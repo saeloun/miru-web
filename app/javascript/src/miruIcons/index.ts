@@ -127,6 +127,7 @@ const userAvatar = require("../../../assets/images/user_avatar.svg");
 const visa = require("../../../assets/images/visa.svg");
 const warningCloseIcon = require("../../../assets/images/warning-close-icon.svg");
 const warningTriangle = require("../../../assets/images/warning-triangle.svg");
+export const GreenCheckCirleIcon = require("../../../assets/images/green-circular-check.svg");
 
 // icons from phosphor
 export const EditIcon = PencilSimple;
