@@ -34,7 +34,7 @@ ENV BASH_ENV ~/.bashrc
 ENV VOLTA_HOME /root/.volta
 ENV PATH $VOLTA_HOME/bin:/usr/local/bin:$PATH
 
-RUN volta install node@${NODE_VERSION} yarn@${YARN_VERSION}
+RUN volta install node@${NODE_VERSION} && volta install yarn@${YARN_VERSION}
 
 FROM base as build_deps
 
@@ -97,11 +97,7 @@ RUN chmod +x /app/bin/* && \
     sed -i 's/ruby.exe/ruby/' /app/bin/* && \
     sed -i '/^#!/aDir.chdir File.expand_path("..", __dir__)' /app/bin/*
 
-# RUN bin/rails fly:build
-
-RUN echo $RAILS_ENV
-
-RUN bin/rails assets:precompile
+RUN bin/rails fly:build
 
 ENV PORT 8080
 

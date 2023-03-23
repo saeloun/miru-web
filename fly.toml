@@ -3,7 +3,11 @@
 app = "miru-staging"
 kill_signal = "SIGINT"
 kill_timeout = 5
-processes = []
+primary_region = "ewr"
+
+[processes]
+  web = "bundle exec rails server -b [::] -p 8080"
+  worker = "bundle exec sidekiq -e production -C config/sidekiq.yml"
 
 [build]
   [build.args]
@@ -48,7 +52,3 @@ processes = []
 [[statics]]
   guest_path = "/app/public"
   url_prefix = "/"
-
-[processes]
-  web = "bundle exec rails server -b [::] -p 8080"
-  worker = "bundle exec sidekiq -e production -C config/sidekiq.yml"
