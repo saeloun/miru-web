@@ -32,4 +32,8 @@ class Address < ApplicationRecord
   # Validations
   validates :address_type, :address_line_1, :state, :city, :country, :pin, presence: true
   validates :address_type, uniqueness: { scope: [ :addressable_id, :addressable_type ] }
+
+  def formatted_address
+    [address_line_1, address_line_2, city, state, pin, country].reject(&:blank?).join(", ")
+  end
 end

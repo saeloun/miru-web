@@ -60,6 +60,7 @@ const Payments = () => {
       <Table baseCurrency={baseCurrency} payments={paymentList} />
       {showManualEntryModal && (
         <AddManualEntry
+          baseCurrency={baseCurrency}
           dateFormat={dateFormat}
           fetchInvoiceList={fetchInvoiceList}
           fetchPaymentList={fetchPaymentList}
@@ -72,7 +73,7 @@ const Payments = () => {
 
   const Main = withLayout(PaymentsLayout, !isDesktop, !isDesktop);
 
-  return <Main />;
+  return isDesktop ? PaymentsLayout() : <Main />;
 };
 
 export default Payments;

@@ -1,6 +1,5 @@
 import React, { useState, useRef } from "react";
 
-import dayjs from "dayjs";
 import { currencyFormat, useDebounce } from "helpers";
 import { DotsThreeVerticalIcon } from "miruIcons";
 import { useNavigate } from "react-router-dom";
@@ -42,7 +41,7 @@ const TableRow = ({
     status,
   } = invoice;
 
-  const { baseCurrency, dateFormat } = company;
+  const { baseCurrency } = company;
   const { name, logo } = client;
 
   const handleCheckboxChange = () => {
@@ -64,8 +63,6 @@ const TableRow = ({
       setShowToolTip(false);
     }
   };
-
-  const formattedDate = date => dayjs(date).format(dateFormat);
 
   return (
     <tr
@@ -90,30 +87,32 @@ const TableRow = ({
           wrapperClassName="h-8 w-8 m-auto rounded-3xl p-2 hover:bg-miru-gray-1000"
         />
       </td>
-      <Tooltip content={name} show={showToolTip}>
-        <td className="flex w-40 cursor-pointer items-center py-5 pr-2 text-left font-medium tracking-normal sm:w-80 md:w-96 lg:w-full">
-          <Avatar url={logo} />
-          <div
-            className="ml-2 overflow-hidden truncate whitespace-nowrap lg:ml-4"
-            ref={toolTipRef}
-            onMouseEnter={handleTooltip}
-          >
-            <span className="text-sm font-semibold capitalize leading-4 text-miru-dark-purple-1000 lg:text-base lg:leading-5">
-              {name}
-            </span>
-            <h3 className="text-xs font-medium leading-4 text-miru-dark-purple-400 lg:text-sm lg:leading-5">
-              {invoiceNumber}
-            </h3>
+      <td>
+        <Tooltip content={name} show={showToolTip}>
+          <div className="flex w-40 cursor-pointer items-center py-5 pr-2 text-left font-medium tracking-normal sm:w-80 md:w-96 lg:w-full">
+            <Avatar url={logo} />
+            <div
+              className="ml-2 overflow-hidden truncate whitespace-nowrap lg:ml-4"
+              ref={toolTipRef}
+              onMouseEnter={handleTooltip}
+            >
+              <span className="text-sm font-semibold capitalize leading-4 text-miru-dark-purple-1000 lg:text-base lg:leading-5">
+                {name}
+              </span>
+              <h3 className="text-xs font-medium leading-4 text-miru-dark-purple-400 lg:text-sm lg:leading-5">
+                {invoiceNumber}
+              </h3>
+            </div>
           </div>
-        </td>
-      </Tooltip>
+        </Tooltip>
+      </td>
       {isDesktop && (
         <td className="w-1/4 whitespace-nowrap px-4 py-5 font-medium tracking-normal lg:px-6">
           <h1 className="text-xs font-normal text-miru-dark-purple-1000 lg:text-base lg:font-semibold">
-            {formattedDate(issueDate)}
+            {issueDate}
           </h1>
           <h3 className="text-xs font-medium text-miru-dark-purple-400 lg:text-sm">
-            Due on {formattedDate(dueDate)}
+            Due on {dueDate}
           </h3>
         </td>
       )}

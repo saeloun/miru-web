@@ -8,8 +8,11 @@ import {
   customStyles,
   CustomValueContainer,
 } from "common/CustomReactSelectStyle";
+import { useUserContext } from "context/UserContext";
 
 export const CustomReactSelect = ({
+  id,
+  isSearchable,
   classNamePrefix,
   options,
   label,
@@ -18,33 +21,45 @@ export const CustomReactSelect = ({
   name,
   value,
   isErr,
-  isDesktopView,
-  menuIsOpen,
+  isDisabled,
+  styles,
+  components,
+  onMenuClose,
+  onMenuOpen,
+  ignoreDisabledFontColor,
 }) => {
+  const { isDesktop } = useUserContext();
+
   const getStyle = () => {
     if (isErr) {
-      return customErrStyles(isDesktopView);
+      return customErrStyles(isDesktop);
     }
 
-    return customStyles(isDesktopView);
+    return customStyles(isDesktop, ignoreDisabledFontColor);
   };
 
   return (
     <div className="outline relative">
       <Select
         classNamePrefix={classNamePrefix}
-        menuIsOpen={menuIsOpen}
+        id={id || name}
+        isDisabled={isDisabled}
+        isSearchable={isSearchable}
         name={name}
         options={options}
         placeholder={label}
-        styles={getStyle()}
+        styles={styles || getStyle()}
         value={value}
-        components={{
-          ValueContainer: CustomValueContainer,
-          IndicatorSeparator: () => null,
-        }}
+        components={
+          components || {
+            ValueContainer: CustomValueContainer,
+            IndicatorSeparator: () => null,
+          }
+        }
         onChange={handleOnChange}
         onFocus={handleonFocus}
+        onMenuClose={onMenuClose}
+        onMenuOpen={onMenuOpen}
       />
     </div>
   );
@@ -57,8 +72,15 @@ CustomReactSelect.defaultProps = {
   handleOnChange: () => {}, // eslint-disable-line  @typescript-eslint/no-empty-function
   handleonFocus: () => {}, // eslint-disable-line  @typescript-eslint/no-empty-function
   isErr: false,
-  isDesktopView: true,
-  menuIsOpen: false,
+  isDisabled: false,
+  defaultValue: null,
+  onMenuClose: () => {}, // eslint-disable-line  @typescript-eslint/no-empty-function
+  onMenuOpen: () => {}, // eslint-disable-line  @typescript-eslint/no-empty-function
+  styles: null,
+  isSearchable: true,
+  components: null,
+  ignoreDisabledFontColor: false,
+  id: "",
 };
 
 export default CustomReactSelect;

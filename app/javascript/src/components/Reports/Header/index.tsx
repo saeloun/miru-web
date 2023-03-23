@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import React, { useState } from "react";
+import React, { Fragment, useState } from "react";
 
 import {
   CaretDownIcon,
@@ -9,7 +9,7 @@ import {
   ShareIcon,
   XIcon,
   ArrowLeftIcon,
-  DotsThreeVerticalIcon,
+  MoreOptionIcon,
 } from "miruIcons";
 import { Link } from "react-router-dom";
 import { MobileMoreOptions } from "StyledComponents";
@@ -81,7 +81,7 @@ const Header = ({
           <Link to="/reports" type="button">
             <ArrowLeftIcon />
           </Link>
-          <span className="w-full py-1 px-3 text-left text-base font-medium leading-5 text-miru-dark-purple-1000 lg:ml-5 lg:truncate lg:px-0 lg:text-center lg:text-2xl lg:font-bold  lg:leading-10">
+          <span className="w-full py-1 px-3 text-left text-base font-medium leading-5 text-miru-dark-purple-1000 lg:ml-5 lg:truncate lg:px-0 lg:text-center lg:text-3.5xl lg:font-bold  lg:leading-10">
             {type}
           </span>
           {showFilterIcon && (
@@ -99,7 +99,7 @@ const Header = ({
                   )}
                 </>
               ) : (
-                <DotsThreeVerticalIcon />
+                <img className="h-4 w-4" src={MoreOptionIcon} />
               )}
             </button>
           )}
@@ -114,30 +114,34 @@ const Header = ({
                 <FilterIcon className="mr-4" color="#7C5DEE" size={16} />{" "}
                 Filters
               </li>
-              <li>
-                <button
-                  className="menuButton__list-item pl-2"
-                  onClick={() => {
-                    setShowExportOptions(false);
-                    handleDownload("csv");
-                  }}
-                >
-                  <FileCsvIcon color="#5B34EA" size={16} weight="bold" />
-                  <span className="ml-3 text-sm">Export as CSV</span>
-                </button>
-              </li>
-              <li>
-                <button
-                  className="menuButton__list-item pl-2"
-                  onClick={() => {
-                    setShowExportOptions(false);
-                    handleDownload("pdf");
-                  }}
-                >
-                  <FilePdfIcon color="#5B34EA" size={16} weight="bold" />
-                  <span className="ml-3 text-sm">Export as PDF</span>
-                </button>
-              </li>
+              {showExportButon && (
+                <Fragment>
+                  <li>
+                    <button
+                      className="menuButton__list-item pl-2"
+                      onMouseDown={() => {
+                        setShowExportOptions(false);
+                        handleDownload("csv");
+                      }}
+                    >
+                      <FileCsvIcon color="#5B34EA" size={16} weight="bold" />
+                      <span className="ml-3 text-sm">Export as CSV</span>
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      className="menuButton__list-item pl-2"
+                      onMouseDown={() => {
+                        setShowExportOptions(false);
+                        handleDownload("pdf");
+                      }}
+                    >
+                      <FilePdfIcon color="#5B34EA" size={16} weight="bold" />
+                      <span className="ml-3 text-sm">Export as PDF</span>
+                    </button>
+                  </li>
+                </Fragment>
+              )}
             </MobileMoreOptions>
           )}
         </div>
@@ -162,7 +166,7 @@ const Header = ({
                   <li>
                     <button
                       className="menuButton__list-item"
-                      onClick={() => {
+                      onMouseDown={() => {
                         setShowExportOptions(false);
                         handleDownload("csv");
                       }}
@@ -174,7 +178,7 @@ const Header = ({
                   <li>
                     <button
                       className="menuButton__list-item"
-                      onClick={() => {
+                      onMouseDown={() => {
                         setShowExportOptions(false);
                         handleDownload("pdf");
                       }}
@@ -208,7 +212,7 @@ const Header = ({
       </div>
       <div>
         {showNavFilters && (
-          <ul className="flex flex-wrap">
+          <ul className="flex flex-wrap px-4 lg:px-0">
             <NavigationFilter />
             {showClearAllFilterBtn(selectedReport.filterCounter, type) && (
               <li className="mr-4 flex px-2 py-1" key="clear_all">

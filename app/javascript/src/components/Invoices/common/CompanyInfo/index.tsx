@@ -4,7 +4,7 @@ const CompanyInfo = ({ company, logo = "" }) => {
   const phoneNumber = company?.phoneNumber || company?.phone_number;
 
   return (
-    <div className="flex flex-col justify-between border-b-2 border-miru-gray-400 md:h-40 md:flex-row md:p-10">
+    <div className="flex flex-col justify-between border-b border-miru-gray-400 md:h-40 md:flex-row md:p-10">
       <div className="flex flex-col md:flex-row">
         <img
           className="m-auto h-20 w-20 rounded-full md:m-0 md:mr-5"

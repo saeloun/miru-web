@@ -2,23 +2,21 @@ import React from "react";
 
 import { MinusIcon, PlusIcon, SearchIcon, XIcon } from "miruIcons";
 
-import CustomCheckbox from "common/CustomCheckbox";
+import ClickableCheckboxText from "common/ClickableCheckboxText";
 
 const ClientFilter = ({
-  setIsClientOpen,
   isClientOpen,
   searchQuery,
   setSearchQuery,
   filteredClientList,
   selectedClients,
   handleSelectClient,
+  handleClientFilterToggle,
 }) => (
   <div className="cursor-pointer border-b border-miru-gray-200 pb-5 pt-6 text-miru-dark-purple-1000">
     <div
       className="flex items-center justify-between px-5 hover:text-miru-han-purple-1000"
-      onClick={() => {
-        setIsClientOpen(!isClientOpen);
-      }}
+      onClick={handleClientFilterToggle}
     >
       <h5 className="text-xs font-bold leading-4 tracking-wider">CLIENTS</h5>
       <div className="flex items-center">
@@ -61,7 +59,7 @@ const ClientFilter = ({
         <div className="max-h-50v overflow-y-auto md:mt-7">
           {filteredClientList.length > 0 ? (
             filteredClientList.map(client => (
-              <CustomCheckbox
+              <ClickableCheckboxText
                 checkboxValue={client.id}
                 handleCheck={() => handleSelectClient(client)}
                 id={client.id}
@@ -69,7 +67,7 @@ const ClientFilter = ({
                 labelClassName="ml-4"
                 name="clients"
                 text={client.label}
-                wrapperClassName="py-3 px-5 flex items-center hover:bg-miru-gray-100 text-miru-dark-purple-1000"
+                wrapperClassName="py-3 px-5 flex items-center lg:hover:bg-miru-gray-100 text-miru-dark-purple-1000"
                 isChecked={
                   !!selectedClients.find(
                     selectedClient => selectedClient.value === client.value
