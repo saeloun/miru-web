@@ -17,6 +17,7 @@ const NewLineItemTable = ({
   loading,
   setLoading,
   setLineItem,
+  dateFormat,
 }) => {
   const selectRowId = items => {
     setLineItem({});
@@ -51,7 +52,7 @@ const NewLineItemTable = ({
         <div className="relative mt-4 h-20 overflow-scroll md:h-50">
           {filteredLineItems.map((item, index) => {
             const hoursLogged = minToHHMM(item.quantity);
-            const date = dayjs(item.date).format("DD.MM.YYYY");
+            const date = dayjs(item.date).format(dateFormat);
 
             return (
               <div

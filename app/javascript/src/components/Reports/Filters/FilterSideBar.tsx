@@ -30,8 +30,11 @@ const FilterSidebar = ({
     timeEntryReport: { selectedFilter: selectedContextFilter, filterOptions },
   } = useEntry();
 
-  const { clients: clientList, teamMember: teamMemberList } =
-    selectedContextFilter;
+  const {
+    clients: clientList,
+    teamMember: teamMemberList,
+    status: statusList,
+  } = selectedContextFilter;
 
   const { clients: selctedClientList, teamMembers: teamMembersList } =
     filterOptions;
@@ -49,6 +52,8 @@ const FilterSidebar = ({
   const [TeamMembersearchQuery, setTeamMemberSearchQuery] = useState("");
   const [selectedClients, setSelectedClients] = useState<any[]>(clientList);
   const [selectedTeams, setSelectedTeams] = useState<any[]>(teamMemberList);
+  const [selectedStatus, setSelectedStatus] = useState<any[]>(statusList);
+
   const [filteredClientList, setFilteredClientList] =
     useState<any[]>(selctedClientList);
 
@@ -110,6 +115,10 @@ const FilterSidebar = ({
       } else {
         setFilteredClientList(filterOptions?.clients);
       }
+    } else {
+      if (!debouncedSearchQuery) {
+        setFilteredClientList(selctedClientList);
+      }
     }
   }, [debouncedSearchQuery]);
 
@@ -150,6 +159,10 @@ const FilterSidebar = ({
           : setFilteredTeamsList([]);
       } else {
         setFilteredTeamsList(filterOptions?.teamMembers);
+      }
+    } else {
+      if (!debouncedTeamsSearchQuery) {
+        setFilteredTeamsList(teamMembersList);
       }
     }
   }, [debouncedTeamsSearchQuery]);
@@ -197,6 +210,27 @@ const FilterSidebar = ({
         teamMember: [...filters.teamMember, selectedTeamMember],
       });
       setSelectedTeams([...selectedTeams, selectedTeamMember]);
+    }
+  };
+
+  const handleSelectStatus = selectedFilter => {
+    if (filters.status.find(filter => filter.value === selectedFilter.value)) {
+      const newarr = selectedStatus.filter(
+        status => status.value != selectedFilter.value
+      );
+
+      setFilters({
+        ...filters,
+        status: newarr,
+      });
+
+      setSelectedStatus(newarr);
+    } else {
+      setFilters({
+        ...filters,
+        status: [...filters.status, selectedFilter],
+      });
+      setSelectedStatus([...selectedStatus, selectedFilter]);
     }
   };
 
@@ -289,13 +323,53 @@ const FilterSidebar = ({
     setIsFilterVisible(false);
   };
 
+  const handleDateRangeToggle = () => {
+    setIsStatusOpen(false);
+    setIsClientOpen(false);
+    setIsTeamMemberOpen(false);
+    setIsGroupByOpen(false);
+    setIsDateRangeOpen(!isDateRangeOpen);
+  };
+
+  const handleClientFilterToggle = () => {
+    setIsClientOpen(!isClientOpen);
+    setIsStatusOpen(false);
+    setIsTeamMemberOpen(false);
+    setIsGroupByOpen(false);
+    setIsDateRangeOpen(false);
+  };
+
+  const handleTeamMembersFilterToggle = () => {
+    setIsTeamMemberOpen(!isTeamMemberOpen);
+    setIsClientOpen(false);
+    setIsStatusOpen(false);
+    setIsGroupByOpen(false);
+    setIsDateRangeOpen(false);
+  };
+
+  const handleStatusFilterToggle = () => {
+    setIsDateRangeOpen(false);
+    setIsClientOpen(false);
+    setIsStatusOpen(!isStatusOpen);
+    setIsTeamMemberOpen(false);
+    setIsGroupByOpen(false);
+  };
+
+  const handleGroupByFilterToggle = () => {
+    setIsDateRangeOpen(false);
+    setIsClientOpen(false);
+    setIsStatusOpen(false);
+    setIsGroupByOpen(!isGroupByOpen);
+    setIsTeamMemberOpen(false);
+  };
+
   return (
     <SidePanel
       WrapperClassname="z-50 justify-content-between"
       setFilterVisibilty={setIsFilterVisible}
     >
       <div>
-        <SidePanel.Header className="mb-2 flex items-center justify-between bg-miru-han-purple-1000 px-5 py-5 text-white lg:bg-white lg:font-bold lg:text-miru-dark-purple-1000">
+        <SidePanel.Header className="mb-2 flex h-12 items-center justify-between bg-miru-han-purple-1000 px-2 text-white lg:h-auto lg:bg-white lg:px-5 lg:py-5 lg:font-bold lg:text-miru-dark-purple-1000">
           {isDesktop ? (
             <h4 className="flex items-center text-base">
               <FilterIcon className="mr-2.5" size={16} /> <span>Filters</span>
@@ -312,19 +386,17 @@ const FilterSidebar = ({
             />
           </Button>
         </SidePanel.Header>
-        <SidePanel.Body className="sidebar__filters max-h-80v min-h-80v overflow-y-auto">
+        <SidePanel.Body className="sidebar__filters max-h-70v min-h-70v overflow-y-auto lg:max-h-80v lg:min-h-80v">
           <DateRangeFilter
             dateRange={dateRange}
             dateRangeList={dateRangeOptions}
             filters={filters}
+            handleDateRangeToggle={handleDateRangeToggle}
             handleOpenDateCalendar={handleOpenDateCalendar}
             handleSelectDate={handleSelectDate}
             handleSelectFilter={handleSelectFilter}
             isDateRangeOpen={isDateRangeOpen}
             selectedInput={selectedInput}
-            setIsClientOpen={setIsClientOpen}
-            setIsDateRangeOpen={setIsDateRangeOpen}
-            setIsStatusOpen={setIsStatusOpen}
             setShowCustomCalendar={setShowCustomCalendar}
             showCustomCalendar={showCustomCalendar}
             showCustomFilter={showCustomFilter}
@@ -334,43 +406,38 @@ const FilterSidebar = ({
           />
           <ClientFilter
             filteredClientList={filteredClientList}
+            handleClientFilterToggle={handleClientFilterToggle}
             handleSelectClient={handleSelectClient}
             isClientOpen={isClientOpen}
             searchQuery={searchQuery}
             selectedClients={filters.clients}
-            setIsClientOpen={setIsClientOpen}
             setSearchQuery={setSearchQuery}
           />
           <TeamMembersFilter
             filteredTeamsList={filteredTeamsList}
             handleSelectTeamMember={handleSelectTeamMember}
+            handleTeamMembersFilterToggle={handleTeamMembersFilterToggle}
             isTeamMemberOpen={isTeamMemberOpen}
             searchQuery={TeamMembersearchQuery}
             selectedTeams={selectedTeams}
-            setIsTeamMemberOpen={setIsTeamMemberOpen}
             setSearchQuery={setTeamMemberSearchQuery}
           />
           <StatusFilter
             filters={filters}
-            handleSelectFilter={handleSelectFilter}
+            handleSelectStatus={handleSelectStatus}
+            handleStatusFilterToggle={handleStatusFilterToggle}
             isStatusOpen={isStatusOpen}
-            setIsClientOpen={setIsClientOpen}
-            setIsDateRangeOpen={setIsDateRangeOpen}
-            setIsStatusOpen={setIsStatusOpen}
             statusOptions={statusOption}
           />
           <GroupByFilter
             filters={filters}
+            handleGroupByFilterToggle={handleGroupByFilterToggle}
             handleSelectFilter={handleSelectGroupByFilter}
             isGroupByOpen={isGroupByOpen}
-            setIsClientOpen={setIsClientOpen}
-            setIsDateRangeOpen={setIsDateRangeOpen}
-            setIsGroupByOpen={setIsGroupByOpen}
-            setIsStatusOpen={setIsStatusOpen}
           />
         </SidePanel.Body>
       </div>
-      <SidePanel.Footer className="sidebar__footer justify-between">
+      <SidePanel.Footer className="sidebar__footer justify-between pt-1">
         <Button
           className="mr-4 flex items-center justify-between"
           size="medium"

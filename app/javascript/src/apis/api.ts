@@ -23,9 +23,11 @@ class ApiHandler {
     this.axios.interceptors.response.use(
       (response: any) => {
         if (response) {
-          response.success = response.status === 200;
-          if (response?.data?.notice) {
-            Toastr.success(response.data.notice);
+          const { data, status } = response;
+          response.success = status === 200;
+          const { reset_session, notice } = data;
+          if (data && !reset_session && notice) {
+            Toastr.success(notice);
           }
         }
 

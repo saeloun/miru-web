@@ -10,8 +10,8 @@ RSpec.describe "Addresses#update", type: :request do
   let(:employee2) { create(:user, current_workspace_id: company2.id) }
   let!(:employee_address) { create(:address, addressable_type: "User", addressable_id: employee.id) }
   let!(:employee2_address) { create(:address, addressable_type: "User", addressable_id: employee2.id) }
-  let!(:company_address) { create(:address, addressable_type: "Company", addressable_id: company.id) }
-  let!(:company2_address) { create(:address, addressable_type: "Company", addressable_id: company2.id) }
+  let!(:company_address) { company.current_address }
+  let!(:company2_address) { company2.current_address }
   let!(:updated_address_details) { attributes_for(:address) }
 
   before do

@@ -4,6 +4,7 @@ require "capybara/rails"
 require "capybara/rspec"
 
 Capybara.server = :puma
+Capybara.default_max_wait_time = 5
 
 if ENV["CI"].present?
   Capybara.register_driver :chrome_headless do |app|

@@ -249,11 +249,11 @@ const FilterSideBar = ({
 
   return (
     <SidePanel
-      WrapperClassname="z-50 justify-content-between"
+      WrapperClassname="z-50 justify-between"
       setFilterVisibilty={setIsFilterVisible}
     >
       <div>
-        <SidePanel.Header className="mb-2 flex items-center justify-between bg-miru-han-purple-1000 px-5 py-5 text-white lg:bg-white lg:font-bold lg:text-miru-dark-purple-1000">
+        <SidePanel.Header className="mb-2 flex h-12 items-center justify-between bg-miru-han-purple-1000 px-2 text-white lg:h-auto lg:bg-white lg:px-5 lg:py-5 lg:font-bold lg:text-miru-dark-purple-1000">
           {isDesktop ? (
             <h4 className="flex items-center text-base">
               <FilterIcon className="mr-2.5" size={16} /> <span>Filters</span>
@@ -270,7 +270,7 @@ const FilterSideBar = ({
             />
           </Button>
         </SidePanel.Header>
-        <SidePanel.Body className="sidebar__filters max-h-80v min-h-80v overflow-y-auto">
+        <SidePanel.Body className="sidebar__filters max-h-70v min-h-70v overflow-y-auto lg:max-h-80v lg:min-h-80v">
           <ul>
             <li className="relative cursor-pointer border-b border-miru-gray-200 pb-5 pt-6 text-miru-dark-purple-1000 hover:text-miru-han-purple-1000">
               <div
@@ -301,7 +301,7 @@ const FilterSideBar = ({
                 <div className="lg:mt-7">
                   {dateRangeList.map(dateRange => (
                     <CustomRadioButton
-                      classNameWrapper="px-5 py-2.5"
+                      classNameWrapper="px-5 py-3"
                       defaultCheck={dateRange.value == filters.dateRange.value}
                       groupName="dateRange"
                       id={dateRange.value}
@@ -484,7 +484,7 @@ const FilterSideBar = ({
           </ul>
         </SidePanel.Body>
       </div>
-      <SidePanel.Footer className="sidebar__footer h-auto justify-around px-2">
+      <SidePanel.Footer className="sidebar__footer h-auto justify-around px-2 pt-1">
         <Button
           className="mr-2 flex items-center justify-between px-10 py-2.5 text-base font-bold leading-5"
           style="secondary"

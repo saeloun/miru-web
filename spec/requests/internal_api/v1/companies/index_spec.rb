@@ -17,14 +17,7 @@ RSpec.describe "InternalApi::V1::Companies::index", type: :request do
       send_request :get, internal_api_v1_companies_path, headers: auth_headers(user)
     end
 
-    it "response should be successful" do
-      expect(response).to be_successful
-    end
-
-    it "returns success json response" do
-      expect(json_response["company_details"]["name"]).to eq(company.name)
-      expect(json_response["company_details"]["address"]).to eq(company.address)
-    end
+    it_behaves_like "InternalApi::V1::Companies::index success response"
   end
 
   context "when user is an owner" do
@@ -34,30 +27,18 @@ RSpec.describe "InternalApi::V1::Companies::index", type: :request do
       send_request :get, internal_api_v1_companies_path, headers: auth_headers(user)
     end
 
-    it "response should be successful" do
-      expect(response).to be_successful
-    end
-
-    it "returns success json response" do
-      expect(json_response["company_details"]["name"]).to eq(company.name)
-      expect(json_response["company_details"]["address"]).to eq(company.address)
-    end
+    it_behaves_like "InternalApi::V1::Companies::index success response"
   end
 
   context "when user is a book keeper" do
-   before do
-     user.add_role :book_keeper, company
-     sign_in user
-     send_request :get, internal_api_v1_companies_path, headers: auth_headers(user)
-   end
+    before do
+      user.add_role :book_keeper, company
+      sign_in user
+      send_request :get, internal_api_v1_companies_path, headers: auth_headers(user)
+    end
 
-   it "response should be successful" do
-     expect(response).to have_http_status(:ok)
-   end
-
-   it "returns success json response" do
-     expect(json_response["company_details"]["name"]).to eq(company.name)
-     expect(json_response["company_details"]["address"]).to eq(company.address)
-   end
- end
+    it "is not be permitted to view a company" do
+      expect(response).to have_http_status(:forbidden)
+    end
+  end
 end
