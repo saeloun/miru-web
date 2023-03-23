@@ -66,7 +66,7 @@ class User < ApplicationRecord
   rolify strict: true
 
   scope :with_kept_employments, -> { merge(Employment.kept) }
-  scope :with_specific_ids, -> (user_ids) { where(id: user_ids) if user_ids.present? }
+  scope :with_ids, -> (user_ids) { where(id: user_ids) if user_ids.present? }
 
   # Social account details
   store_accessor :social_accounts, :github_url, :linkedin_url

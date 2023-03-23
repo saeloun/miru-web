@@ -62,21 +62,21 @@ class Reports::TimeEntries::PageService < ApplicationService
 
     def users_query
       current_company.users
-        .with_specific_ids(params[:team_member])
+        .with_ids(params[:team_member])
         .order(:first_name)
         .select(:id)
     end
 
     def clients_query
       current_company.clients
-        .with_specific_ids(params[:client])
+        .with_ids(params[:client])
         .order(:name)
         .select(:id)
     end
 
     def projects_query
       current_company.projects
-        .with_specific_ids(params[:project])
+        .with_ids(params[:project])
         .order(:name)
         .select(:id)
     end
