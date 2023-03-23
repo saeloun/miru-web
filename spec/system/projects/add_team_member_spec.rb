@@ -8,14 +8,14 @@ RSpec.describe "Add team memebr to project", type: :system do
   let(:client) { create(:client, company:) }
   let!(:project) { create(:project, client:) }
 
-  context "when user is an admin" do
+  context "when adding a project member for a project" do
     before do
       create(:employment, company:, user:)
       user.add_role :admin, company
       sign_in(user)
     end
 
-    it "can add team member to a project" do
+    it "can add project member to a project" do
       with_forgery_protection do
         visit "/projects"
 
@@ -23,13 +23,56 @@ RSpec.describe "Add team memebr to project", type: :system do
         find("#kebabMenu").click
         click_button "Add/Remove Team Members"
         sleep 1
-        click_button "+ Add another team member"
-        select user.first_name, from: "select-user"
+        click_button "Add another team member"
+        find(".react-select-filter__control.css-1ysvbq8-control").click
+        find("#react-select-2-option-0").click
         fill_in "Rate", with: "100"
-        click_button "SAVE CHANGES"
+        click_button "Add team members to project"
 
-        expect(page).to have_content(user.first_name, wait: 3)
-        expect(page).to have_content("100", wait: 3)
+        expect(page).to have_content(user.first_name)
+        expect(page).to have_content("100")
+        expect(page).to have_content(project.name)
+      end
+    end
+  end
+
+  context "when project member is already added to a project" do
+    before do
+      create(:employment, company:, user:)
+      create(:project_member, user:, project:)
+      user.add_role :admin, company
+      sign_in(user)
+    end
+
+    it "can remove member from a project" do
+      with_forgery_protection do
+        visit "/projects"
+
+        find("tbody").hover.click
+        find("#kebabMenu").click
+        click_button "Add/Remove Team Members"
+        sleep 1
+        click_button "removeMember"
+        click_button "Add team members to project"
+
+        expect(page).to have_content("Changes saved successfully")
+        expect(page).to have_content(project.name)
+      end
+    end
+
+    it "can edit the rate for a project member" do
+      with_forgery_protection do
+        visit "/projects"
+
+        find("tbody").hover.click
+        find("#kebabMenu").click
+        click_button "Add/Remove Team Members"
+        sleep 1
+        fill_in "Rate", with: "500"
+        click_button "Add team members to project"
+
+        expect(page).to have_content(user.first_name)
+        expect(page).to have_content("500")
         expect(page).to have_content(project.name)
       end
     end
