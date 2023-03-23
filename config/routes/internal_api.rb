@@ -43,6 +43,7 @@ namespace :internal_api, defaults: { format: "json" } do
     namespace :invoices do
       resources :bulk_deletion, only: [:create]
       resources :bulk_download, only: [:index]
+      resources :action_trails, only: [:show]
     end
     resources :invoices, only: [:index, :create, :update, :show, :destroy, :edit] do
       member do
