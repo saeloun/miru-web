@@ -82,6 +82,7 @@ const edit = require("../../../assets/images/edit.svg");
 const edit_image_button = require("../../../assets/images/edit_image_button.svg");
 const errorOctagon = require("../../../assets/images/error-octagon.svg");
 const google = require("../../../assets/images/google.svg");
+const greenCheckCirleIcon = require("../../../assets/images/green-circular-check.svg");
 const help_icon = require("../../../assets/images/help_icon.png");
 const circleInfo = require("../../../assets/images/info-circle.svg");
 const closeInfo = require("../../../assets/images/info-close-icon.svg");
@@ -127,7 +128,6 @@ const userAvatar = require("../../../assets/images/user_avatar.svg");
 const visa = require("../../../assets/images/visa.svg");
 const warningCloseIcon = require("../../../assets/images/warning-close-icon.svg");
 const warningTriangle = require("../../../assets/images/warning-triangle.svg");
-export const GreenCheckCirleIcon = require("../../../assets/images/green-circular-check.svg");
 
 // icons from phosphor
 export const EditIcon = PencilSimple;
@@ -256,3 +256,4 @@ export const MiruManagingProjectsScreen = miruManagingProjectsScreen;
 export const MiruManagingClientsScreen = miruManagingClientsScreen;
 export const MiruManagingEmployeesScreen = miruManagingEmployeesScreen;
 export const MoreOptionIcon = moreOption;
+export const GreenCheckCirleIcon = greenCheckCirleIcon;
