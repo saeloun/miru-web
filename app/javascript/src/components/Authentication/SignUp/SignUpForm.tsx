@@ -47,23 +47,21 @@ const SignUpForm = () => {
     );
 
   return (
-    <div className="w-full px-8 pt-16 pb-4 md:px-0 md:pt-36 lg:w-1/2">
+    <div className="relative w-full px-8 pt-10 pb-4 md:px-0 md:pt-36 lg:w-1/2">
       <div className="mx-auto min-h-full md:w-1/2 lg:w-352">
         <div className="d-block lg:hidden">
           <a href={MIRU_APP_URL} rel="noreferrer noopener">
             <img
               alt="miru-logo"
-              className="d-block mx-auto mb-20 lg:hidden"
-              height="64"
+              className="d-block mx-auto mb-4 h-10 w-10 md:mb-10 md:h-16 md:w-16 lg:mb-20"
               src={MiruLogoSVG}
-              width="64"
             />
           </a>
         </div>
-        <h1 className="text-center font-manrope text-4.5xl font-extrabold text-miru-han-purple-1000">
+        <h1 className="text-center font-manrope text-2xl font-extrabold text-miru-han-purple-1000 md:text-3xl lg:text-4.5xl">
           Signup for Miru
         </h1>
-        <div className="pt-20">
+        <div className="pt-10 lg:pt-20">
           <Formik
             initialValues={signUpFormInitialValues}
             validateOnBlur={false}
@@ -78,7 +76,7 @@ const SignUpForm = () => {
               return (
                 <Form>
                   <div className="flex justify-between">
-                    <div className="field relative mr-6 w-1/2 lg:w-168">
+                    <div className="field relative mr-2 w-1/2 md:mr-6 lg:w-168">
                       <InputField
                         hasError={errors.firstName && touched.firstName}
                         id="firstName"
@@ -192,7 +190,7 @@ const SignUpForm = () => {
                 Sign Up with Google
               </button>
             </div> */}
-          <p className="pt-5 text-center font-manrope text-xs font-normal not-italic text-miru-dark-purple-1000">
+          <p className="pt-5 pb-10 text-center font-manrope text-xs font-normal not-italic text-miru-dark-purple-1000">
             Already have an account?&nbsp;
             <span
               className="form__link inline cursor-pointer"
@@ -204,8 +202,8 @@ const SignUpForm = () => {
             </span>
           </p>
         </div>
-        <FooterLinks />
       </div>
+      <FooterLinks />
     </div>
   );
 };
