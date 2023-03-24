@@ -39,9 +39,41 @@ const OrganizationSetup = () => {
     financialDetails: FinancialDetailsFormValues
   ) => {
     const formD = new FormData();
+
+    formD.append(
+      "company[addresses_attributes[0][address_line_1]]",
+      companyDetails.address_line_1
+    );
+
+    formD.append(
+      "company[addresses_attributes[0][address_line_2]]",
+      companyDetails.address_line_2
+    );
+
+    formD.append(
+      "company[addresses_attributes[0][state]]",
+      companyDetails.state?.value
+    );
+
+    formD.append(
+      "company[addresses_attributes[0][city]]",
+      companyDetails.city?.value
+    );
+
+    formD.append(
+      "company[addresses_attributes[0][country]]",
+      companyDetails.country?.value
+    );
+
+    formD.append(
+      "company[addresses_attributes[0][pin]]",
+      companyDetails.zipcode
+    );
+
     formD.append("company[name]", companyDetails.company_name);
     formD.append("company[business_phone]", companyDetails.business_phone);
     formD.append("company[country]", companyDetails.country?.value);
+
     formD.append(
       "company[base_currency]",
       financialDetails.base_currency?.value || ""
@@ -51,32 +83,6 @@ const OrganizationSetup = () => {
       "company[standard_price]",
       financialDetails.standard_rate.toString()
     );
-
-    formD.append(
-      "company[addresses_attributes][address_line_1]",
-      companyDetails.address_line_1
-    );
-
-    formD.append(
-      "company[addresses_attributes][address_line_2]",
-      companyDetails.address_line_2
-    );
-
-    formD.append(
-      "company[addresses_attributes][state]",
-      companyDetails.state?.value
-    );
-
-    formD.append(
-      "company[addresses_attributes][city]",
-      companyDetails.city?.value
-    );
-
-    formD.append(
-      "company[addresses_attributes][country]",
-      companyDetails.country?.value
-    );
-    formD.append("company[addresses_attributes][pin]", companyDetails.zipcode);
 
     formD.append("company[fiscal_year_end]", financialDetails.year_end?.value);
     formD.append("company[date_format]", financialDetails.date_format?.value);
