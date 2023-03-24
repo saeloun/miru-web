@@ -31,8 +31,7 @@ class Reports::TimeEntries::PageService < ApplicationService
       first: pagy_data.page == 1,
       prev: pagy_data.prev,
       next: pagy_data.next,
-      last: pagy_data.last,
-      current_page: pagy_data.page
+      last: pagy_data.last
     }
   end
 

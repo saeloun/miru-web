@@ -50,7 +50,6 @@ const TimeEntryReport = () => {
     prev: null,
     next: 0,
     last: false,
-    currentPage: 0,
   });
 
   useEffect(() => {
@@ -131,10 +130,7 @@ const TimeEntryReport = () => {
 
   const handleDownload = async type => {
     const queryParams = getQueryParams(selectedFilter).substring(1);
-    const response = await reportsApi.download(
-      type,
-      `?${queryParams}&page=${paginationDetails.currentPage}`
-    );
+    const response = await reportsApi.download(type, `?${queryParams}`);
     const url = window.URL.createObjectURL(new Blob([response.data]));
     const link = document.createElement("a");
     const date = new Date();
