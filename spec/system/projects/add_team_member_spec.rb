@@ -5,6 +5,7 @@ require "rails_helper"
 RSpec.describe "Add team memebr to project", type: :system do
   let(:company) { create(:company) }
   let!(:user) { create(:user, current_workspace_id: company.id) }
+  let!(:user_2) { create(:user, current_workspace_id: company.id) }
   let(:client) { create(:client, company:) }
   let!(:project) { create(:project, client:) }
 
@@ -39,7 +40,7 @@ RSpec.describe "Add team memebr to project", type: :system do
   context "when project member is already added to a project" do
     before do
       create(:employment, company:, user:)
-      create(:project_member, user:, project:)
+      create(:project_member, user: user_2, project:)
       user.add_role :admin, company
       sign_in(user)
     end
@@ -55,7 +56,7 @@ RSpec.describe "Add team memebr to project", type: :system do
         click_button "removeMember"
         click_button "Add team members to project"
 
-        expect(page).to have_content("Changes saved successfully")
+        expect(page).not_to have_content(user_2.first_name)
         expect(page).to have_content(project.name)
       end
     end

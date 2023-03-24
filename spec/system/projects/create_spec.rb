@@ -20,8 +20,6 @@ RSpec.describe "Creating Project", type: :system do
           visit "/projects"
 
           click_button "NEW PROJECT"
-          expect(page).to have_select("select-client")
-
           sleep 1
           select client.name, from: "select-client"
           fill_in "project-name", with: "Test Project"
@@ -41,7 +39,6 @@ RSpec.describe "Creating Project", type: :system do
           visit "/projects"
 
           click_button "NEW PROJECT"
-          expect(page).to have_select("select-client")
           sleep 1
           select client.name, from: "select-client"
           fill_in "project-name", with: "Non Billable Project"
@@ -60,9 +57,6 @@ RSpec.describe "Creating Project", type: :system do
           visit "/projects"
 
           click_button "NEW PROJECT"
-
-          expect(page).to have_select("select-client")
-
           sleep 1
           select client.name, from: "select-client"
           fill_in "project-name", with: ""
