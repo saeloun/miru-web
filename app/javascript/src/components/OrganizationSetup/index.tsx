@@ -2,6 +2,7 @@ import React, { useState } from "react";
 
 import Steps from "rc-steps";
 import "rc-steps/assets/index.css";
+import { useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 
 import companiesApi from "apis/companies";
@@ -17,6 +18,7 @@ import Step from "./Step";
 import { organizationSetupSteps, TOTAL_NUMBER_OF_STEPS } from "./utils";
 
 const OrganizationSetup = () => {
+  const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [stepNoOfLastSubmittedForm, setStepNoOfLastSubmittedForm] =
     useState<number>(0);
@@ -69,8 +71,9 @@ const OrganizationSetup = () => {
     setStepNoOfLastSubmittedForm(currentStep);
     const payload = generatePayload(companyDetails, financialDetails);
     const res = await companiesApi.create(payload);
+
     if (res?.status == 200) {
-      window.location.href = Paths.TIME_TRACKING;
+      navigate(Paths.SIGNUP_SUCCESS);
     }
   };
 
