@@ -1,6 +1,5 @@
-import React from "react";
+import React, { useRef } from "react";
 
-import axios from "axios";
 import { Formik, Form, FormikProps } from "formik";
 import { GoogleSVG } from "miruIcons";
 import { useNavigate } from "react-router-dom";
@@ -23,6 +22,10 @@ interface SignInFormValues {
 const SignInForm = () => {
   const authDispatch = useAuthDispatch();
   const navigate = useNavigate();
+  const googleOauth = useRef(null);
+  const csrfToken = document
+    .querySelector('[name="csrf-token"]')
+    .getAttribute("content");
 
   const handleSignInFormSubmit = async (values: any) => {
     try {
@@ -48,16 +51,9 @@ const SignInForm = () => {
   };
 
   const handleGoogleAuth = async () => {
-    const res = await axios.get("users/auth/google_oauth2");
-    //@ts-expect-error for authDispatch initial values
-    authDispatch({
-      type: "LOGIN",
-      payload: {
-        token: res.data.user.token,
-        email: res?.data?.user.email,
-      },
-    });
-    setTimeout(() => (window.location.href = `${window.location.origin}`), 500);
+    const googleForm = googleOauth?.current;
+
+    if (googleForm) googleForm.submit();
   };
 
   const isBtnDisabled = (values: SignInFormValues) =>
@@ -132,14 +128,35 @@ const SignInForm = () => {
               }}
             </Formik>
             <div className="mb-3">
-              <button
-                className="form__button whitespace-nowrap"
-                data-cy="sign-up-button"
-                onClick={handleGoogleAuth}
+              <Formik
+                initialValues={{}}
+                validateOnBlur={false}
+                validationSchema=""
+                onSubmit={() => {}} //eslint-disable-line
               >
-                <img alt="" className="mr-2" src={GoogleSVG} />
-                Sign In with Google
-              </button>
+                {() => (
+                  <Form
+                    action="/users/auth/google_oauth2"
+                    method="post"
+                    ref={googleOauth}
+                  >
+                    <input
+                      name="authenticity_token"
+                      type="hidden"
+                      value={csrfToken}
+                    />
+                    <button
+                      className="form__button whitespace-nowrap"
+                      data-cy="sign-up-button"
+                      type="submit"
+                      onClick={handleGoogleAuth}
+                    >
+                      <img alt="" className="mr-2" src={GoogleSVG} />
+                      Sign In with Google
+                    </button>
+                  </Form>
+                )}
+              </Formik>
             </div>
             <p className="mb-3 text-center font-manrope text-xs font-normal not-italic text-miru-dark-purple-1000">
               <span

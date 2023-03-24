@@ -1,10 +1,12 @@
 import React, { useEffect } from "react";
 
-import { Navigate, Routes, Route } from "react-router-dom";
+import { Navigate, Routes, Route, useNavigate } from "react-router-dom";
 
 import { Roles } from "constants/index";
 import { AUTH_ROUTES } from "constants/routes";
-import { useAuthState } from "context/auth";
+import { useAuthState, useAuthDispatch } from "context/auth";
+import { useUserContext } from "context/UserContext";
+import { loginGoogleAuth } from "utils/googleOauthLogin";
 import {
   clearCredentialsFromLocalStorage,
   getValueFromLocalStorage,
@@ -14,8 +16,17 @@ import Dashboard from "./Dashboard";
 import OrganizationSetup from "./OrganizationSetup";
 
 const Main = (props: Iprops) => {
+  const authDispatch = useAuthDispatch();
   //@ts-expect-error is used to allow authToken value on empty object
   const { isLoggedIn } = useAuthState();
+  const { user } = useUserContext();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isLoggedIn === false && props?.googleOauthSuccess) {
+      loginGoogleAuth(user?.token, user?.email, authDispatch, navigate);
+    }
+  }, [isLoggedIn, props?.googleOauthSuccess]);
 
   useEffect(() => {
     const previousLoginAuthEmail = getValueFromLocalStorage("authEmail");
@@ -67,6 +78,7 @@ interface Iprops {
   confirmedUser: boolean;
   isDesktop: boolean;
   isAdminUser: boolean;
+  googleOauthSuccess: boolean;
 }
 
 export default Main;
