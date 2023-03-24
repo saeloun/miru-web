@@ -1,13 +1,28 @@
-import React, { useState, Fragment } from "react";
+import React, { useState, Fragment, useEffect } from "react";
 
 import { DotsThreeVerticalIcon } from "miruIcons";
+
+import { useUserContext } from "context/UserContext";
 
 import MoreOptions from "./MoreOptions";
 
 import { mobileActiveClassName, MobileMenuOptions } from "../utils";
 
-const Navigation = ({ isAdminUser, setSelectedTab }) => {
-  const [showMoreOptions, setShowMoreOptions] = useState<boolean>(false);
+const Navigation = () => {
+  const { isAdminUser, setSelectedTab, selectedTab } = useUserContext();
+  const defaultShowOption = selectedTab == "More";
+  const [showMoreOptions, setShowMoreOptions] =
+    useState<boolean>(defaultShowOption);
+
+  const handleMoreClick = () => {
+    setShowMoreOptions(true);
+  };
+
+  useEffect(() => {
+    if (showMoreOptions) {
+      setSelectedTab("More");
+    }
+  }, [showMoreOptions]);
 
   return (
     <Fragment>
@@ -25,17 +40,14 @@ const Navigation = ({ isAdminUser, setSelectedTab }) => {
               ? mobileActiveClassName
               : "flex flex-col items-center justify-center text-xs"
           }`}
-          onClick={() => {
-            setSelectedTab("More");
-            setShowMoreOptions(true);
-          }}
+          onClick={handleMoreClick}
         >
-          <DotsThreeVerticalIcon size={26} /> More
+          <DotsThreeVerticalIcon size={26} />
+          More
         </li>
       </ul>
       {showMoreOptions && (
         <MoreOptions
-          setSelectedTab={setSelectedTab}
           setVisiblity={setShowMoreOptions}
           showMoreOptions={showMoreOptions}
         />
