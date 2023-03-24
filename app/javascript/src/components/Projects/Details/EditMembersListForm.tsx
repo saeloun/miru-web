@@ -151,6 +151,7 @@ const EditMembersListForm = ({
             <div className="my-auto text-right ">
               <button
                 className="menuButton__button"
+                id="removeMember"
                 type="button"
                 onClick={() => removeMemberHandler(memberIndex)}
               >
