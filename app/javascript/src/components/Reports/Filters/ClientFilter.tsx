@@ -59,22 +59,24 @@ const ClientFilter = ({
         </div>
         <div className="max-h-50v overflow-y-auto md:mt-7">
           {filteredClientList.length > 0 ? (
-            filteredClientList.map(client => (
-              <ClickableCheckboxText
-                checkboxValue={client.id}
-                handleCheck={() => handleSelectClient(client)}
-                id={client.id}
-                key={client.id}
-                labelClassName="ml-4"
-                name="clients"
-                text={client.label}
-                wrapperClassName="py-3 px-5 flex items-center lg:hover:bg-miru-gray-100 text-miru-dark-purple-1000"
-                isChecked={
-                  !!selectedClients.find(
-                    selectedClient => selectedClient.value === client.value
-                  )
-                }
-              />
+            filteredClientList.map((client, index) => (
+              <div key={index}>
+                <ClickableCheckboxText
+                  checkboxValue={client.id}
+                  handleCheck={() => handleSelectClient(client)}
+                  id={client.id}
+                  key={client.id}
+                  labelClassName="ml-4"
+                  name="clients"
+                  text={client.label}
+                  wrapperClassName="py-3 px-5 flex items-center lg:hover:bg-miru-gray-100 text-miru-dark-purple-1000"
+                  isChecked={
+                    !!selectedClients.find(
+                      selectedClient => selectedClient.value === client.value
+                    )
+                  }
+                />
+              </div>
             ))
           ) : (
             <div className="m-5">No results found</div>
