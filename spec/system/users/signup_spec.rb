@@ -78,7 +78,7 @@ RSpec.describe "User Signup", type: :system do
 
         visit user_confirmation_path(confirmation_token:)
 
-        expect(page).to have_content "Welcome"
+        expect(page).to have_content "Thanks for verifying your email."
       end
     end
   end
