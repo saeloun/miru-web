@@ -6,7 +6,8 @@ import { ToastContainer } from "react-toastify";
 
 import authenticationApi from "apis/authentication";
 import { InputErrors, InputField } from "common/FormikFields";
-import { Paths, TOASTER_DURATION } from "constants/index";
+import MiruLogoWatermark from "common/MiruLogoWatermark";
+import { MIRU_APP_URL, Paths, TOASTER_DURATION } from "constants/index";
 
 import {
   resetPasswordFormInitialValues,
@@ -36,40 +37,54 @@ const ResetPassword = () => {
     }
   };
 
+  const isSubmitBtnDisable = values =>
+    !(values?.password?.trim() && values?.confirm_password?.trim());
+
   return (
     <>
       <ToastContainer autoClose={TOASTER_DURATION} />
-      <div className="w-full px-8 pt-16 pb-4 md:px-0 md:pt-36">
+      <div className="relative min-h-screen w-full px-8 pt-10 pb-4 md:px-0 md:pt-36">
         <div className="mx-auto min-h-full md:w-1/2 lg:w-352">
           <div>
-            <img
-              alt="miru-logo"
-              className="d-block mx-auto mb-20"
-              height="64"
-              src={MiruLogoSVG}
-              width="64"
-            />
+            <a href={MIRU_APP_URL} rel="noreferrer noopener">
+              <img
+                alt="miru-logo"
+                className="d-block mx-auto mb-4 h-10 w-10 md:mb-10 md:h-16 md:w-16 lg:mb-20"
+                src={MiruLogoSVG}
+              />
+            </a>
           </div>
-          <h1 className="text-center font-manrope text-4xl font-extrabold text-miru-han-purple-1000">
+          <h1 className="text-center font-manrope text-2xl font-extrabold text-miru-han-purple-1000 md:text-3xl lg:text-4.5xl">
             Reset Password
           </h1>
-          <div className="pt-20">
+          <div className="pt-10 lg:pt-20">
             <Formik
               initialValues={resetPasswordFormInitialValues}
               validateOnBlur={false}
+              validateOnChange={false}
               validationSchema={resetPasswordFormValidationSchema}
               onSubmit={handleResetPasswordFormSubmit}
             >
               {(props: FormikProps<ResetPasswordFormValues>) => {
-                const { touched, errors } = props;
+                const {
+                  values,
+                  touched,
+                  errors,
+                  setFieldError,
+                  setFieldValue,
+                } = props;
 
                 return (
                   <Form>
                     <div className="field">
                       <InputField
+                        hasError={errors.password && touched.password}
                         id="password"
                         label="Password"
+                        labelClassName="p-0"
                         name="password"
+                        setFieldError={setFieldError}
+                        setFieldValue={setFieldValue}
                         type="password"
                       />
                       <InputErrors
@@ -81,8 +96,14 @@ const ResetPassword = () => {
                       <InputField
                         id="confirm_password"
                         label="Confirm Password"
+                        labelClassName="p-0"
                         name="confirm_password"
+                        setFieldError={setFieldError}
+                        setFieldValue={setFieldValue}
                         type="password"
+                        hasError={
+                          errors.confirm_password && touched.confirm_password
+                        }
                       />
                       <InputErrors
                         fieldErrors={errors.confirm_password}
@@ -91,9 +112,13 @@ const ResetPassword = () => {
                     </div>
                     <div>
                       <button
-                        className="form__button whitespace-nowrap"
-                        data-cy="sign-up-button"
+                        data-cy="reset-password-button"
                         type="submit"
+                        className={`form__button whitespace-nowrap ${
+                          isSubmitBtnDisable(values)
+                            ? "cursor-not-allowed border-transparent bg-indigo-100 hover:border-transparent"
+                            : "cursor-pointer"
+                        }`}
                       >
                         Reset password
                       </button>
@@ -116,6 +141,7 @@ const ResetPassword = () => {
             </Formik>
           </div>
         </div>
+        <MiruLogoWatermark />
       </div>
     </>
   );

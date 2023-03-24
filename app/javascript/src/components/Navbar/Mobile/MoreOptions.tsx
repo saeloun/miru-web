@@ -8,8 +8,8 @@ import UserActions from "../UserActions";
 import UserInfo from "../UserInfo";
 import { MobileMenuOptions, navOptions } from "../utils";
 
-const MoreOptions = ({ setVisiblity, setSelectedTab, showMoreOptions }) => {
-  const { user, isAdminUser, companyRole } = useUserContext();
+const MoreOptions = ({ setVisiblity, showMoreOptions }) => {
+  const { user, isAdminUser, setSelectedTab, companyRole } = useUserContext();
 
   return (
     <SidePanel WrapperClassname="pt-13 pb-16" setFilterVisibilty={setVisiblity}>

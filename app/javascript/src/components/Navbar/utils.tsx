@@ -120,7 +120,7 @@ const getMobileListClassName = (isActive, index, showMoreOptions) => {
   if (isActive && !showMoreOptions) return mobileActiveClassName;
 
   if (index > 3) {
-    return "px-4 flex items-center justify-start hover:bg-miru-gray-100";
+    return "w-full px-4 flex items-center justify-start hover:bg-miru-gray-100";
   }
 
   return "w-full flex flex-col items-center justify-center hover:bg-miru-gray-100 text-xs font-medium";
