@@ -20,15 +20,13 @@ class Reports::TimeEntries::DownloadService
     def fetch_complete_report
       next_page = 1
 
-      until next_page == nil do
-        reports_data = Reports::TimeEntries::ReportService.new(
-          params.merge(page: next_page),
-          current_company
-          )
-          .process
-        @reports = reports + reports_data[:reports]
-        next_page = reports_data[:pagination_details][:next]
-      end
+      reports_data = Reports::TimeEntries::ReportService.new(
+        params.merge(page: params[:page]),
+        current_company
+        )
+        .process
+      @reports = reports + reports_data[:reports]
+      next_page = reports_data[:pagination_details][:next]
     end
 
     def format_report

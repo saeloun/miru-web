@@ -62,7 +62,8 @@ class Reports::TimeEntries::ReportService
         first: search_result.first_page?,
         prev: search_result.prev_page,
         next: search_result.next_page,
-        last: search_result.last_page?
+        last: search_result.last_page?,
+        current_page: search_result.page
       }
     end
 
