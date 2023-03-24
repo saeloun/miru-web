@@ -347,7 +347,6 @@ const AddEntryMobile = ({
               className="focus:outline-none cursor-pointer rounded text-center text-xl font-bold text-miru-dark-purple-1000 placeholder:text-miru-dark-purple-200 focus:border-miru-gray-1000 focus:bg-white focus:ring-1 focus:ring-miru-gray-1000"
               initTime={duration}
               name="timeInput"
-              placeholder="00:00"
               onTimeChange={handleDurationChange}
             />
             <Button onClick={handleIncreaseTime}>
