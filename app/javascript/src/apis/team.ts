@@ -16,7 +16,8 @@ const updateTeamMember = (id, payload) => axios.put(`${path}/${id}`, payload);
 
 const destroyTeamMemberAvatar = id => axios.delete(`${path}/${id}/avatar`);
 
-const updateTeamMemberAvatar = (id, payload) => axios.put(`${path}/${id}/avatar`, payload);
+const updateTeamMemberAvatar = (id, payload) =>
+  axios.put(`${path}/${id}/avatar`, payload);
 
 //TODO: connect Invitation flow
 const inviteMember = payload => axios.post("/invitations", payload);
