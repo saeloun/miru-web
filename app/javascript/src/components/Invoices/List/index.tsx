@@ -75,17 +75,23 @@ const Invoices = () => {
 
   useEffect(() => sendGAPageView(), []);
 
+  const aferDownloadActions = () => {
+    setCounter(0);
+    setReceived(null);
+    setConnected(false);
+    setSelectedInvoiceCounter(selectedInvoices.length);
+    setShowBulkDownloadDialog(false);
+  };
+
   useEffect(() => {
     if (!downloading) {
-      const timer = setTimeout(() => {
-        setCounter(0);
-        setReceived(null);
-        setConnected(false);
-        setSelectedInvoiceCounter(selectedInvoices.length);
-        setShowBulkDownloadDialog(false);
-      }, 3000);
+      if (isDesktop) {
+        const timer = setTimeout(aferDownloadActions, 3000);
 
-      return () => clearTimeout(timer);
+        return () => clearTimeout(timer);
+      }
+
+      aferDownloadActions();
     }
   }, [downloading]);
 
