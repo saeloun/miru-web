@@ -9,7 +9,5 @@ class InternalApi::V1::ApplicationController < ActionController::API
   include Pagy::Backend
   include SetCurrentDetails
 
-  helper ApplicationHelper
-
   before_action :authenticate_user!
 end

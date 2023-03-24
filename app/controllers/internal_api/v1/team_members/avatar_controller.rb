@@ -6,7 +6,7 @@ class InternalApi::V1::TeamMembers::AvatarController < InternalApi::V1::Applicat
 
     user = employment.user
     user.update!(avatar_params)
-    render json: { avtar_url: user_avatar(user), notice: "Avatar updated successfully" }, status: :ok
+    render json: { avatar_url: user.avatar_url, notice: "Avatar updated successfully" }, status: :ok
   end
 
   def destroy
