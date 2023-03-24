@@ -36,12 +36,12 @@ const EmailVerification = () => {
         </div>
         <p className="pt-6 text-center font-manrope text-xs font-normal not-italic">
           Didn’t recieve verification link?
-          <span
-            className="cursor-pointer pl-1 font-semibold text-miru-han-purple-1000"
+          <button
+            className="cursor-pointer pl-1 font-semibold text-miru-han-purple-1000 no-underline"
             onClick={() => resendEmailVerificationLink(email)}
           >
             Resend
-          </span>
+          </button>
         </p>
       </div>
       <MiruLogoWatermark />
