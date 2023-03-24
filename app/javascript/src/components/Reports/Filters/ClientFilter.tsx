@@ -20,11 +20,12 @@ const ClientFilter = ({
     >
       <h5 className="text-xs font-bold leading-4 tracking-wider">CLIENTS</h5>
       <div className="flex items-center">
-        {selectedClients.length > 0 && (
-          <span className="mr-7 flex h-5 w-5 items-center justify-center rounded-full bg-miru-han-purple-1000 text-xs font-semibold text-white">
-            {selectedClients.length}
-          </span>
-        )}
+        {selectedClients.length > 0 &&
+          selectedClients[0].label != "All Clients" && (
+            <span className="mr-7 flex h-5 w-5 items-center justify-center rounded-full bg-miru-han-purple-1000 text-xs font-semibold text-white">
+              {selectedClients.length}
+            </span>
+          )}
         {isClientOpen ? <MinusIcon size={16} /> : <PlusIcon size={16} />}
       </div>
     </div>
@@ -58,22 +59,24 @@ const ClientFilter = ({
         </div>
         <div className="max-h-50v overflow-y-auto md:mt-7">
           {filteredClientList.length > 0 ? (
-            filteredClientList.map(client => (
-              <ClickableCheckboxText
-                checkboxValue={client.id}
-                handleCheck={() => handleSelectClient(client)}
-                id={client.id}
-                key={client.id}
-                labelClassName="ml-4"
-                name="clients"
-                text={client.label}
-                wrapperClassName="py-3 px-5 flex items-center lg:hover:bg-miru-gray-100 text-miru-dark-purple-1000"
-                isChecked={
-                  !!selectedClients.find(
-                    selectedClient => selectedClient.value === client.value
-                  )
-                }
-              />
+            filteredClientList.map((client, index) => (
+              <div key={index}>
+                <ClickableCheckboxText
+                  checkboxValue={client.id}
+                  handleCheck={() => handleSelectClient(client)}
+                  id={client.id}
+                  key={client.id}
+                  labelClassName="ml-4"
+                  name="clients"
+                  text={client.label}
+                  wrapperClassName="py-3 px-5 flex items-center lg:hover:bg-miru-gray-100 text-miru-dark-purple-1000"
+                  isChecked={
+                    !!selectedClients.find(
+                      selectedClient => selectedClient.value === client.value
+                    )
+                  }
+                />
+              </div>
             ))
           ) : (
             <div className="m-5">No results found</div>
