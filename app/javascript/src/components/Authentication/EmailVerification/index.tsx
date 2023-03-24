@@ -30,8 +30,7 @@ const EmailVerification = () => {
         </h1>
         <div className="pt-10">
           <p className="text-center font-manrope text-sm text-miru-dark-purple-1000 ">
-            Please verify your email ID to continue. Verification link has been
-            sent to your email ID:
+            Verification link has been sent to your email ID:
             <span className="pl-1 font-manrope font-bold">{email}</span>
           </p>
         </div>
