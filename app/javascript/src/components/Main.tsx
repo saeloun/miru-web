@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 
 import { Navigate, Routes, Route } from "react-router-dom";
 
-import { Roles } from "constants/index";
+import { Paths, Roles } from "constants/index";
 import { AUTH_ROUTES } from "constants/routes";
 import { useAuthState } from "context/auth";
 import {
@@ -12,6 +12,7 @@ import {
 
 import Dashboard from "./Dashboard";
 import OrganizationSetup from "./OrganizationSetup";
+import SignUpSuccess from "./OrganizationSetup/SignUpSuccess";
 
 const Main = (props: Iprops) => {
   //@ts-expect-error is used to allow authToken value on empty object
@@ -36,6 +37,7 @@ const Main = (props: Iprops) => {
         return (
           <Routes>
             <Route element={<OrganizationSetup />} path="/" />
+            <Route element={<SignUpSuccess />} path={Paths.SIGNUP_SUCCESS} />
             <Route element={<Navigate to="/" />} path="*" />
           </Routes>
         );
