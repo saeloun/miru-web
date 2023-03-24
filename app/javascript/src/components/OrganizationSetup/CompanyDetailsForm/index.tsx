@@ -82,7 +82,7 @@ const CompanyDetailsForm = ({
 
   const assignCountries = async allCountries => {
     const countryData = await allCountries.map(country => ({
-      value: country.name,
+      value: country.isoCode,
       label: country.name,
       code: country.isoCode,
     }));
