@@ -31,6 +31,7 @@ export enum Paths {
   FORGOT_PASSWORD = "/password/new",
   RESET_PASSWORD = "/password/edit",
   SIGNUP = "/signup",
+  SIGNUP_SUCCESS = "/signup/success",
   LOGIN = "/login",
   SIGN_IN = "/user/sign_in",
   CLIENTS = "/clients",
