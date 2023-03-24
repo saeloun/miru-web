@@ -12,8 +12,8 @@ import {
   MobileMenuOptions,
 } from "../utils";
 
-const MoreOptions = ({ setVisiblity, setSelectedTab, showMoreOptions }) => {
-  const { user, isAdminUser } = useUserContext();
+const MoreOptions = ({ setVisiblity, showMoreOptions }) => {
+  const { user, isAdminUser, setSelectedTab } = useUserContext();
 
   return (
     <SidePanel WrapperClassname="pt-13 pb-16" setFilterVisibilty={setVisiblity}>
