@@ -3,11 +3,11 @@
 require "rails_helper"
 
 RSpec.describe "InternalApi::V1::Clients#index", type: :request do
-  let(:company) { create(:company) }
-  let(:user) { create(:user, current_workspace_id: company.id) }
-  let(:client_1) { create(:client, company:) }
-  let(:client_2) { create(:client, company:) }
-  let(:client_3) { create(:client, company:, name: "john") }
+  let!(:company) { create(:company) }
+  let!(:user) { create(:user, current_workspace_id: company.id) }
+  let!(:client_1) { create(:client, :reindex, name: "Microsoft", company:) }
+  let!(:client_2) { create(:client, :reindex, company:) }
+  let!(:client_3) { create(:client, :reindex, company:, name: "john") }
 
   let(:project_1) { create(:project, client: client_1) }
   let(:project_2) { create(:project, client: client_2) }
@@ -20,6 +20,8 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
       sign_in user
       create_list(:timesheet_entry, 5, user:, project: project_1)
       create_list(:timesheet_entry, 5, user:, project: project_2)
+      # Client.search_index.refresh
+      # Client.reindex
       send_request :get, internal_api_v1_clients_path, headers: auth_headers(user)
     end
 
@@ -51,7 +53,7 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
       end
     end
 
-    context "for ransack search" do
+    context "search clients" do
       before do
         create(:employment, company:, user:)
         user.add_role :admin, company
@@ -64,6 +66,7 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
           id: client_1.id, name: client_1.name, email: client_1.email, phone: client_1.phone, address: client_1.address,
           minutes_spent: client_1.total_hours_logged(time_frame), logo: ""
         }]
+        send_request :get, internal_api_v1_clients_path, params: { q: client_1.name }, headers: auth_headers(user)
         expect(response).to have_http_status(:ok)
         expect(json_response["client_details"]).to eq(JSON.parse(client_details.to_json))
       end
@@ -73,8 +76,9 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
       client_details = [{
         id: client_1.id, name: client_1.name, email: client_1.email, phone: client_1.phone, address: client_1.address,
         minutes_spent: client_1.total_hours_logged(time_frame), logo: ""
-      }, id: client_2.id, name: client_2.name, email: client_2.email, phone: client_2.phone, address: client_2.address,
-         minutes_spent: client_2.total_hours_logged(time_frame), logo: "" ]
+      }, { id: client_2.id, name: client_2.name, email: client_2.email, phone: client_2.phone, address: client_2.address,
+         minutes_spent: client_2.total_hours_logged(time_frame), logo: "" }, { id: client_3.id, name: client_3.name, email: client_3.email, phone: client_3.phone, address: client_3.address,
+         minutes_spent: client_3.total_hours_logged(time_frame), logo: "" } ]
 
       expect(response).to have_http_status(:ok)
       expect(json_response["client_details"]).to eq(JSON.parse(client_details.to_json))

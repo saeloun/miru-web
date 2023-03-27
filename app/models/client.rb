@@ -6,7 +6,7 @@
 #  id           :bigint           not null, primary key
 #  address      :string
 #  discarded_at :datetime
-#  email        :string
+#  email        :string           default([]), is an Array
 #  name         :string           not null
 #  phone        :string
 #  created_at   :datetime         not null
@@ -16,9 +16,8 @@
 #
 # Indexes
 #
-#  index_clients_on_company_id            (company_id)
-#  index_clients_on_discarded_at          (discarded_at)
-#  index_clients_on_email_and_company_id  (email,company_id) UNIQUE
+#  index_clients_on_company_id    (company_id)
+#  index_clients_on_discarded_at  (discarded_at)
 #
 # Foreign Keys
 #
@@ -37,9 +36,23 @@ class Client < ApplicationRecord
   belongs_to :company
 
   validates :name, presence: true, length: { maximum: 50 }
-  validates :email, presence: true, uniqueness: { scope: :company_id }, format: { with: Devise.email_regexp }
+  validates :email,  presence: true, length: { maximum: 5, message: 'Only 5 emails are allowed.' }
+  validate :validate_email_format
+
   after_discard :discard_projects
   after_commit :reindex_projects
+  after_commit :refresh_client_index
+
+  searchkick text_middle: [:name, :email]
+
+  def self.search_clients(search_term, where_clause)
+    search(
+      search_term,
+      fields: [:name, :email],
+      match: :text_middle,
+      where: where_clause
+    )
+  end
 
   def reindex_projects
     projects.reindex
@@ -135,6 +148,18 @@ class Client < ApplicationRecord
       total_outstanding_amount: status_and_amount["sent"] + status_and_amount["viewed"],
       total_overdue_amount: status_and_amount["overdue"]
     }
+  end
+
+  def validate_email_format
+    invalid_email = []
+    email.each do |mail_id|
+      invalid_email << mail_id unless mail_id =~ Devise.email_regexp
+    end
+    errors.add(:email, "Invalid email ID") if invalid_email.present?
+  end
+
+  def refresh_client_index
+    Client.search_index.refresh
   end
 
   private

@@ -47,7 +47,7 @@ class ClientPolicy < ApplicationPolicy
   end
 
   def permitted_attributes
-    [:name, :email, :phone, :address, :logo]
+    [:name, :phone, :address, :logo, email: []]
   end
 
   def authorize_current_user

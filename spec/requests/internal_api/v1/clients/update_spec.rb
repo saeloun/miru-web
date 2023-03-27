@@ -5,7 +5,7 @@ require "rails_helper"
 RSpec.describe "InternalApi::V1::Clients#update", type: :request do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
-  let(:client) { create(:client, company:, name: "Client", email: "client@example.com") }
+  let(:client) { create(:client, company:, name: "Client", email: ["client@example.com"]) }
 
   context "when user is an admin" do
     before do
@@ -22,7 +22,7 @@ RSpec.describe "InternalApi::V1::Clients#update", type: :request do
             client: {
               id: client.id,
               name: "Test Client",
-              email: "test@example.com",
+              email: ["test@example.com"],
               phone: "Test phone",
               address: "India"
             }
@@ -32,7 +32,7 @@ RSpec.describe "InternalApi::V1::Clients#update", type: :request do
       it "updates client's name and email" do
         client.reload
         expect(client.name).to eq("Test Client")
-        expect(client.email).to eq("test@example.com")
+        expect(client.email).to eq(["test@example.com"])
       end
 
       it "returns success json response" do
@@ -72,7 +72,7 @@ RSpec.describe "InternalApi::V1::Clients#update", type: :request do
           client: {
             id: client.id,
             name: "Test Client",
-            email: "test@example.com",
+            email: ["test@example.com"],
             phone: "Test phone",
             address: "India"
           }
@@ -95,7 +95,7 @@ RSpec.describe "InternalApi::V1::Clients#update", type: :request do
           client: {
             id: client.id,
             name: "Test Client",
-            email: "test@example.com",
+            email: ["test@example.com"],
             phone: "Test phone",
             address: "India"
           }
@@ -114,7 +114,7 @@ RSpec.describe "InternalApi::V1::Clients#update", type: :request do
           client: {
             id: client.id,
             name: "Test Client",
-            email: "test@example.com",
+            email: ["test@example.com"],
             phone: "Test phone",
             address: "India"
           }
@@ -137,7 +137,7 @@ RSpec.describe "InternalApi::V1::Clients#update", type: :request do
           client: {
             id: client.id,
             name: "Test Client",
-            email: "test@example.com",
+            email: ["test@example.com"],
             phone: "Test phone",
             address: "India"
           }

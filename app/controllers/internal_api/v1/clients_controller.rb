@@ -3,8 +3,13 @@
 class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationController
   def index
     authorize Client
-    query = current_company.clients.kept.ransack({ name_or_email_cont: params[:q] })
-    clients = query.result(distinct: true)
+
+    clients = if params[:q].present?
+                Client.search_clients(params[:q], { company_id: current_company.id })
+              else
+                current_company.clients
+              end
+
     client_details = clients.map { |client| client.client_detail(params[:time_frame]) }
     total_minutes = (client_details.map { |client| client[:minutes_spent] }).sum
     overdue_outstanding_amount = current_company.overdue_and_outstanding_and_draft_amount

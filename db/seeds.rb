@@ -46,8 +46,10 @@ users.each { |user| company.employments.create!(user:) }
 puts "Employment Created"
 
 microsoft_client = company.clients.create!(
-  name: "Microsoft", email: "support@example.com", phone: "+1 9999999991",
+  name: "Microsoft", email: ["support@example.com"], phone: "+1 9999999991",
   address: "California, USA")
+
+Client.reindex
 
 puts "Clients Created"
 

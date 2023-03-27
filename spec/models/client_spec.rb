@@ -7,11 +7,12 @@ RSpec.describe Client, type: :model do
 
   describe "Validations" do
     it { is_expected.to validate_presence_of(:name) }
-    it { is_expected.to validate_presence_of(:email) }
-    it { is_expected.to validate_uniqueness_of(:email).scoped_to(:company_id) }
-    it { is_expected.to allow_value("valid@email.com").for(:email) }
-    it { is_expected.not_to allow_value("invalid@email").for(:email) }
+    it { is_expected.not_to allow_value([]).for(:email) }
+    it { is_expected.not_to allow_value("valid@email.com").for(:email) }
+    it { is_expected.to allow_value(["valid@email.com"]).for(:email) }
+    it { is_expected.not_to allow_value(["invalid@email"]).for(:email) }
     it { is_expected.to validate_length_of(:name).is_at_most(50) }
+    it { is_expected.not_to allow_value(Array.new(6, "abc@example.com")).for(:email).with_message("Only 5 emails are allowed.") }
   end
 
   describe "Associations" do
