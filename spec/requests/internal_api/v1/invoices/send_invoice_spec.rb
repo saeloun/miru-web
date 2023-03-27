@@ -4,6 +4,7 @@ require "rails_helper"
 
 RSpec.describe "InternalApi::V1::Invoices#send_invoice", type: :request do
   let(:invoice) { create :invoice_with_invoice_line_items }
+  let(:overdue_invoice) { create :invoice, status: "overdue" }
   let(:client) { invoice.client }
   let(:company) { invoice.company }
   let(:user) { create :user, current_workspace_id: company.id }
@@ -44,6 +45,12 @@ RSpec.describe "InternalApi::V1::Invoices#send_invoice", type: :request do
         invoice.invoice_line_items.reload.each do |line_item|
           expect(line_item.timesheet_entry.bill_status).to eq("billed")
         end
+      end
+
+      it "does not change the invoice status to sent after sending" do
+        post send_invoice_internal_api_v1_invoice_path(id: overdue_invoice.id), params: { invoice_email: },
+          headers: auth_headers(user)
+        expect(overdue_invoice.reload.status).to eq("overdue")
       end
 
       context "when invoice doesn't exist" do
