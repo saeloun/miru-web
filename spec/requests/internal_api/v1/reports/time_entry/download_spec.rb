@@ -32,7 +32,7 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController#download", type: :
           "#{timesheet_entry.client_name}," \
           "#{timesheet_entry.note}," \
           "#{timesheet_entry.user_full_name}," \
-          "#{timesheet_entry.work_date.strftime("%Y-%m-%d")}," \
+          "#{timesheet_entry.formatted_work_date}," \
           "#{timesheet_entry.formatted_duration}"
       end
 

@@ -3,10 +3,15 @@
 require "rails_helper"
 
 RSpec.describe Reports::TimeEntries::GenerateCsv do
+  let(:company) { create(:company) }
   let!(:entry) { create(:timesheet_entry) }
 
   describe "#process" do
-    subject { described_class.new([entry]).process }
+    before do
+      TimesheetEntry.reindex
+    end
+
+    subject { described_class.new(TimesheetEntry.search(load: false), company).process }
 
     let(:csv_headers) do
       "Project,Client,Note,Team Member,Date,Hours Logged"
@@ -16,7 +21,7 @@ RSpec.describe Reports::TimeEntries::GenerateCsv do
         "#{entry.client_name}," \
         "#{entry.note}," \
         "#{entry.user_full_name}," \
-        "#{entry.work_date.strftime("%Y-%m-%d")}," \
+        "#{entry.formatted_work_date}," \
         "#{entry.formatted_duration}"
     end
 
