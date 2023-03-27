@@ -2,9 +2,11 @@
 
 module ApplicationHelper
   def user_avatar(user)
-    return nil unless user.avatar.attached?
-
-    url_for(user.avatar)
+    if user.avatar.attached?
+      url_for(user.avatar)
+    else
+      image_url "avatar.svg"
+    end
   end
 
   def company_logo(company)
