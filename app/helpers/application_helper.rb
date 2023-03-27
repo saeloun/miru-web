@@ -3,6 +3,7 @@
 module ApplicationHelper
   def user_avatar(user)
     return nil unless user.avatar.attached?
+ 
     url_for(user.avatar)
   end
 
