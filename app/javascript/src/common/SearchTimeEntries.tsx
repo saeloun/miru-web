@@ -87,7 +87,10 @@ const SearchTimeEntries = ({
         <CaretDownIcon size={16} />
       </div>
       {showEmployeeList && (
-        <MobileMoreOptions className="h-1/2" setVisibilty={setShowEmployeeList}>
+        <MobileMoreOptions
+          className="flex h-1/2 flex-col"
+          setVisibilty={setShowEmployeeList}
+        >
           <div className="relative mt-2 flex w-full items-center">
             <input
               placeholder="Search"
@@ -114,19 +117,21 @@ const SearchTimeEntries = ({
               />
             )}
           </div>
-          {filteredEmployeeList.map(employee => (
-            <li
-              key={employee.value}
-              className={`flex items-center px-2 pt-3 text-sm leading-5 text-miru-dark-purple-1000 hover:bg-miru-gray-100 ${
-                currentUser.value === employee.value
-                  ? "font-extrabold"
-                  : "font-medium"
-              }`}
-              onClick={() => handleEmployeeChange(employee)}
-            >
-              {employee.label}
-            </li>
-          ))}
+          <div className="flex flex-auto flex-col overflow-y-scroll">
+            {filteredEmployeeList.map(employee => (
+              <li
+                key={employee.value}
+                className={`flex items-center px-2 pt-3 text-sm leading-5 text-miru-dark-purple-1000 hover:bg-miru-gray-100 ${
+                  currentUser.value === employee.value
+                    ? "font-extrabold"
+                    : "font-medium"
+                }`}
+                onClick={() => handleEmployeeChange(employee)}
+              >
+                {employee.label}
+              </li>
+            ))}
+          </div>
         </MobileMoreOptions>
       )}
     </>
