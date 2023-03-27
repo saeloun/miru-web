@@ -60,9 +60,10 @@ const InvoiceDetails = ({
       <div className="mr-2 flex w-2/12 flex-col justify-between">
         <CustomInputText
           dataCy="Invoice Number"
-          id="invoiceNumber"
-          inputBoxClassName="border focus:border-miru-han-purple-1000"
+          id="Invoice Number"
+          inputBoxClassName="border focus:border-miru-han-purple-1000 cursor-pointer"
           label="Invoice Number"
+          labelClassName="cursor-pointer"
           name="Invoice Number"
           type="text"
           value={invoiceNumber}
@@ -71,8 +72,9 @@ const InvoiceDetails = ({
         <CustomInputText
           dataCy="Reference"
           id="Reference"
-          inputBoxClassName="focus:border-miru-han-purple-1000"
+          inputBoxClassName="focus:border-miru-han-purple-1000 cursor-pointer"
           label="Reference"
+          labelClassName="cursor-pointer"
           name="Reference"
           type="text"
           value={reference}
@@ -80,28 +82,26 @@ const InvoiceDetails = ({
         />
       </div>
       <div className="ml-2 flex w-2/12 flex-col justify-between">
-        <div
-          className="relative w-fit cursor-pointer"
-          ref={DateOfIssueWrapper}
-          onClick={() => setShowDateOfIssuePicker(!showDateOfIssuePicker)}
-        >
-          <CustomInputText
-            readOnly
-            dataCy="Date of Issue"
-            id="Date of Issue"
-            inputBoxClassName="focus:border-miru-han-purple-1000"
-            label="Date of Issue"
-            name="Date of Issue"
-            type="text"
-            value={getIssuedDate}
-            onChange={handleDatePickerChange}
-          />
-          <CalendarIcon
-            className="absolute top-4 right-4"
-            color="#5B34EA"
-            size={20}
-            weight="bold"
-          />
+        <div className="relative w-fit cursor-pointer" ref={DateOfIssueWrapper}>
+          <div onClick={() => setShowDateOfIssuePicker(!showDateOfIssuePicker)}>
+            <CustomInputText
+              readOnly
+              dataCy="Date of Issue"
+              id="Date of Issue"
+              inputBoxClassName="focus:border-miru-han-purple-1000 cursor-pointer"
+              label="Date of Issue"
+              name="Date of Issue"
+              type="text"
+              value={getIssuedDate}
+              onChange={handleDatePickerChange}
+            />
+            <CalendarIcon
+              className="absolute top-4 right-4"
+              color="#5B34EA"
+              size={20}
+              weight="bold"
+            />
+          </div>
           {showDateOfIssuePicker && (
             <CustomDatePicker
               date={issueDate}
@@ -111,28 +111,26 @@ const InvoiceDetails = ({
             />
           )}
         </div>
-        <div
-          className="relative w-fit cursor-pointer"
-          ref={DueDateWrapper}
-          onClick={() => setShowDueDatePicker(!showDueDatePicker)}
-        >
-          <CustomInputText
-            readOnly
-            dataCy="Due Date"
-            id="Due Date"
-            inputBoxClassName="focus:border-miru-han-purple-1000"
-            label="Due Date"
-            name="Due Date"
-            type="text"
-            value={getDueDate}
-            onChange={handleDueDatePicker}
-          />
-          <CalendarIcon
-            className="absolute top-4 right-4"
-            color="#5B34EA"
-            size={20}
-            weight="bold"
-          />
+        <div className="relative w-fit cursor-pointer" ref={DueDateWrapper}>
+          <div onClick={() => setShowDueDatePicker(!showDueDatePicker)}>
+            <CustomInputText
+              readOnly
+              dataCy="Due Date"
+              id="Due Date"
+              inputBoxClassName="focus:border-miru-han-purple-1000 cursor-pointer"
+              label="Due Date"
+              name="Due Date"
+              type="text"
+              value={getDueDate}
+              onChange={handleDueDatePicker}
+            />
+            <CalendarIcon
+              className="absolute top-4 right-4"
+              color="#5B34EA"
+              size={20}
+              weight="bold"
+            />
+          </div>
           {showDueDatePicker && (
             <CustomDatePicker
               date={dueDate}

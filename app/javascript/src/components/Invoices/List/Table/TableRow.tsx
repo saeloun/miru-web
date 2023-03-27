@@ -71,9 +71,7 @@ const TableRow = ({
       id="invoicesListTableRow"
       key={index}
       onClick={() => {
-        if (isDesktop) {
-          navigate(`/invoices/${id}`);
-        }
+        navigate(`/invoices/${id}`);
       }}
     >
       <td className="px-0 py-0">
