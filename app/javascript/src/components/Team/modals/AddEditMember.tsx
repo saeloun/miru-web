@@ -162,6 +162,7 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
                           <Field
                             data-cy="new-member-email"
                             disabled={isEdit}
+                            id="email"
                             name="email"
                             placeholder="Enter email ID"
                             className={`form__input disabled:opacity-50 ${
