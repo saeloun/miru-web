@@ -95,7 +95,7 @@ RSpec.describe "User Signup", type: :system do
         fill_in "confirm_password", with: user.password
 
         click_on "Sign Up"
-
+        sleep 1
         expect(page).to have_content "Email ID already exists"
       end
     end
