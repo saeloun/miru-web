@@ -1,13 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
 
+import dayjs from "dayjs";
 import { useDebounce, useOutsideClick } from "helpers";
 import Logger from "js-logger";
 import { FilterIcon, MinusIcon, PlusIcon, XIcon } from "miruIcons";
 import { Button, SidePanel } from "StyledComponents";
-import * as Yup from "yup";
 
-import clientApi from "apis/clients";
 import companiesApi from "apis/companies";
+import clientRevenueApi from "apis/reports/clientRevenue";
 import CustomDateRangePicker from "common/CustomDateRangePicker";
 import CustomRadioButton from "common/CustomRadio";
 import ClientFilter from "components/Reports/Filters/ClientFilter";
@@ -15,11 +15,6 @@ import { LocalStorageKeys } from "constants/index";
 import { useUserContext } from "context/UserContext";
 
 import { dateRangeOptions } from "./filterOptions";
-
-const dateSchema = Yup.object().shape({
-  fromDate: Yup.string().required("Must include From date"),
-  toDate: Yup.string().required("Must include To date"),
-});
 
 const FilterSideBar = ({
   dateRange,
@@ -31,8 +26,8 @@ const FilterSideBar = ({
   selectedInput,
   filterParams,
   setSelectedFilter,
+  setFilterCounter,
 }) => {
-  const [loading, setLoading] = useState<boolean>(true);
   const [clientList, setClientList] = useState<null | any[]>([]);
   const [filters, setFilters] = useState(filterParams);
   const [showCustomFilter, setShowCustomFilter] = useState(false);
@@ -102,7 +97,6 @@ const FilterSideBar = ({
       }));
       setClientList(clientArr.sort(sortClients));
       setFilteredClientList(clientArr.sort(sortClients));
-      setLoading(false);
     } catch {
       resetFilter();
     }
@@ -114,7 +108,7 @@ const FilterSideBar = ({
 
   const fetchAndSetClients = async () => {
     try {
-      const { data } = await clientApi.get("");
+      const { data } = await clientRevenueApi.newReport();
       setClientList(
         data.client_details.map(client => ({
           value: client.id,
@@ -187,23 +181,23 @@ const FilterSideBar = ({
   };
 
   const submitCustomDatePicker = async () => {
-    try {
-      await dateSchema.validate(
-        { fromDate: dateRange.from, toDate: dateRange.to },
-        { abortEarly: false }
-      );
-      await hideCustomFilter();
-    } catch (err) {
-      const errObj = {
-        fromDateErr: "",
-        toDateErr: "",
-      };
+    if (dateRange.from && dateRange.to) {
+      const fromDate = dayjs(dateRange.from).format("Do MMM");
+      const toDate = dayjs(dateRange.to).format("Do MMM");
+      dateRangeOptions[4].label = `Custom (${fromDate} - ${toDate})`;
 
-      err.inner.map(item => {
-        errObj[`${item.path}Err`] = item.message;
+      setFilters({
+        ...filters,
+        ["dateRange"]: {
+          value: "custom",
+          label: `Custom (${fromDate} - ${toDate})`,
+          ...dateRange,
+        },
       });
-      hideCustomFilter();
+      setCustomDate(true);
     }
+    hideCustomFilter();
+    setSelectedInput("from-input");
   };
 
   const defaultDateRange = () => {
@@ -225,6 +219,7 @@ const FilterSideBar = ({
   const resetCustomDatePicker = () => {
     defaultDateRange() && setFilters(setDefaultDateRange());
     hideCustomFilter();
+    setSelectedInput("from-input");
   };
 
   useEffect(() => {
@@ -251,10 +246,14 @@ const FilterSideBar = ({
       : setFilterParams(filters);
 
     window.localStorage.setItem(
-      LocalStorageKeys.INVOICE_FILTERS,
+      LocalStorageKeys.REVENUE_FILTERS,
       JSON.stringify(filters)
     );
     setIsFilterVisible(false);
+    const dateRangeCount = filters.dateRange.value != "all" ? 1 : 0;
+    const ClientCount =
+      filters.clients[0].label === "All Clients" ? 0 : filters.clients.length;
+    setFilterCounter(ClientCount + dateRangeCount);
   };
 
   useEffect(() => {
@@ -270,10 +269,6 @@ const FilterSideBar = ({
       setFilteredClientList(clientList);
     }
   }, [debouncedSearchQuery]);
-
-  if (loading) {
-    return <div>Loading....</div>;
-  }
 
   const handleClientFilterToggle = () => {
     setIsClientOpen(!isClientOpen);
@@ -291,6 +286,13 @@ const FilterSideBar = ({
         clients: newarr,
       });
     } else {
+      if (
+        filters.clients.length > 0 &&
+        filters.clients[0].label === "All Clients"
+      ) {
+        filters.clients.splice(0, 1);
+      }
+
       setFilters({
         ...filters,
         clients: [...filters.clients, selectedClient],
@@ -386,11 +388,12 @@ const FilterSideBar = ({
                     </button>
                     <button
                       disabled={disableDateBtn}
-                      className={`sidebar__apply ${
-                        disableDateBtn
-                          ? "cursor-not-allowed border-transparent bg-indigo-100 hover:border-transparent"
-                          : "cursor-pointer"
-                      }`}
+                      className={`sidebar__apply
+                          ${
+                            disableDateBtn
+                              ? "cursor-not-allowed border-transparent bg-indigo-100 hover:border-transparent"
+                              : "cursor-pointer"
+                          }`}
                       onClick={submitCustomDatePicker}
                     >
                       Done

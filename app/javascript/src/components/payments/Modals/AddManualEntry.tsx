@@ -190,6 +190,17 @@ const AddManualEntry = ({
     setShowSelectMenu(!showSelectMenu);
   };
 
+  useEffect(() => {
+    const close = e => {
+      if (e.keyCode === 27) {
+        setShowDatePicker({ visibility: false });
+      }
+    };
+    window.addEventListener("keydown", close);
+
+    return () => window.removeEventListener("keydown", close);
+  }, []);
+
   return (
     <div
       className="modal__modal main-modal"

@@ -2,10 +2,12 @@ import React, { useState } from "react";
 
 import Steps from "rc-steps";
 import "rc-steps/assets/index.css";
+import { useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 
 import companiesApi from "apis/companies";
-import { Paths, TOASTER_DURATION } from "constants/index";
+import MiruLogoWatermark from "common/MiruLogoWatermark";
+import { Paths } from "constants/index";
 
 import CompanyDetailsForm from "./CompanyDetailsForm";
 import { CompanyDetailsFormValues } from "./CompanyDetailsForm/interface";
@@ -17,6 +19,7 @@ import Step from "./Step";
 import { organizationSetupSteps, TOTAL_NUMBER_OF_STEPS } from "./utils";
 
 const OrganizationSetup = () => {
+  const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [stepNoOfLastSubmittedForm, setStepNoOfLastSubmittedForm] =
     useState<number>(0);
@@ -69,8 +72,9 @@ const OrganizationSetup = () => {
     setStepNoOfLastSubmittedForm(currentStep);
     const payload = generatePayload(companyDetails, financialDetails);
     const res = await companiesApi.create(payload);
+
     if (res?.status == 200) {
-      window.location.href = Paths.TIME_TRACKING;
+      navigate(Paths.SIGNUP_SUCCESS);
     }
   };
 
@@ -94,8 +98,8 @@ const OrganizationSetup = () => {
 
   return (
     <>
-      <ToastContainer autoClose={TOASTER_DURATION} />
-      <div className="w-full px-8 pt-16 pb-4 md:px-0 md:pt-28">
+      <ToastContainer autoClose={30000} />
+      <div className="relative min-h-screen w-full px-8 pt-16 pb-4 md:px-0 md:pt-28">
         <div className="org-setup-form-wrapper mx-auto min-h-full md:w-1/2 lg:w-352">
           <h1 className="text-center font-manrope text-4.75xl font-extrabold not-italic text-miru-han-purple-1000">
             Setup Org
@@ -129,6 +133,7 @@ const OrganizationSetup = () => {
             />
           )}
         </div>
+        <MiruLogoWatermark />
       </div>
     </>
   );

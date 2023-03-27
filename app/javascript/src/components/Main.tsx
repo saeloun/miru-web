@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 
 import { Navigate, Routes, Route, useNavigate } from "react-router-dom";
 
-import { Roles } from "constants/index";
+import { Paths, Roles } from "constants/index";
 import { AUTH_ROUTES } from "constants/routes";
 import { useAuthState, useAuthDispatch } from "context/auth";
 import { useUserContext } from "context/UserContext";
@@ -14,6 +14,7 @@ import {
 
 import Dashboard from "./Dashboard";
 import OrganizationSetup from "./OrganizationSetup";
+import SignUpSuccess from "./OrganizationSetup/SignUpSuccess";
 
 const Main = (props: Iprops) => {
   const authDispatch = useAuthDispatch();
@@ -47,6 +48,7 @@ const Main = (props: Iprops) => {
         return (
           <Routes>
             <Route element={<OrganizationSetup />} path="/" />
+            <Route element={<SignUpSuccess />} path={Paths.SIGNUP_SUCCESS} />
             <Route element={<Navigate to="/" />} path="*" />
           </Routes>
         );
