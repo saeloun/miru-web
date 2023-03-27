@@ -5,10 +5,10 @@ class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationControlle
     authorize Client
 
     clients = if params[:q].present?
-                Client.search_clients(params[:q], { company_id: current_company.id })
-              else
-                current_company.clients
-              end
+      Client.search_clients(params[:q], { company_id: current_company.id })
+    else
+      current_company.clients
+    end
 
     client_details = clients.map { |client| client.client_detail(params[:time_frame]) }
     total_minutes = (client_details.map { |client| client[:minutes_spent] }).sum

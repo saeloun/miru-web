@@ -5,6 +5,8 @@ require "rails_helper"
 RSpec.describe Client, type: :model do
   subject { build(:client) }
 
+  let(:message) { "Only 5 emails are allowed." }
+
   describe "Validations" do
     it { is_expected.to validate_presence_of(:name) }
     it { is_expected.not_to allow_value([]).for(:email) }
@@ -12,7 +14,7 @@ RSpec.describe Client, type: :model do
     it { is_expected.to allow_value(["valid@email.com"]).for(:email) }
     it { is_expected.not_to allow_value(["invalid@email"]).for(:email) }
     it { is_expected.to validate_length_of(:name).is_at_most(50) }
-    it { is_expected.not_to allow_value(Array.new(6, "abc@example.com")).for(:email).with_message("Only 5 emails are allowed.") }
+    it { is_expected.not_to allow_value(Array.new(6, "abc@example.com")).for(:email).with_message(message) }
   end
 
   describe "Associations" do

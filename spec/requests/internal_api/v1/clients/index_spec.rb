@@ -53,7 +53,7 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
       end
     end
 
-    context "search clients" do
+    context "when search clients" do
       before do
         create(:employment, company:, user:)
         user.add_role :admin, company
@@ -73,12 +73,20 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
     end
 
     it "returns all the clients when query params are empty" do
-      client_details = [{
-        id: client_1.id, name: client_1.name, email: client_1.email, phone: client_1.phone, address: client_1.address,
-        minutes_spent: client_1.total_hours_logged(time_frame), logo: ""
-      }, { id: client_2.id, name: client_2.name, email: client_2.email, phone: client_2.phone, address: client_2.address,
-         minutes_spent: client_2.total_hours_logged(time_frame), logo: "" }, { id: client_3.id, name: client_3.name, email: client_3.email, phone: client_3.phone, address: client_3.address,
-         minutes_spent: client_3.total_hours_logged(time_frame), logo: "" } ]
+      client_details = [
+        {
+          id: client_1.id, name: client_1.name, email: client_1.email, phone: client_1.phone, address: client_1.address,
+          minutes_spent: client_1.total_hours_logged(time_frame), logo: ""
+        },
+        {
+          id: client_2.id, name: client_2.name, email: client_2.email, phone: client_2.phone, address: client_2.address,
+          minutes_spent: client_2.total_hours_logged(time_frame), logo: ""
+        },
+        {
+          id: client_3.id, name: client_3.name, email: client_3.email, phone: client_3.phone, address: client_3.address,
+          minutes_spent: client_3.total_hours_logged(time_frame), logo: ""
+        }
+      ]
 
       expect(response).to have_http_status(:ok)
       expect(json_response["client_details"]).to eq(JSON.parse(client_details.to_json))

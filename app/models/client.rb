@@ -36,7 +36,7 @@ class Client < ApplicationRecord
   belongs_to :company
 
   validates :name, presence: true, length: { maximum: 50 }
-  validates :email,  presence: true, length: { maximum: 5, message: 'Only 5 emails are allowed.' }
+  validates :email, presence: true, length: { maximum: 5, message: "Only 5 emails are allowed." }
   validate :validate_email_format
 
   after_discard :discard_projects
@@ -155,7 +155,7 @@ class Client < ApplicationRecord
   def validate_email_format
     invalid_email = []
     email.each do |mail_id|
-      invalid_email << mail_id unless mail_id =~ Devise.email_regexp
+      invalid_email << mail_id unless mail_id.match?(Devise.email_regexp)
     end
     errors.add(:email, "Invalid email ID") if invalid_email.present?
   end
