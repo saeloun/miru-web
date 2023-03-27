@@ -66,11 +66,7 @@ const Container = ({ selectedFilter }: ContainerProps) => {
 
   const getEntryList = entries =>
     entries.map((timeEntry, index) => (
-      <ReportRow
-        clientLogo={timeEntry.clientLogo}
-        key={`${timeEntry.client}-${index}`}
-        timeEntry={timeEntry}
-      />
+      <ReportRow key={`${timeEntry.client}-${index}`} timeEntry={timeEntry} />
     ));
 
   const getAlphabeticallySortedReportList = (reports: any[] | null = []) =>

@@ -54,6 +54,8 @@ class Client < ApplicationRecord
     )
   end
 
+  scope :with_ids, -> (client_ids) { where(id: client_ids) if client_ids.present? }
+
   def reindex_projects
     projects.reindex
   end
