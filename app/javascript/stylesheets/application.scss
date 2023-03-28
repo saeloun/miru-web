@@ -606,3 +606,10 @@ body {
 .border-bottom-none {
   border-bottom: 0 !important;
 }
+
+.profile-img .hover-edit {
+  visibility: hidden;
+}
+.profile-img:hover .hover-edit {
+  visibility: visible;
+}
