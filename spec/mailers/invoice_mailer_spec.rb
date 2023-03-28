@@ -7,7 +7,7 @@ RSpec.describe InvoiceMailer, type: :mailer do
     let(:company) { create :company, :with_logo }
     let(:client) { create :client, company: }
     let(:invoice) { create :invoice, client: }
-    let(:recipients) { [invoice.client.email, "miru@example.com"] }
+    let(:recipients) { invoice.client.email << "miru@example.com" }
     let(:subject) { "Invoice (#{invoice.invoice_number}) due on #{invoice.due_date}" }
     let(:mail) { InvoiceMailer.with(invoice:, subject:, recipients:).invoice }
 

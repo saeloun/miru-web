@@ -20,8 +20,8 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
       sign_in user
       create_list(:timesheet_entry, 5, user:, project: project_1)
       create_list(:timesheet_entry, 5, user:, project: project_2)
-      # Client.search_index.refresh
-      # Client.reindex
+      Client.search_index.refresh
+      Client.reindex
       send_request :get, internal_api_v1_clients_path, headers: auth_headers(user)
     end
 
