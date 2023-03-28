@@ -43,18 +43,9 @@ class Client < ApplicationRecord
   after_commit :reindex_projects
   after_commit :refresh_client_index
 
-  searchkick text_middle: [:name, :email]
-
-  def self.search_clients(search_term, where_clause)
-    search(
-      search_term,
-      fields: [:name, :email],
-      match: :text_middle,
-      where: where_clause
-    )
-  end
-
   scope :with_ids, -> (client_ids) { where(id: client_ids) if client_ids.present? }
+
+  searchkick text_middle: [:name, :email]
 
   def reindex_projects
     projects.reindex

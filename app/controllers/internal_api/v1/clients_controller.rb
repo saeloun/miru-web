@@ -4,16 +4,8 @@ class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationControlle
   def index
     authorize Client
 
-    clients = if params[:q].present?
-      Client.search_clients(params[:q], { company_id: current_company.id })
-    else
-      current_company.clients
-    end
-
-    client_details = clients.map { |client| client.client_detail(params[:time_frame]) }
-    total_minutes = (client_details.map { |client| client[:minutes_spent] }).sum
-    overdue_outstanding_amount = current_company.overdue_and_outstanding_and_draft_amount
-    render json: { client_details:, total_minutes:, overdue_outstanding_amount: }, status: :ok
+    data = Clients::IndexService.new(current_company, params).process
+    render json: data, status: :ok
   end
 
   def create
