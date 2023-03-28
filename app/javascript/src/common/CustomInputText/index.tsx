@@ -23,6 +23,8 @@ type customInputTextProps = {
   label?: string;
   wrapperClassName?: string;
   readOnly?: boolean;
+  step?: any;
+  min?: any;
 };
 
 export const CustomInputText = ({
@@ -38,6 +40,8 @@ export const CustomInputText = ({
   label,
   wrapperClassName,
   readOnly,
+  step,
+  min,
 }: customInputTextProps) => (
   <div className="field relative">
     <div className={classNames(defaultWrapperClassName, wrapperClassName)}>
@@ -46,9 +50,11 @@ export const CustomInputText = ({
         data-cy={dataCy}
         disabled={disabled}
         id={id}
+        min={min}
         name={name}
         placeholder=" "
         readOnly={readOnly}
+        step={step}
         type={type}
         value={value}
         onChange={onChange}
@@ -67,4 +73,6 @@ CustomInputText.defaultProps = {
   type: "text",
   disabled: false,
   readOnly: false,
+  step: 1,
+  min: null,
 };
