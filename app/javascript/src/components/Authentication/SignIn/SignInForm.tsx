@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useRef } from "react";
 
 import { Formik, Form, FormikProps } from "formik";
-import { MiruLogoSVG } from "miruIcons";
+import { GoogleSVG, MiruLogoSVG } from "miruIcons";
 import { useNavigate } from "react-router-dom";
 
 import authenticationApi from "apis/authentication";
@@ -21,6 +21,11 @@ interface SignInFormValues {
 const SignInForm = () => {
   const authDispatch = useAuthDispatch();
   const navigate = useNavigate();
+
+  const googleOauth = useRef(null);
+  const csrfToken = document
+    .querySelector('[name="csrf-token"]')
+    .getAttribute("content");
 
   const handleSignInFormSubmit = async (values: any) => {
     try {
@@ -43,6 +48,12 @@ const SignInForm = () => {
         navigate(`/email_confirmation?email=${values.email}`);
       }
     }
+  };
+
+  const handleGoogleAuth = async () => {
+    const googleForm = googleOauth?.current;
+
+    if (googleForm) googleForm.submit();
   };
 
   const isBtnDisabled = (values: SignInFormValues) =>
@@ -122,27 +133,48 @@ const SignInForm = () => {
                       Sign In
                     </button>
                   </div>
-                  {/* <div className="relative flex items-center py-7">
-                      <div className="flex-grow border-t border-miru-gray-1000" />
-                      <span className="mx-4 flex-shrink text-xs text-miru-dark-purple-1000">
-                        or
-                      </span>
-                      <div className="flex-grow border-t border-miru-gray-1000" />
-                    </div> */}
+                  <div className="relative flex items-center py-7">
+                    <div className="flex-grow border-t border-miru-gray-1000" />
+                    <span className="mx-4 flex-shrink text-xs text-miru-dark-purple-1000">
+                      or
+                    </span>
+                    <div className="flex-grow border-t border-miru-gray-1000" />
+                  </div>
                 </Form>
               );
             }}
           </Formik>
-          {/* <div className="mb-3">
-              <button
-                className="form__button whitespace-nowrap"
-                data-cy="sign-up-button"
-                onClick={authenticationApi.googleAuth}
-              >
-                <img alt="" className="mr-2" src={GoogleSVG} />
-                Sign In with Google
-              </button>
-            </div> */}
+          <div className="mb-3">
+            <Formik
+              initialValues={{}}
+              validateOnBlur={false}
+              validationSchema=""
+              onSubmit={() => {}} //eslint-disable-line
+            >
+              {() => (
+                <Form
+                  action="/users/auth/google_oauth2"
+                  method="post"
+                  ref={googleOauth}
+                >
+                  <input
+                    name="authenticity_token"
+                    type="hidden"
+                    value={csrfToken}
+                  />
+                  <button
+                    className="form__button whitespace-nowrap"
+                    data-cy="sign-up-button"
+                    type="submit"
+                    onClick={handleGoogleAuth}
+                  >
+                    <img alt="" className="mr-2" src={GoogleSVG} />
+                    Sign In with Google
+                  </button>
+                </Form>
+                )}
+            </Formik>
+          </div>
           <p className="mb-3 pt-7 text-center font-manrope text-xs font-normal not-italic text-miru-dark-purple-1000">
             <span
               className="form__link inline cursor-pointer"
