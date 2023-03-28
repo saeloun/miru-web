@@ -9,6 +9,7 @@ import { unmapPayment } from "mapper/mappedIndex";
 
 import Header from "./Header";
 import AddManualEntry from "./Modals/AddManualEntry";
+import { PaymentsEmptyState } from "./PaymentsEmptyState";
 import Table from "./Table";
 
 const Payments = () => {
@@ -55,9 +56,13 @@ const Payments = () => {
   }, []);
 
   const PaymentsLayout = () => (
-    <div className="flex-col">
+    <div className="h-full flex-col">
       <Header setShowManualEntryModal={setShowManualEntryModal} />
-      <Table baseCurrency={baseCurrency} payments={paymentList} />
+      {paymentList.length > 0 ? (
+        <Table baseCurrency={baseCurrency} payments={paymentList} />
+      ) : (
+        <PaymentsEmptyState setShowManualEntryModal={setShowManualEntryModal} />
+      )}
       {showManualEntryModal && (
         <AddManualEntry
           baseCurrency={baseCurrency}
