@@ -196,7 +196,7 @@ const ClientForm = ({
                             </div>
                           </label>
                           <input
-                            className=""
+                            className="hidden"
                             id="file-input"
                             name="logo"
                             type="file"
