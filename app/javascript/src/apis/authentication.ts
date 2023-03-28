@@ -19,8 +19,11 @@ const googleAuth = () =>
   axios
     .create({
       baseURL: "/",
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+      },
     })
-    .post("users/auth/google_oauth2");
+    .get("users/auth/google_oauth2");
 
 const authenticationApi = {
   signin,
