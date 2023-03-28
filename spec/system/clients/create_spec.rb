@@ -62,6 +62,7 @@ RSpec.describe "Create client", type: :system do
           fill_in "address", with: client.address
           click_button "SAVE CHANGES"
 
+          sleep(1)
           expect(page).to have_content("Email has already been taken")
         end
       end

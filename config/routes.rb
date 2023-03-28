@@ -9,9 +9,8 @@ class ActionDispatch::Routing::Mapper
 end
 
 Rails.application.routes.draw do
-  devise_for :users, controllers: {
+  devise_for :users, skip: [:sessions, :registrations], controllers: {
     confirmations: "users/confirmations",
-    passwords: "users/passwords",
     omniauth_callbacks: "users/omniauth_callbacks"
   }
 
@@ -59,11 +58,6 @@ Rails.application.routes.draw do
   get "payments/settings/stripe/connect/refresh", to: "payment_settings#refresh_stripe_connect"
   get "payments/settings/*path", to: "payment_settings#index", via: :all
   get "payments/settings", to: "payment_settings#index"
-
-  devise_scope :user do
-    # TODO: verify if this is path is in use otherwise remove it.
-    delete "profile/purge_avatar", to: "users/registrations#purge_avatar"
-  end
 
   namespace :webhooks do
     post "stripe/checkout/fulfillment", to: "stripe#fulfill_stripe_checkout"

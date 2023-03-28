@@ -65,9 +65,12 @@ const UserActions = () => {
 
   const handleLogout = async () => {
     await authenticationApi.logout();
-    window.localStorage.removeItem(LocalStorageKeys.INVOICE_FILTERS);
+    Object.values(LocalStorageKeys).forEach(key => {
+      localStorage.removeItem(key);
+    });
     //@ts-expect-error for authDispatch object
     authDispatch({ type: "LOGOUT" });
+    window.location.href = "/";
   };
 
   const WorkspaceList = () => (
@@ -107,18 +110,12 @@ const UserActions = () => {
         </NavLink>
       </li>
       <li
-        className="flex items-start justify-start  border-b border-miru-gray-100 px-6 last:border-b-0 hover:bg-miru-gray-100 md:border-b-0"
+        className="flex cursor-pointer items-start  justify-start border-b border-miru-gray-100 px-6 last:border-b-0 hover:bg-miru-gray-100 md:border-b-0"
+        id="logoutBtn"
         onClick={handleLogout}
       >
-        <a
-          className="flex w-full items-start justify-start py-3 hover:bg-miru-gray-100"
-          data-method="delete"
-          href="/users/sign_out"
-          rel="nofollow"
-        >
-          <SignOutIcon className="mr-4" size={26} />
-          Logout
-        </a>
+        <SignOutIcon className="mr-4" size={26} />
+        Logout
       </li>
       <Tooltip content={currentWorkspace.name} show={showToolTip}>
         <li

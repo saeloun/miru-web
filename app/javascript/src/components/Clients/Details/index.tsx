@@ -2,12 +2,14 @@ import React, { useEffect, useState } from "react";
 
 import { cashFormatter, currencySymbol, minToHHMM } from "helpers";
 import Logger from "js-logger";
+import { PlusIcon } from "miruIcons";
 import { useParams, useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 
 import clientApi from "apis/clients";
 import AmountBoxContainer from "common/AmountBox";
 import ChartBar from "common/ChartBar";
+import EmptyStates from "common/EmptyStates";
 import Table from "common/Table";
 import AddEditProject from "components/Projects/Modals/AddEditProject";
 import DeleteProject from "components/Projects/Modals/DeleteProject";
@@ -16,6 +18,8 @@ import { unmapClientDetails } from "mapper/mappedIndex";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import Header from "./Header";
+
+import AddProject from "../Modals/AddProject";
 
 const getTableData = clients => {
   if (clients) {
@@ -52,6 +56,8 @@ const ClientList = ({ isAdminUser }) => {
   const [totalMinutes, setTotalMinutes] = useState(null);
   const [clientDetails, setClientDetails] = useState<any>({});
   const [editProjectData, setEditProjectData] = useState<any>(null);
+  const [showProjectModal, setShowProjectModal] = useState<boolean>(false);
+  const [loading, setLoading] = useState(true);
   const [overdueOutstandingAmount, setOverdueOutstandingAmount] =
     useState<any>(null);
 
@@ -81,6 +87,7 @@ const ClientList = ({ isAdminUser }) => {
     setClientDetails(sanitized.clientDetails);
     setTotalMinutes(sanitized.totalMinutes);
     setOverdueOutstandingAmount(sanitized.overdueOutstandingAmount);
+    setLoading(false);
   };
 
   const fetchProjectList = async () => {
@@ -91,6 +98,7 @@ const ClientList = ({ isAdminUser }) => {
       setProjectDetails(sanitized.projectDetails);
       setTotalMinutes(sanitized.totalMinutes);
       setOverdueOutstandingAmount(sanitized.overdueOutstandingAmount);
+      setLoading(false);
     } catch (e) {
       Logger.error(e);
       navigate("/clients");
@@ -138,6 +146,18 @@ const ClientList = ({ isAdminUser }) => {
 
   const tableData = getTableData(projectDetails);
 
+  const handleAddProject = () => {
+    setShowProjectModal(true);
+  };
+
+  if (loading) {
+    return (
+      <p className="tracking-wide flex min-h-screen items-center justify-center text-base font-medium text-miru-han-purple-1000">
+        Loading...
+      </p>
+    );
+  }
+
   return (
     <>
       <ToastContainer autoClose={TOASTER_DURATION} />
@@ -181,7 +201,7 @@ const ClientList = ({ isAdminUser }) => {
           <div className="overflow-XIcon-auto -my-2 sm:-mx-6 lg:-mx-8">
             <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
               <div className="overflow-hidden">
-                {projectDetails && (
+                {projectDetails && projectDetails.length > 0 ? (
                   <Table
                     hasRowIcons
                     handleDeleteClick={handleDeleteClick}
@@ -189,6 +209,24 @@ const ClientList = ({ isAdminUser }) => {
                     tableHeader={tableHeader}
                     tableRowArray={tableData}
                   />
+                ) : (
+                  <EmptyStates
+                    Message="No project has been added to this client yet."
+                    messageClassName="w-full lg:mt-5"
+                    showNoSearchResultState={false}
+                    wrapperClassName="mt-5"
+                  >
+                    <button
+                      className="mt-4 mb-10 flex h-10 flex-row items-center justify-center rounded bg-miru-han-purple-1000 px-25 font-bold text-white"
+                      type="button"
+                      onClick={handleAddProject}
+                    >
+                      <PlusIcon size={20} weight="bold" />
+                      <span className="ml-2 inline-block text-xl">
+                        Add Project
+                      </span>
+                    </button>
+                  </EmptyStates>
                 )}
               </div>
             </div>
@@ -208,6 +246,12 @@ const ClientList = ({ isAdminUser }) => {
           fetchProjectList={fetchProjectList}
           project={selectedProject}
           setShowDeleteDialog={setShowDeleteDialog}
+        />
+      )}
+      {showProjectModal && (
+        <AddProject
+          clientDetails={clientDetails}
+          setShowProjectModal={setShowProjectModal}
         />
       )}
     </>

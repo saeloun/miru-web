@@ -17,6 +17,7 @@ require "support/session_helpers"
 require "support/database_cleaner"
 
 Dir[Rails.root.join("spec", "support", "**", "*.rb")].sort.each { |f| require f }
+Dir[Rails.root.join("spec/system", "shared_examples", "**", "*.rb")].sort.each { |f| require f }
 
 begin
   ActiveRecord::Migration.maintain_test_schema!

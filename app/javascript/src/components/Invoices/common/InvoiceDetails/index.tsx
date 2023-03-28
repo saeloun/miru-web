@@ -60,7 +60,7 @@ const InvoiceDetails = ({
       <div className="mr-2 flex w-2/12 flex-col justify-between">
         <CustomInputText
           dataCy="Invoice Number"
-          id="Invoice Number"
+          id="invoiceNumber"
           inputBoxClassName="border focus:border-miru-han-purple-1000"
           label="Invoice Number"
           name="Invoice Number"
