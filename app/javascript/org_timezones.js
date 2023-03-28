@@ -1,13 +1,13 @@
 /* eslint-disable space-before-function-paren */
 /* eslint-disable func-style */
 
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", () => {
   let timezones = [];
 
   function setTimeZoneOptions(options) {
     const timeZoneSelect = document.querySelector(".select-timezone");
     timeZoneSelect.innerHTML = "";
-    options.forEach((option) => {
+    options.forEach(option => {
       const optionElement = document.createElement("option");
       optionElement.value = option;
       optionElement.innerText = option;
@@ -33,8 +33,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const response = await fetch("/internal_api/v1/timezones");
     const jsonResponse = await response.json();
     timezones = jsonResponse.timezones;
-    if (window.location.pathname === "/company/new")
+    if (window.location.pathname === "/company/new") {
       setTimeZoneOptions(timezones[selectCountry.value]);
+    }
   }
 
   main();

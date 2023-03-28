@@ -57,7 +57,7 @@ gem "bootsnap", ">= 1.4.4", require: false
 gem "image_processing", ">= 1.2"
 
 # Webpack bundler for rails
-gem "webpacker"
+gem "webpacker", "6.0.0.rc.6"
 
 # React hook for rails
 gem "react-rails"
