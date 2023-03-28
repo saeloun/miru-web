@@ -154,6 +154,6 @@ export const ROUTES = [
   {
     path: Paths.PROFILE,
     subRoutes: ProfileRoutes,
-    authorisedRoles: [ADMIN, OWNER, EMPLOYEE],
+    authorisedRoles: [ADMIN, OWNER, EMPLOYEE, BOOK_KEEPER],
   },
 ];

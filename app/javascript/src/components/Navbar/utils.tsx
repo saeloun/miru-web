@@ -47,7 +47,7 @@ const navOptions = [
     label: "Invoices",
     dataCy: "invoices-tab",
     path: Paths.INVOICES,
-    allowedRoles: ["admin", "owner"],
+    allowedRoles: ["admin", "owner", "book_keeper"],
   },
   {
     logo: <ReportsIcon className="mr-0 md:mr-4" size={26} />,
