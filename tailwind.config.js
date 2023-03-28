@@ -51,6 +51,7 @@ module.exports = {
         30: "7.5rem", //120px
         34: "8.6rem",
         13: "13.5px",
+        88: "5.5rem", //88px
         128: "32rem", // 512px
         168: "10.5rem", // 168px
         180: "11.25rem", //180px
@@ -184,6 +185,7 @@ module.exports = {
         manrope: "'Manrope', serif",
       },
       spacing: {
+        3.75: "0.9375rem",
         13: "3.125rem",
         15: "3.75rem",
         18: "4.5rem",
@@ -213,7 +215,7 @@ module.exports = {
         "10/100": "10%",
       },
       zIndex: {
-        1: "-1",
+        "negative-1": "-1",
         1: "1",
         15: "15",
       },

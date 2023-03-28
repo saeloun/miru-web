@@ -246,6 +246,7 @@ const AddEntry: React.FC<Iprops> = ({
             )}
             <div
               className="formatted-date flex h-8 w-29 items-center justify-center rounded-sm bg-miru-gray-100 p-1 text-sm"
+              id="formattedDate"
               onClick={() => {
                 setDisplayDatePicker(true);
               }}
@@ -265,6 +266,7 @@ const AddEntry: React.FC<Iprops> = ({
             <img
               alt="checkbox"
               className="inline"
+              id="check"
               src={CheckedCheckboxSVG}
               onClick={() => {
                 setBillable(false);
@@ -274,6 +276,7 @@ const AddEntry: React.FC<Iprops> = ({
             <img
               alt="checkbox"
               className="inline"
+              id="uncheck"
               src={UncheckedCheckboxSVG}
               onClick={() => {
                 if (projectBillable) setBillable(true);

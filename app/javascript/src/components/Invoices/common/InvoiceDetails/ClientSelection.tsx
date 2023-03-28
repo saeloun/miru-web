@@ -70,9 +70,9 @@ const ClientSelection = ({
         }}
       >
         <CustomAdvanceInput
-          id="Billed to"
+          id="BilledTo"
           label="Billed to"
-          wrapperClassName="h-full"
+          wrapperClassName="h-full cursor-pointer"
           value={
             isOptionSelected && (
               <div>
@@ -93,10 +93,11 @@ const ClientSelection = ({
             <Select
               defaultMenuIsOpen
               isSearchable
-              className="m-0 mt-2 w-52 text-white"
+              className="client-select m-0 mt-2 w-52 text-white"
               classNamePrefix="m-0 truncate font-medium text-sm text-miru-dark-purple-1000 bg-white"
               components={{ DropdownIndicator, IndicatorSeparator: () => null }}
               defaultValue={null}
+              inputId="clientSelect"
               options={clientList}
               placeholder="Search"
               styles={reactSelectStyles.InvoiceDetails}

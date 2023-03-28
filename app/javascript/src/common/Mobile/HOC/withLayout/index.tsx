@@ -15,12 +15,7 @@ const WithLayout =
       <div className="h-full">
         {includeNavbar && <Header selectedTab={selectedTab} />}
         <WrappedComponent {...props} />
-        {includeSidebar && (
-          <Navigation
-            isAdminUser={isAdminUser}
-            setSelectedTab={setSelectedTab}
-          />
-        )}
+        {includeSidebar && <Navigation />}
       </div>
     );
   };

@@ -22,12 +22,12 @@ const RevenueByClientReport = () => {
     clients: [{ label: "All Clients", value: "" }],
   };
 
-  const LS_INVOICE_FILTERS = window.localStorage.getItem(
-    LocalStorageKeys.INVOICE_FILTERS
+  const LS_REVENUE_FILTERS = window.localStorage.getItem(
+    LocalStorageKeys.REVENUE_FILTERS
   );
 
   const [selectedFilter, setSelectedFilter] = useState<any>(
-    JSON.parse(LS_INVOICE_FILTERS) || filterIntialValues
+    JSON.parse(LS_REVENUE_FILTERS) || filterIntialValues
   );
   const [isFilterVisible, setIsFilterVisible] = useState<boolean>(false);
   const [showNavFilters, setShowNavFilters] = useState<boolean>(false);
@@ -44,22 +44,20 @@ const RevenueByClientReport = () => {
 
   useEffect(() => {
     sendGAPageView();
+    window.localStorage.removeItem(LocalStorageKeys.REVENUE_FILTERS);
+    setSelectedFilter(filterIntialValues);
   }, []);
 
-  const updateFilterCounter = async () => {
-    let counter = 0;
-    for (const filter in selectedFilter) {
-      const filterValue = selectedFilter[filter];
-      if (Array.isArray(filterValue)) {
-        counter = counter + filterValue.length;
-      } else {
-        if (filterValue.value !== "") {
-          counter = counter + 1;
-        }
+  useEffect(() => {
+    const close = e => {
+      if (e.keyCode === 27) {
+        setIsFilterVisible(false);
       }
-    }
-    await setFilterCounter(counter);
-  };
+    };
+    window.addEventListener("keydown", close);
+
+    return () => window.removeEventListener("keydown", close);
+  }, []);
 
   const handleRemoveSingleFilter = (key, value) => {
     const filterValue = selectedFilter[key];
@@ -78,7 +76,6 @@ const RevenueByClientReport = () => {
   };
 
   useEffect(() => {
-    updateFilterCounter();
     getReportData({
       selectedFilter,
       setClientList,
@@ -116,7 +113,8 @@ const RevenueByClientReport = () => {
     setSelectedFilter(filterIntialValues);
     setIsFilterVisible(false);
     setShowNavFilters(false);
-    setSelectedFilter(filterIntialValues);
+    window.localStorage.removeItem(LocalStorageKeys.REVENUE_FILTERS);
+    setFilterCounter(0);
   };
 
   const handleDownload = () => {}; //eslint-disable-line
@@ -132,8 +130,10 @@ const RevenueByClientReport = () => {
           handleDownload={handleDownload}
           isFilterVisible={isFilterVisible}
           resetFilter={resetFilter}
+          revenueFilterCounter={filterCounter}
           setIsFilterVisible={setIsFilterVisible}
           showExportButon={false}
+          showFilterIcon={undefined}
           showNavFilters={showNavFilters}
           type="Revenue Report"
         />
@@ -145,6 +145,7 @@ const RevenueByClientReport = () => {
             resetFilter={resetFilter}
             selectedInput={selectedInput}
             setDateRange={setDateRange}
+            setFilterCounter={setFilterCounter}
             setFilterParams={setSelectedFilter}
             setIsFilterVisible={setIsFilterVisible}
             setSelectedFilter={setSelectedFilter}
