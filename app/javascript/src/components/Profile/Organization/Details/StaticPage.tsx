@@ -12,6 +12,33 @@ import {
 
 dayjs.extend(customParseFormat);
 
+const fiscalYearOptions = [
+  {
+    label: "December",
+    value: "Dec",
+  },
+  {
+    label: "March",
+    value: "Mar",
+  },
+  {
+    label: "September",
+    value: "Sep",
+  },
+];
+
+const getFilterValue = companyFiscalYear => {
+  if (companyFiscalYear) {
+    const fiscalYear = fiscalYearOptions.find(
+      item => item.value === companyFiscalYear
+    );
+
+    return fiscalYear ? fiscalYear.label : "";
+  }
+
+  return "";
+};
+
 const StaticPage = ({
   orgDetails: {
     logoUrl,
@@ -166,7 +193,7 @@ const StaticPage = ({
               Fiscal Year End
             </span>
             <p className="min-h-24 text-miru-dark-purple-1000">
-              {companyFiscalYear}
+              {getFilterValue(companyFiscalYear)}
             </p>
           </div>
         </div>
