@@ -6,4 +6,5 @@ export interface ITimeEntry {
   teamMember: string;
   workDate: string;
   duration: number;
+  clientLogo: string;
 }

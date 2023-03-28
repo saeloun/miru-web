@@ -244,6 +244,7 @@ const CompanyDetailsForm = ({
                   id="company_name"
                   label="Company Name"
                   name="company_name"
+                  resetErrorOnChange={false}
                 />
                 <InputErrors
                   fieldErrors={errors.company_name}
@@ -281,21 +282,19 @@ const CompanyDetailsForm = ({
                   id="address_line_1"
                   label="Address line 1"
                   name="address_line_1"
+                  resetErrorOnChange={false}
                 />
                 <InputErrors
                   fieldErrors={errors.address_line_1}
                   fieldTouched={touched.address_line_1}
                 />
               </div>
-              <div className="field relative">
+              <div className="field relative mb-5">
                 <InputField
                   id="address_line_2"
                   label="Address line 2 (optional)"
                   name="address_line_2"
-                />
-                <InputErrors
-                  fieldErrors={errors.address_line_2}
-                  fieldTouched={touched.address_line_2}
+                  resetErrorOnChange={false}
                 />
               </div>
               {/* Country */}
@@ -354,7 +353,12 @@ const CompanyDetailsForm = ({
                   />
                 </div>
                 <div className="flex w-1/2 flex-col pl-2">
-                  <InputField id="zipcode" label="zipcode" name="zipcode" />
+                  <InputField
+                    id="zipcode"
+                    label="zipcode"
+                    name="zipcode"
+                    resetErrorOnChange={false}
+                  />
                   <InputErrors
                     fieldErrors={errors.zipcode}
                     fieldTouched={touched.zipcode}

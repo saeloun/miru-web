@@ -94,4 +94,13 @@ class Company < ApplicationRecord
   def formatted_address
     current_address.formatted_address
   end
+
+  def billable_clients
+    clients
+      .distinct
+      .joins(:projects)
+      .where(projects: { billable: true })
+      .kept
+      .order(name: :asc)
+  end
 end

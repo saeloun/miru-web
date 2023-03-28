@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import React, { useState, useEffect } from "react";
 
+import { LocalStorageKeys } from "constants/index";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import Container from "./Container";
@@ -17,11 +18,17 @@ import Header from "../Header";
 const RevenueByClientReport = () => {
   const filterIntialValues = {
     // TODO: fix typo filterInitialValues
-    dateRange: { label: "All", value: "" },
+    dateRange: { label: "All", value: "all", from: "", to: "" },
     clients: [{ label: "All Clients", value: "" }],
   };
 
-  const [selectedFilter, setSelectedFilter] = useState(filterIntialValues);
+  const LS_REVENUE_FILTERS = window.localStorage.getItem(
+    LocalStorageKeys.REVENUE_FILTERS
+  );
+
+  const [selectedFilter, setSelectedFilter] = useState<any>(
+    JSON.parse(LS_REVENUE_FILTERS) || filterIntialValues
+  );
   const [isFilterVisible, setIsFilterVisible] = useState<boolean>(false);
   const [showNavFilters, setShowNavFilters] = useState<boolean>(false);
   const [filterCounter, setFilterCounter] = useState(0);
@@ -37,26 +44,20 @@ const RevenueByClientReport = () => {
 
   useEffect(() => {
     sendGAPageView();
+    window.localStorage.removeItem(LocalStorageKeys.REVENUE_FILTERS);
+    setSelectedFilter(filterIntialValues);
   }, []);
 
-  const onClickInput = e => {
-    setSelectedInput(e.target.name);
-  };
-
-  const updateFilterCounter = async () => {
-    let counter = 0;
-    for (const filter in selectedFilter) {
-      const filterValue = selectedFilter[filter];
-      if (Array.isArray(filterValue)) {
-        counter = counter + filterValue.length;
-      } else {
-        if (filterValue.value !== "") {
-          counter = counter + 1;
-        }
+  useEffect(() => {
+    const close = e => {
+      if (e.keyCode === 27) {
+        setIsFilterVisible(false);
       }
-    }
-    await setFilterCounter(counter);
-  };
+    };
+    window.addEventListener("keydown", close);
+
+    return () => window.removeEventListener("keydown", close);
+  }, []);
 
   const handleRemoveSingleFilter = (key, value) => {
     const filterValue = selectedFilter[key];
@@ -75,7 +76,6 @@ const RevenueByClientReport = () => {
   };
 
   useEffect(() => {
-    updateFilterCounter();
     getReportData({
       selectedFilter,
       setClientList,
@@ -109,25 +109,15 @@ const RevenueByClientReport = () => {
     currentReport: "RevenueByClientReport",
   };
 
-  const handleApplyFilter = filters => {
-    setSelectedFilter(filters);
-  };
-
   const resetFilter = () => {
     setSelectedFilter(filterIntialValues);
     setIsFilterVisible(false);
     setShowNavFilters(false);
+    window.localStorage.removeItem(LocalStorageKeys.REVENUE_FILTERS);
+    setFilterCounter(0);
   };
 
   const handleDownload = () => {}; //eslint-disable-line
-
-  const handleSelectDate = date => {
-    if (selectedInput === "from-input") {
-      setDateRange({ ...dateRange, ...{ from: date } });
-    } else {
-      setDateRange({ ...dateRange, ...{ to: date } });
-    }
-  };
 
   return (
     <div className="h-full">
@@ -140,8 +130,10 @@ const RevenueByClientReport = () => {
           handleDownload={handleDownload}
           isFilterVisible={isFilterVisible}
           resetFilter={resetFilter}
+          revenueFilterCounter={filterCounter}
           setIsFilterVisible={setIsFilterVisible}
           showExportButon={false}
+          showFilterIcon={undefined}
           showNavFilters={showNavFilters}
           type="Revenue Report"
         />
@@ -149,13 +141,15 @@ const RevenueByClientReport = () => {
         {isFilterVisible && (
           <Filters
             dateRange={dateRange}
-            handleApplyFilter={handleApplyFilter}
-            handleSelectDate={handleSelectDate}
+            filterParams={selectedFilter}
             resetFilter={resetFilter}
-            selectedFilter={selectedFilter}
             selectedInput={selectedInput}
+            setDateRange={setDateRange}
+            setFilterCounter={setFilterCounter}
+            setFilterParams={setSelectedFilter}
             setIsFilterVisible={setIsFilterVisible}
-            onClickInput={onClickInput}
+            setSelectedFilter={setSelectedFilter}
+            setSelectedInput={setSelectedInput}
           />
         )}
       </EntryContext.Provider>

@@ -117,6 +117,7 @@ const OutstandingInvoiceReport = () => {
         handleDownload={handleDownload}
         isFilterVisible={isFilterVisible}
         resetFilter={resetFilter}
+        revenueFilterCounter={() => {}} // eslint-disable-line  @typescript-eslint/no-empty-function
         setIsFilterVisible={setIsFilterVisible}
         showExportButon={false}
         showFilterIcon={false}

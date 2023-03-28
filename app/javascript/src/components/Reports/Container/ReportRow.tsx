@@ -5,7 +5,7 @@ import { Avatar } from "StyledComponents";
 
 import { ITimeEntry } from "../interface";
 
-const ReportRow = ({ timeEntry, clientLogo }) => {
+const ReportRow = ({ timeEntry }) => {
   const {
     id,
     project,
@@ -14,6 +14,7 @@ const ReportRow = ({ timeEntry, clientLogo }) => {
     teamMember,
     workDate,
     duration,
+    clientLogo,
   }: ITimeEntry = timeEntry;
 
   return (

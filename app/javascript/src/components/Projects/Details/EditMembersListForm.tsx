@@ -1,6 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 
 import { DeleteIcon } from "miruIcons";
+
+import { CustomInputText } from "common/CustomInputText";
+import CustomReactSelect from "common/CustomReactSelect";
+import { ErrorSpan } from "common/ErrorSpan";
 
 const EditMembersListForm = ({
   members,
@@ -10,110 +14,183 @@ const EditMembersListForm = ({
   handleSubmit,
   currencySymbol,
 }) => {
-  const anyError = false; // this is dummy atm
+  const [focusedRateInputBoxId, setFocusedRateInputBoxId] = useState("");
+  const [errorForInvalidHourlyRate, setErrorForInvalidHourlyRate] = useState(
+    {}
+  );
 
-  const removeMemberHandler = idx => {
-    setMembers(members => members.filter((_, i) => i != idx));
+  const removeMemberHandler = memberIndex => {
+    setMembers(members => members.filter((_, i) => i != memberIndex));
   };
 
   const addNewMemberRowHandler = () => {
     setMembers(oldMembers => [
       ...oldMembers,
-      { hourlyRate: 0, isExisting: false },
+      { hourlyRate: "00.00", isExisting: false },
     ]);
   };
 
-  const getMember = (member, idx) => {
+  const getMember = (member, memberIndex) => {
     if (member.isExisting) {
       return (
-        <input
+        <CustomInputText
           disabled
-          className="form__input"
+          id={member?.name}
+          label="Team member"
+          name={member?.name}
           type="text"
-          value={member.name}
+          value={member?.name}
         />
       );
     }
 
+    const currentMemberDetails = allMemberList.find(
+      memberFromAllMemberList => memberFromAllMemberList.id == member.id
+    );
+
+    const formattedMemberList = allMemberList.reduce(
+      (memberList, currentMember) => {
+        if (!currentMember.isAdded) {
+          memberList = [
+            ...memberList,
+            {
+              label: currentMember.name,
+              value: currentMember.id,
+            },
+          ];
+        }
+
+        return memberList;
+      },
+      []
+    );
+
+    const valueObj = {
+      label: currentMemberDetails?.name || "",
+      value: currentMemberDetails?.id || "",
+    };
+
     return (
-      <select
-        className="h-8 w-full rounded bg-miru-gray-100 px-3 py-1 text-sm font-medium"
-        disabled={member.isExisting}
-        id={member.id}
+      <CustomReactSelect
+        hideDropdownIndicator
+        isDisabled={member.isExisting}
+        label="Team member"
         name={member.id}
-        value={member.id}
-        onChange={e => {
+        options={formattedMemberList}
+        value={valueObj}
+        handleOnChange={selectedMember => {
           member.isExisting
             ? null
-            : updateMemberState(idx, "id", parseInt(e.target.value));
+            : updateMemberState(
+                memberIndex,
+                "id",
+                parseInt(selectedMember.value)
+              );
         }}
-      >
-        <option value="">Please select</option>
-        {allMemberList.map(memberFromAllMemberList => (
-          <option
-            hidden={memberFromAllMemberList.isAdded}
-            key={memberFromAllMemberList.id}
-            value={memberFromAllMemberList.id}
-          >
-            {memberFromAllMemberList.name}
-          </option>
-        ))}
-      </select>
+      />
     );
   };
 
+  const handleHourlyRateInput = (e, memberIndex) => {
+    const hourlyRate = e.target.value;
+
+    if (hourlyRate < 0 || isNaN(Number(hourlyRate))) {
+      const errorMessage = "Please enter a valid rate";
+      errorForInvalidHourlyRate[memberIndex] = errorMessage;
+      setErrorForInvalidHourlyRate({ ...errorForInvalidHourlyRate });
+    } else {
+      delete errorForInvalidHourlyRate[memberIndex];
+    }
+    updateMemberState(memberIndex, "hourlyRate", hourlyRate);
+    setErrorForInvalidHourlyRate({ ...errorForInvalidHourlyRate });
+  };
+
+  const isInvalidRateInputBox = memberIndex =>
+    (memberIndex || memberIndex == 0) && errorForInvalidHourlyRate[memberIndex];
+
+  const isSubmitBtnActive = members =>
+    members?.every(
+      member => member.id && member.hourlyRate >= 0 && member.hourlyRate != ""
+    );
+
   return (
-    <form className="mt-7" onSubmit={handleSubmit}>
-      <h5 className="mb-4 text-xs text-miru-dark-purple-1000">Team Members</h5>
-      {members.map((member, idx) => (
-        <div className="mb-2 flex items-center" key={idx}>
-          <div className="mr-2 w-56">{getMember(member, idx)}</div>
-          <div className="relative mr-2 w-24 rounded-md shadow-sm">
-            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-1">
-              <span className="text-gray-500 sm:text-sm">
-                {" "}
-                {currencySymbol}{" "}
-              </span>
+    <form className="mt-7 mr-6" onSubmit={handleSubmit}>
+      {members.map((member, memberIndex) => (
+        <div className="mb-4" key={memberIndex}>
+          <div className="mb-1 flex">
+            <div className="mr-4 w-56">{getMember(member, memberIndex)}</div>
+            <div className="relative mr-2 w-24 rounded-md shadow-sm">
+              {member.hourlyRate == "" &&
+              focusedRateInputBoxId != memberIndex ? null : (
+                <div className="pointer-events-none absolute inset-y-0 right-1 z-20 flex items-center px-1">
+                  <span className="top-0 text-miru-dark-purple-1000 sm:text-sm md:text-base">
+                    {currencySymbol}
+                  </span>
+                </div>
+              )}
+              <CustomInputText
+                id={member.hourlyRate}
+                label="Rate"
+                moveLabelToRightClassName="right-1"
+                name={member.hourlyRate}
+                value={member.hourlyRate}
+                inputBoxClassName={` text-right ${
+                  isInvalidRateInputBox(memberIndex)
+                    ? "border-miru-red-400 error-input"
+                    : "border-miru-gray-1000"
+                }`}
+                onChange={e => handleHourlyRateInput(e, memberIndex)}
+                onFocus={() => setFocusedRateInputBoxId(memberIndex)}
+                onBlur={() => {
+                  if (focusedRateInputBoxId == memberIndex) {
+                    setFocusedRateInputBoxId("");
+                  }
+                }}
+              />
             </div>
-            <input
-              id={member.hourlyRate}
-              name={member.hourlyRate}
-              placeholder="Rate"
-              type="number"
-              value={member.hourlyRate || "0.0"}
-              className={`form__input ${
-                anyError
-                  ? "border-red-600 focus:border-red-600 focus:ring-red-600"
-                  : "border-gray-100 focus:border-miru-gray-1000 focus:ring-miru-gray-1000"
-              }`}
-              onChange={e =>
-                updateMemberState(idx, "hourlyRate", e.target.value)
-              }
-            />
+            <div className="my-auto text-right ">
+              <button
+                className="menuButton__button"
+                id="removeMember"
+                type="button"
+                onClick={() => removeMemberHandler(memberIndex)}
+              >
+                <DeleteIcon color="#5B34EA" fill="#5B34EA" size={12} />
+              </button>
+            </div>
           </div>
-          <div className="w-6 text-right">
-            <button type="button" onClick={() => removeMemberHandler(idx)}>
-              <DeleteIcon fill="#5B34EA" size={15} />
-            </button>
-          </div>
+          {isInvalidRateInputBox(memberIndex) ? (
+            <div className="flex flex-row-reverse">
+              <ErrorSpan
+                className="relative right-2 block w-1/3 text-xs text-miru-red-400"
+                message={errorForInvalidHourlyRate[memberIndex]}
+              />
+            </div>
+          ) : null}
         </div>
       ))}
       <div className="actions mt-4 text-center">
         <button
-          className="text-miru-han-purple-1000 "
+          className="menuButton__button text-xs text-miru-han-purple-1000"
           name="add"
           type="button"
           onClick={addNewMemberRowHandler}
         >
-          + Add another team member
+          <span>+</span>
+          <span className="ml-1 font-bold">Add another team member</span>
         </button>
       </div>
       <div className="actions mt-4">
         <input
-          className="form__input_submit"
+          disabled={!isSubmitBtnActive(members)}
           name="commit"
           type="submit"
-          value="SAVE CHANGES"
+          value="Add team members to project"
+          className={`form__button whitespace-nowrap text-tiny md:text-base ${
+            isSubmitBtnActive(members)
+              ? "cursor-pointer"
+              : "cursor-not-allowed border-transparent bg-miru-gray-1000 hover:border-transparent"
+          }`}
         />
       </div>
     </form>

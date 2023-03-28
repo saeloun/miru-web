@@ -20,6 +20,7 @@ import { getReports } from "./fetchReport";
 import NavigationFilter from "./NavigationFilter";
 
 import { useEntry } from "../context/EntryContext";
+import { REVENUE_REPORT_PAGE } from "../RevenueByClientReport/util";
 import { TIME_ENTRY_REPORT_PAGE } from "../TimeEntryReport/utils";
 
 const Header = ({
@@ -29,6 +30,7 @@ const Header = ({
   resetFilter,
   handleDownload,
   type,
+  revenueFilterCounter,
   showExportButon,
   showFilterIcon = true,
 }) => {
@@ -61,6 +63,8 @@ const Header = ({
           "none"
           ? 1
           : 2;
+    } else if (type == REVENUE_REPORT_PAGE) {
+      return revenueFilterCounter > minNumberOfFilters;
     }
 
     return filterCounter > minNumberOfFilters;
@@ -92,9 +96,15 @@ const Header = ({
               {isDesktop ? (
                 <>
                   <FilterIcon color="#7C5DEE" size={16} />
-                  {selectedReport.filterCounter > 0 && (
+                  {type == TIME_ENTRY_REPORT_PAGE &&
+                    selectedReport.filterCounter > 0 && (
+                      <sup className="filter__counter">
+                        {selectedReport.filterCounter}
+                      </sup>
+                    )}
+                  {type == REVENUE_REPORT_PAGE && revenueFilterCounter > 0 && (
                     <sup className="filter__counter">
-                      {selectedReport.filterCounter}
+                      {revenueFilterCounter}
                     </sup>
                   )}
                 </>
