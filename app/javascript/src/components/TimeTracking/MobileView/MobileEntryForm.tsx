@@ -12,7 +12,12 @@ import {
   CopyIcon,
   DeleteIcon,
 } from "miruIcons";
-import { Button, MobileMoreOptions, SidePanel } from "StyledComponents";
+import {
+  Button,
+  MobileMoreOptions,
+  SidePanel,
+  TimeInput,
+} from "StyledComponents";
 
 import CustomCheckbox from "common/CustomCheckbox";
 import CustomDatePicker from "common/CustomDatePicker";
@@ -125,6 +130,10 @@ const AddEntryMobile = ({
     handleSave();
     setNewEntryView(false);
     setEditEntryId(0);
+  };
+
+  const handleDurationChange = val => {
+    setDuration(val);
   };
 
   return (
@@ -335,11 +344,11 @@ const AddEntryMobile = ({
                   weight="bold"
                 />
               </Button>
-              <input
-                className="laceholder:text-miru-dark-purple-200 focus:outline-none cursor-pointer rounded text-center text-xl font-bold text-miru-dark-purple-1000 focus:border-miru-gray-1000 focus:bg-white focus:ring-1 focus:ring-miru-gray-1000"
-                placeholder="00:00"
-                value={duration}
-                onChange={e => setDuration(e.target.value)}
+              <TimeInput
+                className="focus:outline-none cursor-pointer rounded text-center text-xl font-bold text-miru-dark-purple-1000 placeholder:text-miru-dark-purple-200 focus:border-miru-gray-1000 focus:bg-white focus:ring-1 focus:ring-miru-gray-1000"
+                initTime={duration}
+                name="timeInput"
+                onTimeChange={handleDurationChange}
               />
               <Button onClick={handleIncreaseTime}>
                 <PlusIcon
