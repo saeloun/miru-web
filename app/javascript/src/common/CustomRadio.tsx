@@ -40,12 +40,11 @@ const CustomRadioButton = ({
     <input
       checked={defaultCheck}
       className={classnames(DEFAULT_STYLE_INPUT, classNameInput)}
-      defaultChecked={defaultCheck}
       id={id}
       name={groupName}
       type="radio"
       value={value}
-      onClick={handleOnChange}
+      onChange={handleOnChange}
     />
     <label
       className={classnames("flex cursor-pointer items-center")}
