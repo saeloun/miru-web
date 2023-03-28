@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 
+import { Country } from "country-state-city";
 import { Outlet, useNavigate } from "react-router-dom";
 
 import companiesApi from "apis/companies";
@@ -27,7 +28,6 @@ const initialState = {
 
 const OrgDetails = () => {
   const navigate = useNavigate();
-
   const [orgDetails, setOrgDetails] = useState(initialState);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -35,18 +35,32 @@ const OrgDetails = () => {
     setIsLoading(true);
     const res = await companiesApi.index();
     const companyDetails = { ...res.data.company_details };
+    const {
+      logo,
+      name,
+      address,
+      business_phone,
+      currency,
+      standard_price,
+      fiscal_year_end,
+      date_format,
+      timezone,
+      id,
+    } = companyDetails;
+    const { name: CountryName } = Country.getCountryByCode(address.country);
+
     setOrgDetails({
-      logoUrl: companyDetails.logo,
-      companyName: companyDetails.name,
-      companyAddr: companyDetails.address,
-      companyPhone: companyDetails.business_phone,
-      countryName: companyDetails.country,
-      companyCurrency: companyDetails.currency,
-      companyRate: parseFloat(companyDetails.standard_price),
-      companyFiscalYear: companyDetails.fiscal_year_end,
-      companyDateFormat: companyDetails.date_format,
-      companyTimezone: companyDetails.timezone,
-      id: companyDetails.id,
+      logoUrl: logo,
+      companyName: name,
+      companyAddr: `${address.address_line_1} ${address.address_line_2}, ${address.city}, ${address.state} ${address.pin}, ${CountryName}`,
+      companyPhone: business_phone,
+      countryName: address.country,
+      companyCurrency: currency,
+      companyRate: parseFloat(standard_price),
+      companyFiscalYear: fiscal_year_end,
+      companyDateFormat: date_format,
+      companyTimezone: timezone,
+      id,
       logo: null,
     });
     setIsLoading(false);
