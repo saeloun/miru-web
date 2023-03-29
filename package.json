@@ -125,8 +125,7 @@
   },
   "scripts": {
     "prepare": "husky install",
-    "lint:ui": "eslint ./app/javascript",
-    "lint:ui:fix": "eslint --fix ./app/javascript"
+    "lint": "eslint ./app/javascript",
   },
   "babel": {
     "presets": [
