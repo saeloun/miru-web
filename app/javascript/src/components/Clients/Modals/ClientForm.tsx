@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 
 import { Formik, Form, Field, FormikProps } from "formik";
-import { editButtonIcon, deleteImageIcon } from "miruIcons";
+import { EditImageButtonSVG, deleteImageIcon } from "miruIcons";
 import { Avatar } from "StyledComponents";
 import * as Yup from "yup";
 
@@ -114,7 +114,7 @@ const ClientForm = ({
                 <img
                   alt="edit"
                   className="cursor-pointer rounded-full"
-                  src={editButtonIcon}
+                  src={EditImageButtonSVG}
                   style={{ minWidth: "40px" }}
                 />
                 <p className="my-auto">Edit</p>
