@@ -2,13 +2,11 @@
 import React, { useState } from "react";
 
 import { Formik, Form, Field, FormikProps } from "formik";
+import { editButtonIcon, deleteImageIcon } from "miruIcons";
 import { Avatar } from "StyledComponents";
 import * as Yup from "yup";
 
 import { i18n } from "../../../i18n";
-
-const editButton = require("../../../../../assets/images/edit_image_button.svg");
-const deleteImage = require("../../../../../assets/images/redDelete.svg");
 
 interface IClientForm {
   clientLogoUrl: string;
@@ -116,7 +114,7 @@ const ClientForm = ({
                 <img
                   alt="edit"
                   className="cursor-pointer rounded-full"
-                  src={editButton}
+                  src={editButtonIcon}
                   style={{ minWidth: "40px" }}
                 />
                 <p className="my-auto">Edit</p>
@@ -136,7 +134,7 @@ const ClientForm = ({
             >
               <img
                 alt="delete"
-                src={deleteImage}
+                src={deleteImageIcon}
                 style={{ minWidth: "20px" }}
               />
               <p className="pl-3">Delete</p>
