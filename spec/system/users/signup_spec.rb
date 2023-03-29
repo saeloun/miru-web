@@ -78,7 +78,7 @@ RSpec.describe "User Signup", type: :system do
 
         visit user_confirmation_path(confirmation_token:)
 
-        expect(page).to have_content "Welcome"
+        expect(page).to have_content "Thanks for verifying your email."
       end
     end
   end
@@ -95,7 +95,7 @@ RSpec.describe "User Signup", type: :system do
         fill_in "confirm_password", with: user.password
 
         click_on "Sign Up"
-
+        sleep 1
         expect(page).to have_content "Email ID already exists"
       end
     end

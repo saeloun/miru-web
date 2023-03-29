@@ -68,6 +68,7 @@ export const Project = ({
         {isAdminUser && isHover && (
           <button
             data-cy="edit-icon"
+            id="editProject"
             onClick={e => {
               e.preventDefault();
               e.stopPropagation();
