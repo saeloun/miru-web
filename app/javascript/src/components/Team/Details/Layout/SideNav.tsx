@@ -1,9 +1,12 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
-import { UserAvatarSVG } from "miruIcons";
+import { DeleteIcon, EditIcon, ImageIcon, UserAvatarSVG } from "miruIcons";
 import { NavLink, useParams } from "react-router-dom";
 import { Tooltip } from "StyledComponents";
 
+import teamApi from "apis/team";
+import teamsApi from "apis/teams";
+import Toastr from "common/Toastr";
 import { useTeamDetails } from "context/TeamDetailsContext";
 
 const getActiveClassName = isActive => {
@@ -21,12 +24,60 @@ const getTeamUrls = memberId => [
   },
 ];
 
-const UserInformation = () => {
+const UserInformation = ({ memberId }) => {
   const {
     details: {
       personalDetails: { first_name, last_name },
     },
   } = useTeamDetails();
+
+  const [showProfileOptions, setShowProfileOptions] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [imageUrl, setImageUrl] = useState(null);
+
+  const getAvatar = async () => {
+    try {
+      const responseData = await teamsApi.get(memberId);
+      setImageUrl(responseData.data.avatar_url);
+    } catch {
+      Toastr.error("Error in getting Profile Image");
+    }
+  };
+
+  useEffect(() => {
+    getAvatar();
+  }, []);
+
+  const handleProfileImageChange = async e => {
+    try {
+      setShowProfileOptions(false);
+      const imageFile = e.target.files[0];
+      const size = imageFile.size / 1024;
+      if (size > 100) {
+        setErrorMessage("Image size too big");
+      } else {
+        setImageUrl(URL.createObjectURL(imageFile));
+        setErrorMessage("");
+        const formD = new FormData();
+        formD.append("user[avatar]", imageFile);
+        await teamApi.updateTeamMemberAvatar(memberId, formD);
+        Toastr.success("Image Uploaded successfully");
+      }
+    } catch {
+      Toastr.error("Error in uploading Profile Image");
+    }
+  };
+
+  const handleDeleteProfileImage = async () => {
+    try {
+      setShowProfileOptions(false);
+      await teamApi.destroyTeamMemberAvatar(memberId);
+      setImageUrl(null);
+      Toastr.success("Image deleted successfully");
+    } catch {
+      Toastr.success("Error in deleting Profile Image");
+    }
+  };
 
   return (
     <div>
@@ -34,10 +85,50 @@ const UserInformation = () => {
       <div className="flex flex-col justify-center bg-miru-gray-100">
         <div className="relative flex h-12 justify-center">
           <div className="userAvatarWrapper">
-            <img className="h-24 w-24" src={UserAvatarSVG} />
+            <img
+              className="h-88 w-88 rounded-full"
+              src={imageUrl || UserAvatarSVG}
+            />
+            <button
+              className="absolute right-0 bottom-0	flex h-6 w-6 cursor-pointer items-center justify-center rounded bg-miru-han-purple-1000"
+              onClick={() => setShowProfileOptions(!showProfileOptions)}
+            >
+              <EditIcon color="white" size={12} weight="bold" />
+            </button>
           </div>
         </div>
-        <div className="mt-3 flex flex-col items-center justify-center border-b-8 border-miru-gray-200 pb-8">
+        {errorMessage.length > 0 && (
+          <span className="text-center text-sm text-miru-red-400">
+            {errorMessage}
+          </span>
+        )}
+        <div className="relative mt-3 flex flex-col items-center justify-center border-b-8 border-miru-gray-200 pb-8">
+          {showProfileOptions && (
+            <div className="absolute bottom--10 z-15 mx-auto mt-6 min-h-24	w-28 flex-col items-end rounded-lg bg-white p-2 shadow-c1	group-hover:flex">
+              <label
+                className="flex cursor-pointer flex-row items-center p-1.5 text-sm text-miru-han-purple-1000"
+                htmlFor="file-input"
+              >
+                <ImageIcon color="#5B34EA" size={16} weight="bold" />
+                <span className="pl-2">Upload</span>
+              </label>
+              <input
+                accept="image/png, image/jpeg, image/jpg"
+                className="hidden"
+                id="file-input"
+                name="myImage"
+                type="file"
+                onChange={handleProfileImageChange}
+              />
+              <div
+                className="flex cursor-pointer flex-row items-center p-1.5 text-sm text-miru-red-400"
+                onClick={handleDeleteProfileImage}
+              >
+                <DeleteIcon color="#E04646" size={16} weight="bold" />
+                <span className="pl-2">Delete</span>
+              </div>
+            </div>
+          )}
           <Tooltip
             content={`${first_name} ${last_name}`}
             wrapperClassName="relative block max-w-full "
@@ -79,7 +170,7 @@ const SideNav = () => {
 
   return (
     <div>
-      <UserInformation />
+      <UserInformation memberId={memberId} />
       <TeamUrl urlList={urlList} />
     </div>
   );

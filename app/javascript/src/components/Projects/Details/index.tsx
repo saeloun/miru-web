@@ -205,6 +205,7 @@ const ProjectDetails = () => {
           >
             <button
               className={`menuButton__button ${menuBackground}`}
+              id="kebabMenu"
               onClick={handleMenuVisibility}
             >
               <DotsThreeVerticalIcon color="#000000" size={20} />
