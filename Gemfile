@@ -190,10 +190,6 @@ group :development do
   gem "letter_opener"
 end
 
-group :production do
-  gem "elastic-apm"
-end
-
 group :test, :ci do
   gem "capybara", ">= 3.26"
   gem "selenium-webdriver", ">= 4.0.0"
