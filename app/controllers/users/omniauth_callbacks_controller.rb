@@ -17,4 +17,8 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     def after_omniauth_failure_path_for(scope)
       root_path(scope)
     end
+
+    def after_sign_in_path_for(resource)
+      root_path(google_oauth_success: true)
+    end
 end
