@@ -90,7 +90,7 @@ const InputField = ({
         </label>
         {type == "password" && (
           <span
-            className="menuButton absolute right-2 top-1/3 z-10 cursor-pointer p-1.5"
+            className="menuButton absolute right-2 top-1/4 z-30 cursor-pointer bg-white p-1.5"
             onClick={handleTogglePasswordVisibility}
           >
             {!showPassword ? (
@@ -117,11 +117,9 @@ const InputField = ({
 
 InputField.defaultProps = {
   type: "text",
-  inputBoxClassName:
-    "form__input block w-full appearance-none bg-white p-4 text-base h-12 border-miru-gray-1000",
-  labelClassName:
-    "absolute top-0.5 left-1 h-6 z-1 origin-0 bg-white p-2 text-base font-medium text-miru-dark-purple-200 duration-300",
-  wrapperClassName: "outline relative h-12",
+  inputBoxClassName: "",
+  labelClassName: "",
+  wrapperClassName: "",
   disabled: false,
   autoFocus: false,
   autoComplete: "on",

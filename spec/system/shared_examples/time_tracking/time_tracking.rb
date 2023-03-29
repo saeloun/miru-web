@@ -83,9 +83,9 @@ shared_examples_for "Time tracking" do |obj|
 
       find(:css, "#editIcon", visible: false).hover.click
       find(:css, "#formattedDate", wait: 3).click
-      find(:css, ".react-datepicker__day.react-datepicker__day--#{formatted_date}").click
+      all(:css, ".react-datepicker__day.react-datepicker__day--#{formatted_date}").last.click
       find(:css, "#formattedDate", wait: 3).click
-      find(:css, ".react-datepicker__day.react-datepicker__day--#{formatted_date}").click
+      all(:css, ".react-datepicker__day.react-datepicker__day--#{formatted_date}").last.click
       click_button "UPDATE"
       sleep 1
 
