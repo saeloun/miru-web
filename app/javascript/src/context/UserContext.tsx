@@ -15,6 +15,7 @@ const UserContext = createContext({
   confirmedUser: "",
   isDesktop: false,
   selectedTab: null,
+  googleOauthSuccess: false,
   setSelectedTab: value => {}, //eslint-disable-line
 });
 
