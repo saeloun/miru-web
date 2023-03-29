@@ -172,7 +172,7 @@ const SignInForm = () => {
                     Sign In with Google
                   </button>
                 </Form>
-                )}
+              )}
             </Formik>
           </div>
           <p className="mb-3 pt-7 text-center font-manrope text-xs font-normal not-italic text-miru-dark-purple-1000">
