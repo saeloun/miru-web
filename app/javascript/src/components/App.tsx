@@ -10,7 +10,7 @@ import UserContext from "context/UserContext";
 import Main from "./Main";
 
 const App = props => {
-  const { user, companyRole, confirmedUser } = props;
+  const { user, companyRole, confirmedUser, googleOauthSuccess } = props;
   const isAdminUser = [Roles.ADMIN, Roles.OWNER].includes(companyRole);
   const [isDesktop, setIsDesktop] = useState<boolean>(window.innerWidth > 1023);
   const [selectedTab, setSelectedTab] = useState(null);
@@ -22,6 +22,7 @@ const App = props => {
         user,
         companyRole,
         confirmedUser,
+        googleOauthSuccess,
         isDesktop,
         selectedTab,
         setSelectedTab,
@@ -32,6 +33,7 @@ const App = props => {
           <ToastContainer autoClose={TOASTER_DURATION} />
           <Main
             {...props}
+            googleOauthSuccess={googleOauthSuccess}
             isAdminUser={isAdminUser}
             isDesktop={isDesktop}
             setIsDesktop={setIsDesktop}
