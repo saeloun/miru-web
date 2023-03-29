@@ -1,17 +1,28 @@
 import React from "react";
 
+import { currencyFormat } from "helpers";
 import { FloppyDiskIcon, PaperPlaneTiltIcon } from "miruIcons";
 import { Button } from "StyledComponents";
 
 import { sections } from "../../utils";
 
-const InvoicePreview = ({ setActiveSection }) => (
+const InvoicePreview = ({
+  setActiveSection,
+  total,
+  currency,
+  setIsInvoicePreviewCall,
+  handleSaveInvoice,
+  selectedClient,
+}) => (
   <div className="bg-miru-gray-100 p-4">
     <div className="flex justify-between pb-5">
       <span
         className="w-1/2 text-left text-xs font-bold leading-4 text-miru-han-purple-1000"
         onClick={() => {
-          setActiveSection(sections.InvoicePreview);
+          if (selectedClient) {
+            setActiveSection(sections.invoicePreview);
+            setIsInvoicePreviewCall(true);
+          }
         }}
       >
         Invoice Preview
@@ -21,7 +32,7 @@ const InvoicePreview = ({ setActiveSection }) => (
           Total
         </span>
         <span className="text-right text-sm font-bold leading-5 text-miru-dark-purple-1000">
-          $0.00
+          {currencyFormat(currency, total)}
         </span>
       </div>
     </div>
@@ -29,6 +40,7 @@ const InvoicePreview = ({ setActiveSection }) => (
       <Button
         className="mr-2 flex w-1/2 items-center justify-center px-4 py-2"
         style="primary"
+        onClick={handleSaveInvoice}
       >
         <FloppyDiskIcon className="text-white" size={16} weight="bold" />
         <span className="ml-2 text-center text-base font-bold leading-5 text-white">

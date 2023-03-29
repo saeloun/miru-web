@@ -27,6 +27,7 @@ const InvoiceDetails = ({
   setDueDate,
   setIssueDate,
   setInvoiceNumber,
+  handleSaveInvoice,
 }) => {
   const [isClientVisible, setIsClientVisible] = useState<boolean>(false);
   const wrapperRef = useRef(null);
@@ -75,9 +76,9 @@ const InvoiceDetails = ({
   return (
     <Formik
       initialValues={invoiceDetailsFormInitialValues}
-      onSubmit={() => {}} // eslint-disable-line
       validateOnBlur={false}
       validationSchema={invoiceDetailsSchema}
+      onSubmit={handleSaveInvoice}
     >
       {(props: FormikProps<SignInFormValues>) => {
         const { touched, errors, setFieldValue, setFieldError } = props;
@@ -236,7 +237,6 @@ const InvoiceDetails = ({
                 inputBoxClassName="border focus:border-miru-han-purple-1000"
                 label="Invoice Number"
                 name="invoiceNumber"
-                readOnly={false}
                 setFieldError={setFieldError}
                 setFieldValue={setFieldValue || invoiceNumber}
                 type="text"
@@ -252,7 +252,6 @@ const InvoiceDetails = ({
                 inputBoxClassName="focus:border-miru-han-purple-1000"
                 label="Reference"
                 name="referenceNumber"
-                readOnly={false}
                 setFieldError={setFieldError}
                 setFieldValue={setFieldValue || reference}
                 type="text"

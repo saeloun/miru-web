@@ -197,8 +197,13 @@ const GenerateInvoices = () => {
   if (invoiceDetails && !isDesktop) {
     return (
       <MobileView
+        amount={amount}
+        amountDue={amountDue}
+        amountPaid={amountPaid}
         dateFormat={invoiceDetails.companyDetails.date_format}
+        discount={discount}
         dueDate={dueDate}
+        handleSaveInvoice={handleSaveInvoice}
         invoiceDetails={invoiceDetails}
         invoiceNumber={invoiceNumber}
         issueDate={issueDate}
@@ -207,6 +212,9 @@ const GenerateInvoices = () => {
         reference={reference}
         selectedClient={selectedClient}
         selectedLineItems={selectedOption}
+        setAmount={setAmount}
+        setAmountDue={setAmountDue}
+        setDiscount={setDiscount}
         setDueDate={setDueDate}
         setInvoiceNumber={setInvoiceNumber}
         setIssueDate={setIssueDate}
@@ -215,6 +223,8 @@ const GenerateInvoices = () => {
         setReference={setReference}
         setSelectedClient={setSelectedClient}
         setSelectedLineItems={setSelectedOption}
+        setTax={setTax}
+        tax={tax}
       />
     );
   }

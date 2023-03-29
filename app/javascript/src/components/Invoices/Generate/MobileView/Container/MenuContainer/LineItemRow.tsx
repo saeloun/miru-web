@@ -11,13 +11,16 @@ const LineItemRow = ({
   dateFormat,
   setEditItem,
   setActiveSection,
+  isInvoicePreviewCall,
 }) => (
   <>
     <tr
       className="w-full cursor-pointer"
       onClick={() => {
-        setEditItem(item);
-        setActiveSection(sections.editLineItem);
+        if (!isInvoicePreviewCall) {
+          setEditItem(item);
+          setActiveSection(sections.editLineItem);
+        }
       }}
     >
       <td className="flex flex-col px-1 py-3 text-left text-xs font-medium text-miru-dark-purple-1000 ">

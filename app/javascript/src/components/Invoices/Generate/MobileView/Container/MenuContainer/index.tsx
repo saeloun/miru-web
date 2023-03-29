@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { MinusIcon, PlusIcon } from "miruIcons";
 
+import Billing from "./Billing";
 import InvoiceDetails from "./InvoiceDetails";
 import InvoicePreview from "./InvoicePreview";
 import LineItems from "./LineItems";
@@ -23,9 +24,57 @@ const MenuContainer = ({
   selectedLineItems,
   setEditItem,
   manualEntryArr,
+  amountDue,
+  amountPaid,
+  currency,
+  discount,
+  setAmount,
+  setAmountDue,
+  setDiscount,
+  setTax,
+  tax,
+  isInvoicePreviewCall,
+  setIsInvoicePreviewCall,
+  subTotal,
+  total,
+  setSubTotal,
+  setTotal,
+  handleSaveInvoice,
 }) => {
-  const [showInvoiceDetails, setShowInvoiceDetails] = useState(false);
+  const [showInvoiceDetails, setShowInvoiceDetails] = useState(true);
   const [showLineItem, setShowLineItem] = useState(false);
+  const [showBilling, setShowBilling] = useState(false);
+
+  useEffect(() => {
+    setIsInvoicePreviewCall(false);
+  }, []);
+
+  useEffect(() => {
+    const newLineItemsSubTotalArr = selectedLineItems.filter(
+      lineItem => !lineItem._destroy
+    );
+
+    const newLineItemsSubTotal = newLineItemsSubTotalArr.reduce(
+      (sum, { lineTotal }) => sum + Number(lineTotal),
+      0
+    );
+
+    const allManualEntries = manualEntryArr.filter(
+      lineItem => !lineItem._destroy
+    );
+
+    const manualEntryTotal = allManualEntries.reduce(
+      (sum, { lineTotal }) => sum + Number(lineTotal),
+      0
+    );
+
+    const subTotal = Number(newLineItemsSubTotal) + Number(manualEntryTotal);
+    const newTotal = subTotal + Number(tax) - Number(discount);
+    setSubTotal(subTotal);
+    setTotal(newTotal);
+    setAmount(newTotal);
+    setAmountDue(newTotal - amountPaid);
+  }, [selectedLineItems, manualEntryArr, discount, subTotal, tax]);
 
   const ListItem = ({ title, openDropdown, setOpenDropdown }) => (
     <div
@@ -72,6 +121,7 @@ const MenuContainer = ({
             <InvoiceDetails
               dateFormat={dateFormat}
               dueDate={dueDate}
+              handleSaveInvoice={handleSaveInvoice}
               invoiceDetails={invoiceDetails}
               invoiceNumber={invoiceNumber}
               issueDate={issueDate}
@@ -92,26 +142,57 @@ const MenuContainer = ({
             title="Line Items"
           />
           {showLineItem && (
-            <LineItems
-              currency={invoiceDetails.companyDetails.currency}
-              dateFormat={dateFormat}
-              manualEntryArr={manualEntryArr}
-              selectedClient={selectedClient}
-              selectedLineItems={selectedLineItems}
-              setActiveSection={setActiveSection}
-              setEditItem={setEditItem}
+            <>
+              <div className="mt-3 border-t border-miru-gray-400" />
+              <LineItems
+                currency={invoiceDetails.companyDetails.currency}
+                dateFormat={dateFormat}
+                isInvoicePreviewCall={isInvoicePreviewCall}
+                manualEntryArr={manualEntryArr}
+                selectedClient={selectedClient}
+                selectedLineItems={selectedLineItems}
+                setActiveSection={setActiveSection}
+                setEditItem={setEditItem}
+              />
+            </>
+          )}
+        </div>
+        <div
+          className={` py-3 px-4 ${
+            !showBilling && "border-b border-miru-gray-200"
+          }`}
+        >
+          <ListItem
+            openDropdown={showBilling}
+            setOpenDropdown={setShowBilling}
+            title="Billing Details"
+          />
+          {showBilling && (
+            <Billing
+              amountDue={amountDue}
+              amountPaid={amountPaid}
+              discount={discount}
+              setAmount={setAmount}
+              setAmountDue={setAmountDue}
+              setDiscount={setDiscount}
+              setSubTotal={setSubTotal}
+              setTax={setTax}
+              setTotal={setTotal}
+              subTotal={subTotal}
+              tax={tax}
+              total={total}
             />
           )}
         </div>
-        <div className="border-b border-miru-gray-200 py-3 px-4">
-          <ListItem
-            openDropdown={false}
-            setOpenDropdown={null} //eslint-disable-line
-            title="Billing Details"
-          />
-        </div>
       </div>
-      <InvoicePreview setActiveSection={setActiveSection} />
+      <InvoicePreview
+        currency={currency}
+        handleSaveInvoice={handleSaveInvoice}
+        selectedClient={selectedClient}
+        setActiveSection={setActiveSection}
+        setIsInvoicePreviewCall={setIsInvoicePreviewCall}
+        total={total}
+      />
     </div>
   );
 };

@@ -23,6 +23,16 @@ const MobileView = ({
   setLineItems,
   selectedLineItems,
   setSelectedLineItems,
+  amount,
+  amountDue,
+  amountPaid,
+  discount,
+  setAmount,
+  setAmountDue,
+  setDiscount,
+  setTax,
+  tax,
+  handleSaveInvoice,
 }) => {
   const [activeSection, setActiveSection] = useState<string>(
     sections.generateInvoice
@@ -36,8 +46,13 @@ const MobileView = ({
       />
       <Container
         activeSection={activeSection}
+        amount={amount}
+        amountDue={amountDue}
+        amountPaid={amountPaid}
         dateFormat={dateFormat}
+        discount={discount}
         dueDate={dueDate}
+        handleSaveInvoice={handleSaveInvoice}
         invoiceDetails={invoiceDetails}
         invoiceNumber={invoiceNumber}
         issueDate={issueDate}
@@ -47,6 +62,9 @@ const MobileView = ({
         selectedClient={selectedClient}
         selectedLineItems={selectedLineItems}
         setActiveSection={setActiveSection}
+        setAmount={setAmount}
+        setAmountDue={setAmountDue}
+        setDiscount={setDiscount}
         setDueDate={setDueDate}
         setInvoiceNumber={setInvoiceNumber}
         setIssueDate={setIssueDate}
@@ -55,6 +73,8 @@ const MobileView = ({
         setReference={setReference}
         setSelectedClient={setSelectedClient}
         setSelectedLineItems={setSelectedLineItems}
+        setTax={setTax}
+        tax={tax}
       />
     </div>
   );

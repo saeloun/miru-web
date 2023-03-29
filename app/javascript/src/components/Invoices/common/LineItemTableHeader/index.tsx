@@ -1,7 +1,7 @@
 import React from "react";
 
 const LineItemTableHeader = () => (
-  <thead className="my-2 border-t border-b border-miru-gray-400 lg:border-0">
+  <thead className="my-2 border-b border-miru-gray-400 lg:border-0">
     <tr>
       <th className="w-4/12 pt-2 pb-4 text-left text-xs font-medium tracking-widest text-miru-dark-purple-600 lg:w-1/2 lg:py-0 lg:font-normal">
         <dt className="hidden lg:inline">NAME</dt>

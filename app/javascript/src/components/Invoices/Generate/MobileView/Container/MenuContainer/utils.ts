@@ -11,6 +11,6 @@ export const invoiceDetailsFormInitialValues = {
 export const invoiceDetailsSchema = Yup.object().shape({
   issueDate: Yup.date().typeError("Invalid date"),
   dueDate: Yup.date().typeError("Invalid date"),
-  invoiceNumber: Yup.string().typeError("Invalid number"),
+  invoiceNumber: Yup.string().required("Invalid number"),
   referenceNumber: Yup.string().typeError("Invalid number"),
 });

@@ -15,41 +15,46 @@ const LineItems = ({
   manualEntryArr,
   dateFormat,
   currency,
+  isInvoicePreviewCall,
 }) => (
   <table
-    className={`bg-miru-han-1000 mt-3 ${
+    className={`bg-miru-han-1000 ${
       selectedClient ? "mb-6" : "mb-0"
     } w-full table-fixed border-collapse`}
   >
     <LineItemTableHeader />
     <tbody>
-      <tr>
-        <td className="w-full pt-4" colSpan={6}>
-          <button
-            data-cy="new-line-item"
-            disabled={!selectedClient}
-            className={`w-full rounded border border-dashed  bg-white py-3 text-center text-xs font-bold tracking-widest ${
-              selectedClient
-                ? "border-miru-dark-purple-200 text-miru-dark-purple-200"
-                : "border-miru-dark-purple-100 text-miru-dark-purple-100"
-            }`}
-            onClick={() => {
-              setEditItem({});
-              setActiveSection(sections.addLineItem);
-            }}
-          >
-            + Add New Line Item
-          </button>
-        </td>
-      </tr>
-      <tr>
-        <td colSpan={6}>
-          <InputErrors
-            fieldErrors="Please add client before adding line items."
-            fieldTouched={!selectedClient}
-          />
-        </td>
-      </tr>
+      {!isInvoicePreviewCall && (
+        <>
+          <tr>
+            <td className="w-full pt-4" colSpan={6}>
+              <button
+                data-cy="new-line-item"
+                disabled={!selectedClient}
+                className={`w-full rounded border border-dashed  bg-white py-3 text-center text-xs font-bold tracking-widest ${
+                  selectedClient
+                    ? "border-miru-dark-purple-200 text-miru-dark-purple-200"
+                    : "border-miru-dark-purple-100 text-miru-dark-purple-100"
+                }`}
+                onClick={() => {
+                  setEditItem({});
+                  setActiveSection(sections.addLineItem);
+                }}
+              >
+                + Add New Line Item
+              </button>
+            </td>
+          </tr>
+          <tr>
+            <td colSpan={6}>
+              <InputErrors
+                fieldErrors="Please add client before adding line items."
+                fieldTouched={!selectedClient}
+              />
+            </td>
+          </tr>
+        </>
+      )}
       {manualEntryArr[0]?.name &&
         manualEntryArr.map(
           (item, index) =>
@@ -57,6 +62,7 @@ const LineItems = ({
               <LineItemRow
                 currency={currency}
                 dateFormat={dateFormat}
+                isInvoicePreviewCall={isInvoicePreviewCall}
                 item={item}
                 key={index}
                 setActiveSection={setActiveSection}
@@ -71,6 +77,7 @@ const LineItems = ({
               <LineItemRow
                 currency={currency}
                 dateFormat={dateFormat}
+                isInvoicePreviewCall={isInvoicePreviewCall}
                 item={item}
                 key={index}
                 setActiveSection={setActiveSection}
