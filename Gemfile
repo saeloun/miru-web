@@ -225,3 +225,6 @@ gem "sentry-ruby"
 
 # https://github.com/grosser/parallel_tests
 gem "parallel_tests", group: [:development, :test]
+
+# Track visits and events: https://github.com/ankane/ahoy
+gem "ahoy_matey"
