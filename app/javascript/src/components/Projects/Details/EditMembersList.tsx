@@ -1,5 +1,6 @@
 import React from "react";
 
+import { useKeypress } from "helpers";
 import Logger from "js-logger";
 import { XIcon } from "miruIcons";
 
@@ -63,6 +64,12 @@ const EditMembersList = ({
     modalMembers[memberIndex] = memberToEdit;
     setMembers(modalMembers);
   };
+
+  const handleEscapeKey = () => {
+    setShowAddMemberDialog(false);
+  };
+
+  useKeypress("Escape", handleEscapeKey);
 
   const handleSubmit = async e => {
     e.preventDefault();
@@ -146,6 +153,7 @@ const EditMembersList = ({
             currencySymbol={currencySymbol}
             handleSubmit={handleSubmit}
             members={members}
+            setAllMemberList={setAllMemberList}
             setMembers={setMembers}
             updateMemberState={updateMemberState}
           />
