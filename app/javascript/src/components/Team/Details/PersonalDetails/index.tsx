@@ -43,7 +43,6 @@ const PersonalDetails = () => {
             <h1 className="text-2xl font-bold text-white">Personal Details</h1>
             <button
               className="cursor-pointer rounded-md border border-white bg-miru-han-purple-1000 px-6 py-2 font-bold text-white"
-              data-cy="update-profile"
               onClick={() =>
                 navigate(`/team/${memberId}/edit`, { replace: true })
               }

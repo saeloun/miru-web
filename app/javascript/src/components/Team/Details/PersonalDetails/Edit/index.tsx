@@ -273,14 +273,12 @@ const EmploymentDetails = () => {
             <div>
               <button
                 className="mx-1 cursor-pointer rounded-md border border-white bg-miru-han-purple-1000 px-3 py-2 font-bold text-white	"
-                data-cy="update-profile"
                 onClick={handleCancelDetails} // eslint-disable-line  @typescript-eslint/no-empty-function
               >
                 Cancel
               </button>
               <button
                 className="mx-1 cursor-pointer rounded-md border bg-white px-3 py-2 font-bold text-miru-han-purple-1000"
-                data-cy="update-profile"
                 onClick={handleUpdateDetails}
               >
                 Update
