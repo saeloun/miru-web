@@ -22,7 +22,6 @@ const TableRow = ({ item }) => {
 
   return (
     <tr
-      data-cy="team-table-row"
       className={`hoverIcon ${
         isAdminUser && "cursor-pointer"
       } border-b border-miru-gray-200 last:border-0`}
@@ -55,14 +54,12 @@ const TableRow = ({ item }) => {
               <div className="iconWrapper invisible">
                 <button
                   className="ml-12"
-                  data-cy="edit-team-member-button"
                   onClick={e => handleAction(e, TeamModalType.ADD_EDIT)}
                 >
                   <EditIcon color="#5b34ea" size={16} weight="bold" />
                 </button>
                 <button
                   className="ml-12"
-                  data-cy="delete-team-member-button"
                   onClick={e => handleAction(e, TeamModalType.DELETE)}
                 >
                   <DeleteIcon color="#5b34ea" size={16} weight="bold" />
