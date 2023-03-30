@@ -5,6 +5,7 @@ import dayjs from "dayjs";
 import { currencyFormat, useOutsideClick } from "helpers";
 import { XIcon, CalendarIcon, SearchIcon } from "miruIcons";
 import Select, { DropdownIndicatorProps, components } from "react-select";
+import { Badge } from "StyledComponents";
 
 import payment from "apis/payments/payments";
 import CustomDatePicker from "common/CustomDatePicker";
@@ -14,6 +15,7 @@ import { CustomValueContainer } from "common/CustomReactSelectStyle";
 import { CustomTextareaAutosize } from "common/CustomTextareaAutosize";
 import Toastr from "common/Toastr";
 import { mapPayment } from "mapper/mappedIndex";
+import getStatusCssClass from "utils/getBadgeStatus";
 
 const AddManualEntry = ({
   setShowManualEntryModal,
@@ -178,8 +180,11 @@ const AddManualEntry = ({
           </div>
         </div>
         <div className="w-2/6 py-3 pl-2 pr-0 text-right text-sm font-semibold leading-4 tracking-wider">
-          <span className="rounded-lg bg-miru-alert-green-400 px-1 text-miru-alert-green-800">
-            {data.status}
+          <span className="rounded-lg">
+            <Badge
+              className={`${getStatusCssClass(data.status)} uppercase`}
+              text={data.status}
+            />
           </span>
         </div>
       </div>
