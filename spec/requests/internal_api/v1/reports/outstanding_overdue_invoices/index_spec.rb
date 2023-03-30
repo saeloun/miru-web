@@ -154,8 +154,8 @@ RSpec.describe "InternalApi::V1::Reports::OutstandingOverdueInvoicesController::
       send_request :get, internal_api_v1_reports_outstanding_overdue_invoices_path, headers: auth_headers(user)
     end
 
-    it "is not permitted to view outstanding and overdue invoices report" do
-      expect(response).to have_http_status(:forbidden)
+    it "is permitted to view outstanding and overdue invoices report" do
+      expect(response).to have_http_status(:ok)
     end
   end
 

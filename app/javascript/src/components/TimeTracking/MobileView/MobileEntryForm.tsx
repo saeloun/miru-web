@@ -299,7 +299,6 @@ const AddEntryMobile = ({
               >
                 <CustomInputText
                   disabled
-                  dataCy="date"
                   id="date"
                   label="Date"
                   name="date"
