@@ -5,11 +5,13 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import companiesApi from "apis/companies";
 import invoicesApi from "apis/invoices";
 import Toastr from "common/Toastr";
+import { useUserContext } from "context/UserContext";
 import { mapGenerateInvoice, unmapGenerateInvoice } from "mapper/mappedIndex";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import Container from "./Container";
 import InvoiceSettings from "./InvoiceSettings";
+import MobileView from "./MobileView";
 
 import Header from "../common/InvoiceForm/Header";
 import SendInvoice from "../common/InvoiceForm/SendInvoice";
@@ -45,6 +47,8 @@ const GenerateInvoices = () => {
   const INVOICE_NUMBER_ERROR = "Please enter invoice number to proceed";
   const SELECT_CLIENT_ERROR =
     "Please select client and enter invoice number to proceed";
+
+  const { isDesktop } = useUserContext();
 
   const fetchCompanyDetails = async () => {
     // here we are fetching the company and client list
@@ -131,7 +135,7 @@ const GenerateInvoices = () => {
     }
   };
 
-  if (invoiceDetails) {
+  if (invoiceDetails && isDesktop) {
     return (
       <Fragment>
         <Header
@@ -187,6 +191,41 @@ const GenerateInvoices = () => {
           <InvoiceSettings setShowInvoiceSetting={setShowInvoiceSetting} />
         )}
       </Fragment>
+    );
+  }
+
+  if (invoiceDetails && !isDesktop) {
+    return (
+      <MobileView
+        amount={amount}
+        amountDue={amountDue}
+        amountPaid={amountPaid}
+        dateFormat={invoiceDetails.companyDetails.date_format}
+        discount={discount}
+        dueDate={dueDate}
+        handleSaveInvoice={handleSaveInvoice}
+        invoiceDetails={invoiceDetails}
+        invoiceNumber={invoiceNumber}
+        issueDate={issueDate}
+        lineItems={lineItems}
+        manualEntryArr={manualEntryArr}
+        reference={reference}
+        selectedClient={selectedClient}
+        selectedLineItems={selectedOption}
+        setAmount={setAmount}
+        setAmountDue={setAmountDue}
+        setDiscount={setDiscount}
+        setDueDate={setDueDate}
+        setInvoiceNumber={setInvoiceNumber}
+        setIssueDate={setIssueDate}
+        setLineItems={setLineItems}
+        setManualEntryArr={setManualEntryArr}
+        setReference={setReference}
+        setSelectedClient={setSelectedClient}
+        setSelectedLineItems={setSelectedOption}
+        setTax={setTax}
+        tax={tax}
+      />
     );
   }
 
