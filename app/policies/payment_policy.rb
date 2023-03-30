@@ -6,10 +6,10 @@ class PaymentPolicy < ApplicationPolicy
   end
 
   def create?
-    user_owner_role? || user_admin_role?
+    user_owner_role? || user_admin_role? || user_book_keeper_role?
   end
 
   def new?
-    user_owner_role? || user_admin_role?
+    user_owner_role? || user_admin_role? || user_book_keeper_role?
   end
 end

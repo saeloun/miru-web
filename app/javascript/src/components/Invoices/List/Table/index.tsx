@@ -26,10 +26,7 @@ const Table = ({
         selectedInvoices={selectedInvoices}
       />
     </thead>
-    <tbody
-      className="min-w-full divide-y divide-gray-200 bg-white"
-      data-cy="invoices-list"
-    >
+    <tbody className="min-w-full divide-y divide-gray-200 bg-white">
       {invoices.map((invoice, index) => (
         <TableRow
           deselectInvoices={deselectInvoices}

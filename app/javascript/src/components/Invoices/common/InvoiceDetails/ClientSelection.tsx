@@ -72,7 +72,7 @@ const ClientSelection = ({
         <CustomAdvanceInput
           id="BilledTo"
           label="Billed to"
-          wrapperClassName="h-full"
+          wrapperClassName="h-full cursor-pointer"
           value={
             isOptionSelected && (
               <div>

@@ -156,6 +156,12 @@ class User < ApplicationRecord
     employments.kept.exists?(company_id:)
   end
 
+  def avatar_url
+    return nil unless avatar.attached?
+
+    Rails.application.routes.url_helpers.polymorphic_url(avatar, only_path: true)
+  end
+
   private
 
     def set_token

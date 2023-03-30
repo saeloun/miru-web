@@ -36,7 +36,6 @@ const EmailVerificationSuccess = () => {
         <div className="pt-6 text-center font-manrope text-xs font-normal not-italic">
           <button
             className="form__button cursor-pointer whitespace-nowrap"
-            data-cy="sign-up-button"
             type="submit"
             onClick={redirectToLoginPage}
           >

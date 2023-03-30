@@ -56,7 +56,6 @@ const StaticPage = ({
         <div className="flex flex-row pb-3">
           <div className="flex w-1/2 flex-col px-2">
             <CustomInputText
-              dataCy="first-name"
               id="first_name"
               label="First name"
               name="first_name"
@@ -85,7 +84,6 @@ const StaticPage = ({
           </div>
           <div className="flex w-1/2 flex-col px-2">
             <CustomInputText
-              dataCy="last-name"
               id="last_name"
               label="Last name"
               name="last_name"
@@ -122,7 +120,6 @@ const StaticPage = ({
           >
             <CustomInputText
               disabled
-              dataCy="date_of_birth"
               id="date_of_birth"
               label="Date of Birth"
               name="date_of_birth"
@@ -188,7 +185,6 @@ const StaticPage = ({
           </div>
           <div className="flex w-1/2 flex-col px-2">
             <CustomInputText
-              dataCy="email-id"
               id="email_id"
               label="Email ID (Personal)"
               name="email_id"
@@ -239,7 +235,6 @@ const StaticPage = ({
         </div>
         <div className="flex w-full flex-col px-2 py-3">
           <CustomInputText
-            dataCy="address-line-1"
             id="address_line_1"
             label="Address line 1"
             name="address_line_1"
@@ -271,7 +266,6 @@ const StaticPage = ({
         </div>
         <div className="flex w-full flex-col px-2 py-3">
           <CustomInputText
-            dataCy="address-line-2"
             id="address_line_2"
             label="Address line 2 (optional)"
             name="address_line_2"
@@ -353,7 +347,6 @@ const StaticPage = ({
           </div>
           <div className="flex w-1/2 flex-col px-2 py-3">
             <CustomInputText
-              dataCy="zipcode"
               id="zipcode"
               label="Zipcode"
               name="zipcode"
@@ -392,7 +385,6 @@ const StaticPage = ({
         <div className="flex flex-row">
           <div className="flex w-1/2 flex-col px-2">
             <CustomInputText
-              dataCy="linked-in"
               id="linked_in"
               label="LinkedIn"
               name="linked_in"
@@ -405,7 +397,6 @@ const StaticPage = ({
           </div>
           <div className="flex w-1/2 flex-col px-2">
             <CustomInputText
-              dataCy="github"
               id="github"
               label="github"
               name="github"
