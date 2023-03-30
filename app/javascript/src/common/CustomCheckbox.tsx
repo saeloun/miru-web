@@ -22,7 +22,6 @@ const CustomCheckbox = ({
     >
       <input
         checked={isChecked}
-        data-cy="select-all-checkbox"
         id={id}
         name={name}
         type="checkbox"

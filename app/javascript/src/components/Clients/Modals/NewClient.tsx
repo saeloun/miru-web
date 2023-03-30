@@ -57,12 +57,7 @@ const EditClient = ({
         <div className="relative h-full w-full px-4 md:flex md:items-center md:justify-center">
           <div className="modal-width transform rounded-lg bg-white px-6 pb-6 shadow-xl transition-all sm:max-w-md sm:align-middle">
             <div className="mt-6 flex items-center justify-between">
-              <h6
-                className="text-base font-extrabold"
-                data-cy="add-client-heading"
-              >
-                Add New Client
-              </h6>
+              <h6 className="text-base font-extrabold">Add New Client</h6>
               <button
                 type="button"
                 onClick={() => {
@@ -76,10 +71,6 @@ const EditClient = ({
             <ClientForm
               clientData=""
               clientLogoUrl={clientLogoUrl}
-              dataCyAddress="address-input"
-              dataCyName="name-input"
-              dataCyPhone="phone-number-input"
-              dataCySubmit="submit-button"
               handleDeleteLogo={handleDeleteLogo}
               handleSubmit={handleSubmit}
               setClientLogo={setClientLogo}
