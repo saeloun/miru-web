@@ -20,7 +20,6 @@ const Header = ({ invoiceNumber, id, updateInvoice }) => (
         </Link>
         <button
           className="header__button w-1/3 bg-miru-han-purple-1000 p-0 text-white hover:text-white"
-          data-cy="save-invoice-edit"
           type="button"
           onClick={updateInvoice}
         >

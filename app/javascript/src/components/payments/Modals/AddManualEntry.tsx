@@ -286,7 +286,6 @@ const AddManualEntry = ({
               >
                 <CustomInputText
                   disabled
-                  dataCy="transactionDate"
                   id="transactionDate"
                   label="Transaction Date"
                   name="transactionDate"
@@ -324,7 +323,6 @@ const AddManualEntry = ({
             <div className="mt-4">
               <CustomInputText
                 disabled
-                dataCy="paymentAmount"
                 id="paymentAmount"
                 inputBoxClassName="form__input block w-full appearance-none bg-white p-4 text-base h-12 focus-within:border-miru-han-purple-1000 border-miru-gray-1000"
                 label="Payment amount"

@@ -61,17 +61,12 @@ const Header = ({
 
   return (
     <div className="mt-6 mb-3 flex flex-wrap items-center justify-around lg:justify-between">
-      {isDesktop && (
-        <h2 className="header__title" data-cy="header__invoices">
-          Invoices
-        </h2>
-      )}
+      {isDesktop && <h2 className="header__title">Invoices</h2>}
       <div className="header__searchWrap">
         <div className="header__searchInnerWrapper relative">
           <div>
             <input
               className="header__searchInput"
-              data-cy="search-invoice"
               placeholder="Search"
               type="text"
               value={searchQuery}
@@ -117,10 +112,7 @@ const Header = ({
         >
           <PlusIcon size={16} weight="bold" />
           {isDesktop && (
-            <span
-              className="ml-2 inline-block tracking-normal"
-              data-cy="new-invoice-button"
-            >
+            <span className="ml-2 inline-block tracking-normal">
               NEW INVOICE
             </span>
           )}

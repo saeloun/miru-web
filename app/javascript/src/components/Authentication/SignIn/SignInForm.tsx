@@ -122,7 +122,6 @@ const SignInForm = () => {
                   </div>
                   <div>
                     <button
-                      data-cy="sign-up-button"
                       type="submit"
                       className={`form__button whitespace-nowrap ${
                         isBtnDisabled(values)
@@ -164,7 +163,6 @@ const SignInForm = () => {
                   />
                   <button
                     className="form__button whitespace-nowrap"
-                    data-cy="sign-up-button"
                     type="submit"
                     onClick={handleGoogleAuth}
                   >
@@ -176,10 +174,7 @@ const SignInForm = () => {
             </Formik>
           </div>
           <p className="mb-3 pt-7 text-center font-manrope text-xs font-normal not-italic text-miru-dark-purple-1000">
-            <span
-              className="form__link inline cursor-pointer"
-              data-cy="sign-in-link"
-            >
+            <span className="form__link inline cursor-pointer">
               <a href={Paths.FORGOT_PASSWORD}>
                 <span className="mr-2 inline-block">Forgot Password?</span>
               </a>
@@ -187,10 +182,7 @@ const SignInForm = () => {
           </p>
           <p className="pb-10 text-center font-manrope text-xs font-normal not-italic text-miru-dark-purple-1000">
             Don't have an account?&nbsp;
-            <span
-              className="form__link inline cursor-pointer"
-              data-cy="sign-in-link"
-            >
+            <span className="form__link inline cursor-pointer">
               <a href={Paths.SIGNUP}>
                 <span className="mr-2 inline-block">Sign Up</span>
               </a>
