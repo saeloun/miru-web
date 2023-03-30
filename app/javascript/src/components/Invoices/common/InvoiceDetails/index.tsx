@@ -59,7 +59,6 @@ const InvoiceDetails = ({
       />
       <div className="mr-2 flex w-2/12 flex-col justify-between">
         <CustomInputText
-          dataCy="Invoice Number"
           id="invoiceNumber"
           inputBoxClassName="border focus:border-miru-han-purple-1000 cursor-pointer"
           label="Invoice Number"
@@ -70,7 +69,6 @@ const InvoiceDetails = ({
           onChange={e => setInvoiceNumber(e.target.value)}
         />
         <CustomInputText
-          dataCy="Reference"
           id="Reference"
           inputBoxClassName="focus:border-miru-han-purple-1000 cursor-pointer"
           label="Reference"
@@ -86,7 +84,6 @@ const InvoiceDetails = ({
           <div onClick={() => setShowDateOfIssuePicker(!showDateOfIssuePicker)}>
             <CustomInputText
               readOnly
-              dataCy="Date of Issue"
               id="Date of Issue"
               inputBoxClassName="focus:border-miru-han-purple-1000 cursor-pointer"
               label="Date of Issue"
@@ -115,7 +112,6 @@ const InvoiceDetails = ({
           <div onClick={() => setShowDueDatePicker(!showDueDatePicker)}>
             <CustomInputText
               readOnly
-              dataCy="Due Date"
               id="Due Date"
               inputBoxClassName="focus:border-miru-han-purple-1000 cursor-pointer"
               label="Due Date"
