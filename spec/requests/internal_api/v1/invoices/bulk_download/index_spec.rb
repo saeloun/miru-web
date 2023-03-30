@@ -54,9 +54,13 @@ RSpec.describe "InternalApi::V1::Invoices::BulkDownbload#index", type: :request 
     context "when user is book_keeper" do
       let(:role) { :book_keeper }
 
-      it "returns 403 status" do
+      it "send the download request successfully" do
         subject
-        expect(json_response["errors"]).to eq "You are not authorized to perform this action."
+        expect(response).to have_http_status(:accepted)
+      end
+
+      it "check if bulk invoice download job is queued" do
+        expect(BulkInvoiceDownloadJob).to be_processed_in :default
       end
     end
   end

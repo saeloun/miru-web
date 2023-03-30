@@ -112,7 +112,6 @@ const EditLeavesAndHolidays = ({
                         <div className="outline relative">
                           <input
                             className="form__input block w-full appearance-none bg-white p-4 text-base"
-                            data-cy="standard-rate"
                             id="total"
                             min={0}
                             name="total"
@@ -198,10 +197,7 @@ const EditLeavesAndHolidays = ({
                   </div>
                 </div>
                 <div className="flex w-1/12 items-end justify-center pb-4">
-                  <button
-                    data-cy="delete-logo"
-                    onClick={() => handleDeleteLeaveBalance(index)}
-                  >
+                  <button onClick={() => handleDeleteLeaveBalance(index)}>
                     <DeleteIcon
                       className="ml-2 cursor-pointer rounded-full"
                       color="#5b34ea"
@@ -307,10 +303,7 @@ const EditLeavesAndHolidays = ({
                 </div>
               </div>
               <div className="flex w-1/12 items-end justify-center pb-4">
-                <button
-                  data-cy="delete-logo"
-                  onClick={() => handleDeleteHoliday(false, index)}
-                >
+                <button onClick={() => handleDeleteHoliday(false, index)}>
                   <DeleteIcon
                     className="ml-2 cursor-pointer rounded-full"
                     color="#5b34ea"
@@ -352,7 +345,6 @@ const EditLeavesAndHolidays = ({
                 <div className="field relative">
                   <div className="outline relative">
                     <input
-                      data-cy="standard-rate"
                       id="total_op_holidays"
                       min={0}
                       name="total_op_holidays"
@@ -468,10 +460,7 @@ const EditLeavesAndHolidays = ({
                     </div>
                   </div>
                   <div className="flex w-1/12 items-end justify-center pb-4">
-                    <button
-                      data-cy="delete-logo"
-                      onClick={() => handleDeleteHoliday(true, index)}
-                    >
+                    <button onClick={() => handleDeleteHoliday(true, index)}>
                       <DeleteIcon
                         className="ml-2 cursor-pointer rounded-full"
                         color="#5b34ea"
