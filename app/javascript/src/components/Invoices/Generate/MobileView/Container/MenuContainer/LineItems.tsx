@@ -29,7 +29,6 @@ const LineItems = ({
           <tr>
             <td className="w-full pt-4" colSpan={6}>
               <button
-                data-cy="new-line-item"
                 disabled={!selectedClient}
                 className={`w-full rounded border border-dashed  bg-white py-3 text-center text-xs font-bold tracking-widest ${
                   selectedClient
