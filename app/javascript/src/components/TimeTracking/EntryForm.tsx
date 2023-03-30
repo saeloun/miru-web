@@ -348,6 +348,8 @@ const AddEntry: React.FC<Iprops> = ({
       setNote={setNote}
       setProject={setProject}
       setSelectedDate={setSelectedDate}
+      setSubmitting={setSubmitting}
+      submitting={submitting}
     />
   );
 };

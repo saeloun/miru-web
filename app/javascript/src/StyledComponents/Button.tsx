@@ -51,6 +51,7 @@ const Button = ({
   children,
 }: ButtonProps) => (
   <button
+    disabled={disabled}
     className={classnames(
       DEFAULT_STYLE,
       fullWidth && "w-full",
