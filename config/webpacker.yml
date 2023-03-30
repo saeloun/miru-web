@@ -45,10 +45,10 @@ development:
     allowed_hosts: "all"
     pretty: true
     headers:
-      'Access-Control-Allow-Origin': '*'
+      "Access-Control-Allow-Origin": "*"
     static:
       watch:
-        ignored: '**/node_modules/**'
+        ignored: "**/node_modules/**"
 
 test:
   <<: *default
