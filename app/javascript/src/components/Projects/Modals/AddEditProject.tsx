@@ -168,7 +168,6 @@ const AddEditProject = ({
                 <div className="mt-1">
                   <input
                     className="focus:outline-none block h-8 w-full appearance-none rounded border-0 bg-miru-gray-100 px-3 py-2 text-sm font-medium text-miru-dark-purple-1000 sm:text-base"
-                    data-cy="project-name"
                     id="project-name"
                     placeholder=" Enter Project Name"
                     type="text"
@@ -231,7 +230,6 @@ const AddEditProject = ({
             </div>
             <div className="actions mt-4">
               <button
-                data-cy="add-project-button"
                 disabled={!isFormFilled}
                 type="submit"
                 className={`focus:outline-none flex h-10 w-full cursor-pointer justify-center rounded border border-transparent py-1 px-4 font-sans text-base font-medium tracking-widest text-miru-white-1000 shadow-sm ${

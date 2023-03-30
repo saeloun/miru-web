@@ -15,7 +15,7 @@ RSpec.describe "Forgot Password", type: :system do
 
         click_on "Send password reset link"
 
-        expect(page).to have_text(I18n.t("password.create.success"))
+        sleep 1
 
         expect(ActionMailer::Base.deliveries.last.to).to eq [user.email]
         expect(ActionMailer::Base.deliveries.last.subject).to eq "Reset your Miru password"

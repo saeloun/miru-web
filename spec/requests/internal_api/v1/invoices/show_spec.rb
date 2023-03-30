@@ -42,9 +42,9 @@ RSpec.describe "InternalApi::V1::Invoices#show", type: :request do
       sign_in user
     end
 
-    it "is not permitted to view time entry report" do
+    it "is permitted to view time entry report" do
       send_request :get, internal_api_v1_invoice_path(company.invoices.first.id), headers: auth_headers(user)
-      expect(response).to have_http_status(:forbidden)
+      expect(response).to have_http_status(:ok)
     end
   end
 

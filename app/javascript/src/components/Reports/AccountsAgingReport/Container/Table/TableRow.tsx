@@ -25,7 +25,7 @@ const TableRow = ({ currency, report }) => {
         {isDesktop ? (
           <Tooltip content={name} show={showToolTip}>
             <p
-              className="overflow-hidden text-ellipsis whitespace-normal pr-2 text-sm font-medium text-miru-dark-purple-1000 lg:whitespace-nowrap lg:text-base"
+              className="overflow-hidden text-ellipsis break-words pr-2 text-sm font-medium text-miru-dark-purple-1000 lg:whitespace-normal lg:text-base"
               ref={toolTipRef}
               onMouseEnter={handleTooltip}
             >
