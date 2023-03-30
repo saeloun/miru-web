@@ -11,6 +11,7 @@ module.exports = {
       utils: "src/utils",
       StyledComponents: "src/StyledComponents",
       miruIcons: "src/miruIcons",
+      i18n: "src/i18n",
     },
   },
 };
