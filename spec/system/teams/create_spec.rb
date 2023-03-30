@@ -41,8 +41,13 @@ RSpec.describe "Inviting team memeber", type: :system do
           choose "Employee"
           click_button "SEND INVITE"
 
-          # expect(invitation.recipient_email).to eq("john@example.com")
-          p UserInvitationMailer.last
+          perform_enqueued_jobs
+
+          expect(ActiveJob::Base.queue_adapter.performed_jobs.last["job_class"]).to eq("ActionMailer::MailDeliveryJob")
+          expect(ActionMailer::Base.deliveries.last.to).to include("john@example.com")
+          expect(ActionMailer::Base.deliveries.last.subject).to eq("Welcome to Miru!")
+          expect(ActionMailer::Base.deliveries.last.body).to include("click here")
+          expect(ActionMailer::Base.deliveries.last.body).to include("to accept the invitation")
         end
       end
     end
