@@ -112,7 +112,6 @@ const ResetPassword = () => {
                     </div>
                     <div>
                       <button
-                        data-cy="reset-password-button"
                         type="submit"
                         className={`form__button whitespace-nowrap ${
                           isSubmitBtnDisable(values)
@@ -124,10 +123,7 @@ const ResetPassword = () => {
                       </button>
                     </div>
                     <p className="mb-3 mt-3 text-center font-manrope text-xs font-normal not-italic text-miru-dark-purple-1000">
-                      <span
-                        className="form__link inline cursor-pointer"
-                        data-cy="sign-in-link"
-                      >
+                      <span className="form__link inline cursor-pointer">
                         <a href={Paths.LOGIN}>
                           <span className="mr-2 inline-block">
                             Back to Login

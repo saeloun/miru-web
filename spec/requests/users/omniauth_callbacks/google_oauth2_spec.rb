@@ -17,7 +17,7 @@ RSpec.describe "Users::OmniauthCallbacks#google_oauth2", type: :request do
 
     it "redirects to dashboard page" do
       expect(response).to have_http_status(:redirect)
-      expect(response).to redirect_to(root_path)
+      expect(response).to redirect_to("#{root_path}?google_oauth_success=true")
     end
 
     it "returns a success flash message" do

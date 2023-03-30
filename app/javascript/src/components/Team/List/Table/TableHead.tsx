@@ -6,7 +6,7 @@ const TableHead = () => {
   const { isAdminUser } = useUserContext();
 
   return (
-    <thead className=" border-miru-gray-200" data-cy="team-table-header">
+    <thead className=" border-miru-gray-200">
       <tr>
         <th className="table__header p-6" scope="col">
           NAME
