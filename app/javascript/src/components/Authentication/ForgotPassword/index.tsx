@@ -84,7 +84,6 @@ const ForgotPassword = () => {
                   </div>
                   <div>
                     <button
-                      data-cy="send-password-reset-link-button"
                       type="submit"
                       className={`form__button whitespace-nowrap ${
                         !values?.email?.trim()
@@ -96,10 +95,7 @@ const ForgotPassword = () => {
                     </button>
                   </div>
                   <p className="mb-3 mt-3 text-center font-manrope text-xs font-normal not-italic text-miru-dark-purple-1000">
-                    <span
-                      className="form__link inline cursor-pointer"
-                      data-cy="sign-in-link"
-                    >
+                    <span className="form__link inline cursor-pointer">
                       <a href={Paths.LOGIN}>
                         <span className="mr-2 inline-block font-bold">
                           Back to Login

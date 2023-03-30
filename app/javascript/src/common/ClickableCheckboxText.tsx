@@ -23,7 +23,6 @@ const ClickableCheckboxText = ({
     >
       <input
         checked={isChecked}
-        data-cy="select-all-checkbox"
         id={id}
         name={name}
         type="checkbox"
@@ -31,6 +30,7 @@ const ClickableCheckboxText = ({
         className={`custom__checkbox col-start-1 row-start-1 grid ${
           isUpdatedDesign ? "h-4 w-4" : "h-3 w-3 md:h-5 md:w-5"
         } cursor-pointer opacity-0`}
+        onChange={handleCheck}
         onClick={hanldeOnClick}
       />
       <div

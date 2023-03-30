@@ -32,7 +32,7 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController#download", type: :
           "#{timesheet_entry.client_name}," \
           "#{timesheet_entry.note}," \
           "#{timesheet_entry.user_full_name}," \
-          "#{timesheet_entry.work_date.strftime("%Y-%m-%d")}," \
+          "#{timesheet_entry.formatted_work_date}," \
           "#{timesheet_entry.formatted_duration}"
       end
 
@@ -68,10 +68,35 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController#download", type: :
   context "when user is a book keeper" do
     before { sign_in book_keeper }
 
-    it "returns 403 status" do
-      send_request :get, "/internal_api/v1/reports/time_entries/download.#{type}", headers: auth_headers(book_keeper)
-      expect(response).to have_http_status(:forbidden)
-      expect(json_response["errors"]).to eq "You are not authorized to perform this action."
+    context "when CSV file requested" do
+      let(:csv_headers) do
+        "Project,Client,Note,Team Member,Date,Hours Logged"
+      end
+      let(:csv_data) do
+        "#{timesheet_entry.project_name}," \
+          "#{timesheet_entry.client_name}," \
+          "#{timesheet_entry.note}," \
+          "#{timesheet_entry.user_full_name}," \
+          "#{timesheet_entry.formatted_work_date}," \
+          "#{timesheet_entry.formatted_duration}"
+      end
+
+      it "returns CSV data in response" do
+        send_request :get, "/internal_api/v1/reports/time_entries/download.#{type}", headers: auth_headers(admin)
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include(csv_headers)
+        expect(response.body).to include(csv_data)
+      end
+    end
+
+    context "when pdf file requested" do
+      let(:type) { "pdf" }
+
+      it "generates PDF and send in response" do
+        send_request :get, "/internal_api/v1/reports/time_entries/download.#{type}", headers: auth_headers(admin)
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("PDF")
+      end
     end
   end
 end

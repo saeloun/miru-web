@@ -118,7 +118,6 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
                         <div className="flex">
                           <div className="mt-1">
                             <Field
-                              data-cy="new-member-firstName"
                               name="firstName"
                               placeholder="First Name"
                               className={`form__input ${
@@ -135,7 +134,6 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
                           </div>
                           <div className="mt-1 ml-8">
                             <Field
-                              data-cy="new-member-lastName"
                               name="lastName"
                               placeholder="Last Name"
                               className={`form__input ${
@@ -160,7 +158,6 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
                         </div>
                         <div className="mt-1">
                           <Field
-                            data-cy="new-member-email"
                             disabled={isEdit}
                             id="email"
                             name="email"
@@ -196,7 +193,6 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
                               />
                               <label
                                 className="ml-2 flex cursor-pointer items-center text-xl"
-                                data-cy="admin-radio-button"
                                 htmlFor="role-1"
                               >
                                 <i className="custom__radio-text" />
@@ -213,7 +209,6 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
                               />
                               <label
                                 className="ml-2 flex cursor-pointer items-center text-xl"
-                                data-cy="employee-radio-button"
                                 htmlFor="role-2"
                               >
                                 <i className="custom__radio-text" />
@@ -242,7 +237,6 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
                     </div>
                     <div className="actions mt-4">
                       <button
-                        data-cy="send-invite-button"
                         disabled={!(dirty && isValid)}
                         name="commit"
                         type="submit"

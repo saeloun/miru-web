@@ -27,7 +27,6 @@ const InvoiceTable = ({
   const [filteredLineItems, setFilteredLineItems] = useState<any>();
   const [lineItem, setLineItem] = useState<any>({});
   const [loading, setLoading] = useState<boolean>(false);
-  const [showTooltip, setShowTooltip] = useState<boolean>(false);
   const wrapperRef = useRef(null);
   const debouncedSearchName = useDebounce(lineItem.name, 500);
 
@@ -101,20 +100,10 @@ const InvoiceTable = ({
     if (!addNew) {
       return (
         <tr className="w-full pt-4">
-          <td
-            className="relative w-full pt-4 pr-10"
-            colSpan={6}
-            onMouseEnter={() => {
-              setShowTooltip(true);
-            }}
-            onMouseLeave={() => {
-              setShowTooltip(false);
-            }}
-          >
+          <td className="relative w-full pt-4 pr-10" colSpan={6}>
             <button
-              data-cy="new-line-item"
               disabled={!selectedClient}
-              className={`w-full rounded-md border-2 border-dashed  bg-white py-1 pr-10 text-center text-base font-bold tracking-widest ${
+              className={`hoverButton w-full rounded-md border-2 border-dashed  bg-white py-1 pr-10 text-center text-base font-bold tracking-widest ${
                 selectedClient
                   ? "border-miru-dark-purple-200 text-miru-dark-purple-200"
                   : "border-miru-dark-purple-100 text-miru-dark-purple-100"
@@ -123,8 +112,8 @@ const InvoiceTable = ({
             >
               + NEW LINE ITEM
             </button>
-            {showTooltip && !selectedClient && (
-              <span className="absolute top-full left-1/3 ml-10 rounded bg-miru-dark-purple-1000 p-2 text-sm font-bold text-miru-dark-purple-100">
+            {!selectedClient && (
+              <span className="invisible absolute top-full left-1/3 ml-10 rounded bg-miru-dark-purple-1000 p-2 text-sm font-bold text-miru-dark-purple-100">
                 Please add client before adding line items
               </span>
             )}
