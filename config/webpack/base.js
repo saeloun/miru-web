@@ -1,6 +1,6 @@
 const webpack = require("webpack");
 const aliasConfig = require("./alias");
-const { webpackConfig, merge } = require("@rails/webpacker");
+const { webpackConfig, merge } = require("shakapacker");
 const ForkTSCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
 
 let customConfig = {
