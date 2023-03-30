@@ -68,7 +68,6 @@ const Header = ({ clientDetails }) => {
         <div className="relative h-8">
           <button
             className={`menuButton__button ${menuBackground}`}
-            data-cy="three-dots"
             id="kebabMenu"
             onClick={handleMenuVisibility}
           >

@@ -47,7 +47,6 @@ const DeleteClient = ({ client, setShowDeleteDialog }: IProps) => {
               </button>
               <button
                 className="button__bg_purple"
-                data-cy="delete-button"
                 onClick={() => {
                   deleteClient(client);
                 }}

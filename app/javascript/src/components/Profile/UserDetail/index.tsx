@@ -232,7 +232,6 @@ const UserDetails = () => {
                     <img
                       alt="profile_pic"
                       className="h-full min-w-full rounded-full"
-                      data-cy="profile-image"
                       src={profileImage}
                     />
                   </div>
@@ -251,11 +250,7 @@ const UserDetails = () => {
                     type="file"
                     onChange={handleProfileImageChange}
                   />
-                  <button
-                    className=""
-                    data-cy="delete-image"
-                    onClick={handleDeleteLogo}
-                  >
+                  <button className="" onClick={handleDeleteLogo}>
                     <img
                       alt="delete"
                       src={DeleteIconSVG}
@@ -292,7 +287,6 @@ const UserDetails = () => {
                   <div className="flex w-1/2 flex-col">
                     <input
                       className="mr-2 w-full border py-1 px-1"
-                      data-cy="first-name"
                       id="first_name"
                       name="first_name"
                       type="text"
@@ -304,7 +298,6 @@ const UserDetails = () => {
                   <div className="flex w-1/2 flex-col">
                     <input
                       className="ml-2 w-full border py-1 px-1"
-                      data-cy="last-name"
                       id="last_name"
                       name="last_name"
                       type="text"
@@ -338,7 +331,6 @@ const UserDetails = () => {
                   <div>
                     <p
                       className=" cursor-pointer text-miru-han-purple-1000"
-                      data-cy="change-password"
                       onClick={() => setChangePassword(true)}
                     >
                       CHANGE PASSWORD
@@ -353,7 +345,6 @@ const UserDetails = () => {
                         <div className="relative flex items-center">
                           <input
                             className="mt-2 w-full border py-1 px-1"
-                            data-cy="current-password"
                             id="current_password"
                             name="current_password"
                             type={showCurrentPassword ? "text" : "password"}
@@ -385,7 +376,6 @@ const UserDetails = () => {
                           <div className="relative flex items-center">
                             <input
                               className=" mt-2 w-full border py-1 px-1"
-                              data-cy="password"
                               id="password"
                               name="password"
                               type={showPassword ? "text" : "password"}
@@ -414,7 +404,6 @@ const UserDetails = () => {
                           <div className="relative flex items-center">
                             <input
                               className="mt-2 w-full border py-1 px-1"
-                              data-cy="confirm-password"
                               id="confirm_password"
                               name="confirm_password"
                               type={showConfirmPassword ? "text" : "password"}

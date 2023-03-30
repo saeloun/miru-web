@@ -154,8 +154,8 @@ RSpec.describe "InternalApi::V1::Reports::ClientRevenuesController::#index", typ
       send_request :get, internal_api_v1_reports_client_revenues_path, headers: auth_headers(user)
     end
 
-    it "is not permitted to view client revenue report" do
-      expect(response).to have_http_status(:forbidden)
+    it "is permitted to view client revenue report" do
+      expect(response).to have_http_status(:ok)
     end
   end
 

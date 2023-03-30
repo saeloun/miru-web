@@ -36,7 +36,6 @@ const AutoSearch = ({ searchAction, SearchDataRow }: Iprops) => {
         <div>
           <input
             className="header__searchInput"
-            data-cy="search-invoice"
             id="searchInput"
             placeholder="Search"
             type="text"
