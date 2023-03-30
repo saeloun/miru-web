@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useRef } from "react";
 
-import { useKeypress } from "helpers";
+import { useKeypress, useOutsideClick } from "helpers";
 import Logger from "js-logger";
 import { XIcon } from "miruIcons";
 
@@ -32,6 +32,7 @@ const EditMembersList = ({
     addedMembers.map(v => ({ ...v, isExisting: true }))
   );
   const [allMemberList, setAllMemberList] = React.useState([]);
+  const wrapperRef = useRef(null);
 
   const markAddedMembers = allMembers =>
     allMembers.map(memberFromAllMembers =>
@@ -64,6 +65,10 @@ const EditMembersList = ({
     modalMembers[memberIndex] = memberToEdit;
     setMembers(modalMembers);
   };
+
+  useOutsideClick(wrapperRef, () => {
+    setShowAddMemberDialog(false);
+  });
 
   const handleEscapeKey = () => {
     setShowAddMemberDialog(false);
@@ -133,7 +138,10 @@ const EditMembersList = ({
       }}
     >
       <div className="relative h-full w-full px-4 md:flex md:items-center md:justify-center">
-        <div className="min-w-1/2 relative top-1/3 mx-auto transform rounded-lg bg-white py-6 pl-6 shadow-xl transition-all sm:max-w-md sm:align-middle md:top-0 md:min-w-400">
+        <div
+          className="min-w-1/2 relative top-1/3 mx-auto transform rounded-lg bg-white py-6 pl-6 shadow-xl transition-all sm:max-w-md sm:align-middle md:top-0 md:min-w-400"
+          ref={wrapperRef}
+        >
           <div className=" mr-6 flex items-center justify-between">
             <h6 className="text-base font-extrabold capitalize">
               Add Team Members

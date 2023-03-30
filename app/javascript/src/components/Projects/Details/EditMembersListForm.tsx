@@ -21,7 +21,7 @@ const EditMembersListForm = ({
     {}
   );
 
-  useEffect(() => {
+  const getFormattedMemberList = () => {
     allMemberList.length > 0 &&
       allMemberList.reduce((memberList, currentMember) => {
         if (!currentMember.isAdded) {
@@ -37,6 +37,10 @@ const EditMembersListForm = ({
 
         return memberList;
       }, []);
+  };
+
+  useEffect(() => {
+    getFormattedMemberList();
   }, [allMemberList]);
 
   const removeMemberHandler = (memberIndex, member) => {
