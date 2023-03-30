@@ -121,8 +121,8 @@ RSpec.describe "InternalApi::V1::Reports::AccountsAgingController::#index", type
       send_request :get, internal_api_v1_reports_accounts_aging_index_path, headers: auth_headers(user)
     end
 
-    it "is not permitted to view client revenue report" do
-      expect(response).to have_http_status(:forbidden)
+    it "is permitted to view client revenue report" do
+      expect(response).to have_http_status(:ok)
     end
   end
 

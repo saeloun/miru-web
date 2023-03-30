@@ -10,27 +10,27 @@ class InvoicePolicy < ApplicationPolicy
   end
 
   def show?
-    authorize_current_user
+    authorize_owner_admin_book_keeper
   end
 
   def update?
-    authorize_current_user
+    authorize_owner_admin
   end
 
   def destroy?
-    authorize_current_user
+    authorize_owner_admin
   end
 
   def edit?
-    authorize_current_user
+    authorize_owner_admin
   end
 
   def send_invoice?
-    authorize_current_user
+    authorize_owner_admin
   end
 
   def download?
-    authorize_current_user
+    authorize_owner_admin_book_keeper
   end
 
   def permitted_attributes
@@ -48,11 +48,19 @@ class InvoicePolicy < ApplicationPolicy
   end
 
   def authorize_current_user
-    unless user.current_workspace_id == record.company.id
+    if user.current_workspace_id == record.company.id
+      true
+    else
       @error_message_key = :different_workspace
-      return false
+      false
     end
+  end
 
-    user_owner_role? || user_admin_role?
+  def authorize_owner_admin_book_keeper
+    authorize_current_user && (user_owner_role? || user_admin_role? || user_book_keeper_role?)
+  end
+
+  def authorize_owner_admin
+    authorize_current_user && (user_owner_role? || user_admin_role?)
   end
 end
