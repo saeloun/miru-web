@@ -48,6 +48,8 @@ const AddEntryMobile = ({
   editEntryId,
   setEditEntryId,
   handleDeleteEntry,
+  submitting,
+  setSubmitting,
 }) => {
   const [showClientList, setShowClientList] = useState<boolean>(false);
   const [clientList, setClientList] = useState<any>(clients);
@@ -297,7 +299,6 @@ const AddEntryMobile = ({
               >
                 <CustomInputText
                   disabled
-                  dataCy="date"
                   id="date"
                   label="Date"
                   name="date"
@@ -406,9 +407,12 @@ const AddEntryMobile = ({
           ) : (
             <Button
               className="w-full p-2 text-center text-base font-bold"
-              disabled={!disableApplyBtn}
+              disabled={!disableApplyBtn || submitting}
               style="primary"
-              onClick={handleSave}
+              onClick={() => {
+                setSubmitting(true);
+                handleSave();
+              }}
             >
               Add Entry
             </Button>

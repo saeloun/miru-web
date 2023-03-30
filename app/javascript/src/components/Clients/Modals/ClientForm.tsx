@@ -20,10 +20,6 @@ interface IClientForm {
   formType?: string;
   clientData?: any;
   apiError?: string;
-  dataCyName: string;
-  dataCyPhone: string;
-  dataCyAddress: string;
-  dataCySubmit: string;
 }
 
 interface FormValues {
@@ -61,10 +57,6 @@ const ClientForm = ({
   clientData,
   formType = "new",
   apiError = "",
-  dataCyName,
-  dataCyAddress,
-  dataCyPhone,
-  dataCySubmit,
 }: IClientForm) => {
   const [fileUploadError, setFileUploadError] = useState<string>("");
 
@@ -192,7 +184,6 @@ const ClientForm = ({
                 </div>
                 <div className="mt-1">
                   <Field
-                    data-cy={dataCyName}
                     name="name"
                     className={`form__input ${
                       errors.name &&
@@ -233,7 +224,6 @@ const ClientForm = ({
                 </div>
                 <div className="mt-1">
                   <Field
-                    data-cy={dataCyPhone}
                     name="phone"
                     className={`form__input ${
                       errors.phone &&
@@ -256,7 +246,6 @@ const ClientForm = ({
                 </div>
                 <div className="mt-1">
                   <Field
-                    data-cy={dataCyAddress}
                     name="address"
                     className={`form__input ${
                       errors.address &&
@@ -273,7 +262,6 @@ const ClientForm = ({
             <div className="actions mt-4">
               <input
                 className="form__input_submit"
-                data-cy={dataCySubmit}
                 name="commit"
                 type="submit"
                 value="SAVE CHANGES"

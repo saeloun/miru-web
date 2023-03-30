@@ -38,9 +38,9 @@ RSpec.describe "InternalApi::V1::Invoices#download", type: :request do
     context "when user is book_keeper" do
       let(:role) { :book_keeper }
 
-      it "returns 403 status" do
+      it "downloads the invoice" do
         subject
-        expect(json_response["errors"]).to eq "You are not authorized to perform this action."
+        expect(response).to have_http_status(:ok)
       end
     end
   end
