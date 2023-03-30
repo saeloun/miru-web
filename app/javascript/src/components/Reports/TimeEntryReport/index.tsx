@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from "react";
 
+import ReactPaginate from "react-paginate";
+
 import reportsApi from "apis/reports";
+import { useUserContext } from "context/UserContext";
 import { sendGAPageView } from "utils/googleAnalytics";
+
+import { TimeEntryReportMobileView } from "./TimeEntryReportMobileView";
+import { TIME_ENTRY_REPORT_PAGE } from "./utils";
 
 import { applyFilter, getQueryParams } from "../api/applyFilter";
 import Container from "../Container";
@@ -9,8 +15,8 @@ import AccountsAgingReportContext from "../context/AccountsAgingReportContext";
 import EntryContext from "../context/EntryContext";
 import OutstandingOverdueInvoiceContext from "../context/outstandingOverdueInvoiceContext";
 import RevenueByClientReportContext from "../context/RevenueByClientContext";
-import Filters from "../Filters";
 import { getMonth } from "../Filters/filterOptions";
+import FilterSideBar from "../Filters/FilterSideBar";
 import Header from "../Header";
 import { ITimeEntry } from "../interface";
 
@@ -20,8 +26,13 @@ const TimeEntryReport = () => {
     clients: [],
     teamMember: [],
     status: [],
-    groupBy: { label: "None", value: "" },
+    groupBy: { label: "Client", value: "client" },
+    customDateFilter: {
+      from: "",
+      to: "",
+    },
   };
+  const { isDesktop } = useUserContext();
 
   const [timeEntries, setTimeEntries] = useState<Array<ITimeEntry>>([]);
   const [filterOptions, setFilterOptions] = useState({
@@ -32,7 +43,14 @@ const TimeEntryReport = () => {
   const [isFilterVisible, setIsFilterVisible] = useState<boolean>(false);
   const [showNavFilters, setShowNavFilters] = useState<boolean>(false);
   const [filterCounter, setFilterCounter] = useState(0);
-  const [selectedInput, setSelectedInput] = useState("from-input");
+  const [selectedInput, setSelectedInput] = useState<string>("from-input");
+  const [paginationDetails, setPaginationDetails] = useState({
+    pages: 0,
+    first: true,
+    prev: null,
+    next: 0,
+    last: false,
+  });
 
   useEffect(() => {
     sendGAPageView();
@@ -42,12 +60,12 @@ const TimeEntryReport = () => {
     let counter = 0;
     for (const filterkey in selectedFilter) {
       const filterValue = selectedFilter[filterkey];
-      if (filterkey !== "customDateFilter") {
+      if (filterkey == "customDateFilter") {
         continue;
       } else if (Array.isArray(filterValue)) {
         counter = counter + filterValue.length;
       } else {
-        if (filterValue.value !== "") {
+        if (filterValue?.value) {
           counter = counter + 1;
         }
       }
@@ -62,21 +80,28 @@ const TimeEntryReport = () => {
       setTimeEntries,
       setShowNavFilters,
       setIsFilterVisible,
-      setFilterOptions
+      setFilterOptions,
+      setPaginationDetails
     );
   }, [selectedFilter]);
 
-  const onClickInput = e => {
-    setSelectedInput(e.target.name);
-  };
+  useEffect(() => {
+    const close = e => {
+      if (e.keyCode === 27) {
+        setIsFilterVisible(false);
+      }
+    };
+    window.addEventListener("keydown", close);
 
-  const handleApplyFilter = async filters => {
+    return () => window.removeEventListener("keydown", close);
+  }, []);
+
+  const handleApplyFilter = filters => {
     setSelectedFilter(filters);
   };
 
   const resetFilter = () => {
     setSelectedFilter(filterIntialValues);
-    setIsFilterVisible(false);
     setShowNavFilters(false);
   };
 
@@ -90,6 +115,11 @@ const TimeEntryReport = () => {
         setSelectedFilter({
           ...selectedFilter,
           [key]: filterIntialValues.dateRange,
+        });
+      } else if (key === "groupBy") {
+        setSelectedFilter({
+          ...selectedFilter,
+          [key]: filterIntialValues.groupBy,
         });
       } else {
         const label = "None";
@@ -108,6 +138,25 @@ const TimeEntryReport = () => {
     link.setAttribute("download", `${date.toISOString()}_miru_report.${type}`);
     document.body.appendChild(link);
     link.click();
+  };
+
+  const handlePageClick = async data => {
+    const queryParams = getQueryParams(selectedFilter);
+    const sanitizedParam = queryParams.substring(1);
+    const sanitizedQuery = `?${sanitizedParam}`;
+    if (data.selected > paginationDetails.prev) {
+      const res = await reportsApi.get(
+        `${sanitizedQuery}&page=${paginationDetails.next}`
+      );
+      setTimeEntries(res.data.reports);
+      setPaginationDetails(res.data.pagy);
+    } else {
+      const res = await reportsApi.get(
+        `${sanitizedQuery}&page=${paginationDetails.prev}`
+      );
+      setTimeEntries(res.data.reports);
+      setPaginationDetails(res.data.pagy);
+    }
   };
 
   const contextValues = {
@@ -132,7 +181,7 @@ const TimeEntryReport = () => {
   };
 
   return (
-    <div>
+    <div className="h-full">
       <EntryContext.Provider
         value={{
           ...contextValues,
@@ -143,20 +192,41 @@ const TimeEntryReport = () => {
           handleDownload={handleDownload}
           isFilterVisible={isFilterVisible}
           resetFilter={resetFilter}
+          revenueFilterCounter={() => {}} // eslint-disable-line  @typescript-eslint/no-empty-function
           setIsFilterVisible={setIsFilterVisible}
-          showNavFilters={showNavFilters}
-          type="Time Entry Report"
+          showNavFilters={isDesktop && showNavFilters}
+          type={TIME_ENTRY_REPORT_PAGE}
         />
-        <Container />
+        {isDesktop ? (
+          <Container selectedFilter={selectedFilter} />
+        ) : (
+          <TimeEntryReportMobileView />
+        )}
         {isFilterVisible && (
-          <Filters
+          <FilterSideBar
             handleApplyFilter={handleApplyFilter}
             resetFilter={resetFilter}
+            selectedFilter={selectedFilter}
             selectedInput={selectedInput}
+            setFilterCounter={setFilterCounter}
             setIsFilterVisible={setIsFilterVisible}
-            onClickInput={onClickInput}
+            setSelectedInput={setSelectedInput}
           />
         )}
+        <ReactPaginate
+          activeClassName="bg-miru-han-purple-400"
+          breakLabel="..."
+          className="flex justify-center"
+          nextClassName="ml-3"
+          nextLabel="Next >"
+          pageClassName="page-item"
+          pageCount={paginationDetails.pages}
+          pageLinkClassName="px-2 py-1 border border-solid border-miru-han-purple-1000"
+          pageRangeDisplayed={5}
+          previousClassName="mr-3"
+          previousLabel="< Previous"
+          onPageChange={handlePageClick}
+        />
       </EntryContext.Provider>
     </div>
   );

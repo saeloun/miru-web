@@ -35,50 +35,18 @@ class Company < ApplicationRecord
   has_many :addresses, as: :addressable, dependent: :destroy
   has_many :devices, dependent: :destroy
   has_many :invitations, dependent: :destroy
+  has_many :expenses, dependent: :destroy
+  has_many :expense_categories, dependent: :destroy
+  has_many :vendors, dependent: :destroy
   resourcify
 
   # Validations
   validates :name, :business_phone, :standard_price, :country, :base_currency, presence: true
   validates :standard_price, numericality: { greater_than_or_equal_to: 0 }
 
-  def project_list(client_id = nil, user_id = nil, billable = nil, search)
-    project_list = project_list_query(client_id, user_id, billable)
-    minutes_spent = timesheet_entries.group(:project_id).sum(:duration)
-    query = project_list.ransack({ name_or_client_name_cont: search })
-    project_list = query.result
-    project_ids = project_list.ids.uniq
-    project_ids.map do |id|
-      billable_array = []
-      project_name_array = []
-      client_name_array = []
-      project_list.each do |project|
-        if id == project.id
-          billable_array.push(project.is_billable)
-          client_name_array.push(project.project_client_name)
-          project_name_array.push(project.project_name)
-        end
-      end
-      {
-        id:,
-        name: project_name_array[0],
-        clientName: client_name_array[0],
-        isBillable: billable_array[0],
-        minutesSpent: minutes_spent[id]
-      }
-    end
-  end
-
-  def project_list_query(client_id, user_id, billable)
-    db_query = projects.kept.left_outer_joins(:project_members).joins(:client)
-    db_query = db_query.where(project_members: { user_id: }) if user_id.present?
-    db_query = db_query.where(client_id:) if client_id.present?
-    db_query = db_query.where(projects: { billable: }) if billable.present?
-    db_query.select(
-      "projects.id as id,
-       projects.name as project_name,
-       projects.billable as is_billable,
-       clients.name as project_client_name")
-  end
+  # scopes
+  scope :with_kept_employments, -> { merge(Employment.kept) }
+  scope :valid_invitations, -> { where(company: self).valid_invitations }
 
   def client_list
     clients.kept.map do |client|
@@ -88,7 +56,7 @@ class Company < ApplicationRecord
 
   def overdue_and_outstanding_and_draft_amount
     currency = base_currency
-    status_and_amount = invoices.group(:status).sum(:amount)
+    status_and_amount = invoices.kept.group(:status).sum(:amount)
     status_and_amount.default = 0
     outstanding_amount = status_and_amount["sent"] + status_and_amount["viewed"] + status_and_amount["overdue"]
     {
@@ -107,5 +75,18 @@ class Company < ApplicationRecord
 
   def stripe_account_id
     stripe_connected_account&.account_id
+  end
+
+  def all_expense_categories
+    ExpenseCategory.default_categories.order(:created_at) + expense_categories.order(:created_at)
+  end
+
+  def billable_clients
+    clients
+      .distinct
+      .joins(:projects)
+      .where(projects: { billable: true })
+      .kept
+      .order(name: :asc)
   end
 end

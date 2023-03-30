@@ -14,6 +14,9 @@ import {
   AccountsAgingHoverIcon,
 } from "miruIcons";
 
+import withLayout from "common/Mobile/HOC/withLayout";
+import { useUserContext } from "context/UserContext";
+
 import ReportCard from "./reportCard";
 
 const listDetails = [
@@ -61,26 +64,34 @@ const listDetails = [
   },
 ];
 
-const List = () => (
-  <div className="pb-14">
-    <div className="mt-4 text-3xl font-bold">Reports</div>
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-      {listDetails.map(
-        (item, key) =>
-          item.show && (
-            <div key={key}>
-              <ReportCard
-                description={item.description}
-                icon={item.icon}
-                iconHover={item.iconHover}
-                title={item.title}
-                url={item.url}
-              />
-            </div>
-          )
-      )}
+const List = () => {
+  const { isDesktop } = useUserContext();
+
+  const ReportsLayout = () => (
+    <div className="p-4">
+      {isDesktop && <div className="mt-4 text-3xl font-bold">Reports</div>}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:gap-4">
+        {listDetails.map(
+          (item, key) =>
+            item.show && (
+              <div key={key}>
+                <ReportCard
+                  description={item.description}
+                  icon={item.icon}
+                  iconHover={item.iconHover}
+                  title={item.title}
+                  url={item.url}
+                />
+              </div>
+            )
+        )}
+      </div>
     </div>
-  </div>
-);
+  );
+
+  const Main = withLayout(ReportsLayout, !isDesktop, !isDesktop);
+
+  return isDesktop ? ReportsLayout() : <Main />;
+};
 
 export default List;

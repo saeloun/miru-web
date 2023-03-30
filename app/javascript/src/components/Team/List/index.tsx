@@ -3,8 +3,10 @@ import React, { useEffect, useState } from "react";
 import { ToastContainer } from "react-toastify";
 
 import teamApi from "apis/team";
+import withLayout from "common/Mobile/HOC/withLayout";
 import { TeamModalType, TOASTER_DURATION } from "constants/index";
 import { ListContext } from "context/TeamContext";
+import { useUserContext } from "context/UserContext";
 import { unmapList } from "mapper/team.mapper";
 
 import Header from "./Header";
@@ -12,10 +14,12 @@ import Table from "./Table";
 
 import Modals from "../modals/Modals";
 
-export const ProjectList = () => {
+const TeamList = () => {
   const [teamList, setTeamList] = useState([]);
   const [modal, setModal] = useState("");
   const [modalUser, setModalUser] = useState({});
+
+  const { isDesktop } = useUserContext();
 
   const setModalState = (modalName, user = {}) => {
     setModalUser(user);
@@ -36,7 +40,7 @@ export const ProjectList = () => {
     }
   }, [modal]);
 
-  return (
+  const TeamLayout = () => (
     <ListContext.Provider
       value={{
         teamList,
@@ -60,5 +64,10 @@ export const ProjectList = () => {
       <Modals user={modalUser} />
     </ListContext.Provider>
   );
+
+  const Main = withLayout(TeamLayout, !isDesktop, !isDesktop);
+
+  return isDesktop ? TeamLayout() : <Main />;
 };
-export default ProjectList;
+
+export default TeamList;

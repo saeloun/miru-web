@@ -23,6 +23,7 @@ const AddEditProject = ({
 
   const isEdit = !!projectId;
   const isFormFilled = client && projectName && projectType;
+  const showEditModal = isEdit && editProjectData?.members;
 
   const getClientList = async () => {
     try {
@@ -34,11 +35,13 @@ const AddEditProject = ({
   };
 
   const getProject = async () => {
-    try {
-      const { data } = await projectApi.show(projectId);
-      setEditProjectData(data.project_details);
-    } catch (error) {
-      Logger.error(error);
+    if (!editProjectData.members) {
+      try {
+        const { data } = await projectApi.show(projectId);
+        setEditProjectData(data.project_details);
+      } catch (error) {
+        Logger.error(error);
+      }
     }
   };
 
@@ -102,7 +105,7 @@ const AddEditProject = ({
     handleProjectData();
   }, [editProjectData, clientList]);
 
-  return (
+  return !isEdit || showEditModal ? (
     <div
       className="modal__modal main-modal"
       style={{ background: "rgba(29, 26, 49,0.6)" }}
@@ -137,6 +140,7 @@ const AddEditProject = ({
                   <select
                     className="focus:outline-none block h-8 w-full rounded border-0 bg-miru-gray-100 px-2 py-1 text-sm font-medium text-miru-dark-purple-1000 sm:text-base"
                     defaultValue={client}
+                    id="select-client"
                     onChange={event => setClient(Number(event.target.value))}
                   >
                     <option value="0">Select Client</option>
@@ -164,7 +168,7 @@ const AddEditProject = ({
                 <div className="mt-1">
                   <input
                     className="focus:outline-none block h-8 w-full appearance-none rounded border-0 bg-miru-gray-100 px-3 py-2 text-sm font-medium text-miru-dark-purple-1000 sm:text-base"
-                    data-cy="project-name"
+                    id="project-name"
                     placeholder=" Enter Project Name"
                     type="text"
                     value={projectName}
@@ -226,7 +230,6 @@ const AddEditProject = ({
             </div>
             <div className="actions mt-4">
               <button
-                data-cy="add-project-button"
                 disabled={!isFormFilled}
                 type="submit"
                 className={`focus:outline-none flex h-10 w-full cursor-pointer justify-center rounded border border-transparent py-1 px-4 font-sans text-base font-medium tracking-widest text-miru-white-1000 shadow-sm ${
@@ -243,7 +246,7 @@ const AddEditProject = ({
         </div>
       </div>
     </div>
-  );
+  ) : null;
 };
 
 AddEditProject.defaultProps = {

@@ -28,6 +28,11 @@ export enum Roles {
 }
 
 export enum Paths {
+  FORGOT_PASSWORD = "/password/new",
+  RESET_PASSWORD = "/password/edit",
+  SIGNUP = "/signup",
+  SIGNUP_SUCCESS = "/signup/success",
+  LOGIN = "/login",
   SIGN_IN = "/user/sign_in",
   CLIENTS = "/clients",
   INVOICES = "/invoices",
@@ -37,10 +42,12 @@ export enum Paths {
   PAYMENTS = "/payments",
   TIME_TRACKING = "/time-tracking",
   TEAM = "/team/*",
+  TEAMS = "/teams/*",
   PROFILE = "/profile/*",
+  AUTHORIZATION = "/authorization",
 }
 
-export const TOASTER_DURATION = 3000;
+export const TOASTER_DURATION = 2000;
 
 export const GetToasterIcon = ({ type }) => {
   switch (type) {
@@ -92,4 +99,8 @@ export enum TeamModalType {
 
 export enum LocalStorageKeys {
   INVOICE_FILTERS = "invoiceFilters",
+  REVENUE_FILTERS = "REVENUEFiters",
 }
+
+export const MIRU_APP_URL = "https://miru.so/";
+export const MIRU_APP_SUPPORT_EMAIL_ID = "mailto:mirusupport@saeloun.com";

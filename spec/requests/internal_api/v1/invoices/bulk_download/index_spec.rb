@@ -9,12 +9,13 @@ RSpec.describe "InternalApi::V1::Invoices::BulkDownbload#index", type: :request 
   let!(:invoice) { create(:invoice, client:, status: "sent") }
   let(:download_id) { Faker::Alphanumeric.unique.alpha(number: 10) }
 
-  subject { send_request :get, internal_api_v1_invoices_bulk_download_index_path, params: {
+  subject {
+  send_request :get, internal_api_v1_invoices_bulk_download_index_path, params: {
     bulk_invoices: {
       invoice_ids: [invoice.id],
       download_id:
     }
-  }
+  }, headers: auth_headers(user)
 }
 
   context "when authenticated" do
@@ -53,9 +54,13 @@ RSpec.describe "InternalApi::V1::Invoices::BulkDownbload#index", type: :request 
     context "when user is book_keeper" do
       let(:role) { :book_keeper }
 
-      it "returns 403 status" do
+      it "send the download request successfully" do
         subject
-        expect(json_response["errors"]).to eq "You are not authorized to perform this action."
+        expect(response).to have_http_status(:accepted)
+      end
+
+      it "check if bulk invoice download job is queued" do
+        expect(BulkInvoiceDownloadJob).to be_processed_in :default
       end
     end
   end
@@ -63,9 +68,14 @@ RSpec.describe "InternalApi::V1::Invoices::BulkDownbload#index", type: :request 
   context "when unauthenticated" do
     context "when request is made to download the Invoice" do
       it "returns 403 status" do
-        subject
+        send_request :get, internal_api_v1_invoices_bulk_download_index_path, params: {
+          bulk_invoices: {
+            invoice_ids: [invoice.id],
+            download_id:
+          }
+        }
         expect(response).to have_http_status(:unauthorized)
-        expect(json_response["error"]).to eq("You need to sign in or sign up before continuing.")
+        expect(json_response["error"]).to eq(I18n.t("devise.failure.unauthenticated"))
       end
     end
   end

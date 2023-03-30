@@ -10,13 +10,14 @@ import CompanyInfo from "../common/CompanyInfo";
 const InvoiceDetails = ({ invoice }) => (
   <>
     <CompanyInfo company={invoice.company} />
-    <div className="flex h-36 justify-between border-b-2 border-miru-gray-400 px-10 py-5">
+    <div className="flex h-40 justify-between border-b border-miru-gray-400 px-10 py-5">
       <ClientInfo client={invoice.client} />
       <InvoiceInfo invoice={invoice} />
     </div>
     <InvoiceLineItems
       showHeader
       currency={invoice.company.currency}
+      dateFormat={invoice.company.dateFormat}
       items={invoice.invoiceLineItems}
     />
     <InvoiceTotalSummary invoice={invoice} />

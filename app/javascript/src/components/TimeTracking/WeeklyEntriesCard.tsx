@@ -63,13 +63,12 @@ const WeeklyEntriesCard = ({
     ["unbilled", "billed"].includes(currentEntries[num]["bill_status"])
       ? setBillable(true)
       : setBillable(false);
-    setIsWeeklyEditing(true);
   };
 
   const handleSaveEntry = async () => {
     try {
       const payload = getPayload();
-      const message = validateTimesheetEntry(payload);
+      const message = validateTimesheetEntry(payload, client, currentProjectId);
       if (message) {
         Toastr.error(message);
 
@@ -106,7 +105,7 @@ const WeeklyEntriesCard = ({
     try {
       const timesheetEntryId = currentEntries[selectedInputBox]["id"];
       const payload = getPayload();
-      const message = validateTimesheetEntry(payload);
+      const message = validateTimesheetEntry(payload, client, currentProjectId);
       if (message) {
         Toastr.error(message);
 
@@ -184,6 +183,7 @@ const WeeklyEntriesCard = ({
               />
             ) : (
               <div
+                id={`inputClick_${num}`}
                 key={num}
                 className={`bold h-15 w-18 content-center rounded border-2 border-transparent bg-miru-gray-100 px-1 py-4 text-xl ${
                   currentEntries[num]
@@ -207,7 +207,6 @@ const WeeklyEntriesCard = ({
             src={EditSVG}
             onClick={() => {
               if (!isWeeklyEditing) setProjectSelected(false);
-              setIsWeeklyEditing(true);
             }}
           />
         </div>
@@ -276,8 +275,9 @@ const WeeklyEntriesCard = ({
                 </button>
               ) : (
                 <button
+                  disabled={!(dataChanged && duration && note)}
                   className={`m-2 mb-1 inline-block h-6 w-30 rounded border py-1 px-6 text-xs font-bold tracking-widest text-white ${
-                    dataChanged && duration
+                    dataChanged && duration && note
                       ? "bg-miru-han-purple-1000 hover:border-transparent"
                       : "bg-miru-gray-1000"
                   }`}

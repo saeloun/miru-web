@@ -35,6 +35,7 @@ class TimesheetEntry < ApplicationRecord
 
   has_one :invoice_line_item, dependent: :destroy
   has_one :client, through: :project
+  has_one :company, through: :client
 
   before_validation :ensure_bill_status_is_set
   before_validation :ensure_bill_status_is_not_billed, on: :create
@@ -87,8 +88,14 @@ class TimesheetEntry < ApplicationRecord
   end
 
   def formatted_duration
-    minutes = duration.to_i
-    Time.parse("#{minutes / 60}:#{minutes % 60}").strftime("%H:%M")
+    total_minutes = duration.to_i
+    hours = total_minutes / 60
+    minutes = total_minutes % 60
+    format("%02d:%02d", hours, minutes)
+  end
+
+  def formatted_work_date
+    CompanyDateFormattingService.new(work_date, company:).process
   end
 
   private

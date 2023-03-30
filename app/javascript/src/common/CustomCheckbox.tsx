@@ -22,21 +22,20 @@ const CustomCheckbox = ({
     >
       <input
         checked={isChecked}
-        data-cy="select-all-checkbox"
         id={id}
         name={name}
         type="checkbox"
         value={checkboxValue}
         className={`custom__checkbox col-start-1 row-start-1 grid ${
-          isUpdatedDesign ? "h-4 w-4" : "h-5 w-5"
+          isUpdatedDesign ? "h-4 w-4" : "h-3 w-3 md:h-5 md:w-5"
         } cursor-pointer opacity-0`}
         onChange={handleCheck}
         onClick={hanldeOnClick}
       />
       <div
         className={`col-start-1 row-start-1 ${
-          isUpdatedDesign ? "mr-0 h-4 w-4" : "mr-2 h-5 w-5"
-        } grid flex-shrink-0 content-center justify-items-center rounded-sm border-2 border-miru-han-purple-1000 bg-white focus-within:border-blue-500`}
+          isUpdatedDesign ? "mr-0 h-4 w-4" : "mr-2 h-3 w-3 md:h-5 md:w-5"
+        } grid flex-shrink-0 content-center justify-items-center rounded-sm border border-miru-han-purple-1000 bg-white focus-within:border-blue-500 md:border-2`}
       >
         {!isUpdatedDesign ? (
           <svg

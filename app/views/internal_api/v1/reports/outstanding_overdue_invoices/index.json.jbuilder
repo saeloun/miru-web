@@ -6,13 +6,14 @@ json.deep_format_keys!
 json.currency current_company.base_currency
 json.clients clients do |client|
   json.name client[:name]
+  json.logo client[:logo]
   json.invoices client[:invoices] do |invoice|
     json.client_name client[:name]
-    json.invoice_no invoice[:invoice_number]
-    json.issue_date invoice[:issue_date]
-    json.due_date invoice[:due_date]
-    json.amount invoice[:amount]
-    json.status invoice[:status]
+    json.invoice_no invoice.invoice_number
+    json.issue_date invoice.formatted_issue_date
+    json.due_date invoice.formatted_due_date
+    json.amount invoice.amount
+    json.status invoice.status
   end
   json.total_outstanding_amount client[:total_outstanding_amount]
   json.total_overdue_amount client[:total_overdue_amount]

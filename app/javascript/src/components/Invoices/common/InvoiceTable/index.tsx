@@ -11,6 +11,7 @@ import { fetchNewLineItems } from "../utils";
 
 const InvoiceTable = ({
   currency,
+  dateFormat,
   selectedClient,
   lineItems,
   setLineItems,
@@ -49,7 +50,11 @@ const InvoiceTable = ({
   }, [debouncedSearchName, lineItems]);
 
   const handleAddEntry = () => {
-    if (!addNew && lineItem.name && lineItem.date) {
+    if (!lineItem.date) {
+      lineItem.date = new Date().toISOString();
+    }
+
+    if (!addNew && lineItem.name) {
       setManualEntryArr([...manualEntryArr, lineItem]);
     }
   };
@@ -69,12 +74,14 @@ const InvoiceTable = ({
     if (selectedClient && lineItems && showNewLineItemTable) {
       return (
         <NewLineItemTable
+          dateFormat={dateFormat}
           filteredLineItems={filteredLineItems}
           loadMoreItems={loadNewLineItems}
           loading={loading}
           selectedLineItems={selectedLineItems}
           setAddNew={setAddNew}
           setFilteredLineItems={setFilteredLineItems}
+          setLineItem={setLineItem}
           setLoading={setLoading}
           setMultiLineItemModal={setMultiLineItemModal}
           setSelectedLineItems={setSelectedLineItems}
@@ -92,15 +99,24 @@ const InvoiceTable = ({
   const getAddNewButton = () => {
     if (!addNew) {
       return (
-        <tr className="w-full">
-          <td className="relative py-4 pr-10" colSpan={6}>
+        <tr className="w-full pt-4">
+          <td className="relative w-full pt-4 pr-10" colSpan={6}>
             <button
-              className="w-full rounded-md border-2 border-dashed border-miru-dark-purple-200 bg-white py-1 pr-10 text-center text-base font-bold tracking-widest text-miru-dark-purple-200"
-              data-cy="new-line-item"
+              disabled={!selectedClient}
+              className={`hoverButton w-full rounded-md border-2 border-dashed  bg-white py-1 pr-10 text-center text-base font-bold tracking-widest ${
+                selectedClient
+                  ? "border-miru-dark-purple-200 text-miru-dark-purple-200"
+                  : "border-miru-dark-purple-100 text-miru-dark-purple-100"
+              }`}
               onClick={() => setAddNew(!addNew)}
             >
               + NEW LINE ITEM
             </button>
+            {!selectedClient && (
+              <span className="invisible absolute top-full left-1/3 ml-10 rounded bg-miru-dark-purple-1000 p-2 text-sm font-bold text-miru-dark-purple-100">
+                Please add client before adding line items
+              </span>
+            )}
           </td>
         </tr>
       );
@@ -112,6 +128,7 @@ const InvoiceTable = ({
       return (
         <ManualEntry
           addNew={addNew}
+          dateFormat={dateFormat}
           getNewLineItemDropdown={getNewLineItemDropdown}
           lineItem={lineItem}
           manualEntryArr={manualEntryArr}
@@ -148,6 +165,7 @@ const InvoiceTable = ({
                 !item._destroy && (
                   <NewLineItemRow
                     currency={currency}
+                    dateFormat={dateFormat}
                     item={item}
                     key={index}
                     selectedOption={manualEntryArr}
@@ -161,6 +179,7 @@ const InvoiceTable = ({
                 !item._destroy && (
                   <NewLineItemRow
                     currency={currency}
+                    dateFormat={dateFormat}
                     item={item}
                     key={index}
                     selectedOption={selectedLineItems}
@@ -173,6 +192,7 @@ const InvoiceTable = ({
       <div>
         {multiLineItemModal && (
           <MultipleEntriesModal
+            dateFormat={dateFormat}
             selectedClient={selectedClient}
             selectedOption={selectedLineItems}
             setMultiLineItemModal={setMultiLineItemModal}

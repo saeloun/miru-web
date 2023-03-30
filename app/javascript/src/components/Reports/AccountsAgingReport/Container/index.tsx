@@ -1,7 +1,8 @@
-import React, { Fragment } from "react";
+import React from "react";
 
 import { SummaryDashboard } from "StyledComponents";
 
+import EmptyStates from "common/EmptyStates";
 import { useEntry } from "components/Reports/context/EntryContext";
 
 import Table from "./Table";
@@ -9,10 +10,11 @@ import Table from "./Table";
 const Container = () => {
   const { accountsAgingReport } = useEntry();
 
-  return (
-    <>
+  return accountsAgingReport.clientList.length ? (
+    <div className="bg-white p-4 lg:p-0">
       <SummaryDashboard
         currency={accountsAgingReport.currency}
+        wrapperClassName="lg:mt-3"
         summaryList={[
           {
             label: "0 - 30 DAYS",
@@ -32,10 +34,19 @@ const Container = () => {
           },
         ]}
       />
-      <div className="overflow-x-scroll">
+      <div>
         <Table accountsAgingReport={accountsAgingReport} />
       </div>
-    </>
+    </div>
+  ) : (
+    <EmptyStates
+      showNoSearchResultState={accountsAgingReport.filterCounter > 0}
+      Message={
+        accountsAgingReport.filterCounter > 0
+          ? "No results match current filters. Try removing some filters."
+          : "There are no clients added yet. Please go to Clients to add your first client."
+      }
+    />
   );
 };
 

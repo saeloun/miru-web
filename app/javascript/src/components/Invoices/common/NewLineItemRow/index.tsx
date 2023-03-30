@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import React from "react";
 
-import EditLineItems from "./EditLineItems";
 import NewLineItemStatic from "./NewLineItemStatic";
 
 const NewLineItemRow = ({
@@ -9,9 +8,8 @@ const NewLineItemRow = ({
   setSelectedOption,
   selectedOption,
   removeElement = false,
+  dateFormat,
 }) => {
-  const [isEdit, setIsEdit] = useState<boolean>(false);
-
   const handleDelete = item => {
     const deleteItem = {
       ...item,
@@ -30,24 +28,17 @@ const NewLineItemRow = ({
       return option;
     });
 
-    setIsEdit(false);
     setSelectedOption(selectedOptionArr.filter(n => n));
   };
 
-  return isEdit ? (
-    <EditLineItems
+  return (
+    <NewLineItemStatic
+      currency={currency}
+      dateFormat={dateFormat}
       handleDelete={handleDelete}
       item={item}
       selectedOption={selectedOption}
-      setIsEdit={setIsEdit}
       setSelectedOption={setSelectedOption}
-    />
-  ) : (
-    <NewLineItemStatic
-      currency={currency}
-      handleDelete={handleDelete}
-      item={item}
-      setIsEdit={setIsEdit}
     />
   );
 };

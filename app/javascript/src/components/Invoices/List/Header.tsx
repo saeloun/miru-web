@@ -9,7 +9,13 @@ import { ApiStatus as InvoiceStatus } from "constants/index";
 
 import SearchDropdown from "./InvoiceSearch/SearchDropdown";
 
-const Header = ({ setIsFilterVisible, params, setParams, filterParamsStr }) => {
+const Header = ({
+  setIsFilterVisible,
+  params,
+  setParams,
+  filterParamsStr,
+  isDesktop,
+}) => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [searchResult, setSearchResult] = useState<any[]>([]);
   const [status, setStatus] = useState<InvoiceStatus>(InvoiceStatus.IDLE);
@@ -54,23 +60,20 @@ const Header = ({ setIsFilterVisible, params, setParams, filterParamsStr }) => {
   };
 
   return (
-    <div className="mt-6 mb-3 flex h-40 flex-col flex-wrap items-center justify-between lg:h-auto lg:flex-row">
-      <h2 className="header__title font-bold" data-cy="header__invoices">
-        Invoices
-      </h2>
+    <div className="mt-6 mb-3 flex flex-wrap items-center justify-around lg:justify-between">
+      {isDesktop && <h2 className="header__title">Invoices</h2>}
       <div className="header__searchWrap">
         <div className="header__searchInnerWrapper relative">
           <div>
             <input
               className="header__searchInput"
-              data-cy="search-invoice"
               placeholder="Search"
               type="text"
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
               onKeyDown={e => onKeydownHandler(e)}
             />
-            <button className=" absolute inset-y-0 right-0 flex cursor-pointer items-center pr-3 ">
+            <button className="absolute inset-y-0 right-0 flex cursor-pointer items-center pr-3 ">
               {searchQuery ? (
                 <XIcon size={12} weight="bold" onClick={onSearchClear} />
               ) : (
@@ -85,16 +88,17 @@ const Header = ({ setIsFilterVisible, params, setParams, filterParamsStr }) => {
           </div>
         </div>
         <button
-          className="relative ml-7"
+          className="relative ml-7 h-10 w-10 rounded p-3 hover:bg-miru-gray-1000"
           onClick={() => setIsFilterVisible(true)}
         >
           {appliedFilterCount > 0 && (
-            <span className="absolute bottom-2 left-2 mr-7 flex h-4 w-4 items-center justify-center rounded-full bg-miru-han-purple-1000 text-xs font-semibold text-white">
+            <span className="absolute bottom-5 left-5  flex h-4 w-4 items-center justify-center rounded-full bg-miru-han-purple-1000 text-xs font-semibold text-white">
               {appliedFilterCount}
             </span>
           )}
           <FilterIcon
-            color={filterParamsStr ? "#5B34EA" : "#303A4B"}
+            className="hover:bg-miru-gray-1000"
+            color="#5B34EA"
             size={16}
             weight="bold"
           />
@@ -107,12 +111,11 @@ const Header = ({ setIsFilterVisible, params, setParams, filterParamsStr }) => {
           type="button"
         >
           <PlusIcon size={16} weight="bold" />
-          <span
-            className="ml-2 inline-block tracking-normal"
-            data-cy="new-invoice-button"
-          >
-            New Invoice
-          </span>
+          {isDesktop && (
+            <span className="ml-2 inline-block tracking-normal">
+              NEW INVOICE
+            </span>
+          )}
         </Link>
       </div>
     </div>

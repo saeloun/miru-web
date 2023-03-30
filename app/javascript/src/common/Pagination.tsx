@@ -4,8 +4,8 @@ import cn from "classnames";
 import { CaretCircleLeftIcon, CaretCircleRightIcon } from "miruIcons";
 
 const Pagination = ({ pagy, params, setParams, isDesktop }) => (
-  <div className="bg-grey-400 flex w-full items-center py-10 md:pl-36">
-    <div className="w-full">
+  <div className="bg-grey-400 relative flex w-full items-center px-0 pt-5 pb-20 md:pb-28 lg:py-10 lg:pl-36">
+    <div className="mx-auto w-full">
       {pagy?.pages > 1 && (
         <div className="flex items-center justify-center">
           <button
@@ -25,7 +25,7 @@ const Pagination = ({ pagy, params, setParams, isDesktop }) => (
               className={cn(
                 "m-1 mx-4 p-1 text-base font-bold text-miru-dark-purple-400",
                 {
-                  "text-miru-han-purple-1000": pagy?.page === page,
+                  "text-miru-han-purple-1000": pagy?.prev + 1 === page,
                 }
               )}
               onClick={() => setParams({ ...params, page })}
@@ -51,6 +51,7 @@ const Pagination = ({ pagy, params, setParams, isDesktop }) => (
         <select
           className="p-2 text-xs font-bold text-miru-han-purple-1000"
           defaultValue={pagy?.items}
+          value={params.invoices_per_page}
           onChange={e =>
             setParams({ page: 1, invoices_per_page: Number(e.target.value) })
           }

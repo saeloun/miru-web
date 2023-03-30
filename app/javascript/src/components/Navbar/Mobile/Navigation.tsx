@@ -1,23 +1,44 @@
-import React, { useState, Fragment } from "react";
+import React, { useState, Fragment, useEffect } from "react";
 
 import { DotsThreeVerticalIcon } from "miruIcons";
 
+import { useUserContext } from "context/UserContext";
+
 import MoreOptions from "./MoreOptions";
 
-import { mobileActiveClassName, MobileMenuOptions } from "../utils";
+import { mobileActiveClassName, MobileMenuOptions, navOptions } from "../utils";
 
-const Navigation = ({ isAdminUser, setSelectedTab }) => {
-  const [showMoreOptions, setShowMoreOptions] = useState<boolean>(false);
+const Navigation = () => {
+  const { setSelectedTab, selectedTab, companyRole } = useUserContext();
+  const defaultShowOption = selectedTab == "More";
+  const [showMoreOptions, setShowMoreOptions] =
+    useState<boolean>(defaultShowOption);
+
+  const handleMoreClick = () => {
+    setShowMoreOptions(true);
+  };
+
+  useEffect(() => {
+    if (showMoreOptions) {
+      setSelectedTab("More");
+    }
+  }, [showMoreOptions]);
 
   return (
     <Fragment>
-      <ul className="fixed bottom-0 left-0 right-0 z-50 flex h-14 justify-between bg-white px-3 shadow-c1">
+      <ul className="fixed bottom-0 left-0 right-0 z-40 flex h-1/12 justify-between bg-white px-3 shadow-c1">
         <MobileMenuOptions
+          companyRole={companyRole}
           from={0}
-          isAdminUser={isAdminUser}
           setSelectedTab={setSelectedTab}
           showMoreOptions={showMoreOptions}
-          to={4}
+          to={
+            navOptions.filter(option =>
+              option.allowedRoles.includes(companyRole)
+            ).length < 4
+              ? navOptions.length
+              : 4
+          }
         />
         <li
           className={`flex items-center p-2 ${
@@ -25,17 +46,14 @@ const Navigation = ({ isAdminUser, setSelectedTab }) => {
               ? mobileActiveClassName
               : "flex flex-col items-center justify-center text-xs"
           }`}
-          onClick={() => {
-            setSelectedTab("More");
-            setShowMoreOptions(true);
-          }}
+          onClick={handleMoreClick}
         >
-          <DotsThreeVerticalIcon size={26} /> More
+          <DotsThreeVerticalIcon size={26} />
+          More
         </li>
       </ul>
       {showMoreOptions && (
         <MoreOptions
-          setSelectedTab={setSelectedTab}
           setVisiblity={setShowMoreOptions}
           showMoreOptions={showMoreOptions}
         />

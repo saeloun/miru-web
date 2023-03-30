@@ -1,19 +1,18 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import React, { useState, useEffect, useRef } from "react";
 
-import { SettingIcon, SignOutIcon } from "miruIcons";
+import { useOutsideClick } from "helpers";
+import { SettingIcon, SignOutIcon, Switcher } from "miruIcons";
 import { NavLink } from "react-router-dom";
-import { Avatar } from "StyledComponents";
+import { Avatar, Tooltip } from "StyledComponents";
 
-import companiesApi from "apis/companies";
+import authenticationApi from "apis/authentication";
 import WorkspaceApi from "apis/workspaces";
 import { LocalStorageKeys } from "constants/index";
+import { useAuthDispatch } from "context/auth";
+import { useUserContext } from "context/UserContext";
 
 import { activeClassName } from "./utils";
-
-import { useOutsideClick } from "../../helpers/outsideClick";
-
-const switcher = require("../../../../assets/images/switcher.svg");
 
 const UserActions = () => {
   const [currentWorkspace, setCurrentWorkspace] = useState<any>({
@@ -22,12 +21,24 @@ const UserActions = () => {
   });
   const [workSpaceList, setWorkSpaceList] = useState<any[]>([]);
   const [showWorkSpaceList, setShowWorkSpaceList] = useState<boolean>(false);
+  const [showToolTip, setShowToolTip] = useState<boolean>(false);
   const wrapperRef = useRef(null);
+  const toolTipRef = useRef(null);
+
+  const authDispatch = useAuthDispatch();
+  const { user } = useUserContext();
 
   useEffect(() => {
     fetchWorkspaces();
-    fetchCurrentComapny();
   }, []);
+
+  const handleTooltip = () => {
+    if (toolTipRef?.current?.offsetWidth < toolTipRef?.current?.scrollWidth) {
+      setShowToolTip(true);
+    } else {
+      setShowToolTip(false);
+    }
+  };
 
   useOutsideClick(
     wrapperRef,
@@ -35,14 +46,15 @@ const UserActions = () => {
     showWorkSpaceList
   );
 
-  const fetchCurrentComapny = async () => {
-    const res = await companiesApi.index();
-    setCurrentWorkspace(res.data.company_details);
-  };
-
   const fetchWorkspaces = async () => {
     const res = await WorkspaceApi.get();
-    setWorkSpaceList(res.data.workspaces);
+    const { workspaces } = res.data;
+    setWorkSpaceList(workspaces);
+    workspaces.find(wrk => {
+      if (wrk.id == user.current_workspace_id) {
+        setCurrentWorkspace(wrk);
+      }
+    });
   };
 
   const handleSwitch = async id => {
@@ -51,8 +63,14 @@ const UserActions = () => {
     setTimeout(() => window.location.reload(), 600);
   };
 
-  const handleLogout = () => {
-    window.localStorage.removeItem(LocalStorageKeys.INVOICE_FILTERS);
+  const handleLogout = async () => {
+    await authenticationApi.logout();
+    Object.values(LocalStorageKeys).forEach(key => {
+      localStorage.removeItem(key);
+    });
+    //@ts-expect-error for authDispatch object
+    authDispatch({ type: "LOGOUT" });
+    window.location.href = "/";
   };
 
   const WorkspaceList = () => (
@@ -77,8 +95,8 @@ const UserActions = () => {
   );
 
   return (
-    <ul className="w-full px-6">
-      <li className="flex  border-b border-miru-gray-100 last:border-b-0 hover:bg-miru-gray-100 md:border-b-0 lg:justify-start lg:px-0">
+    <ul className="w-full">
+      <li className="flex border-b border-miru-gray-100 px-6 last:border-b-0 hover:bg-miru-gray-100 md:border-b-0 lg:justify-start">
         <NavLink
           to="/profile/edit"
           className={({ isActive }) =>
@@ -92,34 +110,34 @@ const UserActions = () => {
         </NavLink>
       </li>
       <li
-        className="flex items-start justify-start  border-b border-miru-gray-100 last:border-b-0 hover:bg-miru-gray-100 md:border-b-0 lg:px-0"
+        className="flex cursor-pointer items-start  justify-start border-b border-miru-gray-100 px-6 last:border-b-0 hover:bg-miru-gray-100 md:border-b-0"
+        id="logoutBtn"
         onClick={handleLogout}
       >
-        <NavLink
-          className="flex w-full items-start justify-start py-3 hover:bg-miru-gray-100"
-          data-method="delete"
-          rel="nofollow"
-          to="/users/sign_out"
+        <SignOutIcon className="mr-4" size={26} />
+        Logout
+      </li>
+      <Tooltip content={currentWorkspace.name} show={showToolTip}>
+        <li
+          className="flex w-full cursor-pointer items-center justify-between py-4  px-6 text-sm font-bold leading-4 hover:bg-miru-gray-100"
+          onClick={() => {
+            setShowWorkSpaceList(true);
+          }}
         >
-          <SignOutIcon className="mr-4" size={26} />
-          Logout
-        </NavLink>
-      </li>
-      <li
-        className="flex w-full cursor-pointer items-center justify-between py-4 text-sm font-bold leading-4 hover:bg-miru-gray-100 lg:px-0"
-        onClick={() => {
-          setShowWorkSpaceList(true);
-        }}
-      >
-        <div className="flex flex-wrap items-center justify-start">
-          <Avatar
-            classNameImg="md:w-6 md:h-6 lg:w-6 lg:h-6 mr-4"
-            url={currentWorkspace.logo}
-          />
-          <span>{currentWorkspace.name}</span>
-        </div>
-        <img className="lg:h-10 lg:w-10" src={switcher} />
-      </li>
+          <div
+            className="overflow-hidden truncate whitespace-nowrap lg:pr-4"
+            ref={toolTipRef}
+            onMouseEnter={handleTooltip}
+          >
+            <Avatar
+              classNameImg="lg:w-6 lg:h-6 mr-4"
+              url={currentWorkspace.logo}
+            />
+            <span>{currentWorkspace.name}</span>
+          </div>
+          <img className="lg:h-10 lg:w-10" src={Switcher} />
+        </li>
+      </Tooltip>
       {showWorkSpaceList && <WorkspaceList />}
     </ul>
   );

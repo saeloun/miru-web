@@ -9,7 +9,8 @@ class InternalApi::V1::PaymentsController < ApplicationController
     render :new, locals: {
       invoices: current_company.invoices.includes(:client)
         .with_statuses(["sent", "viewed", "overdue"])
-        .order(created_at: :asc)
+        .order(created_at: :asc),
+      company: current_company
     }
   end
 
@@ -28,7 +29,8 @@ class InternalApi::V1::PaymentsController < ApplicationController
     authorize :index, policy_class: PaymentPolicy
     render :index,
       locals: PaymentsPresenter.new(
-        current_company.payments.includes(invoice: [:client]).order(created_at: :desc)
+        current_company.payments.includes(invoice: [:client]).order(created_at: :desc),
+        current_company
         ).index_data
   end
 

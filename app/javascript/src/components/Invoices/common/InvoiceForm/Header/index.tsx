@@ -1,12 +1,7 @@
 import React, { Fragment, useState, useRef } from "react";
 
 import { useOutsideClick } from "helpers";
-import {
-  XIcon,
-  FloppyDiskIcon,
-  PaperPlaneTiltIcon,
-  SettingIcon,
-} from "miruIcons";
+import { XIcon, FloppyDiskIcon, PaperPlaneTiltIcon } from "miruIcons";
 import { Link } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 
@@ -19,7 +14,7 @@ const Header = ({
   formType = "generate",
   handleSaveInvoice,
   handleSendInvoice,
-  setShowInvoiceSetting,
+  setShowInvoiceSetting, //eslint-disable-line
   invoiceNumber = null,
   id = null,
   deleteInvoice = null,
@@ -45,15 +40,6 @@ const Header = ({
               ? `Edit Invoice #${invoiceNumber}`
               : "Generate Invoice"}
           </h2>
-          {formType == "generate" && (
-            <button
-              className="ml-5 flex items-center text-xs font-bold leading-4 tracking-widest text-miru-han-purple-1000"
-              onClick={() => setShowInvoiceSetting(true)}
-            >
-              <SettingIcon className="mr-2.5" color="#5B34EA" size={15} />
-              SETTINGS
-            </button>
-          )}
         </div>
         <div className="flex flex-col md:w-2/5 md:flex-row">
           <Link
@@ -62,11 +48,13 @@ const Header = ({
             type="button"
           >
             <XIcon size={12} />
-            <span className="ml-2 inline-block">CANCEL</span>
+            <span className="ml-2 inline-block" id="cancelEditInvoiceButton">
+              CANCEL
+            </span>
           </Link>
           <button
             className="header__button my-1 bg-miru-han-purple-1000 p-0 text-white hover:text-white md:my-0 md:w-1/3"
-            data-cy="save-invoice"
+            id="saveInvoiceButton"
             type="button"
             onClick={handleSaveInvoice}
           >
@@ -79,7 +67,7 @@ const Header = ({
             onClick={handleSendInvoice}
           >
             <PaperPlaneTiltIcon color="White" size={18} />
-            <span className="ml-2 inline-block" data-cy="send-invoice">
+            <span className="ml-2 inline-block" id="sendInvoiceButton">
               SEND TO
             </span>
           </button>

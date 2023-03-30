@@ -25,7 +25,6 @@
 # Indexes
 #
 #  index_invoices_on_client_id          (client_id)
-#  index_invoices_on_due_date           (due_date)
 #  index_invoices_on_company_id         (company_id)
 #  index_invoices_on_discarded_at       (discarded_at)
 #  index_invoices_on_due_date           (due_date)
@@ -68,6 +67,7 @@ class Invoice < ApplicationRecord
   store_accessor :payment_infos, :stripe_payment_intent
 
   before_validation :set_external_view_key, on: :create
+  after_commit :refresh_invoice_index
 
   validates :issue_date, :due_date, :invoice_number, presence: true
   validates :due_date, comparison: { greater_than_or_equal_to: :issue_date }
@@ -86,8 +86,9 @@ class Invoice < ApplicationRecord
 
   delegate :name, to: :client, prefix: :client
   delegate :email, to: :client, prefix: :client
+  delegate :logo_url, to: :client, prefix: :client
 
-  searchkick filterable: [:issue_date, :created_at, :client_name, :status, :invoice_number ],
+  searchkick filterable: [:issue_date, :created_at, :updated_at, :client_name, :status, :invoice_number ],
     word_middle: [:invoice_number, :client_name]
 
   def search_data
@@ -101,6 +102,7 @@ class Invoice < ApplicationRecord
       company_id:,
       client_name:,
       created_at:,
+      updated_at:,
       discarded_at:
     }
   end
@@ -150,6 +152,18 @@ class Invoice < ApplicationRecord
     file
   end
 
+  def formatted_due_date
+    CompanyDateFormattingService.new(due_date, company:).process
+  end
+
+  def formatted_issue_date
+    CompanyDateFormattingService.new(issue_date, company:).process
+  end
+
+  def refresh_invoice_index
+    Invoice.search_index.refresh
+  end
+
   private
 
     def set_external_view_key
@@ -158,7 +172,7 @@ class Invoice < ApplicationRecord
 
     def check_if_invoice_paid
       if status_changed? && status_was == "paid"
-        errors.add(:status, "can't be changed to paid")
+        errors.add(:status, t("errors.can't change status"))
       end
     end
 end

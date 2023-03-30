@@ -6,26 +6,36 @@ import { currencyFormat } from "helpers";
 type SummaryDashboardProps = {
   summaryList: any;
   currency: any;
+  wrapperClassName?: string;
 };
 
 const DEFAULT_STYLE =
-  "mt-6 px-10 py-10 flex flex-col lg:flex-row lg:overflow-x-auto rounded-2xl bg-miru-han-purple-1000 text-white";
+  "py-4 lg:py-10 flex flex-wrap md:flex-nowrap lg:overflow-x-auto rounded-2xl bg-miru-han-purple-1000 text-white";
 
-const SummaryDashboard = ({ summaryList, currency }: SummaryDashboardProps) => (
-  <ul className={classnames(DEFAULT_STYLE)}>
+const SummaryDashboard = ({
+  summaryList,
+  currency,
+  wrapperClassName = "",
+}: SummaryDashboardProps) => (
+  <ul className={classnames(DEFAULT_STYLE, wrapperClassName)}>
     {summaryList.map((summary, index) => (
       <li
-        className="page-display__box mt-6 flex cursor-pointer items-center md:pr-12 lg:mt-0 lg:items-start"
         key={index}
+        className={`page-display__box w-auto flex-1 cursor-pointer pt-4 md:w-full lg:mt-6 ${
+          summaryList.length > 3
+            ? "w-1/2 flex-auto border-b pb-2 md:w-full md:border-b-0"
+            : null
+        }`}
+        onClick={summary.onClick}
       >
-        <p className="whitespace-nowrap text-sm font-semibold uppercase tracking-widest text-white">
+        <p className="truncate text-xxs font-semibold uppercase tracking-semiWidest text-white lg:text-sm lg:tracking-widest">
           {summary.label}
         </p>
-        <p className="2xl:text-5xl text-2xl font-semibold tracking-widest text-white lg:mt-3 xl:text-3xl">
+        <p className="mt-2 truncate text-lg font-medium text-white md:text-2xl lg:text-4.5xl lg:font-semibold">
           {currencyFormat(
             currency,
             summary.value,
-            summary.value > 99999 ? "compact" : "standard"
+            summary.value > 999 ? "compact" : "standard"
           )}
         </p>
       </li>

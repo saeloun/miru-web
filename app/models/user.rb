@@ -65,6 +65,9 @@ class User < ApplicationRecord
 
   rolify strict: true
 
+  scope :with_kept_employments, -> { merge(Employment.kept) }
+  scope :with_ids, -> (user_ids) { where(id: user_ids) if user_ids.present? }
+
   # Social account details
   store_accessor :social_accounts, :github_url, :linkedin_url
 
@@ -96,12 +99,32 @@ class User < ApplicationRecord
     roles.first.name
   end
 
+  def remove_roles_for(company)
+    roles.each do | role |
+      remove_role(role.name.to_sym, company)
+    end
+  end
+
   def full_name
     "#{first_name} #{last_name}"
   end
 
+  # Do user authentication if
+  # 1. user is not soft deleted
+  # AND
+  # 2.1 user is part of atleast one active employment OR
+  # 2.2 initial phase i.e, user is owner and setting up the company
+  #     and hence no associated company
   def active_for_authentication?
-    super and self.kept?
+    super and self.kept? and (!self.employments.kept.empty? or self.companies.empty?)
+  end
+
+  def inactive_message
+    if self.employments.kept.empty? && self.kept?
+      I18n.t("user.login.failure.disabled")
+    else
+      I18n.t("user.login.failure.pending_invitation")
+    end
   end
 
   def current_workspace(load_associations: [:logo_attachment])
@@ -130,7 +153,13 @@ class User < ApplicationRecord
  end
 
   def employed_at?(company_id)
-    employments.exists?(company_id:)
+    employments.kept.exists?(company_id:)
+  end
+
+  def avatar_url
+    return nil unless avatar.attached?
+
+    Rails.application.routes.url_helpers.polymorphic_url(avatar, only_path: true)
   end
 
   private

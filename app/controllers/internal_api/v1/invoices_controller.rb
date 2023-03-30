@@ -7,7 +7,6 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
   def index
     authorize Invoice
     data = Invoices::IndexService.new(params, current_company).process
-
     render :index, locals: {
       invoices: data[:invoices_query],
       pagination_details: data[:pagination_details],
@@ -58,7 +57,7 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
   def send_invoice
     authorize invoice
 
-    invoice.sending! unless invoice.paid?
+    invoice.sending! unless invoice.paid? || invoice.overdue?
     invoice.send_to_email(
       subject: invoice_email_params[:subject],
       message: invoice_email_params[:message],

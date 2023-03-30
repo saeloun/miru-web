@@ -34,8 +34,10 @@ module ApplicationHelper
   def get_initial_props
     {
       user: current_user,
-      company_role: current_user.roles.find_by(resource: current_company)&.name,
-      company: current_company
+      company_role: current_user && current_user.roles.find_by(resource: current_company)&.name,
+      confirmed_user: current_user && current_user.confirmed?,
+      company: current_company,
+      google_oauth_success: @google_oauth_success.present?
     }
   end
 

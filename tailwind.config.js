@@ -6,6 +6,8 @@ module.exports = {
       center: true,
     },
     fontSize: {
+      xsm: ".5625em",
+      xxs: "0.625rem",//10px
       xs: ".75rem",
       sm: ".875rem",
       tiny: ".875rem",
@@ -14,16 +16,20 @@ module.exports = {
       xl: "1.25rem",
       "2xl": "1.5rem",
       "3xl": "1.875rem",
+      "3.5xl": "2rem",
       "4xl": "2.25rem",
       "4.5xl": "2.5rem",
+      "4.75xl": "2.75rem",
       "5xl": "3rem",
       "6xl": "4rem",
       "7xl": "5rem",
+      32: "2rem",
     },
     letterSpacing: {
-      widest: "0.125rem",
-      wider: ".05rem",
-      normal: "0",
+      widest: "0.125em",
+      semiWidest: "0.09375",//1.5px
+      wider: ".05em",
+      normal: "0em",
     },
     screens: {
       xsm: "380px",
@@ -43,14 +49,25 @@ module.exports = {
       width: {
         fit: "fit-content",
         30: "7.5rem", //120px
-        128: "32rem", // 512px
         34: "8.6rem",
-        352: "22rem", //352px
-        228: "14.25rem", //228px
+        13: "13.5px",
+        88: "5.5rem", //88px
+        128: "32rem", // 512px
+        168: "10.5rem", // 168px
         180: "11.25rem", //180px
+        228: "14.25rem", //228px
+        300: "18.75rem", //300px
+        320: "20rem", // 320px
+        336: "21rem", // 336px
+        352: "22rem", //352px
+        480: "30rem", //480px
+        18: "18%",
+        72: "72%"
       },
       minWidth: {
+        12: "12px",
         24: "24px",
+        400: "25rem", // 400px
       },
       maxWidth: {
         400: "25rem", //400px
@@ -61,6 +78,9 @@ module.exports = {
         512: "32rem",
         304: "19rem",
         87: "5.4rem",
+        88: "5.5rem",
+        "1/12": "8.333%",
+        "1/15": "6.666%"
       },
       minHeight: {
         "10v": "10vh",
@@ -73,6 +93,7 @@ module.exports = {
         "80v": "80vh",
         "90v": "90vh",
         "100v": "100vh",
+        24: "24px",
       },
       maxHeight: {
         "10v": "10vh",
@@ -96,6 +117,9 @@ module.exports = {
           400: "#E1E6EC",
           200: "#EBEFF2",
           100: "#F5F7F9",
+          500: "#ADA4CE",
+          800: "#ADA4CE",
+          50: "#CDD6DF33",
         },
         "miru-red": {
           400: "#E04646",
@@ -141,6 +165,7 @@ module.exports = {
         },
         "miru-chart-blue": {
           600: "#0E79B2",
+          1000: "#68AEAA"
         },
         "miru-chart-pink": {
           600: "#BF1363",
@@ -160,6 +185,7 @@ module.exports = {
         manrope: "'Manrope', serif",
       },
       spacing: {
+        3.75: "0.9375rem",
         13: "3.125rem",
         15: "3.75rem",
         18: "4.5rem",
@@ -189,11 +215,15 @@ module.exports = {
         "10/100": "10%",
       },
       zIndex: {
-        1: "-1",
+        "negative-1": "-1",
+        1: "1",
         15: "15",
       },
       transformOrigin: {
         0: "0%",
+      },
+      inset: {
+        "-10": "-10px",
       },
     },
   },

@@ -4,30 +4,20 @@ module Authenticable
   extend ActiveSupport::Concern
 
   included do
-    before_action :authenticate_token
-  end
-
-  def authenticate_token
-    return render json: { status: 401, notice: "Invalid Token." }, status: 401 if current_user.blank?
+    before_action :authenticate_user_using_x_auth_token
   end
 
   private
 
-    def current_user
-      @current_user ||= User.find_by(token:)
-    end
+    def authenticate_user_using_x_auth_token
+      user_email = request.headers["X-Auth-Email"].presence
+      auth_token = request.headers["X-Auth-Token"].presence
+      user = user_email && User.find_by(email: user_email)
 
-    def bearer_token
-      pattern = /^Bearer /
-      header = request.headers["Authorization"]
-      header.gsub(pattern, "") if header && header.match(pattern)
-    end
-
-    def token
-      if bearer_token.present?
-        @_token = bearer_token
-      elsif params[:auth_token].present?
-        @_token = params[:auth_token]
+      if user && auth_token && Devise.secure_compare(user.token, auth_token)
+        sign_in user, store: false
+      else
+        render json: { error: I18n.t("devise.failure.unauthenticated") }, status: :unauthorized
       end
     end
 end

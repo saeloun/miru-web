@@ -22,7 +22,7 @@ RSpec.describe "Devices#index", type: :request do
 
     context "when owner wants to check his own details" do
       before do
-        send_request :get, internal_api_v1_user_devices_path(user)
+        send_request :get, internal_api_v1_user_devices_path(user), headers: auth_headers(user)
       end
 
       it "is successful" do
@@ -36,7 +36,7 @@ RSpec.describe "Devices#index", type: :request do
     context "when owner wants to see record of an employee of his own workspace" do
       before do
         create(:employment, company:, user: employee)
-        send_request :get, internal_api_v1_user_devices_path(employee)
+        send_request :get, internal_api_v1_user_devices_path(employee), headers: auth_headers(user)
       end
 
       it "is successful" do
@@ -50,7 +50,7 @@ RSpec.describe "Devices#index", type: :request do
     context "when owner wants to check record of an employee of a different workspace" do
       before do
         create(:employment, company: company2, user: employee)
-        send_request :get, internal_api_v1_user_devices_path(employee)
+        send_request :get, internal_api_v1_user_devices_path(employee), headers: auth_headers(user)
       end
 
       it "is forbidden" do
@@ -60,7 +60,7 @@ RSpec.describe "Devices#index", type: :request do
 
     context "when owner sends request for user id which doesnt exist" do
       before do
-        send_request :get, internal_api_v1_user_devices_path("abc")
+        send_request :get, internal_api_v1_user_devices_path("abc"), headers: auth_headers(user)
       end
 
       it "is forbidden" do
@@ -77,7 +77,7 @@ RSpec.describe "Devices#index", type: :request do
 
     context "when admin wants to check his own details" do
       before do
-        send_request :get, internal_api_v1_user_devices_path(user)
+        send_request :get, internal_api_v1_user_devices_path(user), headers: auth_headers(user)
       end
 
       it "is successful" do
@@ -91,7 +91,7 @@ RSpec.describe "Devices#index", type: :request do
     context "when admin sends valid request" do
       before do
         create(:employment, company:, user: employee)
-        send_request :get, internal_api_v1_user_devices_path(employee)
+        send_request :get, internal_api_v1_user_devices_path(employee), headers: auth_headers(user)
       end
 
       it "is successful" do
@@ -106,7 +106,7 @@ RSpec.describe "Devices#index", type: :request do
       before do
         user.add_role :admin, company
         sign_in user
-        send_request :get, internal_api_v1_user_devices_path("abc")
+        send_request :get, internal_api_v1_user_devices_path("abc"), headers: auth_headers(user)
       end
 
       it "is forbidden" do
@@ -124,7 +124,7 @@ RSpec.describe "Devices#index", type: :request do
     context "when employee updates his own record" do
       before do
         create(:employment, company:, user:)
-        send_request :get, internal_api_v1_user_devices_path(user)
+        send_request :get, internal_api_v1_user_devices_path(user), headers: auth_headers(user)
       end
 
       it "is permitted" do
@@ -138,7 +138,7 @@ RSpec.describe "Devices#index", type: :request do
     context "when employee wants to see someone else's record" do
       before do
         create(:employment, company:, user: employee)
-        send_request :get, internal_api_v1_user_devices_path(employee)
+        send_request :get, internal_api_v1_user_devices_path(employee), headers: auth_headers(user)
       end
 
       it "is forbidden" do

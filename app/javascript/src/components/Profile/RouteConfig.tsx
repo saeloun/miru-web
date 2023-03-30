@@ -3,9 +3,11 @@ import React from "react";
 import { Routes, Route } from "react-router-dom";
 
 // import BankAccountDetails from "./BankAccountDetails";
+import LeaveBalance from "./LeaveBalance";
 import Billing from "./Organization/Billing";
 import OrgEdit from "./Organization/Edit";
 import Import from "./Organization/Import";
+import LeavesAndHolidays from "./Organization/LeavesAndHolidays";
 import PaymentSettings from "./Organization/Payment";
 import UserDetails from "./UserDetail";
 
@@ -18,6 +20,8 @@ const RouteConfig = () => (
       <Route element={<Billing />} path="billing" />
       <Route element={<OrgEdit />} path="organization" />
       <Route element={<Import />} path="import" />
+      <Route element={<LeavesAndHolidays />} path="leaves" />
+      <Route element={<LeaveBalance />} path="leave-balance" />
       {/* </Route> */}
     </Route>
   </Routes>

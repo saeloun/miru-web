@@ -1,7 +1,8 @@
 import React, { Fragment } from "react";
 
 import { minToHHMM } from "helpers";
-import ReactTooltip from "react-tooltip";
+import { Tooltip } from "react-tooltip";
+import "react-tooltip/dist/react-tooltip.css";
 
 import { IChartBarGraph, ISingleClient } from "./interface";
 
@@ -22,20 +23,18 @@ const Client = ({ element, totalMinutes, index }: ISingleClient) => {
 
   return (
     <div style={divStyle}>
-      <ReactTooltip
-        backgroundColor="#1D1A31"
-        effect="solid"
-        id={`registerTip-${index}`}
+      <Tooltip
+        anchorId={`registerTip-${index}`}
+        className="tooltip"
         place="top"
-        textColor="#FFF"
       >
         <p className="text-xs">{element.name}</p>
         <p className="text-center text-2xl">{minToHHMM(element.minutes)}</p>
-      </ReactTooltip>
+      </Tooltip>
       <button
         data-tip
         className={`bg-${randomColor}-600 block h-4 w-full border-b border-t hover:border-transparent`}
-        data-for={`registerTip-${index}`}
+        id={`registerTip-${index}`}
         type="button"
       />
     </div>

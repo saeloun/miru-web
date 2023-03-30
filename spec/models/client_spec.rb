@@ -11,6 +11,7 @@ RSpec.describe Client, type: :model do
     it { is_expected.to validate_uniqueness_of(:email).scoped_to(:company_id) }
     it { is_expected.to allow_value("valid@email.com").for(:email) }
     it { is_expected.not_to allow_value("invalid@email").for(:email) }
+    it { is_expected.to validate_length_of(:name).is_at_most(50) }
   end
 
   describe "Associations" do
@@ -150,8 +151,7 @@ RSpec.describe Client, type: :model do
         currency = client.company.base_currency
         status_and_amount = client.invoices.group(:status).sum(:amount)
         status_and_amount.default = 0
-        outstanding_amount = status_and_amount["sent"] + status_and_amount["viewed"]
-        + status_and_amount["overdue"]
+        outstanding_amount = status_and_amount["sent"] + status_and_amount["viewed"] + status_and_amount["overdue"]
         result = {
           overdue_amount: status_and_amount["overdue"],
           outstanding_amount:,

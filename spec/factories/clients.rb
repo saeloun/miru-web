@@ -16,5 +16,13 @@ FactoryBot.define do
     factory :client_with_phone_number_without_country_code do
       phone { Faker::PhoneNumber.cell_phone_in_e164 }
     end
+
+    trait :with_logo do
+      after :build do |client|
+        file_name = "test-image.png"
+        file_path = Rails.root.join("spec", "support", "fixtures", file_name)
+        client.logo.attach(io: File.open(file_path), filename: file_name, content_type: "image/png")
+      end
+    end
   end
 end

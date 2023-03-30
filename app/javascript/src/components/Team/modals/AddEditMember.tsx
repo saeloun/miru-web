@@ -9,8 +9,12 @@ import { TeamModalType } from "constants/index";
 import { useList } from "context/TeamContext";
 
 const TeamMemberSchema = Yup.object().shape({
-  firstName: Yup.string().required("First Name cannot be blank"),
-  lastName: Yup.string().required("Last Name cannot be blank"),
+  firstName: Yup.string()
+    .matches(/^[a-zA-Z]+$/, "First Name must contain only letters")
+    .required("First Name cannot be blank"),
+  lastName: Yup.string()
+    .matches(/^[a-zA-Z]+$/, "Last Name must contain only letters")
+    .required("Last Name cannot be blank"),
   email: Yup.string()
     .email("Invalid email ID")
     .required("Email ID cannot be blank"),
@@ -114,7 +118,6 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
                         <div className="flex">
                           <div className="mt-1">
                             <Field
-                              data-cy="new-member-firstName"
                               name="firstName"
                               placeholder="First Name"
                               className={`form__input ${
@@ -131,7 +134,6 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
                           </div>
                           <div className="mt-1 ml-8">
                             <Field
-                              data-cy="new-member-lastName"
                               name="lastName"
                               placeholder="Last Name"
                               className={`form__input ${
@@ -156,7 +158,6 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
                         </div>
                         <div className="mt-1">
                           <Field
-                            data-cy="new-member-email"
                             disabled={isEdit}
                             name="email"
                             placeholder="Enter email ID"
@@ -191,7 +192,6 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
                               />
                               <label
                                 className="ml-2 flex cursor-pointer items-center text-xl"
-                                data-cy="admin-radio-button"
                                 htmlFor="role-1"
                               >
                                 <i className="custom__radio-text" />
@@ -208,7 +208,6 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
                               />
                               <label
                                 className="ml-2 flex cursor-pointer items-center text-xl"
-                                data-cy="employee-radio-button"
                                 htmlFor="role-2"
                               >
                                 <i className="custom__radio-text" />
@@ -235,12 +234,8 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
                         </div>
                       </div>
                     </div>
-                    <p className="mt-7 block text-xs tracking-wider text-red-600">
-                      {apiError}
-                    </p>
                     <div className="actions mt-4">
                       <button
-                        data-cy="send-invite-button"
                         disabled={!(dirty && isValid)}
                         name="commit"
                         type="submit"

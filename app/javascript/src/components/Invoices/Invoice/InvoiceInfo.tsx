@@ -1,54 +1,56 @@
 import React from "react";
 
-import dayjs from "dayjs";
 import { currencyFormat } from "helpers";
 
-const formatDate = date => dayjs(date).format("DD-MM-YYYY");
-
-const InvoiceInfo = ({ invoice }) => {
-  const formattedIssueDate = formatDate(invoice.issueDate);
-  const formattedDueDate = formatDate(invoice.dueDate);
-
-  return (
-    <>
-      <div className="group">
-        <p className="flex text-xs font-normal text-miru-dark-purple-1000">
-          Date of Issue
-        </p>
-        <p className="text-base font-normal text-miru-dark-purple-1000">
-          {formattedIssueDate}
-        </p>
-        <p className="mt-4 text-xs font-normal text-miru-dark-purple-1000">
-          Due Date
-        </p>
-        <p className="text-base font-normal text-miru-dark-purple-1000">
-          {formattedDueDate}
-        </p>
-      </div>
-      <div className="group">
-        <p className="text-xs font-normal text-miru-dark-purple-1000">
+const InvoiceInfo = ({
+  invoice: { company, invoiceNumber, reference, issueDate, dueDate, amount },
+}) => (
+  <>
+    <div className="mr-2 flex w-2/12 flex-col justify-between ">
+      <div className="relative h-12 rounded border border-miru-gray-400 px-4 py-3">
+        <p className="absolute left-2 -top-2 bg-miru-gray-100 px-2 text-xs font-medium text-miru-dark-purple-1000">
           Invoice Number
         </p>
-        <p className="text-base font-normal text-miru-dark-purple-1000">
-          {invoice.invoiceNumber}
+        <p className="text-base font-medium text-miru-dark-purple-1000">
+          {invoiceNumber}
         </p>
-        <p className="mt-4 text-xs font-normal text-miru-dark-purple-1000">
+      </div>
+      <div className="relative h-12 rounded border border-miru-gray-400 px-4 py-3">
+        <p className="absolute left-2 -top-2 bg-miru-gray-100 px-2 text-xs font-medium text-miru-dark-purple-1000">
           Reference
         </p>
-        <p className="text-base font-normal text-miru-dark-purple-1000">
-          {invoice.reference}
+        <p className="text-base font-medium text-miru-dark-purple-1000">
+          {reference || "-"}
         </p>
       </div>
-      <div>
-        <p className="text-right text-xs font-normal text-miru-dark-purple-1000">
-          Amount
+    </div>
+    <div className="ml-2 flex w-2/12 flex-col justify-between">
+      <div className="relative h-12 rounded border border-miru-gray-400 px-4 py-3">
+        <p className="absolute left-2 -top-2 bg-miru-gray-100 px-2 text-xs font-medium text-miru-dark-purple-1000">
+          Date of Issue
         </p>
-        <p className="mt-6 text-4xl font-normal text-miru-dark-purple-1000">
-          {currencyFormat(invoice.company.currency, invoice.amount)}
+        <p className="text-base font-medium text-miru-dark-purple-1000">
+          {issueDate}
         </p>
       </div>
-    </>
-  );
-};
+      <div className="relative h-12 rounded border border-miru-gray-400 px-4 py-3">
+        <p className="absolute left-2 -top-2 bg-miru-gray-100 px-2 text-xs font-medium text-miru-dark-purple-1000">
+          Due Date
+        </p>
+        <p className="text-base font-medium text-miru-dark-purple-1000">
+          {dueDate}
+        </p>
+      </div>
+    </div>
+    <div className="relative ml-4 w-4/12 rounded border border-miru-gray-400">
+      <p className="absolute right-2 -top-2 bg-miru-gray-100 px-2 text-right text-xs font-medium text-miru-dark-purple-1000">
+        Amount
+      </p>
+      <p className="mt-6 pr-4 text-right text-4xl font-medium text-miru-dark-purple-1000">
+        {currencyFormat(company.currency, amount)}
+      </p>
+    </div>
+  </>
+);
 
 export default InvoiceInfo;

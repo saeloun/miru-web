@@ -1,56 +1,86 @@
-import React from "react";
+import React, { useEffect } from "react";
 
-import { Routes, Route, Outlet, Navigate } from "react-router-dom";
+import { Navigate, Routes, Route, useNavigate } from "react-router-dom";
 
-import ErrorPage from "common/Error";
-import { Roles, Paths } from "constants/index";
-import ROUTES from "constants/routes";
+import { Paths, Roles } from "constants/index";
+import { AUTH_ROUTES } from "constants/routes";
+import { useAuthState, useAuthDispatch } from "context/auth";
+import { useUserContext } from "context/UserContext";
+import { loginGoogleAuth } from "utils/googleOauthLogin";
+import {
+  clearCredentialsFromLocalStorage,
+  getValueFromLocalStorage,
+} from "utils/storage";
 
-const RestrictedRoute = ({ user, role, authorisedRoles }) => {
-  if (!user) {
-    window.location.href = Paths.SIGN_IN;
+import Dashboard from "./Dashboard";
+import OrganizationSetup from "./OrganizationSetup";
+import SignUpSuccess from "./OrganizationSetup/SignUpSuccess";
 
-    return;
+const Main = (props: Iprops) => {
+  const authDispatch = useAuthDispatch();
+  //@ts-expect-error is used to allow authToken value on empty object
+  const { isLoggedIn } = useAuthState();
+  const { user } = useUserContext();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isLoggedIn === false && props?.googleOauthSuccess) {
+      loginGoogleAuth(user?.token, user?.email, authDispatch, navigate);
+    }
+  }, [isLoggedIn, props?.googleOauthSuccess]);
+
+  useEffect(() => {
+    const previousLoginAuthEmail = getValueFromLocalStorage("authEmail");
+    const hasDeviseUserSessionExpired = !props?.user;
+    const sessionExpiredButLocalStorageCredsExist =
+      hasDeviseUserSessionExpired && previousLoginAuthEmail;
+
+    if (sessionExpiredButLocalStorageCredsExist) {
+      clearCredentialsFromLocalStorage();
+    }
+  }, [props?.user]);
+
+  if (isLoggedIn) {
+    const current_workspace_id = props?.user?.current_workspace_id;
+    const confirmedUser = props?.confirmedUser;
+    if (confirmedUser) {
+      if (!current_workspace_id) {
+        return (
+          <Routes>
+            <Route element={<OrganizationSetup />} path="/" />
+            <Route element={<SignUpSuccess />} path={Paths.SIGNUP_SUCCESS} />
+            <Route element={<Navigate to="/" />} path="*" />
+          </Routes>
+        );
+      }
+
+      return <Dashboard {...props} />;
+    }
   }
 
-  if (authorisedRoles.includes(role)) {
-    return <Outlet />;
-  }
-  const url = role === Roles.BOOK_KEEPER ? Paths.PAYMENTS : Paths.TIME_TRACKING;
-
-  return <Navigate to={url} />;
-};
-
-const Main: React.FC<Iprops> = props => (
-  <div className="overflow-x-scroll px-4 py-12 font-manrope lg:absolute lg:top-0 lg:bottom-0 lg:right-0 lg:w-5/6 lg:px-20 lg:py-3">
+  return (
     <Routes>
-      {ROUTES.map(parentRoute => (
+      {AUTH_ROUTES.map(route => (
         <Route
-          key={parentRoute.path}
-          path={parentRoute.path}
-          element={
-            <RestrictedRoute
-              authorisedRoles={parentRoute.authorisedRoles}
-              role={props.companyRole}
-              user={props.user}
-            />
-          }
-        >
-          {parentRoute.subRoutes.map(({ path, Component }) => (
-            <Route element={<Component {...props} />} key={path} path={path} /> //TODO: Move user data to context
-          ))}
-        </Route>
+          element={<route.component />}
+          key={route.path}
+          path={route.path}
+        />
       ))}
-      <Route element={<ErrorPage />} path="*" />
+      <Route element={<Navigate to="/" />} path="*" />
     </Routes>
-  </div>
-);
-
+  );
+};
 interface Iprops {
-  user: object;
+  user: {
+    current_workspace_id: string;
+  };
   companyRole: Roles;
   company: object;
+  confirmedUser: boolean;
   isDesktop: boolean;
+  isAdminUser: boolean;
+  googleOauthSuccess: boolean;
 }
 
 export default Main;

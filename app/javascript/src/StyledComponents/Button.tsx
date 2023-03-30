@@ -26,7 +26,7 @@ const LARGE = "px-14 py-3.5 text-xl font-bold leading-7";
 
 type ButtonProps = {
   style?: string;
-  onClick;
+  onClick?;
   disabled?: boolean;
   size?: string;
   className?: string;
@@ -51,6 +51,7 @@ const Button = ({
   children,
 }: ButtonProps) => (
   <button
+    disabled={disabled}
     className={classnames(
       DEFAULT_STYLE,
       fullWidth && "w-full",

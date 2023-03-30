@@ -24,7 +24,7 @@ module Invoices
         filters = Invoices::Filters.new(current_company, params)
         filters.process
 
-        @_invoices_query = Invoice.search(
+        @_invoices_query ||= Invoice.search(
           filters.search_term,
           fields: [:invoice_number, :client_name],
           match: :word_middle,
@@ -32,15 +32,20 @@ module Invoices
           order: { created_at: :desc },
           page: filters.page,
           per_page: filters.per_page,
-          includes: [:client]
+          includes: [:client, :company]
         )
       end
 
       def recently_updated_invoices
-        current_company.invoices.kept
-          .includes(:client)
-          .order("updated_at desc")
-          .limit(10)
+        filters = Invoices::Filters.new(current_company, {})
+        filters.process
+
+        Invoice.search(
+          where: filters.where_clause,
+          order: { updated_at: :desc },
+          limit: 10,
+          includes: [:client]
+        )
       end
 
       def pagination_details

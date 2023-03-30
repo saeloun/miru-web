@@ -1,5 +1,11 @@
 import ErrorPage from "common/Error";
+import EmailVerification from "components/Authentication/EmailVerification";
+import EmailVerificationSuccess from "components/Authentication/EmailVerification/EmailVerificationSuccess";
+import ForgotPassword from "components/Authentication/ForgotPassword";
+import SignIn from "components/Authentication/SignIn";
+import SignUp from "components/Authentication/SignUp";
 import AccountsAgingReport from "components/Reports/AccountsAgingReport";
+import TeamsRouteConfig from "components/Team/TeamsRouteConfig";
 import { Roles, Paths } from "constants/index";
 
 import ClientDetails from "../components/Clients/Details";
@@ -18,7 +24,7 @@ import RevenueByClientReport from "../components/Reports/RevenueByClientReport";
 import TimeEntryReports from "../components/Reports/TimeEntryReport";
 import TotalHoursReport from "../components/Reports/totalHoursLogged";
 import PlanSelection from "../components/Subscriptions/PlanSelection";
-import TeamRouteConfig from "../components/Team/RouteConfig";
+import RouteConfig from "../components/Team/RouteConfig";
 import TimeTracking from "../components/TimeTracking";
 
 const ClientsRoutes = [
@@ -64,13 +70,42 @@ const TimeTrackingRoutes = [
   { path: "*", Component: ErrorPage },
 ];
 
-const TeamRoutes = [{ path: "*", Component: TeamRouteConfig }];
+const TeamRoutes = [{ path: "*", Component: RouteConfig }];
+
+const TeamsRoutes = [{ path: "*", Component: TeamsRouteConfig }];
 
 const ProfileRoutes = [{ path: "*", Component: ProfileLayout }];
 
 const { ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE } = Roles;
 
-const ROUTES = [
+export const AUTH_ROUTES = [
+  {
+    path: "/",
+    component: SignIn,
+  },
+  {
+    path: "/signup",
+    component: SignUp,
+  },
+  {
+    path: "/login",
+    component: SignIn,
+  },
+  {
+    path: "/password/new",
+    component: ForgotPassword,
+  },
+  {
+    path: "/email_confirmation",
+    component: EmailVerification,
+  },
+  {
+    path: "/email_confirmed",
+    component: EmailVerificationSuccess,
+  },
+];
+
+export const ROUTES = [
   {
     path: Paths.CLIENTS,
     subRoutes: ClientsRoutes,
@@ -84,7 +119,7 @@ const ROUTES = [
   {
     path: Paths.REPORTS,
     subRoutes: ReportsRoutes,
-    authorisedRoles: [ADMIN, OWNER],
+    authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER],
   },
   {
     path: Paths.PROJECTS,
@@ -104,7 +139,12 @@ const ROUTES = [
   {
     path: Paths.TIME_TRACKING,
     subRoutes: TimeTrackingRoutes,
-    authorisedRoles: [ADMIN, OWNER, EMPLOYEE, BOOK_KEEPER],
+    authorisedRoles: [ADMIN, OWNER, EMPLOYEE],
+  },
+  {
+    path: Paths.TEAMS,
+    subRoutes: TeamsRoutes,
+    authorisedRoles: [ADMIN, OWNER, EMPLOYEE],
   },
   {
     path: Paths.TEAM,
@@ -114,8 +154,6 @@ const ROUTES = [
   {
     path: Paths.PROFILE,
     subRoutes: ProfileRoutes,
-    authorisedRoles: [ADMIN, OWNER, EMPLOYEE],
+    authorisedRoles: [ADMIN, OWNER, EMPLOYEE, BOOK_KEEPER],
   },
 ];
-
-export default ROUTES;
