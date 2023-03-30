@@ -14,7 +14,6 @@ const MoreOptions: FC<MoreOptionsProps> = ({
     {downloadInvoice != null && invoice.status != "draft" && (
       <li
         className="flex cursor-pointer items-center py-2.5 px-4 text-miru-han-purple-1000 hover:bg-miru-gray-100"
-        data-cy="invoice-download-page"
         onClick={() => downloadInvoice(invoice)}
       >
         <DownloadSimple className="mr-4" size={16} />

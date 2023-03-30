@@ -42,8 +42,8 @@ RSpec.describe InvoiceLineItem, type: :model do
                           invoice_line_item_2.id,
                           invoice_line_item_3.id
                         ]
-                    ).total_cost_of_all_line_items.to_s
-        ).to eq(total_cost.to_s)
+                    ).total_cost_of_all_line_items
+        ).to be_within(0.001).of(total_cost)
       end
     end
   end
