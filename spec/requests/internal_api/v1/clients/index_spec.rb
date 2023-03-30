@@ -58,7 +58,7 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
         create(:employment, company:, user:)
         user.add_role :admin, company
         sign_in user
-        send_request :get, internal_api_v1_clients_path, params: { q: client_1.name }, headers: auth_headers(user)
+        send_request :get, internal_api_v1_clients_path, params: { query: client_1.name }, headers: auth_headers(user)
       end
 
       it "finds specific client by name" do
@@ -66,7 +66,7 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
           id: client_1.id, name: client_1.name, email: client_1.email, phone: client_1.phone, address: client_1.address,
           minutes_spent: client_1.total_hours_logged(time_frame), logo: ""
         }]
-        send_request :get, internal_api_v1_clients_path, params: { q: client_1.name }, headers: auth_headers(user)
+        send_request :get, internal_api_v1_clients_path, params: { query: client_1.name }, headers: auth_headers(user)
         expect(response).to have_http_status(:ok)
         expect(json_response["client_details"]).to eq(JSON.parse(client_details.to_json))
       end

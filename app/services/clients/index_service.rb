@@ -22,7 +22,7 @@ module Clients
     private
 
       def clients
-        if params[:q].present?
+        if params[:query].present?
           search_clients(search_term, where_clause)
         else
           current_company.clients
@@ -30,7 +30,7 @@ module Clients
       end
 
       def search_term
-        @_search_term = params[:q].presence || "*"
+        @_search_term = params[:query].presence || "*"
       end
 
       def where_clause
