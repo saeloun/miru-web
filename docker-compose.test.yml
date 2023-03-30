@@ -15,7 +15,7 @@ services:
     command: redis-server
     restart: always
     ports:
-      - '6379:6379'
+      - "6379:6379"
     volumes:
       - redis:/data
 
@@ -71,7 +71,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.test
-    command: bin/webpack-dev-server
+    command: bin/webpacker-dev-server
     image: miru-web:latest
     ports:
       - "3035:3035"
@@ -88,8 +88,8 @@ services:
     environment:
       discovery.type: single-node
       network.host: 0.0.0.0
-      xpack.security.enabled: 'true'
-      ELASTIC_PASSWORD: 'x2Sy5FK51zu'
+      xpack.security.enabled: "true"
+      ELASTIC_PASSWORD: "x2Sy5FK51zu"
     ports:
       - "9200:9200"
 
