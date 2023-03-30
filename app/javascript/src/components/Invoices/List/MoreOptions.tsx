@@ -56,7 +56,6 @@ const MoreOptions = ({
         </Tooltip>
         <Tooltip content="Download">
           <button
-            data-cy="invoice-download"
             disabled={invoice.status == "draft"}
             className={
               invoice.status == "draft"
@@ -74,7 +73,6 @@ const MoreOptions = ({
         <Tooltip content="Edit">
           <Link
             className="p-2 text-miru-han-purple-1000 hover:bg-miru-gray-1000"
-            data-cy="edit-invoice"
             id="editInvoiceButton"
             to={`/invoices/${invoice.id}/edit`}
             type="button"
@@ -167,7 +165,6 @@ const MoreOptions = ({
         </li>
         <li className="flex cursor-pointer items-center py-2">
           <button
-            data-cy="invoice-download"
             disabled={invoice.status == "draft"}
             className={
               invoice.status == "draft"
@@ -182,7 +179,6 @@ const MoreOptions = ({
         <li>
           <Link
             className="flex cursor-pointer items-center py-2 text-miru-han-purple-1000"
-            data-cy="edit-invoice"
             to={`/invoices/${invoice.id}/edit`}
             type="button"
           >

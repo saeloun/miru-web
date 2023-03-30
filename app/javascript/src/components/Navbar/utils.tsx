@@ -17,19 +17,16 @@ const navEmployeeOptions = [
   {
     logo: <TimeTrackingIcon className="mr-0 md:mr-4" size={26} />,
     label: "Time Tracking",
-    dataCy: "time-tracking-tab",
     path: Paths.TIME_TRACKING,
   },
   {
     logo: <ClientsIcon className="mr-0 md:mr-4" size={26} />,
     label: "Clients",
-    dataCy: "clients-tab",
     path: Paths.CLIENTS,
   },
   {
     logo: <ProjectsIcon className="mr-0 md:mr-4" size={26} />,
     label: "Projects",
-    dataCy: "projects-tab",
     path: Paths.PROJECTS,
   },
 ];
@@ -39,25 +36,21 @@ const navAdminOptions = [
   {
     logo: <TeamsIcon className="mr-0 md:mr-4" size={26} />,
     label: "Team",
-    dataCy: "team-tab",
     path: Paths.TEAMS,
   },
   {
     logo: <InvoicesIcon className="mr-0 md:mr-4" size={26} />,
     label: "Invoices",
-    dataCy: "invoices-tab",
     path: Paths.INVOICES,
   },
   {
     logo: <ReportsIcon className="mr-0 md:mr-4" size={26} />,
     label: "Reports",
-    dataCy: "reports-tab",
     path: Paths.REPORTS,
   },
   {
     logo: <PaymentsIcon className="mr-0 md:mr-4" size={26} />,
     label: "Payments",
-    dataCy: "payments-tab",
     path: Paths.PAYMENTS,
   },
 ];
@@ -66,43 +59,36 @@ const navAdminMobileOptions = [
   {
     logo: <TimeTrackingIcon className="mr-0 md:mr-4" size={26} />,
     label: "Time Tracking",
-    dataCy: "time-tracking-tab",
     path: Paths.TIME_TRACKING,
   },
   {
     logo: <TeamsIcon className="mr-0 md:mr-4" size={26} />,
     label: "Team",
-    dataCy: "team-tab",
     path: Paths.TEAMS,
   },
   {
     logo: <ClientsIcon className="mr-0 md:mr-4" size={26} />,
     label: "Clients",
-    dataCy: "clients-tab",
     path: Paths.CLIENTS,
   },
   {
     logo: <InvoicesIcon className="mr-0 md:mr-4" size={26} />,
     label: "Invoices",
-    dataCy: "invoices-tab",
     path: Paths.INVOICES,
   },
   {
     logo: <ProjectsIcon className="mr-4" size={26} />,
     label: "Projects",
-    dataCy: "projects-tab",
     path: Paths.PROJECTS,
   },
   {
     logo: <ReportsIcon className="mr-4" size={26} />,
     label: "Reports",
-    dataCy: "reports-tab",
     path: Paths.REPORTS,
   },
   {
     logo: <PaymentsIcon className="mr-4" size={26} />,
     label: "Payments",
-    dataCy: "payments-tab",
     path: Paths.PAYMENTS,
   },
 ];
@@ -126,7 +112,6 @@ const getMobileListClassName = (isActive, index, showMoreOptions) => {
 const ListOption = ({ option, index }) => (
   <li className="items-center hover:bg-miru-gray-100" key={index}>
     <NavLink
-      data-cy={option.dataCy}
       to={option.path}
       className={({ isActive }) =>
         isActive
@@ -152,7 +137,6 @@ const MobileListOption = ({
     onClick={() => setSelectedTab(option.label)}
   >
     <NavLink
-      data-cy={option.dataCy}
       to={option.path}
       className={({ isActive }) =>
         getMobileListClassName(isActive, from, showMoreOptions)

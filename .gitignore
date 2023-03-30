@@ -54,13 +54,6 @@ yarn-debug.log*
 
 .idea
 
-# Ignore cypress screenshots and videos
-cypress/artifacts/screenshots
-cypress/artifacts/videos
-cypress/screenshots
-cypress/videos
-cypress/downloads
-
 .DS_Store
 
 /config/credentials/development.key

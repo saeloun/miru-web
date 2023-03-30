@@ -17,7 +17,6 @@ const Header = () => {
         <div className="flex">
           <button
             className="header__button"
-            data-cy="add-new-user-button"
             type="button"
             onClick={() => setModalState(TeamModalType.ADD_EDIT)}
           >

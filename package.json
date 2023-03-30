@@ -87,10 +87,8 @@
   "devDependencies": {
     "@babel/eslint-parser": "^7.16.3",
     "@webpack-cli/serve": "^1.6.0",
-    "cypress": "^10.3.0",
     "eslint": "^8.4.1",
     "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-cypress": "^2.12.1",
     "eslint-plugin-import": "^2.25.3",
     "eslint-plugin-jam3": "^0.2.3",
     "eslint-plugin-json": "^3.1.0",
@@ -118,10 +116,6 @@
       "prettier --write",
       "eslint --fix"
     ],
-    "cypress-tests/**/*.{js,jsx,json,ts,tsx}": [
-      "prettier --write",
-      "eslint --fix"
-    ],
     "./**/*.rb": [
       "bundle exec rubocop -a --force-exclusion"
     ],
@@ -131,16 +125,7 @@
   },
   "scripts": {
     "prepare": "husky install",
-    "cy:open:dev": "cypress open",
-    "cy:open:prod": "cypress open --config-file cypress_production.config.ts",
-    "cy:run:prod": "cypress run --config-file cypress_production.config.ts",
-    "cy:run:dev": "cypress run --browser chrome --headless --record --key 78e63e75-c093-4cfa-bc9b-d01afbb2aa49",
-    "cy:run:staging": "cypress run --browser chrome --headless --config baseUrl=https://miru-staging.fly.dev/  --record --key 78e63e75-c093-4cfa-bc9b-d01afbb2aa49",
-    "cy:open:staging": "cypress open --config baseUrl=https://miru-staging.fly.dev/",
-    "lint": "eslint ./cypress",
-    "lint:fix": "eslint --fix ./cypress",
-    "lint:ui": "eslint ./app/javascript",
-    "lint:ui:fix": "eslint --fix ./app/javascript"
+    "lint": "eslint ./app/javascript"
   },
   "babel": {
     "presets": [
