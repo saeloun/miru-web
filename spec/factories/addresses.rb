@@ -14,6 +14,10 @@ FactoryBot.define do
       association(:addressable, factory: :company)
     end
 
+    trait :with_client do
+      association(:addressable, factory: :client)
+    end
+
     trait :with_user do
       association(:addressable, factory: :user)
     end

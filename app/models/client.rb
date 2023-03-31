@@ -33,6 +33,7 @@ class Client < ApplicationRecord
   has_many :projects
   has_many :timesheet_entries, through: :projects
   has_many :invoices, dependent: :destroy
+  has_many :addresses, as: :addressable, dependent: :destroy
   has_one_attached :logo
   belongs_to :company
 
@@ -42,6 +43,7 @@ class Client < ApplicationRecord
   after_commit :reindex_projects
 
   scope :with_ids, -> (client_ids) { where(id: client_ids) if client_ids.present? }
+  accepts_nested_attributes_for :addresses, reject_if: :address_attributes_blank?, allow_destroy: true
 
   def reindex_projects
     projects.reindex
@@ -137,6 +139,18 @@ class Client < ApplicationRecord
       total_outstanding_amount: status_and_amount["sent"] + status_and_amount["viewed"],
       total_overdue_amount: status_and_amount["overdue"]
     }
+  end
+
+  def address_attributes_blank?(attributes)
+    attributes.except("id, address_line_2").values.all?(&:blank?)
+  end
+
+  def current_address
+    addresses.first
+  end
+
+  def formatted_address
+    current_address.formatted_address
   end
 
   private
