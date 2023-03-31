@@ -24,9 +24,9 @@ const SearchTeamMembers = ({ teamMembers, filters, setFilters }) => {
       : "All team members selected";
 
   return (
-    <div>
+    <div className="w-1/2 lg:w-auto">
       <MultiSelect
-        className="w-52"
+        className="lg:w-52"
         labelledBy="Select"
         options={teamMembers}
         value={selected}

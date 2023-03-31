@@ -7,7 +7,12 @@ export const useOutsideClick = (
 ) => {
   useEffect(() => {
     const handleClickOutside = event => {
-      if (ref.current && !ref.current.contains(event.target) && condition) {
+      if (
+        ref &&
+        ref.current &&
+        !ref.current.contains(event.target) &&
+        condition
+      ) {
         callback();
       }
     };
