@@ -5,6 +5,7 @@ import { X, MagnifyingGlass } from "phosphor-react";
 import Select from "react-select";
 
 import CustomDateRangePicker from "common/CustomDateRangePicker";
+import { useUserContext } from "context/UserContext";
 
 import { handleDateRangeOptions } from "./DateRange";
 import SearchTeamMembers from "./SearchTeamMembers";
@@ -25,6 +26,7 @@ const Filters = ({
   const [dateRangeOptions, setDateRangeOptions] = useState(
     handleDateRangeOptions()
   );
+  const { isDesktop } = useUserContext();
 
   useEffect(() => {
     const { value, from, to } = filterParams.dateRange;
@@ -158,7 +160,7 @@ const Filters = ({
   const customStyles = {
     container: base => ({
       ...base,
-      width: "13rem",
+      width: isDesktop ? "13rem" : "auto",
     }),
     control: provided => ({
       ...provided,
@@ -179,7 +181,7 @@ const Filters = ({
     }),
   };
 
-  return (
+  return isDesktop ? (
     <div className="flex flex-col items-center justify-between px-6 py-2 md:flex-row">
       <div className="relative flex w-4/12 items-center">
         <input
@@ -262,6 +264,80 @@ const Filters = ({
       >
         APPLY
       </button>
+    </div>
+  ) : (
+    <div className="flex w-full flex-col px-6 py-2">
+      <div className="relative mt-2 flex w-full items-center">
+        <input
+          placeholder="Search"
+          type="text"
+          value={filters.searchTerm}
+          className="focus:outline-none w-full rounded bg-miru-gray-100 p-2
+            text-sm font-medium focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
+          onChange={e => setFilters({ ...filters, searchTerm: e.target.value })}
+        />
+        {filters.searchTerm ? (
+          <X
+            className="absolute right-3"
+            color="#1D1A31"
+            size={16}
+            onClick={() => setFilters({ ...filters, searchTerm: "" })}
+          />
+        ) : (
+          <MagnifyingGlass
+            className="absolute right-3"
+            color="#CDD6DF"
+            size={16}
+          />
+        )}
+      </div>
+      <div className="mt-2 flex">
+        <SearchTeamMembers
+          filters={filters}
+          setFilters={setFilters}
+          teamMembers={teamMembers}
+        />
+        <div className="relative ml-3 w-1/2">
+          <Select
+            classNamePrefix="react-select-filter w-full"
+            name="dateRange"
+            options={dateRangeOptions}
+            styles={customStyles}
+            value={filters.dateRange}
+            onChange={handleSelectFilter}
+          />
+          {showCustomFilter && (
+            <div className="absolute z-20 mt-1 flex flex-col rounded-lg bg-miru-white-1000 shadow-c1">
+              <CustomDateRangePicker
+                dateRange={dateRange}
+                handleSelectDate={handleSelectDate}
+                hideCustomFilter={hideCustomFilter}
+                selectedInput={selectedInput}
+                onClickInput={onClickInput}
+              />
+              <div className="flex h-full items-end justify-center bg-miru-white-1000 p-6 ">
+                <button
+                  className="sidebar__reset"
+                  onClick={resetCustomDatePicker}
+                >
+                  Cancel
+                </button>
+                <button
+                  disabled={disableDateBtn}
+                  className={`sidebar__apply ${
+                    disableDateBtn
+                      ? "cursor-not-allowed border-transparent bg-indigo-100 hover:border-transparent"
+                      : "cursor-pointer"
+                  }`}
+                  onClick={submitCustomDatePicker}
+                >
+                  Done
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 };
