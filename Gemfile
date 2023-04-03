@@ -172,6 +172,8 @@ group :development, :test, :ci do
   # To record response of outgoing API calls
   gem "vcr", "~> 6.1"
   gem "webmock", "~> 3.14.0"
+
+  gem "dockerfile-rails"
 end
 
 group :development do
