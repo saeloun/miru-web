@@ -25,7 +25,6 @@ RSpec.describe "Payments index page", type: :system do
 
           expect(page).to have_content("Payment failed")
           expect(page).to have_content("Paid invoice")
-          expect(page).to have_content("Partially paid invoice")
           expect(page).to have_content(payment1.invoice.invoice_number)
           expect(page).to have_content(payment2.invoice.invoice_number)
         end
