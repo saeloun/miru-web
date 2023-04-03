@@ -25,6 +25,7 @@ const Layout = ({ isAdminUser, user, company }) => {
     billing: {},
   });
 
+  const { profileSettings } = settingsStates;
   const setUserState = (key, value) => {
     setSettingsStates({
       ...settingsStates,
@@ -48,9 +49,9 @@ const Layout = ({ isAdminUser, user, company }) => {
             <div className="col-span-3">
               <SideNav
                 company={company}
-                firstName={settingsStates.profileSettings?.firstName}
+                firstName={profileSettings?.firstName}
                 isAdmin={isAdminUser}
-                lastName={settingsStates.profileSettings?.lastName}
+                lastName={profileSettings?.lastName}
               />
             </div>
             <div className="col-span-9">
