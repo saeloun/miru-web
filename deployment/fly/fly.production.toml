@@ -10,7 +10,7 @@ primary_region = "ewr"
   worker = "bundle exec sidekiq -e production -C config/sidekiq.yml"
 
 [build]
-  dockerfile = "Dockerfile.production"
+  dockerfile = "Dockerfile"
   [build.args]
     BUILD_COMMAND = "bin/rails fly:build"
     SERVER_COMMAND = "bin/rails fly:server"
