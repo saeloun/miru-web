@@ -25,6 +25,8 @@ class Invoices::PaymentsController < ApplicationController
           recipients: invoice_company.users.with_role([:admin, :owner], invoice_company).pluck(:email)
         )
         flash[:notice] = t(".success")
+      else
+        flash[:notice] = t(".success")
       end
     else
       flash[:error] = t(".failure")
