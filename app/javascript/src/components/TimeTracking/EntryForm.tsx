@@ -10,7 +10,7 @@ import {
   validateTimesheetEntry,
 } from "helpers";
 import { CheckedCheckboxSVG, UncheckedCheckboxSVG } from "miruIcons";
-import TextareaAutosize from "react-autosize-textarea";
+import TextareaAutosize from "react-textarea-autosize";
 import { TimeInput } from "StyledComponents";
 
 import timesheetEntryApi from "apis/timesheet-entry";
