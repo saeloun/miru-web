@@ -17,13 +17,15 @@ class Invoices::PaymentsController < ApplicationController
 
   def success
     if InvoicePayment::StripePaymentIntent.new(@invoice).process
-      invoice_company = @invoice.client.company
-      @invoice.send_to_payment_email(
-        subject: "Payment details by #{@invoice.client.name}",
-        message: email_message,
-        recipients: invoice_company.users.with_role([:admin, :owner], invoice_company).pluck(:email)
-      )
-      flash[:notice] = t(".success")
+      if @invoice.paid?
+        invoice_company = @invoice.client.company
+        @invoice.send_to_payment_email(
+          subject: "Payment details by #{@invoice.client.name}",
+          message: email_message,
+          recipients: invoice_company.users.with_role([:admin, :owner], invoice_company).pluck(:email)
+        )
+        flash[:notice] = t(".success")
+      end
     else
       flash[:error] = t(".failure")
       redirect_to root_path
