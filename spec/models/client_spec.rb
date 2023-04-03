@@ -84,6 +84,17 @@ RSpec.describe Client, type: :model do
       end
     end
 
+    describe "#strip_attributes" do
+      let(:company) { create(:company) }
+      let(:user) { create(:user) }
+
+      it "strips the whitespaces for the client name" do
+        client = build(:client, company:, name: " Client with whitespace ")
+        client.save!
+        expect(client.name).to eq(client.name.strip)
+      end
+    end
+
     describe "#project_details" do
       let(:company) { create(:company) }
       let(:user) { create(:user) }
