@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { DeleteIcon } from "miruIcons";
 
@@ -13,13 +13,47 @@ const EditMembersListForm = ({
   setMembers,
   handleSubmit,
   currencySymbol,
+  setAllMemberList,
 }) => {
   const [focusedRateInputBoxId, setFocusedRateInputBoxId] = useState("");
+  const [formattedMemberList, setFormattedMemberList] = useState([]);
   const [errorForInvalidHourlyRate, setErrorForInvalidHourlyRate] = useState(
     {}
   );
 
-  const removeMemberHandler = memberIndex => {
+  const getFormattedMemberList = () => {
+    allMemberList.length > 0 &&
+      allMemberList.reduce((memberList, currentMember) => {
+        if (!currentMember.isAdded) {
+          memberList = [
+            ...memberList,
+            {
+              label: currentMember.name,
+              value: currentMember.id,
+            },
+          ];
+        }
+        memberList && setFormattedMemberList(memberList);
+
+        return memberList;
+      }, []);
+  };
+
+  useEffect(() => {
+    getFormattedMemberList();
+  }, [allMemberList]);
+
+  const removeMemberHandler = (memberIndex, member) => {
+    const newArr = allMemberList.map(currentMember => {
+      if (member.id == currentMember.id) {
+        return { ...currentMember, isAdded: false };
+      }
+
+      return currentMember;
+    });
+
+    setAllMemberList(newArr);
+
     setMembers(members => members.filter((_, i) => i != memberIndex));
   };
 
@@ -48,23 +82,6 @@ const EditMembersListForm = ({
       memberFromAllMemberList => memberFromAllMemberList.id == member.id
     );
 
-    const formattedMemberList = allMemberList.reduce(
-      (memberList, currentMember) => {
-        if (!currentMember.isAdded) {
-          memberList = [
-            ...memberList,
-            {
-              label: currentMember.name,
-              value: currentMember.id,
-            },
-          ];
-        }
-
-        return memberList;
-      },
-      []
-    );
-
     const valueObj = {
       label: currentMemberDetails?.name || "",
       value: currentMemberDetails?.id || "",
@@ -86,6 +103,7 @@ const EditMembersListForm = ({
                 "id",
                 parseInt(selectedMember.value)
               );
+          document.getElementById(member.hourlyRate).focus();
         }}
       />
     );
@@ -137,7 +155,7 @@ const EditMembersListForm = ({
                 inputBoxClassName={` text-right ${
                   isInvalidRateInputBox(memberIndex)
                     ? "border-miru-red-400 error-input"
-                    : "border-miru-gray-1000"
+                    : "border-miru-gray-1000 focus:border-miru-han-purple-1000"
                 }`}
                 onChange={e => handleHourlyRateInput(e, memberIndex)}
                 onFocus={() => setFocusedRateInputBoxId(memberIndex)}
@@ -153,7 +171,7 @@ const EditMembersListForm = ({
                 className="menuButton__button"
                 id="removeMember"
                 type="button"
-                onClick={() => removeMemberHandler(memberIndex)}
+                onClick={() => removeMemberHandler(memberIndex, member)}
               >
                 <DeleteIcon color="#5B34EA" fill="#5B34EA" size={12} />
               </button>
@@ -171,9 +189,14 @@ const EditMembersListForm = ({
       ))}
       <div className="actions mt-4 text-center">
         <button
-          className="menuButton__button text-xs text-miru-han-purple-1000"
+          disabled={!(formattedMemberList.length > 0)}
           name="add"
           type="button"
+          className={`menuButton__button text-xs ${
+            formattedMemberList.length > 0
+              ? "text-miru-han-purple-1000"
+              : "text-miru-dark-purple-400"
+          }`}
           onClick={addNewMemberRowHandler}
         >
           <span>+</span>
