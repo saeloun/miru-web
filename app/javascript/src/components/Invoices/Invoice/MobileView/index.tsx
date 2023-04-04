@@ -19,15 +19,30 @@ import DeleteInvoice from "components/Invoices/popups/DeleteInvoice";
 import getStatusCssClass from "utils/getBadgeStatus";
 
 const MobileView = ({ invoice }) => {
+  const {
+    id,
+    invoiceLineItems,
+    tax,
+    discount,
+    invoiceNumber,
+    status,
+    company,
+    amount,
+    dueDate,
+    issueDate,
+    reference,
+    client,
+    amountDue,
+    amountPaid,
+  } = invoice;
   const [showMoreOptions, setShowMoreOptions] = useState<boolean>(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
   const navigate = useNavigate();
-  const subTotal = invoice.invoiceLineItems.reduce(
+  const subTotal = invoiceLineItems.reduce(
     (prev, curr) => prev + (curr.rate * curr.quantity) / 60,
     0
   );
-  const tax = invoice.tax;
-  const discount = invoice.discount;
+
   const total = Number(subTotal) + Number(tax) - Number(discount);
 
   return (
@@ -46,44 +61,44 @@ const MobileView = ({ invoice }) => {
               weight="bold"
             />
           </Button>
-          <span>Invoice #{invoice.invoiceNumber}</span>
+          <span>Invoice #{invoiceNumber}</span>
         </div>
         <div>
           <Badge
-            className={`${getStatusCssClass(invoice.status)} uppercase`}
-            text={invoice.status}
+            className={`${getStatusCssClass(status)} uppercase`}
+            text={status}
           />
         </div>
       </div>
-      <CompanyInfo company={invoice.company} />
+      <CompanyInfo company={company} />
       <InvoiceInfo
-        amount={invoice.amount}
-        currency={invoice.company.currency}
-        dateFormat={invoice.company.dateFormat}
-        dueDate={invoice.dueDate}
-        invoiceNumber={invoice.invoiceNumber}
-        issueDate={invoice.issueDate}
-        reference={invoice.reference}
-        selectedClient={invoice.client}
+        amount={amount}
+        currency={company.currency}
+        dateFormat={company.dateFormat}
+        dueDate={dueDate}
+        invoiceNumber={invoiceNumber}
+        issueDate={issueDate}
+        reference={reference}
+        selectedClient={client}
         setActiveSection={() => {}} //eslint-disable-line
         showEditButton={false}
       />
       <div className="border-b border-miru-gray-400 px-4 py-2">
         <LineItems
           isInvoicePreviewCall
-          currency={invoice.company.currency}
-          dateFormat={invoice.company.dateFormat}
+          currency={company.currency}
+          dateFormat={company.dateFormat}
           manualEntryArr={[]}
-          selectedClient={invoice.client}
-          selectedLineItems={invoice.invoiceLineItems}
+          selectedClient={client}
+          selectedLineItems={invoiceLineItems}
           setActiveSection={() => {}} //eslint-disable-line
           setEditItem={() => {}} //eslint-disable-line
         />
       </div>
       <InvoiceTotal
-        amountDue={invoice.amountDue}
-        amountPaid={invoice.amountPaid}
-        currency={invoice.company.currency}
+        amountDue={amountDue}
+        amountPaid={amountPaid}
+        currency={company.currency}
         discount={discount}
         setActiveSection={() => {}} //eslint-disable-line
         showEditButton={false}
@@ -142,7 +157,7 @@ const MobileView = ({ invoice }) => {
             />
             Delete
           </li>
-          {invoice.status == "DRAFT" && (
+          {status == "DRAFT" && (
             <li className="flex cursor-pointer items-center px-5 py-2 text-sm text-miru-han-purple-1000 hover:bg-miru-gray-100 lg:py-1 xl:py-2">
               <PrinterIcon
                 className="mr-4 text-miru-han-purple-1000"
@@ -155,10 +170,7 @@ const MobileView = ({ invoice }) => {
         </MobileMoreOptions>
       )}
       {showDeleteDialog && (
-        <DeleteInvoice
-          invoice={invoice.id}
-          setShowDeleteDialog={setShowDeleteDialog}
-        />
+        <DeleteInvoice invoice={id} setShowDeleteDialog={setShowDeleteDialog} />
       )}
     </div>
   );
