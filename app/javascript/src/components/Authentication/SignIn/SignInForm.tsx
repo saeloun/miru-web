@@ -88,7 +88,7 @@ const SignInForm = () => {
 
               return (
                 <Form>
-                  <div className="field relative mb-6">
+                  <div className="field relative">
                     <InputField
                       autoFocus
                       hasError={errors.email && touched.email}
@@ -104,7 +104,7 @@ const SignInForm = () => {
                       fieldTouched={touched.email}
                     />
                   </div>
-                  <div className="field mb-6">
+                  <div className="field">
                     <InputField
                       hasError={errors.password && touched.password}
                       id="password"
