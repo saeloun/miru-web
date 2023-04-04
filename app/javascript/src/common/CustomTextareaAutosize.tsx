@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, useRef } from "react";
 
-import TextareaAutosize from "react-autosize-textarea";
+import TextareaAutosize from "react-textarea-autosize";
 
 import { useOutsideClick } from "../helpers/outsideClick";
 

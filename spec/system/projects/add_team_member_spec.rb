@@ -25,7 +25,7 @@ RSpec.describe "Add team memebr to project", type: :system do
         click_button "Add/Remove Team Members"
         sleep 1
         click_button "Add another team member"
-        find(".react-select-filter__control.css-1ysvbq8-control").click
+        find(".react-select-filter__control.css-digfch-control").click
         find("#react-select-2-option-0").click
         fill_in "Rate", with: "100"
         click_button "Add team members to project"
