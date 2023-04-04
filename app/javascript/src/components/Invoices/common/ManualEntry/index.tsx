@@ -8,7 +8,7 @@ import {
   useOutsideClick,
 } from "helpers";
 import { DeleteIcon, CalendarIcon } from "miruIcons";
-import TextareaAutosize from "react-autosize-textarea";
+import TextareaAutosize from "react-textarea-autosize";
 
 import CustomDatePicker from "common/CustomDatePicker";
 
