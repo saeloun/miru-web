@@ -1,6 +1,6 @@
 import React from "react";
 
-const Loader = ({ message }) => (
+const Loader = ({ message = "" }) => (
   <div className="outline-none focus:outline-none fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden bg-black opacity-25">
     <div className="relative my-6 mx-auto w-auto max-w-sm">
       <svg

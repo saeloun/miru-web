@@ -44,10 +44,6 @@ Rails.application.routes.draw do
         get :cancel
       end
     end
-
-    member do
-      get :view, to: "view#show", as: :view
-    end
   end
 
   namespace :invitations do
