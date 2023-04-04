@@ -2,6 +2,7 @@ import React, { Fragment } from "react";
 
 import { minToHHMM } from "helpers";
 import { ClientsIcon } from "miruIcons";
+import ReactPaginate from "react-paginate";
 import { Avatar } from "StyledComponents";
 
 import EmptyStates from "common/EmptyStates";
@@ -12,6 +13,8 @@ import { useEntry } from "../context/EntryContext";
 
 interface ContainerProps {
   selectedFilter?: any;
+  paginationDetails?: any;
+  handlePageClick: any;
 }
 
 const ReportHeader = () => (
@@ -36,6 +39,8 @@ const ReportHeader = () => (
 
 export const TimeEntryReportMobileView = ({
   selectedFilter,
+  paginationDetails,
+  handlePageClick,
 }: ContainerProps) => {
   const { timeEntryReport } = useEntry();
 
@@ -126,6 +131,22 @@ export const TimeEntryReportMobileView = ({
               ? "No results match current filters. Try removing some filters."
               : "There are no time entries added yet. You’ll see a summary of time entries added by your team."
           }
+        />
+      )}
+      {paginationDetails.pages > 1 && (
+        <ReactPaginate
+          activeClassName="bg-miru-han-purple-400 rounded-full"
+          breakLabel="..."
+          className="flex content-center justify-center"
+          disabledLinkClassName="cursor-not-allowed"
+          nextClassName="ml-3"
+          nextLabel="Next >"
+          pageCount={paginationDetails.pages}
+          pageLinkClassName="p-2"
+          pageRangeDisplayed={5}
+          previousClassName="mr-3"
+          previousLabel="< Previous"
+          onPageChange={handlePageClick}
         />
       )}
     </div>
