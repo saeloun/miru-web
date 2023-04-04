@@ -16,20 +16,20 @@ const Header = ({
     >
       <div>
         <button
-          className="mx-1 w-20 rounded-md border px-3 "
+          className="mx-1 rounded-md border px-3 "
           disabled={!isDisableUpdateBtn}
           onClick={cancelAction}
         >
-          Cancel
+          CANCEL
         </button>
         <button
           disabled={!isDisableUpdateBtn}
-          className={`mx-1 w-20 rounded-md border px-3 ${
+          className={`mx-1 rounded-md border px-3 ${
             !isDisableUpdateBtn ? "cursor-auto bg-miru-gray-1000" : "bg-white"
           } text-miru-han-purple-1000`}
           onClick={saveAction}
         >
-          Save
+          UPDATE
         </button>
       </div>
     </div>

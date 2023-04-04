@@ -24,8 +24,6 @@ type customInputTextProps = {
   moveLabelToRightClassName?: string;
   moveLabelToLeftClassName?: string;
   readOnly?: boolean;
-  step?: any;
-  min?: any;
   onFocus?: (e?: any) => void; // eslint-disable-line
   onBlur?: (e?: any) => void; // eslint-disable-line
 };
@@ -46,8 +44,6 @@ export const CustomInputText = ({
   moveLabelToRightClassName,
   moveLabelToLeftClassName,
   readOnly,
-  step,
-  min,
 }: customInputTextProps) => (
   <div className="field relative">
     <div className={classNames(defaultWrapperClassName, wrapperClassName)}>
@@ -55,11 +51,9 @@ export const CustomInputText = ({
         className={classNames(defaultInputBoxClassName, inputBoxClassName)}
         disabled={disabled}
         id={id}
-        min={min}
         name={name}
         placeholder=" "
         readOnly={readOnly}
-        step={step}
         type={type}
         value={value}
         onBlur={onBlur}
@@ -86,8 +80,6 @@ CustomInputText.defaultProps = {
   type: "text",
   disabled: false,
   readOnly: false,
-  step: 1,
-  min: null,
   moveLabelToLeftClassName: "left-1",
   moveLabelToRightClassName: "",
   onChange: () => {}, // eslint-disable-line @typescript-eslint/no-empty-function

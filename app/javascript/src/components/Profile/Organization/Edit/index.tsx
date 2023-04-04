@@ -1,31 +1,24 @@
-/* eslint-disable */
+/* eslint-disable @typescript-eslint/no-var-requires */
 import React, { useCallback, useEffect, useState } from "react";
 
+import { DeleteIcon, EditImageButtonSVG, PlusIconSVG } from "miruIcons";
+import Select from "react-select";
 import * as Yup from "yup";
-import { Country, State, City } from "country-state-city";
 
 import companiesApi from "apis/companies";
 import companyProfileApi from "apis/companyProfile";
+import { Divider } from "common/Divider";
 import Loader from "common/Loader/index";
 import Toastr from "common/Toastr";
+import { CountryList } from "constants/countryList";
 import { currencyList } from "constants/currencyList";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import Header from "../../Header";
-import { useDropzone } from "react-dropzone";
-import { useNavigate } from "react-router-dom";
-import { StaticPage } from "./StaticPage";
 
 const orgSchema = Yup.object().shape({
   companyName: Yup.string().required("Name cannot be blank"),
   companyPhone: Yup.string().required("Phone number cannot be blank"),
-  companyAddr: Yup.object().shape({
-    addressLine1: Yup.string().required("Address Line 1 cannot be blank"),
-    country: Yup.string().required("Country cannot be blank"),
-    state: Yup.string().required("State cannot be blank"),
-    city: Yup.string().required("City cannot be blank"),
-    zipcode: Yup.string().required("Zipcode cannot be blank"),
-  }),
   companyRate: Yup.number()
     .typeError("Amount must be a number")
     .min(0, "please enter larger amount")
@@ -33,18 +26,8 @@ const orgSchema = Yup.object().shape({
 });
 
 const fiscalYearOptions = [
-  {
-    label: "December",
-    value: "Dec",
-  },
-  {
-    label: "March",
-    value: "Mar",
-  },
-  {
-    label: "September",
-    value: "Sep",
-  },
+  { value: "jan-dec", label: "January-December" },
+  { value: "apr-mar", label: "April-March" },
 ];
 
 const dateFormatOptions = [
@@ -53,94 +36,59 @@ const dateFormatOptions = [
   { value: "YYYY-MM-DD", label: "YYYY-MM-DD" },
 ];
 
+const customStyles = {
+  control: provided => ({
+    ...provided,
+    backgroundColor: "#FFFFFF",
+    color: "red",
+    minHeight: 32,
+    padding: "0",
+  }),
+  menu: provided => ({
+    ...provided,
+    fontSize: "12px",
+    letterSpacing: "2px",
+  }),
+};
+
 const initialState = {
   id: null,
   logoUrl: "",
   companyName: "",
-  companyAddr: {
-    id: null,
-    addressLine1: "",
-    addressLine2: "",
-    city: {
-      label: "",
-      value: "",
-    },
-    country: {
-      label: "",
-      value: "",
-      code: "",
-    },
-    state: {
-      label: "",
-      value: "",
-    },
-    zipcode: "",
-  },
+  companyAddr: "",
   companyPhone: "",
   countryName: "",
   companyCurrency: "",
-  companyRate: "0.00",
+  companyRate: 0.0,
   companyFiscalYear: "",
   companyDateFormat: "",
   companyTimezone: "",
   logo: null,
 };
 
-const errorState = {
-  companyNameErr: "",
-  companyPhoneErr: "",
-  companyRateErr: "",
-  addressLine1Err: "",
-  stateErr: "",
-  countryErr: "",
-  cityErr: "",
-  zipcodeErr: "",
-};
-
 const OrgEdit = () => {
-  const navigate = useNavigate();
   const [orgDetails, setOrgDetails] = useState(initialState);
 
-  const [errDetails, setErrDetails] = useState(errorState);
-
-  const { acceptedFiles, getRootProps, getInputProps, isDragActive } =
-    useDropzone({
-      accept: {
-        "image/png": [".png", ".jpg", ".svg"],
-      },
-      maxSize: 1048576,
-      multiple: false,
-    });
-
-  const file = acceptedFiles[0];
-
-  useEffect(() => {
-    if (file) {
-      setOrgDetails({
-        ...orgDetails,
-        logoUrl: URL.createObjectURL(file),
-        logo: file,
-      });
-      setIsDetailUpdated(true);
-    }
-  }, [file]);
+  const [errDetails, setErrDetails] = useState({
+    companyNameErr: "",
+    companyPhoneErr: "",
+    companyRateErr: "",
+  });
 
   const [currenciesOption, setCurrenciesOption] = useState([]);
+  const [countriesOption, setCountriesOption] = useState([]);
   const [timezoneOption, setTimezoneOption] = useState([]);
   const [timezones, setTimezones] = useState({});
   const [isDetailUpdated, setIsDetailUpdated] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const [stateList, setStateList] = useState([]);
-  const [currentCityList, setCurrentCityList] = useState([]);
-  const initialSelectValue = {
-    label: "",
-    value: "",
-    code: "",
+  const getCountries = async () => {
+    const countries = CountryList.map(item => ({
+      value: item.code,
+      label: item.name,
+    }));
+    setCountriesOption(countries);
   };
-  const [countries, setCountries] = useState([]);
-  const [currentCountryDetails, setCurrentCountryDetails] =
-    useState(initialSelectValue);
 
   const getCurrencies = async () => {
     const currencies = currencyList.map(item => ({
@@ -150,187 +98,116 @@ const OrgEdit = () => {
     setCurrenciesOption(currencies);
   };
 
+  const countryMapTimezone = country => {
+    const timeZonesForCountry = timezones[country];
+    const timezoneOptionList = timeZonesForCountry.map(item => ({
+      value: item,
+      label: item,
+    }));
+    setTimezoneOption(timezoneOptionList);
+  };
+
   const getData = async () => {
     setIsLoading(true);
     const res = await companiesApi.index();
     const companyDetails = { ...res.data.company_details };
-    const { isoCode, name } = Country.getCountryByCode(
-      companyDetails.address.country
-    );
-
-    const orgAddr = {
-      id: companyDetails.address.id,
-      addressLine1: companyDetails.address.address_line_1,
-      addressLine2: companyDetails.address.address_line_2,
-      city: {
-        value: companyDetails.address.city,
-        label: companyDetails.address.city,
-      },
-      country: {
-        label: name,
-        value: isoCode,
-        code: isoCode,
-      },
-      state: {
-        value: companyDetails.address.state,
-        label: companyDetails.address.state,
-      },
-      zipcode: companyDetails.address.pin,
-    };
-
-    const organizationSchema = {
+    setOrgDetails({
       logoUrl: companyDetails.logo,
       companyName: companyDetails.name,
-      companyAddr: orgAddr,
+      companyAddr: companyDetails.address,
       companyPhone: companyDetails.business_phone,
       countryName: companyDetails.country,
       companyCurrency: companyDetails.currency,
-      companyRate: parseFloat(companyDetails.standard_price.toString()).toFixed(
-        2
-      ),
+      companyRate: parseFloat(companyDetails.standard_price),
       companyFiscalYear: companyDetails.fiscal_year_end,
       companyDateFormat: companyDetails.date_format,
       companyTimezone: companyDetails.timezone,
       id: companyDetails.id,
       logo: null,
-    };
-
-    setOrgDetails(organizationSchema);
+    });
 
     const timezonesEntry = await companyProfileApi.get();
     setTimezones(timezonesEntry.data.timezones);
 
-    const timeZonesForCountry = timezonesEntry.data.timezones[isoCode];
+    const timeZonesForCountry =
+      timezonesEntry.data.timezones[companyDetails.country];
+
     const timezoneOptionList = timeZonesForCountry.map(item => ({
       value: item,
       label: item,
     }));
     setTimezoneOption(timezoneOptionList);
-    addCity(isoCode, companyDetails.address.state);
     setIsLoading(false);
-  };
-
-  const assignCountries = async allCountries => {
-    const countryData = await allCountries.map(country => ({
-      value: country.isoCode,
-      label: country.name,
-      code: country.isoCode,
-    }));
-    setCountries(countryData);
   };
 
   useEffect(() => {
     sendGAPageView();
+    getCountries();
     getCurrencies();
     getData();
-    const allCountries = Country.getAllCountries();
-    assignCountries(allCountries);
   }, []);
 
+  const handleNameChange = useCallback(
+    e => {
+      setOrgDetails({ ...orgDetails, companyName: e.target.value });
+      setIsDetailUpdated(true);
+      setErrDetails({ ...errDetails, companyNameErr: "" });
+    },
+    [orgDetails, errDetails]
+  );
+
   const handleAddrChange = useCallback(
-    (e, type) => {
-      const { companyAddr } = orgDetails;
-      if (type === "addressLine1") {
-        const changedAddr = { ...companyAddr, addressLine1: e.target.value };
-        setOrgDetails({ ...orgDetails, companyAddr: changedAddr });
-      } else {
-        const changedAddr = { ...companyAddr, addressLine2: e.target.value };
-        setOrgDetails({ ...orgDetails, companyAddr: changedAddr });
-      }
+    e => {
+      setOrgDetails({ ...orgDetails, companyAddr: e.target.value });
       setIsDetailUpdated(true);
     },
     [orgDetails]
   );
 
-  const setupTimezone = (orgDetails, countryCode) => {
-    const timeZonesForCountry = timezones[countryCode];
-    const timezoneOptionList = timeZonesForCountry.map(item => ({
-      value: item,
-      label: item,
-    }));
-    setTimezoneOption(timezoneOptionList);
-    setOrgDetails({
-      ...orgDetails,
-      countryName: countryCode,
-      companyTimezone:
-        countryCode === "US"
-          ? "(GMT-05:00) Eastern Time (US & Canada)"
-          : timezoneOptionList[0].value,
-    });
-  };
-
-  const handleChangeCompanyDetails = useCallback(
-    (e, type) => {
-      setOrgDetails({ ...orgDetails, [type]: e });
+  const handlePhoneChange = useCallback(
+    e => {
+      setOrgDetails({ ...orgDetails, companyPhone: e.target.value });
       setIsDetailUpdated(true);
-      setErrDetails({ ...errDetails, [type + "Err"]: "" });
+      setErrDetails({ ...errDetails, companyPhoneErr: "" });
     },
-    [orgDetails, errDetails]
+    [orgDetails]
   );
 
-  const handleOnChangeCountry = selectCountry => {
-    const { companyAddr } = orgDetails;
-    const changedCountry = { ...companyAddr, country: selectCountry };
-    setCurrentCountryDetails(selectCountry);
-
-    setupTimezone(
-      { ...orgDetails, companyAddr: changedCountry },
-      selectCountry.code
-    );
-    setIsDetailUpdated(true);
-  };
-
-  const addCity = (country, state) => {
-    const cities = City.getCitiesOfState(country, state).map(city => ({
-      label: city.name,
-      value: city.name,
-      ...city,
-    }));
-    setCurrentCityList(cities);
-  };
-
-  const handleOnChangeState = selectState => {
-    const { companyAddr } = orgDetails;
-    const changedState = {
-      ...companyAddr,
-      state: { value: selectState.name, label: selectState.name },
-    };
-    setOrgDetails({ ...orgDetails, companyAddr: changedState });
-    addCity(currentCountryDetails.code, selectState.code);
-  };
-
-  const updatedStates = countryCode =>
-    State.getStatesOfCountry(countryCode).map(state => ({
-      label: state.name,
-      value: state.name,
-      code: state.isoCode,
-      ...state,
-    }));
-
-  useEffect(() => {
-    const stateList = updatedStates(orgDetails.companyAddr.country.value);
-    setStateList(stateList);
-  }, [orgDetails.companyAddr.country]);
-
-  const filterCities = (inputValue: string) => {
-    const city = currentCityList.filter(i =>
-      i.label.toLowerCase().includes(inputValue.toLowerCase())
-    );
-    return city.length ? city : [{ label: inputValue, value: inputValue }];
-  };
-
-  const promiseOptions = (inputValue: string) => {
-    return new Promise(resolve => {
-      setTimeout(() => {
-        resolve(filterCities(inputValue));
-      }, 1000);
-    });
-  };
+  const handleCountryChange = useCallback(
+    option => {
+      countryMapTimezone(option.value);
+      const timeZonesForCountry = timezones[option.value];
+      const timezoneOptionList = timeZonesForCountry.map(item => ({
+        value: item,
+        label: item,
+      }));
+      setTimezoneOption(timezoneOptionList);
+      setOrgDetails({
+        ...orgDetails,
+        countryName: option.value,
+        companyTimezone:
+          option.value === "US"
+            ? "(GMT-05:00) Eastern Time (US & Canada)"
+            : timezoneOptionList[0].value,
+      });
+      setIsDetailUpdated(true);
+    },
+    [orgDetails, timezones]
+  );
 
   const handleCurrencyChange = useCallback(
     option => {
       setOrgDetails({ ...orgDetails, companyCurrency: option.value });
       setIsDetailUpdated(true);
+    },
+    [orgDetails]
+  );
+
+  const handleRateChange = useCallback(
+    e => {
+      setOrgDetails({ ...orgDetails, companyRate: e.target.value });
+      setIsDetailUpdated(true);
+      setErrDetails({ ...errDetails, companyRateErr: "" });
     },
     [orgDetails]
   );
@@ -359,13 +236,6 @@ const OrgEdit = () => {
     [orgDetails]
   );
 
-  const handleZipcodeChange = (e, type) => {
-    const { companyAddr } = orgDetails;
-    const changedZipCode = { ...companyAddr, zipcode: e.target.value };
-    setOrgDetails({ ...orgDetails, companyAddr: changedZipCode });
-    setIsDetailUpdated(true);
-  };
-
   const onLogoChange = useCallback(
     e => {
       const file = e.target.files[0];
@@ -381,37 +251,17 @@ const OrgEdit = () => {
 
   const handleUpdateOrgDetails = async () => {
     try {
-      await orgSchema.validate(
-        {
-          companyName: orgDetails.companyName,
-          companyPhone: orgDetails.companyPhone,
-          companyAddr: {
-            addressLine1: orgDetails.companyAddr.addressLine1,
-            country: orgDetails.companyAddr.country.value,
-            state: orgDetails.companyAddr.state.value,
-            city: orgDetails.companyAddr.city.value,
-            zipcode: orgDetails.companyAddr.zipcode,
-          },
-          companyRate: orgDetails.companyRate,
-        },
-        { abortEarly: false }
-      );
+      await orgSchema.validate(orgDetails, { abortEarly: false });
       await updateOrgDetails();
-      navigate(`/profile/edit/organization-details`, { replace: true });
     } catch (err) {
       const errObj = {
         companyNameErr: "",
         companyPhoneErr: "",
-        addressLine1Err: "",
-        stateErr: "",
-        countryErr: "",
-        cityErr: "",
-        zipcodeErr: "",
         companyRateErr: "",
       };
 
       err.inner.map(item => {
-        errObj[`${item.path.split(".").pop()}Err`] = item.message;
+        errObj[`${item.path}Err`] = item.message;
       });
       setErrDetails(errObj);
     }
@@ -422,8 +272,9 @@ const OrgEdit = () => {
       setIsLoading(true);
       const formD = new FormData();
       formD.append("company[name]", orgDetails.companyName);
+      formD.append("company[address]", orgDetails.companyAddr);
       formD.append("company[business_phone]", orgDetails.companyPhone);
-      formD.append("company[country]", orgDetails.companyAddr.country.value);
+      formD.append("company[country]", orgDetails.countryName);
       formD.append("company[base_currency]", orgDetails.companyCurrency);
       formD.append(
         "company[standard_price]",
@@ -433,41 +284,6 @@ const OrgEdit = () => {
       formD.append("company[fiscal_year_end]", orgDetails.companyFiscalYear);
       formD.append("company[date_format]", orgDetails.companyDateFormat);
       formD.append("company[timezone]", orgDetails.companyTimezone);
-      formD.append(
-        "company[addresses_attributes[0][id]]",
-        orgDetails.companyAddr.id
-      );
-
-      formD.append(
-        "company[addresses_attributes[0][address_line_1]]",
-        orgDetails.companyAddr.addressLine1
-      );
-
-      formD.append(
-        "company[addresses_attributes[0][address_line_2]]",
-        orgDetails.companyAddr.addressLine2
-      );
-
-      formD.append(
-        "company[addresses_attributes[0][state]]",
-        orgDetails.companyAddr.state?.value
-      );
-
-      formD.append(
-        "company[addresses_attributes[0][city]]",
-        orgDetails.companyAddr.city?.value
-      );
-
-      formD.append(
-        "company[addresses_attributes[0][country]]",
-        orgDetails.companyAddr.country?.value
-      );
-
-      formD.append(
-        "company[addresses_attributes[0][pin]]",
-        orgDetails.companyAddr.zipcode
-      );
-
       if (orgDetails.logo) {
         formD.append("company[logo]", orgDetails.logo);
       }
@@ -481,10 +297,10 @@ const OrgEdit = () => {
   };
 
   const handleCancelAction = () => {
+    getCountries();
     getCurrencies();
     getData();
     setIsDetailUpdated(false);
-    navigate(`/profile/edit/organization-details`, { replace: true });
   };
 
   const handleDeleteLogo = async () => {
@@ -494,51 +310,247 @@ const OrgEdit = () => {
     }
   };
 
-  const handleOnChangeCity = selectCity => {
-    const { companyAddr } = orgDetails;
-    const changedCountry = { ...companyAddr, city: selectCity };
-    setOrgDetails({ ...orgDetails, companyAddr: changedCountry });
-  };
-
   return (
-    <div className="flex w-full flex-col">
+    <div className="flex w-4/5 flex-col">
       <Header
         showButtons
         cancelAction={handleCancelAction}
         isDisableUpdateBtn={isDetailUpdated}
         saveAction={handleUpdateOrgDetails}
-        subTitle=""
+        subTitle="View and manage org settings"
         title="Organization Settings"
       />
       {isLoading ? (
         <Loader />
       ) : (
-        <StaticPage
-          orgDetails={orgDetails}
-          isDragActive={isDragActive}
-          getInputProps={getInputProps}
-          getRootProps={getRootProps}
-          handleDeleteLogo={handleDeleteLogo}
-          onLogoChange={onLogoChange}
-          errDetails={errDetails}
-          handleChangeCompanyDetails={handleChangeCompanyDetails}
-          handleAddrChange={handleAddrChange}
-          handleOnChangeCountry={handleOnChangeCountry}
-          countries={countries}
-          handleOnChangeState={handleOnChangeState}
-          stateList={stateList}
-          handleOnChangeCity={handleOnChangeCity}
-          promiseOptions={promiseOptions}
-          handleZipcodeChange={handleZipcodeChange}
-          handleCurrencyChange={handleCurrencyChange}
-          currenciesOption={currenciesOption}
-          handleTimezoneChange={handleTimezoneChange}
-          timezoneOption={timezoneOption}
-          handleDateFormatChange={handleDateFormatChange}
-          dateFormatOptions={dateFormatOptions}
-          handleFiscalYearChange={handleFiscalYearChange}
-          fiscalYearOptions={fiscalYearOptions}
-        />
+        <div className="mt-4 h-full bg-miru-gray-100 p-10">
+          <div className="flex flex-row py-6">
+            <div className="w-4/12 p-2 font-bold">Basic Details</div>
+            <div className="w-full p-2">
+              Logo
+              {orgDetails.logoUrl ? (
+                <div className="mt-2 flex flex-row">
+                  <div className="h-20 w-20">
+                    <img
+                      alt="org_logo"
+                      className="h-full min-w-full rounded-full"
+                      src={orgDetails.logoUrl}
+                    />
+                  </div>
+                  <label htmlFor="file-input">
+                    <img
+                      alt="edit"
+                      className="mt-5 cursor-pointer rounded-full"
+                      src={EditImageButtonSVG}
+                      style={{ minWidth: "40px" }}
+                    />
+                  </label>
+                  <input
+                    className="hidden"
+                    id="file-input"
+                    name="myImage"
+                    type="file"
+                    onChange={onLogoChange}
+                  />
+                  <button onClick={handleDeleteLogo}>
+                    <DeleteIcon
+                      className="mt-5 ml-2 cursor-pointer rounded-full"
+                      style={{ minWidth: "40px" }}
+                    />
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <div className="mt-2 h-20 w-20 rounded border border-miru-han-purple-1000">
+                    <label
+                      className="items-cente flex h-full w-full cursor-pointer justify-center"
+                      htmlFor="file-input"
+                    >
+                      <img
+                        alt="file_input"
+                        className="object-none"
+                        src={PlusIconSVG}
+                      />
+                    </label>
+                  </div>
+                  <input
+                    className="hidden"
+                    id="file-input"
+                    name="myImage"
+                    type="file"
+                    onChange={onLogoChange}
+                  />
+                </>
+              )}
+              <div className="mt-4 flex w-1/2 flex-col">
+                <label className="mb-2">Company Name</label>
+                <input
+                  className="w-full border py-1 px-1"
+                  id="company_name"
+                  name="company_name"
+                  type="text"
+                  value={orgDetails.companyName}
+                  onChange={handleNameChange}
+                />
+                {errDetails.companyNameErr && (
+                  <span className="text-sm text-red-600">
+                    {errDetails.companyNameErr}
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
+          <Divider />
+          <div className="flex flex-row py-6">
+            <div className="w-4/12 p-2 font-bold">Contact Details</div>
+            <div className="w-full p-2">
+              <div className="flex flex-col ">
+                <label className="mb-2">Address</label>
+                <textarea
+                  className="w-5/6 border py-1 px-1	"
+                  id="company_addr"
+                  name="company_addr"
+                  value={orgDetails.companyAddr}
+                  onChange={handleAddrChange}
+                />
+                <label className="mb-2 mt-4">Business Phone</label>
+                <input
+                  className="w-80 border py-1 px-1"
+                  id="company_phone"
+                  name="company_phone"
+                  type="text"
+                  value={orgDetails.companyPhone}
+                  onChange={handlePhoneChange}
+                />
+                {errDetails.companyPhoneErr && (
+                  <span className="text-sm text-red-600">
+                    {errDetails.companyPhoneErr}
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
+          <Divider />
+          <div className="flex flex-row py-6">
+            <div className="mt-2 w-4/12 p-2 font-bold">
+              Location and Currency
+            </div>
+            <div className=" w-full p-2">
+              <div className="flex flex-row ">
+                <div className="w-1/2 p-2">
+                  <label className="mb-2">Country</label>
+                  <Select
+                    className="mt-2"
+                    classNamePrefix="react-select-filter"
+                    options={countriesOption}
+                    styles={customStyles}
+                    value={
+                      orgDetails.countryName
+                        ? countriesOption.find(
+                            o => o.value === orgDetails.countryName
+                          )
+                        : { label: "United States", value: "US" }
+                    }
+                    onChange={handleCountryChange}
+                  />
+                </div>
+                <div className="w-1/2 p-2">
+                  <label className="mb-2">Base Currency</label>
+                  <Select
+                    className="mt-2"
+                    classNamePrefix="react-select-filter"
+                    options={currenciesOption}
+                    styles={customStyles}
+                    value={
+                      orgDetails.companyCurrency
+                        ? currenciesOption.find(
+                            o => o.value === orgDetails.companyCurrency
+                          )
+                        : { label: "US Dollar ($)", value: "USD" }
+                    }
+                    onChange={handleCurrencyChange}
+                  />
+                </div>
+              </div>
+              <div className="flex w-1/2 flex-col p-2">
+                <label className="mb-2">Standard Rate</label>
+                <input
+                  className="w-full border py-1 px-1"
+                  id="company_rate"
+                  min={0}
+                  name="company_rate"
+                  type="number"
+                  value={orgDetails.companyRate}
+                  onChange={handleRateChange}
+                />
+                {errDetails.companyRateErr && (
+                  <span className="text-sm text-red-600">
+                    {errDetails.companyRateErr}
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
+          <Divider />
+          <div className="flex flex-row py-6">
+            <div className="mt-2 w-4/12 p-2 font-bold">Date and Time</div>
+            <div className="w-full p-2">
+              <div className="flex flex-row ">
+                <div className="w-1/2 p-2">
+                  <label className="mb-2">Timezone</label>
+                  <Select
+                    className="mt-2"
+                    classNamePrefix="react-select-filter"
+                    options={timezoneOption}
+                    styles={customStyles}
+                    value={
+                      orgDetails.companyTimezone
+                        ? timezoneOption.find(
+                            o => o.value === orgDetails.companyTimezone
+                          )
+                        : timezoneOption[0]
+                    }
+                    onChange={handleTimezoneChange}
+                  />
+                </div>
+                <div className="w-1/2 p-2">
+                  <label className="mb-2">Date Format</label>
+                  <Select
+                    className="mt-2"
+                    classNamePrefix="react-select-filter"
+                    options={dateFormatOptions}
+                    styles={customStyles}
+                    value={
+                      orgDetails.companyDateFormat
+                        ? dateFormatOptions.find(
+                            o => o.value === orgDetails.companyDateFormat
+                          )
+                        : dateFormatOptions[1]
+                    }
+                    onChange={handleDateFormatChange}
+                  />
+                </div>
+              </div>
+              <div className="flex w-1/2 flex-col p-2">
+                <label className="mb-2"> Fiscal Year End</label>
+                <Select
+                  className="mt-2"
+                  classNamePrefix="react-select-filter"
+                  options={fiscalYearOptions}
+                  styles={customStyles}
+                  value={
+                    orgDetails.companyFiscalYear
+                      ? fiscalYearOptions.find(
+                          o => o.value === orgDetails.companyFiscalYear
+                        )
+                      : fiscalYearOptions[0]
+                  }
+                  onChange={handleFiscalYearChange}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
