@@ -1,13 +1,14 @@
 # frozen_string_literal: true
 
-class Invoices::ViewController < ApplicationController
+class InternalApi::V1::Invoices::ViewController < InternalApi::V1::ApplicationController
+  skip_before_action :authenticate_user_using_x_auth_token
   skip_before_action :authenticate_user!
   skip_after_action :verify_authorized
 
   def show
     invoice.viewed! if invoice.sent?
 
-    render :show, locals: { invoice: }, layout: false
+    render :show, locals: { invoice: }
   end
 
   def invoice
