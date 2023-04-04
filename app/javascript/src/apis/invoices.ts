@@ -29,6 +29,8 @@ const updateInvoice = async (id, body) => axios.patch(`${path}/${id}/`, body);
 const sendInvoice = async (id, payload) =>
   axios.post(`${path}/${id}/send_invoice`, payload);
 
+const viewInvoice = async id => axios.get(`${path}/${id}/view`);
+
 const invoicesApi = {
   get,
   post,
@@ -41,6 +43,7 @@ const invoicesApi = {
   updateInvoice,
   downloadInvoice,
   bulkDownloadInvoices,
+  viewInvoice,
 };
 
 export default invoicesApi;
