@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import React, { useState } from "react";
 
-import { i18n } from "app/javascript/src/i18n";
 import { Formik, Form, Field, FormikProps } from "formik";
 import { EditImageButtonSVG, deleteImageIcon } from "miruIcons";
 import { Avatar } from "StyledComponents";
 import * as Yup from "yup";
+
+import { i18n } from "../../../i18n";
 
 interface IClientForm {
   clientLogoUrl: string;
