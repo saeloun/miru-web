@@ -13,7 +13,9 @@ class InvoicePayment::StripeCheckoutFulfillment < ApplicationService
   def process
     @invoice = Invoice.find(event.data.object.metadata.invoice_id)
     if is_valid_event?
-      InvoicePayment::Settle.process(payment_params, invoice)
+      InvoicePayment::Settle.process(
+        payment_params, invoice,
+        { mode: :stripe, email: data_object.customer_details.email })
     end
     rescue StandardError => error
       Rails.logger.error error.message

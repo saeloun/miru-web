@@ -7,6 +7,8 @@ class Invoices::ViewController < ApplicationController
   def show
     invoice.viewed! if invoice.sent?
 
+    Invoices::EventTrackerService.new("view", invoice, params).process
+
     render :show, locals: { invoice: }, layout: false
   end
 
