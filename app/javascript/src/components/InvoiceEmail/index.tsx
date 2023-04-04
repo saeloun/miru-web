@@ -13,12 +13,7 @@ const InvoiceEmail = () => {
   const params = useParams();
 
   const [loading, setLoading] = useState(true);
-  const [url, setUrl] = useState(null);
-  const [invoice, setInvoice] = useState({});
-  const [logo, setLogo] = useState("");
-  const [lineItems, setLineItems] = useState([]);
-  const [company, setCompany] = useState({});
-  const [client, setClient] = useState({});
+  const [data, setData] = useState(null);
 
   useEffect(() => {
     fetchViewInvoice();
@@ -26,19 +21,15 @@ const InvoiceEmail = () => {
 
   const fetchViewInvoice = async () => {
     const res = await invoicesApi.viewInvoice(params.id);
-    const { url, invoice, logo, lineItems, company, client } = res.data;
-    setUrl(url);
-    setInvoice(invoice);
-    setLogo(logo);
-    setLineItems(lineItems);
-    setCompany(company);
-    setClient(client);
+    setData(res.data);
     setLoading(false);
   };
 
   if (loading) {
     return <Loader />;
   }
+
+  const { url, invoice, logo, lineItems, company, client } = data;
 
   return (
     <div className="flex flex-col justify-between">
