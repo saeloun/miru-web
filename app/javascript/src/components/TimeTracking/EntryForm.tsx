@@ -10,7 +10,7 @@ import {
   validateTimesheetEntry,
 } from "helpers";
 import { CheckedCheckboxSVG, UncheckedCheckboxSVG } from "miruIcons";
-import TextareaAutosize from "react-autosize-textarea";
+import TextareaAutosize from "react-textarea-autosize";
 import { TimeInput } from "StyledComponents";
 
 import timesheetEntryApi from "apis/timesheet-entry";
@@ -77,7 +77,10 @@ const AddEntry: React.FC<Iprops> = ({
   };
 
   useEffect(() => {
-    if (!project) return;
+    if (!project) {
+      return setProjectId(0);
+    }
+
     const selectedProject = projects[client].find(
       currentProject => currentProject.name === project
     );
@@ -88,7 +91,7 @@ const AddEntry: React.FC<Iprops> = ({
         setBillable(selectedProject.billable);
       }
     }
-  }, [project]);
+  }, [project, client]);
 
   const handleDurationChange = val => {
     setDuration(val);
@@ -183,7 +186,7 @@ const AddEntry: React.FC<Iprops> = ({
             value={client || "Client"}
             onChange={e => {
               setClient(e.target.value);
-              setProject(projects[e.target.value][0].name);
+              setProject(projects ? projects[e.target.value][0]?.name : "");
             }}
           >
             {!client && (

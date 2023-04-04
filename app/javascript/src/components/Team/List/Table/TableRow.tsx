@@ -12,7 +12,9 @@ const TableRow = ({ item }) => {
   const { setModalState } = useList();
   const navigate = useNavigate();
 
-  const actionIconVisible = isAdminUser && item.role !== "owner";
+  const { id, name, email, role, status } = item;
+
+  const actionIconVisible = isAdminUser && role !== "owner";
 
   const handleAction = (e, action) => {
     e.preventDefault();
@@ -26,26 +28,28 @@ const TableRow = ({ item }) => {
         isAdminUser && "cursor-pointer"
       } border-b border-miru-gray-200 last:border-0`}
       onClick={() => {
+        if (status) return;
+
         if (isDesktop) {
-          isAdminUser ? navigate(`/team/${item.id}`, { replace: true }) : null;
+          isAdminUser ? navigate(`/team/${id}`, { replace: true }) : null;
         } else {
           isAdminUser
-            ? navigate(`/team/${item.id}/options`, { replace: true })
+            ? navigate(`/team/${id}/options`, { replace: true })
             : null;
         }
       }}
     >
-      <td className="table__data p-6 capitalize">{item.name}</td>
+      <td className="table__data p-6 capitalize">{name}</td>
       <td className="table__data table__text p-6 text-sm font-medium">
-        {item.email}
+        {email}
       </td>
       <td className="table__data table__text p-6 text-sm font-medium capitalize">
-        {item.role}
+        {role}
       </td>
       {isAdminUser && (
         <Fragment>
           <td className="w-48 py-6 pr-6 text-right">
-            {item.status && (
+            {status && (
               <span className="table__pending">Pending Invitation</span>
             )}
           </td>
