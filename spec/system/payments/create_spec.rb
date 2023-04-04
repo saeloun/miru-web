@@ -15,25 +15,24 @@ RSpec.describe "Adding payment entry", type: :system do
       sign_in user
     end
 
-    context "when creating a payment entry" do
-      it "creates a payment entry successfully" do
-        with_forgery_protection do
-          visit "/payments"
-          click_button "addEntry"
-          find("#invoice").click
-          within(".modal__container") do
-            find("#react-select-4-option-0").click
-            find("#transactionDate").click
-            find(".react-datepicker__day--014").click
-            find("#transactionType").click
-            find(".react-select-filter__option", text: "ACH").click
-            fill_in "NotesOptional", with: "Testing payment"
-            click_button "ADD PAYMENT"
-          end
+    it "creates a payment entry successfully" do
+      with_forgery_protection do
+        visit "/payments"
 
-          expect(page).to have_content(invoice.invoice_number)
-          expect(page).to have_content("PAID")
+        click_button "addEntry"
+        find("#invoice").click
+        within(".modal__container") do
+          find("#react-select-4-option-0").click
+          find("#transactionDate").click
+          find(".react-datepicker__day--014").click
+          find("#transactionType").click
+          find(".react-select-filter__option", text: "ACH").click
+          fill_in "NotesOptional", with: "Testing payment"
+          click_button "ADD PAYMENT"
         end
+
+        expect(page).to have_content(invoice.invoice_number)
+        expect(page).to have_content("PAID")
       end
     end
   end
