@@ -36,6 +36,7 @@ class Client < ApplicationRecord
   has_one_attached :logo
   belongs_to :company
 
+  before_save :strip_attributes
   validates :name, presence: true, length: { maximum: 50 }
   validates :email, presence: true, uniqueness: { scope: :company_id }, format: { with: Devise.email_regexp }
   after_discard :discard_projects
@@ -147,5 +148,9 @@ class Client < ApplicationRecord
 
     def discard_projects
       projects.discard_all
+    end
+
+    def strip_attributes
+      name.strip!
     end
 end
