@@ -20,6 +20,7 @@ const resolveOptions = {
       ".ts",
       ".tsx",
       ".js",
+      ".jsx",
       ".png",
       ".svg",
       ".gif",
