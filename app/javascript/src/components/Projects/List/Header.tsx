@@ -25,14 +25,11 @@ const Header = ({ setShowProjectModal, isAdminUser }) => {
         isAdminUser ? "sm:justify-between" : ""
       }`}
     >
-      <h2 className="header__title" data-cy="projects-heading">
-        Projects
-      </h2>
+      <h2 className="header__title">Projects</h2>
       <AutoSearch SearchDataRow={SearchDataRow} searchAction={fetchProjects} />
       {isAdminUser && (
         <button
           className="header__button flex"
-          data-cy="new-project-button"
           onClick={() => setShowProjectModal(true)}
         >
           <PlusIcon size={16} weight="fill" />

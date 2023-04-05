@@ -14,6 +14,7 @@ namespace :internal_api, defaults: { format: "json" } do
     end
 
     resources :clients, only: [:index, :update, :destroy, :show, :create]
+
     resources :project, only: [:index]
     resources :timesheet_entry do
       collection do
@@ -28,7 +29,7 @@ namespace :internal_api, defaults: { format: "json" } do
     resources :timesheet_entry, only: [:index, :create, :update, :destroy]
 
     namespace :reports do
-      resources :client_revenues, only: [:index]
+      resources :client_revenues, only: [:index, :new]
       resources :time_entries, only: [:index] do
         collection do
           get :download
@@ -42,7 +43,9 @@ namespace :internal_api, defaults: { format: "json" } do
     namespace :invoices do
       resources :bulk_deletion, only: [:create]
       resources :bulk_download, only: [:index]
+      get "(:id)/view", to: "view#show", as: "view"
     end
+
     resources :invoices, only: [:index, :create, :update, :show, :destroy, :edit] do
       member do
         post :send_invoice
@@ -77,6 +80,7 @@ namespace :internal_api, defaults: { format: "json" } do
 
     resources :team, only: [:index, :destroy, :update] do
       resource :details, only: [:show, :update], controller: "team_members/details"
+      resource :avatar, only: [:update, :destroy], controller: "team_members/avatar"
     end
 
     resources :invitations, only: [:create, :update, :destroy]

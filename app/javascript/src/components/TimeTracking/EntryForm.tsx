@@ -10,7 +10,7 @@ import {
   validateTimesheetEntry,
 } from "helpers";
 import { CheckedCheckboxSVG, UncheckedCheckboxSVG } from "miruIcons";
-import TextareaAutosize from "react-autosize-textarea";
+import TextareaAutosize from "react-textarea-autosize";
 import { TimeInput } from "StyledComponents";
 
 import timesheetEntryApi from "apis/timesheet-entry";
@@ -46,6 +46,7 @@ const AddEntry: React.FC<Iprops> = ({
   const [projectBillable, setProjectBillable] = useState<boolean>(true);
   const [selectedDate, setSelectedDate] = useState<string>(selectedFullDate);
   const [displayDatePicker, setDisplayDatePicker] = useState<boolean>(false);
+  const [submitting, setSubmitting] = useState<boolean>(false);
 
   const datePickerRef: MutableRefObject<any> = useRef();
   const { isDesktop } = useUserContext();
@@ -76,7 +77,10 @@ const AddEntry: React.FC<Iprops> = ({
   };
 
   useEffect(() => {
-    if (!project) return;
+    if (!project) {
+      return setProjectId(0);
+    }
+
     const selectedProject = projects[client].find(
       currentProject => currentProject.name === project
     );
@@ -87,7 +91,7 @@ const AddEntry: React.FC<Iprops> = ({
         setBillable(selectedProject.billable);
       }
     }
-  }, [project]);
+  }, [project, client]);
 
   const handleDurationChange = val => {
     setDuration(val);
@@ -155,7 +159,7 @@ const AddEntry: React.FC<Iprops> = ({
   const handleDisableBtn = () => {
     const tse = getPayload();
     const message = validateTimesheetEntry(tse, client, projectId);
-    if (message) {
+    if (message || submitting) {
       return true;
     }
 
@@ -182,7 +186,7 @@ const AddEntry: React.FC<Iprops> = ({
             value={client || "Client"}
             onChange={e => {
               setClient(e.target.value);
-              setProject(projects[e.target.value][0].name);
+              setProject(projects ? projects[e.target.value][0]?.name : "");
             }}
           >
             {!client && (
@@ -245,6 +249,7 @@ const AddEntry: React.FC<Iprops> = ({
             )}
             <div
               className="formatted-date flex h-8 w-29 items-center justify-center rounded-sm bg-miru-gray-100 p-1 text-sm"
+              id="formattedDate"
               onClick={() => {
                 setDisplayDatePicker(true);
               }}
@@ -264,6 +269,7 @@ const AddEntry: React.FC<Iprops> = ({
             <img
               alt="checkbox"
               className="inline"
+              id="check"
               src={CheckedCheckboxSVG}
               onClick={() => {
                 setBillable(false);
@@ -273,6 +279,7 @@ const AddEntry: React.FC<Iprops> = ({
             <img
               alt="checkbox"
               className="inline"
+              id="uncheck"
               src={UncheckedCheckboxSVG}
               onClick={() => {
                 if (projectBillable) setBillable(true);
@@ -291,7 +298,10 @@ const AddEntry: React.FC<Iprops> = ({
                 ? "cursor-not-allowed bg-miru-gray-1000"
                 : "bg-miru-han-purple-1000 hover:border-transparent"
             }`}
-            onClick={handleSave}
+            onClick={() => {
+              setSubmitting(true);
+              handleSave();
+            }}
           >
             SAVE
           </button>
@@ -341,6 +351,8 @@ const AddEntry: React.FC<Iprops> = ({
       setNote={setNote}
       setProject={setProject}
       setSelectedDate={setSelectedDate}
+      setSubmitting={setSubmitting}
+      submitting={submitting}
     />
   );
 };

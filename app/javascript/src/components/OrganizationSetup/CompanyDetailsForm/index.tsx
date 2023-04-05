@@ -166,10 +166,7 @@ const CompanyDetailsForm = ({
                       type="file"
                       onChange={e => onLogoChange(e, setFieldValue)}
                     />
-                    <button
-                      data-cy="delete-logo"
-                      onClick={() => setFieldValue("logo_url", null)}
-                    >
+                    <button onClick={() => setFieldValue("logo_url", null)}>
                       <img
                         alt="edit"
                         className="min-w-12 cursor-pointer rounded-full hover:bg-miru-gray-50"
@@ -203,6 +200,7 @@ const CompanyDetailsForm = ({
                   id="company_name"
                   label="Company Name"
                   name="company_name"
+                  resetErrorOnChange={false}
                 />
                 <InputErrors
                   fieldErrors={errors.company_name}
@@ -214,6 +212,7 @@ const CompanyDetailsForm = ({
                   id="business_phone"
                   label="Business Phone"
                   name="business_phone"
+                  resetErrorOnChange={false}
                 />
                 <InputErrors
                   fieldErrors={errors.business_phone}
@@ -221,7 +220,12 @@ const CompanyDetailsForm = ({
                 />
               </div>
               <div className="field relative">
-                <InputField id="address" label="Address" name="address" />
+                <InputField
+                  id="address"
+                  label="Address"
+                  name="address"
+                  resetErrorOnChange={false}
+                />
                 <InputErrors
                   fieldErrors={errors.address}
                   fieldTouched={touched.address}
@@ -280,7 +284,6 @@ const CompanyDetailsForm = ({
               {/* Next Button */}
               <div className="mb-3">
                 <button
-                  data-cy="sign-up-button"
                   disabled={isBtnDisabled(values)}
                   type="submit"
                   className={`form__button whitespace-nowrap tracking-normal ${

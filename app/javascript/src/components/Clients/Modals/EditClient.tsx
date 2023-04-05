@@ -57,7 +57,7 @@ const EditClient = ({ setShowEditDialog, client }: IEditClient) => {
         <div className="relative h-full w-full px-4 md:flex md:items-center md:justify-center">
           <div className="modal-width transform rounded-lg bg-white px-6 pb-6 shadow-xl transition-all sm:max-w-md sm:align-middle">
             <div className="mt-6 flex items-center justify-between">
-              <h6 className="text-base font-extrabold">Edit Client</h6>
+              <h6 className="text-base font-extrabold">Edit Client Details</h6>
               <button
                 type="button"
                 onClick={() => {
@@ -71,10 +71,6 @@ const EditClient = ({ setShowEditDialog, client }: IEditClient) => {
               apiError={apiError}
               clientData={client}
               clientLogoUrl={clientLogoUrl}
-              dataCyAddress="edit-client-address"
-              dataCyName="edit-client-name"
-              dataCyPhone="edit-client-phone"
-              dataCySubmit="edit-client-submit"
               formType="edit"
               handleDeleteLogo={handleDeleteLogo}
               handleSubmit={handleSubmit}

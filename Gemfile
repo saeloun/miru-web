@@ -12,7 +12,7 @@ gem "rails", "~> 7.0.4"
 gem "pg"
 
 # Use the Puma web server [https://github.com/puma/puma]
-gem "puma", "~> 5.0"
+gem "puma", "< 7"
 
 # Use JavaScript with ESM import maps [https://github.com/rails/importmap-rails]
 # gem "importmap-rails", ">= 0.9.2"
@@ -57,7 +57,7 @@ gem "bootsnap", ">= 1.4.4", require: false
 gem "image_processing", ">= 1.2"
 
 # Webpack bundler for rails
-gem "webpacker"
+gem "shakapacker", "6.0.0"
 
 # React hook for rails
 gem "react-rails"
@@ -188,10 +188,6 @@ group :development do
   gem "annotate"
 
   gem "letter_opener"
-end
-
-group :production do
-  gem "elastic-apm"
 end
 
 group :test, :ci do

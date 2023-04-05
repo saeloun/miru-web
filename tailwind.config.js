@@ -51,12 +51,14 @@ module.exports = {
         30: "7.5rem", //120px
         34: "8.6rem",
         13: "13.5px",
+        88: "5.5rem", //88px
         128: "32rem", // 512px
         168: "10.5rem", // 168px
         180: "11.25rem", //180px
         228: "14.25rem", //228px
         300: "18.75rem", //300px
         320: "20rem", // 320px
+        336: "21rem", // 336px
         352: "22rem", //352px
         480: "30rem", //480px
         18: "18%",
@@ -65,6 +67,7 @@ module.exports = {
       minWidth: {
         12: "12px",
         24: "24px",
+        400: "25rem", // 400px
       },
       maxWidth: {
         400: "25rem", //400px
@@ -77,7 +80,8 @@ module.exports = {
         87: "5.4rem",
         88: "5.5rem",
         "1/12": "8.333%",
-        "1/15": "6.666%"
+        "1/15": "6.666%",
+        148: "592px",
       },
       minHeight: {
         "10v": "10vh",
@@ -91,6 +95,7 @@ module.exports = {
         "90v": "90vh",
         "100v": "100vh",
         24: "24px",
+        80: "80px",
       },
       maxHeight: {
         "10v": "10vh",
@@ -182,6 +187,7 @@ module.exports = {
         manrope: "'Manrope', serif",
       },
       spacing: {
+        3.75: "0.9375rem",
         13: "3.125rem",
         15: "3.75rem",
         18: "4.5rem",
@@ -211,7 +217,7 @@ module.exports = {
         "10/100": "10%",
       },
       zIndex: {
-        1: "-1",
+        "negative-1": "-1",
         1: "1",
         15: "15",
       },

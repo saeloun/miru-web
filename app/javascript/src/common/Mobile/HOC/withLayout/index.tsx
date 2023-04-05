@@ -9,18 +9,13 @@ import { useUserContext } from "context/UserContext";
 
 const WithLayout =
   (WrappedComponent, includeNavbar, includeSidebar) => props => {
-    const { selectedTab, setSelectedTab, isAdminUser } = useUserContext();
+    const { selectedTab, setSelectedTab, companyRole } = useUserContext();
 
     return (
       <div className="h-full">
         {includeNavbar && <Header selectedTab={selectedTab} />}
         <WrappedComponent {...props} />
-        {includeSidebar && (
-          <Navigation
-            isAdminUser={isAdminUser}
-            setSelectedTab={setSelectedTab}
-          />
-        )}
+        {includeSidebar && <Navigation />}
       </div>
     );
   };

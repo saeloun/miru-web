@@ -1,14 +1,21 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import dayjs from "dayjs";
+import { currencyFormat, useOutsideClick } from "helpers";
 import { XIcon, CalendarIcon, SearchIcon } from "miruIcons";
 import Select, { DropdownIndicatorProps, components } from "react-select";
+import { Badge } from "StyledComponents";
 
 import payment from "apis/payments/payments";
 import CustomDatePicker from "common/CustomDatePicker";
+import { CustomInputText } from "common/CustomInputText";
+import CustomReactSelect from "common/CustomReactSelect";
+import { CustomValueContainer } from "common/CustomReactSelectStyle";
+import { CustomTextareaAutosize } from "common/CustomTextareaAutosize";
 import Toastr from "common/Toastr";
 import { mapPayment } from "mapper/mappedIndex";
+import getStatusCssClass from "utils/getBadgeStatus";
 
 const AddManualEntry = ({
   setShowManualEntryModal,
@@ -16,6 +23,7 @@ const AddManualEntry = ({
   dateFormat,
   fetchPaymentList,
   fetchInvoiceList,
+  baseCurrency,
 }) => {
   const invoiceId = new URLSearchParams(window.location.search).get(
     "invoiceId"
@@ -26,8 +34,11 @@ const AddManualEntry = ({
   const [amount, setAmount] = useState<any>(null);
   const [note, setNote] = useState<any>(null);
   const [showDatePicker, setShowDatePicker] = useState<any>(false);
-  const [isOpen, setIsOpen] = useState<any>(false);
   const [showSelectInvoice, setShowSelectInvoice] = useState<any>(false);
+  const [showSelectMenu, setShowSelectMenu] = useState(false);
+
+  const wrapperSelectRef = useRef(null);
+  const wrapperCalendartRef = useRef(null);
 
   const transactionTypes = [
     { label: "Visa", value: "visa" },
@@ -73,9 +84,18 @@ const AddManualEntry = ({
   };
 
   const handleInvoiceSelect = val => {
+    setShowSelectMenu(!showSelectMenu);
     setInvoice(val);
     setAmount(val.amount);
   };
+
+  useOutsideClick(wrapperSelectRef, () => {
+    setShowSelectMenu(false);
+  });
+
+  useOutsideClick(wrapperCalendartRef, () => {
+    setShowDatePicker({ visibility: false });
+  });
 
   const handleSelectedInvoice = () => {
     if (!invoiceList || invoiceList.length == 0) return;
@@ -99,7 +119,7 @@ const AddManualEntry = ({
 
   const DropdownIndicator = (props: DropdownIndicatorProps<true>) => (
     <components.DropdownIndicator {...props}>
-      {isOpen && <SearchIcon color="#1D1A31" size={20} />}
+      <SearchIcon color="#1D1A31" size={20} />
     </components.DropdownIndicator>
   );
 
@@ -111,7 +131,13 @@ const AddManualEntry = ({
     }),
     menu: base => ({
       ...base,
-      border: 0,
+      marginTop: 0,
+      marginBottom: 0,
+      border: "none",
+      boxShadow: "none",
+      backgroundColor: "white",
+      position: "relative",
+      zIndex: 3,
     }),
     control: provided => ({
       ...provided,
@@ -135,32 +161,50 @@ const AddManualEntry = ({
       <div
         ref={innerRef}
         {...innerProps}
-        className=" flex items-center justify-between p-2"
+        className=" flex cursor-pointer items-center justify-between p-2"
       >
-        <div className="py-2.5 pr-6 pl-0 text-left">
-          <h1 className="text-base font-bold leading-5 text-miru-dark-purple-1000">
+        <div className="w-2/6 py-3 pr-2 pl-0 text-left">
+          <div className="truncate text-sm font-medium leading-5 text-miru-dark-purple-1000">
             {data.label}
-          </h1>
-          <h3 className="pt-1 text-sm font-normal leading-5 text-miru-dark-purple-400">
+          </div>
+          <div className="pt-1 text-sm font-normal leading-5 text-miru-dark-purple-400">
             {data.invoiceNumber}
-          </h3>
+          </div>
         </div>
-        <div className="px-6 py-2.5 text-left">
-          <h1 className="text-base font-bold leading-5 text-miru-dark-purple-1000">
-            {data.amount}
-          </h1>
-          <h3 className="pt-1 text-sm font-normal leading-5 text-miru-dark-purple-400">
+        <div className="w-2/6 px-2 py-3 text-right	">
+          <div className="text-base font-bold leading-5 text-miru-dark-purple-1000">
+            {baseCurrency && currencyFormat(baseCurrency, data.amount)}
+          </div>
+          <div className="pt-1 text-sm font-medium leading-5 text-miru-dark-purple-400">
             {dayjs(data.invoiceDate).format(dateFormat)}
-          </h3>
+          </div>
         </div>
-        <div className="py-2.5 pl-6 pr-0 text-right text-sm font-semibold leading-4 tracking-wider">
-          <span className="rounded-lg bg-miru-alert-green-400 px-1 text-miru-alert-green-800">
-            {data.status}
+        <div className="w-2/6 py-3 pl-2 pr-0 text-right text-sm font-semibold leading-4 tracking-wider">
+          <span className="rounded-lg">
+            <Badge
+              className={`${getStatusCssClass(data.status)} uppercase`}
+              text={data.status}
+            />
           </span>
         </div>
       </div>
     );
   };
+
+  const handleShowSelectMenu = () => {
+    setShowSelectMenu(!showSelectMenu);
+  };
+
+  useEffect(() => {
+    const close = e => {
+      if (e.keyCode === 27) {
+        setShowDatePicker({ visibility: false });
+      }
+    };
+    window.addEventListener("keydown", close);
+
+    return () => window.removeEventListener("keydown", close);
+  }, []);
 
   return (
     <div
@@ -188,128 +232,127 @@ const AddManualEntry = ({
                     Invoice
                   </label>
                 </div>
-                <div className="mt-1">
+                <div className="mt-1" id="invoice" ref={wrapperSelectRef}>
                   {showSelectInvoice && (
-                    <Select
-                      isSearchable
-                      className="m-0 mt-2 w-full border-0 font-medium text-miru-dark-purple-1000"
-                      classNamePrefix="border-0 font-medium text-miru-dark-purple-1000"
-                      defaultValue={invoice}
-                      options={invoiceList.invoiceList}
-                      placeholder="Search by client name or invoice ID"
-                      styles={customStyles}
-                      components={{
-                        Option: CustomOption,
-                        DropdownIndicator,
-                        IndicatorSeparator: () => null,
-                      }}
-                      onChange={handleInvoiceSelect}
-                      onMenuClose={() => setIsOpen(false)}
-                      onMenuOpen={() => setIsOpen(true)}
-                    />
+                    <div
+                      className="relative mt-3"
+                      id="invoicesList"
+                      onClick={handleShowSelectMenu}
+                    >
+                      <CustomReactSelect
+                        ignoreDisabledFontColor
+                        isDisabled
+                        isSearchable
+                        classNamePrefix="border-0 font-medium text-miru-dark-purple-1000"
+                        defaultValue={invoice}
+                        handleOnChange={handleInvoiceSelect}
+                        label="Invoice"
+                        name="invoiceSearch"
+                        options={invoiceList.invoiceList}
+                        value={invoice}
+                        components={{
+                          ValueContainer: CustomValueContainer,
+                          IndicatorSeparator: () => null,
+                        }}
+                      />
+                      {showSelectMenu && (
+                        <div
+                          className="absolute right-0 top-0 z-15 min-h-24 w-full flex-col items-end bg-white p-2 shadow-c1 group-hover:flex"
+                          id="transactionDate"
+                          onClick={e => e.stopPropagation()}
+                        >
+                          <Select
+                            defaultMenuIsOpen
+                            isSearchable
+                            className="m-0 mt-2 w-full border-0 font-medium text-miru-dark-purple-1000"
+                            classNamePrefix="border-0 font-medium text-miru-dark-purple-1000"
+                            defaultValue={invoice}
+                            id="selectDate"
+                            options={invoiceList.invoiceList}
+                            placeholder="Search by client name or invoice ID"
+                            styles={customStyles}
+                            components={{
+                              Option: CustomOption,
+                              DropdownIndicator,
+                              IndicatorSeparator: () => null,
+                            }}
+                            onChange={handleInvoiceSelect}
+                          />
+                        </div>
+                      )}
+                    </div>
                   )}
                 </div>
               </div>
             </div>
-            <div className="mt-4">
-              <div className="field">
-                <div className="field_with_errors">
-                  <label className="block text-xs font-normal tracking-wider text-miru-dark-purple-1000">
-                    Transaction Date
-                  </label>
-                </div>
-                <div
-                  className="relative mt-1"
-                  onClick={() => setShowDatePicker(!showDatePicker)}
-                >
-                  <input
-                    disabled
-                    className="focus:outline-none block h-8 w-full appearance-none rounded border-0 bg-miru-gray-100 px-3 py-2 text-sm font-medium text-miru-dark-purple-1000 sm:text-base"
-                    placeholder={dateFormat}
-                    type="text"
-                    value={
-                      transactionDate &&
-                      dayjs(transactionDate).format(dateFormat)
-                    }
-                  />
-                  <CalendarIcon
-                    className="absolute top-0 right-0 m-2"
-                    color="#5B34EA"
-                    size={20}
-                  />
-                </div>
-                {showDatePicker && (
-                  <CustomDatePicker
-                    date={transactionDate}
-                    handleChange={handleDatePicker}
-                  />
+            <div className="mt-4" ref={wrapperCalendartRef}>
+              <div
+                className="field relative flex w-full flex-col"
+                onClick={() =>
+                  setShowDatePicker({ visibility: !showDatePicker.visibility })
+                }
+              >
+                <CustomInputText
+                  disabled
+                  id="transactionDate"
+                  label="Transaction Date"
+                  name="transactionDate"
+                  type="text"
+                  value={
+                    transactionDate && dayjs(transactionDate).format(dateFormat)
+                  }
+                  onChange={() => {}} //eslint-disable-line
+                />
+                <CalendarIcon
+                  className="absolute top-0 bottom-0 right-1 mx-2 my-3 "
+                  color="#5B34EA"
+                  size={20}
+                />
+              </div>
+              {showDatePicker.visibility && (
+                <CustomDatePicker
+                  date={transactionDate ? new Date(transactionDate) : null}
+                  handleChange={handleDatePicker}
+                />
+              )}
+            </div>
+            <div className="relative mt-4">
+              <CustomReactSelect
+                isSearchable
+                handleOnChange={e => setTransactionType(e.value)}
+                label="Transaction Type"
+                name="transactionType"
+                options={transactionTypes}
+                value={transactionTypes.find(
+                  type => type.value == transactionType
                 )}
-              </div>
+              />
             </div>
             <div className="mt-4">
-              <div className="field">
-                <div className="field_with_errors">
-                  <label className="block text-xs font-normal tracking-wider text-miru-dark-purple-1000">
-                    Transaction Type
-                  </label>
-                </div>
-                <div className="mt-1">
-                  <select
-                    className="focus:outline-none block h-8 w-full rounded border-0 bg-miru-gray-100 px-2 py-1 text-sm font-medium text-miru-dark-purple-1000 sm:text-base"
-                    onChange={e => setTransactionType(e.target.value)}
-                  >
-                    <option
-                      disabled
-                      hidden
-                      selected
-                      style={{ color: "#A5A3AD" }}
-                      value=""
-                    >
-                      Select
-                    </option>
-                    {transactionTypes.map(type => (
-                      <option key={type.value} value={type.value}>
-                        {type.label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
+              <CustomInputText
+                disabled
+                id="paymentAmount"
+                inputBoxClassName="form__input block w-full appearance-none bg-white p-4 text-base h-12 focus-within:border-miru-han-purple-1000 border-miru-gray-1000"
+                label="Payment amount"
+                labelClassName="absolute top-0.5 left-1 h-6 z-1 origin-0 bg-white p-2 text-base font-medium duration-300 text-miru-dark-purple-200"
+                name="paymentAmount"
+                type="text"
+                value={
+                  amount && baseCurrency && currencyFormat(baseCurrency, amount)
+                }
+                onChange={() => {}} //eslint-disable-line
+              />
             </div>
             <div className="mt-4">
-              <div className="field">
-                <div className="field_with_errors">
-                  <label className="block text-xs font-normal tracking-wider text-miru-dark-purple-1000">
-                    Amount
-                  </label>
-                </div>
-                <div className="mt-1">
-                  <input
-                    disabled
-                    className="focus:outline-none block h-8 w-full appearance-none rounded border-0 bg-miru-gray-100 px-3 py-2 text-sm font-medium text-miru-dark-purple-1000 sm:text-base"
-                    placeholder="Payment Amount"
-                    type="text"
-                    value={amount}
-                  />
-                </div>
-              </div>
-            </div>
-            <div className="mt-4">
-              <div className="field">
-                <div className="field_with_errors">
-                  <label className="block text-xs font-normal tracking-wider text-miru-dark-purple-1000">
-                    Notes(Optional)
-                  </label>
-                </div>
-                <div className="mt-1">
-                  <textarea
-                    className="focus:outline-none block w-full appearance-none rounded border-0 bg-miru-gray-100 px-3 py-2 text-sm font-medium text-miru-dark-purple-1000 sm:text-base"
-                    placeholder="Note"
-                    rows={3}
-                    onChange={e => setNote(e.target.value)}
-                  />
-                </div>
-              </div>
+              <CustomTextareaAutosize
+                id="NotesOptional"
+                label="Notes (optional)"
+                maxRows={12}
+                name="NotesOptional"
+                rows={5}
+                value={note}
+                onChange={e => setNote(e.target.value)}
+              />
             </div>
             <div className="actions mt-4">
               {invoice && transactionDate && transactionType && amount ? (

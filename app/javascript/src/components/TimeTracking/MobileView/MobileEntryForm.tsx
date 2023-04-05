@@ -12,7 +12,12 @@ import {
   CopyIcon,
   DeleteIcon,
 } from "miruIcons";
-import { Button, MobileMoreOptions, SidePanel } from "StyledComponents";
+import {
+  Button,
+  MobileMoreOptions,
+  SidePanel,
+  TimeInput,
+} from "StyledComponents";
 
 import CustomCheckbox from "common/CustomCheckbox";
 import CustomDatePicker from "common/CustomDatePicker";
@@ -43,6 +48,8 @@ const AddEntryMobile = ({
   editEntryId,
   setEditEntryId,
   handleDeleteEntry,
+  submitting,
+  setSubmitting,
 }) => {
   const [showClientList, setShowClientList] = useState<boolean>(false);
   const [clientList, setClientList] = useState<any>(clients);
@@ -127,6 +134,10 @@ const AddEntryMobile = ({
     setEditEntryId(0);
   };
 
+  const handleDurationChange = val => {
+    setDuration(val);
+  };
+
   return (
     <SidePanel
       WrapperClassname="z-50 justify-content-between lg:hidden bg-white"
@@ -144,232 +155,236 @@ const AddEntryMobile = ({
         </Button>
       </SidePanel.Header>
       <SidePanel.Body className="sidebar__filters flex h-full flex-col justify-between overflow-y-auto px-4">
-        <div>
-          <div className="py-3">
-            <CustomReactSelect
-              isDisabled={showClientList}
-              label="Client"
-              name="client_select"
-              options={projects[client]}
-              value={client && { label: client }}
-              handleonFocus={() => {
-                setShowClientList(true);
-              }}
-            />
-            {showClientList && (
-              <MobileMoreOptions
-                className="h-1/2"
-                setVisibilty={setShowClientList}
-              >
-                <div className="relative mt-2 flex w-full items-center">
-                  <input
-                    placeholder="Search"
-                    type="text"
-                    value={searchQuery}
-                    className="focus:outline-none w-full rounded bg-miru-gray-100 p-2
+        <div className="flex flex-auto flex-col justify-between">
+          <div>
+            <div className="py-3">
+              <CustomReactSelect
+                isDisabled={showClientList}
+                label="Client"
+                name="client_select"
+                options={projects[client]}
+                value={client && { label: client }}
+                handleonFocus={() => {
+                  setShowClientList(true);
+                }}
+              />
+              {showClientList && (
+                <MobileMoreOptions
+                  className="h-1/2"
+                  setVisibilty={setShowClientList}
+                >
+                  <div className="relative mt-2 flex w-full items-center">
+                    <input
+                      placeholder="Search"
+                      type="text"
+                      value={searchQuery}
+                      className="focus:outline-none w-full rounded bg-miru-gray-100 p-2
             text-sm font-medium focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
-                    onChange={e => {
-                      setSearchQuery(e.target.value);
-                    }}
-                  />
-                  {searchQuery ? (
-                    <XIcon
-                      className="absolute right-2"
-                      color="#1D1A31"
-                      size={16}
-                      onClick={() => setSearchQuery("")}
+                      onChange={e => {
+                        setSearchQuery(e.target.value);
+                      }}
                     />
-                  ) : (
-                    <SearchIcon
-                      className="absolute right-2"
-                      color="#1D1A31"
-                      size={16}
-                    />
-                  )}
-                </div>
-                {clientList.map((eachClient, index) => (
-                  <li
-                    key={index}
-                    className={`flex items-center px-2 pt-3 text-sm leading-5 text-miru-dark-purple-1000 hover:bg-miru-gray-100 ${
-                      eachClient.name == client ? "font-bold" : "font-normal"
-                    }`}
-                    onClick={() => {
-                      setClient(eachClient.name);
-                      setShowClientList(false);
-                    }}
-                  >
-                    {eachClient.name}
-                  </li>
-                ))}
-              </MobileMoreOptions>
-            )}
-          </div>
-          <div className="py-3">
-            <CustomReactSelect
-              isDisabled={showProjectList}
-              label="Project"
-              name="project_select"
-              options={projects[client]}
-              value={project && { label: project }}
-              handleonFocus={() => {
-                setShowProjectList(true);
-              }}
-            />
-            {showProjectList && (
-              <MobileMoreOptions
-                className="h-1/2"
-                setVisibilty={setShowProjectList}
-              >
-                <div className="relative mt-2 flex w-full items-center">
-                  <input
-                    placeholder="Search"
-                    type="text"
-                    value={projectSearchQuery}
-                    className="focus:outline-none w-full rounded bg-miru-gray-100 p-2
-            text-sm font-medium focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
-                    onChange={e => {
-                      setProjectSearchQuery(e.target.value);
-                    }}
-                  />
-                  {projectSearchQuery ? (
-                    <XIcon
-                      className="absolute right-2"
-                      color="#1D1A31"
-                      size={16}
-                      onClick={() => setProjectSearchQuery("")}
-                    />
-                  ) : (
-                    <SearchIcon
-                      className="absolute right-2"
-                      color="#1D1A31"
-                      size={16}
-                    />
-                  )}
-                </div>
-                {client ? (
-                  projectList.map((eachProject, index) => (
+                    {searchQuery ? (
+                      <XIcon
+                        className="absolute right-2"
+                        color="#1D1A31"
+                        size={16}
+                        onClick={() => setSearchQuery("")}
+                      />
+                    ) : (
+                      <SearchIcon
+                        className="absolute right-2"
+                        color="#1D1A31"
+                        size={16}
+                      />
+                    )}
+                  </div>
+                  {clientList.map((eachClient, index) => (
                     <li
                       key={index}
                       className={`flex items-center px-2 pt-3 text-sm leading-5 text-miru-dark-purple-1000 hover:bg-miru-gray-100 ${
-                        eachProject.name == project
-                          ? "font-bold"
-                          : "font-normal"
+                        eachClient.name == client ? "font-bold" : "font-normal"
                       }`}
                       onClick={() => {
-                        setProject(eachProject.name);
-                        setShowProjectList(false);
+                        setClient(eachClient.name);
+                        setShowClientList(false);
                       }}
                     >
-                      {eachProject.name}
+                      {eachClient.name}
                     </li>
-                  ))
-                ) : (
-                  <div className="mt-5">Please select client.</div>
-                )}
-              </MobileMoreOptions>
-            )}
-          </div>
-          <div className="py-3">
-            <CustomTextareaAutosize
-              id="Description (optional)"
-              label="Description (optional)"
-              maxRows={12}
-              name="Description (optional)"
-              rows={5}
-              value={note}
-              onChange={e => setNote(e.target["value"])}
-            />
-          </div>
-          <div className="flex w-full flex-col py-3">
-            <div
-              className="field relative flex w-full flex-col"
-              onClick={() => setShowDatePicker(!showDatePicker)}
-            >
-              <CustomInputText
-                disabled
-                dataCy="date"
-                id="date"
-                label="Date"
-                name="date"
-                type="text"
-                value={dayjs(selectedDate).format("MM.DD.YYYY")}
-                onChange={e => {
-                  setSelectedDate(e.target.value);
+                  ))}
+                </MobileMoreOptions>
+              )}
+            </div>
+            <div className="py-3">
+              <CustomReactSelect
+                isDisabled={showProjectList}
+                label="Project"
+                name="project_select"
+                options={projects[client]}
+                value={project && { label: project }}
+                handleonFocus={() => {
+                  setShowProjectList(true);
                 }}
               />
-              <CalendarIcon
-                className="absolute top-0 bottom-0 right-1 mx-2 my-3 "
-                color="#5B34EA"
-                size={20}
-                weight="bold"
+              {showProjectList && (
+                <MobileMoreOptions
+                  className="h-1/2"
+                  setVisibilty={setShowProjectList}
+                >
+                  <div className="relative mt-2 flex w-full items-center">
+                    <input
+                      placeholder="Search"
+                      type="text"
+                      value={projectSearchQuery}
+                      className="focus:outline-none w-full rounded bg-miru-gray-100 p-2
+            text-sm font-medium focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
+                      onChange={e => {
+                        setProjectSearchQuery(e.target.value);
+                      }}
+                    />
+                    {projectSearchQuery ? (
+                      <XIcon
+                        className="absolute right-2"
+                        color="#1D1A31"
+                        size={16}
+                        onClick={() => setProjectSearchQuery("")}
+                      />
+                    ) : (
+                      <SearchIcon
+                        className="absolute right-2"
+                        color="#1D1A31"
+                        size={16}
+                      />
+                    )}
+                  </div>
+                  {client ? (
+                    projectList.map((eachProject, index) => (
+                      <li
+                        key={index}
+                        className={`flex items-center px-2 pt-3 text-sm leading-5 text-miru-dark-purple-1000 hover:bg-miru-gray-100 ${
+                          eachProject.name == project
+                            ? "font-bold"
+                            : "font-normal"
+                        }`}
+                        onClick={() => {
+                          setProject(eachProject.name);
+                          setShowProjectList(false);
+                        }}
+                      >
+                        {eachProject.name}
+                      </li>
+                    ))
+                  ) : (
+                    <div className="mt-5">Please select client.</div>
+                  )}
+                </MobileMoreOptions>
+              )}
+            </div>
+            <div className="py-3">
+              <CustomTextareaAutosize
+                id="Description (optional)"
+                label="Description (optional)"
+                maxRows={12}
+                name="Description (optional)"
+                rows={5}
+                value={note}
+                onChange={e => setNote(e.target["value"])}
               />
             </div>
-            {showDatePicker && (
-              <CustomDatePicker
-                date={new Date(selectedDate)}
-                handleChange={handleDatePicker}
-                setVisibility={setShowDatePicker}
-                wrapperRef={datePickerRef}
+            <div className="flex w-full flex-col py-3">
+              <div
+                className="field relative flex w-full flex-col"
+                onClick={() => setShowDatePicker(!showDatePicker)}
+              >
+                <CustomInputText
+                  disabled
+                  id="date"
+                  label="Date"
+                  name="date"
+                  type="text"
+                  value={dayjs(selectedDate).format("MM.DD.YYYY")}
+                  onChange={e => {
+                    setSelectedDate(e.target.value);
+                  }}
+                />
+                <CalendarIcon
+                  className="absolute top-0 bottom-0 right-1 mx-2 my-3 "
+                  color="#5B34EA"
+                  size={20}
+                  weight="bold"
+                />
+              </div>
+              {showDatePicker && (
+                <CustomDatePicker
+                  date={new Date(selectedDate)}
+                  handleChange={handleDatePicker}
+                  setVisibility={setShowDatePicker}
+                  wrapperRef={datePickerRef}
+                />
+              )}
+            </div>
+            <div className="py-3">
+              <CustomCheckbox
+                checkboxValue={1}
+                id={1}
+                isChecked={billable}
+                labelClassName="text-miru-dark-purple-1000 text-sm font-medium"
+                text="Billable"
+                wrapperClassName="flex items-center m-auto p-2"
+                handleCheck={() => {
+                  setBillable(!billable);
+                }}
               />
-            )}
-          </div>
-          <div className="py-3">
-            <CustomCheckbox
-              checkboxValue={1}
-              id={1}
-              isChecked={billable}
-              labelClassName="text-miru-dark-purple-1000 text-sm font-medium"
-              text="Billable"
-              wrapperClassName="flex items-center m-auto p-2"
-              handleCheck={() => {
-                setBillable(!billable);
-              }}
-            />
-          </div>
-          <div className="flex items-center justify-between rounded border border-miru-gray-1000">
-            <Button onClick={handleDecreaseTime}>
-              <MinusIcon
-                className="m-4 text-miru-dark-purple-1000"
-                size={20}
-                weight="bold"
+            </div>
+            <div className="flex items-center justify-between rounded border border-miru-gray-1000">
+              <Button onClick={handleDecreaseTime}>
+                <MinusIcon
+                  className="m-4 text-miru-dark-purple-1000"
+                  size={20}
+                  weight="bold"
+                />
+              </Button>
+              <TimeInput
+                className="focus:outline-none cursor-pointer rounded text-center text-xl font-bold text-miru-dark-purple-1000 placeholder:text-miru-dark-purple-200 focus:border-miru-gray-1000 focus:bg-white focus:ring-1 focus:ring-miru-gray-1000"
+                initTime={duration}
+                name="timeInput"
+                onTimeChange={handleDurationChange}
               />
-            </Button>
-            <input
-              className="laceholder:text-miru-dark-purple-200 focus:outline-none cursor-pointer rounded text-center text-xl font-bold text-miru-dark-purple-1000 focus:border-miru-gray-1000 focus:bg-white focus:ring-1 focus:ring-miru-gray-1000"
-              placeholder="00:00"
-              value={duration}
-              onChange={e => setDuration(e.target.value)}
-            />
-            <Button onClick={handleIncreaseTime}>
-              <PlusIcon
-                className="m-4 text-miru-dark-purple-1000"
-                size={20}
-                weight="bold"
-              />
-            </Button>
+              <Button onClick={handleIncreaseTime}>
+                <PlusIcon
+                  className="m-4 text-miru-dark-purple-1000"
+                  size={20}
+                  weight="bold"
+                />
+              </Button>
+            </div>
           </div>
+          {editEntryId ? (
+            <div className="flex w-full items-center justify-between">
+              <Button
+                className="mr-1 flex w-1/2 items-center justify-center py-2 px-10/100"
+                style="secondary"
+                onClick={handleDuplicate}
+              >
+                <CopyIcon
+                  className="mr-2 text-miru-han-purple-1000"
+                  size={20}
+                />
+                <span className="font-bold">Duplicate</span>
+              </Button>
+              <Button
+                className="ml-1 flex w-1/2 items-center justify-center rounded border border-miru-red-400 py-2 px-10/100 text-miru-red-400"
+                onClick={() => {
+                  setShowDeleteDialog(true);
+                }}
+              >
+                <DeleteIcon className="mr-2 text-miru-red-400" size={20} />
+                <span className="font-bold">Delete</span>
+              </Button>
+            </div>
+          ) : null}
         </div>
-        {editEntryId ? (
-          <div className="flex w-full items-center justify-between">
-            <Button
-              className="mr-1 flex w-1/2 items-center justify-center py-2 px-10/100"
-              style="secondary"
-              onClick={handleDuplicate}
-            >
-              <CopyIcon className="mr-2 text-miru-han-purple-1000" size={20} />
-              <span className="font-bold">Duplicate</span>
-            </Button>
-            <Button
-              className="ml-1 flex w-1/2 items-center justify-center rounded border border-miru-red-400 py-2 px-10/100 text-miru-red-400"
-              onClick={() => {
-                setShowDeleteDialog(true);
-              }}
-            >
-              <DeleteIcon className="mr-2 text-miru-red-400" size={20} />
-              <span className="font-bold">Delete</span>
-            </Button>
-          </div>
-        ) : null}
         {showDeleteDialog ? (
           <DeleteEntryModal
             handleDeleteEntry={handleDeleteEntry}
@@ -379,7 +394,7 @@ const AddEntryMobile = ({
             setShowDeleteDialog={setShowDeleteDialog}
           />
         ) : null}
-        <SidePanel.Footer className="sidebar__footer h-auto w-full justify-around px-4">
+        <SidePanel.Footer className="sidebar__footer h-auto w-full justify-around px-0">
           {editEntryId ? (
             <Button
               className="w-full p-2 text-center text-base font-bold"
@@ -392,9 +407,12 @@ const AddEntryMobile = ({
           ) : (
             <Button
               className="w-full p-2 text-center text-base font-bold"
-              disabled={!disableApplyBtn}
+              disabled={!disableApplyBtn || submitting}
               style="primary"
-              onClick={handleSave}
+              onClick={() => {
+                setSubmitting(true);
+                handleSave();
+              }}
             >
               Add Entry
             </Button>

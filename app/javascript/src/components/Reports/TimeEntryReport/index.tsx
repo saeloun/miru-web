@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 
+import ReactPaginate from "react-paginate";
+
 import reportsApi from "apis/reports";
 import { useUserContext } from "context/UserContext";
 import { sendGAPageView } from "utils/googleAnalytics";
@@ -42,6 +44,13 @@ const TimeEntryReport = () => {
   const [showNavFilters, setShowNavFilters] = useState<boolean>(false);
   const [filterCounter, setFilterCounter] = useState(0);
   const [selectedInput, setSelectedInput] = useState<string>("from-input");
+  const [paginationDetails, setPaginationDetails] = useState({
+    pages: 0,
+    first: true,
+    prev: null,
+    next: 0,
+    last: false,
+  });
 
   useEffect(() => {
     sendGAPageView();
@@ -71,7 +80,8 @@ const TimeEntryReport = () => {
       setTimeEntries,
       setShowNavFilters,
       setIsFilterVisible,
-      setFilterOptions
+      setFilterOptions,
+      setPaginationDetails
     );
   }, [selectedFilter]);
 
@@ -130,6 +140,25 @@ const TimeEntryReport = () => {
     link.click();
   };
 
+  const handlePageClick = async data => {
+    const queryParams = getQueryParams(selectedFilter);
+    const sanitizedParam = queryParams.substring(1);
+    const sanitizedQuery = `?${sanitizedParam}`;
+    if (data.selected > paginationDetails.prev) {
+      const res = await reportsApi.get(
+        `${sanitizedQuery}&page=${paginationDetails.next}`
+      );
+      setTimeEntries(res.data.reports);
+      setPaginationDetails(res.data.pagy);
+    } else {
+      const res = await reportsApi.get(
+        `${sanitizedQuery}&page=${paginationDetails.prev}`
+      );
+      setTimeEntries(res.data.reports);
+      setPaginationDetails(res.data.pagy);
+    }
+  };
+
   const contextValues = {
     timeEntryReport: {
       reports: timeEntries,
@@ -163,14 +192,36 @@ const TimeEntryReport = () => {
           handleDownload={handleDownload}
           isFilterVisible={isFilterVisible}
           resetFilter={resetFilter}
+          revenueFilterCounter={() => {}} // eslint-disable-line  @typescript-eslint/no-empty-function
           setIsFilterVisible={setIsFilterVisible}
           showNavFilters={isDesktop && showNavFilters}
           type={TIME_ENTRY_REPORT_PAGE}
         />
         {isDesktop ? (
-          <Container selectedFilter={selectedFilter} />
+          <>
+            <Container selectedFilter={selectedFilter} />
+            {paginationDetails.pages > 1 && (
+              <ReactPaginate
+                activeClassName="bg-miru-han-purple-400 rounded-full"
+                breakLabel="..."
+                className="flex content-center justify-center"
+                disabledLinkClassName="cursor-not-allowed"
+                nextClassName="ml-3"
+                nextLabel="Next >"
+                pageCount={paginationDetails.pages}
+                pageLinkClassName="p-2"
+                pageRangeDisplayed={5}
+                previousClassName="mr-3"
+                previousLabel="< Previous"
+                onPageChange={handlePageClick}
+              />
+            )}
+          </>
         ) : (
-          <TimeEntryReportMobileView />
+          <TimeEntryReportMobileView
+            handlePageClick={handlePageClick}
+            paginationDetails={paginationDetails}
+          />
         )}
         {isFilterVisible && (
           <FilterSideBar

@@ -37,12 +37,14 @@ class Client < ApplicationRecord
   has_one_attached :logo
   belongs_to :company
 
+  before_save :strip_attributes
   validates :name, presence: true, length: { maximum: 50 }
   validates :email, presence: true, uniqueness: { scope: :company_id }, format: { with: Devise.email_regexp }
   after_discard :discard_projects
   after_commit :reindex_projects
 
   accepts_nested_attributes_for :addresses, reject_if: :address_attributes_blank?, allow_destroy: true
+  scope :with_ids, -> (client_ids) { where(id: client_ids) if client_ids.present? }
 
   def reindex_projects
     projects.reindex
@@ -160,5 +162,9 @@ class Client < ApplicationRecord
 
     def discard_projects
       projects.discard_all
+    end
+
+    def strip_attributes
+      name.strip!
     end
 end

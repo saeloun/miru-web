@@ -17,17 +17,14 @@ RSpec.describe ReportPolicy, type: :policy do
   end
 
   permissions :index?, :download? do
-    it "grants permission to an owner and admin" do
+    it "grants permission to an owner, bookkeeper and admin" do
       expect(described_class).to permit(admin)
       expect(described_class).to permit(owner)
+      expect(described_class).to permit(book_keeper)
     end
 
     it "denies permission to a employee" do
       expect(described_class).not_to permit(employee)
-    end
-
-    it "denies permission to a book keeper" do
-      expect(described_class).not_to permit(book_keeper)
     end
   end
 end
