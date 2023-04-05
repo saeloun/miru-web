@@ -57,7 +57,6 @@ const NewLineItemTable = ({
             return (
               <div
                 className="flex cursor-pointer justify-between py-2 px-3 hover:bg-miru-gray-100"
-                data-cy="entries-list"
                 id="entriesList"
                 key={index}
                 onClick={() => selectRowId(item)}

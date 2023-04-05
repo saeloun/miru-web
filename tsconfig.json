@@ -30,7 +30,6 @@
     "node_modules",
     "vendor",
     "public",
-    "cypress.config.ts"
   ],
   "compileOnSave": false
 }

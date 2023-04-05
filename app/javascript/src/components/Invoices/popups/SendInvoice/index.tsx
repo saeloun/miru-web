@@ -217,7 +217,6 @@ const SendInvoice: React.FC<any> = ({ invoice, setIsSending, isSending }) => {
               </fieldset>
               <div>
                 <button
-                  data-cy="send-email"
                   type="button"
                   className={cn(
                     `mt-6 flex w-full justify-center rounded-md border border-transparent p-3 text-lg font-bold

@@ -67,7 +67,6 @@ const TableRow = ({
   return (
     <tr
       className="group cursor-pointer last:border-b-0 hover:bg-miru-gray-100"
-      data-cy="view-invoice"
       id="invoicesListTableRow"
       key={index}
       onClick={() => {
