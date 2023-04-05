@@ -13,7 +13,6 @@ const defaultLabelClassname =
 type customInputTextProps = {
   id?: string;
   inputBoxClassName?: string;
-  dataCy?: string;
   disabled?: boolean;
   name?: string;
   type?: string;
@@ -32,7 +31,6 @@ type customInputTextProps = {
 export const CustomInputText = ({
   id,
   inputBoxClassName,
-  dataCy,
   disabled,
   name,
   type,
@@ -51,7 +49,6 @@ export const CustomInputText = ({
     <div className={classNames(defaultWrapperClassName, wrapperClassName)}>
       <input
         className={classNames(defaultInputBoxClassName, inputBoxClassName)}
-        data-cy={dataCy}
         disabled={disabled}
         id={id}
         name={name}
@@ -80,7 +77,6 @@ export const CustomInputText = ({
 );
 
 CustomInputText.defaultProps = {
-  dataCy: "",
   type: "text",
   disabled: false,
   readOnly: false,

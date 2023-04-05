@@ -213,7 +213,6 @@ const FinancialDetailsForm = ({
               {/* Save Org Details Button */}
               <div className="mb-3">
                 <button
-                  data-cy="sign-up-button"
                   type="submit"
                   className={`form__button whitespace-nowrap tracking-normal ${
                     isBtnDisabled(values)
