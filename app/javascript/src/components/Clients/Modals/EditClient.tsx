@@ -20,8 +20,39 @@ const EditClient = ({ setShowEditDialog, client }: IEditClient) => {
     formData.append("client[name]", values.name);
     formData.append("client[email]", values.email);
     formData.append("client[phone]", values.phone);
-    formData.append("client[address]", values.address);
-    formData.append("client[logo]", clientLogo);
+
+    formData.append("client[addresses_attributes[0][id]]", client.address.id);
+
+    formData.append(
+      "client[addresses_attributes[0][address_line_1]]",
+      values.address1
+    );
+
+    formData.append(
+      "client[addresses_attributes[0][address_line_2]]",
+      values.address2
+    );
+
+    formData.append(
+      "client[addresses_attributes[0][state]]",
+      values.state?.value
+    );
+
+    formData.append(
+      "client[addresses_attributes[0][city]]",
+      values.city?.value
+    );
+
+    formData.append(
+      "client[addresses_attributes[0][country]]",
+      values.country?.value
+    );
+
+    formData.append("client[addresses_attributes[0][pin]]", values.zipcode);
+
+    if (clientLogo) formData.append("client[logo]", clientLogo);
+
+    return formData;
   };
 
   const handleSubmit = async values => {
