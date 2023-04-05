@@ -23,6 +23,7 @@ const Header = ({ setShowManualEntryModal }) => (
     <div className="flex">
       <button
         className="header__button"
+        id="addEntry"
         type="button"
         onClick={() => setShowManualEntryModal(true)}
       >

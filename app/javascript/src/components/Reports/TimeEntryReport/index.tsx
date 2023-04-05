@@ -198,9 +198,30 @@ const TimeEntryReport = () => {
           type={TIME_ENTRY_REPORT_PAGE}
         />
         {isDesktop ? (
-          <Container selectedFilter={selectedFilter} />
+          <>
+            <Container selectedFilter={selectedFilter} />
+            {paginationDetails.pages > 1 && (
+              <ReactPaginate
+                activeClassName="bg-miru-han-purple-400 rounded-full"
+                breakLabel="..."
+                className="flex content-center justify-center"
+                disabledLinkClassName="cursor-not-allowed"
+                nextClassName="ml-3"
+                nextLabel="Next >"
+                pageCount={paginationDetails.pages}
+                pageLinkClassName="p-2"
+                pageRangeDisplayed={5}
+                previousClassName="mr-3"
+                previousLabel="< Previous"
+                onPageChange={handlePageClick}
+              />
+            )}
+          </>
         ) : (
-          <TimeEntryReportMobileView />
+          <TimeEntryReportMobileView
+            handlePageClick={handlePageClick}
+            paginationDetails={paginationDetails}
+          />
         )}
         {isFilterVisible && (
           <FilterSideBar
@@ -211,22 +232,6 @@ const TimeEntryReport = () => {
             setFilterCounter={setFilterCounter}
             setIsFilterVisible={setIsFilterVisible}
             setSelectedInput={setSelectedInput}
-          />
-        )}
-        {paginationDetails.pages > 1 && (
-          <ReactPaginate
-            activeClassName="bg-miru-han-purple-400 rounded-full"
-            breakLabel="..."
-            className="flex content-center justify-center"
-            disabledLinkClassName="cursor-not-allowed"
-            nextClassName="ml-3"
-            nextLabel="Next >"
-            pageCount={paginationDetails.pages}
-            pageLinkClassName="p-2"
-            pageRangeDisplayed={5}
-            previousClassName="mr-3"
-            previousLabel="< Previous"
-            onPageChange={handlePageClick}
           />
         )}
       </EntryContext.Provider>
