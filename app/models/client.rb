@@ -73,9 +73,9 @@ class Client < ApplicationRecord
       name:,
       email:,
       phone:,
-      address:,
       logo: logo_url,
-      minutes_spent: total_hours_logged(time_frame)
+      minutes_spent: total_hours_logged(time_frame),
+      address: current_address
     }
   end
 
