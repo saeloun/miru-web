@@ -35,7 +35,7 @@ git clone https://github.com/saeloun/miru-web.git
    your project as you `cd` into the directory follow
    [this](https://github.com/nvm-sh/nvm#deeper-shell-integration))
 
-3. Install ruby 3.2.1
+3. Install ruby 3.2.2
 
 ```
 rvm install $(cat .ruby-version)
