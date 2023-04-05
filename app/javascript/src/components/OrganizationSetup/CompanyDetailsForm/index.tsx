@@ -238,10 +238,11 @@ const CompanyDetailsForm = ({
               <div className="field relative">
                 <InputField
                   autoFocus
+                  resetErrorOnChange
                   id="company_name"
                   label="Company Name"
                   name="company_name"
-                  resetErrorOnChange={false}
+                  setFieldValue={setFieldValue}
                 />
                 <InputErrors
                   fieldErrors={errors.company_name}
@@ -276,10 +277,11 @@ const CompanyDetailsForm = ({
               </div>
               <div className="field relative">
                 <InputField
+                  resetErrorOnChange
                   id="address_line_1"
                   label="Address line 1"
                   name="address_line_1"
-                  resetErrorOnChange={false}
+                  setFieldValue={setFieldValue}
                 />
                 <InputErrors
                   fieldErrors={errors.address_line_1}
@@ -288,10 +290,11 @@ const CompanyDetailsForm = ({
               </div>
               <div className="field relative mb-5">
                 <InputField
+                  resetErrorOnChange
                   id="address_line_2"
                   label="Address line 2 (optional)"
                   name="address_line_2"
-                  resetErrorOnChange={false}
+                  setFieldValue={setFieldValue}
                 />
               </div>
               {/* Country */}
@@ -351,10 +354,11 @@ const CompanyDetailsForm = ({
                 </div>
                 <div className="flex w-1/2 flex-col pl-2">
                   <InputField
+                    resetErrorOnChange
                     id="zipcode"
                     label="zipcode"
                     name="zipcode"
-                    resetErrorOnChange={false}
+                    setFieldValue={setFieldValue}
                   />
                   <InputErrors
                     fieldErrors={errors.zipcode}
