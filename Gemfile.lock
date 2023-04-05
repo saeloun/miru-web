@@ -170,6 +170,8 @@ GEM
     discard (1.2.1)
       activerecord (>= 4.2, < 8)
     docile (1.4.0)
+    dockerfile-rails (1.2.5)
+      rails
     dotenv (2.8.1)
     dotenv-rails (2.8.1)
       dotenv (= 2.8.1)
@@ -561,6 +563,7 @@ DEPENDENCIES
   debug (>= 1.0.0)
   devise
   discard (~> 1.2)
+  dockerfile-rails
   dotenv-rails
   elasticsearch (< 7.14)
   erb_lint!
