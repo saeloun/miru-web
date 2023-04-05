@@ -1,7 +1,7 @@
 import React from "react";
 
 import dayjs from "dayjs";
-import { currencyFormat } from "helpers";
+import { currencyFormat, minToHHMM, lineTotalCalc } from "helpers";
 
 import { sections } from "../../utils";
 
@@ -13,16 +13,8 @@ const LineItemRow = ({
   setActiveSection,
   isInvoicePreviewCall,
 }) => {
-  const {
-    first_name,
-    last_name,
-    name,
-    date,
-    rate,
-    quantity,
-    lineTotal,
-    description,
-  } = item;
+  const { first_name, last_name, name, date, rate, quantity, description } =
+    item;
 
   return (
     <>
@@ -36,7 +28,7 @@ const LineItemRow = ({
         }}
       >
         <td className="flex flex-col px-1 py-3 text-left text-xs font-medium text-miru-dark-purple-1000 ">
-          <span>
+          <span className="text-sm">
             {first_name || name} {last_name}
           </span>
           <span className="text-miru-dark-purple-400">
@@ -44,13 +36,13 @@ const LineItemRow = ({
           </span>
         </td>
         <td className="w-2/12 px-1 py-3 text-right text-xs font-medium text-miru-dark-purple-1000 ">
-          {rate}
+          {currencyFormat(currency, rate)}
         </td>
         <td className="w-3/12 px-1 py-3 text-right text-xs font-medium text-miru-dark-purple-1000 ">
-          {quantity}
+          {minToHHMM(quantity)}
         </td>
         <td className="w-3/12 px-1 py-3 text-right text-xs font-medium text-miru-dark-purple-1000 ">
-          {currencyFormat(currency, lineTotal)}
+          {currencyFormat(currency, lineTotalCalc(quantity, rate))}
         </td>
       </tr>
       <tr>
