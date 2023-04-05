@@ -43,8 +43,8 @@ class Client < ApplicationRecord
   after_discard :discard_projects
   after_commit :reindex_projects
 
-  scope :with_ids, -> (client_ids) { where(id: client_ids) if client_ids.present? }
   accepts_nested_attributes_for :addresses, reject_if: :address_attributes_blank?, allow_destroy: true
+  scope :with_ids, -> (client_ids) { where(id: client_ids) if client_ids.present? }
 
   def reindex_projects
     projects.reindex
