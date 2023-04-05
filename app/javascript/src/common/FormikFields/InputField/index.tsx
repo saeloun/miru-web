@@ -63,7 +63,7 @@ const InputField = ({
     resetErrorOnChange || onChange ? { onChange: e => handleChange(e) } : {};
 
   return (
-    <div className="field relative">
+    <div className="field relative mb-6">
       <div className={classNames(defaultWrapperClassName, wrapperClassName)}>
         <Field
           autoComplete={autoComplete}
