@@ -311,10 +311,11 @@ const ClientForm = ({
             <div className="field relative">
               <InputField
                 autoFocus
+                resetErrorOnChange
                 id="name"
                 label="Name"
                 name="name"
-                resetErrorOnChange={false}
+                setFieldValue={setFieldValue}
               />
               <InputErrors
                 fieldErrors={errors.name}
@@ -324,10 +325,11 @@ const ClientForm = ({
             <div className="mt-4">
               <div className="field relative">
                 <InputField
+                  resetErrorOnChange
                   id="email"
                   label="Email"
                   name="email"
-                  resetErrorOnChange={false}
+                  setFieldValue={setFieldValue}
                 />
                 <InputErrors
                   fieldErrors={errors.email}
@@ -367,10 +369,11 @@ const ClientForm = ({
             <div className="mt-4">
               <div className="field relative">
                 <InputField
+                  resetErrorOnChange
                   id="address1"
                   label="Address line 1"
                   name="address1"
-                  resetErrorOnChange={false}
+                  setFieldValue={setFieldValue}
                 />
                 <InputErrors
                   fieldErrors={errors.address1}
@@ -381,10 +384,11 @@ const ClientForm = ({
             <div className="mt-4">
               <div className="field relative mb-5">
                 <InputField
+                  resetErrorOnChange
                   id="address2"
                   label="Address line 2 (optional)"
                   name="address2"
-                  resetErrorOnChange={false}
+                  setFieldValue={setFieldValue}
                 />
               </div>
             </div>
@@ -443,10 +447,11 @@ const ClientForm = ({
               </div>
               <div className="flex w-1/2 flex-col pl-2">
                 <InputField
+                  resetErrorOnChange
                   id="zipcode"
                   label="zipcode"
                   name="zipcode"
-                  resetErrorOnChange={false}
+                  setFieldValue={setFieldValue}
                 />
                 <InputErrors
                   fieldErrors={errors.zipcode}
