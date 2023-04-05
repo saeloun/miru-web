@@ -232,10 +232,11 @@ const AddManualEntry = ({
                     Invoice
                   </label>
                 </div>
-                <div className="mt-1" ref={wrapperSelectRef}>
+                <div className="mt-1" id="invoice" ref={wrapperSelectRef}>
                   {showSelectInvoice && (
                     <div
                       className="relative mt-3"
+                      id="invoicesList"
                       onClick={handleShowSelectMenu}
                     >
                       <CustomReactSelect
@@ -257,6 +258,7 @@ const AddManualEntry = ({
                       {showSelectMenu && (
                         <div
                           className="absolute right-0 top-0 z-15 min-h-24 w-full flex-col items-end bg-white p-2 shadow-c1 group-hover:flex"
+                          id="transactionDate"
                           onClick={e => e.stopPropagation()}
                         >
                           <Select
@@ -265,6 +267,7 @@ const AddManualEntry = ({
                             className="m-0 mt-2 w-full border-0 font-medium text-miru-dark-purple-1000"
                             classNamePrefix="border-0 font-medium text-miru-dark-purple-1000"
                             defaultValue={invoice}
+                            id="selectDate"
                             options={invoiceList.invoiceList}
                             placeholder="Search by client name or invoice ID"
                             styles={customStyles}
