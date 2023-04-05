@@ -42,14 +42,14 @@ class Invoices::EventTrackerService < ApplicationService
 
     def handle_payment_action
       if extra_data[:mode] == :stripe
-        add_event("pay_invoice", { mode: :stripe, email: extra_data[:email] })
+        add_event("pay_invoice", { mode: :stripe, customer: extra_data[:customer] })
       else
         add_event("pay_invoice")
       end
     end
 
     def add_event(event_name, optional_data = {})
-      event_data = { id: invoice.id }.merge!(optional_data)
+      event_data = { type: :invoice, id: invoice.id }.merge!(optional_data)
       ahoy.track event_name, event_data
     end
 end
