@@ -16,6 +16,7 @@ const InvoiceInfo = ({
   dateFormat,
   currency,
   setActiveSection,
+  showEditButton = true,
 }) => {
   const { label, address, phone } = selectedClient;
 
@@ -78,15 +79,17 @@ const InvoiceInfo = ({
           {currencyFormat(currency, amount)}
         </span>
       </div>
-      <div
-        className="mt-2 flex w-full items-center justify-center py-3 px-12 text-miru-han-purple-1000"
-        onClick={() => {
-          setActiveSection(sections.generateInvoice);
-        }}
-      >
-        <EditIcon className="mr-2" weight="bold" />
-        <span className="text-xs font-bold">Edit Invoice Details</span>
-      </div>
+      {showEditButton && (
+        <div
+          className="mt-2 flex w-full items-center justify-center py-3 px-12 text-miru-han-purple-1000"
+          onClick={() => {
+            setActiveSection(sections.generateInvoice);
+          }}
+        >
+          <EditIcon className="mr-2" weight="bold" />
+          <span className="text-xs font-bold">Edit Invoice Details</span>
+        </div>
+      )}
     </div>
   );
 };
