@@ -2,7 +2,8 @@
 
 set -eu
 
-bundle install --without development production test
+bundle config set --local with 'ci'
+bundle config set --local without 'development production test'
 bin/yarn install
 bin/rails db:create
 bin/rails db:migrate
