@@ -5,6 +5,7 @@ require "rails_helper"
 RSpec.describe "Inviting team memeber", type: :system do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
+  let(:invitation) { create(:invitation) }
 
   context "when user is an admin" do
     before do
@@ -49,6 +50,18 @@ RSpec.describe "Inviting team memeber", type: :system do
         expect(ActionMailer::Base.deliveries.last.body).to include("click here")
         expect(ActionMailer::Base.deliveries.last.body).to include("to accept the invitation")
       end
+    end
+  end
+
+  context "when user is an employee" do
+    before do
+      create(:employment, company:, user:)
+      user.add_role :employee, company
+      sign_in(user)
+    end
+
+    it "cannot access teams page" do
+      expect(page).to have_no_link("Payments")
     end
   end
 end
