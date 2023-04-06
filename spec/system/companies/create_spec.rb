@@ -4,8 +4,26 @@ require "rails_helper"
 
 RSpec.describe "Create company", type: :system do
   let(:user) { create(:user, current_workspace: nil) }
-  let(:company) { build(:company ) }
-  let(:address) { build(:address, :with_company, country: "US", state: "Alabama", city: "Brooklyn" ) }
+  let(:company) { build(:company) }
+  let(:address) { build(:address, :with_company) }
+
+  def select_values_from_select_box
+    within("div#country") do
+      find(".react-select-filter__control.css-digfch-control").click
+      find("#react-select-2-option-232").click
+    end
+
+    within("div#state") do
+      find(".react-select-filter__control.css-digfch-control").click
+      find("#react-select-3-option-41").click
+    end
+
+    within("div#city") do
+      find(".react-select-filter__control.css-digfch-control").click
+      fill_in "react-select-4-input", with: "Skita"
+      find("#react-select-4-option-0").click
+    end
+  end
 
   context "when new user sign in" do
     before do
@@ -15,26 +33,23 @@ RSpec.describe "Create company", type: :system do
     context "when creating a company and address with valid values" do
       it "when creating companies with valid values" do
         find(
-          'form input[type="file"]',
-          visible: false).set(Rails.root.join("spec", "support", "fixtures", "test-image.png"))
+          "form input[type='file']",
+          visible: false).set(Rails.root.join("spec", "support", "fixtures", "test-image.png")
+        )
+
         fill_in "company_name", with: company.name
         fill_in "address_line_1", with: address.address_line_1
         fill_in "business_phone", with: company.business_phone
-        fill_in "react-select-2-input", with: address.country
-        fill_in "react-select-3-input", with: address.state
-        fill_in "react-select-4-input", with: address.city
+
+        select_values_from_select_box
+
         fill_in "zipcode", with: address.pin
-        click_button "Next",  disabled: true
-        # expect(page).to have_css('img#logo[src*="test-image.png"]')
+        click_button "Next"
 
-        fill_in "react-select-2-input", with: company.base_currency
-        # fill_in "standard_rate", with: "#{company.standard_price}"
-        fill_in "react-select-3-input", with: company.fiscal_year_end
-
-        fill_in "react-select-4-input", with: company.date_format
-        find('button.form__button').click
-        # expect(page).to have_current_path("/signup/success")
-        # expect(page).to have_content(company.name)
+        fill_in "standard_rate", with: "#{company.standard_price}"
+        find("button.form__button").click
+        expect(page).to have_current_path("/signup/success")
+        expect(page).to have_content("Thanks for\nsigning up")
       end
     end
 
@@ -43,14 +58,15 @@ RSpec.describe "Create company", type: :system do
         with_forgery_protection do
           visit "/home/index"
           find(
-              'form input[type="file"]',
-              visible: false).set(Rails.root.join("spec", "support", "fixtures", "test-image.png"))
+            "form input[type='file']",
+            visible: false).set(Rails.root.join("spec", "support", "fixtures", "test-image.png")
+          )
           fill_in "business_phone", with: company.business_phone
-          fill_in "react-select-2-input", with: address.country
-          fill_in "react-select-3-input", with: address.state
-          fill_in "react-select-4-input", with: address.city
+
+          select_values_from_select_box
+
           fill_in "zipcode", with: address.pin
-          click_button "Next",  disabled: true
+          click_button "Next", disabled: true
 
           expect(page).to have_content("Company name can not be blank")
         end
@@ -61,11 +77,12 @@ RSpec.describe "Create company", type: :system do
           visit "/home/index"
 
           find(
-            'form input[type="file"]',
-            visible: false).set(Rails.root.join("spec", "support", "fixtures", "pdf-file.pdf"))
+            "form input[type='file']",
+            visible: false).set(Rails.root.join("spec", "support", "fixtures", "pdf-file.pdf")
+          )
 
-          # expect(page).to have_content("Incorrect file format. Please upload an image of type PNG or JPG.")
-          # expect(page).to have_content("Max size (30kb)")
+          expect(page).to have_content("Incorrect file format. Please upload an image of type PNG or JPG.")
+          expect(page).to have_content("Max size (30kb)")
         end
       end
 
@@ -74,10 +91,11 @@ RSpec.describe "Create company", type: :system do
           visit "/home/index"
 
           find(
-            'form input[type="file"]',
-            visible: false).set(Rails.root.join("spec", "support", "fixtures", "invalid-file.png"))
+            "form input[type='file']",
+            visible: false).set(Rails.root.join("spec", "support", "fixtures", "invalid-file.png")
+          )
 
-          # expect(page).to have_content("File size exceeded the max limit of 30KB.")
+          expect(page).to have_content("File size exceeded the max limit of 30KB.")
         end
       end
     end

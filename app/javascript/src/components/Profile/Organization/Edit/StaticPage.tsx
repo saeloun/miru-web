@@ -245,7 +245,7 @@ export const StaticPage = ({
           </div>
         </div>
         <div className="flex flex-row py-1">
-          <div className="flex w-1/2 flex-col px-2 pb-3">
+          <div className="flex w-1/2 flex-col px-2 pb-3" id="citySelect">
             <CustomAsyncSelect
               handleOnChange={city => handleOnChangeCity(city)}
               isErr={false}

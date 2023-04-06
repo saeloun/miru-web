@@ -430,7 +430,7 @@ const CompanyDetailsForm = ({
                 </div>
               </div>
               <div className="flex flex-row">
-                <div className="flex w-1/2 flex-col pr-2">
+                <div className="flex w-1/2 flex-col pr-2" id="city">
                   <CustomAsyncSelect
                     isErr={!!errors.city && touched.city}
                     label="City"
