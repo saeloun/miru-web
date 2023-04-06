@@ -32,6 +32,7 @@ const InvoicePreviewContainer = ({
   total,
   subTotal,
   handleSaveInvoice,
+  handleSendButtonClick,
 }) => (
   <div className="flex-1 overflow-y-scroll">
     {invoiceDetails.companyDetails && (
@@ -93,6 +94,9 @@ const InvoicePreviewContainer = ({
       <Button
         className="ml-2 flex w-1/2 items-center justify-center px-4 py-2"
         style="primary"
+        onClick={() => {
+          handleSendButtonClick();
+        }}
       >
         <PaperPlaneTiltIcon className="text-white" size={16} weight="bold" />
         <span className="ml-2 text-center text-base font-bold leading-5 text-white">

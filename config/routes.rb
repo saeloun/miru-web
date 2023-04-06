@@ -33,7 +33,6 @@ Rails.application.routes.draw do
 
   draw(:internal_api)
   draw(:api)
-  resources :dashboard, only: [:index]
 
   resources :workspaces, only: [:update]
 

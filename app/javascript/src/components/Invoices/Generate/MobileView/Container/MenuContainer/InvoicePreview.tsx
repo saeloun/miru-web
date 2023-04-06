@@ -13,6 +13,7 @@ const InvoicePreview = ({
   setIsInvoicePreviewCall,
   handleSaveInvoice,
   selectedClient,
+  handleSendButtonClick,
 }) => (
   <div className="bg-miru-gray-100 p-4">
     <div className="flex justify-between pb-5">
@@ -50,6 +51,9 @@ const InvoicePreview = ({
       <Button
         className="ml-2 flex w-1/2 items-center justify-center px-4 py-2"
         style="primary"
+        onClick={() => {
+          handleSendButtonClick();
+        }}
       >
         <PaperPlaneTiltIcon className="text-white" size={16} weight="bold" />
         <span className="ml-2 text-center text-base font-bold leading-5 text-white">

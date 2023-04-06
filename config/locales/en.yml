@@ -32,7 +32,6 @@
 en:
   navbar:
     clients: Clients
-    dashboard: Dashboard
     invoices: Invoices
     logout: Logout
     profile: Profile
@@ -238,8 +237,6 @@ en:
       update?: You are not authorized to update company.
     current_company_policy:
       company_not_present: Company not present.
-    dashboard_policy:
-      index?: You are not authorized to view dashboard.
     project_policy:
       create?: You are not authorized to create project.
       show?:
