@@ -1,11 +1,15 @@
 import * as Yup from "yup";
 
-export const invoiceDetailsFormInitialValues = {
-  billedTo: "",
-  issueDate: "",
-  dueDate: "",
-  invoiceNumber: "",
-  referenceNumber: "",
+export const invoiceDetailsFormInitialValues = (invoiceNumber, reference) => {
+  const invoiceDetails = {
+    billedTo: "",
+    issueDate: "",
+    dueDate: "",
+    invoiceNumber,
+    referenceNumber: reference,
+  };
+
+  return invoiceDetails;
 };
 
 export const invoiceDetailsSchema = Yup.object().shape({

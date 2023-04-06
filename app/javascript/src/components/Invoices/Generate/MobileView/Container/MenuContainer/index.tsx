@@ -40,6 +40,7 @@ const MenuContainer = ({
   setSubTotal,
   setTotal,
   handleSaveInvoice,
+  handleSendButtonClick,
 }) => {
   const [showInvoiceDetails, setShowInvoiceDetails] = useState(true);
   const [showLineItem, setShowLineItem] = useState(false);
@@ -188,6 +189,7 @@ const MenuContainer = ({
       <InvoicePreview
         currency={currency}
         handleSaveInvoice={handleSaveInvoice}
+        handleSendButtonClick={handleSendButtonClick}
         selectedClient={selectedClient}
         setActiveSection={setActiveSection}
         setIsInvoicePreviewCall={setIsInvoicePreviewCall}
