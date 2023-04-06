@@ -15,22 +15,6 @@ class Invoices::PaymentsController < ApplicationController
     redirect_to session.url, allow_other_host: true
   end
 
-  def success
-    if InvoicePayment::StripePaymentIntent.new(@invoice).process
-      if @invoice.paid?
-        PaymentMailer.with(
-          invoice: @invoice,
-          subject: "Payment details by #{@invoice.client.name}").payment.deliver_later
-        flash[:notice] = t(".success")
-      else
-        flash[:notice] = t(".success")
-      end
-    else
-      flash[:error] = t(".failure")
-      redirect_to root_path
-    end
-  end
-
   def cancel
     render
   end

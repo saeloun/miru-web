@@ -40,7 +40,6 @@ Rails.application.routes.draw do
   resources :invoices, only: [], module: :invoices do
     resources :payments, only: [:new] do
       collection do
-        get :success
         get :cancel
       end
     end
