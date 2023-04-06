@@ -1,10 +1,16 @@
 import React, { useState } from "react";
 
+import invoicesApi from "apis/invoices";
+import Toastr from "common/Toastr";
+import { mapGenerateInvoice } from "mapper/mappedIndex";
+
 import AddLineItemContainer from "./AddLineItemContainer";
 import InvoicePreviewContainer from "./InvoicePreview";
 import MenuContainer from "./MenuContainer";
 import MultiLineContainer from "./MultiLineContainer";
+import SendInvoiceContainer from "./SendInvoiceContainer";
 
+import { generateInvoiceLineItems } from "../../../common/utils";
 import { sections } from "../utils";
 
 const Container = ({
@@ -45,6 +51,63 @@ const Container = ({
     useState<boolean>(false);
   const [subTotal, setSubTotal] = useState<number>(0);
   const [total, setTotal] = useState<number>(0);
+  const [invoiceId, setInvoiceId] = useState<number>(null);
+  const [showSendInvoiceModal, setShowSendInvoiceModal] =
+    useState<boolean>(true);
+
+  const INVOICE_NUMBER_ERROR = "Please enter invoice number to proceed";
+  const SELECT_CLIENT_ERROR =
+    "Please select client and enter invoice number to proceed";
+
+  const saveInvoice = async () => {
+    const sanitized = mapGenerateInvoice({
+      selectedClient,
+      invoiceNumber,
+      reference,
+      issueDate,
+      dueDate,
+      invoiceLineItems: generateInvoiceLineItems(
+        selectedLineItems,
+        manualEntryArr
+      ),
+      amount,
+      amountDue,
+      amountPaid,
+      discount,
+      tax,
+      setShowSendInvoiceModal,
+    });
+
+    return await invoicesApi.post(sanitized);
+  };
+
+  const handleSaveSendInvoice = async () => {
+    if (selectedClient && invoiceNumber !== "") {
+      const res = await saveInvoice();
+      setInvoiceId(res?.data.id);
+      setActiveSection(sections.sendInvoice);
+
+      return res;
+    }
+
+    if (selectedClient) {
+      return Toastr.error(INVOICE_NUMBER_ERROR);
+    }
+
+    return Toastr.error(SELECT_CLIENT_ERROR);
+  };
+
+  const handleSendButtonClick = () => {
+    if (selectedClient && invoiceNumber !== "") {
+      return setActiveSection(sections.sendInvoice);
+    }
+
+    if (selectedClient) {
+      return Toastr.error(INVOICE_NUMBER_ERROR);
+    }
+
+    return Toastr.error(SELECT_CLIENT_ERROR);
+  };
 
   const getContainerComponent = () => {
     switch (activeSection) {
@@ -58,6 +121,7 @@ const Container = ({
             discount={discount}
             dueDate={dueDate}
             handleSaveInvoice={handleSaveInvoice}
+            handleSendButtonClick={handleSendButtonClick}
             invoiceDetails={invoiceDetails}
             invoiceNumber={invoiceNumber}
             isInvoicePreviewCall={isInvoicePreviewCall}
@@ -143,6 +207,7 @@ const Container = ({
             discount={discount}
             dueDate={dueDate}
             handleSaveInvoice={handleSaveInvoice}
+            handleSendButtonClick={handleSendButtonClick}
             invoiceDetails={invoiceDetails}
             invoiceNumber={invoiceNumber}
             isInvoicePreviewCall={isInvoicePreviewCall}
@@ -157,6 +222,22 @@ const Container = ({
             tax={tax}
             total={total}
           />
+        );
+      case sections.sendInvoice:
+        return (
+          showSendInvoiceModal && (
+            <SendInvoiceContainer
+              handleSaveSendInvoice={handleSaveSendInvoice}
+              invoice={{
+                id: invoiceId,
+                client: selectedClient,
+                company: invoiceDetails?.companyDetails,
+                dueDate,
+                invoiceNumber,
+                amount,
+              }}
+            />
+          )
         );
     }
   };

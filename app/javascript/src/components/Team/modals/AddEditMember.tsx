@@ -159,6 +159,7 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
                         <div className="mt-1">
                           <Field
                             disabled={isEdit}
+                            id="email"
                             name="email"
                             placeholder="Enter email ID"
                             className={`form__input disabled:opacity-50 ${
