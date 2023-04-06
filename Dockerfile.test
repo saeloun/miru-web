@@ -34,7 +34,7 @@ RUN gem install bundler -v 2.3.11
 
 COPY Gemfile Gemfile.lock ./
 
-RUN bundle install --without development production test --path=vendor/cache &&  rm -rf vendor/bundle/ruby/*/cache
+RUN bundle install --without development production test --path=bundle/vendor &&  rm -rf vendor/bundle/ruby/*/cache
 
 FROM base AS node_modules
 
