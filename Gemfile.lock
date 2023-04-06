@@ -170,6 +170,8 @@ GEM
     discard (1.2.1)
       activerecord (>= 4.2, < 8)
     docile (1.4.0)
+    dockerfile-rails (1.2.5)
+      rails
     dotenv (2.8.1)
     dotenv-rails (2.8.1)
       dotenv (= 2.8.1)
@@ -561,6 +563,7 @@ DEPENDENCIES
   debug (>= 1.0.0)
   devise
   discard (~> 1.2)
+  dockerfile-rails
   dotenv-rails
   elasticsearch (< 7.14)
   erb_lint!
@@ -621,7 +624,7 @@ DEPENDENCIES
   webmock (~> 3.14.0)
 
 RUBY VERSION
-   ruby 3.2.1p31
+   ruby 3.2.2p53
 
 BUNDLED WITH
-   2.3.26
+   2.4.10
