@@ -5,7 +5,7 @@ import ForgotPassword from "components/Authentication/ForgotPassword";
 import SignIn from "components/Authentication/SignIn";
 import SignUp from "components/Authentication/SignUp";
 import InvoiceEmail from "components/InvoiceEmail";
-import Success from "components/payments/Success";
+import Success from "components/payments";
 import AccountsAgingReport from "components/Reports/AccountsAgingReport";
 import TeamsRouteConfig from "components/Team/TeamsRouteConfig";
 import { Roles, Paths } from "constants/index";
