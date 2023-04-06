@@ -18,12 +18,9 @@ class Invoices::PaymentsController < ApplicationController
   def success
     if InvoicePayment::StripePaymentIntent.new(@invoice).process
       if @invoice.paid?
-        invoice_company = @invoice.client.company
-        @invoice.send_to_payment_email(
-          subject: "Payment details by #{@invoice.client.name}",
-          message: email_message,
-          recipients: invoice_company.users.with_role([:admin, :owner], invoice_company).pluck(:email)
-        )
+        PaymentMailer.with(
+          invoice: @invoice,
+          subject: "Payment details by #{@invoice.client.name}").payment.deliver_later
         flash[:notice] = t(".success")
       else
         flash[:notice] = t(".success")
@@ -48,9 +45,5 @@ class Invoices::PaymentsController < ApplicationController
       if @invoice.paid?
         redirect_to success_invoice_payments_url(@invoice.id)
       end
-    end
-
-    def email_message
-      "#{@invoice.client.name} has made a payment of #{@invoice.amount_paid} for<br>invoice #{@invoice.invoice_number} through Stripe. The invoice is paid in full now"
     end
 end
