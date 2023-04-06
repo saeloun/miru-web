@@ -28,4 +28,5 @@ export interface CompanyDetailsFormProps {
   onNextBtnClick: (companyDetails: CompanyDetailsFormValues) => void; // eslint-disable-line
   isFormAlreadySubmitted: boolean;
   previousSubmittedValues?: CompanyDetailsFormValues;
+  formType: string;
 }

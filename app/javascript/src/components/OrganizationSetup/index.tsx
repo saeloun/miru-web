@@ -151,6 +151,7 @@ const OrganizationSetup = () => {
           </div>
           {currentStep == 1 ? (
             <CompanyDetailsForm
+              formType="new"
               isFormAlreadySubmitted={stepNoOfLastSubmittedForm >= 1}
               previousSubmittedValues={companyDetails}
               onNextBtnClick={onNextBtnClick}

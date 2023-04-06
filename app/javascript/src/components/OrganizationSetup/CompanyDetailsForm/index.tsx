@@ -2,11 +2,12 @@ import React, { useEffect, useState } from "react";
 
 import { City, Country, State } from "country-state-city";
 import { Formik, Form, FormikProps } from "formik";
-import { DeleteImageButtonSVG, EditImageButtonSVG } from "miruIcons";
+import { EditImageButtonSVG, deleteImageIcon } from "miruIcons";
 import PhoneInput from "react-phone-number-input";
 import flags from "react-phone-number-input/flags";
 import "react-phone-number-input/style.css";
 import Select, { components } from "react-select";
+import { Avatar } from "StyledComponents";
 
 import companyProfileApi from "apis/companyProfile";
 import { CustomAsyncSelect } from "common/CustomAsyncSelect";
@@ -18,6 +19,8 @@ import {
   companyDetailsFormInitialValues,
   companyDetailsFormValidationSchema,
 } from "./utils";
+
+import { i18n } from "../../../i18n";
 
 const { ValueContainer, Placeholder } = components;
 const customStyles = {
@@ -64,11 +67,13 @@ const CompanyDetailsForm = ({
   onNextBtnClick,
   isFormAlreadySubmitted = false,
   previousSubmittedValues = null,
+  formType = "New",
 }: CompanyDetailsFormProps) => {
   const [allTimezones, setAllTimezones] = useState({});
   const [timezonesOfSelectedCountry, setTimezonesOfSelectedCountry] = useState(
     []
   );
+  const [fileUploadError, setFileUploadError] = useState<string>("");
 
   const initialSelectValue = {
     label: "",
@@ -151,8 +156,34 @@ const CompanyDetailsForm = ({
   const onLogoChange = (e, setFieldValue) => {
     const file = e.target.files[0];
     const logoUrl = URL.createObjectURL(file);
-    setFieldValue("logo_url", logoUrl);
-    setFieldValue("logo", file);
+    const isValid = isValidFileUploaded(file);
+
+    if (isValid.fileExtension && isValid.fileSizeValid) {
+      setFieldValue("logo_url", logoUrl);
+      setFieldValue("logo", file);
+    } else {
+      if (!isValid.fileExtension && !isValid.fileSizeValid) {
+        setFileUploadError(
+          i18n.t("invalidImageFormatSize", { fileSize: "30" })
+        );
+      } else if (isValid.fileExtension && !isValid.fileSizeValid) {
+        setFileUploadError(i18n.t("invalidImageSize", { fileSize: "30" }));
+      } else {
+        setFileUploadError(i18n.t("invalidImageFormat"));
+      }
+    }
+  };
+
+  const isValidFileUploaded = file => {
+    const validExtensions = ["png", "jpeg", "jpg"];
+    const fileExtensions = file.type.split("/")[1];
+    const validFileByteSize = "30000";
+    const fileSize = file.size;
+
+    return {
+      fileExtension: validExtensions.includes(fileExtensions),
+      fileSizeValid: fileSize <= validFileByteSize,
+    };
   };
 
   const isBtnDisabled = (values: CompanyDetailsFormValues) =>
@@ -165,6 +196,66 @@ const CompanyDetailsForm = ({
       values.business_phone?.trim() &&
       values.zipcode?.trim()
     );
+
+  const LogoComponent = ({ values, setFieldValue }) => (
+    <div className="my-4 flex flex-row">
+      <div className="mt-2 h-30 w-30 border border-dashed border-miru-dark-purple-400">
+        <div className="profile-img relative m-auto h-30 w-30 cursor-pointer text-center text-xs font-semibold">
+          <Avatar
+            classNameImg="h-full w-full md:h-full md:w-full"
+            url={values?.logo_url}
+          />
+          <div className="hover-edit absolute top-0 left-0 h-full w-full bg-miru-white-1000 p-4 opacity-80">
+            <button
+              className="flex flex-row text-miru-han-purple-1000"
+              type="button"
+            >
+              <label className="flex cursor-pointer" htmlFor="file_input">
+                <img
+                  alt="edit"
+                  className="cursor-pointer rounded-full"
+                  src={EditImageButtonSVG}
+                  style={{ minWidth: "40px" }}
+                />
+                <p className="my-auto">Edit</p>
+              </label>
+              <input
+                className="hidden"
+                id="file_input"
+                name="logo"
+                type="file"
+                onChange={e => onLogoChange(e, setFieldValue)}
+              />
+            </button>
+            <button
+              className="flex flex-row pl-2 text-miru-red-400"
+              type="button"
+              onClick={() => setFieldValue("logo_url", null)}
+            >
+              <img
+                alt="delete"
+                src={deleteImageIcon}
+                style={{ minWidth: "20px" }}
+              />
+              <p className="pl-3">Delete</p>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div className="my-auto ml-6 text-xs font-normal text-miru-dark-purple-400">
+        <p>Accepted file formats: PNG, JPG, SVG.</p>
+        <p>File size should be &#8826; 2MB.</p>
+        <p>Image resolution should be 1:1.</p>
+      </div>
+      <input
+        className="hidden"
+        id="file_input"
+        name="logo"
+        type="file"
+        onClick={e => onLogoChange(e, setFieldValue)}
+      />
+    </div>
+  );
 
   return (
     <div>
@@ -183,57 +274,56 @@ const CompanyDetailsForm = ({
 
           return (
             <Form>
-              <div className="my-6 mx-auto w-full">
-                {values?.logo_url ? (
-                  <div className="mx-auto mt-2 ml-16 flex flex-row items-center justify-center">
-                    <div className="mr-5 h-16 w-16">
-                      <img
-                        alt="org_logo"
-                        className="h-full min-w-full rounded-full object-cover"
-                        src={values.logo_url}
+              <div className="my-4">
+                <div className="field">
+                  <div className="mt-1">
+                    {formType == "edit" ? (
+                      <LogoComponent
+                        setFieldValue={setFieldValue}
+                        values={values}
                       />
-                    </div>
-                    <label htmlFor="file-input">
-                      <img
-                        alt="edit"
-                        className="min-w-12 cursor-pointer rounded-full hover:bg-miru-gray-50"
-                        src={EditImageButtonSVG}
+                    ) : values?.logo_url ? (
+                      <LogoComponent
+                        setFieldValue={setFieldValue}
+                        values={values}
                       />
-                    </label>
-                    <input
-                      className="hidden"
-                      id="file-input"
-                      name="myImage"
-                      type="file"
-                      onChange={e => onLogoChange(e, setFieldValue)}
-                    />
-                    <button onClick={() => setFieldValue("logo_url", null)}>
-                      <img
-                        alt="edit"
-                        className="min-w-12 cursor-pointer rounded-full hover:bg-miru-gray-50"
-                        src={DeleteImageButtonSVG}
-                      />
-                    </button>
+                    ) : (
+                      <div className="mt-2 flex flex-row">
+                        <div className="mt-2 h-30 w-30 border border-dashed border-miru-dark-purple-400 ">
+                          <label
+                            className="flex h-full w-full cursor-pointer justify-center"
+                            htmlFor="file-input"
+                          >
+                            <div className="m-auto cursor-pointer text-center text-xs font-semibold">
+                              <p className="text-miru-dark-purple-400">
+                                Drag logo
+                              </p>
+                              <p className="text-miru-dark-purple-400">or</p>
+                              <p className="text-miru-han-purple-1000">
+                                Select File
+                              </p>
+                            </div>
+                          </label>
+                          <input
+                            className="hidden"
+                            id="file-input"
+                            name="logo"
+                            type="file"
+                            onChange={e => onLogoChange(e, setFieldValue)}
+                          />
+                        </div>
+                        <div className="my-auto ml-6 text-xs font-normal text-miru-dark-purple-400">
+                          <p>Accepted file formats: PNG, JPG, SVG.</p>
+                          <p>File size should be &#8826; 2MB.</p>
+                          <p>Image resolution should be 1:1.</p>
+                        </div>
+                      </div>
+                    )}
+                    <p className="mt-3 block max-w-xs text-center text-xs tracking-wider text-red-600">
+                      {fileUploadError}
+                    </p>
                   </div>
-                ) : (
-                  <>
-                    <div className="mx-auto mt-2 h-16 w-16 rounded-full border border-dashed border-miru-dark-purple-200 hover:bg-miru-gray-50">
-                      <label
-                        className="flex h-full w-full cursor-pointer items-center justify-center rounded-full px-1 py-2 text-center text-xs text-miru-dark-purple-200"
-                        htmlFor="file-input"
-                      >
-                        Add company logo
-                      </label>
-                    </div>
-                    <input
-                      className="hidden"
-                      id="file-input"
-                      name="myImage"
-                      type="file"
-                      onChange={e => onLogoChange(e, setFieldValue)}
-                    />
-                  </>
-                )}
+                </div>
               </div>
               <div className="field relative">
                 <InputField
@@ -275,7 +365,7 @@ const CompanyDetailsForm = ({
                   fieldTouched={touched.business_phone}
                 />
               </div>
-              <div className="field relative">
+              <div className="field relative mt-4">
                 <InputField
                   resetErrorOnChange
                   id="address_line_1"
