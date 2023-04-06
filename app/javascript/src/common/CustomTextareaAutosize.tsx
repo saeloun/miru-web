@@ -56,6 +56,6 @@ export const CustomTextareaAutosize = ({
 
 CustomTextareaAutosize.defaultProps = {
   inputBoxClassName:
-    "form__input block w-full appearance-none bg-white p-4 text-base h-16 border-miru-gray-1000",
+    "form__input block w-full appearance-none bg-white p-4 text-sm lg:text-base h-16 border-miru-gray-1000",
   wrapperClassName: "outline relative",
 };

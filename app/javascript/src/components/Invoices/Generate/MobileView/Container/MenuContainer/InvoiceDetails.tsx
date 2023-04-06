@@ -75,7 +75,7 @@ const InvoiceDetails = ({
 
   return (
     <Formik
-      initialValues={invoiceDetailsFormInitialValues}
+      initialValues={invoiceDetailsFormInitialValues(invoiceNumber, reference)}
       validateOnBlur={false}
       validationSchema={invoiceDetailsSchema}
       onSubmit={handleSaveInvoice}
@@ -238,7 +238,7 @@ const InvoiceDetails = ({
                 label="Invoice Number"
                 name="invoiceNumber"
                 setFieldError={setFieldError}
-                setFieldValue={setFieldValue || invoiceNumber}
+                setFieldValue={setFieldValue}
                 type="text"
                 wrapperClassName="mr-2"
                 onChange={e => setInvoiceNumber(e.target.value)}
@@ -253,7 +253,7 @@ const InvoiceDetails = ({
                 label="Reference"
                 name="referenceNumber"
                 setFieldError={setFieldError}
-                setFieldValue={setFieldValue || reference}
+                setFieldValue={setFieldValue}
                 type="text"
                 wrapperClassName="ml-2"
                 onChange={e => setReference(e.target.value)}
