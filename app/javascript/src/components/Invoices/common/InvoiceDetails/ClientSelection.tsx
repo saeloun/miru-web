@@ -20,6 +20,7 @@ const ClientSelection = ({
 
   const [isClientVisible, setIsClientVisible] =
     useState<boolean>(clientVisible);
+
   const wrapperRef = useRef(null);
 
   useOutsideClick(wrapperRef, () => setIsClientVisible(false), isClientVisible);
@@ -66,7 +67,7 @@ const ClientSelection = ({
       <div
         className="relative h-full"
         onClick={() => {
-          setIsClientVisible(!isClientVisible);
+          setIsClientVisible(true);
         }}
       >
         <CustomAdvanceInput
@@ -88,12 +89,12 @@ const ClientSelection = ({
             )
           }
         />
-        <div className=" absolute top-2 left-0 w-fit" ref={wrapperRef}>
+        <div className="absolute top-2 w-full" ref={wrapperRef}>
           {isClientVisible && (
             <Select
               defaultMenuIsOpen
               isSearchable
-              className="client-select m-0 mt-2 w-52 text-white"
+              className="client-select m-0 mt-2  w-full text-white"
               classNamePrefix="m-0 truncate font-medium text-sm text-miru-dark-purple-1000 bg-white"
               components={{ DropdownIndicator, IndicatorSeparator: () => null }}
               defaultValue={null}
