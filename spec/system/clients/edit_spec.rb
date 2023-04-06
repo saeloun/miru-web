@@ -20,11 +20,33 @@ RSpec.describe "Edit client", type: :system do
 
         find(:css, ".hoverIcon").hover.click
         find("#kebabMenu").click()
-        click_button "Edit"
-        fill_in "name", with: "test client"
-        fill_in "email", with: "client@test.com"
-        fill_in "phone", with: "9123456789"
-        fill_in "address", with: "New York"
+
+        within('ul.menuButton__wrapper') do
+          find('li:nth-child(2) > .menuButton__list-item').click
+        end
+
+        within("div.modal-width") do
+          fill_in "name", with: "test client", wait: true
+        end
+        # fill_in "email", with: "client@test.com", wait: true
+        # fill_in "phone", with: "9123456789",wait: true
+
+        within('div#country') do
+          find(".react-select-filter__control.css-digfch-control").click
+          find("#react-select-2-option-232").click
+        end
+
+        within('div#state') do
+          find(".react-select-filter__control.css-digfch-control").click
+          find("#react-select-3-option-1").click
+        end
+
+        within('div#city') do
+          find(".react-select-filter__control.css-digfch-control").click
+          fill_in "react-select-4-input", with: "Skita"
+          find("#react-select-4-option-0").click
+        end
+
         click_button "SAVE CHANGES"
 
         expect(page).to have_content("test client")

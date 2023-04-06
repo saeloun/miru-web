@@ -7,6 +7,7 @@ RSpec.describe "Create client", type: :system do
   let(:user) { create(:user, current_workspace_id: company.id) }
   let(:existing_client) { create(:client_with_phone_number_without_country_code, company:) }
   let(:client) { build(:client_with_phone_number_without_country_code, company:) }
+  let(:address) { build(:address, :with_company, country: "US", state: "Alabama", city: "Brooklyn" ) }
 
   context "when user is an admin" do
     before do
@@ -16,7 +17,7 @@ RSpec.describe "Create client", type: :system do
     end
 
     context "when creating clients with valid values" do
-      xit "creates the client successfully" do
+      it "creates the client successfully" do
         with_forgery_protection do
           visit "/clients"
 
@@ -27,7 +28,26 @@ RSpec.describe "Create client", type: :system do
           fill_in "name", with: client.name
           fill_in "email", with: client.email
           fill_in "phone", with: client.phone
-          fill_in "address", with: client.address
+          fill_in "address1", with: address.address_line_1
+
+          within('div#country') do
+            find(".react-select-filter__control.css-digfch-control").click
+            find("#react-select-2-option-232").click
+          end
+
+          within('div#state') do
+            find(".react-select-filter__control.css-digfch-control").click
+            find("#react-select-3-option-1").click
+          end
+
+          within('div#city') do
+            find(".react-select-filter__control.css-digfch-control").click
+            fill_in "react-select-4-input", with: "Skita"
+            find("#react-select-4-option-0").click
+          end
+
+          fill_in "zipcode", with: address.pin
+
           click_button "SAVE CHANGES"
 
           expect(page).to have_css('img#logo[src*="test-image.png"]')
@@ -43,7 +63,25 @@ RSpec.describe "Create client", type: :system do
 
           click_button "NEW CLIENT"
           fill_in "phone", with: client.phone
-          fill_in "address", with: client.address
+          fill_in "address1", with: address.address_line_1
+
+          within('div#country') do
+            find(".react-select-filter__control.css-digfch-control").click
+            find("#react-select-2-option-232").click
+          end
+
+          within('div#state') do
+            find(".react-select-filter__control.css-digfch-control").click
+            find("#react-select-3-option-1").click
+          end
+
+          within('div#city') do
+            find(".react-select-filter__control.css-digfch-control").click
+            fill_in "react-select-4-input", with: "Skita"
+            find("#react-select-4-option-0").click
+          end
+
+          fill_in "zipcode", with: address.pin
           click_button "SAVE CHANGES"
 
           expect(page).to have_content("Name cannot be blank")
@@ -59,7 +97,25 @@ RSpec.describe "Create client", type: :system do
           fill_in "name", with: client.name
           fill_in "email", with: existing_client.email
           fill_in "phone", with: client.phone
-          fill_in "address", with: client.address
+          fill_in "address1", with: address.address_line_1
+
+          within('div#country') do
+            find(".react-select-filter__control.css-digfch-control").click
+            find("#react-select-2-option-232").click
+          end
+
+          within('div#state') do
+            find(".react-select-filter__control.css-digfch-control").click
+            find("#react-select-3-option-1").click
+          end
+
+          within('div#city') do
+            find(".react-select-filter__control.css-digfch-control").click
+            fill_in "react-select-4-input", with: "Skita"
+            find("#react-select-4-option-0").click
+          end
+
+          fill_in "zipcode", with: address.pin
           click_button "SAVE CHANGES"
 
           sleep(1)
