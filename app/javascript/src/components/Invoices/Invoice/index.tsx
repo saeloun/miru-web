@@ -4,10 +4,12 @@ import { useParams } from "react-router-dom";
 
 import invoicesApi from "apis/invoices";
 import { ApiStatus as InvoiceStatus } from "constants/index";
+import { useUserContext } from "context/UserContext";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import Header from "./Header";
 import InvoiceDetails from "./InvoiceDetails";
+import MobileView from "./MobileView";
 
 import DeleteInvoice from "../popups/DeleteInvoice";
 import SendInvoice from "../popups/SendInvoice";
@@ -21,7 +23,7 @@ const Invoice = () => {
     useState<boolean>(false);
   const [invoiceToDelete, setInvoiceToDelete] = useState(null);
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
-
+  const { isDesktop } = useUserContext();
   const fetchInvoice = async () => {
     try {
       setStatus(InvoiceStatus.LOADING);
@@ -43,7 +45,8 @@ const Invoice = () => {
   };
 
   return (
-    status === InvoiceStatus.SUCCESS && (
+    status === InvoiceStatus.SUCCESS &&
+    (isDesktop ? (
       <>
         <Header
           handleSendInvoice={handleSendInvoice}
@@ -68,7 +71,9 @@ const Invoice = () => {
           />
         )}
       </>
-    )
+    ) : (
+      <MobileView invoice={invoice} />
+    ))
   );
 };
 

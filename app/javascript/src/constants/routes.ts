@@ -4,6 +4,7 @@ import EmailVerificationSuccess from "components/Authentication/EmailVerificatio
 import ForgotPassword from "components/Authentication/ForgotPassword";
 import SignIn from "components/Authentication/SignIn";
 import SignUp from "components/Authentication/SignUp";
+import InvoiceEmail from "components/InvoiceEmail";
 import AccountsAgingReport from "components/Reports/AccountsAgingReport";
 import TeamsRouteConfig from "components/Team/TeamsRouteConfig";
 import { Roles, Paths } from "constants/index";
@@ -102,6 +103,13 @@ export const AUTH_ROUTES = [
   {
     path: "/email_confirmed",
     component: EmailVerificationSuccess,
+  },
+];
+
+export const PUBLIC_ROUTES = [
+  {
+    path: "/invoices/:id/view",
+    component: InvoiceEmail,
   },
 ];
 

@@ -1,6 +1,7 @@
 import React from "react";
 
 import { ArrowLeftIcon, SettingIcon } from "miruIcons";
+import { useNavigate } from "react-router-dom";
 import { Button } from "StyledComponents";
 
 import { sections } from "./utils";
@@ -8,16 +9,19 @@ import { sections } from "./utils";
 const Header = ({ activeSection, setActiveSection }) => {
   const showBackButton = true;
   const showSettingsButton = !activeSection === sections.addLineItem;
+  const navigate = useNavigate();
+  const handleBackAction = () => {
+    if (activeSection == sections.generateInvoice) {
+      navigate("/invoices");
+    } else {
+      setActiveSection(sections.generateInvoice);
+    }
+  };
 
   return (
     <div className="flex h-12 items-center justify-between bg-miru-han-purple-1000 px-3 text-white">
       {showBackButton && (
-        <Button
-          style="ternary"
-          onClick={() => {
-            setActiveSection(sections.generateInvoice);
-          }}
-        >
+        <Button style="ternary" onClick={handleBackAction}>
           <ArrowLeftIcon className="text-white" size={16} weight="bold" />
         </Button>
       )}
