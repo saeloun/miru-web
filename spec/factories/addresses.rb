@@ -6,7 +6,7 @@ FactoryBot.define do
     address_line_2 { Faker::Address.full_address }
     state { Faker::Address.state }
     city { Faker::Address.city }
-    country { Faker::Address.country }
+    country { "US" }
     pin { Faker::Address.postcode }
     with_user
 

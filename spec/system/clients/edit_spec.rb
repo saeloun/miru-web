@@ -18,18 +18,16 @@ RSpec.describe "Edit client", type: :system do
       with_forgery_protection do
         visit "/clients"
 
-        find(:css, ".hoverIcon").hover.click
+        find(".hoverIcon").hover.click
         find("#kebabMenu").click()
 
-        within('ul.menuButton__wrapper') do
-          find('li:nth-child(2) > .menuButton__list-item').click
+        within("ul.menuButton__wrapper") do
+          find("li:nth-child(2) > button").click
         end
 
-        within("div.modal-width") do
-          fill_in "name", with: "test client", wait: true
-        end
-        # fill_in "email", with: "client@test.com", wait: true
-        # fill_in "phone", with: "9123456789",wait: true
+        fill_in "name", with: "test client", wait: true
+        fill_in "email", with: "client@test.com", wait: true
+        fill_in "phone", with: "9123456789",wait: true
 
         within('div#country') do
           find(".react-select-filter__control.css-digfch-control").click
