@@ -15,13 +15,13 @@ const Success = () => {
 
   const fetchPaymentSuccess = async () => {
     setLoading(true);
-    const { data } = await invoicesApi.paymentSuccess(id).catch(e => {
+    const res = await invoicesApi.paymentSuccess(id).catch(e => {
       setError(e.response.data.error);
       navigate("/");
     });
 
     setError("");
-    setInvoice(data.invoice);
+    setInvoice(res?.data?.invoice);
 
     setLoading(false);
   };
