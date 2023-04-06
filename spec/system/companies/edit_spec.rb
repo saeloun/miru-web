@@ -20,24 +20,25 @@ RSpec.describe "Edit company", type: :system do
         # find(:xpath, '//ul.tracking-wider div:nth-child(2) button').click
         # find(:xpath, "//ul[@class='tracking-wider'//div(2)//button").click
         within('ul.tracking-wider') do
-            find('div:nth-child(2) > button').click
+          find('div:nth-child(2) > button').click
         end
 
         find('a[href="/profile/edit/organization-details"]').click
-        sleep 5
         click_button "Edit"
-        sleep 5
-        puts find(:css, ".form__input")
         fill_in "companyName", with: "test company"
-        fill_in "input.react-phone-number-input__input", with: "+19296207865"
         fill_in "addressLine1", with: "Test address"
-        fill_in "react-select-9-input", with: "US"
-        fill_in "react-select-10-input", with: "NY"
-        fill_in "react-select-11-input", with: "Akron"
+
+        within('div#countrySelect') do
+          find(".react-select-filter__control.css-digfch-control").click
+          find("#react-select-9-option-232").click
+        end
+        within('div#stateSelect') do
+          find(".react-select-filter__control.css-digfch-control").click
+          find("#react-select-10-option-41").click
+        end
+
         fill_in "zipcode", with: "12238"
-
-
-        click_button "Save", disabled: true
+        click_button "Save"
 
         expect(page).to have_content("Changes saved successfully")
 
@@ -58,12 +59,10 @@ RSpec.describe "Edit company", type: :system do
         end
 
         find('a[href="/profile/edit/organization-details"]').click
-        sleep 5
         click_button "Edit"
-        sleep 5
         fill_in "addressLine1", with: ""
         
-        click_button "Save", disabled: true
+        click_button "Save"
 
         expect(page).to have_content("Address Line 1 cannot be blank")
       end

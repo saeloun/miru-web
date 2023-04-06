@@ -14,7 +14,6 @@ RSpec.describe "Companies index page", type: :system do
     before do
       user.add_role :admin, company
       sign_in user
-      # send_request :get, internal_api_v1_companies_path, headers: auth_headers(user)
     end
 
     it "returns the list of company's clients and company info" do
@@ -26,10 +25,9 @@ RSpec.describe "Companies index page", type: :system do
         end
 
         find('a[href="/profile/edit/organization-details"]').click
-        sleep 2
+
         expect(page).to have_content(company.name)
         expect(page).to have_content(company.base_currency)
-        # expect(page).to have_content(company.current_address.formatted_address)
       end
     end
   end 
