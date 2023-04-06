@@ -15,8 +15,8 @@
     "@rails/actioncable": "^7.0.4",
     "@rails/activestorage": "^7.0.4",
     "@rails/ujs": "^7.0.4",
-    "@types/react": "^17.0.38",
-    "@types/react-dom": "^17.0.11",
+    "@types/react": "^18.0.33",
+    "@types/react-dom": "^18.0.11",
     "@typescript-eslint/eslint-plugin": "^5.7.0",
     "@typescript-eslint/parser": "^5.7.0",
     "alpine-turbo-drive-adapter": "^2.0.0",
@@ -138,6 +138,10 @@
   "browserslist": [
     "defaults"
   ],
+  "resolutions": {
+    "**/react": "^18.2.0",
+    "**/react-dom": "^18.2.0"
+  },
   "license": "MIT",
   "packageManager": "yarn@1.22.17"
 }
