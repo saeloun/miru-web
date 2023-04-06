@@ -8,4 +8,5 @@ export const sections = {
   },
   invoicePreview: { value: "invoicePreview", label: "Invoice Preview" },
   invoiceSettings: { value: "invoiceSettings", label: "Invoice Settings" },
+  sendInvoice: { value: "sendInvoice", label: "Send Invoice" },
 };
