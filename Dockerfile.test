@@ -3,9 +3,6 @@ FROM ruby:3.2.2-slim AS base
 
 ARG NODE_VERSION=18.14.2
 
-ARG BUNDLE_PATH=vendor/bundle
-ENV BUNDLE_PATH ${BUNDLE_PATH}
-
 RUN mkdir /app
 WORKDIR /app
 RUN mkdir -p tmp/pids
@@ -17,15 +14,40 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl gnupg2 && 
     apt-get install -y --no-install-recommends nodejs yarn && \
     apt-get clean && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
-RUN curl --location --silent https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
+# RUN curl --location --silent https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
+#     && sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' \
+#     && apt-get update && apt-get install google-chrome-stable -y --no-install-recommends postgresql-client-13 && \
+#     apt-get clean && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
+
+
+ARG PROD_PACKAGES="postgresql-client curl libsqlite3-0 gnupg"
+ENV PROD_PACKAGES=${PROD_PACKAGES}
+
+RUN --mount=type=cache,id=prod-apt-cache,sharing=locked,target=/var/cache/apt \
+    --mount=type=cache,id=prod-apt-lib,sharing=locked,target=/var/lib/apt \
+    apt-get update -qq && \
+    apt-get install --no-install-recommends -y \
+    ${PROD_PACKAGES} \
+    && curl --location --silent https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
     && sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' \
-    && apt-get update && apt-get install google-chrome-stable -y --no-install-recommends postgresql-client-13 && \
-    apt-get clean && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
+    && apt-get update \
+    && apt-get install google-chrome-stable -y --no-install-recommends \
+    && rm -rf /var/lib/apt/lists /var/cache/apt/archives
+
+
+ARG DEV_PACKAGES="git build-essential libpq-dev"
+ENV DEV_PACKAGES ${DEV_PACKAGES}
+
+RUN --mount=type=cache,id=dev-apt-cache,sharing=locked,target=/var/cache/apt \
+    --mount=type=cache,id=dev-apt-lib,sharing=locked,target=/var/lib/apt \
+    apt-get update -qq && \
+    apt-get install --no-install-recommends -y ${DEV_PACKAGES} \
+    && rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 FROM base AS build-deps
 
-RUN apt-get update && apt-get install -y --no-install-recommends git build-essential libpq-dev && \
-    apt-get clean && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
+# RUN apt-get update && apt-get install -y --no-install-recommends git build-essential libpq-dev && \
+#     apt-get clean && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
 
 FROM build-deps AS gems
