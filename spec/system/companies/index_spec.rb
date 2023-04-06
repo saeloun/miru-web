@@ -5,7 +5,7 @@ require "rails_helper"
 RSpec.describe "Companies index page", type: :system do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
-  
+
   before do
     create(:employment, company:, user:)
   end
@@ -19,17 +19,16 @@ RSpec.describe "Companies index page", type: :system do
     it "returns the list of company's clients and company info" do
       with_forgery_protection do
         visit "/profile/edit"
-        
-        within('ul.tracking-wider') do
-            find('div:nth-child(2) > button').click
+
+        within("ul.tracking-wider") do
+          find("div:nth-child(2) > button").click
         end
 
-        find('a[href="/profile/edit/organization-details"]').click
+        find("a[href='/profile/edit/organization-details']").click
 
         expect(page).to have_content(company.name)
         expect(page).to have_content(company.base_currency)
       end
     end
-  end 
+  end
 end
-42

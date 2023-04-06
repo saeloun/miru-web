@@ -17,22 +17,20 @@ RSpec.describe "Edit company", type: :system do
       with_forgery_protection do
         visit "/profile/edit"
 
-        # find(:xpath, '//ul.tracking-wider div:nth-child(2) button').click
-        # find(:xpath, "//ul[@class='tracking-wider'//div(2)//button").click
-        within('ul.tracking-wider') do
-          find('div:nth-child(2) > button').click
+        within("ul.tracking-wider") do
+          find("div:nth-child(2) > button").click
         end
 
-        find('a[href="/profile/edit/organization-details"]').click
+        find("a[href='/profile/edit/organization-details']").click
         click_button "Edit"
         fill_in "companyName", with: "test company"
         fill_in "addressLine1", with: "Test address"
 
-        within('div#countrySelect') do
+        within("div#countrySelect") do
           find(".react-select-filter__control.css-digfch-control").click
           find("#react-select-9-option-232").click
         end
-        within('div#stateSelect') do
+        within("div#stateSelect") do
           find(".react-select-filter__control.css-digfch-control").click
           find("#react-select-10-option-41").click
         end
@@ -54,11 +52,11 @@ RSpec.describe "Edit company", type: :system do
       with_forgery_protection do
         visit "/profile/edit"
         
-        within('ul.tracking-wider') do
+        within("ul.tracking-wider") do
             find('div:nth-child(2) > button').click
         end
 
-        find('a[href="/profile/edit/organization-details"]').click
+        find("a[href='/profile/edit/organization-details']").click
         click_button "Edit"
         fill_in "addressLine1", with: ""
         
