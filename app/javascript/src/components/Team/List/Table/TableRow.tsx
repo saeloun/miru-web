@@ -58,12 +58,14 @@ const TableRow = ({ item }) => {
               <div className="iconWrapper invisible">
                 <button
                   className="ml-12"
+                  id="editMember"
                   onClick={e => handleAction(e, TeamModalType.ADD_EDIT)}
                 >
                   <EditIcon color="#5b34ea" size={16} weight="bold" />
                 </button>
                 <button
                   className="ml-12"
+                  id="deleteMember"
                   onClick={e => handleAction(e, TeamModalType.DELETE)}
                 >
                   <DeleteIcon color="#5b34ea" size={16} weight="bold" />
