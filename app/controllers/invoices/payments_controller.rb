@@ -8,7 +8,7 @@ class Invoices::PaymentsController < ApplicationController
 
   def new
     session = @invoice.create_checkout_session!(
-      success_url: success_invoice_payments_url(@invoice),
+      success_url: internal_api_v1_invoices_success_url(@invoice),
       cancel_url: cancel_invoice_payments_url(@invoice)
     )
 
@@ -27,7 +27,7 @@ class Invoices::PaymentsController < ApplicationController
 
     def ensure_invoice_unpaid
       if @invoice.paid?
-        redirect_to success_invoice_payments_url(@invoice.id)
+        redirect_to internal_api_v1_invoices_success_url(@invoice)
       end
     end
 end
