@@ -254,7 +254,7 @@ const CompanyDetailsForm = ({
                 </div>
                 <div className="mx-0 mt-1 mb-5 block text-xs tracking-wider text-red-600">
                   {errors.country && touched.country && (
-                    <div>{errors.country}</div>
+                    <div>{errors.country.value}</div>
                   )}
                 </div>
               </div>
@@ -277,7 +277,7 @@ const CompanyDetailsForm = ({
                 </div>
                 <div className="mx-0 mt-1 mb-5 block text-xs tracking-wider text-red-600">
                   {errors.timezone && touched.timezone && (
-                    <div>{errors.timezone}</div>
+                    <div>{errors.timezone.value}</div>
                   )}
                 </div>
               </div>

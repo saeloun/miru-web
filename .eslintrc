@@ -34,7 +34,7 @@
     },
     "import/resolver": {
       "node": {
-        "extensions": [".js", ".jsx", ".ts", ".tsx", ".svg", ".json", ".mp3"]
+        "extensions": [".js", ".jsx", ".ts", ".tsx", ".svg", ".json", ".mp3", ".css"]
       }
     },
     "react": {

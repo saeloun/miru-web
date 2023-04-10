@@ -3,12 +3,12 @@ import React from "react";
 import classnames from "classnames";
 
 const CustomCheckbox = ({
-  text = {},
+  text = undefined,
   isChecked = false,
   checkboxValue,
   id,
   handleCheck,
-  hanldeOnClick,
+  handleOnClick,
   name = "",
   wrapperClassName = "",
   labelClassName = "",
@@ -30,7 +30,7 @@ const CustomCheckbox = ({
           isUpdatedDesign ? "h-4 w-4" : "h-3 w-3 md:h-5 md:w-5"
         } cursor-pointer opacity-0`}
         onChange={handleCheck}
-        onClick={hanldeOnClick}
+        onClick={handleOnClick}
       />
       <div
         className={`col-start-1 row-start-1 ${
@@ -91,7 +91,7 @@ const CustomCheckbox = ({
 );
 
 CustomCheckbox.defaultProps = {
-  hanldeOnClick: () => {}, //eslint-disable-line
+  handleOnClick: () => {}, //eslint-disable-line
   isUpdatedDesign: false,
 };
 
