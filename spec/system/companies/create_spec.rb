@@ -81,7 +81,7 @@ RSpec.describe "Create company", type: :system do
             visible: false).set(Rails.root.join("spec", "support", "fixtures", "pdf-file.pdf")
           )
 
-          expect(page).to have_content("Incorrect file format. Please upload an image of type PNG or JPG.")
+          expect(page).to have_content("Incorrect file format. Please upload an image of type PNG or JPG")
         end
       end
 
