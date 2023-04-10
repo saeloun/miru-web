@@ -3,7 +3,7 @@ import React from "react";
 import classnames from "classnames";
 
 const CustomCheckbox = ({
-  text = "",
+  text = undefined,
   isChecked = false,
   checkboxValue,
   id,
