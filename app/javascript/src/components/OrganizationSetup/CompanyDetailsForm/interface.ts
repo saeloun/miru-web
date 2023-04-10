@@ -29,4 +29,5 @@ export interface CompanyDetailsFormProps {
   isFormAlreadySubmitted: boolean;
   previousSubmittedValues?: CompanyDetailsFormValues;
   formType: string;
+  isDesktop: boolean;
 }
