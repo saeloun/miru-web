@@ -49,6 +49,7 @@ const BulkActionsWrapper = ({
           <MoreOptions className="right-0" setVisibilty={setIsMoreOptionsOpen}>
             <li
               className="flex cursor-pointer items-center py-2.5 px-4 text-xs font-medium text-miru-han-purple-1000 hover:bg-miru-gray-100 lg:text-sm"
+              id="download"
               onClick={() => {
                 setShowBulkDownloadDialog(true);
                 setIsMoreOptionsOpen(false);
