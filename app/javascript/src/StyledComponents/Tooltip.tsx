@@ -9,7 +9,7 @@ type TooltipProps = {
   delay?: number;
   className?: string;
   wrapperClassName?: string;
-    children?: JSX.Element | JSX.Element[];
+  children?: React.ReactNode;
 };
 
 const Tooltip = ({
