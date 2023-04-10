@@ -73,7 +73,7 @@ export const Project = ({
         <td className="table__cell text-right text-lg font-bold lg:text-xl">
           {minToHHMM(minutesSpent)}
         </td>
-        <td className="table__cell hidden px-3 py-3 lg:inline">
+        <td className="table__cell hidden px-3 py-3 lg:table-cell">
           {isAdminUser && isHover && (
             <button
               id="editProject"
@@ -88,7 +88,7 @@ export const Project = ({
             </button>
           )}
         </td>
-        <td className="table__cell hidden px-3 py-3 lg:inline">
+        <td className="table__cell hidden px-3 py-3 lg:table-cell">
           {isAdminUser && isHover && (
             <button
               onClick={e => {
@@ -103,31 +103,15 @@ export const Project = ({
           )}
         </td>
         <td className="table__cell table-cell items-center px-3 py-3 lg:hidden">
-          {isDesktop ? (
-            isAdminUser &&
-            isHover && (
-              <button
-                onClick={e => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  setShowDeleteDialog(true);
-                  setDeleteProjectData({ id, name });
-                }}
-              >
-                <DeleteIcon color="#5B34EA" size={16} />
-              </button>
-            )
-          ) : (
-            <DotsThreeVertical
-              size={16}
-              weight="bold"
-              onClick={e => {
-                e.preventDefault();
-                e.stopPropagation();
-                setShowMoreOptions(true);
-              }}
-            />
-          )}
+          <DotsThreeVertical
+            size={16}
+            weight="bold"
+            onClick={e => {
+              e.preventDefault();
+              e.stopPropagation();
+              setShowMoreOptions(true);
+            }}
+          />
         </td>
       </tr>
       {showMoreOptions && (

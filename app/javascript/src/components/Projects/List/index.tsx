@@ -60,14 +60,23 @@ const ProjectList = ({ isAdminUser }) => {
                       PROJECT/CLIENT
                     </th>
                     <th
-                      className="table__header hidden lg:inline"
+                      className="table__header hidden lg:table-cell"
                       scope="col"
                     />
-                    <th className="table__header text-right" scope="col">
+                    <th
+                      className="table__header hidden text-right lg:table-cell"
+                      scope="col"
+                    >
                       HOURS LOGGED
                     </th>
                     <th
-                      className="table__header hidden lg:inline"
+                      className="table__header text-right lg:hidden"
+                      scope="col"
+                    >
+                      HOURS
+                    </th>
+                    <th
+                      className="table__header hidden lg:table-cell"
                       scope="col"
                     />
                     <th className="table__header" scope="col" />
