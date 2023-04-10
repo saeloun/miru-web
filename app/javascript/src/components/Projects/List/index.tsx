@@ -10,6 +10,7 @@ import { useUserContext } from "context/UserContext";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import Header from "./Header";
+import AddEditProjectMobile from "./Mobile/AddEditProjectMobile";
 import { Project } from "./project";
 
 import { IProject } from "../interface";
@@ -58,11 +59,17 @@ const ProjectList = ({ isAdminUser }) => {
                     <th className="table__header" scope="col">
                       PROJECT/CLIENT
                     </th>
-                    <th className="table__header" scope="col" />
+                    <th
+                      className="table__header hidden lg:inline"
+                      scope="col"
+                    />
                     <th className="table__header text-right" scope="col">
                       HOURS LOGGED
                     </th>
-                    <th className="table__header" scope="col" />
+                    <th
+                      className="table__header hidden lg:inline"
+                      scope="col"
+                    />
                     <th className="table__header" scope="col" />
                   </tr>
                 </thead>
@@ -84,7 +91,7 @@ const ProjectList = ({ isAdminUser }) => {
           </div>
         </div>
       </div>
-      {showProjectModal && (
+      {showProjectModal && isDesktop && (
         <AddEditProject
           editProjectData={editProjectData}
           setEditProjectData={setEditProjectData}
@@ -103,7 +110,21 @@ const ProjectList = ({ isAdminUser }) => {
 
   const Main = withLayout(ProjectsLayout, !isDesktop, !isDesktop);
 
-  return isDesktop ? ProjectsLayout() : <Main />;
+  if (!isDesktop) {
+    if (showProjectModal) {
+      return (
+        <AddEditProjectMobile
+          editProjectData={editProjectData}
+          setEditProjectData={setEditProjectData}
+          setShowProjectModal={setShowProjectModal}
+        />
+      );
+    }
+
+    return <Main />;
+  }
+
+  return ProjectsLayout();
 };
 
 export default ProjectList;
