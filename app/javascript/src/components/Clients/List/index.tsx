@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 
 import { cashFormatter, currencySymbol, minToHHMM } from "helpers";
 import { PlusIcon } from "miruIcons";
+import { DotsThreeVertical } from "phosphor-react";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { Avatar, Tooltip } from "StyledComponents";
@@ -85,18 +86,7 @@ const getTableData = (
       ),
       col4: (
         <div>
-          <svg
-            fill="currentColor"
-            height="26"
-            viewBox="0 0 256 256"
-            width="26"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <rect fill="none" height="256" width="256" />
-            <circle cx="128" cy="128" r="12" />
-            <circle cx="128" cy="64" r="12" />
-            <circle cx="128" cy="192" r="12" />
-          </svg>
+          <DotsThreeVertical height={26} width={24} />
         </div>
       ),
       rowId: client.id,
