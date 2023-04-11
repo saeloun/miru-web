@@ -134,7 +134,7 @@ const ClientForm = ({
   const LogoComponent = () => (
     <div className="my-4 flex flex-row">
       <div className="mt-2 h-30 w-30 border border-dashed border-miru-dark-purple-400">
-        <div className="profile-img relative m-auto cursor-pointer text-center text-xs font-semibold">
+        <div className="profile-img relative m-auto h-30 w-30 cursor-pointer text-center text-xs font-semibold">
           <Avatar
             classNameImg="h-full w-full md:h-full md:w-full"
             url={clientLogoUrl}

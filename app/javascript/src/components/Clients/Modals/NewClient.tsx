@@ -7,6 +7,7 @@ import clientApi from "apis/clients";
 import Toastr from "common/Toastr";
 
 import ClientForm from "./ClientForm";
+import { formatFormData } from "./utils";
 
 const EditClient = ({
   setnewClient,
@@ -18,44 +19,9 @@ const EditClient = ({
   setClientLogo,
   setShowDialog,
 }) => {
-  const formatFormData = (formData, values) => {
-    formData.append("client[name]", values.name);
-    formData.append("client[email]", values.email);
-    formData.append("client[phone]", values.phone);
-
-    formData.append(
-      "client[addresses_attributes[0][address_line_1]]",
-      values.address1
-    );
-
-    formData.append(
-      "client[addresses_attributes[0][address_line_2]]",
-      values.address2
-    );
-
-    formData.append(
-      "client[addresses_attributes[0][state]]",
-      values.state?.value
-    );
-
-    formData.append(
-      "client[addresses_attributes[0][city]]",
-      values.city?.value
-    );
-
-    formData.append(
-      "client[addresses_attributes[0][country]]",
-      values.country?.value
-    );
-
-    formData.append("client[addresses_attributes[0][pin]]", values.zipcode);
-
-    if (clientLogoUrl) formData.append("client[logo]", clientLogo);
-  };
-
   const handleSubmit = async values => {
     const formData = new FormData();
-    formatFormData(formData, values);
+    formatFormData(formData, values, true, clientData, clientLogo);
 
     try {
       const res = await clientApi.create(formData);
