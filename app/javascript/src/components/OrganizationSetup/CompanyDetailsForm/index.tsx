@@ -68,6 +68,7 @@ const CompanyDetailsForm = ({
   isFormAlreadySubmitted = false,
   previousSubmittedValues = null,
   formType = "New",
+  isDesktop,
 }: CompanyDetailsFormProps) => {
   const [allTimezones, setAllTimezones] = useState({});
   const [timezonesOfSelectedCountry, setTimezonesOfSelectedCountry] = useState(
@@ -164,10 +165,10 @@ const CompanyDetailsForm = ({
     } else {
       if (!isValid.fileExtension && !isValid.fileSizeValid) {
         setFileUploadError(
-          i18n.t("invalidImageFormatSize", { fileSize: "30" })
+          i18n.t("invalidImageFormatSize", { fileSize: "2000" })
         );
       } else if (isValid.fileExtension && !isValid.fileSizeValid) {
-        setFileUploadError(i18n.t("invalidImageSize", { fileSize: "30" }));
+        setFileUploadError(i18n.t("invalidImageSize", { fileSize: "2000" }));
       } else {
         setFileUploadError(i18n.t("invalidImageFormat"));
       }
@@ -177,7 +178,7 @@ const CompanyDetailsForm = ({
   const isValidFileUploaded = file => {
     const validExtensions = ["png", "jpeg", "jpg"];
     const fileExtensions = file.type.split("/")[1];
-    const validFileByteSize = "30000";
+    const validFileByteSize = "2000000";
     const fileSize = file.size;
 
     return {
@@ -295,10 +296,16 @@ const CompanyDetailsForm = ({
                             htmlFor="file-input"
                           >
                             <div className="m-auto cursor-pointer text-center text-xs font-semibold">
-                              <p className="text-miru-dark-purple-400">
-                                Drag logo
-                              </p>
-                              <p className="text-miru-dark-purple-400">or</p>
+                              {isDesktop && (
+                                <>
+                                  <p className="text-miru-dark-purple-400">
+                                    Drag logo
+                                  </p>
+                                  <p className="text-miru-dark-purple-400">
+                                    or
+                                  </p>
+                                </>
+                              )}
                               <p className="text-miru-han-purple-1000">
                                 Select File
                               </p>

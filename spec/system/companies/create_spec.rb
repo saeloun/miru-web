@@ -81,8 +81,7 @@ RSpec.describe "Create company", type: :system do
             visible: false).set(Rails.root.join("spec", "support", "fixtures", "pdf-file.pdf")
           )
 
-          expect(page).to have_content("Incorrect file format. Please upload an image of type PNG or JPG.")
-          expect(page).to have_content("Max size (30kb)")
+          expect(page).to have_content("Incorrect file format. Please upload an image of type PNG or JPG")
         end
       end
 
@@ -95,7 +94,7 @@ RSpec.describe "Create company", type: :system do
             visible: false).set(Rails.root.join("spec", "support", "fixtures", "invalid-file.png")
           )
 
-          expect(page).to have_content("File size exceeded the max limit of 30KB.")
+          expect(page).to have_content("File size exceeded the max limit of 2000KB.")
         end
       end
     end

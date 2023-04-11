@@ -8,18 +8,22 @@ import { ToastContainer } from "react-toastify";
 import companiesApi from "apis/companies";
 import MiruLogoWatermark from "common/MiruLogoWatermark";
 import { Paths } from "constants/index";
+import { useUserContext } from "context/UserContext";
 
 import CompanyDetailsForm from "./CompanyDetailsForm";
 import { CompanyDetailsFormValues } from "./CompanyDetailsForm/interface";
 import { companyDetailsFormInitialValues } from "./CompanyDetailsForm/utils";
 import FinancialDetailsForm from "./FinancialDetailsForm";
 import { FinancialDetailsFormValues } from "./FinancialDetailsForm/interface";
+import MobileFinancialDetailForm from "./FinancialDetailsForm/MobileFinancialDetailForm";
 import { financialDetailsFormInitialValues } from "./FinancialDetailsForm/utils";
 import Step from "./Step";
 import { organizationSetupSteps, TOTAL_NUMBER_OF_STEPS } from "./utils";
 
 const OrganizationSetup = () => {
   const navigate = useNavigate();
+  const { isDesktop } = useUserContext();
+
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [stepNoOfLastSubmittedForm, setStepNoOfLastSubmittedForm] =
     useState<number>(0);
@@ -130,11 +134,22 @@ const OrganizationSetup = () => {
   return (
     <>
       <ToastContainer autoClose={30000} />
-      <div className="relative min-h-screen w-full px-8 pt-16 pb-4 md:px-0 md:pt-28">
-        <div className="org-setup-form-wrapper mx-auto min-h-full md:w-1/2 lg:w-352">
-          <h1 className="text-center font-manrope text-4.75xl font-extrabold not-italic text-miru-han-purple-1000">
-            Setup Org
-          </h1>
+      <div
+        className={`relative ${
+          currentStep == 1 ? "min-h-screen" : "h-screen"
+        } w-full px-8 ${isDesktop ? "pt-16" : "pt-8"} pb-4 md:px-0 md:pt-28`}
+      >
+        <div className="org-setup-form-wrapper mx-auto h-full md:w-1/2 lg:w-352">
+          {isDesktop ? (
+            <h1 className="text-center font-manrope text-4.75xl font-extrabold not-italic text-miru-han-purple-1000">
+              Setup Org
+            </h1>
+          ) : (
+            <div className="w-full text-center font-manrope text-2xl font-extrabold not-italic text-miru-han-purple-1000">
+              {" "}
+              Setup Org
+            </div>
+          )}
           <div className="mx-auto mt-6 mb-11 w-full">
             <Steps
               current={currentStep - 1}
@@ -152,17 +167,29 @@ const OrganizationSetup = () => {
           {currentStep == 1 ? (
             <CompanyDetailsForm
               formType="new"
+              isDesktop={isDesktop}
               isFormAlreadySubmitted={stepNoOfLastSubmittedForm >= 1}
               previousSubmittedValues={companyDetails}
               onNextBtnClick={onNextBtnClick}
             />
           ) : (
-            <FinancialDetailsForm
-              isUpdatedFormValues={stepNoOfLastSubmittedForm >= 1}
-              prevFormValues={financialDetails}
-              setFinancialDetails={setFinancialDetails}
-              onSaveBtnClick={onSaveBtnClick}
-            />
+            <>
+              {isDesktop ? (
+                <FinancialDetailsForm
+                  isUpdatedFormValues={stepNoOfLastSubmittedForm >= 1}
+                  prevFormValues={financialDetails}
+                  setFinancialDetails={setFinancialDetails}
+                  onSaveBtnClick={onSaveBtnClick}
+                />
+              ) : (
+                <MobileFinancialDetailForm
+                  isUpdatedFormValues={stepNoOfLastSubmittedForm >= 1}
+                  prevFormValues={financialDetails}
+                  setFinancialDetails={setFinancialDetails}
+                  onSaveBtnClick={onSaveBtnClick}
+                />
+              )}
+            </>
           )}
         </div>
         <MiruLogoWatermark />
