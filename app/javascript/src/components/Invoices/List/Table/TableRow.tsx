@@ -52,7 +52,7 @@ const TableRow = ({
     }
   };
 
-  const hanldeOnClick = e => {
+  const handleOnClick = e => {
     e.stopPropagation();
   };
 
@@ -79,7 +79,7 @@ const TableRow = ({
             isUpdatedDesign
             checkboxValue={isSelected}
             handleCheck={handleCheckboxChange}
-            hanldeOnClick={hanldeOnClick}
+            handleOnClick={handleOnClick}
             id={id}
             isChecked={isSelected}
             text=""
