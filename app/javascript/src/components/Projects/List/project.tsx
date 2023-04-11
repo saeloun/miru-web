@@ -1,8 +1,7 @@
 import React from "react";
 
 import { minToHHMM } from "helpers";
-import { PenIcon, DeleteIcon } from "miruIcons";
-import { DotsThreeVertical } from "phosphor-react";
+import { DeleteIcon, DotsThreeVerticalIcon, EditIcon } from "miruIcons";
 import { useNavigate } from "react-router-dom";
 import { Badge, MobileMoreOptions } from "StyledComponents";
 
@@ -84,7 +83,7 @@ export const Project = ({
                 setEditProjectData({ id, name, clientName, isBillable });
               }}
             >
-              <PenIcon color="#5B34EA" size={16} />
+              <EditIcon color="#5B34EA" size={16} />
             </button>
           )}
         </td>
@@ -103,7 +102,7 @@ export const Project = ({
           )}
         </td>
         <td className="table__cell table-cell items-center px-3 py-3 lg:hidden">
-          <DotsThreeVertical
+          <DotsThreeVerticalIcon
             size={16}
             weight="bold"
             onClick={e => {
@@ -117,23 +116,25 @@ export const Project = ({
       {showMoreOptions && (
         <MobileMoreOptions setVisibilty={setShowMoreOptions}>
           <li
-            className="flex items-center px-2 pt-3 text-sm leading-5 text-miru-dark-purple-1000"
+            className="flex items-center px-2 pt-3 text-sm leading-5 text-miru-han-purple-1000"
             onClick={() => {
               setShowMoreOptions(false);
               setEditProjectData({ id, name, clientName, isBillable });
               setShowProjectModal(true);
             }}
           >
+            <EditIcon className="mr-4" color="#5B34EA" size={16} />
             Edit
           </li>
           <li
-            className="flex items-center px-2 pt-3 text-sm leading-5 text-miru-dark-purple-1000"
+            className="flex items-center px-2 pt-3 text-sm leading-5 text-miru-red-400"
             onClick={() => {
               setShowMoreOptions(false);
               setShowDeleteDialog(true);
               setDeleteProjectData({ id, name });
             }}
           >
+            <DeleteIcon className="mr-4" size={16} />
             Delete
           </li>
         </MobileMoreOptions>

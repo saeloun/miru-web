@@ -65,96 +65,108 @@ const TableRow = ({
   };
 
   return (
-    <tr
-      className="group cursor-pointer last:border-b-0 hover:bg-miru-gray-100"
-      id="invoicesListTableRow"
-      key={index}
-      onClick={() => {
-        navigate(`/invoices/${id}`);
-      }}
-    >
-      <td className="px-0 py-0">
-        <CustomCheckbox
-          isUpdatedDesign
-          checkboxValue={isSelected}
-          handleCheck={handleCheckboxChange}
-          hanldeOnClick={hanldeOnClick}
-          id={id}
-          isChecked={isSelected}
-          text=""
-          wrapperClassName="h-8 w-8 m-auto rounded-3xl p-2 hover:bg-miru-gray-1000"
-        />
-      </td>
-      <td>
-        <Tooltip content={name} show={showToolTip}>
-          <div className="flex w-40 cursor-pointer items-center py-5 pr-2 text-left font-medium tracking-normal sm:w-80 md:w-96 lg:w-full">
-            <Avatar url={logo} />
-            <div
-              className="ml-2 overflow-hidden truncate whitespace-nowrap lg:ml-4"
-              ref={toolTipRef}
-              onMouseEnter={handleTooltip}
-            >
-              <span className="text-sm font-semibold capitalize leading-4 text-miru-dark-purple-1000 lg:text-base lg:leading-5">
-                {name}
-              </span>
-              <h3 className="text-xs font-medium leading-4 text-miru-dark-purple-400 lg:text-sm lg:leading-5">
-                {invoiceNumber}
-              </h3>
-            </div>
-          </div>
-        </Tooltip>
-      </td>
-      {isDesktop && (
-        <td className="w-1/4 whitespace-nowrap px-4 py-5 font-medium tracking-normal lg:px-6">
-          <h1 className="text-xs font-normal text-miru-dark-purple-1000 lg:text-base lg:font-semibold">
-            {issueDate}
-          </h1>
-          <h3 className="text-xs font-medium text-miru-dark-purple-400 lg:text-sm">
-            Due on {dueDate}
-          </h3>
-        </td>
-      )}
-      <td className="hidden px-2 text-right text-sm font-bold tracking-normal text-miru-dark-purple-1000 lg:table-cell lg:w-1/6 lg:px-6 lg:pt-2 lg:pb-7 lg:text-xl">
-        {currencyFormat(baseCurrency, amount)}
-      </td>
-      <td
-        className="relative px-2 text-right font-medium lg:px-6 lg:pb-10"
-        onMouseLeave={() => setIsMenuOpen(false)}
+    <>
+      <tr
+        className="group cursor-pointer last:border-b-0 hover:bg-miru-gray-100"
+        id="invoicesListTableRow"
+        key={index}
+        onClick={() => {
+          navigate(`/invoices/${id}`);
+        }}
       >
+        <td className="px-0 py-0">
+          <CustomCheckbox
+            isUpdatedDesign
+            checkboxValue={isSelected}
+            handleCheck={handleCheckboxChange}
+            hanldeOnClick={hanldeOnClick}
+            id={id}
+            isChecked={isSelected}
+            text=""
+            wrapperClassName="h-8 w-8 m-auto rounded-3xl p-2 hover:bg-miru-gray-1000"
+          />
+        </td>
+        <td>
+          <Tooltip content={name} show={showToolTip}>
+            <div className="flex w-40 cursor-pointer items-center py-5 pr-2 text-left font-medium tracking-normal sm:w-80 md:w-96 lg:w-full">
+              <Avatar url={logo} />
+              <div
+                className="ml-2 overflow-hidden truncate whitespace-nowrap lg:ml-4"
+                ref={toolTipRef}
+                onMouseEnter={handleTooltip}
+              >
+                <span className="text-sm font-semibold capitalize leading-4 text-miru-dark-purple-1000 lg:text-base lg:leading-5">
+                  {name}
+                </span>
+                <h3 className="text-xs font-medium leading-4 text-miru-dark-purple-400 lg:text-sm lg:leading-5">
+                  {invoiceNumber}
+                </h3>
+              </div>
+            </div>
+          </Tooltip>
+        </td>
         {isDesktop && (
-          <MoreOptions
+          <td className="w-1/4 whitespace-nowrap px-4 py-5 font-medium tracking-normal lg:px-6">
+            <h1 className="text-xs font-normal text-miru-dark-purple-1000 lg:text-base lg:font-semibold">
+              {issueDate}
+            </h1>
+            <h3 className="text-xs font-medium text-miru-dark-purple-400 lg:text-sm">
+              Due on {dueDate}
+            </h3>
+          </td>
+        )}
+        <td className="hidden px-2 text-right text-sm font-bold tracking-normal text-miru-dark-purple-1000 lg:table-cell lg:w-1/6 lg:px-6 lg:pt-2 lg:pb-7 lg:text-xl">
+          {currencyFormat(baseCurrency, amount)}
+        </td>
+        <td
+          className="relative px-2 text-right font-medium lg:px-6 lg:pb-10"
+          onMouseLeave={() => setIsMenuOpen(false)}
+        >
+          {isDesktop && (
+            <MoreOptions
+              invoice={invoice}
+              isDesktop={isDesktop}
+              isMenuOpen={isMenuOpen}
+              isSending={isSending}
+              setInvoiceToDelete={setInvoiceToDelete}
+              setIsMenuOpen={setIsMenuOpen}
+              setIsSending={setIsSending}
+              setShowDeleteDialog={setShowDeleteDialog}
+              setShowMoreOptions={setShowMoreOptions}
+              showPrint={false}
+              showSendLink={false}
+            />
+          )}
+          <Badge
+            className={`${getStatusCssClass(status)} uppercase`}
+            text={status}
+          />
+          <dl className="text-right text-sm font-medium leading-5 lg:hidden">
+            <dt className="mt-1">{currencyFormat(baseCurrency, amount)}</dt>
+          </dl>
+        </td>
+        {!isDesktop && (
+          <td className="text-right text-sm text-miru-dark-purple-1000">
+            <button
+              onClick={e => {
+                e.preventDefault();
+                e.stopPropagation();
+                setShowMoreOptions(true);
+              }}
+            >
+              <DotsThreeVerticalIcon size={26} />
+            </button>
+          </td>
+        )}
+        {isSending && (
+          <SendInvoice
+            isSending
+            fetchInvoices={fetchInvoices}
             invoice={invoice}
-            isDesktop={isDesktop}
-            isMenuOpen={isMenuOpen}
-            isSending={isSending}
-            setInvoiceToDelete={setInvoiceToDelete}
-            setIsMenuOpen={setIsMenuOpen}
             setIsSending={setIsSending}
-            setShowDeleteDialog={setShowDeleteDialog}
-            setShowMoreOptions={setShowMoreOptions}
-            showPrint={false}
-            showSendLink={false}
           />
         )}
-        <Badge
-          className={`${getStatusCssClass(status)} uppercase`}
-          text={status}
-        />
-        <dl className="text-right text-sm font-medium leading-5 lg:hidden">
-          <dt className="mt-1">{currencyFormat(baseCurrency, amount)}</dt>
-        </dl>
-      </td>
-      {!isDesktop && (
-        <td className="text-right text-sm text-miru-dark-purple-1000">
-          <button
-            onClick={() => {
-              setShowMoreOptions(true);
-            }}
-          >
-            <DotsThreeVerticalIcon size={26} />
-          </button>
-        </td>
-      )}
+      </tr>
       {!isDesktop && showMoreOptions && (
         <MoreOptions
           invoice={invoice}
@@ -170,15 +182,7 @@ const TableRow = ({
           showSendLink={false}
         />
       )}
-      {isSending && (
-        <SendInvoice
-          isSending
-          fetchInvoices={fetchInvoices}
-          invoice={invoice}
-          setIsSending={setIsSending}
-        />
-      )}
-    </tr>
+    </>
   );
 };
 

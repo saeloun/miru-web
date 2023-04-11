@@ -43,7 +43,7 @@ const ProjectList = ({ isAdminUser }) => {
   }, []);
 
   const ProjectsLayout = () => (
-    <React.Fragment>
+    <div>
       <ToastContainer autoClose={TOASTER_DURATION} />
       <Header
         isAdminUser={isAdminUser}
@@ -114,7 +114,7 @@ const ProjectList = ({ isAdminUser }) => {
           setShowDeleteDialog={setShowDeleteDialog}
         />
       )}
-    </React.Fragment>
+    </div>
   );
 
   const Main = withLayout(ProjectsLayout, !isDesktop, !isDesktop);

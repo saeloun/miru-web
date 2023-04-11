@@ -106,6 +106,7 @@ const AddEditProjectMobile = ({
           className="text-white"
           size={16}
           onClick={() => {
+            setEditProjectData("");
             setShowProjectModal(false);
           }}
         />
