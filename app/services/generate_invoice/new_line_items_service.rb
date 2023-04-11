@@ -73,7 +73,7 @@ module GenerateInvoice
         TimesheetEntry.search(
           search_term,
           fields: [:note, :user_name],
-          match: :text_middle,
+          match: :word_middle,
           where: where_clause,
           includes: [:user, { project: :client }]
         )
