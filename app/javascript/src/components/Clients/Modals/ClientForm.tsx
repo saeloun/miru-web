@@ -13,7 +13,7 @@ import { CustomAsyncSelect } from "common/CustomAsyncSelect";
 import CustomReactSelect from "common/CustomReactSelect";
 import { InputErrors, InputField } from "common/FormikFields";
 
-import { clientSchema, getInitialvalues } from "./schema";
+import { clientSchema, getInitialvalues } from "./formValidationSchema";
 
 import { i18n } from "../../../i18n";
 
