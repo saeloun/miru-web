@@ -16,7 +16,7 @@ const Header = ({
   filterParamsStr,
   isDesktop,
 }) => {
-  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [searchQuery, setSearchQuery] = useState<string>(params.query || "");
   const [searchResult, setSearchResult] = useState<any[]>([]);
   const [status, setStatus] = useState<InvoiceStatus>(InvoiceStatus.IDLE);
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
