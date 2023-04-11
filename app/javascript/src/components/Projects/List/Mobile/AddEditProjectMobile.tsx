@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 import { Formik, Form, FormikProps } from "formik";
+import { useDebounce } from "helpers";
 import Logger from "js-logger";
 import { XIcon, SearchIcon } from "miruIcons";
 import { Button, MobileMoreOptions } from "StyledComponents";
@@ -18,6 +19,8 @@ const AddEditProjectMobile = ({
   const [clientName, setClientName] = useState<string>("");
   const [clientList, setClientList] = useState<any[]>([]);
   const [showClientList, setShowClientList] = useState<boolean>(false);
+  const [filteredClientList, setFilteredClientList] = useState(clientList);
+  const debouncedSearchQuery = useDebounce(clientName, 500);
 
   const projectId =
     (editProjectData && editProjectData["id"]) ||
@@ -34,7 +37,10 @@ const AddEditProjectMobile = ({
   const initialValues = {
     client: editProjectData.clientName,
     project: editProjectData.name,
-    isBillable: editProjectData.isBillable || editProjectData.is_billable,
+    isBillable:
+      editProjectData.isBillable !== undefined
+        ? editProjectData.isBillable
+        : true,
   };
 
   const getClientList = async () => {
@@ -92,6 +98,22 @@ const AddEditProjectMobile = ({
   };
 
   useEffect(() => {
+    if (debouncedSearchQuery && filteredClientList.length > 0) {
+      const newClientList = filteredClientList.filter(client =>
+        client.name.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
+      );
+
+      newClientList.length > 0
+        ? setFilteredClientList(newClientList)
+        : setFilteredClientList([]);
+    } else {
+      setFilteredClientList(clientList);
+    }
+  }, [debouncedSearchQuery]);
+
+  useEffect(() => setFilteredClientList(clientList), [clientList]);
+
+  useEffect(() => {
     getClientList();
     if (isEdit) getProject();
   }, []);
@@ -115,6 +137,12 @@ const AddEditProjectMobile = ({
         {(props: FormikProps<FormValues>) => {
           const { touched, values, errors, setFieldValue, setFieldError } =
             props;
+
+          const isSubmitDisabled = !(
+            values.client &&
+            values.project &&
+            values.isBillable
+          );
 
           return (
             <Form className="flex flex-1 flex-col justify-between p-4">
@@ -155,7 +183,7 @@ const AddEditProjectMobile = ({
                       />
                       {clientName ? (
                         <XIcon
-                          className="absolute right-8"
+                          className="absolute right-2"
                           color="#1D1A31"
                           size={16}
                           onClick={() => setClientName("")}
@@ -169,7 +197,7 @@ const AddEditProjectMobile = ({
                       )}
                     </div>
                     <div className="flex flex-auto flex-col overflow-y-scroll">
-                      {clientList.map(clientItem => (
+                      {filteredClientList.map(clientItem => (
                         <li
                           className="flex items-center px-2 pt-3 text-sm leading-5 text-miru-dark-purple-1000 hover:bg-miru-gray-100"
                           key={clientItem?.id}
@@ -177,6 +205,7 @@ const AddEditProjectMobile = ({
                             setFieldValue("client", clientItem.name, true);
                             setClient(clientItem);
                             setShowClientList(false);
+                            document.getElementById("project").focus();
                           }}
                         >
                           {clientItem.name}
@@ -208,7 +237,7 @@ const AddEditProjectMobile = ({
                     <CustomRadioButton
                       classNameLabel="font-medium text-sm leading-5 text-miru-dark-purple-1000"
                       classNameWrapper="py-3"
-                      defaultCheck={values.isBillable}
+                      defaultCheck={values.isBillable == true}
                       groupName="projectType"
                       id="Billable"
                       key="Billable"
@@ -221,7 +250,7 @@ const AddEditProjectMobile = ({
                     <CustomRadioButton
                       classNameLabel="font-medium text-sm leading-5 text-miru-dark-purple-1000"
                       classNameWrapper="px-5 py-3"
-                      defaultCheck={!values.isBillable}
+                      defaultCheck={values.isBillable == false}
                       groupName="projectType"
                       id="Non-Billable"
                       key="Non-Billable"
@@ -235,8 +264,11 @@ const AddEditProjectMobile = ({
                 </div>
               </div>
               <Button
-                className="w-full p-2 text-center text-base font-bold"
+                disabled={isSubmitDisabled}
                 style="primary"
+                className={`w-full p-2 text-center text-base font-bold ${
+                  isSubmitDisabled && "bg-miru-gray-400"
+                }`}
                 onClick={handleSubmit}
               >
                 {isEdit ? "Edit Project" : "Add Project"}
