@@ -43,6 +43,7 @@ RSpec.describe "Edit company", type: :system do
 
         expect(page).to have_content("Changes saved successfully")
         company.reload
+
         expect(company.name).to eq("test company")
       end
     end
