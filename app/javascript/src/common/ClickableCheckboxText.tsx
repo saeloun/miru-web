@@ -8,7 +8,7 @@ const ClickableCheckboxText = ({
   checkboxValue,
   id,
   handleCheck,
-  hanldeOnClick,
+  handleOnClick,
   name = "",
   wrapperClassName = "",
   labelClassName = "",
@@ -31,7 +31,7 @@ const ClickableCheckboxText = ({
           isUpdatedDesign ? "h-4 w-4" : "h-3 w-3 md:h-5 md:w-5"
         } cursor-pointer opacity-0`}
         onChange={handleCheck}
-        onClick={hanldeOnClick}
+        onClick={handleOnClick}
       />
       <div
         className={`col-start-1 row-start-1 ${
@@ -95,7 +95,7 @@ const ClickableCheckboxText = ({
 );
 
 ClickableCheckboxText.defaultProps = {
-  hanldeOnClick: () => {}, //eslint-disable-line
+  handleOnClick: () => {}, //eslint-disable-line
   isUpdatedDesign: false,
 };
 

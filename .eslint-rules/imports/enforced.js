@@ -27,6 +27,7 @@ module.exports = {
           mp3: "always",
           svg: "always",
           mapper: "always",
+          css: "always",
         },
       },
     ],
