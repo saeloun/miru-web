@@ -20,11 +20,9 @@ RSpec.describe "Companies index page", type: :system do
       with_forgery_protection do
         visit "/profile/edit"
 
-        within("ul.tracking-wider") do
-          find("div:nth-child(2) > button").click
-        end
+        click_on(id: "company")
 
-        find("a[href='/profile/edit/organization-details']").click
+        click_on "ORG. SETTINGS"
 
         expect(page).to have_content(company.name)
         expect(page).to have_content(company.base_currency)
