@@ -10,7 +10,7 @@ import { useUserContext } from "context/UserContext";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import Header from "./Header";
-import AddEditProjectMobile from "./Mobile/AddEditProjectMobile";
+import AddEditProjectMobileForm from "./Mobile/AddEditProjectMobileForm";
 import { Project } from "./project";
 
 import { IProject } from "../interface";
@@ -122,8 +122,9 @@ const ProjectList = ({ isAdminUser }) => {
   if (!isDesktop) {
     if (showProjectModal) {
       return (
-        <AddEditProjectMobile
+        <AddEditProjectMobileForm
           editProjectData={editProjectData}
+          fetchProjects={fetchProjects}
           setEditProjectData={setEditProjectData}
           setShowProjectModal={setShowProjectModal}
         />

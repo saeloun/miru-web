@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 
 import { Formik, Form, FormikProps } from "formik";
 import { useDebounce } from "helpers";
-import Logger from "js-logger";
 import { XIcon, SearchIcon } from "miruIcons";
 import { Button, MobileMoreOptions } from "StyledComponents";
 
@@ -10,10 +9,11 @@ import projectApi from "apis/projects";
 import CustomRadioButton from "common/CustomRadio";
 import { InputField, InputErrors } from "common/FormikFields";
 
-const AddEditProjectMobile = ({
+const AddEditProjectMobileForm = ({
   editProjectData,
   setEditProjectData,
   setShowProjectModal,
+  fetchProjects,
 }) => {
   const [client, setClient] = useState<object>({});
   const [clientName, setClientName] = useState<string>("");
@@ -47,8 +47,8 @@ const AddEditProjectMobile = ({
     try {
       const { data } = await projectApi.get();
       setClientList(data.clients);
-    } catch (error) {
-      Logger.error(error);
+    } catch {
+      // error logic already handled in api.ts
     }
   };
 
@@ -57,8 +57,8 @@ const AddEditProjectMobile = ({
       try {
         const { data } = await projectApi.show(projectId);
         setEditProjectData(data.project_details);
-      } catch (error) {
-        Logger.error(error);
+      } catch {
+        // error logic already handled in api.ts
       }
     }
   };
@@ -72,8 +72,8 @@ const AddEditProjectMobile = ({
       },
     });
     setEditProjectData("");
-    window.location.reload();
     setShowProjectModal(false);
+    fetchProjects();
   };
 
   const editProject = async values => {
@@ -86,7 +86,7 @@ const AddEditProjectMobile = ({
     });
     setEditProjectData("");
     setShowProjectModal(false);
-    window.location.reload();
+    fetchProjects();
   };
 
   const handleSubmit = values => {
@@ -282,4 +282,4 @@ const AddEditProjectMobile = ({
   );
 };
 
-export default AddEditProjectMobile;
+export default AddEditProjectMobileForm;
