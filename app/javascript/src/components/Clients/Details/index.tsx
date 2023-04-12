@@ -50,11 +50,16 @@ const getTableData = (clients, isDesktop) => {
         <div className="text-base text-miru-dark-purple-1000">
           {client.name}
           <br />
-          {client.team.map((member, index) => (
-            <span className="font-manrope text-xs text-purple-900" key={index}>
-              {member},&nbsp;
-            </span>
-          ))}
+          <div className="w-57.5">
+            {client.team.map((member, index) => (
+              <span
+                className="font-manrope text-xs text-miru-dark-purple-400"
+                key={index}
+              >
+                {member},&nbsp;
+              </span>
+            ))}
+          </div>
         </div>
       ),
       col2: (
@@ -198,7 +203,7 @@ const ClientList = ({ isAdminUser }) => {
       <ToastContainer autoClose={TOASTER_DURATION} />
       <Header clientDetails={clientDetails} />
       <div>
-        {isAdminUser && (
+        {isAdminUser && isDesktop && (
           <div className="bg-miru-gray-100 py-10 px-10">
             <div className="flex justify-end">
               <select
