@@ -109,7 +109,7 @@ const CompanyDetailsForm = ({
       ...state,
     }));
 
-  const filterCities = (inputValue: string) => {
+  const filterCities = (inputValue: string, currentCityList) => {
     const city = currentCityList.filter(i =>
       i.label.toLowerCase().includes(inputValue.toLowerCase())
     );
@@ -120,9 +120,30 @@ const CompanyDetailsForm = ({
   const promiseOptions = (inputValue: string) =>
     new Promise(resolve => {
       setTimeout(() => {
-        resolve(filterCities(inputValue));
+        resolve(filterCities(inputValue, currentCityList));
       }, 1000);
     });
+
+  const getOptions = (inputValue: string, values) => {
+    if (currentCityList.length === 0) {
+      const cities = City.getCitiesOfState(
+        values.country.code,
+        values.state.code
+      ).map(city => ({
+        label: city.name,
+        value: city.name,
+        ...city,
+      }));
+
+      return new Promise(resolve => {
+        setTimeout(() => {
+          resolve(filterCities(inputValue, cities));
+        }, 1000);
+      });
+    }
+
+    return promiseOptions(inputValue);
+  };
 
   useEffect(() => {
     if (Object.keys(allTimezones || {})?.length) {
@@ -355,6 +376,7 @@ const CompanyDetailsForm = ({
                       id="business_phone"
                       inputClassName="form__input block w-full appearance-none bg-white border-0 focus:border-0 px-0 text-base border-transparent focus:border-transparent focus:ring-0 border-miru-gray-1000 w-full border-bottom-none "
                       name="business_phone"
+                      value={values.business_phone}
                       onChange={phone => {
                         setFieldValue("business_phone", phone);
                       }}
@@ -441,7 +463,7 @@ const CompanyDetailsForm = ({
                   <CustomAsyncSelect
                     isErr={!!errors.city && touched.city}
                     label="City"
-                    loadOptions={promiseOptions}
+                    loadOptions={option => getOptions(option, values)}
                     name="city"
                     value={values.city.value ? values.city : null}
                     handleOnChange={city => {
