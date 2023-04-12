@@ -9,7 +9,7 @@ import projectApi from "apis/projects";
 import CustomRadioButton from "common/CustomRadio";
 import { InputField, InputErrors } from "common/FormikFields";
 
-const AddEditProjectMobileForm = ({
+const ProjectForm = ({
   editProjectData,
   setEditProjectData,
   setShowProjectModal,
@@ -44,21 +44,19 @@ const AddEditProjectMobileForm = ({
   };
 
   const getClientList = async () => {
-    try {
-      const { data } = await projectApi.get();
+    const { data } = await projectApi.get();
+    if (data.clients) {
       setClientList(data.clients);
-    } catch {
-      // error logic already handled in api.ts
+    } else {
+      setClientList([]);
     }
   };
 
   const getProject = async () => {
     if (!editProjectData.members) {
-      try {
-        const { data } = await projectApi.show(projectId);
+      const { data } = await projectApi.show(projectId);
+      if (data.project_details) {
         setEditProjectData(data.project_details);
-      } catch {
-        // error logic already handled in api.ts
       }
     }
   };
@@ -197,20 +195,24 @@ const AddEditProjectMobileForm = ({
                       )}
                     </div>
                     <div className="flex flex-auto flex-col overflow-y-scroll">
-                      {filteredClientList.map(clientItem => (
-                        <li
-                          className="flex items-center px-2 pt-3 text-sm leading-5 text-miru-dark-purple-1000 hover:bg-miru-gray-100"
-                          key={clientItem?.id}
-                          onClick={() => {
-                            setFieldValue("client", clientItem.name, true);
-                            setClient(clientItem);
-                            setShowClientList(false);
-                            document.getElementById("project").focus();
-                          }}
-                        >
-                          {clientItem.name}
-                        </li>
-                      ))}
+                      {filteredClientList ? (
+                        filteredClientList.map(clientItem => (
+                          <li
+                            className="flex items-center px-2 pt-3 text-sm leading-5 text-miru-dark-purple-1000 hover:bg-miru-gray-100"
+                            key={clientItem?.id}
+                            onClick={() => {
+                              setFieldValue("client", clientItem.name, true);
+                              setClient(clientItem);
+                              setShowClientList(false);
+                              document.getElementById("project").focus();
+                            }}
+                          >
+                            {clientItem.name}
+                          </li>
+                        ))
+                      ) : (
+                        <span className="mt-4">No clients present</span>
+                      )}
                     </div>
                   </MobileMoreOptions>
                 )}
@@ -282,4 +284,4 @@ const AddEditProjectMobileForm = ({
   );
 };
 
-export default AddEditProjectMobileForm;
+export default ProjectForm;
