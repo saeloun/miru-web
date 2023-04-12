@@ -1,8 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 
 import { cashFormatter, currencySymbol, minToHHMM } from "helpers";
-import { PlusIcon } from "miruIcons";
-import { DotsThreeVertical } from "phosphor-react";
+import { DotsThreeVerticalIcon, PlusIcon } from "miruIcons";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { Avatar, Tooltip } from "StyledComponents";
@@ -86,7 +85,7 @@ const getTableData = (
       ),
       col4: (
         <div>
-          <DotsThreeVertical height={26} width={24} />
+          <DotsThreeVerticalIcon height={26} width={24} />
         </div>
       ),
       rowId: client.id,
