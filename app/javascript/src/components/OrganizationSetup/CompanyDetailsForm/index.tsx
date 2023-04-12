@@ -429,6 +429,8 @@ const CompanyDetailsForm = ({
                       setCurrentCountryDetails(e);
                       getTimezonesOfCurrentCountry(e.code, setFieldValue);
                       setFieldValue("country", e);
+                      setFieldValue("city", { value: null, label: null });
+                      setCurrentCityList([]);
                     }}
                   />
                 </div>
