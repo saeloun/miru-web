@@ -59,6 +59,7 @@
     "react-datepicker": "^4.11.0",
     "react-dom": "^18.2.0",
     "react-ga4": "^1.4.1",
+    "react-html-parser": "^2.0.2",
     "react-infinite-scroll-component": "^6.1.0",
     "react-multi-select-component": "^4.3.4",
     "react-paginate": "^8.1.4",
