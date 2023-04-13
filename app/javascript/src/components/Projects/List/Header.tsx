@@ -21,11 +21,11 @@ const Header = ({ setShowProjectModal, isAdminUser }) => {
 
   return (
     <div
-      className={`mt-6 mb-3 sm:flex sm:items-center ${
-        isAdminUser ? "sm:justify-between" : ""
+      className={`m-4 flex items-center lg:mx-0 lg:mt-6 lg:mb-3 ${
+        isAdminUser ? "justify-between" : ""
       }`}
     >
-      <h2 className="header__title">Projects</h2>
+      <h2 className="header__title hidden lg:inline">Projects</h2>
       <AutoSearch SearchDataRow={SearchDataRow} searchAction={fetchProjects} />
       {isAdminUser && (
         <button
@@ -33,7 +33,9 @@ const Header = ({ setShowProjectModal, isAdminUser }) => {
           onClick={() => setShowProjectModal(true)}
         >
           <PlusIcon size={16} weight="fill" />
-          <span className="ml-2 inline-block">NEW PROJECT</span>
+          <span className="ml-2 inline-block hidden lg:inline">
+            NEW PROJECT
+          </span>
         </button>
       )}
       {/* {
