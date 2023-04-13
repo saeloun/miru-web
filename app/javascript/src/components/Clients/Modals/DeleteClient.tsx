@@ -1,6 +1,6 @@
 import React from "react";
 
-import ReactHtmlParser from "react-html-parser";
+import parse from "html-react-parser";
 import { useNavigate } from "react-router-dom";
 
 import clientApi from "apis/clients";
@@ -24,7 +24,7 @@ const DeleteClient = ({ client, setShowDeleteDialog }: IProps) => {
   const displayMessage = () => {
     const value = `Are you sure you want to delete client <b className='font-bold'>${client.name}</b>? This action cannot be reversed.`;
     if (isDesktop) {
-      return ReactHtmlParser(value);
+      return parse(value);
     }
 
     return "Are you sure you want to delete this client?";
