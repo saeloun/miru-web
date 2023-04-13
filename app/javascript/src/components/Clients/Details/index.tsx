@@ -14,6 +14,7 @@ import Table from "common/Table";
 import AddEditProject from "components/Projects/Modals/AddEditProject";
 import DeleteProject from "components/Projects/Modals/DeleteProject";
 import { TOASTER_DURATION } from "constants/index";
+import { useUserContext } from "context/UserContext";
 import { unmapClientDetails } from "mapper/mappedIndex";
 import { sendGAPageView } from "utils/googleAnalytics";
 
@@ -21,8 +22,8 @@ import Header from "./Header";
 
 import AddProject from "../Modals/AddProject";
 
-const getTableData = clients => {
-  if (clients) {
+const getTableData = (clients, isDesktop) => {
+  if (clients && isDesktop) {
     return clients.map(client => ({
       col1: (
         <div className="text-base text-miru-dark-purple-1000">
@@ -37,6 +38,31 @@ const getTableData = clients => {
         </div>
       ),
       col3: (
+        <div className="text-right text-lg font-bold text-miru-dark-purple-1000">
+          {minToHHMM(client.minutes)}
+        </div>
+      ),
+      rowId: client.id,
+    }));
+  } else if (clients && !isDesktop) {
+    return clients.map(client => ({
+      col1: (
+        <div className="text-base text-miru-dark-purple-1000">
+          {client.name}
+          <br />
+          <div className="w-57.5">
+            {client.team.map((member, index) => (
+              <span
+                className="font-manrope text-xs text-miru-dark-purple-400"
+                key={index}
+              >
+                {member},&nbsp;
+              </span>
+            ))}
+          </div>
+        </div>
+      ),
+      col2: (
         <div className="text-right text-lg font-bold text-miru-dark-purple-1000">
           {minToHHMM(client.minutes)}
         </div>
@@ -63,6 +89,7 @@ const ClientList = ({ isAdminUser }) => {
 
   const params = useParams();
   const navigate = useNavigate();
+  const { isDesktop } = useUserContext();
 
   const handleEditClick = id => {
     setShowEditDialog(true);
@@ -128,6 +155,19 @@ const ClientList = ({ isAdminUser }) => {
     },
   ];
 
+  const mobileTableHeader = [
+    {
+      Header: "PROJECT",
+      accessor: "col1", // accessor is the "key" in the data
+      cssClass: "md:w-1/3",
+    },
+    {
+      Header: "HOURS",
+      accessor: "col2",
+      cssClass: "text-right md:w-1/5", // accessor is the "key" in the data
+    },
+  ];
+
   const currencySymb = currencySymbol(overdueOutstandingAmount?.currency);
 
   const amountBox = [
@@ -144,7 +184,7 @@ const ClientList = ({ isAdminUser }) => {
     },
   ];
 
-  const tableData = getTableData(projectDetails);
+  const tableData = getTableData(projectDetails, isDesktop);
 
   const handleAddProject = () => {
     setShowProjectModal(true);
@@ -163,7 +203,7 @@ const ClientList = ({ isAdminUser }) => {
       <ToastContainer autoClose={TOASTER_DURATION} />
       <Header clientDetails={clientDetails} />
       <div>
-        {isAdminUser && (
+        {isAdminUser && isDesktop && (
           <div className="bg-miru-gray-100 py-10 px-10">
             <div className="flex justify-end">
               <select
@@ -206,7 +246,7 @@ const ClientList = ({ isAdminUser }) => {
                     hasRowIcons
                     handleDeleteClick={handleDeleteClick}
                     handleEditClick={handleEditClick}
-                    tableHeader={tableHeader}
+                    tableHeader={isDesktop ? tableHeader : mobileTableHeader}
                     tableRowArray={tableData}
                   />
                 ) : (
