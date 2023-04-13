@@ -5,6 +5,8 @@ import { PencilIcon, DeleteIcon } from "miruIcons";
 import PropTypes from "prop-types";
 import { useTable, useRowSelect } from "react-table";
 
+import { useUserContext } from "context/UserContext";
+
 const IndeterminateCheckbox = forwardRef(
   ({ indeterminate, ...rest }: any, ref) => {
     const defaultRef = useRef();
@@ -75,6 +77,7 @@ const Table = ({
 }) => {
   const data = useMemo(() => tableRowArray, [tableRowArray]);
   const columns = useMemo(() => tableHeader, []);
+  const { isDesktop } = useUserContext();
 
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
     useTable(
@@ -103,7 +106,9 @@ const Table = ({
                 {column.render("Header")}
               </th>
             ))}
-            {hasRowIcons && <th className="table__header md:w-1/5" />}
+            {hasRowIcons && isDesktop && (
+              <th className="table__header md:w-1/5" />
+            )}
           </tr>
         ))}
       </thead>
@@ -123,14 +128,14 @@ const Table = ({
             >
               {row.cells.map((cell, idx) => (
                 <td
-                  className="table__cell md:w-1/3"
+                  className={`table__cell ${!isDesktop && "xsm:p-1"} md:w-1/3`}
                   {...cell.getCellProps()}
                   key={idx}
                 >
                   {cell.render("Cell")}
                 </td>
               ))}
-              {hasRowIcons && (
+              {hasRowIcons && isDesktop && (
                 <td className="table__cell md:w-1/5">
                   <div className="iconWrapper invisible">
                     <button
