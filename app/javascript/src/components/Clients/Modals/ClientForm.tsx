@@ -120,10 +120,10 @@ const ClientForm = ({
     } else {
       if (!isValid.fileExtension && !isValid.fileSizeValid) {
         setFileUploadError(
-          i18n.t("invalidImageFormatSize", { fileSize: "30" })
+          i18n.t("invalidImageFormatSize", { fileSize: "2000" })
         );
       } else if (isValid.fileExtension && !isValid.fileSizeValid) {
-        setFileUploadError(i18n.t("invalidImageSize", { fileSize: "30" }));
+        setFileUploadError(i18n.t("invalidImageSize", { fileSize: "2000" }));
       } else {
         setFileUploadError(i18n.t("invalidImageFormat"));
       }

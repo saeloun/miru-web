@@ -1,18 +1,26 @@
 import React, { useEffect, useState } from "react";
 
+import { City, Country, State } from "country-state-city";
 import { Formik, Form, FormikProps } from "formik";
-import { DeleteImageButtonSVG, EditImageButtonSVG } from "miruIcons";
+import { EditImageButtonSVG, deleteImageIcon } from "miruIcons";
+import PhoneInput from "react-phone-number-input";
+import flags from "react-phone-number-input/flags";
+import "react-phone-number-input/style.css";
 import Select, { components } from "react-select";
+import { Avatar } from "StyledComponents";
 
 import companyProfileApi from "apis/companyProfile";
+import { CustomAsyncSelect } from "common/CustomAsyncSelect";
+import CustomReactSelect from "common/CustomReactSelect";
 import { InputErrors, InputField } from "common/FormikFields";
 
 import { CompanyDetailsFormProps, CompanyDetailsFormValues } from "./interface";
 import {
   companyDetailsFormInitialValues,
   companyDetailsFormValidationSchema,
-  groupedCountryListOptions,
 } from "./utils";
+
+import { i18n } from "../../../i18n";
 
 const { ValueContainer, Placeholder } = components;
 const customStyles = {
@@ -42,18 +50,6 @@ const customStyles = {
   }),
 };
 
-const groupStyles = {
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "space-between",
-};
-
-const formatGroupLabel = (data: any) => (
-  <div style={groupStyles}>
-    <span>{data.label}</span>
-  </div>
-);
-
 const CustomValueContainer = props => {
   const { children } = props;
 
@@ -71,22 +67,91 @@ const CompanyDetailsForm = ({
   onNextBtnClick,
   isFormAlreadySubmitted = false,
   previousSubmittedValues = null,
+  formType = "New",
+  isDesktop,
 }: CompanyDetailsFormProps) => {
   const [allTimezones, setAllTimezones] = useState({});
   const [timezonesOfSelectedCountry, setTimezonesOfSelectedCountry] = useState(
     []
   );
+  const [fileUploadError, setFileUploadError] = useState<string>("");
+
+  const initialSelectValue = {
+    label: "",
+    value: "",
+    code: "",
+  };
+  const [countries, setCountries] = useState([]);
+  const [currentCountryDetails, setCurrentCountryDetails] =
+    useState(initialSelectValue);
+  const [currentCityList, setCurrentCityList] = useState([]);
+
+  const assignCountries = async allCountries => {
+    const countryData = await allCountries.map(country => ({
+      value: country.isoCode,
+      label: country.name,
+      code: country.isoCode,
+    }));
+    setCountries(countryData);
+  };
 
   useEffect(() => {
     getAllTimezones();
+    const allCountries = Country.getAllCountries();
+    assignCountries(allCountries);
   }, []);
+
+  const updatedStates = countryCode =>
+    State.getStatesOfCountry(countryCode).map(state => ({
+      label: state.name,
+      value: state.name,
+      code: state.isoCode,
+      ...state,
+    }));
+
+  const filterCities = (inputValue: string, currentCityList) => {
+    const city = currentCityList.filter(i =>
+      i.label.toLowerCase().includes(inputValue.toLowerCase())
+    );
+
+    return city.length ? city : [{ label: inputValue, value: inputValue }];
+  };
+
+  const promiseOptions = (inputValue: string) =>
+    new Promise(resolve => {
+      setTimeout(() => {
+        resolve(filterCities(inputValue, currentCityList));
+      }, 1000);
+    });
+
+  const getOptions = (inputValue: string, values) => {
+    if (currentCityList.length === 0) {
+      const cities = City.getCitiesOfState(
+        values.country.code,
+        values.state.code
+      ).map(city => ({
+        label: city.name,
+        value: city.name,
+        ...city,
+      }));
+
+      return new Promise(resolve => {
+        setTimeout(() => {
+          resolve(filterCities(inputValue, cities));
+        }, 1000);
+      });
+    }
+
+    return promiseOptions(inputValue);
+  };
 
   useEffect(() => {
     if (Object.keys(allTimezones || {})?.length) {
       const selectedCountryCode = isFormAlreadySubmitted
         ? previousSubmittedValues.country?.value
-        : companyDetailsFormInitialValues?.country?.value || "US";
+        : companyDetailsFormInitialValues?.country?.code || "US";
       getTimezonesOfCurrentCountry(selectedCountryCode);
+      updatedStates(selectedCountryCode);
     }
   }, [allTimezones]); // eslint-disable-line
 
@@ -113,17 +178,106 @@ const CompanyDetailsForm = ({
   const onLogoChange = (e, setFieldValue) => {
     const file = e.target.files[0];
     const logoUrl = URL.createObjectURL(file);
-    setFieldValue("logo_url", logoUrl);
-    setFieldValue("logo", file);
+    const isValid = isValidFileUploaded(file);
+
+    if (isValid.fileExtension && isValid.fileSizeValid) {
+      setFieldValue("logo_url", logoUrl);
+      setFieldValue("logo", file);
+    } else {
+      if (!isValid.fileExtension && !isValid.fileSizeValid) {
+        setFileUploadError(
+          i18n.t("invalidImageFormatSize", { fileSize: "2000" })
+        );
+      } else if (isValid.fileExtension && !isValid.fileSizeValid) {
+        setFileUploadError(i18n.t("invalidImageSize", { fileSize: "2000" }));
+      } else {
+        setFileUploadError(i18n.t("invalidImageFormat"));
+      }
+    }
+  };
+
+  const isValidFileUploaded = file => {
+    const validExtensions = ["png", "jpeg", "jpg"];
+    const fileExtensions = file.type.split("/")[1];
+    const validFileByteSize = "2000000";
+    const fileSize = file.size;
+
+    return {
+      fileExtension: validExtensions.includes(fileExtensions),
+      fileSizeValid: fileSize <= validFileByteSize,
+    };
   };
 
   const isBtnDisabled = (values: CompanyDetailsFormValues) =>
     !(
       values.country?.value?.trim() &&
+      values.state?.value?.trim() &&
+      values.city?.value?.trim() &&
       values.timezone?.value?.trim() &&
-      values.address?.trim() &&
-      values.business_phone?.trim()
+      values.address_line_1?.trim() &&
+      values.business_phone?.trim() &&
+      values.zipcode?.trim()
     );
+
+  const LogoComponent = ({ values, setFieldValue }) => (
+    <div className="my-4 flex flex-row">
+      <div className="mt-2 h-30 w-30 border border-dashed border-miru-dark-purple-400">
+        <div className="profile-img relative m-auto h-30 w-30 cursor-pointer text-center text-xs font-semibold">
+          <Avatar
+            classNameImg="h-full w-full md:h-full md:w-full"
+            url={values?.logo_url}
+          />
+          <div className="hover-edit absolute top-0 left-0 h-full w-full bg-miru-white-1000 p-4 opacity-80">
+            <button
+              className="flex flex-row text-miru-han-purple-1000"
+              type="button"
+            >
+              <label className="flex cursor-pointer" htmlFor="file_input">
+                <img
+                  alt="edit"
+                  className="cursor-pointer rounded-full"
+                  src={EditImageButtonSVG}
+                  style={{ minWidth: "40px" }}
+                />
+                <p className="my-auto">Edit</p>
+              </label>
+              <input
+                className="hidden"
+                id="file_input"
+                name="logo"
+                type="file"
+                onChange={e => onLogoChange(e, setFieldValue)}
+              />
+            </button>
+            <button
+              className="flex flex-row pl-2 text-miru-red-400"
+              type="button"
+              onClick={() => setFieldValue("logo_url", null)}
+            >
+              <img
+                alt="delete"
+                src={deleteImageIcon}
+                style={{ minWidth: "20px" }}
+              />
+              <p className="pl-3">Delete</p>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div className="my-auto ml-6 text-xs font-normal text-miru-dark-purple-400">
+        <p>Accepted file formats: PNG, JPG, SVG.</p>
+        <p>File size should be &#8826; 2MB.</p>
+        <p>Image resolution should be 1:1.</p>
+      </div>
+      <input
+        className="hidden"
+        id="file_input"
+        name="logo"
+        type="file"
+        onClick={e => onLogoChange(e, setFieldValue)}
+      />
+    </div>
+  );
 
   return (
     <div>
@@ -142,65 +296,71 @@ const CompanyDetailsForm = ({
 
           return (
             <Form>
-              <div className="my-6 mx-auto w-full">
-                {values?.logo_url ? (
-                  <div className="mx-auto mt-2 ml-16 flex flex-row items-center justify-center">
-                    <div className="mr-5 h-16 w-16">
-                      <img
-                        alt="org_logo"
-                        className="h-full min-w-full rounded-full object-cover"
-                        src={values.logo_url}
+              <div className="my-4">
+                <div className="field">
+                  <div className="mt-1">
+                    {formType == "edit" ? (
+                      <LogoComponent
+                        setFieldValue={setFieldValue}
+                        values={values}
                       />
-                    </div>
-                    <label htmlFor="file-input">
-                      <img
-                        alt="edit"
-                        className="min-w-12 cursor-pointer rounded-full hover:bg-miru-gray-50"
-                        src={EditImageButtonSVG}
+                    ) : values?.logo_url ? (
+                      <LogoComponent
+                        setFieldValue={setFieldValue}
+                        values={values}
                       />
-                    </label>
-                    <input
-                      className="hidden"
-                      id="file-input"
-                      name="myImage"
-                      type="file"
-                      onChange={e => onLogoChange(e, setFieldValue)}
-                    />
-                    <button onClick={() => setFieldValue("logo_url", null)}>
-                      <img
-                        alt="edit"
-                        className="min-w-12 cursor-pointer rounded-full hover:bg-miru-gray-50"
-                        src={DeleteImageButtonSVG}
-                      />
-                    </button>
+                    ) : (
+                      <div className="mt-2 flex flex-row">
+                        <div className="mt-2 h-30 w-30 border border-dashed border-miru-dark-purple-400 ">
+                          <label
+                            className="flex h-full w-full cursor-pointer justify-center"
+                            htmlFor="file-input"
+                          >
+                            <div className="m-auto cursor-pointer text-center text-xs font-semibold">
+                              {isDesktop && (
+                                <>
+                                  <p className="text-miru-dark-purple-400">
+                                    Drag logo
+                                  </p>
+                                  <p className="text-miru-dark-purple-400">
+                                    or
+                                  </p>
+                                </>
+                              )}
+                              <p className="text-miru-han-purple-1000">
+                                Select File
+                              </p>
+                            </div>
+                          </label>
+                          <input
+                            className="hidden"
+                            id="file-input"
+                            name="logo"
+                            type="file"
+                            onChange={e => onLogoChange(e, setFieldValue)}
+                          />
+                        </div>
+                        <div className="my-auto ml-6 text-xs font-normal text-miru-dark-purple-400">
+                          <p>Accepted file formats: PNG, JPG, SVG.</p>
+                          <p>File size should be &#8826; 2MB.</p>
+                          <p>Image resolution should be 1:1.</p>
+                        </div>
+                      </div>
+                    )}
+                    <p className="mt-3 block max-w-xs text-center text-xs tracking-wider text-red-600">
+                      {fileUploadError}
+                    </p>
                   </div>
-                ) : (
-                  <>
-                    <div className="mx-auto mt-2 h-16 w-16 rounded-full border border-dashed border-miru-dark-purple-200 hover:bg-miru-gray-50">
-                      <label
-                        className="flex h-full w-full cursor-pointer items-center justify-center rounded-full px-1 py-2 text-center text-xs text-miru-dark-purple-200"
-                        htmlFor="file-input"
-                      >
-                        Add company logo
-                      </label>
-                    </div>
-                    <input
-                      className="hidden"
-                      id="file-input"
-                      name="myImage"
-                      type="file"
-                      onChange={e => onLogoChange(e, setFieldValue)}
-                    />
-                  </>
-                )}
+                </div>
               </div>
               <div className="field relative">
                 <InputField
                   autoFocus
+                  resetErrorOnChange
                   id="company_name"
                   label="Company Name"
                   name="company_name"
-                  resetErrorOnChange={false}
+                  setFieldValue={setFieldValue}
                 />
                 <InputErrors
                   fieldErrors={errors.company_name}
@@ -208,54 +368,123 @@ const CompanyDetailsForm = ({
                 />
               </div>
               <div className="field relative">
-                <InputField
-                  id="business_phone"
-                  label="Business Phone"
-                  name="business_phone"
-                  resetErrorOnChange={false}
-                />
+                <div className="flex flex-col">
+                  <div className="outline relative flex h-12 flex-row rounded border border-miru-gray-1000 bg-white p-4 pt-2">
+                    <PhoneInput
+                      className="input-phone-number w-full border-transparent focus:border-transparent focus:ring-0"
+                      flags={flags}
+                      id="business_phone"
+                      inputClassName="form__input block w-full appearance-none bg-white border-0 focus:border-0 px-0 text-base border-transparent focus:border-transparent focus:ring-0 border-miru-gray-1000 w-full border-bottom-none "
+                      name="business_phone"
+                      value={values.business_phone}
+                      onChange={phone => {
+                        setFieldValue("business_phone", phone);
+                      }}
+                    />
+                    <label
+                      className="absolute -top-1 left-0 z-1 ml-3 origin-0 bg-white px-1 text-xsm font-medium text-miru-dark-purple-200 duration-300"
+                      htmlFor="business_phone"
+                    >
+                      Business Phone
+                    </label>
+                  </div>
+                </div>
                 <InputErrors
                   fieldErrors={errors.business_phone}
                   fieldTouched={touched.business_phone}
                 />
               </div>
-              <div className="field relative">
+              <div className="field relative mt-4">
                 <InputField
-                  id="address"
-                  label="Address"
-                  name="address"
-                  resetErrorOnChange={false}
+                  resetErrorOnChange
+                  id="address_line_1"
+                  label="Address line 1"
+                  name="address_line_1"
+                  setFieldValue={setFieldValue}
                 />
                 <InputErrors
-                  fieldErrors={errors.address}
-                  fieldTouched={touched.address}
+                  fieldErrors={errors.address_line_1}
+                  fieldTouched={touched.address_line_1}
+                />
+              </div>
+              <div className="field relative mb-5">
+                <InputField
+                  resetErrorOnChange
+                  id="address_line_2"
+                  label="Address line 2 (optional)"
+                  name="address_line_2"
+                  setFieldValue={setFieldValue}
                 />
               </div>
               {/* Country */}
-              <div className="field relative">
-                <div className="outline relative">
-                  <Select
-                    className=""
-                    classNamePrefix="react-select-filter"
-                    formatGroupLabel={formatGroupLabel}
+              <div className="mb-5 flex flex-row">
+                <div className="flex w-1/2 flex-col py-0 pr-2">
+                  <CustomReactSelect
+                    isErr={!!errors.country}
+                    label="Country"
                     name="country"
-                    options={groupedCountryListOptions}
-                    placeholder="Country"
-                    styles={customStyles}
-                    value={values.country}
-                    components={{
-                      ValueContainer: CustomValueContainer,
-                    }}
-                    onChange={e => {
-                      getTimezonesOfCurrentCountry(e.value, setFieldValue);
+                    options={countries}
+                    value={values.country.value ? values.country : null}
+                    handleOnChange={e => {
+                      setCurrentCountryDetails(e);
+                      getTimezonesOfCurrentCountry(e.code, setFieldValue);
                       setFieldValue("country", e);
+                      setFieldValue("city", { value: null, label: null });
+                      setCurrentCityList([]);
                     }}
                   />
                 </div>
-                <div className="mx-0 mt-1 mb-5 block text-xs tracking-wider text-red-600">
-                  {errors.country && touched.country && (
-                    <div>{errors.country}</div>
-                  )}
+                <div className="flex w-1/2 flex-col pl-2">
+                  <CustomReactSelect
+                    isErr={!!errors.state && touched.state}
+                    label="State"
+                    name="state"
+                    value={values.state.value ? values.state : null}
+                    handleOnChange={state => {
+                      setFieldValue("state", state);
+                      const cities = City.getCitiesOfState(
+                        currentCountryDetails.code,
+                        state.code
+                      ).map(city => ({
+                        label: city.name,
+                        value: city.name,
+                        ...city,
+                      }));
+                      setCurrentCityList(cities);
+                    }}
+                    options={updatedStates(
+                      currentCountryDetails.code
+                        ? currentCountryDetails.code
+                        : "US"
+                    )}
+                  />
+                </div>
+              </div>
+              <div className="flex flex-row">
+                <div className="flex w-1/2 flex-col pr-2" id="city">
+                  <CustomAsyncSelect
+                    isErr={!!errors.city && touched.city}
+                    label="City"
+                    loadOptions={option => getOptions(option, values)}
+                    name="city"
+                    value={values.city.value ? values.city : null}
+                    handleOnChange={city => {
+                      setFieldValue("city", city);
+                    }}
+                  />
+                </div>
+                <div className="flex w-1/2 flex-col pl-2">
+                  <InputField
+                    resetErrorOnChange
+                    id="zipcode"
+                    label="zipcode"
+                    name="zipcode"
+                    setFieldValue={setFieldValue}
+                  />
+                  <InputErrors
+                    fieldErrors={errors.zipcode}
+                    fieldTouched={touched.zipcode}
+                  />
                 </div>
               </div>
               {/* Timezone */}
@@ -268,16 +497,20 @@ const CompanyDetailsForm = ({
                     options={timezonesOfSelectedCountry}
                     placeholder="Timezone"
                     styles={customStyles}
-                    value={values.timezone}
                     components={{
                       ValueContainer: CustomValueContainer,
                     }}
+                    value={
+                      values.timezone.value
+                        ? values.timezone
+                        : timezonesOfSelectedCountry[0]
+                    }
                     onChange={e => setFieldValue("timezone", e)}
                   />
                 </div>
                 <div className="mx-0 mt-1 mb-5 block text-xs tracking-wider text-red-600">
                   {errors.timezone && touched.timezone && (
-                    <div>{errors.timezone}</div>
+                    <div>{errors.timezone.value}</div>
                   )}
                 </div>
               </div>

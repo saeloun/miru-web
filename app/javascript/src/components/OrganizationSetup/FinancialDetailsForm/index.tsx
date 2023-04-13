@@ -120,7 +120,7 @@ const FinancialDetailsForm = ({
                 </div>
                 <div className="mx-0 mt-1 mb-5 block text-xs tracking-wider text-red-600">
                   {errors.base_currency && touched.base_currency && (
-                    <div>{errors.base_currency}</div>
+                    <div>{errors.base_currency.value}</div>
                   )}
                 </div>
               </div>
@@ -180,7 +180,7 @@ const FinancialDetailsForm = ({
                 </div>
                 <div className="mx-0 mt-1 mb-5 block text-xs tracking-wider text-red-600">
                   {errors.year_end && touched.year_end && (
-                    <div>{errors.year_end}</div>
+                    <div>{errors.year_end.value}</div>
                   )}
                 </div>
               </div>
@@ -206,7 +206,7 @@ const FinancialDetailsForm = ({
                 </div>
                 <div className="mx-0 mt-1 mb-5 block text-xs tracking-wider text-red-600">
                   {errors.date_format && touched.date_format && (
-                    <div>{errors.date_format}</div>
+                    <div>{errors.date_format.value}</div>
                   )}
                 </div>
               </div>
