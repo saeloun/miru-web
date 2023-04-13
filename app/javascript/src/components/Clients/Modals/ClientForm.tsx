@@ -158,7 +158,6 @@ const ClientForm = ({
         const res = await clientApi.create(formData);
         setClientData([...clientData, { ...res.data, minutes: 0 }]);
         setnewClient(false);
-        document.location.reload();
         Toastr.success("Client added successfully");
       } catch (error) {
         setApiError(error.message);

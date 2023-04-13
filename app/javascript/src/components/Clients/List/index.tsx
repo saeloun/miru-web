@@ -124,6 +124,10 @@ const Clients = ({ isAdminUser }) => {
     window.addEventListener("keydown", close);
   }, []);
 
+  useEffect(() => {
+    fetchClientDetails("week");
+  }, [client, EditClient]);
+
   const tableHeader = [
     {
       Header: "CLIENT",
