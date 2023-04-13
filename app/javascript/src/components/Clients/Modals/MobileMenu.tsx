@@ -2,11 +2,6 @@ import React from "react";
 
 import { DeleteIcon, EditIcon, PlusIcon } from "miruIcons";
 
-interface IProps {
-  setShowDeleteDialog: any;
-  setShowMobileModal: any;
-}
-
 const MobileMenu = ({ setShowDeleteDialog, setShowMobileModal }: IProps) => (
   <div
     className="fixed inset-0 z-50 flex items-center justify-center p-4"
@@ -40,5 +35,10 @@ const MobileMenu = ({ setShowDeleteDialog, setShowMobileModal }: IProps) => (
     </div>
   </div>
 );
+
+interface IProps {
+  setShowDeleteDialog: any;
+  setShowMobileModal: any;
+}
 
 export default MobileMenu;
