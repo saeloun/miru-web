@@ -37,15 +37,15 @@ RSpec.describe "Edit client", type: :system do
         visit "/clients"
         find(".hoverIcon").hover.click
         find("#kebabMenu").click()
-        within("ul.menuButton__wrapper") do
-          find("li:nth-child(2) > button").click
-        end
+        click_button "Edit"
+
         fill_in "name", with: "test client"
         fill_in "email", with: "client@test.com"
         fill_in "phone", with: "9123456789"
         select_values_from_select_box
         click_button "SAVE CHANGES"
         client.reload
+
         expect(client.name).to eq("test client")
         expect(client.email).to eq("client@test.com")
       end
