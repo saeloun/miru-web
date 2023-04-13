@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { XIcon } from "miruIcons";
 
 import ClientForm from "./ClientForm";
+
 interface IEditClient {
   setShowEditDialog: any;
   client: any;
@@ -44,13 +45,13 @@ const EditClient = ({ setShowEditDialog, client }: IEditClient) => {
             <ClientForm
               apiError={apiError}
               clientData={client}
+              clientLogo={clientLogo}
               clientLogoUrl={clientLogoUrl}
               formType="edit"
               handleDeleteLogo={handleDeleteLogo}
+              setApiError={setApiError}
               setClientLogo={setClientLogo}
               setClientLogoUrl={setClientLogoUrl}
-              clientLogo={clientLogo}
-              setApiError={setApiError}
               setShowEditDialog={setShowEditDialog}
             />
           </div>
