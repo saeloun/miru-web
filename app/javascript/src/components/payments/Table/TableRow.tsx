@@ -3,7 +3,9 @@ import React from "react";
 import { currencyFormat } from "helpers";
 import { Badge } from "StyledComponents";
 
-const TableRow = ({ payment, baseCurrency }) => {
+import { TableRowProps } from "../interfaces";
+
+const TableRow = ({ payment, baseCurrency }: TableRowProps) => {
   const getStatusCss = status => {
     const STATUS_LIST = {
       paid: "bg-miru-han-purple-100 text-miru-han-purple-1000",
