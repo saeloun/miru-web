@@ -1,12 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 
 import Logger from "js-logger";
 import { XIcon } from "miruIcons";
 
 import clientApi from "apis/clients";
 import Toastr from "common/Toastr";
+import { useUserContext } from "context/UserContext";
 
 import ClientForm from "./ClientForm";
+import MobileClientForm from "./MobileClientForm";
 
 const EditClient = ({
   setnewClient,
@@ -18,6 +20,12 @@ const EditClient = ({
   setClientLogo,
   setShowDialog,
 }) => {
+  // eslint-disable-next-line no-unused-vars
+  const [mobileClientView, setMobileClientView] = useState<boolean>(false);
+  const [submitting, setSubmitting] = useState<boolean>(false);
+
+  const { isDesktop } = useUserContext();
+
   const formatFormData = (formData, values) => {
     formData.append("client[name]", values.name);
     formData.append("client[email]", values.email);
@@ -46,7 +54,9 @@ const EditClient = ({
     setClientLogoUrl("");
   };
 
-  return (
+  const handleClose = () => setMobileClientView(false);
+
+  return isDesktop ? (
     <div className="flex items-center justify-center px-4">
       <div
         className="fixed inset-0 top-0 left-0 right-0 bottom-0 z-10 flex items-start justify-center overflow-auto"
@@ -80,6 +90,18 @@ const EditClient = ({
         </div>
       </div>
     </div>
+  ) : (
+    <MobileClientForm
+      clientData=""
+      clientLogoUrl={clientLogoUrl}
+      handleClose={handleClose}
+      handleDeleteLogo={handleDeleteLogo}
+      handleSubmit={handleSubmit}
+      setClientLogo={setClientLogo}
+      setClientLogoUrl={setClientLogoUrl}
+      setSubmitting={setSubmitting}
+      submitting={submitting}
+    />
   );
 };
 
