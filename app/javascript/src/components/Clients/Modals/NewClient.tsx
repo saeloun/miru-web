@@ -1,13 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 
-import Logger from "js-logger";
 import { XIcon } from "miruIcons";
 
-import clientApi from "apis/clients";
-import Toastr from "common/Toastr";
-
 import ClientForm from "./ClientForm";
-import { formatFormData } from "./utils";
 
 const EditClient = ({
   setnewClient,
@@ -19,20 +14,7 @@ const EditClient = ({
   setClientLogo,
   setShowDialog,
 }) => {
-  const handleSubmit = async values => {
-    const formData = new FormData();
-    formatFormData(formData, values, true, clientData, clientLogo);
-
-    try {
-      const res = await clientApi.create(formData);
-      setClientData([...clientData, { ...res.data, minutes: 0 }]);
-      setnewClient(false);
-      document.location.reload();
-      Toastr.success("Client added successfully");
-    } catch (error) {
-      Logger.error(error);
-    }
-  };
+  const [apiError, setApiError] = useState<string>("");
 
   const handleDeleteLogo = () => {
     setClientLogo("");
@@ -62,12 +44,16 @@ const EditClient = ({
               </button>
             </div>
             <ClientForm
-              clientData=""
+              apiError={apiError}
+              clientData={clientData}
+              clientLogo={clientLogo}
               clientLogoUrl={clientLogoUrl}
               handleDeleteLogo={handleDeleteLogo}
-              handleSubmit={handleSubmit}
+              setApiError={setApiError}
+              setClientData={setClientData}
               setClientLogo={setClientLogo}
               setClientLogoUrl={setClientLogoUrl}
+              setnewClient={setnewClient}
             />
           </div>
         </div>

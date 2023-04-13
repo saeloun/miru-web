@@ -3,7 +3,8 @@ export const formatFormData = (
   values,
   isNewForm,
   client,
-  clientLogo
+  clientLogo,
+  clientLogoUrl
 ) => {
   formData.append("client[name]", values.name);
   formData.append("client[email]", values.email);
@@ -37,7 +38,15 @@ export const formatFormData = (
 
   formData.append("client[addresses_attributes[0][pin]]", values.zipcode);
 
-  if (clientLogo || !isNewForm) formData.append("client[logo]", clientLogo);
+  if (clientLogo && isNewForm) formData.append("client[logo]", clientLogo);
+
+  if (clientLogoUrl && clientLogo && !isNewForm) {
+    formData.append("client[logo]", clientLogo);
+  }
+
+  if (!clientLogoUrl && !clientLogo && !isNewForm) {
+    formData.append("client[logo]", clientLogo);
+  }
 
   return formData;
 };
