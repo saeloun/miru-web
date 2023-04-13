@@ -2,11 +2,7 @@ import React, { useState } from "react";
 
 import { XIcon } from "miruIcons";
 
-import clientApi from "apis/clients";
-
 import ClientForm from "./ClientForm";
-import { formatFormData } from "./utils";
-
 interface IEditClient {
   setShowEditDialog: any;
   client: any;
@@ -16,21 +12,6 @@ const EditClient = ({ setShowEditDialog, client }: IEditClient) => {
   const [apiError, setApiError] = useState<string>("");
   const [clientLogoUrl, setClientLogoUrl] = useState<string>(client.logo);
   const [clientLogo, setClientLogo] = useState("");
-
-  const handleSubmit = async values => {
-    const formData = new FormData();
-    formatFormData(formData, values, false, client, clientLogo);
-
-    await clientApi
-      .update(client.id, formData)
-      .then(() => {
-        setShowEditDialog(false);
-        document.location.reload();
-      })
-      .catch(e => {
-        setApiError(e.message);
-      });
-  };
 
   const handleDeleteLogo = event => {
     event.preventDefault();
@@ -66,9 +47,11 @@ const EditClient = ({ setShowEditDialog, client }: IEditClient) => {
               clientLogoUrl={clientLogoUrl}
               formType="edit"
               handleDeleteLogo={handleDeleteLogo}
-              handleSubmit={handleSubmit}
               setClientLogo={setClientLogo}
               setClientLogoUrl={setClientLogoUrl}
+              clientLogo={clientLogo}
+              setApiError={setApiError}
+              setShowEditDialog={setShowEditDialog}
             />
           </div>
         </div>

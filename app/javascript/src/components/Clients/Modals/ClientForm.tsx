@@ -9,23 +9,30 @@ import PhoneInput from "react-phone-number-input";
 import flags from "react-phone-number-input/flags";
 import { Avatar } from "StyledComponents";
 
+import clientApi from "apis/clients";
 import { CustomAsyncSelect } from "common/CustomAsyncSelect";
 import CustomReactSelect from "common/CustomReactSelect";
 import { InputErrors, InputField } from "common/FormikFields";
+import Toastr from "common/Toastr";
 
 import { clientSchema, getInitialvalues } from "./formValidationSchema";
+import { formatFormData } from "./utils";
 
 import { i18n } from "../../../i18n";
 
 interface IClientForm {
   clientLogoUrl: string;
-  handleSubmit: any;
   handleDeleteLogo: any;
   setClientLogoUrl: any;
   setClientLogo: any;
   formType?: string;
   clientData?: any;
   apiError?: string;
+  setClientData?: any;
+  setnewClient?: any;
+  clientLogo?: any;
+  setApiError?: any;
+  setShowEditDialog?: any;
 }
 
 interface FormValues {
@@ -43,13 +50,17 @@ interface FormValues {
 
 const ClientForm = ({
   clientLogoUrl,
-  handleSubmit,
   handleDeleteLogo,
   setClientLogoUrl,
   setClientLogo,
   clientData,
   formType = "new",
   apiError = "",
+  setClientData,
+  setnewClient,
+  clientLogo,
+  setApiError,
+  setShowEditDialog,
 }: IClientForm) => {
   const initialSelectValue = {
     label: "",
@@ -129,6 +140,40 @@ const ClientForm = ({
       fileExtension: validExtensions.includes(fileExtensions),
       fileSizeValid: fileSize <= validFileByteSize,
     };
+  };
+
+  const handleSubmit = async values => {
+    const formData = new FormData();
+
+    formatFormData(
+      formData,
+      values,
+      formType === "new",
+      clientData,
+      clientLogo,
+      clientLogoUrl
+    );
+    if (formType === "new") {
+      try {
+        const res = await clientApi.create(formData);
+        setClientData([...clientData, { ...res.data, minutes: 0 }]);
+        setnewClient(false);
+        document.location.reload();
+        Toastr.success("Client added successfully");
+      } catch (error) {
+        setApiError(error.message);
+      }
+    } else {
+      await clientApi
+        .update(clientData.id, formData)
+        .then(() => {
+          setShowEditDialog(false);
+          document.location.reload();
+        })
+        .catch(e => {
+          setApiError(e.message);
+        });
+    }
   };
 
   const LogoComponent = () => (
