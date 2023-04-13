@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 
 import { cashFormatter, currencySymbol, minToHHMM } from "helpers";
-import { PlusIcon } from "miruIcons";
+import { DotsThreeVerticalIcon, PlusIcon } from "miruIcons";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { Avatar, Tooltip } from "StyledComponents";
@@ -23,8 +23,14 @@ import DeleteClient from "../Modals/DeleteClient";
 import EditClient from "../Modals/EditClient";
 import NewClient from "../Modals/NewClient";
 
-const getTableData = (clients, handleTooltip, showTooltip, toolTipRef) => {
-  if (clients) {
+const getTableData = (
+  clients,
+  handleTooltip,
+  showTooltip,
+  toolTipRef,
+  isDesktop
+) => {
+  if (clients && isDesktop) {
     return clients.map(client => ({
       col1: (
         <Tooltip content={client.name} show={showTooltip}>
@@ -51,6 +57,35 @@ const getTableData = (clients, handleTooltip, showTooltip, toolTipRef) => {
           id={`${client.id}`}
         >
           {minToHHMM(client.minutes)}
+        </div>
+      ),
+      rowId: client.id,
+    }));
+  } else if (clients && !isDesktop) {
+    return clients.map(client => ({
+      col1: (
+        <div className="flex">
+          <Avatar classNameImg="mr-4" url={client.logo} />
+          <span
+            className="my-auto overflow-hidden truncate whitespace-nowrap text-base font-medium capitalize text-miru-dark-purple-1000"
+            ref={toolTipRef}
+            onMouseEnter={handleTooltip}
+          >
+            {client.name}
+          </span>
+        </div>
+      ),
+      col3: (
+        <div
+          className="total-hours text-right text-xl font-bold text-miru-dark-purple-1000"
+          id={`${client.id}`}
+        >
+          {minToHHMM(client.minutes)}
+        </div>
+      ),
+      col4: (
+        <div>
+          <DotsThreeVerticalIcon height={26} width={24} />
         </div>
       ),
       rowId: client.id,
@@ -148,6 +183,24 @@ const Clients = ({ isAdminUser }) => {
     },
   ];
 
+  const mobileTableHeader = [
+    {
+      Header: "CLIENT",
+      accessor: "col1", // accessor is the "key" in the data
+      cssClass: "",
+    },
+    {
+      Header: "HOURS",
+      accessor: "col3",
+      cssClass: "text-right", // accessor is the "key" in the data
+    },
+    {
+      Header: "",
+      accessor: "col4",
+      cssClass: "text-right", // accessor is the "key" in the data
+    },
+  ];
+
   const currencySymb = currencySymbol(overdueOutstandingAmount?.currency);
 
   const amountBox = [
@@ -168,7 +221,8 @@ const Clients = ({ isAdminUser }) => {
     clientData,
     handleTooltip,
     showToolTip,
-    toolTipRef
+    toolTipRef,
+    isDesktop
   );
 
   if (loading) {
@@ -232,10 +286,16 @@ const Clients = ({ isAdminUser }) => {
                     handleDeleteClick={handleDeleteClick}
                     handleEditClick={handleEditClick}
                     hasRowIcons={isAdminUser}
-                    rowOnClick={isAdminUser ? handleRowClick : () => {}} // eslint-disable-line  @typescript-eslint/no-empty-function
                     tableRowArray={tableData}
+                    rowOnClick={
+                      isAdminUser && isDesktop ? handleRowClick : () => {} // eslint-disable-line  @typescript-eslint/no-empty-function
+                    }
                     tableHeader={
-                      isAdminUser ? tableHeader : employeeTableHeader
+                      isAdminUser && isDesktop
+                        ? tableHeader
+                        : isAdminUser && !isDesktop
+                        ? mobileTableHeader
+                        : employeeTableHeader
                     }
                   />
                 ) : (
