@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { Fragment, useState } from "react";
 
 import { ToastContainer } from "react-toastify";
@@ -7,6 +8,7 @@ import { useUserContext } from "context/UserContext";
 
 import Header from "./CommonComponents/Header";
 import EntryContext from "./context/EntryContext";
+import { PersonalDetailsState } from "./context/PersonalDetailsState";
 import RouteConfig from "./RouteConfig";
 import SideNav from "./SubNav";
 
@@ -14,11 +16,7 @@ const Layout = ({ isAdminUser, user, company }) => {
   const { isDesktop } = useUserContext();
 
   const [settingsStates, setSettingsStates] = useState({
-    profileSettings: {
-      firstName: user.first_name,
-      lastName: user.last_name,
-      email: user.email,
-    },
+    profileSettings: PersonalDetailsState,
     organizationSettings: {},
     bankAccDetails: {},
     paymentSettings: {},
@@ -49,9 +47,9 @@ const Layout = ({ isAdminUser, user, company }) => {
             <div className="col-span-3">
               <SideNav
                 company={company}
-                firstName={profileSettings?.firstName}
+                firstName={profileSettings?.first_name}
                 isAdmin={isAdminUser}
-                lastName={profileSettings?.lastName}
+                lastName={profileSettings?.last_name}
               />
             </div>
             <div className="col-span-9">
@@ -60,6 +58,7 @@ const Layout = ({ isAdminUser, user, company }) => {
           </div>
         </Fragment>
       )}
+      {!isDesktop && <RouteConfig />}
       <ToastContainer autoClose={TOASTER_DURATION} />
     </EntryContext.Provider>
   );
