@@ -1,10 +1,12 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import React, { useState } from "react";
 
-import { Field, Form, Formik, FormikProps } from "formik";
+import { Form, Formik, FormikProps } from "formik";
 import { XIcon, EditImageButtonSVG, deleteImageIcon } from "miruIcons";
 import { Avatar, Button, SidePanel } from "StyledComponents";
 import * as Yup from "yup";
+
+import { InputErrors, InputField } from "common/FormikFields";
 
 import { i18n } from "../../../i18n";
 
@@ -194,7 +196,7 @@ const MobileClientForm = ({
           onSubmit={handleSubmit}
         >
           {(props: FormikProps<FormValues>) => {
-            const { touched, errors } = props;
+            const { touched, errors, setFieldError, setFieldValue } = props;
 
             return (
               <Form>
@@ -247,162 +249,125 @@ const MobileClientForm = ({
                     </div>
                   </div>
                   <div className="field">
-                    <div className="field_with_errors">
-                      <label className="form__label">Name</label>
-                      <div className="block text-xs tracking-wider text-red-600">
-                        {errors.name && touched.name && (
-                          <div>{errors.name}</div>
-                        )}
-                      </div>
-                    </div>
-                    <div className="mt-1">
-                      <Field
-                        name="name"
-                        className={`form__input ${
-                          errors.name &&
-                          touched.name &&
-                          "border-red-600 focus:border-red-600 focus:ring-red-600"
-                        } block h-12 w-full appearance-none border-miru-gray-1000 bg-white p-3.75 text-sm md:text-base`}
-                      />
-                    </div>
+                    <InputField
+                      hasError={errors.name && touched.name}
+                      id="name"
+                      label="Name"
+                      labelClassName="p-0"
+                      name="name"
+                      setFieldError={setFieldError}
+                      setFieldValue={setFieldValue}
+                    />
+                    <InputErrors
+                      fieldErrors={errors.name}
+                      fieldTouched={touched.name}
+                    />
                   </div>
                 </div>
                 <div className="mt-4">
                   <div className="field">
-                    <div className="field_with_errors">
-                      <label className="form__label">Email ID(s)</label>
-                      <div className="block text-xs tracking-wider text-red-600">
-                        {errors.email && touched.email && (
-                          <div>{errors.email}</div>
-                        )}
-                      </div>
-                    </div>
-                    <div className="mt-1">
-                      <Field
-                        name="email"
-                        className={`form__input ${
-                          errors.email &&
-                          touched.email &&
-                          "border-red-600 focus:border-red-600 focus:ring-red-600"
-                        } `}
-                      />
-                    </div>
+                    <InputField
+                      hasError={errors.email && touched.email}
+                      id="email"
+                      label="Email ID(s)"
+                      labelClassName="p-0"
+                      name="email"
+                      setFieldError={setFieldError}
+                      setFieldValue={setFieldValue}
+                    />
+                    <InputErrors
+                      fieldErrors={errors.email}
+                      fieldTouched={touched.email}
+                    />
                   </div>
                 </div>
                 <div className="mt-4">
                   <div className="field">
-                    <div className="field_with_errors">
-                      <label className="form__label">Phone number</label>
-                      <div className="block text-xs tracking-wider text-red-600">
-                        {errors.phone && touched.phone && (
-                          <div>{errors.phone}</div>
-                        )}
-                      </div>
-                    </div>
-                    <div className="mt-1">
-                      <Field
-                        name="phone"
-                        className={`form__input ${
-                          errors.phone &&
-                          touched.phone &&
-                          "border-red-600 focus:border-red-600 focus:ring-red-600"
-                        } `}
-                      />
-                    </div>
+                    <InputField
+                      hasError={errors.phone && touched.phone}
+                      id="phone"
+                      label="Phone number"
+                      labelClassName="p-0"
+                      name="phone"
+                      setFieldError={setFieldError}
+                      setFieldValue={setFieldValue}
+                    />
+                    <InputErrors
+                      fieldErrors={errors.phone}
+                      fieldTouched={touched.phone}
+                    />
                   </div>
                 </div>
                 <div className="mt-4">
                   <div className="field">
-                    <div className="field_with_errors">
-                      <label className="form__label">Address</label>
-                      <div className="block text-xs tracking-wider text-red-600">
-                        {errors.address && touched.address && (
-                          <div>{errors.address}</div>
-                        )}
-                      </div>
-                    </div>
-                    <div className="mt-1">
-                      <Field
-                        name="address"
-                        className={`form__input ${
-                          errors.address &&
-                          touched.address &&
-                          "border-red-600 focus:border-red-600 focus:ring-red-600"
-                        } `}
-                      />
-                    </div>
+                    <InputField
+                      hasError={errors.address && touched.address}
+                      id="address"
+                      label="Address line 1"
+                      labelClassName="p-0"
+                      name="address"
+                      setFieldError={setFieldError}
+                      setFieldValue={setFieldValue}
+                    />
+                    <InputErrors
+                      fieldErrors={errors.address}
+                      fieldTouched={touched.address}
+                    />
                   </div>
                 </div>
                 {/* Address line 2 */}
                 <div className="mt-4">
                   <div className="field">
-                    <div className="field_with_errors">
-                      <label className="form__label">
-                        Address line 2 (optional)
-                      </label>
-                      <div className="block text-xs tracking-wider text-red-600">
-                        {errors.address && touched.address && (
-                          <div>{errors.address}</div>
-                        )}
-                      </div>
-                    </div>
-                    <div className="mt-1">
-                      <Field
-                        name="address"
-                        className={`form__input ${
-                          errors.address &&
-                          touched.address &&
-                          "border-red-600 focus:border-red-600 focus:ring-red-600"
-                        } `}
-                      />
-                    </div>
+                    <InputField
+                      hasError={errors.address && touched.address}
+                      id="address"
+                      label="Address line 2"
+                      labelClassName="p-0"
+                      name="address"
+                      setFieldError={setFieldError}
+                      setFieldValue={setFieldValue}
+                    />
+                    <InputErrors
+                      fieldErrors={errors.address}
+                      fieldTouched={touched.address}
+                    />
                   </div>
                 </div>
                 <div className="flex">
                   {/* Country */}
                   <div className="mt-4 mr-2">
                     <div className="field">
-                      <div className="field_with_errors">
-                        <label className="form__label">Country</label>
-                        <div className="block text-xs tracking-wider text-red-600">
-                          {errors.country && touched.country && (
-                            <div>{errors.address}</div>
-                          )}
-                        </div>
-                      </div>
-                      <div className="mt-1">
-                        <Field
-                          name="country"
-                          className={`form__input ${
-                            errors.country &&
-                            touched.country &&
-                            "border-red-600 focus:border-red-600 focus:ring-red-600"
-                          } `}
-                        />
-                      </div>
+                      <InputField
+                        hasError={errors.country && touched.country}
+                        id="country"
+                        label="Country"
+                        labelClassName="p-0"
+                        name="country"
+                        setFieldError={setFieldError}
+                        setFieldValue={setFieldValue}
+                      />
+                      <InputErrors
+                        fieldErrors={errors.country}
+                        fieldTouched={touched.country}
+                      />
                     </div>
                   </div>
                   {/* State */}
                   <div className="mt-4">
                     <div className="field">
-                      <div className="field_with_errors">
-                        <label className="form__label">State</label>
-                        <div className="block text-xs tracking-wider text-red-600">
-                          {errors.state && touched.state && (
-                            <div>{errors.address}</div>
-                          )}
-                        </div>
-                      </div>
-                      <div className="mt-1">
-                        <Field
-                          name="state"
-                          className={`form__input ${
-                            errors.state &&
-                            touched.state &&
-                            "border-red-600 focus:border-red-600 focus:ring-red-600"
-                          } `}
-                        />
-                      </div>
+                      <InputField
+                        hasError={errors.state && touched.state}
+                        id="state"
+                        label="State"
+                        labelClassName="p-0"
+                        name="state"
+                        setFieldError={setFieldError}
+                        setFieldValue={setFieldValue}
+                      />
+                      <InputErrors
+                        fieldErrors={errors.state}
+                        fieldTouched={touched.state}
+                      />
                     </div>
                   </div>
                 </div>
@@ -410,47 +375,38 @@ const MobileClientForm = ({
                   {/* City */}
                   <div className="mt-4 mr-2">
                     <div className="field">
-                      <div className="field_with_errors">
-                        <label className="form__label">City</label>
-                        <div className="block text-xs tracking-wider text-red-600">
-                          {errors.city && touched.city && (
-                            <div>{errors.address}</div>
-                          )}
-                        </div>
-                      </div>
-                      <div className="mt-1">
-                        <Field
-                          name="city"
-                          className={`form__input ${
-                            errors.city &&
-                            touched.city &&
-                            "border-red-600 focus:border-red-600 focus:ring-red-600"
-                          } `}
-                        />
-                      </div>
+                      <InputField
+                        hasError={errors.city && touched.city}
+                        id="city"
+                        label="City"
+                        labelClassName="p-0"
+                        name="city"
+                        setFieldError={setFieldError}
+                        setFieldValue={setFieldValue}
+                      />
+                      <InputErrors
+                        fieldErrors={errors.city}
+                        fieldTouched={touched.city}
+                      />
                     </div>
                   </div>
                   {/* Zipcode */}
                   <div className="mt-4">
                     <div className="field">
-                      <div className="field_with_errors">
-                        <label className="form__label">Zipcode</label>
-                        <div className="block text-xs tracking-wider text-red-600">
-                          {errors.zipcode && touched.zipcode && (
-                            <div>{errors.address}</div>
-                          )}
-                        </div>
-                      </div>
-                      <div className="mt-1">
-                        <Field
-                          name="zipcode"
-                          className={`form__input ${
-                            errors.zipcode &&
-                            touched.zipcode &&
-                            "border-red-600 focus:border-red-600 focus:ring-red-600"
-                          } `}
-                        />
-                      </div>
+                      <InputField
+                        hasError={errors.zipcode && touched.zipcode}
+                        id="zipcode"
+                        inputBoxClassName="p-0"
+                        label="Zipcode"
+                        labelClassName="p-0"
+                        name="zipcode"
+                        setFieldError={setFieldError}
+                        setFieldValue={setFieldValue}
+                      />
+                      <InputErrors
+                        fieldErrors={errors.zipcode}
+                        fieldTouched={touched.zipcode}
+                      />
                     </div>
                   </div>
                 </div>
