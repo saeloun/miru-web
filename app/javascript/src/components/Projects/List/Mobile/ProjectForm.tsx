@@ -35,7 +35,7 @@ const ProjectForm = ({
   }
 
   const initialValues = {
-    client: editProjectData.clientName,
+    client: editProjectData.clientName || editProjectData.client.name,
     project: editProjectData.name,
     isBillable:
       editProjectData.isBillable !== undefined
