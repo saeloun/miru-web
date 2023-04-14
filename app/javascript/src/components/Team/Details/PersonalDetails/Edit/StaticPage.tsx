@@ -163,7 +163,7 @@ const StaticPage = ({
       <div className="w-9/12">
         <div className="flex flex-row">
           <div className="flex w-1/2 flex-col px-2">
-            <div className="outline relative flex h-12 flex-row rounded border border-miru-gray-1000 bg-white p-4 pt-2">
+            <div className="outline relative flex h-12 flex-row rounded border border-miru-gray-1000 bg-white p-4">
               <PhoneInput
                 className="input-phone-number w-full border-transparent focus:border-transparent focus:ring-0"
                 flags={flags}

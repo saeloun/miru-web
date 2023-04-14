@@ -29,11 +29,8 @@ RSpec.describe "Edit company", type: :system do
       with_forgery_protection do
         visit "/profile/edit"
 
-        within("ul.tracking-wider") do
-          find("div:nth-child(2) > button").click
-        end
-
-        find("a[href='/profile/edit/organization-details']").click
+        click_on(id: "company")
+        click_on "ORG. SETTINGS"
         click_button "Edit"
 
         fill_in "companyName", with: "test company"
@@ -46,6 +43,7 @@ RSpec.describe "Edit company", type: :system do
 
         expect(page).to have_content("Changes saved successfully")
         company.reload
+
         expect(company.name).to eq("test company")
       end
     end
@@ -56,11 +54,9 @@ RSpec.describe "Edit company", type: :system do
       with_forgery_protection do
         visit "/profile/edit"
 
-        within("ul.tracking-wider") do
-          find("div:nth-child(2) > button").click
-        end
+        click_on(id: "company")
 
-        find('a[href="/profile/edit/organization-details"]').click
+        click_on "ORG. SETTINGS"
         click_button "Edit"
         fill_in "addressLine1", with: ""
 

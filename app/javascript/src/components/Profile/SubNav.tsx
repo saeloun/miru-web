@@ -25,6 +25,7 @@ const SideNav = ({ isAdmin, firstName, company, lastName }) => {
       <div className="flex flex-row items-center justify-between py-3 px-5">
         <span className="text-base font-bold">Personal</span>
         <button
+          id="personal"
           onClick={() =>
             setOpenedSubNav({
               ...openedSubNav,
@@ -55,6 +56,7 @@ const SideNav = ({ isAdmin, firstName, company, lastName }) => {
       <div className="flex flex-row items-center justify-between py-3 px-5">
         <span className="text-base font-bold">{company.name}</span>
         <button
+          id="company"
           onClick={() =>
             setOpenedSubNav({ ...openedSubNav, company: !openedSubNav.company })
           }
