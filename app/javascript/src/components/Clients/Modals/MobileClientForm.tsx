@@ -1,7 +1,9 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import React, { useState } from "react";
 
-import { Form, Formik, FormikProps } from "formik";
+import classNames from "classnames";
+import { City, Country, State } from "country-state-city";
+import { Field, Form, Formik, FormikProps } from "formik";
 import { XIcon, EditImageButtonSVG, deleteImageIcon } from "miruIcons";
 import { Avatar, Button, SidePanel } from "StyledComponents";
 import * as Yup from "yup";
@@ -55,7 +57,7 @@ const getInitialvalues = (client?: any) => ({
   address: client?.address || "",
   minutes: client?.minutes || "",
   logo: client?.logo || null,
-  country: client?.country || "",
+  country: client?.country || Country.getAllCountries()[0].isoCode,
   zipcode: client?.zipcode || "",
   city: client?.city || "",
   state: client?.state || "",
@@ -77,8 +79,6 @@ const MobileClientForm = ({
   setSubmitting,
   submitting,
 }: IClientForm) => {
-  // Name, email, phone number, Address line 1 & 2, country, state, city, zipcode
-
   const [fileUploadError, setFileUploadError] = useState<string>("");
 
   const onLogoChange = e => {
@@ -196,7 +196,8 @@ const MobileClientForm = ({
           onSubmit={handleSubmit}
         >
           {(props: FormikProps<FormValues>) => {
-            const { touched, errors, setFieldError, setFieldValue } = props;
+            const { touched, errors, setFieldError, setFieldValue, values } =
+              props;
 
             return (
               <Form>
@@ -337,37 +338,48 @@ const MobileClientForm = ({
                   {/* Country */}
                   <div className="mt-4 mr-2">
                     <div className="field">
-                      <InputField
-                        hasError={errors.country && touched.country}
-                        id="country"
-                        label="Country"
-                        labelClassName="p-0"
+                      <Field
+                        as="select"
                         name="country"
-                        setFieldError={setFieldError}
-                        setFieldValue={setFieldValue}
-                      />
-                      <InputErrors
-                        fieldErrors={errors.country}
-                        fieldTouched={touched.country}
-                      />
+                        value={values.country}
+                        className={classNames(
+                          "form__input block h-12 w-full appearance-none bg-white text-sm lg:text-base",
+                          {
+                            "error-input border-miru-red-400":
+                              errors.country && touched.country,
+                          }
+                        )}
+                      >
+                        {Country.getAllCountries().map((c, idx) => (
+                          <option key={idx} value={c.isoCode}>
+                            {c.name}
+                          </option>
+                        ))}
+                      </Field>
                     </div>
                   </div>
                   {/* State */}
                   <div className="mt-4">
                     <div className="field">
-                      <InputField
-                        hasError={errors.state && touched.state}
-                        id="state"
-                        label="State"
-                        labelClassName="p-0"
+                      <Field
+                        as="select"
                         name="state"
-                        setFieldError={setFieldError}
-                        setFieldValue={setFieldValue}
-                      />
-                      <InputErrors
-                        fieldErrors={errors.state}
-                        fieldTouched={touched.state}
-                      />
+                        className={classNames(
+                          "form__input block h-12 w-44 appearance-none bg-white text-sm lg:text-base",
+                          {
+                            "error-input border-miru-red-400":
+                              errors.state && touched.state,
+                          }
+                        )}
+                      >
+                        {State.getStatesOfCountry(values.country).map(
+                          (c, idx) => (
+                            <option key={idx} value={c.name}>
+                              {c.name}
+                            </option>
+                          )
+                        )}
+                      </Field>
                     </div>
                   </div>
                 </div>
@@ -375,19 +387,25 @@ const MobileClientForm = ({
                   {/* City */}
                   <div className="mt-4 mr-2">
                     <div className="field">
-                      <InputField
-                        hasError={errors.city && touched.city}
-                        id="city"
-                        label="City"
-                        labelClassName="p-0"
+                      <Field
+                        as="select"
                         name="city"
-                        setFieldError={setFieldError}
-                        setFieldValue={setFieldValue}
-                      />
-                      <InputErrors
-                        fieldErrors={errors.city}
-                        fieldTouched={touched.city}
-                      />
+                        className={classNames(
+                          "form__input block h-12 w-44 appearance-none bg-white text-sm lg:text-base",
+                          {
+                            "error-input border-miru-red-400":
+                              errors.city && touched.city,
+                          }
+                        )}
+                      >
+                        {City.getCitiesOfCountry(values.country).map(
+                          (c, idx) => (
+                            <option key={idx} value={c.name}>
+                              {c.name}
+                            </option>
+                          )
+                        )}
+                      </Field>
                     </div>
                   </div>
                   {/* Zipcode */}
