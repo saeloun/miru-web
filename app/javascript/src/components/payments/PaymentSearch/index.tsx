@@ -94,7 +94,7 @@ const SearchWithSuggestions = ({
             className="outline-none w-full px-2 text-sm font-medium leading-5"
             placeholder="Search"
             type="text"
-            value={debouncedSearchQuery || params?.query?.trim()}
+            value={searchQuery || params?.query?.trim()}
             onChange={handleSearchInputChange}
             onKeyDown={e => onKeydownHandler(e)}
           />
