@@ -1,11 +1,11 @@
-import React from "react";
+import React, { ReactNode } from "react";
 
 import classNames from "classnames";
 import { EmptyState, NoSearchResultsState } from "miruIcons";
 
 type EmptyStateProps = {
   Message: string;
-  children?: any;
+  children?: ReactNode;
   showNoSearchResultState: boolean;
   wrapperClassName?: string;
   messageClassName?: string;
