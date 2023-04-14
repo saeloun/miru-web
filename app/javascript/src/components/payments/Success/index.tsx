@@ -14,16 +14,18 @@ const Success = () => {
   const navigate = useNavigate();
 
   const fetchPaymentSuccess = async () => {
-    setLoading(true);
-    const res = await invoicesApi.paymentSuccess(id).catch(e => {
+    try {
+      setLoading(true);
+      const res = await invoicesApi.paymentSuccess(id);
+
+      setError("");
+      setInvoice(res?.data?.invoice);
+    } catch (e) {
       setError(e.response.data.error);
       navigate("/");
-    });
-
-    setError("");
-    setInvoice(res?.data?.invoice);
-
-    setLoading(false);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
