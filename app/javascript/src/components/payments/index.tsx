@@ -73,7 +73,6 @@ const Payments = () => {
   const PaymentsLayout = () => (
     <div className="h-full flex-col p-4">
       <Header
-        baseCurrency={baseCurrency}
         params={params}
         payments={paymentList}
         setParams={setParams}

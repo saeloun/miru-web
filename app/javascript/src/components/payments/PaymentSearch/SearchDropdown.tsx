@@ -6,19 +6,17 @@ import { SearchDropdownProps } from "../interfaces";
 
 const SearchDropdown = ({
   list = [],
-  baseCurrency,
   setSearchQuery,
   setIsClickedOnSearchOrSuggestion,
 }: SearchDropdownProps) => (
   <section className="absolute top-9 w-full rounded-lg bg-miru-white-1000 py-4 px-2 shadow drop-shadow-md">
     {list?.length ? (
-      list.map(suggestedItem => (
-        <Fragment key={suggestedItem.invoiceNumber}>
+      list.map(suggestedPayment => (
+        <Fragment key={suggestedPayment.invoiceNumber}>
           <SearchedDataRow
-            baseCurrency={baseCurrency}
             setIsClickedOnSearchOrSuggestion={setIsClickedOnSearchOrSuggestion}
             setSearchQuery={setSearchQuery}
-            suggestedItem={suggestedItem}
+            suggestedPayment={suggestedPayment}
           />
         </Fragment>
       ))

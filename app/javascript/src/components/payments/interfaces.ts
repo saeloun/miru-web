@@ -21,29 +21,39 @@ export interface MobileHeaderProps {
   setParams: (params: SearchParamsProps) => void;
   fetchSearchedPayments: (searchQuery: string) => void;
   setShowManualEntryModal: (showManualEntryModal: boolean) => void;
-  baseCurrency: any;
+}
+
+export interface HeaderProps {
+  params: SearchParamsProps;
+  payments: any[];
+  showSearchedPayments: boolean;
+  setParams: (params: SearchParamsProps) => void;
+  setSearchedPaymentList: (paymentList: any[]) => void;
+  setShowManualEntryModal: (showManualEntryModal: boolean) => void;
+  setShowSearchedPayments: (showSearchedPayments: boolean) => void;
 }
 
 export interface SearchProps {
   searchList: any[];
   searchAction: (searchQuery: string) => void;
-  setIsSearching: (isSearching: boolean) => void;
   params: { query: string };
   setParams: (param: object) => void;
-  baseCurrency: any;
   showSearchedPayments: boolean;
+  setShowSearchedPayments: (showSearchedPayments: boolean) => void;
 }
 
 export interface SearchDropdownProps {
   list: any[];
-  baseCurrency: any;
   setSearchQuery: (searchQuery: string) => void;
   setIsClickedOnSearchOrSuggestion: (isClicked: boolean) => void;
 }
 
 export interface SearchedDataRowProps {
-  suggestedItem: any;
-  baseCurrency?: any;
-  setSearchQuery?: (searchQuery: string) => void;
+  suggestedPayment: any;
+  setSearchQuery: (searchQuery: string) => void;
   setIsClickedOnSearchOrSuggestion: (isClicked: boolean) => void;
+}
+
+export interface PaymentsEmptyStateProps {
+  setShowManualEntryModal: (showManualEntryModal: boolean) => void;
 }

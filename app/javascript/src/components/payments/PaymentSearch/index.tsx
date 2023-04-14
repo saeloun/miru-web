@@ -10,17 +10,16 @@ import { SearchProps } from "../interfaces";
 const SearchWithSuggestions = ({
   searchList,
   searchAction,
-  setIsSearching,
   params,
   setParams,
-  baseCurrency,
   showSearchedPayments,
+  setShowSearchedPayments,
 }: SearchProps) => {
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [filteredList, setFilteredList] = useState([]);
+  const [suggestedPayments, setSuggestedPayments] = useState([]);
   const [isClickedOnSearchOrSuggestion, setIsClickedOnSearchOrSuggestion] =
     useState<boolean>(false);
-  const debouncedSearchQuery = useDebounce(searchQuery, 0);
+  const debouncedSearchQuery = useDebounce(searchQuery, 500);
 
   const onKeydownHandler = e => {
     if (e?.key?.trim()?.toLowerCase() === "enter") {
@@ -33,7 +32,7 @@ const SearchWithSuggestions = ({
     resetSearchState();
   };
 
-  const handleSearch = debouncedSearchQuery => {
+  const handleSearch = (debouncedSearchQuery: string) => {
     if (debouncedSearchQuery) {
       searchAction(debouncedSearchQuery);
       setSearchQuery(debouncedSearchQuery);
@@ -55,7 +54,7 @@ const SearchWithSuggestions = ({
   const resetSearchState = () => {
     setSearchQuery("");
     setParams({ ...params, query: "" });
-    setIsSearching(false);
+    setShowSearchedPayments(false);
   };
 
   const getSuggestedItems = () => {
@@ -72,7 +71,7 @@ const SearchWithSuggestions = ({
       }
     });
 
-    setFilteredList(tempFilteredList);
+    setSuggestedPayments(tempFilteredList);
   };
 
   useEffect(() => {
@@ -112,11 +111,10 @@ const SearchWithSuggestions = ({
               />
             )}
           </button>
-          {searchQuery?.trim() &&
-          searchQuery?.trim() !== params?.query?.trim() ? (
+          {debouncedSearchQuery?.trim() &&
+          debouncedSearchQuery?.trim() !== params?.query?.trim() ? (
             <SearchDropdown
-              baseCurrency={baseCurrency}
-              list={filteredList}
+              list={suggestedPayments}
               setSearchQuery={setSearchQuery}
               setIsClickedOnSearchOrSuggestion={
                 setIsClickedOnSearchOrSuggestion

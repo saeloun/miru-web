@@ -8,7 +8,7 @@ import { getStatusCss } from "components/payments/utils";
 
 const TableRow = ({ baseCurrency, payment }: TableRowProps) => (
   <>
-    <tr className="group block last:border-b-0 hover:bg-miru-gray-100 md:hidden">
+    <tr className="group block last:border-b-0 md:hidden">
       <td className="w-full pt-2 pr-6 pl-0 text-left">
         <h1 className="font-manrope text-sm font-semibold leading-4 text-miru-dark-purple-1000">
           {payment.clientName}

@@ -5,7 +5,7 @@ import { PlusIcon } from "miruIcons";
 import { MobileHeaderProps } from "../interfaces";
 import PaymentSearch from "../PaymentSearch";
 
-const Header = ({
+const MobileHeader = ({
   payments,
   showSearchedPayments,
   fetchSearchedPayments,
@@ -13,16 +13,14 @@ const Header = ({
   setShowManualEntryModal,
   params,
   setParams,
-  baseCurrency,
 }: MobileHeaderProps) => (
   <div className="flex md:hidden">
     <PaymentSearch
-      baseCurrency={baseCurrency}
       params={params}
       searchAction={fetchSearchedPayments}
       searchList={payments}
-      setIsSearching={setShowSearchedPayments}
       setParams={setParams}
+      setShowSearchedPayments={setShowSearchedPayments}
       showSearchedPayments={showSearchedPayments}
     />
     <div>
@@ -36,4 +34,4 @@ const Header = ({
   </div>
 );
 
-export default Header;
+export default MobileHeader;
