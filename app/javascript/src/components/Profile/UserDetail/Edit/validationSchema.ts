@@ -20,7 +20,13 @@ export const userSchema = {
   changePassword: Yup.boolean(),
   password: Yup.string().when("changePassword", {
     is: true,
-    then: Yup.string().required("Please enter password"),
+    then: Yup.string()
+      .required("Please enter password")
+      .matches(/^\S.*\S$/, "Password can not start or end with a blank space")
+      .matches(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\w\s\x00-\x1F\x7F])[\S\s]{8,}$/, // eslint-disable-line
+        "Must Contain at least 8 Characters, One Uppercase, One Lowercase, One Number and One Special Character"
+      ),
   }),
   currentPassword: Yup.string().when("changePassword", {
     is: true,
@@ -29,9 +35,12 @@ export const userSchema = {
 
   confirmPassword: Yup.string().when("changePassword", {
     is: true,
-    then: Yup.string().oneOf(
-      [Yup.ref("password"), null],
-      "Passwords don't match"
-    ),
+    then: Yup.string()
+      .matches(/^\S.*\S$/, "Password can not start or end with a blank space")
+      .matches(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\w\s\x00-\x1F\x7F])[\S\s]{8,}$/, // eslint-disable-line
+        "Must Contain at least 8 Characters, One Uppercase, One Lowercase, One Number and One Special Character"
+      )
+      .oneOf([Yup.ref("password"), null], "Passwords don't match"),
   }),
 };
