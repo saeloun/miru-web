@@ -4,7 +4,7 @@ import { XIcon } from "miruIcons";
 
 import ClientForm from "./ClientForm";
 
-const EditClient = ({
+const NewClient = ({
   setnewClient,
   clientData,
   setClientData,
@@ -62,4 +62,4 @@ const EditClient = ({
   );
 };
 
-export default EditClient;
+export default NewClient;

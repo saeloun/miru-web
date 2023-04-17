@@ -167,6 +167,7 @@ const ClientForm = ({
         .update(clientData.id, formData)
         .then(() => {
           setShowEditDialog(false);
+          window.location.reload();
         })
         .catch(e => {
           setApiError(e.message);

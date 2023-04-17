@@ -126,7 +126,7 @@ const Clients = ({ isAdminUser }) => {
 
   useEffect(() => {
     fetchClientDetails("week");
-  }, [client, EditClient]);
+  }, [client]);
 
   const tableHeader = [
     {
