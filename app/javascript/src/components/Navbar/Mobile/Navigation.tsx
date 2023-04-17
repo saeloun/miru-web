@@ -15,7 +15,7 @@ const Navigation = () => {
     useState<boolean>(defaultShowOption);
 
   const handleMoreClick = () => {
-    setShowMoreOptions(true);
+    setShowMoreOptions(!showMoreOptions);
   };
 
   useEffect(() => {
