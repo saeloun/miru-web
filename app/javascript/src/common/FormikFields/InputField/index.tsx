@@ -26,6 +26,7 @@ const InputField = ({
   wrapperClassName,
   autoComplete,
   onChange,
+  onClick,
   hasError,
   resetErrorOnChange,
   setFieldError,
@@ -80,6 +81,7 @@ const InputField = ({
             type === "password" ? (showPassword ? "text" : "password") : type
           }
           onChange={onChange}
+          onClick={onClick}
           {...optionalFieldProps}
         />
         <label
@@ -125,6 +127,7 @@ InputField.defaultProps = {
   autoComplete: "on",
   readOnly: false,
   onChange: undefined,
+  onClick: undefined,
   hasError: false,
   resetErrorOnChange: true,
   setFieldError: null,

@@ -10,9 +10,12 @@ import {
 } from "miruIcons";
 import { useNavigate } from "react-router-dom";
 
+import { useUserContext } from "context/UserContext";
+
 import AddProject from "../Modals/AddProject";
 import DeleteClient from "../Modals/DeleteClient";
 import EditClient from "../Modals/EditClient";
+import MobileMenu from "../Modals/MobileMenu";
 
 const Header = ({ clientDetails }) => {
   const [isHeaderMenuVisible, setIsHeaderMenuVisible] =
@@ -21,15 +24,21 @@ const Header = ({ clientDetails }) => {
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
   const [showEditDialog, setShowEditDialog] = useState<boolean>(false);
   const [showProjectModal, setShowProjectModal] = useState<boolean>(false);
+  const [showMobileModal, setShowMobileModal] = useState<boolean>(false);
 
   const navigate = useNavigate();
+  const { isDesktop } = useUserContext();
 
   const handleClientDetails = () => {
     setIsClientOpen(!isClientOpen);
   };
 
   const handleMenuVisibility = () => {
-    setIsHeaderMenuVisible(!isHeaderMenuVisible);
+    if (isDesktop) {
+      setIsHeaderMenuVisible(!isHeaderMenuVisible);
+    } else {
+      setShowMobileModal(!showMobileModal);
+    }
   };
 
   const handleBackButtonClick = () => {
@@ -132,6 +141,12 @@ const Header = ({ clientDetails }) => {
         <AddProject
           clientDetails={clientDetails}
           setShowProjectModal={setShowProjectModal}
+        />
+      )}
+      {showMobileModal && (
+        <MobileMenu
+          setShowDeleteDialog={setShowDeleteDialog}
+          setShowMobileModal={setShowMobileModal}
         />
       )}
     </div>
