@@ -29,10 +29,8 @@ RSpec.describe "Edit client", type: :system do
 
         expect(page).to have_content("test client")
 
-        client.reload
-
-        expect(client.name).to eq("test client")
-        expect(client.email).to eq("client@test.com")
+        expect(client.reload.name).to eq("test client")
+        expect(client.reload.email).to eq("client@test.com")
       end
     end
   end
