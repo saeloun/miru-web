@@ -105,7 +105,10 @@ const Header = ({ clientDetails }) => {
           </div>
           <div className="ml-28 text-xs text-miru-dark-purple-400">
             <h6 className="font-semibold">Address</h6>
-            <p>{clientDetails.address}</p>
+            <p>{clientDetails.address.address_line_1}</p>
+            <p>{clientDetails.address?.address_line_2}</p>
+            <p>{clientDetails.address?.city}</p>
+            <p>{clientDetails.address?.country}</p>
           </div>
           <div className="ml-28 text-xs text-miru-dark-purple-400">
             <h6 className="font-semibold">Phone number</h6>

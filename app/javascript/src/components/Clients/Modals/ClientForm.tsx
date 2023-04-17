@@ -1,61 +1,114 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
-import { Formik, Form, Field, FormikProps } from "formik";
+import "react-phone-number-input/style.css"; //eslint-disable-line
+import { Country, State, City } from "country-state-city";
+import { Formik, Form, FormikProps } from "formik";
 import { EditImageButtonSVG, deleteImageIcon } from "miruIcons";
+import PhoneInput from "react-phone-number-input";
+import flags from "react-phone-number-input/flags";
 import { Avatar } from "StyledComponents";
-import * as Yup from "yup";
+
+import clientApi from "apis/clients";
+import { CustomAsyncSelect } from "common/CustomAsyncSelect";
+import CustomReactSelect from "common/CustomReactSelect";
+import { InputErrors, InputField } from "common/FormikFields";
+import Toastr from "common/Toastr";
+
+import { clientSchema, getInitialvalues } from "./formValidationSchema";
+import { formatFormData } from "./utils";
 
 import { i18n } from "../../../i18n";
 
 interface IClientForm {
   clientLogoUrl: string;
-  handleSubmit: any;
   handleDeleteLogo: any;
   setClientLogoUrl: any;
   setClientLogo: any;
   formType?: string;
   clientData?: any;
   apiError?: string;
+  setClientData?: any;
+  setnewClient?: any;
+  clientLogo?: any;
+  setApiError?: any;
+  setShowEditDialog?: any;
 }
 
 interface FormValues {
   name: string;
   email: string;
   phone: string;
-  address: string;
+  address1: string;
+  address2: string;
+  country: any;
+  state: any;
+  city: any;
+  zipcode: string;
   logo: any;
 }
 
-const clientSchema = Yup.object().shape({
-  name: Yup.string().required("Name cannot be blank"),
-  email: Yup.string()
-    .email("Invalid email ID")
-    .required("Email ID cannot be blank"),
-  phone: Yup.number().typeError("Invalid phone number"),
-  address: Yup.string().required("Address cannot be blank"),
-});
-
-const getInitialvalues = (client?: any) => ({
-  name: client?.name || "",
-  email: client?.email || "",
-  phone: client?.phone || "",
-  address: client?.address || "",
-  minutes: client?.minutes || "",
-  logo: client?.logo || null,
-});
-
 const ClientForm = ({
   clientLogoUrl,
-  handleSubmit,
   handleDeleteLogo,
   setClientLogoUrl,
   setClientLogo,
   clientData,
   formType = "new",
   apiError = "",
+  setClientData,
+  setnewClient,
+  clientLogo,
+  setApiError,
+  setShowEditDialog,
 }: IClientForm) => {
+  const initialSelectValue = {
+    label: "",
+    value: "",
+    code: "",
+  };
   const [fileUploadError, setFileUploadError] = useState<string>("");
+  const [countries, setCountries] = useState([]);
+  const [currentCountryDetails, setCurrentCountryDetails] =
+    useState(initialSelectValue);
+  const [currentCityList, setCurrentCityList] = useState([]);
+
+  const assignCountries = async allCountries => {
+    const countryData = await allCountries.map(country => ({
+      value: country.isoCode,
+      label: country.name,
+      code: country.isoCode,
+    }));
+    setCountries(countryData);
+  };
+
+  useEffect(() => {
+    const allCountries = Country.getAllCountries();
+    assignCountries(allCountries);
+  }, []);
+
+  const updatedStates = countryCode =>
+    State.getStatesOfCountry(countryCode).map(state => ({
+      label: state.name,
+      value: state.name,
+      code: state.isoCode,
+      ...state,
+    }));
+
+  const filterCities = (inputValue: string) => {
+    const city = currentCityList.filter(i =>
+      i.label.toLowerCase().includes(inputValue.toLowerCase())
+    );
+
+    return city.length ? city : [{ label: inputValue, value: inputValue }];
+  };
+
+  const promiseOptions = (inputValue: string) =>
+    new Promise(resolve => {
+      setTimeout(() => {
+        resolve(filterCities(inputValue));
+      }, 1000);
+    });
 
   const onLogoChange = e => {
     const file = e.target.files[0];
@@ -89,10 +142,43 @@ const ClientForm = ({
     };
   };
 
+  const handleSubmit = async values => {
+    const formData = new FormData();
+
+    formatFormData(
+      formData,
+      values,
+      formType === "new",
+      clientData,
+      clientLogo,
+      clientLogoUrl
+    );
+    if (formType === "new") {
+      try {
+        const res = await clientApi.create(formData);
+        setClientData([...clientData, { ...res.data, minutes: 0 }]);
+        setnewClient(false);
+        Toastr.success("Client added successfully");
+      } catch (error) {
+        setApiError(error.message);
+      }
+    } else {
+      await clientApi
+        .update(clientData.id, formData)
+        .then(() => {
+          setShowEditDialog(false);
+          window.location.reload();
+        })
+        .catch(e => {
+          setApiError(e.message);
+        });
+    }
+  };
+
   const LogoComponent = () => (
     <div className="my-4 flex flex-row">
       <div className="mt-2 h-30 w-30 border border-dashed border-miru-dark-purple-400">
-        <div className="profile-img relative m-auto cursor-pointer text-center text-xs font-semibold">
+        <div className="profile-img relative m-auto h-30 w-30 cursor-pointer text-center text-xs font-semibold">
           <Avatar
             classNameImg="h-full w-full md:h-full md:w-full"
             url={clientLogoUrl}
@@ -156,7 +242,7 @@ const ClientForm = ({
       onSubmit={handleSubmit}
     >
       {(props: FormikProps<FormValues>) => {
-        const { touched, errors } = props;
+        const { touched, errors, setFieldValue, values } = props;
 
         return (
           <Form>
@@ -206,85 +292,156 @@ const ClientForm = ({
                   </div>
                 </div>
               </div>
-              <div className="field">
-                <div className="field_with_errors">
-                  <label className="form__label">Name</label>
-                  <div className="block text-xs tracking-wider text-red-600">
-                    {errors.name && touched.name && <div>{errors.name}</div>}
-                  </div>
-                </div>
-                <div className="mt-1">
-                  <Field
-                    name="name"
-                    className={`form__input ${
-                      errors.name &&
-                      touched.name &&
-                      "border-red-600 focus:border-red-600 focus:ring-red-600"
-                    } `}
-                  />
-                </div>
+            </div>
+            <div className="field relative">
+              <InputField
+                autoFocus
+                resetErrorOnChange
+                id="name"
+                label="Name"
+                name="name"
+                setFieldValue={setFieldValue}
+              />
+              <InputErrors
+                fieldErrors={errors.name}
+                fieldTouched={touched.name}
+              />
+            </div>
+            <div className="mt-4">
+              <div className="field relative">
+                <InputField
+                  resetErrorOnChange
+                  id="email"
+                  label="Email"
+                  name="email"
+                  setFieldValue={setFieldValue}
+                />
+                <InputErrors
+                  fieldErrors={errors.email}
+                  fieldTouched={touched.email}
+                />
               </div>
             </div>
             <div className="mt-4">
-              <div className="field">
-                <div className="field_with_errors">
-                  <label className="form__label">Email</label>
-                  <div className="block text-xs tracking-wider text-red-600">
-                    {errors.email && touched.email && <div>{errors.email}</div>}
+              <div className="field relative">
+                <div className="flex flex-col">
+                  <div className="outline relative flex h-12 flex-row rounded border border-miru-gray-1000 bg-white p-4 pt-2">
+                    <PhoneInput
+                      className="input-phone-number w-full border-transparent focus:border-transparent focus:ring-0"
+                      flags={flags}
+                      id="phone"
+                      inputClassName="form__input block w-full appearance-none bg-white border-0 focus:border-0 px-0 text-base border-transparent focus:border-transparent focus:ring-0 border-miru-gray-1000 w-full border-bottom-none "
+                      name="phone"
+                      value={clientData.phone}
+                      onChange={phone => {
+                        setFieldValue("phone", phone);
+                      }}
+                    />
+                    <label
+                      className="absolute -top-1 left-0 z-1 ml-3 origin-0 bg-white px-1 text-xsm font-medium text-miru-dark-purple-200 duration-300"
+                      htmlFor="phone"
+                    >
+                      Phone
+                    </label>
                   </div>
                 </div>
-                <div className="mt-1">
-                  <Field
-                    name="email"
-                    className={`form__input ${
-                      errors.email &&
-                      touched.email &&
-                      "border-red-600 focus:border-red-600 focus:ring-red-600"
-                    } `}
-                  />
-                </div>
+                <InputErrors
+                  fieldErrors={errors.phone}
+                  fieldTouched={touched.phone}
+                />
               </div>
             </div>
             <div className="mt-4">
-              <div className="field">
-                <div className="field_with_errors">
-                  <label className="form__label">Phone number</label>
-                  <div className="block text-xs tracking-wider text-red-600">
-                    {errors.phone && touched.phone && <div>{errors.phone}</div>}
-                  </div>
-                </div>
-                <div className="mt-1">
-                  <Field
-                    name="phone"
-                    className={`form__input ${
-                      errors.phone &&
-                      touched.phone &&
-                      "border-red-600 focus:border-red-600 focus:ring-red-600"
-                    } `}
-                  />
-                </div>
+              <div className="field relative">
+                <InputField
+                  resetErrorOnChange
+                  id="address1"
+                  label="Address line 1"
+                  name="address1"
+                  setFieldValue={setFieldValue}
+                />
+                <InputErrors
+                  fieldErrors={errors.address1}
+                  fieldTouched={touched.address1}
+                />
               </div>
             </div>
             <div className="mt-4">
-              <div className="field">
-                <div className="field_with_errors">
-                  <label className="form__label">Address</label>
-                  <div className="block text-xs tracking-wider text-red-600">
-                    {errors.address && touched.address && (
-                      <div>{errors.address}</div>
-                    )}
-                  </div>
-                </div>
-                <div className="mt-1">
-                  <Field
-                    name="address"
-                    className={`form__input ${
-                      errors.address &&
-                      touched.address &&
-                      "border-red-600 focus:border-red-600 focus:ring-red-600"
-                    } `}
-                  />
-                </div>
+              <div className="field relative mb-5">
+                <InputField
+                  resetErrorOnChange
+                  id="address2"
+                  label="Address line 2 (optional)"
+                  name="address2"
+                  setFieldValue={setFieldValue}
+                />
+              </div>
+            </div>
+            <div className="mb-5 flex flex-row">
+              <div className="flex w-1/2 flex-col py-0 pr-2">
+                <CustomReactSelect
+                  isErr={!!errors.country && touched.country}
+                  label="Country"
+                  name="country"
+                  options={countries}
+                  value={values.country.value ? values.country : null}
+                  handleOnChange={e => {
+                    setCurrentCountryDetails(e);
+                    setFieldValue("country", e);
+                  }}
+                />
+              </div>
+              <div className="flex w-1/2 flex-col pl-2">
+                <CustomReactSelect
+                  isErr={!!errors.state && touched.state}
+                  label="State"
+                  name="state"
+                  value={values.state.value ? values.state : null}
+                  handleOnChange={state => {
+                    setFieldValue("state", state);
+                    const cities = City.getCitiesOfState(
+                      currentCountryDetails.code,
+                      state.code
+                    ).map(city => ({
+                      label: city.name,
+                      value: city.name,
+                      ...city,
+                    }));
+                    setCurrentCityList(cities);
+                  }}
+                  options={updatedStates(
+                    currentCountryDetails.code
+                      ? currentCountryDetails.code
+                      : "US"
+                  )}
+                />
+              </div>
+            </div>
+            <div className="flex flex-row">
+              <div className="flex w-1/2 flex-col pr-2" id="city">
+                <CustomAsyncSelect
+                  isErr={!!errors.city && touched.city}
+                  label="City"
+                  loadOptions={promiseOptions}
+                  name="city"
+                  value={values.city.value ? values.city : null}
+                  handleOnChange={city => {
+                    setFieldValue("city", city);
+                  }}
+                />
+              </div>
+              <div className="flex w-1/2 flex-col pl-2">
+                <InputField
+                  resetErrorOnChange
+                  id="zipcode"
+                  label="zipcode"
+                  name="zipcode"
+                  setFieldValue={setFieldValue}
+                />
+                <InputErrors
+                  fieldErrors={errors.zipcode}
+                  fieldTouched={touched.zipcode}
+                />
               </div>
             </div>
             <p className="mt-3 block text-xs tracking-wider text-red-600">
