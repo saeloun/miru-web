@@ -280,7 +280,7 @@ const UserDetailsEdit = () => {
 
   const handleCancelDetails = () => {
     setIsLoading(true);
-    getDetails();
+    navigate(`/profile/edit`, { replace: true });
   };
 
   const handleCurrentPasswordChange = event => {
