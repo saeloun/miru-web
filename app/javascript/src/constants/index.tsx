@@ -99,6 +99,7 @@ export enum TeamModalType {
 
 export enum LocalStorageKeys {
   INVOICE_FILTERS = "invoiceFilters",
+  INVOICE_SEARCH_PARAM = "",
   REVENUE_FILTERS = "REVENUEFiters",
 }
 

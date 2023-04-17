@@ -12,7 +12,7 @@ const Header = ({
 }) => (
   <div className="mt-6 mb-3 sm:flex sm:items-center sm:justify-between">
     <div className="flex flex-row">
-      <BackButton href="javascript:history.back()" />
+      <BackButton href="/invoices" />
       <InvoiceStatus invoice={invoice} />
     </div>
     <InvoiceActions
