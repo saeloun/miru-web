@@ -34,7 +34,7 @@ const MoreOptions = ({ setVisiblity, showMoreOptions }) => {
             />
           </ul>
         </div>
-        <UserActions />
+        <UserActions setVisiblity={setVisiblity} />
       </SidePanel.Body>
     </SidePanel>
   );

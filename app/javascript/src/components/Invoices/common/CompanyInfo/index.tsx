@@ -2,6 +2,8 @@ import React from "react";
 
 const CompanyInfo = ({ company, logo = "" }) => {
   const phoneNumber = company?.phoneNumber || company?.phone_number;
+  const { address_line_1, address_line_2, city, state, country, pin } =
+    company.address;
 
   return (
     <div className="flex h-24 items-center justify-between border-b border-miru-gray-400 p-4 pb-2 lg:h-40 lg:p-10">
@@ -21,9 +23,9 @@ const CompanyInfo = ({ company, logo = "" }) => {
       </div>
       <div className="overflow-y-auto text-right text-right text-xs font-normal text-miru-dark-purple-1000 lg:h-auto lg:w-72 lg:text-base">
         <p className="whitespace-pre">
-          {company.address.split(",").join(",\n")}
+          {`${address_line_1}, ${address_line_2}, ${city}, ${state}, ${country}, ${pin}`}
         </p>
-        <p>{company.country}</p>
+        <p>{country}</p>
       </div>
     </div>
   );

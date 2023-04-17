@@ -6,13 +6,18 @@ FactoryBot.define do
     name { Faker::Name.name }
     email { Faker::Internet.unique.safe_email }
     phone { Faker::PhoneNumber.phone_number_with_country_code }
-    address { Faker::Address.street_address }
+
+    after :create do |client|
+      create(:address, addressable_type: "Client", addressable_id: client.id)
+    end
+
     factory :client_with_invoices do
       transient do
         length { 5 }
       end
       invoices { Array.new(length) { create(:invoice, company:) } }
     end
+
     factory :client_with_phone_number_without_country_code do
       phone { Faker::PhoneNumber.cell_phone_in_e164 }
     end
