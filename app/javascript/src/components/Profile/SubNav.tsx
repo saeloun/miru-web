@@ -1,10 +1,12 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import React from "react";
+import React, { useState } from "react";
 
-import { AvatarPaymentsSVG } from "miruIcons";
+import { MinusIcon, PlusIcon } from "miruIcons";
 import { NavLink } from "react-router-dom";
 
-const SideNav = ({ isAdmin, firstName, company, lastName, email }) => {
+import { UserInformation } from "./CommonComponents/UserInformation";
+
+const SideNav = ({ isAdmin, firstName, company, lastName }) => {
   const getActiveClassName = isActive => {
     if (isActive) {
       return "pl-4 py-5 border-l-8 border-miru-han-purple-600 bg-miru-gray-200 text-miru-han-purple-600 block";
@@ -13,69 +15,81 @@ const SideNav = ({ isAdmin, firstName, company, lastName, email }) => {
     return "pl-6 py-5 border-b-1 border-miru-gray-400 block";
   };
 
+  const [openedSubNav, setOpenedSubNav] = useState({
+    personal: false,
+    company: false,
+  });
+
   const getAdminLinks = () => (
-    <ul className="list-none text-sm font-medium leading-5 tracking-wider">
-      <p className="mt-3 ml-4 text-base font-bold">Personal</p>
-      <li className="mt-4 border-b-2 border-miru-gray-400">
-        <NavLink
-          end
-          className={({ isActive }) => getActiveClassName(isActive)}
-          to="/profile/edit"
+    <ul className="min-h-50v list-none text-sm font-medium leading-5 tracking-wider">
+      <div className="flex flex-row items-center justify-between py-3 px-5">
+        <span className="text-base font-bold">Personal</span>
+        <button
+          id="personal"
+          onClick={() =>
+            setOpenedSubNav({
+              ...openedSubNav,
+              personal: !openedSubNav.personal,
+            })
+          }
         >
-          PROFILE SETTINGS
-        </NavLink>
-      </li>
-      <li className="border-b-2 border-miru-gray-400">
-        {/* <NavLink
-          to="/profile/edit/bank_account_details"
-          type="li"
-          className={({ isActive }) => getActiveClassName(isActive)}
+          {openedSubNav.personal ? (
+            <MinusIcon size={16} weight="bold" />
+          ) : (
+            <PlusIcon size={16} weight="bold" />
+          )}
+        </button>
+      </div>
+      {openedSubNav.personal && (
+        <div>
+          <li className="border-b-2 border-miru-gray-400 tracking-widest">
+            <NavLink
+              end
+              className={({ isActive }) => getActiveClassName(isActive)}
+              to="/profile/edit"
+            >
+              PROFILE SETTINGS
+            </NavLink>
+          </li>
+        </div>
+      )}
+      <div className="flex flex-row items-center justify-between py-3 px-5">
+        <span className="text-base font-bold">{company.name}</span>
+        <button
+          id="company"
+          onClick={() =>
+            setOpenedSubNav({ ...openedSubNav, company: !openedSubNav.company })
+          }
         >
-          BANK ACCOUNT DETAILS
-        </NavLink> TODO: Temporary disabling*/}
-      </li>
-      <p className="mt-5 ml-4 text-base font-bold">{company.name}</p>
-      <li className="mt-4 border-b-2 border-miru-gray-400">
-        <NavLink
-          end
-          className={({ isActive }) => getActiveClassName(isActive)}
-          to="/profile/edit/organization"
-        >
-          ORGANIZATION SETTINGS
-        </NavLink>
-      </li>
-      <li className="border-b-2 border-miru-gray-400">
-        <NavLink
-          end
-          className={({ isActive }) => getActiveClassName(isActive)}
-          to="/profile/edit/payment"
-        >
-          PAYMENT SETTINGS
-        </NavLink>
-      </li>
-      {/* <li className="border-b-2 border-miru-gray-400">
-          <NavLink
-            end
-            className={({ isActive }) => getActiveClassName(isActive)}
-            to="/profile/edit/billing"
-          >
-            BILLING
-          </NavLink>
-        </li> */}
-      <li className="border-b-2 border-miru-gray-400">
-        {/* <NavLink end to="/profile/edit/import" className={({ isActive }) => getActiveClassName(isActive)}>
-          IMPORT
-        </NavLink> */}
-        {/** Disabled till backend integration */}
-        {/* <NavLink
-          end
-          className={({ isActive }) => getActiveClassName(isActive)}
-          to="/profile/edit/leaves"
-        >
-          LEAVES & HOLIDAYS
-        </NavLink>
-        */}
-      </li>
+          {openedSubNav.company ? (
+            <MinusIcon size={16} weight="bold" />
+          ) : (
+            <PlusIcon size={16} weight="bold" />
+          )}
+        </button>
+      </div>
+      {openedSubNav.company && (
+        <div>
+          <li className="border-b-2 border-miru-gray-400 tracking-widest">
+            <NavLink
+              end
+              className={({ isActive }) => getActiveClassName(isActive)}
+              to="/profile/edit/organization-details"
+            >
+              ORG. SETTINGS
+            </NavLink>
+          </li>
+          <li className="border-b-2 border-miru-gray-400 tracking-widest">
+            <NavLink
+              end
+              className={({ isActive }) => getActiveClassName(isActive)}
+              to="/profile/edit/payment"
+            >
+              PAYMENT SETTINGS
+            </NavLink>
+          </li>
+        </div>
+      )}
     </ul>
   );
 
@@ -90,28 +104,13 @@ const SideNav = ({ isAdmin, firstName, company, lastName, email }) => {
           PROFILE SETTINGS
         </NavLink>
       </li>
-      {/* <li className="border-b-2 border-miru-gray-400">
-        <NavLink
-          end
-          className={({ isActive }) => getActiveClassName(isActive)}
-          to="/profile/edit/leave-balance"
-        >
-          LEAVE BALANCE
-        </NavLink>
-      </li> */}
     </ul>
   );
 
   return (
     <div className="flex flex-col ">
-      <div className="mr-2 flex h-16 w-60 items-center bg-miru-han-purple-1000 p-4 text-white">
-        <img className="mr-2" src={AvatarPaymentsSVG} />
-        <div className="flex flex-col overflow-x-auto">
-          <span className="pt-1 text-base font-bold leading-5">{`${firstName} ${lastName}`}</span>
-          <span className="text-xs font-normal leading-4">{email}</span>
-        </div>
-      </div>
-      <div className="mr-2 mt-4 h-full w-60 bg-miru-gray-100">
+      <UserInformation firstName={firstName} lastName={lastName} />
+      <div className="mt-4 h-full bg-miru-gray-100">
         {isAdmin ? getAdminLinks() : getEmployeeLinks()}
       </div>
     </div>

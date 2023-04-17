@@ -15,7 +15,7 @@ const DetailsHeader = ({
     >
       <div>
         <button
-          className="mx-1 cursor-auto rounded-md border bg-white px-3 text-miru-han-purple-1000"
+          className="mx-1 w-20 cursor-pointer rounded-md border bg-miru-han-purple-1000 px-3 text-white"
           disabled={isDisableUpdateBtn}
           onClick={editAction}
         >

@@ -1,7 +1,9 @@
 import { createContext, useContext } from "react";
 
+import { PersonalDetailsState } from "./PersonalDetailsState";
+
 const EntryContext = createContext({
-  profileSettings: {},
+  profileSettings: PersonalDetailsState,
   organizationSettings: {},
   bankAccDetails: {},
   paymentSettings: {},

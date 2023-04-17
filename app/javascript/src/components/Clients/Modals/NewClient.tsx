@@ -1,14 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 
-import Logger from "js-logger";
 import { XIcon } from "miruIcons";
-
-import clientApi from "apis/clients";
-import Toastr from "common/Toastr";
 
 import ClientForm from "./ClientForm";
 
-const EditClient = ({
+const NewClient = ({
   setnewClient,
   clientData,
   setClientData,
@@ -18,28 +14,7 @@ const EditClient = ({
   setClientLogo,
   setShowDialog,
 }) => {
-  const formatFormData = (formData, values) => {
-    formData.append("client[name]", values.name);
-    formData.append("client[email]", values.email);
-    formData.append("client[phone]", values.phone);
-    formData.append("client[address]", values.address);
-    if (clientLogoUrl) formData.append("client[logo]", clientLogo);
-  };
-
-  const handleSubmit = async values => {
-    const formData = new FormData();
-    formatFormData(formData, values);
-
-    try {
-      const res = await clientApi.create(formData);
-      setClientData([...clientData, { ...res.data, minutes: 0 }]);
-      setnewClient(false);
-      document.location.reload();
-      Toastr.success("Client added successfully");
-    } catch (error) {
-      Logger.error(error);
-    }
-  };
+  const [apiError, setApiError] = useState<string>("");
 
   const handleDeleteLogo = () => {
     setClientLogo("");
@@ -69,12 +44,16 @@ const EditClient = ({
               </button>
             </div>
             <ClientForm
-              clientData=""
+              apiError={apiError}
+              clientData={clientData}
+              clientLogo={clientLogo}
               clientLogoUrl={clientLogoUrl}
               handleDeleteLogo={handleDeleteLogo}
-              handleSubmit={handleSubmit}
+              setApiError={setApiError}
+              setClientData={setClientData}
               setClientLogo={setClientLogo}
               setClientLogoUrl={setClientLogoUrl}
+              setnewClient={setnewClient}
             />
           </div>
         </div>
@@ -83,4 +62,4 @@ const EditClient = ({
   );
 };
 
-export default EditClient;
+export default NewClient;
