@@ -11,7 +11,6 @@ import Toastr from "common/Toastr";
 import EditMembersListForm from "./EditMembersListForm";
 
 interface IEditMembersList {
-  setShowAddMemberDialog: any;
   addedMembers: any;
   projectId: number;
   handleAddProjectDetails: any;
@@ -20,7 +19,6 @@ interface IEditMembersList {
 }
 
 const EditMembersList = ({
-  setShowAddMemberDialog,
   addedMembers,
   projectId,
   handleAddProjectDetails,
@@ -67,11 +65,11 @@ const EditMembersList = ({
   };
 
   useOutsideClick(wrapperRef, () => {
-    setShowAddMemberDialog(false);
+    closeAddRemoveMembers();
   });
 
   const handleEscapeKey = () => {
-    setShowAddMemberDialog(false);
+    closeAddRemoveMembers();
   };
 
   useKeypress("Escape", handleEscapeKey);
@@ -149,9 +147,7 @@ const EditMembersList = ({
             <button
               className="menuButton__button"
               type="button"
-              onClick={() => {
-                setShowAddMemberDialog(false);
-              }}
+              onClick={closeAddRemoveMembers}
             >
               <XIcon color="#CDD6DF" size={16} weight="bold" />
             </button>
