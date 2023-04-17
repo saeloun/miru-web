@@ -5,6 +5,8 @@ import { CaretCircleLeftIcon, CaretCircleRightIcon } from "miruIcons";
 
 import { useUserContext } from "context/UserContext";
 
+import { usePagination } from "./usePagination";
+
 type Pagination = {
   title?: string;
   pagy: any;
@@ -14,6 +16,16 @@ type Pagination = {
 
 const Pagination = ({ pagy, params, setParams, title }: Pagination) => {
   const { isDesktop } = useUserContext();
+
+  const currentPage = params.page;
+  const totalPageCount = pagy.pages;
+  const siblingCount = 1;
+
+  const paginationRange = usePagination({
+    currentPage,
+    totalPageCount,
+    siblingCount,
+  });
 
   return (
     <div className="bg-grey-400 relative flex w-full items-center px-0 pt-5 pb-20 md:pb-28 lg:py-10 lg:pl-36">
@@ -33,23 +45,21 @@ const Pagination = ({ pagy, params, setParams, title }: Pagination) => {
               </button>
             )}
             <div className="flex overflow-x-scroll ">
-              {Array.from({ length: pagy.pages }, (_, idx) => idx + 1).map(
-                page => (
-                  <button
-                    disabled={pagy?.page === page}
-                    key={page}
-                    className={cn(
-                      "m-1 mx-4 p-1 text-base font-bold text-miru-dark-purple-400",
-                      {
-                        "text-miru-han-purple-1000": pagy?.prev + 1 === page,
-                      }
-                    )}
-                    onClick={() => setParams({ ...params, page })}
-                  >
-                    {page}
-                  </button>
-                )
-              )}
+              {paginationRange.map(page => (
+                <button
+                  disabled={pagy?.page === page}
+                  key={page}
+                  className={cn(
+                    "m-1 mx-4 p-1 text-base font-bold text-miru-dark-purple-400",
+                    {
+                      "text-miru-han-purple-1000": pagy?.prev + 1 === page,
+                    }
+                  )}
+                  onClick={() => setParams({ ...params, page })}
+                >
+                  {page}
+                </button>
+              ))}
             </div>
             {!pagy?.last && (
               <button
@@ -76,6 +86,7 @@ const Pagination = ({ pagy, params, setParams, title }: Pagination) => {
               setParams({ page: 1, invoices_per_page: Number(e.target.value) })
             }
           >
+            <option value="1">1</option>
             <option value="10">10</option>
             <option value="20">20</option>
             <option value="30">30</option>
