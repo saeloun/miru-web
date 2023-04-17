@@ -35,7 +35,7 @@ RSpec.describe InvoicePayment::StripePaymentIntent do
 
     before(:each, :checkout_session) do
       @checkout = invoice.create_checkout_session!(
-        success_url: success_invoice_payments_url(invoice, host: "https://example.com"),
+        success_url: internal_api_v1_invoices_success_url(invoice, host: "https://example.com"),
         cancel_url: cancel_invoice_payments_url(invoice, host: "https://example.com")
       )
     end
