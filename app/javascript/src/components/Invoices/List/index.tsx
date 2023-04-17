@@ -269,10 +269,10 @@ const Invoices = () => {
           )}
           {invoices.length > 0 && (
             <Pagination
-              isDesktop={isDesktop}
               pagy={pagy}
               params={params}
               setParams={setParams}
+              title="invoices/page"
             />
           )}
           {showDeleteDialog && (

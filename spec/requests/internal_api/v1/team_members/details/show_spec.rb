@@ -13,7 +13,7 @@ RSpec.describe "Details#show", type: :request do
     before do
       user.add_role :owner, company
       sign_in user
-      send_request :get, internal_api_v1_team_details_path(employment), headers: auth_headers(user)
+      send_request :get, internal_api_v1_team_details_path(employment.user_id), headers: auth_headers(user)
     end
 
     it "is successful" do
@@ -31,7 +31,7 @@ RSpec.describe "Details#show", type: :request do
     before do
       user.add_role :admin, company
       sign_in user
-      send_request :get, internal_api_v1_team_details_path(employment), headers: auth_headers(user)
+      send_request :get, internal_api_v1_team_details_path(employment.user_id), headers: auth_headers(user)
     end
 
     it "is successful" do
@@ -49,17 +49,12 @@ RSpec.describe "Details#show", type: :request do
     before do
       user.add_role :employee, company
       sign_in user
-      send_request :get, internal_api_v1_team_details_path(employment), headers: auth_headers(user)
+      send_request :get, internal_api_v1_team_details_path(employment.user_id), headers: auth_headers(user)
     end
 
-    it "is successful" do
-      expect(response).to have_http_status(:ok)
-      expect(json_response["first_name"]).to eq(JSON.parse(user.first_name.to_json))
-      expect(json_response["last_name"]).to eq(JSON.parse(user.last_name.to_json))
-      expect(json_response["personal_email_id"]).to eq(JSON.parse(user.personal_email_id.to_json))
-      expect(json_response["date_of_birth"]).to eq(JSON.parse(user.date_of_birth.to_json))
-      expect(json_response["phone"]).to eq(JSON.parse(user.phone.to_json))
-      expect(json_response["social_accounts"]).to eq(JSON.parse(user.social_accounts.to_json))
+    it "is unsuccessful" do
+      expect(response).to have_http_status(:forbidden)
+      expect(json_response["errors"]).to eq("You are not authorized to perform this action.")
     end
   end
 
@@ -69,7 +64,7 @@ RSpec.describe "Details#show", type: :request do
       user.add_role :owner, company
       user2.add_role :employee, company2
       sign_in user
-      send_request :get, internal_api_v1_team_details_path(employment2), headers: auth_headers(user)
+      send_request :get, internal_api_v1_team_details_path(employment2.user_id), headers: auth_headers(user)
     end
 
     it "is unsuccessful" do
@@ -84,7 +79,7 @@ RSpec.describe "Details#show", type: :request do
       user.add_role :admin, company
       user2.add_role :employee, company2
       sign_in user
-      send_request :get, internal_api_v1_team_details_path(employment2), headers: auth_headers(user)
+      send_request :get, internal_api_v1_team_details_path(employment2.user_id), headers: auth_headers(user)
     end
 
     it "is unsuccessful" do
@@ -99,7 +94,7 @@ RSpec.describe "Details#show", type: :request do
       user.add_role :employee, company
       user2.add_role :employee, company2
       sign_in user
-      send_request :get, internal_api_v1_team_details_path(employment2), headers: auth_headers(user)
+      send_request :get, internal_api_v1_team_details_path(employment2.user_id), headers: auth_headers(user)
     end
 
     it "is unsuccessful" do
@@ -115,7 +110,7 @@ RSpec.describe "Details#show", type: :request do
       user.add_role :employee, company
       user2.add_role :employee, company
       sign_in user
-      send_request :get, internal_api_v1_team_details_path(employment2), headers: auth_headers(user)
+      send_request :get, internal_api_v1_team_details_path(employment2.user_id), headers: auth_headers(user)
     end
 
     it "is unsuccessful" do

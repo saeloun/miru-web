@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useRef } from "react";
 
+import { useKeypress, useOutsideClick } from "helpers";
 import Logger from "js-logger";
 import { XIcon } from "miruIcons";
 
@@ -10,7 +11,6 @@ import Toastr from "common/Toastr";
 import EditMembersListForm from "./EditMembersListForm";
 
 interface IEditMembersList {
-  setShowAddMemberDialog: any;
   addedMembers: any;
   projectId: number;
   handleAddProjectDetails: any;
@@ -19,7 +19,6 @@ interface IEditMembersList {
 }
 
 const EditMembersList = ({
-  setShowAddMemberDialog,
   addedMembers,
   projectId,
   handleAddProjectDetails,
@@ -31,6 +30,7 @@ const EditMembersList = ({
     addedMembers.map(v => ({ ...v, isExisting: true }))
   );
   const [allMemberList, setAllMemberList] = React.useState([]);
+  const wrapperRef = useRef(null);
 
   const markAddedMembers = allMembers =>
     allMembers.map(memberFromAllMembers =>
@@ -63,6 +63,16 @@ const EditMembersList = ({
     modalMembers[memberIndex] = memberToEdit;
     setMembers(modalMembers);
   };
+
+  useOutsideClick(wrapperRef, () => {
+    closeAddRemoveMembers();
+  });
+
+  const handleEscapeKey = () => {
+    closeAddRemoveMembers();
+  };
+
+  useKeypress("Escape", handleEscapeKey);
 
   const handleSubmit = async e => {
     e.preventDefault();
@@ -126,7 +136,10 @@ const EditMembersList = ({
       }}
     >
       <div className="relative h-full w-full px-4 md:flex md:items-center md:justify-center">
-        <div className="min-w-1/2 relative top-1/3 mx-auto transform rounded-lg bg-white py-6 pl-6 shadow-xl transition-all sm:max-w-md sm:align-middle md:top-0 md:min-w-400">
+        <div
+          className="min-w-1/2 relative top-1/3 mx-auto transform rounded-lg bg-white py-6 pl-6 shadow-xl transition-all sm:max-w-md sm:align-middle md:top-0 md:min-w-400"
+          ref={wrapperRef}
+        >
           <div className=" mr-6 flex items-center justify-between">
             <h6 className="text-base font-extrabold capitalize">
               Add Team Members
@@ -134,9 +147,7 @@ const EditMembersList = ({
             <button
               className="menuButton__button"
               type="button"
-              onClick={() => {
-                setShowAddMemberDialog(false);
-              }}
+              onClick={closeAddRemoveMembers}
             >
               <XIcon color="#CDD6DF" size={16} weight="bold" />
             </button>
@@ -146,6 +157,7 @@ const EditMembersList = ({
             currencySymbol={currencySymbol}
             handleSubmit={handleSubmit}
             members={members}
+            setAllMemberList={setAllMemberList}
             setMembers={setMembers}
             updateMemberState={updateMemberState}
           />

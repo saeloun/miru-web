@@ -5,6 +5,7 @@ import dayjs from "dayjs";
 import { currencyFormat, useOutsideClick } from "helpers";
 import { XIcon, CalendarIcon, SearchIcon } from "miruIcons";
 import Select, { DropdownIndicatorProps, components } from "react-select";
+import { Badge } from "StyledComponents";
 
 import payment from "apis/payments/payments";
 import CustomDatePicker from "common/CustomDatePicker";
@@ -14,6 +15,7 @@ import { CustomValueContainer } from "common/CustomReactSelectStyle";
 import { CustomTextareaAutosize } from "common/CustomTextareaAutosize";
 import Toastr from "common/Toastr";
 import { mapPayment } from "mapper/mappedIndex";
+import getStatusCssClass from "utils/getBadgeStatus";
 
 const AddManualEntry = ({
   setShowManualEntryModal,
@@ -178,8 +180,11 @@ const AddManualEntry = ({
           </div>
         </div>
         <div className="w-2/6 py-3 pl-2 pr-0 text-right text-sm font-semibold leading-4 tracking-wider">
-          <span className="rounded-lg bg-miru-alert-green-400 px-1 text-miru-alert-green-800">
-            {data.status}
+          <span className="rounded-lg">
+            <Badge
+              className={`${getStatusCssClass(data.status)} uppercase`}
+              text={data.status}
+            />
           </span>
         </div>
       </div>
@@ -227,10 +232,11 @@ const AddManualEntry = ({
                     Invoice
                   </label>
                 </div>
-                <div className="mt-1" ref={wrapperSelectRef}>
+                <div className="mt-1" id="invoice" ref={wrapperSelectRef}>
                   {showSelectInvoice && (
                     <div
                       className="relative mt-3"
+                      id="invoicesList"
                       onClick={handleShowSelectMenu}
                     >
                       <CustomReactSelect
@@ -252,6 +258,7 @@ const AddManualEntry = ({
                       {showSelectMenu && (
                         <div
                           className="absolute right-0 top-0 z-15 min-h-24 w-full flex-col items-end bg-white p-2 shadow-c1 group-hover:flex"
+                          id="transactionDate"
                           onClick={e => e.stopPropagation()}
                         >
                           <Select
@@ -260,6 +267,7 @@ const AddManualEntry = ({
                             className="m-0 mt-2 w-full border-0 font-medium text-miru-dark-purple-1000"
                             classNamePrefix="border-0 font-medium text-miru-dark-purple-1000"
                             defaultValue={invoice}
+                            id="selectDate"
                             options={invoiceList.invoiceList}
                             placeholder="Search by client name or invoice ID"
                             styles={customStyles}

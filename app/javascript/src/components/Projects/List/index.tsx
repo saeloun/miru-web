@@ -10,6 +10,7 @@ import { useUserContext } from "context/UserContext";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import Header from "./Header";
+import ProjectForm from "./Mobile/ProjectForm";
 import { Project } from "./project";
 
 import { IProject } from "../interface";
@@ -42,7 +43,7 @@ const ProjectList = ({ isAdminUser }) => {
   }, []);
 
   const ProjectsLayout = () => (
-    <React.Fragment>
+    <div>
       <ToastContainer autoClose={TOASTER_DURATION} />
       <Header
         isAdminUser={isAdminUser}
@@ -58,11 +59,26 @@ const ProjectList = ({ isAdminUser }) => {
                     <th className="table__header" scope="col">
                       PROJECT/CLIENT
                     </th>
-                    <th className="table__header" scope="col" />
-                    <th className="table__header text-right" scope="col">
+                    <th
+                      className="table__header hidden lg:table-cell"
+                      scope="col"
+                    />
+                    <th
+                      className="table__header hidden text-right lg:table-cell"
+                      scope="col"
+                    >
                       HOURS LOGGED
                     </th>
-                    <th className="table__header" scope="col" />
+                    <th
+                      className="table__header text-right lg:hidden"
+                      scope="col"
+                    >
+                      HOURS
+                    </th>
+                    <th
+                      className="table__header hidden lg:table-cell"
+                      scope="col"
+                    />
                     <th className="table__header" scope="col" />
                   </tr>
                 </thead>
@@ -84,7 +100,7 @@ const ProjectList = ({ isAdminUser }) => {
           </div>
         </div>
       </div>
-      {showProjectModal && (
+      {showProjectModal && isDesktop && (
         <AddEditProject
           editProjectData={editProjectData}
           setEditProjectData={setEditProjectData}
@@ -98,12 +114,27 @@ const ProjectList = ({ isAdminUser }) => {
           setShowDeleteDialog={setShowDeleteDialog}
         />
       )}
-    </React.Fragment>
+    </div>
   );
 
   const Main = withLayout(ProjectsLayout, !isDesktop, !isDesktop);
 
-  return isDesktop ? ProjectsLayout() : <Main />;
+  if (!isDesktop) {
+    if (showProjectModal) {
+      return (
+        <ProjectForm
+          editProjectData={editProjectData}
+          fetchProjects={fetchProjects}
+          setEditProjectData={setEditProjectData}
+          setShowProjectModal={setShowProjectModal}
+        />
+      );
+    }
+
+    return <Main />;
+  }
+
+  return ProjectsLayout();
 };
 
 export default ProjectList;

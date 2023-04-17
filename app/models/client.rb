@@ -35,6 +35,7 @@ class Client < ApplicationRecord
   has_one_attached :logo
   belongs_to :company
 
+  before_save :strip_attributes
   validates :name, presence: true, length: { maximum: 50 }
   validates :email, presence: true, length: { maximum: 5, message: "Only 5 emails are allowed." }
   validate :validate_email_format
@@ -163,5 +164,9 @@ class Client < ApplicationRecord
 
     def discard_projects
       projects.discard_all
+    end
+
+    def strip_attributes
+      name.strip!
     end
 end

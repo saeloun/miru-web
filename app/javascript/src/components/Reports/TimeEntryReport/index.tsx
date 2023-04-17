@@ -198,9 +198,30 @@ const TimeEntryReport = () => {
           type={TIME_ENTRY_REPORT_PAGE}
         />
         {isDesktop ? (
-          <Container selectedFilter={selectedFilter} />
+          <>
+            <Container selectedFilter={selectedFilter} />
+            {paginationDetails.pages > 1 && (
+              <ReactPaginate
+                activeClassName="bg-miru-han-purple-400 rounded-full"
+                breakLabel="..."
+                className="flex content-center justify-center"
+                disabledLinkClassName="cursor-not-allowed"
+                nextClassName="ml-3"
+                nextLabel="Next >"
+                pageCount={paginationDetails.pages}
+                pageLinkClassName="p-2"
+                pageRangeDisplayed={5}
+                previousClassName="mr-3"
+                previousLabel="< Previous"
+                onPageChange={handlePageClick}
+              />
+            )}
+          </>
         ) : (
-          <TimeEntryReportMobileView />
+          <TimeEntryReportMobileView
+            handlePageClick={handlePageClick}
+            paginationDetails={paginationDetails}
+          />
         )}
         {isFilterVisible && (
           <FilterSideBar
@@ -213,20 +234,6 @@ const TimeEntryReport = () => {
             setSelectedInput={setSelectedInput}
           />
         )}
-        <ReactPaginate
-          activeClassName="bg-miru-han-purple-400"
-          breakLabel="..."
-          className="flex justify-center"
-          nextClassName="ml-3"
-          nextLabel="Next >"
-          pageClassName="page-item"
-          pageCount={paginationDetails.pages}
-          pageLinkClassName="px-2 py-1 border border-solid border-miru-han-purple-1000"
-          pageRangeDisplayed={5}
-          previousClassName="mr-3"
-          previousLabel="< Previous"
-          onPageChange={handlePageClick}
-        />
       </EntryContext.Provider>
     </div>
   );

@@ -32,7 +32,9 @@ module GenerateInvoice
 
       # merging selected_entries from params with ids already present in other invoice line items
       def filtered_ids
+        discarded_invoice_ids = Invoice.kept.pluck(:id)
         @filtered_ids ||= params[:selected_entries].to_a | InvoiceLineItem.joins(:timesheet_entry)
+          .where(invoice_id: discarded_invoice_ids)
           .where(timesheet_entries: { bill_status: "unbilled" })
           .pluck(:timesheet_entry_id)
       end
@@ -71,7 +73,7 @@ module GenerateInvoice
         TimesheetEntry.search(
           search_term,
           fields: [:note, :user_name],
-          match: :text_middle,
+          match: :word_middle,
           where: where_clause,
           includes: [:user, { project: :client }]
         )

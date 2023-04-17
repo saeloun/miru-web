@@ -7,13 +7,14 @@ import { Field } from "formik";
 import { PasswordIconSVG, PasswordIconTextSVG } from "miruIcons";
 
 const defaultInputBoxClassName =
-  "form__input block w-full appearance-none bg-white p-3.75 text-sm md:text-base h-12 border-miru-gray-1000";
+  "form__input block w-full appearance-none bg-white p-3.75 text-sm lg:text-base h-12 border-miru-gray-1000";
 
 const defaultLabelClassname =
-  "absolute top-0.5 left-1 h-6 z-1 origin-0 bg-white p-2 text-base font-medium text-miru-dark-purple-200 duration-300";
+  "absolute top-0.5 left-1 h-6 z-1 origin-0 bg-white p-2 text-sm lg:text-base font-medium text-miru-dark-purple-200 duration-300";
 const defaultWrapperClassName = "outline relative h-12";
 
 const InputField = ({
+  readOnly,
   label,
   id,
   name,
@@ -23,7 +24,9 @@ const InputField = ({
   inputBoxClassName,
   labelClassName,
   wrapperClassName,
+  autoComplete,
   onChange,
+  onClick,
   hasError,
   resetErrorOnChange,
   setFieldError,
@@ -61,20 +64,24 @@ const InputField = ({
     resetErrorOnChange || onChange ? { onChange: e => handleChange(e) } : {};
 
   return (
-    <div className="field relative">
+    <div className="field relative mb-6">
       <div className={classNames(defaultWrapperClassName, wrapperClassName)}>
         <Field
+          autoComplete={autoComplete}
           autoFocus={autoFocus}
           disabled={disabled}
           id={id}
           name={name}
           placeholder=" "
+          readOnly={readOnly}
           className={classNames(defaultInputBoxClassName, inputBoxClassName, {
             "error-input border-miru-red-400": hasError,
           })}
           type={
             type === "password" ? (showPassword ? "text" : "password") : type
           }
+          onChange={onChange}
+          onClick={onClick}
           {...optionalFieldProps}
         />
         <label
@@ -117,7 +124,10 @@ InputField.defaultProps = {
   wrapperClassName: "",
   disabled: false,
   autoFocus: false,
+  autoComplete: "on",
+  readOnly: false,
   onChange: undefined,
+  onClick: undefined,
   hasError: false,
   resetErrorOnChange: true,
   setFieldError: null,

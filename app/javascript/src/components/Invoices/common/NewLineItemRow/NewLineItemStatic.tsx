@@ -3,7 +3,7 @@ import React, { useRef, useState, useEffect } from "react";
 import dayjs from "dayjs";
 import { minFromHHMM, minToHHMM, lineTotalCalc, currencyFormat } from "helpers";
 import { DeleteIcon, CalendarIcon } from "miruIcons";
-import TextareaAutosize from "react-autosize-textarea";
+import TextareaAutosize from "react-textarea-autosize";
 
 import CustomDatePicker from "common/CustomDatePicker";
 
@@ -166,7 +166,7 @@ const NewLineItemStatic = ({
           <TextareaAutosize
             className="focus:outline-none w-full rounded bg-transparent p-1 text-sm font-medium text-miru-dark-purple-400 focus:border-miru-gray-1000 focus:bg-white focus:ring-1 focus:ring-miru-gray-1000"
             placeholder="Enter Description"
-            type="text"
+            // type="text"
             value={description}
             onChange={e => setDescription(e.target["value"])}
             onKeyDown={closeEditField}
