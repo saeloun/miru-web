@@ -76,12 +76,12 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
   return (
     <div className="flex items-center justify-center px-4">
       <div
-        className="fixed inset-0 top-0 left-0 right-0 bottom-0 z-10 flex items-start justify-center overflow-auto"
+        className="fixed inset-0 top-0 left-0 right-0 bottom-0 z-50 flex items-center justify-center overflow-auto"
         style={{
           backgroundColor: "rgba(29, 26, 49, 0.6)",
         }}
       >
-        <div className="relative h-full w-full px-4 md:flex md:items-center md:justify-center">
+        <div className="relative flex h-full w-full items-center justify-center px-4">
           <div className="modal-width transform rounded-lg bg-white px-6 pb-6 shadow-xl transition-all sm:max-w-md sm:align-middle">
             <div className="mt-6 flex items-center justify-between">
               <h6 className="text-base font-extrabold">
@@ -182,7 +182,7 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
                           Role
                         </label>
                         <div className="mt-1 flex">
-                          <div className="sm:space-XIcon-10 space-y-4 sm:flex sm:items-center sm:space-y-0">
+                          <div className="space-XIcon-10 flex items-center">
                             <div className="flex items-center justify-between">
                               <Field
                                 className="custom__radio"

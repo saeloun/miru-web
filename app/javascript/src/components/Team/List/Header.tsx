@@ -12,16 +12,16 @@ const Header = () => {
 
   return (
     <div className="mt-6 mb-3 sm:flex sm:items-center sm:justify-between">
-      <h2 className="header__title ml-4">Team</h2>
+      <h2 className="header__title ml-4 hidden lg:inline">Team</h2>
       {isAdminUser && (
-        <div className="flex">
+        <div className="flex justify-end pr-6 lg:pr-0">
           <button
             className="header__button"
             type="button"
             onClick={() => setModalState(TeamModalType.ADD_EDIT)}
           >
             <PlusIcon size={16} weight="fill" />
-            <span className="ml-2 inline-block">NEW USER</span>
+            <span className="ml-2 hidden lg:inline-block">NEW USER</span>
           </button>
         </div>
       )}
