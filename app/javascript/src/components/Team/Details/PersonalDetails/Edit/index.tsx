@@ -261,7 +261,7 @@ const EmploymentDetails = () => {
 
   const handleCancelDetails = () => {
     setIsLoading(true);
-    getDetails();
+    navigate(`/team/${memberId}`, { replace: true });
   };
 
   return (

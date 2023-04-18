@@ -44,6 +44,7 @@ import {
   Image,
   Money,
   Copy,
+  Key,
 } from "phosphor-react";
 
 const accountsAgingIcon = require("./svgIcons/accountsAging.svg");
@@ -175,6 +176,7 @@ export const GlobeIcon = Globe;
 export const ImageIcon = Image;
 export const MoneyIcon = Money;
 export const CopyIcon = Copy;
+export const KeyIcon = Key;
 
 // custom svg icons
 export const WarningTriangleSVG = warningTriangle;

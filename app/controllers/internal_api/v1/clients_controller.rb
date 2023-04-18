@@ -13,9 +13,12 @@ class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationControlle
 
   def create
     authorize Client
-    render :create, locals: {
-      client: Client.create!(client_params)
-    }
+
+    client = Client.create!(client_params)
+
+    if client
+      render :create, locals: { client:, address: client.current_address }
+    end
   end
 
   def show
