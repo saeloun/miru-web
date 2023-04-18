@@ -58,8 +58,17 @@ const AddLineItemContainer = ({
   const newLineTableRef = useRef(null);
   const getDate = date ? dayjs(date).format(dateFormat) : "";
   const debouncedSearchName = useDebounce(name, 500);
-  const disableBtn = values =>
-    values.name && description && date && values.rate && values.quantity;
+  const disableBtn = (values, errors) => {
+    if (errors.name || errors.rate || errors.quantity) {
+      return true;
+    }
+
+    if (values.name && description && date && values.rate && values.quantity) {
+      return false;
+    }
+
+    return true;
+  };
 
   const handleDatePicker = selectedDate => {
     setDate(selectedDate);
@@ -269,7 +278,6 @@ const AddLineItemContainer = ({
               <div className="relative flex h-full flex-col">
                 <div ref={newLineTableRef}>
                   <div
-                    className="py-2"
                     onClick={() => {
                       setShowNewLineItemTable(true);
                     }}
@@ -292,7 +300,7 @@ const AddLineItemContainer = ({
                     />
                   </div>
                   {showNewLineItemTable && (
-                    <div className="absolute z-50 h-148 w-full rounded-md bg-white pb-4 shadow-lg">
+                    <div className="absolute z-50 h-96 w-full rounded-md bg-white pb-4 shadow-lg">
                       <NewLineItemTable
                         dateFormat={dateFormat}
                         filteredLineItems={filteredLineItems}
@@ -309,7 +317,7 @@ const AddLineItemContainer = ({
                     </div>
                   )}
                 </div>
-                <div className="py-2">
+                <div className="pb-6">
                   <CustomTextareaAutosize
                     id="description"
                     label="Note"
@@ -324,7 +332,7 @@ const AddLineItemContainer = ({
                     fieldTouched={touched.description}
                   />
                 </div>
-                <div className="py-2">
+                <div className="pb-6">
                   <div
                     className="relative"
                     onClick={() => setShowDatePicker(!showDatePicker)}
@@ -369,7 +377,7 @@ const AddLineItemContainer = ({
                     </div>
                   )}
                 </div>
-                <div className="py-2">
+                <div>
                   <InputField
                     id="rate"
                     inputBoxClassName="border focus:border-miru-han-purple-1000"
@@ -386,7 +394,7 @@ const AddLineItemContainer = ({
                     fieldTouched={touched.rate}
                   />
                 </div>
-                <div className="py-2">
+                <div>
                   <InputField
                     id="quantity"
                     inputBoxClassName="border focus:border-miru-han-purple-1000"
@@ -436,7 +444,7 @@ const AddLineItemContainer = ({
               ) : (
                 <Button
                   className="w-full p-2 text-center text-base font-bold"
-                  disabled={!disableBtn(values)}
+                  disabled={disableBtn(values, errors)}
                   style="primary"
                 >
                   Add Line Item
