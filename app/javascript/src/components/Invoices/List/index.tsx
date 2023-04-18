@@ -6,7 +6,7 @@ import { ToastContainer } from "react-toastify";
 
 import invoicesApi from "apis/invoices";
 import withLayout from "common/Mobile/HOC/withLayout";
-import Pagination from "common/Pagination";
+import Pagination from "common/Pagination/Pagination";
 import { ApiStatus as InvoicesStatus, LocalStorageKeys } from "constants/index";
 import { useUserContext } from "context/UserContext";
 import { sendGAPageView } from "utils/googleAnalytics";
