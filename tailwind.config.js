@@ -30,6 +30,7 @@ module.exports = {
       semiWidest: "0.09375",//1.5px
       wider: ".05em",
       normal: "0em",
+      "xs-widest": "0.166667em", // 2px when font-size 12px
     },
     screens: {
       xsm: "380px",
@@ -187,6 +188,7 @@ module.exports = {
         manrope: "'Manrope', serif",
       },
       spacing: {
+        2.125: "0.5625rem",
         3.75: "0.9375rem",
         13: "3.125rem",
         15: "3.75rem",
