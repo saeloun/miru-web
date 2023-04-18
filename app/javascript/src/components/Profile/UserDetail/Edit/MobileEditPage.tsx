@@ -393,7 +393,7 @@ const MobileEditDetails = ({
           <CustomInputText
             id="github"
             inputBoxClassName={`${inputClass} border-miru-gray-1000`}
-            label="github"
+            label="Github"
             labelClassName={`${labelClass} text-miru-dark-purple-200`}
             name="github"
             type="text"

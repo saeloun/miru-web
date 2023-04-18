@@ -230,7 +230,6 @@ const UserDetailsEdit = () => {
           github_url: profileSettings.github,
         },
       };
-
       if (changePassword) {
         userSchema["current_password"] = profileSettings.currentPassword;
         userSchema["password"] = profileSettings.password;
