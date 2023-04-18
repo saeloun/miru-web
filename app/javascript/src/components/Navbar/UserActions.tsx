@@ -88,7 +88,15 @@ const UserActions = setVisiblity => {
           key={workspace.id}
           onClick={() => handleSwitch(workspace.id)}
         >
-          <Avatar classNameImg="lg:w-6 lg:h-6 mr-4" url={workspace.logo} />
+          <Avatar
+            classNameImg="lg:mr-5"
+            classNameInitials="lg:text-xs font-bold capitalize text-white"
+            classNameInitialsWrapper="lg:mr-5 bg-miru-gray-1000 "
+            initialsLetterCount={1}
+            name={currentWorkspace.name}
+            size="w-6 h-6"
+            url={currentWorkspace.logo}
+          />
           {workspace.name}
         </li>
       ))}
@@ -136,7 +144,12 @@ const UserActions = setVisiblity => {
             onMouseEnter={handleTooltip}
           >
             <Avatar
-              classNameImg="lg:w-6 lg:h-6 mr-4"
+              classNameImg="lg:mr-5"
+              classNameInitials="lg:text-xs font-bold capitalize text-white"
+              classNameInitialsWrapper="lg:mr-5 bg-miru-gray-1000 "
+              initialsLetterCount={1}
+              name={currentWorkspace.name}
+              size="w-6 h-6"
               url={currentWorkspace.logo}
             />
             <span>{currentWorkspace.name}</span>
