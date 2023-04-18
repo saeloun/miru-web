@@ -122,6 +122,19 @@ const Payments = () => {
 
   const Main = withLayout(PaymentsLayout, !isDesktop, !isDesktop);
 
+  if (showManualEntryModal && !isDesktop) {
+    return (
+      <AddManualEntry
+        baseCurrency={baseCurrency}
+        dateFormat={dateFormat}
+        fetchInvoiceList={fetchInvoiceList}
+        fetchPaymentList={fetchPaymentList}
+        invoiceList={invoiceList}
+        setShowManualEntryModal={setShowManualEntryModal}
+      />
+    );
+  }
+
   return isDesktop ? PaymentsLayout() : <Main />;
 };
 
