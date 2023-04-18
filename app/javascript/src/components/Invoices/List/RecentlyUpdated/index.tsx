@@ -12,7 +12,7 @@ const RecentlyUpdated = ({ recentlyUpdatedInvoices }) => (
         {recentlyUpdatedInvoices.length > 0 ? (
           recentlyUpdatedInvoices.map((invoice, index) => (
             <Fragment key={invoice.id}>
-              {index <= 5 && (
+              {index <= 9 && (
                 <RecentlyUpdatedCard
                   index={index}
                   invoice={invoice}

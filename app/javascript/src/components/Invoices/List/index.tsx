@@ -96,6 +96,10 @@ const Invoices = () => {
   }, [downloading]);
 
   useEffect(() => {
+    window.localStorage.setItem(
+      LocalStorageKeys.INVOICE_SEARCH_PARAM,
+      params.query
+    );
     fetchInvoices();
     setSearchParams(cleanParams(params));
   }, [params.invoices_per_page, params.page, params.query, filterParams]);
