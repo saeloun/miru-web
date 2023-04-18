@@ -10,7 +10,7 @@ const TableOnMobileView = ({ payments, baseCurrency }: TableProps) => (
     <thead>
       <TableHeader />
     </thead>
-    <tbody className="min-w-full divide-y divide-gray-200 bg-white">
+    <tbody className="block min-w-full divide-y divide-gray-200 bg-white pb-24">
       {payments.map(
         (payment, index) =>
           payment && (

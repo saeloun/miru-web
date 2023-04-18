@@ -49,7 +49,7 @@ export interface SearchDropdownProps {
 }
 
 export interface SearchedDataRowProps {
-  suggestedPayment: any;
+  suggestedPaymentClientName: string;
   setSearchQuery: (searchQuery: string) => void;
   setIsClickedOnSearchOrSuggestion: (isClicked: boolean) => void;
 }

@@ -16,7 +16,7 @@ const SearchDropdown = ({
           <SearchedDataRow
             setIsClickedOnSearchOrSuggestion={setIsClickedOnSearchOrSuggestion}
             setSearchQuery={setSearchQuery}
-            suggestedPayment={suggestedPayment}
+            suggestedPaymentClientName={suggestedPayment.clientName}
           />
         </Fragment>
       ))
