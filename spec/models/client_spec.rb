@@ -17,6 +17,7 @@ RSpec.describe Client, type: :model do
   describe "Associations" do
     it { is_expected.to have_many(:projects) }
     it { is_expected.to have_many(:timesheet_entries) }
+    it { is_expected.to have_many(:addresses).dependent(:destroy) }
     it { is_expected.to belong_to(:company) }
   end
 

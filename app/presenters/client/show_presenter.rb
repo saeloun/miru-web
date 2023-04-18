@@ -12,7 +12,7 @@ class Client::ShowPresenter
       id: client.id,
       name: client.name,
       email: client.email,
-      address: client.address,
+      address: client.current_address,
       phone: client.phone,
       logo: client.logo_url
     }
