@@ -15,7 +15,7 @@ const InvoiceDetails = ({ invoice, company, lineItems, client, logo }) => (
       <InvoiceInfo company={company} invoice={invoice} />
     </div>
     <InvoiceLineItems
-      currency={company.base_currency}
+      currency={company.currency}
       dateFormat={company.dateFormat || company.date_format}
       items={lineItems}
       showHeader={lineItems.length > 0}

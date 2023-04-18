@@ -6,7 +6,10 @@ class InternalApi::V1::ProfileController < InternalApi::V1::ApplicationControlle
     if current_user.avatar.attached?
       avatar_url = url_for(current_user.avatar)
     end
-    render json: { user: current_user.as_json.merge("avatar_url" => avatar_url) }, status: :ok
+    render json: {
+      user: current_user.as_json.merge("avatar_url" => avatar_url),
+      date_format: current_company.date_format
+    }, status: :ok
   end
 
   def remove_avatar

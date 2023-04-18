@@ -14,7 +14,7 @@ import { useUserContext } from "context/UserContext";
 
 import { activeClassName } from "./utils";
 
-const UserActions = () => {
+const UserActions = setVisiblity => {
   const [currentWorkspace, setCurrentWorkspace] = useState<any>({
     name: "",
     logo: "",
@@ -27,6 +27,7 @@ const UserActions = () => {
 
   const authDispatch = useAuthDispatch();
   const { user } = useUserContext();
+  const { isDesktop } = useUserContext();
 
   useEffect(() => {
     fetchWorkspaces();
@@ -98,12 +99,17 @@ const UserActions = () => {
     <ul className="w-full">
       <li className="flex border-b border-miru-gray-100 px-6 last:border-b-0 hover:bg-miru-gray-100 md:border-b-0 lg:justify-start">
         <NavLink
-          to="/profile/edit"
+          to={isDesktop ? "/profile/edit" : "/profile/edit/option"}
           className={({ isActive }) =>
             isActive
               ? activeClassName
               : "flex w-full items-start justify-start py-3 hover:bg-miru-gray-100"
           }
+          onClick={() => {
+            if (!isDesktop) {
+              setVisiblity(false);
+            }
+          }}
         >
           <SettingIcon className="mr-4" size={26} />
           Settings
