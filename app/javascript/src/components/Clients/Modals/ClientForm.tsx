@@ -120,10 +120,10 @@ const ClientForm = ({
     } else {
       if (!isValid.fileExtension && !isValid.fileSizeValid) {
         setFileUploadError(
-          i18n.t("invalidImageFormatSize", { fileSize: "2000" })
+          i18n.t("invalidImageFormatSize", { fileSize: "30" })
         );
       } else if (isValid.fileExtension && !isValid.fileSizeValid) {
-        setFileUploadError(i18n.t("invalidImageSize", { fileSize: "2000" }));
+        setFileUploadError(i18n.t("invalidImageSize", { fileSize: "30" }));
       } else {
         setFileUploadError(i18n.t("invalidImageFormat"));
       }
@@ -205,24 +205,26 @@ const ClientForm = ({
                 onChange={onLogoChange}
               />
             </button>
-            <button
-              className="flex flex-row pl-2 text-miru-red-400"
-              type="button"
-              onClick={handleDeleteLogo}
-            >
-              <img
-                alt="delete"
-                src={deleteImageIcon}
-                style={{ minWidth: "20px" }}
-              />
-              <p className="pl-3">Delete</p>
-            </button>
+            {clientLogoUrl && (
+              <button
+                className="flex flex-row pl-2 text-miru-red-400"
+                type="button"
+                onClick={handleDeleteLogo}
+              >
+                <img
+                  alt="delete"
+                  src={deleteImageIcon}
+                  style={{ minWidth: "20px" }}
+                />
+                <p className="pl-3">Delete</p>
+              </button>
+            )}
           </div>
         </div>
       </div>
       <div className="my-auto ml-6 text-xs font-normal text-miru-dark-purple-400">
-        <p>Accepted file formats: PNG, JPG, SVG.</p>
-        <p>File size should be &#8826; 2MB.</p>
+        <p>Accepted file formats: PNG and JPG.</p>
+        <p>File size should be &#8826; 30 KB.</p>
         <p>Image resolution should be 1:1.</p>
       </div>
       <input
@@ -280,8 +282,8 @@ const ClientForm = ({
                           />
                         </div>
                         <div className="my-auto ml-6 text-xs font-normal text-miru-dark-purple-400">
-                          <p>Accepted file formats: PNG, JPG, SVG.</p>
-                          <p>File size should be &#8826; 2MB.</p>
+                          <p>Accepted file formats: PNG and JPG.</p>
+                          <p>File size should be &#8826; 30 KB.</p>
                           <p>Image resolution should be 1:1.</p>
                         </div>
                       </div>
