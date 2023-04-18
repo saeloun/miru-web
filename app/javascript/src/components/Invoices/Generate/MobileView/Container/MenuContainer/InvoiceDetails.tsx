@@ -142,7 +142,7 @@ const InvoiceDetails = ({
               </div>
             )}
             <div className="flex justify-between py-3">
-              <div className="relative w-fit cursor-pointer">
+              <div className="relative w-1/2 cursor-pointer">
                 <div
                   onClick={() =>
                     setShowDateOfIssuePicker(!showDateOfIssuePicker)
@@ -175,7 +175,7 @@ const InvoiceDetails = ({
                     style={{ background: "rgba(29, 26, 49,0.6)" }}
                   >
                     <div
-                      className="absolute inset-0 m-auto h-72 w-3/4"
+                      className="absolute inset-0 m-auto h-72 w-1/2"
                       ref={DateOfIssueWrapper}
                     >
                       <CustomDatePicker
@@ -188,7 +188,7 @@ const InvoiceDetails = ({
                   </div>
                 )}
               </div>
-              <div className="relative w-fit cursor-pointer">
+              <div className="relative w-1/2 cursor-pointer">
                 <div onClick={() => setShowDueDatePicker(!showDueDatePicker)}>
                   <CustomInputText
                     readOnly
@@ -217,7 +217,7 @@ const InvoiceDetails = ({
                     style={{ background: "rgba(29, 26, 49,0.6)" }}
                   >
                     <div
-                      className="absolute inset-0 m-auto h-72 w-3/4"
+                      className="absolute inset-0 m-auto h-72 w-1/2"
                       ref={DueDateWrapper}
                     >
                       <CustomDatePicker
@@ -240,7 +240,7 @@ const InvoiceDetails = ({
                 setFieldError={setFieldError}
                 setFieldValue={setFieldValue}
                 type="text"
-                wrapperClassName="mr-2"
+                wrapperClassName="mr-2 w-1/2"
                 onChange={e => setInvoiceNumber(e.target.value)}
               />
               <InputErrors
@@ -255,7 +255,7 @@ const InvoiceDetails = ({
                 setFieldError={setFieldError}
                 setFieldValue={setFieldValue}
                 type="text"
-                wrapperClassName="ml-2"
+                wrapperClassName="ml-2 w-1/2"
                 onChange={e => setReference(e.target.value)}
               />
               <InputErrors
