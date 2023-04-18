@@ -5,7 +5,7 @@ import { FilterIcon, SearchIcon, PlusIcon, XIcon } from "miruIcons";
 import { Link } from "react-router-dom";
 
 import invoicesApi from "apis/invoices";
-import { ApiStatus as InvoiceStatus } from "constants/index";
+import { ApiStatus as InvoiceStatus, LocalStorageKeys } from "constants/index";
 
 import SearchDropdown from "./InvoiceSearch/SearchDropdown";
 
@@ -16,7 +16,7 @@ const Header = ({
   filterParamsStr,
   isDesktop,
 }) => {
-  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [searchQuery, setSearchQuery] = useState<string>(params.query || "");
   const [searchResult, setSearchResult] = useState<any[]>([]);
   const [status, setStatus] = useState<InvoiceStatus>(InvoiceStatus.IDLE);
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
@@ -50,11 +50,16 @@ const Header = ({
 
   const onSearchClear = () => {
     setSearchQuery("");
+    window.localStorage.setItem(LocalStorageKeys.INVOICE_SEARCH_PARAM, "");
     setParams({ ...params, query: "" });
   };
 
   const onKeydownHandler = e => {
     if (e.key === "Enter") {
+      window.localStorage.setItem(
+        LocalStorageKeys.INVOICE_SEARCH_PARAM,
+        searchQuery
+      );
       setParams({ ...params, query: searchQuery });
     }
   };
