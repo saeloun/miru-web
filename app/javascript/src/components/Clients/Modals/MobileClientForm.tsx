@@ -1,14 +1,15 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import React, { useState } from "react";
 
-import classNames from "classnames";
-import { City, Country, State } from "country-state-city";
+import { City, State } from "country-state-city";
 import { Field, Form, Formik, FormikProps } from "formik";
 import { XIcon, EditImageButtonSVG, deleteImageIcon } from "miruIcons";
 import { Avatar, Button, SidePanel } from "StyledComponents";
 import * as Yup from "yup";
 
+import CustomReactSelect from "common/CustomReactSelect";
 import { InputErrors, InputField } from "common/FormikFields";
+import { CountryList } from "constants/countryList";
 
 import { i18n } from "../../../i18n";
 
@@ -57,7 +58,7 @@ const getInitialvalues = (client?: any) => ({
   address: client?.address || "",
   minutes: client?.minutes || "",
   logo: client?.logo || null,
-  country: client?.country || Country.getAllCountries()[0].isoCode,
+  country: client?.country || "",
   zipcode: client?.zipcode || "",
   city: client?.city || "",
   state: client?.state || "",
@@ -287,11 +288,13 @@ const MobileClientForm = ({
                     <InputField
                       hasError={errors.phone && touched.phone}
                       id="phone"
+                      inputBoxClassName="pl-8"
                       label="Phone number"
-                      labelClassName="p-0"
+                      labelClassName="p-0 pl-8 focus:p-2"
                       name="phone"
                       setFieldError={setFieldError}
                       setFieldValue={setFieldValue}
+                      type="tel"
                     />
                     <InputErrors
                       fieldErrors={errors.phone}
@@ -338,46 +341,55 @@ const MobileClientForm = ({
                   {/* Country */}
                   <div className="mt-4 mr-2">
                     <div className="field">
-                      <Field
-                        as="select"
-                        name="country"
-                        value={values.country}
-                        className={classNames(
-                          "form__input block h-12 w-full appearance-none bg-white text-sm lg:text-base",
-                          {
-                            "error-input border-miru-red-400":
-                              errors.country && touched.country,
-                          }
+                      <Field name="country">
+                        {({ form }) => (
+                          <CustomReactSelect
+                            isSearchable
+                            className="w-44"
+                            getOptionLabel={options => options["name"]}
+                            getOptionValue={options => options["code"]}
+                            isErr={errors.country && touched.country}
+                            label="Country"
+                            name="country"
+                            options={CountryList}
+                            placeholder="Country"
+                            handleOnChange={selectedOption => {
+                              form.setFieldValue(
+                                "country",
+                                selectedOption.code
+                              );
+                            }}
+                            value={CountryList.find(
+                              option => option.code === values.country
+                            )}
+                          />
                         )}
-                      >
-                        {Country.getAllCountries().map((c, idx) => (
-                          <option key={idx} value={c.isoCode}>
-                            {c.name}
-                          </option>
-                        ))}
                       </Field>
                     </div>
                   </div>
                   {/* State */}
                   <div className="mt-4">
                     <div className="field">
-                      <Field
-                        as="select"
-                        name="state"
-                        className={classNames(
-                          "form__input block h-12 w-44 appearance-none bg-white text-sm lg:text-base",
-                          {
-                            "error-input border-miru-red-400":
-                              errors.state && touched.state,
-                          }
-                        )}
-                      >
-                        {State.getStatesOfCountry(values.country).map(
-                          (c, idx) => (
-                            <option key={idx} value={c.name}>
-                              {c.name}
-                            </option>
-                          )
+                      <Field name="state">
+                        {({ form }) => (
+                          <CustomReactSelect
+                            isSearchable
+                            className="w-44"
+                            getOptionLabel={options => options["name"]}
+                            getOptionValue={options => options["code"]}
+                            isErr={errors.state && touched.state}
+                            label="State"
+                            name="state"
+                            options={State.getStatesOfCountry(values.country)}
+                            placeholder="State"
+                            value={State.getStatesOfCountry(values.country)}
+                            handleOnChange={selectedOption => {
+                              form.setFieldValue(
+                                "state",
+                                selectedOption.isoCode
+                              );
+                            }}
+                          />
                         )}
                       </Field>
                     </div>
@@ -387,23 +399,29 @@ const MobileClientForm = ({
                   {/* City */}
                   <div className="mt-4 mr-2">
                     <div className="field">
-                      <Field
-                        as="select"
-                        name="city"
-                        className={classNames(
-                          "form__input block h-12 w-44 appearance-none bg-white text-sm lg:text-base",
-                          {
-                            "error-input border-miru-red-400":
-                              errors.city && touched.city,
-                          }
-                        )}
-                      >
-                        {City.getCitiesOfCountry(values.country).map(
-                          (c, idx) => (
-                            <option key={idx} value={c.name}>
-                              {c.name}
-                            </option>
-                          )
+                      <Field name="city">
+                        {({ form }) => (
+                          <CustomReactSelect
+                            isSearchable
+                            className="w-44"
+                            getOptionLabel={options => options["name"]}
+                            getOptionValue={options => options["code"]}
+                            isErr={errors.city && touched.city}
+                            label="City"
+                            name="city"
+                            placeholder="City"
+                            handleOnChange={selectedOption => {
+                              form.setFieldValue("city", selectedOption.name);
+                            }}
+                            options={City.getCitiesOfState(
+                              values.country,
+                              values.state
+                            )}
+                            value={City.getCitiesOfState(
+                              values.country,
+                              values.state
+                            )}
+                          />
                         )}
                       </Field>
                     </div>
@@ -428,7 +446,7 @@ const MobileClientForm = ({
                     </div>
                   </div>
                 </div>
-                <p className="mt-3 block text-xs tracking-wider text-red-600">
+                <p className="mt-2 block text-xs tracking-wider text-red-600">
                   {apiError}
                 </p>
                 <div className="actions mt-4">

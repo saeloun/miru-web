@@ -28,6 +28,9 @@ export const CustomReactSelect = ({
   onMenuOpen,
   ignoreDisabledFontColor,
   hideDropdownIndicator,
+  getOptionValue,
+  getOptionLabel,
+  className,
 }) => {
   const { isDesktop } = useUserContext();
 
@@ -46,7 +49,10 @@ export const CustomReactSelect = ({
   return (
     <div className="outline relative">
       <Select
+        className={className}
         classNamePrefix={classNamePrefix}
+        getOptionLabel={getOptionLabel}
+        getOptionValue={getOptionValue}
         id={id || name}
         isDisabled={isDisabled}
         isSearchable={isSearchable}
@@ -87,6 +93,9 @@ CustomReactSelect.defaultProps = {
   defaultValue: null,
   onMenuClose: () => {}, // eslint-disable-line  @typescript-eslint/no-empty-function
   onMenuOpen: () => {}, // eslint-disable-line  @typescript-eslint/no-empty-function
+  getOptionLabel: () => {}, // eslint-disable-line  @typescript-eslint/no-empty-function
+  getOptionValue: () => {}, // eslint-disable-line  @typescript-eslint/no-empty-function
+  className: "",
 };
 
 export default CustomReactSelect;
