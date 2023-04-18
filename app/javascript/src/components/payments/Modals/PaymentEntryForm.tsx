@@ -4,7 +4,7 @@ import dayjs from "dayjs";
 import { currencyFormat, useOutsideClick } from "helpers";
 import { CalendarIcon, SearchIcon } from "miruIcons";
 import Select, { DropdownIndicatorProps, components } from "react-select";
-import { Badge } from "StyledComponents";
+import { Badge, MobileMoreOptions } from "StyledComponents";
 
 import payment from "apis/payments/payments";
 import CustomDatePicker from "common/CustomDatePicker";
@@ -13,6 +13,7 @@ import CustomReactSelect from "common/CustomReactSelect";
 import { CustomValueContainer } from "common/CustomReactSelectStyle";
 import { CustomTextareaAutosize } from "common/CustomTextareaAutosize";
 import Toastr from "common/Toastr";
+import { useUserContext } from "context/UserContext";
 import { mapPayment } from "mapper/mappedIndex";
 import getStatusCssClass from "utils/getBadgeStatus";
 
@@ -29,6 +30,8 @@ const PaymentEntryForm = ({
   const invoiceId = new URLSearchParams(window.location.search).get(
     "invoiceId"
   );
+  const { isDesktop } = useUserContext();
+
   const [invoice, setInvoice] = useState<any>(null);
   const [transactionDate, setTransactionDate] = useState<any>(null);
   const [transactionType, setTransactionType] = useState<any>(null);
@@ -37,6 +40,8 @@ const PaymentEntryForm = ({
   const [showDatePicker, setShowDatePicker] = useState<any>(false);
   const [showSelectInvoice, setShowSelectInvoice] = useState<any>(false);
   const [showSelectMenu, setShowSelectMenu] = useState(false);
+  const [showTransactionTypes, setShowTransactionTypes] =
+    useState<boolean>(false);
 
   const wrapperSelectRef = useRef(null);
   const wrapperCalendartRef = useRef(null);
@@ -270,14 +275,52 @@ const PaymentEntryForm = ({
         )}
       </div>
       <div className="relative mt-4">
-        <CustomReactSelect
-          isSearchable
-          handleOnChange={e => setTransactionType(e.value)}
-          label="Transaction Type"
-          name="transactionType"
-          options={transactionTypes}
-          value={transactionTypes.find(type => type.value == transactionType)}
-        />
+        {isDesktop ? (
+          <CustomReactSelect
+            isSearchable
+            handleOnChange={e => setTransactionType(e.value)}
+            label="Transaction Type"
+            name="transactionType"
+            options={transactionTypes}
+            value={transactionTypes.find(type => type.value == transactionType)}
+          />
+        ) : (
+          <>
+            <CustomReactSelect
+              isDisabled={showTransactionTypes}
+              label="Transaction Type"
+              name="transactionType"
+              options={transactionTypes}
+              handleonFocus={() => {
+                setShowTransactionTypes(true);
+              }}
+              value={transactionTypes.find(
+                type => type.value == transactionType
+              )}
+            />
+            {showTransactionTypes && (
+              <MobileMoreOptions
+                className="h-3/4 w-full overflow-scroll md:w-3/4 lg:h-1/4"
+                setVisibilty={setShowTransactionTypes}
+              >
+                {transactionTypes.map((transaction, index) => (
+                  <li
+                    className="flex items-center pb-5 font-manrope text-sm font-normal capitalize leading-5 text-miru-dark-purple-1000 hover:bg-miru-gray-100"
+                    key={index}
+                    onClick={() => {
+                      if (transaction?.value) {
+                        setTransactionType(transaction.value);
+                      }
+                      setShowTransactionTypes(false);
+                    }}
+                  >
+                    {transaction.label}
+                  </li>
+                ))}
+              </MobileMoreOptions>
+            )}
+          </>
+        )}
       </div>
       <div className="mt-4">
         <CustomInputText
@@ -303,7 +346,7 @@ const PaymentEntryForm = ({
           onChange={e => setNote(e.target.value)}
         />
       </div>
-      <div className="actions absolute bottom-0 z-50 mx-auto mt-4 mb-4 w-11/12 md:relative md:w-full">
+      <div className="actions absolute bottom-0 mx-auto mt-4 mb-4 w-11/12 md:relative md:w-full">
         <button
           type="submit"
           className={

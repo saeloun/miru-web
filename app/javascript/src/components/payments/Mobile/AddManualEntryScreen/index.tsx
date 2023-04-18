@@ -22,7 +22,7 @@ const AddManualEntryScreen = ({
         <XIcon color="#FFFFFF" size={16} />
       </button>
     </div>
-    <div className="min-h-70v w-full px-4">
+    <div className="mx-auto mt-0 min-h-70v w-full px-4 md:mt-12 md:w-5/6 lg:mt-0">
       <PaymentEntryForm
         baseCurrency={baseCurrency}
         dateFormat={dateFormat}

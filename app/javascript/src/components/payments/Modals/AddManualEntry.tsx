@@ -17,7 +17,7 @@ const AddManualEntry = ({
 }) => (
   <>
     <div
-      className="modal__modal main-modal hidden md:flex"
+      className="modal__modal main-modal hidden lg:flex"
       style={{ background: "rgba(29, 26, 49,0.6)" }}
     >
       <div className="modal__container modal-container">
@@ -46,7 +46,7 @@ const AddManualEntry = ({
         </div>
       </div>
     </div>
-    <div className="block md:hidden">
+    <div className="block lg:hidden">
       <AddManualEntryScreen
         baseCurrency={baseCurrency}
         dateFormat={dateFormat}
