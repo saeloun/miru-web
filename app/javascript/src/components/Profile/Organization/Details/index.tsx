@@ -7,9 +7,8 @@ import companiesApi from "apis/companies";
 import Loader from "common/Loader/index";
 import { sendGAPageView } from "utils/googleAnalytics";
 
+import Header from "./Header";
 import StaticPage from "./StaticPage";
-
-import DetailsHeader from "../../DetailsHeader";
 
 const initialState = {
   id: null,
@@ -77,13 +76,7 @@ const OrgDetails = () => {
 
   return (
     <div className="flex w-full flex-col">
-      <DetailsHeader
-        showButtons
-        editAction={handleEditClick}
-        isDisableUpdateBtn={false}
-        subTitle=""
-        title="Organization Settings"
-      />
+      <Header title="Organization Settings" onEditBtnClick={handleEditClick} />
       {isLoading ? <Loader /> : <StaticPage orgDetails={orgDetails} />}
       <Outlet />
     </div>
