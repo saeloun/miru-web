@@ -19,9 +19,13 @@ const AddManualEntry = ({
     <div
       className="modal__modal main-modal hidden lg:flex"
       style={{ background: "rgba(29, 26, 49,0.6)" }}
+      onClick={() => setShowManualEntryModal(false)}
     >
       <div className="modal__container modal-container">
-        <div className="modal__content modal-content">
+        <div
+          className="modal__content modal-content"
+          onClick={e => e.stopPropagation()}
+        >
           <div className="modal__position">
             <h6 className="modal__title"> Add Payment</h6>
             <div className="modal__close">

@@ -70,8 +70,14 @@ const Payments = () => {
     checkInvoiceIdInUrl();
   }, []);
 
+  const handleEscKeyPress = (e: any) => {
+    if (e?.key?.trim()?.toLowerCase() == "escape" && showManualEntryModal) {
+      setShowManualEntryModal(false);
+    }
+  };
+
   const PaymentsLayout = () => (
-    <div className="h-full flex-col p-4">
+    <div className="h-full flex-col p-4" onKeyDown={handleEscKeyPress}>
       <Header
         params={params}
         payments={paymentList}
