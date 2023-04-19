@@ -7,15 +7,18 @@ import { XIcon, EditImageButtonSVG, deleteImageIcon } from "miruIcons";
 import { Avatar, Button, SidePanel } from "StyledComponents";
 import * as Yup from "yup";
 
+import clientApi from "apis/clients";
 import CustomReactSelect from "common/CustomReactSelect";
 import { InputErrors, InputField } from "common/FormikFields";
+import Toastr from "common/Toastr";
 import { CountryList } from "constants/countryList";
+
+import { formatFormData } from "./utils";
 
 import { i18n } from "../../../i18n";
 
 interface IClientForm {
   clientLogoUrl: string;
-  handleSubmit: any;
   handleDeleteLogo: any;
   setClientLogoUrl: any;
   setClientLogo: any;
@@ -28,6 +31,11 @@ interface IClientForm {
   handleEdit?: any;
   setSubmitting: any;
   submitting: boolean;
+  setClientData: any;
+  setnewClient: any;
+  setApiError: any;
+  setShowEditDialog?: any;
+  clientLogo?: any;
 }
 
 interface FormValues {
@@ -66,7 +74,6 @@ const getInitialvalues = (client?: any) => ({
 
 const MobileClientForm = ({
   clientLogoUrl,
-  handleSubmit,
   handleDeleteLogo,
   setClientLogoUrl,
   setClientLogo,
@@ -79,6 +86,11 @@ const MobileClientForm = ({
   handleEdit,
   setSubmitting,
   submitting,
+  setnewClient,
+  setApiError,
+  setClientData,
+  setShowEditDialog,
+  clientLogo,
 }: IClientForm) => {
   const [fileUploadError, setFileUploadError] = useState<string>("");
 
@@ -112,6 +124,39 @@ const MobileClientForm = ({
       fileExtension: validExtensions.includes(fileExtensions),
       fileSizeValid: fileSize <= validFileByteSize,
     };
+  };
+
+  const handleSubmit = async values => {
+    const formData = new FormData();
+
+    formatFormData(
+      formData,
+      values,
+      formType === "new",
+      clientData,
+      clientLogo,
+      clientLogoUrl
+    );
+    if (formType === "new") {
+      try {
+        const res = await clientApi.create(formData);
+        setClientData([...clientData, { ...res.data, minutes: 0 }]);
+        setnewClient(false);
+        Toastr.success("Client added successfully");
+      } catch (error) {
+        setApiError(error.message);
+      }
+    } else {
+      await clientApi
+        .update(clientData.id, formData)
+        .then(() => {
+          setShowEditDialog(false);
+          window.location.reload();
+        })
+        .catch(e => {
+          setApiError(e.message);
+        });
+    }
   };
 
   const LogoComponent = () => (
@@ -478,7 +523,6 @@ const MobileClientForm = ({
               style="primary"
               onClick={() => {
                 setSubmitting(true);
-                handleSubmit();
               }}
             >
               Add Client

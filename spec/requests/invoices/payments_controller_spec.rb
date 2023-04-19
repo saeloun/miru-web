@@ -19,7 +19,7 @@ RSpec.describe Invoices::PaymentsController, type: :request do
   describe "GET new", :vcr do
     subject { send_request :get, new_invoice_payment_path(params) }
 
-    let(:success_path) { success_invoice_payments_path(params) }
+    let(:success_path) { internal_api_v1_invoices_success_path(invoice.id) }
     let(:checkout_response) { Struct.new(:url).new(success_path) }
 
     before do
@@ -73,12 +73,12 @@ RSpec.describe Invoices::PaymentsController, type: :request do
       stripe_connected_account.update_columns(account_id: account.id)
 
       invoice.create_checkout_session!(
-        success_url: success_invoice_payments_url(invoice),
+        success_url: internal_api_v1_invoices_success_url(invoice),
         cancel_url: cancel_invoice_payments_url(invoice)
       )
     end
 
-    subject { send_request :get, success_invoice_payments_path(params) }
+    subject { send_request :get, internal_api_v1_invoices_success_path(invoice) }
 
     it "doesn't mark invoice status as paid" do
       expect(invoice.status).not_to eq "paid"

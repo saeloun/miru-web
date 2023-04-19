@@ -65,60 +65,57 @@ const InputField = ({
     resetErrorOnChange || onChange ? { onChange: e => handleChange(e) } : {};
 
   return (
-    <div className="field relative mb-6 xsm:mb-2">
-      <div className={classNames(defaultWrapperClassName, wrapperClassName)}>
-        <Field
-          autoComplete={autoComplete}
-          autoFocus={autoFocus}
-          disabled={disabled}
-          id={id}
-          name={name}
-          placeholder=" "
-          readOnly={readOnly}
-          className={classNames(defaultInputBoxClassName, inputBoxClassName, {
-            "error-input border-miru-red-400": hasError,
-          })}
-          type={
-            type === "password" ? (showPassword ? "text" : "password") : type
-          }
-          onChange={onChange}
-          onClick={onClick}
-          {...optionalFieldProps}
-        />
-        <label
-          className={classNames(defaultLabelClassname, labelClassName)}
-          htmlFor={name}
+    <div
+      className={classNames(
+        defaultWrapperClassName,
+        "field relative mb-6",
+        wrapperClassName
+      )}
+    >
+      <Field
+        autoComplete={autoComplete}
+        autoFocus={autoFocus}
+        disabled={disabled}
+        id={id}
+        name={name}
+        placeholder=" "
+        readOnly={readOnly}
+        type={type === "password" ? (showPassword ? "text" : "password") : type}
+        className={classNames(defaultInputBoxClassName, inputBoxClassName, {
+          "error-input border-miru-red-400": hasError,
+        })}
+        onChange={onChange}
+        onClick={onClick}
+        {...optionalFieldProps}
+      />
+      <label
+        className={classNames(defaultLabelClassname, labelClassName)}
+        htmlFor={name}
+      >
+        {label}
+      </label>
+      {type == "password" && (
+        <span
+          className="menuButton absolute right-2 top-1/4 z-30 cursor-pointer bg-white p-1.5"
+          onClick={handleTogglePasswordVisibility}
         >
-          {label}
-        </label>
-        {type == "password" && (
-          <span
-            className="menuButton absolute right-2 top-1/4 z-30 cursor-pointer bg-white p-1.5"
-            onClick={handleTogglePasswordVisibility}
-          >
-            {!showPassword ? (
-              <img
-                alt="pass_icon"
-                height="12"
-                src={PasswordIconSVG}
-                width="12"
-              />
-            ) : (
-              <img
-                alt="pass_icon_text"
-                height="12"
-                src={PasswordIconTextSVG}
-                width="12"
-              />
-            )}
-          </span>
-        )}
-        {type === "tel" && (
-          <span className="absolute left-2 top-1/4 z-30 cursor-pointer bg-white">
-            {Country.getAllCountries()[0].flag}
-          </span>
-        )}
-      </div>
+          {!showPassword ? (
+            <img alt="pass_icon" height="12" src={PasswordIconSVG} width="12" />
+          ) : (
+            <img
+              alt="pass_icon_text"
+              height="12"
+              src={PasswordIconTextSVG}
+              width="12"
+            />
+          )}
+        </span>
+      )}
+      {type === "tel" && (
+        <span className="absolute left-2 top-1/4 z-30 cursor-pointer bg-white">
+          {Country.getAllCountries()[0].flag}
+        </span>
+      )}
     </div>
   );
 };

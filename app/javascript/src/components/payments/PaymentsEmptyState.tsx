@@ -4,7 +4,11 @@ import { PlusIcon } from "miruIcons";
 
 import EmptyStates from "common/EmptyStates";
 
-export const PaymentsEmptyState = ({ setShowManualEntryModal }) => (
+import { PaymentsEmptyStateProps } from "./interfaces";
+
+export const PaymentsEmptyState = ({
+  setShowManualEntryModal,
+}: PaymentsEmptyStateProps) => (
   <EmptyStates
     Message="No payments have been recorded yet"
     messageClassName="w-full lg:text-xl"
@@ -17,7 +21,9 @@ export const PaymentsEmptyState = ({ setShowManualEntryModal }) => (
         onClick={() => setShowManualEntryModal(true)}
       >
         <PlusIcon size={20} weight="bold" />
-        <span className="ml-2 inline-block text-xl">ADD MANUAL ENTRY</span>
+        <span className="ml-2 inline-block text-xl uppercase">
+          ADD MANUAL ENTRY
+        </span>
       </button>
     </div>
   </EmptyStates>

@@ -10,24 +10,34 @@ export const companyDetailsFormValidationSchema = Yup.object().shape({
   business_phone: Yup.string()
     .required("Business phone number can not be blank")
     .matches(phoneRegExp, "Please enter a valid business phone number"),
-  address: Yup.string().required("Address line can not be blank"),
+  address_line_1: Yup.string().required("Address line can not be blank"),
   country: Yup.object().shape({
     value: Yup.string().required("Country can not be blank"),
   }),
+  state: Yup.object().shape({
+    value: Yup.string().required("State can not be blank"),
+  }),
+  city: Yup.object().shape({
+    value: Yup.string().required("City can not be blank"),
+  }),
+  zipcode: Yup.string().required("Zipcode line can not be blank"),
 });
 
 export const mostSelectedCountries = [
   {
     label: "United States",
-    value: "US",
+    value: "United States",
+    code: "US",
   },
   {
     label: "India",
-    value: "IN",
+    value: "India",
+    code: "IN",
   },
   {
     label: "Canada",
-    value: "CA",
+    value: "Canada",
+    code: "CA",
   },
 ];
 
@@ -51,11 +61,14 @@ export const groupedCountryListOptions = [
 export const companyDetailsFormInitialValues = {
   company_name: "",
   business_phone: "",
-  address: "",
+  address_line_1: "",
+  address_line_2: "",
   logo_url: null,
-  // address_line2: "",
   logo: null,
-  country: mostSelectedCountries[0],
+  country: mostSelectedCountries[0], //{ value: null, label: null, code: null },
+  state: { value: "", label: "" },
+  city: { value: "", label: "" },
+  zipcode: "",
   timezone: {
     label: "(GMT-05:00) Eastern Time (US & Canada)",
     value: "(GMT-05:00) Eastern Time (US & Canada)",

@@ -1,16 +1,13 @@
 import React, { useState } from "react";
 
-import Logger from "js-logger";
 import { XIcon } from "miruIcons";
 
-import clientApi from "apis/clients";
-import Toastr from "common/Toastr";
 import { useUserContext } from "context/UserContext";
 
 import ClientForm from "./ClientForm";
 import MobileClientForm from "./MobileClientForm";
 
-const EditClient = ({
+const NewClient = ({
   setnewClient,
   clientData,
   setClientData,
@@ -20,34 +17,10 @@ const EditClient = ({
   setClientLogo,
   setShowDialog,
 }) => {
-  // eslint-disable-next-line no-unused-vars
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
   const [mobileClientView, setMobileClientView] = useState<boolean>(false);
   const [submitting, setSubmitting] = useState<boolean>(false);
-
-  const { isDesktop } = useUserContext();
-
-  const formatFormData = (formData, values) => {
-    formData.append("client[name]", values.name);
-    formData.append("client[email]", values.email);
-    formData.append("client[phone]", values.phone);
-    formData.append("client[address]", values.address);
-    if (clientLogoUrl) formData.append("client[logo]", clientLogo);
-  };
-
-  const handleSubmit = async values => {
-    const formData = new FormData();
-    formatFormData(formData, values);
-
-    try {
-      const res = await clientApi.create(formData);
-      setClientData([...clientData, { ...res.data, minutes: 0 }]);
-      setnewClient(false);
-      document.location.reload();
-      Toastr.success("Client added successfully");
-    } catch (error) {
-      Logger.error(error);
-    }
-  };
+  const [apiError, setApiError] = useState<string>("");
 
   const handleDeleteLogo = () => {
     setClientLogo("");
@@ -55,6 +28,7 @@ const EditClient = ({
   };
 
   const handleClose = () => setMobileClientView(false);
+  const { isDesktop } = useUserContext();
 
   return isDesktop ? (
     <div className="flex items-center justify-center px-4">
@@ -79,12 +53,16 @@ const EditClient = ({
               </button>
             </div>
             <ClientForm
-              clientData=""
+              apiError={apiError}
+              clientData={clientData}
+              clientLogo={clientLogo}
               clientLogoUrl={clientLogoUrl}
               handleDeleteLogo={handleDeleteLogo}
-              handleSubmit={handleSubmit}
+              setApiError={setApiError}
+              setClientData={setClientData}
               setClientLogo={setClientLogo}
               setClientLogoUrl={setClientLogoUrl}
+              setnewClient={setnewClient}
             />
           </div>
         </div>
@@ -92,17 +70,20 @@ const EditClient = ({
     </div>
   ) : (
     <MobileClientForm
-      clientData=""
+      apiError={apiError}
+      clientData={clientData}
       clientLogoUrl={clientLogoUrl}
       handleClose={handleClose}
       handleDeleteLogo={handleDeleteLogo}
-      handleSubmit={handleSubmit}
+      setApiError={setApiError}
+      setClientData={setClientData}
       setClientLogo={setClientLogo}
       setClientLogoUrl={setClientLogoUrl}
       setSubmitting={setSubmitting}
+      setnewClient={setnewClient}
       submitting={submitting}
     />
   );
 };
 
-export default EditClient;
+export default NewClient;
