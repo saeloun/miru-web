@@ -38,7 +38,7 @@ const WeeklyEntries = ({
       const selectedProject = projects[client].find(
         currentProject => currentProject.name === project
       );
-      setIsProjectBillable(selectedProject.billable);
+      setIsProjectBillable(selectedProject?.billable);
     }
   }, [project, client]);
 

@@ -178,14 +178,14 @@ const WeeklyEntriesCard = ({
         <div className="mr-7 flex w-138 items-center justify-between">
           {[0, 1, 2, 3, 4, 5, 6].map((num: number) =>
             num === selectedInputBox ? (
-              <div className="w-18" id="selectedInput" key={num}>
-                <TimeInput
-                  className="focus:outline-none bold h-15 w-full content-center rounded border-2 border-miru-han-purple-400 bg-miru-gray-100 px-1 py-4 text-xl focus:border-miru-han-purple-400"
-                  initTime={duration}
-                  name="timeInput"
-                  onTimeChange={handleDurationChange}
-                />
-              </div>
+              <TimeInput
+                className="focus:outline-none bold h-15 w-18 content-center rounded border-2 border-miru-han-purple-400 bg-miru-gray-100 px-1 py-4 text-xl focus:border-miru-han-purple-400"
+                id="selectedInput"
+                initTime={duration}
+                key={num}
+                name="timeInput"
+                onTimeChange={handleDurationChange}
+              />
             ) : (
               <div
                 id={`inputClick_${num}`}
