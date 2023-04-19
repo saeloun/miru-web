@@ -59,6 +59,7 @@ const AddEntryMobile = ({
   const [projectSearchQuery, setProjectSearchQuery] = useState<string>("");
   const [showDatePicker, setShowDatePicker] = useState<boolean>(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
+  const [isProjectBillable, setIsProjectBillable] = useState<boolean>(false);
   const datePickerRef = useRef(null);
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
   const debouncedProjectSearchQuery = useDebounce(projectSearchQuery, 500);
@@ -93,6 +94,19 @@ const AddEntryMobile = ({
   useEffect(() => {
     setProjectList(projects[client]);
   }, [client]);
+
+  useEffect(() => {
+    if (projects[client]) {
+      const selectedProject = projects[client].find(
+        currentProject => currentProject.name === project
+      );
+      setIsProjectBillable(selectedProject?.billable);
+    }
+  }, [project, client]);
+
+  const handleBillableCheck = () => {
+    if (isProjectBillable) setBillable(!billable);
+  };
 
   const handleDatePicker = date => {
     setShowDatePicker(false);
@@ -173,46 +187,55 @@ const AddEntryMobile = ({
                   className="h-1/2"
                   setVisibilty={setShowClientList}
                 >
-                  <div className="relative mt-2 flex w-full items-center">
-                    <input
-                      placeholder="Search"
-                      type="text"
-                      value={searchQuery}
-                      className="focus:outline-none w-full rounded bg-miru-gray-100 p-2
+                  {clientList.length > 0 && (
+                    <div className="relative mt-2 flex w-full items-center">
+                      <input
+                        placeholder="Search"
+                        type="text"
+                        value={searchQuery}
+                        className="focus:outline-none w-full rounded bg-miru-gray-100 p-2
             text-sm font-medium focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
-                      onChange={e => {
-                        setSearchQuery(e.target.value);
-                      }}
-                    />
-                    {searchQuery ? (
-                      <XIcon
-                        className="absolute right-2"
-                        color="#1D1A31"
-                        size={16}
-                        onClick={() => setSearchQuery("")}
+                        onChange={e => {
+                          setSearchQuery(e.target.value);
+                        }}
                       />
-                    ) : (
-                      <SearchIcon
-                        className="absolute right-2"
-                        color="#1D1A31"
-                        size={16}
-                      />
-                    )}
-                  </div>
-                  {clientList.map((eachClient, index) => (
-                    <li
-                      key={index}
-                      className={`flex items-center px-2 pt-3 text-sm leading-5 text-miru-dark-purple-1000 hover:bg-miru-gray-100 ${
-                        eachClient.name == client ? "font-bold" : "font-normal"
-                      }`}
-                      onClick={() => {
-                        setClient(eachClient.name);
-                        setShowClientList(false);
-                      }}
-                    >
-                      {eachClient.name}
-                    </li>
-                  ))}
+                      {searchQuery ? (
+                        <XIcon
+                          className="absolute right-2"
+                          color="#1D1A31"
+                          size={16}
+                          onClick={() => setSearchQuery("")}
+                        />
+                      ) : (
+                        <SearchIcon
+                          className="absolute right-2"
+                          color="#1D1A31"
+                          size={16}
+                        />
+                      )}
+                    </div>
+                  )}
+                  {clientList.length > 0 ? (
+                    clientList.map((eachClient, index) => (
+                      <li
+                        key={index}
+                        className={`flex items-center px-2 pt-3 text-sm leading-5 text-miru-dark-purple-1000 hover:bg-miru-gray-100 ${
+                          eachClient.name == client
+                            ? "font-bold"
+                            : "font-normal"
+                        }`}
+                        onClick={() => {
+                          setClient(eachClient.name);
+                          setProject("");
+                          setShowClientList(false);
+                        }}
+                      >
+                        {eachClient.name}
+                      </li>
+                    ))
+                  ) : (
+                    <div className="mt-5 text-center">No Clients present.</div>
+                  )}
                 </MobileMoreOptions>
               )}
             </div>
@@ -232,33 +255,35 @@ const AddEntryMobile = ({
                   className="h-1/2"
                   setVisibilty={setShowProjectList}
                 >
-                  <div className="relative mt-2 flex w-full items-center">
-                    <input
-                      placeholder="Search"
-                      type="text"
-                      value={projectSearchQuery}
-                      className="focus:outline-none w-full rounded bg-miru-gray-100 p-2
+                  {client && projectList.length > 0 && (
+                    <div className="relative mt-2 flex w-full items-center">
+                      <input
+                        placeholder="Search"
+                        type="text"
+                        value={projectSearchQuery}
+                        className="focus:outline-none w-full rounded bg-miru-gray-100 p-2
             text-sm font-medium focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
-                      onChange={e => {
-                        setProjectSearchQuery(e.target.value);
-                      }}
-                    />
-                    {projectSearchQuery ? (
-                      <XIcon
-                        className="absolute right-2"
-                        color="#1D1A31"
-                        size={16}
-                        onClick={() => setProjectSearchQuery("")}
+                        onChange={e => {
+                          setProjectSearchQuery(e.target.value);
+                        }}
                       />
-                    ) : (
-                      <SearchIcon
-                        className="absolute right-2"
-                        color="#1D1A31"
-                        size={16}
-                      />
-                    )}
-                  </div>
-                  {client ? (
+                      {projectSearchQuery ? (
+                        <XIcon
+                          className="absolute right-2"
+                          color="#1D1A31"
+                          size={16}
+                          onClick={() => setProjectSearchQuery("")}
+                        />
+                      ) : (
+                        <SearchIcon
+                          className="absolute right-2"
+                          color="#1D1A31"
+                          size={16}
+                        />
+                      )}
+                    </div>
+                  )}
+                  {client && projectList.length > 0 ? (
                     projectList.map((eachProject, index) => (
                       <li
                         key={index}
@@ -276,17 +301,21 @@ const AddEntryMobile = ({
                       </li>
                     ))
                   ) : (
-                    <div className="mt-5">Please select client.</div>
+                    <div className="mt-5 text-center">
+                      {client
+                        ? "No project(s) present for selected client."
+                        : "Please select client."}
+                    </div>
                   )}
                 </MobileMoreOptions>
               )}
             </div>
             <div className="py-3">
               <CustomTextareaAutosize
-                id="Description (optional)"
-                label="Description (optional)"
+                id="Description"
+                label="Description"
                 maxRows={12}
-                name="Description (optional)"
+                name="Description"
                 rows={5}
                 value={note}
                 onChange={e => setNote(e.target["value"])}
@@ -327,14 +356,16 @@ const AddEntryMobile = ({
             <div className="py-3">
               <CustomCheckbox
                 checkboxValue={1}
+                handleCheck={handleBillableCheck}
                 id={1}
                 isChecked={billable}
-                labelClassName="text-miru-dark-purple-1000 text-sm font-medium"
                 text="Billable"
                 wrapperClassName="flex items-center m-auto p-2"
-                handleCheck={() => {
-                  setBillable(!billable);
-                }}
+                labelClassName={`${
+                  isProjectBillable
+                    ? "text-miru-dark-purple-1000"
+                    : "text-miru-gray-1000"
+                } text-sm font-medium`}
               />
             </div>
             <div className="flex items-center justify-between rounded border border-miru-gray-1000">

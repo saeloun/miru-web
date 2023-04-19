@@ -31,6 +31,16 @@ const WeeklyEntries = ({
   const [projectSelected, setProjectSelected] = useState(false);
   const [currentEntries, setCurrentEntries] = useState([]);
   const [currentProjectId, setCurrentProjectId] = useState(-1);
+  const [isProjectBillable, setIsProjectBillable] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (projects[client]) {
+      const selectedProject = projects[client].find(
+        currentProject => currentProject.name === project
+      );
+      setIsProjectBillable(selectedProject.billable);
+    }
+  }, [project, client]);
 
   const setProjectId = () => {
     const pid = projects[client].find(p => p.name === project).id;
@@ -104,6 +114,7 @@ const WeeklyEntries = ({
       currentEntries={currentEntries}
       currentProjectId={currentProjectId}
       dayInfo={dayInfo}
+      isProjectBillable={isProjectBillable}
       isWeeklyEditing={isWeeklyEditing}
       newRowView={newRowView}
       project={project}
