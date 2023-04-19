@@ -432,6 +432,8 @@ const MobileClientForm = ({
                 <div className="mb-5 flex flex-row">
                   <div className="flex w-1/2 flex-col py-0 pr-2">
                     <CustomReactSelect
+                      getOptionLabel={option => option["label"]}
+                      getOptionValue={option => option["code"]}
                       isErr={!!errors.country && touched.country}
                       label="Country"
                       name="country"
@@ -445,6 +447,8 @@ const MobileClientForm = ({
                   </div>
                   <div className="flex w-1/2 flex-col pl-2">
                     <CustomReactSelect
+                      getOptionLabel={option => option["label"]}
+                      getOptionValue={option => option["code"]}
                       isErr={!!errors.state && touched.state}
                       label="State"
                       name="state"
