@@ -17,6 +17,7 @@ import { useUserContext } from "context/UserContext";
 import { mapPayment } from "mapper/mappedIndex";
 import getStatusCssClass from "utils/getBadgeStatus";
 
+import { transactionTypes } from "./constants";
 import { customStyles } from "./styles";
 
 const PaymentEntryForm = ({
@@ -45,20 +46,6 @@ const PaymentEntryForm = ({
 
   const wrapperSelectRef = useRef(null);
   const wrapperCalendartRef = useRef(null);
-
-  const transactionTypes = [
-    { label: "Visa", value: "visa" },
-    { label: "Mastercard", value: "mastercard" },
-    { label: "Bank Transfer", value: "bank_transfer" },
-    { label: "ACH", value: "ach" },
-    { label: "Amex", value: "amex" },
-    { label: "Cash", value: "cash" },
-    { label: "Cheque", value: "cheque" },
-    { label: "Credit Card", value: "credit_card" },
-    { label: "Debit Card", value: "debit_card" },
-    { label: "Paypal", value: "paypal" },
-    { label: "Stripe", value: "stripe" },
-  ];
 
   const handleSelectedInvoice = () => {
     if (!invoiceList || invoiceList.length == 0) return;
@@ -152,7 +139,8 @@ const PaymentEntryForm = ({
   };
 
   const CustomOption = props => {
-    const { innerProps, innerRef, data } = props;
+    let { innerProps, innerRef, data } = props; //eslint-disable-line
+    innerProps = { ...innerProps, id: "react-select-4-option-0" };
 
     return (
       <div
