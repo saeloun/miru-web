@@ -24,23 +24,23 @@ const TableRow = ({ item }) => {
     setModalState(action, item);
   };
 
+  const handleRowClick = () => {
+    if (status) return;
+
+    if (isDesktop) {
+      isAdminUser ? navigate(`/team/${id}`, { replace: true }) : null;
+    } else {
+      isAdminUser ? navigate(`/team/${id}/options`, { replace: true }) : null;
+    }
+  };
+
   if (isDesktop) {
     return (
       <tr
         className={`hoverIcon ${
           isAdminUser && "cursor-pointer"
         } border-b border-miru-gray-200 last:border-0`}
-        onClick={() => {
-          if (status) return;
-
-          if (isDesktop) {
-            isAdminUser ? navigate(`/team/${id}`, { replace: true }) : null;
-          } else {
-            isAdminUser
-              ? navigate(`/team/${id}/options`, { replace: true })
-              : null;
-          }
-        }}
+        onClick={handleRowClick}
       >
         <td className="table__data p-6 capitalize">{name}</td>
         <td className="table__data table__text p-6 text-sm font-medium">
@@ -89,7 +89,10 @@ const TableRow = ({ item }) => {
 
   return (
     <>
-      <tr className="border-b border-miru-gray-200 last:border-0">
+      <tr
+        className="border-b border-miru-gray-200 last:border-0"
+        onClick={handleRowClick}
+      >
         <td className="table__data p-6 capitalize">
           <dl className="flex items-center justify-between text-sm font-semibold text-miru-dark-purple-1000">
             <dt>{name}</dt>
