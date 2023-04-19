@@ -115,15 +115,17 @@ const TableRow = ({ item }) => {
           )}
         </td>
         <td className="table__data table__cell items-center px-3 py-3 lg:hidden">
-          <DotsThreeVerticalIcon
-            size={16}
-            weight="bold"
-            onClick={e => {
-              e.preventDefault();
-              e.stopPropagation();
-              setShowMoreOptions(true);
-            }}
-          />
+          {actionIconVisible && (
+            <DotsThreeVerticalIcon
+              size={16}
+              weight="bold"
+              onClick={e => {
+                e.preventDefault();
+                e.stopPropagation();
+                setShowMoreOptions(true);
+              }}
+            />
+          )}
         </td>
       </tr>
       {showMoreOptions && (
