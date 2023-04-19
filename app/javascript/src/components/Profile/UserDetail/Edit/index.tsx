@@ -361,10 +361,7 @@ const UserDetailsEdit = () => {
       )}
       {!isDesktop && (
         <Fragment>
-          <MobileDetailsHeader
-            href={`/team/${memberId}/details`}
-            title="Personal Details"
-          />
+          <MobileDetailsHeader href="/profile/edit" title="Personal Details" />
           {isLoading ? (
             <div className="flex min-h-70v items-center justify-center">
               <Loader />
@@ -373,6 +370,7 @@ const UserDetailsEdit = () => {
             <MobileEditPage
               addrType={addrType}
               addressOptions={addressOptions}
+              changePassword={changePassword}
               countries={countries}
               currentCountryDetails={currentCountryDetails}
               errDetails={errDetails}
@@ -386,8 +384,15 @@ const UserDetailsEdit = () => {
               handleUpdateDetails={handleUpdateDetails}
               personalDetails={profileSettings}
               promiseOptions={promiseOptions}
+              setChangePassword={setChangePassword}
+              setShowConfirmPassword={setShowConfirmPassword}
+              setShowCurrentPassword={setShowCurrentPassword}
               setShowDatePicker={setShowDatePicker}
+              setShowPassword={setShowPassword}
+              showConfirmPassword={showConfirmPassword}
+              showCurrentPassword={showCurrentPassword}
               showDatePicker={showDatePicker}
+              showPassword={showPassword}
               updateBasicDetails={updateBasicDetails}
               updatedStates={updatedStates}
               wrapperRef={wrapperRef}
