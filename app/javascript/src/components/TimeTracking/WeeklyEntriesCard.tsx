@@ -230,7 +230,7 @@ const WeeklyEntriesCard = ({
           />
           <div className="flex h-10 w-full justify-between bg-miru-gray-200">
             <div className="flex items-center">
-              {billable ? (
+              {billable && isProjectBillable ? (
                 <img
                   alt="checkbox"
                   className="inline"
