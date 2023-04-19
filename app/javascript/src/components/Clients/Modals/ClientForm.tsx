@@ -264,10 +264,6 @@ const ClientForm = ({
                             htmlFor="file-input"
                           >
                             <div className="m-auto cursor-pointer text-center text-xs font-semibold">
-                              <p className="text-miru-dark-purple-400">
-                                Drag logo
-                              </p>
-                              <p className="text-miru-dark-purple-400">or</p>
                               <p className="text-miru-han-purple-1000">
                                 Select File
                               </p>
