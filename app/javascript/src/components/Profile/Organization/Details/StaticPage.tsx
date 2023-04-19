@@ -9,6 +9,7 @@ import {
   PhoneIcon,
   CalendarIcon,
 } from "miruIcons";
+import { Avatar } from "StyledComponents";
 
 dayjs.extend(customParseFormat);
 
@@ -68,13 +69,15 @@ const StaticPage = ({
       </div>
       <div className="w-72">
         <div className="flex h-120 w-30 flex-col items-center justify-center rounded border-miru-dark-purple-100 px-2 text-center text-xs">
-          {logoUrl ? (
-            <img alt="org_logo" className="h-full min-w-full" src={logoUrl} />
-          ) : (
-            <div className="flex h-120 w-30 items-center justify-center rounded-full bg-miru-gray-1000 text-5xl font-bold capitalize text-white">
-              {companyName?.substring(0, 1)}
-            </div>
-          )}
+          <Avatar
+            classNameImg="h-full min-w-full"
+            classNameInitials="lg:text-5xl lg:font-bold capitalize text-white"
+            classNameInitialsWrapper="bg-miru-gray-1000"
+            initialsLetterCount={1}
+            name={companyName}
+            size="h-10 w-10 lg:h-30 lg:w-30"
+            url={logoUrl}
+          />
         </div>
         <div className="mt-3 flex px-2">
           <div className="flex w-6/12 flex-col">
