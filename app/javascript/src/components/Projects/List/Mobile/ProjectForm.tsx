@@ -8,6 +8,7 @@ import { Button, MobileMoreOptions } from "StyledComponents";
 import projectApi from "apis/projects";
 import CustomRadioButton from "common/CustomRadio";
 import { InputField, InputErrors } from "common/FormikFields";
+import Toastr from "common/Toastr";
 
 const ProjectForm = ({
   editProjectData,
@@ -35,7 +36,7 @@ const ProjectForm = ({
   }
 
   const initialValues = {
-    client: editProjectData.clientName || editProjectData.client.name,
+    client: editProjectData?.clientName || editProjectData?.client?.name || "",
     project: editProjectData.name,
     isBillable:
       editProjectData.isBillable !== undefined
@@ -62,29 +63,53 @@ const ProjectForm = ({
   };
 
   const createProject = async values => {
-    await projectApi.create({
+    const { project, isBillable } = values;
+    const data = {
       project: {
         client_id: client["id"],
-        name: values.project,
-        billable: values.isBillable,
+        name: project,
+        billable: isBillable,
       },
-    });
-    setEditProjectData("");
-    setShowProjectModal(false);
-    fetchProjects();
+    };
+    if (
+      data.project.client_id &&
+      data.project.name &&
+      data.project.billable !== (undefined || null)
+    ) {
+      const res = await projectApi.create(data);
+      if (res.status === 200) {
+        Toastr.success("Project added successfully");
+      }
+      setEditProjectData("");
+      setClient(null);
+      setShowProjectModal(false);
+      fetchProjects();
+    }
   };
 
   const editProject = async values => {
-    await projectApi.update(editProjectData.id, {
+    const { project, isBillable } = values;
+    const data = {
       project: {
         client_id: client["id"],
-        name: values.project,
-        billable: values.isBillable,
+        name: project,
+        billable: isBillable,
       },
-    });
-    setEditProjectData("");
-    setShowProjectModal(false);
-    fetchProjects();
+    };
+    if (
+      data.project.client_id &&
+      data.project.name &&
+      data.project.billable !== (undefined || null)
+    ) {
+      const res = await projectApi.update(editProjectData.id, data);
+      if (res.status === 200) {
+        Toastr.success("Project updated successfully");
+      }
+      setEditProjectData("");
+      setClient(null);
+      setShowProjectModal(false);
+      fetchProjects();
+    }
   };
 
   const handleSubmit = values => {
@@ -112,6 +137,12 @@ const ProjectForm = ({
   useEffect(() => setFilteredClientList(clientList), [clientList]);
 
   useEffect(() => {
+    if (editProjectData?.client?.id) {
+      setClient(editProjectData.client);
+    }
+  }, [editProjectData]);
+
+  useEffect(() => {
     getClientList();
     if (isEdit) getProject();
   }, []);
@@ -136,11 +167,7 @@ const ProjectForm = ({
           const { touched, values, errors, setFieldValue, setFieldError } =
             props;
 
-          const isSubmitDisabled = !(
-            values.client &&
-            values.project &&
-            values.isBillable
-          );
+          const isSubmitDisabled = !(values.client && values.project);
 
           return (
             <Form className="flex flex-1 flex-col justify-between p-4">
