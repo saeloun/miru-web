@@ -44,6 +44,9 @@ module.exports = {
       boxShadow: {
         c1: "0px 0px 40px rgba(0, 0, 0, 0.1);",
       },
+      lineHeight: {
+        5.5: "22px",
+      },
       margin: {
         86: "342px",
       },
