@@ -3,7 +3,6 @@
 import React, { useState } from "react";
 
 import classNames from "classnames";
-import { Country } from "country-state-city";
 import { Field } from "formik";
 import { PasswordIconSVG, PasswordIconTextSVG } from "miruIcons";
 
@@ -68,7 +67,7 @@ const InputField = ({
     <div
       className={classNames(
         defaultWrapperClassName,
-        "field relative mb-6",
+        "field relative mb-6 xsm:mb-2",
         wrapperClassName
       )}
     >
@@ -109,11 +108,6 @@ const InputField = ({
               width="12"
             />
           )}
-        </span>
-      )}
-      {type === "tel" && (
-        <span className="absolute left-2 top-1/4 z-30 cursor-pointer bg-white">
-          {Country.getAllCountries()[0].flag}
         </span>
       )}
     </div>
