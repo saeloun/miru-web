@@ -5,7 +5,10 @@ import {
   CalendarIcon,
   GlobeIcon,
   InfoIcon,
+  KeyIcon,
   MapPinIcon,
+  PasswordIconSVG,
+  PasswordIconTextSVG,
   PhoneIcon,
 } from "miruIcons";
 import PhoneInput from "react-phone-number-input";
@@ -28,19 +31,27 @@ const labelClass =
 const MobileEditDetails = ({
   addrType,
   addressOptions,
+  changePassword,
   countries,
+  currentCountryDetails,
   handleOnChangeAddrType,
   handleOnChangeCountry,
   handleCancelDetails,
   handleUpdateDetails,
-  currentCountryDetails,
   updatedStates,
   promiseOptions,
   handleOnChangeState,
   updateBasicDetails,
   personalDetails,
-  showDatePicker,
+  setChangePassword,
+  setShowConfirmPassword,
+  setShowCurrentPassword,
   setShowDatePicker,
+  setShowPassword,
+  showConfirmPassword,
+  showCurrentPassword,
+  showDatePicker,
+  showPassword,
   handleDatePicker,
   errDetails,
   handleOnChangeCity,
@@ -166,7 +177,7 @@ const MobileEditDetails = ({
             <PhoneInput
               className="input-phone-number w-full border-transparent focus:border-transparent focus:ring-0"
               flags={flags}
-              inputClassName="form__input block w-full appearance-none bg-white border-0 focus:border-0 p-0 text-sm border-transparent focus:border-transparent focus:ring-0 border-miru-gray-1000 w-full border-bottom-none "
+              inputclassname="form__input block w-full appearance-none bg-white border-0 focus:border-0 p-0 text-sm border-transparent focus:border-transparent focus:ring-0 border-miru-gray-1000 w-full border-bottom-none "
               value={
                 personalDetails.phone_number ? personalDetails.phone_number : ""
               }
@@ -393,7 +404,7 @@ const MobileEditDetails = ({
           <CustomInputText
             id="github"
             inputBoxClassName={`${inputClass} border-miru-gray-1000`}
-            label="github"
+            label="Github"
             labelClassName={`${labelClass} text-miru-dark-purple-200`}
             name="github"
             type="text"
@@ -402,6 +413,164 @@ const MobileEditDetails = ({
               updateBasicDetails(e.target.value, "github", false, "");
             }}
           />
+        </div>
+      </div>
+    </div>
+    <div className="py-6">
+      <div className="flex items-center justify-between pr-4">
+        <span className="flex flex-row items-center text-sm font-medium text-miru-dark-purple-1000">
+          <KeyIcon className="mr-2" color="#1D1A31" size={13.5} />
+          Password
+        </span>
+        <div className="ml-2">
+          <button
+            className="cursor-pointer p-1 text-xs font-bold text-miru-han-purple-600"
+            onClick={() =>
+              changePassword
+                ? setChangePassword(false)
+                : setChangePassword(true)
+            }
+          >
+            {changePassword ? "Cancel Password" : "Change Password"}
+          </button>
+        </div>
+      </div>
+      <div>
+        <div className="mt-2">
+          {changePassword && (
+            <div>
+              <div className="relative flex flex-col px-2 py-3">
+                <CustomInputText
+                  id="current_password"
+                  label="Current Password"
+                  name="current_password"
+                  type={showCurrentPassword ? "text" : "password"}
+                  value={personalDetails.currentPassword}
+                  inputBoxClassName={`${inputClass} ${
+                    errDetails.currentPassword_err
+                      ? "border-red-600"
+                      : "border-miru-gray-1000"
+                  }`}
+                  labelClassName={`${labelClass} ${
+                    errDetails.currentPassword_err
+                      ? "text-red-600"
+                      : "text-miru-dark-purple-200"
+                  }`}
+                  onChange={e => {
+                    updateBasicDetails(
+                      e.target.value,
+                      "currentPassword",
+                      false,
+                      ""
+                    );
+                  }}
+                />
+                <button
+                  className="btn btn-outline-primary absolute right-0 mt-4 mr-5"
+                  onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                >
+                  {!showCurrentPassword ? (
+                    <img alt="pass_icon" src={PasswordIconSVG} />
+                  ) : (
+                    <img alt="pass_icon_text" src={PasswordIconTextSVG} />
+                  )}
+                </button>
+                {errDetails.currentPassword_err && (
+                  <ErrorSpan
+                    className="text-xs text-red-600"
+                    message={errDetails.currentPassword_err}
+                  />
+                )}
+              </div>
+              <div className="py-3">
+                <div className="relative flex flex-col px-2">
+                  <CustomInputText
+                    id="password"
+                    label="Password"
+                    name="password"
+                    type={showPassword ? "text" : "password"}
+                    value={personalDetails.password}
+                    inputBoxClassName={`${inputClass} ${
+                      errDetails.password_err
+                        ? "border-red-600"
+                        : "border-miru-gray-1000"
+                    }`}
+                    labelClassName={`${labelClass} ${
+                      errDetails.password_err
+                        ? "text-red-600"
+                        : "text-miru-dark-purple-200"
+                    }`}
+                    onChange={e => {
+                      updateBasicDetails(e.target.value, "password", false, "");
+                    }}
+                  />
+                  <button
+                    className="btn btn-outline-primary absolute right-0 mt-4 mr-5"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {!showPassword ? (
+                      <img alt="pass_icon" src={PasswordIconSVG} />
+                    ) : (
+                      <img alt="pass_icon_text" src={PasswordIconTextSVG} />
+                    )}
+                  </button>
+                  {errDetails.password_err && (
+                    <ErrorSpan
+                      className="text-xs text-red-600"
+                      message={errDetails.password_err}
+                    />
+                  )}
+                </div>
+                <div className="py-3">
+                  <div className="relative flex flex-col px-2">
+                    <CustomInputText
+                      id="confirm_password"
+                      label="Confirm Password"
+                      name="confirm_password"
+                      type={showConfirmPassword ? "text" : "password"}
+                      value={personalDetails.confirmPassword}
+                      inputBoxClassName={`${inputClass} ${
+                        errDetails.confirmPassword_err
+                          ? "border-red-600"
+                          : "border-miru-gray-1000"
+                      }`}
+                      labelClassName={`${labelClass} ${
+                        errDetails.confirmPassword_err
+                          ? "text-red-600"
+                          : "text-miru-dark-purple-200"
+                      }`}
+                      onChange={e => {
+                        updateBasicDetails(
+                          e.target.value,
+                          "confirmPassword",
+                          false,
+                          ""
+                        );
+                      }}
+                    />
+                    <button
+                      className="btn btn-outline-primary absolute right-0 mt-4 mr-5"
+                      onClick={() =>
+                        setShowConfirmPassword(!showConfirmPassword)
+                      }
+                    >
+                      {!showConfirmPassword ? (
+                        <img alt="pass_icon" src={PasswordIconSVG} />
+                      ) : (
+                        <img alt="pass_icon_text" src={PasswordIconTextSVG} />
+                      )}
+                    </button>
+                    {errDetails.confirmPassword_err && (
+                      <ErrorSpan
+                        className="text-xs text-red-600"
+                        message={errDetails.confirmPassword_err}
+                      />
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

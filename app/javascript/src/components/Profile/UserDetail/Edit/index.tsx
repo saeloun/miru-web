@@ -89,7 +89,6 @@ const UserDetailsEdit = () => {
     setUserId(data.data.user.id);
 
     const userObj = teamsMapper(data.data.user, addressData.data.addresses[0]);
-    userObj.date_format = data.data.date_format;
     setUserState("profileSettings", userObj);
     if (userObj.addresses.address_type.length > 0) {
       setAddrType(
@@ -230,7 +229,6 @@ const UserDetailsEdit = () => {
           github_url: profileSettings.github,
         },
       };
-
       if (changePassword) {
         userSchema["current_password"] = profileSettings.currentPassword;
         userSchema["password"] = profileSettings.password;
@@ -363,10 +361,7 @@ const UserDetailsEdit = () => {
       )}
       {!isDesktop && (
         <Fragment>
-          <MobileDetailsHeader
-            href={`/team/${memberId}/details`}
-            title="Personal Details"
-          />
+          <MobileDetailsHeader href="/profile/edit" title="Personal Details" />
           {isLoading ? (
             <div className="flex min-h-70v items-center justify-center">
               <Loader />
@@ -375,6 +370,7 @@ const UserDetailsEdit = () => {
             <MobileEditPage
               addrType={addrType}
               addressOptions={addressOptions}
+              changePassword={changePassword}
               countries={countries}
               currentCountryDetails={currentCountryDetails}
               errDetails={errDetails}
@@ -388,8 +384,15 @@ const UserDetailsEdit = () => {
               handleUpdateDetails={handleUpdateDetails}
               personalDetails={profileSettings}
               promiseOptions={promiseOptions}
+              setChangePassword={setChangePassword}
+              setShowConfirmPassword={setShowConfirmPassword}
+              setShowCurrentPassword={setShowCurrentPassword}
               setShowDatePicker={setShowDatePicker}
+              setShowPassword={setShowPassword}
+              showConfirmPassword={showConfirmPassword}
+              showCurrentPassword={showCurrentPassword}
               showDatePicker={showDatePicker}
+              showPassword={showPassword}
               updateBasicDetails={updateBasicDetails}
               updatedStates={updatedStates}
               wrapperRef={wrapperRef}
