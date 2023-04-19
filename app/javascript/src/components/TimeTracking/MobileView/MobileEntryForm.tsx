@@ -337,7 +337,7 @@ const AddEntryMobile = ({
                 }}
               />
             </div>
-            <div className="flex items-center justify-between rounded border border-miru-gray-1000">
+            <div className="flex items-center justify-evenly rounded border border-miru-gray-1000">
               <Button onClick={handleDecreaseTime}>
                 <MinusIcon
                   className="m-4 text-miru-dark-purple-1000"
