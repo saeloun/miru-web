@@ -89,7 +89,6 @@ const UserDetailsEdit = () => {
     setUserId(data.data.user.id);
 
     const userObj = teamsMapper(data.data.user, addressData.data.addresses[0]);
-    userObj.date_format = data.data.date_format;
     setUserState("profileSettings", userObj);
     if (userObj.addresses.address_type.length > 0) {
       setAddrType(
