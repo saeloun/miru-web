@@ -27,6 +27,12 @@ const Pagination = ({ pagy, params, setParams, title }: Pagination) => {
     siblingCount,
   });
 
+  const handlePageNumberClick = page => {
+    if (page == "...") return;
+
+    return setParams({ ...params, page });
+  };
+
   return (
     <div className="bg-grey-400 relative flex w-full items-center px-0 pt-5 pb-20 md:pb-28 lg:py-10 lg:pl-36">
       <div className="mx-auto w-full">
@@ -55,7 +61,7 @@ const Pagination = ({ pagy, params, setParams, title }: Pagination) => {
                       "text-miru-han-purple-1000": pagy?.prev + 1 === page,
                     }
                   )}
-                  onClick={() => setParams({ ...params, page })}
+                  onClick={() => handlePageNumberClick(page)}
                 >
                   {page}
                 </button>

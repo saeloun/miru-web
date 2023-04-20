@@ -39,7 +39,11 @@ const SelectProject = ({
 
   const handleClientChange = e => {
     setClient(e.target.value);
-    setProject(projects[e.target.value][0]["name"]);
+    if (projects[e.target.value].length > 0) {
+      setProject(projects[e.target.value][0]["name"]);
+    } else {
+      setProject("");
+    }
   };
 
   return (
