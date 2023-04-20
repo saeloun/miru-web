@@ -2,7 +2,7 @@
 
 class ProfilePolicy < ApplicationPolicy
   def show?
-    true
+    user
   end
 
   def remove_avatar?
