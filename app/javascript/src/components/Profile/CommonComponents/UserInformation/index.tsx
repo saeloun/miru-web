@@ -11,16 +11,12 @@ const UserInformation = ({ firstName, lastName }) => {
   const [imageUrl, setImageUrl] = useState(null);
 
   const getAvatar = async () => {
-    try {
-      const {
-        data: {
-          user: { avatar_url },
-        },
-      } = await profileApi.index();
-      setImageUrl(avatar_url);
-    } catch {
-      Toastr.error("Error in getting Profile Image");
-    }
+    const {
+      data: {
+        user: { avatar_url },
+      },
+    } = await profileApi.index();
+    setImageUrl(avatar_url);
   };
 
   const validateFileSize = file => {
@@ -37,35 +33,23 @@ const UserInformation = ({ firstName, lastName }) => {
     return formData;
   };
 
-  const uploadImage = async formData => {
-    try {
-      await profileApi.update(formData);
-    } catch {
-      Toastr.error("Error in uploading profile image");
-    }
-  };
-
   const handleProfileImageChange = async e => {
     try {
       setShowProfileOptions(false);
       const file = e.target.files[0];
       validateFileSize(file);
       setImageUrl(URL.createObjectURL(file));
-      const formData = createFormData(file);
-      await uploadImage(formData);
+      const payload = createFormData(file);
+      await profileApi.update(payload);
     } catch (error) {
       Toastr.error(error.message);
     }
   };
 
   const handleDeleteProfileImage = async () => {
-    try {
-      setShowProfileOptions(false);
-      await profileApi.removeAvatar();
-      setImageUrl(null);
-    } catch {
-      Toastr.success("Error in deleting Profile Image");
-    }
+    setShowProfileOptions(false);
+    await profileApi.removeAvatar();
+    setImageUrl(null);
   };
 
   useEffect(() => {
