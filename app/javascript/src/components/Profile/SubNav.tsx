@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { MinusIcon, PlusIcon } from "miruIcons";
 import { NavLink } from "react-router-dom";
 
-import { UserInformation } from "./CommonComponents/UserInformation";
+import UserInformation from "./CommonComponents/UserInformation";
 
 const SideNav = ({ isAdmin, firstName, company, lastName }) => {
   const getActiveClassName = isActive => {
