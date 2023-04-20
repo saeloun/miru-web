@@ -27,7 +27,6 @@ const NewClient = ({
     setClientLogoUrl("");
   };
 
-  const handleClose = () => setMobileClientView(false);
   const { isDesktop } = useUserContext();
 
   return isDesktop ? (
@@ -73,12 +72,12 @@ const NewClient = ({
       apiError={apiError}
       clientData={clientData}
       clientLogoUrl={clientLogoUrl}
-      handleClose={handleClose}
       handleDeleteLogo={handleDeleteLogo}
       setApiError={setApiError}
       setClientData={setClientData}
       setClientLogo={setClientLogo}
       setClientLogoUrl={setClientLogoUrl}
+      setShowDialog={setShowDialog}
       setSubmitting={setSubmitting}
       setnewClient={setnewClient}
       submitting={submitting}

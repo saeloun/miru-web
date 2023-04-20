@@ -7,14 +7,13 @@ import { XIcon, EditImageButtonSVG, deleteImageIcon } from "miruIcons";
 import PhoneInput from "react-phone-number-input";
 import flags from "react-phone-number-input/flags";
 import { Avatar, Button, SidePanel } from "StyledComponents";
-import * as Yup from "yup";
 
 import clientApi from "apis/clients";
-import { CustomAsyncSelect } from "common/CustomAsyncSelect";
 import CustomReactSelect from "common/CustomReactSelect";
 import { InputErrors, InputField } from "common/FormikFields";
 import Toastr from "common/Toastr";
 
+import { clientSchema, getInitialvalues } from "./formValidationSchema";
 import { formatFormData } from "./utils";
 
 import { i18n } from "../../../i18n";
@@ -32,12 +31,11 @@ interface IClientForm {
   clientLogo?: any;
   setApiError?: any;
   setShowEditDialog?: any;
-  setMobileClientView?: any;
-  handleClose: any;
   editClientId?: any;
   submitting: any;
   setSubmitting: any;
   handleEdit?: any;
+  setShowDialog: any;
 }
 
 interface FormValues {
@@ -53,28 +51,6 @@ interface FormValues {
   logo: any;
 }
 
-const clientSchema = Yup.object().shape({
-  name: Yup.string().required("Name cannot be blank"),
-  email: Yup.string()
-    .email("Invalid email ID")
-    .required("Email ID cannot be blank"),
-  phone: Yup.number().typeError("Invalid phone number"),
-  address: Yup.string().required("Address cannot be blank"),
-});
-
-const getInitialvalues = (client?: any) => ({
-  name: client?.name || "",
-  email: client?.email || "",
-  phone: client?.phone || "",
-  address: client?.address || "",
-  minutes: client?.minutes || "",
-  logo: client?.logo || null,
-  country: client?.country || "",
-  zipcode: client?.zipcode || "",
-  city: client?.city || "",
-  state: client?.state || "",
-});
-
 const MobileClientForm = ({
   clientLogoUrl,
   handleDeleteLogo,
@@ -88,12 +64,11 @@ const MobileClientForm = ({
   clientLogo,
   setApiError,
   setShowEditDialog,
-  setMobileClientView,
-  handleClose,
   editClientId,
   submitting,
   setSubmitting,
   handleEdit,
+  setShowDialog,
 }: IClientForm) => {
   const initialSelectValue = {
     label: "",
@@ -128,21 +103,6 @@ const MobileClientForm = ({
       code: state.isoCode,
       ...state,
     }));
-
-  const filterCities = (inputValue: string) => {
-    const city = currentCityList.filter(i =>
-      i.label.toLowerCase().includes(inputValue.toLowerCase())
-    );
-
-    return city.length ? city : [{ label: inputValue, value: inputValue }];
-  };
-
-  const promiseOptions = (inputValue: string) =>
-    new Promise(resolve => {
-      setTimeout(() => {
-        resolve(filterCities(inputValue));
-      }, 1000);
-    });
 
   const onLogoChange = e => {
     const file = e.target.files[0];
@@ -209,6 +169,27 @@ const MobileClientForm = ({
     }
   };
 
+  const disableBtn = (values, errors) => {
+    if (errors.name || errors.rate || errors.quantity || submitting) {
+      return true;
+    }
+
+    if (
+      values.name &&
+      values.email &&
+      values.phone &&
+      values.address1 &&
+      values.country &&
+      values.state &&
+      values.city &&
+      values.zipcode
+    ) {
+      return false;
+    }
+
+    return true;
+  };
+
   const LogoComponent = () => (
     <div className="my-4 flex flex-row">
       <div className="mt-2 h-30 w-30 border border-dashed border-miru-dark-purple-400">
@@ -272,13 +253,13 @@ const MobileClientForm = ({
   return (
     <SidePanel
       WrapperClassname="z-50 justify-content-between lg:hidden bg-white"
-      setFilterVisibilty={setMobileClientView}
+      setFilterVisibilty={setShowDialog}
     >
       <SidePanel.Header className="mb-2 flex items-center justify-between bg-miru-han-purple-1000 px-5 py-5 text-white lg:bg-white lg:font-bold lg:text-miru-dark-purple-1000">
         <span className="flex w-full items-center justify-center pl-6 text-base font-medium leading-5">
           {editClientId ? "Edit Client" : "Add New Client"}
         </span>
-        <Button style="ternary" onClick={handleClose}>
+        <Button style="ternary" onClick={() => setShowDialog(false)}>
           <XIcon
             className="text-white lg:text-miru-dark-purple-1000"
             size={16}
@@ -382,7 +363,7 @@ const MobileClientForm = ({
                           className="input-phone-number w-full border-transparent focus:border-transparent focus:ring-0"
                           flags={flags}
                           id="phone"
-                          inputClassName="form__input block w-full appearance-none bg-white border-0 focus:border-0 px-0 text-base border-transparent focus:border-transparent focus:ring-0 border-miru-gray-1000 w-full border-bottom-none "
+                          inputClassName="form__input block w-full appearance-none bg-white border-0 focus:border-0 px-0 text-base border-transparent focus:border-transparent focus:ring-0 border-miru-gray-1000 w-full border-bottom-none"
                           name="phone"
                           value={clientData.phone}
                           onChange={phone => {
@@ -432,8 +413,6 @@ const MobileClientForm = ({
                 <div className="mb-5 flex flex-row">
                   <div className="flex w-1/2 flex-col py-0 pr-2">
                     <CustomReactSelect
-                      getOptionLabel={option => option["label"]}
-                      getOptionValue={option => option["code"]}
                       isErr={!!errors.country && touched.country}
                       label="Country"
                       name="country"
@@ -447,8 +426,6 @@ const MobileClientForm = ({
                   </div>
                   <div className="flex w-1/2 flex-col pl-2">
                     <CustomReactSelect
-                      getOptionLabel={option => option["label"]}
-                      getOptionValue={option => option["code"]}
                       isErr={!!errors.state && touched.state}
                       label="State"
                       name="state"
@@ -475,14 +452,23 @@ const MobileClientForm = ({
                 </div>
                 <div className="flex flex-row">
                   <div className="flex w-1/2 flex-col pr-2" id="city">
-                    <CustomAsyncSelect
+                    <CustomReactSelect
                       isErr={!!errors.city && touched.city}
-                      label="City"
-                      loadOptions={promiseOptions}
+                      label="State"
                       name="city"
+                      options={currentCityList}
                       value={values.city.value ? values.city : null}
                       handleOnChange={city => {
                         setFieldValue("city", city);
+                        const cities = City.getCitiesOfState(
+                          currentCountryDetails.code,
+                          city.code
+                        ).map(city => ({
+                          label: city.name,
+                          value: city.name,
+                          ...city,
+                        }));
+                        setCurrentCityList(cities);
                       }}
                     />
                   </div>
@@ -490,7 +476,7 @@ const MobileClientForm = ({
                     <InputField
                       resetErrorOnChange
                       id="zipcode"
-                      label="zipcode"
+                      label="Zipcode"
                       name="zipcode"
                       setFieldValue={setFieldValue}
                     />
@@ -503,12 +489,13 @@ const MobileClientForm = ({
                 <p className="mt-3 block text-xs tracking-wider text-red-600">
                   {apiError}
                 </p>
-                <div className="actions mt-4">
+                <div className="actions mt-20">
                   {editClientId ? (
                     <Button
                       className="w-full p-2 text-center text-base font-bold"
-                      disabled={submitting}
+                      disabled={disableBtn(values, errors)}
                       style="primary"
+                      type="submit"
                       onClick={handleEdit}
                     >
                       Save Changes
@@ -516,9 +503,11 @@ const MobileClientForm = ({
                   ) : (
                     <Button
                       className="w-full p-2 text-center text-base font-bold"
-                      disabled={submitting}
+                      disabled={disableBtn(values, errors)}
                       style="primary"
+                      type="submit"
                       onClick={() => {
+                        handleSubmit(values);
                         setSubmitting(true);
                       }}
                     >

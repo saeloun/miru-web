@@ -32,6 +32,7 @@ type ButtonProps = {
   className?: string;
   fullWidth?: boolean;
   children?: any;
+  type?: any;
 };
 
 const BUTTON_STYLES = {
@@ -49,9 +50,11 @@ const Button = ({
   fullWidth = false,
   onClick,
   children,
+  type,
 }: ButtonProps) => (
   <button
     disabled={disabled}
+    type={type}
     className={classnames(
       DEFAULT_STYLE,
       fullWidth && "w-full",
