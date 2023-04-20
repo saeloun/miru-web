@@ -41,6 +41,8 @@ const SelectProject = ({
     setClient(e.target.value);
     if (projects[e.target.value].length > 0) {
       setProject(projects[e.target.value][0]["name"]);
+    } else {
+      setProject("");
     }
   };
 
