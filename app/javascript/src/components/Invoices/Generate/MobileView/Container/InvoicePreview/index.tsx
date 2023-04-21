@@ -40,25 +40,31 @@ const InvoicePreviewContainer = ({
     )}
     <InvoiceInfo
       amount={amount}
-      currency={invoiceDetails.companyDetails.currency}
-      dateFormat={invoiceDetails.companyDetails.date_format}
+      currency={currency || invoiceDetails.companyDetails.currency}
       dueDate={dueDate}
       invoiceNumber={invoiceNumber}
       issueDate={issueDate}
       reference={reference}
       selectedClient={selectedClient}
       setActiveSection={setActiveSection}
+      dateFormat={
+        invoiceDetails?.companyDetails?.date_format ||
+        invoiceDetails?.company?.dateFormat
+      }
     />
     <div className="border-b border-miru-gray-400 px-4 py-2">
       <LineItems
-        currency={invoiceDetails.companyDetails.currency}
-        dateFormat={invoiceDetails.companyDetails.date_format}
+        currency={currency || invoiceDetails.companyDetails.currency}
         isInvoicePreviewCall={isInvoicePreviewCall}
         manualEntryArr={manualEntryArr}
         selectedClient={selectedClient}
         selectedLineItems={selectedLineItems}
         setActiveSection={setActiveSection}
         setEditItem={setEditItem}
+        dateFormat={
+          invoiceDetails?.companyDetails?.date_format ||
+          invoiceDetails?.company?.dateFormat
+        }
       />
       <div
         className="mt-2 flex w-full items-center justify-center py-3 px-12 text-miru-han-purple-1000"

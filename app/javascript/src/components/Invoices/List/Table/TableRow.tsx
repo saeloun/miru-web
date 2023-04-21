@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { Avatar, Badge, Tooltip } from "StyledComponents";
 
 import CustomCheckbox from "common/CustomCheckbox";
+import SendInvoiceContainer from "components/Invoices/Generate/MobileView/Container/SendInvoiceContainer";
 import getStatusCssClass from "utils/getBadgeStatus";
 
 import MoreOptions from "../MoreOptions";
@@ -21,8 +22,10 @@ const TableRow = ({
   fetchInvoices,
   isDesktop,
   index,
+  isSending,
+  setIsSending,
 }) => {
-  const [isSending, setIsSending] = useState<boolean>(false);
+  // const [isSending, setIsSending] = useState<boolean>(false);
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   const [showMoreOptions, setShowMoreOptions] = useState<boolean>(false);
   const [showToolTip, setShowToolTip] = useState<boolean>(false);
@@ -158,13 +161,32 @@ const TableRow = ({
             </button>
           </td>
         )}
-        {isSending && (
+        {isSending && isDesktop && (
           <SendInvoice
             isSending
             fetchInvoices={fetchInvoices}
             invoice={invoice}
             setIsSending={setIsSending}
           />
+        )}
+        {isSending && !isDesktop && (
+          <div
+            className="absolute inset-0 flex flex-col bg-white"
+            onClick={e => {
+              e.preventDefault();
+              e.stopPropagation();
+            }}
+          >
+            <div className="flex h-12 items-center justify-center bg-miru-han-purple-1000 px-3 text-white">
+              Send Invoice
+            </div>
+            <div className="flex flex-1">
+              <SendInvoiceContainer
+                handleSaveSendInvoice={null}
+                invoice={invoice}
+              />
+            </div>
+          </div>
         )}
       </tr>
       {!isDesktop && showMoreOptions && (

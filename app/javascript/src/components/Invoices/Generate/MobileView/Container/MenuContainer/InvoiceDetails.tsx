@@ -122,20 +122,24 @@ const InvoiceDetails = ({
                 className="modal__modal main-modal "
                 style={{ background: "rgba(29, 26, 49,0.6)" }}
               >
-                <div className="h-1/2 w-full" ref={wrapperRef}>
+                <div className="h-auto w-full" ref={wrapperRef}>
                   <Select
                     defaultMenuIsOpen
                     isSearchable
                     className="w-full text-white"
                     classNamePrefix="m-0 truncate font-medium text-sm text-miru-dark-purple-1000 bg-white"
                     defaultValue={null}
-                    options={invoiceDetails.clientList}
                     placeholder="Search"
                     styles={reactSelectStyles.InvoiceDetails}
                     components={{
                       DropdownIndicator,
                       IndicatorSeparator: () => null,
                     }}
+                    options={
+                      invoiceDetails.clientList
+                        ? invoiceDetails.clientList
+                        : invoiceDetails.companyClientList
+                    }
                     onChange={handleClientChange}
                   />
                 </div>
