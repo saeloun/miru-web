@@ -71,7 +71,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
     sendGAPageView();
     fetchTimeTrackingData();
     !isDesktop && setView("day");
-  }, []);
+  }, [entryList]);
 
   const fetchTimeTrackingData = async () => {
     try {
