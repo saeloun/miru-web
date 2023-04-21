@@ -43,11 +43,13 @@ const SummaryDashboard = ({
           {summary.label}
         </p>
         <p className="mt-2 truncate text-lg font-medium md:text-2xl lg:text-4.5xl lg:font-semibold">
-          {currencyFormat(
-            currency,
-            summary.value,
-            summary.value > 999 ? "compact" : "standard"
-          )}
+          {summary.hideCurrencySymbol
+            ? summary.value
+            : currencyFormat(
+                currency,
+                summary.value,
+                summary.value > 999 ? "compact" : "standard"
+              )}
         </p>
       </li>
     ))}
