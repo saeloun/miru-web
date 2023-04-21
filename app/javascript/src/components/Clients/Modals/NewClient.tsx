@@ -2,7 +2,10 @@ import React, { useState } from "react";
 
 import { XIcon } from "miruIcons";
 
+import { useUserContext } from "context/UserContext";
+
 import ClientForm from "./ClientForm";
+import MobileClientForm from "./MobileClientForm";
 
 const NewClient = ({
   setnewClient,
@@ -14,6 +17,9 @@ const NewClient = ({
   setClientLogo,
   setShowDialog,
 }) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
+  const [mobileClientView, setMobileClientView] = useState<boolean>(false);
+  const [submitting, setSubmitting] = useState<boolean>(false);
   const [apiError, setApiError] = useState<string>("");
 
   const handleDeleteLogo = () => {
@@ -21,7 +27,9 @@ const NewClient = ({
     setClientLogoUrl("");
   };
 
-  return (
+  const { isDesktop } = useUserContext();
+
+  return isDesktop ? (
     <div className="flex items-center justify-center px-4">
       <div
         className="fixed inset-0 top-0 left-0 right-0 bottom-0 z-10 flex items-start justify-center overflow-auto"
@@ -59,6 +67,21 @@ const NewClient = ({
         </div>
       </div>
     </div>
+  ) : (
+    <MobileClientForm
+      apiError={apiError}
+      clientData={clientData}
+      clientLogoUrl={clientLogoUrl}
+      handleDeleteLogo={handleDeleteLogo}
+      setApiError={setApiError}
+      setClientData={setClientData}
+      setClientLogo={setClientLogo}
+      setClientLogoUrl={setClientLogoUrl}
+      setShowDialog={setShowDialog}
+      setSubmitting={setSubmitting}
+      setnewClient={setnewClient}
+      submitting={submitting}
+    />
   );
 };
 
