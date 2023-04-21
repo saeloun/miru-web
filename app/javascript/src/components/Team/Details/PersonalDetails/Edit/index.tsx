@@ -81,7 +81,7 @@ const EmploymentDetails = () => {
     const addRes = await teamsApi.getAddress(memberId);
     const teamsObj = teamsMapper(res.data, addRes.data.addresses[0]);
     updateDetails("personal", teamsObj);
-    if (teamsObj.addresses.address_type.length > 0) {
+    if (teamsObj.addresses?.address_type?.length > 0) {
       setAddrType(
         addressOptions.find(
           item => item.value === teamsObj.addresses.address_type
@@ -222,9 +222,25 @@ const EmploymentDetails = () => {
         },
       });
 
-      await teamsApi.updateAddress(memberId, addrId, {
-        address: { ...personalDetails.addresses },
-      });
+      const payload = {
+        address: {
+          address_line_1: personalDetails.addresses.address_line_1,
+          address_line_2: personalDetails.addresses.address_line_2,
+          address_type: personalDetails.addresses.address_type,
+          city: personalDetails.addresses.city,
+          state: personalDetails.addresses.state,
+          country: personalDetails.addresses.country,
+          pin: personalDetails.addresses.pin,
+        },
+      };
+      if (addrId) {
+        await teamsApi.updateAddress(memberId, addrId, {
+          address: { ...personalDetails.addresses },
+        });
+      } else {
+        await teamsApi.createAddress(memberId, payload);
+      }
+
       setErrDetails(initialErrState);
       navigate(`/team/${memberId}`, { replace: true });
     } catch (err) {
