@@ -220,24 +220,26 @@ const MobileClientForm = ({
                 onChange={onLogoChange}
               />
             </button>
-            <button
-              className="flex flex-row pl-2 text-miru-red-400"
-              type="button"
-              onClick={handleDeleteLogo}
-            >
-              <img
-                alt="delete"
-                src={deleteImageIcon}
-                style={{ minWidth: "20px" }}
-              />
-              <p className="pl-3">Delete</p>
-            </button>
+            {clientLogoUrl && (
+              <button
+                className="flex flex-row pl-2 text-miru-red-400"
+                type="button"
+                onClick={handleDeleteLogo}
+              >
+                <img
+                  alt="delete"
+                  src={deleteImageIcon}
+                  style={{ minWidth: "20px" }}
+                />
+                <p className="pl-3">Delete</p>
+              </button>
+            )}
           </div>
         </div>
       </div>
       <div className="my-auto ml-6 text-xs font-normal text-miru-dark-purple-400">
-        <p>Accepted file formats: PNG, JPG, SVG.</p>
-        <p>File size should be &#8826; 2MB.</p>
+        <p>Accepted file formats: PNG and JPG.</p>
+        <p>File size should be &#8826; 30 KB.</p>
         <p>Image resolution should be 1:1.</p>
       </div>
       <input
@@ -293,12 +295,6 @@ const MobileClientForm = ({
                                 htmlFor="file-input"
                               >
                                 <div className="m-auto cursor-pointer text-center text-xs font-semibold">
-                                  <p className="text-miru-dark-purple-400">
-                                    Drag logo
-                                  </p>
-                                  <p className="text-miru-dark-purple-400">
-                                    or
-                                  </p>
                                   <p className="text-miru-han-purple-1000">
                                     Select File
                                   </p>
@@ -313,8 +309,8 @@ const MobileClientForm = ({
                               />
                             </div>
                             <div className="my-auto ml-6 text-xs font-normal text-miru-dark-purple-400">
-                              <p>Accepted file formats: PNG, JPG, SVG.</p>
-                              <p>File size should be &#8826; 2MB.</p>
+                              <p>Accepted file formats: PNG and JPG.</p>
+                              <p>File size should be &#8826; 30 KB.</p>
                               <p>Image resolution should be 1:1.</p>
                             </div>
                           </div>
