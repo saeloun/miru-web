@@ -9,11 +9,11 @@ import Loader from "common/Loader/index";
 import { MobileEditHeader } from "common/Mobile/MobileEditHeader";
 import { useProfile } from "components/Profile/context/EntryContext";
 import DetailsHeader from "components/Profile/DetailsHeader";
-import MobilePersonalDetails from "components/Team/Details/PersonalDetails/MobilePersonalDetails";
 import { useUserContext } from "context/UserContext";
 import { teamsMapper } from "mapper/teams.mapper";
 import { sendGAPageView } from "utils/googleAnalytics";
 
+import MobilePersonalDetails from "./MobilePersonalDetails";
 import StaticPage from "./StaticPage";
 
 const UserDetailsView = () => {
@@ -81,7 +81,10 @@ const UserDetailsView = () => {
               <Loader />
             </div>
           ) : (
-            <MobilePersonalDetails personalDetails={profileSettings} />
+            <MobilePersonalDetails
+              handleEditClick={handleEditClick}
+              personalDetails={profileSettings}
+            />
           )}
         </Fragment>
       )}
