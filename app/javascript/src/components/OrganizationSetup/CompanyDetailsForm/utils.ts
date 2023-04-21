@@ -26,17 +26,17 @@ export const companyDetailsFormValidationSchema = Yup.object().shape({
 export const mostSelectedCountries = [
   {
     label: "United States",
-    value: "United States",
+    value: "US",
     code: "US",
   },
   {
     label: "India",
-    value: "India",
+    value: "IN",
     code: "IN",
   },
   {
     label: "Canada",
-    value: "Canada",
+    value: "CA",
     code: "CA",
   },
 ];
