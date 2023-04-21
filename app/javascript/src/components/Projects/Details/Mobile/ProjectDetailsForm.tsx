@@ -29,18 +29,15 @@ const ProjectDetailsForm = ({
         {
           label: "TOTAL HOURS",
           value: parseInt(minToHHMM(project.totalMinutes)),
+          hideCurrencySymbol: true,
         },
         {
           label: "OVERDUE",
-          value: parseInt(
-            minToHHMM(project.overdueOutstandingAmount.overdue_amount)
-          ),
+          value: parseInt(project.overdueOutstandingAmount.overdue_amount),
         },
         {
           label: "OUTSTANDING",
-          value: parseInt(
-            minToHHMM(project.overdueOutstandingAmount.outstanding_amount)
-          ),
+          value: parseInt(project.overdueOutstandingAmount.outstanding_amount),
         },
       ]
     : [];
@@ -110,36 +107,38 @@ const ProjectDetailsForm = ({
             {project && (
               <table className="w-full">
                 <thead>
-                  <th className="w-1/4 py-3 text-left text-xs font-medium leading-4 tracking-widest text-miru-dark-purple-600">
-                    TEAM <br />
-                    MEMBER
-                  </th>
-                  <th className="py-3 text-right text-xs font-medium leading-4 tracking-widest text-miru-dark-purple-600">
-                    HOURLY <br /> RATE
-                  </th>
-                  <th className="py-3 text-right text-xs font-medium leading-4 tracking-widest text-miru-dark-purple-600">
-                    HOURS <br /> LOGGED
-                  </th>
-                  <th className="self-end py-3 text-right text-xs font-medium leading-4 tracking-widest text-miru-dark-purple-600">
-                    COST
-                  </th>
+                  <tr>
+                    <th className="w-1/4 py-3 text-left text-xs font-medium leading-4 tracking-widest text-miru-dark-purple-600">
+                      TEAM <br />
+                      MEMBER
+                    </th>
+                    <th className="py-3 text-right text-xs font-medium leading-4 tracking-widest text-miru-dark-purple-600">
+                      HOURLY <br /> RATE
+                    </th>
+                    <th className="py-3 text-right text-xs font-medium leading-4 tracking-widest text-miru-dark-purple-600">
+                      HOURS <br /> LOGGED
+                    </th>
+                    <th className="self-end py-3 text-right text-xs font-medium leading-4 tracking-widest text-miru-dark-purple-600">
+                      COST
+                    </th>
+                  </tr>
                 </thead>
                 <tbody>
                   {project.members &&
                     project.members.map(member => (
                       <tr key={member.id}>
-                        <th className="py-3 text-left text-sm font-medium leading-5 text-miru-dark-purple-1000">
+                        <td className="py-3 text-left text-sm font-medium leading-5 text-miru-dark-purple-1000">
                           {member.name}
-                        </th>
-                        <th className="py-3 text-right text-sm font-medium leading-5 text-miru-dark-purple-1000">
+                        </td>
+                        <td className="py-3 text-right text-sm font-medium leading-5 text-miru-dark-purple-1000">
                           {currencyFormat(project.currency, member.hourlyRate)}
-                        </th>
-                        <th className="py-3 text-right text-sm font-medium leading-5 text-miru-dark-purple-1000">
+                        </td>
+                        <td className="py-3 text-right text-sm font-medium leading-5 text-miru-dark-purple-1000">
                           {minToHHMM(member.minutes)}
-                        </th>
-                        <th className="py-3 text-right text-sm font-medium leading-5 text-miru-dark-purple-1000">
+                        </td>
+                        <td className="py-3 text-right text-sm font-medium leading-5 text-miru-dark-purple-1000">
                           {member.cost}
-                        </th>
+                        </td>
                       </tr>
                     ))}
                 </tbody>
