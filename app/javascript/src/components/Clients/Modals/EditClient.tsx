@@ -2,7 +2,10 @@ import React, { useState } from "react";
 
 import { XIcon } from "miruIcons";
 
+import { useUserContext } from "context/UserContext";
+
 import ClientForm from "./ClientForm";
+import MobileClientForm from "./MobileClientForm";
 
 interface IEditClient {
   setShowEditDialog: any;
@@ -13,6 +16,8 @@ const EditClient = ({ setShowEditDialog, client }: IEditClient) => {
   const [apiError, setApiError] = useState<string>("");
   const [clientLogoUrl, setClientLogoUrl] = useState<string>(client.logo);
   const [clientLogo, setClientLogo] = useState("");
+  const [submitting, setSubmitting] = useState<boolean>(false);
+  const { isDesktop } = useUserContext();
 
   const handleDeleteLogo = event => {
     event.preventDefault();
@@ -42,18 +47,33 @@ const EditClient = ({ setShowEditDialog, client }: IEditClient) => {
                 <XIcon color="#CDD6DF" size={16} weight="bold" />
               </button>
             </div>
-            <ClientForm
-              apiError={apiError}
-              clientData={client}
-              clientLogo={clientLogo}
-              clientLogoUrl={clientLogoUrl}
-              formType="edit"
-              handleDeleteLogo={handleDeleteLogo}
-              setApiError={setApiError}
-              setClientLogo={setClientLogo}
-              setClientLogoUrl={setClientLogoUrl}
-              setShowEditDialog={setShowEditDialog}
-            />
+            {isDesktop ? (
+              <ClientForm
+                apiError={apiError}
+                clientData={client}
+                clientLogo={clientLogo}
+                clientLogoUrl={clientLogoUrl}
+                formType="edit"
+                handleDeleteLogo={handleDeleteLogo}
+                setApiError={setApiError}
+                setClientLogo={setClientLogo}
+                setClientLogoUrl={setClientLogoUrl}
+                setShowEditDialog={setShowEditDialog}
+              />
+            ) : (
+              <MobileClientForm
+                apiError={apiError}
+                clientData={client}
+                clientLogoUrl={clientLogoUrl}
+                handleDeleteLogo={handleDeleteLogo}
+                setApiError={setApiError}
+                setClientLogo={setClientLogo}
+                setClientLogoUrl={setClientLogoUrl}
+                setShowDialog={setShowEditDialog}
+                setSubmitting={setSubmitting}
+                submitting={submitting}
+              />
+            )}
           </div>
         </div>
       </div>
