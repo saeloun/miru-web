@@ -90,7 +90,7 @@ const UserDetailsEdit = () => {
 
     const userObj = teamsMapper(data.data.user, addressData.data.addresses[0]);
     setUserState("profileSettings", userObj);
-    if (userObj.addresses.address_type.length > 0) {
+    if (userObj.addresses?.address_type?.length > 0) {
       setAddrType(
         addressOptions.find(
           item => item.value === userObj.addresses.address_type
@@ -235,13 +235,30 @@ const UserDetailsEdit = () => {
         userSchema["password_confirmation"] = profileSettings.confirmPassword;
       }
 
+      const payload = {
+        address: {
+          address_line_1: profileSettings.addresses.address_line_1,
+          address_line_2: profileSettings.addresses.address_line_2,
+          address_type: profileSettings.addresses.address_type,
+          city: profileSettings.addresses.city,
+          state: profileSettings.addresses.state,
+          country: profileSettings.addresses.country,
+          pin: profileSettings.addresses.pin,
+        },
+      };
+
       await profileApi.update({
         user: userSchema,
       });
 
-      await profileApi.updateAddress(userId, addrId, {
-        address: { ...profileSettings.addresses },
-      });
+      if (addrId) {
+        await profileApi.updateAddress(userId, addrId, {
+          address: { ...profileSettings.addresses },
+        });
+      } else {
+        await profileApi.createAddress(userId, payload);
+      }
+
       setErrDetails(initialErrState);
       navigate(`/profile/edit`, { replace: true });
     } catch (err) {
