@@ -170,7 +170,17 @@ const MobileClientForm = ({
   };
 
   const disableBtn = (values, errors) => {
-    if (errors.name || errors.rate || errors.quantity || submitting) {
+    if (
+      errors.name ||
+      errors.email ||
+      errors.phone ||
+      errors.address1 ||
+      errors.country ||
+      errors.state ||
+      errors.city ||
+      errors.zipcode ||
+      submitting
+    ) {
       return true;
     }
 
