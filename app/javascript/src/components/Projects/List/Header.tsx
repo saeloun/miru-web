@@ -26,42 +26,23 @@ const Header = ({ setShowProjectModal, isAdminUser }) => {
       }`}
     >
       <h2 className="header__title hidden lg:inline">Projects</h2>
-      <AutoSearch SearchDataRow={SearchDataRow} searchAction={fetchProjects} />
       {isAdminUser && (
-        <button
-          className="header__button flex"
-          onClick={() => setShowProjectModal(true)}
-        >
-          <PlusIcon size={16} weight="fill" />
-          <span className="ml-2 inline-block hidden lg:inline">
-            NEW PROJECT
-          </span>
-        </button>
+        <>
+          <AutoSearch
+            SearchDataRow={SearchDataRow}
+            searchAction={fetchProjects}
+          />
+          <button
+            className="header__button flex"
+            onClick={() => setShowProjectModal(true)}
+          >
+            <PlusIcon size={16} weight="fill" />
+            <span className="ml-2 inline-block hidden lg:inline">
+              NEW PROJECT
+            </span>
+          </button>
+        </>
       )}
-      {/* {
-          isInvoiceSelected && <div className="flex justify-center items-center">
-            <span>{selectedInvoiceCount} invoices selected</span>
-            <button className="ml-2" onClick={handleCloseButton}>
-              <XIcon size={16} color="#5b34ea" weight="bold" />
-            </button>
-            <div className="flex">
-              <button
-                type="button"
-                className="header__button border-miru-red-400 text-miru-red-400"
-              >
-                <DeleteIcon weight="fill" size={16} />
-                <span className="ml-2 inline-block">DELETE</span>
-              </button>
-              <button
-                type="button"
-                className="header__button"
-              >
-                <PaperPlaneTiltIcon weight="fill" size={16} />
-                <span className="ml-2 inline-block">SEND TO</span>
-              </button>
-            </div>
-          </div>
-        } */}
     </div>
   );
 };
