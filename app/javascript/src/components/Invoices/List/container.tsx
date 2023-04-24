@@ -30,6 +30,8 @@ const Container = ({
   downloading,
   handleReset,
   params,
+  isSending,
+  setIsSending,
 }) =>
   invoices.length > 0 ? (
     <div
@@ -63,9 +65,11 @@ const Container = ({
         fetchInvoices={fetchInvoices}
         invoices={invoices}
         isDesktop={isDesktop}
+        isSending={isSending}
         selectInvoices={selectInvoices}
         selectedInvoices={selectedInvoices}
         setInvoiceToDelete={setInvoiceToDelete}
+        setIsSending={setIsSending}
         setShowDeleteDialog={setShowDeleteDialog}
       />
     </div>
