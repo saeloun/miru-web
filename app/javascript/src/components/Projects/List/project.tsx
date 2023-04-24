@@ -27,7 +27,9 @@ export const Project = ({
   const navigate = useNavigate();
   const { isDesktop } = useUserContext();
   const handleMouseEnter = () => {
-    setGrayColor("bg-miru-gray-100");
+    if (isAdminUser) {
+      setGrayColor("bg-miru-gray-100");
+    }
     setIsHover(true);
   };
 
