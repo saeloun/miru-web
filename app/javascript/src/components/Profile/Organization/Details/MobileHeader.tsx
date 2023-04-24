@@ -2,13 +2,17 @@ import React from "react";
 
 import { ArrowLeftIcon } from "miruIcons";
 
-interface HeaderProps {
+interface MobileHeaderProps {
   title: string;
   onBackArrowClick?: () => void;
   onEditBtnClick: () => void;
 }
 
-const Header = ({ title, onBackArrowClick, onEditBtnClick }: HeaderProps) => (
+const MobileHeader = ({
+  title,
+  onBackArrowClick,
+  onEditBtnClick,
+}: MobileHeaderProps) => (
   <section className="flex h-12 w-full items-center justify-between bg-miru-white-1000 p-3 shadow-c1">
     <div className="flex items-center gap-3">
       <div>
@@ -36,4 +40,4 @@ const Header = ({ title, onBackArrowClick, onEditBtnClick }: HeaderProps) => (
   </section>
 );
 
-export default Header;
+export default MobileHeader;
