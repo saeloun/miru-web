@@ -21,7 +21,7 @@ import { ProfileImage } from "./ProfileImage";
 import { Uploader } from "./Uploader";
 
 const inputClass =
-  "form__input block w-full appearance-none bg-white p-4 text-base h-12 focus-within:border-miru-han-purple-1000";
+  "form__input block w-full appearance-none bg-white p-4 text-miru-dark-purple-1000 font-medium text-sm md:text-base h-10 md:h-12 focus-within:border-miru-han-purple-1000";
 
 const labelClass =
   "absolute top-0.5 left-1 h-6 z-1 origin-0 bg-white p-2 text-base font-medium duration-300";
@@ -61,22 +61,24 @@ export const StaticPage = ({
   dateFormatOptions,
   handleFiscalYearChange,
   fiscalYearOptions,
+  cancelAction,
+  saveAction,
 }) => (
-  <div className="mt-4 h-full bg-miru-gray-100 px-10">
-    <div className="flex border-b border-b-miru-gray-400 py-8">
-      <div className="w-18">
-        <span className="flex flex-row items-center text-sm font-medium text-miru-dark-purple-1000">
+  <div className="mt-4 h-full bg-miru-gray-100 px-4 md:px-10">
+    <div className="flex flex-col gap-y-6 border-b border-b-miru-gray-400 py-6 md:flex-row md:gap-y-0 md:py-8">
+      <div className="w-full md:w-18">
+        <div className="flex flex-row items-center text-sm font-medium text-miru-dark-purple-1000">
           <InfoIcon
             className="mr-2"
             color="#1D1A31"
             size={13.5}
             weight="bold"
           />
-          Basic Details
-        </span>
+          <p>Basic Details</p>
+        </div>
       </div>
-      <div className="flex w-72 flex-col">
-        <div className="flex flex-row items-center px-2 pb-4 text-center">
+      <div className="flex w-full flex-col md:w-72">
+        <div className="flex flex-row items-center px-2 pb-6 text-center">
           {!logoUrl ? (
             <Uploader
               getInputProps={getInputProps}
@@ -94,7 +96,7 @@ export const StaticPage = ({
             <FileAcceptanceText />
           </div>
         </div>
-        <div className="flex w-1/2 flex-col px-2 pt-1">
+        <div className="flex w-full flex-col px-2 pt-1 md:w-1/2">
           <CustomInputText
             id="companyName"
             label="Company Name"
@@ -124,22 +126,22 @@ export const StaticPage = ({
         </div>
       </div>
     </div>
-    <div className="flex border-b border-b-miru-gray-400 py-8">
-      <div className="w-18 ">
-        <span className="flex flex-row items-center text-sm font-medium text-miru-dark-purple-1000">
+    <div className="flex flex-col gap-y-6 border-b border-b-miru-gray-400 py-6 md:flex-row md:gap-y-0 md:py-8">
+      <div className="w-full md:w-18">
+        <div className="flex flex-row items-center text-sm font-medium text-miru-dark-purple-1000">
           <PhoneIcon
             className="mr-2"
             color="#1D1A31"
             size={13.5}
             weight="bold"
           />
-          Contact Details
-        </span>
+          <p>Contact Details</p>
+        </div>
       </div>
-      <div className="w-72">
+      <div className="w-full md:w-72">
         <div className="flex flex-row">
-          <div className="flex w-1/2 flex-col px-2">
-            <div className="outline relative flex h-12 flex-row rounded border border-miru-gray-1000 bg-white px-4 py-2.5">
+          <div className="flex w-full flex-col px-2 md:w-1/2">
+            <div className="outline relative flex h-12 flex-row rounded border border-miru-gray-1000 bg-white px-4 md:py-2.5">
               <PhoneInput
                 className="input-phone-number w-full border-transparent focus:border-transparent focus:ring-0"
                 defaultCountry="US"
@@ -166,19 +168,19 @@ export const StaticPage = ({
         </div>
       </div>
     </div>
-    <div className="flex border-b border-b-miru-gray-400 py-8">
-      <div className="w-18">
-        <span className="flex flex-row items-center text-sm font-medium text-miru-dark-purple-1000">
+    <div className="flex flex-col gap-y-6 border-b border-b-miru-gray-400 py-6 md:flex-row md:gap-y-0 md:py-8">
+      <div className="w-full md:w-18">
+        <div className="flex flex-row items-center text-sm font-medium text-miru-dark-purple-1000">
           <MapPinIcon
             className="mr-2"
             color="#1D1A31"
             size={13.5}
             weight="bold"
           />
-          Address
-        </span>
+          <p>Address</p>
+        </div>
       </div>
-      <div className="w-72">
+      <div className="w-full md:w-72">
         <div className="flex w-full flex-col px-2 pb-3">
           <CustomInputText
             id="addressLine1"
@@ -285,8 +287,8 @@ export const StaticPage = ({
         </div>
       </div>
     </div>
-    <div className="flex flex-row  border-b border-b-miru-gray-400 py-8">
-      <div className="w-18">
+    <div className="flex flex-col gap-y-6 border-b border-b-miru-gray-400 py-6 md:flex-row md:py-8">
+      <div className="w-full md:w-18">
         <span className="flex flex-row items-center text-sm font-medium text-miru-dark-purple-1000">
           <span className="mr-2 w-13">
             <MoneyIcon color="#1D1A31" size={13.5} weight="bold" />
@@ -294,7 +296,7 @@ export const StaticPage = ({
           Currency and Standard Rate
         </span>
       </div>
-      <div className="w-72">
+      <div className="w-full md:w-72">
         <div className="flex flex-row">
           <div className="w-1/2 p-2" data-cy="base-currency">
             <CustomReactSelect
@@ -343,34 +345,34 @@ export const StaticPage = ({
         </div>
       </div>
     </div>
-    <div className="flex flex-row  border-b border-b-miru-gray-400 py-8">
-      <div className="w-18">
-        <span className="flex flex-row items-center text-sm font-medium text-miru-dark-purple-1000">
+    <div className="flex flex-col gap-y-6 border-b border-b-miru-gray-400 py-6 md:flex-row md:py-8">
+      <div className="w-full md:w-18">
+        <div className="flex flex-row items-center text-sm font-medium text-miru-dark-purple-1000">
           <CalendarIcon
             className="mr-2"
             color="#1D1A31"
             size={13.5}
             weight="bold"
           />
-          Date & Time
-        </span>
+          <p>Date & Time</p>
+        </div>
       </div>
-      <div className="w-72">
-        <div className="flex flex-row ">
-          <div className="w-1/2 p-2" data-cy="timezone">
-            <CustomReactSelect
-              classNamePrefix="react-select-filter"
-              handleOnChange={handleTimezoneChange}
-              label="Timezone"
-              name="timezone"
-              options={timezoneOption}
-              value={
-                companyTimezone
-                  ? timezoneOption.find(o => o.value === companyTimezone)
-                  : timezoneOption[0]
-              }
-            />
-          </div>
+      <div className="w-full md:w-72">
+        <div className="w-full p-2 pb-6" data-cy="timezone">
+          <CustomReactSelect
+            classNamePrefix="react-select-filter"
+            handleOnChange={handleTimezoneChange}
+            label="Timezone"
+            name="timezone"
+            options={timezoneOption}
+            value={
+              companyTimezone
+                ? timezoneOption.find(o => o.value === companyTimezone)
+                : timezoneOption[0]
+            }
+          />
+        </div>
+        <div className="flex flex-row items-center justify-center">
           <div className="w-1/2 p-2" data-cy="date-format">
             <CustomReactSelect
               classNamePrefix="react-select-filter"
@@ -385,21 +387,39 @@ export const StaticPage = ({
               }
             />
           </div>
+          <div className="w-1/2 p-2" data-cy="fiscal-year">
+            <CustomReactSelect
+              classNamePrefix="react-select-filter"
+              handleOnChange={handleFiscalYearChange}
+              label="Fiscal Year End"
+              name="fiscal_year_end"
+              options={fiscalYearOptions}
+              value={
+                companyFiscalYear
+                  ? fiscalYearOptions.find(o => o.value === companyFiscalYear)
+                  : fiscalYearOptions[0]
+              }
+            />
+          </div>
         </div>
-        <div className="flex w-1/2 flex-col px-2 pt-3" data-cy="fiscal-year">
-          <CustomReactSelect
-            classNamePrefix="react-select-filter"
-            handleOnChange={handleFiscalYearChange}
-            label="Fiscal Year End"
-            name="fiscal_year_end"
-            options={fiscalYearOptions}
-            value={
-              companyFiscalYear
-                ? fiscalYearOptions.find(o => o.value === companyFiscalYear)
-                : fiscalYearOptions[0]
-            }
-          />
-        </div>
+      </div>
+    </div>
+    <div className="flex items-center justify-between gap-x-2 py-4 md:hidden md:w-0">
+      <div className="w-1/2 text-center">
+        <button
+          className="w-full cursor-pointer rounded border border-miru-han-purple-1000 bg-miru-white-1000 py-2 text-base font-bold text-miru-han-purple-1000"
+          onClick={cancelAction}
+        >
+          Cancel
+        </button>
+      </div>
+      <div className="w-1/2 text-center">
+        <button
+          className="w-full cursor-pointer rounded bg-miru-han-purple-1000 py-2 text-base font-bold text-miru-white-1000"
+          onClick={saveAction}
+        >
+          Save
+        </button>
       </div>
     </div>
   </div>

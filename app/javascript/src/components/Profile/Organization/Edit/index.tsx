@@ -514,6 +514,8 @@ const OrgEdit = () => {
         <Loader />
       ) : (
         <StaticPage
+          cancelAction={handleCancelAction}
+          saveAction={handleUpdateOrgDetails}
           orgDetails={orgDetails}
           isDragActive={isDragActive}
           getInputProps={getInputProps}
