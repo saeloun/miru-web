@@ -26,6 +26,7 @@ module.exports = {
       32: "2rem",
     },
     letterSpacing: {
+      '2': '2px',
       widest: "0.125em",
       semiWidest: "0.09375",//1.5px
       wider: ".05em",
@@ -66,7 +67,8 @@ module.exports = {
         352: "22rem", //352px
         480: "30rem", //480px
         18: "18%",
-        72: "72%"
+        72: "72%",
+        '1/10': '10%',
       },
       minWidth: {
         12: "12px",
@@ -191,6 +193,7 @@ module.exports = {
         manrope: "'Manrope', serif",
       },
       spacing: {
+        0.25: "0.0625rem",
         2.125: "0.5625rem",
         3.75: "0.9375rem",
         13: "3.125rem",
