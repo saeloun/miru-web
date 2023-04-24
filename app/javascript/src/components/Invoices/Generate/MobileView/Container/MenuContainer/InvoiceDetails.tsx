@@ -40,7 +40,7 @@ const InvoiceDetails = ({
 
   const getIssuedDate = dayjs(issueDate).format(dateFormat);
   const getDueDate = dayjs(dueDate).format(dateFormat);
-
+  const { clientList, companyClientList } = invoiceDetails;
   const handleDatePickerChange = date => {
     setIssueDate(date);
     setShowDateOfIssuePicker(false);
@@ -129,17 +129,13 @@ const InvoiceDetails = ({
                     className="w-full text-white"
                     classNamePrefix="m-0 truncate font-medium text-sm text-miru-dark-purple-1000 bg-white"
                     defaultValue={null}
+                    options={clientList || companyClientList}
                     placeholder="Search"
                     styles={reactSelectStyles.InvoiceDetails}
                     components={{
                       DropdownIndicator,
                       IndicatorSeparator: () => null,
                     }}
-                    options={
-                      invoiceDetails.clientList
-                        ? invoiceDetails.clientList
-                        : invoiceDetails.companyClientList
-                    }
                     onChange={handleClientChange}
                   />
                 </div>

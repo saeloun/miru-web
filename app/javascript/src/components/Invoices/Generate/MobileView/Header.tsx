@@ -20,10 +20,12 @@ const Header = ({ activeSection, setActiveSection, isEdit }) => {
 
   const handleBackAction = () => {
     if (isEdit) {
-      navigate(-1);
-    }
-
-    if (activeSection == sections.generateInvoice) {
+      if (activeSection == sections.invoicePreview) {
+        navigate("/invoices");
+      } else {
+        setActiveSection(sections.invoicePreview);
+      }
+    } else if (activeSection == sections.generateInvoice) {
       navigate("/invoices");
     } else {
       setActiveSection(sections.generateInvoice);
