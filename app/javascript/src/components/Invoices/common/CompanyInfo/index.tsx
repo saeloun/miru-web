@@ -11,9 +11,9 @@ const CompanyInfo = ({ company, logo = "" }) => {
     <div className="flex h-24 items-center justify-between border-b border-miru-gray-400 p-4 pb-2 lg:h-40 lg:p-10">
       <div className="flex h-full items-center">
         <Avatar
-          classNameImg="lg:mr-5"
-          classNameInitials="lg:text-5xl font-bold capitalize text-white"
-          classNameInitialsWrapper="lg:mr-5 bg-miru-gray-1000 "
+          classNameImg="mr-5"
+          classNameInitials="lg:text-5xl text-lg font-bold capitalize text-white"
+          classNameInitialsWrapper="mr-5 bg-miru-gray-1000 "
           initialsLetterCount={1}
           name={company.name}
           size="h-10 w-10 lg:h-20 lg:w-20"
@@ -28,9 +28,9 @@ const CompanyInfo = ({ company, logo = "" }) => {
           </p>
         </div>
       </div>
-      <div className="overflow-y-auto text-right text-right text-xs font-normal text-miru-dark-purple-1000 lg:h-auto lg:w-72 lg:text-base">
+      <div className="h-full overflow-y-auto text-right text-xs font-normal text-miru-dark-purple-1000 lg:w-72 lg:text-base">
         <p className="whitespace-pre">
-          {`${address_line_1}, ${address_line_2}, ${city}, ${state}, ${country}, ${pin}`}
+          {`${address_line_1},\n ${address_line_2},\n ${city}, ${state}, ${country},\n ${pin}`}
         </p>
         <p>{country}</p>
       </div>

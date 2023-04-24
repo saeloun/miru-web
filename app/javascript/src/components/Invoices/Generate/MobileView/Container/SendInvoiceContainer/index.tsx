@@ -35,7 +35,6 @@ const SendInvoiceContainer = ({ invoice, handleSaveSendInvoice }) => {
       </button>
     </div>
   );
-
   interface InvoiceEmail {
     recipients: string[];
     subject: string;
@@ -80,12 +79,20 @@ const SendInvoiceContainer = ({ invoice, handleSaveSendInvoice }) => {
     try {
       event.preventDefault();
       setStatus(InvoiceStatus.LOADING);
-      const res = await handleSaveSendInvoice();
-      if (res.status === 200) {
-        handleSendInvoice(res.data.id);
+      if (handleSaveSendInvoice) {
+        const res = await handleSaveSendInvoice();
+        if (res.status === 200) {
+          handleSendInvoice(res.data.id);
+        } else {
+          Toastr.error("Send invoice failed");
+          setStatus(InvoiceStatus.ERROR);
+        }
       } else {
-        Toastr.error("Send invoice failed");
-        setStatus(InvoiceStatus.ERROR);
+        const payload = { invoice_email: invoiceEmail };
+        const {
+          data: { message },
+        } = await invoicesApi.sendInvoice(invoice.id, payload);
+        Toastr.success(message);
       }
     } catch {
       setStatus(InvoiceStatus.ERROR);
