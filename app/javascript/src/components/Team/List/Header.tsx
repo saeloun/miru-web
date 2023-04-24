@@ -11,7 +11,7 @@ const Header = () => {
   const { setModalState } = useList();
 
   return (
-    <div className="mt-6 mb-3 sm:flex sm:items-center sm:justify-between">
+    <div className="mt-6 mb-3 lg:flex lg:items-center lg:justify-between">
       <h2 className="header__title ml-4 hidden lg:inline">Team</h2>
       {isAdminUser && (
         <div className="flex justify-end pr-6 lg:pr-0">

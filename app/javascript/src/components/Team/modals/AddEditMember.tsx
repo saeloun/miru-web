@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 
 import { Formik, Form, Field, FormikProps } from "formik";
+import { useOutsideClick, useKeypress } from "helpers";
 import { XIcon } from "miruIcons";
 import * as Yup from "yup";
 
@@ -43,7 +44,7 @@ interface Props {
 const EditClient = ({ user = {}, isEdit = false }: Props) => {
   const [apiError, setApiError] = useState<string>(""); // eslint-disable-line
   const { setModalState } = useList();
-
+  const wrapperRef = useRef();
   const handleSubmit = async values => {
     const { id, firstName, lastName, email, role } = values;
     const payload = {
@@ -73,6 +74,14 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
     }
   };
 
+  useOutsideClick(wrapperRef, () => {
+    setModalState(TeamModalType.NONE);
+  });
+
+  useKeypress("Escape", () => {
+    setModalState(TeamModalType.NONE);
+  });
+
   return (
     <div className="flex items-center justify-center px-4">
       <div
@@ -82,7 +91,10 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
         }}
       >
         <div className="relative flex h-full w-full items-center justify-center px-4">
-          <div className="modal-width transform rounded-lg bg-white px-6 pb-6 shadow-xl transition-all sm:max-w-md sm:align-middle">
+          <div
+            className="lg:modal-width min-w-0 transform rounded-lg bg-white px-6 pb-6 shadow-xl transition-all sm:max-w-md sm:align-middle"
+            ref={wrapperRef}
+          >
             <div className="mt-6 flex items-center justify-between">
               <h6 className="text-base font-extrabold">
                 {isEdit

@@ -35,7 +35,7 @@ const TableHead = () => {
         <th className="table__header w-1/2 p-6" scope="col">
           NAME / EMAIL ID
         </th>
-        <th className="table__header p-6 text-right" scope="col">
+        <th className="table__header w-1/3 p-6 text-right" scope="col">
           ROLE
         </th>
         <th className="table__header" scope="col" />

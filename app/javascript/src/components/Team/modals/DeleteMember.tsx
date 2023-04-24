@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useRef } from "react";
 
+import { useOutsideClick, useKeypress } from "helpers";
 import { XIcon } from "miruIcons";
 
 import teamApi from "apis/team";
@@ -8,6 +9,8 @@ import { TeamModalType } from "constants/index";
 import { useList } from "context/TeamContext";
 
 const DeleteMember = ({ user }) => {
+  const wrapperRef = useRef();
+
   const { setModalState } = useList();
 
   const deleteTeamMember = async () => {
@@ -23,6 +26,14 @@ const DeleteMember = ({ user }) => {
     }
   };
 
+  useOutsideClick(wrapperRef, () => {
+    setModalState(TeamModalType.NONE);
+  });
+
+  useKeypress("Escape", () => {
+    setModalState(TeamModalType.NONE);
+  });
+
   return (
     <div className="flex items-center justify-center px-4">
       <div
@@ -32,7 +43,10 @@ const DeleteMember = ({ user }) => {
         }}
       >
         <div className="relative flex h-full w-full items-center justify-center px-4">
-          <div className="modal-width transform rounded-lg bg-white px-6 pb-6 shadow-xl transition-all sm:max-w-md sm:align-middle">
+          <div
+            className="modal-width transform rounded-lg bg-white px-6 pb-6 shadow-xl transition-all sm:max-w-md sm:align-middle"
+            ref={wrapperRef}
+          >
             <div className="mt-6 flex items-center justify-between">
               <h6 className="text-2xl font-bold">
                 {user.isTeamMember ? "Delete User" : "Delete Invite"}

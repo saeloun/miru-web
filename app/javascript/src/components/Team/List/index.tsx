@@ -51,7 +51,7 @@ const TeamList = () => {
       <ToastContainer autoClose={TOASTER_DURATION} />
       <Header />
       <div>
-        <div className="table__flex">
+        <div className="table__flex pb-14">
           <div className="table__position-one">
             <div className="table__position-two">
               <div className="table__border border-b-0 border-miru-gray-200">
