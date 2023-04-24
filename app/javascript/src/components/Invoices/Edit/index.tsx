@@ -5,8 +5,11 @@ import { useParams, useNavigate } from "react-router-dom";
 
 import invoicesApi from "apis/invoices";
 import Toastr from "common/Toastr";
+import { useUserContext } from "context/UserContext";
 import { unmapLineItems } from "mapper/mappedIndex";
 import { sendGAPageView } from "utils/googleAnalytics";
+
+import EditInvoiceForm from "./Mobile";
 
 import CompanyInfo from "../common/CompanyInfo";
 import InvoiceDetails from "../common/InvoiceDetails";
@@ -20,6 +23,7 @@ import DeleteInvoice from "../popups/DeleteInvoice";
 const EditInvoice = () => {
   const navigate = useNavigate();
   const params = useParams();
+  const { isDesktop } = useUserContext();
 
   const [invoiceDetails, setInvoiceDetails] = useState<any>();
   const [lineItems, setLineItems] = useState<any>([]);
@@ -133,90 +137,124 @@ const EditInvoice = () => {
   };
 
   if (invoiceDetails) {
-    return (
-      <Fragment>
-        <Header
-          showMoreButton
-          formType="edit"
-          handleSaveInvoice={handleSaveInvoice}
-          handleSendInvoice={handleSendInvoice}
-          id={invoiceDetails.id}
-          invoiceNumber={invoiceDetails.invoiceNumber}
-          setShowInvoiceSetting={false}
-          deleteInvoice={() => {
-            setShowDeleteDialog(true);
-            setInvoiceToDelete(invoiceDetails.id);
-          }}
-        />
-        <div className="m-0 mt-5 mb-10 w-full bg-miru-gray-100 p-0">
-          <CompanyInfo company={invoiceDetails.company} />
-          <InvoiceDetails
-            optionSelected
-            amount={amount}
-            clientList={invoiceDetails.companyClientList}
-            clientVisible={false}
-            currency={invoiceDetails.company.currency}
-            dateFormat={invoiceDetails.company.dateFormat}
-            dueDate={dueDate || invoiceDetails.dueDate}
-            invoiceNumber={invoiceNumber}
-            issueDate={issueDate || invoiceDetails.issueDate}
-            reference={reference}
-            selectedClient={selectedClient || invoiceDetails.client}
-            setDueDate={setDueDate}
-            setInvoiceNumber={setInvoiceNumber}
-            setIssueDate={setIssueDate}
-            setReference={setReference}
-            setSelectedClient={setSelectedClient}
-          />
-          <div className="py-5 pl-10">
-            <InvoiceTable
-              currency={invoiceDetails.company.currency}
-              dateFormat={invoiceDetails.company.dateFormat}
-              lineItems={lineItems}
-              manualEntryArr={manualEntryArr}
-              selectedClient={selectedClient || invoiceDetails.client}
-              selectedLineItems={selectedLineItems}
-              setLineItems={setLineItems}
-              setManualEntryArr={setManualEntryArr}
-              setSelectedLineItems={setSelectedLineItems}
-            />
-          </div>
-          <InvoiceTotal
-            amountDue={amountDue}
-            amountPaid={amountPaid}
-            currency={invoiceDetails.company.currency}
-            discount={discount}
-            manualEntryArr={manualEntryArr}
-            newLineItems={selectedLineItems}
-            setAmount={setAmount}
-            setAmountDue={setAmountDue}
-            setDiscount={setDiscount}
-            setTax={setTax}
-            tax={tax || invoiceDetails.tax}
-          />
-        </div>
-        {showSendInvoiceModal && (
-          <SendInvoice
-            handleSaveSendInvoice={handleSaveSendInvoice}
-            isSending={showSendInvoiceModal}
-            setIsSending={setShowSendInvoiceModal}
-            invoice={{
-              id: invoiceDetails.id,
-              client: selectedClient,
-              company: invoiceDetails?.company,
-              dueDate,
-              invoiceNumber,
-              amount,
+    if (isDesktop) {
+      return (
+        <Fragment>
+          <Header
+            showMoreButton
+            formType="edit"
+            handleSaveInvoice={handleSaveInvoice}
+            handleSendInvoice={handleSendInvoice}
+            id={invoiceDetails.id}
+            invoiceNumber={invoiceDetails.invoiceNumber}
+            setShowInvoiceSetting={false}
+            deleteInvoice={() => {
+              setShowDeleteDialog(true);
+              setInvoiceToDelete(invoiceDetails.id);
             }}
           />
-        )}
-        {showDeleteDialog && (
-          <DeleteInvoice
-            invoice={invoiceToDelete}
-            setShowDeleteDialog={setShowDeleteDialog}
-          />
-        )}
-      </Fragment>
+          <div className="m-0 mt-5 mb-10 w-full bg-miru-gray-100 p-0">
+            <CompanyInfo company={invoiceDetails.company} />
+            <InvoiceDetails
+              optionSelected
+              amount={amount}
+              clientList={invoiceDetails.companyClientList}
+              clientVisible={false}
+              currency={invoiceDetails.company.currency}
+              dateFormat={invoiceDetails.company.dateFormat}
+              dueDate={dueDate || invoiceDetails.dueDate}
+              invoiceNumber={invoiceNumber}
+              issueDate={issueDate || invoiceDetails.issueDate}
+              reference={reference}
+              selectedClient={selectedClient || invoiceDetails.client}
+              setDueDate={setDueDate}
+              setInvoiceNumber={setInvoiceNumber}
+              setIssueDate={setIssueDate}
+              setReference={setReference}
+              setSelectedClient={setSelectedClient}
+            />
+            <div className="py-5 pl-10">
+              <InvoiceTable
+                currency={invoiceDetails.company.currency}
+                dateFormat={invoiceDetails.company.dateFormat}
+                lineItems={lineItems}
+                manualEntryArr={manualEntryArr}
+                selectedClient={selectedClient || invoiceDetails.client}
+                selectedLineItems={selectedLineItems}
+                setLineItems={setLineItems}
+                setManualEntryArr={setManualEntryArr}
+                setSelectedLineItems={setSelectedLineItems}
+              />
+            </div>
+            <InvoiceTotal
+              amountDue={amountDue}
+              amountPaid={amountPaid}
+              currency={invoiceDetails.company.currency}
+              discount={discount}
+              manualEntryArr={manualEntryArr}
+              newLineItems={selectedLineItems}
+              setAmount={setAmount}
+              setAmountDue={setAmountDue}
+              setDiscount={setDiscount}
+              setTax={setTax}
+              tax={tax || invoiceDetails.tax}
+            />
+          </div>
+          {showSendInvoiceModal && (
+            <SendInvoice
+              handleSaveSendInvoice={handleSaveSendInvoice}
+              isSending={showSendInvoiceModal}
+              setIsSending={setShowSendInvoiceModal}
+              invoice={{
+                id: invoiceDetails.id,
+                client: selectedClient,
+                company: invoiceDetails?.company,
+                dueDate,
+                invoiceNumber,
+                amount,
+              }}
+            />
+          )}
+          {showDeleteDialog && (
+            <DeleteInvoice
+              invoice={invoiceToDelete}
+              setShowDeleteDialog={setShowDeleteDialog}
+            />
+          )}
+        </Fragment>
+      );
+    }
+
+    return (
+      <EditInvoiceForm
+        amount={amount}
+        amountDue={amountDue}
+        amountPaid={amountPaid}
+        discount={discount}
+        dueDate={dueDate}
+        handleSaveInvoice={handleSaveInvoice}
+        invoiceDetails={invoiceDetails}
+        invoiceNumber={invoiceNumber}
+        issueDate={issueDate}
+        lineItems={lineItems}
+        manualEntryArr={manualEntryArr}
+        reference={reference}
+        selectedClient={selectedClient}
+        selectedLineItems={selectedLineItems}
+        setAmount={setAmount}
+        setAmountDue={setAmountDue}
+        setDiscount={setDiscount}
+        setDueDate={setDueDate}
+        setInvoiceNumber={setInvoiceNumber}
+        setIssueDate={setIssueDate}
+        setLineItems={setLineItems}
+        setManualEntryArr={setManualEntryArr}
+        setReference={setReference}
+        setSelectedClient={setSelectedClient}
+        setSelectedLineItems={setSelectedLineItems}
+        setTax={setTax}
+        tax={tax}
+      />
     );
   }
 

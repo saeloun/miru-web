@@ -70,8 +70,14 @@ const Payments = () => {
     checkInvoiceIdInUrl();
   }, []);
 
+  const handleEscKeyPress = (e: any) => {
+    if (e?.key?.trim()?.toLowerCase() == "escape" && showManualEntryModal) {
+      setShowManualEntryModal(false);
+    }
+  };
+
   const PaymentsLayout = () => (
-    <div className="h-full flex-col p-4">
+    <div className="h-full flex-col p-4" onKeyDown={handleEscKeyPress}>
       <Header
         params={params}
         payments={paymentList}
@@ -121,6 +127,19 @@ const Payments = () => {
   );
 
   const Main = withLayout(PaymentsLayout, !isDesktop, !isDesktop);
+
+  if (showManualEntryModal && !isDesktop) {
+    return (
+      <AddManualEntry
+        baseCurrency={baseCurrency}
+        dateFormat={dateFormat}
+        fetchInvoiceList={fetchInvoiceList}
+        fetchPaymentList={fetchPaymentList}
+        invoiceList={invoiceList}
+        setShowManualEntryModal={setShowManualEntryModal}
+      />
+    );
+  }
 
   return isDesktop ? PaymentsLayout() : <Main />;
 };

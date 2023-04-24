@@ -48,12 +48,16 @@ const Container = ({
   const [multiLineItemModal, setMultiLineItemModal] = useState<boolean>(false);
   const [editItem, setEditItem] = useState<any>({});
   const [isInvoicePreviewCall, setIsInvoicePreviewCall] =
-    useState<boolean>(false);
+    useState<boolean>(true);
   const [subTotal, setSubTotal] = useState<number>(0);
   const [total, setTotal] = useState<number>(0);
   const [invoiceId, setInvoiceId] = useState<number>(null);
   const [showSendInvoiceModal, setShowSendInvoiceModal] =
     useState<boolean>(true);
+
+  const currency =
+    invoiceDetails?.companyDetails?.currency ||
+    invoiceDetails?.company?.currency;
 
   const INVOICE_NUMBER_ERROR = "Please enter invoice number to proceed";
   const SELECT_CLIENT_ERROR =
@@ -116,7 +120,7 @@ const Container = ({
           <MenuContainer
             amountDue={amountDue}
             amountPaid={amountPaid}
-            currency={invoiceDetails.companyDetails.currency}
+            currency={currency}
             dateFormat={dateFormat}
             discount={discount}
             dueDate={dueDate}
@@ -203,7 +207,7 @@ const Container = ({
             amount={amount}
             amountDue={amountDue}
             amountPaid={amountPaid}
-            currency={invoiceDetails.companyDetails.currency}
+            currency={currency}
             discount={discount}
             dueDate={dueDate}
             handleSaveInvoice={handleSaveInvoice}
@@ -231,7 +235,9 @@ const Container = ({
               invoice={{
                 id: invoiceId,
                 client: selectedClient,
-                company: invoiceDetails?.companyDetails,
+                company: invoiceDetails?.companyDetails
+                  ? invoiceDetails?.companyDetails
+                  : invoiceDetails?.company,
                 dueDate,
                 invoiceNumber,
                 amount,

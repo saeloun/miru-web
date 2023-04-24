@@ -33,15 +33,17 @@ const MobileView = ({
   setTax,
   tax,
   handleSaveInvoice,
+  isEdit,
 }) => {
   const [activeSection, setActiveSection] = useState<string>(
-    sections.generateInvoice
+    isEdit ? sections.invoicePreview : sections.generateInvoice
   );
 
   return (
     <div className="flex h-full w-full flex-col">
       <Header
         activeSection={activeSection}
+        isEdit={isEdit}
         setActiveSection={setActiveSection}
       />
       <Container
