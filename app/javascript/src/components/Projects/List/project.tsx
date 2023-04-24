@@ -27,7 +27,9 @@ export const Project = ({
   const navigate = useNavigate();
   const { isDesktop } = useUserContext();
   const handleMouseEnter = () => {
-    setGrayColor("bg-miru-gray-100");
+    if (isAdminUser) {
+      setGrayColor("bg-miru-gray-100");
+    }
     setIsHover(true);
   };
 
@@ -102,15 +104,17 @@ export const Project = ({
           )}
         </td>
         <td className="table__cell table-cell items-center px-3 py-3 lg:hidden">
-          <DotsThreeVerticalIcon
-            size={16}
-            weight="bold"
-            onClick={e => {
-              e.preventDefault();
-              e.stopPropagation();
-              setShowMoreOptions(true);
-            }}
-          />
+          {isAdminUser && (
+            <DotsThreeVerticalIcon
+              size={16}
+              weight="bold"
+              onClick={e => {
+                e.preventDefault();
+                e.stopPropagation();
+                setShowMoreOptions(true);
+              }}
+            />
+          )}
         </td>
       </tr>
       {showMoreOptions && (

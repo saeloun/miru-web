@@ -89,9 +89,8 @@ const UserDetailsEdit = () => {
     setUserId(data.data.user.id);
 
     const userObj = teamsMapper(data.data.user, addressData.data.addresses[0]);
-    userObj.date_format = data.data.date_format;
     setUserState("profileSettings", userObj);
-    if (userObj.addresses.address_type.length > 0) {
+    if (userObj.addresses?.address_type?.length > 0) {
       setAddrType(
         addressOptions.find(
           item => item.value === userObj.addresses.address_type
@@ -230,20 +229,36 @@ const UserDetailsEdit = () => {
           github_url: profileSettings.github,
         },
       };
-
       if (changePassword) {
         userSchema["current_password"] = profileSettings.currentPassword;
         userSchema["password"] = profileSettings.password;
         userSchema["password_confirmation"] = profileSettings.confirmPassword;
       }
 
+      const payload = {
+        address: {
+          address_line_1: profileSettings.addresses.address_line_1,
+          address_line_2: profileSettings.addresses.address_line_2,
+          address_type: profileSettings.addresses.address_type,
+          city: profileSettings.addresses.city,
+          state: profileSettings.addresses.state,
+          country: profileSettings.addresses.country,
+          pin: profileSettings.addresses.pin,
+        },
+      };
+
       await profileApi.update({
         user: userSchema,
       });
 
-      await profileApi.updateAddress(userId, addrId, {
-        address: { ...profileSettings.addresses },
-      });
+      if (addrId) {
+        await profileApi.updateAddress(userId, addrId, {
+          address: { ...profileSettings.addresses },
+        });
+      } else {
+        await profileApi.createAddress(userId, payload);
+      }
+
       setErrDetails(initialErrState);
       navigate(`/profile/edit`, { replace: true });
     } catch (err) {
@@ -363,10 +378,7 @@ const UserDetailsEdit = () => {
       )}
       {!isDesktop && (
         <Fragment>
-          <MobileDetailsHeader
-            href={`/team/${memberId}/details`}
-            title="Personal Details"
-          />
+          <MobileDetailsHeader href="/profile/edit" title="Personal Details" />
           {isLoading ? (
             <div className="flex min-h-70v items-center justify-center">
               <Loader />
@@ -375,6 +387,7 @@ const UserDetailsEdit = () => {
             <MobileEditPage
               addrType={addrType}
               addressOptions={addressOptions}
+              changePassword={changePassword}
               countries={countries}
               currentCountryDetails={currentCountryDetails}
               errDetails={errDetails}
@@ -388,8 +401,15 @@ const UserDetailsEdit = () => {
               handleUpdateDetails={handleUpdateDetails}
               personalDetails={profileSettings}
               promiseOptions={promiseOptions}
+              setChangePassword={setChangePassword}
+              setShowConfirmPassword={setShowConfirmPassword}
+              setShowCurrentPassword={setShowCurrentPassword}
               setShowDatePicker={setShowDatePicker}
+              setShowPassword={setShowPassword}
+              showConfirmPassword={showConfirmPassword}
+              showCurrentPassword={showCurrentPassword}
               showDatePicker={showDatePicker}
+              showPassword={showPassword}
               updateBasicDetails={updateBasicDetails}
               updatedStates={updatedStates}
               wrapperRef={wrapperRef}

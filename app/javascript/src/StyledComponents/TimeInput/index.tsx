@@ -15,6 +15,8 @@ const TimeInput = ({
   className,
   name,
   onBlurHandler,
+  key,
+  id,
 }: Iprops) => {
   const [time, setTime] = useState<string>("");
 
@@ -68,6 +70,8 @@ const TimeInput = ({
     <input
       className={className}
       disabled={disabled}
+      id={id}
+      key={key}
       name={name || undefined}
       placeholder={placeholder}
       ref={_input}
@@ -85,6 +89,8 @@ TimeInput.defaultProps = {
 };
 
 interface Iprops {
+  key?: number | string;
+  id?: string;
   autoFocus?: boolean;
   initTime?: string;
   disabled?: boolean;

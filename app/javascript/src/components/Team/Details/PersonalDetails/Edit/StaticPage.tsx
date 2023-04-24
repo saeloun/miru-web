@@ -398,7 +398,7 @@ const StaticPage = ({
           <div className="flex w-1/2 flex-col px-2">
             <CustomInputText
               id="github"
-              label="github"
+              label="Github"
               name="github"
               type="text"
               value={personalDetails.github}
