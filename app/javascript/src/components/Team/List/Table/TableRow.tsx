@@ -117,6 +117,7 @@ const TableRow = ({ item }) => {
         <td className="table__data table__cell items-center px-3 py-3 lg:hidden">
           {actionIconVisible && (
             <DotsThreeVerticalIcon
+              className="w-full"
               size={16}
               weight="bold"
               onClick={e => {
