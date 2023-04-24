@@ -206,6 +206,7 @@ const GenerateInvoices = () => {
         handleSaveInvoice={handleSaveInvoice}
         invoiceDetails={invoiceDetails}
         invoiceNumber={invoiceNumber}
+        isEdit={false}
         issueDate={issueDate}
         lineItems={lineItems}
         manualEntryArr={manualEntryArr}

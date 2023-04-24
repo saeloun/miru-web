@@ -146,7 +146,7 @@ const MenuContainer = ({
             <>
               <div className="mt-3 border-t border-miru-gray-400" />
               <LineItems
-                currency={invoiceDetails.companyDetails.currency}
+                currency={currency}
                 dateFormat={dateFormat}
                 isInvoicePreviewCall={isInvoicePreviewCall}
                 manualEntryArr={manualEntryArr}
