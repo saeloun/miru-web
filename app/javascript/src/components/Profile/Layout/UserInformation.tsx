@@ -37,7 +37,7 @@ export const UserInformation = () => {
   return (
     <div>
       <div className="flex h-88 w-full flex-row items-center bg-miru-han-purple-1000 p-4 text-white">
-        <div className="relative flex h-14 w-1/5 justify-center">
+        <div className="relative flex h-14 w-1/5 justify-center md:w-1/10 md:justify-start lg:w-1/5 lg:justify-center">
           <img className="h-14 w-14" src={UserAvatarSVG} />
         </div>
         <div className="flex w-4/5 flex-col items-baseline justify-center px-4">
