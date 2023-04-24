@@ -5,9 +5,11 @@ import { Outlet, useNavigate } from "react-router-dom";
 
 import companiesApi from "apis/companies";
 import Loader from "common/Loader/index";
+import DetailsHeader from "components/Profile/DetailsHeader";
+import { useUserContext } from "context/UserContext";
 import { sendGAPageView } from "utils/googleAnalytics";
 
-import Header from "./Header";
+import MobileHeader from "./MobileHeader";
 import StaticPage from "./StaticPage";
 
 const initialState = {
@@ -27,6 +29,7 @@ const initialState = {
 
 const OrgDetails = () => {
   const navigate = useNavigate();
+  const { isDesktop } = useUserContext();
   const [orgDetails, setOrgDetails] = useState(initialState);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -74,9 +77,27 @@ const OrgDetails = () => {
     navigate(`/profile/edit/organization`, { replace: true });
   };
 
+  const handleBackBtnClick = () => {
+    navigate(`/time-tracking`, { replace: true });
+  };
+
   return (
     <div className="flex w-full flex-col">
-      <Header title="Organization Settings" onEditBtnClick={handleEditClick} />
+      {isDesktop ? (
+        <DetailsHeader
+          showButtons
+          editAction={handleEditClick}
+          isDisableUpdateBtn={false}
+          subTitle=""
+          title="Organization Settings"
+        />
+      ) : (
+        <MobileHeader
+          title="Organization Settings"
+          onBackArrowClick={handleBackBtnClick}
+          onEditBtnClick={handleEditClick}
+        />
+      )}
       {isLoading ? <Loader /> : <StaticPage orgDetails={orgDetails} />}
       <Outlet />
     </div>
