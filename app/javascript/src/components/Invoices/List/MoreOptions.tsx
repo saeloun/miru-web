@@ -41,14 +41,14 @@ const MoreOptions = ({
       >
         <Tooltip content="Send To">
           <button
-            className="p-2 text-miru-han-purple-1000 hover:bg-miru-gray-1000"
+            className="rounded p-2 text-miru-han-purple-1000 hover:bg-miru-gray-100"
             id="sendInvoiceButton"
             onClick={() => {
               setIsSending(!isSending);
             }}
           >
             <PaperPlaneTiltIcon
-              className="hover:bg-miru-gray-1000"
+              className="hover:bg-miru-gray-100"
               size={16}
               weight="bold"
             />
@@ -60,7 +60,7 @@ const MoreOptions = ({
             className={
               invoice.status == "draft"
                 ? "text-miru-gray-1000"
-                : "p-2 text-miru-han-purple-1000 hover:bg-miru-gray-1000"
+                : "rounded p-2 text-miru-han-purple-1000 hover:bg-miru-gray-100"
             }
             onClick={e => {
               e.stopPropagation();
@@ -72,7 +72,7 @@ const MoreOptions = ({
         </Tooltip>
         <Tooltip content="Edit">
           <Link
-            className="p-2 text-miru-han-purple-1000 hover:bg-miru-gray-1000"
+            className="rounded p-2 text-miru-han-purple-1000 hover:bg-miru-gray-100"
             id="editInvoiceButton"
             to={`/invoices/${invoice.id}/edit`}
             type="button"
@@ -83,7 +83,7 @@ const MoreOptions = ({
         </Tooltip>
         <Tooltip content="More">
           <button
-            className={`p-2 text-miru-han-purple-1000  hover:bg-miru-gray-1000 ${
+            className={`rounded p-2 text-miru-han-purple-1000  hover:bg-miru-gray-100 ${
               isMenuOpen && `bg-miru-gray-100`
             }`}
             onClick={e => {

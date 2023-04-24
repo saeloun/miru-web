@@ -12,6 +12,8 @@ const Table = ({
   setInvoiceToDelete,
   fetchInvoices,
   isDesktop,
+  isSending,
+  setIsSending,
 }) => (
   <table
     className="min-w-full divide-y divide-gray-200 overflow-x-scroll lg:mt-4"
@@ -35,9 +37,11 @@ const Table = ({
           invoice={invoice}
           isDesktop={isDesktop}
           isSelected={selectedInvoices.includes(invoice.id)}
+          isSending={isSending}
           key={invoice.id}
           selectInvoices={selectInvoices}
           setInvoiceToDelete={setInvoiceToDelete}
+          setIsSending={setIsSending}
           setShowDeleteDialog={setShowDeleteDialog}
         />
       ))}
