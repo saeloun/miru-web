@@ -62,7 +62,7 @@ export const ProfileImage = ({ src, handleDeleteLogo, onLogoChange }) => {
         <>
           {showImageUpdateOptions ? (
             <MobileMoreOptions
-              className="h-1/6 w-full md:mx-auto md:h-1/10 md:w-11/12"
+              className="h-14/100 w-full md:mx-auto md:h-1/10 md:w-11/12"
               setVisibilty={setShowImageUpdateOptions}
             >
               <li className="w-full">
