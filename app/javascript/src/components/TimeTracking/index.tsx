@@ -115,7 +115,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
     if (view === "month") return;
     parseWeeklyViewData();
     calculateTotalHours();
-  }, [weekDay, entryList]);
+  }, [weekDay, entryList, view]);
 
   useEffect(() => {
     setIsWeeklyEditing(false);

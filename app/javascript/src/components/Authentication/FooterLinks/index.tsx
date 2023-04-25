@@ -3,7 +3,7 @@ import React from "react";
 import FOOTER_LINKS from "./utils";
 
 const FooterLinks = () => (
-  <div className="absolute bottom-0 mx-auto mb-4 w-4/5 md:mb-10 md:w-full">
+  <div className="mx-auto mt-auto mb-4 w-4/5 md:mb-10 md:w-full">
     <ul className="flex items-center justify-center">
       {FOOTER_LINKS?.map((footerLink, i) => (
         <li className="flex items-center" key={footerLink.text}>
