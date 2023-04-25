@@ -58,7 +58,7 @@ const SignUpForm = () => {
     );
 
   return (
-    <div className="relative flex w-full flex-col items-center justify-center px-8 pb-4 md:px-0 lg:w-1/2">
+    <div className="relative flex w-full flex-col items-center justify-center px-8 pt-5vh md:px-0 lg:w-1/2">
       <div className="mx-auto mt-auto md:w-1/2 lg:w-352">
         <div className="d-block lg:hidden">
           <a href={MIRU_APP_URL} rel="noreferrer noopener">
