@@ -141,7 +141,7 @@ GEM
       matrix
       ruby-rc4 (>= 0.1.5)
     concurrent-ruby (1.2.2)
-    connection_pool (2.3.0)
+    connection_pool (2.4.0)
     countries (5.3.1)
       unaccent (~> 0.3)
     crack (0.4.5)
@@ -381,6 +381,8 @@ GEM
       railties (>= 3.2)
       tilt
     redis (4.8.0)
+    redis-client (0.14.1)
+      connection_pool
     regexp_parser (2.6.2)
     reline (0.3.3)
       io-console (~> 0.5)
@@ -479,10 +481,11 @@ GEM
       activesupport (>= 3)
     shoulda-matchers (5.3.0)
       activesupport (>= 5.2.0)
-    sidekiq (6.5.8)
-      connection_pool (>= 2.2.5, < 3)
-      rack (~> 2.0)
-      redis (>= 4.5.0, < 5)
+    sidekiq (7.0.8)
+      concurrent-ruby (< 2)
+      connection_pool (>= 2.3.0)
+      rack (>= 2.2.4)
+      redis-client (>= 0.11.0)
     sidekiq-scheduler (5.0.1)
       rufus-scheduler (~> 3.2)
       sidekiq (>= 4, < 8)
@@ -611,7 +614,7 @@ DEPENDENCIES
   shakapacker (= 6.0.0)
   shoulda-callback-matchers (~> 1.1.1)
   shoulda-matchers (~> 5.1)
-  sidekiq (< 7)
+  sidekiq (< 8)
   sidekiq-scheduler
   simplecov
   spring
