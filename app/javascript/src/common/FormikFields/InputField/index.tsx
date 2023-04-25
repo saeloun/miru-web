@@ -67,7 +67,7 @@ const InputField = ({
     <div
       className={classNames(
         defaultWrapperClassName,
-        "field relative mb-6 xsm:mb-2",
+        "field relative mb-2 xsm:mb-6",
         wrapperClassName
       )}
     >
