@@ -8,15 +8,13 @@ RSpec.describe "Time Tracking - day view", type: :system do
   let!(:project) { create(:project, client:) }
   let(:admin) { create(:user, current_workspace_id: company.id) }
   let(:employee) { create(:user, current_workspace_id: company.id) }
-  let(:user_two) { create(:user, current_workspace_id: company.id) }
-  let(:employment_two) { create(:employment, company:, user: user_two) }
-  let(:project_member_two) { create(:project_member, user: user_two, project:) }
 
   context "when user is admin" do
     before do
       admin.add_role :admin, company
       create(:employment, company:, user: admin)
       create(:project_member, user: admin, project:)
+      create(:timesheet_entry, user: admin, project:)
       sign_in(admin)
     end
 
@@ -48,8 +46,6 @@ RSpec.describe "Time Tracking - day view", type: :system do
     end
 
     it "can edit time entry" do
-      create(:timesheet_entry, user: admin, project:)
-
       with_forgery_protection do
         visit "time-tracking"
 
@@ -64,8 +60,6 @@ RSpec.describe "Time Tracking - day view", type: :system do
     end
 
     it "can delete time entry" do
-      create(:timesheet_entry, user: admin, project:)
-
       with_forgery_protection do
         visit "time-tracking"
 
@@ -79,7 +73,11 @@ RSpec.describe "Time Tracking - day view", type: :system do
     end
 
     it "can view other users entry" do
+      user_two = create(:user, current_workspace_id: company.id)
+      create(:employment, company:, user: user_two)
+      create(:project_member, user: user_two, project:)
       time_entry = create(:timesheet_entry, user: user_two, project:)
+
       with_forgery_protection do
         visit "time-tracking"
 
