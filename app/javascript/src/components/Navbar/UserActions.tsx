@@ -105,13 +105,13 @@ const UserActions = setVisiblity => {
 
   return (
     <ul className="w-full">
-      <li className="flex border-b border-miru-gray-100 px-6 last:border-b-0 hover:bg-miru-gray-100 md:border-b-0 lg:justify-start">
+      <li className="flex border-b border-miru-gray-100 last:border-b-0 hover:bg-miru-gray-100 lg:justify-start lg:border-b-0">
         <NavLink
           to={isDesktop ? "/profile/edit" : "/profile/edit/option"}
           className={({ isActive }) =>
             isActive
               ? activeClassName
-              : "flex w-full items-start justify-start py-3 hover:bg-miru-gray-100"
+              : "flex w-full items-start justify-start py-3 px-6 hover:bg-miru-gray-100"
           }
           onClick={() => {
             if (!isDesktop) {
@@ -124,7 +124,7 @@ const UserActions = setVisiblity => {
         </NavLink>
       </li>
       <li
-        className="flex cursor-pointer items-start  justify-start border-b border-miru-gray-100 px-6 last:border-b-0 hover:bg-miru-gray-100 md:border-b-0"
+        className="flex cursor-pointer border-b border-miru-gray-100 px-6 py-3 last:border-b-0 hover:bg-miru-gray-100 lg:justify-start lg:border-b-0"
         id="logoutBtn"
         onClick={handleLogout}
       >
@@ -133,7 +133,7 @@ const UserActions = setVisiblity => {
       </li>
       <Tooltip content={currentWorkspace.name} show={showToolTip}>
         <li
-          className="flex w-full cursor-pointer items-center justify-between py-4  px-6 text-sm font-bold leading-4 hover:bg-miru-gray-100"
+          className="flex w-full cursor-pointer items-center justify-between py-3  px-6 text-sm font-bold leading-4 hover:bg-miru-gray-100"
           onClick={() => {
             setShowWorkSpaceList(true);
           }}

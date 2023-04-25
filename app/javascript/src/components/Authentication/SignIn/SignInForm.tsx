@@ -60,7 +60,7 @@ const SignInForm = () => {
     !(values.email?.trim() && values?.password?.trim());
 
   return (
-    <div className="relative w-full px-8 pt-10 pb-4 md:px-0 md:pt-36 lg:w-1/2">
+    <div className="relative flex w-full flex-col items-center justify-center px-8 pt-5vh md:px-0 lg:w-1/2">
       <div className="d-block lg:hidden">
         <a href={MIRU_APP_URL} rel="noreferrer noopener">
           <img
@@ -70,11 +70,11 @@ const SignInForm = () => {
           />
         </a>
       </div>
-      <div className="mx-auto md:w-1/2 lg:w-352">
+      <div className="mx-auto mt-auto md:w-1/2 lg:w-352">
         <h1 className="text-center font-manrope text-2xl font-extrabold text-miru-han-purple-1000 md:text-3xl lg:text-4.5xl">
           Welcome back!
         </h1>
-        <div className="pt-10 lg:pt-20">
+        <div className="pt-2vh lg:pt-5vh">
           <Formik
             initialValues={signInFormInitialValues}
             validateOnBlur={false}
