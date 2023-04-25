@@ -58,8 +58,8 @@ const SignUpForm = () => {
     );
 
   return (
-    <div className="relative w-full px-8 pt-10 pb-4 md:px-0 md:pt-36 lg:w-1/2">
-      <div className="mx-auto min-h-full md:w-1/2 lg:w-352">
+    <div className="relative flex w-full flex-col items-center justify-center px-8 pb-4 md:px-0 lg:w-1/2">
+      <div className="mx-auto mt-auto md:w-1/2 lg:w-352">
         <div className="d-block lg:hidden">
           <a href={MIRU_APP_URL} rel="noreferrer noopener">
             <img
@@ -72,7 +72,7 @@ const SignUpForm = () => {
         <h1 className="text-center font-manrope text-2xl font-extrabold text-miru-han-purple-1000 md:text-3xl lg:text-4.5xl">
           Signup for Miru
         </h1>
-        <div className="pt-10 lg:pt-20">
+        <div className="pt-2vh lg:pt-5vh">
           <Formik
             initialValues={signUpFormInitialValues}
             validateOnBlur={false}
@@ -179,7 +179,7 @@ const SignUpForm = () => {
                       Sign Up
                     </button>
                   </div>
-                  <div className="relative flex items-center py-7">
+                  <div className="relative flex items-center py-2vh">
                     <div className="flex-grow border-t border-miru-gray-1000" />
                     <span className="mx-4 flex-shrink text-xs text-miru-dark-purple-1000">
                       or
@@ -220,7 +220,7 @@ const SignUpForm = () => {
               )}
             </Formik>
           </div>
-          <p className="pt-5 pb-10 text-center font-manrope text-xs font-normal not-italic text-miru-dark-purple-1000">
+          <p className="py-2vh text-center font-manrope text-xs font-normal not-italic text-miru-dark-purple-1000">
             Already have an account?&nbsp;
             <span className="form__link inline cursor-pointer">
               <a href={Paths.LOGIN}>

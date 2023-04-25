@@ -7,7 +7,7 @@ module.exports = {
     },
     fontSize: {
       xsm: ".5625em",
-      xxs: "0.625rem",//10px
+      xxs: "0.625rem", //10px
       xs: ".75rem",
       sm: ".875rem",
       tiny: ".875rem",
@@ -27,7 +27,7 @@ module.exports = {
     },
     letterSpacing: {
       widest: "0.125em",
-      semiWidest: "0.09375",//1.5px
+      semiWidest: "0.09375", //1.5px
       wider: ".05em",
       normal: "0em",
       "xs-widest": "0.166667em", // 2px when font-size 12px
@@ -63,7 +63,7 @@ module.exports = {
         352: "22rem", //352px
         480: "30rem", //480px
         18: "18%",
-        72: "72%"
+        72: "72%",
       },
       minWidth: {
         12: "12px",
@@ -168,7 +168,7 @@ module.exports = {
         },
         "miru-chart-blue": {
           600: "#0E79B2",
-          1000: "#68AEAA"
+          1000: "#68AEAA",
         },
         "miru-chart-pink": {
           600: "#BF1363",
@@ -209,7 +209,7 @@ module.exports = {
         129: "33rem",
         138: "34.5rem",
         160: "40rem",
-        "1/5": "20%"
+        "1/5": "20%",
       },
       padding: {
         "36/100": "36.66666%",
@@ -218,6 +218,9 @@ module.exports = {
         "26/100": "26.66666%",
         "20/100": "20%",
         "10/100": "10%",
+        "10vh": "10vh",
+        "5vh": "5vh",
+        "2vh": "2vh",
       },
       zIndex: {
         "negative-1": "-1",
