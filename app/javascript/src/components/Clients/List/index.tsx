@@ -253,7 +253,7 @@ const Clients = ({ isAdminUser }) => {
         setnewClient={setClient}
       />
       <div>
-        {isAdminUser && (
+        {isAdminUser && isDesktop && (
           <div className="bg-miru-gray-100 py-10 px-10">
             <div className="flex justify-end">
               <select
