@@ -92,7 +92,7 @@ export const StaticPage = ({
               onLogoChange={onLogoChange}
             />
           )}
-          <div className="ml-5 w-36 whitespace-pre-wrap text-left text-xs	 text-miru-dark-purple-400 ">
+          <div className="ml-5 whitespace-pre-wrap text-left text-xs font-normal text-miru-dark-purple-400 md:w-44 lg:w-36">
             <FileAcceptanceText />
           </div>
         </div>
@@ -143,7 +143,7 @@ export const StaticPage = ({
           <div className="flex w-full flex-col px-2 md:w-1/2">
             <div className="outline relative flex h-12 flex-row rounded border border-miru-gray-1000 bg-white px-4 md:py-2.5">
               <PhoneInput
-                className="input-phone-number w-full border-transparent focus:border-transparent focus:ring-0"
+                className="input-phone-number w-full border-transparent text-sm font-medium focus:border-transparent focus:ring-0"
                 defaultCountry="US"
                 flags={flags}
                 initialValueFormat="national"
@@ -181,7 +181,7 @@ export const StaticPage = ({
         </div>
       </div>
       <div className="w-full md:w-72">
-        <div className="flex w-full flex-col px-2 pb-3">
+        <div className="flex w-full flex-col px-2 pb-3 text-sm font-medium">
           <CustomInputText
             id="addressLine1"
             label="Address line 1"
@@ -208,7 +208,7 @@ export const StaticPage = ({
           />
         </div>
         <div className="flex flex-row pt-2 pb-1">
-          <div className="flex w-1/2 flex-col px-2 pb-3">
+          <div className="flex w-1/2 flex-col px-2 pb-3 text-sm font-medium">
             <CustomReactSelect
               handleOnChange={value => handleOnChangeCountry(value)}
               label="Country"
@@ -223,7 +223,7 @@ export const StaticPage = ({
               />
             )}
           </div>
-          <div className="flex w-1/2 flex-col px-2 pb-3">
+          <div className="flex w-1/2 flex-col px-2 pb-3 text-sm font-medium">
             <CustomReactSelect
               handleOnChange={state => handleOnChangeState(state)}
               label="State"
@@ -247,7 +247,10 @@ export const StaticPage = ({
           </div>
         </div>
         <div className="flex flex-row py-1">
-          <div className="flex w-1/2 flex-col px-2 pb-3" id="citySelect">
+          <div
+            className="flex w-1/2 flex-col px-2 pb-3 text-sm font-medium"
+            id="citySelect"
+          >
             <CustomAsyncSelect
               handleOnChange={city => handleOnChangeCity(city)}
               isErr={false}
@@ -266,7 +269,7 @@ export const StaticPage = ({
               />
             )}
           </div>
-          <div className="flex w-1/2 flex-col px-2 pb-3">
+          <div className="flex w-1/2 flex-col px-2 pb-3 text-sm font-medium">
             <CustomInputText
               id="zipcode"
               label="Zipcode"
@@ -297,7 +300,7 @@ export const StaticPage = ({
         </span>
       </div>
       <div className="w-full md:w-72">
-        <div className="flex flex-row">
+        <div className="flex flex-row text-sm font-medium">
           <div className="w-1/2 p-2" data-cy="base-currency">
             <CustomReactSelect
               classNamePrefix="react-select-filter"
@@ -312,7 +315,7 @@ export const StaticPage = ({
               }
             />
           </div>
-          <div className="w-1/2 p-2">
+          <div className="w-1/2 p-2 text-sm font-medium">
             <CustomInputText
               id="company_rate"
               label="Standard Rate"
@@ -358,7 +361,7 @@ export const StaticPage = ({
         </div>
       </div>
       <div className="w-full md:w-72">
-        <div className="w-full p-2 pb-6" data-cy="timezone">
+        <div className="w-full p-2 pb-6 text-sm font-medium" data-cy="timezone">
           <CustomReactSelect
             classNamePrefix="react-select-filter"
             handleOnChange={handleTimezoneChange}
@@ -373,7 +376,7 @@ export const StaticPage = ({
           />
         </div>
         <div className="flex flex-row items-center justify-center">
-          <div className="w-1/2 p-2" data-cy="date-format">
+          <div className="w-1/2 p-2 text-sm font-medium" data-cy="date-format">
             <CustomReactSelect
               classNamePrefix="react-select-filter"
               handleOnChange={handleDateFormatChange}
@@ -387,7 +390,7 @@ export const StaticPage = ({
               }
             />
           </div>
-          <div className="w-1/2 p-2" data-cy="fiscal-year">
+          <div className="w-1/2 p-2 text-sm font-medium" data-cy="fiscal-year">
             <CustomReactSelect
               classNamePrefix="react-select-filter"
               handleOnChange={handleFiscalYearChange}
