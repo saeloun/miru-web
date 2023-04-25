@@ -11,7 +11,7 @@ import withLayout from "common/Mobile/HOC/withLayout";
 import { useUserContext } from "context/UserContext";
 
 import { TeamUrl } from "./TeamUrl";
-import { UserInformation } from "./UserInformation";
+import { UserDetails } from "./UserDetails";
 
 const getSettingsNavUrls = memberId => [
   {
@@ -68,7 +68,7 @@ const MobileNav = () => {
 
   const mobileView = () => (
     <div>
-      <UserInformation />
+      <UserDetails />
       <TeamUrl
         currentWorkspaceName={currentWorkspace?.name || ""}
         urlList={urlList}
