@@ -58,7 +58,7 @@ microsoft_client.addresses.create!(
   city: "Brooklyn",
   state: "NY",
   pin: "12238",
-  country: "USA"
+  country: "US"
 )
 
 project_office_com = microsoft_client.projects.create!(name: "Office.com", description: "Office 365", billable: true)
