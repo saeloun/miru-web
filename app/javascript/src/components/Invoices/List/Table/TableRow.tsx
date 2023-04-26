@@ -25,7 +25,6 @@ const TableRow = ({
   isSending,
   setIsSending,
 }) => {
-  // const [isSending, setIsSending] = useState<boolean>(false);
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   const [showMoreOptions, setShowMoreOptions] = useState<boolean>(false);
   const [showToolTip, setShowToolTip] = useState<boolean>(false);
@@ -163,9 +162,9 @@ const TableRow = ({
         )}
         {isSending && isDesktop && (
           <SendInvoice
-            isSending
             fetchInvoices={fetchInvoices}
             invoice={invoice}
+            isSending={isSending}
             setIsSending={setIsSending}
           />
         )}
