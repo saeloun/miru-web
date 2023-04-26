@@ -460,7 +460,7 @@ const MobileClientForm = ({
                   <div className="flex w-1/2 flex-col pr-2" id="city">
                     <CustomReactSelect
                       isErr={!!errors.city && touched.city}
-                      label="State"
+                      label="City"
                       name="city"
                       options={currentCityList}
                       value={values.city.value ? values.city : null}
