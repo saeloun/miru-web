@@ -130,7 +130,7 @@ users.each { |user| user.devices.create!(
   device_type: "laptop",
   name: "MacBook Pro",
   serial_number: "1111",
-  company_id: 1
+  company_id: company.id
 )
 }
 
