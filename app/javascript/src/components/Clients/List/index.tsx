@@ -95,6 +95,7 @@ const getTableData = (
         <div>
           {isAdminUser && (
             <DotsThreeVerticalIcon
+              className="mx-auto"
               height={26}
               width={24}
               onClick={e => {

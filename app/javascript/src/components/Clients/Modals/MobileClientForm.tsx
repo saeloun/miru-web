@@ -31,7 +31,6 @@ interface IClientForm {
   clientLogo?: any;
   setApiError?: any;
   setShowEditDialog?: any;
-  editClientId?: any;
   submitting: any;
   setSubmitting: any;
   handleEdit?: any;
@@ -64,7 +63,6 @@ const MobileClientForm = ({
   clientLogo,
   setApiError,
   setShowEditDialog,
-  editClientId,
   submitting,
   setSubmitting,
   handleEdit,
@@ -155,6 +153,7 @@ const MobileClientForm = ({
         Toastr.success("Client added successfully");
       } catch (error) {
         setApiError(error.message);
+        setSubmitting(false);
       }
     } else {
       await clientApi
@@ -165,6 +164,7 @@ const MobileClientForm = ({
         })
         .catch(e => {
           setApiError(e.message);
+          setSubmitting(false);
         });
     }
   };
@@ -269,7 +269,7 @@ const MobileClientForm = ({
     >
       <SidePanel.Header className="mb-2 flex items-center justify-between bg-miru-han-purple-1000 px-5 py-5 text-white lg:bg-white lg:font-bold lg:text-miru-dark-purple-1000">
         <span className="flex w-full items-center justify-center pl-6 text-base font-medium leading-5">
-          {editClientId ? "Edit Client" : "Add New Client"}
+          {clientData?.id ? "Edit Client" : "Add New Client"}
         </span>
         <Button style="ternary" onClick={() => setShowDialog(false)}>
           <XIcon
@@ -386,7 +386,7 @@ const MobileClientForm = ({
                     </div>
                     <InputErrors
                       fieldErrors={errors.phone}
-                      fieldTouched={touched.phone}
+                      fieldTouched={errors.phone}
                     />
                   </div>
                 </div>
@@ -495,8 +495,8 @@ const MobileClientForm = ({
                 <p className="mt-3 block text-xs tracking-wider text-red-600">
                   {apiError}
                 </p>
-                <div className="actions mt-20">
-                  {editClientId ? (
+                <div className="actions mt-auto">
+                  {clientData?.id ? (
                     <Button
                       className="w-full p-2 text-center text-base font-bold"
                       disabled={disableBtn(values, errors)}

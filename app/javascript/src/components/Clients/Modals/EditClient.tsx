@@ -14,7 +14,9 @@ interface IEditClient {
 
 const EditClient = ({ setShowEditDialog, client }: IEditClient) => {
   const [apiError, setApiError] = useState<string>("");
-  const [clientLogoUrl, setClientLogoUrl] = useState<string>(client.logo);
+  const [clientLogoUrl, setClientLogoUrl] = useState<string>(
+    client?.logo || ""
+  );
   const [clientLogo, setClientLogo] = useState("");
   const [submitting, setSubmitting] = useState<boolean>(false);
   const { isDesktop } = useUserContext();
@@ -26,7 +28,7 @@ const EditClient = ({ setShowEditDialog, client }: IEditClient) => {
     setClientLogoUrl("");
   };
 
-  return (
+  return isDesktop ? (
     <div className="flex items-center justify-center px-4">
       <div
         className="fixed inset-0 top-0 left-0 right-0 bottom-0 z-10 flex items-start justify-center overflow-auto"
@@ -47,37 +49,38 @@ const EditClient = ({ setShowEditDialog, client }: IEditClient) => {
                 <XIcon color="#CDD6DF" size={16} weight="bold" />
               </button>
             </div>
-            {isDesktop ? (
-              <ClientForm
-                apiError={apiError}
-                clientData={client}
-                clientLogo={clientLogo}
-                clientLogoUrl={clientLogoUrl}
-                formType="edit"
-                handleDeleteLogo={handleDeleteLogo}
-                setApiError={setApiError}
-                setClientLogo={setClientLogo}
-                setClientLogoUrl={setClientLogoUrl}
-                setShowEditDialog={setShowEditDialog}
-              />
-            ) : (
-              <MobileClientForm
-                apiError={apiError}
-                clientData={client}
-                clientLogoUrl={clientLogoUrl}
-                handleDeleteLogo={handleDeleteLogo}
-                setApiError={setApiError}
-                setClientLogo={setClientLogo}
-                setClientLogoUrl={setClientLogoUrl}
-                setShowDialog={setShowEditDialog}
-                setSubmitting={setSubmitting}
-                submitting={submitting}
-              />
-            )}
+            <ClientForm
+              apiError={apiError}
+              clientData={client}
+              clientLogo={clientLogo}
+              clientLogoUrl={clientLogoUrl}
+              formType="edit"
+              handleDeleteLogo={handleDeleteLogo}
+              setApiError={setApiError}
+              setClientLogo={setClientLogo}
+              setClientLogoUrl={setClientLogoUrl}
+              setShowEditDialog={setShowEditDialog}
+            />
           </div>
         </div>
       </div>
     </div>
+  ) : (
+    <MobileClientForm
+      apiError={apiError}
+      clientData={client}
+      clientLogo={clientLogo}
+      clientLogoUrl={clientLogoUrl}
+      formType="Edit"
+      handleDeleteLogo={handleDeleteLogo}
+      setApiError={setApiError}
+      setClientLogo={setClientLogo}
+      setClientLogoUrl={setClientLogoUrl}
+      setShowDialog={setShowEditDialog}
+      setShowEditDialog={setShowEditDialog}
+      setSubmitting={setSubmitting}
+      submitting={submitting}
+    />
   );
 };
 
