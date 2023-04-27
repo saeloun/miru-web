@@ -14,6 +14,7 @@ RSpec.describe "Time Tracking - day view", type: :system do
       admin.add_role :admin, company
       create(:employment, company:, user: admin)
       create(:project_member, user: admin, project:)
+      create(:timesheet_entry, user: admin, project:)
       sign_in(admin)
     end
 
@@ -45,8 +46,6 @@ RSpec.describe "Time Tracking - day view", type: :system do
     end
 
     it "can edit time entry" do
-      create(:timesheet_entry, user: admin, project:)
-
       with_forgery_protection do
         visit "time-tracking"
 
@@ -61,8 +60,6 @@ RSpec.describe "Time Tracking - day view", type: :system do
     end
 
     it "can delete time entry" do
-      create(:timesheet_entry, user: admin, project:)
-
       with_forgery_protection do
         visit "time-tracking"
 
@@ -80,6 +77,7 @@ RSpec.describe "Time Tracking - day view", type: :system do
       create(:employment, company:, user: user_two)
       create(:project_member, user: user_two, project:)
       time_entry = create(:timesheet_entry, user: user_two, project:)
+
       with_forgery_protection do
         visit "time-tracking"
 
