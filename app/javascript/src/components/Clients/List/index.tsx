@@ -272,11 +272,13 @@ const Clients = ({ isAdminUser }) => {
   const ClientsLayout = () => (
     <>
       <ToastContainer autoClose={TOASTER_DURATION} />
-      <Header
-        isAdminUser={isAdminUser}
-        setShowDialog={setShowDialog}
-        setnewClient={setIsClient}
-      />
+      {clientData.length > 0 && (
+        <Header
+          isAdminUser={isAdminUser}
+          setShowDialog={setShowDialog}
+          setnewClient={setIsClient}
+        />
+      )}
       <div>
         {isAdminUser && isDesktop && (
           <div className="bg-miru-gray-100 py-10 px-10">
