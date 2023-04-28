@@ -11,6 +11,7 @@ import {
   MinusIcon,
   CopyIcon,
   DeleteIcon,
+  CaretDownIcon,
 } from "miruIcons";
 import {
   Button,
@@ -22,7 +23,6 @@ import {
 import CustomCheckbox from "common/CustomCheckbox";
 import CustomDatePicker from "common/CustomDatePicker";
 import { CustomInputText } from "common/CustomInputText";
-import CustomReactSelect from "common/CustomReactSelect";
 import { CustomTextareaAutosize } from "common/CustomTextareaAutosize";
 
 import DeleteEntryModal from "./DeleteEntryModal";
@@ -172,16 +172,26 @@ const AddEntryMobile = ({
         <div className="flex flex-auto flex-col justify-between">
           <div>
             <div className="py-3">
-              <CustomReactSelect
-                isDisabled={showClientList}
-                label="Client"
-                name="client_select"
-                options={projects[client]}
-                value={client && { label: client }}
-                handleonFocus={() => {
-                  setShowClientList(true);
-                }}
-              />
+              <div className="relative flex w-full flex-col">
+                <CustomInputText
+                  autoFocus
+                  disabled={showClientList}
+                  id="Client"
+                  label="Client"
+                  name="Client"
+                  type="text"
+                  value={client && client}
+                  onClick={() => {
+                    setShowClientList(true);
+                  }}
+                />
+                <CaretDownIcon
+                  className="absolute top-0 bottom-0 right-1 mx-2 my-3 "
+                  color="#5B34EA"
+                  size={20}
+                  weight="bold"
+                />
+              </div>
               {showClientList && (
                 <MobileMoreOptions
                   className="h-1/2"
@@ -228,6 +238,7 @@ const AddEntryMobile = ({
                           setClient(eachClient.name);
                           setProject("");
                           setShowClientList(false);
+                          document.getElementById("Project").focus();
                         }}
                       >
                         {eachClient.name}
@@ -240,16 +251,25 @@ const AddEntryMobile = ({
               )}
             </div>
             <div className="py-3">
-              <CustomReactSelect
-                isDisabled={showProjectList}
-                label="Project"
-                name="project_select"
-                options={projects[client]}
-                value={project && { label: project }}
-                handleonFocus={() => {
-                  setShowProjectList(true);
-                }}
-              />
+              <div className="relative flex w-full flex-col">
+                <CustomInputText
+                  disabled={showProjectList}
+                  id="Project"
+                  label="Project"
+                  name="Project"
+                  type="text"
+                  value={project}
+                  onClick={() => {
+                    setShowProjectList(true);
+                  }}
+                />
+                <CaretDownIcon
+                  className="absolute top-0 bottom-0 right-1 mx-2 my-3 "
+                  color="#5B34EA"
+                  size={20}
+                  weight="bold"
+                />
+              </div>
               {showProjectList && (
                 <MobileMoreOptions
                   className="h-1/2"
@@ -295,6 +315,7 @@ const AddEntryMobile = ({
                         onClick={() => {
                           setProject(eachProject.name);
                           setShowProjectList(false);
+                          document.getElementById("Description").click();
                         }}
                       >
                         {eachProject.name}
