@@ -26,6 +26,7 @@ module.exports = {
       32: "2rem",
     },
     letterSpacing: {
+      '2': '2px',
       widest: "0.125em",
       semiWidest: "0.09375", //1.5px
       wider: ".05em",
@@ -43,6 +44,9 @@ module.exports = {
     extend: {
       boxShadow: {
         c1: "0px 0px 40px rgba(0, 0, 0, 0.1);",
+      },
+      lineHeight: {
+        5.5: "22px",
       },
       margin: {
         86: "342px",
@@ -64,6 +68,7 @@ module.exports = {
         480: "30rem", //480px
         18: "18%",
         72: "72%",
+        '1/10': '10%',
       },
       minWidth: {
         12: "12px",
@@ -80,9 +85,12 @@ module.exports = {
         304: "19rem",
         87: "5.4rem",
         88: "5.5rem",
+        "14/100":"14%",
+        "1/10": "10%",
         "1/12": "8.333%",
         "1/15": "6.666%",
         148: "592px",
+        '80v': '80vh',
       },
       minHeight: {
         "10v": "10vh",
@@ -188,6 +196,7 @@ module.exports = {
         manrope: "'Manrope', serif",
       },
       spacing: {
+        0.25: "0.0625rem",
         2.125: "0.5625rem",
         3.75: "0.9375rem",
         13: "3.125rem",
