@@ -511,9 +511,13 @@ const OrgEdit = () => {
         title="Organization Settings"
       />
       {isLoading ? (
-        <Loader />
+        <div className="flex h-80v w-full flex-col justify-center">
+          <Loader />
+        </div>
       ) : (
         <StaticPage
+          cancelAction={handleCancelAction}
+          saveAction={handleUpdateOrgDetails}
           orgDetails={orgDetails}
           isDragActive={isDragActive}
           getInputProps={getInputProps}

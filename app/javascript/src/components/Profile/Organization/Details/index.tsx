@@ -5,11 +5,12 @@ import { Outlet, useNavigate } from "react-router-dom";
 
 import companiesApi from "apis/companies";
 import Loader from "common/Loader/index";
+import DetailsHeader from "components/Profile/DetailsHeader";
+import { useUserContext } from "context/UserContext";
 import { sendGAPageView } from "utils/googleAnalytics";
 
+import MobileHeader from "./MobileHeader";
 import StaticPage from "./StaticPage";
-
-import DetailsHeader from "../../DetailsHeader";
 
 const initialState = {
   id: null,
@@ -28,6 +29,7 @@ const initialState = {
 
 const OrgDetails = () => {
   const navigate = useNavigate();
+  const { isDesktop } = useUserContext();
   const [orgDetails, setOrgDetails] = useState(initialState);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -75,16 +77,34 @@ const OrgDetails = () => {
     navigate(`/profile/edit/organization`, { replace: true });
   };
 
+  const handleBackBtnClick = () => {
+    navigate(`/time-tracking`, { replace: true });
+  };
+
   return (
     <div className="flex w-full flex-col">
-      <DetailsHeader
-        showButtons
-        editAction={handleEditClick}
-        isDisableUpdateBtn={false}
-        subTitle=""
-        title="Organization Settings"
-      />
-      {isLoading ? <Loader /> : <StaticPage orgDetails={orgDetails} />}
+      {isDesktop ? (
+        <DetailsHeader
+          showButtons
+          editAction={handleEditClick}
+          isDisableUpdateBtn={false}
+          subTitle=""
+          title="Organization Settings"
+        />
+      ) : (
+        <MobileHeader
+          title="Organization Settings"
+          onBackArrowClick={handleBackBtnClick}
+          onEditBtnClick={handleEditClick}
+        />
+      )}
+      {isLoading ? (
+        <div className="flex h-80v w-full flex-col justify-center">
+          <Loader />
+        </div>
+      ) : (
+        <StaticPage orgDetails={orgDetails} />
+      )}
       <Outlet />
     </div>
   );
