@@ -93,8 +93,8 @@ const TableRow = ({ item }) => {
         className="border-b border-miru-gray-200 last:border-0"
         onClick={handleRowClick}
       >
-        <td className="table__data p-6 capitalize">
-          <dl className="flex items-center justify-between text-sm font-semibold text-miru-dark-purple-1000">
+        <td className="table__data p-6">
+          <dl className="flex items-center justify-between text-sm font-semibold capitalize text-miru-dark-purple-1000">
             <dt>{name}</dt>
           </dl>
           <dl className="max-h-32 overflow-auto whitespace-pre-wrap break-words text-xs font-medium text-miru-dark-purple-400">

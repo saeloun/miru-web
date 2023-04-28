@@ -32,7 +32,6 @@ const CompanyInfo = ({ company, logo = "" }) => {
         <p className="whitespace-pre">
           {`${address_line_1},\n ${address_line_2},\n ${city}, ${state}, ${country},\n ${pin}`}
         </p>
-        <p>{country}</p>
       </div>
     </div>
   );
