@@ -22,9 +22,8 @@ const TableRow = ({
   fetchInvoices,
   isDesktop,
   index,
-  isSending,
-  setIsSending,
 }) => {
+  const [isSending, setIsSending] = useState<boolean>(false);
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   const [showMoreOptions, setShowMoreOptions] = useState<boolean>(false);
   const [showToolTip, setShowToolTip] = useState<boolean>(false);
