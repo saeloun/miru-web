@@ -98,7 +98,13 @@ const OrgDetails = () => {
           onEditBtnClick={handleEditClick}
         />
       )}
-      {isLoading ? <Loader /> : <StaticPage orgDetails={orgDetails} />}
+      {isLoading ? (
+        <div className="flex h-80v w-full flex-col justify-center">
+          <Loader />
+        </div>
+      ) : (
+        <StaticPage orgDetails={orgDetails} />
+      )}
       <Outlet />
     </div>
   );

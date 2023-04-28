@@ -6,7 +6,7 @@ import { ClientsIcon as BuildingsIcon, UserIcon } from "miruIcons";
 import { Outlet, useNavigate, useParams } from "react-router-dom";
 
 import WorkspaceApi from "apis/workspaces";
-import Loader from "common/Loader";
+import Loader from "common/Loader/index";
 import withLayout from "common/Mobile/HOC/withLayout";
 import { useUserContext } from "context/UserContext";
 
@@ -80,7 +80,11 @@ const MobileNav = () => {
   const DisplayView = withLayout(mobileView, true, true);
 
   if (isLoading) {
-    return <Loader />;
+    return (
+      <div className="flex h-80v w-full flex-col justify-center">
+        <Loader />
+      </div>
+    );
   }
 
   return <DisplayView />;

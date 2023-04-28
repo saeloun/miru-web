@@ -12,13 +12,14 @@ import { teamsMapper } from "mapper/teams.mapper";
 
 export const UserDetails = () => {
   const { setUserState, profileSettings } = useProfile();
+  const { first_name, last_name } = profileSettings;
   const [showImageUpdateOptions, setShowImageUpdateOptions] =
     useState<boolean>(false);
   const [userImageUrl, setUserImageUrl] = useState<any>(null);
 
   const getDetails = async () => {
     try {
-      if (!profileSettings.first_name && !profileSettings.last_name) {
+      if (!first_name && !last_name) {
         const data = await profileApi.index();
         if (data.status && data.status == 200) {
           const addressData = await profileApi.getAddress(data.data.user.id);
@@ -100,7 +101,7 @@ export const UserDetails = () => {
         </div>
         {showImageUpdateOptions ? (
           <MobileMoreOptions
-            className="h-1/10 w-full md:mx-auto md:h-1/12 md:w-11/12"
+            className="w-full md:mx-auto md:w-11/12"
             setVisibilty={setShowImageUpdateOptions}
           >
             <li className="w-full">
@@ -138,12 +139,12 @@ export const UserDetails = () => {
         ) : null}
         <div className="flex w-4/5 flex-col items-baseline justify-center px-4">
           <Tooltip
-            content={`${profileSettings.first_name} ${profileSettings.last_name}`}
+            content={`${first_name} ${last_name}`}
             wrapperClassName="relative block max-w-full "
           >
             <div className="mb-1 max-w-full overflow-hidden truncate whitespace-nowrap px-4">
               <span className="text-xl font-bold text-white">
-                {`${profileSettings.first_name} ${profileSettings.last_name}`}
+                {`${first_name} ${last_name}`}
               </span>
             </div>
           </Tooltip>
