@@ -24,10 +24,12 @@ type customInputTextProps = {
   moveLabelToRightClassName?: string;
   moveLabelToLeftClassName?: string;
   readOnly?: boolean;
+  autoFocus?: boolean;
   step?: any;
   min?: any;
   onFocus?: (e?: any) => void; // eslint-disable-line
   onBlur?: (e?: any) => void; // eslint-disable-line
+  onClick?: (e?: any) => void; // eslint-disable-line
 };
 
 export const CustomInputText = ({
@@ -48,10 +50,13 @@ export const CustomInputText = ({
   readOnly,
   step,
   min,
+  onClick,
+  autoFocus,
 }: customInputTextProps) => (
   <div className="field relative">
     <div className={classNames(defaultWrapperClassName, wrapperClassName)}>
       <input
+        autoFocus={autoFocus}
         className={classNames(defaultInputBoxClassName, inputBoxClassName)}
         disabled={disabled}
         id={id}
@@ -64,6 +69,7 @@ export const CustomInputText = ({
         value={value}
         onBlur={onBlur}
         onChange={onChange}
+        onClick={onClick}
         onFocus={onFocus}
       />
       <label
@@ -86,6 +92,7 @@ CustomInputText.defaultProps = {
   type: "text",
   disabled: false,
   readOnly: false,
+  autoFocus: false,
   step: 1,
   min: null,
   moveLabelToLeftClassName: "left-1",
@@ -93,4 +100,5 @@ CustomInputText.defaultProps = {
   onChange: () => {}, // eslint-disable-line @typescript-eslint/no-empty-function
   onFocus: () => {}, // eslint-disable-line @typescript-eslint/no-empty-function
   onBlur: () => {}, // eslint-disable-line @typescript-eslint/no-empty-function
+  onClick: () => {}, // eslint-disable-line
 };
