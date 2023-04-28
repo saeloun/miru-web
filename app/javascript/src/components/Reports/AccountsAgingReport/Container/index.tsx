@@ -44,7 +44,7 @@ const Container = () => {
       Message={
         accountsAgingReport.filterCounter > 0
           ? "No results match current filters. Try removing some filters."
-          : "There are no clients added yet. Please go to Clients to add your first client."
+          : "No data found. We will display relevant data once it becomes available"
       }
     />
   );
