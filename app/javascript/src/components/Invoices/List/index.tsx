@@ -66,7 +66,6 @@ const Invoices = () => {
   const [connected, setConnected] = useState<boolean>(false);
   const [received, setReceived] = useState<any>(null);
   const [counter, setCounter] = useState<number>(1);
-  const [isSending, setIsSending] = useState<boolean>(false);
   const selectedInvoiceCount = selectedInvoices.length;
   const isInvoiceSelected = selectedInvoiceCount > 0;
   const [selectedInvoiceCounter, setSelectedInvoiceCounter] =
@@ -246,7 +245,6 @@ const Invoices = () => {
             invoices={invoices}
             isDesktop={isDesktop}
             isInvoiceSelected={isInvoiceSelected}
-            isSending={isSending}
             params={params}
             recentlyUpdatedInvoices={recentlyUpdatedInvoices}
             selectInvoices={selectInvoices}
@@ -254,7 +252,6 @@ const Invoices = () => {
             selectedInvoices={selectedInvoices}
             setFilterParams={setFilterParams}
             setInvoiceToDelete={setInvoiceToDelete}
-            setIsSending={setIsSending}
             setShowBulkDeleteDialog={setShowBulkDeleteDialog}
             setShowBulkDownloadDialog={setShowBulkDownloadDialog}
             setShowDeleteDialog={setShowDeleteDialog}
@@ -322,11 +319,7 @@ const Invoices = () => {
     </div>
   );
 
-  const Main = withLayout(
-    InvoicesLayout,
-    !isDesktop && !isSending,
-    !isDesktop && !isSending
-  );
+  const Main = withLayout(InvoicesLayout, !isDesktop, !isDesktop);
 
   return isDesktop ? InvoicesLayout() : <Main />;
 };
