@@ -43,7 +43,8 @@ const MoreOptions = ({
           <button
             className="rounded p-2 text-miru-han-purple-1000 hover:bg-miru-gray-100"
             id="sendInvoiceButton"
-            onClick={() => {
+            onClick={e => {
+              e.stopPropagation();
               setIsSending(!isSending);
             }}
           >
@@ -155,7 +156,8 @@ const MoreOptions = ({
         <li>
           <button
             className="flex cursor-pointer items-center py-2 text-miru-han-purple-1000"
-            onClick={() => {
+            onClick={e => {
+              e.stopPropagation();
               setIsSending(!isSending);
               setShowMoreOptions(false);
             }}
