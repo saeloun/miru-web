@@ -71,6 +71,7 @@ const NewClient = ({
     <MobileClientForm
       apiError={apiError}
       clientData={clientData}
+      clientLogo={clientLogo}
       clientLogoUrl={clientLogoUrl}
       handleDeleteLogo={handleDeleteLogo}
       setApiError={setApiError}

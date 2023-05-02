@@ -35,7 +35,7 @@ const AutoSearch = ({ searchAction, SearchDataRow }: Iprops) => {
       <div className="header__searchInnerWrapper relative">
         <div>
           <input
-            className="header__searchInput"
+            className="header__searchInput rounded-3xl"
             id="searchInput"
             placeholder="Search"
             type="text"
