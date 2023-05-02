@@ -32,7 +32,6 @@ const UserInformation = ({ memberId }) => {
   } = useTeamDetails();
 
   const [showProfileOptions, setShowProfileOptions] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
   const [imageUrl, setImageUrl] = useState(null);
 
   const getAvatar = async () => {
@@ -48,23 +47,30 @@ const UserInformation = ({ memberId }) => {
     getAvatar();
   }, []);
 
+  const validateFileSize = file => {
+    const sizeInKB = file.size / 1024;
+    if (sizeInKB > 100) {
+      throw new Error("Image size needs to be less than 100 KB");
+    }
+  };
+
+  const createFormData = file => {
+    const formData = new FormData();
+    formData.append("user[avatar]", file);
+
+    return formData;
+  };
+
   const handleProfileImageChange = async e => {
     try {
       setShowProfileOptions(false);
-      const imageFile = e.target.files[0];
-      const size = imageFile.size / 1024;
-      if (size > 100) {
-        setErrorMessage("Image size too big");
-      } else {
-        setImageUrl(URL.createObjectURL(imageFile));
-        setErrorMessage("");
-        const formD = new FormData();
-        formD.append("user[avatar]", imageFile);
-        await teamApi.updateTeamMemberAvatar(memberId, formD);
-        Toastr.success("Image Uploaded successfully");
-      }
-    } catch {
-      Toastr.error("Error in uploading Profile Image");
+      const file = e.target.files[0];
+      validateFileSize(file);
+      setImageUrl(URL.createObjectURL(file));
+      const payload = createFormData(file);
+      await teamApi.updateTeamMemberAvatar(memberId, payload);
+    } catch (error) {
+      Toastr.error(error.message);
     }
   };
 
@@ -97,11 +103,6 @@ const UserInformation = ({ memberId }) => {
             </button>
           </div>
         </div>
-        {errorMessage.length > 0 && (
-          <span className="text-center text-sm text-miru-red-400">
-            {errorMessage}
-          </span>
-        )}
         <div className="relative mt-3 flex flex-col items-center justify-center border-b-8 border-miru-gray-200 pb-8">
           {showProfileOptions && (
             <div className="absolute bottom--10 z-15 mx-auto mt-6 min-h-24	w-28 flex-col items-end rounded-lg bg-white p-2 shadow-c1	group-hover:flex">
@@ -120,13 +121,15 @@ const UserInformation = ({ memberId }) => {
                 type="file"
                 onChange={handleProfileImageChange}
               />
-              <div
-                className="flex cursor-pointer flex-row items-center p-1.5 text-sm text-miru-red-400"
-                onClick={handleDeleteProfileImage}
-              >
-                <DeleteIcon color="#E04646" size={16} weight="bold" />
-                <span className="pl-2">Delete</span>
-              </div>
+              {imageUrl && (
+                <div
+                  className="flex cursor-pointer flex-row items-center p-1.5 text-sm text-miru-red-400"
+                  onClick={handleDeleteProfileImage}
+                >
+                  <DeleteIcon color="#E04646" size={16} weight="bold" />
+                  <span className="pl-2">Delete</span>
+                </div>
+              )}
             </div>
           )}
           <Tooltip
