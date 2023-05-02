@@ -7,15 +7,17 @@ import {
   PencilIcon,
   CaretDownIcon,
   DeleteIcon,
+  PlusIcon,
+  EditIcon,
 } from "miruIcons";
 import { useNavigate } from "react-router-dom";
+import { MobileMoreOptions } from "StyledComponents";
 
 import { useUserContext } from "context/UserContext";
 
 import AddProject from "../Modals/AddProject";
 import DeleteClient from "../Modals/DeleteClient";
 import EditClient from "../Modals/EditClient";
-import MobileMenu from "../Modals/MobileMenu";
 
 const Header = ({ clientDetails }) => {
   const [isHeaderMenuVisible, setIsHeaderMenuVisible] =
@@ -144,10 +146,38 @@ const Header = ({ clientDetails }) => {
         />
       )}
       {showMobileModal && (
-        <MobileMenu
-          setShowDeleteDialog={setShowDeleteDialog}
-          setShowMobileModal={setShowMobileModal}
-        />
+        <MobileMoreOptions setVisibilty={setShowMobileModal}>
+          <li
+            className="menuButton__list-item"
+            onClick={() => {
+              handleAddProject();
+              setShowMobileModal(false);
+            }}
+          >
+            <PlusIcon />
+            <span className="ml-3">Add new project</span>
+          </li>
+          <li
+            className="menuButton__list-item"
+            onClick={() => {
+              handleEdit();
+              setShowMobileModal(false);
+            }}
+          >
+            <EditIcon color="#5B34EA" size={16} />
+            <span className="ml-3">Edit</span>
+          </li>
+          <li
+            className="menuButton__list-item"
+            onClick={() => {
+              handleDelete();
+              setShowMobileModal(false);
+            }}
+          >
+            <DeleteIcon color="#E04646" size={16} />
+            <span className="ml-3">Delete</span>
+          </li>
+        </MobileMoreOptions>
       )}
     </div>
   );
