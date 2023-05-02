@@ -46,7 +46,7 @@ RSpec.describe "Create client", type: :system do
         with_forgery_protection do
           visit "/clients"
 
-          click_button "NEW CLIENT"
+          click_button "Add Clients"
           upload_test_image("test-image.png")
           fill_in "name", with: client.name
           fill_in "email", with: client.email
@@ -66,7 +66,7 @@ RSpec.describe "Create client", type: :system do
         with_forgery_protection do
           visit "/clients"
 
-          click_button "NEW CLIENT"
+          click_button "Add Clients"
           fill_in "phone", with: client.phone
           fill_in "address1", with: address.address_line_1
           select_values_from_select_box
@@ -82,7 +82,7 @@ RSpec.describe "Create client", type: :system do
         with_forgery_protection do
           visit "/clients"
 
-          click_button "NEW CLIENT"
+          click_button "Add Clients"
           fill_in "name", with: client.name
           fill_in "email", with: existing_client.email
           fill_in "phone", with: client.phone
@@ -100,7 +100,7 @@ RSpec.describe "Create client", type: :system do
         with_forgery_protection do
           visit "/clients"
 
-          click_button "NEW CLIENT"
+          click_button "Add Clients"
 
           upload_test_image("pdf-file.pdf")
 
@@ -112,7 +112,7 @@ RSpec.describe "Create client", type: :system do
         with_forgery_protection do
           visit "/clients"
 
-          click_button "NEW CLIENT"
+          click_button "Add Clients"
           upload_test_image("invalid-file.png")
 
           expect(page).to have_content("File size exceeded the max limit of 30KB.")

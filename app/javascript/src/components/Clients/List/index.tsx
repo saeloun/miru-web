@@ -1,10 +1,15 @@
 import React, { useEffect, useState, useRef } from "react";
 
 import { cashFormatter, currencySymbol, minToHHMM } from "helpers";
-import { DotsThreeVerticalIcon, PlusIcon } from "miruIcons";
+import {
+  DotsThreeVerticalIcon,
+  PlusIcon,
+  EditIcon,
+  DeleteIcon,
+} from "miruIcons";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
-import { Avatar, Tooltip } from "StyledComponents";
+import { Avatar, MobileMoreOptions, Tooltip } from "StyledComponents";
 
 import clientApi from "apis/clients";
 import AmountBoxContainer from "common/AmountBox";
@@ -28,7 +33,10 @@ const getTableData = (
   handleTooltip,
   showTooltip,
   toolTipRef,
-  isDesktop
+  isDesktop,
+  isAdminUser,
+  setShowMoreOptions,
+  setClientId
 ) => {
   if (clients && isDesktop) {
     return clients.map(client => ({
@@ -64,10 +72,10 @@ const getTableData = (
   } else if (clients && !isDesktop) {
     return clients.map(client => ({
       col1: (
-        <div className="flex">
-          <Avatar classNameImg="mr-4" url={client.logo} />
+        <div className="table__cell text-base capitalize">
+          <Avatar classNameImg="mr-4 w-8 h-8" url={client.logo} />
           <span
-            className="my-auto overflow-hidden truncate whitespace-nowrap text-base font-medium capitalize text-miru-dark-purple-1000"
+            className="my-auto overflow-hidden truncate whitespace-nowrap text-sm font-medium capitalize text-miru-dark-purple-1000"
             ref={toolTipRef}
             onMouseEnter={handleTooltip}
           >
@@ -77,7 +85,7 @@ const getTableData = (
       ),
       col3: (
         <div
-          className="total-hours text-right text-xl font-bold text-miru-dark-purple-1000"
+          className="total-hours text-right text-lg font-bold text-miru-dark-purple-1000"
           id={`${client.id}`}
         >
           {minToHHMM(client.minutes)}
@@ -85,7 +93,19 @@ const getTableData = (
       ),
       col4: (
         <div>
-          <DotsThreeVerticalIcon height={26} width={24} />
+          {isAdminUser && (
+            <DotsThreeVerticalIcon
+              className="mx-auto"
+              height={26}
+              width={24}
+              onClick={e => {
+                e.preventDefault();
+                e.stopPropagation();
+                setShowMoreOptions(true);
+                setClientId(client.id);
+              }}
+            />
+          )}
         </div>
       ),
       rowId: client.id,
@@ -96,9 +116,11 @@ const getTableData = (
 };
 
 const Clients = ({ isAdminUser }) => {
+  const [clientId, setClientId] = useState("");
   const [showEditDialog, setShowEditDialog] = useState<boolean>(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
-  const [client, setClient] = useState<boolean>(false);
+  const [showMoreOptions, setShowMoreOptions] = React.useState<boolean>(false);
+  const [isClient, setIsClient] = useState<boolean>(false);
   const [clientToEdit, setClientToEdit] = useState({});
   const [clientToDelete, setClientToDelete] = useState({});
   const [clientData, setClientData] = useState<any>();
@@ -153,7 +175,7 @@ const Clients = ({ isAdminUser }) => {
 
     const close = e => {
       if (e.keyCode === 27) {
-        setClient(false);
+        setIsClient(false);
       }
     };
     window.addEventListener("keydown", close);
@@ -161,7 +183,7 @@ const Clients = ({ isAdminUser }) => {
 
   useEffect(() => {
     fetchClientDetails("week");
-  }, [client]);
+  }, [isClient]);
 
   const tableHeader = [
     {
@@ -198,17 +220,17 @@ const Clients = ({ isAdminUser }) => {
     {
       Header: "CLIENT",
       accessor: "col1", // accessor is the "key" in the data
-      cssClass: "",
+      cssClass: "table__header font-medium",
     },
     {
       Header: "HOURS",
       accessor: "col3",
-      cssClass: "text-right", // accessor is the "key" in the data
+      cssClass: "table__header font-medium text-right", // accessor is the "key" in the data
     },
     {
       Header: "",
       accessor: "col4",
-      cssClass: "text-right", // accessor is the "key" in the data
+      cssClass: "font-medium text-right", // accessor is the "key" in the data
     },
   ];
 
@@ -233,7 +255,10 @@ const Clients = ({ isAdminUser }) => {
     handleTooltip,
     showToolTip,
     toolTipRef,
-    isDesktop
+    isDesktop,
+    isAdminUser,
+    setShowMoreOptions,
+    setClientId
   );
 
   if (loading) {
@@ -247,11 +272,13 @@ const Clients = ({ isAdminUser }) => {
   const ClientsLayout = () => (
     <>
       <ToastContainer autoClose={TOASTER_DURATION} />
-      <Header
-        isAdminUser={isAdminUser}
-        setShowDialog={setShowDialog}
-        setnewClient={setClient}
-      />
+      {clientData.length > 0 && (
+        <Header
+          isAdminUser={isAdminUser}
+          setShowDialog={setShowDialog}
+          setnewClient={setIsClient}
+        />
+      )}
       <div>
         {isAdminUser && isDesktop && (
           <div className="bg-miru-gray-100 py-10 px-10">
@@ -299,7 +326,7 @@ const Clients = ({ isAdminUser }) => {
                     hasRowIcons={isAdminUser}
                     tableRowArray={tableData}
                     rowOnClick={
-                      isAdminUser && isDesktop ? handleRowClick : () => {} // eslint-disable-line  @typescript-eslint/no-empty-function
+                      isAdminUser ? handleRowClick : () => {} // eslint-disable-line  @typescript-eslint/no-empty-function
                     }
                     tableHeader={
                       isAdminUser && isDesktop
@@ -321,7 +348,7 @@ const Clients = ({ isAdminUser }) => {
                       type="button"
                       onClick={() => {
                         setShowDialog(true);
-                        setClient(true);
+                        setIsClient(true);
                       }}
                     >
                       <PlusIcon size={20} weight="bold" />
@@ -348,7 +375,7 @@ const Clients = ({ isAdminUser }) => {
           setShowDeleteDialog={setShowDeleteDialog}
         />
       )}
-      {client && showDialog && (
+      {isClient && showDialog && (
         <NewClient
           clientData={clientData}
           clientLogo={clientLogo}
@@ -357,12 +384,35 @@ const Clients = ({ isAdminUser }) => {
           setClientLogo={setClientLogo}
           setClientLogoUrl={setClientLogoUrl}
           setShowDialog={setShowDialog}
-          setnewClient={setClient}
+          setnewClient={setIsClient}
         />
+      )}
+      {showMoreOptions && (
+        <MobileMoreOptions setVisibilty={setShowMoreOptions}>
+          <li
+            className="flex items-center px-2 pt-3 text-sm leading-5 text-miru-han-purple-1000"
+            onClick={() => {
+              handleEditClick(clientId);
+              setShowMoreOptions(false);
+            }}
+          >
+            <EditIcon className="mr-4" color="#5B34EA" size={16} />
+            Edit
+          </li>
+          <li
+            className="flex items-center px-2 pt-3 text-sm leading-5 text-miru-red-400"
+            onClick={() => {
+              handleDeleteClick(clientId);
+              setShowMoreOptions(false);
+            }}
+          >
+            <DeleteIcon className="mr-4" size={16} />
+            Delete
+          </li>
+        </MobileMoreOptions>
       )}
     </>
   );
-
   const Main = withLayout(ClientsLayout, !isDesktop, !isDesktop);
 
   return isDesktop ? ClientsLayout() : <Main />;

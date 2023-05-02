@@ -23,13 +23,11 @@ const Header = ({ setnewClient, isAdminUser, setShowDialog }) => {
 
   return (
     <div
-      className={
-        isAdminUser
-          ? "mt-6 mb-3 sm:flex sm:items-center sm:justify-between"
-          : "mt-6 mb-3 sm:flex sm:items-center"
-      }
+      className={`m-4 flex items-center lg:mx-0 lg:mt-6 lg:mb-3 ${
+        isAdminUser ? "justify-between" : ""
+      }`}
     >
-      <h2 className="header__title ml-4">Clients</h2>
+      <h2 className="header__title ml-4 hidden lg:inline">Clients</h2>
       {isAdminUser && (
         <Fragment>
           <AutoSearch
@@ -46,7 +44,9 @@ const Header = ({ setnewClient, isAdminUser, setShowDialog }) => {
               }}
             >
               <PlusIcon size={16} weight="fill" />
-              <span className="ml-2 inline-block">NEW CLIENT</span>
+              <span className="ml-2 inline-block hidden lg:inline">
+                NEW CLIENT
+              </span>
             </button>
           </div>
         </Fragment>
