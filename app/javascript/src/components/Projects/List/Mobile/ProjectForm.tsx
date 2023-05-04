@@ -259,12 +259,12 @@ const ProjectForm = ({
                   fieldTouched={touched.project}
                 />
                 <div>
-                  <span className="text-xs font-normal text-miru-dark-purple-1000">
+                  <span className="text-base font-normal text-miru-dark-purple-1000">
                     Project Type
                   </span>
                   <div className="flex">
                     <CustomRadioButton
-                      classNameLabel="font-medium text-sm leading-5 text-miru-dark-purple-1000"
+                      classNameLabel="font-medium text-base leading-5 text-miru-dark-purple-1000"
                       classNameWrapper="py-3"
                       defaultCheck={values.isBillable == true}
                       groupName="projectType"
@@ -277,7 +277,7 @@ const ProjectForm = ({
                       }}
                     />
                     <CustomRadioButton
-                      classNameLabel="font-medium text-sm leading-5 text-miru-dark-purple-1000"
+                      classNameLabel="font-medium text-base leading-5 text-miru-dark-purple-1000"
                       classNameWrapper="px-5 py-3"
                       defaultCheck={values.isBillable == false}
                       groupName="projectType"
