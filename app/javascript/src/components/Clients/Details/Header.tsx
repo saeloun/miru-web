@@ -5,13 +5,13 @@ import {
   DotsThreeVerticalIcon,
   ReportsIcon,
   PencilIcon,
-  CaretDownIcon,
   DeleteIcon,
   PlusIcon,
   EditIcon,
+  InfoIcon,
 } from "miruIcons";
 import { useNavigate } from "react-router-dom";
-import { MobileMoreOptions } from "StyledComponents";
+import { MobileMoreOptions, Modal } from "StyledComponents";
 
 import { useUserContext } from "context/UserContext";
 
@@ -73,7 +73,7 @@ const Header = ({ clientDetails }) => {
             {clientDetails.name}
           </h2>
           <button onClick={handleClientDetails}>
-            <CaretDownIcon size={20} weight="bold" />
+            <InfoIcon size={20} weight="bold" />
           </button>
         </div>
         <div className="relative h-8">
@@ -109,23 +109,32 @@ const Header = ({ clientDetails }) => {
         </div>
       </div>
       {isClientOpen && (
-        <div className="ml-12 mt-4 flex">
-          <div className="text-xs text-miru-dark-purple-400">
-            <h6 className="font-semibold">Email ID(s)</h6>
-            <p>{clientDetails.email}</p>
+        <Modal isOpen={isClientOpen} onClose={() => setIsClientOpen(false)}>
+          <div>
+            <p className="text-lg font-bold">Client Details</p>
+            <div className="mt-4 text-base">
+              <p className="font-semibold">Email ID(s)</p>
+              <p className="mt-1 text-miru-dark-purple-400">
+                {clientDetails.email}
+              </p>
+            </div>
+            <div className="mt-4 text-base">
+              <p className=" font-semibold">Address</p>
+              <div className="mt-1 text-miru-dark-purple-400">
+                <p>{clientDetails.address.address_line_1}</p>
+                <p>{clientDetails.address?.address_line_2}</p>
+                <p>{clientDetails.address?.city}</p>
+                <p>{clientDetails.address?.country}</p>
+              </div>
+            </div>
+            <div className="mt-4 text-base">
+              <p className="font-semibold">Phone number</p>
+              <p className="mt-1 text-miru-dark-purple-400">
+                {clientDetails.phone}
+              </p>
+            </div>
           </div>
-          <div className="ml-28 text-xs text-miru-dark-purple-400">
-            <h6 className="font-semibold">Address</h6>
-            <p>{clientDetails.address.address_line_1}</p>
-            <p>{clientDetails.address?.address_line_2}</p>
-            <p>{clientDetails.address?.city}</p>
-            <p>{clientDetails.address?.country}</p>
-          </div>
-          <div className="ml-28 text-xs text-miru-dark-purple-400">
-            <h6 className="font-semibold">Phone number</h6>
-            <p>{clientDetails.phone}</p>
-          </div>
-        </div>
+        </Modal>
       )}
       {showDeleteDialog && (
         <DeleteClient
