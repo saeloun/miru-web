@@ -137,7 +137,7 @@ const ProjectDetailsForm = ({
                           {minToHHMM(member.minutes)}
                         </td>
                         <td className="py-3 text-right text-sm font-medium leading-5 text-miru-dark-purple-1000">
-                          {member.cost}
+                          {currencyFormat(project.currency, member.cost)}
                         </td>
                       </tr>
                     ))}
