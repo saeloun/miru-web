@@ -1,7 +1,7 @@
 import React from "react";
 
 import dayjs from "dayjs";
-import { currencyFormat, lineTotalCalc } from "helpers";
+import { currencyFormat, lineTotalCalc, minToHHMM } from "helpers";
 
 import { sections } from "../../utils";
 
@@ -39,7 +39,7 @@ const LineItemRow = ({
           {currencyFormat(currency, rate)}
         </td>
         <td className="w-3/12 px-1 py-3 text-right text-xs font-medium text-miru-dark-purple-1000 ">
-          {parseInt(quantity)}
+          {minToHHMM(quantity)}
         </td>
         <td className="w-3/12 px-1 py-3 text-right text-xs font-medium text-miru-dark-purple-1000 ">
           {currencyFormat(currency, lineTotalCalc(quantity, rate))}
