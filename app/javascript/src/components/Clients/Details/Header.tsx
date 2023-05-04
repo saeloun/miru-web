@@ -15,17 +15,15 @@ import { MobileMoreOptions, Modal } from "StyledComponents";
 
 import { useUserContext } from "context/UserContext";
 
-import AddProject from "../Modals/AddProject";
 import DeleteClient from "../Modals/DeleteClient";
 import EditClient from "../Modals/EditClient";
 
-const Header = ({ clientDetails }) => {
+const Header = ({ clientDetails, setShowProjectModal }) => {
   const [isHeaderMenuVisible, setIsHeaderMenuVisible] =
     useState<boolean>(false);
   const [isClientOpen, setIsClientOpen] = useState<boolean>(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
   const [showEditDialog, setShowEditDialog] = useState<boolean>(false);
-  const [showProjectModal, setShowProjectModal] = useState<boolean>(false);
   const [showMobileModal, setShowMobileModal] = useState<boolean>(false);
 
   const navigate = useNavigate();
@@ -146,12 +144,6 @@ const Header = ({ clientDetails }) => {
         <EditClient
           client={clientDetails}
           setShowEditDialog={setShowEditDialog}
-        />
-      )}
-      {showProjectModal && (
-        <AddProject
-          clientDetails={clientDetails}
-          setShowProjectModal={setShowProjectModal}
         />
       )}
       {showMobileModal && (

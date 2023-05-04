@@ -11,6 +11,7 @@ import AmountBoxContainer from "common/AmountBox";
 import ChartBar from "common/ChartBar";
 import EmptyStates from "common/EmptyStates";
 import Table from "common/Table";
+import ProjectForm from "components/Projects/List/Mobile/ProjectForm";
 import AddEditProject from "components/Projects/Modals/AddEditProject";
 import DeleteProject from "components/Projects/Modals/DeleteProject";
 import { TOASTER_DURATION } from "constants/index";
@@ -81,7 +82,7 @@ const ClientDetails = ({ isAdminUser }) => {
   const [projectDetails, setProjectDetails] = useState<any>();
   const [totalMinutes, setTotalMinutes] = useState(null);
   const [clientDetails, setClientDetails] = useState<any>({});
-  const [editProjectData, setEditProjectData] = useState<any>(null);
+  const [editProjectData, setEditProjectData] = useState<any>({});
   const [showProjectModal, setShowProjectModal] = useState<boolean>(false);
   const [loading, setLoading] = useState(true);
   const [overdueOutstandingAmount, setOverdueOutstandingAmount] =
@@ -198,10 +199,24 @@ const ClientDetails = ({ isAdminUser }) => {
     );
   }
 
+  if (!isDesktop && showProjectModal) {
+    return (
+      <ProjectForm
+        editProjectData={editProjectData}
+        fetchProjects={fetchProjectList}
+        setEditProjectData={setEditProjectData}
+        setShowProjectModal={setShowProjectModal}
+      />
+    );
+  }
+
   return (
     <>
       <ToastContainer autoClose={TOASTER_DURATION} />
-      <Header clientDetails={clientDetails} />
+      <Header
+        clientDetails={clientDetails}
+        setShowProjectModal={setShowProjectModal}
+      />
       <div>
         {isAdminUser && isDesktop && (
           <div className="bg-miru-gray-100 py-10 px-10">
