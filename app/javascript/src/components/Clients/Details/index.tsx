@@ -74,7 +74,7 @@ const getTableData = (clients, isDesktop) => {
   return [{}];
 };
 
-const ClientList = ({ isAdminUser }) => {
+const ClientDetails = ({ isAdminUser }) => {
   const [showEditDialog, setShowEditDialog] = useState<boolean>(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
   const [selectedProject, setSelectedProject] = useState({});
@@ -298,4 +298,4 @@ const ClientList = ({ isAdminUser }) => {
   );
 };
 
-export default ClientList;
+export default ClientDetails;
