@@ -97,7 +97,7 @@ const Pagination = ({
           </div>
         )}
       </div>
-      {isDesktop && (
+      {isDesktop && !isReport && (
         <div className="flex items-center justify-end">
           <select
             className="p-2 text-xs font-bold text-miru-han-purple-1000"
