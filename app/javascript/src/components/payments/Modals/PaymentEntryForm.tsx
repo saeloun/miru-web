@@ -3,6 +3,7 @@ import React, { useState, useRef, useEffect } from "react";
 import dayjs from "dayjs";
 import { currencyFormat, useOutsideClick } from "helpers";
 import { CalendarIcon, SearchIcon } from "miruIcons";
+import { useNavigate } from "react-router-dom";
 import Select, { DropdownIndicatorProps, components } from "react-select";
 import { Badge, MobileMoreOptions } from "StyledComponents";
 
@@ -46,6 +47,8 @@ const PaymentEntryForm = ({
 
   const wrapperSelectRef = useRef(null);
   const wrapperCalendartRef = useRef(null);
+
+  const navigate = useNavigate();
 
   const handleSelectedInvoice = () => {
     if (!invoiceList || invoiceList.length == 0) return;
@@ -112,6 +115,9 @@ const PaymentEntryForm = ({
       setAmount("");
       setNote("");
       setShowManualEntryModal(false);
+      if (invoiceId) {
+        navigate(`/invoices/${invoiceId}`);
+      }
     } catch {
       Toastr.error("Failed to add manual entry");
     }
