@@ -48,6 +48,7 @@ const ProjectList = ({ isAdminUser }) => {
       <ToastContainer autoClose={TOASTER_DURATION} />
       <Header
         isAdminUser={isAdminUser}
+        projectDataPresent={Boolean(projects.length)}
         setShowProjectModal={setShowProjectModal}
       />
       <div className="flex flex-col">
