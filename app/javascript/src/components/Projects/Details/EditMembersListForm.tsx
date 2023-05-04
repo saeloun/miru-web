@@ -36,6 +36,7 @@ const EditMembersListForm = ({
             ...memberList,
             {
               label: currentMember.name,
+              name: currentMember.name,
               value: currentMember.id,
             },
           ];
@@ -48,8 +49,8 @@ const EditMembersListForm = ({
 
   useEffect(() => {
     if (debouncedSearchQuery && formattedMemberList.length > 0) {
-      const newMemberList = formattedMemberList.filter(client =>
-        client.name.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
+      const newMemberList = formattedMemberList.filter(member =>
+        member.name.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
       );
 
       newMemberList.length > 0
@@ -189,7 +190,7 @@ const EditMembersListForm = ({
                     document.getElementById(member.hourlyRate).focus();
                   }}
                 >
-                  {memberItem.label}
+                  {memberItem.name}
                 </li>
               ))}
             </div>
@@ -245,6 +246,7 @@ const EditMembersListForm = ({
                   label="Rate"
                   moveLabelToRightClassName="right-1"
                   name={member.hourlyRate}
+                  type="number"
                   value={member.hourlyRate}
                   inputBoxClassName={` text-right ${
                     isInvalidRateInputBox(memberIndex)
