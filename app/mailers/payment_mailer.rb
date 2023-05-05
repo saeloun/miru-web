@@ -5,11 +5,11 @@ class PaymentMailer < ApplicationMailer
     @invoice = params[:invoice]
     recipients = recipients_with_role
     subject = params[:subject]
-    @message = email_message
     @invoice_url = "#{ENV['APP_BASE_URL']}/invoices/#{@invoice.external_view_key}/view"
     @company = @invoice.company
     @company_logo = company_logo
     @amount = FormatAmountService.new(@company.base_currency, @invoice.amount).process
+    @message = email_message
 
     attachments.inline["miruLogoWithText.png"] = File.read("public/miruLogoWithText.png")
     attachments.inline["Instagram.png"] = File.read("public/Instagram.png")
@@ -32,6 +32,6 @@ class PaymentMailer < ApplicationMailer
     end
 
     def email_message
-      "#{@invoice.client.name} has made a payment of #{@invoice.amount_paid} for<br>invoice #{@invoice.invoice_number} through Stripe. The invoice is paid in full now"
+      "#{@invoice.client.name} has made a payment of #{@amount} for<br>invoice #{@invoice.invoice_number} through Stripe. The invoice is paid in full now"
     end
 end

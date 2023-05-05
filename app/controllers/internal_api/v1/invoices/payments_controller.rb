@@ -8,20 +8,16 @@ class InternalApi::V1::Invoices::PaymentsController < InternalApi::V1::Applicati
 
   def success
     if InvoicePayment::StripePaymentIntent.new(@invoice).process
-      if @invoice.paid?
-        PaymentMailer.with(
-          invoice: @invoice,
-          subject: "Payment details by #{@invoice.client.name}").payment.deliver_later
+      PaymentMailer.with(
+        invoice: @invoice,
+        subject: "Payment details by #{@invoice.client.name}").payment.deliver_later
 
-        @invoice.send_to_client_email(
-          invoice: @invoice,
-          subject: "Payment Receipt of Invoice #{@invoice.invoice_number} from #{@invoice.company.name}"
-        )
+      @invoice.send_to_client_email(
+        invoice: @invoice,
+        subject: "Payment Receipt of Invoice #{@invoice.invoice_number} from #{@invoice.company.name}"
+      )
 
-        render json: { invoice: @invoice, notice: I18n.t("invoices.payments.success.success") }, status: :ok
-      else
-        render json: { invoice: @invoice, notice: I18n.t("invoices.payments.success.success") }, status: :ok
-      end
+      render json: { invoice: @invoice, notice: I18n.t("invoices.payments.success.success") }, status: :ok
     else
       render json: { error: I18n.t("invoices.payments.success.failure") }, status: :unprocessable_entity
     end
