@@ -52,7 +52,7 @@ class Company < ApplicationRecord
 
   def client_list
     clients.kept.map do |client|
-      { id: client.id, name: client.name, email: client.email, phone: client.phone, address: client.address }
+      { id: client.id, name: client.name, email: client.email, phone: client.phone, address: client.current_address }
     end
   end
 
