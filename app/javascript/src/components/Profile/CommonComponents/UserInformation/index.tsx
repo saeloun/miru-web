@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 import { UserAvatarSVG, EditIcon, ImageIcon, DeleteIcon } from "miruIcons";
-import { Tooltip } from "StyledComponents";
+import { MoreOptions, Tooltip } from "StyledComponents";
 
 import profileApi from "apis/profile";
 import Toastr from "common/Toastr";
@@ -76,32 +76,34 @@ const UserInformation = ({ firstName, lastName }) => {
         </div>
         <div className="mt-3 flex flex-col items-center justify-center border-b-8 border-miru-gray-200 pb-8">
           {showProfileOptions && (
-            <div className="absolute bottom--10 z-15 mx-auto mt-6 min-h-24	w-28 flex-col items-end rounded-lg bg-white p-2 shadow-c1	group-hover:flex">
-              <label
-                className="flex cursor-pointer flex-row items-center p-1.5 text-sm text-miru-han-purple-1000"
-                htmlFor="file-input"
-              >
-                <ImageIcon color="#5B34EA" size={16} weight="bold" />
-                <span className="pl-2">Upload</span>
-              </label>
-              <input
-                accept="image/png, image/jpeg, image/jpg"
-                className="hidden"
-                id="file-input"
-                name="myImage"
-                type="file"
-                onChange={handleProfileImageChange}
-              />
-              {imageUrl && (
-                <div
-                  className="flex cursor-pointer flex-row items-center p-1.5 text-sm text-miru-red-400"
-                  onClick={handleDeleteProfileImage}
+            <MoreOptions setVisibilty={setShowProfileOptions}>
+              <li className="absolute bottom--10 z-15 mx-auto mt-6 min-h-24	w-28 flex-col items-end rounded-lg bg-white p-2 shadow-c1	group-hover:flex">
+                <label
+                  className="flex cursor-pointer flex-row items-center p-1.5 text-sm text-miru-han-purple-1000"
+                  htmlFor="file-input"
                 >
-                  <DeleteIcon color="#E04646" size={16} weight="bold" />
-                  <span className="pl-2">Delete</span>
-                </div>
-              )}
-            </div>
+                  <ImageIcon color="#5B34EA" size={16} weight="bold" />
+                  <span className="pl-2">Upload</span>
+                </label>
+                <input
+                  accept="image/png, image/jpeg, image/jpg"
+                  className="hidden"
+                  id="file-input"
+                  name="myImage"
+                  type="file"
+                  onChange={handleProfileImageChange}
+                />
+                {imageUrl && (
+                  <li
+                    className="flex cursor-pointer flex-row items-center p-1.5 text-sm text-miru-red-400"
+                    onClick={handleDeleteProfileImage}
+                  >
+                    <DeleteIcon color="#E04646" size={16} weight="bold" />
+                    <span className="pl-2">Delete</span>
+                  </li>
+                )}
+              </li>
+            </MoreOptions>
           )}
           <Tooltip
             content={`${firstName} ${lastName}`}
