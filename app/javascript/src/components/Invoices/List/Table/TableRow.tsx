@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 
 import { currencyFormat, useDebounce } from "helpers";
-import { ArrowLeftIcon, DotsThreeVerticalIcon } from "miruIcons";
+import { ArrowLeftIcon, DotsThreeVerticalIcon, XIcon } from "miruIcons";
 import { useNavigate } from "react-router-dom";
 import { Avatar, Badge, Button, Tooltip } from "StyledComponents";
 
@@ -182,6 +182,13 @@ const TableRow = ({
               <div className="flex h-12 w-full items-center justify-center bg-miru-han-purple-1000 px-3 text-white">
                 Send Invoice
               </div>
+              <button
+                className="mr-4 text-miru-gray-1000"
+                type="button"
+                onClick={() => setIsSending(false)}
+              >
+                <XIcon size={16} weight="bold" />
+              </button>
             </div>
             <div className="flex flex-1">
               <SendInvoiceContainer
