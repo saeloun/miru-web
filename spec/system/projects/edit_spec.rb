@@ -23,7 +23,7 @@ RSpec.describe "Edit Project", type: :system do
 
         find("tbody").hover.click
         find("#kebabMenu").click
-        click_button "Edit Project Details"
+        click_button "Edit"
         sleep 1
         fill_in "project-name", with: "Updated Project"
         choose "Non-billable"

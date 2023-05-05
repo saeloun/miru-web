@@ -190,7 +190,7 @@ const Clients = ({ isAdminUser }) => {
     {
       Header: "CLIENT",
       accessor: "col1", // accessor is the "key" in the data
-      cssClass: "md:w-1/3",
+      cssClass: "md:w-1/3 capitalize",
     },
     {
       Header: "EMAIL ID",
