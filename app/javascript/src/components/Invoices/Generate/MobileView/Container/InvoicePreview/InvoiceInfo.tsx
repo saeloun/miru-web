@@ -20,7 +20,7 @@ const InvoiceInfo = ({
 }) => {
   const { name, phone, label } = selectedClient;
   const { address_line_1, address_line_2, city, state, country, pin } =
-    selectedClient.address;
+    selectedClient?.address ?? {};
 
   return (
     <div className="flex flex-col items-start justify-between border-b border-miru-gray-400 px-4 py-2">
