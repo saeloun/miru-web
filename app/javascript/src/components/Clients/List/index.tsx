@@ -235,12 +235,16 @@ const Clients = ({ isAdminUser }) => {
     },
   ];
 
-  const currencySymb = currencySymbol(overdueOutstandingAmount?.currency);
-  const formattedOverdueAmount =
-    currencySymb + cashFormatter(overdueOutstandingAmount?.overdue_amount);
+  const {
+    currency = "",
+    overdue_amount = 0,
+    outstanding_amount = 0,
+  } = overdueOutstandingAmount ?? {};
 
+  const currencySymb = currencySymbol(currency);
+  const formattedOverdueAmount = currencySymb + cashFormatter(overdue_amount);
   const formattedOutstandingAmount =
-    currencySymb + cashFormatter(overdueOutstandingAmount?.outstanding_amount);
+    currencySymb + cashFormatter(outstanding_amount);
 
   const amountBox = [
     {

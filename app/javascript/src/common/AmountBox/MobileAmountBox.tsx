@@ -1,6 +1,6 @@
 import React from "react";
 
-import { minToHHMM } from "../../helpers/hhmmParser";
+import { minToHHMM } from "helpers";
 
 const MobileAmountBox = ({
   overdueAmount,
