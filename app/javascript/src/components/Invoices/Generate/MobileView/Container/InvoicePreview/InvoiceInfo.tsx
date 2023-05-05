@@ -18,7 +18,9 @@ const InvoiceInfo = ({
   setActiveSection,
   showEditButton = true,
 }) => {
-  const { label, address, phone } = selectedClient;
+  const { name, phone, label } = selectedClient;
+  const { address_line_1, address_line_2, city, state, country, pin } =
+    selectedClient.address;
 
   return (
     <div className="flex flex-col items-start justify-between border-b border-miru-gray-400 px-4 py-2">
@@ -27,10 +29,12 @@ const InvoiceInfo = ({
           Billed to
         </span>
         <p className="mt-1 text-base font-bold text-miru-dark-purple-1000">
-          {label}
+          {name || label}
         </p>
         <p className="text-xs font-normal text-miru-dark-purple-600">
-          {address}
+          {`${address_line_1}${address_line_2 ? `, ${address_line_2}` : ""}\n ${
+            address_line_2 ? "," : ""
+          }\n ${city}, ${state}, ${country},\n ${pin}`}
           <br />
           {phone}
         </p>

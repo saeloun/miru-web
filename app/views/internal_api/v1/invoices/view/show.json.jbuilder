@@ -7,4 +7,7 @@ json.lineItems invoice.invoice_line_items
 json.company do
   json.partial! "internal_api/v1/partial/company", locals: { company: invoice.company }
 end
-json.client invoice.client
+json.client do
+  json.partial! "internal_api/v1/partial/client", locals: { client: invoice.client }
+
+end
