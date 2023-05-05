@@ -2,10 +2,10 @@ import React, { Fragment } from "react";
 
 import { minToHHMM } from "helpers";
 import { ClientsIcon } from "miruIcons";
-import ReactPaginate from "react-paginate";
 import { Avatar } from "StyledComponents";
 
 import EmptyStates from "common/EmptyStates";
+import Pagination from "common/Pagination/Pagination";
 
 import ReportMobileRow from "./ReportMobileRow";
 
@@ -15,6 +15,8 @@ interface ContainerProps {
   selectedFilter?: any;
   paginationDetails?: any;
   handlePageClick: any;
+  params: any;
+  setParams: any;
 }
 
 const ReportHeader = () => (
@@ -41,6 +43,8 @@ export const TimeEntryReportMobileView = ({
   selectedFilter,
   paginationDetails,
   handlePageClick,
+  params,
+  setParams,
 }: ContainerProps) => {
   const { timeEntryReport } = useEntry();
 
@@ -133,22 +137,13 @@ export const TimeEntryReportMobileView = ({
           }
         />
       )}
-      {paginationDetails.pages > 1 && (
-        <ReactPaginate
-          activeClassName="bg-miru-han-purple-400 rounded-full"
-          breakLabel="..."
-          className="flex content-center justify-center"
-          disabledLinkClassName="cursor-not-allowed"
-          nextClassName="ml-3"
-          nextLabel="Next >"
-          pageCount={paginationDetails.pages}
-          pageLinkClassName="p-2"
-          pageRangeDisplayed={5}
-          previousClassName="mr-3"
-          previousLabel="< Previous"
-          onPageChange={handlePageClick}
-        />
-      )}
+      <Pagination
+        isReport
+        handleClick={handlePageClick}
+        pagy={paginationDetails}
+        params={params}
+        setParams={setParams}
+      />
     </div>
   );
 };
