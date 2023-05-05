@@ -18,7 +18,7 @@ import LineItems from "components/Invoices/Generate/MobileView/Container/MenuCon
 import DeleteInvoice from "components/Invoices/popups/DeleteInvoice";
 import getStatusCssClass from "utils/getBadgeStatus";
 
-const MobileView = ({ invoice }) => {
+const MobileView = ({ invoice, handleSendInvoice }) => {
   const {
     id,
     invoiceLineItems,
@@ -42,7 +42,6 @@ const MobileView = ({ invoice }) => {
     (prev, curr) => prev + (curr.rate * curr.quantity) / 60,
     0
   );
-
   const total = Number(subTotal) + Number(tax) - Number(discount);
 
   return (
@@ -124,6 +123,7 @@ const MobileView = ({ invoice }) => {
         <Button
           className="ml-2 flex w-1/2 items-center justify-center px-4 py-2"
           style="primary"
+          onClick={handleSendInvoice}
         >
           <PaperPlaneTiltIcon className="text-white" size={16} weight="bold" />
           <span className="ml-2 text-center text-base font-bold leading-5 text-white">
