@@ -62,6 +62,9 @@ const ClientSelection = ({
     </components.DropdownIndicator>
   );
 
+  const { address_line_1, address_line_2, city, state, country, pin } =
+    selectedClient?.address ?? {};
+
   return (
     <div className="group w-4/12 pr-4">
       <div
@@ -81,7 +84,12 @@ const ClientSelection = ({
                   {selectedClient.label}
                 </p>
                 <p className="w-52 text-sm font-normal text-miru-dark-purple-600">
-                  {selectedClient.address}
+                  {`${address_line_1}${
+                    address_line_2 ? `, ${address_line_2}` : ""
+                  }
+                ${
+                  address_line_2 ? "," : ""
+                }\n ${city}, ${state}, ${country},\n ${pin}`}
                   <br />
                   {selectedClient.phone}
                 </p>

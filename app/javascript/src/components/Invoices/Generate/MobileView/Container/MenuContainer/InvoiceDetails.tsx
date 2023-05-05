@@ -72,6 +72,8 @@ const InvoiceDetails = ({
     invoiceNumber: string;
     referenceNumber: string;
   }
+  const { address_line_1, address_line_2, city, state, country, pin } =
+    selectedClient?.address ?? {};
 
   return (
     <Formik
@@ -103,7 +105,11 @@ const InvoiceDetails = ({
                         {selectedClient.label}
                       </p>
                       <p className="w-52 text-xs font-medium text-miru-dark-purple-600">
-                        {selectedClient.address}
+                        {`${address_line_1}${
+                          address_line_2 ? `, ${address_line_2}` : ""
+                        }\n ${
+                          address_line_2 ? "," : ""
+                        }\n ${city}, ${state}, ${country},\n ${pin}`}
                         <br />
                         {selectedClient.phone}
                       </p>

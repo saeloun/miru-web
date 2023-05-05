@@ -26,4 +26,5 @@ end
 json.client do
   json.id client.id
   json.name client.name
+  json.address client.current_address
 end
