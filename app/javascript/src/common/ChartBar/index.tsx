@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 
 import { minToHHMM } from "helpers";
 import { Tooltip } from "react-tooltip";
@@ -42,26 +42,28 @@ const Client = ({ element, totalMinutes, index }: ISingleClient) => {
 };
 
 const GetClientBar = ({ data, totalMinutes }: IChartBarGraph) => (
-  <Fragment>
-    <p className="mb-3 text-tiny tracking-widest text-miru-dark-purple-600">
-      TOTAL HOURS:{" "}
-      <span className="font-medium">{minToHHMM(totalMinutes)}</span>
-    </p>
-    <div className="flex h-1 w-full bg-gray-200">
-      {data.map((element, index) => (
-        <Client
-          element={element}
-          index={index}
-          key={index}
-          totalMinutes={totalMinutes}
-        />
-      ))}
+  <section>
+    <div className="hidden md:block">
+      <p className="mb-3 text-tiny tracking-widest text-miru-dark-purple-600">
+        TOTAL HOURS:{" "}
+        <span className="font-medium">{minToHHMM(totalMinutes)}</span>
+      </p>
+      <div className="flex h-1 w-full bg-gray-200">
+        {data.map((element, index) => (
+          <Client
+            element={element}
+            index={index}
+            key={index}
+            totalMinutes={totalMinutes}
+          />
+        ))}
+      </div>
+      <div className="mt-3 flex justify-between pb-6 text-tiny tracking-widest text-miru-dark-purple-400">
+        <span>0</span>
+        <span>{minToHHMM(totalMinutes)}</span>
+      </div>
     </div>
-    <div className="mt-3 flex justify-between pb-6 text-tiny tracking-widest text-miru-dark-purple-400">
-      <span>0</span>
-      <span>{minToHHMM(totalMinutes)}</span>
-    </div>
-  </Fragment>
+  </section>
 );
 
 export default GetClientBar;
