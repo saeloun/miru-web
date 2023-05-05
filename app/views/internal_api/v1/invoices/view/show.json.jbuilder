@@ -9,5 +9,4 @@ json.company do
 end
 json.client do
   json.partial! "internal_api/v1/partial/client", locals: { client: invoice.client }
-
 end
