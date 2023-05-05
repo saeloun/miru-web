@@ -25,10 +25,10 @@ const ProjectForm = ({
 
   const projectId =
     (editProjectData && editProjectData["id"]) ||
-    Number(window.location.pathname.split("/").at(-1));
+    (window.location.pathname.includes("project") &&
+      Number(window.location.pathname?.split("/").at(-1)));
 
   const isEdit = !!projectId;
-
   interface FormValues {
     client: string;
     project: string;
@@ -148,7 +148,7 @@ const ProjectForm = ({
   }, []);
 
   return (
-    <div className="flex h-full w-full flex-col">
+    <div className="z-50 flex h-full w-full flex-col">
       <div className="flex items-center justify-between bg-miru-han-purple-1000 p-3 text-white">
         <span className="w-full pl-6 text-center text-base font-medium leading-5 text-white">
           {editProjectData?.id ? "Edit Project Details" : "Add New Project"}
@@ -259,12 +259,12 @@ const ProjectForm = ({
                   fieldTouched={touched.project}
                 />
                 <div>
-                  <span className="text-xs font-normal text-miru-dark-purple-1000">
+                  <span className="text-base font-normal text-miru-dark-purple-1000">
                     Project Type
                   </span>
                   <div className="flex">
                     <CustomRadioButton
-                      classNameLabel="font-medium text-sm leading-5 text-miru-dark-purple-1000"
+                      classNameLabel="font-medium text-base leading-5 text-miru-dark-purple-1000"
                       classNameWrapper="py-3"
                       defaultCheck={values.isBillable == true}
                       groupName="projectType"
@@ -277,7 +277,7 @@ const ProjectForm = ({
                       }}
                     />
                     <CustomRadioButton
-                      classNameLabel="font-medium text-sm leading-5 text-miru-dark-purple-1000"
+                      classNameLabel="font-medium text-base leading-5 text-miru-dark-purple-1000"
                       classNameWrapper="px-5 py-3"
                       defaultCheck={values.isBillable == false}
                       groupName="projectType"
