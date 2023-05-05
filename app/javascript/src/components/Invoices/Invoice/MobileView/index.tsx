@@ -42,7 +42,6 @@ const MobileView = ({ invoice }) => {
     (prev, curr) => prev + (curr.rate * curr.quantity) / 60,
     0
   );
-
   const total = Number(subTotal) + Number(tax) - Number(discount);
 
   return (
