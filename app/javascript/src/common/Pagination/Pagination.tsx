@@ -12,9 +12,18 @@ type Pagination = {
   pagy: any;
   params: any;
   setParams: any;
+  handleClick?: any;
+  isReport?: boolean;
 };
 
-const Pagination = ({ pagy, params, setParams, title }: Pagination) => {
+const Pagination = ({
+  pagy,
+  params,
+  setParams,
+  title,
+  handleClick,
+  isReport = false,
+}: Pagination) => {
   const { isDesktop } = useUserContext();
 
   const currentPage = params.page;
@@ -45,7 +54,11 @@ const Pagination = ({ pagy, params, setParams, title }: Pagination) => {
                   "text-miru-gray-400": pagy?.first,
                   "text-miru-han-purple-1000": !pagy?.first,
                 })}
-                onClick={() => setParams({ ...params, page: pagy?.prev })}
+                onClick={() => {
+                  isReport
+                    ? handleClick(pagy?.prev)
+                    : setParams({ ...params, page: pagy?.prev });
+                }}
               >
                 <CaretCircleLeftIcon size={16} weight="bold" />
               </button>
@@ -53,7 +66,7 @@ const Pagination = ({ pagy, params, setParams, title }: Pagination) => {
             <div className="flex overflow-x-scroll ">
               {paginationRange.map(page => (
                 <button
-                  disabled={pagy?.page === page}
+                  disabled={pagy?.page === page || currentPage === page}
                   key={page}
                   className={cn(
                     "m-1 mx-4 p-1 text-base font-bold text-miru-dark-purple-400",
@@ -61,7 +74,9 @@ const Pagination = ({ pagy, params, setParams, title }: Pagination) => {
                       "text-miru-han-purple-1000": pagy?.prev + 1 === page,
                     }
                   )}
-                  onClick={() => handlePageNumberClick(page)}
+                  onClick={() => {
+                    isReport ? handleClick(page) : handlePageNumberClick(page);
+                  }}
                 >
                   {page}
                 </button>
@@ -82,7 +97,7 @@ const Pagination = ({ pagy, params, setParams, title }: Pagination) => {
           </div>
         )}
       </div>
-      {isDesktop && (
+      {isDesktop && !isReport && (
         <div className="flex items-center justify-end">
           <select
             className="p-2 text-xs font-bold text-miru-han-purple-1000"
