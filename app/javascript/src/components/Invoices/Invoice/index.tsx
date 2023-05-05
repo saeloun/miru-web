@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 
+import { ArrowLeftIcon } from "miruIcons";
 import { useParams } from "react-router-dom";
+import { Button } from "StyledComponents";
 
 import invoicesApi from "apis/invoices";
 import { ApiStatus as InvoiceStatus } from "constants/index";
@@ -11,6 +13,7 @@ import Header from "./Header";
 import InvoiceDetails from "./InvoiceDetails";
 import MobileView from "./MobileView";
 
+import SendInvoiceContainer from "../Generate/MobileView/Container/SendInvoiceContainer";
 import DeleteInvoice from "../popups/DeleteInvoice";
 import SendInvoice from "../popups/SendInvoice";
 
@@ -71,8 +74,23 @@ const Invoice = () => {
           />
         )}
       </>
+    ) : showSendInvoiceModal ? (
+      <div className="h-full">
+        <div className="flex w-full bg-miru-han-purple-1000 pl-4">
+          <Button
+            style="ternary"
+            onClick={() => setShowSendInvoiceModal(false)}
+          >
+            <ArrowLeftIcon className="text-white" size={16} weight="bold" />
+          </Button>
+          <div className="flex h-12 w-full items-center justify-center bg-miru-han-purple-1000 px-3 text-white">
+            Send Invoice
+          </div>
+        </div>
+        <SendInvoiceContainer handleSaveSendInvoice={null} invoice={invoice} />
+      </div>
     ) : (
-      <MobileView invoice={invoice} />
+      <MobileView handleSendInvoice={handleSendInvoice} invoice={invoice} />
     ))
   );
 };
