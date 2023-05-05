@@ -29,7 +29,7 @@ const HeaderMenuList = ({
         }}
       >
         <PencilIcon color="#5b34ea" size={16} weight="bold" />
-        <span className="ml-3">Edit Project Details</span>
+        <span className="ml-3">Edit</span>
       </button>
     </li>
     <li>
