@@ -50,7 +50,6 @@ const EditClient = ({ setShowEditDialog, client }: IEditClient) => {
               </button>
             </div>
             <ClientForm
-              apiError={apiError}
               clientData={client}
               clientLogo={clientLogo}
               clientLogoUrl={clientLogoUrl}
