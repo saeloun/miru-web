@@ -13,6 +13,7 @@ RSpec.describe Project, type: :model do
   describe "Validations" do
     it { is_expected.to validate_presence_of(:name) }
     it { is_expected.to validate_inclusion_of(:billable).in_array([true, false]) }
+    it { is_expected.to validate_uniqueness_of(:name).scoped_to(:client_id) }
   end
 
   describe "Callbacks" do
