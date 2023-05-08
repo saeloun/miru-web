@@ -55,7 +55,7 @@
             <td>
               <div style=' font-weight:normal; font-size:16px;'>Payment Method</div>
               <div style="font-weight:normal; font-size:18px;">
-                <%= @invoice.payments.pluck(:transaction_type).to_sentence.upcase %>
+                <%= @invoice.payments.any?(&:present?) ? @invoice.payments.pluck(:transaction_type).to_sentence.upcase : "STRIPE" %>
               </div>
             </td>
             <td align="right">
@@ -145,34 +145,27 @@
             <%= image_tag @company_logo, height: 80 ,width: 80 %>
           </div>
           <p  style="font-family: 'Manrope';font-style: normal;font-size: 16px;line-height: 22px;text-align: center;color: #1D1A31; margin: 0px; padding: 0px">
-            <span style='font-weight:bold' id="company_name"><%= @invoice.company.name %></span>
-            has sent you an invoice.
+            <%= sanitize @message %>
           </p>
         </div>
       </div>
       <p style="text-align: center; font-family: 'Manrope'; font-weight:700; font-size: 24px; line-height:33px; color: #1D1A31;text-transform: capitalize; margin: 40px auto; padding: 0;">
-        Invoice Summary
+        Payment receipt
       </p>
       <div style="font-family: 'Manrope';font-weight: 400; font-size: 12px;line-height: 16px; text-align: center; color: #1D1A31; margin: 40px auto;">
         <div>
-          <p style="font-family: 'Manrope'; margin: 0px; padding: 0px;">Date of Issue</p>
-          <p style="font-family: 'Manrope'; font-size: 16px; font-style: normal; font-weight: 400; line-height: 22px; color: #1D1A31; margin: 0px; padding: 4px 0px 16px 0px;"><%= @invoice.issue_date.ordinalize %></p>
+          <p style="font-family: 'Manrope'; margin: 0px; padding: 0px;">Payment method</p>
+          <p style="font-family: 'Manrope'; font-size: 16px; font-style: normal; font-weight: 400; line-height: 22px; color: #1D1A31; margin: 0px; padding: 4px 0px 16px 0px;"><%= @invoice.payments.any?(&:present?) ? @invoice.payments.pluck(:transaction_type).to_sentence.upcase : "STRIPE" %></p>
         </div>
         <div>
-          <p style="font-family: 'Manrope'; margin: 0px; padding: 0px;">Due Date</p>
-          <p style="font-size: 16px; font-style: normal; font-weight: 400; line-height: 22px; color: #1D1A31; margin: 0px; padding: 4px 0px 16px 0px;"><%= @invoice.due_date.ordinalize %></p>
+          <p style="font-family: 'Manrope'; margin: 0px; padding: 0px;">Amount Paid</p>
+          <p style="font-size: 16px; font-style: normal; font-weight: 400; line-height: 22px; color: #1D1A31; margin: 0px; padding: 4px 0px 16px 0px;">
+            <%= @invoice.amount_paid %>
+          </p>
         </div>
         <div>
-          <p style="font-family: 'Manrope'; margin: 0px; padding: 0px;">Invoice Number</p>
-          <p style="font-family: 'Manrope' font-style: normal; font-size: 16px; font-style: normal; font-weight: 400; line-height: 22px; color: #1D1A31; margin: 0px; padding: 4px 0px 16px 0px;"><%= @invoice.invoice_number %></p>
-        </div>
-        <div>
-          <p style="font-family: 'Manrope'; margin: 0px; padding: 0px;">Reference</p>
-          <p style="font-family: 'Manrope' font-style: normal; font-size: 16px; font-style: normal; font-weight: 400; line-height: 22px; color: #1D1A31; margin: 0px; padding: 4px 0px 16px 0px;"><%= @invoice.reference %></p>
-        </div>
-        <div>
-          <p style="font-family: 'Manrope';margin: 0px; padding: 0px;">Total Amount</p>
-          <p style="font-family: 'Manrope'; font-style: normal;font-weight:normal; font-size:40px; margin: 0px; margin-top:12px"><%= @amount %></p>
+          <p style="font-family: 'Manrope'; margin: 0px; padding: 0px;">Issued to</p>
+          <p style="font-family: 'Manrope' font-style: normal; font-size: 16px; font-style: normal; font-weight: 400; line-height: 22px; color: #1D1A31; margin: 0px; padding: 4px 0px 16px 0px;"><%= @company.name %></p>
         </div>
       </div>
       <div id="footer">
