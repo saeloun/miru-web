@@ -2,7 +2,7 @@
 
 require "rails_helper"
 RSpec.describe Project, type: :model do
-  let(:project) { build(:project) }
+  subject { build(:project) }
 
   describe "Associations" do
     it { is_expected.to belong_to(:client) }
@@ -13,7 +13,13 @@ RSpec.describe Project, type: :model do
   describe "Validations" do
     it { is_expected.to validate_presence_of(:name) }
     it { is_expected.to validate_inclusion_of(:billable).in_array([true, false]) }
-    it { is_expected.to validate_uniqueness_of(:name).scoped_to(:client_id) }
+
+    it {
+      expect(subject)
+        .to validate_uniqueness_of(:name)
+        .scoped_to(:client_id)
+        .with_message("The project #{subject.name} already exists")
+    }
   end
 
   describe "Callbacks" do

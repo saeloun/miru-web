@@ -8,8 +8,16 @@ RSpec.describe Client, type: :model do
   describe "Validations" do
     it { is_expected.to validate_presence_of(:name) }
     it { is_expected.to validate_presence_of(:email) }
+
+    it {
+      expect(subject)
+        .to validate_uniqueness_of(:name)
+        .scoped_to(:company_id)
+        .case_insensitive
+        .with_message("The client %{value} already exists")
+    }
+
     it { is_expected.to validate_uniqueness_of(:email).scoped_to(:company_id) }
-    it { is_expected.to validate_uniqueness_of(:name).scoped_to(:company_id) }
     it { is_expected.to allow_value("valid@email.com").for(:email) }
     it { is_expected.not_to allow_value("invalid@email").for(:email) }
     it { is_expected.to validate_length_of(:name).is_at_most(50) }

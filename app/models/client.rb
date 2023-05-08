@@ -40,7 +40,7 @@ class Client < ApplicationRecord
 
   before_save :strip_attributes
   validates :name, presence: true, length: { maximum: 50 },
-    uniqueness: { scope: :company_id, message: "The client  %{value} already exists" }
+    uniqueness: { scope: :company_id, case_sensitive: false, message: "The client  %{value} already exists" }
   validates :email, presence: true, uniqueness: { scope: :company_id }, format: { with: Devise.email_regexp }
   after_discard :discard_projects
   after_commit :reindex_projects
