@@ -95,16 +95,16 @@ const InvoiceDetails = ({
             >
               <CustomAdvanceInput
                 id="Billed to"
-                inputBoxClassName="min-h-80"
+                inputBoxClassName="min-h-80 max-h-20v overflow-y-scroll"
                 label="Billed to"
                 wrapperClassName="h-full"
                 value={
                   selectedClient && (
-                    <div className="h-full overflow-y-scroll">
+                    <div>
                       <p className="text-sm font-medium text-miru-dark-purple-1000">
                         {selectedClient.label}
                       </p>
-                      <p className="w-52 text-xs font-medium text-miru-dark-purple-600">
+                      <p className="w-52 py-2 text-xs font-medium text-miru-dark-purple-600">
                         {`${address_line_1}${
                           address_line_2 ? `, ${address_line_2}` : ""
                         }\n ${
