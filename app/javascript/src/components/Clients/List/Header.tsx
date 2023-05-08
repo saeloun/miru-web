@@ -36,7 +36,7 @@ const Header = ({ setnewClient, isAdminUser, setShowDialog }) => {
           />
           <div className="flex">
             <button
-              className="header__button"
+              className="header__button md:px-2 "
               type="button"
               onClick={() => {
                 setShowDialog(true);
@@ -44,9 +44,7 @@ const Header = ({ setnewClient, isAdminUser, setShowDialog }) => {
               }}
             >
               <PlusIcon size={16} weight="fill" />
-              <span className="ml-2 inline-block hidden lg:inline">
-                NEW CLIENT
-              </span>
+              <span className="ml-2 hidden md:inline">NEW CLIENT</span>
             </button>
           </div>
         </Fragment>
