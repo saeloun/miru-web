@@ -75,7 +75,7 @@ const Invoice = () => {
         )}
       </>
     ) : showSendInvoiceModal ? (
-      <div className="h-full">
+      <div className="flex h-full flex-col">
         <div className="flex w-full bg-miru-han-purple-1000 pl-4">
           <Button
             style="ternary"
@@ -87,7 +87,12 @@ const Invoice = () => {
             Send Invoice
           </div>
         </div>
-        <SendInvoiceContainer handleSaveSendInvoice={null} invoice={invoice} />
+        <div className="flex flex-1">
+          <SendInvoiceContainer
+            handleSaveSendInvoice={null}
+            invoice={invoice}
+          />
+        </div>
       </div>
     ) : (
       <MobileView handleSendInvoice={handleSendInvoice} invoice={invoice} />
