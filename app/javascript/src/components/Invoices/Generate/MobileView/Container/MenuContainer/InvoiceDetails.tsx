@@ -100,7 +100,7 @@ const InvoiceDetails = ({
                 wrapperClassName="h-full"
                 value={
                   selectedClient && (
-                    <div>
+                    <div className="h-full overflow-y-scroll">
                       <p className="text-sm font-medium text-miru-dark-purple-1000">
                         {selectedClient.label}
                       </p>
