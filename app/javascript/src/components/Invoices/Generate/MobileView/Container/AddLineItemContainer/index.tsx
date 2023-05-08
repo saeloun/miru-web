@@ -10,7 +10,7 @@ import {
   useOutsideClick,
 } from "helpers";
 import { CalendarIcon, DeleteIcon, FloppyDiskIcon } from "miruIcons";
-import { Button } from "StyledComponents";
+import { Button, TimeInput } from "StyledComponents";
 
 import CustomDatePicker from "common/CustomDatePicker";
 import { CustomInputText } from "common/CustomInputText";
@@ -43,9 +43,7 @@ const AddLineItemContainer = ({
   const [description, setDescription] = useState<string>("");
   const [rate, setRate] = useState<number>();
   const [quantity, setQuantity] = useState<any>();
-  const [qtyInHHrMin, setQtyInHHrMin] = useState<any>(
-    quantity && minToHHMM(quantity)
-  );
+  const [qtyInHHrMin, setQtyInHHrMin] = useState<any>("");
   const [lineTotal, setLineTotal] = useState<any>();
   const [lineItem, setLineItem] = useState<any>({});
   const [filteredLineItems, setFilteredLineItems] = useState<any>();
@@ -59,11 +57,11 @@ const AddLineItemContainer = ({
   const getDate = date ? dayjs(date).format(dateFormat) : "";
   const debouncedSearchName = useDebounce(name, 500);
   const disableBtn = (values, errors) => {
-    if (errors.name || errors.rate || errors.quantity) {
+    if (errors.name || errors.rate) {
       return true;
     }
 
-    if (values.name && description && date && values.rate && values.quantity) {
+    if (values.name && description && date && values.rate && quantity) {
       return false;
     }
 
@@ -80,9 +78,9 @@ const AddLineItemContainer = ({
     setLineTotal(lineTotalCalc(quantity, e.target.value));
   };
 
-  const handleSetQuantity = e => {
-    const quantityInMin = Number(minFromHHMM(e.target.value));
-    setQtyInHHrMin(e.target.value);
+  const handleSetQuantity = val => {
+    const quantityInMin = Number(minFromHHMM(val));
+    setQtyInHHrMin(val);
     setQuantity(quantityInMin);
     setLineTotal(lineTotalCalc(quantityInMin, rate));
   };
@@ -94,6 +92,7 @@ const AddLineItemContainer = ({
   const handleAddLineItem = (values: any) => {
     values.date = date;
     values.description = description;
+    values.quantity = quantity;
     const lineItem = { id: manualEntryArr.length + 1, ...values, lineTotal };
     setManualEntryArr([...manualEntryArr, lineItem]);
     setActiveSection(sections.generateInvoice);
@@ -144,6 +143,7 @@ const AddLineItemContainer = ({
       ) {
         const first_name = name.split(" ")[0];
         const last_name = name.split(" ")[1];
+        const quantityInMin = Number(minFromHHMM(qtyInHHrMin));
 
         return {
           ...option,
@@ -152,7 +152,7 @@ const AddLineItemContainer = ({
           date,
           description,
           rate,
-          quantity: qtyInHHrMin,
+          quantity: quantityInMin,
           lineTotal,
         };
       }
@@ -168,6 +168,7 @@ const AddLineItemContainer = ({
       ) {
         const first_name = name.split(" ")[0];
         const last_name = name.split(" ")[1];
+        const quantityInMin = Number(minFromHHMM(qtyInHHrMin));
 
         return {
           ...option,
@@ -176,7 +177,7 @@ const AddLineItemContainer = ({
           date,
           description,
           rate,
-          quantity: qtyInHHrMin,
+          quantity: quantityInMin,
           lineTotal,
         };
       }
@@ -215,9 +216,9 @@ const AddLineItemContainer = ({
       setDate(date);
       setDescription(editItem.description);
       setRate(editItem.rate);
-      const quantityInMin = Number(minFromHHMM(editItem.quantity.toString()));
-      setQuantity(quantityInMin);
-      setQtyInHHrMin(editItem.quantity);
+      setQuantity(editItem.quantity);
+      const quantityInMin = minToHHMM(editItem.quantity);
+      setQtyInHHrMin(quantityInMin);
     }
   }, [editItem]);
 
@@ -394,23 +395,12 @@ const AddLineItemContainer = ({
                     fieldTouched={touched.rate}
                   />
                 </div>
-                <div>
-                  <InputField
-                    id="quantity"
-                    inputBoxClassName="border focus:border-miru-han-purple-1000"
-                    label="Quantity"
-                    name="quantity"
-                    readOnly={false}
-                    setFieldError={setFieldError}
-                    setFieldValue={setFieldValue}
-                    type="text"
-                    onChange={handleSetQuantity}
-                  />
-                  <InputErrors
-                    fieldErrors={errors.quantity}
-                    fieldTouched={touched.quantity}
-                  />
-                </div>
+                <TimeInput
+                  className="focus:outline-none h-10 w-full cursor-pointer rounded-md border border-miru-gray-1000 text-center text-xl font-bold text-miru-dark-purple-1000 placeholder:text-miru-dark-purple-200 focus:bg-white focus:ring-1 focus:ring-miru-gray-1000"
+                  initTime={qtyInHHrMin}
+                  name="timeInput"
+                  onTimeChange={handleSetQuantity}
+                />
               </div>
               {editItem.id || editItem.timesheet_entry_id ? (
                 <div className="flex w-full justify-between">
@@ -429,6 +419,7 @@ const AddLineItemContainer = ({
                   </Button>
                   <Button
                     className="ml-2 flex w-1/2 items-center justify-center px-4 py-2"
+                    disabled={disableBtn(values, errors)}
                     style="primary"
                   >
                     <FloppyDiskIcon

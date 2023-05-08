@@ -79,7 +79,7 @@ const ClientSelection = ({
           wrapperClassName="h-full cursor-pointer"
           value={
             isOptionSelected && (
-              <div>
+              <div className="h-full overflow-y-scroll">
                 <p className="text-base font-bold text-miru-dark-purple-1000">
                   {selectedClient.label}
                 </p>
