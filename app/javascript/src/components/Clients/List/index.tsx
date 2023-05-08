@@ -13,6 +13,7 @@ import { Avatar, MobileMoreOptions, Tooltip } from "StyledComponents";
 
 import clientApi from "apis/clients";
 import AmountBoxContainer from "common/AmountBox";
+import MobileAmountBox from "common/AmountBox/MobileAmountBox";
 import ChartBar from "common/ChartBar";
 import EmptyStates from "common/EmptyStates";
 import withLayout from "common/Mobile/HOC/withLayout";
@@ -234,19 +235,25 @@ const Clients = ({ isAdminUser }) => {
     },
   ];
 
-  const currencySymb = currencySymbol(overdueOutstandingAmount?.currency);
+  const {
+    currency = "",
+    overdue_amount = 0,
+    outstanding_amount = 0,
+  } = overdueOutstandingAmount ?? {};
+
+  const currencySymb = currencySymbol(currency);
+  const formattedOverdueAmount = currencySymb + cashFormatter(overdue_amount);
+  const formattedOutstandingAmount =
+    currencySymb + cashFormatter(outstanding_amount);
 
   const amountBox = [
     {
       title: "OVERDUE",
-      amount:
-        currencySymb + cashFormatter(overdueOutstandingAmount?.overdue_amount),
+      amount: formattedOverdueAmount,
     },
     {
       title: "OUTSTANDING",
-      amount:
-        currencySymb +
-        cashFormatter(overdueOutstandingAmount?.outstanding_amount),
+      amount: formattedOutstandingAmount,
     },
   ];
 
@@ -315,9 +322,16 @@ const Clients = ({ isAdminUser }) => {
             <AmountBoxContainer amountBox={amountBox} />
           </div>
         )}
-        <div className="flex flex-col">
-          <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-            <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+        {isAdminUser && !isDesktop && (
+          <MobileAmountBox
+            outstandingAmount={formattedOutstandingAmount}
+            overdueAmount={formattedOverdueAmount}
+            totalMinutes={totalMinutes}
+          />
+        )}
+        <div className="mx-auto flex w-full flex-col px-4">
+          <div className="-my-2 w-full lg:-mx-8">
+            <div className="mx-auto inline-block min-w-full py-2 align-middle lg:px-8">
               <div className="overflow-hidden">
                 {clientData && clientData.length > 0 ? (
                   <Table
