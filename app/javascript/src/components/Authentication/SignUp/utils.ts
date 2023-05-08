@@ -34,4 +34,8 @@ export const signUpFormValidationSchema = Yup.object().shape({
     )
     .oneOf([Yup.ref("password"), null], "Passwords must match")
     .required("Password can not be blank"),
+  isAgreedTermsOfServices: Yup.boolean().oneOf(
+    [true],
+    "Please agree to the terms and privacy policy to continue"
+  ),
 });
