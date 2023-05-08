@@ -18,7 +18,7 @@ RSpec.describe ClientPaymentMailer, type: :mailer do
     end
 
     it "renders the body" do
-      expect(mail.body.encoded).to match("Payment Confirmation")
+      expect(mail.body.encoded).to match("Payment Receipt")
     end
   end
 end
