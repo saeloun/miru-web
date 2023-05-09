@@ -24,7 +24,7 @@ const BackButton = ({ href = "" }) => {
 
   return (
     <div
-      className="mr-1 flex h-14 w-14 flex-row items-center justify-center"
+      className="mr-1 flex h-14 w-14 cursor-pointer flex-row items-center justify-center"
       onClick={naviagteToPath}
     >
       <ArrowLeftIcon size={20} />
