@@ -45,7 +45,7 @@ const MobileView = ({ invoice, handleSendInvoice }) => {
   const total = Number(subTotal) + Number(tax) - Number(discount);
 
   return (
-    <div>
+    <div className="h-full">
       <div className="sticky top-0 left-0 right-0 z-50 flex h-12 items-center bg-white px-4 shadow-c1">
         <div className="flex items-center">
           <Button
@@ -69,7 +69,7 @@ const MobileView = ({ invoice, handleSendInvoice }) => {
           />
         </div>
       </div>
-      <div className="overflow-y-scroll">
+      <div className="h-full overflow-y-scroll">
         <CompanyInfo company={company} />
         <InvoiceInfo
           amount={amount}
