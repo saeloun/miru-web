@@ -93,8 +93,14 @@ const SignUpForm = () => {
             onSubmit={handleSignUpFormSubmit}
           >
             {(props: FormikProps<SignUpFormValues>) => {
-              const { touched, errors, values, setFieldValue, setFieldError } =
-                props;
+              const {
+                touched,
+                errors,
+                values,
+                setFieldValue,
+                setFieldError,
+                setFieldTouched,
+              } = props;
 
               return (
                 <Form>
@@ -193,8 +199,7 @@ const SignUpForm = () => {
                             "isAgreedTermsOfServices",
                             event.target.checked
                           );
-                          touched.isAgreedTermsOfServices;
-                          // setFieldTouched("isAgreedTermsOfServices", true);
+                          setFieldTouched("isAgreedTermsOfServices", false);
                         }}
                       />
                       <h4 className="ml-2">
