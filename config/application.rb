@@ -36,7 +36,7 @@ module MiruWeb
     end
 
     config.autoload_paths << Rails.root.join("lib")
-
+    config.active_model.i18n_customize_full_message = true
     config.react.camelize_props = true
 
     # Use a real queuing backend for Active Job (and separate queues per environment).

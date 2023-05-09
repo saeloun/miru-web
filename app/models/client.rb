@@ -19,6 +19,7 @@
 #  index_clients_on_company_id            (company_id)
 #  index_clients_on_discarded_at          (discarded_at)
 #  index_clients_on_email_and_company_id  (email,company_id) UNIQUE
+#  index_clients_on_name_and_company_id   (name,company_id) UNIQUE
 #
 # Foreign Keys
 #
@@ -38,8 +39,11 @@ class Client < ApplicationRecord
   belongs_to :company
 
   before_save :strip_attributes
-  validates :name, presence: true, length: { maximum: 50 }
+  validates :name, presence: true, length: { maximum: 50 },
+    uniqueness: { scope: :company_id, case_sensitive: false, message: "The client %{value} already exists" }
+
   validates :email, presence: true, uniqueness: { scope: :company_id }, format: { with: Devise.email_regexp }
+
   after_discard :discard_projects
   after_commit :reindex_projects
 
