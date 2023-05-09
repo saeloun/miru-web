@@ -3,7 +3,7 @@
 FactoryBot.define do
   factory :project do
     client
-    name { Faker::Name.name }
+    name { Faker::Name.unique.name }
     description { "Blog site." }
     billable { false }
   end
