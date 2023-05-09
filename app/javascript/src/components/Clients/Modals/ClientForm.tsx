@@ -27,7 +27,6 @@ interface IClientForm {
   setClientLogo: any;
   formType?: string;
   clientData?: any;
-  apiError?: string;
   setClientData?: any;
   setnewClient?: any;
   clientLogo?: any;
@@ -55,7 +54,6 @@ const ClientForm = ({
   setClientLogo,
   clientData,
   formType = "new",
-  apiError = "",
   setClientData,
   setnewClient,
   clientLogo,
@@ -442,9 +440,6 @@ const ClientForm = ({
                 />
               </div>
             </div>
-            <p className="mt-3 block text-xs tracking-wider text-red-600">
-              {apiError}
-            </p>
             <div className="actions mt-4">
               <input
                 className="form__input_submit"

@@ -41,7 +41,7 @@ RSpec.describe "InternalApi::V1::Client#create", type: :request do
             addresses_attributes: [attributes_for(:address)]
           }), headers: auth_headers(user)
         expect(response).to have_http_status(:unprocessable_entity)
-        expect(json_response["errors"]).to eq("Name can't be blank")
+        expect(json_response["errors"]).to eq("can't be blank")
       end
 
       it "throws 422 if the address_line_1 is blank" do
