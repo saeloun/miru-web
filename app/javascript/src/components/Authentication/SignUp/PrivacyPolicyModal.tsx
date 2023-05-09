@@ -1,5 +1,6 @@
 import React from "react";
 
+import { XIcon } from "miruIcons";
 import { Modal } from "StyledComponents";
 
 import {
@@ -12,10 +13,17 @@ import {
 const PrivacyPolicyModal = ({ isOpen, onClose }) => (
   <Modal customStyle="max-w-screen-xl" isOpen={isOpen} onClose={onClose}>
     <div className="">
-      <h2 className="text-lg font-bold">Privacy Policy for Miru Inc</h2>
-      <p className="pt-4 text-justify text-sm">
-        Last Updated on 26th April 2023
-      </p>
+      <div className="mt-2 mb-6 flex items-center justify-between">
+        <h2 className="text-lg font-bold">Privacy Policy for Miru Inc</h2>
+        <button
+          className="left-0 text-miru-gray-1000"
+          type="button"
+          onClick={onClose}
+        >
+          <XIcon size={32} weight="bold" />
+        </button>
+      </div>
+      <p className="text-justify text-sm">Last Updated on 26th April 2023</p>
       <p className="mt-2 text-justify text-sm">
         At Miru, accessible from www.miru.so, one of our main priorities is the
         privacy of our visitors. This Privacy Policy document contains types of

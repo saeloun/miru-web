@@ -10,6 +10,7 @@ import { InputErrors, InputField } from "common/FormikFields";
 import { MIRU_APP_URL, Paths } from "constants/index";
 
 import PrivacyPolicyModal from "./PrivacyPolicyModal";
+import TermsOfServiceModal from "./TermsOfServiceModal";
 import { signUpFormInitialValues, signUpFormValidationSchema } from "./utils";
 
 import FooterLinks from "../FooterLinks";
@@ -24,6 +25,7 @@ interface SignUpFormValues {
 }
 
 const SignUpForm = () => {
+  const [privacyModal, setPrivacyModal] = useState(false);
   const [termsOfServiceModal, setTermsOfServiceModal] = useState(false);
   const navigate = useNavigate();
 
@@ -47,11 +49,14 @@ const SignUpForm = () => {
 
   const handleGoogleAuth = async () => {
     const googleForm = googleOauth?.current;
-
     if (googleForm) googleForm.submit();
   };
 
   const handlePrivacyPolicy = () => {
+    setPrivacyModal(true);
+  };
+
+  const handleTermsOfService = () => {
     setTermsOfServiceModal(true);
   };
 
@@ -194,7 +199,10 @@ const SignUpForm = () => {
                       />
                       <h4 className="ml-2">
                         I agree to the&nbsp;
-                        <span className="form__link cursor-pointer">
+                        <span
+                          className="form__link cursor-pointer"
+                          onClick={handleTermsOfService}
+                        >
                           Terms of Service&nbsp;
                         </span>
                         and&nbsp;
@@ -263,8 +271,14 @@ const SignUpForm = () => {
                 </Form>
               )}
             </Formik>
-            {termsOfServiceModal && (
+            {privacyModal && (
               <PrivacyPolicyModal
+                isOpen={privacyModal}
+                onClose={() => setPrivacyModal(false)}
+              />
+            )}
+            {termsOfServiceModal && (
+              <TermsOfServiceModal
                 isOpen={termsOfServiceModal}
                 onClose={() => setTermsOfServiceModal(false)}
               />
@@ -280,7 +294,10 @@ const SignUpForm = () => {
           </p>
         </div>
       </div>
-      <FooterLinks />
+      <FooterLinks
+        handlePrivacyPolicy={handlePrivacyPolicy}
+        handleTermsOfService={handleTermsOfService}
+      />
     </div>
   );
 };
