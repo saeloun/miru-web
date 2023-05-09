@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_03_09_090124) do
+ActiveRecord::Schema[7.0].define(version: 2023_05_06_115107) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -71,6 +71,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_09_090124) do
     t.index ["company_id"], name: "index_clients_on_company_id"
     t.index ["discarded_at"], name: "index_clients_on_discarded_at"
     t.index ["email", "company_id"], name: "index_clients_on_email_and_company_id", unique: true
+    t.index ["name", "company_id"], name: "index_clients_on_name_and_company_id", unique: true
   end
 
   create_table "companies", force: :cascade do |t|
@@ -85,9 +86,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_09_090124) do
     t.string "timezone"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-  end
-
-  create_table "data_migrations", primary_key: "version", id: :string, force: :cascade do |t|
   end
 
   create_table "devices", force: :cascade do |t|
@@ -278,6 +276,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_09_090124) do
     t.index ["billable"], name: "index_projects_on_billable"
     t.index ["client_id"], name: "index_projects_on_client_id"
     t.index ["discarded_at"], name: "index_projects_on_discarded_at"
+    t.index ["name", "client_id"], name: "index_projects_on_name_and_client_id", unique: true
   end
 
   create_table "roles", force: :cascade do |t|

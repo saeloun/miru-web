@@ -52,7 +52,6 @@ const NewClient = ({
               </button>
             </div>
             <ClientForm
-              apiError={apiError}
               clientData={clientData}
               clientLogo={clientLogo}
               clientLogoUrl={clientLogoUrl}
