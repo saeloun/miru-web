@@ -65,7 +65,7 @@ const Header = ({
   };
 
   return (
-    <div className="mt-6 mb-3 flex flex-wrap items-center justify-around lg:justify-between">
+    <div className="mt-6 mb-3 flex flex-wrap items-center justify-between">
       {isDesktop && <h2 className="header__title">Invoices</h2>}
       <div className="header__searchWrap">
         <div className="header__searchInnerWrapper relative">
@@ -93,7 +93,7 @@ const Header = ({
           </div>
         </div>
         <button
-          className="relative ml-7 h-10 w-10 rounded p-3 hover:bg-miru-gray-1000"
+          className="relative ml-auto h-10 w-10 rounded p-3 hover:bg-miru-gray-1000"
           onClick={() => setIsFilterVisible(true)}
         >
           {appliedFilterCount > 0 && (
