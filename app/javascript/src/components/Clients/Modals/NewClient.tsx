@@ -17,8 +17,6 @@ const NewClient = ({
   setClientLogo,
   setShowDialog,
 }) => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
-  const [mobileClientView, setMobileClientView] = useState<boolean>(false);
   const [submitting, setSubmitting] = useState<boolean>(false);
   const [apiError, setApiError] = useState<string>("");
 
