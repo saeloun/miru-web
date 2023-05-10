@@ -10,7 +10,6 @@ import flags from "react-phone-number-input/flags";
 import { Avatar } from "StyledComponents";
 
 import clientApi from "apis/clients";
-import { CustomAsyncSelect } from "common/CustomAsyncSelect";
 import CustomReactSelect from "common/CustomReactSelect";
 import { InputErrors, InputField } from "common/FormikFields";
 import Toastr from "common/Toastr";
@@ -92,21 +91,6 @@ const ClientForm = ({
       code: state.isoCode,
       ...state,
     }));
-
-  const filterCities = (inputValue: string) => {
-    const city = currentCityList.filter(i =>
-      i.label.toLowerCase().includes(inputValue.toLowerCase())
-    );
-
-    return city.length ? city : [{ label: inputValue, value: inputValue }];
-  };
-
-  const promiseOptions = (inputValue: string) =>
-    new Promise(resolve => {
-      setTimeout(() => {
-        resolve(filterCities(inputValue));
-      }, 1000);
-    });
 
   const onLogoChange = e => {
     const file = e.target.files[0];
@@ -415,22 +399,20 @@ const ClientForm = ({
             </div>
             <div className="flex flex-row">
               <div className="flex w-1/2 flex-col pr-2" id="city">
-                <CustomAsyncSelect
+                <CustomReactSelect
+                  handleOnChange={city => setFieldValue("city", city)}
                   isErr={!!errors.city && touched.city}
                   label="City"
-                  loadOptions={promiseOptions}
                   name="city"
+                  options={currentCityList}
                   value={values.city.value ? values.city : null}
-                  handleOnChange={city => {
-                    setFieldValue("city", city);
-                  }}
                 />
               </div>
               <div className="flex w-1/2 flex-col pl-2">
                 <InputField
                   resetErrorOnChange
                   id="zipcode"
-                  label="zipcode"
+                  label="Zipcode"
                   name="zipcode"
                   setFieldValue={setFieldValue}
                 />
