@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
-class PaymentMailer < ApplicationMailer
+class ClientPaymentMailer < ApplicationMailer
   def payment
     @invoice = params[:invoice]
-    recipients = recipients_with_role
     subject = params[:subject]
     @invoice_url = "#{ENV['APP_BASE_URL']}/invoices/#{@invoice.external_view_key}/view"
     @company = @invoice.company
@@ -15,7 +14,7 @@ class PaymentMailer < ApplicationMailer
     attachments.inline["Instagram.png"] = File.read("public/Instagram.png")
     attachments.inline["Twitter.png"] = File.read("public/Twitter.png")
 
-    mail(to: recipients, subject:, reply_to: ENV["REPLY_TO_EMAIL"])
+    mail(to: @invoice.client.email, subject:, reply_to: ENV["REPLY_TO_EMAIL"])
   end
 
   private
@@ -26,12 +25,11 @@ class PaymentMailer < ApplicationMailer
         ""
     end
 
-    def recipients_with_role
-      client_company = @invoice.client.company
-      client_company.users.with_role([:admin, :owner], client_company).pluck(:email)
+    def format_date
+      @invoice.updated_at.strftime("%d.%m.%Y")
     end
 
     def email_message
-      "#{@invoice.client.name} has made a payment of #{@amount} for<br>invoice #{@invoice.invoice_number} through Stripe. The invoice is paid in full now"
+      "Receipt of payment of #{@amount} on #{format_date} through online payment<br>against invoice number #{@invoice.invoice_number}"
     end
 end
