@@ -19,7 +19,11 @@ import {
 } from "components/Invoices/common/InvoiceForm/SendInvoice/utils";
 import { ApiStatus as InvoiceStatus } from "constants/index";
 
-const SendInvoiceContainer = ({ invoice, handleSaveSendInvoice }) => {
+const SendInvoiceContainer = ({
+  invoice,
+  handleSaveSendInvoice,
+  setIsSending,
+}) => {
   const Recipient: React.FC<{ email: string; handleClick: any }> = ({
     email,
     handleClick,
@@ -94,6 +98,7 @@ const SendInvoiceContainer = ({ invoice, handleSaveSendInvoice }) => {
         } = await invoicesApi.sendInvoice(invoice.id, payload);
         Toastr.success(message);
       }
+      setIsSending(false);
     } catch {
       setStatus(InvoiceStatus.ERROR);
     }
