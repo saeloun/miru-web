@@ -135,7 +135,7 @@ const TeamForm = ({
                       groupName="roles"
                       id="Book Keeper"
                       key="Book Keeper"
-                      label="BookKeeper"
+                      label="Bookkeeper"
                       value={values.role == "book_keeper" ? "book_keeper" : ""}
                       handleOnChange={() => {
                         setFieldValue("role", "book_keeper", true);
