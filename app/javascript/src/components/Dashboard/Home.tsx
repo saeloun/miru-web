@@ -17,23 +17,36 @@ const RestrictedRoute = ({ user, role, authorisedRoles }) => {
     return <Outlet />;
   }
 
-  const url =
-    role === Roles.BOOK_KEEPER
-      ? Paths.PAYMENTS
-      : role === Roles.OWNER
-      ? Paths.INVOICES
-      : Paths.TIME_TRACKING;
+  let url;
+
+  switch (role) {
+    case Roles.BOOK_KEEPER:
+      url = Paths.PAYMENTS;
+      break;
+    case Roles.OWNER:
+      url = Paths.INVOICES;
+      break;
+    default:
+      url = Paths.TIME_TRACKING;
+      break;
+  }
 
   return <Navigate to={url} />;
 };
 
 const RootElement = ({ role }) => {
-  const url =
-    role === Roles.OWNER
-      ? Paths.INVOICES
-      : role === Roles.BOOK_KEEPER
-      ? Paths.PAYMENTS
-      : Paths.TIME_TRACKING;
+  let url;
+  switch (role) {
+    case Roles.OWNER:
+      url = Paths.INVOICES;
+      break;
+    case Roles.BOOK_KEEPER:
+      url = Paths.PAYMENTS;
+      break;
+    default:
+      url = Paths.TIME_TRACKING;
+      break;
+  }
 
   return <Navigate to={url} />;
 };
