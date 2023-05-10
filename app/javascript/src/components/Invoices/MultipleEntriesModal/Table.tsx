@@ -32,8 +32,8 @@ const Table = ({
   const { isDesktop } = useUserContext();
 
   return (
-    <table className="table__width">
-      {isDesktop && (
+    <table className="table__width mt-0 lg:mt-4">
+      {isDesktop ? (
         <thead>
           <tr>
             <th className="w-2.5">
@@ -51,6 +51,32 @@ const Table = ({
             <th className="table__header w-3/5 p-3 text-left">DESCRIPTION</th>
             <th className="table__header p-3 text-right">DATE</th>
             <th className="table__header w-1/12 p-3 text-right">TIME</th>
+          </tr>
+        </thead>
+      ) : (
+        <thead>
+          <tr>
+            <th className="w-2.5">
+              <div className="relative flex items-center">
+                <input
+                  checked={allCheckboxSelected}
+                  className="custom__checkbox absolute h-8 w-8 opacity-0"
+                  type="checkbox"
+                  onChange={handleSelectAll}
+                />
+                <CheckboxIcon />
+              </div>
+            </th>
+            <th className="table__header w-1/2 p-3 text-left">
+              NAME/
+              <br />
+              DESCRIPTION
+            </th>
+            <th className="table__header p-3 text-right">
+              DATE/
+              <br />
+              TIME
+            </th>
           </tr>
         </thead>
       )}
