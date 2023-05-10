@@ -5,6 +5,10 @@ module.exports = {
     container: {
       center: true,
     },
+    listStyleType:{
+      lower: 'lower-alpha',
+      decimal: 'decimal'
+    },
     fontSize: {
       xsm: ".5625em",
       xxs: "0.625rem", //10px
