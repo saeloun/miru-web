@@ -247,7 +247,7 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
                                   htmlFor="role-3"
                                 >
                                   <i className="custom__radio-text" />
-                                  <span className="text-sm">Book Keeper</span>
+                                  <span className="text-sm">BookKeeper</span>
                                 </label>
                               </div>
                             </div>
