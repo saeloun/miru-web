@@ -194,6 +194,7 @@ const TableRow = ({
               <SendInvoiceContainer
                 handleSaveSendInvoice={null}
                 invoice={invoice}
+                setIsSending={setIsSending}
               />
             </div>
           </div>
