@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import invoicesApi from "apis/invoices";
 import Toastr from "common/Toastr";
@@ -112,6 +112,12 @@ const Container = ({
 
     return Toastr.error(SELECT_CLIENT_ERROR);
   };
+
+  useEffect(() => {
+    if (activeSection == sections.generateInvoice) {
+      setMultiLineItemModal(false);
+    }
+  }, [activeSection]);
 
   const getContainerComponent = () => {
     switch (activeSection) {

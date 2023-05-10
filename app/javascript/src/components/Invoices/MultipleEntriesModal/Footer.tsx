@@ -36,7 +36,7 @@ const Footer = ({ selectedRowCount, handleSubmitModal, handleSelectAll }) => {
       </button>
     </div>
   ) : (
-    <div className="px-6 py-4">
+    <div className="fixed bottom-0 left-0 right-0 bg-white p-4 shadow-c1">
       <button
         className={`w-full rounded py-2 px-7 text-base font-bold tracking-widest text-white
           ${

@@ -371,6 +371,7 @@ const MobileClientForm = ({
                           id="phone"
                           inputClassName="form__input block w-full appearance-none bg-white border-0 focus:border-0 px-0 text-base border-transparent focus:border-transparent focus:ring-0 border-miru-gray-1000 w-full border-bottom-none"
                           name="phone"
+                          smartCaret={false}
                           value={clientData.phone}
                           onChange={phone => {
                             setFieldValue("phone", phone);

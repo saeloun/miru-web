@@ -14,6 +14,7 @@ const Header = ({
   selectedInput,
   setSelectedInput,
   filterIntialValues,
+  handleSelectAll,
 }) => {
   const { isDesktop } = useUserContext();
 
@@ -32,6 +33,7 @@ const Header = ({
       <Filters
         filterIntialValues={filterIntialValues}
         filterParams={filterParams}
+        handleSelectAll={handleSelectAll}
         selectedInput={selectedInput}
         setFilterParams={setFilterParams}
         setSelectedInput={setSelectedInput}

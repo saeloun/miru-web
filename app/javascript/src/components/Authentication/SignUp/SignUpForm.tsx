@@ -1,13 +1,16 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 
 import { Formik, Form, FormikProps } from "formik";
 import { GoogleSVG, MiruLogoSVG } from "miruIcons";
 import { useNavigate } from "react-router-dom";
 
 import authenticationApi from "apis/authentication";
+import CustomCheckbox from "common/CustomCheckbox";
 import { InputErrors, InputField } from "common/FormikFields";
 import { MIRU_APP_URL, Paths } from "constants/index";
 
+import PrivacyPolicyModal from "./PrivacyPolicyModal";
+import TermsOfServiceModal from "./TermsOfServiceModal";
 import { signUpFormInitialValues, signUpFormValidationSchema } from "./utils";
 
 import FooterLinks from "../FooterLinks";
@@ -22,6 +25,8 @@ interface SignUpFormValues {
 }
 
 const SignUpForm = () => {
+  const [privacyModal, setPrivacyModal] = useState(false);
+  const [termsOfServiceModal, setTermsOfServiceModal] = useState(false);
   const navigate = useNavigate();
 
   const googleOauth = useRef(null);
@@ -44,8 +49,15 @@ const SignUpForm = () => {
 
   const handleGoogleAuth = async () => {
     const googleForm = googleOauth?.current;
-
     if (googleForm) googleForm.submit();
+  };
+
+  const handlePrivacyPolicy = () => {
+    setPrivacyModal(true);
+  };
+
+  const handleTermsOfService = () => {
+    setTermsOfServiceModal(true);
   };
 
   const isBtnDisabled = (values: SignUpFormValues) =>
@@ -81,8 +93,14 @@ const SignUpForm = () => {
             onSubmit={handleSignUpFormSubmit}
           >
             {(props: FormikProps<SignUpFormValues>) => {
-              const { touched, errors, values, setFieldValue, setFieldError } =
-                props;
+              const {
+                touched,
+                errors,
+                values,
+                setFieldValue,
+                setFieldError,
+                setFieldTouched,
+              } = props;
 
               return (
                 <Form>
@@ -167,6 +185,45 @@ const SignUpForm = () => {
                       fieldTouched={touched.confirm_password}
                     />
                   </div>
+                  <div className="my-6 flex text-xs font-normal leading-4 text-miru-dark-purple-1000">
+                    <div className="mt-2 flex">
+                      <CustomCheckbox
+                        isUpdatedDesign
+                        checkboxValue="termsOfService"
+                        id="termsOfService"
+                        isChecked={values.isAgreedTermsOfServices}
+                        name="agreeToTerms"
+                        wrapperClassName=""
+                        handleCheck={event => {
+                          setFieldValue(
+                            "isAgreedTermsOfServices",
+                            event.target.checked
+                          );
+                          setFieldTouched("isAgreedTermsOfServices", false);
+                        }}
+                      />
+                      <h4 className="ml-2">
+                        I agree to the&nbsp;
+                        <span
+                          className="form__link cursor-pointer"
+                          onClick={handleTermsOfService}
+                        >
+                          Terms of Service&nbsp;
+                        </span>
+                        and&nbsp;
+                        <span
+                          className="form__link cursor-pointer"
+                          onClick={handlePrivacyPolicy}
+                        >
+                          Privacy Policy
+                        </span>
+                      </h4>
+                    </div>
+                  </div>
+                  <InputErrors
+                    fieldErrors={errors.isAgreedTermsOfServices}
+                    fieldTouched={touched.isAgreedTermsOfServices}
+                  />
                   <div className="mb-3">
                     <button
                       type="submit"
@@ -219,6 +276,18 @@ const SignUpForm = () => {
                 </Form>
               )}
             </Formik>
+            {privacyModal && (
+              <PrivacyPolicyModal
+                isOpen={privacyModal}
+                onClose={() => setPrivacyModal(false)}
+              />
+            )}
+            {termsOfServiceModal && (
+              <TermsOfServiceModal
+                isOpen={termsOfServiceModal}
+                onClose={() => setTermsOfServiceModal(false)}
+              />
+            )}
           </div>
           <p className="py-2vh text-center font-manrope text-xs font-normal not-italic text-miru-dark-purple-1000">
             Already have an account?&nbsp;
@@ -230,7 +299,10 @@ const SignUpForm = () => {
           </p>
         </div>
       </div>
-      <FooterLinks />
+      <FooterLinks
+        handlePrivacyPolicy={handlePrivacyPolicy}
+        handleTermsOfService={handleTermsOfService}
+      />
     </div>
   );
 };

@@ -135,6 +135,7 @@ const MultipleEntriesModal = ({
         <Header
           filterIntialValues={filterIntialValues}
           filterParams={filterParams}
+          handleSelectAll={handleSelectAll}
           selectedInput={selectedInput}
           setFilterParams={setFilterParams}
           setMultiLineItemModal={setMultiLineItemModal}
@@ -177,6 +178,7 @@ const MultipleEntriesModal = ({
       <Header
         filterIntialValues={filterIntialValues}
         filterParams={filterParams}
+        handleSelectAll={handleSelectAll}
         selectedInput={selectedInput}
         setFilterParams={setFilterParams}
         setMultiLineItemModal={setMultiLineItemModal}
@@ -188,7 +190,7 @@ const MultipleEntriesModal = ({
           Loading...
         </p>
       ) : (
-        <div className="mx-6 flex-1 overflow-y-scroll">
+        <div className="mx-2 flex-1 overflow-y-scroll">
           {lineItems.length > 0 ? (
             <Table
               allCheckboxSelected={allCheckboxSelected}
