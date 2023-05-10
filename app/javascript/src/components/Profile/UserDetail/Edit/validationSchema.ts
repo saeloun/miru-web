@@ -1,8 +1,12 @@
 import * as Yup from "yup";
 
 export const userSchema = {
-  first_name: Yup.string().required("Please enter first name"),
-  last_name: Yup.string().required("Please enter last name"),
+  first_name: Yup.string()
+    .required("Please enter first name")
+    .max(20, "Maximum 20 characters are allowed"),
+  last_name: Yup.string()
+    .required("Please enter last name")
+    .max(20, "Maximum 20 characters are allowed"),
   addresses: Yup.object().shape({
     address_line_1: Yup.string().required("Please enter address line 1"),
     country: Yup.string().required("Please enter country"),
