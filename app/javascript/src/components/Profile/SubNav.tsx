@@ -21,7 +21,7 @@ const SideNav = ({ isAdmin, firstName, company, lastName }) => {
   });
 
   const getAdminLinks = () => (
-    <ul className="min-h-50v list-none text-sm font-medium leading-5 tracking-wider">
+    <ul className="list-none min-h-50v text-sm font-medium leading-5 tracking-wider">
       <div className="flex flex-row items-center justify-between py-3 px-5">
         <span className="text-base font-bold">Personal</span>
         <button

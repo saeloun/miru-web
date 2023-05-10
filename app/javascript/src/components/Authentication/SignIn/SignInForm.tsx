@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 
 import { Formik, Form, FormikProps } from "formik";
 import { GoogleSVG, MiruLogoSVG } from "miruIcons";
@@ -12,6 +12,8 @@ import { useAuthDispatch } from "context/auth";
 import { signInFormInitialValues, signInFormValidationSchema } from "./utils";
 
 import FooterLinks from "../FooterLinks";
+import PrivacyPolicyModal from "../SignUp/PrivacyPolicyModal";
+import TermsOfServiceModal from "../SignUp/TermsOfServiceModal";
 
 interface SignInFormValues {
   email: string;
@@ -19,6 +21,9 @@ interface SignInFormValues {
 }
 
 const SignInForm = () => {
+  const [privacyModal, setPrivacyModal] = useState(false);
+  const [termsOfServiceModal, setTermsOfServiceModal] = useState(false);
+
   const authDispatch = useAuthDispatch();
   const navigate = useNavigate();
 
@@ -48,6 +53,14 @@ const SignInForm = () => {
         navigate(`/email_confirmation?email=${values.email}`);
       }
     }
+  };
+
+  const handlePrivacyPolicy = () => {
+    setPrivacyModal(true);
+  };
+
+  const handleTermsOfService = () => {
+    setTermsOfServiceModal(true);
   };
 
   const handleGoogleAuth = async () => {
@@ -172,6 +185,18 @@ const SignInForm = () => {
                 </Form>
               )}
             </Formik>
+            {privacyModal && (
+              <PrivacyPolicyModal
+                isOpen={privacyModal}
+                onClose={() => setPrivacyModal(false)}
+              />
+            )}
+            {termsOfServiceModal && (
+              <TermsOfServiceModal
+                isOpen={termsOfServiceModal}
+                onClose={() => setTermsOfServiceModal(false)}
+              />
+            )}
           </div>
           <p className="mb-3 pt-7 text-center font-manrope text-xs font-normal not-italic text-miru-dark-purple-1000">
             <span className="form__link inline cursor-pointer">
@@ -190,7 +215,10 @@ const SignInForm = () => {
           </p>
         </div>
       </div>
-      <FooterLinks />
+      <FooterLinks
+        handlePrivacyPolicy={handlePrivacyPolicy}
+        handleTermsOfService={handleTermsOfService}
+      />
     </div>
   );
 };
