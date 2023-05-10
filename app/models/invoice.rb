@@ -44,6 +44,7 @@
 class Invoice < ApplicationRecord
   include Discard::Model
   include InvoiceSendable
+  include ClientPaymentSendable
 
   attr_accessor :sub_total
 

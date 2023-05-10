@@ -17,6 +17,12 @@ class InternalApi::V1::PaymentsController < ApplicationController
   def create
     authorize :create, policy_class: PaymentPolicy
     payment = InvoicePayment::Settle.process(payment_params, @invoice)
+    if @invoice.paid?
+      @invoice.send_to_client_email(
+        invoice: @invoice,
+        subject: "Payment Receipt of Invoice #{@invoice.invoice_number} from #{@invoice.company.name}"
+      )
+    end
 
     render :create, locals: {
       payment:,
