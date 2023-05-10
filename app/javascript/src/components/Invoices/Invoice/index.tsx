@@ -91,6 +91,7 @@ const Invoice = () => {
           <SendInvoiceContainer
             handleSaveSendInvoice={null}
             invoice={invoice}
+            setIsSending={setShowSendInvoiceModal}
           />
         </div>
       </div>

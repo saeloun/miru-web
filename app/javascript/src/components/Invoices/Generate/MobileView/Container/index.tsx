@@ -232,6 +232,7 @@ const Container = ({
           showSendInvoiceModal && (
             <SendInvoiceContainer
               handleSaveSendInvoice={handleSaveSendInvoice}
+              setIsSending={setShowSendInvoiceModal}
               invoice={{
                 id: invoiceId,
                 client: selectedClient,
