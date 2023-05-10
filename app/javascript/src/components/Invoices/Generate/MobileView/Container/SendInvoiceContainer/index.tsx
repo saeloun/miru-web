@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import invoicesApi from "apis/invoices";
 import { CustomAdvanceInput } from "common/CustomAdvanceInput";
 import { CustomTextareaAutosize } from "common/CustomTextareaAutosize";
-import { InputField, InputErrors } from "common/FormikFields";
+import { InputErrors } from "common/FormikFields";
 import Toastr from "common/Toastr";
 import {
   emailBody,
@@ -133,12 +133,12 @@ const SendInvoiceContainer = ({ invoice, handleSaveSendInvoice }) => {
         onSubmit={handleSubmit}
       >
         {(props: FormikProps<InvoiceEmail>) => {
-          const { touched, errors, setFieldValue, setFieldError } = props;
+          const { touched, errors } = props;
 
           return (
             <Form className="flex h-full flex-col justify-between">
-              <div>
-                <div className="mt-2 mb-6">
+              <div className="pt-2">
+                <div className="mb-6">
                   <CustomAdvanceInput
                     id="Email ID"
                     label="Email ID"
@@ -183,43 +183,46 @@ const SendInvoiceContainer = ({ invoice, handleSaveSendInvoice }) => {
                     fieldTouched={touched.recipients}
                   />
                 </div>
-                <InputField
-                  autoComplete="off"
-                  id="subject"
-                  label="Subject"
-                  name="subject"
-                  setFieldError={setFieldError}
-                  setFieldValue={setFieldValue}
-                  type="textarea"
-                  onChange={e =>
-                    setInvoiceEmail({
-                      ...invoiceEmail,
-                      subject: e.target.value,
-                    })
-                  }
-                />
-                <InputErrors
-                  fieldErrors={errors.subject}
-                  fieldTouched={touched.subject}
-                />
-                <CustomTextareaAutosize
-                  id="message"
-                  label="Message"
-                  maxRows={12}
-                  name="message"
-                  rows={5}
-                  value={invoiceEmail.message}
-                  onChange={e =>
-                    setInvoiceEmail({
-                      ...invoiceEmail,
-                      message: e.target.value,
-                    })
-                  }
-                />
-                <InputErrors
-                  fieldErrors={errors.message}
-                  fieldTouched={touched.message}
-                />
+                <div className="mb-6">
+                  <CustomTextareaAutosize
+                    id="subject"
+                    label="Subject"
+                    maxRows={12}
+                    name="subject"
+                    rows={5}
+                    value={invoiceEmail.subject}
+                    onChange={e =>
+                      setInvoiceEmail({
+                        ...invoiceEmail,
+                        subject: e.target.value,
+                      })
+                    }
+                  />
+                  <InputErrors
+                    fieldErrors={errors.subject}
+                    fieldTouched={touched.subject}
+                  />
+                </div>
+                <div className="mb-6">
+                  <CustomTextareaAutosize
+                    id="message"
+                    label="Message"
+                    maxRows={12}
+                    name="message"
+                    rows={5}
+                    value={invoiceEmail.message}
+                    onChange={e =>
+                      setInvoiceEmail({
+                        ...invoiceEmail,
+                        message: e.target.value,
+                      })
+                    }
+                  />
+                  <InputErrors
+                    fieldErrors={errors.message}
+                    fieldTouched={touched.message}
+                  />
+                </div>
               </div>
               <button
                 type="button"

@@ -20,7 +20,7 @@ RSpec.describe "Search projects", type: :system do
       with_forgery_protection do
         visit "/projects"
 
-        fill_in "searchInput", with: "Conduit"
+        fill_in "searchInput", with: project1.name
         find("#searchResult").click
 
         expect(page).to have_content(project1.name)

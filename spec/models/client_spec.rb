@@ -3,11 +3,19 @@
 require "rails_helper"
 
 RSpec.describe Client, type: :model do
-  subject { build(:client) }
+  subject { create(:client) }
 
   describe "Validations" do
     it { is_expected.to validate_presence_of(:name) }
     it { is_expected.to validate_presence_of(:email) }
+
+    it "validates case-insensitive uniqueness of name within the scope of company_id" do
+      existing_client = create(:client)
+      new_client = build(:client, name: existing_client.name.upcase, company: existing_client.company)
+      expect(new_client).not_to be_valid
+      expect(new_client.errors[:name]).to include("The client #{existing_client.name.upcase} already exists")
+    end
+
     it { is_expected.to validate_uniqueness_of(:email).scoped_to(:company_id) }
     it { is_expected.to allow_value("valid@email.com").for(:email) }
     it { is_expected.not_to allow_value("invalid@email").for(:email) }
