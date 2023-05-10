@@ -77,12 +77,26 @@ const MenuContainer = ({
     setAmountDue(newTotal - amountPaid);
   }, [selectedLineItems, manualEntryArr, discount, subTotal, tax]);
 
-  const ListItem = ({ title, openDropdown, setOpenDropdown }) => (
+  const handleDropdownClick = title => {
+    if (title == "Invoice Details") {
+      setShowInvoiceDetails(!showInvoiceDetails);
+      setShowLineItem(false);
+      setShowBilling(false);
+    } else if (title == "Line Items") {
+      setShowInvoiceDetails(false);
+      setShowLineItem(!showLineItem);
+      setShowBilling(false);
+    } else {
+      setShowInvoiceDetails(false);
+      setShowLineItem(false);
+      setShowBilling(!showBilling);
+    }
+  };
+
+  const ListItem = ({ title, openDropdown }) => (
     <div
       className="flex items-center justify-between"
-      onClick={() => {
-        setOpenDropdown(!openDropdown);
-      }}
+      onClick={() => handleDropdownClick(title)}
     >
       <span
         className={`text-base leading-5 text-miru-dark-purple-1000 ${
@@ -113,11 +127,7 @@ const MenuContainer = ({
     <div className="flex flex-auto flex-col justify-between">
       <div>
         <div className="border-b border-miru-gray-200 py-3 px-4">
-          <ListItem
-            openDropdown={showInvoiceDetails}
-            setOpenDropdown={setShowInvoiceDetails}
-            title="Invoice Details"
-          />
+          <ListItem openDropdown={showInvoiceDetails} title="Invoice Details" />
           {showInvoiceDetails && (
             <InvoiceDetails
               dateFormat={dateFormat}
@@ -137,11 +147,7 @@ const MenuContainer = ({
           )}
         </div>
         <div className="border-b border-miru-gray-200 py-3 px-4">
-          <ListItem
-            openDropdown={showLineItem}
-            setOpenDropdown={setShowLineItem} //eslint-disable-line
-            title="Line Items"
-          />
+          <ListItem openDropdown={showLineItem} title="Line Items" />
           {showLineItem && (
             <>
               <div className="mt-3 border-t border-miru-gray-400" />
@@ -163,11 +169,7 @@ const MenuContainer = ({
             !showBilling && "border-b border-miru-gray-200"
           }`}
         >
-          <ListItem
-            openDropdown={showBilling}
-            setOpenDropdown={setShowBilling}
-            title="Billing Details"
-          />
+          <ListItem openDropdown={showBilling} title="Billing Details" />
           {showBilling && (
             <Billing
               amountDue={amountDue}
