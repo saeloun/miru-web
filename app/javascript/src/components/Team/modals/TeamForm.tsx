@@ -117,7 +117,7 @@ const TeamForm = ({
                     />
                     <CustomRadioButton
                       classNameLabel="font-medium text-sm leading-5 text-miru-dark-purple-1000"
-                      classNameWrapper="px-5 py-3"
+                      classNameWrapper="pl-5 py-3"
                       defaultCheck={values.role == "employee"}
                       groupName="roles"
                       id="Employee"
@@ -135,7 +135,7 @@ const TeamForm = ({
                       groupName="roles"
                       id="Book Keeper"
                       key="Book Keeper"
-                      label="Book Keeper"
+                      label="Bookkeeper"
                       value={values.role == "book_keeper" ? "book_keeper" : ""}
                       handleOnChange={() => {
                         setFieldValue("role", "book_keeper", true);
