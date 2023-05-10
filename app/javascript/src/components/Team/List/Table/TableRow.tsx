@@ -34,6 +34,10 @@ const TableRow = ({ item }) => {
     }
   };
 
+  const formattedRole = role
+    .split("_")
+    .map(word => word.charAt(0) + word.slice(1))
+    .join("");
   if (isDesktop) {
     return (
       <tr
@@ -47,7 +51,7 @@ const TableRow = ({ item }) => {
           {email}
         </td>
         <td className="table__data table__text p-6 text-sm font-medium capitalize">
-          {role}
+          {formattedRole}
         </td>
         {isAdminUser && (
           <Fragment>
@@ -102,7 +106,7 @@ const TableRow = ({ item }) => {
           </dl>
         </td>
         <td className="table__data table__text p-6 text-right text-sm font-medium capitalize">
-          {role}
+          {formattedRole}
           {status && (
             <dl className="mt-3 max-h-32 overflow-auto whitespace-pre-wrap break-words">
               <Badge
