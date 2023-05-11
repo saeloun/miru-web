@@ -2,12 +2,12 @@
 
 FactoryBot.define do
   factory :address do
-    address_line_1 { Faker::Address.full_address }
-    address_line_2 { Faker::Address.full_address }
+    address_line_1 { Faker::Address.full_address.slice(0, 50) }
+    address_line_2 { Faker::Address.full_address.slice(0, 50) }
     state { Faker::Address.state }
     city { Faker::Address.city }
     country { "US" }
-    pin { Faker::Address.postcode }
+    pin { Faker::Address.postcode.slice(0, 10) }
     with_user
 
     trait :with_company do

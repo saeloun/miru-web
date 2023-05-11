@@ -3,9 +3,9 @@
 FactoryBot.define do
   factory :client do
     company
-    name { Faker::Name.unique.name }
+    name { Faker::Name.unique.name[0..30] }
     email { Faker::Internet.unique.safe_email }
-    phone { Faker::PhoneNumber.phone_number_with_country_code }
+    phone { Faker::PhoneNumber.phone_number_with_country_code.slice(0, 15) }
 
     after :create do |client|
       create(:address, addressable_type: "Client", addressable_id: client.id)
@@ -19,7 +19,7 @@ FactoryBot.define do
     end
 
     factory :client_with_phone_number_without_country_code do
-      phone { Faker::PhoneNumber.cell_phone_in_e164 }
+      phone { Faker::PhoneNumber.cell_phone_in_e164.slice(0, 15) }
     end
 
     trait :with_logo do
