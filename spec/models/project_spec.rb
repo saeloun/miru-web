@@ -12,6 +12,9 @@ RSpec.describe Project, type: :model do
 
   describe "Validations" do
     it { is_expected.to validate_presence_of(:name) }
+    it { is_expected.to validate_length_of(:name)
+      .is_at_most(30)
+      .with_message("Name is too long (Maximum 30 characters are allowed)")
     it { is_expected.to validate_inclusion_of(:billable).in_array([true, false]) }
 
     it "validates case-insensitive uniqueness of name within the scope of client_id" do
