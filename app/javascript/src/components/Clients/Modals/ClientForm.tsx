@@ -371,6 +371,10 @@ const ClientForm = ({
                   name="address2"
                   setFieldValue={setFieldValue}
                 />
+                <InputErrors
+                  fieldErrors={errors.address2}
+                  fieldTouched={touched.address2}
+                />
               </div>
             </div>
             <div className="mb-5 flex flex-row">
