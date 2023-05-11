@@ -22,7 +22,6 @@ RSpec.describe "Create client", type: :system do
 
     within("div#city") do
       find(".react-select-filter__control.css-digfch-control").click
-      fill_in "react-select-4-input", with: "Skita"
       find("#react-select-4-option-0").click
     end
   end
