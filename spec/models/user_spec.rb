@@ -30,8 +30,8 @@ RSpec.describe User, type: :model do
     it { is_expected.not_to allow_value("foo&23423").for(:first_name) }
     it { is_expected.to allow_value("foo").for(:last_name) }
     it { is_expected.not_to allow_value("foo&23423").for(:last_name) }
-    it { is_expected.to validate_length_of(:first_name).is_at_most(50) }
-    it { is_expected.to validate_length_of(:last_name).is_at_most(50) }
+    it { is_expected.to validate_length_of(:first_name).is_at_most(20) }
+    it { is_expected.to validate_length_of(:last_name).is_at_most(20) }
   end
 
   describe "Callbacks" do
