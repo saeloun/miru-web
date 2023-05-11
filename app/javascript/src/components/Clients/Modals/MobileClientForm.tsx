@@ -464,23 +464,12 @@ const MobileClientForm = ({
                 <div className="flex flex-row">
                   <div className="flex w-1/2 flex-col pr-2" id="city">
                     <CustomReactSelect
+                      handleOnChange={city => setFieldValue("city", city)}
                       isErr={!!errors.city && touched.city}
                       label="City"
                       name="city"
                       options={currentCityList}
                       value={values.city.value ? values.city : null}
-                      handleOnChange={city => {
-                        setFieldValue("city", city);
-                        const cities = City.getCitiesOfState(
-                          currentCountryDetails.code,
-                          city.code
-                        ).map(city => ({
-                          label: city.name,
-                          value: city.name,
-                          ...city,
-                        }));
-                        setCurrentCityList(cities);
-                      }}
                     />
                   </div>
                   <div className="flex w-1/2 flex-col pl-2">
