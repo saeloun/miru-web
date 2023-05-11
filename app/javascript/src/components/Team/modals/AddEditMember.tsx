@@ -15,9 +15,11 @@ import TeamForm from "./TeamForm";
 const TeamMemberSchema = Yup.object().shape({
   firstName: Yup.string()
     .matches(/^[a-zA-Z]+$/, "First Name must contain only letters")
+    .max(20, "Maximum 20 characters are allowed")
     .required("First Name cannot be blank"),
   lastName: Yup.string()
     .matches(/^[a-zA-Z]+$/, "Last Name must contain only letters")
+    .max(20, "Maximum 20 characters are allowed")
     .required("Last Name cannot be blank"),
   email: Yup.string()
     .email("Invalid email ID")
