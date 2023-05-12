@@ -198,7 +198,7 @@ const SignUpForm = () => {
                     ) : (
                       (errors.confirm_password || errors.password) && (
                         <InputErrors
-                          fieldErrors="Passwords don't match"
+                          fieldErrors="Passwords must match"
                           fieldTouched={
                             touched.confirm_password || touched.password
                           }
