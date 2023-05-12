@@ -1,7 +1,6 @@
 /* eslint-disable no-unused-vars */
 import React from "react";
 
-import dayjs from "dayjs";
 import {
   InfoIcon,
   CalendarIcon,
@@ -145,12 +144,7 @@ const StaticPage = ({
               label="Date of Birth"
               name="date_of_birth"
               type="text"
-              value={
-                personalDetails.date_of_birth &&
-                dayjs(personalDetails.date_of_birth).format(
-                  personalDetails.date_format
-                )
-              }
+              value={personalDetails.date_of_birth}
               onChange={e => {
                 updateBasicDetails(e.target.value, "date_of_birth", false);
               }}
