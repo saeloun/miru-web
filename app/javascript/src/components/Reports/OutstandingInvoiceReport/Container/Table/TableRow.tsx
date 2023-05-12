@@ -34,7 +34,7 @@ const TableRow = ({ currency, reportData, logo }) => {
         </span>
         <dl className="text-left text-xs leading-5 lg:hidden">
           <dt className="mt-3 font-medium text-miru-dark-purple-400">
-            issued on <span className="font-bold">{issueDate}</span>
+            Issued on <span className="font-bold">{issueDate}</span>
           </dt>
         </dl>
       </td>
