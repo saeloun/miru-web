@@ -16,15 +16,27 @@ import { useDropzone } from "react-dropzone";
 import { useNavigate } from "react-router-dom";
 import { StaticPage } from "./StaticPage";
 
+const phoneRegExp =
+  /^((\+\d{1,3}(-| )?\(?\d\)?(-| )?\d{1,3})|(\(?\d{2,3}\)?))(-| )?(\d{3,4})(-| )?(\d{4})(( x| ext)\d{1,5}){0,1}$/;
+
 const orgSchema = Yup.object().shape({
-  companyName: Yup.string().required("Name cannot be blank"),
-  companyPhone: Yup.string().required("Phone number cannot be blank"),
+  companyName: Yup.string()
+    .required("Name cannot be blank")
+    .max(30, "Maximum 30 characters are allowed"),
+  companyPhone: Yup.string()
+    .required("Phone number cannot be blank")
+    .matches(phoneRegExp, "Please enter a valid business phone number"),
   companyAddr: Yup.object().shape({
-    addressLine1: Yup.string().required("Address Line 1 cannot be blank"),
+    addressLine1: Yup.string()
+      .required("Address Line 1 cannot be blank")
+      .max(50, "Maximum 50 characters are allowed"),
+    addressLine2: Yup.string().max(50, "Maximum 50 characters are allowed"),
     country: Yup.string().required("Country cannot be blank"),
     state: Yup.string().required("State cannot be blank"),
     city: Yup.string().required("City cannot be blank"),
-    zipcode: Yup.string().required("Zipcode cannot be blank"),
+    zipcode: Yup.string()
+      .required("Zipcode cannot be blank")
+      .max(10, "Maximum 10 characters are allowed"),
   }),
   companyRate: Yup.number()
     .typeError("Amount must be a number")
@@ -91,6 +103,7 @@ const errorState = {
   companyPhoneErr: "",
   companyRateErr: "",
   addressLine1Err: "",
+  addressLine2Err: "",
   stateErr: "",
   countryErr: "",
   cityErr: "",
@@ -387,6 +400,7 @@ const OrgEdit = () => {
           companyPhone: orgDetails.companyPhone,
           companyAddr: {
             addressLine1: orgDetails.companyAddr.addressLine1,
+            addressLine2: orgDetails.companyAddr.addressLine2,
             country: orgDetails.companyAddr.country.value,
             state: orgDetails.companyAddr.state.value,
             city: orgDetails.companyAddr.city.value,
@@ -403,6 +417,7 @@ const OrgEdit = () => {
         companyNameErr: "",
         companyPhoneErr: "",
         addressLine1Err: "",
+        addressLine2Err: "",
         stateErr: "",
         countryErr: "",
         cityErr: "",
