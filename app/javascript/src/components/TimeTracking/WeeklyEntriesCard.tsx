@@ -5,10 +5,9 @@ import React, { useState, useEffect } from "react";
 import { minFromHHMM, minToHHMM, validateTimesheetEntry } from "helpers";
 import Logger from "js-logger";
 import { CheckedCheckboxSVG, UncheckedCheckboxSVG, EditSVG } from "miruIcons";
-import { TimeInput } from "StyledComponents";
+import { TimeInput, Toastr } from "StyledComponents";
 
 import timesheetEntryApi from "apis/timesheet-entry";
-import Toastr from "common/Toastr";
 
 const WeeklyEntriesCard = ({
   client,

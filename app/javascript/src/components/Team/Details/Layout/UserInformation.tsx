@@ -4,11 +4,10 @@ import React, { useEffect, useState } from "react";
 
 import { UserAvatarSVG, DeleteIcon, ImageIcon, EditIcon } from "miruIcons";
 import { useParams } from "react-router-dom";
-import { MobileMoreOptions, Tooltip } from "StyledComponents";
+import { MobileMoreOptions, Toastr, Tooltip } from "StyledComponents";
 
 import teamApi from "apis/team";
 import teamsApi from "apis/teams";
-import Toastr from "common/Toastr";
 import { useTeamDetails } from "context/TeamDetailsContext";
 import { teamsMapper } from "mapper/teams.mapper";
 

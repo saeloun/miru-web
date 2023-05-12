@@ -4,7 +4,6 @@ import { cashFormatter, currencySymbol, minToHHMM } from "helpers";
 import Logger from "js-logger";
 import { PlusIcon } from "miruIcons";
 import { useParams, useNavigate } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
 
 import clientApi from "apis/clients";
 import AmountBoxContainer from "common/AmountBox";
@@ -14,7 +13,6 @@ import Table from "common/Table";
 import ProjectForm from "components/Projects/List/Mobile/ProjectForm";
 import AddEditProject from "components/Projects/Modals/AddEditProject";
 import DeleteProject from "components/Projects/Modals/DeleteProject";
-import { TOASTER_DURATION } from "constants/index";
 import { useUserContext } from "context/UserContext";
 import { unmapClientDetails } from "mapper/mappedIndex";
 import { sendGAPageView } from "utils/googleAnalytics";
@@ -212,7 +210,6 @@ const ClientDetails = ({ isAdminUser }) => {
 
   return (
     <>
-      <ToastContainer autoClose={TOASTER_DURATION} />
       <Header
         clientDetails={clientDetails}
         setShowProjectModal={setShowProjectModal}

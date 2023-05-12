@@ -2,8 +2,9 @@
 /* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
 
+import { Toastr } from "StyledComponents";
+
 import timesheetEntryApi from "apis/timesheet-entry";
-import Toastr from "common/Toastr";
 
 import SelectProject from "./SelectProject";
 import WeeklyEntriesCard from "./WeeklyEntriesCard";
