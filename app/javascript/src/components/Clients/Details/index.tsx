@@ -48,7 +48,7 @@ const getTableData = (clients, isDesktop) => {
   } else if (clients && !isDesktop) {
     return clients.map(client => ({
       col1: (
-        <div className="table__cell text-base font-medium capitalize text-miru-dark-purple-1000">
+        <div className="text-base font-medium capitalize text-miru-dark-purple-1000">
           {client.name}
           <br />
           <div className="w-57.5">
