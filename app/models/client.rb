@@ -136,7 +136,7 @@ class Client < ApplicationRecord
       .order(issue_date: :desc)
       .includes(:company)
       .select { |invoice| outstanding_overdue_statuses.include?(invoice.status) }
-    status_and_amount = invoices.group(:status).sum(:amount)
+    status_and_amount = invoices.kept.group(:status).sum(:amount)
     status_and_amount.default = 0
 
     {
