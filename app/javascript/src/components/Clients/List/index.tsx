@@ -71,7 +71,7 @@ const getTableData = (
   } else if (clients && !isDesktop) {
     return clients.map(client => ({
       col1: (
-        <div className="table__cell text-base capitalize">
+        <div className="text-base capitalize">
           <Avatar classNameImg="mr-4 w-8 h-8" url={client.logo} />
           <span
             className="my-auto overflow-hidden truncate whitespace-nowrap text-sm font-medium capitalize text-miru-dark-purple-1000"
@@ -326,7 +326,7 @@ const Clients = ({ isAdminUser }) => {
             totalMinutes={totalMinutes}
           />
         )}
-        <div className="mx-auto flex w-full flex-col px-4">
+        <div className="mx-auto flex w-full flex-col lg:px-4">
           <div className="-my-2 w-full lg:-mx-8">
             <div className="mx-auto inline-block min-w-full py-2 align-middle lg:px-8">
               <div className="overflow-hidden">
