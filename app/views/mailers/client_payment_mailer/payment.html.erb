@@ -32,7 +32,11 @@
           style="padding: 30px 40px; background:white ;border-bottom: 2px solid #E1E6EC; text-align: center"
         >
           <div style="padding: 10px; display: inline-block; text-align: center;">
-            <%= image_tag @company_logo, height: 80 ,width: 80, :style => "border-radius: 80px" %>
+            <% if @company_logo.blank? %>
+              <%= image_tag attachments["miruLogoWithText.png"].url, height: 70 ,width: "120px", :style => "border-radius: 80px" %>
+            <% else %>
+              <%= image_tag @company_logo, height: 80 ,width: 80, :style => "border-radius: 80px" %>
+            <% end %>
           </div>
         </div>
       </div>
@@ -66,11 +70,11 @@
           <tr style="width: 100%; margin-top: 15px">
             <td>
               <div style=' font-weight:normal; font-size:16px;'>Issued To</div>
-              <div style="font-weight:normal; font-size:20px;"><%= @company.name %></div>
+              <div style="font-weight:normal; font-size:20px;"><%= @invoice.client.name %></div>
             </td>
             <td align="right">
               <div style=' font-weight:normal; font-size:16px;'>Amount</div>
-              <div style="font-weight:normal; font-size:28px;"><%= @invoice.amount %></div>
+              <div style="font-weight:normal; font-size:28px;"><%= @amount %></div>
             </td>
           </tr>
         </table>
@@ -160,12 +164,12 @@
         <div>
           <p style="font-family: 'Manrope'; margin: 0px; padding: 0px;">Amount Paid</p>
           <p style="font-size: 16px; font-style: normal; font-weight: 400; line-height: 22px; color: #1D1A31; margin: 0px; padding: 4px 0px 16px 0px;">
-            <%= @invoice.amount_paid %>
+            <%= @amount %>
           </p>
         </div>
         <div>
           <p style="font-family: 'Manrope'; margin: 0px; padding: 0px;">Issued to</p>
-          <p style="font-family: 'Manrope' font-style: normal; font-size: 16px; font-style: normal; font-weight: 400; line-height: 22px; color: #1D1A31; margin: 0px; padding: 4px 0px 16px 0px;"><%= @company.name %></p>
+          <p style="font-family: 'Manrope' font-style: normal; font-size: 16px; font-style: normal; font-weight: 400; line-height: 22px; color: #1D1A31; margin: 0px; padding: 4px 0px 16px 0px;"><%= @invoice.client.name %></p>
         </div>
       </div>
       <div id="footer">
