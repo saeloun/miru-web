@@ -60,14 +60,20 @@ const SignUpForm = () => {
     setTermsOfServiceModal(true);
   };
 
-  const isBtnDisabled = (values: SignUpFormValues) =>
+  const isBtnDisabled = (values: SignUpFormValues, errors) =>
     !(
       values?.firstName?.trim() &&
       values?.lastName?.trim() &&
       values.email?.trim() &&
       values?.password?.trim() &&
-      values?.confirm_password?.trim()
-    );
+      values?.confirm_password?.trim() &&
+      values?.password?.trim() == values?.confirm_password?.trim()
+    ) ||
+    errors?.firstName ||
+    errors?.lastName?.trim() ||
+    errors.email?.trim() ||
+    errors?.password?.trim() ||
+    errors?.confirm_password?.trim();
 
   return (
     <div className="relative flex w-full flex-col items-center justify-center px-8 pt-5vh md:px-0 lg:w-1/2">
@@ -243,7 +249,7 @@ const SignUpForm = () => {
                     <button
                       type="submit"
                       className={`form__button whitespace-nowrap ${
-                        isBtnDisabled(values)
+                        isBtnDisabled(values, errors)
                           ? "cursor-not-allowed border-transparent bg-indigo-100 hover:border-transparent"
                           : "cursor-pointer"
                       }`}
