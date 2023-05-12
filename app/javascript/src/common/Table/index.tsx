@@ -128,7 +128,7 @@ const Table = ({
             >
               {row.cells.map((cell, idx) => (
                 <td
-                  className={`table__cell ${!isDesktop && "xsm:p-1"} md:w-1/3`}
+                  className="table__cell md:w-1/3"
                   {...cell.getCellProps()}
                   key={idx}
                 >
@@ -137,7 +137,7 @@ const Table = ({
               ))}
               {hasRowIcons && isDesktop && (
                 <td className="table__cell md:w-1/5">
-                  <div className="iconWrapper invisible">
+                  <div className="iconWrapper invisible flex items-center justify-evenly">
                     <button
                       onClick={e => {
                         e.preventDefault();

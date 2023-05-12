@@ -61,13 +61,17 @@ const Header = ({ clientDetails, setShowProjectModal }) => {
   const menuBackground = isHeaderMenuVisible ? "bg-miru-gray-1000" : "";
 
   return (
-    <div className="my-6">
-      <div className="flex min-w-0 items-center justify-between">
+    <div className="lg:my-6">
+      <div className="flex h-12 min-w-0 items-center justify-between shadow-c1 lg:h-auto lg:shadow-none">
         <div className="flex items-center">
           <button className="button-icon__back" onClick={handleBackButtonClick}>
-            <ArrowLeftIcon color="#5b34ea" size={20} weight="bold" />
+            <ArrowLeftIcon
+              className="text-miru-dark-purple-1000"
+              size={20}
+              weight="bold"
+            />
           </button>
-          <h2 className="mr-6 py-1 text-3xl font-extrabold text-gray-900 sm:truncate sm:text-4xl">
+          <h2 className="mr-6 py-1 text-base font-medium text-miru-dark-purple-1000 sm:truncate lg:text-4xl lg:font-extrabold">
             {clientDetails.name}
           </h2>
           <button onClick={handleClientDetails}>
@@ -80,7 +84,7 @@ const Header = ({ clientDetails, setShowProjectModal }) => {
             id="kebabMenu"
             onClick={handleMenuVisibility}
           >
-            <DotsThreeVerticalIcon color="#000000" size={20} />
+            <DotsThreeVerticalIcon color="#000000" size={20} weight="bold" />
           </button>
           {isHeaderMenuVisible && (
             <ul className="menuButton__wrapper">
