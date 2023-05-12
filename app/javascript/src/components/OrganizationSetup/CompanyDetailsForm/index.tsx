@@ -415,6 +415,10 @@ const CompanyDetailsForm = ({
                   name="address_line_2"
                   setFieldValue={setFieldValue}
                 />
+                <InputErrors
+                  fieldErrors={errors.address_line_2}
+                  fieldTouched={touched.address_line_2}
+                />
               </div>
               {/* Country */}
               <div className="mb-5 flex flex-row">
