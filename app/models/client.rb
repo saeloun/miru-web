@@ -132,7 +132,7 @@ class Client < ApplicationRecord
 
   def outstanding_and_overdue_invoices
     outstanding_overdue_statuses = ["overdue", "sent", "viewed"]
-    filtered_invoices = invoices.kept
+    filtered_invoices = invoices
       .order(issue_date: :desc)
       .includes(:company)
       .select { |invoice| outstanding_overdue_statuses.include?(invoice.status) }
