@@ -27,10 +27,7 @@ const StaticPage = ({ personalDetails, handleEditClick }) => (
               Date of Birth
             </span>
             <p className="text-miru-dark-purple-1000">
-              {personalDetails.date_of_birth &&
-                dayjs(personalDetails.date_of_birth).format(
-                  personalDetails.date_format
-                )}
+              {personalDetails.date_of_birth}
             </p>
           </div>
         </div>
