@@ -108,7 +108,7 @@ RSpec.describe ProjectPolicy, type: :policy do
     context "when user is an admin/owner" do
       it "returns the list of allowed projects" do
         result = ProjectPolicy::Scope.new(admin, company).resolve
-        expect(result.pluck(:id)).to eq([project.id, project_2.id])
+        expect(result.pluck(:id)).to contain_exactly(project.id, project_2.id)
       end
     end
 
