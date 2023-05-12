@@ -32,10 +32,10 @@
           style="padding: 30px 40px; background:white ;border-bottom: 2px solid #E1E6EC; text-align: center"
         >
           <div style="padding: 10px; display: inline-block; text-align: center;">
-            <% if @company_logo.blank? %>
-              <%= image_tag attachments["miruLogoWithText.png"].url, height: 80 ,width: 135, :style => "border-radius: 80px" %>
+            <% if @company_logo.present? %>
+                <%= image_tag @company_logo, height: 80, width: 80, style: "border-radius: 80px" %>
             <% else %>
-              <%= image_tag @company_logo, height: 80 ,width: 80, :style => "border-radius: 80px" %>
+              <div style="width:80px;height:80px;border-radius: 80px;text-align: center;background: #CDD6DF;font-size: 40px;justify-content:center;display: flex; align-items: center; color:white"><%= @invoice.company.name.slice(0) %></div>
             <% end %>
           </div>
         </div>
