@@ -169,17 +169,17 @@ const WeeklyEntriesCard = ({
 
   return (
     <div className="week-card mt-4 w-full rounded-lg p-6 shadow-xl">
-      <div className="flex items-center">
-        <div className="mr-10 flex w-44 overflow-scroll">
-          <p className="text-lg">{client}</p>
-          <p className="mx-2 text-lg">•</p>
-          <p className="text-lg">{project}</p>
+      <div className="flex w-full items-center">
+        <div className="mr-2 flex w-auto overflow-scroll xl:mr-10">
+          <p className="text-xs xl:text-sm xxl:text-lg">{client}</p>
+          <p className="mx-auto text-xs xl:text-sm xxl:text-lg">•</p>
+          <p className="text-xs xl:text-sm xxl:text-lg">{project}</p>
         </div>
-        <div className="mr-7 flex w-138 items-center justify-between">
+        <div className="flex w-1/60 items-center justify-between">
           {[0, 1, 2, 3, 4, 5, 6].map((num: number) =>
             num === selectedInputBox ? (
               <TimeInput
-                className="focus:outline-none bold h-15 w-18 content-center rounded border-2 border-miru-han-purple-400 bg-miru-gray-100 px-1 py-4 text-xl focus:border-miru-han-purple-400"
+                className="focus:outline-none bold mx-auto h-15 w-auto content-center rounded border-2 border-miru-han-purple-400 bg-miru-gray-100 p-1 text-base focus:border-miru-han-purple-400 xl:w-18 xl:text-xl xxl:p-4"
                 id="selectedInput"
                 initTime={duration}
                 key={num}
@@ -190,7 +190,7 @@ const WeeklyEntriesCard = ({
               <div
                 id={`inputClick_${num}`}
                 key={num}
-                className={`bold h-15 w-18 content-center rounded border-2 border-transparent bg-miru-gray-100 px-1 py-4 text-xl ${
+                className={`bold mx-auto flex h-15 w-auto items-center  justify-center rounded border-2 border-transparent bg-miru-gray-100 p-1 text-base xl:text-xl xxl:p-4 ${
                   currentEntries[num]
                     ? "text-miru-gray-500"
                     : "text-miru-dark-purple-200"
@@ -204,8 +204,10 @@ const WeeklyEntriesCard = ({
             )
           )}
         </div>
-        <div className="text-xl font-bold">{minToHHMM(weeklyTotalHours)}</div>
-        <div className="flex justify-around">
+        <div className="w-1/10 text-center text-base font-bold xl:text-xl">
+          {minToHHMM(weeklyTotalHours)}
+        </div>
+        <div className="flex w-1/10 justify-around">
           <img
             alt="edit"
             className="icon-hover ml-8 h-4 w-4 cursor-pointer"
