@@ -35,6 +35,7 @@ class Project < ApplicationRecord
 
   # Validations
   validates :name, presence: true,
+    length: { maximum: 30, message: "Name is too long(Maximum 30 characters are allowed)" },
     uniqueness: { scope: :client_id, case_sensitive: false, message: "The project %{value} already exists" }
   validates :billable, inclusion: { in: [ true, false ] }
 
