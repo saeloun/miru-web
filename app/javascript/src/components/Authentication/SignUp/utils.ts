@@ -12,9 +12,11 @@ export const signUpFormInitialValues = {
 export const signUpFormValidationSchema = Yup.object().shape({
   firstName: Yup.string()
     .matches(/^[A-Za-z ]*$/, "Please enter valid first name")
+    .max(20, "Maximum 20 characters are allowed")
     .required("First name can not be blank"),
   lastName: Yup.string()
     .matches(/^[A-Za-z ]*$/, "Please enter valid last name")
+    .max(20, "Maximum 20 characters are allowed")
     .required("Last name can not be blank"),
   email: Yup.string()
     .email("Invalid email ID")
