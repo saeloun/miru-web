@@ -1,6 +1,8 @@
 import React, { useState, useRef } from "react";
 
+import { parse } from "date-fns";
 import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat";
 import { currencyFormat } from "helpers";
 import { CalendarIcon } from "miruIcons";
 
@@ -8,6 +10,8 @@ import CustomDatePicker from "common/CustomDatePicker";
 import { CustomInputText } from "common/CustomInputText";
 
 import ClientSelection from "./ClientSelection";
+
+dayjs.extend(customParseFormat);
 
 const InvoiceDetails = ({
   currency,
@@ -33,8 +37,8 @@ const InvoiceDetails = ({
   const DueDateWrapper = useRef(null);
   const DateOfIssueWrapper = useRef(null);
 
-  const getIssuedDate = dayjs(issueDate).format(dateFormat);
-  const getDueDate = dayjs(dueDate).format(dateFormat);
+  const getIssuedDate = dayjs(issueDate, dateFormat).format(dateFormat);
+  const getDueDate = dayjs(dueDate, dateFormat).format(dateFormat);
 
   const handleDatePickerChange = date => {
     setIssueDate(date);
@@ -101,7 +105,7 @@ const InvoiceDetails = ({
           </div>
           {showDateOfIssuePicker && (
             <CustomDatePicker
-              date={issueDate}
+              date={parse(getIssuedDate, dateFormat.toLowerCase(), new Date())}
               handleChange={handleDatePickerChange}
               setVisibility={setShowDateOfIssuePicker}
               wrapperRef={DateOfIssueWrapper}
@@ -129,7 +133,7 @@ const InvoiceDetails = ({
           </div>
           {showDueDatePicker && (
             <CustomDatePicker
-              date={dueDate}
+              date={parse(getDueDate, dateFormat.toLowerCase(), new Date())}
               handleChange={handleDueDatePicker}
               setVisibility={setShowDueDatePicker}
               wrapperRef={DueDateWrapper}

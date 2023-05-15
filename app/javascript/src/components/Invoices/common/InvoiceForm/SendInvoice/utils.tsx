@@ -1,8 +1,11 @@
 import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat";
 import { currencyFormat } from "helpers";
 import * as Yup from "yup";
 
 import { ApiStatus as InvoiceStatus } from "constants/index";
+
+dayjs.extend(customParseFormat);
 
 export const isEmailValid = (email: string): boolean => {
   const schema = Yup.string().email();
@@ -19,9 +22,9 @@ export const emailBody = (invoice: any): string => {
     invoice.amount
   );
 
-  const dueDate = isNaN(Date.parse(invoice.dueDate))
-    ? dayjs(invoice.dueDate).format(invoice.company.dateFormat || "DD.MM.YYYY")
-    : invoice.dueDate;
+  const dueDate = dayjs(invoice.dueDate, invoice.company.dateFormat).format(
+    invoice.company.dateFormat || "DD.MM.YYYY"
+  );
 
   return `${invoice.company.name} has sent you an invoice (${invoice.invoiceNumber}) for ${formattedAmount} that's due on ${dueDate}.`;
 };

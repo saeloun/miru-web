@@ -1,6 +1,9 @@
 /* eslint-disable no-unused-vars */
 import React from "react";
 
+import { parse } from "date-fns";
+import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat";
 import {
   InfoIcon,
   CalendarIcon,
@@ -27,6 +30,8 @@ const inputClass =
 
 const labelClass =
   "absolute top-0.5 left-1 h-6 z-1 origin-0 bg-white p-2 text-base font-medium duration-300";
+
+dayjs.extend(customParseFormat);
 
 const StaticPage = ({
   addressOptions,
@@ -158,11 +163,11 @@ const StaticPage = ({
           {showDatePicker.visibility && (
             <CustomDatePicker
               handleChange={e => handleDatePicker(e, true)}
-              date={
-                personalDetails.date_of_birth
-                  ? new Date(personalDetails.date_of_birth)
-                  : null
-              }
+              date={parse(
+                personalDetails.date_of_birth,
+                personalDetails.date_format.toLowerCase(),
+                new Date()
+              )}
             />
           )}
         </div>
