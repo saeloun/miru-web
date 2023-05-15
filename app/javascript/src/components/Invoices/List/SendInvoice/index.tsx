@@ -8,10 +8,9 @@ import React, {
 
 import cn from "classnames";
 import { XIcon } from "miruIcons";
-import { Modal } from "StyledComponents";
+import { Modal, Toastr } from "StyledComponents";
 
 import invoicesApi from "apis/invoices";
-import Toastr from "common/Toastr";
 import { ApiStatus as InvoiceStatus } from "constants/index";
 
 import {

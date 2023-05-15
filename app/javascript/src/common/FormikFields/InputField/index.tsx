@@ -1,6 +1,6 @@
 /* eslint-disable import/exports-last */
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import classNames from "classnames";
 import { Field } from "formik";
@@ -31,8 +31,11 @@ const InputField = ({
   resetErrorOnChange,
   setFieldError,
   setFieldValue,
+  marginBottom,
 }) => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [defaultMarginBottom, setDefaultMarginBottom] =
+    useState<string>(marginBottom);
 
   const handleTogglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -60,6 +63,14 @@ const InputField = ({
     }
   };
 
+  useEffect(() => {
+    if (hasError) {
+      setDefaultMarginBottom("mb-2");
+    } else {
+      setDefaultMarginBottom(marginBottom);
+    }
+  }, [hasError]);
+
   const optionalFieldProps =
     resetErrorOnChange || onChange ? { onChange: e => handleChange(e) } : {};
 
@@ -67,8 +78,9 @@ const InputField = ({
     <div
       className={classNames(
         defaultWrapperClassName,
-        "field relative mb-2 xsm:mb-6",
-        wrapperClassName
+        "field relative",
+        wrapperClassName,
+        defaultMarginBottom
       )}
     >
       <Field
@@ -129,6 +141,7 @@ InputField.defaultProps = {
   resetErrorOnChange: true,
   setFieldError: null,
   setFieldValue: null,
+  marginBottom: "mb-2 xsm:mb-6",
 };
 
 export default InputField;
