@@ -163,11 +163,15 @@ const StaticPage = ({
           {showDatePicker.visibility && (
             <CustomDatePicker
               handleChange={e => handleDatePicker(e, true)}
-              date={parse(
-                personalDetails.date_of_birth,
-                personalDetails.date_format.toLowerCase(),
-                new Date()
-              )}
+              date={
+                personalDetails.date_of_birth
+                  ? parse(
+                      personalDetails.date_of_birth,
+                      personalDetails.date_format.toLowerCase(),
+                      new Date()
+                    )
+                  : null
+              }
             />
           )}
         </div>
