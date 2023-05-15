@@ -1,6 +1,6 @@
 import React from "react";
 
-import dayjs from "dayjs";
+import { parse } from "date-fns";
 import {
   GlobeIcon,
   CalendarIcon,
@@ -124,12 +124,7 @@ const StaticPage = ({
               label="Date of Birth"
               name="date_of_birth"
               type="text"
-              value={
-                personalDetails.date_of_birth &&
-                dayjs(personalDetails.date_of_birth).format(
-                  personalDetails.date_format
-                )
-              }
+              value={personalDetails.date_of_birth}
               onChange={e => {
                 updateBasicDetails(e.target.value, "date_of_birth", false);
               }}
@@ -145,7 +140,11 @@ const StaticPage = ({
               handleChange={e => handleDatePicker(e, true)}
               date={
                 personalDetails.date_of_birth
-                  ? new Date(personalDetails.date_of_birth)
+                  ? parse(
+                      personalDetails.date_of_birth,
+                      personalDetails.date_format.toLowerCase(),
+                      new Date()
+                    )
                   : null
               }
             />
