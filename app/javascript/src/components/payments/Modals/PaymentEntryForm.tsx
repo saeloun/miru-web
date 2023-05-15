@@ -5,7 +5,7 @@ import { currencyFormat, useOutsideClick } from "helpers";
 import { CalendarIcon, SearchIcon } from "miruIcons";
 import { useNavigate } from "react-router-dom";
 import Select, { DropdownIndicatorProps, components } from "react-select";
-import { Badge, MobileMoreOptions } from "StyledComponents";
+import { Badge, MobileMoreOptions, Toastr } from "StyledComponents";
 
 import payment from "apis/payments/payments";
 import CustomDatePicker from "common/CustomDatePicker";
@@ -13,7 +13,6 @@ import { CustomInputText } from "common/CustomInputText";
 import CustomReactSelect from "common/CustomReactSelect";
 import { CustomValueContainer } from "common/CustomReactSelectStyle";
 import { CustomTextareaAutosize } from "common/CustomTextareaAutosize";
-import Toastr from "common/Toastr";
 import { useUserContext } from "context/UserContext";
 import { mapPayment } from "mapper/mappedIndex";
 import getStatusCssClass from "utils/getBadgeStatus";

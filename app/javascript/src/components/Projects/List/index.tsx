@@ -1,12 +1,10 @@
 import React from "react";
 
 import Logger from "js-logger";
-import { ToastContainer } from "react-toastify";
 
 import projectApi from "apis/projects";
 import EmptyStates from "common/EmptyStates";
 import withLayout from "common/Mobile/HOC/withLayout";
-import { TOASTER_DURATION } from "constants/index";
 import { useUserContext } from "context/UserContext";
 import { sendGAPageView } from "utils/googleAnalytics";
 
@@ -45,7 +43,6 @@ const ProjectList = ({ isAdminUser }) => {
 
   const ProjectsLayout = () => (
     <div>
-      <ToastContainer autoClose={TOASTER_DURATION} />
       <Header
         isAdminUser={isAdminUser}
         projectDataPresent={Boolean(projects.length)}

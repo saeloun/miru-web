@@ -8,7 +8,6 @@ import {
   DeleteIcon,
 } from "miruIcons";
 import { useNavigate } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
 import { Avatar, MobileMoreOptions, Tooltip } from "StyledComponents";
 
 import clientApi from "apis/clients";
@@ -18,7 +17,6 @@ import ChartBar from "common/ChartBar";
 import EmptyStates from "common/EmptyStates";
 import withLayout from "common/Mobile/HOC/withLayout";
 import Table from "common/Table";
-import { TOASTER_DURATION } from "constants/index";
 import { useUserContext } from "context/UserContext";
 import { unmapClientList } from "mapper/mappedIndex";
 import { sendGAPageView } from "utils/googleAnalytics";
@@ -278,7 +276,6 @@ const Clients = ({ isAdminUser }) => {
 
   const ClientsLayout = () => (
     <>
-      <ToastContainer autoClose={TOASTER_DURATION} />
       {clientData.length > 0 && (
         <Header
           isAdminUser={isAdminUser}

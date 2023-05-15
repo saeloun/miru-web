@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
 
 import { XIcon } from "miruIcons";
-import { Button } from "StyledComponents";
+import { Button, Toastr } from "StyledComponents";
 
 import companyUsersApi from "apis/company-users";
 import projectMembersApi from "apis/project-members";
-import Toastr from "common/Toastr";
 
 import EditMembersListForm from "../EditMembersListForm";
 

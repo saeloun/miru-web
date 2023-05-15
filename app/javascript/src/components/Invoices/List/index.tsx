@@ -2,7 +2,6 @@ import React, { Fragment, useEffect, useState } from "react";
 
 import Logger from "js-logger";
 import { useSearchParams } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
 
 import invoicesApi from "apis/invoices";
 import withLayout from "common/Mobile/HOC/withLayout";
@@ -15,7 +14,6 @@ import Container from "./container";
 import FilterSideBar from "./FilterSideBar";
 import Header from "./Header";
 
-import { TOASTER_DURATION } from "../../../constants";
 import BulkDeleteInvoices from "../popups/BulkDeleteInvoices";
 import BulkDownloadInvoices from "../popups/BulkDownloadInvoices";
 import DeleteInvoice from "../popups/DeleteInvoice";
@@ -220,7 +218,6 @@ const Invoices = () => {
 
   const InvoicesLayout = () => (
     <div className="h-full p-4 lg:p-0">
-      <ToastContainer autoClose={TOASTER_DURATION} />
       <Header
         filterParamsStr={filterParamsStr}
         isDesktop={isDesktop}
