@@ -1,6 +1,5 @@
 import React from "react";
 
-import dayjs from "dayjs";
 import {
   CalendarIcon,
   GlobeIcon,
@@ -125,12 +124,7 @@ const MobileEditDetails = ({
               label="Date of Birth"
               name="date_of_birth"
               type="text"
-              value={
-                personalDetails.date_of_birth &&
-                dayjs(personalDetails.date_of_birth).format(
-                  personalDetails.date_format
-                )
-              }
+              value={personalDetails.date_of_birth}
               onChange={e => {
                 updateBasicDetails(e.target.value, "date_of_birth", false);
               }}
