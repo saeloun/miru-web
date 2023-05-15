@@ -1,6 +1,5 @@
 import React from "react";
 
-import dayjs from "dayjs";
 import { GlobeIcon, InfoIcon, MapPinIcon, PhoneIcon } from "miruIcons";
 
 import { Divider } from "common/Divider";
@@ -16,6 +15,7 @@ const MobilePersonalDetails = ({
     addresses,
     linkedin,
     github,
+    // eslint-disable-next-line no-unused-vars
     date_format,
   },
 }) => (
@@ -33,10 +33,8 @@ const MobilePersonalDetails = ({
         </div>
         <div className="w-1/2 px-1">
           <InfoDescription
+            description={`${date_of_birth}`}
             title="Date of Birth"
-            description={`${
-              date_of_birth && dayjs(date_of_birth).format(date_format)
-            }`}
           />
         </div>
       </div>
