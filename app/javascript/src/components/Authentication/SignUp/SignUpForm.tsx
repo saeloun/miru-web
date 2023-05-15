@@ -60,14 +60,20 @@ const SignUpForm = () => {
     setTermsOfServiceModal(true);
   };
 
-  const isBtnDisabled = (values: SignUpFormValues) =>
+  const isBtnDisabled = (values: SignUpFormValues, errors) =>
     !(
       values?.firstName?.trim() &&
       values?.lastName?.trim() &&
       values.email?.trim() &&
       values?.password?.trim() &&
-      values?.confirm_password?.trim()
-    );
+      values?.confirm_password?.trim() &&
+      values?.password?.trim() == values?.confirm_password?.trim()
+    ) ||
+    errors?.firstName ||
+    errors?.lastName?.trim() ||
+    errors.email?.trim() ||
+    errors?.password?.trim() ||
+    errors?.confirm_password?.trim();
 
   return (
     <div className="relative flex w-full flex-col items-center justify-center px-8 pt-5vh md:px-0 lg:w-1/2">
@@ -86,8 +92,8 @@ const SignUpForm = () => {
         </h1>
         <div className="pt-2vh lg:pt-5vh">
           <Formik
+            validateOnBlur
             initialValues={signUpFormInitialValues}
-            validateOnBlur={false}
             validateOnChange={false}
             validationSchema={signUpFormValidationSchema}
             onSubmit={handleSignUpFormSubmit}
@@ -161,10 +167,7 @@ const SignUpForm = () => {
                       setFieldError={setFieldError}
                       setFieldValue={setFieldValue}
                       type="password"
-                    />
-                    <InputErrors
-                      fieldErrors={errors.password}
-                      fieldTouched={touched.password}
+                      wrapperClassName="mb-6"
                     />
                   </div>
                   <div className="field">
@@ -172,6 +175,7 @@ const SignUpForm = () => {
                       id="confirm_password"
                       label="Confirm Password"
                       labelClassName="p-0"
+                      marginBottom="mb-2"
                       name="confirm_password"
                       setFieldError={setFieldError}
                       setFieldValue={setFieldValue}
@@ -180,10 +184,27 @@ const SignUpForm = () => {
                         errors.confirm_password && touched.confirm_password
                       }
                     />
-                    <InputErrors
-                      fieldErrors={errors.confirm_password}
-                      fieldTouched={touched.confirm_password}
-                    />
+                    {!errors.confirm_password && !errors.password && (
+                      <p className="text-xs font-medium leading-4 text-miru-dark-purple-400">
+                        Min. 8 characters, 1 uppercase, 1 lowercase, 1 number
+                        and 1 special character
+                      </p>
+                    )}
+                    {errors.confirm_password == errors.password ? (
+                      <InputErrors
+                        fieldErrors={errors.confirm_password}
+                        fieldTouched={touched.confirm_password}
+                      />
+                    ) : (
+                      (errors.confirm_password || errors.password) && (
+                        <InputErrors
+                          fieldErrors="Passwords must match"
+                          fieldTouched={
+                            touched.confirm_password || touched.password
+                          }
+                        />
+                      )
+                    )}
                   </div>
                   <div className="my-6 flex text-xs font-normal leading-4 text-miru-dark-purple-1000">
                     <div className="mt-2 flex">
@@ -228,7 +249,7 @@ const SignUpForm = () => {
                     <button
                       type="submit"
                       className={`form__button whitespace-nowrap ${
-                        isBtnDisabled(values)
+                        isBtnDisabled(values, errors)
                           ? "cursor-not-allowed border-transparent bg-indigo-100 hover:border-transparent"
                           : "cursor-pointer"
                       }`}
