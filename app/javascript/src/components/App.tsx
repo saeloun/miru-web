@@ -2,8 +2,9 @@ import React, { useState } from "react";
 
 import { BrowserRouter } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-import { Roles, TOASTER_DURATION } from "constants/index";
+import { Roles } from "constants/index";
 import { AuthProvider } from "context/auth";
 import UserContext from "context/UserContext";
 
@@ -30,7 +31,7 @@ const App = props => {
     >
       <AuthProvider>
         <BrowserRouter>
-          <ToastContainer autoClose={TOASTER_DURATION} />
+          <ToastContainer />
           <Main
             {...props}
             googleOauthSuccess={googleOauthSuccess}

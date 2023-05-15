@@ -4,12 +4,12 @@ import cn from "classnames";
 import { Formik, Form, FormikProps } from "formik";
 import { XIcon } from "miruIcons";
 import { useNavigate } from "react-router-dom";
+import { Toastr } from "StyledComponents";
 
 import invoicesApi from "apis/invoices";
 import { CustomAdvanceInput } from "common/CustomAdvanceInput";
 import { CustomTextareaAutosize } from "common/CustomTextareaAutosize";
 import { InputErrors } from "common/FormikFields";
-import Toastr from "common/Toastr";
 import {
   emailBody,
   emailSubject,

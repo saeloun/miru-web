@@ -2,11 +2,10 @@ import React, { useEffect, useState } from "react";
 
 import { DeleteIcon, EditIcon, ImageIcon, UserAvatarSVG } from "miruIcons";
 import { NavLink, useParams } from "react-router-dom";
-import { MoreOptions, Tooltip } from "StyledComponents";
+import { MoreOptions, Toastr, Tooltip } from "StyledComponents";
 
 import teamApi from "apis/team";
 import teamsApi from "apis/teams";
-import Toastr from "common/Toastr";
 import { useTeamDetails } from "context/TeamDetailsContext";
 
 const getActiveClassName = isActive => {
