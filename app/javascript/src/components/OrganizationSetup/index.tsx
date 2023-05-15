@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import Steps from "rc-steps";
 import "rc-steps/assets/index.css";
 import { useNavigate } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
 
 import companiesApi from "apis/companies";
 import MiruLogoWatermark from "common/MiruLogoWatermark";
@@ -132,69 +131,66 @@ const OrganizationSetup = () => {
   };
 
   return (
-    <>
-      <ToastContainer autoClose={30000} />
-      <div
-        className={`relative ${
-          currentStep == 1 ? "min-h-screen" : "h-screen"
-        } w-full px-8 ${isDesktop ? "pt-16" : "pt-8"} pb-4 md:px-0 md:pt-28`}
-      >
-        <div className="org-setup-form-wrapper mx-auto h-full md:w-1/2 lg:w-352">
-          {isDesktop ? (
-            <h1 className="text-center font-manrope text-4.75xl font-extrabold not-italic text-miru-han-purple-1000">
-              Setup Org
-            </h1>
-          ) : (
-            <div className="w-full text-center font-manrope text-2xl font-extrabold not-italic text-miru-han-purple-1000">
-              {" "}
-              Setup Org
-            </div>
-          )}
-          <div className="mx-auto mt-6 mb-11 w-full">
-            <Steps
-              current={currentStep - 1}
-              items={organizationSetupSteps}
-              labelPlacement="horizontal"
-              itemRender={props => (
-                <Step
-                  {...props}
-                  isActiveStep={isStepFormSubmittedOrVisited}
-                  updateStepNumber={updateStepNumber}
-                />
-              )}
-            />
+    <div
+      className={`relative ${
+        currentStep == 1 ? "min-h-screen" : "h-screen"
+      } w-full px-8 ${isDesktop ? "pt-16" : "pt-8"} pb-4 md:px-0 md:pt-28`}
+    >
+      <div className="org-setup-form-wrapper mx-auto h-full md:w-1/2 lg:w-352">
+        {isDesktop ? (
+          <h1 className="text-center font-manrope text-4.75xl font-extrabold not-italic text-miru-han-purple-1000">
+            Setup Org
+          </h1>
+        ) : (
+          <div className="w-full text-center font-manrope text-2xl font-extrabold not-italic text-miru-han-purple-1000">
+            {" "}
+            Setup Org
           </div>
-          {currentStep == 1 ? (
-            <CompanyDetailsForm
-              formType="new"
-              isDesktop={isDesktop}
-              isFormAlreadySubmitted={stepNoOfLastSubmittedForm >= 1}
-              previousSubmittedValues={companyDetails}
-              onNextBtnClick={onNextBtnClick}
-            />
-          ) : (
-            <>
-              {isDesktop ? (
-                <FinancialDetailsForm
-                  isUpdatedFormValues={stepNoOfLastSubmittedForm >= 1}
-                  prevFormValues={financialDetails}
-                  setFinancialDetails={setFinancialDetails}
-                  onSaveBtnClick={onSaveBtnClick}
-                />
-              ) : (
-                <MobileFinancialDetailForm
-                  isUpdatedFormValues={stepNoOfLastSubmittedForm >= 1}
-                  prevFormValues={financialDetails}
-                  setFinancialDetails={setFinancialDetails}
-                  onSaveBtnClick={onSaveBtnClick}
-                />
-              )}
-            </>
-          )}
+        )}
+        <div className="mx-auto mt-6 mb-11 w-full">
+          <Steps
+            current={currentStep - 1}
+            items={organizationSetupSteps}
+            labelPlacement="horizontal"
+            itemRender={props => (
+              <Step
+                {...props}
+                isActiveStep={isStepFormSubmittedOrVisited}
+                updateStepNumber={updateStepNumber}
+              />
+            )}
+          />
         </div>
-        <MiruLogoWatermark />
+        {currentStep == 1 ? (
+          <CompanyDetailsForm
+            formType="new"
+            isDesktop={isDesktop}
+            isFormAlreadySubmitted={stepNoOfLastSubmittedForm >= 1}
+            previousSubmittedValues={companyDetails}
+            onNextBtnClick={onNextBtnClick}
+          />
+        ) : (
+          <>
+            {isDesktop ? (
+              <FinancialDetailsForm
+                isUpdatedFormValues={stepNoOfLastSubmittedForm >= 1}
+                prevFormValues={financialDetails}
+                setFinancialDetails={setFinancialDetails}
+                onSaveBtnClick={onSaveBtnClick}
+              />
+            ) : (
+              <MobileFinancialDetailForm
+                isUpdatedFormValues={stepNoOfLastSubmittedForm >= 1}
+                prevFormValues={financialDetails}
+                setFinancialDetails={setFinancialDetails}
+                onSaveBtnClick={onSaveBtnClick}
+              />
+            )}
+          </>
+        )}
       </div>
-    </>
+      <MiruLogoWatermark />
+    </div>
   );
 };
 

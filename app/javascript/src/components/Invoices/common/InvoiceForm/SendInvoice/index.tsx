@@ -10,9 +10,9 @@ import cn from "classnames";
 import { useOutsideClick } from "helpers";
 import { XIcon } from "miruIcons";
 import { useNavigate } from "react-router-dom";
+import { Toastr } from "StyledComponents";
 
 import invoicesApi from "apis/invoices";
-import Toastr from "common/Toastr";
 import { ApiStatus as InvoiceStatus } from "constants/index";
 
 import {
