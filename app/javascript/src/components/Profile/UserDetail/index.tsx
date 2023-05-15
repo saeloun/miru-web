@@ -9,12 +9,12 @@ import {
   PasswordIconTextSVG,
   PlusIconSVG,
 } from "miruIcons";
+import { Toastr } from "StyledComponents";
 import * as Yup from "yup";
 
 import profileApi from "apis/profile";
 import { Divider } from "common/Divider";
 import Loader from "common/Loader/index";
-import Toastr from "common/Toastr";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import { useProfile } from "../context/EntryContext";

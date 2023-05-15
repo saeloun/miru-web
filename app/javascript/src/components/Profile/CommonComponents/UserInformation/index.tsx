@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
 
 import { UserAvatarSVG, EditIcon, ImageIcon, DeleteIcon } from "miruIcons";
-import { MoreOptions, Tooltip } from "StyledComponents";
+import { MoreOptions, Toastr, Tooltip } from "StyledComponents";
 
 import profileApi from "apis/profile";
-import Toastr from "common/Toastr";
 
 const UserInformation = ({ firstName, lastName }) => {
   const [showProfileOptions, setShowProfileOptions] = useState(false);

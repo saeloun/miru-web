@@ -3,10 +3,10 @@ import React, { useRef } from "react";
 import { useKeypress, useOutsideClick } from "helpers";
 import Logger from "js-logger";
 import { XIcon } from "miruIcons";
+import { Toastr } from "StyledComponents";
 
 import companyUsersApi from "apis/company-users";
 import projectMembersApi from "apis/project-members";
-import Toastr from "common/Toastr";
 
 import EditMembersListForm from "./EditMembersListForm";
 

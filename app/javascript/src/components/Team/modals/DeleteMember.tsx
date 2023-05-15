@@ -2,9 +2,9 @@ import React, { useRef } from "react";
 
 import { useOutsideClick, useKeypress } from "helpers";
 import { XIcon } from "miruIcons";
+import { Toastr } from "StyledComponents";
 
 import teamApi from "apis/team";
-import Toastr from "common/Toastr";
 import { TeamModalType } from "constants/index";
 import { useList } from "context/TeamContext";
 

@@ -3,17 +3,17 @@ import React, { useCallback, useEffect, useState } from "react";
 
 import * as Yup from "yup";
 import { Country, State, City } from "country-state-city";
+import { useDropzone } from "react-dropzone";
+import { useNavigate } from "react-router-dom";
 
+import { Toastr } from "StyledComponents";
 import companiesApi from "apis/companies";
 import companyProfileApi from "apis/companyProfile";
 import Loader from "common/Loader/index";
-import Toastr from "common/Toastr";
 import { currencyList } from "constants/currencyList";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import Header from "../../Header";
-import { useDropzone } from "react-dropzone";
-import { useNavigate } from "react-router-dom";
 import { StaticPage } from "./StaticPage";
 
 const phoneRegExp =

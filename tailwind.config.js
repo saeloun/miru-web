@@ -5,9 +5,9 @@ module.exports = {
     container: {
       center: true,
     },
-    listStyleType:{
-      lower: 'lower-alpha',
-      decimal: 'decimal'
+    listStyleType: {
+      lower: "lower-alpha",
+      decimal: "decimal",
     },
     fontSize: {
       xsm: ".5625em",
@@ -30,7 +30,7 @@ module.exports = {
       32: "2rem",
     },
     letterSpacing: {
-      '2': '2px',
+      2: "2px",
       widest: "0.125em",
       semiWidest: "0.09375", //1.5px
       wider: ".05em",
@@ -72,7 +72,10 @@ module.exports = {
         480: "30rem", //480px
         18: "18%",
         72: "72%",
-        '1/10': '10%',
+        "1/10": "10%",
+        "1/15": "15%",
+        "1/20": "20%",
+        "1/60": "60%",
       },
       minWidth: {
         12: "12px",
@@ -89,12 +92,12 @@ module.exports = {
         304: "19rem",
         87: "5.4rem",
         88: "5.5rem",
-        "14/100":"14%",
+        "14/100": "14%",
         "1/10": "10%",
         "1/12": "8.333%",
         "1/15": "6.666%",
         148: "592px",
-        '80v': '80vh',
+        "80v": "80vh",
       },
       minHeight: {
         "10v": "10vh",
@@ -230,7 +233,10 @@ module.exports = {
         "30/100": "30%",
         "26/100": "26.66666%",
         "20/100": "20%",
+        "15/100": "15%",
         "10/100": "10%",
+        "2/100": "2%",
+        "1/100": "1%",
         "10vh": "10vh",
         "5vh": "5vh",
         "2vh": "2vh",

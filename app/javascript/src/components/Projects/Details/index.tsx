@@ -4,7 +4,6 @@ import { cashFormatter, currencySymbol, minToHHMM } from "helpers";
 import Logger from "js-logger";
 import { ArrowLeftIcon, DotsThreeVerticalIcon } from "miruIcons";
 import { useParams, useNavigate } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
 import { Badge } from "StyledComponents";
 
 import projectAPI from "apis/projects";
@@ -20,7 +19,6 @@ import HeaderMenuList from "./HeadermenuList";
 import MemberListForm from "./Mobile/MemberListForm";
 import ProjectDetailsForm from "./Mobile/ProjectDetailsForm";
 
-import { TOASTER_DURATION } from "../../../constants";
 import ProjectForm from "../List/Mobile/ProjectForm";
 import AddEditProject from "../Modals/AddEditProject";
 import DeleteProject from "../Modals/DeleteProject";
@@ -210,7 +208,6 @@ const ProjectDetails = () => {
 
   return (
     <div className="flex h-full w-full">
-      <ToastContainer autoClose={TOASTER_DURATION} />
       <div className="hidden flex-1 flex-col lg:flex">
         <div className="my-6">
           <div className="flex min-w-0 items-center justify-between">

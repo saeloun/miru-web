@@ -2,9 +2,9 @@
 import React, { useEffect, useRef, useState } from "react";
 
 import { useOutsideClick } from "helpers";
+import { Toastr } from "StyledComponents";
 
 import Loader from "common/Loader/index";
-import Toastr from "common/Toastr";
 import DetailsHeader from "components/Profile/DetailsHeader";
 import { leaveTypes } from "constants/leaveType";
 import { sendGAPageView } from "utils/googleAnalytics";

@@ -7,12 +7,11 @@ import { Formik, Form, FormikProps } from "formik";
 import { EditImageButtonSVG, deleteImageIcon } from "miruIcons";
 import PhoneInput from "react-phone-number-input";
 import flags from "react-phone-number-input/flags";
-import { Avatar } from "StyledComponents";
+import { Avatar, Toastr } from "StyledComponents";
 
 import clientApi from "apis/clients";
 import CustomReactSelect from "common/CustomReactSelect";
 import { InputErrors, InputField } from "common/FormikFields";
-import Toastr from "common/Toastr";
 
 import { clientSchema, getInitialvalues } from "./formValidationSchema";
 import { formatFormData } from "./utils";

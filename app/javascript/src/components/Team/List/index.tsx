@@ -1,10 +1,8 @@
 import React, { Fragment, useEffect, useState } from "react";
 
-import { ToastContainer } from "react-toastify";
-
 import teamApi from "apis/team";
 import withLayout from "common/Mobile/HOC/withLayout";
-import { TeamModalType, TOASTER_DURATION } from "constants/index";
+import { TeamModalType } from "constants/index";
 import { ListContext } from "context/TeamContext";
 import { useUserContext } from "context/UserContext";
 import { unmapList } from "mapper/team.mapper";
@@ -50,7 +48,6 @@ const TeamList = () => {
         modal,
       }}
     >
-      <ToastContainer autoClose={TOASTER_DURATION} />
       {!hideContainer && (
         <Fragment>
           <Header />
