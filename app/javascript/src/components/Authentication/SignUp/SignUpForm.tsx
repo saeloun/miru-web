@@ -47,6 +47,14 @@ const SignUpForm = () => {
     navigate(`/email_confirmation?email=${res.data.email}`);
   };
 
+  const showPasswordCriteria = (errors, touched) => {
+    if (errors.confirm_password || errors.password) {
+      if (touched.password || touched.confirm_password) return false;
+    }
+
+    return true;
+  };
+
   const handleGoogleAuth = async () => {
     const googleForm = googleOauth?.current;
     if (googleForm) googleForm.submit();
@@ -184,16 +192,19 @@ const SignUpForm = () => {
                         errors.confirm_password && touched.confirm_password
                       }
                     />
-                    {!errors.confirm_password && !errors.password && (
+                    {showPasswordCriteria(errors, touched) && (
                       <p className="text-xs font-medium leading-4 text-miru-dark-purple-400">
                         Min. 8 characters, 1 uppercase, 1 lowercase, 1 number
                         and 1 special character
                       </p>
                     )}
-                    {errors.confirm_password == errors.password ? (
+                    {errors.confirm_password == errors.password &&
+                    (touched.password || touched.confirm_password) ? (
                       <InputErrors
                         fieldErrors={errors.confirm_password}
-                        fieldTouched={touched.confirm_password}
+                        fieldTouched={
+                          touched.confirm_password || touched.password
+                        }
                       />
                     ) : (
                       (errors.confirm_password || errors.password) && (
