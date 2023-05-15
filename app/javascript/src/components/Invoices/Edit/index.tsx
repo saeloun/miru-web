@@ -53,8 +53,8 @@ const EditInvoice = () => {
       const { data } = await invoicesApi.editInvoice(params.id);
       setInvoiceDetails(data);
       setReference(data.reference);
-      setIssueDate(data.issueDate);
-      setDueDate(data.dueDate);
+      setIssueDate(Date.parse(data.issueDate));
+      setDueDate(Date.parse(data.dueDate));
       setSelectedLineItems(unmapLineItems(data.invoiceLineItems));
       setAmount(data.amount);
       setInvoiceNumber(data.invoiceNumber);
