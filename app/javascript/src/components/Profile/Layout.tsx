@@ -1,9 +1,6 @@
 /* eslint-disable no-unused-vars */
 import React, { Fragment, useState } from "react";
 
-import { ToastContainer } from "react-toastify";
-
-import { TOASTER_DURATION } from "constants/index";
 import { useUserContext } from "context/UserContext";
 
 import Header from "./CommonComponents/Header";
@@ -59,7 +56,6 @@ const Layout = ({ isAdminUser, user, company }) => {
         </Fragment>
       )}
       {!isDesktop && <RouteConfig />}
-      <ToastContainer autoClose={TOASTER_DURATION} />
     </EntryContext.Provider>
   );
 };

@@ -11,11 +11,10 @@ import {
 } from "helpers";
 import { CheckedCheckboxSVG, UncheckedCheckboxSVG } from "miruIcons";
 import TextareaAutosize from "react-textarea-autosize";
-import { TimeInput } from "StyledComponents";
+import { TimeInput, Toastr } from "StyledComponents";
 
 import timesheetEntryApi from "apis/timesheet-entry";
 import CustomDatePicker from "common/CustomDatePicker";
-import Toastr from "common/Toastr";
 import { useUserContext } from "context/UserContext";
 
 import MobileEntryForm from "./MobileView/MobileEntryForm";

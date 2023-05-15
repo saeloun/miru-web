@@ -2,9 +2,9 @@ import React, { Fragment, useEffect, useState } from "react";
 
 import dayjs from "dayjs";
 import { useParams, useNavigate } from "react-router-dom";
+import { Toastr } from "StyledComponents";
 
 import invoicesApi from "apis/invoices";
-import Toastr from "common/Toastr";
 import { useUserContext } from "context/UserContext";
 import { unmapLineItems } from "mapper/mappedIndex";
 import { sendGAPageView } from "utils/googleAnalytics";

@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 
+import { Toastr } from "StyledComponents";
+
 import invoicesApi from "apis/invoices";
-import Toastr from "common/Toastr";
 import { mapGenerateInvoice } from "mapper/mappedIndex";
 
 import AddLineItemContainer from "./AddLineItemContainer";

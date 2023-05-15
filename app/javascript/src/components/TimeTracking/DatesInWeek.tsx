@@ -31,7 +31,7 @@ const WeeklyEntries: React.FC<Iprops> = ({
     </div>
   ) : (
     // dates for week
-    <div className="flex h-16 justify-items-stretch bg-miru-gray-100 px-60">
+    <div className="flex h-16 justify-between bg-miru-gray-100 px-15/100 xl:px-20/100">
       {dayInfo.map((d, index) => (
         <div
           className="my-2 h-12 w-24 items-center rounded-xl border-2 border-transparent py-2"

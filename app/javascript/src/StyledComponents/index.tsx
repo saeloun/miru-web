@@ -7,6 +7,7 @@ import MoreOptions from "./MoreOptions";
 import SidePanel from "./SidePanel";
 import SummaryDashboard from "./SummaryDashboard";
 import TimeInput from "./TimeInput";
+import Toastr from "./Toastr";
 import Tooltip from "./Tooltip";
 
 export {
@@ -19,5 +20,6 @@ export {
   SidePanel,
   SummaryDashboard,
   TimeInput,
+  Toastr,
   Tooltip,
 };
