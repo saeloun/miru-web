@@ -50,7 +50,7 @@ class Invitation < ApplicationRecord
   validates :first_name, :last_name,
     presence: true,
     format: { with: /\A[a-zA-Z\s]+\z/ },
-    length: { maximum: 50 }
+    length: { maximum: 20 }
   validate :non_existing_company_user
   validate :recipient_email_not_changed
 
