@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 
+import { useOutsideClick } from "helpers";
 import Logger from "js-logger";
 import { XIcon } from "miruIcons";
 
@@ -15,6 +16,7 @@ const AddEditProject = ({
   const [projectName, setProjectName] = useState<string>("");
   const [projectType, setProjectType] = useState<string>("Billable");
   const [clientList, setClientList] = useState<[]>([]);
+  const wrapperRef = useRef();
 
   const projectId =
     (projectData && projectData["id"]) ||
@@ -24,6 +26,10 @@ const AddEditProject = ({
   const isEdit = !!projectId;
   const isFormFilled = client && projectName && projectType;
   const showEditModal = isEdit && editProjectData?.members;
+
+  useOutsideClick(wrapperRef, () => {
+    setShowProjectModal(false);
+  });
 
   const getClientList = async () => {
     try {
@@ -110,7 +116,7 @@ const AddEditProject = ({
       className="modal__modal main-modal"
       style={{ background: "rgba(29, 26, 49,0.6)" }}
     >
-      <div className="modal__container modal-container">
+      <div className="modal__container modal-container" ref={wrapperRef}>
         <div className="modal__content modal-content">
           <div className="modal__position">
             <h6 className="modal__title">

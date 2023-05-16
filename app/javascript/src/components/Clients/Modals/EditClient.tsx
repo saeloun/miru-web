@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 
+import { useOutsideClick } from "helpers";
 import { XIcon } from "miruIcons";
 
 import { useUserContext } from "context/UserContext";
@@ -20,6 +21,7 @@ const EditClient = ({ setShowEditDialog, client }: IEditClient) => {
   const [clientLogo, setClientLogo] = useState("");
   const [submitting, setSubmitting] = useState<boolean>(false);
   const { isDesktop } = useUserContext();
+  const wrapperRef = useRef();
 
   const handleDeleteLogo = event => {
     event.preventDefault();
@@ -27,6 +29,10 @@ const EditClient = ({ setShowEditDialog, client }: IEditClient) => {
     setClientLogo("");
     setClientLogoUrl("");
   };
+
+  useOutsideClick(wrapperRef, () => {
+    setShowEditDialog(false);
+  });
 
   return isDesktop ? (
     <div className="flex items-center justify-center px-4">
@@ -37,7 +43,10 @@ const EditClient = ({ setShowEditDialog, client }: IEditClient) => {
         }}
       >
         <div className="relative h-full w-full px-4 md:flex md:items-center md:justify-center">
-          <div className="modal-width transform rounded-lg bg-white px-6 pb-6 shadow-xl transition-all sm:max-w-md sm:align-middle">
+          <div
+            className="modal-width transform rounded-lg bg-white px-6 pb-6 shadow-xl transition-all sm:max-w-md sm:align-middle"
+            ref={wrapperRef}
+          >
             <div className="mt-6 flex items-center justify-between">
               <h6 className="text-base font-extrabold">Edit Client Details</h6>
               <button

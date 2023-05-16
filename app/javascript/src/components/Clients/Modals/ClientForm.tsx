@@ -276,6 +276,7 @@ const ClientForm = ({
               <InputField
                 autoFocus
                 resetErrorOnChange
+                hasError={errors.name && touched.name}
                 id="name"
                 label="Name"
                 name="name"
@@ -290,6 +291,7 @@ const ClientForm = ({
               <div className="field relative">
                 <InputField
                   resetErrorOnChange
+                  hasError={errors.email && touched.email}
                   id="email"
                   label="Email"
                   name="email"
@@ -334,6 +336,7 @@ const ClientForm = ({
               <div className="field relative">
                 <InputField
                   resetErrorOnChange
+                  hasError={errors.address1 && touched.address1}
                   id="address1"
                   label="Address line 1"
                   name="address1"
@@ -349,6 +352,7 @@ const ClientForm = ({
               <div className="field relative mb-5">
                 <InputField
                   resetErrorOnChange
+                  hasError={errors.address2 && touched.address2}
                   id="address2"
                   label="Address line 2 (optional)"
                   name="address2"
@@ -415,6 +419,7 @@ const ClientForm = ({
               <div className="flex w-1/2 flex-col pl-2">
                 <InputField
                   resetErrorOnChange
+                  hasError={errors.zipcode && touched.zipcode}
                   id="zipcode"
                   label="Zipcode"
                   name="zipcode"
