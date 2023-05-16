@@ -191,9 +191,17 @@ const AddLineItemContainer = ({
   };
 
   const handleSubmitForm = (values: any) => {
-    editItem.id || editItem.timesheet_entry_id
-      ? handleEdit()
-      : handleAddLineItem(values);
+    if (
+      values.name &&
+      values.description &&
+      values.date &&
+      values.quantity &&
+      values.rate
+    ) {
+      editItem.id || editItem.timesheet_entry_id
+        ? handleEdit()
+        : handleAddLineItem(values);
+    }
   };
 
   useOutsideClick(
