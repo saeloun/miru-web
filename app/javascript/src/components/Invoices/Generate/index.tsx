@@ -84,7 +84,6 @@ const GenerateInvoices = () => {
       issueDate,
       dueDate,
       invoiceLineItems: generateInvoiceLineItems(
-        invoiceDetails.companyDetails.date_format,
         selectedOption,
         manualEntryArr
       ),

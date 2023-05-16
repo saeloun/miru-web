@@ -5,18 +5,14 @@ import { Toastr } from "StyledComponents";
 import generateInvoice from "apis/generateInvoice";
 import invoicesApi from "apis/invoices";
 
-export const generateInvoiceLineItems = (
-  dateFormat,
-  selectedLineItems,
-  manualEntryArr
-) => {
+export const generateInvoiceLineItems = (selectedLineItems, manualEntryArr) => {
   let invoiceLineItems = [];
   invoiceLineItems = invoiceLineItems.concat(
     selectedLineItems.map(item => ({
       id: item.id,
       name: item.name ? item.name : `${item.first_name} ${item.last_name}`,
       description: item.description,
-      date: dayjs(item.date, dateFormat).format("DD/MM/YYYY"),
+      date: Date(item.date),
       rate: item.rate,
       quantity: Number(item.quantity),
       timesheet_entry_id: item.time_sheet_entry
@@ -31,7 +27,7 @@ export const generateInvoiceLineItems = (
       idx: item.id,
       name: item.name,
       description: item.description,
-      date: dayjs(item.date, dateFormat).format("DD/MM/YYYY"),
+      date: Date(item.date),
       rate: item.rate,
       quantity: Number(item.quantity),
       timesheet_entry_id: item.time_sheet_entry,

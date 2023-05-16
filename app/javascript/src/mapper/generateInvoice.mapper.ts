@@ -52,7 +52,7 @@ const mapGenerateInvoice = input => ({
   invoice_line_items_attributes: input.invoiceLineItems.map(ilt => ({
     name: ilt.name,
     description: ilt.description,
-    date: ilt.date,
+    date: dayjs(ilt.date).format("DD.MM.YYYY"),
     rate: ilt.rate,
     quantity: ilt.quantity,
     timesheet_entry_id: ilt.timesheet_entry_id,
