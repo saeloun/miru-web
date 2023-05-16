@@ -184,9 +184,13 @@ const EmploymentDetails = () => {
 
   const handleDatePicker = date => {
     setShowDatePicker({ visibility: !showDatePicker.visibility });
+    const formattedDate = dayjs(date, personalDetails.date_format).format(
+      personalDetails.date_format
+    );
+
     updateDetails("personal", {
       ...personalDetails,
-      ...{ date_of_birth: dayjs(date).format(personalDetails.date_format) },
+      ...{ date_of_birth: formattedDate },
     });
   };
 
@@ -311,6 +315,7 @@ const EmploymentDetails = () => {
               addressOptions={addressOptions}
               countries={countries}
               currentCountryDetails={currentCountryDetails}
+              dateFormat={personalDetails.date_format}
               errDetails={errDetails}
               handleDatePicker={handleDatePicker}
               handleOnChangeAddrType={handleOnChangeAddrType}
@@ -345,6 +350,7 @@ const EmploymentDetails = () => {
               addressOptions={addressOptions}
               countries={countries}
               currentCountryDetails={currentCountryDetails}
+              dateFormat={personalDetails.date_format}
               errDetails={errDetails}
               handleCancelDetails={handleCancelDetails}
               handleDatePicker={handleDatePicker}

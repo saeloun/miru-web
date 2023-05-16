@@ -43,6 +43,7 @@ const StaticPage = ({
   handleOnChangeCity,
   handlePhoneNumberChange,
   wrapperRef,
+  dateFormat,
 }) => (
   <div className="mt-4 h-full bg-miru-gray-100 px-10">
     <div className="flex border-b border-b-miru-gray-400 py-10">
@@ -124,12 +125,7 @@ const StaticPage = ({
               label="Date of Birth"
               name="date_of_birth"
               type="text"
-              value={
-                personalDetails.date_of_birth &&
-                dayjs(personalDetails.date_of_birth).format(
-                  personalDetails.date_format
-                )
-              }
+              value={personalDetails.date_of_birth || ""}
               onChange={e => {
                 updateBasicDetails(e.target.value, "date_of_birth", false);
               }}
@@ -142,11 +138,12 @@ const StaticPage = ({
           </div>
           {showDatePicker.visibility && (
             <CustomDatePicker
+              dateFormat={dateFormat}
               handleChange={e => handleDatePicker(e, true)}
               date={
                 personalDetails.date_of_birth
-                  ? new Date(personalDetails.date_of_birth)
-                  : null
+                  ? personalDetails.date_of_birth
+                  : dayjs()
               }
             />
           )}
