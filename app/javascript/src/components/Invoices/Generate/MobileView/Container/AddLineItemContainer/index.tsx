@@ -191,13 +191,7 @@ const AddLineItemContainer = ({
   };
 
   const handleSubmitForm = (values: any) => {
-    if (
-      values.name &&
-      values.description &&
-      values.date &&
-      values.quantity &&
-      values.rate
-    ) {
+    if (values.name && values.description && values.rate) {
       editItem.id || editItem.timesheet_entry_id
         ? handleEdit()
         : handleAddLineItem(values);
@@ -334,7 +328,10 @@ const AddLineItemContainer = ({
                     name="description"
                     rows={5}
                     value={description}
-                    onChange={e => setDescription(e.target.value)}
+                    onChange={e => {
+                      setDescription(e.target.value);
+                      setFieldValue("description", e.target.value);
+                    }}
                   />
                   <InputErrors
                     fieldErrors={errors.description}
