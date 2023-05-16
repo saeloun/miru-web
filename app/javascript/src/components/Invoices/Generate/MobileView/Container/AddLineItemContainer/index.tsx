@@ -424,7 +424,7 @@ const AddLineItemContainer = ({
                     className="ml-2 flex w-1/2 items-center justify-center px-4 py-2"
                     disabled={disableBtn(values, errors)}
                     style="primary"
-                    onClick={handleSubmitForm}
+                    onClick={() => handleSubmitForm(values)}
                   >
                     <FloppyDiskIcon
                       className="text-white"
@@ -442,7 +442,7 @@ const AddLineItemContainer = ({
                   disabled={disableBtn(values, errors)}
                   style="primary"
                   type="submit"
-                  onClick={handleSubmitForm}
+                  onClick={() => handleSubmitForm(values)}
                 >
                   Add Line Item
                 </Button>
