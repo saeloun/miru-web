@@ -80,11 +80,11 @@ const EditInvoice = () => {
         issue_date: dayjs(
           issueDate || invoiceDetails.issueDate,
           invoiceDetails.company.dateFormat
-        ).format(invoiceDetails.company.dateFormat),
+        ).format("DD.MM.YYYY"),
         due_date: dayjs(
           dueDate || invoiceDetails.dueDate,
           invoiceDetails.company.dateFormat
-        ).format(invoiceDetails.company.dateFormat),
+        ).format("DD.MM.YYYY"),
         amount_due: amountDue,
         amount_paid: amountPaid,
         amount,
@@ -92,6 +92,7 @@ const EditInvoice = () => {
         tax: tax || invoiceDetails.tax,
         client_id: selectedClient.value,
         invoice_line_items_attributes: generateInvoiceLineItems(
+          invoiceDetails.company.dateFormat,
           selectedLineItems,
           manualEntryArr
         ),

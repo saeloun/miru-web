@@ -25,7 +25,7 @@ const ManualEntry = ({
   dateFormat,
 }) => {
   const [name, setName] = useState<string>("");
-  const [date, setDate] = useState<string>("");
+  const [date, setDate] = useState<any>(dayjs().format(dateFormat));
   const [description, setDescription] = useState<string>("");
   const [rate, setRate] = useState<number>(0);
   const [quantity, setQuantity] = useState<any>(0);
@@ -41,7 +41,7 @@ const ManualEntry = ({
       ...lineItem,
       id: manualEntryArr.length + 1,
       name,
-      date: dayjs(date, "DD-MM-YYYY").format("YYYY-MM-DD"),
+      date: dayjs(date, dateFormat).format("YYYY-MM-DD"),
       description,
       rate,
       quantity,

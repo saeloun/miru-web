@@ -72,6 +72,7 @@ const Container = ({
       issueDate,
       dueDate,
       invoiceLineItems: generateInvoiceLineItems(
+        dateFormat,
         selectedLineItems,
         manualEntryArr
       ),
