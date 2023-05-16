@@ -191,11 +191,9 @@ const AddLineItemContainer = ({
   };
 
   const handleSubmitForm = (values: any) => {
-    if (values.name && values.description && values.rate) {
-      editItem.id || editItem.timesheet_entry_id
-        ? handleEdit()
-        : handleAddLineItem(values);
-    }
+    editItem.id || editItem.timesheet_entry_id
+      ? handleEdit()
+      : handleAddLineItem(values);
   };
 
   useOutsideClick(
@@ -270,7 +268,7 @@ const AddLineItemContainer = ({
         initialValues={addEditFormInitialValues(editItem)}
         validateOnBlur={false}
         validationSchema={addEditFormSchema}
-        onSubmit={handleSubmitForm}
+        onSubmit={() => {}} //eslint-disable-line
       >
         {(props: FormikProps<AddLineItemFormValues>) => {
           const { touched, errors, values, setFieldValue, setFieldError } =
@@ -426,6 +424,7 @@ const AddLineItemContainer = ({
                     className="ml-2 flex w-1/2 items-center justify-center px-4 py-2"
                     disabled={disableBtn(values, errors)}
                     style="primary"
+                    onClick={handleSubmitForm}
                   >
                     <FloppyDiskIcon
                       className="text-white"
@@ -442,6 +441,8 @@ const AddLineItemContainer = ({
                   className="w-full p-2 text-center text-base font-bold"
                   disabled={disableBtn(values, errors)}
                   style="primary"
+                  type="submit"
+                  onClick={handleSubmitForm}
                 >
                   Add Line Item
                 </Button>
