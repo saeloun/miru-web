@@ -53,8 +53,8 @@ const EditInvoice = () => {
       const { data } = await invoicesApi.editInvoice(params.id);
       setInvoiceDetails(data);
       setReference(data.reference);
-      setIssueDate(Date.parse(data.issueDate));
-      setDueDate(Date.parse(data.dueDate));
+      setIssueDate(data.issueDate);
+      setDueDate(data.dueDate);
       setSelectedLineItems(unmapLineItems(data.invoiceLineItems));
       setAmount(data.amount);
       setInvoiceNumber(data.invoiceNumber);
@@ -77,10 +77,14 @@ const EditInvoice = () => {
       const res = await invoicesApi.updateInvoice(invoiceDetails.id, {
         invoice_number: invoiceNumber || invoiceDetails.invoiceNumber,
         reference: reference || invoiceDetails.reference,
-        issue_date: dayjs(issueDate || invoiceDetails.issueDate).format(
-          "DD.MM.YYYY"
-        ),
-        due_date: dayjs(dueDate || invoiceDetails.dueDate).format("DD.MM.YYYY"),
+        issue_date: dayjs(
+          issueDate || invoiceDetails.issueDate,
+          invoiceDetails.company.dateFormat
+        ).format(invoiceDetails.company.dateFormat),
+        due_date: dayjs(
+          dueDate || invoiceDetails.dueDate,
+          invoiceDetails.company.dateFormat
+        ).format(invoiceDetails.company.dateFormat),
         amount_due: amountDue,
         amount_paid: amountPaid,
         amount,
