@@ -268,7 +268,7 @@ const AddLineItemContainer = ({
         initialValues={addEditFormInitialValues(editItem)}
         validateOnBlur={false}
         validationSchema={addEditFormSchema}
-        onSubmit={handleSubmitForm}
+        onSubmit={() => {}} //eslint-disable-line
       >
         {(props: FormikProps<AddLineItemFormValues>) => {
           const { touched, errors, values, setFieldValue, setFieldError } =
@@ -326,7 +326,10 @@ const AddLineItemContainer = ({
                     name="description"
                     rows={5}
                     value={description}
-                    onChange={e => setDescription(e.target.value)}
+                    onChange={e => {
+                      setDescription(e.target.value);
+                      setFieldValue("description", e.target.value);
+                    }}
                   />
                   <InputErrors
                     fieldErrors={errors.description}
@@ -421,6 +424,7 @@ const AddLineItemContainer = ({
                     className="ml-2 flex w-1/2 items-center justify-center px-4 py-2"
                     disabled={disableBtn(values, errors)}
                     style="primary"
+                    onClick={() => handleSubmitForm(values)}
                   >
                     <FloppyDiskIcon
                       className="text-white"
@@ -437,6 +441,8 @@ const AddLineItemContainer = ({
                   className="w-full p-2 text-center text-base font-bold"
                   disabled={disableBtn(values, errors)}
                   style="primary"
+                  type="submit"
+                  onClick={() => handleSubmitForm(values)}
                 >
                   Add Line Item
                 </Button>
