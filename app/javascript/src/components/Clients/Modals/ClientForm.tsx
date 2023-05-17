@@ -401,9 +401,7 @@ const ClientForm = ({
                     setCurrentCityList(cities);
                   }}
                   options={updatedStates(
-                    currentCountryDetails.code
-                      ? currentCountryDetails.code
-                      : "US"
+                    values.country.code ? values.country.code : "US"
                   )}
                 />
               </div>
