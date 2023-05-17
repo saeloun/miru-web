@@ -1,10 +1,11 @@
 import React, { Fragment, useEffect, useState } from "react";
 
+import dayjs from "dayjs";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { Toastr } from "StyledComponents";
 
 import companiesApi from "apis/companies";
 import invoicesApi from "apis/invoices";
-import Toastr from "common/Toastr";
 import { useUserContext } from "context/UserContext";
 import { mapGenerateInvoice, unmapGenerateInvoice } from "mapper/mappedIndex";
 import { sendGAPageView } from "utils/googleAnalytics";
@@ -28,12 +29,10 @@ const GenerateInvoices = () => {
   const [amountDue, setAmountDue] = useState<any>(0);
   const [discount, setDiscount] = useState<any>(0);
   const [tax, setTax] = useState<any>(0);
-  const [issueDate, setIssueDate] = useState(new Date());
-  const today = new Date();
+  const [issueDate, setIssueDate] = useState(dayjs());
+  const today = dayjs();
   const [searchParams] = useSearchParams();
-  const [dueDate, setDueDate] = useState(
-    today.setMonth(issueDate.getMonth() + 1)
-  );
+  const [dueDate, setDueDate] = useState(dayjs(today).add(1, "month"));
   const [selectedOption, setSelectedOption] = useState<any>([]);
   const [showSendInvoiceModal, setShowSendInvoiceModal] =
     useState<boolean>(false);
@@ -86,13 +85,15 @@ const GenerateInvoices = () => {
       dueDate,
       invoiceLineItems: generateInvoiceLineItems(
         selectedOption,
-        manualEntryArr
+        manualEntryArr,
+        invoiceDetails.companyDetails.date_format
       ),
       amount,
       amountDue,
       amountPaid,
       discount,
       tax,
+      dateFormat: invoiceDetails.companyDetails.date_format,
       setShowSendInvoiceModal,
     });
 

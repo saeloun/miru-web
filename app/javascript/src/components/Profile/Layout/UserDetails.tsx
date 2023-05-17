@@ -3,10 +3,9 @@
 import React, { useEffect, useState } from "react";
 
 import { DeleteIcon, EditIcon, ImageIcon, UserAvatarSVG } from "miruIcons";
-import { MobileMoreOptions, Tooltip } from "StyledComponents";
+import { MobileMoreOptions, Toastr, Tooltip } from "StyledComponents";
 
 import profileApi from "apis/profile";
-import Toastr from "common/Toastr";
 import { useProfile } from "components/Profile/context/EntryContext";
 import { teamsMapper } from "mapper/teams.mapper";
 

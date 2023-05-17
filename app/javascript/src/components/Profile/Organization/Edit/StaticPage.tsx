@@ -158,7 +158,7 @@ export const StaticPage = ({
                 Phone number
               </label>
             </div>
-            {errDetails.companyNameErr && (
+            {errDetails.companyPhoneErr && (
               <ErrorSpan
                 className="text-xs text-red-600"
                 message={errDetails.companyPhoneErr}
@@ -206,6 +206,12 @@ export const StaticPage = ({
             value={companyAddr.addressLine2}
             onChange={e => handleAddrChange(e, "addressLine2")}
           />
+          {errDetails.addressLine2Err && (
+            <ErrorSpan
+              className="text-xs text-red-600"
+              message={errDetails.addressLine2Err}
+            />
+          )}
         </div>
         <div className="flex flex-row pt-2 pb-1">
           <div className="flex w-1/2 flex-col px-2 pb-3 text-sm font-medium">

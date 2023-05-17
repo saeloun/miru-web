@@ -63,6 +63,7 @@ const StaticPage = ({
   setShowPassword,
   handleConfirmPasswordChange,
   setShowConfirmPassword,
+  dateFormat,
 }) => (
   <div className="mt-4 h-full bg-miru-gray-100 px-10">
     <div className="flex border-b border-b-miru-gray-400 py-10">
@@ -80,7 +81,7 @@ const StaticPage = ({
               label="First name"
               name="first_name"
               type="text"
-              value={personalDetails.first_name}
+              value={personalDetails.first_name || ""}
               inputBoxClassName={`${inputClass} ${
                 errDetails.first_name_err
                   ? "border-red-600"
@@ -108,7 +109,7 @@ const StaticPage = ({
               label="Last name"
               name="last_name"
               type="text"
-              value={personalDetails.last_name}
+              value={personalDetails.last_name || ""}
               inputBoxClassName={`${inputClass} ${
                 errDetails.last_name_err
                   ? "border-red-600"
@@ -134,9 +135,9 @@ const StaticPage = ({
         <div className="flex w-1/2 flex-col py-3" ref={wrapperRef}>
           <div
             className="field relative flex w-full flex-col px-2"
-            onClick={() =>
-              setShowDatePicker({ visibility: !showDatePicker.visibility })
-            }
+            onClick={() => {
+              setShowDatePicker({ visibility: !showDatePicker.visibility });
+            }}
           >
             <CustomInputText
               disabled
@@ -145,12 +146,7 @@ const StaticPage = ({
               label="Date of Birth"
               name="date_of_birth"
               type="text"
-              value={
-                personalDetails.date_of_birth &&
-                dayjs(personalDetails.date_of_birth).format(
-                  personalDetails.date_format
-                )
-              }
+              value={personalDetails.date_of_birth || ""}
               onChange={e => {
                 updateBasicDetails(e.target.value, "date_of_birth", false);
               }}
@@ -163,11 +159,12 @@ const StaticPage = ({
           </div>
           {showDatePicker.visibility && (
             <CustomDatePicker
+              dateFormat={dateFormat}
               handleChange={e => handleDatePicker(e, true)}
               date={
                 personalDetails.date_of_birth
-                  ? new Date(personalDetails.date_of_birth)
-                  : null
+                  ? personalDetails.date_of_birth
+                  : dayjs()
               }
             />
           )}
@@ -211,7 +208,7 @@ const StaticPage = ({
               label="Email ID (Personal)"
               name="email_id"
               type="email"
-              value={personalDetails.email_id}
+              value={personalDetails.email_id || ""}
               inputBoxClassName={`${inputClass} ${
                 errDetails.email_id_err
                   ? "border-red-600"

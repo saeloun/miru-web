@@ -2,9 +2,9 @@ import React, { Fragment, useEffect, useState } from "react";
 
 import dayjs from "dayjs";
 import { useParams, useNavigate } from "react-router-dom";
+import { Toastr } from "StyledComponents";
 
 import invoicesApi from "apis/invoices";
-import Toastr from "common/Toastr";
 import { useUserContext } from "context/UserContext";
 import { unmapLineItems } from "mapper/mappedIndex";
 import { sendGAPageView } from "utils/googleAnalytics";
@@ -53,8 +53,8 @@ const EditInvoice = () => {
       const { data } = await invoicesApi.editInvoice(params.id);
       setInvoiceDetails(data);
       setReference(data.reference);
-      setIssueDate(Date.parse(data.issueDate));
-      setDueDate(Date.parse(data.dueDate));
+      setIssueDate(data.issueDate);
+      setDueDate(data.dueDate);
       setSelectedLineItems(unmapLineItems(data.invoiceLineItems));
       setAmount(data.amount);
       setInvoiceNumber(data.invoiceNumber);
@@ -77,10 +77,17 @@ const EditInvoice = () => {
       const res = await invoicesApi.updateInvoice(invoiceDetails.id, {
         invoice_number: invoiceNumber || invoiceDetails.invoiceNumber,
         reference: reference || invoiceDetails.reference,
-        issue_date: dayjs(issueDate || invoiceDetails.issueDate).format(
-          "DD.MM.YYYY"
-        ),
-        due_date: dayjs(dueDate || invoiceDetails.dueDate).format("DD.MM.YYYY"),
+        issue_date:
+          invoiceDetails.company.dateFormat == "DD-MM-YYYY"
+            ? issueDate || invoiceDetails.issueDate
+            : dayjs(
+                issueDate || invoiceDetails.issueDate,
+                invoiceDetails.company.dateFormat
+              ).format("DD-MM-YYYY"),
+        due_date: dayjs(
+          dueDate || invoiceDetails.dueDate,
+          invoiceDetails.company.dateFormat
+        ).format("DD-MM-YYYY"),
         amount_due: amountDue,
         amount_paid: amountPaid,
         amount,
@@ -89,8 +96,21 @@ const EditInvoice = () => {
         client_id: selectedClient.value,
         invoice_line_items_attributes: generateInvoiceLineItems(
           selectedLineItems,
-          manualEntryArr
-        ),
+          manualEntryArr,
+          invoiceDetails.company.dateFormat
+        ).map(ilt => ({
+          id: ilt.id,
+          name: ilt.name,
+          description: ilt.description,
+          date:
+            invoiceDetails.company.dateFormat == "DD-MM-YYYY"
+              ? ilt.date
+              : dayjs(ilt.date).format("DD-MM-YYYY"),
+          rate: ilt.rate,
+          quantity: ilt.quantity,
+          timesheet_entry_id: ilt.timesheet_entry_id,
+          _destroy: ilt._destroy,
+        })),
       });
 
       return res;

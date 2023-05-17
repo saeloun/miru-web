@@ -8,7 +8,6 @@ import {
   DeleteIcon,
 } from "miruIcons";
 import { useNavigate } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
 import { Avatar, MobileMoreOptions, Tooltip } from "StyledComponents";
 
 import clientApi from "apis/clients";
@@ -18,7 +17,6 @@ import ChartBar from "common/ChartBar";
 import EmptyStates from "common/EmptyStates";
 import withLayout from "common/Mobile/HOC/withLayout";
 import Table from "common/Table";
-import { TOASTER_DURATION } from "constants/index";
 import { useUserContext } from "context/UserContext";
 import { unmapClientList } from "mapper/mappedIndex";
 import { sendGAPageView } from "utils/googleAnalytics";
@@ -73,7 +71,7 @@ const getTableData = (
   } else if (clients && !isDesktop) {
     return clients.map(client => ({
       col1: (
-        <div className="table__cell text-base capitalize">
+        <div className="text-base capitalize">
           <Avatar classNameImg="mr-4 w-8 h-8" url={client.logo} />
           <span
             className="my-auto overflow-hidden truncate whitespace-nowrap text-sm font-medium capitalize text-miru-dark-purple-1000"
@@ -278,7 +276,6 @@ const Clients = ({ isAdminUser }) => {
 
   const ClientsLayout = () => (
     <>
-      <ToastContainer autoClose={TOASTER_DURATION} />
       {clientData.length > 0 && (
         <Header
           isAdminUser={isAdminUser}
@@ -329,7 +326,7 @@ const Clients = ({ isAdminUser }) => {
             totalMinutes={totalMinutes}
           />
         )}
-        <div className="mx-auto flex w-full flex-col px-4">
+        <div className="mx-auto flex w-full flex-col lg:px-4">
           <div className="-my-2 w-full lg:-mx-8">
             <div className="mx-auto inline-block min-w-full py-2 align-middle lg:px-8">
               <div className="overflow-hidden">

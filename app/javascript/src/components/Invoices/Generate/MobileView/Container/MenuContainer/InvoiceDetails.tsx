@@ -38,14 +38,15 @@ const InvoiceDetails = ({
   const DueDateWrapper = useRef(null);
   const DateOfIssueWrapper = useRef(null);
 
-  const getIssuedDate = dayjs(issueDate).format(dateFormat);
-  const getDueDate = dayjs(dueDate).format(dateFormat);
+  const getIssuedDate = dayjs(issueDate, dateFormat).format(dateFormat);
+  const getDueDate = dayjs(dueDate, dateFormat).format(dateFormat);
   const { clientList, companyClientList } = invoiceDetails;
   const handleDatePickerChange = date => {
     setIssueDate(date);
     setShowDateOfIssuePicker(false);
-    const newDueDate = new Date(date);
-    setDueDate(new Date(newDueDate.setMonth(newDueDate.getMonth() + 1)));
+    const parsedDate = dayjs(date, dateFormat);
+    const newDueDate = parsedDate.add(1, "month").format(dateFormat);
+    setDueDate(newDueDate);
   };
 
   const handleDueDatePicker = date => {
@@ -181,11 +182,12 @@ const InvoiceDetails = ({
                     style={{ background: "rgba(29, 26, 49,0.6)" }}
                   >
                     <div
-                      className="absolute inset-0 m-auto h-72 w-1/2"
+                      className="absolute inset-0 m-auto h-72 w-3/4"
                       ref={DateOfIssueWrapper}
                     >
                       <CustomDatePicker
                         date={issueDate}
+                        dateFormat={dateFormat}
                         handleChange={handleDatePickerChange}
                         setVisibility={setShowDateOfIssuePicker}
                         wrapperRef={DateOfIssueWrapper}
@@ -223,11 +225,12 @@ const InvoiceDetails = ({
                     style={{ background: "rgba(29, 26, 49,0.6)" }}
                   >
                     <div
-                      className="absolute inset-0 m-auto h-72 w-1/2"
+                      className="absolute inset-0 m-auto h-72 w-3/4"
                       ref={DueDateWrapper}
                     >
                       <CustomDatePicker
                         date={dueDate}
+                        dateFormat={dateFormat}
                         handleChange={handleDueDatePicker}
                         setVisibility={setShowDueDatePicker}
                         wrapperRef={DueDateWrapper}
