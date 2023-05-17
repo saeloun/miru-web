@@ -58,16 +58,8 @@ const ClientForm = ({
   setApiError,
   setShowEditDialog,
 }: IClientForm) => {
-  const initialSelectValue = {
-    label: "",
-    value: "",
-    code: "",
-  };
   const [fileUploadError, setFileUploadError] = useState<string>("");
   const [countries, setCountries] = useState([]);
-  const [currentCountryDetails, setCurrentCountryDetails] =
-    useState(initialSelectValue);
-  const [currentCityList, setCurrentCityList] = useState([]);
 
   const assignCountries = async allCountries => {
     const countryData = await allCountries.map(country => ({
@@ -90,6 +82,24 @@ const ClientForm = ({
       code: state.isoCode,
       ...state,
     }));
+
+  const updatedCities = values => {
+    const allStates = State.getAllStates();
+    const currentCity = allStates.filter(
+      state => state.name == values.state.code
+    );
+
+    const cities = City.getCitiesOfState(
+      values.country.code,
+      currentCity[0].isoCode
+    ).map(city => ({
+      label: city.name,
+      value: city.name,
+      ...city,
+    }));
+
+    return cities;
+  };
 
   const onLogoChange = e => {
     const file = e.target.files[0];
@@ -373,7 +383,6 @@ const ClientForm = ({
                   options={countries}
                   value={values.country.value ? values.country : null}
                   handleOnChange={e => {
-                    setCurrentCountryDetails(e);
                     setFieldValue("country", e);
                     setFieldValue("state", "");
                     setFieldValue("city", "");
@@ -390,15 +399,7 @@ const ClientForm = ({
                   value={values.state ? values.state : null}
                   handleOnChange={state => {
                     setFieldValue("state", state);
-                    const cities = City.getCitiesOfState(
-                      currentCountryDetails.code,
-                      state.code
-                    ).map(city => ({
-                      label: city.name,
-                      value: city.name,
-                      ...city,
-                    }));
-                    setCurrentCityList(cities);
+                    updatedCities(values);
                   }}
                   options={updatedStates(
                     values.country.code ? values.country.code : "US"
@@ -414,7 +415,7 @@ const ClientForm = ({
                   isErr={!!errors.city && touched.city}
                   label="City"
                   name="city"
-                  options={currentCityList}
+                  options={updatedCities(values)}
                   value={values.city.value ? values.city : null}
                 />
               </div>
