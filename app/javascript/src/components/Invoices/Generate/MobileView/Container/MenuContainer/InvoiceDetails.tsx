@@ -182,7 +182,7 @@ const InvoiceDetails = ({
                     style={{ background: "rgba(29, 26, 49,0.6)" }}
                   >
                     <div
-                      className="absolute inset-0 m-auto h-72 w-1/2"
+                      className="absolute inset-0 m-auto h-72 w-3/4"
                       ref={DateOfIssueWrapper}
                     >
                       <CustomDatePicker
@@ -225,7 +225,7 @@ const InvoiceDetails = ({
                     style={{ background: "rgba(29, 26, 49,0.6)" }}
                   >
                     <div
-                      className="absolute inset-0 m-auto h-72 w-1/2"
+                      className="absolute inset-0 m-auto h-72 w-3/4"
                       ref={DueDateWrapper}
                     >
                       <CustomDatePicker
