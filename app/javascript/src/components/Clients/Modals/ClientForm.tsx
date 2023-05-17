@@ -63,9 +63,9 @@ const ClientForm = ({
 
   const assignCountries = async allCountries => {
     const countryData = await allCountries.map(country => ({
-      value: country.isoCode,
+      value: country?.isoCode && country.isoCode,
       label: country.name,
-      code: country.isoCode,
+      code: country?.isoCode && country?.isoCode,
     }));
     setCountries(countryData);
   };
@@ -79,19 +79,19 @@ const ClientForm = ({
     State.getStatesOfCountry(countryCode).map(state => ({
       label: state.name,
       value: state.name,
-      code: state.isoCode,
+      code: state?.isoCode && state.isoCode,
       ...state,
     }));
 
   const updatedCities = values => {
     const allStates = State.getAllStates();
     const currentCity = allStates.filter(
-      state => state.name == values.state.code
+      state => state.name == values.state.label
     );
 
     const cities = City.getCitiesOfState(
       values.country.code,
-      currentCity[0].isoCode
+      currentCity[0] && currentCity[0].isoCode
     ).map(city => ({
       label: city.name,
       value: city.name,
@@ -399,6 +399,8 @@ const ClientForm = ({
                   value={values.state ? values.state : null}
                   handleOnChange={state => {
                     setFieldValue("state", state);
+                    setFieldValue("city", "");
+                    setFieldValue("zipcode", "");
                     updatedCities(values);
                   }}
                   options={updatedStates(
