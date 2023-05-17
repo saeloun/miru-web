@@ -168,16 +168,9 @@ const Invoices = () => {
       const res = await PaymentsProviders.get();
       const paymentsProviders = res.data.paymentsProviders;
       const stripe = paymentsProviders.find(p => p.name === "stripe");
-      // setIsStripeConnected(!!stripe && stripe.connected);
       setIsStripeEnabled(!!stripe && stripe.enabled);
-      // setStripeAcceptedPaymentMethods(
-      //   !!stripe && stripe.acceptedPaymentMethods
-      // );
-      // !!stripe && setStripeSettings(stripe);
-      // setStatus(PaymentSettingsStatus.SUCCESS);
     } catch {
       Logger.log("ERROR!");
-      // setStatus(PaymentSettingsStatus.ERROR);
     }
   };
 

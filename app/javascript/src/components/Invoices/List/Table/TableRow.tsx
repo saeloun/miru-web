@@ -177,8 +177,8 @@ const TableRow = ({
         )}
         {!isStripeEnabled && showConnectPaymentDialog && (
           <ConnectPaymentGateway
-            setIsSending={setIsSending}
             setShowConnectPaymentDialog={setShowConnectPaymentDialog}
+            showConnectPaymentDialog={showConnectPaymentDialog}
           />
         )}
         {isSending && !isDesktop && (

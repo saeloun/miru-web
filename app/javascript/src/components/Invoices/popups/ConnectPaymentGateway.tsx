@@ -1,56 +1,50 @@
 import React from "react";
 
+import { XIcon } from "miruIcons";
 import { useNavigate } from "react-router-dom";
+import { Modal } from "StyledComponents";
 
 const ConnectPaymentGateway = ({
   setShowConnectPaymentDialog,
-  setIsSending,
+  showConnectPaymentDialog,
 }) => {
   const navigate = useNavigate();
 
   return (
-    <div className="flex items-center justify-center px-4">
-      <div
-        className="fixed inset-0 top-0 left-0 right-0 bottom-0 z-50 flex items-center justify-center overflow-auto"
-        style={{
-          backgroundColor: "rgba(29, 26, 49, 0.6)",
-        }}
-      >
-        <div className="relative flex h-full w-full items-center justify-center px-4">
-          <div className="modal-width min-w-0 transform rounded-lg bg-white px-6 pb-6 shadow-xl transition-all sm:min-w-400 sm:max-w-md sm:align-middle">
-            <div className="my-8 flex-col">
-              <h6 className="mb-2 text-2xl font-bold">No payment gateway</h6>
-              <p className="mt-2 font-normal">
-                No payment gateways are connected. Clients won't be able to make
-                a payment against the invoice.
-              </p>
-            </div>
-            <div className="flex justify-between">
-              <button
-                className="button__bg_transparent"
-                onClick={e => {
-                  e.stopPropagation();
-                  setShowConnectPaymentDialog(false);
-                  setIsSending(true);
-                }}
-              >
-                SEND INVOICE
-              </button>
-              <button
-                className="button__bg_purple"
-                onClick={e => {
-                  e.stopPropagation();
-                  setShowConnectPaymentDialog(false);
-                  navigate("/profile/edit/payment");
-                }}
-              >
-                Connect payment
-              </button>
-            </div>
-          </div>
-        </div>
+    <Modal
+      customStyle="sm:my-8 sm:w-full sm:max-w-lg sm:align-middle"
+      isOpen={showConnectPaymentDialog}
+      onClose={() => setShowConnectPaymentDialog(false)}
+    >
+      <div className="mt-2 mb-6 flex items-center justify-between">
+        <h6 className="form__title">No payment gateway connected</h6>
+        <button
+          className="text-miru-gray-1000"
+          type="button"
+          onClick={() => setShowConnectPaymentDialog(false)}
+        >
+          <XIcon size={16} weight="bold" />
+        </button>
       </div>
-    </div>
+      <div className="my-8 flex-col">
+        <p className="mt-2 font-normal">
+          No payment gateways are connected. Clients won't be able to make a
+          payment against the invoice.
+        </p>
+      </div>
+      <div className="text-center">
+        <button
+          className="button__bg_purple"
+          onClick={e => {
+            e.stopPropagation();
+            setShowConnectPaymentDialog(false);
+            navigate("/profile/edit/payment");
+          }}
+        >
+          Connect payment
+        </button>
+      </div>
+    </Modal>
   );
 };
 
