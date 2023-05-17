@@ -42,7 +42,7 @@ const EditClient = ({ setShowEditDialog, client }: IEditClient) => {
           backgroundColor: "rgba(29, 26, 49, 0.6)",
         }}
       >
-        <div className="relative h-auto w-full px-4 md:flex md:items-center md:justify-center">
+        <div className="relative h-full w-full px-4 md:flex md:items-center md:justify-center">
           <div
             className="modal-width transform rounded-lg bg-white px-6 pb-6 shadow-xl transition-all sm:max-w-md sm:align-middle xl:overflow-visible"
             ref={wrapperRef}
