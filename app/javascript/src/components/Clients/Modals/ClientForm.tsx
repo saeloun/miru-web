@@ -375,15 +375,19 @@ const ClientForm = ({
                   handleOnChange={e => {
                     setCurrentCountryDetails(e);
                     setFieldValue("country", e);
+                    setFieldValue("state", "");
+                    setFieldValue("city", "");
+                    setFieldValue("zipcode", "");
                   }}
                 />
               </div>
               <div className="flex w-1/2 flex-col pl-2">
                 <CustomReactSelect
+                  id="state"
                   isErr={!!errors.state && touched.state}
                   label="State"
                   name="state"
-                  value={values.state.value ? values.state : null}
+                  value={values.state ? values.state : null}
                   handleOnChange={state => {
                     setFieldValue("state", state);
                     const cities = City.getCitiesOfState(
@@ -408,7 +412,7 @@ const ClientForm = ({
               <div className="flex w-1/2 flex-col pr-2" id="city">
                 <CustomReactSelect
                   handleOnChange={city => setFieldValue("city", city)}
-                  id="city_select"
+                  id="city"
                   isErr={!!errors.city && touched.city}
                   label="City"
                   name="city"
