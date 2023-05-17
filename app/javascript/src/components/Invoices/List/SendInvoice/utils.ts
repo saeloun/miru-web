@@ -18,7 +18,10 @@ export const emailBody = (invoice: any): string => {
     invoice.company.baseCurrency,
     invoice.amount
   );
-  const dueDate = dayjs(invoice.dueDate).format(invoice.company.dateFormat);
+
+  const dueDate = dayjs(invoice.dueDate, invoice.company.dateFormat).format(
+    invoice.company.dateFormat
+  );
 
   return `${invoice.company.name} has sent you an invoice (${invoice.invoiceNumber}) for ${formattedAmount} that's due on ${dueDate}.`;
 };
