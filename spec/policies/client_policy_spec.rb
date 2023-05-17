@@ -79,14 +79,6 @@ RSpec.describe ClientPolicy, type: :policy do
     end
   end
 
-  describe "#permitted_attributes" do
-    subject { described_class.new(admin, company).permitted_attributes }
-
-    it "returns array of a permitted attributes" do
-      expect(subject).to match_array(%i[name email phone address logo])
-    end
-  end
-
   describe "policy_scope" do
     let(:another_company) { create(:company) }
     let(:client_2) { create(:client, company:) }

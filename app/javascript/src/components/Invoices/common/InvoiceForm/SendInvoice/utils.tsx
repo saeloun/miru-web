@@ -19,7 +19,7 @@ export const emailBody = (invoice: any): string => {
     invoice.amount
   );
 
-  const dueDate = dayjs(invoice.dueDate).format(
+  const dueDate = dayjs(invoice.dueDate, invoice.company.dateFormat).format(
     invoice.company.dateFormat || "DD.MM.YYYY"
   );
 

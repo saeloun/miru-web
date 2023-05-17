@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 
-import ReactPaginate from "react-paginate";
+import { useSearchParams } from "react-router-dom";
 
 import reportsApi from "apis/reports";
+import Pagination from "common/Pagination/Pagination";
 import { useUserContext } from "context/UserContext";
 import { sendGAPageView } from "utils/googleAnalytics";
 
@@ -44,11 +45,17 @@ const TimeEntryReport = () => {
   const [showNavFilters, setShowNavFilters] = useState<boolean>(false);
   const [filterCounter, setFilterCounter] = useState(0);
   const [selectedInput, setSelectedInput] = useState<string>("from-input");
+  const [searchParams] = useSearchParams();
+  const [params, setParams] = useState<any>({
+    page: searchParams.get("page") || 1,
+    query: searchParams.get("query") || "",
+  });
+
   const [paginationDetails, setPaginationDetails] = useState({
     pages: 0,
     first: true,
-    prev: null,
-    next: 0,
+    prev: params.page - 1,
+    next: params.page,
     last: false,
   });
 
@@ -140,22 +147,24 @@ const TimeEntryReport = () => {
     link.click();
   };
 
-  const handlePageClick = async data => {
+  const handlePageClick = async page => {
     const queryParams = getQueryParams(selectedFilter);
     const sanitizedParam = queryParams.substring(1);
     const sanitizedQuery = `?${sanitizedParam}`;
-    if (data.selected > paginationDetails.prev) {
+    if (page > paginationDetails.prev) {
       const res = await reportsApi.get(
         `${sanitizedQuery}&page=${paginationDetails.next}`
       );
       setTimeEntries(res.data.reports);
       setPaginationDetails(res.data.pagy);
+      setParams({ ...params, page });
     } else {
       const res = await reportsApi.get(
         `${sanitizedQuery}&page=${paginationDetails.prev}`
       );
       setTimeEntries(res.data.reports);
       setPaginationDetails(res.data.pagy);
+      setParams({ ...params, page });
     }
   };
 
@@ -198,9 +207,23 @@ const TimeEntryReport = () => {
           type={TIME_ENTRY_REPORT_PAGE}
         />
         {isDesktop ? (
-          <Container selectedFilter={selectedFilter} />
+          <>
+            <Container selectedFilter={selectedFilter} />
+            <Pagination
+              isReport
+              handleClick={handlePageClick}
+              pagy={paginationDetails}
+              params={params}
+              setParams={setParams}
+            />
+          </>
         ) : (
-          <TimeEntryReportMobileView />
+          <TimeEntryReportMobileView
+            handlePageClick={handlePageClick}
+            paginationDetails={paginationDetails}
+            params={params}
+            setParams={setParams}
+          />
         )}
         {isFilterVisible && (
           <FilterSideBar
@@ -213,20 +236,6 @@ const TimeEntryReport = () => {
             setSelectedInput={setSelectedInput}
           />
         )}
-        <ReactPaginate
-          activeClassName="bg-miru-han-purple-400"
-          breakLabel="..."
-          className="flex justify-center"
-          nextClassName="ml-3"
-          nextLabel="Next >"
-          pageClassName="page-item"
-          pageCount={paginationDetails.pages}
-          pageLinkClassName="px-2 py-1 border border-solid border-miru-han-purple-1000"
-          pageRangeDisplayed={5}
-          previousClassName="mr-3"
-          previousLabel="< Previous"
-          onPageChange={handlePageClick}
-        />
       </EntryContext.Provider>
     </div>
   );

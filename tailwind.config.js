@@ -5,9 +5,13 @@ module.exports = {
     container: {
       center: true,
     },
+    listStyleType: {
+      lower: "lower-alpha",
+      decimal: "decimal",
+    },
     fontSize: {
       xsm: ".5625em",
-      xxs: "0.625rem",//10px
+      xxs: "0.625rem", //10px
       xs: ".75rem",
       sm: ".875rem",
       tiny: ".875rem",
@@ -26,10 +30,12 @@ module.exports = {
       32: "2rem",
     },
     letterSpacing: {
+      2: "2px",
       widest: "0.125em",
-      semiWidest: "0.09375",//1.5px
+      semiWidest: "0.09375", //1.5px
       wider: ".05em",
       normal: "0em",
+      "xs-widest": "0.166667em", // 2px when font-size 12px
     },
     screens: {
       xsm: "380px",
@@ -42,6 +48,9 @@ module.exports = {
     extend: {
       boxShadow: {
         c1: "0px 0px 40px rgba(0, 0, 0, 0.1);",
+      },
+      lineHeight: {
+        5.5: "22px",
       },
       margin: {
         86: "342px",
@@ -62,7 +71,11 @@ module.exports = {
         352: "22rem", //352px
         480: "30rem", //480px
         18: "18%",
-        72: "72%"
+        72: "72%",
+        "1/10": "10%",
+        "1/15": "15%",
+        "1/20": "20%",
+        "1/60": "60%",
       },
       minWidth: {
         12: "12px",
@@ -79,8 +92,12 @@ module.exports = {
         304: "19rem",
         87: "5.4rem",
         88: "5.5rem",
+        "14/100": "14%",
+        "1/10": "10%",
         "1/12": "8.333%",
-        "1/15": "6.666%"
+        "1/15": "6.666%",
+        148: "592px",
+        "80v": "80vh",
       },
       minHeight: {
         "10v": "10vh",
@@ -94,6 +111,7 @@ module.exports = {
         "90v": "90vh",
         "100v": "100vh",
         24: "24px",
+        80: "80px",
       },
       maxHeight: {
         "10v": "10vh",
@@ -165,7 +183,7 @@ module.exports = {
         },
         "miru-chart-blue": {
           600: "#0E79B2",
-          1000: "#68AEAA"
+          1000: "#68AEAA",
         },
         "miru-chart-pink": {
           600: "#BF1363",
@@ -185,6 +203,8 @@ module.exports = {
         manrope: "'Manrope', serif",
       },
       spacing: {
+        0.25: "0.0625rem",
+        2.125: "0.5625rem",
         3.75: "0.9375rem",
         13: "3.125rem",
         15: "3.75rem",
@@ -205,6 +225,7 @@ module.exports = {
         129: "33rem",
         138: "34.5rem",
         160: "40rem",
+        "1/5": "20%",
       },
       padding: {
         "36/100": "36.66666%",
@@ -212,7 +233,13 @@ module.exports = {
         "30/100": "30%",
         "26/100": "26.66666%",
         "20/100": "20%",
+        "15/100": "15%",
         "10/100": "10%",
+        "2/100": "2%",
+        "1/100": "1%",
+        "10vh": "10vh",
+        "5vh": "5vh",
+        "2vh": "2vh",
       },
       zIndex: {
         "negative-1": "-1",

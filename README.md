@@ -35,7 +35,7 @@ git clone https://github.com/saeloun/miru-web.git
    your project as you `cd` into the directory follow
    [this](https://github.com/nvm-sh/nvm#deeper-shell-integration))
 
-3. Install ruby 3.2.1
+3. Install ruby 3.2.2
 
 ```
 rvm install $(cat .ruby-version)
@@ -129,7 +129,7 @@ bundle exec rake parallel:create
 # Copy Schema for new changes on branches
 bundle exec rake parallel:prepare
 
-# Run migrations if needed 
+# Run migrations if needed
 bundle exec rake parallel:migrate
 
 # Run all specs in parallel
@@ -151,51 +151,6 @@ RAILS_ENV=test bundle exec rake parallel:spec
 | Admin       | supriya@example.com     | welcome  |
 | Employee    | sam@example.com         | welcome  |
 | Book keeper | book.keeper@example.com | welcome  |
-
-## Installation of Cypress Dependencies
-
-Install the cypress dependencies using the following command:
-
-```sh
-cd cypress
-yarn install
-```
-
-## Running Cypress tests
-
-Cypress tests can be run on local, staging and production environment.
-
-To run the cypress tests on the local environment and in headless mode use the
-following command:
-
-```sh
-cd cypress
-yarn run cy:run:dev
-```
-
-To run the tests on local environment and in chrome browser use the following
-command:
-
-```sh
-cd cypress
-yarn run cy:open:dev
-```
-
-To run the tests on staging environment and in headless mode use the following
-command:
-
-```sh
-cd cypress
-yarn run cy:run:staging
-```
-
-To run the tests on staging environment and in chrome browser use the following
-command
-
-```sh
-cd cypress
-yarn run cy:open:staging
-```
 
 ## Configure Sentry:
 

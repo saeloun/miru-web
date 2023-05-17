@@ -2,28 +2,24 @@ import React, { useEffect, useState } from "react";
 
 import { cashFormatter, currencySymbol, minToHHMM } from "helpers";
 import Logger from "js-logger";
-import {
-  ArrowLeftIcon,
-  DotsThreeVerticalIcon,
-  PencilIcon,
-  TeamsIcon,
-  DeleteIcon,
-  InvoicesIcon,
-} from "miruIcons";
+import { ArrowLeftIcon, DotsThreeVerticalIcon } from "miruIcons";
 import { useParams, useNavigate } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
 import { Badge } from "StyledComponents";
 
 import projectAPI from "apis/projects";
 import AmountBoxContainer from "common/AmountBox";
 import ChartBar from "common/ChartBar";
 import Table from "common/Table";
+import { useUserContext } from "context/UserContext";
 import { unmapper } from "mapper/mappedIndex";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import EditMembersList from "./EditMembersList";
+import HeaderMenuList from "./HeadermenuList";
+import MemberListForm from "./Mobile/MemberListForm";
+import ProjectDetailsForm from "./Mobile/ProjectDetailsForm";
 
-import { TOASTER_DURATION } from "../../../constants";
+import ProjectForm from "../List/Mobile/ProjectForm";
 import AddEditProject from "../Modals/AddEditProject";
 import DeleteProject from "../Modals/DeleteProject";
 
@@ -43,6 +39,7 @@ const ProjectDetails = () => {
   const params = useParams();
   const navigate = useNavigate();
   const projectId = parseInt(params.projectId);
+  const { isDesktop } = useUserContext();
 
   const fetchProject = async (timeframe = null) => {
     try {
@@ -149,7 +146,7 @@ const ProjectDetails = () => {
   const handleAddRemoveMembers = e => {
     e?.stopPropagation();
     setShowAddMemberDialog(true);
-    handleMenuVisibility(e);
+    setIsHeaderMenuVisible(false);
   };
 
   const closeAddRemoveMembers = () => {
@@ -166,6 +163,43 @@ const ProjectDetails = () => {
     });
   };
 
+  const getMobileCurrentForm = () => {
+    if (showAddMemberDialog && !isDesktop) {
+      return (
+        <MemberListForm
+          addedMembers={project?.members}
+          closeAddRemoveMembers={closeAddRemoveMembers}
+          currencySymbol={currencySymb}
+          handleAddProjectDetails={handleAddProjectDetails}
+          projectId={projectId}
+        />
+      );
+    }
+
+    if (showProjectModal && !isDesktop) {
+      return (
+        <ProjectForm
+          editProjectData={editProjectData}
+          fetchProjects={fetchProject}
+          setEditProjectData={setEditProjectData}
+          setShowProjectModal={setShowProjectModal}
+        />
+      );
+    }
+
+    return (
+      <ProjectDetailsForm
+        handleAddRemoveMembers={handleAddRemoveMembers}
+        handleEditProject={handleEditProject}
+        handleGenerateInvoice={handleGenerateInvoice}
+        isHeaderMenuVisible={isHeaderMenuVisible}
+        project={project}
+        setIsHeaderMenuVisible={setIsHeaderMenuVisible}
+        setShowDeleteDialog={setShowDeleteDialog}
+      />
+    );
+  };
+
   const menuBackground = isHeaderMenuVisible ? "bg-miru-gray-1000" : "";
 
   const backToProjects = () => {
@@ -173,97 +207,64 @@ const ProjectDetails = () => {
   };
 
   return (
-    <>
-      <ToastContainer autoClose={TOASTER_DURATION} />
-      <div className="my-6">
-        <div className="flex min-w-0 items-center justify-between">
-          <div className="flex items-center">
-            <button
-              className="button-icon__back"
-              onClick={() => {
-                navigate("/projects");
-              }}
+    <div className="flex h-full w-full">
+      <div className="hidden flex-1 flex-col lg:flex">
+        <div className="my-6">
+          <div className="flex min-w-0 items-center justify-between">
+            <div className="flex items-center">
+              <button
+                className="button-icon__back"
+                onClick={() => {
+                  navigate("/projects");
+                }}
+              >
+                <ArrowLeftIcon color="#5b34ea" size={20} weight="bold" />
+              </button>
+              <h2 className="mr-6 py-1 text-3xl font-extrabold text-gray-900 sm:truncate sm:text-4xl">
+                {project?.name}
+              </h2>
+              {project?.is_billable && (
+                <Badge
+                  bgColor="bg-miru-han-purple-100"
+                  className="tracking-wide rounded-xl uppercase"
+                  color="text-miru-han-purple-1000"
+                  text="billable"
+                />
+              )}
+            </div>
+            <div
+              className="relative h-8"
+              onBlur={e => handleMenuVisibility(e, false)}
+              onMouseDown={e => handleMenuVisibility(e, false)}
             >
-              <ArrowLeftIcon color="#5b34ea" size={20} weight="bold" />
-            </button>
-            <h2 className="mr-6 py-1 text-3xl font-extrabold text-gray-900 sm:truncate sm:text-4xl">
-              {project?.name}
-            </h2>
-            {project?.is_billable && (
-              <Badge
-                bgColor="bg-miru-han-purple-100"
-                className="tracking-wide rounded-xl uppercase"
-                color="text-miru-han-purple-1000"
-                text="billable"
-              />
-            )}
+              <button
+                className={`menuButton__button ${menuBackground}`}
+                id="kebabMenu"
+                onClick={handleMenuVisibility}
+              >
+                <DotsThreeVerticalIcon color="#000000" size={20} />
+              </button>
+              {isHeaderMenuVisible && (
+                <ul className="menuButton__wrapper">
+                  <HeaderMenuList
+                    handleAddRemoveMembers={handleAddRemoveMembers}
+                    handleEditProject={handleEditProject}
+                    handleGenerateInvoice={handleGenerateInvoice}
+                    setIsHeaderMenuVisible={setIsHeaderMenuVisible}
+                    setShowDeleteDialog={setShowDeleteDialog}
+                  />
+                </ul>
+              )}
+            </div>
           </div>
-          <div
-            className="relative h-8"
-            onBlur={e => handleMenuVisibility(e, false)}
-            onMouseDown={e => handleMenuVisibility(e, false)}
-          >
-            <button
-              className={`menuButton__button ${menuBackground}`}
-              id="kebabMenu"
-              onClick={handleMenuVisibility}
-            >
-              <DotsThreeVerticalIcon color="#000000" size={20} />
-            </button>
-            {isHeaderMenuVisible && (
-              <ul className="menuButton__wrapper">
-                <li>
-                  <button
-                    className="menuButton__list-item"
-                    onMouseDown={handleGenerateInvoice}
-                  >
-                    <InvoicesIcon color="#5B34EA" size={16} weight="bold" />
-                    <span className="ml-3">Generate Invoice</span>
-                  </button>
-                </li>
-                <li>
-                  <button
-                    className="menuButton__list-item"
-                    onMouseDown={e => {
-                      e?.stopPropagation();
-                      handleEditProject();
-                      setIsHeaderMenuVisible(false);
-                    }}
-                  >
-                    <PencilIcon color="#5b34ea" size={16} weight="bold" />
-                    <span className="ml-3">Edit Project Details</span>
-                  </button>
-                </li>
-                <li>
-                  <button
-                    className="menuButton__list-item"
-                    onMouseDown={handleAddRemoveMembers}
-                  >
-                    <TeamsIcon color="#5b34ea" size={16} weight="bold" />
-                    <span className="ml-3">Add/Remove Team Members</span>
-                  </button>
-                </li>
-                <li>
-                  <button
-                    className="menuButton__list-item text-miru-red-400"
-                    onMouseDown={() => setShowDeleteDialog(true)}
-                  >
-                    <DeleteIcon color="#E04646" size={16} weight="bold" />
-                    <span className="ml-3">Delete Project</span>
-                  </button>
-                </li>
-              </ul>
-            )}
-          </div>
+          <p className="ml-12 mt-1 text-xs text-miru-dark-purple-400">
+            {project && project.client.name}
+          </p>
         </div>
-        <p className="ml-12 mt-1 text-xs text-miru-dark-purple-400">
-          {project && project.client.name}
-        </p>
-      </div>
-      <div className="bg-miru-gray-100 py-10 px-10">
-        <div className="flex justify-end">
-          <select
-            className="focus:outline-none
+        <div className="bg-miru-gray-100 py-10 px-10">
+          <div className="flex justify-end">
+            <select
+              className="focus:outline-none
               m-0
               border-none
               bg-transparent
@@ -274,49 +275,50 @@ const ProjectDetails = () => {
               text-miru-han-purple-1000
               transition
               ease-in-out"
-            onChange={({ target: { value } }) => setTimeframe(value)}
-          >
-            <option className="text-miru-dark-purple-600" value="week">
-              THIS WEEK
-            </option>
-            <option className="text-miru-dark-purple-600" value="month">
-              THIS MONTH
-            </option>
-            <option className="text-miru-dark-purple-600" value="year">
-              THIS YEAR
-            </option>
-          </select>
+              onChange={({ target: { value } }) => setTimeframe(value)}
+            >
+              <option className="text-miru-dark-purple-600" value="week">
+                THIS WEEK
+              </option>
+              <option className="text-miru-dark-purple-600" value="month">
+                THIS MONTH
+              </option>
+              <option className="text-miru-dark-purple-600" value="year">
+                THIS YEAR
+              </option>
+            </select>
+          </div>
+          {project && (
+            <ChartBar
+              data={project.members}
+              totalMinutes={project.totalMinutes}
+            />
+          )}
+          <AmountBoxContainer amountBox={amountBox} />
         </div>
-        {project && (
-          <ChartBar
-            data={project.members}
-            totalMinutes={project.totalMinutes}
-          />
-        )}
-        <AmountBoxContainer amountBox={amountBox} />
-      </div>
-      <div className="flex flex-col">
-        <div className="overflow-XIcon-auto -my-2 sm:-mx-6 lg:-mx-8">
-          <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-            <div className="overflow-hidden">
-              {project && (
-                <Table tableHeader={tableHeader} tableRowArray={tableData} />
-              )}
+        <div className="flex flex-col">
+          <div className="overflow-XIcon-auto -my-2 sm:-mx-6 lg:-mx-8">
+            <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+              <div className="overflow-hidden">
+                {project && (
+                  <Table tableHeader={tableHeader} tableRowArray={tableData} />
+                )}
+              </div>
             </div>
           </div>
         </div>
       </div>
-      {showAddMemberDialog && (
+      {getMobileCurrentForm()}
+      {showAddMemberDialog && isDesktop && (
         <EditMembersList
           addedMembers={project?.members}
           closeAddRemoveMembers={closeAddRemoveMembers}
           currencySymbol={currencySymb}
           handleAddProjectDetails={handleAddProjectDetails}
           projectId={projectId}
-          setShowAddMemberDialog={setShowAddMemberDialog}
         />
       )}
-      {showProjectModal && (
+      {showProjectModal && isDesktop && (
         <AddEditProject
           editProjectData={editProjectData}
           setEditProjectData={setEditProjectData}
@@ -330,7 +332,7 @@ const ProjectDetails = () => {
           setShowDeleteDialog={setShowDeleteDialog}
         />
       )}
-    </>
+    </div>
   );
 };
 export default ProjectDetails;

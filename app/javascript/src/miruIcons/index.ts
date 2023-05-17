@@ -44,6 +44,8 @@ import {
   Image,
   Money,
   Copy,
+  Key,
+  User,
 } from "phosphor-react";
 
 const accountsAgingIcon = require("./svgIcons/accountsAging.svg");
@@ -111,6 +113,7 @@ const PaypalLogo = require("../../../assets/images/PaypalLogo.svg");
 const pConnectInvoice = require("../../../assets/images/pConnectInvoice.svg");
 const plus_icon = require("../../../assets/images/plus_icon.svg");
 const PurpleMiruLogoWithText = require("../../../assets/images/PurpleMiruLogoWithText.svg");
+const deleteImage = require("../../../assets/images/redDelete.svg");
 const saeloun_logo = require("../../../assets/images/saeloun_logo.png");
 const save_button = require("../../../assets/images/save_button.svg");
 const sConnectInvoice = require("../../../assets/images/sConnectInvoice.svg");
@@ -174,6 +177,8 @@ export const GlobeIcon = Globe;
 export const ImageIcon = Image;
 export const MoneyIcon = Money;
 export const CopyIcon = Copy;
+export const KeyIcon = Key;
+export const UserIcon = User;
 
 // custom svg icons
 export const WarningTriangleSVG = warningTriangle;
@@ -257,3 +262,4 @@ export const MiruManagingClientsScreen = miruManagingClientsScreen;
 export const MiruManagingEmployeesScreen = miruManagingEmployeesScreen;
 export const MoreOptionIcon = moreOption;
 export const GreenCheckCirleIcon = greenCheckCirleIcon;
+export const deleteImageIcon = deleteImage;

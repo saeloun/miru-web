@@ -32,14 +32,14 @@ RSpec.describe InvoicePolicy, type: :policy do
   end
 
   permissions :index? do
-    it "grants Invoice#index permission to an admin and owner" do
+    it "grants Invoice#index permission to an admin, owner and book keeper" do
       expect(described_class).to permit(admin)
       expect(described_class).to permit(owner)
+      expect(described_class).to permit(book_keeper)
     end
 
-    it "does not grants Invoice#index permission to an employee and a book keeper" do
+    it "does not grants Invoice#index permission to an employee" do
       expect(described_class).not_to permit(employee)
-      expect(described_class).to permit(book_keeper)
     end
   end
 
@@ -55,7 +55,23 @@ RSpec.describe InvoicePolicy, type: :policy do
     end
   end
 
-  permissions :edit?, :update?, :show?, :destroy?, :send_invoice?, :download? do
+  permissions :show?, :download? do
+    context "when user is an admin, owner or book keeper" do
+      it "grants permission" do
+        expect(described_class).to permit(admin, invoice)
+        expect(described_class).to permit(owner, invoice)
+        expect(described_class).to permit(book_keeper, invoice)
+      end
+    end
+
+    context "when user is an employee" do
+      it "does not grants permission" do
+        expect(described_class).not_to permit(employee, invoice)
+      end
+    end
+  end
+
+  permissions :edit?, :update?, :destroy?, :send_invoice? do
     context "when user is an admin or owner" do
       it "grants permission" do
         expect(described_class).to permit(admin, invoice)

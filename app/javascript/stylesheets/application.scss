@@ -257,7 +257,7 @@
       @apply p-5 text-left text-xs font-normal tracking-widest text-miru-dark-purple-600;
     }
     &__cell {
-      @apply p-5 text-left text-xs font-normal tracking-normal text-miru-dark-purple-1000;
+      @apply p-4 text-left text-xs font-normal tracking-normal text-miru-dark-purple-1000;
     }
     &__body {
       @apply divide-y divide-gray-200 bg-white;
@@ -605,4 +605,11 @@ body {
 
 .border-bottom-none {
   border-bottom: 0 !important;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active{
+    -webkit-box-shadow: 0 0 0 30px white inset !important;
 }

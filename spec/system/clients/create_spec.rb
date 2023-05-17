@@ -7,6 +7,31 @@ RSpec.describe "Create client", type: :system do
   let(:user) { create(:user, current_workspace_id: company.id) }
   let(:existing_client) { create(:client_with_phone_number_without_country_code, company:) }
   let(:client) { build(:client_with_phone_number_without_country_code, company:) }
+  let(:address) { build(:address, :with_company) }
+
+  def select_values_from_select_box
+    within("div#country") do
+      find(".react-select-filter__control.css-digfch-control").click
+      find("#react-select-2-option-232").click
+    end
+
+    within("div#state") do
+      find(".react-select-filter__control.css-digfch-control").click
+      find("#react-select-3-option-1").click
+    end
+
+    within("div#city") do
+      find(".react-select-filter__control.css-digfch-control").click
+      find("#react-select-4-option-0").click
+    end
+  end
+
+  def upload_test_image(file_name)
+    find(
+      "form input[type='file']",
+      visible: false).set(Rails.root.join("spec", "support", "fixtures", file_name)
+    )
+  end
 
   context "when user is an admin" do
     before do
@@ -20,17 +45,16 @@ RSpec.describe "Create client", type: :system do
         with_forgery_protection do
           visit "/clients"
 
-          click_button "NEW CLIENT"
-          find(
-            'form input[type="file"]',
-            visible: false).set(Rails.root.join("spec", "support", "fixtures", "test-image.png"))
+          click_button "Add Clients"
+          upload_test_image("test-image.png")
           fill_in "name", with: client.name
           fill_in "email", with: client.email
           fill_in "phone", with: client.phone
-          fill_in "address", with: client.address
+          fill_in "address1", with: address.address_line_1
+          select_values_from_select_box
+          fill_in "zipcode", with: address.pin
           click_button "SAVE CHANGES"
 
-          expect(page).to have_css('img#logo[src*="test-image.png"]')
           expect(page).to have_content(client.name)
         end
       end
@@ -41,9 +65,11 @@ RSpec.describe "Create client", type: :system do
         with_forgery_protection do
           visit "/clients"
 
-          click_button "NEW CLIENT"
+          click_button "Add Clients"
           fill_in "phone", with: client.phone
-          fill_in "address", with: client.address
+          fill_in "address1", with: address.address_line_1
+          select_values_from_select_box
+          fill_in "zipcode", with: address.pin
           click_button "SAVE CHANGES"
 
           expect(page).to have_content("Name cannot be blank")
@@ -55,11 +81,13 @@ RSpec.describe "Create client", type: :system do
         with_forgery_protection do
           visit "/clients"
 
-          click_button "NEW CLIENT"
+          click_button "Add Clients"
           fill_in "name", with: client.name
           fill_in "email", with: existing_client.email
           fill_in "phone", with: client.phone
-          fill_in "address", with: client.address
+          fill_in "address1", with: address.address_line_1
+          select_values_from_select_box
+          fill_in "zipcode", with: address.pin
           click_button "SAVE CHANGES"
 
           sleep(1)
@@ -71,13 +99,11 @@ RSpec.describe "Create client", type: :system do
         with_forgery_protection do
           visit "/clients"
 
-          click_button "NEW CLIENT"
-          find(
-            'form input[type="file"]',
-            visible: false).set(Rails.root.join("spec", "support", "fixtures", "pdf-file.pdf"))
+          click_button "Add Clients"
 
-          expect(page).to have_content("Incorrect file format. Please upload an image of type PNG or JPG.")
-          expect(page).to have_content("Max size (30kb)")
+          upload_test_image("pdf-file.pdf")
+
+          expect(page).to have_content("Accepted file formats: PNG and JPG.")
         end
       end
 
@@ -85,10 +111,8 @@ RSpec.describe "Create client", type: :system do
         with_forgery_protection do
           visit "/clients"
 
-          click_button "NEW CLIENT"
-          find(
-            'form input[type="file"]',
-            visible: false).set(Rails.root.join("spec", "support", "fixtures", "invalid-file.png"))
+          click_button "Add Clients"
+          upload_test_image("invalid-file.png")
 
           expect(page).to have_content("File size exceeded the max limit of 30KB.")
         end

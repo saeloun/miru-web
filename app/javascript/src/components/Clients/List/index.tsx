@@ -1,18 +1,22 @@
 import React, { useEffect, useState, useRef } from "react";
 
 import { cashFormatter, currencySymbol, minToHHMM } from "helpers";
-import { PlusIcon } from "miruIcons";
+import {
+  DotsThreeVerticalIcon,
+  PlusIcon,
+  EditIcon,
+  DeleteIcon,
+} from "miruIcons";
 import { useNavigate } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
-import { Avatar, Tooltip } from "StyledComponents";
+import { Avatar, MobileMoreOptions, Tooltip } from "StyledComponents";
 
 import clientApi from "apis/clients";
 import AmountBoxContainer from "common/AmountBox";
+import MobileAmountBox from "common/AmountBox/MobileAmountBox";
 import ChartBar from "common/ChartBar";
 import EmptyStates from "common/EmptyStates";
 import withLayout from "common/Mobile/HOC/withLayout";
 import Table from "common/Table";
-import { TOASTER_DURATION } from "constants/index";
 import { useUserContext } from "context/UserContext";
 import { unmapClientList } from "mapper/mappedIndex";
 import { sendGAPageView } from "utils/googleAnalytics";
@@ -23,8 +27,17 @@ import DeleteClient from "../Modals/DeleteClient";
 import EditClient from "../Modals/EditClient";
 import NewClient from "../Modals/NewClient";
 
-const getTableData = (clients, handleTooltip, showTooltip, toolTipRef) => {
-  if (clients) {
+const getTableData = (
+  clients,
+  handleTooltip,
+  showTooltip,
+  toolTipRef,
+  isDesktop,
+  isAdminUser,
+  setShowMoreOptions,
+  setClientId
+) => {
+  if (clients && isDesktop) {
     return clients.map(client => ({
       col1: (
         <Tooltip content={client.name} show={showTooltip}>
@@ -55,15 +68,58 @@ const getTableData = (clients, handleTooltip, showTooltip, toolTipRef) => {
       ),
       rowId: client.id,
     }));
+  } else if (clients && !isDesktop) {
+    return clients.map(client => ({
+      col1: (
+        <div className="text-base capitalize">
+          <Avatar classNameImg="mr-4 w-8 h-8" url={client.logo} />
+          <span
+            className="my-auto overflow-hidden truncate whitespace-nowrap text-sm font-medium capitalize text-miru-dark-purple-1000"
+            ref={toolTipRef}
+            onMouseEnter={handleTooltip}
+          >
+            {client.name}
+          </span>
+        </div>
+      ),
+      col3: (
+        <div
+          className="total-hours text-right text-lg font-bold text-miru-dark-purple-1000"
+          id={`${client.id}`}
+        >
+          {minToHHMM(client.minutes)}
+        </div>
+      ),
+      col4: (
+        <div>
+          {isAdminUser && (
+            <DotsThreeVerticalIcon
+              className="mx-auto"
+              height={26}
+              width={24}
+              onClick={e => {
+                e.preventDefault();
+                e.stopPropagation();
+                setShowMoreOptions(true);
+                setClientId(client.id);
+              }}
+            />
+          )}
+        </div>
+      ),
+      rowId: client.id,
+    }));
   }
 
   return [{}];
 };
 
 const Clients = ({ isAdminUser }) => {
+  const [clientId, setClientId] = useState("");
   const [showEditDialog, setShowEditDialog] = useState<boolean>(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
-  const [client, setClient] = useState<boolean>(false);
+  const [showMoreOptions, setShowMoreOptions] = React.useState<boolean>(false);
+  const [isClient, setIsClient] = useState<boolean>(false);
   const [clientToEdit, setClientToEdit] = useState({});
   const [clientToDelete, setClientToDelete] = useState({});
   const [clientData, setClientData] = useState<any>();
@@ -115,13 +171,24 @@ const Clients = ({ isAdminUser }) => {
   useEffect(() => {
     sendGAPageView();
     fetchClientDetails("week");
+
+    const close = e => {
+      if (e.keyCode === 27) {
+        setIsClient(false);
+      }
+    };
+    window.addEventListener("keydown", close);
   }, []);
+
+  useEffect(() => {
+    fetchClientDetails("week");
+  }, [isClient]);
 
   const tableHeader = [
     {
       Header: "CLIENT",
       accessor: "col1", // accessor is the "key" in the data
-      cssClass: "md:w-1/3",
+      cssClass: "md:w-1/3 capitalize",
     },
     {
       Header: "EMAIL ID",
@@ -148,19 +215,43 @@ const Clients = ({ isAdminUser }) => {
     },
   ];
 
-  const currencySymb = currencySymbol(overdueOutstandingAmount?.currency);
+  const mobileTableHeader = [
+    {
+      Header: "CLIENT",
+      accessor: "col1", // accessor is the "key" in the data
+      cssClass: "table__header font-medium",
+    },
+    {
+      Header: "HOURS",
+      accessor: "col3",
+      cssClass: "table__header font-medium text-right", // accessor is the "key" in the data
+    },
+    {
+      Header: "",
+      accessor: "col4",
+      cssClass: "font-medium text-right", // accessor is the "key" in the data
+    },
+  ];
+
+  const {
+    currency = "",
+    overdue_amount = 0,
+    outstanding_amount = 0,
+  } = overdueOutstandingAmount ?? {};
+
+  const currencySymb = currencySymbol(currency);
+  const formattedOverdueAmount = currencySymb + cashFormatter(overdue_amount);
+  const formattedOutstandingAmount =
+    currencySymb + cashFormatter(outstanding_amount);
 
   const amountBox = [
     {
       title: "OVERDUE",
-      amount:
-        currencySymb + cashFormatter(overdueOutstandingAmount?.overdue_amount),
+      amount: formattedOverdueAmount,
     },
     {
       title: "OUTSTANDING",
-      amount:
-        currencySymb +
-        cashFormatter(overdueOutstandingAmount?.outstanding_amount),
+      amount: formattedOutstandingAmount,
     },
   ];
 
@@ -168,7 +259,11 @@ const Clients = ({ isAdminUser }) => {
     clientData,
     handleTooltip,
     showToolTip,
-    toolTipRef
+    toolTipRef,
+    isDesktop,
+    isAdminUser,
+    setShowMoreOptions,
+    setClientId
   );
 
   if (loading) {
@@ -181,18 +276,16 @@ const Clients = ({ isAdminUser }) => {
 
   const ClientsLayout = () => (
     <>
-      <ToastContainer autoClose={TOASTER_DURATION} />
-      <Header
-        isAdminUser={isAdminUser}
-        setShowDialog={setShowDialog}
-        setnewClient={setClient}
-      />
+      {clientData.length > 0 && (
+        <Header
+          isAdminUser={isAdminUser}
+          setShowDialog={setShowDialog}
+          setnewClient={setIsClient}
+        />
+      )}
       <div>
-        {isAdminUser && (
-          <div
-            className="bg-miru-gray-100 py-10 px-10"
-            data-cy="clients-admin-data"
-          >
+        {isAdminUser && isDesktop && (
+          <div className="bg-miru-gray-100 py-10 px-10">
             <div className="flex justify-end">
               <select
                 id="timeFrame"
@@ -226,19 +319,32 @@ const Clients = ({ isAdminUser }) => {
             <AmountBoxContainer amountBox={amountBox} />
           </div>
         )}
-        <div className="flex flex-col" data-cy="clients-list-table">
-          <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-            <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+        {isAdminUser && !isDesktop && (
+          <MobileAmountBox
+            outstandingAmount={formattedOutstandingAmount}
+            overdueAmount={formattedOverdueAmount}
+            totalMinutes={totalMinutes}
+          />
+        )}
+        <div className="mx-auto flex w-full flex-col lg:px-4">
+          <div className="-my-2 w-full lg:-mx-8">
+            <div className="mx-auto inline-block min-w-full py-2 align-middle lg:px-8">
               <div className="overflow-hidden">
                 {clientData && clientData.length > 0 ? (
                   <Table
                     handleDeleteClick={handleDeleteClick}
                     handleEditClick={handleEditClick}
                     hasRowIcons={isAdminUser}
-                    rowOnClick={isAdminUser ? handleRowClick : () => {}} // eslint-disable-line  @typescript-eslint/no-empty-function
                     tableRowArray={tableData}
+                    rowOnClick={
+                      isAdminUser ? handleRowClick : () => {} // eslint-disable-line  @typescript-eslint/no-empty-function
+                    }
                     tableHeader={
-                      isAdminUser ? tableHeader : employeeTableHeader
+                      isAdminUser && isDesktop
+                        ? tableHeader
+                        : isAdminUser && !isDesktop
+                        ? mobileTableHeader
+                        : employeeTableHeader
                     }
                   />
                 ) : (
@@ -253,7 +359,7 @@ const Clients = ({ isAdminUser }) => {
                       type="button"
                       onClick={() => {
                         setShowDialog(true);
-                        setClient(true);
+                        setIsClient(true);
                       }}
                     >
                       <PlusIcon size={20} weight="bold" />
@@ -280,7 +386,7 @@ const Clients = ({ isAdminUser }) => {
           setShowDeleteDialog={setShowDeleteDialog}
         />
       )}
-      {client && showDialog && (
+      {isClient && showDialog && (
         <NewClient
           clientData={clientData}
           clientLogo={clientLogo}
@@ -289,12 +395,35 @@ const Clients = ({ isAdminUser }) => {
           setClientLogo={setClientLogo}
           setClientLogoUrl={setClientLogoUrl}
           setShowDialog={setShowDialog}
-          setnewClient={setClient}
+          setnewClient={setIsClient}
         />
+      )}
+      {showMoreOptions && (
+        <MobileMoreOptions setVisibilty={setShowMoreOptions}>
+          <li
+            className="flex items-center px-2 pt-3 text-sm leading-5 text-miru-han-purple-1000"
+            onClick={() => {
+              handleEditClick(clientId);
+              setShowMoreOptions(false);
+            }}
+          >
+            <EditIcon className="mr-4" color="#5B34EA" size={16} />
+            Edit
+          </li>
+          <li
+            className="flex items-center px-2 pt-3 text-sm leading-5 text-miru-red-400"
+            onClick={() => {
+              handleDeleteClick(clientId);
+              setShowMoreOptions(false);
+            }}
+          >
+            <DeleteIcon className="mr-4" size={16} />
+            Delete
+          </li>
+        </MobileMoreOptions>
       )}
     </>
   );
-
   const Main = withLayout(ClientsLayout, !isDesktop, !isDesktop);
 
   return isDesktop ? ClientsLayout() : <Main />;

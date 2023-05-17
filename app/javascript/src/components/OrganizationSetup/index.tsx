@@ -3,23 +3,26 @@ import React, { useState } from "react";
 import Steps from "rc-steps";
 import "rc-steps/assets/index.css";
 import { useNavigate } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
 
 import companiesApi from "apis/companies";
 import MiruLogoWatermark from "common/MiruLogoWatermark";
 import { Paths } from "constants/index";
+import { useUserContext } from "context/UserContext";
 
 import CompanyDetailsForm from "./CompanyDetailsForm";
 import { CompanyDetailsFormValues } from "./CompanyDetailsForm/interface";
 import { companyDetailsFormInitialValues } from "./CompanyDetailsForm/utils";
 import FinancialDetailsForm from "./FinancialDetailsForm";
 import { FinancialDetailsFormValues } from "./FinancialDetailsForm/interface";
+import MobileFinancialDetailForm from "./FinancialDetailsForm/MobileFinancialDetailForm";
 import { financialDetailsFormInitialValues } from "./FinancialDetailsForm/utils";
 import Step from "./Step";
 import { organizationSetupSteps, TOTAL_NUMBER_OF_STEPS } from "./utils";
 
 const OrganizationSetup = () => {
   const navigate = useNavigate();
+  const { isDesktop } = useUserContext();
+
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [stepNoOfLastSubmittedForm, setStepNoOfLastSubmittedForm] =
     useState<number>(0);
@@ -42,10 +45,41 @@ const OrganizationSetup = () => {
     financialDetails: FinancialDetailsFormValues
   ) => {
     const formD = new FormData();
+
+    formD.append(
+      "company[addresses_attributes[0][address_line_1]]",
+      companyDetails.address_line_1
+    );
+
+    formD.append(
+      "company[addresses_attributes[0][address_line_2]]",
+      companyDetails.address_line_2
+    );
+
+    formD.append(
+      "company[addresses_attributes[0][state]]",
+      companyDetails.state?.value
+    );
+
+    formD.append(
+      "company[addresses_attributes[0][city]]",
+      companyDetails.city?.value
+    );
+
+    formD.append(
+      "company[addresses_attributes[0][country]]",
+      companyDetails.country?.value
+    );
+
+    formD.append(
+      "company[addresses_attributes[0][pin]]",
+      companyDetails.zipcode
+    );
+
     formD.append("company[name]", companyDetails.company_name);
-    formD.append("company[address]", companyDetails.address);
     formD.append("company[business_phone]", companyDetails.business_phone);
     formD.append("company[country]", companyDetails.country?.value);
+
     formD.append(
       "company[base_currency]",
       financialDetails.base_currency?.value || ""
@@ -97,45 +131,66 @@ const OrganizationSetup = () => {
   };
 
   return (
-    <>
-      <ToastContainer autoClose={30000} />
-      <div className="relative min-h-screen w-full px-8 pt-16 pb-4 md:px-0 md:pt-28">
-        <div className="org-setup-form-wrapper mx-auto min-h-full md:w-1/2 lg:w-352">
+    <div
+      className={`relative ${
+        currentStep == 1 ? "min-h-screen" : "h-screen"
+      } w-full px-8 ${isDesktop ? "pt-16" : "pt-8"} pb-4 md:px-0 md:pt-28`}
+    >
+      <div className="org-setup-form-wrapper mx-auto h-full md:w-1/2 lg:w-352">
+        {isDesktop ? (
           <h1 className="text-center font-manrope text-4.75xl font-extrabold not-italic text-miru-han-purple-1000">
             Setup Org
           </h1>
-          <div className="mx-auto mt-6 mb-11 w-full">
-            <Steps
-              current={currentStep - 1}
-              items={organizationSetupSteps}
-              labelPlacement="horizontal"
-              itemRender={props => (
-                <Step
-                  {...props}
-                  isActiveStep={isStepFormSubmittedOrVisited}
-                  updateStepNumber={updateStepNumber}
-                />
-              )}
-            />
+        ) : (
+          <div className="w-full text-center font-manrope text-2xl font-extrabold not-italic text-miru-han-purple-1000">
+            {" "}
+            Setup Org
           </div>
-          {currentStep == 1 ? (
-            <CompanyDetailsForm
-              isFormAlreadySubmitted={stepNoOfLastSubmittedForm >= 1}
-              previousSubmittedValues={companyDetails}
-              onNextBtnClick={onNextBtnClick}
-            />
-          ) : (
-            <FinancialDetailsForm
-              isUpdatedFormValues={stepNoOfLastSubmittedForm >= 1}
-              prevFormValues={financialDetails}
-              setFinancialDetails={setFinancialDetails}
-              onSaveBtnClick={onSaveBtnClick}
-            />
-          )}
+        )}
+        <div className="mx-auto mt-6 mb-11 w-full">
+          <Steps
+            current={currentStep - 1}
+            items={organizationSetupSteps}
+            labelPlacement="horizontal"
+            itemRender={props => (
+              <Step
+                {...props}
+                isActiveStep={isStepFormSubmittedOrVisited}
+                updateStepNumber={updateStepNumber}
+              />
+            )}
+          />
         </div>
-        <MiruLogoWatermark />
+        {currentStep == 1 ? (
+          <CompanyDetailsForm
+            formType="new"
+            isDesktop={isDesktop}
+            isFormAlreadySubmitted={stepNoOfLastSubmittedForm >= 1}
+            previousSubmittedValues={companyDetails}
+            onNextBtnClick={onNextBtnClick}
+          />
+        ) : (
+          <>
+            {isDesktop ? (
+              <FinancialDetailsForm
+                isUpdatedFormValues={stepNoOfLastSubmittedForm >= 1}
+                prevFormValues={financialDetails}
+                setFinancialDetails={setFinancialDetails}
+                onSaveBtnClick={onSaveBtnClick}
+              />
+            ) : (
+              <MobileFinancialDetailForm
+                isUpdatedFormValues={stepNoOfLastSubmittedForm >= 1}
+                prevFormValues={financialDetails}
+                setFinancialDetails={setFinancialDetails}
+                onSaveBtnClick={onSaveBtnClick}
+              />
+            )}
+          </>
+        )}
       </div>
-    </>
+      <MiruLogoWatermark />
+    </div>
   );
 };
 

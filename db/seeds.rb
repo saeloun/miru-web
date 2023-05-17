@@ -46,10 +46,20 @@ users.each { |user| company.employments.create!(user:) }
 puts "Employment Created"
 
 microsoft_client = company.clients.create!(
-  name: "Microsoft", email: "support@example.com", phone: "+1 9999999991",
-  address: "California, USA")
+  name: "Microsoft",
+  email: "support@example.com",
+  phone: "+1 9999999991"
+)
 
 puts "Clients Created"
+
+microsoft_client.addresses.create!(
+  address_line_1: "475 Clermont Ave",
+  city: "Brooklyn",
+  state: "NY",
+  pin: "12238",
+  country: "US"
+)
 
 project_office_com = microsoft_client.projects.create!(name: "Office.com", description: "Office 365", billable: true)
 project_azure_com = microsoft_client.projects.create!(name: "Azure.com", description: "Cloud Computing", billable: true)
@@ -120,7 +130,7 @@ users.each { |user| user.devices.create!(
   device_type: "laptop",
   name: "MacBook Pro",
   serial_number: "1111",
-  company_id: 1
+  company_id: company.id
 )
 }
 

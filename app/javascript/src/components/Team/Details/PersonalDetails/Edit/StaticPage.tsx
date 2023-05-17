@@ -43,6 +43,7 @@ const StaticPage = ({
   handleOnChangeCity,
   handlePhoneNumberChange,
   wrapperRef,
+  dateFormat,
 }) => (
   <div className="mt-4 h-full bg-miru-gray-100 px-10">
     <div className="flex border-b border-b-miru-gray-400 py-10">
@@ -56,7 +57,6 @@ const StaticPage = ({
         <div className="flex flex-row pb-3">
           <div className="flex w-1/2 flex-col px-2">
             <CustomInputText
-              dataCy="first-name"
               id="first_name"
               label="First name"
               name="first_name"
@@ -85,7 +85,6 @@ const StaticPage = ({
           </div>
           <div className="flex w-1/2 flex-col px-2">
             <CustomInputText
-              dataCy="last-name"
               id="last_name"
               label="Last name"
               name="last_name"
@@ -122,17 +121,11 @@ const StaticPage = ({
           >
             <CustomInputText
               disabled
-              dataCy="date_of_birth"
               id="date_of_birth"
               label="Date of Birth"
               name="date_of_birth"
               type="text"
-              value={
-                personalDetails.date_of_birth &&
-                dayjs(personalDetails.date_of_birth).format(
-                  personalDetails.date_format
-                )
-              }
+              value={personalDetails.date_of_birth || ""}
               onChange={e => {
                 updateBasicDetails(e.target.value, "date_of_birth", false);
               }}
@@ -145,11 +138,12 @@ const StaticPage = ({
           </div>
           {showDatePicker.visibility && (
             <CustomDatePicker
+              dateFormat={dateFormat}
               handleChange={e => handleDatePicker(e, true)}
               date={
                 personalDetails.date_of_birth
-                  ? new Date(personalDetails.date_of_birth)
-                  : null
+                  ? personalDetails.date_of_birth
+                  : dayjs()
               }
             />
           )}
@@ -166,7 +160,7 @@ const StaticPage = ({
       <div className="w-9/12">
         <div className="flex flex-row">
           <div className="flex w-1/2 flex-col px-2">
-            <div className="outline relative flex h-12 flex-row rounded border border-miru-gray-1000 bg-white p-4 pt-2">
+            <div className="outline relative flex h-12 flex-row rounded border border-miru-gray-1000 bg-white p-4">
               <PhoneInput
                 className="input-phone-number w-full border-transparent focus:border-transparent focus:ring-0"
                 flags={flags}
@@ -188,7 +182,6 @@ const StaticPage = ({
           </div>
           <div className="flex w-1/2 flex-col px-2">
             <CustomInputText
-              dataCy="email-id"
               id="email_id"
               label="Email ID (Personal)"
               name="email_id"
@@ -239,7 +232,6 @@ const StaticPage = ({
         </div>
         <div className="flex w-full flex-col px-2 py-3">
           <CustomInputText
-            dataCy="address-line-1"
             id="address_line_1"
             label="Address line 1"
             name="address_line_1"
@@ -271,7 +263,6 @@ const StaticPage = ({
         </div>
         <div className="flex w-full flex-col px-2 py-3">
           <CustomInputText
-            dataCy="address-line-2"
             id="address_line_2"
             label="Address line 2 (optional)"
             name="address_line_2"
@@ -353,7 +344,6 @@ const StaticPage = ({
           </div>
           <div className="flex w-1/2 flex-col px-2 py-3">
             <CustomInputText
-              dataCy="zipcode"
               id="zipcode"
               label="Zipcode"
               name="zipcode"
@@ -392,7 +382,6 @@ const StaticPage = ({
         <div className="flex flex-row">
           <div className="flex w-1/2 flex-col px-2">
             <CustomInputText
-              dataCy="linked-in"
               id="linked_in"
               label="LinkedIn"
               name="linked_in"
@@ -405,9 +394,8 @@ const StaticPage = ({
           </div>
           <div className="flex w-1/2 flex-col px-2">
             <CustomInputText
-              dataCy="github"
               id="github"
-              label="github"
+              label="Github"
               name="github"
               type="text"
               value={personalDetails.github}

@@ -1,10 +1,8 @@
-import React, { useEffect, useState } from "react";
-
-import { ToastContainer } from "react-toastify";
+import React, { Fragment, useEffect, useState } from "react";
 
 import teamApi from "apis/team";
 import withLayout from "common/Mobile/HOC/withLayout";
-import { TeamModalType, TOASTER_DURATION } from "constants/index";
+import { TeamModalType } from "constants/index";
 import { ListContext } from "context/TeamContext";
 import { useUserContext } from "context/UserContext";
 import { unmapList } from "mapper/team.mapper";
@@ -20,6 +18,8 @@ const TeamList = () => {
   const [modalUser, setModalUser] = useState({});
 
   const { isDesktop } = useUserContext();
+
+  const hideContainer = modal == TeamModalType.ADD_EDIT && !isDesktop;
 
   const setModalState = (modalName, user = {}) => {
     setModalUser(user);
@@ -48,24 +48,23 @@ const TeamList = () => {
         modal,
       }}
     >
-      <ToastContainer autoClose={TOASTER_DURATION} />
-      <Header />
-      <div>
-        <div className="table__flex">
-          <div className="table__position-one">
-            <div className="table__position-two">
+      {!hideContainer && (
+        <Fragment>
+          <Header />
+          <div>
+            <div className="table__flex pb-14">
               <div className="table__border border-b-0 border-miru-gray-200">
                 <Table />
               </div>
             </div>
           </div>
-        </div>
-      </div>
+        </Fragment>
+      )}
       <Modals user={modalUser} />
     </ListContext.Provider>
   );
 
-  const Main = withLayout(TeamLayout, !isDesktop, !isDesktop);
+  const Main = withLayout(TeamLayout, !hideContainer, !hideContainer);
 
   return isDesktop ? TeamLayout() : <Main />;
 };

@@ -13,9 +13,10 @@
 #
 # Indexes
 #
-#  index_projects_on_billable      (billable)
-#  index_projects_on_client_id     (client_id)
-#  index_projects_on_discarded_at  (discarded_at)
+#  index_projects_on_billable            (billable)
+#  index_projects_on_client_id           (client_id)
+#  index_projects_on_discarded_at        (discarded_at)
+#  index_projects_on_name_and_client_id  (name,client_id) UNIQUE
 #
 # Foreign Keys
 #
@@ -33,7 +34,9 @@ class Project < ApplicationRecord
   has_many :project_members, dependent: :destroy
 
   # Validations
-  validates :name, presence: true
+  validates :name, presence: true,
+    length: { maximum: 30, message: "Name is too long(Maximum 30 characters are allowed)" },
+    uniqueness: { scope: :client_id, case_sensitive: false, message: "The project %{value} already exists" }
   validates :billable, inclusion: { in: [ true, false ] }
 
   # Callbacks

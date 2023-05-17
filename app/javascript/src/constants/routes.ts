@@ -4,6 +4,8 @@ import EmailVerificationSuccess from "components/Authentication/EmailVerificatio
 import ForgotPassword from "components/Authentication/ForgotPassword";
 import SignIn from "components/Authentication/SignIn";
 import SignUp from "components/Authentication/SignUp";
+import InvoiceEmail from "components/InvoiceEmail";
+import Success from "components/payments/Success";
 import AccountsAgingReport from "components/Reports/AccountsAgingReport";
 import TeamsRouteConfig from "components/Team/TeamsRouteConfig";
 import { Roles, Paths } from "constants/index";
@@ -105,6 +107,17 @@ export const AUTH_ROUTES = [
   },
 ];
 
+export const PUBLIC_ROUTES = [
+  {
+    path: "/invoices/:id/view",
+    component: InvoiceEmail,
+  },
+  {
+    path: "/invoices/:id/payments/success",
+    component: Success,
+  },
+];
+
 export const ROUTES = [
   {
     path: Paths.CLIENTS,
@@ -119,7 +132,7 @@ export const ROUTES = [
   {
     path: Paths.REPORTS,
     subRoutes: ReportsRoutes,
-    authorisedRoles: [ADMIN, OWNER],
+    authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER],
   },
   {
     path: Paths.PROJECTS,
@@ -139,7 +152,7 @@ export const ROUTES = [
   {
     path: Paths.TIME_TRACKING,
     subRoutes: TimeTrackingRoutes,
-    authorisedRoles: [ADMIN, OWNER, EMPLOYEE, BOOK_KEEPER],
+    authorisedRoles: [ADMIN, OWNER, EMPLOYEE],
   },
   {
     path: Paths.TEAMS,
@@ -154,6 +167,6 @@ export const ROUTES = [
   {
     path: Paths.PROFILE,
     subRoutes: ProfileRoutes,
-    authorisedRoles: [ADMIN, OWNER, EMPLOYEE],
+    authorisedRoles: [ADMIN, OWNER, EMPLOYEE, BOOK_KEEPER],
   },
 ];

@@ -5,6 +5,7 @@ import { ClientsIcon } from "miruIcons";
 import { Avatar } from "StyledComponents";
 
 import EmptyStates from "common/EmptyStates";
+import Pagination from "common/Pagination/Pagination";
 
 import ReportMobileRow from "./ReportMobileRow";
 
@@ -12,6 +13,10 @@ import { useEntry } from "../context/EntryContext";
 
 interface ContainerProps {
   selectedFilter?: any;
+  paginationDetails?: any;
+  handlePageClick: any;
+  params: any;
+  setParams: any;
 }
 
 const ReportHeader = () => (
@@ -36,6 +41,10 @@ const ReportHeader = () => (
 
 export const TimeEntryReportMobileView = ({
   selectedFilter,
+  paginationDetails,
+  handlePageClick,
+  params,
+  setParams,
 }: ContainerProps) => {
   const { timeEntryReport } = useEntry();
 
@@ -128,6 +137,13 @@ export const TimeEntryReportMobileView = ({
           }
         />
       )}
+      <Pagination
+        isReport
+        handleClick={handlePageClick}
+        pagy={paginationDetails}
+        params={params}
+        setParams={setParams}
+      />
     </div>
   );
 };

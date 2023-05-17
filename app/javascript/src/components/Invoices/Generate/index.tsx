@@ -1,15 +1,18 @@
 import React, { Fragment, useEffect, useState } from "react";
 
+import dayjs from "dayjs";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { Toastr } from "StyledComponents";
 
 import companiesApi from "apis/companies";
 import invoicesApi from "apis/invoices";
-import Toastr from "common/Toastr";
+import { useUserContext } from "context/UserContext";
 import { mapGenerateInvoice, unmapGenerateInvoice } from "mapper/mappedIndex";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import Container from "./Container";
 import InvoiceSettings from "./InvoiceSettings";
+import MobileView from "./MobileView";
 
 import Header from "../common/InvoiceForm/Header";
 import SendInvoice from "../common/InvoiceForm/SendInvoice";
@@ -26,12 +29,10 @@ const GenerateInvoices = () => {
   const [amountDue, setAmountDue] = useState<any>(0);
   const [discount, setDiscount] = useState<any>(0);
   const [tax, setTax] = useState<any>(0);
-  const [issueDate, setIssueDate] = useState(new Date());
-  const today = new Date();
+  const [issueDate, setIssueDate] = useState(dayjs());
+  const today = dayjs();
   const [searchParams] = useSearchParams();
-  const [dueDate, setDueDate] = useState(
-    today.setMonth(issueDate.getMonth() + 1)
-  );
+  const [dueDate, setDueDate] = useState(dayjs(today).add(1, "month"));
   const [selectedOption, setSelectedOption] = useState<any>([]);
   const [showSendInvoiceModal, setShowSendInvoiceModal] =
     useState<boolean>(false);
@@ -45,6 +46,8 @@ const GenerateInvoices = () => {
   const INVOICE_NUMBER_ERROR = "Please enter invoice number to proceed";
   const SELECT_CLIENT_ERROR =
     "Please select client and enter invoice number to proceed";
+
+  const { isDesktop } = useUserContext();
 
   const fetchCompanyDetails = async () => {
     // here we are fetching the company and client list
@@ -82,13 +85,15 @@ const GenerateInvoices = () => {
       dueDate,
       invoiceLineItems: generateInvoiceLineItems(
         selectedOption,
-        manualEntryArr
+        manualEntryArr,
+        invoiceDetails.companyDetails.date_format
       ),
       amount,
       amountDue,
       amountPaid,
       discount,
       tax,
+      dateFormat: invoiceDetails.companyDetails.date_format,
       setShowSendInvoiceModal,
     });
 
@@ -130,8 +135,7 @@ const GenerateInvoices = () => {
         : Toastr.error(SELECT_CLIENT_ERROR);
     }
   };
-
-  if (invoiceDetails) {
+  if (invoiceDetails && isDesktop) {
     return (
       <Fragment>
         <Header
@@ -187,6 +191,42 @@ const GenerateInvoices = () => {
           <InvoiceSettings setShowInvoiceSetting={setShowInvoiceSetting} />
         )}
       </Fragment>
+    );
+  }
+
+  if (invoiceDetails && !isDesktop) {
+    return (
+      <MobileView
+        amount={amount}
+        amountDue={amountDue}
+        amountPaid={amountPaid}
+        dateFormat={invoiceDetails.companyDetails.date_format}
+        discount={discount}
+        dueDate={dueDate}
+        handleSaveInvoice={handleSaveInvoice}
+        invoiceDetails={invoiceDetails}
+        invoiceNumber={invoiceNumber}
+        isEdit={false}
+        issueDate={issueDate}
+        lineItems={lineItems}
+        manualEntryArr={manualEntryArr}
+        reference={reference}
+        selectedClient={selectedClient}
+        selectedLineItems={selectedOption}
+        setAmount={setAmount}
+        setAmountDue={setAmountDue}
+        setDiscount={setDiscount}
+        setDueDate={setDueDate}
+        setInvoiceNumber={setInvoiceNumber}
+        setIssueDate={setIssueDate}
+        setLineItems={setLineItems}
+        setManualEntryArr={setManualEntryArr}
+        setReference={setReference}
+        setSelectedClient={setSelectedClient}
+        setSelectedLineItems={setSelectedOption}
+        setTax={setTax}
+        tax={tax}
+      />
     );
   }
 

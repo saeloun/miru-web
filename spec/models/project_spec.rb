@@ -2,7 +2,7 @@
 
 require "rails_helper"
 RSpec.describe Project, type: :model do
-  let(:project) { build(:project) }
+  subject { build(:project) }
 
   describe "Associations" do
     it { is_expected.to belong_to(:client) }
@@ -12,7 +12,20 @@ RSpec.describe Project, type: :model do
 
   describe "Validations" do
     it { is_expected.to validate_presence_of(:name) }
+
+    it { expect(subject).to validate_length_of(:name)
+      .is_at_most(30)
+      .with_message("Name is too long(Maximum 30 characters are allowed)")
+}
+
     it { is_expected.to validate_inclusion_of(:billable).in_array([true, false]) }
+
+    it "validates case-insensitive uniqueness of name within the scope of client_id" do
+      existing_project = create(:project)
+      new_project = build(:project, name: existing_project.name.upcase, client: existing_project.client)
+      expect(new_project).not_to be_valid
+      expect(new_project.errors[:name]).to include("The project #{existing_project.name.upcase} already exists")
+    end
   end
 
   describe "Callbacks" do

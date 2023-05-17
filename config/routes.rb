@@ -33,20 +33,14 @@ Rails.application.routes.draw do
 
   draw(:internal_api)
   draw(:api)
-  resources :dashboard, only: [:index]
 
   resources :workspaces, only: [:update]
 
   resources :invoices, only: [], module: :invoices do
     resources :payments, only: [:new] do
       collection do
-        get :success
         get :cancel
       end
-    end
-
-    member do
-      get :view, to: "view#show", as: :view
     end
   end
 

@@ -41,14 +41,15 @@ const MoreOptions = ({
       >
         <Tooltip content="Send To">
           <button
-            className="p-2 text-miru-han-purple-1000 hover:bg-miru-gray-1000"
+            className="rounded p-2 text-miru-han-purple-1000 hover:bg-miru-gray-100"
             id="sendInvoiceButton"
-            onClick={() => {
+            onClick={e => {
+              e.stopPropagation();
               setIsSending(!isSending);
             }}
           >
             <PaperPlaneTiltIcon
-              className="hover:bg-miru-gray-1000"
+              className="hover:bg-miru-gray-100"
               size={16}
               weight="bold"
             />
@@ -56,12 +57,11 @@ const MoreOptions = ({
         </Tooltip>
         <Tooltip content="Download">
           <button
-            data-cy="invoice-download"
             disabled={invoice.status == "draft"}
             className={
               invoice.status == "draft"
                 ? "text-miru-gray-1000"
-                : "p-2 text-miru-han-purple-1000 hover:bg-miru-gray-1000"
+                : "rounded p-2 text-miru-han-purple-1000 hover:bg-miru-gray-100"
             }
             onClick={e => {
               e.stopPropagation();
@@ -73,8 +73,7 @@ const MoreOptions = ({
         </Tooltip>
         <Tooltip content="Edit">
           <Link
-            className="p-2 text-miru-han-purple-1000 hover:bg-miru-gray-1000"
-            data-cy="edit-invoice"
+            className="rounded p-2 text-miru-han-purple-1000 hover:bg-miru-gray-100"
             id="editInvoiceButton"
             to={`/invoices/${invoice.id}/edit`}
             type="button"
@@ -85,7 +84,7 @@ const MoreOptions = ({
         </Tooltip>
         <Tooltip content="More">
           <button
-            className={`p-2 text-miru-han-purple-1000  hover:bg-miru-gray-1000 ${
+            className={`rounded p-2 text-miru-han-purple-1000  hover:bg-miru-gray-100 ${
               isMenuOpen && `bg-miru-gray-100`
             }`}
             onClick={e => {
@@ -157,7 +156,8 @@ const MoreOptions = ({
         <li>
           <button
             className="flex cursor-pointer items-center py-2 text-miru-han-purple-1000"
-            onClick={() => {
+            onClick={e => {
+              e.stopPropagation();
               setIsSending(!isSending);
               setShowMoreOptions(false);
             }}
@@ -167,7 +167,6 @@ const MoreOptions = ({
         </li>
         <li className="flex cursor-pointer items-center py-2">
           <button
-            data-cy="invoice-download"
             disabled={invoice.status == "draft"}
             className={
               invoice.status == "draft"
@@ -182,7 +181,6 @@ const MoreOptions = ({
         <li>
           <Link
             className="flex cursor-pointer items-center py-2 text-miru-han-purple-1000"
-            data-cy="edit-invoice"
             to={`/invoices/${invoice.id}/edit`}
             type="button"
           >

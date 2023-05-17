@@ -8,20 +8,11 @@ class Invoices::PaymentsController < ApplicationController
 
   def new
     session = @invoice.create_checkout_session!(
-      success_url: success_invoice_payments_url(@invoice),
+      success_url: request.base_url + "/invoices/#{@invoice.id}/payments/success",
       cancel_url: cancel_invoice_payments_url(@invoice)
     )
 
     redirect_to session.url, allow_other_host: true
-  end
-
-  def success
-    if InvoicePayment::StripePaymentIntent.new(@invoice).process
-      flash[:notice] = t(".success")
-    else
-      flash[:error] = t(".failure")
-      redirect_to root_path
-    end
   end
 
   def cancel
@@ -36,7 +27,7 @@ class Invoices::PaymentsController < ApplicationController
 
     def ensure_invoice_unpaid
       if @invoice.paid?
-        redirect_to success_invoice_payments_url(@invoice.id)
+        redirect_to request.base_url + "/invoices/#{@invoice.id}/payments/success"
       end
     end
 end

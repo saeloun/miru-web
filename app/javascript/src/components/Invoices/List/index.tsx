@@ -2,11 +2,10 @@ import React, { Fragment, useEffect, useState } from "react";
 
 import Logger from "js-logger";
 import { useSearchParams } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
 
 import invoicesApi from "apis/invoices";
 import withLayout from "common/Mobile/HOC/withLayout";
-import Pagination from "common/Pagination";
+import Pagination from "common/Pagination/Pagination";
 import { ApiStatus as InvoicesStatus, LocalStorageKeys } from "constants/index";
 import { useUserContext } from "context/UserContext";
 import { sendGAPageView } from "utils/googleAnalytics";
@@ -15,7 +14,6 @@ import Container from "./container";
 import FilterSideBar from "./FilterSideBar";
 import Header from "./Header";
 
-import { TOASTER_DURATION } from "../../../constants";
 import BulkDeleteInvoices from "../popups/BulkDeleteInvoices";
 import BulkDownloadInvoices from "../popups/BulkDownloadInvoices";
 import DeleteInvoice from "../popups/DeleteInvoice";
@@ -96,6 +94,10 @@ const Invoices = () => {
   }, [downloading]);
 
   useEffect(() => {
+    window.localStorage.setItem(
+      LocalStorageKeys.INVOICE_SEARCH_PARAM,
+      params.query
+    );
     fetchInvoices();
     setSearchParams(cleanParams(params));
   }, [params.invoices_per_page, params.page, params.query, filterParams]);
@@ -216,7 +218,6 @@ const Invoices = () => {
 
   const InvoicesLayout = () => (
     <div className="h-full p-4 lg:p-0">
-      <ToastContainer autoClose={TOASTER_DURATION} />
       <Header
         filterParamsStr={filterParamsStr}
         isDesktop={isDesktop}
@@ -269,10 +270,10 @@ const Invoices = () => {
           )}
           {invoices.length > 0 && (
             <Pagination
-              isDesktop={isDesktop}
               pagy={pagy}
               params={params}
               setParams={setParams}
+              title="invoices/page"
             />
           )}
           {showDeleteDialog && (

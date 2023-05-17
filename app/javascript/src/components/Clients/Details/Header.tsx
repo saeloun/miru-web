@@ -5,31 +5,40 @@ import {
   DotsThreeVerticalIcon,
   ReportsIcon,
   PencilIcon,
-  CaretDownIcon,
   DeleteIcon,
+  PlusIcon,
+  EditIcon,
+  InfoIcon,
 } from "miruIcons";
 import { useNavigate } from "react-router-dom";
+import { MobileMoreOptions, Modal } from "StyledComponents";
 
-import AddProject from "../Modals/AddProject";
+import { useUserContext } from "context/UserContext";
+
 import DeleteClient from "../Modals/DeleteClient";
 import EditClient from "../Modals/EditClient";
 
-const Header = ({ clientDetails }) => {
+const Header = ({ clientDetails, setShowProjectModal }) => {
   const [isHeaderMenuVisible, setIsHeaderMenuVisible] =
     useState<boolean>(false);
   const [isClientOpen, setIsClientOpen] = useState<boolean>(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
   const [showEditDialog, setShowEditDialog] = useState<boolean>(false);
-  const [showProjectModal, setShowProjectModal] = useState<boolean>(false);
+  const [showMobileModal, setShowMobileModal] = useState<boolean>(false);
 
   const navigate = useNavigate();
+  const { isDesktop } = useUserContext();
 
   const handleClientDetails = () => {
     setIsClientOpen(!isClientOpen);
   };
 
   const handleMenuVisibility = () => {
-    setIsHeaderMenuVisible(!isHeaderMenuVisible);
+    if (isDesktop) {
+      setIsHeaderMenuVisible(!isHeaderMenuVisible);
+    } else {
+      setShowMobileModal(!showMobileModal);
+    }
   };
 
   const handleBackButtonClick = () => {
@@ -52,27 +61,30 @@ const Header = ({ clientDetails }) => {
   const menuBackground = isHeaderMenuVisible ? "bg-miru-gray-1000" : "";
 
   return (
-    <div className="my-6">
-      <div className="flex min-w-0 items-center justify-between">
+    <div className="lg:my-6">
+      <div className="flex h-12 min-w-0 items-center justify-between shadow-c1 lg:h-auto lg:shadow-none">
         <div className="flex items-center">
           <button className="button-icon__back" onClick={handleBackButtonClick}>
-            <ArrowLeftIcon color="#5b34ea" size={20} weight="bold" />
+            <ArrowLeftIcon
+              className="text-miru-dark-purple-1000"
+              size={20}
+              weight="bold"
+            />
           </button>
-          <h2 className="mr-6 py-1 text-3xl font-extrabold text-gray-900 sm:truncate sm:text-4xl">
+          <h2 className="mr-6 py-1 text-base font-medium text-miru-dark-purple-1000 sm:truncate lg:text-4xl lg:font-extrabold">
             {clientDetails.name}
           </h2>
           <button onClick={handleClientDetails}>
-            <CaretDownIcon size={20} weight="bold" />
+            <InfoIcon size={20} weight="bold" />
           </button>
         </div>
         <div className="relative h-8">
           <button
             className={`menuButton__button ${menuBackground}`}
-            data-cy="three-dots"
             id="kebabMenu"
             onClick={handleMenuVisibility}
           >
-            <DotsThreeVerticalIcon color="#000000" size={20} />
+            <DotsThreeVerticalIcon color="#000000" size={20} weight="bold" />
           </button>
           {isHeaderMenuVisible && (
             <ul className="menuButton__wrapper">
@@ -99,20 +111,32 @@ const Header = ({ clientDetails }) => {
         </div>
       </div>
       {isClientOpen && (
-        <div className="ml-12 mt-4 flex">
-          <div className="text-xs text-miru-dark-purple-400">
-            <h6 className="font-semibold">Email ID(s)</h6>
-            <p>{clientDetails.email}</p>
+        <Modal isOpen={isClientOpen} onClose={() => setIsClientOpen(false)}>
+          <div>
+            <p className="text-lg font-bold">Client Details</p>
+            <div className="mt-4 text-base">
+              <p className="font-semibold">Email ID(s)</p>
+              <p className="mt-1 text-miru-dark-purple-400">
+                {clientDetails.email}
+              </p>
+            </div>
+            <div className="mt-4 text-base">
+              <p className=" font-semibold">Address</p>
+              <div className="mt-1 text-miru-dark-purple-400">
+                <p>{clientDetails.address.address_line_1}</p>
+                <p>{clientDetails.address?.address_line_2}</p>
+                <p>{clientDetails.address?.city}</p>
+                <p>{clientDetails.address?.country}</p>
+              </div>
+            </div>
+            <div className="mt-4 text-base">
+              <p className="font-semibold">Phone number</p>
+              <p className="mt-1 text-miru-dark-purple-400">
+                {clientDetails.phone}
+              </p>
+            </div>
           </div>
-          <div className="ml-28 text-xs text-miru-dark-purple-400">
-            <h6 className="font-semibold">Address</h6>
-            <p>{clientDetails.address}</p>
-          </div>
-          <div className="ml-28 text-xs text-miru-dark-purple-400">
-            <h6 className="font-semibold">Phone number</h6>
-            <p>{clientDetails.phone}</p>
-          </div>
-        </div>
+        </Modal>
       )}
       {showDeleteDialog && (
         <DeleteClient
@@ -126,11 +150,39 @@ const Header = ({ clientDetails }) => {
           setShowEditDialog={setShowEditDialog}
         />
       )}
-      {showProjectModal && (
-        <AddProject
-          clientDetails={clientDetails}
-          setShowProjectModal={setShowProjectModal}
-        />
+      {showMobileModal && (
+        <MobileMoreOptions setVisibilty={setShowMobileModal}>
+          <li
+            className="menuButton__list-item"
+            onClick={() => {
+              handleAddProject();
+              setShowMobileModal(false);
+            }}
+          >
+            <PlusIcon />
+            <span className="ml-3">Add new project</span>
+          </li>
+          <li
+            className="menuButton__list-item"
+            onClick={() => {
+              handleEdit();
+              setShowMobileModal(false);
+            }}
+          >
+            <EditIcon color="#5B34EA" size={16} />
+            <span className="ml-3">Edit</span>
+          </li>
+          <li
+            className="menuButton__list-item"
+            onClick={() => {
+              handleDelete();
+              setShowMobileModal(false);
+            }}
+          >
+            <DeleteIcon color="#E04646" size={16} />
+            <span className="ml-3">Delete</span>
+          </li>
+        </MobileMoreOptions>
       )}
     </div>
   );
