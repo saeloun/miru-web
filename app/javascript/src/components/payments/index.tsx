@@ -8,6 +8,7 @@ import { useUserContext } from "context/UserContext";
 import { unmapPayment } from "mapper/mappedIndex";
 
 import Header from "./Header";
+import TableOnMobileView from "./Mobile/Table";
 import AddManualEntry from "./Modals/AddManualEntry";
 import { PaymentsEmptyState } from "./PaymentsEmptyState";
 import Table from "./Table";
@@ -19,6 +20,13 @@ const Payments = () => {
   const [invoiceList, setInvoiceList] = useState<any>([]);
   const [dateFormat, setDateFormat] = useState<any>("");
   const [baseCurrency, setBaseCurrency] = useState<any>("");
+  const [searchedPaymentList, setSearchedPaymentList] = useState<any>([]);
+  const [showSearchedPayments, setShowSearchedPayments] =
+    useState<boolean>(false);
+
+  const [params, setParams] = useState({
+    query: "",
+  });
   const { isDesktop } = useUserContext();
   const fetchInvoiceList = async () => {
     try {
@@ -49,19 +57,61 @@ const Payments = () => {
     }
   };
 
+  const isPaymentListEmpty = (
+    showSearchedPayments: boolean,
+    paymentList: any[],
+    searchedPaymentList: any[]
+  ) =>
+    showSearchedPayments ? !searchedPaymentList?.length : !paymentList?.length;
+
   useEffect(() => {
     fetchInvoiceList();
     fetchPaymentList();
     checkInvoiceIdInUrl();
   }, []);
 
+  const handleEscKeyPress = (e: any) => {
+    if (e?.key?.trim()?.toLowerCase() == "escape" && showManualEntryModal) {
+      setShowManualEntryModal(false);
+    }
+  };
+
   const PaymentsLayout = () => (
-    <div className="h-full flex-col">
-      <Header setShowManualEntryModal={setShowManualEntryModal} />
-      {paymentList.length > 0 ? (
-        <Table baseCurrency={baseCurrency} payments={paymentList} />
-      ) : (
+    <div className="h-full flex-col p-4" onKeyDown={handleEscKeyPress}>
+      <Header
+        params={params}
+        payments={paymentList}
+        setParams={setParams}
+        setSearchedPaymentList={setSearchedPaymentList}
+        setShowManualEntryModal={setShowManualEntryModal}
+        setShowSearchedPayments={setShowSearchedPayments}
+        showSearchedPayments={showSearchedPayments}
+      />
+      {isPaymentListEmpty(
+        showSearchedPayments,
+        paymentList,
+        searchedPaymentList
+      ) ? (
         <PaymentsEmptyState setShowManualEntryModal={setShowManualEntryModal} />
+      ) : (
+        <>
+          <div className="hidden md:block">
+            <Table
+              baseCurrency={baseCurrency}
+              payments={
+                showSearchedPayments ? searchedPaymentList : paymentList
+              }
+            />
+          </div>
+          <div className="block md:hidden">
+            <TableOnMobileView
+              baseCurrency={baseCurrency}
+              payments={
+                showSearchedPayments ? searchedPaymentList : paymentList
+              }
+            />
+          </div>
+        </>
       )}
       {showManualEntryModal && (
         <AddManualEntry
@@ -77,6 +127,19 @@ const Payments = () => {
   );
 
   const Main = withLayout(PaymentsLayout, !isDesktop, !isDesktop);
+
+  if (showManualEntryModal && !isDesktop) {
+    return (
+      <AddManualEntry
+        baseCurrency={baseCurrency}
+        dateFormat={dateFormat}
+        fetchInvoiceList={fetchInvoiceList}
+        fetchPaymentList={fetchPaymentList}
+        invoiceList={invoiceList}
+        setShowManualEntryModal={setShowManualEntryModal}
+      />
+    );
+  }
 
   return isDesktop ? PaymentsLayout() : <Main />;
 };

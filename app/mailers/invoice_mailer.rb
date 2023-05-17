@@ -8,7 +8,7 @@ class InvoiceMailer < ApplicationMailer
     recipients = params[:recipients]
     subject = params[:subject]
     @message = params[:message]
-    @invoice_url = view_invoice_url(@invoice.external_view_key)
+    @invoice_url = "#{ENV['APP_BASE_URL']}/invoices/#{@invoice.external_view_key}/view"
     @company = @invoice.company
     @company_logo = company_logo
     @amount = FormatAmountService.new(@company.base_currency, @invoice.amount).process

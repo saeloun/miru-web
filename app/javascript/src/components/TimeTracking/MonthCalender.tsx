@@ -216,7 +216,7 @@ const MonthCalender = ({
               weekInfo[dayNum] ? (
                 <div
                   key={dayNum}
-                  className={`flex h-14 w-24 cursor-pointer justify-end rounded-md border-2 bg-white p-1
+                  className={`flex h-14 w-16 cursor-pointer justify-end rounded-md border-2 bg-white p-1 xl:w-24
                     ${
                       weekInfo[dayNum]["date"] === selectedFullDate
                         ? "border-miru-han-purple-1000"
@@ -239,7 +239,7 @@ const MonthCalender = ({
                         {weekInfo[dayNum]["day"]}
                       </p>
                     </div>
-                    <p className="mx-3 text-2xl text-miru-dark-purple-1000">
+                    <p className="mx-auto text-xl text-miru-dark-purple-1000 xl:mx-3 xl:text-2xl">
                       {(() => {
                         if (weekInfo[dayNum]["totalDuration"] > 0) {
                           return minToHHMM(weekInfo[dayNum]["totalDuration"]);
@@ -254,14 +254,14 @@ const MonthCalender = ({
                 </div>
               ) : (
                 <div
-                  className="h-14 w-24 text-miru-dark-purple-1000"
+                  className="h-14 w-16 text-miru-dark-purple-1000 xl:w-24"
                   key={dayNum}
                 />
               )
             )}
-            <div className="relative h-14 w-24 rounded-md bg-white font-bold">
+            <div className="relative h-14 w-16 rounded-md bg-white font-semibold xl:w-24 xl:font-bold">
               <div className="absolute bottom-0 right-0 flex justify-end p-1">
-                <p className="mr-auto text-2xl" id={weekInfo[7]}>
+                <p className="mr-auto text-xl xl:text-2xl" id={weekInfo[7]}>
                   {(() => {
                     if (weekInfo[7]) {
                       return minToHHMM(weekInfo[7]);

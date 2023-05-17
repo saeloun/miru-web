@@ -39,6 +39,7 @@ RSpec.describe "Email confirmations", type: :system do
         fill_in "email", with: user2.email
         fill_in "password", with: user2.password
         fill_in "confirm_password", with: user2.password
+        find(:css, "#termsOfService", visible: false).set(true)
 
         click_on "Sign Up"
       end

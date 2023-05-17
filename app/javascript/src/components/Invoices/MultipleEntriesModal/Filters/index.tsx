@@ -5,6 +5,7 @@ import { X, MagnifyingGlass } from "phosphor-react";
 import Select from "react-select";
 
 import CustomDateRangePicker from "common/CustomDateRangePicker";
+import { useUserContext } from "context/UserContext";
 
 import { handleDateRangeOptions } from "./DateRange";
 import SearchTeamMembers from "./SearchTeamMembers";
@@ -16,6 +17,7 @@ const Filters = ({
   selectedInput,
   setSelectedInput,
   filterIntialValues,
+  handleSelectAll,
 }) => {
   const [showCustomFilter, setShowCustomFilter] = useState<boolean>(false);
   const [dateRange, setDateRange] = useState<any>({ from: "", to: "" });
@@ -25,6 +27,11 @@ const Filters = ({
   const [dateRangeOptions, setDateRangeOptions] = useState(
     handleDateRangeOptions()
   );
+  const { isDesktop } = useUserContext();
+  const isResetActive =
+    filters.teamMembers.length > 0 ||
+    filters.dateRange.label !== "All" ||
+    filters.searchTerm !== "";
 
   useEffect(() => {
     const { value, from, to } = filterParams.dateRange;
@@ -150,15 +157,16 @@ const Filters = ({
       : setFilterParams(filters);
   };
 
-  const handleReset = () => {
+  const handleReset = e => {
     setFilters(filterIntialValues);
     setFilterParams(filterIntialValues);
+    handleSelectAll(e);
   };
 
   const customStyles = {
     container: base => ({
       ...base,
-      width: "13rem",
+      width: isDesktop ? "13rem" : "auto",
     }),
     control: provided => ({
       ...provided,
@@ -180,8 +188,8 @@ const Filters = ({
   };
 
   return (
-    <div className="flex flex-col items-center justify-between px-6 py-2 md:flex-row">
-      <div className="relative flex w-4/12 items-center">
+    <div className="flex flex-col items-center justify-between px-2 pt-2 pb-4 lg:flex-row lg:px-6">
+      <div className="relative flex w-full items-center lg:w-4/12 lg:py-0">
         <input
           placeholder="Search"
           type="text"
@@ -205,63 +213,77 @@ const Filters = ({
           />
         )}
       </div>
-      <SearchTeamMembers
-        filters={filters}
-        setFilters={setFilters}
-        teamMembers={teamMembers}
-      />
-      <div>
-        <Select
-          classNamePrefix="react-select-filter"
-          name="dateRange"
-          options={dateRangeOptions}
-          styles={customStyles}
-          value={filters.dateRange}
-          onChange={handleSelectFilter}
+      <div className="flex w-full items-center justify-between py-4 lg:w-6/12 lg:justify-evenly">
+        <SearchTeamMembers
+          filters={filters}
+          setFilters={setFilters}
+          teamMembers={teamMembers}
         />
-        {showCustomFilter && (
-          <div className="absolute z-20 mt-1 flex flex-col rounded-lg bg-miru-white-1000 shadow-c1">
-            <CustomDateRangePicker
-              dateRange={dateRange}
-              handleSelectDate={handleSelectDate}
-              hideCustomFilter={hideCustomFilter}
-              selectedInput={selectedInput}
-              onClickInput={onClickInput}
-            />
-            <div className="flex h-full items-end justify-center bg-miru-white-1000 p-6 ">
-              <button
-                className="sidebar__reset"
-                onClick={resetCustomDatePicker}
-              >
-                Cancel
-              </button>
-              <button
-                disabled={disableDateBtn}
-                className={`sidebar__apply ${
-                  disableDateBtn
-                    ? "cursor-not-allowed border-transparent bg-indigo-100 hover:border-transparent"
-                    : "cursor-pointer"
-                }`}
-                onClick={submitCustomDatePicker}
-              >
-                Done
-              </button>
+        <div className="ml-2 w-1/2 lg:w-auto">
+          <Select
+            classNamePrefix="react-select-filter"
+            name="dateRange"
+            options={dateRangeOptions}
+            styles={customStyles}
+            value={filters.dateRange}
+            onChange={handleSelectFilter}
+          />
+          {showCustomFilter && (
+            <div className="absolute z-20 mt-1 flex flex-col rounded-lg bg-miru-white-1000 shadow-c1">
+              <CustomDateRangePicker
+                dateRange={dateRange}
+                handleSelectDate={handleSelectDate}
+                hideCustomFilter={hideCustomFilter}
+                selectedInput={selectedInput}
+                onClickInput={onClickInput}
+              />
+              <div className="flex h-full items-end justify-center bg-miru-white-1000 p-6 ">
+                <button
+                  className="sidebar__reset"
+                  onClick={resetCustomDatePicker}
+                >
+                  Cancel
+                </button>
+                <button
+                  disabled={disableDateBtn}
+                  className={`sidebar__apply ${
+                    disableDateBtn
+                      ? "cursor-not-allowed border-transparent bg-indigo-100 hover:border-transparent"
+                      : "cursor-pointer"
+                  }`}
+                  onClick={submitCustomDatePicker}
+                >
+                  Done
+                </button>
+              </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
-      <button
-        className="text-base text-miru-han-purple-100 hover:text-miru-han-purple-1000"
-        onClick={handleReset}
-      >
-        RESET
-      </button>
-      <button
-        className="text-base text-miru-han-purple-1000"
-        onClick={handleApply}
-      >
-        APPLY
-      </button>
+      <div className="flex w-full items-center justify-between px-2 lg:w-2/12 lg:py-0">
+        <button
+          disabled={!isResetActive}
+          className={`text-base lg:hover:text-miru-han-purple-1000 ${
+            isResetActive
+              ? "text-miru-han-purple-1000"
+              : "text-miru-han-purple-100"
+          }`}
+          onClick={handleReset}
+        >
+          RESET
+        </button>
+        <button
+          disabled={!isResetActive}
+          className={`text-base lg:hover:text-miru-han-purple-1000 ${
+            isResetActive
+              ? "text-miru-han-purple-1000"
+              : "text-miru-han-purple-100"
+          }`}
+          onClick={handleApply}
+        >
+          APPLY
+        </button>
+      </div>
     </div>
   );
 };

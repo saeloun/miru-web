@@ -20,6 +20,7 @@ const ClientSelection = ({
 
   const [isClientVisible, setIsClientVisible] =
     useState<boolean>(clientVisible);
+
   const wrapperRef = useRef(null);
 
   useOutsideClick(wrapperRef, () => setIsClientVisible(false), isClientVisible);
@@ -61,12 +62,15 @@ const ClientSelection = ({
     </components.DropdownIndicator>
   );
 
+  const { address_line_1, address_line_2, city, state, country, pin } =
+    selectedClient?.address ?? {};
+
   return (
     <div className="group w-4/12 pr-4">
       <div
         className="relative h-full"
         onClick={() => {
-          setIsClientVisible(!isClientVisible);
+          setIsClientVisible(true);
         }}
       >
         <CustomAdvanceInput
@@ -75,12 +79,17 @@ const ClientSelection = ({
           wrapperClassName="h-full cursor-pointer"
           value={
             isOptionSelected && (
-              <div>
+              <div className="h-full overflow-y-scroll">
                 <p className="text-base font-bold text-miru-dark-purple-1000">
                   {selectedClient.label}
                 </p>
                 <p className="w-52 text-sm font-normal text-miru-dark-purple-600">
-                  {selectedClient.address}
+                  {`${address_line_1}${
+                    address_line_2 ? `, ${address_line_2}` : ""
+                  }
+                ${
+                  address_line_2 ? "," : ""
+                }\n ${city}, ${state}, ${country},\n ${pin}`}
                   <br />
                   {selectedClient.phone}
                 </p>
@@ -88,12 +97,12 @@ const ClientSelection = ({
             )
           }
         />
-        <div className=" absolute top-2 left-0 w-fit" ref={wrapperRef}>
+        <div className="absolute top-2 w-full" ref={wrapperRef}>
           {isClientVisible && (
             <Select
               defaultMenuIsOpen
               isSearchable
-              className="client-select m-0 mt-2 w-52 text-white"
+              className="client-select m-0 mt-2  w-full text-white"
               classNamePrefix="m-0 truncate font-medium text-sm text-miru-dark-purple-1000 bg-white"
               components={{ DropdownIndicator, IndicatorSeparator: () => null }}
               defaultValue={null}

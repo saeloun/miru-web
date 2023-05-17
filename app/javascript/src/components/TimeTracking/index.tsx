@@ -6,13 +6,11 @@ import * as updateLocale from "dayjs/plugin/updateLocale";
 import * as weekday from "dayjs/plugin/weekday";
 import { minToHHMM } from "helpers";
 import Logger from "js-logger";
-import { ToastContainer } from "react-toastify";
 
 import timesheetEntryApi from "apis/timesheet-entry";
 import timeTrackingApi from "apis/timeTracking";
 import withLayout from "common/Mobile/HOC/withLayout";
 import SearchTimeEntries from "common/SearchTimeEntries";
-import { TOASTER_DURATION } from "constants/index";
 import { useUserContext } from "context/UserContext";
 import { sendGAPageView } from "utils/googleAnalytics";
 
@@ -71,7 +69,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
     sendGAPageView();
     fetchTimeTrackingData();
     !isDesktop && setView("day");
-  }, []);
+  }, [entryList[selectedFullDate]?.length]);
 
   const fetchTimeTrackingData = async () => {
     try {
@@ -115,7 +113,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
     if (view === "month") return;
     parseWeeklyViewData();
     calculateTotalHours();
-  }, [weekDay, entryList]);
+  }, [weekDay, entryList, view]);
 
   useEffect(() => {
     setIsWeeklyEditing(false);
@@ -361,7 +359,6 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
 
   const TimeTrackingLayout = () => (
     <div className="pb-14">
-      <ToastContainer autoClose={TOASTER_DURATION} />
       {!isDesktop && (
         <Header
           currentMonthNumber={currentMonthNumber}

@@ -46,6 +46,7 @@ const MobileEditDetails = ({
   handleOnChangeCity,
   handlePhoneNumberChange,
   wrapperRef,
+  dateFormat,
 }) => (
   <div className="mt-12 px-4 py-2">
     <div className="py-4">
@@ -55,7 +56,6 @@ const MobileEditDetails = ({
       <div className="mt-2 flex w-full flex-row">
         <div className="w-1/2 px-1">
           <CustomInputText
-            dataCy="first-name"
             id="first_name"
             label="First name"
             name="first_name"
@@ -84,7 +84,6 @@ const MobileEditDetails = ({
         </div>
         <div className="w-1/2 px-1">
           <CustomInputText
-            dataCy="last-name"
             id="last_name"
             label="Last name"
             name="last_name"
@@ -122,18 +121,12 @@ const MobileEditDetails = ({
           >
             <CustomInputText
               disabled
-              dataCy="date_of_birth"
               id="date_of_birth"
               inputBoxClassName={`${inputClass} border-miru-gray-1000`}
               label="Date of Birth"
               name="date_of_birth"
               type="text"
-              value={
-                personalDetails.date_of_birth &&
-                dayjs(personalDetails.date_of_birth).format(
-                  personalDetails.date_format
-                )
-              }
+              value={personalDetails.date_of_birth || ""}
               onChange={e => {
                 updateBasicDetails(e.target.value, "date_of_birth", false);
               }}
@@ -146,11 +139,12 @@ const MobileEditDetails = ({
           </div>
           {showDatePicker.visibility && (
             <CustomDatePicker
+              dateFormat={dateFormat}
               handleChange={e => handleDatePicker(e, true)}
               date={
                 personalDetails.date_of_birth
-                  ? new Date(personalDetails.date_of_birth)
-                  : null
+                  ? personalDetails.date_of_birth
+                  : dayjs()
               }
             />
           )}
@@ -165,7 +159,7 @@ const MobileEditDetails = ({
       </span>
       <div className="mt-2 flex w-full flex-row">
         <div className="w-1/2 px-1">
-          <div className="outline relative flex h-12 flex-row rounded border border-miru-gray-1000 bg-white px-2 pb-4 pt-2 text-sm">
+          <div className="outline relative flex h-12 flex-row rounded border border-miru-gray-1000 bg-white px-2 py-4 text-sm">
             <PhoneInput
               className="input-phone-number w-full border-transparent focus:border-transparent focus:ring-0"
               flags={flags}
@@ -185,7 +179,6 @@ const MobileEditDetails = ({
         </div>
         <div className="w-1/2 px-1">
           <CustomInputText
-            dataCy="email-id"
             id="email_id"
             label="Email ID (Personal)"
             name="email_id"
@@ -231,7 +224,6 @@ const MobileEditDetails = ({
         </div>
         <div className="px-1 py-1">
           <CustomInputText
-            dataCy="address-line-1"
             id="address_line_1"
             label="Address line 1"
             name="address_line_1"
@@ -263,7 +255,6 @@ const MobileEditDetails = ({
         </div>
         <div className="px-2 py-1">
           <CustomInputText
-            dataCy="address-line-2"
             id="address_line_2"
             inputBoxClassName={`${inputClass} border-miru-gray-1000`}
             label="Address line 2 (optional)"
@@ -347,7 +338,6 @@ const MobileEditDetails = ({
           </div>
           <div className="flex w-1/2 flex-col px-2 py-3">
             <CustomInputText
-              dataCy="zipcode"
               id="zipcode"
               label="Zipcode"
               name="zipcode"
@@ -384,7 +374,6 @@ const MobileEditDetails = ({
       <div className="mt-2 flex w-full flex-row">
         <div className="flex w-1/2 flex-col px-1">
           <CustomInputText
-            dataCy="linked-in"
             id="linked_in"
             inputBoxClassName={`${inputClass} border-miru-gray-1000`}
             label="LinkedIn"
@@ -399,7 +388,6 @@ const MobileEditDetails = ({
         </div>
         <div className="flex w-1/2 flex-col px-1">
           <CustomInputText
-            dataCy="github"
             id="github"
             inputBoxClassName={`${inputClass} border-miru-gray-1000`}
             label="github"

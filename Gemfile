@@ -3,7 +3,7 @@
 source "https://rubygems.org"
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby "3.2.1"
+ruby "3.2.2"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 7.0.4"
@@ -12,7 +12,7 @@ gem "rails", "~> 7.0.4"
 gem "pg"
 
 # Use the Puma web server [https://github.com/puma/puma]
-gem "puma", "~> 5.0"
+gem "puma", "< 7"
 
 # Use JavaScript with ESM import maps [https://github.com/rails/importmap-rails]
 # gem "importmap-rails", ">= 0.9.2"
@@ -57,7 +57,7 @@ gem "bootsnap", ">= 1.4.4", require: false
 gem "image_processing", ">= 1.2"
 
 # Webpack bundler for rails
-gem "webpacker", "6.0.0.rc.6"
+gem "shakapacker", "6.0.0"
 
 # React hook for rails
 gem "react-rails"
@@ -115,7 +115,7 @@ gem "active_interaction"
 gem "stripe"
 
 # Background job processing adapter
-gem "sidekiq", "<7"
+gem "sidekiq", "<8"
 
 #  job scheduler extension for Sidekiq
 gem "sidekiq-scheduler"
@@ -172,6 +172,8 @@ group :development, :test, :ci do
   # To record response of outgoing API calls
   gem "vcr", "~> 6.1"
   gem "webmock", "~> 3.14.0"
+
+  gem "dockerfile-rails"
 end
 
 group :development do

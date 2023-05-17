@@ -33,14 +33,15 @@ const InvoiceDetails = ({
   const DueDateWrapper = useRef(null);
   const DateOfIssueWrapper = useRef(null);
 
-  const getIssuedDate = dayjs(issueDate).format(dateFormat);
-  const getDueDate = dayjs(dueDate).format(dateFormat);
+  const getIssuedDate = dayjs(issueDate, dateFormat).format(dateFormat);
+  const getDueDate = dayjs(dueDate, dateFormat).format(dateFormat);
 
   const handleDatePickerChange = date => {
     setIssueDate(date);
     setShowDateOfIssuePicker(false);
-    const newDueDate = new Date(date);
-    setDueDate(new Date(newDueDate.setMonth(newDueDate.getMonth() + 1)));
+    const parsedDate = dayjs(date, dateFormat);
+    const newDueDate = parsedDate.add(1, "month").format(dateFormat);
+    setDueDate(newDueDate);
   };
 
   const handleDueDatePicker = date => {
@@ -59,7 +60,6 @@ const InvoiceDetails = ({
       />
       <div className="mr-2 flex w-2/12 flex-col justify-between">
         <CustomInputText
-          dataCy="Invoice Number"
           id="invoiceNumber"
           inputBoxClassName="border focus:border-miru-han-purple-1000 cursor-pointer"
           label="Invoice Number"
@@ -70,7 +70,6 @@ const InvoiceDetails = ({
           onChange={e => setInvoiceNumber(e.target.value)}
         />
         <CustomInputText
-          dataCy="Reference"
           id="Reference"
           inputBoxClassName="focus:border-miru-han-purple-1000 cursor-pointer"
           label="Reference"
@@ -86,7 +85,6 @@ const InvoiceDetails = ({
           <div onClick={() => setShowDateOfIssuePicker(!showDateOfIssuePicker)}>
             <CustomInputText
               readOnly
-              dataCy="Date of Issue"
               id="Date of Issue"
               inputBoxClassName="focus:border-miru-han-purple-1000 cursor-pointer"
               label="Date of Issue"
@@ -105,6 +103,7 @@ const InvoiceDetails = ({
           {showDateOfIssuePicker && (
             <CustomDatePicker
               date={issueDate}
+              dateFormat={dateFormat}
               handleChange={handleDatePickerChange}
               setVisibility={setShowDateOfIssuePicker}
               wrapperRef={DateOfIssueWrapper}
@@ -115,7 +114,6 @@ const InvoiceDetails = ({
           <div onClick={() => setShowDueDatePicker(!showDueDatePicker)}>
             <CustomInputText
               readOnly
-              dataCy="Due Date"
               id="Due Date"
               inputBoxClassName="focus:border-miru-han-purple-1000 cursor-pointer"
               label="Due Date"
@@ -134,6 +132,7 @@ const InvoiceDetails = ({
           {showDueDatePicker && (
             <CustomDatePicker
               date={dueDate}
+              dateFormat={dateFormat}
               handleChange={handleDueDatePicker}
               setVisibility={setShowDueDatePicker}
               wrapperRef={DueDateWrapper}

@@ -6,16 +6,16 @@ import { useUserContext } from "context/UserContext";
 
 import MoreOptions from "./MoreOptions";
 
-import { mobileActiveClassName, MobileMenuOptions } from "../utils";
+import { mobileActiveClassName, MobileMenuOptions, navOptions } from "../utils";
 
 const Navigation = () => {
-  const { isAdminUser, setSelectedTab, selectedTab } = useUserContext();
+  const { setSelectedTab, selectedTab, companyRole } = useUserContext();
   const defaultShowOption = selectedTab == "More";
   const [showMoreOptions, setShowMoreOptions] =
     useState<boolean>(defaultShowOption);
 
   const handleMoreClick = () => {
-    setShowMoreOptions(true);
+    setShowMoreOptions(!showMoreOptions);
   };
 
   useEffect(() => {
@@ -28,11 +28,17 @@ const Navigation = () => {
     <Fragment>
       <ul className="fixed bottom-0 left-0 right-0 z-40 flex h-1/12 justify-between bg-white px-3 shadow-c1">
         <MobileMenuOptions
+          companyRole={companyRole}
           from={0}
-          isAdminUser={isAdminUser}
           setSelectedTab={setSelectedTab}
           showMoreOptions={showMoreOptions}
-          to={4}
+          to={
+            navOptions.filter(option =>
+              option.allowedRoles.includes(companyRole)
+            ).length < 4
+              ? navOptions.length
+              : 4
+          }
         />
         <li
           className={`flex items-center p-2 ${

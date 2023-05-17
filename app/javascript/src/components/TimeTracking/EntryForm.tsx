@@ -10,12 +10,11 @@ import {
   validateTimesheetEntry,
 } from "helpers";
 import { CheckedCheckboxSVG, UncheckedCheckboxSVG } from "miruIcons";
-import TextareaAutosize from "react-autosize-textarea";
-import { TimeInput } from "StyledComponents";
+import TextareaAutosize from "react-textarea-autosize";
+import { TimeInput, Toastr } from "StyledComponents";
 
 import timesheetEntryApi from "apis/timesheet-entry";
 import CustomDatePicker from "common/CustomDatePicker";
-import Toastr from "common/Toastr";
 import { useUserContext } from "context/UserContext";
 
 import MobileEntryForm from "./MobileView/MobileEntryForm";
@@ -77,7 +76,10 @@ const AddEntry: React.FC<Iprops> = ({
   };
 
   useEffect(() => {
-    if (!project) return;
+    if (!project) {
+      return setProjectId(0);
+    }
+
     const selectedProject = projects[client].find(
       currentProject => currentProject.name === project
     );
@@ -88,7 +90,7 @@ const AddEntry: React.FC<Iprops> = ({
         setBillable(selectedProject.billable);
       }
     }
-  }, [project]);
+  }, [project, client]);
 
   const handleDurationChange = val => {
     setDuration(val);
@@ -183,7 +185,7 @@ const AddEntry: React.FC<Iprops> = ({
             value={client || "Client"}
             onChange={e => {
               setClient(e.target.value);
-              setProject(projects[e.target.value][0].name);
+              setProject(projects ? projects[e.target.value][0]?.name : "");
             }}
           >
             {!client && (
@@ -348,6 +350,8 @@ const AddEntry: React.FC<Iprops> = ({
       setNote={setNote}
       setProject={setProject}
       setSelectedDate={setSelectedDate}
+      setSubmitting={setSubmitting}
+      submitting={submitting}
     />
   );
 };

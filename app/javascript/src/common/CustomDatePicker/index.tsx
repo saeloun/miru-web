@@ -1,6 +1,7 @@
 import React from "react";
 
 import { getMonth, getYear } from "date-fns";
+import dayjs from "dayjs";
 import { useOutsideClick } from "helpers";
 import { CaretCircleLeftIcon, CaretCircleRightIcon } from "miruIcons";
 import DatePicker from "react-datepicker";
@@ -11,6 +12,7 @@ type CustomDatePickerProps = {
   date: any;
   setVisibility?: any;
   wrapperRef?: any;
+  dateFormat?: any;
 };
 
 const CustomDatePicker = ({
@@ -18,6 +20,7 @@ const CustomDatePicker = ({
   date,
   setVisibility,
   wrapperRef,
+  dateFormat,
 }: CustomDatePickerProps) => {
   const range = (start, end) => {
     const ans = [];
@@ -48,11 +51,15 @@ const CustomDatePicker = ({
     setVisibility(false);
   });
 
+  const parseDate = dateString => dayjs(dateString, dateFormat).toDate();
+
+  const formatDate = date => dayjs(date).format(dateFormat);
+
   return (
     <DatePicker
       inline
       calendarClassName="miru-calendar"
-      selected={date}
+      selected={parseDate(date)}
       wrapperClassName="datePicker"
       renderCustomHeader={({
         date,
@@ -96,7 +103,7 @@ const CustomDatePicker = ({
           </button>
         </div>
       )}
-      onChange={handleChange}
+      onChange={newDate => handleChange(formatDate(newDate))}
     />
   );
 };

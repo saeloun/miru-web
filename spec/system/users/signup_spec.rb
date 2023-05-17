@@ -16,6 +16,7 @@ RSpec.describe "User Signup", type: :system do
         fill_in "email", with: user.email
         fill_in "password", with: user.password
         fill_in "confirm_password", with: user.password
+        find(:css, "#termsOfService", visible: false).set(true)
 
         click_on "Sign Up"
 
@@ -33,6 +34,7 @@ RSpec.describe "User Signup", type: :system do
         fill_in "email", with: user.email
         fill_in "password", with: "wohXyq-cusgoz-fexde0"
         fill_in "confirm_password", with: "wohXyq-cusgoz-fexde0"
+        find(:css, "#termsOfService", visible: false).set(true)
 
         click_on "Sign Up"
 
@@ -50,6 +52,7 @@ RSpec.describe "User Signup", type: :system do
         fill_in "email", with: user.email
         fill_in "password", with: "My password with spaces@2023"
         fill_in "confirm_password", with: "My password with spaces@2023"
+        find(:css, "#termsOfService", visible: false).set(true)
 
         click_on "Sign Up"
 
@@ -67,6 +70,7 @@ RSpec.describe "User Signup", type: :system do
         fill_in "email", with: user.email
         fill_in "password", with: user.password
         fill_in "confirm_password", with: user.password
+        find(:css, "#termsOfService", visible: false).set(true)
 
         click_on "Sign Up"
 
@@ -93,6 +97,7 @@ RSpec.describe "User Signup", type: :system do
         fill_in "email", with: existing_user.email
         fill_in "password", with: user.password
         fill_in "confirm_password", with: user.password
+        find(:css, "#termsOfService", visible: false).set(true)
 
         click_on "Sign Up"
         sleep 1
@@ -111,6 +116,7 @@ RSpec.describe "User Signup", type: :system do
         fill_in "email", with: existing_user.email
         fill_in "password", with: "Pass@1"
         fill_in "confirm_password", with: "Pass@1"
+        find(:css, "#termsOfService", visible: false).set(true)
 
         click_on "Sign Up"
 
@@ -127,6 +133,7 @@ RSpec.describe "User Signup", type: :system do
         fill_in "email", with: existing_user.email
         fill_in "password", with: "password@2023"
         fill_in "confirm_password", with: "password@2023"
+        find(:css, "#termsOfService", visible: false).set(true)
 
         click_on "Sign Up"
 
@@ -143,6 +150,7 @@ RSpec.describe "User Signup", type: :system do
         fill_in "email", with: existing_user.email
         fill_in "password", with: "PASSWORD@2023"
         fill_in "confirm_password", with: "PASSWORD@2023"
+        find(:css, "#termsOfService", visible: false).set(true)
 
         click_on "Sign Up"
 
@@ -159,6 +167,7 @@ RSpec.describe "User Signup", type: :system do
         fill_in "email", with: existing_user.email
         fill_in "password", with: "@Password"
         fill_in "confirm_password", with: "@Password"
+        find(:css, "#termsOfService", visible: false).set(true)
 
         click_on "Sign Up"
 
@@ -175,6 +184,7 @@ RSpec.describe "User Signup", type: :system do
         fill_in "email", with: existing_user.email
         fill_in "password", with: "Password2023"
         fill_in "confirm_password", with: "Password2023"
+        find(:css, "#termsOfService", visible: false).set(true)
 
         click_on "Sign Up"
 
@@ -191,6 +201,7 @@ RSpec.describe "User Signup", type: :system do
         fill_in "email", with: existing_user.email
         fill_in "password", with: "Password 2023"
         fill_in "confirm_password", with: "Password 2023"
+        find(:css, "#termsOfService", visible: false).set(true)
 
         click_on "Sign Up"
 
@@ -207,6 +218,7 @@ RSpec.describe "User Signup", type: :system do
         fill_in "email", with: existing_user.email
         fill_in "password", with: " Password@2023"
         fill_in "confirm_password", with: " Password@2023"
+        find(:css, "#termsOfService", visible: false).set(true)
 
         click_on "Sign Up"
 
@@ -223,6 +235,7 @@ RSpec.describe "User Signup", type: :system do
         fill_in "email", with: existing_user.email
         fill_in "password", with: "Password@2023 "
         fill_in "confirm_password", with: "Password@2023 "
+        find(:css, "#termsOfService", visible: false).set(true)
 
         click_on "Sign Up"
 
@@ -239,6 +252,7 @@ RSpec.describe "User Signup", type: :system do
         fill_in "email", with: existing_user.email
         fill_in "password", with: "Welcome@123"
         fill_in "confirm_password", with: "HelloWorld@123"
+        find(:css, "#termsOfService", visible: false).set(true)
 
         click_on "Sign Up"
 

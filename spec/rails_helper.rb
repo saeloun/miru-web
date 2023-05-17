@@ -64,6 +64,7 @@ RSpec.configure do |config|
     Faker::UniqueGenerator.clear
     OmniAuth.config.test_mode = true
   end
+  config.include ActiveJob::TestHelper
 
   config.around do |example|
     if [:system, :feature].include?(example.metadata[:type])

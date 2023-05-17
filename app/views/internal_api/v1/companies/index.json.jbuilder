@@ -5,7 +5,6 @@ json.company_details do
   json.logo current_company.logo.attached? ? polymorphic_url(current_company.logo) : ""
   json.name current_company.name
   json.business_phone current_company.business_phone
-  json.address current_company.address
   json.country current_company.country
   json.currency current_company.base_currency
   json.standard_price current_company.standard_price
@@ -13,6 +12,9 @@ json.company_details do
   json.timezone current_company.timezone
   json.date_format current_company.date_format
   json.logo_url
+  json.address do
+    json.partial! "internal_api/v1/partial/address", locals: { address: }
+  end
 end
 json.issue_date Date.current
 json.due_date Date.current + 30

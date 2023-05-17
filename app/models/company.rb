@@ -3,7 +3,7 @@
 # Table name: companies
 #
 #  id              :bigint           not null, primary key
-#  address         :text             not null
+#  address         :text
 #  base_currency   :string           default("USD"), not null
 #  business_phone  :string
 #  country         :string           not null
@@ -40,8 +40,12 @@ class Company < ApplicationRecord
   has_many :vendors, dependent: :destroy
   resourcify
 
+  accepts_nested_attributes_for :addresses, reject_if: :address_attributes_blank?, allow_destroy: true
+
   # Validations
   validates :name, :business_phone, :standard_price, :country, :base_currency, presence: true
+  validates :name, length: { maximum: 30 }
+  validates :business_phone, length: { maximum: 15 }
   validates :standard_price, numericality: { greater_than_or_equal_to: 0 }
 
   # scopes
@@ -50,7 +54,7 @@ class Company < ApplicationRecord
 
   def client_list
     clients.kept.map do |client|
-      { id: client.id, name: client.name, email: client.email, phone: client.phone, address: client.address }
+      { id: client.id, name: client.name, email: client.email, phone: client.phone, address: client.current_address }
     end
   end
 
@@ -79,6 +83,18 @@ class Company < ApplicationRecord
 
   def all_expense_categories
     ExpenseCategory.default_categories.order(:created_at) + expense_categories.order(:created_at)
+  end
+
+  def address_attributes_blank?(attributes)
+    attributes.except("id, address_line_2").values.all?(&:blank?)
+  end
+
+  def current_address
+    addresses.first
+  end
+
+  def formatted_address
+    current_address.formatted_address
   end
 
   def billable_clients

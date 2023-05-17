@@ -81,7 +81,7 @@ const EmploymentDetails = () => {
     const addRes = await teamsApi.getAddress(memberId);
     const teamsObj = teamsMapper(res.data, addRes.data.addresses[0]);
     updateDetails("personal", teamsObj);
-    if (teamsObj.addresses.address_type.length > 0) {
+    if (teamsObj.addresses?.address_type?.length > 0) {
       setAddrType(
         addressOptions.find(
           item => item.value === teamsObj.addresses.address_type
@@ -184,9 +184,13 @@ const EmploymentDetails = () => {
 
   const handleDatePicker = date => {
     setShowDatePicker({ visibility: !showDatePicker.visibility });
+    const formattedDate = dayjs(date, personalDetails.date_format).format(
+      personalDetails.date_format
+    );
+
     updateDetails("personal", {
       ...personalDetails,
-      ...{ date_of_birth: dayjs(date).format(personalDetails.date_format) },
+      ...{ date_of_birth: formattedDate },
     });
   };
 
@@ -222,9 +226,25 @@ const EmploymentDetails = () => {
         },
       });
 
-      await teamsApi.updateAddress(memberId, addrId, {
-        address: { ...personalDetails.addresses },
-      });
+      const payload = {
+        address: {
+          address_line_1: personalDetails.addresses.address_line_1,
+          address_line_2: personalDetails.addresses.address_line_2,
+          address_type: personalDetails.addresses.address_type,
+          city: personalDetails.addresses.city,
+          state: personalDetails.addresses.state,
+          country: personalDetails.addresses.country,
+          pin: personalDetails.addresses.pin,
+        },
+      };
+      if (addrId) {
+        await teamsApi.updateAddress(memberId, addrId, {
+          address: { ...personalDetails.addresses },
+        });
+      } else {
+        await teamsApi.createAddress(memberId, payload);
+      }
+
       setErrDetails(initialErrState);
       navigate(`/team/${memberId}`, { replace: true });
     } catch (err) {
@@ -261,7 +281,7 @@ const EmploymentDetails = () => {
 
   const handleCancelDetails = () => {
     setIsLoading(true);
-    getDetails();
+    navigate(`/team/${memberId}`, { replace: true });
   };
 
   return (
@@ -273,14 +293,12 @@ const EmploymentDetails = () => {
             <div>
               <button
                 className="mx-1 cursor-pointer rounded-md border border-white bg-miru-han-purple-1000 px-3 py-2 font-bold text-white	"
-                data-cy="update-profile"
                 onClick={handleCancelDetails} // eslint-disable-line  @typescript-eslint/no-empty-function
               >
                 Cancel
               </button>
               <button
                 className="mx-1 cursor-pointer rounded-md border bg-white px-3 py-2 font-bold text-miru-han-purple-1000"
-                data-cy="update-profile"
                 onClick={handleUpdateDetails}
               >
                 Update
@@ -297,6 +315,7 @@ const EmploymentDetails = () => {
               addressOptions={addressOptions}
               countries={countries}
               currentCountryDetails={currentCountryDetails}
+              dateFormat={personalDetails.date_format}
               errDetails={errDetails}
               handleDatePicker={handleDatePicker}
               handleOnChangeAddrType={handleOnChangeAddrType}
@@ -331,6 +350,7 @@ const EmploymentDetails = () => {
               addressOptions={addressOptions}
               countries={countries}
               currentCountryDetails={currentCountryDetails}
+              dateFormat={personalDetails.date_format}
               errDetails={errDetails}
               handleCancelDetails={handleCancelDetails}
               handleDatePicker={handleDatePicker}

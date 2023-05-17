@@ -67,9 +67,9 @@ RSpec.describe "InternalApi::V1::Payments#create", type: :request do
     end
 
     describe "when tries to create manual payment entry" do
-      it "returns forbidden" do
+      it "returns success" do
         send_request :post, internal_api_v1_payments_path(payment: @payment), headers: auth_headers(user)
-        expect(response).to have_http_status(:forbidden)
+        expect(response).to have_http_status(:ok)
       end
     end
   end

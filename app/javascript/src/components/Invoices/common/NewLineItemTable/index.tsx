@@ -36,7 +36,7 @@ const NewLineItemTable = ({
   }, []);
 
   return (
-    <div>
+    <div className="flex h-full flex-col">
       {filteredLineItems.length > 0 && (
         <NewLineItemTableHeader
           setLineItem={setLineItem}
@@ -49,29 +49,39 @@ const NewLineItemTable = ({
         </p>
       )}
       {filteredLineItems.length > 0 ? (
-        <div className="relative mt-4 h-20 overflow-scroll md:h-50">
+        <div className="relative mt-4 flex flex-col overflow-scroll p-2 md:h-50">
           {filteredLineItems.map((item, index) => {
             const hoursLogged = minToHHMM(item.quantity);
             const date = dayjs(item.date).format(dateFormat);
 
             return (
               <div
-                className="flex cursor-pointer justify-between py-2 px-3 hover:bg-miru-gray-100"
-                data-cy="entries-list"
+                className="flex cursor-pointer flex-col justify-between py-2 px-3 hover:bg-miru-gray-100 lg:flex-row"
                 id="entriesList"
                 key={index}
                 onClick={() => selectRowId(item)}
               >
-                <span className="w-1/5 text-left text-sm font-medium text-miru-dark-purple-1000">
-                  {item.first_name} {item.last_name}
-                </span>
-                <span className="w-3/5 whitespace-normal text-left text-xs font-medium text-miru-dark-purple-600">
+                <div className="flex w-full lg:hidden">
+                  <span className="w-1/2 text-left text-sm font-medium text-miru-dark-purple-1000">
+                    {item.first_name} {item.last_name}
+                  </span>
+                  <span className="w-1/2 text-right text-xs font-medium text-miru-dark-purple-1000">
+                    {date} • {hoursLogged}
+                  </span>
+                </div>
+                <span className="inline w-full whitespace-normal text-left text-xs font-medium text-miru-dark-purple-400 lg:hidden">
                   {item.description}
                 </span>
-                <span className="text-right text-xs font-medium text-miru-dark-purple-1000">
+                <span className="hidden w-1/5 text-left text-sm font-medium text-miru-dark-purple-1000 lg:inline">
+                  {item.first_name} {item.last_name}
+                </span>
+                <span className="hidden w-3/5 whitespace-normal text-left text-xs font-medium text-miru-dark-purple-600 lg:inline">
+                  {item.description}
+                </span>
+                <span className="hidden text-right text-xs font-medium text-miru-dark-purple-1000 lg:inline">
                   {date}
                 </span>
-                <span className="w-1/12 text-right text-xs font-medium text-miru-dark-purple-1000">
+                <span className="hidden w-1/12 text-right text-xs font-medium text-miru-dark-purple-1000 lg:inline">
                   {hoursLogged}
                 </span>
               </div>

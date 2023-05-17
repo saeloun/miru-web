@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 
 import { Formik, Form, FormikProps } from "formik";
 import { GoogleSVG, MiruLogoSVG } from "miruIcons";
@@ -12,6 +12,8 @@ import { useAuthDispatch } from "context/auth";
 import { signInFormInitialValues, signInFormValidationSchema } from "./utils";
 
 import FooterLinks from "../FooterLinks";
+import PrivacyPolicyModal from "../SignUp/PrivacyPolicyModal";
+import TermsOfServiceModal from "../SignUp/TermsOfServiceModal";
 
 interface SignInFormValues {
   email: string;
@@ -19,6 +21,9 @@ interface SignInFormValues {
 }
 
 const SignInForm = () => {
+  const [privacyModal, setPrivacyModal] = useState(false);
+  const [termsOfServiceModal, setTermsOfServiceModal] = useState(false);
+
   const authDispatch = useAuthDispatch();
   const navigate = useNavigate();
 
@@ -50,6 +55,14 @@ const SignInForm = () => {
     }
   };
 
+  const handlePrivacyPolicy = () => {
+    setPrivacyModal(true);
+  };
+
+  const handleTermsOfService = () => {
+    setTermsOfServiceModal(true);
+  };
+
   const handleGoogleAuth = async () => {
     const googleForm = googleOauth?.current;
 
@@ -60,7 +73,7 @@ const SignInForm = () => {
     !(values.email?.trim() && values?.password?.trim());
 
   return (
-    <div className="relative w-full px-8 pt-10 pb-4 md:px-0 md:pt-36 lg:w-1/2">
+    <div className="relative flex w-full flex-col items-center justify-center px-8 pt-5vh md:px-0 lg:w-1/2">
       <div className="d-block lg:hidden">
         <a href={MIRU_APP_URL} rel="noreferrer noopener">
           <img
@@ -70,11 +83,11 @@ const SignInForm = () => {
           />
         </a>
       </div>
-      <div className="mx-auto md:w-1/2 lg:w-352">
+      <div className="mx-auto w-full md:w-1/2 lg:mt-auto lg:w-352">
         <h1 className="text-center font-manrope text-2xl font-extrabold text-miru-han-purple-1000 md:text-3xl lg:text-4.5xl">
           Welcome back!
         </h1>
-        <div className="pt-10 lg:pt-20">
+        <div className="pt-2vh lg:pt-5vh">
           <Formik
             initialValues={signInFormInitialValues}
             validateOnBlur={false}
@@ -122,7 +135,6 @@ const SignInForm = () => {
                   </div>
                   <div>
                     <button
-                      data-cy="sign-up-button"
                       type="submit"
                       className={`form__button whitespace-nowrap ${
                         isBtnDisabled(values)
@@ -164,7 +176,6 @@ const SignInForm = () => {
                   />
                   <button
                     className="form__button whitespace-nowrap"
-                    data-cy="sign-up-button"
                     type="submit"
                     onClick={handleGoogleAuth}
                   >
@@ -172,14 +183,23 @@ const SignInForm = () => {
                     Sign In with Google
                   </button>
                 </Form>
-                )}
+              )}
             </Formik>
+            {privacyModal && (
+              <PrivacyPolicyModal
+                isOpen={privacyModal}
+                onClose={() => setPrivacyModal(false)}
+              />
+            )}
+            {termsOfServiceModal && (
+              <TermsOfServiceModal
+                isOpen={termsOfServiceModal}
+                onClose={() => setTermsOfServiceModal(false)}
+              />
+            )}
           </div>
           <p className="mb-3 pt-7 text-center font-manrope text-xs font-normal not-italic text-miru-dark-purple-1000">
-            <span
-              className="form__link inline cursor-pointer"
-              data-cy="sign-in-link"
-            >
+            <span className="form__link inline cursor-pointer">
               <a href={Paths.FORGOT_PASSWORD}>
                 <span className="mr-2 inline-block">Forgot Password?</span>
               </a>
@@ -187,10 +207,7 @@ const SignInForm = () => {
           </p>
           <p className="pb-10 text-center font-manrope text-xs font-normal not-italic text-miru-dark-purple-1000">
             Don't have an account?&nbsp;
-            <span
-              className="form__link inline cursor-pointer"
-              data-cy="sign-in-link"
-            >
+            <span className="form__link inline cursor-pointer">
               <a href={Paths.SIGNUP}>
                 <span className="mr-2 inline-block">Sign Up</span>
               </a>
@@ -198,7 +215,10 @@ const SignInForm = () => {
           </p>
         </div>
       </div>
-      <FooterLinks />
+      <FooterLinks
+        handlePrivacyPolicy={handlePrivacyPolicy}
+        handleTermsOfService={handleTermsOfService}
+      />
     </div>
   );
 };

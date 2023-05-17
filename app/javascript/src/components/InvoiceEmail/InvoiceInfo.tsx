@@ -4,7 +4,9 @@ import dayjs from "dayjs";
 import { currencyFormat } from "helpers";
 
 const InvoiceInfo = ({ invoice, company }) => {
-  const formattedDate = date => dayjs(date).format(company.date_format);
+  const { date_format, currency } = company;
+  const { issue_date, due_date, invoice_number, reference, amount } = invoice;
+  const formattedDate = date => dayjs(date).format(date_format);
 
   return (
     <>
@@ -13,13 +15,13 @@ const InvoiceInfo = ({ invoice, company }) => {
           Date of Issue
         </p>
         <p className="text-base font-normal text-miru-dark-purple-1000">
-          {formattedDate(invoice.issue_date)}
+          {formattedDate(issue_date)}
         </p>
         <p className="mt-4 text-xs font-normal text-miru-dark-purple-1000">
           Due Date
         </p>
         <p className="text-base font-normal text-miru-dark-purple-1000">
-          {formattedDate(invoice.due_date)}
+          {formattedDate(due_date)}
         </p>
       </div>
       <div className="group">
@@ -27,13 +29,13 @@ const InvoiceInfo = ({ invoice, company }) => {
           Invoice Number
         </p>
         <p className="text-base font-normal text-miru-dark-purple-1000">
-          {invoice.invoice_number}
+          {invoice_number}
         </p>
         <p className="mt-4 text-xs font-normal text-miru-dark-purple-1000">
           Reference
         </p>
         <p className="text-base font-normal text-miru-dark-purple-1000">
-          {invoice.reference}
+          {reference}
         </p>
       </div>
       <div>
@@ -41,7 +43,7 @@ const InvoiceInfo = ({ invoice, company }) => {
           Amount
         </p>
         <p className="mt-6 text-4xl font-normal text-miru-dark-purple-1000">
-          {currencyFormat(company.base_currency, invoice.amount)}
+          {currencyFormat(currency, amount)}
         </p>
       </div>
     </>

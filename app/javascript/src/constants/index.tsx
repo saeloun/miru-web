@@ -99,8 +99,13 @@ export enum TeamModalType {
 
 export enum LocalStorageKeys {
   INVOICE_FILTERS = "invoiceFilters",
+  INVOICE_SEARCH_PARAM = "",
   REVENUE_FILTERS = "REVENUEFiters",
 }
 
 export const MIRU_APP_URL = "https://miru.so/";
 export const MIRU_APP_SUPPORT_EMAIL_ID = "mailto:mirusupport@saeloun.com";
+export const GOOGLE_PRIVACY_URL =
+  "https://policies.google.com/privacy?hl=en-US";
+export const AWS_PRIVACY_URL = "https://aws.amazon.com/privacy/";
+export const STRIPE_PRIVACY_URL = "https://stripe.com/in/privacy";

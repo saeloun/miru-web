@@ -30,9 +30,19 @@
 # available at https://guides.rubyonrails.org/i18n.html.
 
 en:
+  activerecord:
+    errors:
+      models:
+        client:
+          attributes:
+            name:
+              format: "%{message}"
+        project:
+          attributes:
+            name:
+              format: "%{message}"
   navbar:
     clients: Clients
-    dashboard: Dashboard
     invoices: Invoices
     logout: Logout
     profile: Profile
@@ -238,8 +248,6 @@ en:
       update?: You are not authorized to update company.
     current_company_policy:
       company_not_present: Company not present.
-    dashboard_policy:
-      index?: You are not authorized to view dashboard.
     project_policy:
       create?: You are not authorized to create project.
       show?:
@@ -256,7 +264,7 @@ en:
     bill_status_billed: You can't bill an entry that has already been billed
     create_billed_entry: You can't create a billed timesheet entry
     internal_server_error: Something went wrong
-    user_already_member: User is already a team member in workspace
+    user_already_member: Email id is already in use. Please enter another email id
     updation_not_allowed: updation is not allowed
     can't change status: can't be changed of a paid invoice
   timesheet_entry:

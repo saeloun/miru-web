@@ -18,6 +18,7 @@ export const CustomReactSelect = ({
   label,
   handleOnChange,
   handleonFocus,
+  handleOnClick,
   name,
   value,
   isErr,
@@ -28,6 +29,8 @@ export const CustomReactSelect = ({
   onMenuOpen,
   ignoreDisabledFontColor,
   hideDropdownIndicator,
+  className,
+  autoFocus,
 }) => {
   const { isDesktop } = useUserContext();
 
@@ -44,8 +47,10 @@ export const CustomReactSelect = ({
   };
 
   return (
-    <div className="outline relative">
+    <div className="outline relative" onClick={handleOnClick}>
       <Select
+        autoFocus={autoFocus}
+        className={className}
         classNamePrefix={classNamePrefix}
         id={id || name}
         isDisabled={isDisabled}
@@ -82,11 +87,14 @@ CustomReactSelect.defaultProps = {
   isDisabled: false,
   ignoreDisabledFontColor: false,
   hideDropdownIndicator: false,
+  handleOnClick: () => {}, // eslint-disable-line  @typescript-eslint/no-empty-function
   handleOnChange: () => {}, // eslint-disable-line  @typescript-eslint/no-empty-function
   handleonFocus: () => {}, // eslint-disable-line  @typescript-eslint/no-empty-function
   defaultValue: null,
   onMenuClose: () => {}, // eslint-disable-line  @typescript-eslint/no-empty-function
   onMenuOpen: () => {}, // eslint-disable-line  @typescript-eslint/no-empty-function
+  className: "",
+  autoFocus: false,
 };
 
 export default CustomReactSelect;

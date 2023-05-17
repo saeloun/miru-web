@@ -123,6 +123,7 @@ const Header = ({
       return weeklyTotalHours;
     }
   };
+
   return (
     <div className="flex w-full items-center justify-between bg-miru-han-purple-1000 px-3 py-3 text-white lg:h-10 lg:p-2">
       <button

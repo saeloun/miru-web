@@ -31,12 +31,11 @@ const AutoSearch = ({ searchAction, SearchDataRow }: Iprops) => {
   };
 
   return (
-    <div className="header__searchWrap">
-      <div className="header__searchInnerWrapper relative">
+    <div className="header__searchWrap w-10/12 rounded-full border py-2 md:w-1/2 lg:w-1/3">
+      <div className="relative mx-auto w-11/12 rounded">
         <div>
           <input
-            className="header__searchInput"
-            data-cy="search-invoice"
+            className="outline-none w-full px-2 text-sm font-medium leading-5"
             id="searchInput"
             placeholder="Search"
             type="text"

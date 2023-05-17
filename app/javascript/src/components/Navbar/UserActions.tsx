@@ -14,7 +14,7 @@ import { useUserContext } from "context/UserContext";
 
 import { activeClassName } from "./utils";
 
-const UserActions = () => {
+const UserActions = setVisiblity => {
   const [currentWorkspace, setCurrentWorkspace] = useState<any>({
     name: "",
     logo: "",
@@ -27,6 +27,7 @@ const UserActions = () => {
 
   const authDispatch = useAuthDispatch();
   const { user } = useUserContext();
+  const { isDesktop } = useUserContext();
 
   useEffect(() => {
     fetchWorkspaces();
@@ -87,7 +88,15 @@ const UserActions = () => {
           key={workspace.id}
           onClick={() => handleSwitch(workspace.id)}
         >
-          <Avatar classNameImg="lg:w-6 lg:h-6 mr-4" url={workspace.logo} />
+          <Avatar
+            classNameImg="lg:mr-5"
+            classNameInitials="lg:text-xs font-bold capitalize text-white"
+            classNameInitialsWrapper="lg:mr-5 bg-miru-gray-1000 "
+            initialsLetterCount={1}
+            name={currentWorkspace.name}
+            size="w-6 h-6"
+            url={currentWorkspace.logo}
+          />
           {workspace.name}
         </li>
       ))}
@@ -96,21 +105,26 @@ const UserActions = () => {
 
   return (
     <ul className="w-full">
-      <li className="flex border-b border-miru-gray-100 px-6 last:border-b-0 hover:bg-miru-gray-100 md:border-b-0 lg:justify-start">
+      <li className="flex border-b border-miru-gray-100 last:border-b-0 hover:bg-miru-gray-100 lg:justify-start lg:border-b-0">
         <NavLink
-          to="/profile/edit"
+          to={isDesktop ? "/profile/edit" : "/profile/edit/option"}
           className={({ isActive }) =>
             isActive
               ? activeClassName
-              : "flex w-full items-start justify-start py-3 hover:bg-miru-gray-100"
+              : "flex w-full items-start justify-start py-3 px-6 hover:bg-miru-gray-100"
           }
+          onClick={() => {
+            if (!isDesktop) {
+              setVisiblity(false);
+            }
+          }}
         >
           <SettingIcon className="mr-4" size={26} />
           Settings
         </NavLink>
       </li>
       <li
-        className="flex cursor-pointer items-start  justify-start border-b border-miru-gray-100 px-6 last:border-b-0 hover:bg-miru-gray-100 md:border-b-0"
+        className="flex cursor-pointer border-b border-miru-gray-100 px-6 py-3 last:border-b-0 hover:bg-miru-gray-100 lg:justify-start lg:border-b-0"
         id="logoutBtn"
         onClick={handleLogout}
       >
@@ -119,7 +133,7 @@ const UserActions = () => {
       </li>
       <Tooltip content={currentWorkspace.name} show={showToolTip}>
         <li
-          className="flex w-full cursor-pointer items-center justify-between py-4  px-6 text-sm font-bold leading-4 hover:bg-miru-gray-100"
+          className="flex w-full cursor-pointer items-center justify-between py-3  px-6 text-sm font-bold leading-4 hover:bg-miru-gray-100"
           onClick={() => {
             setShowWorkSpaceList(true);
           }}
@@ -130,7 +144,12 @@ const UserActions = () => {
             onMouseEnter={handleTooltip}
           >
             <Avatar
-              classNameImg="lg:w-6 lg:h-6 mr-4"
+              classNameImg="lg:mr-5"
+              classNameInitials="lg:text-xs font-bold capitalize text-white"
+              classNameInitialsWrapper="lg:mr-5 bg-miru-gray-1000 "
+              initialsLetterCount={1}
+              name={currentWorkspace.name}
+              size="w-6 h-6"
               url={currentWorkspace.logo}
             />
             <span>{currentWorkspace.name}</span>

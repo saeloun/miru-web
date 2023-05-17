@@ -20,6 +20,8 @@ export const CustomAsyncSelect = ({
   isErr,
   isDesktopView,
   ignoreDisabledFontColor,
+  cacheOptions,
+  defaultOptions,
 }) => {
   const getStyle = () => {
     if (isErr) {
@@ -32,9 +34,9 @@ export const CustomAsyncSelect = ({
   return (
     <div className="outline relative">
       <AsyncSelect
-        cacheOptions
-        defaultOptions
+        cacheOptions={cacheOptions}
         classNamePrefix={classNamePrefix}
+        defaultOptions={defaultOptions}
         loadOptions={loadOptions}
         name={name}
         placeholder={label}
@@ -57,4 +59,6 @@ CustomAsyncSelect.defaultProps = {
   handleOnChange: () => {}, // eslint-disable-line  @typescript-eslint/no-empty-function
   isDesktopView: false,
   ignoreDisabledFontColor: false,
+  cacheOptions: false,
+  defaultOptions: false,
 };

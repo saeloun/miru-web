@@ -18,6 +18,8 @@ RSpec.describe Invitation, type: :model do
     it { is_expected.to validate_presence_of(:role) }
     it { is_expected.to validate_presence_of(:token) }
     it { is_expected.to allow_value(Faker::Lorem.characters(number: 10)).for(:token) }
+    it { is_expected.to validate_length_of(:first_name).is_at_most(20) }
+    it { is_expected.to validate_length_of(:last_name).is_at_most(20) }
     it { is_expected.not_to allow_value(invitation.token).for(:token) }
     it { is_expected.to validate_uniqueness_of(:recipient_email).on(:create) }
     it { is_expected.not_to allow_value("test").for(:recipient_email) }

@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 
+import { useOutsideClick } from "helpers";
 import { XIcon } from "miruIcons";
 
-import clientApi from "apis/clients";
+import { useUserContext } from "context/UserContext";
 
 import ClientForm from "./ClientForm";
+import MobileClientForm from "./MobileClientForm";
 
 interface IEditClient {
   setShowEditDialog: any;
@@ -13,31 +15,13 @@ interface IEditClient {
 
 const EditClient = ({ setShowEditDialog, client }: IEditClient) => {
   const [apiError, setApiError] = useState<string>("");
-  const [clientLogoUrl, setClientLogoUrl] = useState<string>(client.logo);
+  const [clientLogoUrl, setClientLogoUrl] = useState<string>(
+    client?.logo || ""
+  );
   const [clientLogo, setClientLogo] = useState("");
-
-  const formatFormData = (formData, values) => {
-    formData.append("client[name]", values.name);
-    formData.append("client[email]", values.email);
-    formData.append("client[phone]", values.phone);
-    formData.append("client[address]", values.address);
-    formData.append("client[logo]", clientLogo);
-  };
-
-  const handleSubmit = async values => {
-    const formData = new FormData();
-    formatFormData(formData, values);
-
-    await clientApi
-      .update(client.id, formData)
-      .then(() => {
-        setShowEditDialog(false);
-        document.location.reload();
-      })
-      .catch(e => {
-        setApiError(e.message);
-      });
-  };
+  const [submitting, setSubmitting] = useState<boolean>(false);
+  const { isDesktop } = useUserContext();
+  const wrapperRef = useRef();
 
   const handleDeleteLogo = event => {
     event.preventDefault();
@@ -46,7 +30,11 @@ const EditClient = ({ setShowEditDialog, client }: IEditClient) => {
     setClientLogoUrl("");
   };
 
-  return (
+  useOutsideClick(wrapperRef, () => {
+    setShowEditDialog(false);
+  });
+
+  return isDesktop ? (
     <div className="flex items-center justify-center px-4">
       <div
         className="fixed inset-0 top-0 left-0 right-0 bottom-0 z-10 flex items-start justify-center overflow-auto"
@@ -54,10 +42,13 @@ const EditClient = ({ setShowEditDialog, client }: IEditClient) => {
           backgroundColor: "rgba(29, 26, 49, 0.6)",
         }}
       >
-        <div className="relative h-full w-full px-4 md:flex md:items-center md:justify-center">
-          <div className="modal-width transform rounded-lg bg-white px-6 pb-6 shadow-xl transition-all sm:max-w-md sm:align-middle">
+        <div className="relative h-full w-full overflow-y-auto px-4 py-2/100 md:flex md:items-center md:justify-center xl:overflow-visible">
+          <div
+            className="modal-width h-full transform overflow-y-auto rounded-lg bg-white px-6 pb-6 shadow-xl transition-all sm:max-w-md sm:align-middle xl:h-auto xl:overflow-visible"
+            ref={wrapperRef}
+          >
             <div className="mt-6 flex items-center justify-between">
-              <h6 className="text-base font-extrabold">Edit Client</h6>
+              <h6 className="text-base font-extrabold">Edit Client Details</h6>
               <button
                 type="button"
                 onClick={() => {
@@ -68,23 +59,36 @@ const EditClient = ({ setShowEditDialog, client }: IEditClient) => {
               </button>
             </div>
             <ClientForm
-              apiError={apiError}
               clientData={client}
+              clientLogo={clientLogo}
               clientLogoUrl={clientLogoUrl}
-              dataCyAddress="edit-client-address"
-              dataCyName="edit-client-name"
-              dataCyPhone="edit-client-phone"
-              dataCySubmit="edit-client-submit"
               formType="edit"
               handleDeleteLogo={handleDeleteLogo}
-              handleSubmit={handleSubmit}
+              setApiError={setApiError}
               setClientLogo={setClientLogo}
               setClientLogoUrl={setClientLogoUrl}
+              setShowEditDialog={setShowEditDialog}
             />
           </div>
         </div>
       </div>
     </div>
+  ) : (
+    <MobileClientForm
+      apiError={apiError}
+      clientData={client}
+      clientLogo={clientLogo}
+      clientLogoUrl={clientLogoUrl}
+      formType="Edit"
+      handleDeleteLogo={handleDeleteLogo}
+      setApiError={setApiError}
+      setClientLogo={setClientLogo}
+      setClientLogoUrl={setClientLogoUrl}
+      setShowDialog={setShowEditDialog}
+      setShowEditDialog={setShowEditDialog}
+      setSubmitting={setSubmitting}
+      submitting={submitting}
+    />
   );
 };
 

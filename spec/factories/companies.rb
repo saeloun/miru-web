@@ -3,14 +3,17 @@
 FactoryBot.define do
   factory :company do
     name { "Saeloun" }
-    address { Faker::Address.full_address }
-    business_phone { Faker::PhoneNumber.cell_phone_in_e164 }
+    business_phone { Faker::PhoneNumber.cell_phone_in_e164.slice(0, 15) }
     base_currency { Faker::Currency.code }
     standard_price { Faker::Number.decimal(l_digits: 3, r_digits: 2) }
     fiscal_year_end { "December" }
     date_format { "MM-DD-YYYY" }
     country { "US" }
     timezone { "Eastern Time (US & Canada)" }
+
+    after :create do |company|
+      create(:address, addressable_type: "Company", addressable_id: company.id)
+    end
 
     factory :company_with_invoices do
       transient do
