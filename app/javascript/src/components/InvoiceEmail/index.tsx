@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 
+import Logger from "js-logger";
 import { InstagramSVG, TwitterSVG, MiruLogoWithTextSVG } from "miruIcons";
 import { useParams } from "react-router-dom";
 
 import invoicesApi from "apis/invoices";
+import paymentSettings from "apis/payment-settings";
 import Loader from "common/Loader";
 
 import Header from "./Header";
@@ -14,15 +16,27 @@ const InvoiceEmail = () => {
 
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState(null);
+  const [isStripeConnected, setIsStripeConnected] = useState<boolean>(null);
 
   useEffect(() => {
     fetchViewInvoice();
+    fetchPaymentSettings();
   }, []);
 
   const fetchViewInvoice = async () => {
     const res = await invoicesApi.viewInvoice(params.id);
     setData(res.data);
     setLoading(false);
+  };
+
+  const fetchPaymentSettings = async () => {
+    try {
+      const res = await paymentSettings.get();
+      setIsStripeConnected(res.data.providers.stripe.connected);
+    } catch {
+      Logger.log("ERROR! CONNECTING TO PAYMENTS");
+      // setStatus(PaymentSettingsStatus.ERROR);
+    }
   };
 
   if (loading) {
@@ -37,7 +51,11 @@ const InvoiceEmail = () => {
         <img src={MiruLogoWithTextSVG} />
       </div>
       <div className="mx-auto max-w-6xl px-2 font-manrope md:px-11">
-        <Header invoice={invoice} stripeUrl={url} />
+        <Header
+          invoice={invoice}
+          isStripeConnected={isStripeConnected}
+          stripeUrl={url}
+        />
         <div className="m-0 mt-5 mb-10 w-full bg-miru-gray-100 p-0">
           <InvoiceDetails
             client={client}

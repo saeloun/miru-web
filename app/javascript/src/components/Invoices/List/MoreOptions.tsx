@@ -26,6 +26,8 @@ const MoreOptions = ({
   setShowMoreOptions,
   showPrint,
   showSendLink,
+  showConnectPaymentDialog,
+  setShowConnectPaymentDialog,
 }) => {
   const wrapperRef = useRef(null);
 
@@ -45,6 +47,7 @@ const MoreOptions = ({
             id="sendInvoiceButton"
             onClick={e => {
               e.stopPropagation();
+              setShowConnectPaymentDialog(!showConnectPaymentDialog);
               setIsSending(!isSending);
             }}
           >

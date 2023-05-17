@@ -30,6 +30,8 @@ const Container = ({
   downloading,
   handleReset,
   params,
+  isStripeEnabled,
+  setIsStripeEnabled,
 }) =>
   invoices.length > 0 ? (
     <div
@@ -63,9 +65,11 @@ const Container = ({
         fetchInvoices={fetchInvoices}
         invoices={invoices}
         isDesktop={isDesktop}
+        isStripeEnabled={isStripeEnabled}
         selectInvoices={selectInvoices}
         selectedInvoices={selectedInvoices}
         setInvoiceToDelete={setInvoiceToDelete}
+        setIsStripeEnabled={setIsStripeEnabled}
         setShowDeleteDialog={setShowDeleteDialog}
       />
     </div>

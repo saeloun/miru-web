@@ -3,9 +3,10 @@ import React from "react";
 import { ReportsIcon } from "miruIcons";
 import { Badge } from "StyledComponents";
 
+import Toastr from "common/Toastr";
 import getStatusCssClass from "utils/getBadgeStatus";
 
-const Header = ({ invoice, stripeUrl }) => (
+const Header = ({ invoice, stripeUrl, isStripeConnected }) => (
   <div className="mt-6 mb-3 sm:flex sm:items-center sm:justify-between">
     <div className="flex flex-row">
       <div className="mr-2 flex self-center">
@@ -29,7 +30,13 @@ const Header = ({ invoice, stripeUrl }) => (
                 : "bg-miru-han-purple-1000"
             }`}
           onClick={() => {
-            invoice.status != "paid" && (window.location.href = stripeUrl);
+            if (invoice.status != "paid" && !isStripeConnected) {
+              Toastr.error(
+                "Error: Please reach out to the invoice sender to connect a payment gateway to enable you to make invoice payment"
+              );
+            } else if (invoice.status != "paid" && isStripeConnected) {
+              window.location.href = stripeUrl;
+            }
           }}
         >
           <div className="flex flex-row items-center justify-between">

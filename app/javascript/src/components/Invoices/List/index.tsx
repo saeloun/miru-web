@@ -5,6 +5,7 @@ import { useSearchParams } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 
 import invoicesApi from "apis/invoices";
+import PaymentsProviders from "apis/payments/providers";
 import withLayout from "common/Mobile/HOC/withLayout";
 import Pagination from "common/Pagination/Pagination";
 import { ApiStatus as InvoicesStatus, LocalStorageKeys } from "constants/index";
@@ -66,6 +67,7 @@ const Invoices = () => {
   const [connected, setConnected] = useState<boolean>(false);
   const [received, setReceived] = useState<any>(null);
   const [counter, setCounter] = useState<number>(1);
+  const [isStripeEnabled, setIsStripeEnabled] = useState<boolean>(null);
   const selectedInvoiceCount = selectedInvoices.length;
   const isInvoiceSelected = selectedInvoiceCount > 0;
   const [selectedInvoiceCounter, setSelectedInvoiceCounter] =
@@ -101,6 +103,7 @@ const Invoices = () => {
       params.query
     );
     fetchInvoices();
+    fetchPaymentsProvidersSettings();
     setSearchParams(cleanParams(params));
   }, [params.invoices_per_page, params.page, params.query, filterParams]);
 
@@ -159,6 +162,24 @@ const Invoices = () => {
       setStatus(InvoicesStatus.SUCCESS);
     } catch {
       setStatus(InvoicesStatus.ERROR);
+    }
+  };
+
+  const fetchPaymentsProvidersSettings = async () => {
+    try {
+      const res = await PaymentsProviders.get();
+      const paymentsProviders = res.data.paymentsProviders;
+      const stripe = paymentsProviders.find(p => p.name === "stripe");
+      // setIsStripeConnected(!!stripe && stripe.connected);
+      setIsStripeEnabled(!!stripe && stripe.enabled);
+      // setStripeAcceptedPaymentMethods(
+      //   !!stripe && stripe.acceptedPaymentMethods
+      // );
+      // !!stripe && setStripeSettings(stripe);
+      // setStatus(PaymentSettingsStatus.SUCCESS);
+    } catch {
+      Logger.log("ERROR!");
+      // setStatus(PaymentSettingsStatus.ERROR);
     }
   };
 
@@ -245,6 +266,7 @@ const Invoices = () => {
             invoices={invoices}
             isDesktop={isDesktop}
             isInvoiceSelected={isInvoiceSelected}
+            isStripeEnabled={isStripeEnabled}
             params={params}
             recentlyUpdatedInvoices={recentlyUpdatedInvoices}
             selectInvoices={selectInvoices}
@@ -252,6 +274,7 @@ const Invoices = () => {
             selectedInvoices={selectedInvoices}
             setFilterParams={setFilterParams}
             setInvoiceToDelete={setInvoiceToDelete}
+            setIsStripeEnabled={setIsStripeEnabled}
             setShowBulkDeleteDialog={setShowBulkDeleteDialog}
             setShowBulkDownloadDialog={setShowBulkDownloadDialog}
             setShowDeleteDialog={setShowDeleteDialog}
