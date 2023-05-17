@@ -109,6 +109,7 @@ const EditInvoice = () => {
           rate: ilt.rate,
           quantity: ilt.quantity,
           timesheet_entry_id: ilt.timesheet_entry_id,
+          _destroy: ilt._destroy,
         })),
       });
 
