@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 
+import { useOutsideClick } from "helpers";
 import { XIcon } from "miruIcons";
 import { useNavigate } from "react-router-dom";
 
@@ -11,6 +12,11 @@ const AddProject = ({ setShowProjectModal, clientDetails }) => {
   const [projectType, setProjectType] = useState<any>("Billable");
 
   const navigate = useNavigate();
+  const wrapperRef = useRef();
+
+  useOutsideClick(wrapperRef, () => {
+    setShowProjectModal(false);
+  });
 
   const handleSubmit = async () => {
     await projectApi.create({
@@ -29,7 +35,7 @@ const AddProject = ({ setShowProjectModal, clientDetails }) => {
       className="modal__modal main-modal"
       style={{ background: "rgba(29, 26, 49,0.6)" }}
     >
-      <div className="modal__container modal-container">
+      <div className="modal__container modal-container" ref={wrapperRef}>
         <div className="modal__content modal-content">
           <div className="modal__position">
             <h6 className="modal__title"> Add New Project </h6>
