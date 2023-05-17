@@ -42,7 +42,7 @@ const NewClient = ({
       >
         <div className="relative h-auto w-full px-4 md:flex md:items-center md:justify-center">
           <div
-            className="modal-width transform rounded-lg bg-white px-6 pb-6 shadow-xl transition-all sm:max-w-md sm:align-middle"
+            className="modal-width transform rounded-lg bg-white px-6 pb-6 shadow-xl transition-all sm:max-w-md sm:align-middle xl:overflow-visible"
             ref={wrapperRef}
           >
             <div className="mt-6 flex items-center justify-between">
