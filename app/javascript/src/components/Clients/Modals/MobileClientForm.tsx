@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import React, { useEffect, useState } from "react";
 
-import { City, Country, State } from "country-state-city";
+import { Country, State, City } from "country-state-city";
 import { Form, Formik, FormikProps } from "formik";
 import { XIcon, EditImageButtonSVG, deleteImageIcon } from "miruIcons";
 import PhoneInput from "react-phone-number-input";
@@ -67,17 +67,8 @@ const MobileClientForm = ({
   handleEdit,
   setShowDialog,
 }: IClientForm) => {
-  const initialSelectValue = {
-    label: "",
-    value: "",
-    code: "",
-  };
-
   const [fileUploadError, setFileUploadError] = useState<string>("");
   const [countries, setCountries] = useState([]);
-  const [currentCountryDetails, setCurrentCountryDetails] =
-    useState(initialSelectValue);
-  const [currentCityList, setCurrentCityList] = useState([]);
 
   const assignCountries = async allCountries => {
     const countryData = await allCountries.map(country => ({
@@ -100,6 +91,24 @@ const MobileClientForm = ({
       code: state.isoCode,
       ...state,
     }));
+
+  const updatedCities = values => {
+    const allStates = State.getAllStates();
+    const currentCity = allStates.filter(
+      state => state.name == values.state.label
+    );
+
+    const cities = City.getCitiesOfState(
+      values.country.code,
+      currentCity[0] && currentCity[0].isoCode
+    ).map(city => ({
+      label: city.name,
+      value: city.name,
+      ...city,
+    }));
+
+    return cities;
+  };
 
   const onLogoChange = e => {
     const file = e.target.files[0];
@@ -429,8 +438,10 @@ const MobileClientForm = ({
                       options={countries}
                       value={values.country.value ? values.country : null}
                       handleOnChange={e => {
-                        setCurrentCountryDetails(e);
                         setFieldValue("country", e);
+                        setFieldValue("state", "");
+                        setFieldValue("city", "");
+                        setFieldValue("zipcode", "");
                       }}
                     />
                   </div>
@@ -442,20 +453,12 @@ const MobileClientForm = ({
                       value={values.state.value ? values.state : null}
                       handleOnChange={state => {
                         setFieldValue("state", state);
-                        const cities = City.getCitiesOfState(
-                          currentCountryDetails.code,
-                          state.code
-                        ).map(city => ({
-                          label: city.name,
-                          value: city.name,
-                          ...city,
-                        }));
-                        setCurrentCityList(cities);
+                        setFieldValue("city", "");
+                        setFieldValue("zipcode", "");
+                        updatedCities(values);
                       }}
                       options={updatedStates(
-                        currentCountryDetails.code
-                          ? currentCountryDetails.code
-                          : "US"
+                        values.country.code ? values.country.code : "US"
                       )}
                     />
                   </div>
@@ -467,7 +470,7 @@ const MobileClientForm = ({
                       isErr={!!errors.city && touched.city}
                       label="City"
                       name="city"
-                      options={currentCityList}
+                      options={updatedCities(values)}
                       value={values.city.value ? values.city : null}
                     />
                   </div>

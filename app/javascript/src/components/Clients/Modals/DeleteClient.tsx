@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useRef } from "react";
 
+import { useOutsideClick } from "helpers";
 import { useNavigate } from "react-router-dom";
 
 import clientApi from "apis/clients";
@@ -11,6 +12,11 @@ interface IProps {
 
 const DeleteClient = ({ client, setShowDeleteDialog }: IProps) => {
   const navigate = useNavigate();
+  const wrapperRef = useRef();
+
+  useOutsideClick(wrapperRef, () => {
+    setShowDeleteDialog(false);
+  });
 
   const deleteClient = async client => {
     await clientApi.destroy(client.id);
@@ -27,7 +33,10 @@ const DeleteClient = ({ client, setShowDeleteDialog }: IProps) => {
         }}
       >
         <div className="relative h-full w-full px-4 xsm:flex xsm:flex-col xsm:items-center xsm:justify-center xsm:p-8 md:flex md:items-center md:justify-center">
-          <div className="modal-width transform rounded-lg bg-white px-6 pb-6 shadow-xl transition-all xsm:w-full xsm:min-w-0 sm:max-w-md sm:align-middle">
+          <div
+            className="modal-width transform rounded-lg bg-white px-6 pb-6 shadow-xl transition-all xsm:w-full xsm:min-w-0 sm:max-w-md sm:align-middle"
+            ref={wrapperRef}
+          >
             <div className="my-8 flex-col">
               <h6 className="mb-2 text-2xl font-bold">Delete Client</h6>
               <p className="mt-2 font-normal xsm:text-sm">
