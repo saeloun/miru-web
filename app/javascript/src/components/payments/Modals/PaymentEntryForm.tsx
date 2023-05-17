@@ -262,7 +262,7 @@ const PaymentEntryForm = ({
         </div>
         {showDatePicker.visibility && (
           <CustomDatePicker
-            date={transactionDate ? new Date(transactionDate) : null}
+            date={transactionDate || dayjs()}
             handleChange={handleDatePicker}
           />
         )}

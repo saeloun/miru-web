@@ -46,6 +46,7 @@ const MobileEditDetails = ({
   handleOnChangeCity,
   handlePhoneNumberChange,
   wrapperRef,
+  dateFormat,
 }) => (
   <div className="mt-12 px-4 py-2">
     <div className="py-4">
@@ -125,12 +126,7 @@ const MobileEditDetails = ({
               label="Date of Birth"
               name="date_of_birth"
               type="text"
-              value={
-                personalDetails.date_of_birth &&
-                dayjs(personalDetails.date_of_birth).format(
-                  personalDetails.date_format
-                )
-              }
+              value={personalDetails.date_of_birth || ""}
               onChange={e => {
                 updateBasicDetails(e.target.value, "date_of_birth", false);
               }}
@@ -143,11 +139,12 @@ const MobileEditDetails = ({
           </div>
           {showDatePicker.visibility && (
             <CustomDatePicker
+              dateFormat={dateFormat}
               handleChange={e => handleDatePicker(e, true)}
               date={
                 personalDetails.date_of_birth
-                  ? new Date(personalDetails.date_of_birth)
-                  : null
+                  ? personalDetails.date_of_birth
+                  : dayjs()
               }
             />
           )}

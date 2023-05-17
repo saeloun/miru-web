@@ -193,9 +193,13 @@ const UserDetailsEdit = () => {
 
   const handleDatePicker = date => {
     setShowDatePicker({ visibility: !showDatePicker.visibility });
+    const formattedDate = dayjs(date, profileSettings.date_format).format(
+      profileSettings.date_format
+    );
+
     setUserState("profileSettings", {
       ...profileSettings,
-      ...{ date_of_birth: dayjs(date).format(profileSettings.date_format) },
+      ...{ date_of_birth: formattedDate },
     });
   };
 
@@ -346,6 +350,7 @@ const UserDetailsEdit = () => {
               countries={countries}
               currentCountryDetails={currentCountryDetails}
               currentPassword={currentPassword}
+              dateFormat={profileSettings.date_format}
               errDetails={errDetails}
               getErr={getErr}
               handleConfirmPasswordChange={handleConfirmPasswordChange}
@@ -390,6 +395,7 @@ const UserDetailsEdit = () => {
               changePassword={changePassword}
               countries={countries}
               currentCountryDetails={currentCountryDetails}
+              dateFormat={profileSettings.date_format}
               errDetails={errDetails}
               handleCancelDetails={handleCancelDetails}
               handleDatePicker={handleDatePicker}

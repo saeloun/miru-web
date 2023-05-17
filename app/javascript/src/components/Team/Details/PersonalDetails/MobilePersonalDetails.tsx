@@ -35,7 +35,8 @@ const MobilePersonalDetails = ({
           <InfoDescription
             title="Date of Birth"
             description={`${
-              date_of_birth && dayjs(date_of_birth).format(date_format)
+              date_of_birth &&
+              dayjs(date_of_birth, date_format).format(date_format)
             }`}
           />
         </div>
@@ -69,11 +70,11 @@ const MobilePersonalDetails = ({
               description={`${
                 addresses.address_line_1 ? `${addresses.address_line_1},` : ""
               }
-            ${addresses.address_line_2 ? `${addresses.address_line_2},` : ""}
-            ${addresses.city ? `${addresses.city},` : ""}
-            ${addresses.state ? `${addresses.state},` : ""}
-            ${addresses.country ? `${addresses.country} -` : ""}
-            ${addresses.pin ? addresses.pin : ""}`}
+              ${addresses.address_line_2 ? `${addresses.address_line_2},` : ""}
+              ${addresses.city ? `${addresses.city},` : ""}
+              ${addresses.state ? `${addresses.state},` : ""}
+              ${addresses.country ? `${addresses.country} -` : ""}
+              ${addresses.pin ? addresses.pin : ""}`}
             />
           )}
         </div>
