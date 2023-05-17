@@ -73,13 +73,15 @@ const Container = ({
       dueDate,
       invoiceLineItems: generateInvoiceLineItems(
         selectedLineItems,
-        manualEntryArr
+        manualEntryArr,
+        dateFormat
       ),
       amount,
       amountDue,
       amountPaid,
       discount,
       tax,
+      dateFormat,
       setShowSendInvoiceModal,
     });
 

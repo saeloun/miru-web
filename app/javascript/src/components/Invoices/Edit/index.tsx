@@ -77,10 +77,13 @@ const EditInvoice = () => {
       const res = await invoicesApi.updateInvoice(invoiceDetails.id, {
         invoice_number: invoiceNumber || invoiceDetails.invoiceNumber,
         reference: reference || invoiceDetails.reference,
-        issue_date: dayjs(
-          issueDate || invoiceDetails.issueDate,
-          invoiceDetails.company.dateFormat
-        ).format("DD-MM-YYYY"),
+        issue_date:
+          invoiceDetails.company.dateFormat == "DD-MM-YYYY"
+            ? issueDate || invoiceDetails.issueDate
+            : dayjs(
+                issueDate || invoiceDetails.issueDate,
+                invoiceDetails.company.dateFormat
+              ).format("DD-MM-YYYY"),
         due_date: dayjs(
           dueDate || invoiceDetails.dueDate,
           invoiceDetails.company.dateFormat
@@ -93,12 +96,16 @@ const EditInvoice = () => {
         client_id: selectedClient.value,
         invoice_line_items_attributes: generateInvoiceLineItems(
           selectedLineItems,
-          manualEntryArr
+          manualEntryArr,
+          invoiceDetails.company.dateFormat
         ).map(ilt => ({
           id: ilt.id,
           name: ilt.name,
           description: ilt.description,
-          date: dayjs(ilt.date).format("DD-MM-YYYY"),
+          date:
+            invoiceDetails.company.dateFormat == "DD-MM-YYYY"
+              ? ilt.date
+              : dayjs(ilt.date).format("DD-MM-YYYY"),
           rate: ilt.rate,
           quantity: ilt.quantity,
           timesheet_entry_id: ilt.timesheet_entry_id,

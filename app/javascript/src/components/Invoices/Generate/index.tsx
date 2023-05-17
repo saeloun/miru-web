@@ -85,13 +85,15 @@ const GenerateInvoices = () => {
       dueDate,
       invoiceLineItems: generateInvoiceLineItems(
         selectedOption,
-        manualEntryArr
+        manualEntryArr,
+        invoiceDetails.companyDetails.date_format
       ),
       amount,
       amountDue,
       amountPaid,
       discount,
       tax,
+      dateFormat: invoiceDetails.companyDetails.date_format,
       setShowSendInvoiceModal,
     });
 

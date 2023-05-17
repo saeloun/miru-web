@@ -42,8 +42,14 @@ const mapGenerateInvoice = input => ({
   client_id: input.selectedClient.value,
   invoice_number: input.invoiceNumber,
   reference: input.reference,
-  issue_date: dayjs(input.issueDate).format("DD.MM.YYYY"),
-  due_date: dayjs(input.dueDate).format("DD.MM.YYYY"),
+  issue_date:
+    input.dateFormat == "DD-MM-YYYY"
+      ? input.issueDate
+      : dayjs(input.issueDate).format("DD.MM.YYYY"),
+  due_date:
+    input.dateFormat == "DD-MM-YYYY"
+      ? input.dueDate
+      : dayjs(input.dueDate).format("DD.MM.YYYY"),
   amount_due: input.amountDue,
   amount_paid: input.amountPaid,
   amount: input.amount,
@@ -52,7 +58,10 @@ const mapGenerateInvoice = input => ({
   invoice_line_items_attributes: input.invoiceLineItems.map(ilt => ({
     name: ilt.name,
     description: ilt.description,
-    date: dayjs(ilt.date).format("DD.MM.YYYY"),
+    date:
+      input.dateFormat == "DD-MM-YYYY"
+        ? ilt.date
+        : dayjs(ilt.date).format("DD-MM-YYYY"),
     rate: ilt.rate,
     quantity: ilt.quantity,
     timesheet_entry_id: ilt.timesheet_entry_id,
