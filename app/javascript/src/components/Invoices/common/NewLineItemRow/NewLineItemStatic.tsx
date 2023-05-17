@@ -17,7 +17,9 @@ const NewLineItemStatic = ({
 }) => {
   const strName = item.name || `${item.first_name} ${item.last_name}`;
   const [name, setName] = useState<string>(strName);
-  const [lineItemDate, setLineItemDate] = useState(item.date);
+  const [lineItemDate, setLineItemDate] = useState(
+    dayjs(item.date, "YYYY-MM-DD").format(dateFormat)
+  );
   const [description, setDescription] = useState<string>(item.description);
   const [rate, setRate] = useState<number>(item.rate);
   const [quantity, setQuantity] = useState<any>(minToHHMM(item.quantity));
@@ -96,7 +98,7 @@ const NewLineItemStatic = ({
             <input
               placeholder="Select Date"
               type="text"
-              value={lineItemDate && dayjs(lineItemDate).format(dateFormat)}
+              value={lineItemDate}
               className={`focus:outline-none w-full cursor-pointer appearance-none rounded border-0 border-transparent bg-transparent p-1 pl-2 text-right text-sm font-medium text-miru-dark-purple-1000 focus:bg-white focus:bg-white focus:ring-1 focus:ring-miru-gray-1000 ${
                 showCalendarIcon ? "pr-9" : "pr-1"
               }`}
@@ -115,7 +117,8 @@ const NewLineItemStatic = ({
           {showDatePicker && (
             <div className="absolute" ref={datePickerRef}>
               <CustomDatePicker
-                date={new Date(lineItemDate)}
+                date={lineItemDate}
+                dateFormat={dateFormat}
                 handleChange={handleDatePicker}
                 setVisibility={setShowDatePicker}
                 wrapperRef={datePickerRef}

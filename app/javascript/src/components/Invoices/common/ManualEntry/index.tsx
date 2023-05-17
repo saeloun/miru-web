@@ -25,7 +25,7 @@ const ManualEntry = ({
   dateFormat,
 }) => {
   const [name, setName] = useState<string>("");
-  const [date, setDate] = useState<string>("");
+  const [date, setDate] = useState<any>(dayjs().format(dateFormat));
   const [description, setDescription] = useState<string>("");
   const [rate, setRate] = useState<number>(0);
   const [quantity, setQuantity] = useState<any>(0);
@@ -36,14 +36,12 @@ const ManualEntry = ({
   const wrapperRef = useRef(null);
   const datePickerRef = useRef(null);
 
-  const formattedDate = date => dayjs(date).format(dateFormat);
-
   useEffect(() => {
     setLineItem({
       ...lineItem,
       id: manualEntryArr.length + 1,
       name,
-      date,
+      date: dayjs(date, dateFormat).format("YYYY-MM-DD"),
       description,
       rate,
       quantity,
@@ -124,7 +122,7 @@ const ManualEntry = ({
               className="focus:outline-none w-full cursor-pointer appearance-none rounded border-0 border-transparent bg-white p-1 pr-9 pl-2 text-right text-sm font-medium text-miru-dark-purple-1000 focus:ring-1 focus:ring-miru-gray-1000"
               placeholder="Select Date"
               type="text"
-              value={date && formattedDate(date)}
+              value={date || ""}
             />
             <CalendarIcon
               className="absolute top-0 right-0 mx-2 mt-1.5"
@@ -135,7 +133,8 @@ const ManualEntry = ({
           {showDatePicker && (
             <div ref={datePickerRef}>
               <CustomDatePicker
-                date={date}
+                date={date || dayjs()}
+                dateFormat={dateFormat}
                 handleChange={handleDatePicker}
                 setVisibility={setShowDatePicker}
                 wrapperRef={datePickerRef}

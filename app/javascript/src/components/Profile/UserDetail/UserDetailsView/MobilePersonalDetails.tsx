@@ -47,7 +47,8 @@ const MobilePersonalDetails = ({
             <InfoDescription
               title="Date of Birth"
               description={`${
-                date_of_birth && dayjs(date_of_birth).format(date_format)
+                date_of_birth &&
+                dayjs(date_of_birth, date_format).format(date_format)
               }`}
             />
           </div>

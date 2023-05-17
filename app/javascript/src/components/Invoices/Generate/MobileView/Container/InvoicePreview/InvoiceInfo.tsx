@@ -45,7 +45,7 @@ const InvoiceInfo = ({
             Date of Issue
           </span>
           <span className="text-base font-normal leading-5 text-miru-dark-purple-1000">
-            {dayjs(issueDate).format(dateFormat)}
+            {dayjs(issueDate, dateFormat).format(dateFormat)}
           </span>
         </div>
         <div className="flex w-1/2 flex-col items-start justify-between">
@@ -63,7 +63,7 @@ const InvoiceInfo = ({
             Due Date
           </span>
           <span className="text-base font-normal leading-5 text-miru-dark-purple-1000">
-            {dayjs(dueDate).format(dateFormat)}
+            {dayjs(dueDate, dateFormat).format(dateFormat)}
           </span>
         </div>
         <div className="flex w-1/2 flex-col items-start justify-between">

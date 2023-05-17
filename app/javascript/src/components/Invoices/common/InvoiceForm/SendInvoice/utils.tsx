@@ -19,9 +19,9 @@ export const emailBody = (invoice: any): string => {
     invoice.amount
   );
 
-  const dueDate = isNaN(Date.parse(invoice.dueDate))
-    ? dayjs(invoice.dueDate).format(invoice.company.dateFormat || "DD.MM.YYYY")
-    : invoice.dueDate;
+  const dueDate = dayjs(invoice.dueDate, invoice.company.dateFormat).format(
+    invoice.company.dateFormat || "DD.MM.YYYY"
+  );
 
   return `${invoice.company.name} has sent you an invoice (${invoice.invoiceNumber}) for ${formattedAmount} that's due on ${dueDate}.`;
 };
