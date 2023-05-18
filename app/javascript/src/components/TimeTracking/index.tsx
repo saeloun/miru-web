@@ -69,7 +69,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
     sendGAPageView();
     fetchTimeTrackingData();
     !isDesktop && setView("day");
-  }, [entryList[selectedFullDate]?.length]);
+  }, []);
 
   const fetchTimeTrackingData = async () => {
     try {
@@ -236,6 +236,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
     );
     if (res.status === 200) {
       await fetchEntries(selectedFullDate, selectedFullDate);
+      await fetchEntriesOfMonths();
     }
   };
 
@@ -465,6 +466,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
               editEntryId={editEntryId}
               entryList={entryList}
               fetchEntries={fetchEntries}
+              fetchEntriesofMonth={fetchEntriesOfMonths}
               handleAddEntryDateChange={handleAddEntryDateChange}
               handleDeleteEntry={handleDeleteEntry}
               handleFilterEntry={handleFilterEntry}
@@ -545,6 +547,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
                 editEntryId={editEntryId}
                 entryList={entryList}
                 fetchEntries={fetchEntries}
+                fetchEntriesofMonth={fetchEntriesOfMonths}
                 handleAddEntryDateChange={handleAddEntryDateChange}
                 handleDeleteEntry={handleDeleteEntry}
                 handleFilterEntry={handleFilterEntry}
