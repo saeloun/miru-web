@@ -20,7 +20,7 @@ RSpec.describe "Create client", type: :system do
       find("#react-select-3-option-1").click
     end
 
-    within("div#city") do
+    within("div#city-list") do
       find(".react-select-filter__control.css-digfch-control").click
       find("#react-select-4-option-0").click
     end
