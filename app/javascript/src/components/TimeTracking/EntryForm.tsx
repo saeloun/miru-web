@@ -35,6 +35,7 @@ const AddEntry: React.FC<Iprops> = ({
   setSelectedFullDate,
   setUpdateView,
   handleDeleteEntry,
+  fetchEntriesofMonth,
 }) => {
   const [note, setNote] = useState<string>("");
   const [duration, setDuration] = useState<string>("");
@@ -115,6 +116,10 @@ const AddEntry: React.FC<Iprops> = ({
 
     if (res.status === 200) {
       const fetchEntriesRes = await fetchEntries(selectedDate, selectedDate);
+      if (!isDesktop) {
+        fetchEntriesofMonth();
+      }
+
       if (fetchEntriesRes) {
         setNewEntryView(false);
         setUpdateView(true);
@@ -135,8 +140,12 @@ const AddEntry: React.FC<Iprops> = ({
         if (selectedDate !== selectedFullDate) {
           await handleFilterEntry(selectedFullDate, editEntryId);
           await handleRelocateEntry(selectedDate, updateRes.data.entry);
+          if (!isDesktop) {
+            fetchEntriesofMonth();
+          }
         } else {
           await fetchEntries(selectedDate, selectedDate);
+          fetchEntriesofMonth();
         }
         setEditEntryId(0);
         setNewEntryView(false);
@@ -359,6 +368,7 @@ const AddEntry: React.FC<Iprops> = ({
 interface Iprops {
   selectedEmployeeId: number;
   fetchEntries: (from: string, to: string) => Promise<any>; // eslint-disable-line
+  fetchEntriesofMonth: any;
   setNewEntryView: React.Dispatch<React.SetStateAction<boolean>>;
   clients: any[];
   projects: object;
