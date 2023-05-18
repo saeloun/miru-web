@@ -116,7 +116,10 @@ const AddEntry: React.FC<Iprops> = ({
 
     if (res.status === 200) {
       const fetchEntriesRes = await fetchEntries(selectedDate, selectedDate);
-      fetchEntriesofMonth();
+      if (!isDesktop) {
+        fetchEntriesofMonth();
+      }
+
       if (fetchEntriesRes) {
         setNewEntryView(false);
         setUpdateView(true);
@@ -137,7 +140,9 @@ const AddEntry: React.FC<Iprops> = ({
         if (selectedDate !== selectedFullDate) {
           await handleFilterEntry(selectedFullDate, editEntryId);
           await handleRelocateEntry(selectedDate, updateRes.data.entry);
-          await fetchEntriesofMonth();
+          if (!isDesktop) {
+            fetchEntriesofMonth();
+          }
         } else {
           await fetchEntries(selectedDate, selectedDate);
           fetchEntriesofMonth();
