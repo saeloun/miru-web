@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import { useDebounce } from "helpers";
-import { FilterIcon, SearchIcon, PlusIcon, XIcon } from "miruIcons";
+import { PlusIcon, FilterIcon, XIcon, SearchIcon } from "miruIcons";
 import { Link } from "react-router-dom";
 
 import invoicesApi from "apis/invoices";
@@ -67,33 +67,35 @@ const Header = ({
   return (
     <div className="mt-6 mb-3 flex flex-wrap items-center justify-between">
       {isDesktop && <h2 className="header__title">Invoices</h2>}
-      <div className="header__searchWrap">
-        <div className="header__searchInnerWrapper relative">
-          <div>
-            <input
-              className="header__searchInput"
-              placeholder="Search"
-              type="text"
-              value={searchQuery}
-              onChange={e => setSearchQuery(e.target.value)}
-              onKeyDown={e => onKeydownHandler(e)}
-            />
-            <button className="absolute inset-y-0 right-0 flex cursor-pointer items-center pr-3 ">
-              {searchQuery ? (
-                <XIcon size={12} weight="bold" onClick={onSearchClear} />
-              ) : (
-                <SearchIcon size={12} />
-              )}
-            </button>
-            <SearchDropdown
-              display={params.query !== searchQuery}
-              list={searchResult}
-              status={status}
-            />
-          </div>
+      <div className="flex w-10/12 lg:w-1/3">
+        <div className="relative w-11/12">
+          <input
+            className="outline-none w-full rounded-full border-miru-gray-1000 bg-miru-gray-100 py-2 px-3 text-sm font-medium leading-5 focus:border focus:ring-1 focus:ring-miru-gray-1000"
+            placeholder="Search"
+            type="text"
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+            onKeyDown={e => onKeydownHandler(e)}
+          />
+          <button className="absolute inset-y-0 right-3 flex cursor-pointer items-center">
+            {searchQuery ? (
+              <XIcon size={12} weight="bold" onClick={onSearchClear} />
+            ) : (
+              <SearchIcon
+                className="text-miru-gray-1000"
+                size={16}
+                weight="bold"
+              />
+            )}
+          </button>
+          <SearchDropdown
+            display={params.query !== searchQuery}
+            list={searchResult}
+            status={status}
+          />
         </div>
         <button
-          className="relative ml-auto h-10 w-10 rounded p-3 hover:bg-miru-gray-1000"
+          className="relative ml-auto ml-4 h-10 w-10 rounded p-3 hover:bg-miru-gray-1000"
           onClick={() => setIsFilterVisible(true)}
         >
           {appliedFilterCount > 0 && (
