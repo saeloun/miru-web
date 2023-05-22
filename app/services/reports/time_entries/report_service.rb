@@ -48,7 +48,13 @@ class Reports::TimeEntries::ReportService
       page_service.process
 
       @reports = search_timesheet_entries(where_clause.merge(page_service.es_filter))
-      @pagination_details = page_service.pagination_details
+
+      @pagination_details = if @reports.empty? && page_service.pagination_details[:pages] > 1
+        page_service = Reports::TimeEntries::PageService.new(params, current_company, @reports)
+        page_service.pagination_details
+      else
+        page_service.pagination_details
+      end
    end
 
     def reports_without_group_by(where_clause)

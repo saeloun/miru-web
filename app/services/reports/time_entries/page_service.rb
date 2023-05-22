@@ -3,7 +3,7 @@
 class Reports::TimeEntries::PageService < ApplicationService
   include Pagy::Backend
 
-  attr_reader :params, :page, :group_by, :current_company, :pagy_data, :es_filter
+  attr_reader :params, :page, :group_by, :current_company, :pagy_data, :es_filter, :reports
 
   PER_PAGE = {
     users: 5,
@@ -11,12 +11,13 @@ class Reports::TimeEntries::PageService < ApplicationService
     projects: 3
   }
 
-  def initialize(params, current_company)
+  def initialize(params, current_company, reports: [])
     @params = params
     @page = params["page"]
     @group_by = params[:group_by]
     @current_company = current_company
     @pagy_data = nil
+    @reports = reports
 
     @es_filter = nil
   end
@@ -27,9 +28,10 @@ class Reports::TimeEntries::PageService < ApplicationService
 
   def pagination_details
     {
-      pages: pagy_data.pages,
+      page: pagy_data.page,
+      pages: reports.empty? && pagy_data.pages > 1 ? pagy_data.pages - 1 : pagy_data.pages,
       first: pagy_data.page == 1,
-      prev: pagy_data.prev,
+      prev: pagy_data.prev.nil? ? 0 : pagy_data.prev,
       next: pagy_data.next,
       last: pagy_data.last
     }
