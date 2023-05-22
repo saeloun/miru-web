@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 
+import { useOutsideClick } from "helpers";
 import { XIcon } from "miruIcons";
 
 import { useUserContext } from "context/UserContext";
@@ -19,13 +20,17 @@ const NewClient = ({
 }) => {
   const [submitting, setSubmitting] = useState<boolean>(false);
   const [apiError, setApiError] = useState<string>("");
-
+  const wrapperRef = useRef();
   const handleDeleteLogo = () => {
     setClientLogo("");
     setClientLogoUrl("");
   };
 
   const { isDesktop } = useUserContext();
+
+  useOutsideClick(wrapperRef, () => {
+    setShowDialog(false);
+  });
 
   return isDesktop ? (
     <div className="flex items-center justify-center px-4">
@@ -35,8 +40,11 @@ const NewClient = ({
           backgroundColor: "rgba(29, 26, 49, 0.6)",
         }}
       >
-        <div className="relative h-full w-full px-4 md:flex md:items-center md:justify-center">
-          <div className="modal-width transform rounded-lg bg-white px-6 pb-6 shadow-xl transition-all sm:max-w-md sm:align-middle">
+        <div className="relative h-full w-full overflow-y-auto px-4 py-2/100 md:flex md:items-center md:justify-center xl:overflow-visible">
+          <div
+            className="modal-width h-full transform overflow-y-auto rounded-lg bg-white px-6 pb-6 shadow-xl transition-all sm:max-w-md sm:align-middle xl:h-auto xl:overflow-visible"
+            ref={wrapperRef}
+          >
             <div className="mt-6 flex items-center justify-between">
               <h6 className="text-base font-extrabold">Add New Client</h6>
               <button
