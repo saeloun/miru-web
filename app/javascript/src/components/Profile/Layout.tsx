@@ -50,12 +50,12 @@ const Layout = ({ isAdminUser, user, company }) => {
               />
             </div>
             <div className="col-span-9">
-              <RouteConfig />
+              <RouteConfig isAdmin={isAdminUser} />
             </div>
           </div>
         </Fragment>
       )}
-      {!isDesktop && <RouteConfig />}
+      {!isDesktop && <RouteConfig isAdmin={isAdminUser} />}
     </EntryContext.Provider>
   );
 };

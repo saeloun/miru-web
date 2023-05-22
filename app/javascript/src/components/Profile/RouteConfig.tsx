@@ -13,7 +13,7 @@ import PaymentSettings from "./Organization/Payment";
 import UserDetailsEdit from "./UserDetail/Edit";
 import UserDetailsView from "./UserDetail/UserDetailsView";
 
-const RouteConfig = () => (
+const RouteConfig = ({ isAdmin }) => (
   <Routes>
     <Route path="/edit">
       {/* <Route path="bank_account_details" element={<BankAccountDetails />} /> TODO: Temporary disabling*/}
@@ -26,7 +26,7 @@ const RouteConfig = () => (
       <Route element={<LeaveBalance />} path="leave-balance" />
       <Route element={<OrgDetails />} path="organization-details" />
       <Route element={<UserDetailsEdit />} path="change" />
-      <Route element={<MobileNav />} path="option" />
+      <Route element={<MobileNav isAdmin={isAdmin} />} path="option" />
       {/* </Route> */}
     </Route>
   </Routes>
