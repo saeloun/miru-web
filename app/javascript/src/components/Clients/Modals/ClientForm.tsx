@@ -413,7 +413,7 @@ const ClientForm = ({
               <div className="flex w-1/2 flex-col pr-2" id="city">
                 <CustomReactSelect
                   handleOnChange={city => setFieldValue("city", city)}
-                  id="city"
+                  id="city-list"
                   isErr={!!errors.city && touched.city}
                   label="City"
                   name="city"
