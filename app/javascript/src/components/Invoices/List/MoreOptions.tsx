@@ -9,7 +9,7 @@ import {
   DotsThreeVerticalIcon,
   DownloadSimpleIcon,
 } from "miruIcons";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Tooltip } from "StyledComponents";
 
 import { handleDownloadInvoice } from "../common/utils";
@@ -28,7 +28,7 @@ const MoreOptions = ({
   showSendLink,
 }) => {
   const wrapperRef = useRef(null);
-
+  const navigate = useNavigate();
   useOutsideClick(wrapperRef, () => {
     setShowMoreOptions(false);
   });
@@ -72,15 +72,21 @@ const MoreOptions = ({
           </button>
         </Tooltip>
         <Tooltip content="Edit">
-          <Link
-            className="rounded p-2 text-miru-han-purple-1000 hover:bg-miru-gray-100"
+          <button
+            disabled={invoice.status == "draft"}
             id="editInvoiceButton"
-            to={`/invoices/${invoice.id}/edit`}
-            type="button"
-            onClick={e => e.stopPropagation()}
+            className={
+              invoice.status == "draft"
+                ? "text-miru-gray-1000"
+                : "rounded p-2 text-miru-han-purple-1000 hover:bg-miru-gray-100"
+            }
+            onClick={e => {
+              e.stopPropagation();
+              navigate(`/invoices/${invoice.id}/edit`);
+            }}
           >
             <PenIcon size={16} weight="bold" />
-          </Link>
+          </button>
         </Tooltip>
         <Tooltip content="More">
           <button
@@ -179,13 +185,14 @@ const MoreOptions = ({
           </button>
         </li>
         <li>
-          <Link
+          <button
             className="flex cursor-pointer items-center py-2 text-miru-han-purple-1000"
-            to={`/invoices/${invoice.id}/edit`}
-            type="button"
+            onClick={() => {
+              navigate(`/invoices/${invoice.id}/edit`);
+            }}
           >
             <PenIcon className="mr-4" size={16} /> Edit Invoice
-          </Link>
+          </button>
         </li>
         {showPrint && (
           <li className="flex cursor-pointer items-center py-2 text-miru-han-purple-1000">
