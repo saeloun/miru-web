@@ -73,13 +73,8 @@ const MoreOptions = ({
         </Tooltip>
         <Tooltip content="Edit">
           <button
-            disabled={invoice.status == "draft"}
+            className="rounded p-2 text-miru-han-purple-1000 hover:bg-miru-gray-100"
             id="editInvoiceButton"
-            className={
-              invoice.status == "draft"
-                ? "text-miru-gray-1000"
-                : "rounded p-2 text-miru-han-purple-1000 hover:bg-miru-gray-100"
-            }
             onClick={e => {
               e.stopPropagation();
               navigate(`/invoices/${invoice.id}/edit`);
@@ -187,6 +182,7 @@ const MoreOptions = ({
         <li>
           <button
             className="flex cursor-pointer items-center py-2 text-miru-han-purple-1000"
+            id="editInvoiceButton"
             onClick={() => {
               navigate(`/invoices/${invoice.id}/edit`);
             }}
