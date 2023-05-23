@@ -45,7 +45,7 @@ export const Project = ({
   return (
     <>
       <tr
-        className={`last:border-b-0 ${grayColor}`}
+        className={`cursor-pointer last:border-b-0 ${grayColor}`}
         key={id}
         onClick={() => isAdminUser && projectClickHandler(id)}
         onMouseEnter={handleMouseEnter}
@@ -74,7 +74,7 @@ export const Project = ({
         <td className="table__cell text-right text-lg font-bold lg:text-xl">
           {minToHHMM(minutesSpent)}
         </td>
-        <td className="table__cell hidden px-3 py-3 lg:table-cell">
+        <td className="table__cell hidden px-3 py-3 text-center lg:table-cell">
           {isAdminUser && isHover && (
             <button
               id="editProject"
@@ -89,7 +89,7 @@ export const Project = ({
             </button>
           )}
         </td>
-        <td className="table__cell hidden px-3 py-3 lg:table-cell">
+        <td className="table__cell hidden px-3 py-3 text-center lg:table-cell">
           {isAdminUser && isHover && (
             <button
               onClick={e => {

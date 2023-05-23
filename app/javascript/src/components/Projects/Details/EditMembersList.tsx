@@ -3,7 +3,7 @@ import React, { useRef } from "react";
 import { useKeypress, useOutsideClick } from "helpers";
 import Logger from "js-logger";
 import { XIcon } from "miruIcons";
-import { Toastr } from "StyledComponents";
+import { Toastr, Modal } from "StyledComponents";
 
 import companyUsersApi from "apis/company-users";
 import projectMembersApi from "apis/project-members";
@@ -129,41 +129,33 @@ const EditMembersList = ({
   };
 
   return (
-    <div
-      className="fixed inset-0 top-0 left-0 right-0 bottom-0 z-10 flex items-start justify-center overflow-auto"
-      style={{
-        backgroundColor: "rgba(29, 26, 49, 0.6)",
-      }}
+    <Modal
+      isOpen
+      customStyle="sm:my-8 sm:w-full sm:max-w-lg sm:align-middle"
+      onClose={closeAddRemoveMembers}
     >
-      <div className="relative h-full w-full px-4 md:flex md:items-center md:justify-center">
-        <div
-          className="min-w-1/2 relative top-1/3 mx-auto transform rounded-lg bg-white py-6 pl-6 shadow-xl transition-all sm:max-w-md sm:align-middle md:top-0 md:min-w-400"
-          ref={wrapperRef}
+      <div className="flex items-center justify-between">
+        <h6 className="text-base font-extrabold capitalize">
+          Add Team Members
+        </h6>
+        <button
+          className="menuButton__button"
+          type="button"
+          onClick={closeAddRemoveMembers}
         >
-          <div className=" mr-6 flex items-center justify-between">
-            <h6 className="text-base font-extrabold capitalize">
-              Add Team Members
-            </h6>
-            <button
-              className="menuButton__button"
-              type="button"
-              onClick={closeAddRemoveMembers}
-            >
-              <XIcon color="#CDD6DF" size={16} weight="bold" />
-            </button>
-          </div>
-          <EditMembersListForm
-            allMemberList={allMemberList}
-            currencySymbol={currencySymbol}
-            handleSubmit={handleSubmit}
-            members={members}
-            setAllMemberList={setAllMemberList}
-            setMembers={setMembers}
-            updateMemberState={updateMemberState}
-          />
-        </div>
+          <XIcon color="#CDD6DF" size={16} weight="bold" />
+        </button>
       </div>
-    </div>
+      <EditMembersListForm
+        allMemberList={allMemberList}
+        currencySymbol={currencySymbol}
+        handleSubmit={handleSubmit}
+        members={members}
+        setAllMemberList={setAllMemberList}
+        setMembers={setMembers}
+        updateMemberState={updateMemberState}
+      />
+    </Modal>
   );
 };
 
