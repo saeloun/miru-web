@@ -24,6 +24,7 @@ const getSettingsNavUrls = memberId => [
       },
     ],
   },
+
   {
     isCompanyDetails: true,
     navItems: [
@@ -36,10 +37,24 @@ const getSettingsNavUrls = memberId => [
   },
 ];
 
-const MobileNav = () => {
+const getEmployeeSettingsNavUrls = memberId => [
+  {
+    groupName: "Personal",
+    navItems: [
+      {
+        url: "/profile/edit",
+        text: "PERSONAL DETAILS",
+        icon: <UserIcon size={16} />,
+      },
+    ],
+  },
+];
+
+const MobileNav = ({ isAdmin }) => {
   const { isDesktop, user } = useUserContext();
   const { memberId } = useParams();
-  const urlList = getSettingsNavUrls(memberId);
+  const AdminUrlList = getSettingsNavUrls(memberId);
+  const EmployeeUrlList = getEmployeeSettingsNavUrls(memberId);
   const navigate = useNavigate();
   const [currentWorkspace, setCurrentWorkspace] = useState<any>({});
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -71,7 +86,7 @@ const MobileNav = () => {
       <UserDetails />
       <TeamUrl
         currentWorkspaceName={currentWorkspace?.name || ""}
-        urlList={urlList}
+        urlList={isAdmin ? AdminUrlList : EmployeeUrlList}
       />
       <Outlet />
     </div>

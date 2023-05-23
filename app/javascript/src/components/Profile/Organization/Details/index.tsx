@@ -78,7 +78,7 @@ const OrgDetails = () => {
   };
 
   const handleBackBtnClick = () => {
-    navigate(`/time-tracking`, { replace: true });
+    navigate(`/profile/edit/option`, { replace: true });
   };
 
   return (
