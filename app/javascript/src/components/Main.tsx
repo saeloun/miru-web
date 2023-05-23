@@ -63,6 +63,13 @@ const Main = (props: Iprops) => {
               path={route.path}
             />
           ))}
+          {AUTH_ROUTES.map(route => (
+            <Route
+              element={<Dashboard {...props} />}
+              key={route.path}
+              path={route.path}
+            />
+          ))}
           <Route element={<Dashboard {...props} />} path="*" />
         </Routes>
       );
