@@ -72,7 +72,7 @@ const UserDetailsView = () => {
       {!isDesktop && (
         <Fragment>
           <MobileEditHeader
-            backHref="/"
+            backHref="/profile/edit/option"
             href="/profile/edit/change"
             title="Personal Details"
           />
