@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 
+import { useOutsideClick } from "helpers";
 import {
   ArrowLeftIcon,
   DotsThreeVerticalIcon,
@@ -27,6 +28,7 @@ const Header = ({ clientDetails, setShowProjectModal }) => {
   const [showMobileModal, setShowMobileModal] = useState<boolean>(false);
 
   const navigate = useNavigate();
+  const menuRef = useRef();
   const { isDesktop } = useUserContext();
 
   const handleClientDetails = () => {
@@ -58,7 +60,9 @@ const Header = ({ clientDetails, setShowProjectModal }) => {
     setIsHeaderMenuVisible(false);
   };
 
-  const menuBackground = isHeaderMenuVisible ? "bg-miru-gray-1000" : "";
+  useOutsideClick(menuRef, () => setIsHeaderMenuVisible(false));
+
+  const menuBackground = isHeaderMenuVisible ? "bg-miru-gray-100" : "";
 
   return (
     <div className="lg:my-6">
@@ -87,7 +91,7 @@ const Header = ({ clientDetails, setShowProjectModal }) => {
             <DotsThreeVerticalIcon color="#000000" size={20} weight="bold" />
           </button>
           {isHeaderMenuVisible && (
-            <ul className="menuButton__wrapper">
+            <ul className="menuButton__wrapper" ref={menuRef}>
               <li onClick={handleAddProject}>
                 <button className="menuButton__list-item">
                   <ReportsIcon color="#5B34EA" size={16} weight="bold" />
@@ -142,12 +146,14 @@ const Header = ({ clientDetails, setShowProjectModal }) => {
         <DeleteClient
           client={clientDetails}
           setShowDeleteDialog={setShowDeleteDialog}
+          showDeleteDialog={showDeleteDialog}
         />
       )}
       {showEditDialog && (
         <EditClient
           client={clientDetails}
           setShowEditDialog={setShowEditDialog}
+          showEditDialog={showEditDialog}
         />
       )}
       {showMobileModal && (

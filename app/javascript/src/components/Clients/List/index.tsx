@@ -327,8 +327,8 @@ const Clients = ({ isAdminUser }) => {
           />
         )}
         <div className="mx-auto flex w-full flex-col lg:px-4">
-          <div className="-my-2 w-full lg:-mx-8">
-            <div className="mx-auto inline-block min-w-full py-2 align-middle lg:px-8">
+          <div>
+            <div className="mx-auto inline-block min-w-full py-2 align-middle">
               <div className="overflow-hidden">
                 {clientData && clientData.length > 0 ? (
                   <Table
@@ -378,12 +378,14 @@ const Clients = ({ isAdminUser }) => {
         <EditClient
           client={clientToEdit}
           setShowEditDialog={setShowEditDialog}
+          showEditDialog={showEditDialog}
         />
       )}
       {showDeleteDialog && (
         <DeleteClient
           client={clientToDelete}
           setShowDeleteDialog={setShowDeleteDialog}
+          showDeleteDialog={showDeleteDialog}
         />
       )}
       {isClient && showDialog && (
@@ -396,6 +398,7 @@ const Clients = ({ isAdminUser }) => {
           setClientLogoUrl={setClientLogoUrl}
           setShowDialog={setShowDialog}
           setnewClient={setIsClient}
+          showDialog={showDialog}
         />
       )}
       {showMoreOptions && (
