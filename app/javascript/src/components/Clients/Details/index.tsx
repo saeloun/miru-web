@@ -291,6 +291,7 @@ const ClientDetails = ({ isAdminUser }) => {
           projectData={selectedProject}
           setEditProjectData={setEditProjectData}
           setShowProjectModal={setShowEditDialog}
+          showProjectModal={showEditDialog}
         />
       )}
       {showDeleteDialog && (
@@ -298,12 +299,14 @@ const ClientDetails = ({ isAdminUser }) => {
           fetchProjectList={fetchProjectList}
           project={selectedProject}
           setShowDeleteDialog={setShowDeleteDialog}
+          showDeleteDialog={showDeleteDialog}
         />
       )}
       {showProjectModal && (
         <AddProject
           clientDetails={clientDetails}
           setShowProjectModal={setShowProjectModal}
+          showProjectModal={showProjectModal}
         />
       )}
     </>

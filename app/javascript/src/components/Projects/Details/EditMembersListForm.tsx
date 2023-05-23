@@ -224,15 +224,15 @@ const EditMembersListForm = ({
 
   return (
     <form
-      className="flex h-full flex-col justify-between lg:mt-7 lg:mr-6"
+      className="flex h-full flex-col justify-between lg:mt-7"
       onSubmit={handleSubmit}
     >
       <div>
         {members.map((member, memberIndex) => (
           <div className="mb-4" key={memberIndex}>
-            <div className="mb-1 flex">
-              <div className="mr-4 w-56">{getMember(member, memberIndex)}</div>
-              <div className="relative mr-2 w-24 rounded-md shadow-sm">
+            <div className="mb-1 flex items-center">
+              <div className="mr-4 w-2/3">{getMember(member, memberIndex)}</div>
+              <div className="relative mr-2 w-1/4 rounded-md shadow-sm">
                 {member.hourlyRate == "" &&
                 focusedRateInputBoxId != memberIndex ? null : (
                   <div className="pointer-events-none absolute inset-y-0 right-1 z-20 flex items-center px-1">
@@ -269,7 +269,12 @@ const EditMembersListForm = ({
                   type="button"
                   onClick={() => removeMemberHandler(memberIndex, member)}
                 >
-                  <DeleteIcon color="#5B34EA" fill="#5B34EA" size={12} />
+                  <DeleteIcon
+                    color="#5B34EA"
+                    fill="#5B34EA"
+                    size={12}
+                    weight="bold"
+                  />
                 </button>
               </div>
             </div>

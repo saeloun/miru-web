@@ -240,6 +240,7 @@ module.exports = {
         "10vh": "10vh",
         "5vh": "5vh",
         "2vh": "2vh",
+        "1vh": "1vh",
       },
       zIndex: {
         "negative-1": "-1",
