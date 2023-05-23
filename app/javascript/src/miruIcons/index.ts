@@ -48,6 +48,7 @@ import {
   User,
 } from "phosphor-react";
 
+const error404Animation = require("./GIFS/404_animation.gif");
 const accountsAgingIcon = require("./svgIcons/accountsAging.svg");
 const accountsAgingHoverIcon = require("./svgIcons/accountsAgingHover.svg");
 const blurredMiruLogo = require("./svgIcons/blurred-miru-logo.svg");
@@ -263,3 +264,4 @@ export const MiruManagingEmployeesScreen = miruManagingEmployeesScreen;
 export const MoreOptionIcon = moreOption;
 export const GreenCheckCirleIcon = greenCheckCirleIcon;
 export const deleteImageIcon = deleteImage;
+export const Animation_404 = error404Animation;
