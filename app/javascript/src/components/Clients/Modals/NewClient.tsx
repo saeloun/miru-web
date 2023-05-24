@@ -31,7 +31,7 @@ const NewClient = ({
 
   return isDesktop ? (
     <Modal
-      customStyle="sm:my-8 sm:w-full sm:max-w-lg sm:align-middle"
+      customStyle="sm:my-8 sm:w-full sm:max-w-lg sm:align-middle overflow-visible"
       isOpen={showDialog}
       onClose={() => setShowDialog(false)}
     >
