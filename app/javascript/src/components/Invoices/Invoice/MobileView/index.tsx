@@ -167,7 +167,11 @@ const MobileView = ({ invoice, handleSendInvoice }) => {
         </MobileMoreOptions>
       )}
       {showDeleteDialog && (
-        <DeleteInvoice invoice={id} setShowDeleteDialog={setShowDeleteDialog} />
+        <DeleteInvoice
+          invoice={id}
+          setShowDeleteDialog={setShowDeleteDialog}
+          showDeleteDialog={showDeleteDialog}
+        />
       )}
     </div>
   );
