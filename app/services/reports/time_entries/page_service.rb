@@ -11,7 +11,7 @@ class Reports::TimeEntries::PageService < ApplicationService
     projects: 3
   }
 
-  def initialize(params, current_company, reports: [])
+  def initialize(params, current_company)
     @params = params
     @page = params["page"]
     @group_by = params[:group_by]
@@ -29,7 +29,7 @@ class Reports::TimeEntries::PageService < ApplicationService
   def pagination_details
     {
       page: pagy_data.page,
-      pages: reports.empty? && pagy_data.pages > 1 ? pagy_data.pages - 1 : pagy_data.pages,
+      pages: pagy_data.pages,
       first: pagy_data.page == 1,
       prev: pagy_data.prev.nil? ? 0 : pagy_data.prev,
       next: pagy_data.next,
