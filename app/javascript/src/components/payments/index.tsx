@@ -121,6 +121,7 @@ const Payments = () => {
           fetchPaymentList={fetchPaymentList}
           invoiceList={invoiceList}
           setShowManualEntryModal={setShowManualEntryModal}
+          showManualEntryModal={showManualEntryModal}
         />
       )}
     </div>
@@ -137,6 +138,7 @@ const Payments = () => {
         fetchPaymentList={fetchPaymentList}
         invoiceList={invoiceList}
         setShowManualEntryModal={setShowManualEntryModal}
+        showManualEntryModal={showManualEntryModal}
       />
     );
   }
