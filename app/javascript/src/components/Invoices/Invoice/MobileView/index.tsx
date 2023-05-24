@@ -139,9 +139,12 @@ const MobileView = ({ invoice, handleSendInvoice }) => {
         </Button>
       </div>
       {showMoreOptions && (
-        <MobileMoreOptions setVisibilty={setShowMoreOptions}>
+        <MobileMoreOptions
+          setVisibilty={setShowMoreOptions}
+          visibilty={showMoreOptions}
+        >
           <li
-            className="flex cursor-pointer items-center py-2 px-5 text-sm text-miru-red-400 hover:bg-miru-gray-100 lg:py-1 xl:py-2"
+            className="flex cursor-pointer items-center py-2 text-sm text-miru-red-400 hover:bg-miru-gray-100 lg:py-1 xl:py-2"
             onClick={() => {
               setShowMoreOptions(false);
               setShowDeleteDialog(true);
@@ -155,7 +158,7 @@ const MobileView = ({ invoice, handleSendInvoice }) => {
             Delete
           </li>
           {status == "DRAFT" && (
-            <li className="flex cursor-pointer items-center px-5 py-2 text-sm text-miru-han-purple-1000 hover:bg-miru-gray-100 lg:py-1 xl:py-2">
+            <li className="flex cursor-pointer items-center py-2 text-sm text-miru-han-purple-1000 hover:bg-miru-gray-100 lg:py-1 xl:py-2">
               <PrinterIcon
                 className="mr-4 text-miru-han-purple-1000"
                 size={16}

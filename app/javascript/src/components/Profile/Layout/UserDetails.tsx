@@ -102,6 +102,7 @@ export const UserDetails = () => {
           <MobileMoreOptions
             className="w-full md:mx-auto md:w-11/12"
             setVisibilty={setShowImageUpdateOptions}
+            visibilty={showImageUpdateOptions}
           >
             <li className="w-full">
               <label

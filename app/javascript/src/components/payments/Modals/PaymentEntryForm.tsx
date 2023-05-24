@@ -295,6 +295,7 @@ const PaymentEntryForm = ({
               <MobileMoreOptions
                 className="h-3/4 w-full overflow-scroll md:h-3/5 md:w-3/4 lg:h-1/4"
                 setVisibilty={setShowTransactionTypes}
+                visibilty={showTransactionTypes}
               >
                 {transactionTypes.map((transaction, index) => (
                   <li
@@ -339,7 +340,7 @@ const PaymentEntryForm = ({
           onChange={e => setNote(e.target.value)}
         />
       </div>
-      <div className="actions absolute bottom-0 mx-auto mt-4 mb-4 w-11/12 md:relative md:w-full">
+      <div className="actions mx-auto mt-4 mb-4 w-full">
         <button
           type="submit"
           className={

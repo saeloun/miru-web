@@ -157,9 +157,12 @@ const Header = ({ clientDetails, setShowProjectModal }) => {
         />
       )}
       {showMobileModal && (
-        <MobileMoreOptions setVisibilty={setShowMobileModal}>
+        <MobileMoreOptions
+          setVisibilty={setShowMobileModal}
+          visibilty={showMobileModal}
+        >
           <li
-            className="menuButton__list-item"
+            className="menuButton__list-item px-0"
             onClick={() => {
               handleAddProject();
               setShowMobileModal(false);
@@ -169,7 +172,7 @@ const Header = ({ clientDetails, setShowProjectModal }) => {
             <span className="ml-3">Add new project</span>
           </li>
           <li
-            className="menuButton__list-item"
+            className="menuButton__list-item px-0"
             onClick={() => {
               handleEdit();
               setShowMobileModal(false);
@@ -179,7 +182,7 @@ const Header = ({ clientDetails, setShowProjectModal }) => {
             <span className="ml-3">Edit</span>
           </li>
           <li
-            className="menuButton__list-item"
+            className="menuButton__list-item px-0"
             onClick={() => {
               handleDelete();
               setShowMobileModal(false);

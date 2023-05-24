@@ -193,6 +193,7 @@ const ProjectForm = ({
                   <MobileMoreOptions
                     className="flex h-1/2 flex-col"
                     setVisibilty={setShowClientList}
+                    visibilty={showClientList}
                   >
                     <div className="relative mt-2 flex w-full items-center">
                       <input
