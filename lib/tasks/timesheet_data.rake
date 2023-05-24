@@ -1,5 +1,4 @@
-# namespace :import:seed_data_from_csv do
-# end
+
 require 'csv'
 
 namespace :import do
