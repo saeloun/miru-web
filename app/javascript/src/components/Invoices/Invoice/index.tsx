@@ -71,6 +71,7 @@ const Invoice = () => {
           <DeleteInvoice
             invoice={invoiceToDelete}
             setShowDeleteDialog={setShowDeleteDialog}
+            showDeleteDialog={showDeleteDialog}
           />
         )}
       </>

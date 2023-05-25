@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import Logger from "js-logger";
 
@@ -25,21 +25,31 @@ const ProjectList = ({ isAdminUser }) => {
   const [editProjectData, setEditProjectData] = React.useState<any>({});
   const [deleteProjectData, setDeleteProjectData] = React.useState({});
   const [projects, setProjects] = React.useState<IProject[]>([]);
+  const [loading, setLoading] = useState(true);
   const { isDesktop } = useUserContext();
 
   const fetchProjects = async () => {
     try {
       const res = await projectApi.get();
       setProjects(res.data.projects);
+      setLoading(false);
     } catch (err) {
       Logger.error(err);
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     sendGAPageView();
     fetchProjects();
   }, []);
+
+  if (loading) {
+    return (
+      <p className="tracking-wide flex min-h-screen items-center justify-center text-base font-medium text-miru-han-purple-1000">
+        Loading...
+      </p>
+    );
+  }
 
   const ProjectsLayout = () => (
     <div>
@@ -113,6 +123,7 @@ const ProjectList = ({ isAdminUser }) => {
           editProjectData={editProjectData}
           setEditProjectData={setEditProjectData}
           setShowProjectModal={setShowProjectModal}
+          showProjectModal={showProjectModal}
         />
       )}
       {showDeleteDialog && (
@@ -120,6 +131,7 @@ const ProjectList = ({ isAdminUser }) => {
           fetchProjectList={fetchProjects}
           project={deleteProjectData}
           setShowDeleteDialog={setShowDeleteDialog}
+          showDeleteDialog={showDeleteDialog}
         />
       )}
     </div>

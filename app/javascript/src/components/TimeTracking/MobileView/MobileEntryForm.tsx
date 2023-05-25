@@ -172,7 +172,12 @@ const AddEntryMobile = ({
         <div className="flex flex-auto flex-col justify-between">
           <div>
             <div className="py-3">
-              <div className="relative flex w-full flex-col">
+              <div
+                className="relative flex w-full flex-col"
+                onClick={() => {
+                  setShowClientList(true);
+                }}
+              >
                 <CustomInputText
                   autoFocus
                   disabled={showClientList}
@@ -181,9 +186,6 @@ const AddEntryMobile = ({
                   name="Client"
                   type="text"
                   value={client && client}
-                  onClick={() => {
-                    setShowClientList(true);
-                  }}
                 />
                 <CaretDownIcon
                   className="absolute top-0 bottom-0 right-1 mx-2 my-3 "
@@ -251,7 +253,12 @@ const AddEntryMobile = ({
               )}
             </div>
             <div className="py-3">
-              <div className="relative flex w-full flex-col">
+              <div
+                className="relative flex w-full flex-col"
+                onClick={() => {
+                  setShowProjectList(true);
+                }}
+              >
                 <CustomInputText
                   disabled={showProjectList}
                   id="Project"
@@ -259,9 +266,6 @@ const AddEntryMobile = ({
                   name="Project"
                   type="text"
                   value={project}
-                  onClick={() => {
-                    setShowProjectList(true);
-                  }}
                 />
                 <CaretDownIcon
                   className="absolute top-0 bottom-0 right-1 mx-2 my-3 "

@@ -200,7 +200,7 @@ const ProjectDetails = () => {
     );
   };
 
-  const menuBackground = isHeaderMenuVisible ? "bg-miru-gray-1000" : "";
+  const menuBackground = isHeaderMenuVisible ? "bg-miru-gray-100" : "";
 
   const backToProjects = () => {
     navigate("/projects");
@@ -323,6 +323,7 @@ const ProjectDetails = () => {
           editProjectData={editProjectData}
           setEditProjectData={setEditProjectData}
           setShowProjectModal={setShowProjectModal}
+          showProjectModal={showProjectModal}
         />
       )}
       {showDeleteDialog && (
@@ -330,6 +331,7 @@ const ProjectDetails = () => {
           fetchProjectList={backToProjects}
           project={project}
           setShowDeleteDialog={setShowDeleteDialog}
+          showDeleteDialog={showDeleteDialog}
         />
       )}
     </div>

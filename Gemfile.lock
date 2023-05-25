@@ -330,6 +330,8 @@ GEM
     raabro (1.4.0)
     racc (1.6.2)
     rack (2.2.6.4)
+    rack-cors (2.0.1)
+      rack (>= 2.0.0)
     rack-mini-profiler (3.0.0)
       rack (>= 1.2.0)
     rack-protection (3.0.5)
@@ -589,6 +591,7 @@ DEPENDENCIES
   pg
   puma (< 7)
   pundit (~> 2.2)
+  rack-cors
   rack-mini-profiler (>= 2.3.3)
   rails (~> 7.0.4)
   rails-controller-testing (~> 1.0, >= 1.0.5)
