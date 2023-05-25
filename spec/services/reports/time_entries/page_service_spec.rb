@@ -23,7 +23,7 @@ RSpec.describe Reports::TimeEntries::PageService do
           @page_service.process
           @expected_user_ids = User.all.order(:first_name).limit(user_per_page).pluck(:id)
           @expected_pagination_details = {
-            pages: 2, first: true, prev: nil, next: 2, last: 2
+            page: 1, pages: 2, first: true, prev: 0, next: 2, last: 2
           }
         end
 
@@ -39,7 +39,7 @@ RSpec.describe Reports::TimeEntries::PageService do
           @page_service.process
           @expected_user_ids = User.all.order(:first_name).limit(10).pluck(:id).drop(user_per_page)
           @expected_pagination_details = {
-            pages: 2, first: false, prev: 1, next: nil, last: 2
+            page: 2, pages: 2, first: false, prev: 1, next: nil, last: 2
           }
         end
 
@@ -57,7 +57,7 @@ RSpec.describe Reports::TimeEntries::PageService do
           @page_service = described_class.new({ group_by: "team_member", team_member: @filter_user_ids }, company)
           @page_service.process
           @expected_pagination_details = {
-            pages: 2, first: true, prev: nil, next: 2, last: 2
+            page: 1, pages: 2, first: true, prev: 0, next: 2, last: 2
           }
         end
 
@@ -75,7 +75,7 @@ RSpec.describe Reports::TimeEntries::PageService do
             company)
           @page_service.process
           @expected_pagination_details = {
-            pages: 2, first: false, prev: 1, next: nil, last: 2
+            page: 2, pages: 2, first: false, prev: 1, next: nil, last: 2
           }
         end
 
@@ -99,7 +99,7 @@ RSpec.describe Reports::TimeEntries::PageService do
           @page_service.process
           @expected_client_ids = Client.all.order(:name).limit(client_per_page).pluck(:id)
           @expected_pagination_details = {
-            pages: 2, first: true, prev: nil, next: 2, last: 2
+            page: 1, pages: 2, first: true, prev: 0, next: 2, last: 2
           }
         end
 
@@ -115,7 +115,7 @@ RSpec.describe Reports::TimeEntries::PageService do
           @page_service.process
           @expected_client_ids = Client.all.order(:name).limit(10).pluck(:id).drop(client_per_page)
           @expected_pagination_details = {
-            pages: 2, first: false, prev: 1, next: nil, last: 2
+            page: 2, pages: 2, first: false, prev: 1, next: nil, last: 2
           }
         end
 
@@ -133,7 +133,7 @@ RSpec.describe Reports::TimeEntries::PageService do
           @page_service = described_class.new({ group_by: "client", client: @filter_client_ids }, company)
           @page_service.process
           @expected_pagination_details = {
-            pages: 2, first: true, prev: nil, next: 2, last: 2
+            page: 1, pages: 2, first: true, prev: 0, next: 2, last: 2
           }
         end
 
@@ -151,7 +151,7 @@ RSpec.describe Reports::TimeEntries::PageService do
             company)
           @page_service.process
           @expected_pagination_details = {
-            pages: 2, first: false, prev: 1, next: nil, last: 2
+            page: 2, pages: 2, first: false, prev: 1, next: nil, last: 2
           }
         end
 
@@ -176,7 +176,7 @@ RSpec.describe Reports::TimeEntries::PageService do
           @page_service.process
           @expected_project_ids = Project.all.order(:name).limit(project_per_page).pluck(:id)
           @expected_pagination_details = {
-            pages: 2, first: true, prev: nil, next: 2, last: 2
+            page: 1, pages: 2, first: true, prev: 0, next: 2, last: 2
           }
         end
 
@@ -192,7 +192,7 @@ RSpec.describe Reports::TimeEntries::PageService do
           @page_service.process
           @expected_project_ids = Project.all.order(:name).limit(10).pluck(:id).drop(project_per_page)
           @expected_pagination_details = {
-            pages: 2, first: false, prev: 1, next: nil, last: 2
+            page: 2, pages: 2, first: false, prev: 1, next: nil, last: 2
           }
         end
 
@@ -210,7 +210,7 @@ RSpec.describe Reports::TimeEntries::PageService do
           @page_service = described_class.new({ group_by: "project", project: @filter_project_ids }, company)
           @page_service.process
           @expected_pagination_details = {
-            pages: 2, first: true, prev: nil, next: 2, last: 2
+            page: 1, pages: 2, first: true, prev: 0, next: 2, last: 2
           }
         end
 
@@ -228,7 +228,7 @@ RSpec.describe Reports::TimeEntries::PageService do
             company)
           @page_service.process
           @expected_pagination_details = {
-            pages: 2, first: false, prev: 1, next: nil, last: 2
+            page: 2, pages: 2, first: false, prev: 1, next: nil, last: 2
           }
         end
 
