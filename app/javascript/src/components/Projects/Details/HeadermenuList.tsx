@@ -12,7 +12,7 @@ const HeaderMenuList = ({
   <>
     <li>
       <button
-        className="menuButton__list-item px-0"
+        className="menuButton__list-item px-0 lg:px-5"
         onMouseDown={handleGenerateInvoice}
       >
         <InvoicesIcon color="#5B34EA" size={16} weight="bold" />
@@ -21,7 +21,7 @@ const HeaderMenuList = ({
     </li>
     <li>
       <button
-        className="menuButton__list-item px-0"
+        className="menuButton__list-item px-0 lg:px-5"
         onMouseDown={e => {
           e?.stopPropagation();
           handleEditProject();
@@ -34,7 +34,7 @@ const HeaderMenuList = ({
     </li>
     <li>
       <button
-        className="menuButton__list-item px-0"
+        className="menuButton__list-item px-0 lg:px-5"
         onMouseDown={handleAddRemoveMembers}
       >
         <TeamsIcon color="#5b34ea" size={16} weight="bold" />
@@ -43,7 +43,7 @@ const HeaderMenuList = ({
     </li>
     <li>
       <button
-        className="menuButton__list-item px-0 text-miru-red-400"
+        className="menuButton__list-item px-0 text-miru-red-400 lg:px-5"
         onMouseDown={() => setShowDeleteDialog(true)}
       >
         <DeleteIcon color="#E04646" size={16} weight="bold" />

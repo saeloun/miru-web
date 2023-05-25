@@ -187,17 +187,21 @@ const ProjectDetails = () => {
       );
     }
 
-    return (
-      <ProjectDetailsForm
-        handleAddRemoveMembers={handleAddRemoveMembers}
-        handleEditProject={handleEditProject}
-        handleGenerateInvoice={handleGenerateInvoice}
-        isHeaderMenuVisible={isHeaderMenuVisible}
-        project={project}
-        setIsHeaderMenuVisible={setIsHeaderMenuVisible}
-        setShowDeleteDialog={setShowDeleteDialog}
-      />
-    );
+    if (!isDesktop) {
+      return (
+        <ProjectDetailsForm
+          handleAddRemoveMembers={handleAddRemoveMembers}
+          handleEditProject={handleEditProject}
+          handleGenerateInvoice={handleGenerateInvoice}
+          isHeaderMenuVisible={isHeaderMenuVisible}
+          project={project}
+          setIsHeaderMenuVisible={setIsHeaderMenuVisible}
+          setShowDeleteDialog={setShowDeleteDialog}
+        />
+      );
+    }
+
+    return <div />;
   };
 
   const menuBackground = isHeaderMenuVisible ? "bg-miru-gray-100" : "";
@@ -232,11 +236,7 @@ const ProjectDetails = () => {
                 />
               )}
             </div>
-            <div
-              className="relative h-8"
-              onBlur={e => handleMenuVisibility(e, false)}
-              onMouseDown={e => handleMenuVisibility(e, false)}
-            >
+            <div className="relative h-8">
               <button
                 className={`menuButton__button ${menuBackground}`}
                 id="kebabMenu"

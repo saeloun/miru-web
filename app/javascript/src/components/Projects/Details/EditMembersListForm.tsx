@@ -293,6 +293,7 @@ const EditMembersListForm = ({
           <div className="actions mt-4 text-center">
             <button
               disabled={!(formattedMemberList.length > 0)}
+              id="addMember"
               name="add"
               type="button"
               className={`menuButton__button text-xs ${
