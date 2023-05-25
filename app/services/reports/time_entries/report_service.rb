@@ -50,6 +50,18 @@ class Reports::TimeEntries::ReportService
       @reports = search_timesheet_entries(where_clause.merge(page_service.es_filter))
 
       @pagination_details = page_service.pagination_details
+
+      if @reports.empty?
+        details = page_service.pagination_details
+        @pagination_details = {
+          page: details[:page] - 1,
+          pages: details[:pages] > 0 ? details[:pages] - 1 : details[:pages],
+          first: details[:first],
+          prev: details[:prev] > 0 ? details[:prev] - 1 : details[:prev],
+          next: details[:next],
+          last: details[:last]
+        }
+      end
    end
 
     def reports_without_group_by(where_clause)

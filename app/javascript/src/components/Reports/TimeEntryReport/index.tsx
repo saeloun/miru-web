@@ -146,8 +146,13 @@ const TimeEntryReport = () => {
     const sanitizedParam = queryParams.substring(1);
     const sanitizedQuery = `?${sanitizedParam}`;
     const res = await reportsApi.get(`${sanitizedQuery}&page=${page}`);
-    setTimeEntries(res.data.reports);
-    setPaginationDetails(res.data.pagy);
+
+    if (res.data.reports.length === 0) {
+      setPaginationDetails(res.data.pagy);
+    } else {
+      setTimeEntries(res.data.reports);
+      setPaginationDetails(res.data.pagy);
+    }
   };
 
   const contextValues = {
