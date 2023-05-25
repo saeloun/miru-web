@@ -6,7 +6,7 @@ namespace :import do
   task seed_data_from_csv: :environment do
     csv_file = 'lib/csvs/time-entries.csv'
 
-    unless Rails.env.production?
+    if ENV["SEED_DATA_FROM_CSV"].present?
       CSV.foreach(csv_file, headers: true) do |row|
         project_name = row['Project']
         client_name = row['Client']
