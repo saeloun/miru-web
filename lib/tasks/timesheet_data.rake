@@ -8,7 +8,7 @@ namespace :import do
 
     unless Rails.env.production?
       CSV.foreach(csv_file, headers: true) do |row|
-        project = row['Project']
+        project_name = row['Project']
         client_name = row['Client']
         full_name = row['Team Member']
         date_str = row['Date']
@@ -43,7 +43,7 @@ namespace :import do
           puts 'Employment created'
         end
         client = Client.find_or_create_by(name: client_name, company_id: company.id, email: "hr@client.com")
-        project = Project.find_or_create_by(name: project, client_id: client.id, billable: true)
+        project = Project.find_or_create_by(name: project_name, client_id: client.id, billable: true)
         project_member = ProjectMember.find_by(user_id: user.id, project_id: project.id)
         if project_member.nil?
           user.project_members.create(project_id: project.id, hourly_rate: rand(40..150))
