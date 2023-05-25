@@ -55,7 +55,8 @@ class Invoice < ApplicationRecord
     :paid,
     :declined,
     :overdue,
-    :sending
+    :sending,
+    :wavied
   ]
 
   belongs_to :company
@@ -77,6 +78,7 @@ class Invoice < ApplicationRecord
   validates :invoice_number, uniqueness: true
   validates :reference, length: { maximum: 12 }, allow_blank: true
   validate :check_if_invoice_paid, on: :update
+  validate :prevent_draft_to_wavied, on: :update
 
   scope :with_statuses, -> (statuses) { where(status: statuses) if statuses.present? }
   scope :issue_date_range, -> (date_range) { where(issue_date: date_range) if date_range.present? }
@@ -174,6 +176,12 @@ class Invoice < ApplicationRecord
     def check_if_invoice_paid
       if status_changed? && status_was == "paid"
         errors.add(:status, t("errors.can't change status"))
+      end
+    end
+
+    def prevent_draft_to_wavied
+      if status_changed? && status_was == "draft" && status == "waived"
+        errors.add(:status, t("errors.prevent_draft_to_wavied"))
       end
     end
 end
