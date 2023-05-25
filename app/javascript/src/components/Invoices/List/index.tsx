@@ -281,6 +281,7 @@ const Invoices = () => {
               fetchInvoices={fetchInvoices}
               invoice={invoiceToDelete}
               setShowDeleteDialog={setShowDeleteDialog}
+              showDeleteDialog={showDeleteDialog}
             />
           )}
           {showBulkDeleteDialog && (
@@ -288,6 +289,7 @@ const Invoices = () => {
               fetchInvoices={fetchInvoices}
               invoices_ids={selectedInvoices}
               setShowBulkDeleteDialog={setShowBulkDeleteDialog}
+              showBulkDeleteDialog={showBulkDeleteDialog}
             />
           )}
           {showBulkDownloadDialog && (
