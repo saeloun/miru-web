@@ -21,7 +21,7 @@ RSpec.describe "Adding payment entry", type: :system do
 
         click_button "addEntry"
         find("#invoice").click
-        within(".modal__container") do
+        within(".modal__form") do
           find("#react-select-4-option-0").click
           find("#transactionDate").click
           find(".react-datepicker__day--014").click

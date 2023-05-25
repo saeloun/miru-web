@@ -239,6 +239,7 @@ const EditInvoice = () => {
             <DeleteInvoice
               invoice={invoiceToDelete}
               setShowDeleteDialog={setShowDeleteDialog}
+              showDeleteDialog={showDeleteDialog}
             />
           )}
         </Fragment>

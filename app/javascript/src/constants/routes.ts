@@ -10,8 +10,8 @@ import AccountsAgingReport from "components/Reports/AccountsAgingReport";
 import TeamsRouteConfig from "components/Team/TeamsRouteConfig";
 import { Roles, Paths } from "constants/index";
 
+import Clients from "../components/Clients";
 import ClientDetails from "../components/Clients/Details";
-import ClientList from "../components/Clients/List";
 import EditInvoice from "../components/Invoices/Edit";
 import GenerateInvoices from "../components/Invoices/Generate";
 import Invoice from "../components/Invoices/Invoice";
@@ -30,7 +30,7 @@ import RouteConfig from "../components/Team/RouteConfig";
 import TimeTracking from "../components/TimeTracking";
 
 const ClientsRoutes = [
-  { path: "", Component: ClientList },
+  { path: "", Component: Clients },
   { path: ":clientId", Component: ClientDetails },
 ];
 

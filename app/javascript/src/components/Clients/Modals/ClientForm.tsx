@@ -58,22 +58,14 @@ const ClientForm = ({
   setApiError,
   setShowEditDialog,
 }: IClientForm) => {
-  const initialSelectValue = {
-    label: "",
-    value: "",
-    code: "",
-  };
   const [fileUploadError, setFileUploadError] = useState<string>("");
   const [countries, setCountries] = useState([]);
-  const [currentCountryDetails, setCurrentCountryDetails] =
-    useState(initialSelectValue);
-  const [currentCityList, setCurrentCityList] = useState([]);
 
   const assignCountries = async allCountries => {
     const countryData = await allCountries.map(country => ({
-      value: country.isoCode,
+      value: country?.isoCode && country.isoCode,
       label: country.name,
-      code: country.isoCode,
+      code: country?.isoCode && country?.isoCode,
     }));
     setCountries(countryData);
   };
@@ -87,9 +79,27 @@ const ClientForm = ({
     State.getStatesOfCountry(countryCode).map(state => ({
       label: state.name,
       value: state.name,
-      code: state.isoCode,
+      code: state?.isoCode && state.isoCode,
       ...state,
     }));
+
+  const updatedCities = values => {
+    const allStates = State.getAllStates();
+    const currentCity = allStates.filter(
+      state => state.name == values.state.label
+    );
+
+    const cities = City.getCitiesOfState(
+      values.country.code,
+      currentCity[0] && currentCity[0].isoCode
+    ).map(city => ({
+      label: city.name,
+      value: city.name,
+      ...city,
+    }));
+
+    return cities;
+  };
 
   const onLogoChange = e => {
     const file = e.target.files[0];
@@ -276,6 +286,7 @@ const ClientForm = ({
               <InputField
                 autoFocus
                 resetErrorOnChange
+                hasError={errors.name && touched.name}
                 id="name"
                 label="Name"
                 name="name"
@@ -290,6 +301,7 @@ const ClientForm = ({
               <div className="field relative">
                 <InputField
                   resetErrorOnChange
+                  hasError={errors.email && touched.email}
                   id="email"
                   label="Email"
                   name="email"
@@ -334,6 +346,7 @@ const ClientForm = ({
               <div className="field relative">
                 <InputField
                   resetErrorOnChange
+                  hasError={errors.address1 && touched.address1}
                   id="address1"
                   label="Address line 1"
                   name="address1"
@@ -349,6 +362,7 @@ const ClientForm = ({
               <div className="field relative mb-5">
                 <InputField
                   resetErrorOnChange
+                  hasError={errors.address2 && touched.address2}
                   id="address2"
                   label="Address line 2 (optional)"
                   name="address2"
@@ -369,33 +383,28 @@ const ClientForm = ({
                   options={countries}
                   value={values.country.value ? values.country : null}
                   handleOnChange={e => {
-                    setCurrentCountryDetails(e);
                     setFieldValue("country", e);
+                    setFieldValue("state", "");
+                    setFieldValue("city", "");
+                    setFieldValue("zipcode", "");
                   }}
                 />
               </div>
               <div className="flex w-1/2 flex-col pl-2">
                 <CustomReactSelect
+                  id="state"
                   isErr={!!errors.state && touched.state}
                   label="State"
                   name="state"
-                  value={values.state.value ? values.state : null}
+                  value={values.state ? values.state : null}
                   handleOnChange={state => {
                     setFieldValue("state", state);
-                    const cities = City.getCitiesOfState(
-                      currentCountryDetails.code,
-                      state.code
-                    ).map(city => ({
-                      label: city.name,
-                      value: city.name,
-                      ...city,
-                    }));
-                    setCurrentCityList(cities);
+                    setFieldValue("city", "");
+                    setFieldValue("zipcode", "");
+                    updatedCities(values);
                   }}
                   options={updatedStates(
-                    currentCountryDetails.code
-                      ? currentCountryDetails.code
-                      : "US"
+                    values.country.code ? values.country.code : "US"
                   )}
                 />
               </div>
@@ -404,17 +413,18 @@ const ClientForm = ({
               <div className="flex w-1/2 flex-col pr-2" id="city">
                 <CustomReactSelect
                   handleOnChange={city => setFieldValue("city", city)}
-                  id="city_select"
+                  id="city-list"
                   isErr={!!errors.city && touched.city}
                   label="City"
                   name="city"
-                  options={currentCityList}
+                  options={updatedCities(values)}
                   value={values.city.value ? values.city : null}
                 />
               </div>
               <div className="flex w-1/2 flex-col pl-2">
                 <InputField
                   resetErrorOnChange
+                  hasError={errors.zipcode && touched.zipcode}
                   id="zipcode"
                   label="Zipcode"
                   name="zipcode"
