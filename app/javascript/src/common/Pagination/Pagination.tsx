@@ -42,6 +42,16 @@ const Pagination = ({
     return setParams({ ...params, page });
   };
 
+  const disableNextButton = () => {
+    if (!isNaN(Number(pagy?.last)) && pagy?.last === currentPage) {
+      return true;
+    }
+
+    if (typeof pagy?.last === "boolean") {
+      return pagy?.last;
+    }
+  };
+
   return (
     <div className="bg-grey-400 relative flex w-full items-center px-0 pt-5 pb-20 md:pb-28 lg:py-10 lg:pl-36">
       <div className="mx-auto w-full">
@@ -82,18 +92,23 @@ const Pagination = ({
                 </button>
               ))}
             </div>
-            {!pagy?.last && (
-              <button
-                disabled={pagy?.last}
-                className={cn("m-1 mx-4 font-bold", {
-                  "text-miru-gray-400": pagy?.last,
-                  "text-miru-han-purple-1000": !pagy?.last,
-                })}
-                onClick={() => setParams({ ...params, page: pagy?.next })}
-              >
-                <CaretCircleRightIcon size={16} weight="bold" />
-              </button>
-            )}
+            {!pagy?.last ||
+              (!isNaN(Number(pagy?.last)) && (
+                <button
+                  disabled={disableNextButton()}
+                  className={cn("m-1 mx-4 font-bold", {
+                    "text-miru-gray-400": disableNextButton(),
+                    "text-miru-han-purple-1000": !pagy?.last,
+                  })}
+                  onClick={() => {
+                    isReport
+                      ? handleClick(pagy?.next)
+                      : setParams({ ...params, page: pagy?.next });
+                  }}
+                >
+                  <CaretCircleRightIcon size={16} weight="bold" />
+                </button>
+              ))}
           </div>
         )}
       </div>

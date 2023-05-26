@@ -55,14 +55,18 @@ class Reports::TimeEntries::ReportService
         details = page_service.pagination_details
         @pagination_details = {
           page: details[:page] - 1,
-          pages: details[:pages] > 0 ? details[:pages] - 1 : details[:pages],
+          pages: change_pagination(details[:pages]),
           first: details[:first],
-          prev: details[:prev] > 0 ? details[:prev] - 1 : details[:prev],
+          prev: change_pagination(details[:prev]),
           next: details[:next],
-          last: details[:last]
+          last: change_pagination(details[:last])
         }
       end
    end
+
+    def change_pagination(page)
+      page > 0 ? page - 1 : page
+    end
 
     def reports_without_group_by(where_clause)
       @reports = search_timesheet_entries(where_clause, params[:page])
