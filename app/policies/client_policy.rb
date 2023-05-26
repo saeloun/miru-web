@@ -49,7 +49,7 @@ class ClientPolicy < ApplicationPolicy
   def permitted_attributes
     [
       :name,
-      :email,
+      email: [],
       :phone,
       :logo,
       addresses_attributes: [:id, :address_line_1, :address_line_2, :city, :state, :country, :pin]

@@ -5,6 +5,8 @@ require "rails_helper"
 RSpec.describe Client, type: :model do
   subject { create(:client) }
 
+  let(:message) { "Only 5 emails are allowed." }
+
   describe "Validations" do
     it { is_expected.to validate_presence_of(:name) }
     it { is_expected.to validate_presence_of(:email) }
@@ -16,10 +18,12 @@ RSpec.describe Client, type: :model do
       expect(new_client.errors[:name]).to include("The client #{existing_client.name.upcase} already exists")
     end
 
-    it { is_expected.to validate_uniqueness_of(:email).scoped_to(:company_id) }
-    it { is_expected.to allow_value("valid@email.com").for(:email) }
-    it { is_expected.not_to allow_value("invalid@email").for(:email) }
+    it { is_expected.not_to allow_value([]).for(:email) }
+    it { is_expected.not_to allow_value("valid@email.com").for(:email) }
+    it { is_expected.to allow_value(["valid@email.com"]).for(:email) }
+    it { is_expected.not_to allow_value(["invalid@email"]).for(:email) }
     it { is_expected.to validate_length_of(:name).is_at_most(30) }
+    it { is_expected.not_to allow_value(Array.new(6, "abc@example.com")).for(:email).with_message(message) }
     it { is_expected.to validate_length_of(:phone).is_at_most(15) }
   end
 
