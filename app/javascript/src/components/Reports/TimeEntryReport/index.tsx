@@ -142,6 +142,8 @@ const TimeEntryReport = () => {
   };
 
   const handlePageClick = async page => {
+    if (page == "...") return;
+
     const queryParams = getQueryParams(selectedFilter);
     const sanitizedParam = queryParams.substring(1);
     const sanitizedQuery = `?${sanitizedParam}`;
