@@ -8,7 +8,9 @@ const Header = ({
   invoice,
   handleSendInvoice,
   setShowDeleteDialog,
+  setInvoiceToWaive,
   setInvoiceToDelete,
+  setShowWavieDialog,
 }) => (
   <div className="mt-6 mb-3 sm:flex sm:items-center sm:justify-between">
     <div className="flex flex-row">
@@ -22,6 +24,10 @@ const Header = ({
       deleteInvoice={() => {
         setShowDeleteDialog(true);
         setInvoiceToDelete(invoice.id);
+      }}
+      wavieInvoice={() => {
+        setShowWavieDialog(true);
+        setInvoiceToWaive(invoice.id);
       }}
     />
   </div>

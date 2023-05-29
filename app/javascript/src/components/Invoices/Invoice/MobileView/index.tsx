@@ -7,6 +7,7 @@ import {
   DotsThreeVerticalIcon,
   ArrowLeftIcon,
   EditIcon,
+  WaiveSVG,
 } from "miruIcons";
 import { useNavigate } from "react-router-dom";
 import { Button, MobileMoreOptions, Badge } from "StyledComponents";
@@ -16,6 +17,7 @@ import InvoiceInfo from "components/Invoices/Generate/MobileView/Container/Invoi
 import InvoiceTotal from "components/Invoices/Generate/MobileView/Container/InvoicePreview/InvoiceTotal";
 import LineItems from "components/Invoices/Generate/MobileView/Container/MenuContainer/LineItems";
 import DeleteInvoice from "components/Invoices/popups/DeleteInvoice";
+import WavieOffInvoice from "components/Invoices/popups/WavieOffInvoice";
 import getStatusCssClass from "utils/getBadgeStatus";
 
 const MobileView = ({ invoice, handleSendInvoice }) => {
@@ -37,6 +39,7 @@ const MobileView = ({ invoice, handleSendInvoice }) => {
   } = invoice;
   const [showMoreOptions, setShowMoreOptions] = useState<boolean>(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
+  const [showWavieDialog, setShowWavieDialog] = useState<boolean>(false);
   const navigate = useNavigate();
   const subTotal = invoiceLineItems.reduce(
     (prev, curr) => prev + (curr.rate * curr.quantity) / 60,
@@ -141,6 +144,16 @@ const MobileView = ({ invoice, handleSendInvoice }) => {
       {showMoreOptions && (
         <MobileMoreOptions setVisibilty={setShowMoreOptions}>
           <li
+            className="flex cursor-pointer items-center py-2 px-5 text-sm text-miru-han-purple-1000 hover:bg-miru-gray-100 lg:py-1 xl:py-2"
+            onClick={() => {
+              setShowMoreOptions(false);
+              setShowWavieDialog(true);
+            }}
+          >
+            <img className="mr-4" height="16px" src={WaiveSVG} width="16px" />
+            Waive Off
+          </li>
+          <li
             className="flex cursor-pointer items-center py-2 px-5 text-sm text-miru-red-400 hover:bg-miru-gray-100 lg:py-1 xl:py-2"
             onClick={() => {
               setShowMoreOptions(false);
@@ -171,6 +184,13 @@ const MobileView = ({ invoice, handleSendInvoice }) => {
           invoice={id}
           setShowDeleteDialog={setShowDeleteDialog}
           showDeleteDialog={showDeleteDialog}
+        />
+      )}
+      {showWavieDialog && (
+        <WavieOffInvoice
+          invoice={id}
+          setShowWavieDialog={setShowWavieDialog}
+          showWavieDialog={showWavieDialog}
         />
       )}
     </div>
