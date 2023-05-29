@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 
 import { minFromHHMM, minToHHMM, validateTimesheetEntry } from "helpers";
 import Logger from "js-logger";
-import { CheckedCheckboxSVG, UncheckedCheckboxSVG, EditSVG } from "miruIcons";
+import { CheckedCheckboxSVG, UncheckedCheckboxSVG, EditIcon } from "miruIcons";
 import { TimeInput, Toastr } from "StyledComponents";
 
 import timesheetEntryApi from "apis/timesheet-entry";
@@ -168,10 +168,10 @@ const WeeklyEntriesCard = ({
 
   return (
     <div className="week-card mt-4 w-full rounded-lg p-6 shadow-xl">
-      <div className="flex w-full items-center">
-        <div className="mr-2 flex w-auto overflow-scroll xl:mr-10">
+      <div className="flex w-full items-center justify-between">
+        <div className="mr-2 flex w-1/15 flex-wrap items-center justify-start xl:mr-10">
           <p className="text-xs xl:text-sm xxl:text-lg">{client}</p>
-          <p className="mx-auto text-xs xl:text-sm xxl:text-lg">•</p>
+          <p className="ml-2 mr-auto text-xs xl:text-sm xxl:text-lg">•</p>
           <p className="text-xs xl:text-sm xxl:text-lg">{project}</p>
         </div>
         <div className="flex w-1/60 items-center justify-between">
@@ -206,11 +206,11 @@ const WeeklyEntriesCard = ({
         <div className="w-1/10 text-center text-base font-bold xl:text-xl">
           {minToHHMM(weeklyTotalHours)}
         </div>
-        <div className="flex w-1/10 justify-around">
-          <img
-            alt="edit"
-            className="icon-hover ml-8 h-4 w-4 cursor-pointer"
-            src={EditSVG}
+        <div className="flex w-1/10 items-center justify-center">
+          <EditIcon
+            className="cursor-pointer text-miru-han-purple-1000"
+            size={16}
+            weight="bold"
             onClick={() => {
               if (!isWeeklyEditing) setProjectSelected(false);
             }}
