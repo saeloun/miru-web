@@ -47,9 +47,11 @@ puts "Employment Created"
 
 microsoft_client = company.clients.create!(
   name: "Microsoft",
-  email: "support@example.com",
+  email: ["support@example.com"],
   phone: "+1 9999999991"
 )
+
+Client.reindex
 
 puts "Clients Created"
 

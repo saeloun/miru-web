@@ -4,7 +4,7 @@ FactoryBot.define do
   factory :client do
     company
     name { Faker::Name.unique.name[0..30] }
-    email { Faker::Internet.unique.safe_email }
+    email { [Faker::Internet.unique.safe_email] }
     phone { Faker::PhoneNumber.phone_number_with_country_code.slice(0, 15) }
 
     after :create do |client|
@@ -27,6 +27,12 @@ FactoryBot.define do
         file_name = "test-image.png"
         file_path = Rails.root.join("spec", "support", "fixtures", file_name)
         client.logo.attach(io: File.open(file_path), filename: file_name, content_type: "image/png")
+      end
+    end
+
+    trait :reindex do
+      after(:create) do |client, _evaluator|
+        client.reindex(refresh: true)
       end
     end
   end

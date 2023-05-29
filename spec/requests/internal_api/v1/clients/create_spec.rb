@@ -35,7 +35,7 @@ RSpec.describe "InternalApi::V1::Client#create", type: :request do
       it "throws 422 if the name doesn't exist" do
         send_request :post, internal_api_v1_clients_path(
           client: {
-            email: "test@client.com",
+            email: ["test@client.com"],
             description: "Rspec Test",
             phone: "7777777777",
             addresses_attributes: [attributes_for(:address)]
@@ -44,11 +44,36 @@ RSpec.describe "InternalApi::V1::Client#create", type: :request do
         expect(json_response["errors"]).to eq("can't be blank")
       end
 
+      it "throws 422 if the email doesn't exist" do
+        send_request :post, internal_api_v1_clients_path(
+          client: {
+            name: "First name",
+            description: "Rspec Test",
+            phone: "7777777777",
+            address: "Somewhere on Earth"
+          }), headers: auth_headers(user)
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(json_response["errors"]).to eq("Email can't be blank")
+      end
+
+      it "throws 422 if the email is not an array" do
+        send_request :post, internal_api_v1_clients_path(
+          client: {
+            name: "First name",
+            email: "test@client.com",
+            description: "Rspec Test",
+            phone: "7777777777",
+            address: "Somewhere on Earth"
+          }), headers: auth_headers(user)
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(json_response["errors"]).to eq("Email can't be blank")
+      end
+
       it "throws 422 if the address_line_1 is blank" do
         send_request :post, internal_api_v1_clients_path(
           client: {
             name: "ABC",
-            email: "test@client.com",
+            email: ["test@client.com"],
             description: "Rspec Test",
             phone: "7777777777",
             addresses_attributes: [invalid_address_attributes]
