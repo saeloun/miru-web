@@ -1,17 +1,20 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 
-import "react-phone-number-input/style.css"; //eslint-disable-line
+import cn from "classnames";
 import { Country, State, City } from "country-state-city";
 import { Formik, Form, FormikProps } from "formik";
-import { EditImageButtonSVG, deleteImageIcon } from "miruIcons";
+import { EditImageButtonSVG, deleteImageIcon, XIcon } from "miruIcons";
 import PhoneInput from "react-phone-number-input";
 import flags from "react-phone-number-input/flags";
+import "react-phone-number-input/style.css"; //eslint-disable-line
 import { Avatar, Toastr } from "StyledComponents";
 
 import clientApi from "apis/clients";
+import { CustomAdvanceInput } from "common/CustomAdvanceInput";
 import CustomReactSelect from "common/CustomReactSelect";
 import { InputErrors, InputField } from "common/FormikFields";
+import { isEmailValid } from "components/Invoices/common/InvoiceForm/SendInvoice/utils";
 
 import { clientSchema, getInitialvalues } from "./formValidationSchema";
 import { formatFormData } from "./utils";
@@ -60,6 +63,10 @@ const ClientForm = ({
 }: IClientForm) => {
   const [fileUploadError, setFileUploadError] = useState<string>("");
   const [countries, setCountries] = useState([]);
+  const [emails, setEmails] = useState([]);
+  const [newRecipient, setNewRecipient] = useState<string>("");
+  const [width, setWidth] = useState<string>("10ch");
+  const input: React.RefObject<HTMLInputElement> = useRef();
 
   const assignCountries = async allCountries => {
     const countryData = await allCountries.map(country => ({
@@ -74,6 +81,12 @@ const ClientForm = ({
     const allCountries = Country.getAllCountries();
     assignCountries(allCountries);
   }, []);
+
+  useEffect(() => {
+    const length = newRecipient.length;
+
+    setWidth(`${length > 10 ? length : 10}ch`);
+  }, [newRecipient]);
 
   const updatedStates = countryCode =>
     State.getStatesOfCountry(countryCode).map(state => ({
@@ -166,6 +179,43 @@ const ClientForm = ({
     }
   };
 
+  const handleRemove = (recipient: string) => {
+    const recipients = emails.filter(r => r !== recipient);
+    recipients.length > 0 ? setEmails(recipients) : setEmails([]);
+  };
+
+  const handleInput = event => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+    }
+
+    if (event.key === " " || event.key === "Enter") {
+      if (isEmailValid(newRecipient)) {
+        const recipients = emails.filter(email => email !== newRecipient);
+        setEmails(recipients.concat(newRecipient));
+        setNewRecipient("");
+      } else {
+        setNewRecipient("");
+      }
+    }
+  };
+
+  const Recipient: React.FC<{ email: string; handleClick: any }> = ({
+    email,
+    handleClick,
+  }) => (
+    <div className="space-XIcon-2 m-0.5 flex w-fit items-center rounded-full border bg-miru-gray-400 px-2 py-1 text-sm font-medium">
+      <p>{email}</p>
+      <button
+        className="text-miru-black-1000 hover:text-miru-red-400"
+        type="button"
+        onClick={handleClick}
+      >
+        <XIcon size={14} weight="bold" />
+      </button>
+    </div>
+  );
+
   const LogoComponent = () => (
     <div className="my-4 flex flex-row">
       <div className="mt-2 h-30 w-30 border border-dashed border-miru-dark-purple-400">
@@ -230,6 +280,7 @@ const ClientForm = ({
 
   return (
     <Formik
+      validateOnBlur
       initialValues={getInitialvalues(clientData)}
       validationSchema={clientSchema}
       onSubmit={handleSubmit}
@@ -299,13 +350,50 @@ const ClientForm = ({
             </div>
             <div className="mt-4">
               <div className="field relative">
-                <InputField
-                  resetErrorOnChange
-                  hasError={errors.email && touched.email}
+                <CustomAdvanceInput
                   id="email"
-                  label="Email"
-                  name="email"
-                  setFieldValue={setFieldValue}
+                  inputBoxClassName="py-3 h-full"
+                  label="Email ID(s)"
+                  value={
+                    <div className={cn("flex flex-wrap rounded")}>
+                      {emails.map(recipient => (
+                        <Recipient
+                          email={recipient}
+                          key={recipient}
+                          handleClick={() => {
+                            handleRemove(recipient);
+                          }}
+                        />
+                      ))}
+                      <input
+                        name="to"
+                        ref={input}
+                        style={{ width }}
+                        type="email"
+                        value={newRecipient}
+                        className={cn(
+                          "focus:outline-none mx-1.5 w-fit cursor-text",
+                          {
+                            "text-miru-red-400": !isEmailValid(newRecipient),
+                          }
+                        )}
+                        onKeyDown={handleInput}
+                        onBlur={() => {
+                          setFieldValue(
+                            "email",
+                            emails.length > 0 ? emails : ""
+                          );
+                        }}
+                        onChange={e => {
+                          setNewRecipient(e.target.value.trim());
+                        }}
+                      />
+                    </div>
+                  }
+                  onClick={() => input.current.focus()}
+                  onBlur={() => {
+                    setFieldValue("email", emails.length > 0 ? emails : "");
+                  }}
                 />
                 <InputErrors
                   fieldErrors={errors.email}

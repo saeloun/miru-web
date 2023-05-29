@@ -14,6 +14,7 @@ type CustomAdvanceInputProps = {
   inputBoxClassName?: string;
   labelClassName?: string;
   onClick?: React.MouseEventHandler<any>;
+  onBlur?: React.FocusEventHandler<any>;
 };
 
 const getDefaultInputBoxClassName = focused =>
@@ -33,6 +34,7 @@ export const CustomAdvanceInput = ({
   wrapperClassName,
   inputBoxClassName,
   labelClassName,
+  onBlur,
   onClick,
 }: CustomAdvanceInputProps) => {
   const inputRef = useRef(null);
@@ -57,6 +59,7 @@ export const CustomAdvanceInput = ({
       <div
         className={classNames(defaultInputBoxClassName, inputBoxClassName)}
         id={id}
+        onBlur={onBlur}
         onClick={onClick}
       >
         {value}
