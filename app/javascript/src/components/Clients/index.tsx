@@ -20,7 +20,7 @@ const Clients = ({ isAdminUser }) => {
   const [clientId, setClientId] = useState("");
   const [showEditDialog, setShowEditDialog] = useState<boolean>(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
-  const [showMoreOptions, setShowMoreOptions] = React.useState<boolean>(false);
+  const [showMoreOptions, setShowMoreOptions] = useState<boolean>(false);
   const [isClient, setIsClient] = useState<boolean>(false);
   const [clientToEdit, setClientToEdit] = useState({});
   const [clientToDelete, setClientToDelete] = useState({});

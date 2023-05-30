@@ -5,8 +5,8 @@ import { Modal } from "StyledComponents";
 
 import { useUserContext } from "context/UserContext";
 
-import ClientForm from "./ClientForm";
-import MobileClientForm from "./MobileClientForm";
+import ClientForm from "../ClientForm";
+import MobileClientForm from "../ClientForm/MobileClientForm";
 
 const NewClient = ({
   setnewClient,
