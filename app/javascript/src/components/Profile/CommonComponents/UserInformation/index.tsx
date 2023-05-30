@@ -1,22 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
-import { UserAvatarSVG, EditIcon, ImageIcon, DeleteIcon } from "miruIcons";
-import { MoreOptions, Toastr, Tooltip } from "StyledComponents";
+import { EditIcon, ImageIcon, DeleteIcon } from "miruIcons";
+import { Avatar, MoreOptions, Toastr, Tooltip } from "StyledComponents";
 
 import profileApi from "apis/profile";
+import { useUserContext } from "context/UserContext";
 
 const UserInformation = ({ firstName, lastName }) => {
   const [showProfileOptions, setShowProfileOptions] = useState(false);
-  const [imageUrl, setImageUrl] = useState(null);
-
-  const getAvatar = async () => {
-    const {
-      data: {
-        user: { avatar_url },
-      },
-    } = await profileApi.index();
-    setImageUrl(avatar_url);
-  };
+  const { avatarUrl, setCurrentAvatarUrl } = useUserContext();
 
   const validateFileSize = file => {
     const sizeInKB = file.size / 1024;
@@ -37,7 +29,7 @@ const UserInformation = ({ firstName, lastName }) => {
       setShowProfileOptions(false);
       const file = e.target.files[0];
       validateFileSize(file);
-      setImageUrl(URL.createObjectURL(file));
+      setCurrentAvatarUrl(URL.createObjectURL(file));
       const payload = createFormData(file);
       await profileApi.update(payload);
     } catch (error) {
@@ -48,12 +40,8 @@ const UserInformation = ({ firstName, lastName }) => {
   const handleDeleteProfileImage = async () => {
     setShowProfileOptions(false);
     await profileApi.removeAvatar();
-    setImageUrl(null);
+    setCurrentAvatarUrl(null);
   };
-
-  useEffect(() => {
-    getAvatar();
-  }, []);
 
   return (
     <div>
@@ -61,10 +49,7 @@ const UserInformation = ({ firstName, lastName }) => {
       <div className="flex flex-col justify-center bg-miru-gray-100">
         <div className="relative flex h-12 justify-center">
           <div className="userAvatarWrapper">
-            <img
-              className="h-88 w-88 rounded-full"
-              src={imageUrl || UserAvatarSVG}
-            />
+            <Avatar size="h-88 w-88" url={avatarUrl} />
             <button
               className="absolute right-0 bottom-0	flex h-6 w-6 cursor-pointer items-center justify-center rounded bg-miru-han-purple-1000"
               onClick={() => setShowProfileOptions(!showProfileOptions)}
@@ -92,7 +77,7 @@ const UserInformation = ({ firstName, lastName }) => {
                   type="file"
                   onChange={handleProfileImageChange}
                 />
-                {imageUrl && (
+                {avatarUrl && (
                   <li
                     className="flex cursor-pointer flex-row items-center p-1.5 text-sm text-miru-red-400"
                     onClick={handleDeleteProfileImage}

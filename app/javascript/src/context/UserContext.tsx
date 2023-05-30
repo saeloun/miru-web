@@ -11,6 +11,8 @@ const UserContext = createContext({
     first_name: "",
     last_name: "",
   },
+  avatarUrl: "",
+  setCurrentAvatarUrl: value => {}, //eslint-disable-line
   companyRole: "", //current company user role
   confirmedUser: "",
   isDesktop: false,
