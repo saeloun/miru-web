@@ -62,6 +62,8 @@ const EditClient = ({
         setClientLogo={setClientLogo}
         setClientLogoUrl={setClientLogoUrl}
         setShowEditDialog={setShowEditDialog}
+        setSubmitting={setSubmitting}
+        submitting={submitting}
       />
     </Modal>
   ) : (

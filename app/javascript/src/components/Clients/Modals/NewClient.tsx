@@ -57,7 +57,9 @@ const NewClient = ({
         setClientData={setClientData}
         setClientLogo={setClientLogo}
         setClientLogoUrl={setClientLogoUrl}
+        setSubmitting={setSubmitting}
         setnewClient={setnewClient}
+        submitting={submitting}
       />
     </Modal>
   ) : (

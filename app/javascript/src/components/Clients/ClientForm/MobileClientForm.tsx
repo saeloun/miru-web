@@ -14,7 +14,7 @@ import { InputErrors, InputField } from "common/FormikFields";
 
 import { clientSchema, getInitialvalues } from "./formValidationSchema";
 import UploadLogo from "./UploadLogo";
-import { formatFormData } from "./utils";
+import { formatFormData, disableBtn } from "./utils";
 
 const MobileClientForm = ({
   clientLogoUrl,
@@ -110,37 +110,6 @@ const MobileClientForm = ({
           setSubmitting(false);
         });
     }
-  };
-
-  const disableBtn = (values, errors) => {
-    if (
-      errors.name ||
-      errors.email ||
-      errors.phone ||
-      errors.address1 ||
-      errors.country ||
-      errors.state ||
-      errors.city ||
-      errors.zipcode ||
-      submitting
-    ) {
-      return true;
-    }
-
-    if (
-      values.name &&
-      values.email &&
-      values.phone &&
-      values.address1 &&
-      values.country &&
-      values.state &&
-      values.city &&
-      values.zipcode
-    ) {
-      return false;
-    }
-
-    return true;
   };
 
   return (
@@ -344,7 +313,7 @@ const MobileClientForm = ({
                   {clientData?.id ? (
                     <Button
                       className="w-full p-2 text-center text-base font-bold"
-                      disabled={disableBtn(values, errors)}
+                      disabled={disableBtn(values, errors, submitting)}
                       style="primary"
                       type="submit"
                       onClick={handleEdit}
@@ -354,7 +323,7 @@ const MobileClientForm = ({
                   ) : (
                     <Button
                       className="w-full p-2 text-center text-base font-bold"
-                      disabled={disableBtn(values, errors)}
+                      disabled={disableBtn(values, errors, submitting)}
                       style="primary"
                       type="submit"
                       onClick={() => {

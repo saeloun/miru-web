@@ -6,7 +6,7 @@ import { Country, State, City } from "country-state-city";
 import { Formik, Form, FormikProps } from "formik";
 import PhoneInput from "react-phone-number-input";
 import flags from "react-phone-number-input/flags";
-import { Toastr } from "StyledComponents";
+import { Button, Toastr } from "StyledComponents";
 
 import clientApi from "apis/clients";
 import CustomReactSelect from "common/CustomReactSelect";
@@ -14,7 +14,7 @@ import { InputErrors, InputField } from "common/FormikFields";
 
 import { clientSchema, getInitialvalues } from "./formValidationSchema";
 import UploadLogo from "./UploadLogo";
-import { formatFormData } from "./utils";
+import { disableBtn, formatFormData } from "./utils";
 
 const ClientForm = ({
   clientLogoUrl,
@@ -28,6 +28,8 @@ const ClientForm = ({
   clientLogo,
   setApiError,
   setShowEditDialog,
+  submitting,
+  setSubmitting,
 }: IClientForm) => {
   const [fileUploadError, setFileUploadError] = useState<string>("");
   const [countries, setCountries] = useState([]);
@@ -73,6 +75,7 @@ const ClientForm = ({
   };
 
   const handleSubmit = async values => {
+    setSubmitting(true);
     const formData = new FormData();
 
     formatFormData(
@@ -91,6 +94,7 @@ const ClientForm = ({
         Toastr.success("Client added successfully");
       } catch (error) {
         setApiError(error.message);
+        setSubmitting(false);
       }
     } else {
       await clientApi
@@ -101,6 +105,7 @@ const ClientForm = ({
         })
         .catch(e => {
           setApiError(e.message);
+          setSubmitting(false);
         });
     }
   };
@@ -290,12 +295,18 @@ const ClientForm = ({
               </div>
             </div>
             <div className="actions mt-4">
-              <input
-                className="form__input_submit"
-                name="commit"
+              <Button
+                className="w-full p-2 text-center text-base font-bold"
+                disabled={disableBtn(values, errors, submitting)}
+                style="primary"
                 type="submit"
-                value="SAVE CHANGES"
-              />
+                onClick={() => {
+                  handleSubmit(values);
+                  setSubmitting(true);
+                }}
+              >
+                SAVE CHANGES
+              </Button>
             </div>
           </Form>
         );
@@ -316,6 +327,8 @@ interface IClientForm {
   clientLogo?: any;
   setApiError?: any;
   setShowEditDialog?: any;
+  submitting: boolean;
+  setSubmitting: any;
 }
 
 interface FormValues {
