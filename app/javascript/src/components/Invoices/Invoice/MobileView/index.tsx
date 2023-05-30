@@ -46,6 +46,8 @@ const MobileView = ({ invoice, handleSendInvoice }) => {
     0
   );
   const total = Number(subTotal) + Number(tax) - Number(discount);
+  const invoiceWaived = invoice?.status === "waived";
+  const strikeAmount = invoice?.status === "waived" && "line-through";
 
   return (
     <div className="h-full">
@@ -85,6 +87,7 @@ const MobileView = ({ invoice, handleSendInvoice }) => {
           selectedClient={client}
           setActiveSection={() => {}} //eslint-disable-line
           showEditButton={false}
+          strikeAmount={strikeAmount}
         />
         <div className="border-b border-miru-gray-400 px-4 py-2">
           <LineItems
@@ -96,6 +99,7 @@ const MobileView = ({ invoice, handleSendInvoice }) => {
             selectedLineItems={invoiceLineItems}
             setActiveSection={() => {}} //eslint-disable-line
             setEditItem={() => {}} //eslint-disable-line
+            strikeAmount={strikeAmount}
           />
         </div>
         <InvoiceTotal
@@ -105,96 +109,110 @@ const MobileView = ({ invoice, handleSendInvoice }) => {
           discount={discount}
           setActiveSection={() => {}} //eslint-disable-line
           showEditButton={false}
+          strikeAmount={strikeAmount}
           subTotal={subTotal}
           tax={tax}
           total={total}
         />
       </div>
-      <div className="sticky bottom-0 left-0 right-0 z-50 flex w-full items-center justify-between  bg-white p-4 shadow-c1">
-        <Button
-          className="mr-2 flex w-1/2 items-center justify-center px-4 py-2"
-          style="primary"
-          onClick={() => {
-            navigate(`/invoices/${invoice.id}/edit`);
-          }}
-        >
-          <EditIcon className="text-white" size={16} weight="bold" />
-          <span className="ml-2 text-center text-base font-bold leading-5 text-white">
-            Edit
-          </span>
-        </Button>
-        <Button
-          className="ml-2 flex w-1/2 items-center justify-center px-4 py-2"
-          style="primary"
-          onClick={handleSendInvoice}
-        >
-          <PaperPlaneTiltIcon className="text-white" size={16} weight="bold" />
-          <span className="ml-2 text-center text-base font-bold leading-5 text-white">
-            Send to
-          </span>
-        </Button>
-        <Button onClick={() => setShowMoreOptions(true)}>
-          <DotsThreeVerticalIcon
-            className="ml-4 text-miru-han-purple-1000"
-            size={20}
-            weight="bold"
-          />
-        </Button>
-      </div>
-      {showMoreOptions && (
-        <MobileMoreOptions setVisibilty={setShowMoreOptions}>
-          {["sent", "overdue", "viewed"].includes(invoice?.status) && (
-            <li
-              className="flex cursor-pointer items-center py-2 px-5 text-sm text-miru-han-purple-1000 hover:bg-miru-gray-100 lg:py-1 xl:py-2"
+      {!invoiceWaived && (
+        <>
+          <div className="sticky bottom-0 left-0 right-0 z-50 flex w-full items-center justify-between  bg-white p-4 shadow-c1">
+            <Button
+              className="mr-2 flex w-1/2 items-center justify-center px-4 py-2"
+              style="primary"
               onClick={() => {
-                setShowMoreOptions(false);
-                setShowWavieDialog(true);
+                navigate(`/invoices/${invoice.id}/edit`);
               }}
             >
-              <img className="mr-4" height="16px" src={WaiveSVG} width="16px" />
-              Waive Off
-            </li>
-          )}
-          <li
-            className="flex cursor-pointer items-center py-2 px-5 text-sm text-miru-red-400 hover:bg-miru-gray-100 lg:py-1 xl:py-2"
-            onClick={() => {
-              setShowMoreOptions(false);
-              setShowDeleteDialog(true);
-            }}
-          >
-            <DeleteIcon
-              className="mr-4 text-miru-red-400"
-              size={16}
-              weight="bold"
-            />
-            Delete
-          </li>
-          {status == "DRAFT" && (
-            <li className="flex cursor-pointer items-center px-5 py-2 text-sm text-miru-han-purple-1000 hover:bg-miru-gray-100 lg:py-1 xl:py-2">
-              <PrinterIcon
-                className="mr-4 text-miru-han-purple-1000"
+              <EditIcon className="text-white" size={16} weight="bold" />
+              <span className="ml-2 text-center text-base font-bold leading-5 text-white">
+                Edit
+              </span>
+            </Button>
+            <Button
+              className="ml-2 flex w-1/2 items-center justify-center px-4 py-2"
+              style="primary"
+              onClick={handleSendInvoice}
+            >
+              <PaperPlaneTiltIcon
+                className="text-white"
                 size={16}
                 weight="bold"
               />
-              Download
-            </li>
+              <span className="ml-2 text-center text-base font-bold leading-5 text-white">
+                Send to
+              </span>
+            </Button>
+            <Button onClick={() => setShowMoreOptions(true)}>
+              <DotsThreeVerticalIcon
+                className="ml-4 text-miru-han-purple-1000"
+                size={20}
+                weight="bold"
+              />
+            </Button>
+          </div>
+          {showMoreOptions && (
+            <MobileMoreOptions setVisibilty={setShowMoreOptions}>
+              {["sent", "overdue", "viewed"].includes(invoice?.status) && (
+                <li
+                  className="flex cursor-pointer items-center py-2 px-5 text-sm text-miru-han-purple-1000 hover:bg-miru-gray-100 lg:py-1 xl:py-2"
+                  onClick={() => {
+                    setShowMoreOptions(false);
+                    setShowWavieDialog(true);
+                  }}
+                >
+                  <img
+                    className="mr-4"
+                    height="16px"
+                    src={WaiveSVG}
+                    width="16px"
+                  />
+                  Waive Off
+                </li>
+              )}
+              <li
+                className="flex cursor-pointer items-center py-2 px-5 text-sm text-miru-red-400 hover:bg-miru-gray-100 lg:py-1 xl:py-2"
+                onClick={() => {
+                  setShowMoreOptions(false);
+                  setShowDeleteDialog(true);
+                }}
+              >
+                <DeleteIcon
+                  className="mr-4 text-miru-red-400"
+                  size={16}
+                  weight="bold"
+                />
+                Delete
+              </li>
+              {status == "DRAFT" && (
+                <li className="flex cursor-pointer items-center px-5 py-2 text-sm text-miru-han-purple-1000 hover:bg-miru-gray-100 lg:py-1 xl:py-2">
+                  <PrinterIcon
+                    className="mr-4 text-miru-han-purple-1000"
+                    size={16}
+                    weight="bold"
+                  />
+                  Download
+                </li>
+              )}
+            </MobileMoreOptions>
           )}
-        </MobileMoreOptions>
-      )}
-      {showDeleteDialog && (
-        <DeleteInvoice
-          invoice={id}
-          setShowDeleteDialog={setShowDeleteDialog}
-          showDeleteDialog={showDeleteDialog}
-        />
-      )}
-      {showWavieDialog && (
-        <WavieOffInvoice
-          invoice={id}
-          invoiceNumber={invoiceNumber}
-          setShowWavieDialog={setShowWavieDialog}
-          showWavieDialog={showWavieDialog}
-        />
+          {showDeleteDialog && (
+            <DeleteInvoice
+              invoice={id}
+              setShowDeleteDialog={setShowDeleteDialog}
+              showDeleteDialog={showDeleteDialog}
+            />
+          )}
+          {showWavieDialog && (
+            <WavieOffInvoice
+              invoice={id}
+              invoiceNumber={invoiceNumber}
+              setShowWavieDialog={setShowWavieDialog}
+              showWavieDialog={showWavieDialog}
+            />
+          )}
+        </>
       )}
     </div>
   );

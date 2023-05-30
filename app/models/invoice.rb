@@ -184,7 +184,7 @@ class Invoice < ApplicationRecord
     end
 
     def prevent_wavied_status
-      if status_changed? && ![:sent, :overdue, :viewed].include?(status_was.to_sym)
+      if status_changed? && status.to_sym == :waived && ![:sent, :overdue, :viewed].include?(status_was.to_sym)
         errors.add(:status, t("errors.prevent_draft_to_waived"))
       end
     end
