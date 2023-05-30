@@ -72,7 +72,7 @@ class Invoice < ApplicationRecord
   after_commit :refresh_invoice_index
 
   validates :issue_date, :due_date, :invoice_number, presence: true
-  validates :due_date, comparison: { greater_than_or_equal_to: :issue_date }, if: :not_status_waived
+  validates :due_date, comparison: { greater_than_or_equal_to: :issue_date }, if: :not_waived
   validates :amount, :outstanding_amount, :tax,
     :amount_paid, :amount_due, :discount, numericality: { greater_than_or_equal_to: 0 }
   validates :invoice_number, uniqueness: true
@@ -179,7 +179,7 @@ class Invoice < ApplicationRecord
       end
     end
 
-    def not_status_waived
+    def not_waived
       !(status.to_sym == :waived)
     end
 
