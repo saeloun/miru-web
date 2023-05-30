@@ -1,8 +1,8 @@
 import React from "react";
 
-import { useUserContext } from "context/UserContext";
+import { Avatar } from "StyledComponents";
 
-import Avatar from "../../StyledComponents/Avatar";
+import { useUserContext } from "context/UserContext";
 
 const UserInfo = ({ user }) => {
   const { avatarUrl } = useUserContext();
