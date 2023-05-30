@@ -31,8 +31,12 @@ const TableData = (
         </Tooltip>
       ),
       col2: (
-        <div className="text-sm font-medium text-miru-dark-purple-1000">
-          {client.email}
+        <div className="flex flex-wrap text-sm font-medium text-miru-dark-purple-1000">
+          {client.email.map((email, index) => (
+            <span className="mr-2" key={index}>
+              {index == client.email.length - 1 ? email : `${email},`}
+            </span>
+          ))}
         </div>
       ),
       col3: (
