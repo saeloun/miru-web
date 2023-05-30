@@ -50,7 +50,7 @@ const SendInvoice: React.FC<any> = ({ invoice, setIsSending, isSending }) => {
   const [invoiceEmail, setInvoiceEmail] = useState<InvoiceEmail>({
     subject: emailSubject(invoice),
     message: emailBody(invoice),
-    recipients: [invoice.client.email],
+    recipients: invoice.client.email,
   });
   const [newRecipient, setNewRecipient] = useState<string>("");
   const [width, setWidth] = useState<string>("10ch");
