@@ -10,6 +10,7 @@ interface IProps {
   setShowWavieDialog: any;
   showWavieDialog: boolean;
   fetchInvoices?: any;
+  invoiceNumber?: any;
 }
 
 const WavieOffInvoice = ({
@@ -17,6 +18,7 @@ const WavieOffInvoice = ({
   setShowWavieDialog,
   fetchInvoices,
   showWavieDialog,
+  invoiceNumber,
 }: IProps) => {
   const navigate = useNavigate();
   const wavieInvoice = async invoice => {
@@ -38,8 +40,9 @@ const WavieOffInvoice = ({
       <div className="mb-8 mt-4 flex-col">
         <h6 className="mb-2 text-2xl font-bold">Waive Off Invoice</h6>
         <p className="mt-2 font-normal">
-          Are you sure you want to waive off invoice #{invoice.invoiceNumber}?
-          <b className="font-bold" /> This action cannot be reversed.
+          Are you sure you want to waive off invoice{" "}
+          <b className="font-bold">#{invoiceNumber}</b>? This action cannot be
+          reversed.
         </p>
       </div>
       <div className="flex justify-between">

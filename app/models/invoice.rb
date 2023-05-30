@@ -56,7 +56,7 @@ class Invoice < ApplicationRecord
     :declined,
     :overdue,
     :sending,
-    :wavied
+    :waived
   ]
 
   belongs_to :company
@@ -72,13 +72,13 @@ class Invoice < ApplicationRecord
   after_commit :refresh_invoice_index
 
   validates :issue_date, :due_date, :invoice_number, presence: true
-  validates :due_date, comparison: { greater_than_or_equal_to: :issue_date }, if: :not_status_wavied
+  validates :due_date, comparison: { greater_than_or_equal_to: :issue_date }, if: :not_status_waived
   validates :amount, :outstanding_amount, :tax,
     :amount_paid, :amount_due, :discount, numericality: { greater_than_or_equal_to: 0 }
   validates :invoice_number, uniqueness: true
   validates :reference, length: { maximum: 12 }, allow_blank: true
   validate :check_if_invoice_paid, on: :update
-  validate :prevent_draft_to_wavied, on: :update
+  validate :prevent_wavied_status, on: :update
 
   scope :with_statuses, -> (statuses) { where(status: statuses) if statuses.present? }
   scope :issue_date_range, -> (date_range) { where(issue_date: date_range) if date_range.present? }
@@ -179,13 +179,13 @@ class Invoice < ApplicationRecord
       end
     end
 
-    def not_status_wavied
-      !(status == :waived)
+    def not_status_waived
+      !(status.to_sym == :waived)
     end
 
-    def prevent_draft_to_wavied
-      if status_changed? && status_was == "draft" && status == "waived"
-        errors.add(:status, t("errors.prevent_draft_to_wavied"))
+    def prevent_wavied_status
+      if status_changed? && ![:sent, :overdue, :viewed].include?(status_was.to_sym)
+        errors.add(:status, t("errors.prevent_draft_to_waived"))
       end
     end
 end

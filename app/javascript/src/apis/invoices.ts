@@ -33,7 +33,7 @@ const viewInvoice = async id => axios.get(`${path}/${id}/view`);
 
 const paymentSuccess = async id => axios.get(`${path}/${id}/payments/success`);
 
-const wavieInvoice = async id => axios.patch(`${path}/wavied/${id}`);
+const wavieInvoice = async id => axios.patch(`${path}/waived/${id}`);
 
 const invoicesApi = {
   get,

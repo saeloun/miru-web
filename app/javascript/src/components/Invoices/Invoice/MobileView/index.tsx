@@ -143,16 +143,18 @@ const MobileView = ({ invoice, handleSendInvoice }) => {
       </div>
       {showMoreOptions && (
         <MobileMoreOptions setVisibilty={setShowMoreOptions}>
-          <li
-            className="flex cursor-pointer items-center py-2 px-5 text-sm text-miru-han-purple-1000 hover:bg-miru-gray-100 lg:py-1 xl:py-2"
-            onClick={() => {
-              setShowMoreOptions(false);
-              setShowWavieDialog(true);
-            }}
-          >
-            <img className="mr-4" height="16px" src={WaiveSVG} width="16px" />
-            Waive Off
-          </li>
+          {["sent", "overdue", "viewed"].includes(invoice?.status) && (
+            <li
+              className="flex cursor-pointer items-center py-2 px-5 text-sm text-miru-han-purple-1000 hover:bg-miru-gray-100 lg:py-1 xl:py-2"
+              onClick={() => {
+                setShowMoreOptions(false);
+                setShowWavieDialog(true);
+              }}
+            >
+              <img className="mr-4" height="16px" src={WaiveSVG} width="16px" />
+              Waive Off
+            </li>
+          )}
           <li
             className="flex cursor-pointer items-center py-2 px-5 text-sm text-miru-red-400 hover:bg-miru-gray-100 lg:py-1 xl:py-2"
             onClick={() => {
@@ -189,6 +191,7 @@ const MobileView = ({ invoice, handleSendInvoice }) => {
       {showWavieDialog && (
         <WavieOffInvoice
           invoice={id}
+          invoiceNumber={invoiceNumber}
           setShowWavieDialog={setShowWavieDialog}
           showWavieDialog={showWavieDialog}
         />

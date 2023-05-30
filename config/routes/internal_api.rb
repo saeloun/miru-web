@@ -43,7 +43,7 @@ namespace :internal_api, defaults: { format: "json" } do
     namespace :invoices do
       resources :bulk_deletion, only: [:create]
       resources :bulk_download, only: [:index]
-      resources :wavied, only: [:update]
+      resources :waived, only: [:update]
       get "(:id)/view", to: "view#show", as: "view"
       get "/:id/payments/success", to: "payments#success", as: "success"
     end

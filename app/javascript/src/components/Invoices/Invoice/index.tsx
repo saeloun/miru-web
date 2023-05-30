@@ -75,6 +75,7 @@ const Invoice = () => {
         {showWavieDialog && (
           <WavieOffInvoice
             invoice={invoiceToWaive}
+            invoiceNumber={invoice.invoiceNumber}
             setShowWavieDialog={setShowWavieDialog}
             showWavieDialog={showWavieDialog}
           />

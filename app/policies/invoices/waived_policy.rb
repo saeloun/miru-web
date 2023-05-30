@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Invoices::WaviedPolicy < ApplicationPolicy
+class Invoices::WaivedPolicy < ApplicationPolicy
   def update?
     user_owner_role? || user_admin_role?
   end
