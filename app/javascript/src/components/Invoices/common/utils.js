@@ -13,8 +13,7 @@ export const generateInvoiceLineItems = (
   let invoiceLineItems = [];
   invoiceLineItems = invoiceLineItems.concat(
     selectedLineItems.map(item => {
-      const Finaldate =
-        dateFormat == "DD-MM-YYYY" ? item.date : new Date(item.date);
+      const Finaldate = dayjs(item.date, dateFormat).toDate();
 
       return {
         id: item.id,
@@ -33,8 +32,7 @@ export const generateInvoiceLineItems = (
 
   invoiceLineItems = invoiceLineItems.concat(
     manualEntryArr.map(item => {
-      const Finaldate =
-        dateFormat == "DD-MM-YYYY" ? item.date : new Date(item.date);
+      const Finaldate = dayjs(item.date, dateFormat).toDate();
 
       return {
         idx: item.id,
