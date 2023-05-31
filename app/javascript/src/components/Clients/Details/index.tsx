@@ -1,13 +1,10 @@
 import React, { useEffect, useState } from "react";
 
-import { cashFormatter, currencySymbol } from "helpers";
 import Logger from "js-logger";
 import { PlusIcon } from "miruIcons";
 import { useParams, useNavigate } from "react-router-dom";
 
 import clientApi from "apis/clients";
-import AmountBoxContainer from "common/AmountBox";
-import ChartBar from "common/ChartBar";
 import EmptyStates from "common/EmptyStates";
 import Table from "common/Table";
 import ProjectForm from "components/Projects/List/Mobile/ProjectForm";
@@ -19,6 +16,7 @@ import { sendGAPageView } from "utils/googleAnalytics";
 
 import Header from "./Header";
 import TableData from "./TableData";
+import TotalHoursChart from "./TotalHoursChart";
 
 import AddProject from "../Modals/AddProject";
 
@@ -116,22 +114,6 @@ const ClientDetails = ({ isAdminUser }) => {
     },
   ];
 
-  const currencySymb = currencySymbol(overdueOutstandingAmount?.currency);
-
-  const amountBox = [
-    {
-      title: "OVERDUE",
-      amount:
-        currencySymb + cashFormatter(overdueOutstandingAmount?.overdue_amount),
-    },
-    {
-      title: "OUTSTANDING",
-      amount:
-        currencySymb +
-        cashFormatter(overdueOutstandingAmount?.outstanding_amount),
-    },
-  ];
-
   const tableData = TableData(projectDetails, isDesktop);
 
   const handleAddProject = () => {
@@ -166,38 +148,12 @@ const ClientDetails = ({ isAdminUser }) => {
       />
       <div>
         {isAdminUser && isDesktop && (
-          <div className="bg-miru-gray-100 py-10 px-10">
-            <div className="flex justify-end">
-              <select
-                className="focus:outline-none
-                m-0
-                border-none
-                bg-transparent
-                bg-clip-padding bg-no-repeat px-3
-                py-1.5
-                text-base
-                font-normal
-                text-miru-han-purple-1000
-                transition
-                ease-in-out"
-                onChange={handleSelectChange}
-              >
-                <option className="text-miru-dark-purple-600" value="week">
-                  THIS WEEK
-                </option>
-                <option className="text-miru-dark-purple-600" value="month">
-                  THIS MONTH
-                </option>
-                <option className="text-miru-dark-purple-600" value="year">
-                  THIS YEAR
-                </option>
-              </select>
-            </div>
-            {projectDetails && (
-              <ChartBar data={projectDetails} totalMinutes={totalMinutes} />
-            )}
-            <AmountBoxContainer amountBox={amountBox} />
-          </div>
+          <TotalHoursChart
+            handleSelectChange={handleSelectChange}
+            overdueOutstandingAmount={overdueOutstandingAmount}
+            projectDetails={projectDetails}
+            totalMinutes={totalMinutes}
+          />
         )}
         <div className="flex flex-col">
           <div className="overflow-XIcon-auto -my-2 sm:-mx-6 lg:-mx-8">
