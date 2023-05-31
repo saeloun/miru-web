@@ -222,7 +222,7 @@ RSpec.describe "User Signup", type: :system do
 
         click_on "Sign Up"
 
-        expect(page).to have_content "Password can not start or end with a blank space"
+        expect(page).to have_content "Password cannot start or end with a blank space"
       end
     end
 
@@ -239,7 +239,7 @@ RSpec.describe "User Signup", type: :system do
 
         click_on "Sign Up"
 
-        expect(page).to have_content "Password can not start or end with a blank space"
+        expect(page).to have_content "Password cannot start or end with a blank space"
       end
     end
 

@@ -23,7 +23,6 @@ interface SignInFormValues {
 const SignInForm = () => {
   const [privacyModal, setPrivacyModal] = useState(false);
   const [termsOfServiceModal, setTermsOfServiceModal] = useState(false);
-
   const authDispatch = useAuthDispatch();
   const navigate = useNavigate();
 
@@ -32,7 +31,7 @@ const SignInForm = () => {
     .querySelector('[name="csrf-token"]')
     .getAttribute("content");
 
-  const handleSignInFormSubmit = async (values: any) => {
+  const handleSignInFormSubmit = async (values: any, { setFieldError }) => {
     try {
       const res = await authenticationApi.signin(values);
       //@ts-expect-error for authDispatch initial values
@@ -51,6 +50,8 @@ const SignInForm = () => {
     } catch (error) {
       if (error?.response?.data?.unconfirmed) {
         navigate(`/email_confirmation?email=${values.email}`);
+      } else if (error?.response?.data?.error) {
+        setFieldError("password", error.response.data.error);
       }
     }
   };
