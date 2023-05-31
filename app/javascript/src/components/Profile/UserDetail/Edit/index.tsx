@@ -83,6 +83,28 @@ const UserDetailsEdit = () => {
     setCountries(countryData);
   };
 
+  useEffect(() => {
+    const currentCountry = Country.getAllCountries().filter(
+      country => country.isoCode == profileSettings.addresses.country
+    )[0];
+
+    currentCountry &&
+      setCurrentCountryDetails({
+        label: currentCountry.name,
+        value: currentCountry.name,
+        code: currentCountry.isoCode,
+      });
+
+    if (profileSettings.addresses.city) {
+      setCurrentCityList(
+        City.getCitiesOfState(
+          profileSettings.addresses.country,
+          profileSettings.addresses.state
+        ).map(city => ({ label: city.name, value: city.name, ...city }))
+      );
+    }
+  }, [profileSettings]);
+
   const getDetails = async () => {
     const data = await profileApi.index();
     const addressData = await profileApi.getAddress(data.data.user.id);
@@ -148,7 +170,7 @@ const UserDetailsEdit = () => {
       ...{
         addresses: {
           ...profileSettings.addresses,
-          ...{ state: selectState.value },
+          ...{ state: selectState.value, city: "" },
         },
       },
     });
@@ -348,6 +370,7 @@ const UserDetailsEdit = () => {
               changePassword={changePassword}
               confirmPassword={confirmPassword}
               countries={countries}
+              currentCityList={currentCityList}
               currentCountryDetails={currentCountryDetails}
               currentPassword={currentPassword}
               dateFormat={profileSettings.date_format}
