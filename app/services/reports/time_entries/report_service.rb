@@ -48,7 +48,6 @@ class Reports::TimeEntries::ReportService
       page_service.process
 
       @reports = search_timesheet_entries(where_clause.merge(page_service.es_filter))
-
       @pagination_details = page_service.pagination_details
 
       if @reports.empty?
