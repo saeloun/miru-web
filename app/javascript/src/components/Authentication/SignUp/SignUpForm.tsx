@@ -34,17 +34,23 @@ const SignUpForm = () => {
     .querySelector('[name="csrf-token"]')
     .getAttribute("content");
 
-  const handleSignUpFormSubmit = async (values: any) => {
-    const { firstName, lastName, email, password, confirm_password } = values;
-    const payload = {
-      first_name: firstName,
-      last_name: lastName,
-      email,
-      password,
-      password_confirmation: confirm_password,
-    };
-    const res = await authenticationApi.signup(payload);
-    navigate(`/email_confirmation?email=${res.data.email}`);
+  const handleSignUpFormSubmit = async (values: any, { setFieldError }) => {
+    try {
+      const { firstName, lastName, email, password, confirm_password } = values;
+      const payload = {
+        first_name: firstName,
+        last_name: lastName,
+        email,
+        password,
+        password_confirmation: confirm_password,
+      };
+      const res = await authenticationApi.signup(payload);
+      navigate(`/email_confirmation?email=${res.data.email}`);
+    } catch (error) {
+      if (error?.response?.data?.error?.email) {
+        setFieldError("email", error.response.data.error.email[0]);
+      }
+    }
   };
 
   const showPasswordCriteria = (errors, touched) => {
