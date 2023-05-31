@@ -17,6 +17,7 @@ import UploadLogo from "./UploadLogo";
 import { disableBtn, formatFormData } from "./utils";
 
 const ClientForm = ({
+  client,
   clientLogoUrl,
   handleDeleteLogo,
   setClientLogoUrl,
@@ -30,6 +31,7 @@ const ClientForm = ({
   setShowEditDialog,
   submitting,
   setSubmitting,
+  fetchDetails,
 }: IClientForm) => {
   const [fileUploadError, setFileUploadError] = useState<string>("");
   const [countries, setCountries] = useState([]);
@@ -82,7 +84,7 @@ const ClientForm = ({
       formData,
       values,
       formType === "new",
-      clientData,
+      client,
       clientLogo,
       clientLogoUrl
     );
@@ -97,22 +99,20 @@ const ClientForm = ({
         setSubmitting(false);
       }
     } else {
-      await clientApi
-        .update(clientData.id, formData)
-        .then(() => {
-          setShowEditDialog(false);
-          window.location.reload();
-        })
-        .catch(e => {
-          setApiError(e.message);
-          setSubmitting(false);
-        });
+      try {
+        await clientApi.update(client.id, formData);
+        setShowEditDialog(false);
+        fetchDetails();
+      } catch (error) {
+        setApiError(error.message);
+        setSubmitting(false);
+      }
     }
   };
 
   return (
     <Formik
-      initialValues={getInitialvalues(clientData)}
+      initialValues={getInitialvalues(client)}
       validationSchema={clientSchema}
       onSubmit={handleSubmit}
     >
@@ -181,7 +181,7 @@ const ClientForm = ({
                       id="phone"
                       inputClassName="form__input block w-full appearance-none bg-white border-0 focus:border-0 px-0 text-base border-transparent focus:border-transparent focus:ring-0 border-miru-gray-1000 w-full border-bottom-none "
                       name="phone"
-                      value={clientData.phone}
+                      value={formType == "edit" ? client.phone : ""}
                       onChange={phone => {
                         setFieldValue("phone", phone);
                       }}
@@ -316,6 +316,7 @@ const ClientForm = ({
 };
 
 interface IClientForm {
+  client?: any;
   clientLogoUrl: string;
   handleDeleteLogo: any;
   setClientLogoUrl: any;
@@ -329,6 +330,7 @@ interface IClientForm {
   setShowEditDialog?: any;
   submitting: boolean;
   setSubmitting: any;
+  fetchDetails?: any;
 }
 
 interface FormValues {

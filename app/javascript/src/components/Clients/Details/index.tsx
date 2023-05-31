@@ -212,6 +212,7 @@ const ClientDetails = ({ isAdminUser }) => {
     <>
       <Header
         clientDetails={clientDetails}
+        fetchDetails={fetchProjectList}
         setShowProjectModal={setShowProjectModal}
       />
       <div>

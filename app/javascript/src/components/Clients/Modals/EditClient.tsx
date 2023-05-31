@@ -8,15 +8,10 @@ import { useUserContext } from "context/UserContext";
 import ClientForm from "../ClientForm";
 import MobileClientForm from "../ClientForm/MobileClientForm";
 
-interface IEditClient {
-  setShowEditDialog: any;
-  client: any;
-  showEditDialog: boolean;
-}
-
 const EditClient = ({
-  setShowEditDialog,
   client,
+  fetchDetails,
+  setShowEditDialog,
   showEditDialog,
 }: IEditClient) => {
   const [apiError, setApiError] = useState<string>("");
@@ -53,9 +48,10 @@ const EditClient = ({
         </button>
       </div>
       <ClientForm
-        clientData={client}
+        client={client}
         clientLogo={clientLogo}
         clientLogoUrl={clientLogoUrl}
+        fetchDetails={fetchDetails}
         formType="edit"
         handleDeleteLogo={handleDeleteLogo}
         setApiError={setApiError}
@@ -84,5 +80,12 @@ const EditClient = ({
     />
   );
 };
+
+interface IEditClient {
+  setShowEditDialog: any;
+  client: any;
+  showEditDialog: boolean;
+  fetchDetails?: any;
+}
 
 export default EditClient;
