@@ -14,6 +14,7 @@ import { useUserContext } from "context/UserContext";
 import { unmapClientDetails } from "mapper/mappedIndex";
 import { sendGAPageView } from "utils/googleAnalytics";
 
+import { tableHeader, mobileTableHeader } from "./constants";
 import Header from "./Header";
 import TableData from "./TableData";
 import TotalHoursChart from "./TotalHoursChart";
@@ -82,37 +83,6 @@ const ClientDetails = ({ isAdminUser }) => {
     sendGAPageView();
     fetchProjectList();
   }, []);
-
-  const tableHeader = [
-    {
-      Header: "PROJECT",
-      accessor: "col1", // accessor is the "key" in the data
-      cssClass: "md:w-1/3",
-    },
-    {
-      Header: "TEAM",
-      accessor: "col2",
-      cssClass: "md:w-1/3",
-    },
-    {
-      Header: "HOURS LOGGED",
-      accessor: "col3",
-      cssClass: "text-right  md:w-1/5", // accessor is the "key" in the data
-    },
-  ];
-
-  const mobileTableHeader = [
-    {
-      Header: "PROJECT",
-      accessor: "col1", // accessor is the "key" in the data
-      cssClass: "md:w-1/3",
-    },
-    {
-      Header: "HOURS",
-      accessor: "col2",
-      cssClass: "text-right md:w-1/5", // accessor is the "key" in the data
-    },
-  ];
 
   const tableData = TableData(projectDetails, isDesktop);
 
