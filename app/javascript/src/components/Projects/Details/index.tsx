@@ -19,6 +19,7 @@ import HeaderMenuList from "./HeadermenuList";
 import MemberListForm from "./Mobile/MemberListForm";
 import ProjectDetailsForm from "./Mobile/ProjectDetailsForm";
 
+import { getAmountBox, tableHeader } from "../constants";
 import ProjectForm from "../List/Mobile/ProjectForm";
 import AddEditProject from "../Modals/AddEditProject";
 import DeleteProject from "../Modals/DeleteProject";
@@ -99,43 +100,11 @@ const ProjectDetails = () => {
 
   //check with Ajinkya why tableData is not updating
   const tableData = getTableData(project);
-
-  const tableHeader = [
-    {
-      Header: "TEAM MEMBER",
-      accessor: "col1", // accessor is the "key" in the data
-      cssClass: "",
-    },
-    {
-      Header: "HOURLY RATE",
-      accessor: "col2",
-      cssClass: "text-right",
-    },
-    {
-      Header: "HOURS LOGGED",
-      accessor: "col3",
-      cssClass: "text-right", // accessor is the "key" in the data
-    },
-    {
-      Header: "COST",
-      accessor: "col4",
-      cssClass: "text-right", // accessor is the "key" in the data
-    },
-  ];
-
-  const amountBox = [
-    {
-      title: "OVERDUE",
-      amount:
-        currencySymb + cashFormatter(overdueOutstandingAmount?.overdue_amount),
-    },
-    {
-      title: "OUTSTANDING",
-      amount:
-        currencySymb +
-        cashFormatter(overdueOutstandingAmount?.outstanding_amount),
-    },
-  ];
+  const amountBox = getAmountBox(
+    currencySymb,
+    cashFormatter,
+    overdueOutstandingAmount
+  );
 
   const handleMenuVisibility = (e?: any, isMenuVisible?: boolean) => {
     e?.stopPropagation();
@@ -321,6 +290,7 @@ const ProjectDetails = () => {
       {showProjectModal && isDesktop && (
         <AddEditProject
           editProjectData={editProjectData}
+          fetchProjectList={fetchProject}
           setEditProjectData={setEditProjectData}
           setShowProjectModal={setShowProjectModal}
           showProjectModal={showProjectModal}
