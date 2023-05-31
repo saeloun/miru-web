@@ -10,6 +10,7 @@ class Reports::TimeEntries::PageService < ApplicationService
     clients: 3,
     projects: 3
   }
+  DEFAULT_ITEMS_PER_PAGE = 20
 
   def initialize(params, current_company)
     @params = params
@@ -43,8 +44,20 @@ class Reports::TimeEntries::PageService < ApplicationService
       if Reports::TimeEntries::GroupBy.new(group_by).valid_group_by?
         send("#{group_by}_filter")
       else
-        @es_filter = {}
+        set_default_pagination_data
       end
+    end
+
+    def set_default_pagination_data
+      total_records = if params[:group_by].present?
+        reports.total_count
+      else
+        @reports = TimesheetEntry.search(where: {}, load: false)
+        TimesheetEntry.search(where: {}, load: false).total_entries
+      end
+
+      @pagy_data, paginated_data = pagy(@reports, items: DEFAULT_ITEMS_PER_PAGE, page:, count: total_records)
+      @es_filter = { id: paginated_data.results.map { |data| data.except("_id", "_index", "_score") }.pluck(:id) }
     end
 
     def team_member_filter

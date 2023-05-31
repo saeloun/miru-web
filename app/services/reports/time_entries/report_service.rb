@@ -69,8 +69,11 @@ class Reports::TimeEntries::ReportService
     end
 
     def reports_without_group_by(where_clause)
-      @reports = search_timesheet_entries(where_clause, params[:page])
-      @pagination_details = pagination_details_for_es_query(reports)
+      page_service = Reports::TimeEntries::PageService.new(params, current_company)
+      page_service.process
+
+      @reports = search_timesheet_entries(where_clause.merge(page_service.es_filter))
+      @pagination_details = page_service.pagination_details
    end
 
     def pagination_details_for_es_query(search_result)
