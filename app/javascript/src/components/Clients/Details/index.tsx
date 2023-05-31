@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { cashFormatter, currencySymbol, minToHHMM } from "helpers";
+import { cashFormatter, currencySymbol } from "helpers";
 import Logger from "js-logger";
 import { PlusIcon } from "miruIcons";
 import { useParams, useNavigate } from "react-router-dom";
@@ -18,60 +18,9 @@ import { unmapClientDetails } from "mapper/mappedIndex";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import Header from "./Header";
+import TableData from "./TableData";
 
 import AddProject from "../Modals/AddProject";
-
-const getTableData = (clients, isDesktop) => {
-  if (clients && isDesktop) {
-    return clients.map(client => ({
-      col1: (
-        <div className="text-base capitalize text-miru-dark-purple-1000">
-          {client.name}
-        </div>
-      ),
-      col2: (
-        <div className="text-sm font-medium text-miru-dark-purple-1000">
-          {client.team.map((member, index) => (
-            <span key={index}>{member},&nbsp;</span>
-          ))}
-        </div>
-      ),
-      col3: (
-        <div className="text-right text-lg font-bold text-miru-dark-purple-1000">
-          {minToHHMM(client.minutes)}
-        </div>
-      ),
-      rowId: client.id,
-    }));
-  } else if (clients && !isDesktop) {
-    return clients.map(client => ({
-      col1: (
-        <div className="text-base font-medium capitalize text-miru-dark-purple-1000">
-          {client.name}
-          <br />
-          <div className="w-57.5">
-            {client.team.map((member, index) => (
-              <span
-                className="font-manrope text-xs text-miru-dark-purple-400"
-                key={index}
-              >
-                {member},&nbsp;
-              </span>
-            ))}
-          </div>
-        </div>
-      ),
-      col2: (
-        <div className="mr-4 text-right text-lg font-bold text-miru-dark-purple-1000">
-          {minToHHMM(client.minutes)}
-        </div>
-      ),
-      rowId: client.id,
-    }));
-  }
-
-  return [{}];
-};
 
 const ClientDetails = ({ isAdminUser }) => {
   const [showEditDialog, setShowEditDialog] = useState<boolean>(false);
@@ -183,7 +132,7 @@ const ClientDetails = ({ isAdminUser }) => {
     },
   ];
 
-  const tableData = getTableData(projectDetails, isDesktop);
+  const tableData = TableData(projectDetails, isDesktop);
 
   const handleAddProject = () => {
     setShowProjectModal(true);
