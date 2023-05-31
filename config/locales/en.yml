@@ -70,6 +70,8 @@ en:
     create:
       success: Project added successfully.
       failure: Project creation failed.
+    update:
+      success:  Changes saved successfully.
     update_members:
       success:
         message: Changes saved successfully

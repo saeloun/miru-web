@@ -6,6 +6,7 @@ import SignIn from "components/Authentication/SignIn";
 import SignUp from "components/Authentication/SignUp";
 import InvoiceEmail from "components/InvoiceEmail";
 import Success from "components/payments/Success";
+import Projects from "components/Projects";
 import AccountsAgingReport from "components/Reports/AccountsAgingReport";
 import TeamsRouteConfig from "components/Team/TeamsRouteConfig";
 import { Roles, Paths } from "constants/index";
@@ -19,7 +20,6 @@ import InvoicesList from "../components/Invoices/List";
 import Payments from "../components/payments";
 import ProfileLayout from "../components/Profile/Layout";
 import ProjectDetails from "../components/Projects/Details";
-import ProjectList from "../components/Projects/List";
 import ReportList from "../components/Reports/List";
 import OutstandingInvoiceReport from "../components/Reports/OutstandingInvoiceReport";
 import RevenueByClientReport from "../components/Reports/RevenueByClientReport";
@@ -52,7 +52,7 @@ const InvoicesRoutes = [
 ];
 
 const ProjectsRoutes = [
-  { path: "", Component: ProjectList },
+  { path: "", Component: Projects },
   { path: ":projectId", Component: ProjectDetails },
   { path: "*", Component: ErrorPage },
 ];

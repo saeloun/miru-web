@@ -288,6 +288,7 @@ const ClientDetails = ({ isAdminUser }) => {
       {showEditDialog && (
         <AddEditProject
           editProjectData={editProjectData}
+          fetchProjectList={fetchProjectList}
           projectData={selectedProject}
           setEditProjectData={setEditProjectData}
           setShowProjectModal={setShowEditDialog}
@@ -305,6 +306,7 @@ const ClientDetails = ({ isAdminUser }) => {
       {showProjectModal && (
         <AddProject
           clientDetails={clientDetails}
+          fetchProjectList={fetchProjectList}
           setShowProjectModal={setShowProjectModal}
           showProjectModal={showProjectModal}
         />
