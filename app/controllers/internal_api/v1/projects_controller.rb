@@ -21,7 +21,8 @@ class InternalApi::V1::ProjectsController < InternalApi::V1::ApplicationControll
   def create
     authorize Project
     render :create, locals: {
-      project: Project.create!(project_params)
+      project: Project.create!(project_params),
+      notice: I18n.t("projects.create.success")
     }
   end
 
@@ -29,7 +30,8 @@ class InternalApi::V1::ProjectsController < InternalApi::V1::ApplicationControll
     authorize project
     project.update!(project_params)
     render :update, locals: {
-      project:
+      project:,
+      notice: I18n.t("projects.update.success")
     }
   end
 

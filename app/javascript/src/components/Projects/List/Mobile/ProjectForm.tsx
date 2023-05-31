@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Formik, Form, FormikProps } from "formik";
 import { useDebounce } from "helpers";
 import { XIcon, SearchIcon } from "miruIcons";
-import { Button, MobileMoreOptions, Toastr } from "StyledComponents";
+import { Button, MobileMoreOptions } from "StyledComponents";
 
 import projectApi from "apis/projects";
 import CustomRadioButton from "common/CustomRadio";
@@ -75,10 +75,7 @@ const ProjectForm = ({
       data.project.name &&
       data.project.billable !== (undefined || null)
     ) {
-      const res = await projectApi.create(data);
-      if (res.status === 200) {
-        Toastr.success("Project added successfully");
-      }
+      await projectApi.create(data);
       setEditProjectData("");
       setClient(null);
       setShowProjectModal(false);
@@ -100,10 +97,7 @@ const ProjectForm = ({
       data.project.name &&
       data.project.billable !== (undefined || null)
     ) {
-      const res = await projectApi.update(editProjectData.id, data);
-      if (res.status === 200) {
-        Toastr.success("Project updated successfully");
-      }
+      await projectApi.update(editProjectData.id, data);
       setEditProjectData("");
       setClient(null);
       setShowProjectModal(false);

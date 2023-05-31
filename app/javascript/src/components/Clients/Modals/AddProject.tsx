@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 
 import { XIcon } from "miruIcons";
-import { useNavigate } from "react-router-dom";
 import { Modal } from "StyledComponents";
 
 import projectApi from "apis/projects";
@@ -10,12 +9,11 @@ const AddProject = ({
   showProjectModal,
   setShowProjectModal,
   clientDetails,
+  fetchProjectList,
 }) => {
   const [client, setClient] = useState<any>(null);
   const [projectName, setProjectName] = useState<any>(null);
   const [projectType, setProjectType] = useState<any>("Billable");
-
-  const navigate = useNavigate();
 
   const handleSubmit = async () => {
     await projectApi.create({
@@ -25,8 +23,8 @@ const AddProject = ({
         billable: projectType === "Billable",
       },
     });
-    navigate(0);
     setShowProjectModal(false);
+    fetchProjectList();
   };
 
   return (
