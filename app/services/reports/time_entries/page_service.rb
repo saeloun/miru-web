@@ -3,7 +3,7 @@
 class Reports::TimeEntries::PageService < ApplicationService
   include Pagy::Backend
 
-  attr_reader :params, :page, :group_by, :current_company, :pagy_data, :es_filter, :reports
+  attr_reader :params, :page, :group_by, :current_company, :pagy_data, :es_filter
 
   PER_PAGE = {
     users: 5,
@@ -18,7 +18,6 @@ class Reports::TimeEntries::PageService < ApplicationService
     @group_by = params[:group_by]
     @current_company = current_company
     @pagy_data = nil
-    @reports = reports
 
     @es_filter = nil
   end
