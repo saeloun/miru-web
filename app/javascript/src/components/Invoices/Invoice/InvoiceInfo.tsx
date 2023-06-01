@@ -4,6 +4,7 @@ import { currencyFormat } from "helpers";
 
 const InvoiceInfo = ({
   invoice: { company, invoiceNumber, reference, issueDate, dueDate, amount },
+  strikeAmount = "",
 }) => (
   <>
     <div className="mr-2 flex w-2/12 flex-col justify-between ">
@@ -46,7 +47,9 @@ const InvoiceInfo = ({
       <p className="absolute right-2 -top-2 bg-miru-gray-100 px-2 text-right text-xs font-medium text-miru-dark-purple-1000">
         Amount
       </p>
-      <p className="mt-6 pr-4 text-right text-4xl font-medium text-miru-dark-purple-1000">
+      <p
+        className={`mt-6 pr-4 text-right text-4xl font-medium text-miru-dark-purple-1000 ${strikeAmount}`}
+      >
         {currencyFormat(company.currency, amount)}
       </p>
     </div>
