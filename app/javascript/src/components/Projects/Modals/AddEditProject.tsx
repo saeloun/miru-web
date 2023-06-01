@@ -12,6 +12,7 @@ const AddEditProject = ({
   setShowProjectModal,
   showProjectModal,
   projectData,
+  fetchProjectList,
 }) => {
   const [client, setClient] = useState<number>(0);
   const [projectName, setProjectName] = useState<string>("");
@@ -74,7 +75,7 @@ const AddEditProject = ({
     });
     setEditProjectData("");
     setShowProjectModal(false);
-    window.location.reload();
+    fetchProjectList();
   };
 
   const createProject = async () => {
@@ -86,7 +87,7 @@ const AddEditProject = ({
       },
     });
     setEditProjectData("");
-    window.location.reload();
+    fetchProjectList();
     setShowProjectModal(false);
   };
 

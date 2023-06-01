@@ -17,6 +17,7 @@ const InvoiceInfo = ({
   currency,
   setActiveSection,
   showEditButton = true,
+  strikeAmount = "",
 }) => {
   const { name, phone, label } = selectedClient;
   const { address_line_1, address_line_2, city, state, country, pin } =
@@ -79,7 +80,9 @@ const InvoiceInfo = ({
         <span className="text-xs font-normal text-miru-dark-purple-1000">
           Amount
         </span>
-        <span className="mt-1 text-2xl font-semibold leading-8 text-miru-dark-purple-1000">
+        <span
+          className={`mt-1 text-2xl font-semibold leading-8 text-miru-dark-purple-1000 ${strikeAmount}`}
+        >
           {currencyFormat(currency, amount)}
         </span>
       </div>

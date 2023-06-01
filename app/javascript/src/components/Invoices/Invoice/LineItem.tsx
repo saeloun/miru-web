@@ -3,7 +3,7 @@ import React from "react";
 import dayjs from "dayjs";
 import { currencyFormat, minToHHMM, lineTotalCalc } from "helpers";
 
-const LineItem = ({ currency, item, dateFormat }) => {
+const LineItem = ({ currency, item, dateFormat, strikeAmount = "" }) => {
   const date = dayjs(item.date).format(dateFormat);
 
   return (
@@ -22,7 +22,9 @@ const LineItem = ({ currency, item, dateFormat }) => {
         <td className="px-1 pt-5 pb-2 text-right text-base font-medium text-miru-dark-purple-1000 ">
           {minToHHMM(item.quantity)}
         </td>
-        <td className="px-1 pt-5 pb-2 text-right text-base font-medium text-miru-dark-purple-1000 ">
+        <td
+          className={`px-1 pt-5 pb-2 text-right text-base font-medium text-miru-dark-purple-1000 ${strikeAmount}`}
+        >
           {currencyFormat(currency, lineTotalCalc(item.quantity, item.rate))}
         </td>
       </tr>

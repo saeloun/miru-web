@@ -31,7 +31,7 @@ const CustomDatePicker = ({
     return ans;
   };
 
-  const years = range(1990, getYear(new Date()) + 1);
+  const years = range(1920, getYear(new Date()) + 1);
   const months = [
     "Jan",
     "Feb",

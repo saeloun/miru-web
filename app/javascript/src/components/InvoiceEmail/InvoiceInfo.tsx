@@ -3,7 +3,7 @@ import React from "react";
 import dayjs from "dayjs";
 import { currencyFormat } from "helpers";
 
-const InvoiceInfo = ({ invoice, company }) => {
+const InvoiceInfo = ({ invoice, company, strikeAmount = "" }) => {
   const { date_format, currency } = company;
   const { issue_date, due_date, invoice_number, reference, amount } = invoice;
   const formattedDate = date => dayjs(date).format(date_format);
@@ -42,7 +42,9 @@ const InvoiceInfo = ({ invoice, company }) => {
         <p className="text-right text-xs font-normal text-miru-dark-purple-1000">
           Amount
         </p>
-        <p className="mt-6 text-4xl font-normal text-miru-dark-purple-1000">
+        <p
+          className={`mt-6 text-4xl font-normal text-miru-dark-purple-1000 ${strikeAmount}`}
+        >
           {currencyFormat(currency, amount)}
         </p>
       </div>
