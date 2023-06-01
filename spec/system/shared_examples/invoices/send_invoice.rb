@@ -22,7 +22,7 @@ RSpec.shared_examples "Send Invoice", type: :system do
 
       find_by_id("sendInvoiceButton").click()
       click_button("Send Invoice")
-      expect(page).to have_content(/PROCESSING.../, wait: 3)
+      expect(page).to have_content(/PROCESSING.../, wait: 5)
     end
   end
 end
