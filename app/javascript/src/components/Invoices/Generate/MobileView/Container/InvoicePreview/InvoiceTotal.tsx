@@ -15,13 +15,16 @@ const InvoiceTotal = ({
   amountDue,
   setActiveSection,
   showEditButton = true,
+  strikeAmount = "",
 }) => {
   const AmountComponent = ({ label, value }) => (
     <div className="flex w-full items-center justify-between">
       <span className="mb-2 w-1/2 text-right text-sm font-normal leading-5 text-miru-dark-purple-1000">
         {label}
       </span>
-      <span className="text-right text-sm font-bold leading-5 text-miru-dark-purple-1000">
+      <span
+        className={`text-right text-sm font-bold leading-5 text-miru-dark-purple-1000 ${strikeAmount}`}
+      >
         {currencyFormat(currency, value)}
       </span>
     </div>
