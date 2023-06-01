@@ -14,6 +14,7 @@ const InvoiceActions = ({
   editInvoiceLink,
   sendInvoice,
   deleteInvoice,
+  wavieInvoice,
   invoice,
 }) => {
   const [isMoreOptionsVisible, setIsMoreOptionsVisible] =
@@ -47,6 +48,7 @@ const InvoiceActions = ({
             downloadInvoice={handleDownloadInvoice}
             invoice={invoice}
             markInvoiceAsPaid={markInvoiceAsPaid}
+            wavieInvoice={wavieInvoice}
           />
         )}
       </div>
