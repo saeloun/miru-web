@@ -326,7 +326,6 @@ const OrgEdit = () => {
       value: city.name,
       ...city,
     }));
-    console.log(cities, "yo");
     setCurrentCityList(cities);
   };
 
