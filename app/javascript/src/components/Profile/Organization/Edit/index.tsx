@@ -240,6 +240,28 @@ const OrgEdit = () => {
     assignCountries(allCountries);
   }, []);
 
+  useEffect(() => {
+    const currentCountry = Country.getAllCountries().filter(
+      country => country.isoCode == orgDetails.companyAddr.country.code
+    )[0];
+
+    currentCountry &&
+      setCurrentCountryDetails({
+        label: currentCountry.name,
+        value: currentCountry.name,
+        code: currentCountry.isoCode,
+      });
+
+    if (orgDetails.companyAddr.city.label) {
+      setCurrentCityList(
+        City.getCitiesOfState(
+          orgDetails.companyAddr.country.code,
+          orgDetails.companyAddr.state.value
+        ).map(city => ({ label: city.name, value: city.name, ...city }))
+      );
+    }
+  }, [orgDetails]);
+
   const handleAddrChange = useCallback(
     (e, type) => {
       const { companyAddr } = orgDetails;
@@ -283,7 +305,12 @@ const OrgEdit = () => {
 
   const handleOnChangeCountry = selectCountry => {
     const { companyAddr } = orgDetails;
-    const changedCountry = { ...companyAddr, country: selectCountry };
+    const changedCountry = {
+      ...companyAddr,
+      country: selectCountry,
+      state: {},
+      city: {},
+    };
     setCurrentCountryDetails(selectCountry);
 
     setupTimezone(
@@ -299,6 +326,7 @@ const OrgEdit = () => {
       value: city.name,
       ...city,
     }));
+    console.log(cities, "yo");
     setCurrentCityList(cities);
   };
 
@@ -307,6 +335,7 @@ const OrgEdit = () => {
     const changedState = {
       ...companyAddr,
       state: { value: selectState.name, label: selectState.name },
+      city: { label: "", value: "" },
     };
     setOrgDetails({ ...orgDetails, companyAddr: changedState });
     addCity(currentCountryDetails.code, selectState.code);
@@ -531,6 +560,7 @@ const OrgEdit = () => {
         </div>
       ) : (
         <StaticPage
+          currentCityList={currentCityList}
           cancelAction={handleCancelAction}
           saveAction={handleUpdateOrgDetails}
           orgDetails={orgDetails}

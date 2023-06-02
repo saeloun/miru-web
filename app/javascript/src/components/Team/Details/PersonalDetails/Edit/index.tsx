@@ -99,6 +99,28 @@ const EmploymentDetails = () => {
     getDetails();
   }, []);
 
+  useEffect(() => {
+    const currentCountry = Country.getAllCountries().filter(
+      country => country.isoCode == personalDetails.addresses.country
+    )[0];
+
+    currentCountry &&
+      setCurrentCountryDetails({
+        label: currentCountry.name,
+        value: currentCountry.name,
+        code: currentCountry.isoCode,
+      });
+
+    if (personalDetails.addresses.city) {
+      setCurrentCityList(
+        City.getCitiesOfState(
+          personalDetails.addresses.country,
+          personalDetails.addresses.state
+        ).map(city => ({ label: city.name, value: city.name, ...city }))
+      );
+    }
+  }, [personalDetails]);
+
   const handleOnChangeCountry = selectCountry => {
     setCurrentCountryDetails(selectCountry);
     updateDetails("personal", {
@@ -140,6 +162,7 @@ const EmploymentDetails = () => {
         addresses: {
           ...personalDetails.addresses,
           ...{ state: selectState.value },
+          ...{ state: selectState.value, city: "" },
         },
       },
     });
@@ -314,6 +337,7 @@ const EmploymentDetails = () => {
               addrType={addrType}
               addressOptions={addressOptions}
               countries={countries}
+              currentCityList={currentCityList}
               currentCountryDetails={currentCountryDetails}
               dateFormat={personalDetails.date_format}
               errDetails={errDetails}
