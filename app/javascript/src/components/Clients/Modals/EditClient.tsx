@@ -23,7 +23,6 @@ const EditClient = ({
 
   const handleDeleteLogo = event => {
     event.preventDefault();
-
     setClientLogo("");
     setClientLogoUrl("");
   };
@@ -62,9 +61,10 @@ const EditClient = ({
     </Modal>
   ) : (
     <MobileClientForm
-      clientData={client}
+      client={client}
       clientLogo={clientLogo}
       clientLogoUrl={clientLogoUrl}
+      fetchDetails={fetchDetails}
       formType="Edit"
       handleDeleteLogo={handleDeleteLogo}
       setClientLogo={setClientLogo}

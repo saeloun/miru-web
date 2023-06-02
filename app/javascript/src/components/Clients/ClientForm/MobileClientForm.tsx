@@ -17,6 +17,7 @@ import UploadLogo from "./UploadLogo";
 import { formatFormData, disableBtn } from "./utils";
 
 const MobileClientForm = ({
+  client,
   clientLogoUrl,
   handleDeleteLogo,
   setClientLogoUrl,
@@ -31,6 +32,7 @@ const MobileClientForm = ({
   setSubmitting,
   handleEdit,
   setShowDialog,
+  fetchDetails,
 }: IClientForm) => {
   const [fileUploadError, setFileUploadError] = useState<string>("");
   const [countries, setCountries] = useState([]);
@@ -82,7 +84,7 @@ const MobileClientForm = ({
       formData,
       values,
       formType === "new",
-      clientData,
+      client,
       clientLogo,
       clientLogoUrl
     );
@@ -97,9 +99,9 @@ const MobileClientForm = ({
       }
     } else {
       try {
-        await clientApi.update(clientData.id, formData);
+        await clientApi.update(client.id, formData);
         setShowEditDialog(false);
-        window.location.reload();
+        fetchDetails();
       } catch {
         setSubmitting(false);
       }
@@ -113,7 +115,7 @@ const MobileClientForm = ({
     >
       <SidePanel.Header className="mb-2 flex items-center justify-between bg-miru-han-purple-1000 px-5 py-5 text-white lg:bg-white lg:font-bold lg:text-miru-dark-purple-1000">
         <span className="flex w-full items-center justify-center pl-6 text-base font-medium leading-5">
-          {clientData?.id ? "Edit Client" : "Add New Client"}
+          {client?.id ? "Edit Client" : "Add New Client"}
         </span>
         <Button style="ternary" onClick={() => setShowDialog(false)}>
           <XIcon
@@ -124,7 +126,7 @@ const MobileClientForm = ({
       </SidePanel.Header>
       <SidePanel.Body className="sidebar__filters flex h-full flex-col justify-between overflow-y-auto px-4">
         <Formik
-          initialValues={getInitialvalues(clientData)}
+          initialValues={getInitialvalues(client)}
           validationSchema={clientSchema}
           onSubmit={handleSubmit}
         >
@@ -192,7 +194,7 @@ const MobileClientForm = ({
                           inputClassName="form__input block w-full appearance-none bg-white border-0 focus:border-0 px-0 text-base border-transparent focus:border-transparent focus:ring-0 border-miru-gray-1000 w-full border-bottom-none"
                           name="phone"
                           smartCaret={false}
-                          value={clientData.phone}
+                          value={formType == "edit" ? client.phone : ""}
                           onChange={phone => {
                             setFieldValue("phone", phone);
                           }}
@@ -301,7 +303,7 @@ const MobileClientForm = ({
                   </div>
                 </div>
                 <div className="actions mt-auto">
-                  {clientData?.id ? (
+                  {client?.id ? (
                     <Button
                       className="w-full p-2 text-center text-base font-bold"
                       disabled={disableBtn(values, errors, submitting)}
@@ -336,6 +338,7 @@ const MobileClientForm = ({
 };
 
 interface IClientForm {
+  client?: any;
   clientLogoUrl: string;
   handleDeleteLogo: any;
   setClientLogoUrl: any;
@@ -350,6 +353,7 @@ interface IClientForm {
   setSubmitting: any;
   handleEdit?: any;
   setShowDialog: any;
+  fetchDetails?: any;
 }
 
 interface FormValues {
