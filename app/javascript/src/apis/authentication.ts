@@ -22,7 +22,7 @@ const resetPassword = payload =>
   authApi.put("/users/reset_password", { user: payload });
 
 const sendEmailConfirmation = payload =>
-  authApi.post(`/users/resend_confirmation_email`, { user: payload });
+  axios.post(`/users/resend_confirmation_email`, { user: payload });
 
 const googleAuth = () =>
   axios
