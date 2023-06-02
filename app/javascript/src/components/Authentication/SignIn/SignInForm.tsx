@@ -3,6 +3,7 @@ import React, { useRef, useState } from "react";
 import { Formik, Form, FormikProps } from "formik";
 import { GoogleSVG, MiruLogoSVG } from "miruIcons";
 import { useNavigate } from "react-router-dom";
+import { Toastr } from "StyledComponents";
 
 import authenticationApi from "apis/authentication";
 import { InputErrors, InputField } from "common/FormikFields";
@@ -50,6 +51,7 @@ const SignInForm = () => {
     } catch (error) {
       if (error?.response?.data?.unconfirmed) {
         navigate(`/email_confirmation?email=${values.email}`);
+        Toastr.error(error.response.data.error);
       } else if (error?.response?.data?.error) {
         setFieldError("password", error.response.data.error);
       }
