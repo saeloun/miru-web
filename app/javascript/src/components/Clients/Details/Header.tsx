@@ -19,7 +19,7 @@ import { useUserContext } from "context/UserContext";
 import DeleteClient from "../Modals/DeleteClient";
 import EditClient from "../Modals/EditClient";
 
-const Header = ({ clientDetails, setShowProjectModal }) => {
+const Header = ({ clientDetails, setShowProjectModal, fetchDetails }) => {
   const [isHeaderMenuVisible, setIsHeaderMenuVisible] =
     useState<boolean>(false);
   const [isClientOpen, setIsClientOpen] = useState<boolean>(false);
@@ -152,6 +152,7 @@ const Header = ({ clientDetails, setShowProjectModal }) => {
       {showEditDialog && (
         <EditClient
           client={clientDetails}
+          fetchDetails={fetchDetails}
           setShowEditDialog={setShowEditDialog}
           showEditDialog={showEditDialog}
         />

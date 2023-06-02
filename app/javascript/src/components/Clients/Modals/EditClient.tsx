@@ -5,21 +5,15 @@ import { Modal } from "StyledComponents";
 
 import { useUserContext } from "context/UserContext";
 
-import ClientForm from "./ClientForm";
-import MobileClientForm from "./MobileClientForm";
-
-interface IEditClient {
-  setShowEditDialog: any;
-  client: any;
-  showEditDialog: boolean;
-}
+import ClientForm from "../ClientForm";
+import MobileClientForm from "../ClientForm/MobileClientForm";
 
 const EditClient = ({
-  setShowEditDialog,
   client,
+  fetchDetails,
+  setShowEditDialog,
   showEditDialog,
 }: IEditClient) => {
-  const [apiError, setApiError] = useState<string>("");
   const [clientLogoUrl, setClientLogoUrl] = useState<string>(
     client?.logo || ""
   );
@@ -29,7 +23,6 @@ const EditClient = ({
 
   const handleDeleteLogo = event => {
     event.preventDefault();
-
     setClientLogo("");
     setClientLogoUrl("");
   };
@@ -53,26 +46,27 @@ const EditClient = ({
         </button>
       </div>
       <ClientForm
-        clientData={client}
+        client={client}
         clientLogo={clientLogo}
         clientLogoUrl={clientLogoUrl}
+        fetchDetails={fetchDetails}
         formType="edit"
         handleDeleteLogo={handleDeleteLogo}
-        setApiError={setApiError}
         setClientLogo={setClientLogo}
         setClientLogoUrl={setClientLogoUrl}
         setShowEditDialog={setShowEditDialog}
+        setSubmitting={setSubmitting}
+        submitting={submitting}
       />
     </Modal>
   ) : (
     <MobileClientForm
-      apiError={apiError}
-      clientData={client}
+      client={client}
       clientLogo={clientLogo}
       clientLogoUrl={clientLogoUrl}
+      fetchDetails={fetchDetails}
       formType="Edit"
       handleDeleteLogo={handleDeleteLogo}
-      setApiError={setApiError}
       setClientLogo={setClientLogo}
       setClientLogoUrl={setClientLogoUrl}
       setShowDialog={setShowEditDialog}
@@ -82,5 +76,12 @@ const EditClient = ({
     />
   );
 };
+
+interface IEditClient {
+  setShowEditDialog: any;
+  client: any;
+  showEditDialog: boolean;
+  fetchDetails?: any;
+}
 
 export default EditClient;
