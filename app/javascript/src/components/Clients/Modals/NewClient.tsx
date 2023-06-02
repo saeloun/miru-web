@@ -5,8 +5,8 @@ import { Modal } from "StyledComponents";
 
 import { useUserContext } from "context/UserContext";
 
-import ClientForm from "./ClientForm";
-import MobileClientForm from "./MobileClientForm";
+import ClientForm from "../ClientForm";
+import MobileClientForm from "../ClientForm/MobileClientForm";
 
 const NewClient = ({
   setnewClient,
@@ -20,7 +20,6 @@ const NewClient = ({
   showDialog,
 }) => {
   const [submitting, setSubmitting] = useState<boolean>(false);
-  const [apiError, setApiError] = useState<string>("");
 
   const handleDeleteLogo = () => {
     setClientLogo("");
@@ -53,21 +52,20 @@ const NewClient = ({
         clientLogo={clientLogo}
         clientLogoUrl={clientLogoUrl}
         handleDeleteLogo={handleDeleteLogo}
-        setApiError={setApiError}
         setClientData={setClientData}
         setClientLogo={setClientLogo}
         setClientLogoUrl={setClientLogoUrl}
+        setSubmitting={setSubmitting}
         setnewClient={setnewClient}
+        submitting={submitting}
       />
     </Modal>
   ) : (
     <MobileClientForm
-      apiError={apiError}
       clientData={clientData}
       clientLogo={clientLogo}
       clientLogoUrl={clientLogoUrl}
       handleDeleteLogo={handleDeleteLogo}
-      setApiError={setApiError}
       setClientData={setClientData}
       setClientLogo={setClientLogo}
       setClientLogoUrl={setClientLogoUrl}
