@@ -27,7 +27,6 @@ const ClientForm = ({
   setClientData,
   setnewClient,
   clientLogo,
-  setApiError,
   setShowEditDialog,
   submitting,
   setSubmitting,
@@ -94,8 +93,7 @@ const ClientForm = ({
         setClientData([...clientData, { ...res.data, minutes: 0 }]);
         setnewClient(false);
         Toastr.success("Client added successfully");
-      } catch (error) {
-        setApiError(error.message);
+      } catch {
         setSubmitting(false);
       }
     } else {
@@ -103,8 +101,7 @@ const ClientForm = ({
         await clientApi.update(client.id, formData);
         setShowEditDialog(false);
         fetchDetails();
-      } catch (error) {
-        setApiError(error.message);
+      } catch {
         setSubmitting(false);
       }
     }
@@ -326,7 +323,6 @@ interface IClientForm {
   setClientData?: any;
   setnewClient?: any;
   clientLogo?: any;
-  setApiError?: any;
   setShowEditDialog?: any;
   submitting: boolean;
   setSubmitting: any;

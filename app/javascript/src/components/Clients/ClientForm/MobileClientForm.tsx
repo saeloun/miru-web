@@ -23,11 +23,9 @@ const MobileClientForm = ({
   setClientLogo,
   clientData,
   formType = "new",
-  apiError = "",
   setClientData,
   setnewClient,
   clientLogo,
-  setApiError,
   setShowEditDialog,
   submitting,
   setSubmitting,
@@ -94,21 +92,17 @@ const MobileClientForm = ({
         setClientData([...clientData, { ...res.data, minutes: 0 }]);
         setnewClient(false);
         Toastr.success("Client added successfully");
-      } catch (error) {
-        setApiError(error.message);
+      } catch {
         setSubmitting(false);
       }
     } else {
-      await clientApi
-        .update(clientData.id, formData)
-        .then(() => {
-          setShowEditDialog(false);
-          window.location.reload();
-        })
-        .catch(e => {
-          setApiError(e.message);
-          setSubmitting(false);
-        });
+      try {
+        await clientApi.update(clientData.id, formData);
+        setShowEditDialog(false);
+        window.location.reload();
+      } catch {
+        setSubmitting(false);
+      }
     }
   };
 
@@ -306,9 +300,6 @@ const MobileClientForm = ({
                     />
                   </div>
                 </div>
-                <p className="mt-3 block text-xs tracking-wider text-red-600">
-                  {apiError}
-                </p>
                 <div className="actions mt-auto">
                   {clientData?.id ? (
                     <Button
@@ -351,11 +342,9 @@ interface IClientForm {
   setClientLogo: any;
   formType?: string;
   clientData?: any;
-  apiError?: string;
   setClientData?: any;
   setnewClient?: any;
   clientLogo?: any;
-  setApiError?: any;
   setShowEditDialog?: any;
   submitting: any;
   setSubmitting: any;

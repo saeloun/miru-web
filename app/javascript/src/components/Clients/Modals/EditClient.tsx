@@ -14,7 +14,6 @@ const EditClient = ({
   setShowEditDialog,
   showEditDialog,
 }: IEditClient) => {
-  const [apiError, setApiError] = useState<string>("");
   const [clientLogoUrl, setClientLogoUrl] = useState<string>(
     client?.logo || ""
   );
@@ -54,7 +53,6 @@ const EditClient = ({
         fetchDetails={fetchDetails}
         formType="edit"
         handleDeleteLogo={handleDeleteLogo}
-        setApiError={setApiError}
         setClientLogo={setClientLogo}
         setClientLogoUrl={setClientLogoUrl}
         setShowEditDialog={setShowEditDialog}
@@ -64,13 +62,11 @@ const EditClient = ({
     </Modal>
   ) : (
     <MobileClientForm
-      apiError={apiError}
       clientData={client}
       clientLogo={clientLogo}
       clientLogoUrl={clientLogoUrl}
       formType="Edit"
       handleDeleteLogo={handleDeleteLogo}
-      setApiError={setApiError}
       setClientLogo={setClientLogo}
       setClientLogoUrl={setClientLogoUrl}
       setShowDialog={setShowEditDialog}

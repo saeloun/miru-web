@@ -20,7 +20,6 @@ const NewClient = ({
   showDialog,
 }) => {
   const [submitting, setSubmitting] = useState<boolean>(false);
-  const [apiError, setApiError] = useState<string>("");
 
   const handleDeleteLogo = () => {
     setClientLogo("");
@@ -53,7 +52,6 @@ const NewClient = ({
         clientLogo={clientLogo}
         clientLogoUrl={clientLogoUrl}
         handleDeleteLogo={handleDeleteLogo}
-        setApiError={setApiError}
         setClientData={setClientData}
         setClientLogo={setClientLogo}
         setClientLogoUrl={setClientLogoUrl}
@@ -64,12 +62,10 @@ const NewClient = ({
     </Modal>
   ) : (
     <MobileClientForm
-      apiError={apiError}
       clientData={clientData}
       clientLogo={clientLogo}
       clientLogoUrl={clientLogoUrl}
       handleDeleteLogo={handleDeleteLogo}
-      setApiError={setApiError}
       setClientData={setClientData}
       setClientLogo={setClientLogo}
       setClientLogoUrl={setClientLogoUrl}
