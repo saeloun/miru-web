@@ -1,13 +1,10 @@
 import React, { useEffect, useState } from "react";
 
-import { cashFormatter, currencySymbol, minToHHMM } from "helpers";
 import Logger from "js-logger";
 import { PlusIcon } from "miruIcons";
 import { useParams, useNavigate } from "react-router-dom";
 
 import clientApi from "apis/clients";
-import AmountBoxContainer from "common/AmountBox";
-import ChartBar from "common/ChartBar";
 import EmptyStates from "common/EmptyStates";
 import Table from "common/Table";
 import ProjectForm from "components/Projects/List/Mobile/ProjectForm";
@@ -17,61 +14,12 @@ import { useUserContext } from "context/UserContext";
 import { unmapClientDetails } from "mapper/mappedIndex";
 import { sendGAPageView } from "utils/googleAnalytics";
 
+import { tableHeader, mobileTableHeader } from "./constants";
 import Header from "./Header";
+import TableData from "./TableData";
+import TotalHoursChart from "./TotalHoursChart";
 
 import AddProject from "../Modals/AddProject";
-
-const getTableData = (clients, isDesktop) => {
-  if (clients && isDesktop) {
-    return clients.map(client => ({
-      col1: (
-        <div className="text-base capitalize text-miru-dark-purple-1000">
-          {client.name}
-        </div>
-      ),
-      col2: (
-        <div className="text-sm font-medium text-miru-dark-purple-1000">
-          {client.team.map((member, index) => (
-            <span key={index}>{member},&nbsp;</span>
-          ))}
-        </div>
-      ),
-      col3: (
-        <div className="text-right text-lg font-bold text-miru-dark-purple-1000">
-          {minToHHMM(client.minutes)}
-        </div>
-      ),
-      rowId: client.id,
-    }));
-  } else if (clients && !isDesktop) {
-    return clients.map(client => ({
-      col1: (
-        <div className="text-base font-medium capitalize text-miru-dark-purple-1000">
-          {client.name}
-          <br />
-          <div className="w-57.5">
-            {client.team.map((member, index) => (
-              <span
-                className="font-manrope text-xs text-miru-dark-purple-400"
-                key={index}
-              >
-                {member},&nbsp;
-              </span>
-            ))}
-          </div>
-        </div>
-      ),
-      col2: (
-        <div className="mr-4 text-right text-lg font-bold text-miru-dark-purple-1000">
-          {minToHHMM(client.minutes)}
-        </div>
-      ),
-      rowId: client.id,
-    }));
-  }
-
-  return [{}];
-};
 
 const ClientDetails = ({ isAdminUser }) => {
   const [showEditDialog, setShowEditDialog] = useState<boolean>(false);
@@ -136,54 +84,7 @@ const ClientDetails = ({ isAdminUser }) => {
     fetchProjectList();
   }, []);
 
-  const tableHeader = [
-    {
-      Header: "PROJECT",
-      accessor: "col1", // accessor is the "key" in the data
-      cssClass: "md:w-1/3",
-    },
-    {
-      Header: "TEAM",
-      accessor: "col2",
-      cssClass: "md:w-1/3",
-    },
-    {
-      Header: "HOURS LOGGED",
-      accessor: "col3",
-      cssClass: "text-right  md:w-1/5", // accessor is the "key" in the data
-    },
-  ];
-
-  const mobileTableHeader = [
-    {
-      Header: "PROJECT",
-      accessor: "col1", // accessor is the "key" in the data
-      cssClass: "md:w-1/3",
-    },
-    {
-      Header: "HOURS",
-      accessor: "col2",
-      cssClass: "text-right md:w-1/5", // accessor is the "key" in the data
-    },
-  ];
-
-  const currencySymb = currencySymbol(overdueOutstandingAmount?.currency);
-
-  const amountBox = [
-    {
-      title: "OVERDUE",
-      amount:
-        currencySymb + cashFormatter(overdueOutstandingAmount?.overdue_amount),
-    },
-    {
-      title: "OUTSTANDING",
-      amount:
-        currencySymb +
-        cashFormatter(overdueOutstandingAmount?.outstanding_amount),
-    },
-  ];
-
-  const tableData = getTableData(projectDetails, isDesktop);
+  const tableData = TableData(projectDetails, isDesktop);
 
   const handleAddProject = () => {
     setShowProjectModal(true);
@@ -212,42 +113,17 @@ const ClientDetails = ({ isAdminUser }) => {
     <>
       <Header
         clientDetails={clientDetails}
+        fetchDetails={fetchProjectList}
         setShowProjectModal={setShowProjectModal}
       />
       <div>
         {isAdminUser && isDesktop && (
-          <div className="bg-miru-gray-100 py-10 px-10">
-            <div className="flex justify-end">
-              <select
-                className="focus:outline-none
-                m-0
-                border-none
-                bg-transparent
-                bg-clip-padding bg-no-repeat px-3
-                py-1.5
-                text-base
-                font-normal
-                text-miru-han-purple-1000
-                transition
-                ease-in-out"
-                onChange={handleSelectChange}
-              >
-                <option className="text-miru-dark-purple-600" value="week">
-                  THIS WEEK
-                </option>
-                <option className="text-miru-dark-purple-600" value="month">
-                  THIS MONTH
-                </option>
-                <option className="text-miru-dark-purple-600" value="year">
-                  THIS YEAR
-                </option>
-              </select>
-            </div>
-            {projectDetails && (
-              <ChartBar data={projectDetails} totalMinutes={totalMinutes} />
-            )}
-            <AmountBoxContainer amountBox={amountBox} />
-          </div>
+          <TotalHoursChart
+            handleSelectChange={handleSelectChange}
+            overdueOutstandingAmount={overdueOutstandingAmount}
+            projectDetails={projectDetails}
+            totalMinutes={totalMinutes}
+          />
         )}
         <div className="flex flex-col">
           <div className="overflow-XIcon-auto -my-2 sm:-mx-6 lg:-mx-8">
@@ -288,6 +164,7 @@ const ClientDetails = ({ isAdminUser }) => {
       {showEditDialog && (
         <AddEditProject
           editProjectData={editProjectData}
+          fetchProjectList={fetchProjectList}
           projectData={selectedProject}
           setEditProjectData={setEditProjectData}
           setShowProjectModal={setShowEditDialog}
@@ -305,6 +182,7 @@ const ClientDetails = ({ isAdminUser }) => {
       {showProjectModal && (
         <AddProject
           clientDetails={clientDetails}
+          fetchProjectList={fetchProjectList}
           setShowProjectModal={setShowProjectModal}
           showProjectModal={showProjectModal}
         />
