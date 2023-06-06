@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_05_26_062007) do
+ActiveRecord::Schema[7.0].define(version: 2023_05_26_061821) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -61,15 +61,17 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_26_062007) do
   create_table "clients", force: :cascade do |t|
     t.bigint "company_id", null: false
     t.string "name", null: false
+    t.string "email"
     t.string "phone"
     t.string "address"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "discarded_at"
     t.string "stripe_id"
-    t.string "email", default: [], array: true
+    t.string "emails", default: [], array: true
     t.index ["company_id"], name: "index_clients_on_company_id"
     t.index ["discarded_at"], name: "index_clients_on_discarded_at"
+    t.index ["email", "company_id"], name: "index_clients_on_email_and_company_id", unique: true
     t.index ["name", "company_id"], name: "index_clients_on_name_and_company_id", unique: true
   end
 

@@ -6,7 +6,8 @@
 #  id           :bigint           not null, primary key
 #  address      :string
 #  discarded_at :datetime
-#  email        :string           default([]), is an Array
+#  email        :string
+#  emails       :string           default([]), is an Array
 #  name         :string           not null
 #  phone        :string
 #  created_at   :datetime         not null
@@ -16,9 +17,10 @@
 #
 # Indexes
 #
-#  index_clients_on_company_id           (company_id)
-#  index_clients_on_discarded_at         (discarded_at)
-#  index_clients_on_name_and_company_id  (name,company_id) UNIQUE
+#  index_clients_on_company_id            (company_id)
+#  index_clients_on_discarded_at          (discarded_at)
+#  index_clients_on_email_and_company_id  (email,company_id) UNIQUE
+#  index_clients_on_name_and_company_id   (name,company_id) UNIQUE
 #
 # Foreign Keys
 #
@@ -151,10 +153,10 @@ class Client < ApplicationRecord
 
   def validate_email_format
     invalid_email = []
-    email.each do |mail_id|
+    emails.each do |mail_id|
       invalid_email << mail_id unless mail_id.match?(Devise.email_regexp)
     end
-    errors.add(:email, "Invalid email ID") if invalid_email.present?
+    errors.add(:emails, "Invalid email ID") if invalid_email.present?
   end
 
   def refresh_client_index
