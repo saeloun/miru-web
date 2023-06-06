@@ -36,6 +36,24 @@ const Header = ({
     }
   }, [debouncedSearchQuery]);
 
+  useEffect(() => {
+    const pageContainerEl = document.getElementById("invoice-list-page");
+
+    if (pageContainerEl) {
+      if (expandSearchBox || searchQuery) {
+        pageContainerEl.classList.add("h-90v", "overflow-hidden");
+      } else {
+        pageContainerEl.classList.remove("h-90v", "overflow-hidden");
+      }
+    }
+
+    return () => {
+      if (pageContainerEl) {
+        pageContainerEl.classList.remove("h-90v", "overflow-hidden");
+      }
+    };
+  }, [expandSearchBox, searchQuery]);
+
   const fetchSearchinvoices = async debouncedSearchQuery => {
     const SEARCH_SIZE = 5;
     const searchParams = `invoices_per_page=${SEARCH_SIZE}&page=1&query=${debouncedSearchQuery}`;

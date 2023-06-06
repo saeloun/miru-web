@@ -218,7 +218,7 @@ const Invoices = () => {
   };
 
   const InvoicesLayout = () => (
-    <div className="h-full p-4 lg:p-0">
+    <div className="p-4 lg:p-0" id="invoice-list-page">
       <Header
         filterParamsStr={filterParamsStr}
         isDesktop={isDesktop}
