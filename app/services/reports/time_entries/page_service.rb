@@ -2,8 +2,9 @@
 
 class Reports::TimeEntries::PageService < ApplicationService
   include Pagy::Backend
+  # pagy_config skip_empty_pages: true
 
-  attr_reader :params, :page, :group_by, :current_company, :pagy_data, :es_filter
+  attr_reader :params, :page, :group_by, :current_company, :pagy_data, :es_filter, :reports
 
   PER_PAGE = {
     users: 5,
@@ -18,6 +19,7 @@ class Reports::TimeEntries::PageService < ApplicationService
     @group_by = params[:group_by]
     @current_company = current_company
     @pagy_data = nil
+    @reports = nil
 
     @es_filter = nil
   end
@@ -43,7 +45,7 @@ class Reports::TimeEntries::PageService < ApplicationService
       if Reports::TimeEntries::GroupBy.new(group_by).valid_group_by?
         send("#{group_by}_filter")
       else
-        set_default_pagination_data
+        params[:date_range] == "custom" ? set_default_pagination_data : @es_filter = {}
       end
     end
 
@@ -52,7 +54,7 @@ class Reports::TimeEntries::PageService < ApplicationService
         reports.total_count
       else
         @reports = TimesheetEntry.search(where: {}, load: false)
-        TimesheetEntry.search(where: {}, load: false).total_entries
+        @reports.total_entries
       end
 
       @pagy_data, paginated_data = pagy(@reports, items: DEFAULT_ITEMS_PER_PAGE, page:, count: total_records)

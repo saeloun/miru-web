@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class Reports::TimeEntries::ReportService
+  include Pagy::Backend
   attr_reader :params, :current_company, :get_filters
   attr_accessor :reports, :pagination_details
 
@@ -72,16 +73,28 @@ class Reports::TimeEntries::ReportService
       page_service.process
 
       @reports = search_timesheet_entries(where_clause.merge(page_service.es_filter))
-      @pagination_details = page_service.pagination_details
+      @pagination_details = if params[:date_range] == "custom"
+        page_service.pagination_details
+      else
+        pagination_details_for_es_query(@reports)
+      end
    end
 
     def pagination_details_for_es_query(search_result)
+      pagy_data, paginated_data = pagy(
+        search_result,
+        items: Reports::TimeEntries::PageService::DEFAULT_ITEMS_PER_PAGE,
+        page: params[:page], count: search_result.size
+      )
+      @reports = paginated_data
       {
-        pages: search_result.total_pages,
-        first: search_result.first_page?,
-        prev: search_result.prev_page,
-        next: search_result.next_page,
-        last: search_result.last_page?
+        pages: pagy_data.pages,
+        first: pagy_data.page == 1,
+        prev: pagy_data.prev.nil? ? 0 : pagy_data.prev,
+        next: pagy_data.next,
+        last: pagy_data.last,
+        page: pagy_data.page,
+        items: pagy_data.items
       }
     end
 
