@@ -59,18 +59,4 @@ class Invoices::ActionTrailsService < ApplicationService
     def send_invoice_trail_data(event)
       generic_trail_data(event).merge(emails: event.properties["emails"])
     end
-
-    def pay_invoice_trail_data(event)
-      if event.properties["mode"] == "stripe"
-        {
-          type: event.name,
-          user_name: event.properties["customer"]["name"],
-          created_at: event.time,
-          mode: "stripe",
-          emails: [event.properties["customer"]["email"]]
-        }
-      else
-        generic_trail_data(event)
-      end
-    end
 end
