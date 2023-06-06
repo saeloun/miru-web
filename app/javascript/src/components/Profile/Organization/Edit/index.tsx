@@ -85,6 +85,7 @@ const initialState = {
     state: {
       label: "",
       value: "",
+      code: "",
     },
     zipcode: "",
   },
@@ -170,7 +171,9 @@ const OrgEdit = () => {
     const { isoCode, name } = Country.getCountryByCode(
       companyDetails.address.country
     );
-
+    const StateCode = State.getStatesOfCountry(
+      companyDetails.address.country
+    ).filter(state => state.name == companyDetails.address.state)[0].isoCode;
     const orgAddr = {
       id: companyDetails.address.id,
       addressLine1: companyDetails.address.address_line_1,
@@ -187,6 +190,7 @@ const OrgEdit = () => {
       state: {
         value: companyDetails.address.state,
         label: companyDetails.address.state,
+        code: StateCode,
       },
       zipcode: companyDetails.address.pin,
     };
@@ -219,7 +223,7 @@ const OrgEdit = () => {
       label: item,
     }));
     setTimezoneOption(timezoneOptionList);
-    addCity(isoCode, companyDetails.address.state);
+    addCity(isoCode, StateCode);
     setIsLoading(false);
   };
 
@@ -333,7 +337,11 @@ const OrgEdit = () => {
     const { companyAddr } = orgDetails;
     const changedState = {
       ...companyAddr,
-      state: { value: selectState.name, label: selectState.name },
+      state: {
+        value: selectState.name,
+        label: selectState.name,
+        code: selectState.code,
+      },
       city: { label: "", value: "" },
     };
     setOrgDetails({ ...orgDetails, companyAddr: changedState });

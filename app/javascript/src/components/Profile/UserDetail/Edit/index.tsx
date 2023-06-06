@@ -85,7 +85,7 @@ const UserDetailsEdit = () => {
 
   useEffect(() => {
     const currentCountry = Country.getAllCountries().filter(
-      country => country.isoCode == profileSettings.addresses.country
+      country => country.name == profileSettings.addresses.country
     )[0];
 
     currentCountry &&
@@ -96,11 +96,18 @@ const UserDetailsEdit = () => {
       });
 
     if (profileSettings.addresses.city) {
+      const stateCode =
+        currentCountry &&
+        State.getStatesOfCountry(currentCountry.isoCode).filter(
+          state => state.name == profileSettings.addresses.state
+        )[0].isoCode;
+
       setCurrentCityList(
-        City.getCitiesOfState(
-          profileSettings.addresses.country,
-          profileSettings.addresses.state
-        ).map(city => ({ label: city.name, value: city.name, ...city }))
+        City.getCitiesOfState(currentCountry.isoCode, stateCode).map(city => ({
+          label: city.name,
+          value: city.name,
+          ...city,
+        }))
       );
     }
   }, [profileSettings]);
