@@ -4,6 +4,7 @@ import Logger from "js-logger";
 import { useSearchParams } from "react-router-dom";
 
 import invoicesApi from "apis/invoices";
+import Loader from "common/Loader/index";
 import withLayout from "common/Mobile/HOC/withLayout";
 import Pagination from "common/Pagination/Pagination";
 import { ApiStatus as InvoicesStatus, LocalStorageKeys } from "constants/index";
@@ -226,9 +227,9 @@ const Invoices = () => {
         setParams={setParams}
       />
       {status === InvoicesStatus.LOADING ? (
-        <p className="tracking-wide mt-50 flex items-center justify-center text-2xl font-medium text-miru-han-purple-1000">
-          Loading...
-        </p>
+        <div className="flex h-80v w-full flex-col justify-center">
+          <Loader />
+        </div>
       ) : status === InvoicesStatus.SUCCESS ? (
         <Fragment>
           <Container
