@@ -1,33 +1,27 @@
-import React, { useRef } from "react";
+import React from "react";
 
-import classnames from "classnames";
-import { useOutsideClick } from "helpers";
+import Modal from "./Modal";
 
-const DEFAULT_STYLE = "shadow-2 w-full rounded-lg bg-white p-4";
 type MobileMoreOptionsProps = {
   children?: any;
   className?: string;
   setVisibilty;
+  visibilty: boolean;
 };
 
 const MobileMoreOptions = ({
   children,
   className = "",
   setVisibilty,
-}: MobileMoreOptionsProps) => {
-  const wrapperRef = useRef(null);
-  useOutsideClick(wrapperRef, () => setVisibilty(false));
-
-  return (
-    <div
-      className="modal__modal main-modal "
-      style={{ background: "rgba(29, 26, 49,0.6)" }}
-    >
-      <ul className={classnames(DEFAULT_STYLE, className)} ref={wrapperRef}>
-        {children}
-      </ul>
-    </div>
-  );
-};
+  visibilty,
+}: MobileMoreOptionsProps) => (
+  <Modal
+    customStyle="sm:my-8 sm:w-full sm:max-w-lg sm:align-middle overflow-visible"
+    isOpen={visibilty}
+    onClose={() => setVisibilty(false)}
+  >
+    <ul className={className}>{children}</ul>
+  </Modal>
+);
 
 export default MobileMoreOptions;

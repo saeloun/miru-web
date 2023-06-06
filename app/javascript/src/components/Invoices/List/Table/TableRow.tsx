@@ -68,7 +68,7 @@ const TableRow = ({
   return (
     <>
       <tr
-        className="group cursor-pointer last:border-b-0 hover:bg-miru-gray-100"
+        className="group cursor-pointer last:border-b-0 md:hover:bg-miru-gray-100"
         id="invoicesListTableRow"
         key={index}
         onClick={() => {
@@ -134,6 +134,7 @@ const TableRow = ({
               setIsSending={setIsSending}
               setShowDeleteDialog={setShowDeleteDialog}
               setShowMoreOptions={setShowMoreOptions}
+              showMoreOptions={showMoreOptions}
               showPrint={false}
               showSendLink={false}
             />
@@ -211,6 +212,7 @@ const TableRow = ({
           setIsSending={setIsSending}
           setShowDeleteDialog={setShowDeleteDialog}
           setShowMoreOptions={setShowMoreOptions}
+          showMoreOptions={showMoreOptions}
           showPrint={false}
           showSendLink={false}
         />

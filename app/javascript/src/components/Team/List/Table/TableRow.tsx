@@ -134,16 +134,19 @@ const TableRow = ({ item }) => {
         </td>
       </tr>
       {showMoreOptions && (
-        <MobileMoreOptions setVisibilty={setShowMoreOptions}>
+        <MobileMoreOptions
+          setVisibilty={setShowMoreOptions}
+          visibilty={showMoreOptions}
+        >
           <li
-            className="flex items-center px-2 pt-3 text-sm leading-5 text-miru-han-purple-1000"
+            className="flex items-center pt-3 text-sm leading-5 text-miru-han-purple-1000"
             onClick={e => handleAction(e, TeamModalType.ADD_EDIT)}
           >
             <EditIcon className="mr-4" color="#5B34EA" size={16} />
             Edit
           </li>
           <li
-            className="flex items-center px-2 pt-3 text-sm leading-5 text-miru-red-400"
+            className="flex items-center pt-3 text-sm leading-5 text-miru-red-400"
             onClick={e => handleAction(e, TeamModalType.DELETE)}
           >
             <DeleteIcon className="mr-4" size={16} />
