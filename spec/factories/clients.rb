@@ -4,7 +4,8 @@ FactoryBot.define do
   factory :client do
     company
     name { Faker::Name.unique.name[0..30] }
-    email { [Faker::Internet.unique.safe_email] }
+    email { Faker::Internet.unique.safe_email }
+    emails { [Faker::Internet.unique.safe_email] }
     phone { Faker::PhoneNumber.phone_number_with_country_code.slice(0, 15) }
 
     after :create do |client|

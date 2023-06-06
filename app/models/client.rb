@@ -43,7 +43,7 @@ class Client < ApplicationRecord
   validates :name, presence: true, length: { maximum: 30 },
     uniqueness: { scope: :company_id, case_sensitive: false, message: "The client %{value} already exists" }
   validates :phone, length: { maximum: 15 }
-  validates :email, presence: true, length: { maximum: 5, message: "Only 5 emails are allowed." }
+  validates :emails, presence: true, length: { maximum: 5, message: "Only 5 emails are allowed." }
   validate :validate_email_format
 
   after_discard :discard_projects
