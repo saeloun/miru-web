@@ -39,6 +39,70 @@ class Reports::TimeEntries::PageService < ApplicationService
     }
   end
 
+  def reports_with_group_by(where_clause)
+    page_service = Reports::TimeEntries::PageService.new(params, current_company)
+    page_service.process
+
+    search_results = search_timesheet_entries(where_clause.merge(page_service.es_filter))
+    hash_name = params[:group_by] == "team_member" ? "client" : params[:group_by]
+
+    pagy_data, paginated_data = pagy(
+      search_results,
+      items: Reports::TimeEntries::PageService::PER_PAGE[hash_name.to_sym],
+      page: params[:page],
+      count: search_results.size
+    )
+    @reports = paginated_data
+    @pagination_details = {
+      pages: pagy_data.pages,
+      first: pagy_data.page == 1,
+      prev: pagy_data.prev.nil? ? 0 : pagy_data.prev,
+      next: pagy_data.next,
+      last: pagy_data.last,
+      page: pagy_data.page,
+      items: pagy_data.items
+    }
+   end
+
+  def reports_without_group_by(where_clause)
+    page_service = Reports::TimeEntries::PageService.new(params, current_company)
+    page_service.process
+
+    @reports = search_timesheet_entries(where_clause.merge(page_service.es_filter))
+    @pagination_details = if params[:date_range] == "custom"
+      page_service.pagination_details
+    else
+      pagination_details_for_es_query(@reports)
+    end
+ end
+
+  def pagination_details_for_es_query(search_result)
+    pagy_data, paginated_data = pagy(
+      search_result,
+      items: Reports::TimeEntries::PageService::DEFAULT_ITEMS_PER_PAGE,
+      page: params[:page], count: search_result.size
+    )
+    @reports = paginated_data
+    {
+      pages: pagy_data.pages,
+      first: pagy_data.page == 1,
+      prev: pagy_data.prev.nil? ? 0 : pagy_data.prev,
+      next: pagy_data.next,
+      last: pagy_data.last,
+      page: pagy_data.page,
+      items: pagy_data.items
+    }
+  end
+
+  def search_timesheet_entries(where_clause, page = nil)
+    TimesheetEntry.search(
+      where: where_clause,
+      order: { work_date: :desc },
+      page:,
+      load: false
+      )
+  end
+
   private
 
     def es_filter_for_pagination
@@ -62,18 +126,15 @@ class Reports::TimeEntries::PageService < ApplicationService
     end
 
     def team_member_filter
-      @pagy_data, users = pagy(users_query, items: PER_PAGE[:users], page:)
-      @es_filter = { user_id: users.pluck(:id) }
+      @es_filter = { user_id: users_query.pluck(:id) }
     end
 
     def client_filter
-      @pagy_data, clients = pagy(clients_query, items: PER_PAGE[:clients], page:)
-      @es_filter = { client_id: clients.pluck(:id) }
+      @es_filter = { client_id: clients_query.pluck(:id) }
     end
 
     def project_filter
-      @pagy_data, projects = pagy(projects_query, items: PER_PAGE[:projects], page:)
-      @es_filter = { project_id: projects.pluck(:id) }
+      @es_filter = { project_id: projects_query.pluck(:id) }
     end
 
     def users_query

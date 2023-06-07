@@ -48,24 +48,29 @@ class Reports::TimeEntries::ReportService
       page_service = Reports::TimeEntries::PageService.new(params, current_company)
       page_service.process
 
-      @reports = search_timesheet_entries(where_clause.merge(page_service.es_filter))
-      @pagination_details = page_service.pagination_details
+      search_results = search_timesheet_entries(where_clause.merge(page_service.es_filter))
+      hash_name = params[:group_by] == "team_member" ? "client" : params[:group_by]
 
-      if @reports.empty?
-        details = page_service.pagination_details
-        @pagination_details = {
-          page: details[:page] - 1,
-          pages: change_pagination(details[:pages]),
-          first: details[:first],
-          prev: change_pagination(details[:prev]),
-          next: details[:next],
-          last: change_pagination(details[:last])
-        }
-      end
+      pagy_data, paginated_data = pagy(
+        search_results,
+        items: Reports::TimeEntries::PageService::PER_PAGE[hash_name.to_sym],
+        page: params[:page],
+        count: search_results.size
+      )
+      @reports = paginated_data
+      @pagination_details = {
+        pages: pagy_data.pages,
+        first: pagy_data.page == 1,
+        prev: pagy_data.prev.nil? ? 0 : pagy_data.prev,
+        next: pagy_data.next,
+        last: pagy_data.last,
+        page: pagy_data.page,
+        items: pagy_data.items
+      }
    end
 
     def change_pagination(page)
-      page > 0 ? page - 1 : page
+      page > 0 ? [page - 1, 1].max : page
     end
 
     def reports_without_group_by(where_clause)
