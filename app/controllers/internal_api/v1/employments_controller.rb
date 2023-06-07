@@ -10,13 +10,13 @@ class InternalApi::V1::EmploymentsController < InternalApi::V1::ApplicationContr
   end
 
   def show
-    authorize Employment
+    authorize @employment
     employment_with_email = @employment.attributes.merge(email: @user.email)
     render json: { employment: employment_with_email }, status: :ok
   end
 
   def update
-    authorize Employment
+    authorize @employment
     @employment.update!(employment_params)
     render json: { notice: I18n.t("employment.update.success") }
   end

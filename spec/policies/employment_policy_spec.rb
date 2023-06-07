@@ -31,7 +31,7 @@ RSpec.describe EmploymentPolicy, type: :policy do
     another_book_keeper.add_role :book_keeper, another_company
   end
 
-  permissions :index?, :show?, :update? do
+  permissions :show?, :update? do
     context "when user is an admin and" do
       it "grants permission" do
         expect(described_class).to permit(admin, employment)
