@@ -53,7 +53,7 @@ RSpec.describe "InternalApi::V1::Client#create", type: :request do
             address: "Somewhere on Earth"
           }), headers: auth_headers(user)
         expect(response).to have_http_status(:unprocessable_entity)
-        expect(json_response["errors"]).to eq("Email can't be blank")
+        expect(json_response["errors"]).to eq("Emails can't be blank")
       end
 
       it "throws 422 if the email is not an array" do
@@ -66,7 +66,7 @@ RSpec.describe "InternalApi::V1::Client#create", type: :request do
             address: "Somewhere on Earth"
           }), headers: auth_headers(user)
         expect(response).to have_http_status(:unprocessable_entity)
-        expect(json_response["errors"]).to eq("Email can't be blank")
+        expect(json_response["errors"]).to eq("Emails can't be blank")
       end
 
       it "throws 422 if the address_line_1 is blank" do
