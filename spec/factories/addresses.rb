@@ -8,6 +8,7 @@ FactoryBot.define do
     city { Faker::Address.city }
     country { "US" }
     pin { Faker::Address.postcode.slice(0, 10) }
+    association :addressable
     with_user
 
     trait :with_company do

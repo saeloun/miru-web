@@ -152,6 +152,8 @@ class Client < ApplicationRecord
   end
 
   def validate_email_format
+    return false if emails.blank?
+
     invalid_email = []
     emails.each do |mail_id|
       invalid_email << mail_id unless mail_id.match?(Devise.email_regexp)

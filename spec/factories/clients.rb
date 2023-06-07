@@ -8,8 +8,12 @@ FactoryBot.define do
     emails { [Faker::Internet.unique.safe_email] }
     phone { Faker::PhoneNumber.phone_number_with_country_code.slice(0, 15) }
 
-    after :create do |client|
-      create(:address, addressable_type: "Client", addressable_id: client.id)
+    transient do
+      addresses_count { 1 }
+    end
+
+    after :build do |client, evaluator|
+      client.addresses = build_list(:address, evaluator.addresses_count, addressable: client)
     end
 
     factory :client_with_invoices do
