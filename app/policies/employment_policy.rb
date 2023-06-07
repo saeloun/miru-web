@@ -2,14 +2,23 @@
 
 class EmploymentPolicy < ApplicationPolicy
   def index?
-    user_owner_role? || user_admin_role?
+    authorize_current_user && (user_owner_role? || user_admin_role?)
   end
 
   def show?
-    user_owner_role? || user_admin_role?
+    authorize_current_user && (user_owner_role? || user_admin_role?)
   end
 
   def update?
-    user_owner_role? || user_admin_role?
+    authorize_current_user && (user_owner_role? || user_admin_role?)
+  end
+
+  def authorize_current_user
+    if user.current_workspace_id == record.company.id
+      true
+    else
+      @error_message_key = :different_workspace
+      false
+    end
   end
 end
