@@ -12,6 +12,27 @@ const createAddress = (userId, payload) =>
 const updateAddress = (userId, addrId, payload) =>
   axios.put(`users/${userId}/addresses/${addrId}`, payload);
 
-const teamsApi = { get, getAddress, updateUser, updateAddress, createAddress };
+const getEmploymentDetails = async id => axios.get(`employments/${id}`);
+
+const getPreviousEmployments = async id =>
+  axios.get(`users/${id}/previous_employments`);
+
+const updatePreviousEmployments = async (id, payload) =>
+  axios.post(`users/${id}/previous_employments`, payload);
+
+const getPreviousEmploymentDetails = async (userId, id) =>
+  axios.get(`users/${userId}/previous_employments/${id}`);
+
+const teamsApi = {
+  get,
+  getAddress,
+  updateUser,
+  updateAddress,
+  createAddress,
+  getEmploymentDetails,
+  getPreviousEmployments,
+  updatePreviousEmployments,
+  getPreviousEmploymentDetails,
+};
 
 export default teamsApi;
