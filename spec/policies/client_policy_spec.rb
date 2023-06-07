@@ -83,7 +83,13 @@ RSpec.describe ClientPolicy, type: :policy do
     subject { described_class.new(admin, company).permitted_attributes }
 
     it "returns array of a permitted attributes" do
-      expect(subject).to match_array([:name, :phone, :address, :logo, email: []])
+      expect(subject).to match_array(
+        [:name, :phone, :logo, {
+          addresses_attributes: [
+            :id, :address_line_1, :address_line_2, :city, :state, :country, :pin
+          ], emails: []
+        }]
+      )
     end
   end
 
