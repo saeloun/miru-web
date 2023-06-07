@@ -1,8 +1,8 @@
 import * as Yup from "yup";
 
 export const signUpFormInitialValues = {
-  firstName: "",
-  lastName: "",
+  first_name: "",
+  last_name: "",
   email: "",
   isAgreedTermsOfServices: false,
   password: "",
@@ -10,11 +10,11 @@ export const signUpFormInitialValues = {
 };
 
 export const signUpFormValidationSchema = Yup.object().shape({
-  firstName: Yup.string()
+  first_name: Yup.string()
     .matches(/^[A-Za-z ]*$/, "Please enter valid first name")
     .max(20, "Maximum 20 characters are allowed")
     .required("First name cannot be blank"),
-  lastName: Yup.string()
+  last_name: Yup.string()
     .matches(/^[A-Za-z ]*$/, "Please enter valid last name")
     .max(20, "Maximum 20 characters are allowed")
     .required("Last name cannot be blank"),

@@ -16,8 +16,8 @@ import { signUpFormInitialValues, signUpFormValidationSchema } from "./utils";
 import FooterLinks from "../FooterLinks";
 
 interface SignUpFormValues {
-  firstName: string;
-  lastName: string;
+  first_name: string;
+  last_name: string;
   email: string;
   isAgreedTermsOfServices: boolean;
   password: string;
@@ -36,10 +36,12 @@ const SignUpForm = () => {
 
   const handleSignUpFormSubmit = async (values: any, { setFieldError }) => {
     try {
-      const { firstName, lastName, email, password, confirm_password } = values;
+      const { first_name, last_name, email, password, confirm_password } =
+        values;
+
       const payload = {
-        first_name: firstName,
-        last_name: lastName,
+        first_name,
+        last_name,
         email,
         password,
         password_confirmation: confirm_password,
@@ -47,8 +49,12 @@ const SignUpForm = () => {
       const res = await authenticationApi.signup(payload);
       navigate(`/email_confirmation?email=${res.data.email}`);
     } catch (error) {
-      if (error?.response?.data?.error?.email) {
-        setFieldError("email", error.response.data.error.email[0]);
+      if (error?.response?.data?.error) {
+        const errorData = error.response.data.error;
+        Object.keys(errorData).forEach(key => {
+          const errorMessages = errorData[key];
+          setFieldError(key, errorMessages[0]);
+        });
       }
     }
   };
@@ -76,15 +82,15 @@ const SignUpForm = () => {
 
   const isBtnDisabled = (values: SignUpFormValues, errors) =>
     !(
-      values?.firstName?.trim() &&
-      values?.lastName?.trim() &&
+      values?.first_name?.trim() &&
+      values?.last_name?.trim() &&
       values.email?.trim() &&
       values?.password?.trim() &&
       values?.confirm_password?.trim() &&
       values?.password?.trim() == values?.confirm_password?.trim()
     ) ||
-    errors?.firstName ||
-    errors?.lastName?.trim() ||
+    errors?.first_name ||
+    errors?.last_name?.trim() ||
     errors.email?.trim() ||
     errors?.password?.trim() ||
     errors?.confirm_password?.trim();
@@ -127,32 +133,32 @@ const SignUpForm = () => {
                   <div className="flex justify-between">
                     <div className="field relative mr-2 w-1/2 md:mr-6 lg:w-168">
                       <InputField
-                        hasError={errors.firstName && touched.firstName}
-                        id="firstName"
+                        hasError={errors.first_name && touched.first_name}
+                        id="first_name"
                         label="First Name"
                         labelClassName="p-0"
-                        name="firstName"
+                        name="first_name"
                         setFieldError={setFieldError}
                         setFieldValue={setFieldValue}
                       />
                       <InputErrors
-                        fieldErrors={errors.firstName}
-                        fieldTouched={touched.firstName}
+                        fieldErrors={errors.first_name}
+                        fieldTouched={touched.first_name}
                       />
                     </div>
                     <div className="field relative w-1/2 lg:w-168">
                       <InputField
-                        hasError={errors.lastName && touched.lastName}
-                        id="lastName"
+                        hasError={errors.last_name && touched.last_name}
+                        id="last_name"
                         label="Last Name"
                         labelClassName="p-0"
-                        name="lastName"
+                        name="last_name"
                         setFieldError={setFieldError}
                         setFieldValue={setFieldValue}
                       />
                       <InputErrors
-                        fieldErrors={errors.lastName}
-                        fieldTouched={touched.lastName}
+                        fieldErrors={errors.last_name}
+                        fieldTouched={touched.last_name}
                       />
                     </div>
                   </div>
