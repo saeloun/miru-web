@@ -90,6 +90,7 @@ const SearchTimeEntries = ({
         <MobileMoreOptions
           className="flex h-1/2 flex-col"
           setVisibilty={setShowEmployeeList}
+          visibilty={showEmployeeList}
         >
           <div className="relative mt-2 flex w-full items-center">
             <input
