@@ -31,6 +31,10 @@ const StaticPage = ({
   errDetails,
   DOJRef,
   DORRef,
+  previousEmployments,
+  handleDeletePreviousEmployment,
+  handleAddPastEmployment,
+  updatePreviousEmploymentValues,
 }) => (
   <div className="mt-4 h-full bg-miru-gray-100 px-10">
     <div className="flex border-b border-b-miru-gray-400 py-10">
@@ -54,7 +58,7 @@ const StaticPage = ({
               type="text"
               value={employmentDetails.current_employment.employee_id}
               inputBoxClassName={`${inputClass} ${
-                errDetails.first_name_err
+                errDetails.employee_id_err
                   ? "border-red-600"
                   : "border-miru-gray-1000"
               }`}
@@ -106,29 +110,29 @@ const StaticPage = ({
         <div className="flex flex-row py-3">
           <div className="flex w-1/2 flex-col px-2">
             <CustomInputText
-              id="email_id"
+              id="email"
               label="Email ID (Official)"
-              name="email_id"
+              name="email"
               type="text"
-              value={employmentDetails.current_employment.email_id}
+              value={employmentDetails.current_employment.email}
               inputBoxClassName={`${inputClass} ${
-                errDetails.email_id_err
+                errDetails.email_err
                   ? "border-red-600"
                   : "border-miru-gray-1000"
               }`}
               labelClassName={`${labelClass} ${
-                errDetails.email_id_err
+                errDetails.email_err
                   ? "text-red-600"
                   : "text-miru-dark-purple-200"
               }`}
               onChange={e => {
-                updateCurrentEmploymentDetails(e.target.value, "email_id");
+                updateCurrentEmploymentDetails(e.target.value, "email");
               }}
             />
-            {errDetails.email_id_err && (
+            {errDetails.email_err && (
               <ErrorSpan
                 className="text-xs text-red-600"
-                message={errDetails.first_name_err}
+                message={errDetails.email_err}
               />
             )}
           </div>
@@ -154,22 +158,17 @@ const StaticPage = ({
             >
               <CustomInputText
                 disabled
-                id="date_of_joining"
+                id="joined_at"
                 label="Date of Joining"
-                name="date_of_joining"
+                name="joined_at"
                 type="text"
-                value={
-                  employmentDetails.current_employment.date_of_joining || ""
-                }
+                value={employmentDetails.current_employment.joined_at || ""}
                 onChange={e => {
-                  updateCurrentEmploymentDetails(
-                    e.target.value,
-                    "date_of_joining"
-                  );
+                  updateCurrentEmploymentDetails(e.target.value, "joined_at");
                 }}
               />
               <CalendarIcon
-                className="absolute top-0 bottom-0 right-4"
+                className="absolute top-0 bottom-0 right-4 my-auto"
                 color="#5B34EA"
                 size={20}
               />
@@ -179,8 +178,8 @@ const StaticPage = ({
                 dateFormat="DD-MM-YYYY"
                 handleChange={e => handleDOJDatePicker(e, true)}
                 date={
-                  employmentDetails.current_employment.date_of_joining
-                    ? employmentDetails.current_employment.date_of_joining
+                  employmentDetails.current_employment.joined_at
+                    ? employmentDetails.current_employment.joined_at
                     : dayjs()
                 }
               />
@@ -197,22 +196,17 @@ const StaticPage = ({
             >
               <CustomInputText
                 disabled
-                id="date_of_resignation"
+                id="resigned_at"
                 label="Date of Resignation"
-                name="date_of_resignation"
+                name="resigned_at"
                 type="text"
-                value={
-                  employmentDetails.current_employment.date_of_resignation || ""
-                }
+                value={employmentDetails.current_employment.resigned_at || ""}
                 onChange={e => {
-                  updateCurrentEmploymentDetails(
-                    e.target.value,
-                    "date_of_resignation"
-                  );
+                  updateCurrentEmploymentDetails(e.target.value, "resigned_at");
                 }}
               />
               <CalendarIcon
-                className="absolute top-0 bottom-0 right-4"
+                className="absolute top-0 bottom-0 right-4 my-auto"
                 color="#5B34EA"
                 size={20}
               />
@@ -222,8 +216,8 @@ const StaticPage = ({
                 dateFormat="DD-MM-YYYY"
                 handleChange={e => handleDORDatePicker(e, true)}
                 date={
-                  employmentDetails.current_employment.date_of_resignation
-                    ? employmentDetails.current_employment.date_of_resignation
+                  employmentDetails.current_employment.resigned_at
+                    ? employmentDetails.current_employment.resigned_at
                     : dayjs()
                 }
               />
@@ -243,35 +237,56 @@ const StaticPage = ({
           Previous <br /> Employment
         </span>
       </div>
-      <div className="w-9/12">
-        <div className="flex flex-row">
-          <div className="flex w-1/2 flex-col px-2">
-            <CustomInputText
-              id="Role"
-              label="Role"
-              name="Role"
-              type="text"
-              value=""
-              onChange={e => {}} // eslint-disable-line
-            />
-          </div>
-          <div className="flex w-1/2 flex-col px-2">
-            <CustomInputText
-              id="Company Name"
-              label="Company Name"
-              name="Company Name"
-              type="text"
-              value=""
-              onChange={e => {}} // eslint-disable-line
-            />
-          </div>
-          <Button className="rounded" style="ternary">
-            <DeleteIcon
-              className="text-miru-han-purple-1000"
-              size={16}
-              weight="bold"
-            />
+      <div className="w-10/12">
+        {previousEmployments.length > 0 &&
+          previousEmployments.map((previous, index) => (
+            <div
+              className="mb-6 flex w-full flex-row items-center justify-between"
+              key={index}
+            >
+              <div className="flex w-full flex-row">
+                <div className="flex w-1/2 flex-col px-2">
+                  <CustomInputText
+                    id="company_name"
+                    label="Company Name"
+                    name="company_name"
+                    type="text"
+                    value={previous.company_name}
+                    onChange={e => {
+                      updatePreviousEmploymentValues(previous, e);
+                    }}
+                  />
+                </div>
+                <div className="flex w-1/2 flex-col px-2">
+                  <CustomInputText
+                    id="role"
+                    label="Role"
+                    name="role"
+                    type="text"
+                    value={previous.role}
+                    onChange={e => {
+                      updatePreviousEmploymentValues(previous, e);
+                    }}
+                  />
+                </div>
+              </div>
+              <Button
+                className="rounded p-1vh hover:bg-miru-dark-purple-100"
+                style="ternary"
+                onClick={() => handleDeletePreviousEmployment(previous)}
+              >
+                <DeleteIcon size={16} weight="bold" />
+              </Button>
+            </div>
+          ))}
+        <div className="flex items-center justify-between">
+          <Button
+            className="ml-2 w-full rounded border border-dashed  border-miru-dark-purple-200 bg-white py-3 text-center text-base font-bold tracking-widest text-miru-dark-purple-200"
+            onClick={handleAddPastEmployment}
+          >
+            + Add Past Employment
           </Button>
+          <div className="w-11" />
         </div>
       </div>
     </div>

@@ -23,11 +23,11 @@ const schema = Yup.object().shape(employmentSchema);
 const EmploymentDetails = () => {
   const initialErrState = {
     employee_id_err: "",
-    employee_type_err: "",
-    email_id_err: "",
+    employment_type_err: "",
+    email_err: "",
     designation_err: "",
-    date_of_joining_err: "",
-    date_of_resignation_err: "",
+    joined_at_err: "",
+    resigned_at_err: "",
     company_name_err: "",
     role_err: "",
   };
@@ -54,14 +54,7 @@ const EmploymentDetails = () => {
   });
   const [errDetails, setErrDetails] = useState(initialErrState);
   const [isLoading, setIsLoading] = useState(false);
-  const [employeeId, setEmployeeId] = useState();
-  const [emailId, setEmailId] = useState();
-  const [designation, setDesignation] = useState();
-  const [joiningDate, setJoiningDate] = useState();
-  const [resignationDate, setResignationDate] = useState();
-
   useOutsideClick(DOJRef, () => setShowDOJDatePicker({ visibility: false }));
-
   useOutsideClick(DORRef, () => setShowDORDatePicker({ visibility: false }));
 
   const employeeTypes = [
@@ -76,7 +69,18 @@ const EmploymentDetails = () => {
       res1.data.employment,
       res.data.previous_employments
     );
+    if (employmentData.current_employment?.employment_type?.length > 0) {
+      setEmployeeType(
+        employeeTypes.find(
+          item =>
+            item.value === employmentData.current_employment.employment_type
+        )
+      );
+    }
     updateDetails("employment", employmentData);
+    if (employmentData.previous_employments?.length > 0) {
+      setPreviousEmployments(employmentData.previous_employments);
+    }
     setIsLoading(false);
   };
 
@@ -92,7 +96,7 @@ const EmploymentDetails = () => {
       ...{
         current_employment: {
           ...employmentDetails.current_employment,
-          ...{ address_type: empType.value },
+          ...{ employment_type: empType.value },
         },
       },
     });
@@ -110,16 +114,31 @@ const EmploymentDetails = () => {
     });
   };
 
+  const updatePreviousEmploymentValues = (previous, event) => {
+    const { name, value } = event.target;
+    const updatedPreviousEmployments = previousEmployments.map(prevEmployment =>
+      prevEmployment == previous
+        ? { ...prevEmployment, [name]: value }
+        : prevEmployment
+    );
+    setPreviousEmployments(updatedPreviousEmployments);
+  };
+
+  const updatePreviousEmploymentDetails = () => {
+    updateDetails("employment", {
+      ...employmentDetails,
+      previous_employments: previousEmployments,
+    });
+  };
+
   const handleDOJDatePicker = date => {
     setShowDOJDatePicker({ visibility: !showDOJDatePicker.visibility });
-    const formattedDate = dayjs(date).format("DD-MM-YYYY");
-
     updateDetails("employment", {
       ...employmentDetails,
       ...{
         current_employment: {
           ...employmentDetails.current_employment,
-          ...{ date_of_joining: formattedDate },
+          ...{ joined_at: date },
         },
       },
     });
@@ -127,79 +146,61 @@ const EmploymentDetails = () => {
 
   const handleDORDatePicker = date => {
     setShowDORDatePicker({ visibility: !showDORDatePicker.visibility });
-    const formattedDate = dayjs(date).format("DD-MM-YYYY");
-
     updateDetails("employment", {
       ...employmentDetails,
       ...{
         current_employment: {
           ...employmentDetails.current_employment,
-          ...{ date_of_resignation: formattedDate },
+          ...{ resigned_at: date },
         },
       },
     });
   };
 
-  // const handleUpdateDetails = async () => {
-  //   try {
-  //     await schema.validate(
-  //       {
-  //         ...employmentDetails,
-  //         ...{
-  //           is_email: employmentDetails.current_employment.email_id
-  //             ? employmentDetails.current_employment.email_id.length > 0
-  //             : false,
-  //         },
-  //       },
-  //       { abortEarly: false }
-  //     );
+  const handleAddPastEmployment = () => {
+    const pastEmployments = [
+      ...previousEmployments,
+      { company_name: "", role: "" },
+    ];
+    setPreviousEmployments(pastEmployments);
+  };
 
-  //     await teamsApi.updateUser(memberId, {
-  //       user: {
-  //         first_name: employmentDetails.first_name,
-  //         last_name: employmentDetails.last_name,
-  //         date_of_birth: employmentDetails.date_of_birth
-  //           ? dayjs
-  //               .utc(
-  //                 employmentDetails.date_of_birth,
-  //                 employmentDetails.date_format
-  //               )
-  //               .toISOString()
-  //           : null,
-  //         phone: employmentDetails.phone_number,
-  //         personal_email_id: employmentDetails.email_id,
-  //         social_accounts: {
-  //           linkedin_url: employmentDetails.linkedin,
-  //           github_url: employmentDetails.github,
-  //         },
-  //       },
-  //     });
+  const handleDeletePreviousEmployment = previous => {
+    const tempPreviousEmployments = previousEmployments;
+    const itemIndex = tempPreviousEmployments.indexOf(previous);
+    if (itemIndex > -1) {
+      tempPreviousEmployments.splice(itemIndex, 1);
+    }
+    setPreviousEmployments(tempPreviousEmployments);
+  };
 
-  //     if (addrId) {
-  //       await teamsApi.updateAddress(memberId, addrId, {
-  //         address: { ...employmentDetails.addresses },
-  //       });
-  //     } else {
-  //       await teamsApi.createAddress(memberId, payload);
-  //     }
+  const handleUpdateDetails = async () => {
+    try {
+      await schema.validate(employmentDetails, { abortEarly: false });
+      updatePreviousEmploymentDetails();
+      await teamsApi.updateEmploymentDetails(
+        memberId,
+        employmentDetails.current_employment
+      );
 
-  //     setErrDetails(initialErrState);
-  //     navigate(`/team/${memberId}`, { replace: true });
-  //   } catch (err) {
-  //     setIsLoading(false);
-  //     const errObj = initialErrState;
-  //     if (err.inner) {
-  //       err.inner.map(item => {
-  //         if (item.path.includes("addresses")) {
-  //           errObj[`${item.path.split(".").pop()}_err`] = item.message;
-  //         } else {
-  //           errObj[`${item.path}_err`] = item.message;
-  //         }
-  //       });
-  //       setErrDetails(errObj);
-  //     }
-  //   }
-  // };
+      await teamsApi.updatePreviousEmployments(memberId, {
+        previous_employment: previousEmployments,
+      });
+    } catch (err) {
+      setIsLoading(false);
+      const errObj = initialErrState;
+      if (err.inner) {
+        err.inner.map(item => {
+          if (item.path.includes("current_employment")) {
+            errObj[`${item.path.split(".").pop()}_err`] = item.message;
+          } else {
+            errObj[`${item.path}_err`] = item.message;
+          }
+        });
+        setErrDetails(errObj);
+      }
+    }
+  };
 
   const handleCancelDetails = () => {
     setIsLoading(true);
@@ -217,11 +218,14 @@ const EmploymentDetails = () => {
             <div>
               <button
                 className="mx-1 cursor-pointer rounded-md border border-white bg-miru-han-purple-1000 px-3 py-2 font-bold text-white	"
-                onClick={handleCancelDetails} // eslint-disable-line  @typescript-eslint/no-empty-function
+                onClick={handleCancelDetails}
               >
                 Cancel
               </button>
-              <button className="mx-1 cursor-pointer rounded-md border bg-white px-3 py-2 font-bold text-miru-han-purple-1000">
+              <button
+                className="mx-1 cursor-pointer rounded-md border bg-white px-3 py-2 font-bold text-miru-han-purple-1000"
+                onClick={handleUpdateDetails}
+              >
                 Update
               </button>
             </div>
@@ -238,14 +242,18 @@ const EmploymentDetails = () => {
               employeeTypes={employeeTypes}
               employmentDetails={employmentDetails}
               errDetails={errDetails}
+              handleAddPastEmployment={handleAddPastEmployment}
               handleDOJDatePicker={handleDOJDatePicker}
               handleDORDatePicker={handleDORDatePicker}
+              handleDeletePreviousEmployment={handleDeletePreviousEmployment}
               handleOnChangeEmployeeType={handleOnChangeEmployeeType}
+              previousEmployments={previousEmployments}
               setShowDOJDatePicker={setShowDOJDatePicker}
               setShowDORDatePicker={setShowDORDatePicker}
               showDOJDatePicker={showDOJDatePicker}
               showDORDatePicker={showDORDatePicker}
               updateCurrentEmploymentDetails={updateCurrentEmploymentDetails}
+              updatePreviousEmploymentValues={updatePreviousEmploymentValues}
             />
           )}
         </Fragment>

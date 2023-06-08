@@ -24,11 +24,11 @@ export const teamsMapper = (user, address) => ({
 export const employmentMapper = (current, previous) => ({
   current_employment: {
     employee_id: current.employee_id,
-    email_id: current.employee_id,
-    employee_type: current.employee_type,
+    email: current.email,
+    employment_type: current.employment_type,
     designation: current.designation,
-    date_of_joining: current.joined_at,
-    date_of_resignation: current.resigned_at,
+    joined_at: current.joined_at,
+    resigned_at: current.resigned_at,
   },
   previous_employments: previous,
 });

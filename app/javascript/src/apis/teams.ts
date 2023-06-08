@@ -14,6 +14,9 @@ const updateAddress = (userId, addrId, payload) =>
 
 const getEmploymentDetails = async id => axios.get(`employments/${id}`);
 
+const updateEmploymentDetails = async (id, payload) =>
+  axios.patch(`employments/${id}`, payload);
+
 const getPreviousEmployments = async id =>
   axios.get(`users/${id}/previous_employments`);
 
@@ -30,6 +33,7 @@ const teamsApi = {
   updateAddress,
   createAddress,
   getEmploymentDetails,
+  updateEmploymentDetails,
   getPreviousEmployments,
   updatePreviousEmployments,
   getPreviousEmploymentDetails,

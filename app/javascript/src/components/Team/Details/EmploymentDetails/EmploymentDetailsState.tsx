@@ -1,16 +1,16 @@
 export const EmploymentDetailsState = {
   current_employment: {
     employee_id: "",
-    email_id: "",
-    employee_type: "",
+    email: "",
+    employment_type: "",
     designation: "",
-    date_of_joining: "",
-    date_of_resignation: "",
+    joined_at: "",
+    resigned_at: "",
   },
   previous_employments: [
     {
-      role: "",
       company_name: "",
+      role: "",
     },
   ],
 };

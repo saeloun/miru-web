@@ -40,7 +40,7 @@ const StaticPage = ({ employmentDetails }) => (
               Email ID (Official)
             </span>
             <p className="text-miru-dark-purple-1000">
-              {employmentDetails.current_employment.email_id}
+              {employmentDetails.current_employment.email}
             </p>
           </div>
           <div className="w-6/12">
@@ -48,7 +48,7 @@ const StaticPage = ({ employmentDetails }) => (
               Employee Type
             </span>
             <p className="text-miru-dark-purple-1000">
-              {employmentDetails.current_employment.employee_type}
+              {employmentDetails.current_employment.employment_type}
             </p>
           </div>
         </div>
@@ -58,7 +58,7 @@ const StaticPage = ({ employmentDetails }) => (
               Date of Joining
             </span>
             <p className="text-miru-dark-purple-1000">
-              {employmentDetails.current_employment.date_of_joining}
+              {employmentDetails.current_employment.joined_at}
             </p>
           </div>
           <div className="w-6/12">
@@ -66,7 +66,7 @@ const StaticPage = ({ employmentDetails }) => (
               Date of Resignation
             </span>
             <p className="text-miru-dark-purple-1000">
-              {employmentDetails.current_employment.date_of_resignation}
+              {employmentDetails.current_employment.resigned_at}
             </p>
           </div>
         </div>
