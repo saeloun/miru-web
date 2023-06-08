@@ -164,6 +164,9 @@ en:
     update:
       success:
         message: Changes saved successfully
+  employment:
+    update:
+      success: Employment updated successfully
   registration:
     sign_up: sign up
     sign_in: sign in
