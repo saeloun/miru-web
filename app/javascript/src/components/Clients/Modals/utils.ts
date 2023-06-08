@@ -7,7 +7,7 @@ export const formatFormData = (
   clientLogoUrl
 ) => {
   formData.append("client[name]", values.name);
-  values.email.forEach(item => formData.append("client[email][]", item));
+  values.emails.forEach(item => formData.append("client[emails][]", item));
   formData.append("client[phone]", values.phone);
 
   if (!isNewForm) {

@@ -39,7 +39,7 @@ RSpec.describe "Edit client", type: :system do
         click_button "Edit"
 
         fill_in "name", with: "test client"
-        fill_in "email", with: "client@test.com"
+        fill_in "to", with: "client@test.com" + "\n"
         fill_in "phone", with: "9123456789"
         select_values_from_select_box
         fill_in "zipcode", with: "123456"
@@ -48,7 +48,7 @@ RSpec.describe "Edit client", type: :system do
         expect(page).to have_content("test client")
 
         expect(client.reload.name).to eq("test client")
-        expect(client.reload.email).to eq("client@test.com")
+        expect(client.reload.emails).to eq(["client@test.com"])
       end
     end
   end
@@ -61,7 +61,7 @@ RSpec.describe "Edit client", type: :system do
         find(:css, ".hoverIcon").hover.click
         find("#kebabMenu").click()
         click_button "Edit"
-        fill_in "email", with: " "
+        fill_in "to", with: " "
         click_button "SAVE CHANGES"
 
         expect(page).to have_content("Invalid email ID")

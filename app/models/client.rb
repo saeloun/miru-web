@@ -44,6 +44,7 @@ class Client < ApplicationRecord
     uniqueness: { scope: :company_id, case_sensitive: false, message: "The client %{value} already exists" }
   validates :phone, length: { maximum: 15 }
   validates :emails, presence: true, length: { maximum: 5, message: "Only 5 emails are allowed." }
+  validates :emails, uniqueness: { scope: :company_id }
   validate :validate_email_format
 
   after_discard :discard_projects
@@ -81,7 +82,7 @@ class Client < ApplicationRecord
     {
       id:,
       name:,
-      email:,
+      emails:,
       phone:,
       logo: logo_url,
       minutes_spent: total_hours_logged(time_frame),

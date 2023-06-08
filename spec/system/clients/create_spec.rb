@@ -48,7 +48,7 @@ RSpec.describe "Create client", type: :system do
           click_button "Add Clients"
           upload_test_image("test-image.png")
           fill_in "name", with: client.name
-          fill_in "email", with: client.email
+          fill_in "to", with: client.email + "\n"
           fill_in "phone", with: client.phone
           fill_in "address1", with: address.address_line_1
           select_values_from_select_box
@@ -83,7 +83,7 @@ RSpec.describe "Create client", type: :system do
 
           click_button "Add Clients"
           fill_in "name", with: client.name
-          fill_in "email", with: existing_client.email
+          fill_in "to", with: existing_client.emails.join("\n") + "\n"
           fill_in "phone", with: client.phone
           fill_in "address1", with: address.address_line_1
           select_values_from_select_box
@@ -91,7 +91,7 @@ RSpec.describe "Create client", type: :system do
           click_button "SAVE CHANGES"
 
           sleep(1)
-          expect(page).to have_content("Email has already been taken")
+          expect(page).to have_content("Emails has already been taken")
         end
       end
 

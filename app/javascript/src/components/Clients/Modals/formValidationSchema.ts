@@ -9,7 +9,7 @@ export const clientSchema = Yup.object().shape({
   name: Yup.string()
     .required("Name cannot be blank")
     .max(30, "Maximum 30 characters are allowed"),
-  email: Yup.array()
+  emails: Yup.array()
     .required("Email ID cannot be blank")
     .max(5, "Maximum 5 emails are allowed"),
   phone: Yup.string()
@@ -45,7 +45,7 @@ const getCountryLabel = countryCode => {
 
 export const getInitialvalues = (client?: any) => ({
   name: client?.name || "",
-  email: client?.email || "",
+  emails: client?.emails || "",
   phone: client?.phone || "",
   address1: client?.address?.address_line_1 || "",
   address2: client?.address?.address_line_2 || "",

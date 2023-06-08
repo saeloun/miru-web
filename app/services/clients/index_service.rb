@@ -40,7 +40,7 @@ module Clients
       def search_clients(search_term, where_clause)
         Client.search(
           search_term,
-          fields: [:name, :email],
+          fields: [:name, :emails],
           match: :text_middle,
           where: where_clause
         )

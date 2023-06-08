@@ -37,7 +37,7 @@ interface IClientForm {
 
 interface FormValues {
   name: string;
-  email: string;
+  emails: string;
   phone: string;
   address1: string;
   address2: string;
@@ -351,7 +351,7 @@ const ClientForm = ({
             <div className="mt-4">
               <div className="field relative">
                 <CustomAdvanceInput
-                  id="email"
+                  id="emails"
                   inputBoxClassName="py-3 h-full"
                   label="Email ID(s)"
                   value={
@@ -380,7 +380,7 @@ const ClientForm = ({
                         onKeyDown={handleInput}
                         onBlur={() => {
                           setFieldValue(
-                            "email",
+                            "emails",
                             emails.length > 0 ? emails : ""
                           );
                         }}
@@ -392,12 +392,12 @@ const ClientForm = ({
                   }
                   onClick={() => input.current.focus()}
                   onBlur={() => {
-                    setFieldValue("email", emails.length > 0 ? emails : "");
+                    setFieldValue("emails", emails.length > 0 ? emails : "");
                   }}
                 />
                 <InputErrors
-                  fieldErrors={errors.email}
-                  fieldTouched={touched.email}
+                  fieldErrors={errors.emails}
+                  fieldTouched={touched.emails}
                 />
               </div>
             </div>
