@@ -2,15 +2,9 @@
 
 class Reports::TimeEntries::PageService < ApplicationService
   include Pagy::Backend
-  # pagy_config skip_empty_pages: true
 
   attr_reader :params, :page, :group_by, :current_company, :pagy_data, :es_filter, :reports
 
-  PER_PAGE = {
-    users: 5,
-    clients: 3,
-    projects: 3
-  }
   DEFAULT_ITEMS_PER_PAGE = 20
 
   def initialize(params, current_company)
