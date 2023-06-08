@@ -5,12 +5,6 @@ class Reports::TimeEntries::ReportService
   attr_reader :params, :current_company, :get_filters
   attr_accessor :reports, :pagination_details
 
-  PER_PAGE = {
-    users: 5,
-    clients: 3,
-    projects: 3
-  }
-
   def initialize(params, current_company, get_filters: false)
     @params = params
     @current_company = current_company
@@ -55,11 +49,10 @@ class Reports::TimeEntries::ReportService
       page_service.process
 
       search_results = search_timesheet_entries(where_clause.merge(page_service.es_filter))
-      hash_name = params[:group_by] == "team_member" ? PER_PAGE[:clients] : PER_PAGE["#{params[:group_by]}s".to_sym]
 
       pagy_data, paginated_data = pagy(
         search_results,
-        items: hash_name,
+        items: Reports::TimeEntries::PageService::DEFAULT_ITEMS_PER_PAGE,
         page: params[:page],
         count: search_results.size
       )

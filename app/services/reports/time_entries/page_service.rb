@@ -5,7 +5,7 @@ class Reports::TimeEntries::PageService < ApplicationService
 
   attr_reader :params, :page, :group_by, :current_company, :pagy_data, :es_filter, :reports
 
-  DEFAULT_ITEMS_PER_PAGE = 20
+  DEFAULT_ITEMS_PER_PAGE = 50
 
   def initialize(params, current_company)
     @params = params
