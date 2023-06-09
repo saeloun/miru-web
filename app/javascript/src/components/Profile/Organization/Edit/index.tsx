@@ -173,7 +173,7 @@ const OrgEdit = () => {
     );
     const StateCode = State.getStatesOfCountry(
       companyDetails.address.country
-    ).filter(state => state.name == companyDetails.address.state)[0].isoCode;
+    ).filter(state => state.name == companyDetails.address.state)[0]?.isoCode;
     const orgAddr = {
       id: companyDetails.address.id,
       addressLine1: companyDetails.address.address_line_1,
@@ -223,7 +223,7 @@ const OrgEdit = () => {
       label: item,
     }));
     setTimezoneOption(timezoneOptionList);
-    addCity(isoCode, StateCode);
+    addCity(isoCode, StateCode ?? companyDetails.address.state);
     setIsLoading(false);
   };
 
@@ -255,15 +255,6 @@ const OrgEdit = () => {
         value: currentCountry.name,
         code: currentCountry.isoCode,
       });
-
-    if (orgDetails.companyAddr.city.label) {
-      setCurrentCityList(
-        City.getCitiesOfState(
-          orgDetails.companyAddr.country.code,
-          orgDetails.companyAddr.state.value
-        ).map(city => ({ label: city.name, value: city.name, ...city }))
-      );
-    }
   }, [orgDetails]);
 
   const handleAddrChange = useCallback(
@@ -360,6 +351,15 @@ const OrgEdit = () => {
     const stateList = updatedStates(orgDetails.companyAddr.country.value);
     setStateList(stateList);
   }, [orgDetails.companyAddr.country]);
+
+  useEffect(() => {
+    setCurrentCityList(
+      City.getCitiesOfState(
+        orgDetails.companyAddr.country.code,
+        orgDetails.companyAddr.state.code ?? orgDetails.companyAddr.state.value
+      ).map(city => ({ label: city.name, value: city.name, ...city }))
+    );
+  }, [orgDetails.companyAddr.state]);
 
   const filterCities = (inputValue: string) => {
     const city = currentCityList.filter(i =>
