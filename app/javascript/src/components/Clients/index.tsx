@@ -158,6 +158,7 @@ const Clients = ({ isAdminUser }) => {
           handleDeleteClick={handleDeleteClick}
           handleEditClick={handleEditClick}
           setShowMoreOptions={setShowMoreOptions}
+          showMoreOptions={showMoreOptions}
         />
       )}
     </>

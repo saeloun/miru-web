@@ -153,7 +153,10 @@ const MobileView = ({ invoice, handleSendInvoice }) => {
             </Button>
           </div>
           {showMoreOptions && (
-            <MobileMoreOptions setVisibilty={setShowMoreOptions}>
+            <MobileMoreOptions
+              setVisibilty={setShowMoreOptions}
+              visibilty={showMoreOptions}
+            >
               {["sent", "overdue", "viewed"].includes(invoice?.status) && (
                 <li
                   className="flex cursor-pointer items-center py-2 px-5 text-sm text-miru-han-purple-1000 hover:bg-miru-gray-100 lg:py-1 xl:py-2"
