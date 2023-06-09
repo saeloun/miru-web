@@ -32,7 +32,7 @@ const TableData = (
       ),
       col2: (
         <div className="flex flex-wrap text-sm font-medium text-miru-dark-purple-1000">
-          {client.emails.map((email, index) => (
+          {client.emails?.map((email, index) => (
             <span className="mr-2" key={index}>
               {index == client.emails.length - 1 ? email : `${email},`}
             </span>

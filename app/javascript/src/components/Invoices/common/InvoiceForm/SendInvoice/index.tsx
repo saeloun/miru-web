@@ -172,7 +172,7 @@ const SendInvoice: React.FC<any> = ({
                   )}
                   onClick={() => input.current.focus()}
                 >
-                  {invoiceEmail.recipients.map(recipient => (
+                  {invoiceEmail.recipients?.map(recipient => (
                     <Recipient
                       email={recipient}
                       handleClick={() => handleRemove(recipient)}
@@ -237,7 +237,7 @@ const SendInvoice: React.FC<any> = ({
                     `mt-6 flex w-full justify-center rounded-md border border-transparent p-3 text-lg font-bold
                     uppercase text-white shadow-sm
                     ${
-                      invoiceEmail?.recipients.length > 0 &&
+                      invoiceEmail?.recipients?.length > 0 &&
                       status !== InvoiceStatus.LOADING
                         ? `focus:outline-none cursor-pointer bg-miru-han-purple-1000 hover:bg-miru-han-purple-600 focus:ring-2
                         focus:ring-miru-han-purple-600 focus:ring-offset-2`
@@ -250,7 +250,7 @@ const SendInvoice: React.FC<any> = ({
                     }
                   )}
                   disabled={
-                    invoiceEmail?.recipients.length <= 0 || isDisabled(status)
+                    invoiceEmail?.recipients?.length <= 0 || isDisabled(status)
                   }
                   onClick={handleSubmit}
                 >
