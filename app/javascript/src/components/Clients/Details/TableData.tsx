@@ -7,7 +7,7 @@ const TableData = (projects, isDesktop) => {
     return projects.map(project => ({
       col1: (
         <div className="text-base capitalize text-miru-dark-purple-1000">
-          apple
+          {project.name}
         </div>
       ),
       col2: (
