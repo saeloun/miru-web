@@ -70,7 +70,7 @@ const Invoices = () => {
   const [selectedInvoiceCounter, setSelectedInvoiceCounter] =
     useState<number>(selectedInvoiceCount);
 
-  const { isDesktop } = useUserContext();
+  const { isDesktop, handleOverlayVisibility } = useUserContext();
 
   useEffect(() => sendGAPageView(), []);
 
@@ -221,6 +221,7 @@ const Invoices = () => {
     <div className="p-4 lg:p-0" id="invoice-list-page">
       <Header
         filterParamsStr={filterParamsStr}
+        handleOverlayVisibility={handleOverlayVisibility}
         isDesktop={isDesktop}
         params={params}
         setIsFilterVisible={setIsFilterVisible}

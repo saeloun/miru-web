@@ -16,7 +16,7 @@ const SearchDropdown = ({ list = [], status, display }) => {
   }
 
   return (
-    <section className="absolute top-10.05 w-full rounded-lg bg-miru-white-1000 px-4 shadow drop-shadow-md">
+    <section className="absolute top-10.05 z-max w-full rounded-lg bg-miru-white-1000 px-4 shadow drop-shadow-md">
       {list.map(invoice => (
         <SearchedDataRow invoice={invoice} key={invoice.id} />
       ))}

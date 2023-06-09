@@ -249,6 +249,8 @@ module.exports = {
         "negative-1": "-1",
         1: "1",
         15: "15",
+        60: "60",
+        max: "100",
       },
       transformOrigin: {
         0: "0%",
