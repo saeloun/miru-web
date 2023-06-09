@@ -12,6 +12,6 @@ class InternalApi::V1::Invoices::ViewController < InternalApi::V1::ApplicationCo
   end
 
   def invoice
-    @_invoice ||= Invoice.includes(:client, :invoice_line_items).find_by!(external_view_key: params[:id])
+    @_invoice ||= Invoice.kept.includes(:client, :invoice_line_items).find_by!(external_view_key: params[:id])
   end
 end
