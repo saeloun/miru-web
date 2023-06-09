@@ -29,8 +29,8 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
       let(:client_details) do
         user.current_workspace.clients.kept.map do |client|
           {
-            id: client.id, name: client.name, email: client.email, phone: client.phone, address: client.current_address,
-            minutes_spent: client.total_hours_logged(time_frame), logo: ""
+            id: client.id, name: client.name, emails: client.emails, phone: client.phone,
+            address: client.current_address, minutes_spent: client.total_hours_logged(time_frame), logo: ""
           }
         end
       end
@@ -60,13 +60,13 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
 
       it "finds specific client by name" do
         client_details = [{
-          id: client_1.id, name: client_1.name, email: client_1.email, phone: client_1.phone,
+          id: client_1.id, name: client_1.name, emails: client_1.emails, phone: client_1.phone,
           address: client_1.current_address, minutes_spent: client_1.total_hours_logged(time_frame), logo: ""
         }, {
-          id: client_2.id, name: client_2.name, email: client_2.email, phone: client_2.phone,
+          id: client_2.id, name: client_2.name, emails: client_2.emails, phone: client_2.phone,
           address: client_2.current_address, minutes_spent: client_2.total_hours_logged(time_frame), logo: ""
         }, {
-          id: client_3.id, name: client_3.name, email: client_3.email, phone: client_3.phone,
+          id: client_3.id, name: client_3.name, emails: client_3.emails, phone: client_3.phone,
           address: client_3.current_address, minutes_spent: client_3.total_hours_logged(time_frame), logo: ""
         }]
         send_request :get, internal_api_v1_clients_path, params: { q: client_1.name }, headers: auth_headers(user)
@@ -78,15 +78,15 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
     it "returns all the clients when query params are empty" do
       client_details = [
         {
-          id: client_1.id, name: client_1.name, email: client_1.email, phone: client_1.phone,
+          id: client_1.id, name: client_1.name, emails: client_1.emails, phone: client_1.phone,
           address: client_1.current_address, minutes_spent: client_1.total_hours_logged(time_frame), logo: ""
         },
         {
-          id: client_2.id, name: client_2.name, email: client_2.email, phone: client_2.phone,
+          id: client_2.id, name: client_2.name, emails: client_2.emails, phone: client_2.phone,
           address: client_2.current_address, minutes_spent: client_2.total_hours_logged(time_frame), logo: ""
         },
         {
-          id: client_3.id, name: client_3.name, email: client_3.email, phone: client_3.phone,
+          id: client_3.id, name: client_3.name, emails: client_3.emails, phone: client_3.phone,
           address: client_3.current_address, minutes_spent: client_3.total_hours_logged(time_frame), logo: ""
         }
       ]
@@ -114,8 +114,8 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
       it "returns the total hours logged for a Company in the last_week" do
         client_details = user.current_workspace.clients.kept.map do |client|
           {
-            id: client.id, name: client.name, email: client.email, phone: client.phone, address: client.current_address,
-            minutes_spent: client.total_hours_logged(time_frame), logo: ""
+            id: client.id, name: client.name, emails: client.emails, phone: client.phone,
+            address: client.current_address, minutes_spent: client.total_hours_logged(time_frame), logo: ""
           }
         end
         total_minutes = (client_details.map { |client| client[:minutes_spent] }).sum

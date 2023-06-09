@@ -118,7 +118,7 @@ RSpec.describe Invoice, type: :model do
   end
 
   describe ".client_email" do
-    it { is_expected.to delegate_method(:email).to(:client).with_prefix(:client) }
+    it { is_expected.to delegate_method(:emails).to(:client).with_prefix(:client) }
   end
 
   describe ".send_to_email" do
