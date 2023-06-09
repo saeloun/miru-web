@@ -21,10 +21,7 @@ const getPreviousEmployments = async id =>
   axios.get(`users/${id}/previous_employments`);
 
 const updatePreviousEmployments = async (id, payload) =>
-  axios.post(`users/${id}/previous_employments`, payload);
-
-const getPreviousEmploymentDetails = async (userId, id) =>
-  axios.get(`users/${userId}/previous_employments/${id}`);
+  axios.put(`bulk_previous_employments/${id}`, payload);
 
 const teamsApi = {
   get,
@@ -36,7 +33,6 @@ const teamsApi = {
   updateEmploymentDetails,
   getPreviousEmployments,
   updatePreviousEmployments,
-  getPreviousEmploymentDetails,
 };
 
 export default teamsApi;

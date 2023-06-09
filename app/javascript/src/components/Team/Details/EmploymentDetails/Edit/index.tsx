@@ -43,6 +43,12 @@ const EmploymentDetails = () => {
   const DOJRef = useRef(null);
   const DORRef = useRef(null);
 
+  const InitialPrevEmployments = {
+    added_employments: [],
+    updated_employments: [],
+    removed_employment_ids: [],
+  };
+
   const [previousEmployments, setPreviousEmployments] = useState([]);
   const [employeeType, setEmployeeType] = useState({ label: "", value: "" });
   const [showDOJDatePicker, setShowDOJDatePicker] = useState({
@@ -63,11 +69,11 @@ const EmploymentDetails = () => {
   ];
 
   const getDetails = async () => {
-    const res1: any = await teamsApi.getEmploymentDetails(memberId);
-    const res: any = await teamsApi.getPreviousEmployments(memberId);
+    const curr: any = await teamsApi.getEmploymentDetails(memberId);
+    const prev: any = await teamsApi.getPreviousEmployments(memberId);
     const employmentData = employmentMapper(
-      res1.data.employment,
-      res.data.previous_employments
+      curr.data.employment,
+      prev.data.previous_employments
     );
     if (employmentData.current_employment?.employment_type?.length > 0) {
       setEmployeeType(
@@ -76,6 +82,8 @@ const EmploymentDetails = () => {
             item.value === employmentData.current_employment.employment_type
         )
       );
+    } else {
+      setEmployeeType(employeeTypes[0]);
     }
     updateDetails("employment", employmentData);
     if (employmentData.previous_employments?.length > 0) {
@@ -124,13 +132,6 @@ const EmploymentDetails = () => {
     setPreviousEmployments(updatedPreviousEmployments);
   };
 
-  const updatePreviousEmploymentDetails = () => {
-    updateDetails("employment", {
-      ...employmentDetails,
-      previous_employments: previousEmployments,
-    });
-  };
-
   const handleDOJDatePicker = date => {
     setShowDOJDatePicker({ visibility: !showDOJDatePicker.visibility });
     updateDetails("employment", {
@@ -166,26 +167,57 @@ const EmploymentDetails = () => {
   };
 
   const handleDeletePreviousEmployment = previous => {
-    const tempPreviousEmployments = previousEmployments;
-    const itemIndex = tempPreviousEmployments.indexOf(previous);
-    if (itemIndex > -1) {
-      tempPreviousEmployments.splice(itemIndex, 1);
-    }
-    setPreviousEmployments(tempPreviousEmployments);
+    setPreviousEmployments(
+      previousEmployments.filter(prev => prev !== previous)
+    );
   };
 
   const handleUpdateDetails = async () => {
+    setIsLoading(true);
+    const getDifference = (array1, array2) =>
+      array1.filter(object1 => !array2.some(object2 => object1 === object2));
+
+    const removed = employmentDetails.previous_employments.filter(
+      e => !previousEmployments.includes(e)
+    );
+
+    const unSortedEmployments = getDifference(
+      previousEmployments,
+      employmentDetails.previous_employments
+    );
+    const pastEmployments = InitialPrevEmployments;
+    unSortedEmployments.map(unSorted => {
+      if (unSorted.id) {
+        pastEmployments.updated_employments.push(unSorted);
+      } else {
+        pastEmployments.added_employments.push(unSorted);
+      }
+    });
+    if (removed.length > 0) {
+      removed.map(remove => {
+        pastEmployments.updated_employments.filter(updated => {
+          if (updated.id !== remove.id) {
+            pastEmployments.removed_employment_ids.push(remove?.id);
+          }
+        });
+      });
+    }
+    updateEmploymentDetails(pastEmployments);
+  };
+
+  const updateEmploymentDetails = async updatedPreviousEmployments => {
     try {
       await schema.validate(employmentDetails, { abortEarly: false });
-      updatePreviousEmploymentDetails();
       await teamsApi.updateEmploymentDetails(
         memberId,
         employmentDetails.current_employment
       );
 
       await teamsApi.updatePreviousEmployments(memberId, {
-        previous_employment: previousEmployments,
+        employments: updatedPreviousEmployments,
       });
+      setIsLoading(false);
+      navigate(`/team/${memberId}/employment`, { replace: true });
     } catch (err) {
       setIsLoading(false);
       const errObj = initialErrState;

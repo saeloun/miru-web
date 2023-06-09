@@ -144,6 +144,12 @@ const StaticPage = ({
               options={employeeTypes}
               value={employeeType.value ? employeeType : employeeTypes[0]}
             />
+            {errDetails.employment_err && (
+              <ErrorSpan
+                className="text-xs text-red-600"
+                message={errDetails.employment_err}
+              />
+            )}
           </div>
         </div>
         <div className="flex flex-row py-3">
@@ -175,12 +181,13 @@ const StaticPage = ({
             </div>
             {showDOJDatePicker.visibility && (
               <CustomDatePicker
-                dateFormat="DD-MM-YYYY"
-                handleChange={e => handleDOJDatePicker(e, true)}
                 date={
                   employmentDetails.current_employment.joined_at
                     ? employmentDetails.current_employment.joined_at
                     : dayjs()
+                }
+                handleChange={e =>
+                  handleDOJDatePicker(dayjs(e).format("DD-MM-YYYY"), true)
                 }
               />
             )}
@@ -213,12 +220,13 @@ const StaticPage = ({
             </div>
             {showDORDatePicker.visibility && (
               <CustomDatePicker
-                dateFormat="DD-MM-YYYY"
-                handleChange={e => handleDORDatePicker(e, true)}
                 date={
                   employmentDetails.current_employment.resigned_at
                     ? employmentDetails.current_employment.resigned_at
                     : dayjs()
+                }
+                handleChange={e =>
+                  handleDORDatePicker(dayjs(e).format("DD-MM-YYYY"), true)
                 }
               />
             )}

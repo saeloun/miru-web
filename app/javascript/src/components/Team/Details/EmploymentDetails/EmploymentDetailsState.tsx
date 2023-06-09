@@ -11,6 +11,7 @@ export const EmploymentDetailsState = {
     {
       company_name: "",
       role: "",
+      id: "",
     },
   ],
 };
