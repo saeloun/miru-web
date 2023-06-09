@@ -75,7 +75,7 @@ RSpec.describe "Create company", type: :system do
           fill_in "zipcode", with: address.pin
           click_button "Next", disabled: true
 
-          expect(page).to have_content("Company name can not be blank")
+          expect(page).to have_content("Company name cannot be blank")
         end
       end
 

@@ -13,9 +13,9 @@ const PlanDetails = () => {
 
   const membersCountSchema = Yup.object().shape({
     membersCount: Yup.number()
-      .moreThan(0, "Team members can not be 0")
+      .moreThan(0, "Team members cannot be 0")
       .typeError("Enter valid data")
-      .required("Field can not be empty"),
+      .required("Field cannot be empty"),
   });
 
   const handleCountChange = value => {
