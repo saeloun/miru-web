@@ -11,8 +11,8 @@ RSpec.describe "User Signup", type: :system do
       with_forgery_protection do
         visit "/signup"
 
-        fill_in "firstName", with: user.first_name
-        fill_in "lastName", with: user.last_name
+        fill_in "first_name", with: user.first_name
+        fill_in "last_name", with: user.last_name
         fill_in "email", with: user.email
         fill_in "password", with: user.password
         fill_in "confirm_password", with: user.password
@@ -29,8 +29,8 @@ RSpec.describe "User Signup", type: :system do
       with_forgery_protection do
         visit "/signup"
 
-        fill_in "firstName", with: user.first_name
-        fill_in "lastName", with: user.last_name
+        fill_in "first_name", with: user.first_name
+        fill_in "last_name", with: user.last_name
         fill_in "email", with: user.email
         fill_in "password", with: "wohXyq-cusgoz-fexde0"
         fill_in "confirm_password", with: "wohXyq-cusgoz-fexde0"
@@ -47,8 +47,8 @@ RSpec.describe "User Signup", type: :system do
       with_forgery_protection do
         visit "/signup"
 
-        fill_in "firstName", with: user.first_name
-        fill_in "lastName", with: user.last_name
+        fill_in "first_name", with: user.first_name
+        fill_in "last_name", with: user.last_name
         fill_in "email", with: user.email
         fill_in "password", with: "My password with spaces@2023"
         fill_in "confirm_password", with: "My password with spaces@2023"
@@ -65,8 +65,8 @@ RSpec.describe "User Signup", type: :system do
       with_forgery_protection do
         visit "/signup"
 
-        fill_in "firstName", with: user.first_name
-        fill_in "lastName", with: user.last_name
+        fill_in "first_name", with: user.first_name
+        fill_in "last_name", with: user.last_name
         fill_in "email", with: user.email
         fill_in "password", with: user.password
         fill_in "confirm_password", with: user.password
@@ -92,8 +92,8 @@ RSpec.describe "User Signup", type: :system do
       with_forgery_protection do
         visit "/signup"
 
-        fill_in "firstName", with: user.first_name
-        fill_in "lastName", with: user.last_name
+        fill_in "first_name", with: user.first_name
+        fill_in "last_name", with: user.last_name
         fill_in "email", with: existing_user.email
         fill_in "password", with: user.password
         fill_in "confirm_password", with: user.password
@@ -111,8 +111,8 @@ RSpec.describe "User Signup", type: :system do
       with_forgery_protection do
         visit "/signup"
 
-        fill_in "firstName", with: user.first_name
-        fill_in "lastName", with: user.last_name
+        fill_in "first_name", with: user.first_name
+        fill_in "last_name", with: user.last_name
         fill_in "email", with: existing_user.email
         fill_in "password", with: "Pass@1"
         fill_in "confirm_password", with: "Pass@1"
@@ -128,8 +128,8 @@ RSpec.describe "User Signup", type: :system do
       with_forgery_protection do
         visit "/signup"
 
-        fill_in "firstName", with: user.first_name
-        fill_in "lastName", with: user.last_name
+        fill_in "first_name", with: user.first_name
+        fill_in "last_name", with: user.last_name
         fill_in "email", with: existing_user.email
         fill_in "password", with: "password@2023"
         fill_in "confirm_password", with: "password@2023"
@@ -145,8 +145,8 @@ RSpec.describe "User Signup", type: :system do
       with_forgery_protection do
         visit "/signup"
 
-        fill_in "firstName", with: user.first_name
-        fill_in "lastName", with: user.last_name
+        fill_in "first_name", with: user.first_name
+        fill_in "last_name", with: user.last_name
         fill_in "email", with: existing_user.email
         fill_in "password", with: "PASSWORD@2023"
         fill_in "confirm_password", with: "PASSWORD@2023"
@@ -162,8 +162,8 @@ RSpec.describe "User Signup", type: :system do
       with_forgery_protection do
         visit "/signup"
 
-        fill_in "firstName", with: user.first_name
-        fill_in "lastName", with: user.last_name
+        fill_in "first_name", with: user.first_name
+        fill_in "last_name", with: user.last_name
         fill_in "email", with: existing_user.email
         fill_in "password", with: "@Password"
         fill_in "confirm_password", with: "@Password"
@@ -179,8 +179,8 @@ RSpec.describe "User Signup", type: :system do
       with_forgery_protection do
         visit "/signup"
 
-        fill_in "firstName", with: user.first_name
-        fill_in "lastName", with: user.last_name
+        fill_in "first_name", with: user.first_name
+        fill_in "last_name", with: user.last_name
         fill_in "email", with: existing_user.email
         fill_in "password", with: "Password2023"
         fill_in "confirm_password", with: "Password2023"
@@ -196,8 +196,8 @@ RSpec.describe "User Signup", type: :system do
       with_forgery_protection do
         visit "/signup"
 
-        fill_in "firstName", with: user.first_name
-        fill_in "lastName", with: user.last_name
+        fill_in "first_name", with: user.first_name
+        fill_in "last_name", with: user.last_name
         fill_in "email", with: existing_user.email
         fill_in "password", with: "Password 2023"
         fill_in "confirm_password", with: "Password 2023"
@@ -213,8 +213,8 @@ RSpec.describe "User Signup", type: :system do
       with_forgery_protection do
         visit "/signup"
 
-        fill_in "firstName", with: user.first_name
-        fill_in "lastName", with: user.last_name
+        fill_in "first_name", with: user.first_name
+        fill_in "last_name", with: user.last_name
         fill_in "email", with: existing_user.email
         fill_in "password", with: " Password@2023"
         fill_in "confirm_password", with: " Password@2023"
@@ -230,8 +230,8 @@ RSpec.describe "User Signup", type: :system do
       with_forgery_protection do
         visit "/signup"
 
-        fill_in "firstName", with: user.first_name
-        fill_in "lastName", with: user.last_name
+        fill_in "first_name", with: user.first_name
+        fill_in "last_name", with: user.last_name
         fill_in "email", with: existing_user.email
         fill_in "password", with: "Password@2023 "
         fill_in "confirm_password", with: "Password@2023 "
@@ -247,8 +247,8 @@ RSpec.describe "User Signup", type: :system do
       with_forgery_protection do
         visit "/signup"
 
-        fill_in "firstName", with: user.first_name
-        fill_in "lastName", with: user.last_name
+        fill_in "first_name", with: user.first_name
+        fill_in "last_name", with: user.last_name
         fill_in "email", with: existing_user.email
         fill_in "password", with: "Welcome@123"
         fill_in "confirm_password", with: "HelloWorld@123"
