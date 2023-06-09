@@ -62,9 +62,7 @@ RSpec.describe "Edit client", type: :system do
         find("#kebabMenu").click()
         click_button "Edit"
         fill_in "to", with: " "
-        click_button "SAVE CHANGES"
-
-        expect(page).to have_content("Invalid email ID")
+        click_button "SAVE CHANGES", disabled: true
       end
     end
   end

@@ -15,6 +15,7 @@ const Header = ({
   invoiceNumber = null,
   id = null,
   deleteInvoice = null,
+  wavieInvoice = null,
   showMoreButton = false,
 }) => {
   const [isMoreOptionsVisible, setIsMoreOptionsVisible] =
@@ -77,6 +78,7 @@ const Header = ({
                 downloadInvoice={null}
                 invoice={undefined}
                 markInvoiceAsPaid={() => null}
+                wavieInvoice={wavieInvoice}
               />
             )}
           </div>

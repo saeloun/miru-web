@@ -4,11 +4,10 @@ import React, { useEffect, useState, useRef } from "react";
 import cn from "classnames";
 import { Country, State, City } from "country-state-city";
 import { Formik, Form, FormikProps } from "formik";
-import { EditImageButtonSVG, deleteImageIcon, XIcon } from "miruIcons";
+import { XIcon } from "miruIcons";
 import PhoneInput from "react-phone-number-input";
 import flags from "react-phone-number-input/flags";
-import "react-phone-number-input/style.css"; //eslint-disable-line
-import { Avatar, Toastr } from "StyledComponents";
+import { Button, Toastr } from "StyledComponents";
 
 import clientApi from "apis/clients";
 import { CustomAdvanceInput } from "common/CustomAdvanceInput";
@@ -17,38 +16,11 @@ import { InputErrors, InputField } from "common/FormikFields";
 import { isEmailValid } from "components/Invoices/common/InvoiceForm/SendInvoice/utils";
 
 import { clientSchema, getInitialvalues } from "./formValidationSchema";
-import { formatFormData } from "./utils";
-
-import { i18n } from "../../../i18n";
-
-interface IClientForm {
-  clientLogoUrl: string;
-  handleDeleteLogo: any;
-  setClientLogoUrl: any;
-  setClientLogo: any;
-  formType?: string;
-  clientData?: any;
-  setClientData?: any;
-  setnewClient?: any;
-  clientLogo?: any;
-  setApiError?: any;
-  setShowEditDialog?: any;
-}
-
-interface FormValues {
-  name: string;
-  emails: string;
-  phone: string;
-  address1: string;
-  address2: string;
-  country: any;
-  state: any;
-  city: any;
-  zipcode: string;
-  logo: any;
-}
+import UploadLogo from "./UploadLogo";
+import { disableBtn, formatFormData } from "./utils";
 
 const ClientForm = ({
+  client,
   clientLogoUrl,
   handleDeleteLogo,
   setClientLogoUrl,
@@ -58,12 +30,14 @@ const ClientForm = ({
   setClientData,
   setnewClient,
   clientLogo,
-  setApiError,
   setShowEditDialog,
+  submitting,
+  setSubmitting,
+  fetchDetails,
 }: IClientForm) => {
   const [fileUploadError, setFileUploadError] = useState<string>("");
   const [countries, setCountries] = useState([]);
-  const [emails, setEmails] = useState(clientData.email || []);
+  const [emails, setEmails] = useState(clientData?.emails || []);
   const [newRecipient, setNewRecipient] = useState<string>("");
   const [width, setWidth] = useState<string>("10ch");
   const input: React.RefObject<HTMLInputElement> = useRef();
@@ -114,46 +88,15 @@ const ClientForm = ({
     return cities;
   };
 
-  const onLogoChange = e => {
-    const file = e.target.files[0];
-    const isValid = isValidFileUploaded(file);
-
-    if (isValid.fileExtension && isValid.fileSizeValid) {
-      setClientLogoUrl(URL.createObjectURL(file));
-      setClientLogo(file);
-    } else {
-      if (!isValid.fileExtension && !isValid.fileSizeValid) {
-        setFileUploadError(
-          i18n.t("invalidImageFormatSize", { fileSize: "30" })
-        );
-      } else if (isValid.fileExtension && !isValid.fileSizeValid) {
-        setFileUploadError(i18n.t("invalidImageSize", { fileSize: "30" }));
-      } else {
-        setFileUploadError(i18n.t("invalidImageFormat"));
-      }
-    }
-  };
-
-  const isValidFileUploaded = file => {
-    const validExtensions = ["png", "jpeg", "jpg"];
-    const fileExtensions = file.type.split("/")[1];
-    const validFileByteSize = "30000";
-    const fileSize = file.size;
-
-    return {
-      fileExtension: validExtensions.includes(fileExtensions),
-      fileSizeValid: fileSize <= validFileByteSize,
-    };
-  };
-
   const handleSubmit = async values => {
+    setSubmitting(true);
     const formData = new FormData();
 
     formatFormData(
       formData,
       values,
       formType === "new",
-      clientData,
+      client,
       clientLogo,
       clientLogoUrl
     );
@@ -163,19 +106,17 @@ const ClientForm = ({
         setClientData([...clientData, { ...res.data, minutes: 0 }]);
         setnewClient(false);
         Toastr.success("Client added successfully");
-      } catch (error) {
-        setApiError(error.message);
+      } catch {
+        setSubmitting(false);
       }
     } else {
-      await clientApi
-        .update(clientData.id, formData)
-        .then(() => {
-          setShowEditDialog(false);
-          window.location.reload();
-        })
-        .catch(e => {
-          setApiError(e.message);
-        });
+      try {
+        await clientApi.update(client.id, formData);
+        setShowEditDialog(false);
+        fetchDetails();
+      } catch {
+        setSubmitting(false);
+      }
     }
   };
 
@@ -216,72 +157,10 @@ const ClientForm = ({
     </div>
   );
 
-  const LogoComponent = () => (
-    <div className="my-4 flex flex-row">
-      <div className="mt-2 h-30 w-30 border border-dashed border-miru-dark-purple-400">
-        <div className="profile-img relative m-auto h-30 w-30 cursor-pointer text-center text-xs font-semibold">
-          <Avatar
-            classNameImg="h-full w-full md:h-full md:w-full"
-            url={clientLogoUrl}
-          />
-          <div className="hover-edit absolute top-0 left-0 h-full w-full bg-miru-white-1000 p-4 opacity-80">
-            <button
-              className="flex flex-row text-miru-han-purple-1000"
-              type="button"
-            >
-              <label className="flex cursor-pointer" htmlFor="file_input">
-                <img
-                  alt="edit"
-                  className="cursor-pointer rounded-full"
-                  src={EditImageButtonSVG}
-                  style={{ minWidth: "40px" }}
-                />
-                <p className="my-auto">Edit</p>
-              </label>
-              <input
-                className="hidden"
-                id="file_input"
-                name="logo"
-                type="file"
-                onChange={onLogoChange}
-              />
-            </button>
-            {clientLogoUrl && (
-              <button
-                className="flex flex-row pl-2 text-miru-red-400"
-                type="button"
-                onClick={handleDeleteLogo}
-              >
-                <img
-                  alt="delete"
-                  src={deleteImageIcon}
-                  style={{ minWidth: "20px" }}
-                />
-                <p className="pl-3">Delete</p>
-              </button>
-            )}
-          </div>
-        </div>
-      </div>
-      <div className="my-auto ml-6 text-xs font-normal text-miru-dark-purple-400">
-        <p>Accepted file formats: PNG and JPG.</p>
-        <p>File size should be &#8826; 30 KB.</p>
-        <p>Image resolution should be 1:1.</p>
-      </div>
-      <input
-        className="hidden"
-        id="file_input"
-        name="logo"
-        type="file"
-        onClick={onLogoChange}
-      />
-    </div>
-  );
-
   return (
     <Formik
       validateOnBlur
-      initialValues={getInitialvalues(clientData)}
+      initialValues={getInitialvalues(client)}
       validationSchema={clientSchema}
       onSubmit={handleSubmit}
     >
@@ -294,38 +173,14 @@ const ClientForm = ({
               <div className="my-4">
                 <div className="field">
                   <div className="mt-1">
-                    {formType == "edit" ? (
-                      <LogoComponent />
-                    ) : clientLogoUrl ? (
-                      <LogoComponent />
-                    ) : (
-                      <div className="mt-2 flex flex-row">
-                        <div className="mt-2 h-30 w-30 border border-dashed border-miru-dark-purple-400 ">
-                          <label
-                            className="flex h-full w-full cursor-pointer justify-center"
-                            htmlFor="file-input"
-                          >
-                            <div className="m-auto cursor-pointer text-center text-xs font-semibold">
-                              <p className="text-miru-han-purple-1000">
-                                Select File
-                              </p>
-                            </div>
-                          </label>
-                          <input
-                            className="hidden"
-                            id="file-input"
-                            name="logo"
-                            type="file"
-                            onChange={onLogoChange}
-                          />
-                        </div>
-                        <div className="my-auto ml-6 text-xs font-normal text-miru-dark-purple-400">
-                          <p>Accepted file formats: PNG and JPG.</p>
-                          <p>File size should be &#8826; 30 KB.</p>
-                          <p>Image resolution should be 1:1.</p>
-                        </div>
-                      </div>
-                    )}
+                    <UploadLogo
+                      clientLogoUrl={clientLogoUrl}
+                      formType={formType}
+                      handleDeleteLogo={handleDeleteLogo}
+                      setClientLogo={setClientLogo}
+                      setClientLogoUrl={setClientLogoUrl}
+                      setFileUploadError={setFileUploadError}
+                    />
                     <p className="mt-3 block max-w-xs text-center text-xs tracking-wider text-red-600">
                       {fileUploadError}
                     </p>
@@ -411,7 +266,7 @@ const ClientForm = ({
                       id="phone"
                       inputClassName="form__input block w-full appearance-none bg-white border-0 focus:border-0 px-0 text-base border-transparent focus:border-transparent focus:ring-0 border-miru-gray-1000 w-full border-bottom-none "
                       name="phone"
-                      value={clientData.phone}
+                      value={formType == "edit" ? client.phone : ""}
                       onChange={phone => {
                         setFieldValue("phone", phone);
                       }}
@@ -525,12 +380,18 @@ const ClientForm = ({
               </div>
             </div>
             <div className="actions mt-4">
-              <input
-                className="form__input_submit"
-                name="commit"
+              <Button
+                className="w-full p-2 text-center text-base font-bold"
+                disabled={disableBtn(values, errors, submitting)}
+                style="primary"
                 type="submit"
-                value="SAVE CHANGES"
-              />
+                onClick={() => {
+                  handleSubmit(values);
+                  setSubmitting(true);
+                }}
+              >
+                SAVE CHANGES
+              </Button>
             </div>
           </Form>
         );
@@ -538,5 +399,35 @@ const ClientForm = ({
     </Formik>
   );
 };
+
+interface IClientForm {
+  client?: any;
+  clientLogoUrl: string;
+  handleDeleteLogo: any;
+  setClientLogoUrl: any;
+  setClientLogo: any;
+  formType?: string;
+  clientData?: any;
+  setClientData?: any;
+  setnewClient?: any;
+  clientLogo?: any;
+  setShowEditDialog?: any;
+  submitting: boolean;
+  setSubmitting: any;
+  fetchDetails?: any;
+}
+
+interface FormValues {
+  name: string;
+  emails: string;
+  phone: string;
+  address1: string;
+  address2: string;
+  country: any;
+  state: any;
+  city: any;
+  zipcode: string;
+  logo: any;
+}
 
 export default ClientForm;

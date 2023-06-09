@@ -8,6 +8,7 @@ import { useUserContext } from "context/UserContext";
 import { unmapPayment } from "mapper/mappedIndex";
 
 import Header from "./Header";
+import AddManualEntryScreen from "./Mobile/AddManualEntryScreen";
 import TableOnMobileView from "./Mobile/Table";
 import AddManualEntry from "./Modals/AddManualEntry";
 import { PaymentsEmptyState } from "./PaymentsEmptyState";
@@ -113,7 +114,7 @@ const Payments = () => {
           </div>
         </>
       )}
-      {showManualEntryModal && (
+      {showManualEntryModal && isDesktop && (
         <AddManualEntry
           baseCurrency={baseCurrency}
           dateFormat={dateFormat}
@@ -131,14 +132,13 @@ const Payments = () => {
 
   if (showManualEntryModal && !isDesktop) {
     return (
-      <AddManualEntry
+      <AddManualEntryScreen
         baseCurrency={baseCurrency}
         dateFormat={dateFormat}
         fetchInvoiceList={fetchInvoiceList}
         fetchPaymentList={fetchPaymentList}
         invoiceList={invoiceList}
         setShowManualEntryModal={setShowManualEntryModal}
-        showManualEntryModal={showManualEntryModal}
       />
     );
   }

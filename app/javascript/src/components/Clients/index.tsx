@@ -20,7 +20,7 @@ const Clients = ({ isAdminUser }) => {
   const [clientId, setClientId] = useState("");
   const [showEditDialog, setShowEditDialog] = useState<boolean>(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
-  const [showMoreOptions, setShowMoreOptions] = React.useState<boolean>(false);
+  const [showMoreOptions, setShowMoreOptions] = useState<boolean>(false);
   const [isClient, setIsClient] = useState<boolean>(false);
   const [clientToEdit, setClientToEdit] = useState({});
   const [clientToDelete, setClientToDelete] = useState({});
@@ -49,7 +49,7 @@ const Clients = ({ isAdminUser }) => {
     setClientToDelete(editSelection);
   };
 
-  const fetchClientDetails = async val => {
+  const fetchClientDetails = async (val = "week") => {
     const res = await clientApi.get(`?time_frame=${val}`);
     const sanitized = unmapClientList(res);
     setClientData(sanitized.clientList);
@@ -72,7 +72,7 @@ const Clients = ({ isAdminUser }) => {
 
   useEffect(() => {
     sendGAPageView();
-    fetchClientDetails("week");
+    fetchClientDetails();
 
     const close = e => {
       if (e.keyCode === 27) {
@@ -83,7 +83,7 @@ const Clients = ({ isAdminUser }) => {
   }, []);
 
   useEffect(() => {
-    fetchClientDetails("week");
+    fetchClientDetails();
   }, [isClient]);
 
   if (loading) {
@@ -127,6 +127,7 @@ const Clients = ({ isAdminUser }) => {
       {showEditDialog && (
         <EditClient
           client={clientToEdit}
+          fetchDetails={fetchClientDetails}
           setShowEditDialog={setShowEditDialog}
           showEditDialog={showEditDialog}
         />
@@ -157,6 +158,7 @@ const Clients = ({ isAdminUser }) => {
           handleDeleteClick={handleDeleteClick}
           handleEditClick={handleEditClick}
           setShowMoreOptions={setShowMoreOptions}
+          showMoreOptions={showMoreOptions}
         />
       )}
     </>

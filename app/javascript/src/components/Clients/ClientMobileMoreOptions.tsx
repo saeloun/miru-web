@@ -8,8 +8,12 @@ const ClientMobileMoreOptions = ({
   setShowMoreOptions,
   handleEditClick,
   handleDeleteClick,
+  showMoreOptions,
 }) => (
-  <MobileMoreOptions setVisibilty={setShowMoreOptions}>
+  <MobileMoreOptions
+    setVisibilty={setShowMoreOptions}
+    visibilty={showMoreOptions}
+  >
     <li
       className="flex items-center px-2 pt-3 text-sm leading-5 text-miru-han-purple-1000"
       onClick={() => {

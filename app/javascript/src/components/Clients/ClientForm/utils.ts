@@ -50,3 +50,34 @@ export const formatFormData = (
 
   return formData;
 };
+
+export const disableBtn = (values, errors, submitting) => {
+  if (
+    errors.name ||
+    errors.emails ||
+    errors.phone ||
+    errors.address1 ||
+    errors.country ||
+    errors.state ||
+    errors.city ||
+    errors.zipcode ||
+    submitting
+  ) {
+    return true;
+  }
+
+  if (
+    values.name &&
+    values.emails &&
+    values.phone &&
+    values.address1 &&
+    values.country &&
+    values.state &&
+    values.city &&
+    values.zipcode
+  ) {
+    return false;
+  }
+
+  return true;
+};
