@@ -63,7 +63,7 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
       invoice.sending! unless invoice.paid? || invoice.overdue?
       invoice.send_to_email(
         subject: invoice_email_params[:subject],
-        message: invoice_email_params[:message],git 
+        message: invoice_email_params[:message],
         recipients: invoice_email_params[:recipients]
       )
 
