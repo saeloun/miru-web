@@ -47,6 +47,12 @@
 class User < ApplicationRecord
   include Discard::Model
 
+  class SpamUserSignup < StandardError
+    def initialize(msg = "Spam User Login")
+      super
+    end
+  end
+
   # Associations
   has_many :employments, dependent: :destroy
   has_many :companies, through: :employments
@@ -89,8 +95,15 @@ class User < ApplicationRecord
     :omniauthable, omniauth_providers: [:google_oauth2]
 
   # Callbacks
+  before_validation :prevent_spam_user_sign_up
   after_discard :discard_project_members
   before_create :set_token
+
+  def prevent_spam_user_sign_up
+    if self.email.include?("internetkeno")
+      raise SpamUserSignup.new("#{self.email} Spam User Signup")
+    end
+  end
 
   def primary_role(company)
     roles = self.roles.where(resource: company)
