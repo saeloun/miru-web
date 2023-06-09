@@ -11,7 +11,7 @@ json.array! invoices do |invoice|
     json.amount invoice.amount
     json.client do
       json.name invoice.client_name
-      json.email invoice.client_email
+      json.emails invoice.client_emails
       json.logo invoice.client_logo_url
     end
     json.company do

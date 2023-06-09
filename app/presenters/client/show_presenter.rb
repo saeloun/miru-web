@@ -11,7 +11,7 @@ class Client::ShowPresenter
     {
       id: client.id,
       name: client.name,
-      email: client.email,
+      emails: client.emails,
       address: client.current_address,
       phone: client.phone,
       logo: client.logo_url
