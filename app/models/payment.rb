@@ -6,6 +6,7 @@
 #
 #  id               :bigint           not null, primary key
 #  amount           :decimal(20, 2)   default(0.0)
+#  name             :string
 #  note             :text
 #  status           :integer          not null
 #  transaction_date :date             not null
@@ -27,7 +28,8 @@ class Payment < ApplicationRecord
   enum status: [
     :paid,
     :partially_paid,
-    :failed
+    :failed,
+    :cancelled
   ]
 
   enum transaction_type: [
@@ -59,6 +61,8 @@ class Payment < ApplicationRecord
   private
 
     def set_status
+      return if status.present?
+
       if settles?(invoice)
         self.status = :paid
       else
