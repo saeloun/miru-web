@@ -34,8 +34,8 @@ RSpec.describe "Email confirmations", type: :system do
       with_forgery_protection do
         visit "/signup"
 
-        fill_in "firstName", with: user2.first_name
-        fill_in "lastName", with: user2.last_name
+        fill_in "first_name", with: user2.first_name
+        fill_in "last_name", with: user2.last_name
         fill_in "email", with: user2.email
         fill_in "password", with: user2.password
         fill_in "confirm_password", with: user2.password

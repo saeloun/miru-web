@@ -4,18 +4,18 @@ import { currencyList } from "constants/currencyList";
 
 export const financialDetailsFormValidationSchema = Yup.object().shape({
   base_currency: Yup.object().shape({
-    value: Yup.string().required("Base currency end can not be blank"),
+    value: Yup.string().required("Base currency end cannot be blank"),
   }),
   standard_rate: Yup.number().min(
     0,
     "Standard rate(per hour) must be greater than or equal to 0"
   ),
   year_end: Yup.object().shape({
-    value: Yup.string().required("Fiscal year end can not be blank"),
+    value: Yup.string().required("Fiscal year end cannot be blank"),
   }),
 
   date_format: Yup.object().shape({
-    value: Yup.string().required("Date format can not be blank"),
+    value: Yup.string().required("Date format cannot be blank"),
   }),
 });
 

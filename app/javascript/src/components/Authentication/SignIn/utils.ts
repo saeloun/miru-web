@@ -9,5 +9,5 @@ export const signInFormValidationSchema = Yup.object().shape({
   email: Yup.string()
     .email("Invalid email ID")
     .required("Email ID cannot be blank"),
-  password: Yup.string().required("Password can not be blank"),
+  password: Yup.string().required("Password cannot be blank"),
 });
