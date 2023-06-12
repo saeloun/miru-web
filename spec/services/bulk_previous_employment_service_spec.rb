@@ -27,7 +27,7 @@ RSpec.describe BulkPreviousEmploymentService do
         service.process
       }.to change { user.previous_employments.count }.by(1)
       updated_employment = user.previous_employments.find_by!(id: previous_employment.id)
-      
+
       expect(updated_employment.company_name).to eq("Updated Company")
       expect(updated_employment.role).to eq("Updated Role")
       expect(user.previous_employments.pluck(:id)).not_to include(2, 3)
