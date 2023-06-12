@@ -12,6 +12,7 @@ RSpec.describe "Search clients", type: :system do
     create(:employment, company:, user:)
     user.add_role :admin, company
     sign_in(user)
+    Client.reindex
   end
 
   context "when searching for a client" do
