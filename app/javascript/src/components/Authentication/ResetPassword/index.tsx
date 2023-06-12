@@ -22,18 +22,22 @@ interface ResetPasswordFormValues {
 const ResetPassword = () => {
   const searchParams = new URLSearchParams(document.location.search);
 
-  const handleResetPasswordFormSubmit = async values => {
+  const handleResetPasswordFormSubmit = async (values, { setFieldError }) => {
     const { password, confirm_password } = values;
     const payload = {
       reset_password_token: searchParams.get("reset_password_token"),
       password,
       password_confirmation: confirm_password,
     };
-    const res = await authenticationApi.resetPassword(payload);
-    if (res.status == 200) {
-      setTimeout(() => {
-        window.location.assign(`${window.location.origin}`);
-      }, 500);
+    try {
+      const res = await authenticationApi.resetPassword(payload);
+      if (res.status == 200) {
+        setTimeout(() => {
+          window.location.assign(`${window.location.origin}`);
+        }, 500);
+      }
+    } catch (error) {
+      setFieldError("confirm_password", error.response.data.error);
     }
   };
 
