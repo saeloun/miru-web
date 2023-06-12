@@ -16,6 +16,7 @@ const UserContext = createContext({
   companyRole: "", //current company user role
   confirmedUser: "",
   isDesktop: false,
+  handleOverlayVisibility: (isOverlayVisible: boolean) => {}, //eslint-disable-line
   selectedTab: null,
   googleOauthSuccess: false,
   setSelectedTab: value => {}, //eslint-disable-line
