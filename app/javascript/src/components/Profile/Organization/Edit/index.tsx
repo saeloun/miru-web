@@ -356,7 +356,8 @@ const OrgEdit = () => {
     setCurrentCityList(
       City.getCitiesOfState(
         orgDetails.companyAddr.country.code,
-        orgDetails.companyAddr.state.code ?? orgDetails.companyAddr.state.value
+        orgDetails?.companyAddr?.state?.code ??
+          orgDetails?.companyAddr?.state?.value
       ).map(city => ({ label: city.name, value: city.name, ...city }))
     );
   }, [orgDetails.companyAddr.state]);
