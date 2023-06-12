@@ -140,10 +140,9 @@ const TimeEntryReport = () => {
     const response = await reportsApi.download(type, `?${queryParams}`);
     const url = window.URL.createObjectURL(new Blob([response.data]));
     const link = document.createElement("a");
-    const date = new Date();
+    const filename = `${selectedFilter.dateRange.label}.${type}`;
     link.href = url;
-    link.setAttribute("download", `${date.toISOString()}_miru_report.${type}`);
-    document.body.appendChild(link);
+    link.setAttribute("download", filename);
     link.click();
   };
 
