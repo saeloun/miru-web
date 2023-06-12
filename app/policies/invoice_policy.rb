@@ -2,7 +2,7 @@
 
 class InvoicePolicy < ApplicationPolicy
   def index?
-    user_owner_role? || user_admin_role? || user_book_keeper_role?
+    user_owner_role? || user_admin_role? || user_book_keeper_role? || user_client_role?
   end
 
   def create?
