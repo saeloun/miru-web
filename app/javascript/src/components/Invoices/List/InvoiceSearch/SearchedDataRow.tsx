@@ -20,22 +20,26 @@ const SearchDataRow = ({ invoice }) => {
       className="group flex cursor-pointer items-center py-2 last:border-b-0 hover:bg-miru-gray-100"
       onClick={() => handleClick(invoice)}
     >
-      <div className="ftracking-wider w-5/12 px-2/100 font-medium">
-        <div className="font-semibold capitalize text-miru-dark-purple-1000">
+      <div className="w-5/12 p-0 font-medium tracking-wider">
+        <div className="pb-1 text-sm font-medium capitalize text-miru-dark-purple-1000">
           {invoice.client.name}
         </div>
         <div className="text-sm font-normal text-miru-dark-purple-400">
           {invoice.invoiceNumber}
         </div>
       </div>
-      <div className="w-4/12 px-2/100 font-medium tracking-wider">
+      <div className="w-4/12 px-2/100 font-bold tracking-wider">
         {currencyFormat(invoice.company.baseCurrency, invoice.amount)}
         <div className="text-sm font-normal text-miru-dark-purple-400">
           {formattedDate(invoice.issueDate, invoice.company.dateFormat)}
         </div>
       </div>
-      <div className="w-3/12 px-2/100 font-medium">
-        <span className={`${getStatusCssClass(invoice.status)} uppercase`}>
+      <div className="w-3/12 pl-2/100 text-right font-medium">
+        <span
+          className={`${getStatusCssClass(
+            invoice.status
+          )} uppercase tracking-2`}
+        >
           {invoice.status}
         </span>
       </div>
