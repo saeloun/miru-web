@@ -4,6 +4,7 @@ import Logger from "js-logger";
 import { useSearchParams } from "react-router-dom";
 
 import invoicesApi from "apis/invoices";
+import Loader from "common/Loader/index";
 import withLayout from "common/Mobile/HOC/withLayout";
 import Pagination from "common/Pagination/Pagination";
 import { ApiStatus as InvoicesStatus, LocalStorageKeys } from "constants/index";
@@ -69,7 +70,7 @@ const Invoices = () => {
   const [selectedInvoiceCounter, setSelectedInvoiceCounter] =
     useState<number>(selectedInvoiceCount);
 
-  const { isDesktop } = useUserContext();
+  const { isDesktop, handleOverlayVisibility } = useUserContext();
 
   useEffect(() => sendGAPageView(), []);
 
@@ -217,18 +218,19 @@ const Invoices = () => {
   };
 
   const InvoicesLayout = () => (
-    <div className="h-full p-4 lg:p-0">
+    <div className="p-4 lg:p-0" id="invoice-list-page">
       <Header
         filterParamsStr={filterParamsStr}
+        handleOverlayVisibility={handleOverlayVisibility}
         isDesktop={isDesktop}
         params={params}
         setIsFilterVisible={setIsFilterVisible}
         setParams={setParams}
       />
       {status === InvoicesStatus.LOADING ? (
-        <p className="tracking-wide mt-50 flex items-center justify-center text-2xl font-medium text-miru-han-purple-1000">
-          Loading...
-        </p>
+        <div className="flex h-80v w-full flex-col justify-center">
+          <Loader />
+        </div>
       ) : status === InvoicesStatus.SUCCESS ? (
         <Fragment>
           <Container
