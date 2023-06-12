@@ -1,6 +1,7 @@
 import React from "react";
 
 import { BlurredMiruLogo } from "miruIcons";
+import ReactPlayer from "react-player";
 import { Carousel } from "react-responsive-carousel";
 
 import { MIRU_APP_URL } from "constants/index";
@@ -18,17 +19,22 @@ const FeaturePreviews = () => (
       <Carousel
         autoPlay
         infiniteLoop
+        interval={5000}
         showArrows={false}
         showStatus={false}
         showThumbs={false}
       >
         {carouselItems?.map((feature, i) => (
           <div key={i}>
-            <img
-              className="h-300 mb-4 w-480 object-contain"
-              src={feature.image}
-              style={{ boxShadow: "0px 0px 32px rgba(0, 0, 0, 0.1)" }}
-            />
+            {feature.type == "image" ? (
+              <img
+                className="h-300 mb-4 w-480 object-contain"
+                src={feature.image}
+                style={{ boxShadow: "0px 0px 32px rgba(0, 0, 0, 0.1)" }}
+              />
+            ) : (
+              <ReactPlayer muted playing url={feature.url} />
+            )}
             <div>
               <h2 className="mb-3 font-manrope text-2xl font-semibold not-italic text-miru-white-1000">
                 {feature.texts.title}
