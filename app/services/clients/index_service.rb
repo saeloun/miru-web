@@ -47,7 +47,9 @@ module Clients
       end
 
       def client_details
-        clients.kept.map { |client| client.client_detail(params[:time_frame]) }
+        # The reason for adding this where clause was because this same service was being used
+        # when using the search feature as well and it kept crashing.
+        clients.where(discarded_at: nil).map { |client| client.client_detail(params[:time_frame]) }
       end
 
       def total_minutes
