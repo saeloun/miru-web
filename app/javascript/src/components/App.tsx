@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { BrowserRouter } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
@@ -18,6 +18,24 @@ const App = props => {
   const [selectedTab, setSelectedTab] = useState(null);
   const [currentAvatarUrl, setCurrentAvatarUrl] = useState(avatarUrl);
 
+  const handleOverlayVisibility = (isOverlayVisible: boolean) => {
+    const overlayEl = document.getElementById("overlay");
+    const overlayClasses = "fixed inset-0 z-60 bg-black bg-opacity-50".split(
+      " "
+    );
+    if (overlayEl) {
+      if (isOverlayVisible) {
+        overlayEl.classList.add(...overlayClasses);
+      } else {
+        overlayEl.classList.remove(...overlayClasses);
+      }
+    }
+  };
+
+  useEffect(() => {
+    handleOverlayVisibility(false);
+  }, []);
+
   return (
     <UserContext.Provider
       value={{
@@ -29,6 +47,7 @@ const App = props => {
         confirmedUser,
         googleOauthSuccess,
         isDesktop,
+        handleOverlayVisibility,
         selectedTab,
         setSelectedTab,
       }}
@@ -44,6 +63,7 @@ const App = props => {
             setIsDesktop={setIsDesktop}
             user={user}
           />
+          <div id="overlay" />
         </BrowserRouter>
       </AuthProvider>
     </UserContext.Provider>
