@@ -20,7 +20,7 @@ RSpec.describe "Create client", type: :system do
       find("#react-select-3-option-1").click
     end
 
-    within("div#city") do
+    within("div#city-list") do
       find(".react-select-filter__control.css-digfch-control").click
       find("#react-select-4-option-0").click
     end
@@ -70,10 +70,8 @@ RSpec.describe "Create client", type: :system do
           fill_in "address1", with: address.address_line_1
           select_values_from_select_box
           fill_in "zipcode", with: address.pin
-          click_button "SAVE CHANGES"
 
-          expect(page).to have_content("Name cannot be blank")
-          expect(page).to have_content("Email ID cannot be blank")
+          click_button "SAVE CHANGES", disabled: true
         end
       end
 

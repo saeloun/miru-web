@@ -11,16 +11,20 @@ import UserContext from "context/UserContext";
 import Main from "./Main";
 
 const App = props => {
-  const { user, companyRole, confirmedUser, googleOauthSuccess } = props;
+  const { user, companyRole, confirmedUser, googleOauthSuccess, avatarUrl } =
+    props;
   const isAdminUser = [Roles.ADMIN, Roles.OWNER].includes(companyRole);
   const [isDesktop, setIsDesktop] = useState<boolean>(window.innerWidth > 1023);
   const [selectedTab, setSelectedTab] = useState(null);
+  const [currentAvatarUrl, setCurrentAvatarUrl] = useState(avatarUrl);
 
   return (
     <UserContext.Provider
       value={{
         isAdminUser,
         user,
+        avatarUrl: currentAvatarUrl,
+        setCurrentAvatarUrl,
         companyRole,
         confirmedUser,
         googleOauthSuccess,

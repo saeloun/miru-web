@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from "react";
 
-import { cashFormatter, currencySymbol, minToHHMM } from "helpers";
+import { currencySymbol } from "helpers";
 import Logger from "js-logger";
 import { ArrowLeftIcon, DotsThreeVerticalIcon } from "miruIcons";
 import { useParams, useNavigate } from "react-router-dom";
 import { Badge } from "StyledComponents";
 
 import projectAPI from "apis/projects";
-import AmountBoxContainer from "common/AmountBox";
-import ChartBar from "common/ChartBar";
 import Table from "common/Table";
 import { useUserContext } from "context/UserContext";
 import { unmapper } from "mapper/mappedIndex";
@@ -18,7 +16,10 @@ import EditMembersList from "./EditMembersList";
 import HeaderMenuList from "./HeadermenuList";
 import MemberListForm from "./Mobile/MemberListForm";
 import ProjectDetailsForm from "./Mobile/ProjectDetailsForm";
+import TableData from "./TableData";
+import TotalHoursChart from "./TotalHoursChart";
 
+import { tableHeader } from "../constants";
 import ProjectForm from "../List/Mobile/ProjectForm";
 import AddEditProject from "../Modals/AddEditProject";
 import DeleteProject from "../Modals/DeleteProject";
@@ -63,79 +64,12 @@ const ProjectDetails = () => {
     fetchProject();
   };
 
-  const getTableData = project => {
-    if (project) {
-      return project.members.map(member => ({
-        col1: (
-          <div className="text-base text-miru-dark-purple-1000">
-            {member.name}
-          </div>
-        ),
-        col2: (
-          <div className="text-right text-base text-miru-dark-purple-1000">
-            {currencySymb}
-            {member.hourlyRate}
-          </div>
-        ),
-        col3: (
-          <div className="text-right text-base text-miru-dark-purple-1000">
-            {minToHHMM(member.minutes)}
-          </div>
-        ),
-        col4: (
-          <div className="text-right text-lg font-bold text-miru-dark-purple-1000">
-            {currencySymb}
-            {Number(member.cost).toFixed(2)}
-          </div>
-        ),
-      }));
-    }
-  };
-
   useEffect(() => {
     sendGAPageView();
     fetchProject(timeframe);
   }, [timeframe]);
 
-  //check with Ajinkya why tableData is not updating
-  const tableData = getTableData(project);
-
-  const tableHeader = [
-    {
-      Header: "TEAM MEMBER",
-      accessor: "col1", // accessor is the "key" in the data
-      cssClass: "",
-    },
-    {
-      Header: "HOURLY RATE",
-      accessor: "col2",
-      cssClass: "text-right",
-    },
-    {
-      Header: "HOURS LOGGED",
-      accessor: "col3",
-      cssClass: "text-right", // accessor is the "key" in the data
-    },
-    {
-      Header: "COST",
-      accessor: "col4",
-      cssClass: "text-right", // accessor is the "key" in the data
-    },
-  ];
-
-  const amountBox = [
-    {
-      title: "OVERDUE",
-      amount:
-        currencySymb + cashFormatter(overdueOutstandingAmount?.overdue_amount),
-    },
-    {
-      title: "OUTSTANDING",
-      amount:
-        currencySymb +
-        cashFormatter(overdueOutstandingAmount?.outstanding_amount),
-    },
-  ];
+  const tableData = TableData(project, currencySymb);
 
   const handleMenuVisibility = (e?: any, isMenuVisible?: boolean) => {
     e?.stopPropagation();
@@ -187,20 +121,24 @@ const ProjectDetails = () => {
       );
     }
 
-    return (
-      <ProjectDetailsForm
-        handleAddRemoveMembers={handleAddRemoveMembers}
-        handleEditProject={handleEditProject}
-        handleGenerateInvoice={handleGenerateInvoice}
-        isHeaderMenuVisible={isHeaderMenuVisible}
-        project={project}
-        setIsHeaderMenuVisible={setIsHeaderMenuVisible}
-        setShowDeleteDialog={setShowDeleteDialog}
-      />
-    );
+    if (!isDesktop) {
+      return (
+        <ProjectDetailsForm
+          handleAddRemoveMembers={handleAddRemoveMembers}
+          handleEditProject={handleEditProject}
+          handleGenerateInvoice={handleGenerateInvoice}
+          isHeaderMenuVisible={isHeaderMenuVisible}
+          project={project}
+          setIsHeaderMenuVisible={setIsHeaderMenuVisible}
+          setShowDeleteDialog={setShowDeleteDialog}
+        />
+      );
+    }
+
+    return <div />;
   };
 
-  const menuBackground = isHeaderMenuVisible ? "bg-miru-gray-1000" : "";
+  const menuBackground = isHeaderMenuVisible ? "bg-miru-gray-100" : "";
 
   const backToProjects = () => {
     navigate("/projects");
@@ -232,11 +170,7 @@ const ProjectDetails = () => {
                 />
               )}
             </div>
-            <div
-              className="relative h-8"
-              onBlur={e => handleMenuVisibility(e, false)}
-              onMouseDown={e => handleMenuVisibility(e, false)}
-            >
+            <div className="relative h-8">
               <button
                 className={`menuButton__button ${menuBackground}`}
                 id="kebabMenu"
@@ -261,41 +195,12 @@ const ProjectDetails = () => {
             {project && project.client.name}
           </p>
         </div>
-        <div className="bg-miru-gray-100 py-10 px-10">
-          <div className="flex justify-end">
-            <select
-              className="focus:outline-none
-              m-0
-              border-none
-              bg-transparent
-              bg-clip-padding bg-no-repeat px-3
-              py-1.5
-              text-base
-              font-normal
-              text-miru-han-purple-1000
-              transition
-              ease-in-out"
-              onChange={({ target: { value } }) => setTimeframe(value)}
-            >
-              <option className="text-miru-dark-purple-600" value="week">
-                THIS WEEK
-              </option>
-              <option className="text-miru-dark-purple-600" value="month">
-                THIS MONTH
-              </option>
-              <option className="text-miru-dark-purple-600" value="year">
-                THIS YEAR
-              </option>
-            </select>
-          </div>
-          {project && (
-            <ChartBar
-              data={project.members}
-              totalMinutes={project.totalMinutes}
-            />
-          )}
-          <AmountBoxContainer amountBox={amountBox} />
-        </div>
+        <TotalHoursChart
+          currencySymb={currencySymb}
+          overdueOutstandingAmount={overdueOutstandingAmount}
+          project={project}
+          setTimeframe={setTimeframe}
+        />
         <div className="flex flex-col">
           <div className="overflow-XIcon-auto -my-2 sm:-mx-6 lg:-mx-8">
             <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
@@ -321,8 +226,10 @@ const ProjectDetails = () => {
       {showProjectModal && isDesktop && (
         <AddEditProject
           editProjectData={editProjectData}
+          fetchProjectList={fetchProject}
           setEditProjectData={setEditProjectData}
           setShowProjectModal={setShowProjectModal}
+          showProjectModal={showProjectModal}
         />
       )}
       {showDeleteDialog && (
@@ -330,6 +237,7 @@ const ProjectDetails = () => {
           fetchProjectList={backToProjects}
           project={project}
           setShowDeleteDialog={setShowDeleteDialog}
+          showDeleteDialog={showDeleteDialog}
         />
       )}
     </div>

@@ -45,7 +45,7 @@ export const Project = ({
   return (
     <>
       <tr
-        className={`last:border-b-0 ${grayColor}`}
+        className={`cursor-pointer last:border-b-0 ${grayColor}`}
         key={id}
         onClick={() => isAdminUser && projectClickHandler(id)}
         onMouseEnter={handleMouseEnter}
@@ -74,7 +74,7 @@ export const Project = ({
         <td className="table__cell text-right text-lg font-bold lg:text-xl">
           {minToHHMM(minutesSpent)}
         </td>
-        <td className="table__cell hidden px-3 py-3 lg:table-cell">
+        <td className="table__cell hidden px-3 py-3 text-center lg:table-cell">
           {isAdminUser && isHover && (
             <button
               id="editProject"
@@ -89,7 +89,7 @@ export const Project = ({
             </button>
           )}
         </td>
-        <td className="table__cell hidden px-3 py-3 lg:table-cell">
+        <td className="table__cell hidden px-3 py-3 text-center lg:table-cell">
           {isAdminUser && isHover && (
             <button
               onClick={e => {
@@ -118,9 +118,12 @@ export const Project = ({
         </td>
       </tr>
       {showMoreOptions && (
-        <MobileMoreOptions setVisibilty={setShowMoreOptions}>
+        <MobileMoreOptions
+          setVisibilty={setShowMoreOptions}
+          visibilty={showMoreOptions}
+        >
           <li
-            className="flex items-center px-2 pt-3 text-sm leading-5 text-miru-han-purple-1000"
+            className="flex items-center pt-3 text-sm leading-5 text-miru-han-purple-1000"
             onClick={() => {
               setShowMoreOptions(false);
               setEditProjectData({ id, name, clientName, isBillable });
@@ -131,7 +134,7 @@ export const Project = ({
             Edit
           </li>
           <li
-            className="flex items-center px-2 pt-3 text-sm leading-5 text-miru-red-400"
+            className="flex items-center pt-3 text-sm leading-5 text-miru-red-400"
             onClick={() => {
               setShowMoreOptions(false);
               setShowDeleteDialog(true);

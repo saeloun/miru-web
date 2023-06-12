@@ -1,6 +1,5 @@
-import React, { useRef } from "react";
+import React from "react";
 
-import { useOutsideClick } from "helpers";
 import {
   PaperPlaneTiltIcon,
   DeleteIcon,
@@ -9,8 +8,8 @@ import {
   DotsThreeVerticalIcon,
   DownloadSimpleIcon,
 } from "miruIcons";
-import { Link } from "react-router-dom";
-import { Tooltip } from "StyledComponents";
+import { useNavigate } from "react-router-dom";
+import { Tooltip, Modal } from "StyledComponents";
 
 import { handleDownloadInvoice } from "../common/utils";
 
@@ -23,15 +22,12 @@ const MoreOptions = ({
   setIsSending,
   isSending,
   isDesktop,
+  showMoreOptions,
   setShowMoreOptions,
   showPrint,
   showSendLink,
 }) => {
-  const wrapperRef = useRef(null);
-
-  useOutsideClick(wrapperRef, () => {
-    setShowMoreOptions(false);
-  });
+  const navigate = useNavigate();
 
   return isDesktop ? (
     <>
@@ -72,15 +68,16 @@ const MoreOptions = ({
           </button>
         </Tooltip>
         <Tooltip content="Edit">
-          <Link
+          <button
             className="rounded p-2 text-miru-han-purple-1000 hover:bg-miru-gray-100"
             id="editInvoiceButton"
-            to={`/invoices/${invoice.id}/edit`}
-            type="button"
-            onClick={e => e.stopPropagation()}
+            onClick={e => {
+              e.stopPropagation();
+              navigate(`/invoices/${invoice.id}/edit`);
+            }}
           >
             <PenIcon size={16} weight="bold" />
-          </Link>
+          </button>
         </Tooltip>
         <Tooltip content="More">
           <button
@@ -148,11 +145,12 @@ const MoreOptions = ({
       )}
     </>
   ) : (
-    <div
-      className="modal__modal main-modal "
-      style={{ background: "rgba(29, 26, 49,0.6)" }}
+    <Modal
+      customStyle="sm:my-8 sm:w-full sm:max-w-lg sm:align-middle overflow-visible"
+      isOpen={showMoreOptions}
+      onClose={() => setShowMoreOptions(false)}
     >
-      <ul className="shadow-2 w-full rounded-lg bg-white p-4" ref={wrapperRef}>
+      <ul className="shadow-2 w-full rounded-lg bg-white">
         <li>
           <button
             className="flex cursor-pointer items-center py-2 text-miru-han-purple-1000"
@@ -179,13 +177,15 @@ const MoreOptions = ({
           </button>
         </li>
         <li>
-          <Link
+          <button
             className="flex cursor-pointer items-center py-2 text-miru-han-purple-1000"
-            to={`/invoices/${invoice.id}/edit`}
-            type="button"
+            id="editInvoiceButton"
+            onClick={() => {
+              navigate(`/invoices/${invoice.id}/edit`);
+            }}
           >
             <PenIcon className="mr-4" size={16} /> Edit Invoice
-          </Link>
+          </button>
         </li>
         {showPrint && (
           <li className="flex cursor-pointer items-center py-2 text-miru-han-purple-1000">
@@ -210,7 +210,7 @@ const MoreOptions = ({
           Delete
         </li>
       </ul>
-    </div>
+    </Modal>
   );
 };
 

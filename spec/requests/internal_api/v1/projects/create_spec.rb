@@ -21,7 +21,7 @@ RSpec.describe "InternalApi::V1::Project#create", type: :request do
         project = attributes_for(:project, client_id: client.id)
         send_request :post, internal_api_v1_projects_path(project:), headers: auth_headers(user)
         expect(response).to have_http_status(:ok)
-        expected_attrs = ["billable", "description", "id", "name"]
+        expected_attrs = ["billable", "description", "id", "name", "notice"]
         expect(json_response.keys.sort).to match(expected_attrs)
       end
 

@@ -2,7 +2,7 @@ import React, { useRef } from "react";
 
 import { useOutsideClick, useKeypress } from "helpers";
 import { XIcon } from "miruIcons";
-import { Toastr } from "StyledComponents";
+import { Toastr, Modal, Button } from "StyledComponents";
 
 import teamApi from "apis/team";
 import { TeamModalType } from "constants/index";
@@ -11,7 +11,7 @@ import { useList } from "context/TeamContext";
 const DeleteMember = ({ user }) => {
   const wrapperRef = useRef();
 
-  const { setModalState } = useList();
+  const { setModalState, modal } = useList();
 
   const deleteTeamMember = async () => {
     try {
@@ -35,53 +35,49 @@ const DeleteMember = ({ user }) => {
   });
 
   return (
-    <div className="flex items-center justify-center px-4">
-      <div
-        className="fixed inset-0 top-0 left-0 right-0 bottom-0 z-50 flex items-center justify-center overflow-auto"
-        style={{
-          backgroundColor: "rgba(29, 26, 49, 0.6)",
-        }}
-      >
-        <div className="relative flex h-full w-full items-center justify-center px-4">
-          <div
-            className="modal-width transform rounded-lg bg-white px-6 pb-6 shadow-xl transition-all sm:max-w-md sm:align-middle"
-            ref={wrapperRef}
-          >
-            <div className="mt-6 flex items-center justify-between">
-              <h6 className="text-2xl font-bold">
-                {user.isTeamMember ? "Delete User" : "Delete Invite"}
-              </h6>
-              <button
-                type="button"
-                onClick={() => {
-                  setModalState(TeamModalType.NONE);
-                }}
-              >
-                <XIcon color="#CDD6DF" size={16} weight="bold" />
-              </button>
-            </div>
-            <p className="my-8">
-              Are you sure you want to delete user <b> {user?.name}</b>? This
-              action cannot be reversed.
-            </p>
-            <div className="flex justify-between">
-              <button
-                className="button__bg_transparent mr-2"
-                onClick={() => setModalState(TeamModalType.NONE)}
-              >
-                CANCEL
-              </button>
-              <button
-                className="button__bg_purple ml-2"
-                onClick={() => deleteTeamMember()}
-              >
-                DELETE
-              </button>
-            </div>
-          </div>
-        </div>
+    <Modal
+      customStyle="sm:my-8 sm:w-full sm:max-w-lg sm:align-middle"
+      isOpen={modal == "delete"}
+      onClose={() => {
+        setModalState(TeamModalType.NONE);
+      }}
+    >
+      <div className="flex items-center justify-between">
+        <h6 className="text-2xl font-bold">
+          {user.isTeamMember ? "Delete User" : "Delete Invite"}
+        </h6>
+        <Button
+          type="button"
+          onClick={() => {
+            setModalState(TeamModalType.NONE);
+          }}
+        >
+          <XIcon color="#CDD6DF" size={16} weight="bold" />
+        </Button>
       </div>
-    </div>
+      <p className="my-8">
+        Are you sure you want to delete user <b> {user?.name}</b>? This action
+        cannot be reversed.
+      </p>
+      <div className="flex justify-between">
+        <Button
+          className="mr-2 w-1/2"
+          size="medium"
+          style="secondary"
+          onClick={() => setModalState(TeamModalType.NONE)}
+        >
+          CANCEL
+        </Button>
+        <Button
+          className="ml-2 w-1/2"
+          size="medium"
+          style="primary"
+          onClick={() => deleteTeamMember()}
+        >
+          DELETE
+        </Button>
+      </div>
+    </Modal>
   );
 };
 

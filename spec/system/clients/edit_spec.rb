@@ -42,6 +42,7 @@ RSpec.describe "Edit client", type: :system do
         fill_in "email", with: "client@test.com"
         fill_in "phone", with: "9123456789"
         select_values_from_select_box
+        fill_in "zipcode", with: "123456"
         click_button "SAVE CHANGES"
 
         expect(page).to have_content("test client")
@@ -61,9 +62,7 @@ RSpec.describe "Edit client", type: :system do
         find("#kebabMenu").click()
         click_button "Edit"
         fill_in "email", with: " "
-        click_button "SAVE CHANGES"
-
-        expect(page).to have_content("Invalid email ID")
+        click_button "SAVE CHANGES", disabled: true
       end
     end
   end
