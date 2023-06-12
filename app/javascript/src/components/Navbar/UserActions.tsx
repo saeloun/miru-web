@@ -6,7 +6,7 @@ import { SettingIcon, SignOutIcon, Switcher } from "miruIcons";
 import { NavLink } from "react-router-dom";
 import { Avatar, Tooltip } from "StyledComponents";
 
-import authenticationApi from "apis/authentication";
+import { logoutApi } from "apis/logoutApi";
 import WorkspaceApi from "apis/workspaces";
 import { LocalStorageKeys } from "constants/index";
 import { useAuthDispatch } from "context/auth";
@@ -65,7 +65,7 @@ const UserActions = setVisiblity => {
   };
 
   const handleLogout = async () => {
-    await authenticationApi.logout();
+    await logoutApi();
     Object.values(LocalStorageKeys).forEach(key => {
       localStorage.removeItem(key);
     });

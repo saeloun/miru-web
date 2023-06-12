@@ -59,14 +59,20 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
   def send_invoice
     authorize invoice
 
-    invoice.sending! unless invoice.paid? || invoice.overdue?
-    invoice.send_to_email(
-      subject: invoice_email_params[:subject],
-      message: invoice_email_params[:message],
-      recipients: invoice_email_params[:recipients]
-    )
+    recipients = invoice_email_params[:recipients]
 
-    render json: { message: "Invoice will be sent!" }, status: :accepted
+    if recipients.size < 6
+      invoice.sending! unless invoice.paid? || invoice.overdue?
+      invoice.send_to_email(
+        subject: invoice_email_params[:subject],
+        message: invoice_email_params[:message],
+        recipients: invoice_email_params[:recipients]
+      )
+
+      render json: { message: "Invoice will be sent!" }, status: :accepted
+    else
+      render json: { errors: "Email can only be sent to 5 recipients." }, status: :unprocessable_entity
+    end
   end
 
   def download

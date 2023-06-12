@@ -58,7 +58,7 @@ namespace :internal_api, defaults: { format: "json" } do
 
     resources :generate_invoice, only: [:index, :show]
     resources :project_members, only: [:update]
-    resources :employments, only: [:index]
+    resources :employments, only: [:index, :show, :update]
     resources :timezones, only: [:index]
 
     concern :addressable do
@@ -116,5 +116,6 @@ namespace :internal_api, defaults: { format: "json" } do
     resources :vendors, only: [:create]
     resources :expense_categories, only: [:create]
     resources :expenses, only: [:create, :index, :show]
+    resources :bulk_previous_employments, only: [:update]
   end
 end

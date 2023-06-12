@@ -118,9 +118,12 @@ export const Project = ({
         </td>
       </tr>
       {showMoreOptions && (
-        <MobileMoreOptions setVisibilty={setShowMoreOptions}>
+        <MobileMoreOptions
+          setVisibilty={setShowMoreOptions}
+          visibilty={showMoreOptions}
+        >
           <li
-            className="flex items-center px-2 pt-3 text-sm leading-5 text-miru-han-purple-1000"
+            className="flex items-center pt-3 text-sm leading-5 text-miru-han-purple-1000"
             onClick={() => {
               setShowMoreOptions(false);
               setEditProjectData({ id, name, clientName, isBillable });
@@ -131,7 +134,7 @@ export const Project = ({
             Edit
           </li>
           <li
-            className="flex items-center px-2 pt-3 text-sm leading-5 text-miru-red-400"
+            className="flex items-center pt-3 text-sm leading-5 text-miru-red-400"
             onClick={() => {
               setShowMoreOptions(false);
               setShowDeleteDialog(true);
