@@ -47,7 +47,7 @@ module Clients
       end
 
       def client_details
-        clients.map { |client| client.client_detail(params[:time_frame]) }
+        clients.kept.map { |client| client.client_detail(params[:time_frame]) }
       end
 
       def total_minutes
