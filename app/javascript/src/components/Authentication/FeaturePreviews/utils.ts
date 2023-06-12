@@ -9,6 +9,16 @@ import {
 
 export const carouselItems = [
   {
+    type: "video",
+    url: "https://www.youtube.com/watch?v=-0YwRN-tYpg",
+    texts: {
+      title: "Send invoice in 2 minutes",
+      description:
+        "Get a detailed report of your team's efforts & measure their time distribution across different projects. Identify team burnouts & underworked members for better decision-making.",
+    },
+  },
+  {
+    type: "image",
     image: MiruTimeTrackingScreen,
     texts: {
       title: "Start with effortless time tracking today",
@@ -17,6 +27,7 @@ export const carouselItems = [
     },
   },
   {
+    type: "image",
     image: MiruReportAndAnalysisScreen,
     texts: {
       title: "Powerful Reporting & Analysis ",
@@ -25,6 +36,7 @@ export const carouselItems = [
     },
   },
   {
+    type: "image",
     image: MiruPaymentAndInvoicesScreen,
     texts: {
       title: "Payment & Invoices",
@@ -33,6 +45,7 @@ export const carouselItems = [
     },
   },
   {
+    type: "image",
     image: MiruManagingClientsScreen,
     texts: {
       title: "Managing Clients",
@@ -41,6 +54,7 @@ export const carouselItems = [
     },
   },
   {
+    type: "image",
     image: MiruManagingEmployeesScreen,
     texts: {
       title: "Managing Employees",
@@ -49,6 +63,7 @@ export const carouselItems = [
     },
   },
   {
+    type: "image",
     image: MiruManagingProjectsScreen,
     texts: {
       title: "Managing Projects",
