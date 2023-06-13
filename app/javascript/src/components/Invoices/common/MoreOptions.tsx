@@ -35,7 +35,7 @@ const MoreOptions: FC<MoreOptionsProps> = ({
           onClick={wavieInvoice}
         >
           <img className="mr-4" height="16px" src={WaiveSVG} width="16px" />
-          Wavie Off
+          Waive Off
         </li>
       </>
     )}
