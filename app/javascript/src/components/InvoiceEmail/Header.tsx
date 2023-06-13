@@ -3,10 +3,15 @@ import React from "react";
 import { ReportsIcon } from "miruIcons";
 import { Badge } from "StyledComponents";
 
-import Toastr from "common/Toastr";
 import getStatusCssClass from "utils/getBadgeStatus";
 
-const Header = ({ invoice, stripeUrl, isStripeConnected }) => (
+const Header = ({
+  invoice,
+  stripeUrl,
+  isStripeConnected,
+  setIsInvoiceEmail,
+  setShowConnectPaymentDialog,
+}) => (
   <div className="mt-6 mb-3 sm:flex sm:items-center sm:justify-between">
     <div className="flex flex-row">
       <div className="mr-2 flex self-center">
@@ -31,9 +36,8 @@ const Header = ({ invoice, stripeUrl, isStripeConnected }) => (
             }`}
           onClick={() => {
             if (invoice.status != "paid" && !isStripeConnected) {
-              Toastr.error(
-                "Error: Please reach out to the invoice sender to connect a payment gateway to enable you to make invoice payment"
-              );
+              setIsInvoiceEmail(true);
+              setShowConnectPaymentDialog(true);
             } else if (invoice.status != "paid" && isStripeConnected) {
               window.location.href = stripeUrl;
             }
