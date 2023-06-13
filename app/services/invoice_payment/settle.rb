@@ -13,7 +13,6 @@ module InvoicePayment
     def process
       @payment = Payment.create!(payment_params)
       @invoice.settle!(payment)
-
       @payment
     end
   end

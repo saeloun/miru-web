@@ -70,6 +70,8 @@ en:
     create:
       success: Project added successfully.
       failure: Project creation failed.
+    update:
+      success:  Changes saved successfully.
     update_members:
       success:
         message: Changes saved successfully
@@ -162,6 +164,9 @@ en:
     update:
       success:
         message: Changes saved successfully
+  employment:
+    update:
+      success: Employment updated successfully
   registration:
     sign_up: sign up
     sign_in: sign in
@@ -267,6 +272,7 @@ en:
     user_already_member: Email id is already in use. Please enter another email id
     updation_not_allowed: updation is not allowed
     can't change status: can't be changed of a paid invoice
+    prevent_draft_to_waived: can't be changed to waived
   timesheet_entry:
     create:
       message: "Timesheet created"

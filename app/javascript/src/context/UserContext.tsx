@@ -11,9 +11,12 @@ const UserContext = createContext({
     first_name: "",
     last_name: "",
   },
+  avatarUrl: "",
+  setCurrentAvatarUrl: value => {}, //eslint-disable-line
   companyRole: "", //current company user role
   confirmedUser: "",
   isDesktop: false,
+  handleOverlayVisibility: (isOverlayVisible: boolean) => {}, //eslint-disable-line
   selectedTab: null,
   googleOauthSuccess: false,
   setSelectedTab: value => {}, //eslint-disable-line

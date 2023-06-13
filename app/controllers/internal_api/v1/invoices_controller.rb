@@ -3,6 +3,7 @@
 class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationController
   before_action :load_client, only: [:create, :update]
   after_action :ensure_time_entries_billed, only: [:send_invoice]
+  after_action :track_event, only: [:create, :update, :destroy, :send_invoice, :download]
 
   def index
     authorize Invoice
@@ -17,8 +18,9 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
 
   def create
     authorize Invoice
+    @invoice = current_company.invoices.create!(invoice_params)
     render :create, locals: {
-      invoice: current_company.invoices.create!(invoice_params),
+      invoice: @invoice,
       client: @client
     }
   end
@@ -57,14 +59,20 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
   def send_invoice
     authorize invoice
 
-    invoice.sending! unless invoice.paid? || invoice.overdue?
-    invoice.send_to_email(
-      subject: invoice_email_params[:subject],
-      message: invoice_email_params[:message],
-      recipients: invoice_email_params[:recipients]
-    )
+    recipients = invoice_email_params[:recipients]
 
-    render json: { message: "Invoice will be sent!" }, status: :accepted
+    if recipients.size < 6
+      invoice.sending! unless invoice.paid? || invoice.overdue?
+      invoice.send_to_email(
+        subject: invoice_email_params[:subject],
+        message: invoice_email_params[:message],
+        recipients: invoice_email_params[:recipients]
+      )
+
+      render json: { message: "Invoice will be sent!" }, status: :accepted
+    else
+      render json: { errors: "Email can only be sent to 5 recipients." }, status: :unprocessable_entity
+    end
   end
 
   def download
@@ -94,5 +102,9 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
 
     def ensure_time_entries_billed
       invoice.update_timesheet_entry_status!
+    end
+
+    def track_event
+      Invoices::EventTrackerService.new(params[:action], @invoice || invoice, params).process
     end
 end

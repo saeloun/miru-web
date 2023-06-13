@@ -19,6 +19,7 @@ import SendInvoiceContainer from "../Generate/MobileView/Container/SendInvoiceCo
 import ConnectPaymentGateway from "../popups/ConnectPaymentGateway";
 import DeleteInvoice from "../popups/DeleteInvoice";
 import SendInvoice from "../popups/SendInvoice";
+import WavieOffInvoice from "../popups/WavieOffInvoice";
 
 const Invoice = () => {
   const params = useParams();
@@ -28,6 +29,8 @@ const Invoice = () => {
   const [showSendInvoiceModal, setShowSendInvoiceModal] =
     useState<boolean>(false);
   const [invoiceToDelete, setInvoiceToDelete] = useState(null);
+  const [invoiceToWaive, setInvoiceToWaive] = useState(null);
+  const [showWavieDialog, setShowWavieDialog] = useState<boolean>(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
   const [showConnectPaymentDialog, setShowConnectPaymentDialog] =
     useState<boolean>(false);
@@ -74,8 +77,10 @@ const Invoice = () => {
           invoice={invoice}
           isStripeEnabled={isStripeEnabled}
           setInvoiceToDelete={setInvoiceToDelete}
+          setInvoiceToWaive={setInvoiceToWaive}
           setShowConnectPaymentDialog={setShowConnectPaymentDialog}
           setShowDeleteDialog={setShowDeleteDialog}
+          setShowWavieDialog={setShowWavieDialog}
         />
         <div className="m-0 mt-5 mb-10 w-full bg-miru-gray-100 p-0">
           <InvoiceDetails invoice={invoice} />
@@ -93,6 +98,14 @@ const Invoice = () => {
             setIsSending={setShowSendInvoiceModal}
             setShowConnectPaymentDialog={setShowConnectPaymentDialog}
             showConnectPaymentDialog={showConnectPaymentDialog}
+          />
+        )}
+        {showWavieDialog && (
+          <WavieOffInvoice
+            invoice={invoiceToWaive}
+            invoiceNumber={invoice.invoiceNumber}
+            setShowWavieDialog={setShowWavieDialog}
+            showWavieDialog={showWavieDialog}
           />
         )}
         {showDeleteDialog && (

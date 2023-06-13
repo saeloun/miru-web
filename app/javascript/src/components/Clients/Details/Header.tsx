@@ -19,7 +19,7 @@ import { useUserContext } from "context/UserContext";
 import DeleteClient from "../Modals/DeleteClient";
 import EditClient from "../Modals/EditClient";
 
-const Header = ({ clientDetails, setShowProjectModal }) => {
+const Header = ({ clientDetails, setShowProjectModal, fetchDetails }) => {
   const [isHeaderMenuVisible, setIsHeaderMenuVisible] =
     useState<boolean>(false);
   const [isClientOpen, setIsClientOpen] = useState<boolean>(false);
@@ -152,14 +152,18 @@ const Header = ({ clientDetails, setShowProjectModal }) => {
       {showEditDialog && (
         <EditClient
           client={clientDetails}
+          fetchDetails={fetchDetails}
           setShowEditDialog={setShowEditDialog}
           showEditDialog={showEditDialog}
         />
       )}
       {showMobileModal && (
-        <MobileMoreOptions setVisibilty={setShowMobileModal}>
+        <MobileMoreOptions
+          setVisibilty={setShowMobileModal}
+          visibilty={showMobileModal}
+        >
           <li
-            className="menuButton__list-item"
+            className="menuButton__list-item px-0"
             onClick={() => {
               handleAddProject();
               setShowMobileModal(false);
@@ -169,7 +173,7 @@ const Header = ({ clientDetails, setShowProjectModal }) => {
             <span className="ml-3">Add new project</span>
           </li>
           <li
-            className="menuButton__list-item"
+            className="menuButton__list-item px-0"
             onClick={() => {
               handleEdit();
               setShowMobileModal(false);
@@ -179,7 +183,7 @@ const Header = ({ clientDetails, setShowProjectModal }) => {
             <span className="ml-3">Edit</span>
           </li>
           <li
-            className="menuButton__list-item"
+            className="menuButton__list-item px-0"
             onClick={() => {
               handleDelete();
               setShowMobileModal(false);

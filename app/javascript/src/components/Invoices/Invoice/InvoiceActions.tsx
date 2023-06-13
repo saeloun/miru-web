@@ -14,6 +14,7 @@ const InvoiceActions = ({
   editInvoiceLink,
   sendInvoice,
   deleteInvoice,
+  wavieInvoice,
   invoice,
   setShowConnectPaymentDialog,
   isStripeEnabled,
@@ -57,6 +58,7 @@ const InvoiceActions = ({
             downloadInvoice={handleDownloadInvoice}
             invoice={invoice}
             markInvoiceAsPaid={markInvoiceAsPaid}
+            wavieInvoice={wavieInvoice}
           />
         )}
       </div>

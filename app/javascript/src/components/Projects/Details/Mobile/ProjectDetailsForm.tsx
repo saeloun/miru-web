@@ -82,6 +82,7 @@ const ProjectDetailsForm = ({
         <MobileMoreOptions
           className="p-0"
           setVisibilty={setIsHeaderMenuVisible}
+          visibilty={isHeaderMenuVisible}
         >
           <HeaderMenuList
             handleAddRemoveMembers={handleAddRemoveMembers}

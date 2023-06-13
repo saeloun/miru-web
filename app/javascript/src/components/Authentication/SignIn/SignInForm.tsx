@@ -3,6 +3,7 @@ import React, { useRef, useState } from "react";
 import { Formik, Form, FormikProps } from "formik";
 import { GoogleSVG, MiruLogoSVG } from "miruIcons";
 import { useNavigate } from "react-router-dom";
+import { Toastr } from "StyledComponents";
 
 import authenticationApi from "apis/authentication";
 import { InputErrors, InputField } from "common/FormikFields";
@@ -23,7 +24,6 @@ interface SignInFormValues {
 const SignInForm = () => {
   const [privacyModal, setPrivacyModal] = useState(false);
   const [termsOfServiceModal, setTermsOfServiceModal] = useState(false);
-
   const authDispatch = useAuthDispatch();
   const navigate = useNavigate();
 
@@ -32,7 +32,7 @@ const SignInForm = () => {
     .querySelector('[name="csrf-token"]')
     .getAttribute("content");
 
-  const handleSignInFormSubmit = async (values: any) => {
+  const handleSignInFormSubmit = async (values: any, { setFieldError }) => {
     try {
       const res = await authenticationApi.signin(values);
       //@ts-expect-error for authDispatch initial values
@@ -51,6 +51,9 @@ const SignInForm = () => {
     } catch (error) {
       if (error?.response?.data?.unconfirmed) {
         navigate(`/email_confirmation?email=${values.email}`);
+        Toastr.error(error.response.data.error);
+      } else if (error?.response?.data?.error) {
+        setFieldError("password", error.response.data.error);
       }
     }
   };
@@ -205,14 +208,14 @@ const SignInForm = () => {
               </a>
             </span>
           </p>
-          <p className="pb-10 text-center font-manrope text-xs font-normal not-italic text-miru-dark-purple-1000">
+          {/* <p className="pb-10 text-center font-manrope text-xs font-normal not-italic text-miru-dark-purple-1000">
             Don't have an account?&nbsp;
             <span className="form__link inline cursor-pointer">
               <a href={Paths.SIGNUP}>
                 <span className="mr-2 inline-block">Sign Up</span>
               </a>
             </span>
-          </p>
+          </p> */}
         </div>
       </div>
       <FooterLinks

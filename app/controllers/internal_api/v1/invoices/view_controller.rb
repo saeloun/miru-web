@@ -7,11 +7,11 @@ class InternalApi::V1::Invoices::ViewController < InternalApi::V1::ApplicationCo
 
   def show
     invoice.viewed! if invoice.sent?
-
+    Invoices::EventTrackerService.new("view", invoice, params).process
     render :show, locals: { invoice: }
   end
 
   def invoice
-    @_invoice ||= Invoice.includes(:client, :invoice_line_items).find_by!(external_view_key: params[:id])
+    @_invoice ||= Invoice.kept.includes(:client, :invoice_line_items).find_by!(external_view_key: params[:id])
   end
 end

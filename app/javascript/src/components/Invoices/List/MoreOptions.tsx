@@ -1,6 +1,5 @@
-import React, { useRef } from "react";
+import React from "react";
 
-import { useOutsideClick } from "helpers";
 import {
   PaperPlaneTiltIcon,
   DeleteIcon,
@@ -10,7 +9,7 @@ import {
   DownloadSimpleIcon,
 } from "miruIcons";
 import { useNavigate } from "react-router-dom";
-import { Tooltip } from "StyledComponents";
+import { Tooltip, Modal } from "StyledComponents";
 
 import { handleDownloadInvoice } from "../common/utils";
 
@@ -23,17 +22,14 @@ const MoreOptions = ({
   setIsSending,
   isSending,
   isDesktop,
+  showMoreOptions,
   setShowMoreOptions,
   showPrint,
   showSendLink,
   showConnectPaymentDialog,
   setShowConnectPaymentDialog,
 }) => {
-  const wrapperRef = useRef(null);
   const navigate = useNavigate();
-  useOutsideClick(wrapperRef, () => {
-    setShowMoreOptions(false);
-  });
 
   return isDesktop ? (
     <>
@@ -152,11 +148,12 @@ const MoreOptions = ({
       )}
     </>
   ) : (
-    <div
-      className="modal__modal main-modal "
-      style={{ background: "rgba(29, 26, 49,0.6)" }}
+    <Modal
+      customStyle="sm:my-8 sm:w-full sm:max-w-lg sm:align-middle overflow-visible"
+      isOpen={showMoreOptions}
+      onClose={() => setShowMoreOptions(false)}
     >
-      <ul className="shadow-2 w-full rounded-lg bg-white p-4" ref={wrapperRef}>
+      <ul className="shadow-2 w-full rounded-lg bg-white">
         <li>
           <button
             className="flex cursor-pointer items-center py-2 text-miru-han-purple-1000"
@@ -216,7 +213,7 @@ const MoreOptions = ({
           Delete
         </li>
       </ul>
-    </div>
+    </Modal>
   );
 };
 
