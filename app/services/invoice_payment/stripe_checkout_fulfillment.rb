@@ -50,8 +50,9 @@ class InvoicePayment::StripeCheckoutFulfillment < ApplicationService
 
     def card_name
       stripe_connected_account = @invoice.company.stripe_connected_account
-      return nil if stripe_connected_account.nil?
-        || (stripe_connected_account && stripe_connected_account.account_id.nil?)
+
+      return nil if stripe_connected_account.nil? ||
+        (stripe_connected_account && stripe_connected_account.account_id.nil?)
 
       account_id = stripe_connected_account.account_id
       payment_intent = Stripe::RetrievePaymentIntent.new(
