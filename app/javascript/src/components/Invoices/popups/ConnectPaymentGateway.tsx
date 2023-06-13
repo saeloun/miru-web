@@ -1,14 +1,34 @@
 import React from "react";
 
+import Logger from "js-logger";
 import { XIcon } from "miruIcons";
 import { useNavigate } from "react-router-dom";
 import { Modal } from "StyledComponents";
 
+import invoicesApi from "apis/invoices";
+
 const ConnectPaymentGateway = ({
   setShowConnectPaymentDialog,
   showConnectPaymentDialog,
+  invoice,
+  setIsSending,
 }) => {
   const navigate = useNavigate();
+
+  const updateInvoice = async () => {
+    const invoiceStatuses = ["sent", "paid", "draft"];
+    if (invoiceStatuses.includes(invoice.status)) return;
+
+    try {
+      const res = await invoicesApi.updateInvoice(invoice.id, {
+        status: "draft",
+      });
+
+      return res;
+    } catch (error) {
+      Logger.log(error);
+    }
+  };
 
   return (
     <Modal
@@ -34,14 +54,25 @@ const ConnectPaymentGateway = ({
       </div>
       <div className="text-center">
         <button
-          className="button__bg_purple"
+          className="button__bg_purple mb-3 block w-full"
           onClick={e => {
             e.stopPropagation();
             setShowConnectPaymentDialog(false);
+            updateInvoice();
             navigate("/profile/edit/payment");
           }}
         >
-          Connect payment
+          Go to Payment Settings
+        </button>
+        <button
+          className="button__bg_purple w-full"
+          onClick={e => {
+            e.stopPropagation();
+            setIsSending(true);
+            setShowConnectPaymentDialog(false);
+          }}
+        >
+          Send Without Payment Gateway
         </button>
       </div>
     </Modal>

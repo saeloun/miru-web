@@ -9,6 +9,8 @@ const Header = ({
   handleSendInvoice,
   setShowDeleteDialog,
   setInvoiceToDelete,
+  setShowConnectPaymentDialog,
+  isStripeEnabled,
 }) => (
   <div className="mt-6 mb-3 sm:flex sm:items-center sm:justify-between">
     <div className="flex flex-row">
@@ -18,7 +20,9 @@ const Header = ({
     <InvoiceActions
       editInvoiceLink={`/invoices/${invoice.id}/edit`}
       invoice={invoice}
+      isStripeEnabled={isStripeEnabled}
       sendInvoice={handleSendInvoice}
+      setShowConnectPaymentDialog={setShowConnectPaymentDialog}
       deleteInvoice={() => {
         setShowDeleteDialog(true);
         setInvoiceToDelete(invoice.id);

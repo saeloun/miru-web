@@ -177,6 +177,8 @@ const TableRow = ({
         )}
         {!isStripeEnabled && showConnectPaymentDialog && (
           <ConnectPaymentGateway
+            invoice={invoice}
+            setIsSending={setIsSending}
             setShowConnectPaymentDialog={setShowConnectPaymentDialog}
             showConnectPaymentDialog={showConnectPaymentDialog}
           />

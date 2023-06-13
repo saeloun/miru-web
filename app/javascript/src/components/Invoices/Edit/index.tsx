@@ -1,10 +1,12 @@
 import React, { Fragment, useEffect, useState } from "react";
 
 import dayjs from "dayjs";
+import Logger from "js-logger";
 import { useParams, useNavigate } from "react-router-dom";
 import { Toastr } from "StyledComponents";
 
 import invoicesApi from "apis/invoices";
+import paymentSettings from "apis/payment-settings";
 import { useUserContext } from "context/UserContext";
 import { unmapLineItems } from "mapper/mappedIndex";
 import { sendGAPageView } from "utils/googleAnalytics";
@@ -18,6 +20,7 @@ import SendInvoice from "../common/InvoiceForm/SendInvoice";
 import InvoiceTable from "../common/InvoiceTable";
 import InvoiceTotal from "../common/InvoiceTotal";
 import { generateInvoiceLineItems } from "../common/utils";
+import ConnectPaymentGateway from "../popups/ConnectPaymentGateway";
 import DeleteInvoice from "../popups/DeleteInvoice";
 
 const EditInvoice = () => {
@@ -43,6 +46,9 @@ const EditInvoice = () => {
     useState<boolean>(false);
   const [invoiceToDelete, setInvoiceToDelete] = useState(null);
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
+  const [isStripeEnabled, setIsStripeEnabled] = useState<boolean>(false);
+  const [showConnectPaymentDialog, setShowConnectPaymentDialog] =
+    useState<boolean>(false);
 
   const INVOICE_NUMBER_ERROR = "Please enter invoice number to proceed";
   const SELECT_CLIENT_ERROR =
@@ -67,9 +73,19 @@ const EditInvoice = () => {
     }
   };
 
+  const fetchPaymentSettings = async () => {
+    try {
+      const res = await paymentSettings.get();
+      setIsStripeEnabled(res.data.providers.stripe.connected);
+    } catch {
+      Logger.log("ERROR! CONNECTING TO PAYMENTS");
+    }
+  };
+
   useEffect(() => {
     sendGAPageView();
     fetchInvoice();
+    fetchPaymentSettings();
   }, []);
 
   const updateInvoice = async () => {
@@ -133,7 +149,13 @@ const EditInvoice = () => {
   };
 
   const handleSendInvoice = () => {
-    if (selectedClient && invoiceNumber !== "") {
+    if (!isStripeEnabled) {
+      setShowConnectPaymentDialog(true);
+    } else if (
+      selectedClient &&
+      invoiceNumber !== "" &&
+      !showConnectPaymentDialog
+    ) {
       setShowSendInvoiceModal(true);
     } else {
       selectedClient
@@ -220,7 +242,7 @@ const EditInvoice = () => {
               tax={tax || invoiceDetails.tax}
             />
           </div>
-          {showSendInvoiceModal && (
+          {showSendInvoiceModal && !showConnectPaymentDialog && (
             <SendInvoice
               handleSaveSendInvoice={handleSaveSendInvoice}
               isSending={showSendInvoiceModal}
@@ -233,6 +255,14 @@ const EditInvoice = () => {
                 invoiceNumber,
                 amount,
               }}
+            />
+          )}
+          {!isStripeEnabled && showConnectPaymentDialog && (
+            <ConnectPaymentGateway
+              invoice={invoiceDetails}
+              setIsSending={setShowSendInvoiceModal}
+              setShowConnectPaymentDialog={setShowConnectPaymentDialog}
+              showConnectPaymentDialog={showConnectPaymentDialog}
             />
           )}
           {showDeleteDialog && (
