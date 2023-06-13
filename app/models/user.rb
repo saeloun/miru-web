@@ -69,7 +69,6 @@ class User < ApplicationRecord
   has_many :projects, through: :project_members
   has_many :clients, through: :projects
   has_many :client_members, dependent: :destroy
-  has_many :clients, through: :client_members
   rolify strict: true
 
   scope :with_kept_employments, -> { merge(Employment.kept) }

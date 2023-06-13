@@ -12,7 +12,7 @@ class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationControlle
     users_not_in_client_members = users_with_client_role.where.not(id: ClientMember.pluck(:user_id))
     render json: {
              client_details:, total_minutes:, overdue_outstanding_amount:,
-             users_not_in_client_members:, users_with_client_role:
+             users_not_in_client_members:
            },
       status: :ok
   end
@@ -43,9 +43,11 @@ class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationControlle
     authorize client
     ActiveRecord::Base.transaction do
       client.update!(update_client_params)
-      user = User.find_by!(email: update_client_params[:email])
-      client_member = ClientMember.find_by!(client:)
-      client_member.update!(user:)
+      if update_client_params[:email]
+        user = User.find_by!(email: update_client_params[:email])
+        client_member = ClientMember.find_by!(client:)
+        client_member.update!(user:)
+      end
       render json: {
         success: true,
         client:,
