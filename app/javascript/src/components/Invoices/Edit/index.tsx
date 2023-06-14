@@ -286,6 +286,7 @@ const EditInvoice = () => {
         handleSaveInvoice={handleSaveInvoice}
         invoiceDetails={invoiceDetails}
         invoiceNumber={invoiceNumber}
+        isStripeEnabled={isStripeEnabled}
         issueDate={issueDate}
         lineItems={lineItems}
         manualEntryArr={manualEntryArr}
@@ -303,7 +304,9 @@ const EditInvoice = () => {
         setReference={setReference}
         setSelectedClient={setSelectedClient}
         setSelectedLineItems={setSelectedLineItems}
+        setShowConnectPaymentDialog={setShowConnectPaymentDialog}
         setTax={setTax}
+        showConnectPaymentDialog={showConnectPaymentDialog}
         tax={tax}
       />
     );

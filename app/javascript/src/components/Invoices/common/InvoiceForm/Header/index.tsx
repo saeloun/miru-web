@@ -17,6 +17,9 @@ const Header = ({
   deleteInvoice = null,
   wavieInvoice = null,
   showMoreButton = false,
+  isStripeEnabled = false,
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  setShowConnectPaymentDialog = _val => {},
 }) => {
   const [isMoreOptionsVisible, setIsMoreOptionsVisible] =
     useState<boolean>(false);
@@ -60,7 +63,13 @@ const Header = ({
         <button
           className="header__button my-1 bg-miru-han-purple-1000 p-0 text-white hover:text-white md:my-0 md:w-1/3"
           type="button"
-          onClick={handleSendInvoice}
+          onClick={() => {
+            if (!isStripeEnabled) {
+              setShowConnectPaymentDialog(true);
+            } else {
+              handleSendInvoice();
+            }
+          }}
         >
           <PaperPlaneTiltIcon color="White" size={18} />
           <span className="ml-2 inline-block" id="sendInvoiceButton">

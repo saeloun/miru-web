@@ -1,11 +1,13 @@
 import React, { Fragment, useEffect, useState } from "react";
 
 import dayjs from "dayjs";
+import Logger from "js-logger";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Toastr } from "StyledComponents";
 
 import companiesApi from "apis/companies";
 import invoicesApi from "apis/invoices";
+import PaymentsProviders from "apis/payments/providers";
 import { useUserContext } from "context/UserContext";
 import { mapGenerateInvoice, unmapGenerateInvoice } from "mapper/mappedIndex";
 import { sendGAPageView } from "utils/googleAnalytics";
@@ -17,6 +19,7 @@ import MobileView from "./MobileView";
 import Header from "../common/InvoiceForm/Header";
 import SendInvoice from "../common/InvoiceForm/SendInvoice";
 import { generateInvoiceLineItems } from "../common/utils";
+import ConnectPaymentGateway from "../popups/ConnectPaymentGateway";
 
 const GenerateInvoices = () => {
   const navigate = useNavigate();
@@ -39,6 +42,9 @@ const GenerateInvoices = () => {
   const [invoiceId, setInvoiceId] = useState<number>(null);
   const [showInvoiceSetting, setShowInvoiceSetting] = useState<boolean>(false);
   const [manualEntryArr, setManualEntryArr] = useState<any>([]);
+  const [showConnectPaymentDialog, setShowConnectPaymentDialog] =
+    useState<boolean>(false);
+  const [isStripeConnected, setIsStripeConnected] = useState<boolean>(null);
 
   const amountPaid = 0;
   const clientId = searchParams.get("clientId");
@@ -60,6 +66,17 @@ const GenerateInvoices = () => {
     }
   };
 
+  const fetchPaymentsProvidersSettings = async () => {
+    try {
+      const res = await PaymentsProviders.get();
+      const paymentsProviders = res.data.paymentsProviders;
+      const stripe = paymentsProviders.find(p => p.name === "stripe");
+      setIsStripeConnected(!!stripe && stripe.enabled);
+    } catch {
+      Logger.log("ERROR!");
+    }
+  };
+
   const setClientListIfClientIdPresent = () => {
     const client = invoiceDetails?.clientList?.find(
       client => client.value === parseInt(clientId)
@@ -70,6 +87,7 @@ const GenerateInvoices = () => {
   useEffect(() => {
     sendGAPageView();
     fetchCompanyDetails();
+    fetchPaymentsProvidersSettings();
   }, []);
 
   useEffect(() => {
@@ -141,6 +159,8 @@ const GenerateInvoices = () => {
         <Header
           handleSaveInvoice={handleSaveInvoice}
           handleSendInvoice={handleSendInvoice}
+          isStripeEnabled={isStripeConnected}
+          setShowConnectPaymentDialog={setShowConnectPaymentDialog}
           setShowInvoiceSetting={setShowInvoiceSetting}
         />
         <Container
@@ -172,6 +192,14 @@ const GenerateInvoices = () => {
           setTax={setTax}
           tax={tax}
         />
+        {!isStripeConnected && showConnectPaymentDialog && (
+          <ConnectPaymentGateway
+            invoice={invoiceDetails}
+            setIsSending={setShowSendInvoiceModal}
+            setShowConnectPaymentDialog={setShowConnectPaymentDialog}
+            showConnectPaymentDialog={showConnectPaymentDialog}
+          />
+        )}
         {showSendInvoiceModal && (
           <SendInvoice
             handleSaveSendInvoice={handleSaveSendInvoice}
@@ -207,6 +235,7 @@ const GenerateInvoices = () => {
         invoiceDetails={invoiceDetails}
         invoiceNumber={invoiceNumber}
         isEdit={false}
+        isStripeEnabled={isStripeConnected}
         issueDate={issueDate}
         lineItems={lineItems}
         manualEntryArr={manualEntryArr}
@@ -224,7 +253,9 @@ const GenerateInvoices = () => {
         setReference={setReference}
         setSelectedClient={setSelectedClient}
         setSelectedLineItems={setSelectedOption}
+        setShowConnectPaymentDialog={setShowConnectPaymentDialog}
         setTax={setTax}
+        showConnectPaymentDialog={showConnectPaymentDialog}
         tax={tax}
       />
     );

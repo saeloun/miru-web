@@ -28,6 +28,7 @@ const MoreOptions = ({
   showSendLink,
   showConnectPaymentDialog,
   setShowConnectPaymentDialog,
+  isStripeEnabled,
 }) => {
   const navigate = useNavigate();
 
@@ -161,6 +162,13 @@ const MoreOptions = ({
               e.stopPropagation();
               setIsSending(!isSending);
               setShowMoreOptions(false);
+              if (!isStripeEnabled) {
+                setShowConnectPaymentDialog(true);
+                setIsSending(false);
+              } else {
+                setIsSending(!isSending);
+                setShowMoreOptions(false);
+              }
             }}
           >
             <PaperPlaneTiltIcon className="mr-4" size={16} /> Send Invoice

@@ -138,7 +138,14 @@ const Invoice = () => {
         </div>
       </div>
     ) : (
-      <MobileView handleSendInvoice={handleSendInvoice} invoice={invoice} />
+      <MobileView
+        handleSendInvoice={handleSendInvoice}
+        invoice={invoice}
+        isStripeEnabled={isStripeEnabled}
+        setShowConnectPaymentDialog={setShowConnectPaymentDialog}
+        setShowSendInvoiceModal={setShowSendInvoiceModal}
+        showConnectPaymentDialog={showConnectPaymentDialog}
+      />
     ))
   );
 };
