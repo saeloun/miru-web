@@ -10,7 +10,7 @@ company = Company.create!(
     fiscal_year_end: "Dec",
     date_format: "MM-DD-YYYY",
     country: "US",
-    timezone: "America - New York"
+    timezone: "(GMT-10:00) America/Adak"
   })
 
 puts "Company Created"

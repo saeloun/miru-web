@@ -92,18 +92,18 @@ const UserDetailsEdit = () => {
       setCurrentCountryDetails({
         label: currentCountry.name,
         value: currentCountry.name,
-        code: currentCountry.isoCode,
+        code: currentCountry?.isoCode,
       });
 
     if (profileSettings.addresses.city) {
       const stateCode =
         currentCountry &&
-        State.getStatesOfCountry(currentCountry.isoCode).filter(
+        State.getStatesOfCountry(currentCountry?.isoCode).filter(
           state => state.name == profileSettings.addresses.state
-        )[0].isoCode;
+        )[0]?.isoCode;
 
       setCurrentCityList(
-        City.getCitiesOfState(currentCountry.isoCode, stateCode).map(city => ({
+        City.getCitiesOfState(currentCountry?.isoCode, stateCode).map(city => ({
           label: city.name,
           value: city.name,
           ...city,
@@ -154,7 +154,7 @@ const UserDetailsEdit = () => {
     State.getStatesOfCountry(countryCode).map(state => ({
       label: state.name,
       value: state.name,
-      code: state.isoCode,
+      code: state?.isoCode,
       ...state,
     }));
 
