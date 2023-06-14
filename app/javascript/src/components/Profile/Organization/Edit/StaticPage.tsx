@@ -50,6 +50,7 @@ export const StaticPage = ({
   countries,
   handleOnChangeState,
   stateList,
+  currentCityList,
   handleOnChangeCity,
   promiseOptions,
   handleZipcodeChange,
@@ -258,6 +259,7 @@ export const StaticPage = ({
             id="citySelect"
           >
             <CustomAsyncSelect
+              defaultOptions={currentCityList}
               handleOnChange={city => handleOnChangeCity(city)}
               isErr={false}
               label="City"
