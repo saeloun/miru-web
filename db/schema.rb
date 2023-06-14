@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_06_05_072322) do
+ActiveRecord::Schema[7.0].define(version: 2023_06_12_105554) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -98,6 +98,15 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_05_072322) do
     t.datetime "started_at"
     t.index ["user_id"], name: "index_ahoy_visits_on_user_id"
     t.index ["visit_token"], name: "index_ahoy_visits_on_visit_token", unique: true
+  end
+
+  create_table "client_members", force: :cascade do |t|
+    t.bigint "client_id", null: false
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["client_id"], name: "index_client_members_on_client_id"
+    t.index ["user_id"], name: "index_client_members_on_user_id"
   end
 
   create_table "clients", force: :cascade do |t|
@@ -420,6 +429,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_05_072322) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "client_members", "clients"
+  add_foreign_key "client_members", "users"
   add_foreign_key "clients", "companies"
   add_foreign_key "devices", "companies"
   add_foreign_key "devices", "users"
