@@ -28,7 +28,7 @@ class Reports::TimeEntries::ReportService
       if get_filters
         @_filter_options ||= {
           clients: current_company.clients.includes([:logo_attachment]).order(:name),
-          team_members: current_company.users.order(:first_name)
+          team_members: users_not_client_role.order(:first_name)
         }
       end
     end
@@ -90,4 +90,9 @@ class Reports::TimeEntries::ReportService
     def this_month_filter
       { work_date: DateTime.current.beginning_of_month..DateTime.current.end_of_month }
    end
+
+    def users_not_client_role
+      users_with_client_role_ids = current_company.users.joins(:roles).where(roles: { name: "client" }).pluck(:id)
+      current_company.users.where.not(id: users_with_client_role_ids)
+    end
 end

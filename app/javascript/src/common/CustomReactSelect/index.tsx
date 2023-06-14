@@ -31,6 +31,8 @@ export const CustomReactSelect = ({
   hideDropdownIndicator,
   className,
   autoFocus,
+  onBlur,
+  defaultValue,
 }) => {
   const { isDesktop } = useUserContext();
 
@@ -52,6 +54,7 @@ export const CustomReactSelect = ({
         autoFocus={autoFocus}
         className={className}
         classNamePrefix={classNamePrefix}
+        defaultValue={defaultValue}
         id={id || name}
         isDisabled={isDisabled}
         isSearchable={isSearchable}
@@ -66,6 +69,7 @@ export const CustomReactSelect = ({
             IndicatorSeparator: () => null,
           }
         }
+        onBlur={onBlur}
         onChange={handleOnChange}
         onFocus={handleonFocus}
         onMenuClose={onMenuClose}
@@ -90,11 +94,13 @@ CustomReactSelect.defaultProps = {
   handleOnClick: () => {}, // eslint-disable-line  @typescript-eslint/no-empty-function
   handleOnChange: () => {}, // eslint-disable-line  @typescript-eslint/no-empty-function
   handleonFocus: () => {}, // eslint-disable-line  @typescript-eslint/no-empty-function
+  onBlur: () => {}, // eslint-disable-line  @typescript-eslint/no-empty-function
   defaultValue: null,
   onMenuClose: () => {}, // eslint-disable-line  @typescript-eslint/no-empty-function
   onMenuOpen: () => {}, // eslint-disable-line  @typescript-eslint/no-empty-function
   className: "",
   autoFocus: false,
+  value: null,
 };
 
 export default CustomReactSelect;
