@@ -91,7 +91,7 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
     end
 
     def invoice
-      @_invoice ||= Invoice.includes(:client, :invoice_line_items).find(params[:id])
+      @_invoice ||= Invoice.kept.includes(:client, :invoice_line_items).find(params[:id])
     end
 
     def invoice_params
