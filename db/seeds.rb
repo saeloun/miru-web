@@ -7,10 +7,10 @@ company = Company.create!(
     business_phone: "+1 9296207865",
     base_currency: "USD",
     standard_price: 1000,
-    fiscal_year_end: "jan-dec",
+    fiscal_year_end: "Dec",
     date_format: "MM-DD-YYYY",
     country: "US",
-    timezone: "America - New York"
+    timezone: "(GMT-10:00) America/Adak"
   })
 
 puts "Company Created"
@@ -56,7 +56,7 @@ puts "Clients Created"
 microsoft_client.addresses.create!(
   address_line_1: "475 Clermont Ave",
   city: "Brooklyn",
-  state: "NY",
+  state: "New york",
   pin: "12238",
   country: "US"
 )
