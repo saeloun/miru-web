@@ -12,7 +12,7 @@ const StaticPage = ({ employmentDetails }) => (
           weight="bold"
         />
         <span className="text-sm font-medium text-miru-dark-purple-1000">
-          Current <br /> Employement
+          Current <br /> Employment
         </span>
       </div>
       <div className="w-4/5">
@@ -80,7 +80,7 @@ const StaticPage = ({ employmentDetails }) => (
           weight="bold"
         />
         <span className="text-sm font-medium text-miru-dark-purple-1000">
-          Previous <br /> Employement
+          Previous <br /> Employment
         </span>
       </div>
       <div className="w-4/5">
