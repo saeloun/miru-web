@@ -78,7 +78,7 @@ const TeamsRoutes = [{ path: "*", Component: TeamsRouteConfig }];
 
 const ProfileRoutes = [{ path: "*", Component: ProfileLayout }];
 
-const { ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE } = Roles;
+const { ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE, CLIENT } = Roles;
 
 export const AUTH_ROUTES = [
   {
@@ -127,7 +127,7 @@ export const ROUTES = [
   {
     path: Paths.INVOICES,
     subRoutes: InvoicesRoutes,
-    authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER],
+    authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER, CLIENT],
   },
   {
     path: Paths.REPORTS,

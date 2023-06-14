@@ -26,6 +26,9 @@ const RestrictedRoute = ({ user, role, authorisedRoles }) => {
     case Roles.OWNER:
       url = Paths.INVOICES;
       break;
+    case Roles.CLIENT:
+      url = Paths.INVOICES;
+      break;
     default:
       url = Paths.TIME_TRACKING;
       break;

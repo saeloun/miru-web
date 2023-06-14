@@ -25,6 +25,7 @@ export enum Roles {
   OWNER = "owner",
   BOOK_KEEPER = "book_keeper",
   EMPLOYEE = "employee",
+  CLIENT = "client",
 }
 
 export enum Paths {
