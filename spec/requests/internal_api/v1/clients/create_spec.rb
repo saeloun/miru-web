@@ -6,9 +6,11 @@ RSpec.describe "InternalApi::V1::Client#create", type: :request do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
   let(:invalid_address_attributes) { { city: "Brooklyn", state: "NY", country: "US", pin: "12238" } }
+  let!(:invitation) { create(:invitation, company:, role: "client") }
 
   context "when user is an admin" do
     before do
+      send_request :get, invitations_accepts_url(token: invitation.token)
       create(:employment, company:, user:)
       user.add_role :admin, company
       sign_in user
@@ -17,7 +19,7 @@ RSpec.describe "InternalApi::V1::Client#create", type: :request do
     describe "#create" do
       it "creates the client successfully" do
         address_details = attributes_for(:address)
-        client = attributes_for(:client, addresses_attributes: [address_details])
+        client = attributes_for(:client, email: invitation.recipient_email, addresses_attributes: [address_details])
         send_request :post, internal_api_v1_clients_path(client:), headers: auth_headers(user)
         expect(response).to have_http_status(:ok)
         change(Client, :count).by(1)

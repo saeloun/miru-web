@@ -8,15 +8,21 @@ class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationControlle
     client_details = clients.map { |client| client.client_detail(params[:time_frame]) }
     total_minutes = (client_details.map { |client| client[:minutes_spent] }).sum
     overdue_outstanding_amount = current_company.overdue_and_outstanding_and_draft_amount
-    render json: { client_details:, total_minutes:, overdue_outstanding_amount: }, status: :ok
+    users_with_client_role = current_company.users.joins(:roles).where(roles: { name: "client" })
+    users_not_in_client_members = users_with_client_role.where.not(id: ClientMember.pluck(:user_id))
+    render json: {
+             client_details:, total_minutes:, overdue_outstanding_amount:,
+             users_not_in_client_members:
+           },
+      status: :ok
   end
 
   def create
     authorize Client
-
-    client = Client.create!(client_params)
-
-    if client
+    ActiveRecord::Base.transaction do
+      client = Client.create!(client_params)
+      user = User.find_by!(email: params[:client][:email])
+      client_member = ClientMember.create!(client:, user:)
       render :create, locals: { client:, address: client.current_address }
     end
   end
@@ -35,8 +41,14 @@ class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationControlle
 
   def update
     authorize client
-
-    if client.update!(update_client_params)
+    ActiveRecord::Base.transaction do
+      client.update!(update_client_params)
+      if params[:client][:prev_email] && update_client_params[:email]
+        prev_user = User.find_by!(email: params[:client][:prev_email])
+        new_user = User.find_by!(email: update_client_params[:email])
+        client_member = ClientMember.find_by!(client:, user: prev_user)
+        client_member.update!(user: new_user)
+      end
       render json: {
         success: true,
         client:,

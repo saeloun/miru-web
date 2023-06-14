@@ -36,6 +36,7 @@ const StaticPage = ({
   handleOnChangeAddrType,
   handleOnChangeCountry,
   currentCountryDetails,
+  currentCityList,
   updatedStates,
   promiseOptions,
   handleOnChangeState,
@@ -348,6 +349,7 @@ const StaticPage = ({
         <div className="flex flex-row">
           <div className="flex w-1/2 flex-col px-2 py-3">
             <CustomAsyncSelect
+              defaultOptions={currentCityList}
               handleOnChange={city => handleOnChangeCity(city)}
               isErr={!!errDetails.city_err}
               label="City"
