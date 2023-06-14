@@ -37,7 +37,7 @@ RSpec.describe "Editing team memeber details", type: :system do
 
           el = all(:css, "#editMember", visible: false).last.hover
           el.click
-          choose "Bookkeeper"
+          choose "Admin"
           click_button "SAVE CHANGES"
 
           expect(page).to have_content("Bookkeeper")

@@ -43,10 +43,11 @@ class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationControlle
     authorize client
     ActiveRecord::Base.transaction do
       client.update!(update_client_params)
-      if update_client_params[:email]
-        user = User.find_by!(email: update_client_params[:email])
-        client_member = ClientMember.find_by!(client:)
-        client_member.update!(user:)
+      if params[:client][:prev_email] && update_client_params[:email]
+        prev_user = User.find_by!(email: params[:client][:prev_email])
+        new_user = User.find_by!(email: update_client_params[:email])
+        client_member = ClientMember.find_by!(client:, user: prev_user)
+        client_member.update!(user: new_user)
       end
       render json: {
         success: true,
