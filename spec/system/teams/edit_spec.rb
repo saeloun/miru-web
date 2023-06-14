@@ -40,7 +40,7 @@ RSpec.describe "Editing team memeber details", type: :system do
           choose "Admin"
           click_button "SAVE CHANGES"
 
-          expect(page).to have_content("Bookkeeper")
+          expect(page).to have_content("Admin")
         end
       end
     end
