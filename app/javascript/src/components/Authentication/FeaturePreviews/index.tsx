@@ -33,7 +33,17 @@ const FeaturePreviews = () => (
                 style={{ boxShadow: "0px 0px 32px rgba(0, 0, 0, 0.1)" }}
               />
             ) : (
-              <ReactPlayer muted playing url={feature.url} />
+              <div className="player-wrapper">
+                <ReactPlayer
+                  loop
+                  muted
+                  playing
+                  className="react-player"
+                  height="100%"
+                  url={feature.url}
+                  width="100%"
+                />
+              </div>
             )}
             <div>
               <h2 className="mb-3 font-manrope text-2xl font-semibold not-italic text-miru-white-1000">

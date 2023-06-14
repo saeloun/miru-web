@@ -10,11 +10,28 @@ import {
 export const carouselItems = [
   {
     type: "video",
+    url: "https://www.youtube.com/watch?v=PgCysAgvGj0",
+    texts: {
+      title: "Learn how to connect stripe in Miru to enable payments",
+      description:
+        "In this video, we will walk you through the process of connecting Stripe to your Miru account to enable payment processing for your sent invoices.",
+    },
+  },
+  {
+    type: "video",
+    url: "https://www.youtube.com/watch?v=OCgCYKs_4fY",
+    texts: {
+      title: "Learn to Create and Send Invoices to Clients",
+      description:
+        "Create and send invoices instantly to clients instantly using Miru's intuitive and user-friendly interface",
+    },
+  },
+  {
+    type: "video",
     url: "https://www.youtube.com/watch?v=-0YwRN-tYpg",
     texts: {
-      title: "Send invoice in 2 minutes",
-      description:
-        "Get a detailed report of your team's efforts & measure their time distribution across different projects. Identify team burnouts & underworked members for better decision-making.",
+      title: "Learn to Make Payments for Your Invoices using Stripe",
+      description: "Make payments for your invoices using Stripe",
     },
   },
   {
