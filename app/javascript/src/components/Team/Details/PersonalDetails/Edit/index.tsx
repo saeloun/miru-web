@@ -101,25 +101,30 @@ const EmploymentDetails = () => {
 
   useEffect(() => {
     const currentCountry = Country.getAllCountries().filter(
-      country => country.name == personalDetails.addresses.country
+      country =>
+        country.name == personalDetails.addresses.country ||
+        country.isoCode == personalDetails.addresses.country
     )[0];
 
     currentCountry &&
       setCurrentCountryDetails({
         label: currentCountry.name,
         value: currentCountry.name,
-        code: currentCountry.isoCode,
+        code: currentCountry?.isoCode,
       });
 
     if (personalDetails.addresses.city) {
       const stateCode =
         currentCountry &&
-        State.getStatesOfCountry(currentCountry.isoCode).filter(
+        State.getStatesOfCountry(currentCountry?.isoCode).filter(
           state => state.name == personalDetails.addresses.state
-        )[0].isoCode;
+        )[0]?.isoCode;
 
       setCurrentCityList(
-        City.getCitiesOfState(currentCountry.isoCode, stateCode).map(city => ({
+        City.getCitiesOfState(
+          currentCountry?.isoCode,
+          stateCode ?? personalDetails.addresses.state
+        ).map(city => ({
           label: city.name,
           value: city.name,
           ...city,
@@ -145,7 +150,7 @@ const EmploymentDetails = () => {
     State.getStatesOfCountry(countryCode).map(state => ({
       label: state.name,
       value: state.name,
-      code: state.isoCode,
+      code: state?.isoCode,
       ...state,
     }));
 

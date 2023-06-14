@@ -85,7 +85,9 @@ const UserDetailsEdit = () => {
 
   useEffect(() => {
     const currentCountry = Country.getAllCountries().filter(
-      country => country.name == profileSettings.addresses.country
+      country =>
+        country.name == profileSettings.addresses.country ||
+        country.isoCode == profileSettings.addresses.country
     )[0];
 
     currentCountry &&
@@ -103,7 +105,10 @@ const UserDetailsEdit = () => {
         )[0]?.isoCode;
 
       setCurrentCityList(
-        City.getCitiesOfState(currentCountry?.isoCode, stateCode).map(city => ({
+        City.getCitiesOfState(
+          currentCountry?.isoCode,
+          stateCode ?? profileSettings.addresses.state
+        ).map(city => ({
           label: city.name,
           value: city.name,
           ...city,
