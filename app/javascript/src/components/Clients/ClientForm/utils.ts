@@ -14,6 +14,10 @@ export const formatFormData = (
     formData.append("client[addresses_attributes[0][id]]", client.address.id);
   }
 
+  if (!isNewForm && values.email !== client.email) {
+    formData.append("client[prev_email]", client.email);
+  }
+
   formData.append(
     "client[addresses_attributes[0][address_line_1]]",
     values.address1
