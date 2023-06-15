@@ -44,8 +44,11 @@ const MoreOptions = ({
             id="sendInvoiceButton"
             onClick={e => {
               e.stopPropagation();
-              setShowConnectPaymentDialog(!showConnectPaymentDialog);
-              setIsSending(!isSending);
+              if (!isStripeEnabled) {
+                setShowConnectPaymentDialog(!showConnectPaymentDialog);
+              } else {
+                setIsSending(!isSending);
+              }
             }}
           >
             <PaperPlaneTiltIcon
