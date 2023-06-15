@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe InvoicePayment::StripePaymentFailed do
+RSpec.describe InvoicePayment::StripePaymentFailed, vcr: true do
   include Rails.application.routes.url_helpers
   let(:company) { create(:company, base_currency: "inr") }
   let(:client) { create(:client_with_phone_number_without_country_code, company:) }
@@ -13,7 +13,7 @@ RSpec.describe InvoicePayment::StripePaymentFailed do
 }
   let!(:stripe_connected_account) { create(:stripe_connected_account, company:) }
 
-  describe "#process", :vcr do
+  describe "#process" do
     before do
       stripe_connected_account.update_columns(account_id: "acct_1NIU5SENZof8Gnl1")
       payment_intent = Stripe::PaymentIntent.retrieve(
