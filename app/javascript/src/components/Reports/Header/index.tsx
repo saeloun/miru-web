@@ -122,6 +122,7 @@ const Header = ({
                 className="flex items-center py-2 text-sm text-miru-han-purple-1000"
                 onClick={() => {
                   setIsFilterVisible(!isFilterVisible);
+                  setShowMoreOptions(false);
                 }}
               >
                 <FilterIcon className="mr-4" color="#7C5DEE" size={16} />{" "}
