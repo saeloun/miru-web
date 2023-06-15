@@ -21,6 +21,7 @@ RSpec.describe InvoicePayment::StripeCheckoutFailed do
         invoice_checkout.id, {},
         { stripe_account: stripe_connected_account.account_id })
 
+      expired_checkout.metadata.invoice_id = invoice.id
       json_expired = { data: { object: expired_checkout.as_json }, created: 1686646712 }
       object_expired = JSON.parse(json_expired.to_json, object_class: OpenStruct)
 
