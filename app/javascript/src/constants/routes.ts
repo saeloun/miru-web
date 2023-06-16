@@ -5,6 +5,7 @@ import ForgotPassword from "components/Authentication/ForgotPassword";
 import SignIn from "components/Authentication/SignIn";
 import SignUp from "components/Authentication/SignUp";
 import InvoiceEmail from "components/InvoiceEmail";
+import InvoicesRouteConfig from "components/Invoices/InvoicesRouteConfig";
 import Success from "components/payments/Success";
 import Projects from "components/Projects";
 import AccountsAgingReport from "components/Reports/AccountsAgingReport";
@@ -13,10 +14,6 @@ import { Roles, Paths } from "constants/index";
 
 import Clients from "../components/Clients";
 import ClientDetails from "../components/Clients/Details";
-import EditInvoice from "../components/Invoices/Edit";
-import GenerateInvoices from "../components/Invoices/Generate";
-import Invoice from "../components/Invoices/Invoice";
-import InvoicesList from "../components/Invoices/List";
 import Payments from "../components/payments";
 import ProfileLayout from "../components/Profile/Layout";
 import ProjectDetails from "../components/Projects/Details";
@@ -43,14 +40,6 @@ const ReportsRoutes = [
   { path: "accounts-aging", Component: AccountsAgingReport },
 ];
 
-const InvoicesRoutes = [
-  { path: "", Component: InvoicesList },
-  { path: "generate", Component: GenerateInvoices },
-  { path: ":id/edit", Component: EditInvoice },
-  { path: ":id", Component: Invoice },
-  { path: "*", Component: ErrorPage },
-];
-
 const ProjectsRoutes = [
   { path: "", Component: Projects },
   { path: ":projectId", Component: ProjectDetails },
@@ -75,6 +64,8 @@ const TimeTrackingRoutes = [
 const TeamRoutes = [{ path: "*", Component: RouteConfig }];
 
 const TeamsRoutes = [{ path: "*", Component: TeamsRouteConfig }];
+
+const InvoiceRoutes = [{ path: "*", Component: InvoicesRouteConfig }];
 
 const ProfileRoutes = [{ path: "*", Component: ProfileLayout }];
 
@@ -126,7 +117,7 @@ export const ROUTES = [
   },
   {
     path: Paths.INVOICES,
-    subRoutes: InvoicesRoutes,
+    subRoutes: InvoiceRoutes,
     authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER, CLIENT],
   },
   {
@@ -167,6 +158,6 @@ export const ROUTES = [
   {
     path: Paths.PROFILE,
     subRoutes: ProfileRoutes,
-    authorisedRoles: [ADMIN, OWNER, EMPLOYEE, BOOK_KEEPER],
+    authorisedRoles: [ADMIN, OWNER, EMPLOYEE, BOOK_KEEPER, CLIENT],
   },
 ];

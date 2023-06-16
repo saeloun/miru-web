@@ -13,7 +13,12 @@ namespace :internal_api, defaults: { format: "json" } do
       end
     end
 
-    resources :clients, only: [:index, :update, :destroy, :show, :create]
+    resources :clients, only: [:index, :update, :destroy, :show, :create] do
+      collection do
+        get "invoices", to: "clients/invoices#index"
+        get "invoices/:id", to: "clients/invoices#show", as: "invoice"
+      end
+    end
 
     resources :project, only: [:index]
     resources :timesheet_entry do
