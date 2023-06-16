@@ -91,7 +91,7 @@ const Header = ({ params, setParams }) => {
 
   return (
     <div className="relative mt-6 mb-3 flex flex-wrap items-center justify-between md:justify-start lg:justify-between">
-      {isDesktop && <h2 className="header__title">Invoices</h2>}
+      <h2 className="header__title">Invoices</h2>
       {isDesktop ? (
         <div className="flex w-10/12 lg:w-1/2">
           <div className="relative w-11/12">
