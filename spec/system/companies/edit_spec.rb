@@ -16,6 +16,11 @@ RSpec.describe "Edit company", type: :system do
       find(".react-select-filter__control.css-digfch-control").click
       find("#react-select-10-option-41").click
     end
+
+    within("div#citySelect") do
+      find(".react-select-filter__control.css-digfch-control").click
+      find("#react-select-11-option-4").click
+    end
   end
 
   before do
