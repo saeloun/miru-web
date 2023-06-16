@@ -14,7 +14,7 @@ const ClientInvoices = () => {
   const [loading, setLoading] = useState(true);
   const [pagy, setPagy] = useState<any>(null);
   const [params, setParams] = useState<any>({
-    invoices_per_page: searchParams.get("invoices_per_page") || 1,
+    invoices_per_page: searchParams.get("invoices_per_page") || 20,
     page: searchParams.get("page") || 1,
     query: searchParams.get("query") || "",
   });
