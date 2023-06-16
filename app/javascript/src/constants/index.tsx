@@ -36,7 +36,7 @@ export enum Paths {
   LOGIN = "/login",
   SIGN_IN = "/user/sign_in",
   CLIENTS = "/clients",
-  INVOICES = "/invoices",
+  INVOICES = "/invoices/*",
   REPORTS = "/reports",
   PROJECTS = "/projects",
   SUBSCRIPTIONS = "/subscriptions",
