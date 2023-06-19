@@ -1,0 +1,45 @@
+.carousel-root {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-items: center;
+}
+
+.carousel.carousel-slider {
+    height: 60%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+
+.slider-wrapper {
+    height: 80%;
+    margin: 0 !important;
+}
+
+.control-dots{
+    height: 5%;
+    position: static;
+}
+
+.slider{
+    height: 100%;
+}
+
+.react-player iframe {
+    height: 100% !important;
+    width: 100% !important;
+    margin: 0 !important;
+    border-radius: 10px;
+}
+
+.html5-video-container {
+    height: 100% !important;
+    width: 100% !important;
+}
+
+.html5-video-player .video-click-tracking, .html5-video-player .video-stream {
+    width: 100% !important;
+    height: 100% !important;
+    position: relative;
+}
