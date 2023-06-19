@@ -1,7 +1,6 @@
 import React, { Fragment, useEffect, useState } from "react";
 
 import dayjs from "dayjs";
-import Logger from "js-logger";
 import { useParams, useNavigate } from "react-router-dom";
 import { Toastr } from "StyledComponents";
 
@@ -78,7 +77,7 @@ const EditInvoice = () => {
       const res = await paymentSettings.get();
       setIsStripeEnabled(res.data.providers.stripe.connected);
     } catch {
-      Logger.log("ERROR! CONNECTING TO PAYMENTS");
+      Toastr.error("ERROR! CONNECTING TO PAYMENTS");
     }
   };
 
@@ -151,11 +150,7 @@ const EditInvoice = () => {
   const handleSendInvoice = () => {
     if (!isStripeEnabled) {
       setShowConnectPaymentDialog(true);
-    } else if (
-      selectedClient &&
-      invoiceNumber !== "" &&
-      !showConnectPaymentDialog
-    ) {
+    } else if (selectedClient && invoiceNumber && !showConnectPaymentDialog) {
       setShowSendInvoiceModal(true);
     } else {
       selectedClient

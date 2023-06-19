@@ -41,10 +41,10 @@ const InvoiceActions = ({
       <EditButton editInvoiceLink={editInvoiceLink} />
       <SendButton
         onClick={() => {
-          if (!isStripeEnabled) {
-            setShowConnectPaymentDialog(true);
-          } else {
+          if (isStripeEnabled) {
             sendInvoice();
+          } else {
+            setShowConnectPaymentDialog(true);
           }
         }}
       />

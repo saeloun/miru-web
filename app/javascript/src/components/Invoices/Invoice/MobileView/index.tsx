@@ -142,10 +142,10 @@ const MobileView = ({
               className="ml-2 flex w-1/2 items-center justify-center px-4 py-2"
               style="primary"
               onClick={() => {
-                if (!isStripeEnabled) {
-                  setShowConnectPaymentDialog(true);
-                } else {
+                if (isStripeEnabled) {
                   handleSendInvoice();
+                } else {
+                  setShowConnectPaymentDialog(true);
                 }
               }}
             >

@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 
-import Logger from "js-logger";
 import { InstagramSVG, TwitterSVG, MiruLogoWithTextSVG } from "miruIcons";
 import { useParams } from "react-router-dom";
 
 import invoicesApi from "apis/invoices";
 import paymentSettings from "apis/payment-settings";
 import Loader from "common/Loader";
+import Toastr from "common/Toastr";
 import ConnectPaymentGateway from "components/Invoices/popups/ConnectPaymentGateway";
 
 import Header from "./Header";
@@ -38,7 +38,7 @@ const InvoiceEmail = () => {
       const res = await paymentSettings.get();
       setIsStripeConnected(res.data.providers.stripe.connected);
     } catch {
-      Logger.log("ERROR! CONNECTING TO PAYMENTS");
+      Toastr.error("ERROR! CONNECTING TO PAYMENTS");
     }
   };
 

@@ -44,10 +44,10 @@ const MoreOptions = ({
             id="sendInvoiceButton"
             onClick={e => {
               e.stopPropagation();
-              if (!isStripeEnabled) {
-                setShowConnectPaymentDialog(!showConnectPaymentDialog);
-              } else {
+              if (isStripeEnabled) {
                 setIsSending(!isSending);
+              } else {
+                setShowConnectPaymentDialog(!showConnectPaymentDialog);
               }
             }}
           >

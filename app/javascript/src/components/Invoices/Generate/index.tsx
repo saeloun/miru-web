@@ -1,7 +1,6 @@
 import React, { Fragment, useEffect, useState } from "react";
 
 import dayjs from "dayjs";
-import Logger from "js-logger";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Toastr } from "StyledComponents";
 
@@ -73,7 +72,7 @@ const GenerateInvoices = () => {
       const stripe = paymentsProviders.find(p => p.name === "stripe");
       setIsStripeConnected(!!stripe && stripe.enabled);
     } catch {
-      Logger.log("ERROR!");
+      Toastr.error("ERROR! CONNECTING TO PAYMENTS");
     }
   };
 

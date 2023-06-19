@@ -1,6 +1,7 @@
 import React from "react";
 
 import { ReportsIcon } from "miruIcons";
+import PropTypes from "prop-types";
 import { Badge, Tooltip } from "StyledComponents";
 
 import getStatusCssClass from "utils/getBadgeStatus";
@@ -77,5 +78,13 @@ const Header = ({
     </div>
   </div>
 );
+
+Header.propTypes = {
+  invoice: PropTypes.object,
+  stripeUrl: PropTypes.string,
+  isStripeConnected: PropTypes.bool,
+  setIsInvoiceEmail: PropTypes.func,
+  setShowConnectPaymentDialog: PropTypes.func,
+};
 
 export default Header;
