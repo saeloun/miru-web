@@ -28,6 +28,7 @@
 #
 
 class TimesheetEntry < ApplicationRecord
+  extend Pagy::Searchkick
   enum bill_status: [:non_billable, :unbilled, :billed]
 
   belongs_to :user

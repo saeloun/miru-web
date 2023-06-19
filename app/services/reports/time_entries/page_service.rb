@@ -47,11 +47,11 @@ class Reports::TimeEntries::PageService < ApplicationService
       total_records = if params[:group_by].present?
         reports.total_count
       else
-        @reports = TimesheetEntry.search(where: {}, load: false)
+        @reports = TimesheetEntry.pagy_search(where: {}, load: false)
         @reports.total_entries
       end
 
-      @pagy_data, paginated_data = pagy(@reports, items: DEFAULT_ITEMS_PER_PAGE, page:, count: total_records)
+      @pagy_data, paginated_data = pagy_searchkick(@reports, items: DEFAULT_ITEMS_PER_PAGE, page:, count: total_records)
       @es_filter = { id: paginated_data.results.map { |data| data.except("_id", "_index", "_score") }.pluck(:id) }
     end
 

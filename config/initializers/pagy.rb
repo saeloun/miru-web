@@ -4,6 +4,7 @@ require "pagy/extras/metadata"
 Pagy::DEFAULT[:metadata] = %i[scaffold_url page count in items pages prev next last] # example
 
 require "pagy/extras/items"
+require "pagy/extras/elasticsearch_rails"
 # Pagy initializer file (5.10.1)
 # Customize only what you really need and notice that the core Pagy works also without any of the following lines.
 # Should you just cherry pick part of this file, please maintain the require-order of the extras

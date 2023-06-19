@@ -50,7 +50,7 @@ class Reports::TimeEntries::ReportService
 
       search_results = search_timesheet_entries(where_clause.merge(page_service.es_filter))
 
-      pagy_data, paginated_data = pagy(
+      pagy_data, paginated_data = pagy_searchkick(
         search_results,
         items: Reports::TimeEntries::PageService::DEFAULT_ITEMS_PER_PAGE,
         page: params[:page],
@@ -76,16 +76,24 @@ class Reports::TimeEntries::ReportService
       page_service = Reports::TimeEntries::PageService.new(params, current_company)
       page_service.process
 
-      @reports = search_timesheet_entries(where_clause.merge(page_service.es_filter))
+      collections = search_timesheet_entries(where_clause.merge(page_service.es_filter))
+
       @pagination_details = if params[:date_range] == "custom"
+        @pagy, @response = pagy_searchkick(
+          collections,
+          items: Reports::TimeEntries::PageService::DEFAULT_ITEMS_PER_PAGE,
+          page: params[:page],
+          count: collections.size
+        )
         page_service.pagination_details
       else
-        pagination_details_for_es_query(@reports)
+        @reports = collections
+        pagination_details_for_es_query(collections)
       end
    end
 
     def pagination_details_for_es_query(search_result)
-      pagy_data, paginated_data = pagy(
+      pagy_data, paginated_data = pagy_searchkick(
         search_result,
         items: Reports::TimeEntries::PageService::DEFAULT_ITEMS_PER_PAGE,
         page: params[:page], count: search_result.size
@@ -103,7 +111,7 @@ class Reports::TimeEntries::ReportService
     end
 
     def search_timesheet_entries(where_clause, page = nil)
-      TimesheetEntry.search(
+      TimesheetEntry.pagy_search(
         where: where_clause,
         order: { work_date: :desc },
         page:,
