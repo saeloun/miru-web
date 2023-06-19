@@ -28,6 +28,7 @@ module.exports = {
       "6xl": "4rem",
       "7xl": "5rem",
       32: "2rem",
+      "2vh": "2vh",
     },
     letterSpacing: {
       2: "2px",

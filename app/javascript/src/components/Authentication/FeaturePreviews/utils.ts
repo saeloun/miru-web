@@ -10,7 +10,7 @@ import {
 export const carouselItems = [
   {
     type: "video",
-    url: "https://www.youtube.com/watch?v=PgCysAgvGj0",
+    url: "https://www.youtube.com/watch?v=KvLh-XYMdpM",
     texts: {
       title: "Learn how to connect stripe in Miru to enable payments",
       description:
