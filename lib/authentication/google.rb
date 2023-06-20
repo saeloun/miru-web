@@ -11,29 +11,29 @@ module Authentication
     def user!
       return if @user_data.blank? || google_id.blank?
 
-      # Identity.google_auth.where(uid: google_id)&.first&.user || create_user!
+      Identity.google_auth.where(uid: google_id)&.first&.user || create_user!
       Identity.google_auth.where(uid: google_id)&.first&.user
     end
 
     private
 
       def create_user!
-        # user = User.find_by_email(email)
-        # if user.present?
-        #   user.identities.find_or_create_by(provider: PROVIDER, uid: google_id)
-        # else
-        #   user_first_name = first_name || email.split("@").first
-        #   user = User.new(
-        #     email:,
-        #     first_name: user_first_name,
-        #     last_name:,
-        #     password: Devise.friendly_token[0, 20]
-        #   )
-        #   user.skip_confirmation!
-        #   user.save
-        #   user.identities.create(provider: PROVIDER, uid: google_id)
-        # end
-        # user
+        user = User.find_by_email(email)
+        if user.present?
+          user.identities.find_or_create_by(provider: PROVIDER, uid: google_id)
+        else
+          user_first_name = first_name || email.split("@").first
+          user = User.new(
+            email:,
+            first_name: user_first_name,
+            last_name:,
+            password: Devise.friendly_token[0, 20]
+          )
+          user.skip_confirmation!
+          user.save!
+          user.identities.create!(provider: PROVIDER, uid: google_id)
+        end
+        user
       end
 
       def email
