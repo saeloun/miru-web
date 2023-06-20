@@ -22,25 +22,25 @@ RSpec.describe Authentication::Google, type: :class do
       expect(user.id).to eq(identity.user.id)
     end
 
-    # it "returns the existing user, if user with email exists" do
-    #   existing_user = create(:user, email: "john@example.com")
+    it "returns the existing user, if user with email exists" do
+      existing_user = create(:user, email: "john@example.com")
 
-    #   user = Authentication::Google.new(user_data).user!
-    #   expect(existing_user.id).to eq(user.id)
-    #   expect(existing_user.email).to eq(user.email)
-    # end
+      user = Authentication::Google.new(user_data).user!
+      expect(existing_user.id).to eq(user.id)
+      expect(existing_user.email).to eq(user.email)
+    end
 
-    # it "returns and create a new user if user or user identity does not exists in our system" do
-    #   expect(User.find_by_email(user_data.info.email)).to be_nil
-    #   expect(User.find_by_first_name(user_data.info.first_name)).to be_nil
-    #   expect(User.find_by_last_name(user_data.info.last_name)).to be_nil
-    #   expect(Identity.google_auth.where(uid: user_data.uid)&.first).to be_nil
+    it "returns and create a new user if user or user identity does not exists in our system" do
+      expect(User.find_by_email(user_data.info.email)).to be_nil
+      expect(User.find_by_first_name(user_data.info.first_name)).to be_nil
+      expect(User.find_by_last_name(user_data.info.last_name)).to be_nil
+      expect(Identity.google_auth.where(uid: user_data.uid)&.first).to be_nil
 
-    #   user = Authentication::Google.new(user_data).user!
+      user = Authentication::Google.new(user_data).user!
 
-    #   expect(user.email).to eq(user_data.info.email)
-    #   identity = user.identities.find_by(provider: Authentication::Google::PROVIDER, uid: user_data.uid)
-    #   expect(identity.present?).to be_truthy
-    # end
+      expect(user.email).to eq(user_data.info.email)
+      identity = user.identities.find_by(provider: Authentication::Google::PROVIDER, uid: user_data.uid)
+      expect(identity.present?).to be_truthy
+    end
   end
 end
