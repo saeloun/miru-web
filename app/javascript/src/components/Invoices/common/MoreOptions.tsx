@@ -1,7 +1,11 @@
 /* eslint-disable no-unused-vars */
 import React, { FC } from "react";
 
-import { CurrencyCircleDollarIcon, WaiveSVG } from "miruIcons";
+import {
+  CurrencyCircleDollarIcon,
+  PaperPlaneTiltIcon,
+  WaiveSVG,
+} from "miruIcons";
 import { Trash, DownloadSimple } from "phosphor-react";
 
 const MoreOptions: FC<MoreOptionsProps> = ({
@@ -10,6 +14,8 @@ const MoreOptions: FC<MoreOptionsProps> = ({
   downloadInvoice,
   invoice = null,
   markInvoiceAsPaid = () => null,
+  setIsSendReminder,
+  sendInvoice,
 }) => (
   <ul className="absolute right-20 rounded border-2 border-miru-gray-200 bg-white py-2 drop-shadow">
     {downloadInvoice != null && invoice.status != "draft" && (
@@ -39,6 +45,18 @@ const MoreOptions: FC<MoreOptionsProps> = ({
         </li>
       </>
     )}
+    {invoice?.status === "overdue" && (
+      <li
+        className="flex cursor-pointer items-center py-2.5 px-4 text-miru-han-purple-1000 hover:bg-miru-gray-100"
+        onClick={() => {
+          setIsSendReminder(true);
+          sendInvoice();
+        }}
+      >
+        <PaperPlaneTiltIcon className="mr-4" size={16} />
+        Send Reminder
+      </li>
+    )}
     <li
       className="flex cursor-pointer items-center py-2.5 px-4 text-miru-red-400 hover:bg-miru-gray-100"
       onClick={deleteInvoice}
@@ -55,6 +73,8 @@ interface MoreOptionsProps {
   downloadInvoice: (invoice: any) => void;
   invoice: any;
   markInvoiceAsPaid: (id: number) => void;
+  setIsSendReminder: (value: boolean) => void;
+  sendInvoice?: () => void;
 }
 
 export default MoreOptions;

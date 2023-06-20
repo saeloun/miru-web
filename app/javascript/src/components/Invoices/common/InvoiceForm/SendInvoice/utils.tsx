@@ -13,6 +13,9 @@ export const isEmailValid = (email: string): boolean => {
 export const emailSubject = (invoice: any): string =>
   `${invoice.company.name} sent you an invoice (${invoice.invoiceNumber})`;
 
+export const sendReminderEmailSubject = invoice =>
+  `Reminder to complete payments for unpaid invoice #(${invoice.id})`;
+
 export const emailBody = (invoice: any): string => {
   const formattedAmount = currencyFormat(
     invoice.company.baseCurrency || invoice.company.currency,

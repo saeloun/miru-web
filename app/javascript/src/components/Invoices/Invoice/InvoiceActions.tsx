@@ -16,6 +16,7 @@ const InvoiceActions = ({
   deleteInvoice,
   wavieInvoice,
   invoice,
+  setIsSendReminder,
 }) => {
   const [isMoreOptionsVisible, setIsMoreOptionsVisible] =
     useState<boolean>(false);
@@ -48,6 +49,8 @@ const InvoiceActions = ({
             downloadInvoice={handleDownloadInvoice}
             invoice={invoice}
             markInvoiceAsPaid={markInvoiceAsPaid}
+            sendInvoice={sendInvoice}
+            setIsSendReminder={setIsSendReminder}
             wavieInvoice={wavieInvoice}
           />
         )}

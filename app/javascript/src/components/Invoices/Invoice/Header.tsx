@@ -11,6 +11,7 @@ const Header = ({
   setInvoiceToWaive,
   setInvoiceToDelete,
   setShowWavieDialog,
+  setIsSendReminder,
 }) => {
   const invoiceWaived = invoice?.status === "waived";
 
@@ -25,6 +26,7 @@ const Header = ({
           editInvoiceLink={`/invoices/${invoice.id}/edit`}
           invoice={invoice}
           sendInvoice={handleSendInvoice}
+          setIsSendReminder={setIsSendReminder}
           deleteInvoice={() => {
             setShowDeleteDialog(true);
             setInvoiceToDelete(invoice.id);

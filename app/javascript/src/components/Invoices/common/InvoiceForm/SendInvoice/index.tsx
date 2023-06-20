@@ -22,6 +22,7 @@ import {
   emailBody,
   isDisabled,
   buttonText,
+  sendReminderEmailSubject,
 } from "./utils";
 
 interface InvoiceEmail {
@@ -51,10 +52,14 @@ const SendInvoice: React.FC<any> = ({
   setIsSending,
   isSending,
   handleSaveSendInvoice,
+  isSendReminder = false,
+  setIsSendReminder,
 }) => {
   const [status, setStatus] = useState<InvoiceStatus>(InvoiceStatus.IDLE);
   const [invoiceEmail, setInvoiceEmail] = useState<InvoiceEmail>({
-    subject: emailSubject(invoice),
+    subject: isSendReminder
+      ? sendReminderEmailSubject(invoice)
+      : emailSubject(invoice),
     message: emailBody(invoice),
     recipients: [invoice.client.email],
   });
@@ -255,7 +260,7 @@ const SendInvoice: React.FC<any> = ({
                   }
                   onClick={handleSubmit}
                 >
-                  {buttonText(status)}
+                  {isSendReminder ? "Send Reminder" : buttonText(status)}
                 </button>
               </div>
             </form>

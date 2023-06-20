@@ -79,6 +79,20 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
     end
   end
 
+  def send_reminder
+    authorize invoice
+
+    if invoice.overdue?
+      SendReminderMailer.with(
+        invoice:,
+        subject: invoice_email_params[:subject],
+        recipients: invoice_email_params[:recipients]
+      ).send_reminder.deliver_later
+
+      render json: { message: "A reminder has been sent to #{invoice.client.email}" }, status: :accepted
+    end
+  end
+
   def download
     authorize invoice
 

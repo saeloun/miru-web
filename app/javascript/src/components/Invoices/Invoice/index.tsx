@@ -29,6 +29,7 @@ const Invoice = () => {
   const [invoiceToWaive, setInvoiceToWaive] = useState(null);
   const [showWavieDialog, setShowWavieDialog] = useState<boolean>(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
+  const [isSendReminder, setIsSendReminder] = useState<boolean>(false);
   const { isDesktop } = useUserContext();
   const fetchInvoice = async () => {
     try {
@@ -59,15 +60,17 @@ const Invoice = () => {
           invoice={invoice}
           setInvoiceToDelete={setInvoiceToDelete}
           setInvoiceToWaive={setInvoiceToWaive}
+          setIsSendReminder={setIsSendReminder}
           setShowDeleteDialog={setShowDeleteDialog}
           setShowWavieDialog={setShowWavieDialog}
         />
         <div className="m-0 mt-5 mb-10 w-full bg-miru-gray-100 p-0">
           <InvoiceDetails invoice={invoice} />
         </div>
-        {showSendInvoiceModal && (
+        {(showSendInvoiceModal || isSendReminder) && (
           <SendInvoice
             invoice={invoice}
+            isSendReminder={isSendReminder}
             isSending={showSendInvoiceModal}
             setIsSending={setShowSendInvoiceModal}
           />

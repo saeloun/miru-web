@@ -46,7 +46,12 @@ const Recipient: React.FC<{ email: string; handleClick: any }> = ({
   </div>
 );
 
-const SendInvoice: React.FC<any> = ({ invoice, setIsSending, isSending }) => {
+const SendInvoice: React.FC<any> = ({
+  invoice,
+  setIsSending,
+  isSending,
+  isSendReminder,
+}) => {
   const [status, setStatus] = useState<InvoiceStatus>(InvoiceStatus.IDLE);
   const [invoiceEmail, setInvoiceEmail] = useState<InvoiceEmail>({
     subject: emailSubject(invoice),
@@ -74,7 +79,12 @@ const SendInvoice: React.FC<any> = ({ invoice, setIsSending, isSending }) => {
         setStatus(InvoiceStatus.LOADING);
 
         const payload = { invoice_email: invoiceEmail };
-        const resp = await invoicesApi.sendInvoice(invoice.id, payload);
+        let resp;
+        if (isSendReminder) {
+          resp = await invoicesApi.sendReminder(invoice.id, payload);
+        } else {
+          resp = await invoicesApi.sendInvoice(invoice.id, payload);
+        }
 
         Toastr.success(resp.data.message);
         setStatus(InvoiceStatus.SUCCESS);
@@ -239,7 +249,7 @@ const SendInvoice: React.FC<any> = ({ invoice, setIsSending, isSending }) => {
                   }
                   onClick={handleSubmit}
                 >
-                  {buttonText(status)}
+                  {isSendReminder ? "Send Reminder" : buttonText(status)}
                 </button>
               </div>
             </form>

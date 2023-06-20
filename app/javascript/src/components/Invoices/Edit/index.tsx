@@ -43,6 +43,7 @@ const EditInvoice = () => {
     useState<boolean>(false);
   const [invoiceToDelete, setInvoiceToDelete] = useState(null);
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
+  const [isSendReminder, setIsSendReminder] = useState<boolean>(false);
 
   const INVOICE_NUMBER_ERROR = "Please enter invoice number to proceed";
   const SELECT_CLIENT_ERROR =
@@ -167,6 +168,7 @@ const EditInvoice = () => {
             handleSendInvoice={handleSendInvoice}
             id={invoiceDetails.id}
             invoiceNumber={invoiceDetails.invoiceNumber}
+            setIsSendReminder={setIsSendReminder}
             setShowInvoiceSetting={false}
             deleteInvoice={() => {
               setShowDeleteDialog(true);
@@ -220,7 +222,7 @@ const EditInvoice = () => {
               tax={tax || invoiceDetails.tax}
             />
           </div>
-          {showSendInvoiceModal && (
+          {(showSendInvoiceModal || isSendReminder) && (
             <SendInvoice
               handleSaveSendInvoice={handleSaveSendInvoice}
               isSending={showSendInvoiceModal}

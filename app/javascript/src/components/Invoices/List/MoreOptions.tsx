@@ -26,6 +26,7 @@ const MoreOptions = ({
   setShowMoreOptions,
   showPrint,
   showSendLink,
+  setIsSendReminder,
 }) => {
   const navigate = useNavigate();
 
@@ -106,6 +107,22 @@ const MoreOptions = ({
             className="mt-1 rounded-lg border-miru-gray-200 bg-white shadow-c1 lg:py-3 xl:py-4"
             onClick={e => e.stopPropagation()}
           >
+            {invoice?.status === "overdue" && (
+              <li
+                className="flex cursor-pointer items-center px-5 text-sm text-miru-han-purple-1000 hover:bg-miru-gray-100 lg:py-1 xl:py-2"
+                onClick={() => {
+                  setIsSendReminder(true);
+                  setIsSending(!isSending);
+                }}
+              >
+                <PaperPlaneTiltIcon
+                  className="lg:mr-2 xl:mr-4"
+                  size={16}
+                  weight="bold"
+                />
+                Send Reminder
+              </li>
+            )}
             {showPrint && (
               <li className="flex cursor-pointer items-center px-5 text-sm text-miru-han-purple-1000 hover:bg-miru-gray-100 lg:py-1 xl:py-2">
                 <PrinterIcon

@@ -27,6 +27,7 @@ const TableRow = ({
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   const [showMoreOptions, setShowMoreOptions] = useState<boolean>(false);
   const [showToolTip, setShowToolTip] = useState<boolean>(false);
+  const [isSendReminder, setIsSendReminder] = useState<boolean>(false);
   useDebounce(isMenuOpen, 500);
   const navigate = useNavigate();
   const toolTipRef = useRef(null);
@@ -131,6 +132,7 @@ const TableRow = ({
               isSending={isSending}
               setInvoiceToDelete={setInvoiceToDelete}
               setIsMenuOpen={setIsMenuOpen}
+              setIsSendReminder={setIsSendReminder}
               setIsSending={setIsSending}
               setShowDeleteDialog={setShowDeleteDialog}
               setShowMoreOptions={setShowMoreOptions}
@@ -160,10 +162,11 @@ const TableRow = ({
             </button>
           </td>
         )}
-        {isSending && isDesktop && (
+        {(isSending || isSendReminder) && isDesktop && (
           <SendInvoice
             fetchInvoices={fetchInvoices}
             invoice={invoice}
+            isSendReminder={isSendReminder}
             isSending={isSending}
             setIsSending={setIsSending}
           />
@@ -209,6 +212,7 @@ const TableRow = ({
           isSending={isSending}
           setInvoiceToDelete={setInvoiceToDelete}
           setIsMenuOpen={setIsMenuOpen}
+          setIsSendReminder={setIsSendReminder}
           setIsSending={setIsSending}
           setShowDeleteDialog={setShowDeleteDialog}
           setShowMoreOptions={setShowMoreOptions}
