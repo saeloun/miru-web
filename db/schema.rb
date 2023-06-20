@@ -277,6 +277,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_12_105554) do
     t.integer "transaction_type", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "name"
     t.index ["invoice_id"], name: "index_payments_on_invoice_id"
     t.index ["status"], name: "index_payments_on_status"
   end

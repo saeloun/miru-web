@@ -1,0 +1,626 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://api.stripe.com/v1/accounts
+    body:
+      encoding: UTF-8
+      string: type=standard
+    headers:
+      User-Agent:
+      - Stripe/v1 RubyBindings/8.2.0
+      Authorization:
+      - Bearer sk_test_51EXIAiEQYiNu1q8E22PeN6N5pMswpv0Q5dwRApDrqfIuGvyoKTCX5KaKdWWIEZht8LjSF85v7lxPOKrxBFFs7vLp00QvWOAKgM
+      Content-Type:
+      - application/x-www-form-urlencoded
+      X-Stripe-Client-User-Agent:
+      - '{"bindings_version":"8.2.0","lang":"ruby","lang_version":"3.2.2 p53 (2023-03-30)","platform":"x86_64-darwin22","engine":"ruby","publisher":"stripe","uname":"Darwin
+        Gowsik-ka-MacBook-Pro.local 22.2.0 Darwin Kernel Version 22.2.0: Fri Nov 11
+        02:08:47 PST 2022; root:xnu-8792.61.2~4/RELEASE_X86_64 x86_64","hostname":"Gowsik-ka-MacBook-Pro.local"}'
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - nginx
+      Date:
+      - Tue, 13 Jun 2023 12:09:19 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '2825'
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Credentials:
+      - 'true'
+      Access-Control-Allow-Methods:
+      - GET, POST, HEAD, OPTIONS, DELETE
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Expose-Headers:
+      - Request-Id, Stripe-Manage-Version, X-Stripe-External-Auth-Required, X-Stripe-Privileged-Session-Required
+      Access-Control-Max-Age:
+      - '300'
+      Cache-Control:
+      - no-cache, no-store
+      Idempotency-Key:
+      - fa67869a-288d-4da1-96f2-148a12b21cd3
+      Original-Request:
+      - req_07m6PghM7nimSS
+      Request-Id:
+      - req_07m6PghM7nimSS
+      Stripe-Should-Retry:
+      - 'false'
+      Stripe-Version:
+      - '2019-03-14'
+      X-Stripe-Routing-Context-Priority-Tier:
+      - api-testmode
+      Strict-Transport-Security:
+      - max-age=63072000; includeSubDomains; preload
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+          "id": "acct_1NIW2EE7b9SoEaxf",
+          "object": "account",
+          "business_profile": {
+            "mcc": null,
+            "name": null,
+            "product_description": null,
+            "support_address": null,
+            "support_email": null,
+            "support_phone": null,
+            "support_url": null,
+            "url": null
+          },
+          "business_type": null,
+          "capabilities": {},
+          "charges_enabled": false,
+          "controller": {
+            "is_controller": true,
+            "type": "application"
+          },
+          "country": "US",
+          "created": 1686658159,
+          "default_currency": "usd",
+          "details_submitted": false,
+          "email": null,
+          "external_accounts": {
+            "object": "list",
+            "data": [],
+            "has_more": false,
+            "total_count": 0,
+            "url": "/v1/accounts/acct_1NIW2EE7b9SoEaxf/external_accounts"
+          },
+          "future_requirements": {
+            "alternatives": [],
+            "current_deadline": null,
+            "currently_due": [],
+            "disabled_reason": null,
+            "errors": [],
+            "eventually_due": [],
+            "past_due": [],
+            "pending_verification": []
+          },
+          "metadata": {},
+          "payouts_enabled": false,
+          "requirements": {
+            "alternatives": [],
+            "current_deadline": null,
+            "currently_due": [
+              "business_profile.product_description",
+              "business_profile.support_phone",
+              "business_profile.url",
+              "external_account",
+              "tos_acceptance.date",
+              "tos_acceptance.ip"
+            ],
+            "disabled_reason": "requirements.past_due",
+            "errors": [],
+            "eventually_due": [
+              "business_profile.product_description",
+              "business_profile.support_phone",
+              "business_profile.url",
+              "external_account",
+              "tos_acceptance.date",
+              "tos_acceptance.ip"
+            ],
+            "past_due": [
+              "external_account",
+              "tos_acceptance.date",
+              "tos_acceptance.ip"
+            ],
+            "pending_verification": []
+          },
+          "settings": {
+            "bacs_debit_payments": {},
+            "branding": {
+              "icon": null,
+              "logo": null,
+              "primary_color": null,
+              "secondary_color": null
+            },
+            "card_issuing": {
+              "tos_acceptance": {
+                "date": null,
+                "ip": null
+              }
+            },
+            "card_payments": {
+              "decline_on": {
+                "avs_failure": true,
+                "cvc_failure": true
+              },
+              "statement_descriptor_prefix": null,
+              "statement_descriptor_prefix_kana": null,
+              "statement_descriptor_prefix_kanji": null
+            },
+            "dashboard": {
+              "display_name": null,
+              "timezone": "Etc/UTC"
+            },
+            "payments": {
+              "statement_descriptor": null,
+              "statement_descriptor_kana": null,
+              "statement_descriptor_kanji": null
+            },
+            "payouts": {
+              "debit_negative_balances": true,
+              "schedule": {
+                "delay_days": 2,
+                "interval": "daily"
+              },
+              "statement_descriptor": null
+            },
+            "sepa_debit_payments": {}
+          },
+          "tos_acceptance": {
+            "date": null,
+            "ip": null,
+            "user_agent": null
+          },
+          "type": "standard"
+        }
+  recorded_at: Tue, 13 Jun 2023 12:09:19 GMT
+- request:
+    method: post
+    uri: https://api.stripe.com/v1/customers
+    body:
+      encoding: UTF-8
+      string: email=jeanene%40example.org&name=Tasia+Lemke+MD&phone=%2B404467218542&metadata[platform_id]=1
+    headers:
+      User-Agent:
+      - Stripe/v1 RubyBindings/8.2.0
+      Authorization:
+      - Bearer sk_test_51EXIAiEQYiNu1q8E22PeN6N5pMswpv0Q5dwRApDrqfIuGvyoKTCX5KaKdWWIEZht8LjSF85v7lxPOKrxBFFs7vLp00QvWOAKgM
+      Content-Type:
+      - application/x-www-form-urlencoded
+      X-Stripe-Client-Telemetry:
+      - '{"last_request_metrics":{"request_id":"req_07m6PghM7nimSS","request_duration_ms":1854}}'
+      X-Stripe-Client-User-Agent:
+      - '{"bindings_version":"8.2.0","lang":"ruby","lang_version":"3.2.2 p53 (2023-03-30)","platform":"x86_64-darwin22","engine":"ruby","publisher":"stripe","uname":"Darwin
+        Gowsik-ka-MacBook-Pro.local 22.2.0 Darwin Kernel Version 22.2.0: Fri Nov 11
+        02:08:47 PST 2022; root:xnu-8792.61.2~4/RELEASE_X86_64 x86_64","hostname":"Gowsik-ka-MacBook-Pro.local"}'
+      Stripe-Account:
+      - acct_1NIU5SENZof8Gnl1
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - nginx
+      Date:
+      - Tue, 13 Jun 2023 12:09:20 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '1268'
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Credentials:
+      - 'true'
+      Access-Control-Allow-Methods:
+      - GET, POST, HEAD, OPTIONS, DELETE
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Expose-Headers:
+      - Request-Id, Stripe-Manage-Version, X-Stripe-External-Auth-Required, X-Stripe-Privileged-Session-Required
+      Access-Control-Max-Age:
+      - '300'
+      Cache-Control:
+      - no-cache, no-store
+      Idempotency-Key:
+      - 965ca5b6-6304-4edd-b5b0-625308b76a1b
+      Original-Request:
+      - req_QEazEL3Vza7wUn
+      Request-Id:
+      - req_QEazEL3Vza7wUn
+      Stripe-Account:
+      - acct_1NIU5SENZof8Gnl1
+      Stripe-Should-Retry:
+      - 'false'
+      Stripe-Version:
+      - '2019-03-14'
+      X-Stripe-Routing-Context-Priority-Tier:
+      - api-testmode
+      Strict-Transport-Security:
+      - max-age=63072000; includeSubDomains; preload
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+          "id": "cus_O4fNxSVrMbKsTM",
+          "object": "customer",
+          "account_balance": 0,
+          "address": null,
+          "balance": 0,
+          "created": 1686658160,
+          "currency": null,
+          "default_currency": null,
+          "default_source": null,
+          "delinquent": false,
+          "description": null,
+          "discount": null,
+          "email": "jeanene@example.org",
+          "invoice_prefix": "388EBEB4",
+          "invoice_settings": {
+            "custom_fields": null,
+            "default_payment_method": null,
+            "footer": null,
+            "rendering_options": null
+          },
+          "livemode": false,
+          "metadata": {
+            "platform_id": "1"
+          },
+          "name": "Tasia Lemke MD",
+          "next_invoice_sequence": 1,
+          "phone": "+404467218542",
+          "preferred_locales": [],
+          "shipping": null,
+          "sources": {
+            "object": "list",
+            "data": [],
+            "has_more": false,
+            "total_count": 0,
+            "url": "/v1/customers/cus_O4fNxSVrMbKsTM/sources"
+          },
+          "subscriptions": {
+            "object": "list",
+            "data": [],
+            "has_more": false,
+            "total_count": 0,
+            "url": "/v1/customers/cus_O4fNxSVrMbKsTM/subscriptions"
+          },
+          "tax_exempt": "none",
+          "tax_ids": {
+            "object": "list",
+            "data": [],
+            "has_more": false,
+            "total_count": 0,
+            "url": "/v1/customers/cus_O4fNxSVrMbKsTM/tax_ids"
+          },
+          "tax_info": null,
+          "tax_info_verification": null,
+          "test_clock": null
+        }
+  recorded_at: Tue, 13 Jun 2023 12:09:20 GMT
+- request:
+    method: post
+    uri: https://api.stripe.com/v1/checkout/sessions
+    body:
+      encoding: UTF-8
+      string: line_items[0][price_data][currency]=inr&line_items[0][price_data][product_data][name]=igos&line_items[0][price_data][product_data][description]=Invoice+from+Saeloun+for+inr+64470.72+due+on+2021-10-15&line_items[0][price_data][unit_amount]=6447072&line_items[0][quantity]=1&mode=payment&customer=cus_O4fNxSVrMbKsTM&success_url=https%3A%2F%2Fexample.com%2Finvoices%2F1%2Fpayments%2Fsuccess&cancel_url=https%3A%2F%2Fexample.com%2Finvoices%2F1%2Fpayments%2Fcancel&metadata[invoice_id]=1
+    headers:
+      User-Agent:
+      - Stripe/v1 RubyBindings/8.2.0
+      Authorization:
+      - Bearer sk_test_51EXIAiEQYiNu1q8E22PeN6N5pMswpv0Q5dwRApDrqfIuGvyoKTCX5KaKdWWIEZht8LjSF85v7lxPOKrxBFFs7vLp00QvWOAKgM
+      Content-Type:
+      - application/x-www-form-urlencoded
+      X-Stripe-Client-Telemetry:
+      - '{"last_request_metrics":{"request_id":"req_QEazEL3Vza7wUn","request_duration_ms":643}}'
+      X-Stripe-Client-User-Agent:
+      - '{"bindings_version":"8.2.0","lang":"ruby","lang_version":"3.2.2 p53 (2023-03-30)","platform":"x86_64-darwin22","engine":"ruby","publisher":"stripe","uname":"Darwin
+        Gowsik-ka-MacBook-Pro.local 22.2.0 Darwin Kernel Version 22.2.0: Fri Nov 11
+        02:08:47 PST 2022; root:xnu-8792.61.2~4/RELEASE_X86_64 x86_64","hostname":"Gowsik-ka-MacBook-Pro.local"}'
+      Stripe-Account:
+      - acct_1NIU5SENZof8Gnl1
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - nginx
+      Date:
+      - Tue, 13 Jun 2023 12:09:21 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '2316'
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Credentials:
+      - 'true'
+      Access-Control-Allow-Methods:
+      - GET, POST, HEAD, OPTIONS, DELETE
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Expose-Headers:
+      - Request-Id, Stripe-Manage-Version, X-Stripe-External-Auth-Required, X-Stripe-Privileged-Session-Required
+      Access-Control-Max-Age:
+      - '300'
+      Cache-Control:
+      - no-cache, no-store
+      Idempotency-Key:
+      - a0603a69-d2a9-40ac-8036-b1927353b7c4
+      Original-Request:
+      - req_i3xqNty28naNEF
+      Request-Id:
+      - req_i3xqNty28naNEF
+      Stripe-Account:
+      - acct_1NIU5SENZof8Gnl1
+      Stripe-Should-Retry:
+      - 'false'
+      Stripe-Version:
+      - '2019-03-14'
+      X-Stripe-Routing-Context-Priority-Tier:
+      - api-testmode
+      Strict-Transport-Security:
+      - max-age=63072000; includeSubDomains; preload
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+          "id": "cs_test_a1KjLGdJoNxOfqFZdXssJ3mhpmzbcOPbqU52RZaJCbrbvmWdXgeoRs60Bq",
+          "object": "checkout.session",
+          "after_expiration": null,
+          "allow_promotion_codes": null,
+          "amount_subtotal": 6447072,
+          "amount_total": 6447072,
+          "automatic_tax": {
+            "enabled": false,
+            "status": null
+          },
+          "billing_address_collection": null,
+          "cancel_url": "https://example.com/invoices/1/payments/cancel",
+          "client_reference_id": null,
+          "consent": null,
+          "consent_collection": null,
+          "created": 1686658161,
+          "currency": "inr",
+          "currency_conversion": null,
+          "custom_fields": [],
+          "custom_text": {
+            "shipping_address": null,
+            "submit": null
+          },
+          "customer": "cus_O4fNxSVrMbKsTM",
+          "customer_creation": null,
+          "customer_details": {
+            "address": null,
+            "email": "jeanene@example.org",
+            "name": null,
+            "phone": null,
+            "tax_exempt": "none",
+            "tax_ids": null
+          },
+          "customer_email": null,
+          "expires_at": 1686744560,
+          "invoice": null,
+          "invoice_creation": {
+            "enabled": false,
+            "invoice_data": {
+              "account_tax_ids": null,
+              "custom_fields": null,
+              "description": null,
+              "footer": null,
+              "metadata": {},
+              "rendering_options": null
+            }
+          },
+          "livemode": false,
+          "locale": null,
+          "metadata": {
+            "invoice_id": "1"
+          },
+          "mode": "payment",
+          "payment_intent": "pi_3NIW2HENZof8Gnl11PBmxajq",
+          "payment_link": null,
+          "payment_method_collection": "always",
+          "payment_method_options": {},
+          "payment_method_types": [
+            "card"
+          ],
+          "payment_status": "unpaid",
+          "phone_number_collection": {
+            "enabled": false
+          },
+          "recovered_from": null,
+          "setup_intent": null,
+          "shipping": null,
+          "shipping_address_collection": null,
+          "shipping_options": [],
+          "shipping_rate": null,
+          "status": "open",
+          "submit_type": null,
+          "subscription": null,
+          "success_url": "https://example.com/invoices/1/payments/success",
+          "total_details": {
+            "amount_discount": 0,
+            "amount_shipping": 0,
+            "amount_tax": 0
+          },
+          "url": "https://checkout.stripe.com/c/pay/cs_test_a1KjLGdJoNxOfqFZdXssJ3mhpmzbcOPbqU52RZaJCbrbvmWdXgeoRs60Bq#fidkdWxOYHwnPyd1blpxYHZxWktKYmZuSTFHUTE1ZGJibExXSGxQPUo3YjU1fG1UfXU0fFYnKSdjd2poVmB3c2B3Jz9xd3BgKSdpZHxqcHFRfHVgJz8ndmxrYmlgWmxxYGgnKSdga2RnaWBVaWRmYG1qaWFgd3YnP3F3cGApJ3Zxd2x1YERmZmpwa3EnPydkZmZxWjRLTFAwVkBLX2pjPUJraTQneCUl"
+        }
+  recorded_at: Tue, 13 Jun 2023 12:09:21 GMT
+- request:
+    method: post
+    uri: https://api.stripe.com/v1/checkout/sessions/cs_test_a1KjLGdJoNxOfqFZdXssJ3mhpmzbcOPbqU52RZaJCbrbvmWdXgeoRs60Bq/expire
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Stripe/v1 RubyBindings/8.2.0
+      Authorization:
+      - Bearer sk_test_51EXIAiEQYiNu1q8E22PeN6N5pMswpv0Q5dwRApDrqfIuGvyoKTCX5KaKdWWIEZht8LjSF85v7lxPOKrxBFFs7vLp00QvWOAKgM
+      Content-Type:
+      - application/x-www-form-urlencoded
+      X-Stripe-Client-Telemetry:
+      - '{"last_request_metrics":{"request_id":"req_i3xqNty28naNEF","request_duration_ms":916}}'
+      X-Stripe-Client-User-Agent:
+      - '{"bindings_version":"8.2.0","lang":"ruby","lang_version":"3.2.2 p53 (2023-03-30)","platform":"x86_64-darwin22","engine":"ruby","publisher":"stripe","uname":"Darwin
+        Gowsik-ka-MacBook-Pro.local 22.2.0 Darwin Kernel Version 22.2.0: Fri Nov 11
+        02:08:47 PST 2022; root:xnu-8792.61.2~4/RELEASE_X86_64 x86_64","hostname":"Gowsik-ka-MacBook-Pro.local"}'
+      Stripe-Account:
+      - acct_1NIU5SENZof8Gnl1
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - nginx
+      Date:
+      - Tue, 13 Jun 2023 12:09:22 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '1996'
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Credentials:
+      - 'true'
+      Access-Control-Allow-Methods:
+      - GET, POST, HEAD, OPTIONS, DELETE
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Expose-Headers:
+      - Request-Id, Stripe-Manage-Version, X-Stripe-External-Auth-Required, X-Stripe-Privileged-Session-Required
+      Access-Control-Max-Age:
+      - '300'
+      Cache-Control:
+      - no-cache, no-store
+      Idempotency-Key:
+      - a01dee71-e246-4c4e-8670-41c87e4be82e
+      Original-Request:
+      - req_VxvFJY5mDHqxPH
+      Request-Id:
+      - req_VxvFJY5mDHqxPH
+      Stripe-Account:
+      - acct_1NIU5SENZof8Gnl1
+      Stripe-Should-Retry:
+      - 'false'
+      Stripe-Version:
+      - '2019-03-14'
+      X-Stripe-Routing-Context-Priority-Tier:
+      - api-testmode
+      Strict-Transport-Security:
+      - max-age=63072000; includeSubDomains; preload
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+          "id": "cs_test_a1KjLGdJoNxOfqFZdXssJ3mhpmzbcOPbqU52RZaJCbrbvmWdXgeoRs60Bq",
+          "object": "checkout.session",
+          "after_expiration": null,
+          "allow_promotion_codes": null,
+          "amount_subtotal": 6447072,
+          "amount_total": 6447072,
+          "automatic_tax": {
+            "enabled": false,
+            "status": null
+          },
+          "billing_address_collection": null,
+          "cancel_url": "https://example.com/invoices/1/payments/cancel",
+          "client_reference_id": null,
+          "consent": null,
+          "consent_collection": null,
+          "created": 1686658161,
+          "currency": "inr",
+          "currency_conversion": null,
+          "custom_fields": [],
+          "custom_text": {
+            "shipping_address": null,
+            "submit": null
+          },
+          "customer": "cus_O4fNxSVrMbKsTM",
+          "customer_creation": null,
+          "customer_details": {
+            "address": null,
+            "email": "jeanene@example.org",
+            "name": null,
+            "phone": null,
+            "tax_exempt": "none",
+            "tax_ids": null
+          },
+          "customer_email": null,
+          "expires_at": 1686744560,
+          "invoice": null,
+          "invoice_creation": {
+            "enabled": false,
+            "invoice_data": {
+              "account_tax_ids": null,
+              "custom_fields": null,
+              "description": null,
+              "footer": null,
+              "metadata": {},
+              "rendering_options": null
+            }
+          },
+          "livemode": false,
+          "locale": null,
+          "metadata": {
+            "invoice_id": "1"
+          },
+          "mode": "payment",
+          "payment_intent": "pi_3NIW2HENZof8Gnl11PBmxajq",
+          "payment_link": null,
+          "payment_method_collection": "always",
+          "payment_method_options": {},
+          "payment_method_types": [
+            "card"
+          ],
+          "payment_status": "unpaid",
+          "phone_number_collection": {
+            "enabled": false
+          },
+          "recovered_from": null,
+          "setup_intent": null,
+          "shipping": null,
+          "shipping_address_collection": null,
+          "shipping_options": [],
+          "shipping_rate": null,
+          "status": "expired",
+          "submit_type": null,
+          "subscription": null,
+          "success_url": "https://example.com/invoices/1/payments/success",
+          "total_details": {
+            "amount_discount": 0,
+            "amount_shipping": 0,
+            "amount_tax": 0
+          },
+          "url": null
+        }
+  recorded_at: Tue, 13 Jun 2023 12:09:22 GMT
+recorded_with: VCR 6.1.0
