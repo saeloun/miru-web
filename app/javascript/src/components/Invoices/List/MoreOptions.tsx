@@ -7,6 +7,7 @@ import {
   PenIcon,
   DotsThreeVerticalIcon,
   DownloadSimpleIcon,
+  ReminderIcon,
 } from "miruIcons";
 import { useNavigate } from "react-router-dom";
 import { Tooltip, Modal } from "StyledComponents";
@@ -115,7 +116,7 @@ const MoreOptions = ({
                   setIsSending(!isSending);
                 }}
               >
-                <PaperPlaneTiltIcon
+                <ReminderIcon
                   className="lg:mr-2 xl:mr-4"
                   size={16}
                   weight="bold"

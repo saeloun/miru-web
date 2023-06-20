@@ -1,11 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React, { FC } from "react";
 
-import {
-  CurrencyCircleDollarIcon,
-  PaperPlaneTiltIcon,
-  WaiveSVG,
-} from "miruIcons";
+import { CurrencyCircleDollarIcon, ReminderIcon, WaiveSVG } from "miruIcons";
 import { Trash, DownloadSimple } from "phosphor-react";
 
 const MoreOptions: FC<MoreOptionsProps> = ({
@@ -53,7 +49,7 @@ const MoreOptions: FC<MoreOptionsProps> = ({
           sendInvoice();
         }}
       >
-        <PaperPlaneTiltIcon className="mr-4" size={16} />
+        <ReminderIcon className="mr-4" size={16} />
         Send Reminder
       </li>
     )}
