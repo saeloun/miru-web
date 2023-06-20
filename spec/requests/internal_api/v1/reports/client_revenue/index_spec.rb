@@ -80,8 +80,10 @@ RSpec.describe "InternalApi::V1::Reports::ClientRevenuesController::#index", typ
       it "returns the summary of all clients" do
         expected_summary = {
           totalPaidAmount: @client1_paid_amount + @client2_paid_amount,
-          totalOutstandingAmount: @client1_unpaid_amount + @client2_unpaid_amount,
-          totalRevenue: @client1_paid_amount + @client2_paid_amount + @client1_unpaid_amount + @client2_unpaid_amount
+          totalOutstandingAmount: @client1_unpaid_amount + @client2_unpaid_amount + @client1_overdue_amount +
+                                  @client2_overdue_amount,
+          totalRevenue: @client1_paid_amount + @client2_paid_amount + @client1_unpaid_amount + @client2_unpaid_amount +
+                        @client1_overdue_amount + @client2_overdue_amount
         }
         expect(json_response["summary"]).to eq(JSON.parse(expected_summary.to_json))
       end
@@ -125,8 +127,8 @@ RSpec.describe "InternalApi::V1::Reports::ClientRevenuesController::#index", typ
       it "returns the summary of first client" do
         expected_summary = {
           totalPaidAmount: @client1_paid_amount,
-          totalOutstandingAmount: @client1_unpaid_amount,
-          totalRevenue: @client1_paid_amount + @client1_unpaid_amount
+          totalOutstandingAmount: @client1_unpaid_amount + @client1_overdue_amount,
+          totalRevenue: @client1_paid_amount + @client1_unpaid_amount + @client1_overdue_amount
         }
         expect(json_response["summary"]).to eq(JSON.parse(expected_summary.to_json))
       end
