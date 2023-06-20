@@ -202,7 +202,7 @@ const FilterSideBar = ({
 
   const defaultDateRange = () => {
     const { value } = filters.dateRange;
-    if (value == "all") {
+    if (value == "all_time") {
       return true;
     } else if (value == "custom" && !customDate) {
       return true;
@@ -213,7 +213,7 @@ const FilterSideBar = ({
 
   const setDefaultDateRange = () => ({
     ...filters,
-    ["dateRange"]: { value: "all", label: "All", from: "", to: "" },
+    ["dateRange"]: { value: "all_time", label: "All Time", from: "", to: "" },
   });
 
   const resetCustomDatePicker = () => {
