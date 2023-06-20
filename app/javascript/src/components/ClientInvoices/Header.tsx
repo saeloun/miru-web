@@ -92,7 +92,7 @@ const Header = ({ showSearch, params, setParams }) => {
   return (
     <div className="relative mt-6 mb-3 flex flex-wrap items-center justify-between md:justify-start lg:justify-between">
       <h2 className="header__title">Invoices</h2>
-      {showSearch !== 0 && (
+      {showSearch >= 1 && (
         <>
           {isDesktop ? (
             <div className="flex w-10/12 lg:w-1/2">
@@ -168,6 +168,7 @@ const Header = ({ showSearch, params, setParams }) => {
           )}
         </>
       )}
+      <div />
     </div>
   );
 };
