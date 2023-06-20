@@ -208,14 +208,14 @@ const SignInForm = () => {
               </a>
             </span>
           </p>
-          {/* <p className="pb-10 text-center font-manrope text-xs font-normal not-italic text-miru-dark-purple-1000">
+          <p className="pb-10 text-center font-manrope text-xs font-normal not-italic text-miru-dark-purple-1000">
             Don't have an account?&nbsp;
             <span className="form__link inline cursor-pointer">
               <a href={Paths.SIGNUP}>
                 <span className="mr-2 inline-block">Sign Up</span>
               </a>
             </span>
-          </p> */}
+          </p>
         </div>
       </div>
       <FooterLinks
