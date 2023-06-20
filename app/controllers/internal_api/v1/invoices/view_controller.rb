@@ -4,6 +4,7 @@ class InternalApi::V1::Invoices::ViewController < InternalApi::V1::ApplicationCo
   skip_before_action :authenticate_user_using_x_auth_token
   skip_before_action :authenticate_user!
   skip_after_action :verify_authorized
+  before_action :invoice
 
   def show
     invoice.viewed! if invoice.sent?
@@ -12,6 +13,15 @@ class InternalApi::V1::Invoices::ViewController < InternalApi::V1::ApplicationCo
   end
 
   def invoice
-    @_invoice ||= Invoice.kept.includes(:client, :invoice_line_items).find_by!(external_view_key: params[:id])
+    @_invoice ||= find_invoice_by_external_view_key
+    @_invoice ? @_invoice : render_invoice_not_found
+  end
+
+  def find_invoice_by_external_view_key
+    Invoice.kept.includes(:client, :invoice_line_items).find_by(external_view_key: params[:id])
+  end
+
+  def render_invoice_not_found
+    render json: { error: "No invoice found" }, status: :unprocessable_entity
   end
 end
