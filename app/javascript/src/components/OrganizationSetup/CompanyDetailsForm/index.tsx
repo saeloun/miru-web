@@ -467,6 +467,7 @@ const CompanyDetailsForm = ({
               <div className="flex flex-row">
                 <div className="flex w-1/2 flex-col pr-2" id="city">
                   <CustomAsyncSelect
+                    defaultOptions={currentCityList}
                     isErr={!!errors.city && touched.city}
                     label="City"
                     loadOptions={option => getOptions(option, values)}
