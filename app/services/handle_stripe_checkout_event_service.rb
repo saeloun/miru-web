@@ -5,6 +5,8 @@ class HandleStripeCheckoutEventService
     :event, :status, :json
 
   STRIPE_CHECKOUT_SESSION_COMPLETED_EVENT = "checkout.session.completed"
+  STRIPE_CHECKOUT_SESSION_EXPIRED_EVENT = "checkout.session.expired"
+  STRIPE_PAYMENT_INTENT_FAILED_EVENT = "payment_intent.payment_failed"
 
   def initialize(payload:, stripe_signature:)
     @payload = payload
@@ -37,6 +39,18 @@ class HandleStripeCheckoutEventService
       case event.type
       when STRIPE_CHECKOUT_SESSION_COMPLETED_EVENT
         if InvoicePayment::StripeCheckoutFulfillment.process(event)
+          set_response({ success: true }, :ok)
+        else
+          set_response({ message: "Invalid payload!" }, 400)
+        end
+      when STRIPE_CHECKOUT_SESSION_EXPIRED_EVENT
+        if InvoicePayment::StripeCheckoutFailed.process(event)
+          set_response({ success: true }, :ok)
+        else
+          set_response({ message: "Invalid payload!" }, 400)
+        end
+      when STRIPE_PAYMENT_INTENT_FAILED_EVENT
+        if InvoicePayment::StripePaymentFailed.process(event)
           set_response({ success: true }, :ok)
         else
           set_response({ message: "Invalid payload!" }, 400)
