@@ -10,7 +10,7 @@ export const isEmailValid = (email: string): boolean => {
   return schema.isValidSync(email);
 };
 
-export const emailSubject = (invoice: any, isSendReminder: boolean): string => {
+export const emailSubject = (invoice: any, isSendReminder = false): string => {
   if (isSendReminder) {
     return `Reminder to complete payments for unpaid invoice (${invoice.invoiceNumber})`;
   }
@@ -18,7 +18,7 @@ export const emailSubject = (invoice: any, isSendReminder: boolean): string => {
   return `${invoice.company.name} sent you an invoice (${invoice.invoiceNumber})`;
 };
 
-export const emailBody = (invoice: any, isSendReminder: boolean): string => {
+export const emailBody = (invoice: any, isSendReminder = false): string => {
   const formattedAmount = currencyFormat(
     invoice.company.baseCurrency || invoice.company.currency,
     invoice.amount

@@ -168,6 +168,7 @@ const TableRow = ({
             invoice={invoice}
             isSendReminder={isSendReminder}
             isSending={isSending}
+            setISendReminder={setIsSendReminder}
             setIsSending={setIsSending}
           />
         )}

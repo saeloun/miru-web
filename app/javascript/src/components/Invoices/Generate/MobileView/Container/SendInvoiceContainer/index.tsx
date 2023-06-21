@@ -23,6 +23,8 @@ const SendInvoiceContainer = ({
   invoice,
   handleSaveSendInvoice,
   setIsSending,
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  setIsSendReminder = _value => {},
   isSendReminder = false,
 }) => {
   const Recipient: React.FC<{ email: string; handleClick: any }> = ({
@@ -103,6 +105,7 @@ const SendInvoiceContainer = ({
         Toastr.success(resp.data.message);
       }
       setIsSending(false);
+      setIsSendReminder(false);
     } catch {
       setStatus(InvoiceStatus.ERROR);
     }

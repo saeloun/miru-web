@@ -72,6 +72,7 @@ const Invoice = () => {
             invoice={invoice}
             isSendReminder={isSendReminder}
             isSending={showSendInvoiceModal}
+            setIsSendReminder={setIsSendReminder}
             setIsSending={setShowSendInvoiceModal}
           />
         )}
@@ -109,6 +110,7 @@ const Invoice = () => {
             handleSaveSendInvoice={null}
             invoice={invoice}
             isSendReminder={isSendReminder}
+            setIsSendReminder={setIsSendReminder}
             setIsSending={setShowSendInvoiceModal}
           />
         </div>

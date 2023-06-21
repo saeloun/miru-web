@@ -50,11 +50,12 @@ const SendInvoice: React.FC<any> = ({
   invoice,
   fetchInvoices,
   isSendReminder = false,
+  setISendReminder,
 }) => {
   const [status, setStatus] = useState<InvoiceStatus>(InvoiceStatus.IDLE);
   const [invoiceEmail, setInvoiceEmail] = useState<InvoiceEmail>({
-    subject: emailSubject(invoice),
-    message: emailBody(invoice),
+    subject: emailSubject(invoice, isSendReminder),
+    message: emailBody(invoice, isSendReminder),
     recipients: [invoice.client.email],
   });
   const [newRecipient, setNewRecipient] = useState<string>("");
@@ -85,6 +86,7 @@ const SendInvoice: React.FC<any> = ({
         Toastr.success(resp.data.message);
         setStatus(InvoiceStatus.SUCCESS);
         setIsSending(false);
+        setISendReminder(false);
         setTimeout(fetchInvoices, 6000);
       } catch {
         setStatus(InvoiceStatus.ERROR);
@@ -117,7 +119,14 @@ const SendInvoice: React.FC<any> = ({
     <Modal
       customStyle="sm:my-8 sm:w-full sm:max-w-lg sm:align-middle"
       isOpen={isSending}
-      onClose={() => setIsSending(false)}
+      onClose={() => {
+        if (isSendReminder) {
+          setIsSending(false);
+          setISendReminder(false);
+        } else {
+          setIsSending(false);
+        }
+      }}
     >
       <div onClick={e => e.stopPropagation()}>
         <div className="mt-2 mb-6 flex items-center justify-between">
@@ -125,7 +134,14 @@ const SendInvoice: React.FC<any> = ({
           <button
             className="text-miru-gray-1000"
             type="button"
-            onClick={() => setIsSending(false)}
+            onClick={() => {
+              if (isSendReminder) {
+                setIsSending(false);
+                setISendReminder(false);
+              } else {
+                setIsSending(false);
+              }
+            }}
           >
             <XIcon size={16} weight="bold" />
           </button>

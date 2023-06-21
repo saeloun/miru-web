@@ -51,11 +51,13 @@ const SendInvoice: React.FC<any> = ({
   setIsSending,
   isSending,
   isSendReminder,
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  setIsSendReminder = _value => {},
 }) => {
   const [status, setStatus] = useState<InvoiceStatus>(InvoiceStatus.IDLE);
   const [invoiceEmail, setInvoiceEmail] = useState<InvoiceEmail>({
-    subject: emailSubject(invoice),
-    message: emailBody(invoice),
+    subject: emailSubject(invoice, isSendReminder),
+    message: emailBody(invoice, isSendReminder),
     recipients: [invoice.client.email],
   });
   const [newRecipient, setNewRecipient] = useState<string>("");
@@ -65,7 +67,15 @@ const SendInvoice: React.FC<any> = ({
   const modal = useRef();
   const input: React.RefObject<HTMLInputElement> = useRef();
 
-  useOutsideClick(modal, () => setIsSending(false), isSending);
+  useOutsideClick(modal, () => {
+    if (isSendReminder) {
+      setIsSending(false), isSending;
+      setIsSendReminder(false), isSendReminder;
+    } else {
+      setIsSending(false), isSending;
+    }
+  });
+
   useEffect(() => {
     const length = newRecipient.length;
 
@@ -88,6 +98,7 @@ const SendInvoice: React.FC<any> = ({
 
         Toastr.success(resp.data.message);
         setStatus(InvoiceStatus.SUCCESS);
+        setIsSendReminder(false);
       } catch {
         setStatus(InvoiceStatus.ERROR);
       }
@@ -151,7 +162,14 @@ const SendInvoice: React.FC<any> = ({
               <button
                 className="text-miru-gray-1000"
                 type="button"
-                onClick={() => setIsSending(false)}
+                onClick={() => {
+                  if (isSendReminder) {
+                    setIsSending(false);
+                    setIsSendReminder(false);
+                  } else {
+                    setIsSending(false);
+                  }
+                }}
               >
                 <XIcon size={16} weight="bold" />
               </button>
