@@ -41,8 +41,8 @@ const navOptions = [
   {
     logo: <InvoicesIcon className="mr-0 md:mr-4" size={26} />,
     label: "Invoices",
-    path: Paths.INVOICES,
-    allowedRoles: ["admin", "owner", "book_keeper"],
+    path: "/invoices",
+    allowedRoles: ["admin", "owner", "book_keeper", "client"],
   },
   {
     logo: <ReportsIcon className="mr-0 md:mr-4" size={26} />,
