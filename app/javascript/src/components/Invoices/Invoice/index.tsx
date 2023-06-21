@@ -108,12 +108,17 @@ const Invoice = () => {
           <SendInvoiceContainer
             handleSaveSendInvoice={null}
             invoice={invoice}
+            isSendReminder={isSendReminder}
             setIsSending={setShowSendInvoiceModal}
           />
         </div>
       </div>
     ) : (
-      <MobileView handleSendInvoice={handleSendInvoice} invoice={invoice} />
+      <MobileView
+        handleSendInvoice={handleSendInvoice}
+        invoice={invoice}
+        setIsSendReminder={setIsSendReminder}
+      />
     ))
   );
 };

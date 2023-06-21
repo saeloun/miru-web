@@ -205,6 +205,18 @@ const MoreOptions = ({
             <PenIcon className="mr-4" size={16} /> Edit Invoice
           </button>
         </li>
+        {invoice?.status === "overdue" && (
+          <li
+            className="flex cursor-pointer items-center py-2 text-miru-han-purple-1000"
+            onClick={() => {
+              setIsSendReminder(true);
+              setShowMoreOptions(false);
+            }}
+          >
+            <ReminderIcon className="mr-4" size={16} weight="bold" />
+            Send Reminder
+          </li>
+        )}
         {showPrint && (
           <li className="flex cursor-pointer items-center py-2 text-miru-han-purple-1000">
             <PrinterIcon className="mr-4" size={16} />

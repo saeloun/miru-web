@@ -8,6 +8,7 @@ import {
   ArrowLeftIcon,
   EditIcon,
   WaiveSVG,
+  ReminderIcon,
 } from "miruIcons";
 import { useNavigate } from "react-router-dom";
 import { Button, MobileMoreOptions, Badge } from "StyledComponents";
@@ -20,7 +21,7 @@ import DeleteInvoice from "components/Invoices/popups/DeleteInvoice";
 import WavieOffInvoice from "components/Invoices/popups/WavieOffInvoice";
 import getStatusCssClass from "utils/getBadgeStatus";
 
-const MobileView = ({ invoice, handleSendInvoice }) => {
+const MobileView = ({ invoice, handleSendInvoice, setIsSendReminder }) => {
   const {
     id,
     invoiceLineItems,
@@ -172,6 +173,19 @@ const MobileView = ({ invoice, handleSendInvoice }) => {
                     width="16px"
                   />
                   Waive Off
+                </li>
+              )}
+              {invoice?.status === "overdue" && (
+                <li
+                  className="flex cursor-pointer items-center py-2 px-5 text-sm text-miru-han-purple-1000 hover:bg-miru-gray-100 lg:py-1 xl:py-2"
+                  onClick={() => {
+                    setShowMoreOptions(false);
+                    setIsSendReminder(true);
+                    handleSendInvoice();
+                  }}
+                >
+                  <ReminderIcon className="mr-4" size={16} weight="bold" />
+                  Send Reminder
                 </li>
               )}
               <li

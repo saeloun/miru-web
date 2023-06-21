@@ -171,7 +171,7 @@ const TableRow = ({
             setIsSending={setIsSending}
           />
         )}
-        {isSending && !isDesktop && (
+        {(isSending || isSendReminder) && !isDesktop && (
           <div
             className="absolute inset-0 z-50 flex flex-col bg-white"
             onClick={e => {
@@ -180,7 +180,14 @@ const TableRow = ({
             }}
           >
             <div className="flex w-full bg-miru-han-purple-1000 pl-4">
-              <Button style="ternary" onClick={() => setIsSending(false)}>
+              <Button
+                style="ternary"
+                onClick={() => {
+                  isSendReminder
+                    ? setIsSendReminder(false)
+                    : setIsSending(false);
+                }}
+              >
                 <ArrowLeftIcon className="text-white" size={16} weight="bold" />
               </Button>
               <div className="flex h-12 w-full items-center justify-center bg-miru-han-purple-1000 px-3 text-white">
@@ -189,7 +196,11 @@ const TableRow = ({
               <button
                 className="mr-4 text-miru-gray-1000"
                 type="button"
-                onClick={() => setIsSending(false)}
+                onClick={() => {
+                  isSendReminder
+                    ? setIsSendReminder(false)
+                    : setIsSending(false);
+                }}
               >
                 <XIcon size={16} weight="bold" />
               </button>
@@ -198,6 +209,7 @@ const TableRow = ({
               <SendInvoiceContainer
                 handleSaveSendInvoice={null}
                 invoice={invoice}
+                isSendReminder={isSendReminder}
                 setIsSending={setIsSending}
               />
             </div>
