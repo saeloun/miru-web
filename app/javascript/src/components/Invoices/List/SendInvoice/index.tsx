@@ -130,7 +130,11 @@ const SendInvoice: React.FC<any> = ({
     >
       <div onClick={e => e.stopPropagation()}>
         <div className="mt-2 mb-6 flex items-center justify-between">
-          <h6 className="form__title">Send Invoice #{invoice.invoiceNumber}</h6>
+          <h6 className="form__title">
+            {isSendReminder
+              ? "Send Invoice Reminder"
+              : `Send Invoice #{${invoice.invoiceNumber}}`}
+          </h6>
           <button
             className="text-miru-gray-1000"
             type="button"

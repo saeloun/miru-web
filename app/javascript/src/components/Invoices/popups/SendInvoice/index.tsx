@@ -157,7 +157,9 @@ const SendInvoice: React.FC<any> = ({
           <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
             <div className="mt-2 mb-6 flex items-center justify-between">
               <h6 className="form__title">
-                Send Invoice #{invoice.invoiceNumber}
+                {isSendReminder
+                  ? "Send Invoice Reminder"
+                  : `Send Invoice #{${invoice.invoiceNumber}}`}
               </h6>
               <button
                 className="text-miru-gray-1000"
