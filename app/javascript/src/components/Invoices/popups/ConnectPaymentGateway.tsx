@@ -1,9 +1,8 @@
 import React from "react";
 
-import Logger from "js-logger";
 import { XIcon } from "miruIcons";
 import { useNavigate } from "react-router-dom";
-import { Modal } from "StyledComponents";
+import { Modal, Toastr } from "StyledComponents";
 
 import invoicesApi from "apis/invoices";
 
@@ -28,7 +27,7 @@ const ConnectPaymentGateway = ({
 
       return res;
     } catch (error) {
-      Logger.log(error);
+      Toastr.error(error);
     }
   };
 

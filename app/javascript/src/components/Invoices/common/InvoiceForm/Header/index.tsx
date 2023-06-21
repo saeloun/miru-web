@@ -64,10 +64,10 @@ const Header = ({
           className="header__button my-1 bg-miru-han-purple-1000 p-0 text-white hover:text-white md:my-0 md:w-1/3"
           type="button"
           onClick={() => {
-            if (!isStripeEnabled) {
-              setShowConnectPaymentDialog(true);
-            } else {
+            if (isStripeEnabled) {
               handleSendInvoice();
+            } else {
+              setShowConnectPaymentDialog(true);
             }
           }}
         >

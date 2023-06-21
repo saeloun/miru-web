@@ -165,12 +165,12 @@ const MoreOptions = ({
               e.stopPropagation();
               setIsSending(!isSending);
               setShowMoreOptions(false);
-              if (!isStripeEnabled) {
-                setShowConnectPaymentDialog(true);
-                setIsSending(false);
-              } else {
+              if (isStripeEnabled) {
                 setIsSending(!isSending);
                 setShowMoreOptions(false);
+              } else {
+                setShowConnectPaymentDialog(true);
+                setIsSending(false);
               }
             }}
           >

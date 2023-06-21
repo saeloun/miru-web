@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 
-import Logger from "js-logger";
 import { ArrowLeftIcon } from "miruIcons";
 import { useParams } from "react-router-dom";
-import { Button } from "StyledComponents";
+import { Button, Toastr } from "StyledComponents";
 
 import invoicesApi from "apis/invoices";
 import PaymentsProviders from "apis/payments/providers";
@@ -64,7 +63,7 @@ const Invoice = () => {
       const stripe = paymentsProviders.find(p => p.name === "stripe");
       setIsStripeEnabled(!!stripe && stripe.enabled);
     } catch {
-      Logger.log("ERROR!");
+      Toastr.error("ERROR! CONNECTING TO PAYMENTS");
     }
   };
 

@@ -1,10 +1,22 @@
 import React from "react";
 
 import { ReportsIcon } from "miruIcons";
-import PropTypes from "prop-types";
 import { Badge, Tooltip } from "StyledComponents";
 
 import getStatusCssClass from "utils/getBadgeStatus";
+
+interface Invoice {
+  invoice_number: number;
+  status: string;
+}
+
+interface InvoiceEmailProps {
+  invoice: Invoice;
+  stripeUrl: string;
+  isStripeConnected: boolean;
+  setIsInvoiceEmail: (_value) => void;
+  setShowConnectPaymentDialog: (_value) => void;
+}
 
 const Header = ({
   invoice,
@@ -12,7 +24,7 @@ const Header = ({
   isStripeConnected,
   setIsInvoiceEmail,
   setShowConnectPaymentDialog,
-}) => (
+}: InvoiceEmailProps) => (
   <div className="mt-6 mb-3 sm:flex sm:items-center sm:justify-between">
     <div className="flex flex-row">
       <div className="mr-2 flex self-center">
@@ -56,11 +68,13 @@ const Header = ({
                   : "bg-miru-han-purple-1000"
               }`}
             onClick={() => {
-              if (invoice.status != "paid" && !isStripeConnected) {
-                setIsInvoiceEmail(true);
-                setShowConnectPaymentDialog(true);
-              } else if (invoice.status != "paid" && isStripeConnected) {
-                window.location.href = stripeUrl;
+              if (invoice.status != "paid") {
+                if (isStripeConnected) {
+                  window.location.href = stripeUrl;
+                } else {
+                  setIsInvoiceEmail(true);
+                  setShowConnectPaymentDialog(true);
+                }
               }
             }}
           >
@@ -78,13 +92,5 @@ const Header = ({
     </div>
   </div>
 );
-
-Header.propTypes = {
-  invoice: PropTypes.object,
-  stripeUrl: PropTypes.string,
-  isStripeConnected: PropTypes.bool,
-  setIsInvoiceEmail: PropTypes.func,
-  setShowConnectPaymentDialog: PropTypes.func,
-};
 
 export default Header;

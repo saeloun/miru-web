@@ -6,11 +6,12 @@ import { useParams } from "react-router-dom";
 import invoicesApi from "apis/invoices";
 import paymentSettings from "apis/payment-settings";
 import Loader from "common/Loader";
-import Toastr from "common/Toastr";
 import ConnectPaymentGateway from "components/Invoices/popups/ConnectPaymentGateway";
 
 import Header from "./Header";
 import InvoiceDetails from "./InvoiceDetails";
+
+import Toastr from "../../StyledComponents/Toastr";
 
 const InvoiceEmail = () => {
   const params = useParams();

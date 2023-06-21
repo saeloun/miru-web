@@ -2,6 +2,7 @@ import React, { Fragment, useEffect, useState } from "react";
 
 import Logger from "js-logger";
 import { useSearchParams } from "react-router-dom";
+import { Toastr } from "StyledComponents";
 
 import invoicesApi from "apis/invoices";
 import PaymentsProviders from "apis/payments/providers";
@@ -171,7 +172,7 @@ const Invoices = () => {
       const stripe = paymentsProviders.find(p => p.name === "stripe");
       setIsStripeEnabled(!!stripe && stripe.enabled);
     } catch {
-      Logger.log("ERROR!");
+      Toastr.error("ERROR! CONNECTING TO PAYMENTS");
     }
   };
 
