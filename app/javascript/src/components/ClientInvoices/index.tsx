@@ -39,12 +39,16 @@ const ClientInvoices = () => {
   };
 
   const fetchInvoices = async () => {
-    const {
-      data: { invoices, pagy },
-    } = await clientApi.invoices(queryParams());
-    setInvoices(invoices);
-    setPagy(pagy);
-    setLoading(false);
+    try {
+      const {
+        data: { invoices, pagy },
+      } = await clientApi.invoices(queryParams());
+      setInvoices(invoices);
+      setPagy(pagy);
+      setLoading(false);
+    } catch {
+      setLoading(false);
+    }
   };
 
   if (loading) {
@@ -57,7 +61,11 @@ const ClientInvoices = () => {
 
   return (
     <div className="p-4 lg:p-0" id="invoice-list-page">
-      <Header params={params} setParams={setParams} />
+      <Header
+        params={params}
+        setParams={setParams}
+        showSearch={invoices.length}
+      />
       <List invoices={invoices} />
       {invoices.length > 0 && (
         <Pagination

@@ -59,7 +59,7 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
   def send_invoice
     authorize invoice
 
-    if current_user.email == "supriya@saeloun.com"
+    if ENV["SEND_INVOICE_EMAILS"] || current_user.email == "supriya@saeloun.com"
       recipients = invoice_email_params[:recipients]
 
       if recipients.size < 6

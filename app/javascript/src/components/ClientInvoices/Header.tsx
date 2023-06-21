@@ -9,7 +9,7 @@ import { useUserContext } from "context/UserContext";
 
 import SearchDropdown from "./InvoiceSearch/SearchDropdown";
 
-const Header = ({ params, setParams }) => {
+const Header = ({ showSearch, params, setParams }) => {
   const { isDesktop, handleOverlayVisibility } = useUserContext();
   const [searchQuery, setSearchQuery] = useState<string>(params.query || "");
   const [searchResult, setSearchResult] = useState<any[]>([]);
@@ -92,77 +92,81 @@ const Header = ({ params, setParams }) => {
   return (
     <div className="relative mt-6 mb-3 flex flex-wrap items-center justify-between md:justify-start lg:justify-between">
       <h2 className="header__title">Invoices</h2>
-      {isDesktop ? (
-        <div className="flex w-10/12 lg:w-1/2">
-          <div className="relative w-11/12">
-            <input
-              className="outline-none w-full rounded-full border-miru-gray-1000 bg-miru-gray-100 py-2 px-3 text-sm font-medium leading-5 focus:border focus:ring-1 focus:ring-miru-gray-1000"
-              placeholder="Search"
-              type="text"
-              value={searchQuery}
-              onChange={e => setSearchQuery(e.target.value)}
-              onKeyDown={e => onKeydownHandler(e)}
-            />
-            <button className="absolute inset-y-0 right-3 flex cursor-pointer items-center">
-              {searchQuery ? (
-                <XIcon size={12} weight="bold" onClick={onSearchClear} />
-              ) : (
-                <SearchIcon
-                  className="text-miru-gray-1000"
-                  size={16}
-                  weight="bold"
+      {showSearch >= 1 && (
+        <>
+          {isDesktop ? (
+            <div className="flex w-10/12 lg:w-1/2">
+              <div className="relative w-11/12">
+                <input
+                  className="outline-none w-full rounded-full border-miru-gray-1000 bg-miru-gray-100 py-2 px-3 text-sm font-medium leading-5 focus:border focus:ring-1 focus:ring-miru-gray-1000"
+                  placeholder="Search"
+                  type="text"
+                  value={searchQuery}
+                  onChange={e => setSearchQuery(e.target.value)}
+                  onKeyDown={e => onKeydownHandler(e)}
                 />
-              )}
-            </button>
-            <SearchDropdown
-              display={params.query !== searchQuery}
-              list={searchResult}
-              status={status}
-            />
-          </div>
-        </div>
-      ) : (
-        <div className="flex w-10/12 md:w-11/12 lg:w-1/3">
-          <div
-            className={`${
-              expandSearchBox || searchQuery
-                ? "absolute z-max mb-2 w-full scale-100 transform transition-transform duration-300"
-                : "relative w-11/12 scale-95 transform transition-transform duration-300"
-            } ${isShrinkingSearchBox ? "scale-95" : ""}`}
-          >
-            <input
-              className="outline-none w-full rounded-full border-miru-gray-1000 bg-miru-gray-100 py-3 px-3 text-sm font-medium leading-5 focus:border focus:ring-1 focus:ring-miru-gray-1000"
-              placeholder="Search"
-              type="text"
-              value={searchQuery}
-              onBlur={onSearchBlur}
-              onChange={e => setSearchQuery(e.target.value)}
-              onFocus={() => setExpandSearchBox(true)}
-              onKeyDown={e => onKeydownHandler(e)}
-            />
-            <button className="absolute inset-y-0 right-3 flex cursor-pointer items-center">
-              {searchQuery || expandSearchBox ? (
-                <XIcon
-                  color="#CDD6DF"
-                  size={16}
-                  weight="bold"
-                  onClick={onSearchClear}
+                <button className="absolute inset-y-0 right-3 flex cursor-pointer items-center">
+                  {searchQuery ? (
+                    <XIcon size={12} weight="bold" onClick={onSearchClear} />
+                  ) : (
+                    <SearchIcon
+                      className="text-miru-gray-1000"
+                      size={16}
+                      weight="bold"
+                    />
+                  )}
+                </button>
+                <SearchDropdown
+                  display={params.query !== searchQuery}
+                  list={searchResult}
+                  status={status}
                 />
-              ) : (
-                <SearchIcon
-                  className="text-miru-gray-1000"
-                  size={16}
-                  weight="bold"
+              </div>
+            </div>
+          ) : (
+            <div className="flex w-10/12 md:w-11/12 lg:w-1/3">
+              <div
+                className={`${
+                  expandSearchBox || searchQuery
+                    ? "absolute z-max mb-2 w-full scale-100 transform transition-transform duration-300"
+                    : "relative w-11/12 scale-95 transform transition-transform duration-300"
+                } ${isShrinkingSearchBox ? "scale-95" : ""}`}
+              >
+                <input
+                  className="outline-none w-full rounded-full border-miru-gray-1000 bg-miru-gray-100 py-3 px-3 text-sm font-medium leading-5 focus:border focus:ring-1 focus:ring-miru-gray-1000"
+                  placeholder="Search"
+                  type="text"
+                  value={searchQuery}
+                  onBlur={onSearchBlur}
+                  onChange={e => setSearchQuery(e.target.value)}
+                  onFocus={() => setExpandSearchBox(true)}
+                  onKeyDown={e => onKeydownHandler(e)}
                 />
-              )}
-            </button>
-            <SearchDropdown
-              display={params.query !== searchQuery}
-              list={searchResult}
-              status={status}
-            />
-          </div>
-        </div>
+                <button className="absolute inset-y-0 right-3 flex cursor-pointer items-center">
+                  {searchQuery || expandSearchBox ? (
+                    <XIcon
+                      color="#CDD6DF"
+                      size={16}
+                      weight="bold"
+                      onClick={onSearchClear}
+                    />
+                  ) : (
+                    <SearchIcon
+                      className="text-miru-gray-1000"
+                      size={16}
+                      weight="bold"
+                    />
+                  )}
+                </button>
+                <SearchDropdown
+                  display={params.query !== searchQuery}
+                  list={searchResult}
+                  status={status}
+                />
+              </div>
+            </div>
+          )}
+        </>
       )}
       <div />
     </div>

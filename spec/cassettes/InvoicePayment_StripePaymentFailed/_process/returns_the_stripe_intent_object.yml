@@ -1,0 +1,468 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://api.stripe.com/v1/accounts
+    body:
+      encoding: UTF-8
+      string: type=standard
+    headers:
+      User-Agent:
+      - Stripe/v1 RubyBindings/8.2.0
+      Authorization:
+      - Bearer sk_test_51EXIAiEQYiNu1q8E22PeN6N5pMswpv0Q5dwRApDrqfIuGvyoKTCX5KaKdWWIEZht8LjSF85v7lxPOKrxBFFs7vLp00QvWOAKgM
+      Content-Type:
+      - application/x-www-form-urlencoded
+      X-Stripe-Client-User-Agent:
+      - '{"bindings_version":"8.2.0","lang":"ruby","lang_version":"3.2.2 p53 (2023-03-30)","platform":"x86_64-darwin22","engine":"ruby","publisher":"stripe","uname":"Darwin
+        Gowsik-ka-MacBook-Pro.local 22.2.0 Darwin Kernel Version 22.2.0: Fri Nov 11
+        02:08:47 PST 2022; root:xnu-8792.61.2~4/RELEASE_X86_64 x86_64","hostname":"Gowsik-ka-MacBook-Pro.local"}'
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - nginx
+      Date:
+      - Tue, 13 Jun 2023 11:56:18 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '2825'
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Credentials:
+      - 'true'
+      Access-Control-Allow-Methods:
+      - GET, POST, HEAD, OPTIONS, DELETE
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Expose-Headers:
+      - Request-Id, Stripe-Manage-Version, X-Stripe-External-Auth-Required, X-Stripe-Privileged-Session-Required
+      Access-Control-Max-Age:
+      - '300'
+      Cache-Control:
+      - no-cache, no-store
+      Idempotency-Key:
+      - c4c93c9e-b165-43b8-9161-12ebccb026ab
+      Original-Request:
+      - req_1f8UMQjMkbL21k
+      Request-Id:
+      - req_1f8UMQjMkbL21k
+      Stripe-Should-Retry:
+      - 'false'
+      Stripe-Version:
+      - '2019-03-14'
+      X-Stripe-Routing-Context-Priority-Tier:
+      - api-testmode
+      Strict-Transport-Security:
+      - max-age=63072000; includeSubDomains; preload
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+          "id": "acct_1NIVpdCuXNTh7nJw",
+          "object": "account",
+          "business_profile": {
+            "mcc": null,
+            "name": null,
+            "product_description": null,
+            "support_address": null,
+            "support_email": null,
+            "support_phone": null,
+            "support_url": null,
+            "url": null
+          },
+          "business_type": null,
+          "capabilities": {},
+          "charges_enabled": false,
+          "controller": {
+            "is_controller": true,
+            "type": "application"
+          },
+          "country": "US",
+          "created": 1686657377,
+          "default_currency": "usd",
+          "details_submitted": false,
+          "email": null,
+          "external_accounts": {
+            "object": "list",
+            "data": [],
+            "has_more": false,
+            "total_count": 0,
+            "url": "/v1/accounts/acct_1NIVpdCuXNTh7nJw/external_accounts"
+          },
+          "future_requirements": {
+            "alternatives": [],
+            "current_deadline": null,
+            "currently_due": [],
+            "disabled_reason": null,
+            "errors": [],
+            "eventually_due": [],
+            "past_due": [],
+            "pending_verification": []
+          },
+          "metadata": {},
+          "payouts_enabled": false,
+          "requirements": {
+            "alternatives": [],
+            "current_deadline": null,
+            "currently_due": [
+              "business_profile.product_description",
+              "business_profile.support_phone",
+              "business_profile.url",
+              "external_account",
+              "tos_acceptance.date",
+              "tos_acceptance.ip"
+            ],
+            "disabled_reason": "requirements.past_due",
+            "errors": [],
+            "eventually_due": [
+              "business_profile.product_description",
+              "business_profile.support_phone",
+              "business_profile.url",
+              "external_account",
+              "tos_acceptance.date",
+              "tos_acceptance.ip"
+            ],
+            "past_due": [
+              "external_account",
+              "tos_acceptance.date",
+              "tos_acceptance.ip"
+            ],
+            "pending_verification": []
+          },
+          "settings": {
+            "bacs_debit_payments": {},
+            "branding": {
+              "icon": null,
+              "logo": null,
+              "primary_color": null,
+              "secondary_color": null
+            },
+            "card_issuing": {
+              "tos_acceptance": {
+                "date": null,
+                "ip": null
+              }
+            },
+            "card_payments": {
+              "decline_on": {
+                "avs_failure": true,
+                "cvc_failure": true
+              },
+              "statement_descriptor_prefix": null,
+              "statement_descriptor_prefix_kana": null,
+              "statement_descriptor_prefix_kanji": null
+            },
+            "dashboard": {
+              "display_name": null,
+              "timezone": "Etc/UTC"
+            },
+            "payments": {
+              "statement_descriptor": null,
+              "statement_descriptor_kana": null,
+              "statement_descriptor_kanji": null
+            },
+            "payouts": {
+              "debit_negative_balances": true,
+              "schedule": {
+                "delay_days": 2,
+                "interval": "daily"
+              },
+              "statement_descriptor": null
+            },
+            "sepa_debit_payments": {}
+          },
+          "tos_acceptance": {
+            "date": null,
+            "ip": null,
+            "user_agent": null
+          },
+          "type": "standard"
+        }
+  recorded_at: Tue, 13 Jun 2023 11:56:18 GMT
+- request:
+    method: get
+    uri: https://api.stripe.com/v1/payment_intents/pi_3NIVZzENZof8Gnl10xirMpvw
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Stripe/v1 RubyBindings/8.2.0
+      Authorization:
+      - Bearer sk_test_51EXIAiEQYiNu1q8E22PeN6N5pMswpv0Q5dwRApDrqfIuGvyoKTCX5KaKdWWIEZht8LjSF85v7lxPOKrxBFFs7vLp00QvWOAKgM
+      Content-Type:
+      - application/x-www-form-urlencoded
+      X-Stripe-Client-Telemetry:
+      - '{"last_request_metrics":{"request_id":"req_1f8UMQjMkbL21k","request_duration_ms":2010}}'
+      X-Stripe-Client-User-Agent:
+      - '{"bindings_version":"8.2.0","lang":"ruby","lang_version":"3.2.2 p53 (2023-03-30)","platform":"x86_64-darwin22","engine":"ruby","publisher":"stripe","uname":"Darwin
+        Gowsik-ka-MacBook-Pro.local 22.2.0 Darwin Kernel Version 22.2.0: Fri Nov 11
+        02:08:47 PST 2022; root:xnu-8792.61.2~4/RELEASE_X86_64 x86_64","hostname":"Gowsik-ka-MacBook-Pro.local"}'
+      Stripe-Account:
+      - acct_1NIU5SENZof8Gnl1
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - nginx
+      Date:
+      - Tue, 13 Jun 2023 11:56:19 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '5992'
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Credentials:
+      - 'true'
+      Access-Control-Allow-Methods:
+      - GET, POST, HEAD, OPTIONS, DELETE
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Expose-Headers:
+      - Request-Id, Stripe-Manage-Version, X-Stripe-External-Auth-Required, X-Stripe-Privileged-Session-Required
+      Access-Control-Max-Age:
+      - '300'
+      Cache-Control:
+      - no-cache, no-store
+      Request-Id:
+      - req_klRgrqIe9mGmrP
+      Stripe-Account:
+      - acct_1NIU5SENZof8Gnl1
+      Stripe-Version:
+      - '2019-03-14'
+      X-Stripe-Routing-Context-Priority-Tier:
+      - api-testmode
+      Strict-Transport-Security:
+      - max-age=63072000; includeSubDomains; preload
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+          "id": "pi_3NIVZzENZof8Gnl10xirMpvw",
+          "object": "payment_intent",
+          "amount": 865833,
+          "amount_capturable": 0,
+          "amount_details": {
+            "tip": {}
+          },
+          "amount_received": 0,
+          "application": "ca_LVTEicAhu0EntAfF62QG1G4CXJtN08Wv",
+          "application_fee_amount": null,
+          "automatic_payment_methods": null,
+          "canceled_at": null,
+          "cancellation_reason": null,
+          "capture_method": "automatic",
+          "charges": {
+            "object": "list",
+            "data": [
+              {
+                "id": "ch_3NIVZzENZof8Gnl10D5SO5TY",
+                "object": "charge",
+                "amount": 865833,
+                "amount_captured": 0,
+                "amount_refunded": 0,
+                "application": "ca_LVTEicAhu0EntAfF62QG1G4CXJtN08Wv",
+                "application_fee": null,
+                "application_fee_amount": null,
+                "balance_transaction": null,
+                "billing_details": {
+                  "address": {
+                    "city": null,
+                    "country": "IN",
+                    "line1": null,
+                    "line2": null,
+                    "postal_code": null,
+                    "state": null
+                  },
+                  "email": "support@example.com",
+                  "name": "tests",
+                  "phone": null
+                },
+                "calculated_statement_descriptor": "WWW.SAELOUN.COM",
+                "captured": false,
+                "created": 1686656831,
+                "currency": "usd",
+                "customer": "cus_O4dPSmgjXR42M0",
+                "description": null,
+                "destination": null,
+                "dispute": null,
+                "disputed": false,
+                "failure_balance_transaction": null,
+                "failure_code": "card_declined",
+                "failure_message": "Your card was declined.",
+                "fraud_details": {},
+                "invoice": null,
+                "livemode": false,
+                "metadata": {},
+                "on_behalf_of": null,
+                "order": null,
+                "outcome": {
+                  "network_status": "declined_by_network",
+                  "reason": "generic_decline",
+                  "risk_level": "normal",
+                  "risk_score": 37,
+                  "seller_message": "The bank did not return any further details with this decline.",
+                  "type": "issuer_declined"
+                },
+                "paid": false,
+                "payment_intent": "pi_3NIVZzENZof8Gnl10xirMpvw",
+                "payment_method": "pm_1NIVgoENZof8Gnl1CA89s5l4",
+                "payment_method_details": {
+                  "card": {
+                    "brand": "visa",
+                    "checks": {
+                      "address_line1_check": null,
+                      "address_postal_code_check": null,
+                      "cvc_check": "pass"
+                    },
+                    "country": "US",
+                    "exp_month": 4,
+                    "exp_year": 2032,
+                    "fingerprint": "5beI1rIYkNtRjlhB",
+                    "funding": "credit",
+                    "installments": null,
+                    "last4": "0341",
+                    "mandate": null,
+                    "network": "visa",
+                    "network_token": {
+                      "used": false
+                    },
+                    "three_d_secure": null,
+                    "wallet": null
+                  },
+                  "type": "card"
+                },
+                "receipt_email": null,
+                "receipt_number": null,
+                "receipt_url": null,
+                "refunded": false,
+                "refunds": {
+                  "object": "list",
+                  "data": [],
+                  "has_more": false,
+                  "total_count": 0,
+                  "url": "/v1/charges/ch_3NIVZzENZof8Gnl10D5SO5TY/refunds"
+                },
+                "review": null,
+                "shipping": null,
+                "source": null,
+                "source_transfer": null,
+                "statement_descriptor": null,
+                "statement_descriptor_suffix": null,
+                "status": "failed",
+                "transfer_data": null,
+                "transfer_group": null
+              }
+            ],
+            "has_more": true,
+            "total_count": 2,
+            "url": "/v1/charges?payment_intent=pi_3NIVZzENZof8Gnl10xirMpvw"
+          },
+          "client_secret": "pi_3NIVZzENZof8Gnl10xirMpvw_secret_pnRihRqeCy8yhCFnM1nylPhhY",
+          "confirmation_method": "automatic",
+          "created": 1686656407,
+          "currency": "usd",
+          "customer": "cus_O4dPSmgjXR42M0",
+          "description": null,
+          "invoice": null,
+          "last_payment_error": {
+            "charge": "ch_3NIVZzENZof8Gnl10D5SO5TY",
+            "code": "card_declined",
+            "decline_code": "generic_decline",
+            "doc_url": "https://stripe.com/docs/error-codes/card-declined",
+            "message": "Your card was declined.",
+            "payment_method": {
+              "id": "pm_1NIVgoENZof8Gnl1CA89s5l4",
+              "object": "payment_method",
+              "billing_details": {
+                "address": {
+                  "city": null,
+                  "country": "IN",
+                  "line1": null,
+                  "line2": null,
+                  "postal_code": null,
+                  "state": null
+                },
+                "email": "support@example.com",
+                "name": "tests",
+                "phone": null
+              },
+              "card": {
+                "brand": "visa",
+                "checks": {
+                  "address_line1_check": null,
+                  "address_postal_code_check": null,
+                  "cvc_check": "pass"
+                },
+                "country": "US",
+                "exp_month": 4,
+                "exp_year": 2032,
+                "fingerprint": "5beI1rIYkNtRjlhB",
+                "funding": "credit",
+                "generated_from": null,
+                "last4": "0341",
+                "networks": {
+                  "available": [
+                    "visa"
+                  ],
+                  "preferred": null
+                },
+                "three_d_secure_usage": {
+                  "supported": true
+                },
+                "wallet": null
+              },
+              "created": 1686656830,
+              "customer": null,
+              "livemode": false,
+              "metadata": {},
+              "type": "card"
+            },
+            "type": "card_error"
+          },
+          "latest_charge": "ch_3NIVZzENZof8Gnl10D5SO5TY",
+          "livemode": false,
+          "metadata": {},
+          "next_action": null,
+          "on_behalf_of": null,
+          "payment_method": null,
+          "payment_method_options": {
+            "card": {
+              "installments": null,
+              "mandate_options": null,
+              "network": null,
+              "request_three_d_secure": "automatic"
+            }
+          },
+          "payment_method_types": [
+            "card"
+          ],
+          "processing": null,
+          "receipt_email": null,
+          "review": null,
+          "setup_future_usage": null,
+          "shipping": null,
+          "source": null,
+          "statement_descriptor": null,
+          "statement_descriptor_suffix": null,
+          "status": "requires_payment_method",
+          "transfer_data": null,
+          "transfer_group": null
+        }
+  recorded_at: Tue, 13 Jun 2023 11:56:19 GMT
+recorded_with: VCR 6.1.0
