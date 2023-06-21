@@ -102,7 +102,7 @@ const Invoice = () => {
             <ArrowLeftIcon className="text-white" size={16} weight="bold" />
           </Button>
           <div className="flex h-12 w-full items-center justify-center bg-miru-han-purple-1000 px-3 text-white">
-            Send Invoice
+            {isSendReminder ? "Send Invoice Reminder" : "Send Invoice"}
           </div>
         </div>
         <div className="flex flex-1">
