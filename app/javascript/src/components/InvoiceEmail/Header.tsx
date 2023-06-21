@@ -5,19 +5,6 @@ import { Badge, Tooltip } from "StyledComponents";
 
 import getStatusCssClass from "utils/getBadgeStatus";
 
-interface Invoice {
-  invoice_number: number;
-  status: string;
-}
-
-interface InvoiceEmailProps {
-  invoice: Invoice;
-  stripeUrl: string;
-  isStripeConnected: boolean;
-  setIsInvoiceEmail: (_value) => void;
-  setShowConnectPaymentDialog: (_value) => void;
-}
-
 const Header = ({
   invoice,
   stripeUrl,
@@ -92,5 +79,18 @@ const Header = ({
     </div>
   </div>
 );
+
+interface Invoice {
+  invoice_number: number;
+  status: string;
+}
+
+interface InvoiceEmailProps {
+  invoice: Invoice;
+  stripeUrl: string;
+  isStripeConnected: boolean;
+  setIsInvoiceEmail: (_value) => void;
+  setShowConnectPaymentDialog: (_value) => void;
+}
 
 export default Header;

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import { InstagramSVG, TwitterSVG, MiruLogoWithTextSVG } from "miruIcons";
 import { useParams } from "react-router-dom";
+import { Toastr } from "StyledComponents";
 
 import invoicesApi from "apis/invoices";
 import paymentSettings from "apis/payment-settings";
@@ -10,8 +11,6 @@ import ConnectPaymentGateway from "components/Invoices/popups/ConnectPaymentGate
 
 import Header from "./Header";
 import InvoiceDetails from "./InvoiceDetails";
-
-import Toastr from "../../StyledComponents/Toastr";
 
 const InvoiceEmail = () => {
   const params = useParams();
