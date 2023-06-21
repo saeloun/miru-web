@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import { XIcon } from "miruIcons";
 import { Modal } from "StyledComponents";
 
+import clientApi from "apis/clients";
 import { useUserContext } from "context/UserContext";
 
 import ClientForm from "../ClientForm";
@@ -20,12 +21,22 @@ const EditClient = ({
   const [clientLogo, setClientLogo] = useState("");
   const [submitting, setSubmitting] = useState<boolean>(false);
   const { isDesktop } = useUserContext();
+  const [usersWithClientRole, setUsersWithClientRole] = useState([]);
 
   const handleDeleteLogo = event => {
     event.preventDefault();
     setClientLogo("");
     setClientLogoUrl("");
   };
+
+  const fetchUsersWithClientroles = async (val = "week") => {
+    const res = await clientApi.get(`?time_frame=${val}`);
+    setUsersWithClientRole(res.data.users_not_in_client_members);
+  };
+
+  useEffect(() => {
+    fetchUsersWithClientroles();
+  }, []);
 
   return isDesktop ? (
     <Modal
@@ -57,6 +68,7 @@ const EditClient = ({
         setShowEditDialog={setShowEditDialog}
         setSubmitting={setSubmitting}
         submitting={submitting}
+        usersWithClientRole={usersWithClientRole}
       />
     </Modal>
   ) : (

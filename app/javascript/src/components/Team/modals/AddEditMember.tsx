@@ -246,6 +246,22 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
                             <span className="text-sm">Bookkeeper</span>
                           </label>
                         </div>
+                        <div className="ml-8 flex items-center">
+                          <Field
+                            className="custom__radio"
+                            id="role-3"
+                            name="role"
+                            type="radio"
+                            value="client"
+                          />
+                          <label
+                            className="ml-2 flex cursor-pointer items-center text-xl"
+                            htmlFor="role-3"
+                          >
+                            <i className="custom__radio-text" />
+                            <span className="text-sm">Client</span>
+                          </label>
+                        </div>
                       </div>
                     </div>
                   </div>

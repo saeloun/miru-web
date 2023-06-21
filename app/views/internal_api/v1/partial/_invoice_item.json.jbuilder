@@ -9,6 +9,7 @@ json.array! invoices do |invoice|
     json.issue_date invoice.formatted_issue_date
     json.due_date invoice.formatted_due_date
     json.amount invoice.amount
+    json.external_view_key invoice.external_view_key
     json.client do
       json.name invoice.client_name
       json.email invoice.client_email

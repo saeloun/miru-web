@@ -1,12 +1,9 @@
 import React from "react";
 
-import dayjs from "dayjs";
 import { currencyFormat } from "helpers";
 import { useNavigate } from "react-router-dom";
 
 import getStatusCssClass from "utils/getBadgeStatus";
-
-const formattedDate = (date, format) => dayjs(date).format(format);
 
 const SearchDataRow = ({ invoice }) => {
   const navigate = useNavigate();
@@ -15,28 +12,30 @@ const SearchDataRow = ({ invoice }) => {
     navigate(`/invoices/${invoice.id}`);
   };
 
+  const { client, invoiceNumber, company, amount, issueDate, status } = invoice;
+
   return (
     <div
       className="group flex cursor-pointer items-center py-2 last:border-b-0 hover:bg-miru-gray-100"
       onClick={() => handleClick(invoice)}
     >
-      <div className="ftracking-wider w-5/12 px-2/100 font-medium">
-        <div className="font-semibold capitalize text-miru-dark-purple-1000">
-          {invoice.client.name}
+      <div className="w-5/12 p-0 font-medium tracking-wider">
+        <div className="pb-1 text-sm font-medium capitalize text-miru-dark-purple-1000">
+          {client.name}
         </div>
         <div className="text-sm font-normal text-miru-dark-purple-400">
-          {invoice.invoiceNumber}
+          {invoiceNumber}
         </div>
       </div>
-      <div className="w-4/12 px-2/100 font-medium tracking-wider">
-        {currencyFormat(invoice.company.baseCurrency, invoice.amount)}
+      <div className="w-4/12 px-2/100 font-bold tracking-wider">
+        {currencyFormat(company.baseCurrency, amount)}
         <div className="text-sm font-normal text-miru-dark-purple-400">
-          {formattedDate(invoice.issueDate, invoice.company.dateFormat)}
+          {issueDate}
         </div>
       </div>
-      <div className="w-3/12 px-2/100 font-medium">
-        <span className={`${getStatusCssClass(invoice.status)} uppercase`}>
-          {invoice.status}
+      <div className="w-3/12 pl-2/100 text-right font-medium">
+        <span className={`${getStatusCssClass(status)} uppercase tracking-2`}>
+          {status}
         </span>
       </div>
     </div>

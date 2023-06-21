@@ -9,27 +9,25 @@ export const clientSchema = Yup.object().shape({
   name: Yup.string()
     .required("Name cannot be blank")
     .max(30, "Maximum 30 characters are allowed"),
-  email: Yup.string()
-    .email("Invalid email ID")
-    .required("Email ID cannot be blank"),
+  email: Yup.string().required("Email cannot be blank"),
   phone: Yup.string()
-    .required("Business phone number can not be blank")
+    .required("Business phone number cannot be blank")
     .matches(phoneRegExp, "Please enter a valid business phone number"),
   address1: Yup.string()
-    .required("Address line can not be blank")
+    .required("Address line cannot be blank")
     .max(50, "Maximum 50 characters are allowed"),
   address2: Yup.string().max(50, "Maximum 50 characters are allowed"),
   country: Yup.object().shape({
-    value: Yup.string().required("Country can not be blank"),
+    value: Yup.string().required("Country cannot be blank"),
   }),
   state: Yup.object().shape({
-    value: Yup.string().required("State can not be blank"),
+    value: Yup.string().required("State cannot be blank"),
   }),
   city: Yup.object().shape({
-    value: Yup.string().required("City can not be blank"),
+    value: Yup.string().required("City cannot be blank"),
   }),
   zipcode: Yup.string()
-    .required("Zipcode line can not be blank")
+    .required("Zipcode line cannot be blank")
     .max(10, "Maximum 10 characters are allowed"),
 });
 

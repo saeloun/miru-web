@@ -31,6 +31,7 @@ const ClientForm = ({
   submitting,
   setSubmitting,
   fetchDetails,
+  usersWithClientRole,
 }: IClientForm) => {
   const [fileUploadError, setFileUploadError] = useState<string>("");
   const [countries, setCountries] = useState([]);
@@ -78,7 +79,6 @@ const ClientForm = ({
   const handleSubmit = async values => {
     setSubmitting(true);
     const formData = new FormData();
-
     formatFormData(
       formData,
       values,
@@ -114,7 +114,8 @@ const ClientForm = ({
       onSubmit={handleSubmit}
     >
       {(props: FormikProps<FormValues>) => {
-        const { touched, errors, setFieldValue, values } = props;
+        const { touched, errors, setFieldValue, values, setFieldTouched } =
+          props;
 
         return (
           <Form>
@@ -153,20 +154,22 @@ const ClientForm = ({
               />
             </div>
             <div className="mt-4">
-              <div className="field relative">
-                <InputField
-                  resetErrorOnChange
-                  hasError={errors.email && touched.email}
-                  id="email"
-                  label="Email"
-                  name="email"
-                  setFieldValue={setFieldValue}
-                />
-                <InputErrors
-                  fieldErrors={errors.email}
-                  fieldTouched={touched.email}
-                />
-              </div>
+              <CustomReactSelect
+                handleOnChange={email => setFieldValue("email", email.value)}
+                id="email"
+                label="Email"
+                name="email"
+                value={{ label: values.email, value: values.email }}
+                options={usersWithClientRole.map(user => ({
+                  value: user.email,
+                  label: user.email,
+                }))}
+                onBlur={() => setFieldTouched("email", true)}
+              />
+              <InputErrors
+                fieldErrors={errors.email?.value}
+                fieldTouched={touched.email}
+              />
             </div>
             <div className="mt-4">
               <div className="field relative">
@@ -327,11 +330,15 @@ interface IClientForm {
   submitting: boolean;
   setSubmitting: any;
   fetchDetails?: any;
+  usersWithClientRole: any;
 }
 
 interface FormValues {
   name: string;
-  email: string;
+  email: {
+    value: string;
+    label: string;
+  };
   phone: string;
   address1: string;
   address2: string;

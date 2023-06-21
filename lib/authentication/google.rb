@@ -12,6 +12,7 @@ module Authentication
       return if @user_data.blank? || google_id.blank?
 
       Identity.google_auth.where(uid: google_id)&.first&.user || create_user!
+      Identity.google_auth.where(uid: google_id)&.first&.user
     end
 
     private
@@ -30,7 +31,7 @@ module Authentication
           )
           user.skip_confirmation!
           user.save!
-          user.identities.create(provider: PROVIDER, uid: google_id)
+          user.identities.create!(provider: PROVIDER, uid: google_id)
         end
         user
       end

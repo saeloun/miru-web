@@ -13,7 +13,12 @@ namespace :internal_api, defaults: { format: "json" } do
       end
     end
 
-    resources :clients, only: [:index, :update, :destroy, :show, :create]
+    resources :clients, only: [:index, :update, :destroy, :show, :create] do
+      collection do
+        get "invoices", to: "clients/invoices#index"
+        get "invoices/:id", to: "clients/invoices#show", as: "invoice"
+      end
+    end
 
     resources :project, only: [:index]
     resources :timesheet_entry do
@@ -43,6 +48,7 @@ namespace :internal_api, defaults: { format: "json" } do
     namespace :invoices do
       resources :bulk_deletion, only: [:create]
       resources :bulk_download, only: [:index]
+      resources :action_trails, only: [:show]
       resources :waived, only: [:update]
       get "(:id)/view", to: "view#show", as: "view"
       get "/:id/payments/success", to: "payments#success", as: "success"
@@ -57,7 +63,7 @@ namespace :internal_api, defaults: { format: "json" } do
 
     resources :generate_invoice, only: [:index, :show]
     resources :project_members, only: [:update]
-    resources :employments, only: [:index]
+    resources :employments, only: [:index, :show, :update]
     resources :timezones, only: [:index]
 
     concern :addressable do
@@ -115,5 +121,6 @@ namespace :internal_api, defaults: { format: "json" } do
     resources :vendors, only: [:create]
     resources :expense_categories, only: [:create]
     resources :expenses, only: [:create, :index, :show]
+    resources :bulk_previous_employments, only: [:update]
   end
 end
