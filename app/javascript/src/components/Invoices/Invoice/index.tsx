@@ -97,7 +97,14 @@ const Invoice = () => {
         <div className="flex w-full bg-miru-han-purple-1000 pl-4">
           <Button
             style="ternary"
-            onClick={() => setShowSendInvoiceModal(false)}
+            onClick={() => {
+              if (isSendReminder) {
+                setShowSendInvoiceModal(false);
+                setIsSendReminder(false);
+              } else {
+                setShowSendInvoiceModal(false);
+              }
+            }}
           >
             <ArrowLeftIcon className="text-white" size={16} weight="bold" />
           </Button>
