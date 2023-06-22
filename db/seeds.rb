@@ -33,25 +33,34 @@ sam = User.create!(
   first_name: "Sam", last_name: "Smith", email: "sam@example.com", password: "welcome",
   password_confirmation: "welcome", confirmed_at: Time.current, current_workspace_id: company.id
 )
+oliver = User.create!(
+  first_name: "Oliver", last_name: "Smith", email: "oliver@example.com", password: "welcome",
+  password_confirmation: "welcome", confirmed_at: Time.current, current_workspace_id: company.id
+)
 
 vipul.add_role(:owner, company)
 supriya.add_role(:admin, company)
 book_keeper.add_role(:book_keeper, company)
 sam.add_role(:employee, company)
+oliver.add_role(:client, company)
 puts "Users Roles Created"
 
-users = [vipul, supriya, book_keeper, sam]
+users = [vipul, supriya, book_keeper, sam, oliver]
 
 users.each { |user| company.employments.create!(user:) }
 puts "Employment Created"
 
 microsoft_client = company.clients.create!(
   name: "Microsoft",
-  email: "support@example.com",
+  email: oliver.email,
   phone: "+1 9999999991"
 )
 
 puts "Clients Created"
+
+ClientMember.create!(client: microsoft_client, user: oliver)
+
+puts "Client member created"
 
 microsoft_client.addresses.create!(
   address_line_1: "475 Clermont Ave",
