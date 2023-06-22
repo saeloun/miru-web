@@ -45,9 +45,10 @@ sam.add_role(:employee, company)
 oliver.add_role(:client, company)
 puts "Users Roles Created"
 
-users = [vipul, supriya, book_keeper, sam, oliver]
+users = [vipul, supriya, book_keeper, sam]
 
 users.each { |user| company.employments.create!(user:) }
+company.employments.create!(user: oliver)
 puts "Employment Created"
 
 microsoft_client = company.clients.create!(
