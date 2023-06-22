@@ -433,6 +433,7 @@ const CompanyDetailsForm = ({
                       setCurrentCountryDetails(e);
                       getTimezonesOfCurrentCountry(e.code, setFieldValue);
                       setFieldValue("country", e);
+                      setFieldValue("state", { value: null, label: null });
                       setFieldValue("city", { value: null, label: null });
                       setCurrentCityList([]);
                     }}
@@ -446,8 +447,13 @@ const CompanyDetailsForm = ({
                     value={values.state.value ? values.state : null}
                     handleOnChange={state => {
                       setFieldValue("state", state);
+                      const countryCode =
+                        currentCountryDetails.code == ""
+                          ? values.country?.value
+                          : currentCountryDetails.code;
+
                       const cities = City.getCitiesOfState(
-                        currentCountryDetails.code,
+                        countryCode,
                         state.code
                       ).map(city => ({
                         label: city.name,
@@ -467,6 +473,7 @@ const CompanyDetailsForm = ({
               <div className="flex flex-row">
                 <div className="flex w-1/2 flex-col pr-2" id="city">
                   <CustomAsyncSelect
+                    defaultOptions={currentCityList}
                     isErr={!!errors.city && touched.city}
                     label="City"
                     loadOptions={option => getOptions(option, values)}
