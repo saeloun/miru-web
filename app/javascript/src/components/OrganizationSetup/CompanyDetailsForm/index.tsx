@@ -447,8 +447,13 @@ const CompanyDetailsForm = ({
                     value={values.state.value ? values.state : null}
                     handleOnChange={state => {
                       setFieldValue("state", state);
+                      const countryCode =
+                        currentCountryDetails.code == ""
+                          ? values.country?.value
+                          : currentCountryDetails.code;
+
                       const cities = City.getCitiesOfState(
-                        currentCountryDetails.code,
+                        countryCode,
                         state.code
                       ).map(city => ({
                         label: city.name,
