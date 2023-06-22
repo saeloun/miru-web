@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 
 import cn from "classnames";
 import { CaretCircleLeftIcon, CaretCircleRightIcon } from "miruIcons";
@@ -75,21 +75,23 @@ const Pagination = ({
             )}
             <div className="flex overflow-x-scroll ">
               {paginationRange.map(page => (
-                <button
-                  disabled={pagy?.page === page || currentPage === page}
-                  key={page}
-                  className={cn(
-                    "m-1 mx-4 p-1 text-base font-bold text-miru-dark-purple-400",
-                    {
-                      "text-miru-han-purple-1000": pagy?.prev + 1 === page,
-                    }
-                  )}
-                  onClick={() => {
-                    isReport ? handleClick(page) : handlePageNumberClick(page);
-                  }}
-                >
-                  {page}
-                </button>
+                <Fragment>
+                  <button
+                    disabled={pagy?.page === page || currentPage === page}
+                    key={page}
+                    className={cn(
+                      "m-1 mx-4 p-1 text-base font-bold text-miru-dark-purple-400",
+                      {
+                        "text-miru-han-purple-1000": pagy?.prev + 1 === page,
+                      }
+                    )}
+                    onClick={() => {
+                      isReport ? handleClick(page) : handlePageNumberClick(page);
+                    }}
+                  >
+                    {page}
+                  </button>
+                </Fragment>
               ))}
             </div>
             {!pagy?.last ||
