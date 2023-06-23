@@ -119,7 +119,9 @@ const GenerateInvoices = () => {
 
   const handleSendInvoice = () => {
     if (selectedClient && invoiceNumber !== "") {
-      setShowSendInvoiceModal(true);
+      isStripeConnected
+        ? setShowSendInvoiceModal(true)
+        : setShowConnectPaymentDialog(true);
     } else {
       selectedClient
         ? Toastr.error(INVOICE_NUMBER_ERROR)
@@ -158,8 +160,6 @@ const GenerateInvoices = () => {
         <Header
           handleSaveInvoice={handleSaveInvoice}
           handleSendInvoice={handleSendInvoice}
-          isStripeEnabled={isStripeConnected}
-          setShowConnectPaymentDialog={setShowConnectPaymentDialog}
           setShowInvoiceSetting={setShowInvoiceSetting}
         />
         <Container

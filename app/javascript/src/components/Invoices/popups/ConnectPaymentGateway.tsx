@@ -18,6 +18,8 @@ const ConnectPaymentGateway = ({
 
   const updateInvoice = async () => {
     const invoiceStatuses = ["sent", "paid", "draft"];
+    if (!Object.keys(invoice).includes("status")) return;
+
     if (invoiceStatuses.includes(invoice.status)) return;
 
     try {

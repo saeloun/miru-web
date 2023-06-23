@@ -184,8 +184,6 @@ const EditInvoice = () => {
             handleSendInvoice={handleSendInvoice}
             id={invoiceDetails.id}
             invoiceNumber={invoiceDetails.invoiceNumber}
-            isStripeEnabled={isStripeEnabled}
-            setShowConnectPaymentDialog={setShowConnectPaymentDialog}
             setShowInvoiceSetting={false}
             deleteInvoice={() => {
               setShowDeleteDialog(true);
