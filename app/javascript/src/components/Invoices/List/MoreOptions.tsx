@@ -83,6 +83,7 @@ const MoreOptions = ({
         </Tooltip>
         <Tooltip content="More">
           <button
+            id="openMenu"
             className={`rounded p-2 text-miru-han-purple-1000  hover:bg-miru-gray-100 ${
               isMenuOpen && `bg-miru-gray-100`
             }`}
@@ -111,6 +112,7 @@ const MoreOptions = ({
             {invoice?.status === "overdue" && (
               <li
                 className="flex cursor-pointer items-center px-5 text-sm text-miru-han-purple-1000 hover:bg-miru-gray-100 lg:py-1 xl:py-2"
+                id="reminderIcon"
                 onClick={() => {
                   setIsSendReminder(true);
                   setIsSending(!isSending);

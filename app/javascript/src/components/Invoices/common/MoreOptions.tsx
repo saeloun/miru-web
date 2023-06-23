@@ -49,7 +49,7 @@ const MoreOptions: FC<MoreOptionsProps> = ({
           sendInvoice();
         }}
       >
-        <ReminderIcon className="mr-4" size={16} />
+        <ReminderIcon className="mr-4" id="reminderIcon" size={16} />
         Send Reminder
       </li>
     )}
