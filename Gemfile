@@ -227,3 +227,6 @@ gem "parallel_tests", group: [:development, :test]
 
 # CROS: https://github.com/cyu/rack-cors
 gem "rack-cors"
+
+# Administrate dashboard
+gem "administrate"

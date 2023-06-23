@@ -9,6 +9,23 @@ class ActionDispatch::Routing::Mapper
 end
 
 Rails.application.routes.draw do
+  namespace :admin do
+      resources :users
+      resources :timesheet_entries
+      resources :stripe_connected_accounts
+      resources :roles
+      resources :project_members
+      resources :projects
+      resources :payments
+      resources :invoice_line_items
+      resources :invoices
+      resources :invitations
+      resources :companies
+      resources :clients
+      resources :addresses
+
+      root to: "users#index"
+    end
   devise_for :users, skip: [:sessions, :registrations], controllers: {
     confirmations: "users/confirmations",
     omniauth_callbacks: "users/omniauth_callbacks"
