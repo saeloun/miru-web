@@ -3,13 +3,9 @@
 class Reports::TimeEntries::PageService < ApplicationService
   include Pagy::Backend
 
-  attr_reader :params, :page, :group_by, :current_company, :pagy_data, :es_filter
+  attr_reader :params, :page, :group_by, :current_company, :pagy_data, :es_filter, :reports
 
-  PER_PAGE = {
-    users: 5,
-    clients: 3,
-    projects: 3
-  }
+  DEFAULT_ITEMS_PER_PAGE = 50
 
   def initialize(params, current_company)
     @params = params
@@ -27,11 +23,13 @@ class Reports::TimeEntries::PageService < ApplicationService
 
   def pagination_details
     {
+      page: pagy_data.page,
       pages: pagy_data.pages,
       first: pagy_data.page == 1,
-      prev: pagy_data.prev,
+      prev: pagy_data.prev.nil? ? 0 : pagy_data.prev,
       next: pagy_data.next,
-      last: pagy_data.last
+      last: pagy_data.last,
+      item: pagy_data.items
     }
   end
 
@@ -41,23 +39,24 @@ class Reports::TimeEntries::PageService < ApplicationService
       if Reports::TimeEntries::GroupBy.new(group_by).valid_group_by?
         send("#{group_by}_filter")
       else
-        @es_filter = {}
+        params[:date_range] == "custom" ? set_default_pagination_data : @es_filter = {}
       end
     end
 
+    def set_default_pagination_data
+      @es_filter = { id: current_company.timesheet_entries.pluck(:id) }
+    end
+
     def team_member_filter
-      @pagy_data, users = pagy(users_query, items: PER_PAGE[:users], page:)
-      @es_filter = { user_id: users.pluck(:id) }
+      @es_filter = { user_id: users_query.pluck(:id) }
     end
 
     def client_filter
-      @pagy_data, clients = pagy(clients_query, items: PER_PAGE[:clients], page:)
-      @es_filter = { client_id: clients.pluck(:id) }
+      @es_filter = { client_id: clients_query.pluck(:id) }
     end
 
     def project_filter
-      @pagy_data, projects = pagy(projects_query, items: PER_PAGE[:projects], page:)
-      @es_filter = { project_id: projects.pluck(:id) }
+      @es_filter = { project_id: projects_query.pluck(:id) }
     end
 
     def users_query
