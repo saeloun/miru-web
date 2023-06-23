@@ -18,7 +18,7 @@ class Reports::TimeEntries::Result < ApplicationService
     if Reports::TimeEntries::GroupBy.new(group_by).valid_group_by?
       process_response_by_group_by
     else
-      [{ label: "", entries: es_response }]
+      [{ label: "", entries: es_response.to_a }]
     end
   end
 
