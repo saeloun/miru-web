@@ -189,7 +189,7 @@ const TimeEntryReport = () => {
           handleDownload={handleDownload}
           isFilterVisible={isFilterVisible}
           resetFilter={resetFilter}
-          revenueFilterCounter={() => { }} // eslint-disable-line  @typescript-eslint/no-empty-function
+          revenueFilterCounter={() => {}} // eslint-disable-line  @typescript-eslint/no-empty-function
           setIsFilterVisible={setIsFilterVisible}
           showNavFilters={isDesktop && showNavFilters}
           type={TIME_ENTRY_REPORT_PAGE}
