@@ -3,7 +3,7 @@
 class Reports::TimeEntries::ReportService
   include Pagy::Backend
   attr_reader :params, :current_company, :get_filters
-  attr_accessor :reports, :pagination_details
+  attr_accessor :reports, :pagination_details, :pagy_data
 
   def initialize(params, current_company, get_filters: false)
     @params = params
@@ -11,6 +11,7 @@ class Reports::TimeEntries::ReportService
     @get_filters = get_filters
     @reports = nil
     @pagination_details = nil
+    @pagy_data = nil
   end
 
   def process
@@ -37,84 +38,37 @@ class Reports::TimeEntries::ReportService
     def fetch_reports
       default_filter = current_company_filter.merge(this_month_filter)
       where_clause = default_filter.merge(TimeEntries::Filters.process(params))
-      if params[:group_by].present?
-        reports_with_group_by(where_clause)
-      else
-        reports_without_group_by(where_clause)
-      end
+      pagy_reports(where_clause)
    end
 
-    def reports_with_group_by(where_clause)
+    def pagy_reports(where_clause)
       page_service = Reports::TimeEntries::PageService.new(params, current_company)
       page_service.process
 
       search_results = search_timesheet_entries(where_clause.merge(page_service.es_filter))
 
-      pagy_data, paginated_data = pagy_searchkick(
-        search_results,
-        items: Reports::TimeEntries::PageService::DEFAULT_ITEMS_PER_PAGE,
-        page: params[:page],
-        count: search_results.size
-      )
-      @reports = paginated_data
-      @pagination_details = {
-        pages: pagy_data.pages,
-        first: pagy_data.page == 1,
-        prev: pagy_data.prev.nil? ? 0 : pagy_data.prev,
-        next: pagy_data.next,
-        last: pagy_data.last,
-        page: pagy_data.page,
-        items: pagy_data.items
-      }
+      pagination_details_for_es_query(search_results)
    end
 
     def change_pagination(page)
       page > 0 ? [page - 1, 1].max : page
     end
 
-    def reports_without_group_by(where_clause)
-      page_service = Reports::TimeEntries::PageService.new(params, current_company)
-      page_service.process
-
-      collections = search_timesheet_entries(where_clause.merge(page_service.es_filter))
-
-      @pagination_details = if params[:date_range] == "custom"
-        @pagy, @response = pagy_searchkick(
-          collections,
-          items: Reports::TimeEntries::PageService::DEFAULT_ITEMS_PER_PAGE,
-          page: params[:page],
-          count: collections.size
-        )
-        page_service.pagination_details
-      else
-        @reports = collections
-        pagination_details_for_es_query(collections)
-      end
-   end
-
     def pagination_details_for_es_query(search_result)
-      pagy_data, paginated_data = pagy_searchkick(
+      @pagy_data, paginated_data = pagy_searchkick(
         search_result,
         items: Reports::TimeEntries::PageService::DEFAULT_ITEMS_PER_PAGE,
-        page: params[:page], count: search_result.size
+        page: params[:page]
       )
       @reports = paginated_data
-      {
-        pages: pagy_data.pages,
-        first: pagy_data.page == 1,
-        prev: pagy_data.prev.nil? ? 0 : pagy_data.prev,
-        next: pagy_data.next,
-        last: pagy_data.last,
-        page: pagy_data.page,
-        items: pagy_data.items
-      }
+      pagination_details
     end
 
     def search_timesheet_entries(where_clause, page = nil)
       TimesheetEntry.pagy_search(
         where: where_clause,
         order: { work_date: :desc },
-        page:,
+        page: params[:page],
         load: false
         )
     end
@@ -138,5 +92,17 @@ class Reports::TimeEntries::ReportService
     def users_not_client_role
       users_with_client_role_ids = current_company.users.joins(:roles).where(roles: { name: "client" }).pluck(:id)
       current_company.users.where.not(id: users_with_client_role_ids)
+    end
+
+    def pagination_details
+      {
+        pages: pagy_data.pages,
+        first: pagy_data.page == 1,
+        prev: pagy_data.prev.nil? ? 0 : pagy_data.prev,
+        next: pagy_data.next,
+        last: pagy_data.last,
+        page: pagy_data.page,
+        items: pagy_data.items
+      }
     end
 end

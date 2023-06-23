@@ -13,7 +13,6 @@ class Reports::TimeEntries::PageService < ApplicationService
     @group_by = params[:group_by]
     @current_company = current_company
     @pagy_data = nil
-    @reports = nil
 
     @es_filter = nil
   end
@@ -29,7 +28,8 @@ class Reports::TimeEntries::PageService < ApplicationService
       first: pagy_data.page == 1,
       prev: pagy_data.prev.nil? ? 0 : pagy_data.prev,
       next: pagy_data.next,
-      last: pagy_data.last
+      last: pagy_data.last,
+      item: pagy_data.items
     }
   end
 
@@ -44,15 +44,7 @@ class Reports::TimeEntries::PageService < ApplicationService
     end
 
     def set_default_pagination_data
-      total_records = if params[:group_by].present?
-        reports.total_count
-      else
-        @reports = TimesheetEntry.pagy_search(where: {}, load: false)
-        @reports.total_entries
-      end
-
-      @pagy_data, paginated_data = pagy_searchkick(@reports, items: DEFAULT_ITEMS_PER_PAGE, page:, count: total_records)
-      @es_filter = { id: paginated_data.results.map { |data| data.except("_id", "_index", "_score") }.pluck(:id) }
+      @es_filter = { id: current_company.timesheet_entries.pluck(:id) }
     end
 
     def team_member_filter
