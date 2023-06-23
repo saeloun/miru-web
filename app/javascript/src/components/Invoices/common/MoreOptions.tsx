@@ -26,14 +26,14 @@ const MoreOptions: FC<MoreOptionsProps> = ({
     {["sent", "overdue", "viewed"].includes(invoice?.status) && (
       <>
         <li
-          className="flex cursor-pointer items-center py-2.5 px-4 text-miru-han-purple-1000 hover:bg-miru-gray-100"
+          className="flex cursor-pointer items-center py-2 px-4 text-miru-han-purple-1000 hover:bg-miru-gray-100"
           onClick={() => markInvoiceAsPaid(invoice.id)}
         >
           <CurrencyCircleDollarIcon className="mr-4" size={16} />
           Mark as Paid
         </li>
         <li
-          className="flex cursor-pointer items-center py-2.5 px-4 text-miru-han-purple-1000 hover:bg-miru-gray-100"
+          className="flex cursor-pointer items-center py-2 px-4 text-miru-han-purple-1000 hover:bg-miru-gray-100"
           onClick={wavieInvoice}
         >
           <img className="mr-4" height="16px" src={WaiveSVG} width="16px" />
@@ -43,7 +43,7 @@ const MoreOptions: FC<MoreOptionsProps> = ({
     )}
     {invoice?.status === "overdue" && (
       <li
-        className="flex cursor-pointer items-center py-2.5 px-4 text-miru-han-purple-1000 hover:bg-miru-gray-100"
+        className="flex cursor-pointer items-center py-2 px-4 text-miru-han-purple-1000 hover:bg-miru-gray-100"
         onClick={() => {
           setIsSendReminder(true);
           sendInvoice();
@@ -54,7 +54,7 @@ const MoreOptions: FC<MoreOptionsProps> = ({
       </li>
     )}
     <li
-      className="flex cursor-pointer items-center py-2.5 px-4 text-miru-red-400 hover:bg-miru-gray-100"
+      className="flex cursor-pointer items-center py-2 px-4 text-miru-red-400 hover:bg-miru-gray-100"
       onClick={deleteInvoice}
     >
       <Trash className="mr-4" size={16} />
