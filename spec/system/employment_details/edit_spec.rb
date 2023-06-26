@@ -26,10 +26,10 @@ RSpec.describe "Edit employment details", type: :system do
         find(".hoverIcon", visible: false).hover.click
         click_on "EMPLOYEMENT DETAILS"
         click_button "Edit"
-
-        fill_in "employee_id", with: "testID"
-        fill_in "designation", with: "test designation"
-        fill_in "email", with: "test@example.com"
+        sleep 10
+        find(:css, "#employee_id").set("testID")
+        find(:css, "#designation").set("test designation")
+        find(:css, "#email").set("test@example.com")
 
         click_button "Update"
 
