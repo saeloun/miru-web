@@ -4,12 +4,15 @@ import { useSearchParams } from "react-router-dom";
 
 import clientApi from "apis/clients";
 import Loader from "common/Loader/index";
+import withLayout from "common/Mobile/HOC/withLayout";
 import Pagination from "common/Pagination/Pagination";
+import { useUserContext } from "context/UserContext";
 
 import Header from "./Header";
 import List from "./List";
 
 const ClientInvoices = () => {
+  const { isDesktop } = useUserContext();
   const [searchParams, setSearchParams] = useSearchParams();
   const [loading, setLoading] = useState(true);
   const [pagy, setPagy] = useState<any>(null);
@@ -59,7 +62,7 @@ const ClientInvoices = () => {
     );
   }
 
-  return (
+  const InvoicesLayout = () => (
     <div className="p-4 lg:p-0" id="invoice-list-page">
       <Header
         params={params}
@@ -77,6 +80,10 @@ const ClientInvoices = () => {
       )}
     </div>
   );
+
+  const Main = withLayout(InvoicesLayout, !isDesktop, !isDesktop);
+
+  return isDesktop ? InvoicesLayout() : <Main />;
 };
 
 export default ClientInvoices;

@@ -1,11 +1,11 @@
 import React from "react";
 
+import CompanyInfo from "components/Invoices/common/CompanyInfo";
+import ClientInfo from "components/Invoices/Invoice/ClientInfo";
+import InvoiceLineItems from "components/Invoices/Invoice/InvoiceLineItems";
+
 import InvoiceInfo from "./InvoiceInfo";
 import InvoiceTotalSummary from "./InvoiceTotalSummary";
-
-import CompanyInfo from "../../Invoices/common/CompanyInfo";
-import ClientInfo from "../../Invoices/Invoice/ClientInfo";
-import InvoiceLineItems from "../../Invoices/Invoice/InvoiceLineItems";
 
 const InvoiceDetails = ({ invoice, company, lineItems, client, logo }) => {
   const invoiceWaived = invoice?.status === "waived";
