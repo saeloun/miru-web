@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Toastr } from "StyledComponents";
 
 import invoicesApi from "apis/invoices";
+import ConnectPaymentGateway from "components/Invoices/popups/ConnectPaymentGateway";
 import { mapGenerateInvoice } from "mapper/mappedIndex";
 
 import AddLineItemContainer from "./AddLineItemContainer";
@@ -45,6 +46,9 @@ const Container = ({
   setTax,
   tax,
   handleSaveInvoice,
+  isStripeEnabled,
+  setShowConnectPaymentDialog,
+  showConnectPaymentDialog,
 }) => {
   const [multiLineItemModal, setMultiLineItemModal] = useState<boolean>(false);
   const [editItem, setEditItem] = useState<any>({});
@@ -105,6 +109,10 @@ const Container = ({
   };
 
   const handleSendButtonClick = () => {
+    if (!showConnectPaymentDialog && !isStripeEnabled && showSendInvoiceModal) {
+      return setShowConnectPaymentDialog(true);
+    }
+
     if (selectedClient && invoiceNumber !== "") {
       return setActiveSection(sections.sendInvoice);
     }
@@ -237,7 +245,14 @@ const Container = ({
           />
         );
       case sections.sendInvoice:
-        return (
+        return showConnectPaymentDialog && !isStripeEnabled ? (
+          <ConnectPaymentGateway
+            invoice={invoiceDetails}
+            setIsSending={setShowSendInvoiceModal}
+            setShowConnectPaymentDialog={setShowConnectPaymentDialog}
+            showConnectPaymentDialog={showConnectPaymentDialog}
+          />
+        ) : (
           showSendInvoiceModal && (
             <SendInvoiceContainer
               handleSaveSendInvoice={handleSaveSendInvoice}
