@@ -28,6 +28,9 @@ const MoreOptions = ({
   showPrint,
   showSendLink,
   setIsSendReminder,
+  showConnectPaymentDialog,
+  setShowConnectPaymentDialog,
+  isStripeEnabled,
 }) => {
   const navigate = useNavigate();
 
@@ -43,7 +46,11 @@ const MoreOptions = ({
             id="sendInvoiceButton"
             onClick={e => {
               e.stopPropagation();
-              setIsSending(!isSending);
+              if (isStripeEnabled) {
+                setIsSending(!isSending);
+              } else {
+                setShowConnectPaymentDialog(!showConnectPaymentDialog);
+              }
             }}
           >
             <PaperPlaneTiltIcon
@@ -178,6 +185,13 @@ const MoreOptions = ({
               e.stopPropagation();
               setIsSending(!isSending);
               setShowMoreOptions(false);
+              if (isStripeEnabled) {
+                setIsSending(!isSending);
+                setShowMoreOptions(false);
+              } else {
+                setShowConnectPaymentDialog(true);
+                setIsSending(false);
+              }
             }}
           >
             <PaperPlaneTiltIcon className="mr-4" size={16} /> Send Invoice

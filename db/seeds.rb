@@ -18,6 +18,9 @@ puts "Company Created"
 company.logo.attach(io: File.open(Rails.root.join("app/assets/images/saeloun_logo.png")), filename: "saeloun_logo.png")
 
 puts "Users Created"
+super_admin = User.create!(
+  first_name: "Saeloun", last_name: "Admin", email: "hello@saeloun.com", password: "welcome",
+  password_confirmation: "welcome", confirmed_at: Time.current)
 vipul = User.create!(
   first_name: "Vipul", last_name: "A M", email: "vipul@example.com", password: "welcome",
   password_confirmation: "welcome", confirmed_at: Time.current, current_workspace_id: company.id)
@@ -38,6 +41,7 @@ oliver = User.create!(
   password_confirmation: "welcome", confirmed_at: Time.current, current_workspace_id: company.id
 )
 
+super_admin.add_role(:super_admin)
 vipul.add_role(:owner, company)
 supriya.add_role(:admin, company)
 book_keeper.add_role(:book_keeper, company)

@@ -2,9 +2,12 @@ import React, { useEffect, useState } from "react";
 
 import { InstagramSVG, TwitterSVG, MiruLogoWithTextSVG } from "miruIcons";
 import { useParams } from "react-router-dom";
+import { Toastr } from "StyledComponents";
 
 import invoicesApi from "apis/invoices";
+import paymentSettings from "apis/payment-settings";
 import Loader from "common/Loader";
+import ConnectPaymentGateway from "components/Invoices/popups/ConnectPaymentGateway";
 
 import Header from "./Header";
 import InvoiceDetails from "./InvoiceDetails";
@@ -14,15 +17,29 @@ const InvoiceEmail = () => {
 
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState(null);
+  const [isStripeConnected, setIsStripeConnected] = useState<boolean>(null);
+  const [isInvoiceEmail, setIsInvoiceEmail] = useState<boolean>(false);
+  const [showConnectPaymentDialog, setShowConnectPaymentDialog] =
+    useState<boolean>(false);
 
   useEffect(() => {
     fetchViewInvoice();
+    fetchPaymentSettings();
   }, []);
 
   const fetchViewInvoice = async () => {
     const res = await invoicesApi.viewInvoice(params.id);
     setData(res.data);
     setLoading(false);
+  };
+
+  const fetchPaymentSettings = async () => {
+    try {
+      const res = await paymentSettings.get();
+      setIsStripeConnected(res.data.providers.stripe.connected);
+    } catch {
+      Toastr.error("ERROR! CONNECTING TO PAYMENTS");
+    }
   };
 
   if (loading) {
@@ -37,7 +54,13 @@ const InvoiceEmail = () => {
         <img src={MiruLogoWithTextSVG} />
       </div>
       <div className="mx-auto max-w-6xl px-2 font-manrope md:px-11">
-        <Header invoice={invoice} stripeUrl={url} />
+        <Header
+          invoice={invoice}
+          isStripeConnected={isStripeConnected}
+          setIsInvoiceEmail={setIsInvoiceEmail}
+          setShowConnectPaymentDialog={setShowConnectPaymentDialog}
+          stripeUrl={url}
+        />
         <div className="m-0 mt-5 mb-10 w-full bg-miru-gray-100 p-0">
           <InvoiceDetails
             client={client}
@@ -47,6 +70,14 @@ const InvoiceEmail = () => {
             logo={logo}
           />
         </div>
+        {isInvoiceEmail && showConnectPaymentDialog && (
+          <ConnectPaymentGateway
+            isInvoiceEmail
+            invoice={invoice}
+            setShowConnectPaymentDialog={setShowConnectPaymentDialog}
+            showConnectPaymentDialog={showConnectPaymentDialog}
+          />
+        )}
       </div>
       <div className="flex justify-between bg-miru-han-purple-1000 px-28 py-3 font-manrope text-white">
         <span className="text-center text-xs font-normal leading-4">

@@ -17,6 +17,8 @@ const InvoiceActions = ({
   wavieInvoice,
   invoice,
   setIsSendReminder,
+  setShowConnectPaymentDialog,
+  isStripeEnabled,
 }) => {
   const [isMoreOptionsVisible, setIsMoreOptionsVisible] =
     useState<boolean>(false);
@@ -38,7 +40,15 @@ const InvoiceActions = ({
   return (
     <div className="justify-items-right flex flex-row">
       <EditButton editInvoiceLink={editInvoiceLink} />
-      <SendButton onClick={sendInvoice} />
+      <SendButton
+        onClick={() => {
+          if (isStripeEnabled) {
+            sendInvoice();
+          } else {
+            setShowConnectPaymentDialog(true);
+          }
+        }}
+      />
       <div ref={wrapperRef}>
         <MoreButton
           onClick={() => setIsMoreOptionsVisible(!isMoreOptionsVisible)}
