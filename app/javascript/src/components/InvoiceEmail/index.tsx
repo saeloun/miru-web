@@ -7,13 +7,16 @@ import { Toastr } from "StyledComponents";
 import invoicesApi from "apis/invoices";
 import paymentSettings from "apis/payment-settings";
 import Loader from "common/Loader";
+import MobileView from "components/ClientInvoices/Details/MobileView";
 import ConnectPaymentGateway from "components/Invoices/popups/ConnectPaymentGateway";
+import { useUserContext } from "context/UserContext";
 
 import Header from "./Header";
 import InvoiceDetails from "./InvoiceDetails";
 
 const InvoiceEmail = () => {
   const params = useParams();
+  const { isDesktop } = useUserContext();
 
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState(null);
@@ -48,7 +51,7 @@ const InvoiceEmail = () => {
 
   const { url, invoice, logo, lineItems, company, client } = data;
 
-  return (
+  return isDesktop ? (
     <div className="flex flex-col justify-between">
       <div className="flex h-16 justify-start bg-miru-han-purple-1000 px-24 font-manrope text-white">
         <img src={MiruLogoWithTextSVG} />
@@ -90,6 +93,8 @@ const InvoiceEmail = () => {
         </span>
       </div>
     </div>
+  ) : (
+    <MobileView data={data} />
   );
 };
 
