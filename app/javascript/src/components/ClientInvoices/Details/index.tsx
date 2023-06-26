@@ -4,13 +4,16 @@ import { useParams } from "react-router-dom";
 
 import invoicesApi from "apis/invoices";
 import Loader from "common/Loader/index";
+import { useUserContext } from "context/UserContext";
 
 import Header from "./Header";
 import InvoiceDetails from "./InvoiceDetails";
+import MobileView from "./MobileView";
 
 import NoInvoices from "../List/NoInvoices";
 
 const ClientInvoiceDetails = () => {
+  const { isDesktop } = useUserContext();
   const params = useParams();
 
   const [loading, setLoading] = useState(true);
@@ -37,7 +40,7 @@ const ClientInvoiceDetails = () => {
   if (data) {
     const { url, invoice, logo, lineItems, company, client } = data;
 
-    return (
+    return isDesktop ? (
       <div className="flex flex-col justify-between">
         <div className="font-manrope">
           <Header invoice={invoice} stripeUrl={url} />
@@ -52,6 +55,8 @@ const ClientInvoiceDetails = () => {
           </div>
         </div>
       </div>
+    ) : (
+      <MobileView data={data} />
     );
   }
 
