@@ -7,6 +7,7 @@ import { Avatar, Badge, Button, Tooltip } from "StyledComponents";
 
 import CustomCheckbox from "common/CustomCheckbox";
 import SendInvoiceContainer from "components/Invoices/Generate/MobileView/Container/SendInvoiceContainer";
+import ConnectPaymentGateway from "components/Invoices/popups/ConnectPaymentGateway";
 import getStatusCssClass from "utils/getBadgeStatus";
 
 import MoreOptions from "../MoreOptions";
@@ -22,12 +23,17 @@ const TableRow = ({
   fetchInvoices,
   isDesktop,
   index,
+  isStripeEnabled,
+  // eslint-disable-next-line no-unused-vars
+  setIsStripeEnabled,
 }) => {
   const [isSending, setIsSending] = useState<boolean>(false);
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   const [showMoreOptions, setShowMoreOptions] = useState<boolean>(false);
   const [showToolTip, setShowToolTip] = useState<boolean>(false);
   useDebounce(isMenuOpen, 500);
+  const [showConnectPaymentDialog, setShowConnectPaymentDialog] =
+    useState<boolean>(false);
   const navigate = useNavigate();
   const toolTipRef = useRef(null);
 
@@ -129,11 +135,14 @@ const TableRow = ({
               isDesktop={isDesktop}
               isMenuOpen={isMenuOpen}
               isSending={isSending}
+              isStripeEnabled={isStripeEnabled}
               setInvoiceToDelete={setInvoiceToDelete}
               setIsMenuOpen={setIsMenuOpen}
               setIsSending={setIsSending}
+              setShowConnectPaymentDialog={setShowConnectPaymentDialog}
               setShowDeleteDialog={setShowDeleteDialog}
               setShowMoreOptions={setShowMoreOptions}
+              showConnectPaymentDialog={showConnectPaymentDialog}
               showMoreOptions={showMoreOptions}
               showPrint={false}
               showSendLink={false}
@@ -160,12 +169,20 @@ const TableRow = ({
             </button>
           </td>
         )}
-        {isSending && isDesktop && (
+        {isSending && isDesktop && !showConnectPaymentDialog && (
           <SendInvoice
             fetchInvoices={fetchInvoices}
             invoice={invoice}
             isSending={isSending}
             setIsSending={setIsSending}
+          />
+        )}
+        {!isStripeEnabled && showConnectPaymentDialog && (
+          <ConnectPaymentGateway
+            invoice={invoice}
+            setIsSending={setIsSending}
+            setShowConnectPaymentDialog={setShowConnectPaymentDialog}
+            showConnectPaymentDialog={showConnectPaymentDialog}
           />
         )}
         {isSending && !isDesktop && (
@@ -207,11 +224,14 @@ const TableRow = ({
           isDesktop={isDesktop}
           isMenuOpen={isMenuOpen}
           isSending={isSending}
+          isStripeEnabled={isStripeEnabled}
           setInvoiceToDelete={setInvoiceToDelete}
           setIsMenuOpen={setIsMenuOpen}
           setIsSending={setIsSending}
+          setShowConnectPaymentDialog={setShowConnectPaymentDialog}
           setShowDeleteDialog={setShowDeleteDialog}
           setShowMoreOptions={setShowMoreOptions}
+          showConnectPaymentDialog={showConnectPaymentDialog}
           showMoreOptions={showMoreOptions}
           showPrint={false}
           showSendLink={false}

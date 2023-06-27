@@ -85,6 +85,7 @@ const initialState = {
     state: {
       label: "",
       value: "",
+      code: "",
     },
     zipcode: "",
   },
@@ -170,7 +171,9 @@ const OrgEdit = () => {
     const { isoCode, name } = Country.getCountryByCode(
       companyDetails.address.country
     );
-
+    const StateCode = State.getStatesOfCountry(
+      companyDetails.address.country
+    ).filter(state => state.name == companyDetails.address.state)[0]?.isoCode;
     const orgAddr = {
       id: companyDetails.address.id,
       addressLine1: companyDetails.address.address_line_1,
@@ -187,6 +190,7 @@ const OrgEdit = () => {
       state: {
         value: companyDetails.address.state,
         label: companyDetails.address.state,
+        code: StateCode,
       },
       zipcode: companyDetails.address.pin,
     };
@@ -219,7 +223,7 @@ const OrgEdit = () => {
       label: item,
     }));
     setTimezoneOption(timezoneOptionList);
-    addCity(isoCode, companyDetails.address.state);
+    addCity(isoCode, StateCode ?? companyDetails.address.state);
     setIsLoading(false);
   };
 
@@ -239,6 +243,19 @@ const OrgEdit = () => {
     const allCountries = Country.getAllCountries();
     assignCountries(allCountries);
   }, []);
+
+  useEffect(() => {
+    const currentCountry = Country.getAllCountries().filter(
+      country => country.isoCode == orgDetails.companyAddr.country.code
+    )[0];
+
+    currentCountry &&
+      setCurrentCountryDetails({
+        label: currentCountry.name,
+        value: currentCountry.name,
+        code: currentCountry.isoCode,
+      });
+  }, [orgDetails]);
 
   const handleAddrChange = useCallback(
     (e, type) => {
@@ -283,7 +300,12 @@ const OrgEdit = () => {
 
   const handleOnChangeCountry = selectCountry => {
     const { companyAddr } = orgDetails;
-    const changedCountry = { ...companyAddr, country: selectCountry };
+    const changedCountry = {
+      ...companyAddr,
+      country: selectCountry,
+      state: {},
+      city: {},
+    };
     setCurrentCountryDetails(selectCountry);
 
     setupTimezone(
@@ -306,7 +328,12 @@ const OrgEdit = () => {
     const { companyAddr } = orgDetails;
     const changedState = {
       ...companyAddr,
-      state: { value: selectState.name, label: selectState.name },
+      state: {
+        value: selectState.name,
+        label: selectState.name,
+        code: selectState.code,
+      },
+      city: { label: "", value: "" },
     };
     setOrgDetails({ ...orgDetails, companyAddr: changedState });
     addCity(currentCountryDetails.code, selectState.code);
@@ -324,6 +351,16 @@ const OrgEdit = () => {
     const stateList = updatedStates(orgDetails.companyAddr.country.value);
     setStateList(stateList);
   }, [orgDetails.companyAddr.country]);
+
+  useEffect(() => {
+    setCurrentCityList(
+      City.getCitiesOfState(
+        orgDetails.companyAddr.country.code,
+        orgDetails?.companyAddr?.state?.code ??
+          orgDetails?.companyAddr?.state?.value
+      ).map(city => ({ label: city.name, value: city.name, ...city }))
+    );
+  }, [orgDetails.companyAddr.state]);
 
   const filterCities = (inputValue: string) => {
     const city = currentCityList.filter(i =>
@@ -531,6 +568,7 @@ const OrgEdit = () => {
         </div>
       ) : (
         <StaticPage
+          currentCityList={currentCityList}
           cancelAction={handleCancelAction}
           saveAction={handleUpdateOrgDetails}
           orgDetails={orgDetails}

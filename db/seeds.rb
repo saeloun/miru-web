@@ -7,10 +7,10 @@ company = Company.create!(
     business_phone: "+1 9296207865",
     base_currency: "USD",
     standard_price: 1000,
-    fiscal_year_end: "jan-dec",
+    fiscal_year_end: "Dec",
     date_format: "MM-DD-YYYY",
     country: "US",
-    timezone: "America - New York"
+    timezone: "(GMT-10:00) America/Adak"
   })
 
 puts "Company Created"
@@ -18,6 +18,9 @@ puts "Company Created"
 company.logo.attach(io: File.open(Rails.root.join("app/assets/images/saeloun_logo.png")), filename: "saeloun_logo.png")
 
 puts "Users Created"
+super_admin = User.create!(
+  first_name: "Saeloun", last_name: "Admin", email: "hello@saeloun.com", password: "welcome",
+  password_confirmation: "welcome", confirmed_at: Time.current)
 vipul = User.create!(
   first_name: "Vipul", last_name: "A M", email: "vipul@example.com", password: "welcome",
   password_confirmation: "welcome", confirmed_at: Time.current, current_workspace_id: company.id)
@@ -33,30 +36,41 @@ sam = User.create!(
   first_name: "Sam", last_name: "Smith", email: "sam@example.com", password: "welcome",
   password_confirmation: "welcome", confirmed_at: Time.current, current_workspace_id: company.id
 )
+oliver = User.create!(
+  first_name: "Oliver", last_name: "Smith", email: "oliver@example.com", password: "welcome",
+  password_confirmation: "welcome", confirmed_at: Time.current, current_workspace_id: company.id
+)
 
+super_admin.add_role(:super_admin)
 vipul.add_role(:owner, company)
 supriya.add_role(:admin, company)
 book_keeper.add_role(:book_keeper, company)
 sam.add_role(:employee, company)
+oliver.add_role(:client, company)
 puts "Users Roles Created"
 
 users = [vipul, supriya, book_keeper, sam]
 
 users.each { |user| company.employments.create!(user:) }
+company.employments.create!(user: oliver)
 puts "Employment Created"
 
 microsoft_client = company.clients.create!(
   name: "Microsoft",
-  email: "support@example.com",
+  email: oliver.email,
   phone: "+1 9999999991"
 )
 
 puts "Clients Created"
 
+ClientMember.create!(client: microsoft_client, user: oliver)
+
+puts "Client member created"
+
 microsoft_client.addresses.create!(
   address_line_1: "475 Clermont Ave",
   city: "Brooklyn",
-  state: "NY",
+  state: "New york",
   pin: "12238",
   country: "US"
 )

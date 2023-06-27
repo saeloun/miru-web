@@ -18,7 +18,7 @@ import Header from "../Header";
 const RevenueByClientReport = () => {
   const filterIntialValues = {
     // TODO: fix typo filterInitialValues
-    dateRange: { label: "All", value: "all", from: "", to: "" },
+    dateRange: { label: "All Time", value: "all_time", from: "", to: "" },
     clients: [{ label: "All Clients", value: "" }],
   };
 

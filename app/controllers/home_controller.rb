@@ -6,7 +6,11 @@ class HomeController < ApplicationController
   before_action :set_google_oauth_success
 
   def index
-    render
+    if current_user && current_user.has_role?(:super_admin)
+      redirect_to admin_root_path
+    else
+      render
+    end
   end
 
   private

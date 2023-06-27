@@ -68,7 +68,7 @@ class User < ApplicationRecord
   has_secure_token :token, length: 50
   has_many :projects, through: :project_members
   has_many :clients, through: :projects
-
+  has_many :client_members, dependent: :destroy
   rolify strict: true
 
   scope :with_kept_employments, -> { merge(Employment.kept) }

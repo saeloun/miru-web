@@ -33,7 +33,7 @@ const ReportRow = ({ timeEntry }) => {
         </div>
       </div>
       <div className="col-span-2 ">
-        <div className="flex h-full items-center whitespace-pre-wrap break-words px-6 py-2.5 font-manrope text-sm font-normal text-miru-dark-purple-1000">
+        <div className="flex h-full items-center whitespace-pre-wrap break-all px-6 py-2.5 font-manrope text-sm font-normal text-miru-dark-purple-1000">
           {note?.trim()}
         </div>
       </div>

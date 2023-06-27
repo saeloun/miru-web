@@ -99,6 +99,40 @@ const EmploymentDetails = () => {
     getDetails();
   }, []);
 
+  useEffect(() => {
+    const currentCountry = Country.getAllCountries().filter(
+      country =>
+        country.name == personalDetails.addresses.country ||
+        country.isoCode == personalDetails.addresses.country
+    )[0];
+
+    currentCountry &&
+      setCurrentCountryDetails({
+        label: currentCountry.name,
+        value: currentCountry.name,
+        code: currentCountry?.isoCode,
+      });
+
+    if (personalDetails.addresses.city) {
+      const stateCode =
+        currentCountry &&
+        State.getStatesOfCountry(currentCountry?.isoCode).filter(
+          state => state.name == personalDetails.addresses.state
+        )[0]?.isoCode;
+
+      setCurrentCityList(
+        City.getCitiesOfState(
+          currentCountry?.isoCode,
+          stateCode ?? personalDetails.addresses.state
+        ).map(city => ({
+          label: city.name,
+          value: city.name,
+          ...city,
+        }))
+      );
+    }
+  }, [personalDetails]);
+
   const handleOnChangeCountry = selectCountry => {
     setCurrentCountryDetails(selectCountry);
     updateDetails("personal", {
@@ -116,7 +150,7 @@ const EmploymentDetails = () => {
     State.getStatesOfCountry(countryCode).map(state => ({
       label: state.name,
       value: state.name,
-      code: state.isoCode,
+      code: state?.isoCode,
       ...state,
     }));
 
@@ -140,6 +174,7 @@ const EmploymentDetails = () => {
         addresses: {
           ...personalDetails.addresses,
           ...{ state: selectState.value },
+          ...{ state: selectState.value, city: "" },
         },
       },
     });
@@ -314,6 +349,7 @@ const EmploymentDetails = () => {
               addrType={addrType}
               addressOptions={addressOptions}
               countries={countries}
+              currentCityList={currentCityList}
               currentCountryDetails={currentCountryDetails}
               dateFormat={personalDetails.date_format}
               errDetails={errDetails}

@@ -14,34 +14,34 @@ const TableHeader = () => (
   <thead>
     <tr className="flex flex-row items-center">
       <th
-        className="w-3/5 py-5 pr-6 text-left text-xs font-normal tracking-widest text-miru-dark-purple-600"
+        className="w-4/12 py-5 pr-6 text-left text-xs font-normal tracking-widest text-miru-dark-purple-600"
         scope="col"
       >
         CLIENT
       </th>
       <th
-        className="w-2/5 px-0 py-5 text-right text-xs font-normal tracking-widest text-miru-dark-purple-600"
+        className="w-2/12 px-0 py-5 text-right text-xs font-normal tracking-widest text-miru-dark-purple-600"
         scope="col"
       >
-        OVERDUE AMOUNT
+        OVERDUE <br /> AMOUNT
       </th>
       <th
-        className="w-2/5 px-0 py-5 text-right text-xs font-normal tracking-widest text-miru-dark-purple-600"
+        className="w-2/12 px-0 py-5 text-right text-xs font-normal tracking-widest text-miru-dark-purple-600"
         scope="col"
       >
-        OUTSTANDING AMOUNT
+        OUTSTANDING <br /> AMOUNT
       </th>
       <th
-        className="w-1/5 px-6 py-5 text-right text-xs font-normal tracking-widest text-miru-dark-purple-600"
+        className="w-2/12 px-6 py-5 text-right text-xs font-normal tracking-widest text-miru-dark-purple-600"
         scope="col"
       >
-        PAID AMOUNT
+        PAID <br /> AMOUNT
       </th>
       <th
-        className="w-1/5 py-5 pl-6 text-right text-xs font-normal tracking-widest text-miru-dark-purple-600"
+        className="w-2/12 py-5 pl-6 text-right text-xs font-normal tracking-widest text-miru-dark-purple-600"
         scope="col"
       >
-        TOTAL REVENUE
+        TOTAL <br /> REVENUE
       </th>
     </tr>
   </thead>
@@ -55,7 +55,7 @@ const Container = () => {
   return revenueByClientReport.clientList.length ? (
     <Fragment>
       <TotalHeader
-        firstTitle={isDesktop ? "TOTAL OUTSTANDING AMOUNT" : "OUTSTANDING"}
+        firstTitle={isDesktop ? "TOTAL PENDING AMOUNT" : "PENDING"}
         secondTitle={isDesktop ? "TOTAL PAID AMOUNT" : "PAID"}
         thirdTitle={isDesktop ? "TOTAL REVENUE" : "TOTAL"}
         firstAmount={`${currencySymb}${cashFormatter(
@@ -70,7 +70,7 @@ const Container = () => {
       />
       <div />
       {isDesktop ? (
-        <table className="mt-4 min-w-full divide-y divide-gray-200">
+        <table className="mt-4 min-w-full table-auto divide-y divide-gray-200">
           <TableHeader />
           <tbody className="divide-y divide-gray-200 bg-white">
             {revenueByClientReport.clientList.length &&
