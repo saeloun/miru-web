@@ -139,10 +139,11 @@ const StaticPage = ({
           <div className="flex w-1/2 flex-col px-2">
             <CustomReactSelect
               handleOnChange={handleOnChangeEmployeeType}
+              id="employment_type"
               label="Employment Type"
               name="employment_type"
               options={employeeTypes}
-              value={employeeType.value ? employeeType : employeeTypes[0]}
+              value={employeeType?.value ? employeeType : employeeTypes[0]}
             />
             {errDetails.employment_err && (
               <ErrorSpan
@@ -156,6 +157,7 @@ const StaticPage = ({
           <div className="flex w-1/2 flex-col" ref={DOJRef}>
             <div
               className="field relative flex w-full flex-col px-2"
+              id="joiningDate"
               onClick={() =>
                 setShowDOJDatePicker({
                   visibility: !showDOJDatePicker.visibility,
@@ -179,6 +181,12 @@ const StaticPage = ({
                 size={20}
               />
             </div>
+            {errDetails.joined_at_err && (
+              <ErrorSpan
+                className="text-xs text-red-600"
+                message={errDetails.joined_at_err}
+              />
+            )}
             {showDOJDatePicker.visibility && (
               <CustomDatePicker
                 date={
@@ -195,6 +203,7 @@ const StaticPage = ({
           <div className="flex w-1/2 flex-col" ref={DORRef}>
             <div
               className="field relative flex w-full flex-col px-2"
+              id="resigningDate"
               onClick={() =>
                 setShowDORDatePicker({
                   visibility: !showDORDatePicker.visibility,
@@ -218,6 +227,12 @@ const StaticPage = ({
                 size={20}
               />
             </div>
+            {errDetails.resigned_at_err && (
+              <ErrorSpan
+                className="text-xs text-red-600"
+                message={errDetails.resigned_at_err}
+              />
+            )}
             {showDORDatePicker.visibility && (
               <CustomDatePicker
                 date={

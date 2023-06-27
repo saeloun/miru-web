@@ -12,8 +12,7 @@ export const employmentSchema = {
     email: Yup.string()
       .email("Please enter valid email")
       .required("Please enter email"),
-    joined_at: Yup.string().required("Please enter date of joining"),
-    resigned_at: Yup.string().required("Please enter date of resignation"),
+    joined_at: Yup.string(),
   }),
   previous_employment: Yup.array(),
 };

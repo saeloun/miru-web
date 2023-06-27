@@ -84,6 +84,8 @@ const EmploymentDetails = () => {
       );
     } else {
       setEmployeeType(employeeTypes[0]);
+      employmentData.current_employment.employment_type =
+        employeeTypes[0].value;
     }
     updateDetails("employment", employmentData);
     if (employmentData.previous_employments?.length > 0) {

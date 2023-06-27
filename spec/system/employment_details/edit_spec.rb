@@ -7,10 +7,8 @@ RSpec.describe "Edit employment details", type: :system do
   let(:user) { create(:user, current_workspace_id: company.id) }
 
   def select_values_from_select_box
-    within("div#employment_type_select") do
-      find(".react-select-filter__control.css-digfch-control").click
-      find("#react-select-1-option-232").click
-    end
+    find(:css, "#employment_type").click
+    find("#react-select-3-option-0").click
   end
 
   before do
@@ -20,19 +18,36 @@ RSpec.describe "Edit employment details", type: :system do
   end
 
   context "when editing employment details" do
-    it "edit the employment details successfully" do
+    it "edit the current employment details successfully" do
+      with_forgery_protection do
+        visit "/teams"
+        find(".hoverIcon", visible: false).hover.click
+        click_on "EMPLOYEMENT DETAILS"
+        click_button "Edit"
+        find(:css, "#employee_id").set("testID")
+        find(:css, "#designation").set("test designation")
+        find(:css, "#email").set("test@example.com")
+        select_values_from_select_box
+        find("#joiningDate").click
+        find("#resigningDate").click
+
+        click_button "Update"
+        expect(page).to have_content("Employment updated successfully")
+      end
+    end
+
+    it "edit the previous employment details successfully" do
       with_forgery_protection do
         visit "/teams"
         find(".hoverIcon", visible: false).hover.click
         click_on "EMPLOYEMENT DETAILS"
         click_button "Edit"
         sleep 10
-        find(:css, "#employee_id").set("testID")
-        find(:css, "#designation").set("test designation")
-        find(:css, "#email").set("test@example.com")
+        click_button "+ Add Past Employment"
+        find(:css, "#company_name").set("test comapny")
+        find(:css, "#role").set("test role")
 
         click_button "Update"
-
         expect(page).to have_content("Employment updated successfully")
       end
     end
