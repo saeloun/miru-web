@@ -78,6 +78,7 @@ const Header = ({
                 downloadInvoice={null}
                 invoice={undefined}
                 markInvoiceAsPaid={() => null}
+                showHistory={() => null}
                 wavieInvoice={wavieInvoice}
               />
             )}

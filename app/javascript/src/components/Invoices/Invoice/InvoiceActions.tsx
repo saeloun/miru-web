@@ -18,6 +18,7 @@ const InvoiceActions = ({
   invoice,
   setShowConnectPaymentDialog,
   isStripeEnabled,
+  setShowHistory,
 }) => {
   const [isMoreOptionsVisible, setIsMoreOptionsVisible] =
     useState<boolean>(false);
@@ -59,6 +60,10 @@ const InvoiceActions = ({
             invoice={invoice}
             markInvoiceAsPaid={markInvoiceAsPaid}
             wavieInvoice={wavieInvoice}
+            showHistory={() => {
+              setShowHistory(true);
+              setIsMoreOptionsVisible(false);
+            }}
           />
         )}
       </div>

@@ -13,6 +13,7 @@ import { sendGAPageView } from "utils/googleAnalytics";
 import Header from "./Header";
 import InvoiceDetails from "./InvoiceDetails";
 import MobileView from "./MobileView";
+import ViewHistory from "./ViewHistory";
 
 import SendInvoiceContainer from "../Generate/MobileView/Container/SendInvoiceContainer";
 import ConnectPaymentGateway from "../popups/ConnectPaymentGateway";
@@ -30,6 +31,7 @@ const Invoice = () => {
   const [invoiceToDelete, setInvoiceToDelete] = useState(null);
   const [invoiceToWaive, setInvoiceToWaive] = useState(null);
   const [showWavieDialog, setShowWavieDialog] = useState<boolean>(false);
+  const [showHistory, setShowHistory] = useState<boolean>(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
   const [showConnectPaymentDialog, setShowConnectPaymentDialog] =
     useState<boolean>(false);
@@ -79,6 +81,7 @@ const Invoice = () => {
           setInvoiceToWaive={setInvoiceToWaive}
           setShowConnectPaymentDialog={setShowConnectPaymentDialog}
           setShowDeleteDialog={setShowDeleteDialog}
+          setShowHistory={setShowHistory}
           setShowWavieDialog={setShowWavieDialog}
         />
         <div className="m-0 mt-5 mb-10 w-full bg-miru-gray-100 p-0">
@@ -106,6 +109,9 @@ const Invoice = () => {
             setShowWavieDialog={setShowWavieDialog}
             showWavieDialog={showWavieDialog}
           />
+        )}
+        {showHistory && (
+          <ViewHistory invoice={invoice} setShowHistory={setShowHistory} />
         )}
         {showDeleteDialog && (
           <DeleteInvoice

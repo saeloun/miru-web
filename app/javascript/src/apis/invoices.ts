@@ -35,6 +35,8 @@ const paymentSuccess = async id => axios.get(`${path}/${id}/payments/success`);
 
 const wavieInvoice = async id => axios.patch(`${path}/waived/${id}`);
 
+const invoiceLogs = async id => axios.get(`${path}/action_trails/${id}`);
+
 const invoicesApi = {
   get,
   post,
@@ -50,6 +52,7 @@ const invoicesApi = {
   viewInvoice,
   paymentSuccess,
   wavieInvoice,
+  invoiceLogs,
 };
 
 export default invoicesApi;

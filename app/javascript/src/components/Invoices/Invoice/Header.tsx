@@ -13,6 +13,7 @@ const Header = ({
   setShowWavieDialog,
   setShowConnectPaymentDialog,
   isStripeEnabled,
+  setShowHistory,
 }) => {
   const invoiceWaived = invoice?.status === "waived";
 
@@ -29,6 +30,7 @@ const Header = ({
           isStripeEnabled={isStripeEnabled}
           sendInvoice={handleSendInvoice}
           setShowConnectPaymentDialog={setShowConnectPaymentDialog}
+          setShowHistory={setShowHistory}
           deleteInvoice={() => {
             setShowDeleteDialog(true);
             setInvoiceToDelete(invoice.id);
