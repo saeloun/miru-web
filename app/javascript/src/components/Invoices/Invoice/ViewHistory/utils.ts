@@ -8,7 +8,13 @@ const calculateTime = date => {
   const recordCreated = new Date(date).getTime();
   const hour = Math.floor(Math.abs(now - recordCreated) / 3600000);
   if (hour < 24) {
-    if (hour == 1) {
+    if (hour <= 1) {
+      if (hour < 1) {
+        return `${Math.floor(
+          Math.abs(now - recordCreated) / 360000
+        )} minutes ago`;
+      }
+
       return `${hour} hour ago`;
     }
 
@@ -64,8 +70,30 @@ export const createData = rawData => {
         Data.push({ message, time });
         break;
       }
-      case "pay_invoice": {
-        const message = `${data.userName} marked invoice as paid`;
+      case "paid": {
+        const message = `${
+          data.name ? `${data.name}` : ""
+        } marked invoice as paid`;
+        const time = calculateTime(data.createdAt);
+        Data.push({ message, time });
+        break;
+      }
+      case "partially_paid": {
+        const message = "Partial payment successful";
+        const time = calculateTime(data.createdAt);
+        Data.push({ message, time });
+        break;
+      }
+      case "cancelled": {
+        const message = `Payment Cancelled ${
+          data.name ? `by ${data.name}` : ""
+        }`;
+        const time = calculateTime(data.createdAt);
+        Data.push({ message, time });
+        break;
+      }
+      case "failed": {
+        const message = "Payment Failed";
         const time = calculateTime(data.createdAt);
         Data.push({ message, time });
         break;

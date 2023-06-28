@@ -14,7 +14,12 @@ const ViewHistory = ({ setShowHistory, invoice }) => {
 
   const getHistory = async () => {
     const { data } = await invoicesApi.invoiceLogs(invoice.id);
-    setHistoryData(data.trails);
+    const records = data.trails.concat(data.paymentTrails);
+    records.sort(
+      (a, b) =>
+        new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+    );
+    setHistoryData(records.reverse());
   };
 
   useEffect(() => {
