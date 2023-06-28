@@ -51,8 +51,6 @@ class Invoices::ActionTrailsService < ApplicationService
         generic_trail_data(event)
       when "send_invoice"
         send_invoice_trail_data(event)
-      when "pay_invoice"
-        pay_invoice_trail_data(event)
       end
     end
 
