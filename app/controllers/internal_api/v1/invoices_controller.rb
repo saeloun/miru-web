@@ -86,7 +86,8 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
       SendReminderMailer.with(
         invoice:,
         subject: invoice_email_params[:subject],
-        recipients: invoice_email_params[:recipients]
+        recipients: invoice_email_params[:recipients],
+        message: invoice_email_params[:message]
       ).send_reminder.deliver_later
 
       render json: { message: "A reminder has been sent to #{invoice.client.email}" }, status: :accepted
