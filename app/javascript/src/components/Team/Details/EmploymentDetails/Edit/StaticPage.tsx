@@ -103,7 +103,7 @@ const StaticPage = ({
                   updateCurrentEmploymentDetails(e.target.value, "designation");
                 }}
               />
-              {errDetails.last_name_err && (
+              {errDetails.designation_err && (
                 <ErrorSpan
                   className="text-xs text-red-600"
                   message={errDetails.designation_err}

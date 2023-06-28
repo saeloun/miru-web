@@ -1,11 +1,7 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useState } from "react";
 
-import { useParams } from "react-router-dom";
-
-import teamsApi from "apis/teams";
 import { TeamDetailsContext } from "context/TeamDetailsContext";
 import { useUserContext } from "context/UserContext";
-import { teamsMapper } from "mapper/teams.mapper";
 
 import { EmploymentDetailsState } from "./EmploymentDetails/EmploymentDetailsState";
 import Header from "./Layout/Header";
@@ -23,21 +19,9 @@ const TeamDetails = () => {
     reimburstmentDetails: {},
   });
   const { isDesktop } = useUserContext();
-  const { memberId } = useParams();
   const updateDetails = (key, payload) => {
     setDetails({ ...details, [`${key}Details`]: payload });
   };
-
-  const getDetails = async () => {
-    const res: any = await teamsApi.get(memberId);
-    const addRes = await teamsApi.getAddress(memberId);
-    const teamsObj = teamsMapper(res.data, addRes.data.addresses[0]);
-    updateDetails("personal", teamsObj);
-  };
-
-  useEffect(() => {
-    getDetails();
-  }, []);
 
   return (
     <TeamDetailsContext.Provider

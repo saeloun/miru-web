@@ -83,23 +83,27 @@ const StaticPage = ({ employmentDetails }) => (
           Previous <br /> Employment
         </span>
       </div>
-      <div className="w-4/5">
-        {employmentDetails.previous_employments.map((previous, index) => (
-          <div className="mb-4 flex" key={index}>
-            <div className="w-6/12">
-              <span className="text-xs text-miru-dark-purple-1000">
-                Company
-              </span>
-              <p className="text-miru-dark-purple-1000">
-                {previous.company_name}
-              </p>
+      <div className="flex w-4/5 items-center justify-center">
+        {employmentDetails?.previous_employments[0]?.company_name ? (
+          employmentDetails.previous_employments.map((previous, index) => (
+            <div className="mb-4 flex w-full" key={index}>
+              <div className="w-6/12">
+                <span className="text-xs text-miru-dark-purple-1000">
+                  Company
+                </span>
+                <p className="text-miru-dark-purple-1000">
+                  {previous.company_name}
+                </p>
+              </div>
+              <div className="w-6/12">
+                <span className="text-xs text-miru-dark-purple-1000">Role</span>
+                <p className="text-miru-dark-purple-1000">{previous.role}</p>
+              </div>
             </div>
-            <div className="w-6/12">
-              <span className="text-xs text-miru-dark-purple-1000">Role</span>
-              <p className="text-miru-dark-purple-1000">{previous.role}</p>
-            </div>
-          </div>
-        ))}
+          ))
+        ) : (
+          <div className="text-xs">No previous employments found</div>
+        )}
       </div>
     </div>
   </div>
