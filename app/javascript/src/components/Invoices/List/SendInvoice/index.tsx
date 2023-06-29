@@ -49,11 +49,13 @@ const SendInvoice: React.FC<any> = ({
   setIsSending,
   invoice,
   fetchInvoices,
+  isSendReminder = false,
+  setISendReminder,
 }) => {
   const [status, setStatus] = useState<InvoiceStatus>(InvoiceStatus.IDLE);
   const [invoiceEmail, setInvoiceEmail] = useState<InvoiceEmail>({
-    subject: emailSubject(invoice),
-    message: emailBody(invoice),
+    subject: emailSubject(invoice, isSendReminder),
+    message: emailBody(invoice, isSendReminder),
     recipients: [invoice.client.email],
   });
   const [newRecipient, setNewRecipient] = useState<string>("");
@@ -74,13 +76,17 @@ const SendInvoice: React.FC<any> = ({
         setStatus(InvoiceStatus.LOADING);
 
         const payload = { invoice_email: invoiceEmail };
-        const {
-          data: { message },
-        } = await invoicesApi.sendInvoice(invoice.id, payload);
+        let resp;
+        if (isSendReminder) {
+          resp = await invoicesApi.sendReminder(invoice.id, payload);
+        } else {
+          resp = await invoicesApi.sendInvoice(invoice.id, payload);
+        }
 
-        Toastr.success(message);
+        Toastr.success(resp.data.message);
         setStatus(InvoiceStatus.SUCCESS);
         setIsSending(false);
+        setISendReminder(false);
         setTimeout(fetchInvoices, 6000);
       } catch {
         setStatus(InvoiceStatus.ERROR);
@@ -113,15 +119,33 @@ const SendInvoice: React.FC<any> = ({
     <Modal
       customStyle="sm:my-8 sm:w-full sm:max-w-lg sm:align-middle"
       isOpen={isSending}
-      onClose={() => setIsSending(false)}
+      onClose={() => {
+        if (isSendReminder) {
+          setIsSending(false);
+          setISendReminder(false);
+        } else {
+          setIsSending(false);
+        }
+      }}
     >
       <div onClick={e => e.stopPropagation()}>
         <div className="mt-2 mb-6 flex items-center justify-between">
-          <h6 className="form__title">Send Invoice #{invoice.invoiceNumber}</h6>
+          <h6 className="form__title">
+            {isSendReminder
+              ? "Send Invoice Reminder"
+              : `Send Invoice #{${invoice.invoiceNumber}}`}
+          </h6>
           <button
             className="text-miru-gray-1000"
             type="button"
-            onClick={() => setIsSending(false)}
+            onClick={() => {
+              if (isSendReminder) {
+                setIsSending(false);
+                setISendReminder(false);
+              } else {
+                setIsSending(false);
+              }
+            }}
           >
             <XIcon size={16} weight="bold" />
           </button>
@@ -218,7 +242,7 @@ const SendInvoice: React.FC<any> = ({
               }
               onClick={handleSubmit}
             >
-              {buttonText(status)}
+              {isSendReminder ? "Send Reminder" : buttonText(status)}
             </button>
           </div>
         </form>

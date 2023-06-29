@@ -7,6 +7,7 @@ import {
   PenIcon,
   DotsThreeVerticalIcon,
   DownloadSimpleIcon,
+  ReminderIcon,
 } from "miruIcons";
 import { useNavigate } from "react-router-dom";
 import { Tooltip, Modal } from "StyledComponents";
@@ -26,6 +27,7 @@ const MoreOptions = ({
   setShowMoreOptions,
   showPrint,
   showSendLink,
+  setIsSendReminder,
   showConnectPaymentDialog,
   setShowConnectPaymentDialog,
   isStripeEnabled,
@@ -88,6 +90,7 @@ const MoreOptions = ({
         </Tooltip>
         <Tooltip content="More">
           <button
+            id="openMenu"
             className={`rounded p-2 text-miru-han-purple-1000  hover:bg-miru-gray-100 ${
               isMenuOpen && `bg-miru-gray-100`
             }`}
@@ -113,6 +116,23 @@ const MoreOptions = ({
             className="mt-1 rounded-lg border-miru-gray-200 bg-white shadow-c1 lg:py-3 xl:py-4"
             onClick={e => e.stopPropagation()}
           >
+            {invoice?.status === "overdue" && (
+              <li
+                className="flex cursor-pointer items-center px-5 text-sm text-miru-han-purple-1000 hover:bg-miru-gray-100 lg:py-1 xl:py-2"
+                id="reminderIcon"
+                onClick={() => {
+                  setIsSendReminder(true);
+                  setIsSending(!isSending);
+                }}
+              >
+                <ReminderIcon
+                  className="lg:mr-2 xl:mr-4"
+                  size={16}
+                  weight="bold"
+                />
+                Send Reminder
+              </li>
+            )}
             {showPrint && (
               <li className="flex cursor-pointer items-center px-5 text-sm text-miru-han-purple-1000 hover:bg-miru-gray-100 lg:py-1 xl:py-2">
                 <PrinterIcon
@@ -201,6 +221,18 @@ const MoreOptions = ({
             <PenIcon className="mr-4" size={16} /> Edit Invoice
           </button>
         </li>
+        {invoice?.status === "overdue" && (
+          <li
+            className="flex cursor-pointer items-center py-2 text-miru-han-purple-1000"
+            onClick={() => {
+              setIsSendReminder(true);
+              setShowMoreOptions(false);
+            }}
+          >
+            <ReminderIcon className="mr-4" size={16} weight="bold" />
+            Send Reminder
+          </li>
+        )}
         {showPrint && (
           <li className="flex cursor-pointer items-center py-2 text-miru-han-purple-1000">
             <PrinterIcon className="mr-4" size={16} />
