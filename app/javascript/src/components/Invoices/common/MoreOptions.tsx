@@ -29,6 +29,7 @@ const MoreOptions: FC<MoreOptionsProps> = ({
     )}
     <li
       className="flex cursor-pointer items-center py-2.5 px-4 text-miru-han-purple-1000 hover:bg-miru-gray-100"
+      id="viewHistory"
       onClick={showHistory}
     >
       <ClockIcon className="mr-4" size={16} weight="bold" />
