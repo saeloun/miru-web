@@ -24,17 +24,17 @@ const Header = ({ selectedTab }) => {
         url = Paths.PAYMENTS;
         break;
       case Roles.OWNER:
-        url = "invoices";
+        url = "/invoices";
         break;
       case Roles.CLIENT:
-        url = "invoices";
+        url = "/invoices";
         break;
       default:
         url = Paths.TIME_TRACKING;
         break;
     }
 
-    return `/${url}`;
+    return url;
   };
 
   const getHeaderContent = () => {
