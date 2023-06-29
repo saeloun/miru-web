@@ -2,10 +2,8 @@ import React, { useEffect, useState } from "react";
 
 import { InstagramSVG, TwitterSVG, MiruLogoWithTextSVG } from "miruIcons";
 import { useParams } from "react-router-dom";
-import { Toastr } from "StyledComponents";
 
 import invoicesApi from "apis/invoices";
-import paymentSettings from "apis/payment-settings";
 import Loader from "common/Loader";
 import MobileView from "components/ClientInvoices/Details/MobileView";
 import ConnectPaymentGateway from "components/Invoices/popups/ConnectPaymentGateway";
@@ -27,22 +25,13 @@ const InvoiceEmail = () => {
 
   useEffect(() => {
     fetchViewInvoice();
-    fetchPaymentSettings();
   }, []);
 
   const fetchViewInvoice = async () => {
     const res = await invoicesApi.viewInvoice(params.id);
     setData(res.data);
+    setIsStripeConnected(res.data.stripe_connected_account);
     setLoading(false);
-  };
-
-  const fetchPaymentSettings = async () => {
-    try {
-      const res = await paymentSettings.get();
-      setIsStripeConnected(res.data.providers.stripe.connected);
-    } catch {
-      Toastr.error("ERROR! CONNECTING TO PAYMENTS");
-    }
   };
 
   if (loading) {

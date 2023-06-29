@@ -33,6 +33,7 @@ const Invoice = () => {
   const [showWavieDialog, setShowWavieDialog] = useState<boolean>(false);
   const [showHistory, setShowHistory] = useState<boolean>(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
+  const [isSendReminder, setIsSendReminder] = useState<boolean>(false);
   const [showConnectPaymentDialog, setShowConnectPaymentDialog] =
     useState<boolean>(false);
   const [isStripeEnabled, setIsStripeEnabled] = useState<boolean>(null);
@@ -79,6 +80,7 @@ const Invoice = () => {
           isStripeEnabled={isStripeEnabled}
           setInvoiceToDelete={setInvoiceToDelete}
           setInvoiceToWaive={setInvoiceToWaive}
+          setIsSendReminder={setIsSendReminder}
           setShowConnectPaymentDialog={setShowConnectPaymentDialog}
           setShowDeleteDialog={setShowDeleteDialog}
           setShowHistory={setShowHistory}
@@ -87,13 +89,16 @@ const Invoice = () => {
         <div className="m-0 mt-5 mb-10 w-full bg-miru-gray-100 p-0">
           <InvoiceDetails invoice={invoice} />
         </div>
-        {!showConnectPaymentDialog && showSendInvoiceModal && (
-          <SendInvoice
-            invoice={invoice}
-            isSending={showSendInvoiceModal}
-            setIsSending={setShowSendInvoiceModal}
-          />
-        )}
+        {!showConnectPaymentDialog &&
+          (showSendInvoiceModal || isSendReminder) && (
+            <SendInvoice
+              invoice={invoice}
+              isSendReminder={isSendReminder}
+              isSending={showSendInvoiceModal}
+              setIsSendReminder={setIsSendReminder}
+              setIsSending={setShowSendInvoiceModal}
+            />
+          )}
         {!isStripeEnabled && showConnectPaymentDialog && (
           <ConnectPaymentGateway
             invoice={invoice}
@@ -126,18 +131,27 @@ const Invoice = () => {
         <div className="flex w-full bg-miru-han-purple-1000 pl-4">
           <Button
             style="ternary"
-            onClick={() => setShowSendInvoiceModal(false)}
+            onClick={() => {
+              if (isSendReminder) {
+                setShowSendInvoiceModal(false);
+                setIsSendReminder(false);
+              } else {
+                setShowSendInvoiceModal(false);
+              }
+            }}
           >
             <ArrowLeftIcon className="text-white" size={16} weight="bold" />
           </Button>
           <div className="flex h-12 w-full items-center justify-center bg-miru-han-purple-1000 px-3 text-white">
-            Send Invoice
+            {isSendReminder ? "Send Invoice Reminder" : "Send Invoice"}
           </div>
         </div>
         <div className="flex flex-1">
           <SendInvoiceContainer
             handleSaveSendInvoice={null}
             invoice={invoice}
+            isSendReminder={isSendReminder}
+            setIsSendReminder={setIsSendReminder}
             setIsSending={setShowSendInvoiceModal}
           />
         </div>
@@ -147,6 +161,7 @@ const Invoice = () => {
         handleSendInvoice={handleSendInvoice}
         invoice={invoice}
         isStripeEnabled={isStripeEnabled}
+        setIsSendReminder={setIsSendReminder}
         setShowConnectPaymentDialog={setShowConnectPaymentDialog}
         setShowSendInvoiceModal={setShowSendInvoiceModal}
         showConnectPaymentDialog={showConnectPaymentDialog}

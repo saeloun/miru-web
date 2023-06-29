@@ -16,6 +16,7 @@ const InvoiceActions = ({
   deleteInvoice,
   wavieInvoice,
   invoice,
+  setIsSendReminder,
   setShowConnectPaymentDialog,
   isStripeEnabled,
   setShowHistory,
@@ -59,6 +60,8 @@ const InvoiceActions = ({
             downloadInvoice={handleDownloadInvoice}
             invoice={invoice}
             markInvoiceAsPaid={markInvoiceAsPaid}
+            sendInvoice={sendInvoice}
+            setIsSendReminder={setIsSendReminder}
             wavieInvoice={wavieInvoice}
             showHistory={() => {
               setShowHistory(true);

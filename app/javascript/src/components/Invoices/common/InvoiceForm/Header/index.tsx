@@ -16,6 +16,8 @@ const Header = ({
   id = null,
   deleteInvoice = null,
   wavieInvoice = null,
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  setIsSendReminder = _value => {},
   showMoreButton = false,
 }) => {
   const [isMoreOptionsVisible, setIsMoreOptionsVisible] =
@@ -78,6 +80,8 @@ const Header = ({
                 downloadInvoice={null}
                 invoice={undefined}
                 markInvoiceAsPaid={() => null}
+                sendInvoice={handleSendInvoice}
+                setIsSendReminder={setIsSendReminder}
                 showHistory={() => null}
                 wavieInvoice={wavieInvoice}
               />

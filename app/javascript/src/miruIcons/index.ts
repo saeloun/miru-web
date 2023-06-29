@@ -47,6 +47,7 @@ import {
   Key,
   User,
   Clock,
+  BellRinging,
 } from "phosphor-react";
 
 const error404Animation = require("./GIFS/404_animation.gif");
@@ -183,6 +184,7 @@ export const CopyIcon = Copy;
 export const KeyIcon = Key;
 export const UserIcon = User;
 export const ClockIcon = Clock;
+export const ReminderIcon = BellRinging;
 
 // custom svg icons
 export const WarningTriangleSVG = warningTriangle;
