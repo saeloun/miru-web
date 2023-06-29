@@ -23,6 +23,9 @@ const SendInvoiceContainer = ({
   invoice,
   handleSaveSendInvoice,
   setIsSending,
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  setIsSendReminder = _value => {},
+  isSendReminder = false,
 }) => {
   const Recipient: React.FC<{ email: string; handleClick: any }> = ({
     email,
@@ -46,8 +49,8 @@ const SendInvoiceContainer = ({
   }
 
   const [invoiceEmail, setInvoiceEmail] = useState<InvoiceEmail>({
-    subject: emailSubject(invoice),
-    message: emailBody(invoice),
+    subject: emailSubject(invoice, isSendReminder),
+    message: emailBody(invoice, isSendReminder),
     recipients: [invoice.client.email],
   });
   const [newRecipient, setNewRecipient] = useState<string>("");
@@ -93,12 +96,16 @@ const SendInvoiceContainer = ({
         }
       } else {
         const payload = { invoice_email: invoiceEmail };
-        const {
-          data: { message },
-        } = await invoicesApi.sendInvoice(invoice.id, payload);
-        Toastr.success(message);
+        let resp;
+        if (isSendReminder) {
+          resp = await invoicesApi.sendReminder(invoice.id, payload);
+        } else {
+          resp = await invoicesApi.sendInvoice(invoice.id, payload);
+        }
+        Toastr.success(resp.data.message);
       }
       setIsSending(false);
+      setIsSendReminder(false);
     } catch {
       setStatus(InvoiceStatus.ERROR);
     }
@@ -252,7 +259,7 @@ const SendInvoiceContainer = ({
                 }
                 onClick={handleSubmit}
               >
-                {buttonText(status)}
+                {isSendReminder ? "Send Reminder" : buttonText(status)}
               </button>
             </Form>
           );
