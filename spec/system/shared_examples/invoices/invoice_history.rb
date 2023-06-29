@@ -13,7 +13,7 @@ RSpec.shared_examples "View Invoice Logs", type: :system do
       find(:css, "#invoicesListTableRow").click
       expect(page).to have_content("Invoice ##{invoice.invoice_number}")
 
-      find_by_id("ViewInvoiceMoreOptions").click
+      find_by_id("menuOpen").click
       find_by_id("viewHistory").click
 
       expect(page).to have_content("History")
