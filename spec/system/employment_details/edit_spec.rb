@@ -28,9 +28,7 @@ RSpec.describe "Edit employment details", type: :system do
         find(:css, "#designation").set("test designation")
         find(:css, "#email").set("test@example.com")
         select_values_from_select_box
-        find("#joiningDate").click
-        find("#resigningDate").click
-
+        sleep 3
         click_button "Update"
         expect(page).to have_content("Employment updated successfully")
       end
