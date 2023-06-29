@@ -34,6 +34,12 @@ class ApiHandler {
         return response;
       },
       (error: any) => {
+        if (error.response?.status === 404) {
+          window.location.href = "/error";
+
+          return;
+        }
+
         if (error.response?.status === 401) {
           clearCredentialsFromLocalStorage();
           Toastr.error(error.response?.data?.error);
