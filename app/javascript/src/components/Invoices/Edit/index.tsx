@@ -45,6 +45,7 @@ const EditInvoice = () => {
     useState<boolean>(false);
   const [invoiceToDelete, setInvoiceToDelete] = useState(null);
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
+  const [isSendReminder, setIsSendReminder] = useState<boolean>(false);
   const [isStripeEnabled, setIsStripeEnabled] = useState<boolean>(false);
   const [showConnectPaymentDialog, setShowConnectPaymentDialog] =
     useState<boolean>(false);
@@ -184,6 +185,7 @@ const EditInvoice = () => {
             handleSendInvoice={handleSendInvoice}
             id={invoiceDetails.id}
             invoiceNumber={invoiceDetails.invoiceNumber}
+            setIsSendReminder={setIsSendReminder}
             setShowInvoiceSetting={false}
             deleteInvoice={() => {
               setShowDeleteDialog(true);
@@ -237,21 +239,22 @@ const EditInvoice = () => {
               tax={tax || invoiceDetails.tax}
             />
           </div>
-          {showSendInvoiceModal && !showConnectPaymentDialog && (
-            <SendInvoice
-              handleSaveSendInvoice={handleSaveSendInvoice}
-              isSending={showSendInvoiceModal}
-              setIsSending={setShowSendInvoiceModal}
-              invoice={{
-                id: invoiceDetails.id,
-                client: selectedClient,
-                company: invoiceDetails?.company,
-                dueDate,
-                invoiceNumber,
-                amount,
-              }}
-            />
-          )}
+          {(showSendInvoiceModal || isSendReminder) &&
+            !showConnectPaymentDialog && (
+              <SendInvoice
+                handleSaveSendInvoice={handleSaveSendInvoice}
+                isSending={showSendInvoiceModal}
+                setIsSending={setShowSendInvoiceModal}
+                invoice={{
+                  id: invoiceDetails.id,
+                  client: selectedClient,
+                  company: invoiceDetails?.company,
+                  dueDate,
+                  invoiceNumber,
+                  amount,
+                }}
+              />
+            )}
           {!isStripeEnabled && showConnectPaymentDialog && (
             <ConnectPaymentGateway
               invoice={invoiceDetails}
