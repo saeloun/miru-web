@@ -20,7 +20,7 @@ const UserContext = createContext({
   selectedTab: null,
   googleOauthSuccess: false,
   setSelectedTab: value => {}, //eslint-disable-line
-  companyDateFormat: "DD-MM-YYYY",
+  company: null,
 });
 
 export const useUserContext = () => useContext(UserContext);

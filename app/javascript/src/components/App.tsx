@@ -20,7 +20,7 @@ const App = props => {
     company,
   } = props;
   const isAdminUser = [Roles.ADMIN, Roles.OWNER].includes(companyRole);
-  const companyDateFormat = company.date_format;
+
   const [isDesktop, setIsDesktop] = useState<boolean>(window.innerWidth > 1023);
   const [selectedTab, setSelectedTab] = useState(null);
   const [currentAvatarUrl, setCurrentAvatarUrl] = useState(avatarUrl);
@@ -57,7 +57,7 @@ const App = props => {
         handleOverlayVisibility,
         selectedTab,
         setSelectedTab,
-        companyDateFormat,
+        company,
       }}
     >
       <AuthProvider>

@@ -37,7 +37,8 @@ const StaticPage = ({
   handleAddPastEmployment,
   updatePreviousEmploymentValues,
 }) => {
-  const { companyDateFormat } = useUserContext();
+  const { company } = useUserContext();
+  const { date_format } = company;
 
   return (
     <div className="mt-4 h-full bg-miru-gray-100 px-10">
@@ -193,17 +194,14 @@ const StaticPage = ({
               )}
               {showDOJDatePicker.visibility && (
                 <CustomDatePicker
-                  dateFormat={companyDateFormat}
+                  dateFormat={date_format}
                   date={
                     employmentDetails.current_employment.joined_at
                       ? employmentDetails.current_employment.joined_at
                       : dayjs()
                   }
                   handleChange={e =>
-                    handleDOJDatePicker(
-                      dayjs(e).format(companyDateFormat),
-                      true
-                    )
+                    handleDOJDatePicker(dayjs(e).format(date_format), true)
                   }
                 />
               )}
@@ -246,17 +244,14 @@ const StaticPage = ({
               )}
               {showDORDatePicker.visibility && (
                 <CustomDatePicker
-                  dateFormat={companyDateFormat}
+                  dateFormat={date_format}
                   date={
                     employmentDetails.current_employment.resigned_at
                       ? employmentDetails.current_employment.resigned_at
                       : dayjs()
                   }
                   handleChange={e =>
-                    handleDORDatePicker(
-                      dayjs(e).format(companyDateFormat),
-                      true
-                    )
+                    handleDORDatePicker(dayjs(e).format(date_format), true)
                   }
                 />
               )}
