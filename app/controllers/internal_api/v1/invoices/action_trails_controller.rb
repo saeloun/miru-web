@@ -7,9 +7,11 @@ class InternalApi::V1::Invoices::ActionTrailsController < InternalApi::V1::Appli
     action_trails_service = Invoices::ActionTrailsService.new(params[:id])
     action_trails_service.process
     action_trails = action_trails_service.trails
+    payment_trails = action_trails_service.payment_trails
 
     render :show, locals: {
-      trails: action_trails
+      trails: action_trails,
+      payment_trails:
     }
   end
 end
