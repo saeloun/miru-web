@@ -11,6 +11,7 @@ const Header = ({
   setInvoiceToWaive,
   setInvoiceToDelete,
   setShowWavieDialog,
+  setIsSendReminder,
   setShowConnectPaymentDialog,
   isStripeEnabled,
 }) => {
@@ -28,6 +29,7 @@ const Header = ({
           invoice={invoice}
           isStripeEnabled={isStripeEnabled}
           sendInvoice={handleSendInvoice}
+          setIsSendReminder={setIsSendReminder}
           setShowConnectPaymentDialog={setShowConnectPaymentDialog}
           deleteInvoice={() => {
             setShowDeleteDialog(true);
