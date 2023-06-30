@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_06_12_105554) do
+ActiveRecord::Schema[7.0].define(version: 2023_06_30_045247) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -261,6 +261,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_12_105554) do
     t.jsonb "payment_infos", default: {}
     t.bigint "company_id"
     t.datetime "discarded_at"
+    t.datetime "sent_at"
+    t.datetime "payment_sent_at"
+    t.datetime "client_payment_sent_at"
     t.index ["client_id"], name: "index_invoices_on_client_id"
     t.index ["company_id"], name: "index_invoices_on_company_id"
     t.index ["discarded_at"], name: "index_invoices_on_discarded_at"

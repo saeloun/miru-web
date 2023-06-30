@@ -9,7 +9,7 @@ RSpec.describe InvoiceMailer, type: :mailer do
     let(:invoice) { create :invoice, client:, company: }
     let(:recipients) { [invoice.client.email, "miru@example.com"] }
     let(:subject) { "Invoice (#{invoice.invoice_number}) due on #{invoice.due_date}" }
-    let(:mail) { InvoiceMailer.with(invoice:, subject:, recipients:).invoice }
+    let(:mail) { InvoiceMailer.with(invoice_id: invoice.id, subject:, recipients:).invoice }
 
     it "renders the headers" do
       expect(mail.subject).to eq(subject)

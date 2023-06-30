@@ -10,7 +10,7 @@ class InternalApi::V1::Invoices::PaymentsController < InternalApi::V1::Applicati
     if InvoicePayment::StripePaymentIntent.new(@invoice).process
       if @invoice.paid?
         PaymentMailer.with(
-          invoice: @invoice,
+          invoice_id: @invoice.id,
           subject: "Payment details by #{@invoice.client.name}").payment.deliver_later
 
         @invoice.send_to_client_email(
