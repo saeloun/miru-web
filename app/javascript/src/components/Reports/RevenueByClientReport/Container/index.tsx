@@ -1,9 +1,8 @@
 import React, { Fragment } from "react";
 
-import { cashFormatter, currencySymbol } from "helpers"; // TODO: Formatter
+import { SummaryDashboard } from "StyledComponents";
 
 import EmptyStates from "common/EmptyStates";
-import TotalHeader from "common/TotalHeader";
 import { useEntry } from "components/Reports/context/EntryContext";
 import { useUserContext } from "context/UserContext";
 
@@ -49,24 +48,44 @@ const TableHeader = () => (
 
 const Container = () => {
   const { revenueByClientReport } = useEntry();
-  const currencySymb = currencySymbol(revenueByClientReport.currency);
   const { isDesktop } = useUserContext();
+
+  const summaryList = isDesktop
+    ? [
+        {
+          label: "TOTAL PENDING AMOUNT",
+          value: revenueByClientReport.summary.totalOutstandingAmount,
+        },
+        {
+          label: "TOTAL PAID AMOUNT",
+          value: revenueByClientReport.summary.totalPaidAmount,
+        },
+        {
+          label: "TOTAL REVENUE",
+          value: revenueByClientReport.summary.totalRevenue,
+        },
+      ]
+    : [
+        {
+          label: "PENDING",
+          value: revenueByClientReport.summary.totalOutstandingAmount,
+        },
+        {
+          label: "PAID",
+          value: revenueByClientReport.summary.totalPaidAmount,
+        },
+        {
+          label: "REVENUE",
+          value: revenueByClientReport.summary.totalRevenue,
+        },
+      ];
 
   return revenueByClientReport.clientList.length ? (
     <Fragment>
-      <TotalHeader
-        firstTitle={isDesktop ? "TOTAL PENDING AMOUNT" : "PENDING"}
-        secondTitle={isDesktop ? "TOTAL PAID AMOUNT" : "PAID"}
-        thirdTitle={isDesktop ? "TOTAL REVENUE" : "TOTAL"}
-        firstAmount={`${currencySymb}${cashFormatter(
-          revenueByClientReport.summary.totalOutstandingAmount
-        )}`}
-        secondAmount={`${currencySymb}${cashFormatter(
-          revenueByClientReport.summary.totalPaidAmount
-        )}`}
-        thirdAmount={`${currencySymb}${cashFormatter(
-          revenueByClientReport.summary.totalRevenue
-        )}`}
+      <SummaryDashboard
+        currency={revenueByClientReport.currency}
+        summaryList={summaryList}
+        wrapperClassName="mt-3 lg:mb-9 mx-4 lg:mx-0"
       />
       <div />
       {isDesktop ? (
