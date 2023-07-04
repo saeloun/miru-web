@@ -2,9 +2,14 @@ import React, { useEffect, useState } from "react";
 
 import { currencySymbol } from "helpers";
 import Logger from "js-logger";
-import { ArrowLeftIcon, DotsThreeVerticalIcon } from "miruIcons";
+import {
+  ArrowLeftIcon,
+  DotsThreeVerticalIcon,
+  InvoicesIcon,
+  TeamsIcon,
+} from "miruIcons";
 import { useParams, useNavigate } from "react-router-dom";
-import { Badge } from "StyledComponents";
+import { Badge, Tooltip } from "StyledComponents";
 
 import projectAPI from "apis/projects";
 import Table from "common/Table";
@@ -170,7 +175,31 @@ const ProjectDetails = () => {
                 />
               )}
             </div>
-            <div className="relative h-8">
+            <div className=" relative flex h-8 items-center">
+              <Tooltip
+                placeBottom
+                className="tooltip px-3 py-2"
+                content="Generate Invoice"
+              >
+                <button
+                  className={`menuButton__button ${menuBackground}`}
+                  onClick={handleGenerateInvoice}
+                >
+                  <InvoicesIcon color="#5B34EA" size={20} weight="bold" />
+                </button>
+              </Tooltip>
+              <Tooltip
+                placeBottom
+                className="tooltip px-3 py-2"
+                content="Add/Remove Team Members"
+              >
+                <button
+                  className={`menuButton__button ${menuBackground}`}
+                  onClick={handleAddRemoveMembers}
+                >
+                  <TeamsIcon color="#5b34ea" size={20} weight="bold" />
+                </button>
+              </Tooltip>
               <button
                 className={`menuButton__button ${menuBackground}`}
                 id="kebabMenu"
