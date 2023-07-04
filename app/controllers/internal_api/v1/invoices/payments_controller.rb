@@ -14,7 +14,7 @@ class InternalApi::V1::Invoices::PaymentsController < InternalApi::V1::Applicati
           subject: "Payment details by #{@invoice.client.name}").payment.deliver_later
 
         @invoice.send_to_client_email(
-          invoice: @invoice,
+          invoice_id: @invoice.id,
           subject: "Payment Confirmation of Invoice #{@invoice.invoice_number} by #{@invoice.client.name}"
         )
         render json: { invoice: @invoice, notice: I18n.t("invoices.payments.success.success") }, status: :ok
