@@ -14,7 +14,7 @@ module Invoices
         invoices_query:,
         pagination_details:,
         recently_updated_invoices:,
-        summary: current_company.overdue_and_outstanding_and_draft_amount
+        summary: overdue_and_outstanding_and_draft_amount
       }
     end
 
@@ -55,6 +55,20 @@ module Invoices
           prev: invoices_query.prev_page,
           next: invoices_query.next_page,
           last: invoices_query.last_page?
+        }
+      end
+
+      def overdue_and_outstanding_and_draft_amount
+        currency = current_company.base_currency
+        invoices = invoices_query.to_a
+        status_and_amount = invoices.group_by(&:status).transform_values { |invoices| invoices.sum(&:amount) }
+        status_and_amount.default = 0
+        outstanding_amount = status_and_amount["sent"] + status_and_amount["viewed"] + status_and_amount["overdue"]
+        {
+          overdue_amount: status_and_amount["overdue"],
+          outstanding_amount:,
+          draft_amount: status_and_amount["draft"],
+          currency:
         }
       end
   end
