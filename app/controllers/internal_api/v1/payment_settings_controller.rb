@@ -18,7 +18,7 @@ class InternalApi::V1::PaymentSettingsController < InternalApi::V1::ApplicationC
   end
 
   def destroy
-    authorize :connect_stripe, policy_class: PaymentSettingsPolicy
+    authorize :destroy, policy_class: PaymentSettingsPolicy
 
     if stripe_connected_account.destroy
       render json: { notice: "Stripe connection disconnected" }, status: :ok
