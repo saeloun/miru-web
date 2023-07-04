@@ -3,6 +3,7 @@ import React, { Fragment, useState } from "react";
 import { TeamDetailsContext } from "context/TeamDetailsContext";
 import { useUserContext } from "context/UserContext";
 
+import { EmploymentDetailsState } from "./EmploymentDetails/EmploymentDetailsState";
 import Header from "./Layout/Header";
 import OutletWrapper from "./Layout/OutletWrapper";
 import SideNav from "./Layout/SideNav";
@@ -11,14 +12,13 @@ import { PersonalDetailsState } from "./PersonalDetails/PersonalDetailsState";
 const TeamDetails = () => {
   const [details, setDetails] = useState({
     personalDetails: PersonalDetailsState,
-    employmentDetails: [],
+    employmentDetails: EmploymentDetailsState,
     documentDetails: {},
     deviceDetails: {},
     compensationDetails: {},
     reimburstmentDetails: {},
   });
   const { isDesktop } = useUserContext();
-
   const updateDetails = (key, payload) => {
     setDetails({ ...details, [`${key}Details`]: payload });
   };
