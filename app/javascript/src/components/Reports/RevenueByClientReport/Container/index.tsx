@@ -9,6 +9,8 @@ import { useUserContext } from "context/UserContext";
 import MobileRow from "./MobileRow";
 import TableRow from "./TableRow";
 
+import { summaryList } from "../util";
+
 const TableHeader = () => (
   <thead>
     <tr className="flex flex-row items-center">
@@ -50,41 +52,11 @@ const Container = () => {
   const { revenueByClientReport } = useEntry();
   const { isDesktop } = useUserContext();
 
-  const summaryList = isDesktop
-    ? [
-        {
-          label: "TOTAL PENDING AMOUNT",
-          value: revenueByClientReport.summary.totalOutstandingAmount,
-        },
-        {
-          label: "TOTAL PAID AMOUNT",
-          value: revenueByClientReport.summary.totalPaidAmount,
-        },
-        {
-          label: "TOTAL REVENUE",
-          value: revenueByClientReport.summary.totalRevenue,
-        },
-      ]
-    : [
-        {
-          label: "PENDING",
-          value: revenueByClientReport.summary.totalOutstandingAmount,
-        },
-        {
-          label: "PAID",
-          value: revenueByClientReport.summary.totalPaidAmount,
-        },
-        {
-          label: "REVENUE",
-          value: revenueByClientReport.summary.totalRevenue,
-        },
-      ];
-
   return revenueByClientReport.clientList.length ? (
     <Fragment>
       <SummaryDashboard
         currency={revenueByClientReport.currency}
-        summaryList={summaryList}
+        summaryList={summaryList(revenueByClientReport, isDesktop)}
         wrapperClassName="mt-3 lg:mb-9 mx-4 lg:mx-0"
       />
       <div />
