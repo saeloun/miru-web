@@ -155,6 +155,7 @@ const AddEntryMobile = ({
   return (
     <>
       <SidePanel
+        disableOutsideClick
         WrapperClassname="z-50 justify-content-between lg:hidden bg-white"
         setFilterVisibilty={setNewEntryView}
       >
