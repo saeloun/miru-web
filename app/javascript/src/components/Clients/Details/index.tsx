@@ -11,6 +11,7 @@ import ProjectForm from "components/Projects/List/Mobile/ProjectForm";
 import AddEditProject from "components/Projects/Modals/AddEditProject";
 import DeleteProject from "components/Projects/Modals/DeleteProject";
 import { useUserContext } from "context/UserContext";
+import { unmapClientInvoices } from "mapper/client.mapper";
 import { unmapClientDetails } from "mapper/mappedIndex";
 import { sendGAPageView } from "utils/googleAnalytics";
 
@@ -20,6 +21,7 @@ import TableData from "./TableData";
 import TotalHoursChart from "./TotalHoursChart";
 
 import AddProject from "../Modals/AddProject";
+import PaymentReminder from "../Modals/PaymentReminder";
 
 const ClientDetails = ({ isAdminUser }) => {
   const [showEditDialog, setShowEditDialog] = useState<boolean>(false);
@@ -33,6 +35,10 @@ const ClientDetails = ({ isAdminUser }) => {
   const [loading, setLoading] = useState(true);
   const [overdueOutstandingAmount, setOverdueOutstandingAmount] =
     useState<any>(null);
+  const [clientInvoices, setClientInvoices] = useState<any[]>([]);
+
+  const [sendPaymentReminder, setSendPaymentReminder] =
+    useState<boolean>(false);
 
   const params = useParams();
   const navigate = useNavigate();
@@ -72,6 +78,7 @@ const ClientDetails = ({ isAdminUser }) => {
       setProjectDetails(sanitized.projectDetails);
       setTotalMinutes(sanitized.totalMinutes);
       setOverdueOutstandingAmount(sanitized.overdueOutstandingAmount);
+      setClientInvoices(unmapClientInvoices(res));
       setLoading(false);
     } catch (e) {
       Logger.error(e);
@@ -114,6 +121,7 @@ const ClientDetails = ({ isAdminUser }) => {
       <Header
         clientDetails={clientDetails}
         fetchDetails={fetchProjectList}
+        setSendPaymentReminder={setSendPaymentReminder}
         setShowProjectModal={setShowProjectModal}
       />
       <div>
@@ -185,6 +193,14 @@ const ClientDetails = ({ isAdminUser }) => {
           fetchProjectList={fetchProjectList}
           setShowProjectModal={setShowProjectModal}
           showProjectModal={showProjectModal}
+        />
+      )}
+      {sendPaymentReminder && (
+        <PaymentReminder
+          client={clientDetails}
+          clientInvoices={clientInvoices}
+          sendPaymentReminder={sendPaymentReminder}
+          setSendPaymentReminder={setSendPaymentReminder}
         />
       )}
     </>

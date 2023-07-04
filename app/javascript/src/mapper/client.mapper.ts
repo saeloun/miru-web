@@ -36,6 +36,20 @@ const unmapClientListForDropdown = input => {
   }));
 };
 
+const unmapClientInvoices = input => {
+  const clientInvoices = input.data.invoices;
+
+  return clientInvoices.map(item => ({
+    id: item.id,
+    amount: item.amount,
+    dueDate: item.dueDate,
+    status: item.status,
+    invoiceNumber: item.invoiceNumber,
+    issueDate: item.issueDate,
+    company: item.company,
+  }));
+};
+
 const unmapClientDetails = input => {
   const { data } = input;
 
@@ -53,4 +67,9 @@ const unmapClientDetails = input => {
   };
 };
 
-export { unmapClientList, unmapClientDetails, unmapClientListForDropdown };
+export {
+  unmapClientList,
+  unmapClientDetails,
+  unmapClientListForDropdown,
+  unmapClientInvoices,
+};

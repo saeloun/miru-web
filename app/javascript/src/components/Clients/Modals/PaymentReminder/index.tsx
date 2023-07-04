@@ -1,0 +1,195 @@
+import React, { useState } from "react";
+
+import cn from "classnames";
+import { CheckCircleIcon, XIcon } from "miruIcons";
+import { Modal } from "StyledComponents";
+
+import CustomCheckbox from "common/CustomCheckbox";
+
+import InvoicesList from "./InvoicesList";
+import SendPaymentReminder from "./SendPaymentReminder";
+
+const PaymentReminder = ({
+  sendPaymentReminder,
+  setSendPaymentReminder,
+  client,
+  clientInvoices,
+}) => {
+  const invoiceStatus = ["sent", "viewed", "overdue"];
+  const invoices = clientInvoices.filter(invoice =>
+    invoiceStatus.includes(invoice.status)
+  );
+  const [activeTab, setActiveTab] = useState<string>("select_invoices");
+  const [selectedInvoices, setSelectedInvoices] = useState<any[]>(
+    clientInvoices
+      .filter(invoice => invoice.status === "overdue")
+      .map(invoice => invoice.id)
+  );
+  const [isChecked, setIsChecked] = useState<boolean>(false);
+
+  const deselectInvoices = (invoiceIds: number[]) =>
+    setSelectedInvoices(
+      selectedInvoices.filter(id => !invoiceIds.includes(id))
+    );
+
+  const handleCheck = event => {
+    if (event.target.checked) {
+      selectAllInvoices();
+      setIsChecked(true);
+    } else {
+      deselectAllInvoices();
+      setIsChecked(false);
+    }
+  };
+
+  const selectInvoices = (invoiceIds: number[]) => {
+    setSelectedInvoices(
+      Array.from(new Set(selectedInvoices.concat(invoiceIds)))
+    );
+  };
+
+  const selectAllInvoices = () => {
+    setSelectedInvoices(invoices.map(invoice => invoice.id));
+  };
+
+  const deselectAllInvoices = () => {
+    deselectInvoices(
+      invoices
+        .filter(invoice => invoice.status !== "overdue")
+        .map(invoice => invoice.id)
+    );
+  };
+
+  const renderSelectedForm = () => {
+    if (activeTab === "select_invoices") {
+      return (
+        <table className="min-w-full divide-y divide-gray-200 overflow-x-scroll lg:mt-4">
+          <thead>
+            <tr>
+              <th className="py-5 lg:px-3" scope="col">
+                <CustomCheckbox
+                  isUpdatedDesign
+                  checkboxValue={1}
+                  handleCheck={handleCheck}
+                  id={1}
+                  isChecked={isChecked}
+                  text=""
+                  wrapperClassName="h-8 w-8 m-auto rounded-3xl p-2 hover:bg-miru-gray-1000"
+                />
+              </th>
+              <th
+                className="whitespace-nowrap py-5 pr-0 text-left text-xs font-medium tracking-widest text-miru-black-1000 md:font-normal lg:w-1/3 lg:pr-2 lg:pr-2"
+                scope="col"
+              >
+                CLIENT / INVOICE NO.
+              </th>
+              <th
+                className="hidden w-1/6 px-2 py-5 text-right text-xs font-normal tracking-widest text-miru-black-1000 lg:table-cell lg:px-6"
+                scope="col"
+              >
+                AMOUNT
+              </th>
+              <th
+                className="hidden px-2 py-5 text-right text-xs font-normal tracking-widest text-miru-black-1000 lg:table-cell lg:px-6"
+                scope="col"
+              >
+                STATUS
+              </th>
+              <th
+                className="table-cell px-2 py-5 text-right text-xs font-medium leading-4 tracking-widest text-miru-black-1000 lg:hidden lg:px-6"
+                scope="col"
+              >
+                STATUS/ <br />
+                AMOUNT
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {invoices.map((invoice, idx) => (
+              <InvoicesList
+                deselectInvoices={deselectInvoices}
+                invoice={invoice}
+                key={idx}
+                selectInvoices={selectInvoices}
+                isSelected={
+                  selectedInvoices.includes(invoice.id) ||
+                  invoice.status === "overdue"
+                }
+              />
+            ))}
+          </tbody>
+        </table>
+      );
+    }
+
+    // render email preview
+    return (
+      <SendPaymentReminder
+        client={client}
+        invoices={invoices}
+        selectedInvoices={selectedInvoices}
+        setActiveTab={setActiveTab}
+        setSendPaymentReminder={setSendPaymentReminder}
+      />
+    );
+  };
+
+  return (
+    <Modal
+      customStyle="sm:my-8 sm:w-full sm:max-w-lg sm:align-middle min-w-1008"
+      isOpen={sendPaymentReminder}
+      onClose={() => setSendPaymentReminder(false)}
+    >
+      <div onClick={e => e.stopPropagation()}>
+        <div className="mt-2 mb-6 flex items-center justify-between">
+          <h6 className="form__title">Send Payment Reminder</h6>
+          <div className="flex">
+            <div className="flex">
+              {selectedInvoices.length >= 1 && (
+                <CheckCircleIcon className="mt-1 text-green-600" size={18} />
+              )}
+              <h6
+                className={cn("mx-2 cursor-pointer", {
+                  "text-green-600": selectedInvoices.length >= 1,
+                  "text-miru-han-purple-1000": selectedInvoices.length === 0,
+                })}
+                onClick={() => setActiveTab("select_invoices")}
+              >
+                Select Invoices
+              </h6>
+            </div>
+            <h6
+              className={cn("cursor-pointer text-miru-han-purple-1000", {
+                "font-bold": activeTab === "email_preview",
+              })}
+              onClick={() => setActiveTab("email_preview")}
+            >
+              Email Preview
+            </h6>
+          </div>
+          <button
+            className="text-miru-gray-1000"
+            type="button"
+            onClick={() => setSendPaymentReminder(false)}
+          >
+            <XIcon size={16} weight="bold" />
+          </button>
+        </div>
+        {renderSelectedForm()}
+        {activeTab === "select_invoices" && (
+          <button
+            disabled={selectedInvoices.length < 1}
+            type="button"
+            className="shadow-smfocus:outline-none mx-2 mt-6 flex cursor-pointer justify-center rounded-md border border-transparent
+                  bg-miru-han-purple-1000 p-3 text-sm font-bold uppercase text-white"
+            onClick={() => setActiveTab("email_preview")}
+          >
+            Next
+          </button>
+        )}
+      </div>
+    </Modal>
+  );
+};
+
+export default PaymentReminder;

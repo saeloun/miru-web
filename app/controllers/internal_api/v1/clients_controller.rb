@@ -30,11 +30,12 @@ class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationControlle
   def show
     authorize client
 
-    render json: {
+    render locals: {
              client_details: Client::ShowPresenter.new(client).process,
              project_details: client.project_details(params[:time_frame]),
              total_minutes: client.total_hours_logged(params[:time_frame]),
-             overdue_outstanding_amount: client.client_overdue_and_outstanding_calculation
+             overdue_outstanding_amount: client.client_overdue_and_outstanding_calculation,
+             invoices: client.invoices
            },
       status: :ok
   end
@@ -68,6 +69,19 @@ class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationControlle
     end
   end
 
+  def send_payment_reminder
+    authorize client
+
+    SendPaymentReminderMailer.with(
+      recipients: client_email_params[:recipients],
+      selected_invoices: client_email_params[:selected_invoices],
+      message: client_email_params[:message],
+      subject: client_email_params[:subject],
+    ).send_payment_reminder.deliver_later
+
+    render json: { notice: "Payment reminder has been sent to #{client.email}" }, status: :accepted
+  end
+
   private
 
     def client
@@ -89,5 +103,9 @@ class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationControlle
       else
         client_params
       end
+    end
+
+    def client_email_params
+      params.require(:client_email).permit(:subject, :message, recipients: [], selected_invoices: [])
     end
 end
