@@ -17,6 +17,16 @@ class InternalApi::V1::PaymentSettingsController < InternalApi::V1::ApplicationC
     render :connect_stripe, locals: { stripe_connected_account: }
   end
 
+  def destroy
+    authorize :connect_stripe, policy_class: PaymentSettingsPolicy
+
+    if stripe_connected_account.destroy
+      render json: { notice: "Stripe connection disconnected" }, status: :ok
+    else
+      render json: { error: "Unable to process the request" }, status: :unprocessable_entity
+    end
+  end
+
   private
 
     def stripe_connected_account
