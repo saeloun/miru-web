@@ -22,7 +22,7 @@ class InternalApi::V1::PaymentsController < ApplicationController
     if @invoice.paid?
       @invoice.send_to_client_email(
         invoice: @invoice,
-        subject: "Payment Receipt of Invoice #{@invoice.invoice_number} from #{@invoice.company.name}"
+        subject: "Payment Confirmation of Invoice #{@invoice.invoice_number} for #{@invoice.company.name}"
       )
     end
 
