@@ -20,3 +20,15 @@ export const teamsMapper = (user, address) => ({
   github: user.social_accounts.github_url,
   date_format: user.date_format,
 });
+
+export const employmentMapper = (current, previous) => ({
+  current_employment: {
+    employee_id: current.employee_id,
+    email: current.email,
+    employment_type: current.employment_type,
+    designation: current.designation,
+    joined_at: current.joined_at,
+    resigned_at: current.resigned_at,
+  },
+  previous_employments: previous,
+});
