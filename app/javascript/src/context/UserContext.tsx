@@ -20,6 +20,7 @@ const UserContext = createContext({
   selectedTab: null,
   googleOauthSuccess: false,
   setSelectedTab: value => {}, //eslint-disable-line
+  company: null,
 });
 
 export const useUserContext = () => useContext(UserContext);
