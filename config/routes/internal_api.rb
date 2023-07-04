@@ -60,6 +60,7 @@ namespace :internal_api, defaults: { format: "json" } do
     resources :invoices, only: [:index, :create, :update, :show, :destroy, :edit] do
       member do
         post :send_invoice
+        post :send_reminder
         get :download
       end
     end

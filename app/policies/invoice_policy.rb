@@ -33,6 +33,10 @@ class InvoicePolicy < ApplicationPolicy
     authorize_owner_admin_book_keeper
   end
 
+  def send_reminder?
+    authorize_owner_admin
+  end
+
   def permitted_attributes
     [
       :issue_date, :due_date, :status,
