@@ -1,6 +1,5 @@
 import React from "react";
 
-import { useNavigate } from "react-router-dom";
 import { Modal, Button } from "StyledComponents";
 
 import paymentSettings from "apis/payment-settings";
@@ -9,24 +8,19 @@ interface IProps {
   setShowDisconnectDialog: any;
   showDisconnectDialog: boolean;
   paymentMode?: any;
-  isDesktop: boolean;
+  fetchPaymentSettings: any;
 }
 
 const DisconnectPayment = ({
   setShowDisconnectDialog,
   showDisconnectDialog,
   paymentMode = "Stripe",
-  isDesktop,
+  fetchPaymentSettings,
 }: IProps) => {
-  const navigate = useNavigate();
   const disconnectPayment = async () => {
     await paymentSettings.disconnectStripe();
     setShowDisconnectDialog(false);
-    if (isDesktop) {
-      navigate("/profile/edit/payment");
-    } else {
-      navigate("/profile/edit/option");
-    }
+    fetchPaymentSettings();
   };
 
   return (

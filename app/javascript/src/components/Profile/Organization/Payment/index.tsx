@@ -77,7 +77,7 @@ const PaymentSettings = () => {
       )}
       {showDisconnectDialog && (
         <DisconnectPayment
-          isDesktop={isDesktop}
+          fetchPaymentSettings={fetchPaymentSettings}
           setShowDisconnectDialog={setShowDisconnectDialog}
           showDisconnectDialog={showDisconnectDialog}
         />
