@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 
 import { currencySymbol } from "helpers";
 import Logger from "js-logger";
@@ -39,7 +39,8 @@ const ProjectDetails = () => {
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
   const [showProjectModal, setShowProjectModal] = useState<boolean>(false);
   const [timeframe, setTimeframe] = useState<any>("week");
-  const [showToolTip, setShowToolTip] = useState<boolean>(false);
+  const [showToolTip, setShowToolTip] = useState<boolean>(true);
+  const [isButtonHovered, setIsButtonHovered] = useState(false);
   const [overdueOutstandingAmount, setOverdueOutstandingAmount] =
     useState<any>(null);
 
@@ -47,7 +48,6 @@ const ProjectDetails = () => {
   const navigate = useNavigate();
   const projectId = parseInt(params.projectId);
   const { isDesktop } = useUserContext();
-  const toolTipRef = useRef(null);
 
   const fetchProject = async (timeframe = null) => {
     try {
@@ -61,15 +61,16 @@ const ProjectDetails = () => {
     }
   };
 
-  const handleTooltip = () => {
-    if (toolTipRef?.current?.offsetWidth <= toolTipRef?.current?.scrollWidth) {
-      setShowToolTip(true);
-    } else {
-      setShowToolTip(false);
-    }
+  const handleButtonMouseEnter = () => {
+    setIsButtonHovered(true);
+  };
+
+  const handleButtonMouseLeave = () => {
+    setIsButtonHovered(false);
   };
 
   const handleGenerateInvoice = () => {
+    setShowToolTip(false);
     navigate(`/invoices/generate/?clientId=${project?.client?.id}`);
   };
 
@@ -88,12 +89,14 @@ const ProjectDetails = () => {
 
   const handleMenuVisibility = (e?: any, isMenuVisible?: boolean) => {
     e?.stopPropagation();
+    setShowToolTip(false);
     const tempIsMenuVisible = isMenuVisible ?? !isHeaderMenuVisible;
     setIsHeaderMenuVisible(tempIsMenuVisible);
   };
 
   const handleAddRemoveMembers = e => {
     e?.stopPropagation();
+    setShowToolTip(false);
     setShowAddMemberDialog(true);
     setIsHeaderMenuVisible(false);
   };
@@ -188,27 +191,30 @@ const ProjectDetails = () => {
             <div className=" relative flex h-8 items-center">
               <Tooltip
                 placeBottom
-                className="tooltip px-3 py-2"
+                className="tooltip tootlip-project px-3 py-2"
                 content="Generate Invoice"
+                show={showToolTip || isButtonHovered}
               >
                 <button
                   className={`menuButton__button ${menuBackground}`}
                   onClick={handleGenerateInvoice}
+                  onMouseEnter={handleButtonMouseEnter}
+                  onMouseLeave={handleButtonMouseLeave}
                 >
                   <InvoicesIcon color="#5B34EA" size={20} weight="bold" />
                 </button>
               </Tooltip>
               <Tooltip
                 placeBottom
-                className="tooltip px-3 py-2"
+                className="tooltip tootlip-project px-3 py-2"
                 content="Add/Remove Team Members"
-                show={showToolTip}
+                show={showToolTip || isButtonHovered}
               >
                 <button
                   className={`menuButton__button ${menuBackground}`}
-                  ref={toolTipRef}
                   onClick={handleAddRemoveMembers}
-                  onMouseEnter={handleTooltip}
+                  onMouseEnter={handleButtonMouseEnter}
+                  onMouseLeave={handleButtonMouseLeave}
                 >
                   <TeamsIcon color="#5b34ea" size={20} weight="bold" />
                 </button>
