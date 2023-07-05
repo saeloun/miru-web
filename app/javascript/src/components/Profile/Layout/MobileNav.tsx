@@ -2,7 +2,11 @@
 
 import React, { useEffect, useState } from "react";
 
-import { ClientsIcon as BuildingsIcon, UserIcon } from "miruIcons";
+import {
+  ClientsIcon as BuildingsIcon,
+  UserIcon,
+  PaymentsIcon,
+} from "miruIcons";
 import { Outlet, useNavigate, useParams } from "react-router-dom";
 
 import WorkspaceApi from "apis/workspaces";
@@ -32,6 +36,11 @@ const getSettingsNavUrls = memberId => [
         url: "/profile/edit/organization-details",
         text: "ORG. SETTINGS",
         icon: <BuildingsIcon size={16} />,
+      },
+      {
+        url: "/profile/edit/payment",
+        text: "PAYMENT SETTINGS",
+        icon: <PaymentsIcon size={16} />,
       },
     ],
   },
