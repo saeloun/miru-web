@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 import classNames from "classnames";
-import { Toastr } from "StyledComponents";
+import { Button, Toastr } from "StyledComponents";
 
 import clientApi from "apis/clients";
 
@@ -89,27 +89,25 @@ const SendPaymentReminder = ({
             <MessageTab invoice={invoice} key={idx} />
           ))}
       </div>
-      <div className="flex text-right">
-        <button
-          type="button"
-          className="shadow-smfocus:outline-none mt-6 flex cursor-pointer justify-center rounded-md border border-transparent border-miru-han-purple-1000
-                  bg-white p-3 text-sm font-bold uppercase text-miru-han-purple-1000"
+      <div className="text-right">
+        <Button
+          className="mr-2 p-3"
+          style="secondary"
           onClick={() => setActiveTab("select_invoices")}
         >
           Back
-        </button>
-        <button
+        </Button>
+        <Button
+          className="p-3"
           disabled={selectedInvoices.length < 1}
-          type="button"
-          className="shadow-smfocus:outline-none mx-2 mt-6 flex cursor-pointer justify-center rounded-md border border-transparent
-                  bg-miru-han-purple-1000 p-3 text-sm font-bold uppercase text-white"
+          style="primary"
           onClick={e => {
             e.stopPropagation();
             handleClick();
           }}
         >
           Send Reminder
-        </button>
+        </Button>
       </div>
     </form>
   );
