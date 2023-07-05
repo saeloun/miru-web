@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 import cn from "classnames";
 import { CheckCircleIcon, XIcon } from "miruIcons";
-import { Modal } from "StyledComponents";
+import { Button, Modal } from "StyledComponents";
 
 import CustomCheckbox from "common/CustomCheckbox";
 
@@ -15,7 +15,7 @@ const PaymentReminder = ({
   client,
   clientInvoices,
 }) => {
-  const invoiceStatus = ["sent", "viewed", "overdue"];
+  const invoiceStatus = ["overdue", "viewed", "sent"];
   const invoices = clientInvoices.filter(invoice =>
     invoiceStatus.includes(invoice.status)
   );
@@ -177,15 +177,16 @@ const PaymentReminder = ({
         </div>
         {renderSelectedForm()}
         {activeTab === "select_invoices" && (
-          <button
-            disabled={selectedInvoices.length < 1}
-            type="button"
-            className="shadow-smfocus:outline-none mx-2 mt-6 flex cursor-pointer justify-center rounded-md border border-transparent
-                  bg-miru-han-purple-1000 p-3 text-sm font-bold uppercase text-white"
-            onClick={() => setActiveTab("email_preview")}
-          >
-            Next
-          </button>
+          <div className="text-right">
+            <Button
+              className="p-3"
+              disabled={selectedInvoices.length < 1}
+              style="primary"
+              onClick={() => setActiveTab("email_preview")}
+            >
+              Next
+            </Button>
+          </div>
         )}
       </div>
     </Modal>
