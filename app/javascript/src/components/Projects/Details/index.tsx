@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 
 import { currencySymbol } from "helpers";
 import Logger from "js-logger";
@@ -39,6 +39,7 @@ const ProjectDetails = () => {
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
   const [showProjectModal, setShowProjectModal] = useState<boolean>(false);
   const [timeframe, setTimeframe] = useState<any>("week");
+  const [showToolTip, setShowToolTip] = useState<boolean>(false);
   const [overdueOutstandingAmount, setOverdueOutstandingAmount] =
     useState<any>(null);
 
@@ -46,6 +47,7 @@ const ProjectDetails = () => {
   const navigate = useNavigate();
   const projectId = parseInt(params.projectId);
   const { isDesktop } = useUserContext();
+  const toolTipRef = useRef(null);
 
   const fetchProject = async (timeframe = null) => {
     try {
@@ -56,6 +58,14 @@ const ProjectDetails = () => {
     } catch (e) {
       Logger.error(e);
       navigate("/projects");
+    }
+  };
+
+  const handleTooltip = () => {
+    if (toolTipRef?.current?.offsetWidth <= toolTipRef?.current?.scrollWidth) {
+      setShowToolTip(true);
+    } else {
+      setShowToolTip(false);
     }
   };
 
@@ -192,10 +202,13 @@ const ProjectDetails = () => {
                 placeBottom
                 className="tooltip px-3 py-2"
                 content="Add/Remove Team Members"
+                show={showToolTip}
               >
                 <button
                   className={`menuButton__button ${menuBackground}`}
+                  ref={toolTipRef}
                   onClick={handleAddRemoveMembers}
+                  onMouseEnter={handleTooltip}
                 >
                   <TeamsIcon color="#5b34ea" size={20} weight="bold" />
                 </button>
