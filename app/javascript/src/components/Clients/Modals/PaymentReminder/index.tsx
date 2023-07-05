@@ -21,7 +21,7 @@ const PaymentReminder = ({
   );
   const [activeTab, setActiveTab] = useState<string>("select_invoices");
   const [selectedInvoices, setSelectedInvoices] = useState<any[]>(
-    clientInvoices
+    invoices
       .filter(invoice => invoice.status === "overdue")
       .map(invoice => invoice.id)
   );
@@ -181,18 +181,25 @@ const PaymentReminder = ({
           </button>
         </div>
         {renderSelectedForm()}
-        {activeTab === "select_invoices" && (
-          <div className="text-right">
-            <Button
-              className="p-3"
-              disabled={selectedInvoices.length < 1}
-              style="primary"
-              onClick={() => setActiveTab("email_preview")}
-            >
-              Next
-            </Button>
-          </div>
-        )}
+        <div className="flex justify-between">
+          {activeTab === "select_invoices" && (
+            <>
+              <small className="mt-10">
+                {selectedInvoices.length} invoices selected
+              </small>
+              <div className="mt-6 text-right">
+                <Button
+                  className="py-2 px-10 text-base"
+                  disabled={selectedInvoices.length < 1}
+                  style="primary"
+                  onClick={() => setActiveTab("email_preview")}
+                >
+                  Continue
+                </Button>
+              </div>
+            </>
+          )}
+        </div>
       </div>
     </Modal>
   );
