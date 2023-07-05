@@ -63,10 +63,10 @@ const PaymentReminder = ({
   const renderSelectedForm = () => {
     if (activeTab === "select_invoices") {
       return (
-        <table className="min-w-full divide-y divide-gray-200 overflow-x-scroll lg:mt-4">
+        <table className="min-w-full divide-y divide-gray-200 overflow-x-scroll overflow-y-scroll lg:mt-4">
           <thead>
             <tr>
-              <th className="py-5 lg:px-3" scope="col">
+              <th className="py-5" scope="col">
                 <CustomCheckbox
                   isUpdatedDesign
                   checkboxValue={1}
@@ -74,33 +74,38 @@ const PaymentReminder = ({
                   id={1}
                   isChecked={isChecked}
                   text=""
-                  wrapperClassName="h-8 w-8 m-auto rounded-3xl p-2 hover:bg-miru-gray-1000"
+                  wrapperClassName="h-8 w-8 m-auto rounded-3xl hover:bg-miru-gray-1000"
                 />
               </th>
               <th
-                className="whitespace-nowrap py-5 pr-0 text-left text-xs font-medium tracking-widest text-miru-black-1000 md:font-normal lg:w-1/3 lg:pr-2 lg:pr-2"
+                className="w-1/6 whitespace-nowrap py-5 pr-0 text-left text-xs font-medium tracking-widest text-miru-black-1000 md:font-normal lg:px-2"
                 scope="col"
               >
-                CLIENT / INVOICE NO.
+                INVOICE NO.
               </th>
               <th
-                className="hidden w-1/6 px-2 py-5 text-right text-xs font-normal tracking-widest text-miru-black-1000 lg:table-cell lg:px-6"
+                className="w-1/6 whitespace-nowrap py-5 pr-0 text-left text-xs font-medium tracking-widest text-miru-black-1000 md:font-normal lg:px-2"
+                scope="col"
+              >
+                ISSUE DATE
+              </th>
+              <th
+                className="w-1/6 whitespace-nowrap py-5 pr-0 text-left text-xs font-medium tracking-widest text-miru-black-1000 md:font-normal lg:pr-2"
+                scope="col"
+              >
+                DUE DATE
+              </th>
+              <th
+                className="hidden w-1/6 px-2 py-5 text-left text-xs font-normal tracking-widest text-miru-black-1000 lg:table-cell"
                 scope="col"
               >
                 AMOUNT
               </th>
               <th
-                className="hidden px-2 py-5 text-right text-xs font-normal tracking-widest text-miru-black-1000 lg:table-cell lg:px-6"
+                className="hidden w-1/6 px-2 py-5 text-left text-xs font-normal tracking-widest text-miru-black-1000 lg:table-cell"
                 scope="col"
               >
                 STATUS
-              </th>
-              <th
-                className="table-cell px-2 py-5 text-right text-xs font-medium leading-4 tracking-widest text-miru-black-1000 lg:hidden lg:px-6"
-                scope="col"
-              >
-                STATUS/ <br />
-                AMOUNT
               </th>
             </tr>
           </thead>
