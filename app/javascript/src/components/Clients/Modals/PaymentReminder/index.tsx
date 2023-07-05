@@ -22,6 +22,7 @@ const PaymentReminder = ({
   const [activeTab, setActiveTab] = useState<string>("select_invoices");
   const [selectedInvoices, setSelectedInvoices] = useState<any[]>(
     invoices
+      .sort((a, b) => a.status.localeCompare(b.status))
       .filter(invoice => invoice.status === "overdue")
       .map(invoice => invoice.id)
   );
