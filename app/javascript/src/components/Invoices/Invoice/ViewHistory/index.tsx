@@ -3,33 +3,28 @@ import React, { useEffect, useState } from "react";
 import { ClockIcon, XIcon } from "miruIcons";
 import { Button, SidePanel } from "StyledComponents";
 
-import invoicesApi from "apis/invoices";
+import Loader from "common/Loader/index";
+import { useUserContext } from "context/UserContext";
 
 import History from "./History";
-import { createData } from "./utils";
+import { getHistory } from "./utils";
 
 const ViewHistory = ({ setShowHistory, invoice }) => {
-  const [historyData, setHistoryData] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [logs, setLogs] = useState([]);
+  const { company } = useUserContext();
 
-  const getHistory = async () => {
-    const { data } = await invoicesApi.invoiceLogs(invoice.id);
-    const records = data.trails.concat(data.paymentTrails);
-    records.sort(
-      (a, b) =>
-        new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-    );
-    setHistoryData(records.reverse());
+  const getHistoryData = async () => {
+    const records = await getHistory(invoice.id, company);
+
+    setLogs(records);
+    setLoading(false);
   };
 
   useEffect(() => {
-    getHistory();
+    setLoading(true);
+    getHistoryData();
   }, []);
-
-  useEffect(() => {
-    const invoiceHistory = createData(historyData);
-    setLogs(invoiceHistory);
-  }, [historyData]);
 
   return (
     <SidePanel WrapperClassname="py-8 px-6" setFilterVisibilty={setShowHistory}>
@@ -47,8 +42,14 @@ const ViewHistory = ({ setShowHistory, invoice }) => {
           <XIcon size={16} weight="bold" />
         </Button>
       </SidePanel.Header>
-      <SidePanel.Body className="py-10">
-        <History logs={logs} />
+      <SidePanel.Body className="h-full py-10">
+        {loading ? (
+          <div className="flex h-full items-center justify-center">
+            <Loader />
+          </div>
+        ) : (
+          <History logs={logs} />
+        )}
       </SidePanel.Body>
     </SidePanel>
   );
