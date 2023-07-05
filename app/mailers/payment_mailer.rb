@@ -2,7 +2,7 @@
 
 class PaymentMailer < ApplicationMailer
   def payment
-    @invoice = params[:invoice]
+    @invoice = Invoice.find(params[:invoice_id])
     recipients = recipients_with_role
     subject = params[:subject]
     @invoice_url = "#{ENV['APP_BASE_URL']}/invoices/#{@invoice.external_view_key}/view"
@@ -11,11 +11,15 @@ class PaymentMailer < ApplicationMailer
     @amount = FormatAmountService.new(@company.base_currency, @invoice.amount).process
     @message = email_message
 
-    attachments.inline["miruLogoWithText.png"] = File.read("public/miruLogoWithText.png")
-    attachments.inline["Instagram.png"] = File.read("public/Instagram.png")
-    attachments.inline["Twitter.png"] = File.read("public/Twitter.png")
+    if can_send_mail?
+      attachments.inline["miruLogoWithText.png"] = File.read("public/miruLogoWithText.png")
+      attachments.inline["Instagram.png"] = File.read("public/Instagram.png")
+      attachments.inline["Twitter.png"] = File.read("public/Twitter.png")
 
-    mail(to: recipients, subject:, reply_to: ENV["REPLY_TO_EMAIL"])
+      mail(to: recipients, subject:, reply_to: ENV["REPLY_TO_EMAIL"])
+
+      @invoice.update_columns(payment_sent_at: DateTime.current)
+    end
   end
 
   private
@@ -33,5 +37,9 @@ class PaymentMailer < ApplicationMailer
 
     def email_message
       "#{@invoice.client.name} has made a payment of #{@amount} for<br>invoice #{@invoice.invoice_number} through Stripe. The invoice is paid in full now"
+    end
+
+    def can_send_mail?
+      @invoice.payment_sent_at.nil?
     end
 end
