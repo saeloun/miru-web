@@ -212,6 +212,7 @@ const ProjectDetails = () => {
               >
                 <button
                   className={`menuButton__button ${menuBackground}`}
+                  id="addRemoveTeamMembers"
                   onClick={handleAddRemoveMembers}
                   onMouseEnter={handleButtonMouseEnter}
                   onMouseLeave={handleButtonMouseLeave}
