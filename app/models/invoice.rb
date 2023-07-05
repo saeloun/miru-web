@@ -2,25 +2,28 @@
 #
 # Table name: invoices
 #
-#  id                 :bigint           not null, primary key
-#  amount             :decimal(20, 2)   default(0.0)
-#  amount_due         :decimal(20, 2)   default(0.0)
-#  amount_paid        :decimal(20, 2)   default(0.0)
-#  discarded_at       :datetime
-#  discount           :decimal(20, 2)   default(0.0)
-#  due_date           :date
-#  external_view_key  :string
-#  invoice_number     :string
-#  issue_date         :date
-#  outstanding_amount :decimal(20, 2)   default(0.0)
-#  payment_infos      :jsonb
-#  reference          :text
-#  status             :integer          default("draft"), not null
-#  tax                :decimal(20, 2)   default(0.0)
-#  created_at         :datetime         not null
-#  updated_at         :datetime         not null
-#  client_id          :bigint           not null
-#  company_id         :bigint
+#  id                     :bigint           not null, primary key
+#  amount                 :decimal(20, 2)   default(0.0)
+#  amount_due             :decimal(20, 2)   default(0.0)
+#  amount_paid            :decimal(20, 2)   default(0.0)
+#  client_payment_sent_at :datetime
+#  discarded_at           :datetime
+#  discount               :decimal(20, 2)   default(0.0)
+#  due_date               :date
+#  external_view_key      :string
+#  invoice_number         :string
+#  issue_date             :date
+#  outstanding_amount     :decimal(20, 2)   default(0.0)
+#  payment_infos          :jsonb
+#  payment_sent_at        :datetime
+#  reference              :text
+#  sent_at                :datetime
+#  status                 :integer          default("draft"), not null
+#  tax                    :decimal(20, 2)   default(0.0)
+#  created_at             :datetime         not null
+#  updated_at             :datetime         not null
+#  client_id              :bigint           not null
+#  company_id             :bigint
 #
 # Indexes
 #
@@ -108,6 +111,10 @@ class Invoice < ApplicationRecord
       updated_at:,
       discarded_at:
     }
+  end
+
+  def recently_sent_mail?
+    sent_at.nil? || (sent_at && !(sent_at > 1.minute.ago))
   end
 
   def update_timesheet_entry_status!

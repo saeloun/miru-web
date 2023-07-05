@@ -59,6 +59,10 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
   def send_invoice
     authorize invoice
 
+    unless invoice.recently_sent_mail?
+      return render json: { message: "Invoice was sent just a minute ago." }, status: :accepted
+    end
+
     if ENV["SEND_INVOICE_EMAILS"] || current_user.email == "supriya@saeloun.com"
       recipients = invoice_email_params[:recipients]
 
