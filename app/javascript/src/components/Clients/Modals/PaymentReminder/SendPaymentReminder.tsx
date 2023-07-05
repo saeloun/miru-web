@@ -24,7 +24,9 @@ const SendPaymentReminder = ({
 
   const handleClick = async () => {
     try {
-      await clientApi.sendPaymentReminder(client.id, emailParams);
+      await clientApi.sendPaymentReminder(client.id, {
+        client_email: emailParams,
+      });
       setSendPaymentReminder(false);
     } catch (error) {
       Toastr.error(error.message);

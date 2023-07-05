@@ -13,7 +13,7 @@ const update = async (id, payload) => axios.patch(`${path}/${id}`, payload);
 const destroy = async id => axios.delete(`${path}/${id}`);
 
 const sendPaymentReminder = async (id, payload) =>
-  axios.post(`${path}/${id}`, payload);
+  axios.post(`${path}/${id}/send_payment_reminder`, payload);
 
 const invoices = async (query = "") =>
   axios.get(query ? `${path}/invoices?${query}` : `${path}/invoices`);
