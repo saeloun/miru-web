@@ -152,62 +152,75 @@ const SendInvoice: React.FC<any> = ({
         </div>
         <form className="space-y-4">
           <fieldset className="field_with_errors flex flex-col">
-            <label className="form__label mb-2" htmlFor="to">
-              To
-            </label>
-            <div
-              className={cn("flex flex-wrap rounded bg-miru-gray-100 p-1.5", {
-                "h-9": !invoiceEmail.recipients,
-              })}
-              // onClick={() => input.current.focus()}
-            >
-              {invoiceEmail.recipients.map(recipient => (
-                <Recipient
-                  email={recipient}
-                  handleClick={() => handleRemove(recipient)}
-                  key={recipient}
-                />
-              ))}
-              {/* <input
-                name="to"
-                ref={input}
-                style={{ width }}
-                type="email"
-                value={newRecipient}
+            <div className="field relative">
+              <div className="outline relative h-12" />
+              <div
                 className={cn(
-                  "focus:outline-none mx-1.5 w-fit cursor-text rounded bg-miru-gray-100 py-2",
+                  "form__input flex h-12 w-full appearance-none flex-wrap border-miru-gray-1000 bg-white text-sm lg:text-base",
                   {
-                    "text-miru-red-400": !isEmailValid(newRecipient),
+                    "h-9": !invoiceEmail.recipients,
                   }
                 )}
-                onChange={e => setNewRecipient(e.target.value.trim())}
-                onKeyDown={handleInput}
-              /> */}
+                // onClick={() => input.current.focus()}
+              >
+                {invoiceEmail.recipients.map(recipient => (
+                  <Recipient
+                    email={recipient}
+                    handleClick={() => handleRemove(recipient)}
+                    key={recipient}
+                  />
+                ))}
+                <label
+                  className="form__label relative bottom-4 right-48 z-1"
+                  htmlFor="to"
+                >
+                  Email
+                </label>
+                {/* <input
+                    name="to"
+                    ref={input}
+                    style={{ width }}
+                    type="email"
+                    value={newRecipient}
+                    className={cn(
+                      "focus:outline-none mx-1.5 w-fit cursor-text rounded bg-miru-gray-100 py-2",
+                      {
+                        "text-miru-red-400": !isEmailValid(newRecipient),
+                      }
+                    )}
+                    onChange={e => setNewRecipient(e.target.value.trim())}
+                    onKeyDown={handleInput}
+                  /> */}
+              </div>
             </div>
           </fieldset>
           <fieldset className="field_with_errors flex flex-col">
-            <label className="form__label mb-2" htmlFor="subject">
-              Subject
-            </label>
-            <input
-              className="rounded bg-miru-gray-100 p-1.5"
-              name="subject"
-              type="text"
-              value={invoiceEmail.subject}
-              onChange={e =>
-                setInvoiceEmail({
-                  ...invoiceEmail,
-                  subject: e.target.value,
-                })
-              }
-            />
+            <div className="field relative">
+              <div className="outline relative h-12">
+                <input
+                  className="form__input block h-12 w-full appearance-none border-miru-gray-1000 bg-white p-4 text-sm lg:text-base"
+                  name="subject"
+                  type="text"
+                  value={invoiceEmail.subject}
+                  onChange={e =>
+                    setInvoiceEmail({
+                      ...invoiceEmail,
+                      subject: e.target.value,
+                    })
+                  }
+                />
+                <label
+                  className="form__label absolute top-0.5 z-1 h-6 origin-0 bg-white p-2 text-sm font-medium text-miru-dark-purple-200 duration-300 lg:text-base"
+                  htmlFor="subject"
+                >
+                  Subject
+                </label>
+              </div>
+            </div>
           </fieldset>
           <fieldset className="field_with_errors flex flex-col">
-            <label className="form__label mb-2" htmlFor="body">
-              Message
-            </label>
             <textarea
-              className="rounded bg-miru-gray-100 p-1.5"
+              className="rounded border border-miru-gray-1000 bg-white p-1.5"
               name="body"
               rows={5}
               value={invoiceEmail.message}
@@ -218,6 +231,12 @@ const SendInvoice: React.FC<any> = ({
                 })
               }
             />
+            <label
+              className="form__label relative bottom-36 left-3 z-1"
+              htmlFor="body"
+            >
+              Message
+            </label>
           </fieldset>
           <div>
             <button

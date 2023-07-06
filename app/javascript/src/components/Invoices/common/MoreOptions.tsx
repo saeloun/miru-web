@@ -13,7 +13,7 @@ const MoreOptions: FC<MoreOptionsProps> = ({
   setIsSendReminder,
   sendInvoice,
 }) => (
-  <ul className="absolute right-20 rounded border-2 border-miru-gray-200 bg-white py-2 drop-shadow">
+  <ul className="absolute right-20 z-max rounded border-2 border-miru-gray-200 bg-white py-2 drop-shadow">
     {downloadInvoice != null && invoice.status != "draft" && (
       <li
         className="flex cursor-pointer items-center py-2.5 px-4 text-miru-han-purple-1000 hover:bg-miru-gray-100"
