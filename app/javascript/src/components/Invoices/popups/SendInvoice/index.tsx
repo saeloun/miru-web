@@ -150,7 +150,7 @@ const SendInvoice: React.FC<any> = ({
           <h6 className="form__title">
             {isSendReminder
               ? "Send Invoice Reminder"
-              : `Send Invoice #{${invoice.invoiceNumber}}`}
+              : `Send Invoice #${invoice.invoiceNumber}`}
           </h6>
           <button
             className="text-miru-gray-1000"

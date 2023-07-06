@@ -32,7 +32,7 @@ const Recipient: React.FC<{ email: string; handleClick: any }> = ({
   email,
   handleClick,
 }) => (
-  <div className="m-0.5 flex w-fit items-center space-x-2 rounded-full border bg-miru-gray-400 px-2 py-1">
+  <div className="m-0.5 flex w-fit items-center space-x-2 rounded-full border bg-miru-gray-400 px-2 py-1 text-sm">
     <p>{email}</p>
     {/* <button
       className="text-miru-black-1000 hover:text-miru-red-400"
@@ -133,7 +133,7 @@ const SendInvoice: React.FC<any> = ({
           <h6 className="form__title">
             {isSendReminder
               ? "Send Invoice Reminder"
-              : `Send Invoice #{${invoice.invoiceNumber}}`}
+              : `Send Invoice #${invoice.invoiceNumber}`}
           </h6>
           <button
             className="text-miru-gray-1000"
@@ -156,7 +156,7 @@ const SendInvoice: React.FC<any> = ({
               <div className="outline relative h-12" />
               <div
                 className={cn(
-                  "form__input flex h-12 w-full appearance-none flex-wrap border-miru-gray-1000 bg-white text-sm lg:text-base",
+                  "form__input flex h-16 w-full appearance-none flex-wrap border-miru-gray-1000 bg-white text-sm lg:text-base",
                   {
                     "h-9": !invoiceEmail.recipients,
                   }
@@ -171,7 +171,7 @@ const SendInvoice: React.FC<any> = ({
                   />
                 ))}
                 <label
-                  className="form__label relative bottom-4 right-48 z-1"
+                  className="form__label relative bottom-4 right-44 z-1"
                   htmlFor="to"
                 >
                   Email
@@ -210,7 +210,7 @@ const SendInvoice: React.FC<any> = ({
                   }
                 />
                 <label
-                  className="form__label absolute top-0.5 z-1 h-6 origin-0 bg-white p-2 text-sm font-medium text-miru-dark-purple-200 duration-300 lg:text-base"
+                  className="form__label absolute top-0.5 z-1 h-6 origin-0 bg-white p-2 font-medium text-miru-dark-purple-200"
                   htmlFor="subject"
                 >
                   Subject
