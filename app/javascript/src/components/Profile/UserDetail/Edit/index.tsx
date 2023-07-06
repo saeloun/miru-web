@@ -142,6 +142,14 @@ const UserDetailsEdit = () => {
     getDetails();
   }, []);
 
+  const cancelPasswordChange = () => {
+    setChangePassword(false);
+    setUserState("profileSettings", {
+      ...profileSettings,
+      ...{ confirmPassword: "", password: "" },
+    });
+  };
+
   const handleOnChangeCountry = selectCountry => {
     setCurrentCountryDetails(selectCountry);
     setUserState("profileSettings", {
@@ -379,6 +387,7 @@ const UserDetailsEdit = () => {
             <StaticPage
               addrType={addrType}
               addressOptions={addressOptions}
+              cancelPasswordChange={cancelPasswordChange}
               changePassword={changePassword}
               confirmPassword={confirmPassword}
               countries={countries}
@@ -401,6 +410,7 @@ const UserDetailsEdit = () => {
               personalDetails={profileSettings}
               promiseOptions={promiseOptions}
               setChangePassword={setChangePassword}
+              setErrDetails={setErrDetails}
               setShowConfirmPassword={setShowConfirmPassword}
               setShowCurrentPassword={setShowCurrentPassword}
               setShowDatePicker={setShowDatePicker}

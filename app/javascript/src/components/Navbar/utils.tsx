@@ -8,10 +8,12 @@ import {
   ReportsIcon,
   InvoicesIcon,
   PaymentsIcon,
+  SettingIcon,
 } from "miruIcons";
 import { NavLink } from "react-router-dom";
 
-import { Paths } from "constants/index";
+import { logoutApi } from "apis/logoutApi";
+import { Paths, LocalStorageKeys } from "constants/index";
 
 const navOptions = [
   {
@@ -93,6 +95,27 @@ const navAdminMobileOptions = [
     logo: <PaymentsIcon className="mr-4" size={26} />,
     label: "Payments",
     path: Paths.PAYMENTS,
+  },
+];
+
+const navClientOptions = [
+  {
+    logo: <InvoicesIcon className="mr-0 md:mr-4" size={26} />,
+    label: "Invoices",
+    path: "/invoices",
+    allowedRoles: ["admin", "owner", "book_keeper", "client"],
+  },
+  {
+    logo: <PaymentsIcon className="mr-0 md:mr-4" size={26} />,
+    label: "Payments",
+    path: Paths.PAYMENTS,
+    allowedRoles: ["admin", "owner", "book_keeper", "client"],
+  },
+  {
+    logo: <SettingIcon className="mr-0 md:mr-4" size={26} />,
+    label: "Settings",
+    path: "/profile/edit/option",
+    allowedRoles: ["admin", "owner", "book_keeper", "client"],
   },
 ];
 
@@ -183,6 +206,15 @@ const MobileMenuOptions = ({
   </>
 );
 
+const handleLogout = async authDispatch => {
+  await logoutApi();
+  Object.values(LocalStorageKeys).forEach(key => {
+    localStorage.removeItem(key);
+  });
+  authDispatch({ type: "LOGOUT" });
+  window.location.href = "/";
+};
+
 export {
   navAdminMobileOptions,
   activeClassName,
@@ -192,4 +224,6 @@ export {
   MobileMenuOptions,
   getNavOptions,
   navOptions,
+  navClientOptions,
+  handleLogout,
 };
