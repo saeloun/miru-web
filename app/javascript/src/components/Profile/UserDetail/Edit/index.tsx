@@ -260,7 +260,9 @@ const UserDetailsEdit = () => {
               .utc(profileSettings.date_of_birth, profileSettings.date_format)
               .toISOString()
           : null,
-        phone: profileSettings.phone_number,
+        phone: profileSettings.phone_number
+          ? profileSettings.phone_number
+          : null,
         personal_email_id: profileSettings.email_id,
         social_accounts: {
           linkedin_url: profileSettings.linkedin,
