@@ -146,7 +146,7 @@ const UserDetailsEdit = () => {
     setChangePassword(false);
     setUserState("profileSettings", {
       ...profileSettings,
-      ...{ confirmPassword: "", password: "" },
+      ...{ confirmPassword: "", password: "", currentPassword: "" },
     });
   };
 
@@ -437,12 +437,15 @@ const UserDetailsEdit = () => {
             <MobileEditPage
               addrType={addrType}
               addressOptions={addressOptions}
+              cancelPasswordChange={cancelPasswordChange}
               changePassword={changePassword}
               countries={countries}
               currentCountryDetails={currentCountryDetails}
+              currentPassword={currentPassword}
               dateFormat={profileSettings.date_format}
               errDetails={errDetails}
               handleCancelDetails={handleCancelDetails}
+              handleCurrentPasswordChange={handleCurrentPasswordChange}
               handleDatePicker={handleDatePicker}
               handleOnChangeAddrType={handleOnChangeAddrType}
               handleOnChangeCity={handleOnChangeCity}
@@ -453,6 +456,7 @@ const UserDetailsEdit = () => {
               personalDetails={profileSettings}
               promiseOptions={promiseOptions}
               setChangePassword={setChangePassword}
+              setErrDetails={setErrDetails}
               setShowConfirmPassword={setShowConfirmPassword}
               setShowCurrentPassword={setShowCurrentPassword}
               setShowDatePicker={setShowDatePicker}

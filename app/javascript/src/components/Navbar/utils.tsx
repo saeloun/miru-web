@@ -106,12 +106,6 @@ const navClientOptions = [
     allowedRoles: ["admin", "owner", "book_keeper", "client"],
   },
   {
-    logo: <PaymentsIcon className="mr-0 md:mr-4" size={26} />,
-    label: "Payments",
-    path: Paths.PAYMENTS,
-    allowedRoles: ["admin", "owner", "book_keeper", "client"],
-  },
-  {
     logo: <SettingIcon className="mr-0 md:mr-4" size={26} />,
     label: "Settings",
     path: "/profile/edit/option",
