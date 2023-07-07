@@ -22,7 +22,7 @@ class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationControlle
     ActiveRecord::Base.transaction do
       client = Client.create!(client_params)
       user = User.find_by!(email: params[:client][:email])
-      client_member = ClientMember.create!(client:, user:)
+      client_member = current_company.client_members.create!(client:, user:)
       render :create, locals: { client:, address: client.current_address }
     end
   end
