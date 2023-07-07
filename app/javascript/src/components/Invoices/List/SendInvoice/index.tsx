@@ -173,7 +173,7 @@ const SendInvoice: React.FC<any> = ({
                       key={recipient}
                     />
                   ))}
-                  <input
+                  {/* <input
                     name="to"
                     ref={input}
                     style={{ width }}
@@ -187,10 +187,10 @@ const SendInvoice: React.FC<any> = ({
                     )}
                     onChange={e => setNewRecipient(e.target.value.trim())}
                     onKeyDown={handleInput}
-                  />
+                  /> */}
                 </div>
               }
-              onClick={() => input.current.focus()}
+              // onClick={() => input.current.focus()}
             />
           </fieldset>
           <fieldset className="field_with_errors flex flex-col">
