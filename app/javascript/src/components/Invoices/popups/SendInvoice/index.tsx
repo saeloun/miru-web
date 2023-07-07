@@ -14,6 +14,9 @@ import { useNavigate } from "react-router-dom";
 import { Modal, Toastr } from "StyledComponents";
 
 import invoicesApi from "apis/invoices";
+import { CustomAdvanceInput } from "common/CustomAdvanceInput";
+import { CustomInputText } from "common/CustomInputText";
+import { CustomTextareaAutosize } from "common/CustomTextareaAutosize";
 import { ApiStatus as InvoiceStatus } from "constants/index";
 
 import {
@@ -169,45 +172,49 @@ const SendInvoice: React.FC<any> = ({
         </div>
         <form className="space-y-4">
           <fieldset className="field_with_errors flex flex-col">
-            <label className="form__label mb-2" htmlFor="to">
-              To
-            </label>
-            <div
-              className={cn("flex flex-wrap rounded bg-miru-gray-100 p-1.5", {
-                "h-9": !invoiceEmail.recipients,
-              })}
-              // onClick={() => input.current.focus()}
-            >
-              {invoiceEmail.recipients.map(recipient => (
-                <Recipient
-                  email={recipient}
-                  handleClick={() => handleRemove(recipient)}
-                  key={recipient}
-                />
-              ))}
-              {/* <input
+            <CustomAdvanceInput
+              id="Email ID"
+              inputBoxClassName="py-3"
+              label="Email ID"
+              wrapperClassName="h-full"
+              value={
+                <div
+                  className={cn("flex flex-wrap rounded", {
+                    "h-9": !invoiceEmail.recipients,
+                  })}
+                >
+                  {invoiceEmail.recipients.map(recipient => (
+                    <Recipient
+                      email={recipient}
+                      handleClick={() => handleRemove(recipient)}
+                      key={recipient}
+                    />
+                  ))}
+                  <input
                     name="to"
                     ref={input}
                     style={{ width }}
                     type="email"
                     value={newRecipient}
                     className={cn(
-                      "focus:outline-none mx-1.5 w-fit cursor-text rounded bg-miru-gray-100 py-2",
+                      "focus:outline-none mx-1.5 w-fit cursor-text",
                       {
                         "text-miru-red-400": !isEmailValid(newRecipient),
                       }
                     )}
                     onChange={e => setNewRecipient(e.target.value.trim())}
                     onKeyDown={handleInput}
-                  /> */}
-            </div>
+                  />
+                </div>
+              }
+              onClick={() => input.current.focus()}
+            />
           </fieldset>
           <fieldset className="field_with_errors flex flex-col">
-            <label className="form__label mb-2" htmlFor="subject">
-              Subject
-            </label>
-            <input
-              className="rounded bg-miru-gray-100 p-1.5"
+            <CustomInputText
+              id="subject"
+              inputBoxClassName="border focus:border-miru-han-purple-1000"
+              label="Subject"
               name="subject"
               type="text"
               value={invoiceEmail.subject}
@@ -220,20 +227,19 @@ const SendInvoice: React.FC<any> = ({
             />
           </fieldset>
           <fieldset className="field_with_errors flex flex-col">
-            <label className="form__label mb-2" htmlFor="body">
-              Message
-            </label>
-            <textarea
-              className="rounded bg-miru-gray-100 p-1.5"
-              name="body"
+            <CustomTextareaAutosize
+              id="message"
+              label="Message"
+              maxRows={5}
+              name="message"
               rows={5}
               value={invoiceEmail.message}
-              onChange={e =>
+              onChange={e => {
                 setInvoiceEmail({
                   ...invoiceEmail,
                   message: e.target.value,
-                })
-              }
+                });
+              }}
             />
           </fieldset>
           <div>
