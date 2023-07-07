@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 
 import invoicesApi from "apis/invoices";
 import Loader from "common/Loader/index";
+import ConnectPaymentGateway from "components/Invoices/popups/ConnectPaymentGateway";
 import { useUserContext } from "context/UserContext";
 
 import Header from "./Header";
@@ -18,6 +19,8 @@ const ClientInvoiceDetails = () => {
 
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState(null);
+  const [showConnectPaymentDialog, setShowConnectPaymentDialog] =
+    useState<boolean>(false);
 
   useEffect(() => {
     fetchViewInvoice();
@@ -38,12 +41,25 @@ const ClientInvoiceDetails = () => {
   }
 
   if (data) {
-    const { url, invoice, logo, lineItems, company, client } = data;
+    const {
+      url,
+      invoice,
+      logo,
+      lineItems,
+      company,
+      client,
+      stripe_connected_account,
+    } = data;
 
     return isDesktop ? (
       <div className="flex flex-col justify-between">
         <div className="font-manrope">
-          <Header invoice={invoice} stripeUrl={url} />
+          <Header
+            invoice={invoice}
+            setShowConnectPaymentDialog={setShowConnectPaymentDialog}
+            stripeUrl={url}
+            stripe_connected_account={stripe_connected_account}
+          />
           <div className="m-0 mt-5 mb-10 w-full bg-miru-gray-100 p-0">
             <InvoiceDetails
               client={client}
@@ -53,6 +69,14 @@ const ClientInvoiceDetails = () => {
               logo={logo}
             />
           </div>
+          {showConnectPaymentDialog && (
+            <ConnectPaymentGateway
+              isInvoiceEmail
+              invoice={invoice}
+              setShowConnectPaymentDialog={setShowConnectPaymentDialog}
+              showConnectPaymentDialog={showConnectPaymentDialog}
+            />
+          )}
         </div>
       </div>
     ) : (
