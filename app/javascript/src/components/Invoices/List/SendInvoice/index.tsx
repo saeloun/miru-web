@@ -157,6 +157,7 @@ const SendInvoice: React.FC<any> = ({
           <fieldset className="field_with_errors flex flex-col">
             <CustomAdvanceInput
               id="Email ID"
+              inputBoxClassName="py-3"
               label="Email ID"
               wrapperClassName="h-full"
               value={
@@ -195,7 +196,7 @@ const SendInvoice: React.FC<any> = ({
           <fieldset className="field_with_errors flex flex-col">
             <CustomInputText
               id="subject"
-              inputBoxClassName="border focus:border-miru-han-purple-1000 cursor-pointer"
+              inputBoxClassName="border focus:border-miru-han-purple-1000"
               label="Subject"
               name="subject"
               type="text"
