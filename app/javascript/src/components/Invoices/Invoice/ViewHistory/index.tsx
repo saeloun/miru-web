@@ -42,7 +42,7 @@ const ViewHistory = ({ setShowHistory, invoice }) => {
           <XIcon size={16} weight="bold" />
         </Button>
       </SidePanel.Header>
-      <SidePanel.Body className="h-full py-10">
+      <SidePanel.Body className="h-full overflow-y-auto py-10">
         {loading ? (
           <div className="flex h-full items-center justify-center">
             <Loader />

@@ -16,7 +16,10 @@ const calculateTime = (date, dateFormat, timezone) => {
     if (hour <= 1) {
       if (hour < 1) {
         const minutes = Math.round(Math.abs(now - recordCreated) / 60000);
-        minutes == 1 ? `${minutes} minute ago` : `${minutes} minutes ago`;
+
+        return minutes == 1
+          ? `${minutes} minute ago`
+          : `${minutes} minutes ago`;
       }
 
       return `${hour} hour ago`;
