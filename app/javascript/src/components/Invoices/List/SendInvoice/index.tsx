@@ -12,6 +12,9 @@ import { XIcon } from "miruIcons";
 import { Modal, Toastr } from "StyledComponents";
 
 import invoicesApi from "apis/invoices";
+import { CustomAdvanceInput } from "common/CustomAdvanceInput";
+import { CustomInputText } from "common/CustomInputText";
+import { CustomTextareaAutosize } from "common/CustomTextareaAutosize";
 import { ApiStatus as InvoiceStatus } from "constants/index";
 
 import {
@@ -32,7 +35,7 @@ const Recipient: React.FC<{ email: string; handleClick: any }> = ({
   email,
   handleClick,
 }) => (
-  <div className="m-0.5 flex w-fit items-center space-x-2 rounded-full border bg-miru-gray-400 px-2 py-1 text-sm">
+  <div className="space-XIcon-2 m-0.5 flex w-fit items-center rounded-full border bg-miru-gray-400 px-2 py-1 text-sm font-medium">
     <p>{email}</p>
     {/* <button
       className="text-miru-black-1000 hover:text-miru-red-400"
@@ -152,91 +155,74 @@ const SendInvoice: React.FC<any> = ({
         </div>
         <form className="space-y-4">
           <fieldset className="field_with_errors flex flex-col">
-            <div className="field relative">
-              <div className="outline relative h-12" />
-              <div
-                className={cn(
-                  "form__input flex h-16 w-full appearance-none flex-wrap border-miru-gray-1000 bg-white text-sm lg:text-base",
-                  {
+            <CustomAdvanceInput
+              id="Email ID"
+              label="Email ID"
+              wrapperClassName="h-full"
+              value={
+                <div
+                  className={cn("flex flex-wrap rounded", {
                     "h-9": !invoiceEmail.recipients,
-                  }
-                )}
-                // onClick={() => input.current.focus()}
-              >
-                {invoiceEmail.recipients.map(recipient => (
-                  <Recipient
-                    email={recipient}
-                    handleClick={() => handleRemove(recipient)}
-                    key={recipient}
-                  />
-                ))}
-                <label
-                  className="form__label relative bottom-4 right-44 z-1"
-                  htmlFor="to"
+                  })}
                 >
-                  Email
-                </label>
-                {/* <input
+                  {invoiceEmail.recipients.map(recipient => (
+                    <Recipient
+                      email={recipient}
+                      handleClick={() => handleRemove(recipient)}
+                      key={recipient}
+                    />
+                  ))}
+                  <input
                     name="to"
                     ref={input}
                     style={{ width }}
                     type="email"
                     value={newRecipient}
                     className={cn(
-                      "focus:outline-none mx-1.5 w-fit cursor-text rounded bg-miru-gray-100 py-2",
+                      "focus:outline-none mx-1.5 w-fit cursor-text",
                       {
                         "text-miru-red-400": !isEmailValid(newRecipient),
                       }
                     )}
                     onChange={e => setNewRecipient(e.target.value.trim())}
                     onKeyDown={handleInput}
-                  /> */}
-              </div>
-            </div>
+                  />
+                </div>
+              }
+              onClick={() => input.current.focus()}
+            />
           </fieldset>
           <fieldset className="field_with_errors flex flex-col">
-            <div className="field relative">
-              <div className="outline relative h-12">
-                <input
-                  className="form__input block h-12 w-full appearance-none border-miru-gray-1000 bg-white p-4 text-sm lg:text-base"
-                  name="subject"
-                  type="text"
-                  value={invoiceEmail.subject}
-                  onChange={e =>
-                    setInvoiceEmail({
-                      ...invoiceEmail,
-                      subject: e.target.value,
-                    })
-                  }
-                />
-                <label
-                  className="form__label absolute top-0.5 z-1 h-6 origin-0 bg-white p-2 font-medium text-miru-dark-purple-200"
-                  htmlFor="subject"
-                >
-                  Subject
-                </label>
-              </div>
-            </div>
-          </fieldset>
-          <fieldset className="field_with_errors flex flex-col">
-            <textarea
-              className="rounded border border-miru-gray-1000 bg-white p-1.5"
-              name="body"
-              rows={5}
-              value={invoiceEmail.message}
+            <CustomInputText
+              id="subject"
+              inputBoxClassName="border focus:border-miru-han-purple-1000 cursor-pointer"
+              label="Subject"
+              name="subject"
+              type="text"
+              value={invoiceEmail.subject}
               onChange={e =>
                 setInvoiceEmail({
                   ...invoiceEmail,
-                  message: e.target.value,
+                  subject: e.target.value,
                 })
               }
             />
-            <label
-              className="form__label relative bottom-36 left-3 z-1"
-              htmlFor="body"
-            >
-              Message
-            </label>
+          </fieldset>
+          <fieldset className="field_with_errors flex flex-col">
+            <CustomTextareaAutosize
+              id="message"
+              label="Message"
+              maxRows={5}
+              name="message"
+              rows={5}
+              value={invoiceEmail.message}
+              onChange={e => {
+                setInvoiceEmail({
+                  ...invoiceEmail,
+                  message: e.target.value,
+                });
+              }}
+            />
           </fieldset>
           <div>
             <button
