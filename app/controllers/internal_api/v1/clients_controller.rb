@@ -9,7 +9,7 @@ class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationControlle
     total_minutes = (client_details.map { |client| client[:minutes_spent] }).sum
     overdue_outstanding_amount = current_company.overdue_and_outstanding_and_draft_amount
     users_with_client_role = current_company.users.includes(:roles).where(roles: { name: "client" })
-    users_not_in_client_members = users_with_client_role.where.not(id: ClientMember.pluck(:user_id))
+    users_not_in_client_members = users_with_client_role.where.not(id: current_company.client_members.pluck(:user_id))
     render json: {
              client_details:, total_minutes:, overdue_outstanding_amount:,
              users_not_in_client_members:
