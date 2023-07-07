@@ -13,7 +13,7 @@ class InternalApi::V1::Clients::InvoicesController < InternalApi::V1::Applicatio
   end
 
   def client
-    client_member = ClientMember.find_by(user: current_user)
+    client_member = ClientMember.find_by(user: current_user, company: current_company)
     unless client_member && client_member.client
       render json: { error: "No clients associated" }, status: :unprocessable_entity
     else
