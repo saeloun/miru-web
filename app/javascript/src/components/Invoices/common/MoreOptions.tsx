@@ -12,6 +12,7 @@ const MoreOptions: FC<MoreOptionsProps> = ({
   markInvoiceAsPaid = () => null,
   setIsSendReminder,
   sendInvoice,
+  setIsMoreOptionsVisible,
 }) => (
   <ul className="absolute right-20 z-max rounded border-2 border-miru-gray-200 bg-white py-2 drop-shadow">
     {downloadInvoice != null && invoice.status != "draft" && (
@@ -47,6 +48,7 @@ const MoreOptions: FC<MoreOptionsProps> = ({
         onClick={() => {
           setIsSendReminder(true);
           sendInvoice();
+          setIsMoreOptionsVisible(false);
         }}
       >
         <ReminderIcon className="mr-4" id="reminderIcon" size={16} />
@@ -71,6 +73,7 @@ interface MoreOptionsProps {
   markInvoiceAsPaid: (id: number) => void;
   setIsSendReminder: (value: boolean) => void;
   sendInvoice?: () => void;
+  setIsMoreOptionsVisible?: (value: boolean) => void;
 }
 
 export default MoreOptions;

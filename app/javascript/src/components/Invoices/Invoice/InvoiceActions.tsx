@@ -60,6 +60,7 @@ const InvoiceActions = ({
             invoice={invoice}
             markInvoiceAsPaid={markInvoiceAsPaid}
             sendInvoice={sendInvoice}
+            setIsMoreOptionsVisible={setIsMoreOptionsVisible}
             setIsSendReminder={setIsSendReminder}
             wavieInvoice={wavieInvoice}
           />
