@@ -77,7 +77,7 @@ const UserActions = setVisiblity => {
           onClick={() => handleSwitch(workspace.id)}
         >
           <Avatar
-            classNameImg="lg:mr-5"
+            classNameImg="mr-5"
             classNameInitials="lg:text-xs font-bold capitalize text-white"
             classNameInitialsWrapper="lg:mr-5 bg-miru-gray-1000 "
             initialsLetterCount={1}
@@ -132,7 +132,7 @@ const UserActions = setVisiblity => {
             onMouseEnter={handleTooltip}
           >
             <Avatar
-              classNameImg="lg:mr-5"
+              classNameImg="mr-5"
               classNameInitials="lg:text-xs font-bold capitalize text-white"
               classNameInitialsWrapper="lg:mr-5 bg-miru-gray-1000 "
               initialsLetterCount={1}
