@@ -63,7 +63,7 @@ const TableRow = ({ invoice, index }) => {
           </div>
         </Tooltip>
       </td>
-      <td className="w-1/4 whitespace-nowrap px-4 py-5 font-medium tracking-normal lg:px-6">
+      <td className="hidden w-1/4 whitespace-nowrap px-4 py-5 font-medium tracking-normal lg:table-cell lg:px-6">
         <h1 className="text-xs font-normal text-miru-dark-purple-1000 lg:text-base lg:font-semibold">
           {issueDate}
         </h1>
