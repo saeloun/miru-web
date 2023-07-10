@@ -90,8 +90,8 @@ const Header = ({ showSearch, params, setParams }) => {
   };
 
   return (
-    <div className="relative mt-6 mb-3 flex flex-wrap items-center justify-between md:justify-start lg:justify-between">
-      <h2 className="header__title">Invoices</h2>
+    <div className="relative mt-6 mb-3 flex flex-wrap items-center justify-center md:justify-start lg:justify-between">
+      {isDesktop && <h2 className="header__title">Invoices</h2>}
       {showSearch >= 1 && (
         <>
           {isDesktop ? (
