@@ -8,8 +8,8 @@ class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationControlle
     client_details = clients.map { |client| client.client_detail(params[:time_frame]) }
     total_minutes = (client_details.map { |client| client[:minutes_spent] }).sum
     overdue_outstanding_amount = current_company.overdue_and_outstanding_and_draft_amount
-    users_with_client_role = current_company.users.joins(:roles).where(roles: { name: "client" })
-    users_not_in_client_members = users_with_client_role.where.not(id: ClientMember.pluck(:user_id))
+    users_with_client_role = current_company.users.includes(:roles).where(roles: { name: "client" })
+    users_not_in_client_members = users_with_client_role.where.not(id: current_company.client_members.pluck(:user_id))
     render json: {
              client_details:, total_minutes:, overdue_outstanding_amount:,
              users_not_in_client_members:
@@ -22,7 +22,7 @@ class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationControlle
     ActiveRecord::Base.transaction do
       client = Client.create!(client_params)
       user = User.find_by!(email: params[:client][:email])
-      client_member = ClientMember.create!(client:, user:)
+      client_member = current_company.client_members.create!(client:, user:)
       render :create, locals: { client:, address: client.current_address }
     end
   end
