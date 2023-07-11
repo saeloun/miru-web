@@ -12,3 +12,5 @@ json.invitation invitations do |member|
   json.extract! member, :id, :name, :first_name, :last_name, :email, :role, :status
   json.profile_picture image_url "avatar.svg"
 end
+
+json.pagination_details pagination_details

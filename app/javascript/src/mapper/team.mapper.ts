@@ -24,4 +24,17 @@ const unmapList = input => {
   return [...team, ...invitation];
 };
 
-export { unmapList };
+const unmapPagyData = input => {
+  const { paginationDetails } = input.data;
+
+  return {
+    items: paginationDetails.items,
+    next: paginationDetails.next,
+    page: paginationDetails.page,
+    pages: paginationDetails.pages,
+    last: paginationDetails.last,
+    prev: paginationDetails.prev,
+  };
+};
+
+export { unmapList, unmapPagyData };

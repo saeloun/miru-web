@@ -14,6 +14,7 @@ type Pagination = {
   setParams: any;
   handleClick?: any;
   isReport?: boolean;
+  isTeamPage?: boolean;
 };
 
 const Pagination = ({
@@ -23,11 +24,12 @@ const Pagination = ({
   title,
   handleClick,
   isReport = false,
+  isTeamPage = false,
 }: Pagination) => {
   const { isDesktop } = useUserContext();
 
-  const currentPage = params.page;
-  const totalPageCount = pagy.pages;
+  const currentPage = params?.page;
+  const totalPageCount = pagy?.pages;
   const siblingCount = 1;
 
   const paginationRange = usePagination({
@@ -65,7 +67,7 @@ const Pagination = ({
                   "text-miru-han-purple-1000": !pagy?.first,
                 })}
                 onClick={() => {
-                  isReport
+                  isReport || isTeamPage
                     ? handleClick(pagy?.prev)
                     : setParams({ ...params, page: pagy?.prev });
                 }}
@@ -86,7 +88,7 @@ const Pagination = ({
                       }
                     )}
                     onClick={() => {
-                      isReport
+                      isReport || isTeamPage
                         ? handleClick(page)
                         : handlePageNumberClick(page);
                     }}
@@ -105,7 +107,7 @@ const Pagination = ({
                     "text-miru-han-purple-1000": !pagy?.last,
                   })}
                   onClick={() => {
-                    isReport
+                    isReport || isTeamPage
                       ? handleClick(pagy?.next)
                       : setParams({ ...params, page: pagy?.next });
                   }}
@@ -121,10 +123,18 @@ const Pagination = ({
           <select
             className="p-2 text-xs font-bold text-miru-han-purple-1000"
             defaultValue={pagy?.items}
-            value={params.invoices_per_page}
-            onChange={e =>
-              setParams({ page: 1, invoices_per_page: Number(e.target.value) })
-            }
+            value={isTeamPage ? params?.items : params.invoices_per_page}
+            onChange={e => {
+              if (isTeamPage) {
+                handleClick(Number(1), e.target.value);
+                setParams({ ...params, items: e.target.value });
+              } else {
+                setParams({
+                  page: 1,
+                  invoices_per_page: Number(e.target.value),
+                });
+              }
+            }}
           >
             <option value="10">10</option>
             <option value="20">20</option>
