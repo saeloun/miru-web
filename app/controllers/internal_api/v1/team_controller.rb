@@ -16,7 +16,6 @@ class InternalApi::V1::TeamController < InternalApi::V1::ApplicationController
     invitation_data = presenter_data[:invitations]
     pagy_details, team_details = pagy_array(team_data, items: params[:items] || 10)
     invitation_pagy_data, invitation_details = pagy_array(invitation_data, items: params[:items] || 5)
-    # debugger
     render :index, locals: {
       teams: team_details,
       invitations: invitation_details,

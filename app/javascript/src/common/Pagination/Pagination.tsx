@@ -126,8 +126,8 @@ const Pagination = ({
             value={isTeamPage ? params?.items : params.invoices_per_page}
             onChange={e => {
               if (isTeamPage) {
-                handleClick(Number(1), e.target.value);
-                setParams({ ...params, items: e.target.value });
+                handleClick(Number(1), Number(e.target.value));
+                setParams({ ...params, items: Number(e.target.value) });
               } else {
                 setParams({
                   page: 1,
