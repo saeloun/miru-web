@@ -432,7 +432,10 @@ const UserDetails = () => {
                       </div>
                       <p
                         className="mt-5 cursor-pointer text-miru-han-purple-1000"
-                        onClick={() => setChangePassword(false)}
+                        onClick={() => {
+                          setChangePassword(false);
+                          setErrDetails(initialErrState);
+                        }}
                       >
                         CANCEL
                       </p>

@@ -26,7 +26,11 @@ const Navigation = () => {
 
   return (
     <Fragment>
-      <ul className="fixed bottom-0 left-0 right-0 z-40 flex h-1/12 justify-between bg-white px-3 shadow-c1">
+      <ul
+        className={`fixed bottom-0 left-0 right-0 z-40 flex h-1/12 ${
+          companyRole == "client" ? "px-8" : "px-3"
+        } justify-between bg-white shadow-c1`}
+      >
         <MobileMenuOptions
           companyRole={companyRole}
           from={0}

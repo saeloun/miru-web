@@ -46,6 +46,7 @@ const StaticPage = ({
   setShowDatePicker,
   handleDatePicker,
   errDetails,
+  setErrDetails,
   handleOnChangeCity,
   handlePhoneNumberChange,
   wrapperRef,
@@ -65,6 +66,7 @@ const StaticPage = ({
   handleConfirmPasswordChange,
   setShowConfirmPassword,
   dateFormat,
+  cancelPasswordChange,
 }) => (
   <div className="mt-4 h-full bg-miru-gray-100 px-10">
     <div className="flex border-b border-b-miru-gray-400 py-10">
@@ -589,7 +591,14 @@ const StaticPage = ({
                 </div>
                 <p
                   className="ml-2 mt-2 cursor-pointer text-miru-han-purple-1000"
-                  onClick={() => setChangePassword(false)}
+                  onClick={() => {
+                    setErrDetails({
+                      ...errDetails,
+                      password_err: "",
+                      confirmPassword_err: "",
+                    });
+                    cancelPasswordChange();
+                  }}
                 >
                   CANCEL
                 </p>
