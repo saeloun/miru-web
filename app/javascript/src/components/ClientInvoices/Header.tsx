@@ -124,7 +124,7 @@ const Header = ({ showSearch, params, setParams }) => {
               </div>
             </div>
           ) : (
-            <div className="flex w-10/12 md:w-11/12 lg:w-1/3">
+            <div className="flex w-10/12 items-center justify-center md:w-11/12 lg:w-1/3">
               <div
                 className={`${
                   expandSearchBox || searchQuery
