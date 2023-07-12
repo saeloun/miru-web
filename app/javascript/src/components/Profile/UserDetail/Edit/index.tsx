@@ -142,6 +142,14 @@ const UserDetailsEdit = () => {
     getDetails();
   }, []);
 
+  const cancelPasswordChange = () => {
+    setChangePassword(false);
+    setUserState("profileSettings", {
+      ...profileSettings,
+      ...{ confirmPassword: "", password: "", currentPassword: "" },
+    });
+  };
+
   const handleOnChangeCountry = selectCountry => {
     setCurrentCountryDetails(selectCountry);
     setUserState("profileSettings", {
@@ -260,7 +268,9 @@ const UserDetailsEdit = () => {
               .utc(profileSettings.date_of_birth, profileSettings.date_format)
               .toISOString()
           : null,
-        phone: profileSettings.phone_number,
+        phone: profileSettings.phone_number
+          ? profileSettings.phone_number
+          : null,
         personal_email_id: profileSettings.email_id,
         social_accounts: {
           linkedin_url: profileSettings.linkedin,
@@ -379,6 +389,7 @@ const UserDetailsEdit = () => {
             <StaticPage
               addrType={addrType}
               addressOptions={addressOptions}
+              cancelPasswordChange={cancelPasswordChange}
               changePassword={changePassword}
               confirmPassword={confirmPassword}
               countries={countries}
@@ -401,6 +412,7 @@ const UserDetailsEdit = () => {
               personalDetails={profileSettings}
               promiseOptions={promiseOptions}
               setChangePassword={setChangePassword}
+              setErrDetails={setErrDetails}
               setShowConfirmPassword={setShowConfirmPassword}
               setShowCurrentPassword={setShowCurrentPassword}
               setShowDatePicker={setShowDatePicker}
@@ -427,12 +439,15 @@ const UserDetailsEdit = () => {
             <MobileEditPage
               addrType={addrType}
               addressOptions={addressOptions}
+              cancelPasswordChange={cancelPasswordChange}
               changePassword={changePassword}
               countries={countries}
               currentCountryDetails={currentCountryDetails}
+              currentPassword={currentPassword}
               dateFormat={profileSettings.date_format}
               errDetails={errDetails}
               handleCancelDetails={handleCancelDetails}
+              handleCurrentPasswordChange={handleCurrentPasswordChange}
               handleDatePicker={handleDatePicker}
               handleOnChangeAddrType={handleOnChangeAddrType}
               handleOnChangeCity={handleOnChangeCity}
@@ -443,6 +458,7 @@ const UserDetailsEdit = () => {
               personalDetails={profileSettings}
               promiseOptions={promiseOptions}
               setChangePassword={setChangePassword}
+              setErrDetails={setErrDetails}
               setShowConfirmPassword={setShowConfirmPassword}
               setShowCurrentPassword={setShowCurrentPassword}
               setShowDatePicker={setShowDatePicker}

@@ -102,6 +102,7 @@ namespace :internal_api, defaults: { format: "json" } do
     # Non-Resourceful Routes
     get "payments/settings", to: "payment_settings#index"
     post "payments/settings/stripe/connect", to: "payment_settings#connect_stripe"
+    delete "payments/settings/stripe/disconnect", to: "payment_settings#destroy"
 
     resources :payments, only: [:new, :create, :index]
 

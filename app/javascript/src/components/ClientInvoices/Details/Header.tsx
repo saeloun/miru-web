@@ -5,7 +5,12 @@ import { Badge, Tooltip } from "StyledComponents";
 
 import getStatusCssClass from "utils/getBadgeStatus";
 
-const Header = ({ invoice, stripeUrl }) => (
+const Header = ({
+  invoice,
+  stripeUrl,
+  stripe_connected_account,
+  setShowConnectPaymentDialog,
+}) => (
   <div className="mt-6 mb-3 sm:flex sm:items-center sm:justify-between">
     <div className="flex flex-row">
       <div className="mr-2 flex self-center">
@@ -49,7 +54,13 @@ const Header = ({ invoice, stripeUrl }) => (
                   : "bg-miru-han-purple-1000"
               }`}
             onClick={() => {
-              invoice.status != "paid" && (window.location.href = stripeUrl);
+              if (invoice.status != "paid") {
+                if (stripe_connected_account) {
+                  window.location.href = stripeUrl;
+                } else {
+                  setShowConnectPaymentDialog(true);
+                }
+              }
             }}
           >
             <div className="flex flex-row items-center justify-between">

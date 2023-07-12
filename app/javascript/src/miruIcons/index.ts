@@ -46,6 +46,7 @@ import {
   Copy,
   Key,
   User,
+  Clock,
   BellRinging,
 } from "phosphor-react";
 
@@ -77,9 +78,11 @@ const close_button = require("../../../assets/images/close_button.svg");
 const company = require("../../../assets/images/company.svg");
 const Connect = require("../../../assets/images/Connect.svg");
 const connected_check = require("../../../assets/images/connected_check.svg");
+const ConnectMobile = require("../../../assets/images/ConnectMobile.svg");
 const ConnectPaypal = require("../../../assets/images/ConnectPaypal.svg");
 const deleteSVG = require("../../../assets/images/delete.svg");
 const delete_image_button = require("../../../assets/images/delete_image_button.svg");
+const disconnectAccount = require("../../../assets/images/disconnect-account.svg");
 const down = require("../../../assets/images/down-arrow-svgrepo-com.svg");
 const downArrow = require("../../../assets/images/down_arrow.svg");
 const edit = require("../../../assets/images/edit.svg");
@@ -182,6 +185,7 @@ export const MoneyIcon = Money;
 export const CopyIcon = Copy;
 export const KeyIcon = Key;
 export const UserIcon = User;
+export const ClockIcon = Clock;
 export const ReminderIcon = BellRinging;
 
 // custom svg icons
@@ -241,6 +245,8 @@ export const WaiveSVG = Waive;
 export const MiruWhiteLogoWithTextSVG = MiruWhiteLogoWithText;
 export const ConnectPaypalSVG = ConnectPaypal;
 export const ConnectSVG = Connect;
+export const ConnectMobileSVG = ConnectMobile;
+export const disconnectAccountSVG = disconnectAccount;
 export const MiruLogoSVG = miruLogo;
 export const MiruLogoWatermarkSVG = miruLogoWatermark;
 export const DeleteIconSVG = deleteSVG;

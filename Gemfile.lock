@@ -86,10 +86,6 @@ GEM
       tzinfo (~> 2.0)
     addressable (2.8.1)
       public_suffix (>= 2.0.2, < 6.0)
-    ahoy_matey (4.2.1)
-      activesupport (>= 5.2)
-      device_detector
-      safely_block (>= 0.2.1)
     administrate (0.18.0)
       actionpack (>= 5.0)
       actionview (>= 5.0)
@@ -98,6 +94,10 @@ GEM
       kaminari (>= 1.0)
       sassc-rails (~> 2.1)
       selectize-rails (~> 0.6)
+    ahoy_matey (4.2.1)
+      activesupport (>= 5.2)
+      device_detector
+      safely_block (>= 0.2.1)
     annotate (3.2.0)
       activerecord (>= 3.2, < 8.0)
       rake (>= 10.4, < 14.0)
@@ -587,8 +587,8 @@ PLATFORMS
 DEPENDENCIES
   active_interaction
   activerecord-import
-  ahoy_matey
   administrate
+  ahoy_matey
   annotate
   aws-sdk-s3
   bootsnap (>= 1.4.4)
