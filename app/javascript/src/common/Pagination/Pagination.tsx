@@ -42,14 +42,12 @@ const Pagination = ({
     return setParams({ ...params, page });
   };
 
-  const disableNextButton = () => {
-    if (!isNaN(Number(pagy?.last)) && pagy?.last === currentPage) {
-      return true;
-    }
-
-    if (typeof pagy?.last === "boolean") {
+  const isLastPage = () => {
+    if (typeof pagy?.last == "boolean") {
       return pagy?.last;
     }
+
+    return pagy?.last == currentPage;
   };
 
   return (
@@ -96,23 +94,22 @@ const Pagination = ({
                 </Fragment>
               ))}
             </div>
-            {!pagy?.last ||
-              (!isNaN(Number(pagy?.last)) && (
-                <button
-                  disabled={disableNextButton()}
-                  className={cn("m-1 mx-4 font-bold", {
-                    "text-miru-gray-400": disableNextButton(),
-                    "text-miru-han-purple-1000": !pagy?.last,
-                  })}
-                  onClick={() => {
-                    isReport
-                      ? handleClick(pagy?.next)
-                      : setParams({ ...params, page: pagy?.next });
-                  }}
-                >
-                  <CaretCircleRightIcon size={16} weight="bold" />
-                </button>
-              ))}
+            {!isLastPage() && (
+              <button
+                disabled={isLastPage()}
+                className={cn("m-1 mx-4 font-bold", {
+                  "text-miru-gray-400": isLastPage(),
+                  "text-miru-han-purple-1000": !isLastPage(),
+                })}
+                onClick={() => {
+                  isReport
+                    ? handleClick(pagy?.next)
+                    : setParams({ ...params, page: pagy?.next });
+                }}
+              >
+                <CaretCircleRightIcon size={16} weight="bold" />
+              </button>
+            )}
           </div>
         )}
       </div>
