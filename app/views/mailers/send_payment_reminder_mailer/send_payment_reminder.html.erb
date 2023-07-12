@@ -44,79 +44,77 @@
         <div
           style="margin: 40px; text-align: center; font-weight:bold; font-size: 24px; line-height:28px;"
         >
-          Payment reminder
+          Payment Reminder
         </div>
-        <div style="text-align: center">
-          <span style="font-size:18px"><%= sanitize @message %></span>
+        <div style="font-size:16px; font-weight:normal; text-align: center; margin-bottom:10px">
+          <span><%= sanitize @message %></span>
         </div>
-        <table style="min-width: 100%; overflow-x: scroll; margin-top: 4px;">
-          <% @invoices.map do |invoice| %>
-            <thead style="border-width: 10px; border-spacing: 2px; border-color: red; border-style: solid;">
+        <% @invoices.map do |invoice| %>
+          <table style="min-width: 100%; overflow-x: scroll; margin-top: 4px; margin-bottom: 40px; position: relative;">
+            <thead>
               <tr>
                 <th
-                  style="width: 16.666667%; white-space: nowrap; padding: 20px 8px; font-weight: 500; text-align: left; font-size: .75rem; font-weight: 500; letter-spacing: 0.125em; color: black; border-width: 10px; border-spacing: 2px; border-color: red; border-style: solid;"
+                  style="width: 16.666667%; white-space: nowrap;  font-weight: 500; text-align: left; font-size: .75rem; font-weight: 500; letter-spacing: 0.125em; color: black;"
                   scope="col"
                 >
                   INVOICE NO.
                 </th>
                 <th
-                  style="width: 16.666667%; white-space: nowrap; padding: 20px 8px; font-weight: 500; text-align: left; font-size: .75rem; font-weight: 500; letter-spacing: 0.125em; color: black;"
+                  style="width: 16.666667%; white-space: nowrap;  font-weight: 500; text-align: left; font-size: .75rem; font-weight: 500; letter-spacing: 0.125em; color: black;"
                   scope="col"
                 >
                   ISSUE DATE
                 </th>
                 <th
-                  style="width: 16.666667%; white-space: nowrap; padding: 20px 8px; text-align: left; font-weight: 500; font-size: .75rem; font-weight: 500; letter-spacing: 0.125em; color: black; lg:pr-2"
+                  style="width: 16.666667%; white-space: nowrap;  text-align: left; font-weight: 500; font-size: .75rem; font-weight: 500; letter-spacing: 0.125em; color: black; lg:pr-2"
                   scope="col"
                 >
                   DUE DATE
                 </th>
                 <th
-                  style="hidden width: 16.666667%; padding: 20px 8px; font-weight: 400; text-align: left; font-size: .75rem; font-weight: 400; letter-spacing: 0.125em; color: black;"
+                  style="hidden width: 16.666667%;  font-weight: 400; text-align: left; font-size: .75rem; font-weight: 400; letter-spacing: 0.125em; color: black;"
                   scope="col"
                 >
                   AMOUNT
                 </th>
                 <th
-                  style="hidden width: 16.666667%; padding: 20px 8px; font-weight: 400; text-align: left; font-size: .75rem; font-weight: 400; letter-spacing: 0.125em; color: black;"
+                  style="hidden width: 16.666667%;  font-weight: 400; text-align: left; font-size: .75rem; font-weight: 400; letter-spacing: 0.125em; color: black;"
                   scope="col"
                 >
                   STATUS
                 </th>
-                <th
-                  style="display: table-cell; width: 16.666667%; text-align: left; font-weight: 500; font-size: .75rem; font-weight: 500; leading-4 letter-spacing: 0.125em; color: black;"
-                  scope="col"
-                >
-                  <a
-                    href=<%= "#{ENV['APP_BASE_URL']}/invoices/#{invoice.external_view_key}/view" %>
-                    target="_blank"
-                    style="position: relative; top: 1.25rem; cursor: pointer; border-width: 1px; border-color: transparent; background-color: #5b34ea; padding: 0.5rem; font-size: 1rem; color: #ffffff; text-decoration: none;"
-                  >
-                    View Invoice
-                  </a>
-                </th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td style="width: 16.666667%; padding: 0 0; font-size: 1rem;"><%= invoice.invoice_number %></td>
-                <td style="width: 16.666667%; padding: 0 0; font-size: 1rem;"><%= CompanyDateFormattingService.new(invoice.issue_date, company: @company).process %></td>
-                <td style="width: 16.666667%; padding: 0 0; font-size: 1rem;"><%= invoice.due_date %></td>
-                <td style="width: 16.666667%; text-align: left; text-base tracking-normal color: #1d1a31; padding: 8px 12px 28px 8px; font-size: 1rem;">
+                <td style="width: 16.666667%; padding: 0 0 40px 0; font-size: 1rem; border-width:0px; border-bottom-width: 1px; border-color: #EBEFF2; border-style: solid;"><%= invoice.invoice_number %></td>
+                <td style="width: 16.666667%; padding: 0 0 40px 0; font-size: 1rem; border-width:0px; border-bottom-width: 1px; border-color: #EBEFF2; border-style: solid;"><%= CompanyDateFormattingService.new(invoice.issue_date, company: @company).process %></td>
+                <td style="width: 16.666667%; padding: 0 0 40px 0; font-size: 1rem; border-width:0px; border-bottom-width: 1px; border-color: #EBEFF2; border-style: solid;"><%= invoice.due_date %></td>
+                <td style="width: 16.666667%; text-align: left; text-base tracking-normal color: #1d1a31; padding: 0 0 40px 0; font-size: 1rem; border-width:0px; border-bottom-width: 1px; border-color: #EBEFF2; border-style: solid;">
                   <%= FormatAmountService.new(@company.base_currency, invoice.amount).process %>
                 </td>
-                <td style="relative width: 16.666667%; px-2 text-align: left; font-weight: 500; padding-bottom: 40px;">
+                <td style="relative width: 16.666667%; px-2 text-align: left; font-weight: 500; padding: 0 0 40px 0; border-width:0px; border-bottom-width: 1px; border-color: #EBEFF2; border-style: solid;">
                   <span
                     style="display: inline-flex; align-items: center; border-radius: 9999px; padding: 2px 10px; font-size: .75rem; font-weight: 600; line-height: 16px; letter-spacing: 0.125em; <%= invoice.status == 'overdue' ? 'background-color: #efa9a9; color: #561013;' : invoice.status == 'sent' ? 'background-color: #a9efc5; color: #10562c;' : 'background-color: #a9deef; color: #104556;' %> text-transform: uppercase;"
                     >
                     <%= invoice.status %>
                   </span>
                 </td>
-                <td></td>
+                <td style="width: 16.666667%; padding: 0 0 40px 0; font-size: 1rem; border-width:0px; border-bottom-width: 1px; border-color: #EBEFF2; border-style: solid;">
+                  <a
+                    href=<%= "#{ENV['APP_BASE_URL']}/invoices/#{invoice.external_view_key}/view" %>
+                    target="_blank"
+                    style="position: absolute; top: 0; right: 0; cursor: pointer; border-width: 1px; border-color: transparent; background-color: #5b34ea; padding: 0.5rem; font-size: 1rem; color: #ffffff; text-decoration: none; border-radius: 2px;"
+                  >
+                    View Invoice
+                  </a>
+
+                </td>
               </tr>
             </tbody>
-          <% end %>
-        </table>
+          </table>
+        <% end %>
       </div>
       <div id="footer">
         <div

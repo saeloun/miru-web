@@ -39,13 +39,13 @@ const InvoicesList = ({
           wrapperClassName="h-8 w-8 m-auto rounded-3xl p-2 hover:bg-miru-gray-1000"
         />
       </td>
-      <td className="w-1/6 px-0 py-0 lg:text-base">{invoiceNumber}</td>
-      <td className="w-1/6 px-0 py-0 lg:text-base">{issueDate}</td>
-      <td className="w-1/6 px-0 py-0 lg:text-base">{dueDate}</td>
-      <td className="w-1/6 px-0 text-left text-base tracking-normal text-miru-dark-purple-1000 lg:w-1/6 lg:px-3 lg:pt-2 lg:pb-7 lg:text-base">
+      <td className="w-1/4 px-0 py-0 lg:px-2 lg:text-base">{invoiceNumber}</td>
+      <td className="w-1/4 px-0 py-0 lg:text-base">{issueDate}</td>
+      <td className="px-0 py-0 lg:text-base">{dueDate}</td>
+      <td className="w-1/5 px-0 text-right text-base tracking-normal text-miru-dark-purple-1000 lg:w-1/6 lg:px-3 lg:pt-2 lg:pb-7 lg:text-base">
         {currencyFormat(baseCurrency, amount)}
       </td>
-      <td className="w-1/6 px-2 text-left font-medium lg:pb-10">
+      <td className="w-1/6 px-2 text-right font-medium lg:pb-10">
         <Badge
           className={`${getStatusCssClass(status)} mt-4 uppercase`}
           text={status}
