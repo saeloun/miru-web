@@ -88,6 +88,15 @@ const SideNav = ({ isAdmin, firstName, company, lastName }) => {
               PAYMENT SETTINGS
             </NavLink>
           </li>
+          <li className="border-b-2 border-miru-gray-400 tracking-widest">
+            <NavLink
+              end
+              className={({ isActive }) => getActiveClassName(isActive)}
+              to="/profile/edit/calendar"
+            >
+              GOOGLE CALENDAR
+            </NavLink>
+          </li>
         </div>
       )}
     </ul>
