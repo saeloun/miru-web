@@ -6,13 +6,11 @@ import { SettingIcon, SignOutIcon, Switcher } from "miruIcons";
 import { NavLink } from "react-router-dom";
 import { Avatar, Tooltip } from "StyledComponents";
 
-import { logoutApi } from "apis/logoutApi";
 import WorkspaceApi from "apis/workspaces";
-import { LocalStorageKeys } from "constants/index";
 import { useAuthDispatch } from "context/auth";
 import { useUserContext } from "context/UserContext";
 
-import { activeClassName } from "./utils";
+import { activeClassName, handleLogout } from "./utils";
 
 const UserActions = setVisiblity => {
   const [currentWorkspace, setCurrentWorkspace] = useState<any>({
@@ -64,16 +62,6 @@ const UserActions = setVisiblity => {
     setTimeout(() => window.location.reload(), 600);
   };
 
-  const handleLogout = async () => {
-    await logoutApi();
-    Object.values(LocalStorageKeys).forEach(key => {
-      localStorage.removeItem(key);
-    });
-    //@ts-expect-error for authDispatch object
-    authDispatch({ type: "LOGOUT" });
-    window.location.href = "/";
-  };
-
   const WorkspaceList = () => (
     <ul
       className="absolute bottom-20 w-full rounded-lg bg-white py-4 lg:shadow-c1"
@@ -89,13 +77,13 @@ const UserActions = setVisiblity => {
           onClick={() => handleSwitch(workspace.id)}
         >
           <Avatar
-            classNameImg="lg:mr-5"
+            classNameImg="mr-5"
             classNameInitials="lg:text-xs font-bold capitalize text-white"
             classNameInitialsWrapper="lg:mr-5 bg-miru-gray-1000 "
             initialsLetterCount={1}
-            name={currentWorkspace.name}
+            name={workspace.name}
             size="w-6 h-6"
-            url={currentWorkspace.logo}
+            url={workspace.logo}
           />
           {workspace.name}
         </li>
@@ -126,7 +114,7 @@ const UserActions = setVisiblity => {
       <li
         className="flex cursor-pointer border-b border-miru-gray-100 px-6 py-3 last:border-b-0 hover:bg-miru-gray-100 lg:justify-start lg:border-b-0"
         id="logoutBtn"
-        onClick={handleLogout}
+        onClick={() => handleLogout(authDispatch)}
       >
         <SignOutIcon className="mr-4" size={26} />
         Logout
@@ -144,7 +132,7 @@ const UserActions = setVisiblity => {
             onMouseEnter={handleTooltip}
           >
             <Avatar
-              classNameImg="lg:mr-5"
+              classNameImg="mr-5"
               classNameInitials="lg:text-xs font-bold capitalize text-white"
               classNameInitialsWrapper="lg:mr-5 bg-miru-gray-1000 "
               initialsLetterCount={1}

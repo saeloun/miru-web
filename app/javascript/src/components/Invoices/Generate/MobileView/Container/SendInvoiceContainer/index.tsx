@@ -136,7 +136,7 @@ const SendInvoiceContainer = ({
   }, [status]);
 
   return (
-    <div className="h-full p-4">
+    <div className="h-full w-full p-4">
       <Formik
         initialValues={{
           recipients: [""],

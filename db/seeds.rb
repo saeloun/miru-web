@@ -63,7 +63,7 @@ microsoft_client = company.clients.create!(
 
 puts "Clients Created"
 
-ClientMember.create!(client: microsoft_client, user: oliver)
+company.client_members.create!(client: microsoft_client, user: oliver)
 
 puts "Client member created"
 
