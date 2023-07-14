@@ -230,6 +230,7 @@ const Invoices = () => {
     window.localStorage.removeItem(LocalStorageKeys.INVOICE_FILTERS);
     setIsFilterVisible(false);
     setFilterParams(filterIntialValues);
+    setParams({ ...params, page: 1 });
   };
 
   const InvoicesLayout = () => (
@@ -282,6 +283,7 @@ const Invoices = () => {
               handleReset={handleReset}
               isDesktop={isDesktop}
               selectedInput={selectedInput}
+              setDefaultParams={() => setParams({ ...params, page: 1 })}
               setFilterParams={setFilterParams}
               setIsFilterVisible={setIsFilterVisible}
               setSelectedInput={setSelectedInput}
