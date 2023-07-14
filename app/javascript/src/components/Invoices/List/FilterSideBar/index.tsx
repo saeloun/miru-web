@@ -25,6 +25,7 @@ const FilterSideBar = ({
   setSelectedInput,
   isDesktop,
   handleReset,
+  setDefaultParams,
 }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [clientList, setClientList] = useState<null | any[]>([]);
@@ -227,6 +228,7 @@ const FilterSideBar = ({
       JSON.stringify(filters)
     );
     setIsFilterVisible(false);
+    setDefaultParams();
   };
 
   useEffect(() => {
