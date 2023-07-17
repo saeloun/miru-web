@@ -9,7 +9,7 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
     authorize Invoice
     data = Invoices::IndexService.new(params, current_company).process
     render :index, locals: {
-      invoices: data[:invoices_query],
+      invoices: data[:invoices],
       pagination_details: data[:pagination_details],
       recently_updated_invoices: data[:recently_updated_invoices],
       summary: data[:summary]
