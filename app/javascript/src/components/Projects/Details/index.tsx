@@ -2,9 +2,14 @@ import React, { useEffect, useState } from "react";
 
 import { currencySymbol } from "helpers";
 import Logger from "js-logger";
-import { ArrowLeftIcon, DotsThreeVerticalIcon } from "miruIcons";
+import {
+  ArrowLeftIcon,
+  DotsThreeVerticalIcon,
+  InvoicesIcon,
+  TeamsIcon,
+} from "miruIcons";
 import { useParams, useNavigate } from "react-router-dom";
-import { Badge } from "StyledComponents";
+import { Badge, Tooltip } from "StyledComponents";
 
 import projectAPI from "apis/projects";
 import Table from "common/Table";
@@ -34,6 +39,8 @@ const ProjectDetails = () => {
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
   const [showProjectModal, setShowProjectModal] = useState<boolean>(false);
   const [timeframe, setTimeframe] = useState<any>("week");
+  const [showToolTip, setShowToolTip] = useState<boolean>(true);
+  const [isButtonHovered, setIsButtonHovered] = useState(false);
   const [overdueOutstandingAmount, setOverdueOutstandingAmount] =
     useState<any>(null);
 
@@ -54,7 +61,16 @@ const ProjectDetails = () => {
     }
   };
 
+  const handleButtonMouseEnter = () => {
+    setIsButtonHovered(true);
+  };
+
+  const handleButtonMouseLeave = () => {
+    setIsButtonHovered(false);
+  };
+
   const handleGenerateInvoice = () => {
+    setShowToolTip(false);
     navigate(`/invoices/generate/?clientId=${project?.client?.id}`);
   };
 
@@ -73,12 +89,14 @@ const ProjectDetails = () => {
 
   const handleMenuVisibility = (e?: any, isMenuVisible?: boolean) => {
     e?.stopPropagation();
+    setShowToolTip(false);
     const tempIsMenuVisible = isMenuVisible ?? !isHeaderMenuVisible;
     setIsHeaderMenuVisible(tempIsMenuVisible);
   };
 
   const handleAddRemoveMembers = e => {
     e?.stopPropagation();
+    setShowToolTip(false);
     setShowAddMemberDialog(true);
     setIsHeaderMenuVisible(false);
   };
@@ -138,8 +156,6 @@ const ProjectDetails = () => {
     return <div />;
   };
 
-  const menuBackground = isHeaderMenuVisible ? "bg-miru-gray-100" : "";
-
   const backToProjects = () => {
     navigate("/projects");
   };
@@ -170,25 +186,58 @@ const ProjectDetails = () => {
                 />
               )}
             </div>
-            <div className="relative h-8">
-              <button
-                className={`menuButton__button ${menuBackground}`}
-                id="kebabMenu"
-                onClick={handleMenuVisibility}
+            <div className="flex h-8 items-center">
+              <Tooltip
+                placeBottom
+                className="tooltip tootlip-project px-3 py-2"
+                content="Generate Invoice"
+                show={showToolTip || isButtonHovered}
               >
-                <DotsThreeVerticalIcon color="#000000" size={20} />
-              </button>
-              {isHeaderMenuVisible && (
-                <ul className="menuButton__wrapper">
-                  <HeaderMenuList
-                    handleAddRemoveMembers={handleAddRemoveMembers}
-                    handleEditProject={handleEditProject}
-                    handleGenerateInvoice={handleGenerateInvoice}
-                    setIsHeaderMenuVisible={setIsHeaderMenuVisible}
-                    setShowDeleteDialog={setShowDeleteDialog}
-                  />
-                </ul>
-              )}
+                <button
+                  className="menuButton__button mr-3 hover:bg-miru-gray-100"
+                  onClick={handleGenerateInvoice}
+                  onMouseEnter={handleButtonMouseEnter}
+                  onMouseLeave={handleButtonMouseLeave}
+                >
+                  <InvoicesIcon color="#5B34EA" size={20} weight="bold" />
+                </button>
+              </Tooltip>
+              <Tooltip
+                placeBottom
+                className="tooltip tootlip-project px-3 py-2"
+                content="Add/Remove Team Members"
+                show={showToolTip || isButtonHovered}
+              >
+                <button
+                  className="menuButton__button mr-3 hover:bg-miru-gray-100"
+                  id="addRemoveTeamMembers"
+                  onClick={handleAddRemoveMembers}
+                  onMouseEnter={handleButtonMouseEnter}
+                  onMouseLeave={handleButtonMouseLeave}
+                >
+                  <TeamsIcon color="#5b34ea" size={20} weight="bold" />
+                </button>
+              </Tooltip>
+              <div className="relative">
+                <button
+                  className="menuButton__button hover:bg-miru-gray-100"
+                  id="kebabMenu"
+                  onClick={handleMenuVisibility}
+                >
+                  <DotsThreeVerticalIcon color="#000000" size={20} />
+                </button>
+                {isHeaderMenuVisible && (
+                  <ul className="menuButton__wrapper">
+                    <HeaderMenuList
+                      handleAddRemoveMembers={handleAddRemoveMembers}
+                      handleEditProject={handleEditProject}
+                      handleGenerateInvoice={handleGenerateInvoice}
+                      setIsHeaderMenuVisible={setIsHeaderMenuVisible}
+                      setShowDeleteDialog={setShowDeleteDialog}
+                    />
+                  </ul>
+                )}
+              </div>
             </div>
           </div>
           <p className="ml-12 mt-1 text-xs text-miru-dark-purple-400">
