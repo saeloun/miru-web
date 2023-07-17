@@ -196,7 +196,7 @@ const ProjectDetails = () => {
                 show={showToolTip || isButtonHovered}
               >
                 <button
-                  className={`menuButton__button ${menuBackground}`}
+                  className={`menuButton__button ${menuBackground} mr-3`}
                   onClick={handleGenerateInvoice}
                   onMouseEnter={handleButtonMouseEnter}
                   onMouseLeave={handleButtonMouseLeave}
@@ -211,7 +211,7 @@ const ProjectDetails = () => {
                 show={showToolTip || isButtonHovered}
               >
                 <button
-                  className={`menuButton__button ${menuBackground}`}
+                  className={`menuButton__button ${menuBackground} mr-3`}
                   id="addRemoveTeamMembers"
                   onClick={handleAddRemoveMembers}
                   onMouseEnter={handleButtonMouseEnter}
