@@ -8,6 +8,8 @@ import {
   ArrowLeftIcon,
   EditIcon,
   WaiveSVG,
+  ReminderIcon,
+  ClockIcon,
 } from "miruIcons";
 import { useNavigate } from "react-router-dom";
 import { Button, MobileMoreOptions, Badge } from "StyledComponents";
@@ -21,6 +23,8 @@ import DeleteInvoice from "components/Invoices/popups/DeleteInvoice";
 import WavieOffInvoice from "components/Invoices/popups/WavieOffInvoice";
 import getStatusCssClass from "utils/getBadgeStatus";
 
+import HistoryMobileView from "../ViewHistory/HistoryMobileView";
+
 const MobileView = ({
   invoice,
   handleSendInvoice,
@@ -28,6 +32,7 @@ const MobileView = ({
   showConnectPaymentDialog,
   setShowSendInvoiceModal,
   setShowConnectPaymentDialog,
+  setIsSendReminder,
 }) => {
   const {
     id,
@@ -48,6 +53,7 @@ const MobileView = ({
   const [showMoreOptions, setShowMoreOptions] = useState<boolean>(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
   const [showWavieDialog, setShowWavieDialog] = useState<boolean>(false);
+  const [showHistory, setShowHistory] = useState<boolean>(false);
   const navigate = useNavigate();
   const subTotal = invoiceLineItems.reduce(
     (prev, curr) => prev + (curr.rate * curr.quantity) / 60,
@@ -56,6 +62,12 @@ const MobileView = ({
   const total = Number(subTotal) + Number(tax) - Number(discount);
   const invoiceWaived = invoice?.status === "waived";
   const strikeAmount = invoice?.status === "waived" && "line-through";
+
+  if (showHistory) {
+    return (
+      <HistoryMobileView invoice={invoice} setShowHistory={setShowHistory} />
+    );
+  }
 
   return (
     <div className="h-full">
@@ -186,6 +198,33 @@ const MobileView = ({
                     width="16px"
                   />
                   Waive Off
+                </li>
+              )}
+              <li
+                className="flex cursor-pointer items-center px-5 py-2 text-sm text-miru-han-purple-1000 hover:bg-miru-gray-100 lg:py-1 xl:py-2"
+                onClick={() => {
+                  setShowMoreOptions(false);
+                  setShowHistory(true);
+                }}
+              >
+                <ClockIcon
+                  className="mr-4 text-miru-han-purple-1000"
+                  size={16}
+                  weight="bold"
+                />
+                View History
+              </li>
+              {invoice?.status === "overdue" && (
+                <li
+                  className="flex cursor-pointer items-center py-2 px-5 text-sm text-miru-han-purple-1000 hover:bg-miru-gray-100 lg:py-1 xl:py-2"
+                  onClick={() => {
+                    setShowMoreOptions(false);
+                    setIsSendReminder(true);
+                    handleSendInvoice();
+                  }}
+                >
+                  <ReminderIcon className="mr-4" size={16} weight="bold" />
+                  Send Reminder
                 </li>
               )}
               <li

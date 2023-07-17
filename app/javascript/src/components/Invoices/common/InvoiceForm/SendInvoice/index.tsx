@@ -51,11 +51,13 @@ const SendInvoice: React.FC<any> = ({
   setIsSending,
   isSending,
   handleSaveSendInvoice,
+  isSendReminder = false,
+  setIsSendReminder,
 }) => {
   const [status, setStatus] = useState<InvoiceStatus>(InvoiceStatus.IDLE);
   const [invoiceEmail, setInvoiceEmail] = useState<InvoiceEmail>({
-    subject: emailSubject(invoice),
-    message: emailBody(invoice),
+    subject: emailSubject(invoice, isSendReminder),
+    message: emailBody(invoice, isSendReminder),
     recipients: [invoice.client.email],
   });
   const [newRecipient, setNewRecipient] = useState<string>("");
@@ -156,7 +158,11 @@ const SendInvoice: React.FC<any> = ({
               <button
                 className="text-miru-gray-1000"
                 type="button"
-                onClick={() => setIsSending(false)}
+                onClick={() => {
+                  isSendReminder
+                    ? setIsSendReminder(false)
+                    : setIsSending(false);
+                }}
               >
                 <XIcon size={16} weight="bold" />
               </button>
@@ -255,7 +261,7 @@ const SendInvoice: React.FC<any> = ({
                   }
                   onClick={handleSubmit}
                 >
-                  {buttonText(status)}
+                  {isSendReminder ? "Send Reminder" : buttonText(status)}
                 </button>
               </div>
             </form>

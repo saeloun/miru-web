@@ -21,8 +21,8 @@ class InternalApi::V1::PaymentsController < ApplicationController
     payment = InvoicePayment::Settle.process(payment_params.merge(name_attr), @invoice)
     if @invoice.paid?
       @invoice.send_to_client_email(
-        invoice: @invoice,
-        subject: "Payment Receipt of Invoice #{@invoice.invoice_number} from #{@invoice.company.name}"
+        invoice_id: @invoice.id,
+        subject: "Payment Confirmation of Invoice #{@invoice.invoice_number} for #{@invoice.company.name}"
       )
     end
 

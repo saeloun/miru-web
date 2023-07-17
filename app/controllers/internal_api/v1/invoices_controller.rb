@@ -9,7 +9,7 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
     authorize Invoice
     data = Invoices::IndexService.new(params, current_company).process
     render :index, locals: {
-      invoices: data[:invoices_query],
+      invoices: data[:invoices],
       pagination_details: data[:pagination_details],
       recently_updated_invoices: data[:recently_updated_invoices],
       summary: data[:summary]
@@ -59,6 +59,10 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
   def send_invoice
     authorize invoice
 
+    unless invoice.recently_sent_mail?
+      return render json: { message: "Invoice was sent just a minute ago." }, status: :accepted
+    end
+
     if ENV["SEND_INVOICE_EMAILS"] || current_user.email == "supriya@saeloun.com"
       recipients = invoice_email_params[:recipients]
 
@@ -76,6 +80,21 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
       end
     else
       render json: { errors: "This feature is currently disabled" }, status: :unprocessable_entity
+    end
+  end
+
+  def send_reminder
+    authorize invoice
+
+    if invoice.overdue?
+      SendReminderMailer.with(
+        invoice:,
+        subject: invoice_email_params[:subject],
+        recipients: invoice_email_params[:recipients],
+        message: invoice_email_params[:message]
+      ).send_reminder.deliver_later
+
+      render json: { message: "A reminder has been sent to #{invoice.client.email}" }, status: :accepted
     end
   end
 

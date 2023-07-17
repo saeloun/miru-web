@@ -38,6 +38,7 @@ class Company < ApplicationRecord
   has_many :expenses, dependent: :destroy
   has_many :expense_categories, dependent: :destroy
   has_many :vendors, dependent: :destroy
+  has_many :client_members, dependent: :destroy
   resourcify
 
   accepts_nested_attributes_for :addresses, reject_if: :address_attributes_blank?, allow_destroy: true

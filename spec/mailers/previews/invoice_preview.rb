@@ -10,6 +10,6 @@ class InvoicePreview < ActionMailer::Preview
     subject = "Invoice (#{invoice.invoice_number}) due on #{invoice.due_date}"
     message = "#{invoice.client.company.name} has sent you an invoice (#{invoice.invoice_number}) for $#{invoice.amount.to_i} that's due on #{invoice.due_date}."
 
-    InvoiceMailer.with(invoice:, recipients:, subject:, message:).invoice
+    InvoiceMailer.with(invoice_id:, recipients:, subject:, message:).invoice
   end
 end

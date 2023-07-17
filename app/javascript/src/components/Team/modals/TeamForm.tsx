@@ -102,45 +102,64 @@ const TeamForm = ({
                     Role
                   </span>
                   <div className="flex">
-                    <CustomRadioButton
-                      classNameLabel="font-medium text-sm leading-5 text-miru-dark-purple-1000"
-                      classNameWrapper="py-3"
-                      defaultCheck={values.role == "admin"}
-                      groupName="roles"
-                      id="Admin"
-                      key="Admin"
-                      label="Admin"
-                      value={values.role == "admin" ? "admin" : ""}
-                      handleOnChange={() => {
-                        setFieldValue("role", "admin", true);
-                      }}
-                    />
-                    <CustomRadioButton
-                      classNameLabel="font-medium text-sm leading-5 text-miru-dark-purple-1000"
-                      classNameWrapper="pl-5 py-3"
-                      defaultCheck={values.role == "employee"}
-                      groupName="roles"
-                      id="Employee"
-                      key="Employee"
-                      label="Employee"
-                      value={values.role == "employee" ? "employee" : ""}
-                      handleOnChange={() => {
-                        setFieldValue("role", "employee", true);
-                      }}
-                    />
-                    <CustomRadioButton
-                      classNameLabel="font-medium text-sm leading-5 text-miru-dark-purple-1000"
-                      classNameWrapper="px-5 py-3"
-                      defaultCheck={values.role == "book_keeper"}
-                      groupName="roles"
-                      id="Book Keeper"
-                      key="Book Keeper"
-                      label="Bookkeeper"
-                      value={values.role == "book_keeper" ? "book_keeper" : ""}
-                      handleOnChange={() => {
-                        setFieldValue("role", "book_keeper", true);
-                      }}
-                    />
+                    <div>
+                      <CustomRadioButton
+                        classNameLabel="font-medium text-sm leading-5 text-miru-dark-purple-1000"
+                        classNameWrapper="py-3"
+                        defaultCheck={values.role == "admin"}
+                        groupName="roles"
+                        id="Admin"
+                        key="Admin"
+                        label="Admin"
+                        value={values.role == "admin" ? "admin" : ""}
+                        handleOnChange={() => {
+                          setFieldValue("role", "admin", true);
+                        }}
+                      />
+                      <CustomRadioButton
+                        classNameLabel="font-medium text-sm leading-5 text-miru-dark-purple-1000"
+                        classNameWrapper="py-3"
+                        defaultCheck={values.role == "employee"}
+                        groupName="roles"
+                        id="Employee"
+                        key="Employee"
+                        label="Employee"
+                        value={values.role == "employee" ? "employee" : ""}
+                        handleOnChange={() => {
+                          setFieldValue("role", "employee", true);
+                        }}
+                      />
+                    </div>
+                    <div>
+                      <CustomRadioButton
+                        classNameLabel="font-medium text-sm leading-5 text-miru-dark-purple-1000"
+                        classNameWrapper="ml-10 px-5 py-3"
+                        defaultCheck={values.role == "book_keeper"}
+                        groupName="roles"
+                        id="Book Keeper"
+                        key="Book Keeper"
+                        label="Bookkeeper"
+                        handleOnChange={() => {
+                          setFieldValue("role", "book_keeper", true);
+                        }}
+                        value={
+                          values.role == "book_keeper" ? "book_keeper" : ""
+                        }
+                      />
+                      <CustomRadioButton
+                        classNameLabel="font-medium text-sm leading-5 text-miru-dark-purple-1000"
+                        classNameWrapper="ml-10 px-5 py-3"
+                        defaultCheck={values.role == "client"}
+                        groupName="roles"
+                        id="Client"
+                        key="Client"
+                        label="Client"
+                        value={values.role == "client" ? "client" : ""}
+                        handleOnChange={() => {
+                          setFieldValue("role", "client", true);
+                        }}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>

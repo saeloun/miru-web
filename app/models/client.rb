@@ -156,7 +156,7 @@ class Client < ApplicationRecord
   end
 
   def formatted_address
-    current_address.formatted_address
+    current_address&.formatted_address
   end
 
   private

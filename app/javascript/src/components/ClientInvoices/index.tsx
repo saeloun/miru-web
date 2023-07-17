@@ -63,7 +63,7 @@ const ClientInvoices = () => {
   }
 
   const InvoicesLayout = () => (
-    <div className="p-4 lg:p-0" id="invoice-list-page">
+    <div className="h-full p-4 lg:p-0" id="invoice-list-page">
       <Header
         params={params}
         setParams={setParams}

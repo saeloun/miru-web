@@ -10,10 +10,15 @@ export const isEmailValid = (email: string): boolean => {
   return schema.isValidSync(email);
 };
 
-export const emailSubject = (invoice: any): string =>
-  `${invoice.company.name} sent you an invoice (${invoice.invoiceNumber})`;
+export const emailSubject = (invoice: any, isSendReminder = false): string => {
+  if (isSendReminder) {
+    return `Reminder to complete payments for unpaid invoice (${invoice.invoiceNumber})`;
+  }
 
-export const emailBody = (invoice: any): string => {
+  return `${invoice.company.name} sent you an invoice (${invoice.invoiceNumber})`;
+};
+
+export const emailBody = (invoice: any, isSendReminder = false): string => {
   const formattedAmount = currencyFormat(
     invoice.company.baseCurrency,
     invoice.amount
@@ -22,6 +27,10 @@ export const emailBody = (invoice: any): string => {
   const dueDate = dayjs(invoice.dueDate, invoice.company.dateFormat).format(
     invoice.company.dateFormat
   );
+
+  if (isSendReminder) {
+    return `${invoice.company.name} has sent you a reminder for invoice (${invoice.invoiceNumber}) that's due on ${dueDate}.`;
+  }
 
   return `${invoice.company.name} has sent you an invoice (${invoice.invoiceNumber}) for ${formattedAmount} that's due on ${dueDate}.`;
 };
