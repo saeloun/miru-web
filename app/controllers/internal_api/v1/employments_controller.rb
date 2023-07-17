@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class InternalApi::V1::EmploymentsController < InternalApi::V1::ApplicationController
-  before_action :set_user, only: [:show]
   before_action :set_employment, only: [:update, :show]
 
   def index
@@ -11,8 +10,7 @@ class InternalApi::V1::EmploymentsController < InternalApi::V1::ApplicationContr
 
   def show
     authorize @employment
-    employment_with_email = @employment.attributes.merge(email: @user.email)
-    render json: { employment: employment_with_email }, status: :ok
+    render :show
   end
 
   def update
@@ -22,10 +20,6 @@ class InternalApi::V1::EmploymentsController < InternalApi::V1::ApplicationContr
   end
 
   private
-
-    def set_user
-      @user ||= User.find(params[:id])
-    end
 
     def set_employment
       @employment = Employment.find_by!(user_id: params[:id], company_id: current_company.id)
