@@ -6,8 +6,15 @@ import { Badge, Button } from "StyledComponents";
 import getStatusCssClass from "utils/getBadgeStatus";
 
 const InvoiceRow = ({ invoice, isLast }) => {
-  const { amount, company, dueDate, invoiceNumber, issueDate, status } =
-    invoice;
+  const {
+    amount,
+    company,
+    dueDate,
+    invoiceNumber,
+    issueDate,
+    status,
+    externalViewKey,
+  } = invoice;
 
   const { baseCurrency } = company;
 
@@ -71,7 +78,11 @@ const InvoiceRow = ({ invoice, isLast }) => {
               className="absolute top-0 right-0 py-2 px-5 text-base"
               style="primary"
             >
-              <a href="#" target="_blank">
+              <a
+                href={`/invoices/${externalViewKey}/view`}
+                rel="noreferrer"
+                target="_blank"
+              >
                 View Invoice
               </a>
             </Button>

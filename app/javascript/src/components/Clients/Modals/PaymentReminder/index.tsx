@@ -23,11 +23,15 @@ const PaymentReminder = ({
     invoiceStatus.includes(invoice.status)
   );
 
+  const sortByStatus = (a, b) => {
+    const statusAIndex = invoiceStatus.indexOf(a.status);
+    const statusBIndex = invoiceStatus.indexOf(b.status);
+
+    return statusAIndex - statusBIndex;
+  };
+
   const [selectedInvoices, setSelectedInvoices] = useState<any[]>(
-    invoices
-      .sort((a, b) => a.status.localeCompare(b.status))
-      .filter(invoice => invoice.status === "overdue")
-      .map(invoice => invoice.id)
+    invoices.sort(sortByStatus).map(invoice => invoice.id)
   );
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [stepNoOfLastSubmittedForm, setStepNoOfLastSubmittedForm] =
@@ -134,7 +138,11 @@ const PaymentReminder = ({
         <div className="absolute bottom-0 left-0 right-0 flex items-center justify-between bg-white p-4 shadow-c1">
           {currentStep === 1 ? (
             <div className="flex w-full items-center justify-between">
-              <small>{selectedInvoices.length} invoices selected</small>
+              <small>
+                {selectedInvoices.length > 1
+                  ? `${selectedInvoices.length} invoices selected`
+                  : `${selectedInvoices.length} invoice selected`}
+              </small>
               <Button
                 className="py-2 px-10 text-base"
                 disabled={selectedInvoices.length < 1}
