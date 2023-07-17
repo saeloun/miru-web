@@ -77,6 +77,6 @@ Rails.application.routes.draw do
   root "home#index"
 
   match "*path", via: :all, to: "home#index", constraints: lambda { |req|
-    req.path.exclude? "rails/active_storage"
+    req.path.exclude?("rails/active_storage") && !req.path.include?("internal_api")
   }
 end
