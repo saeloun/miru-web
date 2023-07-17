@@ -156,8 +156,6 @@ const ProjectDetails = () => {
     return <div />;
   };
 
-  const menuBackground = isHeaderMenuVisible ? "bg-miru-gray-100" : "";
-
   const backToProjects = () => {
     navigate("/projects");
   };
@@ -188,7 +186,7 @@ const ProjectDetails = () => {
                 />
               )}
             </div>
-            <div className=" relative flex h-8 items-center">
+            <div className="flex h-8 items-center">
               <Tooltip
                 placeBottom
                 className="tooltip tootlip-project px-3 py-2"
@@ -196,7 +194,7 @@ const ProjectDetails = () => {
                 show={showToolTip || isButtonHovered}
               >
                 <button
-                  className={`menuButton__button ${menuBackground} mr-3`}
+                  className="menuButton__button mr-3 hover:bg-miru-gray-100"
                   onClick={handleGenerateInvoice}
                   onMouseEnter={handleButtonMouseEnter}
                   onMouseLeave={handleButtonMouseLeave}
@@ -211,7 +209,7 @@ const ProjectDetails = () => {
                 show={showToolTip || isButtonHovered}
               >
                 <button
-                  className={`menuButton__button ${menuBackground} mr-3`}
+                  className="menuButton__button mr-3 hover:bg-miru-gray-100"
                   id="addRemoveTeamMembers"
                   onClick={handleAddRemoveMembers}
                   onMouseEnter={handleButtonMouseEnter}
@@ -220,24 +218,26 @@ const ProjectDetails = () => {
                   <TeamsIcon color="#5b34ea" size={20} weight="bold" />
                 </button>
               </Tooltip>
-              <button
-                className={`menuButton__button ${menuBackground}`}
-                id="kebabMenu"
-                onClick={handleMenuVisibility}
-              >
-                <DotsThreeVerticalIcon color="#000000" size={20} />
-              </button>
-              {isHeaderMenuVisible && (
-                <ul className="menuButton__wrapper">
-                  <HeaderMenuList
-                    handleAddRemoveMembers={handleAddRemoveMembers}
-                    handleEditProject={handleEditProject}
-                    handleGenerateInvoice={handleGenerateInvoice}
-                    setIsHeaderMenuVisible={setIsHeaderMenuVisible}
-                    setShowDeleteDialog={setShowDeleteDialog}
-                  />
-                </ul>
-              )}
+              <div className="relative">
+                <button
+                  className="menuButton__button hover:bg-miru-gray-100"
+                  id="kebabMenu"
+                  onClick={handleMenuVisibility}
+                >
+                  <DotsThreeVerticalIcon color="#000000" size={20} />
+                </button>
+                {isHeaderMenuVisible && (
+                  <ul className="menuButton__wrapper">
+                    <HeaderMenuList
+                      handleAddRemoveMembers={handleAddRemoveMembers}
+                      handleEditProject={handleEditProject}
+                      handleGenerateInvoice={handleGenerateInvoice}
+                      setIsHeaderMenuVisible={setIsHeaderMenuVisible}
+                      setShowDeleteDialog={setShowDeleteDialog}
+                    />
+                  </ul>
+                )}
+              </div>
             </div>
           </div>
           <p className="ml-12 mt-1 text-xs text-miru-dark-purple-400">
