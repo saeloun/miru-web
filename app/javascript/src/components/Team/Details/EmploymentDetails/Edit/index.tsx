@@ -60,6 +60,10 @@ const EmploymentDetails = () => {
   });
   const [errDetails, setErrDetails] = useState(initialErrState);
   const [isLoading, setIsLoading] = useState(false);
+  const [dateFormat, setDateFormat] = useState("DD-MM-YYYY");
+  const [resignedAt, setResignedAt] = useState(null);
+  const [joinedAt, setJoinedAt] = useState(null);
+
   useOutsideClick(DOJRef, () => setShowDOJDatePicker({ visibility: false }));
   useOutsideClick(DORRef, () => setShowDORDatePicker({ visibility: false }));
 
@@ -71,6 +75,9 @@ const EmploymentDetails = () => {
   const getDetails = async () => {
     const curr: any = await teamsApi.getEmploymentDetails(memberId);
     const prev: any = await teamsApi.getPreviousEmployments(memberId);
+    setDateFormat(curr.data.date_format);
+    setJoinedAt(curr.data.employment.joined_at);
+    setResignedAt(curr.data.employment.resigned_at);
     const employmentData = employmentMapper(
       curr.data.employment,
       prev.data.previous_employments
@@ -136,12 +143,18 @@ const EmploymentDetails = () => {
 
   const handleDOJDatePicker = date => {
     setShowDOJDatePicker({ visibility: !showDOJDatePicker.visibility });
+    setJoinedAt(date);
     updateDetails("employment", {
       ...employmentDetails,
       ...{
         current_employment: {
           ...employmentDetails.current_employment,
-          ...{ joined_at: date },
+          ...{
+            joined_at:
+              dateFormat == "DD-MM-YYYY"
+                ? date
+                : dayjs(date).format("DD-MM-YYYY"),
+          },
         },
       },
     });
@@ -149,12 +162,18 @@ const EmploymentDetails = () => {
 
   const handleDORDatePicker = date => {
     setShowDORDatePicker({ visibility: !showDORDatePicker.visibility });
+    setResignedAt(date);
     updateDetails("employment", {
       ...employmentDetails,
       ...{
         current_employment: {
           ...employmentDetails.current_employment,
-          ...{ resigned_at: date },
+          ...{
+            resigned_at:
+              dateFormat == "DD-MM-YYYY"
+                ? date
+                : dayjs(date).format("DD-MM-YYYY"),
+          },
         },
       },
     });
@@ -272,6 +291,7 @@ const EmploymentDetails = () => {
             <StaticPage
               DOJRef={DOJRef}
               DORRef={DORRef}
+              dateFormat={dateFormat}
               employeeType={employeeType}
               employeeTypes={employeeTypes}
               employmentDetails={employmentDetails}
@@ -281,7 +301,9 @@ const EmploymentDetails = () => {
               handleDORDatePicker={handleDORDatePicker}
               handleDeletePreviousEmployment={handleDeletePreviousEmployment}
               handleOnChangeEmployeeType={handleOnChangeEmployeeType}
+              joinedAt={joinedAt}
               previousEmployments={previousEmployments}
+              resignedAt={resignedAt}
               setShowDOJDatePicker={setShowDOJDatePicker}
               setShowDORDatePicker={setShowDORDatePicker}
               showDOJDatePicker={showDOJDatePicker}

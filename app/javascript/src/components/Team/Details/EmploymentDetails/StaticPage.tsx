@@ -83,7 +83,7 @@ const StaticPage = ({ employmentDetails }) => (
           Previous <br /> Employment
         </span>
       </div>
-      <div className="flex w-4/5 items-center justify-center">
+      <div className="flex w-4/5 flex-col items-center justify-center">
         {employmentDetails?.previous_employments[0]?.company_name ? (
           employmentDetails.previous_employments.map((previous, index) => (
             <div className="mb-4 flex w-full" key={index}>
