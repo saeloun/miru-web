@@ -73,10 +73,10 @@ class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationControlle
     authorize client
 
     SendPaymentReminderMailer.with(
-      recipients: client_email_params[:recipients],
+      recipients: client_email_params[:email_params][:recipients],
       selected_invoices: client_email_params[:selected_invoices],
-      message: client_email_params[:message],
-      subject: client_email_params[:subject],
+      message: client_email_params[:email_params][:message],
+      subject: client_email_params[:email_params][:subject],
     ).send_payment_reminder.deliver_later
 
     render json: { notice: "Payment reminder has been sent to #{client.email}" }, status: :accepted
@@ -106,6 +106,6 @@ class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationControlle
     end
 
     def client_email_params
-      params.require(:client_email).permit(:subject, :message, recipients: [], selected_invoices: [])
+      params.require(:client_email).permit(email_params: [:subject, :message, recipients: []], selected_invoices: [])
     end
 end

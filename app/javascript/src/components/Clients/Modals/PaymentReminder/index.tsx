@@ -31,7 +31,10 @@ const PaymentReminder = ({
   };
 
   const [selectedInvoices, setSelectedInvoices] = useState<any[]>(
-    invoices.sort(sortByStatus).map(invoice => invoice.id)
+    invoices
+      .sort(sortByStatus)
+      .filter(invoice => invoice.status === "overdue")
+      .map(invoice => invoice.id)
   );
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [stepNoOfLastSubmittedForm, setStepNoOfLastSubmittedForm] =
@@ -41,7 +44,6 @@ const PaymentReminder = ({
     subject: "Reminder to complete payments for unpaid invoices",
     message:
       "This is a gentle reminder to complete payments for the following invoices. You can find the respective payment links along with the invoice details given below",
-    selected_invoices: selectedInvoices,
     recipients: [client.email],
   });
 
@@ -72,7 +74,10 @@ const PaymentReminder = ({
   const handleSendReminder = async () => {
     try {
       await clientApi.sendPaymentReminder(client.id, {
-        client_email: emailParams,
+        client_email: {
+          email_params: emailParams,
+          selected_invoices: selectedInvoices,
+        },
       });
       setSendPaymentReminder(false);
     } catch (error) {
@@ -189,7 +194,6 @@ interface SendPaymentReminderEmail {
   subject: string;
   message: string;
   recipients: string[];
-  selected_invoices: any[];
 }
 
 export default PaymentReminder;
