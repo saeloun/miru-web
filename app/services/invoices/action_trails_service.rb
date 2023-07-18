@@ -79,13 +79,22 @@ class Invoices::ActionTrailsService < ApplicationService
     end
 
     def generic_trail_data(event)
-      user_id = Integer(event.user_id)
-      {
-        type: event.name,
-        user_name: users[user_id].full_name,
-        user_avatar: users[user_id].avatar,
-        created_at: event.time
-      }
+      if event.user_id.nil?
+        invoice = Invoice.find_by(id: event.properties["id"])
+        {
+          type: event.name,
+          user_name: invoice.client.name,
+          created_at: event.time
+        }
+      else
+        user_id = Integer(event.user_id)
+        {
+          type: event.name,
+          user_name: users[user_id].full_name,
+          user_avatar: users[user_id].avatar,
+          created_at: event.time
+        }
+      end
     end
 
     def send_invoice_trail_data(event)
