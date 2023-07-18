@@ -47,6 +47,7 @@ const unmapClientInvoices = input => {
     invoiceNumber: item.invoiceNumber,
     issueDate: item.issueDate,
     company: item.company,
+    externalViewKey: item.externalViewKey,
   }));
 };
 

@@ -5,11 +5,14 @@ import { CustomTextareaAutosize } from "common/CustomTextareaAutosize";
 
 import InvoiceRow from "./InvoiceRow";
 
+import MobileInvoiceRow from "../MobileView/MobileInvoiceRow";
+
 const EmailPreview = ({
   selectedInvoices,
   invoices,
   emailParams,
   setEmailParams,
+  isDesktop,
 }) => {
   const selected = invoices.filter(invoice =>
     selectedInvoices.includes(invoice.id)
@@ -17,7 +20,7 @@ const EmailPreview = ({
 
   return (
     <div className="mt-4 h-full overflow-y-auto pb-10/100">
-      <div className="my-6">
+      <div className="my-6 xsm:max-w-screen-xsm xsm:px-2 lg:max-w-screen-lg lg:px-0">
         <CustomAdvanceInput
           id="Email ID"
           label="Email ID"
@@ -31,7 +34,7 @@ const EmailPreview = ({
           ))}
         />
       </div>
-      <div className="mb-6">
+      <div className="mb-6 xsm:max-w-screen-xsm xsm:px-2 lg:max-w-screen-lg lg:px-0">
         <CustomTextareaAutosize
           id="subject"
           label="Subject"
@@ -48,24 +51,28 @@ const EmailPreview = ({
           }
         />
       </div>
-      <div className="mb-6">
+      <div className="mb-6 overflow-auto xsm:max-w-screen-xsm xsm:px-2 lg:max-w-screen-lg lg:px-0">
         <CustomAdvanceInput
           id="message"
           label="Message"
           value={
             <div className="mt-3">
-              <p className="mb-10">
-                This is a gentle reminder to complete payments for the following
-                invoices. You can find the respective payment links along with
-                the invoice details given below
-              </p>
-              {selected.map((invoice, idx) => (
-                <InvoiceRow
-                  invoice={invoice}
-                  isLast={selected.length == idx + 1}
-                  key={idx}
-                />
-              ))}
+              <p className="mb-10">{emailParams.message}</p>
+              {selected.map((invoice, idx) =>
+                isDesktop ? (
+                  <InvoiceRow
+                    invoice={invoice}
+                    isLast={selected.length == idx + 1}
+                    key={idx}
+                  />
+                ) : (
+                  <MobileInvoiceRow
+                    invoice={invoice}
+                    isLast={selected.length == idx + 1}
+                    key={idx}
+                  />
+                )
+              )}
             </div>
           }
         />

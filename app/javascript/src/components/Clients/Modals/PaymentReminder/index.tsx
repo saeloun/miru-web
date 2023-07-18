@@ -17,6 +17,7 @@ const PaymentReminder = ({
   setSendPaymentReminder,
   client,
   clientInvoices,
+  isDesktop,
 }) => {
   const invoiceStatus = ["overdue", "viewed", "sent"];
   const invoices = clientInvoices.filter(invoice =>
@@ -93,6 +94,7 @@ const PaymentReminder = ({
       <EmailPreview
         emailParams={emailParams}
         invoices={invoices}
+        isDesktop={isDesktop}
         selectedInvoices={selectedInvoices}
         setEmailParams={setEmailParams}
       />
