@@ -52,12 +52,12 @@ const Pagination = ({
     return pagy?.last == currentPage;
   };
 
-  const isFirstPage = () => {
+  const isNotFirstPage = () => {
     if (typeof pagy?.first == "boolean") {
-      return pagy?.first;
+      return !pagy?.first;
     }
 
-    return pagy?.first == currentPage;
+    return pagy?.page > 1;
   };
 
   const handleOnClick = e => {
@@ -77,12 +77,12 @@ const Pagination = ({
       <div className="mx-auto w-full">
         {pagy?.pages > 1 && (
           <div className="flex items-center justify-center">
-            {isFirstPage() && (
+            {isNotFirstPage() && (
               <button
                 disabled={pagy?.first}
                 className={cn("m-1 mx-4 font-bold", {
                   "text-miru-gray-400": pagy?.first,
-                  "text-miru-han-purple-1000": isFirstPage(),
+                  "text-miru-han-purple-1000": isNotFirstPage(),
                 })}
                 onClick={() => {
                   isReport || isTeamPage
