@@ -33,6 +33,12 @@ const viewInvoice = async id => axios.get(`${path}/${id}/view`);
 
 const paymentSuccess = async id => axios.get(`${path}/${id}/payments/success`);
 
+const wavieInvoice = async id => axios.patch(`${path}/waived/${id}`);
+
+const invoiceLogs = async id => axios.get(`${path}/action_trails/${id}`);
+const sendReminder = async (id, payload) =>
+  await axios.post(`${path}/${id}/send_reminder`, payload);
+
 const invoicesApi = {
   get,
   post,
@@ -47,6 +53,9 @@ const invoicesApi = {
   bulkDownloadInvoices,
   viewInvoice,
   paymentSuccess,
+  wavieInvoice,
+  invoiceLogs,
+  sendReminder,
 };
 
 export default invoicesApi;

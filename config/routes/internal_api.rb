@@ -13,7 +13,12 @@ namespace :internal_api, defaults: { format: "json" } do
       end
     end
 
-    resources :clients, only: [:index, :update, :destroy, :show, :create]
+    resources :clients, only: [:index, :update, :destroy, :show, :create] do
+      collection do
+        get "invoices", to: "clients/invoices#index"
+        get "invoices/:id", to: "clients/invoices#show", as: "invoice"
+      end
+    end
 
     resources :project, only: [:index]
     resources :timesheet_entry do
@@ -43,6 +48,8 @@ namespace :internal_api, defaults: { format: "json" } do
     namespace :invoices do
       resources :bulk_deletion, only: [:create]
       resources :bulk_download, only: [:index]
+      resources :action_trails, only: [:show]
+      resources :waived, only: [:update]
       get "(:id)/view", to: "view#show", as: "view"
       get "/:id/payments/success", to: "payments#success", as: "success"
     end
@@ -50,13 +57,14 @@ namespace :internal_api, defaults: { format: "json" } do
     resources :invoices, only: [:index, :create, :update, :show, :destroy, :edit] do
       member do
         post :send_invoice
+        post :send_reminder
         get :download
       end
     end
 
     resources :generate_invoice, only: [:index, :show]
     resources :project_members, only: [:update]
-    resources :employments, only: [:index]
+    resources :employments, only: [:index, :show, :update]
     resources :timezones, only: [:index]
 
     concern :addressable do
@@ -91,6 +99,7 @@ namespace :internal_api, defaults: { format: "json" } do
     # Non-Resourceful Routes
     get "payments/settings", to: "payment_settings#index"
     post "payments/settings/stripe/connect", to: "payment_settings#connect_stripe"
+    delete "payments/settings/stripe/disconnect", to: "payment_settings#destroy"
 
     resources :payments, only: [:new, :create, :index]
 
@@ -114,5 +123,10 @@ namespace :internal_api, defaults: { format: "json" } do
     resources :vendors, only: [:create]
     resources :expense_categories, only: [:create]
     resources :expenses, only: [:create, :index, :show]
+    resources :bulk_previous_employments, only: [:update]
+
+    match "*path", to: "application#not_found", via: :all, constraints: lambda { |req|
+      req.path.exclude?("rails/active_storage") && req.path.include?("internal_api")
+    }
   end
 end

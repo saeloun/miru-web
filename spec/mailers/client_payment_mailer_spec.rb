@@ -9,7 +9,7 @@ RSpec.describe ClientPaymentMailer, type: :mailer do
     let(:invoice) { create :invoice, client: }
     let(:user) { create(:user, current_workspace_id: company.id, companies: [company]) }
     let(:subject) { "Payment Receipt of Invoice #{invoice.invoice_number} from #{invoice.company.name}" }
-    let(:mail) { ClientPaymentMailer.with(invoice:, subject:).payment }
+    let(:mail) { ClientPaymentMailer.with(invoice_id: invoice.id, subject:).payment }
 
     it "renders the headers" do
       user.add_role :admin, company

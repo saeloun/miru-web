@@ -33,7 +33,7 @@
 #  fk_rails_...  (sender_id => users.id)
 #
 class Invitation < ApplicationRecord
-  enum role: [:owner, :admin, :employee, :book_keeper]
+  enum role: [:owner, :admin, :employee, :book_keeper, :client]
 
   # Constant
   MAX_EXPIRATION_DAY = 14.days

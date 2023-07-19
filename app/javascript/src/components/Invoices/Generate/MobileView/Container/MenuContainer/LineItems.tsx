@@ -16,6 +16,7 @@ const LineItems = ({
   dateFormat,
   currency,
   isInvoicePreviewCall,
+  strikeAmount = "",
 }) => (
   <table
     className={`bg-miru-han-1000 ${
@@ -66,6 +67,7 @@ const LineItems = ({
                 key={index}
                 setActiveSection={setActiveSection}
                 setEditItem={setEditItem}
+                strikeAmount={strikeAmount}
               />
             )
         )}
@@ -81,6 +83,7 @@ const LineItems = ({
                 key={index}
                 setActiveSection={setActiveSection}
                 setEditItem={setEditItem}
+                strikeAmount={strikeAmount}
               />
             )
         )}

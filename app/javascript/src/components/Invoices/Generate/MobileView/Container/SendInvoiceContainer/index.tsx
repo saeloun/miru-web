@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 
 import cn from "classnames";
 import { Formik, Form, FormikProps } from "formik";
@@ -13,7 +13,6 @@ import { InputErrors } from "common/FormikFields";
 import {
   emailBody,
   emailSubject,
-  isEmailValid,
   buttonText,
   isDisabled,
 } from "components/Invoices/common/InvoiceForm/SendInvoice/utils";
@@ -23,6 +22,9 @@ const SendInvoiceContainer = ({
   invoice,
   handleSaveSendInvoice,
   setIsSending,
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  setIsSendReminder = _value => {},
+  isSendReminder = false,
 }) => {
   const Recipient: React.FC<{ email: string; handleClick: any }> = ({
     email,
@@ -46,16 +48,18 @@ const SendInvoiceContainer = ({
   }
 
   const [invoiceEmail, setInvoiceEmail] = useState<InvoiceEmail>({
-    subject: emailSubject(invoice),
-    message: emailBody(invoice),
+    subject: emailSubject(invoice, isSendReminder),
+    message: emailBody(invoice, isSendReminder),
     recipients: [invoice.client.email],
   });
+  // eslint-disable-next-line no-unused-vars
   const [newRecipient, setNewRecipient] = useState<string>("");
+  // eslint-disable-next-line no-unused-vars
   const [width, setWidth] = useState<string>("10ch");
   const [status, setStatus] = useState<InvoiceStatus>(InvoiceStatus.IDLE);
-  const [height, setHeight] = useState<string>("h-0 py-0");
+  // const [height, setHeight] = useState<string>("h-0 py-0");
 
-  const input: React.RefObject<HTMLInputElement> = useRef();
+  // const input: React.RefObject<HTMLInputElement> = useRef();
   const navigate = useNavigate();
 
   const handleRemove = (recipient: string) => {
@@ -67,17 +71,17 @@ const SendInvoiceContainer = ({
     });
   };
 
-  const handleInput = event => {
-    const recipients = invoiceEmail.recipients;
+  // const handleInput = event => {
+  //   const recipients = invoiceEmail.recipients;
 
-    if (isEmailValid(newRecipient) && event.key === "Enter") {
-      setInvoiceEmail({
-        ...invoiceEmail,
-        recipients: recipients.concat(newRecipient),
-      });
-      setNewRecipient("");
-    }
-  };
+  //   if (isEmailValid(newRecipient) && event.key === "Enter") {
+  //     setInvoiceEmail({
+  //       ...invoiceEmail,
+  //       recipients: recipients.concat(newRecipient),
+  //     });
+  //     setNewRecipient("");
+  //   }
+  // };
 
   const handleSubmit = async event => {
     try {
@@ -93,12 +97,16 @@ const SendInvoiceContainer = ({
         }
       } else {
         const payload = { invoice_email: invoiceEmail };
-        const {
-          data: { message },
-        } = await invoicesApi.sendInvoice(invoice.id, payload);
-        Toastr.success(message);
+        let resp;
+        if (isSendReminder) {
+          resp = await invoicesApi.sendReminder(invoice.id, payload);
+        } else {
+          resp = await invoicesApi.sendInvoice(invoice.id, payload);
+        }
+        Toastr.success(resp.data.message);
       }
       setIsSending(false);
+      setIsSendReminder(false);
     } catch {
       setStatus(InvoiceStatus.ERROR);
     }
@@ -128,7 +136,7 @@ const SendInvoiceContainer = ({
   }, [status]);
 
   return (
-    <div className="h-full p-4">
+    <div className="h-full w-full p-4">
       <Formik
         initialValues={{
           recipients: [""],
@@ -161,7 +169,7 @@ const SendInvoiceContainer = ({
                             key={recipient}
                           />
                         ))}
-                        <input
+                        {/* <input
                           name="to"
                           ref={input}
                           style={{ width }}
@@ -178,10 +186,10 @@ const SendInvoiceContainer = ({
                           onChange={e => setNewRecipient(e.target.value.trim())}
                           onFocus={() => setHeight("h-6 py-2")}
                           onKeyDown={handleInput}
-                        />
+                        /> */}
                       </div>
                     }
-                    onClick={() => input.current.focus()}
+                    // onClick={() => input.current.focus()}
                   />
                   <InputErrors
                     fieldErrors={errors.recipients}
@@ -252,7 +260,7 @@ const SendInvoiceContainer = ({
                 }
                 onClick={handleSubmit}
               >
-                {buttonText(status)}
+                {isSendReminder ? "Send Reminder" : buttonText(status)}
               </button>
             </Form>
           );

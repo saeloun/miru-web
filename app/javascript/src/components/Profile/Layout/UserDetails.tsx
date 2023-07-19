@@ -2,11 +2,12 @@
 
 import React, { useEffect, useState } from "react";
 
-import { DeleteIcon, EditIcon, ImageIcon, UserAvatarSVG } from "miruIcons";
-import { MobileMoreOptions, Toastr, Tooltip } from "StyledComponents";
+import { DeleteIcon, EditIcon, ImageIcon } from "miruIcons";
+import { Avatar, MobileMoreOptions, Toastr, Tooltip } from "StyledComponents";
 
 import profileApi from "apis/profile";
 import { useProfile } from "components/Profile/context/EntryContext";
+import { useUserContext } from "context/UserContext";
 import { teamsMapper } from "mapper/teams.mapper";
 
 export const UserDetails = () => {
@@ -14,8 +15,7 @@ export const UserDetails = () => {
   const { first_name, last_name } = profileSettings;
   const [showImageUpdateOptions, setShowImageUpdateOptions] =
     useState<boolean>(false);
-  const [userImageUrl, setUserImageUrl] = useState<any>(null);
-
+  const { avatarUrl, setCurrentAvatarUrl } = useUserContext();
   const getDetails = async () => {
     try {
       if (!first_name && !last_name) {
@@ -53,7 +53,7 @@ export const UserDetails = () => {
       setShowImageUpdateOptions(false);
       const file = e.target.files[0];
       validateFileSize(file);
-      setUserImageUrl(URL.createObjectURL(file));
+      setCurrentAvatarUrl(URL.createObjectURL(file));
       const payload = createFormData(file);
       await profileApi.update(payload);
     } catch (error) {
@@ -64,20 +64,10 @@ export const UserDetails = () => {
   const handleDeleteProfileImage = async () => {
     setShowImageUpdateOptions(false);
     await profileApi.removeAvatar();
-    setUserImageUrl(null);
-  };
-
-  const getAvatar = async () => {
-    const {
-      data: {
-        user: { avatar_url },
-      },
-    } = await profileApi.index();
-    setUserImageUrl(avatar_url);
+    setCurrentAvatarUrl(null);
   };
 
   useEffect(() => {
-    getAvatar();
     getDetails();
   }, []);
 
@@ -86,10 +76,7 @@ export const UserDetails = () => {
       <div className="relative flex h-88 w-full flex-row items-center bg-miru-han-purple-1000 p-4 text-white">
         <div className="relative flex h-14 w-14 justify-center">
           <div>
-            <img
-              className="h-full w-full rounded-full object-cover"
-              src={userImageUrl || UserAvatarSVG}
-            />
+            <Avatar classNameImg="w-14 h-14" url={avatarUrl} />
             <button
               className="absolute right-0 bottom-0	flex h-6 w-6 cursor-pointer items-center justify-center rounded-full bg-miru-white-1000"
               onClick={() => setShowImageUpdateOptions(true)}
@@ -102,6 +89,7 @@ export const UserDetails = () => {
           <MobileMoreOptions
             className="w-full md:mx-auto md:w-11/12"
             setVisibilty={setShowImageUpdateOptions}
+            visibilty={showImageUpdateOptions}
           >
             <li className="w-full">
               <label

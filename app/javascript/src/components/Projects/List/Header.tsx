@@ -43,9 +43,7 @@ const Header = ({ projectDataPresent, setShowProjectModal, isAdminUser }) => {
             onClick={() => setShowProjectModal(true)}
           >
             <PlusIcon size={16} weight="fill" />
-            <span className="ml-2 inline-block hidden lg:inline">
-              NEW PROJECT
-            </span>
+            <span className="ml-2 hidden lg:inline">NEW PROJECT</span>
           </button>
         </>
       )}

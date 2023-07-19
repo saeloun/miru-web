@@ -135,6 +135,7 @@ bundle exec rake parallel:migrate
 # Run all specs in parallel
 RAILS_ENV=test bundle exec rake parallel:spec
 ```
+
 #### Coverage
 
 1. Run `COVERAGE=true bundle exec rspec`
@@ -151,10 +152,13 @@ RAILS_ENV=test bundle exec rake parallel:spec
 | Admin       | supriya@example.com     | welcome  |
 | Employee    | sam@example.com         | welcome  |
 | Book keeper | book.keeper@example.com | welcome  |
+| Client      | oliver@example.com      | welcome  |
 
 ## Configure Sentry:
 
-To configure Sentry set the project's [sentry dsn](https://docs.sentry.io/product/sentry-basics/dsn-explainer/#where-to-find-your-dsn) as value to `SENTRY_DNS` environment variable.
+To configure Sentry set the project's
+[sentry dsn](https://docs.sentry.io/product/sentry-basics/dsn-explainer/#where-to-find-your-dsn)
+as value to `SENTRY_DNS` environment variable.
 
 ## Community Support
 

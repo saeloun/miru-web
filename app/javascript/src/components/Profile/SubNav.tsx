@@ -22,17 +22,17 @@ const SideNav = ({ isAdmin, firstName, company, lastName }) => {
 
   const getAdminLinks = () => (
     <ul className="list-none min-h-50v text-sm font-medium leading-5 tracking-wider">
-      <div className="flex flex-row items-center justify-between py-3 px-5">
+      <div
+        className="flex cursor-pointer flex-row items-center justify-between py-3 px-5"
+        onClick={() =>
+          setOpenedSubNav({
+            ...openedSubNav,
+            personal: !openedSubNav.personal,
+          })
+        }
+      >
         <span className="text-base font-bold">Personal</span>
-        <button
-          id="personal"
-          onClick={() =>
-            setOpenedSubNav({
-              ...openedSubNav,
-              personal: !openedSubNav.personal,
-            })
-          }
-        >
+        <button id="personal">
           {openedSubNav.personal ? (
             <MinusIcon size={16} weight="bold" />
           ) : (
@@ -53,14 +53,14 @@ const SideNav = ({ isAdmin, firstName, company, lastName }) => {
           </li>
         </div>
       )}
-      <div className="flex flex-row items-center justify-between py-3 px-5">
+      <div
+        className="flex cursor-pointer flex-row items-center justify-between py-3 px-5"
+        onClick={() =>
+          setOpenedSubNav({ ...openedSubNav, company: !openedSubNav.company })
+        }
+      >
         <span className="text-base font-bold">{company.name}</span>
-        <button
-          id="company"
-          onClick={() =>
-            setOpenedSubNav({ ...openedSubNav, company: !openedSubNav.company })
-          }
-        >
+        <button id="company">
           {openedSubNav.company ? (
             <MinusIcon size={16} weight="bold" />
           ) : (

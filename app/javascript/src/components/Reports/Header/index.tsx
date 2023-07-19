@@ -114,11 +114,15 @@ const Header = ({
             </button>
           )}
           {showMoreOptions && (
-            <MobileMoreOptions setVisibilty={setShowMoreOptions}>
+            <MobileMoreOptions
+              setVisibilty={setShowMoreOptions}
+              visibilty={showMoreOptions}
+            >
               <li
-                className="flex items-center p-2 text-sm text-miru-han-purple-1000"
+                className="flex items-center py-2 text-sm text-miru-han-purple-1000"
                 onClick={() => {
                   setIsFilterVisible(!isFilterVisible);
+                  setShowMoreOptions(false);
                 }}
               >
                 <FilterIcon className="mr-4" color="#7C5DEE" size={16} />{" "}
@@ -128,7 +132,7 @@ const Header = ({
                 <Fragment>
                   <li>
                     <button
-                      className="menuButton__list-item pl-2"
+                      className="menuButton__list-item px-0"
                       onMouseDown={() => {
                         setShowExportOptions(false);
                         handleDownload("csv");
@@ -140,7 +144,7 @@ const Header = ({
                   </li>
                   <li>
                     <button
-                      className="menuButton__list-item pl-2"
+                      className="menuButton__list-item px-0"
                       onMouseDown={() => {
                         setShowExportOptions(false);
                         handleDownload("pdf");

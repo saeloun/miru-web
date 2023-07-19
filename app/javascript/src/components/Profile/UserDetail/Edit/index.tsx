@@ -83,6 +83,40 @@ const UserDetailsEdit = () => {
     setCountries(countryData);
   };
 
+  useEffect(() => {
+    const currentCountry = Country.getAllCountries().filter(
+      country =>
+        country.name == profileSettings.addresses.country ||
+        country.isoCode == profileSettings.addresses.country
+    )[0];
+
+    currentCountry &&
+      setCurrentCountryDetails({
+        label: currentCountry.name,
+        value: currentCountry.name,
+        code: currentCountry?.isoCode,
+      });
+
+    if (profileSettings.addresses.city) {
+      const stateCode =
+        currentCountry &&
+        State.getStatesOfCountry(currentCountry?.isoCode).filter(
+          state => state.name == profileSettings.addresses.state
+        )[0]?.isoCode;
+
+      setCurrentCityList(
+        City.getCitiesOfState(
+          currentCountry?.isoCode,
+          stateCode ?? profileSettings.addresses.state
+        ).map(city => ({
+          label: city.name,
+          value: city.name,
+          ...city,
+        }))
+      );
+    }
+  }, [profileSettings]);
+
   const getDetails = async () => {
     const data = await profileApi.index();
     const addressData = await profileApi.getAddress(data.data.user.id);
@@ -108,6 +142,14 @@ const UserDetailsEdit = () => {
     getDetails();
   }, []);
 
+  const cancelPasswordChange = () => {
+    setChangePassword(false);
+    setUserState("profileSettings", {
+      ...profileSettings,
+      ...{ confirmPassword: "", password: "", currentPassword: "" },
+    });
+  };
+
   const handleOnChangeCountry = selectCountry => {
     setCurrentCountryDetails(selectCountry);
     setUserState("profileSettings", {
@@ -125,7 +167,7 @@ const UserDetailsEdit = () => {
     State.getStatesOfCountry(countryCode).map(state => ({
       label: state.name,
       value: state.name,
-      code: state.isoCode,
+      code: state?.isoCode,
       ...state,
     }));
 
@@ -148,7 +190,7 @@ const UserDetailsEdit = () => {
       ...{
         addresses: {
           ...profileSettings.addresses,
-          ...{ state: selectState.value },
+          ...{ state: selectState.value, city: "" },
         },
       },
     });
@@ -226,7 +268,9 @@ const UserDetailsEdit = () => {
               .utc(profileSettings.date_of_birth, profileSettings.date_format)
               .toISOString()
           : null,
-        phone: profileSettings.phone_number,
+        phone: profileSettings.phone_number
+          ? profileSettings.phone_number
+          : null,
         personal_email_id: profileSettings.email_id,
         social_accounts: {
           linkedin_url: profileSettings.linkedin,
@@ -345,9 +389,11 @@ const UserDetailsEdit = () => {
             <StaticPage
               addrType={addrType}
               addressOptions={addressOptions}
+              cancelPasswordChange={cancelPasswordChange}
               changePassword={changePassword}
               confirmPassword={confirmPassword}
               countries={countries}
+              currentCityList={currentCityList}
               currentCountryDetails={currentCountryDetails}
               currentPassword={currentPassword}
               dateFormat={profileSettings.date_format}
@@ -366,6 +412,7 @@ const UserDetailsEdit = () => {
               personalDetails={profileSettings}
               promiseOptions={promiseOptions}
               setChangePassword={setChangePassword}
+              setErrDetails={setErrDetails}
               setShowConfirmPassword={setShowConfirmPassword}
               setShowCurrentPassword={setShowCurrentPassword}
               setShowDatePicker={setShowDatePicker}
@@ -392,12 +439,15 @@ const UserDetailsEdit = () => {
             <MobileEditPage
               addrType={addrType}
               addressOptions={addressOptions}
+              cancelPasswordChange={cancelPasswordChange}
               changePassword={changePassword}
               countries={countries}
               currentCountryDetails={currentCountryDetails}
+              currentPassword={currentPassword}
               dateFormat={profileSettings.date_format}
               errDetails={errDetails}
               handleCancelDetails={handleCancelDetails}
+              handleCurrentPasswordChange={handleCurrentPasswordChange}
               handleDatePicker={handleDatePicker}
               handleOnChangeAddrType={handleOnChangeAddrType}
               handleOnChangeCity={handleOnChangeCity}
@@ -408,6 +458,7 @@ const UserDetailsEdit = () => {
               personalDetails={profileSettings}
               promiseOptions={promiseOptions}
               setChangePassword={setChangePassword}
+              setErrDetails={setErrDetails}
               setShowConfirmPassword={setShowConfirmPassword}
               setShowCurrentPassword={setShowCurrentPassword}
               setShowDatePicker={setShowDatePicker}

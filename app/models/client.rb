@@ -35,6 +35,7 @@ class Client < ApplicationRecord
   has_many :timesheet_entries, through: :projects
   has_many :invoices, dependent: :destroy
   has_many :addresses, as: :addressable, dependent: :destroy
+  has_many :client_members, dependent: :destroy
   has_one_attached :logo
   belongs_to :company
 
@@ -155,7 +156,7 @@ class Client < ApplicationRecord
   end
 
   def formatted_address
-    current_address.formatted_address
+    current_address&.formatted_address
   end
 
   private

@@ -22,7 +22,7 @@ class Invoices::PaymentsController < ApplicationController
   private
 
     def load_invoice
-      @invoice = Invoice.includes(client: :company).find(params[:invoice_id])
+      @invoice = Invoice.kept.includes(client: :company).find(params[:invoice_id])
     end
 
     def ensure_invoice_unpaid

@@ -2,7 +2,7 @@
 
 class InvoicePolicy < ApplicationPolicy
   def index?
-    user_owner_role? || user_admin_role? || user_book_keeper_role?
+    user_owner_role? || user_admin_role? || user_book_keeper_role? || user_client_role?
   end
 
   def create?
@@ -31,6 +31,10 @@ class InvoicePolicy < ApplicationPolicy
 
   def download?
     authorize_owner_admin_book_keeper
+  end
+
+  def send_reminder?
+    authorize_owner_admin
   end
 
   def permitted_attributes

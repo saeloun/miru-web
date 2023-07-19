@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, {
   FormEvent,
   KeyboardEvent,
@@ -11,6 +12,9 @@ import { XIcon } from "miruIcons";
 import { Modal, Toastr } from "StyledComponents";
 
 import invoicesApi from "apis/invoices";
+import { CustomAdvanceInput } from "common/CustomAdvanceInput";
+import { CustomInputText } from "common/CustomInputText";
+import { CustomTextareaAutosize } from "common/CustomTextareaAutosize";
 import { ApiStatus as InvoiceStatus } from "constants/index";
 
 import {
@@ -31,15 +35,15 @@ const Recipient: React.FC<{ email: string; handleClick: any }> = ({
   email,
   handleClick,
 }) => (
-  <div className="m-0.5 flex w-fit items-center space-x-2 rounded-full border bg-miru-gray-400 px-2 py-1">
+  <div className="space-XIcon-2 m-0.5 flex w-fit items-center rounded-full border bg-miru-gray-400 px-2 py-1 text-sm font-medium">
     <p>{email}</p>
-    <button
+    {/* <button
       className="text-miru-black-1000 hover:text-miru-red-400"
       type="button"
       onClick={handleClick}
     >
       <XIcon size={14} weight="bold" />
-    </button>
+    </button> */}
   </div>
 );
 
@@ -48,11 +52,13 @@ const SendInvoice: React.FC<any> = ({
   setIsSending,
   invoice,
   fetchInvoices,
+  isSendReminder = false,
+  setISendReminder,
 }) => {
   const [status, setStatus] = useState<InvoiceStatus>(InvoiceStatus.IDLE);
   const [invoiceEmail, setInvoiceEmail] = useState<InvoiceEmail>({
-    subject: emailSubject(invoice),
-    message: emailBody(invoice),
+    subject: emailSubject(invoice, isSendReminder),
+    message: emailBody(invoice, isSendReminder),
     recipients: [invoice.client.email],
   });
   const [newRecipient, setNewRecipient] = useState<string>("");
@@ -73,13 +79,17 @@ const SendInvoice: React.FC<any> = ({
         setStatus(InvoiceStatus.LOADING);
 
         const payload = { invoice_email: invoiceEmail };
-        const {
-          data: { message },
-        } = await invoicesApi.sendInvoice(invoice.id, payload);
+        let resp;
+        if (isSendReminder) {
+          resp = await invoicesApi.sendReminder(invoice.id, payload);
+        } else {
+          resp = await invoicesApi.sendInvoice(invoice.id, payload);
+        }
 
-        Toastr.success(message);
+        Toastr.success(resp.data.message);
         setStatus(InvoiceStatus.SUCCESS);
         setIsSending(false);
+        setISendReminder(false);
         setTimeout(fetchInvoices, 6000);
       } catch {
         setStatus(InvoiceStatus.ERROR);
@@ -112,60 +122,82 @@ const SendInvoice: React.FC<any> = ({
     <Modal
       customStyle="sm:my-8 sm:w-full sm:max-w-lg sm:align-middle"
       isOpen={isSending}
-      onClose={() => setIsSending(false)}
+      onClose={() => {
+        if (isSendReminder) {
+          setIsSending(false);
+          setISendReminder(false);
+        } else {
+          setIsSending(false);
+        }
+      }}
     >
       <div onClick={e => e.stopPropagation()}>
         <div className="mt-2 mb-6 flex items-center justify-between">
-          <h6 className="form__title">Send Invoice #{invoice.invoiceNumber}</h6>
+          <h6 className="form__title">
+            {isSendReminder
+              ? "Send Invoice Reminder"
+              : `Send Invoice #${invoice.invoiceNumber}`}
+          </h6>
           <button
             className="text-miru-gray-1000"
             type="button"
-            onClick={() => setIsSending(false)}
+            onClick={() => {
+              if (isSendReminder) {
+                setIsSending(false);
+                setISendReminder(false);
+              } else {
+                setIsSending(false);
+              }
+            }}
           >
             <XIcon size={16} weight="bold" />
           </button>
         </div>
         <form className="space-y-4">
           <fieldset className="field_with_errors flex flex-col">
-            <label className="form__label mb-2" htmlFor="to">
-              To
-            </label>
-            <div
-              className={cn("flex flex-wrap rounded bg-miru-gray-100 p-1.5", {
-                "h-9": !invoiceEmail.recipients,
-              })}
-              onClick={() => input.current.focus()}
-            >
-              {invoiceEmail.recipients.map(recipient => (
-                <Recipient
-                  email={recipient}
-                  handleClick={() => handleRemove(recipient)}
-                  key={recipient}
-                />
-              ))}
-              <input
-                name="to"
-                ref={input}
-                style={{ width }}
-                type="email"
-                value={newRecipient}
-                className={cn(
-                  "focus:outline-none mx-1.5 w-fit cursor-text rounded bg-miru-gray-100 py-2",
-                  {
-                    "text-miru-red-400": !isEmailValid(newRecipient),
-                  }
-                )}
-                onChange={e => setNewRecipient(e.target.value.trim())}
-                onKeyDown={handleInput}
-              />
-            </div>
+            <CustomAdvanceInput
+              id="Email ID"
+              inputBoxClassName="py-3"
+              label="Email ID"
+              wrapperClassName="h-full"
+              value={
+                <div
+                  className={cn("flex flex-wrap rounded", {
+                    "h-9": !invoiceEmail.recipients,
+                  })}
+                >
+                  {invoiceEmail.recipients.map(recipient => (
+                    <Recipient
+                      email={recipient}
+                      handleClick={() => handleRemove(recipient)}
+                      key={recipient}
+                    />
+                  ))}
+                  {/* <input
+                    name="to"
+                    ref={input}
+                    style={{ width }}
+                    type="email"
+                    value={newRecipient}
+                    className={cn(
+                      "focus:outline-none mx-1.5 w-fit cursor-text",
+                      {
+                        "text-miru-red-400": !isEmailValid(newRecipient),
+                      }
+                    )}
+                    onChange={e => setNewRecipient(e.target.value.trim())}
+                    onKeyDown={handleInput}
+                  /> */}
+                </div>
+              }
+              // onClick={() => input.current.focus()}
+            />
           </fieldset>
           <fieldset className="field_with_errors flex flex-col">
-            <label className="form__label mb-2" htmlFor="subject">
-              Subject
-            </label>
-            <input
-              className="rounded bg-miru-gray-100 p-1.5"
+            <CustomInputText
+              id="subject"
+              inputBoxClassName="border focus:border-miru-han-purple-1000"
+              label="Subject"
               name="subject"
               type="text"
               value={invoiceEmail.subject}
@@ -178,20 +210,19 @@ const SendInvoice: React.FC<any> = ({
             />
           </fieldset>
           <fieldset className="field_with_errors flex flex-col">
-            <label className="form__label mb-2" htmlFor="body">
-              Message
-            </label>
-            <textarea
-              className="rounded bg-miru-gray-100 p-1.5"
-              name="body"
+            <CustomTextareaAutosize
+              id="message"
+              label="Message"
+              maxRows={5}
+              name="message"
               rows={5}
               value={invoiceEmail.message}
-              onChange={e =>
+              onChange={e => {
                 setInvoiceEmail({
                   ...invoiceEmail,
                   message: e.target.value,
-                })
-              }
+                });
+              }}
             />
           </fieldset>
           <div>
@@ -217,7 +248,7 @@ const SendInvoice: React.FC<any> = ({
               }
               onClick={handleSubmit}
             >
-              {buttonText(status)}
+              {isSendReminder ? "Send Reminder" : buttonText(status)}
             </button>
           </div>
         </form>

@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
 
-import { useSearchParams } from "react-router-dom";
-
 import reportsApi from "apis/reports";
 import Pagination from "common/Pagination/Pagination";
 import { useUserContext } from "context/UserContext";
@@ -45,17 +43,13 @@ const TimeEntryReport = () => {
   const [showNavFilters, setShowNavFilters] = useState<boolean>(false);
   const [filterCounter, setFilterCounter] = useState(0);
   const [selectedInput, setSelectedInput] = useState<string>("from-input");
-  const [searchParams] = useSearchParams();
-  const [params, setParams] = useState<any>({
-    page: searchParams.get("page") || 1,
-    query: searchParams.get("query") || "",
-  });
 
   const [paginationDetails, setPaginationDetails] = useState({
+    page: 0,
     pages: 0,
     first: true,
-    prev: params.page - 1,
-    next: params.page,
+    prev: 0,
+    next: 0,
     last: false,
   });
 
@@ -140,31 +134,25 @@ const TimeEntryReport = () => {
     const response = await reportsApi.download(type, `?${queryParams}`);
     const url = window.URL.createObjectURL(new Blob([response.data]));
     const link = document.createElement("a");
-    const date = new Date();
+    const filename = `${selectedFilter.dateRange.label}.${type}`;
     link.href = url;
-    link.setAttribute("download", `${date.toISOString()}_miru_report.${type}`);
-    document.body.appendChild(link);
+    link.setAttribute("download", filename);
     link.click();
   };
 
   const handlePageClick = async page => {
+    if (page == "...") return;
+
     const queryParams = getQueryParams(selectedFilter);
     const sanitizedParam = queryParams.substring(1);
     const sanitizedQuery = `?${sanitizedParam}`;
-    if (page > paginationDetails.prev) {
-      const res = await reportsApi.get(
-        `${sanitizedQuery}&page=${paginationDetails.next}`
-      );
-      setTimeEntries(res.data.reports);
+    const res = await reportsApi.get(`${sanitizedQuery}&page=${page}`);
+
+    if (res.data.reports.length === 0) {
       setPaginationDetails(res.data.pagy);
-      setParams({ ...params, page });
     } else {
-      const res = await reportsApi.get(
-        `${sanitizedQuery}&page=${paginationDetails.prev}`
-      );
       setTimeEntries(res.data.reports);
       setPaginationDetails(res.data.pagy);
-      setParams({ ...params, page });
     }
   };
 
@@ -213,16 +201,16 @@ const TimeEntryReport = () => {
               isReport
               handleClick={handlePageClick}
               pagy={paginationDetails}
-              params={params}
-              setParams={setParams}
+              params={paginationDetails}
+              setParams={setPaginationDetails}
             />
           </>
         ) : (
           <TimeEntryReportMobileView
             handlePageClick={handlePageClick}
             paginationDetails={paginationDetails}
-            params={params}
-            setParams={setParams}
+            params={paginationDetails}
+            setParams={setPaginationDetails}
           />
         )}
         {isFilterVisible && (
