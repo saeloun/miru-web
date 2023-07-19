@@ -52,6 +52,14 @@ const Pagination = ({
     return pagy?.last == currentPage;
   };
 
+  const isFirstPage = () => {
+    if (typeof pagy?.first == "boolean") {
+      return pagy?.first;
+    }
+
+    return pagy?.first == currentPage;
+  };
+
   const handleOnClick = e => {
     if (isTeamPage) {
       handleClick(Number(1), Number(e.target.value));
@@ -69,12 +77,12 @@ const Pagination = ({
       <div className="mx-auto w-full">
         {pagy?.pages > 1 && (
           <div className="flex items-center justify-center">
-            {!pagy?.first && (
+            {isFirstPage() && (
               <button
                 disabled={pagy?.first}
                 className={cn("m-1 mx-4 font-bold", {
                   "text-miru-gray-400": pagy?.first,
-                  "text-miru-han-purple-1000": !pagy?.first,
+                  "text-miru-han-purple-1000": isFirstPage(),
                 })}
                 onClick={() => {
                   isReport || isTeamPage
@@ -116,7 +124,7 @@ const Pagination = ({
                   "text-miru-han-purple-1000": !isLastPage(),
                 })}
                 onClick={() => {
-                  isReport
+                  isReport || isTeamPage
                     ? handleClick(pagy?.next)
                     : setParams({ ...params, page: pagy?.next });
                 }}

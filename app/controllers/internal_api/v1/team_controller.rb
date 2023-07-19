@@ -15,13 +15,13 @@ class InternalApi::V1::TeamController < InternalApi::V1::ApplicationController
     presenter_data = TeamPresenter.new(teams, invitations, current_user, current_company).index_data
     team_data = presenter_data[:teams]
     invitation_data = presenter_data[:invitations]
-    pagy_details, team_details = pagy_array(team_data, items: params[:items] || 10)
-    invitation_pagy_data, invitation_details = pagy_array(invitation_data, items: params[:items] || 5)
+
+    combined_data = team_data + invitation_data
+    pagy_combined, combined_details = pagy_array(combined_data, items: params[:items] || 10)
 
     render :index, locals: {
-      teams: team_details,
-      invitations: invitation_details,
-      pagination_details: pagy_metadata(pagy_details)
+      combined_details:,
+      pagination_details_combined: pagy_metadata(pagy_combined)
     }, status: :ok
   end
 
