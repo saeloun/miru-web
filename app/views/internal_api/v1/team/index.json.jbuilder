@@ -5,7 +5,7 @@ json.deep_format_keys!
 
 json.combined_details do
   json.array! combined_details do |item|
-    if item["data_type"] == "Team"
+    if item[:data_type] == "Team"
       json.extract! item, :id, :first_name, :last_name, :name, :email, :role, :status, :is_team_member
       json.profile_picture user_avatar(item[:member])
     else
