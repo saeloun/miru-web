@@ -34,6 +34,9 @@ const MobileView = ({
   tax,
   handleSaveInvoice,
   isEdit,
+  isStripeEnabled,
+  setShowConnectPaymentDialog,
+  showConnectPaymentDialog,
 }) => {
   const [activeSection, setActiveSection] = useState<string>(
     isEdit ? sections.invoicePreview : sections.generateInvoice
@@ -57,6 +60,7 @@ const MobileView = ({
         handleSaveInvoice={handleSaveInvoice}
         invoiceDetails={invoiceDetails}
         invoiceNumber={invoiceNumber}
+        isStripeEnabled={isStripeEnabled}
         issueDate={issueDate}
         lineItems={lineItems}
         manualEntryArr={manualEntryArr}
@@ -75,7 +79,9 @@ const MobileView = ({
         setReference={setReference}
         setSelectedClient={setSelectedClient}
         setSelectedLineItems={setSelectedLineItems}
+        setShowConnectPaymentDialog={setShowConnectPaymentDialog}
         setTax={setTax}
+        showConnectPaymentDialog={showConnectPaymentDialog}
         tax={tax}
       />
     </div>

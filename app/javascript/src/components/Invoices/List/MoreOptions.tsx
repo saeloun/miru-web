@@ -1,6 +1,5 @@
-import React, { useRef } from "react";
+import React from "react";
 
-import { useOutsideClick } from "helpers";
 import {
   PaperPlaneTiltIcon,
   DeleteIcon,
@@ -8,9 +7,10 @@ import {
   PenIcon,
   DotsThreeVerticalIcon,
   DownloadSimpleIcon,
+  ReminderIcon,
 } from "miruIcons";
-import { Link } from "react-router-dom";
-import { Tooltip } from "StyledComponents";
+import { useNavigate } from "react-router-dom";
+import { Tooltip, Modal } from "StyledComponents";
 
 import { handleDownloadInvoice } from "../common/utils";
 
@@ -23,15 +23,16 @@ const MoreOptions = ({
   setIsSending,
   isSending,
   isDesktop,
+  showMoreOptions,
   setShowMoreOptions,
   showPrint,
   showSendLink,
+  setIsSendReminder,
+  showConnectPaymentDialog,
+  setShowConnectPaymentDialog,
+  isStripeEnabled,
 }) => {
-  const wrapperRef = useRef(null);
-
-  useOutsideClick(wrapperRef, () => {
-    setShowMoreOptions(false);
-  });
+  const navigate = useNavigate();
 
   return isDesktop ? (
     <>
@@ -45,7 +46,11 @@ const MoreOptions = ({
             id="sendInvoiceButton"
             onClick={e => {
               e.stopPropagation();
-              setIsSending(!isSending);
+              if (isStripeEnabled) {
+                setIsSending(!isSending);
+              } else {
+                setShowConnectPaymentDialog(!showConnectPaymentDialog);
+              }
             }}
           >
             <PaperPlaneTiltIcon
@@ -72,18 +77,20 @@ const MoreOptions = ({
           </button>
         </Tooltip>
         <Tooltip content="Edit">
-          <Link
+          <button
             className="rounded p-2 text-miru-han-purple-1000 hover:bg-miru-gray-100"
             id="editInvoiceButton"
-            to={`/invoices/${invoice.id}/edit`}
-            type="button"
-            onClick={e => e.stopPropagation()}
+            onClick={e => {
+              e.stopPropagation();
+              navigate(`/invoices/${invoice.id}/edit`);
+            }}
           >
             <PenIcon size={16} weight="bold" />
-          </Link>
+          </button>
         </Tooltip>
         <Tooltip content="More">
           <button
+            id="openMenu"
             className={`rounded p-2 text-miru-han-purple-1000  hover:bg-miru-gray-100 ${
               isMenuOpen && `bg-miru-gray-100`
             }`}
@@ -109,6 +116,23 @@ const MoreOptions = ({
             className="mt-1 rounded-lg border-miru-gray-200 bg-white shadow-c1 lg:py-3 xl:py-4"
             onClick={e => e.stopPropagation()}
           >
+            {invoice?.status === "overdue" && (
+              <li
+                className="flex cursor-pointer items-center px-5 text-sm text-miru-han-purple-1000 hover:bg-miru-gray-100 lg:py-1 xl:py-2"
+                id="reminderIcon"
+                onClick={() => {
+                  setIsSendReminder(true);
+                  setIsSending(!isSending);
+                }}
+              >
+                <ReminderIcon
+                  className="lg:mr-2 xl:mr-4"
+                  size={16}
+                  weight="bold"
+                />
+                Send Reminder
+              </li>
+            )}
             {showPrint && (
               <li className="flex cursor-pointer items-center px-5 text-sm text-miru-han-purple-1000 hover:bg-miru-gray-100 lg:py-1 xl:py-2">
                 <PrinterIcon
@@ -148,11 +172,12 @@ const MoreOptions = ({
       )}
     </>
   ) : (
-    <div
-      className="modal__modal main-modal "
-      style={{ background: "rgba(29, 26, 49,0.6)" }}
+    <Modal
+      customStyle="sm:my-8 sm:w-full sm:max-w-lg sm:align-middle overflow-visible"
+      isOpen={showMoreOptions}
+      onClose={() => setShowMoreOptions(false)}
     >
-      <ul className="shadow-2 w-full rounded-lg bg-white p-4" ref={wrapperRef}>
+      <ul className="shadow-2 w-full rounded-lg bg-white">
         <li>
           <button
             className="flex cursor-pointer items-center py-2 text-miru-han-purple-1000"
@@ -160,6 +185,13 @@ const MoreOptions = ({
               e.stopPropagation();
               setIsSending(!isSending);
               setShowMoreOptions(false);
+              if (isStripeEnabled) {
+                setIsSending(!isSending);
+                setShowMoreOptions(false);
+              } else {
+                setShowConnectPaymentDialog(true);
+                setIsSending(false);
+              }
             }}
           >
             <PaperPlaneTiltIcon className="mr-4" size={16} /> Send Invoice
@@ -179,14 +211,28 @@ const MoreOptions = ({
           </button>
         </li>
         <li>
-          <Link
+          <button
             className="flex cursor-pointer items-center py-2 text-miru-han-purple-1000"
-            to={`/invoices/${invoice.id}/edit`}
-            type="button"
+            id="editInvoiceButton"
+            onClick={() => {
+              navigate(`/invoices/${invoice.id}/edit`);
+            }}
           >
             <PenIcon className="mr-4" size={16} /> Edit Invoice
-          </Link>
+          </button>
         </li>
+        {invoice?.status === "overdue" && (
+          <li
+            className="flex cursor-pointer items-center py-2 text-miru-han-purple-1000"
+            onClick={() => {
+              setIsSendReminder(true);
+              setShowMoreOptions(false);
+            }}
+          >
+            <ReminderIcon className="mr-4" size={16} weight="bold" />
+            Send Reminder
+          </li>
+        )}
         {showPrint && (
           <li className="flex cursor-pointer items-center py-2 text-miru-han-purple-1000">
             <PrinterIcon className="mr-4" size={16} />
@@ -210,7 +256,7 @@ const MoreOptions = ({
           Delete
         </li>
       </ul>
-    </div>
+    </Modal>
   );
 };
 

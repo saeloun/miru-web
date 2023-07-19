@@ -21,10 +21,9 @@ RSpec.describe "Add team memebr to project", type: :system do
         visit "/projects"
 
         find("tbody").hover.click
-        find("#kebabMenu").click
-        click_button "Add/Remove Team Members"
+        click_button "addRemoveTeamMembers"
         sleep 1
-        click_button "Add another team member"
+        click_button(id: "addMember")
         find(".react-select-filter__control.css-digfch-control").click
         find("#react-select-2-option-0").click
         fill_in "Rate", with: "100"
@@ -50,8 +49,7 @@ RSpec.describe "Add team memebr to project", type: :system do
         visit "/projects"
 
         find("tbody").hover.click
-        find("#kebabMenu").click
-        click_button "Add/Remove Team Members"
+        click_button "addRemoveTeamMembers"
         sleep 1
         click_button "removeMember"
         click_button "Add team members to project"
@@ -66,8 +64,7 @@ RSpec.describe "Add team memebr to project", type: :system do
         visit "/projects"
 
         find("tbody").hover.click
-        find("#kebabMenu").click
-        click_button "Add/Remove Team Members"
+        click_button "addRemoveTeamMembers"
         sleep 1
         fill_in "Rate", with: "500"
         click_button "Add team members to project"

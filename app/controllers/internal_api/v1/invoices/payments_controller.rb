@@ -10,14 +10,13 @@ class InternalApi::V1::Invoices::PaymentsController < InternalApi::V1::Applicati
     if InvoicePayment::StripePaymentIntent.new(@invoice).process
       if @invoice.paid?
         PaymentMailer.with(
-          invoice: @invoice,
+          invoice_id: @invoice.id,
           subject: "Payment details by #{@invoice.client.name}").payment.deliver_later
 
         @invoice.send_to_client_email(
-          invoice: @invoice,
-          subject: "Payment Receipt of Invoice #{@invoice.invoice_number} from #{@invoice.company.name}"
+          invoice_id: @invoice.id,
+          subject: "Payment Confirmation of Invoice #{@invoice.invoice_number} by #{@invoice.client.name}"
         )
-
         render json: { invoice: @invoice, notice: I18n.t("invoices.payments.success.success") }, status: :ok
       else
         render json: { invoice: @invoice, notice: I18n.t("invoices.payments.success.success") }, status: :ok

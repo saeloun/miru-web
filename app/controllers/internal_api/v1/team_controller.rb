@@ -11,7 +11,6 @@ class InternalApi::V1::TeamController < InternalApi::V1::ApplicationController
       .ransack(first_name_or_last_name_or_recipient_email_cont: params.dig(:q, :first_name_or_last_name_or_email_cont))
     teams = query.result(distinct: true)
     invitations = invitations_query.result(distinct: true)
-
     render :index, locals: TeamPresenter.new(teams, invitations, current_user, current_company).index_data, status: :ok
   end
 

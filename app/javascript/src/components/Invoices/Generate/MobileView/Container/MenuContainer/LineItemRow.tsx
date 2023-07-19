@@ -12,6 +12,7 @@ const LineItemRow = ({
   setEditItem,
   setActiveSection,
   isInvoicePreviewCall,
+  strikeAmount = "",
 }) => {
   const { first_name, last_name, name, date, rate, quantity, description } =
     item;
@@ -41,7 +42,9 @@ const LineItemRow = ({
         <td className="w-3/12 px-1 py-3 text-right text-xs font-medium text-miru-dark-purple-1000 ">
           {minToHHMM(quantity)}
         </td>
-        <td className="w-3/12 px-1 py-3 text-right text-xs font-medium text-miru-dark-purple-1000 ">
+        <td
+          className={`w-3/12 px-1 py-3 text-right text-xs font-medium text-miru-dark-purple-1000 ${strikeAmount}`}
+        >
           {currencyFormat(currency, lineTotalCalc(quantity, rate))}
         </td>
       </tr>

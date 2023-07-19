@@ -2,7 +2,13 @@ import React from "react";
 
 import LineItem from "./LineItem";
 
-const InvoiceLineItems = ({ currency, items, showHeader, dateFormat }) => {
+const InvoiceLineItems = ({
+  currency,
+  items,
+  showHeader,
+  dateFormat,
+  strikeAmount = "",
+}) => {
   const getHeader = () => (
     <thead className="border-b border-miru-gray-400">
       <tr>
@@ -39,6 +45,7 @@ const InvoiceLineItems = ({ currency, items, showHeader, dateFormat }) => {
                     dateFormat={dateFormat}
                     item={item}
                     key={item.id}
+                    strikeAmount={strikeAmount}
                   />
                 )
             )}

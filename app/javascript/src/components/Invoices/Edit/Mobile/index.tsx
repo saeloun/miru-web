@@ -30,6 +30,9 @@ const EditInvoiceForm = ({
   reference,
   tax,
   selectedLineItems,
+  isStripeEnabled,
+  showConnectPaymentDialog,
+  setShowConnectPaymentDialog,
 }) => {
   const { company } = invoiceDetails;
 
@@ -45,6 +48,7 @@ const EditInvoiceForm = ({
       handleSaveInvoice={handleSaveInvoice}
       invoiceDetails={invoiceDetails}
       invoiceNumber={invoiceNumber}
+      isStripeEnabled={isStripeEnabled}
       issueDate={issueDate}
       lineItems={lineItems}
       manualEntryArr={manualEntryArr}
@@ -62,7 +66,9 @@ const EditInvoiceForm = ({
       setReference={setReference}
       setSelectedClient={setSelectedClient}
       setSelectedLineItems={setSelectedLineItems}
+      setShowConnectPaymentDialog={setShowConnectPaymentDialog}
       setTax={setTax}
+      showConnectPaymentDialog={showConnectPaymentDialog}
       tax={tax}
     />
   );

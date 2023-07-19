@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 
+import { useOutsideClick } from "helpers";
 import {
   ArrowLeftIcon,
   DotsThreeVerticalIcon,
@@ -18,7 +19,7 @@ import { useUserContext } from "context/UserContext";
 import DeleteClient from "../Modals/DeleteClient";
 import EditClient from "../Modals/EditClient";
 
-const Header = ({ clientDetails, setShowProjectModal }) => {
+const Header = ({ clientDetails, setShowProjectModal, fetchDetails }) => {
   const [isHeaderMenuVisible, setIsHeaderMenuVisible] =
     useState<boolean>(false);
   const [isClientOpen, setIsClientOpen] = useState<boolean>(false);
@@ -27,6 +28,7 @@ const Header = ({ clientDetails, setShowProjectModal }) => {
   const [showMobileModal, setShowMobileModal] = useState<boolean>(false);
 
   const navigate = useNavigate();
+  const menuRef = useRef();
   const { isDesktop } = useUserContext();
 
   const handleClientDetails = () => {
@@ -58,7 +60,9 @@ const Header = ({ clientDetails, setShowProjectModal }) => {
     setIsHeaderMenuVisible(false);
   };
 
-  const menuBackground = isHeaderMenuVisible ? "bg-miru-gray-1000" : "";
+  useOutsideClick(menuRef, () => setIsHeaderMenuVisible(false));
+
+  const menuBackground = isHeaderMenuVisible ? "bg-miru-gray-100" : "";
 
   return (
     <div className="lg:my-6">
@@ -87,7 +91,7 @@ const Header = ({ clientDetails, setShowProjectModal }) => {
             <DotsThreeVerticalIcon color="#000000" size={20} weight="bold" />
           </button>
           {isHeaderMenuVisible && (
-            <ul className="menuButton__wrapper">
+            <ul className="menuButton__wrapper" ref={menuRef}>
               <li onClick={handleAddProject}>
                 <button className="menuButton__list-item">
                   <ReportsIcon color="#5B34EA" size={16} weight="bold" />
@@ -142,18 +146,24 @@ const Header = ({ clientDetails, setShowProjectModal }) => {
         <DeleteClient
           client={clientDetails}
           setShowDeleteDialog={setShowDeleteDialog}
+          showDeleteDialog={showDeleteDialog}
         />
       )}
       {showEditDialog && (
         <EditClient
           client={clientDetails}
+          fetchDetails={fetchDetails}
           setShowEditDialog={setShowEditDialog}
+          showEditDialog={showEditDialog}
         />
       )}
       {showMobileModal && (
-        <MobileMoreOptions setVisibilty={setShowMobileModal}>
+        <MobileMoreOptions
+          setVisibilty={setShowMobileModal}
+          visibilty={showMobileModal}
+        >
           <li
-            className="menuButton__list-item"
+            className="menuButton__list-item px-0"
             onClick={() => {
               handleAddProject();
               setShowMobileModal(false);
@@ -163,7 +173,7 @@ const Header = ({ clientDetails, setShowProjectModal }) => {
             <span className="ml-3">Add new project</span>
           </li>
           <li
-            className="menuButton__list-item"
+            className="menuButton__list-item px-0"
             onClick={() => {
               handleEdit();
               setShowMobileModal(false);
@@ -173,7 +183,7 @@ const Header = ({ clientDetails, setShowProjectModal }) => {
             <span className="ml-3">Edit</span>
           </li>
           <li
-            className="menuButton__list-item"
+            className="menuButton__list-item px-0"
             onClick={() => {
               handleDelete();
               setShowMobileModal(false);

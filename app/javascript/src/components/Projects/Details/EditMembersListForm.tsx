@@ -140,12 +140,13 @@ const EditMembersListForm = ({
           name={member?.name}
           type="text"
           value={valueObj.label}
-          onFocus={() => setShowMemberList(true)}
+          onClick={() => setShowMemberList(true)}
         />
         {showMemberList && (
           <MobileMoreOptions
             className="flex h-1/2 flex-col"
             setVisibilty={setShowMemberList}
+            visibilty={showMemberList}
           >
             <div className="relative mt-2 flex w-full items-center">
               <input
@@ -176,7 +177,7 @@ const EditMembersListForm = ({
             <div className="flex flex-auto flex-col overflow-y-scroll">
               {formattedMemberList.map(memberItem => (
                 <li
-                  className="flex items-center px-2 pt-3 text-sm font-medium leading-5 text-miru-dark-purple-1000"
+                  className="flex items-center pt-3 text-sm font-medium leading-5 text-miru-dark-purple-1000"
                   key={memberItem.value}
                   onMouseDown={() => {
                     member.isExisting
@@ -224,15 +225,15 @@ const EditMembersListForm = ({
 
   return (
     <form
-      className="flex h-full flex-col justify-between lg:mt-7 lg:mr-6"
+      className="flex h-full flex-col justify-between lg:mt-7"
       onSubmit={handleSubmit}
     >
       <div>
         {members.map((member, memberIndex) => (
           <div className="mb-4" key={memberIndex}>
-            <div className="mb-1 flex">
-              <div className="mr-4 w-56">{getMember(member, memberIndex)}</div>
-              <div className="relative mr-2 w-24 rounded-md shadow-sm">
+            <div className="mb-1 flex items-center">
+              <div className="mr-4 w-2/3">{getMember(member, memberIndex)}</div>
+              <div className="relative mr-2 w-1/4 rounded-md shadow-sm">
                 {member.hourlyRate == "" &&
                 focusedRateInputBoxId != memberIndex ? null : (
                   <div className="pointer-events-none absolute inset-y-0 right-1 z-20 flex items-center px-1">
@@ -269,7 +270,12 @@ const EditMembersListForm = ({
                   type="button"
                   onClick={() => removeMemberHandler(memberIndex, member)}
                 >
-                  <DeleteIcon color="#5B34EA" fill="#5B34EA" size={12} />
+                  <DeleteIcon
+                    color="#5B34EA"
+                    fill="#5B34EA"
+                    size={12}
+                    weight="bold"
+                  />
                 </button>
               </div>
             </div>
@@ -283,22 +289,29 @@ const EditMembersListForm = ({
             ) : null}
           </div>
         ))}
-        <div className="actions mt-4 text-center">
-          <button
-            disabled={!(formattedMemberList.length > 0)}
-            name="add"
-            type="button"
-            className={`menuButton__button text-xs ${
-              formattedMemberList.length > 0
-                ? "text-miru-han-purple-1000"
-                : "text-miru-dark-purple-400"
-            }`}
-            onClick={addNewMemberRowHandler}
-          >
-            <span>+</span>
-            <span className="ml-1 font-bold">Add another team member</span>
-          </button>
-        </div>
+        {formattedMemberList.length > 0 && (
+          <div className="actions mt-4 text-center">
+            <button
+              disabled={!(formattedMemberList.length > 0)}
+              id="addMember"
+              name="add"
+              type="button"
+              className={`menuButton__button text-xs ${
+                formattedMemberList.length > 0
+                  ? "text-miru-han-purple-1000"
+                  : "text-miru-dark-purple-400"
+              }`}
+              onClick={addNewMemberRowHandler}
+            >
+              <span>+</span>
+              <span className="ml-1 font-bold">
+                {formattedMemberList.length == allMemberList.length
+                  ? "Add team member"
+                  : "Add another team member"}
+              </span>
+            </button>
+          </div>
+        )}
       </div>
       <div className="actions mt-4">
         <input

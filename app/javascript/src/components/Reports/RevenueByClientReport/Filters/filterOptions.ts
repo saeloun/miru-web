@@ -40,6 +40,7 @@ const getDateRangeOptions = () => {
     { value: "this_year", label: "This Year" },
     { value: "last_year", label: "Last Year" },
     { value: "custom", label: "Custom" },
+    { value: "all_time", label: "All Time" },
   ];
 };
 

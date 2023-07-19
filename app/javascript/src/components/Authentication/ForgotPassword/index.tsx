@@ -26,11 +26,15 @@ const ForgotPassword = () => {
     setEmailToSendResetPasswordLink("");
   }, []);
 
-  const handlePasswordFormSubmit = async values => {
+  const handlePasswordFormSubmit = async (values, { setFieldError }) => {
     const email = values?.email?.trim();
-    if (email) {
-      await authenticationApi.forgotPassword({ email });
-      setEmailToSendResetPasswordLink(email);
+    try {
+      if (email) {
+        await authenticationApi.forgotPassword({ email });
+        setEmailToSendResetPasswordLink(email);
+      }
+    } catch (error) {
+      setFieldError("email", error.response.data.error);
     }
   };
 

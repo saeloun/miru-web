@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 
 import cn from "classnames";
 import { CaretCircleLeftIcon, CaretCircleRightIcon } from "miruIcons";
@@ -42,6 +42,14 @@ const Pagination = ({
     return setParams({ ...params, page });
   };
 
+  const isLastPage = () => {
+    if (typeof pagy?.last == "boolean") {
+      return pagy?.last;
+    }
+
+    return pagy?.last == currentPage;
+  };
+
   return (
     <div className="bg-grey-400 relative flex w-full items-center px-0 pt-5 pb-20 md:pb-28 lg:py-10 lg:pl-36">
       <div className="mx-auto w-full">
@@ -64,32 +72,40 @@ const Pagination = ({
               </button>
             )}
             <div className="flex overflow-x-scroll ">
-              {paginationRange.map(page => (
-                <button
-                  disabled={pagy?.page === page || currentPage === page}
-                  key={page}
-                  className={cn(
-                    "m-1 mx-4 p-1 text-base font-bold text-miru-dark-purple-400",
-                    {
-                      "text-miru-han-purple-1000": pagy?.prev + 1 === page,
-                    }
-                  )}
-                  onClick={() => {
-                    isReport ? handleClick(page) : handlePageNumberClick(page);
-                  }}
-                >
-                  {page}
-                </button>
+              {paginationRange.map((page, index) => (
+                <Fragment key={index}>
+                  <button
+                    disabled={pagy?.page === page || currentPage === page}
+                    key={page}
+                    className={cn(
+                      "m-1 mx-4 p-1 text-base font-bold text-miru-dark-purple-400",
+                      {
+                        "text-miru-han-purple-1000": pagy?.prev + 1 === page,
+                      }
+                    )}
+                    onClick={() => {
+                      isReport
+                        ? handleClick(page)
+                        : handlePageNumberClick(page);
+                    }}
+                  >
+                    {page}
+                  </button>
+                </Fragment>
               ))}
             </div>
-            {!pagy?.last && (
+            {!isLastPage() && (
               <button
-                disabled={pagy?.last}
+                disabled={isLastPage()}
                 className={cn("m-1 mx-4 font-bold", {
-                  "text-miru-gray-400": pagy?.last,
-                  "text-miru-han-purple-1000": !pagy?.last,
+                  "text-miru-gray-400": isLastPage(),
+                  "text-miru-han-purple-1000": !isLastPage(),
                 })}
-                onClick={() => setParams({ ...params, page: pagy?.next })}
+                onClick={() => {
+                  isReport
+                    ? handleClick(pagy?.next)
+                    : setParams({ ...params, page: pagy?.next });
+                }}
               >
                 <CaretCircleRightIcon size={16} weight="bold" />
               </button>

@@ -2,25 +2,28 @@
 #
 # Table name: invoices
 #
-#  id                 :bigint           not null, primary key
-#  amount             :decimal(20, 2)   default(0.0)
-#  amount_due         :decimal(20, 2)   default(0.0)
-#  amount_paid        :decimal(20, 2)   default(0.0)
-#  discarded_at       :datetime
-#  discount           :decimal(20, 2)   default(0.0)
-#  due_date           :date
-#  external_view_key  :string
-#  invoice_number     :string
-#  issue_date         :date
-#  outstanding_amount :decimal(20, 2)   default(0.0)
-#  payment_infos      :jsonb
-#  reference          :text
-#  status             :integer          default("draft"), not null
-#  tax                :decimal(20, 2)   default(0.0)
-#  created_at         :datetime         not null
-#  updated_at         :datetime         not null
-#  client_id          :bigint           not null
-#  company_id         :bigint
+#  id                     :bigint           not null, primary key
+#  amount                 :decimal(20, 2)   default(0.0)
+#  amount_due             :decimal(20, 2)   default(0.0)
+#  amount_paid            :decimal(20, 2)   default(0.0)
+#  client_payment_sent_at :datetime
+#  discarded_at           :datetime
+#  discount               :decimal(20, 2)   default(0.0)
+#  due_date               :date
+#  external_view_key      :string
+#  invoice_number         :string
+#  issue_date             :date
+#  outstanding_amount     :decimal(20, 2)   default(0.0)
+#  payment_infos          :jsonb
+#  payment_sent_at        :datetime
+#  reference              :text
+#  sent_at                :datetime
+#  status                 :integer          default("draft"), not null
+#  tax                    :decimal(20, 2)   default(0.0)
+#  created_at             :datetime         not null
+#  updated_at             :datetime         not null
+#  client_id              :bigint           not null
+#  company_id             :bigint
 #
 # Indexes
 #
@@ -55,7 +58,8 @@ class Invoice < ApplicationRecord
     :paid,
     :declined,
     :overdue,
-    :sending
+    :sending,
+    :waived
   ]
 
   belongs_to :company
@@ -71,12 +75,13 @@ class Invoice < ApplicationRecord
   after_commit :refresh_invoice_index
 
   validates :issue_date, :due_date, :invoice_number, presence: true
-  validates :due_date, comparison: { greater_than_or_equal_to: :issue_date }
+  validates :due_date, comparison: { greater_than_or_equal_to: :issue_date }, if: :not_waived
   validates :amount, :outstanding_amount, :tax,
     :amount_paid, :amount_due, :discount, numericality: { greater_than_or_equal_to: 0 }
   validates :invoice_number, uniqueness: true
   validates :reference, length: { maximum: 12 }, allow_blank: true
   validate :check_if_invoice_paid, on: :update
+  validate :prevent_waived_change, on: :update
 
   scope :with_statuses, -> (statuses) { where(status: statuses) if statuses.present? }
   scope :issue_date_range, -> (date_range) { where(issue_date: date_range) if date_range.present? }
@@ -106,6 +111,10 @@ class Invoice < ApplicationRecord
       updated_at:,
       discarded_at:
     }
+  end
+
+  def recently_sent_mail?
+    sent_at.nil? || (sent_at && !(sent_at > 1.minute.ago))
   end
 
   def update_timesheet_entry_status!
@@ -174,6 +183,16 @@ class Invoice < ApplicationRecord
     def check_if_invoice_paid
       if status_changed? && status_was == "paid"
         errors.add(:status, t("errors.can't change status"))
+      end
+    end
+
+    def not_waived
+      !(status.to_sym == :waived)
+    end
+
+    def prevent_waived_change
+      if status_changed? && status.to_sym == :waived && ![:sent, :overdue, :viewed].include?(status_was.to_sym)
+        errors.add(:status, t("errors.prevent_draft_to_waived"))
       end
     end
 end

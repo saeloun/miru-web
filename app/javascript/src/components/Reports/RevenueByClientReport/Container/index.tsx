@@ -1,47 +1,48 @@
 import React, { Fragment } from "react";
 
-import { cashFormatter, currencySymbol } from "helpers"; // TODO: Formatter
+import { SummaryDashboard } from "StyledComponents";
 
 import EmptyStates from "common/EmptyStates";
-import TotalHeader from "common/TotalHeader";
 import { useEntry } from "components/Reports/context/EntryContext";
 import { useUserContext } from "context/UserContext";
 
 import MobileRow from "./MobileRow";
 import TableRow from "./TableRow";
 
+import { summaryList } from "../util";
+
 const TableHeader = () => (
   <thead>
     <tr className="flex flex-row items-center">
       <th
-        className="w-3/5 py-5 pr-6 text-left text-xs font-normal tracking-widest text-miru-dark-purple-600"
+        className="w-4/12 py-5 pr-6 text-left text-xs font-normal tracking-widest text-miru-dark-purple-600"
         scope="col"
       >
         CLIENT
       </th>
       <th
-        className="w-2/5 px-0 py-5 text-right text-xs font-normal tracking-widest text-miru-dark-purple-600"
+        className="w-2/12 px-0 py-5 text-right text-xs font-normal tracking-widest text-miru-dark-purple-600"
         scope="col"
       >
-        OVERDUE AMOUNT
+        OVERDUE <br /> AMOUNT
       </th>
       <th
-        className="w-2/5 px-0 py-5 text-right text-xs font-normal tracking-widest text-miru-dark-purple-600"
+        className="w-2/12 px-0 py-5 text-right text-xs font-normal tracking-widest text-miru-dark-purple-600"
         scope="col"
       >
-        OUTSTANDING AMOUNT
+        OUTSTANDING <br /> AMOUNT
       </th>
       <th
-        className="w-1/5 px-6 py-5 text-right text-xs font-normal tracking-widest text-miru-dark-purple-600"
+        className="w-2/12 px-6 py-5 text-right text-xs font-normal tracking-widest text-miru-dark-purple-600"
         scope="col"
       >
-        PAID AMOUNT
+        PAID <br /> AMOUNT
       </th>
       <th
-        className="w-1/5 py-5 pl-6 text-right text-xs font-normal tracking-widest text-miru-dark-purple-600"
+        className="w-2/12 py-5 pl-6 text-right text-xs font-normal tracking-widest text-miru-dark-purple-600"
         scope="col"
       >
-        TOTAL REVENUE
+        TOTAL <br /> REVENUE
       </th>
     </tr>
   </thead>
@@ -49,28 +50,18 @@ const TableHeader = () => (
 
 const Container = () => {
   const { revenueByClientReport } = useEntry();
-  const currencySymb = currencySymbol(revenueByClientReport.currency);
   const { isDesktop } = useUserContext();
 
   return revenueByClientReport.clientList.length ? (
     <Fragment>
-      <TotalHeader
-        firstTitle={isDesktop ? "TOTAL OUTSTANDING AMOUNT" : "OUTSTANDING"}
-        secondTitle={isDesktop ? "TOTAL PAID AMOUNT" : "PAID"}
-        thirdTitle={isDesktop ? "TOTAL REVENUE" : "TOTAL"}
-        firstAmount={`${currencySymb}${cashFormatter(
-          revenueByClientReport.summary.totalOutstandingAmount
-        )}`}
-        secondAmount={`${currencySymb}${cashFormatter(
-          revenueByClientReport.summary.totalPaidAmount
-        )}`}
-        thirdAmount={`${currencySymb}${cashFormatter(
-          revenueByClientReport.summary.totalRevenue
-        )}`}
+      <SummaryDashboard
+        currency={revenueByClientReport.currency}
+        summaryList={summaryList(revenueByClientReport, isDesktop)}
+        wrapperClassName="mt-3 lg:mb-9 mx-4 lg:mx-0"
       />
       <div />
       {isDesktop ? (
-        <table className="mt-4 min-w-full divide-y divide-gray-200">
+        <table className="mt-4 min-w-full table-auto divide-y divide-gray-200">
           <TableHeader />
           <tbody className="divide-y divide-gray-200 bg-white">
             {revenueByClientReport.clientList.length &&

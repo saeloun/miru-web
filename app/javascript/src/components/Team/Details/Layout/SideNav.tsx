@@ -21,6 +21,10 @@ const getTeamUrls = memberId => [
     url: `/team/${memberId}`,
     text: "PERSONAL DETAILS",
   },
+  {
+    url: `/team/${memberId}/employment`,
+    text: "EMPLOYEMENT DETAILS",
+  },
 ];
 
 const UserInformation = ({ memberId }) => {

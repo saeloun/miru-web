@@ -2,8 +2,11 @@ import React, { Fragment, useEffect, useState } from "react";
 
 import Logger from "js-logger";
 import { useSearchParams } from "react-router-dom";
+import { Toastr } from "StyledComponents";
 
 import invoicesApi from "apis/invoices";
+import PaymentsProviders from "apis/payments/providers";
+import Loader from "common/Loader/index";
 import withLayout from "common/Mobile/HOC/withLayout";
 import Pagination from "common/Pagination/Pagination";
 import { ApiStatus as InvoicesStatus, LocalStorageKeys } from "constants/index";
@@ -64,12 +67,13 @@ const Invoices = () => {
   const [connected, setConnected] = useState<boolean>(false);
   const [received, setReceived] = useState<any>(null);
   const [counter, setCounter] = useState<number>(1);
+  const [isStripeEnabled, setIsStripeEnabled] = useState<boolean>(null);
   const selectedInvoiceCount = selectedInvoices.length;
   const isInvoiceSelected = selectedInvoiceCount > 0;
   const [selectedInvoiceCounter, setSelectedInvoiceCounter] =
     useState<number>(selectedInvoiceCount);
 
-  const { isDesktop } = useUserContext();
+  const { isDesktop, handleOverlayVisibility } = useUserContext();
 
   useEffect(() => sendGAPageView(), []);
 
@@ -99,6 +103,7 @@ const Invoices = () => {
       params.query
     );
     fetchInvoices();
+    fetchPaymentsProvidersSettings();
     setSearchParams(cleanParams(params));
   }, [params.invoices_per_page, params.page, params.query, filterParams]);
 
@@ -160,6 +165,17 @@ const Invoices = () => {
     }
   };
 
+  const fetchPaymentsProvidersSettings = async () => {
+    try {
+      const res = await PaymentsProviders.get();
+      const paymentsProviders = res.data.paymentsProviders;
+      const stripe = paymentsProviders.find(p => p.name === "stripe");
+      setIsStripeEnabled(!!stripe && stripe.enabled);
+    } catch {
+      Toastr.error("ERROR! CONNECTING TO PAYMENTS");
+    }
+  };
+
   const handleFilterParams = () => {
     let filterQueryParams = "";
 
@@ -214,21 +230,23 @@ const Invoices = () => {
     window.localStorage.removeItem(LocalStorageKeys.INVOICE_FILTERS);
     setIsFilterVisible(false);
     setFilterParams(filterIntialValues);
+    setParams({ ...params, page: 1 });
   };
 
   const InvoicesLayout = () => (
-    <div className="h-full p-4 lg:p-0">
+    <div className="h-full p-4 lg:p-0" id="invoice-list-page">
       <Header
         filterParamsStr={filterParamsStr}
+        handleOverlayVisibility={handleOverlayVisibility}
         isDesktop={isDesktop}
         params={params}
         setIsFilterVisible={setIsFilterVisible}
         setParams={setParams}
       />
       {status === InvoicesStatus.LOADING ? (
-        <p className="tracking-wide mt-50 flex items-center justify-center text-2xl font-medium text-miru-han-purple-1000">
-          Loading...
-        </p>
+        <div className="flex h-80v w-full flex-col justify-center">
+          <Loader />
+        </div>
       ) : status === InvoicesStatus.SUCCESS ? (
         <Fragment>
           <Container
@@ -242,6 +260,7 @@ const Invoices = () => {
             invoices={invoices}
             isDesktop={isDesktop}
             isInvoiceSelected={isInvoiceSelected}
+            isStripeEnabled={isStripeEnabled}
             params={params}
             recentlyUpdatedInvoices={recentlyUpdatedInvoices}
             selectInvoices={selectInvoices}
@@ -249,6 +268,7 @@ const Invoices = () => {
             selectedInvoices={selectedInvoices}
             setFilterParams={setFilterParams}
             setInvoiceToDelete={setInvoiceToDelete}
+            setIsStripeEnabled={setIsStripeEnabled}
             setShowBulkDeleteDialog={setShowBulkDeleteDialog}
             setShowBulkDownloadDialog={setShowBulkDownloadDialog}
             setShowDeleteDialog={setShowDeleteDialog}
@@ -263,6 +283,7 @@ const Invoices = () => {
               handleReset={handleReset}
               isDesktop={isDesktop}
               selectedInput={selectedInput}
+              setDefaultParams={() => setParams({ ...params, page: 1 })}
               setFilterParams={setFilterParams}
               setIsFilterVisible={setIsFilterVisible}
               setSelectedInput={setSelectedInput}
@@ -281,6 +302,7 @@ const Invoices = () => {
               fetchInvoices={fetchInvoices}
               invoice={invoiceToDelete}
               setShowDeleteDialog={setShowDeleteDialog}
+              showDeleteDialog={showDeleteDialog}
             />
           )}
           {showBulkDeleteDialog && (
@@ -288,6 +310,7 @@ const Invoices = () => {
               fetchInvoices={fetchInvoices}
               invoices_ids={selectedInvoices}
               setShowBulkDeleteDialog={setShowBulkDeleteDialog}
+              showBulkDeleteDialog={showBulkDeleteDialog}
             />
           )}
           {showBulkDownloadDialog && (

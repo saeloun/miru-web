@@ -46,8 +46,11 @@ import {
   Copy,
   Key,
   User,
+  Clock,
+  BellRinging,
 } from "phosphor-react";
 
+const error404Animation = require("./GIFS/404_animation.gif");
 const accountsAgingIcon = require("./svgIcons/accountsAging.svg");
 const accountsAgingHoverIcon = require("./svgIcons/accountsAgingHover.svg");
 const blurredMiruLogo = require("./svgIcons/blurred-miru-logo.svg");
@@ -75,9 +78,11 @@ const close_button = require("../../../assets/images/close_button.svg");
 const company = require("../../../assets/images/company.svg");
 const Connect = require("../../../assets/images/Connect.svg");
 const connected_check = require("../../../assets/images/connected_check.svg");
+const ConnectMobile = require("../../../assets/images/ConnectMobile.svg");
 const ConnectPaypal = require("../../../assets/images/ConnectPaypal.svg");
 const deleteSVG = require("../../../assets/images/delete.svg");
 const delete_image_button = require("../../../assets/images/delete_image_button.svg");
+const disconnectAccount = require("../../../assets/images/disconnect-account.svg");
 const down = require("../../../assets/images/down-arrow-svgrepo-com.svg");
 const downArrow = require("../../../assets/images/down_arrow.svg");
 const edit = require("../../../assets/images/edit.svg");
@@ -89,6 +94,7 @@ const help_icon = require("../../../assets/images/help_icon.png");
 const circleInfo = require("../../../assets/images/info-circle.svg");
 const closeInfo = require("../../../assets/images/info-close-icon.svg");
 const Instagram = require("../../../assets/images/Instagram.svg");
+const Waive = require("../../../assets/images/InvoiceWaive.svg");
 const logo = require("../../../assets/images/logo.jpg");
 const logout_icon = require("../../../assets/images/logout_icon.svg");
 const masterCard = require("../../../assets/images/masterCard.svg");
@@ -179,6 +185,8 @@ export const MoneyIcon = Money;
 export const CopyIcon = Copy;
 export const KeyIcon = Key;
 export const UserIcon = User;
+export const ClockIcon = Clock;
+export const ReminderIcon = BellRinging;
 
 // custom svg icons
 export const WarningTriangleSVG = warningTriangle;
@@ -233,9 +241,12 @@ export const AlertSVG = alert;
 export const AmexSVG = amex;
 export const NavAvatarSVG = NavAvatar;
 export const InstagramSVG = Instagram;
+export const WaiveSVG = Waive;
 export const MiruWhiteLogoWithTextSVG = MiruWhiteLogoWithText;
 export const ConnectPaypalSVG = ConnectPaypal;
 export const ConnectSVG = Connect;
+export const ConnectMobileSVG = ConnectMobile;
+export const disconnectAccountSVG = disconnectAccount;
 export const MiruLogoSVG = miruLogo;
 export const MiruLogoWatermarkSVG = miruLogoWatermark;
 export const DeleteIconSVG = deleteSVG;
@@ -263,3 +274,4 @@ export const MiruManagingEmployeesScreen = miruManagingEmployeesScreen;
 export const MoreOptionIcon = moreOption;
 export const GreenCheckCirleIcon = greenCheckCirleIcon;
 export const deleteImageIcon = deleteImage;
+export const Animation_404 = error404Animation;

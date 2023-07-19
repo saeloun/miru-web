@@ -26,7 +26,7 @@ module Reports::ClientRevenues
 
       def summary
         total_paid_amount = clients.pluck(:paid_amount).sum
-        total_outstanding_amount = clients.pluck(:outstanding_amount).sum
+        total_outstanding_amount = clients.pluck(:outstanding_amount).sum + clients.pluck(:overdue_amount).sum
         {
           total_paid_amount:,
           total_outstanding_amount:,

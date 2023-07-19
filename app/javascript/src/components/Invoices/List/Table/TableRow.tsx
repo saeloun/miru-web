@@ -7,6 +7,7 @@ import { Avatar, Badge, Button, Tooltip } from "StyledComponents";
 
 import CustomCheckbox from "common/CustomCheckbox";
 import SendInvoiceContainer from "components/Invoices/Generate/MobileView/Container/SendInvoiceContainer";
+import ConnectPaymentGateway from "components/Invoices/popups/ConnectPaymentGateway";
 import getStatusCssClass from "utils/getBadgeStatus";
 
 import MoreOptions from "../MoreOptions";
@@ -22,12 +23,18 @@ const TableRow = ({
   fetchInvoices,
   isDesktop,
   index,
+  isStripeEnabled,
+  // eslint-disable-next-line no-unused-vars
+  setIsStripeEnabled,
 }) => {
   const [isSending, setIsSending] = useState<boolean>(false);
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   const [showMoreOptions, setShowMoreOptions] = useState<boolean>(false);
   const [showToolTip, setShowToolTip] = useState<boolean>(false);
+  const [isSendReminder, setIsSendReminder] = useState<boolean>(false);
   useDebounce(isMenuOpen, 500);
+  const [showConnectPaymentDialog, setShowConnectPaymentDialog] =
+    useState<boolean>(false);
   const navigate = useNavigate();
   const toolTipRef = useRef(null);
 
@@ -68,7 +75,7 @@ const TableRow = ({
   return (
     <>
       <tr
-        className="group cursor-pointer last:border-b-0 hover:bg-miru-gray-100"
+        className="group cursor-pointer last:border-b-0 md:hover:bg-miru-gray-100"
         id="invoicesListTableRow"
         key={index}
         onClick={() => {
@@ -129,11 +136,16 @@ const TableRow = ({
               isDesktop={isDesktop}
               isMenuOpen={isMenuOpen}
               isSending={isSending}
+              isStripeEnabled={isStripeEnabled}
               setInvoiceToDelete={setInvoiceToDelete}
               setIsMenuOpen={setIsMenuOpen}
+              setIsSendReminder={setIsSendReminder}
               setIsSending={setIsSending}
+              setShowConnectPaymentDialog={setShowConnectPaymentDialog}
               setShowDeleteDialog={setShowDeleteDialog}
               setShowMoreOptions={setShowMoreOptions}
+              showConnectPaymentDialog={showConnectPaymentDialog}
+              showMoreOptions={showMoreOptions}
               showPrint={false}
               showSendLink={false}
             />
@@ -159,15 +171,27 @@ const TableRow = ({
             </button>
           </td>
         )}
-        {isSending && isDesktop && (
-          <SendInvoice
-            fetchInvoices={fetchInvoices}
+        {(isSending || isSendReminder) &&
+          isDesktop &&
+          !showConnectPaymentDialog && (
+            <SendInvoice
+              fetchInvoices={fetchInvoices}
+              invoice={invoice}
+              isSendReminder={isSendReminder}
+              isSending={isSending}
+              setISendReminder={setIsSendReminder}
+              setIsSending={setIsSending}
+            />
+          )}
+        {!isStripeEnabled && showConnectPaymentDialog && (
+          <ConnectPaymentGateway
             invoice={invoice}
-            isSending={isSending}
             setIsSending={setIsSending}
+            setShowConnectPaymentDialog={setShowConnectPaymentDialog}
+            showConnectPaymentDialog={showConnectPaymentDialog}
           />
         )}
-        {isSending && !isDesktop && (
+        {(isSending || isSendReminder) && !isDesktop && (
           <div
             className="absolute inset-0 z-50 flex flex-col bg-white"
             onClick={e => {
@@ -176,16 +200,27 @@ const TableRow = ({
             }}
           >
             <div className="flex w-full bg-miru-han-purple-1000 pl-4">
-              <Button style="ternary" onClick={() => setIsSending(false)}>
+              <Button
+                style="ternary"
+                onClick={() => {
+                  isSendReminder
+                    ? setIsSendReminder(false)
+                    : setIsSending(false);
+                }}
+              >
                 <ArrowLeftIcon className="text-white" size={16} weight="bold" />
               </Button>
               <div className="flex h-12 w-full items-center justify-center bg-miru-han-purple-1000 px-3 text-white">
-                Send Invoice
+                {isSendReminder ? "Send Invoice Reminder" : "Send Invoice"}
               </div>
               <button
                 className="mr-4 text-miru-gray-1000"
                 type="button"
-                onClick={() => setIsSending(false)}
+                onClick={() => {
+                  isSendReminder
+                    ? setIsSendReminder(false)
+                    : setIsSending(false);
+                }}
               >
                 <XIcon size={16} weight="bold" />
               </button>
@@ -194,6 +229,7 @@ const TableRow = ({
               <SendInvoiceContainer
                 handleSaveSendInvoice={null}
                 invoice={invoice}
+                isSendReminder={isSendReminder}
                 setIsSending={setIsSending}
               />
             </div>
@@ -206,11 +242,16 @@ const TableRow = ({
           isDesktop={isDesktop}
           isMenuOpen={isMenuOpen}
           isSending={isSending}
+          isStripeEnabled={isStripeEnabled}
           setInvoiceToDelete={setInvoiceToDelete}
           setIsMenuOpen={setIsMenuOpen}
+          setIsSendReminder={setIsSendReminder}
           setIsSending={setIsSending}
+          setShowConnectPaymentDialog={setShowConnectPaymentDialog}
           setShowDeleteDialog={setShowDeleteDialog}
           setShowMoreOptions={setShowMoreOptions}
+          showConnectPaymentDialog={showConnectPaymentDialog}
+          showMoreOptions={showMoreOptions}
           showPrint={false}
           showSendLink={false}
         />
