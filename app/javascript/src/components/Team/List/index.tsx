@@ -45,7 +45,6 @@ const TeamList = () => {
   }, [modal]);
 
   const handlePageChange = async (pageData, items = pagy.items) => {
-    // console.log("Clicked");
     if (pageData == "...") return;
 
     const response = await teamApi.get(`page=${pageData}&items=${items}`);
