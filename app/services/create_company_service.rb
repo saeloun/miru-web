@@ -13,6 +13,7 @@ class CreateCompanyService
   def process
     company.save!
     add_current_user_to_company
+    company
   end
 
   private

@@ -1,6 +1,29 @@
 # frozen_string_literal: true
 
 class ClientPolicy < ApplicationPolicy
+  class Scope < ApplicationPolicy
+    def initialize(user, company)
+      @user = user
+      @scope = company
+    end
+
+    def resolve
+      if user_owner_role? || user_admin_role?
+        scope.clients.kept.order(:name)
+      else
+        user.clients.kept
+          .where(company_id: scope.id)
+          .merge(user.project_members.kept)
+          .order(:name)
+          .distinct
+      end
+    end
+
+    private
+
+      attr_reader :user, :scope
+  end
+
   attr_reader :error_message_key
 
   def index?
@@ -24,7 +47,13 @@ class ClientPolicy < ApplicationPolicy
   end
 
   def permitted_attributes
-    [:name, :email, :phone, :address]
+    [
+      :name,
+      :email,
+      :phone,
+      :logo,
+      addresses_attributes: [:id, :address_line_1, :address_line_2, :city, :state, :country, :pin]
+    ]
   end
 
   def authorize_current_user

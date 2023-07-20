@@ -13,7 +13,7 @@ class InvoicePayment::StripeCheckoutFulfillment < ApplicationService
   def process
     @invoice = Invoice.find(event.data.object.metadata.invoice_id)
     if is_valid_event?
-      InvoicePayment::AddPayment.process(payment_params, invoice)
+      InvoicePayment::Settle.process(payment_params, invoice)
     end
     rescue StandardError => error
       Rails.logger.error error.message
@@ -43,7 +43,27 @@ class InvoicePayment::StripeCheckoutFulfillment < ApplicationService
         transaction_date: DateTime.strptime(event.created.to_s, "%s").to_date,
         transaction_type: "stripe",
         amount: Money.from_cents(event.data.object.amount_total, event.data.object.currency).amount,
-        note: "Stripe_Payment_Success"
+        note: "Stripe_Payment_Success",
+        name: card_name
       }
+    end
+
+    def card_name
+      stripe_connected_account = @invoice.company.stripe_connected_account
+
+      return nil if stripe_connected_account.nil? ||
+        (stripe_connected_account && stripe_connected_account.account_id.nil?)
+
+      account_id = stripe_connected_account.account_id
+      payment_intent = Stripe::RetrievePaymentIntent.new(
+        data_object.payment_intent,
+        account_id
+      ).process
+      payment_method = Stripe::RetrievePaymentMethod.new(
+        payment_intent.payment_method,
+        account_id
+      ).process
+
+      payment_method&.billing_details&.name
     end
 end

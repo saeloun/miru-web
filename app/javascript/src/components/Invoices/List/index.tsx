@@ -2,22 +2,26 @@ import React, { Fragment, useEffect, useState } from "react";
 
 import Logger from "js-logger";
 import { useSearchParams } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
+import { Toastr } from "StyledComponents";
 
 import invoicesApi from "apis/invoices";
-import Pagination from "common/Pagination";
+import PaymentsProviders from "apis/payments/providers";
+import Loader from "common/Loader/index";
+import withLayout from "common/Mobile/HOC/withLayout";
+import Pagination from "common/Pagination/Pagination";
 import { ApiStatus as InvoicesStatus, LocalStorageKeys } from "constants/index";
+import { useUserContext } from "context/UserContext";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import Container from "./container";
 import FilterSideBar from "./FilterSideBar";
 import Header from "./Header";
 
-import { TOASTER_DURATION } from "../../../constants";
 import BulkDeleteInvoices from "../popups/BulkDeleteInvoices";
+import BulkDownloadInvoices from "../popups/BulkDownloadInvoices";
 import DeleteInvoice from "../popups/DeleteInvoice";
 
-const Invoices = ({ isDesktop }) => {
+const Invoices = () => {
   const filterIntialValues = {
     dateRange: { label: "All", value: "all", from: "", to: "" },
     clients: [],
@@ -53,15 +57,53 @@ const Invoices = ({ isDesktop }) => {
 
   const [showBulkDeleteDialog, setShowBulkDeleteDialog] =
     useState<boolean>(false);
-  const [invoiceToDelete, setInvoiceToDelete] = useState(null);
-  const [recentlyUpdatedInvoices, setRecentlyUpdatedInvoices] = useState(null);
+
+  const [showBulkDownloadDialog, setShowBulkDownloadDialog] =
+    useState<boolean>(false);
+  const [invoiceToDelete, setInvoiceToDelete] = useState<any>(null);
+  const [recentlyUpdatedInvoices, setRecentlyUpdatedInvoices] =
+    useState<any>(null);
+  const [downloading, setDownloading] = useState<boolean>(false);
+  const [connected, setConnected] = useState<boolean>(false);
+  const [received, setReceived] = useState<any>(null);
+  const [counter, setCounter] = useState<number>(1);
+  const [isStripeEnabled, setIsStripeEnabled] = useState<boolean>(null);
   const selectedInvoiceCount = selectedInvoices.length;
   const isInvoiceSelected = selectedInvoiceCount > 0;
+  const [selectedInvoiceCounter, setSelectedInvoiceCounter] =
+    useState<number>(selectedInvoiceCount);
+
+  const { isDesktop, handleOverlayVisibility } = useUserContext();
 
   useEffect(() => sendGAPageView(), []);
 
+  const aferDownloadActions = () => {
+    setCounter(0);
+    setReceived(null);
+    setConnected(false);
+    setSelectedInvoiceCounter(selectedInvoices.length);
+    setShowBulkDownloadDialog(false);
+  };
+
   useEffect(() => {
+    if (!downloading) {
+      if (isDesktop) {
+        const timer = setTimeout(aferDownloadActions, 3000);
+
+        return () => clearTimeout(timer);
+      }
+
+      aferDownloadActions();
+    }
+  }, [downloading]);
+
+  useEffect(() => {
+    window.localStorage.setItem(
+      LocalStorageKeys.INVOICE_SEARCH_PARAM,
+      params.query
+    );
     fetchInvoices();
+    fetchPaymentsProvidersSettings();
     setSearchParams(cleanParams(params));
   }, [params.invoices_per_page, params.page, params.query, filterParams]);
 
@@ -123,27 +165,38 @@ const Invoices = ({ isDesktop }) => {
     }
   };
 
+  const fetchPaymentsProvidersSettings = async () => {
+    try {
+      const res = await PaymentsProviders.get();
+      const paymentsProviders = res.data.paymentsProviders;
+      const stripe = paymentsProviders.find(p => p.name === "stripe");
+      setIsStripeEnabled(!!stripe && stripe.enabled);
+    } catch {
+      Toastr.error("ERROR! CONNECTING TO PAYMENTS");
+    }
+  };
+
   const handleFilterParams = () => {
     let filterQueryParams = "";
 
     filterParams.clients.forEach(client => {
-      filterQueryParams += `&client_ids[]=${client.value}`;
+      filterQueryParams += `&client[]=${client.value}`;
     });
 
     filterParams.status.forEach(status => {
-      filterQueryParams += `&statuses[]=${status.value}`;
+      filterQueryParams += `&status[]=${status.value}`;
     });
 
     const { value, from, to } = filterParams.dateRange;
 
     if (value != "all" && value != "custom") {
-      filterQueryParams += `&from_to[date_range]=${value}`;
+      filterQueryParams += `&date_range=${value}`;
     }
 
     if (value === "custom" && from && to) {
-      filterQueryParams += `&from_to[date_range]=${value}`;
-      filterQueryParams += `&from_to[from]=${from}`;
-      filterQueryParams += `&from_to[to]=${to}`;
+      filterQueryParams += `&date_range=${value}`;
+      filterQueryParams += `&from_date_range=${from}`;
+      filterQueryParams += `&to_date_range=${to}`;
     }
 
     setFilterParamsStr(filterQueryParams);
@@ -162,48 +215,75 @@ const Invoices = ({ isDesktop }) => {
       selectedInvoices.filter(id => !invoiceIds.includes(id))
     );
 
-  return (
-    <Fragment>
-      <ToastContainer autoClose={TOASTER_DURATION} />
+  useEffect(() => {
+    const close = e => {
+      if (e.keyCode === 27) {
+        setIsFilterVisible(false);
+      }
+    };
+    window.addEventListener("keydown", close);
+
+    return () => window.removeEventListener("keydown", close);
+  }, []);
+
+  const handleReset = () => {
+    window.localStorage.removeItem(LocalStorageKeys.INVOICE_FILTERS);
+    setIsFilterVisible(false);
+    setFilterParams(filterIntialValues);
+    setParams({ ...params, page: 1 });
+  };
+
+  const InvoicesLayout = () => (
+    <div className="h-full p-4 lg:p-0" id="invoice-list-page">
       <Header
         filterParamsStr={filterParamsStr}
-        isInvoiceSelected={isInvoiceSelected}
+        handleOverlayVisibility={handleOverlayVisibility}
+        isDesktop={isDesktop}
         params={params}
-        selectedInvoiceCount={selectedInvoiceCount}
         setIsFilterVisible={setIsFilterVisible}
         setParams={setParams}
-        setShowBulkDeleteDialog={setShowBulkDeleteDialog}
-        clearCheckboxes={() =>
-          deselectInvoices(invoices.map(invoice => invoice.id))
-        }
       />
       {status === InvoicesStatus.LOADING ? (
-        <p className="tracking-wide mt-50 flex items-center justify-center text-2xl font-medium text-miru-han-purple-1000">
-          Loading...
-        </p>
+        <div className="flex h-80v w-full flex-col justify-center">
+          <Loader />
+        </div>
       ) : status === InvoicesStatus.SUCCESS ? (
         <Fragment>
           <Container
             deselectInvoices={deselectInvoices}
+            downloading={downloading}
             fetchInvoices={fetchInvoices}
             filterIntialValues={filterIntialValues}
             filterParams={filterParams}
             filterParamsStr={filterParamsStr}
+            handleReset={handleReset}
             invoices={invoices}
             isDesktop={isDesktop}
+            isInvoiceSelected={isInvoiceSelected}
+            isStripeEnabled={isStripeEnabled}
+            params={params}
             recentlyUpdatedInvoices={recentlyUpdatedInvoices}
             selectInvoices={selectInvoices}
+            selectedInvoiceCount={selectedInvoiceCount}
             selectedInvoices={selectedInvoices}
             setFilterParams={setFilterParams}
             setInvoiceToDelete={setInvoiceToDelete}
+            setIsStripeEnabled={setIsStripeEnabled}
+            setShowBulkDeleteDialog={setShowBulkDeleteDialog}
+            setShowBulkDownloadDialog={setShowBulkDownloadDialog}
             setShowDeleteDialog={setShowDeleteDialog}
             summary={summary}
+            clearCheckboxes={() =>
+              deselectInvoices(invoices.map(invoice => invoice.id))
+            }
           />
           {isFilterVisible && (
             <FilterSideBar
-              filterIntialValues={filterIntialValues}
               filterParams={filterParams}
+              handleReset={handleReset}
+              isDesktop={isDesktop}
               selectedInput={selectedInput}
+              setDefaultParams={() => setParams({ ...params, page: 1 })}
               setFilterParams={setFilterParams}
               setIsFilterVisible={setIsFilterVisible}
               setSelectedInput={setSelectedInput}
@@ -211,10 +291,10 @@ const Invoices = ({ isDesktop }) => {
           )}
           {invoices.length > 0 && (
             <Pagination
-              isDesktop={isDesktop}
               pagy={pagy}
               params={params}
               setParams={setParams}
+              title="invoices/page"
             />
           )}
           {showDeleteDialog && (
@@ -222,6 +302,7 @@ const Invoices = ({ isDesktop }) => {
               fetchInvoices={fetchInvoices}
               invoice={invoiceToDelete}
               setShowDeleteDialog={setShowDeleteDialog}
+              showDeleteDialog={showDeleteDialog}
             />
           )}
           {showBulkDeleteDialog && (
@@ -229,6 +310,22 @@ const Invoices = ({ isDesktop }) => {
               fetchInvoices={fetchInvoices}
               invoices_ids={selectedInvoices}
               setShowBulkDeleteDialog={setShowBulkDeleteDialog}
+              showBulkDeleteDialog={showBulkDeleteDialog}
+            />
+          )}
+          {showBulkDownloadDialog && (
+            <BulkDownloadInvoices
+              connected={connected}
+              counter={counter}
+              downloading={downloading}
+              received={received}
+              selectedInvoiceCounter={selectedInvoiceCounter}
+              selectedInvoices={selectedInvoices}
+              setConnected={setConnected}
+              setCounter={setCounter}
+              setDownloading={setDownloading}
+              setReceived={setReceived}
+              setSelectedInvoiceCounter={setSelectedInvoiceCounter}
             />
           )}
         </Fragment>
@@ -239,8 +336,12 @@ const Invoices = ({ isDesktop }) => {
           </div>
         )
       )}
-    </Fragment>
+    </div>
   );
+
+  const Main = withLayout(InvoicesLayout, !isDesktop, !isDesktop);
+
+  return isDesktop ? InvoicesLayout() : <Main />;
 };
 
 export default Invoices;

@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from "react";
 
 import reportsApi from "apis/reports";
+import Pagination from "common/Pagination/Pagination";
+import { useUserContext } from "context/UserContext";
 import { sendGAPageView } from "utils/googleAnalytics";
+
+import { TimeEntryReportMobileView } from "./TimeEntryReportMobileView";
+import { TIME_ENTRY_REPORT_PAGE } from "./utils";
 
 import { applyFilter, getQueryParams } from "../api/applyFilter";
 import Container from "../Container";
@@ -9,8 +14,8 @@ import AccountsAgingReportContext from "../context/AccountsAgingReportContext";
 import EntryContext from "../context/EntryContext";
 import OutstandingOverdueInvoiceContext from "../context/outstandingOverdueInvoiceContext";
 import RevenueByClientReportContext from "../context/RevenueByClientContext";
-import Filters from "../Filters";
 import { getMonth } from "../Filters/filterOptions";
+import FilterSideBar from "../Filters/FilterSideBar";
 import Header from "../Header";
 import { ITimeEntry } from "../interface";
 
@@ -20,8 +25,13 @@ const TimeEntryReport = () => {
     clients: [],
     teamMember: [],
     status: [],
-    groupBy: { label: "None", value: "" },
+    groupBy: { label: "Client", value: "client" },
+    customDateFilter: {
+      from: "",
+      to: "",
+    },
   };
+  const { isDesktop } = useUserContext();
 
   const [timeEntries, setTimeEntries] = useState<Array<ITimeEntry>>([]);
   const [filterOptions, setFilterOptions] = useState({
@@ -32,7 +42,16 @@ const TimeEntryReport = () => {
   const [isFilterVisible, setIsFilterVisible] = useState<boolean>(false);
   const [showNavFilters, setShowNavFilters] = useState<boolean>(false);
   const [filterCounter, setFilterCounter] = useState(0);
-  const [selectedInput, setSelectedInput] = useState("from-input");
+  const [selectedInput, setSelectedInput] = useState<string>("from-input");
+
+  const [paginationDetails, setPaginationDetails] = useState({
+    page: 0,
+    pages: 0,
+    first: true,
+    prev: 0,
+    next: 0,
+    last: false,
+  });
 
   useEffect(() => {
     sendGAPageView();
@@ -42,12 +61,12 @@ const TimeEntryReport = () => {
     let counter = 0;
     for (const filterkey in selectedFilter) {
       const filterValue = selectedFilter[filterkey];
-      if (filterkey !== "customDateFilter") {
+      if (filterkey == "customDateFilter") {
         continue;
       } else if (Array.isArray(filterValue)) {
         counter = counter + filterValue.length;
       } else {
-        if (filterValue.value !== "") {
+        if (filterValue?.value) {
           counter = counter + 1;
         }
       }
@@ -62,21 +81,28 @@ const TimeEntryReport = () => {
       setTimeEntries,
       setShowNavFilters,
       setIsFilterVisible,
-      setFilterOptions
+      setFilterOptions,
+      setPaginationDetails
     );
   }, [selectedFilter]);
 
-  const onClickInput = e => {
-    setSelectedInput(e.target.name);
-  };
+  useEffect(() => {
+    const close = e => {
+      if (e.keyCode === 27) {
+        setIsFilterVisible(false);
+      }
+    };
+    window.addEventListener("keydown", close);
 
-  const handleApplyFilter = async filters => {
+    return () => window.removeEventListener("keydown", close);
+  }, []);
+
+  const handleApplyFilter = filters => {
     setSelectedFilter(filters);
   };
 
   const resetFilter = () => {
     setSelectedFilter(filterIntialValues);
-    setIsFilterVisible(false);
     setShowNavFilters(false);
   };
 
@@ -91,6 +117,11 @@ const TimeEntryReport = () => {
           ...selectedFilter,
           [key]: filterIntialValues.dateRange,
         });
+      } else if (key === "groupBy") {
+        setSelectedFilter({
+          ...selectedFilter,
+          [key]: filterIntialValues.groupBy,
+        });
       } else {
         const label = "None";
         setSelectedFilter({ ...selectedFilter, [key]: { label, value: "" } });
@@ -103,11 +134,26 @@ const TimeEntryReport = () => {
     const response = await reportsApi.download(type, `?${queryParams}`);
     const url = window.URL.createObjectURL(new Blob([response.data]));
     const link = document.createElement("a");
-    const date = new Date();
+    const filename = `${selectedFilter.dateRange.label}.${type}`;
     link.href = url;
-    link.setAttribute("download", `${date.toISOString()}_miru_report.${type}`);
-    document.body.appendChild(link);
+    link.setAttribute("download", filename);
     link.click();
+  };
+
+  const handlePageClick = async page => {
+    if (page == "...") return;
+
+    const queryParams = getQueryParams(selectedFilter);
+    const sanitizedParam = queryParams.substring(1);
+    const sanitizedQuery = `?${sanitizedParam}`;
+    const res = await reportsApi.get(`${sanitizedQuery}&page=${page}`);
+
+    if (res.data.reports.length === 0) {
+      setPaginationDetails(res.data.pagy);
+    } else {
+      setTimeEntries(res.data.reports);
+      setPaginationDetails(res.data.pagy);
+    }
   };
 
   const contextValues = {
@@ -132,7 +178,7 @@ const TimeEntryReport = () => {
   };
 
   return (
-    <div>
+    <div className="h-full">
       <EntryContext.Provider
         value={{
           ...contextValues,
@@ -143,18 +189,39 @@ const TimeEntryReport = () => {
           handleDownload={handleDownload}
           isFilterVisible={isFilterVisible}
           resetFilter={resetFilter}
+          revenueFilterCounter={() => {}} // eslint-disable-line  @typescript-eslint/no-empty-function
           setIsFilterVisible={setIsFilterVisible}
-          showNavFilters={showNavFilters}
-          type="Time Entry Report"
+          showNavFilters={isDesktop && showNavFilters}
+          type={TIME_ENTRY_REPORT_PAGE}
         />
-        <Container />
+        {isDesktop ? (
+          <>
+            <Container selectedFilter={selectedFilter} />
+            <Pagination
+              isReport
+              handleClick={handlePageClick}
+              pagy={paginationDetails}
+              params={paginationDetails}
+              setParams={setPaginationDetails}
+            />
+          </>
+        ) : (
+          <TimeEntryReportMobileView
+            handlePageClick={handlePageClick}
+            paginationDetails={paginationDetails}
+            params={paginationDetails}
+            setParams={setPaginationDetails}
+          />
+        )}
         {isFilterVisible && (
-          <Filters
+          <FilterSideBar
             handleApplyFilter={handleApplyFilter}
             resetFilter={resetFilter}
+            selectedFilter={selectedFilter}
             selectedInput={selectedInput}
+            setFilterCounter={setFilterCounter}
             setIsFilterVisible={setIsFilterVisible}
-            onClickInput={onClickInput}
+            setSelectedInput={setSelectedInput}
           />
         )}
       </EntryContext.Provider>

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, {
   FormEvent,
   KeyboardEvent,
@@ -7,11 +8,13 @@ import React, {
 } from "react";
 
 import cn from "classnames";
-import { useOutsideClick } from "helpers";
 import { XIcon } from "miruIcons";
+import { Modal, Toastr } from "StyledComponents";
 
 import invoicesApi from "apis/invoices";
-import Toastr from "common/Toastr";
+import { CustomAdvanceInput } from "common/CustomAdvanceInput";
+import { CustomInputText } from "common/CustomInputText";
+import { CustomTextareaAutosize } from "common/CustomTextareaAutosize";
 import { ApiStatus as InvoiceStatus } from "constants/index";
 
 import {
@@ -32,37 +35,37 @@ const Recipient: React.FC<{ email: string; handleClick: any }> = ({
   email,
   handleClick,
 }) => (
-  <div className="m-0.5 flex w-fit items-center space-x-2 rounded-full border bg-miru-gray-400 px-2 py-1">
+  <div className="space-XIcon-2 m-0.5 flex w-fit items-center rounded-full border bg-miru-gray-400 px-2 py-1 text-sm font-medium">
     <p>{email}</p>
-    <button
+    {/* <button
       className="text-miru-black-1000 hover:text-miru-red-400"
       type="button"
       onClick={handleClick}
     >
       <XIcon size={14} weight="bold" />
-    </button>
+    </button> */}
   </div>
 );
 
 const SendInvoice: React.FC<any> = ({
-  invoice,
-  setIsSending,
   isSending,
+  setIsSending,
+  invoice,
   fetchInvoices,
+  isSendReminder = false,
+  setISendReminder,
 }) => {
   const [status, setStatus] = useState<InvoiceStatus>(InvoiceStatus.IDLE);
   const [invoiceEmail, setInvoiceEmail] = useState<InvoiceEmail>({
-    subject: emailSubject(invoice),
-    message: emailBody(invoice),
+    subject: emailSubject(invoice, isSendReminder),
+    message: emailBody(invoice, isSendReminder),
     recipients: [invoice.client.email],
   });
   const [newRecipient, setNewRecipient] = useState<string>("");
   const [width, setWidth] = useState<string>("10ch");
 
-  const modal = useRef();
   const input: React.RefObject<HTMLInputElement> = useRef();
 
-  useOutsideClick(modal, () => setIsSending(false), isSending);
   useEffect(() => {
     const length = newRecipient.length;
 
@@ -76,13 +79,17 @@ const SendInvoice: React.FC<any> = ({
         setStatus(InvoiceStatus.LOADING);
 
         const payload = { invoice_email: invoiceEmail };
-        const {
-          data: { message },
-        } = await invoicesApi.sendInvoice(invoice.id, payload);
+        let resp;
+        if (isSendReminder) {
+          resp = await invoicesApi.sendReminder(invoice.id, payload);
+        } else {
+          resp = await invoicesApi.sendInvoice(invoice.id, payload);
+        }
 
-        Toastr.success(message);
+        Toastr.success(resp.data.message);
         setStatus(InvoiceStatus.SUCCESS);
         setIsSending(false);
+        setISendReminder(false);
         setTimeout(fetchInvoices, 6000);
       } catch {
         setStatus(InvoiceStatus.ERROR);
@@ -112,51 +119,52 @@ const SendInvoice: React.FC<any> = ({
   };
 
   return (
-    <div
-      aria-labelledby="modal-title"
-      aria-modal="true"
-      className="fixed inset-0 z-10 overflow-y-auto"
-      role="dialog"
+    <Modal
+      customStyle="sm:my-8 sm:w-full sm:max-w-lg sm:align-middle"
+      isOpen={isSending}
+      onClose={() => {
+        if (isSendReminder) {
+          setIsSending(false);
+          setISendReminder(false);
+        } else {
+          setIsSending(false);
+        }
+      }}
     >
-      <div className="flex min-h-screen items-end justify-center px-4 pt-4 pb-20 text-center sm:block sm:p-0">
-        <div
-          aria-hidden="true"
-          className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
-        />
-        <span
-          aria-hidden="true"
-          className="hidden sm:inline-block sm:h-screen sm:align-middle"
-        >
-          &#8203;
-        </span>
-        <div
-          className="relative inline-block transform overflow-hidden rounded-lg bg-white text-left align-bottom shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:align-middle"
-          ref={modal}
-        >
-          <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-            <div className="mt-2 mb-6 flex items-center justify-between">
-              <h6 className="form__title">
-                Send Invoice #{invoice.invoiceNumber}
-              </h6>
-              <button
-                className="text-miru-gray-1000"
-                type="button"
-                onClick={() => setIsSending(false)}
-              >
-                <XIcon size={16} weight="bold" />
-              </button>
-            </div>
-            <form className="space-y-4">
-              <fieldset className="field_with_errors flex flex-col">
-                <label className="form__label mb-2" htmlFor="to">
-                  To
-                </label>
+      <div onClick={e => e.stopPropagation()}>
+        <div className="mt-2 mb-6 flex items-center justify-between">
+          <h6 className="form__title">
+            {isSendReminder
+              ? "Send Invoice Reminder"
+              : `Send Invoice #${invoice.invoiceNumber}`}
+          </h6>
+          <button
+            className="text-miru-gray-1000"
+            type="button"
+            onClick={() => {
+              if (isSendReminder) {
+                setIsSending(false);
+                setISendReminder(false);
+              } else {
+                setIsSending(false);
+              }
+            }}
+          >
+            <XIcon size={16} weight="bold" />
+          </button>
+        </div>
+        <form className="space-y-4">
+          <fieldset className="field_with_errors flex flex-col">
+            <CustomAdvanceInput
+              id="Email ID"
+              inputBoxClassName="py-3"
+              label="Email ID"
+              wrapperClassName="h-full"
+              value={
                 <div
-                  className={cn(
-                    "flex flex-wrap rounded bg-miru-gray-100 p-1.5",
-                    { "h-9": !invoiceEmail.recipients }
-                  )}
-                  onClick={() => input.current.focus()}
+                  className={cn("flex flex-wrap rounded", {
+                    "h-9": !invoiceEmail.recipients,
+                  })}
                 >
                   {invoiceEmail.recipients.map(recipient => (
                     <Recipient
@@ -165,88 +173,87 @@ const SendInvoice: React.FC<any> = ({
                       key={recipient}
                     />
                   ))}
-                  <input
+                  {/* <input
                     name="to"
                     ref={input}
                     style={{ width }}
                     type="email"
                     value={newRecipient}
                     className={cn(
-                      "focus:outline-none mx-1.5 w-fit cursor-text rounded bg-miru-gray-100 py-2",
+                      "focus:outline-none mx-1.5 w-fit cursor-text",
                       {
                         "text-miru-red-400": !isEmailValid(newRecipient),
                       }
                     )}
                     onChange={e => setNewRecipient(e.target.value.trim())}
                     onKeyDown={handleInput}
-                  />
+                  /> */}
                 </div>
-              </fieldset>
-              <fieldset className="field_with_errors flex flex-col">
-                <label className="form__label mb-2" htmlFor="subject">
-                  Subject
-                </label>
-                <input
-                  className="rounded bg-miru-gray-100 p-1.5"
-                  name="subject"
-                  type="text"
-                  value={invoiceEmail.subject}
-                  onChange={e =>
-                    setInvoiceEmail({
-                      ...invoiceEmail,
-                      subject: e.target.value,
-                    })
-                  }
-                />
-              </fieldset>
-              <fieldset className="field_with_errors flex flex-col">
-                <label className="form__label mb-2" htmlFor="body">
-                  Message
-                </label>
-                <textarea
-                  className="rounded bg-miru-gray-100 p-1.5"
-                  name="body"
-                  rows={5}
-                  value={invoiceEmail.message}
-                  onChange={e =>
-                    setInvoiceEmail({
-                      ...invoiceEmail,
-                      message: e.target.value,
-                    })
-                  }
-                />
-              </fieldset>
-              <div>
-                <button
-                  type="button"
-                  className={cn(
-                    `mt-6 flex w-full justify-center rounded-md border border-transparent p-3 text-lg font-bold
-                    uppercase text-white shadow-sm
-                    ${
-                      invoiceEmail?.recipients.length > 0
-                        ? `focus:outline-none cursor-pointer bg-miru-han-purple-1000 hover:bg-miru-han-purple-600 focus:ring-2
-                        focus:ring-miru-han-purple-600 focus:ring-offset-2`
-                        : "cursor-not-allowed border-transparent bg-indigo-100 hover:border-transparent"
-                    }
-                    `,
-                    {
-                      "bg-miru-chart-green-600 hover:bg-miru-chart-green-400":
-                        status === InvoiceStatus.SUCCESS,
-                    }
-                  )}
-                  disabled={
-                    invoiceEmail?.recipients.length <= 0 || isDisabled(status)
-                  }
-                  onClick={handleSubmit}
-                >
-                  {buttonText(status)}
-                </button>
-              </div>
-            </form>
+              }
+              // onClick={() => input.current.focus()}
+            />
+          </fieldset>
+          <fieldset className="field_with_errors flex flex-col">
+            <CustomInputText
+              id="subject"
+              inputBoxClassName="border focus:border-miru-han-purple-1000"
+              label="Subject"
+              name="subject"
+              type="text"
+              value={invoiceEmail.subject}
+              onChange={e =>
+                setInvoiceEmail({
+                  ...invoiceEmail,
+                  subject: e.target.value,
+                })
+              }
+            />
+          </fieldset>
+          <fieldset className="field_with_errors flex flex-col">
+            <CustomTextareaAutosize
+              id="message"
+              label="Message"
+              maxRows={5}
+              name="message"
+              rows={5}
+              value={invoiceEmail.message}
+              onChange={e => {
+                setInvoiceEmail({
+                  ...invoiceEmail,
+                  message: e.target.value,
+                });
+              }}
+            />
+          </fieldset>
+          <div>
+            <button
+              type="button"
+              className={cn(
+                `mt-6 flex w-full justify-center rounded-md border border-transparent p-3 text-lg font-bold
+                uppercase text-white shadow-sm
+                ${
+                  invoiceEmail?.recipients.length > 0
+                    ? `focus:outline-none cursor-pointer bg-miru-han-purple-1000 hover:bg-miru-han-purple-600 focus:ring-2
+                    focus:ring-miru-han-purple-600 focus:ring-offset-2`
+                    : "cursor-not-allowed border-transparent bg-indigo-100 hover:border-transparent"
+                }
+                `,
+                {
+                  "bg-miru-chart-green-600 hover:bg-miru-chart-green-400":
+                    status === InvoiceStatus.SUCCESS,
+                }
+              )}
+              disabled={
+                invoiceEmail?.recipients.length <= 0 || isDisabled(status)
+              }
+              onClick={handleSubmit}
+            >
+              {isSendReminder ? "Send Reminder" : buttonText(status)}
+            </button>
           </div>
-        </div>
+        </form>
       </div>
-    </div>
+    </Modal>
   );
 };
 

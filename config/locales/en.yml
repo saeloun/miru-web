@@ -30,9 +30,19 @@
 # available at https://guides.rubyonrails.org/i18n.html.
 
 en:
+  activerecord:
+    errors:
+      models:
+        client:
+          attributes:
+            name:
+              format: "%{message}"
+        project:
+          attributes:
+            name:
+              format: "%{message}"
   navbar:
     clients: Clients
-    dashboard: Dashboard
     invoices: Invoices
     logout: Logout
     profile: Profile
@@ -44,6 +54,11 @@ en:
     help: Help
     time_tracking: Time Tracking
     view_notifications: View Notifications
+  user:
+    login:
+      failure:
+        disabled: "Your access has been disabled."
+        pending_invitation: "Your account is not activated yet."
   projects:
     projects: Projects
     hours_logged: HOURS LOGGED
@@ -55,6 +70,8 @@ en:
     create:
       success: Project added successfully.
       failure: Project creation failed.
+    update:
+      success:  Changes saved successfully.
     update_members:
       success:
         message: Changes saved successfully
@@ -147,6 +164,9 @@ en:
     update:
       success:
         message: Changes saved successfully
+  employment:
+    update:
+      success: Employment updated successfully
   registration:
     sign_up: sign up
     sign_in: sign in
@@ -206,7 +226,7 @@ en:
         failure: "Something went wrong, please contact support"
   settings:
     settings: settings
-    cancel : cancel
+    cancel: cancel
     save: save
     profile_setting: profile settings
     organization_setting: organization settings
@@ -223,7 +243,9 @@ en:
     client_policy:
       create?: You are not authorized to create client.
       update?: You are not authorized to update client.
-      show?: You are not authorized to access the page. Please reach out to your administrator for help.
+      show?:
+        You are not authorized to access the page. Please reach out to your
+        administrator for help.
     company_policy:
       new?: You are not authorized to create new company.
       create?: You are not authorized to create company.
@@ -231,21 +253,26 @@ en:
       update?: You are not authorized to update company.
     current_company_policy:
       company_not_present: Company not present.
-    dashboard_policy:
-      index?: You are not authorized to view dashboard.
     project_policy:
       create?: You are not authorized to create project.
-      show?: You are not authorized to access the page. Please reach out to your administrator for help.
+      show?:
+        You are not authorized to access the page. Please reach out to your
+        administrator for help.
     team_policy:
       edit?: You are not authorized to edit team.
       update?: You are not authorized to update team.
       destroy?: You are not authorized to destroy team.
   errors:
     not_found: The resource you're looking for is not available
-    unauthorized: Only owner or admin users are authorized to perform this action
+    unauthorized:
+      Only owner or admin users are authorized to perform this action
     bill_status_billed: You can't bill an entry that has already been billed
     create_billed_entry: You can't create a billed timesheet entry
     internal_server_error: Something went wrong
+    user_already_member: Email id is already in use. Please enter another email id
+    updation_not_allowed: updation is not allowed
+    can't change status: can't be changed of a paid invoice
+    prevent_draft_to_waived: can't be changed to waived
   timesheet_entry:
     create:
       message: "Timesheet created"
@@ -253,3 +280,12 @@ en:
       message: "Timesheet updated"
     destroy:
       message: "Timesheet deleted"
+  password:
+    create:
+      success:
+        Instructions for resetting your password have been sent to your email.
+    update:
+      success: Your password has been updated.
+  sessions:
+    failure:
+      invalid: Invalid email or password

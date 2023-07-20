@@ -1,6 +1,5 @@
-import React, { useRef } from "react";
+import React from "react";
 
-import { useOutsideClick } from "helpers";
 import {
   PaperPlaneTiltIcon,
   DeleteIcon,
@@ -8,9 +7,10 @@ import {
   PenIcon,
   DotsThreeVerticalIcon,
   DownloadSimpleIcon,
+  ReminderIcon,
 } from "miruIcons";
-import { Link } from "react-router-dom";
-import { Tooltip } from "StyledComponents";
+import { useNavigate } from "react-router-dom";
+import { Tooltip, Modal } from "StyledComponents";
 
 import { handleDownloadInvoice } from "../common/utils";
 
@@ -23,76 +23,128 @@ const MoreOptions = ({
   setIsSending,
   isSending,
   isDesktop,
+  showMoreOptions,
   setShowMoreOptions,
+  showPrint,
+  showSendLink,
+  setIsSendReminder,
+  showConnectPaymentDialog,
+  setShowConnectPaymentDialog,
+  isStripeEnabled,
 }) => {
-  const wrapperRef = useRef(null);
-
-  useOutsideClick(wrapperRef, () => {
-    setShowMoreOptions(false);
-  });
+  const navigate = useNavigate();
 
   return isDesktop ? (
     <>
-      <div className="absolute bottom-16 right-0 flex hidden items-center justify-between rounded-xl border-2 border-miru-gray-200 bg-white lg:w-28 lg:p-2 lg:group-hover:flex xl:w-40 xl:p-3">
+      <div
+        className="absolute bottom-16 right-0 flex hidden items-center justify-between rounded-xl border-2 border-miru-gray-200 bg-white lg:w-28 lg:p-2 lg:group-hover:flex xl:w-40 xl:p-3"
+        onClick={e => e.stopPropagation()}
+      >
         <Tooltip content="Send To">
           <button
-            className="text-miru-han-purple-1000"
-            onClick={() => setIsSending(!isSending)}
+            className="rounded p-2 text-miru-han-purple-1000 hover:bg-miru-gray-100"
+            id="sendInvoiceButton"
+            onClick={e => {
+              e.stopPropagation();
+              if (isStripeEnabled) {
+                setIsSending(!isSending);
+              } else {
+                setShowConnectPaymentDialog(!showConnectPaymentDialog);
+              }
+            }}
           >
-            <PaperPlaneTiltIcon size={16} />
+            <PaperPlaneTiltIcon
+              className="hover:bg-miru-gray-100"
+              size={16}
+              weight="bold"
+            />
           </button>
         </Tooltip>
         <Tooltip content="Download">
           <button
-            data-cy="invoice-download"
             disabled={invoice.status == "draft"}
             className={
               invoice.status == "draft"
                 ? "text-miru-gray-1000"
-                : "text-miru-han-purple-1000"
+                : "rounded p-2 text-miru-han-purple-1000 hover:bg-miru-gray-100"
             }
-            onClick={() => handleDownloadInvoice(invoice)}
+            onClick={e => {
+              e.stopPropagation();
+              handleDownloadInvoice(invoice);
+            }}
           >
-            <DownloadSimpleIcon size={16} />
+            <DownloadSimpleIcon size={16} weight="bold" />
           </button>
         </Tooltip>
         <Tooltip content="Edit">
-          <Link
-            className="text-miru-han-purple-1000"
-            data-cy="edit-invoice"
-            to={`/invoices/${invoice.id}/edit`}
-            type="button"
+          <button
+            className="rounded p-2 text-miru-han-purple-1000 hover:bg-miru-gray-100"
+            id="editInvoiceButton"
+            onClick={e => {
+              e.stopPropagation();
+              navigate(`/invoices/${invoice.id}/edit`);
+            }}
           >
-            <PenIcon size={16} />
-          </Link>
+            <PenIcon size={16} weight="bold" />
+          </button>
         </Tooltip>
         <Tooltip content="More">
           <button
-            className="text-miru-han-purple-1000"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            id="openMenu"
+            className={`rounded p-2 text-miru-han-purple-1000  hover:bg-miru-gray-100 ${
+              isMenuOpen && `bg-miru-gray-100`
+            }`}
+            onClick={e => {
+              e.stopPropagation();
+              setIsMenuOpen(!isMenuOpen);
+            }}
           >
-            <DotsThreeVerticalIcon size={16} />
+            <DotsThreeVerticalIcon size={16} weight="bold" />
           </button>
         </Tooltip>
       </div>
       {isMenuOpen && (
         <div
           className="absolute top-4 right-0 z-10 flex-col items-end group-hover:flex"
+          onClick={e => e.stopPropagation()}
           onMouseLeave={() => setIsMenuOpen(false)}
         >
-          <div className="overflow-hidden lg:w-10 xl:w-12">
+          <div className="hidden overflow-hidden lg:w-10 xl:w-12">
             <div className="h-6 w-6 origin-bottom-left rotate-45 transform border-2 border-miru-gray-200 bg-white" />
           </div>
-          <ul className="border-2 border-t-0 border-miru-gray-200 bg-white lg:p-3 xl:p-4">
-            <li className="flex cursor-pointer items-center lg:py-1 xl:py-2">
-              <PrinterIcon
-                className="text-miru-han-purple-1000 lg:mr-2 xl:mr-4"
-                size={16}
-              />
-              Print
-            </li>
+          <ul
+            className="mt-1 rounded-lg border-miru-gray-200 bg-white shadow-c1 lg:py-3 xl:py-4"
+            onClick={e => e.stopPropagation()}
+          >
+            {invoice?.status === "overdue" && (
+              <li
+                className="flex cursor-pointer items-center px-5 text-sm text-miru-han-purple-1000 hover:bg-miru-gray-100 lg:py-1 xl:py-2"
+                id="reminderIcon"
+                onClick={() => {
+                  setIsSendReminder(true);
+                  setIsSending(!isSending);
+                }}
+              >
+                <ReminderIcon
+                  className="lg:mr-2 xl:mr-4"
+                  size={16}
+                  weight="bold"
+                />
+                Send Reminder
+              </li>
+            )}
+            {showPrint && (
+              <li className="flex cursor-pointer items-center px-5 text-sm text-miru-han-purple-1000 hover:bg-miru-gray-100 lg:py-1 xl:py-2">
+                <PrinterIcon
+                  className="text-miru-han-purple-1000 lg:mr-2 xl:mr-4"
+                  size={16}
+                  weight="bold"
+                />
+                Print
+              </li>
+            )}
             <li
-              className="flex cursor-pointer items-center text-miru-red-400 lg:py-1 xl:py-2"
+              className="flex cursor-pointer items-center px-5 text-sm text-miru-red-400 hover:bg-miru-gray-100 lg:py-1 xl:py-2"
               onClick={() => {
                 setShowDeleteDialog(true);
                 setInvoiceToDelete(invoice.id);
@@ -101,37 +153,52 @@ const MoreOptions = ({
               <DeleteIcon
                 className="text-miru-red-400 lg:mr-2 xl:mr-4"
                 size={16}
+                weight="bold"
               />
               Delete
             </li>
-            <li className="flex cursor-pointer items-center lg:py-1 xl:py-2">
-              <PaperPlaneTiltIcon
-                className="text-miru-han-purple-1000 lg:mr-2 xl:mr-4"
-                size={16}
-              />
-              Send link
-            </li>
+            {showSendLink && (
+              <li className="flex cursor-pointer items-center px-5 text-sm text-miru-han-purple-1000 hover:bg-miru-gray-100 lg:py-1 xl:py-2">
+                <PaperPlaneTiltIcon
+                  className="text-miru-han-purple-1000 lg:mr-2 xl:mr-4"
+                  size={16}
+                  weight="bold"
+                />
+                Send link
+              </li>
+            )}
           </ul>
         </div>
       )}
     </>
   ) : (
-    <div
-      className="modal__modal main-modal "
-      style={{ background: "rgba(29, 26, 49,0.6)" }}
+    <Modal
+      customStyle="sm:my-8 sm:w-full sm:max-w-lg sm:align-middle overflow-visible"
+      isOpen={showMoreOptions}
+      onClose={() => setShowMoreOptions(false)}
     >
-      <ul className="shadow-2 w-full rounded-lg bg-white p-4" ref={wrapperRef}>
+      <ul className="shadow-2 w-full rounded-lg bg-white">
         <li>
           <button
             className="flex cursor-pointer items-center py-2 text-miru-han-purple-1000"
-            onClick={() => setIsSending(!isSending)}
+            onClick={e => {
+              e.stopPropagation();
+              setIsSending(!isSending);
+              setShowMoreOptions(false);
+              if (isStripeEnabled) {
+                setIsSending(!isSending);
+                setShowMoreOptions(false);
+              } else {
+                setShowConnectPaymentDialog(true);
+                setIsSending(false);
+              }
+            }}
           >
             <PaperPlaneTiltIcon className="mr-4" size={16} /> Send Invoice
           </button>
         </li>
         <li className="flex cursor-pointer items-center py-2">
           <button
-            data-cy="invoice-download"
             disabled={invoice.status == "draft"}
             className={
               invoice.status == "draft"
@@ -144,23 +211,40 @@ const MoreOptions = ({
           </button>
         </li>
         <li>
-          <Link
+          <button
             className="flex cursor-pointer items-center py-2 text-miru-han-purple-1000"
-            data-cy="edit-invoice"
-            to={`/invoices/${invoice.id}/edit`}
-            type="button"
+            id="editInvoiceButton"
+            onClick={() => {
+              navigate(`/invoices/${invoice.id}/edit`);
+            }}
           >
             <PenIcon className="mr-4" size={16} /> Edit Invoice
-          </Link>
+          </button>
         </li>
-        <li className="flex cursor-pointer items-center py-2 text-miru-han-purple-1000">
-          <PrinterIcon className="mr-4" size={16} />
-          Print
-        </li>
-        <li className="flex cursor-pointer items-center py-2 text-miru-han-purple-1000">
-          <PaperPlaneTiltIcon className="mr-4" size={16} />
-          Send link
-        </li>
+        {invoice?.status === "overdue" && (
+          <li
+            className="flex cursor-pointer items-center py-2 text-miru-han-purple-1000"
+            onClick={() => {
+              setIsSendReminder(true);
+              setShowMoreOptions(false);
+            }}
+          >
+            <ReminderIcon className="mr-4" size={16} weight="bold" />
+            Send Reminder
+          </li>
+        )}
+        {showPrint && (
+          <li className="flex cursor-pointer items-center py-2 text-miru-han-purple-1000">
+            <PrinterIcon className="mr-4" size={16} />
+            Print
+          </li>
+        )}
+        {showSendLink && (
+          <li className="flex cursor-pointer items-center py-2 text-miru-han-purple-1000">
+            <PaperPlaneTiltIcon className="mr-4" size={16} />
+            Send link
+          </li>
+        )}
         <li
           className="flex cursor-pointer items-center py-2 text-miru-red-400"
           onClick={() => {
@@ -172,7 +256,7 @@ const MoreOptions = ({
           Delete
         </li>
       </ul>
-    </div>
+    </Modal>
   );
 };
 

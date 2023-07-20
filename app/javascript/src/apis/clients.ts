@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "./api";
 
 const path = "/clients";
 
@@ -12,6 +12,9 @@ const update = async (id, payload) => axios.patch(`${path}/${id}`, payload);
 
 const destroy = async id => axios.delete(`${path}/${id}`);
 
-const clientApi = { update, destroy, get, show, create };
+const invoices = async (query = "") =>
+  axios.get(query ? `${path}/invoices?${query}` : `${path}/invoices`);
+
+const clientApi = { update, destroy, get, show, create, invoices };
 
 export default clientApi;

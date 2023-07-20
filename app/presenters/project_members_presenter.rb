@@ -8,22 +8,14 @@ class ProjectMembersPresenter
   end
 
   def project_to_member_hourly_rate
-    projects_members_rates = {}
-    projects.each do |project|
-      projects_members_rates[project.id] = project_members_hourly_rate(project)
+    @_project_to_member_hourly_rate ||= projects.group_by(&:id).transform_values do |project|
+      project_members_hourly_rate(project.first)
     end
-
-    projects_members_rates
   end
 
   private
 
     def project_members_hourly_rate(project)
-      member_rates = {}
-      project.project_members.each do |project_member|
-        member_rates[project_member.user_id] = project_member.hourly_rate
-      end
-
-      member_rates
+      @_project_members_hourly_rate ||= project.project_members.pluck(:user_id, :hourly_rate).to_h
     end
 end

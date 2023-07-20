@@ -1,38 +1,52 @@
 import dayjs from "dayjs";
 import { lineTotalCalc } from "helpers";
+import { Toastr } from "StyledComponents";
 
 import generateInvoice from "apis/generateInvoice";
 import invoicesApi from "apis/invoices";
-import Toastr from "common/Toastr";
 
-export const generateInvoiceLineItems = (selectedLineItems, manualEntryArr) => {
+export const generateInvoiceLineItems = (
+  selectedLineItems,
+  manualEntryArr,
+  dateFormat
+) => {
   let invoiceLineItems = [];
   invoiceLineItems = invoiceLineItems.concat(
-    selectedLineItems.map(item => ({
-      id: item.id,
-      name: item.name ? item.name : `${item.first_name} ${item.last_name}`,
-      description: item.description,
-      date: dayjs(item.date).format("DD/MM/YYYY"),
-      rate: item.rate,
-      quantity: Number(item.quantity),
-      timesheet_entry_id: item.time_sheet_entry
-        ? item.time_sheet_entry
-        : item.timesheet_entry_id,
-      _destroy: !!item._destroy,
-    }))
+    selectedLineItems.map(item => {
+      const Finaldate =
+        dateFormat == "DD-MM-YYYY" ? item.date : new Date(item.date);
+
+      return {
+        id: item.id,
+        name: item.name ? item.name : `${item.first_name} ${item.last_name}`,
+        description: item.description,
+        date: Finaldate,
+        rate: item.rate,
+        quantity: Number(item.quantity),
+        timesheet_entry_id: item.time_sheet_entry
+          ? item.time_sheet_entry
+          : item.timesheet_entry_id,
+        _destroy: !!item._destroy,
+      };
+    })
   );
 
   invoiceLineItems = invoiceLineItems.concat(
-    manualEntryArr.map(item => ({
-      idx: item.id,
-      name: item.name,
-      description: item.description,
-      date: dayjs(item.date).format("DD/MM/YYYY"),
-      rate: item.rate,
-      quantity: Number(item.quantity),
-      timesheet_entry_id: item.time_sheet_entry,
-      _destroy: !!item._destroy,
-    }))
+    manualEntryArr.map(item => {
+      const Finaldate =
+        dateFormat == "DD-MM-YYYY" ? item.date : new Date(item.date);
+
+      return {
+        idx: item.id,
+        name: item.name,
+        description: item.description,
+        date: Finaldate,
+        rate: item.rate,
+        quantity: Number(item.quantity),
+        timesheet_entry_id: item.time_sheet_entry,
+        _destroy: !!item._destroy,
+      };
+    })
   );
 
   return invoiceLineItems;

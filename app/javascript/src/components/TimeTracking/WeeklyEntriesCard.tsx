@@ -4,10 +4,10 @@ import React, { useState, useEffect } from "react";
 
 import { minFromHHMM, minToHHMM, validateTimesheetEntry } from "helpers";
 import Logger from "js-logger";
-import { CheckedCheckboxSVG, UncheckedCheckboxSVG, EditSVG } from "miruIcons";
+import { CheckedCheckboxSVG, UncheckedCheckboxSVG, EditIcon } from "miruIcons";
+import { TimeInput, Toastr } from "StyledComponents";
 
 import timesheetEntryApi from "apis/timesheet-entry";
-import Toastr from "common/Toastr";
 
 const WeeklyEntriesCard = ({
   client,
@@ -23,6 +23,7 @@ const WeeklyEntriesCard = ({
   isWeeklyEditing,
   setIsWeeklyEditing,
   selectedEmployeeId,
+  isProjectBillable,
 }: Iprops) => {
   const [selectedInputBox, setSelectedInputBox] = useState<number>(-1);
   const [note, setNote] = useState<string>("");
@@ -63,13 +64,12 @@ const WeeklyEntriesCard = ({
     ["unbilled", "billed"].includes(currentEntries[num]["bill_status"])
       ? setBillable(true)
       : setBillable(false);
-    setIsWeeklyEditing(true);
   };
 
   const handleSaveEntry = async () => {
     try {
       const payload = getPayload();
-      const message = validateTimesheetEntry(payload);
+      const message = validateTimesheetEntry(payload, client, currentProjectId);
       if (message) {
         Toastr.error(message);
 
@@ -106,7 +106,7 @@ const WeeklyEntriesCard = ({
     try {
       const timesheetEntryId = currentEntries[selectedInputBox]["id"];
       const payload = getPayload();
-      const message = validateTimesheetEntry(payload);
+      const message = validateTimesheetEntry(payload, client, currentProjectId);
       if (message) {
         Toastr.error(message);
 
@@ -140,9 +140,14 @@ const WeeklyEntriesCard = ({
     );
   };
 
+  const handleDurationChange = val => {
+    setDuration(val);
+    setDataChanged(true);
+  };
+
   const handleSetFocus = () => {
     if (selectedInputBox === -1) return;
-    document.getElementById("selectedInput").focus();
+    document.getElementById("selectedInput")?.focus();
   };
 
   useEffect(() => {
@@ -163,29 +168,28 @@ const WeeklyEntriesCard = ({
 
   return (
     <div className="week-card mt-4 w-full rounded-lg p-6 shadow-xl">
-      <div className="flex items-center">
-        <div className="mr-10 flex w-44 overflow-scroll">
-          <p className="text-lg">{client}</p>
-          <p className="mx-2 text-lg">•</p>
-          <p className="text-lg">{project}</p>
+      <div className="flex w-full items-center justify-between">
+        <div className="mr-2 flex w-1/15 flex-wrap items-center justify-start xl:mr-10">
+          <p className="text-xs xl:text-sm xxl:text-lg">{client}</p>
+          <p className="ml-2 mr-auto text-xs xl:text-sm xxl:text-lg">•</p>
+          <p className="text-xs xl:text-sm xxl:text-lg">{project}</p>
         </div>
-        <div className="mr-7 flex w-138 items-center justify-between">
+        <div className="flex w-1/60 items-center justify-between">
           {[0, 1, 2, 3, 4, 5, 6].map((num: number) =>
             num === selectedInputBox ? (
-              <input
-                className=" focus:outline-none bold h-15 w-18 content-center rounded border-2 border-miru-han-purple-400 bg-miru-gray-100 px-1 py-4 text-xl focus:border-miru-han-purple-400"
+              <TimeInput
+                className="focus:outline-none bold mx-auto h-15 w-auto content-center rounded border-2 border-miru-han-purple-400 bg-miru-gray-100 p-1 text-base focus:border-miru-han-purple-400 xl:w-18 xl:text-xl xxl:p-4"
                 id="selectedInput"
+                initTime={duration}
                 key={num}
-                value={duration}
-                onChange={e => {
-                  setDataChanged(true);
-                  setDuration(e.target.value);
-                }}
+                name="timeInput"
+                onTimeChange={handleDurationChange}
               />
             ) : (
               <div
+                id={`inputClick_${num}`}
                 key={num}
-                className={`bold h-15 w-18 content-center rounded border-2 border-transparent bg-miru-gray-100 px-1 py-4 text-xl ${
+                className={`bold mx-auto flex h-15 w-auto items-center  justify-center rounded border-2 border-transparent bg-miru-gray-100 p-1 text-base xl:text-xl xxl:p-4 ${
                   currentEntries[num]
                     ? "text-miru-gray-500"
                     : "text-miru-dark-purple-200"
@@ -199,15 +203,16 @@ const WeeklyEntriesCard = ({
             )
           )}
         </div>
-        <div className="text-xl font-bold">{minToHHMM(weeklyTotalHours)}</div>
-        <div className="flex justify-around">
-          <img
-            alt="edit"
-            className="icon-hover ml-8 h-4 w-4 cursor-pointer"
-            src={EditSVG}
+        <div className="w-1/10 text-center text-base font-bold xl:text-xl">
+          {minToHHMM(weeklyTotalHours)}
+        </div>
+        <div className="flex w-1/10 items-center justify-center">
+          <EditIcon
+            className="cursor-pointer text-miru-han-purple-1000"
+            size={16}
+            weight="bold"
             onClick={() => {
               if (!isWeeklyEditing) setProjectSelected(false);
-              setIsWeeklyEditing(true);
             }}
           />
         </div>
@@ -226,7 +231,7 @@ const WeeklyEntriesCard = ({
           />
           <div className="flex h-10 w-full justify-between bg-miru-gray-200">
             <div className="flex items-center">
-              {billable ? (
+              {billable && isProjectBillable ? (
                 <img
                   alt="checkbox"
                   className="inline"
@@ -242,7 +247,7 @@ const WeeklyEntriesCard = ({
                   className="inline"
                   src={UncheckedCheckboxSVG}
                   onClick={() => {
-                    setBillable(true);
+                    isProjectBillable && setBillable(true);
                     setDataChanged(true);
                   }}
                 />
@@ -276,8 +281,9 @@ const WeeklyEntriesCard = ({
                 </button>
               ) : (
                 <button
+                  disabled={!(dataChanged && duration && note)}
                   className={`m-2 mb-1 inline-block h-6 w-30 rounded border py-1 px-6 text-xs font-bold tracking-widest text-white ${
-                    dataChanged && duration
+                    dataChanged && duration && note
                       ? "bg-miru-han-purple-1000 hover:border-transparent"
                       : "bg-miru-gray-1000"
                   }`}
@@ -297,6 +303,7 @@ const WeeklyEntriesCard = ({
 interface Iprops {
   client: string;
   project: string;
+  isProjectBillable: boolean;
   selectedEmployeeId: number;
   currentEntries: Array<any>;
   setCurrentEntries: React.Dispatch<React.SetStateAction<[]>>;

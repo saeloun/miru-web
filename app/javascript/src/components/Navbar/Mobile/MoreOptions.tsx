@@ -2,32 +2,42 @@ import React from "react";
 
 import { SidePanel } from "StyledComponents";
 
-import Header from "./Header";
+import { useUserContext } from "context/UserContext";
 
 import UserActions from "../UserActions";
-import {
-  navAdminOptions,
-  navEmployeeOptions,
-  MobileMenuOptions,
-} from "../utils";
+import UserInfo from "../UserInfo";
+import { MobileMenuOptions, navOptions } from "../utils";
 
-const MoreOptions = ({ isAdminUser, setVisiblity, setSelectedTab }) => (
-  <SidePanel setFilterVisibilty={setVisiblity}>
-    <SidePanel.Header className="w-full">
-      <Header selectedTab="More Options" />
-    </SidePanel.Header>
-    <SidePanel.Body className="flex flex-col" hasFooter={false}>
-      <ul className="h-full w-full pt-14" onClick={() => setVisiblity(false)}>
-        <MobileMenuOptions
-          from={4}
-          isAdminUser={isAdminUser}
-          setSelectedTab={setSelectedTab}
-          to={isAdminUser ? navAdminOptions.length : navEmployeeOptions.length}
-        />
-      </ul>
-      <UserActions />
-    </SidePanel.Body>
-  </SidePanel>
-);
+const MoreOptions = ({ setVisiblity, showMoreOptions }) => {
+  const { user, isAdminUser, setSelectedTab, companyRole } = useUserContext();
+
+  return (
+    <SidePanel WrapperClassname="pt-13 pb-16" setFilterVisibilty={setVisiblity}>
+      <SidePanel.Body
+        className={`flex h-full w-full flex-col items-start ${
+          isAdminUser ? "justify-between" : "justify-start"
+        }`}
+      >
+        <div className="w-full">
+          <UserInfo user={user} />
+          <ul className="w-full px-4" onClick={() => setVisiblity(false)}>
+            <MobileMenuOptions
+              companyRole={companyRole}
+              from={4}
+              setSelectedTab={setSelectedTab}
+              showMoreOptions={showMoreOptions}
+              to={
+                navOptions.filter(option =>
+                  option.allowedRoles.includes(companyRole)
+                ).length
+              }
+            />
+          </ul>
+        </div>
+        <UserActions setVisiblity={setVisiblity} />
+      </SidePanel.Body>
+    </SidePanel>
+  );
+};
 
 export default MoreOptions;

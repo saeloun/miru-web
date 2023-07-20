@@ -5,6 +5,8 @@ import { PencilIcon, DeleteIcon } from "miruIcons";
 import PropTypes from "prop-types";
 import { useTable, useRowSelect } from "react-table";
 
+import { useUserContext } from "context/UserContext";
+
 const IndeterminateCheckbox = forwardRef(
   ({ indeterminate, ...rest }: any, ref) => {
     const defaultRef = useRef();
@@ -75,6 +77,7 @@ const Table = ({
 }) => {
   const data = useMemo(() => tableRowArray, [tableRowArray]);
   const columns = useMemo(() => tableHeader, []);
+  const { isDesktop } = useUserContext();
 
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
     useTable(
@@ -103,7 +106,9 @@ const Table = ({
                 {column.render("Header")}
               </th>
             ))}
-            {hasRowIcons && <th className="table__header md:w-1/5" />}
+            {hasRowIcons && isDesktop && (
+              <th className="table__header md:w-1/5" />
+            )}
           </tr>
         ))}
       </thead>
@@ -130,9 +135,9 @@ const Table = ({
                   {cell.render("Cell")}
                 </td>
               ))}
-              {hasRowIcons && (
+              {hasRowIcons && isDesktop && (
                 <td className="table__cell md:w-1/5">
-                  <div className="iconWrapper invisible">
+                  <div className="iconWrapper invisible flex items-center justify-evenly">
                     <button
                       onClick={e => {
                         e.preventDefault();
@@ -140,16 +145,10 @@ const Table = ({
                         handleEditClick(row.original.rowId);
                       }}
                     >
-                      <PencilIcon
-                        color="#5b34ea"
-                        data-cy="edit-icon"
-                        size={16}
-                        weight="bold"
-                      />
+                      <PencilIcon color="#5b34ea" size={16} weight="bold" />
                     </button>
                     <button
                       className="ml-10"
-                      data-cy="delete-icon"
                       onClick={e => {
                         e.preventDefault();
                         e.stopPropagation();

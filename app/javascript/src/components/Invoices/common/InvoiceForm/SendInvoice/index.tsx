@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, {
   FormEvent,
   KeyboardEvent,
@@ -10,9 +11,9 @@ import cn from "classnames";
 import { useOutsideClick } from "helpers";
 import { XIcon } from "miruIcons";
 import { useNavigate } from "react-router-dom";
+import { Toastr } from "StyledComponents";
 
 import invoicesApi from "apis/invoices";
-import Toastr from "common/Toastr";
 import { ApiStatus as InvoiceStatus } from "constants/index";
 
 import {
@@ -35,13 +36,13 @@ const Recipient: React.FC<{ email: string; handleClick: any }> = ({
 }) => (
   <div className="space-XIcon-2 m-0.5 flex w-fit items-center rounded-full border bg-miru-gray-400 px-2 py-1">
     <p>{email}</p>
-    <button
+    {/* <button
       className="text-miru-black-1000 hover:text-miru-red-400"
       type="button"
       onClick={handleClick}
     >
       <XIcon size={14} weight="bold" />
-    </button>
+    </button> */}
   </div>
 );
 
@@ -50,11 +51,13 @@ const SendInvoice: React.FC<any> = ({
   setIsSending,
   isSending,
   handleSaveSendInvoice,
+  isSendReminder = false,
+  setIsSendReminder,
 }) => {
   const [status, setStatus] = useState<InvoiceStatus>(InvoiceStatus.IDLE);
   const [invoiceEmail, setInvoiceEmail] = useState<InvoiceEmail>({
-    subject: emailSubject(invoice),
-    message: emailBody(invoice),
+    subject: emailSubject(invoice, isSendReminder),
+    message: emailBody(invoice, isSendReminder),
     recipients: [invoice.client.email],
   });
   const [newRecipient, setNewRecipient] = useState<string>("");
@@ -155,7 +158,11 @@ const SendInvoice: React.FC<any> = ({
               <button
                 className="text-miru-gray-1000"
                 type="button"
-                onClick={() => setIsSending(false)}
+                onClick={() => {
+                  isSendReminder
+                    ? setIsSendReminder(false)
+                    : setIsSending(false);
+                }}
               >
                 <XIcon size={16} weight="bold" />
               </button>
@@ -170,7 +177,7 @@ const SendInvoice: React.FC<any> = ({
                     "flex flex-wrap rounded bg-miru-gray-100 p-1.5",
                     { "h-9": !invoiceEmail.recipients }
                   )}
-                  onClick={() => input.current.focus()}
+                  // onClick={() => input.current.focus()}
                 >
                   {invoiceEmail.recipients.map(recipient => (
                     <Recipient
@@ -179,7 +186,7 @@ const SendInvoice: React.FC<any> = ({
                       key={recipient}
                     />
                   ))}
-                  <input
+                  {/* <input
                     name="to"
                     ref={input}
                     style={{ width }}
@@ -193,7 +200,7 @@ const SendInvoice: React.FC<any> = ({
                     )}
                     onChange={e => setNewRecipient(e.target.value.trim())}
                     onKeyDown={handleInput}
-                  />
+                  /> */}
                 </div>
               </fieldset>
               <fieldset className="field_with_errors flex flex-col">
@@ -232,7 +239,6 @@ const SendInvoice: React.FC<any> = ({
               </fieldset>
               <div>
                 <button
-                  data-cy="send-email"
                   type="button"
                   className={cn(
                     `mt-6 flex w-full justify-center rounded-md border border-transparent p-3 text-lg font-bold
@@ -255,7 +261,7 @@ const SendInvoice: React.FC<any> = ({
                   }
                   onClick={handleSubmit}
                 >
-                  {buttonText(status)}
+                  {isSendReminder ? "Send Reminder" : buttonText(status)}
                 </button>
               </div>
             </form>

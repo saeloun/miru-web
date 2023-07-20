@@ -25,23 +25,31 @@ export enum Roles {
   OWNER = "owner",
   BOOK_KEEPER = "book_keeper",
   EMPLOYEE = "employee",
+  CLIENT = "client",
 }
 
 export enum Paths {
+  FORGOT_PASSWORD = "/password/new",
+  RESET_PASSWORD = "/password/edit",
+  SIGNUP = "/signup",
+  SIGNUP_SUCCESS = "/signup/success",
+  LOGIN = "/login",
   SIGN_IN = "/user/sign_in",
   CLIENTS = "/clients",
-  INVOICES = "/invoices",
+  INVOICES = "/invoices/*",
   REPORTS = "/reports",
   PROJECTS = "/projects",
   SUBSCRIPTIONS = "/subscriptions",
   PAYMENTS = "/payments",
   TIME_TRACKING = "/time-tracking",
   TEAM = "/team/*",
+  TEAMS = "/teams/*",
   PROFILE = "/profile/*",
   EXPENSES = "/expenses",
+  AUTHORIZATION = "/authorization",
 }
 
-export const TOASTER_DURATION = 3000;
+export const TOASTER_DURATION = 2000;
 
 export const GetToasterIcon = ({ type }) => {
   switch (type) {
@@ -93,4 +101,13 @@ export enum TeamModalType {
 
 export enum LocalStorageKeys {
   INVOICE_FILTERS = "invoiceFilters",
+  INVOICE_SEARCH_PARAM = "",
+  REVENUE_FILTERS = "REVENUEFiters",
 }
+
+export const MIRU_APP_URL = "https://miru.so/";
+export const MIRU_APP_SUPPORT_EMAIL_ID = "mailto:mirusupport@saeloun.com";
+export const GOOGLE_PRIVACY_URL =
+  "https://policies.google.com/privacy?hl=en-US";
+export const AWS_PRIVACY_URL = "https://aws.amazon.com/privacy/";
+export const STRIPE_PRIVACY_URL = "https://stripe.com/in/privacy";

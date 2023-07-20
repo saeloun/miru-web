@@ -20,18 +20,19 @@ const TERNARY =
   "bg-transparent text-miru-han-purple-1000 hover:text-miru-han-purple-600 border-0";
 const TERNARY_DISABLED = "bg-transparent text-miru-dark-purple-200 border-0";
 
-const SMALL = "px-9 py-1 text-xs font-bold leading-4";
-const MEDIUM = "px-12 py-2.5 text-base font-bold leading-5";
-const LARGE = "px-14 py-3.5 text-xl font-bold leading-7";
+const SMALL = "px-5/100 py-1vh text-xs font-bold leading-4";
+const MEDIUM = "px-10/100 py-1vh text-base font-bold leading-5";
+const LARGE = "px-15/100 py-1vh text-xl font-bold leading-7";
 
 type ButtonProps = {
   style?: string;
-  onClick;
+  onClick?;
   disabled?: boolean;
   size?: string;
   className?: string;
   fullWidth?: boolean;
   children?: any;
+  type?: any;
 };
 
 const BUTTON_STYLES = {
@@ -49,8 +50,11 @@ const Button = ({
   fullWidth = false,
   onClick,
   children,
+  type,
 }: ButtonProps) => (
   <button
+    disabled={disabled}
+    type={type}
     className={classnames(
       DEFAULT_STYLE,
       fullWidth && "w-full",

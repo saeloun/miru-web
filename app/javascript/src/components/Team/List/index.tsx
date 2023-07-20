@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
-
-import { ToastContainer } from "react-toastify";
+import React, { Fragment, useEffect, useState } from "react";
 
 import teamApi from "apis/team";
-import { TeamModalType, TOASTER_DURATION } from "constants/index";
+import withLayout from "common/Mobile/HOC/withLayout";
+import { TeamModalType } from "constants/index";
 import { ListContext } from "context/TeamContext";
+import { useUserContext } from "context/UserContext";
 import { unmapList } from "mapper/team.mapper";
 
 import Header from "./Header";
@@ -12,10 +12,14 @@ import Table from "./Table";
 
 import Modals from "../modals/Modals";
 
-export const ProjectList = () => {
+const TeamList = () => {
   const [teamList, setTeamList] = useState([]);
   const [modal, setModal] = useState("");
   const [modalUser, setModalUser] = useState({});
+
+  const { isDesktop } = useUserContext();
+
+  const hideContainer = modal == TeamModalType.ADD_EDIT && !isDesktop;
 
   const setModalState = (modalName, user = {}) => {
     setModalUser(user);
@@ -36,7 +40,7 @@ export const ProjectList = () => {
     }
   }, [modal]);
 
-  return (
+  const TeamLayout = () => (
     <ListContext.Provider
       value={{
         teamList,
@@ -44,21 +48,25 @@ export const ProjectList = () => {
         modal,
       }}
     >
-      <ToastContainer autoClose={TOASTER_DURATION} />
-      <Header />
-      <div>
-        <div className="table__flex">
-          <div className="table__position-one">
-            <div className="table__position-two">
+      {!hideContainer && (
+        <Fragment>
+          <Header />
+          <div>
+            <div className="table__flex pb-14">
               <div className="table__border border-b-0 border-miru-gray-200">
                 <Table />
               </div>
             </div>
           </div>
-        </div>
-      </div>
+        </Fragment>
+      )}
       <Modals user={modalUser} />
     </ListContext.Provider>
   );
+
+  const Main = withLayout(TeamLayout, !hideContainer, !hideContainer);
+
+  return isDesktop ? TeamLayout() : <Main />;
 };
-export default ProjectList;
+
+export default TeamList;

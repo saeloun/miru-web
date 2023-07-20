@@ -2,27 +2,23 @@ import React from "react";
 
 import { Route, Routes } from "react-router-dom";
 
-// import Details from "./Details";
-// import CompensationDetails from "./Details/CompensationDetails";
-// import DeviceDetails from "./Details/DeviceDetails";
-// import DocumentDetails from "./Details/DocumentDetails";
-// import EmploymentDetails from "./Details/EmploymentDetails";
-// import PersonalDetails from "./Details/PersonalDetails";
-// import ReimburstmentDetails from "./Details/ReimburstmentDetails";
-import List from "./List";
+import Details from "./Details";
+import EmploymentDetails from "./Details/EmploymentDetails";
+import EmploymentEdit from "./Details/EmploymentDetails/Edit";
+import MobileNav from "./Details/Layout/MobileNav";
+import PersonalDetails from "./Details/PersonalDetails";
+import PersonalEdit from "./Details/PersonalDetails/Edit";
 
 const RouteConfig = () => (
   <Routes>
-    <Route element={<List />} path="*" />{" "}
-    {/* TODO: set to index and display personalDetails */}
-    {/* <Route path=":memberId" element={<Details />}>
-        <Route index element={<PersonalDetails />} />
-        <Route path="devices" element={<DeviceDetails />} />
-        <Route path="employment" element={<EmploymentDetails />} />
-        <Route path="compensation" element={<CompensationDetails />} />
-        <Route path="documents" element={<DocumentDetails />} />
-        <Route path="reimburstment" element={<ReimburstmentDetails />} />
-      </Route> */}
+    <Route element={<Details />} path=":memberId">
+      <Route index element={<PersonalDetails />} />
+      <Route element={<PersonalEdit />} path="edit" />
+      <Route element={<MobileNav />} path="options" />
+      <Route element={<PersonalDetails />} path="details" />
+      <Route element={<EmploymentDetails />} path="employment" />
+      <Route element={<EmploymentEdit />} path="employment_edit" />
+    </Route>
   </Routes>
 );
 

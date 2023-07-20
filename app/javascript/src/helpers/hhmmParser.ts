@@ -19,7 +19,7 @@ export const minToHHMM = (duration: number) => {
   if (Number.isNaN(duration) || duration <= 0) {
     return "00:00";
   }
-  const roundDur = Number(duration.toFixed());
+  const roundDur = Number(Number(duration).toFixed());
   let hours = (roundDur / 60).toString().split(".")[0];
   let minutes = (roundDur % 60).toString();
   if (hours.length === 1) hours = `0${hours}`;

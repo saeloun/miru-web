@@ -3,7 +3,9 @@ import React from "react";
 import TableHeader from "./TableHeader";
 import TableRow from "./TableRow";
 
-const Table = ({ payments, baseCurrency }) => (
+import { TableProps } from "../interfaces";
+
+const Table = ({ payments, baseCurrency }: TableProps) => (
   <table className="mt-4 min-w-full divide-y divide-gray-200">
     <thead>
       <TableHeader />

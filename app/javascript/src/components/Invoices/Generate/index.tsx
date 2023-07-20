@@ -1,22 +1,24 @@
 import React, { Fragment, useEffect, useState } from "react";
 
-import { useNavigate } from "react-router-dom";
+import dayjs from "dayjs";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { Toastr } from "StyledComponents";
 
 import companiesApi from "apis/companies";
 import invoicesApi from "apis/invoices";
-import Toastr from "common/Toastr";
+import PaymentsProviders from "apis/payments/providers";
+import { useUserContext } from "context/UserContext";
+import { mapGenerateInvoice, unmapGenerateInvoice } from "mapper/mappedIndex";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import Container from "./Container";
 import InvoiceSettings from "./InvoiceSettings";
+import MobileView from "./MobileView";
 
-import {
-  mapGenerateInvoice,
-  unmapGenerateInvoice,
-} from "../../../mapper/generateInvoice.mapper";
 import Header from "../common/InvoiceForm/Header";
 import SendInvoice from "../common/InvoiceForm/SendInvoice";
 import { generateInvoiceLineItems } from "../common/utils";
+import ConnectPaymentGateway from "../popups/ConnectPaymentGateway";
 
 const GenerateInvoices = () => {
   const navigate = useNavigate();
@@ -29,23 +31,28 @@ const GenerateInvoices = () => {
   const [amountDue, setAmountDue] = useState<any>(0);
   const [discount, setDiscount] = useState<any>(0);
   const [tax, setTax] = useState<any>(0);
-  const [issueDate, setIssueDate] = useState(new Date());
-  const today = new Date();
-  const [dueDate, setDueDate] = useState(
-    today.setMonth(issueDate.getMonth() + 1)
-  );
+  const [issueDate, setIssueDate] = useState(dayjs());
+  const today = dayjs();
+  const [searchParams] = useSearchParams();
+  const [dueDate, setDueDate] = useState(dayjs(today).add(1, "month"));
   const [selectedOption, setSelectedOption] = useState<any>([]);
   const [showSendInvoiceModal, setShowSendInvoiceModal] =
     useState<boolean>(false);
   const [invoiceId, setInvoiceId] = useState<number>(null);
   const [showInvoiceSetting, setShowInvoiceSetting] = useState<boolean>(false);
   const [manualEntryArr, setManualEntryArr] = useState<any>([]);
+  const [showConnectPaymentDialog, setShowConnectPaymentDialog] =
+    useState<boolean>(false);
+  const [isStripeConnected, setIsStripeConnected] = useState<boolean>(null);
 
   const amountPaid = 0;
+  const clientId = searchParams.get("clientId");
 
   const INVOICE_NUMBER_ERROR = "Please enter invoice number to proceed";
   const SELECT_CLIENT_ERROR =
     "Please select client and enter invoice number to proceed";
+
+  const { isDesktop } = useUserContext();
 
   const fetchCompanyDetails = async () => {
     // here we are fetching the company and client list
@@ -58,10 +65,33 @@ const GenerateInvoices = () => {
     }
   };
 
+  const fetchPaymentsProvidersSettings = async () => {
+    try {
+      const res = await PaymentsProviders.get();
+      const paymentsProviders = res.data.paymentsProviders;
+      const stripe = paymentsProviders.find(p => p.name === "stripe");
+      setIsStripeConnected(!!stripe && stripe.enabled);
+    } catch {
+      Toastr.error("ERROR! CONNECTING TO PAYMENTS");
+    }
+  };
+
+  const setClientListIfClientIdPresent = () => {
+    const client = invoiceDetails?.clientList?.find(
+      client => client.value === parseInt(clientId)
+    );
+    if (client) setSelectedClient(client);
+  };
+
   useEffect(() => {
     sendGAPageView();
     fetchCompanyDetails();
+    fetchPaymentsProvidersSettings();
   }, []);
+
+  useEffect(() => {
+    if (clientId) setClientListIfClientIdPresent();
+  }, [invoiceDetails]);
 
   const saveInvoice = async () => {
     const sanitized = mapGenerateInvoice({
@@ -72,13 +102,15 @@ const GenerateInvoices = () => {
       dueDate,
       invoiceLineItems: generateInvoiceLineItems(
         selectedOption,
-        manualEntryArr
+        manualEntryArr,
+        invoiceDetails.companyDetails.date_format
       ),
       amount,
       amountDue,
       amountPaid,
       discount,
       tax,
+      dateFormat: invoiceDetails.companyDetails.date_format,
       setShowSendInvoiceModal,
     });
 
@@ -87,7 +119,9 @@ const GenerateInvoices = () => {
 
   const handleSendInvoice = () => {
     if (selectedClient && invoiceNumber !== "") {
-      setShowSendInvoiceModal(true);
+      isStripeConnected
+        ? setShowSendInvoiceModal(true)
+        : setShowConnectPaymentDialog(true);
     } else {
       selectedClient
         ? Toastr.error(INVOICE_NUMBER_ERROR)
@@ -120,8 +154,7 @@ const GenerateInvoices = () => {
         : Toastr.error(SELECT_CLIENT_ERROR);
     }
   };
-
-  if (invoiceDetails) {
+  if (invoiceDetails && isDesktop) {
     return (
       <Fragment>
         <Header
@@ -133,6 +166,7 @@ const GenerateInvoices = () => {
           amount={amount}
           amountDue={amountDue}
           amountPaid={amountPaid}
+          dateFormat={invoiceDetails.companyDetails.date_format}
           discount={discount}
           dueDate={dueDate}
           invoiceDetails={invoiceDetails}
@@ -157,6 +191,14 @@ const GenerateInvoices = () => {
           setTax={setTax}
           tax={tax}
         />
+        {!isStripeConnected && showConnectPaymentDialog && (
+          <ConnectPaymentGateway
+            invoice={invoiceDetails}
+            setIsSending={setShowSendInvoiceModal}
+            setShowConnectPaymentDialog={setShowConnectPaymentDialog}
+            showConnectPaymentDialog={showConnectPaymentDialog}
+          />
+        )}
         {showSendInvoiceModal && (
           <SendInvoice
             handleSaveSendInvoice={handleSaveSendInvoice}
@@ -176,6 +218,45 @@ const GenerateInvoices = () => {
           <InvoiceSettings setShowInvoiceSetting={setShowInvoiceSetting} />
         )}
       </Fragment>
+    );
+  }
+
+  if (invoiceDetails && !isDesktop) {
+    return (
+      <MobileView
+        amount={amount}
+        amountDue={amountDue}
+        amountPaid={amountPaid}
+        dateFormat={invoiceDetails.companyDetails.date_format}
+        discount={discount}
+        dueDate={dueDate}
+        handleSaveInvoice={handleSaveInvoice}
+        invoiceDetails={invoiceDetails}
+        invoiceNumber={invoiceNumber}
+        isEdit={false}
+        isStripeEnabled={isStripeConnected}
+        issueDate={issueDate}
+        lineItems={lineItems}
+        manualEntryArr={manualEntryArr}
+        reference={reference}
+        selectedClient={selectedClient}
+        selectedLineItems={selectedOption}
+        setAmount={setAmount}
+        setAmountDue={setAmountDue}
+        setDiscount={setDiscount}
+        setDueDate={setDueDate}
+        setInvoiceNumber={setInvoiceNumber}
+        setIssueDate={setIssueDate}
+        setLineItems={setLineItems}
+        setManualEntryArr={setManualEntryArr}
+        setReference={setReference}
+        setSelectedClient={setSelectedClient}
+        setSelectedLineItems={setSelectedOption}
+        setShowConnectPaymentDialog={setShowConnectPaymentDialog}
+        setTax={setTax}
+        showConnectPaymentDialog={showConnectPaymentDialog}
+        tax={tax}
+      />
     );
   }
 

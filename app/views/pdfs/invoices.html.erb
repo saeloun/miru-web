@@ -24,8 +24,7 @@ html {
       </div>
     </div>
     <div class="mt-2 font-normal text-base text-right text-miru-dark-purple-1000 w-40">
-      <p><%=invoice.company.address%></p>
-      <p><%=invoice.company.country%></p>
+      <p><%=invoice.company.formatted_address%></p>
     </div>
   </div>
 
@@ -37,7 +36,7 @@ html {
           <%=client.name%>
         </p>
         <p class="font-normal text-xs text-miru-dark-purple-400 truncate">
-          <%=client.address%><br><%=client.phone%>
+          <%=client.formatted_address%><br><%=client.phone%>
         </p>
       </div>
     </div>

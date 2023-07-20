@@ -5,7 +5,13 @@ require "rails_helper"
 RSpec.describe "InternalApi::V1::Clients#update", type: :request do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
-  let(:client) { create(:client, company:, name: "Client", email: "client@example.com") }
+  let(:client) {
+    create(
+      :client,
+      company:,
+      name: "Client", email: "client@example.com"
+    )
+  }
 
   context "when user is an admin" do
     before do
@@ -22,17 +28,19 @@ RSpec.describe "InternalApi::V1::Clients#update", type: :request do
             client: {
               id: client.id,
               name: "Test Client",
-              email: "test@example.com",
               phone: "Test phone",
-              address: "India"
+              addresses_attributes: [{
+                id: client.current_address.id,
+                address_line_1: "updated address"
+              }]
             }
-          })
+          }, headers: auth_headers(user))
       end
 
-      it "updates client's name and email" do
+      it "updates client" do
         client.reload
         expect(client.name).to eq("Test Client")
-        expect(client.email).to eq("test@example.com")
+        expect(client.current_address.address_line_1).to eq("updated address")
       end
 
       it "returns success json response" do
@@ -50,9 +58,9 @@ RSpec.describe "InternalApi::V1::Clients#update", type: :request do
               name: "",
               email: "",
               phone: "",
-              address: "India"
+              addresses_attributes: [attributes_for(:address)]
             }
-          })
+          }, headers: auth_headers(user))
       end
 
       it "returns failed json response" do
@@ -74,9 +82,9 @@ RSpec.describe "InternalApi::V1::Clients#update", type: :request do
             name: "Test Client",
             email: "test@example.com",
             phone: "Test phone",
-            address: "India"
+            addresses_attributes: [attributes_for(:address)]
           }
-        })
+        }, headers: auth_headers(user))
     end
 
     it "is not permitted to update client" do
@@ -97,9 +105,9 @@ RSpec.describe "InternalApi::V1::Clients#update", type: :request do
             name: "Test Client",
             email: "test@example.com",
             phone: "Test phone",
-            address: "India"
+            addresses_attributes: [attributes_for(:address)]
           }
-        })
+        }, headers: auth_headers(user))
     end
 
     it "is not permitted to update client" do
@@ -116,10 +124,10 @@ RSpec.describe "InternalApi::V1::Clients#update", type: :request do
             name: "Test Client",
             email: "test@example.com",
             phone: "Test phone",
-            address: "India"
+            addresses_attributes: [attributes_for(:address)]
           }
         })
-      expect(json_response["error"]).to match("You need to sign in or sign up before continuing.")
+      expect(json_response["error"]).to match(I18n.t("devise.failure.unauthenticated"))
     end
   end
 
@@ -139,9 +147,9 @@ RSpec.describe "InternalApi::V1::Clients#update", type: :request do
             name: "Test Client",
             email: "test@example.com",
             phone: "Test phone",
-            address: "India"
+            addresses_attributes: [attributes_for(:address)]
           }
-        }
+        }, headers: auth_headers(user)
       )
     end
 

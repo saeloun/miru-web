@@ -6,6 +6,8 @@ import dayjs from "dayjs";
 import { minToHHMM } from "helpers";
 import Logger from "js-logger";
 
+import Header from "./Header";
+
 // Day start from monday
 dayjs.Ls.en.weekStart = 1;
 
@@ -23,6 +25,7 @@ const MonthCalender = ({
   setCurrentMonthNumber,
   currentYear,
   setCurrentYear,
+  dayInfo,
 }: Iprops) => {
   const [firstDay, setFirstDay] = useState<number>(
     dayjs().startOf("month").weekday()
@@ -43,8 +46,13 @@ const MonthCalender = ({
     const monthData = [];
     let weeksData = [];
     let currentWeekTotalHours = 0;
-    let dayInWeekCounter = firstDay;
-    for (let i = 1; i <= daysInMonth; i++) {
+    const firstDateOfTheMonth = `${currentYear}-${currentMonthNumber + 1}-01`;
+    const daysInCurrentMonth = dayjs(firstDateOfTheMonth).daysInMonth();
+    let dayInWeekCounter = dayjs(firstDateOfTheMonth)
+      .startOf("month")
+      .weekday();
+
+    for (let i = 1; i <= daysInCurrentMonth; i++) {
       // Ex. date = "2020-01-01"
       const date = dayjs(
         `${currentYear}-${currentMonthNumber + 1}-${i}`
@@ -62,7 +70,9 @@ const MonthCalender = ({
       };
       // if the day is sunday, create a new week
       if (dayInWeekCounter === 6) {
-        weeksData[7] = currentWeekTotalHours;
+        if (weeksData[6].date < today) {
+          weeksData[7] = currentWeekTotalHours;
+        } else weeksData[7] = currentWeekTotalHours || null;
         currentWeekTotalHours = 0;
         monthData.push(weeksData);
         weeksData = [];
@@ -72,7 +82,9 @@ const MonthCalender = ({
       }
     }
     if (weeksData.length) {
-      weeksData[7] = currentWeekTotalHours;
+      if (weeksData[weeksData.length - 1].date < today) {
+        weeksData[7] = currentWeekTotalHours;
+      } else weeksData[7] = currentWeekTotalHours || null;
       monthData.push(weeksData);
     }
 
@@ -161,16 +173,8 @@ const MonthCalender = ({
 
   useEffect(() => {
     handleMonthNumberChange();
-  }, [currentMonthNumber]);
-
-  useEffect(() => {
     handleMonthChange();
-  }, [firstDay]);
-
-  useEffect(() => {
-    handleMonthNumberChange();
-    handleMonthChange();
-  }, [currentYear]);
+  }, [currentMonthNumber, currentYear]);
 
   useEffect(() => {
     handleMonthChange();
@@ -178,37 +182,17 @@ const MonthCalender = ({
 
   return (
     <div className="mb-6">
-      <div className="flex h-10 w-full items-center justify-between bg-miru-han-purple-1000">
-        <button
-          className="ml-4 flex h-6 w-20 items-center justify-center rounded border-2 text-xs font-bold tracking-widest text-white"
-          onClick={handleMonthTodayButton}
-        >
-          TODAY
-        </button>
-        <div className="flex">
-          <button
-            className="flex h-6 w-6 flex-col items-center justify-center rounded-xl border-2 text-white"
-            onClick={handlePrevMonth}
-          >
-            &lt;
-          </button>
-          <p className="mx-6 w-auto text-white">
-            {monthsAbbr[Math.abs(currentMonthNumber)]} {currentYear}
-          </p>
-          <button
-            className="flex h-6 w-6 flex-col items-center justify-center rounded-xl border-2 text-white"
-            onClick={handleNextMonth}
-          >
-            &gt;
-          </button>
-        </div>
-        <div className="mr-12 flex">
-          <p className="mr-2 text-white">Total</p>
-          <p className="font-extrabold text-white">
-            {minToHHMM(totalMonthDuration)}
-          </p>
-        </div>
-      </div>
+      <Header
+        currentMonthNumber={currentMonthNumber}
+        currentYear={currentYear}
+        dayInfo={dayInfo}
+        handleMonthTodayButton={handleMonthTodayButton}
+        handleNextMonth={handleNextMonth}
+        handlePrevMonth={handlePrevMonth}
+        monthsAbbr={monthsAbbr}
+        totalMonthDuration={totalMonthDuration}
+        view="month"
+      />
       <div className="bg-miru-gray-100 p-4">
         <div className="mb-4 flex justify-between bg-miru-gray-100">
           {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((d, index) => (
@@ -232,7 +216,7 @@ const MonthCalender = ({
               weekInfo[dayNum] ? (
                 <div
                   key={dayNum}
-                  className={`flex h-14 w-24 cursor-pointer justify-end rounded-md border-2 bg-white p-1
+                  className={`flex h-14 w-16 cursor-pointer justify-end rounded-md border-2 bg-white p-1 xl:w-24
                     ${
                       weekInfo[dayNum]["date"] === selectedFullDate
                         ? "border-miru-han-purple-1000"
@@ -255,24 +239,36 @@ const MonthCalender = ({
                         {weekInfo[dayNum]["day"]}
                       </p>
                     </div>
-                    <p className="mx-3 text-2xl text-miru-dark-purple-1000">
-                      {weekInfo[dayNum]["totalDuration"] > 0
-                        ? minToHHMM(weekInfo[dayNum]["totalDuration"])
-                        : ""}
+                    <p className="mx-auto text-xl text-miru-dark-purple-1000 xl:mx-3 xl:text-2xl">
+                      {(() => {
+                        if (weekInfo[dayNum]["totalDuration"] > 0) {
+                          return minToHHMM(weekInfo[dayNum]["totalDuration"]);
+                        } else if (weekInfo[dayNum]["date"] < today) {
+                          return "00:00";
+                        }
+
+                        return "";
+                      })()}
                     </p>
                   </div>
                 </div>
               ) : (
                 <div
-                  className="h-14 w-24 text-miru-dark-purple-1000"
+                  className="h-14 w-16 text-miru-dark-purple-1000 xl:w-24"
                   key={dayNum}
                 />
               )
             )}
-            <div className="relative h-14 w-24 rounded-md bg-white font-bold">
+            <div className="relative h-14 w-16 rounded-md bg-white font-semibold xl:w-24 xl:font-bold">
               <div className="absolute bottom-0 right-0 flex justify-end p-1">
-                <p className="mr-auto text-2xl">
-                  {weekInfo[7] ? minToHHMM(weekInfo[7]) : ""}
+                <p className="mr-auto text-xl xl:text-2xl" id={weekInfo[7]}>
+                  {(() => {
+                    if (weekInfo[7]) {
+                      return minToHHMM(weekInfo[7]);
+                    } else if (weekInfo[7] === 0) {
+                      return "00:00";
+                    }
+                  })()}
                 </p>
               </div>
             </div>
@@ -297,6 +293,7 @@ interface Iprops {
   setCurrentMonthNumber: any;
   currentYear: any;
   setCurrentYear: any;
+  dayInfo: any[];
 }
 
 export default MonthCalender;

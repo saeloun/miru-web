@@ -5,7 +5,13 @@ module.exports = {
     container: {
       center: true,
     },
+    listStyleType: {
+      lower: "lower-alpha",
+      decimal: "decimal",
+    },
     fontSize: {
+      xsm: ".5625em",
+      xxs: "0.625rem", //10px
       xs: ".75rem",
       sm: ".875rem",
       tiny: ".875rem",
@@ -14,16 +20,22 @@ module.exports = {
       xl: "1.25rem",
       "2xl": "1.5rem",
       "3xl": "1.875rem",
+      "3.5xl": "2rem",
       "4xl": "2.25rem",
       "4.5xl": "2.5rem",
+      "4.75xl": "2.75rem",
       "5xl": "3rem",
       "6xl": "4rem",
       "7xl": "5rem",
+      32: "2rem",
     },
     letterSpacing: {
-      widest: "0.125rem",
-      wider: ".05rem",
-      normal: "0",
+      2: "2px",
+      widest: "0.125em",
+      semiWidest: "0.09375", //1.5px
+      wider: ".05em",
+      normal: "0em",
+      "xs-widest": "0.166667em", // 2px when font-size 12px
     },
     screens: {
       xsm: "380px",
@@ -37,19 +49,38 @@ module.exports = {
       boxShadow: {
         c1: "0px 0px 40px rgba(0, 0, 0, 0.1);",
       },
+      lineHeight: {
+        5.5: "22px",
+      },
       margin: {
         86: "342px",
       },
       width: {
         fit: "fit-content",
         30: "7.5rem", //120px
+        34: "8.6rem",
+        13: "13.5px",
+        88: "5.5rem", //88px
         128: "32rem", // 512px
-        352: "22rem", //352px
-        228: "14.25rem", //228px
+        168: "10.5rem", // 168px
         180: "11.25rem", //180px
+        228: "14.25rem", //228px
+        300: "18.75rem", //300px
+        320: "20rem", // 320px
+        336: "21rem", // 336px
+        352: "22rem", //352px
+        480: "30rem", //480px
+        18: "18%",
+        72: "72%",
+        "1/10": "10%",
+        "1/15": "15%",
+        "1/20": "20%",
+        "1/60": "60%",
       },
       minWidth: {
+        12: "12px",
         24: "24px",
+        400: "25rem", // 400px
       },
       maxWidth: {
         400: "25rem", //400px
@@ -60,6 +91,14 @@ module.exports = {
         512: "32rem",
         304: "19rem",
         87: "5.4rem",
+        88: "5.5rem",
+        "14/100": "14%",
+        "1/10": "10%",
+        "1/12": "8.333%",
+        "1/15": "6.666%",
+        148: "592px",
+        "80v": "80vh",
+        "90v": "90vh",
       },
       minHeight: {
         "10v": "10vh",
@@ -72,6 +111,8 @@ module.exports = {
         "80v": "80vh",
         "90v": "90vh",
         "100v": "100vh",
+        24: "24px",
+        80: "80px",
       },
       maxHeight: {
         "10v": "10vh",
@@ -95,6 +136,9 @@ module.exports = {
           400: "#E1E6EC",
           200: "#EBEFF2",
           100: "#F5F7F9",
+          500: "#ADA4CE",
+          800: "#ADA4CE",
+          50: "#CDD6DF33",
         },
         "miru-red": {
           400: "#E04646",
@@ -140,6 +184,7 @@ module.exports = {
         },
         "miru-chart-blue": {
           600: "#0E79B2",
+          1000: "#68AEAA",
         },
         "miru-chart-pink": {
           600: "#BF1363",
@@ -159,6 +204,10 @@ module.exports = {
         manrope: "'Manrope', serif",
       },
       spacing: {
+        0.25: "0.0625rem",
+        2.125: "0.5625rem",
+        3.75: "0.9375rem",
+        10.05: "2.565rem",
         13: "3.125rem",
         15: "3.75rem",
         18: "4.5rem",
@@ -178,6 +227,7 @@ module.exports = {
         129: "33rem",
         138: "34.5rem",
         160: "40rem",
+        "1/5": "20%",
       },
       padding: {
         "36/100": "36.66666%",
@@ -185,10 +235,28 @@ module.exports = {
         "30/100": "30%",
         "26/100": "26.66666%",
         "20/100": "20%",
+        "15/100": "15%",
         "10/100": "10%",
+        "5/100": "5%",
+        "2/100": "2%",
+        "1/100": "1%",
+        "10vh": "10vh",
+        "5vh": "5vh",
+        "2vh": "2vh",
+        "1vh": "1vh",
       },
       zIndex: {
+        "negative-1": "-1",
+        1: "1",
         15: "15",
+        60: "60",
+        max: "100",
+      },
+      transformOrigin: {
+        0: "0%",
+      },
+      inset: {
+        "-10": "-10px",
       },
     },
   },

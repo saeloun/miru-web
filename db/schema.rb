@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -12,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_12_29_153456) do
+ActiveRecord::Schema[7.0].define(version: 2023_07_07_082247) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -23,8 +21,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_29_153456) do
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
     t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
-    t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness",
-      unique: true
+    t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
   end
 
   create_table "active_storage_blobs", force: :cascade do |t|
@@ -57,9 +54,61 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_29_153456) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "state", null: false
-    t.index ["addressable_type", "addressable_id", "address_type"],
-      name: "index_addresses_on_addressable_and_address_type", unique: true
+    t.index ["addressable_type", "addressable_id", "address_type"], name: "index_addresses_on_addressable_and_address_type", unique: true
     t.index ["addressable_type", "addressable_id"], name: "index_addresses_on_addressable"
+  end
+
+  create_table "ahoy_events", force: :cascade do |t|
+    t.bigint "visit_id"
+    t.bigint "user_id"
+    t.string "name"
+    t.jsonb "properties"
+    t.datetime "time"
+    t.index ["name", "time"], name: "index_ahoy_events_on_name_and_time"
+    t.index ["properties"], name: "index_ahoy_events_on_properties", opclass: :jsonb_path_ops, using: :gin
+    t.index ["user_id"], name: "index_ahoy_events_on_user_id"
+    t.index ["visit_id"], name: "index_ahoy_events_on_visit_id"
+  end
+
+  create_table "ahoy_visits", force: :cascade do |t|
+    t.string "visit_token"
+    t.string "visitor_token"
+    t.bigint "user_id"
+    t.string "ip"
+    t.text "user_agent"
+    t.text "referrer"
+    t.string "referring_domain"
+    t.text "landing_page"
+    t.string "browser"
+    t.string "os"
+    t.string "device_type"
+    t.string "country"
+    t.string "region"
+    t.string "city"
+    t.float "latitude"
+    t.float "longitude"
+    t.string "utm_source"
+    t.string "utm_medium"
+    t.string "utm_term"
+    t.string "utm_content"
+    t.string "utm_campaign"
+    t.string "app_version"
+    t.string "os_version"
+    t.string "platform"
+    t.datetime "started_at"
+    t.index ["user_id"], name: "index_ahoy_visits_on_user_id"
+    t.index ["visit_token"], name: "index_ahoy_visits_on_visit_token", unique: true
+  end
+
+  create_table "client_members", force: :cascade do |t|
+    t.bigint "client_id", null: false
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "company_id", null: false
+    t.index ["client_id"], name: "index_client_members_on_client_id"
+    t.index ["company_id"], name: "index_client_members_on_company_id"
+    t.index ["user_id"], name: "index_client_members_on_user_id"
   end
 
   create_table "clients", force: :cascade do |t|
@@ -75,11 +124,12 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_29_153456) do
     t.index ["company_id"], name: "index_clients_on_company_id"
     t.index ["discarded_at"], name: "index_clients_on_discarded_at"
     t.index ["email", "company_id"], name: "index_clients_on_email_and_company_id", unique: true
+    t.index ["name", "company_id"], name: "index_clients_on_name_and_company_id", unique: true
   end
 
   create_table "companies", force: :cascade do |t|
     t.string "name", null: false
-    t.text "address", null: false
+    t.text "address"
     t.string "business_phone"
     t.string "base_currency", default: "USD", null: false
     t.decimal "standard_price", default: "0.0", null: false
@@ -89,6 +139,9 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_29_153456) do
     t.string "timezone"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "data_migrations", primary_key: "version", id: :string, force: :cascade do |t|
   end
 
   create_table "devices", force: :cascade do |t|
@@ -119,6 +172,31 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_29_153456) do
     t.index ["company_id"], name: "index_employments_on_company_id"
     t.index ["discarded_at"], name: "index_employments_on_discarded_at"
     t.index ["user_id"], name: "index_employments_on_user_id"
+  end
+
+  create_table "expense_categories", force: :cascade do |t|
+    t.string "name"
+    t.boolean "default", default: false
+    t.bigint "company_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_expense_categories_on_company_id"
+  end
+
+  create_table "expenses", force: :cascade do |t|
+    t.date "date", null: false
+    t.decimal "amount", precision: 20, scale: 2, default: "0.0", null: false
+    t.integer "expense_type"
+    t.text "description"
+    t.bigint "company_id", null: false
+    t.bigint "expense_category_id", null: false
+    t.bigint "vendor_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_expenses_on_company_id"
+    t.index ["expense_category_id"], name: "index_expenses_on_expense_category_id"
+    t.index ["expense_type"], name: "index_expenses_on_expense_type"
+    t.index ["vendor_id"], name: "index_expenses_on_vendor_id"
   end
 
   create_table "identities", force: :cascade do |t|
@@ -185,10 +263,13 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_29_153456) do
     t.jsonb "payment_infos", default: {}
     t.bigint "company_id"
     t.datetime "discarded_at"
+    t.datetime "sent_at"
+    t.datetime "payment_sent_at"
+    t.datetime "client_payment_sent_at"
     t.index ["client_id"], name: "index_invoices_on_client_id"
-    t.index ["due_date"], name: "index_invoices_on_due_date"
     t.index ["company_id"], name: "index_invoices_on_company_id"
     t.index ["discarded_at"], name: "index_invoices_on_discarded_at"
+    t.index ["due_date"], name: "index_invoices_on_due_date"
     t.index ["external_view_key"], name: "index_invoices_on_external_view_key", unique: true
     t.index ["invoice_number"], name: "index_invoices_on_invoice_number", unique: true
     t.index ["issue_date"], name: "index_invoices_on_issue_date"
@@ -204,6 +285,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_29_153456) do
     t.integer "transaction_type", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "name"
     t.index ["invoice_id"], name: "index_payments_on_invoice_id"
     t.index ["status"], name: "index_payments_on_status"
   end
@@ -254,6 +336,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_29_153456) do
     t.index ["billable"], name: "index_projects_on_billable"
     t.index ["client_id"], name: "index_projects_on_client_id"
     t.index ["discarded_at"], name: "index_projects_on_discarded_at"
+    t.index ["name", "client_id"], name: "index_projects_on_name_and_client_id", unique: true
   end
 
   create_table "roles", force: :cascade do |t|
@@ -331,6 +414,14 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_29_153456) do
     t.index ["user_id"], name: "index_users_roles_on_user_id"
   end
 
+  create_table "vendors", force: :cascade do |t|
+    t.string "name"
+    t.bigint "company_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_vendors_on_company_id"
+  end
+
   create_table "wise_accounts", force: :cascade do |t|
     t.string "profile_id"
     t.string "recipient_id"
@@ -347,11 +438,18 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_29_153456) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "client_members", "clients"
+  add_foreign_key "client_members", "companies"
+  add_foreign_key "client_members", "users"
   add_foreign_key "clients", "companies"
   add_foreign_key "devices", "companies"
   add_foreign_key "devices", "users"
   add_foreign_key "employments", "companies"
   add_foreign_key "employments", "users"
+  add_foreign_key "expense_categories", "companies"
+  add_foreign_key "expenses", "companies"
+  add_foreign_key "expenses", "expense_categories"
+  add_foreign_key "expenses", "vendors"
   add_foreign_key "identities", "users"
   add_foreign_key "invitations", "companies"
   add_foreign_key "invitations", "users", column: "sender_id"
@@ -369,6 +467,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_29_153456) do
   add_foreign_key "timesheet_entries", "projects"
   add_foreign_key "timesheet_entries", "users"
   add_foreign_key "users", "companies", column: "current_workspace_id"
+  add_foreign_key "vendors", "companies"
   add_foreign_key "wise_accounts", "companies"
   add_foreign_key "wise_accounts", "users"
 end

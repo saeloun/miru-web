@@ -36,14 +36,30 @@ import {
   FloppyDisk,
   Minus,
   CurrencyCircleDollar,
+  CheckCircle,
+  Phone,
+  MapPin,
+  Info,
+  Globe,
+  Image,
+  Money,
+  Copy,
+  Key,
+  User,
+  Clock,
+  BellRinging,
 } from "phosphor-react";
 
+const error404Animation = require("./GIFS/404_animation.gif");
 const accountsAgingIcon = require("./svgIcons/accountsAging.svg");
 const accountsAgingHoverIcon = require("./svgIcons/accountsAgingHover.svg");
+const blurredMiruLogo = require("./svgIcons/blurred-miru-logo.svg");
 const reportcalendarIcon = require("./svgIcons/Calendar.svg");
 const calendarHoverIcon = require("./svgIcons/CalendarHover.svg");
+const emptyState = require("./svgIcons/emptyState.svg");
 const hoursIcon = require("./svgIcons/Hours.svg");
 const hoursHoverIcon = require("./svgIcons/HoursHover.svg");
+const noSearchResultsState = require("./svgIcons/NoSearchResultsState.svg");
 const overdueOutstandingIcon = require("./svgIcons/OverdueOutstanding.svg");
 const overdueOutstandingHoverIcon = require("./svgIcons/OverdueOutstandingHover.svg");
 const revenueIcon = require("./svgIcons/Revenue.svg");
@@ -62,26 +78,38 @@ const close_button = require("../../../assets/images/close_button.svg");
 const company = require("../../../assets/images/company.svg");
 const Connect = require("../../../assets/images/Connect.svg");
 const connected_check = require("../../../assets/images/connected_check.svg");
+const ConnectMobile = require("../../../assets/images/ConnectMobile.svg");
 const ConnectPaypal = require("../../../assets/images/ConnectPaypal.svg");
 const deleteSVG = require("../../../assets/images/delete.svg");
 const delete_image_button = require("../../../assets/images/delete_image_button.svg");
+const disconnectAccount = require("../../../assets/images/disconnect-account.svg");
 const down = require("../../../assets/images/down-arrow-svgrepo-com.svg");
 const downArrow = require("../../../assets/images/down_arrow.svg");
 const edit = require("../../../assets/images/edit.svg");
 const edit_image_button = require("../../../assets/images/edit_image_button.svg");
 const errorOctagon = require("../../../assets/images/error-octagon.svg");
 const google = require("../../../assets/images/google.svg");
+const greenCheckCirleIcon = require("../../../assets/images/green-circular-check.svg");
 const help_icon = require("../../../assets/images/help_icon.png");
 const circleInfo = require("../../../assets/images/info-circle.svg");
 const closeInfo = require("../../../assets/images/info-close-icon.svg");
 const Instagram = require("../../../assets/images/Instagram.svg");
+const Waive = require("../../../assets/images/InvoiceWaive.svg");
 const logo = require("../../../assets/images/logo.jpg");
 const logout_icon = require("../../../assets/images/logout_icon.svg");
 const masterCard = require("../../../assets/images/masterCard.svg");
+const miruLogoWatermark = require("../../../assets/images/miru-logo-watermark.svg");
 const miruLogo = require("../../../assets/images/miru-logo.svg");
+const miruManagingClientsScreen = require("../../../assets/images/miru-managing-clients-screen.png");
+const miruManagingEmployeesScreen = require("../../../assets/images/miru-managing-employees-screen.png");
+const miruManagingProjectsScreen = require("../../../assets/images/miru-managing-projects-screen.png");
+const miruPaymentAndInvoicesScreen = require("../../../assets/images/miru-payment-and-invoices-screen.png");
+const miruReportAndAnalysisScreen = require("../../../assets/images/miru-report-and-analysis-screen.png");
+const miruTimeTrackingScreen = require("../../../assets/images/miru-time-tracking-screen.png");
 const miruLogoWithText = require("../../../assets/images/miruLogoWithText.svg");
 const MiruWhiteLogoWithText = require("../../../assets/images/MiruWhiteLogowithText.svg");
 const mobile = require("../../../assets/images/mobile-menu.svg");
+const moreOption = require("../../../assets/images/moreOption.svg");
 const NavAvatar = require("../../../assets/images/NavAvatar.svg");
 const notification = require("../../../assets/images/notification.svg");
 const password_icon = require("../../../assets/images/password_icon.svg");
@@ -91,6 +119,7 @@ const PaypalLogo = require("../../../assets/images/PaypalLogo.svg");
 const pConnectInvoice = require("../../../assets/images/pConnectInvoice.svg");
 const plus_icon = require("../../../assets/images/plus_icon.svg");
 const PurpleMiruLogoWithText = require("../../../assets/images/PurpleMiruLogoWithText.svg");
+const deleteImage = require("../../../assets/images/redDelete.svg");
 const saeloun_logo = require("../../../assets/images/saeloun_logo.png");
 const save_button = require("../../../assets/images/save_button.svg");
 const sConnectInvoice = require("../../../assets/images/sConnectInvoice.svg");
@@ -101,6 +130,8 @@ const stripe_logo = require("../../../assets/images/stripe_logo.svg");
 const StripeDropdown = require("../../../assets/images/StripeDropdown.svg");
 const clickSuccess = require("../../../assets/images/success-check-circle.svg");
 const success = require("../../../assets/images/success-close-icon.svg");
+const switcher = require("../../../assets/images/switcher.svg");
+const transparentMiruLogo = require("../../../assets/images/transparent-miru-logo.svg");
 const Twitter = require("../../../assets/images/Twitter.svg");
 const userAvatar = require("../../../assets/images/user_avatar.svg");
 const visa = require("../../../assets/images/visa.svg");
@@ -145,6 +176,19 @@ export const CalendarIcon = Calendar;
 export const PaperPlaneTiltIcon = PaperPlaneTilt;
 export const FloppyDiskIcon = FloppyDisk;
 export const CurrencyCircleDollarIcon = CurrencyCircleDollar;
+export const CheckCircleIcon = CheckCircle;
+export const PhoneIcon = Phone;
+export const MapPinIcon = MapPin;
+export const InfoIcon = Info;
+export const GlobeIcon = Globe;
+export const ImageIcon = Image;
+export const MoneyIcon = Money;
+export const CopyIcon = Copy;
+export const KeyIcon = Key;
+export const UserIcon = User;
+export const ClockIcon = Clock;
+export const ReminderIcon = BellRinging;
+
 // custom svg icons
 export const WarningTriangleSVG = warningTriangle;
 export const WarningCloseIconSVG = warningCloseIcon;
@@ -198,10 +242,14 @@ export const AlertSVG = alert;
 export const AmexSVG = amex;
 export const NavAvatarSVG = NavAvatar;
 export const InstagramSVG = Instagram;
+export const WaiveSVG = Waive;
 export const MiruWhiteLogoWithTextSVG = MiruWhiteLogoWithText;
 export const ConnectPaypalSVG = ConnectPaypal;
 export const ConnectSVG = Connect;
+export const ConnectMobileSVG = ConnectMobile;
+export const disconnectAccountSVG = disconnectAccount;
 export const MiruLogoSVG = miruLogo;
+export const MiruLogoWatermarkSVG = miruLogoWatermark;
 export const DeleteIconSVG = deleteSVG;
 export const ReportcalendarIcon = reportcalendarIcon;
 export const CalendarHoverIcon = calendarHoverIcon;
@@ -213,4 +261,18 @@ export const RevenueIcon = revenueIcon;
 export const RevenueHoverIcon = revenueHoverIcon;
 export const AccountsAgingIcon = accountsAgingIcon;
 export const AccountsAgingHoverIcon = accountsAgingHoverIcon;
-//export const ExpenseIcon = expenseIcon;
+export const Switcher = switcher;
+export const EmptyState = emptyState;
+export const NoSearchResultsState = noSearchResultsState;
+export const BlurredMiruLogo = blurredMiruLogo;
+export const TransparentMiruLogo = transparentMiruLogo;
+export const MiruTimeTrackingScreen = miruTimeTrackingScreen;
+export const MiruReportAndAnalysisScreen = miruReportAndAnalysisScreen;
+export const MiruPaymentAndInvoicesScreen = miruPaymentAndInvoicesScreen;
+export const MiruManagingProjectsScreen = miruManagingProjectsScreen;
+export const MiruManagingClientsScreen = miruManagingClientsScreen;
+export const MiruManagingEmployeesScreen = miruManagingEmployeesScreen;
+export const MoreOptionIcon = moreOption;
+export const GreenCheckCirleIcon = greenCheckCirleIcon;
+export const deleteImageIcon = deleteImage;
+export const Animation_404 = error404Animation;

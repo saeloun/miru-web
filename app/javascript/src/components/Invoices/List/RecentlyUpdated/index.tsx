@@ -1,43 +1,34 @@
-import React from "react";
+import React, { Fragment } from "react";
 
-import { currencyFormat } from "helpers";
-import { useNavigate } from "react-router-dom";
-import { Avatar, Badge } from "StyledComponents";
+import RecentlyUpdatedCard from "./RecentlyUpdatedCard";
 
-import getStatusCssClass from "utils/getBadgeStatus";
-
-const RecentlyUpdated = ({ invoice }) => {
-  const navigate = useNavigate();
-
-  const formattedAmount = (amount, baseCurrency) =>
-    currencyFormat({ baseCurrency, amount });
-
-  return (
-    <div
-      className="mx-2 flex h-auto w-40 cursor-pointer flex-col justify-between rounded-xl border-2 border-miru-gray-200 p-4 text-center"
-      onClick={() => navigate(`/invoices/${invoice.id}`)}
-    >
-      <h3 className="mr-0.5 text-center text-xs font-normal text-miru-dark-purple-400">
-        {invoice.invoiceNumber}
-      </h3>
-      <div className="my-1 flex justify-center lg:my-3">
-        <Avatar />
-      </div>
-      <div className="mt-1 mb-2.5 flex h-11 items-center justify-center text-center text-sm font-semibold capitalize leading-5 text-miru-dark-purple-1000 lg:text-base">
-        <p className="truncateOverflowText">{invoice.client.name}</p>
-      </div>
-      <h1 className="mt-2.5 mb-1 truncate text-base font-bold text-miru-dark-purple-1000 lg:text-xl">
-        {" "}
-        {formattedAmount(invoice.amount, invoice.company.baseCurrency)}{" "}
-      </h1>
-      <div>
-        <Badge
-          className={`${getStatusCssClass(invoice.status)} mt-2 uppercase`}
-          text={invoice.status}
-        />
+const RecentlyUpdated = ({ recentlyUpdatedInvoices }) => (
+  <div className="mt-4 mb-6 md:my-15">
+    <h1 className="mb-4 text-base font-semibold text-miru-dark-purple-1000 lg:text-2xl lg:font-normal">
+      Recently updated
+    </h1>
+    <div className="flex overflow-x-auto overflow-y-hidden">
+      <div className="flex">
+        {recentlyUpdatedInvoices.length > 0 ? (
+          recentlyUpdatedInvoices.map((invoice, index) => (
+            <Fragment key={invoice.id}>
+              {index <= 9 && (
+                <RecentlyUpdatedCard
+                  index={index}
+                  invoice={invoice}
+                  key={invoice.id}
+                />
+              )}
+            </Fragment>
+          ))
+        ) : (
+          <span className="col-span-5 grid text-xl font-medium text-miru-dark-purple-200">
+            No Recently Updated invoices available.
+          </span>
+        )}
       </div>
     </div>
-  );
-};
+  </div>
+);
 
 export default RecentlyUpdated;

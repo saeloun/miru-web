@@ -33,7 +33,7 @@
 #  fk_rails_...  (sender_id => users.id)
 #
 class Invitation < ApplicationRecord
-  enum role: [:owner, :admin, :employee, :book_keeper]
+  enum role: [:owner, :admin, :employee, :book_keeper, :client]
 
   # Constant
   MAX_EXPIRATION_DAY = 14.days
@@ -50,7 +50,7 @@ class Invitation < ApplicationRecord
   validates :first_name, :last_name,
     presence: true,
     format: { with: /\A[a-zA-Z\s]+\z/ },
-    length: { maximum: 50 }
+    length: { maximum: 20 }
   validate :non_existing_company_user
   validate :recipient_email_not_changed
 
@@ -91,7 +91,7 @@ class Invitation < ApplicationRecord
 
     def non_existing_company_user
       if company && employment_in_company_present?
-        self.errors.add(:base, "User is already a team member in workspace")
+        self.errors.add(:base, t("errors.user_already_member"))
       end
     end
 
@@ -101,7 +101,7 @@ class Invitation < ApplicationRecord
 
     def recipient_email_not_changed
       if recipient_email_changed? && self.persisted?
-        self.errors.add(:recipient_email, "updation is not allowed")
+        self.errors.add(:recipient_email, t("errors.updation_not_allowed"))
       end
     end
 

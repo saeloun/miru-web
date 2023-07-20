@@ -1,11 +1,27 @@
 import React from "react";
 
 import { getMonth, getYear } from "date-fns";
+import dayjs from "dayjs";
+import { useOutsideClick } from "helpers";
 import { CaretCircleLeftIcon, CaretCircleRightIcon } from "miruIcons";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-const CustomDatePicker = ({ handleChange, date }) => {
+type CustomDatePickerProps = {
+  handleChange: any;
+  date: any;
+  setVisibility?: any;
+  wrapperRef?: any;
+  dateFormat?: any;
+};
+
+const CustomDatePicker = ({
+  handleChange,
+  date,
+  setVisibility,
+  wrapperRef,
+  dateFormat,
+}: CustomDatePickerProps) => {
   const range = (start, end) => {
     const ans = [];
     for (let i = start; i <= end; i++) {
@@ -15,7 +31,7 @@ const CustomDatePicker = ({ handleChange, date }) => {
     return ans;
   };
 
-  const years = range(1990, getYear(new Date()) + 1);
+  const years = range(1920, getYear(new Date()) + 1);
   const months = [
     "Jan",
     "Feb",
@@ -31,11 +47,19 @@ const CustomDatePicker = ({ handleChange, date }) => {
     "Dec",
   ];
 
+  useOutsideClick(wrapperRef, () => {
+    setVisibility(false);
+  });
+
+  const parseDate = dateString => dayjs(dateString, dateFormat).toDate();
+
+  const formatDate = date => dayjs(date).format(dateFormat);
+
   return (
     <DatePicker
       inline
       calendarClassName="miru-calendar"
-      selected={date}
+      selected={parseDate(date)}
       wrapperClassName="datePicker"
       renderCustomHeader={({
         date,
@@ -79,7 +103,7 @@ const CustomDatePicker = ({ handleChange, date }) => {
           </button>
         </div>
       )}
-      onChange={handleChange}
+      onChange={newDate => handleChange(formatDate(newDate))}
     />
   );
 };

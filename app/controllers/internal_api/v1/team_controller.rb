@@ -11,8 +11,7 @@ class InternalApi::V1::TeamController < InternalApi::V1::ApplicationController
       .ransack(first_name_or_last_name_or_recipient_email_cont: params.dig(:q, :first_name_or_last_name_or_email_cont))
     teams = query.result(distinct: true)
     invitations = invitations_query.result(distinct: true)
-
-    render :index, locals: { teams:, invitations: }, status: :ok
+    render :index, locals: TeamPresenter.new(teams, invitations, current_user, current_company).index_data, status: :ok
   end
 
   def update
@@ -29,7 +28,9 @@ class InternalApi::V1::TeamController < InternalApi::V1::ApplicationController
 
   def destroy
     authorize employment, policy_class: TeamPolicy
+    employment.user.remove_roles_for(current_company)
     employment.discard!
+
     render json: {
       user: employment.user,
       notice: I18n.t("team.delete.success.message")

@@ -40,7 +40,7 @@ class StripeConnectedAccount < ApplicationRecord
       type: "account_onboarding",
       account: self.account_id,
       refresh_url: payments_settings_stripe_connect_refresh_url(host: "#{ENV['APP_BASE_URL']}"),
-      return_url: payments_settings_url(host: "#{ENV['APP_BASE_URL']}")
+      return_url: "#{ENV['APP_BASE_URL']}/profile/edit/payment"
     ).url unless details_submitted
   end
 
