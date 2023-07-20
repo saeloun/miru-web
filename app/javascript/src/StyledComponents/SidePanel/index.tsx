@@ -11,22 +11,28 @@ type SidePanelProps = {
   WrapperClassname?: string;
   setFilterVisibilty;
   children;
+  disableOutsideClick?: boolean;
 };
 
 const SidePanel = ({
   WrapperClassname,
   setFilterVisibilty,
   children,
+  disableOutsideClick = false,
 }: SidePanelProps) => {
   const wrapperRef = useRef(null);
 
-  useOutsideClick(wrapperRef, () => setFilterVisibilty(false));
+  useOutsideClick(
+    wrapperRef,
+    () => setFilterVisibilty(false),
+    !disableOutsideClick
+  );
 
   return (
     <div
       ref={wrapperRef}
       className={classnames(
-        "sidebar__container z-50 flex w-full flex-col lg:w-1/5",
+        "sidebar__container flex w-full flex-col lg:w-1/4",
         WrapperClassname
       )}
     >

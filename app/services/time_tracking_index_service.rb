@@ -27,7 +27,11 @@ class TimeTrackingIndexService
   private
 
     def set_employees
-      @employees = is_admin ? current_company.users.select(:id, :first_name, :last_name) : [current_user]
+      @employees = is_admin ? current_company_users : [current_user]
+    end
+
+    def current_company_users
+      current_company.users.with_kept_employments.select(:id, :first_name, :last_name)
     end
 
     def set_timesheet_entries
@@ -52,19 +56,12 @@ class TimeTrackingIndexService
     end
 
     def set_clients
-      if is_admin
-        @clients = current_company.clients.kept.order(name: :asc).includes(:projects)
-      else
-        @clients = current_user.clients.kept
-          .where(company_id: current_company.id)
-          .order(name: :asc)
-          .includes(:projects).distinct
-      end
+      @clients = ClientPolicy::Scope.new(current_user, current_company).resolve.includes(:projects)
     end
 
     def set_projects
-      @projects = ClientsPresenter
-        .new(clients, current_company, current_user)
-        .group_projects_by_client_name
+      @projects = {}
+      user_projects = ProjectPolicy::Scope.new(current_user, current_company).resolve
+      clients.each { |client| @projects[client.name] = client.projects.kept & user_projects }
     end
 end

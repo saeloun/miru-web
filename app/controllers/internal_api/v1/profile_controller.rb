@@ -2,11 +2,8 @@
 
 class InternalApi::V1::ProfileController < InternalApi::V1::ApplicationController
   def show
-    authorize :index, policy_class: ProfilePolicy
-    if current_user.avatar.attached?
-      avatar_url = url_for(current_user.avatar)
-    end
-    render json: { user: current_user.as_json.merge("avatar_url" => avatar_url) }, status: :ok
+    authorize :show, policy_class: ProfilePolicy
+    render :show, locals: { user: current_user }, status: :ok
   end
 
   def remove_avatar
@@ -25,7 +22,9 @@ class InternalApi::V1::ProfileController < InternalApi::V1::ApplicationControlle
 
     def user_params
       params.require(:user).permit(
-        :first_name, :last_name, :current_password, :password, :password_confirmation, :avatar
+        :first_name, :last_name, :current_password, :password, :password_confirmation,
+        :avatar, :date_of_birth, :phone, :personal_email_id,
+        social_accounts: {}
       )
     end
 end

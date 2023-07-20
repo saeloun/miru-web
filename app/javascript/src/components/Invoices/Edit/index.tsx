@@ -2,13 +2,16 @@ import React, { Fragment, useEffect, useState } from "react";
 
 import dayjs from "dayjs";
 import { useParams, useNavigate } from "react-router-dom";
+import { Toastr } from "StyledComponents";
 
-import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import invoicesApi from "apis/invoices";
-import Toastr from "common/Toastr";
+import paymentSettings from "apis/payment-settings";
+import { useUserContext } from "context/UserContext";
+import { unmapLineItems } from "mapper/mappedIndex";
 import { sendGAPageView } from "utils/googleAnalytics";
 
-import { unmapLineItems } from "../../../mapper/editInvoice.mapper";
+import EditInvoiceForm from "./Mobile";
+
 import CompanyInfo from "../common/CompanyInfo";
 import InvoiceDetails from "../common/InvoiceDetails";
 import Header from "../common/InvoiceForm/Header";
@@ -16,11 +19,13 @@ import SendInvoice from "../common/InvoiceForm/SendInvoice";
 import InvoiceTable from "../common/InvoiceTable";
 import InvoiceTotal from "../common/InvoiceTotal";
 import { generateInvoiceLineItems } from "../common/utils";
+import ConnectPaymentGateway from "../popups/ConnectPaymentGateway";
 import DeleteInvoice from "../popups/DeleteInvoice";
 
 const EditInvoice = () => {
   const navigate = useNavigate();
   const params = useParams();
+  const { isDesktop } = useUserContext();
 
   const [invoiceDetails, setInvoiceDetails] = useState<any>();
   const [lineItems, setLineItems] = useState<any>([]);
@@ -40,6 +45,10 @@ const EditInvoice = () => {
     useState<boolean>(false);
   const [invoiceToDelete, setInvoiceToDelete] = useState(null);
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
+  const [isSendReminder, setIsSendReminder] = useState<boolean>(false);
+  const [isStripeEnabled, setIsStripeEnabled] = useState<boolean>(false);
+  const [showConnectPaymentDialog, setShowConnectPaymentDialog] =
+    useState<boolean>(false);
 
   const INVOICE_NUMBER_ERROR = "Please enter invoice number to proceed";
   const SELECT_CLIENT_ERROR =
@@ -47,28 +56,36 @@ const EditInvoice = () => {
 
   const fetchInvoice = async () => {
     try {
-      const res = await invoicesApi.editInvoice(params.id);
-      setInvoiceDetails(res.data);
-      setReference(res.data.reference);
-      setIssueDate(Date.parse(res.data.issueDate));
-      setDueDate(Date.parse(res.data.dueDate));
-      setSelectedLineItems(unmapLineItems(res.data.invoiceLineItems));
-      setAmount(res.data.amount);
-      setInvoiceNumber(res.data.invoiceNumber);
-      setDiscount(res.data.discount);
-      setSelectedClient(res.data.client);
-      setAmountDue(res.data.amountDue);
-      setAmountPaid(res.data.amountPaid);
+      const { data } = await invoicesApi.editInvoice(params.id);
+      setInvoiceDetails(data);
+      setReference(data.reference);
+      setIssueDate(data.issueDate);
+      setDueDate(data.dueDate);
+      setSelectedLineItems(unmapLineItems(data.invoiceLineItems));
+      setAmount(data.amount);
+      setInvoiceNumber(data.invoiceNumber);
+      setDiscount(data.discount);
+      setSelectedClient(data.client);
+      setAmountDue(data.amountDue);
+      setAmountPaid(data.amountPaid);
     } catch {
       navigate("/invoices/error");
     }
   };
 
+  const fetchPaymentSettings = async () => {
+    try {
+      const res = await paymentSettings.get();
+      setIsStripeEnabled(res.data.providers.stripe.connected);
+    } catch {
+      Toastr.error("ERROR! CONNECTING TO PAYMENTS");
+    }
+  };
+
   useEffect(() => {
     sendGAPageView();
-    setAuthHeaders();
-    registerIntercepts();
     fetchInvoice();
+    fetchPaymentSettings();
   }, []);
 
   const updateInvoice = async () => {
@@ -76,10 +93,17 @@ const EditInvoice = () => {
       const res = await invoicesApi.updateInvoice(invoiceDetails.id, {
         invoice_number: invoiceNumber || invoiceDetails.invoiceNumber,
         reference: reference || invoiceDetails.reference,
-        issue_date: dayjs(issueDate || invoiceDetails.issueDate).format(
-          "DD.MM.YYYY"
-        ),
-        due_date: dayjs(dueDate || invoiceDetails.dueDate).format("DD.MM.YYYY"),
+        issue_date:
+          invoiceDetails.company.dateFormat == "DD-MM-YYYY"
+            ? issueDate || invoiceDetails.issueDate
+            : dayjs(
+                issueDate || invoiceDetails.issueDate,
+                invoiceDetails.company.dateFormat
+              ).format("DD-MM-YYYY"),
+        due_date: dayjs(
+          dueDate || invoiceDetails.dueDate,
+          invoiceDetails.company.dateFormat
+        ).format("DD-MM-YYYY"),
         amount_due: amountDue,
         amount_paid: amountPaid,
         amount,
@@ -88,8 +112,21 @@ const EditInvoice = () => {
         client_id: selectedClient.value,
         invoice_line_items_attributes: generateInvoiceLineItems(
           selectedLineItems,
-          manualEntryArr
-        ),
+          manualEntryArr,
+          invoiceDetails.company.dateFormat
+        ).map(ilt => ({
+          id: ilt.id,
+          name: ilt.name,
+          description: ilt.description,
+          date:
+            invoiceDetails.company.dateFormat == "DD-MM-YYYY"
+              ? ilt.date
+              : dayjs(ilt.date).format("DD-MM-YYYY"),
+          rate: ilt.rate,
+          quantity: ilt.quantity,
+          timesheet_entry_id: ilt.timesheet_entry_id,
+          _destroy: ilt._destroy,
+        })),
       });
 
       return res;
@@ -112,7 +149,9 @@ const EditInvoice = () => {
   };
 
   const handleSendInvoice = () => {
-    if (selectedClient && invoiceNumber !== "") {
+    if (!isStripeEnabled) {
+      setShowConnectPaymentDialog(true);
+    } else if (selectedClient && invoiceNumber && !showConnectPaymentDialog) {
       setShowSendInvoiceModal(true);
     } else {
       selectedClient
@@ -136,90 +175,138 @@ const EditInvoice = () => {
   };
 
   if (invoiceDetails) {
-    return (
-      <Fragment>
-        <Header
-          showMoreButton
-          formType="edit"
-          handleSaveInvoice={handleSaveInvoice}
-          handleSendInvoice={handleSendInvoice}
-          id={invoiceDetails.id}
-          invoiceNumber={invoiceDetails.invoiceNumber}
-          setShowInvoiceSetting={false}
-          deleteInvoice={() => {
-            setShowDeleteDialog(true);
-            setInvoiceToDelete(invoiceDetails.id);
-          }}
-        />
-        <div className="m-0 mt-5 mb-10 w-full bg-miru-gray-100 p-0">
-          <CompanyInfo company={invoiceDetails.company} />
-          <InvoiceDetails
-            optionSelected
-            amount={amount}
-            clientList={invoiceDetails.companyClientList}
-            clientVisible={false}
-            currency={invoiceDetails.company.currency}
-            dueDate={dueDate || invoiceDetails.dueDate}
-            invoiceNumber={invoiceNumber}
-            issueDate={issueDate || invoiceDetails.issueDate}
-            reference={reference}
-            selectedClient={selectedClient || invoiceDetails.client}
-            setDueDate={setDueDate}
-            setInvoiceNumber={setInvoiceNumber}
-            setIssueDate={setIssueDate}
-            setReference={setReference}
-            setSelectedClient={setSelectedClient}
-          />
-          <div className="py-5 pl-10">
-            <InvoiceTable
-              currency={invoiceDetails.company.currency}
-              lineItems={lineItems}
-              manualEntryArr={manualEntryArr}
-              selectedClient={selectedClient || invoiceDetails.client}
-              selectedLineItems={selectedLineItems}
-              setLineItems={setLineItems}
-              setManualEntryArr={setManualEntryArr}
-              setSelectedLineItems={setSelectedLineItems}
-            />
-          </div>
-          <InvoiceTotal
-            amountDue={amountDue}
-            amountPaid={amountPaid}
-            currency={invoiceDetails.company.currency}
-            discount={discount}
-            manualEntryArr={manualEntryArr}
-            newLineItems={selectedLineItems}
-            setAmount={setAmount}
-            setAmountDue={setAmountDue}
-            setDiscount={setDiscount}
-            setTax={setTax}
-            showDiscountInput={!!invoiceDetails.discount}
-            showTax={!!invoiceDetails.tax}
-            tax={tax || invoiceDetails.tax}
-          />
-        </div>
-        {showSendInvoiceModal && (
-          <SendInvoice
-            handleSaveSendInvoice={handleSaveSendInvoice}
-            isSending={showSendInvoiceModal}
-            setIsSending={setShowSendInvoiceModal}
-            invoice={{
-              id: invoiceDetails.id,
-              client: selectedClient,
-              company: invoiceDetails?.company,
-              dueDate,
-              invoiceNumber,
-              amount,
+    if (isDesktop) {
+      return (
+        <Fragment>
+          <Header
+            showMoreButton
+            formType="edit"
+            handleSaveInvoice={handleSaveInvoice}
+            handleSendInvoice={handleSendInvoice}
+            id={invoiceDetails.id}
+            invoiceNumber={invoiceDetails.invoiceNumber}
+            setIsSendReminder={setIsSendReminder}
+            setShowInvoiceSetting={false}
+            deleteInvoice={() => {
+              setShowDeleteDialog(true);
+              setInvoiceToDelete(invoiceDetails.id);
             }}
           />
-        )}
-        {showDeleteDialog && (
-          <DeleteInvoice
-            invoice={invoiceToDelete}
-            setShowDeleteDialog={setShowDeleteDialog}
-          />
-        )}
-      </Fragment>
+          <div className="m-0 mt-5 mb-10 w-full bg-miru-gray-100 p-0">
+            <CompanyInfo company={invoiceDetails.company} />
+            <InvoiceDetails
+              optionSelected
+              amount={amount}
+              clientList={invoiceDetails.companyClientList}
+              clientVisible={false}
+              currency={invoiceDetails.company.currency}
+              dateFormat={invoiceDetails.company.dateFormat}
+              dueDate={dueDate || invoiceDetails.dueDate}
+              invoiceNumber={invoiceNumber}
+              issueDate={issueDate || invoiceDetails.issueDate}
+              reference={reference}
+              selectedClient={selectedClient || invoiceDetails.client}
+              setDueDate={setDueDate}
+              setInvoiceNumber={setInvoiceNumber}
+              setIssueDate={setIssueDate}
+              setReference={setReference}
+              setSelectedClient={setSelectedClient}
+            />
+            <div className="py-5 pl-10">
+              <InvoiceTable
+                currency={invoiceDetails.company.currency}
+                dateFormat={invoiceDetails.company.dateFormat}
+                lineItems={lineItems}
+                manualEntryArr={manualEntryArr}
+                selectedClient={selectedClient || invoiceDetails.client}
+                selectedLineItems={selectedLineItems}
+                setLineItems={setLineItems}
+                setManualEntryArr={setManualEntryArr}
+                setSelectedLineItems={setSelectedLineItems}
+              />
+            </div>
+            <InvoiceTotal
+              amountDue={amountDue}
+              amountPaid={amountPaid}
+              currency={invoiceDetails.company.currency}
+              discount={discount}
+              manualEntryArr={manualEntryArr}
+              newLineItems={selectedLineItems}
+              setAmount={setAmount}
+              setAmountDue={setAmountDue}
+              setDiscount={setDiscount}
+              setTax={setTax}
+              tax={tax || invoiceDetails.tax}
+            />
+          </div>
+          {(showSendInvoiceModal || isSendReminder) &&
+            !showConnectPaymentDialog && (
+              <SendInvoice
+                handleSaveSendInvoice={handleSaveSendInvoice}
+                isSending={showSendInvoiceModal}
+                setIsSending={setShowSendInvoiceModal}
+                invoice={{
+                  id: invoiceDetails.id,
+                  client: selectedClient,
+                  company: invoiceDetails?.company,
+                  dueDate,
+                  invoiceNumber,
+                  amount,
+                }}
+              />
+            )}
+          {!isStripeEnabled && showConnectPaymentDialog && (
+            <ConnectPaymentGateway
+              invoice={invoiceDetails}
+              setIsSending={setShowSendInvoiceModal}
+              setShowConnectPaymentDialog={setShowConnectPaymentDialog}
+              showConnectPaymentDialog={showConnectPaymentDialog}
+            />
+          )}
+          {showDeleteDialog && (
+            <DeleteInvoice
+              invoice={invoiceToDelete}
+              setShowDeleteDialog={setShowDeleteDialog}
+              showDeleteDialog={showDeleteDialog}
+            />
+          )}
+        </Fragment>
+      );
+    }
+
+    return (
+      <EditInvoiceForm
+        amount={amount}
+        amountDue={amountDue}
+        amountPaid={amountPaid}
+        discount={discount}
+        dueDate={dueDate}
+        handleSaveInvoice={handleSaveInvoice}
+        invoiceDetails={invoiceDetails}
+        invoiceNumber={invoiceNumber}
+        isStripeEnabled={isStripeEnabled}
+        issueDate={issueDate}
+        lineItems={lineItems}
+        manualEntryArr={manualEntryArr}
+        reference={reference}
+        selectedClient={selectedClient}
+        selectedLineItems={selectedLineItems}
+        setAmount={setAmount}
+        setAmountDue={setAmountDue}
+        setDiscount={setDiscount}
+        setDueDate={setDueDate}
+        setInvoiceNumber={setInvoiceNumber}
+        setIssueDate={setIssueDate}
+        setLineItems={setLineItems}
+        setManualEntryArr={setManualEntryArr}
+        setReference={setReference}
+        setSelectedClient={setSelectedClient}
+        setSelectedLineItems={setSelectedLineItems}
+        setShowConnectPaymentDialog={setShowConnectPaymentDialog}
+        setTax={setTax}
+        showConnectPaymentDialog={showConnectPaymentDialog}
+        tax={tax}
+      />
     );
   }
 

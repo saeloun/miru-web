@@ -22,7 +22,7 @@ RSpec.describe "InternalApi::V1::TimesheetEntry#create", type: :request do
           bill_status: :unbilled
         },
         user_id: user.id
-      }
+      }, headers: auth_headers(user)
     end
 
     it "they should be able to create the record successfully" do
@@ -49,7 +49,7 @@ RSpec.describe "InternalApi::V1::TimesheetEntry#create", type: :request do
           bill_status: :unbilled
         },
         user_id: user.id
-      }
+      }, headers: auth_headers(user)
     end
 
     it "they should be able to create the record successfully" do
@@ -76,7 +76,7 @@ RSpec.describe "InternalApi::V1::TimesheetEntry#create", type: :request do
           bill_status: :unbilled
         },
         user_id: user.id
-      }
+      }, headers: auth_headers(user)
     end
 
     it "is not be permitted to generate an timehseet entry" do
@@ -88,7 +88,7 @@ RSpec.describe "InternalApi::V1::TimesheetEntry#create", type: :request do
     it "user will be redirected to sign in path" do
       send_request :post, internal_api_v1_timesheet_entry_index_path
       expect(response).to have_http_status(:unauthorized)
-      expect(json_response["error"]).to match("You need to sign in or sign up before continuing.")
+      expect(json_response["error"]).to match(I18n.t("devise.failure.unauthenticated"))
     end
   end
 end

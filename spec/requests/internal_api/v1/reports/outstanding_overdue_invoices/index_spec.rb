@@ -5,8 +5,8 @@ require "rails_helper"
 RSpec.describe "InternalApi::V1::Reports::OutstandingOverdueInvoicesController::#index", type: :request do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
-  let!(:client1) { create(:client, company:, name: "bob") }
-  let!(:client2) { create(:client, company:, name: "alpha") }
+  let!(:client1) { create(:client, :with_logo, company:, name: "bob") }
+  let!(:client2) { create(:client, :with_logo, company:, name: "alpha") }
   let!(:client1_sent_invoice1) { create(:invoice, client: client1, status: "sent") }
   let!(:client1_sent_invoice2) { create(:invoice, client: client1, status: "sent") }
   let!(:client1_viewed_invoice1) { create(:invoice, client: client1, status: "viewed") }
@@ -31,59 +31,61 @@ RSpec.describe "InternalApi::V1::Reports::OutstandingOverdueInvoicesController::
         @expected_clients =
           [{
             name: client2.name,
+            logo: client2.logo_url,
             totalOutstandingAmount: @client2_outstanding_amount,
             totalOverdueAmount: @client2_overdue_amount,
             invoices: [
                         {
                           clientName: client2.name,
                           invoiceNo: client2_overdue_invoice1.invoice_number,
-                          issueDate: client2_overdue_invoice1.issue_date,
-                          dueDate: client2_overdue_invoice1.due_date,
+                          issueDate: client2_overdue_invoice1.formatted_issue_date,
+                          dueDate: client2_overdue_invoice1.formatted_due_date,
                           amount: client2_overdue_invoice1.amount,
                           status: client2_overdue_invoice1.status
                         },
                         {
                           clientName: client2.name,
                           invoiceNo: client2_sent_invoice1.invoice_number,
-                          issueDate: client2_sent_invoice1.issue_date,
-                          dueDate: client2_sent_invoice1.due_date,
+                          issueDate: client2_sent_invoice1.formatted_issue_date,
+                          dueDate: client2_sent_invoice1.formatted_due_date,
                           amount: client2_sent_invoice1.amount,
                           status: client2_sent_invoice1.status
                         }
-                      ]
+                      ].sort_by { |k| Date.strptime(k[:issueDate], "%m.%d.%Y") }.reverse
           },
            {
              name: client1.name,
+             logo: client1.logo_url,
              totalOutstandingAmount: @client1_outstanding_amount,
              totalOverdueAmount: @client1_overdue_amount,
              invoices: [
                         {
                           clientName: client1.name,
                           invoiceNo: client1_viewed_invoice1.invoice_number,
-                          issueDate: client1_viewed_invoice1.issue_date,
-                          dueDate: client1_viewed_invoice1.due_date,
+                          issueDate: client1_viewed_invoice1.formatted_issue_date,
+                          dueDate: client1_viewed_invoice1.formatted_due_date,
                           amount: client1_viewed_invoice1.amount,
                           status: client1_viewed_invoice1.status
                         },
                         {
                           clientName: client1.name,
                           invoiceNo: client1_sent_invoice2.invoice_number,
-                          issueDate: client1_sent_invoice2.issue_date,
-                          dueDate: client1_sent_invoice2.due_date,
+                          issueDate: client1_sent_invoice2.formatted_issue_date,
+                          dueDate: client1_sent_invoice2.formatted_due_date,
                           amount: client1_sent_invoice2.amount,
                           status: client1_sent_invoice2.status
                         },
                         {
                           clientName: client1.name,
                           invoiceNo: client1_sent_invoice1.invoice_number,
-                          issueDate: client1_sent_invoice1.issue_date,
-                          dueDate: client1_sent_invoice1.due_date,
+                          issueDate: client1_sent_invoice1.formatted_issue_date,
+                          dueDate: client1_sent_invoice1.formatted_due_date,
                           amount: client1_sent_invoice1.amount,
                           status: client1_sent_invoice1.status
                         }
-                      ]
+                      ].sort_by { |k| Date.strptime(k[:issueDate], "%m.%d.%Y") }.reverse
            }]
-        get internal_api_v1_reports_outstanding_overdue_invoices_path
+        get internal_api_v1_reports_outstanding_overdue_invoices_path, headers: auth_headers(user)
       end
 
       it "returns the 200 http response" do
@@ -136,7 +138,7 @@ RSpec.describe "InternalApi::V1::Reports::OutstandingOverdueInvoicesController::
       create(:employment, company:, user:)
       user.add_role :employee, company
       sign_in user
-      send_request :get, internal_api_v1_reports_outstanding_overdue_invoices_path
+      send_request :get, internal_api_v1_reports_outstanding_overdue_invoices_path, headers: auth_headers(user)
     end
 
     it "is not permitted to view outstanding and overdue invoices report" do
@@ -149,11 +151,11 @@ RSpec.describe "InternalApi::V1::Reports::OutstandingOverdueInvoicesController::
       create(:employment, company:, user:)
       user.add_role :book_keeper, company
       sign_in user
-      send_request :get, internal_api_v1_reports_outstanding_overdue_invoices_path
+      send_request :get, internal_api_v1_reports_outstanding_overdue_invoices_path, headers: auth_headers(user)
     end
 
-    it "is not permitted to view outstanding and overdue invoices report" do
-      expect(response).to have_http_status(:forbidden)
+    it "is permitted to view outstanding and overdue invoices report" do
+      expect(response).to have_http_status(:ok)
     end
   end
 
@@ -161,7 +163,7 @@ RSpec.describe "InternalApi::V1::Reports::OutstandingOverdueInvoicesController::
     it "is not permitted to view outstanding and overdue invoices report" do
       send_request :get, internal_api_v1_reports_outstanding_overdue_invoices_path
       expect(response).to have_http_status(:unauthorized)
-      expect(json_response["error"]).to eq("You need to sign in or sign up before continuing.")
+      expect(json_response["error"]).to eq(I18n.t("devise.failure.unauthenticated"))
     end
   end
 end

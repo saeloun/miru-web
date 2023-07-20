@@ -7,6 +7,8 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
   let(:user) { create(:user, current_workspace_id: company.id) }
   let(:client_1) { create(:client, company:) }
   let(:client_2) { create(:client, company:) }
+  let(:client_3) { create(:client, company:, name: "john") }
+
   let(:project_1) { create(:project, client: client_1) }
   let(:project_2) { create(:project, client: client_2) }
   let(:time_frame) { "week" }
@@ -18,20 +20,16 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
       sign_in user
       create_list(:timesheet_entry, 5, user:, project: project_1)
       create_list(:timesheet_entry, 5, user:, project: project_2)
-      send_request :get, internal_api_v1_clients_path
+      send_request :get, internal_api_v1_clients_path, headers: auth_headers(user)
     end
 
     context "when time_frame is week" do
       let(:client_details) do
         user.current_workspace.clients.kept.map do |client|
-          a_hash_including(
-            "id" => client.id,
-            "name" => client.name,
-            "email" => client.email,
-            "phone" => client.phone,
-            "address" => client.address,
-            "minutes_spent" => client.total_hours_logged(time_frame)
-          )
+          {
+            id: client.id, name: client.name, email: client.email, phone: client.phone, address: client.current_address,
+            minutes_spent: client.total_hours_logged(time_frame), logo: ""
+          }
         end
       end
       let(:total_minutes) do
@@ -43,7 +41,8 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
       it "returns the total hours logged for a Company in the last_week" do
         overdue_outstanding_amount = user.current_workspace.overdue_and_outstanding_and_draft_amount
         expect(response).to have_http_status(:ok)
-        expect(json_response["client_details"]).to match_array(client_details)
+
+        expect(json_response["client_details"]).to match_array(JSON.parse(client_details.to_json))
         expect(json_response["total_minutes"]).to eq(total_minutes)
         expect(json_response["overdue_outstanding_amount"]).to eq(JSON.parse(overdue_outstanding_amount.to_json))
       end
@@ -54,13 +53,13 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
         create(:employment, company:, user:)
         user.add_role :admin, company
         sign_in user
-        send_request :get, internal_api_v1_clients_path, params: { q: client_1.name }
+        send_request :get, internal_api_v1_clients_path, params: { q: client_1.name }, headers: auth_headers(user)
       end
 
       it "finds specific client by name" do
         client_details = [{
-          id: client_1.id, name: client_1.name, email: client_1.email, phone: client_1.phone, address: client_1.address,
-          minutes_spent: client_1.total_hours_logged(time_frame)
+          id: client_1.id, name: client_1.name, email: client_1.email, phone: client_1.phone,
+          address: client_1.current_address, minutes_spent: client_1.total_hours_logged(time_frame), logo: ""
         }]
         expect(response).to have_http_status(:ok)
         expect(json_response["client_details"]).to eq(JSON.parse(client_details.to_json))
@@ -69,10 +68,10 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
 
     it "returns all the clients when query params are empty" do
       client_details = [{
-        id: client_1.id, name: client_1.name, email: client_1.email, phone: client_1.phone, address: client_1.address,
-        minutes_spent: client_1.total_hours_logged(time_frame)
-      }, id: client_2.id, name: client_2.name, email: client_2.email, phone: client_2.phone, address: client_2.address,
-         minutes_spent: client_2.total_hours_logged(time_frame) ]
+        id: client_1.id, name: client_1.name, email: client_1.email, phone: client_1.phone,
+        address: client_1.current_address, minutes_spent: client_1.total_hours_logged(time_frame), logo: ""
+      }, id: client_2.id, name: client_2.name, email: client_2.email, phone: client_2.phone,
+         address: client_2.current_address, minutes_spent: client_2.total_hours_logged(time_frame), logo: "" ]
 
       expect(response).to have_http_status(:ok)
       expect(json_response["client_details"]).to eq(JSON.parse(client_details.to_json))
@@ -90,15 +89,15 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
       create_list(:timesheet_entry, 5, user:, project: project_2)
       send_request :get, internal_api_v1_clients_path, params: {
         time_frame:
-      }
+      }, headers: auth_headers(user)
     end
 
     context "when time_frame is week" do
       it "returns the total hours logged for a Company in the last_week" do
         client_details = user.current_workspace.clients.kept.map do |client|
           {
-            id: client.id, name: client.name, email: client.email, phone: client.phone, address: client.address,
-            minutes_spent: client.total_hours_logged(time_frame)
+            id: client.id, name: client.name, email: client.email, phone: client.phone, address: client.current_address,
+            minutes_spent: client.total_hours_logged(time_frame), logo: ""
           }
         end
         total_minutes = (client_details.map { |client| client[:minutes_spent] }).sum
@@ -122,7 +121,7 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
       create_list(:timesheet_entry, 5, user:, project: project_2)
       send_request :get, internal_api_v1_clients_path, params: {
         time_frame:
-      }
+      }, headers: auth_headers(user)
     end
 
     it "is not be permitted to access client" do
@@ -136,7 +135,7 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
         time_frame:
       }
       expect(response).to have_http_status(:unauthorized)
-      expect(json_response["error"]).to eq("You need to sign in or sign up before continuing.")
+      expect(json_response["error"]).to eq(I18n.t("devise.failure.unauthenticated"))
     end
   end
 end

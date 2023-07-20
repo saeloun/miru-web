@@ -19,6 +19,7 @@
 #  index_clients_on_company_id            (company_id)
 #  index_clients_on_discarded_at          (discarded_at)
 #  index_clients_on_email_and_company_id  (email,company_id) UNIQUE
+#  index_clients_on_name_and_company_id   (name,company_id) UNIQUE
 #
 # Foreign Keys
 #
@@ -33,12 +34,22 @@ class Client < ApplicationRecord
   has_many :projects
   has_many :timesheet_entries, through: :projects
   has_many :invoices, dependent: :destroy
+  has_many :addresses, as: :addressable, dependent: :destroy
+  has_many :client_members, dependent: :destroy
+  has_one_attached :logo
   belongs_to :company
 
-  validates :name, :email, presence: true
-  validates :email, uniqueness: { scope: :company_id }, format: { with: Devise.email_regexp }
+  before_save :strip_attributes
+  validates :name, presence: true, length: { maximum: 30 },
+    uniqueness: { scope: :company_id, case_sensitive: false, message: "The client %{value} already exists" }
+  validates :phone, length: { maximum: 15 }
+  validates :email, presence: true, uniqueness: { scope: :company_id }, format: { with: Devise.email_regexp }
+
   after_discard :discard_projects
   after_commit :reindex_projects
+
+  accepts_nested_attributes_for :addresses, reject_if: :address_attributes_blank?, allow_destroy: true
+  scope :with_ids, -> (client_ids) { where(id: client_ids) if client_ids.present? }
 
   def reindex_projects
     projects.reindex
@@ -50,7 +61,7 @@ class Client < ApplicationRecord
   end
 
   def project_details(time_frame = "week")
-    projects.kept.map do | project |
+    projects.includes([:project_members]).kept.map do | project |
       {
         id: project.id,
         name: project.name,
@@ -68,9 +79,16 @@ class Client < ApplicationRecord
       name:,
       email:,
       phone:,
-      address:,
-      minutes_spent: total_hours_logged(time_frame)
+      logo: logo_url,
+      minutes_spent: total_hours_logged(time_frame),
+      address: current_address
     }
+  end
+
+  def logo_url
+    logo.attached? ? Rails.application.routes.url_helpers.polymorphic_url(
+      logo, only_path: true
+    ) : ""
   end
 
   def client_overdue_and_outstanding_calculation
@@ -104,29 +122,41 @@ class Client < ApplicationRecord
   end
 
   def payment_summary(duration)
-    status_and_amount = invoices.during(duration).group(:status).sum(:amount)
+    status_and_amount = invoices.kept.during(duration).group(:status).sum(:amount)
     status_and_amount.default = 0
     {
-      name:,
       paid_amount: status_and_amount["paid"],
-      unpaid_amount: status_and_amount["sent"] + status_and_amount["viewed"] + status_and_amount["overdue"]
+      outstanding_amount: status_and_amount["sent"] + status_and_amount["viewed"],
+      overdue_amount: status_and_amount["overdue"]
     }
   end
 
   def outstanding_and_overdue_invoices
     outstanding_overdue_statuses = ["overdue", "sent", "viewed"]
-    filtered_invoices = invoices
-      .order(updated_at: :desc)
+    filtered_invoices = invoices.kept
+      .order(issue_date: :desc)
+      .includes(:company)
       .select { |invoice| outstanding_overdue_statuses.include?(invoice.status) }
-    status_and_amount = invoices.group(:status).sum(:amount)
+    status_and_amount = invoices.kept.group(:status).sum(:amount)
     status_and_amount.default = 0
 
     {
-      name:,
       invoices: filtered_invoices,
       total_outstanding_amount: status_and_amount["sent"] + status_and_amount["viewed"],
       total_overdue_amount: status_and_amount["overdue"]
     }
+  end
+
+  def address_attributes_blank?(attributes)
+    attributes.except("id, address_line_2").values.all?(&:blank?)
+  end
+
+  def current_address
+    addresses.first
+  end
+
+  def formatted_address
+    current_address&.formatted_address
   end
 
   private
@@ -137,5 +167,9 @@ class Client < ApplicationRecord
 
     def discard_projects
       projects.discard_all
+    end
+
+    def strip_attributes
+      name.strip!
     end
 end

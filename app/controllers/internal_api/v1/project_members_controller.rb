@@ -4,63 +4,31 @@ class InternalApi::V1::ProjectMembersController < InternalApi::V1::ApplicationCo
   def update
     authorize project, policy_class: ProjectMemberPolicy
 
-    ActiveRecord::Base.transaction do
-      add_new_members
-      update_existing_members
-      remove_members
-    end
+    ProjectMemberService.new(update_params).process
     render json: {}, status: :ok
   end
 
   private
 
-    def add_new_members
-      added_members = added_members_params
-
-      return if added_members.blank?
-
-      added_members = added_members.filter_map do |m|
-        next unless m.key?("hourlyRate")
-
-        { user_id: m["id"], project_id: params[:id], hourly_rate: m["hourlyRate"] }
-      end
-
-      ProjectMember.create!(added_members)
-    end
-
-    def update_existing_members
-      updated_members = updated_members_params
-
-      return if updated_members.blank?
-
-      updated_members.each do |member_params|
-          ProjectMember
-            .where(user_id: member_params["id"], project_id: params[:id])
-            .update!(hourly_rate: member_params["hourlyRate"])
-        end
-    end
-
-    def remove_members
-      member_ids = removed_members_params
-
-      return if member_ids.blank?
-
-      member_ids.each do |member_id|
-          ProjectMember.where(user_id: member_id, project_id: params[:id])
-            .delete_all # FIXME: Use Soft delete
-        end
+    def update_params
+      {
+        project:,
+        added_members: added_members_params[:added_members],
+        updated_members: updated_members_params[:updated_members],
+        removed_member_ids: removed_members_params[:removed_member_ids]
+      }
     end
 
     def added_members_params
-      params.require(:members).permit(added_members: [:id, :hourlyRate])["added_members"]
+      params.require(:members).permit(added_members: [:id, :hourly_rate])
     end
 
     def updated_members_params
-      params.require(:members).permit(updated_members: [:id, :hourlyRate])["updated_members"]
+      params.require(:members).permit(updated_members: [:id, :hourly_rate])
     end
 
     def removed_members_params
-      params.require(:members).permit(removed_member_ids: [])["removed_member_ids"]
+      params.require(:members).permit(removed_member_ids: [])
     end
 
     def project

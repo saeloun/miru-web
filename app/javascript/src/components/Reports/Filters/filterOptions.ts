@@ -71,7 +71,6 @@ const groupBy = [
   { value: "team_member", label: "Team member" },
   { value: "client", label: "Client" },
   { value: "project", label: "Project" },
-  { value: "week", label: "Week" },
 ];
 
 export { dateRangeOptions, statusOption, groupBy, getMonth };

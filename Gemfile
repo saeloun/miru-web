@@ -3,19 +3,16 @@
 source "https://rubygems.org"
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby "3.2.0"
+ruby "3.2.2"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 7.0.4"
-
-# The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
-# gem "sprockets-rails", ">= 3.4.1"
 
 # Use postgresql as the database for Active Record
 gem "pg"
 
 # Use the Puma web server [https://github.com/puma/puma]
-gem "puma", "~> 5.0"
+gem "puma", "< 7"
 
 # Use JavaScript with ESM import maps [https://github.com/rails/importmap-rails]
 # gem "importmap-rails", ">= 0.9.2"
@@ -33,7 +30,7 @@ gem "puma", "~> 5.0"
 gem "jbuilder", "~> 2.11"
 
 # Use devise for authentication
-gem "devise", git: "https://github.com/heartcombo/devise", branch: "main"
+gem "devise"
 
 # Use Redis adapter to run Action Cable in production
 gem "redis", "~> 4.0"
@@ -60,7 +57,7 @@ gem "bootsnap", ">= 1.4.4", require: false
 gem "image_processing", ">= 1.2"
 
 # Webpack bundler for rails
-gem "webpacker"
+gem "shakapacker", "6.0.0"
 
 # React hook for rails
 gem "react-rails"
@@ -118,7 +115,7 @@ gem "active_interaction"
 gem "stripe"
 
 # Background job processing adapter
-gem "sidekiq", "<7"
+gem "sidekiq", "<8"
 
 #  job scheduler extension for Sidekiq
 gem "sidekiq-scheduler"
@@ -137,13 +134,11 @@ gem "bundler-audit", require: false
 gem "ruby_audit", require: false
 
 # For reporting messages, exceptions, and tracing events.
-gem "sentry-rails"
-gem "sentry-ruby"
-gem "sentry-sidekiq"
 
 gem "rubyzip"
 
-group :development, :test do
+gem "ahoy_matey"
+group :development, :test, :ci do
   # See https://edgeguides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", ">= 1.0.0", platforms: %i[mri mingw x64_mingw]
 
@@ -176,8 +171,10 @@ group :development, :test do
   gem "bullet"
 
   # To record response of outgoing API calls
-  gem "vcr", "~> 3.0.1"
+  gem "vcr", "~> 6.1"
   gem "webmock", "~> 3.14.0"
+
+  gem "dockerfile-rails"
 end
 
 group :development do
@@ -196,11 +193,9 @@ group :development do
   gem "letter_opener"
 end
 
-group :test do
-  # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
+group :test, :ci do
   gem "capybara", ">= 3.26"
   gem "selenium-webdriver", ">= 4.0.0"
-  gem "webdrivers"
 
   # Use Codecov for code coverage analysis
   gem "simplecov", require: false
@@ -216,3 +211,22 @@ group :test do
   # BuildKite Test Collector
   # gem "buildkite-test_collector", git: "https://github.com/buildkite/test-collector-ruby.git", branch: "main"
 end
+
+# Ref: https://www.plymouthsoftware.com/articles/rails-on-docker-system-specs-in-containers-with-rspec-capybara-chrome-and-selenium/
+gem "webdrivers", group: :test
+
+# https://github.com/ankane/strong_migrations
+gem "strong_migrations"
+
+# Error tracking: https://docs.sentry.io/platforms/ruby/guides/rails/
+gem "sentry-rails"
+gem "sentry-ruby"
+
+# https://github.com/grosser/parallel_tests
+gem "parallel_tests", group: [:development, :test]
+
+# CROS: https://github.com/cyu/rack-cors
+gem "rack-cors"
+
+# Administrate dashboard
+gem "administrate"

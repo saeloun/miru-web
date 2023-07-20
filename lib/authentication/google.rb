@@ -29,8 +29,8 @@ module Authentication
             password: Devise.friendly_token[0, 20]
           )
           user.skip_confirmation!
-          user.save
-          user.identities.create(provider: PROVIDER, uid: google_id)
+          user.save!
+          user.identities.create!(provider: PROVIDER, uid: google_id)
         end
         user
       end

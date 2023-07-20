@@ -1,6 +1,6 @@
 import { bytesToSize } from "./byteToSizeConverter";
 import { cashFormatter } from "./cashFormater";
-import { currencyFormat, currencyNotationFormat } from "./currency";
+import { currencyFormat } from "./currency";
 import { currencySymbol } from "./currencySymbol";
 import { getMonthFromString } from "./dateParser";
 import { useDebounce } from "./debounce";
@@ -8,6 +8,7 @@ import { minFromHHMM, minToHHMM } from "./hhmmParser";
 import { lineTotalCalc } from "./lineTotalCalc";
 import { getNumberWithOrdinal } from "./ordinal";
 import { useOutsideClick } from "./outsideClick";
+import useKeypress from "./useKeyPress";
 import { validateTimesheetEntry } from "./validateTimesheetEntry";
 import {
   separateAddressFields,
@@ -19,7 +20,6 @@ export {
   bytesToSize,
   cashFormatter,
   currencyFormat,
-  currencyNotationFormat,
   currencySymbol,
   getMonthFromString,
   getNumberWithOrdinal,
@@ -29,5 +29,6 @@ export {
   separateAddressFields,
   useDebounce,
   useOutsideClick,
+  useKeypress,
   validateTimesheetEntry,
 };

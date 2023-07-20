@@ -88,6 +88,7 @@ const statusOptions = [
   { value: "paid", label: "PAID" },
   { value: "declined", label: "DECLINED" },
   { value: "overdue", label: "OVERDUE" },
+  { value: "waived", label: "WAIVED" },
 ];
 
 const dateRangeOptions = [...getDateRangeOptions()];

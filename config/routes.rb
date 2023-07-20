@@ -9,10 +9,25 @@ class ActionDispatch::Routing::Mapper
 end
 
 Rails.application.routes.draw do
-  devise_for :users, controllers: {
-    registrations: "users/registrations",
-    sessions: "users/sessions",
-    passwords: "users/passwords",
+  namespace :admin do
+      resources :users
+      resources :timesheet_entries
+      resources :stripe_connected_accounts
+      resources :roles
+      resources :project_members
+      resources :projects
+      resources :payments
+      resources :invoice_line_items
+      resources :invoices
+      resources :invitations
+      resources :companies
+      resources :clients
+      resources :addresses
+
+      root to: "users#index"
+    end
+  devise_for :users, skip: [:sessions, :registrations], controllers: {
+    confirmations: "users/confirmations",
     omniauth_callbacks: "users/omniauth_callbacks"
   }
 
@@ -33,28 +48,16 @@ Rails.application.routes.draw do
   end
   mount Sidekiq::Web, at: "/sidekiq"
 
-  root to: "root#index"
   draw(:internal_api)
   draw(:api)
-  resources :dashboard, only: [:index]
-
-  # get "*path", to: "home#index", via: :all
-  resource :company, only: [:new, :show, :create, :update], controller: :companies do
-    resource :purge_logo, only: [:destroy], controller: "companies/purge_logo"
-  end
 
   resources :workspaces, only: [:update]
 
   resources :invoices, only: [], module: :invoices do
     resources :payments, only: [:new] do
       collection do
-        get :success
         get :cancel
       end
-    end
-
-    member do
-      get :view, to: "view#show", as: :view
     end
   end
 
@@ -67,20 +70,13 @@ Rails.application.routes.draw do
   get "payments/settings/*path", to: "payment_settings#index", via: :all
   get "payments/settings", to: "payment_settings#index"
 
-  resource :email_confirmation, only: :show do
-    get :resend
-  end
-
-  devise_scope :user do
-    # TODO: verify if this is path is in use otherwise remove it.
-    delete "profile/purge_avatar", to: "users/registrations#purge_avatar"
-  end
-
   namespace :webhooks do
     post "stripe/checkout/fulfillment", to: "stripe#fulfill_stripe_checkout"
   end
 
+  root "home#index"
+
   match "*path", via: :all, to: "home#index", constraints: lambda { |req|
-    req.path.exclude? "rails/active_storage"
+    req.path.exclude?("rails/active_storage") && !req.path.include?("internal_api")
   }
 end

@@ -6,6 +6,7 @@ const getClientList = input =>
     phone: client.phone,
     minutes: client.minutes_spent,
     name: client.name,
+    logo: client.logo,
   }));
 
 const unmapClientList = input => {
@@ -45,6 +46,7 @@ const unmapClientDetails = input => {
       email: data.client_details.email,
       phone: data.client_details.phone || "--",
       address: data.client_details.address || "--",
+      logo: data.client_details.logo,
     },
     overdueOutstandingAmount: data.overdue_outstanding_amount,
     totalMinutes: data.total_minutes,

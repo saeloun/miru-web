@@ -1,16 +1,16 @@
-import React from "react";
+import React, { useRef } from "react";
 
+import { useKeypress, useOutsideClick } from "helpers";
 import Logger from "js-logger";
 import { XIcon } from "miruIcons";
+import { Toastr, Modal } from "StyledComponents";
 
 import companyUsersApi from "apis/company-users";
 import projectMembersApi from "apis/project-members";
-import Toastr from "common/Toastr";
 
 import EditMembersListForm from "./EditMembersListForm";
 
 interface IEditMembersList {
-  setShowAddMemberDialog: any;
   addedMembers: any;
   projectId: number;
   handleAddProjectDetails: any;
@@ -19,7 +19,6 @@ interface IEditMembersList {
 }
 
 const EditMembersList = ({
-  setShowAddMemberDialog,
   addedMembers,
   projectId,
   handleAddProjectDetails,
@@ -31,6 +30,7 @@ const EditMembersList = ({
     addedMembers.map(v => ({ ...v, isExisting: true }))
   );
   const [allMemberList, setAllMemberList] = React.useState([]);
+  const wrapperRef = useRef(null);
 
   const markAddedMembers = allMembers =>
     allMembers.map(memberFromAllMembers =>
@@ -56,13 +56,23 @@ const EditMembersList = ({
     setAllMemberList(markAddedMembers(allMemberList));
   }, [members]);
 
-  const updateMemberState = (idx, key, val) => {
+  const updateMemberState = (memberIndex, key, val) => {
     const modalMembers = [...members];
-    const memberToEdit = { ...members[idx] };
+    const memberToEdit = { ...members[memberIndex] };
     memberToEdit[key] = val;
-    modalMembers[idx] = memberToEdit;
+    modalMembers[memberIndex] = memberToEdit;
     setMembers(modalMembers);
   };
+
+  useOutsideClick(wrapperRef, () => {
+    closeAddRemoveMembers();
+  });
+
+  const handleEscapeKey = () => {
+    closeAddRemoveMembers();
+  };
+
+  useKeypress("Escape", handleEscapeKey);
 
   const handleSubmit = async e => {
     e.preventDefault();
@@ -74,15 +84,27 @@ const EditMembersList = ({
       alreadyAddedMembersMap[member.id] = member.hourlyRate;
     });
 
-    const newlyAddedMembers = members.filter(
-      member => !alreadyAddedMembersMap[member.id]
-    );
+    const newlyAddedMembers = members.filter(member => {
+      if (!alreadyAddedMembersMap[member.id]) {
+        member.hourly_rate = member.hourlyRate;
+        delete member.hourlyRate;
 
-    const updatedMembers = members.filter(
-      member =>
+        return member;
+      }
+    });
+
+    const updatedMembers = members.filter(member => {
+      if (
         alreadyAddedMembersMap[member.id] &&
         alreadyAddedMembersMap[member.id] != member.hourlyRate
-    );
+      ) {
+        member.hourly_rate = member.hourlyRate;
+        delete member.hourlyRate;
+
+        return member;
+      }
+    });
+
     if (
       newlyAddedMembers.length > 0 ||
       updatedMembers.length > 0 ||
@@ -92,8 +114,8 @@ const EditMembersList = ({
         await projectMembersApi.update(projectId, {
           members: {
             added_members: newlyAddedMembers,
-            removed_member_ids: removedIds,
             updated_members: updatedMembers,
+            removed_member_ids: removedIds,
           },
         });
         setExistingMembers(members);
@@ -107,36 +129,33 @@ const EditMembersList = ({
   };
 
   return (
-    <div
-      className="fixed inset-0 top-0 left-0 right-0 bottom-0 z-10 flex items-start justify-center overflow-auto"
-      style={{
-        backgroundColor: "rgba(29, 26, 49, 0.6)",
-      }}
+    <Modal
+      isOpen
+      customStyle="sm:my-8 sm:w-full sm:max-w-lg sm:align-middle"
+      onClose={closeAddRemoveMembers}
     >
-      <div className="relative h-full w-full px-4 md:flex md:items-center md:justify-center">
-        <div className="modal-width transform rounded-lg bg-white px-6 pb-6 shadow-xl transition-all sm:max-w-md sm:align-middle">
-          <div className="mt-6 flex items-center justify-between">
-            <h6 className="text-base font-extrabold">Add/Edit Team Members</h6>
-            <button
-              type="button"
-              onClick={() => {
-                setShowAddMemberDialog(false);
-              }}
-            >
-              <XIcon color="#CDD6DF" size={16} weight="bold" />
-            </button>
-          </div>
-          <EditMembersListForm
-            allMemberList={allMemberList}
-            currencySymbol={currencySymbol}
-            handleSubmit={handleSubmit}
-            members={members}
-            setMembers={setMembers}
-            updateMemberState={updateMemberState}
-          />
-        </div>
+      <div className="flex items-center justify-between">
+        <h6 className="text-base font-extrabold capitalize">
+          Add Team Members
+        </h6>
+        <button
+          className="menuButton__button"
+          type="button"
+          onClick={closeAddRemoveMembers}
+        >
+          <XIcon color="#CDD6DF" size={16} weight="bold" />
+        </button>
       </div>
-    </div>
+      <EditMembersListForm
+        allMemberList={allMemberList}
+        currencySymbol={currencySymbol}
+        handleSubmit={handleSubmit}
+        members={members}
+        setAllMemberList={setAllMemberList}
+        setMembers={setMembers}
+        updateMemberState={updateMemberState}
+      />
+    </Modal>
   );
 };
 

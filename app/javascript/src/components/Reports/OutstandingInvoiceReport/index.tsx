@@ -108,35 +108,35 @@ const OutstandingInvoiceReport = () => {
   };
 
   return (
-    <div>
-      <EntryContext.Provider
-        value={{
-          ...contextValues,
-        }}
-      >
-        <Header
-          handleDownload={handleDownload}
-          isFilterVisible={isFilterVisible}
+    <EntryContext.Provider
+      value={{
+        ...contextValues,
+      }}
+    >
+      <Header
+        handleDownload={handleDownload}
+        isFilterVisible={isFilterVisible}
+        resetFilter={resetFilter}
+        revenueFilterCounter={() => {}} // eslint-disable-line  @typescript-eslint/no-empty-function
+        setIsFilterVisible={setIsFilterVisible}
+        showExportButon={false}
+        showFilterIcon={false}
+        showNavFilters={showNavFilters}
+        type="Invoices Report"
+      />
+      <Container />
+      {false && (
+        <Filters
+          dateRange={dateRange}
+          handleApplyFilter={handleApplyFilter}
+          handleSelectDate={handleSelectDate}
           resetFilter={resetFilter}
+          selectedInput={selectedInput}
           setIsFilterVisible={setIsFilterVisible}
-          showExportButon={false}
-          showNavFilters={showNavFilters}
-          type="Invoices Report"
+          onClickInput={onClickInput}
         />
-        <Container />
-        {false && (
-          <Filters
-            dateRange={dateRange}
-            handleApplyFilter={handleApplyFilter}
-            handleSelectDate={handleSelectDate}
-            resetFilter={resetFilter}
-            selectedInput={selectedInput}
-            setIsFilterVisible={setIsFilterVisible}
-            onClickInput={onClickInput}
-          />
-        )}
-      </EntryContext.Provider>
-    </div>
+      )}
+    </EntryContext.Provider>
   );
 };
 

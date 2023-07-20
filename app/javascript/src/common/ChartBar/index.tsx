@@ -1,7 +1,8 @@
-import React, { Fragment } from "react";
+import React from "react";
 
 import { minToHHMM } from "helpers";
-import ReactTooltip from "react-tooltip";
+import { Tooltip } from "react-tooltip";
+import "react-tooltip/dist/react-tooltip.css";
 
 import { IChartBarGraph, ISingleClient } from "./interface";
 
@@ -22,20 +23,18 @@ const Client = ({ element, totalMinutes, index }: ISingleClient) => {
 
   return (
     <div style={divStyle}>
-      <ReactTooltip
-        backgroundColor="#1D1A31"
-        effect="solid"
-        id={`registerTip-${index}`}
+      <Tooltip
+        anchorId={`registerTip-${index}`}
+        className="tooltip"
         place="top"
-        textColor="#FFF"
       >
         <p className="text-xs">{element.name}</p>
         <p className="text-center text-2xl">{minToHHMM(element.minutes)}</p>
-      </ReactTooltip>
+      </Tooltip>
       <button
         data-tip
         className={`bg-${randomColor}-600 block h-4 w-full border-b border-t hover:border-transparent`}
-        data-for={`registerTip-${index}`}
+        id={`registerTip-${index}`}
         type="button"
       />
     </div>
@@ -43,26 +42,28 @@ const Client = ({ element, totalMinutes, index }: ISingleClient) => {
 };
 
 const GetClientBar = ({ data, totalMinutes }: IChartBarGraph) => (
-  <Fragment>
-    <p className="mb-3 text-tiny tracking-widest text-miru-dark-purple-600">
-      TOTAL HOURS:{" "}
-      <span className="font-medium">{minToHHMM(totalMinutes)}</span>
-    </p>
-    <div className="flex h-1 w-full bg-gray-200">
-      {data.map((element, index) => (
-        <Client
-          element={element}
-          index={index}
-          key={index}
-          totalMinutes={totalMinutes}
-        />
-      ))}
+  <section>
+    <div className="hidden md:block">
+      <p className="mb-3 text-tiny tracking-widest text-miru-dark-purple-600">
+        TOTAL HOURS:{" "}
+        <span className="font-medium">{minToHHMM(totalMinutes)}</span>
+      </p>
+      <div className="flex h-1 w-full bg-gray-200">
+        {data.map((element, index) => (
+          <Client
+            element={element}
+            index={index}
+            key={index}
+            totalMinutes={totalMinutes}
+          />
+        ))}
+      </div>
+      <div className="mt-3 flex justify-between pb-6 text-tiny tracking-widest text-miru-dark-purple-400">
+        <span>0</span>
+        <span>{minToHHMM(totalMinutes)}</span>
+      </div>
     </div>
-    <div className="mt-3 flex justify-between pb-6 text-tiny tracking-widest text-miru-dark-purple-400">
-      <span>0</span>
-      <span>{minToHHMM(totalMinutes)}</span>
-    </div>
-  </Fragment>
+  </section>
 );
 
 export default GetClientBar;

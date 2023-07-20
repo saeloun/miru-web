@@ -18,6 +18,9 @@ RSpec.describe Address, type: :model do
     it { is_expected.to validate_presence_of(:city) }
     it { is_expected.to validate_presence_of(:country) }
     it { is_expected.to validate_presence_of(:pin) }
+    it { is_expected.to validate_length_of(:address_line_1).is_at_most(50) }
+    it { is_expected.to validate_length_of(:address_line_2).is_at_most(50) }
+    it { is_expected.to validate_length_of(:pin).is_at_most(10) }
 
     it do
       expect(subject).to validate_uniqueness_of(:address_type)

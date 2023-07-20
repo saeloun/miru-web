@@ -3,7 +3,9 @@
   <br/>
 </p>
 
-Miru is an open-source tool, designed to make time tracking, invoice management, and accounting easy for small businesses worldwide. It is a platform for organizations to help them streamline their workflow.
+Miru is an open-source tool, designed to make time tracking, invoice management,
+and accounting easy for small businesses worldwide. It is a platform for
+organizations to help them streamline their workflow.
 
 [![Build status](https://badge.buildkite.com/c21ea1f95172e59eeeecec486c49130e578e4daf99d90dcba1.svg?branch=develop)](https://buildkite.com/saeloun-bk/miruweb)
 ![GitHub contributors](https://img.shields.io/github/contributors/saeloun/miru-web)
@@ -33,13 +35,13 @@ git clone https://github.com/saeloun/miru-web.git
    your project as you `cd` into the directory follow
    [this](https://github.com/nvm-sh/nvm#deeper-shell-integration))
 
-3. Install ruby 3.1.1
+3. Install ruby 3.2.2
 
 ```
 rvm install $(cat .ruby-version)
 ```
 
-4. Install Node 16.4.2(can be skipped if you followed the tip mentioned in (2)
+4. Install Node 18.14.2(can be skipped if you followed the tip mentioned in (2)
    above)
 
 ```
@@ -58,14 +60,23 @@ brew install postgresql
 brew install elastic/tap/elasticsearch-full
 brew services start elasticsearch-full
 ```
-   To run elasticsearch on latest macos(ventura) please follow the below instructions
-   - Install Docker Desktop ( M1 / Intel ) https://www.docker.com/products/docker-desktop/
-   - Run below command in your terminal & you can check by opening `localhost:9200`
-   ```
-   docker run -dp 127.0.0.1:9200:9200 -p 127.0.0.1:9300:9300 -e "discovery.type=single-node" docker.elastic.co/elasticsearch/elasticsearch:7.17.7
-   ```
-   - Install Chrome Extension to browse the Cluster ( Kind of like PGAdmin for Elastic Search ) https://chrome.google.com/webstore/search/multi%20elastic%20search%20head
-   More information available at https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html
+
+To run elasticsearch on latest macos(ventura) please follow the below
+instructions
+
+- Install Docker Desktop ( M1 / Intel )
+  https://www.docker.com/products/docker-desktop/
+- Run below command in your terminal & you can check by opening `localhost:9200`
+
+```
+docker run -dp 127.0.0.1:9200:9200 -p 127.0.0.1:9300:9300 -e "discovery.type=single-node" docker.elastic.co/elasticsearch/elasticsearch:7.17.7
+```
+
+- Install Chrome Extension to browse the Cluster ( Kind of like PGAdmin for
+  Elastic Search )
+  https://chrome.google.com/webstore/search/multi%20elastic%20search%20head More
+  information available at
+  https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html
 
 7. Install Redis
 
@@ -102,6 +113,29 @@ add `EMAIL_DELIVERY_METHOD='letter_opener_web'` to `.env`)
 2. Run `bin/rails db:migrate RAILS_ENV=test`
 3. Run `bundle exec rspec`
 
+### Running Tests in Parallel
+
+Change `database.yml` to embed `TEST_ENV_NUMBER`
+
+```yaml
+test:
+  database: miru_web_test_<%= ENV['TEST_ENV_NUMBER'] %>
+```
+
+```ruby
+# Setup parallel specs
+bundle exec rake parallel:create
+
+# Copy Schema for new changes on branches
+bundle exec rake parallel:prepare
+
+# Run migrations if needed
+bundle exec rake parallel:migrate
+
+# Run all specs in parallel
+RAILS_ENV=test bundle exec rake parallel:spec
+```
+
 #### Coverage
 
 1. Run `COVERAGE=true bundle exec rspec`
@@ -112,77 +146,38 @@ add `EMAIL_DELIVERY_METHOD='letter_opener_web'` to `.env`)
 
 ### User Test credentials
 
-| Role     | Email               | Password |
-| -------- | ------------------- | -------- |
-| Owner    | vipul@example.com   | password |
-| Admin    | supriya@example.com | password |
-| Employee | akhil@example.com   | password |
+| Role        | Email                   | Password |
+| ----------- | ----------------------- | -------- |
+| Owner       | vipul@example.com       | welcome  |
+| Admin       | supriya@example.com     | welcome  |
+| Employee    | sam@example.com         | welcome  |
+| Book keeper | book.keeper@example.com | welcome  |
+| Client      | oliver@example.com      | welcome  |
 
-## Installation of Cypress Dependencies
+## Configure Sentry:
 
-Install the cypress dependencies using the following command:
-
-```sh
-cd cypress
-yarn install
-```
-
-## Running Cypress tests
-
-Cypress tests can be run on local, staging and production environment.
-
-To run the cypress tests on the local environment and in headless mode use the
-following command:
-
-```sh
-cd cypress
-yarn run cy:run:dev
-```
-
-To run the tests on local environment and in chrome browser use the following
-command:
-
-```sh
-cd cypress
-yarn run cy:open:dev
-```
-
-To run the tests on staging environment and in headless mode use the following
-command:
-
-```sh
-cd cypress
-yarn run cy:run:staging
-```
-
-To run the tests on staging environment and in chrome browser use the following
-command
-
-```sh
-cd cypress
-yarn run cy:open:staging
-```
-
-## Deployment
-
-### Heroku one-click deploy
-
-You can deploy Miru on Heroku using the one-click-deployment button:
-
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/saeloun/miru-web/tree/main)
+To configure Sentry set the project's
+[sentry dsn](https://docs.sentry.io/product/sentry-basics/dsn-explainer/#where-to-find-your-dsn)
+as value to `SENTRY_DNS` environment variable.
 
 ## Community Support
 
-- Feel free to join our [Discord](https://discord.gg/UABXyQQ82c) channel for support and questions.
+- Feel free to join our [Discord](https://discord.gg/UABXyQQ82c) channel for
+  support and questions.
 - Subscribe our latest [blog articles](https://blog.miru.so) and tutorials.
-- [Discussions](https://github.com/saeloun/miru-web/discussions): Post your questions regarding Miru Web
+- [Discussions](https://github.com/saeloun/miru-web/discussions): Post your
+  questions regarding Miru Web
 - [**Twitter**](https://twitter.com/getmiru)
 - [Documentation](https://docs.miru.so)
 
 ## Contributing
-We encourage everyone to contribute to Miru Web! Check out [Contributing Guide](CONTRIBUTING.md) for guidelines about how to proceed.. <br>
 
-Note: We are working on improving the documentation. So we had created a docusaurus app for documentation. Check out the [Miru Docs](https://github.com/saeloun/miru-docs/) Repo.
+We encourage everyone to contribute to Miru Web! Check out
+[Contributing Guide](CONTRIBUTING.md) for guidelines about how to proceed.. <br>
+
+Note: We are working on improving the documentation. So we had created a
+docusaurus app for documentation. Check out the
+[Miru Docs](https://github.com/saeloun/miru-docs/) Repo.
 
 ## Contributors ✨
 
@@ -194,4 +189,4 @@ Thanks goes to all our contributors
 
 ## License
 
-*Miru* &copy; 2023, Saeloun - Released under the MIT License.
+_Miru_ &copy; 2023, Saeloun - Released under the MIT License.

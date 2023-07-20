@@ -1,29 +1,34 @@
 import ErrorPage from "common/Error";
+import EmailVerification from "components/Authentication/EmailVerification";
+import EmailVerificationSuccess from "components/Authentication/EmailVerification/EmailVerificationSuccess";
+import ForgotPassword from "components/Authentication/ForgotPassword";
+import SignIn from "components/Authentication/SignIn";
+import SignUp from "components/Authentication/SignUp";
 import Expenses from "components/Expenses";
+import InvoiceEmail from "components/InvoiceEmail";
+import InvoicesRouteConfig from "components/Invoices/InvoicesRouteConfig";
+import Success from "components/payments/Success";
+import Projects from "components/Projects";
 import AccountsAgingReport from "components/Reports/AccountsAgingReport";
+import TeamsRouteConfig from "components/Team/TeamsRouteConfig";
 import { Roles, Paths } from "constants/index";
 
+import Clients from "../components/Clients";
 import ClientDetails from "../components/Clients/Details";
-import ClientList from "../components/Clients/List";
-import EditInvoice from "../components/Invoices/Edit";
-import GenerateInvoices from "../components/Invoices/Generate";
-import Invoice from "../components/Invoices/Invoice";
-import InvoicesList from "../components/Invoices/List";
 import Payments from "../components/payments";
 import ProfileLayout from "../components/Profile/Layout";
 import ProjectDetails from "../components/Projects/Details";
-import ProjectList from "../components/Projects/List";
 import ReportList from "../components/Reports/List";
 import OutstandingInvoiceReport from "../components/Reports/OutstandingInvoiceReport";
 import RevenueByClientReport from "../components/Reports/RevenueByClientReport";
 import TimeEntryReports from "../components/Reports/TimeEntryReport";
 import TotalHoursReport from "../components/Reports/totalHoursLogged";
 import PlanSelection from "../components/Subscriptions/PlanSelection";
-import TeamRouteConfig from "../components/Team/RouteConfig";
+import RouteConfig from "../components/Team/RouteConfig";
 import TimeTracking from "../components/TimeTracking";
 
 const ClientsRoutes = [
-  { path: "", Component: ClientList },
+  { path: "", Component: Clients },
   { path: ":clientId", Component: ClientDetails },
 ];
 
@@ -36,16 +41,8 @@ const ReportsRoutes = [
   { path: "accounts-aging", Component: AccountsAgingReport },
 ];
 
-const InvoicesRoutes = [
-  { path: "", Component: InvoicesList },
-  { path: "generate", Component: GenerateInvoices },
-  { path: ":id/edit", Component: EditInvoice },
-  { path: ":id", Component: Invoice },
-  { path: "*", Component: ErrorPage },
-];
-
 const ProjectsRoutes = [
-  { path: "", Component: ProjectList },
+  { path: "", Component: Projects },
   { path: ":projectId", Component: ProjectDetails },
   { path: "*", Component: ErrorPage },
 ];
@@ -65,15 +62,57 @@ const TimeTrackingRoutes = [
   { path: "*", Component: ErrorPage },
 ];
 
-const TeamRoutes = [{ path: "*", Component: TeamRouteConfig }];
+const TeamRoutes = [{ path: "*", Component: RouteConfig }];
+
+const TeamsRoutes = [{ path: "*", Component: TeamsRouteConfig }];
+
+const InvoiceRoutes = [{ path: "*", Component: InvoicesRouteConfig }];
 
 const ProfileRoutes = [{ path: "*", Component: ProfileLayout }];
 
 const ExpenseRoutes = [{ path: "", Component: Expenses }];
 
-const { ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE } = Roles;
+const { ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE, CLIENT } = Roles;
 
-const ROUTES = [
+export const AUTH_ROUTES = [
+  {
+    path: "/",
+    component: SignIn,
+  },
+  {
+    path: "/signup",
+    component: SignUp,
+  },
+  {
+    path: "/login",
+    component: SignIn,
+  },
+  {
+    path: "/password/new",
+    component: ForgotPassword,
+  },
+  {
+    path: "/email_confirmation",
+    component: EmailVerification,
+  },
+  {
+    path: "/email_confirmed",
+    component: EmailVerificationSuccess,
+  },
+];
+
+export const PUBLIC_ROUTES = [
+  {
+    path: "/invoices/:id/view",
+    component: InvoiceEmail,
+  },
+  {
+    path: "/invoices/:id/payments/success",
+    component: Success,
+  },
+];
+
+export const ROUTES = [
   {
     path: Paths.CLIENTS,
     subRoutes: ClientsRoutes,
@@ -81,13 +120,13 @@ const ROUTES = [
   },
   {
     path: Paths.INVOICES,
-    subRoutes: InvoicesRoutes,
-    authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER],
+    subRoutes: InvoiceRoutes,
+    authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER, CLIENT],
   },
   {
     path: Paths.REPORTS,
     subRoutes: ReportsRoutes,
-    authorisedRoles: [ADMIN, OWNER],
+    authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER],
   },
   {
     path: Paths.PROJECTS,
@@ -107,7 +146,12 @@ const ROUTES = [
   {
     path: Paths.TIME_TRACKING,
     subRoutes: TimeTrackingRoutes,
-    authorisedRoles: [ADMIN, OWNER, EMPLOYEE, BOOK_KEEPER],
+    authorisedRoles: [ADMIN, OWNER, EMPLOYEE],
+  },
+  {
+    path: Paths.TEAMS,
+    subRoutes: TeamsRoutes,
+    authorisedRoles: [ADMIN, OWNER, EMPLOYEE],
   },
   {
     path: Paths.TEAM,
@@ -117,7 +161,7 @@ const ROUTES = [
   {
     path: Paths.PROFILE,
     subRoutes: ProfileRoutes,
-    authorisedRoles: [ADMIN, OWNER, EMPLOYEE],
+    authorisedRoles: [ADMIN, OWNER, EMPLOYEE, BOOK_KEEPER, CLIENT],
   },
   {
     path: Paths.EXPENSES,
@@ -125,5 +169,3 @@ const ROUTES = [
     authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER],
   },
 ];
-
-export default ROUTES;

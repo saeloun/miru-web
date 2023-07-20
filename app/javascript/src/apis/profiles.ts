@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "./api";
 
 const path = "/profiles/bank_account_details";
 

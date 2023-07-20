@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 
+import { useUserContext } from "context/UserContext";
+
 import Footer from "./Footer";
 import Header from "./Header";
 import Table from "./Table";
@@ -11,7 +13,9 @@ const MultipleEntriesModal = ({
   selectedOption,
   setSelectedOption,
   setMultiLineItemModal,
+  dateFormat,
 }) => {
+  const { isDesktop } = useUserContext();
   const filterIntialValues = {
     teamMembers: [],
     dateRange: { label: "All", value: "all", from: "", to: "" },
@@ -122,7 +126,7 @@ const MultipleEntriesModal = ({
     return `${filterQueryParams}`;
   };
 
-  return (
+  return isDesktop ? (
     <div
       className="fixed inset-0 z-50 flex h-full w-full justify-center px-10 py-20 md:px-52"
       style={{ background: "rgba(29, 26, 49,0.6)" }}
@@ -131,6 +135,7 @@ const MultipleEntriesModal = ({
         <Header
           filterIntialValues={filterIntialValues}
           filterParams={filterParams}
+          handleSelectAll={handleSelectAll}
           selectedInput={selectedInput}
           setFilterParams={setFilterParams}
           setMultiLineItemModal={setMultiLineItemModal}
@@ -146,6 +151,7 @@ const MultipleEntriesModal = ({
             {lineItems.length > 0 ? (
               <Table
                 allCheckboxSelected={allCheckboxSelected}
+                dateFormat={dateFormat}
                 handleItemSelection={handleItemSelection}
                 handleSelectAll={handleSelectAll}
                 lineItems={lineItems}
@@ -163,6 +169,48 @@ const MultipleEntriesModal = ({
           selectedRowCount={selectedLineItems.length}
         />
       </div>
+    </div>
+  ) : (
+    <div
+      className="flex w-full flex-col"
+      style={{ height: "calc(100vh - 48px)" }}
+    >
+      <Header
+        filterIntialValues={filterIntialValues}
+        filterParams={filterParams}
+        handleSelectAll={handleSelectAll}
+        selectedInput={selectedInput}
+        setFilterParams={setFilterParams}
+        setMultiLineItemModal={setMultiLineItemModal}
+        setSelectedInput={setSelectedInput}
+        teamMembers={teamMembers}
+      />
+      {loading ? (
+        <p className="tracking-wide flex items-center justify-center text-base font-medium text-miru-han-purple-1000">
+          Loading...
+        </p>
+      ) : (
+        <div className="mx-2 flex-1 overflow-y-scroll">
+          {lineItems.length > 0 ? (
+            <Table
+              allCheckboxSelected={allCheckboxSelected}
+              dateFormat={dateFormat}
+              handleItemSelection={handleItemSelection}
+              handleSelectAll={handleSelectAll}
+              lineItems={lineItems}
+            />
+          ) : (
+            <p className="tracking-wide flex items-center justify-center text-base font-medium text-miru-han-purple-1000">
+              No Data Found
+            </p>
+          )}
+        </div>
+      )}
+      <Footer
+        handleSelectAll={handleSelectAll}
+        handleSubmitModal={handleSubmitModal}
+        selectedRowCount={selectedLineItems.length}
+      />
     </div>
   );
 };

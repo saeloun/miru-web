@@ -32,6 +32,7 @@ const Container = ({
   setSelectedOption,
   manualEntryArr,
   setManualEntryArr,
+  dateFormat,
 }) => (
   <div className="relative m-0 mt-5 mb-10 w-full bg-miru-gray-100 p-0">
     <CompanyInfo company={invoiceDetails.companyDetails} />
@@ -40,6 +41,7 @@ const Container = ({
       clientList={invoiceDetails.clientList}
       clientVisible={false}
       currency={invoiceDetails.companyDetails.currency}
+      dateFormat={dateFormat}
       dueDate={dueDate}
       invoiceNumber={invoiceNumber}
       issueDate={issueDate}
@@ -55,6 +57,7 @@ const Container = ({
     <div className="block overflow-x-auto whitespace-nowrap py-5 md:overflow-x-visible md:whitespace-normal md:pl-10">
       <InvoiceTable
         currency={invoiceDetails.companyDetails.currency}
+        dateFormat={invoiceDetails.companyDetails.date_format}
         lineItems={lineItems}
         manualEntryArr={manualEntryArr}
         selectedClient={selectedClient}
@@ -75,8 +78,6 @@ const Container = ({
       setAmountDue={setAmountDue}
       setDiscount={setDiscount}
       setTax={setTax}
-      showDiscountInput={false}
-      showTax={false}
       tax={tax}
     />
   </div>

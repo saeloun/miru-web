@@ -19,16 +19,19 @@ RSpec.describe "InternalApi::V1::Companies::update", type: :request do
           :put, "#{internal_api_v1_companies_path}/#{company[:id]}", params: {
             company: {
               name: "Test Company",
-              address: "test address",
               business_phone: "Test phone",
               country: "India",
               timezone: "IN",
               base_currency: "Rs",
               standard_price: "1000",
               fiscal_year_end: "April",
-              date_format: "DD/MM/YYYY"
+              date_format: "DD/MM/YYYY",
+              addresses_attributes: [{
+                id: company.current_address.id,
+                address_line_1: "updated address"
+              }]
             }
-          })
+          }, headers: auth_headers(user))
       end
 
       it "response should be successful" do
@@ -37,6 +40,17 @@ RSpec.describe "InternalApi::V1::Companies::update", type: :request do
 
       it "returns success json response" do
         expect(json_response["notice"]).to eq(I18n.t("companies.update.success"))
+      end
+
+      it "updates the company" do
+        company.reload
+        company.current_address.reload
+        expect(company.name).to eq("Test Company")
+        expect(company.business_phone).to eq("Test phone")
+        expect(company.standard_price).to eq(1000)
+        expect(company.fiscal_year_end).to eq("April")
+        expect(company.base_currency).to eq("Rs")
+        expect(company.current_address.address_line_1).to eq("updated address")
       end
     end
 
@@ -52,7 +66,7 @@ RSpec.describe "InternalApi::V1::Companies::update", type: :request do
               fiscal_year_end: "",
               date_format: ""
             }
-          })
+          }, headers: auth_headers(user))
       end
 
       it "will fail" do
@@ -61,6 +75,30 @@ RSpec.describe "InternalApi::V1::Companies::update", type: :request do
 
       it "will not be created" do
         change(Company, :count).by(0)
+      end
+    end
+
+    context "when address is invalid" do
+      before do
+        send_request(
+          :put, "#{internal_api_v1_companies_path}/#{company[:id]}", params: {
+            company: {
+              business_phone: "12345677",
+              timezone: "IN",
+              base_currency: "Rs",
+              standard_price: "1000",
+              fiscal_year_end: "April",
+              date_format: "",
+              addresses_attributes: [{
+                id: company.current_address.id,
+                address_line_1: ""
+              }]
+            }
+          }, headers: auth_headers(user))
+      end
+
+      it "will fail" do
+        expect(json_response["errors"]).to eq("Addresses address line 1 can't be blank")
       end
     end
   end
@@ -78,16 +116,19 @@ RSpec.describe "InternalApi::V1::Companies::update", type: :request do
           :put, "#{internal_api_v1_companies_path}/#{company[:id]}", params: {
             company: {
               name: "Test Company",
-              address: "test address",
               business_phone: "Test phone",
               country: "India",
               timezone: "IN",
               base_currency: "Rs",
               standard_price: "1000",
               fiscal_year_end: "April",
-              date_format: "DD/MM/YYYY"
+              date_format: "DD/MM/YYYY",
+              addresses_attributes: [{
+                id: company.current_address.id,
+                address_line_2: "updated address"
+              }]
             }
-          })
+          }, headers: auth_headers(user))
       end
 
       it "is not be permitted to update a company" do

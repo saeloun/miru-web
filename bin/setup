@@ -1,4 +1,6 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
+
 require "fileutils"
 
 # path to your application root.
@@ -20,7 +22,7 @@ FileUtils.chdir APP_ROOT do
   system("bundle check") || system!("bundle install")
 
   puts "\n== Executing yarn =="
-  system!("bin/yarn")
+  system!("bin/yarn --frozen-lockfile ")
 
   puts "\n== Setup ENV's =="
   system! "cp .env.example .env"

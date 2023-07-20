@@ -34,7 +34,7 @@ RSpec.describe Invoice, type: :model do
     describe "validate enum" do
       it do
         expect(subject).to define_enum_for(:status)
-          .with_values([:draft, :sent, :viewed, :paid, :declined, :overdue, :sending])
+          .with_values([:draft, :sent, :viewed, :paid, :declined, :overdue, :sending, :waived])
       end
     end
   end
@@ -74,9 +74,10 @@ RSpec.describe Invoice, type: :model do
   end
 
   describe "Scopes" do
-    let(:company) do
-      create(:company_with_invoices)
-    end
+    let(:company) { create(:company_with_invoices) }
+    let(:draft_invoices) { company.invoices.with_statuses([:draft]).size }
+    let(:paid_invoices) { company.invoices.with_statuses([:paid]).size }
+    let(:overdue_invoices) { company.invoices.with_statuses([:overdue]).size }
 
     describe ".with_statuses" do
       it "returns all invoices if statuses are not specified" do
@@ -84,17 +85,19 @@ RSpec.describe Invoice, type: :model do
       end
 
       it "returns draft and paid invoices" do
-        expect(company.invoices.with_statuses([:draft, :paid]).size).to eq(5)
+        expect(company.invoices.with_statuses([:draft, :paid]).size).to eq(draft_invoices + paid_invoices)
       end
 
       it "returns draft, overdue and paid invoices" do
-        expect(company.invoices.with_statuses([:draft, :overdue, :paid]).size).to eq(5)
+        expect(
+          company.invoices.with_statuses(
+            [:draft, :overdue,
+             :paid]).size).to eq(draft_invoices + paid_invoices + overdue_invoices)
       end
     end
 
     describe "issue_date_range" do
       it "returns all invoices if date range is not specified" do
-        # debugger
         expect(company.invoices.issue_date_range(nil).size).to eq(5)
       end
     end

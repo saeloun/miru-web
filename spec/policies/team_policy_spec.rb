@@ -35,12 +35,12 @@ RSpec.describe TeamPolicy, type: :policy, test_ploi: true do
       it "grants permission" do
         expect(described_class).to permit(admin, :team)
         expect(described_class).to permit(owner, :team)
-        expect(described_class).to permit(employee, :team)
       end
 
-      context "when user is book_keeper" do
+      context "when user is book_keeper or employee" do
         it "does not grants permission" do
           expect(described_class).not_to permit(book_keeper, :team)
+          expect(described_class).not_to permit(employee, :team)
         end
       end
     end

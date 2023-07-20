@@ -5,6 +5,7 @@ json.project_details do
   json.name project.name
   json.is_billable project.billable
   json.client do
+    json.id project.client_id
     json.name project.client.name
   end
   json.members team_member_details

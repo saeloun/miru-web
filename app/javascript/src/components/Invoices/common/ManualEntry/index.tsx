@@ -1,13 +1,16 @@
 import React, { useState, useEffect, useRef } from "react";
 
+import dayjs from "dayjs";
 import {
   lineTotalCalc,
   minFromHHMM,
   minToHHMM,
   useOutsideClick,
 } from "helpers";
-import { DeleteIcon } from "miruIcons";
-import TextareaAutosize from "react-autosize-textarea";
+import { DeleteIcon, CalendarIcon } from "miruIcons";
+import TextareaAutosize from "react-textarea-autosize";
+
+import CustomDatePicker from "common/CustomDatePicker";
 
 const ManualEntry = ({
   addNew,
@@ -19,24 +22,26 @@ const ManualEntry = ({
   setNewLineItemTable,
   setAddNew,
   showNewLineItemTable,
+  dateFormat,
 }) => {
   const [name, setName] = useState<string>("");
-  const [date, setDate] = useState<string>("");
+  const [date, setDate] = useState<any>(dayjs().format(dateFormat));
   const [description, setDescription] = useState<string>("");
   const [rate, setRate] = useState<number>(0);
   const [quantity, setQuantity] = useState<any>(0);
   const [lineTotal, setLineTotal] = useState<string>("0");
   const [qtyInHHrMin, setQtyInHHrMin] = useState<any>(minToHHMM(quantity));
   const [isEnter, setIsEnter] = useState<boolean>(false);
-  const ref = useRef(null);
+  const [showDatePicker, setShowDatePicker] = useState<boolean>(false);
   const wrapperRef = useRef(null);
+  const datePickerRef = useRef(null);
 
   useEffect(() => {
     setLineItem({
       ...lineItem,
       id: manualEntryArr.length + 1,
       name,
-      date,
+      date: dayjs(date, dateFormat).format("YYYY-MM-DD"),
       description,
       rate,
       quantity,
@@ -88,13 +93,17 @@ const ManualEntry = ({
     addNew
   );
 
+  const handleDatePicker = selectedDate => {
+    setDate(selectedDate);
+    setShowDatePicker(false);
+  };
+
   return (
     <>
       <tr className="my-1 w-full">
         <td className="w-full p-1">
           <input
-            className=" focus:outline-none w-full rounded bg-white p-1 px-2 text-sm font-medium text-miru-dark-purple-1000 focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
-            data-cy="invoice-name-input"
+            className="focus:outline-none w-full rounded bg-white p-1 px-2 text-sm font-medium text-miru-dark-purple-1000 focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
             placeholder="Name"
             type="text"
             value={name}
@@ -104,16 +113,34 @@ const ManualEntry = ({
           />
         </td>
         <td className="w-full">
-          <input
-            className=" focus:outline-none w-full rounded bg-white p-1 px-2 text-sm font-medium text-miru-dark-purple-1000 focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
-            placeholder="Date"
-            ref={ref}
-            type="text"
-            value={date}
-            onChange={e => setDate(e.target.value)}
-            onFocus={e => (e.target.type = "date")}
-            onKeyDown={handleEnter}
-          />
+          <div
+            className="relative"
+            onClick={() => setShowDatePicker(!showDatePicker)}
+          >
+            <input
+              disabled
+              className="focus:outline-none w-full cursor-pointer appearance-none rounded border-0 border-transparent bg-white p-1 pr-9 pl-2 text-right text-sm font-medium text-miru-dark-purple-1000 focus:ring-1 focus:ring-miru-gray-1000"
+              placeholder="Select Date"
+              type="text"
+              value={date || ""}
+            />
+            <CalendarIcon
+              className="absolute top-0 right-0 mx-2 mt-1.5"
+              color="#5B34EA"
+              size={20}
+            />
+          </div>
+          {showDatePicker && (
+            <div ref={datePickerRef}>
+              <CustomDatePicker
+                date={date || dayjs()}
+                dateFormat={dateFormat}
+                handleChange={handleDatePicker}
+                setVisibility={setShowDatePicker}
+                wrapperRef={datePickerRef}
+              />
+            </div>
+          )}
         </td>
         <td className=" w-full">
           <input
@@ -127,7 +154,7 @@ const ManualEntry = ({
         </td>
         <td className="w-full p-1">
           <input
-            className=" focus:outline-none w-full rounded bg-white p-1 px-2 text-right text-sm font-medium text-miru-dark-purple-1000 focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
+            className="focus:outline-none w-full rounded bg-white p-1 px-2 text-right text-sm font-medium text-miru-dark-purple-1000 focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
             placeholder="quantity"
             type="text"
             value={qtyInHHrMin}
@@ -151,7 +178,7 @@ const ManualEntry = ({
         <tr>
           <td className="relative w-full" colSpan={5}>
             <div
-              className="box-shadow absolute m-0 w-full rounded bg-white text-sm font-medium text-miru-dark-purple-1000"
+              className="box-shadow absolute z-40 m-0 w-full rounded bg-white text-sm font-medium text-miru-dark-purple-1000"
               ref={wrapperRef}
             >
               {getNewLineItemDropdown()}
@@ -163,7 +190,7 @@ const ManualEntry = ({
         <td className="w-full p-1" colSpan={2}>
           <TextareaAutosize
             className="focus:outline-none w-full rounded bg-white p-1 px-2 text-sm font-medium text-miru-dark-purple-1000 focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
-            placeholder="Description"
+            placeholder="Enter Description"
             value={description}
             onChange={e => setDescription(e.target["value"])}
             onKeyDown={handleEnter}

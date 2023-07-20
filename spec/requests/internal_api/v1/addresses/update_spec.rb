@@ -10,8 +10,8 @@ RSpec.describe "Addresses#update", type: :request do
   let(:employee2) { create(:user, current_workspace_id: company2.id) }
   let!(:employee_address) { create(:address, addressable_type: "User", addressable_id: employee.id) }
   let!(:employee2_address) { create(:address, addressable_type: "User", addressable_id: employee2.id) }
-  let!(:company_address) { create(:address, addressable_type: "Company", addressable_id: company.id) }
-  let!(:company2_address) { create(:address, addressable_type: "Company", addressable_id: company2.id) }
+  let!(:company_address) { company.current_address }
+  let!(:company2_address) { company2.current_address }
   let!(:updated_address_details) { attributes_for(:address) }
 
   before do
@@ -32,7 +32,7 @@ RSpec.describe "Addresses#update", type: :request do
           id: employee_address.id,
           params: {
             address: updated_address_details
-          })
+          }), headers: auth_headers(user)
       end
 
       it "is successful" do
@@ -54,7 +54,7 @@ RSpec.describe "Addresses#update", type: :request do
           id: company_address.id,
           params: {
             address: updated_address_details
-          })
+          }), headers: auth_headers(user)
       end
 
       it "is successful" do
@@ -77,7 +77,7 @@ RSpec.describe "Addresses#update", type: :request do
           id: employee2_address.id,
           params: {
             address: updated_address_details
-          })
+          }), headers: auth_headers(user)
       end
 
       it "is forbidden" do
@@ -92,7 +92,7 @@ RSpec.describe "Addresses#update", type: :request do
           id: company2_address.id,
           params: {
             address: updated_address_details
-          })
+          }), headers: auth_headers(user)
       end
 
       it "is forbidden" do
@@ -107,7 +107,7 @@ RSpec.describe "Addresses#update", type: :request do
           id: "abc",
           params: {
             address: updated_address_details
-          })
+          }), headers: auth_headers(user)
       end
 
       it "is not found" do
@@ -122,7 +122,7 @@ RSpec.describe "Addresses#update", type: :request do
           id: "abc",
           params: {
             address: updated_address_details
-          })
+          }), headers: auth_headers(user)
       end
 
       it "is not found" do
@@ -145,7 +145,7 @@ RSpec.describe "Addresses#update", type: :request do
           id: employee_address.id,
           params: {
             address: updated_address_details
-          })
+          }), headers: auth_headers(user)
       end
 
       it "is successful" do
@@ -167,7 +167,7 @@ RSpec.describe "Addresses#update", type: :request do
           id: company_address.id,
           params: {
             address: updated_address_details
-          })
+          }), headers: auth_headers(user)
       end
 
       it "is successful" do
@@ -190,7 +190,7 @@ RSpec.describe "Addresses#update", type: :request do
           id: employee2_address.id,
           params: {
             address: updated_address_details
-          })
+          }), headers: auth_headers(user)
       end
 
       it "is forbidden" do
@@ -205,7 +205,7 @@ RSpec.describe "Addresses#update", type: :request do
           id: company2_address.id,
           params: {
             address: updated_address_details
-          })
+          }), headers: auth_headers(user)
       end
 
       it "is forbidden" do
@@ -220,7 +220,7 @@ RSpec.describe "Addresses#update", type: :request do
           id: "abc",
           params: {
             address: updated_address_details
-          })
+          }), headers: auth_headers(user)
       end
 
       it "is not found" do
@@ -235,7 +235,7 @@ RSpec.describe "Addresses#update", type: :request do
           id: "abc",
           params: {
             address: updated_address_details
-          })
+          }), headers: auth_headers(user)
       end
 
       it "is not found" do
@@ -258,7 +258,7 @@ RSpec.describe "Addresses#update", type: :request do
           id: employee_address.id,
           params: {
             address: updated_address_details
-          })
+          }), headers: auth_headers(employee)
       end
 
       it "is successful" do
@@ -281,7 +281,7 @@ RSpec.describe "Addresses#update", type: :request do
           id: employee2_address.id,
           params: {
             address: updated_address_details
-          })
+          }), headers: auth_headers(employee)
       end
 
       it "is forbidden" do
@@ -296,7 +296,7 @@ RSpec.describe "Addresses#update", type: :request do
           id: company_address.id,
           params: {
             address: updated_address_details
-          })
+          }), headers: auth_headers(employee)
       end
 
       it "is forbidden" do

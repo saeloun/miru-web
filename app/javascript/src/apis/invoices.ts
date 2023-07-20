@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "./api";
 
 const path = "/invoices";
 
@@ -21,10 +21,23 @@ const editInvoice = async id => axios.get(`${path}/${id}/edit`);
 const downloadInvoice = async id =>
   await axios.get(`${path}/${id}/download`, { responseType: "blob" });
 
+const bulkDownloadInvoices = async queryString =>
+  await axios.get(`${path}/bulk_download?${queryString}`);
+
 const updateInvoice = async (id, body) => axios.patch(`${path}/${id}/`, body);
 
 const sendInvoice = async (id, payload) =>
   axios.post(`${path}/${id}/send_invoice`, payload);
+
+const viewInvoice = async id => axios.get(`${path}/${id}/view`);
+
+const paymentSuccess = async id => axios.get(`${path}/${id}/payments/success`);
+
+const wavieInvoice = async id => axios.patch(`${path}/waived/${id}`);
+
+const invoiceLogs = async id => axios.get(`${path}/action_trails/${id}`);
+const sendReminder = async (id, payload) =>
+  await axios.post(`${path}/${id}/send_reminder`, payload);
 
 const invoicesApi = {
   get,
@@ -37,6 +50,12 @@ const invoicesApi = {
   editInvoice,
   updateInvoice,
   downloadInvoice,
+  bulkDownloadInvoices,
+  viewInvoice,
+  paymentSuccess,
+  wavieInvoice,
+  invoiceLogs,
+  sendReminder,
 };
 
 export default invoicesApi;

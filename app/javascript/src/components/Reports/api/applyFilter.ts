@@ -1,8 +1,8 @@
 import dayjs from "dayjs";
 
 import reportsApi from "apis/reports";
+import { reportUnmapper as unmapper } from "mapper/mappedIndex";
 
-import { unmapper } from "../../../mapper/report.mapper";
 import { customDateFilter } from "../RevenueByClientReport/Filters/filterOptions";
 
 const isValuePresent = filterValue =>
@@ -51,7 +51,8 @@ const applyFilter = async (
   setTimeEntries,
   setNavFilters,
   setFilterVisibilty,
-  getFilterOptions
+  getFilterOptions,
+  getPaginationDetails
 ) => {
   const queryParams = getQueryParams(selectedFilter);
   const sanitizedParam = queryParams.substring(1);
@@ -60,6 +61,7 @@ const applyFilter = async (
   const sanitizedData = unmapper(res.data);
   setTimeEntries(sanitizedData.reports);
   getFilterOptions(sanitizedData.filterOptions);
+  getPaginationDetails(sanitizedData.pagy);
   setNavFilters(true);
   setFilterVisibilty(false);
 };

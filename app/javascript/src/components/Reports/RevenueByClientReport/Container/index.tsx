@@ -1,38 +1,48 @@
 import React, { Fragment } from "react";
 
-import { cashFormatter, currencySymbol } from "helpers"; // TODO: Formatter
+import { SummaryDashboard } from "StyledComponents";
 
-import TotalHeader from "common/TotalHeader";
+import EmptyStates from "common/EmptyStates";
 import { useEntry } from "components/Reports/context/EntryContext";
+import { useUserContext } from "context/UserContext";
 
+import MobileRow from "./MobileRow";
 import TableRow from "./TableRow";
+
+import { summaryList } from "../util";
 
 const TableHeader = () => (
   <thead>
     <tr className="flex flex-row items-center">
       <th
-        className="w-3/5 py-5 pr-6 text-left text-xs font-normal tracking-widest text-miru-dark-purple-600"
+        className="w-4/12 py-5 pr-6 text-left text-xs font-normal tracking-widest text-miru-dark-purple-600"
         scope="col"
       >
         CLIENT
       </th>
       <th
-        className="w-2/5 px-0 py-5 text-left text-xs font-normal tracking-widest text-miru-dark-purple-600"
+        className="w-2/12 px-0 py-5 text-right text-xs font-normal tracking-widest text-miru-dark-purple-600"
         scope="col"
       >
-        UNPAID AMOUNT
+        OVERDUE <br /> AMOUNT
       </th>
       <th
-        className="w-1/5 px-6 py-5 text-left text-xs font-normal tracking-widest text-miru-dark-purple-600"
+        className="w-2/12 px-0 py-5 text-right text-xs font-normal tracking-widest text-miru-dark-purple-600"
         scope="col"
       >
-        PAID AMOUNT
+        OUTSTANDING <br /> AMOUNT
       </th>
       <th
-        className="w-1/5 py-5 pl-6 text-right text-xs font-normal tracking-widest text-miru-dark-purple-600"
+        className="w-2/12 px-6 py-5 text-right text-xs font-normal tracking-widest text-miru-dark-purple-600"
         scope="col"
       >
-        TOTAL AMOUNT
+        PAID <br /> AMOUNT
+      </th>
+      <th
+        className="w-2/12 py-5 pl-6 text-right text-xs font-normal tracking-widest text-miru-dark-purple-600"
+        scope="col"
+      >
+        TOTAL <br /> REVENUE
       </th>
     </tr>
   </thead>
@@ -40,43 +50,59 @@ const TableHeader = () => (
 
 const Container = () => {
   const { revenueByClientReport } = useEntry();
+  const { isDesktop } = useUserContext();
 
-  const currencySymb = currencySymbol(revenueByClientReport.currency);
-
-  return (
+  return revenueByClientReport.clientList.length ? (
     <Fragment>
-      <TotalHeader
-        firstTitle="TOTAL UNPAID AMOUNT"
-        secondTitle="TOTAL PAID AMOUNT"
-        thirdTitle="TOTAL REVENUE"
-        firstAmount={`${currencySymb}${cashFormatter(
-          revenueByClientReport.summary.totalUnpaidAmount
-        )}`}
-        secondAmount={`${currencySymb}${cashFormatter(
-          revenueByClientReport.summary.totalPaidAmount
-        )}`}
-        thirdAmount={`${currencySymb}${cashFormatter(
-          revenueByClientReport.summary.totalRevenue
-        )}`}
+      <SummaryDashboard
+        currency={revenueByClientReport.currency}
+        summaryList={summaryList(revenueByClientReport, isDesktop)}
+        wrapperClassName="mt-3 lg:mb-9 mx-4 lg:mx-0"
       />
       <div />
-      <table className="mt-4 min-w-full divide-y divide-gray-200">
-        <TableHeader />
-        <tbody className="divide-y divide-gray-200 bg-white">
-          {revenueByClientReport.clientList.length &&
+      {isDesktop ? (
+        <table className="mt-4 min-w-full table-auto divide-y divide-gray-200">
+          <TableHeader />
+          <tbody className="divide-y divide-gray-200 bg-white">
+            {revenueByClientReport.clientList.length &&
+              revenueByClientReport.currency &&
+              revenueByClientReport.clientList.map((client, index) => (
+                <Fragment key={index}>
+                  <TableRow
+                    currency={revenueByClientReport.currency}
+                    key={index}
+                    report={client}
+                  />
+                </Fragment>
+              ))}
+          </tbody>
+        </table>
+      ) : (
+        <div className="my-6 mx-4">
+          {revenueByClientReport.clientList.length > 0 &&
             revenueByClientReport.currency &&
             revenueByClientReport.clientList.map((client, index) => (
               <Fragment key={index}>
-                <TableRow
+                <MobileRow
                   currency={revenueByClientReport.currency}
                   key={index}
                   report={client}
                 />
+                <hr />
               </Fragment>
             ))}
-        </tbody>
-      </table>
+        </div>
+      )}
     </Fragment>
+  ) : (
+    <EmptyStates
+      showNoSearchResultState={revenueByClientReport.filterCounter > 0}
+      Message={
+        revenueByClientReport.filterCounter > 0
+          ? "No results match current filters. Try removing some filters."
+          : " No data found. We will display relevant data once it becomes available"
+      }
+    />
   );
 };
 

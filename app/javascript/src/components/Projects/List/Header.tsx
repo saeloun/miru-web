@@ -5,10 +5,13 @@ import { PlusIcon } from "miruIcons";
 
 import projectApi from "apis/projects";
 import AutoSearch from "common/AutoSearch";
+import { useUserContext } from "context/UserContext";
 
 import SearchDataRow from "./SearchDataRow";
 
-const Header = ({ setShowProjectModal, isAdminUser }) => {
+const Header = ({ projectDataPresent, setShowProjectModal, isAdminUser }) => {
+  const { isDesktop } = useUserContext();
+
   const fetchProjects = async searchString => {
     try {
       const res = await projectApi.search(searchString);
@@ -21,45 +24,29 @@ const Header = ({ setShowProjectModal, isAdminUser }) => {
 
   return (
     <div
-      className={`mt-6 mb-3 sm:flex sm:items-center ${
-        isAdminUser ? "sm:justify-between" : ""
+      className={`m-4 flex items-center  lg:mx-0 lg:mt-6 lg:mb-3 ${
+        isAdminUser &&
+        `${isDesktop || projectDataPresent ? "justify-between" : "justify-end"}`
       }`}
     >
-      <h2 className="header__title">Projects</h2>
-      <AutoSearch SearchDataRow={SearchDataRow} searchAction={fetchProjects} />
+      <h2 className="header__title hidden lg:inline">Projects</h2>
       {isAdminUser && (
-        <button
-          className="header__button flex"
-          onClick={() => setShowProjectModal(true)}
-        >
-          <PlusIcon size={16} weight="fill" />
-          <span className="ml-2 inline-block">NEW PROJECT</span>
-        </button>
+        <>
+          {projectDataPresent && (
+            <AutoSearch
+              SearchDataRow={SearchDataRow}
+              searchAction={fetchProjects}
+            />
+          )}
+          <button
+            className="header__button flex"
+            onClick={() => setShowProjectModal(true)}
+          >
+            <PlusIcon size={16} weight="fill" />
+            <span className="ml-2 hidden lg:inline">NEW PROJECT</span>
+          </button>
+        </>
       )}
-      {/* {
-          isInvoiceSelected && <div className="flex justify-center items-center">
-            <span>{selectedInvoiceCount} invoices selected</span>
-            <button className="ml-2" onClick={handleCloseButton}>
-              <XIcon size={16} color="#5b34ea" weight="bold" />
-            </button>
-            <div className="flex">
-              <button
-                type="button"
-                className="header__button border-miru-red-400 text-miru-red-400"
-              >
-                <DeleteIcon weight="fill" size={16} />
-                <span className="ml-2 inline-block">DELETE</span>
-              </button>
-              <button
-                type="button"
-                className="header__button"
-              >
-                <PaperPlaneTiltIcon weight="fill" size={16} />
-                <span className="ml-2 inline-block">SEND TO</span>
-              </button>
-            </div>
-          </div>
-        } */}
     </div>
   );
 };

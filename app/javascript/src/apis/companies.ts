@@ -1,10 +1,20 @@
-import axios from "axios";
+import axios from "./api";
 
 const path = "/companies";
+const authApi = axios.create({
+  baseURL: "/internal_api/v1",
+  headers: {
+    Accept: "application/json",
+    "Content-Type": "application/json",
+    "X-CSRF-TOKEN": document
+      .querySelector('[name="csrf-token"]')
+      .getAttribute("content"),
+  },
+});
 
 const index = async () => axios.get(`${path}`);
 
-const create = payload => axios.post(path, payload);
+const create = payload => authApi.post(path, payload);
 
 const update = (id, payload) => axios.put(`${path}/${id}`, payload);
 

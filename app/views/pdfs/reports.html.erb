@@ -1,59 +1,54 @@
-<div class="main">
-  <div class="flex justify-between border-b-2 border-miru-gray-400 p-10 h-30">
-    <h2>Time Entry Report</h2>
-  </div>
+<div style="display: flex; justify-content: center; align-items: center; border-bottom: 2px solid #ccc; padding: 10px; height: 30px;">
+  <h2>Time Entry Report</h2>
+</div>
 
-  <div class="flex justify-between p-10">
-    <table>
-      <thead>
-        <th class="text-left w-2/5 border border-b-1">
-          <p>Project\</p>
-          <p>Client</p>
-        </th>
-        <th class="text-left w-2/5 px-3 border border-b-1">
-          Note
-        </th>
-        <th class="text-left w-1/5 border-b-1 border">
-          <p>Team Member\</p>
-          <p>Date</p>
-        </th>
-        <th class="text-right w-1/5 p-1 border border-b-1">
-          Hours Logged
-        </th>
-      </thead>
-      <tbody>
-        <% report_entries.each do |report| %>
-          <% if report[:label].present? %>
-            <tr>
-              <td colspan="4" class="text-sm text-left p-2 border border-b-1 bg-miru-dark-purple-400">
-                <%= report[:label] %>
-              </td>
-            </tr>
-          <% end %>
-          <% report[:entries].each do |entry| %>
-            <tr>
-              <td class="text-sm text-left w-2/5 p-2 border border-b-1">
-                <p class="text-miru-dark-purple-1000">
+<div style="display: flex; justify-content: space-between; padding: 10px;">
+  <table style="width: 100%; border-collapse: collapse">
+    <thead>
+      <th style="text-align: left; flex-basis: 25%; border: 1px solid #000;">
+        <p>Project\</p>
+        <p>Client</p>
+      </th>
+      <th style="text-align: left; flex-basis: 25%; padding: 3px;border: 1px solid #000; ">
+        Note
+      </th>
+      <th style="text-align: left; flex-basis: 25%; border: 1px solid #000; ">
+        <p>Team Member\</p>
+        <p>Date</p>
+      </th>
+      <th style="text-align: left; flex-basis: 25%; padding: 1px;border: 1px solid #000; ">
+        Hours Logged
+      </th>
+    </thead>
+    <tbody>
+      <% report_entries.each do |report| %>
+        <% report[:entries].each do |entry| %>
+          <tr>
+            <td style="font-size: 14px; text-align: center; flex-basis: 25%; padding: 2px; border: 1px solid #000;">
+              <p style="color: #1F2937; margin: 0;">
                 <%= entry.project_name %>
-                </p>
-                <p class="text-miru-dark-purple-400">
+              </p>
+              <p style="color: #6B7280; margin: 0;">
                 <%= entry.client_name %>
-                </p>
-              </td>
-              <td class="text-left text-xs px-3 w-2/5 p-2 border border-b-1">
-                <%= entry.note %>
-              </td>
-              <td class="text-xs w-1/5 p-2 border border-b-1">
-                <p class="text-miru-dark-purple-1000"><%= entry.user_full_name %></p>
-                <p class="text-miru-dark-purple-400"><%= entry.work_date.strftime("%Y-%m-%d") %></p>
-              </td>
-              <td class="text-right w-1/5 p-2 pl-3 border border-b-1">
-                <%= entry.formatted_duration %>
-              </td>
-            </tr>
-          <% end %>
+              </p>
+            </td>
+            <td style="text-align: left; font-size: 14px; flex-basis: 25%; padding: 2px;border: 1px solid #000;">
+              <%= entry.note %>
+            </td>
+            <td style="font-size: 14px; text-align: left; flex-basis: 25%; padding: 2px;border: 1px solid #000;">
+              <p style="color: #1F2937; margin: 0;">
+                <%= entry.user_name %>
+              </p>
+              <p style="color: #6B7280; margin: 0;">
+                <%= CompanyDateFormattingService.new(entry.work_date, company: current_company, es_date_presence: true).process %>
+              </p>
+            </td>
+            <td style="text-align: left; flex-basis: 25%; padding: 2px; border: 1px solid #000;">
+              <%= DurationFormatter.new(entry.duration).process %>
+            </td>
+          </tr>
         <% end %>
-      </tbody>
-    </table>
-  </div>
+      <% end %>
+    </tbody>
+  </table>
 </div>

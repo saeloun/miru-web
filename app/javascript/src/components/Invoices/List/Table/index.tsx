@@ -12,8 +12,13 @@ const Table = ({
   setInvoiceToDelete,
   fetchInvoices,
   isDesktop,
+  isStripeEnabled,
+  setIsStripeEnabled,
 }) => (
-  <table className="mt-4 min-w-full divide-y divide-gray-200 overflow-x-scroll">
+  <table
+    className="min-w-full divide-y divide-gray-200 overflow-x-scroll lg:mt-4"
+    id="invoicesListTable"
+  >
     <thead>
       <TableHeader
         deselectInvoices={deselectInvoices}
@@ -23,20 +28,20 @@ const Table = ({
         selectedInvoices={selectedInvoices}
       />
     </thead>
-    <tbody
-      className="min-w-full divide-y divide-gray-200 bg-white"
-      data-cy="invoices-list"
-    >
-      {invoices.map(invoice => (
+    <tbody className="min-w-full divide-y divide-gray-200 bg-white">
+      {invoices.map((invoice, index) => (
         <TableRow
           deselectInvoices={deselectInvoices}
           fetchInvoices={fetchInvoices}
+          index={index}
           invoice={invoice}
           isDesktop={isDesktop}
           isSelected={selectedInvoices.includes(invoice.id)}
+          isStripeEnabled={isStripeEnabled}
           key={invoice.id}
           selectInvoices={selectInvoices}
           setInvoiceToDelete={setInvoiceToDelete}
+          setIsStripeEnabled={setIsStripeEnabled}
           setShowDeleteDialog={setShowDeleteDialog}
         />
       ))}

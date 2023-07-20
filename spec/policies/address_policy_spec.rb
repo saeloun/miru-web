@@ -7,8 +7,8 @@ RSpec.describe AddressPolicy, type: :policy do
   let(:company2) { create(:company) }
   let(:user) { create(:user, current_workspace: company) }
   let(:employee) { create(:user, current_workspace: company) }
-  let(:company_address) { create(:address, addressable_type: "Company", addressable_id: company.id) }
-  let(:company2_address) { create(:address, addressable_type: "Company", addressable_id: company2.id) }
+  let(:company_address) { company.current_address }
+  let(:company2_address) { company2.current_address }
   let(:employee_address) { create(:address, addressable_type: "User", addressable_id: employee.id) }
   let(:user_address) { create(:address, addressable_type: "User", addressable_id: user.id) }
 

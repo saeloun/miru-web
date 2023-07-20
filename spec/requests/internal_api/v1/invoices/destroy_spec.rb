@@ -17,7 +17,7 @@ RSpec.describe "InternalApi::V1::Invoices#destroy", type: :request do
 
     describe "#destroy" do
       it "deletes invoice successfully" do
-        send_request :delete, internal_api_v1_invoice_path(id: invoice.id)
+        send_request :delete, internal_api_v1_invoice_path(id: invoice.id), headers: auth_headers(user)
         expect(response).to be_successful
         expect(company.invoices.discarded.pluck(:id).include?(invoice.id)).to eq(true)
       end
@@ -29,7 +29,7 @@ RSpec.describe "InternalApi::V1::Invoices#destroy", type: :request do
       create(:employment, company:, user:)
       user.add_role :employee, company
       sign_in user
-      send_request :delete, internal_api_v1_invoice_path(id: invoice.id)
+      send_request :delete, internal_api_v1_invoice_path(id: invoice.id), headers: auth_headers(user)
     end
 
     it "is not be permitted to delete an invoice" do
@@ -42,7 +42,7 @@ RSpec.describe "InternalApi::V1::Invoices#destroy", type: :request do
       create(:employment, company:, user:)
       user.add_role :book_keeper, company
       sign_in user
-      send_request :delete, internal_api_v1_invoice_path(id: invoice.id)
+      send_request :delete, internal_api_v1_invoice_path(id: invoice.id), headers: auth_headers(user)
     end
 
     it "is not be permitted to delete an invoice" do
@@ -54,7 +54,7 @@ RSpec.describe "InternalApi::V1::Invoices#destroy", type: :request do
     it "is not be permitted to delete an invoice" do
       send_request :delete, internal_api_v1_invoice_path(id: invoice.id)
       expect(response).to have_http_status(:unauthorized)
-      expect(json_response["error"]).to eq("You need to sign in or sign up before continuing.")
+      expect(json_response["error"]).to eq(I18n.t("devise.failure.unauthenticated"))
     end
   end
 end
