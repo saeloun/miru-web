@@ -198,15 +198,20 @@ const EmploymentDetails = () => {
     const getDifference = (array1, array2) =>
       array1.filter(object1 => !array2.some(object2 => object1 === object2));
 
+    //creating an array which includes removed records
     const removed = employmentDetails.previous_employments.filter(
       e => !previousEmployments.includes(e)
     );
 
+    //creating an array which includes updated and added records
     const unSortedEmployments = getDifference(
       previousEmployments,
       employmentDetails.previous_employments
     );
+
     const pastEmployments = InitialPrevEmployments;
+
+    //sorting new entries and updated entries into
     unSortedEmployments.map(unSorted => {
       if (unSorted.id) {
         pastEmployments.updated_employments.push(unSorted);
@@ -214,13 +219,19 @@ const EmploymentDetails = () => {
         pastEmployments.added_employments.push(unSorted);
       }
     });
+
+    //Extracting removed records id
     if (removed.length > 0) {
       removed.map(remove => {
-        pastEmployments.updated_employments.filter(updated => {
-          if (updated.id !== remove.id) {
-            pastEmployments.removed_employment_ids.push(remove?.id);
-          }
-        });
+        if (pastEmployments.updated_employments.length > 0) {
+          pastEmployments.updated_employments.filter(updated => {
+            if (updated.id !== remove.id) {
+              pastEmployments.removed_employment_ids.push(remove?.id);
+            }
+          });
+        } else {
+          pastEmployments.removed_employment_ids.push(remove?.id);
+        }
       });
     }
     updateEmploymentDetails(pastEmployments);
