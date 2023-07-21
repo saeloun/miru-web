@@ -24,9 +24,16 @@ const PaymentReminder = ({
     invoiceStatus.includes(invoice.status)
   );
 
+  const sortByStatus = (a, b) => {
+    const statusAIndex = invoiceStatus.indexOf(a.status);
+    const statusBIndex = invoiceStatus.indexOf(b.status);
+
+    return statusAIndex - statusBIndex;
+  };
+
   const [selectedInvoices, setSelectedInvoices] = useState<any[]>(
     invoices
-      .sort((a, b) => a.status.localeCompare(b.status))
+      .sort(sortByStatus)
       .filter(invoice => invoice.status === "overdue")
       .map(invoice => invoice.id)
   );
@@ -38,7 +45,6 @@ const PaymentReminder = ({
     subject: "Reminder to complete payments for unpaid invoices",
     message:
       "This is a gentle reminder to complete payments for the following invoices. You can find the respective payment links along with the invoice details given below",
-    selected_invoices: selectedInvoices,
     recipients: [client.email],
   });
 
@@ -69,7 +75,10 @@ const PaymentReminder = ({
   const handleSendReminder = async () => {
     try {
       await clientApi.sendPaymentReminder(client.id, {
-        client_email: emailParams,
+        client_email: {
+          email_params: emailParams,
+          selected_invoices: selectedInvoices,
+        },
       });
       setSendPaymentReminder(false);
     } catch (error) {
@@ -136,7 +145,11 @@ const PaymentReminder = ({
         <div className="absolute bottom-0 left-0 right-0 flex items-center justify-between bg-white p-4 shadow-c1">
           {currentStep === 1 ? (
             <div className="flex w-full items-center justify-between">
-              <small>{selectedInvoices.length} invoices selected</small>
+              <small>
+                {selectedInvoices.length > 1
+                  ? `${selectedInvoices.length} invoices selected`
+                  : `${selectedInvoices.length} invoice selected`}
+              </small>
               <Button
                 className="py-2 px-10 text-base"
                 disabled={selectedInvoices.length < 1}
@@ -183,7 +196,6 @@ interface SendPaymentReminderEmail {
   subject: string;
   message: string;
   recipients: string[];
-  selected_invoices: any[];
 }
 
 export default PaymentReminder;

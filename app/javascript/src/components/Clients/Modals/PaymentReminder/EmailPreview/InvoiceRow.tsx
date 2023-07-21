@@ -79,7 +79,7 @@ const InvoiceRow = ({ invoice, isLast }) => {
               style="primary"
             >
               <a
-                href={`/invoices/${externalViewKey}`}
+                href={`/invoices/${externalViewKey}/view`}
                 rel="noreferrer"
                 target="_blank"
               >

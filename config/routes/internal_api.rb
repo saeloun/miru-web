@@ -127,5 +127,9 @@ namespace :internal_api, defaults: { format: "json" } do
     resources :expense_categories, only: [:create]
     resources :expenses, only: [:create, :index, :show]
     resources :bulk_previous_employments, only: [:update]
+
+    match "*path", to: "application#not_found", via: :all, constraints: lambda { |req|
+      req.path.exclude?("rails/active_storage") && req.path.include?("internal_api")
+    }
   end
 end
