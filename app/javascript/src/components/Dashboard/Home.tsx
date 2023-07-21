@@ -22,7 +22,7 @@ const RestrictedRoute = ({ user, role, authorisedRoles, lastVisitedPage }) => {
 
   switch (role) {
     case Roles.BOOK_KEEPER:
-      url = Paths.PAYMENTS;
+      url = lastVisitedPage || Paths.PAYMENTS;
       break;
     case Roles.OWNER:
       url = lastVisitedPage || "invoices";
@@ -31,7 +31,7 @@ const RestrictedRoute = ({ user, role, authorisedRoles, lastVisitedPage }) => {
       url = "invoices";
       break;
     default:
-      url = Paths.TIME_TRACKING;
+      url = lastVisitedPage || Paths.TIME_TRACKING;
       break;
   }
 
@@ -45,13 +45,13 @@ const RootElement = ({ role, lastVisitedPage }) => {
       url = lastVisitedPage || "invoices";
       break;
     case Roles.BOOK_KEEPER:
-      url = Paths.PAYMENTS;
+      url = lastVisitedPage || Paths.PAYMENTS;
       break;
     case Roles.CLIENT:
-      url = "invoices";
+      url = lastVisitedPage || "invoices";
       break;
     default:
-      url = Paths.TIME_TRACKING;
+      url = lastVisitedPage || Paths.TIME_TRACKING;
       break;
   }
 
