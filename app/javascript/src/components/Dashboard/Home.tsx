@@ -5,8 +5,9 @@ import { Routes, Route, Outlet, Navigate } from "react-router-dom";
 import ErrorPage from "common/Error";
 import { Roles, Paths } from "constants/index";
 import { ROUTES } from "constants/routes";
+import useRedirectAfterLogin from "utils/useRedirectAfterLogin";
 
-const RestrictedRoute = ({ user, role, authorisedRoles }) => {
+const RestrictedRoute = ({ user, role, authorisedRoles, lastVisitedPage }) => {
   if (!user) {
     window.location.href = Paths.SIGN_IN;
 
@@ -24,7 +25,7 @@ const RestrictedRoute = ({ user, role, authorisedRoles }) => {
       url = Paths.PAYMENTS;
       break;
     case Roles.OWNER:
-      url = "invoices";
+      url = lastVisitedPage || "invoices";
       break;
     case Roles.CLIENT:
       url = "invoices";
@@ -37,11 +38,11 @@ const RestrictedRoute = ({ user, role, authorisedRoles }) => {
   return <Navigate to={url} />;
 };
 
-const RootElement = ({ role }) => {
+const RootElement = ({ role, lastVisitedPage }) => {
   let url;
   switch (role) {
     case Roles.OWNER:
-      url = "invoices";
+      url = lastVisitedPage || "invoices";
       break;
     case Roles.BOOK_KEEPER:
       url = Paths.PAYMENTS;
@@ -59,11 +60,18 @@ const RootElement = ({ role }) => {
 
 const Home = (props: Iprops) => {
   const { companyRole } = props;
+  const { getLastVisitPage } = useRedirectAfterLogin();
+  const lastVisitedPage = getLastVisitPage();
 
   return (
     <div className="h-full overflow-x-scroll p-0 font-manrope lg:absolute lg:top-0 lg:bottom-0 lg:right-0 lg:w-5/6 lg:px-20 lg:py-3">
       <Routes>
-        <Route element={<RootElement role={companyRole} />} path="/" />
+        <Route
+          path="/"
+          element={
+            <RootElement lastVisitedPage={lastVisitedPage} role={companyRole} />
+          }
+        />
         {ROUTES.map(parentRoute => (
           <Route
             key={parentRoute.path}
@@ -71,6 +79,7 @@ const Home = (props: Iprops) => {
             element={
               <RestrictedRoute
                 authorisedRoles={parentRoute.authorisedRoles}
+                lastVisitedPage={lastVisitedPage}
                 role={companyRole}
                 user={props.user}
               />
