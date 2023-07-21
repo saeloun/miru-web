@@ -46,6 +46,10 @@ class ClientPolicy < ApplicationPolicy
     authorize_current_user
   end
 
+  def send_payment_reminder?
+    user_admin_role? || user_owner_role?
+  end
+
   def permitted_attributes
     [
       :name,

@@ -10,6 +10,7 @@ import {
   PlusIcon,
   EditIcon,
   InfoIcon,
+  ReminderIcon,
 } from "miruIcons";
 import { useNavigate } from "react-router-dom";
 import { MobileMoreOptions, Modal } from "StyledComponents";
@@ -19,7 +20,12 @@ import { useUserContext } from "context/UserContext";
 import DeleteClient from "../Modals/DeleteClient";
 import EditClient from "../Modals/EditClient";
 
-const Header = ({ clientDetails, setShowProjectModal, fetchDetails }) => {
+const Header = ({
+  clientDetails,
+  setShowProjectModal,
+  fetchDetails,
+  setSendPaymentReminder,
+}) => {
   const [isHeaderMenuVisible, setIsHeaderMenuVisible] =
     useState<boolean>(false);
   const [isClientOpen, setIsClientOpen] = useState<boolean>(false);
@@ -102,6 +108,12 @@ const Header = ({ clientDetails, setShowProjectModal, fetchDetails }) => {
                 <button className="menuButton__list-item">
                   <PencilIcon color="#5b34ea" size={16} weight="bold" />
                   <span className="ml-3">Edit</span>
+                </button>
+              </li>
+              <li onClick={() => setSendPaymentReminder(true)}>
+                <button className="menuButton__list-item">
+                  <ReminderIcon id="reminderIcon" size={16} />
+                  <span className="ml-3">Payment Reminder</span>
                 </button>
               </li>
               <li onClick={handleDelete}>
