@@ -22,7 +22,7 @@ class Invoices::EventTrackerService < ApplicationService
 
     def handle_view_action
       add_event("view_invoice")
-      end
+    end
 
     def handle_update_action
       add_event("update_invoice")
