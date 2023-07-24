@@ -19,6 +19,8 @@ import { financialDetailsFormInitialValues } from "./FinancialDetailsForm/utils"
 import Step from "./Step";
 import { organizationSetupSteps, TOTAL_NUMBER_OF_STEPS } from "./utils";
 
+import Toastr from "../../StyledComponents/Toastr";
+
 const OrganizationSetup = () => {
   const navigate = useNavigate();
   const { isDesktop } = useUserContext();
@@ -105,10 +107,18 @@ const OrganizationSetup = () => {
   ) => {
     setStepNoOfLastSubmittedForm(currentStep);
     const payload = generatePayload(companyDetails, financialDetails);
-    const res = await companiesApi.create(payload);
 
-    if (res?.status == 200) {
-      navigate(Paths.SIGNUP_SUCCESS);
+    try {
+      const res = await companiesApi.create(payload);
+      if (res?.status == 200) {
+        navigate(Paths.SIGNUP_SUCCESS);
+      }
+    } catch (error) {
+      Toastr.error(
+        error.response?.data?.errors ||
+          error.response?.data?.error ||
+          error.response?.data?.notice
+      );
     }
   };
 
