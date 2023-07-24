@@ -116,6 +116,7 @@ const MobilePaymentReminder = ({
           Send Payment Reminder
         </div>
         <Button
+          className="pr-4"
           style="ternary"
           onClick={() => {
             setSendPaymentReminder(false);
@@ -143,7 +144,11 @@ const MobilePaymentReminder = ({
       {renderSelectedForm()}
       {currentStep === 1 ? (
         <div className="flex w-full items-center justify-between bg-miru-gray-100 p-3">
-          <small>{selectedInvoices.length} invoices selected</small>
+          <small>
+            {selectedInvoices.length > 1
+              ? `${selectedInvoices.length} invoices selected`
+              : `${selectedInvoices.length} invoice selected`}
+          </small>
           <Button
             className="py-2 px-10 text-base"
             disabled={selectedInvoices.length < 1}
@@ -157,7 +162,7 @@ const MobilePaymentReminder = ({
           </Button>
         </div>
       ) : (
-        <div className="flex w-full items-center justify-end p-3">
+        <div className="mx-auto w-full py-3 pl-7">
           <Button
             className="mr-4 py-2 px-10 text-base"
             disabled={selectedInvoices.length < 1}

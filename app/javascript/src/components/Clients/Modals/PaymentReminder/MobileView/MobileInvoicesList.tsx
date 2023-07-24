@@ -36,7 +36,7 @@ const MobileInvoicesList = ({
           id={id}
           isChecked={isSelected}
           text=""
-          wrapperClassName="h-8 w-8 m-auto rounded-3xl p-2 hover:bg-miru-gray-1000"
+          wrapperClassName="h-8 w-8 m-auto rounded-3xl p-2"
         />
       </td>
       <td className="w-1/4 px-0 py-0">{invoiceNumber}</td>

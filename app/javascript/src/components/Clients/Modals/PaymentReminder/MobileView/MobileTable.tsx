@@ -32,11 +32,7 @@ const MobileTable = ({ invoices, selectedInvoices, setSelectedInvoices }) => {
   };
 
   const deselectAllInvoices = () => {
-    deselectInvoices(
-      invoices
-        .filter(invoice => invoice.status !== "overdue")
-        .map(invoice => invoice.id)
-    );
+    deselectInvoices(invoices.map(invoice => invoice.id));
   };
 
   return (

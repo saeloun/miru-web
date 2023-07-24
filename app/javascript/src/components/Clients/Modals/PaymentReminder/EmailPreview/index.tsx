@@ -19,7 +19,7 @@ const EmailPreview = ({
   );
 
   return (
-    <div className="mt-4 h-full overflow-y-auto pb-10/100">
+    <div className="mt-4 h-full overflow-y-auto pb-10/100 xsm:mx-auto">
       <div className="my-6 xsm:max-w-screen-xsm xsm:px-2 lg:max-w-screen-lg lg:px-0">
         <CustomAdvanceInput
           id="Email ID"
@@ -51,7 +51,7 @@ const EmailPreview = ({
           }
         />
       </div>
-      <div className="mb-6 overflow-auto xsm:max-w-screen-xsm xsm:px-2 lg:max-w-screen-lg lg:px-0">
+      <div className="mb-6 overflow-auto xsm:max-w-screen-xsm xsm:overflow-visible xsm:px-2 lg:max-w-screen-lg lg:px-0">
         <CustomAdvanceInput
           id="message"
           label="Message"

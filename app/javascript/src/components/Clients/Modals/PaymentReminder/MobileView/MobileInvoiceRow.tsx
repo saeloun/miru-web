@@ -1,14 +1,11 @@
 import React from "react";
 
 import { currencyFormat } from "helpers";
-import { useNavigate } from "react-router-dom";
 import { Badge, Button } from "StyledComponents";
 
 import getStatusCssClass from "utils/getBadgeStatus";
 
 const MobileInvoiceRow = ({ invoice, isLast }) => {
-  const navigate = useNavigate();
-
   const {
     amount,
     company,
@@ -57,10 +54,9 @@ const MobileInvoiceRow = ({ invoice, isLast }) => {
         <div>
           <Button className="py-2 px-5 text-base" style="primary">
             <a
-              href={`/invoices/${externalViewKey}`}
+              href={`/invoices/${externalViewKey}/view`}
               rel="noreferrer"
               target="_blank"
-              onClick={() => navigate(`/invoices/${externalViewKey}/view`)}
             >
               View Invoice
             </a>

@@ -13,7 +13,7 @@ const MobileTableHeader = ({ handleCheck, isChecked }) => (
           id={1}
           isChecked={isChecked}
           text=""
-          wrapperClassName="h-8 m-auto rounded-3xl hover:bg-miru-gray-1000"
+          wrapperClassName="h-8 m-auto rounded-3xl"
         />
       </th>
       <th
