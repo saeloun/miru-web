@@ -58,6 +58,12 @@ const navOptions = [
     path: Paths.PAYMENTS,
     allowedRoles: ["admin", "owner", "book_keeper"],
   },
+  {
+    logo: <PaymentsIcon className="mr-0 md:mr-4" size={26} />,
+    label: "Expenses",
+    path: Paths.EXPENSES,
+    allowedRoles: ["admin", "owner", "book_keeper"],
+  },
 ];
 
 const navAdminMobileOptions = [
