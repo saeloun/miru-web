@@ -23,7 +23,7 @@ const getTeamUrls = memberId => [
   },
   {
     url: `/team/${memberId}/employment`,
-    text: "EMPLOYEMENT DETAILS",
+    text: "EMPLOYMENT DETAILS",
   },
 ];
 
