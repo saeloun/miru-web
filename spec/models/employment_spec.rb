@@ -26,10 +26,10 @@ RSpec.describe Employment, type: :model do
   end
 
   describe "Validations" do
-    it { is_expected.to validate_presence_of(:designation) }
-    it { is_expected.to validate_presence_of(:employment_type) }
-    it { is_expected.to validate_presence_of(:joined_at) }
-    it { is_expected.to validate_presence_of(:employee_id) }
+    it { is_expected.to validate_presence_of(:designation).on(:update) }
+    it { is_expected.to validate_presence_of(:employment_type).on(:update) }
+    it { is_expected.to validate_presence_of(:joined_at).on(:update) }
+    it { is_expected.to validate_presence_of(:employee_id).on(:update) }
   end
 
   describe "validate comparisons" do
