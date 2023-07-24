@@ -49,6 +49,14 @@ class Employment < ApplicationRecord
     end
   end
 
+  def formatted_joined_at
+    CompanyDateFormattingService.new(joined_at, company:).process
+  end
+
+  def formatted_resigned_at
+    CompanyDateFormattingService.new(resigned_at, company:).process
+  end
+
   private
 
     def remove_user_invitations

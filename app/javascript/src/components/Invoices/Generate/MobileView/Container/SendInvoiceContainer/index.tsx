@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 
 import cn from "classnames";
 import { Formik, Form, FormikProps } from "formik";
@@ -13,7 +13,6 @@ import { InputErrors } from "common/FormikFields";
 import {
   emailBody,
   emailSubject,
-  isEmailValid,
   buttonText,
   isDisabled,
 } from "components/Invoices/common/InvoiceForm/SendInvoice/utils";
@@ -53,12 +52,14 @@ const SendInvoiceContainer = ({
     message: emailBody(invoice, isSendReminder),
     recipients: [invoice.client.email],
   });
+  // eslint-disable-next-line no-unused-vars
   const [newRecipient, setNewRecipient] = useState<string>("");
+  // eslint-disable-next-line no-unused-vars
   const [width, setWidth] = useState<string>("10ch");
   const [status, setStatus] = useState<InvoiceStatus>(InvoiceStatus.IDLE);
-  const [height, setHeight] = useState<string>("h-0 py-0");
+  // const [height, setHeight] = useState<string>("h-0 py-0");
 
-  const input: React.RefObject<HTMLInputElement> = useRef();
+  // const input: React.RefObject<HTMLInputElement> = useRef();
   const navigate = useNavigate();
 
   const handleRemove = (recipient: string) => {
@@ -70,17 +71,17 @@ const SendInvoiceContainer = ({
     });
   };
 
-  const handleInput = event => {
-    const recipients = invoiceEmail.recipients;
+  // const handleInput = event => {
+  //   const recipients = invoiceEmail.recipients;
 
-    if (isEmailValid(newRecipient) && event.key === "Enter") {
-      setInvoiceEmail({
-        ...invoiceEmail,
-        recipients: recipients.concat(newRecipient),
-      });
-      setNewRecipient("");
-    }
-  };
+  //   if (isEmailValid(newRecipient) && event.key === "Enter") {
+  //     setInvoiceEmail({
+  //       ...invoiceEmail,
+  //       recipients: recipients.concat(newRecipient),
+  //     });
+  //     setNewRecipient("");
+  //   }
+  // };
 
   const handleSubmit = async event => {
     try {
@@ -135,7 +136,7 @@ const SendInvoiceContainer = ({
   }, [status]);
 
   return (
-    <div className="h-full p-4">
+    <div className="h-full w-full p-4">
       <Formik
         initialValues={{
           recipients: [""],
@@ -168,7 +169,7 @@ const SendInvoiceContainer = ({
                             key={recipient}
                           />
                         ))}
-                        <input
+                        {/* <input
                           name="to"
                           ref={input}
                           style={{ width }}
@@ -185,10 +186,10 @@ const SendInvoiceContainer = ({
                           onChange={e => setNewRecipient(e.target.value.trim())}
                           onFocus={() => setHeight("h-6 py-2")}
                           onKeyDown={handleInput}
-                        />
+                        /> */}
                       </div>
                     }
-                    onClick={() => input.current.focus()}
+                    // onClick={() => input.current.focus()}
                   />
                   <InputErrors
                     fieldErrors={errors.recipients}

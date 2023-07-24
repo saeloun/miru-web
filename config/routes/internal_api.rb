@@ -18,6 +18,9 @@ namespace :internal_api, defaults: { format: "json" } do
         get "invoices", to: "clients/invoices#index"
         get "invoices/:id", to: "clients/invoices#show", as: "invoice"
       end
+      member do
+        post :send_payment_reminder
+      end
     end
 
     resources :project, only: [:index]
@@ -124,5 +127,9 @@ namespace :internal_api, defaults: { format: "json" } do
     resources :expense_categories, only: [:create]
     resources :expenses, only: [:create, :index, :show]
     resources :bulk_previous_employments, only: [:update]
+
+    match "*path", to: "application#not_found", via: :all, constraints: lambda { |req|
+      req.path.exclude?("rails/active_storage") && req.path.include?("internal_api")
+    }
   end
 end

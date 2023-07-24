@@ -46,6 +46,7 @@ import {
   Copy,
   Key,
   User,
+  Clock,
   BellRinging,
 } from "phosphor-react";
 
@@ -184,6 +185,7 @@ export const MoneyIcon = Money;
 export const CopyIcon = Copy;
 export const KeyIcon = Key;
 export const UserIcon = User;
+export const ClockIcon = Clock;
 export const ReminderIcon = BellRinging;
 
 // custom svg icons

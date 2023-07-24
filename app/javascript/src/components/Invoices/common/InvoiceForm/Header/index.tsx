@@ -82,6 +82,7 @@ const Header = ({
                 markInvoiceAsPaid={() => null}
                 sendInvoice={handleSendInvoice}
                 setIsSendReminder={setIsSendReminder}
+                showHistory={() => null}
                 wavieInvoice={wavieInvoice}
               />
             )}
