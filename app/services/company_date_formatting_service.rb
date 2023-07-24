@@ -13,7 +13,7 @@ class CompanyDateFormattingService < ApplicationService
     return if !company
 
     @date = date.to_date if es_date_presence
-    date.strftime(company_date_format)
+    date&.strftime(company_date_format)
   end
 
   private
