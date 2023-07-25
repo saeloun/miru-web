@@ -49,7 +49,7 @@ const MobileInvoiceRow = ({ invoice, isLast }) => {
           />
         </div>
       </div>
-      <div>
+      <div className="pb-8">
         <span />
         <div>
           <Button className="py-2 px-5 text-base" style="primary">
