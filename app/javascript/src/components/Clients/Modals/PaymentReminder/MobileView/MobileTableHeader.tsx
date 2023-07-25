@@ -29,7 +29,7 @@ const MobileTableHeader = ({ handleCheck, isChecked }) => (
         ISSUE DATE/ DUE DATE
       </th>
       <th
-        className="w-1/5 py-5 px-3 text-right text-xs font-medium tracking-widest text-miru-black-1000"
+        className="w-1/5 py-5 px-4 text-right text-xs font-medium tracking-widest text-miru-black-1000"
         scope="col"
       >
         STATUS/ AMOUNT

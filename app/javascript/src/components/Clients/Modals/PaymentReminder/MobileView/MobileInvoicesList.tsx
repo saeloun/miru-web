@@ -44,7 +44,7 @@ const MobileInvoicesList = ({
         {issueDate} <br />
         <span className="text-miru-gray-500">{dueDate}</span>
       </td>
-      <td className="w-1/5 px-3 text-right text-base tracking-normal text-miru-dark-purple-1000">
+      <td className="w-1/5 px-4 text-right text-base tracking-normal text-miru-dark-purple-1000">
         <Badge
           className={`${getStatusCssClass(status)} mt-4 uppercase`}
           text={status}
