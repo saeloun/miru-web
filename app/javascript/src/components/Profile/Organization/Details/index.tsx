@@ -49,7 +49,10 @@ const OrgDetails = () => {
       timezone,
       id,
     } = companyDetails;
-    const { name: CountryName } = Country.getCountryByCode(address.country);
+
+    const { name: CountryName } = address.country
+      ? Country.getCountryByCode(address.country)
+      : { name: "" };
 
     setOrgDetails({
       logoUrl: logo,
