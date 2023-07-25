@@ -126,7 +126,7 @@ const MobilePaymentReminder = ({
         </Button>
       </div>
       <div className="bg-gray-100">
-        <div className="mx-auto my-2 flex px-3 py-1">
+        <div className="mx-auto my-2 flex px-10 py-1">
           <Steps
             current={currentStep - 1}
             items={organizationSetupSteps}
@@ -162,9 +162,9 @@ const MobilePaymentReminder = ({
           </Button>
         </div>
       ) : (
-        <div className="mx-auto w-full py-3 pl-7">
+        <div className="mx-auto flex w-full justify-between py-3 px-7">
           <Button
-            className="mr-4 py-2 px-10 text-base"
+            className="mr-4 w-2/5 py-2 px-2/100 text-base"
             disabled={selectedInvoices.length < 1}
             style="secondary"
             onClick={() => {
@@ -174,7 +174,7 @@ const MobilePaymentReminder = ({
             Back
           </Button>
           <Button
-            className="py-2 px-10 text-base"
+            className="w-2/5 py-2 px-2/100 text-base"
             disabled={selectedInvoices.length < 1}
             style="primary"
             onClick={() => {

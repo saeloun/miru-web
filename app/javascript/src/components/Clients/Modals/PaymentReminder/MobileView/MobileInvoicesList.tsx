@@ -27,7 +27,7 @@ const MobileInvoicesList = ({
 
   return (
     <tr>
-      <td className="px-0 py-0">
+      <td className="w-1/12 py-3">
         <CustomCheckbox
           isUpdatedDesign
           checkboxValue={isSelected}
@@ -39,12 +39,12 @@ const MobileInvoicesList = ({
           wrapperClassName="h-8 w-8 m-auto rounded-3xl p-2"
         />
       </td>
-      <td className="w-1/4 px-0 py-0">{invoiceNumber}</td>
-      <td className="w-1/4 px-0 py-0">
+      <td className="w-1/5 break-all px-2 py-0">{invoiceNumber}</td>
+      <td className="w-1/5 px-0 py-0">
         {issueDate} <br />
         <span className="text-miru-gray-500">{dueDate}</span>
       </td>
-      <td className="w-1/5 px-0 text-left text-base tracking-normal text-miru-dark-purple-1000">
+      <td className="w-1/5 px-3 text-right text-base tracking-normal text-miru-dark-purple-1000">
         <Badge
           className={`${getStatusCssClass(status)} mt-4 uppercase`}
           text={status}

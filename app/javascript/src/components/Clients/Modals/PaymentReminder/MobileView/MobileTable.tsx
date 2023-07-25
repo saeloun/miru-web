@@ -44,7 +44,7 @@ const MobileTable = ({ invoices, selectedInvoices, setSelectedInvoices }) => {
               handleCheck={handleCheck}
               isChecked={isChecked}
             />
-            <tbody>
+            <tbody className="overflow-y-scroll">
               {invoices.map((invoice, idx) => (
                 <MobileInvoicesList
                   deselectInvoices={deselectInvoices}

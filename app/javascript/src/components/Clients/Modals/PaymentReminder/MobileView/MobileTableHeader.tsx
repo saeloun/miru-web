@@ -5,7 +5,7 @@ import CustomCheckbox from "common/CustomCheckbox";
 const MobileTableHeader = ({ handleCheck, isChecked }) => (
   <thead>
     <tr>
-      <th className="w-1/6 py-5" scope="col">
+      <th className="w-1/10 pt-4" scope="col">
         <CustomCheckbox
           isUpdatedDesign
           checkboxValue={1}
@@ -29,7 +29,7 @@ const MobileTableHeader = ({ handleCheck, isChecked }) => (
         ISSUE DATE/ DUE DATE
       </th>
       <th
-        className="w-1/5 py-5 text-left text-xs font-medium tracking-widest text-miru-black-1000"
+        className="w-1/5 py-5 px-3 text-right text-xs font-medium tracking-widest text-miru-black-1000"
         scope="col"
       >
         STATUS/ AMOUNT

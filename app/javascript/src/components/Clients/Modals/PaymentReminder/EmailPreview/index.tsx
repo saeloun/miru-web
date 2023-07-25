@@ -20,10 +20,10 @@ const EmailPreview = ({
 
   return (
     <div className="mt-4 h-full overflow-y-auto pb-10/100 xsm:mx-auto">
-      <div className="my-6 xsm:max-w-screen-xsm xsm:px-2 lg:max-w-screen-lg lg:px-0">
+      <div className="my-6 w-full xsm:px-2 lg:px-0">
         <CustomAdvanceInput
           id="Email ID"
-          label="Email ID"
+          label="Recipient Email ID"
           value={emailParams.recipients.map(recipient => (
             <div
               className="m-0.5 flex w-fit items-center space-x-2 rounded-full border bg-miru-gray-400 px-2 py-1"
@@ -34,7 +34,7 @@ const EmailPreview = ({
           ))}
         />
       </div>
-      <div className="mb-6 xsm:max-w-screen-xsm xsm:px-2 lg:max-w-screen-lg lg:px-0">
+      <div className="mb-6 w-full xsm:px-2 lg:px-0">
         <CustomTextareaAutosize
           id="subject"
           label="Subject"
@@ -51,7 +51,7 @@ const EmailPreview = ({
           }
         />
       </div>
-      <div className="mb-6 overflow-auto xsm:max-w-screen-xsm xsm:overflow-visible xsm:px-2 lg:max-w-screen-lg lg:px-0">
+      <div className="mb-6 w-full overflow-auto xsm:overflow-visible xsm:px-2.5 lg:px-0">
         <CustomAdvanceInput
           id="message"
           label="Message"
