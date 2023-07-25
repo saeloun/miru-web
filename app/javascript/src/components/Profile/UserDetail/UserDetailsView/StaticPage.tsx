@@ -97,13 +97,13 @@ const StaticPage = ({ personalDetails, handleEditClick }) => (
       </div>
       <div className="w-4/5">
         <div className="flex">
-          <div className="w-6/12">
+          <div className="w-6/12 break-all pr-4">
             <span className="text-xs text-miru-dark-purple-1000">LinkedIn</span>
             <p className="min-h-24 text-miru-dark-purple-1000">
               {personalDetails.linkedin}
             </p>
           </div>
-          <div className="w-6/12">
+          <div className="w-6/12 break-all pr-4">
             <span className="text-xs text-miru-dark-purple-1000">Github</span>
             <p className="min-h-24 text-miru-dark-purple-1000">
               {personalDetails.github}

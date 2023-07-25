@@ -101,10 +101,18 @@ const MobilePersonalDetails = ({
         </span>
         <div className="mt-2 flex w-full flex-row">
           <div className="w-1/2 px-1">
-            <InfoDescription description={linkedin} title="LinkedIn" />
+            <InfoDescription
+              description={linkedin}
+              title="LinkedIn"
+              wrapperClassName="break-all"
+            />
           </div>
           <div className="w-1/2 px-2">
-            <InfoDescription description={github} title="Github" />
+            <InfoDescription
+              description={github}
+              title="Github"
+              wrapperClassName="break-all"
+            />
           </div>
         </div>
       </div>
