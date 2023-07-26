@@ -4,6 +4,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 
 import { useUserContext } from "context/UserContext";
 
+import GoogleCalendar from "./GoogleCalendar";
 import MobileNav from "./Layout/MobileNav";
 import LeaveBalance from "./LeaveBalance";
 import Billing from "./Organization/Billing";
@@ -54,6 +55,10 @@ const RouteConfig = () => {
         />
         <Route element={<UserDetailsEdit />} path="change" />
         <Route element={<MobileNav isAdmin={isAdminUser} />} path="option" />
+        <Route
+          element={<GoogleCalendar isAdmin={isAdminUser} />}
+          path="integrations"
+        />
       </Route>
     </Routes>
   );
