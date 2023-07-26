@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_07_07_082247) do
+ActiveRecord::Schema[7.0].define(version: 2023_07_26_105455) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -399,6 +399,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_07_082247) do
     t.jsonb "social_accounts"
     t.string "phone"
     t.string "token", limit: 50
+    t.boolean "calendar_connected", default: true
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token"
     t.index ["current_workspace_id"], name: "index_users_on_current_workspace_id"
     t.index ["discarded_at"], name: "index_users_on_discarded_at"
