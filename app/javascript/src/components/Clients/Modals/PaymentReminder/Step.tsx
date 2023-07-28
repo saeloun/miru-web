@@ -31,7 +31,7 @@ const Step = (props: any) => {
       <div className="rc-steps-item-container">
         <div className="rc-steps-item-tail" />
         {stepIsFinished(status) ? (
-          <div className="rc-steps-item-icon flex items-center justify-center pb-7 md:pb-0">
+          <div className="rc-steps-item-icon flex items-center justify-center md:pb-0">
             <CheckCircle
               className="green-tick block"
               color="#0DA163"

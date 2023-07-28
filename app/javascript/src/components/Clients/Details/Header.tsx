@@ -187,6 +187,16 @@ const Header = ({
           <li
             className="menuButton__list-item px-0"
             onClick={() => {
+              setSendPaymentReminder(true);
+              setShowMobileModal(false);
+            }}
+          >
+            <ReminderIcon id="reminderIcon" size={16} />
+            <span className="ml-3">Payment Reminder</span>
+          </li>
+          <li
+            className="menuButton__list-item px-0"
+            onClick={() => {
               handleEdit();
               setShowMobileModal(false);
             }}

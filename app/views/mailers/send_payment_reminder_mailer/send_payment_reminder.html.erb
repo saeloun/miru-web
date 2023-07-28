@@ -15,6 +15,8 @@
         width: 360px;
         margin: 0 auto;
         display: none;
+        font-family: sans-serif;
+        font-weight: 400;
       }
       @media only screen and (max-width: 640px) {
         .desktop-invoice {
@@ -174,35 +176,66 @@
       </div>
     </div>
     <div class="mobile-invoice">
-      <div id="mobile-header" style="padding:0 16px;">
-        <div
-          style="padding: 40px 0px; background:white ;border-bottom: 2px solid #E1E6EC; text-align: center"
-        >
-          <div style="padding: 10px; display: inline-block; text-align: center">
-            <%= image_tag @company_logo, height: 80 ,width: 80 %>
+      <div id="mobile-header">
+        <div id="mobile-header" style="padding:0 16px;">
+          <div
+            style="padding: 40px 0px; background:white ;border-bottom: 2px solid #E1E6EC; text-align: center"
+          >
+            <div style="padding: 10px; display: inline-block; text-align: center">
+              <%= image_tag @company_logo, height: 80 ,width: 80 %>
+            </div>
+            <p  style="font-family: 'Manrope';font-style: normal;font-size: 16px;line-height: 22px;text-align: center;color: #1D1A31; margin: 0px; padding: 0px">
+              <%= sanitize @message %>
+            </p>
           </div>
-          <p  style="font-family: 'Manrope';font-style: normal;font-size: 16px;line-height: 22px;text-align: center;color: #1D1A31; margin: 0px; padding: 0px">
-            <%= sanitize @message %>
-          </p>
         </div>
-      </div>
-      <p style="text-align: center; font-family: 'Manrope'; font-weight:700; font-size: 24px; line-height:33px; color: #1D1A31;text-transform: capitalize; margin: 40px auto; padding: 0;">
-        Payment receipt
-      </p>
-      <div style="font-family: 'Manrope';font-weight: 400; font-size: 12px;line-height: 16px; text-align: center; color: #1D1A31; margin: 40px auto;">
-        <div>
-          <p style="font-family: 'Manrope'; margin: 0px; padding: 0px;">Payment method</p>
-        </div>
-        <div>
-          <p style="font-family: 'Manrope'; margin: 0px; padding: 0px;">Amount Paid</p>
-          <p style="font-size: 16px; font-style: normal; font-weight: 400; line-height: 22px; color: #1D1A31; margin: 0px; padding: 4px 0px 16px 0px;">
-            <%= @amount %>
-          </p>
-        </div>
-        <div>
-          <p style="font-family: 'Manrope'; margin: 0px; padding: 0px;">Issued to</p>
-        </div>
-      </div>
+        <p style="text-align: center; font-family: 'Manrope'; font-weight:700; font-size: 24px; line-height:33px; color: #1D1A31;text-transform: capitalize; margin: 40px auto; padding: 0;">
+          Payment Reminder
+        </p>
+        <% @invoices.map do |invoice| %>
+          <div
+            style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; border-top-width: 0px; border-left-width: 0px; border-right-width: 0px; border-bottom-width: 1px; border-style: solid; border-color: #ebeff2; padding: 16px 6px"
+          >
+            <div>
+              <span>INVOICE NO.</span>
+              <div><%= invoice.invoice_number %></div>
+            </div>
+            <div>
+              <span>ISSUED DATE</span>
+              <div><%= invoice.issue_date %></div>
+            </div>
+            <div>
+              <span>DUE DATE</span>
+              <div><%= invoice.due_date %></div>
+            </div>
+            <div>
+              <span>AMOUNT</span>
+              <div><%= FormatAmountService.new(@company.base_currency, invoice.amount).process %></div>
+            </div>
+            <div>
+              <span>STATUS</span>
+              <div>
+                <span
+                  style="display: inline-flex; align-items: center; border-radius: 9999px; padding: 2px 10px; font-size: .75rem; font-weight: 600; line-height: 16px; letter-spacing: 0.125em; <%= invoice.status == 'overdue' ? 'background-color: #efa9a9; color: #561013;' : invoice.status == 'sent' ? 'background-color: #a9efc5; color: #10562c;' : 'background-color: #a9deef; color: #104556;' %> text-transform: uppercase;"
+                  >
+                  <%= invoice.status %>
+                </span>
+              </div>
+            </div>
+            <div>
+              <span></span>
+              <div>
+                <a
+                  href=<%= "#{ENV['APP_BASE_URL']}/invoices/#{invoice.external_view_key}/view" %>
+                  target="_blank"
+                  style=" border-width: 1px; border-color: transparent; background-color: #5b34ea; padding: 0.5rem; font-size: 1rem; color: #ffffff; text-decoration: none; border-radius: 2px; font-size: 16px; padding: 8px 20px;"
+                >
+                  View Invoice
+                </a>
+              </div>
+            </div>
+          </div>
+        <% end %>
       <div id="footer">
         <div
           style="font-family: 'Manrope'; padding:16px; align-items:center; background: #EBEFF2; text-align:center;"
