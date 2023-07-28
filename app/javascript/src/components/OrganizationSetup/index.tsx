@@ -114,11 +114,10 @@ const OrganizationSetup = () => {
         navigate(Paths.SIGNUP_SUCCESS);
       }
     } catch (error) {
-      Toastr.error(
-        error.response?.data?.errors ||
-          error.response?.data?.error ||
-          error.response?.data?.notice
-      );
+      const { errors, error: err, notice } = error?.response?.data || {};
+      const errorMessage = errors || err || notice;
+
+      Toastr.error(errorMessage);
     }
   };
 
