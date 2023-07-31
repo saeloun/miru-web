@@ -16,7 +16,7 @@ const AddManualEntry = ({
   showManualEntryModal,
 }) => (
   <Modal
-    customStyle="sm:my-8 sm:w-full sm:max-w-lg sm:align-middle"
+    customStyle="sm:my-8 sm:w-full sm:max-w-lg sm:align-middle overflow-visible"
     isOpen={showManualEntryModal}
     onClose={() => setShowManualEntryModal(false)}
   >
