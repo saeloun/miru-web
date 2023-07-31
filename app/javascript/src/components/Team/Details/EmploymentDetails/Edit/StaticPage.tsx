@@ -9,7 +9,6 @@ import CustomDatePicker from "common/CustomDatePicker";
 import { CustomInputText } from "common/CustomInputText";
 import { CustomReactSelect } from "common/CustomReactSelect";
 import { ErrorSpan } from "common/ErrorSpan";
-import { useUserContext } from "context/UserContext";
 
 const inputClass =
   "form__input block w-full appearance-none bg-white p-4 text-base h-12 focus-within:border-miru-han-purple-1000";
@@ -36,9 +35,13 @@ const StaticPage = ({
   handleDeletePreviousEmployment,
   handleAddPastEmployment,
   updatePreviousEmploymentValues,
+  dateFormat,
+  joinedAt,
+  resignedAt,
 }) => {
-  const { company } = useUserContext();
-  const { date_format } = company;
+  const getDOJ = joinedAt && dayjs(joinedAt, dateFormat).format(dateFormat);
+
+  const getDOR = resignedAt && dayjs(resignedAt, dateFormat).format(dateFormat);
 
   return (
     <div className="mt-4 h-full bg-miru-gray-100 px-10">
@@ -115,6 +118,7 @@ const StaticPage = ({
           <div className="flex flex-row py-3">
             <div className="flex w-1/2 flex-col px-2">
               <CustomInputText
+                disabled={employmentDetails.current_employment.email}
                 id="email"
                 label="Email ID (Official)"
                 name="email"
@@ -175,10 +179,7 @@ const StaticPage = ({
                   label="Date of Joining"
                   name="joined_at"
                   type="text"
-                  value={employmentDetails.current_employment.joined_at || ""}
-                  onChange={e => {
-                    updateCurrentEmploymentDetails(e.target.value, "joined_at");
-                  }}
+                  value={getDOJ || ""}
                 />
                 <CalendarIcon
                   className="absolute top-0 bottom-0 right-4 my-auto"
@@ -194,15 +195,9 @@ const StaticPage = ({
               )}
               {showDOJDatePicker.visibility && (
                 <CustomDatePicker
-                  dateFormat={date_format}
-                  date={
-                    employmentDetails.current_employment.joined_at
-                      ? employmentDetails.current_employment.joined_at
-                      : dayjs()
-                  }
-                  handleChange={e =>
-                    handleDOJDatePicker(dayjs(e).format(date_format), true)
-                  }
+                  date={joinedAt || dayjs()}
+                  dateFormat={dateFormat}
+                  handleChange={handleDOJDatePicker}
                 />
               )}
             </div>
@@ -222,13 +217,7 @@ const StaticPage = ({
                   label="Date of Resignation"
                   name="resigned_at"
                   type="text"
-                  value={employmentDetails.current_employment.resigned_at || ""}
-                  onChange={e => {
-                    updateCurrentEmploymentDetails(
-                      e.target.value,
-                      "resigned_at"
-                    );
-                  }}
+                  value={getDOR || ""}
                 />
                 <CalendarIcon
                   className="absolute top-0 bottom-0 right-4 my-auto"
@@ -244,15 +233,9 @@ const StaticPage = ({
               )}
               {showDORDatePicker.visibility && (
                 <CustomDatePicker
-                  dateFormat={date_format}
-                  date={
-                    employmentDetails.current_employment.resigned_at
-                      ? employmentDetails.current_employment.resigned_at
-                      : dayjs()
-                  }
-                  handleChange={e =>
-                    handleDORDatePicker(dayjs(e).format(date_format), true)
-                  }
+                  date={resignedAt || dayjs()}
+                  dateFormat={dateFormat}
+                  handleChange={handleDORDatePicker}
                 />
               )}
             </div>

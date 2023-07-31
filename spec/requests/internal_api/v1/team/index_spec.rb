@@ -16,6 +16,8 @@ RSpec.describe "InternalApi::V1::Team#index", type: :request do
     before do
       sign_in user
       send_request :get, internal_api_v1_team_index_path, headers: auth_headers(user)
+      @team_data = json_response["combinedDetails"].select { |item| item["isTeamMember"] == true }
+      @invitation_data = json_response["combinedDetails"].select { |item| item["isTeamMember"] == false }
     end
 
     it "returns http success" do
@@ -23,17 +25,19 @@ RSpec.describe "InternalApi::V1::Team#index", type: :request do
     end
 
     it "checks if profile picture is there with each team member" do
-      expect("http://www.example.com#{json_response["team"].first["profilePicture"]}").to eq(url_for(user.avatar))
-      expect(json_response["invitation"].last["profilePicture"]).to include("/assets/avatar")
+      expect(
+        "http://www.example.com#{json_response["combinedDetails"].first["profilePicture"]}"
+      ).to eq(url_for(user.avatar))
+      expect(json_response["combinedDetails"].last["profilePicture"]).to include("/assets/avatar")
     end
 
     it "checks if correct team members data is returned" do
-      actual_team_data = json_response["team"].map do |member|
-                              member.slice("id", "name", "email", "role", "status")
-                            end
-      actual_invited_user_data = json_response["invitation"].map do |member|
-                            member.slice("id", "name", "email", "role", "status")
+      actual_team_data = @team_data.map do |member|
+                            member.slice("id", "name", "email", "role", "status", "is_team_member")
                           end
+      actual_invited_user_data = @invitation_data.map do |member|
+                                   member.slice("id", "name", "email", "role", "status", "is_team_member")
+                                 end
 
       expected_team_data =
         [{

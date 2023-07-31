@@ -14,6 +14,7 @@ type Pagination = {
   setParams: any;
   handleClick?: any;
   isReport?: boolean;
+  isTeamPage?: boolean;
 };
 
 const Pagination = ({
@@ -23,11 +24,12 @@ const Pagination = ({
   title,
   handleClick,
   isReport = false,
+  isTeamPage = false,
 }: Pagination) => {
   const { isDesktop } = useUserContext();
 
-  const currentPage = params.page;
-  const totalPageCount = pagy.pages;
+  const currentPage = params?.page;
+  const totalPageCount = pagy?.pages;
   const siblingCount = 1;
 
   const paginationRange = usePagination({
@@ -50,20 +52,40 @@ const Pagination = ({
     return pagy?.last == currentPage;
   };
 
+  const isNotFirstPage = () => {
+    if (typeof pagy?.first == "boolean") {
+      return !pagy?.first;
+    }
+
+    return pagy?.page > 1;
+  };
+
+  const handleOnClick = e => {
+    if (isTeamPage) {
+      handleClick(Number(1), Number(e.target.value));
+      setParams({ ...params, items: Number(e.target.value) });
+    } else {
+      setParams({
+        page: 1,
+        invoices_per_page: Number(e.target.value),
+      });
+    }
+  };
+
   return (
     <div className="bg-grey-400 relative flex w-full items-center px-0 pt-5 pb-20 md:pb-28 lg:py-10 lg:pl-36">
       <div className="mx-auto w-full">
         {pagy?.pages > 1 && (
           <div className="flex items-center justify-center">
-            {!pagy?.first && (
+            {isNotFirstPage() && (
               <button
                 disabled={pagy?.first}
                 className={cn("m-1 mx-4 font-bold", {
                   "text-miru-gray-400": pagy?.first,
-                  "text-miru-han-purple-1000": !pagy?.first,
+                  "text-miru-han-purple-1000": isNotFirstPage(),
                 })}
                 onClick={() => {
-                  isReport
+                  isReport || isTeamPage
                     ? handleClick(pagy?.prev)
                     : setParams({ ...params, page: pagy?.prev });
                 }}
@@ -84,7 +106,7 @@ const Pagination = ({
                       }
                     )}
                     onClick={() => {
-                      isReport
+                      isReport || isTeamPage
                         ? handleClick(page)
                         : handlePageNumberClick(page);
                     }}
@@ -102,7 +124,7 @@ const Pagination = ({
                   "text-miru-han-purple-1000": !isLastPage(),
                 })}
                 onClick={() => {
-                  isReport
+                  isReport || isTeamPage
                     ? handleClick(pagy?.next)
                     : setParams({ ...params, page: pagy?.next });
                 }}
@@ -118,10 +140,8 @@ const Pagination = ({
           <select
             className="p-2 text-xs font-bold text-miru-han-purple-1000"
             defaultValue={pagy?.items}
-            value={params.invoices_per_page}
-            onChange={e =>
-              setParams({ page: 1, invoices_per_page: Number(e.target.value) })
-            }
+            value={isTeamPage ? params?.items : params.invoices_per_page}
+            onChange={handleOnClick}
           >
             <option value="10">10</option>
             <option value="20">20</option>

@@ -2,7 +2,7 @@ import axios from "./api";
 
 const path = "/team";
 
-const get = () => axios.get(path);
+const get = (query = "") => axios.get(query ? `${path}?${query}` : path);
 const search = term => {
   const payload = { "q[first_name_or_last_name_or_email_cont]": term };
   const queryParams = new URLSearchParams(payload).toString();
