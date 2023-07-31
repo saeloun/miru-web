@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import React, { useRef, useState } from "react";
 
 import { Formik, Form, FormikProps } from "formik";
@@ -43,7 +42,15 @@ const SignUpForm = () => {
       const portalId = 23903467;
       const formId = "3266596a-b69b-40a2-9cd4-58ef522a270a";
 
-      const result = await authenticationApi.hubspot(portalId, formId, {
+      const payload = {
+        first_name,
+        last_name,
+        email,
+        password,
+        password_confirmation: confirm_password,
+      };
+      const res = await authenticationApi.signup(payload);
+      await authenticationApi.hubspot(portalId, formId, {
         portalId,
         formId,
         fields: [
@@ -62,14 +69,6 @@ const SignUpForm = () => {
         ],
       });
 
-      const payload = {
-        first_name,
-        last_name,
-        email,
-        password,
-        password_confirmation: confirm_password,
-      };
-      const res = await authenticationApi.signup(payload);
       navigate(`/email_confirmation?email=${res.data.email}`);
     } catch (error) {
       if (error?.response?.data?.error) {
