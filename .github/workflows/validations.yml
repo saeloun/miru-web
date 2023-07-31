@@ -17,7 +17,7 @@ jobs:
       - name: Setup PostgreSQL
         uses: Harmon758/postgresql-action@v1.0.0
         with:
-          postgresql version: 9.6.2-alpine
+          postgresql version: '15'
           postgresql db: miru_web_test
           postgresql user: root
       - name: Setup ElasticSearch
