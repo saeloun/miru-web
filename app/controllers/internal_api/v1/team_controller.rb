@@ -11,7 +11,18 @@ class InternalApi::V1::TeamController < InternalApi::V1::ApplicationController
       .ransack(first_name_or_last_name_or_recipient_email_cont: params.dig(:q, :first_name_or_last_name_or_email_cont))
     teams = query.result(distinct: true)
     invitations = invitations_query.result(distinct: true)
-    render :index, locals: TeamPresenter.new(teams, invitations, current_user, current_company).index_data, status: :ok
+
+    presenter_data = TeamPresenter.new(teams, invitations, current_user, current_company).index_data
+    team_data = presenter_data[:teams]
+    invitation_data = presenter_data[:invitations]
+
+    combined_data = team_data + invitation_data
+    pagy_combined, combined_details = pagy_array(combined_data, items: params[:items] || 10)
+
+    render :index, locals: {
+      combined_details:,
+      pagination_details_combined: pagy_metadata(pagy_combined)
+    }, status: :ok
   end
 
   def update
