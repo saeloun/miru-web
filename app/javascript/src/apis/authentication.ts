@@ -34,6 +34,12 @@ const googleAuth = () =>
     })
     .get("users/auth/google_oauth2");
 
+const hubspot = async (portalId, formId, payload) =>
+  await axios.post(
+    `https://api.hsforms.com/submissions/v3/integration/submit/${portalId}/${formId}`,
+    payload
+  );
+
 const authenticationApi = {
   signin,
   signup,
@@ -41,6 +47,7 @@ const authenticationApi = {
   resetPassword,
   googleAuth,
   sendEmailConfirmation,
+  hubspot,
 };
 
 export default authenticationApi;

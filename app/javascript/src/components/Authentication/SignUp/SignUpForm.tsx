@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useRef, useState } from "react";
 
 import { Formik, Form, FormikProps } from "formik";
@@ -38,6 +39,28 @@ const SignUpForm = () => {
     try {
       const { first_name, last_name, email, password, confirm_password } =
         values;
+
+      const portalId = "3266596a-b69b-40a2-9cd4-58ef522a270a";
+      const formId = "23903467";
+
+      const result = await authenticationApi.hubspot(portalId, formId, {
+        portalId,
+        formId,
+        fields: [
+          {
+            name: "email",
+            value: email,
+          },
+          {
+            name: "firstname",
+            value: first_name,
+          },
+          {
+            name: "lastname",
+            value: last_name,
+          },
+        ],
+      });
 
       const payload = {
         first_name,
