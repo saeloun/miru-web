@@ -43,6 +43,7 @@ const PaymentEntryForm = ({
   const [showSelectMenu, setShowSelectMenu] = useState(false);
   const [showTransactionTypes, setShowTransactionTypes] =
     useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const wrapperSelectRef = useRef(null);
   const wrapperCalendartRef = useRef(null);
@@ -106,6 +107,7 @@ const PaymentEntryForm = ({
       });
       await payment.create(sanitized);
       Toastr.success("Manual entry added successfully.");
+      setIsLoading(false);
       fetchPaymentList();
       fetchInvoiceList();
       setInvoice("");
@@ -119,6 +121,7 @@ const PaymentEntryForm = ({
       }
     } catch {
       Toastr.error("Failed to add manual entry");
+      setIsLoading(false);
     }
   };
 
@@ -342,6 +345,7 @@ const PaymentEntryForm = ({
       </div>
       <div className="actions mx-auto mt-4 mb-4 w-full">
         <button
+          disabled={isLoading}
           type="submit"
           className={
             isAddPaymentBtnActive(
@@ -349,11 +353,12 @@ const PaymentEntryForm = ({
               transactionDate,
               transactionType,
               amount
-            )
-              ? "focus:outline-none flex h-10 w-full cursor-pointer justify-center rounded border border-transparent bg-miru-han-purple-1000 py-1 px-4 font-sans text-base font-medium uppercase tracking-widest text-miru-white-1000 shadow-sm hover:bg-miru-han-purple-600"
-              : "focus:outline-none flex h-10 w-full cursor-pointer justify-center rounded border border-transparent bg-miru-gray-1000 py-1 px-4 font-sans text-base font-medium uppercase tracking-widest text-miru-white-1000 shadow-sm"
+            ) && !isLoading
+              ? "focus:outline-none flex h-10 w-full cursor-pointer items-center justify-center rounded border border-transparent bg-miru-han-purple-1000 py-1 px-4 font-sans text-base font-medium uppercase tracking-widest text-miru-white-1000 shadow-sm hover:bg-miru-han-purple-600"
+              : "focus:outline-none flex h-10 w-full cursor-pointer items-center justify-center rounded border border-transparent bg-miru-gray-1000 py-1 px-4 font-sans text-base font-medium uppercase tracking-widest text-miru-white-1000 shadow-sm"
           }
           onClick={() => {
+            setIsLoading(true);
             if (
               isAddPaymentBtnActive(
                 invoice,
