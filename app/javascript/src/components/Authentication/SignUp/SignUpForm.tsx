@@ -40,8 +40,8 @@ const SignUpForm = () => {
       const { first_name, last_name, email, password, confirm_password } =
         values;
 
-      const portalId = "3266596a-b69b-40a2-9cd4-58ef522a270a";
-      const formId = "23903467";
+      const portalId = 23903467;
+      const formId = "3266596a-b69b-40a2-9cd4-58ef522a270a";
 
       const result = await authenticationApi.hubspot(portalId, formId, {
         portalId,
