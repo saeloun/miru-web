@@ -2,11 +2,12 @@
 
 module Clients
   class IndexService < ApplicationService
-    attr_reader :params, :current_company
+    attr_reader :current_company, :query, :time_frame
 
-    def initialize(current_company, params)
+    def initialize(current_company, query, time_frame)
       @current_company = current_company
-      @params = params
+      @query = query
+      @time_frame = time_frame
     end
 
     def process
@@ -21,7 +22,7 @@ module Clients
     private
 
       def clients_list
-        if params[:query].present?
+        if query.present?
           search_clients(search_term, where_clause)
         else
           current_company.clients
@@ -29,7 +30,7 @@ module Clients
       end
 
       def search_term
-        @_search_term = params[:query].presence || "*"
+        @_search_term = query.presence || "*"
       end
 
       def where_clause
@@ -47,7 +48,7 @@ module Clients
 
       def client_details
         @_client_details ||= clients_list.where(discarded_at: nil).map { |client|
-                                client.client_detail(params[:time_frame])
+                                client.client_detail(time_frame)
                               }
       end
 
