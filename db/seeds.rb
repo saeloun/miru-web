@@ -75,6 +75,8 @@ microsoft_client.addresses.create!(
   country: "US"
 )
 
+Client.reindex
+
 project_office_com = microsoft_client.projects.create!(name: "Office.com", description: "Office 365", billable: true)
 project_azure_com = microsoft_client.projects.create!(name: "Azure.com", description: "Cloud Computing", billable: true)
 
