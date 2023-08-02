@@ -39,8 +39,8 @@ const SignUpForm = () => {
       const { first_name, last_name, email, password, confirm_password } =
         values;
 
-      const portalId = 23903467;
-      const formId = "3266596a-b69b-40a2-9cd4-58ef522a270a";
+      const portalId = process.env.HUBSPOT_SIGNUP_FORM_PORTAL_ID;
+      const formId = process.env.HUBSPOT_SIGNUP_FORM_FORMID;
 
       const payload = {
         first_name,
