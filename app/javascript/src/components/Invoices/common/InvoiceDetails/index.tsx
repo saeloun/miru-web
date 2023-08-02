@@ -56,6 +56,7 @@ const InvoiceDetails = ({
         clientVisible={clientVisible}
         optionSelected={optionSelected}
         selectedClient={selectedClient}
+        setInvoiceNumber={setInvoiceNumber}
         setSelectedClient={setSelectedClient}
       />
       <div className="mr-2 flex w-2/12 flex-col justify-between">

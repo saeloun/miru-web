@@ -14,6 +14,7 @@ const ClientSelection = ({
   setSelectedClient,
   optionSelected,
   clientVisible,
+  setInvoiceNumber,
 }) => {
   const [isOptionSelected, setIsOptionSelected] =
     useState<boolean>(optionSelected);
@@ -43,10 +44,31 @@ const ClientSelection = ({
     handleAlreadySelectedClient();
   }, [selectedClient]);
 
+  const autoGenerateInvoiceNumber = client => {
+    const { previous_invoice_number } = client;
+
+    //extracting last character of invoice
+    const lastChar = parseInt(
+      previous_invoice_number.charAt(previous_invoice_number.length - 1)
+    );
+
+    //extracting remaining invoice number
+    const remaining = previous_invoice_number.slice(
+      0,
+      previous_invoice_number.length - 1
+    );
+
+    //incrementing invoice number
+    if (!isNaN(lastChar)) {
+      setInvoiceNumber(remaining.concat(lastChar + 1));
+    }
+  };
+
   const handleClientChange = selection => {
     setSelectedClient(selection);
     setIsClientVisible(false);
     setIsOptionSelected(true);
+    autoGenerateInvoiceNumber(selection);
   };
 
   const handleAlreadySelectedClient = () => {
@@ -78,7 +100,8 @@ const ClientSelection = ({
           label="Billed to"
           wrapperClassName="h-full cursor-pointer"
           value={
-            isOptionSelected && (
+            isOptionSelected &&
+            selectedClient && (
               <div className="h-full overflow-y-scroll">
                 <p className="text-base font-bold text-miru-dark-purple-1000">
                   {selectedClient.label}
