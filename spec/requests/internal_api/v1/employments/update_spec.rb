@@ -25,7 +25,7 @@ RSpec.describe "InternalApi::V1::Employments#update", type: :request do
           }, headers: auth_headers(user))
       end
 
-      it "updates client" do
+      it "updates employment" do
         employment.reload
         expect(employment.designation).to eq("Software Engineer")
         expect(employment.employment_type).to eq("Consultant")
@@ -52,9 +52,12 @@ RSpec.describe "InternalApi::V1::Employments#update", type: :request do
         }, headers: auth_headers(user))
     end
 
-    it "forbids the user to update the employment details" do
-      expect(response).to have_http_status(:forbidden)
-      expect(json_response["errors"]).to eq("You are not authorized to perform this action.")
+    it "updates employment" do
+      employment.reload
+      expect(employment.designation).to eq("Software Engineer")
+      expect(employment.employment_type).to eq("Consultant")
+      expect(employment.employee_id).to eq("SA123")
+      expect(json_response["notice"]).to match("Employment updated successfully")
     end
   end
 
