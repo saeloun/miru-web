@@ -46,21 +46,26 @@ const ClientSelection = ({
 
   const autoGenerateInvoiceNumber = client => {
     const { previous_invoice_number } = client;
+    if (previous_invoice_number) {
+      //extracting last character of invoice
+      const lastChar = parseInt(
+        previous_invoice_number.charAt(previous_invoice_number.length - 1)
+      );
 
-    //extracting last character of invoice
-    const lastChar = parseInt(
-      previous_invoice_number.charAt(previous_invoice_number.length - 1)
-    );
+      //extracting remaining invoice number
+      const remaining = previous_invoice_number.slice(
+        0,
+        previous_invoice_number.length - 1
+      );
 
-    //extracting remaining invoice number
-    const remaining = previous_invoice_number.slice(
-      0,
-      previous_invoice_number.length - 1
-    );
-
-    //incrementing invoice number
-    if (!isNaN(lastChar)) {
-      setInvoiceNumber(remaining.concat(lastChar + 1));
+      //incrementing invoice number
+      if (!isNaN(lastChar)) {
+        setInvoiceNumber(remaining.concat(lastChar + 1));
+      } else {
+        setInvoiceNumber("");
+      }
+    } else {
+      setInvoiceNumber("");
     }
   };
 
@@ -106,16 +111,20 @@ const ClientSelection = ({
                 <p className="text-base font-bold text-miru-dark-purple-1000">
                   {selectedClient.label}
                 </p>
-                <p className="w-52 text-sm font-normal text-miru-dark-purple-600">
-                  {`${address_line_1}${
-                    address_line_2 ? `, ${address_line_2}` : ""
-                  }
+                {selectedClient?.address ? (
+                  <p className="w-52 text-sm font-normal text-miru-dark-purple-600">
+                    {`${address_line_1}${
+                      address_line_2 ? `, ${address_line_2}` : ""
+                    }
                 ${
                   address_line_2 ? "," : ""
                 }\n ${city}, ${state}, ${country},\n ${pin}`}
-                  <br />
-                  {selectedClient.phone}
-                </p>
+                    <br />
+                    {selectedClient.phone}
+                  </p>
+                ) : (
+                  "-"
+                )}
               </div>
             )
           }
