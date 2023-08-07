@@ -26,6 +26,9 @@
         .mobile-invoice {
           display: block;
         }
+        .invoice-columns {
+          flex-basis: calc(45%);
+        }
       }
     </style>
   </head>
@@ -194,25 +197,25 @@
         </p>
         <% @invoices.map do |invoice| %>
           <div
-            style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; border-top-width: 0px; border-left-width: 0px; border-right-width: 0px; border-bottom-width: 1px; border-style: solid; border-color: #ebeff2; padding: 16px 6px"
+            style="display: flex; flex-wrap: wrap; gap: 1rem; border-top-width: 0px; border-left-width: 0px; border-right-width: 0px; border-bottom-width: 1px; border-style: solid; border-color: #ebeff2; padding: 16px 6px"
           >
-            <div>
+            <div class="invoice-columns">
               <span>INVOICE NO.</span>
               <div><%= invoice.invoice_number %></div>
             </div>
-            <div>
+            <div class="invoice-columns">
               <span>ISSUED DATE</span>
               <div><%= invoice.issue_date %></div>
             </div>
-            <div>
+            <div class="invoice-columns">
               <span>DUE DATE</span>
               <div><%= invoice.due_date %></div>
             </div>
-            <div>
+            <div class="invoice-columns">
               <span>AMOUNT</span>
               <div><%= FormatAmountService.new(@company.base_currency, invoice.amount).process %></div>
             </div>
-            <div>
+            <div class="invoice-columns">
               <span>STATUS</span>
               <div>
                 <span
@@ -222,7 +225,7 @@
                 </span>
               </div>
             </div>
-            <div>
+            <div class="invoice-columns">
               <span></span>
               <div>
                 <a
