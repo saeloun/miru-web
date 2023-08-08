@@ -240,13 +240,13 @@ const EmploymentDetails = () => {
   const updateEmploymentDetails = async updatedPreviousEmployments => {
     try {
       await schema.validate(employmentDetails, { abortEarly: false });
-      await teamsApi.updateEmploymentDetails(
-        memberId,
-        employmentDetails.current_employment
-      );
+      const payload = {
+        ...updatedPreviousEmployments,
+        current_employment: employmentDetails.current_employment,
+      };
 
       await teamsApi.updatePreviousEmployments(memberId, {
-        employments: updatedPreviousEmployments,
+        employments: payload,
       });
       setIsLoading(false);
       navigate(`/team/${memberId}/employment`, { replace: true });
