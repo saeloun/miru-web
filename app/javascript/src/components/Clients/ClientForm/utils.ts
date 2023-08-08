@@ -7,15 +7,11 @@ export const formatFormData = (
   clientLogoUrl
 ) => {
   formData.append("client[name]", values.name);
-  formData.append("client[email]", values.email);
+  formData.append("client[emails]", values.emails);
   formData.append("client[phone]", values.phone);
 
   if (!isNewForm) {
     formData.append("client[addresses_attributes[0][id]]", client.address.id);
-  }
-
-  if (!isNewForm && values.email !== client.email) {
-    formData.append("client[prev_email]", client.email);
   }
 
   formData.append(
@@ -58,7 +54,7 @@ export const formatFormData = (
 export const disableBtn = (values, errors, submitting) => {
   if (
     errors.name ||
-    errors.email ||
+    errors.emails ||
     errors.phone ||
     errors.address1 ||
     errors.country ||
@@ -72,7 +68,7 @@ export const disableBtn = (values, errors, submitting) => {
 
   if (
     values.name &&
-    values.email &&
+    values.emails &&
     values.phone &&
     values.address1 &&
     values.country &&

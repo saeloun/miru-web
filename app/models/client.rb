@@ -43,7 +43,7 @@ class Client < ApplicationRecord
   validates :name, presence: true, length: { maximum: 30 },
     uniqueness: { scope: :company_id, case_sensitive: false, message: "The client %{value} already exists" }
   validates :phone, length: { maximum: 15 }
-  validates :email, presence: true, uniqueness: { scope: :company_id }, format: { with: Devise.email_regexp }
+  # validates :email, presence: true, uniqueness: { scope: :company_id }, format: { with: Devise.email_regexp }
 
   after_discard :discard_projects
   after_commit :reindex_projects

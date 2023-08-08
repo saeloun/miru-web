@@ -9,12 +9,9 @@ class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationControlle
 
   def create
     authorize Client
-    ActiveRecord::Base.transaction do
-      client = Client.create!(client_params)
-      user = User.find_by!(email: params[:client][:email])
-      client_member = current_company.client_members.create!(client:, user:)
-      render :create, locals: { client:, address: client.current_address }
-    end
+    client = Client.create!(client_params)
+    invitation = Invitations::ClientInvitationService.new(params, current_company, current_user, client).process
+    render :create, locals: { client:, address: client.current_address }
   end
 
   def show
