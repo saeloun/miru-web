@@ -244,6 +244,9 @@ GEM
     hash_dot (2.5.0)
     hashdiff (1.0.1)
     hashie (5.0.0)
+    httparty (0.21.0)
+      mini_mime (>= 1.0.0)
+      multi_xml (>= 0.5.2)
     i18n (1.12.0)
       concurrent-ruby (~> 1.0)
     image_processing (1.12.2)
@@ -606,6 +609,7 @@ DEPENDENCIES
   foreman
   grover
   hash_dot
+  httparty
   image_processing (>= 1.2)
   jbuilder (~> 2.11)
   letter_opener
