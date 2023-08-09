@@ -45,17 +45,17 @@ const ClientSelection = ({
   }, [selectedClient]);
 
   const autoGenerateInvoiceNumber = client => {
-    const { previous_invoice_number } = client;
-    if (previous_invoice_number) {
+    const { previousInvoiceNumber } = client;
+    if (previousInvoiceNumber) {
       //extracting last character of invoice
       const lastChar = parseInt(
-        previous_invoice_number.charAt(previous_invoice_number.length - 1)
+        previousInvoiceNumber.charAt(previousInvoiceNumber.length - 1)
       );
 
       //extracting remaining invoice number
-      const remaining = previous_invoice_number.slice(
+      const remaining = previousInvoiceNumber.slice(
         0,
-        previous_invoice_number.length - 1
+        previousInvoiceNumber.length - 1
       );
 
       //incrementing invoice number

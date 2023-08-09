@@ -57,7 +57,7 @@ class Company < ApplicationRecord
     clients.kept.map do |client|
       {
         id: client.id, name: client.name, email: client.email, phone: client.phone, address: client.current_address,
-        previous_invoice_number: client.invoices&.last&.invoice_number || 0
+        previousInvoiceNumber: client.invoices&.last&.invoice_number || 0
       }
     end
   end
