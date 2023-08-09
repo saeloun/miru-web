@@ -32,7 +32,7 @@
       }
     </style>
   </head>
-  <body style="color:#1D1A31">
+  <body style="color:#1D1A31;">
     <div class="desktop-invoice">
       <div id="header" style="padding:0 40px;">
         <div
@@ -139,7 +139,7 @@
             </tr>
           </table>
           <div>
-            Invoice and accounting software for every business
+            Invoice software for every business
           </div>
         </div>
         <div
@@ -178,7 +178,7 @@
         </div>
       </div>
     </div>
-    <div class="mobile-invoice">
+    <div class="mobile-invoice" style="font-family: Manrope;">
       <div id="mobile-header">
         <div id="mobile-header" style="padding:0 16px;">
           <div
@@ -200,23 +200,23 @@
             style="display: flex; flex-wrap: wrap; gap: 1rem; border-top-width: 0px; border-left-width: 0px; border-right-width: 0px; border-bottom-width: 1px; border-style: solid; border-color: #ebeff2; padding: 16px 6px"
           >
             <div class="invoice-columns">
-              <span>INVOICE NO.</span>
-              <div><%= invoice.invoice_number %></div>
+              <span style="font-size: 12px; font-weight: 500; letter-spacing: 0.125em; color: black; padding-bottom:10px;">INVOICE NO.</span>
+              <div style="font-size: 16px; font-weight: 500; color: black;"><%= invoice.invoice_number %></div>
             </div>
             <div class="invoice-columns">
-              <span>ISSUED DATE</span>
-              <div><%= invoice.issue_date %></div>
+              <span style="font-size: 12px; font-weight: 500; letter-spacing: 0.125em; color: black; padding-bottom:10px;">ISSUED DATE</span>
+              <div style="font-size: 16px; font-weight: 500; color: black;"><%= invoice.issue_date %></div>
             </div>
             <div class="invoice-columns">
-              <span>DUE DATE</span>
-              <div><%= invoice.due_date %></div>
+              <span style="font-size: 12px; font-weight: 500; letter-spacing: 0.125em; color: black; padding-bottom:10px;">DUE DATE</span>
+              <div style="font-size: 16px; font-weight: 500; color: black;"><%= invoice.due_date %></div>
             </div>
             <div class="invoice-columns">
-              <span>AMOUNT</span>
-              <div><%= FormatAmountService.new(@company.base_currency, invoice.amount).process %></div>
+              <span style="font-size: 12px; font-weight: 500; letter-spacing: 0.125em; color: black; padding-bottom:10px;">AMOUNT</span>
+              <div style="font-size: 16px; font-weight: 500; color: black;"><%= FormatAmountService.new(@company.base_currency, invoice.amount).process %></div>
             </div>
             <div class="invoice-columns">
-              <span>STATUS</span>
+              <span style="font-size: 12px; font-weight: 500; letter-spacing: 0.125em; color: black; padding-bottom:10px;">STATUS</span>
               <div>
                 <span
                   style="display: inline-flex; align-items: center; border-radius: 9999px; padding: 2px 10px; font-size: .75rem; font-weight: 600; line-height: 16px; letter-spacing: 0.125em; <%= invoice.status == 'overdue' ? 'background-color: #efa9a9; color: #561013;' : invoice.status == 'sent' ? 'background-color: #a9efc5; color: #10562c;' : 'background-color: #a9deef; color: #104556;' %> text-transform: uppercase;"
@@ -255,7 +255,7 @@
             </tr>
           </table>
           <p style="font-family: 'Manrope'; font-style: normal; font-size:14px; font-weight:400; line-height: 19px; text-align: center; color:#A5A3AD; width: 80%; margin: 8px auto 0px auto;">
-            Invoice and accounting software for every business
+            Invoice software for every business
           </p>
         </div>
         <div
