@@ -10,8 +10,20 @@ class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationControlle
   def create
     authorize Client
     client = Client.create!(client_params)
-    invitation = Invitations::ClientInvitationService.new(params, current_company, current_user, client).process
     render :create, locals: { client:, address: client.current_address }
+  end
+
+  def add_client_contact
+    authorize client
+    invitation_service = Invitations::ClientInvitationService.new(
+      params,
+      current_company,
+      current_user,
+      client
+    )
+
+    invitations = invitation_service.process
+    render json: { notice: "Invitation sent successfully." }, status: :ok
   end
 
   def show
@@ -22,7 +34,8 @@ class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationControlle
              project_details: client.project_details(params[:time_frame]),
              total_minutes: client.total_hours_logged(params[:time_frame]),
              overdue_outstanding_amount: client.client_overdue_and_outstanding_calculation,
-             invoices: client.invoices
+             invoices: client.invoices,
+             client_members: client.client_members.includes(:user).pluck(:email)
            },
       status: :ok
   end

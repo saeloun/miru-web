@@ -17,6 +17,7 @@ import { MobileMoreOptions, Modal } from "StyledComponents";
 
 import { useUserContext } from "context/UserContext";
 
+import AddContacts from "../Modals/AddContacts";
 import DeleteClient from "../Modals/DeleteClient";
 import EditClient from "../Modals/EditClient";
 
@@ -25,6 +26,7 @@ const Header = ({
   setShowProjectModal,
   fetchDetails,
   setSendPaymentReminder,
+  contactDetails,
 }) => {
   const [isHeaderMenuVisible, setIsHeaderMenuVisible] =
     useState<boolean>(false);
@@ -32,6 +34,7 @@ const Header = ({
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
   const [showEditDialog, setShowEditDialog] = useState<boolean>(false);
   const [showMobileModal, setShowMobileModal] = useState<boolean>(false);
+  const [showContactModal, setShowContactModal] = useState<boolean>(false);
 
   const navigate = useNavigate();
   const menuRef = useRef();
@@ -116,6 +119,17 @@ const Header = ({
                   <span className="ml-3">Payment Reminder</span>
                 </button>
               </li>
+              <li
+                onClick={() => {
+                  setShowContactModal(true);
+                  setIsHeaderMenuVisible(false);
+                }}
+              >
+                <button className="menuButton__list-item">
+                  <ReminderIcon id="reminderIcon" size={16} />
+                  <span className="ml-3">Add Contacts</span>
+                </button>
+              </li>
               <li onClick={handleDelete}>
                 <button className="menuButton__list-item text-miru-red-400">
                   <DeleteIcon color="#E04646" size={16} weight="bold" />
@@ -133,7 +147,9 @@ const Header = ({
             <div className="mt-4 text-base">
               <p className="font-semibold">Email ID(s)</p>
               <p className="mt-1 text-miru-dark-purple-400">
-                {clientDetails.email}
+                {contactDetails.map((email, index) => (
+                  <div key={index}>{email}</div>
+                ))}
               </p>
             </div>
             <div className="mt-4 text-base">
@@ -167,6 +183,13 @@ const Header = ({
           fetchDetails={fetchDetails}
           setShowEditDialog={setShowEditDialog}
           showEditDialog={showEditDialog}
+        />
+      )}
+      {showContactModal && (
+        <AddContacts
+          client={clientDetails}
+          setShowContactModal={setShowContactModal}
+          showContactModal={showContactModal}
         />
       )}
       {showMobileModal && (

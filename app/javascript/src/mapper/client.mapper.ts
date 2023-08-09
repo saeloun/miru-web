@@ -66,6 +66,7 @@ const unmapClientDetails = input => {
     overdueOutstandingAmount: data.overdue_outstanding_amount,
     totalMinutes: data.total_minutes,
     projectDetails: mapProjectDetails(data.project_details),
+    contactDetails: data.client_members,
   };
 };
 

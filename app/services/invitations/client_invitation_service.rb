@@ -13,31 +13,24 @@ module Invitations
     end
 
     def process
-      recipient_emails = extract_recipient_emails
-      invitations = create_invitations_for_emails(recipient_emails)
+      invitations = create_invitations_for_email
       invitations
     end
 
     private
 
-      def extract_recipient_emails
-        params.dig(:client, :emails).split(",").map(&:strip)
-      end
-
-      def create_invitations_for_emails(emails)
-        emails.map do |email|
-          invitation = Invitation.new(
-            first_name: params.dig(:client, :name),
-            last_name: params.dig(:client, :name),
-            recipient_email: email,
-            role: "client"
-          )
-          set_company(invitation)
-          set_sender(invitation)
-          set_client(invitation)
-          invitation.save!
-          invitation
-        end
+      def create_invitations_for_email
+        invitation = Invitation.new(
+          first_name: params.dig(:firstName),
+          last_name: params.dig(:lastName),
+          recipient_email: params.dig(:email),
+          role: "client"
+        )
+        set_company(invitation)
+        set_sender(invitation)
+        set_client(invitation)
+        invitation.save!
+        invitation
       end
 
       def set_company(invitation)

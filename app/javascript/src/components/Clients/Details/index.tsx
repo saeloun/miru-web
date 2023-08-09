@@ -31,13 +31,13 @@ const ClientDetails = ({ isAdminUser }) => {
   const [projectDetails, setProjectDetails] = useState<any>();
   const [totalMinutes, setTotalMinutes] = useState(null);
   const [clientDetails, setClientDetails] = useState<any>({});
+  const [contactDetails, setContactDetails] = useState<any>({});
   const [editProjectData, setEditProjectData] = useState<any>({});
   const [showProjectModal, setShowProjectModal] = useState<boolean>(false);
   const [loading, setLoading] = useState(true);
   const [overdueOutstandingAmount, setOverdueOutstandingAmount] =
     useState<any>(null);
   const [clientInvoices, setClientInvoices] = useState<any[]>([]);
-
   const [sendPaymentReminder, setSendPaymentReminder] =
     useState<boolean>(false);
 
@@ -75,6 +75,7 @@ const ClientDetails = ({ isAdminUser }) => {
     try {
       const res = await clientApi.show(params.clientId, "?time_frame=week");
       const sanitized = unmapClientDetails(res);
+      setContactDetails(sanitized.contactDetails);
       setClientDetails(sanitized.clientDetails);
       setProjectDetails(sanitized.projectDetails);
       setTotalMinutes(sanitized.totalMinutes);
@@ -132,6 +133,7 @@ const ClientDetails = ({ isAdminUser }) => {
     <>
       <Header
         clientDetails={clientDetails}
+        contactDetails={contactDetails}
         fetchDetails={fetchProjectList}
         setSendPaymentReminder={setSendPaymentReminder}
         setShowProjectModal={setShowProjectModal}

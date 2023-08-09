@@ -50,6 +50,10 @@ class ClientPolicy < ApplicationPolicy
     user_admin_role? || user_owner_role?
   end
 
+  def add_client_contact?
+    user_admin_role? || user_owner_role?
+  end
+
   def permitted_attributes
     [
       :name,
