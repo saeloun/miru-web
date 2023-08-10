@@ -36,6 +36,14 @@ const Header = ({
   const [showMobileModal, setShowMobileModal] = useState<boolean>(false);
   const [showContactModal, setShowContactModal] = useState<boolean>(false);
 
+  const acceptedEmails = contactDetails.filter(
+    contact => contact.accepted_at !== null
+  );
+
+  const pendingInvitationEmails = contactDetails.filter(
+    contact => contact.accepted_at === null
+  );
+  const sortedEmails = [...acceptedEmails, ...pendingInvitationEmails];
   const navigate = useNavigate();
   const menuRef = useRef();
   const { isDesktop } = useUserContext();
@@ -147,8 +155,8 @@ const Header = ({
             <div className="mt-4 text-base">
               <p className="font-semibold">Email ID(s)</p>
               <p className="mt-1 text-miru-dark-purple-400">
-                {contactDetails.map((contact, index) => (
-                  <p key={index}>
+                {sortedEmails.map((contact, index) => (
+                  <p className="mb-2" key={index}>
                     {contact.accepted_at !== null ? (
                       contact.recipient_email
                     ) : (

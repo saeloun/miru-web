@@ -34,6 +34,7 @@ const AddContacts = ({ client, setShowContactModal, showContactModal }) => {
     const { firstName, lastName, email } = values;
     const payload = { firstName, lastName, email };
     await clientApi.addClientContact(client.id, payload);
+    setShowContactModal(false);
   };
 
   return (
