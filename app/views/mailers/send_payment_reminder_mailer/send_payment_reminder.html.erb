@@ -178,7 +178,7 @@
         </div>
       </div>
     </div>
-    <div class="mobile-invoice" style="font-family: Manrope;">
+    <div class="mobile-invoice">
       <div id="mobile-header">
         <div id="mobile-header" style="padding:0 16px;">
           <div
@@ -187,12 +187,12 @@
             <div style="padding: 10px; display: inline-block; text-align: center">
               <%= image_tag @company_logo, height: 80 ,width: 80 %>
             </div>
-            <p  style="font-family: 'Manrope';font-style: normal;font-size: 16px;line-height: 22px;text-align: center;color: #1D1A31; margin: 0px; padding: 0px">
+            <p  style="font-style: normal;font-size: 16px;line-height: 22px;text-align: center;color: #1D1A31; margin: 0px; padding: 0px">
               <%= sanitize @message %>
             </p>
           </div>
         </div>
-        <p style="text-align: center; font-family: 'Manrope'; font-weight:700; font-size: 24px; line-height:33px; color: #1D1A31;text-transform: capitalize; margin: 40px auto; padding: 0;">
+        <p style="text-align: center; font-weight:700; font-size: 24px; line-height:33px; color: #1D1A31;text-transform: capitalize; margin: 40px auto; padding: 0;">
           Payment Reminder
         </p>
         <% @invoices.map do |invoice| %>
