@@ -36,6 +36,7 @@ class Client < ApplicationRecord
   has_many :invoices, dependent: :destroy
   has_many :addresses, as: :addressable, dependent: :destroy
   has_many :client_members, dependent: :destroy
+  has_many :invitations
   has_one_attached :logo
   belongs_to :company
 

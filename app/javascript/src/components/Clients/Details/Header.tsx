@@ -13,7 +13,7 @@ import {
   ReminderIcon,
 } from "miruIcons";
 import { useNavigate } from "react-router-dom";
-import { MobileMoreOptions, Modal } from "StyledComponents";
+import { Badge, MobileMoreOptions, Modal } from "StyledComponents";
 
 import { useUserContext } from "context/UserContext";
 
@@ -147,8 +147,17 @@ const Header = ({
             <div className="mt-4 text-base">
               <p className="font-semibold">Email ID(s)</p>
               <p className="mt-1 text-miru-dark-purple-400">
-                {contactDetails.map((email, index) => (
-                  <div key={index}>{email}</div>
+                {contactDetails.map((contact, index) => (
+                  <p key={index}>
+                    {contact.accepted_at !== null ? (
+                      contact.recipient_email
+                    ) : (
+                      <div className="flex justify-between">
+                        {contact.recipient_email}
+                        <Badge text="Pending Invitation" />
+                      </div>
+                    )}
+                  </p>
                 ))}
               </p>
             </div>

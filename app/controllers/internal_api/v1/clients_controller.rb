@@ -35,7 +35,7 @@ class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationControlle
              total_minutes: client.total_hours_logged(params[:time_frame]),
              overdue_outstanding_amount: client.client_overdue_and_outstanding_calculation,
              invoices: client.invoices,
-             client_members: client.client_members.includes(:user).pluck(:email)
+             client_members: client.invitations
            },
       status: :ok
   end
