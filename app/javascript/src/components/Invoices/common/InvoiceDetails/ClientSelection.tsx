@@ -58,7 +58,7 @@ const ClientSelection = ({
   const autoGenerateInvoiceNumber = client => {
     const { previousInvoiceNumber } = client;
     // on edit invoice page: invoice number should not be incremented for same client
-    if (prePopulatedClient.value == client.value) {
+    if (prePopulatedClient?.value == client.value) {
       setInvoiceNumber(prePopulatedInvoiceNumber);
     } else {
       if (previousInvoiceNumber) {
