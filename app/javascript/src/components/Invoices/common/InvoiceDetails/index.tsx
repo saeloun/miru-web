@@ -59,6 +59,7 @@ const InvoiceDetails = ({
       <ClientSelection
         clientList={clientList}
         clientVisible={clientVisible}
+        invoiceNumber={invoiceNumber}
         optionSelected={optionSelected}
         selectedClient={selectedClient}
         setInvoiceNumber={setInvoiceNumber}

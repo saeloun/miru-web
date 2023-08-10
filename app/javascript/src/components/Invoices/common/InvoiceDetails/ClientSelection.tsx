@@ -15,9 +15,15 @@ const ClientSelection = ({
   optionSelected,
   clientVisible,
   setInvoiceNumber,
+  invoiceNumber,
 }) => {
   const [isOptionSelected, setIsOptionSelected] =
     useState<boolean>(optionSelected);
+
+  //storing prepopulated values before editing invoice
+  const [prePopulatedClient, setPrePopulatedClient] = useState<any>();
+  const [prePopulatedInvoiceNumber, setPrePopulatedInvoiceNumber] =
+    useState<any>();
 
   const [isClientVisible, setIsClientVisible] =
     useState<boolean>(clientVisible);
@@ -38,6 +44,11 @@ const ClientSelection = ({
       );
       selection[0] && handleClientChange(selection[0]);
     }
+
+    if (selectedClient) {
+      setPrePopulatedClient(selectedClient);
+      setPrePopulatedInvoiceNumber(invoiceNumber);
+    }
   }, []);
 
   useEffect(() => {
@@ -46,26 +57,31 @@ const ClientSelection = ({
 
   const autoGenerateInvoiceNumber = client => {
     const { previousInvoiceNumber } = client;
-    if (previousInvoiceNumber) {
-      //extracting last character of invoice
-      const lastChar = parseInt(
-        previousInvoiceNumber.charAt(previousInvoiceNumber.length - 1)
-      );
+    // on edit invoice page: invoice number should not be incremented for same client
+    if (prePopulatedClient.value == client.value) {
+      setInvoiceNumber(prePopulatedInvoiceNumber);
+    } else {
+      if (previousInvoiceNumber) {
+        //extracting last character of invoice
+        const lastChar = parseInt(
+          previousInvoiceNumber.charAt(previousInvoiceNumber.length - 1)
+        );
 
-      //extracting remaining invoice number
-      const remaining = previousInvoiceNumber.slice(
-        0,
-        previousInvoiceNumber.length - 1
-      );
+        //extracting remaining invoice number
+        const remaining = previousInvoiceNumber.slice(
+          0,
+          previousInvoiceNumber.length - 1
+        );
 
-      //incrementing invoice number
-      if (!isNaN(lastChar)) {
-        setInvoiceNumber(remaining.concat(lastChar + 1));
+        //incrementing invoice number
+        if (!isNaN(lastChar)) {
+          setInvoiceNumber(remaining.concat(lastChar + 1));
+        } else {
+          setInvoiceNumber("");
+        }
       } else {
         setInvoiceNumber("");
       }
-    } else {
-      setInvoiceNumber("");
     }
   };
 
