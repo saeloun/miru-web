@@ -7,7 +7,6 @@ export const formatFormData = (
   clientLogoUrl
 ) => {
   formData.append("client[name]", values.name);
-  formData.append("client[emails]", values.emails);
   formData.append("client[phone]", values.phone);
 
   if (!isNewForm) {
@@ -54,7 +53,6 @@ export const formatFormData = (
 export const disableBtn = (values, errors, submitting) => {
   if (
     errors.name ||
-    errors.emails ||
     errors.phone ||
     errors.address1 ||
     errors.country ||
@@ -68,7 +66,6 @@ export const disableBtn = (values, errors, submitting) => {
 
   if (
     values.name &&
-    values.emails &&
     values.phone &&
     values.address1 &&
     values.country &&
