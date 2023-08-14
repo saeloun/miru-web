@@ -236,13 +236,13 @@ const EmploymentDetailsEdit = () => {
   const updateEmploymentDetails = async updatedPreviousEmployments => {
     try {
       await schema.validate(employmentDetails, { abortEarly: false });
-      await teamsApi.updateEmploymentDetails(
-        user.id,
-        employmentDetails.current_employment
-      );
+      const payload = {
+        ...updatedPreviousEmployments,
+        current_employment: employmentDetails.current_employment,
+      };
 
       await teamsApi.updatePreviousEmployments(user.id, {
-        employments: updatedPreviousEmployments,
+        employments: payload,
       });
       setIsLoading(false);
       navigate(`/profile/employment-details`, { replace: true });
