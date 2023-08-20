@@ -1,5 +1,0 @@
-# Used by the 'Add to Buildkite' button in the readme
-name: "Miru Web"
-steps:
-  - label: ":pipeline:"
-    command: "buildkite-agent pipeline upload"
