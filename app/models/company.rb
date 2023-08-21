@@ -55,7 +55,10 @@ class Company < ApplicationRecord
 
   def client_list
     clients.kept.map do |client|
-      { id: client.id, name: client.name, email: client.email, phone: client.phone, address: client.current_address }
+      {
+        id: client.id, name: client.name, email: client.email, phone: client.phone, address: client.current_address,
+        client_members: client.client_members.joins(:user).pluck("users.email")
+      }
     end
   end
 

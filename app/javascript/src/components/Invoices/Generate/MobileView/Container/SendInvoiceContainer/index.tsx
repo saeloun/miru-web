@@ -50,7 +50,7 @@ const SendInvoiceContainer = ({
   const [invoiceEmail, setInvoiceEmail] = useState<InvoiceEmail>({
     subject: emailSubject(invoice, isSendReminder),
     message: emailBody(invoice, isSendReminder),
-    recipients: [invoice.client.email],
+    recipients: [invoice.client.clientMembersEmails],
   });
   // eslint-disable-next-line no-unused-vars
   const [newRecipient, setNewRecipient] = useState<string>("");
