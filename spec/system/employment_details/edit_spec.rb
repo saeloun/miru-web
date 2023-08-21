@@ -20,13 +20,12 @@ RSpec.describe "Edit employment details", type: :system do
   context "when editing employment details" do
     it "edit the current employment details successfully" do
       with_forgery_protection do
-        visit "/teams"
-        find(".hoverIcon", visible: false).hover.click
-        click_on "EMPLOYEMENT DETAILS"
+        visit "/team/#{user.id}/employment"
+        click_link "EMPLOYMENT DETAILS"
         click_button "Edit"
         find(:css, "#employee_id").set("testID")
         find(:css, "#designation").set("test designation")
-        find(:css, "#email").set("test@example.com")
+        expect(find("#email").value).to eq user.email
         select_values_from_select_box
         sleep 3
         click_button "Update"
@@ -36,9 +35,8 @@ RSpec.describe "Edit employment details", type: :system do
 
     it "edit the previous employment details successfully" do
       with_forgery_protection do
-        visit "/teams"
-        find(".hoverIcon", visible: false).hover.click
-        click_on "EMPLOYEMENT DETAILS"
+        visit "/team/#{user.id}/employment"
+        click_link "EMPLOYMENT DETAILS"
         click_button "Edit"
         sleep 10
         click_button "+ Add Past Employment"
