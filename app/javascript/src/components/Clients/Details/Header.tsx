@@ -26,7 +26,6 @@ const Header = ({
   setShowProjectModal,
   fetchDetails,
   setSendPaymentReminder,
-  contactDetails,
 }) => {
   const [isHeaderMenuVisible, setIsHeaderMenuVisible] =
     useState<boolean>(false);
@@ -36,14 +35,11 @@ const Header = ({
   const [showMobileModal, setShowMobileModal] = useState<boolean>(false);
   const [showContactModal, setShowContactModal] = useState<boolean>(false);
 
-  const acceptedEmails = contactDetails.filter(
-    contact => contact.accepted_at !== null
-  );
+  const clientMembersEmail = clientDetails.clientMembersEmails;
 
-  const pendingInvitationEmails = contactDetails.filter(
+  const pendingInvitationEmails = clientDetails.invitations.filter(
     contact => contact.accepted_at === null
   );
-  const sortedEmails = [...acceptedEmails, ...pendingInvitationEmails];
   const navigate = useNavigate();
   const menuRef = useRef();
   const { isDesktop } = useUserContext();
@@ -155,16 +151,17 @@ const Header = ({
             <div className="mt-4 text-base">
               <p className="font-semibold">Email ID(s)</p>
               <p className="mt-1 text-miru-dark-purple-400">
-                {sortedEmails.map((contact, index) => (
+                {clientMembersEmail.map((email, index) => (
                   <p className="mb-2" key={index}>
-                    {contact.accepted_at !== null ? (
-                      contact.recipient_email
-                    ) : (
-                      <div className="flex justify-between">
-                        {contact.recipient_email}
-                        <Badge text="Pending Invitation" />
-                      </div>
-                    )}
+                    {email}
+                  </p>
+                ))}
+                {pendingInvitationEmails.map((contact, index) => (
+                  <p className="mb-2" key={index}>
+                    <div className="flex items-center justify-between">
+                      {contact.recipient_email}
+                      <Badge text="Pending Invitation" />
+                    </div>
                   </p>
                 ))}
               </p>

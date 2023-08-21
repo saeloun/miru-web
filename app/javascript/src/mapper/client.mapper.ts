@@ -62,11 +62,12 @@ const unmapClientDetails = input => {
       phone: data.client_details.phone || "--",
       address: data.client_details.address || "--",
       logo: data.client_details.logo,
+      clientMembersEmails: data.client_members_emails,
+      invitations: data.invitations,
     },
     overdueOutstandingAmount: data.overdue_outstanding_amount,
     totalMinutes: data.total_minutes,
     projectDetails: mapProjectDetails(data.project_details),
-    contactDetails: data.client_members,
   };
 };
 
