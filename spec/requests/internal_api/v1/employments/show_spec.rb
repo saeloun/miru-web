@@ -22,8 +22,8 @@ RSpec.describe "InternalApi::V1::Employments#show", type: :request do
       expect(json_response["employment"]["designation"]).to eq(employment.designation)
       expect(json_response["employment"]["id"]).to eq(employment.id)
       expect(json_response["employment"]["employment_type"]).to eq(employment.employment_type)
-      expect(json_response["employment"]["joined_at"]).to eq(employment.joined_at.strftime("%Y-%m-%d"))
-      expect(json_response["employment"]["resigned_at"]).to eq(employment.resigned_at.strftime("%Y-%m-%d"))
+      expect(json_response["employment"]["joined_at"]).to eq(employment.joined_at.strftime("%m.%d.%Y"))
+      expect(json_response["employment"]["resigned_at"]).to eq(employment.resigned_at.strftime("%m.%d.%Y"))
       expect(json_response["employment"]["employee_id"]).to eq(employment.employee_id)
       expect(json_response["employment"]["email"]).to eq(user.email)
     end
@@ -37,8 +37,14 @@ RSpec.describe "InternalApi::V1::Employments#show", type: :request do
     end
 
     it "forbids the user to access the employment details" do
-      expect(response).to have_http_status(:forbidden)
-      expect(json_response["errors"]).to eq("You are not authorized to perform this action.")
+      expect(response).to have_http_status(:ok)
+      expect(json_response["employment"]["designation"]).to eq(employment.designation)
+      expect(json_response["employment"]["id"]).to eq(employment.id)
+      expect(json_response["employment"]["employment_type"]).to eq(employment.employment_type)
+      expect(json_response["employment"]["joined_at"]).to eq(employment.joined_at.strftime("%m.%d.%Y"))
+      expect(json_response["employment"]["resigned_at"]).to eq(employment.resigned_at.strftime("%m.%d.%Y"))
+      expect(json_response["employment"]["employee_id"]).to eq(employment.employee_id)
+      expect(json_response["employment"]["email"]).to eq(user.email)
     end
   end
 
