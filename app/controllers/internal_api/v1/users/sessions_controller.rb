@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class InternalApi::V1::Users::SessionsController < Devise::SessionsController
+  skip_before_action :verify_authenticity_token, only: :create
+
   respond_to :json
 
   def create
@@ -13,7 +15,21 @@ class InternalApi::V1::Users::SessionsController < Devise::SessionsController
         status: :unprocessable_entity
     else
       sign_in(user)
-      render json: { notice: I18n.t("devise.sessions.signed_in"), user: }, status: :ok
+      app = params[:app] || ""
+
+      if app == "miru_desktop"
+        initial_props = {
+          user:,
+          avatar_url: current_user && current_user.avatar_url,
+          company_role: current_user && current_user.roles.find_by(resource: current_company)&.name,
+          confirmed_user: current_user && current_user.confirmed?,
+          company: current_company,
+          google_oauth_success: @google_oauth_success.present?
+        }
+        render json: { notice: I18n.t("devise.sessions.signed_in"), **initial_props }, status: :ok
+      else
+        render json: { notice: I18n.t("devise.sessions.signed_in"), user: }, status: :ok
+      end
     end
   end
 
