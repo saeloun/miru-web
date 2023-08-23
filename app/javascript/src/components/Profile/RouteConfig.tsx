@@ -9,8 +9,9 @@ import LeaveBalance from "./LeaveBalance";
 import Billing from "./Organization/Billing";
 import OrgDetails from "./Organization/Details";
 import OrgEdit from "./Organization/Edit";
+import Holidays from "./Organization/Holidays";
 import Import from "./Organization/Import";
-import LeavesAndHolidays from "./Organization/LeavesAndHolidays";
+import Leaves from "./Organization/LeavesAndHolidays";
 import PaymentSettings from "./Organization/Payment";
 import UserDetailsEdit from "./UserDetail/Edit";
 import UserDetailsView from "./UserDetail/UserDetailsView";
@@ -42,7 +43,8 @@ const RouteConfig = () => {
           }
         />
         <Route element={<Import />} path="import" />
-        <Route element={<LeavesAndHolidays />} path="leaves" />
+        <Route element={<Leaves />} path="leaves" />
+        <Route element={<Holidays />} path="holidays" />
         <Route element={<LeaveBalance />} path="leave-balance" />
         <Route
           path="organization-details"

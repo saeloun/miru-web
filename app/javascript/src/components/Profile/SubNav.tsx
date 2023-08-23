@@ -16,9 +16,16 @@ const SideNav = ({ isAdmin, firstName, company, lastName }) => {
   };
 
   const [openedSubNav, setOpenedSubNav] = useState({
-    personal: false,
+    personal: true,
     company: false,
   });
+
+  const companySettingsList = [
+    { label: "ORG. SETTINGS", link: "/profile/edit/organization-details" },
+    { label: "PAYMENT SETTINGS", link: "/profile/edit/payment" },
+    { label: "LEAVES", link: "/profile/edit/leaves" },
+    { label: "HOLIDAYS", link: "/profile/edit/holidays" },
+  ];
 
   const getAdminLinks = () => (
     <ul className="list-none min-h-50v text-sm font-medium leading-5 tracking-wider">
@@ -70,24 +77,20 @@ const SideNav = ({ isAdmin, firstName, company, lastName }) => {
       </div>
       {openedSubNav.company && (
         <div>
-          <li className="border-b-2 border-miru-gray-400 tracking-widest">
-            <NavLink
-              end
-              className={({ isActive }) => getActiveClassName(isActive)}
-              to="/profile/edit/organization-details"
+          {companySettingsList.map((setting, index) => (
+            <li
+              className="border-b-2 border-miru-gray-400 tracking-widest"
+              key={index}
             >
-              ORG. SETTINGS
-            </NavLink>
-          </li>
-          <li className="border-b-2 border-miru-gray-400 tracking-widest">
-            <NavLink
-              end
-              className={({ isActive }) => getActiveClassName(isActive)}
-              to="/profile/edit/payment"
-            >
-              PAYMENT SETTINGS
-            </NavLink>
-          </li>
+              <NavLink
+                end
+                className={({ isActive }) => getActiveClassName(isActive)}
+                to={setting.link}
+              >
+                {setting.label}
+              </NavLink>
+            </li>
+          ))}
         </div>
       )}
     </ul>

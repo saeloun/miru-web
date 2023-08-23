@@ -1,3 +1,14 @@
+import {
+  CakeIcon,
+  CalendarBlackIcon,
+  CarIcon,
+  VacationIcon,
+  FlowerIcon,
+  UserSVGIcon,
+  MedicineIcon,
+  BabyIcon,
+} from "miruIcons";
+
 export const leaveTypes = [
   {
     value: "annual",
@@ -19,6 +30,52 @@ export const leaveTypes = [
     value: "period",
     label: "Period leave",
   },
+];
+
+export const leaveColors = [
+  {
+    value: "#0E79B2",
+    label: "Annual leaves",
+  },
+  {
+    value: "#BF1363",
+    label: "Sick leaves",
+  },
+  {
+    value: "#F39237",
+    label: "Maternity leave",
+  },
+  {
+    value: "#058C42",
+    label: "Paternity leave",
+  },
+  {
+    value: "#7768AE",
+    label: "Period leave",
+  },
+  {
+    value: "#68AEAA",
+    label: "Period leave",
+  },
+  {
+    value: "#C97CC1",
+    label: "Period leave",
+  },
+  {
+    value: "#7CC984",
+    label: "Period leave",
+  },
+];
+
+export const leaveIcons = [
+  { value: "calendar", label: "label", icon: CalendarBlackIcon },
+  { value: "cake", label: "label2", icon: CakeIcon },
+  { value: "vacation", label: "label3", icon: VacationIcon },
+  { value: "medicine", label: "label4", icon: MedicineIcon },
+  { value: "baby", label: "label5", icon: BabyIcon },
+  { value: "flower", label: "label6", icon: FlowerIcon },
+  { value: "car", label: "label7", icon: CarIcon },
+  { value: "user", label: "label8", icon: UserSVGIcon },
 ];
 
 export const repitationTypeObj = {

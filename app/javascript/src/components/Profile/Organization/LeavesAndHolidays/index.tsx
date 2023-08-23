@@ -4,63 +4,27 @@ import React, { useEffect, useRef, useState } from "react";
 import { useOutsideClick } from "helpers";
 import { Toastr } from "StyledComponents";
 
-import Loader from "common/Loader/index";
+import Loader from "common/Loader";
 import DetailsHeader from "components/Profile/DetailsHeader";
-import { leaveTypes } from "constants/leaveType";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import Details from "./Details";
-import EditLeavesAndHolidays from "./EditLeavesAndHolidays";
+import EditLeaves from "./EditLeaves";
 
 import Header from "../../Header";
 
-const LeavesAndHolidays = () => {
-  const leaveTypeOptions = leaveTypes;
-
+const Leaves = () => {
   const [leaveBalanceList, setLeaveBalanceList] = useState([]);
-  const [holidayList, setHolidayList] = useState([]);
-  const [errDetails, setErrDetails] = useState({}); //eslint-disable-line
   const [isDetailUpdated, setIsDetailUpdated] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [showCalendar, setShowCalendar] = useState(false);
-  const [showDatePicker, setShowDatePicker] = useState<any>({
-    visibility: false,
-    index: 0,
-  });
-  const wrapperRef = useRef(null);
-  const optionalWrapperRef = useRef(null);
   const modalWrapperRef = useRef(null);
 
-  const [enableOptionalHolidays, setEnableOptionalHolidays] =
-    useState<any>(false);
-
-  const [showOptionalDatePicker, setShowOptionalDatePicker] = useState<any>({
-    visibility: false,
-    index: 0,
-  });
-  const [optionalHolidaysList, setOptionalHolidaysList] = useState([]);
-  const [totalOptionalHolidays, setTotalOptionalHolidays] = useState(0);
-  const [optionalRepetitionType, setOptionalRepetitionType] =
-    useState("per_year");
   const [isEditable, setIsEditable] = useState(true);
 
   const getData = async () => {
     setIsLoading(true);
   };
-
-  useOutsideClick(wrapperRef, () => {
-    setShowDatePicker({
-      visibility: false,
-      index: 0,
-    });
-  });
-
-  useOutsideClick(optionalWrapperRef, () => {
-    setShowOptionalDatePicker({
-      visibility: false,
-      index: 0,
-    });
-  });
 
   useOutsideClick(modalWrapperRef, () => {
     setShowCalendar(false);
@@ -78,6 +42,8 @@ const LeavesAndHolidays = () => {
       ...[
         {
           leaveType: "",
+          leaveIcon: "",
+          leaveColor: "",
           total: 0,
           countType: "days",
           repetitionType: "per_year",
@@ -91,84 +57,6 @@ const LeavesAndHolidays = () => {
     const editLeaveList = [...leaveBalanceList];
     editLeaveList[index][type] = value;
     setLeaveBalanceList([...editLeaveList]);
-    setIsDetailUpdated(true);
-  };
-
-  const handleDatePicker = (date, index, isoptionalHoliday) => {
-    setIsDetailUpdated(true);
-    if (!isoptionalHoliday) {
-      const holidayListDetail = [...holidayList];
-      holidayListDetail[index].date = date;
-      setHolidayList([...holidayListDetail]);
-      setShowDatePicker({ visibility: false, index: 0 });
-    } else {
-      const holidayListDetail = [...optionalHolidaysList];
-      holidayListDetail[index].date = date;
-      setOptionalHolidaysList([...holidayListDetail]);
-      setShowOptionalDatePicker({ visibility: false, index: 0 });
-    }
-  };
-
-  const handleAddHoliday = isoptionalHoliday => {
-    if (!isoptionalHoliday) {
-      setHolidayList([
-        ...holidayList,
-        ...[
-          {
-            date: "",
-            name: "",
-          },
-        ],
-      ]);
-    } else {
-      setOptionalHolidaysList([
-        ...optionalHolidaysList,
-        ...[
-          {
-            date: "",
-            name: "",
-          },
-        ],
-      ]);
-    }
-  };
-
-  const handleDeleteHoliday = (isoptionalHoliday, index) => {
-    if (!isoptionalHoliday) {
-      const updatedHolidayList = holidayList;
-      updatedHolidayList.splice(index, 1);
-      setHolidayList([...updatedHolidayList]);
-    } else {
-      const updatedHolidayList = optionalHolidaysList;
-      updatedHolidayList.splice(index, 1);
-      setOptionalHolidaysList([...updatedHolidayList]);
-    }
-  };
-
-  const handleHolidateNameChange = (e, index, isoptionalHoliday) => {
-    setIsDetailUpdated(true);
-    if (!isoptionalHoliday) {
-      const holidayListDetail = [...holidayList];
-      holidayListDetail[index].name = e.target.value;
-      setHolidayList([...holidayListDetail]);
-    } else {
-      const holidayListDetail = [...optionalHolidaysList];
-      holidayListDetail[index].name = e.target.value;
-      setOptionalHolidaysList([...holidayListDetail]);
-    }
-  };
-
-  const handleCheckboxClick = () => {
-    setEnableOptionalHolidays(!enableOptionalHolidays);
-  };
-
-  const handleChangeTotalOpHoliday = e => {
-    setTotalOptionalHolidays(e.target.value);
-    setIsDetailUpdated(true);
-  };
-
-  const handleChangeRepetitionOpHoliday = e => {
-    setOptionalRepetitionType(e.value);
     setIsDetailUpdated(true);
   };
 
@@ -192,64 +80,60 @@ const LeavesAndHolidays = () => {
     setLeaveBalanceList([...updatedLeaveBalance]);
   };
 
+  const handleLeaveTypeChange = (e, index) => {
+    const result = e.target.value.replace(/[^a-zA-Z- ]/g, "");
+    updateCondition("leaveType", result, index);
+  };
+
+  const getLeavesContent = () => {
+    if (isLoading) {
+      return <Loader />;
+    }
+
+    if (isEditable) {
+      return (
+        <EditLeaves
+          handleAddLeaveType={handleAddLeaveType}
+          handleDeleteLeaveBalance={handleDeleteLeaveBalance}
+          handleLeaveTypeChange={handleLeaveTypeChange}
+          leaveBalanceList={leaveBalanceList}
+          updateCondition={updateCondition}
+        />
+      );
+    }
+
+    return (
+      <Details
+        showCalendar={showCalendar}
+        toggleCalendarModal={toggleCalendarModal}
+        wrapperRef={modalWrapperRef}
+      />
+    );
+  };
+
   return (
     <div className="flex w-4/5 flex-col">
-      {!isEditable ? (
-        <DetailsHeader
-          showButtons
-          editAction={() => setIsEditable(true)}
-          isDisableUpdateBtn={false}
-          subTitle=""
-          title="Leaves & Holidays"
-        />
-      ) : (
+      {isEditable ? (
         <Header
           showButtons
           cancelAction={handleCancelAction}
           isDisableUpdateBtn={isDetailUpdated}
           saveAction={handleupdateLeaveDetails}
           subTitle=""
-          title="Leaves & Holidays"
-        />
-      )}
-      {isLoading ? (
-        <Loader />
-      ) : !isEditable ? (
-        <Details
-          showCalendar={showCalendar}
-          toggleCalendarModal={toggleCalendarModal}
-          wrapperRef={modalWrapperRef}
+          title="Leaves"
         />
       ) : (
-        <EditLeavesAndHolidays
-          enableOptionalHolidays={enableOptionalHolidays}
-          errDetails={errDetails}
-          handleAddHoliday={handleAddHoliday}
-          handleAddLeaveType={handleAddLeaveType}
-          handleChangeRepetitionOpHoliday={handleChangeRepetitionOpHoliday}
-          handleChangeTotalOpHoliday={handleChangeTotalOpHoliday}
-          handleCheckboxClick={handleCheckboxClick}
-          handleDatePicker={handleDatePicker}
-          handleDeleteHoliday={handleDeleteHoliday}
-          handleDeleteLeaveBalance={handleDeleteLeaveBalance}
-          handleHolidateNameChange={handleHolidateNameChange}
-          holidayList={holidayList}
-          leaveBalanceList={leaveBalanceList}
-          leaveTypeOptions={leaveTypeOptions}
-          optionalHolidaysList={optionalHolidaysList}
-          optionalRepetitionType={optionalRepetitionType}
-          optionalWrapperRef={optionalWrapperRef}
-          setShowDatePicker={setShowDatePicker}
-          setShowOptionalDatePicker={setShowOptionalDatePicker}
-          showDatePicker={showDatePicker}
-          showOptionalDatePicker={showOptionalDatePicker}
-          totalOptionalHolidays={totalOptionalHolidays}
-          updateCondition={updateCondition}
-          wrapperRef={wrapperRef}
+        <DetailsHeader
+          showButtons
+          editAction={() => setIsEditable(true)}
+          isDisableUpdateBtn={false}
+          subTitle=""
+          title="Leaves"
         />
       )}
+      {getLeavesContent()}
     </div>
   );
 };
 
-export default LeavesAndHolidays;
+export default Leaves;
