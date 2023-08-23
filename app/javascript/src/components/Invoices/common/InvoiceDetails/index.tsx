@@ -49,13 +49,20 @@ const InvoiceDetails = ({
     setShowDueDatePicker(false);
   };
 
+  const handleInvoiceNumberChange = e => {
+    const result = e.target.value.replace(/[^a-zA-Z0-9_-]/g, "");
+    setInvoiceNumber(result);
+  };
+
   return (
     <div className="flex w-full flex-col justify-between border-b border-miru-gray-400 px-5 py-5 md:h-40 md:flex-row md:px-10">
       <ClientSelection
         clientList={clientList}
         clientVisible={clientVisible}
+        invoiceNumber={invoiceNumber}
         optionSelected={optionSelected}
         selectedClient={selectedClient}
+        setInvoiceNumber={setInvoiceNumber}
         setSelectedClient={setSelectedClient}
       />
       <div className="mr-2 flex w-2/12 flex-col justify-between">
@@ -67,7 +74,7 @@ const InvoiceDetails = ({
           name="invoiceNumber"
           type="text"
           value={invoiceNumber}
-          onChange={e => setInvoiceNumber(e.target.value)}
+          onChange={handleInvoiceNumberChange}
         />
         <CustomInputText
           id="Reference"
@@ -86,7 +93,7 @@ const InvoiceDetails = ({
             <CustomInputText
               readOnly
               id="Date of Issue"
-              inputBoxClassName="focus:border-miru-han-purple-1000 cursor-pointer"
+              inputBoxClassName="focus:border-miru-han-purple-1000 cursor-pointer pr-9 truncate"
               label="Date of Issue"
               name="Date of Issue"
               type="text"
@@ -115,7 +122,7 @@ const InvoiceDetails = ({
             <CustomInputText
               readOnly
               id="Due Date"
-              inputBoxClassName="focus:border-miru-han-purple-1000 cursor-pointer"
+              inputBoxClassName="focus:border-miru-han-purple-1000 cursor-pointer pr-9 truncate"
               label="Due Date"
               name="Due Date"
               type="text"
