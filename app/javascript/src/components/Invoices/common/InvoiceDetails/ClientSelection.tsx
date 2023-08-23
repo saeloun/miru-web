@@ -14,9 +14,16 @@ const ClientSelection = ({
   setSelectedClient,
   optionSelected,
   clientVisible,
+  setInvoiceNumber,
+  invoiceNumber,
 }) => {
   const [isOptionSelected, setIsOptionSelected] =
     useState<boolean>(optionSelected);
+
+  //storing prepopulated values before editing invoice
+  const [prePopulatedClient, setPrePopulatedClient] = useState<any>();
+  const [prePopulatedInvoiceNumber, setPrePopulatedInvoiceNumber] =
+    useState<any>();
 
   const [isClientVisible, setIsClientVisible] =
     useState<boolean>(clientVisible);
@@ -37,16 +44,52 @@ const ClientSelection = ({
       );
       selection[0] && handleClientChange(selection[0]);
     }
+
+    if (selectedClient) {
+      setPrePopulatedClient(selectedClient);
+      setPrePopulatedInvoiceNumber(invoiceNumber);
+    }
   }, []);
 
   useEffect(() => {
     handleAlreadySelectedClient();
   }, [selectedClient]);
 
+  const autoGenerateInvoiceNumber = client => {
+    const { previousInvoiceNumber } = client;
+    // on edit invoice page: invoice number should not be incremented for same client
+    if (prePopulatedClient?.value == client.value) {
+      setInvoiceNumber(prePopulatedInvoiceNumber);
+    } else {
+      if (previousInvoiceNumber) {
+        //extracting last character of invoice
+        const lastChar = parseInt(
+          previousInvoiceNumber.charAt(previousInvoiceNumber.length - 1)
+        );
+
+        //extracting remaining invoice number
+        const remaining = previousInvoiceNumber.slice(
+          0,
+          previousInvoiceNumber.length - 1
+        );
+
+        //incrementing invoice number
+        if (!isNaN(lastChar)) {
+          setInvoiceNumber(remaining.concat(lastChar + 1));
+        } else {
+          setInvoiceNumber("");
+        }
+      } else {
+        setInvoiceNumber("");
+      }
+    }
+  };
+
   const handleClientChange = selection => {
     setSelectedClient(selection);
     setIsClientVisible(false);
     setIsOptionSelected(true);
+    autoGenerateInvoiceNumber(selection);
   };
 
   const handleAlreadySelectedClient = () => {
@@ -78,21 +121,26 @@ const ClientSelection = ({
           label="Billed to"
           wrapperClassName="h-full cursor-pointer"
           value={
-            isOptionSelected && (
+            isOptionSelected &&
+            selectedClient && (
               <div className="h-full overflow-y-scroll">
                 <p className="text-base font-bold text-miru-dark-purple-1000">
                   {selectedClient.label}
                 </p>
-                <p className="w-52 text-sm font-normal text-miru-dark-purple-600">
-                  {`${address_line_1}${
-                    address_line_2 ? `, ${address_line_2}` : ""
-                  }
+                {selectedClient?.address ? (
+                  <p className="w-52 text-sm font-normal text-miru-dark-purple-600">
+                    {`${address_line_1}${
+                      address_line_2 ? `, ${address_line_2}` : ""
+                    }
                 ${
                   address_line_2 ? "," : ""
                 }\n ${city}, ${state}, ${country},\n ${pin}`}
-                  <br />
-                  {selectedClient.phone}
-                </p>
+                    <br />
+                    {selectedClient.phone}
+                  </p>
+                ) : (
+                  "-"
+                )}
               </div>
             )
           }
