@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_07_07_082247) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_25_065606) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -197,6 +197,26 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_07_082247) do
     t.index ["expense_category_id"], name: "index_expenses_on_expense_category_id"
     t.index ["expense_type"], name: "index_expenses_on_expense_type"
     t.index ["vendor_id"], name: "index_expenses_on_vendor_id"
+  end
+
+  create_table "holiday_infos", force: :cascade do |t|
+    t.date "date", null: false
+    t.string "name", null: false
+    t.bigint "holiday_id", null: false
+    t.string "category", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["holiday_id"], name: "index_holiday_infos_on_holiday_id"
+  end
+
+  create_table "holidays", force: :cascade do |t|
+    t.integer "year", null: false
+    t.boolean "enable_optional_holidays", default: false
+    t.integer "no_of_allowed_optional_holidays"
+    t.string "holiday_types", default: [], array: true
+    t.string "time_period_optional_holidays", default: "per_quarter"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "identities", force: :cascade do |t|
@@ -450,6 +470,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_07_082247) do
   add_foreign_key "expenses", "companies"
   add_foreign_key "expenses", "expense_categories"
   add_foreign_key "expenses", "vendors"
+  add_foreign_key "holiday_infos", "holidays"
   add_foreign_key "identities", "users"
   add_foreign_key "invitations", "companies"
   add_foreign_key "invitations", "users", column: "sender_id"
