@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_25_065606) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_25_102549) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -217,6 +217,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_25_065606) do
     t.string "time_period_optional_holidays", default: "per_quarter"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "company_id", null: false
+    t.index ["company_id"], name: "index_holidays_on_company_id"
   end
 
   create_table "identities", force: :cascade do |t|
@@ -471,6 +473,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_25_065606) do
   add_foreign_key "expenses", "expense_categories"
   add_foreign_key "expenses", "vendors"
   add_foreign_key "holiday_infos", "holidays"
+  add_foreign_key "holidays", "companies"
   add_foreign_key "identities", "users"
   add_foreign_key "invitations", "companies"
   add_foreign_key "invitations", "users", column: "sender_id"

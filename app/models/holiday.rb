@@ -12,9 +12,21 @@
 #  year                            :integer          not null
 #  created_at                      :datetime         not null
 #  updated_at                      :datetime         not null
+#  company_id                      :bigint           not null
+#
+# Indexes
+#
+#  index_holidays_on_company_id  (company_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (company_id => companies.id)
 #
 class Holiday < ApplicationRecord
   has_many :holiday_infos, dependent: :destroy
+  belongs_to :company
+
   enum time_period_optional_holidays: { per_quarter: "per_quarter", per_year: "per_year" }
+
   validates :year, presence: true
 end
