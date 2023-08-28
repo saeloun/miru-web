@@ -50,6 +50,13 @@ const SideNav = ({ isAdmin, firstName, company, lastName }) => {
             >
               PROFILE SETTINGS
             </NavLink>
+            <NavLink
+              end
+              className={({ isActive }) => getActiveClassName(isActive)}
+              to="/profile/employment-details"
+            >
+              EMPLOYMENT DETAILS
+            </NavLink>
           </li>
         </div>
       )}
@@ -114,6 +121,13 @@ const SideNav = ({ isAdmin, firstName, company, lastName }) => {
           to="/profile/edit"
         >
           PROFILE SETTINGS
+        </NavLink>
+        <NavLink
+          end
+          className={({ isActive }) => getActiveClassName(isActive)}
+          to="/profile/employment-details"
+        >
+          EMPLOYMENT DETAILS
         </NavLink>
       </li>
     </ul>

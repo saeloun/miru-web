@@ -100,6 +100,8 @@ class User < ApplicationRecord
   after_discard :discard_project_members
   before_create :set_token
 
+  after_commit :send_to_hubspot, on: :create
+
   def prevent_spam_user_sign_up
     if self.email.include?("internetkeno")
       raise SpamUserSignup.new("#{self.email} Spam User Signup")
@@ -210,5 +212,9 @@ class User < ApplicationRecord
       return false if skip_password_validation
 
       super
+    end
+
+    def send_to_hubspot
+      HubspotIntegrationJob.perform_later(email, first_name, last_name)
     end
 end

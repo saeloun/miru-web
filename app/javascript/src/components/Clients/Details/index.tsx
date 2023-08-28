@@ -22,6 +22,7 @@ import TotalHoursChart from "./TotalHoursChart";
 
 import AddProject from "../Modals/AddProject";
 import PaymentReminder from "../Modals/PaymentReminder";
+import MobilePaymentReminder from "../Modals/PaymentReminder/MobileView";
 
 const ClientDetails = ({ isAdminUser }) => {
   const [showEditDialog, setShowEditDialog] = useState<boolean>(false);
@@ -116,6 +117,17 @@ const ClientDetails = ({ isAdminUser }) => {
     );
   }
 
+  if (!isDesktop && sendPaymentReminder) {
+    return (
+      <MobilePaymentReminder
+        client={clientDetails}
+        clientInvoices={clientInvoices}
+        isDesktop={isDesktop}
+        setSendPaymentReminder={setSendPaymentReminder}
+      />
+    );
+  }
+
   return (
     <>
       <Header
@@ -195,10 +207,11 @@ const ClientDetails = ({ isAdminUser }) => {
           showProjectModal={showProjectModal}
         />
       )}
-      {sendPaymentReminder && (
+      {isDesktop && sendPaymentReminder && (
         <PaymentReminder
           client={clientDetails}
           clientInvoices={clientInvoices}
+          isDesktop={isDesktop}
           sendPaymentReminder={sendPaymentReminder}
           setSendPaymentReminder={setSendPaymentReminder}
         />

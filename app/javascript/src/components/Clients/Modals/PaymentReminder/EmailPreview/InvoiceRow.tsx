@@ -73,7 +73,7 @@ const InvoiceRow = ({ invoice, isLast }) => {
               text={status}
             />
           </td>
-          <td className="">
+          <td>
             <Button
               className="absolute top-0 right-0 py-2 px-5 text-base"
               style="primary"
