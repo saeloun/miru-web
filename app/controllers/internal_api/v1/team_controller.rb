@@ -48,7 +48,6 @@ class InternalApi::V1::TeamController < InternalApi::V1::ApplicationController
     enabled_disabled = params[:team][:calendar_enabled] ? "enabled" : "disabled"
 
     render json: {
-             calendar_enabled: current_company.calendar_enabled,
              notice: "Calendar integration has been #{enabled_disabled} for all users of #{current_company.name}"
            },
       status: :ok
