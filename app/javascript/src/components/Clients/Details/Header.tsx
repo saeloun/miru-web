@@ -11,6 +11,7 @@ import {
   EditIcon,
   InfoIcon,
   ReminderIcon,
+  TeamsIcon,
 } from "miruIcons";
 import { useNavigate } from "react-router-dom";
 import { Badge, MobileMoreOptions, Modal } from "StyledComponents";
@@ -130,7 +131,7 @@ const Header = ({
                 }}
               >
                 <button className="menuButton__list-item">
-                  <ReminderIcon id="reminderIcon" size={16} />
+                  <TeamsIcon size={16} />
                   <span className="ml-3">Add Contacts</span>
                 </button>
               </li>
