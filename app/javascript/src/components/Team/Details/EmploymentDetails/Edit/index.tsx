@@ -60,6 +60,10 @@ const EmploymentDetails = () => {
   });
   const [errDetails, setErrDetails] = useState(initialErrState);
   const [isLoading, setIsLoading] = useState(false);
+  const [dateFormat, setDateFormat] = useState("DD-MM-YYYY");
+  const [resignedAt, setResignedAt] = useState(null);
+  const [joinedAt, setJoinedAt] = useState(null);
+
   useOutsideClick(DOJRef, () => setShowDOJDatePicker({ visibility: false }));
   useOutsideClick(DORRef, () => setShowDORDatePicker({ visibility: false }));
 
@@ -71,6 +75,9 @@ const EmploymentDetails = () => {
   const getDetails = async () => {
     const curr: any = await teamsApi.getEmploymentDetails(memberId);
     const prev: any = await teamsApi.getPreviousEmployments(memberId);
+    setDateFormat(curr.data.date_format);
+    setJoinedAt(curr.data.employment.joined_at);
+    setResignedAt(curr.data.employment.resigned_at);
     const employmentData = employmentMapper(
       curr.data.employment,
       prev.data.previous_employments
@@ -136,12 +143,18 @@ const EmploymentDetails = () => {
 
   const handleDOJDatePicker = date => {
     setShowDOJDatePicker({ visibility: !showDOJDatePicker.visibility });
+    setJoinedAt(date);
     updateDetails("employment", {
       ...employmentDetails,
       ...{
         current_employment: {
           ...employmentDetails.current_employment,
-          ...{ joined_at: date },
+          ...{
+            joined_at:
+              dateFormat == "DD-MM-YYYY"
+                ? date
+                : dayjs(date).format("DD-MM-YYYY"),
+          },
         },
       },
     });
@@ -149,12 +162,18 @@ const EmploymentDetails = () => {
 
   const handleDORDatePicker = date => {
     setShowDORDatePicker({ visibility: !showDORDatePicker.visibility });
+    setResignedAt(date);
     updateDetails("employment", {
       ...employmentDetails,
       ...{
         current_employment: {
           ...employmentDetails.current_employment,
-          ...{ resigned_at: date },
+          ...{
+            resigned_at:
+              dateFormat == "DD-MM-YYYY"
+                ? date
+                : dayjs(date).format("DD-MM-YYYY"),
+          },
         },
       },
     });
@@ -179,15 +198,20 @@ const EmploymentDetails = () => {
     const getDifference = (array1, array2) =>
       array1.filter(object1 => !array2.some(object2 => object1 === object2));
 
+    //creating an array which includes removed records
     const removed = employmentDetails.previous_employments.filter(
       e => !previousEmployments.includes(e)
     );
 
+    //creating an array which includes updated and added records
     const unSortedEmployments = getDifference(
       previousEmployments,
       employmentDetails.previous_employments
     );
+
     const pastEmployments = InitialPrevEmployments;
+
+    //sorting new entries and updated entries into
     unSortedEmployments.map(unSorted => {
       if (unSorted.id) {
         pastEmployments.updated_employments.push(unSorted);
@@ -195,13 +219,19 @@ const EmploymentDetails = () => {
         pastEmployments.added_employments.push(unSorted);
       }
     });
+
+    //Extracting removed records id
     if (removed.length > 0) {
       removed.map(remove => {
-        pastEmployments.updated_employments.filter(updated => {
-          if (updated.id !== remove.id) {
-            pastEmployments.removed_employment_ids.push(remove?.id);
-          }
-        });
+        if (pastEmployments.updated_employments.length > 0) {
+          pastEmployments.updated_employments.filter(updated => {
+            if (updated.id !== remove.id) {
+              pastEmployments.removed_employment_ids.push(remove?.id);
+            }
+          });
+        } else {
+          pastEmployments.removed_employment_ids.push(remove?.id);
+        }
       });
     }
     updateEmploymentDetails(pastEmployments);
@@ -210,13 +240,13 @@ const EmploymentDetails = () => {
   const updateEmploymentDetails = async updatedPreviousEmployments => {
     try {
       await schema.validate(employmentDetails, { abortEarly: false });
-      await teamsApi.updateEmploymentDetails(
-        memberId,
-        employmentDetails.current_employment
-      );
+      const payload = {
+        ...updatedPreviousEmployments,
+        current_employment: employmentDetails.current_employment,
+      };
 
       await teamsApi.updatePreviousEmployments(memberId, {
-        employments: updatedPreviousEmployments,
+        employments: payload,
       });
       setIsLoading(false);
       navigate(`/team/${memberId}/employment`, { replace: true });
@@ -272,6 +302,7 @@ const EmploymentDetails = () => {
             <StaticPage
               DOJRef={DOJRef}
               DORRef={DORRef}
+              dateFormat={dateFormat}
               employeeType={employeeType}
               employeeTypes={employeeTypes}
               employmentDetails={employmentDetails}
@@ -281,7 +312,9 @@ const EmploymentDetails = () => {
               handleDORDatePicker={handleDORDatePicker}
               handleDeletePreviousEmployment={handleDeletePreviousEmployment}
               handleOnChangeEmployeeType={handleOnChangeEmployeeType}
+              joinedAt={joinedAt}
               previousEmployments={previousEmployments}
+              resignedAt={resignedAt}
               setShowDOJDatePicker={setShowDOJDatePicker}
               setShowDORDatePicker={setShowDORDatePicker}
               showDOJDatePicker={showDOJDatePicker}

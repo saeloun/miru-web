@@ -168,19 +168,37 @@ const OrgEdit = () => {
     setIsLoading(true);
     const res = await companiesApi.index();
     const companyDetails = { ...res.data.company_details };
-    const { isoCode, name } = Country.getCountryByCode(
-      companyDetails.address.country
+
+    const {
+      id,
+      address_line_1: addressLine1,
+      address_line_2: addressLine2,
+      city,
+      state,
+      pin,
+      country,
+    } = companyDetails.address;
+
+    let isoCode = "";
+    let name = "";
+    if (country && country !== "") {
+      const countryData = Country.getCountryByCode(country);
+      isoCode = countryData ? countryData.isoCode : "";
+      name = countryData ? countryData.name : "";
+    }
+
+    let stateData = State.getStatesOfCountry(country).find(
+      item => item.name === state
     );
-    const StateCode = State.getStatesOfCountry(
-      companyDetails.address.country
-    ).filter(state => state.name == companyDetails.address.state)[0]?.isoCode;
+    const StateCode = stateData ? stateData.isoCode : "";
+
     const orgAddr = {
-      id: companyDetails.address.id,
-      addressLine1: companyDetails.address.address_line_1,
-      addressLine2: companyDetails.address.address_line_2,
+      id: id,
+      addressLine1: addressLine1,
+      addressLine2: addressLine2,
       city: {
-        value: companyDetails.address.city,
-        label: companyDetails.address.city,
+        value: city,
+        label: city,
       },
       country: {
         label: name,
@@ -188,11 +206,11 @@ const OrgEdit = () => {
         code: isoCode,
       },
       state: {
-        value: companyDetails.address.state,
-        label: companyDetails.address.state,
+        value: state,
+        label: state,
         code: StateCode,
       },
-      zipcode: companyDetails.address.pin,
+      zipcode: pin,
     };
 
     const organizationSchema = {
@@ -218,12 +236,17 @@ const OrgEdit = () => {
     setTimezones(timezonesEntry.data.timezones);
 
     const timeZonesForCountry = timezonesEntry.data.timezones[isoCode];
-    const timezoneOptionList = timeZonesForCountry.map(item => ({
-      value: item,
-      label: item,
-    }));
+
+    let timezoneOptionList = [];
+    if (timeZonesForCountry) {
+      timezoneOptionList = timeZonesForCountry.map(item => ({
+        value: item,
+        label: item,
+      }));
+    }
+
     setTimezoneOption(timezoneOptionList);
-    addCity(isoCode, StateCode ?? companyDetails.address.state);
+    addCity(isoCode, StateCode ?? state);
     setIsLoading(false);
   };
 
@@ -533,6 +556,7 @@ const OrgEdit = () => {
   };
 
   const handleCancelAction = () => {
+    console.log("true");
     getCurrencies();
     getData();
     setIsDetailUpdated(false);

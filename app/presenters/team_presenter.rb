@@ -30,6 +30,8 @@ class TeamPresenter
             email: member.email,
             role: member.primary_role(current_company),
             status: team_member_status(member),
+            is_team_member: true,
+            data_type: "Team",
             member:
           }
         end
@@ -44,7 +46,9 @@ class TeamPresenter
             last_name: member.last_name,
             email: member.recipient_email,
             role: member.role,
-            status: invited_user_status
+            status: invited_user_status,
+            is_team_member: false,
+            data_type: "Invitation"
           }
         end
     end

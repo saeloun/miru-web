@@ -16,6 +16,7 @@ export const CustomTextareaAutosize = ({
   wrapperClassName,
   rows,
   maxRows,
+  maxLength,
 }) => {
   const inputRef = useRef(null);
   const [focused, setFocused] = useState<boolean>(false);
@@ -42,6 +43,7 @@ export const CustomTextareaAutosize = ({
         className={inputBoxClassName}
         cols={60}
         id={id}
+        maxLength={maxLength}
         maxRows={maxRows}
         name={name}
         placeholder=" "
@@ -58,4 +60,5 @@ CustomTextareaAutosize.defaultProps = {
   inputBoxClassName:
     "form__input block w-full appearance-none bg-white p-4 text-sm lg:text-base h-16 border-miru-gray-1000",
   wrapperClassName: "outline relative",
+  maxLength: 100000000,
 };

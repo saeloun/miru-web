@@ -131,7 +131,7 @@ const EditMembersList = ({
   return (
     <Modal
       isOpen
-      customStyle="sm:my-8 sm:w-full sm:max-w-lg sm:align-middle"
+      customStyle="sm:my-8 sm:w-full sm:max-w-lg sm:align-middle overflow-visible"
       onClose={closeAddRemoveMembers}
     >
       <div className="flex items-center justify-between">

@@ -65,7 +65,7 @@ const Header = ({
           onClick={handleSendInvoice}
         >
           <PaperPlaneTiltIcon color="White" size={18} />
-          <span className="ml-2 inline-block" id="sendInvoiceButton">
+          <span className="ml-2 inline-block truncate" id="sendInvoiceButton">
             SEND TO
           </span>
         </button>

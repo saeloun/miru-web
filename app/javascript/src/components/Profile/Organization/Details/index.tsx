@@ -49,12 +49,31 @@ const OrgDetails = () => {
       timezone,
       id,
     } = companyDetails;
-    const { name: CountryName } = Country.getCountryByCode(address.country);
+
+    const { address_line_1, address_line_2, city, state, pin, country } =
+      address;
+
+    const { name: CountryName } = country
+      ? Country.getCountryByCode(country)
+      : { name: "" };
+
+    const companyAddrParts = [
+      address_line_1,
+      address_line_2,
+      city,
+      state,
+      pin,
+      CountryName,
+    ];
+
+    const companyAddr = companyAddrParts
+      .filter(part => part !== null && part !== undefined && part !== "")
+      .join(", ");
 
     setOrgDetails({
       logoUrl: logo,
       companyName: name,
-      companyAddr: `${address.address_line_1} ${address.address_line_2}, ${address.city}, ${address.state} ${address.pin}, ${CountryName}`,
+      companyAddr,
       companyPhone: business_phone,
       countryName: address.country,
       companyCurrency: currency,
