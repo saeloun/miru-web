@@ -6,6 +6,7 @@ interface GenerateInvoiceClientList {
   name: string;
   phone_number: number;
   email: string;
+  previousInvoiceNumber: string;
   client_members: any;
 }
 
@@ -24,6 +25,7 @@ const getClientList = (clientList: Array<GenerateInvoiceClientList>) =>
     value: client.id,
     label: client.name,
     phone: client.phone_number,
+    previousInvoiceNumber: client.previousInvoiceNumber,
     clientMembersEmails: client.client_members,
   }));
 

@@ -10,6 +10,7 @@ const UserContext = createContext({
     token: "",
     first_name: "",
     last_name: "",
+    id: "",
   },
   avatarUrl: "",
   setCurrentAvatarUrl: value => {}, //eslint-disable-line

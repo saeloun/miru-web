@@ -281,7 +281,6 @@ const ClientForm = ({
                 style="primary"
                 type="submit"
                 onClick={() => {
-                  handleSubmit(values);
                   setSubmitting(true);
                 }}
               >

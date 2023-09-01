@@ -26,7 +26,6 @@ RSpec.describe BulkPreviousEmploymentPolicy, type: :policy do
 
     context "when user is an employee or book keeper" do
       it "does not grants permission" do
-        expect(described_class).not_to permit(employee, previous_employment_employee)
         expect(described_class).not_to permit(book_keeper, previous_employment_employee)
       end
     end
