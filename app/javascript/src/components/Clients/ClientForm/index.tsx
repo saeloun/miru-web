@@ -89,7 +89,7 @@ const ClientForm = ({
     if (formType === "new") {
       try {
         const res = await clientApi.create(formData);
-        setClientData([...clientData, { ...res.data, minutes: 0 }]);
+        setClientData([...clientData, { ...res.data.client, minutes: 0 }]);
         setnewClient(false);
         Toastr.success("Client added successfully");
       } catch {
@@ -280,9 +280,6 @@ const ClientForm = ({
                 disabled={disableBtn(values, errors, submitting)}
                 style="primary"
                 type="submit"
-                onClick={() => {
-                  setSubmitting(true);
-                }}
               >
                 SAVE CHANGES
               </Button>
