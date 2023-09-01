@@ -1,6 +1,13 @@
 import React, { useEffect } from "react";
 
-import { Navigate, Routes, Route, useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
+import {
+  Navigate,
+  Routes,
+  Route,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
 
 import { Paths, Roles } from "constants/index";
 import { AUTH_ROUTES, PUBLIC_ROUTES } from "constants/routes";
@@ -18,14 +25,19 @@ import SignUpSuccess from "./OrganizationSetup/SignUpSuccess";
 
 const Main = (props: Iprops) => {
   const authDispatch = useAuthDispatch();
+  const location = useLocation();
   //@ts-expect-error is used to allow authToken value on empty object
   const { isLoggedIn } = useAuthState();
   const { user } = useUserContext();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (isLoggedIn === false && props?.googleOauthSuccess) {
+    if (!isLoggedIn && props?.googleOauthSuccess) {
       loginGoogleAuth(user?.token, user?.email, authDispatch, navigate);
+    }
+
+    if (!isLoggedIn) {
+      Cookies.set("lastVisitedPage", location.pathname, { expires: 7 });
     }
   }, [isLoggedIn, props?.googleOauthSuccess]);
 
