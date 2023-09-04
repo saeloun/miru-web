@@ -17,7 +17,7 @@ jobs:
       - name: Setup PostgreSQL
         uses: Harmon758/postgresql-action@v1.0.0
         with:
-          postgresql db: miru_web_test
+          postgresql db: miru_web_test_
           postgresql user: root
       - name: Setup ElasticSearch
         uses: ankane/setup-elasticsearch@v1
