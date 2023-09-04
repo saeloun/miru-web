@@ -71,7 +71,6 @@ jobs:
       - name: Setup test database
         env:
           RAILS_ENV: test
-          PGHOST: 127.0.0.1
           DB_USER: root
           DB_PASS: "password"
           TEST_ENV_NUMBER: ${{ github.event.number }}
@@ -85,8 +84,9 @@ jobs:
       - name: Run tests
         env:
           RAILS_ENV: test
-          PGHOST: 127.0.0.1
-          PGUSER: root
+          DB_USER: root
+          DB_PASS: "password"
+          TEST_ENV_NUMBER: ${{ github.event.number }}
         run: COVERAGE=true bundle exec rspec
       - name: Parse codecoverage output and generate comment body
         id: parse_output
