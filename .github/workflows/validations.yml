@@ -19,8 +19,6 @@ jobs:
         with:
           postgresql db: miru_web_test
           postgresql user: root
-        run: |
-          systemctl status postgresql
       - name: Setup ElasticSearch
         uses: ankane/setup-elasticsearch@v1
       - name: Check if Elasticsearch is reachable
@@ -41,6 +39,7 @@ jobs:
           bundle install --jobs 4 --retry 3
       - name: Audit gems
         run: |
+          systemctl status postgresql
           bundle exec bundle-audit --update
           bundle exec ruby-audit check
       - name: Setup Node
