@@ -40,13 +40,6 @@ const config = {
           showLastUpdateTime: true,
           breadcrumbs: true,
         },
-        blog: {
-          showReadingTime: true,
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
-          editUrl:
-            'https://github.com/saeloun/docs/edit/main/blog/',
-        },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
         },
@@ -118,7 +111,7 @@ const config = {
             items: [
               {
                 label: 'Blog',
-                to: '/blog',
+                href: 'https://blog.miru.so',
               },
               {
                 label: 'GitHub',
