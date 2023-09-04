@@ -11,14 +11,19 @@ jobs:
     name: Running tests
     runs-on: ubuntu-latest
     if: "!contains(github.event.head_commit.message, 'skip ci')"
+    env:
+      TEST_ENV_NUMBER: ${{ github.event.number }}
+      DB_USER: root
+      DB_PASS: ""
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
       - name: Setup PostgreSQL
         uses: Harmon758/postgresql-action@v1.0.0
         with:
-          postgresql db: miru_web_test_
+          postgresql db: miru_web_test_${{ github.event.number }}
           postgresql user: root
+          postgresql password: ""
       - name: Setup ElasticSearch
         uses: ankane/setup-elasticsearch@v1
       - name: Check if Elasticsearch is reachable
