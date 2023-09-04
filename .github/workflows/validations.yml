@@ -19,6 +19,8 @@ jobs:
         with:
           postgresql db: miru_web_test
           postgresql user: root
+        run: |
+          systemctl status postgresql
       - name: Setup ElasticSearch
         uses: ankane/setup-elasticsearch@v1
       - name: Check if Elasticsearch is reachable
