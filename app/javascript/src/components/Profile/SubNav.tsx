@@ -82,6 +82,13 @@ const SideNav = ({ isAdmin, firstName, company, lastName }) => {
               <UserIcon className="mr-2" size={20} weight="bold" />
               PROFILE SETTINGS
             </NavLink>
+            <NavLink
+              end
+              className={({ isActive }) => getActiveClassName(isActive)}
+              to="/profile/employment-details"
+            >
+              EMPLOYMENT DETAILS
+            </NavLink>
           </li>
         </div>
       )}
@@ -132,6 +139,13 @@ const SideNav = ({ isAdmin, firstName, company, lastName }) => {
         >
           <UserIcon className="mr-2" size={20} weight="bold" />
           PROFILE SETTINGS
+        </NavLink>
+        <NavLink
+          end
+          className={({ isActive }) => getActiveClassName(isActive)}
+          to="/profile/employment-details"
+        >
+          EMPLOYMENT DETAILS
         </NavLink>
       </li>
     </ul>

@@ -6,11 +6,11 @@ class EmploymentPolicy < ApplicationPolicy
   end
 
   def show?
-    authorize_current_user && (user_owner_role? || user_admin_role?)
+    authorize_current_user && (user_owner_role? || user_admin_role? || user_employee_role?)
   end
 
   def update?
-    authorize_current_user && (user_owner_role? || user_admin_role?)
+    authorize_current_user && (user_owner_role? || user_admin_role? || user_employee_role?)
   end
 
   def authorize_current_user
