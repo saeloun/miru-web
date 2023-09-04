@@ -29,4 +29,15 @@ class Holiday < ApplicationRecord
   enum time_period_optional_holidays: { per_quarter: "per_quarter", per_year: "per_year" }
 
   validates :year, presence: true
+  validate :unique_holiday_record_per_year
+
+  private
+
+    def unique_holiday_record_per_year
+      existing_record = company.holidays.where(year:).where.not(id:).exists?
+
+      if existing_record
+        errors.add(:year, "already has a holiday record for this company")
+      end
+    end
 end

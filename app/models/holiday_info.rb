@@ -24,8 +24,11 @@ class HolidayInfo < ApplicationRecord
   belongs_to :holiday
 
   enum category: { national: "national", optional: "optional" }
+
   validates :name, :date, :category, presence: true
-  validate :validate_holiday_type
+  validate :validate_optional_holidays, if: -> { category == "optional" }
+  validate :validate_holiday_category
+  validate :validate_year
 
   scope :for_year_and_category, ->(year, category) {
     joins(:holiday)
@@ -35,9 +38,21 @@ class HolidayInfo < ApplicationRecord
 
   private
 
+    def validate_optional_holidays
+      unless holiday&.enable_optional_holidays
+        errors.add(:base, "optional holidays are disabled")
+      end
+    end
+
     def validate_holiday_category
       unless holiday&.holiday_types.include?(category)
         errors.add(:category, "must be a valid holiday category for the associated holiday")
+      end
+    end
+
+    def validate_year
+      if date.year != holiday.year
+        errors.add(:date, "must have the same year as the associated holiday")
       end
     end
 end

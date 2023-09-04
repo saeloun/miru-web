@@ -105,6 +105,7 @@ namespace :internal_api, defaults: { format: "json" } do
     delete "payments/settings/stripe/disconnect", to: "payment_settings#destroy"
 
     resources :payments, only: [:new, :create, :index]
+    resources :holidays, only: [:create]
 
     namespace :payments do
       resources :providers, only: [:index, :update]
