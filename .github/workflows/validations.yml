@@ -17,6 +17,7 @@ jobs:
       - name: Setup PostgreSQL
         uses: Harmon758/postgresql-action@v1.0.0
         with:
+          postgresql version: 14.9-alpine3.18
           postgresql db: miru_web_test_${{ github.event.number }}
           postgresql user: root
           postgresql password: "password"
@@ -40,9 +41,6 @@ jobs:
           bundle install --jobs 4 --retry 3
       - name: Audit gems
         run: |
-          sudo systemctl start postgresql.service
-          pg_isready
-          systemctl status postgresql
           bundle exec bundle-audit --update
           bundle exec ruby-audit check
       - name: Setup Node
