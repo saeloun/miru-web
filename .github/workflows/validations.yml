@@ -11,10 +11,6 @@ jobs:
     name: Running tests
     runs-on: ubuntu-latest
     if: "!contains(github.event.head_commit.message, 'skip ci')"
-    env:
-      TEST_ENV_NUMBER: ${{ github.event.number }}
-      DB_USER: root
-      DB_PASS: ""
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -78,7 +74,9 @@ jobs:
         env:
           RAILS_ENV: test
           PGHOST: 127.0.0.1
-          PGUSER: root
+          DB_USER: root
+          DB_PASS: "password"
+          TEST_ENV_NUMBER: ${{ github.event.number }}
         run: |
           bundle exec rails db:create
           bundle exec rails db:migrate
