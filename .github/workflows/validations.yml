@@ -19,7 +19,7 @@ jobs:
         with:
           postgresql db: miru_web_test_${{ github.event.number }}
           postgresql user: root
-          postgresql password: ""
+          postgresql password: "password"
       - name: Setup ElasticSearch
         uses: ankane/setup-elasticsearch@v1
       - name: Check if Elasticsearch is reachable
