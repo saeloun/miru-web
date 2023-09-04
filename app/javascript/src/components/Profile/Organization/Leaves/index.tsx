@@ -1,11 +1,13 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 
-import { useOutsideClick } from "helpers";
+import { useNavigate } from "react-router-dom";
 import { Toastr } from "StyledComponents";
 
 import Loader from "common/Loader";
 import DetailsHeader from "components/Profile/DetailsHeader";
+import { leaveIcons, leaveColors } from "constants/leaveType";
+import { useUserContext } from "context/UserContext";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import Details from "./Details";
@@ -15,26 +17,29 @@ import Header from "../../Header";
 
 const Leaves = () => {
   const [leaveBalanceList, setLeaveBalanceList] = useState([]);
+  const [iconOptions, setIconOptions] = useState(leaveIcons);
+  const [colorOptions, setColorOptions] = useState(leaveColors);
   const [isDetailUpdated, setIsDetailUpdated] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [showCalendar, setShowCalendar] = useState(false);
-  const modalWrapperRef = useRef(null);
 
   const [isEditable, setIsEditable] = useState(true);
+  const { isDesktop } = useUserContext();
+  const navigate = useNavigate();
 
   const getData = async () => {
     setIsLoading(true);
   };
 
-  useOutsideClick(modalWrapperRef, () => {
-    setShowCalendar(false);
-  });
-
-  const toggleCalendarModal = () => setShowCalendar(!showCalendar);
-
   useEffect(() => {
     sendGAPageView();
   }, []);
+
+  useEffect(() => {
+    if (leaveBalanceList) {
+      handleIconSelect();
+      handleColorSelect();
+    }
+  }, [leaveBalanceList]);
 
   const handleAddLeaveType = () => {
     setLeaveBalanceList([
@@ -47,7 +52,7 @@ const Leaves = () => {
           total: 0,
           countType: "days",
           repetitionType: "per_year",
-          carryforwardedCount: 0,
+          carryForwardDays: 0,
         },
       ],
     ]);
@@ -60,7 +65,7 @@ const Leaves = () => {
     setIsDetailUpdated(true);
   };
 
-  const handleupdateLeaveDetails = async () => {
+  const updateLeaveDetails = async () => {
     try {
       setIsEditable(false);
     } catch {
@@ -70,8 +75,12 @@ const Leaves = () => {
   };
 
   const handleCancelAction = () => {
-    getData();
-    setIsDetailUpdated(false);
+    if (isDesktop) {
+      getData();
+      setIsDetailUpdated(false);
+    } else {
+      navigate("/profile/edit/option");
+    }
   };
 
   const handleDeleteLeaveBalance = index => {
@@ -85,6 +94,22 @@ const Leaves = () => {
     updateCondition("leaveType", result, index);
   };
 
+  const handleIconSelect = () => {
+    const selectedIcons = leaveBalanceList.map(item => item.leaveIcon);
+    const filteredIconsList = leaveIcons.filter(
+      icon => !selectedIcons.includes(icon)
+    );
+    setIconOptions(filteredIconsList);
+  };
+
+  const handleColorSelect = () => {
+    const selectedColors = leaveBalanceList.map(item => item.leaveColor);
+    const filteredColorsList = leaveColors.filter(
+      icon => !selectedColors.includes(icon)
+    );
+    setColorOptions(filteredColorsList);
+  };
+
   const getLeavesContent = () => {
     if (isLoading) {
       return <Loader />;
@@ -93,38 +118,39 @@ const Leaves = () => {
     if (isEditable) {
       return (
         <EditLeaves
+          colorOptions={colorOptions}
           handleAddLeaveType={handleAddLeaveType}
+          handleCancelAction={handleCancelAction}
           handleDeleteLeaveBalance={handleDeleteLeaveBalance}
           handleLeaveTypeChange={handleLeaveTypeChange}
+          iconOptions={iconOptions}
+          isDesktop={isDesktop}
           leaveBalanceList={leaveBalanceList}
           updateCondition={updateCondition}
+          updateLeaveDetails={updateLeaveDetails}
         />
       );
     }
 
-    return (
-      <Details
-        showCalendar={showCalendar}
-        toggleCalendarModal={toggleCalendarModal}
-        wrapperRef={modalWrapperRef}
-      />
-    );
+    return <Details leavesList={leaveBalanceList} />;
   };
 
   return (
-    <div className="flex w-4/5 flex-col">
+    <div className="flex h-full w-full flex-col">
       {isEditable ? (
         <Header
           showButtons
+          showYearPicker
           cancelAction={handleCancelAction}
           isDisableUpdateBtn={isDetailUpdated}
-          saveAction={handleupdateLeaveDetails}
+          saveAction={updateLeaveDetails}
           subTitle=""
           title="Leaves"
         />
       ) : (
         <DetailsHeader
           showButtons
+          showYearPicker
           editAction={() => setIsEditable(true)}
           isDisableUpdateBtn={false}
           subTitle=""

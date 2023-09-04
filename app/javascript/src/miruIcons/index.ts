@@ -48,6 +48,7 @@ import {
   User,
   Clock,
   BellRinging,
+  Cake,
 } from "phosphor-react";
 
 const error404Animation = require("./GIFS/404_animation.gif");
@@ -195,6 +196,7 @@ export const KeyIcon = Key;
 export const UserIcon = User;
 export const ClockIcon = Clock;
 export const ReminderIcon = BellRinging;
+export const CakeIcon = Cake;
 
 // custom svg icons
 export const WarningTriangleSVG = warningTriangle;
@@ -283,11 +285,11 @@ export const MoreOptionIcon = moreOption;
 export const GreenCheckCirleIcon = greenCheckCirleIcon;
 export const deleteImageIcon = deleteImage;
 export const Animation_404 = error404Animation;
-export const VacationIcon = vacation;
-export const BabyIcon = baby;
-export const CakeIcon = cake;
-export const FlowerIcon = flower;
-export const CarIcon = car;
-export const UserSVGIcon = user;
-export const CalendarBlackIcon = calendarBlack;
-export const MedicineIcon = medicine;
+export const VacationIconSVG = vacation;
+export const BabyIconSVG = baby;
+export const CakeIconSVG = cake;
+export const FlowerIconSVG = flower;
+export const CarIconSVG = car;
+export const UserIconSVG = user;
+export const CalendarBlackIconSVG = calendarBlack;
+export const MedicineIconSVG = medicine;

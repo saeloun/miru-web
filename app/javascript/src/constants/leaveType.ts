@@ -1,12 +1,12 @@
 import {
-  CakeIcon,
-  CalendarBlackIcon,
-  CarIcon,
-  VacationIcon,
-  FlowerIcon,
-  UserSVGIcon,
-  MedicineIcon,
-  BabyIcon,
+  CakeIconSVG,
+  CalendarBlackIconSVG,
+  CarIconSVG,
+  VacationIconSVG,
+  FlowerIconSVG,
+  UserIconSVG,
+  MedicineIconSVG,
+  BabyIconSVG,
 } from "miruIcons";
 
 export const leaveTypes = [
@@ -35,50 +35,50 @@ export const leaveTypes = [
 export const leaveColors = [
   {
     value: "#0E79B2",
-    label: "Annual leaves",
+    label: "Chart Blue",
   },
   {
     value: "#BF1363",
-    label: "Sick leaves",
+    label: "Chart Pink",
   },
   {
     value: "#F39237",
-    label: "Maternity leave",
+    label: "Chart Orange",
   },
   {
     value: "#058C42",
-    label: "Paternity leave",
+    label: "Chart Green",
   },
   {
     value: "#7768AE",
-    label: "Period leave",
+    label: "Chart Purple",
   },
   {
     value: "#68AEAA",
-    label: "Period leave",
+    label: "Chart Light Blue",
   },
   {
     value: "#C97CC1",
-    label: "Period leave",
+    label: "Chart Light Pink",
   },
   {
     value: "#7CC984",
-    label: "Period leave",
+    label: "Chart Light Green",
   },
 ];
 
 export const leaveIcons = [
-  { value: "calendar", label: "label", icon: CalendarBlackIcon },
-  { value: "cake", label: "label2", icon: CakeIcon },
-  { value: "vacation", label: "label3", icon: VacationIcon },
-  { value: "medicine", label: "label4", icon: MedicineIcon },
-  { value: "baby", label: "label5", icon: BabyIcon },
-  { value: "flower", label: "label6", icon: FlowerIcon },
-  { value: "car", label: "label7", icon: CarIcon },
-  { value: "user", label: "label8", icon: UserSVGIcon },
+  { value: "calendar", label: "label", icon: CalendarBlackIconSVG },
+  { value: "cake", label: "label2", icon: CakeIconSVG },
+  { value: "vacation", label: "label3", icon: VacationIconSVG },
+  { value: "medicine", label: "label4", icon: MedicineIconSVG },
+  { value: "baby", label: "label5", icon: BabyIconSVG },
+  { value: "flower", label: "label6", icon: FlowerIconSVG },
+  { value: "car", label: "label7", icon: CarIconSVG },
+  { value: "user", label: "label8", icon: UserIconSVG },
 ];
 
-export const repitationTypeObj = {
+export const repetitionTypeObj = {
   per_month: "per month",
   per_year: "per year",
   per_week: "per week",

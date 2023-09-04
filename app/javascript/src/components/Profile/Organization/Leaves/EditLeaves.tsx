@@ -2,16 +2,12 @@ import React from "react";
 
 import { DeleteIcon } from "miruIcons";
 import { components } from "react-select";
+import { Button } from "StyledComponents";
 
 import { CustomInputText } from "common/CustomInputText";
 import CustomReactSelect from "common/CustomReactSelect";
 import { Divider } from "common/Divider";
-import {
-  leaveColors,
-  leaveIcons,
-  repetitionType,
-  countTypeOptions,
-} from "constants/leaveType";
+import { repetitionType, countTypeOptions } from "constants/leaveType";
 
 const { Option } = components;
 
@@ -120,15 +116,20 @@ const EditLeaves = ({
   handleDeleteLeaveBalance,
   handleAddLeaveType,
   handleLeaveTypeChange,
+  iconOptions,
+  colorOptions,
+  isDesktop,
+  updateLeaveDetails,
+  handleCancelAction,
 }) => (
-  <div className="mt-4 min-h-80v bg-miru-gray-100 p-10">
-    <div className="flex flex-row py-6">
-      <div className="w-2/12 p-2">Leave Balance</div>
-      <div className="w-10/12 p-2">
-        <div className="flex flex-col">
+  <div className="mt-4 min-h-full p-4 lg:min-h-80v lg:bg-miru-gray-100 lg:p-10">
+    <div className="flex flex-col lg:flex-row lg:py-6">
+      <div className="p-2 lg:w-2/12">Leave Balance</div>
+      <div className="p-2 lg:w-10/12">
+        <div className="flex flex-col bg-miru-gray-100 py-6 px-4 lg:bg-transparent lg:p-0">
           {leaveBalanceList.map((leaveBalance, index) => (
-            <div key={index}>
-              <div className="mb-4 flex w-full items-center justify-between">
+            <div className="flex flex-col" key={index}>
+              <div className="flex w-full flex-col items-center justify-between lg:mb-4 lg:flex-row">
                 <CustomInputText
                   id="leaveType"
                   inputBoxClassName="border focus:border-miru-han-purple-1000 cursor-pointer"
@@ -137,7 +138,7 @@ const EditLeaves = ({
                   name="leaveType"
                   type="text"
                   value={leaveBalance.leaveType || ""}
-                  wrapperClassName="w-5/12"
+                  wrapperClassName="w-full lg:w-5/12 mb-6 lg:mb-0"
                   onChange={e => handleLeaveTypeChange(e, index)}
                 />
                 <CustomReactSelect
@@ -145,10 +146,10 @@ const EditLeaves = ({
                   id="leaveIcon"
                   label="Icon"
                   name="leaveIcon"
-                  options={leaveIcons}
+                  options={iconOptions}
                   styles={iconColorStyles}
                   value={leaveBalance.leaveIcon || null}
-                  wrapperClassName="w-3/12 h-12 mx-4"
+                  wrapperClassName="w-full h-12 lg:mx-4 lg:w-3/12 mb-6 lg:mb-0"
                   components={{
                     Option: IconOption,
                     IndicatorSeparator: () => null,
@@ -162,10 +163,10 @@ const EditLeaves = ({
                   id="leaveColor"
                   label="Color"
                   name="leaveColor"
-                  options={leaveColors}
+                  options={colorOptions}
                   styles={iconColorStyles}
                   value={leaveBalance.leaveColor || null}
-                  wrapperClassName="w-4/12 h-12"
+                  wrapperClassName="h-12 w-full lg:w-4/12 mb-6 lg:mb-0"
                   components={{
                     Option: ColorOption,
                     IndicatorSeparator: () => null,
@@ -176,7 +177,7 @@ const EditLeaves = ({
                 />
                 <div className="w-1/12" />
               </div>
-              <div className="mb-6 flex w-full items-center justify-between">
+              <div className="mb-6 flex w-full flex-col items-center justify-between lg:flex-row">
                 <CustomInputText
                   id="total"
                   inputBoxClassName="border focus:border-miru-han-purple-1000 cursor-pointer"
@@ -186,7 +187,7 @@ const EditLeaves = ({
                   name="total"
                   type="number"
                   value={leaveBalance.total || ""}
-                  wrapperClassName="w-2/12 mr-2"
+                  wrapperClassName="w-full lg:w-2/12 lg:mr-2 mb-6 lg:mb-0"
                   onChange={e =>
                     updateCondition("total", e.target.value, index)
                   }
@@ -197,7 +198,7 @@ const EditLeaves = ({
                   name="countType"
                   options={countTypeOptions}
                   styles={customStyles}
-                  wrapperClassName="w-1/5 h-12 mx-4"
+                  wrapperClassName="w-full lg:w-1/5 h-12 lg:mx-4 mb-6 lg:mb-0"
                   components={{
                     IndicatorSeparator: () => null,
                   }}
@@ -218,7 +219,7 @@ const EditLeaves = ({
                   name="repetitionType"
                   options={repetitionType}
                   styles={customStyles}
-                  wrapperClassName="w-3/12 h-12 mr-4"
+                  wrapperClassName="w-full lg:w-3/12 h-12 lg:mr-4 mb-6 lg:mb-0"
                   components={{
                     IndicatorSeparator: () => null,
                   }}
@@ -241,14 +242,10 @@ const EditLeaves = ({
                   min={0}
                   name="carryForward"
                   type="number"
-                  value={leaveBalance.carryforwardedCount || ""}
-                  wrapperClassName="w-4/12"
+                  value={leaveBalance.carryForwardDays || ""}
+                  wrapperClassName="w-full lg:w-4/12 mb-6 lg:mb-0"
                   onChange={e =>
-                    updateCondition(
-                      "carryforwardedCount",
-                      e.target.value,
-                      index
-                    )
+                    updateCondition("carryForwardDays", e.target.value, index)
                   }
                 />
                 <div className="flex h-12 w-1/12 items-center">
@@ -262,7 +259,7 @@ const EditLeaves = ({
                 </div>
               </div>
               {leaveBalanceList.length - 1 != index && (
-                <div className="mb-6 w-11/12">
+                <div className="mb-6 w-full lg:w-11/12">
                   <Divider />
                 </div>
               )}
@@ -278,6 +275,27 @@ const EditLeaves = ({
           </div>
         </div>
       </div>
+      {!isDesktop && leaveBalanceList.length > 0 && (
+        <div className="mt-5 flex w-full justify-between px-2">
+          <Button
+            className="mr-2 flex w-1/2 items-center justify-center rounded border border-miru-red-400 px-4 py-2"
+            onClick={handleCancelAction}
+          >
+            <span className="ml-2 text-center text-base font-bold leading-5 text-miru-red-400">
+              Cancel
+            </span>
+          </Button>
+          <Button
+            className="ml-2 flex w-1/2 items-center justify-center px-4 py-2"
+            style="primary"
+            onClick={updateLeaveDetails}
+          >
+            <span className="ml-2 text-center text-base font-bold leading-5 text-white">
+              Save
+            </span>
+          </Button>
+        </div>
+      )}
     </div>
   </div>
 );

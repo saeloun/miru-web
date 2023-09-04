@@ -11,7 +11,7 @@ import OrgDetails from "./Organization/Details";
 import OrgEdit from "./Organization/Edit";
 import Holidays from "./Organization/Holidays";
 import Import from "./Organization/Import";
-import Leaves from "./Organization/LeavesAndHolidays";
+import Leaves from "./Organization/Leaves";
 import PaymentSettings from "./Organization/Payment";
 import UserDetailsEdit from "./UserDetail/Edit";
 import UserDetailsView from "./UserDetail/UserDetailsView";

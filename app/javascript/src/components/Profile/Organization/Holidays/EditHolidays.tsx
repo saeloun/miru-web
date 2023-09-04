@@ -2,9 +2,12 @@ import React from "react";
 
 import dayjs from "dayjs";
 import { DeleteIcon, CalendarIcon } from "miruIcons";
-import Select from "react-select";
+import { Button } from "StyledComponents";
 
 import CustomDatePicker from "common/CustomDatePicker";
+import { CustomInputText } from "common/CustomInputText";
+import CustomReactSelect from "common/CustomReactSelect";
+import CustomToggle from "common/CustomToggle";
 import { Divider } from "common/Divider";
 import { repetitionType } from "constants/leaveType";
 
@@ -12,7 +15,6 @@ const customStyles = {
   control: (provided, state) => ({
     ...provided,
     backgroundColor: "#FFFFFF",
-    color: "red",
     minHeight: 48,
     padding: "0",
     borderColor: state.isFocused ? "#5B34EA" : "#D7DEE5",
@@ -26,12 +28,7 @@ const customStyles = {
     ...provided,
     fontSize: "12px",
     letterSpacing: "2px",
-    width: "auto",
     zIndex: 5,
-  }),
-  valueContainer: provided => ({
-    ...provided,
-    overflow: "visible",
   }),
   placeholder: base => ({
     ...base,
@@ -41,18 +38,12 @@ const customStyles = {
     fontSize: 10,
     backgroundColor: "#FFFFFF",
   }),
-  menuList: provided => ({
-    ...provided,
-    display: "grid",
-    gridTemplateColumns: "auto auto auto auto",
-    padding: 0,
-  }),
   option: provided => ({
     ...provided,
-    display: "grid",
-    justifyItems: "center",
-    padding: 0,
     cursor: "pointer",
+    "&:hover": {
+      background: "#D7DEE5",
+    },
   }),
 };
 
@@ -75,88 +66,71 @@ const EditHolidays = ({
   setShowOptionalDatePicker,
   showOptionalDatePicker,
   wrapperRef,
+  setEnableOptionalHolidays,
+  isDesktop,
+  handleCancelAction,
+  updateHolidayDetails,
 }) => (
-  <div className="mt-4 min-h-80v bg-miru-gray-100 p-10">
-    <div className="flex flex-row py-6">
-      <div className="w-2/12 p-2">Holidays</div>
-      <div className="w-10/12 p-2">
+  <div className="mt-4 p-4 lg:min-h-80v lg:bg-miru-gray-100 lg:p-10">
+    <div className="flex flex-col py-6 lg:flex-row">
+      <div className="p-2 lg:w-2/12">Public Holidays</div>
+      <div className="p-2 lg:w-10/12">
         <div className="flex flex-col">
           {holidayList.map((holiday, index) => (
             <div className="mb-4 flex flex-row" key={index}>
               <div className="flex w-11/12 flex-row py-2">
-                <div
-                  className="field w-1/2 border bg-white pr-1"
-                  ref={wrapperRef}
-                >
+                <div className="relative w-1/2" ref={wrapperRef}>
                   <div
-                    className="relative"
-                    onClick={() =>
+                    onClick={() => {
                       setShowDatePicker({
                         visibility: !showDatePicker.visibility,
                         index,
-                      })
-                    }
+                      });
+                    }}
                   >
-                    <div className="field relative">
-                      <div className="outline relative">
-                        <input
-                          disabled
-                          className="focus:outline-none form__input block w-full appearance-none rounded border-0 bg-white p-4 px-3 py-2 text-sm font-medium text-miru-dark-purple-1000 sm:text-base"
-                          name="holiday_date"
-                          placeholder=""
-                          type="text"
-                          value={
-                            holiday.date &&
-                            dayjs(holiday.date).format("DD.MM.YYYY")
-                          }
-                        />
-                        <CalendarIcon
-                          className="absolute top-0 right-0 m-2"
-                          color="#5B34EA"
-                          size={20}
-                        />
-                        <label
-                          className="absolute -top-10 z-10 ml-3 h-3 origin-0 bg-white p-0 px-1 text-xs text-miru-dark-purple-400 duration-300"
-                          htmlFor="holiday_date"
-                        >
-                          Date
-                        </label>
-                      </div>
-                    </div>
+                    <CustomInputText
+                      readOnly
+                      id="Date"
+                      inputBoxClassName="border focus:border-miru-han-purple-1000 cursor-pointer"
+                      label="Date"
+                      labelClassName="cursor-pointer"
+                      name="Date"
+                      type="text"
+                      value={
+                        holiday.date && dayjs(holiday.date).format("DD.MM.YYYY")
+                      }
+                    />
+                    <CalendarIcon
+                      className="absolute top-2 right-2 m-2"
+                      color="#5B34EA"
+                      size={20}
+                    />
                   </div>
                   {index == showDatePicker.index &&
                     showDatePicker.visibility && (
                       <CustomDatePicker
-                        date={holiday.date}
+                        date={holiday.date ? holiday.date : dayjs()}
                         handleChange={e => handleDatePicker(e, index, false)}
+                        setVisibility={showDatePicker.visibility}
+                        showYearDropdown={false}
+                        wrapperRef={wrapperRef}
                       />
                     )}
                 </div>
                 <div className="w-1/2 pl-1">
-                  <div className="field relative">
-                    <div className="outline relative">
-                      <input
-                        className="form__input block w-full appearance-none bg-white p-4 text-base"
-                        id="holiday_name"
-                        name="holiday_name"
-                        placeholder=""
-                        type="text"
-                        value={holiday.name}
-                        onChange={e =>
-                          handleHolidateNameChange(e, index, false)
-                        }
-                      />
-                      <label
-                        className="absolute top-0 z-1 origin-0 bg-white p-3 text-base font-medium text-miru-dark-purple-200 duration-300"
-                        htmlFor="holiday_name"
-                      >
-                        Name
-                      </label>
-                    </div>
-                  </div>
+                  <CustomInputText
+                    id="Name"
+                    inputBoxClassName="border focus:border-miru-han-purple-1000 cursor-pointer"
+                    label="Name"
+                    labelClassName="cursor-pointer"
+                    name="Name"
+                    type="text"
+                    value={holiday.name}
+                    onChange={e => handleHolidateNameChange(e, index, false)}
+                  />
                 </div>
               </div>
-              <div className="flex w-1/12 items-end justify-center pb-4">
+              <div className="flex w-1/12 items-center justify-center">
                 <button onClick={() => handleDeleteHoliday(false, index)}>
                   <DeleteIcon
                     className="ml-2 cursor-pointer rounded-full"
@@ -177,52 +151,51 @@ const EditHolidays = ({
       </div>
     </div>
     <Divider />
-    <div className="flex flex-row py-6">
-      <div className="w-2/12 p-2">
-        <div>Optional</div>
-        <div>Holidays</div>
+    <div className="flex flex-col py-6 lg:flex-row">
+      <div className="p-2 lg:w-2/12">
+        <div className="lg:w-2/12">Optional Holidays</div>
       </div>
-      <div className="w-10/12 p-2">
-        <div className="flex w-11/12 flex-row justify-between">
-          <span>Enable optional holidays</span>
-          <div>
-            <label className="switch">
-              <input type="checkbox" onChange={handleCheckboxClick} />
-              <span className="slider round" />
-            </label>
-          </div>
+      <div className="p-2 lg:w-10/12">
+        <div className="flex flex-row justify-between lg:w-11/12">
+          <span className="flex items-center text-xs font-normal text-miru-dark-purple-1000">
+            Enable optional holidays
+          </span>
+          <CustomToggle
+            id="optionalHolidays"
+            isChecked={enableOptionalHolidays}
+            setIsChecked={setEnableOptionalHolidays}
+            toggleCss="mt-5"
+            onToggle={handleCheckboxClick}
+          />
         </div>
         {enableOptionalHolidays && (
           <div className="mt-4 flex flex-col">
-            <div className="flex w-11/12 flex-row py-2">
+            <div className="flex flex-row py-2 lg:w-11/12">
               <div className="w-1/2">
-                <div className="field relative">
-                  <div className="outline relative">
-                    <input
-                      id="total_op_holidays"
-                      min={0}
-                      name="total_op_holidays"
-                      type="number"
-                      value={totalOptionalHolidays}
-                      className={`
-                          form__input block w-full appearance-none bg-white p-4 text-base`}
-                      onChange={handleChangeTotalOpHoliday}
-                    />
-                    <label
-                      className="absolute top-0 z-1 origin-0 bg-white p-3 text-base font-medium text-miru-dark-purple-200 duration-300"
-                      htmlFor="total_op_holidays"
-                    >
-                      Total optional holidays
-                    </label>
-                  </div>
-                </div>
+                <CustomInputText
+                  id="total_op_holidays"
+                  inputBoxClassName="border focus:border-miru-han-purple-1000 cursor-pointer"
+                  label="Total optional holidays"
+                  labelClassName="cursor-pointer"
+                  min={0}
+                  name="total_op_holidays"
+                  type="number"
+                  value={totalOptionalHolidays}
+                  onChange={handleChangeTotalOpHoliday}
+                />
               </div>
               <div className="w-1/2 px-2">
-                <Select
-                  className=""
-                  classNamePrefix="react-select-filter"
+                <CustomReactSelect
+                  handleOnChange={handleChangeRepetitionOpHoliday}
+                  id="repetitionType"
+                  label=""
+                  name="repetitionType"
                   options={repetitionType}
                   styles={customStyles}
+                  wrapperClassName="h-12"
+                  components={{
+                    IndicatorSeparator: () => null,
+                  }}
                   value={
                     optionalRepetitionType
                       ? repetitionType.filter(
@@ -230,21 +203,19 @@ const EditHolidays = ({
                         )
                       : repetitionType[0]
                   }
-                  onChange={handleChangeRepetitionOpHoliday}
                 />
               </div>
             </div>
-            <div className="mt-3">
-              <label> List of optional holidays </label>
+            <div className="mt-10">
+              <label className="flex items-center text-xs font-normal text-miru-dark-purple-1000">
+                {" "}
+                List of optional holidays{" "}
+              </label>
               {optionalHolidaysList.map((optionalHoliday, index) => (
                 <div className="flex flex-row" key={index}>
                   <div className="flex w-11/12 flex-row py-3">
-                    <div
-                      className="field w-1/2 border bg-white pr-1"
-                      ref={optionalWrapperRef}
-                    >
+                    <div className="relative w-1/2" ref={optionalWrapperRef}>
                       <div
-                        className="relative"
                         onClick={() =>
                           setShowOptionalDatePicker({
                             visibility: !showOptionalDatePicker.visibility,
@@ -252,68 +223,51 @@ const EditHolidays = ({
                           })
                         }
                       >
-                        <div className="field relative">
-                          <div className="outline relative">
-                            <input
-                              disabled
-                              name="op_holiday_date_picker"
-                              placeholder=""
-                              type="text"
-                              className={`
-                                  focus:outline-none form__input block w-full appearance-none rounded border-0 bg-white p-4 px-3 py-2 text-sm font-medium text-miru-dark-purple-1000 sm:text-base`}
-                              value={
-                                optionalHoliday.date &&
-                                dayjs(optionalHoliday.date).format("DD.MM.YYYY")
-                              }
-                            />
-                            <label
-                              className="absolute -top-10 z-10 ml-3 h-3 origin-0 bg-white p-0 px-1 text-xs text-miru-dark-purple-400 duration-300"
-                              htmlFor="total_op_holidays"
-                            >
-                              Date
-                            </label>
-                            <CalendarIcon
-                              className="absolute top-0 right-0 m-2"
-                              color="#5B34EA"
-                              size={20}
-                            />
-                          </div>
-                        </div>
+                        <CustomInputText
+                          readOnly
+                          id="op_holiday_date_picker"
+                          inputBoxClassName="border focus:border-miru-han-purple-1000 cursor-pointer"
+                          label="Date"
+                          labelClassName="cursor-pointer"
+                          name="op_holiday_date_picker"
+                          type="text"
+                          value={
+                            optionalHoliday.date &&
+                            dayjs(optionalHoliday.date).format("DD.MM.YYYY")
+                          }
+                        />
+                        <CalendarIcon
+                          className="absolute top-2 right-2 m-2"
+                          color="#5B34EA"
+                          size={20}
+                        />
                       </div>
-                      {showOptionalDatePicker.index == index &&
+                      {index == showOptionalDatePicker.index &&
                         showOptionalDatePicker.visibility && (
                           <CustomDatePicker
-                            date={optionalHoliday.date}
+                            date={optionalHoliday.date || dayjs()}
                             handleChange={e => handleDatePicker(e, index, true)}
+                            setVisibility={showOptionalDatePicker.visibility}
+                            showYearDropdown={false}
+                            wrapperRef={optionalWrapperRef}
                           />
                         )}
                     </div>
                     <div className="w-1/2 pl-1">
-                      <div className="field relative">
-                        <div className="outline relative">
-                          <input
-                            id="holiday_name_op"
-                            name="holiday_name_op"
-                            placeholder=""
-                            type="text"
-                            value={optionalHoliday.name}
-                            className={`form__input
-                                block w-full appearance-none bg-white p-4 text-base`}
-                            onChange={e =>
-                              handleHolidateNameChange(e, index, true)
-                            }
-                          />
-                          <label
-                            className="absolute top-0 z-1 origin-0 bg-white p-3 text-base font-medium text-miru-dark-purple-200 duration-300"
-                            htmlFor="holiday_name_op"
-                          >
-                            Name
-                          </label>
-                        </div>
-                      </div>
+                      <CustomInputText
+                        id="holiday_name_op"
+                        inputBoxClassName="border focus:border-miru-han-purple-1000 cursor-pointer"
+                        label="Name"
+                        labelClassName="cursor-pointer"
+                        min={0}
+                        name="holiday_name_op"
+                        type="text"
+                        value={optionalHoliday.name}
+                        onChange={e => handleHolidateNameChange(e, index, true)}
+                      />
                     </div>
                   </div>
-                  <div className="flex w-1/12 items-end justify-center pb-4">
+                  <div className="flex w-1/12 items-center justify-center">
                     <button onClick={() => handleDeleteHoliday(true, index)}>
                       <DeleteIcon
                         className="ml-2 cursor-pointer rounded-full"
@@ -326,7 +280,7 @@ const EditHolidays = ({
               ))}
             </div>
             <div
-              className="dotted-btn mt-4 w-11/12 px-4 py-2 text-center text-miru-dark-purple-200"
+              className="dotted-btn mt-4 px-4 py-2 text-center text-miru-dark-purple-200 lg:w-11/12"
               onClick={() => handleAddHoliday(true)}
             >
               + Add Optional Holiday
@@ -335,6 +289,27 @@ const EditHolidays = ({
         )}
       </div>
     </div>
+    {!isDesktop && holidayList.length > 0 && (
+      <div className="mt-5 flex w-full justify-between px-2">
+        <Button
+          className="mr-2 flex w-1/2 items-center justify-center rounded border border-miru-red-400 px-4 py-2"
+          onClick={handleCancelAction}
+        >
+          <span className="ml-2 text-center text-base font-bold leading-5 text-miru-red-400">
+            Cancel
+          </span>
+        </Button>
+        <Button
+          className="ml-2 flex w-1/2 items-center justify-center px-4 py-2"
+          style="primary"
+          onClick={updateHolidayDetails}
+        >
+          <span className="ml-2 text-center text-base font-bold leading-5 text-white">
+            Save
+          </span>
+        </Button>
+      </div>
+    )}
   </div>
 );
 
