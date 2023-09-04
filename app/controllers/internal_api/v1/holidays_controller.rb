@@ -3,6 +3,14 @@
 class InternalApi::V1::HolidaysController < ApplicationController
   before_action :set_year, only: [:create]
 
+  def index
+    authorize Holiday
+
+    year = params[:year]
+    holiday_infos = Holiday.find_by(year:).holiday_infos
+    render :index, locals: { holiday_infos: }, status: :ok
+  end
+
   def create
     authorize Holiday
 
