@@ -15,7 +15,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
       - name: Setup PostgreSQL
-        uses: actions/setup-postgres@v2
+        uses: Harmon758/postgresql-action@v1.0.0
         with:
           postgresql version: "15"
           postgresql db: miru_web_test
