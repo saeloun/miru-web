@@ -203,6 +203,7 @@ const Header = ({
       {showContactModal && (
         <AddContacts
           client={clientDetails}
+          fetchDetails={fetchDetails}
           setShowContactModal={setShowContactModal}
           showContactModal={showContactModal}
         />

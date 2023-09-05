@@ -22,7 +22,12 @@ const contactSchema = Yup.object().shape({
     .required("Email ID cannot be blank"),
 });
 
-const AddContacts = ({ client, setShowContactModal, showContactModal }) => {
+const AddContacts = ({
+  client,
+  fetchDetails,
+  setShowContactModal,
+  showContactModal,
+}) => {
   interface FormValues {
     id?: string;
     firstName: string;
@@ -35,6 +40,7 @@ const AddContacts = ({ client, setShowContactModal, showContactModal }) => {
     const payload = { firstName, lastName, email };
     await clientApi.addClientContact(client.id, payload);
     setShowContactModal(false);
+    fetchDetails();
   };
 
   return (
