@@ -11,6 +11,13 @@ const InvoiceDetails = ({ invoice }) => {
   const invoiceWaived = invoice?.status === "waived";
   const strikeAmount = invoiceWaived && "line-through";
 
+  const sortedLineItems = [...invoice.invoiceLineItems].sort((a, b) => {
+    const dateA = new Date(a.date);
+    const dateB = new Date(b.date);
+
+    return dateA.getTime() - dateB.getTime();
+  });
+
   return (
     <>
       <CompanyInfo company={invoice.company} />
@@ -22,7 +29,7 @@ const InvoiceDetails = ({ invoice }) => {
         showHeader
         currency={invoice.company.currency}
         dateFormat={invoice.company.dateFormat}
-        items={invoice.invoiceLineItems}
+        items={sortedLineItems}
         strikeAmount={strikeAmount}
       />
       <InvoiceTotalSummary invoice={invoice} strikeAmount={strikeAmount} />
