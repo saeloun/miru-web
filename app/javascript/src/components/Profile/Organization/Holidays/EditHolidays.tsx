@@ -73,7 +73,10 @@ const EditHolidays = ({
 }) => (
   <div className="mt-4 p-4 lg:min-h-80v lg:bg-miru-gray-100 lg:p-10">
     <div className="flex flex-col py-6 lg:flex-row">
-      <div className="p-2 lg:w-2/12">Public Holidays</div>
+      <div className="flex p-2 lg:w-2/12">
+        <CalendarIcon className="mr-2 mt-1" size={20} weight="bold" />
+        <div className="">Public Holidays</div>
+      </div>
       <div className="p-2 lg:w-10/12">
         <div className="flex flex-col">
           {holidayList.map((holiday, index) => (
@@ -152,8 +155,9 @@ const EditHolidays = ({
     </div>
     <Divider />
     <div className="flex flex-col py-6 lg:flex-row">
-      <div className="p-2 lg:w-2/12">
-        <div className="lg:w-2/12">Optional Holidays</div>
+      <div className="flex p-2 lg:w-2/12">
+        <CalendarIcon className="mr-2 mt-1" size={20} weight="bold" />
+        <div className="">Optional Holidays</div>
       </div>
       <div className="p-2 lg:w-10/12">
         <div className="flex flex-row justify-between lg:w-11/12">
