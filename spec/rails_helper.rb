@@ -39,7 +39,7 @@ VCR.configure do |config|
   config.ignore_localhost = true
   config.configure_rspec_metadata!
   config.allow_http_connections_when_no_cassette = true
-  config.ignore_hosts "127.0.0.1", "localhost", "elasticsearch"
+  config.ignore_hosts "127.0.0.1", "localhost", "elasticsearch", "analytics-api.buildkite.com"
 end
 
 RSpec.configure do |config|
