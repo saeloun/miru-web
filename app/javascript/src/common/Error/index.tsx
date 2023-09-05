@@ -6,10 +6,11 @@ import { Button } from "StyledComponents";
 
 import withLayout from "common/Mobile/HOC/withLayout";
 import { useUserContext } from "context/UserContext";
+import { dashboardUrl } from "utils/dashboardUrl";
 
 const ErrorPage = () => {
   const navigate = useNavigate();
-  const { isDesktop } = useUserContext();
+  const { isDesktop, companyRole } = useUserContext();
 
   const ErrorPageLayout = () => (
     <div className="flex h-90v w-full items-center justify-center lg:h-full">
@@ -22,7 +23,7 @@ const ErrorPage = () => {
           className="w-full py-2 lg:w-1/4 lg:py-4"
           style="primary"
           onClick={() => {
-            navigate("/time-tracking");
+            navigate(dashboardUrl(companyRole));
           }}
         >
           <span className="text-base font-bold leading-5 text-white lg:text-lg lg:leading-7">
@@ -32,6 +33,7 @@ const ErrorPage = () => {
       </div>
     </div>
   );
+
   const Main = withLayout(ErrorPageLayout, !isDesktop, !isDesktop);
 
   return isDesktop ? ErrorPageLayout() : <Main />;

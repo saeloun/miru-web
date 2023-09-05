@@ -6,23 +6,11 @@ import { Routes, Route, Outlet, Navigate } from "react-router-dom";
 import ErrorPage from "common/Error";
 import { Roles, Paths } from "constants/index";
 import { ROUTES } from "constants/routes";
+import { dashboardUrl } from "utils/dashboardUrl";
 
 const redirectUrl = role => {
   const lastVisitedPage = Cookies.get("lastVisitedPage");
-  let url;
-
-  switch (role) {
-    case Roles.BOOK_KEEPER:
-      url = Paths.PAYMENTS;
-      break;
-    case Roles.OWNER:
-    case Roles.CLIENT:
-      url = "invoices";
-      break;
-    default:
-      url = Paths.TIME_TRACKING;
-      break;
-  }
+  let url = dashboardUrl(role);
 
   if (lastVisitedPage && lastVisitedPage !== "/") {
     url = lastVisitedPage;
