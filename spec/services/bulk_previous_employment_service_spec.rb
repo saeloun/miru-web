@@ -4,16 +4,17 @@ require "rails_helper"
 
 RSpec.describe BulkPreviousEmploymentService do
   describe "#process" do
-    let(:user) { create(:user) }
+    let(:company) { create(:company) }
+    let(:user) { create(:user, current_workspace_id: company.id) }
+    let(:employment) { create(:employment, company_id: company.id, user_id: user.id) }
     let(:previous_employment) { create(:previous_employment, user:) }
-    let(:added_employments) { [{ "company_name" => "ABC Company", "role" => "Software Engineer" }] }
+    let(:added_employments) { [{ company_name: "ABC Company", role: "Software Engineer" }] }
     let(:updated_employments) {
-  [{ "id" => previous_employment.id, "company_name" => "Updated Company", "role" => "Updated Role" }]
-}
+      [{ id: previous_employment.id, company_name: "Updated Company", role: "Updated Role" }]
+    }
     let(:removed_employment_ids) { [2, 3] }
     let(:employments) do
       {
-        user:,
         added_employments:,
         updated_employments:,
         removed_employment_ids:
@@ -21,7 +22,7 @@ RSpec.describe BulkPreviousEmploymentService do
     end
 
     it "updates previous employments" do
-      service = BulkPreviousEmploymentService.new(employments)
+      service = BulkPreviousEmploymentService.new(employments, user, employment)
 
       expect {
         service.process
