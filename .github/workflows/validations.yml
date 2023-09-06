@@ -84,9 +84,7 @@ jobs:
           DB_PASS: "password"
           TEST_ENV_NUMBER: ${{ github.event.number }}
         run: |
-          bundle exec rails db:create
-          bundle exec rails db:migrate
-          bundle exec rails db:seed
+          bundle exec rails db:prepare
       - name: Run Rubocop
         run: |
           bundle exec rubocop
@@ -97,29 +95,7 @@ jobs:
           DB_PASS: "password"
           TEST_ENV_NUMBER: ${{ github.event.number }}
         run:
-          COVERAGE=true bundle exec rspec --exclude-pattern
-          "spec/system/**/*_spec.rb"
-      - name: Parse codecoverage output and generate comment body
-        id: parse_output
-        run: |
-          ruby ./.github/workflows/code_coverage_parser.rb
-      - name: Read parsed Code Coverage Comment Body
-        id: summary
-        uses: juliangruber/read-file-action@v1
-        with:
-          path: ./code-coverage-comment.txt
-          trim: true
-      - name: PR number finder
-        uses: jwalton/gh-find-current-pr@v1
-        id: finder
-      - name: Add comment to PR
-        uses: marocchino/sticky-pull-request-comment@v2
-        with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          header: CodeCoverage
-          number: ${{ steps.finder.outputs.pr }}
-          message: |
-            ${{ steps.summary.outputs.content }}
+          bundle exec rspec --exclude-pattern "spec/system/**/*_spec.rb"
       - name: Run Eslint
         run: |
           npx eslint "./app/javascript/**/*.{ts,tsx,js,jsx,json}"
