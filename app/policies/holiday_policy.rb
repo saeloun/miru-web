@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class HolidayPolicy < ApplicationPolicy
-  def create?
+  def update?
     authorize_current_user
   end
 
