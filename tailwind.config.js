@@ -74,8 +74,6 @@ module.exports = {
         72: "72%",
         "1/10": "10%",
         "1/15": "15%",
-        "1/20": "20%",
-        "1/60": "60%",
       },
       minWidth: {
         12: "12px",
@@ -271,4 +269,5 @@ module.exports = {
     opacity: ({ after }) => after(["disabled"]),
   },
   plugins: [],
+  content: ["./public/**/*.html", "./src/**/*.{js,jsx,ts,tsx}"],
 };
