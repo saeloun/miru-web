@@ -51,7 +51,7 @@ class HolidayInfo < ApplicationRecord
     end
 
     def validate_year
-      if date.year != holiday.year
+      if date&.year != holiday.year
         errors.add(:date, "must have the same year as the associated holiday")
       end
     end

@@ -19,21 +19,13 @@ class InternalApi::V1::HolidaysController < ApplicationController
 
   private
 
-    def set_year
-    end
-
     def holiday_params
       params.require(:holiday).permit(
-        holiday: [:enable_optional_holidays, :no_of_allowed_optional_holidays, holiday_types: []],
+        holiday: [:enable_optional_holidays, :no_of_allowed_optional_holidays, :time_period_optional_holidays,
+                  holiday_types: []],
         add_holiday_infos: [:name, :date, :category],
         update_holiday_infos: [:id, :name, :date, :category],
         remove_holiday_infos: []
       )
-    end
-
-    def holiday_info_params
-      params.require(:holiday_info).map do |info|
-        info.permit(:name, :date, :category)
-      end
     end
 end
