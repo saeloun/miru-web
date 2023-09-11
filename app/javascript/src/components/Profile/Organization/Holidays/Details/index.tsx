@@ -27,7 +27,7 @@ const Details = ({
   const tileContent = ({ date }) => {
     let result;
     if (
-      (result = holidaysList.find(
+      (result = holidaysList?.find(
         o => o.date === dayjs(date).format("DD-MM-YYYY")
       ))
     ) {
@@ -55,9 +55,13 @@ const Details = ({
           <table>
             <TableHeader />
             <tbody>
-              {holidaysList.map((holiday, index) => (
-                <TableRow holiday={holiday} key={index} />
-              ))}
+              {holidaysList.length ? (
+                holidaysList.map((holiday, index) => (
+                  <TableRow holiday={holiday} key={index} />
+                ))
+              ) : (
+                <div>No data found</div>
+              )}
             </tbody>
           </table>
         </div>
@@ -78,9 +82,13 @@ const Details = ({
           <table>
             <TableHeader />
             <tbody>
-              {optionalHolidayList.map((holiday, index) => (
-                <TableRow holiday={holiday} key={index} />
-              ))}
+              {optionalHolidayList.length > 0 ? (
+                optionalHolidayList.map((holiday, index) => (
+                  <TableRow holiday={holiday} key={index} />
+                ))
+              ) : (
+                <div>No Data found</div>
+              )}
             </tbody>
           </table>
         </div>

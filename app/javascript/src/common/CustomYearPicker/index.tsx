@@ -14,6 +14,7 @@ const CustomYearPicker = () => {
 
     return ans;
   };
+
   const years = range(1920, getYear(new Date()) + 1);
 
   const handleOnChange = selected => {

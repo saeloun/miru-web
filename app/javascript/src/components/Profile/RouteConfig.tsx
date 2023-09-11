@@ -10,7 +10,7 @@ import Billing from "./Organization/Billing";
 import OrgDetails from "./Organization/Details";
 import OrgEdit from "./Organization/Edit";
 import Holidays from "./Organization/Holidays";
-import Import from "./Organization/Import";
+import OrganizationImport from "./Organization/Import";
 import Leaves from "./Organization/Leaves";
 import PaymentSettings from "./Organization/Payment";
 import UserDetailsEdit from "./UserDetail/Edit";
@@ -46,7 +46,7 @@ const RouteConfig = () => {
             </ProtectedRoute>
           }
         />
-        <Route element={<Import />} path="import" />
+        <Route element={<OrganizationImport />} path="import" />
         <Route element={<Leaves />} path="leaves" />
         <Route element={<Holidays />} path="holidays" />
         <Route element={<LeaveBalance />} path="leave-balance" />

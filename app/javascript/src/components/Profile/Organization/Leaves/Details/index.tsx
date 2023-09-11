@@ -10,9 +10,13 @@ const Details = ({ leavesList }) => (
       <table className="flex w-full flex-col">
         <TableHeader />
         <tbody>
-          {leavesList.map((leave, index) => (
-            <TableRow key={index} leave={leave} />
-          ))}
+          {leavesList.length > 0 ? (
+            leavesList.map((leave, index) => (
+              <TableRow key={index} leave={leave} />
+            ))
+          ) : (
+            <div>No data found</div>
+          )}
         </tbody>
       </table>
     </div>
