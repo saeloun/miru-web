@@ -2,24 +2,21 @@
 import React, { useEffect, useRef, useState } from "react";
 
 import { useOutsideClick } from "helpers";
+import { useNavigate } from "react-router-dom";
 import { Toastr } from "StyledComponents";
 
 import Loader from "common/Loader/index";
 import DetailsHeader from "components/Profile/DetailsHeader";
-import { leaveTypes } from "constants/leaveType";
+import { useUserContext } from "context/UserContext";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import Details from "./Details";
-import EditLeavesAndHolidays from "./EditLeavesAndHolidays";
+import EditHolidays from "./EditHolidays";
 
 import Header from "../../Header";
 
-const LeavesAndHolidays = () => {
-  const leaveTypeOptions = leaveTypes;
-
-  const [leaveBalanceList, setLeaveBalanceList] = useState([]);
+const Holidays = () => {
   const [holidayList, setHolidayList] = useState([]);
-  const [errDetails, setErrDetails] = useState({}); //eslint-disable-line
   const [isDetailUpdated, setIsDetailUpdated] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [showCalendar, setShowCalendar] = useState(false);
@@ -43,6 +40,9 @@ const LeavesAndHolidays = () => {
   const [optionalRepetitionType, setOptionalRepetitionType] =
     useState("per_year");
   const [isEditable, setIsEditable] = useState(true);
+
+  const { isDesktop } = useUserContext();
+  const navigate = useNavigate();
 
   const getData = async () => {
     setIsLoading(true);
@@ -71,28 +71,6 @@ const LeavesAndHolidays = () => {
   useEffect(() => {
     sendGAPageView();
   }, []);
-
-  const handleAddLeaveType = () => {
-    setLeaveBalanceList([
-      ...leaveBalanceList,
-      ...[
-        {
-          leaveType: "",
-          total: 0,
-          countType: "days",
-          repetitionType: "per_year",
-          carryforwardedCount: 0,
-        },
-      ],
-    ]);
-  };
-
-  const updateCondition = (type, value, index) => {
-    const editLeaveList = [...leaveBalanceList];
-    editLeaveList[index][type] = value;
-    setLeaveBalanceList([...editLeaveList]);
-    setIsDetailUpdated(true);
-  };
 
   const handleDatePicker = (date, index, isoptionalHoliday) => {
     setIsDetailUpdated(true);
@@ -172,7 +150,7 @@ const LeavesAndHolidays = () => {
     setIsDetailUpdated(true);
   };
 
-  const handleupdateLeaveDetails = async () => {
+  const handleUpdateHolidayDetails = async () => {
     try {
       setIsEditable(false);
     } catch {
@@ -182,74 +160,83 @@ const LeavesAndHolidays = () => {
   };
 
   const handleCancelAction = () => {
-    getData();
-    setIsDetailUpdated(false);
+    if (isDesktop) {
+      getData();
+      setIsDetailUpdated(false);
+    } else {
+      navigate("/profile/edit/option");
+    }
   };
 
-  const handleDeleteLeaveBalance = index => {
-    const updatedLeaveBalance = leaveBalanceList;
-    updatedLeaveBalance.splice(index, 1);
-    setLeaveBalanceList([...updatedLeaveBalance]);
-  };
+  const getHolidaysContent = () => {
+    if (isLoading) {
+      return <Loader />;
+    }
 
-  return (
-    <div className="flex w-4/5 flex-col">
-      {!isEditable ? (
-        <DetailsHeader
-          showButtons
-          editAction={() => setIsEditable(true)}
-          isDisableUpdateBtn={false}
-          subTitle=""
-          title="Leaves & Holidays"
-        />
-      ) : (
-        <Header
-          showButtons
-          cancelAction={handleCancelAction}
-          isDisableUpdateBtn={isDetailUpdated}
-          saveAction={handleupdateLeaveDetails}
-          subTitle=""
-          title="Leaves & Holidays"
-        />
-      )}
-      {isLoading ? (
-        <Loader />
-      ) : !isEditable ? (
-        <Details
-          showCalendar={showCalendar}
-          toggleCalendarModal={toggleCalendarModal}
-          wrapperRef={modalWrapperRef}
-        />
-      ) : (
-        <EditLeavesAndHolidays
+    if (isEditable) {
+      return (
+        <EditHolidays
           enableOptionalHolidays={enableOptionalHolidays}
-          errDetails={errDetails}
           handleAddHoliday={handleAddHoliday}
-          handleAddLeaveType={handleAddLeaveType}
+          handleCancelAction={handleCancelAction}
           handleChangeRepetitionOpHoliday={handleChangeRepetitionOpHoliday}
           handleChangeTotalOpHoliday={handleChangeTotalOpHoliday}
           handleCheckboxClick={handleCheckboxClick}
           handleDatePicker={handleDatePicker}
           handleDeleteHoliday={handleDeleteHoliday}
-          handleDeleteLeaveBalance={handleDeleteLeaveBalance}
           handleHolidateNameChange={handleHolidateNameChange}
           holidayList={holidayList}
-          leaveBalanceList={leaveBalanceList}
-          leaveTypeOptions={leaveTypeOptions}
+          isDesktop={isDesktop}
           optionalHolidaysList={optionalHolidaysList}
           optionalRepetitionType={optionalRepetitionType}
           optionalWrapperRef={optionalWrapperRef}
+          setEnableOptionalHolidays={setEnableOptionalHolidays}
           setShowDatePicker={setShowDatePicker}
           setShowOptionalDatePicker={setShowOptionalDatePicker}
           showDatePicker={showDatePicker}
           showOptionalDatePicker={showOptionalDatePicker}
           totalOptionalHolidays={totalOptionalHolidays}
-          updateCondition={updateCondition}
+          updateHolidayDetails={handleUpdateHolidayDetails}
           wrapperRef={wrapperRef}
         />
+      );
+    }
+
+    return (
+      <Details
+        holidaysList={holidayList}
+        optionalHolidayList={optionalHolidaysList}
+        showCalendar={showCalendar}
+        toggleCalendarModal={toggleCalendarModal}
+      />
+    );
+  };
+
+  return (
+    <div className="flex h-full w-full flex-col">
+      {isEditable ? (
+        <Header
+          showButtons
+          showYearPicker
+          cancelAction={handleCancelAction}
+          isDisableUpdateBtn={isDetailUpdated}
+          saveAction={handleUpdateHolidayDetails}
+          subTitle=""
+          title="Holidays"
+        />
+      ) : (
+        <DetailsHeader
+          showButtons
+          showYearPicker
+          editAction={() => setIsEditable(true)}
+          isDisableUpdateBtn={false}
+          subTitle=""
+          title="Holidays"
+        />
       )}
+      {getHolidaysContent()}
     </div>
   );
 };
 
-export default LeavesAndHolidays;
+export default Holidays;

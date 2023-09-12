@@ -1,7 +1,15 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import React, { useState } from "react";
 
-import { MinusIcon, PlusIcon } from "miruIcons";
+import {
+  MinusIcon,
+  PlusIcon,
+  ClientsIcon as BuildingsIcon,
+  PaymentsIcon,
+  CalendarIcon,
+  CakeIcon,
+  UserIcon,
+} from "miruIcons";
 import { NavLink } from "react-router-dom";
 
 import UserInformation from "./CommonComponents/UserInformation";
@@ -9,16 +17,39 @@ import UserInformation from "./CommonComponents/UserInformation";
 const SideNav = ({ isAdmin, firstName, company, lastName }) => {
   const getActiveClassName = isActive => {
     if (isActive) {
-      return "pl-4 py-5 border-l-8 border-miru-han-purple-600 bg-miru-gray-200 text-miru-han-purple-600 block";
+      return "pl-4 py-5 border-l-8 border-miru-han-purple-600 bg-miru-gray-200 text-miru-han-purple-600 block w-full flex items-center";
     }
 
-    return "pl-6 py-5 border-b-1 border-miru-gray-400 block";
+    return "pl-6 py-5 border-b-1 border-miru-gray-400 block w-full flex items-center";
   };
 
   const [openedSubNav, setOpenedSubNav] = useState({
-    personal: false,
+    personal: true,
     company: false,
   });
+
+  const companySettingsList = [
+    {
+      label: "ORG. SETTINGS",
+      link: "/profile/edit/organization-details",
+      icon: <BuildingsIcon className="mr-2" size={20} weight="bold" />,
+    },
+    {
+      label: "PAYMENT SETTINGS",
+      link: "/profile/edit/payment",
+      icon: <PaymentsIcon className="mr-2" size={20} weight="bold" />,
+    },
+    {
+      label: "LEAVES",
+      link: "/profile/edit/leaves",
+      icon: <CalendarIcon className="mr-2" size={20} weight="bold" />,
+    },
+    {
+      label: "HOLIDAYS",
+      link: "/profile/edit/holidays",
+      icon: <CakeIcon className="mr-2" size={20} weight="bold" />,
+    },
+  ];
 
   const getAdminLinks = () => (
     <ul className="list-none min-h-50v text-sm font-medium leading-5 tracking-wider">
@@ -48,6 +79,7 @@ const SideNav = ({ isAdmin, firstName, company, lastName }) => {
               className={({ isActive }) => getActiveClassName(isActive)}
               to="/profile/edit"
             >
+              <UserIcon className="mr-2" size={20} weight="bold" />
               PROFILE SETTINGS
             </NavLink>
             <NavLink
@@ -77,24 +109,21 @@ const SideNav = ({ isAdmin, firstName, company, lastName }) => {
       </div>
       {openedSubNav.company && (
         <div>
-          <li className="border-b-2 border-miru-gray-400 tracking-widest">
-            <NavLink
-              end
-              className={({ isActive }) => getActiveClassName(isActive)}
-              to="/profile/edit/organization-details"
+          {companySettingsList.map((setting, index) => (
+            <li
+              className="flex items-center justify-start border-b-2 border-miru-gray-400 tracking-widest"
+              key={index}
             >
-              ORG. SETTINGS
-            </NavLink>
-          </li>
-          <li className="border-b-2 border-miru-gray-400 tracking-widest">
-            <NavLink
-              end
-              className={({ isActive }) => getActiveClassName(isActive)}
-              to="/profile/edit/payment"
-            >
-              PAYMENT SETTINGS
-            </NavLink>
-          </li>
+              <NavLink
+                end
+                className={({ isActive }) => getActiveClassName(isActive)}
+                to={setting.link}
+              >
+                {setting.icon}
+                {setting.label}
+              </NavLink>
+            </li>
+          ))}
         </div>
       )}
     </ul>
@@ -108,6 +137,7 @@ const SideNav = ({ isAdmin, firstName, company, lastName }) => {
           className={({ isActive }) => getActiveClassName(isActive)}
           to="/profile/edit"
         >
+          <UserIcon className="mr-2" size={20} weight="bold" />
           PROFILE SETTINGS
         </NavLink>
         <NavLink
