@@ -1,11 +1,27 @@
-import React, { useState } from "react";
+import React from "react";
 
+import classNames from "classnames";
 import { getYear } from "date-fns";
 import { CaretCircleLeftIcon, CaretCircleRightIcon } from "miruIcons";
 
-const CustomYearPicker = () => {
-  const [currentYear, setCurrentYear] = useState(getYear(new Date()) + 1);
+type customYearPickerProps = {
+  wrapperClassName?: string;
+  yearClassName?: string;
+  currentYear: number;
+  setCurrentYear: React.Dispatch<React.SetStateAction<number>>;
+};
 
+const defaultWrapperClassName = "flex items-center justify-center";
+
+const defaultYearClassName =
+  "outline-none appearance-none bg-transparent text-white";
+
+const CustomYearPicker = ({
+  wrapperClassName,
+  yearClassName,
+  currentYear,
+  setCurrentYear,
+}: customYearPickerProps) => {
   const range = (start, end) => {
     const ans = [];
     for (let i = start; i <= end; i++) {
@@ -31,13 +47,13 @@ const CustomYearPicker = () => {
   };
 
   return (
-    <div className="flex flex-auto flex-row items-center justify-center">
+    <div className={classNames(defaultWrapperClassName, wrapperClassName)}>
       <button className="pr-2" onClick={handlePrevious}>
         <CaretCircleLeftIcon size={13} weight="bold" />
       </button>
       {currentYear && (
         <select
-          className="outline-none appearance-none bg-transparent text-white"
+          className={classNames(defaultYearClassName, yearClassName)}
           onChange={e => handleOnChange(e.target.value)}
         >
           <option
