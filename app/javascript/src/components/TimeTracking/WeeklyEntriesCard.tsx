@@ -174,7 +174,7 @@ const WeeklyEntriesCard = ({
           <p className="ml-2 mr-auto text-xs xl:text-sm xxl:text-lg">•</p>
           <p className="text-xs xl:text-sm xxl:text-lg">{project}</p>
         </div>
-        <div className="flex w-1/60 items-center justify-between">
+        <div className="flex w-3/5 items-center justify-between">
           {[0, 1, 2, 3, 4, 5, 6].map((num: number) =>
             num === selectedInputBox ? (
               <TimeInput
