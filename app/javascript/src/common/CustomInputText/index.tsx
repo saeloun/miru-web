@@ -53,38 +53,36 @@ export const CustomInputText = ({
   onClick,
   autoFocus,
 }: customInputTextProps) => (
-  <div className="field relative">
-    <div className={classNames(defaultWrapperClassName, wrapperClassName)}>
-      <input
-        autoFocus={autoFocus}
-        className={classNames(defaultInputBoxClassName, inputBoxClassName)}
-        disabled={disabled}
-        id={id}
-        min={min}
-        name={name}
-        placeholder=" "
-        readOnly={readOnly}
-        step={step}
-        type={type}
-        value={value}
-        onBlur={onBlur}
-        onChange={onChange}
-        onClick={onClick}
-        onFocus={onFocus}
-      />
-      <label
-        htmlFor={name}
-        className={classNames([
-          defaultLabelClassname,
-          labelClassName,
-          moveLabelToRightClassName?.trim()
-            ? moveLabelToRightClassName
-            : moveLabelToLeftClassName,
-        ])}
-      >
-        {label}
-      </label>
-    </div>
+  <div className={classNames(defaultWrapperClassName, wrapperClassName)}>
+    <input
+      autoFocus={autoFocus}
+      className={classNames(defaultInputBoxClassName, inputBoxClassName)}
+      disabled={disabled}
+      id={id}
+      min={min}
+      name={name}
+      placeholder=" "
+      readOnly={readOnly}
+      step={step}
+      type={type}
+      value={value}
+      onBlur={onBlur}
+      onChange={onChange}
+      onClick={onClick}
+      onFocus={onFocus}
+    />
+    <label
+      htmlFor={name}
+      className={classNames([
+        defaultLabelClassname,
+        labelClassName,
+        moveLabelToRightClassName?.trim()
+          ? moveLabelToRightClassName
+          : moveLabelToLeftClassName,
+      ])}
+    >
+      {label}
+    </label>
   </div>
 );
 

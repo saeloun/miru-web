@@ -1,7 +1,9 @@
 import React from "react";
 
 import { XIcon } from "miruIcons";
+import { useNavigate } from "react-router-dom";
 
+import CustomYearPicker from "common/CustomYearPicker";
 import { useUserContext } from "context/UserContext";
 
 const Header = ({
@@ -11,14 +13,17 @@ const Header = ({
   cancelAction,
   saveAction,
   isDisableUpdateBtn = false,
+  showYearPicker = false,
 }: Iprops) => {
   const { isDesktop } = useUserContext();
+  const navigate = useNavigate();
 
   return (
     <>
       <div className="hidden h-16 w-0 justify-between bg-miru-han-purple-1000 p-4 pl-10 text-white md:flex md:w-full">
         <span className="text-2xl font-bold">{title}</span>
         <span className="pt-2 text-sm font-normal">{subTitle}</span>
+        {showYearPicker && <CustomYearPicker />}
         <div
           className={`mt-1 text-center ${
             showButtons ? "visible" : "invisible"
@@ -53,7 +58,9 @@ const Header = ({
         <div>
           <button
             className="outline-none border-none bg-transparent font-manrope font-bold capitalize text-miru-han-purple-1000"
-            onClick={cancelAction}
+            onClick={() => {
+              navigate("/profile/edit/option");
+            }}
           >
             <XIcon color="#fff" size={16} />
           </button>
@@ -70,6 +77,7 @@ interface Iprops {
   cancelAction?: () => any;
   saveAction?: () => any;
   isDisableUpdateBtn?: boolean;
+  showYearPicker?: boolean;
 }
 
 export default Header;
