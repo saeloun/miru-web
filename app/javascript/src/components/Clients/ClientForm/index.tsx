@@ -302,6 +302,7 @@ const ClientForm = ({
                 type="submit"
                 onClick={() => {
                   setSubmitting(true);
+                  handleSubmit(values);
                 }}
               >
                 SAVE CHANGES
