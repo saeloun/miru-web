@@ -82,10 +82,6 @@ const Clients = ({ isAdminUser }) => {
     window.addEventListener("keydown", close);
   }, []);
 
-  useEffect(() => {
-    fetchClientDetails();
-  }, [isClient]);
-
   if (loading) {
     return (
       <p className="tracking-wide flex min-h-screen items-center justify-center text-base font-medium text-miru-han-purple-1000">

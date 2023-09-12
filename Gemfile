@@ -6,7 +6,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 ruby "3.2.2"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
-gem "rails", "~> 7.0.4"
+gem "rails", "~> 7.0.7.1"
 
 # Use postgresql as the database for Active Record
 gem "pg"
@@ -138,6 +138,9 @@ gem "ruby_audit", require: false
 gem "rubyzip"
 
 gem "ahoy_matey"
+
+gem "httparty"
+
 group :development, :test, :ci do
   # See https://edgeguides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", ">= 1.0.0", platforms: %i[mri mingw x64_mingw]
@@ -213,7 +216,6 @@ group :test, :ci do
 end
 
 # Ref: https://www.plymouthsoftware.com/articles/rails-on-docker-system-specs-in-containers-with-rspec-capybara-chrome-and-selenium/
-gem "webdrivers", group: :test
 
 # https://github.com/ankane/strong_migrations
 gem "strong_migrations"

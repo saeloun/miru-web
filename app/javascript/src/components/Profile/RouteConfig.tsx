@@ -13,6 +13,8 @@ import Import from "./Organization/Import";
 import LeavesAndHolidays from "./Organization/LeavesAndHolidays";
 import PaymentSettings from "./Organization/Payment";
 import UserDetailsEdit from "./UserDetail/Edit";
+import EmploymentDetails from "./UserDetail/EmploymentDetails";
+import EmploymentDetailsEdit from "./UserDetail/EmploymentDetails/Edit";
 import UserDetailsView from "./UserDetail/UserDetailsView";
 
 const ProtectedRoute = ({ isAdminUser, children }) => {
@@ -28,6 +30,8 @@ const RouteConfig = () => {
 
   return (
     <Routes>
+      <Route element={<EmploymentDetails />} path="employment-details" />
+      <Route element={<EmploymentDetailsEdit />} path="employment-edit" />
       <Route path="/edit">
         {/* <Route path="bank_account_details" element={<BankAccountDetails />} /> TODO: Temporary disabling*/}
         <Route element={<UserDetailsView />} path="" />
