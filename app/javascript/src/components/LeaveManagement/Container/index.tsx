@@ -6,18 +6,7 @@ import LeaveBlock from "./LeaveBlock";
 import Table from "./Table";
 
 const Container = ({ leaveTypes }) => {
-  const leaveDetails = [
-    { date: "1/1/10", status: "approved", description: "annual", hours: "123" },
-    { date: "1/1/10", status: "approved", description: "annual", hours: "123" },
-    { date: "1/1/10", status: "approved", description: "annual", hours: "123" },
-    { date: "1/1/10", status: "approved", description: "annual", hours: "123" },
-    { date: "1/1/10", status: "approved", description: "annual", hours: "123" },
-    { date: "1/1/10", status: "approved", description: "annual", hours: "123" },
-    { date: "1/1/10", status: "approved", description: "annual", hours: "123" },
-    { date: "1/1/10", status: "approved", description: "annual", hours: "123" },
-    { date: "1/1/10", status: "approved", description: "annual", hours: "123" },
-    { date: "1/1/10", status: "approved", description: "annual", hours: "123" },
-  ];
+  const leaveDetails = [];
 
   return (
     <div className="mx-4 my-6 h-full lg:mx-0">
