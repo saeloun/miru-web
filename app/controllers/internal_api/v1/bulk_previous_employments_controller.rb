@@ -3,31 +3,23 @@
 class InternalApi::V1::BulkPreviousEmploymentsController < InternalApi::V1::ApplicationController
   def update
     authorize user, policy_class: BulkPreviousEmploymentPolicy
-    BulkPreviousEmploymentService.new(update_params).process
+    BulkPreviousEmploymentService.new(update_params, user, employment).process
     render json: { notice: I18n.t("employment.update.success") }
   end
 
   private
 
     def update_params
-      {
-        user:,
-        added_employments: added_employments_params[:added_employments],
-        updated_employments: updated_employments_params[:updated_employments],
-        removed_employment_ids: removed_employment_params[:removed_employment_ids]
-      }
+      params.require(:employments).permit(
+        current_employment: [:designation, :employment_type, :joined_at, :resigned_at, :employee_id],
+        added_employments: [:company_name, :role],
+        updated_employments: [:id, :company_name, :role],
+        removed_employment_ids: []
+      )
     end
 
-    def added_employments_params
-      params.require(:employments).permit(added_employments: [:company_name, :role])
-    end
-
-    def updated_employments_params
-      params.require(:employments).permit(updated_employments: [:id, :company_name, :role])
-    end
-
-    def removed_employment_params
-      params.require(:employments).permit(removed_employment_ids: [])
+    def employment
+      @_employment ||= Employment.find_by!(user_id: params[:id], company_id: current_company.id)
     end
 
     def user

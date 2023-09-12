@@ -4,23 +4,23 @@ import React, { Fragment, useEffect, useRef, useState } from "react";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import { useOutsideClick } from "helpers";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 
 import teamsApi from "apis/teams";
 import Loader from "common/Loader/index";
-import { useTeamDetails } from "context/TeamDetailsContext";
+import { useProfile } from "components/Profile/context/EntryContext";
+import { employmentSchema } from "components/Team/Details/EmploymentDetails/Edit/validationSchema";
 import { useUserContext } from "context/UserContext";
 import { employmentMapper } from "mapper/teams.mapper";
 
 import StaticPage from "./StaticPage";
-import { employmentSchema } from "./validationSchema";
 
 dayjs.extend(utc);
 
 const schema = Yup.object().shape(employmentSchema);
 
-const EmploymentDetails = () => {
+const EmploymentDetailsEdit = () => {
   const initialErrState = {
     employee_id_err: "",
     employment_type_err: "",
@@ -31,12 +31,8 @@ const EmploymentDetails = () => {
     company_name_err: "",
     role_err: "",
   };
-
-  const { memberId } = useParams();
-  const {
-    updateDetails,
-    details: { employmentDetails },
-  } = useTeamDetails();
+  const { user } = useUserContext();
+  const { setUserState, employmentDetails } = useProfile();
   const navigate = useNavigate();
   const { isDesktop } = useUserContext();
 
@@ -73,8 +69,8 @@ const EmploymentDetails = () => {
   ];
 
   const getDetails = async () => {
-    const curr: any = await teamsApi.getEmploymentDetails(memberId);
-    const prev: any = await teamsApi.getPreviousEmployments(memberId);
+    const curr: any = await teamsApi.getEmploymentDetails(user.id);
+    const prev: any = await teamsApi.getPreviousEmployments(user.id);
     setDateFormat(curr.data.date_format);
     setJoinedAt(curr.data.employment.joined_at);
     setResignedAt(curr.data.employment.resigned_at);
@@ -94,7 +90,7 @@ const EmploymentDetails = () => {
       employmentData.current_employment.employment_type =
         employeeTypes[0].value;
     }
-    updateDetails("employment", employmentData);
+    setUserState("employmentDetails", employmentData);
     if (employmentData.previous_employments?.length > 0) {
       setPreviousEmployments(employmentData.previous_employments);
     }
@@ -108,7 +104,7 @@ const EmploymentDetails = () => {
 
   const handleOnChangeEmployeeType = empType => {
     setEmployeeType(empType);
-    updateDetails("employment", {
+    setUserState("employmentDetails", {
       ...employmentDetails,
       ...{
         current_employment: {
@@ -120,7 +116,7 @@ const EmploymentDetails = () => {
   };
 
   const updateCurrentEmploymentDetails = (value, type) => {
-    updateDetails("employment", {
+    setUserState("employmentDetails", {
       ...employmentDetails,
       ...{
         current_employment: {
@@ -144,7 +140,7 @@ const EmploymentDetails = () => {
   const handleDOJDatePicker = date => {
     setShowDOJDatePicker({ visibility: !showDOJDatePicker.visibility });
     setJoinedAt(date);
-    updateDetails("employment", {
+    setUserState("employmentDetails", {
       ...employmentDetails,
       ...{
         current_employment: {
@@ -163,7 +159,7 @@ const EmploymentDetails = () => {
   const handleDORDatePicker = date => {
     setShowDORDatePicker({ visibility: !showDORDatePicker.visibility });
     setResignedAt(date);
-    updateDetails("employment", {
+    setUserState("employmentDetails", {
       ...employmentDetails,
       ...{
         current_employment: {
@@ -245,11 +241,11 @@ const EmploymentDetails = () => {
         current_employment: employmentDetails.current_employment,
       };
 
-      await teamsApi.updatePreviousEmployments(memberId, {
+      await teamsApi.updatePreviousEmployments(user.id, {
         employments: payload,
       });
       setIsLoading(false);
-      navigate(`/team/${memberId}/employment`, { replace: true });
+      navigate(`/profile/employment-details`, { replace: true });
     } catch (err) {
       setIsLoading(false);
       const errObj = initialErrState;
@@ -268,7 +264,7 @@ const EmploymentDetails = () => {
 
   const handleCancelDetails = () => {
     setIsLoading(true);
-    navigate(`/team/${memberId}/employment`, { replace: true });
+    navigate(`/profile/employment-details`, { replace: true });
   };
 
   return (
@@ -329,4 +325,4 @@ const EmploymentDetails = () => {
   );
 };
 
-export default EmploymentDetails;
+export default EmploymentDetailsEdit;

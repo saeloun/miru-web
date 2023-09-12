@@ -12,7 +12,7 @@ import SearchDataRow from "./SearchDataRow";
 const Header = ({ setnewClient, isAdminUser, setShowDialog }) => {
   const fetchClients = async searchString => {
     try {
-      const res = await clientApi.get(`?q=${searchString}`);
+      const res = await clientApi.get(`?query=${searchString}`);
       const dropdownList = unmapClientListForDropdown(res);
 
       return dropdownList;

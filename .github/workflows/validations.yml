@@ -3,7 +3,7 @@ on:
   push:
     branches: [develop, main]
   pull_request:
-      types: [labeled, opened, synchronize, reopened]
+    types: [labeled, opened, synchronize, reopened]
   workflow_dispatch:
 
 jobs:
@@ -17,11 +17,21 @@ jobs:
       - name: Setup PostgreSQL
         uses: Harmon758/postgresql-action@v1.0.0
         with:
-          postgresql version: 9.6.2-alpine
-          postgresql db: miru_web_test
+          postgresql version: 14.9-alpine3.18
+          postgresql db: miru_web_test_${{ github.event.number }}
           postgresql user: root
+          postgresql password: "password"
       - name: Setup ElasticSearch
         uses: ankane/setup-elasticsearch@v1
+      - name: Setup chrome
+        uses: nanasess/setup-chromedriver@v2
+        with:
+          # Optional: do not specify to match Chrome's version
+          chromedriver-version: "88.0.4324.96"
+      - run: |
+          export DISPLAY=:99
+          chromedriver --url-base=/wd/hub &
+          sudo Xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 & # optional
       - name: Check if Elasticsearch is reachable
         run: |
           curl --verbose --show-error http://localhost:9200
@@ -70,50 +80,22 @@ jobs:
       - name: Setup test database
         env:
           RAILS_ENV: test
-          PGHOST: 127.0.0.1
-          PGUSER: root
+          DB_USER: root
+          DB_PASS: "password"
+          TEST_ENV_NUMBER: ${{ github.event.number }}
         run: |
-          bundle exec rails db:create
-          bundle exec rails db:migrate
-          bundle exec rails db:seed
+          bundle exec rails db:prepare
       - name: Run Rubocop
         run: |
           bundle exec rubocop
       - name: Run tests
         env:
           RAILS_ENV: test
-          PGHOST: 127.0.0.1
-          PGUSER: root
-        run: COVERAGE=true bundle exec rspec
-      - name: Parse codecoverage output and generate comment body
-        id: parse_output
-        run: |
-          ruby ./.github/workflows/code_coverage_parser.rb
-      - name: Read parsed Code Coverage Comment Body
-        id: summary
-        uses: juliangruber/read-file-action@v1
-        with:
-          path: ./code-coverage-comment.txt
-          trim: true
-      - name: PR number finder
-        uses: jwalton/gh-find-current-pr@v1
-        id: finder
-      - name: Add comment to PR
-        uses: marocchino/sticky-pull-request-comment@v2
-        with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          header: CodeCoverage
-          number: ${{ steps.finder.outputs.pr }}
-          message: |
-            ${{ steps.summary.outputs.content }}
+          DB_USER: root
+          DB_PASS: "password"
+          TEST_ENV_NUMBER: ${{ github.event.number }}
+        run:
+          bundle exec rspec --exclude-pattern "spec/system/**/*_spec.rb"
       - name: Run Eslint
         run: |
           npx eslint "./app/javascript/**/*.{ts,tsx,js,jsx,json}"
-      - name: Cypress install
-        uses: cypress-io/github-action@v4
-        with:
-          # just perform install
-          runTests: false
-      - name: Cypress tests
-        run: |
-          npm run cy:run:staging

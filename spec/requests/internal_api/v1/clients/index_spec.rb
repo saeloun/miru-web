@@ -13,6 +13,11 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
   let(:project_2) { create(:project, client: client_2) }
   let(:time_frame) { "week" }
 
+  before do
+    Client.search_index.refresh
+    Client.reindex
+  end
+
   context "when user is an admin" do
     before do
       create(:employment, company:, user:)
@@ -48,12 +53,12 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
       end
     end
 
-    context "for ransack search" do
+    context "for search" do
       before do
         create(:employment, company:, user:)
         user.add_role :admin, company
         sign_in user
-        send_request :get, internal_api_v1_clients_path, params: { q: client_1.name }, headers: auth_headers(user)
+        send_request :get, internal_api_v1_clients_path, params: { query: client_1.name }, headers: auth_headers(user)
       end
 
       it "finds specific client by name" do
