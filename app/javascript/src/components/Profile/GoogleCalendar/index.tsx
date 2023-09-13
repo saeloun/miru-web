@@ -6,6 +6,7 @@ import { Button, Switch } from "StyledComponents";
 
 import companiesApi from "apis/companies";
 import teamApi from "apis/team";
+import Loader from "common/Loader/index";
 
 import Header from "./Header";
 
@@ -14,13 +15,21 @@ const GoogleCalendar = ({ isAdmin }) => {
     useState<boolean>(false);
   const [enabled, setEnabled] = useState<boolean>(false);
   const [apiCallNeeded, setApiCallNeeded] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const companiesData = async () => {
-      const {
-        data: { company_details },
-      } = await companiesApi.index();
-      setEnabled(company_details.calendar_enabled);
+      setLoading(true);
+      try {
+        const {
+          data: { company_details },
+        } = await companiesApi.index();
+        setEnabled(company_details.calendar_enabled);
+      } catch (error) {
+        Logger.log(error);
+      } finally {
+        setLoading(false);
+      }
     };
     companiesData();
   }, []);
@@ -31,6 +40,14 @@ const GoogleCalendar = ({ isAdmin }) => {
       setApiCallNeeded(false);
     }
   }, [apiCallNeeded]);
+
+  if (loading) {
+    return (
+      <div className="flex h-80v w-full flex-col justify-center">
+        <Loader />
+      </div>
+    );
+  }
 
   const enableCalendar = async () => {
     try {
