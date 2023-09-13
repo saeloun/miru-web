@@ -50,22 +50,31 @@ import {
   BellRinging,
   GoogleLogo,
   Plugs,
+  Cake,
 } from "phosphor-react";
 
 const error404Animation = require("./GIFS/404_animation.gif");
 const accountsAgingIcon = require("./svgIcons/accountsAging.svg");
 const accountsAgingHoverIcon = require("./svgIcons/accountsAgingHover.svg");
+const baby = require("./svgIcons/baby.svg");
 const blurredMiruLogo = require("./svgIcons/blurred-miru-logo.svg");
+const cake = require("./svgIcons/cake.svg");
 const reportcalendarIcon = require("./svgIcons/Calendar.svg");
+const calendarBlack = require("./svgIcons/CalendarBlack.svg");
 const calendarHoverIcon = require("./svgIcons/CalendarHover.svg");
+const car = require("./svgIcons/car.svg");
 const emptyState = require("./svgIcons/emptyState.svg");
+const flower = require("./svgIcons/flower.svg");
 const hoursIcon = require("./svgIcons/Hours.svg");
 const hoursHoverIcon = require("./svgIcons/HoursHover.svg");
+const medicine = require("./svgIcons/medicine.svg");
 const noSearchResultsState = require("./svgIcons/NoSearchResultsState.svg");
 const overdueOutstandingIcon = require("./svgIcons/OverdueOutstanding.svg");
 const overdueOutstandingHoverIcon = require("./svgIcons/OverdueOutstandingHover.svg");
 const revenueIcon = require("./svgIcons/Revenue.svg");
 const revenueHoverIcon = require("./svgIcons/RevenueHover.svg");
+const user = require("./svgIcons/user.svg");
+const vacation = require("./svgIcons/vacation.svg");
 
 const alert = require("../../../assets/images/alert-error-close.svg");
 const amex = require("../../../assets/images/amex.svg");
@@ -192,6 +201,7 @@ export const ClockIcon = Clock;
 export const ReminderIcon = BellRinging;
 export const GoogleIcon = GoogleLogo;
 export const IntegrateIcon = Plugs;
+export const CakeIcon = Cake;
 
 // custom svg icons
 export const WarningTriangleSVG = warningTriangle;
@@ -281,3 +291,11 @@ export const GreenCheckCirleIcon = greenCheckCirleIcon;
 export const deleteImageIcon = deleteImage;
 export const Animation_404 = error404Animation;
 export const GoogleCalendarIcon = googleCalendarIcon;
+export const VacationIconSVG = vacation;
+export const BabyIconSVG = baby;
+export const CakeIconSVG = cake;
+export const FlowerIconSVG = flower;
+export const CarIconSVG = car;
+export const UserIconSVG = user;
+export const CalendarBlackIconSVG = calendarBlack;
+export const MedicineIconSVG = medicine;

@@ -46,6 +46,7 @@ export enum Paths {
   TEAMS = "/teams/*",
   PROFILE = "/profile/*",
   AUTHORIZATION = "/authorization",
+  Leave_Management = "/leave-management",
 }
 
 export const TOASTER_DURATION = 2000;
