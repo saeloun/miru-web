@@ -5,6 +5,7 @@ import { GoogleCalendarIcon, IntegrateIcon } from "miruIcons";
 import { Button, Switch } from "StyledComponents";
 
 import companiesApi from "apis/companies";
+import googleCalendarApi from "apis/googleCalendar";
 import teamApi from "apis/team";
 
 import Header from "./Header";
@@ -62,7 +63,10 @@ const GoogleCalendar = ({ isAdmin }) => {
         <Button
           className="mt-5 px-3 py-1 text-xs"
           style="primary"
-          onClick={() => setConnectGoogleCalendar(true)}
+          onClick={() => {
+            setConnectGoogleCalendar(true);
+            googleCalendarApi.redirect();
+          }}
         >
           Connect
         </Button>

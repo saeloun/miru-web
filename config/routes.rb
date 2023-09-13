@@ -72,9 +72,6 @@ Rails.application.routes.draw do
 
   namespace :webhooks do
     post "stripe/checkout/fulfillment", to: "stripe#fulfill_stripe_checkout"
-    get "/redirect", to: "calendar#redirect", as: "redirect"
-    get "/callback", to: "calendar#callback", as: "callback"
-    get "/calendars", to: "calendar#calendars", as: "calendars"
   end
 
   root "home#index"
