@@ -5,7 +5,7 @@
 # Table name: holiday_infos
 #
 #  id         :bigint           not null, primary key
-#  category   :string           not null
+#  category   :integer          default("national"), not null
 #  date       :date             not null
 #  name       :string           not null
 #  created_at :datetime         not null
@@ -23,7 +23,7 @@
 class HolidayInfo < ApplicationRecord
   belongs_to :holiday
 
-  enum category: { national: "national", optional: "optional" }
+  enum category: { national: 0, optional: 1 }
 
   validates :name, :date, :category, presence: true
   validate :validate_optional_holidays, if: -> { category == "optional" }

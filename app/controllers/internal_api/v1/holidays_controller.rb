@@ -5,8 +5,13 @@ class InternalApi::V1::HolidaysController < ApplicationController
     authorize Holiday
 
     year = params[:year]
-    holiday_infos = current_company.holidays.find_by(year:).holiday_infos
-    render :index, locals: { holiday_infos: }, status: :ok
+    holiday = current_company.holidays.find_by(year:)
+    if holiday.nil?
+      render json: { error: "No holiday record found for the specified year and company" }, status: :not_found
+    else
+      holiday_infos = holiday.holiday_infos
+      render :index, locals: { holiday_infos: }, status: :ok
+    end
   end
 
   def update

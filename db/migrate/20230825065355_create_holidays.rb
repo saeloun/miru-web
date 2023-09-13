@@ -7,7 +7,7 @@ class CreateHolidays < ActiveRecord::Migration[7.0]
       t.boolean :enable_optional_holidays, default: false
       t.integer :no_of_allowed_optional_holidays
       t.string :holiday_types, array: true, default: []
-      t.string :time_period_optional_holidays, default: "per_quarter"
+      t.integer :time_period_optional_holidays, default: 0, null: false
       t.timestamps
     end
   end

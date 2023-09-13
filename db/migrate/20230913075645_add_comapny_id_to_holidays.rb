@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class AddCompanyIdToHolidays < ActiveRecord::Migration[7.0]
+class AddComapnyIdToHolidays < ActiveRecord::Migration[7.0]
   disable_ddl_transaction!
 
   def change

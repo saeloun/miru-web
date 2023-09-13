@@ -6,7 +6,7 @@ class CreateHolidayInfos < ActiveRecord::Migration[7.0]
       t.date :date, null: false
       t.string :name, null: false
       t.references :holiday, foreign_key: true, null: false
-      t.string :category, null: false
+      t.integer :category, default: 0, null: false
       t.timestamps
     end
   end
