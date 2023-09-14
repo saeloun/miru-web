@@ -1,10 +1,25 @@
 import React from "react";
 
+import Cookies from "js-cookie";
 import { Routes, Route, Outlet, Navigate } from "react-router-dom";
 
 import ErrorPage from "common/Error";
 import { Roles, Paths } from "constants/index";
 import { ROUTES } from "constants/routes";
+import { dashboardUrl } from "utils/dashboardUrl";
+
+const redirectUrl = role => {
+  const lastVisitedPage = Cookies.get("lastVisitedPage");
+  let url = dashboardUrl(role);
+
+  if (lastVisitedPage && lastVisitedPage !== "/") {
+    url = lastVisitedPage;
+  }
+
+  Cookies.remove("lastVisitedPage");
+
+  return url;
+};
 
 const RestrictedRoute = ({ user, role, authorisedRoles }) => {
   if (!user) {
@@ -17,42 +32,13 @@ const RestrictedRoute = ({ user, role, authorisedRoles }) => {
     return <Outlet />;
   }
 
-  let url;
-
-  switch (role) {
-    case Roles.BOOK_KEEPER:
-      url = Paths.PAYMENTS;
-      break;
-    case Roles.OWNER:
-      url = "invoices";
-      break;
-    case Roles.CLIENT:
-      url = "invoices";
-      break;
-    default:
-      url = Paths.TIME_TRACKING;
-      break;
-  }
+  const url = redirectUrl(role);
 
   return <Navigate to={url} />;
 };
 
 const RootElement = ({ role }) => {
-  let url;
-  switch (role) {
-    case Roles.OWNER:
-      url = "invoices";
-      break;
-    case Roles.BOOK_KEEPER:
-      url = Paths.PAYMENTS;
-      break;
-    case Roles.CLIENT:
-      url = "invoices";
-      break;
-    default:
-      url = Paths.TIME_TRACKING;
-      break;
-  }
+  const url = redirectUrl(role);
 
   return <Navigate to={url} />;
 };
