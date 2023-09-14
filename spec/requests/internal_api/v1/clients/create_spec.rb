@@ -25,7 +25,7 @@ RSpec.describe "InternalApi::V1::Client#create", type: :request do
         change(Client, :count).by(1)
         change(Address, :count).by(1)
         expected_attrs = [ "address", "id", "logo", "name", "phone" ]
-        # expect(json_response["client"].keys.sort).to match(expected_attrs)
+        expect(json_response["client"].keys.sort).to match(expected_attrs)
         expect(json_response["client"]["address"]["address_line_1"]).to eq(address_details[:address_line_1])
         expect(json_response["client"]["address"]["address_line_2"]).to eq(address_details[:address_line_2])
         expect(json_response["client"]["address"]["city"]).to eq(address_details[:city])
