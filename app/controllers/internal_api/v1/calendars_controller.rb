@@ -37,7 +37,9 @@ class InternalApi::V1::CalendarsController < ApplicationController
     service.authorization = client
 
     @calendar_list = service.list_calendar_lists
-    puts "Calendar has been connected!"
+
+    # TODO: remove this method when getting events and instead redirect to the events method.
+    redirect_to root_path
   end
 
   private
