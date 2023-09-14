@@ -10,7 +10,6 @@ if defined? Rack::Cors
         https://miru-production.fly.dev
         https://staging.miru.so
         https://app.miru.so
-        https://accounts.google.com
         localhost:3000
       ]
       resource "/assets/*"

@@ -6,7 +6,7 @@ class InternalApi::V1::CalendarsController < ApplicationController
 
     client = Signet::OAuth2::Client.new(client_options)
 
-    redirect_to client.authorization_uri.to_s, allow_other_host: true
+    render json: { url: client.authorization_uri.to_s }
   end
 
   def callback
@@ -37,6 +37,7 @@ class InternalApi::V1::CalendarsController < ApplicationController
     service.authorization = client
 
     @calendar_list = service.list_calendar_lists
+    puts "Calendar has been connected!"
   end
 
   private

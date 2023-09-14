@@ -47,6 +47,12 @@ const GoogleCalendar = ({ isAdmin }) => {
     setApiCallNeeded(true);
   };
 
+  const handleConnectCalendar = async () => {
+    setConnectGoogleCalendar(true);
+    const { data } = await googleCalendarApi.redirect();
+    window.location.replace(data.url);
+  };
+
   const showConnectDisconnectBtn = () => {
     if (enabled) {
       return connectGoogleCalendar ? (
@@ -63,10 +69,7 @@ const GoogleCalendar = ({ isAdmin }) => {
         <Button
           className="mt-5 px-3 py-1 text-xs"
           style="primary"
-          onClick={() => {
-            setConnectGoogleCalendar(true);
-            googleCalendarApi.redirect();
-          }}
+          onClick={handleConnectCalendar}
         >
           Connect
         </Button>
