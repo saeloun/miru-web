@@ -2,7 +2,7 @@ import axios from "./api";
 
 const path = "/calendars";
 
-const redirect = () => axios.get(`${path}/redirect`);
+const redirect = async () => axios.get(`${path}/redirect`);
 
 const googleCalendarApi = { redirect };
 
