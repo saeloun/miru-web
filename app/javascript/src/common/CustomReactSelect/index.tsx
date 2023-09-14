@@ -10,6 +10,33 @@ import {
 } from "common/CustomReactSelectStyle";
 import { useUserContext } from "context/UserContext";
 
+type CustomReactSelectProps = {
+  id?: string;
+  styles?: any;
+  components?: any;
+  classNamePrefix?: string;
+  label?: string;
+  isErr?: any;
+  isSearchable?: boolean;
+  isDisabled?: boolean;
+  ignoreDisabledFontColor?: boolean;
+  hideDropdownIndicator?: boolean;
+  handleOnClick?: (e?: any) => void; // eslint-disable-line
+  handleOnChange?: (e?: any) => void; // eslint-disable-line
+  handleonFocus?: (e?: any) => void; // eslint-disable-line
+  onBlur?: (e?: any) => void; // eslint-disable-line
+  defaultValue?: object;
+  onMenuClose?: (e?: any) => void; // eslint-disable-line
+  onMenuOpen?: (e?: any) => void; // eslint-disable-line
+  className?: string;
+  autoFocus?: boolean;
+  value?: object;
+  getOptionLabel?: (e?: any) => any; // eslint-disable-line
+  wrapperClassName?: string;
+  options?: Array<any>;
+  name?: string;
+};
+
 export const CustomReactSelect = ({
   id,
   isSearchable,
@@ -33,7 +60,9 @@ export const CustomReactSelect = ({
   autoFocus,
   onBlur,
   defaultValue,
-}) => {
+  getOptionLabel,
+  wrapperClassName,
+}: CustomReactSelectProps) => {
   const { isDesktop } = useUserContext();
 
   const getStyle = () => {
@@ -49,12 +78,16 @@ export const CustomReactSelect = ({
   };
 
   return (
-    <div className="outline relative" onClick={handleOnClick}>
+    <div
+      className={`outline relative ${wrapperClassName}`}
+      onClick={handleOnClick}
+    >
       <Select
         autoFocus={autoFocus}
         className={className}
         classNamePrefix={classNamePrefix}
         defaultValue={defaultValue}
+        getOptionLabel={getOptionLabel}
         id={id || name}
         isDisabled={isDisabled}
         isSearchable={isSearchable}
@@ -85,7 +118,6 @@ CustomReactSelect.defaultProps = {
   components: null,
   classNamePrefix: "react-select-filter",
   label: "Select",
-  placeholder: "Please select...",
   isErr: false,
   isSearchable: true,
   isDisabled: false,
@@ -101,6 +133,7 @@ CustomReactSelect.defaultProps = {
   className: "",
   autoFocus: false,
   value: null,
+  wrapperClassName: "",
 };
 
 export default CustomReactSelect;
