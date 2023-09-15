@@ -9,6 +9,7 @@ import {
   CalendarIcon,
   CakeIcon,
   UserIcon,
+  IntegrateIcon,
 } from "miruIcons";
 import { NavLink } from "react-router-dom";
 
@@ -126,6 +127,18 @@ const SideNav = ({ isAdmin, firstName, company, lastName }) => {
           ))}
         </div>
       )}
+      <li className="border-b-2 border-miru-gray-400 tracking-widest">
+        <NavLink
+          end
+          className={({ isActive }) => getActiveClassName(isActive)}
+          to="/profile/edit/integrations"
+        >
+          <div className="flex items-center">
+            <IntegrateIcon size={16} weight="bold" />
+            <span className="px-3 text-base font-bold">Integration</span>
+          </div>
+        </NavLink>
+      </li>
     </ul>
   );
 
