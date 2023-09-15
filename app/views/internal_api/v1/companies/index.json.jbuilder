@@ -11,6 +11,7 @@ json.company_details do
   json.fiscal_year_end current_company.fiscal_year_end
   json.timezone current_company.timezone
   json.date_format current_company.date_format
+  json.calendar_enabled current_company.calendar_enabled
   json.logo_url
   json.address do
     json.partial! "internal_api/v1/partial/address", locals: { address: }

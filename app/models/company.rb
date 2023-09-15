@@ -2,18 +2,19 @@
 #
 # Table name: companies
 #
-#  id              :bigint           not null, primary key
-#  address         :text
-#  base_currency   :string           default("USD"), not null
-#  business_phone  :string
-#  country         :string           not null
-#  date_format     :string
-#  fiscal_year_end :string
-#  name            :string           not null
-#  standard_price  :decimal(, )      default(0.0), not null
-#  timezone        :string
-#  created_at      :datetime         not null
-#  updated_at      :datetime         not null
+#  id               :bigint           not null, primary key
+#  address          :text
+#  base_currency    :string           default("USD"), not null
+#  business_phone   :string
+#  calendar_enabled :boolean          default(TRUE)
+#  country          :string           not null
+#  date_format      :string
+#  fiscal_year_end  :string
+#  name             :string           not null
+#  standard_price   :decimal(, )      default(0.0), not null
+#  timezone         :string
+#  created_at       :datetime         not null
+#  updated_at       :datetime         not null
 #
 
 # frozen_string_literal: true
