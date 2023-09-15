@@ -48,6 +48,8 @@ import {
   User,
   Clock,
   BellRinging,
+  GoogleLogo,
+  Plugs,
   Cake,
 } from "phosphor-react";
 
@@ -98,6 +100,7 @@ const edit = require("../../../assets/images/edit.svg");
 const edit_image_button = require("../../../assets/images/edit_image_button.svg");
 const errorOctagon = require("../../../assets/images/error-octagon.svg");
 const google = require("../../../assets/images/google.svg");
+const googleCalendarIcon = require("../../../assets/images/googleCalendarIcon.svg");
 const greenCheckCirleIcon = require("../../../assets/images/green-circular-check.svg");
 const help_icon = require("../../../assets/images/help_icon.png");
 const circleInfo = require("../../../assets/images/info-circle.svg");
@@ -196,6 +199,8 @@ export const KeyIcon = Key;
 export const UserIcon = User;
 export const ClockIcon = Clock;
 export const ReminderIcon = BellRinging;
+export const GoogleIcon = GoogleLogo;
+export const IntegrateIcon = Plugs;
 export const CakeIcon = Cake;
 
 // custom svg icons
@@ -285,6 +290,7 @@ export const MoreOptionIcon = moreOption;
 export const GreenCheckCirleIcon = greenCheckCirleIcon;
 export const deleteImageIcon = deleteImage;
 export const Animation_404 = error404Animation;
+export const GoogleCalendarIcon = googleCalendarIcon;
 export const VacationIconSVG = vacation;
 export const BabyIconSVG = baby;
 export const CakeIconSVG = cake;
