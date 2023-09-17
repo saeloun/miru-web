@@ -25,7 +25,10 @@ class HolidayInfo < ApplicationRecord
 
   enum category: { national: 0, optional: 1 }
 
-  validates :name, :date, :category, presence: true
+  validates :name, presence: true,
+    format: { with: /\A[a-zA-Z\s]+\z/ },
+    length: { maximum: 30 }
+  validates :date, :category, presence: true
   validate :validate_optional_holidays, if: -> { category == "optional" }
   validate :validate_holiday_category
   validate :validate_year

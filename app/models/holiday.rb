@@ -29,6 +29,7 @@ class Holiday < ApplicationRecord
   enum time_period_optional_holidays: { per_quarter: 0, per_year: 1, per_month: 2 }
 
   validates :year, presence: true
+  validates :year, numericality: { only_integer: true, greater_than_or_equal_to: 1900, less_than_or_equal_to: 2099 }
   validate :unique_holiday_record_per_year
 
   private
