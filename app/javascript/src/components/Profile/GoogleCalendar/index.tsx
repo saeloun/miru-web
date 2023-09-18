@@ -11,10 +11,10 @@ import Loader from "common/Loader/index";
 
 import Header from "./Header";
 
-const GoogleCalendar = ({ isAdmin }) => {
+const GoogleCalendar = ({ isAdmin, calendarEnabled, calendarConnected }) => {
   const [connectGoogleCalendar, setConnectGoogleCalendar] =
-    useState<boolean>(false);
-  const [enabled, setEnabled] = useState<boolean>(false);
+    useState<boolean>(calendarConnected);
+  const [enabled, setEnabled] = useState<boolean>(calendarEnabled);
   const [apiCallNeeded, setApiCallNeeded] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -70,6 +70,12 @@ const GoogleCalendar = ({ isAdmin }) => {
     window.location.replace(data.url);
   };
 
+  const handleDisconnectCalendar = async () => {
+    setConnectGoogleCalendar(false);
+    await googleCalendarApi.callback();
+    window.location.replace("/profile/edit/integration");
+  };
+
   const showConnectDisconnectBtn = () => {
     if (enabled) {
       return connectGoogleCalendar ? (
@@ -77,7 +83,7 @@ const GoogleCalendar = ({ isAdmin }) => {
           <IntegrateIcon size={12} />
           <Button
             className="ml-1 text-sm font-bold"
-            onClick={() => setConnectGoogleCalendar(false)}
+            onClick={handleDisconnectCalendar}
           >
             Disconnect
           </Button>

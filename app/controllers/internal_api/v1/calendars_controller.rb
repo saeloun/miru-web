@@ -23,7 +23,7 @@ class InternalApi::V1::CalendarsController < ApplicationController
 
       redirect_to internal_api_v1_calendars_path
     else
-      redirect_to root_path
+      current_user.update!(calendar_connected: false)
     end
   end
 
@@ -32,6 +32,7 @@ class InternalApi::V1::CalendarsController < ApplicationController
 
     client = Signet::OAuth2::Client.new(client_options)
     client.update!(session[:authorization])
+    current_user.update!(calendar_connected: true)
 
     service = Google::Apis::CalendarV3::CalendarService.new
     service.authorization = client
