@@ -50,7 +50,7 @@ const AddContacts = ({
       onClose={() => setShowContactModal(false)}
     >
       <div className="modal__position">
-        <h6 className="modal__title"> Add Contacts </h6>
+        <h6 className="modal__title"> Add Contact </h6>
         <div className="modal__close">
           <button
             className="modal__button"
@@ -136,7 +136,7 @@ const AddContacts = ({
                   !isValid || (!dirty && "bg-miru-gray-400")
                 }`}
               >
-                Add Contacts
+                Add Contact
               </Button>
             </Form>
           );
