@@ -28,7 +28,7 @@ const ProtectedRoute = ({ isAdminUser, children }) => {
 };
 
 const RouteConfig = () => {
-  const { isAdminUser } = useUserContext();
+  const { isAdminUser, calendarEnabled, calendarConnected } = useUserContext();
 
   return (
     <Routes>
@@ -62,8 +62,14 @@ const RouteConfig = () => {
         <Route element={<UserDetailsEdit />} path="change" />
         <Route element={<MobileNav isAdmin={isAdminUser} />} path="option" />
         <Route
-          element={<GoogleCalendar isAdmin={isAdminUser} />}
           path="integrations"
+          element={
+            <GoogleCalendar
+              calendarConnected={calendarConnected}
+              calendarEnabled={calendarEnabled}
+              isAdmin={isAdminUser}
+            />
+          }
         />
       </Route>
     </Routes>

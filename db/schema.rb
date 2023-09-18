@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_28_113109) do
+ActiveRecord::Schema[7.0].define(version: 2023_09_18_093317) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -401,6 +401,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_28_113109) do
     t.string "phone"
     t.string "token", limit: 50
     t.boolean "calendar_enabled", default: true
+    t.boolean "calendar_connected", default: true
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token"
     t.index ["current_workspace_id"], name: "index_users_on_current_workspace_id"
     t.index ["discarded_at"], name: "index_users_on_discarded_at"
