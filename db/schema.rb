@@ -139,6 +139,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_13_075839) do
     t.string "timezone"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "calendar_enabled", default: true
   end
 
   create_table "data_migrations", primary_key: "version", id: :string, force: :cascade do |t|
@@ -243,7 +244,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_13_075839) do
     t.integer "role", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "client_id"
     t.index ["accepted_at"], name: "index_invitations_on_accepted_at"
+    t.index ["client_id"], name: "index_invitations_on_client_id"
     t.index ["company_id"], name: "index_invitations_on_company_id"
     t.index ["expired_at"], name: "index_invitations_on_expired_at"
     t.index ["recipient_email"], name: "index_invitations_on_recipient_email"
@@ -421,6 +424,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_13_075839) do
     t.jsonb "social_accounts"
     t.string "phone"
     t.string "token", limit: 50
+    t.boolean "calendar_enabled", default: true
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token"
     t.index ["current_workspace_id"], name: "index_users_on_current_workspace_id"
     t.index ["discarded_at"], name: "index_users_on_discarded_at"
@@ -475,6 +479,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_13_075839) do
   add_foreign_key "holiday_infos", "holidays"
   add_foreign_key "holidays", "companies"
   add_foreign_key "identities", "users"
+  add_foreign_key "invitations", "clients"
   add_foreign_key "invitations", "companies"
   add_foreign_key "invitations", "users", column: "sender_id"
   add_foreign_key "invoice_line_items", "invoices"

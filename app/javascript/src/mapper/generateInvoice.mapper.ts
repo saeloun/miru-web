@@ -7,6 +7,7 @@ interface GenerateInvoiceClientList {
   phone_number: number;
   email: string;
   previousInvoiceNumber: string;
+  client_members: any;
 }
 
 interface CompanyDetails {
@@ -24,8 +25,8 @@ const getClientList = (clientList: Array<GenerateInvoiceClientList>) =>
     value: client.id,
     label: client.name,
     phone: client.phone_number,
-    email: client.email,
     previousInvoiceNumber: client.previousInvoiceNumber,
+    clientMembersEmails: client.client_members,
   }));
 
 const getCompanyDetails = (input: CompanyDetails) => input;

@@ -4,13 +4,15 @@ import { Routes, Route, Navigate } from "react-router-dom";
 
 import { useUserContext } from "context/UserContext";
 
+import GoogleCalendar from "./GoogleCalendar";
 import MobileNav from "./Layout/MobileNav";
 import LeaveBalance from "./LeaveBalance";
 import Billing from "./Organization/Billing";
 import OrgDetails from "./Organization/Details";
 import OrgEdit from "./Organization/Edit";
-import Import from "./Organization/Import";
-import LeavesAndHolidays from "./Organization/LeavesAndHolidays";
+import Holidays from "./Organization/Holidays";
+import OrganizationImport from "./Organization/Import";
+import Leaves from "./Organization/Leaves";
 import PaymentSettings from "./Organization/Payment";
 import UserDetailsEdit from "./UserDetail/Edit";
 import EmploymentDetails from "./UserDetail/EmploymentDetails";
@@ -45,8 +47,9 @@ const RouteConfig = () => {
             </ProtectedRoute>
           }
         />
-        <Route element={<Import />} path="import" />
-        <Route element={<LeavesAndHolidays />} path="leaves" />
+        <Route element={<OrganizationImport />} path="import" />
+        <Route element={<Leaves />} path="leaves" />
+        <Route element={<Holidays />} path="holidays" />
         <Route element={<LeaveBalance />} path="leave-balance" />
         <Route
           path="organization-details"
@@ -58,6 +61,10 @@ const RouteConfig = () => {
         />
         <Route element={<UserDetailsEdit />} path="change" />
         <Route element={<MobileNav isAdmin={isAdminUser} />} path="option" />
+        <Route
+          element={<GoogleCalendar isAdmin={isAdminUser} />}
+          path="integrations"
+        />
       </Route>
     </Routes>
   );

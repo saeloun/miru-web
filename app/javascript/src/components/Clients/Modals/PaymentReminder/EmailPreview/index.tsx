@@ -1,5 +1,7 @@
 import React from "react";
 
+import cn from "classnames";
+
 import { CustomAdvanceInput } from "common/CustomAdvanceInput";
 import { CustomTextareaAutosize } from "common/CustomTextareaAutosize";
 
@@ -24,14 +26,23 @@ const EmailPreview = ({
         <CustomAdvanceInput
           id="Email ID"
           label="Recipient Email ID"
-          value={emailParams.recipients.map(recipient => (
+          wrapperClassName="h-full"
+          value={
             <div
-              className="m-0.5 flex w-fit items-center space-x-2 rounded-full border bg-miru-gray-400 px-2 py-1"
-              key={recipient}
+              className={cn("flex flex-wrap rounded", {
+                "h-9": !emailParams.recipients,
+              })}
             >
-              <p>{recipient}</p>
+              {emailParams.recipients.map(recipient => (
+                <div
+                  className="space-XIcon-2 m-0.5 mr-2 flex w-fit items-center rounded-full border bg-miru-gray-400 px-2 py-1"
+                  key={recipient}
+                >
+                  <p>{recipient}</p>
+                </div>
+              ))}
             </div>
-          ))}
+          }
         />
       </div>
       <div className="mb-6 w-full xsm:px-2 lg:px-0">
