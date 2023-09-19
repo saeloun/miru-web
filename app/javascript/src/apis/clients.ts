@@ -15,6 +15,9 @@ const destroy = async id => axios.delete(`${path}/${id}`);
 const sendPaymentReminder = async (id, payload) =>
   axios.post(`${path}/${id}/send_payment_reminder`, payload);
 
+const addClientContact = async (id, payload) =>
+  axios.post(`${path}/${id}/add_client_contact`, payload);
+
 const invoices = async (query = "") =>
   axios.get(query ? `${path}/invoices?${query}` : `${path}/invoices`);
 
@@ -26,6 +29,7 @@ const clientApi = {
   create,
   invoices,
   sendPaymentReminder,
+  addClientContact,
 };
 
 export default clientApi;
