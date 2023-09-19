@@ -154,6 +154,7 @@ const GenerateInvoices = () => {
         : Toastr.error(SELECT_CLIENT_ERROR);
     }
   };
+
   if (invoiceDetails && isDesktop) {
     return (
       <Fragment>
