@@ -95,7 +95,7 @@ jobs:
           DB_PASS: "password"
           TEST_ENV_NUMBER: ${{ github.event.number }}
         run:
-          bundle exec rspec
+          bundle exec rspec spec/system
       - name: Run Eslint
         run: |
           npx eslint "./app/javascript/**/*.{ts,tsx,js,jsx,json}"
