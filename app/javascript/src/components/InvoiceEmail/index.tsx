@@ -73,12 +73,26 @@ const InvoiceEmail = () => {
       </div>
       <div className="flex justify-between bg-miru-han-purple-1000 px-28 py-3 font-manrope text-white">
         <span className="text-center text-xs font-normal leading-4">
-          © Miru 2022. All rights reserved.
+          © Miru 2023. All rights reserved.
         </span>
         <span className="flex w-1/4 justify-between text-center text-xs font-normal leading-4">
-          miru.so/
-          <img height="16px" src={InstagramSVG} width="16px" />
-          <img height="16px" src={TwitterSVG} width="16px" />
+          <a href="https://www.miru.so/" rel="noreferrer" target="_blank">
+            miru.so/
+          </a>
+          <a
+            href="https://www.instagram.com/getmiru/"
+            rel="noreferrer"
+            target="_blank"
+          >
+            <img height="16px" src={InstagramSVG} width="16px" />
+          </a>
+          <a
+            href="https://twitter.com/i/flow/login?redirect_after_login=%2Fgetmiru"
+            rel="noreferrer"
+            target="_blank"
+          >
+            <img height="16px" src={TwitterSVG} width="16px" />
+          </a>
         </span>
       </div>
     </div>
