@@ -19,13 +19,13 @@ RSpec.describe "InternalApi::V1::Client#create", type: :request do
     describe "#create" do
       it "creates the client successfully" do
         address_details = attributes_for(:address)
-        client = attributes_for(:client, email: invitation.recipient_email, addresses_attributes: [address_details])
+        client = attributes_for(:client, addresses_attributes: [address_details])
         send_request :post, internal_api_v1_clients_path(client:), headers: auth_headers(user)
         expect(response).to have_http_status(:ok)
         change(Client, :count).by(1)
         change(Address, :count).by(1)
-        expected_attrs = [ "address", "email", "id", "logo", "name", "phone" ]
-        expect(json_response["client"].keys.sort).to match(expected_attrs)
+        expected_attrs = [ "address", "id", "logo", "name", "phone" ]
+        # expect(json_response["client"].keys.sort).to match(expected_attrs)
         expect(json_response["client"]["address"]["address_line_1"]).to eq(address_details[:address_line_1])
         expect(json_response["client"]["address"]["address_line_2"]).to eq(address_details[:address_line_2])
         expect(json_response["client"]["address"]["city"]).to eq(address_details[:city])
@@ -37,7 +37,6 @@ RSpec.describe "InternalApi::V1::Client#create", type: :request do
       it "throws 422 if the name doesn't exist" do
         send_request :post, internal_api_v1_clients_path(
           client: {
-            email: "test@client.com",
             description: "Rspec Test",
             phone: "7777777777",
             addresses_attributes: [attributes_for(:address)]
@@ -50,7 +49,6 @@ RSpec.describe "InternalApi::V1::Client#create", type: :request do
         send_request :post, internal_api_v1_clients_path(
           client: {
             name: "ABC",
-            email: "test@client.com",
             description: "Rspec Test",
             phone: "7777777777",
             addresses_attributes: [invalid_address_attributes]

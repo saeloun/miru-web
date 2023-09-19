@@ -31,7 +31,6 @@ const ClientForm = ({
   submitting,
   setSubmitting,
   fetchDetails,
-  usersWithClientRole,
 }: IClientForm) => {
   const [fileUploadError, setFileUploadError] = useState<string>("");
   const [countries, setCountries] = useState([]);
@@ -114,8 +113,7 @@ const ClientForm = ({
       onSubmit={handleSubmit}
     >
       {(props: FormikProps<FormValues>) => {
-        const { touched, errors, setFieldValue, values, setFieldTouched } =
-          props;
+        const { touched, errors, setFieldValue, values } = props;
 
         return (
           <Form>
@@ -151,24 +149,6 @@ const ClientForm = ({
               <InputErrors
                 fieldErrors={errors.name}
                 fieldTouched={touched.name}
-              />
-            </div>
-            <div className="mt-4">
-              <CustomReactSelect
-                handleOnChange={email => setFieldValue("email", email.value)}
-                id="email"
-                label="Email"
-                name="email"
-                value={{ label: values.email, value: values.email }}
-                options={usersWithClientRole.map(user => ({
-                  value: user.email,
-                  label: user.email,
-                }))}
-                onBlur={() => setFieldTouched("email", true)}
-              />
-              <InputErrors
-                fieldErrors={errors.email?.value}
-                fieldTouched={touched.email}
               />
             </div>
             <div className="mt-4">
@@ -326,15 +306,10 @@ interface IClientForm {
   submitting: boolean;
   setSubmitting: any;
   fetchDetails?: any;
-  usersWithClientRole: any;
 }
 
 interface FormValues {
   name: string;
-  email: {
-    value: string;
-    label: string;
-  };
   phone: string;
   address1: string;
   address2: string;

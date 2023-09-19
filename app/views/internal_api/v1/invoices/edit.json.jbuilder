@@ -10,6 +10,7 @@ json.client do
   json.address client.current_address
   json.phone client.phone
   json.email client.email
+  json.client_members_emails client_member_emails
 end
 json.company do
   json.partial! "internal_api/v1/partial/company", locals: { company: client.company }
