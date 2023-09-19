@@ -48,13 +48,13 @@ class HolidayInfo < ApplicationRecord
     end
 
     def validate_holiday_category
-      unless holiday&.holiday_types.include?(category)
+      unless holiday&.holiday_types&.include?(category)
         errors.add(:category, "must be a valid holiday category for the associated holiday")
       end
     end
 
     def validate_year
-      if date&.year != holiday.year
+      if holiday && date&.year != holiday.year
         errors.add(:date, "must have the same year as the associated holiday")
       end
     end
