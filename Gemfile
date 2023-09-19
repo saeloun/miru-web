@@ -210,7 +210,7 @@ group :test, :ci do
 
   gem "rspec-buildkite"
   gem "rspec-retry"
-
+  gem "webdrivers", "~> 5.0", require: false
   # BuildKite Test Collector
   # gem "buildkite-test_collector", git: "https://github.com/buildkite/test-collector-ruby.git", branch: "main"
 end
