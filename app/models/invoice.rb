@@ -174,6 +174,10 @@ class Invoice < ApplicationRecord
     Invoice.search_index.refresh
   end
 
+  def client_member_emails
+    client.client_members.joins(:user).pluck("users.email")
+  end
+
   private
 
     def set_external_view_key
