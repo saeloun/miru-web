@@ -1,6 +1,6 @@
 import React from "react";
 
-import CalendarComponent from "../Organization/LeavesAndHolidays/CalendarComponent";
+import CalendarComponent from "../Organization/Holidays/CalendarComponent";
 
 const QuarterlyCalendar = ({ tileContent, quarterlyMap }) => (
   <div className="flex flex-row justify-between bg-miru-gray-100">

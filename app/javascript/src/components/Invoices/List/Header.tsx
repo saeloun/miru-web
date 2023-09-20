@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 
-import { useDebounce } from "helpers";
+import { useDebounce, useOutsideClick } from "helpers";
 import { PlusIcon, FilterIcon, XIcon, SearchIcon } from "miruIcons";
 import { Link } from "react-router-dom";
 
@@ -27,6 +27,8 @@ const Header = ({
   let appliedFilterCount = (filterParamsStr.match(/&/g) || []).length;
   filterParamsStr.includes("custom") &&
     (appliedFilterCount = appliedFilterCount - 2);
+
+  const searchRef = useRef(null);
 
   useEffect(() => {
     if (searchQuery) {
@@ -97,6 +99,10 @@ const Header = ({
       clearTimeout(timer);
     }, 300);
   };
+
+  useOutsideClick(searchRef, () => {
+    onSearchClear();
+  });
 
   return (
     <div className="relative mt-6 mb-3 flex flex-wrap items-center justify-between md:justify-start lg:justify-between">
@@ -184,6 +190,7 @@ const Header = ({
             <SearchDropdown
               display={params.query !== searchQuery}
               list={searchResult}
+              searchRef={searchRef}
               status={status}
             />
           </div>

@@ -18,10 +18,7 @@ RSpec.describe "Employment index page", type: :system do
 
     it "returns the employment details" do
       with_forgery_protection do
-        visit "/teams"
-
-        find(".hoverIcon").hover.click
-        click_on "EMPLOYEMENT DETAILS"
+        visit "/team/#{user.id}/employment"
 
         expect(page).to have_content(user.employments.kept.first.employee_id)
         expect(page).to have_content(user.employments.kept.first.designation)

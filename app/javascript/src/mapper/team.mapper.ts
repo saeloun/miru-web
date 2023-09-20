@@ -7,21 +7,27 @@ const mapper = item => ({
   role: item.role,
   status: item.status,
   profilePicture: item.profilePicture,
+  isTeamMember: item.isTeamMember,
 });
 
 const unmapList = input => {
-  let { team, invitation } = input.data;
-  team = team.map(item => ({
-    ...mapper(item),
-    isTeamMember: true,
-  }));
+  let { combinedDetails } = input.data;
+  combinedDetails = combinedDetails.map(item => ({ ...mapper(item) }));
 
-  invitation = invitation.map(item => ({
-    ...mapper(item),
-    isTeamMember: false,
-  }));
-
-  return [...team, ...invitation];
+  return combinedDetails;
 };
 
-export { unmapList };
+const unmapPagyData = input => {
+  const { paginationDetails } = input.data;
+
+  return {
+    items: paginationDetails.items,
+    next: paginationDetails.next,
+    page: paginationDetails.page,
+    pages: paginationDetails.pages,
+    last: paginationDetails.last,
+    prev: paginationDetails.prev,
+  };
+};
+
+export { unmapList, unmapPagyData };

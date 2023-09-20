@@ -16,9 +16,11 @@ const Client = ({ element, totalMinutes, index }: ISingleClient) => {
   const chartColorIndex = index % 4;
   const randomColor = chartColor[chartColorIndex];
   const hourPercentage = (element.minutes * 100) / totalMinutes;
+  const finalHourPercentage =
+    hourPercentage > 1 ? hourPercentage : Math.ceil(hourPercentage);
 
   const divStyle = {
-    width: `${hourPercentage}%`,
+    width: `${finalHourPercentage}%`,
   };
 
   return (
@@ -41,29 +43,38 @@ const Client = ({ element, totalMinutes, index }: ISingleClient) => {
   );
 };
 
-const GetClientBar = ({ data, totalMinutes }: IChartBarGraph) => (
-  <section>
-    <div className="hidden md:block">
-      <p className="mb-3 text-tiny tracking-widest text-miru-dark-purple-600">
-        TOTAL HOURS:{" "}
-        <span className="font-medium">{minToHHMM(totalMinutes)}</span>
-      </p>
-      <div className="flex h-1 w-full bg-gray-200">
-        {data.map((element, index) => (
-          <Client
-            element={element}
-            index={index}
-            key={index}
-            totalMinutes={totalMinutes}
-          />
-        ))}
+const GetClientBar = ({ data, totalMinutes }: IChartBarGraph) => {
+  //removing elements whose minutes value is less than or equal to zero.
+  const dataWithMinutes = data.filter(element => element.minutes > 0);
+
+  return (
+    <section>
+      <div className="hidden md:block">
+        <p className="mb-3 text-tiny tracking-widest text-miru-dark-purple-600">
+          TOTAL HOURS:{" "}
+          <span className="font-medium">{minToHHMM(totalMinutes)}</span>
+        </p>
+        <div className="flex h-1 w-full bg-gray-200">
+          {dataWithMinutes.map((element, index) => {
+            if (element.minutes > 0) {
+              return (
+                <Client
+                  element={element}
+                  index={index}
+                  key={index}
+                  totalMinutes={totalMinutes}
+                />
+              );
+            }
+          })}
+        </div>
+        <div className="mt-3 flex justify-between pb-6 text-tiny tracking-widest text-miru-dark-purple-400">
+          <span>0</span>
+          <span>{minToHHMM(totalMinutes)}</span>
+        </div>
       </div>
-      <div className="mt-3 flex justify-between pb-6 text-tiny tracking-widest text-miru-dark-purple-400">
-        <span>0</span>
-        <span>{minToHHMM(totalMinutes)}</span>
-      </div>
-    </div>
-  </section>
-);
+    </section>
+  );
+};
 
 export default GetClientBar;

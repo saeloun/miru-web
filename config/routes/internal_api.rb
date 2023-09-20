@@ -18,6 +18,9 @@ namespace :internal_api, defaults: { format: "json" } do
         get "invoices", to: "clients/invoices#index"
         get "invoices/:id", to: "clients/invoices#show", as: "invoice"
       end
+      member do
+        post :send_payment_reminder
+      end
     end
 
     resources :project, only: [:index]
@@ -90,6 +93,7 @@ namespace :internal_api, defaults: { format: "json" } do
     resources :team, only: [:index, :destroy, :update] do
       resource :details, only: [:show, :update], controller: "team_members/details"
       resource :avatar, only: [:update, :destroy], controller: "team_members/avatar"
+      collection { put "update_team_members" }
     end
 
     resources :invitations, only: [:create, :update, :destroy]

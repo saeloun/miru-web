@@ -1,15 +1,23 @@
 import React, { useEffect, useState } from "react";
 
+import classNames from "classnames";
 import { useDebounce } from "helpers";
 import { SearchIcon, XIcon } from "miruIcons";
 
 import SearchDropdown from "./SearchDropdown";
 
-const AutoSearch = ({ searchAction, SearchDataRow }: Iprops) => {
+const AutoSearch = ({
+  searchAction,
+  SearchDataRow,
+  wrapperClassName,
+}: Iprops) => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [searchResult, setSearchResult] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
+
+  const defaultWrapperClassName =
+    "relative w-full rounded-full md:w-1/2 lg:w-1/3";
 
   const handleSearchAction = async () => {
     if (searchQuery) {
@@ -31,7 +39,7 @@ const AutoSearch = ({ searchAction, SearchDataRow }: Iprops) => {
   };
 
   return (
-    <div className="relative mx-auto w-11/12 rounded-full md:w-1/2 lg:w-1/3">
+    <div className={classNames(defaultWrapperClassName, wrapperClassName)}>
       <input
         className="outline-none w-full rounded-full border-miru-gray-1000 bg-miru-gray-100 py-2 px-3 text-sm font-medium leading-5 focus:border focus:ring-1 focus:ring-miru-gray-1000"
         id="searchInput"
@@ -59,6 +67,7 @@ const AutoSearch = ({ searchAction, SearchDataRow }: Iprops) => {
 interface Iprops {
   searchAction: (val) => any; // eslint-disable-line
   SearchDataRow;
+  wrapperClassName?: string;
 }
 
 export default AutoSearch;

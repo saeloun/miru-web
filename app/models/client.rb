@@ -47,9 +47,13 @@ class Client < ApplicationRecord
 
   after_discard :discard_projects
   after_commit :reindex_projects
+  after_commit :refresh_client_index
 
   accepts_nested_attributes_for :addresses, reject_if: :address_attributes_blank?, allow_destroy: true
   scope :with_ids, -> (client_ids) { where(id: client_ids) if client_ids.present? }
+
+  searchkick filterable: [:name, :email, :discarded_at],
+    word_middle: [:name, :email]
 
   def reindex_projects
     projects.reindex
@@ -157,6 +161,10 @@ class Client < ApplicationRecord
 
   def formatted_address
     current_address&.formatted_address
+  end
+
+  def refresh_client_index
+    Client.search_index.refresh
   end
 
   private

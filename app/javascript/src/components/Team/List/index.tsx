@@ -2,10 +2,11 @@ import React, { Fragment, useEffect, useState } from "react";
 
 import teamApi from "apis/team";
 import withLayout from "common/Mobile/HOC/withLayout";
+import Pagination from "common/Pagination/Pagination";
 import { TeamModalType } from "constants/index";
 import { ListContext } from "context/TeamContext";
 import { useUserContext } from "context/UserContext";
-import { unmapList } from "mapper/team.mapper";
+import { unmapList, unmapPagyData } from "mapper/team.mapper";
 
 import Header from "./Header";
 import Table from "./Table";
@@ -16,6 +17,7 @@ const TeamList = () => {
   const [teamList, setTeamList] = useState([]);
   const [modal, setModal] = useState("");
   const [modalUser, setModalUser] = useState({});
+  const [pagy, setPagy] = useState<any>(null);
 
   const { isDesktop } = useUserContext();
 
@@ -30,7 +32,9 @@ const TeamList = () => {
     const response = await teamApi.get();
     if (response.status === 200) {
       const sanitized = unmapList(response);
+      const pagyData = unmapPagyData(response);
       setTeamList(sanitized);
+      setPagy(pagyData);
     }
   };
 
@@ -39,6 +43,18 @@ const TeamList = () => {
       getTeamList();
     }
   }, [modal]);
+
+  const handlePageChange = async (pageData, items = pagy.items) => {
+    if (pageData == "...") return;
+
+    const response = await teamApi.get(`page=${pageData}&items=${items}`);
+    if (response.status === 200) {
+      const sanitized = unmapList(response);
+      const pagyData = unmapPagyData(response);
+      setTeamList(sanitized);
+      setPagy(pagyData);
+    }
+  };
 
   const TeamLayout = () => (
     <ListContext.Provider
@@ -57,6 +73,14 @@ const TeamList = () => {
                 <Table />
               </div>
             </div>
+            <Pagination
+              isTeamPage
+              handleClick={handlePageChange}
+              pagy={pagy}
+              params={pagy}
+              setParams={setPagy}
+              title="users/page"
+            />
           </div>
         </Fragment>
       )}

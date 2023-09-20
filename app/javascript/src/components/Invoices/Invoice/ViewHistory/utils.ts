@@ -33,9 +33,13 @@ const calculateTime = (date, dateFormat, timezone) => {
   }
 
   if (hour >= 48) {
-    const format = `${dateFormat}, HH:MM a`;
+    const timeZoneString = timezone;
+    const timeZoneOffset = timeZoneString.split("GMT")[1].trim();
+    const utcDateTime = dayjs.utc(date);
+    const convertedDateTime = utcDateTime.utcOffset(timeZoneOffset);
+    const format = `${dateFormat}, hh:mm a`;
 
-    return dayjs(date).format(format);
+    return convertedDateTime.format(format);
   }
 };
 
