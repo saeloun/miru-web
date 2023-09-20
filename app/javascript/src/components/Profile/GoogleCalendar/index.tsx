@@ -19,20 +19,22 @@ const GoogleCalendar = ({ isAdmin, calendarEnabled, calendarConnected }) => {
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    const companiesData = async () => {
-      setLoading(true);
-      try {
-        const {
-          data: { company_details },
-        } = await companiesApi.index();
-        setEnabled(company_details.calendar_enabled);
-      } catch (error) {
-        Logger.log(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    companiesData();
+    if (isAdmin) {
+      const companiesData = async () => {
+        setLoading(true);
+        try {
+          const {
+            data: { company_details },
+          } = await companiesApi.index();
+          setEnabled(company_details.calendar_enabled);
+        } catch (error) {
+          Logger.log(error);
+        } finally {
+          setLoading(false);
+        }
+      };
+      companiesData();
+    }
   }, []);
 
   useEffect(() => {
