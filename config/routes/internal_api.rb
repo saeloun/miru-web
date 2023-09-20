@@ -21,6 +21,9 @@ namespace :internal_api, defaults: { format: "json" } do
       member do
         post :send_payment_reminder
       end
+      member do
+        post :add_client_contact
+      end
     end
 
     resources :project, only: [:index]

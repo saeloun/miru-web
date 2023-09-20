@@ -58,7 +58,8 @@ class Company < ApplicationRecord
     clients.kept.map do |client|
       {
         id: client.id, name: client.name, email: client.email, phone: client.phone, address: client.current_address,
-        previousInvoiceNumber: client.invoices&.last&.invoice_number || 0
+        previousInvoiceNumber: client.invoices&.last&.invoice_number || 0,
+        client_members: client.client_members.joins(:user).pluck("users.email")
       }
     end
   end
