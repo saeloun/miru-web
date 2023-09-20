@@ -1,3 +1,14 @@
+import {
+  CakeIconSVG,
+  CalendarBlackIconSVG,
+  CarIconSVG,
+  VacationIconSVG,
+  FlowerIconSVG,
+  UserIconSVG,
+  MedicineIconSVG,
+  BabyIconSVG,
+} from "miruIcons";
+
 export const leaveTypes = [
   {
     value: "annual",
@@ -21,7 +32,53 @@ export const leaveTypes = [
   },
 ];
 
-export const repitationTypeObj = {
+export const leaveColors = [
+  {
+    value: "#0E79B2",
+    label: "Chart Blue",
+  },
+  {
+    value: "#BF1363",
+    label: "Chart Pink",
+  },
+  {
+    value: "#F39237",
+    label: "Chart Orange",
+  },
+  {
+    value: "#058C42",
+    label: "Chart Green",
+  },
+  {
+    value: "#7768AE",
+    label: "Chart Purple",
+  },
+  {
+    value: "#68AEAA",
+    label: "Chart Light Blue",
+  },
+  {
+    value: "#C97CC1",
+    label: "Chart Light Pink",
+  },
+  {
+    value: "#7CC984",
+    label: "Chart Light Green",
+  },
+];
+
+export const leaveIcons = [
+  { value: "calendar", label: "label", icon: CalendarBlackIconSVG },
+  { value: "cake", label: "label2", icon: CakeIconSVG },
+  { value: "vacation", label: "label3", icon: VacationIconSVG },
+  { value: "medicine", label: "label4", icon: MedicineIconSVG },
+  { value: "baby", label: "label5", icon: BabyIconSVG },
+  { value: "flower", label: "label6", icon: FlowerIconSVG },
+  { value: "car", label: "label7", icon: CarIconSVG },
+  { value: "user", label: "label8", icon: UserIconSVG },
+];
+
+export const repetitionTypeObj = {
   per_month: "per month",
   per_year: "per year",
   per_week: "per week",

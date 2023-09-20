@@ -123,7 +123,9 @@ const UserActions = setVisiblity => {
         <li
           className="flex w-full cursor-pointer items-center justify-between py-3  px-6 text-sm font-bold leading-4 hover:bg-miru-gray-100"
           onClick={() => {
-            setShowWorkSpaceList(true);
+            if (workSpaceList.length > 1) {
+              setShowWorkSpaceList(true);
+            }
           }}
         >
           <div
@@ -142,7 +144,9 @@ const UserActions = setVisiblity => {
             />
             <span>{currentWorkspace.name}</span>
           </div>
-          <img className="lg:h-10 lg:w-10" src={Switcher} />
+          {workSpaceList.length > 1 && (
+            <img className="lg:h-10 lg:w-10" src={Switcher} />
+          )}
         </li>
       </Tooltip>
       {showWorkSpaceList && <WorkspaceList />}

@@ -3,6 +3,7 @@
 # Table name: users
 #
 #  id                     :bigint           not null, primary key
+#  calendar_enabled       :boolean          default(TRUE)
 #  confirmation_sent_at   :datetime
 #  confirmation_token     :string
 #  confirmed_at           :datetime
@@ -98,6 +99,8 @@ class User < ApplicationRecord
   before_validation :prevent_spam_user_sign_up
   after_discard :discard_project_members
   before_create :set_token
+
+  after_commit :send_to_hubspot, on: :create
 
   def prevent_spam_user_sign_up
     if self.email.include?("internetkeno")
@@ -209,5 +212,9 @@ class User < ApplicationRecord
       return false if skip_password_validation
 
       super
+    end
+
+    def send_to_hubspot
+      HubspotIntegrationJob.perform_later(email, first_name, last_name)
     end
 end

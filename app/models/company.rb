@@ -2,18 +2,19 @@
 #
 # Table name: companies
 #
-#  id              :bigint           not null, primary key
-#  address         :text
-#  base_currency   :string           default("USD"), not null
-#  business_phone  :string
-#  country         :string           not null
-#  date_format     :string
-#  fiscal_year_end :string
-#  name            :string           not null
-#  standard_price  :decimal(, )      default(0.0), not null
-#  timezone        :string
-#  created_at      :datetime         not null
-#  updated_at      :datetime         not null
+#  id               :bigint           not null, primary key
+#  address          :text
+#  base_currency    :string           default("USD"), not null
+#  business_phone   :string
+#  calendar_enabled :boolean          default(TRUE)
+#  country          :string           not null
+#  date_format      :string
+#  fiscal_year_end  :string
+#  name             :string           not null
+#  standard_price   :decimal(, )      default(0.0), not null
+#  timezone         :string
+#  created_at       :datetime         not null
+#  updated_at       :datetime         not null
 #
 
 # frozen_string_literal: true
@@ -55,7 +56,10 @@ class Company < ApplicationRecord
 
   def client_list
     clients.kept.map do |client|
-      { id: client.id, name: client.name, email: client.email, phone: client.phone, address: client.current_address }
+      {
+        id: client.id, name: client.name, email: client.email, phone: client.phone, address: client.current_address,
+        previousInvoiceNumber: client.invoices&.last&.invoice_number || 0
+      }
     end
   end
 

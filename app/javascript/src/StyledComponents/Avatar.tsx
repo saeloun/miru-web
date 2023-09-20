@@ -11,6 +11,7 @@ type AvatarProps = {
   classNameInitialsWrapper?: string;
   initialsLetterCount?: number;
   size?: string;
+  style?: React.CSSProperties;
 };
 
 const Avatar = ({
@@ -21,6 +22,7 @@ const Avatar = ({
   classNameInitials = "",
   classNameInitialsWrapper = "",
   initialsLetterCount = 2,
+  style,
 }: AvatarProps) => {
   const [initials, setInitials] = useState<string>(null);
   const DEFAULT_STYLE_IMAGE = "inline-block rounded-full";
@@ -48,6 +50,7 @@ const Avatar = ({
         className={classnames(DEFAULT_STYLE_IMAGE, size, classNameImg)}
         id="logo"
         src={url}
+        style={style}
       />
     );
   }
@@ -77,6 +80,7 @@ const Avatar = ({
       alt="avatar"
       className={classnames(DEFAULT_STYLE_IMAGE, size, classNameImg)}
       src={NavAvatarSVG}
+      style={style}
     />
   );
 };

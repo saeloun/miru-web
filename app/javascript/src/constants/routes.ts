@@ -7,6 +7,7 @@ import SignUp from "components/Authentication/SignUp";
 import Expenses from "components/Expenses";
 import InvoiceEmail from "components/InvoiceEmail";
 import InvoicesRouteConfig from "components/Invoices/InvoicesRouteConfig";
+import LeaveManagement from "components/LeaveManagement";
 import Success from "components/payments/Success";
 import Projects from "components/Projects";
 import AccountsAgingReport from "components/Reports/AccountsAgingReport";
@@ -59,6 +60,11 @@ const PaymentsRoutes = [
 
 const TimeTrackingRoutes = [
   { path: "", Component: TimeTracking },
+  { path: "*", Component: ErrorPage },
+];
+
+const LeaveManagementRoutes = [
+  { path: "", Component: LeaveManagement },
   { path: "*", Component: ErrorPage },
 ];
 
@@ -167,5 +173,10 @@ export const ROUTES = [
     path: Paths.EXPENSES,
     subRoutes: ExpenseRoutes,
     authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER],
+  },
+  {
+    path: Paths.Leave_Management,
+    subRoutes: LeaveManagementRoutes,
+    authorisedRoles: [ADMIN, OWNER, EMPLOYEE],
   },
 ];

@@ -11,7 +11,18 @@ class InternalApi::V1::TeamController < InternalApi::V1::ApplicationController
       .ransack(first_name_or_last_name_or_recipient_email_cont: params.dig(:q, :first_name_or_last_name_or_email_cont))
     teams = query.result(distinct: true)
     invitations = invitations_query.result(distinct: true)
-    render :index, locals: TeamPresenter.new(teams, invitations, current_user, current_company).index_data, status: :ok
+
+    presenter_data = TeamPresenter.new(teams, invitations, current_user, current_company).index_data
+    team_data = presenter_data[:teams]
+    invitation_data = presenter_data[:invitations]
+
+    combined_data = team_data + invitation_data
+    pagy_combined, combined_details = pagy_array(combined_data, items: params[:items] || 10)
+
+    render :index, locals: {
+      combined_details:,
+      pagination_details_combined: pagy_metadata(pagy_combined)
+    }, status: :ok
   end
 
   def update
@@ -24,6 +35,22 @@ class InternalApi::V1::TeamController < InternalApi::V1::ApplicationController
       user: employment.user,
       notice: I18n.t("team.update.success.message")
     }, status: :ok
+  end
+
+  def update_team_members
+    authorize current_company, policy_class: CompanyPolicy
+
+    current_company.update!(calendar_enabled: team_params[:calendar_enabled])
+    current_company.employments.includes(:user).find_each do |item|
+      item.user.update!(calendar_enabled: team_params[:calendar_enabled])
+    end
+
+    enabled_disabled = team_params[:calendar_enabled] ? "enabled" : "disabled"
+
+    render json: {
+             notice: "Calendar integration has been #{enabled_disabled} for all users of #{current_company.name}"
+           },
+      status: :ok
   end
 
   def destroy
@@ -45,5 +72,9 @@ class InternalApi::V1::TeamController < InternalApi::V1::ApplicationController
 
     def user_params
       params.permit(policy(:team).permitted_attributes)
+    end
+
+    def team_params
+      params.require(:team).permit(:calendar_enabled)
     end
 end

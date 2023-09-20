@@ -36,9 +36,8 @@ class Employment < ApplicationRecord
   belongs_to :user
 
   # Validations
-  # TODO:- To be uncommented after UI integration is done
-  # validates :designation, :employment_type, :joined_at, :employee_id, presence: true
-  # validates :resigned_at, comparison: { greater_than: :joined_at }, unless: -> { resigned_at.nil? }
+  validates :designation, :employment_type, :joined_at, :employee_id, presence: true, on: :update
+  validates :resigned_at, comparison: { greater_than: :joined_at }, unless: -> { resigned_at.nil? }
 
   # Callbacks
   before_destroy :remove_user_invitations
@@ -48,6 +47,14 @@ class Employment < ApplicationRecord
       user.current_workspace = user.employments.kept.first.company
       user.save!
     end
+  end
+
+  def formatted_joined_at
+    CompanyDateFormattingService.new(joined_at, company:).process
+  end
+
+  def formatted_resigned_at
+    CompanyDateFormattingService.new(resigned_at, company:).process
   end
 
   private
