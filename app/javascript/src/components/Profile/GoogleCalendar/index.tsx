@@ -73,7 +73,7 @@ const GoogleCalendar = ({ isAdmin, calendarEnabled, calendarConnected }) => {
   const handleDisconnectCalendar = async () => {
     setConnectGoogleCalendar(false);
     await googleCalendarApi.callback();
-    window.location.replace("/profile/edit/integration");
+    window.location.replace("/profile/edit/integrations");
   };
 
   const showConnectDisconnectBtn = () => {
