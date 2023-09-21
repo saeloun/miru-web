@@ -37,7 +37,6 @@ const ClientDetails = ({ isAdminUser }) => {
   const [overdueOutstandingAmount, setOverdueOutstandingAmount] =
     useState<any>(null);
   const [clientInvoices, setClientInvoices] = useState<any[]>([]);
-
   const [sendPaymentReminder, setSendPaymentReminder] =
     useState<boolean>(false);
 

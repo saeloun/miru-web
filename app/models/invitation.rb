@@ -43,6 +43,7 @@ class Invitation < ApplicationRecord
 
   # Associations
   belongs_to :company
+  belongs_to :client, optional: true
   belongs_to :sender, class_name: "User"
 
   # Validations
@@ -56,7 +57,6 @@ class Invitation < ApplicationRecord
     length: { maximum: 20 }
   validate :non_existing_company_user
   validate :recipient_email_not_changed
-
   # Scopes
   scope :valid_invitations, -> {
     where(accepted_at: nil, expired_at: Time.current...(Time.current + MAX_EXPIRATION_DAY))
