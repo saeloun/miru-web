@@ -44,10 +44,6 @@ const Holidays = () => {
   const { isDesktop } = useUserContext();
   const navigate = useNavigate();
 
-  const getData = async () => {
-    setIsLoading(true);
-  };
-
   useOutsideClick(wrapperRef, () => {
     setShowDatePicker({
       visibility: false,
@@ -161,8 +157,8 @@ const Holidays = () => {
 
   const handleCancelAction = () => {
     if (isDesktop) {
-      getData();
       setIsDetailUpdated(false);
+      setIsEditable(false);
     } else {
       navigate("/profile/edit/option");
     }
