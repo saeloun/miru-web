@@ -60,11 +60,11 @@ const EditHolidays = ({
                     >
                       <CustomInputText
                         readOnly
-                        id="Date"
+                        id={`Date_${index}`}
                         inputBoxClassName="border focus:border-miru-han-purple-1000 cursor-pointer"
                         label="Date"
                         labelClassName="cursor-pointer"
-                        name="Date"
+                        name={`Date_${index}`}
                         type="text"
                         value={
                           holiday.date &&
@@ -90,11 +90,11 @@ const EditHolidays = ({
                   </div>
                   <div className="w-1/2 pl-1">
                     <CustomInputText
-                      id="Name"
+                      id={`Name_${index}`}
                       inputBoxClassName="border focus:border-miru-han-purple-1000 cursor-pointer"
                       label="Name"
                       labelClassName="cursor-pointer"
-                      name="Name"
+                      name={`Name_${index}`}
                       type="text"
                       value={holiday.name}
                       onChange={e => handleHolidateNameChange(e, index, false)}
@@ -200,11 +200,11 @@ const EditHolidays = ({
                         >
                           <CustomInputText
                             readOnly
-                            id="op_holiday_date_picker"
+                            id={`op_holiday_date_picker_${index}`}
                             inputBoxClassName="border focus:border-miru-han-purple-1000 cursor-pointer"
                             label="Date"
                             labelClassName="cursor-pointer"
-                            name="op_holiday_date_picker"
+                            name={`op_holiday_date_picker_${index}`}
                             type="text"
                             value={
                               optionalHoliday.date &&
@@ -232,12 +232,12 @@ const EditHolidays = ({
                       </div>
                       <div className="w-1/2 pl-1">
                         <CustomInputText
-                          id="holiday_name_op"
+                          id={`holiday_name_op_${index}`}
                           inputBoxClassName="border focus:border-miru-han-purple-1000 cursor-pointer"
                           label="Name"
                           labelClassName="cursor-pointer"
                           min={0}
-                          name="holiday_name_op"
+                          name={`holiday_name_op_${index}`}
                           type="text"
                           value={optionalHoliday.name}
                           onChange={e =>

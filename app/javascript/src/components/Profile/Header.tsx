@@ -5,7 +5,6 @@ import { XIcon } from "miruIcons";
 import { useNavigate } from "react-router-dom";
 
 import CustomYearPicker from "common/CustomYearPicker";
-import { useUserContext } from "context/UserContext";
 
 const Header = ({
   title,
@@ -16,7 +15,6 @@ const Header = ({
   isDisableUpdateBtn = false,
   showYearPicker = false,
 }: Iprops) => {
-  const { isDesktop } = useUserContext();
   const navigate = useNavigate();
   const [currentYear, setCurrentYear] = useState<number>(getYear(new Date()));
 
@@ -39,7 +37,6 @@ const Header = ({
           <div>
             <button
               className="mx-1 w-20 rounded-md border px-3 "
-              disabled={isDesktop && !isDisableUpdateBtn}
               onClick={cancelAction}
             >
               Cancel
