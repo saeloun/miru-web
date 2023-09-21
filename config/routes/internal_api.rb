@@ -128,6 +128,12 @@ namespace :internal_api, defaults: { format: "json" } do
     resources :expenses, only: [:create, :index, :show]
     resources :bulk_previous_employments, only: [:update]
 
+    resources :leaves, as: "leave" do
+      resources :leave_types
+    end
+
+    patch "leave_with_leave_type/:year", to: "leave_with_leave_types#update", as: :update_leave_with_leave_types
+
     match "*path", to: "application#not_found", via: :all, constraints: lambda { |req|
       req.path.exclude?("rails/active_storage") && req.path.include?("internal_api")
     }
