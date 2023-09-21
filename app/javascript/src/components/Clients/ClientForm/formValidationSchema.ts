@@ -9,7 +9,6 @@ export const clientSchema = Yup.object().shape({
   name: Yup.string()
     .required("Name cannot be blank")
     .max(30, "Maximum 30 characters are allowed"),
-  email: Yup.string().required("Email cannot be blank"),
   phone: Yup.string()
     .required("Business phone number cannot be blank")
     .matches(phoneRegExp, "Please enter a valid business phone number"),
