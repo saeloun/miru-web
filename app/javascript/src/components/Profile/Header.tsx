@@ -18,9 +18,7 @@ const Header = ({
 }: Iprops) => {
   const { isDesktop } = useUserContext();
   const navigate = useNavigate();
-  const [currentYear, setCurrentYear] = useState<number>(
-    getYear(new Date()) + 1
-  );
+  const [currentYear, setCurrentYear] = useState<number>(getYear(new Date()));
 
   return (
     <>

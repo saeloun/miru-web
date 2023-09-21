@@ -556,7 +556,6 @@ const OrgEdit = () => {
   };
 
   const handleCancelAction = () => {
-    console.log("true");
     getCurrencies();
     getData();
     setIsDetailUpdated(false);

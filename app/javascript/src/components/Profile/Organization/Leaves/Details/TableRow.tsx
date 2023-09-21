@@ -8,8 +8,8 @@ const TableRow = ({ leave, key }) => {
     leaveIcon,
     leaveColor,
     total,
-    countType,
-    repetitionType,
+    allocationPeriod,
+    allocationFrequency,
     carryForwardDays,
   } = leave;
 
@@ -29,7 +29,7 @@ const TableRow = ({ leave, key }) => {
         className="flex w-4/12 items-center border-b border-miru-gray-400 py-6 pr-2 text-left text-sm font-medium text-miru-dark-purple-1000"
         scope="col"
       >
-        {total} {countType} {repetitionType}
+        {total} {allocationPeriod} {allocationFrequency}
       </td>
       <td
         className="flex w-4/12 items-center border-b border-miru-gray-400 py-6 pr-2 text-left text-sm font-medium text-miru-dark-purple-1000"

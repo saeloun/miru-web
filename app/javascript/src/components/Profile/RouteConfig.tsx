@@ -33,6 +33,7 @@ const RouteConfig = () => {
     <Routes>
       <Route element={<EmploymentDetails />} path="employment-details" />
       <Route element={<EmploymentDetailsEdit />} path="employment-edit" />
+      <Route element={<Leaves />} path="leaves-details" />
       <Route path="/edit">
         {/* <Route path="bank_account_details" element={<BankAccountDetails />} /> TODO: Temporary disabling*/}
         <Route element={<UserDetailsView />} path="" />
@@ -47,7 +48,6 @@ const RouteConfig = () => {
           }
         />
         <Route element={<OrganizationImport />} path="import" />
-        <Route element={<Leaves />} path="leaves" />
         <Route element={<Holidays />} path="holidays" />
         <Route element={<LeaveBalance />} path="leave-balance" />
         <Route
