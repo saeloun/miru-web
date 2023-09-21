@@ -14,12 +14,14 @@
 #  token           :string           not null
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
+#  client_id       :bigint
 #  company_id      :bigint           not null
 #  sender_id       :bigint           not null
 #
 # Indexes
 #
 #  index_invitations_on_accepted_at      (accepted_at)
+#  index_invitations_on_client_id        (client_id)
 #  index_invitations_on_company_id       (company_id)
 #  index_invitations_on_expired_at       (expired_at)
 #  index_invitations_on_recipient_email  (recipient_email)
@@ -29,6 +31,7 @@
 #
 # Foreign Keys
 #
+#  fk_rails_...  (client_id => clients.id)
 #  fk_rails_...  (company_id => companies.id)
 #  fk_rails_...  (sender_id => users.id)
 #
