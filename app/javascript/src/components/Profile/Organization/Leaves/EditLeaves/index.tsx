@@ -50,11 +50,11 @@ const EditLeaves = ({
               <div className="flex flex-col" key={index}>
                 <div className="flex w-full flex-col items-center justify-between lg:mb-4 lg:flex-row">
                   <CustomInputText
-                    id="leaveType"
+                    id={`leaveType_${index}`}
                     inputBoxClassName="border focus:border-miru-han-purple-1000 cursor-pointer"
                     label="Leave Type"
                     labelClassName="cursor-pointer"
-                    name="leaveType"
+                    name={`leaveType_${index}`}
                     type="text"
                     value={leaveBalance.leaveType || ""}
                     wrapperClassName="w-full lg:w-5/12 mb-6 lg:mb-0"
@@ -62,9 +62,9 @@ const EditLeaves = ({
                   />
                   <CustomReactSelect
                     handleOnChange={e => updateCondition("leaveIcon", e, index)}
-                    id="leaveIcon"
+                    id={`leaveIcon_${index}`}
                     label="Icon"
-                    name="leaveIcon"
+                    name={`leaveIcon_${index}`}
                     options={iconOptions}
                     styles={iconColorStyles}
                     value={leaveBalance.leaveIcon || null}
@@ -78,9 +78,9 @@ const EditLeaves = ({
                     )}
                   />
                   <CustomReactSelect
-                    id="leaveColor"
+                    id={`leaveColor_${index}`}
                     label="Color"
-                    name="leaveColor"
+                    name={`leaveColor_${index}`}
                     options={colorOptions}
                     styles={iconColorStyles}
                     value={leaveBalance.leaveColor || null}
@@ -103,12 +103,12 @@ const EditLeaves = ({
                 </div>
                 <div className="mb-6 flex w-full flex-col items-center justify-between lg:flex-row">
                   <CustomInputText
-                    id="total"
+                    id={`total_${index}`}
                     inputBoxClassName="border focus:border-miru-han-purple-1000 cursor-pointer"
                     label="Total"
                     labelClassName="cursor-pointer"
                     min={0}
-                    name="total"
+                    name={`total_${index}`}
                     type="number"
                     value={leaveBalance.total || ""}
                     wrapperClassName="w-full lg:w-2/12 lg:mr-2 mb-6 lg:mb-0"
@@ -117,9 +117,9 @@ const EditLeaves = ({
                     }
                   />
                   <CustomReactSelect
-                    id="allocationPeriod"
+                    id={`allocationPeriod_${index}`}
                     label=""
-                    name="allocationPeriod"
+                    name={`allocationPeriod_${index}`}
                     options={allocationPeriod}
                     styles={customStyles}
                     wrapperClassName="w-full lg:w-1/5 h-12 lg:mx-4 mb-6 lg:mb-0"
@@ -139,9 +139,9 @@ const EditLeaves = ({
                     }
                   />
                   <CustomReactSelect
-                    id="allocationFrequency"
+                    id={`allocationFrequency_${index}`}
                     label=""
-                    name="allocationFrequency"
+                    name={`allocationFrequency_${index}`}
                     options={allocationFrequency}
                     styles={customStyles}
                     wrapperClassName="w-full lg:w-3/12 h-12 lg:mr-4 mb-6 lg:mb-0"
@@ -161,12 +161,12 @@ const EditLeaves = ({
                     }
                   />
                   <CustomInputText
-                    id="carryForward"
+                    id={`carryForward_${index}`}
                     inputBoxClassName="border focus:border-miru-han-purple-1000 cursor-pointer"
                     label="Carry forward (days)"
                     labelClassName="cursor-pointer"
                     min={0}
-                    name="carryForward"
+                    name={`carryForward_${index}`}
                     type="number"
                     value={leaveBalance.carryForwardDays || ""}
                     wrapperClassName="w-full lg:w-4/12 mb-6 lg:mb-0"
