@@ -6,7 +6,7 @@ class LeaveTypePolicy < ApplicationPolicy
   end
 
   def update?
-    user_owner_role? || user_admin_role?
+    authorize_current_user
   end
 
   def permitted_attributes
@@ -14,5 +14,14 @@ class LeaveTypePolicy < ApplicationPolicy
       :name, :icon, :color, :allocation_value, :allocation_period,
       :allocation_frequency, :carry_forward_days
     ]
+  end
+
+  def authorize_current_user
+    unless user.current_workspace_id == record.leave.company_id
+      @error_message_key = :different_workspace
+      return false
+    end
+
+    user_owner_role? || user_admin_role?
   end
 end

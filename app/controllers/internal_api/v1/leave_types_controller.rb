@@ -23,7 +23,7 @@ class InternalApi::V1::LeaveTypesController < InternalApi::V1::ApplicationContro
     end
 
     def leave
-      @_leave ||= Leave.find_by!(id: params[:id])
+      @_leave ||= current_company.leaves.find_by!(id: params[:id])
     end
 
     def leave_type
