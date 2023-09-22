@@ -10,9 +10,7 @@ import { yearCalendar } from "constants/leaveType";
 import CalendarComponent from "./CalendarComponent";
 
 const HolidayModal = ({ tileContent, toggleCalendarModal, showCalendar }) => {
-  const [currentYear, setCurrentYear] = useState<number>(
-    getYear(new Date()) + 1
-  );
+  const [currentYear, setCurrentYear] = useState<number>(getYear(new Date()));
 
   return (
     <Modal
@@ -60,7 +58,7 @@ const HolidayModal = ({ tileContent, toggleCalendarModal, showCalendar }) => {
                   key={key}
                   name={month.name}
                   tileContent={tileContent}
-                  year="2023"
+                  year={currentYear}
                 />
               )
             )}

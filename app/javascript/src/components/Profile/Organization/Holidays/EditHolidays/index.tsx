@@ -4,10 +4,10 @@ import dayjs from "dayjs";
 import { DeleteIcon, CalendarIcon } from "miruIcons";
 import { Button } from "StyledComponents";
 
-import CustomDatePicker from "common/CustomDatePicker";
 import { CustomInputText } from "common/CustomInputText";
 import CustomReactSelect from "common/CustomReactSelect";
 import CustomToggle from "common/CustomToggle";
+import SingleYearDatePicker from "common/CustomYearPicker/SingleYearDatePicker";
 import { Divider } from "common/Divider";
 import { repetitionType } from "constants/leaveType";
 
@@ -91,11 +91,13 @@ const EditHolidays = ({
                       </div>
                       {index == showDatePicker.index &&
                         showDatePicker.visibility && (
-                          <CustomDatePicker
-                            date={holiday.date ? holiday.date : dayjs()}
+                          <SingleYearDatePicker
+                            selectedYear={currentYear}
                             setVisibility={showDatePicker.visibility}
-                            showYearDropdown={false}
                             wrapperRef={wrapperRef}
+                            date={
+                              holiday.date || dayjs().set("year", currentYear)
+                            }
                             handleChange={e =>
                               handleDatePicker(e, index, false)
                             }
@@ -238,10 +240,13 @@ const EditHolidays = ({
                           </div>
                           {index == showOptionalDatePicker.index &&
                             showOptionalDatePicker.visibility && (
-                              <CustomDatePicker
-                                date={optionalHoliday.date || dayjs()}
-                                showYearDropdown={false}
+                              <SingleYearDatePicker
+                                selectedYear={currentYear}
                                 wrapperRef={optionalWrapperRef}
+                                date={
+                                  optionalHoliday.date ||
+                                  dayjs(`${currentYear}-01-01`).toDate()
+                                }
                                 handleChange={e =>
                                   handleDatePicker(e, index, true)
                                 }
