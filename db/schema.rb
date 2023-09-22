@@ -222,7 +222,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_28_113109) do
     t.integer "role", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "client_id"
     t.index ["accepted_at"], name: "index_invitations_on_accepted_at"
+    t.index ["client_id"], name: "index_invitations_on_client_id"
     t.index ["company_id"], name: "index_invitations_on_company_id"
     t.index ["expired_at"], name: "index_invitations_on_expired_at"
     t.index ["recipient_email"], name: "index_invitations_on_recipient_email"
@@ -453,6 +455,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_28_113109) do
   add_foreign_key "expenses", "expense_categories"
   add_foreign_key "expenses", "vendors"
   add_foreign_key "identities", "users"
+  add_foreign_key "invitations", "clients"
   add_foreign_key "invitations", "companies"
   add_foreign_key "invitations", "users", column: "sender_id"
   add_foreign_key "invoice_line_items", "invoices"

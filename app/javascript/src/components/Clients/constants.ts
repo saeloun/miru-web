@@ -5,13 +5,8 @@ export const tableHeader = [
     cssClass: "md:w-1/3 capitalize",
   },
   {
-    Header: "EMAIL ID",
-    accessor: "col2",
-    cssClass: "md:w-1/3",
-  },
-  {
     Header: "HOURS LOGGED",
-    accessor: "col3",
+    accessor: "col2",
     cssClass: "text-right md:w-1/5", // accessor is the "key" in the data
   },
 ];

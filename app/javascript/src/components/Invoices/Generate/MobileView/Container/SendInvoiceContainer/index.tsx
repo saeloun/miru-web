@@ -26,19 +26,22 @@ const SendInvoiceContainer = ({
   setIsSendReminder = _value => {},
   isSendReminder = false,
 }) => {
-  const Recipient: React.FC<{ email: string; handleClick: any }> = ({
-    email,
-    handleClick,
-  }) => (
+  const Recipient: React.FC<{
+    email: string;
+    handleClick: any;
+    recipientsCount: any;
+  }> = ({ email, handleClick, recipientsCount }) => (
     <div className="space-XIcon-2 m-0.5 flex w-fit items-center rounded-full border bg-miru-gray-400 px-2 py-1 text-sm font-medium">
       <p>{email}</p>
-      <button
-        className="text-miru-black-1000 hover:text-miru-red-400"
-        type="button"
-        onClick={handleClick}
-      >
-        <XIcon size={14} weight="bold" />
-      </button>
+      {recipientsCount > 1 && (
+        <button
+          className="text-miru-black-1000 hover:text-miru-red-400"
+          type="button"
+          onClick={handleClick}
+        >
+          <XIcon size={14} weight="bold" />
+        </button>
+      )}
     </div>
   );
   interface InvoiceEmail {
@@ -50,7 +53,7 @@ const SendInvoiceContainer = ({
   const [invoiceEmail, setInvoiceEmail] = useState<InvoiceEmail>({
     subject: emailSubject(invoice, isSendReminder),
     message: emailBody(invoice, isSendReminder),
-    recipients: [invoice.client.email],
+    recipients: invoice.client.clientMembersEmails,
   });
   // eslint-disable-next-line no-unused-vars
   const [newRecipient, setNewRecipient] = useState<string>("");
@@ -167,6 +170,7 @@ const SendInvoiceContainer = ({
                             email={recipient}
                             handleClick={() => handleRemove(recipient)}
                             key={recipient}
+                            recipientsCount={invoiceEmail.recipients.length}
                           />
                         ))}
                         {/* <input
