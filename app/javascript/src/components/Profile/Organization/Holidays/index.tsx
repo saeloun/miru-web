@@ -1,24 +1,24 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import React, { useEffect, useRef, useState } from "react";
 
+import { getYear } from "date-fns";
 import { useOutsideClick } from "helpers";
 import { useNavigate } from "react-router-dom";
 import { Toastr } from "StyledComponents";
 
+import holidaysApi from "apis/holidays";
 import Loader from "common/Loader/index";
-import DetailsHeader from "components/Profile/DetailsHeader";
 import { useUserContext } from "context/UserContext";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import Details from "./Details";
 import EditHolidays from "./EditHolidays";
 
-import Header from "../../Header";
-
 const Holidays = () => {
   const [holidayList, setHolidayList] = useState([]);
   const [isDetailUpdated, setIsDetailUpdated] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [currentYear, setCurrentYear] = useState<number>(getYear(new Date()));
   const [showCalendar, setShowCalendar] = useState(false);
   const [showDatePicker, setShowDatePicker] = useState<any>({
     visibility: false,
@@ -39,14 +39,10 @@ const Holidays = () => {
   const [totalOptionalHolidays, setTotalOptionalHolidays] = useState(0);
   const [optionalRepetitionType, setOptionalRepetitionType] =
     useState("per_year");
-  const [isEditable, setIsEditable] = useState(true);
+  const [isEditable, setIsEditable] = useState(false);
 
   const { isDesktop } = useUserContext();
   const navigate = useNavigate();
-
-  const getData = async () => {
-    setIsLoading(true);
-  };
 
   useOutsideClick(wrapperRef, () => {
     setShowDatePicker({
@@ -70,10 +66,15 @@ const Holidays = () => {
 
   useEffect(() => {
     sendGAPageView();
+    fetchHolidays();
   }, []);
 
+  const fetchHolidays = async () => {
+    await holidaysApi.allHolidays();
+    setIsLoading(false);
+  };
+
   const handleDatePicker = (date, index, isoptionalHoliday) => {
-    setIsDetailUpdated(true);
     if (!isoptionalHoliday) {
       const holidayListDetail = [...holidayList];
       holidayListDetail[index].date = date;
@@ -124,7 +125,6 @@ const Holidays = () => {
   };
 
   const handleHolidateNameChange = (e, index, isoptionalHoliday) => {
-    setIsDetailUpdated(true);
     if (!isoptionalHoliday) {
       const holidayListDetail = [...holidayList];
       holidayListDetail[index].name = e.target.value;
@@ -142,12 +142,10 @@ const Holidays = () => {
 
   const handleChangeTotalOpHoliday = e => {
     setTotalOptionalHolidays(e.target.value);
-    setIsDetailUpdated(true);
   };
 
   const handleChangeRepetitionOpHoliday = e => {
     setOptionalRepetitionType(e.value);
-    setIsDetailUpdated(true);
   };
 
   const handleUpdateHolidayDetails = async () => {
@@ -161,21 +159,26 @@ const Holidays = () => {
 
   const handleCancelAction = () => {
     if (isDesktop) {
-      getData();
       setIsDetailUpdated(false);
+      setIsEditable(false);
     } else {
       navigate("/profile/edit/option");
     }
   };
 
-  const getHolidaysContent = () => {
-    if (isLoading) {
-      return <Loader />;
-    }
+  if (isLoading) {
+    return (
+      <div className="flex min-h-70v items-center justify-center">
+        <Loader />
+      </div>
+    );
+  }
 
-    if (isEditable) {
-      return (
+  return (
+    <div className="flex h-full w-full flex-col">
+      {isEditable ? (
         <EditHolidays
+          currentYear={currentYear}
           enableOptionalHolidays={enableOptionalHolidays}
           handleAddHoliday={handleAddHoliday}
           handleCancelAction={handleCancelAction}
@@ -187,9 +190,11 @@ const Holidays = () => {
           handleHolidateNameChange={handleHolidateNameChange}
           holidayList={holidayList}
           isDesktop={isDesktop}
+          isDisableUpdateBtn={isDetailUpdated}
           optionalHolidaysList={optionalHolidaysList}
           optionalRepetitionType={optionalRepetitionType}
           optionalWrapperRef={optionalWrapperRef}
+          setCurrentYear={setCurrentYear}
           setEnableOptionalHolidays={setEnableOptionalHolidays}
           setShowDatePicker={setShowDatePicker}
           setShowOptionalDatePicker={setShowOptionalDatePicker}
@@ -199,42 +204,17 @@ const Holidays = () => {
           updateHolidayDetails={handleUpdateHolidayDetails}
           wrapperRef={wrapperRef}
         />
-      );
-    }
-
-    return (
-      <Details
-        holidaysList={holidayList}
-        optionalHolidayList={optionalHolidaysList}
-        showCalendar={showCalendar}
-        toggleCalendarModal={toggleCalendarModal}
-      />
-    );
-  };
-
-  return (
-    <div className="flex h-full w-full flex-col">
-      {isEditable ? (
-        <Header
-          showButtons
-          showYearPicker
-          cancelAction={handleCancelAction}
-          isDisableUpdateBtn={isDetailUpdated}
-          saveAction={handleUpdateHolidayDetails}
-          subTitle=""
-          title="Holidays"
-        />
       ) : (
-        <DetailsHeader
-          showButtons
-          showYearPicker
+        <Details
+          currentYear={currentYear}
           editAction={() => setIsEditable(true)}
-          isDisableUpdateBtn={false}
-          subTitle=""
-          title="Holidays"
+          holidaysList={holidayList}
+          optionalHolidayList={optionalHolidaysList}
+          setCurrentYear={setCurrentYear}
+          showCalendar={showCalendar}
+          toggleCalendarModal={toggleCalendarModal}
         />
       )}
-      {getHolidaysContent()}
     </div>
   );
 };

@@ -14,12 +14,14 @@
 #  token           :string           not null
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
+#  client_id       :bigint
 #  company_id      :bigint           not null
 #  sender_id       :bigint           not null
 #
 # Indexes
 #
 #  index_invitations_on_accepted_at      (accepted_at)
+#  index_invitations_on_client_id        (client_id)
 #  index_invitations_on_company_id       (company_id)
 #  index_invitations_on_expired_at       (expired_at)
 #  index_invitations_on_recipient_email  (recipient_email)
@@ -29,6 +31,7 @@
 #
 # Foreign Keys
 #
+#  fk_rails_...  (client_id => clients.id)
 #  fk_rails_...  (company_id => companies.id)
 #  fk_rails_...  (sender_id => users.id)
 #
@@ -40,6 +43,7 @@ class Invitation < ApplicationRecord
 
   # Associations
   belongs_to :company
+  belongs_to :client, optional: true
   belongs_to :sender, class_name: "User"
 
   # Validations
@@ -53,7 +57,6 @@ class Invitation < ApplicationRecord
     length: { maximum: 20 }
   validate :non_existing_company_user
   validate :recipient_email_not_changed
-
   # Scopes
   scope :valid_invitations, -> {
     where(accepted_at: nil, expired_at: Time.current...(Time.current + MAX_EXPIRATION_DAY))

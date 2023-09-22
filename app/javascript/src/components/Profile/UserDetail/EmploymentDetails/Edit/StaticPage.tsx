@@ -263,9 +263,9 @@ const StaticPage = ({
                 <div className="flex w-full flex-row">
                   <div className="flex w-1/2 flex-col px-2">
                     <CustomInputText
-                      id="company_name"
+                      id={`company_name_${index}`}
                       label="Company Name"
-                      name="company_name"
+                      name={`company_name_${index}`}
                       type="text"
                       value={previous.company_name}
                       onChange={e => {
@@ -275,9 +275,9 @@ const StaticPage = ({
                   </div>
                   <div className="flex w-1/2 flex-col px-2">
                     <CustomInputText
-                      id="role"
+                      id={`role_${index}`}
                       label="Role"
-                      name="role"
+                      name={`role_${index}`}
                       type="text"
                       value={previous.role}
                       onChange={e => {
