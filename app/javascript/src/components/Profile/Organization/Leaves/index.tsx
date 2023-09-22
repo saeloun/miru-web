@@ -26,10 +26,6 @@ const Leaves = () => {
   const { isDesktop } = useUserContext();
   const navigate = useNavigate();
 
-  const getData = async () => {
-    setIsLoading(true);
-  };
-
   useEffect(() => {
     sendGAPageView();
   }, []);
@@ -76,8 +72,8 @@ const Leaves = () => {
 
   const handleCancelAction = () => {
     if (isDesktop) {
-      getData();
       setIsDetailUpdated(false);
+      setIsEditable(false);
     } else {
       navigate("/profile/edit/option");
     }
