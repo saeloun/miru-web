@@ -2,6 +2,7 @@ import React from "react";
 
 import dayjs from "dayjs";
 
+import Header from "./Header";
 import TableHeader from "./TableHeader";
 import TableRow from "./TableRow";
 
@@ -12,6 +13,9 @@ const Details = ({
   optionalHolidayList,
   holidaysList,
   showCalendar,
+  editAction,
+  currentYear,
+  setCurrentYear,
 }) => {
   const CalendarButton = ({ result, date, className }) => (
     <button
@@ -39,6 +43,11 @@ const Details = ({
 
   return (
     <>
+      <Header
+        currentYear={currentYear}
+        editAction={editAction}
+        setCurrentYear={setCurrentYear}
+      />
       <div className="mb-10 min-h-40v bg-miru-gray-100 p-4 lg:mt-4 lg:p-10">
         <div className="flex w-full flex-col py-6">
           <div className="flex w-full items-center justify-between text-sm">
