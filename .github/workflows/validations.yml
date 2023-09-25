@@ -94,6 +94,7 @@ jobs:
           DB_USER: root
           DB_PASS: "password"
           TEST_ENV_NUMBER: ${{ github.event.number }}
+          CI: true
         run:
           bundle exec rspec spec/system
       - name: Run Eslint
