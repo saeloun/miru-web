@@ -4,14 +4,8 @@ class InternalApi::V1::HolidaysController < ApplicationController
   def index
     authorize Holiday
 
-    year = params[:year]
-    holiday = current_company.holidays.find_by(year:)
-    if holiday.nil?
-      render json: { error: "No holiday record found for the specified year and company" }, status: :not_found
-    else
-      holiday_infos = holiday.holiday_infos
-      render :index, locals: { holiday_infos: }, status: :ok
-    end
+    holidays = current_company.holidays.includes([:holiday_infos])
+    render :index, locals: { holidays: }, status: :ok
   end
 
   def update
@@ -26,7 +20,7 @@ class InternalApi::V1::HolidaysController < ApplicationController
 
     def holiday_params
       params.require(:holiday).permit(
-        holiday: [:enable_optional_holidays, :no_of_allowed_optional_holidays, :time_period_optional_holidays,
+        holiday: [:year, :enable_optional_holidays, :no_of_allowed_optional_holidays, :time_period_optional_holidays,
                   holiday_types: []],
         add_holiday_infos: [:name, :date, :category],
         update_holiday_infos: [:id, :name, :date, :category],

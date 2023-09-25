@@ -12,8 +12,8 @@ class BulkHolidayService
 
   def process
     ActiveRecord::Base.transaction do
-      find_or_create_holiday
-      create_holiday_info
+      create_or_update_holiday
+      add_holiday_info
       update_holiday_info
       remove_holiday_info
     end
@@ -21,20 +21,20 @@ class BulkHolidayService
 
   private
 
-    def find_or_create_holiday
+    def create_or_update_holiday
       @holiday = current_company.holidays.find_by(year:)
       if holiday
-        holiday.update!(holiday_params[:holiday].merge(year:))
+        @holiday.update!(holiday_params[:holiday])
       else
-        @holiday = current_company.holidays.create!(holiday_params[:holiday].merge(year:))
+        @holiday = current_company.holidays.create!(holiday_params[:holiday])
       end
     end
 
-    def create_holiday_info
+    def add_holiday_info
       return if holiday_params[:add_holiday_infos].blank?
 
       holiday_params[:add_holiday_infos].each do |info|
-        holiday_info = holiday.holiday_infos.create!(info)
+        holiday.holiday_infos.create!(info)
       end
     end
 
@@ -42,7 +42,9 @@ class BulkHolidayService
       return if holiday_params[:update_holiday_infos].blank?
 
       holiday_params[:update_holiday_infos].each do |info|
-        holiday_info = holiday.holiday_infos.find_by!(id: info[:id])
+        holiday_info = holiday.holiday_infos.find_by(id: info[:id])
+
+        next unless holiday_info
 
         holiday_info.update!(info)
       end

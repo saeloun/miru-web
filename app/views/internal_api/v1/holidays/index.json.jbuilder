@@ -1,3 +1,24 @@
 # frozen_string_literal: true
 
-json.holiday_infos holiday_infos
+json.holidays holidays do |holiday|
+  json.id holiday.id
+  json.year holiday.year
+  json.enable_optional_holidays holiday.enable_optional_holidays
+  json.no_of_allowed_optional_holidays holiday.no_of_allowed_optional_holidays
+  json.holiday_types holiday.holiday_types
+  json.time_period_optional_holidays holiday.time_period_optional_holidays
+
+  json.national_holidays holiday.holiday_infos.national.each do |holiday_info|
+    json.id holiday_info.id
+    json.date holiday_info.date
+    json.name holiday_info.name
+    json.category holiday_info.category
+  end
+
+  json.optional_holidays holiday.holiday_infos.optional.each do |holiday_info|
+    json.id holiday_info.id
+    json.date holiday_info.date
+    json.name holiday_info.name
+    json.category holiday_info.category
+  end
+end
