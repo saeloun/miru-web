@@ -75,7 +75,7 @@ jobs:
           DB_PASS: "password"
           TEST_ENV_NUMBER: ${{ github.event.number }}
         run: |
-          bundle exec rails db:prepare
+          rake parallel:setup
       - name: Run Rubocop
         run: |
           bundle exec rubocop
@@ -87,7 +87,7 @@ jobs:
           TEST_ENV_NUMBER: ${{ github.event.number }}
           CI: true
         run:
-          bundle exec rspec spec/system/users/login_spec.rb
+          rake parallel:spec
       - name: Run Eslint
         run: |
           npx eslint "./app/javascript/**/*.{ts,tsx,js,jsx,json}"
