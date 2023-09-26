@@ -51,6 +51,7 @@ import {
   GoogleLogo,
   Plugs,
   Cake,
+  Check,
 } from "phosphor-react";
 
 const error404Animation = require("./GIFS/404_animation.gif");
@@ -110,6 +111,7 @@ const Waive = require("../../../assets/images/InvoiceWaive.svg");
 const logo = require("../../../assets/images/logo.jpg");
 const logout_icon = require("../../../assets/images/logout_icon.svg");
 const masterCard = require("../../../assets/images/masterCard.svg");
+const meetingIcon = require("../../../assets/images/meeting.svg");
 const miruLogoWatermark = require("../../../assets/images/miru-logo-watermark.svg");
 const miruLogo = require("../../../assets/images/miru-logo.svg");
 const miruManagingClientsScreen = require("../../../assets/images/miru-managing-clients-screen.png");
@@ -202,6 +204,7 @@ export const ReminderIcon = BellRinging;
 export const GoogleIcon = GoogleLogo;
 export const IntegrateIcon = Plugs;
 export const CakeIcon = Cake;
+export const CheckIcon = Check;
 
 // custom svg icons
 export const WarningTriangleSVG = warningTriangle;
@@ -221,6 +224,7 @@ export const PlusIconSVG = plus_icon;
 export const PasswordIconTextSVG = password_icon_text;
 export const PasswordIconSVG = password_icon;
 export const NotificationSVG = notification;
+export const MeetingIconSVG = meetingIcon;
 export const MiruLogoWithTextSVG = miruLogoWithText;
 export const MobileSVG = mobile;
 export const PConnectInvoiceSVG = pConnectInvoice;
