@@ -6,6 +6,8 @@ import * as updateLocale from "dayjs/plugin/updateLocale";
 import * as weekday from "dayjs/plugin/weekday";
 import { minToHHMM } from "helpers";
 import Logger from "js-logger";
+import { CalendarIcon } from "miruIcons";
+import { useNavigate } from "react-router-dom";
 
 import timesheetEntryApi from "apis/timesheet-entry";
 import timeTrackingApi from "apis/timeTracking";
@@ -21,6 +23,8 @@ import EntryForm from "./EntryForm";
 import Header from "./Header";
 import MonthCalender from "./MonthCalender";
 import WeeklyEntries from "./WeeklyEntries";
+
+import Button from "../../StyledComponents/Button";
 
 dayjs.extend(updateLocale);
 dayjs.extend(weekday);
@@ -64,6 +68,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
     value: `${e["id"]}`,
     label: `${e["first_name"]} ${e["last_name"]}`,
   }));
+  const navigate = useNavigate();
 
   useEffect(() => {
     sendGAPageView();
@@ -411,6 +416,19 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
               setSelectedEmployeeId={setSelectedEmployeeId}
             />
           )}
+          <Button
+            className="px-4 py-1 font-bold"
+            style="secondary"
+            onClick={() => navigate("/meetings")}
+          >
+            <div className="flex items-center justify-between">
+              <CalendarIcon className="mr-2 font-bold" />
+              Meeting
+              <div className="relative ml-1 flex h-5 w-5 items-center justify-center rounded-full border-2 border-solid bg-miru-han-purple-600 text-xs">
+                <span className="text-white">0</span>
+              </div>
+            </div>
+          </Button>
         </div>
         <div>
           {view === "month" ? (

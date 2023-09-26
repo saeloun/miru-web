@@ -7,6 +7,7 @@ import SignUp from "components/Authentication/SignUp";
 import InvoiceEmail from "components/InvoiceEmail";
 import InvoicesRouteConfig from "components/Invoices/InvoicesRouteConfig";
 import LeaveManagement from "components/LeaveManagement";
+import Meetings from "components/Meetings";
 import Success from "components/payments/Success";
 import Projects from "components/Projects";
 import AccountsAgingReport from "components/Reports/AccountsAgingReport";
@@ -64,6 +65,11 @@ const TimeTrackingRoutes = [
 
 const LeaveManagementRoutes = [
   { path: "", Component: LeaveManagement },
+  { path: "*", Component: ErrorPage },
+];
+
+const MeetingRoutes = [
+  { path: "", Component: Meetings },
   { path: "*", Component: ErrorPage },
 ];
 
@@ -170,5 +176,10 @@ export const ROUTES = [
     path: Paths.Leave_Management,
     subRoutes: LeaveManagementRoutes,
     authorisedRoles: [ADMIN, OWNER, EMPLOYEE],
+  },
+  {
+    path: Paths.MEETINGS,
+    subRoutes: MeetingRoutes,
+    authorisedRoles: [ADMIN, OWNER, EMPLOYEE, BOOK_KEEPER, CLIENT],
   },
 ];
