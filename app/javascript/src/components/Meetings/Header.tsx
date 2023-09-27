@@ -10,15 +10,15 @@ const Header = () => (
       <BackButton href="/time-tracking" />
       Meetings
     </div>
-    <div className="flex h-1/5 items-center rounded-xl bg-miru-han-purple-1000 text-white">
-      <span className="px-10 text-xl">
+    <div className="flex h-30 items-center rounded-xl bg-miru-han-purple-1000 text-white">
+      <span className="px-8 text-base">
         Add your meetings from your meeting apps as time entries with a single
         <br />
         click.
       </span>
       <img
         alt="meeting-icon"
-        className="absolute right-50 top-6"
+        className="absolute right-50"
         src={MeetingIconSVG}
       />
     </div>

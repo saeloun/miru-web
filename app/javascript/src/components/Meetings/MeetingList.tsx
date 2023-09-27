@@ -29,7 +29,7 @@ const MeetingList = () => {
 
   return (
     <>
-      <div className="mt-3 flex justify-between">
+      <div className="mt-6 flex justify-between">
         7 meetings and tasks
         <Button className="px-4 py-1 font-bold" style="secondary">
           Add All Meetings
