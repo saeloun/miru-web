@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -21,7 +23,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_20_162752) do
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
     t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
-    t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
+    t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness",
+      unique: true
   end
 
   create_table "active_storage_blobs", force: :cascade do |t|
@@ -54,7 +57,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_20_162752) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "state", null: false
-    t.index ["addressable_type", "addressable_id", "address_type"], name: "index_addresses_on_addressable_and_address_type", unique: true
+    t.index ["addressable_type", "addressable_id", "address_type"],
+      name: "index_addresses_on_addressable_and_address_type", unique: true
     t.index ["addressable_type", "addressable_id"], name: "index_addresses_on_addressable"
   end
 
@@ -198,6 +202,28 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_20_162752) do
     t.index ["expense_category_id"], name: "index_expenses_on_expense_category_id"
     t.index ["expense_type"], name: "index_expenses_on_expense_type"
     t.index ["vendor_id"], name: "index_expenses_on_vendor_id"
+  end
+
+  create_table "holiday_infos", force: :cascade do |t|
+    t.date "date", null: false
+    t.string "name", null: false
+    t.bigint "holiday_id", null: false
+    t.integer "category", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["holiday_id"], name: "index_holiday_infos_on_holiday_id"
+  end
+
+  create_table "holidays", force: :cascade do |t|
+    t.integer "year", null: false
+    t.boolean "enable_optional_holidays", default: false
+    t.integer "no_of_allowed_optional_holidays"
+    t.string "holiday_types", default: [], array: true
+    t.integer "time_period_optional_holidays", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "company_id", null: false
+    t.index ["company_id"], name: "index_holidays_on_company_id"
   end
 
   create_table "identities", force: :cascade do |t|
@@ -479,6 +505,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_20_162752) do
   add_foreign_key "expenses", "companies"
   add_foreign_key "expenses", "expense_categories"
   add_foreign_key "expenses", "vendors"
+  add_foreign_key "holiday_infos", "holidays"
+  add_foreign_key "holidays", "companies"
   add_foreign_key "identities", "users"
   add_foreign_key "invitations", "clients"
   add_foreign_key "invitations", "companies"

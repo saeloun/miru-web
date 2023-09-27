@@ -43,6 +43,7 @@ class Company < ApplicationRecord
   has_many :leaves, class_name: "Leave", dependent: :destroy
 
   resourcify
+  has_many :holidays, dependent: :destroy
 
   accepts_nested_attributes_for :addresses, reject_if: :address_attributes_blank?, allow_destroy: true
 
