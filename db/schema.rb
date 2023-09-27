@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_28_113109) do
+ActiveRecord::Schema[7.0].define(version: 2023_09_13_075839) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -198,6 +198,28 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_28_113109) do
     t.index ["expense_category_id"], name: "index_expenses_on_expense_category_id"
     t.index ["expense_type"], name: "index_expenses_on_expense_type"
     t.index ["vendor_id"], name: "index_expenses_on_vendor_id"
+  end
+
+  create_table "holiday_infos", force: :cascade do |t|
+    t.date "date", null: false
+    t.string "name", null: false
+    t.bigint "holiday_id", null: false
+    t.integer "category", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["holiday_id"], name: "index_holiday_infos_on_holiday_id"
+  end
+
+  create_table "holidays", force: :cascade do |t|
+    t.integer "year", null: false
+    t.boolean "enable_optional_holidays", default: false
+    t.integer "no_of_allowed_optional_holidays"
+    t.string "holiday_types", default: [], array: true
+    t.integer "time_period_optional_holidays", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "company_id", null: false
+    t.index ["company_id"], name: "index_holidays_on_company_id"
   end
 
   create_table "identities", force: :cascade do |t|
@@ -454,6 +476,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_28_113109) do
   add_foreign_key "expenses", "companies"
   add_foreign_key "expenses", "expense_categories"
   add_foreign_key "expenses", "vendors"
+  add_foreign_key "holiday_infos", "holidays"
+  add_foreign_key "holidays", "companies"
   add_foreign_key "identities", "users"
   add_foreign_key "invitations", "clients"
   add_foreign_key "invitations", "companies"
