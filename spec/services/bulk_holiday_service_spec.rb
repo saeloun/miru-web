@@ -8,6 +8,7 @@ RSpec.describe BulkHolidayService, type: :service do
   let(:holiday_params) do
     {
       holiday: {
+        year:,
         enable_optional_holidays: true,
         no_of_allowed_optional_holidays: 7,
         holiday_types: ["national", "optional"]
