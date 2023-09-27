@@ -4,7 +4,6 @@ import React, { useEffect, useRef, useState } from "react";
 import { getYear } from "date-fns";
 import { useOutsideClick } from "helpers";
 import { useNavigate } from "react-router-dom";
-import { Toastr } from "StyledComponents";
 
 import holidaysApi from "apis/holidays";
 import Loader from "common/Loader/index";
@@ -40,6 +39,8 @@ const Holidays = () => {
   const [optionalRepetitionType, setOptionalRepetitionType] =
     useState("per_year");
   const [isEditable, setIsEditable] = useState(false);
+  const [holidays, setHolidays] = useState([]);
+  const [currentYearHolidaysList, setCurrentYearHolidaysList] = useState([]);
 
   const { isDesktop } = useUserContext();
   const navigate = useNavigate();
@@ -70,8 +71,57 @@ const Holidays = () => {
   }, []);
 
   const fetchHolidays = async () => {
-    await holidaysApi.allHolidays();
+    const res = await holidaysApi.allHolidays();
+    setHolidays(res.data.holidays);
+    updateHolidaysList(res.data.holidays);
     setIsLoading(false);
+  };
+
+  useEffect(() => {
+    if (holidays.length) {
+      updateHolidaysList(holidays);
+    }
+  }, [currentYear]);
+
+  const updateHolidaysList = holidays => {
+    const currentHoliday = holidays.find(
+      holiday => holiday.year == currentYear
+    );
+    if (currentHoliday) {
+      const {
+        enable_optional_holidays,
+        national_holidays = [],
+        optional_holidays = [],
+        no_of_allowed_optional_holidays,
+        time_period_optional_holidays,
+      } = currentHoliday;
+
+      enable_optional_holidays &&
+        setEnableOptionalHolidays(enable_optional_holidays);
+
+      no_of_allowed_optional_holidays &&
+        setTotalOptionalHolidays(no_of_allowed_optional_holidays);
+
+      time_period_optional_holidays &&
+        setOptionalRepetitionType(time_period_optional_holidays);
+
+      const newNationalHolidays = national_holidays.map(holiday => ({
+        ...holiday,
+      }));
+
+      const newOptionalHolidays = optional_holidays.map(holiday => ({
+        ...holiday,
+      }));
+      setHolidayList(newNationalHolidays);
+      setOptionalHolidaysList(newOptionalHolidays);
+      setCurrentYearHolidaysList([...national_holidays, ...optional_holidays]);
+    } else {
+      setEnableOptionalHolidays(false);
+      setTotalOptionalHolidays(0);
+      setOptionalRepetitionType("per_year");
+      setHolidayList([]);
+      setOptionalHolidaysList([]);
+    }
   };
 
   const handleDatePicker = (date, index, isoptionalHoliday) => {
@@ -96,6 +146,7 @@ const Holidays = () => {
           {
             date: "",
             name: "",
+            category: "national",
           },
         ],
       ]);
@@ -106,6 +157,7 @@ const Holidays = () => {
           {
             date: "",
             name: "",
+            category: "optional",
           },
         ],
       ]);
@@ -148,13 +200,54 @@ const Holidays = () => {
     setOptionalRepetitionType(e.value);
   };
 
-  const handleUpdateHolidayDetails = async () => {
-    try {
-      setIsEditable(false);
-    } catch {
-      setIsLoading(false);
-      Toastr.error("Error in Updating Leave Details");
-    }
+  const handleUpdateHolidayDetails = () => {
+    const totalHolidayList = [...holidayList, ...optionalHolidaysList];
+    const payload = {
+      holiday: {
+        year: currentYear,
+        enable_optional_holidays: enableOptionalHolidays,
+        no_of_allowed_optional_holidays: totalOptionalHolidays,
+        time_period_optional_holidays: optionalRepetitionType,
+        holiday_types: ["national", "optional"],
+      },
+      add_holiday_infos: [],
+      update_holiday_infos: [],
+      remove_holiday_infos: [],
+    };
+
+    const removedHolidays = currentYearHolidaysList
+      .filter(
+        currentHoliday =>
+          !totalHolidayList.some(leave => leave.id === currentHoliday.id)
+      )
+      .map(removedHoliday => removedHoliday.id);
+
+    payload.remove_holiday_infos.push(...removedHolidays);
+
+    const sortedHolidays = totalHolidayList.filter(
+      holiday =>
+        !currentYearHolidaysList.some(currentHoliday => {
+          const holidayJSON = JSON.stringify(holiday);
+          const currentHolidayJSON = JSON.stringify(currentHoliday);
+
+          return holidayJSON === currentHolidayJSON;
+        })
+    );
+
+    sortedHolidays.forEach(holiday => {
+      if (holiday.id) {
+        payload.update_holiday_infos.push(holiday);
+      } else {
+        payload.add_holiday_infos.push(holiday);
+      }
+    });
+
+    saveUpdatedHolidayDetails(payload);
+  };
+
+  const saveUpdatedHolidayDetails = async payload => {
+    await holidaysApi.updateHolidays(currentYear, { holiday: payload });
+    setIsEditable(false);
   };
 
   const handleCancelAction = () => {
