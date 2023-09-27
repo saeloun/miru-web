@@ -43,7 +43,7 @@ const SideNav = ({ isAdmin, firstName, company, lastName }) => {
     },
     {
       label: "LEAVES",
-      link: "/profile/leaves-details",
+      link: "/profile/edit/leaves",
       icon: <CalendarIcon className="mr-2" size={20} weight="bold" />,
     },
     {
