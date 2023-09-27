@@ -1,37 +1,29 @@
 import React from "react";
 
-import { getMonth, getYear } from "date-fns";
+import { getMonth } from "date-fns";
 import dayjs from "dayjs";
 import { useOutsideClick } from "helpers";
 import { CaretCircleLeftIcon, CaretCircleRightIcon } from "miruIcons";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-type CustomDatePickerProps = {
+type SingleYearDatePickerProps = {
   handleChange: any;
   date: any;
   setVisibility?: any;
   wrapperRef?: any;
   dateFormat?: any;
+  selectedYear: any;
 };
 
-const CustomDatePicker = ({
+const SingleYearDatePicker = ({
   handleChange,
   date,
   setVisibility,
   wrapperRef,
   dateFormat,
-}: CustomDatePickerProps) => {
-  const range = (start, end) => {
-    const ans = [];
-    for (let i = start; i <= end; i++) {
-      ans.push(i);
-    }
-
-    return ans;
-  };
-
-  const years = range(1920, getYear(new Date()) + 1);
+  selectedYear = new Date().getFullYear(),
+}: SingleYearDatePickerProps) => {
   const months = [
     "Jan",
     "Feb",
@@ -59,11 +51,12 @@ const CustomDatePicker = ({
     <DatePicker
       inline
       calendarClassName="miru-calendar"
+      maxDate={dayjs(`${selectedYear}-12-31`).toDate()}
+      minDate={dayjs(`${selectedYear}-01-01`).toDate()}
       selected={parseDate(date)}
       wrapperClassName="datePicker"
       renderCustomHeader={({
         date,
-        changeYear,
         changeMonth,
         decreaseMonth,
         increaseMonth,
@@ -72,7 +65,10 @@ const CustomDatePicker = ({
       }) => (
         <div className="headerWrapper">
           <button disabled={prevMonthButtonDisabled} onClick={decreaseMonth}>
-            <CaretCircleLeftIcon color="#5b34ea" size={16} />
+            <CaretCircleLeftIcon
+              color={prevMonthButtonDisabled ? "#ADA4CE" : "#5b34ea"}
+              size={16}
+            />
           </button>
           <div>
             <select
@@ -87,19 +83,12 @@ const CustomDatePicker = ({
                 </option>
               ))}
             </select>
-            <select
-              value={getYear(date)}
-              onChange={({ target: { value } }) => changeYear(value)}
-            >
-              {years.map(option => (
-                <option key={option} value={option}>
-                  {option}
-                </option>
-              ))}
-            </select>
           </div>
           <button disabled={nextMonthButtonDisabled} onClick={increaseMonth}>
-            <CaretCircleRightIcon color="#5b34ea" size={16} />
+            <CaretCircleRightIcon
+              color={nextMonthButtonDisabled ? "#ADA4CE" : "#5b34ea"}
+              size={16}
+            />
           </button>
         </div>
       )}
@@ -108,4 +97,4 @@ const CustomDatePicker = ({
   );
 };
 
-export default CustomDatePicker;
+export default SingleYearDatePicker;
