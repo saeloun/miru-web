@@ -62,7 +62,7 @@ const config = {
       },
       navbar: {
         logo: {
-          href: "/docs",
+          href: "/",
           alt: 'Miru Logo',
           src: 'https://miru.so/static/media/miru-blue-logo-with-text.5ba2b3fe09b9f038473f0a131f8a8bec.svg',
         },
@@ -87,7 +87,7 @@ const config = {
             items: [
               {
                 label: 'Docs',
-                to: '/docs',
+                to: '/',
               },
             ],
           },
