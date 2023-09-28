@@ -57,7 +57,7 @@ const config = {
         content:
           '⭐️ If you like Miru, give it a star on <a href="https://github.com/saeloun/miru-web">GitHub</a> and follow us on <a href="https://twitter.com/getmiru">Twitter</a>!',
         isCloseable: true,
-        backgroundColor: '#4D72DA',
+        backgroundColor: '#5B34EA',
         textColor: '#ffffff'
       },
       navbar: {
