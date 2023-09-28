@@ -2,6 +2,8 @@ import React from "react";
 
 import { ProjectsIcon } from "miruIcons";
 
+import { getLabelForValue } from "./helpers";
+
 const StaticPage = ({ employmentDetails }) => (
   <div className="mt-4 h-full bg-miru-gray-100 px-10">
     <div className="flex border-b border-b-miru-gray-400 py-10">
@@ -48,7 +50,9 @@ const StaticPage = ({ employmentDetails }) => (
               Employee Type
             </span>
             <p className="text-miru-dark-purple-1000">
-              {employmentDetails.current_employment.employment_type}
+              {getLabelForValue(
+                employmentDetails.current_employment.employment_type
+              )}
             </p>
           </div>
         </div>
