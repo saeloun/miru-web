@@ -11,11 +11,11 @@ The Week view streamlines the process of entering a substantial amount of time a
 
 Lastly, the Month view provides a comprehensive snapshot of your entire month, displaying an overview of your work hours.
 
-# **Day view**
+# **Day View**
 
 The Day view of your timesheet lets you track your time as you work. By adding entries for work you’ve already done, you can make sure your time is accurate and accounted for.
 
-You can access this view by going to **Time Tracking> DAY.**
+You can access this view by going to **Time Tracking > DAY**.
 
 # Week View
 
