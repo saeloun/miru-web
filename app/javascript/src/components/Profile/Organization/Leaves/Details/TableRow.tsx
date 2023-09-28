@@ -2,6 +2,8 @@ import React from "react";
 
 import { Avatar } from "StyledComponents";
 
+import { allocationFrequency as allocationFrequencyProp } from "constants/leaveType";
+
 const TableRow = ({ leave, key }) => {
   const {
     leaveType,
@@ -12,6 +14,10 @@ const TableRow = ({ leave, key }) => {
     allocationFrequency,
     carryForwardDays,
   } = leave;
+
+  const allocationFrequencyLabel = allocationFrequencyProp.find(
+    item => item.value === allocationFrequency
+  )?.label;
 
   return (
     <tr className="flex w-full" key={key}>
@@ -29,7 +35,7 @@ const TableRow = ({ leave, key }) => {
         className="flex w-4/12 items-center border-b border-miru-gray-400 py-6 pr-2 text-left text-sm font-medium text-miru-dark-purple-1000"
         scope="col"
       >
-        {total} {allocationPeriod} {allocationFrequency}
+        {total} {allocationPeriod} {allocationFrequencyLabel}
       </td>
       <td
         className="flex w-4/12 items-center border-b border-miru-gray-400 py-6 pr-2 text-left text-sm font-medium text-miru-dark-purple-1000"
