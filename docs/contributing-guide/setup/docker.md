@@ -69,6 +69,7 @@ add `EMAIL_DELIVERY_METHOD='letter_opener_web'` to `.env`)
 
 | Role     | Email               | Password |
 | -------- | ------------------- | -------- |
-| Owner    | vipul@example.com   | password |
-| Admin    | supriya@example.com | password |
-| Employee | akhil@example.com   | password |
+| Owner    | vipul@example.com   | welcome  |
+| Admin    | supriya@example.com | welcome  |
+| Employee | sam@example.com     | welcome  |
+| Client   | oliver@example.com  | welcome  |

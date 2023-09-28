@@ -95,5 +95,5 @@ add `EMAIL_DELIVERY_METHOD='letter_opener_web'` to `.env`)
 | -------- | ------------------- | -------- |
 | Owner    | vipul@example.com   | welcome |
 | Admin    | supriya@example.com | welcome |
-| Employee | sam@example.com  | welcome |
-| Client | oliver@example.com  | welcome |
+| Employee | sam@example.com     | welcome |
+| Client   | oliver@example.com    | welcome |
