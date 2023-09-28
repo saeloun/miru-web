@@ -1,3 +1,7 @@
+---
+id: docker
+title: Docker
+---
 
 # Docker Setup Guide
 

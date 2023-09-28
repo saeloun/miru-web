@@ -1,6 +1,6 @@
 ---
 id: ubuntu-debian
-title: Ubuntu 21.04/Debian 11
+title: Ubuntu / Debian
 ---
 
 ## Installation
@@ -10,7 +10,7 @@ title: Ubuntu 21.04/Debian 11
 #### 2. Clone the repo to local
 
 ```bash
-git clone https://github.com/<your-name>/miru-web.git
+$ git clone https://github.com/<your-name>/miru-web.git
 ```
 
 #### 3. Install [rvm](https://rvm.io/) and [nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
@@ -19,40 +19,40 @@ git clone https://github.com/<your-name>/miru-web.git
 your project as you `cd` into the directory follow
 [this](https://github.com/nvm-sh/nvm#deeper-shell-integration))
 
-#### 4. Install ruby 3.1.1
+#### 4. Install Ruby
 
 ```bash
-rvm install $(cat .ruby-version)
+$ rvm install $(cat .ruby-version)
 ```
 
-#### 5. Install Node 16.4.2(can be skipped if you followed the tip mentioned in (3) above)
+#### 5. Install Node 18.14.2(can be skipped if you followed the tip mentioned in (3) above)
 
 ```bash
-nvm install $(cat .nvmrc)
+$ nvm install $(cat .nvmrc)
 ```
 
 #### 6. Install Postgres
 
 ```bash
-sudo apt install postgresql-13
+$ sudo apt install postgresql-13
 ```
 
 Verify postgres is up and running by:
 
 ```bash
-sudo systemctl status postgresql.service
+$ sudo systemctl status postgresql.service
 ```
 
 If not, to start it run:
 
 ```bash
-sudo systemctl enable postgresql.service --now
+$ sudo systemctl enable postgresql.service --now
 ```
 
 Default superuser is `postgres`. Set password for the user by running:
 
 ```bash
-sudo -u postgres psql -c "ALTER USER postgres PASSWORD '<new-password>';"
+$ sudo -u postgres psql -c "ALTER USER postgres PASSWORD '<new-password>';"
 ```
 
 #### 7. Install Elasticsearch
@@ -64,59 +64,59 @@ All of the packages are signed with the Elasticsearch signing key in order to pr
 To begin, use cURL, the command line tool for transferring data with URLs, to import the Elasticsearch public GPG key into APT. Note that we are using the arguments -fsSL to silence all progress and possible errors (except for a server failure) and to allow cURL to make a request on a new location if redirected. Pipe the output of the cURL command into the apt-key program, which adds the public GPG key to APT.
 
 ```bash
-curl -fsSL https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
+$ curl -fsSL https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
 ```
 
 Next, add the Elastic source list to the `sources.list.d` directory, where APT will search for new sources:
 
 ```bash
-echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | sudo tee -a /etc/apt/sources.list.d/elastic-7.x.list
+$ echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | sudo tee -a /etc/apt/sources.list.d/elastic-7.x.list
 ```
 
 Next, update your package lists so APT will read the new Elastic source:
 
 ```bash
-sudo apt update
+$ sudo apt update
 ```
 
 Then install Elasticsearch with this command:
 
 ```bash
-sudo apt install elasticsearch
+$ sudo apt install elasticsearch
 ```
 
 Verify Elasticsearch is up and running by:
 
 ```bash
-systemctl status elasticsearch.service
+$ systemctl status elasticsearch.service
 ```
 
 If not, to start it run:
 
 ```bash
-sudo systemctl enable elasticsearch.service --now
+$ sudo systemctl enable elasticsearch.service --now
 ```
 
 #### 8. Install Redis
 
 ```bash
-sudo apt install redis redis-server
+$ sudo apt install redis redis-server
 ```
 
 Verify redis and redis-server is up and running by:
 
 ```bash
-systemctl status redis.service
+$ systemctl status redis.service
 ```
 
 ```bash
-systemctl status redis-server.service
+$ systemctl status redis-server.service
 ```
 
 If not, to start it, run:
 
 ```bash
-sudo systemctl enable redis.service redis-server.service --now
+$ sudo systemctl enable redis.service redis-server.service --now
 ```
 
 #### 9. Setup the app
