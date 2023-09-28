@@ -22,27 +22,28 @@ your project as you `cd` into the directory follow
 #### 4. Install ruby 3.2.2
 
 ```bash
-rvm install $(cat .ruby-version)
+$ rvm install $(cat .ruby-version)
 ```
 
 #### 5. Install Node 18.4.2(can be skipped if you followed the tip mentioned in (3) above)
 
 ```bash
-nvm install $(cat .nvmrc)
+$ nvm install $(cat .nvmrc)
 ```
 
 #### 6. Install Postgres
 
 ```bash
-brew install postgresql
+$ brew install postgresql
 ```
 
 #### 7. Install elasticsearch
 
 ```bash
-brew install elastic/tap/elasticsearch-full
-brew services start elasticsearch-full
+$ brew install elastic/tap/elasticsearch-full
+$ brew services start elasticsearch-full
 ```
+
 To run elasticsearch on latest macos(ventura) please follow the below
 instructions
 
@@ -50,8 +51,8 @@ instructions
   https://www.docker.com/products/docker-desktop/
 - Run below command in your terminal & you can check by opening `localhost:9200`
 
-```
-docker run -dp 127.0.0.1:9200:9200 -p 127.0.0.1:9300:9300 -e "discovery.type=single-node" docker.elastic.co/elasticsearch/elasticsearch:7.17.7
+```bash
+$ docker run -dp 127.0.0.1:9200:9200 -p 127.0.0.1:9300:9300 -e "discovery.type=single-node" docker.elastic.co/elasticsearch/elasticsearch:7.17.7
 ```
 
 - Install Chrome Extension to browse the Cluster ( Kind of like PGAdmin for
@@ -63,7 +64,7 @@ docker run -dp 127.0.0.1:9200:9200 -p 127.0.0.1:9300:9300 -e "discovery.type=sin
 #### 8. Install Redis
 
 ```bash
-brew install redis
+$ brew install redis
 ```
 
 #### 9. Setup the app
@@ -71,13 +72,13 @@ brew install redis
 ```bash
 # Go to the miru-web app directory
 
-bin/setup
+$ bin/setup
 ```
 
 #### 10. Run app in local env
 
 ```bash
-foreman start -f Procfile.dev
+$ foreman start -f Procfile.dev
 ```
 
 #### 11. Navigate to [http://0.0.0.0:3000](http://0.0.0.0:3000)
