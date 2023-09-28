@@ -1,10 +1,10 @@
 {
-  "label": "Contributing Guide",
+  "label": "Product Guide",
   "position": 2,
   "collapsed": true,
   "link": {
     "type": "generated-index",
-    "description": "Guides for contributing to Miru Web"
+    "description": "Guides for features of Miru Web"
   }
 }
 
