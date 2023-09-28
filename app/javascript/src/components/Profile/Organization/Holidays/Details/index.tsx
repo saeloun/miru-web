@@ -29,13 +29,23 @@ const Details = ({
   );
 
   const tileContent = ({ date }) => {
-    let result;
-    if (
-      (result = holidaysList?.find(
-        o => o.date === dayjs(date).format("DD-MM-YYYY")
-      ))
-    ) {
-      return <CalendarButton className="holiday" date={date} result={result} />;
+    const presentDate = dayjs(date).format("DD-MM-YYYY");
+    const isHoliday = holidaysList?.find(
+      holiday => dayjs(holiday.date).format("DD-MM-YYYY") === presentDate
+    );
+
+    const isOptionalHoliday = optionalHolidayList?.find(
+      holiday => dayjs(holiday.date).format("DD-MM-YYYY") === presentDate
+    );
+
+    if (isHoliday || isOptionalHoliday) {
+      return (
+        <CalendarButton
+          className={isHoliday ? "holiday" : "optional-holiday"}
+          date={date}
+          result={isHoliday || isOptionalHoliday}
+        />
+      );
     }
 
     return <button>{date.getDate()}</button>;
@@ -104,6 +114,8 @@ const Details = ({
       </div>
       {showCalendar && (
         <HolidayModal
+          currentYear={currentYear}
+          setCurrentYear={setCurrentYear}
           showCalendar={showCalendar}
           tileContent={tileContent}
           toggleCalendarModal={toggleCalendarModal}

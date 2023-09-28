@@ -41,6 +41,12 @@ const Holidays = () => {
   const [isEditable, setIsEditable] = useState(false);
   const [holidays, setHolidays] = useState([]);
   const [currentYearHolidaysList, setCurrentYearHolidaysList] = useState([]);
+  const [currentYearPublicHolidays, setCurrentYearPublicHolidays] = useState(
+    []
+  );
+
+  const [currentYearOptionalHolidays, setCurrentYearOptionalHolidays] =
+    useState([]);
 
   const { isDesktop } = useUserContext();
   const navigate = useNavigate();
@@ -87,6 +93,7 @@ const Holidays = () => {
     const currentHoliday = holidays.find(
       holiday => holiday.year == currentYear
     );
+
     if (currentHoliday) {
       const {
         enable_optional_holidays,
@@ -115,6 +122,8 @@ const Holidays = () => {
       setHolidayList(newNationalHolidays);
       setOptionalHolidaysList(newOptionalHolidays);
       setCurrentYearHolidaysList([...national_holidays, ...optional_holidays]);
+      setCurrentYearPublicHolidays(national_holidays);
+      setCurrentYearOptionalHolidays(optional_holidays);
     } else {
       setEnableOptionalHolidays(false);
       setTotalOptionalHolidays(0);
@@ -247,11 +256,15 @@ const Holidays = () => {
 
   const saveUpdatedHolidayDetails = async payload => {
     await holidaysApi.updateHolidays(currentYear, { holiday: payload });
+    fetchHolidays();
     setIsEditable(false);
   };
 
   const handleCancelAction = () => {
     if (isDesktop) {
+      if (holidays.length) {
+        updateHolidaysList(holidays);
+      }
       setIsDetailUpdated(false);
       setIsEditable(false);
     } else {
@@ -301,8 +314,8 @@ const Holidays = () => {
         <Details
           currentYear={currentYear}
           editAction={() => setIsEditable(true)}
-          holidaysList={holidayList}
-          optionalHolidayList={optionalHolidaysList}
+          holidaysList={currentYearPublicHolidays}
+          optionalHolidayList={currentYearOptionalHolidays}
           setCurrentYear={setCurrentYear}
           showCalendar={showCalendar}
           toggleCalendarModal={toggleCalendarModal}
