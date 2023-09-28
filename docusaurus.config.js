@@ -34,6 +34,7 @@ const config = {
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({
         docs: {
+          routeBasePath: '/',
           sidebarCollapsible: true,
           sidebarPath: require.resolve("./sidebars.js"),
           editUrl: "https://github.com/saeloun/miru-docs/edit/main/",
