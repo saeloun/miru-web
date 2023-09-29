@@ -1,0 +1,25 @@
+{
+  "permalink": "/blog-only/heading-as-title",
+  "editUrl": "https://github.com/facebook/docusaurus/edit/main/website/src/__tests__/__fixtures__/website/blog/heading-as-title.md",
+  "source": "@site/src/__tests__/__fixtures__/website/blog/heading-as-title.md",
+  "title": "some heading",
+  "description": "",
+  "date": "2019-01-02T00:00:00.000Z",
+  "formattedDate": "January 2, 2019",
+  "tags": [],
+  "readingTime": 0,
+  "hasTruncateMarker": false,
+  "authors": [],
+  "frontMatter": {
+    "date": "2019-01-02T00:00:00.000Z"
+  },
+  "unlisted": false,
+  "prevItem": {
+    "title": "Simple Slug",
+    "permalink": "/blog-only/simple/slug"
+  },
+  "nextItem": {
+    "title": "date-matter",
+    "permalink": "/blog-only/date-matter"
+  }
+}

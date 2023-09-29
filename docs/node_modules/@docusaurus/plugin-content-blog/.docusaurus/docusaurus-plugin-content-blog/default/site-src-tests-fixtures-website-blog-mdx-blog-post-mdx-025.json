@@ -1,0 +1,26 @@
+{
+  "permalink": "/blog-only/mdx-blog-post",
+  "editUrl": "https://github.com/facebook/docusaurus/edit/main/website/src/__tests__/__fixtures__/website/blog/mdx-blog-post.mdx",
+  "source": "@site/src/__tests__/__fixtures__/website/blog/mdx-blog-post.mdx",
+  "title": "Full Blog Sample",
+  "description": "HTML Heading 1",
+  "date": "2021-03-05T00:00:00.000Z",
+  "formattedDate": "March 5, 2021",
+  "tags": [],
+  "readingTime": 0.245,
+  "hasTruncateMarker": false,
+  "authors": [],
+  "frontMatter": {
+    "title": "Full Blog Sample",
+    "date": "2021-03-05T00:00:00.000Z"
+  },
+  "unlisted": false,
+  "prevItem": {
+    "title": "MDX Blog Sample with require calls",
+    "permalink": "/blog-only/mdx-require-blog-post"
+  },
+  "nextItem": {
+    "title": "Complex Slug",
+    "permalink": "/blog-only/hey/my super path/héllô"
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "permalink": "/blog-only/simple/slug",
+  "editUrl": "https://github.com/facebook/docusaurus/edit/main/website/src/__tests__/__fixtures__/website/blog/simple-slug.md",
+  "source": "@site/src/__tests__/__fixtures__/website/blog/simple-slug.md",
+  "title": "Simple Slug",
+  "description": "simple url slug",
+  "date": "2020-08-15T00:00:00.000Z",
+  "formattedDate": "August 15, 2020",
+  "tags": [],
+  "readingTime": 0.015,
+  "hasTruncateMarker": false,
+  "authors": [
+    {
+      "name": "Sébastien Lorber",
+      "title": "Docusaurus maintainer",
+      "url": "https://sebastienlorber.com"
+    }
+  ],
+  "frontMatter": {
+    "slug": "/simple/slug",
+    "title": "Simple Slug",
+    "date": "2020-08-15T00:00:00.000Z",
+    "author": "Sébastien Lorber",
+    "author_title": "Docusaurus maintainer",
+    "author_url": "https://sebastienlorber.com"
+  },
+  "unlisted": false,
+  "prevItem": {
+    "title": "Complex Slug",
+    "permalink": "/blog-only/hey/my super path/héllô"
+  },
+  "nextItem": {
+    "title": "some heading",
+    "permalink": "/blog-only/heading-as-title"
+  }
+}

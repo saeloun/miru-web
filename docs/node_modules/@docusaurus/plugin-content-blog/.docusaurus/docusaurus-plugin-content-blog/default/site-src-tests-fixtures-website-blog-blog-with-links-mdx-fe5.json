@@ -1,0 +1,22 @@
+{
+  "permalink": "/blog-only/blog-with-links",
+  "editUrl": "https://github.com/facebook/docusaurus/edit/main/website/src/__tests__/__fixtures__/website/blog/blog-with-links.mdx",
+  "source": "@site/src/__tests__/__fixtures__/website/blog/blog-with-links.mdx",
+  "title": "test links",
+  "description": "absolute full url",
+  "date": "2023-07-23T00:00:00.000Z",
+  "formattedDate": "July 23, 2023",
+  "tags": [],
+  "readingTime": 0.145,
+  "hasTruncateMarker": false,
+  "authors": [],
+  "frontMatter": {
+    "title": "test links",
+    "date": "2023-07-23T00:00:00.000Z"
+  },
+  "unlisted": false,
+  "nextItem": {
+    "title": "MDX Blog Sample with require calls",
+    "permalink": "/blog-only/mdx-require-blog-post"
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "permalink": "/blog-only/2018/12/14/Happy-First-Birthday-Slash",
+  "editUrl": "https://github.com/facebook/docusaurus/edit/main/website/src/__tests__/__fixtures__/website/blog/2018-12-14-Happy-First-Birthday-Slash.md",
+  "source": "@site/src/__tests__/__fixtures__/website/blog/2018-12-14-Happy-First-Birthday-Slash.md",
+  "title": "Happy 1st Birthday Slash!",
+  "description": "Happy birthday!",
+  "date": "2018-12-14T00:00:00.000Z",
+  "formattedDate": "December 14, 2018",
+  "tags": [
+    {
+      "label": "birthday",
+      "permalink": "/blog-only/tags/birthday"
+    }
+  ],
+  "readingTime": 0.01,
+  "hasTruncateMarker": false,
+  "authors": [
+    {
+      "name": "Yangshun Tay"
+    },
+    {
+      "name": "Sébastien Lorber",
+      "title": "Docusaurus maintainer",
+      "email": "lorber.sebastien@gmail.com",
+      "url": "https://sebastienlorber.com",
+      "key": "slorber"
+    }
+  ],
+  "frontMatter": {
+    "title": "Happy 1st Birthday Slash!",
+    "authors": [
+      {
+        "name": "Yangshun Tay"
+      },
+      "slorber"
+    ],
+    "tags": [
+      "birthday"
+    ]
+  },
+  "unlisted": false,
+  "prevItem": {
+    "title": "date-matter",
+    "permalink": "/blog-only/date-matter"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "title": "Recent posts",
+  "items": [
+    {
+      "title": "test links",
+      "permalink": "/blog-only/blog-with-links",
+      "unlisted": false
+    },
+    {
+      "title": "MDX Blog Sample with require calls",
+      "permalink": "/blog-only/mdx-require-blog-post",
+      "unlisted": false
+    },
+    {
+      "title": "Full Blog Sample",
+      "permalink": "/blog-only/mdx-blog-post",
+      "unlisted": false
+    },
+    {
+      "title": "Complex Slug",
+      "permalink": "/blog-only/hey/my super path/héllô",
+      "unlisted": false
+    },
+    {
+      "title": "Simple Slug",
+      "permalink": "/blog-only/simple/slug",
+      "unlisted": false
+    }
+  ]
+}

@@ -1,0 +1,312 @@
+{
+  "blogPosts": [
+    {
+      "id": "/blog-with-links",
+      "metadata": {
+        "permalink": "/blog-only/blog-with-links",
+        "editUrl": "https://github.com/facebook/docusaurus/edit/main/website/src/__tests__/__fixtures__/website/blog/blog-with-links.mdx",
+        "source": "@site/src/__tests__/__fixtures__/website/blog/blog-with-links.mdx",
+        "title": "test links",
+        "description": "absolute full url",
+        "date": "2023-07-23T00:00:00.000Z",
+        "formattedDate": "July 23, 2023",
+        "tags": [],
+        "readingTime": 0.145,
+        "hasTruncateMarker": false,
+        "authors": [],
+        "frontMatter": {
+          "title": "test links",
+          "date": "2023-07-23T00:00:00.000Z"
+        },
+        "unlisted": false,
+        "nextItem": {
+          "title": "MDX Blog Sample with require calls",
+          "permalink": "/blog-only/mdx-require-blog-post"
+        }
+      },
+      "content": "import useBaseUrl from '@docusaurus/useBaseUrl';\n\n[absolute full url](https://github.com/facebook/docusaurus)\n\n[absolute url with implicit domain name](/blog/2017/12/14/introducing-docusaurus)\n\n[relative url](2017-12-14-introducing-docusaurus.mdx)\n\n[anchor](#title)\n\n![](/img/docusaurus-social-card.png)\n\n![](https://docusaurus.io/assets/images/slash-introducing-411a16dd05086935b8e9ddae38ae9b45.svg)\n\n<img\n  srcSet={`${useBaseUrl(\n    '/img/docusaurus-social-card.png 300w',\n  )},    ${useBaseUrl('/img/docusaurus-social-card.png 500w')}`}\n/>\n\n<img src={useBaseUrl('/img/docusaurus-social-card.png')} />"
+    },
+    {
+      "id": "/mdx-require-blog-post",
+      "metadata": {
+        "permalink": "/blog-only/mdx-require-blog-post",
+        "editUrl": "https://github.com/facebook/docusaurus/edit/main/website/src/__tests__/__fixtures__/website/blog/mdx-require-blog-post.mdx",
+        "source": "@site/src/__tests__/__fixtures__/website/blog/mdx-require-blog-post.mdx",
+        "title": "MDX Blog Sample with require calls",
+        "description": "Test MDX with require calls",
+        "date": "2021-03-06T00:00:00.000Z",
+        "formattedDate": "March 6, 2021",
+        "tags": [],
+        "readingTime": 0.09,
+        "hasTruncateMarker": false,
+        "authors": [],
+        "frontMatter": {
+          "title": "MDX Blog Sample with require calls",
+          "date": "2021-03-06T00:00:00.000Z"
+        },
+        "unlisted": false,
+        "prevItem": {
+          "title": "test links",
+          "permalink": "/blog-only/blog-with-links"
+        },
+        "nextItem": {
+          "title": "Full Blog Sample",
+          "permalink": "/blog-only/mdx-blog-post"
+        }
+      },
+      "content": "Test MDX with require calls\n\nimport useBaseUrl from '@docusaurus/useBaseUrl';\n\n<img src={useBaseUrl('/img/docusaurus-social-card.png')} />\n\n<img src={require('../static/img/docusaurus-social-card.png').default} />\n\n<img src={require('@site/static/img/docusaurus-social-card.png').default} />"
+    },
+    {
+      "id": "/mdx-blog-post",
+      "metadata": {
+        "permalink": "/blog-only/mdx-blog-post",
+        "editUrl": "https://github.com/facebook/docusaurus/edit/main/website/src/__tests__/__fixtures__/website/blog/mdx-blog-post.mdx",
+        "source": "@site/src/__tests__/__fixtures__/website/blog/mdx-blog-post.mdx",
+        "title": "Full Blog Sample",
+        "description": "HTML Heading 1",
+        "date": "2021-03-05T00:00:00.000Z",
+        "formattedDate": "March 5, 2021",
+        "tags": [],
+        "readingTime": 0.245,
+        "hasTruncateMarker": false,
+        "authors": [],
+        "frontMatter": {
+          "title": "Full Blog Sample",
+          "date": "2021-03-05T00:00:00.000Z"
+        },
+        "unlisted": false,
+        "prevItem": {
+          "title": "MDX Blog Sample with require calls",
+          "permalink": "/blog-only/mdx-require-blog-post"
+        },
+        "nextItem": {
+          "title": "Complex Slug",
+          "permalink": "/blog-only/hey/my super path/héllô"
+        }
+      },
+      "content": "<h1>HTML Heading 1</h1>\n<h2>HTML Heading 2</h2>\n<p>HTML Paragraph</p>\n\nimport Typography from '@site/../component/Typography';\n\n<Typography>Import DOM</Typography>\n\n# Heading 1\n\n## Heading 2\n\n### Heading 3\n\n#### Heading 4\n\n##### Heading 5\n\n- list1\n- list2\n- list3\n\n* list1\n* list2\n* list3\n\nNormal Text _Italics Text_ **Bold Text**\n\n[link](https://v2.docusaurus.io/) ![image](https://v2.docusaurus.io/)"
+    },
+    {
+      "id": "/hey/my super path/héllô",
+      "metadata": {
+        "permalink": "/blog-only/hey/my super path/héllô",
+        "editUrl": "https://github.com/facebook/docusaurus/edit/main/website/src/__tests__/__fixtures__/website/blog/complex-slug.md",
+        "source": "@site/src/__tests__/__fixtures__/website/blog/complex-slug.md",
+        "title": "Complex Slug",
+        "description": "complex url slug",
+        "date": "2020-08-16T00:00:00.000Z",
+        "formattedDate": "August 16, 2020",
+        "tags": [
+          {
+            "label": "date",
+            "permalink": "/blog-only/tags/date"
+          },
+          {
+            "label": "complex",
+            "permalink": "/blog-only/tags/complex"
+          }
+        ],
+        "readingTime": 0.015,
+        "hasTruncateMarker": false,
+        "authors": [],
+        "frontMatter": {
+          "slug": "/hey/my super path/héllô",
+          "title": "Complex Slug",
+          "date": "2020/08/16",
+          "tags": [
+            "date",
+            "complex"
+          ]
+        },
+        "unlisted": false,
+        "prevItem": {
+          "title": "Full Blog Sample",
+          "permalink": "/blog-only/mdx-blog-post"
+        },
+        "nextItem": {
+          "title": "Simple Slug",
+          "permalink": "/blog-only/simple/slug"
+        }
+      },
+      "content": "complex url slug"
+    },
+    {
+      "id": "/simple/slug",
+      "metadata": {
+        "permalink": "/blog-only/simple/slug",
+        "editUrl": "https://github.com/facebook/docusaurus/edit/main/website/src/__tests__/__fixtures__/website/blog/simple-slug.md",
+        "source": "@site/src/__tests__/__fixtures__/website/blog/simple-slug.md",
+        "title": "Simple Slug",
+        "description": "simple url slug",
+        "date": "2020-08-15T00:00:00.000Z",
+        "formattedDate": "August 15, 2020",
+        "tags": [],
+        "readingTime": 0.015,
+        "hasTruncateMarker": false,
+        "authors": [
+          {
+            "name": "Sébastien Lorber",
+            "title": "Docusaurus maintainer",
+            "url": "https://sebastienlorber.com"
+          }
+        ],
+        "frontMatter": {
+          "slug": "/simple/slug",
+          "title": "Simple Slug",
+          "date": "2020-08-15T00:00:00.000Z",
+          "author": "Sébastien Lorber",
+          "author_title": "Docusaurus maintainer",
+          "author_url": "https://sebastienlorber.com"
+        },
+        "unlisted": false,
+        "prevItem": {
+          "title": "Complex Slug",
+          "permalink": "/blog-only/hey/my super path/héllô"
+        },
+        "nextItem": {
+          "title": "some heading",
+          "permalink": "/blog-only/heading-as-title"
+        }
+      },
+      "content": "simple url slug"
+    },
+    {
+      "id": "/unlisted",
+      "metadata": {
+        "permalink": "/blog-only/unlisted",
+        "editUrl": "https://github.com/facebook/docusaurus/edit/main/website/src/__tests__/__fixtures__/website/blog/unlisted.md",
+        "source": "@site/src/__tests__/__fixtures__/website/blog/unlisted.md",
+        "title": "unlisted",
+        "description": "this post is unlisted",
+        "date": "2020-02-27T00:00:00.000Z",
+        "formattedDate": "February 27, 2020",
+        "tags": [],
+        "readingTime": 0.02,
+        "hasTruncateMarker": false,
+        "authors": [],
+        "frontMatter": {
+          "date": "2020-02-27T00:00:00.000Z",
+          "unlisted": true
+        },
+        "unlisted": true
+      },
+      "content": "this post is unlisted"
+    },
+    {
+      "id": "/heading-as-title",
+      "metadata": {
+        "permalink": "/blog-only/heading-as-title",
+        "editUrl": "https://github.com/facebook/docusaurus/edit/main/website/src/__tests__/__fixtures__/website/blog/heading-as-title.md",
+        "source": "@site/src/__tests__/__fixtures__/website/blog/heading-as-title.md",
+        "title": "some heading",
+        "description": "",
+        "date": "2019-01-02T00:00:00.000Z",
+        "formattedDate": "January 2, 2019",
+        "tags": [],
+        "readingTime": 0,
+        "hasTruncateMarker": false,
+        "authors": [],
+        "frontMatter": {
+          "date": "2019-01-02T00:00:00.000Z"
+        },
+        "unlisted": false,
+        "prevItem": {
+          "title": "Simple Slug",
+          "permalink": "/blog-only/simple/slug"
+        },
+        "nextItem": {
+          "title": "date-matter",
+          "permalink": "/blog-only/date-matter"
+        }
+      },
+      "content": ""
+    },
+    {
+      "id": "/date-matter",
+      "metadata": {
+        "permalink": "/blog-only/date-matter",
+        "editUrl": "https://github.com/facebook/docusaurus/edit/main/website/src/__tests__/__fixtures__/website/blog/date-matter.md",
+        "source": "@site/src/__tests__/__fixtures__/website/blog/date-matter.md",
+        "title": "date-matter",
+        "description": "date inside front matter",
+        "date": "2019-01-01T00:00:00.000Z",
+        "formattedDate": "January 1, 2019",
+        "tags": [
+          {
+            "label": "date",
+            "permalink": "/blog-only/tags/date"
+          }
+        ],
+        "readingTime": 0.02,
+        "hasTruncateMarker": false,
+        "authors": [],
+        "frontMatter": {
+          "date": "2019-01-01T00:00:00.000Z",
+          "tags": [
+            "date"
+          ]
+        },
+        "unlisted": false,
+        "prevItem": {
+          "title": "some heading",
+          "permalink": "/blog-only/heading-as-title"
+        },
+        "nextItem": {
+          "title": "Happy 1st Birthday Slash!",
+          "permalink": "/blog-only/2018/12/14/Happy-First-Birthday-Slash"
+        }
+      },
+      "content": "date inside front matter"
+    },
+    {
+      "id": "/2018/12/14/Happy-First-Birthday-Slash",
+      "metadata": {
+        "permalink": "/blog-only/2018/12/14/Happy-First-Birthday-Slash",
+        "editUrl": "https://github.com/facebook/docusaurus/edit/main/website/src/__tests__/__fixtures__/website/blog/2018-12-14-Happy-First-Birthday-Slash.md",
+        "source": "@site/src/__tests__/__fixtures__/website/blog/2018-12-14-Happy-First-Birthday-Slash.md",
+        "title": "Happy 1st Birthday Slash!",
+        "description": "Happy birthday!",
+        "date": "2018-12-14T00:00:00.000Z",
+        "formattedDate": "December 14, 2018",
+        "tags": [
+          {
+            "label": "birthday",
+            "permalink": "/blog-only/tags/birthday"
+          }
+        ],
+        "readingTime": 0.01,
+        "hasTruncateMarker": false,
+        "authors": [
+          {
+            "name": "Yangshun Tay"
+          },
+          {
+            "name": "Sébastien Lorber",
+            "title": "Docusaurus maintainer",
+            "email": "lorber.sebastien@gmail.com",
+            "url": "https://sebastienlorber.com",
+            "key": "slorber"
+          }
+        ],
+        "frontMatter": {
+          "title": "Happy 1st Birthday Slash!",
+          "authors": [
+            {
+              "name": "Yangshun Tay"
+            },
+            "slorber"
+          ],
+          "tags": [
+            "birthday"
+          ]
+        },
+        "unlisted": false,
+        "prevItem": {
+          "title": "date-matter",
+          "permalink": "/blog-only/date-matter"
+        }
+      },
+      "content": "Happy birthday!"
+    }
+  ]
+}

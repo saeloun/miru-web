@@ -1,0 +1,33 @@
+{
+  "permalink": "/blog-only/date-matter",
+  "editUrl": "https://github.com/facebook/docusaurus/edit/main/website/src/__tests__/__fixtures__/website/blog/date-matter.md",
+  "source": "@site/src/__tests__/__fixtures__/website/blog/date-matter.md",
+  "title": "date-matter",
+  "description": "date inside front matter",
+  "date": "2019-01-01T00:00:00.000Z",
+  "formattedDate": "January 1, 2019",
+  "tags": [
+    {
+      "label": "date",
+      "permalink": "/blog-only/tags/date"
+    }
+  ],
+  "readingTime": 0.02,
+  "hasTruncateMarker": false,
+  "authors": [],
+  "frontMatter": {
+    "date": "2019-01-01T00:00:00.000Z",
+    "tags": [
+      "date"
+    ]
+  },
+  "unlisted": false,
+  "prevItem": {
+    "title": "some heading",
+    "permalink": "/blog-only/heading-as-title"
+  },
+  "nextItem": {
+    "title": "Happy 1st Birthday Slash!",
+    "permalink": "/blog-only/2018/12/14/Happy-First-Birthday-Slash"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "permalink": "/blog-only/mdx-require-blog-post",
+  "editUrl": "https://github.com/facebook/docusaurus/edit/main/website/src/__tests__/__fixtures__/website/blog/mdx-require-blog-post.mdx",
+  "source": "@site/src/__tests__/__fixtures__/website/blog/mdx-require-blog-post.mdx",
+  "title": "MDX Blog Sample with require calls",
+  "description": "Test MDX with require calls",
+  "date": "2021-03-06T00:00:00.000Z",
+  "formattedDate": "March 6, 2021",
+  "tags": [],
+  "readingTime": 0.09,
+  "hasTruncateMarker": false,
+  "authors": [],
+  "frontMatter": {
+    "title": "MDX Blog Sample with require calls",
+    "date": "2021-03-06T00:00:00.000Z"
+  },
+  "unlisted": false,
+  "prevItem": {
+    "title": "test links",
+    "permalink": "/blog-only/blog-with-links"
+  },
+  "nextItem": {
+    "title": "Full Blog Sample",
+    "permalink": "/blog-only/mdx-blog-post"
+  }
+}

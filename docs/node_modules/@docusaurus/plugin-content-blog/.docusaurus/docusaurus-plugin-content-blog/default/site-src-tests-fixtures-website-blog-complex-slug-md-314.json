@@ -1,0 +1,40 @@
+{
+  "permalink": "/blog-only/hey/my super path/héllô",
+  "editUrl": "https://github.com/facebook/docusaurus/edit/main/website/src/__tests__/__fixtures__/website/blog/complex-slug.md",
+  "source": "@site/src/__tests__/__fixtures__/website/blog/complex-slug.md",
+  "title": "Complex Slug",
+  "description": "complex url slug",
+  "date": "2020-08-16T00:00:00.000Z",
+  "formattedDate": "August 16, 2020",
+  "tags": [
+    {
+      "label": "date",
+      "permalink": "/blog-only/tags/date"
+    },
+    {
+      "label": "complex",
+      "permalink": "/blog-only/tags/complex"
+    }
+  ],
+  "readingTime": 0.015,
+  "hasTruncateMarker": false,
+  "authors": [],
+  "frontMatter": {
+    "slug": "/hey/my super path/héllô",
+    "title": "Complex Slug",
+    "date": "2020/08/16",
+    "tags": [
+      "date",
+      "complex"
+    ]
+  },
+  "unlisted": false,
+  "prevItem": {
+    "title": "Full Blog Sample",
+    "permalink": "/blog-only/mdx-blog-post"
+  },
+  "nextItem": {
+    "title": "Simple Slug",
+    "permalink": "/blog-only/simple/slug"
+  }
+}

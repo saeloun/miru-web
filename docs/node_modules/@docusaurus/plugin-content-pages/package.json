@@ -1,0 +1,38 @@
+{
+  "name": "@docusaurus/plugin-content-pages",
+  "version": "2.4.3",
+  "description": "Pages plugin for Docusaurus.",
+  "main": "lib/index.js",
+  "types": "src/plugin-content-pages.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/facebook/docusaurus.git",
+    "directory": "packages/docusaurus-plugin-content-pages"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@docusaurus/core": "2.4.3",
+    "@docusaurus/mdx-loader": "2.4.3",
+    "@docusaurus/types": "2.4.3",
+    "@docusaurus/utils": "2.4.3",
+    "@docusaurus/utils-validation": "2.4.3",
+    "fs-extra": "^10.1.0",
+    "tslib": "^2.4.0",
+    "webpack": "^5.73.0"
+  },
+  "peerDependencies": {
+    "react": "^16.8.4 || ^17.0.0",
+    "react-dom": "^16.8.4 || ^17.0.0"
+  },
+  "engines": {
+    "node": ">=16.14"
+  },
+  "gitHead": "56410aa94665699f75cb889f477ccdffb98f2b21"
+}
