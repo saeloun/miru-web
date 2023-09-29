@@ -61,7 +61,7 @@ const EditHolidays = ({
               holidayList.map((holiday, index) => (
                 <div className="mb-4 flex flex-row" key={index}>
                   <div className="flex w-11/12 flex-row py-2">
-                    <div className="relative w-1/2" ref={wrapperRef}>
+                    <div className="relative w-1/2">
                       <div
                         onClick={() => {
                           setShowDatePicker({
@@ -207,10 +207,7 @@ const EditHolidays = ({
                   optionalHolidaysList.map((optionalHoliday, index) => (
                     <div className="flex flex-row" key={index}>
                       <div className="flex w-11/12 flex-row py-3">
-                        <div
-                          className="relative w-1/2"
-                          ref={optionalWrapperRef}
-                        >
+                        <div className="relative w-1/2">
                           <div
                             onClick={() =>
                               setShowOptionalDatePicker({
