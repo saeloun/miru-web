@@ -79,6 +79,11 @@ const config = {
           }
         ],
       },
+      algolia: {
+        appId: "QIQQLP8ODT",
+        apiKey: "fe413cd4421525316f1f677211a7fa83",
+        indexName: "miru",
+      },
       footer: {
         style: 'dark',
         links: [
