@@ -10,6 +10,7 @@ import {
   CakeIcon,
   UserIcon,
   IntegrateIcon,
+  MobileIcon,
   ProjectsIcon,
 } from "miruIcons";
 import { NavLink } from "react-router-dom";
@@ -97,6 +98,14 @@ const SideNav = ({ isAdmin, firstName, company, lastName }) => {
               <ProjectsIcon className="mr-2" size={20} weight="bold" />
               EMPLOYMENT DETAILS
             </NavLink>
+            <NavLink
+              end
+              className={({ isActive }) => getActiveClassName(isActive)}
+              to="" // TODO Add detail page link
+            >
+              <MobileIcon className="mr-2" size={20} weight="bold" />
+              ALLOCATED DEVICES
+            </NavLink>
           </li>
         </div>
       )}
@@ -153,7 +162,16 @@ const SideNav = ({ isAdmin, firstName, company, lastName }) => {
           className={({ isActive }) => getActiveClassName(isActive)}
           to="/profile/employment-details"
         >
+          <ProjectsIcon className="mr-2" size={20} weight="bold" />
           EMPLOYMENT DETAILS
+        </NavLink>
+        <NavLink
+          end
+          className={({ isActive }) => getActiveClassName(isActive)}
+          to="" // TODO Add detail page link
+        >
+          <MobileIcon className="mr-2" size={20} weight="bold" />
+          ALLOCATED DEVICES
         </NavLink>
       </li>
     </ul>
