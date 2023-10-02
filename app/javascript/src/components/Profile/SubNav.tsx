@@ -101,7 +101,7 @@ const SideNav = ({ isAdmin, firstName, company, lastName }) => {
             <NavLink
               end
               className={({ isActive }) => getActiveClassName(isActive)}
-              to="" // TODO Add detail page link
+              to="/profile/devices-details"
             >
               <MobileIcon className="mr-2" size={20} weight="bold" />
               ALLOCATED DEVICES
@@ -168,7 +168,7 @@ const SideNav = ({ isAdmin, firstName, company, lastName }) => {
         <NavLink
           end
           className={({ isActive }) => getActiveClassName(isActive)}
-          to="" // TODO Add detail page link
+          to="/profile/devices-details"
         >
           <MobileIcon className="mr-2" size={20} weight="bold" />
           ALLOCATED DEVICES
