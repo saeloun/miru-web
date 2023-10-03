@@ -113,6 +113,7 @@ namespace :internal_api, defaults: { format: "json" } do
     get "calendars/events/:calendar_id", to: "calendars#events", as: "events", calendar_id: /[^\/]+/
 
     resources :payments, only: [:new, :create, :index]
+    resources :holidays, only: [:update, :index], param: :year
 
     namespace :payments do
       resources :providers, only: [:index, :update]

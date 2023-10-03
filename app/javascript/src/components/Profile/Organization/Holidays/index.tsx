@@ -1,24 +1,23 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import React, { useEffect, useRef, useState } from "react";
 
+import { getYear } from "date-fns";
 import { useOutsideClick } from "helpers";
 import { useNavigate } from "react-router-dom";
-import { Toastr } from "StyledComponents";
 
+import holidaysApi from "apis/holidays";
 import Loader from "common/Loader/index";
-import DetailsHeader from "components/Profile/DetailsHeader";
 import { useUserContext } from "context/UserContext";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import Details from "./Details";
 import EditHolidays from "./EditHolidays";
 
-import Header from "../../Header";
-
 const Holidays = () => {
   const [holidayList, setHolidayList] = useState([]);
   const [isDetailUpdated, setIsDetailUpdated] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [currentYear, setCurrentYear] = useState<number>(getYear(new Date()));
   const [showCalendar, setShowCalendar] = useState(false);
   const [showDatePicker, setShowDatePicker] = useState<any>({
     visibility: false,
@@ -39,14 +38,12 @@ const Holidays = () => {
   const [totalOptionalHolidays, setTotalOptionalHolidays] = useState(0);
   const [optionalRepetitionType, setOptionalRepetitionType] =
     useState("per_year");
-  const [isEditable, setIsEditable] = useState(true);
+  const [isEditable, setIsEditable] = useState(false);
+  const [holidays, setHolidays] = useState([]);
+  const [currentYearHolidaysList, setCurrentYearHolidaysList] = useState([]);
 
   const { isDesktop } = useUserContext();
   const navigate = useNavigate();
-
-  const getData = async () => {
-    setIsLoading(true);
-  };
 
   useOutsideClick(wrapperRef, () => {
     setShowDatePicker({
@@ -70,10 +67,64 @@ const Holidays = () => {
 
   useEffect(() => {
     sendGAPageView();
+    fetchHolidays();
   }, []);
 
+  const fetchHolidays = async () => {
+    const res = await holidaysApi.allHolidays();
+    setHolidays(res.data.holidays);
+    updateHolidaysList(res.data.holidays);
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    if (holidays.length) {
+      updateHolidaysList(holidays);
+    }
+  }, [currentYear]);
+
+  const updateHolidaysList = holidays => {
+    const currentHoliday = holidays.find(
+      holiday => holiday.year == currentYear
+    );
+    if (currentHoliday) {
+      const {
+        enable_optional_holidays,
+        national_holidays = [],
+        optional_holidays = [],
+        no_of_allowed_optional_holidays,
+        time_period_optional_holidays,
+      } = currentHoliday;
+
+      enable_optional_holidays &&
+        setEnableOptionalHolidays(enable_optional_holidays);
+
+      no_of_allowed_optional_holidays &&
+        setTotalOptionalHolidays(no_of_allowed_optional_holidays);
+
+      time_period_optional_holidays &&
+        setOptionalRepetitionType(time_period_optional_holidays);
+
+      const newNationalHolidays = national_holidays.map(holiday => ({
+        ...holiday,
+      }));
+
+      const newOptionalHolidays = optional_holidays.map(holiday => ({
+        ...holiday,
+      }));
+      setHolidayList(newNationalHolidays);
+      setOptionalHolidaysList(newOptionalHolidays);
+      setCurrentYearHolidaysList([...national_holidays, ...optional_holidays]);
+    } else {
+      setEnableOptionalHolidays(false);
+      setTotalOptionalHolidays(0);
+      setOptionalRepetitionType("per_year");
+      setHolidayList([]);
+      setOptionalHolidaysList([]);
+    }
+  };
+
   const handleDatePicker = (date, index, isoptionalHoliday) => {
-    setIsDetailUpdated(true);
     if (!isoptionalHoliday) {
       const holidayListDetail = [...holidayList];
       holidayListDetail[index].date = date;
@@ -95,6 +146,7 @@ const Holidays = () => {
           {
             date: "",
             name: "",
+            category: "national",
           },
         ],
       ]);
@@ -105,6 +157,7 @@ const Holidays = () => {
           {
             date: "",
             name: "",
+            category: "optional",
           },
         ],
       ]);
@@ -124,7 +177,6 @@ const Holidays = () => {
   };
 
   const handleHolidateNameChange = (e, index, isoptionalHoliday) => {
-    setIsDetailUpdated(true);
     if (!isoptionalHoliday) {
       const holidayListDetail = [...holidayList];
       holidayListDetail[index].name = e.target.value;
@@ -142,40 +194,84 @@ const Holidays = () => {
 
   const handleChangeTotalOpHoliday = e => {
     setTotalOptionalHolidays(e.target.value);
-    setIsDetailUpdated(true);
   };
 
   const handleChangeRepetitionOpHoliday = e => {
     setOptionalRepetitionType(e.value);
-    setIsDetailUpdated(true);
   };
 
-  const handleUpdateHolidayDetails = async () => {
-    try {
-      setIsEditable(false);
-    } catch {
-      setIsLoading(false);
-      Toastr.error("Error in Updating Leave Details");
-    }
+  const handleUpdateHolidayDetails = () => {
+    const totalHolidayList = [...holidayList, ...optionalHolidaysList];
+    const payload = {
+      holiday: {
+        year: currentYear,
+        enable_optional_holidays: enableOptionalHolidays,
+        no_of_allowed_optional_holidays: totalOptionalHolidays,
+        time_period_optional_holidays: optionalRepetitionType,
+        holiday_types: ["national", "optional"],
+      },
+      add_holiday_infos: [],
+      update_holiday_infos: [],
+      remove_holiday_infos: [],
+    };
+
+    const removedHolidays = currentYearHolidaysList
+      .filter(
+        currentHoliday =>
+          !totalHolidayList.some(leave => leave.id === currentHoliday.id)
+      )
+      .map(removedHoliday => removedHoliday.id);
+
+    payload.remove_holiday_infos.push(...removedHolidays);
+
+    const sortedHolidays = totalHolidayList.filter(
+      holiday =>
+        !currentYearHolidaysList.some(currentHoliday => {
+          const holidayJSON = JSON.stringify(holiday);
+          const currentHolidayJSON = JSON.stringify(currentHoliday);
+
+          return holidayJSON === currentHolidayJSON;
+        })
+    );
+
+    sortedHolidays.forEach(holiday => {
+      if (holiday.id) {
+        payload.update_holiday_infos.push(holiday);
+      } else {
+        payload.add_holiday_infos.push(holiday);
+      }
+    });
+
+    saveUpdatedHolidayDetails(payload);
+  };
+
+  const saveUpdatedHolidayDetails = async payload => {
+    await holidaysApi.updateHolidays(currentYear, { holiday: payload });
+    setIsEditable(false);
   };
 
   const handleCancelAction = () => {
     if (isDesktop) {
-      getData();
       setIsDetailUpdated(false);
+      setIsEditable(false);
     } else {
       navigate("/profile/edit/option");
     }
   };
 
-  const getHolidaysContent = () => {
-    if (isLoading) {
-      return <Loader />;
-    }
+  if (isLoading) {
+    return (
+      <div className="flex min-h-70v items-center justify-center">
+        <Loader />
+      </div>
+    );
+  }
 
-    if (isEditable) {
-      return (
+  return (
+    <div className="flex h-full w-full flex-col">
+      {isEditable ? (
         <EditHolidays
+          currentYear={currentYear}
           enableOptionalHolidays={enableOptionalHolidays}
           handleAddHoliday={handleAddHoliday}
           handleCancelAction={handleCancelAction}
@@ -187,9 +283,11 @@ const Holidays = () => {
           handleHolidateNameChange={handleHolidateNameChange}
           holidayList={holidayList}
           isDesktop={isDesktop}
+          isDisableUpdateBtn={isDetailUpdated}
           optionalHolidaysList={optionalHolidaysList}
           optionalRepetitionType={optionalRepetitionType}
           optionalWrapperRef={optionalWrapperRef}
+          setCurrentYear={setCurrentYear}
           setEnableOptionalHolidays={setEnableOptionalHolidays}
           setShowDatePicker={setShowDatePicker}
           setShowOptionalDatePicker={setShowOptionalDatePicker}
@@ -199,42 +297,17 @@ const Holidays = () => {
           updateHolidayDetails={handleUpdateHolidayDetails}
           wrapperRef={wrapperRef}
         />
-      );
-    }
-
-    return (
-      <Details
-        holidaysList={holidayList}
-        optionalHolidayList={optionalHolidaysList}
-        showCalendar={showCalendar}
-        toggleCalendarModal={toggleCalendarModal}
-      />
-    );
-  };
-
-  return (
-    <div className="flex h-full w-full flex-col">
-      {isEditable ? (
-        <Header
-          showButtons
-          showYearPicker
-          cancelAction={handleCancelAction}
-          isDisableUpdateBtn={isDetailUpdated}
-          saveAction={handleUpdateHolidayDetails}
-          subTitle=""
-          title="Holidays"
-        />
       ) : (
-        <DetailsHeader
-          showButtons
-          showYearPicker
+        <Details
+          currentYear={currentYear}
           editAction={() => setIsEditable(true)}
-          isDisableUpdateBtn={false}
-          subTitle=""
-          title="Holidays"
+          holidaysList={holidayList}
+          optionalHolidayList={optionalHolidaysList}
+          setCurrentYear={setCurrentYear}
+          showCalendar={showCalendar}
+          toggleCalendarModal={toggleCalendarModal}
         />
       )}
-      {getHolidaysContent()}
     </div>
   );
 };
