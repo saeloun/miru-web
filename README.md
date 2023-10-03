@@ -178,7 +178,7 @@ We encourage everyone to contribute to Miru Web! Check out
 
 Note: We are working on improving the documentation. So we had created a
 docusaurus app for documentation. Check out the
-[Miru Docs](https://github.com/saeloun/miru-docs/) Repo.
+[Miru Docs](https://github.com/saeloun/miru-web/docs).
 
 ## Contributors ✨
 

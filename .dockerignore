@@ -39,3 +39,6 @@
 /public/assets
 /public/packs
 /public/packs-test
+
+# Ignore miru-docs.
+docs/*
