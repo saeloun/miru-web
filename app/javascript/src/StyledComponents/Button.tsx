@@ -11,7 +11,7 @@ const PRIMARY_DISABLED =
   "bg-miru-gray-1000 text-white border border-miru-gray-1000";
 
 const SECONDARY =
-  " hover:bg-miru-gray-1000 text-miru-han-purple-1000 border border-miru-han-purple-1000";
+  "bg-transparent hover:bg-miru-gray-1000 text-miru-han-purple-1000 border border-miru-han-purple-1000";
 
 const SECONDARY_DISABLED =
   "bg-transparent text-miru-dark-purple-200 border border-miru-dark-purple-200";
