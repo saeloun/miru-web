@@ -1,8 +1,9 @@
 /* eslint-disable no-unused-vars */
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { format } from "date-fns";
 import dayjs from "dayjs";
+import Logger from "js-logger";
 import {
   CheckedCheckboxSVG,
   CheckIcon,
@@ -12,20 +13,42 @@ import {
 import TextareaAutosize from "react-textarea-autosize";
 import { Button, TimeInput } from "StyledComponents";
 
+import timeTrackingApi from "apis/timeTracking";
 import CustomDatePicker from "common/CustomDatePicker";
 
 const MeetingList = () => {
   const [displayDatePicker, setDisplayDatePicker] = useState<boolean>(false);
   const [billable, setBillable] = useState<boolean>(false);
   const [note, setNote] = useState<string>("");
-  const [selectedDate, setSelectedDate] = useState("");
   const [clients, setClients] = useState<any[]>([]);
   const [duration, setDuration] = useState<string>("");
   const [client, setClient] = useState<string>("");
   const [project, setProject] = useState<string>("");
-  const [projectId, setProjectId] = useState<number>(0);
   const [projectBillable, setProjectBillable] = useState<boolean>(true);
   const [bulkUpdateDialog, setBulkUpdateDialog] = useState<boolean>(false);
+  const [projects, setProjects] = useState<any>({});
+  const [selectDate, setSelectDate] = useState<number>(dayjs().weekday());
+
+  const fetchTimeTrackingData = async () => {
+    try {
+      const {
+        data: { clients, projects },
+      } = await timeTrackingApi.get();
+
+      setClients(clients);
+      setProjects(projects);
+    } catch (error) {
+      Logger.error(error);
+    }
+  };
+
+  const handleDurationChange = val => {
+    setDuration(val);
+  };
+
+  useEffect(() => {
+    fetchTimeTrackingData();
+  }, []);
 
   return (
     <>
@@ -45,7 +68,7 @@ const MeetingList = () => {
               value={client || "Client"}
               onChange={e => {
                 setClient(e.target.value);
-                // setProject(projects ? projects[e.target.value][0]?.name : "");
+                setProject(projects ? projects[e.target.value][0]?.name : "");
               }}
             >
               {!client && (
@@ -71,12 +94,12 @@ const MeetingList = () => {
                   Project
                 </option>
               )}
-              {/* {client &&
+              {client &&
                 projects[client].map((project, i) => (
                   <option data-project-id={project.id} key={i.toString()}>
                     {project.name}
                   </option>
-                ))} */}
+                ))}
             </select>
           </div>
           <TextareaAutosize
@@ -98,10 +121,12 @@ const MeetingList = () => {
                 <div className="relative">
                   <div className="h-100 w-100 absolute top-8 z-10">
                     <CustomDatePicker
-                      date={dayjs("2023-09-09").toDate()}
-                      handleChange={() =>
-                        setDisplayDatePicker(!displayDatePicker)
-                      }
+                      date={selectDate}
+                      setVisibility={displayDatePicker}
+                      handleChange={date => {
+                        setDisplayDatePicker(false);
+                        setSelectDate(date);
+                      }}
                     />
                   </div>
                 </div>
@@ -110,17 +135,17 @@ const MeetingList = () => {
                 className="formatted-date flex h-8 w-29 items-center justify-center rounded-sm bg-miru-gray-100 p-1 text-sm"
                 id="formattedDate"
                 onClick={() => {
-                  setDisplayDatePicker(true);
+                  setDisplayDatePicker(!displayDatePicker);
                 }}
               >
-                {format(new Date("2023-09-26"), "dd MMM, yyyy")}
+                {format(new Date(selectDate), "do MMM, yyyy")}
               </div>
             </div>
             <TimeInput
               className="h-8 w-20 rounded-sm bg-miru-gray-100 p-1 text-sm placeholder:text-miru-gray-1000"
               initTime={duration}
               name="timeInput"
-              // onTimeChange={handleDurationChange}
+              onTimeChange={handleDurationChange}
             />
           </div>
           <div className="mt-2 flex items-center">
