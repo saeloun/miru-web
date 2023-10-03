@@ -30,6 +30,7 @@
     "node_modules",
     "vendor",
     "public",
+    "docs"
   ],
   "compileOnSave": false
 }
