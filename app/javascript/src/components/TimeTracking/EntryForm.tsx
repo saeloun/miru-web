@@ -95,6 +95,7 @@ const AddEntry: React.FC<Iprops> = ({
 
   const handleDurationChange = val => {
     setDuration(val);
+    saveFormDataToLocalStorage();
   };
 
   const getPayload = () => ({
@@ -127,6 +128,51 @@ const AddEntry: React.FC<Iprops> = ({
       }
     }
   };
+
+    //Load saved form data from local storage
+    useEffect(() => {
+      loadFormDataFromLocalStorage();
+    }, []);
+
+    // to save form data to local storage
+    const saveFormDataToLocalStorage = () => {
+      try {
+        const formData = {
+          note,
+          duration,
+          client,
+          project,
+          projectId,
+          billable,
+          projectBillable,
+          selectedDate,
+        };
+        localStorage.setItem("formData", JSON.stringify(formData));
+      } catch (error) {
+
+        console.error("Error saving data to local storage:", error);
+      }
+    };
+
+    //to load form data from local storage
+    const loadFormDataFromLocalStorage = () => {
+      try {
+        const savedFormData = localStorage.getItem("formData");
+        if (savedFormData) {
+          const formData = JSON.parse(savedFormData);
+          setNote(formData.note);
+          setDuration(formData.duration);
+          setClient(formData.client);
+          setProject(formData.project);
+          setProjectId(formData.projectId);
+          setBillable(formData.billable);
+          setProjectBillable(formData.projectBillable);
+          setSelectedDate(formData.selectedDate);
+        }
+      } catch (error) {
+        console.error("Error loading data from local storage:", error);
+      }
+    };
 
   const handleEdit = async () => {
     try {
@@ -162,6 +208,7 @@ const AddEntry: React.FC<Iprops> = ({
     setSelectedDate(dayjs(date).format("YYYY-MM-DD"));
     setDisplayDatePicker(false);
     setUpdateView(false);
+    saveFormDataToLocalStorage();
   };
 
   const handleDisableBtn = () => {
@@ -195,6 +242,7 @@ const AddEntry: React.FC<Iprops> = ({
             onChange={e => {
               setClient(e.target.value);
               setProject(projects ? projects[e.target.value][0]?.name : "");
+              saveFormDataToLocalStorage();
             }}
           >
             {!client && (
@@ -211,8 +259,9 @@ const AddEntry: React.FC<Iprops> = ({
             id="project"
             name="project"
             value={project}
-            onChange={e => {
+            onChange={(e) => {
               setProject(e.target.value);
+              saveFormDataToLocalStorage();
             }}
           >
             {!project && (
@@ -239,7 +288,9 @@ const AddEntry: React.FC<Iprops> = ({
               editEntryId ? "h-auto" : "h-8"
             }
           `}
-          onChange={e => setNote(e.target["value"])}
+          onChange={(e) =>
+            {setNote(e.target["value"]);
+            saveFormDataToLocalStorage();}}
         />
       </div>
       <div className="w-60">
@@ -281,6 +332,7 @@ const AddEntry: React.FC<Iprops> = ({
               src={CheckedCheckboxSVG}
               onClick={() => {
                 setBillable(false);
+                saveFormDataToLocalStorage();
               }}
             />
           ) : (
@@ -291,6 +343,7 @@ const AddEntry: React.FC<Iprops> = ({
               src={UncheckedCheckboxSVG}
               onClick={() => {
                 if (projectBillable) setBillable(true);
+                saveFormDataToLocalStorage();
               }}
             />
           )}
