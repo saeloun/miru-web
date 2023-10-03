@@ -128,51 +128,47 @@ const AddEntry: React.FC<Iprops> = ({
       }
     }
   };
+  
+  useEffect(() => {
+    loadFormDataFromLocalStorage();
+  }, []);
 
-    //Load saved form data from local storage
-    useEffect(() => {
-      loadFormDataFromLocalStorage();
-    }, []);
+  const saveFormDataToLocalStorage = () => {
+    try {
+      const formData = {
+        note,
+        duration,
+        client,
+        project,
+        projectId,
+        billable,
+        projectBillable,
+        selectedDate,
+      };
+      localStorage.setItem("formData", JSON.stringify(formData));
+    } catch (error) {
+      console.error("Error saving data to local storage:", error);
+    }
+  };
 
-    // to save form data to local storage
-    const saveFormDataToLocalStorage = () => {
-      try {
-        const formData = {
-          note,
-          duration,
-          client,
-          project,
-          projectId,
-          billable,
-          projectBillable,
-          selectedDate,
-        };
-        localStorage.setItem("formData", JSON.stringify(formData));
-      } catch (error) {
-
-        console.error("Error saving data to local storage:", error);
+  const loadFormDataFromLocalStorage = () => {
+    try {
+      const savedFormData = localStorage.getItem("formData");
+      if (savedFormData) {
+        const formData = JSON.parse(savedFormData);
+        setNote(formData.note);
+        setDuration(formData.duration);
+        setClient(formData.client);
+        setProject(formData.project);
+        setProjectId(formData.projectId);
+        setBillable(formData.billable);
+        setProjectBillable(formData.projectBillable);
+        setSelectedDate(formData.selectedDate);
       }
-    };
-
-    //to load form data from local storage
-    const loadFormDataFromLocalStorage = () => {
-      try {
-        const savedFormData = localStorage.getItem("formData");
-        if (savedFormData) {
-          const formData = JSON.parse(savedFormData);
-          setNote(formData.note);
-          setDuration(formData.duration);
-          setClient(formData.client);
-          setProject(formData.project);
-          setProjectId(formData.projectId);
-          setBillable(formData.billable);
-          setProjectBillable(formData.projectBillable);
-          setSelectedDate(formData.selectedDate);
-        }
-      } catch (error) {
-        console.error("Error loading data from local storage:", error);
-      }
-    };
+    } catch (error) {
+      console.error("Error loading data from local storage:", error);
+    }
+  };
 
   const handleEdit = async () => {
     try {
