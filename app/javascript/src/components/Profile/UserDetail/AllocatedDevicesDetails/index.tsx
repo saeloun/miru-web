@@ -11,9 +11,9 @@ import StaticPage from "./StaticPage";
 const AllocatedDevicesDetails = () => {
   const { user } = useUserContext();
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [devices, setDevices] = useState([]);
-  const handleEditClick = devices => devices; // TODO: Update the logic
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [devices, setDevices] = useState<Device[]>([]);
+  // const handleEditClick = () => {};
 
   const getDevicesDetail = async () => {
     const res: any = await deviceApi.get(user.id);
@@ -31,7 +31,7 @@ const AllocatedDevicesDetails = () => {
     <div>
       <DetailsHeader
         showButtons
-        editAction={() => handleEditClick(devices)}
+        // editAction={() => handleEditClick(devices)}
         isDisableUpdateBtn={false}
         subTitle=""
         title="Allocated Devices"
@@ -41,7 +41,7 @@ const AllocatedDevicesDetails = () => {
           <Loader />
         </div>
       ) : (
-        <StaticPage />
+        <StaticPage devices={devices} />
       )}
     </div>
   );

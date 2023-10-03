@@ -1,5 +1,5 @@
 export interface Device {
-  device_type: string;
+  device_type: "laptop" | "mobile";
   name: string;
   serial_number: string;
   specifications: {
