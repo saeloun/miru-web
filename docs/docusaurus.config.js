@@ -17,7 +17,7 @@ const config = {
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
   organizationName: 'saeloun', // Usually your GitHub org/user name.
-  projectName: 'miru-docs', // Usually your repo name.
+  projectName: 'miru-web', // Usually your repo name.
   deploymentBranch: 'gh-pages',
   trailingSlash: false,
   // Even if you don't use internalization, you can use this field to set useful
@@ -37,7 +37,7 @@ const config = {
           routeBasePath: '/',
           sidebarCollapsible: true,
           sidebarPath: require.resolve("./sidebars.js"),
-          editUrl: "https://github.com/saeloun/miru-docs/edit/main/",
+          editUrl: "https://github.com/saeloun/miru-web/blob/develop/docs/",
           showLastUpdateAuthor: true,
           showLastUpdateTime: true,
           breadcrumbs: true,
