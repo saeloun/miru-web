@@ -200,6 +200,28 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_18_093317) do
     t.index ["vendor_id"], name: "index_expenses_on_vendor_id"
   end
 
+  create_table "holiday_infos", force: :cascade do |t|
+    t.date "date", null: false
+    t.string "name", null: false
+    t.bigint "holiday_id", null: false
+    t.integer "category", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["holiday_id"], name: "index_holiday_infos_on_holiday_id"
+  end
+
+  create_table "holidays", force: :cascade do |t|
+    t.integer "year", null: false
+    t.boolean "enable_optional_holidays", default: false
+    t.integer "no_of_allowed_optional_holidays"
+    t.string "holiday_types", default: [], array: true
+    t.integer "time_period_optional_holidays", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "company_id", null: false
+    t.index ["company_id"], name: "index_holidays_on_company_id"
+  end
+
   create_table "identities", force: :cascade do |t|
     t.string "provider"
     t.string "uid"
@@ -455,6 +477,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_18_093317) do
   add_foreign_key "expenses", "companies"
   add_foreign_key "expenses", "expense_categories"
   add_foreign_key "expenses", "vendors"
+  add_foreign_key "holiday_infos", "holidays"
+  add_foreign_key "holidays", "companies"
   add_foreign_key "identities", "users"
   add_foreign_key "invitations", "clients"
   add_foreign_key "invitations", "companies"
