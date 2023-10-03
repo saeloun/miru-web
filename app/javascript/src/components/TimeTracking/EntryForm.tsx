@@ -259,7 +259,7 @@ const AddEntry: React.FC<Iprops> = ({
             id="project"
             name="project"
             value={project}
-            onChange={(e) => {
+            onChange={e => {
               setProject(e.target.value);
               saveFormDataToLocalStorage();
             }}
@@ -288,7 +288,7 @@ const AddEntry: React.FC<Iprops> = ({
               editEntryId ? "h-auto" : "h-8"
             }
           `}
-          onChange={(e) =>
+          onChange={e =>
             {setNote(e.target["value"]);
             saveFormDataToLocalStorage();}}
         />
