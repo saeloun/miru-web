@@ -44,7 +44,7 @@ const SIZES = { small: "small", medium: "medium", large: "large" };
 
 const Button = ({
   style = "primary",
-  size = "medium",
+  size,
   disabled = false,
   className = "",
   fullWidth = false,
