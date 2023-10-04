@@ -93,15 +93,15 @@ const SubNav = ({ isAdmin, firstName, company, lastName }) => {
 
   const getEmployeeLinks = () => (
     <ul className="list-none text-sm font-medium leading-5 tracking-wider">
-      {personalSettingsList.map((selectOption, index) => (
+      {personalSettingsList.map((setting, index) => (
         <li
           className="border-b-2 border-miru-gray-400 tracking-widest"
           key={index}
         >
           <SideBarNavItem
-            icon={selectOption.icon}
-            label={selectOption.label}
-            link={selectOption.link}
+            icon={setting.icon}
+            label={setting.label}
+            link={setting.link}
           />
         </li>
       ))}
