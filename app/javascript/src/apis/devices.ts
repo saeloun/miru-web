@@ -1,8 +1,6 @@
 import axios from "./api";
 
-const getPath = user_id => `/users/${user_id}/devices`;
-
-const get = async user_id => axios.get(getPath(user_id));
+const get = async userId => axios.get(`/users/${userId}/devices`);
 
 const deviceApi = { get };
 

@@ -13,7 +13,6 @@ const AllocatedDevicesDetails = () => {
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [devices, setDevices] = useState<Device[]>([]);
-  // const handleEditClick = () => {};
 
   const getDevicesDetail = async () => {
     const res: any = await deviceApi.get(user.id);
@@ -31,7 +30,6 @@ const AllocatedDevicesDetails = () => {
     <div>
       <DetailsHeader
         showButtons
-        // editAction={() => handleEditClick(devices)}
         isDisableUpdateBtn={false}
         subTitle=""
         title="Allocated Devices"

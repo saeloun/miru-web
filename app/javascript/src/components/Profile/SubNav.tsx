@@ -7,7 +7,7 @@ import { NavLink } from "react-router-dom";
 import UserInformation from "./CommonComponents/UserInformation";
 import { companySettingsList, personalSettingsList } from "./constants";
 
-const SideNav = ({ isAdmin, firstName, company, lastName }) => {
+const SubNav = ({ isAdmin, firstName, company, lastName }) => {
   const getActiveClassName = isActive => {
     if (isActive) {
       return "pl-4 py-5 border-l-8 border-miru-han-purple-600 bg-miru-gray-200 text-miru-han-purple-600 block w-full flex items-center";
@@ -43,15 +43,15 @@ const SideNav = ({ isAdmin, firstName, company, lastName }) => {
       </div>
       {openedSubNav.personal && (
         <ul>
-          {personalSettingsList.map((selectOption, index) => (
+          {personalSettingsList.map((setting, index) => (
             <li
               className="border-b-2 border-miru-gray-400 tracking-widest"
               key={index}
             >
               <SideBarNavItem
-                icon={selectOption.icon}
-                label={selectOption.label}
-                link={selectOption.link}
+                icon={setting.icon}
+                label={setting.label}
+                link={setting.link}
               />
             </li>
           ))}
@@ -129,4 +129,4 @@ const SideNav = ({ isAdmin, firstName, company, lastName }) => {
   );
 };
 
-export default SideNav;
+export default SubNav;
