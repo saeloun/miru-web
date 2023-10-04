@@ -28,7 +28,7 @@ Here are some examples of how we can use it:
 <Button
   style="secondary"
 >
-  Button
+  Click here
 </Button>
 ```
 
@@ -38,7 +38,7 @@ Here are some examples of how we can use it:
 <Button
   style="ternary"
 >
-  Button
+  Click here
 </Button>
 ```
 
@@ -53,6 +53,6 @@ Here are some examples of how we can use it:
 | `size`      | To set the size of the Button. `"small", "medium", "large"`              | `"medium"`        |
 | `disabled`  | To set Button as disabled `bool`                                         | `false`           |
 | `className` | To provide external classnames to Button component. `string`             | `""`              |
-| `fullWidth` | To take the full width of parent component                               | `"false"`         |
+| `fullWidth` | To take the full width of parent component `bool`                        | `false`           |
 | `children`  | To specify the children to be rendered inside the Button `string`        | `""`              |
 | `type`      | To specify the type of Button `"button", "reset", "submit" `             | `"button"`        |
