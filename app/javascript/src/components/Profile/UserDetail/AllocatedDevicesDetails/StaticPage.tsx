@@ -2,14 +2,6 @@ import React, { Fragment } from "react";
 
 import { MobileIcon } from "miruIcons";
 
-const StaticPage = ({ devices }) => (
-  <Fragment>
-    {devices?.map((device, index) => (
-      <DeviceDetails device={device} key={index} />
-    ))}
-  </Fragment>
-);
-
 const DeviceDetails = ({ device }) => {
   const { device_type, name, serial_number, specifications } = device;
 
@@ -76,5 +68,13 @@ const DeviceDetails = ({ device }) => {
     </div>
   );
 };
+
+const StaticPage = ({ devices }) => (
+  <Fragment>
+    {devices?.map((device, index) => (
+      <DeviceDetails device={device} key={index} />
+    ))}
+  </Fragment>
+);
 
 export default StaticPage;
