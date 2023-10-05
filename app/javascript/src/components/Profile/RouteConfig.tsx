@@ -14,6 +14,7 @@ import Holidays from "./Organization/Holidays";
 import OrganizationImport from "./Organization/Import";
 import Leaves from "./Organization/Leaves";
 import PaymentSettings from "./Organization/Payment";
+import AllocatedDevicesDetails from "./UserDetail/AllocatedDevicesDetails";
 import UserDetailsEdit from "./UserDetail/Edit";
 import EmploymentDetails from "./UserDetail/EmploymentDetails";
 import EmploymentDetailsEdit from "./UserDetail/EmploymentDetails/Edit";
@@ -34,6 +35,7 @@ const RouteConfig = () => {
     <Routes>
       <Route element={<EmploymentDetails />} path="employment-details" />
       <Route element={<EmploymentDetailsEdit />} path="employment-edit" />
+      <Route element={<AllocatedDevicesDetails />} path="devices-details" />
       <Route path="/edit">
         {/* <Route path="bank_account_details" element={<BankAccountDetails />} /> TODO: Temporary disabling*/}
         <Route element={<UserDetailsView />} path="" />

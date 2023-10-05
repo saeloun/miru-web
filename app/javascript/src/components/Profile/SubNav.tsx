@@ -1,22 +1,13 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import React, { useState } from "react";
 
-import {
-  MinusIcon,
-  PlusIcon,
-  ClientsIcon as BuildingsIcon,
-  PaymentsIcon,
-  CalendarIcon,
-  CakeIcon,
-  UserIcon,
-  IntegrateIcon,
-  ProjectsIcon,
-} from "miruIcons";
+import { MinusIcon, PlusIcon } from "miruIcons";
 import { NavLink } from "react-router-dom";
 
 import UserInformation from "./CommonComponents/UserInformation";
+import { companySettingsList, personalSettingsList } from "./constants";
 
-const SideNav = ({ isAdmin, firstName, company, lastName }) => {
+const SubNav = ({ isAdmin, firstName, company, lastName }) => {
   const getActiveClassName = isActive => {
     if (isActive) {
       return "pl-4 py-5 border-l-8 border-miru-han-purple-600 bg-miru-gray-200 text-miru-han-purple-600 block w-full flex items-center";
@@ -29,34 +20,6 @@ const SideNav = ({ isAdmin, firstName, company, lastName }) => {
     personal: true,
     company: false,
   });
-
-  const companySettingsList = [
-    {
-      label: "ORG. SETTINGS",
-      link: "/profile/edit/organization-details",
-      icon: <BuildingsIcon className="mr-2" size={20} weight="bold" />,
-    },
-    {
-      label: "PAYMENT SETTINGS",
-      link: "/profile/edit/payment",
-      icon: <PaymentsIcon className="mr-2" size={20} weight="bold" />,
-    },
-    {
-      label: "LEAVES",
-      link: "/profile/edit/leaves",
-      icon: <CalendarIcon className="mr-2" size={20} weight="bold" />,
-    },
-    {
-      label: "HOLIDAYS",
-      link: "/profile/edit/holidays",
-      icon: <CakeIcon className="mr-2" size={20} weight="bold" />,
-    },
-    {
-      label: "Integration",
-      link: "/profile/edit/integrations",
-      icon: <IntegrateIcon className="mr-2" size={20} weight="bold" />,
-    },
-  ];
 
   const getAdminLinks = () => (
     <ul className="list-none min-h-50v text-sm font-medium leading-5 tracking-wider">
@@ -79,26 +42,20 @@ const SideNav = ({ isAdmin, firstName, company, lastName }) => {
         </button>
       </div>
       {openedSubNav.personal && (
-        <div>
-          <li className="border-b-2 border-miru-gray-400 tracking-widest">
-            <NavLink
-              end
-              className={({ isActive }) => getActiveClassName(isActive)}
-              to="/profile/edit"
+        <ul>
+          {personalSettingsList.map((setting, index) => (
+            <li
+              className="border-b-2 border-miru-gray-400 tracking-widest"
+              key={index}
             >
-              <UserIcon className="mr-2" size={20} weight="bold" />
-              PROFILE SETTINGS
-            </NavLink>
-            <NavLink
-              end
-              className={({ isActive }) => getActiveClassName(isActive)}
-              to="/profile/employment-details"
-            >
-              <ProjectsIcon className="mr-2" size={20} weight="bold" />
-              EMPLOYMENT DETAILS
-            </NavLink>
-          </li>
-        </div>
+              <SideBarNavItem
+                icon={setting.icon}
+                label={setting.label}
+                link={setting.link}
+              />
+            </li>
+          ))}
+        </ul>
       )}
       <div
         className="flex cursor-pointer flex-row items-center justify-between py-3 px-5"
@@ -116,47 +73,50 @@ const SideNav = ({ isAdmin, firstName, company, lastName }) => {
         </button>
       </div>
       {openedSubNav.company && (
-        <div>
+        <ul>
           {companySettingsList.map((setting, index) => (
             <li
               className="flex items-center justify-start border-b-2 border-miru-gray-400 tracking-widest"
               key={index}
             >
-              <NavLink
-                end
-                className={({ isActive }) => getActiveClassName(isActive)}
-                to={setting.link}
-              >
-                {setting.icon}
-                {setting.label}
-              </NavLink>
+              <SideBarNavItem
+                icon={setting.icon}
+                label={setting.label}
+                link={setting.link}
+              />
             </li>
           ))}
-        </div>
+        </ul>
       )}
     </ul>
   );
 
   const getEmployeeLinks = () => (
     <ul className="list-none text-sm font-medium leading-5 tracking-wider">
-      <li className="border-b-2 border-miru-gray-400">
-        <NavLink
-          end
-          className={({ isActive }) => getActiveClassName(isActive)}
-          to="/profile/edit"
+      {personalSettingsList.map((setting, index) => (
+        <li
+          className="border-b-2 border-miru-gray-400 tracking-widest"
+          key={index}
         >
-          <UserIcon className="mr-2" size={20} weight="bold" />
-          PROFILE SETTINGS
-        </NavLink>
-        <NavLink
-          end
-          className={({ isActive }) => getActiveClassName(isActive)}
-          to="/profile/employment-details"
-        >
-          EMPLOYMENT DETAILS
-        </NavLink>
-      </li>
+          <SideBarNavItem
+            icon={setting.icon}
+            label={setting.label}
+            link={setting.link}
+          />
+        </li>
+      ))}
     </ul>
+  );
+
+  const SideBarNavItem = ({ label, link, icon }) => (
+    <NavLink
+      end
+      className={({ isActive }) => getActiveClassName(isActive)}
+      to={link}
+    >
+      {icon}
+      {label}
+    </NavLink>
   );
 
   return (
@@ -169,4 +129,4 @@ const SideNav = ({ isAdmin, firstName, company, lastName }) => {
   );
 };
 
-export default SideNav;
+export default SubNav;
