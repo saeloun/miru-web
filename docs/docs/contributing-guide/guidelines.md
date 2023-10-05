@@ -1,6 +1,7 @@
 ---
 id: guideline
 title: Guidelines
+description: Guidelines for contributing to Miru
 ---
 
 # Contributing to Miru
