@@ -1,6 +1,9 @@
 ---
 id: switch
 title: Switch
+description:
+  Toggle between two states, typically representing an on/off or true/false
+  choice
 ---
 
 The Switch component is an UI element that allows users to toggle between two
