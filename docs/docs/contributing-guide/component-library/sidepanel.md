@@ -4,7 +4,7 @@ title: Sidepanel
 ---
 
 The Sidepanel component is a versatile and reusable component that provides a
-side panel interface for displaying conten in our app. We can customize it by
+side panel interface for displaying content in our app. We can customize it by
 passing various props to suit our component needs. In this guide, we'll walk
 through how to use the Sidepanel component in codebase.
 
@@ -17,14 +17,10 @@ components. Here's how we can import it:
 import { Sidepanel } from "StyledComponents";
 ```
 
-<img src="/img/sidepanel/default.png" alt="default sidepanel" width="400" height="100" />
-
-<br/>
-
 #### Using the Sidepanel Component
 
 The Sidepanel component can be used with various props to control its
-appearance. Here are some examples of how we can use it:
+appearance. Here is an example of how we can use it:
 
 ```
 <SidePanel WrapperClassname="py-8 px-6" setFilterVisibilty={() => ()}>
@@ -50,6 +46,8 @@ appearance. Here are some examples of how we can use it:
 ```
 
 <img src="/img/sidepanel/with-props.png" alt="sidepanel with props" width="400" height="50" />
+
+<br/>
 
 #### Sidepanel Component Props
 
