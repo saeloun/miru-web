@@ -1,6 +1,7 @@
 ---
 id: timeinput
 title: TimeInput
+description: Input time in hours and minutes format
 ---
 
 The TimeInput component is a versatile and reusable component that allows users
