@@ -24,7 +24,7 @@ import { Modal } from "StyledComponents";
 #### Using the Modal Component
 
 The Modal component can be used with various props to control its appearance.
-Here are some examples of how we can use it:
+Here is an example of how we can use it:
 
 ```
 <Modal
@@ -65,9 +65,9 @@ Here are some examples of how we can use it:
 
 #### Modal Component Props
 
-| Name        | Description                                                                      | Default Value |
-| ----------- | -------------------------------------------------------------------------------- | ------------- |
-| isOpen      | To specify whether the Modal is open or not. `bool`                              | `false`       |
-| onClose     | To specify the callback which will be invoked when the Modal is closed. `func`   | `(e) => void` |
-| customStyle | To provide external classNames to the Modal. `string`                            | `""`          |
-| children    | To specify the content to be rendered inside the Modal component. ` node``func ` | `{}`          |
+| Name        | Description                                                                    | Default Value |
+| ----------- | ------------------------------------------------------------------------------ | ------------- |
+| isOpen      | To specify whether the Modal is open or not. `bool`                            | `false`       |
+| onClose     | To specify the callback which will be invoked when the Modal is closed. `func` | `(e) => void` |
+| customStyle | To provide external classNames to the Modal. `string`                          | `""`          |
+| children    | To specify the content to be rendered inside the Modal component. ` node`      | `-`           |
