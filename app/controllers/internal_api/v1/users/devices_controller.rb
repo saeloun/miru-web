@@ -14,7 +14,7 @@ class InternalApi::V1::Users::DevicesController < InternalApi::V1::ApplicationCo
     device = @user.devices.new(device_params.merge(issued_to: @user, issued_by: @user.current_workspace))
     device.save!
     render :create, locals: { device: }, status: :ok
- end
+  end
 
   def show
     authorize device, policy_class: Users::DevicePolicy
