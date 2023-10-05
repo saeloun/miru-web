@@ -14,7 +14,7 @@ the Modal component in codebase.
 To use the Modal component in our app, we need to import it from our styled
 components. Here's how we can import it:
 
-```
+```javascript
 import { Modal } from "StyledComponents";
 ```
 
@@ -27,7 +27,7 @@ import { Modal } from "StyledComponents";
 The Modal component can be used with various props to control its appearance.
 Here is an example of how we can use it:
 
-```
+```javascript
 <Modal
   isOpen={true}
   onClose={() => setShowDeleteDialog(false)}

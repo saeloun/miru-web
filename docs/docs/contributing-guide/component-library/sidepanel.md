@@ -14,7 +14,7 @@ through how to use the Sidepanel component in codebase.
 To use the Sidepanel component in our app, we need to import it from our styled
 components. Here's how we can import it:
 
-```
+```javascript
 import { Sidepanel } from "StyledComponents";
 ```
 
@@ -23,7 +23,7 @@ import { Sidepanel } from "StyledComponents";
 The Sidepanel component can be used with various props to control its
 appearance. Here is an example of how we can use it:
 
-```
+```javascript
 <SidePanel WrapperClassname="py-8 px-6" setFilterVisibilty={() => ()}>
   <SidePanel.Header className="flex justify-between">
     <div className="flex items-center">
