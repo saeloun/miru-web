@@ -20,6 +20,14 @@ organizations to help them streamline their workflow.
 <img src="https://user-images.githubusercontent.com/22231095/170424136-42f45a24-caa9-4b0e-b5fa-35bfe6f2e70b.png" width="100%" alt="Miru Invoice page"/>
 
 ---
+## Documentation
+
+For detailed information on how to use Miru Web and its various features, please refer to our official documentation:
+
+[Official Documentation](https://docs.miru.so)
+
+The documentation covers everything from installation and setup to advanced usage and troubleshooting. It's the best resource for getting started with Miru Web.
+
 ## Community Support
 
 - Feel free to join our [Discord](https://discord.gg/UABXyQQ82c) channel for
@@ -28,7 +36,6 @@ organizations to help them streamline their workflow.
 - [Discussions](https://github.com/saeloun/miru-web/discussions): Post your
   questions regarding Miru Web
 - [**Twitter**](https://twitter.com/getmiru)
-- [Documentation](https://docs.miru.so)
 
 ## Contributing
 
