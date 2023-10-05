@@ -14,7 +14,7 @@ through how to use the Avatar component in codebase.
 To use the Avatar component in our app, we need to import it from our styled
 components. Here's how we can import it:
 
-```
+```javascript
 import { Avatar } from "StyledComponents";
 ```
 
@@ -25,7 +25,7 @@ import { Avatar } from "StyledComponents";
 The Avatar component can be used with various props to control its appearance.
 Here are some examples of how we can use it:
 
-```
+```javascript
 <Avatar
   url={company.logo || logo}
 />
@@ -33,7 +33,7 @@ Here are some examples of how we can use it:
 
 ![avatar with url](/img/avatar/with-url.png)
 
-```
+```javascript
 <Avatar
   name="Hello Moto"
 />
@@ -41,7 +41,7 @@ Here are some examples of how we can use it:
 
 ![avatar with name](/img/avatar/with-name.png)
 
-```
+```javascript
 <Avatar
   name="Hello Moto"
   initialsLetterCount={1}
@@ -50,7 +50,7 @@ Here are some examples of how we can use it:
 
 ![avatar with name](/img/avatar/with-initials-count.png)
 
-```
+```javascript
 <Avatar
   classNameImg="mr-5"
   classNameInitials="lg:text-5xl text-lg font-bold capitalize text-white"

@@ -5,7 +5,7 @@ title: List of Icons
 
 ## Guide contains the list of all available Miru icons
 
-```
+```javascript
 WarningTriangleSVG
 WarningCloseIconSVG
 UserAvatarSVG
