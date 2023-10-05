@@ -1,6 +1,7 @@
 ---
 id: badge
 title: Badge
+description: Display information with badges or labels
 ---
 
 The Badge component is a versatile and reusable component that allows us to

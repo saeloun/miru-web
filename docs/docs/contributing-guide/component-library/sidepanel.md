@@ -1,6 +1,7 @@
 ---
 id: sidepanel
 title: Sidepanel
+description: A side panel interface for displaying content
 ---
 
 The Sidepanel component is a versatile and reusable component that provides a
