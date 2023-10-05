@@ -14,7 +14,7 @@ Toastr component in codebase.
 To use the Toastr component in our app, we need to import it from our styled
 components. Here's how we can import it:
 
-```
+```javascript
 import { Toastr } from "StyledComponents";
 ```
 
@@ -25,7 +25,7 @@ Here are some examples of how we can use it:
 
 #### Success message toastr
 
-```
+```javascript
 Toastr.success("Pass the message to be displayed");
 ```
 
@@ -33,7 +33,7 @@ Toastr.success("Pass the message to be displayed");
 
 #### Error message toastr
 
-```
+```javascript
 Toastr.error("Pass the message to be displayed");
 ```
 
