@@ -20,7 +20,7 @@ const ErrorPage = () => {
           Page not Found
         </span>
         <Button
-          style="ternary"
+          className="w-full py-2 lg:w-1/4 lg:py-4"
           onClick={() => {
             navigate(dashboardUrl(companyRole));
           }}
