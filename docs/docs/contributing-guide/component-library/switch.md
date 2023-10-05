@@ -15,7 +15,7 @@ we'll walk you through how to use the Switch component in codebase..
 To use the Switch component in our app, we need to import it from our styled
 components. Here's how we can import it:
 
-```
+```javascript
 import { Switch } from "StyledComponents";
 ```
 
@@ -24,7 +24,7 @@ import { Switch } from "StyledComponents";
 The Switch component can be used with various props to control its appearance.
 Here are some examples of how we can use it:
 
-```
+```javascript
 const [enabled, setEnabled] = useState(false);
 
 <Switch enabled={enabled} onChange={setEnabled}  />
@@ -35,7 +35,7 @@ const [enabled, setEnabled] = useState(false);
 
 <br/>
 
-```
+```javascript
 const [enabled, setEnabled] = useState(false);
 
 const handleOnChange = () => {
