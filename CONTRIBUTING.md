@@ -1,6 +1,8 @@
 # Contributing to Miru
 If you're here, it means this is going to be the start of something amazing! ✨ Thank you for your interest in contributing to Miru! We're happy to have you here.
 
+Please refer to our [Contributing Guide](https://docs.miru.so/category/contributing-guide) for detailed instructions on how to contribute.
+
 ## How you can help
 
 Miru, though managed by the awesome folks at [Saeloun](https://saeloun.com/), is an open source project. This means that we're always looking for help from the community to make Miru better. Here are some ways you can help:
@@ -15,7 +17,7 @@ You can also join our [Discord](https://discord.gg/UABXyQQ82c) channel to chat w
 
 ## Setup
 
-The Readme contains all the setup information you'd require. Please follow the instructions there to get started.
+The [Environment Setup](https://docs.miru.so/category/environment-setup) contains all the setup information you'd require. Please follow the instructions there to get started.
 
 ## Everything is GitHub
 
