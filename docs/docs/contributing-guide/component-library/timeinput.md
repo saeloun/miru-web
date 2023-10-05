@@ -3,7 +3,7 @@ id: timeinput
 title: TimeInput
 ---
 
-The TimeInput component is a versatile and reusable componentthat allows users
+The TimeInput component is a versatile and reusable component that allows users
 to input time in hours and minutes format. It allows only numbers as input. We
 can customize it by passing various props to suit our component needs. In this
 guide, we'll walk through how to use the TimeInput component in codebase.
