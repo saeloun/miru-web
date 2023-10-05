@@ -1,7 +1,12 @@
-# Contributing to Miru
-If you're here, it means this is going to be the start of something amazing! ✨ Thank you for your interest in contributing to Miru! We're happy to have you here.
+---
+id: guideline
+title: Guidelines
+description: Guidelines for contributing to Miru
+---
 
-Please refer to our [Contributing Guide](https://docs.miru.so/category/contributing-guide) for detailed instructions on how to contribute.
+# Contributing to Miru
+
+If you're here, it means this is going to be the start of something amazing! ✨ Thank you for your interest in contributing to Miru! We're happy to have you here.
 
 ## How you can help
 
@@ -53,6 +58,7 @@ Once you've decided the issue you'll be working on, please follow the instructio
 6. Raise a pull request!
 
 ## First-time contributors
+
 There are a few things you can do to help out if you're a first-time contributor. We've tagged some issues with the `good first issue` label. These are issues that are easy to fix and are a good place to start.
 
 [Good first issues](https://github.com/saeloun/miru-web/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)
@@ -70,4 +76,5 @@ Miru is a work in progress. We're always looking to add new features to make it 
 Please do not start working on a feature without getting it approved by a maintainer first. There might be a reason why we haven't added it yet.
 
 ## License
+
 By contributing, you agree that your contributions will be licensed under the MIT License.
