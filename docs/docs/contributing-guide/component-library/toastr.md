@@ -1,6 +1,7 @@
 ---
 id: toastr
 title: Toastr
+description: Display toast notifications to provide messages
 ---
 
 The Toastr component is a utility for displaying toast notifications in our

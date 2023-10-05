@@ -1,6 +1,7 @@
 ---
 id: button
 title: Button
+description: Create buttons with different styles and sizes
 ---
 
 The Button component is a versatile and reusable component that allows us to

@@ -1,6 +1,9 @@
 ---
 id: tooltip
 title: Tooltip
+description:
+  Additional information or context when users hover over or interact with an
+  element
 ---
 
 The Tooltip component is a user interface element that provides additional

@@ -1,6 +1,7 @@
 ---
 id: modal
 title: Modal
+description: Dialog for displaying content
 ---
 
 The Modal component is a versatile and reusable component that provides a modal
