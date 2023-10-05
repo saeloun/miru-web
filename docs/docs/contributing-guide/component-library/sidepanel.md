@@ -45,7 +45,7 @@ appearance. Here is an example of how we can use it:
 </SidePanel>
 ```
 
-<img src="/img/sidepanel/with-props.png" alt="sidepanel with props" width="400" height="50" />
+![sidepanel with props](/img/sidepanel/with-props.png)
 
 <br/>
 
