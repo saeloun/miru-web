@@ -97,7 +97,7 @@ const GoogleCalendar = ({ isAdmin }) => {
               <div>
                 <img className="w-1/5 py-5" src={GoogleCalendarIcon} />
               </div>
-              {isAdmin && <Switch setToggle={toggleEnabled} toggle={enabled} />}
+              {isAdmin && <Switch enabled={enabled} onChange={toggleEnabled} />}
             </div>
             <span className="text-base font-bold leading-5 text-miru-dark-purple-1000">
               Google Calendar
