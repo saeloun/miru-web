@@ -8,7 +8,7 @@ const StaticPage = ({ devices }) => {
       device_type,
       name,
       serial_number,
-      specifications: { ram, graphics, processor },
+      specifications: { ram = "", graphics = "", processor = "" } = {},
     } = device;
 
     return (
