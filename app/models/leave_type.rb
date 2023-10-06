@@ -65,8 +65,8 @@ class LeaveType < ApplicationRecord
   belongs_to :leave, class_name: "Leave"
 
   validates :name, presence: true, format: { with: /\A[a-zA-Z\s]+\z/ }, length: { maximum: 20 }
-  validates :color, uniqueness: { scope: :leave_id, message: "has already been taken for this leave" }
-  validates :icon, uniqueness: { scope: :leave_id, message: "has already been taken for this leave" }
+  validates :color, presence: true, uniqueness: { scope: :leave_id, message: "has already been taken for this leave" }
+  validates :icon, presence: true, uniqueness: { scope: :leave_id, message: "has already been taken for this leave" }
   validates :allocation_value, presence: true, numericality: { greater_than_or_equal_to: 1 }
   validates :allocation_period, :allocation_frequency, presence: true
   validates :carry_forward_days, presence: true
