@@ -65,7 +65,7 @@ class InternalApi::V1::CalendarsController < ApplicationController
         authorization_uri: "https://accounts.google.com/o/oauth2/auth",
         token_credential_uri: "https://oauth2.googleapis.com/token",
         scope: Google::Apis::CalendarV3::AUTH_CALENDAR_READONLY,
-        redirect_uri: "#{ENV.fetch("APP_BASE_URL", "")}/internal_api/v1/calendars/callback"
+        redirect_uri: internal_api_v1_callback_url
       }
     end
 
