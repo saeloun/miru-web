@@ -14,7 +14,7 @@ guide, we'll walk through how to use the TimeInput component in codebase.
 To use the TimeInput component in our app, we need to import it from our styled
 components. Here's how we can import it:
 
-```
+```javascript
 import { TimeInput } from "StyledComponents";
 ```
 
@@ -25,14 +25,14 @@ import { TimeInput } from "StyledComponents";
 The TimeInput component can be used with various props to control its
 appearance. Here are some examples of how we can use it:
 
-```
+```javascript
 <TimeInput
   className="h-8 w-20 rounded-sm bg-miru-gray-100 p-1 text-sm
   onTimeChange={() => ()}
 />
 ```
 
-```
+```javascript
 <TimeInput
   className="h-8 w-20 rounded-sm bg-miru-gray-100 p-1 text-sm placeholder:text-miru-gray-1000"
   initTime={duration}

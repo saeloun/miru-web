@@ -14,7 +14,7 @@ the Badge component in codebase.
 To use the Badge component in our app, we need to import it from our styled
 components. Here's how we can import it:
 
-```
+```javascript
 import { Badge } from "StyledComponents";
 ```
 
@@ -25,7 +25,7 @@ import { Badge } from "StyledComponents";
 The Badge component can be used with various props to control its appearance.
 Here are some examples of how we can use it:
 
-```
+```javascript
 <Badge
   text="Paid"
 />
@@ -33,7 +33,7 @@ Here are some examples of how we can use it:
 
 ![with text](/img/badge/with-text.png)
 
-```
+```javascript
 <Badge
   className="uppercase"
   text="Paid"
@@ -42,7 +42,7 @@ Here are some examples of how we can use it:
 
 ![with class](/img/badge/with-class.png)
 
-```
+```javascript
 <Badge
   className="uppercase"
   bgColor="bg-miru-alert-green-400"
@@ -52,7 +52,7 @@ Here are some examples of how we can use it:
 
 ![with bgcolor](/img/badge/with-bg-color.png)
 
-```
+```javascript
 <Badge
   className="mt-2 uppercase"
   bgColor="bg-miru-alert-blue-400"
@@ -63,7 +63,7 @@ Here are some examples of how we can use it:
 
 ![with bgcolor](/img/badge/with-color.png)
 
-```
+```javascript
 <Badge
   className="bg-miru-alert-yellow-400 text-miru-alert-green-1000 mt-2 uppercase"
   text="Paid"

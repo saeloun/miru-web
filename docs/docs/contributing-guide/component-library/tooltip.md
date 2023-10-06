@@ -17,7 +17,7 @@ how to use the Tooltip component in codebase.
 To use the Tooltip component in our app, we need to import it from our styled
 components. Here's how we can import it:
 
-```
+```javascript
 import { Tooltip } from "StyledComponents";
 ```
 
@@ -26,7 +26,7 @@ import { Tooltip } from "StyledComponents";
 The Tooltip component can be used with various props to control its appearance.
 Here are some examples of how we can use it:
 
-```
+```javascript
 <Tooltip
   content="Send To"
 >
@@ -36,7 +36,7 @@ Here are some examples of how we can use it:
 
 <br/>
 
-```
+```javascript
 <Tooltip
   className="tooltip tootlip-project px-3 py-2"
   content="Add/Remove Team Members"
@@ -47,7 +47,7 @@ Here are some examples of how we can use it:
 
 <br/>
 
-```
+```javascript
 <Tooltip
   placeBottom
   className="tooltip tootlip-project px-3 py-2"
