@@ -2,7 +2,7 @@
 
 class LeaveTypePolicy < ApplicationPolicy
   def create?
-    user_owner_role? || user_admin_role?
+    has_owner_or_admin_role?
   end
 
   def update?
@@ -22,6 +22,6 @@ class LeaveTypePolicy < ApplicationPolicy
       return false
     end
 
-    user_owner_role? || user_admin_role?
+    has_owner_or_admin_role?
   end
 end

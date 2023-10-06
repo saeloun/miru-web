@@ -2,11 +2,11 @@
 
 class LeavePolicy < ApplicationPolicy
   def index?
-    user_owner_role? || user_admin_role?
+    has_owner_or_admin_role?
   end
 
   def create?
-    user_owner_role? || user_admin_role?
+    has_owner_or_admin_role?
   end
 
   def update?
@@ -25,6 +25,6 @@ class LeavePolicy < ApplicationPolicy
       return false
     end
 
-    user_owner_role? || user_admin_role?
+    has_owner_or_admin_role?
   end
 end

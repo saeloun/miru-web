@@ -2,6 +2,6 @@
 
 class LeaveWithLeaveTypesPolicy < ApplicationPolicy
   def update?
-    user_owner_role? || user_admin_role?
+    has_owner_or_admin_role?
   end
 end
