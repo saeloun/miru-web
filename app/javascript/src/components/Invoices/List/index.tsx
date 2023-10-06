@@ -233,6 +233,14 @@ const Invoices = () => {
     setParams({ ...params, page: 1 });
   };
 
+  if (status === InvoicesStatus.LOADING) {
+    return (
+      <div className="flex h-full w-full items-center justify-center">
+        <Loader />
+      </div>
+    );
+  }
+
   const InvoicesLayout = () => (
     <div className="h-full p-4 lg:p-0" id="invoice-list-page">
       <Header
@@ -243,11 +251,7 @@ const Invoices = () => {
         setIsFilterVisible={setIsFilterVisible}
         setParams={setParams}
       />
-      {status === InvoicesStatus.LOADING ? (
-        <div className="flex h-80v w-full flex-col justify-center">
-          <Loader />
-        </div>
-      ) : status === InvoicesStatus.SUCCESS ? (
+      {status === InvoicesStatus.SUCCESS ? (
         <Fragment>
           <Container
             deselectInvoices={deselectInvoices}

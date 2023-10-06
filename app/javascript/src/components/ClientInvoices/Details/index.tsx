@@ -37,7 +37,11 @@ const ClientInvoiceDetails = () => {
   };
 
   if (loading) {
-    return <Loader />;
+    return (
+      <div className="flex h-full w-full items-center justify-center">
+        <Loader />
+      </div>
+    );
   }
 
   if (data) {

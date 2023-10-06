@@ -6,6 +6,7 @@ import { Button, Toastr } from "StyledComponents";
 
 import invoicesApi from "apis/invoices";
 import PaymentsProviders from "apis/payments/providers";
+import Loader from "common/Loader/index";
 import { ApiStatus as InvoiceStatus } from "constants/index";
 import { useUserContext } from "context/UserContext";
 import { sendGAPageView } from "utils/googleAnalytics";
@@ -69,6 +70,14 @@ const Invoice = () => {
       Toastr.error("ERROR! CONNECTING TO PAYMENTS");
     }
   };
+
+  if (status === InvoiceStatus.LOADING) {
+    return (
+      <div className="flex h-full w-full items-center justify-center">
+        <Loader />
+      </div>
+    );
+  }
 
   return (
     status === InvoiceStatus.SUCCESS &&

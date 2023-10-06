@@ -261,7 +261,7 @@ const Holidays = () => {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-80v items-center justify-center">
+      <div className="flex h-full w-full items-center justify-center">
         <Loader />
       </div>
     );

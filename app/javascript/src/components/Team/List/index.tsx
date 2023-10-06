@@ -1,6 +1,9 @@
 import React, { Fragment, useEffect, useState } from "react";
 
+import Logger from "js-logger";
+
 import teamApi from "apis/team";
+import Loader from "common/Loader/index";
 import withLayout from "common/Mobile/HOC/withLayout";
 import Pagination from "common/Pagination/Pagination";
 import { TeamModalType } from "constants/index";
@@ -17,6 +20,7 @@ const TeamList = () => {
   const [teamList, setTeamList] = useState([]);
   const [modal, setModal] = useState("");
   const [modalUser, setModalUser] = useState({});
+  const [loading, setLoading] = useState<boolean>(false);
   const [pagy, setPagy] = useState<any>(null);
 
   const { isDesktop } = useUserContext();
@@ -29,12 +33,19 @@ const TeamList = () => {
   };
 
   const getTeamList = async () => {
-    const response = await teamApi.get();
-    if (response.status === 200) {
-      const sanitized = unmapList(response);
-      const pagyData = unmapPagyData(response);
-      setTeamList(sanitized);
-      setPagy(pagyData);
+    setLoading(true);
+    try {
+      const response = await teamApi.get();
+      if (response.status === 200) {
+        const sanitized = unmapList(response);
+        const pagyData = unmapPagyData(response);
+        setTeamList(sanitized);
+        setPagy(pagyData);
+      }
+      setLoading(false);
+    } catch (e) {
+      Logger.error(e);
+      setLoading(false);
     }
   };
 
@@ -55,6 +66,14 @@ const TeamList = () => {
       setPagy(pagyData);
     }
   };
+
+  if (loading) {
+    return (
+      <div className="flex h-full w-full items-center justify-center">
+        <Loader />
+      </div>
+    );
+  }
 
   const TeamLayout = () => (
     <ListContext.Provider

@@ -6,6 +6,8 @@ import { Toastr } from "StyledComponents";
 
 import invoicesApi from "apis/invoices";
 import paymentSettings from "apis/payment-settings";
+import Loader from "common/Loader/index";
+import { ApiStatus as InvoiceStatus } from "constants/index";
 import { useUserContext } from "context/UserContext";
 import { unmapLineItems } from "mapper/mappedIndex";
 import { sendGAPageView } from "utils/googleAnalytics";
@@ -27,6 +29,7 @@ const EditInvoice = () => {
   const params = useParams();
   const { isDesktop } = useUserContext();
 
+  const [status, setStatus] = useState<InvoiceStatus>(InvoiceStatus.IDLE);
   const [invoiceDetails, setInvoiceDetails] = useState<any>();
   const [lineItems, setLineItems] = useState<any>([]);
   const [selectedLineItems, setSelectedLineItems] = useState<any>([]);
@@ -56,6 +59,7 @@ const EditInvoice = () => {
 
   const fetchInvoice = async () => {
     try {
+      setStatus(InvoiceStatus.LOADING);
       const { data } = await invoicesApi.editInvoice(params.id);
       setInvoiceDetails(data);
       setReference(data.reference);
@@ -68,8 +72,10 @@ const EditInvoice = () => {
       setSelectedClient(data.client);
       setAmountDue(data.amountDue);
       setAmountPaid(data.amountPaid);
+      setStatus(InvoiceStatus.SUCCESS);
     } catch {
       navigate("/invoices/error");
+      setStatus(InvoiceStatus.ERROR);
     }
   };
 
@@ -90,6 +96,7 @@ const EditInvoice = () => {
 
   const updateInvoice = async () => {
     try {
+      setStatus(InvoiceStatus.LOADING);
       const res = await invoicesApi.updateInvoice(invoiceDetails.id, {
         invoice_number: invoiceNumber || invoiceDetails.invoiceNumber,
         reference: reference || invoiceDetails.reference,
@@ -128,10 +135,12 @@ const EditInvoice = () => {
           _destroy: ilt._destroy,
         })),
       });
+      setStatus(InvoiceStatus.SUCCESS);
 
       return res;
     } catch {
       navigate(`/invoices/${invoiceDetails.id}`);
+      setStatus(InvoiceStatus.ERROR);
 
       return {};
     }
@@ -173,6 +182,14 @@ const EditInvoice = () => {
 
     return Toastr.error(SELECT_CLIENT_ERROR);
   };
+
+  if (status === InvoiceStatus.LOADING) {
+    return (
+      <div className="flex h-full w-full items-center justify-center">
+        <Loader />
+      </div>
+    );
+  }
 
   if (invoiceDetails) {
     if (isDesktop) {

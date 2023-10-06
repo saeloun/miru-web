@@ -56,7 +56,7 @@ const ClientInvoices = () => {
 
   if (loading) {
     return (
-      <div className="flex h-80v w-full flex-col justify-center">
+      <div className="flex h-full w-full items-center justify-center">
         <Loader />
       </div>
     );

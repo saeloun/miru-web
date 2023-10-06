@@ -31,7 +31,7 @@ const Clients = ({ isAdminUser }) => {
   const [clientLogo, setClientLogo] = useState("");
   const [overdueOutstandingAmount, setOverdueOutstandingAmount] =
     useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState<boolean>(true);
   const [showDialog, setShowDialog] = useState<boolean>(false);
   const [showToolTip, setShowToolTip] = useState<boolean>(false);
   const { isDesktop } = useUserContext();
@@ -85,7 +85,7 @@ const Clients = ({ isAdminUser }) => {
 
   if (loading) {
     return (
-      <div className="flex h-80v w-full flex-col justify-center">
+      <div className="flex h-full w-full items-center justify-center">
         <Loader />
       </div>
     );

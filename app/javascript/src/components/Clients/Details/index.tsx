@@ -6,7 +6,7 @@ import { useParams, useNavigate } from "react-router-dom";
 
 import clientApi from "apis/clients";
 import EmptyStates from "common/EmptyStates";
-import Loader from "common/Loader";
+import Loader from "common/Loader/index";
 import Table from "common/Table";
 import ProjectForm from "components/Projects/List/Mobile/ProjectForm";
 import AddEditProject from "components/Projects/Modals/AddEditProject";
@@ -100,7 +100,7 @@ const ClientDetails = ({ isAdminUser }) => {
 
   if (loading) {
     return (
-      <div className="flex h-80v w-full flex-col justify-center">
+      <div className="flex h-full w-full items-center justify-center">
         <Loader />
       </div>
     );

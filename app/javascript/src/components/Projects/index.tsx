@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import projectApi from "apis/projects";
-import Loader from "common/Loader";
+import Loader from "common/Loader/index";
 import withLayout from "common/Mobile/HOC/withLayout";
 import { useUserContext } from "context/UserContext";
 import { sendGAPageView } from "utils/googleAnalytics";
@@ -34,7 +34,7 @@ const Projects = ({ isAdminUser }) => {
 
   if (loading) {
     return (
-      <div className="flex h-80v w-full flex-col justify-center">
+      <div className="flex h-full w-full items-center justify-center">
         <Loader />
       </div>
     );

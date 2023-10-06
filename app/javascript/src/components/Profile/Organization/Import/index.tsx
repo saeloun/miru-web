@@ -84,7 +84,9 @@ const Import = () => {
         title="Import"
       />
       {isLoading ? (
-        <Loader />
+        <div className="h-70v flex w-full items-center justify-center">
+          <Loader />
+        </div>
       ) : (
         <div className="mt-4 min-h-70v bg-miru-gray-100 px-10 py-5">
           {importList.map((item, index) => (

@@ -60,7 +60,9 @@ const UserDetailsView = () => {
             title="Personal Details"
           />
           {isLoading ? (
-            <Loader />
+            <div className="h-70v flex w-full items-center justify-center">
+              <Loader />
+            </div>
           ) : (
             <StaticPage
               handleEditClick={handleEditClick}
