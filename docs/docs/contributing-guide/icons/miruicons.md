@@ -68,7 +68,7 @@ isn't already in the collection, we can easily add it. Follow these steps:
 - **Step 3: Import and Use the New Icon** With the icon file in place, we can
   import and use it just like any other MiruIcon:
 
-```
+```javascript
 import { NewCustomIcon } from "miruIcons";
 ```
 
