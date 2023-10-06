@@ -1,11 +1,9 @@
 {
   "label": "Contributing Guide",
   "position": 3,
-  "collapsed": true,
+  "collapsed": false,
   "link": {
     "type": "generated-index",
     "description": "Guides for contributing to Miru Web"
   }
 }
-
-
