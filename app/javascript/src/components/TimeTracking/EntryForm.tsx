@@ -58,6 +58,13 @@ const AddEntry: React.FC<Iprops> = ({
 
   useEffect(() => {
     setSelectedDate(selectedFullDate);
+    // make sure the current form's locally saved info is not overwrting the
+    // next form's when date selection is changed
+    setDuration("");
+    setProject("");
+    setClient("");
+    setNote("");
+    setBillable(false);
   }, [selectedFullDate]);
 
   useEffect(() => {
@@ -106,7 +113,7 @@ const AddEntry: React.FC<Iprops> = ({
       return;
     }
 
-    const entry = entries[selectedDate]?.find(
+    const entry = entries[selectedFullDate]?.find(
       entry => entry.editEntryId === editEntryId
     );
     if (!entry) {
@@ -120,7 +127,7 @@ const AddEntry: React.FC<Iprops> = ({
     setDuration(duration);
     setNote(note);
     setClient(client);
-  }, [editEntryId, selectedDate]);
+  }, [editEntryId, selectedFullDate]);
 
   // write data into local storage
   useEffect(() => {
