@@ -30,6 +30,6 @@ class InternalApi::V1::LeavesController < InternalApi::V1::ApplicationController
     end
 
     def leave
-      @_leave ||= Leave.find_by!(id: params[:id])
+      @_leave ||= current_company.leaves.find(params[:id])
     end
 end
