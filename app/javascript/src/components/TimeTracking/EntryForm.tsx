@@ -113,7 +113,7 @@ const AddEntry: React.FC<Iprops> = ({
       return;
     }
 
-    const entry = entries[selectedFullDate]?.find(
+    const entry = entries[selectedDate]?.find(
       entry => entry.editEntryId === editEntryId
     );
     if (!entry) {
@@ -127,7 +127,7 @@ const AddEntry: React.FC<Iprops> = ({
     setDuration(duration);
     setNote(note);
     setClient(client);
-  }, [editEntryId, selectedFullDate]);
+  }, [editEntryId, selectedDate]);
 
   // write data into local storage
   useEffect(() => {
@@ -148,42 +148,34 @@ const AddEntry: React.FC<Iprops> = ({
 
     if (!entries) {
       setToLocalStorage("timeTrackingEntries", {
-        [selectedFullDate]: [form],
+        [selectedDate]: [form],
       });
 
       return;
     }
 
-    if (!entries?.[selectedFullDate]) {
-      entries[selectedFullDate] = [form];
+    if (!entries?.[selectedDate]) {
+      entries[selectedDate] = [form];
       setToLocalStorage("timeTrackingEntries", entries);
 
       return;
     }
 
-    const entryIndex = entries[selectedFullDate].findIndex(
+    const entryIndex = entries[selectedDate].findIndex(
       entry => entry.editEntryId === editEntryId
     );
 
     if (entryIndex > -1) {
-      entries[selectedFullDate][entryIndex] = {
-        ...entries[selectedFullDate][entryIndex],
+      entries[selectedDate][entryIndex] = {
+        ...entries[selectedDate][entryIndex],
         ...form,
       };
     } else {
-      entries[selectedFullDate].push(form);
+      entries[selectedDate].push(form);
     }
 
     setToLocalStorage("timeTrackingEntries", entries);
-  }, [
-    project,
-    client,
-    billable,
-    duration,
-    note,
-    editEntryId,
-    selectedFullDate,
-  ]);
+  }, [project, client, billable, duration, note, editEntryId, selectedDate]);
 
   useEffect(() => {
     if (!project) {
@@ -294,11 +286,11 @@ const AddEntry: React.FC<Iprops> = ({
 
   const clearEntryInLocalStorage = (editEntryId: number) => {
     const entries = getValueFromLocalStorage("timeTrackingEntries");
-    if (!entries?.[selectedFullDate]) {
+    if (!entries?.[selectedDate]) {
       return;
     }
 
-    entries[selectedFullDate] = entries[selectedFullDate].filter(
+    entries[selectedDate] = entries[selectedDate].filter(
       entry => entry.editEntryId !== editEntryId
     );
     setToLocalStorage("timeTrackingEntries", entries);
