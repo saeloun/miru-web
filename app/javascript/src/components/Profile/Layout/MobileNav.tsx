@@ -45,7 +45,7 @@ const getSettingsNavUrls = memberId => [
         icon: <PaymentsIcon size={16} />,
       },
       {
-        url: "/profile/edit/leaves",
+        url: "/profile/leaves/details",
         text: "Leaves",
         icon: <CalendarIcon size={16} />,
       },
