@@ -16,6 +16,7 @@ import { TimeInput, Toastr } from "StyledComponents";
 import timesheetEntryApi from "apis/timesheet-entry";
 import CustomDatePicker from "common/CustomDatePicker";
 import { useUserContext } from "context/UserContext";
+import { getValueFromLocalStorage, setToLocalStorage } from "utils/storage";
 
 import MobileEntryForm from "./MobileView/MobileEntryForm";
 
@@ -59,11 +60,33 @@ const AddEntry: React.FC<Iprops> = ({
     setSelectedDate(selectedFullDate);
   }, [selectedFullDate]);
 
+  useEffect(() => {
+    handleFillData();
+  }, []);
+
+  // display locally or remotely saved data when user edits an entry
   const handleFillData = () => {
     if (!editEntryId) return;
+    const localEntries = getValueFromLocalStorage("timeTrackingEntries");
+
+    const localEntry = localEntries[selectedFullDate]?.find(
+      entry => entry.editEntryId === editEntryId
+    );
+
+    if (localEntry) {
+      setDuration(localEntry.duration);
+      setClient(localEntry.client);
+      setProject(localEntry.project);
+      setNote(localEntry.note);
+      setBillable(localEntry.billable);
+
+      return;
+    }
+
     const entry = entryList[selectedFullDate].find(
       entry => entry.id === editEntryId
     );
+
     if (entry) {
       setDuration(minToHHMM(entry.duration));
       setClient(entry.client);
@@ -75,6 +98,85 @@ const AddEntry: React.FC<Iprops> = ({
       }
     }
   };
+
+  // read data from local storage
+  useEffect(() => {
+    const entries = getValueFromLocalStorage("timeTrackingEntries");
+    if (!entries) {
+      return;
+    }
+
+    const entry = entries[selectedDate]?.find(
+      entry => entry.editEntryId === editEntryId
+    );
+    if (!entry) {
+      return;
+    }
+
+    const { client, project, billable, duration, note } = entry;
+
+    setProject(project);
+    setBillable(billable);
+    setDuration(duration);
+    setNote(note);
+    setClient(client);
+  }, [editEntryId, selectedDate]);
+
+  // write data into local storage
+  useEffect(() => {
+    // prevent overwriting local storage with an empty form
+    if (!client && !project && !note && !duration && !billable) {
+      return;
+    }
+
+    const entries = getValueFromLocalStorage("timeTrackingEntries");
+    const form = {
+      editEntryId,
+      client,
+      project,
+      billable,
+      duration,
+      note,
+    };
+
+    if (!entries) {
+      setToLocalStorage("timeTrackingEntries", {
+        [selectedFullDate]: [form],
+      });
+
+      return;
+    }
+
+    if (!entries?.[selectedFullDate]) {
+      entries[selectedFullDate] = [form];
+      setToLocalStorage("timeTrackingEntries", entries);
+
+      return;
+    }
+
+    const entryIndex = entries[selectedFullDate].findIndex(
+      entry => entry.editEntryId === editEntryId
+    );
+
+    if (entryIndex > -1) {
+      entries[selectedFullDate][entryIndex] = {
+        ...entries[selectedFullDate][entryIndex],
+        ...form,
+      };
+    } else {
+      entries[selectedFullDate].push(form);
+    }
+
+    setToLocalStorage("timeTrackingEntries", entries);
+  }, [
+    project,
+    client,
+    billable,
+    duration,
+    note,
+    editEntryId,
+    selectedFullDate,
+  ]);
 
   useEffect(() => {
     if (!project) {
@@ -118,9 +220,11 @@ const AddEntry: React.FC<Iprops> = ({
       const fetchEntriesRes = await fetchEntries(selectedDate, selectedDate);
       if (!isDesktop) {
         fetchEntriesofMonth();
+        clearEntryInLocalStorage(editEntryId);
       }
 
       if (fetchEntriesRes) {
+        clearEntryInLocalStorage(editEntryId);
         setNewEntryView(false);
         setUpdateView(true);
         handleAddEntryDateChange(dayjs(selectedDate));
@@ -147,6 +251,7 @@ const AddEntry: React.FC<Iprops> = ({
           await fetchEntries(selectedDate, selectedDate);
           fetchEntriesofMonth();
         }
+        clearEntryInLocalStorage(editEntryId);
         setEditEntryId(0);
         setNewEntryView(false);
         setUpdateView(true);
@@ -174,9 +279,23 @@ const AddEntry: React.FC<Iprops> = ({
     return false;
   };
 
-  useEffect(() => {
-    handleFillData();
-  }, []);
+  const handleCancel = () => {
+    setNewEntryView(false);
+    clearEntryInLocalStorage(editEntryId);
+    setEditEntryId(0);
+  };
+
+  const clearEntryInLocalStorage = (editEntryId: number) => {
+    const entries = getValueFromLocalStorage("timeTrackingEntries");
+    if (!entries?.[selectedFullDate]) {
+      return;
+    }
+
+    entries[selectedFullDate] = entries[selectedFullDate].filter(
+      entry => entry.editEntryId !== editEntryId
+    );
+    setToLocalStorage("timeTrackingEntries", entries);
+  };
 
   return isDesktop ? (
     <div
@@ -328,10 +447,7 @@ const AddEntry: React.FC<Iprops> = ({
         )}
         <button
           className="mt-1 h-8 w-38 rounded border border-miru-han-purple-1000 bg-transparent py-1 px-6 text-xs font-bold tracking-widest text-miru-han-purple-600 hover:border-transparent hover:bg-miru-han-purple-1000 hover:text-white"
-          onClick={() => {
-            setNewEntryView(false);
-            setEditEntryId(0);
-          }}
+          onClick={handleCancel}
         >
           CANCEL
         </button>
