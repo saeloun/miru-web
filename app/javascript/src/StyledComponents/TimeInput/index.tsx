@@ -5,7 +5,7 @@ import { isValid } from "./validate";
 
 const TimeInput = ({
   autoFocus = false,
-  initTime,
+  initTime = "",
   disabled,
   mountFocus,
   onTimeChange,

@@ -35,35 +35,35 @@ export const leaveTypes = [
 export const leaveColors = [
   {
     value: "#0E79B2",
-    label: "Chart Blue",
+    label: "chart_blue",
   },
   {
     value: "#BF1363",
-    label: "Chart Pink",
+    label: "chart_pink",
   },
   {
     value: "#F39237",
-    label: "Chart Orange",
+    label: "chart_orange",
   },
   {
     value: "#058C42",
-    label: "Chart Green",
+    label: "chart_green",
   },
   {
     value: "#7768AE",
-    label: "Chart Purple",
+    label: "chart_purple",
   },
   {
     value: "#68AEAA",
-    label: "Chart Light Blue",
+    label: "chart_light_blue",
   },
   {
     value: "#C97CC1",
-    label: "Chart Light Pink",
+    label: "chart_light_pink",
   },
   {
     value: "#7CC984",
-    label: "Chart Light Green",
+    label: "chart_light_green",
   },
 ];
 
@@ -78,20 +78,13 @@ export const leaveIcons = [
   { value: "user", label: "label8", icon: UserIconSVG },
 ];
 
-export const repetitionTypeObj = {
-  per_month: "per month",
-  per_year: "per year",
-  per_week: "per week",
-  per_quarter: "per quarter",
-};
-
-export const countTypeOptions = [
+export const allocationPeriod = [
   { value: "days", label: "days" },
   { value: "weeks", label: "weeks" },
   { value: "months", label: "months" },
 ];
 
-export const repetitionType = [
+export const allocationFrequency = [
   { value: "per_week", label: "per week" },
   { value: "per_month", label: "per month" },
   { value: "per_quarter", label: "per quarter" },

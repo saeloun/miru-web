@@ -1,6 +1,7 @@
 ---
 id: guideline
 title: Guidelines
+description: Guidelines for contributing to Miru
 ---
 
 # Contributing to Miru
@@ -21,7 +22,7 @@ You can also join our [Discord](https://discord.gg/UABXyQQ82c) channel to chat w
 
 ## Setup
 
-The [Contribution Setup](/docs/category/environment-setup) contains all the setup information you'd require. Please follow the instructions there to get started.
+The [Environment Setup](https://docs.miru.so/category/environment-setup) contains all the setup information you'd require. Please follow the instructions there to get started.
 
 ## Everything is GitHub
 

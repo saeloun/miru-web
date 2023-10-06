@@ -3,7 +3,7 @@ id: create-an-account
 title: Create your Miru Account
 ---
 
-Log in to your Miru account anytime using your **login** **ID** and **password**. You can either sign up using your **Google account** or create an account by adding your **email ID** and **password**. 
+Log in to your Miru account anytime using your **login** **ID** and **password**. You can either sign up using your **Google account** or create an account by adding your **email ID** and **password**.
 
 ## How to Sign up on Miru?
 
