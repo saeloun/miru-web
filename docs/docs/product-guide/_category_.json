@@ -1,11 +1,9 @@
 {
   "label": "Product Guide",
   "position": 2,
-  "collapsed": true,
+  "collapsed": false,
   "link": {
     "type": "generated-index",
     "description": "Guides for features of Miru Web"
   }
 }
-
-

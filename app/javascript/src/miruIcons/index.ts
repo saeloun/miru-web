@@ -52,6 +52,7 @@ import {
   Plugs,
   Cake,
   Check,
+  DeviceMobileCamera,
 } from "phosphor-react";
 
 const error404Animation = require("./GIFS/404_animation.gif");
@@ -205,6 +206,7 @@ export const GoogleIcon = GoogleLogo;
 export const IntegrateIcon = Plugs;
 export const CakeIcon = Cake;
 export const CheckIcon = Check;
+export const MobileIcon = DeviceMobileCamera;
 
 // custom svg icons
 export const WarningTriangleSVG = warningTriangle;
