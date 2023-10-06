@@ -3,6 +3,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
 import clientApi from "apis/clients";
+import Loader from "common/Loader/index";
 import withLayout from "common/Mobile/HOC/withLayout";
 import { useUserContext } from "context/UserContext";
 import { unmapClientList } from "mapper/mappedIndex";
@@ -84,9 +85,9 @@ const Clients = ({ isAdminUser }) => {
 
   if (loading) {
     return (
-      <p className="tracking-wide flex min-h-screen items-center justify-center text-base font-medium text-miru-han-purple-1000">
-        Loading...
-      </p>
+      <div className="flex h-80v w-full flex-col justify-center">
+        <Loader />
+      </div>
     );
   }
 
