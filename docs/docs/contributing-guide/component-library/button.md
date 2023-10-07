@@ -1,6 +1,7 @@
 ---
 id: button
 title: Button
+description: Create buttons with different styles and sizes
 ---
 
 The Button component is a versatile and reusable component that allows us to
@@ -13,7 +14,7 @@ through how to use the Button component in codebase.
 To use the Button component in our app, we need to import it from our styled
 components. Here's how we can import it:
 
-```
+```javascript
 import { Button } from "StyledComponents";
 ```
 
@@ -24,7 +25,7 @@ import { Button } from "StyledComponents";
 The Button component can be used with various props to control its appearance.
 Here are some examples of how we can use it:
 
-```
+```javascript
 <Button
   style="secondary"
 >
@@ -34,7 +35,7 @@ Here are some examples of how we can use it:
 
 ![default btn](/img/button/secondary-btn.png)
 
-```
+```javascript
 <Button
   style="ternary"
 >

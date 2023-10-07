@@ -37,7 +37,7 @@ ensures that our app maintains a cohesive and consistent visual identity.
 To get started with MiruIcons, we'll need to import the icons into components.
 The following examples demonstrate how to do this:
 
-```
+```javascript
 import { CaretCircleLeftIcon } from "miruIcons";
 import { SearchIcon } from "miruIcons";
 import { XIcon } from "miruIcons";
@@ -45,7 +45,7 @@ import { XIcon } from "miruIcons";
 
 #### Importing Multiple Icons
 
-```
+```javascript
 import { PencilIcon, DeleteIcon } from "miruIcons";
 import { SearchIcon, FilterIcon } from "miruIcons";
 ```
@@ -68,7 +68,7 @@ isn't already in the collection, we can easily add it. Follow these steps:
 - **Step 3: Import and Use the New Icon** With the icon file in place, we can
   import and use it just like any other MiruIcon:
 
-```
+```javascript
 import { NewCustomIcon } from "miruIcons";
 ```
 

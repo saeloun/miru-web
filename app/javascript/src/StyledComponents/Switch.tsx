@@ -1,22 +1,25 @@
 import React from "react";
 
-const Switch = ({ setToggle, toggle }) => {
-  const toggleClass = " transform translate-x-full";
+import { Switch as HeadlessSwitch } from "@headlessui/react";
+import classNames from "classnames";
 
-  return (
-    <div
-      className={`flex h-6 w-12 cursor-pointer items-center rounded-full ${
-        toggle ? "bg-miru-han-purple-600" : "bg-gray-300"
-      } p-1 md:h-7 md:w-14`}
-      onClick={setToggle}
-    >
-      <div
-        className={`h-5 w-5 transform rounded-full bg-white shadow-md duration-300 ease-in-out md:h-6 md:w-6 ${
-          toggle ? toggleClass : null
-        }`}
-      />
-    </div>
-  );
-};
+const Switch = ({ enabled, onChange }) => (
+  <HeadlessSwitch
+    checked={enabled}
+    className={classNames(
+      enabled ? "bg-indigo-600" : "bg-gray-200",
+      "focus:outline-none relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2"
+    )}
+    onChange={onChange}
+  >
+    <span
+      aria-hidden="true"
+      className={classNames(
+        enabled ? "translate-x-5" : "translate-x-0",
+        "pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
+      )}
+    />
+  </HeadlessSwitch>
+);
 
 export default Switch;
