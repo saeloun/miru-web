@@ -161,11 +161,7 @@ const GenerateInvoices = () => {
   };
 
   if (isLoading) {
-    return (
-      <div className="flex h-full w-full items-center justify-center">
-        <Loader />
-      </div>
-    );
+    return <Loader />;
   }
 
   if (invoiceDetails && isDesktop) {

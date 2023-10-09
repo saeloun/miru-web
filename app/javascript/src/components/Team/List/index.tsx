@@ -68,11 +68,7 @@ const TeamList = () => {
   };
 
   if (loading) {
-    return (
-      <div className="flex h-full w-full items-center justify-center">
-        <Loader />
-      </div>
-    );
+    return <Loader />;
   }
 
   const TeamLayout = () => (

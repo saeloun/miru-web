@@ -234,11 +234,7 @@ const Invoices = () => {
   };
 
   if (status === InvoicesStatus.LOADING) {
-    return (
-      <div className="flex h-full w-full items-center justify-center">
-        <Loader />
-      </div>
-    );
+    return <Loader />;
   }
 
   const InvoicesLayout = () => (
