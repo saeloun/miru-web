@@ -454,6 +454,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_20_162752) do
     t.string "phone"
     t.string "token", limit: 50
     t.boolean "calendar_enabled", default: true
+    t.boolean "calendar_connected", default: true
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token"
     t.index ["current_workspace_id"], name: "index_users_on_current_workspace_id"
     t.index ["discarded_at"], name: "index_users_on_discarded_at"
