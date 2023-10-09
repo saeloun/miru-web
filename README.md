@@ -20,6 +20,35 @@ organizations to help them streamline their workflow.
 <img src="https://user-images.githubusercontent.com/22231095/170424136-42f45a24-caa9-4b0e-b5fa-35bfe6f2e70b.png" width="100%" alt="Miru Invoice page"/>
 
 ---
+
+## Major Features
+
+- 🕒 **Time Tracking**: Intuitive time tracking tools for effortless monitoring of work hours.
+
+- 💼 **Invoicing**: Create professional invoices with ease, using time tracking data. Send invoices directly to clients via email for prompt payment processing.
+
+- 👥 **Team Page**: Collaborative workspace to manage your team's work efficiently.
+
+- 👤 **Client Page**: Centralized client management system for maintaining client information. Easily access client details when creating invoices or reports.
+
+- 🏢 **Client Portal**: Access a client-specific dashboard for a quick overview of all invoices with update status.
+
+- 🚀 **Projects**: Dashboard to add new projects, team members, and rates.
+
+- 📊 **Reports Page**: Generate comprehensive reports for insights into project performance. View time tracking data, expenses, and revenue summaries. Export reports in various formats (PDF, CSV) for sharing or record-keeping.
+
+- 💳 **Integration with Payment Gateways**: Seamlessly connect with STRIPE for quick and secure payments. Accept payments directly through Miru.so to streamline invoicing and payment processing.
+
+## Upcoming Features
+
+- 💰 **Expense Tracking**: Keep track of project-related expenses and allocate them to clients or projects. Capture receipts and attach them to expense entries for documentation. Include expenses in invoices for transparent billing.
+
+- 🌐 **Multi-Platform Accessibility**: Access Miru.so from web browsers, desktop applications, and mobile devices. Synchronize data across platforms for flexibility and convenience.
+
+- 🏖️ **PTO Module**: A comprehensive leave management module.
+
+- 📅 **Google Integration**: Integration to track and add meetings directly.
+
 ## Documentation
 
 For detailed information on how to use Miru Web and its various features, please refer to our official documentation:
