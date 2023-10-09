@@ -12,9 +12,7 @@ const DetailsHeader = ({
   isDisableUpdateBtn = false,
   showYearPicker = false,
 }: Iprops) => {
-  const [currentYear, setCurrentYear] = useState<number>(
-    getYear(new Date()) + 1
-  );
+  const [currentYear, setCurrentYear] = useState<number>(getYear(new Date()));
 
   return (
     <div className="flex h-16 justify-between bg-miru-han-purple-1000 p-4 pl-10  text-white">

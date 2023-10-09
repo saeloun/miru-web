@@ -21,145 +21,41 @@ organizations to help them streamline their workflow.
 
 ---
 
-## Installation
+## Major Features
 
-1. Clone repo to local
+- 🕒 **Time Tracking**: Intuitive time tracking tools for effortless monitoring of work hours.
 
-```
-git clone https://github.com/saeloun/miru-web.git
-```
+- 💼 **Invoicing**: Create professional invoices with ease, using time tracking data. Send invoices directly to clients via email for prompt payment processing.
 
-2. Install [rvm](https://rvm.io/) and
-   [nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+- 👥 **Team Page**: Collaborative workspace to manage your team's work efficiently.
 
-   (**Tip**: To allow `nvm` to automatically detect and change node versions for
-   your project as you `cd` into the directory follow
-   [this](https://github.com/nvm-sh/nvm#deeper-shell-integration))
+- 👤 **Client Page**: Centralized client management system for maintaining client information. Easily access client details when creating invoices or reports.
 
-3. Install ruby 3.2.2
+- 🏢 **Client Portal**: Access a client-specific dashboard for a quick overview of all invoices with update status.
 
-```
-rvm install $(cat .ruby-version)
-```
+- 🚀 **Projects**: Dashboard to add new projects, team members, and rates.
 
-4. Install Node 18.14.2(can be skipped if you followed the tip mentioned in (2)
-   above)
+- 📊 **Reports Page**: Generate comprehensive reports for insights into project performance. View time tracking data, expenses, and revenue summaries. Export reports in various formats (PDF, CSV) for sharing or record-keeping.
 
-```
-nvm install $(cat .nvmrc)
-```
+- 💳 **Integration with Payment Gateways**: Seamlessly connect with STRIPE for quick and secure payments. Accept payments directly through Miru.so to streamline invoicing and payment processing.
 
-5. Install Postgres
+## Upcoming Features
 
-```
-brew install postgresql
-```
+- 💰 **Expense Tracking**: Keep track of project-related expenses and allocate them to clients or projects. Capture receipts and attach them to expense entries for documentation. Include expenses in invoices for transparent billing.
 
-6. Install elasticsearch
+- 🌐 **Multi-Platform Accessibility**: Access Miru.so from web browsers, desktop applications, and mobile devices. Synchronize data across platforms for flexibility and convenience.
 
-```
-brew install elastic/tap/elasticsearch-full
-brew services start elasticsearch-full
-```
+- 🏖️ **PTO Module**: A comprehensive leave management module.
 
-To run elasticsearch on latest macos(ventura) please follow the below
-instructions
+- 📅 **Google Integration**: Integration to track and add meetings directly.
 
-- Install Docker Desktop ( M1 / Intel )
-  https://www.docker.com/products/docker-desktop/
-- Run below command in your terminal & you can check by opening `localhost:9200`
+## Documentation
 
-```
-docker run -dp 127.0.0.1:9200:9200 -p 127.0.0.1:9300:9300 -e "discovery.type=single-node" docker.elastic.co/elasticsearch/elasticsearch:7.17.7
-```
+For detailed information on how to use Miru Web and its various features, please refer to our official documentation:
 
-- Install Chrome Extension to browse the Cluster ( Kind of like PGAdmin for
-  Elastic Search )
-  https://chrome.google.com/webstore/search/multi%20elastic%20search%20head More
-  information available at
-  https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html
+[Official Documentation](https://docs.miru.so)
 
-7. Install Redis
-
-```
-brew install redis
-```
-
-8. Setup the app
-
-```
-# Go to the miru-web app directory
-
-bin/setup
-```
-
-16. Run app in local env
-
-```
-foreman start -f Procfile.dev
-```
-
-17. Navigate to [http://0.0.0.0:3000](http://0.0.0.0:3000)
-
-### To receive the emails in non-production apps.
-
-Go to `/sent_emails` for accessing the emails(for `/sent_emails` route to work,
-add `EMAIL_DELIVERY_METHOD='letter_opener_web'` to `.env`)
-
-### Tests & Coverage
-
-#### Tests
-
-1. Run `bin/rails db:create RAILS_ENV=test`
-2. Run `bin/rails db:migrate RAILS_ENV=test`
-3. Run `bundle exec rspec`
-
-### Running Tests in Parallel
-
-Change `database.yml` to embed `TEST_ENV_NUMBER`
-
-```yaml
-test:
-  database: miru_web_test_<%= ENV['TEST_ENV_NUMBER'] %>
-```
-
-```ruby
-# Setup parallel specs
-bundle exec rake parallel:create
-
-# Copy Schema for new changes on branches
-bundle exec rake parallel:prepare
-
-# Run migrations if needed
-bundle exec rake parallel:migrate
-
-# Run all specs in parallel
-RAILS_ENV=test bundle exec rake parallel:spec
-```
-
-#### Coverage
-
-1. Run `COVERAGE=true bundle exec rspec`
-2. Open `coverage/index.html`(`open coverage/index.html` in MacOS and
-   `xdg-open coverage/index.html` in Debian/Ubuntu)
-
-## Testing in Review apps
-
-### User Test credentials
-
-| Role        | Email                   | Password |
-| ----------- | ----------------------- | -------- |
-| Owner       | vipul@example.com       | welcome  |
-| Admin       | supriya@example.com     | welcome  |
-| Employee    | sam@example.com         | welcome  |
-| Book keeper | book.keeper@example.com | welcome  |
-| Client      | oliver@example.com      | welcome  |
-
-## Configure Sentry:
-
-To configure Sentry set the project's
-[sentry dsn](https://docs.sentry.io/product/sentry-basics/dsn-explainer/#where-to-find-your-dsn)
-as value to `SENTRY_DNS` environment variable.
+The documentation covers everything from installation and setup to advanced usage and troubleshooting. It's the best resource for getting started with Miru Web.
 
 ## Community Support
 
@@ -169,7 +65,6 @@ as value to `SENTRY_DNS` environment variable.
 - [Discussions](https://github.com/saeloun/miru-web/discussions): Post your
   questions regarding Miru Web
 - [**Twitter**](https://twitter.com/getmiru)
-- [Documentation](https://docs.miru.so)
 
 ## Contributing
 
@@ -190,4 +85,4 @@ Thanks goes to all our contributors
 
 ## License
 
-_Miru_ &copy; 2023, Saeloun - Released under the MIT License.
+_Miru_ &copy; 2023, Saeloun - Released under the [MIT License](LICENSE).

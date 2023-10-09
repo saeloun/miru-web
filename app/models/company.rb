@@ -40,6 +40,8 @@ class Company < ApplicationRecord
   has_many :expense_categories, dependent: :destroy
   has_many :vendors, dependent: :destroy
   has_many :client_members, dependent: :destroy
+  has_many :leaves, class_name: "Leave", dependent: :destroy
+
   resourcify
   has_many :holidays, dependent: :destroy
 

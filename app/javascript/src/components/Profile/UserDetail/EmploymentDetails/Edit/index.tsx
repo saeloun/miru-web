@@ -16,6 +16,8 @@ import { employmentMapper } from "mapper/teams.mapper";
 
 import StaticPage from "./StaticPage";
 
+import { employeeTypes } from "../helpers";
+
 dayjs.extend(utc);
 
 const schema = Yup.object().shape(employmentSchema);
@@ -62,11 +64,6 @@ const EmploymentDetailsEdit = () => {
 
   useOutsideClick(DOJRef, () => setShowDOJDatePicker({ visibility: false }));
   useOutsideClick(DORRef, () => setShowDORDatePicker({ visibility: false }));
-
-  const employeeTypes = [
-    { label: "Salaried Employee", value: "salaried" },
-    { label: "Contractor", value: "contractor" },
-  ];
 
   const getDetails = async () => {
     const curr: any = await teamsApi.getEmploymentDetails(user.id);
