@@ -18,6 +18,8 @@ const App = props => {
     googleOauthSuccess,
     avatarUrl,
     company,
+    calendarEnabled,
+    calendarConnected,
   } = props;
   const isAdminUser = [Roles.ADMIN, Roles.OWNER].includes(companyRole);
 
@@ -47,6 +49,8 @@ const App = props => {
     <UserContext.Provider
       value={{
         isAdminUser,
+        calendarEnabled,
+        calendarConnected,
         user,
         avatarUrl: currentAvatarUrl,
         setCurrentAvatarUrl,
