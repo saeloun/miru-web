@@ -22,7 +22,13 @@ on your Windows machine.
 $ git clone https://github.com/<your-name>/miru-web.git
 ```
 
-#### 3. Install rvm
+#### 3. Go to the project directory
+
+```bash
+cd miru-web
+```
+
+#### 4. Install rvm
 
 First, use the gpg command to contact a public key server and request the `RVM`
 project’s key which is used to sign each `RVM` release.
@@ -60,12 +66,12 @@ Execute this command to make `rvm` accessible in your current session:
 source ~/.rvm/scripts/rvm
 ```
 
-#### 4. Install ruby
+#### 5. Install ruby
 
 Now use the `rvm` command to install the required version of Ruby:
 
 ```bash
-rvm install ruby@3.2.2
+rvm install $(cat .ruby-version)
 ```
 
 You can check if ruby has been installed by running:
@@ -74,7 +80,7 @@ You can check if ruby has been installed by running:
 ruby -v
 ```
 
-#### 5. Install nvm
+#### 6. Install nvm
 
 To install `NVM` on your Ubuntu machine:
 
@@ -89,12 +95,12 @@ first source your `.bashrc` file:
 source ~/.bashrc
 ```
 
-#### 6. Install Node 18.4.2
+#### 7. Install Node 18.4.2
 
 Now use the `nvm` command to install the required version of Node:
 
 ```bash
-nvm install 18.4.2
+nvm install $(cat .nvmrc)
 ```
 
 You can view the different versions you have installed by listing them:
@@ -109,7 +115,7 @@ You can switch between installed versions with `nvm` use:
 nvm use v18.4.2
 ```
 
-#### 7. Install Postgres
+#### 8. Install Postgres
 
 Refresh your server’s local package index:
 
@@ -135,7 +141,7 @@ Ensure that the server is running:
 sudo service postgresql status
 ```
 
-#### 8. Install Elasticsearch
+#### 9. Install Elasticsearch
 
 Using `cURL`, import Elasticsearch public `GPG` key into `APT`. Use `-fsSL` to
 silence progress and errors. Pipe output to `gpg --dearmor` for verification of
@@ -175,7 +181,7 @@ Ensure that the server is running:
 sudo service elasticsearch status
 ```
 
-#### 9. Install Redis
+#### 10. Install Redis
 
 Using `cURL`, import Redis public `GPG` key into `APT`. Use `-fsSL` to silence
 progress and errors. Pipe output to `gpg --dearmor` for verification of
@@ -215,7 +221,7 @@ Ensure that the server is running:
 sudo service redis-server status
 ```
 
-#### 10. Setup the database user
+#### 11. Setup the database user
 
 Go to the `database.yml` file and update the default user and password with your
 postgres user and password.
@@ -223,19 +229,19 @@ postgres user and password.
 If you haven't changed the default settings of postgres, then your postgres user
 and password will be "postgres".
 
-#### 10. Setup the app
+#### 12. Setup the app
 
 ```bash
 $ bin/setup
 ```
 
-#### 11. Run app in local env
+#### 13. Run app in local env
 
 ```bash
 $ foreman start -f Procfile.dev
 ```
 
-#### 11. Navigate to [http://0.0.0.0:3000](http://0.0.0.0:3000)
+#### 14. Navigate to [http://0.0.0.0:3000](http://0.0.0.0:3000)
 
 ### To receive the emails in non-production apps.
 
