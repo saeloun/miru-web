@@ -51,7 +51,7 @@ Next, use the curl command to download the `RVM` installation script from the
 project’s website.
 
 ```bash
-\curl -sSL https://get.rvm.io -o rvm.sh
+curl -sSL https://get.rvm.io -o rvm.sh
 ```
 
 Execute this command to install the latest stable release of `RVM`:
