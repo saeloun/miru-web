@@ -46,11 +46,10 @@ const SendInvoice: React.FC<any> = ({
   const [invoiceEmail, setInvoiceEmail] = useState<InvoiceEmail>({
     subject: emailSubject(invoice, isSendReminder),
     message: emailBody(invoice, isSendReminder),
-    recipients: [invoice.client.email],
+    recipients: invoice.client.clientMembersEmails,
   });
   const [newRecipient, setNewRecipient] = useState<string>("");
   const [width, setWidth] = useState<string>("10ch");
-
   const input: React.RefObject<HTMLInputElement> = useRef();
 
   useEffect(() => {
@@ -158,6 +157,7 @@ const SendInvoice: React.FC<any> = ({
                       email={recipient}
                       handleClick={() => handleRemove(recipient)}
                       key={recipient}
+                      recipientsCount={invoiceEmail.recipients.length}
                     />
                   ))}
                   {user.email == "supriya@saeloun.com" && (

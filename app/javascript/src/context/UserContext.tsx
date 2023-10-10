@@ -22,6 +22,8 @@ const UserContext = createContext({
   googleOauthSuccess: false,
   setSelectedTab: value => {}, //eslint-disable-line
   company: null,
+  calendarEnabled: false,
+  calendarConnected: false,
 });
 
 export const useUserContext = () => useContext(UserContext);

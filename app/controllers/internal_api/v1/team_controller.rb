@@ -37,6 +37,22 @@ class InternalApi::V1::TeamController < InternalApi::V1::ApplicationController
     }, status: :ok
   end
 
+  def update_team_members
+    authorize current_company, policy_class: CompanyPolicy
+
+    current_company.update!(calendar_enabled: team_params[:calendar_enabled])
+    current_company.employments.includes(:user).find_each do |item|
+      item.user.update!(calendar_enabled: team_params[:calendar_enabled])
+    end
+
+    enabled_disabled = team_params[:calendar_enabled] ? "enabled" : "disabled"
+
+    render json: {
+             notice: "Calendar integration has been #{enabled_disabled} for all users of #{current_company.name}"
+           },
+      status: :ok
+  end
+
   def destroy
     authorize employment, policy_class: TeamPolicy
     employment.user.remove_roles_for(current_company)
@@ -56,5 +72,9 @@ class InternalApi::V1::TeamController < InternalApi::V1::ApplicationController
 
     def user_params
       params.permit(policy(:team).permitted_attributes)
+    end
+
+    def team_params
+      params.require(:team).permit(:calendar_enabled)
     end
 end

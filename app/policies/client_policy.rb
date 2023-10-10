@@ -50,11 +50,15 @@ class ClientPolicy < ApplicationPolicy
     user_admin_role? || user_owner_role?
   end
 
+  def add_client_contact?
+    user_admin_role? || user_owner_role?
+  end
+
   def permitted_attributes
     [
       :name,
-      :email,
       :phone,
+      :email,
       :logo,
       addresses_attributes: [:id, :address_line_1, :address_line_2, :city, :state, :country, :pin]
     ]

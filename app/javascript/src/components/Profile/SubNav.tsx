@@ -5,18 +5,19 @@ import { MinusIcon, PlusIcon } from "miruIcons";
 import { NavLink } from "react-router-dom";
 
 import UserInformation from "./CommonComponents/UserInformation";
+import { companySettingsList, personalSettingsList } from "./constants";
 
-const SideNav = ({ isAdmin, firstName, company, lastName }) => {
+const SubNav = ({ isAdmin, firstName, company, lastName }) => {
   const getActiveClassName = isActive => {
     if (isActive) {
-      return "pl-4 py-5 border-l-8 border-miru-han-purple-600 bg-miru-gray-200 text-miru-han-purple-600 block";
+      return "pl-4 py-5 border-l-8 border-miru-han-purple-600 bg-miru-gray-200 text-miru-han-purple-600 block w-full flex items-center";
     }
 
-    return "pl-6 py-5 border-b-1 border-miru-gray-400 block";
+    return "pl-6 py-5 border-b-1 border-miru-gray-400 block w-full flex items-center";
   };
 
   const [openedSubNav, setOpenedSubNav] = useState({
-    personal: false,
+    personal: true,
     company: false,
   });
 
@@ -41,24 +42,20 @@ const SideNav = ({ isAdmin, firstName, company, lastName }) => {
         </button>
       </div>
       {openedSubNav.personal && (
-        <div>
-          <li className="border-b-2 border-miru-gray-400 tracking-widest">
-            <NavLink
-              end
-              className={({ isActive }) => getActiveClassName(isActive)}
-              to="/profile/edit"
+        <ul>
+          {personalSettingsList.map((setting, index) => (
+            <li
+              className="border-b-2 border-miru-gray-400 tracking-widest"
+              key={index}
             >
-              PROFILE SETTINGS
-            </NavLink>
-            <NavLink
-              end
-              className={({ isActive }) => getActiveClassName(isActive)}
-              to="/profile/employment-details"
-            >
-              EMPLOYMENT DETAILS
-            </NavLink>
-          </li>
-        </div>
+              <SideBarNavItem
+                icon={setting.icon}
+                label={setting.label}
+                link={setting.link}
+              />
+            </li>
+          ))}
+        </ul>
       )}
       <div
         className="flex cursor-pointer flex-row items-center justify-between py-3 px-5"
@@ -76,49 +73,50 @@ const SideNav = ({ isAdmin, firstName, company, lastName }) => {
         </button>
       </div>
       {openedSubNav.company && (
-        <div>
-          <li className="border-b-2 border-miru-gray-400 tracking-widest">
-            <NavLink
-              end
-              className={({ isActive }) => getActiveClassName(isActive)}
-              to="/profile/edit/organization-details"
+        <ul>
+          {companySettingsList.map((setting, index) => (
+            <li
+              className="flex items-center justify-start border-b-2 border-miru-gray-400 tracking-widest"
+              key={index}
             >
-              ORG. SETTINGS
-            </NavLink>
-          </li>
-          <li className="border-b-2 border-miru-gray-400 tracking-widest">
-            <NavLink
-              end
-              className={({ isActive }) => getActiveClassName(isActive)}
-              to="/profile/edit/payment"
-            >
-              PAYMENT SETTINGS
-            </NavLink>
-          </li>
-        </div>
+              <SideBarNavItem
+                icon={setting.icon}
+                label={setting.label}
+                link={setting.link}
+              />
+            </li>
+          ))}
+        </ul>
       )}
     </ul>
   );
 
   const getEmployeeLinks = () => (
     <ul className="list-none text-sm font-medium leading-5 tracking-wider">
-      <li className="border-b-2 border-miru-gray-400">
-        <NavLink
-          end
-          className={({ isActive }) => getActiveClassName(isActive)}
-          to="/profile/edit"
+      {personalSettingsList.map((setting, index) => (
+        <li
+          className="border-b-2 border-miru-gray-400 tracking-widest"
+          key={index}
         >
-          PROFILE SETTINGS
-        </NavLink>
-        <NavLink
-          end
-          className={({ isActive }) => getActiveClassName(isActive)}
-          to="/profile/employment-details"
-        >
-          EMPLOYMENT DETAILS
-        </NavLink>
-      </li>
+          <SideBarNavItem
+            icon={setting.icon}
+            label={setting.label}
+            link={setting.link}
+          />
+        </li>
+      ))}
     </ul>
+  );
+
+  const SideBarNavItem = ({ label, link, icon }) => (
+    <NavLink
+      end
+      className={({ isActive }) => getActiveClassName(isActive)}
+      to={link}
+    >
+      {icon}
+      {label}
+    </NavLink>
   );
 
   return (
@@ -131,4 +129,4 @@ const SideNav = ({ isAdmin, firstName, company, lastName }) => {
   );
 };
 
-export default SideNav;
+export default SubNav;

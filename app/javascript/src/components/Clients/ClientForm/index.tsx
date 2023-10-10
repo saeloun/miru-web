@@ -31,7 +31,6 @@ const ClientForm = ({
   submitting,
   setSubmitting,
   fetchDetails,
-  usersWithClientRole,
 }: IClientForm) => {
   const [fileUploadError, setFileUploadError] = useState<string>("");
   const [countries, setCountries] = useState([]);
@@ -90,7 +89,7 @@ const ClientForm = ({
     if (formType === "new") {
       try {
         const res = await clientApi.create(formData);
-        setClientData([...clientData, { ...res.data, minutes: 0 }]);
+        setClientData([...clientData, { ...res.data.client, minutes: 0 }]);
         setnewClient(false);
         Toastr.success("Client added successfully");
       } catch {
@@ -114,8 +113,7 @@ const ClientForm = ({
       onSubmit={handleSubmit}
     >
       {(props: FormikProps<FormValues>) => {
-        const { touched, errors, setFieldValue, values, setFieldTouched } =
-          props;
+        const { touched, errors, setFieldValue, values } = props;
 
         return (
           <Form>
@@ -151,24 +149,6 @@ const ClientForm = ({
               <InputErrors
                 fieldErrors={errors.name}
                 fieldTouched={touched.name}
-              />
-            </div>
-            <div className="mt-4">
-              <CustomReactSelect
-                handleOnChange={email => setFieldValue("email", email.value)}
-                id="email"
-                label="Email"
-                name="email"
-                value={{ label: values.email, value: values.email }}
-                options={usersWithClientRole.map(user => ({
-                  value: user.email,
-                  label: user.email,
-                }))}
-                onBlur={() => setFieldTouched("email", true)}
-              />
-              <InputErrors
-                fieldErrors={errors.email?.value}
-                fieldTouched={touched.email}
               />
             </div>
             <div className="mt-4">
@@ -300,9 +280,6 @@ const ClientForm = ({
                 disabled={disableBtn(values, errors, submitting)}
                 style="primary"
                 type="submit"
-                onClick={() => {
-                  setSubmitting(true);
-                }}
               >
                 SAVE CHANGES
               </Button>
@@ -329,15 +306,10 @@ interface IClientForm {
   submitting: boolean;
   setSubmitting: any;
   fetchDetails?: any;
-  usersWithClientRole: any;
 }
 
 interface FormValues {
   name: string;
-  email: {
-    value: string;
-    label: string;
-  };
   phone: string;
   address1: string;
   address2: string;

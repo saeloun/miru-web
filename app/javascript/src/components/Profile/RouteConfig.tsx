@@ -4,14 +4,17 @@ import { Routes, Route, Navigate } from "react-router-dom";
 
 import { useUserContext } from "context/UserContext";
 
+// import GoogleCalendar from "./GoogleCalendar";
 import MobileNav from "./Layout/MobileNav";
-import LeaveBalance from "./LeaveBalance";
+// import LeaveBalance from "./LeaveBalance";
 import Billing from "./Organization/Billing";
 import OrgDetails from "./Organization/Details";
 import OrgEdit from "./Organization/Edit";
-import Import from "./Organization/Import";
-import LeavesAndHolidays from "./Organization/LeavesAndHolidays";
+// import Holidays from "./Organization/Holidays";
+// import OrganizationImport from "./Organization/Import";
+// import Leaves from "./Organization/Leaves";
 import PaymentSettings from "./Organization/Payment";
+// import AllocatedDevicesDetails from "./UserDetail/AllocatedDevicesDetails";
 import UserDetailsEdit from "./UserDetail/Edit";
 import EmploymentDetails from "./UserDetail/EmploymentDetails";
 import EmploymentDetailsEdit from "./UserDetail/EmploymentDetails/Edit";
@@ -32,6 +35,7 @@ const RouteConfig = () => {
     <Routes>
       <Route element={<EmploymentDetails />} path="employment-details" />
       <Route element={<EmploymentDetailsEdit />} path="employment-edit" />
+      {/* <Route element={<AllocatedDevicesDetails />} path="devices-details" /> */}
       <Route path="/edit">
         {/* <Route path="bank_account_details" element={<BankAccountDetails />} /> TODO: Temporary disabling*/}
         <Route element={<UserDetailsView />} path="" />
@@ -45,9 +49,10 @@ const RouteConfig = () => {
             </ProtectedRoute>
           }
         />
-        <Route element={<Import />} path="import" />
-        <Route element={<LeavesAndHolidays />} path="leaves" />
-        <Route element={<LeaveBalance />} path="leave-balance" />
+        {/* <Route element={<OrganizationImport />} path="import" />
+        <Route element={<Leaves />} path="leaves" />
+        <Route element={<Holidays />} path="holidays" />
+        <Route element={<LeaveBalance />} path="leave-balance" /> */}
         <Route
           path="organization-details"
           element={
@@ -58,6 +63,16 @@ const RouteConfig = () => {
         />
         <Route element={<UserDetailsEdit />} path="change" />
         <Route element={<MobileNav isAdmin={isAdminUser} />} path="option" />
+        {/* <Route
+          path="integrations"
+          element={
+            <GoogleCalendar
+              calendarConnected={calendarConnected}
+              calendarEnabled={calendarEnabled}
+              isAdmin={isAdminUser}
+            />
+          }
+        /> */}
       </Route>
     </Routes>
   );

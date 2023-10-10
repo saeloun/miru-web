@@ -285,7 +285,7 @@ export const StaticPage = ({
               type="text"
               value={companyAddr.zipcode}
               onChange={e => {
-                handleZipcodeChange(e, "zipcode");
+                handleZipcodeChange(e);
               }}
             />
             {errDetails.zipcodeErr && (
