@@ -3,6 +3,10 @@ FROM ruby:3.2.2-slim AS base
 
 ARG NODE_VERSION=18.14.2
 
+ENV BUNDLE_PATH="/usr/local/bundle"
+ENV GEM_HOME="/usr/local/bundle/gems"
+ENV GEM_PATH="/usr/local/bundle/gems"
+
 RUN mkdir /app
 WORKDIR /app
 RUN mkdir -p tmp/pids
@@ -49,5 +53,3 @@ COPY --from=gems /app /app
 COPY --from=gems /usr/local/bundle /usr/local/bundle
 COPY --from=node_modules /app/node_modules /app/node_modules
 COPY . ./
-
-RUN RAILS_ENV=$RAILS_ENV rails assets:precompile
