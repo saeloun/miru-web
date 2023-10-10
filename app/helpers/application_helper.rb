@@ -38,7 +38,9 @@ module ApplicationHelper
       company_role: current_user && current_user.roles.find_by(resource: current_company)&.name,
       confirmed_user: current_user && current_user.confirmed?,
       company: current_company,
-      google_oauth_success: @google_oauth_success.present?
+      google_oauth_success: @google_oauth_success.present?,
+      calendar_enabled: current_user && current_user.calendar_enabled,
+      calendar_connected: current_user && current_user.calendar_connected
     }
   end
 

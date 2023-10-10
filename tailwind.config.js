@@ -74,14 +74,18 @@ module.exports = {
         72: "72%",
         "1/10": "10%",
         "1/15": "15%",
-        "1/20": "20%",
-        "1/60": "60%",
       },
       minWidth: {
         12: "12px",
         24: "24px",
         400: "25rem", // 400px
         1008: "1008px",
+        "50v": "50vw",
+        "60v": "60vw",
+        "70v": "70vw",
+        "80v": "80vw",
+        "90v": "90vw",
+        "100v": "100vw",
       },
       maxWidth: {
         400: "25rem", //400px
@@ -271,4 +275,5 @@ module.exports = {
     opacity: ({ after }) => after(["disabled"]),
   },
   plugins: [],
+  content: ["./public/**/*.html", "./src/**/*.{js,jsx,ts,tsx}", "!./docs/**/*"],
 };

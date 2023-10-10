@@ -1,20 +1,20 @@
-/* eslint-disable */
 import React, { useCallback, useEffect, useState } from "react";
 
-import * as Yup from "yup";
 import { Country, State, City } from "country-state-city";
 import { useDropzone } from "react-dropzone";
 import { useNavigate } from "react-router-dom";
-
 import { Toastr } from "StyledComponents";
+import * as Yup from "yup";
+
 import companiesApi from "apis/companies";
 import companyProfileApi from "apis/companyProfile";
 import Loader from "common/Loader/index";
 import { currencyList } from "constants/currencyList";
 import { sendGAPageView } from "utils/googleAnalytics";
 
-import Header from "../../Header";
 import { StaticPage } from "./StaticPage";
+
+import Header from "../../Header";
 
 const phoneRegExp =
   /^((\+\d{1,3}(-| )?\(?\d\)?(-| )?\d{1,3})|(\(?\d{2,3}\)?))(-| )?(\d{3,4})(-| )?(\d{4})(( x| ext)\d{1,5}){0,1}$/;
@@ -187,15 +187,15 @@ const OrgEdit = () => {
       name = countryData ? countryData.name : "";
     }
 
-    let stateData = State.getStatesOfCountry(country).find(
+    const stateData = State.getStatesOfCountry(country).find(
       item => item.name === state
     );
     const StateCode = stateData ? stateData.isoCode : "";
 
     const orgAddr = {
-      id: id,
-      addressLine1: addressLine1,
-      addressLine2: addressLine2,
+      id,
+      addressLine1,
+      addressLine2,
       city: {
         value: city,
         label: city,
@@ -316,7 +316,7 @@ const OrgEdit = () => {
     (e, type) => {
       setOrgDetails({ ...orgDetails, [type]: e });
       setIsDetailUpdated(true);
-      setErrDetails({ ...errDetails, [type + "Err"]: "" });
+      setErrDetails({ ...errDetails, [`${type}Err`]: "" });
     },
     [orgDetails, errDetails]
   );
@@ -389,16 +389,16 @@ const OrgEdit = () => {
     const city = currentCityList.filter(i =>
       i.label.toLowerCase().includes(inputValue.toLowerCase())
     );
+
     return city.length ? city : [{ label: inputValue, value: inputValue }];
   };
 
-  const promiseOptions = (inputValue: string) => {
-    return new Promise(resolve => {
+  const promiseOptions = (inputValue: string) =>
+    new Promise(resolve => {
       setTimeout(() => {
         resolve(filterCities(inputValue));
       }, 1000);
     });
-  };
 
   const handleCurrencyChange = useCallback(
     option => {
@@ -432,7 +432,7 @@ const OrgEdit = () => {
     [orgDetails]
   );
 
-  const handleZipcodeChange = (e, type) => {
+  const handleZipcodeChange = e => {
     const { companyAddr } = orgDetails;
     const changedZipCode = { ...companyAddr, zipcode: e.target.value };
     setOrgDetails({ ...orgDetails, companyAddr: changedZipCode });
@@ -556,7 +556,6 @@ const OrgEdit = () => {
   };
 
   const handleCancelAction = () => {
-    console.log("true");
     getCurrencies();
     getData();
     setIsDetailUpdated(false);
@@ -592,33 +591,33 @@ const OrgEdit = () => {
         </div>
       ) : (
         <StaticPage
-          currentCityList={currentCityList}
           cancelAction={handleCancelAction}
-          saveAction={handleUpdateOrgDetails}
-          orgDetails={orgDetails}
-          isDragActive={isDragActive}
+          countries={countries}
+          currenciesOption={currenciesOption}
+          currentCityList={currentCityList}
+          dateFormatOptions={dateFormatOptions}
+          errDetails={errDetails}
+          fiscalYearOptions={fiscalYearOptions}
           getInputProps={getInputProps}
           getRootProps={getRootProps}
-          handleDeleteLogo={handleDeleteLogo}
-          onLogoChange={onLogoChange}
-          errDetails={errDetails}
-          handleChangeCompanyDetails={handleChangeCompanyDetails}
           handleAddrChange={handleAddrChange}
-          handleOnChangeCountry={handleOnChangeCountry}
-          countries={countries}
-          handleOnChangeState={handleOnChangeState}
-          stateList={stateList}
-          handleOnChangeCity={handleOnChangeCity}
-          promiseOptions={promiseOptions}
-          handleZipcodeChange={handleZipcodeChange}
+          handleChangeCompanyDetails={handleChangeCompanyDetails}
           handleCurrencyChange={handleCurrencyChange}
-          currenciesOption={currenciesOption}
-          handleTimezoneChange={handleTimezoneChange}
-          timezoneOption={timezoneOption}
           handleDateFormatChange={handleDateFormatChange}
-          dateFormatOptions={dateFormatOptions}
+          handleDeleteLogo={handleDeleteLogo}
           handleFiscalYearChange={handleFiscalYearChange}
-          fiscalYearOptions={fiscalYearOptions}
+          handleOnChangeCity={handleOnChangeCity}
+          handleOnChangeCountry={handleOnChangeCountry}
+          handleOnChangeState={handleOnChangeState}
+          handleTimezoneChange={handleTimezoneChange}
+          handleZipcodeChange={handleZipcodeChange}
+          isDragActive={isDragActive}
+          orgDetails={orgDetails}
+          promiseOptions={promiseOptions}
+          saveAction={handleUpdateOrgDetails}
+          stateList={stateList}
+          timezoneOption={timezoneOption}
+          onLogoChange={onLogoChange}
         />
       )}
     </div>
