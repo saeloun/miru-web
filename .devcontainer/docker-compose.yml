@@ -21,7 +21,7 @@ services:
 
   app:
     build:
-      context: .
+      context: ..
       dockerfile: .devcontainer/Dockerfile
     command: bundle exec rails s -p 3000 -b 0.0.0.0
     ports:
@@ -49,8 +49,8 @@ services:
 
   webpack:
     build:
-      context: .
-      dockerfile: Dockerfile.local
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
     command: bin/webpacker-dev-server
     image: miru-web:latest
     ports:
@@ -68,8 +68,8 @@ services:
 
   sidekiq:
     build:
-      context: .
-      dockerfile: Dockerfile.local
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
     command: bundle exec sidekiq -C config/sidekiq.yml
     volumes:
       - .:/app
