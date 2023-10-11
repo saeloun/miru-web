@@ -1,29 +1,11 @@
 version: "3.9"
 services:
-  database:
-    image: postgres:13.8
-    restart: always
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres:/var/lib/postgresql/data
-    environment:
-      POSTGRES_PASSWORD: postgres
-
-  redis:
-    image: redis:6.2.7
-    command: redis-server
-    restart: always
-    ports:
-      - "6379:6379"
-    volumes:
-      - redis:/data
-
   app:
     build:
       context: ..
       dockerfile: .devcontainer/Dockerfile
       args:
+        VARIANT: 3.2
         USER_UID: 1000
         USER_GID: 1000
     command: bundle exec rails s -p 3000 -b 0.0.0.0
@@ -49,6 +31,26 @@ services:
       - elasticsearch
     tmpfs:
       - /tmp/pids/
+    network_mode: service:database
+
+  database:
+    image: postgres:13.8
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: postgres
+
+  redis:
+    image: redis:6.2.7
+    command: redis-server
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis:/data
 
   webpack:
     build:

@@ -2,7 +2,8 @@
     "[ruby]": {
       "editor.autoClosingBrackets": "beforeWhitespace",
       "editor.formatOnSave": true,
-      "editor.defaultFormatter": "rebornix.ruby"
+      "editor.defaultFormatter": "rebornix.ruby",
+      "editor.tabSize": 2,
     },
     "files.trimTrailingWhitespace": true,
     "files.trimFinalNewlines": true,
