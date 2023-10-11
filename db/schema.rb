@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_03_04_143641) do
+ActiveRecord::Schema[7.1].define(version: 2023_10_11_063227) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -143,9 +143,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_04_143641) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "calendar_enabled", default: true
-  end
-
-  create_table "data_migrations", primary_key: "version", id: :string, force: :cascade do |t|
   end
 
   create_table "devices", force: :cascade do |t|
@@ -540,7 +537,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_04_143641) do
   add_foreign_key "expenses", "expense_categories"
   add_foreign_key "expenses", "vendors"
   add_foreign_key "holiday_infos", "holidays"
-  add_foreign_key "holidays", "companies"
+  add_foreign_key "holidays", "companies", validate: false
   add_foreign_key "identities", "users"
   add_foreign_key "invitations", "clients"
   add_foreign_key "invitations", "companies"
