@@ -36,18 +36,19 @@ class InternalApi::V1::CalendarsController < ApplicationController
     service.authorization = @client
 
     @calendar_list = service.list_calendar_lists
-    calendar_id = @calendar_list.items.select { |item| item.summary.include?("@") }.first.id
+    calendar_id = @calendar_list.items.select(&:primary?).first.id
+    current_user.update!(calendar_id:)
 
-    redirect_to internal_api_v1_events_path(calendar_id)
+    redirect_to "/profile/edit/integrations"
   end
 
   def events
     authorize :events, policy_class: CalendarPolicy
 
     @client.update!(session[:authorization])
-    current_month = Time.now.month
-    current_year = Time.now.year
-    calendar_id = params[:calendar_id]
+    current_month = params[:month]
+    current_year = params[:year]
+    calendar_id = current_user.calendar_id
 
     meetings = Calendars::MonthlyCalendarEventsService.new(
       calendar_id, current_month, current_year, @client

@@ -28,6 +28,7 @@
 #  unconfirmed_email      :string
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
+#  calendar_id            :string
 #  current_workspace_id   :bigint
 #  personal_email_id      :string
 #
