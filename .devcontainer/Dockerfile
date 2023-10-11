@@ -1,5 +1,15 @@
 #syntax=docker/dockerfile:1
-FROM ruby:3.2.2-slim AS base
+ARG VARIANT=3.2
+FROM mcr.microsoft.com/vscode/devcontainers/ruby:${VARIANT} AS base
+
+# Update args in docker-compose.yaml to set the UID/GID of the "vscode" user.
+ARG USER_UID=1000
+ARG USER_GID=$USER_UID
+RUN if [ "$USER_GID" != "1000" ] || [ "$USER_UID" != "1000" ]; then \
+    groupmod --gid $USER_GID vscode \
+    && usermod --uid $USER_UID --gid $USER_GID vscode \
+    && chmod -R $USER_UID:$USER_GID /home/vscode; \
+    fi
 
 ARG NODE_VERSION=18.14.2
 
@@ -24,6 +34,12 @@ RUN curl --location --silent https://dl-ssl.google.com/linux/linux_signing_key.p
     && sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' \
     && apt-get update && apt-get install google-chrome-stable -y --no-install-recommends postgresql-client && \
     apt-get clean && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
+
+# Install gh
+RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
+    && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+    && sudo apt update \
+    && sudo apt install gh
 
 
 FROM base AS build-deps
