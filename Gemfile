@@ -6,7 +6,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 ruby "3.2.2"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
-gem "rails", "~> 7.0.8"
+gem "rails", "~> 7.1.0"
 
 # Use postgresql as the database for Active Record
 gem "pg"
@@ -65,7 +65,7 @@ gem "react-rails"
 # Use SCSS for stylesheets
 gem "sass-rails"
 
-##--- gems for server & infra configuration ---##
+# #--- gems for server & infra configuration ---##
 gem "dotenv-rails"
 gem "foreman"
 
@@ -174,7 +174,7 @@ group :development, :test, :ci do
   gem "rails-controller-testing", "~> 1.0", ">= 1.0.5"
 
   # help to kill N+1 queries and unused eager loading. https://github.com/flyerhzm/bullet
-  gem "bullet"
+  gem "bullet", "~> 7.1"
 
   # To record response of outgoing API calls
   gem "vcr", "~> 6.1"
