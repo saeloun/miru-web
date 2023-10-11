@@ -1,0 +1,55 @@
+#syntax=docker/dockerfile:1
+FROM ruby:3.2.2-slim AS base
+
+ARG NODE_VERSION=18.14.2
+
+ENV BUNDLE_PATH="/usr/local/bundle"
+ENV GEM_HOME="/usr/local/bundle/gems"
+ENV GEM_PATH="/usr/local/bundle/gems"
+
+RUN mkdir /app
+WORKDIR /app
+RUN mkdir -p tmp/pids
+
+RUN apt-get update && apt-get install -y --no-install-recommends curl gnupg2 && \
+    echo "deb https://dl.yarnpkg.com/debian/ stable main" > /etc/apt/sources.list.d/yarn.list && \
+    curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
+    curl -sL https://deb.nodesource.com/setup_lts.x | bash - && \
+    apt-get install -y --no-install-recommends nodejs yarn && \
+    npm --version && \
+    apt-get clean && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
+
+
+RUN curl --location --silent https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
+    && sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' \
+    && apt-get update && apt-get install google-chrome-stable -y --no-install-recommends postgresql-client && \
+    apt-get clean && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
+
+
+FROM base AS build-deps
+
+RUN apt-get update && apt-get install -y --no-install-recommends git build-essential libpq-dev && \
+    apt-get clean && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
+
+
+FROM build-deps AS gems
+
+RUN gem install bundler -v 2.3.11
+
+COPY Gemfile Gemfile.lock ./
+
+RUN bundle install &&  rm -rf vendor/bundle/ruby/*/cache
+
+FROM base AS node_modules
+
+COPY package.json yarn.lock ./
+
+RUN yarn install --check-files
+
+FROM base
+
+
+COPY --from=gems /app /app
+COPY --from=gems /usr/local/bundle /usr/local/bundle
+COPY --from=node_modules /app/node_modules /app/node_modules
+COPY . ./
