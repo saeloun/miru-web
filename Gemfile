@@ -65,7 +65,7 @@ gem "react-rails", "2.6.2"
 # Use SCSS for stylesheets
 gem "sass-rails"
 
-##--- gems for server & infra configuration ---##
+# #--- gems for server & infra configuration ---##
 gem "dotenv-rails"
 gem "foreman"
 
