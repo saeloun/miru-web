@@ -30,7 +30,7 @@
 				"eamodio.gitlens",
 				"github.copilot",
 				"mrmlnc.vscode-duplicate"
-  		],
+  			],
 			"settings": {
 				"terminal.integrated.shell.linux": "/bin/zsh"
 			}
