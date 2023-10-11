@@ -308,7 +308,7 @@ const UserDetailsEdit = () => {
       }
 
       setErrDetails(initialErrState);
-      navigate(`/profile/edit`, { replace: true });
+      navigate(`/settings/profile`, { replace: true });
     } catch (err) {
       setIsLoading(false);
       const errObj = initialErrState;
@@ -343,7 +343,7 @@ const UserDetailsEdit = () => {
 
   const handleCancelDetails = () => {
     setIsLoading(true);
-    navigate(`/profile/edit`, { replace: true });
+    navigate(`/settings/profile`, { replace: true });
   };
 
   const handleCurrentPasswordChange = event => {
@@ -430,7 +430,10 @@ const UserDetailsEdit = () => {
       )}
       {!isDesktop && (
         <Fragment>
-          <MobileDetailsHeader href="/profile/edit" title="Personal Details" />
+          <MobileDetailsHeader
+            href="/settings/profile"
+            title="Personal Details"
+          />
           {isLoading ? (
             <div className="flex min-h-70v items-center justify-center">
               <Loader />

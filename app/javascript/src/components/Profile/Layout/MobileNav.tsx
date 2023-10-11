@@ -24,7 +24,7 @@ const getSettingsNavUrls = memberId => [
     groupName: "Personal",
     navItems: [
       {
-        url: "/profile/edit",
+        url: "/settings/profile",
         text: "PERSONAL DETAILS",
         icon: <UserIcon size={16} />,
       },
@@ -35,22 +35,22 @@ const getSettingsNavUrls = memberId => [
     isCompanyDetails: true,
     navItems: [
       {
-        url: "/profile/edit/organization-details",
+        url: "/settings/organization",
         text: "ORG. SETTINGS",
         icon: <BuildingsIcon size={16} />,
       },
       {
-        url: "/profile/edit/payment",
+        url: "/settings/payment",
         text: "PAYMENT SETTINGS",
         icon: <PaymentsIcon size={16} />,
       },
       {
-        url: "/profile/leaves/details",
+        url: "/settings/leaves",
         text: "Leaves",
         icon: <CalendarIcon size={16} />,
       },
       {
-        url: "/profile/edit/holidays",
+        url: "/settings/holidays",
         text: "Holidays",
         icon: <CakeIcon size={16} />,
       },
@@ -71,8 +71,8 @@ const getEmployeeSettingsNavUrls = memberId => [
   },
 ];
 
-const MobileNav = ({ isAdmin }) => {
-  const { isDesktop, user } = useUserContext();
+const MobileNav = () => {
+  const { isAdminUser: isAdmin, isDesktop, user } = useUserContext();
   const { memberId } = useParams();
   const AdminUrlList = getSettingsNavUrls(memberId);
   const EmployeeUrlList = getEmployeeSettingsNavUrls(memberId);
@@ -98,7 +98,7 @@ const MobileNav = ({ isAdmin }) => {
 
   useEffect(() => {
     if (isDesktop) {
-      navigate("/profile/edit");
+      navigate("/settings/profile");
     }
   }, [isDesktop]);
 

@@ -1,0 +1,97 @@
+import { Roles } from "constants/index";
+
+import GoogleCalendar from "./GoogleCalendar";
+import MobileNav from "./Layout/MobileNav";
+import LeaveBalance from "./LeaveBalance";
+import Billing from "./Organization/Billing";
+import OrgDetails from "./Organization/Details";
+import OrgEdit from "./Organization/Edit";
+import Holidays from "./Organization/Holidays";
+import OrganizationImport from "./Organization/Import";
+import Leaves from "./Organization/Leaves";
+import PaymentSettings from "./Organization/Payment";
+import AllocatedDevicesDetails from "./UserDetail/AllocatedDevicesDetails";
+import UserDetailsEdit from "./UserDetail/Edit";
+import EmploymentDetails from "./UserDetail/EmploymentDetails";
+import EmploymentDetailsEdit from "./UserDetail/EmploymentDetails/Edit";
+import UserDetailsView from "./UserDetail/UserDetailsView";
+
+const { ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE, CLIENT } = Roles;
+
+export const SETTINGS_ROUTES = [
+  {
+    path: "/profile",
+    Component: UserDetailsView,
+    authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE, CLIENT],
+  },
+  {
+    path: "/profile/edit",
+    Component: UserDetailsEdit,
+    authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE, CLIENT],
+  },
+  {
+    path: "/employment",
+    Component: EmploymentDetails,
+    authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE],
+  },
+  {
+    path: "/employment/edit",
+    Component: EmploymentDetailsEdit,
+    authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE],
+  },
+  {
+    path: "/devices",
+    Component: AllocatedDevicesDetails,
+    authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE],
+  },
+  {
+    path: "/",
+    Component: MobileNav,
+    authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE],
+  },
+  {
+    path: "/organization",
+    Component: OrgDetails,
+    authorisedRoles: [ADMIN, OWNER],
+  },
+  {
+    path: "/organization/edit",
+    Component: OrgEdit,
+    authorisedRoles: [ADMIN, OWNER],
+  },
+  {
+    path: "/edit/import",
+    Component: OrganizationImport,
+    authorisedRoles: [ADMIN, OWNER],
+  },
+  {
+    path: "/payment",
+    Component: PaymentSettings,
+    authorisedRoles: [ADMIN, OWNER],
+  },
+  {
+    path: "/edit/billing",
+    Component: Billing,
+    authorisedRoles: [ADMIN, OWNER],
+  },
+  {
+    path: "/leaves",
+    Component: Leaves,
+    authorisedRoles: [ADMIN, OWNER],
+  },
+  {
+    path: "/holidays",
+    Component: Holidays,
+    authorisedRoles: [ADMIN, OWNER],
+  },
+  {
+    path: "/edit/leave-balance",
+    Component: LeaveBalance,
+    authorisedRoles: [ADMIN, OWNER],
+  },
+  {
+    path: "/integrations",
+    Component: GoogleCalendar,
+    authorisedRoles: [ADMIN, OWNER],
+  },
+];

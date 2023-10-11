@@ -3,56 +3,68 @@ import React from "react";
 import {
   ClientsIcon as BuildingsIcon,
   PaymentsIcon,
-  // CalendarIcon,
-  // CakeIcon,
+  CalendarIcon,
+  CakeIcon,
   UserIcon,
-  // IntegrateIcon,
-  // MobileIcon,
+  IntegrateIcon,
+  MobileIcon,
   ProjectsIcon,
 } from "miruIcons";
+
+import { Roles } from "constants/index";
+
+const { ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE, CLIENT } = Roles;
 
 export const personalSettingsList = [
   {
     label: "PROFILE SETTINGS",
-    link: "/profile/edit",
+    link: "/settings/profile",
     icon: <UserIcon className="mr-2" size={20} weight="bold" />,
+    authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE, CLIENT],
   },
   {
     label: "EMPLOYMENT DETAILS",
-    link: "/profile/employment-details",
+    link: "/settings/employment",
     icon: <ProjectsIcon className="mr-2" size={20} weight="bold" />,
+    authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE],
   },
-  // {
-  //   label: "ALLOCATED DEVICES",
-  //   link: "/profile/devices-details",
-  //   icon: <MobileIcon className="mr-2" size={20} weight="bold" />,
-  // },
+  {
+    label: "ALLOCATED DEVICES",
+    link: "/settings/devices",
+    icon: <MobileIcon className="mr-2" size={20} weight="bold" />,
+    authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE],
+  },
 ];
 
 export const companySettingsList = [
   {
     label: "ORG. SETTINGS",
-    link: "/profile/edit/organization-details",
+    link: "/settings/organization",
     icon: <BuildingsIcon className="mr-2" size={20} weight="bold" />,
+    authorisedRoles: [ADMIN, OWNER],
   },
   {
     label: "PAYMENT SETTINGS",
-    link: "/profile/edit/payment",
+    link: "/settings/payment",
     icon: <PaymentsIcon className="mr-2" size={20} weight="bold" />,
+    authorisedRoles: [ADMIN, OWNER],
   },
-  // {
-  //   label: "LEAVES",
-  //   link: "/profile/edit/leaves",
-  //   icon: <CalendarIcon className="mr-2" size={20} weight="bold" />,
-  // },
-  // {
-  //   label: "HOLIDAYS",
-  //   link: "/profile/edit/holidays",
-  //   icon: <CakeIcon className="mr-2" size={20} weight="bold" />,
-  // },
-  // {
-  //   label: "Integration",
-  //   link: "/profile/edit/integrations",
-  //   icon: <IntegrateIcon className="mr-2" size={20} weight="bold" />,
-  // },
+  {
+    label: "LEAVES",
+    link: "/settings/leaves",
+    icon: <CalendarIcon className="mr-2" size={20} weight="bold" />,
+    authorisedRoles: [ADMIN, OWNER],
+  },
+  {
+    label: "HOLIDAYS",
+    link: "/settings/holidays",
+    icon: <CakeIcon className="mr-2" size={20} weight="bold" />,
+    authorisedRoles: [ADMIN, OWNER],
+  },
+  {
+    label: "Integration",
+    link: "/settings/integrations",
+    icon: <IntegrateIcon className="mr-2" size={20} weight="bold" />,
+    authorisedRoles: [ADMIN, OWNER],
+  },
 ];
