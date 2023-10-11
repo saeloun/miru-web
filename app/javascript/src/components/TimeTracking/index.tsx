@@ -9,6 +9,7 @@ import Logger from "js-logger";
 import { CalendarIcon } from "miruIcons";
 import { useNavigate } from "react-router-dom";
 
+import googleCalendarApi from "apis/googleCalendar";
 import timesheetEntryApi from "apis/timesheet-entry";
 import timeTrackingApi from "apis/timeTracking";
 import withLayout from "common/Mobile/HOC/withLayout";
@@ -63,6 +64,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
   );
   const [currentYear, setCurrentYear] = useState<number>(dayjs().year());
   const [updateView, setUpdateView] = useState(true);
+  const [events, setEvents] = useState<any[]>([]);
   const { isDesktop } = useUserContext();
   const employeeOptions = employees.map(e => ({
     value: `${e["id"]}`,
@@ -106,6 +108,20 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
     );
   };
 
+  const fetchCalendarEvents = async () => {
+    try {
+      const { data } = await googleCalendarApi.events(
+        user.calendar_id,
+        currentMonthNumber + 1,
+        currentYear
+      );
+      setEvents(data);
+      localStorage.setItem("calendarEvents", JSON.stringify(data));
+    } catch (error) {
+      Logger.log(error);
+    }
+  };
+
   useEffect(() => {
     !isDesktop && setView("day");
   }, [isDesktop]);
@@ -138,6 +154,12 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
     if (dayInfo.length <= 0) return;
     fetchEntriesOfMonths();
   }, [selectedEmployeeId]);
+
+  useEffect(() => {
+    if (user.calendar_connected) {
+      fetchCalendarEvents();
+    }
+  }, [currentMonthNumber, currentYear]);
 
   const handleWeekTodayButton = () => {
     setSelectDate(0);
@@ -425,7 +447,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
               <CalendarIcon className="mr-2 font-bold" />
               Meeting
               <div className="relative ml-1 flex h-5 w-5 items-center justify-center rounded-full border-2 border-solid bg-miru-han-purple-600 text-xs">
-                <span className="text-white">0</span>
+                <span className="text-white">{events.length || 0}</span>
               </div>
             </div>
           </Button>

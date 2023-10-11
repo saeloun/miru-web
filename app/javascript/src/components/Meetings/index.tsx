@@ -13,15 +13,17 @@ import MeetingList from "./MeetingList";
 import Button from "../../StyledComponents/Button";
 
 const Meetings = () => {
-  const [meetings, setMeetings] = useState<any[]>([]);
+  const [meetings, setMeetings] = useState<any[]>(
+    JSON.parse(localStorage.getItem("calendarEvents"))
+  );
   const { calendarConnected } = useUserContext();
   const navigate = useNavigate();
 
   return (
     <>
       <Header />
-      {meetings.length >= 1 ? (
-        <MeetingList />
+      {meetings?.length >= 1 ? (
+        <MeetingList meetings={meetings} setMeetings={setMeetings} />
       ) : (
         <EmptyStates
           containerClassName="h-1/2"

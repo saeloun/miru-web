@@ -110,7 +110,7 @@ namespace :internal_api, defaults: { format: "json" } do
     get "calendars/redirect", to: "calendars#redirect", as: "redirect"
     get "calendars/callback", to: "calendars#callback", as: "callback"
     get "calendars/calendars", to: "calendars#calendars", as: "calendars"
-    get "calendars/events/:calendar_id", to: "calendars#events", as: "events", calendar_id: /[^\/]+/
+    get "calendars/events/:calendar_id", to: "calendars#events", as: "events", calendar_id: "/[^\/]+/"
 
     resources :payments, only: [:new, :create, :index]
     resources :holidays, only: [:update, :index], param: :year
