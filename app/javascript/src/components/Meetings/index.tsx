@@ -3,14 +3,13 @@ import React, { useState } from "react";
 
 import { CalendarIcon } from "miruIcons";
 import { useNavigate } from "react-router-dom";
+import { Button } from "StyledComponents";
 
 import EmptyStates from "common/EmptyStates";
 import { useUserContext } from "context/UserContext";
 
 import Header from "./Header";
 import MeetingList from "./MeetingList";
-
-import Button from "../../StyledComponents/Button";
 
 const Meetings = () => {
   const [meetings, setMeetings] = useState<any[]>(
