@@ -60,7 +60,7 @@ const UserDetailsView = () => {
             title="Personal Details"
           />
           {isLoading ? (
-            <Loader />
+            <Loader className="min-h-70v" />
           ) : (
             <StaticPage
               handleEditClick={handleEditClick}
@@ -77,9 +77,7 @@ const UserDetailsView = () => {
             title="Personal Details"
           />
           {isLoading ? (
-            <div className="flex min-h-70v items-center justify-center">
-              <Loader />
-            </div>
+            <Loader className="min-h-70v" />
           ) : (
             <MobilePersonalDetails
               handleEditClick={handleEditClick}

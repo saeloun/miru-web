@@ -45,11 +45,7 @@ const GoogleCalendar = ({ isAdmin, calendarEnabled, calendarConnected }) => {
   }, [apiCallNeeded]);
 
   if (loading) {
-    return (
-      <div className="flex h-80v w-full flex-col justify-center">
-        <Loader />
-      </div>
-    );
+    return <Loader className="min-h-70v" />;
   }
 
   const enableCalendar = async () => {

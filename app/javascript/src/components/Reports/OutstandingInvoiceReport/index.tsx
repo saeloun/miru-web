@@ -1,6 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState, useEffect } from "react";
 
+import Logger from "js-logger";
+import { useNavigate } from "react-router-dom";
+
+import Loader from "common/Loader/index";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import Container from "./Container";
@@ -23,6 +27,7 @@ const OutstandingInvoiceReport = () => {
   const [selectedFilter, setSelectedFilter] = useState(filterIntialValues);
   const [isFilterVisible, setIsFilterVisible] = useState<boolean>(false);
   const [showNavFilters, setShowNavFilters] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const [filterCounter, setFilterCounter] = useState(0); // eslint-disable-line
   const [dateRange, setDateRange] = useState({ from: "", to: "" });
   const [selectedInput, setSelectedInput] = useState("from-input");
@@ -35,6 +40,7 @@ const OutstandingInvoiceReport = () => {
     totalOutstandingAmount: 0,
     totalOverdueAmount: 0,
   });
+  const navigate = useNavigate();
 
   useEffect(() => {
     sendGAPageView();
@@ -55,14 +61,24 @@ const OutstandingInvoiceReport = () => {
     }
   };
 
+  const fetchReportData = async () => {
+    try {
+      await getReportData({
+        setClientList,
+        setShowNavFilters,
+        setIsFilterVisible,
+        setSummary,
+        setCurrency,
+      });
+      setLoading(false);
+    } catch (e) {
+      Logger.error(e);
+      navigate("/reports");
+    }
+  };
+
   useEffect(() => {
-    getReportData({
-      setClientList,
-      setShowNavFilters,
-      setIsFilterVisible,
-      setSummary,
-      setCurrency,
-    });
+    fetchReportData();
   }, [selectedFilter]);
 
   const contextValues = {
@@ -106,6 +122,10 @@ const OutstandingInvoiceReport = () => {
       setDateRange({ ...dateRange, to: date });
     }
   };
+
+  if (loading) {
+    return <Loader />;
+  }
 
   return (
     <EntryContext.Provider

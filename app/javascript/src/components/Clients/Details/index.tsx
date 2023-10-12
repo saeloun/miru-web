@@ -6,6 +6,7 @@ import { useParams, useNavigate } from "react-router-dom";
 
 import clientApi from "apis/clients";
 import EmptyStates from "common/EmptyStates";
+import Loader from "common/Loader/index";
 import Table from "common/Table";
 import ProjectForm from "components/Projects/List/Mobile/ProjectForm";
 import AddEditProject from "components/Projects/Modals/AddEditProject";
@@ -98,11 +99,7 @@ const ClientDetails = ({ isAdminUser }) => {
   };
 
   if (loading) {
-    return (
-      <p className="tracking-wide flex min-h-screen items-center justify-center text-base font-medium text-miru-han-purple-1000">
-        Loading...
-      </p>
-    );
+    return <Loader />;
   }
 
   if (!isDesktop && showProjectModal) {

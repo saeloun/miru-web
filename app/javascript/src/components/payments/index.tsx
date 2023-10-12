@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import Logger from "js-logger";
 
 import payment from "apis/payments/payments";
+import Loader from "common/Loader/index";
 import withLayout from "common/Mobile/HOC/withLayout";
 import { useUserContext } from "context/UserContext";
 import { unmapPayment } from "mapper/mappedIndex";
@@ -17,6 +18,7 @@ import Table from "./Table";
 const Payments = () => {
   const [showManualEntryModal, setShowManualEntryModal] =
     useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const [paymentList, setPaymentList] = useState<any>([]);
   const [invoiceList, setInvoiceList] = useState<any>([]);
   const [dateFormat, setDateFormat] = useState<any>("");
@@ -65,10 +67,20 @@ const Payments = () => {
   ) =>
     showSearchedPayments ? !searchedPaymentList?.length : !paymentList?.length;
 
+  const fetchData = async () => {
+    try {
+      await fetchInvoiceList();
+      await fetchPaymentList();
+      checkInvoiceIdInUrl();
+      setLoading(false);
+    } catch (e) {
+      Logger.error(e);
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    fetchInvoiceList();
-    fetchPaymentList();
-    checkInvoiceIdInUrl();
+    fetchData();
   }, []);
 
   const handleEscKeyPress = (e: any) => {
@@ -76,6 +88,14 @@ const Payments = () => {
       setShowManualEntryModal(false);
     }
   };
+
+  if (loading) {
+    return (
+      <div className="flex h-full w-full items-center justify-center">
+        <Loader />
+      </div>
+    );
+  }
 
   const PaymentsLayout = () => (
     <div className="h-full flex-col p-4" onKeyDown={handleEscKeyPress}>

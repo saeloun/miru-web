@@ -260,11 +260,7 @@ const Holidays = () => {
   };
 
   if (isLoading) {
-    return (
-      <div className="flex min-h-70v items-center justify-center">
-        <Loader />
-      </div>
-    );
+    return <Loader />;
   }
 
   return (
