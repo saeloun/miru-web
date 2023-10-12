@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from "react";
 
+import Logger from "js-logger";
+import { useNavigate } from "react-router-dom";
+
+import Loader from "common/Loader/index";
+
 import Container from "./Container";
 import FilterSideBar from "./Filters";
 
@@ -13,6 +18,7 @@ import Header from "../Header";
 const AccountsAgingReport = () => {
   const [isFilterVisible, setIsFilterVisible] = useState<boolean>(false);
   const [showNavFilters, setShowNavFilters] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const [selectedFilter, setSelectedFilter] = useState([]); //eslint-disable-line
   const [filterCounter, setFilterCounter] = useState(0); //eslint-disable-line
   const [clientList, setClientList] = useState<any>([]);
@@ -24,6 +30,7 @@ const AccountsAgingReport = () => {
     ninety_plus_days: 0,
     total: 0,
   });
+  const navigate = useNavigate();
 
   const resetFilter = () => {
     setSelectedFilter([]);
@@ -32,8 +39,18 @@ const AccountsAgingReport = () => {
     setShowNavFilters(false);
   };
 
+  const fetchReportData = async () => {
+    try {
+      await getReportData({ setClientList, setTotalAmount, setCurrency });
+      setLoading(false);
+    } catch (e) {
+      Logger.error(e);
+      navigate("/reports");
+    }
+  };
+
   useEffect(() => {
-    getReportData({ setClientList, setTotalAmount, setCurrency });
+    fetchReportData();
   }, []);
 
   const contextValues = {
@@ -57,6 +74,10 @@ const AccountsAgingReport = () => {
       },
     },
   };
+
+  if (loading) {
+    return <Loader />;
+  }
 
   return (
     <EntryContext.Provider value={{ ...contextValues }}>
