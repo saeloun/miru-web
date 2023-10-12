@@ -1,7 +1,9 @@
 import React from "react";
 
-const Loader = () => (
-  <div className="flex min-h-full w-full flex-col items-center justify-center">
+const Loader = ({ className }: { className?: string }) => (
+  <div
+    className={`flex min-h-full w-full items-center justify-center ${className}`}
+  >
     <svg
       fill="none"
       height="120"

@@ -288,9 +288,7 @@ const EmploymentDetailsEdit = () => {
             </div>
           </div>
           {isLoading ? (
-            <div className="flex min-h-70v items-center justify-center">
-              <Loader />
-            </div>
+            <Loader className="min-h-70v" />
           ) : (
             <StaticPage
               DOJRef={DOJRef}

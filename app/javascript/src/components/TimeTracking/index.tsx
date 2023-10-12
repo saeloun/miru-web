@@ -9,6 +9,7 @@ import Logger from "js-logger";
 
 import timesheetEntryApi from "apis/timesheet-entry";
 import timeTrackingApi from "apis/timeTracking";
+import Loader from "common/Loader/index";
 import withLayout from "common/Mobile/HOC/withLayout";
 import SearchTimeEntries from "common/SearchTimeEntries";
 import { useUserContext } from "context/UserContext";
@@ -46,6 +47,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
   );
   const [editEntryId, setEditEntryId] = useState<number>(0);
   const [weeklyData, setWeeklyData] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
   const [isWeeklyEditing, setIsWeeklyEditing] = useState<boolean>(false);
   const [selectedEmployeeId, setSelectedEmployeeId] = useState<number>(
     user?.id
@@ -83,8 +85,10 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
       const currentEmployeeEntries = {};
       currentEmployeeEntries[user.id] = entries;
       setAllEmployeesEntries(currentEmployeeEntries);
+      setLoading(false);
     } catch (error) {
       Logger.error(error);
+      setLoading(false);
     }
   };
 
@@ -173,10 +177,12 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
         setAllEmployeesEntries(allEntries);
         setEntryList(allEntries[selectedEmployeeId]);
       }
+      setLoading(false);
 
       return res;
     } catch (error) {
       Logger.error(error);
+      setLoading(false);
     }
   };
 
@@ -357,6 +363,10 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
     setCurrentMonthNumber(dayjs(date).get("month"));
     setCurrentYear(dayjs(date).year());
   };
+
+  if (loading) {
+    return <Loader />;
+  }
 
   const TimeTrackingLayout = () => (
     <div className="pb-14">
