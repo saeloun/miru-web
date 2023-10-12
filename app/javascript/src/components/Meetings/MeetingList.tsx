@@ -1,7 +1,6 @@
 /* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from "react";
 
-import dayjs from "dayjs";
 import Logger from "js-logger";
 import { Button } from "StyledComponents";
 
@@ -10,17 +9,8 @@ import timeTrackingApi from "apis/timeTracking";
 import Meeting from "./Meeting";
 
 const MeetingList = ({ meetings, setMeetings }) => {
-  const [displayDatePicker, setDisplayDatePicker] = useState<boolean>(false);
-  const [billable, setBillable] = useState<boolean>(false);
-  const [note, setNote] = useState<string>("");
   const [clients, setClients] = useState<any[]>([]);
-  const [duration, setDuration] = useState<string>("");
-  const [client, setClient] = useState<string>("");
-  const [project, setProject] = useState<string>("");
-  const [projectBillable, setProjectBillable] = useState<boolean>(true);
-  const [bulkUpdateDialog, setBulkUpdateDialog] = useState<boolean>(false);
   const [projects, setProjects] = useState<any>({});
-  const [selectDate, setSelectDate] = useState<number>(dayjs().weekday());
 
   const fetchTimeTrackingData = async () => {
     try {
@@ -35,13 +25,49 @@ const MeetingList = ({ meetings, setMeetings }) => {
     }
   };
 
-  const handleDurationChange = val => {
-    setDuration(val);
-  };
-
   useEffect(() => {
     fetchTimeTrackingData();
   }, []);
+
+  const updateClient = (id, client, project) => {
+    const updatedMeetings = [...meetings];
+    updatedMeetings[id] = {
+      ...updatedMeetings[id],
+      client,
+      project,
+    };
+    setMeetings(updatedMeetings);
+  };
+
+  const updateProject = (id, project) => {
+    const updatedMeetings = [...meetings];
+    updatedMeetings[id] = { ...updatedMeetings[id], project };
+    setMeetings(updatedMeetings);
+  };
+
+  const updateNote = (id, note) => {
+    const updatedMeetings = [...meetings];
+    updatedMeetings[id] = { ...updatedMeetings[id], note };
+    setMeetings(updatedMeetings);
+  };
+
+  const updateDate = (id, date) => {
+    const updatedMeetings = [...meetings];
+    updatedMeetings[id] = { ...updatedMeetings[id], date };
+    setMeetings(updatedMeetings);
+  };
+
+  const updateDuration = (id, duration) => {
+    const updatedMeetings = [...meetings];
+    updatedMeetings[id] = { ...updatedMeetings[id], duration };
+    setMeetings(updatedMeetings);
+  };
+
+  const updateBillable = (id, billable) => {
+    const updatedMeetings = [...meetings];
+    updatedMeetings[id] = { ...updatedMeetings[id], billable };
+    setMeetings(updatedMeetings);
+  };
 
   return (
     <>
@@ -53,29 +79,17 @@ const MeetingList = ({ meetings, setMeetings }) => {
       </div>
       {meetings?.map((meeting, idx) => (
         <Meeting
-          billable={billable}
-          client={meeting?.client}
           clients={clients}
-          displayDatePicker={displayDatePicker}
-          duration={duration}
-          handleDurationChange={handleDurationChange}
+          id={idx}
           key={idx}
           meeting={meeting}
-          note={note}
-          project={meeting?.project}
-          projectBillable={projectBillable}
           projects={projects}
-          selectDate={selectDate}
-          setBillable={setBillable}
-          setClient={setClient}
-          setClients={setClients}
-          setDisplayDatePicker={setDisplayDatePicker}
-          setDuration={setDuration}
-          setNote={setNote}
-          setProject={setProject}
-          setProjectBillable={setProjectBillable}
-          setProjects={setProjects}
-          setSelectDate={setSelectDate}
+          updateBillable={updateBillable}
+          updateClient={updateClient}
+          updateDate={updateDate}
+          updateDuration={updateDuration}
+          updateNote={updateNote}
+          updateProject={updateProject}
         />
       ))}
     </>
