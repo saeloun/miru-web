@@ -12,6 +12,7 @@ import { sendGAPageView } from "utils/googleAnalytics";
 
 import Details from "./Details";
 import EditHolidays from "./EditHolidays";
+import { companyDateFormat } from "./utils";
 
 const Holidays = () => {
   const [holidayList, setHolidayList] = useState([]);
@@ -48,7 +49,9 @@ const Holidays = () => {
   const [currentYearOptionalHolidays, setCurrentYearOptionalHolidays] =
     useState([]);
 
-  const { isDesktop } = useUserContext();
+  const { isDesktop, company } = useUserContext();
+  const dateFormat = companyDateFormat(company?.date_format);
+
   const navigate = useNavigate();
 
   useOutsideClick(wrapperRef, () => {
@@ -285,6 +288,7 @@ const Holidays = () => {
       {isEditable ? (
         <EditHolidays
           currentYear={currentYear}
+          dateFormat={dateFormat}
           enableOptionalHolidays={enableOptionalHolidays}
           handleAddHoliday={handleAddHoliday}
           handleCancelAction={handleCancelAction}
@@ -313,6 +317,7 @@ const Holidays = () => {
       ) : (
         <Details
           currentYear={currentYear}
+          dateFormat={dateFormat}
           editAction={() => setIsEditable(true)}
           holidaysList={currentYearPublicHolidays}
           optionalHolidayList={currentYearOptionalHolidays}

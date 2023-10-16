@@ -9,13 +9,14 @@ import TableRow from "./TableRow";
 import HolidayModal from "../HolidaysModal";
 
 const Details = ({
-  toggleCalendarModal,
-  optionalHolidayList,
-  holidaysList,
-  showCalendar,
-  editAction,
   currentYear,
   setCurrentYear,
+  dateFormat,
+  editAction,
+  holidaysList,
+  optionalHolidayList,
+  showCalendar,
+  toggleCalendarModal,
 }) => {
   const CalendarButton = ({ result, date, className }) => (
     <button
@@ -29,13 +30,13 @@ const Details = ({
   );
 
   const tileContent = ({ date }) => {
-    const presentDate = dayjs(date).format("DD-MM-YYYY");
+    const presentDate = dayjs(date).format(dateFormat);
     const isHoliday = holidaysList?.find(
-      holiday => dayjs(holiday.date).format("DD-MM-YYYY") === presentDate
+      holiday => holiday.date === presentDate
     );
 
     const isOptionalHoliday = optionalHolidayList?.find(
-      holiday => dayjs(holiday.date).format("DD-MM-YYYY") === presentDate
+      holiday => holiday.date === presentDate
     );
 
     if (isHoliday || isOptionalHoliday) {
