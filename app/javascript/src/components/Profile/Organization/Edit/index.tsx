@@ -10,6 +10,7 @@ import companiesApi from "apis/companies";
 import companyProfileApi from "apis/companyProfile";
 import Loader from "common/Loader/index";
 import { currencyList } from "constants/currencyList";
+import { useUserContext } from "context/UserContext";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import { StaticPage } from "./StaticPage";
@@ -113,6 +114,7 @@ const errorState = {
 
 const OrgEdit = () => {
   const navigate = useNavigate();
+  const { setCompany } = useUserContext();
   const [orgDetails, setOrgDetails] = useState(initialState);
 
   const [errDetails, setErrDetails] = useState(errorState);
@@ -546,7 +548,8 @@ const OrgEdit = () => {
       if (orgDetails.logo) {
         formD.append("company[logo]", orgDetails.logo);
       }
-      await companiesApi.update(orgDetails.id, formD);
+      const res = await companiesApi.update(orgDetails.id, formD);
+      setCompany(res.data.company);
       setIsDetailUpdated(false);
       setIsLoading(false);
     } catch {
