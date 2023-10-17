@@ -66,6 +66,5 @@ class InvoiceLineItem < ApplicationRecord
 
   def formatted_date
     CompanyDateFormattingService.new(date, company: invoice.company).process
-  end
-  
+  end  
 end
