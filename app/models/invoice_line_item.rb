@@ -63,4 +63,9 @@ class InvoiceLineItem < ApplicationRecord
   def total_cost
     @_total_cost ||= (hours_spent * rate).round(3)
   end
+
+  def formatted_date
+    CompanyDateFormattingService.new(date, company: invoice.company).process
+  end
+  
 end
