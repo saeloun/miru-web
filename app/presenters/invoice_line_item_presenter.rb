@@ -7,8 +7,6 @@ class InvoiceLineItemPresenter
     @invoice_line_item = invoice_line_item
   end
 
-  
-
   def pdf_row(base_currency)
     {
       name: invoice_line_item.name,
