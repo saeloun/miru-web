@@ -24,7 +24,7 @@ class CompanyDateFormattingService < ApplicationService
         "%d.%m.%Y"
       when "YYYY-MM-DD"
         "%Y.%m.%d"
-      else
+      when "MM-DD-YYYY"
         "%m.%d.%Y"
       end
     end
