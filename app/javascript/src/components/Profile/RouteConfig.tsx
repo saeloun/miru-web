@@ -14,7 +14,8 @@ import OrgEdit from "./Organization/Edit";
 // import OrganizationImport from "./Organization/Import";
 // import Leaves from "./Organization/Leaves";
 import PaymentSettings from "./Organization/Payment";
-// import AllocatedDevicesDetails from "./UserDetail/AllocatedDevicesDetails";
+import AllocatedDevicesDetails from "./UserDetail/AllocatedDevicesDetails";
+import DevicesDetailsEdit from "./UserDetail/AllocatedDevicesDetails/Edit";
 import UserDetailsEdit from "./UserDetail/Edit";
 import EmploymentDetails from "./UserDetail/EmploymentDetails";
 import EmploymentDetailsEdit from "./UserDetail/EmploymentDetails/Edit";
@@ -35,10 +36,11 @@ const RouteConfig = () => {
     <Routes>
       <Route element={<EmploymentDetails />} path="employment-details" />
       <Route element={<EmploymentDetailsEdit />} path="employment-edit" />
-      {/* <Route element={<AllocatedDevicesDetails />} path="devices-details" /> */}
+      <Route element={<AllocatedDevicesDetails />} path="devices-details" />
       <Route path="/edit">
         {/* <Route path="bank_account_details" element={<BankAccountDetails />} /> TODO: Temporary disabling*/}
         <Route element={<UserDetailsView />} path="" />
+        <Route element={<DevicesDetailsEdit />} path="devices-details" />
         <Route element={<PaymentSettings />} path="payment" />
         <Route element={<Billing />} path="billing" />
         <Route

@@ -7,7 +7,7 @@ import {
   // CakeIcon,
   UserIcon,
   // IntegrateIcon,
-  // MobileIcon,
+  MobileIcon,
   ProjectsIcon,
 } from "miruIcons";
 
@@ -22,11 +22,11 @@ export const personalSettingsList = [
     link: "/profile/employment-details",
     icon: <ProjectsIcon className="mr-2" size={20} weight="bold" />,
   },
-  // {
-  //   label: "ALLOCATED DEVICES",
-  //   link: "/profile/devices-details",
-  //   icon: <MobileIcon className="mr-2" size={20} weight="bold" />,
-  // },
+  {
+    label: "ALLOCATED DEVICES",
+    link: "/profile/devices-details",
+    icon: <MobileIcon className="mr-2" size={20} weight="bold" />,
+  },
 ];
 
 export const companySettingsList = [
