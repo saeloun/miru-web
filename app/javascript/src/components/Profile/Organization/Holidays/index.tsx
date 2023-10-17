@@ -132,7 +132,10 @@ const Holidays = () => {
       setTotalOptionalHolidays(0);
       setOptionalRepetitionType("per_year");
       setHolidayList([]);
+      setCurrentYearHolidaysList([]);
       setOptionalHolidaysList([]);
+      setCurrentYearPublicHolidays([]);
+      setCurrentYearOptionalHolidays([]);
     }
   };
 
