@@ -12,7 +12,7 @@ class InvoiceLineItemPresenter
   def pdf_row(base_currency)
     {
       name: invoice_line_item.name,
-      date: invoice_line_item.formatted_date
+      date: invoice_line_item.formatted_date,
       description: invoice_line_item.description,
       quantity: invoice_line_item.time_spent,
       rate: FormatAmountService.new(base_currency, invoice_line_item.rate).process,
