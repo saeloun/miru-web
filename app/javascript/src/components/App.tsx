@@ -11,8 +11,15 @@ import UserContext from "context/UserContext";
 import Main from "./Main";
 
 const App = props => {
-  const { user, companyRole, confirmedUser, googleOauthSuccess, avatarUrl } =
-    props;
+  const {
+    user,
+    companyRole,
+    confirmedUser,
+    googleOauthSuccess,
+    avatarUrl,
+    calendarEnabled,
+    calendarConnected,
+  } = props;
   const isAdminUser = [Roles.ADMIN, Roles.OWNER].includes(companyRole);
 
   const [isDesktop, setIsDesktop] = useState<boolean>(window.innerWidth > 1023);
@@ -42,6 +49,8 @@ const App = props => {
     <UserContext.Provider
       value={{
         isAdminUser,
+        calendarEnabled,
+        calendarConnected,
         user,
         avatarUrl: currentAvatarUrl,
         setCurrentAvatarUrl,

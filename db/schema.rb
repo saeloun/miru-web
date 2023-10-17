@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_09_13_075839) do
+ActiveRecord::Schema[7.0].define(version: 2023_10_11_151059) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -106,6 +106,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_13_075839) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "company_id", null: false
+    t.index ["client_id", "user_id"], name: "index_client_members_on_client_id_and_user_id", unique: true
     t.index ["client_id"], name: "index_client_members_on_client_id"
     t.index ["company_id"], name: "index_client_members_on_company_id"
     t.index ["user_id"], name: "index_client_members_on_user_id"
@@ -301,6 +302,31 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_13_075839) do
     t.index ["status"], name: "index_invoices_on_status"
   end
 
+  create_table "leave_types", force: :cascade do |t|
+    t.string "name", null: false
+    t.integer "icon", null: false
+    t.integer "color", null: false
+    t.integer "allocation_value", null: false
+    t.integer "allocation_period", null: false
+    t.integer "allocation_frequency", null: false
+    t.integer "carry_forward_days", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "leave_id", null: false
+    t.index ["color", "leave_id"], name: "index_leave_types_on_color_and_leave_id", unique: true
+    t.index ["icon", "leave_id"], name: "index_leave_types_on_icon_and_leave_id", unique: true
+    t.index ["leave_id"], name: "index_leave_types_on_leave_id"
+  end
+
+  create_table "leaves", force: :cascade do |t|
+    t.integer "year"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "company_id", null: false
+    t.index ["company_id"], name: "index_leaves_on_company_id"
+    t.index ["year", "company_id"], name: "index_leaves_on_year_and_company_id", unique: true
+  end
+
   create_table "payments", force: :cascade do |t|
     t.bigint "invoice_id", null: false
     t.date "transaction_date", null: false
@@ -425,6 +451,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_13_075839) do
     t.string "phone"
     t.string "token", limit: 50
     t.boolean "calendar_enabled", default: true
+    t.boolean "calendar_connected", default: true
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token"
     t.index ["current_workspace_id"], name: "index_users_on_current_workspace_id"
     t.index ["discarded_at"], name: "index_users_on_discarded_at"
@@ -486,6 +513,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_13_075839) do
   add_foreign_key "invoice_line_items", "timesheet_entries"
   add_foreign_key "invoices", "clients"
   add_foreign_key "invoices", "companies"
+  add_foreign_key "leave_types", "leaves", column: "leave_id"
+  add_foreign_key "leaves", "companies"
   add_foreign_key "payments", "invoices"
   add_foreign_key "payments_providers", "companies"
   add_foreign_key "previous_employments", "users"

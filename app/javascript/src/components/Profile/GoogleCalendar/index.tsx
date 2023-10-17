@@ -5,33 +5,36 @@ import { GoogleCalendarIcon, IntegrateIcon } from "miruIcons";
 import { Button, Switch } from "StyledComponents";
 
 import companiesApi from "apis/companies";
+import googleCalendarApi from "apis/googleCalendar";
 import teamApi from "apis/team";
 import Loader from "common/Loader/index";
 
 import Header from "./Header";
 
-const GoogleCalendar = ({ isAdmin }) => {
+const GoogleCalendar = ({ isAdmin, calendarEnabled, calendarConnected }) => {
   const [connectGoogleCalendar, setConnectGoogleCalendar] =
-    useState<boolean>(false);
-  const [enabled, setEnabled] = useState<boolean>(false);
+    useState<boolean>(calendarConnected);
+  const [enabled, setEnabled] = useState<boolean>(calendarEnabled);
   const [apiCallNeeded, setApiCallNeeded] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    const companiesData = async () => {
-      setLoading(true);
-      try {
-        const {
-          data: { company_details },
-        } = await companiesApi.index();
-        setEnabled(company_details.calendar_enabled);
-      } catch (error) {
-        Logger.log(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    companiesData();
+    if (isAdmin) {
+      const companiesData = async () => {
+        setLoading(true);
+        try {
+          const {
+            data: { company_details },
+          } = await companiesApi.index();
+          setEnabled(company_details.calendar_enabled);
+        } catch (error) {
+          Logger.log(error);
+        } finally {
+          setLoading(false);
+        }
+      };
+      companiesData();
+    }
   }, []);
 
   useEffect(() => {
@@ -42,11 +45,7 @@ const GoogleCalendar = ({ isAdmin }) => {
   }, [apiCallNeeded]);
 
   if (loading) {
-    return (
-      <div className="flex h-80v w-full flex-col justify-center">
-        <Loader />
-      </div>
-    );
+    return <Loader className="min-h-70v" />;
   }
 
   const enableCalendar = async () => {
@@ -63,6 +62,18 @@ const GoogleCalendar = ({ isAdmin }) => {
     setApiCallNeeded(true);
   };
 
+  const handleConnectCalendar = async () => {
+    setConnectGoogleCalendar(true);
+    const { data } = await googleCalendarApi.redirect();
+    window.location.replace(data.url);
+  };
+
+  const handleDisconnectCalendar = async () => {
+    setConnectGoogleCalendar(false);
+    await googleCalendarApi.callback();
+    window.location.replace("/profile/edit/integrations");
+  };
+
   const showConnectDisconnectBtn = () => {
     if (enabled) {
       return connectGoogleCalendar ? (
@@ -70,7 +81,7 @@ const GoogleCalendar = ({ isAdmin }) => {
           <IntegrateIcon size={12} />
           <Button
             className="ml-1 text-sm font-bold"
-            onClick={() => setConnectGoogleCalendar(false)}
+            onClick={handleDisconnectCalendar}
           >
             Disconnect
           </Button>
@@ -79,7 +90,7 @@ const GoogleCalendar = ({ isAdmin }) => {
         <Button
           className="mt-5 px-3 py-1 text-xs"
           style="primary"
-          onClick={() => setConnectGoogleCalendar(true)}
+          onClick={handleConnectCalendar}
         >
           Connect
         </Button>

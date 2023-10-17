@@ -9,7 +9,7 @@ import CustomReactSelect from "common/CustomReactSelect";
 import CustomToggle from "common/CustomToggle";
 import SingleYearDatePicker from "common/CustomYearPicker/SingleYearDatePicker";
 import { Divider } from "common/Divider";
-import { repetitionType } from "constants/leaveType";
+import { allocationFrequency } from "constants/leaveType";
 
 import Header from "./Header";
 import { customStyles } from "./utils";
@@ -179,10 +179,10 @@ const EditHolidays = ({
                 <div className="w-1/2 px-2">
                   <CustomReactSelect
                     handleOnChange={handleChangeRepetitionOpHoliday}
-                    id="repetitionType"
+                    id="allocationFrequency"
                     label=""
-                    name="repetitionType"
-                    options={repetitionType}
+                    name="allocationFrequency"
+                    options={allocationFrequency}
                     styles={customStyles}
                     wrapperClassName="h-12"
                     components={{
@@ -190,10 +190,10 @@ const EditHolidays = ({
                     }}
                     value={
                       optionalRepetitionType
-                        ? repetitionType.filter(
+                        ? allocationFrequency.filter(
                             option => option.value === optionalRepetitionType
                           )
-                        : repetitionType[0]
+                        : allocationFrequency[0]
                     }
                   />
                 </div>

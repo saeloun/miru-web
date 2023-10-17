@@ -23,6 +23,8 @@ const UserContext = createContext({
   setSelectedTab: value => {}, //eslint-disable-line
   company: null,
   setCompany: value => {}, //eslint-disable-line
+  calendarEnabled: false,
+  calendarConnected: false,
 });
 
 export const useUserContext = () => useContext(UserContext);

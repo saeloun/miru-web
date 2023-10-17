@@ -141,6 +141,9 @@ gem "ahoy_matey"
 
 gem "httparty"
 
+# Use google calendar for integration with Miru
+gem "google-api-client", require: "google/apis/calendar_v3"
+
 group :development, :test, :ci do
   # See https://edgeguides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", ">= 1.0.0", platforms: %i[mri mingw x64_mingw]

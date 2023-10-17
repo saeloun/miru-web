@@ -219,7 +219,9 @@ const UserDetails = () => {
         title="Profile Settings"
       />
       {isLoading ? (
-        <Loader />
+        <div className="flex h-80v w-full items-center justify-center">
+          <Loader />
+        </div>
       ) : (
         <div className="mt-4 min-h-80v bg-miru-gray-100 pb-10 pt-10 pl-10 pr-10">
           <div className="flex flex-row py-6">
