@@ -4,7 +4,7 @@ import CustomYearPicker from "common/CustomYearPicker";
 
 const Header = ({ editAction, currentYear, setCurrentYear }: Iprops) => (
   <div className="flex h-16 justify-between bg-miru-han-purple-1000 p-4 pl-10  text-white">
-    <span className="text-2xl font-bold">Leaves</span>
+    <span className="text-2xl font-bold">Holidays</span>
     <CustomYearPicker
       currentYear={currentYear}
       setCurrentYear={setCurrentYear}

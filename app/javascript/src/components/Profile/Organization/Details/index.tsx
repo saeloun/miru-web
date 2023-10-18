@@ -93,11 +93,13 @@ const OrgDetails = () => {
   }, []);
 
   const handleEditClick = () => {
-    navigate(`/profile/edit/organization`, { replace: true });
+    navigate(`/settings/organization/edit`, { replace: true });
   };
 
   const handleBackBtnClick = () => {
-    navigate(`/profile/edit/option`, { replace: true });
+    navigate(isDesktop ? `/settings/organization` : "/settings", {
+      replace: true,
+    });
   };
 
   return (
