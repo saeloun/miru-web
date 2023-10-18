@@ -1,8 +1,12 @@
 import React from "react";
 
+import StaticPage from "./StaticPage";
+
 const DevicesDetailsEdit = () => (
   <div>
-    <div>Device detail page</div>
+    <div>
+      <StaticPage />
+    </div>
   </div>
 );
 
