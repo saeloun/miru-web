@@ -223,6 +223,13 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
   };
 
   const handleDuplicate = async id => {
+    localStorage.removeItem("note");
+    localStorage.removeItem("duration");
+    localStorage.removeItem("client");
+    localStorage.removeItem("project");
+    localStorage.removeItem("projectId");
+    localStorage.removeItem("billable");
+    localStorage.removeItem("projectBillable");
     if (!id) return;
     const entry = entryList[selectedFullDate].find(entry => entry.id === id);
     const data = {

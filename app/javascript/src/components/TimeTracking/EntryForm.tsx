@@ -37,13 +37,30 @@ const AddEntry: React.FC<Iprops> = ({
   handleDeleteEntry,
   fetchEntriesofMonth,
 }) => {
-  const [note, setNote] = useState<string>("");
-  const [duration, setDuration] = useState<string>("");
-  const [client, setClient] = useState<string>("");
-  const [project, setProject] = useState<string>("");
-  const [projectId, setProjectId] = useState<number>(0);
-  const [billable, setBillable] = useState<boolean>(false);
-  const [projectBillable, setProjectBillable] = useState<boolean>(true);
+  const [note, setNote] = useState<string>(localStorage.getItem("note") || "");
+  const [duration, setDuration] = useState<string>(
+    localStorage.getItem("duration") || ""
+  );
+
+  const [client, setClient] = useState<string>(
+    localStorage.getItem("client") || ""
+  );
+
+  const [project, setProject] = useState<string>(
+    localStorage.getItem("project") || ""
+  );
+
+  const [projectId, setProjectId] = useState<number>(
+    parseInt(localStorage.getItem("projectId") || "0")
+  );
+
+  const [billable, setBillable] = useState<boolean>(
+    localStorage.getItem("billable") === "true"
+  );
+
+  const [projectBillable, setProjectBillable] = useState<boolean>(
+    localStorage.getItem("projectBillable") === "true"
+  );
   const [selectedDate, setSelectedDate] = useState<string>(selectedFullDate);
   const [displayDatePicker, setDisplayDatePicker] = useState<boolean>(false);
   const [submitting, setSubmitting] = useState<boolean>(false);
@@ -105,6 +122,13 @@ const AddEntry: React.FC<Iprops> = ({
   });
 
   const handleSave = async () => {
+    localStorage.removeItem("note");
+    localStorage.removeItem("duration");
+    localStorage.removeItem("client");
+    localStorage.removeItem("project");
+    localStorage.removeItem("projectId");
+    localStorage.removeItem("billable");
+    localStorage.removeItem("projectBillable");
     const tse = getPayload();
     const res = await timesheetEntryApi.create(
       {
@@ -177,6 +201,17 @@ const AddEntry: React.FC<Iprops> = ({
   useEffect(() => {
     handleFillData();
   }, []);
+
+  useEffect(() => {
+    // Save the entry data to localStorage whenever it changes
+    localStorage.setItem("note", note);
+    localStorage.setItem("duration", duration);
+    localStorage.setItem("client", client);
+    localStorage.setItem("project", project);
+    localStorage.setItem("projectId", projectId.toString());
+    localStorage.setItem("billable", billable.toString());
+    localStorage.setItem("projectBillable", projectBillable.toString());
+  }, [note, duration, client, project, projectId, billable, projectBillable]);
 
   return isDesktop ? (
     <div
