@@ -60,7 +60,7 @@ export const SETTINGS_ROUTES = [
     authorisedRoles: [ADMIN, OWNER],
   },
   {
-    path: "/edit/import",
+    path: "/import",
     Component: OrganizationImport,
     authorisedRoles: [ADMIN, OWNER],
   },
@@ -70,7 +70,7 @@ export const SETTINGS_ROUTES = [
     authorisedRoles: [ADMIN, OWNER],
   },
   {
-    path: "/edit/billing",
+    path: "/billing",
     Component: Billing,
     authorisedRoles: [ADMIN, OWNER],
   },
@@ -85,7 +85,7 @@ export const SETTINGS_ROUTES = [
     authorisedRoles: [ADMIN, OWNER],
   },
   {
-    path: "/edit/leave-balance",
+    path: "/leave-balance",
     Component: LeaveBalance,
     authorisedRoles: [ADMIN, OWNER],
   },
