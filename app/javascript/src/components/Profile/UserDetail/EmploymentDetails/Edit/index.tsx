@@ -242,7 +242,7 @@ const EmploymentDetailsEdit = () => {
         employments: payload,
       });
       setIsLoading(false);
-      navigate(`/profile/employment-details`, { replace: true });
+      navigate(`/settings/employment`, { replace: true });
     } catch (err) {
       setIsLoading(false);
       const errObj = initialErrState;
@@ -261,7 +261,7 @@ const EmploymentDetailsEdit = () => {
 
   const handleCancelDetails = () => {
     setIsLoading(true);
-    navigate(`/profile/employment-details`, { replace: true });
+    navigate(`/settings/employment`, { replace: true });
   };
 
   return (

@@ -144,7 +144,7 @@ const Leaves = () => {
       updateLeaveBalanceList();
       setIsEditable(false);
     } else {
-      navigate("/profile/edit/option");
+      navigate("/settings/profile");
     }
   };
 
