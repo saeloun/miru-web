@@ -586,9 +586,7 @@ const OrgEdit = () => {
         title="Organization Settings"
       />
       {isLoading ? (
-        <div className="flex h-80v w-full flex-col justify-center">
-          <Loader />
-        </div>
+        <Loader className="min-h-70v" />
       ) : (
         <StaticPage
           cancelAction={handleCancelAction}

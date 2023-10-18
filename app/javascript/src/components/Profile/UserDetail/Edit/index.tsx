@@ -382,9 +382,7 @@ const UserDetailsEdit = () => {
             </div>
           </div>
           {isLoading ? (
-            <div className="flex min-h-70v items-center justify-center">
-              <Loader />
-            </div>
+            <Loader className="min-h-70v" />
           ) : (
             <StaticPage
               addrType={addrType}
@@ -435,9 +433,7 @@ const UserDetailsEdit = () => {
             title="Personal Details"
           />
           {isLoading ? (
-            <div className="flex min-h-70v items-center justify-center">
-              <Loader />
-            </div>
+            <Loader className="min-h-70v" />
           ) : (
             <MobileEditPage
               addrType={addrType}
