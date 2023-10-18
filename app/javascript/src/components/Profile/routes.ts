@@ -1,14 +1,8 @@
 import { Roles } from "constants/index";
 
-import GoogleCalendar from "./GoogleCalendar";
 import MobileNav from "./Layout/MobileNav";
-import LeaveBalance from "./LeaveBalance";
-import Billing from "./Organization/Billing";
 import OrgDetails from "./Organization/Details";
 import OrgEdit from "./Organization/Edit";
-import Holidays from "./Organization/Holidays";
-import OrganizationImport from "./Organization/Import";
-import Leaves from "./Organization/Leaves";
 import PaymentSettings from "./Organization/Payment";
 import AllocatedDevicesDetails from "./UserDetail/AllocatedDevicesDetails";
 import UserDetailsEdit from "./UserDetail/Edit";
@@ -60,38 +54,38 @@ export const SETTINGS_ROUTES = [
     authorisedRoles: [ADMIN, OWNER],
   },
   {
-    path: "/import",
-    Component: OrganizationImport,
-    authorisedRoles: [ADMIN, OWNER],
-  },
-  {
     path: "/payment",
     Component: PaymentSettings,
     authorisedRoles: [ADMIN, OWNER],
   },
-  {
-    path: "/billing",
-    Component: Billing,
-    authorisedRoles: [ADMIN, OWNER],
-  },
-  {
-    path: "/leaves",
-    Component: Leaves,
-    authorisedRoles: [ADMIN, OWNER],
-  },
-  {
-    path: "/holidays",
-    Component: Holidays,
-    authorisedRoles: [ADMIN, OWNER],
-  },
-  {
-    path: "/leave-balance",
-    Component: LeaveBalance,
-    authorisedRoles: [ADMIN, OWNER],
-  },
-  {
-    path: "/integrations",
-    Component: GoogleCalendar,
-    authorisedRoles: [ADMIN, OWNER],
-  },
+  // {
+  //   path: "/import",
+  //   Component: OrganizationImport,
+  //   authorisedRoles: [ADMIN, OWNER],
+  // },
+  // {
+  //   path: "/billing",
+  //   Component: Billing,
+  //   authorisedRoles: [ADMIN, OWNER],
+  // },
+  // {
+  //   path: "/leaves",
+  //   Component: Leaves,
+  //   authorisedRoles: [ADMIN, OWNER],
+  // },
+  // {
+  //   path: "/holidays",
+  //   Component: Holidays,
+  //   authorisedRoles: [ADMIN, OWNER],
+  // },
+  // {
+  //   path: "/leave-balance",
+  //   Component: LeaveBalance,
+  //   authorisedRoles: [ADMIN, OWNER],
+  // },
+  // {
+  //   path: "/integrations",
+  //   Component: GoogleCalendar,
+  //   authorisedRoles: [ADMIN, OWNER],
+  // },
 ];

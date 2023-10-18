@@ -6,8 +6,6 @@ import {
   ClientsIcon as BuildingsIcon,
   UserIcon,
   PaymentsIcon,
-  CalendarIcon,
-  CakeIcon,
 } from "miruIcons";
 import { Outlet, useNavigate, useParams } from "react-router-dom";
 
@@ -44,16 +42,16 @@ const getSettingsNavUrls = memberId => [
         text: "PAYMENT SETTINGS",
         icon: <PaymentsIcon size={16} />,
       },
-      {
-        url: "/settings/leaves",
-        text: "Leaves",
-        icon: <CalendarIcon size={16} />,
-      },
-      {
-        url: "/settings/holidays",
-        text: "Holidays",
-        icon: <CakeIcon size={16} />,
-      },
+      // {
+      //   url: "/settings/leaves",
+      //   text: "Leaves",
+      //   icon: <CalendarIcon size={16} />,
+      // },
+      // {
+      //   url: "/settings/holidays",
+      //   text: "Holidays",
+      //   icon: <CakeIcon size={16} />,
+      // },
     ],
   },
 ];
