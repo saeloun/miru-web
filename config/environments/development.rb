@@ -95,5 +95,9 @@ Rails.application.configure do
     codespace_domain = ENV["GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN"]
     codespace_host = "#{ENV['CODESPACE_NAME']}-3000.#{codespace_domain}"
     config.hosts << codespace_host
+
+    config.action_dispatch.default_headers = {
+      "X-Frame-Options" => "ALLOW-FROM #{codespace_domain}"
+    }
   end
 end
