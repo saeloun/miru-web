@@ -90,4 +90,10 @@ Rails.application.configure do
   end
 
   config.serve_static_assets = true
+
+  if ENV["CODESPACES"] == "true"
+    codespace_domain = ENV['GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN']
+    codespace_host = "#{ENV['CODESPACE_NAME']}-3000.#{codespace_domain}"
+    config.hosts << codespace_host
+  end
 end
