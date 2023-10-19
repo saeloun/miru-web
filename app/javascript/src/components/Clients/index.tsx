@@ -3,6 +3,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
 import clientApi from "apis/clients";
+import Loader from "common/Loader/index";
 import withLayout from "common/Mobile/HOC/withLayout";
 import { useUserContext } from "context/UserContext";
 import { unmapClientList } from "mapper/mappedIndex";
@@ -30,7 +31,7 @@ const Clients = ({ isAdminUser }) => {
   const [clientLogo, setClientLogo] = useState("");
   const [overdueOutstandingAmount, setOverdueOutstandingAmount] =
     useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState<boolean>(true);
   const [showDialog, setShowDialog] = useState<boolean>(false);
   const [showToolTip, setShowToolTip] = useState<boolean>(false);
   const { isDesktop } = useUserContext();
@@ -83,11 +84,7 @@ const Clients = ({ isAdminUser }) => {
   }, []);
 
   if (loading) {
-    return (
-      <p className="tracking-wide flex min-h-screen items-center justify-center text-base font-medium text-miru-han-purple-1000">
-        Loading...
-      </p>
-    );
+    return <Loader />;
   }
 
   const ClientsLayout = () => (

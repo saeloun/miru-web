@@ -255,16 +255,12 @@ const Holidays = () => {
       setIsDetailUpdated(false);
       setIsEditable(false);
     } else {
-      navigate("/profile/edit/option");
+      navigate("/settings/profile");
     }
   };
 
   if (isLoading) {
-    return (
-      <div className="flex min-h-70v items-center justify-center">
-        <Loader />
-      </div>
-    );
+    return <Loader />;
   }
 
   return (
