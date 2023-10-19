@@ -274,7 +274,7 @@ const Holidays = () => {
       setIsDetailUpdated(false);
       setIsEditable(false);
     } else {
-      navigate("/profile/edit/option");
+      navigate("/settings/profile");
     }
   };
 

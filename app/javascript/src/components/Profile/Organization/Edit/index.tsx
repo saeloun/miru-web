@@ -473,7 +473,7 @@ const OrgEdit = () => {
         { abortEarly: false }
       );
       await updateOrgDetails();
-      navigate(`/profile/edit/organization-details`, { replace: true });
+      navigate(`/settings/organization`, { replace: true });
     } catch (err) {
       const errObj = {
         companyNameErr: "",
@@ -562,7 +562,7 @@ const OrgEdit = () => {
     getCurrencies();
     getData();
     setIsDetailUpdated(false);
-    navigate(`/profile/edit/organization-details`, { replace: true });
+    navigate(`/settings/organization`, { replace: true });
   };
 
   const handleDeleteLogo = async () => {
