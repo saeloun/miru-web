@@ -69,3 +69,4 @@ COPY --from=gems /app /app
 COPY --from=gems /usr/local/bundle /usr/local/bundle
 COPY --from=node_modules /app/node_modules /app/node_modules
 COPY . ./
+RUN apt-get install iputils-ping -y
