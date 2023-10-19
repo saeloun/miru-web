@@ -4,9 +4,9 @@ services:
     build:
       context: ..
       dockerfile: .devcontainer/Dockerfile
-    # command: bundle exec rails s -p 3000 -b 0.0.0.0
+    command: bash -c "bundle install && bundle exec rails db:prepare && bundle exec rails s -p 3000 -b 0.0.0.0" || sleep infinity
     # Overrides default command so things don't shut down after the process ends.
-    command: sleep infinity
+    # command: sleep infinity
     ports:
       - "3000:3000"
     image: miru-web:latest
