@@ -2,23 +2,17 @@
 // README at: https://github.com/devcontainers/templates/tree/main/src/docker-existing-docker-compose
 {
 	"name": "Miru Web Codespace",
-
 	// Update the 'dockerComposeFile' list if you have more compose files or use different names.
 	// The .devcontainer/docker-compose.yml file contains any overrides you need/want to make.
 	"dockerComposeFile": "docker-compose.yml",
-
 	// The 'service' property is the name of the service for the container that VS Code should
 	// use. Update this value and .devcontainer/docker-compose.yml to the real service name.
 	"service": "app",
-
 	// The optional 'workspaceFolder' property is the path VS Code should open by default when
 	// connected. This is typically a file mount in .devcontainer/docker-compose.yml
-
 	"workspaceFolder": "/app",
-
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	// "features": {},
-
 	"customizations": {
 		"vscode": {
 			// Add the IDs of extensions you want installed when the container is created.
@@ -30,32 +24,34 @@
 				"eamodio.gitlens",
 				"github.copilot",
 				"mrmlnc.vscode-duplicate"
-  			],
+			],
 			"settings": {
 				"terminal.integrated.shell.linux": "/bin/zsh"
 			}
 		}
-
 	},
-
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	"forwardPorts": [3000, 3035, 9200],
-
+	"forwardPorts": [
+		3000,
+		3035,
+		9200
+	],
 	// Uncomment the next line if you want start specific services in your Docker Compose config.
 	// "runServices": [],
-
 	// Uncomment the next line if you want to keep your containers running after VS Code shuts down.
 	// "shutdownAction": "none",
-
 	// Uncomment the next line to run commands after the container is created.
-	"postCreateCommand": ".devcontainer/boot.sh",
-
+	"postCreateCommand": {
+		"bundle": "bundle install && bundle exec rails db:prepare",
+		"gh": "gh codespace ports visibility 3000:public 3035:public"
+	},
+	"postAttachCommand": {
+		"rails": "bundle exec rails s -p 3000 -b 0.0.0.0"
+	},
 	// Configure tool-specific properties.
 	// "customizations": {},
-
 	// Uncomment to connect as an existing user other than the container default. More info: https://aka.ms/dev-containers-non-root.
-	// "remoteUser": "devcontainer"
-
+	"remoteUser": "root",
 	"portsAttributes": {
 		"3000": {
 			"label": "Rails Server"
