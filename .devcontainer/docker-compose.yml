@@ -98,7 +98,7 @@ services:
       dockerfile: .devcontainer/Dockerfile
     command: bundle exec sidekiq -C config/sidekiq.yml
     volumes:
-      - .:/app
+      - ..:/app
       - gem_cache:/usr/local/bundle/gems
       - node_modules:/app/node_modules
     environment:
