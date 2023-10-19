@@ -19,7 +19,6 @@
 			"extensions": [
 				"Shopify.ruby-lsp",
 				"misogi.ruby-rubocop",
-				"wingrunr21.vscode-ruby",
 				"davidpallinder.rails-test-runner",
 				"eamodio.gitlens",
 				"github.copilot",
@@ -42,7 +41,7 @@
 	// "shutdownAction": "none",
 	// Uncomment the next line to run commands after the container is created.
 	// "postCreateCommand": "",
-	"postAttachCommand": "bundle install && (bundle exec rails db:prepare && bundle exec rails s -p 3000 -b 0.0.0.0) ",
+	"postAttachCommand": "bundle exec rails s -p 3000 -b 0.0.0.0 && bundle exec rails db:prepare",
 	// Configure tool-specific properties.
 	// "customizations": {},
 	// Uncomment to connect as an existing user other than the container default. More info: https://aka.ms/dev-containers-non-root.
