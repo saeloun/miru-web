@@ -471,7 +471,7 @@ const OrgEdit = () => {
         { abortEarly: false }
       );
       await updateOrgDetails();
-      navigate(`/profile/edit/organization-details`, { replace: true });
+      navigate(`/settings/organization`, { replace: true });
     } catch (err) {
       const errObj = {
         companyNameErr: "",
@@ -559,7 +559,7 @@ const OrgEdit = () => {
     getCurrencies();
     getData();
     setIsDetailUpdated(false);
-    navigate(`/profile/edit/organization-details`, { replace: true });
+    navigate(`/settings/organization`, { replace: true });
   };
 
   const handleDeleteLogo = async () => {
@@ -586,9 +586,7 @@ const OrgEdit = () => {
         title="Organization Settings"
       />
       {isLoading ? (
-        <div className="flex h-80v w-full flex-col justify-center">
-          <Loader />
-        </div>
+        <Loader className="min-h-70v" />
       ) : (
         <StaticPage
           cancelAction={handleCancelAction}

@@ -4,10 +4,14 @@ import React, { useState } from "react";
 import { MinusIcon, PlusIcon } from "miruIcons";
 import { NavLink } from "react-router-dom";
 
+import { useUserContext } from "context/UserContext";
+
 import UserInformation from "./CommonComponents/UserInformation";
 import { companySettingsList, personalSettingsList } from "./constants";
 
 const SubNav = ({ isAdmin, firstName, company, lastName }) => {
+  const { companyRole } = useUserContext();
+
   const getActiveClassName = isActive => {
     if (isActive) {
       return "pl-4 py-5 border-l-8 border-miru-han-purple-600 bg-miru-gray-200 text-miru-han-purple-600 block w-full flex items-center";
@@ -43,18 +47,22 @@ const SubNav = ({ isAdmin, firstName, company, lastName }) => {
       </div>
       {openedSubNav.personal && (
         <ul>
-          {personalSettingsList.map((setting, index) => (
-            <li
-              className="border-b-2 border-miru-gray-400 tracking-widest"
-              key={index}
-            >
-              <SideBarNavItem
-                icon={setting.icon}
-                label={setting.label}
-                link={setting.link}
-              />
-            </li>
-          ))}
+          {personalSettingsList.map((setting, index) => {
+            if (setting.authorisedRoles.includes(companyRole)) {
+              return (
+                <li
+                  className="border-b-2 border-miru-gray-400 tracking-widest"
+                  key={index}
+                >
+                  <SideBarNavItem
+                    icon={setting.icon}
+                    label={setting.label}
+                    link={setting.link}
+                  />
+                </li>
+              );
+            }
+          })}
         </ul>
       )}
       <div
@@ -74,9 +82,34 @@ const SubNav = ({ isAdmin, firstName, company, lastName }) => {
       </div>
       {openedSubNav.company && (
         <ul>
-          {companySettingsList.map((setting, index) => (
+          {companySettingsList.map((setting, index) => {
+            if (setting.authorisedRoles.includes(companyRole)) {
+              return (
+                <li
+                  className="flex items-center justify-start border-b-2 border-miru-gray-400 tracking-widest"
+                  key={index}
+                >
+                  <SideBarNavItem
+                    icon={setting.icon}
+                    label={setting.label}
+                    link={setting.link}
+                  />
+                </li>
+              );
+            }
+          })}
+        </ul>
+      )}
+    </ul>
+  );
+
+  const getEmployeeLinks = () => (
+    <ul className="list-none text-sm font-medium leading-5 tracking-wider">
+      {personalSettingsList.map((setting, index) => {
+        if (setting.authorisedRoles.includes(companyRole)) {
+          return (
             <li
-              className="flex items-center justify-start border-b-2 border-miru-gray-400 tracking-widest"
+              className="border-b-2 border-miru-gray-400 tracking-widest"
               key={index}
             >
               <SideBarNavItem
@@ -85,26 +118,9 @@ const SubNav = ({ isAdmin, firstName, company, lastName }) => {
                 link={setting.link}
               />
             </li>
-          ))}
-        </ul>
-      )}
-    </ul>
-  );
-
-  const getEmployeeLinks = () => (
-    <ul className="list-none text-sm font-medium leading-5 tracking-wider">
-      {personalSettingsList.map((setting, index) => (
-        <li
-          className="border-b-2 border-miru-gray-400 tracking-widest"
-          key={index}
-        >
-          <SideBarNavItem
-            icon={setting.icon}
-            label={setting.label}
-            link={setting.link}
-          />
-        </li>
-      ))}
+          );
+        }
+      })}
     </ul>
   );
 
