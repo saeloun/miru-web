@@ -10,14 +10,14 @@ json.holidays holidays do |holiday|
 
   json.national_holidays holiday.holiday_infos.national.each do |holiday_info|
     json.id holiday_info.id
-    json.date holiday_info.date
+    json.date CompanyDateFormattingService.new(holiday_info.date, company: current_company).process
     json.name holiday_info.name
     json.category holiday_info.category
   end
 
   json.optional_holidays holiday.holiday_infos.optional.each do |holiday_info|
     json.id holiday_info.id
-    json.date holiday_info.date
+    json.date CompanyDateFormattingService.new(holiday_info.date, company: current_company).process
     json.name holiday_info.name
     json.category holiday_info.category
   end
