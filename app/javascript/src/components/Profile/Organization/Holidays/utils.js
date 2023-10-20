@@ -1,3 +1,5 @@
+import dayjs from "dayjs";
+
 export const companyDateFormat = dateFormat => {
   switch (dateFormat) {
     case "DD-MM-YYYY":
@@ -10,3 +12,12 @@ export const companyDateFormat = dateFormat => {
       return "DD.MM.YYYY";
   }
 };
+
+export const makePayload = (totalHolidayList, dateFormat) =>
+  totalHolidayList.map(holiday => ({
+    ...holiday,
+    date:
+      dateFormat == "DD.MM.YYYY"
+        ? holiday.date
+        : dayjs(holiday.date).format("DD.MM.YYYY"),
+  }));

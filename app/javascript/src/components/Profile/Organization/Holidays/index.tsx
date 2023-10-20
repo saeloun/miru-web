@@ -12,7 +12,7 @@ import { sendGAPageView } from "utils/googleAnalytics";
 
 import Details from "./Details";
 import EditHolidays from "./EditHolidays";
-import { companyDateFormat } from "./utils";
+import { companyDateFormat, makePayload } from "./utils";
 
 const Holidays = () => {
   const [holidayList, setHolidayList] = useState([]);
@@ -216,7 +216,11 @@ const Holidays = () => {
   };
 
   const handleUpdateHolidayDetails = () => {
-    const totalHolidayList = [...holidayList, ...optionalHolidaysList];
+    const totalHolidayList = makePayload(
+      [...holidayList, ...optionalHolidaysList],
+      dateFormat
+    );
+
     const payload = {
       holiday: {
         year: currentYear,
