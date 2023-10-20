@@ -16,6 +16,7 @@ import { TimeInput, Toastr } from "StyledComponents";
 import timesheetEntryApi from "apis/timesheet-entry";
 import CustomDatePicker from "common/CustomDatePicker";
 import { useUserContext } from "context/UserContext";
+import { getValueFromLocalStorage, setToLocalStorage } from "utils/storage";
 
 import MobileEntryForm from "./MobileView/MobileEntryForm";
 
@@ -36,30 +37,27 @@ const AddEntry: React.FC<Iprops> = ({
   setUpdateView,
   handleDeleteEntry,
   fetchEntriesofMonth,
+  removeLocalStorageItems,
 }) => {
-  const [note, setNote] = useState<string>(localStorage.getItem("note") || "");
-  const [duration, setDuration] = useState<string>(
-    localStorage.getItem("duration") || ""
+  const initialNote = getValueFromLocalStorage("note") || "";
+  const initialDuration = getValueFromLocalStorage("duration") || "";
+  const initialClient = getValueFromLocalStorage("client") || "";
+  const initialProject = getValueFromLocalStorage("project") || "";
+  const initialProjectId = parseInt(
+    getValueFromLocalStorage("projectId") || "0"
   );
+  const initialBillable = getValueFromLocalStorage("billable") === "true";
+  const initialProjectBillable =
+    getValueFromLocalStorage("projectBillable") === "true";
 
-  const [client, setClient] = useState<string>(
-    localStorage.getItem("client") || ""
-  );
-
-  const [project, setProject] = useState<string>(
-    localStorage.getItem("project") || ""
-  );
-
-  const [projectId, setProjectId] = useState<number>(
-    parseInt(localStorage.getItem("projectId") || "0")
-  );
-
-  const [billable, setBillable] = useState<boolean>(
-    localStorage.getItem("billable") === "true"
-  );
-
+  const [note, setNote] = useState<string>(initialNote);
+  const [duration, setDuration] = useState<string>(initialDuration);
+  const [client, setClient] = useState<string>(initialClient);
+  const [project, setProject] = useState<string>(initialProject);
+  const [projectId, setProjectId] = useState<number>(initialProjectId);
+  const [billable, setBillable] = useState<boolean>(initialBillable);
   const [projectBillable, setProjectBillable] = useState<boolean>(
-    localStorage.getItem("projectBillable") === "true"
+    initialProjectBillable
   );
   const [selectedDate, setSelectedDate] = useState<string>(selectedFullDate);
   const [displayDatePicker, setDisplayDatePicker] = useState<boolean>(false);
@@ -122,13 +120,7 @@ const AddEntry: React.FC<Iprops> = ({
   });
 
   const handleSave = async () => {
-    localStorage.removeItem("note");
-    localStorage.removeItem("duration");
-    localStorage.removeItem("client");
-    localStorage.removeItem("project");
-    localStorage.removeItem("projectId");
-    localStorage.removeItem("billable");
-    localStorage.removeItem("projectBillable");
+    removeLocalStorageItems();
     const tse = getPayload();
     const res = await timesheetEntryApi.create(
       {
@@ -202,15 +194,18 @@ const AddEntry: React.FC<Iprops> = ({
     handleFillData();
   }, []);
 
+  const setLocalStorageItems = () => {
+    setToLocalStorage("note", note);
+    setToLocalStorage("duration", duration);
+    setToLocalStorage("client", client);
+    setToLocalStorage("project", project);
+    setToLocalStorage("projectId", projectId.toString());
+    setToLocalStorage("billable", billable.toString());
+    setToLocalStorage("projectBillable", projectBillable.toString());
+  };
+
   useEffect(() => {
-    // Save the entry data to localStorage whenever it changes
-    localStorage.setItem("note", note);
-    localStorage.setItem("duration", duration);
-    localStorage.setItem("client", client);
-    localStorage.setItem("project", project);
-    localStorage.setItem("projectId", projectId.toString());
-    localStorage.setItem("billable", billable.toString());
-    localStorage.setItem("projectBillable", projectBillable.toString());
+    setLocalStorageItems();
   }, [note, duration, client, project, projectId, billable, projectBillable]);
 
   return isDesktop ? (
@@ -417,6 +412,7 @@ interface Iprops {
   setSelectedFullDate: any;
   setUpdateView: any;
   handleDeleteEntry: any;
+  removeLocalStorageItems: () => void;
 }
 
 export default AddEntry;
