@@ -3,10 +3,7 @@ import React from "react";
 import {
   ClientsIcon as BuildingsIcon,
   PaymentsIcon,
-  CalendarIcon,
-  CakeIcon,
   UserIcon,
-  IntegrateIcon,
   MobileIcon,
   ProjectsIcon,
 } from "miruIcons";
@@ -49,22 +46,22 @@ export const companySettingsList = [
     icon: <PaymentsIcon className="mr-2" size={20} weight="bold" />,
     authorisedRoles: [ADMIN, OWNER],
   },
-  {
-    label: "LEAVES",
-    link: "/settings/leaves",
-    icon: <CalendarIcon className="mr-2" size={20} weight="bold" />,
-    authorisedRoles: [ADMIN, OWNER],
-  },
-  {
-    label: "HOLIDAYS",
-    link: "/settings/holidays",
-    icon: <CakeIcon className="mr-2" size={20} weight="bold" />,
-    authorisedRoles: [ADMIN, OWNER],
-  },
-  {
-    label: "Integration",
-    link: "/settings/integrations",
-    icon: <IntegrateIcon className="mr-2" size={20} weight="bold" />,
-    authorisedRoles: [ADMIN, OWNER],
-  },
+  // {
+  //   label: "LEAVES",
+  //   link: "/settings/leaves",
+  //   icon: <CalendarIcon className="mr-2" size={20} weight="bold" />,
+  //   authorisedRoles: [ADMIN, OWNER],
+  // },
+  // {
+  //   label: "HOLIDAYS",
+  //   link: "/settings/holidays",
+  //   icon: <CakeIcon className="mr-2" size={20} weight="bold" />,
+  //   authorisedRoles: [ADMIN, OWNER],
+  // },
+  // {
+  //   label: "Integration",
+  //   link: "/settings/integrations",
+  //   icon: <IntegrateIcon className="mr-2" size={20} weight="bold" />,
+  //   authorisedRoles: [ADMIN, OWNER],
+  // },
 ];
