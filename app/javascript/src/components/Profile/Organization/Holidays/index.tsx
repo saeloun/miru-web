@@ -12,6 +12,7 @@ import { sendGAPageView } from "utils/googleAnalytics";
 
 import Details from "./Details";
 import EditHolidays from "./EditHolidays";
+import { companyDateFormat, makePayload } from "./utils";
 
 const Holidays = () => {
   const [holidayList, setHolidayList] = useState([]);
@@ -41,8 +42,16 @@ const Holidays = () => {
   const [isEditable, setIsEditable] = useState(false);
   const [holidays, setHolidays] = useState([]);
   const [currentYearHolidaysList, setCurrentYearHolidaysList] = useState([]);
+  const [currentYearPublicHolidays, setCurrentYearPublicHolidays] = useState(
+    []
+  );
 
-  const { isDesktop } = useUserContext();
+  const [currentYearOptionalHolidays, setCurrentYearOptionalHolidays] =
+    useState([]);
+
+  const { isDesktop, company } = useUserContext();
+  const dateFormat = companyDateFormat(company?.date_format);
+
   const navigate = useNavigate();
 
   useOutsideClick(wrapperRef, () => {
@@ -87,6 +96,7 @@ const Holidays = () => {
     const currentHoliday = holidays.find(
       holiday => holiday.year == currentYear
     );
+
     if (currentHoliday) {
       const {
         enable_optional_holidays,
@@ -115,12 +125,17 @@ const Holidays = () => {
       setHolidayList(newNationalHolidays);
       setOptionalHolidaysList(newOptionalHolidays);
       setCurrentYearHolidaysList([...national_holidays, ...optional_holidays]);
+      setCurrentYearPublicHolidays(national_holidays);
+      setCurrentYearOptionalHolidays(optional_holidays);
     } else {
       setEnableOptionalHolidays(false);
       setTotalOptionalHolidays(0);
       setOptionalRepetitionType("per_year");
       setHolidayList([]);
+      setCurrentYearHolidaysList([]);
       setOptionalHolidaysList([]);
+      setCurrentYearPublicHolidays([]);
+      setCurrentYearOptionalHolidays([]);
     }
   };
 
@@ -201,7 +216,11 @@ const Holidays = () => {
   };
 
   const handleUpdateHolidayDetails = () => {
-    const totalHolidayList = [...holidayList, ...optionalHolidaysList];
+    const totalHolidayList = makePayload(
+      [...holidayList, ...optionalHolidaysList],
+      dateFormat
+    );
+
     const payload = {
       holiday: {
         year: currentYear,
@@ -247,11 +266,15 @@ const Holidays = () => {
 
   const saveUpdatedHolidayDetails = async payload => {
     await holidaysApi.updateHolidays(currentYear, { holiday: payload });
+    fetchHolidays();
     setIsEditable(false);
   };
 
   const handleCancelAction = () => {
     if (isDesktop) {
+      if (holidays.length) {
+        updateHolidaysList(holidays);
+      }
       setIsDetailUpdated(false);
       setIsEditable(false);
     } else {
@@ -268,6 +291,7 @@ const Holidays = () => {
       {isEditable ? (
         <EditHolidays
           currentYear={currentYear}
+          dateFormat={dateFormat}
           enableOptionalHolidays={enableOptionalHolidays}
           handleAddHoliday={handleAddHoliday}
           handleCancelAction={handleCancelAction}
@@ -296,9 +320,10 @@ const Holidays = () => {
       ) : (
         <Details
           currentYear={currentYear}
+          dateFormat={dateFormat}
           editAction={() => setIsEditable(true)}
-          holidaysList={holidayList}
-          optionalHolidayList={optionalHolidaysList}
+          holidaysList={currentYearPublicHolidays}
+          optionalHolidayList={currentYearOptionalHolidays}
           setCurrentYear={setCurrentYear}
           showCalendar={showCalendar}
           toggleCalendarModal={toggleCalendarModal}
