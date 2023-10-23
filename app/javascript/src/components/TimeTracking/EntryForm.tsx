@@ -6,6 +6,7 @@ import dayjs from "dayjs";
 import {
   minFromHHMM,
   minToHHMM,
+  useDebounce,
   useOutsideClick,
   validateTimesheetEntry,
 } from "helpers";
@@ -65,7 +66,8 @@ const AddEntry: React.FC<Iprops> = ({
 
   const datePickerRef: MutableRefObject<any> = useRef();
   const { isDesktop } = useUserContext();
-
+  const isNewEntry = !editEntryId;
+  const debouncedNote = useDebounce(note, 500);
   useOutsideClick(datePickerRef, () => {
     setDisplayDatePicker(false);
   });
@@ -195,7 +197,7 @@ const AddEntry: React.FC<Iprops> = ({
   }, []);
 
   const setLocalStorageItems = () => {
-    setToLocalStorage("note", note);
+    setToLocalStorage("note", debouncedNote);
     setToLocalStorage("duration", duration);
     setToLocalStorage("client", client);
     setToLocalStorage("project", project);
@@ -205,8 +207,18 @@ const AddEntry: React.FC<Iprops> = ({
   };
 
   useEffect(() => {
-    setLocalStorageItems();
-  }, [note, duration, client, project, projectId, billable, projectBillable]);
+    if (isNewEntry) {
+      setLocalStorageItems();
+    }
+  }, [
+    debouncedNote,
+    duration,
+    client,
+    project,
+    projectId,
+    billable,
+    projectBillable,
+  ]);
 
   return isDesktop ? (
     <div
