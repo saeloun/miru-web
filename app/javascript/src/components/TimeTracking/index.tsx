@@ -222,7 +222,18 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
     await handleFilterEntry(selectedFullDate, id);
   };
 
+  const removeLocalStorageItems = () => {
+    localStorage.removeItem("note");
+    localStorage.removeItem("duration");
+    localStorage.removeItem("client");
+    localStorage.removeItem("project");
+    localStorage.removeItem("projectId");
+    localStorage.removeItem("billable");
+    localStorage.removeItem("projectBillable");
+  };
+
   const handleDuplicate = async id => {
+    removeLocalStorageItems();
     if (!id) return;
     const entry = entryList[selectedFullDate].find(entry => entry.id === id);
     const data = {
@@ -482,6 +493,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
               handleFilterEntry={handleFilterEntry}
               handleRelocateEntry={handleRelocateEntry}
               projects={projects}
+              removeLocalStorageItems={removeLocalStorageItems}
               selectedEmployeeId={selectedEmployeeId}
               selectedFullDate={selectedFullDate}
               setEditEntryId={setEditEntryId}
@@ -564,6 +576,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
                 handleRelocateEntry={handleRelocateEntry}
                 key={entry.id}
                 projects={projects}
+                removeLocalStorageItems={removeLocalStorageItems}
                 selectedEmployeeId={selectedEmployeeId}
                 selectedFullDate={selectedFullDate}
                 setEditEntryId={setEditEntryId}
