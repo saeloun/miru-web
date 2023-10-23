@@ -6,6 +6,7 @@ import dayjs from "dayjs";
 import {
   minFromHHMM,
   minToHHMM,
+  useDebounce,
   useOutsideClick,
   validateTimesheetEntry,
 } from "helpers";
@@ -16,6 +17,7 @@ import { TimeInput, Toastr } from "StyledComponents";
 import timesheetEntryApi from "apis/timesheet-entry";
 import CustomDatePicker from "common/CustomDatePicker";
 import { useUserContext } from "context/UserContext";
+import { getValueFromLocalStorage, setToLocalStorage } from "utils/storage";
 
 import MobileEntryForm from "./MobileView/MobileEntryForm";
 
@@ -36,21 +38,36 @@ const AddEntry: React.FC<Iprops> = ({
   setUpdateView,
   handleDeleteEntry,
   fetchEntriesofMonth,
+  removeLocalStorageItems,
 }) => {
-  const [note, setNote] = useState<string>("");
-  const [duration, setDuration] = useState<string>("");
-  const [client, setClient] = useState<string>("");
-  const [project, setProject] = useState<string>("");
-  const [projectId, setProjectId] = useState<number>(0);
-  const [billable, setBillable] = useState<boolean>(false);
-  const [projectBillable, setProjectBillable] = useState<boolean>(true);
+  const initialNote = getValueFromLocalStorage("note") || "";
+  const initialDuration = getValueFromLocalStorage("duration") || "";
+  const initialClient = getValueFromLocalStorage("client") || "";
+  const initialProject = getValueFromLocalStorage("project") || "";
+  const initialProjectId = parseInt(
+    getValueFromLocalStorage("projectId") || "0"
+  );
+  const initialBillable = getValueFromLocalStorage("billable") === "true";
+  const initialProjectBillable =
+    getValueFromLocalStorage("projectBillable") === "true";
+
+  const [note, setNote] = useState<string>(initialNote);
+  const [duration, setDuration] = useState<string>(initialDuration);
+  const [client, setClient] = useState<string>(initialClient);
+  const [project, setProject] = useState<string>(initialProject);
+  const [projectId, setProjectId] = useState<number>(initialProjectId);
+  const [billable, setBillable] = useState<boolean>(initialBillable);
+  const [projectBillable, setProjectBillable] = useState<boolean>(
+    initialProjectBillable
+  );
   const [selectedDate, setSelectedDate] = useState<string>(selectedFullDate);
   const [displayDatePicker, setDisplayDatePicker] = useState<boolean>(false);
   const [submitting, setSubmitting] = useState<boolean>(false);
 
   const datePickerRef: MutableRefObject<any> = useRef();
   const { isDesktop } = useUserContext();
-
+  const isNewEntry = !editEntryId;
+  const debouncedNote = useDebounce(note, 500);
   useOutsideClick(datePickerRef, () => {
     setDisplayDatePicker(false);
   });
@@ -105,6 +122,7 @@ const AddEntry: React.FC<Iprops> = ({
   });
 
   const handleSave = async () => {
+    removeLocalStorageItems();
     const tse = getPayload();
     const res = await timesheetEntryApi.create(
       {
@@ -177,6 +195,30 @@ const AddEntry: React.FC<Iprops> = ({
   useEffect(() => {
     handleFillData();
   }, []);
+
+  const setLocalStorageItems = () => {
+    setToLocalStorage("note", debouncedNote);
+    setToLocalStorage("duration", duration);
+    setToLocalStorage("client", client);
+    setToLocalStorage("project", project);
+    setToLocalStorage("projectId", projectId.toString());
+    setToLocalStorage("billable", billable.toString());
+    setToLocalStorage("projectBillable", projectBillable.toString());
+  };
+
+  useEffect(() => {
+    if (isNewEntry) {
+      setLocalStorageItems();
+    }
+  }, [
+    debouncedNote,
+    duration,
+    client,
+    project,
+    projectId,
+    billable,
+    projectBillable,
+  ]);
 
   return isDesktop ? (
     <div
@@ -382,6 +424,7 @@ interface Iprops {
   setSelectedFullDate: any;
   setUpdateView: any;
   handleDeleteEntry: any;
+  removeLocalStorageItems: () => void;
 }
 
 export default AddEntry;
