@@ -1,11 +1,10 @@
 import React from "react";
 
 import { Routes, Route, Navigate } from "react-router-dom";
+import { SettingsSubRoutes } from "routes";
 
 import ErrorPage from "common/Error";
 import { useUserContext } from "context/UserContext";
-
-import { SETTINGS_ROUTES } from "./routes";
 
 const ProtectedRoute = ({ role, authorisedRoles, children }) => {
   if (authorisedRoles.includes(role)) {
@@ -20,7 +19,7 @@ const RouteConfig = () => {
 
   return (
     <Routes>
-      {SETTINGS_ROUTES.map(({ path, authorisedRoles, Component }) => (
+      {SettingsSubRoutes.map(({ path, authorisedRoles, Component }) => (
         <Route
           key={path}
           path={path}

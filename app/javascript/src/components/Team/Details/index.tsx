@@ -5,9 +5,10 @@ import { useUserContext } from "context/UserContext";
 
 import { EmploymentDetailsState } from "./EmploymentDetails/EmploymentDetailsState";
 import Header from "./Layout/Header";
-import OutletWrapper from "./Layout/OutletWrapper";
 import SideNav from "./Layout/SideNav";
 import { PersonalDetailsState } from "./PersonalDetails/PersonalDetailsState";
+
+import RouteConfig from "../RouteConfig";
 
 const TeamDetails = () => {
   const [details, setDetails] = useState({
@@ -38,12 +39,12 @@ const TeamDetails = () => {
               <SideNav />
             </div>
             <div className="col-span-9">
-              <OutletWrapper />
+              <RouteConfig />
             </div>
           </div>
         </Fragment>
       )}
-      {!isDesktop && <OutletWrapper />}
+      {!isDesktop && <RouteConfig />}
     </TeamDetailsContext.Provider>
   );
 };

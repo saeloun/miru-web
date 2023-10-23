@@ -32,7 +32,9 @@ dayjs.updateLocale("en", { monthShort: monthsAbbr });
 // Day start from monday
 dayjs.Ls.en.weekStart = 1;
 
-const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
+const TimeTracking = () => {
+  const { user, isAdminUser, isDesktop } = useUserContext();
+
   const [dayInfo, setDayInfo] = useState<any[]>([]);
   const [view, setView] = useState<string>("month");
   const [newEntryView, setNewEntryView] = useState<boolean>(false);
@@ -50,7 +52,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [isWeeklyEditing, setIsWeeklyEditing] = useState<boolean>(false);
   const [selectedEmployeeId, setSelectedEmployeeId] = useState<number>(
-    user?.id
+    Number(user?.id)
   );
   const [allEmployeesEntries, setAllEmployeesEntries] = useState<object>({});
   const [clients, setClients] = useState<any>({});
@@ -61,7 +63,6 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
   );
   const [currentYear, setCurrentYear] = useState<number>(dayjs().year());
   const [updateView, setUpdateView] = useState(true);
-  const { isDesktop } = useUserContext();
   const employeeOptions = employees.map(e => ({
     value: `${e["id"]}`,
     label: `${e["first_name"]} ${e["last_name"]}`,
@@ -620,10 +621,5 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
 
   return isDesktop ? TimeTrackingLayout() : <Main />;
 };
-
-interface Iprops {
-  isAdminUser: boolean;
-  user: any;
-}
 
 export default TimeTracking;

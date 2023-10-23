@@ -17,7 +17,7 @@ import EditClient from "./Modals/EditClient";
 import NewClient from "./Modals/NewClient";
 import TotalHoursChart from "./TotalHoursChart";
 
-const Clients = ({ isAdminUser }) => {
+const Clients = () => {
   const [clientId, setClientId] = useState("");
   const [showEditDialog, setShowEditDialog] = useState<boolean>(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
@@ -34,7 +34,7 @@ const Clients = ({ isAdminUser }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [showDialog, setShowDialog] = useState<boolean>(false);
   const [showToolTip, setShowToolTip] = useState<boolean>(false);
-  const { isDesktop } = useUserContext();
+  const { isAdminUser, isDesktop } = useUserContext();
   const navigate = useNavigate();
   const toolTipRef = useRef(null);
 

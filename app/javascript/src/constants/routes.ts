@@ -10,6 +10,7 @@ import LeaveManagement from "components/LeaveManagement";
 import Success from "components/payments/Success";
 import Projects from "components/Projects";
 import AccountsAgingReport from "components/Reports/AccountsAgingReport";
+import TeamDetails from "components/Team/Details";
 import TeamsRouteConfig from "components/Team/TeamsRouteConfig";
 import { Roles, Paths } from "constants/index";
 
@@ -24,7 +25,6 @@ import RevenueByClientReport from "../components/Reports/RevenueByClientReport";
 import TimeEntryReports from "../components/Reports/TimeEntryReport";
 import TotalHoursReport from "../components/Reports/totalHoursLogged";
 import PlanSelection from "../components/Subscriptions/PlanSelection";
-import RouteConfig from "../components/Team/RouteConfig";
 import TimeTracking from "../components/TimeTracking";
 
 const ClientsRoutes = [
@@ -67,7 +67,7 @@ const LeaveManagementRoutes = [
   { path: "*", Component: ErrorPage },
 ];
 
-const TeamRoutes = [{ path: "*", Component: RouteConfig }];
+const TeamRoutes = [{ path: "*", Component: TeamDetails }];
 
 const TeamsRoutes = [{ path: "*", Component: TeamsRouteConfig }];
 

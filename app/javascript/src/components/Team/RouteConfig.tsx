@@ -1,25 +1,41 @@
 import React from "react";
 
-import { Route, Routes } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
+import { TeamSubRoutes } from "routes";
 
-import Details from "./Details";
-import EmploymentDetails from "./Details/EmploymentDetails";
-import EmploymentEdit from "./Details/EmploymentDetails/Edit";
-import MobileNav from "./Details/Layout/MobileNav";
-import PersonalDetails from "./Details/PersonalDetails";
-import PersonalEdit from "./Details/PersonalDetails/Edit";
+import ErrorPage from "common/Error";
+import { useUserContext } from "context/UserContext";
 
-const RouteConfig = () => (
-  <Routes>
-    <Route element={<Details />} path=":memberId">
-      <Route index element={<PersonalDetails />} />
-      <Route element={<PersonalEdit />} path="edit" />
-      <Route element={<MobileNav />} path="options" />
-      <Route element={<PersonalDetails />} path="details" />
-      <Route element={<EmploymentDetails />} path="employment" />
-      <Route element={<EmploymentEdit />} path="employment_edit" />
-    </Route>
-  </Routes>
-);
+const ProtectedRoute = ({ role, authorisedRoles, children }) => {
+  if (authorisedRoles.includes(role)) {
+    return children;
+  }
+
+  return <Navigate replace to="/error" />;
+};
+
+const RouteConfig = () => {
+  const { companyRole } = useUserContext();
+
+  return (
+    <Routes>
+      {TeamSubRoutes.map(({ path, authorisedRoles, Component }) => (
+        <Route
+          key={path}
+          path={path}
+          element={
+            <ProtectedRoute
+              authorisedRoles={authorisedRoles}
+              role={companyRole}
+            >
+              <Component />
+            </ProtectedRoute>
+          }
+        />
+      ))}
+      <Route element={<ErrorPage />} path="*" />
+    </Routes>
+  );
+};
 
 export default RouteConfig;
