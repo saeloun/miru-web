@@ -12,14 +12,14 @@ import ProjectForm from "./List/Mobile/ProjectForm";
 import AddEditProject from "./Modals/AddEditProject";
 import DeleteProject from "./Modals/DeleteProject";
 
-const Projects = ({ isAdminUser }) => {
+const Projects = () => {
   const [showProjectModal, setShowProjectModal] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [editProjectData, setEditProjectData] = useState({});
   const [deleteProjectData, setDeleteProjectData] = useState({});
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { isDesktop } = useUserContext();
+  const { isAdminUser, isDesktop } = useUserContext();
 
   const fetchProjects = async () => {
     const res = await projectApi.get();

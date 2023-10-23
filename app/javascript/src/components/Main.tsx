@@ -8,9 +8,9 @@ import {
   useLocation,
   useNavigate,
 } from "react-router-dom";
+import { AUTH_ROUTES, PUBLIC_ROUTES } from "routes";
 
 import { Paths, Roles } from "constants/index";
-import { AUTH_ROUTES, PUBLIC_ROUTES } from "constants/routes";
 import { useAuthState, useAuthDispatch } from "context/auth";
 import { useUserContext } from "context/UserContext";
 import { loginGoogleAuth } from "utils/googleOauthLogin";

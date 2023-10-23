@@ -15,7 +15,6 @@ export const Project = ({
   clientName,
   minutesSpent,
   isBillable,
-  isAdminUser,
   setShowProjectModal,
   setEditProjectData,
   setShowDeleteDialog,
@@ -24,8 +23,11 @@ export const Project = ({
   const [grayColor, setGrayColor] = React.useState<string>("");
   const [isHover, setIsHover] = React.useState<boolean>(false);
   const [showMoreOptions, setShowMoreOptions] = React.useState<boolean>(false);
+
   const navigate = useNavigate();
-  const { isDesktop } = useUserContext();
+
+  const { isAdminUser, isDesktop } = useUserContext();
+
   const handleMouseEnter = () => {
     if (isAdminUser) {
       setGrayColor("bg-miru-gray-100");

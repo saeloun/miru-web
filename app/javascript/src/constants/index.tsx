@@ -42,7 +42,7 @@ export enum Paths {
   SUBSCRIPTIONS = "/subscriptions",
   PAYMENTS = "/payments",
   TIME_TRACKING = "/time-tracking",
-  TEAM = "/team/*",
+  TEAM = "/team",
   TEAMS = "/teams/*",
   SETTINGS = "/settings/*",
   AUTHORIZATION = "/authorization",

@@ -21,6 +21,7 @@
       "context/*": ["./app/javascript/src/context/*"],
       "mapper/*": ["./app/javascript/src/mapper/*"],
       "constants/*": ["./app/javascript/src/constants/*"],
+      "routes": ["./app/javascript/src/routes"],
       "StyledComponents": ["./app/javascript/src/StyledComponents"],
       "miruIcons": ["./app/javascript/src/miruIcons"],
     }

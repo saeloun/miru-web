@@ -25,7 +25,7 @@ import AddProject from "../Modals/AddProject";
 import PaymentReminder from "../Modals/PaymentReminder";
 import MobilePaymentReminder from "../Modals/PaymentReminder/MobileView";
 
-const ClientDetails = ({ isAdminUser }) => {
+const ClientDetails = () => {
   const [showEditDialog, setShowEditDialog] = useState<boolean>(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
   const [selectedProject, setSelectedProject] = useState({});
@@ -43,7 +43,7 @@ const ClientDetails = ({ isAdminUser }) => {
 
   const params = useParams();
   const navigate = useNavigate();
-  const { isDesktop } = useUserContext();
+  const { isAdminUser, isDesktop } = useUserContext();
 
   const handleEditClick = id => {
     setShowEditDialog(true);

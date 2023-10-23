@@ -10,8 +10,8 @@ import { PersonalDetailsState } from "./context/PersonalDetailsState";
 import RouteConfig from "./RouteConfig";
 import SubNav from "./SubNav";
 
-const Layout = ({ isAdminUser, user, company }) => {
-  const { isDesktop } = useUserContext();
+const Layout = () => {
+  const { isDesktop, isAdminUser, user, company } = useUserContext();
 
   const [settingsStates, setSettingsStates] = useState({
     profileSettings: PersonalDetailsState,

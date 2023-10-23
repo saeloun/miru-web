@@ -41,7 +41,7 @@ const EmploymentDetails = () => {
         <button
           className="cursor-pointer rounded-md border border-white bg-miru-han-purple-1000 px-6 py-2 font-bold text-white"
           onClick={() =>
-            navigate(`/team/${memberId}/employment_edit`, { replace: true })
+            navigate(`/team/${memberId}/employment/edit`, { replace: true })
           }
         >
           Edit

@@ -1,18 +1,26 @@
+import Layout from "components/Profile/Layout";
+import MobileNav from "components/Profile/Layout/MobileNav";
+import OrgDetails from "components/Profile/Organization/Details";
+import OrgEdit from "components/Profile/Organization/Edit";
+import PaymentSettings from "components/Profile/Organization/Payment";
+import AllocatedDevicesDetails from "components/Profile/UserDetail/AllocatedDevicesDetails";
+import UserDetailsEdit from "components/Profile/UserDetail/Edit";
+import EmploymentDetails from "components/Profile/UserDetail/EmploymentDetails";
+import EmploymentDetailsEdit from "components/Profile/UserDetail/EmploymentDetails/Edit";
+import UserDetailsView from "components/Profile/UserDetail/UserDetailsView";
 import { Roles } from "constants/index";
-
-import MobileNav from "./Layout/MobileNav";
-import OrgDetails from "./Organization/Details";
-import OrgEdit from "./Organization/Edit";
-import PaymentSettings from "./Organization/Payment";
-import AllocatedDevicesDetails from "./UserDetail/AllocatedDevicesDetails";
-import UserDetailsEdit from "./UserDetail/Edit";
-import EmploymentDetails from "./UserDetail/EmploymentDetails";
-import EmploymentDetailsEdit from "./UserDetail/EmploymentDetails/Edit";
-import UserDetailsView from "./UserDetail/UserDetailsView";
 
 const { ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE, CLIENT } = Roles;
 
-export const SETTINGS_ROUTES = [
+export const SettingsRoutes = [
+  {
+    path: "/settings/*",
+    Component: Layout,
+    authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE, CLIENT],
+  },
+];
+
+export const SettingsSubRoutes = [
   {
     path: "/profile",
     Component: UserDetailsView,

@@ -37,7 +37,7 @@ const navOptions = [
   {
     logo: <TeamsIcon className="mr-0 md:mr-4" size={26} />,
     label: "Team",
-    path: Paths.TEAMS,
+    path: Paths.TEAM,
     allowedRoles: ["admin", "owner"],
   },
   {
@@ -76,7 +76,7 @@ const navAdminMobileOptions = [
   {
     logo: <TeamsIcon className="mr-0 md:mr-4" size={26} />,
     label: "Team",
-    path: Paths.TEAMS,
+    path: Paths.TEAM,
   },
   {
     logo: <ClientsIcon className="mr-0 md:mr-4" size={26} />,

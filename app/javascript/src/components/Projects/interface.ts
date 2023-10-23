@@ -6,7 +6,6 @@ export interface IProject {
   minutesSpent: number;
   editIcon: string;
   deleteIcon: string;
-  isAdminUser: boolean;
   setShowEditDialog: any;
   setProjectToEdit: any;
   setProjectToDelete: any;

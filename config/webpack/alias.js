@@ -8,6 +8,7 @@ module.exports = {
       context: "src/context",
       mapper: "src/mapper",
       constants: "src/constants",
+      routes:"src/routes",
       utils: "src/utils",
       StyledComponents: "src/StyledComponents",
       miruIcons: "src/miruIcons",
