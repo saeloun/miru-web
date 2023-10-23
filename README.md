@@ -61,7 +61,7 @@ The documentation covers everything from installation and setup to advanced usag
 
 - Feel free to join our [Discord](https://discord.gg/UABXyQQ82c) channel for
   support and questions.
-- Subscribe our latest [blog articles](https://blog.miru.so) and tutorials.
+- Subscribe to our latest [blog articles](https://blog.miru.so) and tutorials.
 - [Discussions](https://github.com/saeloun/miru-web/discussions): Post your
   questions regarding Miru Web
 - [**Twitter**](https://twitter.com/getmiru)
@@ -71,7 +71,7 @@ The documentation covers everything from installation and setup to advanced usag
 We encourage everyone to contribute to Miru Web! Check out
 [Contributing Guide](CONTRIBUTING.md) for guidelines about how to proceed.. <br>
 
-Note: We are working on improving the documentation. So we had created a
+Note: We are working on improving the documentation. So we created a
 docusaurus app for documentation. Check out the
 [Miru Docs](https://github.com/saeloun/miru-web/tree/develop/docs).
 
