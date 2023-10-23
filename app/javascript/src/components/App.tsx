@@ -17,7 +17,6 @@ const App = props => {
     confirmedUser,
     googleOauthSuccess,
     avatarUrl,
-    company,
     calendarEnabled,
     calendarConnected,
   } = props;
@@ -26,6 +25,7 @@ const App = props => {
   const [isDesktop, setIsDesktop] = useState<boolean>(window.innerWidth > 1023);
   const [selectedTab, setSelectedTab] = useState(null);
   const [currentAvatarUrl, setCurrentAvatarUrl] = useState(avatarUrl);
+  const [company, setCompany] = useState(props.company);
 
   const handleOverlayVisibility = (isOverlayVisible: boolean) => {
     const overlayEl = document.getElementById("overlay");
@@ -62,6 +62,7 @@ const App = props => {
         selectedTab,
         setSelectedTab,
         company,
+        setCompany,
       }}
     >
       <AuthProvider>
