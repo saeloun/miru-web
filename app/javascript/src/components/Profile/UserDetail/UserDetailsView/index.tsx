@@ -5,12 +5,13 @@ import React, { Fragment, useEffect, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 
 import profileApi from "apis/profile";
+import teamsApi from "apis/teams";
 import Loader from "common/Loader/index";
 import { MobileEditHeader } from "common/Mobile/MobileEditHeader";
 import { useProfile } from "components/Profile/context/EntryContext";
 import DetailsHeader from "components/Profile/DetailsHeader";
 import { useUserContext } from "context/UserContext";
-import { teamsMapper } from "mapper/teams.mapper";
+import { employmentMapper, teamsMapper } from "mapper/teams.mapper";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import MobilePersonalDetails from "./MobilePersonalDetails";
@@ -31,6 +32,21 @@ const UserDetailsView = () => {
         addressData.data.addresses[0]
       );
       setUserState("profileSettings", userObj);
+      const employmentData: any = await teamsApi.getEmploymentDetails(
+        data?.data?.user.id
+      );
+
+      const prevEmploymentData: any = await teamsApi.getPreviousEmployments(
+        data?.data?.user.id
+      );
+
+      if (employmentData.status && employmentData.status == 200) {
+        const employmentObj = employmentMapper(
+          employmentData.data.employment,
+          prevEmploymentData.data.previous_employments
+        );
+        setUserState("employmentDetails", employmentObj);
+      }
       setIsLoading(false);
     } else {
       setIsLoading(false);

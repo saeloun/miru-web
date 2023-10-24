@@ -6,7 +6,7 @@ import { Avatar, MoreOptions, Toastr, Tooltip } from "StyledComponents";
 import profileApi from "apis/profile";
 import { useUserContext } from "context/UserContext";
 
-const UserInformation = ({ firstName, lastName }) => {
+const UserInformation = ({ firstName, lastName, designation }) => {
   const [showProfileOptions, setShowProfileOptions] = useState(false);
   const { avatarUrl, setCurrentAvatarUrl } = useUserContext();
 
@@ -90,13 +90,16 @@ const UserInformation = ({ firstName, lastName }) => {
             </MoreOptions>
           )}
           <Tooltip
-            content={`${firstName} ${lastName}`}
+            content={`${firstName} ${lastName} ${designation}`}
             wrapperClassName="relative block max-w-full "
           >
             <div className="mb-1 max-w-full overflow-hidden truncate whitespace-nowrap px-4">
               <span className=" text-xl font-bold text-miru-han-purple-1000">
                 {`${firstName} ${lastName}`}
               </span>
+              <p className="text-center text-sm uppercase text-miru-dark-purple-1000">
+                {designation}
+              </p>
             </div>
           </Tooltip>
           <span className="text-xs leading-4 tracking-wider text-miru-dark-purple-1000" />

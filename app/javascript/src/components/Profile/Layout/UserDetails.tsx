@@ -6,18 +6,41 @@ import { DeleteIcon, EditIcon, ImageIcon } from "miruIcons";
 import { Avatar, MobileMoreOptions, Toastr, Tooltip } from "StyledComponents";
 
 import profileApi from "apis/profile";
+import teamsApi from "apis/teams";
 import { useProfile } from "components/Profile/context/EntryContext";
 import { useUserContext } from "context/UserContext";
 import { teamsMapper } from "mapper/teams.mapper";
 
 export const UserDetails = () => {
-  const { setUserState, profileSettings } = useProfile();
+  const { setUserState, profileSettings, employmentDetails } = useProfile();
+  const { user } = useUserContext();
   const { first_name, last_name } = profileSettings;
+  const {
+    current_employment: { designation },
+  } = employmentDetails;
+
   const [showImageUpdateOptions, setShowImageUpdateOptions] =
     useState<boolean>(false);
   const { avatarUrl, setCurrentAvatarUrl } = useUserContext();
   const getDetails = async () => {
     try {
+      if (!designation) {
+        const employmentData: any = await teamsApi.getEmploymentDetails(
+          user.id
+        );
+
+        const prevEmploymentData = await teamsApi.getPreviousEmployments(
+          user.id
+        );
+        if (employmentData.status && employmentData.status == 200) {
+          const employmentObj = teamsMapper(
+            employmentData?.data?.employment,
+            prevEmploymentData?.data?.previous_employments
+          );
+          setUserState("employementDetails", employmentObj);
+        }
+      }
+
       if (!first_name && !last_name) {
         const data = await profileApi.index();
         if (data.status && data.status == 200) {
@@ -126,13 +149,14 @@ export const UserDetails = () => {
         ) : null}
         <div className="flex w-4/5 flex-col items-baseline justify-center px-4">
           <Tooltip
-            content={`${first_name} ${last_name}`}
+            content={`${first_name} ${last_name} ${designation}`}
             wrapperClassName="relative block max-w-full "
           >
             <div className="mb-1 max-w-full overflow-hidden truncate whitespace-nowrap px-4">
               <span className="text-xl font-bold text-white">
                 {`${first_name} ${last_name}`}
               </span>
+              <p className="uppercase">{designation}</p>
             </div>
           </Tooltip>
           <span className="text-xs leading-4 tracking-wider text-miru-dark-purple-1000" />

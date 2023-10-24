@@ -22,12 +22,12 @@ const Layout = ({ isAdminUser, user, company }) => {
     billing: {},
   });
 
-  const { profileSettings } = settingsStates;
+  const { profileSettings, employmentDetails } = settingsStates;
   const setUserState = (key, value) => {
-    setSettingsStates({
-      ...settingsStates,
-      ...{ [key]: { ...settingsStates[key], ...value } },
-    });
+    setSettingsStates(previousSettings => ({
+      ...previousSettings,
+      ...{ [key]: { ...previousSettings[key], ...value } },
+    }));
   };
 
   return (
@@ -46,6 +46,7 @@ const Layout = ({ isAdminUser, user, company }) => {
             <div className="col-span-3">
               <SubNav
                 company={company}
+                designation={employmentDetails?.current_employment?.designation}
                 firstName={profileSettings?.first_name}
                 isAdmin={isAdminUser}
                 lastName={profileSettings?.last_name}
