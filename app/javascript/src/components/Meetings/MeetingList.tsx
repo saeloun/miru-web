@@ -1,16 +1,19 @@
-/* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from "react";
 
+import { minFromHHMM } from "helpers";
 import Logger from "js-logger";
 import { Button } from "StyledComponents";
 
+import timesheetEntryApi from "apis/timesheet-entry";
 import timeTrackingApi from "apis/timeTracking";
+import { useUserContext } from "context/UserContext";
 
 import Meeting from "./Meeting";
 
 const MeetingList = ({ meetings, setMeetings }) => {
   const [clients, setClients] = useState<any[]>([]);
   const [projects, setProjects] = useState<any>({});
+  const { user } = useUserContext();
 
   const fetchTimeTrackingData = async () => {
     try {
@@ -69,6 +72,46 @@ const MeetingList = ({ meetings, setMeetings }) => {
     setMeetings(updatedMeetings);
   };
 
+  const formatDataForTimeTracking = (data, isMultipleMeetings: boolean) => {
+    let timeTrackingFormat;
+
+    if (isMultipleMeetings) {
+      data.map(
+        el =>
+          (timeTrackingFormat = {
+            billable: el.billable || false,
+            duration: el.duration,
+            note: el.title || el.note,
+            work_date: data.startDate,
+            project_id: getProjectId(el),
+          })
+      );
+    } else {
+      timeTrackingFormat = {
+        timesheet_entry: {
+          bill_status: data.billable ? "unbilled" : "non_billable",
+          duration: minFromHHMM(data.duration),
+          note: data.title || data.note,
+          work_date: data.startDate,
+        },
+        projectId: getProjectId(data),
+      };
+    }
+
+    timesheetEntryApi.create(
+      {
+        project_id: timeTrackingFormat.projectId,
+        timesheet_entry: timeTrackingFormat.timesheet_entry,
+      },
+      user.id
+    );
+  };
+
+  const getProjectId = data =>
+    projects[data.client].find(
+      currentProject => currentProject.name === data.project
+    ).id;
+
   return (
     <>
       <div className="mt-6 flex justify-between">
@@ -80,6 +123,7 @@ const MeetingList = ({ meetings, setMeetings }) => {
       {meetings?.map((meeting, idx) => (
         <Meeting
           clients={clients}
+          formatDataForTimeTracking={formatDataForTimeTracking}
           id={idx}
           key={idx}
           meeting={meeting}
