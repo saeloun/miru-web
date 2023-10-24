@@ -27,6 +27,7 @@ const Meeting = ({
   updateDate,
   updateDuration,
   updateBillable,
+  formatDataForTimeTracking,
 }) => {
   const [displayDatePicker, setDisplayDatePicker] = useState<boolean>(false);
   const [projectBillable, setProjectBillable] = useState(false);
@@ -166,6 +167,7 @@ const Meeting = ({
         <Button
           className="text-x mb-1 mr-3 h-8 rounded border py-1 px-3"
           style="secondary"
+          onClick={() => formatDataForTimeTracking(meeting, false)}
         >
           <CheckIcon />
         </Button>
