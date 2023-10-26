@@ -18,6 +18,9 @@ const destroyBulk = async payload =>
 const updateBulk = async payload =>
   axios.patch(`${path}/bulk_action/`, payload);
 
+const createBulk = async (params, userId) =>
+  axios.post(`${path}/bulk_action?user_id=${userId}`, params);
+
 const timesheetEntryApi = {
   list,
   create,
@@ -25,6 +28,7 @@ const timesheetEntryApi = {
   destroy,
   destroyBulk,
   updateBulk,
+  createBulk,
 };
 
 export default timesheetEntryApi;

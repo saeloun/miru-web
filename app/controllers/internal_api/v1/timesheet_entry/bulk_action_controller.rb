@@ -4,6 +4,34 @@ class InternalApi::V1::TimesheetEntry::BulkActionController < InternalApi::V1::A
   skip_after_action :verify_authorized, only: [:update, :destroy]
   after_action :verify_policy_scoped, only: [:update, :destroy]
 
+  def create
+    authorize TimesheetEntry
+
+    entries_data = timesheet_entry_params[:timesheet_entry]
+    user_id = params[:user_id]
+
+    ActiveRecord::Base.transaction do
+      entries_data.each do |entry_data|
+        timesheet_entry = TimesheetEntry.new(entry_data)
+        timesheet_entry.user_id = user_id
+        timesheet_entry.project_id = entry_data[:project_id]
+
+        unless timesheet_entry.valid?
+          render json: { error: "An error occurred while trying to add meetings. Please try again." },
+            status: :unprocessable_entity
+          return
+        end
+
+        timesheet_entry.save!
+      end
+    end
+
+    render json: {
+      notice: I18n.t("timesheet_entry.create.message"),
+      entries: entries_data.map { |entry_data| entry_data[:snippet] }
+    }
+  end
+
   def update
     timesheet_entries = policy_scope(TimesheetEntry)
     timesheet_entries.where(id: params[:ids]).update(project_id: params[:project_id])
@@ -22,5 +50,11 @@ class InternalApi::V1::TimesheetEntry::BulkActionController < InternalApi::V1::A
 
     def ids_params
       params.require(:source).require(:ids)
+    end
+
+    def timesheet_entry_params
+      params.require(:bulk_action).permit(
+        :user_id, timesheet_entry: [:project_id, :duration, :work_date, :note, :bill_status]
+      )
     end
 end

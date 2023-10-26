@@ -29,7 +29,7 @@ namespace :internal_api, defaults: { format: "json" } do
     resources :project, only: [:index]
     resources :timesheet_entry do
       collection do
-        resource :bulk_action, only: [:update, :destroy], controller: "timesheet_entry/bulk_action"
+        resource :bulk_action, only: [:update, :destroy, :create], controller: "timesheet_entry/bulk_action"
       end
     end
     resources :projects, only: [:index, :show, :create, :update, :destroy] do
