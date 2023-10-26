@@ -8,11 +8,13 @@ import timesheetEntryApi from "apis/timesheet-entry";
 import timeTrackingApi from "apis/timeTracking";
 import { useUserContext } from "context/UserContext";
 
+import AddAllMeetingsModal from "./AddAllMeetingsModal";
 import Meeting from "./Meeting";
 
 const MeetingList = ({ meetings, setMeetings }) => {
   const [clients, setClients] = useState<any[]>([]);
   const [projects, setProjects] = useState<any>({});
+  const [showDialog, setShowDialog] = useState<boolean>(false);
   const { user } = useUserContext();
 
   const fetchTimeTrackingData = async () => {
@@ -72,19 +74,28 @@ const MeetingList = ({ meetings, setMeetings }) => {
     setMeetings(updatedMeetings);
   };
 
-  const formatDataForTimeTracking = (data, isMultipleMeetings: boolean) => {
+  const formatDataForTimeTracking = async (
+    data,
+    isMultipleMeetings: boolean
+  ) => {
     let timeTrackingFormat;
 
     if (isMultipleMeetings) {
-      data.map(
-        el =>
-          (timeTrackingFormat = {
-            billable: el.billable || false,
-            duration: el.duration,
-            note: el.title || el.note,
-            work_date: data.startDate,
-            project_id: getProjectId(el),
-          })
+      timeTrackingFormat = data.map(el => ({
+        bill_status: el.billable ? "unbilled" : "non_billable",
+        duration: minFromHHMM(el.duration),
+        note: el.title || el.note,
+        work_date: el.startDate,
+        project_id: getProjectId(el),
+      }));
+
+      await timesheetEntryApi.createBulk(
+        {
+          bulk_action: {
+            timesheet_entry: timeTrackingFormat,
+          },
+        },
+        user.id
       );
     } else {
       timeTrackingFormat = {
@@ -96,15 +107,15 @@ const MeetingList = ({ meetings, setMeetings }) => {
         },
         projectId: getProjectId(data),
       };
-    }
 
-    timesheetEntryApi.create(
-      {
-        project_id: timeTrackingFormat.projectId,
-        timesheet_entry: timeTrackingFormat.timesheet_entry,
-      },
-      user.id
-    );
+      await timesheetEntryApi.create(
+        {
+          timesheet_entry: timeTrackingFormat.timesheet_entry,
+          project_id: timeTrackingFormat.projectId,
+        },
+        user.id
+      );
+    }
   };
 
   const getProjectId = data =>
@@ -112,11 +123,20 @@ const MeetingList = ({ meetings, setMeetings }) => {
       currentProject => currentProject.name === data.project
     ).id;
 
+  const checkPresenceInArray = (key: string) =>
+    meetings.filter(el => Object.keys(el).includes(key)).length <
+    meetings.length;
+
   return (
     <>
       <div className="mt-6 flex justify-between">
         {meetings?.length} meetings and tasks
-        <Button className="px-4 py-1 font-bold" style="secondary">
+        <Button
+          className="px-4 py-1 font-bold"
+          disabled={meetings?.length === 0 || checkPresenceInArray("project")}
+          style="secondary"
+          onClick={() => setShowDialog(true)}
+        >
           Add All Meetings
         </Button>
       </div>
@@ -136,6 +156,14 @@ const MeetingList = ({ meetings, setMeetings }) => {
           updateProject={updateProject}
         />
       ))}
+      {showDialog && (
+        <AddAllMeetingsModal
+          formatDataForTimeTracking={formatDataForTimeTracking}
+          meetings={meetings}
+          setShowDialog={setShowDialog}
+          showDialog={showDialog}
+        />
+      )}
     </>
   );
 };

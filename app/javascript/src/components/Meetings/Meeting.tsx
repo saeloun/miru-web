@@ -166,8 +166,11 @@ const Meeting = ({
       <div className="flex items-center">
         <Button
           className="text-x mb-1 mr-3 h-8 rounded border py-1 px-3"
+          disabled={!(meeting.project && meeting.client)}
           style="secondary"
-          onClick={() => formatDataForTimeTracking(meeting, false)}
+          onClick={() => {
+            formatDataForTimeTracking(meeting, false);
+          }}
         >
           <CheckIcon />
         </Button>
