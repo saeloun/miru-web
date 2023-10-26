@@ -1,9 +1,13 @@
 import React from "react";
 
-import { XIcon } from "miruIcons";
+import {
+  XIcon,
+  ErrorOctagonSVG,
+  CircleInfoSVG,
+  ClickSuccessSVG,
+  WarningTriangleSVG,
+} from "miruIcons";
 import { toast, Slide } from "react-toastify";
-
-import { GetToasterIcon } from "constants/index";
 
 import Toast from "./Toast";
 
@@ -51,6 +55,27 @@ const showErrorToastr = error => {
     ...TOAST_CONFIG,
     icon: <GetToasterIcon type="error" />,
   });
+};
+
+const GetToasterIcon = ({ type }) => {
+  switch (type) {
+    case "success":
+      return (
+        <img alt="success" className="items-center" src={ClickSuccessSVG} />
+      );
+    case "error":
+      return <img alt="error" className="items-center" src={ErrorOctagonSVG} />;
+    case "warning":
+      return (
+        <img alt="warning" className="items-center" src={WarningTriangleSVG} />
+      );
+    case "info":
+      return <img alt="info" className="items-center" src={CircleInfoSVG} />;
+    default:
+      return (
+        <img alt="success" className="items-center" src={ClickSuccessSVG} />
+      );
+  }
 };
 
 export const Toastr = {
