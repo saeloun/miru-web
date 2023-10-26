@@ -1,5 +1,4 @@
-/* eslint-disable no-unused-vars */
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { CalendarIcon } from "miruIcons";
 import { useNavigate } from "react-router-dom";
@@ -17,6 +16,10 @@ const Meetings = () => {
   );
   const { calendarConnected } = useUserContext();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    localStorage.setItem("calendarEvents", JSON.stringify(meetings));
+  }, [meetings]);
 
   return (
     <>

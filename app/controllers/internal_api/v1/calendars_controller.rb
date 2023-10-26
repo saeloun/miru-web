@@ -39,7 +39,7 @@ class InternalApi::V1::CalendarsController < ApplicationController
     calendar_id = @calendar_list.items.select(&:primary?).first.id
     current_user.update!(calendar_id:)
 
-    redirect_to "/profile/edit/integrations"
+    redirect_to "/settings/integrations"
   end
 
   def events
