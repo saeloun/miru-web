@@ -28,6 +28,7 @@ const Meeting = ({
   updateDuration,
   updateBillable,
   formatDataForTimeTracking,
+  removeMeeting,
 }) => {
   const [displayDatePicker, setDisplayDatePicker] = useState<boolean>(false);
   const [projectBillable, setProjectBillable] = useState(false);
@@ -177,6 +178,7 @@ const Meeting = ({
         <Button
           className="text-x mb-1 h-8 rounded border py-1 px-3"
           style="secondary"
+          onClick={() => removeMeeting(id)}
         >
           <XIcon />
         </Button>

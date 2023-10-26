@@ -127,6 +127,12 @@ const MeetingList = ({ meetings, setMeetings }) => {
     meetings.filter(el => Object.keys(el).includes(key)).length <
     meetings.length;
 
+  const removeMeeting = id => {
+    const filteredMeetings = meetings.filter((_value, idx) => idx !== id);
+    localStorage.setItem("calendarEvents", JSON.stringify(filteredMeetings));
+    setMeetings(filteredMeetings);
+  };
+
   return (
     <>
       <div className="mt-6 flex justify-between">
@@ -148,6 +154,7 @@ const MeetingList = ({ meetings, setMeetings }) => {
           key={idx}
           meeting={meeting}
           projects={projects}
+          removeMeeting={removeMeeting}
           updateBillable={updateBillable}
           updateClient={updateClient}
           updateDate={updateDate}

@@ -35,6 +35,7 @@ const AddAllMeetingsModal = ({
         style="primary"
         onClick={() => {
           formatDataForTimeTracking(meetings, true);
+          localStorage.removeItem("calendarEvents");
         }}
       >
         Add {meetings.length} meetings
