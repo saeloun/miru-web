@@ -93,11 +93,13 @@ const OrgDetails = () => {
   }, []);
 
   const handleEditClick = () => {
-    navigate(`/profile/edit/organization`, { replace: true });
+    navigate(`/settings/organization/edit`, { replace: true });
   };
 
   const handleBackBtnClick = () => {
-    navigate(`/profile/edit/option`, { replace: true });
+    navigate(isDesktop ? `/settings/organization` : "/settings", {
+      replace: true,
+    });
   };
 
   return (
@@ -118,9 +120,7 @@ const OrgDetails = () => {
         />
       )}
       {isLoading ? (
-        <div className="flex h-80v w-full flex-col justify-center">
-          <Loader />
-        </div>
+        <Loader className="min-h-70v" />
       ) : (
         <StaticPage orgDetails={orgDetails} />
       )}

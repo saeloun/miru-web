@@ -51,9 +51,7 @@ const PersonalDetails = () => {
             </button>
           </div>
           {isLoading ? (
-            <div className="flex min-h-70v items-center justify-center">
-              <Loader />
-            </div>
+            <Loader className="min-h-70v" />
           ) : (
             <StaticPage personalDetails={personalDetails} />
           )}
@@ -67,9 +65,7 @@ const PersonalDetails = () => {
             title="Personal Details"
           />
           {isLoading ? (
-            <div className="flex min-h-70v items-center justify-center">
-              <Loader />
-            </div>
+            <Loader className="min-h-70v" />
           ) : (
             <MobilePersonalDetails personalDetails={personalDetails} />
           )}

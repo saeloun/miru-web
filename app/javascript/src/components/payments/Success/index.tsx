@@ -33,7 +33,11 @@ const Success = () => {
   }, []);
 
   if (loading) {
-    return <Loader />;
+    return (
+      <div className="flex h-80v w-full flex-col justify-center">
+        <Loader />
+      </div>
+    );
   }
 
   return (
