@@ -55,6 +55,12 @@ class InternalApi::V1::CalendarsController < ApplicationController
     ).get_events_for_month
 
     render :events, locals: { meetings: }
+  rescue Google::Apis::AuthorizationError
+    response = @client.refresh!
+
+    session[:authorization] = session[:authorization].merge(response)
+
+    retry
   end
 
   private
