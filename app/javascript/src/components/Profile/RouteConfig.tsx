@@ -10,8 +10,6 @@ import { teamsMapper } from "mapper/teams.mapper";
 import { useProfile } from "./context/EntryContext";
 import { SETTINGS_ROUTES } from "./routes";
 
-import Toastr from "../../StyledComponents/Toastr";
-
 const ProtectedRoute = ({ role, authorisedRoles, children }) => {
   if (authorisedRoles.includes(role)) {
     return children;
@@ -29,16 +27,14 @@ const RouteConfig = () => {
 
   const getData = async () => {
     if (!first_name && !last_name) {
-      const data = await profileApi.index();
-      if (data.status && data.status == 200) {
-        const addressData = await profileApi.getAddress(data.data.user.id);
+      const res = await profileApi.index();
+      if (res.status && res.status == 200) {
+        const addressData = await profileApi.getAddress(res.data.user.id);
         const userObj = teamsMapper(
-          data.data.user,
+          res.data.user,
           addressData.data.addresses[0]
         );
         setUserState("profileSettings", userObj);
-      } else {
-        Toastr.error("Something went wrong.");
       }
     }
   };
