@@ -180,6 +180,6 @@ export const ROUTES = [
   {
     path: Paths.MEETINGS,
     subRoutes: MeetingRoutes,
-    authorisedRoles: [ADMIN, OWNER, EMPLOYEE, BOOK_KEEPER, CLIENT],
+    authorisedRoles: [ADMIN, OWNER, EMPLOYEE, BOOK_KEEPER],
   },
 ];
