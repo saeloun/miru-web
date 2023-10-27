@@ -90,14 +90,14 @@ const UserInformation = ({ firstName, lastName, designation }) => {
             </MoreOptions>
           )}
           <Tooltip
-            content={`${firstName} ${lastName} ${designation}`}
+            content={`${firstName} ${lastName}`}
             wrapperClassName="relative block max-w-full "
           >
             <div className="mb-1 max-w-full overflow-hidden truncate whitespace-nowrap px-4">
               <span className=" text-xl font-bold text-miru-han-purple-1000">
                 {`${firstName} ${lastName}`}
               </span>
-              <p className="text-center text-sm uppercase text-miru-dark-purple-1000">
+              <p className="mt-3 text-center text-sm uppercase text-miru-dark-purple-1000">
                 {designation}
               </p>
             </div>
