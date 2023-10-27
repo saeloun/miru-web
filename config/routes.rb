@@ -9,6 +9,8 @@ class ActionDispatch::Routing::Mapper
 end
 
 Rails.application.routes.draw do
+  mount Rswag::Ui::Engine => "/api-docs"
+  mount Rswag::Api::Engine => "/api-docs"
   namespace :admin do
       resources :users
       resources :timesheet_entries

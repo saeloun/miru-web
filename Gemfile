@@ -144,6 +144,10 @@ gem "httparty"
 # Use google calendar for integration with Miru
 gem "google-api-client", require: "google/apis/calendar_v3"
 
+# Swagger
+gem "rswag-api"
+gem "rswag-ui"
+
 group :development, :test, :ci do
   # See https://edgeguides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", ">= 1.0.0", platforms: %i[mri mingw x64_mingw]
@@ -181,6 +185,8 @@ group :development, :test, :ci do
   gem "webmock", "~> 3.14.0"
 
   gem "dockerfile-rails"
+
+  gem "rswag-specs"
 end
 
 group :development do
