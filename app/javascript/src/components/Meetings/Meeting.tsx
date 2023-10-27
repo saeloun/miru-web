@@ -10,11 +10,9 @@ import {
   XIcon,
 } from "miruIcons";
 import ReactTextareaAutosize from "react-textarea-autosize";
+import { Button, TimeInput } from "StyledComponents";
 
 import CustomDatePicker from "common/CustomDatePicker";
-
-import Button from "../../StyledComponents/Button";
-import TimeInput from "../../StyledComponents/TimeInput";
 
 const Meeting = ({
   id,

@@ -8,6 +8,7 @@ import { minToHHMM } from "helpers";
 import Logger from "js-logger";
 import { CalendarIcon } from "miruIcons";
 import { useNavigate } from "react-router-dom";
+import { Button } from "StyledComponents";
 
 import googleCalendarApi from "apis/googleCalendar";
 import timesheetEntryApi from "apis/timesheet-entry";
@@ -25,8 +26,6 @@ import EntryForm from "./EntryForm";
 import Header from "./Header";
 import MonthCalender from "./MonthCalender";
 import WeeklyEntries from "./WeeklyEntries";
-
-import Button from "../../StyledComponents/Button";
 
 dayjs.extend(updateLocale);
 dayjs.extend(weekday);

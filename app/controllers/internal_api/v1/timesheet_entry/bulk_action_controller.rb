@@ -10,21 +10,7 @@ class InternalApi::V1::TimesheetEntry::BulkActionController < InternalApi::V1::A
     entries_data = timesheet_entry_params[:timesheet_entry]
     user_id = params[:user_id]
 
-    ActiveRecord::Base.transaction do
-      entries_data.each do |entry_data|
-        timesheet_entry = TimesheetEntry.new(entry_data)
-        timesheet_entry.user_id = user_id
-        timesheet_entry.project_id = entry_data[:project_id]
-
-        unless timesheet_entry.valid?
-          render json: { error: "An error occurred while trying to add meetings. Please try again." },
-            status: :unprocessable_entity
-          return
-        end
-
-        timesheet_entry.save!
-      end
-    end
+    CreateBulkTimeEntriesService.new(entries_data:, user_id:).process
 
     render json: {
       notice: I18n.t("timesheet_entry.create.message"),
