@@ -176,7 +176,7 @@ const ProjectDetails = () => {
               <button
                 className="button-icon__back"
                 onClick={() => {
-                  navigate("/projects");
+                  navigate(-1);
                 }}
               >
                 <ArrowLeftIcon color="#5b34ea" size={20} weight="bold" />
