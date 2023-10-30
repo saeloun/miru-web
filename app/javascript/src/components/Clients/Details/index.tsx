@@ -94,6 +94,10 @@ const ClientDetails = ({ isAdminUser }) => {
 
   const tableData = TableData(projectDetails, isDesktop);
 
+  const handleRowClick = id => {
+    navigate(`/projects/${id}`);
+  };
+
   const handleAddProject = () => {
     setShowProjectModal(true);
   };
@@ -152,6 +156,9 @@ const ClientDetails = ({ isAdminUser }) => {
                     handleEditClick={handleEditClick}
                     tableHeader={isDesktop ? tableHeader : mobileTableHeader}
                     tableRowArray={tableData}
+                    rowOnClick={
+                      isAdminUser ? handleRowClick : () => {} // eslint-disable-line  @typescript-eslint/no-empty-function
+                    }
                   />
                 ) : (
                   <EmptyStates
