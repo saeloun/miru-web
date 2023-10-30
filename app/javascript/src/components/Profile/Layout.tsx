@@ -24,10 +24,10 @@ const Layout = ({ isAdminUser, user, company }) => {
 
   const { profileSettings } = settingsStates;
   const setUserState = (key, value) => {
-    setSettingsStates({
-      ...settingsStates,
-      ...{ [key]: { ...settingsStates[key], ...value } },
-    });
+    setSettingsStates(previousSettings => ({
+      ...previousSettings,
+      ...{ [key]: { ...previousSettings[key], ...value } },
+    }));
   };
 
   return (
