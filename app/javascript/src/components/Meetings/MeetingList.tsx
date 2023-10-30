@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 
 import { minFromHHMM } from "helpers";
-import Logger from "js-logger";
 import { Button } from "StyledComponents";
 
 import timesheetEntryApi from "apis/timesheet-entry";
@@ -18,16 +17,12 @@ const MeetingList = ({ meetings, setMeetings }) => {
   const { user } = useUserContext();
 
   const fetchTimeTrackingData = async () => {
-    try {
-      const {
-        data: { clients, projects },
-      } = await timeTrackingApi.get();
+    const {
+      data: { clients, projects },
+    } = await timeTrackingApi.get();
 
-      setClients(clients);
-      setProjects(projects);
-    } catch (error) {
-      Logger.error(error);
-    }
+    setClients(clients);
+    setProjects(projects);
   };
 
   useEffect(() => {
