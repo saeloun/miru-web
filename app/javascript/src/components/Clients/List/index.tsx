@@ -10,6 +10,7 @@ import TableData from "./TableData";
 
 import {
   employeeTableHeader,
+  mobileEmployeeTableHeader,
   mobileTableHeader,
   tableHeader,
 } from "../constants";
@@ -59,7 +60,9 @@ const ClientList = ({
                     ? tableHeader
                     : isAdminUser && !isDesktop
                     ? mobileTableHeader
-                    : employeeTableHeader
+                    : !isAdminUser && isDesktop
+                    ? employeeTableHeader
+                    : mobileEmployeeTableHeader
                 }
               />
             ) : (

@@ -15,31 +15,32 @@ import Header from "./Header";
 import { customStyles } from "./utils";
 
 const EditHolidays = ({
-  setShowDatePicker,
-  holidayList,
-  showDatePicker,
-  handleDatePicker,
-  handleHolidateNameChange,
-  handleDeleteHoliday,
-  handleCheckboxClick,
-  enableOptionalHolidays,
-  totalOptionalHolidays,
-  handleChangeTotalOpHoliday,
-  handleAddHoliday,
-  optionalRepetitionType,
-  optionalHolidaysList,
-  optionalWrapperRef,
-  handleChangeRepetitionOpHoliday,
-  setShowOptionalDatePicker,
-  showOptionalDatePicker,
-  wrapperRef,
-  setEnableOptionalHolidays,
   isDesktop,
-  handleCancelAction,
-  updateHolidayDetails,
+  dateFormat,
   currentYear,
   setCurrentYear,
+  enableOptionalHolidays,
+  setEnableOptionalHolidays,
+  holidayList,
+  optionalHolidaysList,
+  totalOptionalHolidays,
   isDisableUpdateBtn,
+  optionalRepetitionType,
+  wrapperRef,
+  optionalWrapperRef,
+  showDatePicker,
+  setShowDatePicker,
+  showOptionalDatePicker,
+  setShowOptionalDatePicker,
+  handleAddHoliday,
+  handleCancelAction,
+  handleChangeRepetitionOpHoliday,
+  handleChangeTotalOpHoliday,
+  handleCheckboxClick,
+  handleDatePicker,
+  handleDeleteHoliday,
+  handleHolidateNameChange,
+  updateHolidayDetails,
 }) => (
   <>
     <Header
@@ -61,7 +62,7 @@ const EditHolidays = ({
               holidayList.map((holiday, index) => (
                 <div className="mb-4 flex flex-row" key={index}>
                   <div className="flex w-11/12 flex-row py-2">
-                    <div className="relative w-1/2" ref={wrapperRef}>
+                    <div className="relative w-1/2">
                       <div
                         onClick={() => {
                           setShowDatePicker({
@@ -78,10 +79,7 @@ const EditHolidays = ({
                           labelClassName="cursor-pointer"
                           name={`Date_${index}`}
                           type="text"
-                          value={
-                            holiday.date &&
-                            dayjs(holiday.date).format("DD.MM.YYYY")
-                          }
+                          value={holiday.date}
                         />
                         <CalendarIcon
                           className="absolute top-2 right-2 m-2"
@@ -92,6 +90,7 @@ const EditHolidays = ({
                       {index == showDatePicker.index &&
                         showDatePicker.visibility && (
                           <SingleYearDatePicker
+                            dateFormat={dateFormat}
                             selectedYear={currentYear}
                             setVisibility={showDatePicker.visibility}
                             wrapperRef={wrapperRef}
@@ -207,10 +206,7 @@ const EditHolidays = ({
                   optionalHolidaysList.map((optionalHoliday, index) => (
                     <div className="flex flex-row" key={index}>
                       <div className="flex w-11/12 flex-row py-3">
-                        <div
-                          className="relative w-1/2"
-                          ref={optionalWrapperRef}
-                        >
+                        <div className="relative w-1/2">
                           <div
                             onClick={() =>
                               setShowOptionalDatePicker({
@@ -227,10 +223,7 @@ const EditHolidays = ({
                               labelClassName="cursor-pointer"
                               name={`op_holiday_date_picker_${index}`}
                               type="text"
-                              value={
-                                optionalHoliday.date &&
-                                dayjs(optionalHoliday.date).format("DD.MM.YYYY")
-                              }
+                              value={optionalHoliday.date}
                             />
                             <CalendarIcon
                               className="absolute top-2 right-2 m-2"
@@ -241,11 +234,12 @@ const EditHolidays = ({
                           {index == showOptionalDatePicker.index &&
                             showOptionalDatePicker.visibility && (
                               <SingleYearDatePicker
+                                dateFormat={dateFormat}
                                 selectedYear={currentYear}
                                 wrapperRef={optionalWrapperRef}
                                 date={
                                   optionalHoliday.date ||
-                                  dayjs(`${currentYear}-01-01`).toDate()
+                                  dayjs().set("year", currentYear)
                                 }
                                 handleChange={e =>
                                   handleDatePicker(e, index, true)

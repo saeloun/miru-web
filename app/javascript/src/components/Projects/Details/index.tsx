@@ -12,6 +12,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Badge, Tooltip } from "StyledComponents";
 
 import projectAPI from "apis/projects";
+import Loader from "common/Loader/index";
 import Table from "common/Table";
 import { useUserContext } from "context/UserContext";
 import { unmapper } from "mapper/mappedIndex";
@@ -39,6 +40,7 @@ const ProjectDetails = () => {
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
   const [showProjectModal, setShowProjectModal] = useState<boolean>(false);
   const [timeframe, setTimeframe] = useState<any>("week");
+  const [loading, setLoading] = useState<boolean>(true);
   const [showToolTip, setShowToolTip] = useState<boolean>(true);
   const [isButtonHovered, setIsButtonHovered] = useState(false);
   const [overdueOutstandingAmount, setOverdueOutstandingAmount] =
@@ -55,6 +57,7 @@ const ProjectDetails = () => {
       const sanitized = unmapper(res.data.project_details);
       setProject(sanitized);
       setOverdueOutstandingAmount(sanitized.overdueOutstandingAmount);
+      setLoading(false);
     } catch (e) {
       Logger.error(e);
       navigate("/projects");
@@ -160,6 +163,10 @@ const ProjectDetails = () => {
     navigate("/projects");
   };
 
+  if (loading) {
+    return <Loader />;
+  }
+
   return (
     <div className="flex h-full w-full">
       <div className="hidden flex-1 flex-col lg:flex">
@@ -169,7 +176,7 @@ const ProjectDetails = () => {
               <button
                 className="button-icon__back"
                 onClick={() => {
-                  navigate("/projects");
+                  navigate(-1);
                 }}
               >
                 <ArrowLeftIcon color="#5b34ea" size={20} weight="bold" />

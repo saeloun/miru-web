@@ -8,10 +8,17 @@ import companiesApi from "apis/companies";
 import googleCalendarApi from "apis/googleCalendar";
 import teamApi from "apis/team";
 import Loader from "common/Loader/index";
+import { useUserContext } from "context/UserContext";
 
 import Header from "./Header";
 
-const GoogleCalendar = ({ isAdmin, calendarEnabled, calendarConnected }) => {
+const GoogleCalendar = () => {
+  const {
+    isAdminUser: isAdmin,
+    calendarEnabled,
+    calendarConnected,
+  } = useUserContext();
+
   const [connectGoogleCalendar, setConnectGoogleCalendar] =
     useState<boolean>(calendarConnected);
   const [enabled, setEnabled] = useState<boolean>(calendarEnabled);
@@ -45,11 +52,7 @@ const GoogleCalendar = ({ isAdmin, calendarEnabled, calendarConnected }) => {
   }, [apiCallNeeded]);
 
   if (loading) {
-    return (
-      <div className="flex h-80v w-full flex-col justify-center">
-        <Loader />
-      </div>
-    );
+    return <Loader className="min-h-70v" />;
   }
 
   const enableCalendar = async () => {
@@ -75,7 +78,7 @@ const GoogleCalendar = ({ isAdmin, calendarEnabled, calendarConnected }) => {
   const handleDisconnectCalendar = async () => {
     setConnectGoogleCalendar(false);
     await googleCalendarApi.callback();
-    window.location.replace("/profile/edit/integrations");
+    window.location.replace("/settings/integrations");
   };
 
   const showConnectDisconnectBtn = () => {

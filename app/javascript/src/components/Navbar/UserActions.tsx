@@ -95,7 +95,7 @@ const UserActions = setVisiblity => {
     <ul className="w-full lg:mb-2 xl:mb-6">
       <li className="flex border-b border-miru-gray-100 last:border-b-0 hover:bg-miru-gray-100 lg:justify-start lg:border-b-0">
         <NavLink
-          to={isDesktop ? "/profile/edit" : "/profile/edit/option"}
+          to={isDesktop ? "/settings/profile" : "/settings"}
           className={({ isActive }) =>
             isActive
               ? activeClassName

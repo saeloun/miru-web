@@ -53,7 +53,7 @@ const PaymentSettings = () => {
   }, [isStripeConnected]);
 
   const handleBackBtnClick = () => {
-    navigate(`/profile/edit/option`, { replace: true });
+    navigate(isDesktop ? "/settings/profile" : "/settings", { replace: true });
   };
 
   return (

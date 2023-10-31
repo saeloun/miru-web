@@ -242,7 +242,7 @@ const EmploymentDetailsEdit = () => {
         employments: payload,
       });
       setIsLoading(false);
-      navigate(`/profile/employment-details`, { replace: true });
+      navigate(`/settings/employment`, { replace: true });
     } catch (err) {
       setIsLoading(false);
       const errObj = initialErrState;
@@ -261,7 +261,7 @@ const EmploymentDetailsEdit = () => {
 
   const handleCancelDetails = () => {
     setIsLoading(true);
-    navigate(`/profile/employment-details`, { replace: true });
+    navigate(`/settings/employment`, { replace: true });
   };
 
   return (
@@ -288,9 +288,7 @@ const EmploymentDetailsEdit = () => {
             </div>
           </div>
           {isLoading ? (
-            <div className="flex min-h-70v items-center justify-center">
-              <Loader />
-            </div>
+            <Loader className="min-h-70v" />
           ) : (
             <StaticPage
               DOJRef={DOJRef}

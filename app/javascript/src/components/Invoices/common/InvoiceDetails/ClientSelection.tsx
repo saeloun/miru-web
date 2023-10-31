@@ -62,20 +62,19 @@ const ClientSelection = ({
       setInvoiceNumber(prePopulatedInvoiceNumber);
     } else {
       if (previousInvoiceNumber) {
-        //extracting last character of invoice
-        const lastChar = parseInt(
-          previousInvoiceNumber.charAt(previousInvoiceNumber.length - 1)
-        );
+        const lastDigitIndex = previousInvoiceNumber.search(/\d+$/);
+        const remaining = previousInvoiceNumber.slice(0, lastDigitIndex);
+        const lastDigits = previousInvoiceNumber.slice(lastDigitIndex);
 
-        //extracting remaining invoice number
-        const remaining = previousInvoiceNumber.slice(
-          0,
-          previousInvoiceNumber.length - 1
-        );
+        if (lastDigits && !isNaN(lastDigits)) {
+          const incrementedDigits = (parseInt(lastDigits) + 1).toString();
+          const hasLeadingZeros = lastDigits[0] === "0";
 
-        //incrementing invoice number
-        if (!isNaN(lastChar)) {
-          setInvoiceNumber(remaining.concat(lastChar + 1));
+          const numZeros = hasLeadingZeros
+            ? lastDigits.length - incrementedDigits.length
+            : 0;
+          const leadingZeros = "0".repeat(numZeros);
+          setInvoiceNumber(remaining + leadingZeros + incrementedDigits);
         } else {
           setInvoiceNumber("");
         }
@@ -148,6 +147,7 @@ const ClientSelection = ({
         <div className="absolute top-2 w-full" ref={wrapperRef}>
           {isClientVisible && (
             <Select
+              autoFocus
               defaultMenuIsOpen
               isSearchable
               className="client-select m-0 mt-2  w-full text-white"
