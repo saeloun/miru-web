@@ -63,12 +63,15 @@ RSpec.describe InternalApi::V1::CalendarsController, type: :request do
       allow_any_instance_of(
         Calendars::MonthlyCalendarEventsService
       ).to receive(:get_events_for_month).and_return(event_list)
+      # service = Calendars::MonthlyCalendarEventsService.new(
+      #   user.calendar_id, current_month, current_year,
+      #   client).get_events_for_month
 
       get internal_api_v1_events_path, params: { month: "10", year: "2023" }
 
       expect(response).to have_http_status(:success)
       expect(response).to render_template(:events)
-      expect(assigns(:meetings)).to be_nil
+      expect(assigns(:meetings).size).to eq(event_list.size)
     end
   end
 

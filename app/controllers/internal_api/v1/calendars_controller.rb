@@ -50,11 +50,12 @@ class InternalApi::V1::CalendarsController < ApplicationController
     current_year = params[:year]
     calendar_id = current_user.calendar_id
 
-    meetings = Calendars::MonthlyCalendarEventsService.new(
+    # Making use of instance variable here just because otherwise it wouldn't be accessible for the test case
+    @meetings = Calendars::MonthlyCalendarEventsService.new(
       calendar_id, current_month, current_year, @client
     ).get_events_for_month
 
-    render :events, locals: { meetings: }
+    render :events, locals: { meetings: @meetings }
   rescue Google::Apis::AuthorizationError
     response = @client.refresh!
 
