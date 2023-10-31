@@ -35,7 +35,11 @@ const InvoiceEmail = () => {
   };
 
   if (loading) {
-    return <Loader />;
+    return (
+      <div className="flex h-80v w-full flex-col justify-center">
+        <Loader />
+      </div>
+    );
   }
 
   const { url, invoice, logo, lineItems, company, client } = data;

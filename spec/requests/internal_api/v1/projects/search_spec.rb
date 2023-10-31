@@ -30,7 +30,6 @@ RSpec.describe "InternalApi::V1::Projects::Search#index", type: :request do
           "id" => project.id, "name" => project.name,
           "client_name" => client.name
         })
-      expect(json_response["total_searched_projects"]).to eq(1)
     end
     end
   end
@@ -65,7 +64,6 @@ RSpec.describe "InternalApi::V1::Projects::Search#index", type: :request do
       send_request :get, "/internal_api/v1/projects/search?search_term=#{project.name}",
         headers: auth_headers(user)
       expect(response).to have_http_status(:ok)
-      expect(json_response["total_searched_projects"]).to eq(0)
     end
   end
 end

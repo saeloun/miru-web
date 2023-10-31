@@ -19,11 +19,22 @@ export const employeeTableHeader = [
   },
   {
     Header: "HOURS LOGGED",
+    accessor: "col2",
+    cssClass: "text-right", // accessor is the "key" in the data
+  },
+];
+export const mobileEmployeeTableHeader = [
+  {
+    Header: "CLIENT",
+    accessor: "col1", // accessor is the "key" in the data
+    cssClass: "",
+  },
+  {
+    Header: "HOURS LOGGED",
     accessor: "col3",
     cssClass: "text-right", // accessor is the "key" in the data
   },
 ];
-
 export const mobileTableHeader = [
   {
     Header: "CLIENT",

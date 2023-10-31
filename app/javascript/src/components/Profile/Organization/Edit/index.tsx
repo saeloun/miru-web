@@ -10,6 +10,7 @@ import companiesApi from "apis/companies";
 import companyProfileApi from "apis/companyProfile";
 import Loader from "common/Loader/index";
 import { currencyList } from "constants/currencyList";
+import { useUserContext } from "context/UserContext";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import { StaticPage } from "./StaticPage";
@@ -113,6 +114,7 @@ const errorState = {
 
 const OrgEdit = () => {
   const navigate = useNavigate();
+  const { setCompany } = useUserContext();
   const [orgDetails, setOrgDetails] = useState(initialState);
 
   const [errDetails, setErrDetails] = useState(errorState);
@@ -471,7 +473,7 @@ const OrgEdit = () => {
         { abortEarly: false }
       );
       await updateOrgDetails();
-      navigate(`/profile/edit/organization-details`, { replace: true });
+      navigate(`/settings/organization`, { replace: true });
     } catch (err) {
       const errObj = {
         companyNameErr: "",
@@ -546,7 +548,8 @@ const OrgEdit = () => {
       if (orgDetails.logo) {
         formD.append("company[logo]", orgDetails.logo);
       }
-      await companiesApi.update(orgDetails.id, formD);
+      const res = await companiesApi.update(orgDetails.id, formD);
+      setCompany(res.data.company);
       setIsDetailUpdated(false);
       setIsLoading(false);
     } catch {
@@ -559,7 +562,7 @@ const OrgEdit = () => {
     getCurrencies();
     getData();
     setIsDetailUpdated(false);
-    navigate(`/profile/edit/organization-details`, { replace: true });
+    navigate(`/settings/organization`, { replace: true });
   };
 
   const handleDeleteLogo = async () => {
@@ -586,9 +589,7 @@ const OrgEdit = () => {
         title="Organization Settings"
       />
       {isLoading ? (
-        <div className="flex h-80v w-full flex-col justify-center">
-          <Loader />
-        </div>
+        <Loader className="min-h-70v" />
       ) : (
         <StaticPage
           cancelAction={handleCancelAction}
