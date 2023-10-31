@@ -5,7 +5,7 @@ import { Modal, Button } from "StyledComponents";
 const AddAllMeetingsModal = ({
   showDialog,
   setShowDialog,
-  formatDataForTimeTracking,
+  // formatDataForTimeTracking,
   meetings,
 }) => (
   <Modal
@@ -29,17 +29,17 @@ const AddAllMeetingsModal = ({
       >
         CANCEL
       </Button>
-      <Button
-        className="ml-2 w-1/2"
-        size="medium"
-        style="primary"
-        onClick={() => {
-          formatDataForTimeTracking(meetings, true);
-          localStorage.removeItem("calendarEvents");
-        }}
-      >
-        Add {meetings.length} meetings
-      </Button>
+      {/* <Button
+          className="ml-2 w-1/2"
+          size="medium"
+          style="primary"
+          onClick={() => {
+            formatDataForTimeTracking(meetings, true);
+            localStorage.removeItem("calendarEvents");
+          }}
+        >
+          Add {meetings.length} meetings
+        </Button> */}
     </div>
   </Modal>
 );
