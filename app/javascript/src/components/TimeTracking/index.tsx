@@ -18,6 +18,7 @@ import withLayout from "common/Mobile/HOC/withLayout";
 import SearchTimeEntries from "common/SearchTimeEntries";
 import { useUserContext } from "context/UserContext";
 import { sendGAPageView } from "utils/googleAnalytics";
+import { setToLocalStorage } from "utils/storage";
 
 import DatesInWeek from "./DatesInWeek";
 import { EmptyStatesMobileView } from "./EmptyStatesMobileView";
@@ -112,17 +113,13 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
   };
 
   const fetchCalendarEvents = async () => {
-    try {
-      const { data } = await googleCalendarApi.events(
-        user.calendar_id,
-        currentMonthNumber + 1,
-        currentYear
-      );
-      setEvents(data);
-      localStorage.setItem("calendarEvents", JSON.stringify(data));
-    } catch (error) {
-      Logger.log(error);
-    }
+    const { data } = await googleCalendarApi.events(
+      user.calendar_id,
+      currentMonthNumber + 1,
+      currentYear
+    );
+    setEvents(data);
+    setToLocalStorage("calendarEvents", JSON.stringify(data));
   };
 
   useEffect(() => {

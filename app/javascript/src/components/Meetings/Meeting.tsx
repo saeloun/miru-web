@@ -29,7 +29,7 @@ const Meeting = ({
   removeMeeting,
 }) => {
   const [displayDatePicker, setDisplayDatePicker] = useState<boolean>(false);
-  const [projectBillable, setProjectBillable] = useState(false);
+  const [projectBillable, setProjectBillable] = useState<boolean>(false);
 
   const handleDurationChange = val => {
     updateDuration(id, val);

@@ -10,19 +10,21 @@ class CreateBulkTimeEntriesService
 
   def process
     ActiveRecord::Base.transaction do
+      create_timesheet_entries_from_data
+    end
+  end
+
+  private
+
+    def create_timesheet_entries_from_data
+      return if entries_data.blank?
+
       entries_data.each do |entry_data|
         timesheet_entry = TimesheetEntry.new(entry_data)
         timesheet_entry.user_id = user_id
         timesheet_entry.project_id = entry_data[:project_id]
 
-        unless timesheet_entry.valid?
-          render json: { error: "An error occurred while trying to add meetings. Please try again." },
-            status: :unprocessable_entity
-          return
-        end
-
         timesheet_entry.save!
       end
     end
-  end
 end

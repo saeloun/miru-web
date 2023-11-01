@@ -2,11 +2,14 @@ import React from "react";
 
 import { Modal, Button } from "StyledComponents";
 
+import { removeFromLocalStorage } from "utils/storage";
+
 const AddAllMeetingsModal = ({
   showDialog,
   setShowDialog,
   formatDataForTimeTracking,
   meetings,
+  setMeetings,
 }) => (
   <Modal
     customStyle="sm:my-8 sm:w-full sm:max-w-lg sm:align-middle"
@@ -35,7 +38,9 @@ const AddAllMeetingsModal = ({
         style="primary"
         onClick={() => {
           formatDataForTimeTracking(meetings, true);
-          localStorage.removeItem("calendarEvents");
+          removeFromLocalStorage("calendarEvents");
+          setMeetings([]);
+          setShowDialog(false);
         }}
       >
         Add {meetings.length} meetings
