@@ -30,7 +30,7 @@ class InvoicePolicy < ApplicationPolicy
   end
 
   def download?
-    authorize_owner_admin_book_keeper
+    authorize_current_user && (user_owner_role? || user_admin_role? || user_book_keeper_role? || user_client_role?)
   end
 
   def send_reminder?
