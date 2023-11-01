@@ -1,9 +1,9 @@
 import React, { useState, useRef } from "react";
 
 import { useOutsideClick } from "helpers";
-import { useNavigate } from "react-router-dom";
 
 import EditButton from "./EditButton";
+import MarkInvoiceAsPaidModal from "./MarkInvoicePaidModal";
 import SendButton from "./SendButton";
 
 import MoreButton from "../common/MoreButton";
@@ -20,16 +20,19 @@ const InvoiceActions = ({
   setShowConnectPaymentDialog,
   isStripeEnabled,
   setShowHistory,
+  fetchInvoice,
 }) => {
   const [isMoreOptionsVisible, setIsMoreOptionsVisible] =
     useState<boolean>(false);
 
+  const [showInvoicePaymentModal, setShowInvoicePaymentModal] =
+    useState<boolean>(false);
+
   const wrapperRef = useRef(null);
 
-  const navigate = useNavigate();
-
-  const markInvoiceAsPaid = async (id: number) => {
-    navigate(`/payments/?invoiceId=${id}`);
+  const markInvoiceAsPaid = () => {
+    setShowInvoicePaymentModal(true);
+    setIsMoreOptionsVisible(false);
   };
 
   useOutsideClick(
@@ -68,6 +71,16 @@ const InvoiceActions = ({
               setShowHistory(true);
               setIsMoreOptionsVisible(false);
             }}
+          />
+        )}
+        {showInvoicePaymentModal && (
+          <MarkInvoiceAsPaidModal
+            baseCurrency={invoice.company.currency}
+            dateFormat={invoice.company.dateFormat}
+            fetchInvoice={fetchInvoice}
+            invoice={invoice}
+            setShowManualEntryModal={setShowInvoicePaymentModal}
+            showManualEntryModal={showInvoicePaymentModal}
           />
         )}
       </div>
