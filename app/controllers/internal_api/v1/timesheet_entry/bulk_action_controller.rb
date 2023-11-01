@@ -16,6 +16,9 @@ class InternalApi::V1::TimesheetEntry::BulkActionController < InternalApi::V1::A
       notice: I18n.t("timesheet_entry.create.message"),
       entries: entries_data.map { |entry_data| entry_data[:snippet] }
     }
+  rescue ActiveRecord::RecordInvalid => e
+    render json: { error: "An error occurred while trying to add meetings. Please try again." },
+      status: :unprocessable_entity
   end
 
   def update

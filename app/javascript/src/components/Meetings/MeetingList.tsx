@@ -6,6 +6,7 @@ import { Button } from "StyledComponents";
 import timesheetEntryApi from "apis/timesheet-entry";
 import timeTrackingApi from "apis/timeTracking";
 import { useUserContext } from "context/UserContext";
+import { setToLocalStorage } from "utils/storage";
 
 import AddAllMeetingsModal from "./AddAllMeetingsModal";
 import Meeting from "./Meeting";
@@ -73,10 +74,10 @@ const MeetingList = ({ meetings, setMeetings }) => {
     data,
     isMultipleMeetings: boolean
   ) => {
-    let timeTrackingFormat;
+    let timeSheetEntriesData;
 
     if (isMultipleMeetings) {
-      timeTrackingFormat = data.map(el => ({
+      timeSheetEntriesData = data.map(el => ({
         bill_status: el.billable ? "unbilled" : "non_billable",
         duration: minFromHHMM(el.duration),
         note: el.title || el.note,
@@ -87,13 +88,13 @@ const MeetingList = ({ meetings, setMeetings }) => {
       await timesheetEntryApi.createBulk(
         {
           bulk_action: {
-            timesheet_entry: timeTrackingFormat,
+            timesheet_entry: timeSheetEntriesData,
           },
         },
         user.id
       );
     } else {
-      timeTrackingFormat = {
+      timeSheetEntriesData = {
         timesheet_entry: {
           bill_status: data.billable ? "unbilled" : "non_billable",
           duration: minFromHHMM(data.duration),
@@ -105,8 +106,8 @@ const MeetingList = ({ meetings, setMeetings }) => {
 
       await timesheetEntryApi.create(
         {
-          timesheet_entry: timeTrackingFormat.timesheet_entry,
-          project_id: timeTrackingFormat.projectId,
+          timesheet_entry: timeSheetEntriesData.timesheet_entry,
+          project_id: timeSheetEntriesData.projectId,
         },
         user.id
       );
@@ -124,7 +125,7 @@ const MeetingList = ({ meetings, setMeetings }) => {
 
   const removeMeeting = id => {
     const filteredMeetings = meetings.filter((_value, idx) => idx !== id);
-    localStorage.setItem("calendarEvents", JSON.stringify(filteredMeetings));
+    setToLocalStorage("calendarEvents", JSON.stringify(filteredMeetings));
     setMeetings(filteredMeetings);
   };
 
@@ -162,6 +163,7 @@ const MeetingList = ({ meetings, setMeetings }) => {
         <AddAllMeetingsModal
           formatDataForTimeTracking={formatDataForTimeTracking}
           meetings={meetings}
+          setMeetings={setMeetings}
           setShowDialog={setShowDialog}
           showDialog={showDialog}
         />

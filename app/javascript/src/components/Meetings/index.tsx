@@ -6,19 +6,20 @@ import { Button } from "StyledComponents";
 
 import EmptyStates from "common/EmptyStates";
 import { useUserContext } from "context/UserContext";
+import { getValueFromLocalStorage, setToLocalStorage } from "utils/storage";
 
 import Header from "./Header";
 import MeetingList from "./MeetingList";
 
 const Meetings = () => {
   const [meetings, setMeetings] = useState<any[]>(
-    JSON.parse(localStorage.getItem("calendarEvents"))
+    JSON.parse(getValueFromLocalStorage("calendarEvents") || "[]")
   );
   const { calendarConnected } = useUserContext();
   const navigate = useNavigate();
 
   useEffect(() => {
-    localStorage.setItem("calendarEvents", JSON.stringify(meetings));
+    setToLocalStorage("calendarEvents", JSON.stringify(meetings));
   }, [meetings]);
 
   return (
