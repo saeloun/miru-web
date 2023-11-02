@@ -22,7 +22,7 @@ module Projects
         fields: [:client_name, :name],
         match: :text_middle,
         where: { client_id: client_ids, discarded_at: nil },
-        includes: [:client]
+        includes: [:client, :timesheet_entries]
       )
     end
 
@@ -36,16 +36,6 @@ module Projects
 
     def client_ids
       client_list.pluck(:id).uniq
-    end
-
-    def searched_projects
-      @_searched_projects ||= Project.search(
-        search_term,
-        fields: [:client_name, :name],
-        match: :text_middle,
-        where: { client_id: client_list, discarded_at: nil },
-        includes: [:client, :timesheet_entries]
-      )
     end
   end
 end
