@@ -19,7 +19,7 @@ const unmapPayment = input => {
 };
 
 const mapPayment = input => ({
-  invoice_id: input.invoice.value,
+  invoice_id: input.invoice.value || input.invoice.id,
   transaction_date: input.transactionDate,
   transaction_type: input.transactionType,
   amount: input.amount,
