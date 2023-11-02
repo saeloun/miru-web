@@ -14,7 +14,7 @@ json.array! invoices do |invoice|
       json.name invoice.client_name
       json.email invoice.client_email
       json.logo invoice.client_logo_url
-      json.client_members_emails invoice.client.client_members.joins(:user).pluck("users.email")
+      json.client_members_emails invoice.client_member_emails
     end
     json.company do
       json.name current_company.name
