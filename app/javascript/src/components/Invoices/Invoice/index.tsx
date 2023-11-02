@@ -80,6 +80,7 @@ const Invoice = () => {
     (isDesktop ? (
       <>
         <Header
+          fetchInvoice={fetchInvoice}
           handleSendInvoice={handleSendInvoice}
           invoice={invoice}
           isStripeEnabled={isStripeEnabled}
