@@ -175,7 +175,7 @@ class Invoice < ApplicationRecord
   end
 
   def client_member_emails
-    client.client_members.joins(:user).pluck("users.email")
+    client.client_members.includes(:user).pluck("users.email")
   end
 
   private
