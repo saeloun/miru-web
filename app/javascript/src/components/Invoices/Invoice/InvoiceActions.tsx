@@ -41,6 +41,9 @@ const InvoiceActions = ({
     isMoreOptionsVisible
   );
 
+  const currency = invoice?.company?.currency;
+  const dateFormat = invoice?.company?.dateFormat;
+
   return (
     <div className="justify-items-right flex flex-row">
       <EditButton editInvoiceLink={editInvoiceLink} />
@@ -75,8 +78,8 @@ const InvoiceActions = ({
         )}
         {showInvoicePaymentModal && (
           <MarkInvoiceAsPaidModal
-            baseCurrency={invoice.company.currency}
-            dateFormat={invoice.company.dateFormat}
+            baseCurrency={currency}
+            dateFormat={dateFormat}
             fetchInvoice={fetchInvoice}
             invoice={invoice}
             setShowManualEntryModal={setShowInvoicePaymentModal}

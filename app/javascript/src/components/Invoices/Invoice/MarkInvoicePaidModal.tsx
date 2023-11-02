@@ -3,7 +3,7 @@ import React, { useState, useRef, useEffect } from "react";
 import dayjs from "dayjs";
 import { currencyFormat, useOutsideClick } from "helpers";
 import { CalendarIcon, XIcon } from "miruIcons";
-import { MobileMoreOptions, Modal, Toastr } from "StyledComponents";
+import { Button, MobileMoreOptions, Modal, Toastr } from "StyledComponents";
 
 import payment from "apis/payments/payments";
 import CustomDatePicker from "common/CustomDatePicker";
@@ -33,7 +33,8 @@ const MarkInvoiceAsPaidModal = ({
 
   const wrapperSelectRef = useRef(null);
   const wrapperCalendartRef = useRef(null);
-  const amount = invoice.amount;
+  const amount = invoice?.amount;
+  const client = invoice?.client?.name;
 
   const isAddPaymentBtnActive = (
     invoice,
@@ -52,10 +53,6 @@ const MarkInvoiceAsPaidModal = ({
 
     return () => window.removeEventListener("keydown", close);
   }, []);
-
-  useOutsideClick(wrapperSelectRef, () => {
-    setShowManualEntryModal(false);
-  });
 
   useOutsideClick(wrapperCalendartRef, () => {
     setShowDatePicker({ visibility: false });
@@ -109,8 +106,8 @@ const MarkInvoiceAsPaidModal = ({
               labelClassName="absolute top-0.5 left-1 h-6 z-1 origin-0 bg-white p-2 text-base font-medium duration-300 text-miru-dark-purple-200"
               name="invoice"
               type="text"
-              value={invoice.client.name}
-                onChange={() => {}} //eslint-disable-line
+              value={client}
+              onChange={() => {}} //eslint-disable-line
             />
           </div>
         </div>
@@ -129,7 +126,7 @@ const MarkInvoiceAsPaidModal = ({
             name="transactionDate"
             type="text"
             value={transactionDate && dayjs(transactionDate).format(dateFormat)}
-              onChange={() => {}} //eslint-disable-line
+            onChange={() => {}} //eslint-disable-line
           />
           <CalendarIcon
             className="absolute top-0 bottom-0 right-1 mx-2 my-3 "
@@ -203,7 +200,7 @@ const MarkInvoiceAsPaidModal = ({
           name="paymentAmount"
           type="text"
           value={amount && baseCurrency && currencyFormat(baseCurrency, amount)}
-            onChange={() => {}} //eslint-disable-line
+          onChange={() => {}} //eslint-disable-line
         />
       </div>
       <div className="mt-4">
@@ -218,8 +215,9 @@ const MarkInvoiceAsPaidModal = ({
         />
       </div>
       <div className="actions mx-auto mt-4 mb-4 w-full">
-        <button
+        <Button
           disabled={isLoading}
+          size="medium"
           type="submit"
           className={
             isAddPaymentBtnActive(
@@ -227,7 +225,7 @@ const MarkInvoiceAsPaidModal = ({
               transactionDate,
               transactionType,
               amount
-            ) && !isLoading
+            )
               ? "focus:outline-none flex h-10 w-full cursor-pointer items-center justify-center rounded border border-transparent bg-miru-han-purple-1000 py-1 px-4 font-sans text-base font-medium uppercase tracking-widest text-miru-white-1000 shadow-sm hover:bg-miru-han-purple-600"
               : "focus:outline-none flex h-10 w-full cursor-pointer items-center justify-center rounded border border-transparent bg-miru-gray-1000 py-1 px-4 font-sans text-base font-medium uppercase tracking-widest text-miru-white-1000 shadow-sm"
           }
@@ -246,7 +244,7 @@ const MarkInvoiceAsPaidModal = ({
           }}
         >
           MARK AS PAID
-        </button>
+        </Button>
       </div>
     </Modal>
   );
