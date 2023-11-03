@@ -2,18 +2,15 @@
 
 module Team
   class IndexService < ApplicationService
-    attr_reader :current_company, :query, :team_data
+    attr_reader :current_company, :query
 
-    def initialize(current_company, query, team_data)
+    def initialize(current_company, query)
       @current_company = current_company
       @query = query
-      @team_data = team_data
     end
 
     def process
-      {
-        team_list:
-      }
+      { team_list: }
     end
 
     private

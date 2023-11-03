@@ -15,7 +15,7 @@ class InternalApi::V1::TeamController < InternalApi::V1::ApplicationController
     presenter_data = TeamPresenter.new(teams, invitations, current_user, current_company).index_data
     team_data = presenter_data[:teams]
     invitation_data = presenter_data[:invitations]
-    queried_service = Team::IndexService.new(current_company, params[:query], team_data).process
+    queried_service = Team::IndexService.new(current_company, params[:query]).process
 
     combined_data = params[:query].present? ? queried_service[:team_list] : (team_data + invitation_data)
     pagy_combined, combined_details = pagy_array(combined_data, items: params[:items] || 10)
