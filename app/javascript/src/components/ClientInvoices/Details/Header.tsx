@@ -6,11 +6,10 @@ import {
   DotsThreeVerticalIcon,
   DownloadSimpleIcon,
 } from "miruIcons";
-import { Badge, MoreOptions, Tooltip } from "StyledComponents";
+import { Badge, Button, MoreOptions, Tooltip } from "StyledComponents";
 
+import { handleDownloadInvoice } from "components/Invoices/common/utils";
 import getStatusCssClass from "utils/getBadgeStatus";
-
-import { handleDownloadInvoice } from "../../Invoices/common/utils";
 
 const Header = ({
   invoice,
@@ -21,6 +20,8 @@ const Header = ({
   const [isMoreOptionsVisible, setIsMoreOptionsVisible] =
     useState<boolean>(false);
   const wrapperRef = useRef(null);
+  const { invoice_number, status } = invoice;
+
   useOutsideClick(
     wrapperRef,
     () => setIsMoreOptionsVisible(false),
@@ -31,20 +32,18 @@ const Header = ({
     <div className="mt-6 mb-3 sm:flex sm:items-center sm:justify-between">
       <div className="flex flex-row">
         <div className="mr-2 flex self-center">
-          <p className="text-4xl font-bold">
-            Invoice #{invoice.invoice_number}
-          </p>
+          <p className="text-4xl font-bold">Invoice #{invoice_number}</p>
         </div>
         <div className="ml-2 flex self-center">
           <Badge
-            className={`${getStatusCssClass(invoice.status)} uppercase`}
-            text={invoice.status}
+            className={`${getStatusCssClass(status)} uppercase`}
+            text={status}
           />
         </div>
       </div>
       <div className="justify-items-right flex flex-row">
         <div className="send-button-container ml-1 flex flex-col justify-items-center">
-          {invoice.status == "waived" ? (
+          {status == "waived" ? (
             <Tooltip
               content="This invoice has been waived off by the sender"
               wrapperClassName="relative block max-w-full "
@@ -65,15 +64,15 @@ const Header = ({
             </Tooltip>
           ) : (
             <button
-              disabled={invoice.status == "paid"}
+              disabled={status == "paid"}
               className={`flex h-10 w-44 flex-row items-center justify-center rounded
               ${
-                invoice.status == "paid"
+                status == "paid"
                   ? "cursor-not-allowed bg-indigo-100"
                   : "bg-miru-han-purple-1000"
               }`}
               onClick={() => {
-                if (invoice.status != "paid") {
+                if (status != "paid") {
                   if (stripe_connected_account) {
                     window.location.href = stripeUrl;
                   } else {
@@ -94,12 +93,13 @@ const Header = ({
           )}
         </div>
         <div className="relative">
-          <button
+          <Button
             className="ml-2 rounded border border-miru-han-purple-1000 bg-miru-gray-1000 p-2.5 text-miru-han-purple-1000 opacity-50"
+            style="ternary"
             onClick={() => setIsMoreOptionsVisible(!isMoreOptionsVisible)}
           >
             <DotsThreeVerticalIcon size={16} />
-          </button>
+          </Button>
           {isMoreOptionsVisible && (
             <MoreOptions
               className="right-0"
