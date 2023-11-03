@@ -15,6 +15,7 @@ const Header = ({
   setShowConnectPaymentDialog,
   isStripeEnabled,
   setShowHistory,
+  fetchInvoice,
 }) => {
   const invoiceWaived = invoice?.status === "waived";
 
@@ -27,6 +28,7 @@ const Header = ({
       {!invoiceWaived && (
         <InvoiceActions
           editInvoiceLink={`/invoices/${invoice.id}/edit`}
+          fetchInvoice={fetchInvoice}
           invoice={invoice}
           isStripeEnabled={isStripeEnabled}
           sendInvoice={handleSendInvoice}
