@@ -10,6 +10,7 @@ const ContactsList = ({
   invitedEmails,
   setAddContactModal,
   displayEditContact,
+  displayDeleteContact,
 }) => (
   <Modal
     customStyle="sm:my-8 sm:w-full sm:max-w-lg sm:align-middle overflow-visible"
@@ -51,7 +52,10 @@ const ContactsList = ({
             <button onClick={() => displayEditContact(contact)}>
               <PencilIcon color="#5b34ea" size={16} weight="bold" />
             </button>
-            <button className="ml-10">
+            <button
+              className="ml-10"
+              onClick={() => displayDeleteContact(contact)}
+            >
               <DeleteIcon color="#5b34ea" size={16} weight="bold" />
             </button>
           </div>

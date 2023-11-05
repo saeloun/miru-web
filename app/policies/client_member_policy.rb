@@ -9,6 +9,10 @@ class ClientMemberPolicy < ApplicationPolicy
     authorize_current_user
   end
 
+  def destroy?
+    authorize_current_user
+  end
+
   def permitted_attributes
     [:first_name, :last_name]
   end

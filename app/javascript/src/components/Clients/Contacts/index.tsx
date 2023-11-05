@@ -3,12 +3,14 @@ import React, { useEffect, useState } from "react";
 import clientMembersApi from "apis/clientMembers";
 
 import AddContacts from "./AddContacts";
+import DeleteContact from "./DeleteContact";
 import EditContact from "./EditContact";
 import ContactsList from "./List";
 
 const Contacts = ({ isContactOpen, setIsContactOpen, clientDetails }) => {
   const [addContactModal, setAddContactModal] = useState(false);
   const [editContactModal, setEditContactModal] = useState(false);
+  const [deleteContactModal, setDeleteContactModal] = useState(false);
   const [contacts, setContacts] = useState([]);
   const [contact, setContact] = useState({});
   const [invitedEmails, setInvitedEmails] = useState([]);
@@ -30,6 +32,11 @@ const Contacts = ({ isContactOpen, setIsContactOpen, clientDetails }) => {
   const displayEditContact = contact => {
     setContact(contact);
     setEditContactModal(true);
+  };
+
+  const displayDeleteContact = contact => {
+    setContact(contact);
+    setDeleteContactModal(true);
   };
 
   if (addContactModal) {
@@ -55,9 +62,22 @@ const Contacts = ({ isContactOpen, setIsContactOpen, clientDetails }) => {
     );
   }
 
+  if (deleteContactModal) {
+    return (
+      <DeleteContact
+        client={clientDetails}
+        contact={contact}
+        fetchContacts={fetchContacts}
+        setShowDeleteDialog={setDeleteContactModal}
+        showDeleteDialog={deleteContactModal}
+      />
+    );
+  }
+
   return (
     <ContactsList
       contacts={contacts}
+      displayDeleteContact={displayDeleteContact}
       displayEditContact={displayEditContact}
       invitedEmails={invitedEmails}
       isContactOpen={isContactOpen}

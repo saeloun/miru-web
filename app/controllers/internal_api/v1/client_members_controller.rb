@@ -5,7 +5,7 @@ class InternalApi::V1::ClientMembersController < InternalApi::V1::ApplicationCon
     authorize client, policy_class: ClientMemberPolicy
 
     render locals: {
-      client_members: client.client_members.includes(:user),
+      client_members: client.client_members.kept.includes(:user),
       invitations: client.invitations
     }, status: :ok
   end
@@ -19,6 +19,16 @@ class InternalApi::V1::ClientMembersController < InternalApi::V1::ApplicationCon
     render json: {
       notice: "Contact updated successfully"
     }, status: :ok
+  end
+
+  def destroy
+    authorize client, policy_class: ClientMemberPolicy
+
+    if client_member.discard!
+      render json: {
+        notice: "Contact deleted successfully"
+      }, status: :ok
+    end
   end
 
   private

@@ -169,7 +169,7 @@ class Client < ApplicationRecord
   end
 
   def client_members_emails
-    client_members.includes(:user).pluck("users.email")
+    client_members.kept.includes(:user).pluck("users.email")
   end
 
   private
