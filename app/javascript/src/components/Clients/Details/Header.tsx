@@ -14,11 +14,12 @@ import {
   TeamsIcon,
 } from "miruIcons";
 import { useNavigate } from "react-router-dom";
-import { Badge, MobileMoreOptions, Modal } from "StyledComponents";
+import { MobileMoreOptions, Modal } from "StyledComponents";
 
 import { useUserContext } from "context/UserContext";
 
-import AddContacts from "../Modals/AddContacts";
+// import AddContacts from "../Modals/AddContacts";
+import Contacts from "../Contacts";
 import DeleteClient from "../Modals/DeleteClient";
 import EditClient from "../Modals/EditClient";
 
@@ -36,11 +37,6 @@ const Header = ({
   const [showMobileModal, setShowMobileModal] = useState<boolean>(false);
   const [showContactModal, setShowContactModal] = useState<boolean>(false);
 
-  const clientMembersEmail = clientDetails.clientMembersEmails;
-
-  const pendingInvitationEmails = clientDetails.invitations.filter(
-    contact => contact.accepted_at === null
-  );
   const navigate = useNavigate();
   const menuRef = useRef();
   const { isDesktop } = useUserContext();
@@ -150,24 +146,6 @@ const Header = ({
           <div>
             <p className="text-lg font-bold">Client Details</p>
             <div className="mt-4 text-base">
-              <p className="font-semibold">Email ID(s)</p>
-              <p className="mt-1 text-miru-dark-purple-400">
-                {clientMembersEmail.map((email, index) => (
-                  <p className="mb-2" key={index}>
-                    {email}
-                  </p>
-                ))}
-                {pendingInvitationEmails.map((contact, index) => (
-                  <p className="mb-2" key={index}>
-                    <div className="flex items-center justify-between">
-                      {contact.recipient_email}
-                      <Badge text="Pending Invitation" />
-                    </div>
-                  </p>
-                ))}
-              </p>
-            </div>
-            <div className="mt-4 text-base">
               <p className=" font-semibold">Address</p>
               <div className="mt-1 text-miru-dark-purple-400">
                 <p>{clientDetails.address.address_line_1}</p>
@@ -201,11 +179,10 @@ const Header = ({
         />
       )}
       {showContactModal && (
-        <AddContacts
-          client={clientDetails}
-          fetchDetails={fetchDetails}
-          setShowContactModal={setShowContactModal}
-          showContactModal={showContactModal}
+        <Contacts
+          clientDetails={clientDetails}
+          isContactOpen={showContactModal}
+          setIsContactOpen={setShowContactModal}
         />
       )}
       {showMobileModal && (
