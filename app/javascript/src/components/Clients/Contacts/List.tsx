@@ -1,7 +1,7 @@
 import React from "react";
 
 import { DeleteIcon, PencilIcon, PlusIcon, XIcon } from "miruIcons";
-import { Badge, Modal } from "StyledComponents";
+import { Badge, Modal, Switch } from "StyledComponents";
 
 const ContactsList = ({
   isContactOpen,
@@ -11,9 +11,10 @@ const ContactsList = ({
   setAddContactModal,
   displayEditContact,
   displayDeleteContact,
+  handleVerifyContact,
 }) => (
   <Modal
-    customStyle="sm:my-8 sm:w-full sm:max-w-lg sm:align-middle overflow-visible"
+    customStyle="sm:my-8 sm:w-full sm:max-w-xl sm:align-middle overflow-visible"
     isOpen={isContactOpen}
     onClose={() => setIsContactOpen(false)}
   >
@@ -38,7 +39,7 @@ const ContactsList = ({
     </div>
     <div className="mt-4 text-base text-miru-dark-purple-400">
       {contacts.map((contact, index) => (
-        <div className="mb-2 flex items-center justify-between" key={index}>
+        <div className="mb-3 flex items-center justify-between" key={index}>
           <p
             style={{
               maxWidth: "80%",
@@ -61,20 +62,28 @@ const ContactsList = ({
           </div>
         </div>
       ))}
-      {invitedEmails.map((contact, index) => (
-        <div className="mb-2 flex items-center justify-between" key={index}>
-          <span
-            style={{
-              maxWidth: "80%",
-              wordWrap: "break-word",
-              overflowWrap: "break-word",
-            }}
-          >
-            {contact.recipient_email}
-          </span>
-          <Badge text="Pending Invitation" />
-        </div>
-      ))}
+      <div className="mt-4">
+        {invitedEmails.map((contact, index) => (
+          <div className="mb-3 flex items-center justify-between" key={index}>
+            <span
+              style={{
+                maxWidth: "60%",
+                wordWrap: "break-word",
+                overflowWrap: "break-word",
+              }}
+            >
+              {contact.recipient_email}
+            </span>
+            <div className="iconWrapper flex items-center justify-evenly">
+              <Badge className="mr-2" text="Pending" />
+              <Switch
+                enabled={contact.virtual_verified}
+                onChange={() => handleVerifyContact(contact)}
+              />
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   </Modal>
 );

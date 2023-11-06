@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import clientMembersApi from "apis/clientMembers";
+import teamApi from "apis/team";
 
 import AddContacts from "./AddContacts";
 import DeleteContact from "./DeleteContact";
@@ -37,6 +38,12 @@ const Contacts = ({ isContactOpen, setIsContactOpen, clientDetails }) => {
   const displayDeleteContact = contact => {
     setContact(contact);
     setDeleteContactModal(true);
+  };
+
+  const handleVerifyContact = async contact => {
+    const payload = { virtual_verified: !contact.virtual_verified };
+    await teamApi.updateInvitedMember(contact.id, payload);
+    fetchContacts();
   };
 
   if (addContactModal) {
@@ -79,6 +86,7 @@ const Contacts = ({ isContactOpen, setIsContactOpen, clientDetails }) => {
       contacts={contacts}
       displayDeleteContact={displayDeleteContact}
       displayEditContact={displayEditContact}
+      handleVerifyContact={handleVerifyContact}
       invitedEmails={invitedEmails}
       isContactOpen={isContactOpen}
       setAddContactModal={setAddContactModal}

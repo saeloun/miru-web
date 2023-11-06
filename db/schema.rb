@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_11_05_140031) do
+ActiveRecord::Schema[7.0].define(version: 2023_11_06_110527) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -248,6 +248,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_05_140031) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "client_id"
+    t.boolean "virtual_verified", default: false
     t.index ["accepted_at"], name: "index_invitations_on_accepted_at"
     t.index ["client_id"], name: "index_invitations_on_client_id"
     t.index ["company_id"], name: "index_invitations_on_company_id"
