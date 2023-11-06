@@ -61,7 +61,7 @@ class Reports::TimeEntries::ReportService
 
       TimesheetEntry.search(
         where: where_clause,
-        order: order_field.to_sym,
+        order: [order_field.to_sym => :asc, work_date: :desc],
         per_page: 50,
         page: params[:page],
         load: false,
