@@ -5,19 +5,25 @@ class InternalApi::V1::TeamController < InternalApi::V1::ApplicationController
 
   def index
     authorize :index, policy_class: TeamPolicy
-    # TODO: need to update either the search form or search logic in later PRs
-    query = current_company.employments.kept.includes(user: [:roles, :avatar_attachment]).ransack(params[:q])
-    invitations_query = current_company.invitations.valid_invitations
-      .ransack(first_name_or_last_name_or_recipient_email_cont: params.dig(:q, :first_name_or_last_name_or_email_cont))
-    teams = query.result(distinct: true)
-    invitations = invitations_query.result(distinct: true)
+    users = current_company.employments.kept.pluck(:user_id)
+    teams = User.search(
+      params.dig(:q, :first_name_or_last_name_or_email_cont) || "*",
+      fields: [:first_name, :last_name, :email],
+      match: :word_middle,
+      where: { id: users }
+    )
+    invitations = Invitation.search(
+      params.dig(:q, :first_name_or_last_name_or_email_cont) || "*",
+      fields: [:first_name, :last_name, :recipient_email],
+      match: :word_middle,
+      where: { sender_id: current_user.id }
+    )
 
     presenter_data = TeamPresenter.new(teams, invitations, current_user, current_company).index_data
     team_data = presenter_data[:teams]
     invitation_data = presenter_data[:invitations]
-    queried_service = Team::IndexService.new(current_company, params[:query]).process
 
-    combined_data = params[:query].present? ? queried_service[:team_list] : (team_data + invitation_data)
+    combined_data = (team_data + invitation_data)
     pagy_combined, combined_details = pagy_array(combined_data, items: params[:items] || 10)
 
     render :index, locals: {

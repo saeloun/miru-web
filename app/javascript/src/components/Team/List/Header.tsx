@@ -16,7 +16,7 @@ const Header = () => {
   const { setModalState } = useList();
 
   const fetchTeamList = async searchString => {
-    const res = await teamApi.get(`query=${searchString}`);
+    const res = await teamApi.search(searchString);
     const dropdownList = unmapList(res);
 
     return dropdownList;

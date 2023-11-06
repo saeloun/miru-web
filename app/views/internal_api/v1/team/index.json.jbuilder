@@ -9,8 +9,7 @@ json.combined_details do
       json.extract! item, :id, :first_name, :last_name, :name, :email, :role, :status, :is_team_member
       json.profile_picture user_avatar(item[:member])
     else
-      json.extract! item, :id, :first_name, :last_name, :email, :role
-      json.name item.full_name
+      json.extract! item, :id, :name, :first_name, :last_name, :email, :role, :status, :is_team_member
       json.profile_picture image_url "avatar.svg"
     end
   end
