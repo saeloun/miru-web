@@ -22,7 +22,7 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
     render :create, locals: {
       invoice: @invoice,
       client: @client,
-      client_member_emails: @invoice.client_member_emails
+      client_member_emails: @invoice.send_invoice_emails
     }
   end
 
@@ -32,7 +32,7 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
       invoice:,
       client: invoice.client,
       client_list: current_company.client_list,
-      client_member_emails: invoice.client_member_emails
+      client_member_emails: invoice.send_invoice_emails
     }
   end
 
@@ -50,7 +50,7 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
     render :show, locals: {
       invoice:,
       client: invoice.client,
-      client_member_emails: invoice.client_member_emails
+      client_member_emails: invoice.send_invoice_emails
     }
   end
 
