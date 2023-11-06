@@ -39,38 +39,33 @@ class Reports::TimeEntries::ReportService
       default_filter = current_company_filter.merge(this_month_filter)
       where_clause = default_filter.merge(TimeEntries::Filters.process(params))
       pagy_reports(where_clause)
-   end
-
-    def pagy_reports(where_clause)
-      page_service = Reports::TimeEntries::PageService.new(params, current_company)
-      page_service.process
-
-      search_results = search_timesheet_entries(where_clause.merge(page_service.es_filter))
-
-      pagination_details_for_es_query(search_results)
-   end
-
-    def change_pagination(page)
-      page > 0 ? [page - 1, 1].max : page
     end
 
-    def pagination_details_for_es_query(search_result)
-      @pagy_data, paginated_data = pagy_searchkick(
-        search_result,
-        items: Reports::TimeEntries::PageService::DEFAULT_ITEMS_PER_PAGE,
-        page: params[:page]
-      )
-      @reports = paginated_data
-      pagination_details
+    def pagy_reports(where_clause)
+      filter_service = Reports::TimeEntries::FilterService.new(params, current_company)
+      filter_service.process
+      @reports = search_timesheet_entries(where_clause.merge(filter_service.es_filter))
     end
 
     def search_timesheet_entries(where_clause, page = nil)
-      TimesheetEntry.pagy_search(
+      order_field = case params[:group_by]
+                    when "project"
+                      "project_name"
+                    when "client"
+                      "client_name"
+                    when "team_member"
+                      "user_name"
+                    else
+                      "work_date"
+      end
+
+      TimesheetEntry.search(
         where: where_clause,
-        order: { work_date: :desc },
+        order: order_field.to_sym,
+        per_page: 50,
         page: params[:page],
-        load: false
-        )
+        load: false,
+      )
     end
 
     def client_logos
@@ -83,11 +78,11 @@ class Reports::TimeEntries::ReportService
 
     def current_company_filter
       { project_id: current_company.project_ids }
-   end
+    end
 
     def this_month_filter
       { work_date: DateTime.current.beginning_of_month..DateTime.current.end_of_month }
-   end
+    end
 
     def users_not_client_role
       users_with_client_role_ids = current_company.users.joins(:roles).where(roles: { name: "client" }).pluck(:id)
@@ -96,13 +91,11 @@ class Reports::TimeEntries::ReportService
 
     def pagination_details
       {
-        pages: pagy_data.pages,
-        first: pagy_data.page == 1,
-        prev: pagy_data.prev.nil? ? 0 : pagy_data.prev,
-        next: pagy_data.next,
-        last: pagy_data.last,
-        page: pagy_data.page,
-        items: pagy_data.items
+        pages: @reports.total_pages,
+        first: @reports.first_page?,
+        prev: @reports.prev_page,
+        next: @reports.next_page,
+        last: @reports.last_page?
       }
     end
 end
