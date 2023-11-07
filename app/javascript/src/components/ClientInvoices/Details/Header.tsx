@@ -6,7 +6,7 @@ import {
   DotsThreeVerticalIcon,
   DownloadSimpleIcon,
 } from "miruIcons";
-import { Badge, Button, MoreOptions, Tooltip } from "StyledComponents";
+import { Badge, Button, MoreOptions, Toastr, Tooltip } from "StyledComponents";
 
 import { handleDownloadInvoice } from "components/Invoices/common/utils";
 import getStatusCssClass from "utils/getBadgeStatus";
@@ -27,6 +27,12 @@ const Header = ({
     () => setIsMoreOptionsVisible(false),
     isMoreOptionsVisible
   );
+
+  const handleDownloadAction = invoice => {
+    Toastr.success("Download request sent");
+    handleDownloadInvoice(invoice);
+    setIsMoreOptionsVisible(false);
+  };
 
   return (
     <div className="mt-6 mb-3 sm:flex sm:items-center sm:justify-between">
@@ -107,7 +113,7 @@ const Header = ({
             >
               <li
                 className="flex cursor-pointer items-center py-2.5 px-4 text-miru-han-purple-1000 hover:bg-miru-gray-100"
-                onClick={() => handleDownloadInvoice(invoice)}
+                onClick={() => handleDownloadAction(invoice)}
               >
                 <DownloadSimpleIcon className="mr-4" size={16} weight="bold" />
                 Download

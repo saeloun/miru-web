@@ -10,7 +10,7 @@ class InvoicePolicy < ApplicationPolicy
   end
 
   def show?
-    authorize_owner_admin_book_keeper
+    authorize_owner_admin_book_keeper_client
   end
 
   def update?
@@ -30,7 +30,7 @@ class InvoicePolicy < ApplicationPolicy
   end
 
   def download?
-    authorize_current_user && (user_owner_role? || user_admin_role? || user_book_keeper_role? || user_client_role?)
+    authorize_owner_admin_book_keeper_client
   end
 
   def send_reminder?
@@ -66,5 +66,9 @@ class InvoicePolicy < ApplicationPolicy
 
   def authorize_owner_admin
     authorize_current_user && (user_owner_role? || user_admin_role?)
+  end
+
+  def authorize_owner_admin_book_keeper_client
+    authorize_current_user && (user_owner_role? || user_admin_role? || user_book_keeper_role? || user_client_role?)
   end
 end
