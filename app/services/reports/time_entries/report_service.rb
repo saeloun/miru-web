@@ -48,20 +48,17 @@ class Reports::TimeEntries::ReportService
     end
 
     def search_timesheet_entries(where_clause, page = nil)
-      order_field = case params[:group_by]
-                    when "project"
-                      "project_name"
-                    when "client"
-                      "client_name"
-                    when "team_member"
-                      "user_name"
-                    else
-                      "work_date"
-      end
+      order_fields = {
+        "project" => :project_name,
+        "client" => :client_name,
+        "team_member" => :user_name,
+        "default" => :client_name
+      }
+      order_field = order_fields[params[:group_by]] || order_fields["default"]
 
       TimesheetEntry.search(
         where: where_clause,
-        order: [order_field.to_sym => :asc, work_date: :desc],
+        order: [order_field => :asc, work_date: :desc],
         per_page: 50,
         page: params[:page],
         load: false,
