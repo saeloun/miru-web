@@ -36,13 +36,6 @@ const MarkInvoiceAsPaidModal = ({
   const amount = invoice?.amount;
   const client = invoice?.client?.name;
 
-  const isAddPaymentBtnActive = (
-    invoice,
-    transactionDate,
-    transactionType,
-    amount
-  ) => invoice && transactionDate && transactionType && amount;
-
   useEffect(() => {
     const close = e => {
       if (e.keyCode === 27) {
@@ -101,7 +94,7 @@ const MarkInvoiceAsPaidModal = ({
             <CustomInputText
               disabled
               id="invoice"
-              inputBoxClassName="form__input block w-full appearance-none bg-white p-4 text-base h-12 focus-within:border-miru-han-purple-1000 border-miru-gray-1000"
+              inputBoxClassName="form__input block w-full appearance-none bg-white p-4 text-base h-12 focus-within:border-miru-han-purple-1000 border-miru-gray-1000 cursor-not-allowed"
               label="Invoice"
               labelClassName="absolute top-0.5 left-1 h-6 z-1 origin-0 bg-white p-2 text-base font-medium duration-300 text-miru-dark-purple-200"
               name="invoice"
@@ -195,7 +188,7 @@ const MarkInvoiceAsPaidModal = ({
         <CustomInputText
           disabled
           id="paymentAmount"
-          inputBoxClassName="form__input block w-full appearance-none bg-white p-4 text-base h-12 focus-within:border-miru-han-purple-1000 border-miru-gray-1000"
+          inputBoxClassName="form__input block w-full appearance-none bg-white p-4 text-base h-12 focus-within:border-miru-han-purple-1000 border-miru-gray-1000 cursor-not-allowed"
           label="Payment amount"
           labelClassName="absolute top-0.5 left-1 h-6 z-1 origin-0 bg-white p-2 text-base font-medium duration-300 text-miru-dark-purple-200"
           name="paymentAmount"
@@ -216,36 +209,29 @@ const MarkInvoiceAsPaidModal = ({
         />
       </div>
       <div className="actions mx-auto mt-4 mb-4 w-full">
-        <Button
-          disabled={isLoading}
-          size="medium"
-          type="submit"
-          className={
-            isAddPaymentBtnActive(
-              invoice,
-              transactionDate,
-              transactionType,
-              amount
-            )
-              ? "focus:outline-none flex h-10 w-full cursor-pointer items-center justify-center rounded border border-transparent bg-miru-han-purple-1000 py-1 px-4 font-sans text-base font-medium uppercase tracking-widest text-miru-white-1000 shadow-sm hover:bg-miru-han-purple-600"
-              : "focus:outline-none flex h-10 w-full cursor-pointer items-center justify-center rounded border border-transparent bg-miru-gray-1000 py-1 px-4 font-sans text-base font-medium uppercase tracking-widest text-miru-white-1000 shadow-sm"
-          }
-          onClick={() => {
-            setIsLoading(true);
-            if (
-              isAddPaymentBtnActive(
-                invoice,
-                transactionDate,
-                transactionType,
-                amount
-              )
-            ) {
+        {invoice && transactionDate && transactionType && amount ? (
+          <Button
+            className="focus:outline-none flex h-10 w-full cursor-pointer items-center justify-center rounded border border-transparent bg-miru-han-purple-1000 py-1 px-4 font-sans text-base font-medium uppercase tracking-widest text-miru-white-1000 shadow-sm hover:bg-miru-han-purple-600"
+            disabled={isLoading}
+            size="medium"
+            type="submit"
+            onClick={() => {
+              setIsLoading(true);
               handleAddPayment();
-            }
-          }}
-        >
-          MARK AS PAID
-        </Button>
+            }}
+          >
+            MARK AS PAID
+          </Button>
+        ) : (
+          <Button
+            disabled
+            className="focus:outline-none flex h-10 w-full cursor-not-allowed items-center justify-center rounded border border-transparent bg-miru-gray-1000 py-1 px-4 font-sans text-base font-medium uppercase tracking-widest text-miru-white-1000 shadow-sm"
+            size="medium"
+            type="submit"
+          >
+            MARK AS PAID
+          </Button>
+        )}
       </div>
     </Modal>
   );
