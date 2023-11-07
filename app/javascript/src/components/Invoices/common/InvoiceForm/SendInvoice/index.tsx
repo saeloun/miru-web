@@ -165,9 +165,6 @@ const SendInvoice: React.FC<any> = ({
                     "flex flex-wrap rounded bg-miru-gray-100 p-1.5",
                     { "h-9": !invoiceEmail.recipients }
                   )}
-                  onClick={() =>
-                    user.email == "supriya@saeloun.com" && input.current.focus()
-                  }
                 >
                   {invoiceEmail.recipients.map(recipient => (
                     <Recipient
@@ -177,23 +174,6 @@ const SendInvoice: React.FC<any> = ({
                       recipientsCount={invoiceEmail.recipients.length}
                     />
                   ))}
-                  {user.email == "supriya@saeloun.com" && (
-                    <input
-                      name="to"
-                      ref={input}
-                      style={{ width }}
-                      type="email"
-                      value={newRecipient}
-                      className={cn(
-                        "focus:outline-none mx-1.5 w-fit cursor-text rounded bg-miru-gray-100 py-2",
-                        {
-                          "text-miru-red-400": !isEmailValid(newRecipient),
-                        }
-                      )}
-                      onChange={e => setNewRecipient(e.target.value.trim())}
-                      onKeyDown={handleInput}
-                    />
-                  )}
                 </div>
               </fieldset>
               <fieldset className="field_with_errors flex flex-col">
