@@ -5,25 +5,26 @@ class InternalApi::V1::TeamController < InternalApi::V1::ApplicationController
 
   def index
     authorize :index, policy_class: TeamPolicy
-    users = current_company.employments.kept.pluck(:user_id)
+    user_ids = current_company.employments.kept.pluck(:user_id)
+    invitation_ids = current_company.invitations.valid_invitations.pluck(:id)
     teams = User.search(
       params.dig(:q, :first_name_or_last_name_or_email_cont) || "*",
       fields: [:first_name, :last_name, :email],
       match: :word_middle,
-      where: { id: users }
+      where: { id: user_ids }
     )
     invitations = Invitation.search(
       params.dig(:q, :first_name_or_last_name_or_email_cont) || "*",
       fields: [:first_name, :last_name, :recipient_email],
       match: :word_middle,
-      where: { sender_id: current_user.id }
+      where: { sender_id: current_user.id, id: invitation_ids }
     )
 
     presenter_data = TeamPresenter.new(teams, invitations, current_user, current_company).index_data
     team_data = presenter_data[:teams]
     invitation_data = presenter_data[:invitations]
 
-    combined_data = (team_data + invitation_data)
+    combined_data = team_data + invitation_data
     pagy_combined, combined_details = pagy_array(combined_data, items: params[:items] || 10)
 
     render :index, locals: {
