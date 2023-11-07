@@ -20,7 +20,7 @@ import StaticPage from "./StaticPage";
 const UserDetailsView = () => {
   const { setUserState, profileSettings } = useProfile();
   const [isLoading, setIsLoading] = useState(false);
-  const { isDesktop } = useUserContext();
+  const { isDesktop, companyRole } = useUserContext();
 
   const getData = async () => {
     setIsLoading(true);
@@ -31,19 +31,24 @@ const UserDetailsView = () => {
         data.data.user,
         addressData.data.addresses[0]
       );
+
       setUserState("profileSettings", userObj);
-      const res: any = await teamsApi.getEmploymentDetails(data?.data?.user.id);
-
-      const res1: any = await teamsApi.getPreviousEmployments(
-        data?.data?.user.id
-      );
-
-      if (res.status && res.status == 200) {
-        const employmentObj = employmentMapper(
-          res.data.employment,
-          res1.data.previous_employments
+      if (companyRole !== "client") {
+        const res: any = await teamsApi.getEmploymentDetails(
+          data?.data?.user.id
         );
-        setUserState("employmentDetails", employmentObj);
+
+        const res1: any = await teamsApi.getPreviousEmployments(
+          data?.data?.user.id
+        );
+
+        if (res.status && res.status == 200) {
+          const employmentObj = employmentMapper(
+            res.data.employment,
+            res1.data.previous_employments
+          );
+          setUserState("employmentDetails", employmentObj);
+        }
       }
       setIsLoading(false);
     } else {

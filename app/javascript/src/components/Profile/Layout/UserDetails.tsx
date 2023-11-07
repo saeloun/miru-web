@@ -21,7 +21,7 @@ export const UserDetails = () => {
 
   const [showImageUpdateOptions, setShowImageUpdateOptions] =
     useState<boolean>(false);
-  const { avatarUrl, setCurrentAvatarUrl } = useUserContext();
+  const { avatarUrl, setCurrentAvatarUrl, companyRole } = useUserContext();
   const getDetails = async () => {
     try {
       if (!first_name && !last_name) {
@@ -35,7 +35,7 @@ export const UserDetails = () => {
           setUserState("profileSettings", userObj);
         }
 
-        if (!designation) {
+        if (companyRole !== "client" && !designation) {
           const res: any = await teamsApi.getEmploymentDetails(
             data.data.user.id
           );
