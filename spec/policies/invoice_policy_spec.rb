@@ -63,7 +63,7 @@ RSpec.describe InvoicePolicy, type: :policy do
         expect(described_class).to permit(admin, invoice)
         expect(described_class).to permit(owner, invoice)
         expect(described_class).to permit(book_keeper, invoice)
-        expect(described_class).to permit(client, invoice)
+        expect(described_class).to permit(client_member, invoice)
       end
     end
 
