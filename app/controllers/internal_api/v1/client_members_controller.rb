@@ -25,6 +25,8 @@ class InternalApi::V1::ClientMembersController < InternalApi::V1::ApplicationCon
     authorize client, policy_class: ClientMemberPolicy
 
     if client_member.discard!
+      employment.user.remove_roles_for(current_company)
+      employment.discard!
       render json: {
         notice: "Contact deleted successfully"
       }, status: :ok
