@@ -17,7 +17,7 @@ class InternalApi::V1::TeamController < InternalApi::V1::ApplicationController
       params.dig(:q, :first_name_or_last_name_or_email_cont) || "*",
       fields: [:first_name, :last_name, :recipient_email],
       match: :word_middle,
-      where: { sender_id: current_user.id, id: invitation_ids }
+      where: { sender_id: current_user.id }
     )
 
     presenter_data = TeamPresenter.new(teams, invitations, current_user, current_company).index_data
