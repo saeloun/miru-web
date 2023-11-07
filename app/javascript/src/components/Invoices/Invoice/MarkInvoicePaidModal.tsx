@@ -23,7 +23,7 @@ const MarkInvoiceAsPaidModal = ({
   fetchInvoice,
 }) => {
   const { isDesktop } = useUserContext();
-  const [transactionDate, setTransactionDate] = useState<any>(null);
+  const [transactionDate, setTransactionDate] = useState<any>(dayjs());
   const [transactionType, setTransactionType] = useState<any>(null);
   const [note, setNote] = useState<any>(null);
   const [showDatePicker, setShowDatePicker] = useState<any>(false);
@@ -120,8 +120,9 @@ const MarkInvoiceAsPaidModal = ({
           }
         >
           <CustomInputText
-            disabled
+            readOnly
             id="transactionDate"
+            inputBoxClassName="cursor-pointer"
             label="Transaction Date"
             name="transactionDate"
             type="text"
@@ -129,7 +130,7 @@ const MarkInvoiceAsPaidModal = ({
             onChange={() => {}} //eslint-disable-line
           />
           <CalendarIcon
-            className="absolute top-0 bottom-0 right-1 mx-2 my-3 "
+            className="absolute top-0 bottom-0 right-1 mx-2 my-3 cursor-pointer "
             color="#5B34EA"
             size={20}
           />
