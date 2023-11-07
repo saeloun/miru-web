@@ -19,6 +19,6 @@ class InternalApi::V1::ApplicationController < ActionController::API
   end
 
   def set_virtual_verified_invitations_allowed
-    @virtual_verified_invitations_allowed = ENV["VIRTUAL_VERIFIED_ADMIN_EMAILS"].include?(current_user.email)
+    @virtual_verified_invitations_allowed = ENV["VIRTUAL_VERIFIED_ADMIN_EMAILS"]&.include?(current_user.email)
   end
 end
