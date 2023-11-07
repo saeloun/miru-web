@@ -1,11 +1,9 @@
 # frozen_string_literal: true
 
-class Reports::TimeEntries::PageService < ApplicationService
+class Reports::TimeEntries::FilterService < ApplicationService
   include Pagy::Backend
 
   attr_reader :params, :page, :group_by, :current_company, :pagy_data, :es_filter, :reports
-
-  DEFAULT_ITEMS_PER_PAGE = 50
 
   def initialize(params, current_company)
     @params = params
@@ -19,18 +17,6 @@ class Reports::TimeEntries::PageService < ApplicationService
 
   def process
     es_filter_for_pagination
-  end
-
-  def pagination_details
-    {
-      page: pagy_data.page,
-      pages: pagy_data.pages,
-      first: pagy_data.page == 1,
-      prev: pagy_data.prev.nil? ? 0 : pagy_data.prev,
-      next: pagy_data.next,
-      last: pagy_data.last,
-      item: pagy_data.items
-    }
   end
 
   private

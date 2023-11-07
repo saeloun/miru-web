@@ -113,7 +113,8 @@ export const handleDownloadInvoice = async invoice => {
     const url = window.URL.createObjectURL(new Blob([res.data]));
     const link = document.createElement("a");
     link.href = url;
-    link.setAttribute("download", `${invoice.invoiceNumber}.pdf`);
+    const filename = invoice?.invoiceNumber || invoice?.invoice_number;
+    link.setAttribute("download", `${filename}.pdf`);
     document.body.appendChild(link);
     link.click();
   } catch {
