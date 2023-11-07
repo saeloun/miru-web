@@ -10,10 +10,15 @@ class InternalApi::V1::ApplicationController < ActionController::API
   include SetCurrentDetails
 
   before_action :authenticate_user!
+  before_action :set_virtual_verified_invitations_allowed
 
   def not_found
     skip_authorization
 
     render json: { error: "Route not found" }, status: :not_found
+  end
+
+  def set_virtual_verified_invitations_allowed
+    @virtual_verified_invitations_allowed = ENV["VIRTUAL_VERIFIED_ADMIN_EMAILS"].include?(current_user.email)
   end
 end

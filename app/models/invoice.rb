@@ -182,8 +182,12 @@ class Invoice < ApplicationRecord
     client.invitations.where(virtual_verified: true, accepted_at: nil).pluck(:recipient_email)
   end
 
-  def send_invoice_emails
-    client_member_emails + client_virtual_verified_emails
+  def send_invoice_emails(virtual_verified)
+    if virtual_verified
+      client_member_emails + client_virtual_verified_emails
+    else
+      client_member_emails
+    end
   end
 
   private

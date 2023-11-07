@@ -128,7 +128,7 @@ const Header = ({
               >
                 <button className="menuButton__list-item">
                   <TeamsIcon size={16} />
-                  <span className="ml-3">Add Contacts</span>
+                  <span className="ml-3">Add / View Contacts</span>
                 </button>
               </li>
               <li onClick={handleDelete}>

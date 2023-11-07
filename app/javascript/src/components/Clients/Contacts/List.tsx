@@ -12,6 +12,7 @@ const ContactsList = ({
   displayEditContact,
   displayDeleteContact,
   handleVerifyContact,
+  virtualVerifiedInvitationsAllowed,
 }) => (
   <Modal
     customStyle="sm:my-8 sm:w-full sm:max-w-xl sm:align-middle overflow-visible"
@@ -76,10 +77,12 @@ const ContactsList = ({
             </span>
             <div className="iconWrapper flex items-center justify-evenly">
               <Badge className="mr-2" text="Pending" />
-              <Switch
-                enabled={contact.virtual_verified}
-                onChange={() => handleVerifyContact(contact)}
-              />
+              {virtualVerifiedInvitationsAllowed && (
+                <Switch
+                  enabled={contact.virtual_verified}
+                  onChange={() => handleVerifyContact(contact)}
+                />
+              )}
             </div>
           </div>
         ))}
