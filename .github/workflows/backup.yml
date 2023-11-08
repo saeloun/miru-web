@@ -17,7 +17,7 @@ jobs:
       FLY_DB_APP: miru-staging-db
       PGUSER: postgres
       PGPASSWORD: ${{ secrets.PGSTAGINGPASSWORD }}
-      PGDATABASE: miru-staging-db
+      PGDATABASE: miru_staging
       PGHOST: localhost
       PGPORT: 5434
       S3_BUCKET: miru-db-backup
