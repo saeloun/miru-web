@@ -41,13 +41,10 @@ jobs:
           psql --version
       - name: Dump database, gzip, and upload to S3
         run: |
-          echo $FLY_DB_APP
-          echo $S3_BUCKET
-          flyctl apps list & sleep 3
           flyctl proxy $PGPORT:5432 -a $FLY_DB_APP &
           sleep 3
           echo Dumping ...
-          pg_dump -v -h $PGHOST -p $PGPORT -U $PGUSER $PGDATABASE > ${{ env.filename }}
+          PGPASSWORD=${PGPASSWORD} pg_dump -h $PGHOST -p $PGPORT -x -U $PGUSER -F c -b -v  -Z0 -f ${{ env.filename }} ${PGDATABASE}
           gzip ${{ env.filename }}
           ls
           s3cmd put --acl-private ${{ env.filename }}.gz s3://$S3_BUCKET/${{ env.filename }}.gz
