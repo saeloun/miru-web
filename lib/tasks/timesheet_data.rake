@@ -3,7 +3,7 @@ require 'csv'
 namespace :import do
   desc 'Seed data from CSV file'
   task seed_data_from_csv: :environment do
-    csv_files = ['lib/csvs/time-entries.csv', 'lib/csvs/custom.csv']
+    csv_files = ['lib/csvs/time-entries.csv', 'lib/csvs/timesheet-entries-data.csv']
 
     if ENV["SEED_DATA_FROM_CSV"].present?
       csv_files.each do |csv_file|
