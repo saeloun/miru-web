@@ -1,0 +1,47 @@
+name: Back up database
+run-name: Task
+on:
+  schedule:
+    - cron: "0 0 * * 0"
+    # every sunday
+  workflow_dispatch:
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    env:
+      FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+      FLY_DB_APP: myapp-db
+      PGUSER: postgres
+      PGPASSWORD: ${{ secrets.PGPASSWORD }}
+      PGDATABASE: myapp
+      PGHOST: localhost
+      PGPORT: 5555
+      S3_BUCKET: myapp-backups
+      S3_PATH: myapp
+
+    steps:
+      - uses: s3-actions/s3cmd@v1.2.0
+        with:
+          provider: aws
+          region: ap-southeast-1
+          access_key: ${{ secrets.S3_ACCESS_KEY }}
+          secret_key: ${{ secrets.S3_SECRET_KEY }}
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+      - name: Set filename
+        run: echo "filename=db-$(date -u +"%Y-%m-%d-%H%M%S").sql" >> $GITHUB_ENV
+      - name: install pg_dump version 15.2
+        run: |
+          sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+          wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo tee /etc/apt/trusted.gpg.d/pgdg.asc &>/dev/null
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client-15
+          psql --version
+      - name: Dump database, gzip, and upload to S3
+        run: |
+          flyctl proxy $PGPORT:5432 -a $FLY_DB_APP &
+          sleep 3
+          echo Dumping ...
+          pg_dump -v -h $PGHOST -p $PGPORT -U $PGUSER $PGDATABASE > ${{ env.filename }}
+          gzip ${{ env.filename }}
+          ls
+          s3cmd put --acl-private ${{ env.filename }}.gz s3://$S3_BUCKET/$S3_PATH/${{ env.filename }}.gz
