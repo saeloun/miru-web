@@ -43,6 +43,7 @@ jobs:
         run: |
           echo $FLY_DB_APP
           echo $S3_BUCKET
+          flyctl apps list & sleep 3
           flyctl proxy $PGPORT:5432 -a $FLY_DB_APP &
           sleep 3
           echo Dumping ...
