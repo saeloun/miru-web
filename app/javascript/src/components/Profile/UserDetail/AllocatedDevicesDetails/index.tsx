@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 
+import { useNavigate } from "react-router-dom";
+
 import deviceApi from "apis/devices";
 import Loader from "common/Loader/index";
 import DetailsHeader from "components/Profile/DetailsHeader";
@@ -10,6 +12,7 @@ import StaticPage from "./StaticPage";
 
 const AllocatedDevicesDetails = () => {
   const { user } = useUserContext();
+  const navigate = useNavigate();
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [devices, setDevices] = useState<Device[]>([]);
@@ -26,10 +29,15 @@ const AllocatedDevicesDetails = () => {
     getDevicesDetail();
   }, []);
 
+  const handleEdit = () => {
+    navigate(`/settings/devices/edit`, { replace: true });
+  };
+
   return (
     <div>
       <DetailsHeader
         showButtons
+        editAction={handleEdit}
         isDisableUpdateBtn={false}
         subTitle=""
         title="Allocated Devices"

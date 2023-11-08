@@ -43,7 +43,7 @@ const BUTTON_STYLES = {
 const SIZES = { small: "small", medium: "medium", large: "large" };
 
 const Button = ({
-  style = "primary",
+  style,
   size,
   disabled = false,
   className = "",
