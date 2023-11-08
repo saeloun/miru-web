@@ -92,7 +92,8 @@ class Reports::TimeEntries::ReportService
         first: @reports.first_page?,
         prev: @reports.prev_page,
         next: @reports.next_page,
-        last: @reports.last_page?
+        last: @reports.last_page?,
+        page: params[:page].to_i
       }
     end
 end
