@@ -1,13 +1,11 @@
 name: Back up database
 run-name: Task
+
 on:
-  push:
-    branches:
-      - automate-db-backup
-# on:
-#   schedule:
-#     - cron: "0 0 * * 0"
-#     # every sunday
+  schedule:
+    # - cron: "0 0 * * 0"
+    - cron: "5 8 * * *"
+    # every sunday
   workflow_dispatch:
 jobs:
   backup:
