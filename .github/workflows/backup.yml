@@ -2,11 +2,9 @@ name: Back up database
 run-name: Task
 
 on:
-  schedule:
-    - cron: "5 * * * *"
-    # - cron: "0 0 * * 0"
-    # every sunday
   workflow_dispatch:
+  schedule:
+    - cron: "0 0 * * 0" # every sunday
 jobs:
   backup:
     runs-on: ubuntu-latest
