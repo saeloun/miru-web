@@ -13,11 +13,11 @@ jobs:
   backup:
     runs-on: ubuntu-latest
     env:
-      FLY_API_TOKEN: ${{ secrets.FLY_STAGING_DB_TOKEN }}
-      FLY_DB_APP: miru-staging-db
+      FLY_API_TOKEN: ${{ secrets.FLY_PRODUCTION_DB_TOKEN }}
+      FLY_DB_APP: ${{ secrets.FLY_DB_APP_NAME }}
       PGUSER: postgres
-      PGPASSWORD: ${{ secrets.PGSTAGINGPASSWORD }}
-      PGDATABASE: miru_staging
+      PGPASSWORD: ${{ secrets.PGPASSWORD }}
+      PGDATABASE: miru_production
       PGHOST: localhost
       PGPORT: 5434
       S3_BUCKET: miru-db-backup
