@@ -1,10 +1,10 @@
 name: Back up database
 run-name: Task
 
-# every 15 mins
+# every sunday
 on:
   schedule:
-    - cron: "*/15 * * * *"
+    - cron: "0 0 * * 0"
   workflow_dispatch:
 jobs:
   backup:
