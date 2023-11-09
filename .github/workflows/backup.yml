@@ -4,7 +4,7 @@ run-name: Task
 # every 15 mins
 on:
   schedule:
-    - cron: "15 * * * *"
+    - cron: "*/15 * * * *"
   workflow_dispatch:
 jobs:
   backup:
