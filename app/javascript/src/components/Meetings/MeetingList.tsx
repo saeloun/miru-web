@@ -54,7 +54,7 @@ const MeetingList = ({ meetings, setMeetings }) => {
 
   const updateDate = (id, date) => {
     const updatedMeetings = [...meetings];
-    updatedMeetings[id] = { ...updatedMeetings[id], date };
+    updatedMeetings[id] = { ...updatedMeetings[id], startDate: date };
     setMeetings(updatedMeetings);
   };
 
