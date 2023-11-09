@@ -94,7 +94,7 @@ const Pagination = ({
               </button>
             )}
             <div className="flex overflow-x-scroll ">
-              {paginationRange.map((page, index) => (
+              {paginationRange?.map((page, index) => (
                 <Fragment key={index}>
                   <button
                     disabled={pagy?.page === page || currentPage === page}
