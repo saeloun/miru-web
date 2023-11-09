@@ -80,7 +80,7 @@ const Meeting = ({
               </option>
             )}
             {meeting.client &&
-              projects[meeting.client].map((project, i) => (
+              projects[meeting.client]?.map((project, i) => (
                 <option data-project-id={project.id} key={i.toString()}>
                   {project.name}
                 </option>
@@ -169,6 +169,7 @@ const Meeting = ({
           style="secondary"
           onClick={() => {
             formatDataForTimeTracking(meeting, false);
+            removeMeeting(id);
           }}
         >
           <CheckIcon />

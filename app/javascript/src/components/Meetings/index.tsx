@@ -41,7 +41,7 @@ const Meetings = () => {
             <Button
               className="flex h-14 w-96 items-center justify-center text-xl font-bold"
               style="primary"
-              onClick={() => navigate("/profile/edit/integrations")}
+              onClick={() => navigate("/settings/integrations")}
             >
               <CalendarIcon className="mr-2" />
               <span>Connect Meeting apps</span>

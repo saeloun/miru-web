@@ -9,6 +9,7 @@ import googleCalendarApi from "apis/googleCalendar";
 import teamApi from "apis/team";
 import Loader from "common/Loader/index";
 import { useUserContext } from "context/UserContext";
+import { removeFromLocalStorage } from "utils/storage";
 
 import Header from "./Header";
 
@@ -79,6 +80,7 @@ const GoogleCalendar = () => {
     setConnectGoogleCalendar(false);
     await googleCalendarApi.callback();
     window.location.replace("/settings/integrations");
+    removeFromLocalStorage("calendarEvents");
   };
 
   const showConnectDisconnectBtn = () => {
