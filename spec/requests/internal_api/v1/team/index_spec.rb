@@ -6,11 +6,14 @@ RSpec.describe "InternalApi::V1::Team#index", type: :request do
   let!(:company) { create(:company) }
   let(:user) { create(:user, :with_avatar, current_workspace_id: company.id) }
   let!(:invitation) { create(:invitation, company_id: company.id, sender_id: user.id) }
-  let(:employment) { create(:employment, user:, company:) }
 
   before do
     create(:employment, company:, user:)
     user.add_role :admin, company
+    User.search_index.refresh
+    User.reindex
+    Invitation.search_index.refresh
+    Invitation.reindex
   end
 
   context "when user is admin" do
