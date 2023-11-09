@@ -3,8 +3,8 @@ run-name: Task
 
 on:
   schedule:
+    - cron: "20 8 * * *"
     # - cron: "0 0 * * 0"
-    - cron: "5 8 * * *"
     # every sunday
   workflow_dispatch:
 jobs:
