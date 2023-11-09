@@ -41,6 +41,7 @@ jobs:
           psql --version
       - name: Dump database, gzip, and upload to S3
         run: |
+          flyctl apps list & sleep 3
           flyctl proxy $PGPORT:5432 -a $FLY_DB_APP &
           sleep 3
           echo Dumping ...
