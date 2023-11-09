@@ -42,8 +42,8 @@ jobs:
       - name: Dump database, gzip, and upload to S3
         run: |
           echo ${PGDATABASE}
-          echo ${FLY_DB_APP_NAME}
-          flyctl proxy $PGPORT:5432 -a $FLY_DB_APP_NAME &
+          echo ${FLY_DB_APP}
+          flyctl proxy $PGPORT:5432 -a $FLY_DB_APP &
           sleep 3
           echo Dumping ...
           PGPASSWORD=${PGPASSWORD} pg_dump -h $PGHOST -p $PGPORT -x -U $PGUSER -F c -b -v  -Z0 -f ${{ env.filename }} ${PGDATABASE}
