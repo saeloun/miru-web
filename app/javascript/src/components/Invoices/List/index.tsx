@@ -2,13 +2,12 @@ import React, { Fragment, useEffect, useState } from "react";
 
 import Logger from "js-logger";
 import { useSearchParams } from "react-router-dom";
-import { Toastr } from "StyledComponents";
+import { Pagination, Toastr } from "StyledComponents";
 
 import invoicesApi from "apis/invoices";
 import PaymentsProviders from "apis/payments/providers";
 import Loader from "common/Loader/index";
 import withLayout from "common/Mobile/HOC/withLayout";
-import Pagination from "common/Pagination/Pagination";
 import { ApiStatus as InvoicesStatus, LocalStorageKeys } from "constants/index";
 import { useUserContext } from "context/UserContext";
 import { sendGAPageView } from "utils/googleAnalytics";
@@ -34,7 +33,7 @@ const Invoices = () => {
   const [pagy, setPagy] = useState<any>(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const [params, setParams] = useState<any>({
-    invoices_per_page: searchParams.get("invoices_per_page") || 20,
+    invoices_per_page: searchParams.get("invoices_per_page") || 1,
     page: searchParams.get("page") || 1,
     query: searchParams.get("query") || "",
   });
@@ -237,6 +236,19 @@ const Invoices = () => {
     return <Loader />;
   }
 
+  const handlePageChange = page => {
+    if (page == "...") return;
+
+    return setParams({ ...params, page });
+  };
+
+  const handleClickOnPerPage = e => {
+    setParams({
+      page: 1,
+      invoices_per_page: Number(e.target.value),
+    });
+  };
+
   const InvoicesLayout = () => (
     <div className="h-full p-4 lg:p-0" id="invoice-list-page">
       <Header
@@ -291,10 +303,17 @@ const Invoices = () => {
           )}
           {invoices.length > 0 && (
             <Pagination
-              pagy={pagy}
-              params={params}
-              setParams={setParams}
+              isPerPageVisible
+              currentPage={pagy?.page}
+              handleClick={handlePageChange}
+              handleClickOnPerPage={handleClickOnPerPage}
+              isFirstPage={pagy?.first}
+              isLastPage={pagy?.last}
+              itemsPerPage={pagy?.items}
+              nextPage={pagy?.next}
+              prevPage={pagy?.prev}
               title="invoices/page"
+              totalPages={pagy?.pages}
             />
           )}
           {showDeleteDialog && (
