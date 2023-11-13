@@ -22,7 +22,7 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
     render :create, locals: {
       invoice: @invoice,
       client: @client,
-      client_member_emails: @invoice.client_member_emails
+      client_member_emails: @invoice.send_invoice_emails(@virtual_verified_invitations_allowed)
     }
   end
 
@@ -32,7 +32,7 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
       invoice:,
       client: invoice.client,
       client_list: current_company.client_list,
-      client_member_emails: invoice.client_member_emails
+      client_member_emails: invoice.send_invoice_emails(@virtual_verified_invitations_allowed)
     }
   end
 
@@ -50,7 +50,7 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
     render :show, locals: {
       invoice:,
       client: invoice.client,
-      client_member_emails: invoice.client_member_emails
+      client_member_emails: invoice.send_invoice_emails(@virtual_verified_invitations_allowed)
     }
   end
 
@@ -66,23 +66,19 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
       return render json: { message: "Invoice was sent just a minute ago." }, status: :accepted
     end
 
-    if ENV["SEND_INVOICE_EMAILS"] || current_user.email == "supriya@saeloun.com"
-      recipients = invoice_email_params[:recipients]
+    recipients = invoice_email_params[:recipients]
 
-      if recipients.size < 6
-        invoice.sending! unless invoice.paid? || invoice.overdue?
-        invoice.send_to_email(
-          subject: invoice_email_params[:subject],
-          message: invoice_email_params[:message],
-          recipients: invoice_email_params[:recipients]
-        )
+    if recipients.size < 6
+      invoice.sending! unless invoice.paid? || invoice.overdue?
+      invoice.send_to_email(
+        subject: invoice_email_params[:subject],
+        message: invoice_email_params[:message],
+        recipients: invoice_email_params[:recipients]
+      )
 
-        render json: { message: "Invoice will be sent!" }, status: :accepted
-      else
-        render json: { errors: "Email can only be sent to 5 recipients." }, status: :unprocessable_entity
-      end
+      render json: { message: "Invoice will be sent!" }, status: :accepted
     else
-      render json: { errors: "This feature is currently disabled" }, status: :unprocessable_entity
+      render json: { errors: "Email can only be sent to 5 recipients." }, status: :unprocessable_entity
     end
   end
 

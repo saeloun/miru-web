@@ -62,7 +62,7 @@ class Company < ApplicationRecord
       {
         id: client.id, name: client.name, email: client.email, phone: client.phone, address: client.current_address,
         previousInvoiceNumber: client.invoices&.last&.invoice_number || 0,
-        client_members: client.client_members.joins(:user).pluck("users.email")
+        client_members: client.client_members_emails
       }
     end
   end
