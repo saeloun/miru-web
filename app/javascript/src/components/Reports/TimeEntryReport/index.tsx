@@ -212,8 +212,6 @@ const TimeEntryReport = () => {
           <TimeEntryReportMobileView
             handlePageClick={handlePageClick}
             paginationDetails={paginationDetails}
-            params={paginationDetails}
-            setParams={setPaginationDetails}
           />
         )}
         {isFilterVisible && (
