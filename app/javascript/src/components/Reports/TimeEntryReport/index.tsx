@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 
+import { Pagination } from "StyledComponents";
+
 import reportsApi from "apis/reports";
-import Pagination from "common/Pagination/Pagination";
 import { useUserContext } from "context/UserContext";
 import { sendGAPageView } from "utils/googleAnalytics";
 
@@ -198,11 +199,13 @@ const TimeEntryReport = () => {
           <>
             <Container selectedFilter={selectedFilter} />
             <Pagination
-              isReport
+              currentPage={paginationDetails?.page}
               handleClick={handlePageClick}
-              pagy={paginationDetails}
-              params={paginationDetails}
-              setParams={setPaginationDetails}
+              isFirstPage={paginationDetails?.first}
+              isLastPage={paginationDetails?.last}
+              nextPage={paginationDetails?.next}
+              prevPage={paginationDetails?.prev}
+              totalPages={paginationDetails?.pages}
             />
           </>
         ) : (
