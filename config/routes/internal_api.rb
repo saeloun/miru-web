@@ -18,6 +18,9 @@ namespace :internal_api, defaults: { format: "json" } do
         get "invoices", to: "clients/invoices#index"
         get "invoices/:id", to: "clients/invoices#show", as: "invoice"
       end
+
+      resources :client_members, only: [:index, :update, :destroy]
+
       member do
         post :send_payment_reminder
       end
