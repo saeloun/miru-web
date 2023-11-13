@@ -29,9 +29,9 @@ const Pagination = ({
   prevPage,
   nextPage,
   isLastPage,
-  isPerPageVisible,
-  title,
-  itemsPerPage,
+  isPerPageVisible = false,
+  title = "items/page",
+  itemsPerPage = 10,
   handleClickOnPerPage,
 }: Iprops) => {
   const { isDesktop } = useUserContext();
