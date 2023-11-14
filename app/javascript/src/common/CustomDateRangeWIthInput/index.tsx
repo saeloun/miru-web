@@ -53,14 +53,6 @@ const CustomDateRangeWithInput = ({
     resetErrors("fromInput");
   }, []);
 
-  const handleDateInputOnBlur = (dateInput: string, fieldName: string) => {
-    if (dateInput) {
-      const isValidDate = validateDateInput(dateInput, fieldName);
-      setValidDate(dateInput, fieldName, isValidDate);
-    }
-    submitCustomDatePicker();
-  };
-
   const handleDateInputChange = (dateInput: string, fieldName: string) => {
     const showErrorMsg = !dateInput?.trim();
     const isValidDate = validateDateInput(dateInput, fieldName, showErrorMsg);
@@ -221,11 +213,8 @@ const CustomDateRangeWithInput = ({
               "border-2 border-miru-han-purple-1000"
             }`}
             value={
-              dateRange.from
-                ? dayjs(dateRange.from).format("DD MMM YYYY")
-                : null
+              dateRange.from ? dayjs(dateRange.from).format("DD MMM YYYY") : ""
             }
-            onBlur={e => handleDateInputOnBlur(e.target.value, "fromInput")}
             onChange={e => handleDateInputChange(e.target.value, "fromInput")}
             onClick={onClickInput}
           />
@@ -247,9 +236,8 @@ const CustomDateRangeWithInput = ({
               "border-2 border-miru-han-purple-1000"
             }`}
             value={
-              dateRange.to ? dayjs(dateRange.to).format("DD MMM YYYY") : null
+              dateRange.to ? dayjs(dateRange.to).format("DD MMM YYYY") : ""
             }
-            onBlur={e => handleDateInputOnBlur(e.target.value, "toInput")}
             onChange={e => handleDateInputChange(e.target.value, "toInput")}
             onClick={onClickInput}
           />
