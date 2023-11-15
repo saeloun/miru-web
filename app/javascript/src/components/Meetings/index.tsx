@@ -44,7 +44,7 @@ const Meetings = () => {
               onClick={() => navigate("/settings/integrations")}
             >
               <CalendarIcon className="mr-2" />
-              <span>Connect Meeting apps</span>
+              <span>Connect Meeting Apps</span>
             </Button>
           )}
         </EmptyStates>
