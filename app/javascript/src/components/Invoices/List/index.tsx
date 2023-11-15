@@ -244,8 +244,8 @@ const Invoices = () => {
 
   const handleClickOnPerPage = e => {
     setParams({
-      page: 1,
       invoices_per_page: Number(e.target.value),
+      page: 1,
     });
   };
 
