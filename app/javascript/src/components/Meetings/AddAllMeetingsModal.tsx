@@ -17,7 +17,7 @@ const AddAllMeetingsModal = ({
     onClose={() => setShowDialog(false)}
   >
     <div className="my-8 flex-col">
-      <h6 className="mb-2 text-2xl font-bold">Delete Project</h6>
+      <h6 className="mb-2 text-2xl font-bold">Add all meetings</h6>
       <p className="mt-2 font-normal">
         Are you sure you want to add all {meetings.length} meetings as time
         entries?
