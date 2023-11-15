@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 
 import { format } from "date-fns";
 import dayjs from "dayjs";
@@ -30,6 +30,7 @@ const Meeting = ({
 }) => {
   const [displayDatePicker, setDisplayDatePicker] = useState<boolean>(false);
   const [projectBillable, setProjectBillable] = useState<boolean>(false);
+  const changeDateRef = useRef();
 
   const handleDurationChange = val => {
     updateDuration(id, val);
@@ -101,13 +102,14 @@ const Meeting = ({
       </div>
       <div className="w-60">
         <div className="mb-2 flex justify-between">
-          <div>
+          <div ref={changeDateRef}>
             {displayDatePicker && (
               <div className="relative">
                 <div className="h-100 w-100 absolute top-8 z-10">
                   <CustomDatePicker
                     date={dayjs().format("YYYY-MM-DD")}
-                    setVisibility={displayDatePicker}
+                    setVisibility={setDisplayDatePicker}
+                    wrapperRef={changeDateRef}
                     handleChange={date => {
                       setDisplayDatePicker(false);
                       updateDate(id, date);
