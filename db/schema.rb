@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_10_11_151059) do
+ActiveRecord::Schema[7.0].define(version: 2023_11_15_121129) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -106,9 +106,11 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_11_151059) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "company_id", null: false
+    t.datetime "discarded_at"
     t.index ["client_id", "user_id"], name: "index_client_members_on_client_id_and_user_id", unique: true
     t.index ["client_id"], name: "index_client_members_on_client_id"
     t.index ["company_id"], name: "index_client_members_on_company_id"
+    t.index ["discarded_at"], name: "index_client_members_on_discarded_at"
     t.index ["user_id"], name: "index_client_members_on_user_id"
   end
 
@@ -246,6 +248,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_11_151059) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "client_id"
+    t.boolean "virtual_verified", default: false
     t.index ["accepted_at"], name: "index_invitations_on_accepted_at"
     t.index ["client_id"], name: "index_invitations_on_client_id"
     t.index ["company_id"], name: "index_invitations_on_company_id"
@@ -398,6 +401,14 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_11_151059) do
     t.datetime "updated_at", null: false
     t.index ["name", "resource_type", "resource_id"], name: "index_roles_on_name_and_resource_type_and_resource_id"
     t.index ["resource_type", "resource_id"], name: "index_roles_on_resource"
+  end
+
+  create_table "ses_invalid_emails", force: :cascade do |t|
+    t.string "email"
+    t.boolean "bounce", default: false
+    t.boolean "compliant", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "stripe_connected_accounts", force: :cascade do |t|

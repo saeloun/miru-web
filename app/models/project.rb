@@ -106,6 +106,10 @@ class Project < ApplicationRecord
     }
   end
 
+  def minutes_spent
+    timesheet_entries.sum(:duration)
+  end
+
   private
 
     def discard_project_members

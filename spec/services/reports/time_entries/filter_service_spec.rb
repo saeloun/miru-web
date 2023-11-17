@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe Reports::TimeEntries::PageService do
+RSpec.describe Reports::TimeEntries::FilterService do
   let(:company) { create(:company) }
 
   describe "pagination for team members" do

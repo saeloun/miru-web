@@ -7,108 +7,76 @@ import { useUserContext } from "context/UserContext";
 
 import { usePagination } from "./usePagination";
 
-type Pagination = {
+type Iprops = {
+  handleClick: (e: any) => void; // eslint-disable-line
+  totalPages: number;
+  currentPage: number;
+  isFirstPage: boolean;
+  prevPage: number;
+  nextPage: number;
+  isLastPage: boolean;
+  isPerPageVisible?: boolean;
   title?: string;
-  pagy: any;
-  params: any;
-  setParams: any;
-  handleClick?: any;
-  isReport?: boolean;
-  isTeamPage?: boolean;
+  itemsPerPage?: number;
+  handleClickOnPerPage?: (e: any) => void; // eslint-disable-line
 };
 
 const Pagination = ({
-  pagy,
-  params,
-  setParams,
-  title,
   handleClick,
-  isReport = false,
-  isTeamPage = false,
-}: Pagination) => {
+  totalPages,
+  currentPage,
+  isFirstPage,
+  prevPage,
+  nextPage,
+  isLastPage,
+  isPerPageVisible = false,
+  title = "items/page",
+  itemsPerPage = 10,
+  handleClickOnPerPage,
+}: Iprops) => {
   const { isDesktop } = useUserContext();
 
-  const currentPage = params?.page;
-  const totalPageCount = pagy?.pages;
   const siblingCount = 1;
 
   const paginationRange = usePagination({
     currentPage,
-    totalPageCount,
+    totalPages,
     siblingCount,
   });
-
-  const handlePageNumberClick = page => {
-    if (page == "...") return;
-
-    return setParams({ ...params, page });
-  };
-
-  const isLastPage = () => {
-    if (typeof pagy?.last == "boolean") {
-      return pagy?.last;
-    }
-
-    return pagy?.last == currentPage;
-  };
-
-  const isNotFirstPage = () => {
-    if (typeof pagy?.first == "boolean") {
-      return !pagy?.first;
-    }
-
-    return pagy?.page > 1;
-  };
-
-  const handleOnClick = e => {
-    if (isTeamPage) {
-      handleClick(Number(1), Number(e.target.value));
-      setParams({ ...params, items: Number(e.target.value) });
-    } else {
-      setParams({
-        page: 1,
-        invoices_per_page: Number(e.target.value),
-      });
-    }
-  };
 
   return (
     <div className="bg-grey-400 relative flex w-full items-center px-0 pt-5 pb-20 md:pb-28 lg:py-10 lg:pl-36">
       <div className="mx-auto w-full">
-        {pagy?.pages > 1 && (
+        {totalPages > 1 && (
           <div className="flex items-center justify-center">
-            {isNotFirstPage() && (
+            {!isFirstPage && (
               <button
-                disabled={pagy?.first}
+                disabled={isFirstPage}
                 className={cn("m-1 mx-4 font-bold", {
-                  "text-miru-gray-400": pagy?.first,
-                  "text-miru-han-purple-1000": isNotFirstPage(),
+                  "text-miru-gray-400": isFirstPage,
+                  "text-miru-han-purple-1000": !isFirstPage,
                 })}
                 onClick={() => {
-                  isReport || isTeamPage
-                    ? handleClick(pagy?.prev)
-                    : setParams({ ...params, page: pagy?.prev });
+                  handleClick(prevPage);
                 }}
               >
                 <CaretCircleLeftIcon size={16} weight="bold" />
               </button>
             )}
             <div className="flex overflow-x-scroll ">
-              {paginationRange.map((page, index) => (
+              {paginationRange?.map((page, index) => (
                 <Fragment key={index}>
                   <button
-                    disabled={pagy?.page === page || currentPage === page}
+                    disabled={currentPage === page}
                     key={page}
                     className={cn(
                       "m-1 mx-4 p-1 text-base font-bold text-miru-dark-purple-400",
                       {
-                        "text-miru-han-purple-1000": pagy?.prev + 1 === page,
+                        "text-miru-han-purple-1000": prevPage + 1 === page,
                       }
                     )}
                     onClick={() => {
-                      isReport || isTeamPage
-                        ? handleClick(page)
-                        : handlePageNumberClick(page);
+                      handleClick(page);
                     }}
                   >
                     {page}
@@ -116,17 +84,15 @@ const Pagination = ({
                 </Fragment>
               ))}
             </div>
-            {!isLastPage() && (
+            {!isLastPage && (
               <button
-                disabled={isLastPage()}
+                disabled={isLastPage}
                 className={cn("m-1 mx-4 font-bold", {
-                  "text-miru-gray-400": isLastPage(),
-                  "text-miru-han-purple-1000": !isLastPage(),
+                  "text-miru-gray-400": isLastPage,
+                  "text-miru-han-purple-1000": !isLastPage,
                 })}
                 onClick={() => {
-                  isReport || isTeamPage
-                    ? handleClick(pagy?.next)
-                    : setParams({ ...params, page: pagy?.next });
+                  handleClick(nextPage);
                 }}
               >
                 <CaretCircleRightIcon size={16} weight="bold" />
@@ -135,13 +101,13 @@ const Pagination = ({
           </div>
         )}
       </div>
-      {isDesktop && !isReport && (
+      {isDesktop && isPerPageVisible && (
         <div className="flex items-center justify-end">
           <select
             className="p-2 text-xs font-bold text-miru-han-purple-1000"
-            defaultValue={pagy?.items}
-            value={isTeamPage ? params?.items : params.invoices_per_page}
-            onChange={handleOnClick}
+            defaultValue={itemsPerPage}
+            value={itemsPerPage}
+            onChange={handleClickOnPerPage}
           >
             <option value="10">10</option>
             <option value="20">20</option>
