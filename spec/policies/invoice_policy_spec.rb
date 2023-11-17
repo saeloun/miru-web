@@ -16,6 +16,7 @@ RSpec.describe InvoicePolicy, type: :policy do
   let(:another_employee) { create(:user, current_workspace_id: another_company.id) }
   let(:another_owner) { create(:user, current_workspace_id: another_company.id) }
   let(:another_book_keeper) { create(:user, current_workspace_id: another_company.id) }
+  let(:client_member) { create(:user, current_workspace_id: company.id) }
 
   subject { described_class }
 
@@ -24,6 +25,7 @@ RSpec.describe InvoicePolicy, type: :policy do
     owner.add_role :owner, company
     employee.add_role :employee, company
     book_keeper.add_role :book_keeper, company
+    client_member.add_role :client, company
 
     another_owner.add_role :owner, another_company
     another_admin.add_role :admin, another_company
@@ -56,11 +58,12 @@ RSpec.describe InvoicePolicy, type: :policy do
   end
 
   permissions :show?, :download? do
-    context "when user is an admin, owner or book keeper" do
+    context "when user is an admin, owner, client or book keeper" do
       it "grants permission" do
         expect(described_class).to permit(admin, invoice)
         expect(described_class).to permit(owner, invoice)
         expect(described_class).to permit(book_keeper, invoice)
+        expect(described_class).to permit(client_member, invoice)
       end
     end
 

@@ -178,27 +178,7 @@ const SendInvoice: React.FC<any> = ({
                       recipientsCount={invoiceEmail.recipients.length}
                     />
                   ))}
-                  {user.email == "supriya@saeloun.com" && (
-                    <input
-                      name="to"
-                      ref={input}
-                      style={{ width }}
-                      type="email"
-                      value={newRecipient}
-                      className={cn(
-                        "focus:outline-none mx-1.5 w-fit cursor-text",
-                        {
-                          "text-miru-red-400": !isEmailValid(newRecipient),
-                        }
-                      )}
-                      onChange={e => setNewRecipient(e.target.value.trim())}
-                      onKeyDown={handleInput}
-                    />
-                  )}
                 </div>
-              }
-              onClick={() =>
-                user.email == "supriya@saeloun.com" && input.current.focus()
               }
             />
           </fieldset>
