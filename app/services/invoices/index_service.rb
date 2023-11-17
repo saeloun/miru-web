@@ -40,7 +40,8 @@ module Invoices
           first: fetch_invoices.first_page?,
           prev: fetch_invoices.prev_page,
           next: fetch_invoices.next_page,
-          last: fetch_invoices.last_page?
+          last: fetch_invoices.last_page?,
+          page: params[:page].to_i
         }
       end
 
