@@ -4,6 +4,7 @@ import Button from "./Button";
 import MobileMoreOptions from "./MobileMoreOptions";
 import Modal from "./Modal";
 import MoreOptions from "./MoreOptions";
+import Pagination from "./Pagination";
 import SidePanel from "./SidePanel";
 import SummaryDashboard from "./SummaryDashboard";
 import Switch from "./Switch";
@@ -18,6 +19,7 @@ export {
   MobileMoreOptions,
   Modal,
   MoreOptions,
+  Pagination,
   SidePanel,
   SummaryDashboard,
   TimeInput,
