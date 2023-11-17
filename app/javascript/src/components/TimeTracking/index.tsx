@@ -156,7 +156,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
   }, [selectedEmployeeId]);
 
   useEffect(() => {
-    if (user.calendar_connected) {
+    if (user.calendar_enabled && user.calendar_connected && user.calendar_id) {
       fetchCalendarEvents();
     }
   }, [currentMonthNumber, currentYear]);
