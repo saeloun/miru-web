@@ -47,9 +47,11 @@ export const createData = (rawData, company) => {
   const Data = [];
 
   rawData.map(data => {
+    const userDisplayName = data?.userName ?? "";
+    const userEmail = data?.user?.email ?? "";
     switch (data.type) {
       case "create_invoice": {
-        const message = `${data.userName} created invoice`;
+        const message = `${userDisplayName}<${userEmail}> created invoice`;
         const time = calculateTime(
           data.createdAt,
           company.date_format,
@@ -59,7 +61,7 @@ export const createData = (rawData, company) => {
         break;
       }
       case "view_invoice": {
-        const message = `${data.userName} viewed invoice`;
+        const message = `${userDisplayName}<${userEmail}> viewed invoice`;
         const time = calculateTime(
           data.createdAt,
           company.date_format,
@@ -69,7 +71,7 @@ export const createData = (rawData, company) => {
         break;
       }
       case "update_invoice": {
-        const message = `${data.userName} updated invoice`;
+        const message = `${userDisplayName}<${userEmail}> updated invoice`;
         const time = calculateTime(
           data.createdAt,
           company.date_format,
@@ -79,7 +81,7 @@ export const createData = (rawData, company) => {
         break;
       }
       case "delete_invoice": {
-        const message = `${data.userName} deleted invoice`;
+        const message = `${userDisplayName}<${userEmail}> deleted invoice`;
         const time = calculateTime(
           data.createdAt,
           company.date_format,
@@ -89,7 +91,7 @@ export const createData = (rawData, company) => {
         break;
       }
       case "download_invoice": {
-        const message = `${data.userName} downloaded invoice`;
+        const message = `${userDisplayName}<${userEmail}> downloaded invoice`;
         const time = calculateTime(
           data.createdAt,
           company.date_format,
@@ -99,19 +101,26 @@ export const createData = (rawData, company) => {
         break;
       }
       case "send_invoice": {
-        const message = `${data.userName} sent invoice`;
+        let message = `${userDisplayName}<${userEmail}> sent invoice`;
         const time = calculateTime(
           data.createdAt,
           company.date_format,
           company.timezone
         );
+
+        if (Array.isArray(data.emails) && data.emails.length > 0) {
+          const emailList = data.emails
+            .map(email => `${email.toLowerCase()}`)
+            .join(" ");
+          message += ` to ${emailList}`;
+        }
+
         Data.push({ message, time });
         break;
       }
-      case "paid": {
-        const message = `${
-          data.name ? `${data.name}` : ""
-        } marked invoice as paid`;
+      case "create_payment": {
+        const message = `${userDisplayName}<${userEmail}>
+         marked invoice as paid manually`;
 
         const time = calculateTime(
           data.createdAt,
@@ -121,6 +130,18 @@ export const createData = (rawData, company) => {
         Data.push({ message, time });
         break;
       }
+      case "create_stripe_payment": {
+        const message = `${userDisplayName}<${userEmail}> paid via stripe`;
+
+        const time = calculateTime(
+          data.createdAt,
+          company.date_format,
+          company.timezone
+        );
+        Data.push({ message, time });
+        break;
+      }
+
       case "partially_paid": {
         const message = "Partial payment successful";
         const time = calculateTime(
@@ -133,7 +154,7 @@ export const createData = (rawData, company) => {
       }
       case "cancelled": {
         const message = `Payment Cancelled ${
-          data.name ? `by ${data.name}` : ""
+          data.name ? `by ${data.name}<${userEmail}>` : ""
         }`;
 
         const time = calculateTime(
@@ -166,7 +187,6 @@ export const getHistory = async (id, company) => {
   records.sort(
     (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
   );
-
   const rawData = records.reverse();
   const logs = createData(rawData, company);
 

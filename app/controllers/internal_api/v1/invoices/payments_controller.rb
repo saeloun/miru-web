@@ -5,6 +5,7 @@ class InternalApi::V1::Invoices::PaymentsController < InternalApi::V1::Applicati
   skip_before_action :authenticate_user_using_x_auth_token
   skip_before_action :authenticate_user!
   skip_after_action :verify_authorized
+  after_action :track_event, only: [:success]
 
   def success
     if InvoicePayment::StripePaymentIntent.new(@invoice).process
@@ -30,5 +31,10 @@ class InternalApi::V1::Invoices::PaymentsController < InternalApi::V1::Applicati
 
     def load_invoice
       @invoice = Invoice.includes(client: :company).find(params[:id])
+    end
+
+    def track_event
+      create_stripe = "create_stripe"
+      Invoices::EventTrackerService.new(create_stripe, @invoice, params).process
     end
 end
