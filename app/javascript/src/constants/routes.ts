@@ -6,6 +6,7 @@ import SignIn from "components/Authentication/SignIn";
 import SignUp from "components/Authentication/SignUp";
 import InvoiceEmail from "components/InvoiceEmail";
 import InvoicesRouteConfig from "components/Invoices/InvoicesRouteConfig";
+import LeaveManagement from "components/LeaveManagement";
 import Success from "components/payments/Success";
 import Projects from "components/Projects";
 import AccountsAgingReport from "components/Reports/AccountsAgingReport";
@@ -61,13 +62,18 @@ const TimeTrackingRoutes = [
   { path: "*", Component: ErrorPage },
 ];
 
+const LeaveManagementRoutes = [
+  { path: "", Component: LeaveManagement },
+  { path: "*", Component: ErrorPage },
+];
+
 const TeamRoutes = [{ path: "*", Component: RouteConfig }];
 
 const TeamsRoutes = [{ path: "*", Component: TeamsRouteConfig }];
 
 const InvoiceRoutes = [{ path: "*", Component: InvoicesRouteConfig }];
 
-const ProfileRoutes = [{ path: "*", Component: ProfileLayout }];
+const SettingsRoutes = [{ path: "*", Component: ProfileLayout }];
 
 const { ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE, CLIENT } = Roles;
 
@@ -156,8 +162,13 @@ export const ROUTES = [
     authorisedRoles: [ADMIN, OWNER, EMPLOYEE],
   },
   {
-    path: Paths.PROFILE,
-    subRoutes: ProfileRoutes,
+    path: Paths.SETTINGS,
+    subRoutes: SettingsRoutes,
     authorisedRoles: [ADMIN, OWNER, EMPLOYEE, BOOK_KEEPER, CLIENT],
+  },
+  {
+    path: Paths.Leave_Management,
+    subRoutes: LeaveManagementRoutes,
+    authorisedRoles: [ADMIN, OWNER, EMPLOYEE],
   },
 ];

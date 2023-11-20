@@ -8,7 +8,7 @@ import { EmploymentDetailsState } from "./context/EmploymentDetailsState";
 import EntryContext from "./context/EntryContext";
 import { PersonalDetailsState } from "./context/PersonalDetailsState";
 import RouteConfig from "./RouteConfig";
-import SideNav from "./SubNav";
+import SubNav from "./SubNav";
 
 const Layout = ({ isAdminUser, user, company }) => {
   const { isDesktop } = useUserContext();
@@ -24,10 +24,10 @@ const Layout = ({ isAdminUser, user, company }) => {
 
   const { profileSettings } = settingsStates;
   const setUserState = (key, value) => {
-    setSettingsStates({
-      ...settingsStates,
-      ...{ [key]: { ...settingsStates[key], ...value } },
-    });
+    setSettingsStates(previousSettings => ({
+      ...previousSettings,
+      ...{ [key]: { ...previousSettings[key], ...value } },
+    }));
   };
 
   return (
@@ -44,7 +44,7 @@ const Layout = ({ isAdminUser, user, company }) => {
           </div>
           <div className="mt-6 mb-10 grid grid-cols-12 gap-11">
             <div className="col-span-3">
-              <SideNav
+              <SubNav
                 company={company}
                 firstName={profileSettings?.first_name}
                 isAdmin={isAdminUser}

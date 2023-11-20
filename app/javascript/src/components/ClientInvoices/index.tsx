@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 
 import { useSearchParams } from "react-router-dom";
+import { Pagination } from "StyledComponents";
 
 import clientApi from "apis/clients";
 import Loader from "common/Loader/index";
 import withLayout from "common/Mobile/HOC/withLayout";
-import Pagination from "common/Pagination/Pagination";
 import { useUserContext } from "context/UserContext";
 
 import Header from "./Header";
@@ -54,12 +54,21 @@ const ClientInvoices = () => {
     }
   };
 
+  const handlePageChange = page => {
+    if (page == "...") return;
+
+    return setParams({ ...params, page });
+  };
+
+  const handleClickOnPerPage = e => {
+    setParams({
+      page: 1,
+      invoices_per_page: Number(e.target.value),
+    });
+  };
+
   if (loading) {
-    return (
-      <div className="flex h-80v w-full flex-col justify-center">
-        <Loader />
-      </div>
-    );
+    return <Loader />;
   }
 
   const InvoicesLayout = () => (
@@ -72,10 +81,17 @@ const ClientInvoices = () => {
       <List invoices={invoices} />
       {invoices.length > 0 && (
         <Pagination
-          pagy={pagy}
-          params={params}
-          setParams={setParams}
+          isPerPageVisible
+          currentPage={pagy?.page}
+          handleClick={handlePageChange}
+          handleClickOnPerPage={handleClickOnPerPage}
+          isFirstPage={pagy?.first}
+          isLastPage={pagy?.last}
+          itemsPerPage={pagy?.items}
+          nextPage={pagy?.next}
+          prevPage={pagy?.prev}
           title="invoices/page"
+          totalPages={pagy?.pages}
         />
       )}
     </div>

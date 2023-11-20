@@ -19,6 +19,9 @@ const destroyTeamMemberAvatar = id => axios.delete(`${path}/${id}/avatar`);
 const updateTeamMemberAvatar = (id, payload) =>
   axios.put(`${path}/${id}/avatar`, payload);
 
+const updateTeamMembers = payload =>
+  axios.put(`${path}/update_team_members`, payload);
+
 //TODO: connect Invitation flow
 const inviteMember = payload => axios.post("/invitations", payload);
 const updateInvitedMember = (id, payload) =>
@@ -35,6 +38,7 @@ const teamApi = {
   updateTeamMemberAvatar,
   deleteInvitedMember,
   inviteMember,
+  updateTeamMembers,
 };
 
 export default teamApi;

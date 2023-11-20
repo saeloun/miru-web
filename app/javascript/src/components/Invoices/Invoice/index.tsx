@@ -6,6 +6,7 @@ import { Button, Toastr } from "StyledComponents";
 
 import invoicesApi from "apis/invoices";
 import PaymentsProviders from "apis/payments/providers";
+import Loader from "common/Loader/index";
 import { ApiStatus as InvoiceStatus } from "constants/index";
 import { useUserContext } from "context/UserContext";
 import { sendGAPageView } from "utils/googleAnalytics";
@@ -70,11 +71,16 @@ const Invoice = () => {
     }
   };
 
+  if (status === InvoiceStatus.LOADING) {
+    return <Loader />;
+  }
+
   return (
     status === InvoiceStatus.SUCCESS &&
     (isDesktop ? (
       <>
         <Header
+          fetchInvoice={fetchInvoice}
           handleSendInvoice={handleSendInvoice}
           invoice={invoice}
           isStripeEnabled={isStripeEnabled}

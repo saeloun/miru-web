@@ -16,6 +16,8 @@ import { employmentMapper } from "mapper/teams.mapper";
 
 import StaticPage from "./StaticPage";
 
+import { employeeTypes } from "../helpers";
+
 dayjs.extend(utc);
 
 const schema = Yup.object().shape(employmentSchema);
@@ -62,11 +64,6 @@ const EmploymentDetailsEdit = () => {
 
   useOutsideClick(DOJRef, () => setShowDOJDatePicker({ visibility: false }));
   useOutsideClick(DORRef, () => setShowDORDatePicker({ visibility: false }));
-
-  const employeeTypes = [
-    { label: "Salaried Employee", value: "salaried" },
-    { label: "Contractor", value: "contractor" },
-  ];
 
   const getDetails = async () => {
     const curr: any = await teamsApi.getEmploymentDetails(user.id);
@@ -245,7 +242,7 @@ const EmploymentDetailsEdit = () => {
         employments: payload,
       });
       setIsLoading(false);
-      navigate(`/profile/employment-details`, { replace: true });
+      navigate(`/settings/employment`, { replace: true });
     } catch (err) {
       setIsLoading(false);
       const errObj = initialErrState;
@@ -264,7 +261,7 @@ const EmploymentDetailsEdit = () => {
 
   const handleCancelDetails = () => {
     setIsLoading(true);
-    navigate(`/profile/employment-details`, { replace: true });
+    navigate(`/settings/employment`, { replace: true });
   };
 
   return (
@@ -291,9 +288,7 @@ const EmploymentDetailsEdit = () => {
             </div>
           </div>
           {isLoading ? (
-            <div className="flex min-h-70v items-center justify-center">
-              <Loader />
-            </div>
+            <Loader className="min-h-70v" />
           ) : (
             <StaticPage
               DOJRef={DOJRef}

@@ -58,6 +58,13 @@ const navOptions = [
     path: Paths.PAYMENTS,
     allowedRoles: ["admin", "owner", "book_keeper"],
   },
+  // TODO: Uncomment the following code while integrating Leave management API.
+  // {
+  //   logo: <CalendarIcon className="mr-0 md:mr-4" size={26} />,
+  //   label: "Leave Management",
+  //   path: Paths.Leave_Management,
+  //   allowedRoles: ["admin", "owner", "employee"],
+  // },
 ];
 
 const navAdminMobileOptions = [
@@ -108,7 +115,7 @@ const navClientOptions = [
   {
     logo: <SettingIcon className="mr-0 md:mr-4" size={26} />,
     label: "Settings",
-    path: "/profile/edit/option",
+    path: "/settings/profile",
     allowedRoles: ["admin", "owner", "book_keeper", "client"],
   },
 ];

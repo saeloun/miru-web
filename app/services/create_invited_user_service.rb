@@ -33,6 +33,7 @@ class CreateInvitedUserService
       update_invitation!
       find_or_create_user!
       add_role_to_invited_user
+      create_client_member
     end
   rescue StandardError => e
     service_failed(e.message)
@@ -63,7 +64,7 @@ class CreateInvitedUserService
     def find_or_create_user!
       if (@user = User.find_by(email: invitation.recipient_email))
         @user.update!(current_workspace_id: invitation.company.id)
-        activate_employment_status
+        activate_employment_status unless invitation.client
       else
         create_invited_user!
         create_reset_password_token
@@ -94,6 +95,12 @@ class CreateInvitedUserService
       user.current_company = invitation.company
       user.role = invitation.role
       user.assign_company_and_role
+    end
+
+    def create_client_member
+      return unless invitation.client
+
+      invitation.company.client_members.create!(client: invitation.client, user:)
     end
 
     def create_reset_password_token

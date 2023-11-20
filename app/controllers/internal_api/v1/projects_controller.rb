@@ -3,7 +3,11 @@
 class InternalApi::V1::ProjectsController < InternalApi::V1::ApplicationController
   def index
     authorize Project
-    render :index, locals: Projects::IndexService.new(current_company, params).process, status: :ok
+    data = Projects::IndexService.new(current_company, params[:search_term]).process
+    render :index, locals: {
+      projects: data[:projects],
+      clients: data[:clients]
+    }, status: :ok
   end
 
   def show
