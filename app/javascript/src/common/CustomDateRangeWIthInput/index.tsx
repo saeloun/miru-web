@@ -314,6 +314,9 @@ const CustomDateRangeWithInput = ({
                 </div>
               </div>
             )}
+            selected={
+              selectedInput === fromInput ? dateRange.from : dateRange.to
+            }
             onChange={date => {
               const fieldName =
                 selectedInput == fromInput ? "fromInput" : "toInput";

@@ -245,6 +245,7 @@ const FilterSidebar = ({
       setDefaultDateRange();
       hideCustomFilter();
       setDateRange({ from: "", to: "" });
+      dateRangeOptions[4].label = "Custom";
     }
 
     if (selectedValue.value === "custom") {
