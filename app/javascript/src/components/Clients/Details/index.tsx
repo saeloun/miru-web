@@ -6,6 +6,7 @@ import { useParams, useNavigate } from "react-router-dom";
 
 import clientApi from "apis/clients";
 import EmptyStates from "common/EmptyStates";
+import Loader from "common/Loader/index";
 import Table from "common/Table";
 import ProjectForm from "components/Projects/List/Mobile/ProjectForm";
 import AddEditProject from "components/Projects/Modals/AddEditProject";
@@ -37,7 +38,6 @@ const ClientDetails = ({ isAdminUser }) => {
   const [overdueOutstandingAmount, setOverdueOutstandingAmount] =
     useState<any>(null);
   const [clientInvoices, setClientInvoices] = useState<any[]>([]);
-
   const [sendPaymentReminder, setSendPaymentReminder] =
     useState<boolean>(false);
 
@@ -94,16 +94,16 @@ const ClientDetails = ({ isAdminUser }) => {
 
   const tableData = TableData(projectDetails, isDesktop);
 
+  const handleRowClick = id => {
+    navigate(`/projects/${id}`);
+  };
+
   const handleAddProject = () => {
     setShowProjectModal(true);
   };
 
   if (loading) {
-    return (
-      <p className="tracking-wide flex min-h-screen items-center justify-center text-base font-medium text-miru-han-purple-1000">
-        Loading...
-      </p>
-    );
+    return <Loader />;
   }
 
   if (!isDesktop && showProjectModal) {
@@ -156,6 +156,9 @@ const ClientDetails = ({ isAdminUser }) => {
                     handleEditClick={handleEditClick}
                     tableHeader={isDesktop ? tableHeader : mobileTableHeader}
                     tableRowArray={tableData}
+                    rowOnClick={
+                      isAdminUser ? handleRowClick : () => {} // eslint-disable-line  @typescript-eslint/no-empty-function
+                    }
                   />
                 ) : (
                   <EmptyStates

@@ -19,6 +19,10 @@ const getValueFromLocalStorage = key => {
   return response;
 };
 
+const removeFromLocalStorage = key => {
+  localStorage.removeItem(key);
+};
+
 const clearCredentialsFromLocalStorage = () => {
   setToLocalStorage("authEmail", null);
   setToLocalStorage("authToken", null);
@@ -28,4 +32,5 @@ export {
   setToLocalStorage,
   getValueFromLocalStorage,
   clearCredentialsFromLocalStorage,
+  removeFromLocalStorage,
 };

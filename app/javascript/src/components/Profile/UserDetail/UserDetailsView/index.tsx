@@ -45,7 +45,7 @@ const UserDetailsView = () => {
   const navigate = useNavigate();
 
   const handleEditClick = () => {
-    navigate(`/profile/edit/change`, { replace: true });
+    navigate(`/settings/profile/edit`, { replace: true });
   };
 
   return (
@@ -60,7 +60,7 @@ const UserDetailsView = () => {
             title="Personal Details"
           />
           {isLoading ? (
-            <Loader />
+            <Loader className="min-h-70v" />
           ) : (
             <StaticPage
               handleEditClick={handleEditClick}
@@ -72,14 +72,12 @@ const UserDetailsView = () => {
       {!isDesktop && (
         <Fragment>
           <MobileEditHeader
-            backHref="/profile/edit/option"
-            href="/profile/edit/change"
+            backHref="/settings/"
+            href="/settings/profile/edit"
             title="Personal Details"
           />
           {isLoading ? (
-            <div className="flex min-h-70v items-center justify-center">
-              <Loader />
-            </div>
+            <Loader className="min-h-70v" />
           ) : (
             <MobilePersonalDetails
               handleEditClick={handleEditClick}

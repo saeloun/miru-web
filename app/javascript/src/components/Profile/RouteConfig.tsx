@@ -1,64 +1,65 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import { Routes, Route, Navigate } from "react-router-dom";
 
+import profileApi from "apis/profile";
+import ErrorPage from "common/Error";
 import { useUserContext } from "context/UserContext";
+import { teamsMapper } from "mapper/teams.mapper";
 
-import MobileNav from "./Layout/MobileNav";
-import LeaveBalance from "./LeaveBalance";
-import Billing from "./Organization/Billing";
-import OrgDetails from "./Organization/Details";
-import OrgEdit from "./Organization/Edit";
-import Import from "./Organization/Import";
-import LeavesAndHolidays from "./Organization/LeavesAndHolidays";
-import PaymentSettings from "./Organization/Payment";
-import UserDetailsEdit from "./UserDetail/Edit";
-import EmploymentDetails from "./UserDetail/EmploymentDetails";
-import EmploymentDetailsEdit from "./UserDetail/EmploymentDetails/Edit";
-import UserDetailsView from "./UserDetail/UserDetailsView";
+import { useProfile } from "./context/EntryContext";
+import { SETTINGS_ROUTES } from "./routes";
 
-const ProtectedRoute = ({ isAdminUser, children }) => {
-  if (!isAdminUser) {
-    return <Navigate replace to="/error" />;
+const ProtectedRoute = ({ role, authorisedRoles, children }) => {
+  if (authorisedRoles.includes(role)) {
+    return children;
   }
 
-  return children;
+  return <Navigate replace to="/error" />;
 };
 
 const RouteConfig = () => {
-  const { isAdminUser } = useUserContext();
+  const { companyRole } = useUserContext();
+  const {
+    setUserState,
+    profileSettings: { first_name, last_name },
+  } = useProfile();
+
+  const getData = async () => {
+    if (!first_name && !last_name) {
+      const res = await profileApi.index();
+      if (res.status && res.status == 200) {
+        const addressData = await profileApi.getAddress(res.data.user.id);
+        const userObj = teamsMapper(
+          res.data.user,
+          addressData.data.addresses[0]
+        );
+        setUserState("profileSettings", userObj);
+      }
+    }
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
 
   return (
     <Routes>
-      <Route element={<EmploymentDetails />} path="employment-details" />
-      <Route element={<EmploymentDetailsEdit />} path="employment-edit" />
-      <Route path="/edit">
-        {/* <Route path="bank_account_details" element={<BankAccountDetails />} /> TODO: Temporary disabling*/}
-        <Route element={<UserDetailsView />} path="" />
-        <Route element={<PaymentSettings />} path="payment" />
-        <Route element={<Billing />} path="billing" />
+      {SETTINGS_ROUTES.map(({ path, authorisedRoles, Component }) => (
         <Route
-          path="organization"
+          key={path}
+          path={path}
           element={
-            <ProtectedRoute isAdminUser={isAdminUser}>
-              <OrgEdit />
+            <ProtectedRoute
+              authorisedRoles={authorisedRoles}
+              role={companyRole}
+            >
+              <Component />
             </ProtectedRoute>
           }
         />
-        <Route element={<Import />} path="import" />
-        <Route element={<LeavesAndHolidays />} path="leaves" />
-        <Route element={<LeaveBalance />} path="leave-balance" />
-        <Route
-          path="organization-details"
-          element={
-            <ProtectedRoute isAdminUser={isAdminUser}>
-              <OrgDetails />
-            </ProtectedRoute>
-          }
-        />
-        <Route element={<UserDetailsEdit />} path="change" />
-        <Route element={<MobileNav isAdmin={isAdminUser} />} path="option" />
-      </Route>
+      ))}
+      <Route element={<ErrorPage />} path="*" />
     </Routes>
   );
 };

@@ -39,16 +39,14 @@ const EmploymentDetails = () => {
         <button
           className="cursor-pointer rounded-md border border-white bg-miru-han-purple-1000 px-6 py-2 font-bold text-white"
           onClick={() =>
-            navigate(`/profile/employment-edit`, { replace: true })
+            navigate(`/settings/employment/edit`, { replace: true })
           }
         >
           Edit
         </button>
       </div>
       {isLoading ? (
-        <div className="flex min-h-70v items-center justify-center">
-          <Loader />
-        </div>
+        <Loader className="min-h-70v" />
       ) : (
         <StaticPage employmentDetails={employmentDetails} />
       )}

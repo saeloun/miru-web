@@ -2,7 +2,7 @@ import React from "react";
 
 import classnames from "classnames";
 
-const DEFAULT_STYLE = "rounded text-center";
+const DEFAULT_STYLE = "rounded text-center p-2";
 
 const PRIMARY =
   "bg-miru-han-purple-1000 hover:bg-miru-han-purple-600 text-white  border border-miru-han-purple-1000 hover:border-miru-han-purple-600";
@@ -43,7 +43,7 @@ const BUTTON_STYLES = {
 const SIZES = { small: "small", medium: "medium", large: "large" };
 
 const Button = ({
-  style,
+  style = "primary",
   size,
   disabled = false,
   className = "",

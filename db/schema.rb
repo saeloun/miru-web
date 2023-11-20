@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_07_07_082247) do
+ActiveRecord::Schema[7.0].define(version: 2023_11_15_121129) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -106,8 +106,11 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_07_082247) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "company_id", null: false
+    t.datetime "discarded_at"
+    t.index ["client_id", "user_id"], name: "index_client_members_on_client_id_and_user_id", unique: true
     t.index ["client_id"], name: "index_client_members_on_client_id"
     t.index ["company_id"], name: "index_client_members_on_company_id"
+    t.index ["discarded_at"], name: "index_client_members_on_discarded_at"
     t.index ["user_id"], name: "index_client_members_on_user_id"
   end
 
@@ -139,6 +142,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_07_082247) do
     t.string "timezone"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "calendar_enabled", default: true
   end
 
   create_table "data_migrations", primary_key: "version", id: :string, force: :cascade do |t|
@@ -199,6 +203,28 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_07_082247) do
     t.index ["vendor_id"], name: "index_expenses_on_vendor_id"
   end
 
+  create_table "holiday_infos", force: :cascade do |t|
+    t.date "date", null: false
+    t.string "name", null: false
+    t.bigint "holiday_id", null: false
+    t.integer "category", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["holiday_id"], name: "index_holiday_infos_on_holiday_id"
+  end
+
+  create_table "holidays", force: :cascade do |t|
+    t.integer "year", null: false
+    t.boolean "enable_optional_holidays", default: false
+    t.integer "no_of_allowed_optional_holidays"
+    t.string "holiday_types", default: [], array: true
+    t.integer "time_period_optional_holidays", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "company_id", null: false
+    t.index ["company_id"], name: "index_holidays_on_company_id"
+  end
+
   create_table "identities", force: :cascade do |t|
     t.string "provider"
     t.string "uid"
@@ -221,7 +247,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_07_082247) do
     t.integer "role", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "client_id"
+    t.boolean "virtual_verified", default: false
     t.index ["accepted_at"], name: "index_invitations_on_accepted_at"
+    t.index ["client_id"], name: "index_invitations_on_client_id"
     t.index ["company_id"], name: "index_invitations_on_company_id"
     t.index ["expired_at"], name: "index_invitations_on_expired_at"
     t.index ["recipient_email"], name: "index_invitations_on_recipient_email"
@@ -274,6 +303,31 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_07_082247) do
     t.index ["invoice_number"], name: "index_invoices_on_invoice_number", unique: true
     t.index ["issue_date"], name: "index_invoices_on_issue_date"
     t.index ["status"], name: "index_invoices_on_status"
+  end
+
+  create_table "leave_types", force: :cascade do |t|
+    t.string "name", null: false
+    t.integer "icon", null: false
+    t.integer "color", null: false
+    t.integer "allocation_value", null: false
+    t.integer "allocation_period", null: false
+    t.integer "allocation_frequency", null: false
+    t.integer "carry_forward_days", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "leave_id", null: false
+    t.index ["color", "leave_id"], name: "index_leave_types_on_color_and_leave_id", unique: true
+    t.index ["icon", "leave_id"], name: "index_leave_types_on_icon_and_leave_id", unique: true
+    t.index ["leave_id"], name: "index_leave_types_on_leave_id"
+  end
+
+  create_table "leaves", force: :cascade do |t|
+    t.integer "year"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "company_id", null: false
+    t.index ["company_id"], name: "index_leaves_on_company_id"
+    t.index ["year", "company_id"], name: "index_leaves_on_year_and_company_id", unique: true
   end
 
   create_table "payments", force: :cascade do |t|
@@ -349,6 +403,14 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_07_082247) do
     t.index ["resource_type", "resource_id"], name: "index_roles_on_resource"
   end
 
+  create_table "ses_invalid_emails", force: :cascade do |t|
+    t.string "email"
+    t.boolean "bounce", default: false
+    t.boolean "compliant", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "stripe_connected_accounts", force: :cascade do |t|
     t.string "account_id", null: false
     t.bigint "company_id", null: false
@@ -399,6 +461,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_07_082247) do
     t.jsonb "social_accounts"
     t.string "phone"
     t.string "token", limit: 50
+    t.boolean "calendar_enabled", default: true
+    t.boolean "calendar_connected", default: true
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token"
     t.index ["current_workspace_id"], name: "index_users_on_current_workspace_id"
     t.index ["discarded_at"], name: "index_users_on_discarded_at"
@@ -450,13 +514,18 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_07_082247) do
   add_foreign_key "expenses", "companies"
   add_foreign_key "expenses", "expense_categories"
   add_foreign_key "expenses", "vendors"
+  add_foreign_key "holiday_infos", "holidays"
+  add_foreign_key "holidays", "companies"
   add_foreign_key "identities", "users"
+  add_foreign_key "invitations", "clients"
   add_foreign_key "invitations", "companies"
   add_foreign_key "invitations", "users", column: "sender_id"
   add_foreign_key "invoice_line_items", "invoices"
   add_foreign_key "invoice_line_items", "timesheet_entries"
   add_foreign_key "invoices", "clients"
   add_foreign_key "invoices", "companies"
+  add_foreign_key "leave_types", "leaves", column: "leave_id"
+  add_foreign_key "leaves", "companies"
   add_foreign_key "payments", "invoices"
   add_foreign_key "payments_providers", "companies"
   add_foreign_key "previous_employments", "users"

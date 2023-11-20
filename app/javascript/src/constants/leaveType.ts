@@ -1,3 +1,14 @@
+import {
+  CakeIconSVG,
+  CalendarBlackIconSVG,
+  CarIconSVG,
+  VacationIconSVG,
+  FlowerIconSVG,
+  UserIconSVG,
+  MedicineIconSVG,
+  BabyIconSVG,
+} from "miruIcons";
+
 export const leaveTypes = [
   {
     value: "annual",
@@ -21,20 +32,59 @@ export const leaveTypes = [
   },
 ];
 
-export const repitationTypeObj = {
-  per_month: "per month",
-  per_year: "per year",
-  per_week: "per week",
-  per_quarter: "per quarter",
-};
+export const leaveColors = [
+  {
+    value: "#0E79B2",
+    label: "chart_blue",
+  },
+  {
+    value: "#BF1363",
+    label: "chart_pink",
+  },
+  {
+    value: "#F39237",
+    label: "chart_orange",
+  },
+  {
+    value: "#058C42",
+    label: "chart_green",
+  },
+  {
+    value: "#7768AE",
+    label: "chart_purple",
+  },
+  {
+    value: "#68AEAA",
+    label: "chart_light_blue",
+  },
+  {
+    value: "#C97CC1",
+    label: "chart_light_pink",
+  },
+  {
+    value: "#7CC984",
+    label: "chart_light_green",
+  },
+];
 
-export const countTypeOptions = [
+export const leaveIcons = [
+  { value: "calendar", label: "label", icon: CalendarBlackIconSVG },
+  { value: "cake", label: "label2", icon: CakeIconSVG },
+  { value: "vacation", label: "label3", icon: VacationIconSVG },
+  { value: "medicine", label: "label4", icon: MedicineIconSVG },
+  { value: "baby", label: "label5", icon: BabyIconSVG },
+  { value: "flower", label: "label6", icon: FlowerIconSVG },
+  { value: "car", label: "label7", icon: CarIconSVG },
+  { value: "user", label: "label8", icon: UserIconSVG },
+];
+
+export const allocationPeriod = [
   { value: "days", label: "days" },
   { value: "weeks", label: "weeks" },
   { value: "months", label: "months" },
 ];
 
-export const repetitionType = [
+export const allocationFrequency = [
   { value: "per_week", label: "per week" },
   { value: "per_month", label: "per month" },
   { value: "per_quarter", label: "per quarter" },
