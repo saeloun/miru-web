@@ -6,6 +6,7 @@ import {
   UserIcon,
   MobileIcon,
   ProjectsIcon,
+  IntegrateIcon,
 } from "miruIcons";
 
 import { Roles } from "constants/index";
@@ -58,10 +59,10 @@ export const companySettingsList = [
   //   icon: <CakeIcon className="mr-2" size={20} weight="bold" />,
   //   authorisedRoles: [ADMIN, OWNER],
   // },
-  // {
-  //   label: "Integration",
-  //   link: "/settings/integrations",
-  //   icon: <IntegrateIcon className="mr-2" size={20} weight="bold" />,
-  //   authorisedRoles: [ADMIN, OWNER],
-  // },
+  {
+    label: "Integration",
+    link: "/settings/integrations",
+    icon: <IntegrateIcon className="mr-2" size={20} weight="bold" />,
+    authorisedRoles: [ADMIN, OWNER],
+  },
 ];
