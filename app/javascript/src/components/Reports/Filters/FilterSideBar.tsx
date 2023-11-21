@@ -92,6 +92,10 @@ const FilterSidebar = ({
       setDateRange({ ...dateRange, from: "", to: "" });
     }
 
+    if (value !== "custom") {
+      dateRangeOptions[4].label = "Custom";
+    }
+
     if (dateRange.from && dateRange.to) {
       setDisableDateBtn(false);
     }
