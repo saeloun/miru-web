@@ -1,5 +1,6 @@
 import { Roles } from "constants/index";
 
+import GoogleCalendar from "./GoogleCalendar";
 import MobileNav from "./Layout/MobileNav";
 import OrgDetails from "./Organization/Details";
 import OrgEdit from "./Organization/Edit";
@@ -83,9 +84,9 @@ export const SETTINGS_ROUTES = [
   //   Component: LeaveBalance,
   //   authorisedRoles: [ADMIN, OWNER],
   // },
-  // {
-  //   path: "/integrations",
-  //   Component: GoogleCalendar,
-  //   authorisedRoles: [ADMIN, OWNER],
-  // },
+  {
+    path: "/integrations",
+    Component: GoogleCalendar,
+    authorisedRoles: [ADMIN, OWNER, EMPLOYEE],
+  },
 ];
