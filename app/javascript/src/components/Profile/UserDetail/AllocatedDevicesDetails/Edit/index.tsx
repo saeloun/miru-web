@@ -1,22 +1,34 @@
 /* eslint-disable no-unused-vars */
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 
-import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc";
 import { useNavigate } from "react-router-dom";
 
+import deviceApi from "apis/devices";
 import Loader from "common/Loader/index";
 import { useUserContext } from "context/UserContext";
 
 import EditPage from "./EditPage";
 
-dayjs.extend(utc);
+import { Device } from "../Device";
 
 const AllocatedDevicesEdit = () => {
   const navigate = useNavigate();
-  const { isDesktop } = useUserContext();
+  const { isDesktop, user } = useUserContext();
 
   const [isLoading, setIsLoading] = useState(false);
+  const [devices, setDevices] = useState<Device[]>([]);
+
+  useEffect(() => {
+    setIsLoading(true);
+    getDevicesDetail();
+  }, []);
+
+  const getDevicesDetail = async () => {
+    const res: any = await deviceApi.get(user.id);
+    const devicesDetails: Device[] = res.data.devices;
+    setDevices(devicesDetails);
+    setIsLoading(false);
+  };
 
   const handleCancelDetails = () => {
     setIsLoading(true);
@@ -41,7 +53,11 @@ const AllocatedDevicesEdit = () => {
               </button>
             </div>
           </div>
-          {isLoading ? <Loader className="min-h-70v" /> : <EditPage />}
+          {isLoading ? (
+            <Loader className="min-h-70v" />
+          ) : (
+            <EditPage devices={devices} setDevices={setDevices} />
+          )}
         </Fragment>
       )}
     </Fragment>
