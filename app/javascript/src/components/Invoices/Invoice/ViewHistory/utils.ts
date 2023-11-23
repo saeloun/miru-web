@@ -46,124 +46,55 @@ const calculateTime = (date, dateFormat, timezone) => {
 export const createData = (rawData, company) => {
   const Data = [];
 
-  const processInvoiceEvent = (action, userDisplayName, userEmail, data) => {
-    const message = `${userDisplayName}<${userEmail}> ${action}`;
+  const processInvoiceEvent = (action, data) => {
+    const userDisplayName = data?.userName ?? "";
+    const userEmail = data?.user?.email ?? "";
+    let message = `${userDisplayName}<${userEmail}> ${action}`;
     const time = calculateTime(
       data.createdAt,
       company.date_format,
       company.timezone
     );
-    Data.push({ message, time });
+    if (data.type == "send_invoice") {
+      const emailList = getEmailList(data.emails);
+      if (emailList) {
+        message += ` to ${emailList}`;
+      }
+      Data.push({ message, time });
+    } else {
+      Data.push({ message, time });
+    }
   };
 
   const getEmailList = emails =>
     emails.map(email => `${email.toLowerCase()}`).join(" ");
 
   rawData.map(data => {
-    const userDisplayName = data?.userName ?? "";
-    const userEmail = data?.user?.email ?? "";
-
     switch (data.type) {
       case "create_invoice":
-        processInvoiceEvent(
-          "created invoice",
-          userDisplayName,
-          userEmail,
-          data
-        );
+        processInvoiceEvent("created invoice", data);
         break;
       case "view_invoice":
-        processInvoiceEvent("viewed invoice", userDisplayName, userEmail, data);
+        processInvoiceEvent("viewed invoice", data);
         break;
       case "update_invoice":
-        processInvoiceEvent(
-          "updated invoice",
-          userDisplayName,
-          userEmail,
-          data
-        );
+        processInvoiceEvent("updated invoice", data);
         break;
       case "delete_invoice":
-        processInvoiceEvent(
-          "deleted invoice",
-          userDisplayName,
-          userEmail,
-          data
-        );
+        processInvoiceEvent("deleted invoice", data);
         break;
       case "download_invoice":
-        processInvoiceEvent(
-          "downloaded invoice",
-          userDisplayName,
-          userEmail,
-          data
-        );
+        processInvoiceEvent("downloaded invoice", data);
         break;
-      case "send_invoice": {
-        let message = `${userDisplayName}<${userEmail}> sent invoice`;
-        const time = calculateTime(
-          data.createdAt,
-          company.date_format,
-          company.timezone
-        );
-
-        const emailList = getEmailList(data.emails);
-        if (emailList) {
-          message += ` to ${emailList}`;
-        }
-
-        Data.push({ message, time });
+      case "send_invoice":
+        processInvoiceEvent("sent invoice", data);
         break;
-      }
       case "create_payment":
-        processInvoiceEvent(
-          "marked invoice as paid manually",
-          userDisplayName,
-          userEmail,
-          data
-        );
+        processInvoiceEvent("marked invoice as paid manually", data);
         break;
       case "create_stripe_payment":
-        processInvoiceEvent(
-          "paid via stripe",
-          userDisplayName,
-          userEmail,
-          data
-        );
+        processInvoiceEvent("paid via stripe", data);
         break;
-      case "partially_paid": {
-        const partialPaymentMessage = "Partial payment successful";
-        const partialPaymentTime = calculateTime(
-          data.createdAt,
-          company.date_format,
-          company.timezone
-        );
-        Data.push({ message: partialPaymentMessage, time: partialPaymentTime });
-        break;
-      }
-      case "cancelled": {
-        const cancellationMessage = `Payment Cancelled ${
-          data.name ? `by ${data.name}<${userEmail}>` : ""
-        }`;
-
-        const cancellationTime = calculateTime(
-          data.createdAt,
-          company.date_format,
-          company.timezone
-        );
-        Data.push({ message: cancellationMessage, time: cancellationTime });
-        break;
-      }
-      case "failed": {
-        const failedPaymentMessage = "Payment Failed";
-        const failedPaymentTime = calculateTime(
-          data.createdAt,
-          company.date_format,
-          company.timezone
-        );
-        Data.push({ message: failedPaymentMessage, time: failedPaymentTime });
-        break;
-      }
     }
   });
 
