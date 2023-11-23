@@ -2,6 +2,7 @@
 
 class InternalApi::V1::PaymentsController < ApplicationController
   before_action :set_invoice, only: [:create]
+  after_action :track_event, only: [:create]
 
   def new
     authorize :new, policy_class: PaymentPolicy
@@ -52,5 +53,10 @@ class InternalApi::V1::PaymentsController < ApplicationController
 
     def set_invoice
       @invoice = current_company.invoices.find(payment_params[:invoice_id])
+    end
+
+    def track_event
+      create_payment = "create_payment"
+      Invoices::EventTrackerService.new(create_payment, @invoice || invoice, params).process
     end
 end
