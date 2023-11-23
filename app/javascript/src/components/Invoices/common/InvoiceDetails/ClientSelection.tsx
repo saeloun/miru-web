@@ -147,6 +147,7 @@ const ClientSelection = ({
         <div className="absolute top-2 w-full" ref={wrapperRef}>
           {isClientVisible && (
             <Select
+              autoFocus
               defaultMenuIsOpen
               isSearchable
               className="client-select m-0 mt-2  w-full text-white"

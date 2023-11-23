@@ -16,7 +16,6 @@ const ViewHistory = ({ setShowHistory, invoice }) => {
 
   const getHistoryData = async () => {
     const records = await getHistory(invoice.id, company);
-
     setLogs(records);
     setLoading(false);
   };

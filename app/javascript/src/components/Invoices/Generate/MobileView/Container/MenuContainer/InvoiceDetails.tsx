@@ -131,6 +131,7 @@ const InvoiceDetails = ({
               >
                 <div className="h-auto w-full" ref={wrapperRef}>
                   <Select
+                    autoFocus
                     defaultMenuIsOpen
                     isSearchable
                     className="w-full text-white"

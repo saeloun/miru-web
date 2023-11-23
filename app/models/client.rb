@@ -168,6 +168,10 @@ class Client < ApplicationRecord
     Client.search_index.refresh
   end
 
+  def client_members_emails
+    client_members.kept.includes(:user).pluck("users.email")
+  end
+
   private
 
     def stripe_connected_account
