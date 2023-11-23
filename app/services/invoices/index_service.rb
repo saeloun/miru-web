@@ -87,7 +87,7 @@ module Invoices
           match: :word_middle,
           where: filters.where_clause,
           order: options[:order] || DEFAULT_ORDER,
-          includes: [:client, :company]
+          includes: [:client, { client: :logo_attachment }, :company]
         }
 
         invoice_options[:page] = options[:page] if options[:page]
