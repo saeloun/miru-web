@@ -40,6 +40,14 @@ class Invoices::EventTrackerService < ApplicationService
       add_event("download_invoice")
     end
 
+    def handle_create_payment_action
+      add_event("create_payment")
+    end
+
+    def handle_create_stripe_action
+      add_event("create_stripe_payment")
+    end
+
     def add_event(event_name, optional_data = {})
       event_data = { type: :invoice, id: invoice.id }.merge!(optional_data)
       ahoy.track event_name, event_data
