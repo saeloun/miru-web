@@ -24,22 +24,19 @@ const UserDetailsView = () => {
 
   const getData = async () => {
     setIsLoading(true);
-    const data = await profileApi.index();
-    if (data.status && data.status == 200) {
-      const addressData = await profileApi.getAddress(data.data.user.id);
-      const userObj = teamsMapper(
-        data.data.user,
-        addressData.data.addresses[0]
-      );
+    const res = await profileApi.index();
+    if (res.status && res.status == 200) {
+      const addressData = await profileApi.getAddress(res.data.user.id);
+      const userObj = teamsMapper(res.data.user, addressData.data.addresses[0]);
 
       setUserState("profileSettings", userObj);
       if (companyRole !== "client") {
         const employmentData: any = await teamsApi.getEmploymentDetails(
-          data?.data?.user.id
+          res?.data?.user.id
         );
 
         const previousEmploymentData: any =
-          await teamsApi.getPreviousEmployments(data?.data?.user.id);
+          await teamsApi.getPreviousEmployments(res?.data?.user.id);
 
         if (employmentData.status && employmentData.status == 200) {
           const employmentObj = employmentMapper(
