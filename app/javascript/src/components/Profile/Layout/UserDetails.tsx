@@ -13,7 +13,6 @@ import { employmentMapper, teamsMapper } from "mapper/teams.mapper";
 
 export const UserDetails = () => {
   const { setUserState, profileSettings, employmentDetails } = useProfile();
-  const { user } = useUserContext();
   const { first_name, last_name } = profileSettings;
   const {
     current_employment: { designation },
@@ -25,26 +24,31 @@ export const UserDetails = () => {
   const getDetails = async () => {
     try {
       if (!first_name && !last_name) {
-        const data = await profileApi.index();
-        if (data.status && data.status == 200) {
-          const addressData = await profileApi.getAddress(data.data.user.id);
+        const userData = await profileApi.index();
+        if (userData.status && userData.status == 200) {
+          const addressData = await profileApi.getAddress(
+            userData.data.user.id
+          );
+
           const userObj = teamsMapper(
-            data.data.user,
+            userData.data.user,
             addressData.data.addresses[0]
           );
           setUserState("profileSettings", userObj);
         }
 
         if (companyRole !== "client" && !designation) {
-          const res: any = await teamsApi.getEmploymentDetails(
-            data.data.user.id
+          const employmentData: any = await teamsApi.getEmploymentDetails(
+            userData.data.user.id
           );
 
-          const res1 = await teamsApi.getPreviousEmployments(data.data.user.id);
-          if (res.status && res.status == 200) {
+          const previousEmploymentData = await teamsApi.getPreviousEmployments(
+            userData.data.user.id
+          );
+          if (employmentData.status && employmentData.status == 200) {
             const employmentObj = employmentMapper(
-              res?.data?.employment,
-              res1?.data?.previous_employments
+              employmentData?.data?.employment,
+              previousEmploymentData?.data?.previous_employments
             );
             setUserState("employmentDetails", employmentObj);
           }

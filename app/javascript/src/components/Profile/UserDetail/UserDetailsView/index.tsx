@@ -34,18 +34,17 @@ const UserDetailsView = () => {
 
       setUserState("profileSettings", userObj);
       if (companyRole !== "client") {
-        const res: any = await teamsApi.getEmploymentDetails(
+        const employmentData: any = await teamsApi.getEmploymentDetails(
           data?.data?.user.id
         );
 
-        const res1: any = await teamsApi.getPreviousEmployments(
-          data?.data?.user.id
-        );
+        const previousEmploymentData: any =
+          await teamsApi.getPreviousEmployments(data?.data?.user.id);
 
-        if (res.status && res.status == 200) {
+        if (employmentData.status && employmentData.status == 200) {
           const employmentObj = employmentMapper(
-            res.data.employment,
-            res1.data.previous_employments
+            employmentData.data.employment,
+            previousEmploymentData.data.previous_employments
           );
           setUserState("employmentDetails", employmentObj);
         }
