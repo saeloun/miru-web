@@ -1,93 +1,35 @@
 /* eslint-disable no-unused-vars */
-import React, {
-  FormEvent,
-  KeyboardEvent,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import cn from "classnames";
 import { useOutsideClick } from "helpers";
 import { XIcon } from "miruIcons";
 import { useNavigate } from "react-router-dom";
-import { Toastr } from "StyledComponents";
 
-import invoicesApi from "apis/invoices";
 import { ApiStatus as InvoiceStatus } from "constants/index";
-import { useUserContext } from "context/UserContext";
 
 import Recipient from "./Recipient";
-import {
-  isEmailValid,
-  emailSubject,
-  emailBody,
-  isDisabled,
-  buttonText,
-} from "./utils";
+import { emailSubject, emailBody, isDisabled, buttonText } from "./utils";
 
-interface InvoiceEmail {
-  subject: string;
-  message: string;
-  recipients: string[];
-}
-
-const SendInvoice: React.FC<any> = ({
+const SendInvoice = ({
+  status,
   invoice,
-  setIsSending,
   isSending,
-  handleSaveSendInvoice,
+  setIsSending,
+  handleSubmit,
   isSendReminder = false,
   setIsSendReminder,
-}) => {
-  const { user } = useUserContext();
-
-  const [status, setStatus] = useState<InvoiceStatus>(InvoiceStatus.IDLE);
+}: Iprops) => {
   const [invoiceEmail, setInvoiceEmail] = useState<InvoiceEmail>({
     subject: emailSubject(invoice, isSendReminder),
     message: emailBody(invoice, isSendReminder),
     recipients: invoice.client.clientMembersEmails,
   });
-  const [newRecipient, setNewRecipient] = useState<string>("");
-  const [width, setWidth] = useState<string>("10ch");
 
   const navigate = useNavigate();
   const modal = useRef();
-  const input: React.RefObject<HTMLInputElement> = useRef();
 
   useOutsideClick(modal, () => setIsSending(false), isSending);
-  useEffect(() => {
-    const length = newRecipient.length;
-
-    setWidth(`${length > 10 ? length : 10}ch`);
-  }, [newRecipient]);
-
-  const handleSubmit = async (event: FormEvent) => {
-    try {
-      event.preventDefault();
-      setStatus(InvoiceStatus.LOADING);
-      const res = await handleSaveSendInvoice();
-      if (res.status === 200) {
-        handleSendInvoice(res.data.id);
-      } else {
-        Toastr.error("Send invoice failed");
-        setStatus(InvoiceStatus.ERROR);
-      }
-    } catch {
-      setStatus(InvoiceStatus.ERROR);
-    }
-  };
-
-  const handleSendInvoice = async invoiceId => {
-    try {
-      const payload = { invoice_email: invoiceEmail };
-      const resp = await invoicesApi.sendInvoice(invoiceId, payload);
-      Toastr.success(resp.data.message);
-      setStatus(InvoiceStatus.SUCCESS);
-    } catch {
-      setStatus(InvoiceStatus.ERROR);
-    }
-  };
 
   const handleRemove = (recipient: string) => {
     const recipients = invoiceEmail.recipients.filter(r => r !== recipient);
@@ -96,18 +38,6 @@ const SendInvoice: React.FC<any> = ({
       ...invoiceEmail,
       recipients,
     });
-  };
-
-  const handleInput = (event: KeyboardEvent) => {
-    const recipients = invoiceEmail.recipients;
-
-    if (isEmailValid(newRecipient) && event.key === "Enter") {
-      setInvoiceEmail({
-        ...invoiceEmail,
-        recipients: recipients.concat(newRecipient),
-      });
-      setNewRecipient("");
-    }
   };
 
   useEffect(() => {
@@ -232,7 +162,7 @@ const SendInvoice: React.FC<any> = ({
                   disabled={
                     invoiceEmail?.recipients.length <= 0 || isDisabled(status)
                   }
-                  onClick={handleSubmit}
+                  onClick={e => handleSubmit(e, invoiceEmail)}
                 >
                   {isSendReminder ? "Send Reminder" : buttonText(status)}
                 </button>
@@ -244,5 +174,21 @@ const SendInvoice: React.FC<any> = ({
     </div>
   );
 };
+
+interface InvoiceEmail {
+  subject: string;
+  message: string;
+  recipients: string[];
+}
+
+interface Iprops {
+  status: any;
+  invoice: any;
+  isSending: boolean;
+  setIsSending: any;
+  handleSubmit: any;
+  isSendReminder?: boolean;
+  setIsSendReminder?: any;
+}
 
 export default SendInvoice;
