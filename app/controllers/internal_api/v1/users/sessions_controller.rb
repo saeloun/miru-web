@@ -17,7 +17,7 @@ class InternalApi::V1::Users::SessionsController < Devise::SessionsController
       sign_in(user)
       app = params[:app] || ""
 
-      if app == "miru_desktop"
+      if app == "miru-desktop"
         initial_props = {
           user:,
           avatar_url: current_user && current_user.avatar_url,
