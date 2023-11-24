@@ -8,7 +8,7 @@ class InternalApi::V1::CompaniesController < InternalApi::V1::ApplicationControl
 
     render :index, locals: {
       current_company:,
-      client_list: current_company.client_list,
+      client_list: current_company.clients.kept,
       address: current_company.current_address
     }, status: :ok
   end

@@ -14,7 +14,7 @@ json.array! invoices do |invoice|
       json.name invoice.client_name
       json.email invoice.client_email
       json.logo invoice.client_logo_url
-      json.client_members_emails invoice.send_invoice_emails(@virtual_verified_invitations_allowed)
+      json.client_members_emails invoice.client.send_invoice_emails(@virtual_verified_invitations_allowed)
     end
     json.company do
       json.name current_company.name
