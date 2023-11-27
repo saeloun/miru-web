@@ -17,8 +17,11 @@ const SECONDARY_DISABLED =
   "bg-transparent text-miru-dark-purple-200 border border-miru-dark-purple-200";
 
 const TERNARY =
-  "bg-transparent text-miru-han-purple-1000 hover:text-miru-han-purple-600 border-0";
+  "rounded bg-transparent text-miru-han-purple-1000 hover:bg-miru-dark-purple-100 hover:text-miru-han-purple-600 border-0";
 const TERNARY_DISABLED = "bg-transparent text-miru-dark-purple-200 border-0";
+
+const DASHED =
+  "bg-white rounded border border-dashed border-miru-dark-purple-200 text-center text-base font-bold tracking-widest text-miru-dark-purple-200";
 
 const SMALL = "px-5/100 py-1vh text-xs font-bold leading-4";
 const MEDIUM = "px-10/100 py-1vh text-base font-bold leading-5";
@@ -39,6 +42,7 @@ const BUTTON_STYLES = {
   primary: "primary",
   secondary: "secondary",
   ternary: "ternary",
+  dashed: "dashed",
 };
 const SIZES = { small: "small", medium: "medium", large: "large" };
 
@@ -66,6 +70,8 @@ const Button = ({
 
       style == BUTTON_STYLES.ternary && !disabled && TERNARY,
       style == BUTTON_STYLES.ternary && disabled && TERNARY_DISABLED,
+
+      style == BUTTON_STYLES.dashed && !disabled && DASHED,
 
       size == SIZES.small && SMALL,
       size == SIZES.medium && MEDIUM,

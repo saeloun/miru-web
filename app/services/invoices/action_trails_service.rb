@@ -46,11 +46,10 @@ class Invoices::ActionTrailsService < ApplicationService
     end
 
     def generate_trail_from_event(event)
-      case event.name
-      when "create_invoice", "view_invoice", "update_invoice", "delete_invoice", "download_invoice"
-        generic_trail_data(event)
-      when "send_invoice"
+      if event.name == "send_invoice"
         send_invoice_trail_data(event)
+      else
+        generic_trail_data(event)
       end
     end
 
@@ -91,7 +90,7 @@ class Invoices::ActionTrailsService < ApplicationService
         {
           type: event.name,
           user_name: users[user_id].full_name,
-          user_avatar: users[user_id].avatar,
+          user: users[user_id],
           created_at: event.time
         }
       end

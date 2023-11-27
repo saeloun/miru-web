@@ -9,7 +9,7 @@ import { useUserContext } from "context/UserContext";
 import UserInformation from "./CommonComponents/UserInformation";
 import { companySettingsList, personalSettingsList } from "./constants";
 
-const SubNav = ({ isAdmin, firstName, company, lastName }) => {
+const SubNav = ({ isAdmin, firstName, company, lastName, designation }) => {
   const { companyRole } = useUserContext();
 
   const getActiveClassName = isActive => {
@@ -137,7 +137,11 @@ const SubNav = ({ isAdmin, firstName, company, lastName }) => {
 
   return (
     <div className="flex flex-col ">
-      <UserInformation firstName={firstName} lastName={lastName} />
+      <UserInformation
+        designation={designation}
+        firstName={firstName}
+        lastName={lastName}
+      />
       <div className="mt-4 h-full bg-miru-gray-100">
         {isAdmin ? getAdminLinks() : getEmployeeLinks()}
       </div>
