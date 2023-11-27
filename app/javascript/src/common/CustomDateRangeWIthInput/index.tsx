@@ -53,6 +53,15 @@ const CustomDateRangeWithInput = ({
     resetErrors("fromInput");
   }, []);
 
+  useEffect(() => {
+    if (
+      document.activeElement == toInputRef.current ||
+      document.activeElement == textInput.current
+    ) {
+      setShowCustomCalendar(true);
+    }
+  }, [document.activeElement]);
+
   const handleDateInputChange = (dateInput: string, fieldName: string) => {
     const showErrorMsg = !dateInput?.trim();
     const isValidDate = validateDateInput(dateInput, fieldName, showErrorMsg);

@@ -316,6 +316,7 @@ const FilterSidebar = ({
 
   const onClickInput = e => {
     setSelectedInput(e.target.name);
+    setShowCustomCalendar(!showCustomCalendar);
   };
 
   const handleApply = () => {
