@@ -68,6 +68,9 @@ class Invitation < ApplicationRecord
   before_validation :set_expired_at, on: :create
   after_create_commit :send_invitation_mail
 
+  searchkick filterable: [:first_name, :last_name, :recipient_email],
+    word_middle: [:first_name, :last_name, :recipient_email]
+
   def full_name
     "#{first_name} #{last_name}"
   end
