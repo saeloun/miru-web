@@ -92,6 +92,10 @@ const FilterSidebar = ({
       setDateRange({ ...dateRange, from: "", to: "" });
     }
 
+    if (value !== "custom") {
+      dateRangeOptions[4].label = "Custom";
+    }
+
     if (dateRange.from && dateRange.to) {
       setDisableDateBtn(false);
     }
@@ -245,6 +249,7 @@ const FilterSidebar = ({
       setDefaultDateRange();
       hideCustomFilter();
       setDateRange({ from: "", to: "" });
+      dateRangeOptions[4].label = "Custom";
     }
 
     if (selectedValue.value === "custom") {
@@ -311,6 +316,7 @@ const FilterSidebar = ({
 
   const onClickInput = e => {
     setSelectedInput(e.target.name);
+    setShowCustomCalendar(!showCustomCalendar);
   };
 
   const handleApply = () => {
