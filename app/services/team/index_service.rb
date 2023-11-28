@@ -27,7 +27,8 @@ module Team
           search_term,
           fields: [:first_name, :last_name, :email],
           match: :word_middle,
-          where: { id: user_ids }
+          where: { id: user_ids },
+          includes: [:avatar_attachment]
         )
       end
 
