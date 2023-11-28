@@ -103,6 +103,9 @@ class User < ApplicationRecord
 
   after_commit :send_to_hubspot, on: :create
 
+  searchkick filterable: [:first_name, :last_name, :email],
+    word_middle: [:first_name, :last_name, :email]
+
   def prevent_spam_user_sign_up
     if self.email.include?("internetkeno")
       raise SpamUserSignup.new("#{self.email} Spam User Signup")
