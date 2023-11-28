@@ -19,4 +19,6 @@ json.company_details do
 end
 json.issue_date Date.current
 json.due_date Date.current + 30
-json.company_client_list client_list
+json.company_client_list do
+  json.partial! "internal_api/v1/companies/client_list", locals: { clients: client_list }
+end

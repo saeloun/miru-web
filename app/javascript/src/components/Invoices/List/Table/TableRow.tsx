@@ -3,15 +3,17 @@ import React, { useState, useRef } from "react";
 import { currencyFormat, useDebounce } from "helpers";
 import { ArrowLeftIcon, DotsThreeVerticalIcon, XIcon } from "miruIcons";
 import { useNavigate } from "react-router-dom";
-import { Avatar, Badge, Button, Tooltip } from "StyledComponents";
+import { Avatar, Badge, Button, Toastr, Tooltip } from "StyledComponents";
 
+import invoicesApi from "apis/invoices";
 import CustomCheckbox from "common/CustomCheckbox";
+import SendInvoice from "components/Invoices/common/InvoiceForm/SendInvoice";
 import SendInvoiceContainer from "components/Invoices/Generate/MobileView/Container/SendInvoiceContainer";
 import ConnectPaymentGateway from "components/Invoices/popups/ConnectPaymentGateway";
+import { ApiStatus as InvoicesStatus } from "constants/index";
 import getStatusCssClass from "utils/getBadgeStatus";
 
 import MoreOptions from "../MoreOptions";
-import SendInvoice from "../SendInvoice";
 
 const TableRow = ({
   invoice,
@@ -27,6 +29,9 @@ const TableRow = ({
   // eslint-disable-next-line no-unused-vars
   setIsStripeEnabled,
 }) => {
+  const [sendStatus, setSendStatus] = useState<InvoicesStatus>(
+    InvoicesStatus.IDLE
+  );
   const [isSending, setIsSending] = useState<boolean>(false);
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   const [showMoreOptions, setShowMoreOptions] = useState<boolean>(false);
@@ -69,6 +74,32 @@ const TableRow = ({
       setShowToolTip(true);
     } else {
       setShowToolTip(false);
+    }
+  };
+
+  const submitSendInvoice = async (e, invoiceEmail) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (invoiceEmail?.recipients.length > 0) {
+      try {
+        setSendStatus(InvoicesStatus.LOADING);
+
+        const payload = { invoice_email: invoiceEmail };
+        let resp;
+        if (isSendReminder) {
+          resp = await invoicesApi.sendReminder(invoice.id, payload);
+        } else {
+          resp = await invoicesApi.sendInvoice(invoice.id, payload);
+        }
+
+        Toastr.success(resp.data.message);
+        setSendStatus(InvoicesStatus.SUCCESS);
+        setIsSending(false);
+        setIsSendReminder(false);
+        setTimeout(fetchInvoices, 6000);
+      } catch {
+        setSendStatus(InvoicesStatus.ERROR);
+      }
     }
   };
 
@@ -175,12 +206,13 @@ const TableRow = ({
           isDesktop &&
           !showConnectPaymentDialog && (
             <SendInvoice
-              fetchInvoices={fetchInvoices}
+              handleSubmit={submitSendInvoice}
               invoice={invoice}
               isSendReminder={isSendReminder}
               isSending={isSending}
-              setISendReminder={setIsSendReminder}
+              setIsSendReminder={setIsSendReminder}
               setIsSending={setIsSending}
+              status={sendStatus}
             />
           )}
         {!isStripeEnabled && showConnectPaymentDialog && (
