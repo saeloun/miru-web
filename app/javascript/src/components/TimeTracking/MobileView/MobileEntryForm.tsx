@@ -400,7 +400,7 @@ const AddEntryMobile = ({
                 />
               </div>
               <div className="flex items-center justify-between rounded border border-miru-gray-1000">
-                <Button onClick={handleDecreaseTime}>
+                <Button style="ternary" onClick={handleDecreaseTime}>
                   <MinusIcon
                     className="m-4 text-miru-dark-purple-1000"
                     size={20}
@@ -413,7 +413,7 @@ const AddEntryMobile = ({
                   name="timeInput"
                   onTimeChange={handleDurationChange}
                 />
-                <Button onClick={handleIncreaseTime}>
+                <Button style="ternary" onClick={handleIncreaseTime}>
                   <PlusIcon
                     className="m-4 text-miru-dark-purple-1000"
                     size={20}
