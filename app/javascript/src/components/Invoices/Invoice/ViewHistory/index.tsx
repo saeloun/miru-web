@@ -33,7 +33,7 @@ const ViewHistory = ({ setShowHistory, invoice }) => {
           <span>History</span>
         </div>
         <Button
-          className="rounded p-2 hover:bg-miru-dark-purple-100"
+          style="ternary"
           onClick={() => {
             setShowHistory(false);
           }}
