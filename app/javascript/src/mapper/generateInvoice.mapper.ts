@@ -22,8 +22,8 @@ interface CompanyDetails {
 const getClientList = (clientList: Array<GenerateInvoiceClientList>) =>
   clientList.map(client => ({
     address: client.address,
-    value: client.id,
-    label: client.name,
+    id: client.id,
+    name: client.name,
     phone: client.phone_number,
     previousInvoiceNumber: client.previousInvoiceNumber,
     clientMembersEmails: client.client_members,
