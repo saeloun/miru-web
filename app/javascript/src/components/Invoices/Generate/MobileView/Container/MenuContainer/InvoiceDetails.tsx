@@ -52,9 +52,9 @@ const InvoiceDetails = ({
     setDueDate(newDueDate);
   };
 
-  const list = companyClientList || clientList;
+  const clientDetails = companyClientList || clientList;
   const createClientList = () =>
-    list.map(client => ({
+    clientDetails.map(client => ({
       label: client.name,
       value: client.id,
     }));
@@ -66,7 +66,7 @@ const InvoiceDetails = ({
       .replace(/%20/g, " ");
 
     if (prePopulatedClient) {
-      const selection = list.filter(
+      const selection = clientDetails.filter(
         client => client.label == prePopulatedClient
       );
       selection[0] && handleClientChange(selection[0]);
@@ -119,7 +119,7 @@ const InvoiceDetails = ({
   );
 
   const handleClientChange = selection => {
-    const client = list.find(client => client.id == selection.value);
+    const client = clientDetails.find(client => client.id == selection.value);
     setSelectedClient(client);
     setIsClientVisible(false);
     autoGenerateInvoiceNumber(client);
