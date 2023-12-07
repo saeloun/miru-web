@@ -42,7 +42,7 @@ const unmapGenerateInvoice = input => {
 };
 
 const mapGenerateInvoice = input => ({
-  client_id: input.selectedClient.value,
+  client_id: input.selectedClient.id,
   invoice_number: input.invoiceNumber,
   reference: input.reference,
   issue_date:
