@@ -161,7 +161,7 @@ const EditInvoice = () => {
   };
 
   const handleSendInvoice = () => {
-    if (!isStripeEnabled) {
+    if (!isStripeEnabled && invoiceNumber !== "") {
       setShowConnectPaymentDialog(true);
     } else if (selectedClient && invoiceNumber && !showConnectPaymentDialog) {
       setShowSendInvoiceModal(true);

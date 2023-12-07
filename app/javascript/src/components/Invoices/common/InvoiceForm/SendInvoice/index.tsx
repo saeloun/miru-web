@@ -5,6 +5,7 @@ import cn from "classnames";
 import { useOutsideClick } from "helpers";
 import { XIcon } from "miruIcons";
 import { useNavigate } from "react-router-dom";
+import { Button } from "StyledComponents";
 
 import { ApiStatus as InvoiceStatus } from "constants/index";
 
@@ -96,7 +97,7 @@ const SendInvoice = ({
                     { "h-9": !invoiceEmail.recipients }
                   )}
                 >
-                  {invoiceEmail.recipients.map(recipient => (
+                  {invoiceEmail?.recipients?.map(recipient => (
                     <Recipient
                       email={recipient}
                       handleClick={() => handleRemove(recipient)}
@@ -141,31 +142,22 @@ const SendInvoice = ({
                 />
               </fieldset>
               <div>
-                <button
+                <Button
+                  size="medium"
+                  style="primary"
                   type="button"
-                  className={cn(
-                    `mt-6 flex w-full justify-center rounded-md border border-transparent p-3 text-lg font-bold
-                    uppercase text-white shadow-sm
-                    ${
-                      invoiceEmail?.recipients.length > 0 &&
-                      status !== InvoiceStatus.LOADING
-                        ? `focus:outline-none cursor-pointer bg-miru-han-purple-1000 hover:bg-miru-han-purple-600 focus:ring-2
-                        focus:ring-miru-han-purple-600 focus:ring-offset-2`
-                        : "cursor-not-allowed border-transparent bg-indigo-100 hover:border-transparent"
-                    }
-                    `,
-                    {
-                      "bg-miru-chart-green-600 hover:bg-miru-chart-green-400":
-                        status === InvoiceStatus.SUCCESS,
-                    }
-                  )}
+                  className={`mt-6 flex w-full justify-center uppercase ${
+                    status === InvoiceStatus.SUCCESS
+                      ? "bg-miru-chart-green-600 hover:bg-miru-chart-green-400"
+                      : ""
+                  }`}
                   disabled={
-                    invoiceEmail?.recipients.length <= 0 || isDisabled(status)
+                    invoiceEmail?.recipients?.length <= 0 || isDisabled(status)
                   }
                   onClick={e => handleSubmit(e, invoiceEmail)}
                 >
                   {isSendReminder ? "Send Reminder" : buttonText(status)}
-                </button>
+                </Button>
               </div>
             </form>
           </div>
