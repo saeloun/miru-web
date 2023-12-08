@@ -60,7 +60,7 @@ gem "image_processing", ">= 1.2"
 gem "shakapacker", "6.0.0"
 
 # React hook for rails
-gem "react-rails"
+gem "react-rails", "2.6.2"
 
 # Use SCSS for stylesheets
 gem "sass-rails"
