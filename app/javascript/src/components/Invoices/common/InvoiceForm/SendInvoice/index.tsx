@@ -77,7 +77,8 @@ const SendInvoice = ({
               <button
                 className="text-miru-gray-1000"
                 type="button"
-                onClick={() => {
+                onClick={e => {
+                  e.stopPropagation();
                   isSendReminder
                     ? setIsSendReminder(false)
                     : setIsSending(false);
