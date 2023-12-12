@@ -119,7 +119,7 @@ const EditInvoice = () => {
         amount,
         discount: Number(discount),
         tax: tax || invoiceDetails.tax,
-        client_id: selectedClient.value,
+        client_id: selectedClient.id,
         invoice_line_items_attributes: generateInvoiceLineItems(
           selectedLineItems,
           manualEntryArr,
@@ -161,7 +161,7 @@ const EditInvoice = () => {
   };
 
   const handleSendInvoice = () => {
-    if (!isStripeEnabled) {
+    if (!isStripeEnabled && invoiceNumber !== "") {
       setShowConnectPaymentDialog(true);
     } else if (selectedClient && invoiceNumber && !showConnectPaymentDialog) {
       setShowSendInvoiceModal(true);
