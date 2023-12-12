@@ -39,6 +39,8 @@ const AddEntry: React.FC<Iprops> = ({
   handleDeleteEntry,
   fetchEntriesofMonth,
   removeLocalStorageItems,
+  entryType,
+  setEntryType,
 }) => {
   const initialNote = getValueFromLocalStorage("note") || "";
   const initialDuration = getValueFromLocalStorage("duration") || "";
@@ -52,6 +54,7 @@ const AddEntry: React.FC<Iprops> = ({
     getValueFromLocalStorage("projectBillable") === "true";
 
   const [note, setNote] = useState<string>(initialNote);
+  const [selectedLeaveType, setSelectedLeaveType] = useState("");
   const [duration, setDuration] = useState<string>(initialDuration);
   const [client, setClient] = useState<string>(initialClient);
   const [project, setProject] = useState<string>(initialProject);
@@ -229,46 +232,71 @@ const AddEntry: React.FC<Iprops> = ({
     >
       <div className="w-1/2">
         <div className="mb-2 flex w-129 justify-between">
-          <select
-            className="h-8 w-64 rounded-sm bg-miru-gray-100"
-            id="client"
-            name="client"
-            value={client || "Client"}
-            onChange={e => {
-              setClient(e.target.value);
-              setProject(projects ? projects[e.target.value][0]?.name : "");
-            }}
-          >
-            {!client && (
-              <option disabled selected className="text-miru-gray-100">
-                Client
+          {entryType === "leaves" ? (
+            <select
+              className="h-8 w-full rounded-sm bg-miru-gray-100"
+              id="leaves"
+              name="leaves"
+              value={selectedLeaveType}
+              onChange={e => setSelectedLeaveType(e.target.value)}
+            >
+              <option disabled selected className="text-miru-gray-100" value="">
+                Leave Type
               </option>
-            )}
-            {clients.map((client, i) => (
-              <option key={i.toString()}>{client["name"]}</option>
-            ))}
-          </select>
-          <select
-            className="h-8 w-64 rounded-sm bg-miru-gray-100"
-            id="project"
-            name="project"
-            value={project}
-            onChange={e => {
-              setProject(e.target.value);
-            }}
-          >
-            {!project && (
-              <option disabled selected className="text-miru-gray-100">
-                Project
+              <option className="text-miru-gray-100" value="annual">
+                Annual leave
               </option>
-            )}
-            {client &&
-              projects[client].map((project, i) => (
-                <option data-project-id={project.id} key={i.toString()}>
-                  {project.name}
-                </option>
-              ))}
-          </select>
+              <option className="text-miru-gray-100" value="sick">
+                Sick leave
+              </option>
+              <option className="text-miru-gray-100" value="maternity">
+                Maternity leave
+              </option>
+            </select>
+          ) : (
+            <>
+              <select
+                className="h-8 w-64 rounded-sm bg-miru-gray-100"
+                id="client"
+                name="client"
+                value={client || "Client"}
+                onChange={e => {
+                  setClient(e.target.value);
+                  setProject(projects ? projects[e.target.value][0]?.name : "");
+                }}
+              >
+                {!client && (
+                  <option disabled selected className="text-miru-gray-100">
+                    Client
+                  </option>
+                )}
+                {clients.map((client, i) => (
+                  <option key={i.toString()}>{client["name"]}</option>
+                ))}
+              </select>
+              <select
+                className="h-8 w-64 rounded-sm bg-miru-gray-100"
+                id="project"
+                name="project"
+                value={project}
+                onChange={e => {
+                  setProject(e.target.value);
+                }}
+              >
+                {!project && (
+                  <option disabled selected className="text-miru-gray-100">
+                    Project
+                  </option>
+                )}
+                {client &&
+                  projects[client].map((project, i) => (
+                    <option data-project-id={project.id} key={i.toString()}>
+                      {project.name}
+                    </option>
+                  ))}
+              </select>
+            </>
+          )}
         </div>
         <TextareaAutosize
           cols={60}
@@ -314,30 +342,32 @@ const AddEntry: React.FC<Iprops> = ({
             onTimeChange={handleDurationChange}
           />
         </div>
-        <div className="mt-2 flex items-center">
-          {billable ? (
-            <img
-              alt="checkbox"
-              className="inline"
-              id="check"
-              src={CheckedCheckboxSVG}
-              onClick={() => {
-                setBillable(false);
-              }}
-            />
-          ) : (
-            <img
-              alt="checkbox"
-              className="inline"
-              id="uncheck"
-              src={UncheckedCheckboxSVG}
-              onClick={() => {
-                if (projectBillable) setBillable(true);
-              }}
-            />
-          )}
-          <h4>Billable</h4>
-        </div>
+        {entryType !== "leaves" && (
+          <div className="mt-2 flex items-center">
+            {billable ? (
+              <img
+                alt="checkbox"
+                className="inline"
+                id="check"
+                src={CheckedCheckboxSVG}
+                onClick={() => {
+                  setBillable(false);
+                }}
+              />
+            ) : (
+              <img
+                alt="checkbox"
+                className="inline"
+                id="uncheck"
+                src={UncheckedCheckboxSVG}
+                onClick={() => {
+                  if (projectBillable) setBillable(true);
+                }}
+              />
+            )}
+            <h4>Billable</h4>
+          </div>
+        )}
       </div>
       <div className="max-w-min">
         {editEntryId === 0 ? (
@@ -372,6 +402,7 @@ const AddEntry: React.FC<Iprops> = ({
           className="mt-1 h-8 w-38 rounded border border-miru-han-purple-1000 bg-transparent py-1 px-6 text-xs font-bold tracking-widest text-miru-han-purple-600 hover:border-transparent hover:bg-miru-han-purple-1000 hover:text-white"
           onClick={() => {
             setNewEntryView(false);
+            setEntryType("");
             setEditEntryId(0);
           }}
         >
@@ -425,6 +456,8 @@ interface Iprops {
   setUpdateView: any;
   handleDeleteEntry: any;
   removeLocalStorageItems: () => void;
+  entryType: string;
+  setEntryType: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export default AddEntry;
