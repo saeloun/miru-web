@@ -21,6 +21,7 @@ import EntryCard from "./EntryCard";
 import EntryForm from "./EntryForm";
 import Header from "./Header";
 import MonthCalender from "./MonthCalender";
+import Vacation from "./Vacation";
 import WeeklyEntries from "./WeeklyEntries";
 
 dayjs.extend(updateLocale);
@@ -35,6 +36,7 @@ dayjs.Ls.en.weekStart = 1;
 const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
   const [dayInfo, setDayInfo] = useState<any[]>([]);
   const [view, setView] = useState<string>("month");
+  const [entryType, setEntryType] = useState<string>("");
   const [newEntryView, setNewEntryView] = useState<boolean>(false);
   const [newRowView, setNewRowView] = useState<boolean>(false);
   const [selectDate, setSelectDate] = useState<number>(dayjs().weekday());
@@ -486,6 +488,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
               clients={clients}
               editEntryId={editEntryId}
               entryList={entryList}
+              entryType={entryType}
               fetchEntries={fetchEntries}
               fetchEntriesofMonth={fetchEntriesOfMonths}
               handleAddEntryDateChange={handleAddEntryDateChange}
@@ -497,21 +500,38 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
               selectedEmployeeId={selectedEmployeeId}
               selectedFullDate={selectedFullDate}
               setEditEntryId={setEditEntryId}
+              setEntryType={setEntryType}
               setNewEntryView={setNewEntryView}
               setSelectedFullDate={setSelectedFullDate}
               setUpdateView={setUpdateView}
             />
           )}
           {view !== "week" && !newEntryView && isDesktop && (
-            <button
-              className="flex h-10 w-full items-center justify-center rounded border-2 border-miru-han-purple-600 p-2 text-lg font-bold tracking-widest text-miru-han-purple-600 lg:h-14 lg:p-4"
-              onClick={() => {
-                setNewEntryView(true);
-                setEditEntryId(0);
-              }}
-            >
-              + NEW ENTRY
-            </button>
+            <div className="flex">
+              <button
+                className="flex h-10 w-full items-center justify-center rounded border-2 border-miru-han-purple-600 p-2 text-lg font-bold tracking-widest text-miru-han-purple-600 lg:h-14 lg:p-4"
+                onClick={() => {
+                  setNewEntryView(true);
+                  setEditEntryId(0);
+                }}
+              >
+                + NEW ENTRY
+              </button>
+              {view === "month" && !newEntryView && isDesktop && (
+                <button
+                  className="ml-2 flex h-10 w-full items-center justify-center rounded border-2 border-miru-han-purple-600 p-2 text-lg font-bold tracking-widest text-miru-han-purple-600 lg:h-14 lg:p-4"
+                  onClick={() => {
+                    setNewEntryView(true);
+                    setEntryType("leaves");
+                    setEditEntryId(0);
+                  }}
+                >
+                  <Vacation fill="blue" stroke="yellow" />
+                  {/* <img src= {VacationIconSVG} className="icon"/> */}
+                  <span className="ml-2">Mark Time Off</span>
+                </button>
+              )}
+            </div>
           )}
           {/* --- On mobile view we don't need New Entry button for Empty States --- */}
           {view !== "week" &&
@@ -568,6 +588,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
                 clients={clients}
                 editEntryId={editEntryId}
                 entryList={entryList}
+                entryType={entryType}
                 fetchEntries={fetchEntries}
                 fetchEntriesofMonth={fetchEntriesOfMonths}
                 handleAddEntryDateChange={handleAddEntryDateChange}
@@ -580,6 +601,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
                 selectedEmployeeId={selectedEmployeeId}
                 selectedFullDate={selectedFullDate}
                 setEditEntryId={setEditEntryId}
+                setEntryType={setEntryType}
                 setNewEntryView={setNewEntryView}
                 setSelectedFullDate={setSelectedFullDate}
                 setUpdateView={setUpdateView}
