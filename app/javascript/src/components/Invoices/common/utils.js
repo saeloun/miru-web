@@ -64,8 +64,7 @@ export const fetchNewLineItems = async (
         selectedEntriesString += `&selected_entries[]=${entry.timesheet_entry_id}`;
       }
     });
-
-    const queryParams = `client_id=${selectedClient.value}${selectedEntriesString}`;
+    const queryParams = `client_id=${selectedClient.id}${selectedEntriesString}`;
     const res = await generateInvoice.getLineItems(queryParams);
     const mergedItems = [...res.data.new_line_item_entries];
     const sortedData = mergedItems.sort((item1, item2) =>
