@@ -67,7 +67,7 @@ const getEmployeeSettingsNavUrls = memberId => [
     groupName: "Personal",
     navItems: [
       {
-        url: "/profile/edit",
+        url: "/settings/profile",
         text: "PERSONAL DETAILS",
         icon: <UserIcon size={16} />,
       },
