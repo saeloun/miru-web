@@ -145,10 +145,7 @@ const EmploymentDetailsEdit = () => {
         current_employment: {
           ...employmentDetails.current_employment,
           ...{
-            joined_at:
-              dateFormat == "DD-MM-YYYY"
-                ? date
-                : dayjs(date).format("DD-MM-YYYY"),
+            joined_at: date,
           },
         },
       },
@@ -164,10 +161,7 @@ const EmploymentDetailsEdit = () => {
         current_employment: {
           ...employmentDetails.current_employment,
           ...{
-            resigned_at:
-              dateFormat == "DD-MM-YYYY"
-                ? date
-                : dayjs(date).format("DD-MM-YYYY"),
+            resigned_at: date,
           },
         },
       },
@@ -235,9 +229,21 @@ const EmploymentDetailsEdit = () => {
   const updateEmploymentDetails = async updatedPreviousEmployments => {
     try {
       await schema.validate(employmentDetails, { abortEarly: false });
+      const joined_at = employmentDetails.current_employment.joined_at;
+      const resigned_at = employmentDetails.current_employment.resigned_at;
       const payload = {
         ...updatedPreviousEmployments,
-        current_employment: employmentDetails.current_employment,
+        current_employment: {
+          ...employmentDetails.current_employment,
+          joined_at:
+            dateFormat == "DD-MM-YYYY"
+              ? joined_at
+              : dayjs(joined_at).format("DD-MM-YYYY"),
+          resigned_at:
+            dateFormat == "DD-MM-YYYY"
+              ? resigned_at
+              : dayjs(resigned_at).format("DD-MM-YYYY"),
+        },
       };
 
       await teamsApi.updatePreviousEmployments(user.id, {
