@@ -19,7 +19,7 @@ class InternalApi::V1::LeaveTypesController < InternalApi::V1::ApplicationContro
   private
 
     def leave_type_params
-      params.require(:leave_type).permit(permitted_attributes)
+      params.require(:leave_type).permit(policy(LeaveType).permitted_attributes)
     end
 
     def leave
