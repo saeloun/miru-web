@@ -12,6 +12,7 @@ import timeTrackingApi from "apis/timeTracking";
 import Loader from "common/Loader/index";
 import withLayout from "common/Mobile/HOC/withLayout";
 import SearchTimeEntries from "common/SearchTimeEntries";
+import TimeoffForm from "components/TimeoffEntries/TimeoffForm";
 import { useUserContext } from "context/UserContext";
 import { sendGAPageView } from "utils/googleAnalytics";
 
@@ -63,6 +64,9 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
   );
   const [currentYear, setCurrentYear] = useState<number>(dayjs().year());
   const [updateView, setUpdateView] = useState(true);
+  const [newTimeoffEntryView, setNewTimeoffEntryView] =
+    useState<boolean>(false);
+
   const { isDesktop } = useUserContext();
   const employeeOptions = employees.map(e => ({
     value: `${e["id"]}`,
@@ -506,32 +510,39 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
               setUpdateView={setUpdateView}
             />
           )}
-          {view !== "week" && !newEntryView && isDesktop && (
-            <div className="flex">
-              <button
-                className="flex h-10 w-full items-center justify-center rounded border-2 border-miru-han-purple-600 p-2 text-lg font-bold tracking-widest text-miru-han-purple-600 lg:h-14 lg:p-4"
-                onClick={() => {
-                  setNewEntryView(true);
-                  setEditEntryId(0);
-                }}
-              >
-                + NEW ENTRY
-              </button>
-              {view === "month" && !newEntryView && isDesktop && (
+          {view !== "week" &&
+            !newEntryView &&
+            !newTimeoffEntryView &&
+            isDesktop && (
+              <div className="flex">
                 <button
-                  className="ml-2 flex h-10 w-full items-center justify-center rounded border-2 border-miru-han-purple-600 p-2 text-lg font-bold tracking-widest text-miru-han-purple-600 lg:h-14 lg:p-4"
+                  className="flex h-10 w-full items-center justify-center rounded border-2 border-miru-han-purple-600 p-2 text-lg font-bold tracking-widest text-miru-han-purple-600 lg:h-14 lg:p-4"
                   onClick={() => {
                     setNewEntryView(true);
-                    setEntryType("leaves");
                     setEditEntryId(0);
                   }}
                 >
-                  <Vacation fill="blue" stroke="yellow" />
-                  {/* <img src= {VacationIconSVG} className="icon"/> */}
-                  <span className="ml-2">Mark Time Off</span>
+                  + NEW ENTRY
                 </button>
-              )}
-            </div>
+                {view === "month" && !newEntryView && isDesktop && (
+                  <button
+                    className="ml-2 flex h-10 w-full items-center justify-center rounded border-2 border-miru-han-purple-600 p-2 text-lg font-bold tracking-widest text-miru-han-purple-600 lg:h-14 lg:p-4"
+                    onClick={() => {
+                      setNewTimeoffEntryView(true);
+                    }}
+                  >
+                    <Vacation fill="blue" stroke="yellow" />
+                    {/* <img src= {VacationIconSVG} className="icon"/> */}
+                    <span className="ml-2">Mark Time Off</span>
+                  </button>
+                )}
+              </div>
+            )}
+          {newTimeoffEntryView && view !== "week" && (
+            <TimeoffForm
+              selectedFullDate={selectedFullDate}
+              setNewTimeoffEntryView={setNewTimeoffEntryView}
+            />
           )}
           {/* --- On mobile view we don't need New Entry button for Empty States --- */}
           {view !== "week" &&
