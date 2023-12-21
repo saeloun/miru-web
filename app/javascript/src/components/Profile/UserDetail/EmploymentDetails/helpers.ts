@@ -6,5 +6,5 @@ export const employeeTypes = [
 export function getLabelForEmployeeType(valueToFind: string): string | null {
   const foundType = employeeTypes.find(type => type.value === valueToFind);
 
-  return foundType ? foundType.label : null;
+  return foundType ? foundType.label : "-";
 }
