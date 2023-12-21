@@ -47,6 +47,7 @@ const ProjectDetailsForm = ({
       <div className="flex h-12 w-full items-center bg-white shadow-c1">
         <Button
           className="p-3"
+          style="primary_disabled"
           onClick={() => {
             navigate("/projects");
           }}
@@ -70,7 +71,11 @@ const ProjectDetailsForm = ({
             />
           )}
         </div>
-        <Button className="p-3" onClick={() => setIsHeaderMenuVisible(true)}>
+        <Button
+          className="p-3"
+          style="primary_disabled"
+          onClick={() => setIsHeaderMenuVisible(true)}
+        >
           <DotsThreeVerticalIcon
             className="text-miru-dark-purple-1000"
             size={16}
