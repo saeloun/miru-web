@@ -31,7 +31,12 @@ const UserInformation = ({ firstName, lastName, designation }) => {
       validateFileSize(file);
       setCurrentAvatarUrl(URL.createObjectURL(file));
       const payload = createFormData(file);
-      await profileApi.update(payload);
+
+      const headers = {
+        "Content-Type": "multipart/form-data",
+      };
+
+      await profileApi.upadteAvatar(payload, { headers });
     } catch (error) {
       Toastr.error(error.message);
     }
