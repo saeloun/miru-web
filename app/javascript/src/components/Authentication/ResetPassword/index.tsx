@@ -8,6 +8,7 @@ import authenticationApi from "apis/authentication";
 import { InputErrors, InputField } from "common/FormikFields";
 import MiruLogoWatermark from "common/MiruLogoWatermark";
 import { MIRU_APP_URL, Paths } from "constants/index";
+import { setToLocalStorage } from "utils/storage";
 
 import {
   resetPasswordFormInitialValues,
@@ -31,11 +32,8 @@ const ResetPassword = () => {
     };
     try {
       const res = await authenticationApi.resetPassword(payload);
-      if (res.status == 200) {
-        setTimeout(() => {
-          window.location.assign(`${window.location.origin}`);
-        }, 500);
-      }
+      setToLocalStorage("authToken", res.data.user.token);
+      setToLocalStorage("authEmail", res.data.user.email);
     } catch (error) {
       setFieldError("confirm_password", error.response.data.error);
     }
