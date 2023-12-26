@@ -80,7 +80,10 @@ export const UserDetails = () => {
       validateFileSize(file);
       setCurrentAvatarUrl(URL.createObjectURL(file));
       const payload = createFormData(file);
-      await profileApi.update(payload);
+      const headers = {
+        "Content-Type": "multipart/form-data",
+      };
+      await profileApi.upadteAvatar(payload, { headers });
     } catch (error) {
       Toastr.error(error.message);
     }
@@ -129,6 +132,7 @@ export const UserDetails = () => {
                 </p>
               </label>
               <input
+                accept="image/png, image/jpeg, image/jpg"
                 className="hidden"
                 id="org-profile-image-input"
                 name="myImage"
