@@ -10,6 +10,7 @@ import {
   WaiveSVG,
   ReminderIcon,
   ClockIcon,
+  CurrencyCircleDollarIcon,
 } from "miruIcons";
 import { useNavigate } from "react-router-dom";
 import { Button, MobileMoreOptions, Badge } from "StyledComponents";
@@ -211,7 +212,7 @@ const MobileView = ({
                   setShowInvoicePaymentModal(true);
                 }}
               >
-                <ClockIcon
+                <CurrencyCircleDollarIcon
                   className="mr-4 text-miru-han-purple-1000"
                   size={16}
                   weight="bold"
