@@ -18,4 +18,8 @@ class ApplicationPolicy
   def record_belongs_to_user?
     user.id == record.user_id
   end
+
+  def has_owner_or_admin_role?
+    user_owner_role? || user_admin_role?
+  end
 end

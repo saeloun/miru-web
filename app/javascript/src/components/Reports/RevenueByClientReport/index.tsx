@@ -1,6 +1,10 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import React, { useState, useEffect } from "react";
 
+import Logger from "js-logger";
+import { useNavigate } from "react-router-dom";
+
+import Loader from "common/Loader/index";
 import { LocalStorageKeys } from "constants/index";
 import { sendGAPageView } from "utils/googleAnalytics";
 
@@ -31,6 +35,7 @@ const RevenueByClientReport = () => {
   );
   const [isFilterVisible, setIsFilterVisible] = useState<boolean>(false);
   const [showNavFilters, setShowNavFilters] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const [filterCounter, setFilterCounter] = useState(0);
   const [dateRange, setDateRange] = useState({ from: "", to: "" });
   const [selectedInput, setSelectedInput] = useState("from-input");
@@ -41,6 +46,7 @@ const RevenueByClientReport = () => {
     totalOutstandingAmount: 0,
     totalRevenue: 0,
   });
+  const navigate = useNavigate();
 
   useEffect(() => {
     sendGAPageView();
@@ -75,16 +81,27 @@ const RevenueByClientReport = () => {
     }
   };
 
+  const fetchReportData = async () => {
+    setLoading(true);
+    try {
+      await getReportData({
+        selectedFilter,
+        setClientList,
+        setShowNavFilters,
+        setIsFilterVisible,
+        setSummary,
+        setCurrency,
+        customDate: dateRange,
+      });
+      setLoading(false);
+    } catch (e) {
+      Logger.error(e);
+      navigate("/reports");
+    }
+  };
+
   useEffect(() => {
-    getReportData({
-      selectedFilter,
-      setClientList,
-      setShowNavFilters,
-      setIsFilterVisible,
-      setSummary,
-      setCurrency,
-      customDate: dateRange,
-    });
+    fetchReportData();
   }, [selectedFilter]);
 
   const contextValues = {
@@ -118,6 +135,10 @@ const RevenueByClientReport = () => {
   };
 
   const handleDownload = () => {}; //eslint-disable-line
+
+  if (loading) {
+    return <Loader />;
+  }
 
   return (
     <div className="h-full">

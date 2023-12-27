@@ -127,7 +127,7 @@ const navClientOptions = [
   {
     logo: <SettingIcon className="mr-0 md:mr-4" size={26} />,
     label: "Settings",
-    path: "/profile/edit/option",
+    path: "/settings/profile",
     allowedRoles: ["admin", "owner", "book_keeper", "client"],
   },
   {

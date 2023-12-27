@@ -64,8 +64,7 @@ export const fetchNewLineItems = async (
         selectedEntriesString += `&selected_entries[]=${entry.timesheet_entry_id}`;
       }
     });
-
-    const queryParams = `client_id=${selectedClient.value}${selectedEntriesString}`;
+    const queryParams = `client_id=${selectedClient.id}${selectedEntriesString}`;
     const res = await generateInvoice.getLineItems(queryParams);
     const mergedItems = [...res.data.new_line_item_entries];
     const sortedData = mergedItems.sort((item1, item2) =>
@@ -113,7 +112,8 @@ export const handleDownloadInvoice = async invoice => {
     const url = window.URL.createObjectURL(new Blob([res.data]));
     const link = document.createElement("a");
     link.href = url;
-    link.setAttribute("download", `${invoice.invoiceNumber}.pdf`);
+    const filename = invoice?.invoiceNumber || invoice?.invoice_number;
+    link.setAttribute("download", `${filename}.pdf`);
     document.body.appendChild(link);
     link.click();
   } catch {

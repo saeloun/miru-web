@@ -16,7 +16,7 @@ const MoreOptions: FC<MoreOptionsProps> = ({
   downloadInvoice,
   showHistory,
   invoice = null,
-  markInvoiceAsPaid = () => null,
+  markInvoiceAsPaid,
   setIsSendReminder,
   sendInvoice,
   setIsMoreOptionsVisible,

@@ -40,7 +40,8 @@ module Invoices
           first: fetch_invoices.first_page?,
           prev: fetch_invoices.prev_page,
           next: fetch_invoices.next_page,
-          last: fetch_invoices.last_page?
+          last: fetch_invoices.last_page?,
+          page: params[:page].to_i
         }
       end
 
@@ -86,7 +87,7 @@ module Invoices
           match: :word_middle,
           where: filters.where_clause,
           order: options[:order] || DEFAULT_ORDER,
-          includes: [:client, :company]
+          includes: [:client, { client: :logo_attachment }, :company]
         }
 
         invoice_options[:page] = options[:page] if options[:page]

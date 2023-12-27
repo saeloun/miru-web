@@ -1,0 +1,9 @@
+{
+  "label": "Product Guide",
+  "position": 2,
+  "collapsed": false,
+  "link": {
+    "type": "generated-index",
+    "description": "Guides for features of Miru Web"
+  }
+}

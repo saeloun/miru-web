@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 
 import dayjs from "dayjs";
 import { Formik, Form, FormikProps } from "formik";
@@ -31,6 +31,9 @@ const InvoiceDetails = ({
 }) => {
   const [isClientVisible, setIsClientVisible] = useState<boolean>(false);
   const wrapperRef = useRef(null);
+  const [prePopulatedClient, setPrePopulatedClient] = useState<any>();
+  const [prePopulatedInvoiceNumber, setPrePopulatedInvoiceNumber] =
+    useState<any>();
 
   const [showDateOfIssuePicker, setShowDateOfIssuePicker] =
     useState<boolean>(false);
@@ -49,6 +52,61 @@ const InvoiceDetails = ({
     setDueDate(newDueDate);
   };
 
+  const clientDetails = companyClientList || clientList;
+  const createClientList = () =>
+    clientDetails.map(client => ({
+      label: client.name,
+      value: client.id,
+    }));
+
+  useEffect(() => {
+    const prePopulatedClient = window.location.search
+      .split("?")
+      .join("")
+      .replace(/%20/g, " ");
+
+    if (prePopulatedClient) {
+      const selection = clientDetails.filter(
+        client => client.label == prePopulatedClient
+      );
+      selection[0] && handleClientChange(selection[0]);
+    }
+
+    if (selectedClient) {
+      setPrePopulatedClient(selectedClient);
+      setPrePopulatedInvoiceNumber(invoiceNumber);
+    }
+  }, []);
+
+  const autoGenerateInvoiceNumber = client => {
+    const { previousInvoiceNumber } = client;
+    // on edit invoice page: invoice number should not be incremented for same client
+    if (prePopulatedClient?.id == client.id) {
+      setInvoiceNumber(prePopulatedInvoiceNumber);
+    } else {
+      if (previousInvoiceNumber) {
+        const lastDigitIndex = previousInvoiceNumber.search(/\d+$/);
+        const remaining = previousInvoiceNumber.slice(0, lastDigitIndex);
+        const lastDigits = previousInvoiceNumber.slice(lastDigitIndex);
+
+        if (lastDigits && !isNaN(lastDigits)) {
+          const incrementedDigits = (parseInt(lastDigits) + 1).toString();
+          const hasLeadingZeros = lastDigits[0] === "0";
+
+          const numZeros = hasLeadingZeros
+            ? lastDigits.length - incrementedDigits.length
+            : 0;
+          const leadingZeros = "0".repeat(numZeros);
+          setInvoiceNumber(remaining + leadingZeros + incrementedDigits);
+        } else {
+          setInvoiceNumber("");
+        }
+      } else {
+        setInvoiceNumber("");
+      }
+    }
+  };
+
   const handleDueDatePicker = date => {
     setDueDate(date);
     setShowDueDatePicker(false);
@@ -61,12 +119,14 @@ const InvoiceDetails = ({
   );
 
   const handleClientChange = selection => {
-    setSelectedClient(selection);
+    const client = clientDetails.find(client => client.id == selection.value);
+    setSelectedClient(client);
     setIsClientVisible(false);
+    autoGenerateInvoiceNumber(client);
   };
 
   useOutsideClick(wrapperRef, () => setIsClientVisible(false), isClientVisible);
-  interface SignInFormValues {
+  interface InvoiceDetails {
     billedTo: string;
     issueDate: string;
     dueDate: string;
@@ -83,7 +143,7 @@ const InvoiceDetails = ({
       validationSchema={invoiceDetailsSchema}
       onSubmit={handleSaveInvoice}
     >
-      {(props: FormikProps<SignInFormValues>) => {
+      {(props: FormikProps<InvoiceDetails>) => {
         const { touched, errors, setFieldValue, setFieldError } = props;
 
         return (
@@ -103,7 +163,7 @@ const InvoiceDetails = ({
                   selectedClient && (
                     <div>
                       <p className="text-sm font-medium text-miru-dark-purple-1000">
-                        {selectedClient.label}
+                        {selectedClient.name}
                       </p>
                       <p className="w-52 py-2 text-xs font-medium text-miru-dark-purple-600">
                         {`${address_line_1}${
@@ -131,12 +191,13 @@ const InvoiceDetails = ({
               >
                 <div className="h-auto w-full" ref={wrapperRef}>
                   <Select
+                    autoFocus
                     defaultMenuIsOpen
                     isSearchable
                     className="w-full text-white"
                     classNamePrefix="m-0 truncate font-medium text-sm text-miru-dark-purple-1000 bg-white"
                     defaultValue={null}
-                    options={clientList || companyClientList}
+                    options={createClientList()}
                     placeholder="Search"
                     styles={reactSelectStyles.InvoiceDetails}
                     components={{
@@ -241,14 +302,13 @@ const InvoiceDetails = ({
               </div>
             </div>
             <div className="flex justify-between py-3">
-              <InputField
+              <CustomInputText
                 id="invoiceNumber"
                 inputBoxClassName="border focus:border-miru-han-purple-1000"
                 label="Invoice Number"
                 name="invoiceNumber"
-                setFieldError={setFieldError}
-                setFieldValue={setFieldValue}
                 type="text"
+                value={invoiceNumber}
                 wrapperClassName="mr-2 w-1/2"
                 onChange={e => setInvoiceNumber(e.target.value)}
               />

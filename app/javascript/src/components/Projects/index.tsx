@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import projectApi from "apis/projects";
+import Loader from "common/Loader/index";
 import withLayout from "common/Mobile/HOC/withLayout";
 import { useUserContext } from "context/UserContext";
 import { sendGAPageView } from "utils/googleAnalytics";
@@ -33,9 +34,9 @@ const Projects = ({ isAdminUser }) => {
 
   if (loading) {
     return (
-      <p className="tracking-wide flex min-h-screen items-center justify-center text-base font-medium text-miru-han-purple-1000">
-        Loading...
-      </p>
+      <div className="flex h-full w-full items-center justify-center">
+        <Loader />
+      </div>
     );
   }
 

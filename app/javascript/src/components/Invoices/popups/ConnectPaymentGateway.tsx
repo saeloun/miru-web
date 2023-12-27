@@ -71,7 +71,7 @@ const ConnectPaymentGateway = ({
                 e.stopPropagation();
                 setShowConnectPaymentDialog(false);
                 updateInvoice();
-                navigate("/profile/edit/payment");
+                navigate("/settings/payment");
               }}
             >
               Go to Payment Settings

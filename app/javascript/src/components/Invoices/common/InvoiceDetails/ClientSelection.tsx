@@ -31,13 +31,11 @@ const ClientSelection = ({
   const wrapperRef = useRef(null);
 
   useOutsideClick(wrapperRef, () => setIsClientVisible(false), isClientVisible);
-
   useEffect(() => {
     const prePopulatedClient = window.location.search
       .split("?")
       .join("")
       .replace(/%20/g, " ");
-
     if (prePopulatedClient) {
       const selection = clientList.filter(
         client => client.label == prePopulatedClient
@@ -58,24 +56,23 @@ const ClientSelection = ({
   const autoGenerateInvoiceNumber = client => {
     const { previousInvoiceNumber } = client;
     // on edit invoice page: invoice number should not be incremented for same client
-    if (prePopulatedClient?.value == client.value) {
+    if (prePopulatedClient?.id == client.id) {
       setInvoiceNumber(prePopulatedInvoiceNumber);
     } else {
       if (previousInvoiceNumber) {
-        //extracting last character of invoice
-        const lastChar = parseInt(
-          previousInvoiceNumber.charAt(previousInvoiceNumber.length - 1)
-        );
+        const lastDigitIndex = previousInvoiceNumber.search(/\d+$/);
+        const remaining = previousInvoiceNumber.slice(0, lastDigitIndex);
+        const lastDigits = previousInvoiceNumber.slice(lastDigitIndex);
 
-        //extracting remaining invoice number
-        const remaining = previousInvoiceNumber.slice(
-          0,
-          previousInvoiceNumber.length - 1
-        );
+        if (lastDigits && !isNaN(lastDigits)) {
+          const incrementedDigits = (parseInt(lastDigits) + 1).toString();
+          const hasLeadingZeros = lastDigits[0] === "0";
 
-        //incrementing invoice number
-        if (!isNaN(lastChar)) {
-          setInvoiceNumber(remaining.concat(lastChar + 1));
+          const numZeros = hasLeadingZeros
+            ? lastDigits.length - incrementedDigits.length
+            : 0;
+          const leadingZeros = "0".repeat(numZeros);
+          setInvoiceNumber(remaining + leadingZeros + incrementedDigits);
         } else {
           setInvoiceNumber("");
         }
@@ -86,11 +83,18 @@ const ClientSelection = ({
   };
 
   const handleClientChange = selection => {
-    setSelectedClient(selection);
+    const client = clientList.find(client => client.id == selection.value);
+    setSelectedClient(client);
     setIsClientVisible(false);
     setIsOptionSelected(true);
-    autoGenerateInvoiceNumber(selection);
+    autoGenerateInvoiceNumber(client);
   };
+
+  const createClientList = () =>
+    clientList.map(client => ({
+      label: client.name,
+      value: client.id,
+    }));
 
   const handleAlreadySelectedClient = () => {
     if (selectedClient) {
@@ -125,7 +129,7 @@ const ClientSelection = ({
             selectedClient && (
               <div className="h-full overflow-y-scroll">
                 <p className="text-base font-bold text-miru-dark-purple-1000">
-                  {selectedClient.label}
+                  {selectedClient.name}
                 </p>
                 {selectedClient?.address ? (
                   <p className="w-52 text-sm font-normal text-miru-dark-purple-600">
@@ -148,6 +152,7 @@ const ClientSelection = ({
         <div className="absolute top-2 w-full" ref={wrapperRef}>
           {isClientVisible && (
             <Select
+              autoFocus
               defaultMenuIsOpen
               isSearchable
               className="client-select m-0 mt-2  w-full text-white"
@@ -155,7 +160,7 @@ const ClientSelection = ({
               components={{ DropdownIndicator, IndicatorSeparator: () => null }}
               defaultValue={null}
               inputId="clientSelect"
-              options={clientList}
+              options={createClientList()}
               placeholder="Search"
               styles={reactSelectStyles.InvoiceDetails}
               onChange={handleClientChange}

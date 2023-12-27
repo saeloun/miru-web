@@ -2,42 +2,40 @@
 
 module Projects
   class IndexService < ApplicationService
-    def initialize(current_company, params)
-      @current_company = current_company
-      @params = params
+    attr_reader :current_company, :search_term
 
-      set_projects
-      set_clients
-      set_users
+    def initialize(current_company, search_term)
+      @current_company = current_company
+      @search_term = search_term
     end
 
     def process
       {
-        projects: @projects,
-        clients: @clients,
-        users: @users
+        projects: fetch_projects,
+        clients: client_list
       }
     end
 
-    private
+    def fetch_projects
+      @_fetch_projects ||= Project.search(
+        search_query,
+        fields: [:client_name, :name],
+        match: :text_middle,
+        where: { client_id: client_ids, discarded_at: nil },
+        includes: [:client, :timesheet_entries]
+      )
+    end
 
-      def set_projects
-        @projects = Projects::SearchService.new(
-          @params[:search],
-          @current_company,
-          @params[:client_id],
-          @params[:user_id],
-          @params[:billable],
-        ).process
-      end
+    def search_query
+      @_search_query ||= search_term.present? ? search_term : "*"
+    end
 
-      def set_clients
-        @clients = @current_company.clients.kept
-      end
+    def client_list
+      @_client_list ||= current_company.clients
+    end
 
-      def set_users
-        @users = @current_company.employments.joins(:user)
-          .select("users.id as id, users.first_name as first_name, users.last_name as last_name")
-      end
+    def client_ids
+      client_list.pluck(:id).uniq
+    end
   end
 end

@@ -6,6 +6,8 @@ import { Toastr } from "StyledComponents";
 
 import invoicesApi from "apis/invoices";
 import paymentSettings from "apis/payment-settings";
+import Loader from "common/Loader/index";
+import { ApiStatus as InvoiceStatus } from "constants/index";
 import { useUserContext } from "context/UserContext";
 import { unmapLineItems } from "mapper/mappedIndex";
 import { sendGAPageView } from "utils/googleAnalytics";
@@ -27,6 +29,10 @@ const EditInvoice = () => {
   const params = useParams();
   const { isDesktop } = useUserContext();
 
+  const [status, setStatus] = useState<InvoiceStatus>(InvoiceStatus.IDLE);
+  const [saveSendStatus, setSaveSendStatus] = useState<InvoiceStatus>(
+    InvoiceStatus.IDLE
+  );
   const [invoiceDetails, setInvoiceDetails] = useState<any>();
   const [lineItems, setLineItems] = useState<any>([]);
   const [selectedLineItems, setSelectedLineItems] = useState<any>([]);
@@ -56,6 +62,7 @@ const EditInvoice = () => {
 
   const fetchInvoice = async () => {
     try {
+      setStatus(InvoiceStatus.LOADING);
       const { data } = await invoicesApi.editInvoice(params.id);
       setInvoiceDetails(data);
       setReference(data.reference);
@@ -68,8 +75,10 @@ const EditInvoice = () => {
       setSelectedClient(data.client);
       setAmountDue(data.amountDue);
       setAmountPaid(data.amountPaid);
+      setStatus(InvoiceStatus.SUCCESS);
     } catch {
       navigate("/invoices/error");
+      setStatus(InvoiceStatus.ERROR);
     }
   };
 
@@ -90,6 +99,7 @@ const EditInvoice = () => {
 
   const updateInvoice = async () => {
     try {
+      setStatus(InvoiceStatus.LOADING);
       const res = await invoicesApi.updateInvoice(invoiceDetails.id, {
         invoice_number: invoiceNumber || invoiceDetails.invoiceNumber,
         reference: reference || invoiceDetails.reference,
@@ -109,7 +119,7 @@ const EditInvoice = () => {
         amount,
         discount: Number(discount),
         tax: tax || invoiceDetails.tax,
-        client_id: selectedClient.value,
+        client_id: selectedClient.id,
         invoice_line_items_attributes: generateInvoiceLineItems(
           selectedLineItems,
           manualEntryArr,
@@ -128,10 +138,12 @@ const EditInvoice = () => {
           _destroy: ilt._destroy,
         })),
       });
+      setStatus(InvoiceStatus.SUCCESS);
 
       return res;
     } catch {
       navigate(`/invoices/${invoiceDetails.id}`);
+      setStatus(InvoiceStatus.ERROR);
 
       return {};
     }
@@ -149,7 +161,7 @@ const EditInvoice = () => {
   };
 
   const handleSendInvoice = () => {
-    if (!isStripeEnabled) {
+    if (!isStripeEnabled && invoiceNumber !== "") {
       setShowConnectPaymentDialog(true);
     } else if (selectedClient && invoiceNumber && !showConnectPaymentDialog) {
       setShowSendInvoiceModal(true);
@@ -173,6 +185,37 @@ const EditInvoice = () => {
 
     return Toastr.error(SELECT_CLIENT_ERROR);
   };
+
+  const submitSaveSendInvoice = async (e, invoiceEmail) => {
+    e.preventDefault();
+    try {
+      setSaveSendStatus(InvoiceStatus.LOADING);
+      const res = await handleSaveSendInvoice();
+      if (res.status === 200) {
+        submitSendInvoice(res.data.id, invoiceEmail);
+      } else {
+        Toastr.error("Send invoice failed");
+        setSaveSendStatus(InvoiceStatus.ERROR);
+      }
+    } catch {
+      setSaveSendStatus(InvoiceStatus.ERROR);
+    }
+  };
+
+  const submitSendInvoice = async (invoiceId, invoiceEmail) => {
+    try {
+      const payload = { invoice_email: invoiceEmail };
+      const resp = await invoicesApi.sendInvoice(invoiceId, payload);
+      Toastr.success(resp.data.message);
+      setSaveSendStatus(InvoiceStatus.SUCCESS);
+    } catch {
+      setSaveSendStatus(InvoiceStatus.ERROR);
+    }
+  };
+
+  if (status === InvoiceStatus.LOADING) {
+    return <Loader />;
+  }
 
   if (invoiceDetails) {
     if (isDesktop) {
@@ -242,9 +285,10 @@ const EditInvoice = () => {
           {(showSendInvoiceModal || isSendReminder) &&
             !showConnectPaymentDialog && (
               <SendInvoice
-                handleSaveSendInvoice={handleSaveSendInvoice}
+                handleSubmit={submitSaveSendInvoice}
                 isSending={showSendInvoiceModal}
                 setIsSending={setShowSendInvoiceModal}
+                status={saveSendStatus}
                 invoice={{
                   id: invoiceDetails.id,
                   client: selectedClient,
