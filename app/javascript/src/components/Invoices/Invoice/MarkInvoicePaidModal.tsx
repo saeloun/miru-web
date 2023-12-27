@@ -153,7 +153,9 @@ const MarkInvoiceAsPaidModal = ({
               name="transactionType"
               options={transactionTypes}
               handleonFocus={() => {
-                setShowTransactionTypes(true);
+                if (!transactionType) {
+                  setShowTransactionTypes(true);
+                }
               }}
               value={transactionTypes.find(
                 type => type.value == transactionType
