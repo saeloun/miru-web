@@ -190,23 +190,6 @@ const MobileView = ({
               setVisibilty={setShowMoreOptions}
               visibilty={showMoreOptions}
             >
-              {["sent", "overdue", "viewed"].includes(invoice?.status) && (
-                <li
-                  className="flex cursor-pointer items-center py-2 px-5 text-sm text-miru-han-purple-1000 hover:bg-miru-gray-100 lg:py-1 xl:py-2"
-                  onClick={() => {
-                    setShowMoreOptions(false);
-                    setShowWavieDialog(true);
-                  }}
-                >
-                  <img
-                    className="mr-4"
-                    height="16px"
-                    src={WaiveSVG}
-                    width="16px"
-                  />
-                  Waive Off
-                </li>
-              )}
               <li
                 className="flex cursor-pointer items-center px-5 py-2 text-sm text-miru-han-purple-1000 hover:bg-miru-gray-100 lg:py-1 xl:py-2"
                 onClick={() => {
@@ -235,6 +218,23 @@ const MobileView = ({
                 />
                 Mark as paid
               </li>
+              {["sent", "overdue", "viewed"].includes(invoice?.status) && (
+                <li
+                  className="flex cursor-pointer items-center py-2 px-5 text-sm text-miru-han-purple-1000 hover:bg-miru-gray-100 lg:py-1 xl:py-2"
+                  onClick={() => {
+                    setShowMoreOptions(false);
+                    setShowWavieDialog(true);
+                  }}
+                >
+                  <img
+                    className="mr-4"
+                    height="16px"
+                    src={WaiveSVG}
+                    width="16px"
+                  />
+                  Waive Off
+                </li>
+              )}
               {invoice?.status === "overdue" && (
                 <li
                   className="flex cursor-pointer items-center py-2 px-5 text-sm text-miru-han-purple-1000 hover:bg-miru-gray-100 lg:py-1 xl:py-2"
