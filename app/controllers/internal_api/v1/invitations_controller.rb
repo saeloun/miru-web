@@ -19,6 +19,7 @@ class InternalApi::V1::InvitationsController < InternalApi::V1::ApplicationContr
   def destroy
     authorize @invitation
 
+    @invitation.mark_as_deleted
     @invitation.destroy!
     render json: { notice: I18n.t("invitation.delete.success.message") }, status: :ok
   end
