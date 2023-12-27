@@ -4,42 +4,43 @@ import dayjs from "dayjs";
 import { DeleteIcon, CalendarIcon } from "miruIcons";
 import { Button } from "StyledComponents";
 
-import CustomDatePicker from "common/CustomDatePicker";
 import { CustomInputText } from "common/CustomInputText";
 import CustomReactSelect from "common/CustomReactSelect";
 import CustomToggle from "common/CustomToggle";
+import SingleYearDatePicker from "common/CustomYearPicker/SingleYearDatePicker";
 import { Divider } from "common/Divider";
-import { repetitionType } from "constants/leaveType";
+import { allocationFrequency } from "constants/leaveType";
 
 import Header from "./Header";
 import { customStyles } from "./utils";
 
 const EditHolidays = ({
-  setShowDatePicker,
-  holidayList,
-  showDatePicker,
-  handleDatePicker,
-  handleHolidateNameChange,
-  handleDeleteHoliday,
-  handleCheckboxClick,
-  enableOptionalHolidays,
-  totalOptionalHolidays,
-  handleChangeTotalOpHoliday,
-  handleAddHoliday,
-  optionalRepetitionType,
-  optionalHolidaysList,
-  optionalWrapperRef,
-  handleChangeRepetitionOpHoliday,
-  setShowOptionalDatePicker,
-  showOptionalDatePicker,
-  wrapperRef,
-  setEnableOptionalHolidays,
   isDesktop,
-  handleCancelAction,
-  updateHolidayDetails,
+  dateFormat,
   currentYear,
   setCurrentYear,
+  enableOptionalHolidays,
+  setEnableOptionalHolidays,
+  holidayList,
+  optionalHolidaysList,
+  totalOptionalHolidays,
   isDisableUpdateBtn,
+  optionalRepetitionType,
+  wrapperRef,
+  optionalWrapperRef,
+  showDatePicker,
+  setShowDatePicker,
+  showOptionalDatePicker,
+  setShowOptionalDatePicker,
+  handleAddHoliday,
+  handleCancelAction,
+  handleChangeRepetitionOpHoliday,
+  handleChangeTotalOpHoliday,
+  handleCheckboxClick,
+  handleDatePicker,
+  handleDeleteHoliday,
+  handleHolidateNameChange,
+  updateHolidayDetails,
 }) => (
   <>
     <Header
@@ -61,7 +62,7 @@ const EditHolidays = ({
               holidayList.map((holiday, index) => (
                 <div className="mb-4 flex flex-row" key={index}>
                   <div className="flex w-11/12 flex-row py-2">
-                    <div className="relative w-1/2" ref={wrapperRef}>
+                    <div className="relative w-1/2">
                       <div
                         onClick={() => {
                           setShowDatePicker({
@@ -78,10 +79,7 @@ const EditHolidays = ({
                           labelClassName="cursor-pointer"
                           name={`Date_${index}`}
                           type="text"
-                          value={
-                            holiday.date &&
-                            dayjs(holiday.date).format("DD.MM.YYYY")
-                          }
+                          value={holiday.date}
                         />
                         <CalendarIcon
                           className="absolute top-2 right-2 m-2"
@@ -91,11 +89,14 @@ const EditHolidays = ({
                       </div>
                       {index == showDatePicker.index &&
                         showDatePicker.visibility && (
-                          <CustomDatePicker
-                            date={holiday.date ? holiday.date : dayjs()}
+                          <SingleYearDatePicker
+                            dateFormat={dateFormat}
+                            selectedYear={currentYear}
                             setVisibility={showDatePicker.visibility}
-                            showYearDropdown={false}
                             wrapperRef={wrapperRef}
+                            date={
+                              holiday.date || dayjs().set("year", currentYear)
+                            }
                             handleChange={e =>
                               handleDatePicker(e, index, false)
                             }
@@ -178,10 +179,10 @@ const EditHolidays = ({
                 <div className="w-1/2 px-2">
                   <CustomReactSelect
                     handleOnChange={handleChangeRepetitionOpHoliday}
-                    id="repetitionType"
+                    id="allocationFrequency"
                     label=""
-                    name="repetitionType"
-                    options={repetitionType}
+                    name="allocationFrequency"
+                    options={allocationFrequency}
                     styles={customStyles}
                     wrapperClassName="h-12"
                     components={{
@@ -189,10 +190,10 @@ const EditHolidays = ({
                     }}
                     value={
                       optionalRepetitionType
-                        ? repetitionType.filter(
+                        ? allocationFrequency.filter(
                             option => option.value === optionalRepetitionType
                           )
-                        : repetitionType[0]
+                        : allocationFrequency[0]
                     }
                   />
                 </div>
@@ -205,10 +206,7 @@ const EditHolidays = ({
                   optionalHolidaysList.map((optionalHoliday, index) => (
                     <div className="flex flex-row" key={index}>
                       <div className="flex w-11/12 flex-row py-3">
-                        <div
-                          className="relative w-1/2"
-                          ref={optionalWrapperRef}
-                        >
+                        <div className="relative w-1/2">
                           <div
                             onClick={() =>
                               setShowOptionalDatePicker({
@@ -225,10 +223,7 @@ const EditHolidays = ({
                               labelClassName="cursor-pointer"
                               name={`op_holiday_date_picker_${index}`}
                               type="text"
-                              value={
-                                optionalHoliday.date &&
-                                dayjs(optionalHoliday.date).format("DD.MM.YYYY")
-                              }
+                              value={optionalHoliday.date}
                             />
                             <CalendarIcon
                               className="absolute top-2 right-2 m-2"
@@ -238,10 +233,14 @@ const EditHolidays = ({
                           </div>
                           {index == showOptionalDatePicker.index &&
                             showOptionalDatePicker.visibility && (
-                              <CustomDatePicker
-                                date={optionalHoliday.date || dayjs()}
-                                showYearDropdown={false}
+                              <SingleYearDatePicker
+                                dateFormat={dateFormat}
+                                selectedYear={currentYear}
                                 wrapperRef={optionalWrapperRef}
+                                date={
+                                  optionalHoliday.date ||
+                                  dayjs().set("year", currentYear)
+                                }
                                 handleChange={e =>
                                   handleDatePicker(e, index, true)
                                 }

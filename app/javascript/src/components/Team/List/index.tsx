@@ -1,8 +1,11 @@
 import React, { Fragment, useEffect, useState } from "react";
 
+import Logger from "js-logger";
+import { Pagination } from "StyledComponents";
+
 import teamApi from "apis/team";
+import Loader from "common/Loader/index";
 import withLayout from "common/Mobile/HOC/withLayout";
-import Pagination from "common/Pagination/Pagination";
 import { TeamModalType } from "constants/index";
 import { ListContext } from "context/TeamContext";
 import { useUserContext } from "context/UserContext";
@@ -17,6 +20,7 @@ const TeamList = () => {
   const [teamList, setTeamList] = useState([]);
   const [modal, setModal] = useState("");
   const [modalUser, setModalUser] = useState({});
+  const [loading, setLoading] = useState<boolean>(false);
   const [pagy, setPagy] = useState<any>(null);
 
   const { isDesktop } = useUserContext();
@@ -29,12 +33,19 @@ const TeamList = () => {
   };
 
   const getTeamList = async () => {
-    const response = await teamApi.get();
-    if (response.status === 200) {
-      const sanitized = unmapList(response);
-      const pagyData = unmapPagyData(response);
-      setTeamList(sanitized);
-      setPagy(pagyData);
+    setLoading(true);
+    try {
+      const response = await teamApi.get();
+      if (response.status === 200) {
+        const sanitized = unmapList(response);
+        const pagyData = unmapPagyData(response);
+        setTeamList(sanitized);
+        setPagy(pagyData);
+      }
+      setLoading(false);
+    } catch (e) {
+      Logger.error(e);
+      setLoading(false);
     }
   };
 
@@ -56,6 +67,31 @@ const TeamList = () => {
     }
   };
 
+  const isFirstPage = () => {
+    if (typeof pagy?.first == "boolean") {
+      return pagy?.first;
+    }
+
+    return pagy?.page == 1;
+  };
+
+  const isLastPage = () => {
+    if (typeof pagy?.last == "boolean") {
+      return pagy?.last;
+    }
+
+    return pagy?.last == pagy?.page;
+  };
+
+  const handleClickOnPerPage = e => {
+    handlePageChange(Number(1), Number(e.target.value));
+    setPagy({ ...pagy, items: Number(e.target.value) });
+  };
+
+  if (loading) {
+    return <Loader />;
+  }
+
   const TeamLayout = () => (
     <ListContext.Provider
       value={{
@@ -74,12 +110,17 @@ const TeamList = () => {
               </div>
             </div>
             <Pagination
-              isTeamPage
+              isPerPageVisible
+              currentPage={pagy?.page}
               handleClick={handlePageChange}
-              pagy={pagy}
-              params={pagy}
-              setParams={setPagy}
+              handleClickOnPerPage={handleClickOnPerPage}
+              isFirstPage={isFirstPage()}
+              isLastPage={isLastPage()}
+              itemsPerPage={pagy?.items}
+              nextPage={pagy?.next}
+              prevPage={pagy?.prev}
               title="users/page"
+              totalPages={pagy?.pages}
             />
           </div>
         </Fragment>

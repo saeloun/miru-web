@@ -18,6 +18,9 @@ namespace :internal_api, defaults: { format: "json" } do
         get "invoices", to: "clients/invoices#index"
         get "invoices/:id", to: "clients/invoices#show", as: "invoice"
       end
+
+      resources :client_members, only: [:index, :update, :destroy]
+
       member do
         post :send_payment_reminder
       end
@@ -107,8 +110,13 @@ namespace :internal_api, defaults: { format: "json" } do
     get "payments/settings", to: "payment_settings#index"
     post "payments/settings/stripe/connect", to: "payment_settings#connect_stripe"
     delete "payments/settings/stripe/disconnect", to: "payment_settings#destroy"
+    get "calendars/redirect", to: "calendars#redirect", as: "redirect"
+    get "calendars/callback", to: "calendars#callback", as: "callback"
+    get "calendars/calendars", to: "calendars#calendars", as: "calendars"
+    get "calendars/events/:calendar_id", to: "calendars#events", as: "events", calendar_id: /[^\/]+/
 
     resources :payments, only: [:new, :create, :index]
+    resources :holidays, only: [:update, :index], param: :year
 
     namespace :payments do
       resources :providers, only: [:index, :update]
@@ -131,6 +139,14 @@ namespace :internal_api, defaults: { format: "json" } do
     resources :expense_categories, only: [:create]
     resources :expenses, only: [:create, :index, :show]
     resources :bulk_previous_employments, only: [:update]
+
+    resources :leaves, as: "leave" do
+      resources :leave_types
+    end
+
+    resources :timeoff_entries, except: [:new, :edit]
+
+    patch "leave_with_leave_type/:year", to: "leave_with_leave_types#update", as: :update_leave_with_leave_types
 
     match "*path", to: "application#not_found", via: :all, constraints: lambda { |req|
       req.path.exclude?("rails/active_storage") && req.path.include?("internal_api")

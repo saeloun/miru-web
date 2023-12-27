@@ -2,7 +2,6 @@ import React, { useState } from "react";
 
 import { getYear } from "date-fns";
 
-import AutoSearch from "common/AutoSearch";
 import CustomYearPicker from "common/CustomYearPicker";
 
 const Header = () => {
@@ -15,11 +14,6 @@ const Header = () => {
       <span className="hidden text-3xl font-bold text-miru-dark-purple-1000 lg:inline">
         Leave Management
       </span>
-      <AutoSearch
-        SearchDataRow={() => null}
-        searchAction={() => null}
-        wrapperClassName="mr-2 lg:mr-0"
-      />
       <CustomYearPicker
         currentYear={currentYear}
         setCurrentYear={setCurrentYear}

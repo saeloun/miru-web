@@ -4,19 +4,20 @@
 #
 # Table name: invitations
 #
-#  id              :bigint           not null, primary key
-#  accepted_at     :datetime
-#  expired_at      :datetime
-#  first_name      :string
-#  last_name       :string
-#  recipient_email :string           not null
-#  role            :integer          default("owner"), not null
-#  token           :string           not null
-#  created_at      :datetime         not null
-#  updated_at      :datetime         not null
-#  client_id       :bigint
-#  company_id      :bigint           not null
-#  sender_id       :bigint           not null
+#  id               :bigint           not null, primary key
+#  accepted_at      :datetime
+#  expired_at       :datetime
+#  first_name       :string
+#  last_name        :string
+#  recipient_email  :string           not null
+#  role             :integer          default("owner"), not null
+#  token            :string           not null
+#  virtual_verified :boolean          default(FALSE)
+#  created_at       :datetime         not null
+#  updated_at       :datetime         not null
+#  client_id        :bigint
+#  company_id       :bigint           not null
+#  sender_id        :bigint           not null
 #
 # Indexes
 #
@@ -47,7 +48,7 @@ class Invitation < ApplicationRecord
   belongs_to :sender, class_name: "User"
 
   # Validations
-  validates :recipient_email, :role, :token, :expired_at, presence: true
+  validates :recipient_email, :role, :token, presence: true
   validates :recipient_email, format: { with: Devise.email_regexp }
   validates_uniqueness_of :token
   validates_uniqueness_of :recipient_email, on: :create, if: -> { user_invitation_present? }
@@ -66,6 +67,9 @@ class Invitation < ApplicationRecord
   before_validation :set_token, on: :create
   before_validation :set_expired_at, on: :create
   after_create_commit :send_invitation_mail
+
+  searchkick filterable: [:first_name, :last_name, :recipient_email],
+    word_middle: [:first_name, :last_name, :recipient_email]
 
   def full_name
     "#{first_name} #{last_name}"

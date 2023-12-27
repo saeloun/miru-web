@@ -16,9 +16,7 @@ const Header = ({
   showYearPicker = false,
 }: Iprops) => {
   const navigate = useNavigate();
-  const [currentYear, setCurrentYear] = useState<number>(
-    getYear(new Date()) + 1
-  );
+  const [currentYear, setCurrentYear] = useState<number>(getYear(new Date()));
 
   return (
     <>
@@ -65,7 +63,7 @@ const Header = ({
           <button
             className="outline-none border-none bg-transparent font-manrope font-bold capitalize text-miru-han-purple-1000"
             onClick={() => {
-              navigate("/profile/edit/option");
+              navigate("/settings/organization");
             }}
           >
             <XIcon color="#fff" size={16} />

@@ -1,7 +1,6 @@
 import React from "react";
 
 import classNames from "classnames";
-import { getYear } from "date-fns";
 import { CaretCircleLeftIcon, CaretCircleRightIcon } from "miruIcons";
 
 type customYearPickerProps = {
@@ -31,7 +30,7 @@ const CustomYearPicker = ({
     return ans;
   };
 
-  const years = range(1920, getYear(new Date()) + 1);
+  const years = range(1920, currentYear + 1);
 
   const handleOnChange = selected => {
     const current = parseInt(selected);
@@ -54,14 +53,9 @@ const CustomYearPicker = ({
       {currentYear && (
         <select
           className={classNames(defaultYearClassName, yearClassName)}
+          value={currentYear}
           onChange={e => handleOnChange(e.target.value)}
         >
-          <option
-            className="text-base font-medium text-white"
-            value={currentYear}
-          >
-            {currentYear}
-          </option>
           {years.map((year, index) => (
             <option
               className="text-base font-medium text-white"

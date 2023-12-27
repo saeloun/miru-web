@@ -118,6 +118,10 @@
     background-color: transparent;
     background-color: #FFFFFF;
   }
+  .react-datepicker__day--selected {
+    color: #FFFFFF;
+    background-color: #5B34EA !important;
+  }
   .react-datepicker__day {
     font-size: 12px;
     line-height: 16px;

@@ -97,7 +97,7 @@ const MultipleEntriesModal = ({
   const handleFilterParams = () => {
     let filterQueryParams = "";
 
-    filterQueryParams += `client_id=${selectedClient.value}`;
+    filterQueryParams += `client_id=${selectedClient.id}`;
 
     selectedOption.forEach(entry => {
       if (!entry._destroy) {

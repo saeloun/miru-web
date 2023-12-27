@@ -9,13 +9,14 @@ import TableRow from "./TableRow";
 import HolidayModal from "../HolidaysModal";
 
 const Details = ({
-  toggleCalendarModal,
-  optionalHolidayList,
-  holidaysList,
-  showCalendar,
-  editAction,
   currentYear,
   setCurrentYear,
+  dateFormat,
+  editAction,
+  holidaysList,
+  optionalHolidayList,
+  showCalendar,
+  toggleCalendarModal,
 }) => {
   const CalendarButton = ({ result, date, className }) => (
     <button
@@ -29,13 +30,23 @@ const Details = ({
   );
 
   const tileContent = ({ date }) => {
-    let result;
-    if (
-      (result = holidaysList?.find(
-        o => o.date === dayjs(date).format("DD-MM-YYYY")
-      ))
-    ) {
-      return <CalendarButton className="holiday" date={date} result={result} />;
+    const presentDate = dayjs(date).format(dateFormat);
+    const isHoliday = holidaysList?.find(
+      holiday => holiday.date === presentDate
+    );
+
+    const isOptionalHoliday = optionalHolidayList?.find(
+      holiday => holiday.date === presentDate
+    );
+
+    if (isHoliday || isOptionalHoliday) {
+      return (
+        <CalendarButton
+          className={isHoliday ? "holiday" : "optional-holiday"}
+          date={date}
+          result={isHoliday || isOptionalHoliday}
+        />
+      );
     }
 
     return <button>{date.getDate()}</button>;
@@ -104,6 +115,8 @@ const Details = ({
       </div>
       {showCalendar && (
         <HolidayModal
+          currentYear={currentYear}
+          setCurrentYear={setCurrentYear}
           showCalendar={showCalendar}
           tileContent={tileContent}
           toggleCalendarModal={toggleCalendarModal}

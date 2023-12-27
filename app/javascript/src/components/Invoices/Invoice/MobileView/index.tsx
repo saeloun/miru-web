@@ -71,9 +71,10 @@ const MobileView = ({
 
   return (
     <div className="h-full">
-      <div className="sticky top-0 left-0 right-0 z-50 flex h-12 items-center bg-white px-4 shadow-c1">
+      <div className="sticky top-0 left-0 right-0 z-50 flex h-12 items-center justify-between bg-white px-4 shadow-c1">
         <div className="flex items-center">
           <Button
+            className="xsm:p-0"
             style="ternary"
             onClick={() => {
               navigate("/invoices");
@@ -170,12 +171,12 @@ const MobileView = ({
                 Send to
               </span>
             </Button>
-            <Button onClick={() => setShowMoreOptions(true)}>
-              <DotsThreeVerticalIcon
-                className="ml-4 text-miru-han-purple-1000"
-                size={20}
-                weight="bold"
-              />
+            <Button
+              className="ml-4"
+              style="ternary"
+              onClick={() => setShowMoreOptions(true)}
+            >
+              <DotsThreeVerticalIcon size={20} weight="bold" />
             </Button>
           </div>
           {showMoreOptions && (

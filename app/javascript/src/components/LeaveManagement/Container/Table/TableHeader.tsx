@@ -16,22 +16,10 @@ const TableHeader = () => (
         DESCRIPTION
       </th>
       <th
-        className="hidden pr-8 text-left text-xs font-normal tracking-widest text-miru-dark-purple-600 lg:table-cell lg:w-2/12"
-        scope="col"
-      >
-        STATUS
-      </th>
-      <th
         className="hidden pl-8 text-right text-xs font-normal tracking-widest text-miru-dark-purple-600 lg:table-cell lg:w-3/12"
         scope="col"
       >
         HOURS
-      </th>
-      <th
-        className="table-cell w-1/3 pl-8 text-right text-xs font-normal tracking-widest text-miru-dark-purple-600 lg:hidden"
-        scope="col"
-      >
-        Hours/ <br /> Status
       </th>
     </tr>
   </thead>

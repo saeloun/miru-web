@@ -7,6 +7,8 @@ import { Toastr } from "StyledComponents";
 import companiesApi from "apis/companies";
 import invoicesApi from "apis/invoices";
 import PaymentsProviders from "apis/payments/providers";
+import Loader from "common/Loader/index";
+import { ApiStatus as InvoiceStatus } from "constants/index";
 import { useUserContext } from "context/UserContext";
 import { mapGenerateInvoice, unmapGenerateInvoice } from "mapper/mappedIndex";
 import { sendGAPageView } from "utils/googleAnalytics";
@@ -22,8 +24,10 @@ import ConnectPaymentGateway from "../popups/ConnectPaymentGateway";
 
 const GenerateInvoices = () => {
   const navigate = useNavigate();
+  const [status, setStatus] = useState<InvoiceStatus>(InvoiceStatus.IDLE);
   const [invoiceDetails, setInvoiceDetails] = useState<any>();
   const [lineItems, setLineItems] = useState<any>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [selectedClient, setSelectedClient] = useState<any>();
   const [invoiceNumber, setInvoiceNumber] = useState<any>("");
   const [reference, setReference] = useState<string>("");
@@ -57,11 +61,14 @@ const GenerateInvoices = () => {
   const fetchCompanyDetails = async () => {
     // here we are fetching the company and client list
     try {
+      setIsLoading(true);
       const res = await companiesApi.index();
       const sanitzed = await unmapGenerateInvoice(res.data);
       setInvoiceDetails(sanitzed);
+      setIsLoading(false);
     } catch {
       navigate("invoices/error");
+      setIsLoading(false);
     }
   };
 
@@ -155,6 +162,37 @@ const GenerateInvoices = () => {
     }
   };
 
+  const submitSaveSendInvoice = async (e, invoiceEmail) => {
+    e.preventDefault();
+    try {
+      setStatus(InvoiceStatus.LOADING);
+      const res = await handleSaveSendInvoice();
+      if (res.status === 200) {
+        submitSendInvoice(res.data.id, invoiceEmail);
+      } else {
+        Toastr.error("Send invoice failed");
+        setStatus(InvoiceStatus.ERROR);
+      }
+    } catch {
+      setStatus(InvoiceStatus.ERROR);
+    }
+  };
+
+  const submitSendInvoice = async (invoiceId, invoiceEmail) => {
+    try {
+      const payload = { invoice_email: invoiceEmail };
+      const resp = await invoicesApi.sendInvoice(invoiceId, payload);
+      Toastr.success(resp.data.message);
+      setStatus(InvoiceStatus.SUCCESS);
+    } catch {
+      setStatus(InvoiceStatus.ERROR);
+    }
+  };
+
+  if (isLoading) {
+    return <Loader />;
+  }
+
   if (invoiceDetails && isDesktop) {
     return (
       <Fragment>
@@ -202,9 +240,10 @@ const GenerateInvoices = () => {
         )}
         {showSendInvoiceModal && (
           <SendInvoice
-            handleSaveSendInvoice={handleSaveSendInvoice}
+            handleSubmit={submitSaveSendInvoice}
             isSending={showSendInvoiceModal}
             setIsSending={setShowSendInvoiceModal}
+            status={status}
             invoice={{
               id: invoiceId,
               client: selectedClient,

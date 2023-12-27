@@ -297,7 +297,8 @@ const StaticPage = ({
             ))}
           <div className="flex items-center justify-between">
             <Button
-              className="ml-2 w-full rounded border border-dashed  border-miru-dark-purple-200 bg-white py-3 text-center text-base font-bold tracking-widest text-miru-dark-purple-200"
+              className="ml-2 w-full py-3"
+              style="dashed"
               onClick={handleAddPastEmployment}
             >
               + Add Past Employment

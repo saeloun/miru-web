@@ -16,7 +16,7 @@ RSpec.describe TeamPresenter do
 
   describe "index_data" do
     before do
-      @data = TeamPresenter.new(Employment.all, Invitation.all, user, company).index_data
+      @data = TeamPresenter.new(User.where(id: [user.id, user2.id]), Invitation.all, user, company).index_data
     end
 
     it "returns required data of team members" do

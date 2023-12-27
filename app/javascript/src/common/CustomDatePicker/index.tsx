@@ -13,7 +13,6 @@ type CustomDatePickerProps = {
   setVisibility?: any;
   wrapperRef?: any;
   dateFormat?: any;
-  showYearDropdown?: boolean;
 };
 
 const CustomDatePicker = ({
@@ -22,7 +21,6 @@ const CustomDatePicker = ({
   setVisibility,
   wrapperRef,
   dateFormat,
-  showYearDropdown,
 }: CustomDatePickerProps) => {
   const range = (start, end) => {
     const ans = [];
@@ -89,18 +87,16 @@ const CustomDatePicker = ({
                 </option>
               ))}
             </select>
-            {showYearDropdown && (
-              <select
-                value={getYear(date)}
-                onChange={({ target: { value } }) => changeYear(value)}
-              >
-                {years.map(option => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </select>
-            )}
+            <select
+              value={getYear(date)}
+              onChange={({ target: { value } }) => changeYear(value)}
+            >
+              {years.map(option => (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
           </div>
           <button disabled={nextMonthButtonDisabled} onClick={increaseMonth}>
             <CaretCircleRightIcon color="#5b34ea" size={16} />
@@ -110,10 +106,6 @@ const CustomDatePicker = ({
       onChange={newDate => handleChange(formatDate(newDate))}
     />
   );
-};
-
-CustomDatePicker.defaultProps = {
-  showYearDropdown: true,
 };
 
 export default CustomDatePicker;

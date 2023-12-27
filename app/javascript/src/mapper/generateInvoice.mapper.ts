@@ -22,8 +22,8 @@ interface CompanyDetails {
 const getClientList = (clientList: Array<GenerateInvoiceClientList>) =>
   clientList.map(client => ({
     address: client.address,
-    value: client.id,
-    label: client.name,
+    id: client.id,
+    name: client.name,
     phone: client.phone_number,
     previousInvoiceNumber: client.previousInvoiceNumber,
     clientMembersEmails: client.client_members,
@@ -42,7 +42,7 @@ const unmapGenerateInvoice = input => {
 };
 
 const mapGenerateInvoice = input => ({
-  client_id: input.selectedClient.value,
+  client_id: input.selectedClient.id,
   invoice_number: input.invoiceNumber,
   reference: input.reference,
   issue_date:

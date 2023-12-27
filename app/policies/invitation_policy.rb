@@ -18,6 +18,6 @@ class InvitationPolicy < ApplicationPolicy
   end
 
   def permitted_attributes
-    [:first_name, :last_name, :recipient_email, :role]
+    [:first_name, :last_name, :recipient_email, :role, :virtual_verified]
   end
 end

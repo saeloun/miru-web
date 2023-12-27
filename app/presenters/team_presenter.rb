@@ -20,19 +20,18 @@ class TeamPresenter
   private
 
     def formatted_team
-      team.map do |company_user|
-          member = company_user.user
+      team.map do |user|
           {
-            id: member.id,
-            first_name: member.first_name,
-            last_name: member.last_name,
-            name: member.full_name,
-            email: member.email,
-            role: member.primary_role(current_company),
-            status: team_member_status(member),
+            id: user.id,
+            first_name: user.first_name,
+            last_name: user.last_name,
+            name: user.full_name,
+            email: user.email,
+            role: user.primary_role(current_company),
+            status: team_member_status(user),
             is_team_member: true,
             data_type: "Team",
-            member:
+            member: user
           }
         end
     end
