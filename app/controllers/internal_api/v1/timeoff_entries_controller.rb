@@ -5,6 +5,18 @@ class InternalApi::V1::TimeoffEntriesController < InternalApi::V1::ApplicationCo
   before_action :load_leave_type!, only: [:create, :update]
   before_action :load_timeoff_entry!, only: [:update, :destroy]
 
+  def index
+    authorize TimeoffEntry
+    data = TimeoffEntries::IndexService.new(params, current_company, current_user).process
+
+    render :index, locals: {
+      timeoff_entries: data[:timeoff_entries],
+      employees: data[:employees],
+      leave_balance: data[:leave_balance],
+      total_timeoff_entries_duration: data[:total_timeoff_entries_duration]
+    }, status: :ok
+  end
+
   def create
     authorize TimeoffEntry
 

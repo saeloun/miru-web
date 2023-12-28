@@ -1,0 +1,119 @@
+# frozen_string_literal: true
+
+module TimeoffEntries
+  class IndexService < ApplicationService
+    attr_reader :params, :current_company, :current_user
+    attr_accessor :total_timeoff_entries_duration
+
+    def initialize(params, current_company, current_user)
+      @params = params
+      @current_company = current_company
+      @current_user = current_user
+      @total_timeoff_entries_duration = 0
+    end
+
+    def process
+      {
+        timeoff_entries:,
+        employees:,
+        leave_balance:,
+        total_timeoff_entries_duration:
+      }
+    end
+
+    private
+
+      def timeoff_entries
+        @_timeoff_entries ||= current_company.timeoff_entries.includes([:leave_type])
+          .where(user_id: params[:user_id] || current_user.id)
+          .order(leave_date: :desc)
+      end
+
+      def employees
+        @_employees ||= is_admin? ? current_company_users : [current_user]
+      end
+
+      def current_company_users
+        current_company.users.with_kept_employments.select(:id, :first_name, :last_name)
+      end
+
+      def is_admin?
+        current_user.has_role?(:owner, current_company) || current_user.has_role?(:admin, current_company)
+      end
+
+      def leave_balance
+        leave_balance = []
+
+        leave = current_company.leaves.find_by(year: params[:year])
+
+        leave.leave_types.all.each do |leave_type|
+          total_leave_type_days = calculate_total_duration(leave_type)
+
+          timeoff_entries_duration = leave_type.timeoff_entries.where(user_id: params[:user_id]).sum(:duration)
+
+          net_duration = (total_leave_type_days * 8 * 60) - timeoff_entries_duration
+
+          @total_timeoff_entries_duration += timeoff_entries_duration
+
+          summary_object = {
+            id: leave_type.id,
+            name: leave_type.name,
+            icon: leave_type.icon,
+            color: leave_type.color,
+            total_leave_type_days:,
+            timeoff_entries_duration:,
+            net_duration:,
+            net_days: net_duration / 60 / 8
+          }
+
+          leave_balance << summary_object
+        end
+
+        leave_balance
+      end
+
+      def calculate_total_duration(leave_type)
+        allocation_value = leave_type.allocation_value
+        allocation_period = leave_type.allocation_period
+        allocation_frequency = leave_type.allocation_frequency
+
+        hours_per_day = 8
+        days_per_week = 5
+        weeks_per_month = 4
+        months_per_quarter = 3
+        quarters_per_year = 4
+        months_per_year = 12
+
+        total_duration = case allocation_frequency.to_sym
+                         when :per_week
+                           allocation_value * weeks_per_month * months_per_year
+                         when :per_month
+                           case allocation_period.to_sym
+                           when :days
+                             allocation_value * months_per_year
+                           when :weeks
+                             allocation_value * days_per_week * months_per_year
+                           end
+                         when :per_quarter
+                           case allocation_period.to_sym
+                           when :days
+                             allocation_value * quarters_per_year
+                           when :weeks
+                             allocation_value * days_per_week * quarters_per_year
+                           end
+                         when :per_year
+                           case allocation_period.to_sym
+                           when :days
+                             allocation_value
+                           when :weeks
+                             allocation_value * days_per_week
+                           when :months
+                             allocation_value * days_per_week * weeks_per_month
+                           end
+                         else
+                           0
+        end
+        total_duration
+        end
+  end
+end
