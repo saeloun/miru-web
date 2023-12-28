@@ -2,6 +2,7 @@ import React from "react";
 
 import {
   ClientsIcon as BuildingsIcon,
+  CalendarIcon,
   PaymentsIcon,
   UserIcon,
   MobileIcon,
@@ -46,12 +47,12 @@ export const companySettingsList = [
     icon: <PaymentsIcon className="mr-2" size={20} weight="bold" />,
     authorisedRoles: [ADMIN, OWNER],
   },
-  // {
-  //   label: "LEAVES",
-  //   link: "/settings/leaves",
-  //   icon: <CalendarIcon className="mr-2" size={20} weight="bold" />,
-  //   authorisedRoles: [ADMIN, OWNER],
-  // },
+  {
+    label: "LEAVES",
+    link: "/settings/leaves",
+    icon: <CalendarIcon className="mr-2" size={20} weight="bold" />,
+    authorisedRoles: [ADMIN, OWNER],
+  },
   // {
   //   label: "HOLIDAYS",
   //   link: "/settings/holidays",

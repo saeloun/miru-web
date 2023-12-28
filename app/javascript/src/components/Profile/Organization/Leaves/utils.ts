@@ -1,9 +1,9 @@
 import { leaveColors, leaveIcons } from "constants/leaveType";
 
-const generateLeaveColor = name =>
+export const generateLeaveColor = name =>
   leaveColors.find(colorObj => colorObj.label === name);
 
-const generateLeaveIcon = name =>
+export const generateLeaveIcon = name =>
   leaveIcons.find(iconObj => iconObj.value === name);
 
 export const generatePayload = leaves =>
