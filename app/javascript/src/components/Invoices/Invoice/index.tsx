@@ -7,6 +7,7 @@ import { Button, Toastr } from "StyledComponents";
 import invoicesApi from "apis/invoices";
 import PaymentsProviders from "apis/payments/providers";
 import Loader from "common/Loader/index";
+import SendInvoice from "components/Invoices/common/InvoiceForm/SendInvoice";
 import { ApiStatus as InvoiceStatus } from "constants/index";
 import { useUserContext } from "context/UserContext";
 import { sendGAPageView } from "utils/googleAnalytics";
@@ -19,13 +20,15 @@ import ViewHistory from "./ViewHistory";
 import SendInvoiceContainer from "../Generate/MobileView/Container/SendInvoiceContainer";
 import ConnectPaymentGateway from "../popups/ConnectPaymentGateway";
 import DeleteInvoice from "../popups/DeleteInvoice";
-import SendInvoice from "../popups/SendInvoice";
 import WavieOffInvoice from "../popups/WavieOffInvoice";
 
 const Invoice = () => {
   const params = useParams();
 
   const [status, setStatus] = useState<InvoiceStatus>(InvoiceStatus.IDLE);
+  const [sendStatus, setSendStatus] = useState<InvoiceStatus>(
+    InvoiceStatus.IDLE
+  );
   const [invoice, setInvoice] = useState<any>(null);
   const [showSendInvoiceModal, setShowSendInvoiceModal] =
     useState<boolean>(false);
@@ -71,12 +74,36 @@ const Invoice = () => {
     }
   };
 
+  const submitSendInvoice = async (e, invoiceEmail) => {
+    e.preventDefault();
+    if (invoiceEmail?.recipients.length > 0) {
+      try {
+        setSendStatus(InvoiceStatus.LOADING);
+
+        const payload = { invoice_email: invoiceEmail };
+        let resp;
+        if (isSendReminder) {
+          resp = await invoicesApi.sendReminder(invoice.id, payload);
+        } else {
+          resp = await invoicesApi.sendInvoice(invoice.id, payload);
+        }
+
+        Toastr.success(resp.data.message);
+        setSendStatus(InvoiceStatus.SUCCESS);
+        setIsSendReminder(false);
+      } catch {
+        setSendStatus(InvoiceStatus.ERROR);
+      }
+    }
+  };
+
   if (status === InvoiceStatus.LOADING) {
     return <Loader />;
   }
 
   return (
     status === InvoiceStatus.SUCCESS &&
+    // eslint-disable-next-line no-nested-ternary
     (isDesktop ? (
       <>
         <Header
@@ -98,11 +125,13 @@ const Invoice = () => {
         {!showConnectPaymentDialog &&
           (showSendInvoiceModal || isSendReminder) && (
             <SendInvoice
+              handleSubmit={submitSendInvoice}
               invoice={invoice}
               isSendReminder={isSendReminder}
               isSending={showSendInvoiceModal}
               setIsSendReminder={setIsSendReminder}
               setIsSending={setShowSendInvoiceModal}
+              status={sendStatus}
             />
           )}
         {!isStripeEnabled && showConnectPaymentDialog && (

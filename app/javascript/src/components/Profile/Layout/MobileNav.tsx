@@ -6,6 +6,7 @@ import {
   ClientsIcon as BuildingsIcon,
   UserIcon,
   PaymentsIcon,
+  ProjectsIcon,
 } from "miruIcons";
 import { Outlet, useNavigate, useParams } from "react-router-dom";
 
@@ -42,6 +43,11 @@ const getSettingsNavUrls = memberId => [
         text: "PAYMENT SETTINGS",
         icon: <PaymentsIcon size={16} />,
       },
+      {
+        url: "/settings/employment",
+        text: "EMPLOYMENT DETAILS",
+        icon: <ProjectsIcon size={16} />,
+      },
       // {
       //   url: "/settings/leaves",
       //   text: "Leaves",
@@ -61,7 +67,7 @@ const getEmployeeSettingsNavUrls = memberId => [
     groupName: "Personal",
     navItems: [
       {
-        url: "/profile/edit",
+        url: "/settings/profile",
         text: "PERSONAL DETAILS",
         icon: <UserIcon size={16} />,
       },

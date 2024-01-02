@@ -5,6 +5,7 @@ import OrgDetails from "./Organization/Details";
 import OrgEdit from "./Organization/Edit";
 import PaymentSettings from "./Organization/Payment";
 import AllocatedDevicesDetails from "./UserDetail/AllocatedDevicesDetails";
+import AllocatedDevicesEdit from "./UserDetail/AllocatedDevicesDetails/Edit";
 import UserDetailsEdit from "./UserDetail/Edit";
 import EmploymentDetails from "./UserDetail/EmploymentDetails";
 import EmploymentDetailsEdit from "./UserDetail/EmploymentDetails/Edit";
@@ -36,6 +37,11 @@ export const SETTINGS_ROUTES = [
   {
     path: "/devices",
     Component: AllocatedDevicesDetails,
+    authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE],
+  },
+  {
+    path: "/devices/edit",
+    Component: AllocatedDevicesEdit,
     authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE],
   },
   {

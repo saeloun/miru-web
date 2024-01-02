@@ -2,10 +2,9 @@ import React, { Fragment } from "react";
 
 import { minToHHMM } from "helpers";
 import { ClientsIcon } from "miruIcons";
-import { Avatar } from "StyledComponents";
+import { Avatar, Pagination } from "StyledComponents";
 
 import EmptyStates from "common/EmptyStates";
-import Pagination from "common/Pagination/Pagination";
 
 import ReportMobileRow from "./ReportMobileRow";
 
@@ -15,8 +14,6 @@ interface ContainerProps {
   selectedFilter?: any;
   paginationDetails?: any;
   handlePageClick: any;
-  params: any;
-  setParams: any;
 }
 
 const ReportHeader = () => (
@@ -43,8 +40,6 @@ export const TimeEntryReportMobileView = ({
   selectedFilter,
   paginationDetails,
   handlePageClick,
-  params,
-  setParams,
 }: ContainerProps) => {
   const { timeEntryReport } = useEntry();
 
@@ -138,11 +133,13 @@ export const TimeEntryReportMobileView = ({
         />
       )}
       <Pagination
-        isReport
+        currentPage={paginationDetails?.page}
         handleClick={handlePageClick}
-        pagy={paginationDetails}
-        params={params}
-        setParams={setParams}
+        isFirstPage={paginationDetails?.first}
+        isLastPage={paginationDetails?.last}
+        nextPage={paginationDetails?.next}
+        prevPage={paginationDetails?.prev}
+        totalPages={paginationDetails?.pages}
       />
     </div>
   );

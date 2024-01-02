@@ -9,11 +9,13 @@ import * as Yup from "yup";
 
 import teamsApi from "apis/teams";
 import Loader from "common/Loader/index";
+import { MobileDetailsHeader } from "common/Mobile/MobileDetailsHeader";
 import { useProfile } from "components/Profile/context/EntryContext";
 import { employmentSchema } from "components/Team/Details/EmploymentDetails/Edit/validationSchema";
 import { useUserContext } from "context/UserContext";
 import { employmentMapper } from "mapper/teams.mapper";
 
+import MobileEditPage from "./MobileEditPage";
 import StaticPage from "./StaticPage";
 
 import { employeeTypes } from "../helpers";
@@ -143,10 +145,7 @@ const EmploymentDetailsEdit = () => {
         current_employment: {
           ...employmentDetails.current_employment,
           ...{
-            joined_at:
-              dateFormat == "DD-MM-YYYY"
-                ? date
-                : dayjs(date).format("DD-MM-YYYY"),
+            joined_at: date,
           },
         },
       },
@@ -162,10 +161,7 @@ const EmploymentDetailsEdit = () => {
         current_employment: {
           ...employmentDetails.current_employment,
           ...{
-            resigned_at:
-              dateFormat == "DD-MM-YYYY"
-                ? date
-                : dayjs(date).format("DD-MM-YYYY"),
+            resigned_at: date,
           },
         },
       },
@@ -233,9 +229,21 @@ const EmploymentDetailsEdit = () => {
   const updateEmploymentDetails = async updatedPreviousEmployments => {
     try {
       await schema.validate(employmentDetails, { abortEarly: false });
+      const joined_at = employmentDetails.current_employment.joined_at;
+      const resigned_at = employmentDetails.current_employment.resigned_at;
       const payload = {
         ...updatedPreviousEmployments,
-        current_employment: employmentDetails.current_employment,
+        current_employment: {
+          ...employmentDetails.current_employment,
+          joined_at:
+            dateFormat == "DD-MM-YYYY"
+              ? joined_at
+              : dayjs(joined_at).format("DD-MM-YYYY"),
+          resigned_at:
+            dateFormat == "DD-MM-YYYY"
+              ? resigned_at
+              : dayjs(resigned_at).format("DD-MM-YYYY"),
+        },
       };
 
       await teamsApi.updatePreviousEmployments(user.id, {
@@ -268,9 +276,9 @@ const EmploymentDetailsEdit = () => {
     <Fragment>
       {isDesktop && (
         <Fragment>
-          <div className="flex items-center justify-between bg-miru-han-purple-1000 px-10 py-4">
+          <div className="items-center justify-between bg-miru-han-purple-1000 px-10 py-4 lg:flex">
             <h1 className="text-2xl font-bold text-white">
-              Employement Details
+              Employment Details
             </h1>
             <div>
               <button
@@ -303,6 +311,43 @@ const EmploymentDetailsEdit = () => {
               handleDORDatePicker={handleDORDatePicker}
               handleDeletePreviousEmployment={handleDeletePreviousEmployment}
               handleOnChangeEmployeeType={handleOnChangeEmployeeType}
+              joinedAt={joinedAt}
+              previousEmployments={previousEmployments}
+              resignedAt={resignedAt}
+              setShowDOJDatePicker={setShowDOJDatePicker}
+              setShowDORDatePicker={setShowDORDatePicker}
+              showDOJDatePicker={showDOJDatePicker}
+              showDORDatePicker={showDORDatePicker}
+              updateCurrentEmploymentDetails={updateCurrentEmploymentDetails}
+              updatePreviousEmploymentValues={updatePreviousEmploymentValues}
+            />
+          )}
+        </Fragment>
+      )}
+      {!isDesktop && (
+        <Fragment>
+          <MobileDetailsHeader
+            href="/settings/employment"
+            title="Employment Details"
+          />
+          {isLoading ? (
+            <Loader className="min-h-70v" />
+          ) : (
+            <MobileEditPage
+              DOJRef={DOJRef}
+              DORRef={DORRef}
+              dateFormat={dateFormat}
+              employeeType={employeeType}
+              employeeTypes={employeeTypes}
+              employmentDetails={employmentDetails}
+              errDetails={errDetails}
+              handleAddPastEmployment={handleAddPastEmployment}
+              handleCancelDetails={handleCancelDetails}
+              handleDOJDatePicker={handleDOJDatePicker}
+              handleDORDatePicker={handleDORDatePicker}
+              handleDeletePreviousEmployment={handleDeletePreviousEmployment}
+              handleOnChangeEmployeeType={handleOnChangeEmployeeType}
+              handleUpdateDetails={handleUpdateDetails}
               joinedAt={joinedAt}
               previousEmployments={previousEmployments}
               resignedAt={resignedAt}

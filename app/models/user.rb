@@ -71,6 +71,8 @@ class User < ApplicationRecord
   has_many :projects, through: :project_members
   has_many :clients, through: :projects
   has_many :client_members, dependent: :destroy
+  has_many :timeoff_entries, dependent: :destroy
+
   rolify strict: true
 
   scope :with_kept_employments, -> { merge(Employment.kept) }
@@ -102,6 +104,9 @@ class User < ApplicationRecord
   before_create :set_token
 
   after_commit :send_to_hubspot, on: :create
+
+  searchkick filterable: [:first_name, :last_name, :email],
+    word_middle: [:first_name, :last_name, :email]
 
   def prevent_spam_user_sign_up
     if self.email.include?("internetkeno")

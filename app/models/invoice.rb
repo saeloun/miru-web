@@ -174,22 +174,6 @@ class Invoice < ApplicationRecord
     Invoice.search_index.refresh
   end
 
-  def client_member_emails
-    client.client_members.kept.includes(:user).pluck("users.email")
-  end
-
-  def client_virtual_verified_emails
-    client.invitations.where(virtual_verified: true, accepted_at: nil).pluck(:recipient_email)
-  end
-
-  def send_invoice_emails(virtual_verified)
-    if virtual_verified
-      client_member_emails + client_virtual_verified_emails
-    else
-      client_member_emails
-    end
-  end
-
   private
 
     def set_external_view_key
