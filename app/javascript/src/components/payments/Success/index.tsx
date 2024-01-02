@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import { useNavigate, useParams } from "react-router-dom";
+import { Button } from "StyledComponents";
 
 import invoicesApi from "apis/invoices";
 import Loader from "common/Loader";
@@ -26,6 +27,10 @@ const Success = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const redirectToHomePage = () => {
+    navigate("/invoices");
   };
 
   useEffect(() => {
@@ -68,6 +73,12 @@ const Success = () => {
               <p className="mt-2 text-base text-gray-500">
                 We have received your payment.
               </p>
+              <Button
+                className="mt-8 text-lg font-semibold"
+                onClick={redirectToHomePage}
+              >
+                Go to HomePage
+              </Button>
             </div>
           </div>
         </main>
