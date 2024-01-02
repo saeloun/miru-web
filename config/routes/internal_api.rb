@@ -144,6 +144,8 @@ namespace :internal_api, defaults: { format: "json" } do
       resources :leave_types
     end
 
+    resources :timeoff_entries, except: [:new, :edit]
+
     patch "leave_with_leave_type/:year", to: "leave_with_leave_types#update", as: :update_leave_with_leave_types
 
     match "*path", to: "application#not_found", via: :all, constraints: lambda { |req|

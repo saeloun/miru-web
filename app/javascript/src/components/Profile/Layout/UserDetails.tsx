@@ -6,27 +6,52 @@ import { DeleteIcon, EditIcon, ImageIcon } from "miruIcons";
 import { Avatar, MobileMoreOptions, Toastr, Tooltip } from "StyledComponents";
 
 import profileApi from "apis/profile";
+import teamsApi from "apis/teams";
 import { useProfile } from "components/Profile/context/EntryContext";
 import { useUserContext } from "context/UserContext";
-import { teamsMapper } from "mapper/teams.mapper";
+import { employmentMapper, teamsMapper } from "mapper/teams.mapper";
 
 export const UserDetails = () => {
-  const { setUserState, profileSettings } = useProfile();
+  const { setUserState, profileSettings, employmentDetails } = useProfile();
   const { first_name, last_name } = profileSettings;
+  const {
+    current_employment: { designation },
+  } = employmentDetails;
+
   const [showImageUpdateOptions, setShowImageUpdateOptions] =
     useState<boolean>(false);
-  const { avatarUrl, setCurrentAvatarUrl } = useUserContext();
+  const { avatarUrl, setCurrentAvatarUrl, companyRole } = useUserContext();
   const getDetails = async () => {
     try {
       if (!first_name && !last_name) {
-        const data = await profileApi.index();
-        if (data.status && data.status == 200) {
-          const addressData = await profileApi.getAddress(data.data.user.id);
+        const userData = await profileApi.index();
+        if (userData.status && userData.status == 200) {
+          const addressData = await profileApi.getAddress(
+            userData.data.user.id
+          );
+
           const userObj = teamsMapper(
-            data.data.user,
+            userData.data.user,
             addressData.data.addresses[0]
           );
           setUserState("profileSettings", userObj);
+        }
+
+        if (companyRole !== "client" && !designation) {
+          const employmentData: any = await teamsApi.getEmploymentDetails(
+            userData.data.user.id
+          );
+
+          const previousEmploymentData = await teamsApi.getPreviousEmployments(
+            userData.data.user.id
+          );
+          if (employmentData.status && employmentData.status == 200) {
+            const employmentObj = employmentMapper(
+              employmentData?.data?.employment,
+              previousEmploymentData?.data?.previous_employments
+            );
+            setUserState("employmentDetails", employmentObj);
+          }
         }
       }
     } catch {
@@ -55,7 +80,10 @@ export const UserDetails = () => {
       validateFileSize(file);
       setCurrentAvatarUrl(URL.createObjectURL(file));
       const payload = createFormData(file);
-      await profileApi.update(payload);
+      const headers = {
+        "Content-Type": "multipart/form-data",
+      };
+      await profileApi.upadteAvatar(payload, { headers });
     } catch (error) {
       Toastr.error(error.message);
     }
@@ -104,6 +132,7 @@ export const UserDetails = () => {
                 </p>
               </label>
               <input
+                accept="image/png, image/jpeg, image/jpg"
                 className="hidden"
                 id="org-profile-image-input"
                 name="myImage"
@@ -133,6 +162,7 @@ export const UserDetails = () => {
               <span className="text-xl font-bold text-white">
                 {`${first_name} ${last_name}`}
               </span>
+              <p className="mt-1 uppercase">{designation}</p>
             </div>
           </Tooltip>
           <span className="text-xs leading-4 tracking-wider text-miru-dark-purple-1000" />

@@ -46,114 +46,55 @@ const calculateTime = (date, dateFormat, timezone) => {
 export const createData = (rawData, company) => {
   const Data = [];
 
+  const processInvoiceEvent = (action, data) => {
+    const userDisplayName = data?.userName ?? "";
+    const userEmail = data?.user?.email ?? "";
+    let message = `${userDisplayName}<${userEmail}> ${action}`;
+    const time = calculateTime(
+      data.createdAt,
+      company.date_format,
+      company.timezone
+    );
+    if (data.type == "send_invoice") {
+      const emailList = getEmailList(data.emails);
+      if (emailList) {
+        message += ` to ${emailList}`;
+      }
+      Data.push({ message, time });
+    } else {
+      Data.push({ message, time });
+    }
+  };
+
+  const getEmailList = emails =>
+    emails.map(email => `${email.toLowerCase()}`).join(" ");
+
   rawData.map(data => {
     switch (data.type) {
-      case "create_invoice": {
-        const message = `${data.userName} created invoice`;
-        const time = calculateTime(
-          data.createdAt,
-          company.date_format,
-          company.timezone
-        );
-        Data.push({ message, time });
+      case "create_invoice":
+        processInvoiceEvent("created invoice", data);
         break;
-      }
-      case "view_invoice": {
-        const message = `${data.userName} viewed invoice`;
-        const time = calculateTime(
-          data.createdAt,
-          company.date_format,
-          company.timezone
-        );
-        Data.push({ message, time });
+      case "view_invoice":
+        processInvoiceEvent("viewed invoice", data);
         break;
-      }
-      case "update_invoice": {
-        const message = `${data.userName} updated invoice`;
-        const time = calculateTime(
-          data.createdAt,
-          company.date_format,
-          company.timezone
-        );
-        Data.push({ message, time });
+      case "update_invoice":
+        processInvoiceEvent("updated invoice", data);
         break;
-      }
-      case "delete_invoice": {
-        const message = `${data.userName} deleted invoice`;
-        const time = calculateTime(
-          data.createdAt,
-          company.date_format,
-          company.timezone
-        );
-        Data.push({ message, time });
+      case "delete_invoice":
+        processInvoiceEvent("deleted invoice", data);
         break;
-      }
-      case "download_invoice": {
-        const message = `${data.userName} downloaded invoice`;
-        const time = calculateTime(
-          data.createdAt,
-          company.date_format,
-          company.timezone
-        );
-        Data.push({ message, time });
+      case "download_invoice":
+        processInvoiceEvent("downloaded invoice", data);
         break;
-      }
-      case "send_invoice": {
-        const message = `${data.userName} sent invoice`;
-        const time = calculateTime(
-          data.createdAt,
-          company.date_format,
-          company.timezone
-        );
-        Data.push({ message, time });
+      case "send_invoice":
+        processInvoiceEvent("sent invoice", data);
         break;
-      }
-      case "paid": {
-        const message = `${
-          data.name ? `${data.name}` : ""
-        } marked invoice as paid`;
-
-        const time = calculateTime(
-          data.createdAt,
-          company.date_format,
-          company.timezone
-        );
-        Data.push({ message, time });
+      case "create_payment":
+        processInvoiceEvent("marked invoice as paid manually", data);
         break;
-      }
-      case "partially_paid": {
-        const message = "Partial payment successful";
-        const time = calculateTime(
-          data.createdAt,
-          company.date_format,
-          company.timezone
-        );
-        Data.push({ message, time });
+      case "create_stripe_payment":
+        processInvoiceEvent("paid via stripe", data);
         break;
-      }
-      case "cancelled": {
-        const message = `Payment Cancelled ${
-          data.name ? `by ${data.name}` : ""
-        }`;
-
-        const time = calculateTime(
-          data.createdAt,
-          company.date_format,
-          company.timezone
-        );
-        Data.push({ message, time });
-        break;
-      }
-      case "failed": {
-        const message = "Payment Failed";
-        const time = calculateTime(
-          data.createdAt,
-          company.date_format,
-          company.timezone
-        );
-        Data.push({ message, time });
-        break;
-      }
     }
   });
 
@@ -166,7 +107,6 @@ export const getHistory = async (id, company) => {
   records.sort(
     (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
   );
-
   const rawData = records.reverse();
   const logs = createData(rawData, company);
 

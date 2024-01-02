@@ -47,6 +47,7 @@ const DeleteMember = ({ user }) => {
           {user.isTeamMember ? "Delete User" : "Delete Invite"}
         </h6>
         <Button
+          style="ternary"
           type="button"
           onClick={() => {
             setModalState(TeamModalType.NONE);

@@ -172,6 +172,18 @@ class Client < ApplicationRecord
     client_members.kept.includes(:user).pluck("users.email")
   end
 
+  def client_virtual_verified_emails
+    invitations.where(virtual_verified: true, accepted_at: nil).pluck(:recipient_email)
+  end
+
+  def send_invoice_emails(virtual_verified)
+    if virtual_verified
+      client_members_emails + client_virtual_verified_emails
+    else
+      client_members_emails
+    end
+  end
+
   private
 
     def stripe_connected_account

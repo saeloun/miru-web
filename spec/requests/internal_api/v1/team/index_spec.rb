@@ -10,6 +10,10 @@ RSpec.describe "InternalApi::V1::Team#index", type: :request do
   before do
     create(:employment, company:, user:)
     user.add_role :admin, company
+    User.search_index.refresh
+    User.reindex
+    Invitation.search_index.refresh
+    Invitation.reindex
   end
 
   context "when user is admin" do
@@ -25,10 +29,13 @@ RSpec.describe "InternalApi::V1::Team#index", type: :request do
     end
 
     it "checks if profile picture is there with each team member" do
-      expect(
-        "http://www.example.com#{json_response["combinedDetails"].first["profilePicture"]}"
-      ).to eq(url_for(user.avatar))
-      expect(json_response["combinedDetails"].last["profilePicture"]).to include("/assets/avatar")
+      first_member = json_response["combinedDetails"].first
+      last_member = json_response["combinedDetails"].last
+
+      expect(first_member["profilePicture"]).to eq(user.avatar_url) if first_member["isTeamMember"]
+      expect(first_member["profilePicture"]).to include("/assets/avatar") unless first_member["isTeamMember"]
+      expect(last_member["profilePicture"]).to eq(user.avatar_url) if last_member["isTeamMember"]
+      expect(last_member["profilePicture"]).to include("/assets/avatar") unless last_member["isTeamMember"]
     end
 
     it "checks if correct team members data is returned" do
@@ -39,17 +46,30 @@ RSpec.describe "InternalApi::V1::Team#index", type: :request do
                                    member.slice("id", "name", "email", "role", "status", "is_team_member")
                                  end
 
-      expected_team_data =
-        [{
-          "id" => user.id, "name" => user.full_name, "email" => user.email, "role" => "admin", "status" => nil
-        }]
-      expected_invited_user_data =
-        [{
-          "id" => invitation.id, "name" => invitation.full_name, "email" => invitation.recipient_email, "role" => "employee", "status" => I18n.t("team.invitation")
-        }]
+      expected_team_data = [{
+        "id" => user.id, "name" => user.full_name, "email" => user.email, "role" => "admin", "status" => nil
+      }]
+
+      expected_invited_user_data = [{
+        "id" => invitation.id, "name" => invitation.full_name, "email" => invitation.recipient_email, "role" => "employee", "status" => I18n.t("team.invitation")
+      }]
 
       expect(actual_team_data).to eq(expected_team_data)
       expect(actual_invited_user_data).to eq(expected_invited_user_data)
+    end
+
+    it "can search a user from the team" do
+      send_request :get, internal_api_v1_team_index_path(
+        q: { first_name_or_last_name_or_email_cont: user.first_name }
+      ), headers: auth_headers(user)
+
+      service_arr = [{
+        "id" => user.id, "firstName" => user.first_name, "lastName" => user.last_name, "name" => "#{user.first_name} #{user.last_name}",
+        "email" => user.email, "role" => "admin", "status" => nil, "isTeamMember" => true,
+        "profilePicture" => user.avatar_url
+      }]
+
+      expect(json_response["combinedDetails"]).to match_array(service_arr)
     end
   end
 
