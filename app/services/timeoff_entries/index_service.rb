@@ -43,31 +43,35 @@ module TimeoffEntries
         leave_balance = []
 
         leave = current_company.leaves.find_by(year: params[:year])
-        previous_year_leave = current_company.leaves.find_by(year: leave.year - 1)
 
-        leave.leave_types.all.each do |leave_type|
-          total_leave_type_days = calculate_total_duration(leave_type)
+        if leave
+          previous_year_leave = current_company.leaves.find_by(year: leave.year - 1)
 
-          timeoff_entries_duration = leave_type.timeoff_entries.where(user_id: params[:user_id]).sum(:duration)
+          leave.leave_types.all.each do |leave_type|
+            total_leave_type_days = calculate_total_duration(leave_type)
 
-          previous_year_leave_type = previous_year_leave.leave_types.find_by(name: leave_type.name)
+            timeoff_entries_duration = leave_type.timeoff_entries.where(user_id: params[:user_id]).sum(:duration)
 
-          previous_year_carryforward = calculate_previous_year_carryforward(previous_year_leave_type)
+            previous_year_leave_type = previous_year_leave &&
+              previous_year_leave.leave_types.find_by(name: leave_type.name)
 
-          net_duration = (total_leave_type_days * 8 * 60) + previous_year_carryforward - timeoff_entries_duration
+            previous_year_carryforward = calculate_previous_year_carryforward(previous_year_leave_type)
 
-          summary_object = {
-            id: leave_type.id,
-            name: leave_type.name,
-            icon: leave_type.icon,
-            color: leave_type.color,
-            total_leave_type_days:,
-            timeoff_entries_duration:,
-            net_duration:,
-            net_days: net_duration / 60 / 8
-          }
+            net_duration = (total_leave_type_days * 8 * 60) + previous_year_carryforward - timeoff_entries_duration
 
-          leave_balance << summary_object
+            summary_object = {
+              id: leave_type.id,
+              name: leave_type.name,
+              icon: leave_type.icon,
+              color: leave_type.color,
+              total_leave_type_days:,
+              timeoff_entries_duration:,
+              net_duration:,
+              net_days: net_duration / 60 / 8
+            }
+
+            leave_balance << summary_object
+          end
         end
 
         leave_balance
@@ -118,6 +122,8 @@ module TimeoffEntries
       end
 
       def calculate_previous_year_carryforward(leave_type)
+        return 0 unless leave_type
+
         total_leave_type_days = calculate_total_duration(leave_type)
 
         timeoff_entries_duration = leave_type.timeoff_entries.where(user_id: params[:user_id]).sum(:duration)
