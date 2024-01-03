@@ -3,13 +3,11 @@
 module TimeoffEntries
   class IndexService < ApplicationService
     attr_reader :params, :current_company, :current_user
-    attr_accessor :total_timeoff_entries_duration
 
     def initialize(params, current_company, current_user)
       @params = params
       @current_company = current_company
       @current_user = current_user
-      @total_timeoff_entries_duration = 0
     end
 
     def process
@@ -17,7 +15,7 @@ module TimeoffEntries
         timeoff_entries:,
         employees:,
         leave_balance:,
-        total_timeoff_entries_duration:
+        total_timeoff_entries_duration: timeoff_entries.sum(:duration)
       }
     end
 
@@ -45,15 +43,18 @@ module TimeoffEntries
         leave_balance = []
 
         leave = current_company.leaves.find_by(year: params[:year])
+        previous_year_leave = current_company.leaves.find_by(year: leave.year - 1)
 
         leave.leave_types.all.each do |leave_type|
           total_leave_type_days = calculate_total_duration(leave_type)
 
           timeoff_entries_duration = leave_type.timeoff_entries.where(user_id: params[:user_id]).sum(:duration)
 
-          net_duration = (total_leave_type_days * 8 * 60) - timeoff_entries_duration
+          previous_year_leave_type = previous_year_leave.leave_types.find_by(name: leave_type.name)
 
-          @total_timeoff_entries_duration += timeoff_entries_duration
+          previous_year_carryforward = calculate_previous_year_carryforward(previous_year_leave_type)
+
+          net_duration = (total_leave_type_days * 8 * 60) + previous_year_carryforward - timeoff_entries_duration
 
           summary_object = {
             id: leave_type.id,
@@ -114,6 +115,18 @@ module TimeoffEntries
                            0
         end
         total_duration
-        end
+      end
+
+      def calculate_previous_year_carryforward(leave_type)
+        total_leave_type_days = calculate_total_duration(leave_type)
+
+        timeoff_entries_duration = leave_type.timeoff_entries.where(user_id: params[:user_id]).sum(:duration)
+
+        net_duration = (total_leave_type_days * 8 * 60) - timeoff_entries_duration
+
+        carry_forward_duration = leave_type.carry_forward_days * 8 * 60
+
+        net_duration > carry_forward_duration ? carry_forward_duration : net_duration > 0 ? net_duration : 0
+      end
   end
 end
