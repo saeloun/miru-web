@@ -6,10 +6,10 @@ const update = (id, payload) => axios.patch(`/timeoff_entries/${id}`, payload);
 
 const destroy = id => axios.delete(`/timeoff_entries/${id}`);
 
-const clientMembersApi = {
+const timeoffEntryApi = {
   create,
   update,
   destroy,
 };
 
-export default clientMembersApi;
+export default timeoffEntryApi;
