@@ -47,6 +47,7 @@ const LeaveManagement = () => {
         setSelectedEmployeeId={setSelectedEmployeeId}
       />
       <Container
+        currentYear={currentYear}
         leaveTypes={leaveTypes}
         timeoffEntries={timeoffEntries}
         totalTimeoffEntriesDuration={totalTimeoffEntriesDuration}

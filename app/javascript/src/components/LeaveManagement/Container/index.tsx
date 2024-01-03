@@ -8,13 +8,14 @@ import LeaveBlock from "./LeaveBlock";
 import Table from "./Table";
 
 const Container = ({
+  currentYear,
   leaveTypes,
   timeoffEntries,
   totalTimeoffEntriesDuration,
 }) => (
   <div className="mx-4 my-6 h-full lg:mx-0">
     <span className="text-base font-normal text-miru-dark-purple-1000 lg:text-2xl">
-      Leave Balance Until 31st Dec 2023
+      Leave Balance Until 31st Dec {currentYear}
     </span>
     <div className="mt-6 grid w-full gap-4 lg:grid-cols-3">
       {leaveTypes.map((leaveType, index) => (
