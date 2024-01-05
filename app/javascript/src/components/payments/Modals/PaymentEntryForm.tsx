@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 
 import dayjs from "dayjs";
+import { Form, Formik, FormikProps } from "formik";
 import { currencyFormat, useOutsideClick } from "helpers";
 import { CalendarIcon, SearchIcon } from "miruIcons";
 import { useNavigate } from "react-router-dom";
@@ -19,6 +20,16 @@ import getStatusCssClass from "utils/getBadgeStatus";
 
 import { transactionTypes } from "./constants";
 import { customStyles } from "./styles";
+import { paymentEntryInitialValues } from "./utils";
+
+interface PaymentEntryFormValues {
+  invoice: any;
+  transactionDate: any;
+  amount: any;
+  transactionType: any;
+  showTransactionTypes: boolean;
+  note: any;
+}
 
 const PaymentEntryForm = ({
   invoiceList,
@@ -33,16 +44,9 @@ const PaymentEntryForm = ({
   );
   const { isDesktop } = useUserContext();
 
-  const [invoice, setInvoice] = useState<any>(null);
-  const [transactionDate, setTransactionDate] = useState<any>(dayjs());
-  const [transactionType, setTransactionType] = useState<any>(null);
-  const [amount, setAmount] = useState<any>(null);
-  const [note, setNote] = useState<any>(null);
   const [showDatePicker, setShowDatePicker] = useState<any>(false);
   const [showSelectInvoice, setShowSelectInvoice] = useState<any>(false);
   const [showSelectMenu, setShowSelectMenu] = useState(false);
-  const [showTransactionTypes, setShowTransactionTypes] =
-    useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const wrapperSelectRef = useRef(null);
@@ -50,14 +54,14 @@ const PaymentEntryForm = ({
 
   const navigate = useNavigate();
 
-  const handleSelectedInvoice = () => {
-    if (!invoiceList || invoiceList.length == 0) return;
+  const handleSelectedInvoice = setFieldValue => {
+    if (!invoiceList || invoiceList.length === 0) return;
     const selectedInvoice = invoiceList.invoiceList.find(
       invoice => invoice.value === Number(invoiceId)
     );
     if (selectedInvoice) {
-      setInvoice(selectedInvoice);
-      setAmount(selectedInvoice.amount);
+      setFieldValue("invoice", selectedInvoice);
+      setFieldValue("amount", selectedInvoice.amount);
       setShowSelectInvoice(true);
     }
   };
@@ -68,14 +72,6 @@ const PaymentEntryForm = ({
     transactionType,
     amount
   ) => invoice && transactionDate && transactionType && amount;
-
-  useEffect(() => {
-    if (invoiceId) {
-      handleSelectedInvoice();
-    } else {
-      setShowSelectInvoice(true);
-    }
-  }, [invoiceList]);
 
   useEffect(() => {
     const close = e => {
@@ -96,7 +92,14 @@ const PaymentEntryForm = ({
     setShowDatePicker({ visibility: false });
   });
 
-  const handleAddPayment = async () => {
+  const handleAddPayment = async values => {
+    const { invoice, transactionDate, transactionType, amount, note } = values;
+    if (
+      !isAddPaymentBtnActive(invoice, transactionDate, transactionType, amount)
+    ) {
+      return;
+    }
+
     try {
       const sanitized = mapPayment({
         invoice,
@@ -110,11 +113,6 @@ const PaymentEntryForm = ({
       setIsLoading(false);
       fetchPaymentList();
       fetchInvoiceList();
-      setInvoice("");
-      setTransactionDate("");
-      setTransactionType("");
-      setAmount("");
-      setNote("");
       setShowManualEntryModal(false);
       if (invoiceId) {
         navigate(`/invoices/${invoiceId}`);
@@ -130,17 +128,6 @@ const PaymentEntryForm = ({
       <SearchIcon color="#1D1A31" size={20} />
     </components.DropdownIndicator>
   );
-
-  const handleDatePicker = date => {
-    setTransactionDate(date);
-    setShowDatePicker(false);
-  };
-
-  const handleInvoiceSelect = val => {
-    setShowSelectMenu(!showSelectMenu);
-    setInvoice(val);
-    setAmount(val.amount);
-  };
 
   const handleShowSelectMenu = () => {
     setShowSelectMenu(!showSelectMenu);
@@ -185,197 +172,247 @@ const PaymentEntryForm = ({
   };
 
   return (
-    <>
-      <div className="relative mt-4">
-        <div className="field">
-          <div className="mt-1" id="invoice" ref={wrapperSelectRef}>
-            {showSelectInvoice && (
+    <Formik
+      initialValues={paymentEntryInitialValues}
+      onSubmit={async (values, { resetForm }) => {
+        await handleAddPayment(values);
+        resetForm();
+      }}
+    >
+      {(props: FormikProps<PaymentEntryFormValues>) => {
+        const { values, setFieldValue } = props;
+
+        if (invoiceId) {
+          handleSelectedInvoice(setFieldValue);
+        } else {
+          setShowSelectInvoice(true);
+        }
+
+        const setShowTransactionTypes = visibilty => {
+          setFieldValue("showTransactionTypes", visibilty);
+        };
+
+        const {
+          invoice,
+          transactionDate,
+          amount,
+          transactionType,
+          showTransactionTypes,
+          note,
+        } = values;
+
+        const isPaymentBtnActive = () =>
+          isAddPaymentBtnActive(
+            invoice,
+            transactionDate,
+            transactionType,
+            amount
+          );
+
+        return (
+          <Form>
+            <div className="relative mt-4">
+              <div className="field">
+                <div className="mt-1" id="invoice" ref={wrapperSelectRef}>
+                  {showSelectInvoice && (
+                    <div
+                      className="relative mt-3"
+                      id="invoicesList"
+                      onClick={handleShowSelectMenu}
+                    >
+                      <CustomReactSelect
+                        ignoreDisabledFontColor
+                        isDisabled
+                        isSearchable
+                        classNamePrefix="border-0 font-medium text-miru-dark-purple-1000"
+                        defaultValue={invoice}
+                        id="invoice"
+                        label="Invoice"
+                        name="invoiceSearch"
+                        options={invoiceList.invoiceList}
+                        value={invoice}
+                        components={{
+                          ValueContainer: CustomValueContainer,
+                          IndicatorSeparator: () => null,
+                        }}
+                        handleOnChange={val => {
+                          setShowSelectMenu(!showSelectMenu);
+                          setFieldValue("invoice", val);
+                          setFieldValue("amount", amount);
+                        }}
+                      />
+                      {showSelectMenu && (
+                        <div
+                          className="absolute right-0 top-0 z-15 min-h-24 w-full flex-col items-end bg-white p-2 shadow-c1 group-hover:flex"
+                          id="transactionDate"
+                          onClick={e => e.stopPropagation()}
+                        >
+                          <Select
+                            defaultMenuIsOpen
+                            isSearchable
+                            className="m-0 mt-2 w-full border-0 font-medium text-miru-dark-purple-1000"
+                            classNamePrefix="border-0 font-medium text-miru-dark-purple-1000"
+                            defaultValue={invoice}
+                            id="selectDate"
+                            options={invoiceList.invoiceList}
+                            placeholder="Search by client name or invoice ID"
+                            styles={customStyles}
+                            components={{
+                              Option: CustomOption,
+                              DropdownIndicator,
+                              IndicatorSeparator: () => null,
+                            }}
+                            onChange={val => {
+                              setShowSelectMenu(!showSelectMenu);
+                              setFieldValue("invoice", val);
+                              setFieldValue("amount", val.amount);
+                            }}
+                          />
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+            <div className="mt-4" ref={wrapperCalendartRef}>
               <div
-                className="relative mt-3"
-                id="invoicesList"
-                onClick={handleShowSelectMenu}
+                className="field relative flex w-full flex-col"
+                onClick={() =>
+                  setShowDatePicker({ visibility: !showDatePicker.visibility })
+                }
               >
-                <CustomReactSelect
-                  ignoreDisabledFontColor
-                  isDisabled
-                  isSearchable
-                  classNamePrefix="border-0 font-medium text-miru-dark-purple-1000"
-                  defaultValue={invoice}
-                  handleOnChange={handleInvoiceSelect}
-                  label="Invoice"
-                  name="invoiceSearch"
-                  options={invoiceList.invoiceList}
-                  value={invoice}
-                  components={{
-                    ValueContainer: CustomValueContainer,
-                    IndicatorSeparator: () => null,
+                <CustomInputText
+                  readOnly
+                  id="transactionDate"
+                  inputBoxClassName="cursor-pointer"
+                  label="Transaction Date"
+                  name="transactionDate"
+                  type="text"
+                  value={
+                    transactionDate && dayjs(transactionDate).format(dateFormat)
+                  }
+                  onChange={() => {}} //eslint-disable-line
+                />
+                <CalendarIcon
+                  className="absolute top-0 bottom-0 right-1 mx-2 my-3 cursor-pointer"
+                  color="#5B34EA"
+                  size={20}
+                />
+              </div>
+              {showDatePicker.visibility && (
+                <CustomDatePicker
+                  date={transactionDate || dayjs()}
+                  handleChange={date => {
+                    setFieldValue("transactionDate", date);
+                    setShowDatePicker(false);
                   }}
                 />
-                {showSelectMenu && (
-                  <div
-                    className="absolute right-0 top-0 z-15 min-h-24 w-full flex-col items-end bg-white p-2 shadow-c1 group-hover:flex"
-                    id="transactionDate"
-                    onClick={e => e.stopPropagation()}
-                  >
-                    <Select
-                      defaultMenuIsOpen
-                      isSearchable
-                      className="m-0 mt-2 w-full border-0 font-medium text-miru-dark-purple-1000"
-                      classNamePrefix="border-0 font-medium text-miru-dark-purple-1000"
-                      defaultValue={invoice}
-                      id="selectDate"
-                      options={invoiceList.invoiceList}
-                      placeholder="Search by client name or invoice ID"
-                      styles={customStyles}
-                      components={{
-                        Option: CustomOption,
-                        DropdownIndicator,
-                        IndicatorSeparator: () => null,
-                      }}
-                      onChange={handleInvoiceSelect}
-                    />
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-      <div className="mt-4" ref={wrapperCalendartRef}>
-        <div
-          className="field relative flex w-full flex-col"
-          onClick={() =>
-            setShowDatePicker({ visibility: !showDatePicker.visibility })
-          }
-        >
-          <CustomInputText
-            readOnly
-            id="transactionDate"
-            inputBoxClassName="cursor-pointer"
-            label="Transaction Date"
-            name="transactionDate"
-            type="text"
-            value={transactionDate && dayjs(transactionDate).format(dateFormat)}
-            onChange={() => {}} //eslint-disable-line
-          />
-          <CalendarIcon
-            className="absolute top-0 bottom-0 right-1 mx-2 my-3 cursor-pointer"
-            color="#5B34EA"
-            size={20}
-          />
-        </div>
-        {showDatePicker.visibility && (
-          <CustomDatePicker
-            date={transactionDate || dayjs()}
-            handleChange={handleDatePicker}
-          />
-        )}
-      </div>
-      <div className="relative mt-4">
-        {isDesktop ? (
-          <CustomReactSelect
-            isSearchable
-            handleOnChange={e => setTransactionType(e.value)}
-            label="Transaction Type"
-            name="transactionType"
-            options={transactionTypes}
-            value={transactionTypes.find(type => type.value == transactionType)}
-          />
-        ) : (
-          <>
-            <CustomReactSelect
-              isDisabled={showTransactionTypes}
-              label="Transaction Type"
-              name="transactionType"
-              options={transactionTypes}
-              handleonFocus={() => {
-                setShowTransactionTypes(true);
-              }}
-              value={transactionTypes.find(
-                type => type.value == transactionType
               )}
-            />
-            {showTransactionTypes && (
-              <MobileMoreOptions
-                className="h-3/4 w-full overflow-scroll md:h-3/5 md:w-3/4 lg:h-1/4"
-                setVisibilty={setShowTransactionTypes}
-                visibilty={showTransactionTypes}
+            </div>
+            <div
+              className="relative mt-4"
+              id="transactionType"
+              onClick={() => setFieldValue("showTransactionTypes", true)}
+            >
+              {isDesktop ? (
+                <CustomReactSelect
+                  isSearchable
+                  label="Transaction Type"
+                  name="transactionType"
+                  options={transactionTypes}
+                  handleOnChange={e =>
+                    setFieldValue("transactionType", e.value)
+                  }
+                  value={transactionTypes.find(
+                    type => type.value == transactionType
+                  )}
+                />
+              ) : (
+                <>
+                  <CustomReactSelect
+                    isDisabled
+                    label="Transaction Type"
+                    name="transactionType"
+                    options={transactionTypes}
+                    handleonFocus={() =>
+                      setFieldValue("showTransactionTypes", true)
+                    }
+                    value={transactionTypes.find(
+                      type => type.value == transactionType
+                    )}
+                  />
+                  {showTransactionTypes && (
+                    <MobileMoreOptions
+                      className="h-3/4 w-full overflow-scroll md:h-3/5 md:w-3/4 lg:h-1/4"
+                      setVisibilty={setShowTransactionTypes}
+                      visibilty={showTransactionTypes}
+                    >
+                      {transactionTypes.map((transaction, index) => (
+                        <li
+                          className="flex items-center pb-5 font-manrope text-sm font-normal capitalize leading-5 text-miru-dark-purple-1000 hover:bg-miru-gray-100"
+                          key={index}
+                          onClick={() => {
+                            if (transaction?.value) {
+                              setFieldValue(
+                                "transactionType",
+                                transaction.value
+                              );
+                            }
+                            setFieldValue("showTransactionTypes", false);
+                          }}
+                        >
+                          {transaction.label}
+                        </li>
+                      ))}
+                    </MobileMoreOptions>
+                  )}
+                </>
+              )}
+            </div>
+            <div className="mt-4">
+              <CustomInputText
+                disabled
+                id="paymentAmount"
+                inputBoxClassName="form__input block w-full appearance-none bg-white p-4 text-base h-12 focus-within:border-miru-han-purple-1000 border-miru-gray-1000"
+                label="Payment amount"
+                labelClassName="absolute top-0.5 left-1 h-6 z-1 origin-0 bg-white p-2 text-base font-medium duration-300 text-miru-dark-purple-200"
+                name="paymentAmount"
+                type="text"
+                value={
+                  amount && baseCurrency && currencyFormat(baseCurrency, amount)
+                }
+                onChange={() => {}} //eslint-disable-line
+              />
+            </div>
+            <div className="mt-4">
+              <CustomTextareaAutosize
+                id="NotesOptional"
+                label="Notes (optional)"
+                maxRows={12}
+                name="NotesOptional"
+                rows={5}
+                value={note}
+                onChange={e => setFieldValue("note", e.target.value)}
+              />
+            </div>
+            <div className="actions mx-auto mt-4 mb-4 w-full">
+              <button
+                disabled={isLoading}
+                type="submit"
+                className={
+                  isPaymentBtnActive() && !isLoading
+                    ? "focus:outline-none flex h-10 w-full cursor-pointer items-center justify-center rounded border border-transparent bg-miru-han-purple-1000 py-1 px-4 font-sans text-base font-medium uppercase tracking-widest text-miru-white-1000 shadow-sm hover:bg-miru-han-purple-600"
+                    : "focus:outline-none flex h-10 w-full cursor-pointer items-center justify-center rounded border border-transparent bg-miru-gray-1000 py-1 px-4 font-sans text-base font-medium uppercase tracking-widest text-miru-white-1000 shadow-sm"
+                }
               >
-                {transactionTypes.map((transaction, index) => (
-                  <li
-                    className="flex items-center pb-5 font-manrope text-sm font-normal capitalize leading-5 text-miru-dark-purple-1000 hover:bg-miru-gray-100"
-                    key={index}
-                    onClick={() => {
-                      if (transaction?.value) {
-                        setTransactionType(transaction.value);
-                      }
-                      setShowTransactionTypes(false);
-                    }}
-                  >
-                    {transaction.label}
-                  </li>
-                ))}
-              </MobileMoreOptions>
-            )}
-          </>
-        )}
-      </div>
-      <div className="mt-4">
-        <CustomInputText
-          disabled
-          id="paymentAmount"
-          inputBoxClassName="form__input block w-full appearance-none bg-white p-4 text-base h-12 focus-within:border-miru-han-purple-1000 border-miru-gray-1000"
-          label="Payment amount"
-          labelClassName="absolute top-0.5 left-1 h-6 z-1 origin-0 bg-white p-2 text-base font-medium duration-300 text-miru-dark-purple-200"
-          name="paymentAmount"
-          type="text"
-          value={amount && baseCurrency && currencyFormat(baseCurrency, amount)}
-          onChange={() => {}} //eslint-disable-line
-        />
-      </div>
-      <div className="mt-4">
-        <CustomTextareaAutosize
-          id="NotesOptional"
-          label="Notes (optional)"
-          maxRows={12}
-          name="NotesOptional"
-          rows={5}
-          value={note}
-          onChange={e => setNote(e.target.value)}
-        />
-      </div>
-      <div className="actions mx-auto mt-4 mb-4 w-full">
-        <button
-          disabled={isLoading}
-          type="submit"
-          className={
-            isAddPaymentBtnActive(
-              invoice,
-              transactionDate,
-              transactionType,
-              amount
-            ) && !isLoading
-              ? "focus:outline-none flex h-10 w-full cursor-pointer items-center justify-center rounded border border-transparent bg-miru-han-purple-1000 py-1 px-4 font-sans text-base font-medium uppercase tracking-widest text-miru-white-1000 shadow-sm hover:bg-miru-han-purple-600"
-              : "focus:outline-none flex h-10 w-full cursor-pointer items-center justify-center rounded border border-transparent bg-miru-gray-1000 py-1 px-4 font-sans text-base font-medium uppercase tracking-widest text-miru-white-1000 shadow-sm"
-          }
-          onClick={() => {
-            setIsLoading(true);
-            if (
-              isAddPaymentBtnActive(
-                invoice,
-                transactionDate,
-                transactionType,
-                amount
-              )
-            ) {
-              handleAddPayment();
-            }
-          }}
-        >
-          ADD PAYMENT
-        </button>
-      </div>
-    </>
+                ADD PAYMENT
+              </button>
+            </div>
+          </Form>
+        );
+      }}
+    </Formik>
   );
 };
 
