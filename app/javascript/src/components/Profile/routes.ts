@@ -47,7 +47,7 @@ export const SETTINGS_ROUTES = [
   {
     path: "/",
     Component: MobileNav,
-    authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE],
+    authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE, CLIENT],
   },
   {
     path: "/organization",
