@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React from "react";
 
 import classnames from "classnames";
@@ -38,7 +39,7 @@ type ButtonProps = {
   type?: any;
 };
 
-const BUTTON_STYLES = {
+export const BUTTON_STYLES = {
   primary: "primary",
   secondary: "secondary",
   ternary: "ternary",

@@ -25,7 +25,7 @@ import TimeEntryReports from "../components/Reports/TimeEntryReport";
 import TotalHoursReport from "../components/Reports/totalHoursLogged";
 import PlanSelection from "../components/Subscriptions/PlanSelection";
 import RouteConfig from "../components/Team/RouteConfig";
-import TimeTracking from "../components/TimeTracking";
+import TimesheetEntries from "../components/TimesheetEntries";
 
 const ClientsRoutes = [
   { path: "", Component: Clients },
@@ -58,7 +58,7 @@ const PaymentsRoutes = [
 ];
 
 const TimeTrackingRoutes = [
-  { path: "", Component: TimeTracking },
+  { path: "", Component: TimesheetEntries },
   { path: "*", Component: ErrorPage },
 ];
 
