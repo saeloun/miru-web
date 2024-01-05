@@ -1,12 +1,16 @@
 # frozen_string_literal: true
 
 class TimeTrackingIndexService
-  attr_reader :current_user, :current_company
+  attr_reader :current_user, :current_company, :entries, :from, :to, :year
   attr_accessor :clients, :projects, :is_admin, :timesheet_entries, :employees
 
-  def initialize(user, company)
+  def initialize(user, company, from, to, year)
     @current_user = user
     @current_company = company
+    @from = from
+    @to = to
+    @year = year
+    @entries = {}
 
     set_is_admin
     set_clients
@@ -19,8 +23,9 @@ class TimeTrackingIndexService
     {
       clients:,
       projects:,
-      entries: formatted_timesheet_entries,
+      entries: format_entries,
       employees:
+      leave_types
     }
   end
 
@@ -40,15 +45,19 @@ class TimeTrackingIndexService
         .includes([:project, :user])
         .in_workspace(current_company)
         .during(
-          1.month.ago.beginning_of_month,
-          1.month.since.end_of_month
+          from,
+          to
                             )
     end
 
+    def format_entries
+      formatted_timesheet_entries
+      group_timeoff_entries_by_leave_date
+    end
+
     def formatted_timesheet_entries
-      entries = TimesheetEntriesPresenter.new(timesheet_entries).group_snippets_by_work_date
-      entries[:currentUserRole] = current_user.primary_role current_company
-      entries
+      @entries = TimesheetEntriesPresenter.new(timesheet_entries).group_snippets_by_work_date
+      @entries[:currentUserRole] = current_user.primary_role current_company
     end
 
     def set_is_admin
@@ -63,5 +72,28 @@ class TimeTrackingIndexService
       @projects = {}
       user_projects = ProjectPolicy::Scope.new(current_user, current_company).resolve
       clients.each { |client| @projects[client.name] = client.projects.kept & user_projects }
+    end
+
+    def timeoff_entries
+      @_timeoff_entries ||= current_company.timeoff_entries.includes([:leave_type])
+        .where(user_id: current_user.id)
+        .order(leave_date: :desc)
+        .during(
+          from,
+          to
+        )
+    end
+
+    def group_timeoff_entries_by_leave_date
+      timeoff_entries.each do |entry|
+        @entries[entry.leave_date] ||= []
+        @entries[entry.leave_date] << entry
+      end
+      @entries
+    end
+
+    def leave_types
+      leave = current_company.leaves.find_by(year:)
+      leave.leave_types
     end
 end
