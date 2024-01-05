@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class InternalApi::V1::InvitationsController < InternalApi::V1::ApplicationController
-  before_action :set_invitation, only: [:update, :destroy]
+  before_action :set_invitation, only: [:update, :destroy, :resend]
 
   def create
     authorize :invitation
@@ -21,6 +21,13 @@ class InternalApi::V1::InvitationsController < InternalApi::V1::ApplicationContr
 
     @invitation.destroy!
     render json: { notice: I18n.t("invitation.delete.success.message") }, status: :ok
+  end
+
+  def resend
+    authorize @invitation
+
+    @invitation.resend_invitation
+    render json: { notice: "Invitation resent success" }, status: :ok
   end
 
   private
