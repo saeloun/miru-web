@@ -2,7 +2,7 @@
 
 class TimeTrackingIndexService
   attr_reader :current_user, :current_company, :entries, :from, :to, :year
-  attr_accessor :clients, :projects, :is_admin, :timesheet_entries, :employees
+  attr_accessor :clients, :projects, :is_admin, :employees
 
   def initialize(user, company, from, to, year)
     @current_user = user
@@ -11,12 +11,7 @@ class TimeTrackingIndexService
     @to = to
     @year = year
     @entries = {}
-
-    set_is_admin
-    set_clients
-    set_projects
-    set_timesheet_entries
-    set_employees
+    setup_data
   end
 
   def process
@@ -24,12 +19,20 @@ class TimeTrackingIndexService
       clients:,
       projects:,
       entries: format_entries,
-      employees:
-      leave_types
+      employees:,
+      leave_types:,
+      holiday_infos:
     }
   end
 
   private
+
+    def setup_data
+      set_is_admin
+      set_clients
+      set_projects
+      set_employees
+    end
 
     def set_employees
       @employees = is_admin ? current_company_users : [current_user]
@@ -39,23 +42,20 @@ class TimeTrackingIndexService
       current_company.users.with_kept_employments.select(:id, :first_name, :last_name)
     end
 
-    def set_timesheet_entries
-      @timesheet_entries = current_user
-        .timesheet_entries
-        .includes([:project, :user])
-        .in_workspace(current_company)
-        .during(
-          from,
-          to
-                            )
-    end
-
     def format_entries
       formatted_timesheet_entries
       group_timeoff_entries_by_leave_date
+      entries
+    end
+
+    def fetch_timesheet_entries
+      current_user.timesheet_entries.includes([:project, :user])
+        .in_workspace(current_company)
+        .during(from, to)
     end
 
     def formatted_timesheet_entries
+      timesheet_entries = fetch_timesheet_entries
       @entries = TimesheetEntriesPresenter.new(timesheet_entries).group_snippets_by_work_date
       @entries[:currentUserRole] = current_user.primary_role current_company
     end
@@ -89,11 +89,15 @@ class TimeTrackingIndexService
         @entries[entry.leave_date] ||= []
         @entries[entry.leave_date] << entry
       end
-      @entries
     end
 
     def leave_types
       leave = current_company.leaves.find_by(year:)
-      leave.leave_types
+      leave&.leave_types || []
+    end
+
+    def holiday_infos
+      holiday = current_company.holidays.find_by(year:)
+      holiday&.holiday_infos || []
     end
 end
