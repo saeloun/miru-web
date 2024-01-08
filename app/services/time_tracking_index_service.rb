@@ -1,30 +1,38 @@
 # frozen_string_literal: true
 
 class TimeTrackingIndexService
-  attr_reader :current_user, :current_company
-  attr_accessor :clients, :projects, :is_admin, :timesheet_entries, :employees
+  attr_reader :current_user, :current_company, :entries, :from, :to, :year
+  attr_accessor :clients, :projects, :is_admin, :employees
 
-  def initialize(user, company)
+  def initialize(user, company, from, to, year)
     @current_user = user
     @current_company = company
-
-    set_is_admin
-    set_clients
-    set_projects
-    set_timesheet_entries
-    set_employees
+    @from = from
+    @to = to
+    @year = year
+    @entries = {}
+    setup_data
   end
 
   def process
     {
       clients:,
       projects:,
-      entries: formatted_timesheet_entries,
-      employees:
+      entries: format_entries,
+      employees:,
+      leave_types:,
+      holiday_infos:
     }
   end
 
   private
+
+    def setup_data
+      set_is_admin
+      set_clients
+      set_projects
+      set_employees
+    end
 
     def set_employees
       @employees = is_admin ? current_company_users : [current_user]
@@ -34,21 +42,22 @@ class TimeTrackingIndexService
       current_company.users.with_kept_employments.select(:id, :first_name, :last_name)
     end
 
-    def set_timesheet_entries
-      @timesheet_entries = current_user
-        .timesheet_entries
-        .includes([:project, :user])
+    def format_entries
+      formatted_timesheet_entries
+      group_timeoff_entries_by_leave_date
+      entries
+    end
+
+    def fetch_timesheet_entries
+      current_user.timesheet_entries.includes([:project, :user])
         .in_workspace(current_company)
-        .during(
-          1.month.ago.beginning_of_month,
-          1.month.since.end_of_month
-                            )
+        .during(from, to)
     end
 
     def formatted_timesheet_entries
-      entries = TimesheetEntriesPresenter.new(timesheet_entries).group_snippets_by_work_date
-      entries[:currentUserRole] = current_user.primary_role current_company
-      entries
+      timesheet_entries = fetch_timesheet_entries
+      @entries = TimesheetEntriesPresenter.new(timesheet_entries).group_snippets_by_work_date
+      @entries[:currentUserRole] = current_user.primary_role current_company
     end
 
     def set_is_admin
@@ -63,5 +72,32 @@ class TimeTrackingIndexService
       @projects = {}
       user_projects = ProjectPolicy::Scope.new(current_user, current_company).resolve
       clients.each { |client| @projects[client.name] = client.projects.kept & user_projects }
+    end
+
+    def timeoff_entries
+      @_timeoff_entries ||= current_company.timeoff_entries.includes([:leave_type])
+        .where(user_id: current_user.id)
+        .order(leave_date: :desc)
+        .during(
+          from,
+          to
+        )
+    end
+
+    def group_timeoff_entries_by_leave_date
+      timeoff_entries.each do |entry|
+        @entries[entry.leave_date] ||= []
+        @entries[entry.leave_date] << entry
+      end
+    end
+
+    def leave_types
+      leave = current_company.leaves.find_by(year:)
+      leave&.leave_types || []
+    end
+
+    def holiday_infos
+      holiday = current_company.holidays.find_by(year:)
+      holiday&.holiday_infos || []
     end
 end

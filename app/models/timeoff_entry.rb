@@ -36,4 +36,6 @@ class TimeoffEntry < ApplicationRecord
 
   validates :duration, presence: true, numericality: { less_than_or_equal_to: 6000000, greater_than_or_equal_to: 0 }
   validates :leave_date, presence: true
+
+  scope :during, -> (from, to) { where(leave_date: from..to).order(leave_date: :desc) }
 end

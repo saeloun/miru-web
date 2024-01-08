@@ -6,7 +6,12 @@ class InternalApi::V1::TimeTrackingController < InternalApi::V1::ApplicationCont
 
   def index
     authorize :index, policy_class: TimeTrackingPolicy
-    data = TimeTrackingIndexService.new(current_user, current_company).process
+    user = params[:user_id] || current_user
+    year = params[:year] || Date.today.year
+    from = params[:from] || 1.month.ago.beginning_of_month
+    to = params[:to] || 1.month.since.end_of_month
+
+    data = TimeTrackingIndexService.new(user, current_company, from, to, year).process
     render json: data, status: :ok
   end
 end
