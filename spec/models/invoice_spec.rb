@@ -13,7 +13,7 @@ RSpec.describe Invoice, type: :model do
     end
 
     describe "validate uniqueness of" do
-      it { is_expected.to validate_uniqueness_of(:invoice_number) }
+      it { is_expected.to validate_uniqueness_of(:invoice_number).scoped_to(:company_id) }
     end
 
     describe "validate comparisons" do
