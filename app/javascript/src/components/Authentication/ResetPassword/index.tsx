@@ -32,8 +32,13 @@ const ResetPassword = () => {
     };
     try {
       const res = await authenticationApi.resetPassword(payload);
-      setToLocalStorage("authToken", res.data.user.token);
-      setToLocalStorage("authEmail", res.data.user.email);
+      if (res.status == 200) {
+        setToLocalStorage("authToken", res.data.user.token);
+        setToLocalStorage("authEmail", res.data.user.email);
+        setTimeout(() => {
+          window.location.assign(`${window.location.origin}`);
+        }, 500);
+      }
     } catch (error) {
       setFieldError("confirm_password", error.response.data.error);
     }
