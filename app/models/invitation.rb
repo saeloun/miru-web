@@ -90,11 +90,6 @@ class Invitation < ApplicationRecord
     end
   end
 
-  def mark_as_deleted
-    self.expired_at = Time.current
-    save
-  end
-
   private
 
     def set_expired_at
