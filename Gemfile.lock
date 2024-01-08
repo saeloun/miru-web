@@ -347,7 +347,7 @@ GEM
     net-smtp (0.3.3)
       net-protocol
     newrelic_rpm (8.16.0)
-    nio4r (2.5.9)
+    nio4r (2.7.0)
     nokogiri (1.15.4-arm64-darwin)
       racc (~> 1.4)
     nokogiri (1.15.4-x86_64-darwin)
@@ -387,7 +387,7 @@ GEM
       ast (~> 2.4.1)
     pg (1.4.5)
     public_suffix (5.0.3)
-    puma (6.3.1)
+    puma (6.4.2)
       nio4r (~> 2.0)
     pundit (2.3.0)
       activesupport (>= 3.0.0)
