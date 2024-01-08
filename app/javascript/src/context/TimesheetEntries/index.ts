@@ -50,6 +50,7 @@ const initialState: any = {
   setClient: () => {}, //eslint-disable-line
   setEditEntryId: () => {}, //eslint-disable-line
   setNewEntryView: () => {}, //eslint-disable-line
+  setNewTimeoffEntryView: () => {}, //eslint-disable-line
   setNote: () => {}, //eslint-disable-line
   setProject: () => {}, //eslint-disable-line
   setUpdateView: () => {}, //eslint-disable-line

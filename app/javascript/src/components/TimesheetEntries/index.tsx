@@ -23,6 +23,8 @@ import MonthCalender from "./MonthCalendar";
 import TimeEntryManager from "./TimeEntryManager";
 import ViewToggler from "./ViewToggler";
 import { TimesheetEntriesContext } from "context/TimesheetEntries";
+import TimeoffForm from "components/TimeoffEntries/TimeoffForm";
+import { VacationIconSVG } from "miruIcons";
 
 dayjs.extend(updateLocale);
 dayjs.extend(weekday);
@@ -49,6 +51,8 @@ const TimesheetEntries = ({ user, isAdminUser }: Iprops) => {
   );
   const [view, setView] = useState<string>("month");
   const [newEntryView, setNewEntryView] = useState<boolean>(false);
+  const [newTimeoffEntryView, setNewTimeoffEntryView] =
+    useState<boolean>(false);
   const [newRowView, setNewRowView] = useState<boolean>(false);
   const [selectDate, setSelectDate] = useState<number>(dayjs().weekday());
   const [weekDay, setWeekDay] = useState<number>(0);
@@ -542,6 +546,7 @@ const TimesheetEntries = ({ user, isAdminUser }: Iprops) => {
         setNewEntryView,
         setNewRowView,
         setIsWeeklyEditing,
+        setNewTimeoffEntryView,
         setSelectedFullDate,
         setUpdateView,
         setSelectedEmployeeId,
@@ -582,33 +587,53 @@ const TimesheetEntries = ({ user, isAdminUser }: Iprops) => {
               {view === "month" ? <MonthCalender /> : <DatesInWeek />}
             </div>
             {!editEntryId && newEntryView && view !== "week" && <EntryForm />}
-
-            {view !== "week" && !newEntryView && isDesktop && (
-              <button
-                className="flex h-10 w-full items-center justify-center rounded border-2 border-miru-han-purple-600 p-2 text-lg font-bold tracking-widest text-miru-han-purple-600 lg:h-14 lg:p-4"
-                onClick={() => {
-                  setNewEntryView(true);
-                  setEditEntryId(0);
-                }}
-              >
-                + NEW ENTRY
-              </button>
-            )}
-            {/* --- On mobile view we don't need New Entry button for Empty States --- */}
-            {view !== "week" &&
-              !newEntryView &&
-              !isDesktop &&
-              entryList[selectedFullDate] && (
-                <button
-                  className="flex h-10 w-full items-center justify-center rounded border-2 border-miru-han-purple-600 p-2 text-lg font-bold tracking-widest text-miru-han-purple-600 lg:h-14 lg:p-4"
-                  onClick={() => {
-                    setNewEntryView(true);
-                    setEditEntryId(0);
-                  }}
-                >
-                  + NEW ENTRY
-                </button>
-              )}
+            {newTimeoffEntryView && view !== "week" && <TimeoffForm />}
+            <div className="flex">
+              {view !== "week" &&
+                !newEntryView &&
+                !newTimeoffEntryView &&
+                isDesktop && (
+                  <button
+                    className="flex h-10 w-full items-center justify-center rounded border-2 border-miru-han-purple-600 p-2 text-lg font-bold tracking-widest text-miru-han-purple-600 lg:h-14 lg:p-4"
+                    onClick={() => {
+                      setNewEntryView(true);
+                      setEditEntryId(0);
+                    }}
+                  >
+                    + NEW ENTRY
+                  </button>
+                )}
+              {/* --- On mobile view we don't need New Entry button for Empty States --- */}
+              {view !== "week" &&
+                !newEntryView &&
+                !isDesktop &&
+                entryList[selectedFullDate] && (
+                  <button
+                    className="flex h-10 w-full items-center justify-center rounded border-2 border-miru-han-purple-600 p-2 text-lg font-bold tracking-widest text-miru-han-purple-600 lg:h-14 lg:p-4"
+                    onClick={() => {
+                      setNewEntryView(true);
+                      setEditEntryId(0);
+                    }}
+                  >
+                    + NEW ENTRY
+                  </button>
+                )}
+              {view === "month" &&
+                !newEntryView &&
+                !newTimeoffEntryView &&
+                isDesktop && (
+                  <button
+                    className="ml-2 flex h-10 w-full items-center justify-center rounded border-2 border-miru-han-purple-600 p-2 text-lg font-bold tracking-widest text-miru-han-purple-600 lg:h-14 lg:p-4"
+                    onClick={() => {
+                      setNewTimeoffEntryView(true);
+                    }}
+                  >
+                    {/* <VacationIconSVG fill="blue" stroke="yellow" /> */}
+                    <img src={VacationIconSVG} className="icon" />
+                    <span className="ml-2">Mark Time Off</span>
+                  </button>
+                )}
+            </div>
             {/* --- weekly view --- */}
             {view === "week" && !newRowView && (
               <button
