@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React from "react";
 
 import { getMonth, getYear } from "date-fns";
@@ -7,17 +8,10 @@ import { CaretCircleLeftIcon, CaretCircleRightIcon } from "miruIcons";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-type CustomDatePickerProps = {
-  handleChange: any;
-  date: any;
-  setVisibility?: any;
-  wrapperRef?: any;
-  dateFormat?: any;
-};
-
 const CustomDatePicker = ({
   handleChange,
   date,
+  visibility = true,
   setVisibility,
   wrapperRef,
   dateFormat,
@@ -54,6 +48,10 @@ const CustomDatePicker = ({
   const parseDate = dateString => dayjs(dateString, dateFormat).toDate();
 
   const formatDate = date => dayjs(date).format(dateFormat);
+
+  if (!visibility) {
+    return null;
+  }
 
   return (
     <DatePicker
@@ -106,6 +104,15 @@ const CustomDatePicker = ({
       onChange={newDate => handleChange(formatDate(newDate))}
     />
   );
+};
+
+type CustomDatePickerProps = {
+  visibility?: boolean;
+  handleChange: any;
+  date: any;
+  setVisibility?: (visibility: boolean) => any;
+  wrapperRef?: any;
+  dateFormat?: any;
 };
 
 export default CustomDatePicker;

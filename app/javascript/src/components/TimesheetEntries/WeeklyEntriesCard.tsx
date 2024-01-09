@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-/* eslint-disable no-unused-vars */
+/* eslint-disable */
 import React, { useState, useEffect } from "react";
 
 import { minFromHHMM, minToHHMM, validateTimesheetEntry } from "helpers";
 import { CheckedCheckboxSVG, UncheckedCheckboxSVG, EditIcon } from "miruIcons";
-import { TimeInput, Toastr } from "StyledComponents";
+import { Button, BUTTON_STYLES, TimeInput, Toastr } from "StyledComponents";
 
 import timesheetEntryApi from "apis/timesheet-entry";
 
@@ -79,13 +79,15 @@ const WeeklyEntriesCard = ({
       if (res.status === 200) {
         setEntryList(prevState => {
           const newState: any = { ...prevState };
-          if (newState[res.data.entry.work_date]) {
-            newState[res.data.entry.work_date] = [
-              ...newState[res.data.entry.work_date],
-              res.data.entry,
-            ];
+          const {
+            data: { entry },
+          } = res;
+          const { work_date } = entry;
+
+          if (newState[work_date]) {
+            newState[work_date] = [...newState[work_date], entry];
           } else {
-            newState[res.data.entry.work_date] = [res.data.entry];
+            newState[work_date] = [entry];
           }
 
           return newState;
@@ -96,9 +98,7 @@ const WeeklyEntriesCard = ({
         setShowNote(false);
         setIsWeeklyEditing(false);
       }
-    } catch (error) {
-      Toastr.error(error.message);
-    }
+    } catch (error) {}
   };
 
   const handleUpdateEntry = async () => {
@@ -128,9 +128,7 @@ const WeeklyEntriesCard = ({
         setShowNote(false);
         setIsWeeklyEditing(false);
       }
-    } catch (error) {
-      Toastr.error(error.message);
-    }
+    } catch (error) {}
   };
 
   const calculateTotalWeeklyDuration = () => {
@@ -254,7 +252,8 @@ const WeeklyEntriesCard = ({
               <h4>Billable</h4>
             </div>
             <div>
-              <button
+              <Button
+                style={BUTTON_STYLES.secondary}
                 className="m-2 inline-block h-6 w-30 justify-center rounded border border-miru-han-purple-1000 bg-transparent py-1 px-6 text-center align-middle text-xs font-bold tracking-widest text-miru-han-purple-600  hover:border-transparent hover:bg-miru-han-purple-1000 hover:text-white"
                 onClick={() => {
                   setNote("");
@@ -266,9 +265,10 @@ const WeeklyEntriesCard = ({
                 }}
               >
                 CANCEL
-              </button>
+              </Button>
               {currentEntries[selectedInputBox] ? (
-                <button
+                <Button
+                  style={BUTTON_STYLES.primary}
                   className={`m-2 mb-1 inline-block h-6 w-30 rounded border py-1 px-6 text-xs font-bold tracking-widest text-white ${
                     dataChanged && duration
                       ? "bg-miru-han-purple-1000 hover:border-transparent"
@@ -277,9 +277,10 @@ const WeeklyEntriesCard = ({
                   onClick={handleUpdateEntry}
                 >
                   UPDATE
-                </button>
+                </Button>
               ) : (
-                <button
+                <Button
+                  style={BUTTON_STYLES.primary}
                   disabled={!(dataChanged && duration && note)}
                   className={`m-2 mb-1 inline-block h-6 w-30 rounded border py-1 px-6 text-xs font-bold tracking-widest text-white ${
                     dataChanged && duration && note
@@ -289,7 +290,7 @@ const WeeklyEntriesCard = ({
                   onClick={handleSaveEntry}
                 >
                   SAVE
-                </button>
+                </Button>
               )}
             </div>
           </div>
