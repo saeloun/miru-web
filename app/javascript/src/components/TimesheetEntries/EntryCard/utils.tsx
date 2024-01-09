@@ -1,8 +1,9 @@
 import React from "react";
 
 import { DeleteIcon, EditIcon, CopyIcon } from "miruIcons";
+import { Button, BUTTON_STYLES } from "StyledComponents";
 
-import { Roles } from "../../../constants";
+import { Roles } from "constants/index";
 
 export const canEditTimeEntry = (billStatus, role) =>
   billStatus != "billed" || role == Roles["OWNER"] || role == Roles["ADMIN"];
@@ -10,13 +11,14 @@ export const canEditTimeEntry = (billStatus, role) =>
 export const showUpdateAction = (billStatus, role, id, setEditEntryId) => {
   if (canEditTimeEntry(billStatus, role)) {
     return (
-      <button
-        className="icon-hover"
+      <Button
+        className="icon-hover border-none"
         id="editIcon"
+        style={BUTTON_STYLES.secondary}
         onClick={() => setEditEntryId(id)}
       >
         <EditIcon className="text-miru-han-purple-1000" size={20} />
-      </button>
+      </Button>
     );
   }
 
@@ -26,13 +28,14 @@ export const showUpdateAction = (billStatus, role, id, setEditEntryId) => {
 export const showDeleteAction = (billStatus, role, id, handleDeleteEntry) => {
   if (canEditTimeEntry(billStatus, role)) {
     return (
-      <button
-        className="icon-hover "
+      <Button
+        className="icon-hover border-none"
         id="deleteIcon"
+        style={BUTTON_STYLES.secondary}
         onClick={() => handleDeleteEntry(id)}
       >
         <DeleteIcon className="text-miru-han-purple-1000" size={20} />
-      </button>
+      </Button>
     );
   }
 
@@ -42,9 +45,13 @@ export const showDeleteAction = (billStatus, role, id, handleDeleteEntry) => {
 export const showDuplicateAction = (billStatus, role, id, handleDuplicate) => {
   if (canEditTimeEntry(billStatus, role)) {
     return (
-      <button className="icon-hover " onClick={() => handleDuplicate(id)}>
+      <Button
+        className="icon-hover border-none"
+        style={BUTTON_STYLES.secondary}
+        onClick={() => handleDuplicate(id)}
+      >
         <CopyIcon className="text-miru-han-purple-1000" size={20} />
-      </button>
+      </Button>
     );
   }
 

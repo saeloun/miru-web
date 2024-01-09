@@ -5,7 +5,7 @@ import CustomDatePicker from "common/CustomDatePicker";
 import { useUserContext } from "context/UserContext";
 import dayjs from "dayjs";
 import LabelText from "./LabelText";
-import { NavArrowBtn, NavArrowBtnDirections } from "StyledComponents";
+import NavArrowBtn, { NavArrowBtnDirections } from "./NavArrowBtn";
 import { useTimesheetEntries } from "context/TimesheetEntries";
 
 function CalendarNavigator() {

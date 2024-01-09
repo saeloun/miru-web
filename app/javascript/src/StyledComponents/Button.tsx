@@ -31,6 +31,7 @@ const MEDIUM = "px-10/100 py-1vh text-base font-bold leading-5";
 const LARGE = "px-15/100 py-1vh text-xl font-bold leading-7";
 
 type ButtonProps = {
+  id?: string;
   style?: string;
   onClick?;
   disabled?: boolean;
@@ -51,6 +52,7 @@ export const BUTTON_STYLES = {
 const SIZES = { small: "small", medium: "medium", large: "large" };
 
 const Button = ({
+  id = "",
   style = "primary",
   size,
   disabled = false,
@@ -61,6 +63,7 @@ const Button = ({
   type,
 }: ButtonProps) => (
   <button
+    id={id}
     disabled={disabled}
     type={type}
     className={classnames(

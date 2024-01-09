@@ -13,7 +13,7 @@ import {
   showUpdateAction,
 } from "./utils";
 
-const EntryCard: React.FC<Iprops> = ({
+const EntryCard = ({
   id,
   client,
   project,
@@ -25,7 +25,7 @@ const EntryCard: React.FC<Iprops> = ({
   currentUserRole,
   setNewEntryView,
   handleDuplicate,
-}) => {
+}: Iprops) => {
   const { isDesktop } = useUserContext();
 
   const handleCardClick = () => {

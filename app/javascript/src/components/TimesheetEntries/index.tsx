@@ -33,7 +33,7 @@ dayjs.updateLocale("en", { monthShort: monthsAbbr });
 // Day start from monday
 dayjs.Ls.en.weekStart = 1;
 
-const TimesheetEntries: React.FC<Iprops> = ({ user, isAdminUser }) => {
+const TimesheetEntries = ({ user, isAdminUser }: Iprops) => {
   const isViewTogglerVisible = false;
   const today = dayjs().format("YYYY-MM-DD");
   const [dayInfo, setDayInfo] = useState<any[]>([]);
