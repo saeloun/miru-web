@@ -4,9 +4,8 @@ import React, { useRef, useState } from "react";
 import CustomDatePicker from "common/CustomDatePicker";
 import { useUserContext } from "context/UserContext";
 import dayjs from "dayjs";
-import { CaretCircleLeftIcon, CaretCircleRightIcon } from "miruIcons";
 import LabelText from "./LabelText";
-import NavArrowBtn from "./NavArrowBtn";
+import { NavArrowBtn, NavArrowBtnDirections } from "StyledComponents";
 import { useTimesheetEntries } from "context/TimesheetEntries";
 
 function CalendarNavigator() {
@@ -59,8 +58,9 @@ function CalendarNavigator() {
     <div className="relative flex">
       <NavArrowBtn
         id="prevMonth"
+        iconSize={20}
         handleClick={getLeftArrowAction}
-        icon={<CaretCircleLeftIcon size={20} />}
+        direction={NavArrowBtnDirections.prev}
       />
       <label
         className="mx-3 text-center text-sm font-medium leading-5"
@@ -87,8 +87,9 @@ function CalendarNavigator() {
       </div>
       <NavArrowBtn
         id="nextMonth"
-        handleClick={getRightArrowAction}
-        icon={<CaretCircleRightIcon size={20} />}
+        iconSize={20}
+        handleClick={getLeftArrowAction}
+        direction={NavArrowBtnDirections.next}
       />
     </div>
   );

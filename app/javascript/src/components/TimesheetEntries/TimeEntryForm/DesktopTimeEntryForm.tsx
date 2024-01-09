@@ -5,13 +5,11 @@ import dayjs from "dayjs";
 import { useOutsideClick, validateTimesheetEntry } from "helpers";
 import { CheckedCheckboxSVG, UncheckedCheckboxSVG } from "miruIcons";
 import TextareaAutosize from "react-textarea-autosize";
-import { Button, TimeInput } from "StyledComponents";
+import { Button, BUTTON_STYLES, TimeInput } from "StyledComponents";
 
 import CustomDatePicker from "common/CustomDatePicker";
 import { useTimesheetEntries } from "context/TimesheetEntries";
 import { useTimeEntryForm } from "context/TimesheetEntries/TimeEntryFormContext";
-
-import { BUTTON_STYLES } from "../../../StyledComponents/Button";
 
 const DesktopTimeEntryForm = () => {
   const {

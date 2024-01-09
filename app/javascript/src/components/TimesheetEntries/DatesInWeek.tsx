@@ -1,12 +1,10 @@
 import React from "react";
 
 import { getNumberWithOrdinal } from "helpers";
-import { Button } from "StyledComponents";
+import { Button, BUTTON_STYLES } from "StyledComponents";
 
 import { useTimesheetEntries } from "context/TimesheetEntries";
 import { useUserContext } from "context/UserContext";
-
-import { BUTTON_STYLES } from "../../StyledComponents/Button";
 
 const WeeklyEntries = () => {
   const { isDesktop } = useUserContext();

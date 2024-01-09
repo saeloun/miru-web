@@ -1,9 +1,10 @@
 import Avatar from "./Avatar";
 import Badge from "./Badge";
-import Button from "./Button";
+import Button, { BUTTON_STYLES } from "./Button";
 import MobileMoreOptions from "./MobileMoreOptions";
 import Modal from "./Modal";
 import MoreOptions from "./MoreOptions";
+import NavArrowBtn, { NavArrowBtnDirections } from "./NavArrowBtn";
 import Pagination from "./Pagination";
 import SidePanel from "./SidePanel";
 import SummaryDashboard from "./SummaryDashboard";
@@ -26,4 +27,7 @@ export {
   Toastr,
   Tooltip,
   Switch,
+  NavArrowBtn,
+  BUTTON_STYLES,
+  NavArrowBtnDirections,
 };
