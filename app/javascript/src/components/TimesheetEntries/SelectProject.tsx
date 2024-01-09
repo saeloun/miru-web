@@ -1,6 +1,8 @@
 /* eslint-disable no-unused-vars */
 import React from "react";
 
+import { Button, BUTTON_STYLES } from "StyledComponents";
+
 const SelectProject = ({
   clients,
   client,
@@ -89,13 +91,15 @@ const SelectProject = ({
             </option>
           ))}
       </select>
-      <button
+      <Button
         className="h-8 w-38 rounded border border-miru-han-purple-1000 bg-transparent py-1 px-6 text-xs font-bold tracking-widest text-miru-han-purple-600 hover:border-transparent hover:bg-miru-han-purple-1000 hover:text-white"
+        style={BUTTON_STYLES.secondary}
         onClick={handleCancelButton}
       >
         CANCEL
-      </button>
-      <button
+      </Button>
+      <Button
+        style={BUTTON_STYLES.primary}
         className={`h-8 w-38 rounded border py-1 px-6 text-xs font-bold tracking-widest text-white ${
           client && project
             ? "bg-miru-han-purple-1000 hover:border-transparent"
@@ -104,7 +108,7 @@ const SelectProject = ({
         onClick={handleSaveButton}
       >
         SAVE
-      </button>
+      </Button>
     </div>
   );
 };

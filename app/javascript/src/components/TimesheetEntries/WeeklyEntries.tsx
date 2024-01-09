@@ -50,19 +50,8 @@ const WeeklyEntries = ({
     return pid;
   };
 
-  const getIds = () => {
-    let ids = [];
-
-    if (currentEntries?.length > 0) {
-      ids = currentEntries.reduce((acc, entry) => {
-        if (entry) acc.push(entry["id"]);
-
-        return acc;
-      }, []);
-    }
-
-    return ids;
-  };
+  const getIds = () =>
+    currentEntries?.map(entry => entry && entry["id"])?.filter(Boolean) || [];
 
   const handleEditEntries = async () => {
     try {
