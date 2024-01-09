@@ -9,7 +9,7 @@ import Table from "./Table";
 
 const Container = ({
   currentYear,
-  leaveTypes,
+  leaveBalance,
   timeoffEntries,
   totalTimeoffEntriesDuration,
 }) => (
@@ -18,7 +18,7 @@ const Container = ({
       Leave Balance Until 31st Dec {currentYear}
     </span>
     <div className="mt-6 grid w-full gap-4 lg:grid-cols-3">
-      {leaveTypes.map((leaveType, index) => (
+      {leaveBalance.map((leaveType, index) => (
         <LeaveBlock key={index} leaveType={leaveType} />
       ))}
     </div>

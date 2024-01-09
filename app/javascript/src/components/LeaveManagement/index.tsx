@@ -13,7 +13,7 @@ const LeaveManagement = () => {
   const { isDesktop, user, isAdminUser } = useUserContext();
 
   const [timeoffEntries, setTimeoffEntries] = useState([]);
-  const [leaveTypes, setLeaveTypes] = useState([]);
+  const [leaveBalance, setLeaveBalance] = useState([]);
   const [employees, setEmployees] = useState([]);
   const [selectedEmployeeId, setSelectedEmployeeId] = useState(user.id);
   const [totalTimeoffEntriesDuration, setTotalTimeoffEntriesDuration] =
@@ -27,10 +27,16 @@ const LeaveManagement = () => {
 
   const fetchTimeoffEntries = async () => {
     const res = await timeoffEntryApi.get(selectedEmployeeId, currentYear);
-    setTimeoffEntries(res.data.timeoffEntries);
-    setEmployees(res.data.employees);
-    setLeaveTypes(res.data.leaveBalance);
-    setTotalTimeoffEntriesDuration(res.data.totalTimeoffEntriesDuration);
+    const {
+      timeoffEntries,
+      employees,
+      leaveBalance,
+      totalTimeoffEntriesDuration,
+    } = res.data;
+    setTimeoffEntries(timeoffEntries);
+    setEmployees(employees);
+    setLeaveBalance(leaveBalance);
+    setTotalTimeoffEntriesDuration(totalTimeoffEntriesDuration);
   };
 
   const employeeList = employees.map(e => ({
@@ -48,7 +54,7 @@ const LeaveManagement = () => {
       />
       <Container
         currentYear={currentYear}
-        leaveTypes={leaveTypes}
+        leaveBalance={leaveBalance}
         timeoffEntries={timeoffEntries}
         totalTimeoffEntriesDuration={totalTimeoffEntriesDuration}
       />
