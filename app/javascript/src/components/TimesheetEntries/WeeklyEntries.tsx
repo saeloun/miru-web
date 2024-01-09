@@ -51,10 +51,15 @@ const WeeklyEntries = ({
   };
 
   const getIds = () => {
-    const ids = [];
-    currentEntries.forEach(entry => {
-      if (entry) ids.push(entry["id"]);
-    });
+    let ids = [];
+
+    if (currentEntries?.length > 0) {
+      ids = currentEntries.reduce((acc, entry) => {
+        if (entry) acc.push(entry["id"]);
+
+        return acc;
+      }, []);
+    }
 
     return ids;
   };
