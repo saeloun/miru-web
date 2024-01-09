@@ -28,6 +28,7 @@ import {
   Pen,
   FileCsv,
   FilePdf,
+  File,
   Printer,
   Share,
   DownloadSimple,
@@ -52,6 +53,13 @@ import {
   Plugs,
   Cake,
   DeviceMobileCamera,
+  Percent,
+  House,
+  ShieldCheck,
+  Car,
+  Wrench,
+  Armchair,
+  ForkKnife,
 } from "phosphor-react";
 
 const error404Animation = require("./GIFS/404_animation.gif");
@@ -65,6 +73,7 @@ const calendarBlack = require("./svgIcons/calendarBlack.svg");
 const calendarHoverIcon = require("./svgIcons/CalendarHover.svg");
 const car = require("./svgIcons/car.svg");
 const emptyState = require("./svgIcons/emptyState.svg");
+const expenseIcon = require("./svgIcons/expenseIcon.svg");
 const flower = require("./svgIcons/flower.svg");
 const hoursIcon = require("./svgIcons/Hours.svg");
 const hoursHoverIcon = require("./svgIcons/HoursHover.svg");
@@ -150,7 +159,6 @@ const userAvatar = require("../../../assets/images/user_avatar.svg");
 const visa = require("../../../assets/images/visa.svg");
 const warningCloseIcon = require("../../../assets/images/warning-close-icon.svg");
 const warningTriangle = require("../../../assets/images/warning-triangle.svg");
-//const expenseIcon = require("../../../assets/images/expense.svg");
 
 // icons from phosphor
 export const EditIcon = PencilSimple;
@@ -180,6 +188,7 @@ export const XIcon = X;
 export const CaretDownIcon = CaretDown;
 export const CaretUpIcon = CaretUp;
 export const PenIcon = Pen;
+export const FileIcon = File;
 export const FileCsvIcon = FileCsv;
 export const FilePdfIcon = FilePdf;
 export const PrinterIcon = Printer;
@@ -205,6 +214,13 @@ export const GoogleIcon = GoogleLogo;
 export const IntegrateIcon = Plugs;
 export const CakeIcon = Cake;
 export const MobileIcon = DeviceMobileCamera;
+export const FoodIcon = ForkKnife;
+export const PercentIcon = Percent;
+export const HouseIcon = House;
+export const CarIcon = Car;
+export const FurnitureIcon = Armchair;
+export const WrenchIcon = Wrench;
+export const ShieldIcon = ShieldCheck;
 
 // custom svg icons
 export const WarningTriangleSVG = warningTriangle;
@@ -302,3 +318,4 @@ export const CarIconSVG = car;
 export const UserIconSVG = user;
 export const CalendarBlackIconSVG = calendarBlack;
 export const MedicineIconSVG = medicine;
+export const ExpenseIconSVG = expenseIcon;
