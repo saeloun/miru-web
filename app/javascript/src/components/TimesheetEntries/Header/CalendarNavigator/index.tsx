@@ -88,7 +88,7 @@ function CalendarNavigator() {
       <NavArrowBtn
         id="nextMonth"
         iconSize={20}
-        handleClick={getLeftArrowAction}
+        handleClick={getRightArrowAction}
         direction={NavArrowBtnDirections.next}
       />
     </div>
