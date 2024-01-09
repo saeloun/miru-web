@@ -75,10 +75,6 @@ module TimeoffEntries
           end
         end
 
-        # if holiday
-        #   optional_holidays = calculate_total_optional_holidays(holiday)
-        # end
-
         leave_balance
       end
 
@@ -139,31 +135,5 @@ module TimeoffEntries
 
         net_duration > carry_forward_duration ? carry_forward_duration : net_duration > 0 ? net_duration : 0
       end
-
-    # def calculate_total_optional_holidays(holiday)
-    #   allocation_value = holiday.no_of_allowed_optional_holidays
-    #   allocation_frequency = holiday.time_period_optional_holidays
-
-    #   hours_per_day = 8
-    #   days_per_week = 5
-    #   weeks_per_month = 4
-    #   months_per_quarter = 3
-    #   quarters_per_year = 4
-    #   months_per_year = 12
-
-    #   total_duration = case allocation_frequency.to_sym
-    #                    when :per_week
-    #                      allocation_value * weeks_per_month * months_per_year
-    #                    when :per_month
-    #                      allocation_value * days_per_week * months_per_year
-    #                    when :per_quarter
-    #                      allocation_value * quarters_per_year
-    #                    when :per_year
-    #                      allocation_value * days_per_week * weeks_per_month
-    #                    else
-    #                      0
-    #   end
-    #   total_duration
-    # end
   end
 end
