@@ -6,13 +6,21 @@ import { Avatar } from "StyledComponents";
 import {
   generateLeaveIcon,
   generateLeaveColor,
+  generateHolidayIcon,
+  generateHolidayColor,
 } from "components/Profile/Organization/Leaves/utils";
 
 const TableRow = ({ timeoffEntry }) => {
-  const { leaveDate, duration, leaveType } = timeoffEntry;
+  const { leaveDate, duration, leaveType, holidayInfo } = timeoffEntry;
 
-  const leaveIcon = generateLeaveIcon(leaveType.icon);
-  const leaveColor = generateLeaveColor(leaveType.color);
+  const leaveIcon = leaveType?.icon
+    ? generateLeaveIcon(leaveType?.icon)
+    : generateHolidayIcon(holidayInfo?.category);
+
+  const leaveColor = leaveType?.color
+    ? generateLeaveColor(leaveType?.color)
+    : generateHolidayColor(holidayInfo?.category);
+  const leaveName = leaveType?.name || holidayInfo?.name;
 
   return (
     <tr className="flex items-center justify-between py-4">
@@ -24,11 +32,11 @@ const TableRow = ({ timeoffEntry }) => {
           <Avatar
             classNameImg="mr-2 p-2"
             size="w-8 h-8"
-            style={{ backgroundColor: leaveColor.value }}
-            url={leaveIcon.icon}
+            style={{ backgroundColor: leaveColor?.value }}
+            url={leaveIcon?.icon}
           />
         </dt>
-        {leaveType.name}
+        {leaveName}
       </td>
       <td className="flex w-1/3 flex-col whitespace-nowrap pb-2.5 text-right text-base lg:mt-0 lg:table-cell lg:w-3/12 lg:items-center lg:pl-8">
         {minToHHMM(duration)}

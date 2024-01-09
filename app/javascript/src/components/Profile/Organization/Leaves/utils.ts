@@ -1,10 +1,21 @@
-import { leaveColors, leaveIcons } from "constants/leaveType";
+import {
+  holidayColors,
+  holidayIcons,
+  leaveColors,
+  leaveIcons,
+} from "constants/leaveType";
 
 export const generateLeaveColor = name =>
   leaveColors.find(colorObj => colorObj.label === name);
 
 export const generateLeaveIcon = name =>
   leaveIcons.find(iconObj => iconObj.value === name);
+
+export const generateHolidayColor = name =>
+  holidayColors.find(colorObj => colorObj.label === name);
+
+export const generateHolidayIcon = name =>
+  holidayIcons.find(iconObj => iconObj.label === name);
 
 export const generatePayload = leaves =>
   leaves.map(leave => ({
