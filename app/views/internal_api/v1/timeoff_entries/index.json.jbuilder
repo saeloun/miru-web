@@ -8,7 +8,8 @@ json.timeoff_entries timeoff_entries do |timeoff_entry|
   json.id timeoff_entry.id
   json.duration timeoff_entry.duration
   json.leave_date CompanyDateFormattingService.new(timeoff_entry.leave_date, company: current_company).process
-  json.leave_type timeoff_entry.leave_type
+  json.leave_type timeoff_entry.leave_type if timeoff_entry.leave_type.present?
+  json.holiday_info timeoff_entry.holiday_info if timeoff_entry.holiday_info.present?
 end
 
 json.employees employees
