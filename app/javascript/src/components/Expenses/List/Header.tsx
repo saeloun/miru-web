@@ -1,26 +1,16 @@
 import React, { useState } from "react";
 
 import { FilterIcon, SearchIcon, PlusIcon, XIcon } from "miruIcons";
-import { Link } from "react-router-dom";
+import { Button } from "StyledComponents";
 
-const Header = () => {
+const Header = ({ setShowAddExpenseModal }) => {
   const [searchQuery, setSearchQuery] = useState<string>("");
 
   return (
-    <div className="mt-6 mb-3 flex h-40 flex-col flex-wrap items-center justify-between lg:h-auto lg:flex-row">
-      <div className="flex">
-        <h2 className="header__title" data-cy="header__invoices">
-          Expenses
-        </h2>
-        <button className="relative ml-7">
-          {/* {appliedFilterCount > 0 && (
-            <span className="absolute bottom-2 left-2 mr-7 flex h-4 w-4 items-center justify-center rounded-full bg-miru-han-purple-1000 text-xs font-semibold text-white">
-              {appliedFilterCount}
-            </span>
-          )} */}
-          <FilterIcon color="#5B34EA" size={16} />
-        </button>
-      </div>
+    <div className="mt-6 mb-3 flex flex-wrap items-center justify-between">
+      <h2 className="header__title hidden lg:inline" data-cy="header__invoices">
+        Expenses
+      </h2>
       <div className="header__searchWrap">
         <div className="header__searchInnerWrapper relative rounded-full">
           <div className="">
@@ -38,13 +28,22 @@ const Header = () => {
           </div>
         </div>
       </div>
+      <Button className="relative ml-7" style="ternary">
+        <FilterIcon color="#5B34EA" size={16} />
+      </Button>
       <div className="flex">
-        <Link className="header__button" to="/invoices/generate" type="button">
+        <button
+          className="header__button"
+          onClick={() => setShowAddExpenseModal(true)}
+        >
           <PlusIcon size={16} weight="fill" />
-          <span className="ml-2 inline-block" data-cy="new-invoice-button">
+          <span
+            className="ml-2 hidden lg:inline-block"
+            data-cy="new-invoice-button"
+          >
             Add Expense
           </span>
-        </Link>
+        </button>
       </div>
     </div>
   );
