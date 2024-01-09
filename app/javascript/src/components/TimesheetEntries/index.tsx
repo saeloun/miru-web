@@ -22,7 +22,7 @@ import Header from "./Header";
 import MonthCalender from "./MonthCalendar";
 import TimeEntryManager from "./TimeEntryManager";
 import ViewToggler from "./ViewToggler";
-import { TimesheetEntriesContext } from "./context/TimesheetEntriesContext";
+import { TimesheetEntriesContext } from "context/TimesheetEntries";
 
 dayjs.extend(updateLocale);
 dayjs.extend(weekday);
@@ -508,6 +508,7 @@ const TimesheetEntries: React.FC<Iprops> = ({ user, isAdminUser }) => {
         currentMonthNumber,
         currentYear,
         dailyTotalHours,
+        isWeeklyEditing,
         handleAddEntryDateChange,
         handleNextDay,
         handleNextWeek,
@@ -527,6 +528,7 @@ const TimesheetEntries: React.FC<Iprops> = ({ user, isAdminUser }) => {
         clients,
         editEntryId,
         entryList,
+        weeklyData,
         fetchEntries,
         fetchEntriesOfMonths,
         handleDeleteEntry,
@@ -538,6 +540,8 @@ const TimesheetEntries: React.FC<Iprops> = ({ user, isAdminUser }) => {
         selectedEmployeeId,
         setEditEntryId,
         setNewEntryView,
+        setNewRowView,
+        setIsWeeklyEditing,
         setSelectedFullDate,
         setUpdateView,
         setSelectedEmployeeId,
@@ -619,10 +623,7 @@ const TimesheetEntries: React.FC<Iprops> = ({ user, isAdminUser }) => {
           <TimeEntryManager />
           {/* mobile view Empty state condition */}
           {view !== "week" && !entryList[selectedFullDate] && !isDesktop && (
-            <EmptyStatesMobileView
-              setEditEntryId={setEditEntryId}
-              setNewEntryView={setNewEntryView}
-            />
+            <EmptyStatesMobileView />
           )}
         </div>
       </div>

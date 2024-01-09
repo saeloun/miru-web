@@ -1,6 +1,7 @@
 import React from "react";
 
-import { useTimesheetEntries } from "../context/TimesheetEntriesContext";
+import { useTimesheetEntries } from "context/TimesheetEntries";
+
 import EntryCard from "../EntryCard";
 import EntryForm from "../TimeEntryForm";
 import WeeklyEntries from "../WeeklyEntries";
@@ -60,7 +61,7 @@ const TimeEntryManager = () => {
             />
           )}
           <div>
-            {weeklyData.map((entry, weekCounter) => (
+            {weeklyData?.map((entry, weekCounter) => (
               <WeeklyEntries
                 key={weekCounter + 1}
                 {...entry}
@@ -82,7 +83,7 @@ const TimeEntryManager = () => {
       ) : (
         // Entry cards for day and month
         entryList[selectedFullDate] &&
-        entryList[selectedFullDate].map((entry, weekCounter) =>
+        entryList[selectedFullDate]?.map((entry, weekCounter) =>
           editEntryId === entry.id ? (
             // Edit time entry form
             <EntryForm key={entry.id} />

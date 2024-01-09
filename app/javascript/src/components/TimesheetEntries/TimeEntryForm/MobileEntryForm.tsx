@@ -24,11 +24,9 @@ import CustomCheckbox from "common/CustomCheckbox";
 import CustomDatePicker from "common/CustomDatePicker";
 import { CustomInputText } from "common/CustomInputText";
 import { CustomTextareaAutosize } from "common/CustomTextareaAutosize";
-
-import { useTimeEntryForm } from "./context/TimeEntryFormContext";
-
-import { useTimesheetEntries } from "../context/TimesheetEntriesContext";
-import DeleteEntryModal from "../MobileView/DeleteEntryModal";
+import DeleteEntryModal from "components/TimesheetEntries/MobileView/DeleteEntryModal";
+import { useTimesheetEntries } from "context/TimesheetEntries";
+import { useTimeEntryForm } from "context/TimesheetEntries/TimeEntryFormContext";
 
 const AddEntryMobile = () => {
   const { clients, projects, editEntryId, setNewEntryView, setEditEntryId } =

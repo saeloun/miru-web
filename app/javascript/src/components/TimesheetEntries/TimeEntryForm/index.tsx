@@ -6,14 +6,13 @@ import { minFromHHMM, minToHHMM, useDebounce, useOutsideClick } from "helpers";
 import { Toastr } from "StyledComponents";
 
 import timesheetEntryApi from "apis/timesheet-entry";
+import { useTimesheetEntries } from "context/TimesheetEntries";
+import { TimeEntryFormContext } from "context/TimesheetEntries/TimeEntryFormContext";
 import { useUserContext } from "context/UserContext";
 import { getValueFromLocalStorage, setToLocalStorage } from "utils/storage";
 
-import { TimeEntryFormContext } from "./context/TimeEntryFormContext";
 import DesktopTimeEntryForm from "./DesktopTimeEntryForm";
 import MobileEntryForm from "./MobileEntryForm";
-
-import { useTimesheetEntries } from "../context/TimesheetEntriesContext";
 
 const AddEntry = () => {
   const {

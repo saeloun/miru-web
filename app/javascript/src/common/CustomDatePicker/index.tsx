@@ -8,15 +8,6 @@ import { CaretCircleLeftIcon, CaretCircleRightIcon } from "miruIcons";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-type CustomDatePickerProps = {
-  visibility?: boolean;
-  handleChange: any;
-  date: any;
-  setVisibility?: (visibility: boolean) => any;
-  wrapperRef?: any;
-  dateFormat?: any;
-};
-
 const CustomDatePicker = ({
   handleChange,
   date,
@@ -113,6 +104,15 @@ const CustomDatePicker = ({
       onChange={newDate => handleChange(formatDate(newDate))}
     />
   );
+};
+
+type CustomDatePickerProps = {
+  visibility?: boolean;
+  handleChange: any;
+  date: any;
+  setVisibility?: (visibility: boolean) => any;
+  wrapperRef?: any;
+  dateFormat?: any;
 };
 
 export default CustomDatePicker;

@@ -1,10 +1,12 @@
 import React from "react";
 
 import { getNumberWithOrdinal } from "helpers";
+import { Button } from "StyledComponents";
 
+import { useTimesheetEntries } from "context/TimesheetEntries";
 import { useUserContext } from "context/UserContext";
 
-import { useTimesheetEntries } from "./context/TimesheetEntriesContext";
+import { BUTTON_STYLES } from "../../StyledComponents/Button";
 
 const WeeklyEntries = () => {
   const { isDesktop } = useUserContext();
@@ -18,9 +20,10 @@ const WeeklyEntries = () => {
     <>
       {view === "day" ? (
         <div className="flex h-16 justify-evenly bg-miru-gray-100">
-          {dayInfo.map((d, index) => (
-            <button
+          {dayInfo?.map((d, index) => (
+            <Button
               key={index}
+              style={BUTTON_STYLES.calendarCell}
               className={`my-2 h-12 w-26 items-center rounded-xl border-2 border-transparent px-5 py-1 text-left ${
                 index === selectDate && "border-miru-han-purple-1000 bg-white"
               }`}
@@ -34,7 +37,7 @@ const WeeklyEntries = () => {
               <p className="text-xs">
                 {getNumberWithOrdinal(parseInt(d.date, 10))} {d.month}{" "}
               </p>
-            </button>
+            </Button>
           ))}
         </div>
       ) : (

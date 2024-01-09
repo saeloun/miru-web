@@ -14,6 +14,8 @@ const PRIMARY_DISABLED =
 const SECONDARY =
   "bg-transparent hover:bg-miru-gray-1000 text-miru-han-purple-1000 border border-miru-han-purple-1000";
 
+const Calendar_Cell = "rounded-xl border-2 border-transparent text-left";
+
 const SECONDARY_DISABLED =
   "bg-transparent text-miru-dark-purple-200 border border-miru-dark-purple-200";
 
@@ -44,6 +46,7 @@ export const BUTTON_STYLES = {
   secondary: "secondary",
   ternary: "ternary",
   dashed: "dashed",
+  calendarCell: "calendarCell",
 };
 const SIZES = { small: "small", medium: "medium", large: "large" };
 
@@ -73,6 +76,8 @@ const Button = ({
       style == BUTTON_STYLES.ternary && disabled && TERNARY_DISABLED,
 
       style == BUTTON_STYLES.dashed && !disabled && DASHED,
+
+      style == BUTTON_STYLES.calendarCell && Calendar_Cell,
 
       size == SIZES.small && SMALL,
       size == SIZES.medium && MEDIUM,

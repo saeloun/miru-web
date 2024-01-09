@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from "react";
 
 import { minFromHHMM, minToHHMM, validateTimesheetEntry } from "helpers";
-import Logger from "js-logger";
 import { CheckedCheckboxSVG, UncheckedCheckboxSVG, EditIcon } from "miruIcons";
 import { TimeInput, Toastr } from "StyledComponents";
 
@@ -98,7 +97,7 @@ const WeeklyEntriesCard = ({
         setIsWeeklyEditing(false);
       }
     } catch (error) {
-      Logger.error(error.message);
+      Toastr.error(error.message);
     }
   };
 
@@ -130,7 +129,7 @@ const WeeklyEntriesCard = ({
         setIsWeeklyEditing(false);
       }
     } catch (error) {
-      Logger.error(error.message);
+      Toastr.error(error.message);
     }
   };
 

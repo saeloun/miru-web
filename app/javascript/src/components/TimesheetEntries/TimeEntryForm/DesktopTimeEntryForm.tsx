@@ -8,11 +8,10 @@ import TextareaAutosize from "react-textarea-autosize";
 import { Button, TimeInput } from "StyledComponents";
 
 import CustomDatePicker from "common/CustomDatePicker";
-
-import { useTimeEntryForm } from "./context/TimeEntryFormContext";
+import { useTimesheetEntries } from "context/TimesheetEntries";
+import { useTimeEntryForm } from "context/TimesheetEntries/TimeEntryFormContext";
 
 import { BUTTON_STYLES } from "../../../StyledComponents/Button";
-import { useTimesheetEntries } from "../context/TimesheetEntriesContext";
 
 const DesktopTimeEntryForm = () => {
   const {

@@ -5,10 +5,10 @@ import React, { useState, useEffect } from "react";
 import dayjs from "dayjs";
 import { minToHHMM } from "helpers";
 
+import { useTimesheetEntries } from "context/TimesheetEntries";
+
 import CalendarCell from "./CalendarCell";
 import InvalidEmptyCalendarCell from "./InvalidEmptyCalendarCell";
-
-import { useTimesheetEntries } from "../context/TimesheetEntriesContext";
 
 // Day start from monday
 dayjs.Ls.en.weekStart = 1;
@@ -69,12 +69,12 @@ const MonthCalender = () => {
     <div className="mb-6">
       <div className="bg-miru-gray-100 p-4">
         <div className="mb-4 flex justify-between bg-miru-gray-100">
-          {DAYS.map((d, index) => (
+          {DAYS.map(day => (
             <div
               className="w-28 items-center rounded-xl text-center text-xs font-medium text-miru-dark-purple-1000"
-              key={d}
+              key={day}
             >
-              {d}
+              {day}
             </div>
           ))}
           <div className="w-28 items-center rounded-xl text-center text-xs font-medium text-miru-dark-purple-1000">

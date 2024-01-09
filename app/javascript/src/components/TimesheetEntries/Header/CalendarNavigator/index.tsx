@@ -7,7 +7,7 @@ import dayjs from "dayjs";
 import { CaretCircleLeftIcon, CaretCircleRightIcon } from "miruIcons";
 import LabelText from "./LabelText";
 import NavArrowBtn from "./NavArrowBtn";
-import { useTimesheetEntries } from "components/TimesheetEntries/context/TimesheetEntriesContext";
+import { useTimesheetEntries } from "context/TimesheetEntries";
 
 function CalendarNavigator() {
   const {

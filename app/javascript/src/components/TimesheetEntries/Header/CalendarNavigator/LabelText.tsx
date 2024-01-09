@@ -1,6 +1,6 @@
 import React from "react";
 
-import { useTimesheetEntries } from "components/TimesheetEntries/context/TimesheetEntriesContext";
+import { useTimesheetEntries } from "context/TimesheetEntries";
 import { useUserContext } from "context/UserContext";
 
 function LabelText() {
