@@ -10,27 +10,11 @@ import { Divider } from "common/Divider";
 
 import { deviceTypes } from "../helpers";
 
-const EditPage = ({ devices, setDevices }) => {
+const EditPage = ({ devices, addAnotherDevice }) => {
   const setDeviceType = (type: string) => {
     const CurrentType = deviceTypes.filter(device => device.value === type);
 
     return CurrentType[0];
-  };
-
-  const addAnotherDevice = () => {
-    setDevices([
-      ...devices,
-      {
-        device_type: "",
-        name: "",
-        serial_number: "",
-        specifications: {
-          graphics: "",
-          processor: "",
-          ram: "",
-        },
-      },
-    ]);
   };
 
   return (

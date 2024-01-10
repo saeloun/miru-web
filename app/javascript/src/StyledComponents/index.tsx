@@ -1,6 +1,6 @@
 import Avatar from "./Avatar";
 import Badge from "./Badge";
-import Button from "./Button";
+import Button, { BUTTON_STYLES } from "./Button";
 import MobileMoreOptions from "./MobileMoreOptions";
 import Modal from "./Modal";
 import MoreOptions from "./MoreOptions";
@@ -26,4 +26,5 @@ export {
   Toastr,
   Tooltip,
   Switch,
+  BUTTON_STYLES,
 };
