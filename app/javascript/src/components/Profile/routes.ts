@@ -3,6 +3,8 @@ import { Roles } from "constants/index";
 import MobileNav from "./Layout/MobileNav";
 import OrgDetails from "./Organization/Details";
 import OrgEdit from "./Organization/Edit";
+import Holidays from "./Organization/Holidays";
+import Leaves from "./Organization/Leaves";
 import PaymentSettings from "./Organization/Payment";
 import AllocatedDevicesDetails from "./UserDetail/AllocatedDevicesDetails";
 import AllocatedDevicesEdit from "./UserDetail/AllocatedDevicesDetails/Edit";
@@ -74,16 +76,16 @@ export const SETTINGS_ROUTES = [
   //   Component: Billing,
   //   authorisedRoles: [ADMIN, OWNER],
   // },
-  // {
-  //   path: "/leaves",
-  //   Component: Leaves,
-  //   authorisedRoles: [ADMIN, OWNER],
-  // },
-  // {
-  //   path: "/holidays",
-  //   Component: Holidays,
-  //   authorisedRoles: [ADMIN, OWNER],
-  // },
+  {
+    path: "/leaves",
+    Component: Leaves,
+    authorisedRoles: [ADMIN, OWNER],
+  },
+  {
+    path: "/holidays",
+    Component: Holidays,
+    authorisedRoles: [ADMIN, OWNER],
+  },
   // {
   //   path: "/leave-balance",
   //   Component: LeaveBalance,
