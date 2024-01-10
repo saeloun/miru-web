@@ -8,7 +8,7 @@
 #  enable_optional_holidays        :boolean          default(FALSE)
 #  holiday_types                   :string           default([]), is an Array
 #  no_of_allowed_optional_holidays :integer
-#  time_period_optional_holidays   :integer          default("per_quarter"), not null
+#  time_period_optional_holidays   :integer          default("per_week"), not null
 #  year                            :integer          not null
 #  created_at                      :datetime         not null
 #  updated_at                      :datetime         not null
