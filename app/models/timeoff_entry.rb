@@ -42,6 +42,8 @@ class TimeoffEntry < ApplicationRecord
 
   validate :either_leave_type_or_holiday_info_present
 
+  scope :during, -> (from, to) { where(leave_date: from..to).order(leave_date: :desc) }
+
   private
 
     def either_leave_type_or_holiday_info_present

@@ -193,6 +193,7 @@ const Invoice = () => {
       </div>
     ) : (
       <MobileView
+        fetchInvoice={fetchInvoice}
         handleSendInvoice={handleSendInvoice}
         invoice={invoice}
         isStripeEnabled={isStripeEnabled}

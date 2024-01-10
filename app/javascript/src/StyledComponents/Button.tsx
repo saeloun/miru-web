@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React from "react";
 
 import classnames from "classnames";
@@ -12,6 +13,8 @@ const PRIMARY_DISABLED =
 
 const SECONDARY =
   "bg-transparent hover:bg-miru-gray-1000 text-miru-han-purple-1000 border border-miru-han-purple-1000";
+
+const Calendar_Cell = "rounded-xl border-2 border-transparent text-left";
 
 const SECONDARY_DISABLED =
   "bg-transparent text-miru-dark-purple-200 border border-miru-dark-purple-200";
@@ -28,6 +31,7 @@ const MEDIUM = "px-10/100 py-1vh text-base font-bold leading-5";
 const LARGE = "px-15/100 py-1vh text-xl font-bold leading-7";
 
 type ButtonProps = {
+  id?: string;
   style?: string;
   onClick?;
   disabled?: boolean;
@@ -38,15 +42,17 @@ type ButtonProps = {
   type?: any;
 };
 
-const BUTTON_STYLES = {
+export const BUTTON_STYLES = {
   primary: "primary",
   secondary: "secondary",
   ternary: "ternary",
   dashed: "dashed",
+  calendarCell: "calendarCell",
 };
 const SIZES = { small: "small", medium: "medium", large: "large" };
 
 const Button = ({
+  id = "",
   style = "primary",
   size,
   disabled = false,
@@ -57,6 +63,7 @@ const Button = ({
   type,
 }: ButtonProps) => (
   <button
+    id={id}
     disabled={disabled}
     type={type}
     className={classnames(
@@ -72,6 +79,8 @@ const Button = ({
       style == BUTTON_STYLES.ternary && disabled && TERNARY_DISABLED,
 
       style == BUTTON_STYLES.dashed && !disabled && DASHED,
+
+      style == BUTTON_STYLES.calendarCell && Calendar_Cell,
 
       size == SIZES.small && SMALL,
       size == SIZES.medium && MEDIUM,

@@ -300,7 +300,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_08_083827) do
     t.index ["discarded_at"], name: "index_invoices_on_discarded_at"
     t.index ["due_date"], name: "index_invoices_on_due_date"
     t.index ["external_view_key"], name: "index_invoices_on_external_view_key", unique: true
-    t.index ["invoice_number"], name: "index_invoices_on_invoice_number", unique: true
+    t.index ["invoice_number", "company_id"], name: "index_invoices_on_invoice_number_and_company_id", unique: true
     t.index ["issue_date"], name: "index_invoices_on_issue_date"
     t.index ["status"], name: "index_invoices_on_status"
   end

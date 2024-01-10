@@ -131,7 +131,7 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
                       <label className="form__label">Name</label>
                     </div>
                     <div className="flex">
-                      <div className="mt-1">
+                      <div className="mt-1 w-1/2">
                         <Field
                           name="firstName"
                           placeholder="First Name"
@@ -147,7 +147,7 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
                           )}
                         </div>
                       </div>
-                      <div className="mt-1 ml-8">
+                      <div className="mt-1 ml-8 w-1/2">
                         <Field
                           name="lastName"
                           placeholder="Last Name"
