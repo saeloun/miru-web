@@ -20,6 +20,8 @@ const initialState: any = {
   currentYear: dayjs().year(),
   getPayload: () => {}, //eslint-disable-line
   submitting: false,
+  leaveTypes: [],
+  leaveTypeHashObj: {},
   isWeeklyEditing: false,
   billable: false,
   client: initialClient,
@@ -27,6 +29,7 @@ const initialState: any = {
   monthData: [],
   weeklyData: [],
   duration: initialDuration,
+  editTimeoffEntryId: 0,
   editEntryId: "",
   handleEdit: () => {}, //eslint-disable-line
   handleSave: () => {}, //eslint-disable-line
@@ -57,6 +60,9 @@ const initialState: any = {
   setSelectedDate: () => {}, //eslint-disable-line
   setSubmitting: () => {}, //eslint-disable-line
   setSelectedEmployeeId: () => {}, //eslint-disable-line
+  setLeaveTypes: () => {}, //eslint-disable-line
+  setLeaveTypeHashObj: () => {}, //eslint-disable-line
+  setEditTimeoffEntryId: () => {}, //eslint-disable-line
 };
 export const TimesheetEntriesContext = createContext(initialState);
 

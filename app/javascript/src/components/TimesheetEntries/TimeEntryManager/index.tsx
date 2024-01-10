@@ -1,5 +1,6 @@
 import React from "react";
 
+import TimeoffEntryManager from "components/TimeoffEntries/TimeoffEntryManager";
 import { useTimesheetEntries } from "context/TimesheetEntries";
 
 import EntryCard from "../EntryCard";
@@ -27,12 +28,14 @@ const TimeEntryManager = () => {
     weeklyData,
     clients,
     editEntryId,
+    editTimeoffEntryId,
     handleDeleteEntry,
     selectedFullDate,
     setEditEntryId,
     setNewEntryView,
     handleDuplicate,
     parseWeeklyViewData,
+    leaveTypeHashObj,
   } = useTimesheetEntries();
 
   return (
@@ -88,15 +91,28 @@ const TimeEntryManager = () => {
             // Edit time entry form
             <EntryForm key={entry.id} />
           ) : (
-            <EntryCard
-              currentUserRole={entryList["currentUserRole"]}
-              handleDeleteEntry={handleDeleteEntry}
-              handleDuplicate={handleDuplicate}
-              key={weekCounter}
-              setEditEntryId={setEditEntryId}
-              setNewEntryView={setNewEntryView}
-              {...entry}
-            />
+            <>
+              {entry?.type === "timesheet" && !entry?.leave_type_id ? (
+                <EntryCard
+                  currentUserRole={entryList["currentUserRole"]}
+                  handleDeleteEntry={handleDeleteEntry}
+                  handleDuplicate={handleDuplicate}
+                  key={weekCounter}
+                  setEditEntryId={setEditEntryId}
+                  setNewEntryView={setNewEntryView}
+                  {...entry}
+                />
+              ) : (
+                <TimeoffEntryManager
+                  currentUserRole={entryList["currentUserRole"]}
+                  leaveEntry={entry}
+                  leaveTypeDetails={leaveTypeHashObj[entry?.leave_type_id]}
+                  isDisplayEditTimeoffEntryForm={
+                    editTimeoffEntryId === entry?.id
+                  }
+                />
+              )}
+            </>
           )
         )
       )}

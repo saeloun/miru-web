@@ -63,6 +63,7 @@ const TimesheetEntries = ({ user, isAdminUser }: Iprops) => {
     dayjs().format("YYYY-MM-DD")
   );
   const [editEntryId, setEditEntryId] = useState<number>(0);
+  const [editTimeoffEntryId, setEditTimeoffEntryId] = useState<number>(0);
   const [weeklyData, setWeeklyData] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [isWeeklyEditing, setIsWeeklyEditing] = useState<boolean>(false);
@@ -76,6 +77,8 @@ const TimesheetEntries = ({ user, isAdminUser }: Iprops) => {
   const [currentMonthNumber, setCurrentMonthNumber] = useState<number>(
     dayjs().month()
   );
+  const [leaveTypes, setLeaveTypes] = useState([]);
+  const [leaveTypeHashObj, setLeaveTypeHashObj] = useState({});
   const [totalMonthDuration, setTotalMonthDuration] = useState<number>(0);
   const [monthData, setMonthData] = useState<object[]>([]);
   const [currentYear, setCurrentYear] = useState<number>(dayjs().year());
@@ -95,11 +98,12 @@ const TimesheetEntries = ({ user, isAdminUser }: Iprops) => {
   const fetchTimeTrackingData = async () => {
     try {
       const { data } = await timeTrackingApi.get();
-      const { clients, projects, entries, employees } = data;
+      const { clients, projects, entries, employees, leave_types } = data;
       setClients(clients);
       setProjects(projects);
       setEmployees(employees);
       setEntryList(entries);
+      setLeaveTypes(leave_types);
       const currentEmployeeEntries = {};
       currentEmployeeEntries[user.id] = entries;
       setAllEmployeesEntries(currentEmployeeEntries);
@@ -156,6 +160,19 @@ const TimesheetEntries = ({ user, isAdminUser }: Iprops) => {
     fetchEntriesOfMonths();
   }, [selectedEmployeeId]);
 
+  useEffect(() => {
+    if (leaveTypes?.length > 0) {
+      const hashObj = leaveTypes?.reduce((acc, leaveType) => {
+        if (leaveType?.id) {
+          acc[leaveType.id] = { ...leaveType };
+        }
+        return acc;
+      }, {});
+
+      setLeaveTypeHashObj({ ...hashObj });
+    }
+  }, [leaveTypes]);
+
   const handleWeekTodayButton = () => {
     setSelectDate(0);
     setWeekDay(dayjs().weekday());
@@ -193,7 +210,6 @@ const TimesheetEntries = ({ user, isAdminUser }: Iprops) => {
           ...res.data.entries,
         };
         setAllEmployeesEntries(allEntries);
-        console.log(allEntries[selectedEmployeeId]);
         setEntryList(allEntries[selectedEmployeeId]);
       }
       setLoading(false);
@@ -557,6 +573,12 @@ const TimesheetEntries = ({ user, isAdminUser }: Iprops) => {
         handleMonthChange,
         isDesktop,
         newRowView,
+        leaveTypes,
+        setLeaveTypes,
+        leaveTypeHashObj,
+        setLeaveTypeHashObj,
+        editTimeoffEntryId,
+        setEditTimeoffEntryId,
       }}
     >
       <div className="pb-14">

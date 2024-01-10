@@ -1,28 +1,60 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 
 import { format } from "date-fns";
 import dayjs from "dayjs";
+import { minFromHHMM, minToHHMM } from "helpers";
 import TextareaAutosize from "react-textarea-autosize";
-import { TimeInput } from "StyledComponents";
+import { Button, BUTTON_STYLES, TimeInput } from "StyledComponents";
 
+import timeoffEntryApi from "apis/timeoff-entry";
 import CustomDatePicker from "common/CustomDatePicker";
-import { useTimesheetEntries } from "components/TimesheetEntries/context/TimesheetEntriesContext";
+import { useTimesheetEntries } from "context/TimesheetEntries";
+import { useUserContext } from "context/UserContext";
 
-const TimeoffForm = () => {
-  const { selectedFullDate, setNewTimeoffEntryView } = useTimesheetEntries();
-  const LEAVE_TYPES = [
-    { label: "Leave Type", value: "" },
-    { label: "Annual leave", value: "annual" },
-    { label: "Sick leave", value: "sick" },
-    { label: "Maternity leave", value: "maternity" },
-  ];
+const TimeoffForm = ({ isDisplayEditTimeoffEntryForm = false }: Iprops) => {
+  const datePickerRef = useRef();
+  const { isDesktop } = useUserContext();
+  const {
+    leaveTypes,
+    entryList,
+    selectedFullDate,
+    setUpdateView,
+    setNewTimeoffEntryView,
+    selectedEmployeeId,
+    fetchEntries,
+    fetchEntriesOfMonths,
+    handleAddEntryDateChange,
+    editTimeoffEntryId,
+    setEditTimeoffEntryId,
+    handleFilterEntry,
+    handleRelocateEntry,
+    setSelectedFullDate,
+  } = useTimesheetEntries();
+
   const [note, setNote] = useState<string>("");
   const [displayDatePicker, setDisplayDatePicker] = useState<boolean>(false);
   const [duration, setDuration] = useState<string>("");
   const [selectedDate, setSelectedDate] = useState<string>(selectedFullDate);
+  const [leaveTypeId, setLeaveTypeId] = useState(0);
 
-  const datePickerRef = useRef();
+  useEffect(() => {
+    if (isDisplayEditTimeoffEntryForm) {
+      handleFillData();
+    }
+  }, [isDisplayEditTimeoffEntryForm]);
+
+  const handleFillData = () => {
+    const timeoffEntry = entryList[selectedFullDate]?.find(
+      entry => entry.id === editTimeoffEntryId
+    );
+
+    if (timeoffEntry) {
+      setDuration(minToHHMM(timeoffEntry.duration));
+      setLeaveTypeId(timeoffEntry.leave_type_id);
+      setNote(timeoffEntry.note);
+    }
+  };
 
   const handleDateChangeFromDatePicker = (date: Date) => {
     setSelectedDate(dayjs(date).format("YYYY-MM-DD"));
@@ -33,36 +65,99 @@ const TimeoffForm = () => {
     setDuration(val);
   };
 
-  // const handleDisableBtn = () => {
-  //   const tse = getPayload();
-  //   const message = validateTimesheetEntry(tse, client, projectId);
-  //   if (message || submitting) {
-  //     return true;
-  //   }
+  const isBtnDisable = () => {
+    const isActiveBtn = duration?.length > 0 && selectedDate?.length > 0;
 
-  //   return false;
-  // };
+    return !isActiveBtn;
+  };
+
+  const getPayload = () => {
+    const payload = {
+      duration: minFromHHMM(duration),
+      leave_date: selectedDate,
+      user_id: selectedEmployeeId,
+      leave_type_id: leaveTypeId,
+      note, // check payload
+    };
+
+    return { timeoff_entry: { ...payload } };
+  };
+
+  const handleSubmit = () => {
+    if (editTimeoffEntryId && isDisplayEditTimeoffEntryForm) {
+      handleEditTimeoffEntry();
+    } else {
+      handleSaveTimeoffEntry();
+    }
+  };
+
+  const handleSaveTimeoffEntry = async () => {
+    const payload = getPayload();
+    const res = await timeoffEntryApi.create(payload, selectedEmployeeId);
+
+    if (res.status === 200) {
+      const fetchEntriesRes = await fetchEntries(selectedDate, selectedDate);
+      if (!isDesktop) {
+        fetchEntriesOfMonths();
+      }
+
+      if (fetchEntriesRes) {
+        setNewTimeoffEntryView(false);
+        setUpdateView(true);
+        handleAddEntryDateChange(dayjs(selectedDate));
+        await fetchEntries(selectedDate, selectedDate);
+        fetchEntriesOfMonths();
+      }
+    }
+  };
+
+  const handleEditTimeoffEntry = async () => {
+    const payload = getPayload();
+    const updateRes = await timeoffEntryApi.update(editTimeoffEntryId, payload);
+
+    if (updateRes.status >= 200 && updateRes.status < 300) {
+      if (selectedDate !== selectedFullDate) {
+        await handleFilterEntry(selectedFullDate, editTimeoffEntryId);
+        await handleRelocateEntry(selectedDate, updateRes.data.entry);
+        if (!isDesktop) {
+          fetchEntriesOfMonths();
+        }
+      } else {
+        await fetchEntries(selectedDate, selectedDate);
+        fetchEntriesOfMonths();
+      }
+      setEditTimeoffEntryId(0);
+      setNewTimeoffEntryView(false);
+      setUpdateView(true);
+      handleAddEntryDateChange(dayjs(selectedDate));
+      setSelectedFullDate(dayjs(selectedDate).format("YYYY-MM-DD"));
+    }
+  };
 
   return (
-    <div
-      className={`hidden min-h-24 justify-between rounded-lg p-4 shadow-2xl lg:flex `}
-    >
+    <div className="mt-10 hidden min-h-24 justify-between rounded-lg p-4 shadow-2xl lg:flex">
       <div className="w-1/2">
         <div className="mb-2 flex w-129 justify-between">
           <select
             className="h-8 w-full rounded-sm bg-miru-gray-100"
             id="leaves"
             name="leaves"
+            value={`${leaveTypeId}`}
+            onChange={e => setLeaveTypeId(Number(e?.target?.value) || 0)}
           >
-            {LEAVE_TYPES?.map(leave => (
-              <option
-                className="text-miru-gray-100"
-                key={leave.value}
-                value={leave.value}
-              >
-                {leave.label}
-              </option>
-            ))}
+            <option className="text-miru-gray-100" key={0} value={0}>
+              Leave Type
+            </option>
+            {leaveTypes?.length > 0 &&
+              leaveTypes?.map(leave => (
+                <option
+                  className="text-miru-gray-100"
+                  key={leave.id}
+                  value={leave.id}
+                >
+                  {leave.name}
+                </option>
+              ))}
           </select>
         </div>
         <TextareaAutosize
@@ -109,24 +204,38 @@ const TimeoffForm = () => {
         </div>
       </div>
       <div className="max-w-min">
-        <button
-          // disabled={handleDisableBtn()}
-          className={`mb-1 h-8 w-38 rounded border bg-miru-han-purple-1000 py-1 px-6 text-xs font-bold tracking-widest text-white hover:border-transparent
+        <Button
+          disabled={isBtnDisable()}
+          style={BUTTON_STYLES.primary}
+          className={`mb-1 h-8 w-38 rounded border py-1 px-6 text-xs font-bold uppercase tracking-widest text-white hover:border-transparent ${
+            isBtnDisable()
+              ? "cursor-not-allowed bg-miru-gray-1000"
+              : "cursor-pointer bg-miru-han-purple-1000 hover:border-transparent"
+          }
           `}
+          onClick={handleSubmit}
         >
-          SAVE
-        </button>
-        <button
-          className="mt-1 h-8 w-38 rounded border border-miru-han-purple-1000 bg-transparent py-1 px-6 text-xs font-bold tracking-widest text-miru-han-purple-600 hover:border-transparent hover:bg-miru-han-purple-1000 hover:text-white"
+          {isDisplayEditTimeoffEntryForm ? "Update" : "Save"}
+        </Button>
+        <Button
+          className="mt-1 h-8 w-38 rounded border border-miru-han-purple-1000 bg-transparent py-1 px-6 text-xs font-bold uppercase tracking-widest text-miru-han-purple-600 hover:border-transparent hover:bg-miru-han-purple-1000 hover:text-white"
+          style={BUTTON_STYLES.secondary}
           onClick={() => {
             setNewTimeoffEntryView(false);
+            if (editTimeoffEntryId) {
+              setEditTimeoffEntryId(0);
+            }
           }}
         >
           CANCEL
-        </button>
+        </Button>
       </div>
     </div>
   );
 };
+
+interface Iprops {
+  isDisplayEditTimeoffEntryForm?: boolean;
+}
 
 export default TimeoffForm;

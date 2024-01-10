@@ -5,7 +5,6 @@ import { minToHHMM } from "helpers";
 import { Badge } from "StyledComponents";
 
 import { useUserContext } from "context/UserContext";
-import getStatusCssClass from "utils/getBadgeStatus";
 
 import {
   showDeleteAction,
@@ -48,7 +47,7 @@ const EntryCard = ({
         </div>
         <div className="flex py-2 lg:hidden">
           <Badge
-            className={`${getStatusCssClass(bill_status)} uppercase`}
+            // className={`${getStatusCssClass(bill_status)} uppercase`}
             text={bill_status}
           />
         </div>
@@ -63,7 +62,7 @@ const EntryCard = ({
         <div className="flex w-7/12 items-center justify-between">
           <div>
             <Badge
-              className={`${getStatusCssClass(bill_status)} uppercase`}
+              // className={`${getStatusCssClass(bill_status)} uppercase`}
               text={bill_status}
             />
           </div>
