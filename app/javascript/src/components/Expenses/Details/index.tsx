@@ -55,11 +55,15 @@ const ExpenseDetails = () => {
     }
   };
 
-  const handleEditExpense = () => {
-    //Todo: uncomment following line after update api is added.
-    //await expensesApi.update(expense.id, payload);
+  const handleEditExpense = async payload => {
+    await expensesApi.update(expense.id, payload);
     setShowEditExpenseModal(false);
     fetchExpense();
+  };
+
+  const handleDeleteExpense = async () => {
+    await expensesApi.destroy(expense.id);
+    navigate("/expenses");
   };
 
   const handleDelete = () => {
@@ -98,6 +102,7 @@ const ExpenseDetails = () => {
       )}
       {showDeleteExpenseModal && (
         <DeleteExpenseModal
+          handleDeleteExpense={handleDeleteExpense}
           setShowDeleteExpenseModal={setShowDeleteExpenseModal}
           showDeleteExpenseModal={showDeleteExpenseModal}
         />

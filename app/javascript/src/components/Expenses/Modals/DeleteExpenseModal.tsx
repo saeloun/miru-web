@@ -5,6 +5,7 @@ import { Modal, Button } from "StyledComponents";
 const DeleteExpenseModal = ({
   setShowDeleteExpenseModal,
   showDeleteExpenseModal,
+  handleDeleteExpense,
 }) => (
   <Modal
     customStyle="sm:my-8 sm:w-full sm:max-w-lg sm:align-middle"
@@ -33,6 +34,7 @@ const DeleteExpenseModal = ({
         className="ml-2 w-1/2 bg-miru-red-400 xsm:text-white"
         size="medium"
         style="ternary"
+        onClick={handleDeleteExpense}
       >
         DELETE
       </Button>
