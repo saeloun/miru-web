@@ -27,6 +27,22 @@ class InternalApi::V1::ExpensesController < ApplicationController
     render :show, locals: { expense: Expense::ShowPresenter.new(@expense).process }
   end
 
+  def update
+    authorize set_expense
+
+    @expense.update(expense_params)
+
+    render json: { notice: "Expense updated successfully" }, status: :ok
+  end
+
+  def destroy
+    authorize set_expense
+
+    @expense.destroy
+
+    render json: { notice: "Expense deleted successfully" }, status: :ok
+  end
+
   private
 
     def expense_params
