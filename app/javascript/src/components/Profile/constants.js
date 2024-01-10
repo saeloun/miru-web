@@ -8,7 +8,6 @@ import {
   UserIcon,
   MobileIcon,
   ProjectsIcon,
-  CalendarIcon,
 } from "miruIcons";
 
 import { Roles } from "constants/index";
