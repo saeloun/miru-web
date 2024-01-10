@@ -27,7 +27,7 @@ class InternalApi::V1::InvitationsController < InternalApi::V1::ApplicationContr
     authorize @invitation
 
     @invitation.resend_invitation
-    render json: { notice: "Invitation resent success" }, status: :ok
+    render json: { notice: I18n.t("invitation.resent.success.message") }, status: :ok
   end
 
   private

@@ -24,6 +24,7 @@ const updateTeamMembers = payload =>
 
 //TODO: connect Invitation flow
 const inviteMember = payload => axios.post("/invitations", payload);
+const resendInvite = id => axios.post(`/invitations/${id}/resend`);
 const updateInvitedMember = (id, payload) =>
   axios.put(`/invitations/${id}`, payload);
 const deleteInvitedMember = id => axios.delete(`/invitations/${id}`);
@@ -39,6 +40,7 @@ const teamApi = {
   deleteInvitedMember,
   inviteMember,
   updateTeamMembers,
+  resendInvite,
 };
 
 export default teamApi;
