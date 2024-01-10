@@ -113,8 +113,7 @@ class Invitation < ApplicationRecord
     end
 
     def users_not_with_client_role
-      users_with_client_role_ids = company.users.joins(:roles).where(roles: { name: "client" }).pluck(:id)
-      company.users.where.not(id: users_with_client_role_ids)
+      company.employments.joins(user: :roles).where.not(roles: { name: "client" })
     end
 
     def send_invitation_mail
