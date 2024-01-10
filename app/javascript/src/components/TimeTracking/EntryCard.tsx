@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable */
 import React from "react";
 
 import { minToHHMM } from "helpers";

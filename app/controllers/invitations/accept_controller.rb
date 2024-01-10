@@ -18,8 +18,7 @@ class Invitations::AcceptController < ApplicationController
     else
       flash[:error] = service.error_message
     end
-
-    redirect_to root_path
+    redirect_to "/invalid-link"
   end
 
   def show

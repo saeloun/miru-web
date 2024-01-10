@@ -166,11 +166,13 @@ const InvoiceDetails = ({
                         {selectedClient.name}
                       </p>
                       <p className="w-52 py-2 text-xs font-medium text-miru-dark-purple-600">
-                        {`${address_line_1}${
-                          address_line_2 ? `, ${address_line_2}` : ""
-                        }\n ${
-                          address_line_2 ? "," : ""
-                        }\n ${city}, ${state}, ${country},\n ${pin}`}
+                        {selectedClient?.address
+                          ? `${address_line_1}${
+                              address_line_2 ? `, ${address_line_2}` : ""
+                            }\n${
+                              address_line_2 ? "," : ""
+                            }\n${city}, ${state}, ${country},\n${pin}`
+                          : "No address found"}
                         <br />
                         {selectedClient.phone}
                       </p>
