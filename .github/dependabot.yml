@@ -6,19 +6,8 @@ updates:
       interval: daily
     # Allow more concurrent PRs because our Gemfile is so large.
     open-pull-requests-limit: 10
-    ignore:
-      # Ignore patch releases because they create too much low-value work.
-      # This should not affect security updates.
-      - dependency-name: "*"
-        update-types: ["version-update:semver-patch"]
   - package-ecosystem: npm
     directory: "/"
     schedule:
       interval: daily
     open-pull-requests-limit: 10
-    ignore:
-      # Ignore minor and patch releases because they create too much low-value work.
-      # This should not affect security updates.
-      - dependency-name: "*"
-        update-types:
-          ["version-update:semver-minor", "version-update:semver-patch"]
