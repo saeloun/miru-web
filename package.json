@@ -11,7 +11,7 @@
     "@babel/runtime": "^7.21.0",
     "@fontsource/plus-jakarta-sans": "^4.5.0",
     "@headlessui/react": "^1.4.2",
-    "@heroicons/react": "^1.0.5",
+    "@heroicons/react": "^2.1.1",
     "@rails/actioncable": "^7.0.4",
     "@rails/activestorage": "^7.0.4",
     "@rails/ujs": "^7.0.4",
