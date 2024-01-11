@@ -688,12 +688,11 @@ const TimesheetEntries = ({ user, isAdminUser }: Iprops) => {
                 !newTimeoffEntryView &&
                 isDesktop && (
                   <button
-                    className="ml-2 flex h-10 w-full items-center justify-center rounded border-2 border-miru-han-purple-600 p-2 text-lg font-bold tracking-widest text-miru-han-purple-600 lg:h-14 lg:p-4"
+                    className="ml-2 flex h-10 w-full items-center justify-center rounded border-2 border-miru-han-purple-600 p-2 text-lg font-bold uppercase tracking-widest text-miru-han-purple-600 lg:h-14 lg:p-4"
                     onClick={() => {
                       setNewTimeoffEntryView(true);
                     }}
                   >
-                    {/* <VacationIconSVG fill="blue" stroke="yellow" /> */}
                     <img src={VacationIconSVG} className="icon" />
                     <span className="ml-2">Mark Time Off</span>
                   </button>
