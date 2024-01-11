@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_11_15_121129) do
+ActiveRecord::Schema[7.0].define(version: 2024_01_08_083827) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -300,7 +300,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_15_121129) do
     t.index ["discarded_at"], name: "index_invoices_on_discarded_at"
     t.index ["due_date"], name: "index_invoices_on_due_date"
     t.index ["external_view_key"], name: "index_invoices_on_external_view_key", unique: true
-    t.index ["invoice_number"], name: "index_invoices_on_invoice_number", unique: true
+    t.index ["invoice_number", "company_id"], name: "index_invoices_on_invoice_number_and_company_id", unique: true
     t.index ["issue_date"], name: "index_invoices_on_issue_date"
     t.index ["status"], name: "index_invoices_on_status"
   end
@@ -420,6 +420,22 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_15_121129) do
     t.index ["company_id"], name: "index_stripe_connected_accounts_on_company_id", unique: true
   end
 
+  create_table "timeoff_entries", force: :cascade do |t|
+    t.integer "duration", null: false
+    t.text "note", default: ""
+    t.date "leave_date", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.bigint "leave_type_id"
+    t.datetime "discarded_at"
+    t.bigint "holiday_info_id"
+    t.index ["discarded_at"], name: "index_timeoff_entries_on_discarded_at"
+    t.index ["holiday_info_id"], name: "index_timeoff_entries_on_holiday_info_id"
+    t.index ["leave_type_id"], name: "index_timeoff_entries_on_leave_type_id"
+    t.index ["user_id"], name: "index_timeoff_entries_on_user_id"
+  end
+
   create_table "timesheet_entries", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "project_id", null: false
@@ -533,6 +549,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_15_121129) do
   add_foreign_key "project_members", "users"
   add_foreign_key "projects", "clients"
   add_foreign_key "stripe_connected_accounts", "companies"
+  add_foreign_key "timeoff_entries", "leave_types"
+  add_foreign_key "timeoff_entries", "users"
   add_foreign_key "timesheet_entries", "projects"
   add_foreign_key "timesheet_entries", "users"
   add_foreign_key "users", "companies", column: "current_workspace_id"

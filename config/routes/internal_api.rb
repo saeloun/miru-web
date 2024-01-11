@@ -102,7 +102,11 @@ namespace :internal_api, defaults: { format: "json" } do
       collection { put "update_team_members" }
     end
 
-    resources :invitations, only: [:create, :update, :destroy]
+    resources :invitations, only: [:create, :update, :destroy] do
+      member do
+        post "resend"
+      end
+    end
 
     resources :time_tracking, only: [:index], path: "time-tracking"
 
@@ -143,6 +147,8 @@ namespace :internal_api, defaults: { format: "json" } do
     resources :leaves, as: "leave" do
       resources :leave_types
     end
+
+    resources :timeoff_entries, except: [:new, :edit]
 
     patch "leave_with_leave_type/:year", to: "leave_with_leave_types#update", as: :update_leave_with_leave_types
 
