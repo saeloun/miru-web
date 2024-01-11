@@ -101,7 +101,7 @@ gem "omniauth-rails_csrf_protection", "~> 1.0"
 gem "pundit", "~> 2.2"
 
 # Data migration gem to migrate data alongside schema changes
-gem "data_migrate", "~> 8.0.0.rc2"
+gem "data_migrate", "~> 10.0.3.rc"
 
 # pagy for Pagination
 gem "pagy", "~> 5.10"
