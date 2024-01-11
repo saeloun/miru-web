@@ -4,7 +4,7 @@ class TimeTrackingIndexService
   attr_reader :current_user, :current_company, :entries, :from, :to, :year
   attr_accessor :clients, :projects, :is_admin, :employees
 
-  def initialize(user, company, from, to, year)
+  def initialize(user:, company:, from:, to:, year:)
     @current_user = user
     @current_company = company
     @from = from
