@@ -75,7 +75,7 @@ class TimeTrackingIndexService
     end
 
     def timeoff_entries
-      @_timeoff_entries ||= current_company.timeoff_entries.includes([:leave_type])
+      @_timeoff_entries ||= current_company.timeoff_entries.kept.includes([:leave_type])
         .where(user_id: current_user.id)
         .order(leave_date: :desc)
         .during(
