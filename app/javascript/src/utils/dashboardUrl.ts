@@ -9,7 +9,7 @@ export const dashboardUrl = role => {
       break;
     case Roles.OWNER:
     case Roles.CLIENT:
-      url = "invoices";
+      url = "/invoices";
       break;
     default:
       url = Paths.TIME_TRACKING;
