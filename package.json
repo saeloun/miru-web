@@ -53,7 +53,7 @@
     "postcss-preset-env": "^8.0.1",
     "prop-types": "^15.8.1",
     "puppeteer": "^18.0.0",
-    "ramda": "^0.28.0",
+    "ramda": "^0.29.1",
     "rc-steps": "^6.0.0",
     "react": "^18.2.0",
     "react-calendar": "2.18.1",
