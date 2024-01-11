@@ -118,11 +118,18 @@ class Invitation < ApplicationRecord
 
     def send_invitation_mail
       user_already_exists = User.exists?(email: recipient_email)
+
       company_details = {
-        name: company.name, logo: company.company_logo,
+        name: company.name,
+        logo: company.company_logo,
         employee_count: users_not_with_client_role.count
       }
-      sender_details = { email: sender.email, avatar: sender.avatar_url, name: sender.full_name }
+
+      sender_details = {
+        email: sender.email,
+        avatar: sender.avatar_url,
+        name: sender.full_name
+      }
 
       UserInvitationMailer.with(
         recipient: recipient_email,
