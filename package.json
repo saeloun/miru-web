@@ -40,7 +40,7 @@
     "formik": "^2.2.9",
     "html-react-parser": "^3.0.15",
     "i18n-js": "^4.2.2",
-    "jquery": "^3.6.0",
+    "jquery": "^3.7.1",
     "js-cookie": "^3.0.5",
     "js-logger": "^1.6.1",
     "mini-css-extract-plugin": "^2.7.2",
