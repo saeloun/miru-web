@@ -1,9 +1,15 @@
 import React, { Fragment } from "react";
 
-import { EditIcon, DeleteIcon, DotsThreeVerticalIcon } from "miruIcons";
+import {
+  EditIcon,
+  DeleteIcon,
+  DotsThreeVerticalIcon,
+  ResendInviteIcon,
+} from "miruIcons";
 import { useNavigate } from "react-router-dom";
 import { Badge, MobileMoreOptions } from "StyledComponents";
 
+import teamApi from "apis/team";
 import { TeamModalType } from "constants/index";
 import { useList } from "context/TeamContext";
 import { useUserContext } from "context/UserContext";
@@ -22,6 +28,10 @@ const TableRow = ({ item }) => {
     e.preventDefault();
     e.stopPropagation();
     setModalState(action, item);
+  };
+
+  const handleResendInvite = async () => {
+    await teamApi.resendInvite(item.id);
   };
 
   const handleRowClick = () => {
@@ -68,6 +78,19 @@ const TableRow = ({ item }) => {
             <td className="w-44 py-6 pr-6 text-right">
               {actionIconVisible && (
                 <div className="iconWrapper invisible">
+                  {status && (
+                    <button
+                      className="ml-12"
+                      id="resendInvite"
+                      onClick={handleResendInvite}
+                    >
+                      <ResendInviteIcon
+                        color="#5b34ea"
+                        size={16}
+                        weight="bold"
+                      />
+                    </button>
+                  )}
                   <button
                     className="ml-12"
                     id="editMember"
@@ -138,6 +161,15 @@ const TableRow = ({ item }) => {
           setVisibilty={setShowMoreOptions}
           visibilty={showMoreOptions}
         >
+          {status && (
+            <li
+              className="flex items-center pt-3 text-sm leading-5 text-miru-han-purple-1000"
+              onClick={e => handleAction(e, TeamModalType.ADD_EDIT)}
+            >
+              <ResendInviteIcon className="mr-4" color="#5B34EA" size={16} />
+              Resend
+            </li>
+          )}
           <li
             className="flex items-center pt-3 text-sm leading-5 text-miru-han-purple-1000"
             onClick={e => handleAction(e, TeamModalType.ADD_EDIT)}
