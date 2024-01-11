@@ -117,7 +117,7 @@ class Invitation < ApplicationRecord
     end
 
     def users_not_with_client_role
-      company.employments.joins(user: :roles).where.not(roles: { name: "client" })
+      company.employments.kept.joins(user: :roles).where.not(roles: { name: "client" })
     end
 
     def send_invitation_mail
