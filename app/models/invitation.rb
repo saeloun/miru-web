@@ -90,6 +90,10 @@ class Invitation < ApplicationRecord
     end
   end
 
+  def resend_invitation
+    send_invitation_mail
+  end
+
   private
 
     def set_expired_at
