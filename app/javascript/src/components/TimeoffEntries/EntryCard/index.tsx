@@ -82,7 +82,7 @@ const TimeoffEntryCard = ({
     setEditEntryId(0);
     const res = await timeoffEntryApi.destroy(timeoffEntryId);
 
-    if (res.status == 200) {
+    if (res.status === 200) {
       await handleFilterEntry(selectedFullDate, timeoffEntryId);
     }
   };
@@ -99,7 +99,7 @@ const TimeoffEntryCard = ({
       const payload = getPayload(timeoffEntry);
       if (payload) {
         const res = await timeoffEntryApi.create(payload, selectedEmployeeId);
-        if (res.status == 200) {
+        if (res.status === 200) {
           await fetchEntries(selectedFullDate, selectedFullDate);
           await fetchEntriesOfMonths();
         }

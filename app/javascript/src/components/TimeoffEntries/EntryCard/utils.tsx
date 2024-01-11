@@ -5,8 +5,12 @@ import { Button, BUTTON_STYLES } from "StyledComponents";
 
 import { Roles } from "constants/index";
 
+import { BILL_STATUS } from "../constants";
+
 export const canEditTimeEntry = (billStatus, role) =>
-  billStatus != "billed" || role == Roles["OWNER"] || role == Roles["ADMIN"];
+  billStatus !== BILL_STATUS.BILLED ||
+  role === Roles["OWNER"] ||
+  role === Roles["ADMIN"];
 
 export const showUpdateAction = (
   billStatus,

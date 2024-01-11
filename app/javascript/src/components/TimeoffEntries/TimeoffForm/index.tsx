@@ -12,7 +12,7 @@ import CustomDatePicker from "common/CustomDatePicker";
 import { useTimesheetEntries } from "context/TimesheetEntries";
 import { useUserContext } from "context/UserContext";
 
-import { HOLIDAY_TYPES } from "./constant";
+import { HOLIDAY_TYPES } from "../constants";
 
 const TimeoffForm = ({ isDisplayEditTimeoffEntryForm = false }: Iprops) => {
   const datePickerRef = useRef();
@@ -105,7 +105,7 @@ const TimeoffForm = ({ isDisplayEditTimeoffEntryForm = false }: Iprops) => {
   const setSuggestedHolidayBasedOnDate = (currentHolidayOptions: any[]) => {
     if (!isDisplayEditTimeoffEntryForm && currentHolidayOptions?.length > 0) {
       const suggestedHoliday = currentHolidayOptions?.find(
-        holiday => holiday?.date == selectedDate
+        holiday => holiday?.date === selectedDate
       );
       setHolidayId(suggestedHoliday?.id || 0);
     }
@@ -188,7 +188,7 @@ const TimeoffForm = ({ isDisplayEditTimeoffEntryForm = false }: Iprops) => {
     if (payload) {
       const res = await timeoffEntryApi.create(payload, selectedEmployeeId);
 
-      if (res.status == 200) {
+      if (res.status === 200) {
         const fetchEntriesRes = await fetchEntries(selectedDate, selectedDate);
 
         if (!isDesktop) {
