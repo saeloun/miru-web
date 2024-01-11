@@ -2236,10 +2236,10 @@ ajv@^8.0.0, ajv@^8.8.0:
     require-from-string "^2.0.2"
     uri-js "^4.2.2"
 
-alpine-turbo-drive-adapter@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/alpine-turbo-drive-adapter/-/alpine-turbo-drive-adapter-2.0.0.tgz#16ecd73cb549e1812f5c9fd605e2e7e51c00c930"
-  integrity sha512-Hspm4IX2UNxriAkdNjAsLdDX1/Euaksnj5dc4+M/0/xsMxAEiMOkt+7ZWtU8GSFR87iS3PixBh/n76Ci6yeDbQ==
+alpine-turbo-drive-adapter@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/alpine-turbo-drive-adapter/-/alpine-turbo-drive-adapter-2.1.0.tgz#ad517170348b3ab3d2e8be90dc996bda763ab3e6"
+  integrity sha512-Lehm3XM6JsQEcNugdtDkOMJUp1zEKmpJ/zMHxL/h6Korb5xZkMbacINRaFlUZGQtSP0Om4ZcYLERklLEFGczYQ==
 
 alpinejs@^2.2.5:
   version "2.8.2"
