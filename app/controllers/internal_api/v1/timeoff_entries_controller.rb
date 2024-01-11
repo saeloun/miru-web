@@ -3,7 +3,20 @@
 class InternalApi::V1::TimeoffEntriesController < InternalApi::V1::ApplicationController
   before_action :load_user!, only: [:create, :update]
   before_action :load_leave_type!, only: [:create, :update]
+  before_action :load_holiday_info!, only: [:create, :update]
   before_action :load_timeoff_entry!, only: [:update, :destroy]
+
+  def index
+    authorize TimeoffEntry
+    data = TimeoffEntries::IndexService.new(params, current_company, current_user).process
+
+    render :index, locals: {
+      timeoff_entries: data[:timeoff_entries],
+      employees: data[:employees],
+      leave_balance: data[:leave_balance],
+      total_timeoff_entries_duration: data[:total_timeoff_entries_duration]
+    }, status: :ok
+  end
 
   def create
     authorize TimeoffEntry
@@ -37,7 +50,15 @@ class InternalApi::V1::TimeoffEntriesController < InternalApi::V1::ApplicationCo
     end
 
     def load_leave_type!
-      @leave_type ||= current_company.leave_types.find(params[:timeoff_entry][:leave_type_id])
+      if timeoff_params[:leave_type_id].present?
+        @leave_type ||= current_company.leave_types.find(params[:timeoff_entry][:leave_type_id])
+      end
+    end
+
+    def load_holiday_info!
+      if timeoff_params[:holiday_info_id].present?
+        @hoiday_info ||= current_company.holiday_infos.find(params[:timeoff_entry][:holiday_info_id])
+      end
     end
 
     def load_timeoff_entry!

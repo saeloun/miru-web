@@ -7,6 +7,8 @@ import {
   UserIconSVG,
   MedicineIconSVG,
   BabyIconSVG,
+  ShieldSVG,
+  HelpIconSVG,
 } from "miruIcons";
 
 export const leaveTypes = [
@@ -76,6 +78,28 @@ export const leaveIcons = [
   { value: "flower", label: "label6", icon: FlowerIconSVG },
   { value: "car", label: "label7", icon: CarIconSVG },
   { value: "user", label: "label8", icon: UserIconSVG },
+];
+
+export const holidayColors = [
+  {
+    label: "national",
+    value: "#FFFFE0",
+  },
+  {
+    label: "optional",
+    value: "#FFC0CB",
+  },
+];
+
+export const holidayIcons = [
+  {
+    label: "national",
+    icon: ShieldSVG,
+  },
+  {
+    label: "optional",
+    icon: HelpIconSVG,
+  },
 ];
 
 export const allocationPeriod = [
