@@ -663,6 +663,7 @@ const TimesheetEntries = ({ user, isAdminUser }: Iprops) => {
                     onClick={() => {
                       setNewEntryView(true);
                       setEditEntryId(0);
+                      setEditTimeoffEntryId(0);
                     }}
                   >
                     + NEW ENTRY

@@ -1,5 +1,7 @@
 import React from "react";
 
+import { useTimesheetEntries } from "context/TimesheetEntries";
+
 import TimeoffEntryCard from "../EntryCard";
 import TimeoffForm from "../TimeoffForm";
 
@@ -9,23 +11,27 @@ const TimeoffEntryManager = ({
   leaveTypeDetails,
   holidayDetails,
   isDisplayEditTimeoffEntryForm,
-}: Iprops) => (
-  <>
-    {isDisplayEditTimeoffEntryForm ? (
-      <TimeoffForm
-        isDisplayEditTimeoffEntryForm={isDisplayEditTimeoffEntryForm}
-      />
-    ) : (
-      <TimeoffEntryCard
-        currentUserRole={currentUserRole}
-        holidayDetails={holidayDetails}
-        key={timeoffEntry?.id}
-        leaveTypeDetails={leaveTypeDetails}
-        timeoffEntry={timeoffEntry}
-      />
-    )}
-  </>
-);
+}: Iprops) => {
+  const { editEntryId, newEntryView } = useTimesheetEntries();
+
+  return (
+    <>
+      {isDisplayEditTimeoffEntryForm && !editEntryId && !newEntryView ? (
+        <TimeoffForm
+          isDisplayEditTimeoffEntryForm={isDisplayEditTimeoffEntryForm}
+        />
+      ) : (
+        <TimeoffEntryCard
+          currentUserRole={currentUserRole}
+          holidayDetails={holidayDetails}
+          key={timeoffEntry?.id}
+          leaveTypeDetails={leaveTypeDetails}
+          timeoffEntry={timeoffEntry}
+        />
+      )}
+    </>
+  );
+};
 
 interface Iprops {
   timeoffEntry: any;

@@ -28,6 +28,8 @@ const TimeoffEntryCard = ({
     selectedEmployeeId,
     fetchEntries,
     fetchEntriesOfMonths,
+    setEditEntryId,
+    setNewEntryView,
   } = useTimesheetEntries();
   const { id, note, duration, bill_status } = timeoffEntry;
   const [isHolidayTimeoffEntry, setIsHolidayTimeoffEntry] =
@@ -67,7 +69,17 @@ const TimeoffEntryCard = ({
     }
   };
 
+  const handleEditBtnClick = () => {
+    setNewEntryView(false);
+    setEditEntryId(0);
+    setEditTimeoffEntryId(id);
+  };
+
   const handleDeleteTimeoffEntry = async timeoffEntryId => {
+    if (!timeoffEntryId) return;
+
+    setNewEntryView(false);
+    setEditEntryId(0);
     const res = await timeoffEntryApi.destroy(timeoffEntryId);
 
     if (res.status == 200) {
@@ -77,6 +89,8 @@ const TimeoffEntryCard = ({
 
   const handleDuplicateTimeoffEntry = async timeoffEntryId => {
     if (!id) return;
+    setNewEntryView(false);
+    setEditEntryId(0);
     const timeoffEntry = entryList[selectedFullDate]?.find(
       entry => entry.id === timeoffEntryId
     );
@@ -134,7 +148,7 @@ const TimeoffEntryCard = ({
             bill_status,
             currentUserRole,
             id,
-            setEditTimeoffEntryId
+            handleEditBtnClick
           )}
           {showDeleteAction(
             bill_status,
