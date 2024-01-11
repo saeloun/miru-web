@@ -14,7 +14,7 @@ RSpec.describe Holiday, type: :model do
     it {
   expect(subject).to define_enum_for(:time_period_optional_holidays).with_values(
     per_quarter: 0, per_year: 1,
-    per_month: 2)
+    per_month: 2, per_week: 3)
 }
   end
 

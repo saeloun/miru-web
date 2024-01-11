@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 class TimeoffEntryPolicy < ApplicationPolicy
+  def index?
+    user_owner_role? || user_admin_role? || user_employee_role?
+  end
+
   def create?
     user_owner_role? || user_admin_role? || user_employee_role?
   end
@@ -15,7 +19,7 @@ class TimeoffEntryPolicy < ApplicationPolicy
 
   def permitted_attributes
     [
-      :duration, :note, :leave_date, :user_id, :leave_type_id
+      :duration, :note, :leave_date, :user_id, :leave_type_id, :holiday_info_id
     ]
   end
 

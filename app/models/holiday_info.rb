@@ -23,6 +23,8 @@
 class HolidayInfo < ApplicationRecord
   belongs_to :holiday
 
+  has_many :timeoff_entries, inverse_of: :holiday_info
+
   enum category: { national: 0, optional: 1 }
 
   validates :name, presence: true,

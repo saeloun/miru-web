@@ -9,6 +9,7 @@ import {
   InvoicesIcon,
   PaymentsIcon,
   SettingIcon,
+  CalendarIcon,
   ExpenseIconSVG,
 } from "miruIcons";
 import { NavLink } from "react-router-dom";
@@ -60,18 +61,17 @@ const navOptions = [
     allowedRoles: ["admin", "owner", "book_keeper"],
   },
   {
+    logo: <CalendarIcon className="mr-0 md:mr-4" size={26} />,
+    label: "Leave Management",
+    path: Paths.Leave_Management,
+    allowedRoles: ["admin", "owner", "employee"],
+  },
+  {
     logo: <img className="mr-0 h-5 w-5 md:mr-4" src={ExpenseIconSVG} />,
     label: "Expenses",
     path: Paths.EXPENSES,
     allowedRoles: ["admin", "owner", "book_keeper"],
   },
-  // TODO: Uncomment the following code while integrating Leave management API.
-  // {
-  //   logo: <CalendarIcon className="mr-0 md:mr-4" size={26} />,
-  //   label: "Leave Management",
-  //   path: Paths.Leave_Management,
-  //   allowedRoles: ["admin", "owner", "employee"],
-  // },
 ];
 
 const navAdminMobileOptions = [
