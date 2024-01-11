@@ -4,9 +4,10 @@ import TimeoffEntryCard from "../EntryCard";
 import TimeoffForm from "../TimeoffForm";
 
 const TimeoffEntryManager = ({
-  leaveEntry,
+  timeoffEntry,
   currentUserRole,
   leaveTypeDetails,
+  holidayDetails,
   isDisplayEditTimeoffEntryForm,
 }: Iprops) => (
   <>
@@ -17,17 +18,19 @@ const TimeoffEntryManager = ({
     ) : (
       <TimeoffEntryCard
         currentUserRole={currentUserRole}
-        key={leaveEntry?.id}
-        leaveEntry={leaveEntry}
+        holidayDetails={holidayDetails}
+        key={timeoffEntry?.id}
         leaveTypeDetails={leaveTypeDetails}
+        timeoffEntry={timeoffEntry}
       />
     )}
   </>
 );
 
 interface Iprops {
-  leaveEntry: any;
+  timeoffEntry: any;
   leaveTypeDetails: any;
+  holidayDetails: any;
   currentUserRole: string;
   isDisplayEditTimeoffEntryForm: boolean;
 }

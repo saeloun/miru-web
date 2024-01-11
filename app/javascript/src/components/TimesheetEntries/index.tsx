@@ -78,7 +78,11 @@ const TimesheetEntries = ({ user, isAdminUser }: Iprops) => {
     dayjs().month()
   );
   const [leaveTypes, setLeaveTypes] = useState([]);
+  const [holidayList, setHolidayList] = useState([]);
+  const [hasNationalHoliday, setHasNationalHoliday] = useState<boolean>(false);
+  const [hasOptionalHoliday, setHasOptionalHoliday] = useState<boolean>(false);
   const [leaveTypeHashObj, setLeaveTypeHashObj] = useState({});
+  const [holidaysHashObj, setHolidaysHashObj] = useState({});
   const [totalMonthDuration, setTotalMonthDuration] = useState<number>(0);
   const [monthData, setMonthData] = useState<object[]>([]);
   const [currentYear, setCurrentYear] = useState<number>(dayjs().year());
@@ -98,12 +102,20 @@ const TimesheetEntries = ({ user, isAdminUser }: Iprops) => {
   const fetchTimeTrackingData = async () => {
     try {
       const { data } = await timeTrackingApi.get();
-      const { clients, projects, entries, employees, leave_types } = data;
+      const {
+        clients,
+        projects,
+        entries,
+        employees,
+        leave_types,
+        holiday_infos,
+      } = data;
       setClients(clients);
       setProjects(projects);
       setEmployees(employees);
       setEntryList(entries);
       setLeaveTypes(leave_types);
+      setHolidayList(holiday_infos);
       const currentEmployeeEntries = {};
       currentEmployeeEntries[user.id] = entries;
       setAllEmployeesEntries(currentEmployeeEntries);
@@ -173,6 +185,28 @@ const TimesheetEntries = ({ user, isAdminUser }: Iprops) => {
     }
   }, [leaveTypes]);
 
+  useEffect(() => {
+    if (holidayList?.length > 0) {
+      const hashObj = holidayList?.reduce((acc, holidayDetails) => {
+        if (holidayDetails?.id) {
+          acc[holidayDetails.id] = { ...holidayDetails };
+        }
+
+        if (!hasNationalHoliday && holidayDetails?.category === "national") {
+          setHasNationalHoliday(true);
+        } else if (
+          !hasOptionalHoliday &&
+          holidayDetails?.category === "optional"
+        ) {
+          setHasOptionalHoliday(true);
+        }
+        return acc;
+      }, {});
+
+      setHolidaysHashObj({ ...hashObj });
+    }
+  }, [holidayList]);
+
   const handleWeekTodayButton = () => {
     setSelectDate(0);
     setWeekDay(dayjs().weekday());
@@ -202,7 +236,12 @@ const TimesheetEntries = ({ user, isAdminUser }: Iprops) => {
 
   const fetchEntries = async (from: string, to: string) => {
     try {
-      const res = await timesheetEntryApi.list(from, to, selectedEmployeeId);
+      const res = await timeTrackingApi.getCurrentUserEntries(
+        from,
+        to,
+        currentYear,
+        selectedEmployeeId
+      );
       if (res.status >= 200 && res.status < 300) {
         const allEntries = { ...allEmployeesEntries };
         allEntries[selectedEmployeeId] = {
@@ -579,6 +618,10 @@ const TimesheetEntries = ({ user, isAdminUser }: Iprops) => {
         setLeaveTypeHashObj,
         editTimeoffEntryId,
         setEditTimeoffEntryId,
+        holidayList,
+        holidaysHashObj,
+        hasNationalHoliday,
+        hasOptionalHoliday,
       }}
     >
       <div className="pb-14">

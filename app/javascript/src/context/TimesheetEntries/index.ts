@@ -41,6 +41,10 @@ const initialState: any = {
   projectBillable: initialProjectBillable,
   displayDatePicker: false,
   employeeOptions: [],
+  holidayList: [],
+  holidaysHashObj: {},
+  hasNationalHoliday: false,
+  hasOptionalHoliday: false,
   setDuration: () => {}, //eslint-disable-line
   handleAddEntryDateChange: (date: any) => {}, //eslint-disable-line
   handleNextDay: () => {}, //eslint-disable-line

@@ -36,6 +36,7 @@ const TimeEntryManager = () => {
     handleDuplicate,
     parseWeeklyViewData,
     leaveTypeHashObj,
+    holidaysHashObj,
   } = useTimesheetEntries();
 
   return (
@@ -105,10 +106,15 @@ const TimeEntryManager = () => {
               ) : (
                 <TimeoffEntryManager
                   currentUserRole={entryList["currentUserRole"]}
-                  leaveEntry={entry}
-                  leaveTypeDetails={leaveTypeHashObj[entry?.leave_type_id]}
+                  timeoffEntry={entry}
+                  holidayDetails={
+                    holidaysHashObj[entry?.holiday_info_id || null]
+                  }
                   isDisplayEditTimeoffEntryForm={
                     editTimeoffEntryId === entry?.id
+                  }
+                  leaveTypeDetails={
+                    leaveTypeHashObj[entry?.leave_type_id] || null
                   }
                 />
               )}
