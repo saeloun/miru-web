@@ -234,14 +234,20 @@ const TimesheetEntries = ({ user, isAdminUser }: Iprops) => {
     setDayInfo(() => daysInWeek);
   };
 
-  const fetchEntries = async (from: string, to: string) => {
+  const fetchEntries = async (
+    from: string,
+    to: string,
+    year?: string | number
+  ) => {
+    const entryYear = year || currentYear;
     try {
       const res = await timeTrackingApi.getCurrentUserEntries(
         from,
         to,
-        currentYear,
+        entryYear,
         selectedEmployeeId
       );
+
       if (res.status >= 200 && res.status < 300) {
         const allEntries = { ...allEmployeesEntries };
         allEntries[selectedEmployeeId] = {
@@ -384,7 +390,8 @@ const TimesheetEntries = ({ user, isAdminUser }: Iprops) => {
     const to = dayjs()
       .weekday(weekDay + 13)
       .format("YYYY-MM-DD");
-    fetchEntries(from, to);
+    const year = dayjs(to).year();
+    fetchEntries(from, to, year);
   };
 
   const handlePrevWeek = () => {
@@ -396,7 +403,9 @@ const TimesheetEntries = ({ user, isAdminUser }: Iprops) => {
     const to = dayjs()
       .weekday(weekDay - 1)
       .format("YYYY-MM-DD");
-    fetchEntries(from, to);
+
+    const year = dayjs(to).year();
+    fetchEntries(from, to, year);
   };
 
   const parseWeeklyViewData = () => {
@@ -441,6 +450,7 @@ const TimesheetEntries = ({ user, isAdminUser }: Iprops) => {
   // Month view
   const handlePrevMonth = async () => {
     try {
+      let year = currentYear;
       const startOfTheMonth2MonthsAgo = dayjs(startOfTheMonth)
         .subtract(2, "month")
         .format("YYYY-MM-DD");
@@ -448,13 +458,19 @@ const TimesheetEntries = ({ user, isAdminUser }: Iprops) => {
       const endOfTheMonth2MonthsAgo = dayjs(endOfTheMonth)
         .subtract(2, "month")
         .format("YYYY-MM-DD");
-      await fetchEntries(startOfTheMonth2MonthsAgo, endOfTheMonth2MonthsAgo);
+
       if (currentMonthNumber === 0) {
+        year = year - 1;
         setCurrentMonthNumber(11);
-        setCurrentYear(currentYear - 1);
+        setCurrentYear(year);
       } else {
         setCurrentMonthNumber(cmn => cmn - 1);
       }
+      await fetchEntries(
+        startOfTheMonth2MonthsAgo,
+        endOfTheMonth2MonthsAgo,
+        year
+      );
     } catch (error) {
       Logger.error(error);
     }
@@ -462,6 +478,7 @@ const TimesheetEntries = ({ user, isAdminUser }: Iprops) => {
 
   const handleNextMonth = async () => {
     try {
+      let year = currentYear;
       const startOfTheMonth2MonthsLater = dayjs(startOfTheMonth)
         .add(2, "month")
         .format("YYYY-MM-DD");
@@ -470,16 +487,18 @@ const TimesheetEntries = ({ user, isAdminUser }: Iprops) => {
         .add(2, "month")
         .format("YYYY-MM-DD");
 
-      await fetchEntries(
-        startOfTheMonth2MonthsLater,
-        endOfTheMonth2MonthsLater
-      );
       if (currentMonthNumber === 11) {
+        year = year + 1;
         setCurrentMonthNumber(0);
-        setCurrentYear(currentYear + 1);
+        setCurrentYear(year);
       } else {
         setCurrentMonthNumber(currentMonthNumber + 1);
       }
+      await fetchEntries(
+        startOfTheMonth2MonthsLater,
+        endOfTheMonth2MonthsLater,
+        year
+      );
     } catch (error) {
       Logger.error(error);
     }

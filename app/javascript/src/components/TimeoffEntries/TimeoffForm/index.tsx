@@ -215,7 +215,7 @@ const TimeoffForm = ({ isDisplayEditTimeoffEntryForm = false }: Iprops) => {
       if (updateRes.status >= 200 && updateRes.status < 300) {
         if (selectedDate !== selectedFullDate) {
           await handleFilterEntry(selectedFullDate, editTimeoffEntryId);
-          await handleRelocateEntry(selectedDate, updateRes.data.entry);
+          await handleRelocateEntry(selectedDate, updateRes.data.timeoff_entry);
           if (!isDesktop) {
             fetchEntriesOfMonths();
           }
