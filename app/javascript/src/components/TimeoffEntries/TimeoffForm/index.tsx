@@ -236,10 +236,12 @@ const TimeoffForm = ({ isDisplayEditTimeoffEntryForm = false }: Iprops) => {
       <div className="w-1/2">
         <div className="mb-2 flex w-129 justify-between">
           <select
-            className="h-8 w-12/25 rounded-sm bg-miru-gray-100"
             id="leaves"
             name="leaves"
             value={`${leaveTypeId}`}
+            className={`h-8 rounded-sm bg-miru-gray-100 ${
+              isShowHolidayList ? "w-12/25" : "w-full"
+            }`}
             onChange={e => setLeaveTypeId(e?.target?.value || 0)}
           >
             <option className="text-miru-gray-100" key={0} value={0}>
