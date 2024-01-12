@@ -42,7 +42,7 @@ module TimeoffEntries
       def leave_balance
         leave_balance = []
 
-        leave = current_company.leaves.find_by(year: "2023")
+        leave = current_company.leaves.find_by(year: params[:year])
         holiday = current_company.holidays.find_by(year: params[:year])
 
         if leave
