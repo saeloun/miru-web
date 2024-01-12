@@ -249,11 +249,26 @@ const TimesheetEntries = ({ user, isAdminUser }: Iprops) => {
       );
 
       if (res.status >= 200 && res.status < 300) {
+        const {
+          clients,
+          projects,
+          entries,
+          employees,
+          leave_types,
+          holiday_infos,
+        } = res.data;
+
         const allEntries = { ...allEmployeesEntries };
         allEntries[selectedEmployeeId] = {
           ...allEntries[selectedEmployeeId],
-          ...res.data.entries,
+          ...entries,
         };
+
+        setClients(clients);
+        setProjects(projects);
+        setEmployees(employees);
+        setLeaveTypes(leave_types);
+        setHolidayList(holiday_infos);
         setAllEmployeesEntries(allEntries);
         setEntryList(allEntries[selectedEmployeeId]);
       }
