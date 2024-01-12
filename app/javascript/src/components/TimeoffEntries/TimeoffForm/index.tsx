@@ -9,10 +9,9 @@ import { Button, BUTTON_STYLES, TimeInput } from "StyledComponents";
 
 import timeoffEntryApi from "apis/timeoff-entry";
 import CustomDatePicker from "common/CustomDatePicker";
+import { HOLIDAY_TYPES } from "constants/index";
 import { useTimesheetEntries } from "context/TimesheetEntries";
 import { useUserContext } from "context/UserContext";
-
-import { HOLIDAY_TYPES } from "../constants";
 
 const TimeoffForm = ({ isDisplayEditTimeoffEntryForm = false }: Iprops) => {
   const datePickerRef = useRef();

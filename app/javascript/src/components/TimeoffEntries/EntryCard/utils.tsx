@@ -3,9 +3,7 @@ import React from "react";
 import { DeleteIcon, EditIcon, CopyIcon } from "miruIcons";
 import { Button, BUTTON_STYLES } from "StyledComponents";
 
-import { Roles } from "constants/index";
-
-import { BILL_STATUS } from "../constants";
+import { Roles, BILL_STATUS } from "constants/index";
 
 export const canEditTimeEntry = (billStatus, role) =>
   billStatus !== BILL_STATUS.BILLED ||

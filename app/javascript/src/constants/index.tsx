@@ -37,6 +37,17 @@ export enum Paths {
   Leave_Management = "/leave-management",
 }
 
+export const BILL_STATUS = {
+  BILLED: "billed",
+  UNBILLED: "unbilled",
+  NON_BILLABLE: "non_billable",
+};
+
+export const HOLIDAY_TYPES = {
+  NATIONAL: "national",
+  OPTIONAL: "optional",
+};
+
 export const BASIC_PLAN_CHARGE = 10;
 
 export const TEAM_MEMBER_CHARGE = 5;
