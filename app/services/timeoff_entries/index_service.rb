@@ -22,7 +22,7 @@ module TimeoffEntries
     private
 
       def timeoff_entries
-        @_timeoff_entries ||= current_company.timeoff_entries.includes([:leave_type], [:holiday_info])
+        @_timeoff_entries ||= current_company.timeoff_entries.kept.includes([:leave_type], [:holiday_info])
           .where(user_id: params[:user_id] || current_user.id)
           .order(leave_date: :desc)
       end
@@ -51,7 +51,7 @@ module TimeoffEntries
           leave.leave_types.all.each do |leave_type|
             total_leave_type_days = calculate_total_duration(leave_type)
 
-            timeoff_entries_duration = leave_type.timeoff_entries.where(user_id: params[:user_id]).sum(:duration)
+            timeoff_entries_duration = leave_type.timeoff_entries.kept.where(user_id: params[:user_id]).sum(:duration)
 
             previous_year_leave_type = previous_year_leave &&
               previous_year_leave.leave_types.find_by(name: leave_type.name)
@@ -127,7 +127,7 @@ module TimeoffEntries
 
         total_leave_type_days = calculate_total_duration(leave_type)
 
-        timeoff_entries_duration = leave_type.timeoff_entries.where(user_id: params[:user_id]).sum(:duration)
+        timeoff_entries_duration = leave_type.timeoff_entries.kept.where(user_id: params[:user_id]).sum(:duration)
 
         net_duration = (total_leave_type_days * 8 * 60) - timeoff_entries_duration
 
