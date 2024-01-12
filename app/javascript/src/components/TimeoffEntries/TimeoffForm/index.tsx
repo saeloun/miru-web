@@ -101,6 +101,12 @@ const TimeoffForm = ({ isDisplayEditTimeoffEntryForm = false }: Iprops) => {
     }
   }, [leaveTypeId]);
 
+  useEffect(() => {
+    if (!isDisplayEditTimeoffEntryForm && selectedFullDate !== selectedDate) {
+      setSelectedDate(selectedFullDate);
+    }
+  }, [selectedFullDate, isDisplayEditTimeoffEntryForm]);
+
   const setSuggestedHolidayBasedOnDate = (currentHolidayOptions: any[]) => {
     if (!isDisplayEditTimeoffEntryForm && currentHolidayOptions?.length > 0) {
       const suggestedHoliday = currentHolidayOptions?.find(
