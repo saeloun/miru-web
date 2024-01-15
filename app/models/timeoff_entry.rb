@@ -35,7 +35,7 @@ class TimeoffEntry < ApplicationRecord
   belongs_to :holiday_info, optional: true
 
   has_one :leave, through: :leave_type
-  has_one :company, through: :leave
+  has_one :holiday, through: :holiday_info
 
   validates :duration, presence: true, numericality: { less_than_or_equal_to: 6000000, greater_than_or_equal_to: 0 }
   validates :leave_date, presence: true
@@ -43,6 +43,10 @@ class TimeoffEntry < ApplicationRecord
   validate :either_leave_type_or_holiday_info_present
 
   scope :during, -> (from, to) { where(leave_date: from..to).order(leave_date: :desc) }
+
+  def company
+    leave&.company || holiday&.company
+  end
 
   private
 

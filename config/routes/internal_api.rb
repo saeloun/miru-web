@@ -102,7 +102,11 @@ namespace :internal_api, defaults: { format: "json" } do
       collection { put "update_team_members" }
     end
 
-    resources :invitations, only: [:create, :update, :destroy]
+    resources :invitations, only: [:create, :update, :destroy] do
+      member do
+        post "resend"
+      end
+    end
 
     resources :time_tracking, only: [:index], path: "time-tracking"
 
