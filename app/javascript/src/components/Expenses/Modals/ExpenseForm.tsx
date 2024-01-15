@@ -3,8 +3,11 @@ import React, { useRef, useState, ChangeEvent, useEffect } from "react";
 import dayjs from "dayjs";
 import { useOutsideClick } from "helpers";
 import { CalendarIcon, FileIcon, FilePdfIcon, XIcon } from "miruIcons";
+import { components } from "react-select";
 import { Button } from "StyledComponents";
 
+import expensesApi from "apis/expenses";
+import CustomCreatableSelect from "common/CustomCreatableSelect";
 import CustomDatePicker from "common/CustomDatePicker";
 import { CustomInputText } from "common/CustomInputText";
 import CustomRadioButton from "common/CustomRadio";
@@ -28,6 +31,7 @@ const ExpenseForm = ({
   const [vendor, setVendor] = useState<any>("");
   const [amount, setAmount] = useState<number | string>(expense?.amount || "");
   const [category, setCategory] = useState<any>("");
+  const [newCategory, setNewCategory] = useState<any>("");
   const [description, setDescription] = useState<string>(
     expense?.description || ""
   );
@@ -37,7 +41,22 @@ const ExpenseForm = ({
   );
   const [receipt, setReceipt] = useState<File>(expense?.receipt || "");
 
-  const isFormActionDisabled = !(expenseDate && vendor && amount && category);
+  const isFormActionDisabled = !(
+    expenseDate &&
+    vendor &&
+    amount &&
+    (category || newCategory)
+  );
+
+  const { Option } = components;
+  const IconOption = props => (
+    <Option {...props}>
+      <div className="flex w-full items-center gap-4">
+        {props.data.icon}
+        {props.data.label}
+      </div>
+    </Option>
+  );
 
   const setExpenseData = () => {
     if (expense) {
@@ -56,6 +75,39 @@ const ExpenseForm = ({
   const handleDatePicker = date => {
     setExpenseDate(date);
     setShowDatePicker(false);
+  };
+
+  const handleCategory = async category => {
+    category.label = (
+      <div className="flex w-full items-center gap-4">
+        {category.icon}
+        {category.label}
+      </div>
+    );
+    if (expenseData.categories.includes(category)) {
+      setCategory(category);
+    } else {
+      const payload = {
+        expense_category: {
+          name: category.value,
+        },
+      };
+
+      const res = await expensesApi.createCategory(payload);
+      const expenses = await expensesApi.index();
+
+      if (res.status == 200 && expenses.status == 200) {
+        const newCategoryValue = expenses.data.categories.find(
+          val => val.name == category.value
+        );
+
+        newCategoryValue.value = newCategoryValue.name;
+        newCategoryValue.label = newCategoryValue.name;
+        delete newCategoryValue.name;
+
+        setNewCategory(newCategoryValue);
+      }
+    }
   };
 
   const handleFileUpload = () => {
@@ -77,16 +129,12 @@ const ExpenseForm = ({
       date: expenseDate,
       description,
       expense_type: expenseType,
-      expense_category_id: category?.id,
+      expense_category_id: category?.id || newCategory?.id,
       vendor_id: vendor.id,
       receipts: receipt,
     };
     handleFormAction(payload);
   };
-
-  useOutsideClick(wrapperCalendarRef, () => {
-    setShowDatePicker(false);
-  });
 
   const ReceiptCard = () => (
     <div
@@ -132,6 +180,10 @@ const ExpenseForm = ({
       />
     </div>
   );
+
+  useOutsideClick(wrapperCalendarRef, () => {
+    setShowDatePicker(false);
+  });
 
   useEffect(() => {
     setExpenseData();
@@ -191,13 +243,14 @@ const ExpenseForm = ({
           <ErrorSpan message="" />
         </div>
         <div className="mt-6">
-          <CustomReactSelect
-            handleOnChange={category => setCategory(category)}
+          <CustomCreatableSelect
+            components={{ Option: IconOption }}
+            handleOnChange={handleCategory}
             id="category"
             label="Category"
             name="category"
             options={expenseData.categories}
-            value={category}
+            value={category || newCategory}
           />
         </div>
         <div className="mt-6">

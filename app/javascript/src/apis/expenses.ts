@@ -12,7 +12,8 @@ const update = async (id, payload) => axios.patch(`${path}/${id}`, payload);
 
 const destroy = async id => axios.delete(`${path}/${id}`);
 
-const categories = () => axios.get("/expense_categories");
+const createCategory = async payload =>
+  axios.post("/expense_categories", payload);
 
 const expensesApi = {
   index,
@@ -20,7 +21,7 @@ const expensesApi = {
   show,
   update,
   destroy,
-  categories,
+  createCategory,
 };
 
 export default expensesApi;

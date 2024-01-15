@@ -7,7 +7,7 @@ import Table from "./Table";
 
 const Container = ({ expenseData }) => (
   <div className="mt-6">
-    <ExpensesSummary categories={expenseData?.categories} />
+    <ExpensesSummary />
     {expenseData?.expenses?.length > 0 ? (
       <Table expenses={expenseData?.expenses} />
     ) : (

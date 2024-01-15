@@ -30,17 +30,17 @@ class InternalApi::V1::ExpensesController < ApplicationController
   def update
     authorize set_expense
 
-    @expense.update(expense_params)
+    @expense.update!(expense_params)
 
-    render json: { notice: "Expense updated successfully" }, status: :ok
+    render json: { notice: I18n.t("Expense updated successfully") }, status: :ok
   end
 
   def destroy
     authorize set_expense
 
-    @expense.destroy
+    @expense.destroy!
 
-    render json: { notice: "Expense deleted successfully" }, status: :ok
+    render json: { notice: I18n.t("Expense deleted successfully") }, status: :ok
   end
 
   private

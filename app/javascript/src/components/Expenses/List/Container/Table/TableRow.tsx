@@ -1,7 +1,7 @@
 import React, { Fragment, useState } from "react";
 
 import { currencyFormat } from "helpers";
-import { DotsThreeVerticalIcon } from "miruIcons";
+import { DotsThreeVerticalIcon, ExpenseIconSVG } from "miruIcons";
 import { useNavigate } from "react-router-dom";
 
 import { useUserContext } from "context/UserContext";
@@ -18,9 +18,8 @@ const TableRow = ({ expense, currency }) => {
   const [showMoreOptions, setShowMoreOptions] = useState<boolean>(false);
 
   const getCategoryIcon = () => {
-    const icon = Categories.find(
-      category => category.label === categoryName
-    )?.icon;
+    const icon = Categories.find(category => category.label === categoryName)
+      ?.icon || <img src={ExpenseIconSVG} />;
 
     return (
       <div className="mr-2 flex h-6 w-6 items-center justify-center rounded-full bg-miru-gray-200 p-1 text-miru-dark-purple-600">
@@ -35,7 +34,6 @@ const TableRow = ({ expense, currency }) => {
 
   return (
     <Fragment>
-      {" "}
       <tr
         className="group w-full cursor-pointer py-4 lg:hover:bg-miru-gray-100"
         key={id}

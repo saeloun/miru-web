@@ -72,7 +72,7 @@ export const Categories = [
   {
     value: "Other",
     label: "Other",
-    icon: <img src={ExpenseIconSVG} />,
+    icon: <img sizes={16} src={ExpenseIconSVG} />,
     iconColor: "#4A485A",
     color: "#CFE4F0",
   },
@@ -88,13 +88,27 @@ export const setVendorData = vendors => {
 };
 
 export const setCategoryData = rawCategories => {
-  Categories.map(category => {
-    rawCategories.map(raw => {
-      if (raw.name === category.value) {
-        category.id = raw.id;
-      }
-    });
+  const newCategories = rawCategories.map(raw => {
+    const matchingCat = Categories.find(
+      category => category.value === raw.name
+    );
+
+    const newCat = {
+      ...raw,
+      value: raw.name,
+      label: raw.name,
+      icon: <img sizes={16} src={ExpenseIconSVG} />,
+      ...(matchingCat && {
+        icon: matchingCat.icon || <img sizes={16} src={ExpenseIconSVG} />,
+        iconColor: matchingCat.iconColor,
+        color: matchingCat.color,
+      }),
+    };
+    delete newCat.name;
+    delete newCat.default;
+
+    return newCat;
   });
 
-  return Categories;
+  return newCategories;
 };
