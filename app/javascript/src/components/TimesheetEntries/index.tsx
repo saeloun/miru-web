@@ -23,6 +23,8 @@ import MonthCalender from "./MonthCalendar";
 import TimeEntryManager from "./TimeEntryManager";
 import ViewToggler from "./ViewToggler";
 import { TimesheetEntriesContext } from "context/TimesheetEntries";
+import TimeoffForm from "components/TimeoffEntries/TimeoffForm";
+import { VacationIconSVG } from "miruIcons";
 
 dayjs.extend(updateLocale);
 dayjs.extend(weekday);
@@ -49,6 +51,8 @@ const TimesheetEntries = ({ user, isAdminUser }: Iprops) => {
   );
   const [view, setView] = useState<string>("month");
   const [newEntryView, setNewEntryView] = useState<boolean>(false);
+  const [newTimeoffEntryView, setNewTimeoffEntryView] =
+    useState<boolean>(false);
   const [newRowView, setNewRowView] = useState<boolean>(false);
   const [selectDate, setSelectDate] = useState<number>(dayjs().weekday());
   const [weekDay, setWeekDay] = useState<number>(0);
@@ -59,6 +63,7 @@ const TimesheetEntries = ({ user, isAdminUser }: Iprops) => {
     dayjs().format("YYYY-MM-DD")
   );
   const [editEntryId, setEditEntryId] = useState<number>(0);
+  const [editTimeoffEntryId, setEditTimeoffEntryId] = useState<number>(0);
   const [weeklyData, setWeeklyData] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [isWeeklyEditing, setIsWeeklyEditing] = useState<boolean>(false);
@@ -72,6 +77,12 @@ const TimesheetEntries = ({ user, isAdminUser }: Iprops) => {
   const [currentMonthNumber, setCurrentMonthNumber] = useState<number>(
     dayjs().month()
   );
+  const [leaveTypes, setLeaveTypes] = useState([]);
+  const [holidayList, setHolidayList] = useState([]);
+  const [hasNationalHoliday, setHasNationalHoliday] = useState<boolean>(false);
+  const [hasOptionalHoliday, setHasOptionalHoliday] = useState<boolean>(false);
+  const [leaveTypeHashObj, setLeaveTypeHashObj] = useState({});
+  const [holidaysHashObj, setHolidaysHashObj] = useState({});
   const [totalMonthDuration, setTotalMonthDuration] = useState<number>(0);
   const [monthData, setMonthData] = useState<object[]>([]);
   const [currentYear, setCurrentYear] = useState<number>(dayjs().year());
@@ -91,11 +102,20 @@ const TimesheetEntries = ({ user, isAdminUser }: Iprops) => {
   const fetchTimeTrackingData = async () => {
     try {
       const { data } = await timeTrackingApi.get();
-      const { clients, projects, entries, employees } = data;
+      const {
+        clients,
+        projects,
+        entries,
+        employees,
+        leave_types,
+        holiday_infos,
+      } = data;
       setClients(clients);
       setProjects(projects);
       setEmployees(employees);
       setEntryList(entries);
+      setLeaveTypes(leave_types);
+      setHolidayList(holiday_infos);
       const currentEmployeeEntries = {};
       currentEmployeeEntries[user.id] = entries;
       setAllEmployeesEntries(currentEmployeeEntries);
@@ -152,6 +172,41 @@ const TimesheetEntries = ({ user, isAdminUser }: Iprops) => {
     fetchEntriesOfMonths();
   }, [selectedEmployeeId]);
 
+  useEffect(() => {
+    if (leaveTypes?.length > 0) {
+      const hashObj = leaveTypes?.reduce((acc, leaveType) => {
+        if (leaveType?.id) {
+          acc[leaveType.id] = { ...leaveType };
+        }
+        return acc;
+      }, {});
+
+      setLeaveTypeHashObj({ ...hashObj });
+    }
+  }, [leaveTypes]);
+
+  useEffect(() => {
+    if (holidayList?.length > 0) {
+      const hashObj = holidayList?.reduce((acc, holidayDetails) => {
+        if (holidayDetails?.id) {
+          acc[holidayDetails.id] = { ...holidayDetails };
+        }
+
+        if (!hasNationalHoliday && holidayDetails?.category === "national") {
+          setHasNationalHoliday(true);
+        } else if (
+          !hasOptionalHoliday &&
+          holidayDetails?.category === "optional"
+        ) {
+          setHasOptionalHoliday(true);
+        }
+        return acc;
+      }, {});
+
+      setHolidaysHashObj({ ...hashObj });
+    }
+  }, [holidayList]);
+
   const handleWeekTodayButton = () => {
     setSelectDate(0);
     setWeekDay(dayjs().weekday());
@@ -179,17 +234,42 @@ const TimesheetEntries = ({ user, isAdminUser }: Iprops) => {
     setDayInfo(() => daysInWeek);
   };
 
-  const fetchEntries = async (from: string, to: string) => {
+  const fetchEntries = async (
+    from: string,
+    to: string,
+    year?: string | number
+  ) => {
+    const entryYear = year || currentYear;
     try {
-      const res = await timesheetEntryApi.list(from, to, selectedEmployeeId);
+      const res = await timeTrackingApi.getCurrentUserEntries(
+        from,
+        to,
+        entryYear,
+        selectedEmployeeId
+      );
+
       if (res.status >= 200 && res.status < 300) {
+        const {
+          clients,
+          projects,
+          entries,
+          employees,
+          leave_types,
+          holiday_infos,
+        } = res.data;
+
         const allEntries = { ...allEmployeesEntries };
         allEntries[selectedEmployeeId] = {
           ...allEntries[selectedEmployeeId],
-          ...res.data.entries,
+          ...entries,
         };
+
+        setClients(clients);
+        setProjects(projects);
+        setEmployees(employees);
+        setLeaveTypes(leave_types);
+        setHolidayList(holiday_infos);
         setAllEmployeesEntries(allEntries);
-        console.log(allEntries[selectedEmployeeId]);
         setEntryList(allEntries[selectedEmployeeId]);
       }
       setLoading(false);
@@ -325,7 +405,8 @@ const TimesheetEntries = ({ user, isAdminUser }: Iprops) => {
     const to = dayjs()
       .weekday(weekDay + 13)
       .format("YYYY-MM-DD");
-    fetchEntries(from, to);
+    const year = dayjs(to).year();
+    fetchEntries(from, to, year);
   };
 
   const handlePrevWeek = () => {
@@ -337,7 +418,9 @@ const TimesheetEntries = ({ user, isAdminUser }: Iprops) => {
     const to = dayjs()
       .weekday(weekDay - 1)
       .format("YYYY-MM-DD");
-    fetchEntries(from, to);
+
+    const year = dayjs(to).year();
+    fetchEntries(from, to, year);
   };
 
   const parseWeeklyViewData = () => {
@@ -382,6 +465,7 @@ const TimesheetEntries = ({ user, isAdminUser }: Iprops) => {
   // Month view
   const handlePrevMonth = async () => {
     try {
+      let year = currentYear;
       const startOfTheMonth2MonthsAgo = dayjs(startOfTheMonth)
         .subtract(2, "month")
         .format("YYYY-MM-DD");
@@ -389,13 +473,19 @@ const TimesheetEntries = ({ user, isAdminUser }: Iprops) => {
       const endOfTheMonth2MonthsAgo = dayjs(endOfTheMonth)
         .subtract(2, "month")
         .format("YYYY-MM-DD");
-      await fetchEntries(startOfTheMonth2MonthsAgo, endOfTheMonth2MonthsAgo);
+
       if (currentMonthNumber === 0) {
+        year = year - 1;
         setCurrentMonthNumber(11);
-        setCurrentYear(currentYear - 1);
+        setCurrentYear(year);
       } else {
         setCurrentMonthNumber(cmn => cmn - 1);
       }
+      await fetchEntries(
+        startOfTheMonth2MonthsAgo,
+        endOfTheMonth2MonthsAgo,
+        year
+      );
     } catch (error) {
       Logger.error(error);
     }
@@ -403,6 +493,7 @@ const TimesheetEntries = ({ user, isAdminUser }: Iprops) => {
 
   const handleNextMonth = async () => {
     try {
+      let year = currentYear;
       const startOfTheMonth2MonthsLater = dayjs(startOfTheMonth)
         .add(2, "month")
         .format("YYYY-MM-DD");
@@ -411,16 +502,18 @@ const TimesheetEntries = ({ user, isAdminUser }: Iprops) => {
         .add(2, "month")
         .format("YYYY-MM-DD");
 
-      await fetchEntries(
-        startOfTheMonth2MonthsLater,
-        endOfTheMonth2MonthsLater
-      );
       if (currentMonthNumber === 11) {
+        year = year + 1;
         setCurrentMonthNumber(0);
-        setCurrentYear(currentYear + 1);
+        setCurrentYear(year);
       } else {
         setCurrentMonthNumber(currentMonthNumber + 1);
       }
+      await fetchEntries(
+        startOfTheMonth2MonthsLater,
+        endOfTheMonth2MonthsLater,
+        year
+      );
     } catch (error) {
       Logger.error(error);
     }
@@ -542,6 +635,7 @@ const TimesheetEntries = ({ user, isAdminUser }: Iprops) => {
         setNewEntryView,
         setNewRowView,
         setIsWeeklyEditing,
+        setNewTimeoffEntryView,
         setSelectedFullDate,
         setUpdateView,
         setSelectedEmployeeId,
@@ -552,6 +646,16 @@ const TimesheetEntries = ({ user, isAdminUser }: Iprops) => {
         handleMonthChange,
         isDesktop,
         newRowView,
+        leaveTypes,
+        setLeaveTypes,
+        leaveTypeHashObj,
+        setLeaveTypeHashObj,
+        editTimeoffEntryId,
+        setEditTimeoffEntryId,
+        holidayList,
+        holidaysHashObj,
+        hasNationalHoliday,
+        hasOptionalHoliday,
       }}
     >
       <div className="pb-14">
@@ -582,33 +686,53 @@ const TimesheetEntries = ({ user, isAdminUser }: Iprops) => {
               {view === "month" ? <MonthCalender /> : <DatesInWeek />}
             </div>
             {!editEntryId && newEntryView && view !== "week" && <EntryForm />}
-
-            {view !== "week" && !newEntryView && isDesktop && (
-              <button
-                className="flex h-10 w-full items-center justify-center rounded border-2 border-miru-han-purple-600 p-2 text-lg font-bold tracking-widest text-miru-han-purple-600 lg:h-14 lg:p-4"
-                onClick={() => {
-                  setNewEntryView(true);
-                  setEditEntryId(0);
-                }}
-              >
-                + NEW ENTRY
-              </button>
-            )}
-            {/* --- On mobile view we don't need New Entry button for Empty States --- */}
-            {view !== "week" &&
-              !newEntryView &&
-              !isDesktop &&
-              entryList[selectedFullDate] && (
-                <button
-                  className="flex h-10 w-full items-center justify-center rounded border-2 border-miru-han-purple-600 p-2 text-lg font-bold tracking-widest text-miru-han-purple-600 lg:h-14 lg:p-4"
-                  onClick={() => {
-                    setNewEntryView(true);
-                    setEditEntryId(0);
-                  }}
-                >
-                  + NEW ENTRY
-                </button>
-              )}
+            {newTimeoffEntryView && view !== "week" && <TimeoffForm />}
+            <div className="flex">
+              {view !== "week" &&
+                !newEntryView &&
+                !newTimeoffEntryView &&
+                isDesktop && (
+                  <button
+                    className="flex h-10 w-full items-center justify-center rounded border-2 border-miru-han-purple-600 p-2 text-lg font-bold tracking-widest text-miru-han-purple-600 lg:h-14 lg:p-4"
+                    onClick={() => {
+                      setNewEntryView(true);
+                      setEditEntryId(0);
+                      setEditTimeoffEntryId(0);
+                    }}
+                  >
+                    + NEW ENTRY
+                  </button>
+                )}
+              {/* --- On mobile view we don't need New Entry button for Empty States --- */}
+              {view !== "week" &&
+                !newEntryView &&
+                !isDesktop &&
+                entryList[selectedFullDate] && (
+                  <button
+                    className="flex h-10 w-full items-center justify-center rounded border-2 border-miru-han-purple-600 p-2 text-lg font-bold tracking-widest text-miru-han-purple-600 lg:h-14 lg:p-4"
+                    onClick={() => {
+                      setNewEntryView(true);
+                      setEditEntryId(0);
+                    }}
+                  >
+                    + NEW ENTRY
+                  </button>
+                )}
+              {view === "month" &&
+                !newEntryView &&
+                !newTimeoffEntryView &&
+                isDesktop && (
+                  <button
+                    className="ml-2 flex h-10 w-full items-center justify-center rounded border-2 border-miru-han-purple-600 p-2 text-lg font-bold uppercase tracking-widest text-miru-han-purple-600 lg:h-14 lg:p-4"
+                    onClick={() => {
+                      setNewTimeoffEntryView(true);
+                    }}
+                  >
+                    <img src={VacationIconSVG} className="icon" />
+                    <span className="ml-2">Mark Time Off</span>
+                  </button>
+                )}
+            </div>
             {/* --- weekly view --- */}
             {view === "week" && !newRowView && (
               <button

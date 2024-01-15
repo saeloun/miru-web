@@ -4,7 +4,7 @@ class TimeTrackingIndexService
   attr_reader :current_user, :current_company, :entries, :from, :to, :year
   attr_accessor :clients, :projects, :is_admin, :employees
 
-  def initialize(user, company, from, to, year)
+  def initialize(user:, company:, from:, to:, year:)
     @current_user = user
     @current_company = company
     @from = from
@@ -39,7 +39,7 @@ class TimeTrackingIndexService
     end
 
     def current_company_users
-      current_company.users.with_kept_employments.select(:id, :first_name, :last_name)
+      current_company.employees_without_client_role.select(:id, :first_name, :last_name)
     end
 
     def format_entries
@@ -75,7 +75,7 @@ class TimeTrackingIndexService
     end
 
     def timeoff_entries
-      @_timeoff_entries ||= current_company.timeoff_entries.includes([:leave_type])
+      @_timeoff_entries ||= current_company.timeoff_entries.kept.includes([:leave_type])
         .where(user_id: current_user.id)
         .order(leave_date: :desc)
         .during(
