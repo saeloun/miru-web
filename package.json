@@ -27,7 +27,6 @@
     "babel-loader": "^9.1.2",
     "babel-plugin-js-logger": "^1.0.17",
     "babel-plugin-transform-react-remove-prop-types": "^0.4.24",
-    "chart.js": "^4.1.2",
     "classnames": "^2.3.1",
     "compression-webpack-plugin": "^10.0.0",
     "country-state-city": "^3.1.2",
