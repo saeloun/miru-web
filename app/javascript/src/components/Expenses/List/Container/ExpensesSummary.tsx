@@ -1,12 +1,14 @@
 import React from "react";
 
-const ExpensesSummary = ({ categories }) => (
+import { Categories } from "../../utils";
+
+const ExpensesSummary = () => (
   <div className="flex w-full flex-wrap bg-miru-gray-100 px-4 py-10 lg:py-6 lg:px-20">
     <div className="grid w-full grid-cols-2 flex-wrap gap-10 lg:grid-cols-3 lg:grid-rows-3">
-      {categories?.map(category => (
+      {Categories?.map(category => (
         <div
           className="flex w-1/3 items-center justify-start"
-          key={category.id}
+          key={category.value}
         >
           <div
             className="mr-2 flex h-6 w-6 items-center justify-center rounded-full p-1"
