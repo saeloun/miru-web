@@ -61,7 +61,7 @@ const EntryCard = ({
       </p>
       <div className="hidden w-5/12 items-center justify-between lg:flex">
         <div className="flex w-7/12 items-center justify-between">
-          <div>
+          <div className="w-1/3">
             <Badge
               className={`${getStatusCssClass(bill_status)} uppercase`}
               text={bill_status}

@@ -53,6 +53,7 @@ import {
   Plugs,
   Cake,
   DeviceMobileCamera,
+  ArrowCounterClockwise,
   Percent,
   House,
   ShieldCheck,
@@ -163,6 +164,7 @@ const warningTriangle = require("../../../assets/images/warning-triangle.svg");
 // icons from phosphor
 export const EditIcon = PencilSimple;
 export const DeleteIcon = Trash;
+export const ResendInviteIcon = ArrowCounterClockwise;
 export const LeftArrowIcon = CaretLeft;
 export const RightArrowIcon = CaretRight;
 export const SearchIcon = MagnifyingGlass;
