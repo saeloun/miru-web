@@ -17,6 +17,10 @@ class InvitationPolicy < ApplicationPolicy
     user_owner_role? || user_admin_role?
   end
 
+  def resend?
+    user_owner_role? || user_admin_role?
+  end
+
   def permitted_attributes
     [:first_name, :last_name, :recipient_email, :role, :virtual_verified]
   end

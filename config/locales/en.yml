@@ -164,6 +164,9 @@ en:
     update:
       success:
         message: Changes saved successfully
+    resent:
+      success:
+        message: Invitation resent successfully
   employment:
     update:
       success: Employment updated successfully
