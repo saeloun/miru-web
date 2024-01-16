@@ -10,6 +10,7 @@ import LeaveManagement from "components/LeaveManagement";
 import Success from "components/payments/Success";
 import Projects from "components/Projects";
 import AccountsAgingReport from "components/Reports/AccountsAgingReport";
+import InvalidLink from "components/Team/List/InvalidLink";
 import TeamsRouteConfig from "components/Team/TeamsRouteConfig";
 import { Roles, Paths } from "constants/index";
 
@@ -25,7 +26,7 @@ import TimeEntryReports from "../components/Reports/TimeEntryReport";
 import TotalHoursReport from "../components/Reports/totalHoursLogged";
 import PlanSelection from "../components/Subscriptions/PlanSelection";
 import RouteConfig from "../components/Team/RouteConfig";
-import TimeTracking from "../components/TimeTracking";
+import TimesheetEntries from "../components/TimesheetEntries";
 
 const ClientsRoutes = [
   { path: "", Component: Clients },
@@ -58,7 +59,7 @@ const PaymentsRoutes = [
 ];
 
 const TimeTrackingRoutes = [
-  { path: "", Component: TimeTracking },
+  { path: "", Component: TimesheetEntries },
   { path: "*", Component: ErrorPage },
 ];
 
@@ -101,6 +102,10 @@ export const AUTH_ROUTES = [
   {
     path: "/email_confirmed",
     component: EmailVerificationSuccess,
+  },
+  {
+    path: "/invalid-link",
+    component: InvalidLink,
   },
 ];
 

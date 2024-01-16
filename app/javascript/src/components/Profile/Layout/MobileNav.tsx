@@ -7,6 +7,7 @@ import {
   UserIcon,
   PaymentsIcon,
   ProjectsIcon,
+  MobileIcon,
 } from "miruIcons";
 import { Outlet, useNavigate, useParams } from "react-router-dom";
 
@@ -47,6 +48,11 @@ const getSettingsNavUrls = memberId => [
         url: "/settings/employment",
         text: "EMPLOYMENT DETAILS",
         icon: <ProjectsIcon size={16} />,
+      },
+      {
+        url: "/settings/devices",
+        text: "ALLOCATED DEVICES",
+        icon: <MobileIcon size={16} />,
       },
       // {
       //   url: "/settings/leaves",

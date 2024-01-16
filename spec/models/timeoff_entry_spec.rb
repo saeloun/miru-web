@@ -17,6 +17,7 @@ RSpec.describe TimeoffEntry, type: :model do
 
   describe "associations" do
     it { is_expected.to belong_to(:user) }
-    it { is_expected.to belong_to(:leave_type) }
+    it { is_expected.to belong_to(:leave_type).optional(true) }
+    it { is_expected.to belong_to(:holiday_info).optional(true) }
   end
 end
