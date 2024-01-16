@@ -1,3 +1,4 @@
+<div class="footer-container">
 <div id="footer">
         <div
           style="font-family: 'Manrope'; padding:16px; align-items:center; background: #EBEFF2; text-align:center;"
@@ -9,12 +10,12 @@
                 style="font-family: 'Manrope'; font-style: normal; font-size:14px; font-weight:400; line-height: 19px; color:#A5A3AD; display: inline-block; text-align: center;"
               >Powered by</td>
               <td align="left" style="vertical-align: middle; display: inline-block;">
-                <%= image_tag attachments['miruLogoWithText.png'].url, height:'48px', width:'120px' %>
+                <img src=<%= Rails.root.join('public', 'miruLogoWithText.png') %> alt="Miru Logo" height="48px" width="120px">
               </td>
             </tr>
           </table>
           <p style="font-family: 'Manrope'; font-style: normal; font-size:14px; font-weight:400; line-height: 19px; text-align: center; color:#A5A3AD; width: 80%; margin: 8px auto 0px auto;">
-            Invoice software for every business
+            Saeloun Inc, 475 Clermont Avenue, Brooklyn, New York 11238, United States
           </p>
         </div>
         <div
@@ -41,14 +42,15 @@
               href="https://www.instagram.com/getmiru/"
               target="_blank"
             >
-              <%= image_tag attachments['Instagram.png'].url, height: '16px' ,width:'16px', style: 'margin: 0px 20px;' %>
+            <img src=<%= Rails.root.join('public', 'Instagram.png') %> alt="Instagram Logo" height="16px" width="16px">
             </a>
             <a
               href="https://twitter.com/getmiru"
               target="_blank"
             >
-              <%= image_tag attachments['Twitter.png'].url, height: '16px' ,width:'16px' %>
+            <img src=<%= Rails.root.join('public', 'Twitter.png') %> alt="Twitter Logo" height="16px" width="16px">
             </a>
           </div>
         </div>
       </div>
+  </div>
