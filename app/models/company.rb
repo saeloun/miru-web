@@ -43,9 +43,10 @@ class Company < ApplicationRecord
   has_many :leaves, class_name: "Leave", dependent: :destroy
   has_many :leave_types, through: :leaves, dependent: :destroy
   has_many :timeoff_entries, through: :users
+  has_many :holidays, dependent: :destroy
+  has_many :holiday_infos, through: :holidays, dependent: :destroy
 
   resourcify
-  has_many :holidays, dependent: :destroy
 
   accepts_nested_attributes_for :addresses, reject_if: :address_attributes_blank?, allow_destroy: true
 
@@ -115,5 +116,9 @@ class Company < ApplicationRecord
       .where(projects: { billable: true })
       .kept
       .order(name: :asc)
+  end
+
+  def employees_without_client_role
+    users.with_kept_employments.joins(:roles).where.not(roles: { name: "client" })
   end
 end

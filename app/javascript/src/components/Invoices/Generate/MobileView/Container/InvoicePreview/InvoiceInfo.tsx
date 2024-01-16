@@ -33,9 +33,13 @@ const InvoiceInfo = ({
           {name || label}
         </p>
         <p className="text-xs font-normal text-miru-dark-purple-600">
-          {`${address_line_1}${address_line_2 ? `, ${address_line_2}` : ""}\n ${
-            address_line_2 ? "," : ""
-          }\n ${city}, ${state}, ${country},\n ${pin}`}
+          {selectedClient?.address
+            ? `${address_line_1}${
+                address_line_2 ? `, ${address_line_2}` : ""
+              }\n${
+                address_line_2 ? "," : ""
+              }\n${city}, ${state}, ${country},\n${pin}`
+            : "No address found"}
           <br />
           {phone}
         </p>
