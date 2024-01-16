@@ -1,11 +1,12 @@
 # frozen_string_literal: true
 
 class TimeTrackingIndexService
-  attr_reader :current_user, :current_company, :entries, :from, :to, :year
+  attr_reader :current_user, :user, :current_company, :entries, :from, :to, :year
   attr_accessor :clients, :projects, :is_admin, :employees
 
-  def initialize(user:, company:, from:, to:, year:)
-    @current_user = user
+  def initialize(current_user:, user:, company:, from:, to:, year:)
+    @current_user = current_user
+    @user = user
     @current_company = company
     @from = from
     @to = to
@@ -49,7 +50,7 @@ class TimeTrackingIndexService
     end
 
     def fetch_timesheet_entries
-      current_user.timesheet_entries.includes([:project, :user])
+      user.timesheet_entries.includes([:project, :user])
         .in_workspace(current_company)
         .during(from, to)
     end
@@ -76,7 +77,7 @@ class TimeTrackingIndexService
 
     def timeoff_entries
       @_timeoff_entries ||= current_company.timeoff_entries.kept.includes([:leave_type])
-        .where(user_id: current_user.id)
+        .where(user_id: user.id)
         .order(leave_date: :desc)
         .during(
           from,
