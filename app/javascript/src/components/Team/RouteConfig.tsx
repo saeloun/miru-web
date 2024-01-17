@@ -3,6 +3,8 @@ import React from "react";
 import { Route, Routes } from "react-router-dom";
 
 import Details from "./Details";
+import CompensationDetails from "./Details/CompensationDetails";
+import CompensationEdit from "./Details/CompensationDetails/Edit";
 import EmploymentDetails from "./Details/EmploymentDetails";
 import EmploymentEdit from "./Details/EmploymentDetails/Edit";
 import MobileNav from "./Details/Layout/MobileNav";
@@ -18,6 +20,8 @@ const RouteConfig = () => (
       <Route element={<PersonalDetails />} path="details" />
       <Route element={<EmploymentDetails />} path="employment" />
       <Route element={<EmploymentEdit />} path="employment_edit" />
+      <Route element={<CompensationDetails />} path="compensation" />
+      <Route element={<CompensationEdit />} path="compensation_edit" />
     </Route>
   </Routes>
 );

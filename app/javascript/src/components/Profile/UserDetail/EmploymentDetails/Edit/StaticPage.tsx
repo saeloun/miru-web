@@ -265,7 +265,7 @@ const StaticPage = ({
                     <CustomInputText
                       id={`company_name_${index}`}
                       label="Company Name"
-                      name={`company_name_${index}`}
+                      name="company_name"
                       type="text"
                       value={previous.company_name}
                       onChange={e => {
@@ -277,7 +277,7 @@ const StaticPage = ({
                     <CustomInputText
                       id={`role_${index}`}
                       label="Role"
-                      name={`role_${index}`}
+                      name="role"
                       type="text"
                       value={previous.role}
                       onChange={e => {
