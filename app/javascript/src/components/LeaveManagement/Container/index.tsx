@@ -12,6 +12,7 @@ const Container = ({
   leaveBalance,
   timeoffEntries,
   totalTimeoffEntriesDuration,
+  setSelectedLeaveType,
 }) => (
   <div className="mx-4 my-6 h-full lg:mx-0">
     <span className="text-base font-normal text-miru-dark-purple-1000 lg:text-2xl">
@@ -19,7 +20,11 @@ const Container = ({
     </span>
     <div className="mt-6 grid w-full gap-4 lg:grid-cols-3">
       {leaveBalance.map((leaveType, index) => (
-        <LeaveBlock key={index} leaveType={leaveType} />
+        <LeaveBlock
+          key={index}
+          leaveType={leaveType}
+          setSelectedLeaveType={setSelectedLeaveType}
+        />
       ))}
     </div>
     <div className="mt-10">
