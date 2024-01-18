@@ -7,12 +7,12 @@
   <body style="color:#1D1A31">
   <div class="mail invitation">
     <img class="background" src=<%= Rails.root.join('public', 'Background.svg') %> alt="background">
-<img class="banner" src=<%= Rails.root.join('public', 'Banner.svg') %> alt="banner">
+    <img class="banner" src=<%= Rails.root.join('public', 'Banner.svg') %> alt="banner">
     <p class="header">You have been invited to Miru</p>
 
     <p><%= @sender_details[:name] %> (<%= @sender_details[:email] %>) has invited you to join <%= @company_details[:name] %> team on Miru</p>
 
-    <div class='sender_company_container'>
+    <div class='sender_company_container'> 
       <div class='sender'>
         <img src=<%= @sender_details[:avatar] ? @sender_details[:avatar] : Rails.root.join('public', 'avatar.svg') %> alt="User avatar" height="40px" width="40px">
         <b><%= @sender_details[:name] %></b>
@@ -33,17 +33,17 @@
 
     If you don’t know this user or think this was sent by mistake, please flag this request to our team at <a href="mailto:support@miru.so" class="purple">support@miru.so</a>
 
-<div class="about-miru-container">
-<div class="about-miru">
-  <img class="about-miru-background" src=<%= Rails.root.join('public', 'about-miru-background.svg') %> alt="about-miru-background">
-  <img class="miru-logo" src=<%= Rails.root.join('public', 'miru-logo.svg') %> alt="miru-logo">
+    <div class="about-miru-container">
+      <div class="about-miru">
+        <img class="about-miru-background" src=<%= Rails.root.join('public', 'about-miru-background.svg') %> alt="about-miru-background">
+        <img class="miru-logo" src=<%= Rails.root.join('public', 'miru-logo.svg') %> alt="miru-logo">
 
-<div class="desc">
-    <p class="header">About Miru</p>
-    <p>Miru is an open-source time-tracking & invoicing tool developed by a team of experienced developers. Using Miru, you can track your time, create and send invoices for those time entries to your clients & received instant payments.</p>
-    <p class="button"><%= link_to 'Learn More >', invitations_accepts_url(token: @token), target: "_blank" %></p>
-</div>
-    </div>
+        <div class="desc">
+            <p class="header">About Miru</p>
+            <p>Miru is an open-source time-tracking & invoicing tool developed by a team of experienced developers. Using Miru, you can track your time, create and send invoices for those time entries to your clients & received instant payments.</p>
+            <p class="button"><%= link_to 'Learn More >', 'https://www.miru.so/', target: "_blank" %></p>
+        </div>
+      </div>
     </div>
 
     <%= render "devise/shared/footer" %>
