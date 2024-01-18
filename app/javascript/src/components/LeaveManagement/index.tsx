@@ -23,13 +23,15 @@ const LeaveManagement = () => {
   const [currentYear, setCurrentYear] = useState(getYear(new Date()));
   const [selectedLeaveType, setSelectedLeaveType] = useState(null);
   const [filterTimeoffEntries, setFilterTimeoffEntries] = useState([]);
+  const [filterTimeoffEntriesDuration, setFilterTimeoffEntriesDuration] =
+    useState(0);
 
   useEffect(() => {
     fetchTimeoffEntries();
   }, [selectedEmployeeId, currentYear]);
 
   useEffect(() => {
-    handlefilterTimeoffEntries(timeoffEntries);
+    handlefilterTimeoffEntries(timeoffEntries, totalTimeoffEntriesDuration);
   }, [selectedLeaveType]);
 
   const fetchTimeoffEntries = async () => {
@@ -45,22 +47,31 @@ const LeaveManagement = () => {
     setEmployees(employees);
     setLeaveBalance(leaveBalance);
     setTotalTimeoffEntriesDuration(totalTimeoffEntriesDuration);
-    handlefilterTimeoffEntries(timeoffEntries);
+    handlefilterTimeoffEntries(timeoffEntries, totalTimeoffEntriesDuration);
     setIsLoading(false);
   };
 
-  const handlefilterTimeoffEntries = timeoffEntries => {
+  const handlefilterTimeoffEntries = (
+    timeoffEntries,
+    totalTimeoffEntriesDuration
+  ) => {
     if (selectedLeaveType) {
       const sortedTimeoffEntries =
         timeoffEntries.length &&
         selectedLeaveType &&
         timeoffEntries.filter(
-          timeoffEntry => timeoffEntry.leaveType.id == selectedLeaveType
+          timeoffEntry => timeoffEntry.leaveType.id == selectedLeaveType.id
         );
 
+      const leaveType = leaveBalance.find(
+        item => item.id === selectedLeaveType.id
+      );
+
       setFilterTimeoffEntries(sortedTimeoffEntries);
+      setFilterTimeoffEntriesDuration(leaveType.timeoffEntriesDuration);
     } else {
       setFilterTimeoffEntries(timeoffEntries);
+      setFilterTimeoffEntriesDuration(totalTimeoffEntriesDuration);
     }
   };
 
@@ -87,9 +98,10 @@ const LeaveManagement = () => {
         <Container
           currentYear={currentYear}
           leaveBalance={leaveBalance}
+          selectedLeaveType={selectedLeaveType}
           setSelectedLeaveType={setSelectedLeaveType}
           timeoffEntries={filterTimeoffEntries}
-          totalTimeoffEntriesDuration={totalTimeoffEntriesDuration}
+          totalTimeoffEntriesDuration={filterTimeoffEntriesDuration}
         />
       </div>
     );

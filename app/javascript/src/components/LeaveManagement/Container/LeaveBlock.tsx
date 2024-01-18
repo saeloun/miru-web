@@ -18,7 +18,7 @@ const LeaveBlock = ({ leaveType, setSelectedLeaveType }) => {
     <div
       className="flex w-full cursor-pointer justify-start rounded-lg p-2 text-white lg:flex-col lg:p-6"
       style={{ background: leaveColor.value }}
-      onClick={() => setSelectedLeaveType(leaveType.id)}
+      onClick={() => setSelectedLeaveType(leaveType)}
     >
       <Avatar
         classNameImg="mr-2 p-2"
