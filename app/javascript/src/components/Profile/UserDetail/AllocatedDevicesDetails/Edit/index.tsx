@@ -5,18 +5,31 @@ import { useNavigate } from "react-router-dom";
 
 import deviceApi from "apis/devices";
 import Loader from "common/Loader/index";
+import { MobileDetailsHeader } from "common/Mobile/MobileDetailsHeader";
 import { useUserContext } from "context/UserContext";
 
 import EditPage from "./EditPage";
+import MobileEditPage from "./MobileEditPage";
 
 import { Device } from "../Device";
 
 const AllocatedDevicesEdit = () => {
+  const initialErrState = {
+    device_type_err: "",
+    name_err: "",
+    serial_number_err: "",
+    specifications_err: {
+      ram_err: "",
+      graphics_err: "",
+      processor_err: "",
+    },
+  };
   const navigate = useNavigate();
   const { isDesktop, user } = useUserContext();
 
   const [isLoading, setIsLoading] = useState(false);
   const [devices, setDevices] = useState<Device[]>([]);
+  const [errDetails, setErrDetails] = useState(initialErrState);
 
   useEffect(() => {
     setIsLoading(true);
@@ -33,6 +46,22 @@ const AllocatedDevicesEdit = () => {
   const handleCancelDetails = () => {
     setIsLoading(true);
     navigate(`/settings/devices`, { replace: true });
+  };
+
+  const addAnotherDevice = () => {
+    setDevices([
+      ...devices,
+      {
+        device_type: "",
+        name: "",
+        serial_number: "",
+        specifications: {
+          graphics: "",
+          processor: "",
+          ram: "",
+        },
+      },
+    ]);
   };
 
   return (
@@ -56,7 +85,25 @@ const AllocatedDevicesEdit = () => {
           {isLoading ? (
             <Loader className="min-h-70v" />
           ) : (
-            <EditPage devices={devices} setDevices={setDevices} />
+            <EditPage addAnotherDevice={addAnotherDevice} devices={devices} />
+          )}
+        </Fragment>
+      )}
+      {!isDesktop && (
+        <Fragment>
+          <MobileDetailsHeader
+            href="/settings/devices"
+            title="Allocated Devices"
+          />
+          {isLoading ? (
+            <Loader className="min-h-70v" />
+          ) : (
+            <MobileEditPage
+              addAnotherDevice={addAnotherDevice}
+              devices={devices}
+              errDetails={errDetails}
+              handleCancelDetails={handleCancelDetails}
+            />
           )}
         </Fragment>
       )}

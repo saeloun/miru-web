@@ -27,14 +27,14 @@
 #
 # Indexes
 #
-#  index_invoices_on_client_id          (client_id)
-#  index_invoices_on_company_id         (company_id)
-#  index_invoices_on_discarded_at       (discarded_at)
-#  index_invoices_on_due_date           (due_date)
-#  index_invoices_on_external_view_key  (external_view_key) UNIQUE
-#  index_invoices_on_invoice_number     (invoice_number) UNIQUE
-#  index_invoices_on_issue_date         (issue_date)
-#  index_invoices_on_status             (status)
+#  index_invoices_on_client_id                      (client_id)
+#  index_invoices_on_company_id                     (company_id)
+#  index_invoices_on_discarded_at                   (discarded_at)
+#  index_invoices_on_due_date                       (due_date)
+#  index_invoices_on_external_view_key              (external_view_key) UNIQUE
+#  index_invoices_on_invoice_number_and_company_id  (invoice_number,company_id) UNIQUE
+#  index_invoices_on_issue_date                     (issue_date)
+#  index_invoices_on_status                         (status)
 #
 # Foreign Keys
 #
@@ -78,7 +78,7 @@ class Invoice < ApplicationRecord
   validates :due_date, comparison: { greater_than_or_equal_to: :issue_date }, if: :not_waived
   validates :amount, :outstanding_amount, :tax,
     :amount_paid, :amount_due, :discount, numericality: { greater_than_or_equal_to: 0 }
-  validates :invoice_number, uniqueness: true
+  validates :invoice_number, uniqueness: { scope: :company_id }
   validates :reference, length: { maximum: 12 }, allow_blank: true
   validate :check_if_invoice_paid, on: :update
   validate :prevent_waived_change, on: :update

@@ -2,23 +2,14 @@ import React from "react";
 
 const TableHeader = () => (
   <thead>
-    <tr className="flex flex-row items-center py-5">
-      <th
-        className="flex w-1/3 cursor-pointer pr-8 text-left text-xs font-normal tracking-widest text-miru-dark-purple-600 lg:w-3/12"
-        scope="col"
-      >
+    <tr className="flex w-full justify-between">
+      <th className="flex text-left text-xs font-normal tracking-widest text-miru-dark-purple-600 lg:w-1/4">
         DATE
       </th>
-      <th
-        className="w-1/3 pr-8 text-left text-xs font-normal tracking-widest text-miru-dark-purple-600 lg:w-4/12"
-        scope="col"
-      >
+      <th className="flex w-3/6 text-left text-xs font-normal tracking-widest text-miru-dark-purple-600 lg:w-4/12">
         DESCRIPTION
       </th>
-      <th
-        className="hidden pl-8 text-right text-xs font-normal tracking-widest text-miru-dark-purple-600 lg:table-cell lg:w-3/12"
-        scope="col"
-      >
+      <th className="flex justify-end text-xs font-normal tracking-widest text-miru-dark-purple-600 lg:w-3/12">
         HOURS
       </th>
     </tr>
