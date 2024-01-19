@@ -44,7 +44,11 @@ class CreateInvitedUserService
   private
 
     def invitation
-      @_invitation ||= Invitation.find_by!(token:)
+      @_invitation ||= find_invitation
+    end
+
+    def find_invitation
+      Invitation.find_by(token: @token) || raise(InvitationExpired)
     end
 
     def invitation_valid!

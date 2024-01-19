@@ -152,35 +152,33 @@ const MarkInvoiceAsPaidModal = ({
               label="Transaction Type"
               name="transactionType"
               options={transactionTypes}
-              handleonFocus={() => {
-                setShowTransactionTypes(true);
-              }}
               value={transactionTypes.find(
                 type => type.value == transactionType
               )}
+              onMenuOpen={() => {
+                setShowTransactionTypes(true);
+              }}
             />
-            {showTransactionTypes && (
-              <MobileMoreOptions
-                className="h-3/4 w-full overflow-scroll md:h-3/5 md:w-3/4 lg:h-1/4"
-                setVisibilty={setShowTransactionTypes}
-                visibilty={showTransactionTypes}
-              >
-                {transactionTypes.map((transaction, index) => (
-                  <li
-                    className="flex items-center pb-5 font-manrope text-sm font-normal capitalize leading-5 text-miru-dark-purple-1000 hover:bg-miru-gray-100"
-                    key={index}
-                    onClick={() => {
-                      if (transaction?.value) {
-                        setTransactionType(transaction.value);
-                      }
-                      setShowTransactionTypes(false);
-                    }}
-                  >
-                    {transaction.label}
-                  </li>
-                ))}
-              </MobileMoreOptions>
-            )}
+            <MobileMoreOptions
+              className="h-3/4 w-full overflow-scroll md:h-3/5 md:w-3/4 lg:h-1/4"
+              setVisibilty={setShowTransactionTypes}
+              visibilty={showTransactionTypes}
+            >
+              {transactionTypes.map((transaction, index) => (
+                <li
+                  className="flex items-center pb-5 font-manrope text-sm font-normal capitalize leading-5 text-miru-dark-purple-1000 hover:bg-miru-gray-100"
+                  key={index}
+                  onClick={() => {
+                    if (transaction?.value) {
+                      setTransactionType(transaction.value);
+                    }
+                    setShowTransactionTypes(false);
+                  }}
+                >
+                  {transaction.label}
+                </li>
+              ))}
+            </MobileMoreOptions>
           </>
         )}
       </div>
