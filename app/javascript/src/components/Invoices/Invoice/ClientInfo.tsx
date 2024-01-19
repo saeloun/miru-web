@@ -14,9 +14,13 @@ const ClientInfo = ({ client }) => {
           {client.name}
         </p>
         <p className="w-52 text-sm font-normal text-miru-dark-purple-600">
-          {`${address_line_1}${address_line_2 ? `, ${address_line_2}` : ""}${
-            address_line_2 ? "," : ""
-          }\n ${city}, ${state}, ${country},\n ${pin}`}
+          {client?.address
+            ? `${address_line_1}${
+                address_line_2 ? `, ${address_line_2}` : ""
+              }\n${
+                address_line_2 ? "," : ""
+              }\n${city}, ${state}, ${country},\n${pin}`
+            : "No address found"}
           <br />
           {client.phone}
         </p>

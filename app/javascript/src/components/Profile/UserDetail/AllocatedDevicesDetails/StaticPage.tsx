@@ -12,9 +12,9 @@ const StaticPage = ({ devices }) => {
     } = device;
 
     return (
-      <div className="mt-4 h-full bg-miru-gray-100 px-10">
-        <div className="flex border-b border-b-miru-gray-400 py-10">
-          <div className="flex w-1/5 pr-4">
+      <div className="h-full bg-miru-gray-100 px-4 lg:px-10">
+        <div className="border-b border-b-miru-gray-400 py-10 lg:flex">
+          <div className="flex py-5 lg:w-1/5 lg:py-0 lg:pr-4">
             <MobileIcon
               className="mr-4 mt-1 text-miru-dark-purple-1000"
               size={16}

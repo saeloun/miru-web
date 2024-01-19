@@ -52,6 +52,7 @@ import {
   Plugs,
   Cake,
   DeviceMobileCamera,
+  ArrowCounterClockwise,
 } from "phosphor-react";
 
 const error404Animation = require("./GIFS/404_animation.gif");
@@ -154,6 +155,7 @@ const warningTriangle = require("../../../assets/images/warning-triangle.svg");
 // icons from phosphor
 export const EditIcon = PencilSimple;
 export const DeleteIcon = Trash;
+export const ResendInviteIcon = ArrowCounterClockwise;
 export const LeftArrowIcon = CaretLeft;
 export const RightArrowIcon = CaretRight;
 export const SearchIcon = MagnifyingGlass;
