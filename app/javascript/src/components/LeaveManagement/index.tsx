@@ -31,7 +31,11 @@ const LeaveManagement = () => {
   }, [selectedEmployeeId, currentYear]);
 
   useEffect(() => {
-    handlefilterTimeoffEntries(timeoffEntries, totalTimeoffEntriesDuration);
+    handlefilterTimeoffEntries(
+      timeoffEntries,
+      totalTimeoffEntriesDuration,
+      selectedLeaveType
+    );
   }, [selectedLeaveType]);
 
   const fetchTimeoffEntries = async () => {
@@ -43,17 +47,23 @@ const LeaveManagement = () => {
       totalTimeoffEntriesDuration,
     } = res.data;
 
+    setSelectedLeaveType(null);
     setTimeoffEntries(timeoffEntries);
     setEmployees(employees);
     setLeaveBalance(leaveBalance);
     setTotalTimeoffEntriesDuration(totalTimeoffEntriesDuration);
-    handlefilterTimeoffEntries(timeoffEntries, totalTimeoffEntriesDuration);
+    handlefilterTimeoffEntries(
+      timeoffEntries,
+      totalTimeoffEntriesDuration,
+      null
+    );
     setIsLoading(false);
   };
 
   const handlefilterTimeoffEntries = (
     timeoffEntries,
-    totalTimeoffEntriesDuration
+    totalTimeoffEntriesDuration,
+    selectedLeaveType
   ) => {
     if (selectedLeaveType) {
       const sortedTimeoffEntries =
