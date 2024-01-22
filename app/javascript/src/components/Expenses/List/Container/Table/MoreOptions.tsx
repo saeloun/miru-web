@@ -19,6 +19,7 @@ const MoreOptions = ({
     >
       <Tooltip content="Download">
         <Button
+          disabled
           style="ternary"
           onClick={e => {
             e.stopPropagation();
