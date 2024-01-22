@@ -8,7 +8,7 @@ import {
   generateLeaveIcon,
 } from "components/Profile/Organization/Leaves/utils";
 
-const LeaveBlock = ({ leaveType }) => {
+const LeaveBlock = ({ leaveType, setSelectedLeaveType }) => {
   const { icon, color, name, netDuration, netDays } = leaveType;
 
   const leaveIcon = generateLeaveIcon(icon);
@@ -16,8 +16,9 @@ const LeaveBlock = ({ leaveType }) => {
 
   return (
     <div
-      className="flex w-full justify-start rounded-lg p-2 text-white lg:flex-col lg:p-6"
+      className="flex w-full cursor-pointer justify-start rounded-lg p-2 text-white lg:flex-col lg:p-6"
       style={{ background: leaveColor.value }}
+      onClick={() => setSelectedLeaveType(leaveType)}
     >
       <Avatar
         classNameImg="mr-2 p-2"
