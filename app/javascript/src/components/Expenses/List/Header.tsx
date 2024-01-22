@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 
-import { FilterIcon, SearchIcon, PlusIcon, XIcon } from "miruIcons";
-import { Button } from "StyledComponents";
+import { SearchIcon, PlusIcon, XIcon } from "miruIcons";
 
 const Header = ({ setShowAddExpenseModal }) => {
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -28,9 +27,11 @@ const Header = ({ setShowAddExpenseModal }) => {
           </div>
         </div>
       </div>
+      {/* Todo: Uncomment when filter functionality is added
       <Button className="relative ml-7" style="ternary">
         <FilterIcon color="#5B34EA" size={16} />
       </Button>
+      */}
       <div className="flex">
         <button
           className="header__button"
