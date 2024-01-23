@@ -34,11 +34,12 @@ const CompensationEditPage = () => {
   const [total, setTotal] = useState<number | string>(
     CompensationDetailsState.total.amount
   );
-  const [errDetails, setErrDetails] = useState(initialErrState);
+  const [errDetails, setErrDetails] = useState<object>({});
 
   useEffect(() => {
     setIsLoading(true);
     getDevicesDetail();
+    setErrDetails(initialErrState);
   }, []);
 
   useEffect(() => {
@@ -120,6 +121,7 @@ const CompensationEditPage = () => {
               currency={company.base_currency}
               deductions={deductions}
               earnings={earnings}
+              errDetails={errDetails}
               handleAddDeduction={handleAddDeduction}
               handleAddEarning={handleAddEarning}
               handleDeleteDeduction={handleDeleteDeduction}
@@ -134,6 +136,7 @@ const CompensationEditPage = () => {
               currency={company.base_currency}
               deductions={deductions}
               earnings={earnings}
+              errDetails={errDetails}
               handleAddDeduction={handleAddDeduction}
               handleAddEarning={handleAddEarning}
               handleCancelDetails={handleCancelDetails}

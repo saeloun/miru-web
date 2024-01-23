@@ -11,6 +11,7 @@ import "react-phone-number-input/style.css";
 import { Button } from "StyledComponents";
 
 import { CustomInputText } from "common/CustomInputText";
+import { ErrorSpan } from "common/ErrorSpan";
 
 const EditPage = ({
   handleAddEarning,
@@ -23,6 +24,7 @@ const EditPage = ({
   deductions,
   total,
   currency,
+  errDetails,
 }) => (
   <div className="mt-4 h-full bg-miru-gray-100 px-10">
     <div className="flex border-b border-b-miru-gray-400 py-10">
@@ -51,6 +53,12 @@ const EditPage = ({
                       updateEarningsValues(earning, e);
                     }}
                   />
+                  {errDetails.earning_type_err && (
+                    <ErrorSpan
+                      className="text-xs text-red-600"
+                      message={errDetails.earning_type_err}
+                    />
+                  )}
                 </div>
                 <div className="flex w-1/2 flex-col px-2">
                   <CustomInputText
@@ -63,6 +71,12 @@ const EditPage = ({
                       updateEarningsValues(earning, e);
                     }}
                   />
+                  {errDetails.earning_amount_err && (
+                    <ErrorSpan
+                      className="text-xs text-red-600"
+                      message={errDetails.earning_amount_err}
+                    />
+                  )}
                 </div>
               </div>
               <Button
@@ -112,6 +126,12 @@ const EditPage = ({
                       updateDeductionValues(deduction, e);
                     }}
                   />
+                  {errDetails.deduction_type_err && (
+                    <ErrorSpan
+                      className="text-xs text-red-600"
+                      message={errDetails.deduction_type_err}
+                    />
+                  )}
                 </div>
                 <div className="flex w-1/2 flex-col px-2">
                   <CustomInputText
@@ -124,6 +144,12 @@ const EditPage = ({
                       updateDeductionValues(deduction, e);
                     }}
                   />
+                  {errDetails.deduction_amount_err && (
+                    <ErrorSpan
+                      className="text-xs text-red-600"
+                      message={errDetails.deduction_amount_err}
+                    />
+                  )}
                 </div>
               </div>
               <Button
