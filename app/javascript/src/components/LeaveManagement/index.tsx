@@ -70,7 +70,7 @@ const LeaveManagement = () => {
         timeoffEntries.length &&
         selectedLeaveType &&
         timeoffEntries.filter(
-          timeoffEntry => timeoffEntry.leaveType.id === selectedLeaveType.id
+          timeoffEntry => timeoffEntry.leaveType?.id === selectedLeaveType.id
         );
 
       const leaveType = leaveBalance.find(
