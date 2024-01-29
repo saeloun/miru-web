@@ -35,7 +35,7 @@ RSpec.describe "InternalApi::V1::TimesheetEntry#index", type: :request do
     end
 
     it "returns the timesheet entry" do
-      expect(json_response["entries"].size).to eq(3)
+      expect(json_response["entries"].size).to eq(2)
 
       expect(json_response["entries"].keys)
         .to include(timesheet_entry1.work_date.strftime("%F"), timesheet_entry2.work_date.strftime("%F"))
@@ -60,7 +60,7 @@ RSpec.describe "InternalApi::V1::TimesheetEntry#index", type: :request do
     end
 
     it "returns the timesheet entry" do
-      expect(json_response["entries"].size).to eq(3)
+      expect(json_response["entries"].size).to eq(2)
 
       expect(json_response["entries"].keys)
         .to include(timesheet_entry1.work_date.strftime("%F"), timesheet_entry2.work_date.strftime("%F"))

@@ -46,14 +46,16 @@ json.leave_types leave_types do |leave_type|
   json.leave_id leave_type[:leave_id]
 end
 
-json.projects projects do |client_name, data|
-  json.set! client_name do
-    json.array! data do |entry|
-      json.id entry[:id]
-      json.name entry[:name]
-      json.billable entry[:billable]
-      json.description entry[:description]
-      json.client_id entry[:client_id]
+json.projects do
+  projects.each do |client_name, data|
+    json.set! client_name do
+      json.array! data do |entry|
+        json.id entry[:id]
+        json.name entry[:name]
+        json.billable entry[:billable]
+        json.description entry[:description]
+        json.client_id entry[:client_id]
+      end
     end
   end
 end

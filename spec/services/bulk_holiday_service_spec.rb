@@ -90,7 +90,7 @@ RSpec.describe BulkHolidayService, type: :service do
         create(:holiday, year:, company: current_company)
         create(:holiday_info, id: 1, holiday: current_company.holidays.first)
 
-        expect { subject.process }.to change(HolidayInfo, :count).by(-1)
+        expect { subject.process }.to change { holiday_info.reload.discarded? }.from(false).to(true)
       end
     end
   end
