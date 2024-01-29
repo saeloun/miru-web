@@ -58,7 +58,6 @@ class TimeTrackingIndexService
     def formatted_timesheet_entries
       timesheet_entries = fetch_timesheet_entries
       @entries = TimesheetEntriesPresenter.new(timesheet_entries).group_snippets_by_work_date
-      @entries[:currentUserRole] = current_user.primary_role current_company
     end
 
     def set_is_admin
@@ -94,11 +93,11 @@ class TimeTrackingIndexService
 
     def leave_types
       leave = current_company.leaves.find_by(year:)
-      leave&.leave_types || []
+      leave&.leave_types.kept || []
     end
 
     def holiday_infos
       holiday = current_company.holidays.find_by(year:)
-      holiday&.holiday_infos || []
+      holiday&.holiday_infos.kept || []
     end
 end
