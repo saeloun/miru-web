@@ -87,8 +87,8 @@ RSpec.describe BulkHolidayService, type: :service do
       end
 
       it "removes holiday info" do
-        create(:holiday, year:, company: current_company)
-        create(:holiday_info, id: 1, holiday: current_company.holidays.first)
+        holiday = create(:holiday, year:, company: current_company)
+        holiday_info = create(:holiday_info, id: 1, holiday:)
 
         expect { subject.process }.to change { holiday_info.reload.discarded? }.from(false).to(true)
       end
