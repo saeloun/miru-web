@@ -93,11 +93,11 @@ class TimeTrackingIndexService
 
     def leave_types
       leave = current_company.leaves.find_by(year:)
-      leave&.leave_types.kept || []
+      leave&.leave_types&.kept || []
     end
 
     def holiday_infos
       holiday = current_company.holidays.find_by(year:)
-      holiday&.holiday_infos.kept || []
+      holiday&.holiday_infos&.kept || []
     end
 end
