@@ -15,11 +15,10 @@ import {
 
 const TimeoffEntryCard = ({
   timeoffEntry,
-  currentUserRole,
   leaveTypeDetails,
   holidayDetails,
 }: Iprops) => {
-  const { isDesktop } = useUserContext();
+  const { isDesktop, companyRole } = useUserContext();
   const {
     entryList,
     setEditTimeoffEntryId,
@@ -140,19 +139,14 @@ const TimeoffEntryCard = ({
         <div className="flex w-5/12 items-center justify-evenly">
           {showDuplicateAction(
             bill_status,
-            currentUserRole,
+            companyRole,
             id,
             handleDuplicateTimeoffEntry
           )}
-          {showUpdateAction(
-            bill_status,
-            currentUserRole,
-            id,
-            handleEditBtnClick
-          )}
+          {showUpdateAction(bill_status, companyRole, id, handleEditBtnClick)}
           {showDeleteAction(
             bill_status,
-            currentUserRole,
+            companyRole,
             id,
             handleDeleteTimeoffEntry
           )}
@@ -174,7 +168,6 @@ interface Iprops {
   timeoffEntry: any;
   leaveTypeDetails: any;
   holidayDetails: any;
-  currentUserRole: string;
 }
 
 export default TimeoffEntryCard;

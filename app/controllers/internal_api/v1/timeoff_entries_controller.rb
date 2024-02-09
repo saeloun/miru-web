@@ -8,7 +8,8 @@ class InternalApi::V1::TimeoffEntriesController < InternalApi::V1::ApplicationCo
 
   def index
     authorize TimeoffEntry
-    data = TimeoffEntries::IndexService.new(params, current_company, current_user).process
+
+    data = TimeoffEntries::IndexService.new(current_user, current_company, params[:user_id], params[:year]).process
 
     render :index, locals: {
       timeoff_entries: data[:timeoff_entries],

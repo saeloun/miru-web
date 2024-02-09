@@ -95,7 +95,6 @@ const TimeEntryManager = () => {
             <>
               {entry?.type === "timesheet" && !entry?.leave_type_id ? (
                 <EntryCard
-                  currentUserRole={entryList["currentUserRole"]}
                   handleDeleteEntry={handleDeleteEntry}
                   handleDuplicate={handleDuplicate}
                   key={weekCounter}
@@ -105,7 +104,6 @@ const TimeEntryManager = () => {
                 />
               ) : (
                 <TimeoffEntryManager
-                  currentUserRole={entryList["currentUserRole"]}
                   timeoffEntry={entry}
                   holidayDetails={
                     holidaysHashObj[entry?.holiday_info_id || null]

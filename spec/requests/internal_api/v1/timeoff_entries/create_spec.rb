@@ -6,7 +6,7 @@ RSpec.describe "InternalApi::V1::TimeoffEntry#create", type: :request do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
   let(:leave) { create(:leave, company:) }
-  let!(:leave_type) { create(:leave_type, leave:) }
+  let!(:leave_type) { create(:leave_type, name: "Annual", leave:) }
 
   context "when user is an admin" do
     before do

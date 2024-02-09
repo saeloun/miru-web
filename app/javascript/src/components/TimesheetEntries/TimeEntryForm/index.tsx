@@ -92,7 +92,7 @@ const AddEntry = () => {
       return setProjectId(0);
     }
 
-    const selectedProject = projects[client].find(
+    const selectedProject = projects[client]?.find(
       currentProject => currentProject.name === project
     );
     if (selectedProject) {
