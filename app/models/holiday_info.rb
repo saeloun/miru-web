@@ -4,26 +4,30 @@
 #
 # Table name: holiday_infos
 #
-#  id         :bigint           not null, primary key
-#  category   :integer          default("national"), not null
-#  date       :date             not null
-#  name       :string           not null
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#  holiday_id :bigint           not null
+#  id           :bigint           not null, primary key
+#  category     :integer          default("national"), not null
+#  date         :date             not null
+#  discarded_at :datetime
+#  name         :string           not null
+#  created_at   :datetime         not null
+#  updated_at   :datetime         not null
+#  holiday_id   :bigint           not null
 #
 # Indexes
 #
-#  index_holiday_infos_on_holiday_id  (holiday_id)
+#  index_holiday_infos_on_discarded_at  (discarded_at)
+#  index_holiday_infos_on_holiday_id    (holiday_id)
 #
 # Foreign Keys
 #
 #  fk_rails_...  (holiday_id => holidays.id)
 #
 class HolidayInfo < ApplicationRecord
+  include Discard::Model
+
   belongs_to :holiday
 
-  has_many :timeoff_entries, inverse_of: :holiday_info
+  has_many :timeoff_entries, dependent: :destroy
 
   enum category: { national: 0, optional: 1 }
 
@@ -34,6 +38,8 @@ class HolidayInfo < ApplicationRecord
   validate :validate_optional_holidays, if: -> { category == "optional" }
   validate :validate_holiday_category
   validate :validate_year
+
+  after_discard :discard_timeoff_entries
 
   scope :for_year_and_category, ->(year, category) {
     joins(:holiday)
@@ -59,5 +65,9 @@ class HolidayInfo < ApplicationRecord
       if holiday && date&.year != holiday.year
         errors.add(:date, "must have the same year as the associated holiday")
       end
+    end
+
+    def discard_timeoff_entries
+      timeoff_entries.discard_all
     end
 end

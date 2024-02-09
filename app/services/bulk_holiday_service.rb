@@ -53,6 +53,6 @@ class BulkHolidayService
     def remove_holiday_info
       return if holiday_params[:remove_holiday_infos].blank?
 
-      holiday.holiday_infos.where(id: holiday_params[:remove_holiday_infos]).destroy_all
+      holiday.holiday_infos.where(id: holiday_params[:remove_holiday_infos]).discard_all
     end
 end

@@ -586,7 +586,6 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
               />
             ) : (
               <EntryCard
-                currentUserRole={entryList["currentUserRole"]}
                 handleDeleteEntry={handleDeleteEntry}
                 handleDuplicate={handleDuplicate}
                 key={weekCounter}

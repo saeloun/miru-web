@@ -40,6 +40,6 @@ class LeaveWithLeaveTypesService
     def remove_leave_types
       return if params[:removed_leave_type_ids].blank?
 
-      leave.leave_types.where(id: params[:removed_leave_type_ids]).destroy_all
+      leave.leave_types.where(id: params[:removed_leave_type_ids]).discard_all
     end
 end

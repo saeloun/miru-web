@@ -22,11 +22,10 @@ const EntryCard = ({
   handleDeleteEntry,
   setEditEntryId,
   bill_status,
-  currentUserRole,
   setNewEntryView,
   handleDuplicate,
 }: Iprops) => {
-  const { isDesktop } = useUserContext();
+  const { isDesktop, companyRole } = useUserContext();
 
   const handleCardClick = () => {
     if (!isDesktop) {
@@ -70,19 +69,9 @@ const EntryCard = ({
           <p className="mx-auto text-2xl xl:text-4xl">{minToHHMM(duration)}</p>
         </div>
         <div className="flex w-5/12 items-center justify-evenly">
-          {showDuplicateAction(
-            bill_status,
-            currentUserRole,
-            id,
-            handleDuplicate
-          )}
-          {showUpdateAction(bill_status, currentUserRole, id, setEditEntryId)}
-          {showDeleteAction(
-            bill_status,
-            currentUserRole,
-            id,
-            handleDeleteEntry
-          )}
+          {showDuplicateAction(bill_status, companyRole, id, handleDuplicate)}
+          {showUpdateAction(bill_status, companyRole, id, setEditEntryId)}
+          {showDeleteAction(bill_status, companyRole, id, handleDeleteEntry)}
         </div>
       </div>
     </div>
@@ -98,7 +87,6 @@ interface Iprops {
   handleDeleteEntry: (id: number) => void; // eslint-disable-line
   setEditEntryId: React.Dispatch<React.SetStateAction<number>>;
   bill_status: string;
-  currentUserRole: string;
   setNewEntryView: any;
   handleDuplicate: any;
 }
