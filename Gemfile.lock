@@ -664,7 +664,7 @@ DEPENDENCIES
   letter_opener_web
   money
   newrelic_rpm (~> 8.4)
-  nokogiri (>= 1.13.10)
+  nokogiri (>= 1.16.2)
   omniauth-google-oauth2 (~> 1.0)
   omniauth-rails_csrf_protection (~> 1.0)
   pagy (~> 5.10)
