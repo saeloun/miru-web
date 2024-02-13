@@ -661,7 +661,25 @@ const TimesheetEntries = ({ user, isAdminUser }: Iprops) => {
       <div className="pb-14">
         {!isDesktop && <Header />}
         <div className="mt-0 h-full p-4 lg:mt-6 lg:p-0">
-          <div className="mb-6 flex items-center justify-between md:flex-row-reverse">
+          <div className="mb-6 flex items-center justify-between">
+            {isDesktop && (
+              <nav className="flex">
+                {["month", "day"].map((item, index) => (
+                  <button
+                    key={index}
+                    className={`mr-10 tracking-widest
+                      ${
+                        item === view
+                          ? "border-b-2 border-miru-han-purple-1000 font-bold text-miru-han-purple-1000"
+                          : "font-medium text-miru-han-purple-600"
+                      }`}
+                    onClick={() => setView(item)}
+                  >
+                    {item.toUpperCase()}
+                  </button>
+                ))}
+              </nav>
+            )}
             {isDesktop && isViewTogglerVisible && (
               <ViewToggler view={view} setView={setView} />
             )}
@@ -718,7 +736,7 @@ const TimesheetEntries = ({ user, isAdminUser }: Iprops) => {
                     + NEW ENTRY
                   </button>
                 )}
-              {view === "month" &&
+              {view !== "week" &&
                 !newEntryView &&
                 !newTimeoffEntryView &&
                 isDesktop && (
