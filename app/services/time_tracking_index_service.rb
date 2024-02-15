@@ -65,7 +65,7 @@ class TimeTrackingIndexService
     end
 
     def set_clients
-      @clients = ClientPolicy::Scope.new(current_user, current_company).resolve.includes(:projects)
+      @clients = ClientPolicy::Scope.new(current_user, current_company).resolve.includes(:projects, :addresses)
     end
 
     def set_projects
