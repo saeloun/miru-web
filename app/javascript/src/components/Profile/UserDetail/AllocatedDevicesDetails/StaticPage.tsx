@@ -2,6 +2,8 @@ import React, { Fragment } from "react";
 
 import { MobileIcon } from "miruIcons";
 
+import EmptyStates from "common/EmptyStates";
+
 const StaticPage = ({ devices }) => {
   const DeviceDetails = ({ device }) => {
     const {
@@ -75,9 +77,17 @@ const StaticPage = ({ devices }) => {
 
   return (
     <Fragment>
-      {devices?.map((device, index) => (
-        <DeviceDetails device={device} key={index} />
-      ))}
+      {devices.length > 0 ? (
+        devices.map((device, index) => (
+          <DeviceDetails device={device} key={index} />
+        ))
+      ) : (
+        <EmptyStates
+          Message="No devices found"
+          containerClassName="h-full"
+          showNoSearchResultState={false}
+        />
+      )}
     </Fragment>
   );
 };
