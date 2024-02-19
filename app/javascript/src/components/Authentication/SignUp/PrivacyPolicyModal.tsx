@@ -168,7 +168,7 @@ const PrivacyPolicyModal = ({ isOpen, onClose }) => (
           className="form__link inline cursor-pointer"
           href={MIRU_APP_SUPPORT_EMAIL_ID}
         >
-          mirusupport@saeloun.com.
+          hello@saeloun.com.
         </a>
       </p>
       <h3 className="mt-2 text-lg font-semibold">
@@ -419,7 +419,7 @@ const PrivacyPolicyModal = ({ isOpen, onClose }) => (
           className="form__link inline cursor-pointer"
           href={MIRU_APP_SUPPORT_EMAIL_ID}
         >
-          mirusupport@saeloun.com.
+          hello@saeloun.com.
         </a>
       </p>
     </div>
