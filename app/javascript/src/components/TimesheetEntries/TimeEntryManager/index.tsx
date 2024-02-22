@@ -86,6 +86,7 @@ const TimeEntryManager = () => {
         </>
       ) : (
         // Entry cards for day and month
+        entryList &&
         entryList[selectedFullDate] &&
         entryList[selectedFullDate]?.map((entry, weekCounter) =>
           editEntryId === entry.id ? (
