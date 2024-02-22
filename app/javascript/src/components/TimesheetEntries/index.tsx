@@ -764,9 +764,10 @@ const TimesheetEntries = ({ user, isAdminUser }: Iprops) => {
           {/* Render existing time entry cards in bottom */}
           <TimeEntryManager />
           {/* mobile view Empty state condition */}
-          {view !== "week" && !entryList[selectedFullDate] && !isDesktop && (
-            <EmptyStatesMobileView />
-          )}
+          {view !== "week" &&
+            entryList &&
+            !entryList[selectedFullDate] &&
+            !isDesktop && <EmptyStatesMobileView />}
         </div>
       </div>
     </TimesheetEntriesContext.Provider>
