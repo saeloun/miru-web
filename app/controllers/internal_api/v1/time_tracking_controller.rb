@@ -19,7 +19,8 @@ class InternalApi::V1::TimeTrackingController < InternalApi::V1::ApplicationCont
       entries: data[:entries],
       holiday_infos: data[:holiday_infos],
       leave_types: data[:leave_types],
-      projects: data[:projects]
+      projects: data[:projects],
+      company: current_company
     }, status: :ok
   end
 
