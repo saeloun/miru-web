@@ -1,7 +1,5 @@
 import React from "react";
 
-import { CaretDownIcon } from "miruIcons";
-
 const TableHeader = ({ sortClientList }) => (
   <thead>
     <tr className="flex flex-row items-center py-5">
@@ -10,7 +8,7 @@ const TableHeader = ({ sortClientList }) => (
         scope="col"
         onClick={sortClientList}
       >
-        CLIENT <CaretDownIcon className="ml-2" size={18} />
+        CLIENT
       </th>
       <th
         className="w-2/12 pr-8 text-right text-xs font-normal tracking-widest text-miru-dark-purple-600"

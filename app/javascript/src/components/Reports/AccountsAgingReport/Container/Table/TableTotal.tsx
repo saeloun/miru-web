@@ -3,9 +3,9 @@ import React from "react";
 import { currencyFormat } from "helpers";
 
 const TableTotal = ({ currency, report }) => (
-  <tr className="flex flex-row items-center py-4">
+  <tr className="flex flex-row items-center py-4 ">
     <td className="flex w-2/12 items-center whitespace-nowrap pr-8 text-left">
-      <p className="whitespace-normal text-base font-bold text-miru-dark-purple-1000">
+      <p className="whitespace-normal pl-14 text-base font-bold text-miru-dark-purple-1000">
         Total
       </p>
     </td>
