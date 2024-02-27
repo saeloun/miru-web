@@ -14,10 +14,9 @@ const WeeklyEntriesCard = ({
   currentEntries,
   setProjectSelected,
   currentProjectId,
+  entryList,
   setEntryList,
   setCurrentEntries,
-  newRowView,
-  setNewRowView,
   dayInfo,
   isWeeklyEditing,
   setIsWeeklyEditing,
@@ -110,23 +109,22 @@ const WeeklyEntriesCard = ({
         return;
       }
       const res = await timesheetEntryApi.update(timesheetEntryId, payload);
-      if (res.status === 200) {
-        handleUpdateRow(res.data.entry);
-        setDataChanged(false);
-        setShowNote(false);
-        setIsWeeklyEditing(false);
-        setSelectedInputBox(-1);
-        setEntryList(prevState => {
-          const newState: any = { ...prevState };
-          newState[res.data.entry.work_date] = newState[
-            res.data.entry.work_date
-          ].map(entry =>
-            entry.id === res.data.entry.id ? res.data.entry : entry
-          );
-
-          return newState;
-        });
-      }
+      const updatedEntry = res.data.entry;
+      handleUpdateRow(updatedEntry);
+      setDataChanged(false);
+      setShowNote(false);
+      setIsWeeklyEditing(false);
+      setSelectedInputBox(-1);
+      const allEntries = { ...entryList };
+      allEntries[updatedEntry.work_date] = allEntries[
+        updatedEntry.work_date
+      ].map(entry => {
+        if (entry.id == updatedEntry.id) {
+          return { ...entry, ...updatedEntry };
+        }
+        return entry;
+      });
+      setEntryList(allEntries);
     } catch (error) {}
   };
 
@@ -310,6 +308,7 @@ interface Iprops {
   setProjectSelected: React.Dispatch<React.SetStateAction<boolean>>;
   newRowView: boolean;
   setNewRowView: React.Dispatch<React.SetStateAction<boolean>>;
+  entryList: any;
   setEntryList: React.Dispatch<React.SetStateAction<[]>>;
   dayInfo: Array<any>;
   isWeeklyEditing: boolean;

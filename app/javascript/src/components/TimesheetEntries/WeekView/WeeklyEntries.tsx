@@ -19,6 +19,7 @@ const WeeklyEntries = ({
   clientName,
   projectName,
   entries,
+  entryList,
   setEntryList,
   dayInfo,
   isWeeklyEditing,
@@ -90,6 +91,7 @@ const WeeklyEntries = ({
       currentEntries={currentEntries}
       currentProjectId={currentProjectId}
       dayInfo={dayInfo}
+      entryList={entryList}
       isProjectBillable={isProjectBillable}
       isWeeklyEditing={isWeeklyEditing}
       newRowView={newRowView}
@@ -132,6 +134,7 @@ interface Props {
   clientName: string;
   projectName: string;
   entries: [];
+  entryList: any;
   setEntryList: React.Dispatch<React.SetStateAction<[]>>;
   dayInfo: Array<any>;
   isWeeklyEditing: boolean;

@@ -628,6 +628,7 @@ const TimesheetEntries = ({ user, isAdminUser }: Iprops) => {
         clients,
         editEntryId,
         entryList,
+        setEntryList,
         weeklyData,
         fetchEntries,
         fetchEntriesOfMonths,

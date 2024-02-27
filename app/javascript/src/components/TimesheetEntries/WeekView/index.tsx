@@ -18,6 +18,7 @@ const WeekView = () => {
     newRowView,
     projects,
     selectedEmployeeId,
+    entryList,
     setEntryList,
     setIsWeeklyEditing,
     setNewRowView,
@@ -59,6 +60,7 @@ const WeekView = () => {
           clients={clients}
           dayInfo={dayInfo}
           entries={entries || []}
+          entryList={entryList}
           isWeeklyEditing={isWeeklyEditing}
           newRowView={newRowView}
           projectId={projectId || null}
@@ -77,6 +79,7 @@ const WeekView = () => {
             {...entry}
             clients={clients}
             dayInfo={dayInfo}
+            entryList={entryList}
             isWeeklyEditing={isWeeklyEditing}
             newRowView={newRowView}
             parseWeeklyViewData={parseWeeklyViewData}
