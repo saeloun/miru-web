@@ -10,6 +10,7 @@ type SummaryDashboardProps = {
   bgColor?: string;
   textColor?: string;
   borderColor?: string;
+  showPointer?: boolean;
 };
 
 const DEFAULT_STYLE =
@@ -22,6 +23,7 @@ const SummaryDashboard = ({
   bgColor = "bg-miru-han-purple-1000",
   textColor = "text-white",
   borderColor = "border-miru-han-purple-600",
+  showPointer = true,
 }: SummaryDashboardProps) => (
   <ul
     className={classnames(DEFAULT_STYLE, bgColor, textColor, wrapperClassName)}
@@ -30,7 +32,9 @@ const SummaryDashboard = ({
       <li
         key={index}
         className={classnames(
-          `page-display__box w-auto flex-1 cursor-pointer pt-4 md:w-full lg:mt-6 ${
+          `page-display__box w-auto flex-1 ${
+            showPointer ? `cursor-pointer` : ""
+          } pt-4 md:w-full lg:mt-6 ${
             summaryList.length > 3
               ? "w-1/2 flex-auto border-b pb-2 md:w-full md:border-b-0"
               : null

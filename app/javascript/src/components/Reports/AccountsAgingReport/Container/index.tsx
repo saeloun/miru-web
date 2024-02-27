@@ -14,6 +14,7 @@ const Container = () => {
     <div className="bg-white p-4 lg:p-0">
       <SummaryDashboard
         currency={accountsAgingReport.currency}
+        showPointer={false}
         wrapperClassName="lg:mt-3"
         summaryList={[
           {
