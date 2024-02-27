@@ -104,10 +104,8 @@ const TeamList = () => {
         <Fragment>
           <Header />
           <div>
-            <div className="table__flex pb-14">
-              <div className="table__border border-b-0 border-miru-gray-200">
-                <Table />
-              </div>
+            <div className="overflow-auto border-b-0 border-miru-gray-200 pb-14 lg:overflow-hidden">
+              <Table />
             </div>
             <Pagination
               isPerPageVisible

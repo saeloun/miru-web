@@ -9,7 +9,7 @@ const Table = () => {
   const { teamList } = useList();
 
   return (
-    <table className="table__width w-full table-fixed">
+    <table className="table__width grid w-full table-fixed">
       <TableHead />
       <tbody>
         {teamList.map((item, index) => (
