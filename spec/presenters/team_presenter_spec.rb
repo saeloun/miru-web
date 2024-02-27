@@ -29,6 +29,8 @@ RSpec.describe TeamPresenter do
       expect(team_member).to have_key(:role)
       expect(team_member).to have_key(:status)
       expect(team_member).to have_key(:member)
+      expect(team_member).to have_key(:employment_type)
+      expect(team_member).to have_key(:joined_at_date)
       expect(@data[:teams].pluck(:id)).to eq([user.id, user2.id])
     end
 
