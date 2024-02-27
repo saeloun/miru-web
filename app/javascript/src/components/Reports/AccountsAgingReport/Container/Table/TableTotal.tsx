@@ -64,4 +64,5 @@ const TableTotal = ({ currency, clientList }) => {
     </tr>
   );
 };
+
 export default TableTotal;
