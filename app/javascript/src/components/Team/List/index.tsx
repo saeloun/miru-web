@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import Logger from "js-logger";
 import { Pagination } from "StyledComponents";
@@ -101,7 +101,7 @@ const TeamList = () => {
       }}
     >
       {!hideContainer && (
-        <Fragment>
+        <div className="p-4 lg:p-0">
           <Header />
           <div>
             <div className="overflow-auto border-b-0 border-miru-gray-200 pb-14 lg:overflow-hidden">
@@ -121,7 +121,7 @@ const TeamList = () => {
               totalPages={pagy?.pages}
             />
           </div>
-        </Fragment>
+        </div>
       )}
       <Modals user={modalUser} />
     </ListContext.Provider>

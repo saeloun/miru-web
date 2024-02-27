@@ -32,7 +32,11 @@ const MoreOptions = ({ item, setShowMoreOptions, showMoreOptions }: Iprops) => {
   return isDesktop ? (
     <HoverMoreOptions position="bottom-10 right-0">
       <Tooltip content="Re-Invite">
-        <Button style="ternary" onClick={handleResendInvite}>
+        <Button
+          disabled={!item.status}
+          style="ternary"
+          onClick={handleResendInvite}
+        >
           <ResendInviteIcon size={16} weight="bold" />
         </Button>
       </Tooltip>
