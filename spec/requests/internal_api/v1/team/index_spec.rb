@@ -62,10 +62,11 @@ RSpec.describe "InternalApi::V1::Team#index", type: :request do
       send_request :get, internal_api_v1_team_index_path(
         q: { first_name_or_last_name_or_email_cont: user.first_name }
       ), headers: auth_headers(user)
+      employment = user.employments.find_by!(company_id: current_company.id)
 
       service_arr = [{
         "id" => user.id, "firstName" => user.first_name, "lastName" => user.last_name, "name" => "#{user.first_name} #{user.last_name}",
-        "email" => user.email, "role" => "admin", "status" => nil, "isTeamMember" => true,
+        "email" => user.email, "role" => "admin", "status" => nil, "isTeamMember" => true, "employmentType" => user.employment.employment_type, "joined_at_date" => user.employment.joined_at
         "profilePicture" => user.avatar_url
       }]
 
