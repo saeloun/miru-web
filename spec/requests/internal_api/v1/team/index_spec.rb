@@ -66,7 +66,7 @@ RSpec.describe "InternalApi::V1::Team#index", type: :request do
 
       service_arr = [{
         "id" => user.id, "firstName" => user.first_name, "lastName" => user.last_name, "name" => "#{user.first_name} #{user.last_name}",
-        "email" => user.email, "role" => "admin", "status" => nil, "isTeamMember" => true, "employmentType" => user.employment.employment_type, "joined_at_date" => user.employment.joined_at,
+        "email" => user.email, "role" => "admin", "status" => nil, "isTeamMember" => true, "employmentType" => user.employment.employment_type, "joinedAtDate" => user.employment.joined_at,
         "profilePicture" => user.avatar_url
       }]
 
