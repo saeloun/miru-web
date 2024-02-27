@@ -25,11 +25,11 @@ const TableTotal = ({ currency, clientList }) => {
       return acc;
     },
     {
-      zero_to_thirty_days: 0,
-      thirty_one_to_sixty_days: 0,
-      sixty_one_to_ninety_days: 0,
-      ninety_plus_days: 0,
-      total: 0,
+      zero_to_thirty_days: 0.0,
+      thirty_one_to_sixty_days: 0.0,
+      sixty_one_to_ninety_days: 0.0,
+      ninety_plus_days: 0.0,
+      total: 0.0,
     }
   );
 
