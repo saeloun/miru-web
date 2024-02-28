@@ -187,64 +187,62 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
                   />
                 </div>
                 <div className="field">
-                  <label className="form__label block text-xs font-normal tracking-wider text-miru-dark-purple-1000">
+                  <label className="text-xs font-normal text-miru-dark-purple-1000">
                     Role
                   </label>
-                  <div className="mt-1 flex">
-                    <div className="space-XIcon-10 flex items-center">
-                      <CustomRadioButton
-                        classNameLabel="font-medium text-base leading-5 text-miru-dark-purple-1000"
-                        classNameWrapper="p-3 rounded"
-                        defaultCheck={values.role == "admin"}
-                        groupName="role"
-                        id="admin"
-                        key="admin"
-                        label="Admin"
-                        value={values.role}
-                        handleOnChange={() => {
-                          setFieldValue("role", "admin", true);
-                        }}
-                      />
-                      <CustomRadioButton
-                        classNameLabel="font-medium text-base leading-5 text-miru-dark-purple-1000"
-                        classNameWrapper="p-3 rounded"
-                        defaultCheck={values.role == "employee"}
-                        groupName="role"
-                        id="employee"
-                        key="employee"
-                        label="Employee"
-                        value={values.role}
-                        handleOnChange={() => {
-                          setFieldValue("role", "employee", true);
-                        }}
-                      />
-                      <CustomRadioButton
-                        classNameLabel="font-medium text-base leading-5 text-miru-dark-purple-1000"
-                        classNameWrapper="p-3 rounded"
-                        defaultCheck={values.role == "book_keeper"}
-                        groupName="role"
-                        id="book_keeper"
-                        key="book_keeper"
-                        label="Bookkeeper"
-                        value={values.role}
-                        handleOnChange={() => {
-                          setFieldValue("role", "book_keeper", true);
-                        }}
-                      />
-                      <CustomRadioButton
-                        classNameLabel="font-medium text-base leading-5 text-miru-dark-purple-1000"
-                        classNameWrapper="p-3 rounded"
-                        defaultCheck={values.role == "client"}
-                        groupName="role"
-                        id="client"
-                        key="client"
-                        label="Client"
-                        value={values.role}
-                        handleOnChange={() => {
-                          setFieldValue("role", "client", true);
-                        }}
-                      />
-                    </div>
+                  <div className="mt-2 flex items-center gap-6">
+                    <CustomRadioButton
+                      classNameLabel="font-medium text-sm text-miru-dark-purple-1000"
+                      classNameWrapper="py-2 pr-2 rounded"
+                      defaultCheck={values.role == "admin"}
+                      groupName="role"
+                      id="admin"
+                      key="admin"
+                      label="Admin"
+                      value={values.role}
+                      handleOnChange={() => {
+                        setFieldValue("role", "admin", true);
+                      }}
+                    />
+                    <CustomRadioButton
+                      classNameLabel="font-medium text-sm text-miru-dark-purple-1000"
+                      classNameWrapper="py-2 pr-2 rounded"
+                      defaultCheck={values.role == "employee"}
+                      groupName="role"
+                      id="employee"
+                      key="employee"
+                      label="Employee"
+                      value={values.role}
+                      handleOnChange={() => {
+                        setFieldValue("role", "employee", true);
+                      }}
+                    />
+                    <CustomRadioButton
+                      classNameLabel="font-medium text-sm text-miru-dark-purple-1000"
+                      classNameWrapper="py-2 pr-2 rounded"
+                      defaultCheck={values.role == "book_keeper"}
+                      groupName="role"
+                      id="book_keeper"
+                      key="book_keeper"
+                      label="Bookkeeper"
+                      value={values.role}
+                      handleOnChange={() => {
+                        setFieldValue("role", "book_keeper", true);
+                      }}
+                    />
+                    <CustomRadioButton
+                      classNameLabel="font-medium text-sm text-miru-dark-purple-1000"
+                      classNameWrapper="py-2 pr-2 rounded"
+                      defaultCheck={values.role == "client"}
+                      groupName="role"
+                      id="client"
+                      key="client"
+                      label="Client"
+                      value={values.role}
+                      handleOnChange={() => {
+                        setFieldValue("role", "client", true);
+                      }}
+                    />
                   </div>
                 </div>
                 <div className="actions mt-6">
