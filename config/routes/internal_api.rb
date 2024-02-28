@@ -50,7 +50,11 @@ namespace :internal_api, defaults: { format: "json" } do
         end
       end
       resources :outstanding_overdue_invoices, only: [:index]
-      resources :accounts_aging, only: [:index]
+      resources :accounts_aging, only: [:index] do
+        collection do
+          get :download
+        end
+      end
     end
 
     resources :workspaces, only: [:index, :update]

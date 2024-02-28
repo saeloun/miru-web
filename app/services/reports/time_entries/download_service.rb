@@ -1,18 +1,11 @@
 # frozen_string_literal: true
 
-class Reports::TimeEntries::DownloadService
-  attr_reader :params, :current_company, :reports
+class Reports::TimeEntries::DownloadService < Reports::DownloadService
+  attr_reader :reports
 
   def initialize(params, current_company)
-    @params = params
-    @current_company = current_company
-
+    super
     @reports = []
-  end
-
-  def process
-    fetch_complete_report
-    format_report
   end
 
   private
@@ -31,12 +24,12 @@ class Reports::TimeEntries::DownloadService
       end
     end
 
-    def format_report
-      if params[:format] == "pdf"
-        Reports::TimeEntries::GeneratePdf.new(reports, current_company).process
-      else
-        flatten_reports = reports.map { |e| e[:entries] }.flatten
-        Reports::TimeEntries::GenerateCsv.new(flatten_reports, current_company).process
-      end
+    def generate_pdf
+      Reports::TimeEntries::GeneratePdf.new(:time_entries, reports, current_company).process
+    end
+
+    def generate_csv
+      flatten_reports = reports.map { |e| e[:entries] }.flatten
+      Reports::TimeEntries::GenerateCsv.new(flatten_reports, current_company).process
     end
 end
