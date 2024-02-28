@@ -56,23 +56,12 @@ export const disableBtn = (values, errors, submitting) => {
     errors.phone ||
     errors.address1 ||
     errors.country ||
-    errors.state ||
-    errors.city ||
-    errors.zipcode ||
     submitting
   ) {
     return true;
   }
 
-  if (
-    values.name &&
-    values.phone &&
-    values.address1 &&
-    values.country &&
-    values.state &&
-    values.city &&
-    values.zipcode
-  ) {
+  if (values.name && values.phone && values.address1 && values.country) {
     return false;
   }
 

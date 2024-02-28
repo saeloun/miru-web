@@ -19,15 +19,6 @@ export const clientSchema = Yup.object().shape({
   country: Yup.object().shape({
     value: Yup.string().required("Country cannot be blank"),
   }),
-  state: Yup.object().shape({
-    value: Yup.string().required("State cannot be blank"),
-  }),
-  city: Yup.object().shape({
-    value: Yup.string().required("City cannot be blank"),
-  }),
-  zipcode: Yup.string()
-    .required("Zipcode line cannot be blank")
-    .max(10, "Maximum 10 characters are allowed"),
 });
 
 const getCountryLabel = countryCode => {

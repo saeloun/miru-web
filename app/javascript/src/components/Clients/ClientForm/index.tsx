@@ -113,7 +113,7 @@ const ClientForm = ({
       onSubmit={handleSubmit}
     >
       {(props: FormikProps<FormValues>) => {
-        const { touched, errors, setFieldValue, values } = props;
+        const { touched, errors, setFieldValue, setValues, values } = props;
 
         return (
           <Form>
@@ -220,11 +220,14 @@ const ClientForm = ({
                   name="country"
                   options={countries}
                   value={values.country.value ? values.country : null}
-                  handleOnChange={e => {
-                    setFieldValue("country", e);
-                    setFieldValue("state", "");
-                    setFieldValue("city", "");
-                    setFieldValue("zipcode", "");
+                  handleOnChange={country => {
+                    setValues({
+                      ...values,
+                      country,
+                      state: "",
+                      city: "",
+                      zipcode: "",
+                    });
                   }}
                 />
               </div>
