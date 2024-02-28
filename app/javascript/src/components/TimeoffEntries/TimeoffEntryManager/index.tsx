@@ -10,6 +10,7 @@ const TimeoffEntryManager = ({
   leaveTypeDetails,
   holidayDetails,
   isDisplayEditTimeoffEntryForm,
+  showDateLabelForWeekView,
 }: Iprops) => {
   const { editEntryId, newEntryView } = useTimesheetEntries();
 
@@ -22,8 +23,8 @@ const TimeoffEntryManager = ({
       ) : (
         <TimeoffEntryCard
           holidayDetails={holidayDetails}
-          key={timeoffEntry?.id}
           leaveTypeDetails={leaveTypeDetails}
+          showDateLabelForWeekView={showDateLabelForWeekView}
           timeoffEntry={timeoffEntry}
         />
       )}
@@ -36,6 +37,7 @@ interface Iprops {
   leaveTypeDetails: any;
   holidayDetails: any;
   isDisplayEditTimeoffEntryForm: boolean;
+  showDateLabelForWeekView?: boolean;
 }
 
 export default TimeoffEntryManager;
