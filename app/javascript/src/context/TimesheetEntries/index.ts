@@ -67,6 +67,7 @@ const initialState: any = {
   setLeaveTypes: () => {}, //eslint-disable-line
   setLeaveTypeHashObj: () => {}, //eslint-disable-line
   setEditTimeoffEntryId: () => {}, //eslint-disable-line
+  setEntryList: () => {}, //eslint-disable-line
 };
 export const TimesheetEntriesContext = createContext(initialState);
 
