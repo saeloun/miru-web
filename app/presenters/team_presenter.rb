@@ -21,7 +21,7 @@ class TeamPresenter
 
     def formatted_team
       team.map do |user|
-          {
+          user_info = {
             id: user.id,
             first_name: user.first_name,
             last_name: user.last_name,
@@ -33,6 +33,7 @@ class TeamPresenter
             data_type: "Team",
             member: user
           }
+          user_info.merge(employment_data(user))
         end
     end
 
@@ -68,5 +69,13 @@ class TeamPresenter
       is_current_user_employee ||= current_user.has_any_role?(
         { name: :owner, resource: current_company },
         { name: :admin, resource: current_company })
+    end
+
+    def employment_data(user)
+      employment = user.employments.find_by!(company_id: current_company.id)
+      {
+        employment_type: employment&.employment_type,
+        joined_at_date: employment&.joined_at
+      }
     end
 end
