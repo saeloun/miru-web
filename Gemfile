@@ -231,7 +231,7 @@ gem "sentry-ruby"
 gem "parallel_tests", group: [:development, :test]
 
 # CROS: https://github.com/cyu/rack-cors
-gem "rack-cors"
+gem "rack-cors", "2.0.0"
 
 # Administrate dashboard
 gem "administrate"
