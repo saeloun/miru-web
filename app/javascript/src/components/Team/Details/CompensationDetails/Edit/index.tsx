@@ -12,12 +12,13 @@ import EditPage from "./EditPage";
 import MobileEditPage from "./MobileEditPage";
 
 const CompensationEditPage = () => {
-  const initialErrState = {
-    earning_type_err: "",
-    earning_amount_err: "",
-    deduction_type_err: "",
-    deduction_amount_err: "",
-  };
+  //TODO: add state for errDetails after API integration
+  // const initialErrState = {
+  //   earning_type_err: "",
+  //   earning_amount_err: "",
+  //   deduction_type_err: "",
+  //   deduction_amount_err: "",
+  // };
   const navigate = useNavigate();
   const { isDesktop, company } = useUserContext();
 
@@ -33,7 +34,6 @@ const CompensationEditPage = () => {
   const [total, setTotal] = useState<number | string>(
     CompensationDetailsState.total.amount
   );
-  const [errDetails, setErrDetails] = useState(initialErrState);
 
   useEffect(() => {
     setIsLoading(true);
