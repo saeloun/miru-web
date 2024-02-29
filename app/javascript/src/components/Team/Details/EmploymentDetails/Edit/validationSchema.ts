@@ -12,7 +12,7 @@ export const employmentSchema = {
     designation: Yup.string()
       .required("Please enter designation")
       .typeError("Please enter designation")
-      .max(20, "Maximum 20 characters are allowed"),
+      .max(40, "Maximum 40 characters are allowed"),
     email: Yup.string()
       .required("Please enter email id")
       .email("Please enter valid email")

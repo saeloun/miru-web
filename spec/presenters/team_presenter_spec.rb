@@ -22,15 +22,8 @@ RSpec.describe TeamPresenter do
     it "returns required data of team members" do
       team_member = @data[:teams].first
 
-      expect(team_member).to have_key(:id)
-      expect(team_member).to have_key(:first_name)
-      expect(team_member).to have_key(:last_name)
-      expect(team_member).to have_key(:email)
-      expect(team_member).to have_key(:role)
-      expect(team_member).to have_key(:status)
-      expect(team_member).to have_key(:member)
-      expect(team_member).to have_key(:employment_type)
-      expect(team_member).to have_key(:joined_at_date)
+      expected_keys = [:id, :first_name, :last_name, :email, :role, :status, :member, :employment_type, :joined_at_date]
+      expect(team_member.keys).to include(*expected_keys)
       expect(@data[:teams].pluck(:id)).to eq([user.id, user2.id])
     end
 
