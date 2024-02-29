@@ -230,8 +230,8 @@ gem "sentry-ruby"
 # https://github.com/grosser/parallel_tests
 gem "parallel_tests", group: [:development, :test]
 
-# CROS: https://github.com/cyu/rack-cors
-gem "rack-cors"
+# CORS: https://github.com/cyu/rack-cors
+gem "rack-cors", "2.0.0"
 
 # Administrate dashboard
 gem "administrate"
