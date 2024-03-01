@@ -29,13 +29,13 @@ body {
 .container {
   text-align: center;
   width: 640px;
-    font-family: 'Manrope';
-    font-style: normal;
-    font-weight: 400;
-    font-size: 14px;
-    line-height: 19px;
-    text-align: center;
-    color: #777683;
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 19px;
+  text-align: center;
+  color: #777683;
 
   .reset-password-button {
     border-radius: 20px;
