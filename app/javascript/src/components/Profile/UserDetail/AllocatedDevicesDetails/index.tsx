@@ -36,16 +36,15 @@ const AllocatedDevicesDetails = () => {
 
   return (
     <Fragment>
-      {isDesktop && (
+      {isDesktop ? (
         <DetailsHeader
-          showButtons
           editAction={handleEdit}
           isDisableUpdateBtn={false}
+          showButtons={false}
           subTitle=""
           title="Allocated Devices"
         />
-      )}
-      {!isDesktop && (
+      ) : (
         <MobileEditHeader
           backHref="/settings/"
           href="/settings/devices/edit"
