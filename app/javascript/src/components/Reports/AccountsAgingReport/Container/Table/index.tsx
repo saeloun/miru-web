@@ -66,8 +66,8 @@ const Table = ({ accountsAgingReport }) => {
         )}
         {clientList.length > 0 && isDesktop && (
           <TableTotal
+            clientList={clientList}
             currency={accountsAgingReport.currency}
-            report={accountsAgingReport.summary}
           />
         )}
       </tbody>

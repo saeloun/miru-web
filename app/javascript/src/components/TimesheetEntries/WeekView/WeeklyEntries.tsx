@@ -6,8 +6,9 @@ import { Toastr } from "StyledComponents";
 
 import timesheetEntryApi from "apis/timesheet-entry";
 
-import SelectProject from "./SelectProject";
 import WeeklyEntriesCard from "./WeeklyEntriesCard";
+
+import SelectProject from "../SelectProject";
 
 const WeeklyEntries = ({
   clients,
@@ -18,13 +19,11 @@ const WeeklyEntries = ({
   clientName,
   projectName,
   entries,
-  entryList, //eslint-disable-line
+  entryList,
   setEntryList,
   dayInfo,
   isWeeklyEditing,
   setIsWeeklyEditing,
-  weeklyData,
-  setWeeklyData,
   selectedEmployeeId,
 }: Props) => {
   const [client, setClient] = useState("");
@@ -92,6 +91,7 @@ const WeeklyEntries = ({
       currentEntries={currentEntries}
       currentProjectId={currentProjectId}
       dayInfo={dayInfo}
+      entryList={entryList}
       isProjectBillable={isProjectBillable}
       isWeeklyEditing={isWeeklyEditing}
       newRowView={newRowView}
@@ -134,13 +134,11 @@ interface Props {
   clientName: string;
   projectName: string;
   entries: [];
-  entryList: object;
+  entryList: any;
   setEntryList: React.Dispatch<React.SetStateAction<[]>>;
   dayInfo: Array<any>;
   isWeeklyEditing: boolean;
   setIsWeeklyEditing: React.Dispatch<React.SetStateAction<boolean>>;
-  weeklyData: any[];
-  setWeeklyData: React.Dispatch<React.SetStateAction<any[]>>;
 }
 
 export default WeeklyEntries;

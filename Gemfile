@@ -6,7 +6,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 ruby "3.2.2"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
-gem "rails", "~> 7.0.8"
+gem "rails", "~> 7.0.8.1"
 
 # Use postgresql as the database for Active Record
 gem "pg"
@@ -106,7 +106,7 @@ gem "data_migrate", "~> 8.0.0.rc2"
 # pagy for Pagination
 gem "pagy", "~> 5.10"
 
-gem "nokogiri", ">= 1.13.10"
+gem "nokogiri", ">= 1.16.2"
 
 # Manage application specific business logic. https://github.com/AaronLasseigne/active_interaction
 gem "active_interaction"
@@ -230,8 +230,8 @@ gem "sentry-ruby"
 # https://github.com/grosser/parallel_tests
 gem "parallel_tests", group: [:development, :test]
 
-# CROS: https://github.com/cyu/rack-cors
-gem "rack-cors"
+# CORS: https://github.com/cyu/rack-cors
+gem "rack-cors", "2.0.0"
 
 # Administrate dashboard
 gem "administrate"
