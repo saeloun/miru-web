@@ -62,7 +62,7 @@ const MonthCalender = () => {
   }, [currentMonthNumber, currentYear]);
 
   useEffect(() => {
-    handleMonthChange();
+    entryList && handleMonthChange();
   }, [entryList]);
 
   return (
