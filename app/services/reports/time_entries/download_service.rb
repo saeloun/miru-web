@@ -25,11 +25,27 @@ class Reports::TimeEntries::DownloadService < Reports::DownloadService
     end
 
     def generate_pdf
-      Reports::TimeEntries::GeneratePdf.new(:time_entries, reports, current_company).process
+      Reports::GeneratePdf.new(:time_entries, reports, current_company).process
     end
 
     def generate_csv
+      data = []
+      headers = ["Project", "Client", "Note", "Team Member", "Date", "Hours Logged"]
       flatten_reports = reports.map { |e| e[:entries] }.flatten
-      Reports::TimeEntries::GenerateCsv.new(flatten_reports, current_company).process
+      flatten_reports.each do |entry|
+            data << [
+              "#{entry.project_name}",
+              "#{entry.client_name}",
+              "#{entry.note}",
+              "#{entry.user_name}",
+              "#{format_date(entry.work_date)}",
+              "#{DurationFormatter.new(entry.duration).process}"
+            ]
+          end
+      Reports::GenerateCsv.new(data, headers).process
+    end
+
+    def format_date(date)
+      CompanyDateFormattingService.new(date, company: current_company, es_date_presence: true).process
     end
 end
