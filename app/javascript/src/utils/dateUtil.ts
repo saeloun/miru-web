@@ -52,8 +52,8 @@ const quarters = {
   },
   4: {
     months: ["Oct", "Nov", "Dec"],
-    startDay: "1st Jul",
-    endDay: "30th Sep",
+    startDay: "1st Oct",
+    endDay: "31st Dec",
   },
 };
 

@@ -2,12 +2,13 @@
 
 module TimeoffEntries
   class IndexService < ApplicationService
-    attr_reader :params, :current_company, :current_user
+    attr_reader :current_company, :current_user, :user_id, :year
 
-    def initialize(params, current_company, current_user)
-      @params = params
-      @current_company = current_company
+    def initialize(current_user, current_company, user_id, year)
       @current_user = current_user
+      @current_company = current_company
+      @user_id = user_id
+      @year = year.to_i
     end
 
     def process
@@ -22,8 +23,12 @@ module TimeoffEntries
     private
 
       def timeoff_entries
+        start_date = Date.new(year, 1, 1)
+        end_date = Date.new(year, 12, 31)
+
         @_timeoff_entries ||= current_company.timeoff_entries.kept.includes([:leave_type], [:holiday_info])
-          .where(user_id: params[:user_id] || current_user.id)
+          .where(user_id:)
+          .where(leave_date: start_date..end_date)
           .order(leave_date: :desc)
       end
 
@@ -42,19 +47,18 @@ module TimeoffEntries
       def leave_balance
         leave_balance = []
 
-        leave = current_company.leaves.find_by(year: params[:year])
-        holiday = current_company.holidays.find_by(year: params[:year])
+        leave = current_company.leaves.kept.find_by(year:)
 
         if leave
-          previous_year_leave = current_company.leaves.find_by(year: leave.year - 1)
+          previous_year_leave = current_company.leaves.kept.find_by(year: leave.year - 1)
 
-          leave.leave_types.all.each do |leave_type|
+          leave.leave_types.kept.all.each do |leave_type|
             total_leave_type_days = calculate_total_duration(leave_type)
 
-            timeoff_entries_duration = leave_type.timeoff_entries.kept.where(user_id: params[:user_id]).sum(:duration)
+            timeoff_entries_duration = leave_type.timeoff_entries.kept.where(user_id:).sum(:duration)
 
             previous_year_leave_type = previous_year_leave &&
-              previous_year_leave.leave_types.find_by(name: leave_type.name)
+              previous_year_leave.leave_types.kept.find_by(name: leave_type.name)
 
             previous_year_carryforward = calculate_previous_year_carryforward(previous_year_leave_type)
 
@@ -127,7 +131,7 @@ module TimeoffEntries
 
         total_leave_type_days = calculate_total_duration(leave_type)
 
-        timeoff_entries_duration = leave_type.timeoff_entries.kept.where(user_id: params[:user_id]).sum(:duration)
+        timeoff_entries_duration = leave_type.timeoff_entries.kept.where(user_id:).sum(:duration)
 
         net_duration = (total_leave_type_days * 8 * 60) - timeoff_entries_duration
 

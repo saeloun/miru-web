@@ -7,10 +7,10 @@ import TimeoffForm from "../TimeoffForm";
 
 const TimeoffEntryManager = ({
   timeoffEntry,
-  currentUserRole,
   leaveTypeDetails,
   holidayDetails,
   isDisplayEditTimeoffEntryForm,
+  showDateLabelForWeekView,
 }: Iprops) => {
   const { editEntryId, newEntryView } = useTimesheetEntries();
 
@@ -22,10 +22,9 @@ const TimeoffEntryManager = ({
         />
       ) : (
         <TimeoffEntryCard
-          currentUserRole={currentUserRole}
           holidayDetails={holidayDetails}
-          key={timeoffEntry?.id}
           leaveTypeDetails={leaveTypeDetails}
+          showDateLabelForWeekView={showDateLabelForWeekView}
           timeoffEntry={timeoffEntry}
         />
       )}
@@ -37,8 +36,8 @@ interface Iprops {
   timeoffEntry: any;
   leaveTypeDetails: any;
   holidayDetails: any;
-  currentUserRole: string;
   isDisplayEditTimeoffEntryForm: boolean;
+  showDateLabelForWeekView?: boolean;
 }
 
 export default TimeoffEntryManager;

@@ -5,6 +5,7 @@
 # Table name: holidays
 #
 #  id                              :bigint           not null, primary key
+#  discarded_at                    :datetime
 #  enable_optional_holidays        :boolean          default(FALSE)
 #  holiday_types                   :string           default([]), is an Array
 #  no_of_allowed_optional_holidays :integer
@@ -16,13 +17,16 @@
 #
 # Indexes
 #
-#  index_holidays_on_company_id  (company_id)
+#  index_holidays_on_company_id    (company_id)
+#  index_holidays_on_discarded_at  (discarded_at)
 #
 # Foreign Keys
 #
 #  fk_rails_...  (company_id => companies.id)
 #
 class Holiday < ApplicationRecord
+  include Discard::Model
+
   has_many :holiday_infos, dependent: :destroy
   belongs_to :company
 
@@ -30,4 +34,12 @@ class Holiday < ApplicationRecord
 
   validates :year, presence: true, uniqueness: { scope: :company_id }
   validates :year, numericality: { only_integer: true, greater_than_or_equal_to: 1900, less_than_or_equal_to: 2099 }
+
+  after_discard :discard_holiday_infos
+
+  private
+
+    def discard_holiday_infos
+      holiday_infos.discard_all
+    end
 end

@@ -65,6 +65,7 @@ const TimesheetEntries = ({ user, isAdminUser }: Iprops) => {
   const [editEntryId, setEditEntryId] = useState<number>(0);
   const [editTimeoffEntryId, setEditTimeoffEntryId] = useState<number>(0);
   const [weeklyData, setWeeklyData] = useState<any[]>([]);
+  const [weeklyTimeoffEntries, setWeeklyTimeoffEntries] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [isWeeklyEditing, setIsWeeklyEditing] = useState<boolean>(false);
   const [selectedEmployeeId, setSelectedEmployeeId] = useState<number>(
@@ -425,6 +426,7 @@ const TimesheetEntries = ({ user, isAdminUser }: Iprops) => {
 
   const parseWeeklyViewData = () => {
     const weekArr = [];
+    const weekTimeoffEntries = [];
     for (let weekCounter = 0; weekCounter < 7; weekCounter++) {
       const date = dayjs()
         .weekday(weekDay + weekCounter)
@@ -433,33 +435,38 @@ const TimesheetEntries = ({ user, isAdminUser }: Iprops) => {
       if (!entryList[date]) continue;
 
       entryList[date].forEach(entry => {
-        let entryAdded = false;
-        weekArr.forEach(rowInfo => {
-          if (
-            rowInfo["projectId"] === entry["project_id"] &&
-            !rowInfo["entries"][weekCounter] &&
-            !entryAdded
-          ) {
-            rowInfo["entries"][weekCounter] = entry;
-            entryAdded = true;
-          }
+        if (entry["type"] == "timesheet") {
+          let entryAdded = false;
+          weekArr.forEach(rowInfo => {
+            if (
+              rowInfo["projectId"] === entry["project_id"] &&
+              !rowInfo["entries"][weekCounter] &&
+              !entryAdded
+            ) {
+              rowInfo["entries"][weekCounter] = entry;
+              entryAdded = true;
+            }
 
-          return rowInfo;
-        });
+            return rowInfo;
+          });
 
-        if (entryAdded) return;
-        const newRow = [];
-        newRow[weekCounter] = entry;
-        weekArr.push({
-          projectId: entry["project_id"],
-          clientName: entry.client,
-          projectName: entry.project,
-          entries: newRow,
-        });
+          if (entryAdded) return;
+          const newRow = [];
+          newRow[weekCounter] = entry;
+          weekArr.push({
+            projectId: entry["project_id"],
+            clientName: entry.client,
+            projectName: entry.project,
+            entries: newRow,
+          });
+        } else {
+          weekTimeoffEntries.push(entry);
+        }
       });
     }
 
     setWeeklyData(() => weekArr);
+    setWeeklyTimeoffEntries(weekTimeoffEntries);
   };
 
   // Month view
@@ -621,6 +628,7 @@ const TimesheetEntries = ({ user, isAdminUser }: Iprops) => {
         clients,
         editEntryId,
         entryList,
+        setEntryList,
         weeklyData,
         fetchEntries,
         fetchEntriesOfMonths,
@@ -635,6 +643,7 @@ const TimesheetEntries = ({ user, isAdminUser }: Iprops) => {
         setNewEntryView,
         setNewRowView,
         setIsWeeklyEditing,
+        newTimeoffEntryView,
         setNewTimeoffEntryView,
         setSelectedFullDate,
         setUpdateView,
@@ -656,12 +665,33 @@ const TimesheetEntries = ({ user, isAdminUser }: Iprops) => {
         holidaysHashObj,
         hasNationalHoliday,
         hasOptionalHoliday,
+        weeklyTimeoffEntries,
+        setWeeklyTimeoffEntries,
       }}
     >
       <div className="pb-14">
         {!isDesktop && <Header />}
         <div className="mt-0 h-full p-4 lg:mt-6 lg:p-0">
-          <div className="mb-6 flex items-center justify-between md:flex-row-reverse">
+          <h2 className="header__title hidden lg:inline">Time Tracking</h2>
+          <div className="mt-8 mb-6 flex items-center justify-between">
+            {isDesktop && (
+              <nav className="flex">
+                {["month", "week", "day"].map((item, index) => (
+                  <button
+                    key={index}
+                    className={`mr-10 tracking-widest
+                      ${
+                        item === view
+                          ? "border-b-2 border-miru-han-purple-1000 font-bold text-miru-han-purple-1000"
+                          : "font-medium text-miru-han-purple-600"
+                      }`}
+                    onClick={() => setView(item)}
+                  >
+                    {item.toUpperCase()}
+                  </button>
+                ))}
+              </nav>
+            )}
             {isDesktop && isViewTogglerVisible && (
               <ViewToggler view={view} setView={setView} />
             )}
@@ -686,7 +716,7 @@ const TimesheetEntries = ({ user, isAdminUser }: Iprops) => {
               {view === "month" ? <MonthCalender /> : <DatesInWeek />}
             </div>
             {!editEntryId && newEntryView && view !== "week" && <EntryForm />}
-            {newTimeoffEntryView && view !== "week" && <TimeoffForm />}
+            {newTimeoffEntryView && <TimeoffForm />}
             <div className="flex">
               {view !== "week" &&
                 !newEntryView &&
@@ -718,7 +748,7 @@ const TimesheetEntries = ({ user, isAdminUser }: Iprops) => {
                     + NEW ENTRY
                   </button>
                 )}
-              {view === "month" &&
+              {view !== "week" &&
                 !newEntryView &&
                 !newTimeoffEntryView &&
                 isDesktop && (
@@ -733,22 +763,14 @@ const TimesheetEntries = ({ user, isAdminUser }: Iprops) => {
                   </button>
                 )}
             </div>
-            {/* --- weekly view --- */}
-            {view === "week" && !newRowView && (
-              <button
-                className="h-14 w-full border-2 border-miru-han-purple-600 p-4 text-lg font-bold tracking-widest text-miru-han-purple-600"
-                onClick={() => setNewRowView(true)}
-              >
-                + NEW ROW
-              </button>
-            )}
           </div>
           {/* Render existing time entry cards in bottom */}
           <TimeEntryManager />
           {/* mobile view Empty state condition */}
-          {view !== "week" && !entryList[selectedFullDate] && !isDesktop && (
-            <EmptyStatesMobileView />
-          )}
+          {view !== "week" &&
+            entryList &&
+            !entryList[selectedFullDate] &&
+            !isDesktop && <EmptyStatesMobileView />}
         </div>
       </div>
     </TimesheetEntriesContext.Provider>
