@@ -10,18 +10,18 @@
     <img class="banner" src=<%= Rails.root.join('public', 'Banner.svg') %> alt="banner">
     <p class="header">You have been invited to Miru</p>
 
-    <p><%= @sender_details[:name] %> (<%= @sender_details[:email] %>) has invited you to join <%= @company_details[:name] %> team on Miru</p>
+    <p><%= @sender_details&.[](:name) %> (<%= @sender_details&.[](:email) %>) has invited you to join <%=@company_details&.[](:name) %> team on Miru</p>
 
     <div class='sender_company_container'> 
       <div class='sender'>
-        <img src=<%= @sender_details[:avatar] ? @sender_details[:avatar] : Rails.root.join('public', 'avatar.svg') %> alt="User avatar" height="40px" width="40px">
-        <b><%= @sender_details[:name] %></b>
-        <%= @sender_details[:email] %>
+        <img src=<%= @sender_details&.[](:avatar) ? @sender_details&.[](:avatar) : Rails.root.join('public', 'avatar.svg') %> alt="User avatar" height="40px" width="40px">
+        <b><%= @sender_details&.[](:name) %></b>
+        <%= @sender_details&.[](:email) %>
       </div>
       <div class='company'>
-      <img src=<%= @company_details[:logo] ? @company_details[:logo] : Rails.root.join('public', 'miru-logo.svg') %> alt="User avatar" height="40px" width="40px">
-        <b><%= @company_details[:name] %></b>
-        <%= @company_details[:employee_count] %> members
+      <img src=<%=@company_details&.[](:logo) ?@company_details&.[](:logo) : Rails.root.join('public', 'miru-logo.svg') %> alt="User avatar" height="40px" width="40px">
+        <b><%=@company_details&.[](:name) %></b>
+        <%=@company_details&.[](:employee_count) %> members
       </div>
     </div>
 

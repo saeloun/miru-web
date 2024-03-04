@@ -1,4 +1,4 @@
-# frozen_string_literal: true
+\# frozen_string_literal: true
 
 require "rails_helper"
 
@@ -21,7 +21,7 @@ RSpec.describe UserInvitationMailer, type: :mailer do
     end
 
     it "renders the body" do
-      expect(mail.body.encoded).to include("to accept the invitation.")
+      expect(mail.body.encoded).to include("To get started, set your password by clicking the button below")
     end
   end
 end
