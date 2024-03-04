@@ -4,12 +4,12 @@ FactoryBot.define do
   factory :user do
     first_name { Faker::Name.first_name.gsub(/\W/, "") }
     last_name { Faker::Name.last_name.gsub(/\W/, "") }
-    email { Faker::Internet.safe_email }
+    email { Faker::Internet.email }
     password { Faker::Internet.password }
     confirmed_at { Date.today }
     date_of_birth { Faker::Date.between(from: "1990-01-01", to: "2000-01-01") }
     phone { Faker::PhoneNumber.phone_number_with_country_code }
-    personal_email_id { Faker::Internet.safe_email }
+    personal_email_id { Faker::Internet.email }
     current_workspace factory: :company
 
     trait :with_avatar do
