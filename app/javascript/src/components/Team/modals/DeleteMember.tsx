@@ -53,12 +53,16 @@ const DeleteMember = ({ user }) => {
             setModalState(TeamModalType.NONE);
           }}
         >
-          <XIcon color="#CDD6DF" size={16} weight="bold" />
+          <XIcon
+            className="text-miru-dark-purple-1000"
+            size={16}
+            weight="bold"
+          />
         </Button>
       </div>
-      <p className="my-8">
-        Are you sure you want to delete user <b> {user?.name}</b>? This action
-        cannot be reversed.
+      <p className="mt-4 mb-10">
+        Are you sure you want to delete user <b> {user?.name}</b>? <br />
+        This action cannot be reversed.
       </p>
       <div className="flex justify-between">
         <Button
@@ -72,7 +76,7 @@ const DeleteMember = ({ user }) => {
         <Button
           className="ml-2 w-1/2"
           size="medium"
-          style="primary"
+          style="delete"
           onClick={() => deleteTeamMember()}
         >
           DELETE
