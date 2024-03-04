@@ -4,7 +4,7 @@ class InternalApi::V1::HolidaysController < ApplicationController
   def index
     authorize Holiday
 
-    holidays = current_company.holidays.includes([:holiday_infos])
+    holidays = current_company.holidays.kept.includes([:holiday_infos])
     render :index, locals: { holidays: }, status: :ok
   end
 

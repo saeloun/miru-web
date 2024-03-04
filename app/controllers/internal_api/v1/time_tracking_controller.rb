@@ -12,7 +12,16 @@ class InternalApi::V1::TimeTrackingController < InternalApi::V1::ApplicationCont
     to = params[:to] || 1.month.since.end_of_month
 
     data = TimeTrackingIndexService.new(current_user:, user: @user, company: current_company, from:, to:, year:).process
-    render json: data, status: :ok
+
+    render :index, locals: {
+      clients: data[:clients],
+      employees: data[:employees],
+      entries: data[:entries],
+      holiday_infos: data[:holiday_infos],
+      leave_types: data[:leave_types],
+      projects: data[:projects],
+      company: current_company
+    }, status: :ok
   end
 
   private

@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import React, { useEffect, useState } from "react";
 
+import { format } from "date-fns";
 import { minToHHMM } from "helpers";
 
 import timeoffEntryApi from "apis/timeoff-entry";
@@ -15,11 +16,11 @@ import {
 
 const TimeoffEntryCard = ({
   timeoffEntry,
-  currentUserRole,
   leaveTypeDetails,
   holidayDetails,
+  showDateLabelForWeekView,
 }: Iprops) => {
-  const { isDesktop } = useUserContext();
+  const { isDesktop, companyRole } = useUserContext();
   const {
     entryList,
     setEditTimeoffEntryId,
@@ -113,7 +114,7 @@ const TimeoffEntryCard = ({
       onClick={handleCardClick}
     >
       <div className="w-7/12 flex-auto">
-        <div className="text-miu-dark-Purple-1000 flex">
+        <div className="text-miu-dark-Purple-1000 flex items-center">
           <p className="text-base font-normal lg:text-lg">
             {isHolidayTimeoffEntry ? "Holiday" : "Leave"}
           </p>
@@ -123,6 +124,14 @@ const TimeoffEntryCard = ({
               ? holidayDetails?.name
               : leaveTypeDetails?.name}
           </p>
+          {showDateLabelForWeekView && (
+            <div className="text-miu-dark-Purple-1000 flex items-center">
+              <p className="mx-2 text-lg">•</p>
+              <p className="text-base font-normal lg:text-lg">
+                {`${format(new Date(timeoffEntry.leave_date), "do MMM, yyyy")}`}
+              </p>
+            </div>
+          )}
         </div>
         <div className="flex py-2 lg:hidden" />
         <p className="max-h-32 overflow-auto whitespace-pre-wrap break-words text-sm text-miru-dark-purple-200 lg:w-160">
@@ -140,19 +149,14 @@ const TimeoffEntryCard = ({
         <div className="flex w-5/12 items-center justify-evenly">
           {showDuplicateAction(
             bill_status,
-            currentUserRole,
+            companyRole,
             id,
             handleDuplicateTimeoffEntry
           )}
-          {showUpdateAction(
-            bill_status,
-            currentUserRole,
-            id,
-            handleEditBtnClick
-          )}
+          {showUpdateAction(bill_status, companyRole, id, handleEditBtnClick)}
           {showDeleteAction(
             bill_status,
-            currentUserRole,
+            companyRole,
             id,
             handleDeleteTimeoffEntry
           )}
@@ -174,7 +178,7 @@ interface Iprops {
   timeoffEntry: any;
   leaveTypeDetails: any;
   holidayDetails: any;
-  currentUserRole: string;
+  showDateLabelForWeekView?: boolean;
 }
 
 export default TimeoffEntryCard;

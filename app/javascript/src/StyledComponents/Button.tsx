@@ -26,6 +26,8 @@ const TERNARY_DISABLED = "bg-transparent text-miru-dark-purple-200 border-0";
 const DASHED =
   "bg-white rounded border border-dashed border-miru-dark-purple-200 text-center text-base font-bold tracking-widest text-miru-dark-purple-200";
 
+const DELETE = "bg-miru-red-400 hover:bg-miru-red-200 text-white";
+
 const SMALL = "px-5/100 py-1vh text-xs font-bold leading-4";
 const MEDIUM = "px-10/100 py-1vh text-base font-bold leading-5";
 const LARGE = "px-15/100 py-1vh text-xl font-bold leading-7";
@@ -47,6 +49,7 @@ export const BUTTON_STYLES = {
   secondary: "secondary",
   ternary: "ternary",
   dashed: "dashed",
+  delete: "delete",
   calendarCell: "calendarCell",
 };
 const SIZES = { small: "small", medium: "medium", large: "large" };
@@ -79,6 +82,8 @@ const Button = ({
       style == BUTTON_STYLES.ternary && disabled && TERNARY_DISABLED,
 
       style == BUTTON_STYLES.dashed && !disabled && DASHED,
+
+      style == BUTTON_STYLES.delete && !disabled && DELETE,
 
       style == BUTTON_STYLES.calendarCell && Calendar_Cell,
 

@@ -3,7 +3,7 @@
 json.leaves leaves do |leave|
   json.leave_id leave.id
   json.year leave.year
-  json.leave_types leave.leave_types do |leave_type|
+  json.leave_types leave.leave_types.kept do |leave_type|
     json.id leave_type.id
     json.name leave_type.name
     json.icon leave_type.icon
