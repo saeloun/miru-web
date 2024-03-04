@@ -2,11 +2,10 @@ import React from "react";
 
 import classnames from "classnames";
 
-const DEFAULT_STYLE_WRAPPER =
-  "flex items-center cursor-pointer lg:hover:bg-miru-gray-100";
+const DEFAULT_STYLE_WRAPPER = "flex items-center cursor-pointer";
 
 const DEFAULT_STYLE_LABEL =
-  "text-sm text-miru-dark-purple-1000 font-normal leading-5 lg:ml-4";
+  "text-sm text-miru-dark-purple-1000 font-normal leading-5";
 const DEFAULT_STYLE_INPUT = "hidden w-3 h-3 custom__radio";
 const DEFAULT_STYLE_RADIO_ICON =
   "w-3 h-3 inline-block mr-2 rounded-full border border-miru-han-purple-1000";

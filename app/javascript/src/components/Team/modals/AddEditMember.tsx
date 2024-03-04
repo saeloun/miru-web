@@ -1,12 +1,14 @@
 import React, { useState, useRef } from "react";
 
-import { Formik, Form, Field, FormikProps } from "formik";
+import { Formik, Form, FormikProps } from "formik";
 import { useOutsideClick, useKeypress } from "helpers";
 import { XIcon } from "miruIcons";
-import { Modal } from "StyledComponents";
+import { Button, Modal } from "StyledComponents";
 import * as Yup from "yup";
 
 import teamApi from "apis/team";
+import CustomRadioButton from "common/CustomRadio";
+import { InputErrors, InputField } from "common/FormikFields";
 import { TeamModalType } from "constants/index";
 import { useList } from "context/TeamContext";
 import { useUserContext } from "context/UserContext";
@@ -111,9 +113,13 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
       >
         <div className="flex items-center justify-between">
           <h6 className="text-base font-extrabold">{getLabel()}</h6>
-          <button type="button" onClick={handleCloseModal}>
-            <XIcon color="#CDD6DF" size={16} weight="bold" />
-          </button>
+          <Button style="ternary" onClick={handleCloseModal}>
+            <XIcon
+              className="text-miru-dark-purple-1000"
+              size={16}
+              weight="bold"
+            />
+          </Button>
         </div>
         <Formik
           initialValues={getInitialvalues(user)}
@@ -121,164 +127,136 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
           onSubmit={handleSubmit}
         >
           {(props: FormikProps<FormValues>) => {
-            const { touched, errors, isValid, dirty } = props;
+            const {
+              touched,
+              errors,
+              isValid,
+              dirty,
+              values,
+              setFieldError,
+              setFieldValue,
+            } = props;
 
             return (
               <Form>
-                <div className="mt-4">
-                  <div className="field">
-                    <div className="field_with_errors">
-                      <label className="form__label">Name</label>
-                    </div>
-                    <div className="flex">
-                      <div className="mt-1 w-1/2">
-                        <Field
-                          name="firstName"
-                          placeholder="First Name"
-                          className={`form__input ${
-                            errors.firstName &&
-                            touched.firstName &&
-                            "border-red-600 focus:border-red-600 focus:ring-red-600"
-                          } `}
-                        />
-                        <div className="block flex text-xs tracking-wider text-red-600">
-                          {errors.firstName && touched.firstName && (
-                            <div>{errors.firstName}</div>
-                          )}
-                        </div>
-                      </div>
-                      <div className="mt-1 ml-8 w-1/2">
-                        <Field
-                          name="lastName"
-                          placeholder="Last Name"
-                          className={`form__input ${
-                            errors.lastName &&
-                            touched.lastName &&
-                            "border-red-600 focus:border-red-600 focus:ring-red-600"
-                          } `}
-                        />
-                        <div className="block flex text-xs tracking-wider text-red-600">
-                          {errors.lastName && touched.lastName && (
-                            <div className="ml-2">{errors.lastName}</div>
-                          )}
-                        </div>
-                      </div>
-                    </div>
+                <div className="mt-4 flex gap-4">
+                  <div className="field w-1/2">
+                    <InputField
+                      hasError={errors.firstName && touched.firstName}
+                      id="firstName"
+                      label="First Name"
+                      name="firstName"
+                      setFieldError={setFieldError}
+                      setFieldValue={setFieldValue}
+                      type="text"
+                    />
+                    <InputErrors
+                      fieldErrors={errors.firstName}
+                      fieldTouched={touched.firstName}
+                    />
+                  </div>
+                  <div className="field w-1/2">
+                    <InputField
+                      hasError={errors.lastName && touched.lastName}
+                      id="lastName"
+                      label="Last Name"
+                      name="lastName"
+                      setFieldError={setFieldError}
+                      setFieldValue={setFieldValue}
+                      type="text"
+                    />
+                    <InputErrors
+                      fieldErrors={errors.lastName}
+                      fieldTouched={touched.lastName}
+                    />
                   </div>
                 </div>
-                <div className="mt-4">
-                  <div className="field">
-                    <div className="field_with_errors">
-                      <label className="form__label">Email</label>
-                    </div>
-                    <div className="mt-1">
-                      <Field
-                        disabled={isEdit}
-                        id="email"
-                        name="email"
-                        placeholder="Enter email ID"
-                        className={`form__input disabled:opacity-50 ${
-                          errors.email &&
-                          touched.email &&
-                          "border-red-600 focus:border-red-600 focus:ring-red-600"
-                        } `}
-                      />
-                      <div className="block text-xs tracking-wider text-red-600">
-                        {errors.email && touched.email && (
-                          <div>{errors.email}</div>
-                        )}
-                      </div>
-                    </div>
+                <div className="field">
+                  <InputField
+                    autoFocus
+                    hasError={errors.email && touched.email}
+                    id="email"
+                    label="Email"
+                    name="email"
+                    setFieldError={setFieldError}
+                    setFieldValue={setFieldValue}
+                  />
+                  <InputErrors
+                    fieldErrors={errors.email}
+                    fieldTouched={touched.email}
+                  />
+                </div>
+                <div className="field">
+                  <label className="text-xs font-normal text-miru-dark-purple-1000">
+                    Role
+                  </label>
+                  <div className="mt-2 flex items-center gap-6">
+                    <CustomRadioButton
+                      classNameLabel="font-medium text-sm text-miru-dark-purple-1000"
+                      classNameWrapper="py-2 pr-2 rounded"
+                      defaultCheck={values.role == "admin"}
+                      groupName="role"
+                      id="admin"
+                      key="admin"
+                      label="Admin"
+                      value={values.role}
+                      handleOnChange={() => {
+                        setFieldValue("role", "admin", true);
+                      }}
+                    />
+                    <CustomRadioButton
+                      classNameLabel="font-medium text-sm text-miru-dark-purple-1000"
+                      classNameWrapper="py-2 pr-2 rounded"
+                      defaultCheck={values.role == "employee"}
+                      groupName="role"
+                      id="employee"
+                      key="employee"
+                      label="Employee"
+                      value={values.role}
+                      handleOnChange={() => {
+                        setFieldValue("role", "employee", true);
+                      }}
+                    />
+                    <CustomRadioButton
+                      classNameLabel="font-medium text-sm text-miru-dark-purple-1000"
+                      classNameWrapper="py-2 pr-2 rounded"
+                      defaultCheck={values.role == "book_keeper"}
+                      groupName="role"
+                      id="book_keeper"
+                      key="book_keeper"
+                      label="Bookkeeper"
+                      value={values.role}
+                      handleOnChange={() => {
+                        setFieldValue("role", "book_keeper", true);
+                      }}
+                    />
+                    <CustomRadioButton
+                      classNameLabel="font-medium text-sm text-miru-dark-purple-1000"
+                      classNameWrapper="py-2 pr-2 rounded"
+                      defaultCheck={values.role == "client"}
+                      groupName="role"
+                      id="client"
+                      key="client"
+                      label="Client"
+                      value={values.role}
+                      handleOnChange={() => {
+                        setFieldValue("role", "client", true);
+                      }}
+                    />
                   </div>
                 </div>
-                <div className="mt-4">
-                  <div className="field">
-                    <label className="form__label block text-xs font-normal tracking-wider text-miru-dark-purple-1000">
-                      Role
-                    </label>
-                    <div className="mt-1 flex">
-                      <div className="space-XIcon-10 flex items-center">
-                        <div className="flex items-center justify-between">
-                          <Field
-                            className="custom__radio"
-                            id="role-1"
-                            name="role"
-                            type="radio"
-                            value="admin"
-                          />
-                          <label
-                            className="ml-2 flex cursor-pointer items-center text-xl"
-                            htmlFor="role-1"
-                          >
-                            <i className="custom__radio-text" />
-                            <span className="text-sm">Admin</span>
-                          </label>
-                        </div>
-                        <div className="ml-8 flex items-center">
-                          <Field
-                            className="custom__radio"
-                            id="role-2"
-                            name="role"
-                            type="radio"
-                            value="employee"
-                          />
-                          <label
-                            className="ml-2 flex cursor-pointer items-center text-xl"
-                            htmlFor="role-2"
-                          >
-                            <i className="custom__radio-text" />
-                            <span className="text-sm">Employee</span>
-                          </label>
-                        </div>
-                        <div className="ml-8 flex items-center">
-                          <Field
-                            className="custom__radio"
-                            id="role-3"
-                            name="role"
-                            type="radio"
-                            value="book_keeper"
-                          />
-                          <label
-                            className="ml-2 flex cursor-pointer items-center text-xl"
-                            htmlFor="role-3"
-                          >
-                            <i className="custom__radio-text" />
-                            <span className="text-sm">Bookkeeper</span>
-                          </label>
-                        </div>
-                        <div className="ml-8 flex items-center">
-                          <Field
-                            className="custom__radio"
-                            id="role-3"
-                            name="role"
-                            type="radio"
-                            value="client"
-                          />
-                          <label
-                            className="ml-2 flex cursor-pointer items-center text-xl"
-                            htmlFor="role-3"
-                          >
-                            <i className="custom__radio-text" />
-                            <span className="text-sm">Client</span>
-                          </label>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="actions mt-4">
-                  <button
+                <div className="actions mt-6">
+                  <Button
                     disabled={!(dirty && isValid)}
-                    name="commit"
                     type="submit"
                     className={
                       !isValid || !dirty
-                        ? "focus:outline-none flex h-10 w-full justify-center rounded border border-transparent bg-miru-gray-1000 py-1 px-4 font-sans text-base font-medium tracking-widest text-miru-white-1000 shadow-sm"
+                        ? "focus:outline-none flex h-10 w-full justify-center rounded border border-transparent bg-miru-gray-1000 text-base font-medium tracking-widest text-miru-white-1000 shadow-sm"
                         : "form__input_submit"
                     }
                   >
                     {isEdit ? "SAVE CHANGES" : "SEND INVITE"}
-                  </button>
+                  </Button>
                 </div>
               </Form>
             );
