@@ -16,7 +16,7 @@ RSpec.describe "InternalApi::V1::TeamMembers::DetailsController::#update", type:
       last_name: Faker::Alphanumeric.alpha(number: 2..10),
       phone: Faker::PhoneNumber.phone_number_with_country_code,
       date_of_birth: Faker::Date.between(from: "1990-01-01", to: "2000-01-01"),
-      personal_email_id: Faker::Internet.safe_email,
+      personal_email_id: Faker::Internet.email,
       social_accounts: {
         "github_url": "#{user.first_name}.github",
         "linkedin_url": "#{user.first_name}.linkedin"
