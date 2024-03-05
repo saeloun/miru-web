@@ -10,7 +10,7 @@
                 style="font-family: 'Manrope'; font-style: normal; font-size:14px; font-weight:400; line-height: 19px; color:#A5A3AD; display: inline-block; text-align: center;"
               >Powered by</td>
               <td align="left" style="vertical-align: middle; display: inline-block;">
-                <img src=<%= Rails.root.join('public', 'miruLogoWithText.png') %> alt="Miru Logo" height="48px" width="120px">
+                <%= image_tag "miruLogoWithText.svg", height: '48px', width: '120px' %>
               </td>
             </tr>
           </table>
@@ -42,13 +42,13 @@
               href="https://www.instagram.com/getmiru/"
               target="_blank"
             >
-            <img src=<%= Rails.root.join('public', 'Instagram.png') %> alt="Instagram Logo" height="16px" width="16px">
-            </a>
+            <%= image_tag "Instagram.svg", height: '16px', width: '16px' %>
+          </a>
             <a
               href="https://twitter.com/getmiru"
               target="_blank"
             >
-            <img src=<%= Rails.root.join('public', 'Twitter.png') %> alt="Twitter Logo" height="16px" width="16px">
+            <%= image_tag "Twitter.svg", height: '16px', width: '16px' %>
             </a>
           </div>
         </div>
