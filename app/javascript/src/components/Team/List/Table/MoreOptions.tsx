@@ -50,14 +50,16 @@ const MoreOptions = ({ item, setShowMoreOptions, showMoreOptions }: Iprops) => {
           <EditIcon size={16} weight="bold" />
         </Button>
       </Tooltip>
-      <Button
-        style="ternary"
-        onClick={e => {
-          handleAction(e, TeamModalType.DELETE);
-        }}
-      >
-        <DeleteIcon className="text-miru-red-400" size={16} weight="bold" />
-      </Button>
+      <Tooltip content="Delete">
+        <Button
+          style="ternary"
+          onClick={e => {
+            handleAction(e, TeamModalType.DELETE);
+          }}
+        >
+          <DeleteIcon className="text-miru-red-400" size={16} weight="bold" />
+        </Button>
+      </Tooltip>
     </HoverMoreOptions>
   ) : (
     <MobileMoreOptions
