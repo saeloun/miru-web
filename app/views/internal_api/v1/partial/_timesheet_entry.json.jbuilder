@@ -4,7 +4,7 @@ json.id entry[:id]
 json.duration entry[:duration]
 json.note entry[:note]
 json.bill_status entry[:bill_status]
-json.work_date entry[:work_date]
+json.work_date CompanyDateFormattingService.new(entry[:work_date], company:).process
 json.type entry[:type]
 json.client entry[:client]
 json.project entry[:project]
