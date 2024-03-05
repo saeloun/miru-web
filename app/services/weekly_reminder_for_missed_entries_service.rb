@@ -21,11 +21,11 @@ class WeeklyReminderForMissedEntriesService
     start_date = 1.week.ago.beginning_of_week
     end_date = 1.week.ago.end_of_week
 
-    entries = get_user_company_entries(user:, company:, start_date:, end_date:)
+    entries = get_entries_for_period(user:, company:, start_date:, end_date:)
 
-    total_company_entries_durations = entries.sum(:duration)
+    entries_total_duration = entries.sum(&:duration)
 
-    if total_company_entries_durations < WEEKLY_LIMIT && !@invalid_emails.include?(user.email)
+    if entries_total_duration < WEEKLY_LIMIT && !@invalid_emails.include?(user.email)
       send_mail(recipients: user.email, name:, start_date:, end_date:, company_name:)
     end
   end
@@ -45,6 +45,7 @@ def send_mail(recipients:, name:, start_date:, end_date:, company_name:)
   ).notify_user_about_missed_entries.deliver_later
 end
 
-def get_user_company_entries(user:, start_date:, end_date:, company:)
-  user.timesheet_entries.in_workspace(company).during(start_date, end_date)
+def get_entries_for_period(user:, company:, start_date:, end_date:)
+  user.timesheet_entries.in_workspace(company).during(start_date, end_date) +
+    user.timeoff_entries.during(start_date, end_date)
 end

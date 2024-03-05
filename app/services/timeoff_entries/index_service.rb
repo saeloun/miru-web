@@ -47,18 +47,18 @@ module TimeoffEntries
       def leave_balance
         leave_balance = []
 
-        leave = current_company.leaves.find_by(year:)
+        leave = current_company.leaves.kept.find_by(year:)
 
         if leave
-          previous_year_leave = current_company.leaves.find_by(year: leave.year - 1)
+          previous_year_leave = current_company.leaves.kept.find_by(year: leave.year - 1)
 
-          leave.leave_types.all.each do |leave_type|
+          leave.leave_types.kept.all.each do |leave_type|
             total_leave_type_days = calculate_total_duration(leave_type)
 
             timeoff_entries_duration = leave_type.timeoff_entries.kept.where(user_id:).sum(:duration)
 
             previous_year_leave_type = previous_year_leave &&
-              previous_year_leave.leave_types.find_by(name: leave_type.name)
+              previous_year_leave.leave_types.kept.find_by(name: leave_type.name)
 
             previous_year_carryforward = calculate_previous_year_carryforward(previous_year_leave_type)
 

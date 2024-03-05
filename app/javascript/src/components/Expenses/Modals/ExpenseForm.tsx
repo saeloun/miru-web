@@ -271,7 +271,7 @@ const ExpenseForm = ({
           <div className="flex">
             <CustomRadioButton
               classNameLabel="font-medium text-sm text-miru-dark-purple-1000"
-              classNameRadioIcon="lg:w-4 lg:h-4 lg:border-2 lg:mr-0"
+              classNameRadioIcon="lg:w-4 lg:h-4 lg:border-2"
               classNameWrapper="pt-3 mr-4"
               defaultCheck={expenseType == "personal"}
               groupName="expenseType"
@@ -285,7 +285,7 @@ const ExpenseForm = ({
             />
             <CustomRadioButton
               classNameLabel="font-medium text-sm text-miru-dark-purple-1000"
-              classNameRadioIcon="lg:w-4 lg:h-4 lg:border-2 lg:mr-0"
+              classNameRadioIcon="lg:w-4 lg:h-4 lg:border-2"
               classNameWrapper="pt-3"
               defaultCheck={expenseType == "business"}
               groupName="expenseType"

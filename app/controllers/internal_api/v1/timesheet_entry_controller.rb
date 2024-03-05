@@ -11,7 +11,6 @@ class InternalApi::V1::TimesheetEntryController < InternalApi::V1::ApplicationCo
       .during(params[:from], params[:to])
       .includes(:user, :project, :client)
     entries = TimesheetEntriesPresenter.new(timesheet_entries).group_snippets_by_work_date
-    entries[:currentUserRole] = current_user.primary_role current_company
     render json: { entries: }, status: :ok
   end
 
