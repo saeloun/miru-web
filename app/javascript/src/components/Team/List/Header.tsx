@@ -1,6 +1,7 @@
 import React from "react";
 
 import { PlusIcon } from "miruIcons";
+import { Button } from "StyledComponents";
 
 import teamApi from "apis/team";
 import AutoSearch from "common/AutoSearch";
@@ -25,14 +26,16 @@ const Header = () => {
       <h2 className="header__title hidden lg:inline">Team</h2>
       <AutoSearch SearchDataRow={SearchDataRow} searchAction={fetchTeamList} />
       <div className="flex justify-end">
-        <button
-          className="header__button"
-          type="button"
+        <Button
+          className="ml-2 flex items-center px-2 py-2 lg:ml-0 lg:px-4"
+          style="secondary"
           onClick={() => setModalState(TeamModalType.ADD_EDIT)}
         >
-          <PlusIcon size={16} weight="fill" />
-          <span className="ml-2 hidden lg:inline-block">NEW USER</span>
-        </button>
+          <PlusIcon size={16} weight="bold" />
+          <span className="ml-2 hidden text-base font-medium tracking-widest lg:inline-block">
+            NEW USER
+          </span>
+        </Button>
       </div>
     </div>
   );
