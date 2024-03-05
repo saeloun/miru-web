@@ -201,11 +201,12 @@ export const StaticPage = ({
           )}
         </div>
         <div className="flex w-full flex-col px-2 py-3">
-          <CustomInputText
+          <CustomTextareaAutosize
             id="addressLine2"
             label="Address line 2 (optional)"
+            maxRows={5}
             name="addressLine2"
-            type="text"
+            rows={1}
             value={companyAddr.addressLine2}
             onChange={e => handleAddrChange(e, "addressLine2")}
           />
