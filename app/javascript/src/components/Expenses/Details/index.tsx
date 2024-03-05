@@ -80,8 +80,8 @@ const ExpenseDetails = () => {
   }, []);
 
   return (
-    <div className="">
-      {!showEditExpenseModal && (
+    <div>
+      {!isDesktop && showEditExpenseModal ? null : (
         <div>
           <Header
             expense={expense}
@@ -91,28 +91,28 @@ const ExpenseDetails = () => {
           <Expense currency={company.base_currency} expense={expense} />
         </div>
       )}
-      {showEditExpenseModal && isDesktop && (
-        <EditExpenseModal
-          expense={expense}
-          expenseData={expenseData}
-          handleEditExpense={handleEditExpense}
-          setShowEditExpenseModal={setShowEditExpenseModal}
-          showEditExpenseModal={showEditExpenseModal}
-        />
-      )}
+      {showEditExpenseModal &&
+        (isDesktop ? (
+          <EditExpenseModal
+            expense={expense}
+            expenseData={expenseData}
+            handleEditExpense={handleEditExpense}
+            setShowEditExpenseModal={setShowEditExpenseModal}
+            showEditExpenseModal={showEditExpenseModal}
+          />
+        ) : (
+          <EditExpense
+            expense={expense}
+            expenseData={expenseData}
+            handleEditExpense={handleEditExpense}
+            setShowEditExpenseModal={setShowEditExpenseModal}
+          />
+        ))}
       {showDeleteExpenseModal && (
         <DeleteExpenseModal
           handleDeleteExpense={handleDeleteExpense}
           setShowDeleteExpenseModal={setShowDeleteExpenseModal}
           showDeleteExpenseModal={showDeleteExpenseModal}
-        />
-      )}
-      {showEditExpenseModal && !isDesktop && (
-        <EditExpense
-          expense={expense}
-          expenseData={expenseData}
-          handleEditExpense={handleEditExpense}
-          setShowEditExpenseModal={setShowEditExpenseModal}
         />
       )}
     </div>

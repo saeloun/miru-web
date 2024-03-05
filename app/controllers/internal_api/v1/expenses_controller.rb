@@ -28,7 +28,8 @@ class InternalApi::V1::ExpensesController < ApplicationController
   end
 
   def update
-    authorize set_expense
+    set_expense
+    authorize @expense
 
     @expense.update!(expense_params)
 
@@ -36,7 +37,8 @@ class InternalApi::V1::ExpensesController < ApplicationController
   end
 
   def destroy
-    authorize set_expense
+    set_expense
+    authorize @expense
 
     @expense.destroy!
 

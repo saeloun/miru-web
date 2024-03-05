@@ -18,13 +18,7 @@ const MoreOptions = ({
       onClick={e => e.stopPropagation()}
     >
       <Tooltip content="Download">
-        <Button
-          disabled
-          style="ternary"
-          onClick={e => {
-            e.stopPropagation();
-          }}
-        >
+        <Button disabled style="ternary">
           <DownloadSimpleIcon size={16} weight="bold" />
         </Button>
       </Tooltip>

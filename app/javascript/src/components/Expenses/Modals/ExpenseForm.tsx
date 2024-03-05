@@ -153,7 +153,7 @@ const ExpenseForm = ({
         <div className="flex items-center text-xs font-medium text-miru-dark-purple-400">
           <span>PDF</span>
           <div className="mx-2 h-1 w-1 rounded-xl bg-miru-dark-purple-200" />
-          <span>{Math.ceil(receipt.size / 1000)}kb</span>
+          <span>{Math.ceil(receipt.size / 1024)}kb</span>
         </div>
       </div>
       <Button style="ternary" onClick={() => setReceipt(null)}>
