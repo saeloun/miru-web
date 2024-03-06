@@ -7,7 +7,7 @@ RSpec.describe "InternalApi::V1::TimesheetEntry#update", type: :request do
   let(:user) { create(:user, current_workspace_id: company.id) }
   let(:user2) { create(:user, current_workspace_id: company.id) }
   let(:client) { create(:client, company:) }
-  let(:project) { create(:project, client:) }
+  let(:project) { create(:project, billable: true, client:) }
   let!(:timesheet_entry) {
     create(
       :timesheet_entry,

@@ -9,6 +9,7 @@ RSpec.describe TimesheetEntry, type: :model do
   let(:client2) { create(:client, company_id: company2.id) }
   let(:project) { create(:project, client_id: client.id) }
   let(:project2) { create(:project, client_id: client2.id) }
+  let(:billable_project) { create(:project, billable: true, client_id: client.id) }
   let(:timesheet_entry) { create(:timesheet_entry, project:) }
 
   describe "Associations" do
@@ -97,6 +98,16 @@ RSpec.describe TimesheetEntry, type: :model do
     end
   end
 
+  describe "#validate_billable_project" do
+    let(:error_message) { "can't create an unbilled entry for non-billable projects" }
+
+    it "returns an error if project is non billable and user try to create unbilled entry" do
+      timesheet_entry = build(:timesheet_entry, bill_status: "unbilled")
+      expect(timesheet_entry.valid?).to be_falsey
+      expect(timesheet_entry.errors.messages[:base]).to include(error_message)
+    end
+  end
+
   describe "#ensure_billed_status_should_not_be_changed" do
     context "when admin or owner is updating the time entry" do
       before do
@@ -106,7 +117,7 @@ RSpec.describe TimesheetEntry, type: :model do
       end
 
       let(:admin) { create(:user) }
-      let(:timesheet_entry) { create(:timesheet_entry, project:) }
+      let(:timesheet_entry) { create(:timesheet_entry, project: billable_project) }
 
       context "when time entry is billed" do
         it "allows owners and admins to edit the billed time entry" do
@@ -160,7 +171,7 @@ RSpec.describe TimesheetEntry, type: :model do
       end
 
       let(:user) { create(:user) }
-      let(:timesheet_entry) { create(:timesheet_entry, project:) }
+      let(:timesheet_entry) { create(:timesheet_entry, project: billable_project) }
       let(:error_message) { "You can't bill an entry that has already been billed" }
 
       context "when time entry is billed" do
