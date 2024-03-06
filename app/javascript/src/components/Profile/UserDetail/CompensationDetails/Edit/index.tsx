@@ -45,12 +45,12 @@ const CompensationEditPage = () => {
   useEffect(() => {
     const totalEarnings = earnings.reduce(
       (accumulator, currentValue) => accumulator + currentValue["amount"],
-      0
+      0.0
     );
 
     const totalDeductions = deductions.reduce(
       (accumulator, currentValue) => accumulator + currentValue["amount"],
-      0
+      0.0
     );
     setTotal(totalEarnings - totalDeductions);
   }, [deductions, earnings]);
