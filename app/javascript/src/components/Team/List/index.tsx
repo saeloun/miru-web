@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import Logger from "js-logger";
 import { Pagination } from "StyledComponents";
@@ -101,14 +101,10 @@ const TeamList = () => {
       }}
     >
       {!hideContainer && (
-        <Fragment>
+        <div className="p-4 lg:p-0">
           <Header />
           <div>
-            <div className="table__flex pb-14">
-              <div className="table__border border-b-0 border-miru-gray-200">
-                <Table />
-              </div>
-            </div>
+            <Table />
             <Pagination
               isPerPageVisible
               currentPage={pagy?.page}
@@ -123,7 +119,7 @@ const TeamList = () => {
               totalPages={pagy?.pages}
             />
           </div>
-        </Fragment>
+        </div>
       )}
       <Modals user={modalUser} />
     </ListContext.Provider>

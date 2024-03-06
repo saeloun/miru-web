@@ -12,6 +12,7 @@ const getStatusCssClass = status => {
     sending: "bg-miru-gray-6000 text-miru-black-1000",
     waived: "bg-miru-gray-1000 text-miru-black-1000",
     non_billable: "bg-miru-dark-purple-100 text-miru-dark-purple-600",
+    pending: "bg-miru-han-purple-100 text-miru-han-purple-1000",
   };
   const lowerCaseStatus = status.toLowerCase();
 
