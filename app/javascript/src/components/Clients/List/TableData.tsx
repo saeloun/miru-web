@@ -32,6 +32,14 @@ const TableData = (
       ),
       col2: (
         <div
+          className="total-hours text-left text-sm font-medium text-miru-dark-purple-1000"
+          id={`${client.id}`}
+        >
+          {client.email || "-"}
+        </div>
+      ),
+      col3: (
+        <div
           className="total-hours text-right text-xl font-bold text-miru-dark-purple-1000"
           id={`${client.id}`}
         >

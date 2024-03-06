@@ -2,12 +2,17 @@ export const tableHeader = [
   {
     Header: "CLIENT",
     accessor: "col1", // accessor is the "key" in the data
-    cssClass: "md:w-1/3 capitalize",
+    cssClass: "md:w-1/4 capitalize",
+  },
+  {
+    Header: "EMAIL ID(s)",
+    accessor: "col2",
+    cssClass: "text-left md:w-2/5", // accessor is the "key" in the data
   },
   {
     Header: "HOURS LOGGED",
-    accessor: "col2",
-    cssClass: "text-right md:w-1/5", // accessor is the "key" in the data
+    accessor: "col3",
+    cssClass: "text-right md:w-1/6", // accessor is the "key" in the data
   },
 ];
 

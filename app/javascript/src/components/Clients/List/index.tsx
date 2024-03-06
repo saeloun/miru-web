@@ -30,8 +30,10 @@ const ClientList = ({
 }) => {
   const { isAdminUser, isDesktop } = useUserContext();
 
+  const sortedClientData = clientData.sort((a, b) => b.minutes - a.minutes);
+
   const getTableData = TableData(
-    clientData,
+    sortedClientData,
     handleTooltip,
     showToolTip,
     toolTipRef,
