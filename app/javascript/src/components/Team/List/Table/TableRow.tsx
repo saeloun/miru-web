@@ -1,192 +1,136 @@
-import React, { Fragment } from "react";
+import React, { useState } from "react";
 
-import {
-  EditIcon,
-  DeleteIcon,
-  DotsThreeVerticalIcon,
-  ResendInviteIcon,
-} from "miruIcons";
+import { intervalToDuration } from "date-fns";
+import { DotsThreeVerticalIcon } from "miruIcons";
 import { useNavigate } from "react-router-dom";
-import { Badge, MobileMoreOptions } from "StyledComponents";
+import { Avatar, Badge, Button } from "StyledComponents";
 
-import teamApi from "apis/team";
-import { TeamModalType } from "constants/index";
-import { useList } from "context/TeamContext";
 import { useUserContext } from "context/UserContext";
+import getStatusCssClass from "utils/getBadgeStatus";
+
+import MoreOptions from "./MoreOptions";
 
 const TableRow = ({ item }) => {
-  const { isAdminUser, isDesktop } = useUserContext();
-  const { setModalState } = useList();
+  const { isDesktop } = useUserContext();
+
   const navigate = useNavigate();
 
-  const [showMoreOptions, setShowMoreOptions] = React.useState<boolean>(false);
-  const { id, name, email, role, status } = item;
+  const [showMoreOptions, setShowMoreOptions] = useState<boolean>(false);
+  const {
+    id,
+    name,
+    email,
+    role,
+    status,
+    profilePicture,
+    joinedAtDate,
+    employmentType,
+  } = item;
 
-  const actionIconVisible = isAdminUser && role !== "owner";
+  const calculateWorkDuration = joinedAt => {
+    if (!joinedAt) {
+      return null;
+    }
 
-  const handleAction = (e, action) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setModalState(action, item);
-  };
+    const start = new Date(joinedAt);
+    const today = new Date();
 
-  const handleResendInvite = async () => {
-    await teamApi.resendInvite(item.id);
+    const dur = intervalToDuration({ start, end: today });
+
+    const duration =
+      (dur.years ? `${dur.years}y ` : "") +
+      (dur.months ? ` ${dur.months}m ` : "") +
+      (dur.days ? ` ${dur.days}d` : "");
+
+    return duration;
   };
 
   const handleRowClick = () => {
     if (status) return;
 
     if (isDesktop) {
-      isAdminUser ? navigate(`/team/${id}`, { replace: true }) : null;
+      navigate(`/team/${id}`, { replace: true });
     } else {
-      isAdminUser ? navigate(`/team/${id}/options`, { replace: true }) : null;
+      navigate(`/team/${id}/options`, { replace: true });
     }
   };
 
-  const formattedRole = role
-    .split("_")
-    .map(word => word.charAt(0) + word.slice(1))
-    .join("");
-  if (isDesktop) {
-    return (
-      <tr
-        className={`hoverIcon ${
-          isAdminUser && "cursor-pointer"
-        } border-b border-miru-gray-200 last:border-0`}
-        onClick={handleRowClick}
-      >
-        <td className="table__data p-6 capitalize">{name}</td>
-        <td className="table__data table__text p-6 text-sm font-medium">
-          {email}
-        </td>
-        <td className="table__data table__text p-6 text-sm font-medium capitalize">
-          {formattedRole}
-        </td>
-        {isAdminUser && (
-          <Fragment>
-            <td className="w-48 py-6 pr-6 text-right">
-              {status && (
-                <Badge
-                  bgColor="bg-miru-han-purple-100"
-                  className="rounded-lg px-1 capitalize tracking-widest"
-                  color="text-miru-han-purple-1000"
-                  text="Pending Invitation"
-                />
-              )}
-            </td>
-            <td className="w-44 py-6 pr-6 text-right">
-              {actionIconVisible && (
-                <div className="iconWrapper invisible">
-                  {status && (
-                    <button
-                      className="ml-12"
-                      id="resendInvite"
-                      onClick={handleResendInvite}
-                    >
-                      <ResendInviteIcon
-                        color="#5b34ea"
-                        size={16}
-                        weight="bold"
-                      />
-                    </button>
-                  )}
-                  <button
-                    className="ml-12"
-                    id="editMember"
-                    onClick={e => handleAction(e, TeamModalType.ADD_EDIT)}
-                  >
-                    <EditIcon color="#5b34ea" size={16} weight="bold" />
-                  </button>
-                  <button
-                    className="ml-12"
-                    id="deleteMember"
-                    onClick={e => handleAction(e, TeamModalType.DELETE)}
-                  >
-                    <DeleteIcon color="#5b34ea" size={16} weight="bold" />
-                  </button>
-                </div>
-              )}
-            </td>
-          </Fragment>
-        )}
-      </tr>
-    );
-  }
-
   return (
-    <>
-      <tr
-        className="border-b border-miru-gray-200 last:border-0"
-        onClick={handleRowClick}
-      >
-        <td className="table__data p-6">
-          <dl className="flex items-center justify-between text-sm font-semibold capitalize text-miru-dark-purple-1000">
-            <dt>{name}</dt>
-          </dl>
-          <dl className="max-h-32 overflow-auto whitespace-pre-wrap break-words text-xs font-medium text-miru-dark-purple-400">
-            <dt>{email}</dt>
-          </dl>
-        </td>
-        <td className="table__data table__text p-6 text-right text-sm font-medium capitalize">
-          {formattedRole}
-          {status && (
-            <dl className="mt-3 max-h-32 overflow-auto whitespace-pre-wrap break-words">
+    <tr
+      className="group flex cursor-pointer border-b border-miru-gray-200 last:border-0 lg:grid lg:grid-cols-10 lg:gap-4"
+      onClick={handleRowClick}
+    >
+      <td className="flex w-3/5 py-2 text-left text-xs font-medium leading-4 tracking-widest text-miru-dark-purple-600 lg:col-span-4 lg:py-3">
+        <div className="my-auto">
+          <Avatar url={profilePicture} />
+        </div>
+        <div className="ml-2 truncate capitalize lg:ml-4">
+          <dt className="lg:flex">
+            <p className="mr-2 text-sm font-bold leading-5 text-miru-dark-purple-1000 lg:text-base">
+              {name}
+            </p>
+            {status && (
               <Badge
-                bgColor="bg-miru-han-purple-100"
-                className="rounded-lg px-1 capitalize tracking-widest"
-                color="text-miru-han-purple-1000"
-                text="Pending"
+                text="pending"
+                className={`${getStatusCssClass(
+                  "pending"
+                )} hidden uppercase lg:block`}
               />
-            </dl>
-          )}
-        </td>
-        <td className="table__data table__cell items-center px-3 py-3 lg:hidden">
-          {actionIconVisible && (
-            <DotsThreeVerticalIcon
-              className="w-full"
-              size={16}
-              weight="bold"
-              onClick={e => {
-                e.preventDefault();
-                e.stopPropagation();
-                setShowMoreOptions(true);
-              }}
+            )}
+          </dt>
+          <dt className="mt-2 truncate text-xs font-medium lowercase leading-4 text-miru-dark-purple-400">
+            {email}
+          </dt>
+        </div>
+      </td>
+      <td className="col-span-2 hidden self-start text-left text-sm font-medium capitalize leading-5 tracking-widest text-miru-dark-purple-1000 lg:table-cell lg:py-3">
+        -
+      </td>
+      <td className="flex w-2/5 justify-between py-2  text-left text-sm font-medium capitalize leading-4 tracking-widest text-miru-dark-purple-600 lg:col-span-2 lg:py-3">
+        <div>
+          <p className="truncate text-xs lg:text-sm">
+            {role.replace(/_/g, " ")}
+          </p>
+          {status && (
+            <Badge
+              text="pending"
+              className={`${getStatusCssClass(
+                "pending"
+              )} mt-2 uppercase xsm:text-xxs lg:hidden lg:text-sm`}
             />
           )}
-        </td>
-      </tr>
-      {showMoreOptions && (
-        <MobileMoreOptions
-          setVisibilty={setShowMoreOptions}
-          visibilty={showMoreOptions}
+        </div>
+        <Button
+          className="lg:hidden"
+          style="ternary"
+          onClick={e => {
+            e.preventDefault();
+            e.stopPropagation();
+            setShowMoreOptions(true);
+          }}
         >
-          {status && (
-            <li
-              className="flex items-center pt-3 text-sm leading-5 text-miru-han-purple-1000"
-              onClick={e => handleAction(e, TeamModalType.ADD_EDIT)}
-            >
-              <ResendInviteIcon className="mr-4" color="#5B34EA" size={16} />
-              Resend
-            </li>
-          )}
-          <li
-            className="flex items-center pt-3 text-sm leading-5 text-miru-han-purple-1000"
-            onClick={e => handleAction(e, TeamModalType.ADD_EDIT)}
-          >
-            <EditIcon className="mr-4" color="#5B34EA" size={16} />
-            Edit
-          </li>
-          <li
-            className="flex items-center pt-3 text-sm leading-5 text-miru-red-400"
-            onClick={e => handleAction(e, TeamModalType.DELETE)}
-          >
-            <DeleteIcon className="mr-4" size={16} />
-            Delete
-          </li>
-        </MobileMoreOptions>
+          <DotsThreeVerticalIcon
+            className="text-miru-dark-purple-1000"
+            size={20}
+            weight="bold"
+          />
+        </Button>
+      </td>
+      <td className="relative col-span-2 hidden py-2 text-left text-xs font-medium capitalize leading-4 tracking-widest text-miru-dark-purple-1000 lg:table-cell lg:py-3">
+        <div>{employmentType || "-"}</div>
+        <div className="mt-2 text-xs font-medium lowercase leading-4 text-miru-dark-purple-400">
+          {calculateWorkDuration(joinedAtDate) || "-"}
+        </div>
+        {isDesktop && <MoreOptions item={item} />}
+      </td>
+      {showMoreOptions && (
+        <MoreOptions
+          item={item}
+          setShowMoreOptions={setShowMoreOptions}
+          showMoreOptions={showMoreOptions}
+        />
       )}
-    </>
+    </tr>
   );
 };
 
