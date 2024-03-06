@@ -51,7 +51,7 @@ const GetClientBar = ({ data, totalMinutes }: IChartBarGraph) => {
     <section>
       <div className="hidden md:block">
         <p className="mb-3 text-tiny tracking-widest text-miru-dark-purple-600">
-          TOTAL HOURS:{" "}
+          TOTAL HOURS:
           <span className="font-medium">{minToHHMM(totalMinutes)}</span>
         </p>
         <div className="flex h-1 w-full bg-gray-200">
