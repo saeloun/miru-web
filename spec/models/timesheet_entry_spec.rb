@@ -99,7 +99,7 @@ RSpec.describe TimesheetEntry, type: :model do
   end
 
   describe "#validate_billable_project" do
-    let(:error_message) { "can't create an unbilled entry for non-billable projects" }
+    let(:error_message) { "You can't create an unbilled entry for non-billable projects" }
 
     it "returns an error if project is non billable and user try to create unbilled entry" do
       timesheet_entry = build(:timesheet_entry, bill_status: "unbilled")
