@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { differenceInCalendarDays } from "date-fns";
+import { intervalToDuration } from "date-fns";
 import { DotsThreeVerticalIcon } from "miruIcons";
 import { useNavigate } from "react-router-dom";
 import { Avatar, Badge, Button } from "StyledComponents";
@@ -35,19 +35,12 @@ const TableRow = ({ item }) => {
     const start = new Date(joinedAt);
     const today = new Date();
 
-    const daysDifference = differenceInCalendarDays(today, start);
-    const years = Math.floor(daysDifference / 365);
-    const remainingDaysAfterYears = daysDifference % 365;
-
-    const months = Math.floor(remainingDaysAfterYears / 30);
-    const remainingDaysAfterMonths = remainingDaysAfterYears % 30;
-
-    const days = remainingDaysAfterMonths;
+    const dur = intervalToDuration({ start, end: today });
 
     const duration =
-      (years ? `${years}y ` : "") +
-      (months ? ` ${months}m ` : "") +
-      (days ? ` ${days}d` : "");
+      (dur.years ? `${dur.years}y ` : "") +
+      (dur.months ? ` ${dur.months}m ` : "") +
+      (dur.days ? ` ${dur.days}d` : "");
 
     return duration;
   };
