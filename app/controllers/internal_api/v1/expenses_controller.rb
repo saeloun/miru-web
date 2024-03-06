@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class InternalApi::V1::ExpensesController < ApplicationController
-  before_action :set_expense, only: :show
+  before_action :set_expense, only: [:show, :update, :destroy]
 
   def index
     authorize Expense
@@ -28,7 +28,6 @@ class InternalApi::V1::ExpensesController < ApplicationController
   end
 
   def update
-    set_expense
     authorize @expense
 
     @expense.update!(expense_params)
@@ -37,7 +36,6 @@ class InternalApi::V1::ExpensesController < ApplicationController
   end
 
   def destroy
-    set_expense
     authorize @expense
 
     @expense.destroy!
