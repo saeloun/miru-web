@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 
 import { differenceInCalendarDays } from "date-fns";
-import { currencyFormat } from "helpers";
 import { DotsThreeVerticalIcon } from "miruIcons";
 import { useNavigate } from "react-router-dom";
 import { Avatar, Badge, Button } from "StyledComponents";
@@ -92,7 +91,7 @@ const TableRow = ({ item }) => {
         </div>
       </td>
       <td className="col-span-2 hidden self-start text-left text-sm font-medium capitalize leading-5 tracking-widest text-miru-dark-purple-1000 lg:table-cell lg:py-3">
-        {currencyFormat("USD", "100000")}
+        -
       </td>
       <td className="flex w-2/5 justify-between py-2  text-left text-sm font-medium capitalize leading-4 tracking-widest text-miru-dark-purple-600 lg:col-span-2 lg:py-3">
         <div>
