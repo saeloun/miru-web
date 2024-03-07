@@ -33,15 +33,15 @@ class Reports::TimeEntries::DownloadService < Reports::DownloadService
       headers = ["Project", "Client", "Note", "Team Member", "Date", "Hours Logged"]
       flatten_reports = reports.map { |e| e[:entries] }.flatten
       flatten_reports.each do |entry|
-            data << [
-              "#{entry.project_name}",
-              "#{entry.client_name}",
-              "#{entry.note}",
-              "#{entry.user_name}",
-              "#{format_date(entry.work_date)}",
-              "#{DurationFormatter.new(entry.duration).process}"
-            ]
-          end
+          data << [
+          "#{entry.project_name}",
+          "#{entry.client_name}",
+          "#{entry.note}",
+          "#{entry.user_name}",
+          "#{format_date(entry.work_date)}",
+          "#{DurationFormatter.new(entry.duration).process}"
+        ]
+        end
       Reports::GenerateCsv.new(data, headers).process
     end
 

@@ -34,14 +34,13 @@ module Reports::AccountsAging
         end
 
         csv_data << [
-  "Total Amounts",
-  reports[:total_amount_overdue_by_date_range][:zero_to_thirty_days],
-  reports[:total_amount_overdue_by_date_range][:thirty_one_to_sixty_days],
-  reports[:total_amount_overdue_by_date_range][:sixty_one_to_ninety_days],
-  reports[:total_amount_overdue_by_date_range][:ninety_plus_days],
-  reports[:total_amount_overdue_by_date_range][:total]
-
-]
+          "Total Amounts",
+          reports[:total_amount_overdue_by_date_range][:zero_to_thirty_days],
+          reports[:total_amount_overdue_by_date_range][:thirty_one_to_sixty_days],
+          reports[:total_amount_overdue_by_date_range][:sixty_one_to_ninety_days],
+          reports[:total_amount_overdue_by_date_range][:ninety_plus_days],
+          reports[:total_amount_overdue_by_date_range][:total]
+          ]
 
         Reports::GenerateCsv.new(csv_data, headers).process
       end

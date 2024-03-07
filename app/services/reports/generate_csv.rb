@@ -12,11 +12,10 @@ class Reports::GenerateCsv
 
   def process
     CSV.generate do |csv|
-    csv << headers
-
-    data.each do |row|
-    csv << row
+      csv << headers
+      data.each do |row|
+        csv << row
+      end
+    end
   end
-  end
-end
 end

@@ -25,37 +25,37 @@
       </th>
     </thead>
     <tbody>
-        <% report_data[:clients].each do |client| %>
-          <tr>
-            <td style="font-size: 14px; text-align: center; flex-basis: 25%; padding: 2px; border: 1px solid #000;">
-              <p style="color: #1F2937; margin: 0;">
-                <%= client[:name] %>
-              </p>
-            </td>
-            <td style="text-align: left; font-size: 14px; flex-basis: 25%; padding: 2px;border: 1px solid #000;">
-              <p style="color: #6B7280; margin: 0;">
-                <%= FormatAmountService.new(report_data[:base_currency],client[:amount_overdue][:zero_to_thirty_days]).process %>
-              </p>
-            </td>
-            <td style="text-align: left; font-size: 14px; flex-basis: 25%; padding: 2px;border: 1px solid #000;">
-              <%= FormatAmountService.new(report_data[:base_currency],client[:amount_overdue][:thirty_one_to_sixty_days]).process %>
-            </td>
-            <td style="font-size: 14px; text-align: left; flex-basis: 25%; padding: 2px;border: 1px solid #000;">
-              <p style="color: #1F2937; margin: 0;">
-                <%= FormatAmountService.new(report_data[:base_currency],client[:amount_overdue][:sixty_one_to_ninety_days]).process %>
-              </p>
-            </td>
-            <td style="font-size: 14px; text-align: left; flex-basis: 25%; padding: 2px;border: 1px solid #000;">
-              <p style="color: #1F2937; margin: 0;">
-                <%= FormatAmountService.new(report_data[:base_currency],client[:amount_overdue][:ninety_plus_days]).process %>
-              </p>
-            </td>
-            <td style="font-size: 14px; text-align: left; flex-basis: 25%; padding: 2px;border: 1px solid #000;">
-              <p style="color: #1F2937; margin: 0;">
-                <%= FormatAmountService.new(report_data[:base_currency],client[:amount_overdue][:total]).process %>
-              </p>
-            </td>
-          </tr>
+      <% report_data[:clients].each do |client| %>
+      <tr>
+        <td style="font-size: 14px; text-align: center; flex-basis: 25%; padding: 2px; border: 1px solid #000;">
+          <p style="color: #1F2937; margin: 0;">
+            <%= client[:name] %>
+          </p>
+        </td>
+        <td style="text-align: left; font-size: 14px; flex-basis: 25%; padding: 2px;border: 1px solid #000;">
+          <p style="color: #6B7280; margin: 0;">
+            <%= FormatAmountService.new(report_data[:base_currency],client[:amount_overdue][:zero_to_thirty_days]).process %>
+          </p>
+        </td>
+        <td style="text-align: left; font-size: 14px; flex-basis: 25%; padding: 2px;border: 1px solid #000;">
+          <%= FormatAmountService.new(report_data[:base_currency],client[:amount_overdue][:thirty_one_to_sixty_days]).process %>
+        </td>
+        <td style="font-size: 14px; text-align: left; flex-basis: 25%; padding: 2px;border: 1px solid #000;">
+          <p style="color: #1F2937; margin: 0;">
+            <%= FormatAmountService.new(report_data[:base_currency],client[:amount_overdue][:sixty_one_to_ninety_days]).process %>
+          </p>
+        </td>
+        <td style="font-size: 14px; text-align: left; flex-basis: 25%; padding: 2px;border: 1px solid #000;">
+          <p style="color: #1F2937; margin: 0;">
+            <%= FormatAmountService.new(report_data[:base_currency],client[:amount_overdue][:ninety_plus_days]).process %>
+          </p>
+        </td>
+        <td style="font-size: 14px; text-align: left; flex-basis: 25%; padding: 2px;border: 1px solid #000;">
+          <p style="color: #1F2937; margin: 0;">
+            <%= FormatAmountService.new(report_data[:base_currency],client[:amount_overdue][:total]).process %>
+          </p>
+        </td>
+      </tr>
       <% end %>
       <tr>
         <td style="text-align: left; font-size: 14px; flex-basis: 25%; padding: 2px;border: 1px solid #000;">
