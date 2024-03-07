@@ -43,6 +43,7 @@ const Container = () => {
       <div className="bg-white p-4 lg:p-0">
         <SummaryDashboard
           currency={outstandingOverdueInvoice.currency}
+          showPointer={false}
           summaryList={summaryList}
           wrapperClassName="lg:mt-3 lg:mb-9"
         />
