@@ -26,13 +26,17 @@ interface IProvider {
   acceptedPaymentMethods: Array<string>;
 }
 
-const InvoiceSettings = ({ setShowInvoiceSetting }) => {
+const InvoiceSettings = ({
+  setShowInvoiceSetting,
+  isStripeEnabled,
+  setIsStripeEnabled,
+}) => {
   const [status, setStatus] = useState<PaymentSettingsStatus>(
     PaymentSettingsStatus.IDLE
   );
   const [isChecked, setIsChecked] = useState<boolean>(true);
   const [isStripeConnected, setIsStripeConnected] = useState<boolean>(null);
-  const [isStripeEnabled, setIsStripeEnabled] = useState<boolean>(null);
+  // const [isStripeEnabled, setIsStripeEnabled] = useState<boolean>(null);
   const [isPaypalConnected, setPaypalConnected] = useState<boolean>(false); //eslint-disable-line
   const [accountLink, setAccountLink] = useState<string>(null);
   const [stripeAcceptedPaymentMethods, setStripeAcceptedPaymentMethods] =
@@ -51,7 +55,7 @@ const InvoiceSettings = ({ setShowInvoiceSetting }) => {
       const paymentsProviders = res.data.paymentsProviders;
       const stripe = paymentsProviders.find(p => p.name === "stripe");
       setIsStripeConnected(!!stripe && stripe.connected);
-      setIsStripeEnabled(!!stripe && stripe.enabled);
+      // setIsStripeEnabled(!!stripe && stripe.enabled);
       setStripeAcceptedPaymentMethods(
         !!stripe && stripe.acceptedPaymentMethods
       );
@@ -67,9 +71,9 @@ const InvoiceSettings = ({ setShowInvoiceSetting }) => {
   };
 
   const toggleStripe = async () => {
-    await updatePaymentsProvidersSettings(stripe.id, {
-      enabled: !isStripeEnabled,
-    });
+    // await updatePaymentsProvidersSettings(stripe.id, {
+    //   enabled: !isStripeEnabled,
+    // });
     setIsStripeEnabled(!isStripeEnabled);
   };
 

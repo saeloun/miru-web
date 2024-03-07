@@ -1,7 +1,12 @@
 import React, { useState, useRef } from "react";
 
 import { useOutsideClick } from "helpers";
-import { XIcon, FloppyDiskIcon, PaperPlaneTiltIcon } from "miruIcons";
+import {
+  XIcon,
+  FloppyDiskIcon,
+  PaperPlaneTiltIcon,
+  SettingIcon,
+} from "miruIcons";
 import { Link } from "react-router-dom";
 
 import MoreButton from "../../MoreButton";
@@ -11,7 +16,7 @@ const Header = ({
   formType = "generate",
   handleSaveInvoice,
   handleSendInvoice,
-  setShowInvoiceSetting, //eslint-disable-line
+  setShowInvoiceSetting,
   invoiceNumber = null,
   id = null,
   deleteInvoice = null,
@@ -38,6 +43,13 @@ const Header = ({
             ? `Edit Invoice #${invoiceNumber}`
             : "Generate Invoice"}
         </h2>
+        <button
+          className="ml-5 flex items-center text-xs font-bold leading-4 tracking-widest text-miru-han-purple-1000"
+          onClick={() => setShowInvoiceSetting(true)}
+        >
+          <SettingIcon className="mr-2.5" color="#5B34EA" size={15} />
+          Settings
+        </button>
       </div>
       <div className="flex flex-col md:w-2/5 md:flex-row">
         <Link
