@@ -4,11 +4,10 @@ json.key_format! camelize: :lower
 json.deep_format_keys!
 
 json.expenses expenses do |expense|
-  json.extract! expense, :id, :amount, :expense_type
+  json.extract! expense, :id, :amount, :expense_type, :description
   json.category_name expense.expense_category.name
   json.vendor_name expense.vendor&.name
   json.date expense.formatted_date
-  json.description expense.description
 end
 
 json.vendors vendors do | vendor |
