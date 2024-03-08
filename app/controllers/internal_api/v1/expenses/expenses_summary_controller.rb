@@ -20,11 +20,13 @@ class InternalApi::V1::Expenses::ExpensesSummaryController < InternalApi::V1::Ap
     end
 
     def default_category_expenses
-      Expense.where(expense_category: ExpenseCategory.default_categories, company_id: current_company.id)
+      Expense.includes(:expense_category).where(
+        expense_category: ExpenseCategory.default_categories,
+        company_id: current_company.id)
     end
 
     def company_expenses_categories
-      Expense.where(expense_category: current_company.expense_categories)
+      Expense.includes(:expense_category).where(expense_category: current_company.expense_categories)
     end
 
     def formatted_expenses_sum(expenses)
