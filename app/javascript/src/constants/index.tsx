@@ -32,6 +32,7 @@ export enum Paths {
   TIME_TRACKING = "/time-tracking",
   TEAM = "/team/*",
   TEAMS = "/teams/*",
+  EXPENSES = "/expenses",
   SETTINGS = "/settings/*",
   AUTHORIZATION = "/authorization",
   Leave_Management = "/leave-management",

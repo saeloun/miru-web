@@ -22,7 +22,7 @@
 class ExpenseCategory < ApplicationRecord
   DEFAULT_CATEGORIES = [
     { name: "Salary", default: true },
-    { name: "Repair & Maintenance", default: true },
+    { name: "Repairs & Maintenance", default: true },
     { name: "Rent", default: true },
     { name: "Food", default: true },
     { name: "Travel", default: true },
