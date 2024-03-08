@@ -8,6 +8,7 @@ json.expenses expenses do |expense|
   json.category_name expense.expense_category.name
   json.vendor_name expense.vendor&.name
   json.date expense.formatted_date
+  json.description expense.description
 end
 
 json.vendors vendors do | vendor |
