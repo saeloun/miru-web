@@ -145,6 +145,7 @@ namespace :internal_api, defaults: { format: "json" } do
     namespace :expenses do
       resources :expenses_summary, only: [:index]
     end
+
     resources :expenses, only: [:create, :index, :show, :update, :destroy]
     resources :bulk_previous_employments, only: [:update]
 
