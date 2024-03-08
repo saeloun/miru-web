@@ -4,6 +4,8 @@ import EmailVerificationSuccess from "components/Authentication/EmailVerificatio
 import ForgotPassword from "components/Authentication/ForgotPassword";
 import SignIn from "components/Authentication/SignIn";
 import SignUp from "components/Authentication/SignUp";
+import ExpenseDetails from "components/Expenses/Details";
+import Expenses from "components/Expenses/List";
 import InvoiceEmail from "components/InvoiceEmail";
 import InvoicesRouteConfig from "components/Invoices/InvoicesRouteConfig";
 import LeaveManagement from "components/LeaveManagement";
@@ -75,6 +77,12 @@ const TeamsRoutes = [{ path: "*", Component: TeamsRouteConfig }];
 const InvoiceRoutes = [{ path: "*", Component: InvoicesRouteConfig }];
 
 const SettingsRoutes = [{ path: "*", Component: ProfileLayout }];
+
+const ExpenseRoutes = [
+  { path: "", Component: Expenses },
+  { path: ":expenseId", Component: ExpenseDetails },
+  { path: "*", Component: ErrorPage },
+];
 
 const { ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE, CLIENT } = Roles;
 
@@ -170,6 +178,11 @@ export const ROUTES = [
     path: Paths.SETTINGS,
     subRoutes: SettingsRoutes,
     authorisedRoles: [ADMIN, OWNER, EMPLOYEE, BOOK_KEEPER, CLIENT],
+  },
+  {
+    path: Paths.EXPENSES,
+    subRoutes: ExpenseRoutes,
+    authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER],
   },
   {
     path: Paths.Leave_Management,
