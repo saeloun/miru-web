@@ -209,7 +209,7 @@ group :test, :ci do
   # Strategies for cleaning databases in Ruby.
   gem "database_cleaner", "~> 2.0"
   gem "hash_dot"
-  gem "rspec-sidekiq"
+  gem "rspec-sidekiq", require: false
 
   gem "rspec-buildkite"
   gem "rspec-retry"
@@ -235,3 +235,5 @@ gem "rack-cors", "2.0.0"
 
 # Administrate dashboard
 gem "administrate"
+
+gem "faraday-httpclient", "~> 2.0"
