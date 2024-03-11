@@ -7,23 +7,23 @@ RSpec.describe Reports::GeneratePdf do
   let(:current_company) { double("current_company") }
 
   describe "#process" do
-    context "when report type is :time_entries" do
+    context "when report type is time_entries" do
       subject { described_class.new(:time_entries, report_data, current_company) }
 
       it "generates PDF for time entries" do
         allow(Pdf::HtmlGenerator).to receive(:new).with(
-          :reports,
+          :time_entries,
           locals: { report_data:, current_company: }).and_return(double("Pdf::HtmlGenerator", make: nil))
         subject.process
       end
     end
 
-    context "when report type is :accounts_aging" do
+    context "when report type is accounts_aging" do
       subject { described_class.new(:accounts_aging, report_data, current_company) }
 
       it "generates PDF for accounts aging" do
         allow(Pdf::HtmlGenerator).to receive(:new).with(
-          :accounts_aging_reports,
+          :accounts_aging,
           locals: { report_data:, current_company: }).and_return(double("Pdf::HtmlGenerator", make: nil))
         subject.process
       end

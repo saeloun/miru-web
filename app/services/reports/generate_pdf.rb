@@ -11,27 +11,18 @@ class Reports::GeneratePdf
 
   def process
     case report_type
-    when :time_entries
-      generate_time_entries_pdf
-    when :accounts_aging
-      generate_accounts_aging_pdf
+    when :time_entries, :accounts_aging
+      generate_pdf(report_type)
     else
       raise ArgumentError, "Unsupported report type: #{report_type}"
     end
   end
 
   private
-
-    def generate_time_entries_pdf
+  
+    def generate_pdf(report_type)
       Pdf::HtmlGenerator.new(
-        :reports,
-        locals: { report_data:, current_company: }
-      ).make
-    end
-
-    def generate_accounts_aging_pdf
-      Pdf::HtmlGenerator.new(
-        :accounts_aging_reports,
+        report_type,
         locals: { report_data:, current_company: }
       ).make
     end
