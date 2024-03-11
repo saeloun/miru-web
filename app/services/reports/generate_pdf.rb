@@ -19,7 +19,7 @@ class Reports::GeneratePdf
   end
 
   private
-  
+
     def generate_pdf(report_type)
       Pdf::HtmlGenerator.new(
         report_type,
