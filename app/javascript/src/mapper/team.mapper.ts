@@ -8,6 +8,8 @@ const mapper = item => ({
   status: item.status,
   profilePicture: item.profilePicture,
   isTeamMember: item.isTeamMember,
+  employmentType: item.employmentType,
+  joinedAtDate: item.joinedAtDate,
 });
 
 const unmapList = input => {
