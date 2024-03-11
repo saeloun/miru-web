@@ -157,6 +157,9 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_11_174949) do
     t.jsonb "specifications"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "is_insured", default: false
+    t.date "insurance_bought_date"
+    t.date "insurance_expiry_date"
     t.index ["company_id"], name: "index_devices_on_company_id"
     t.index ["device_type"], name: "index_devices_on_device_type"
     t.index ["user_id"], name: "index_devices_on_user_id"

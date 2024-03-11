@@ -4,15 +4,18 @@
 #
 # Table name: devices
 #
-#  id             :bigint           not null, primary key
-#  device_type    :string           default("laptop")
-#  name           :string
-#  serial_number  :string
-#  specifications :jsonb
-#  created_at     :datetime         not null
-#  updated_at     :datetime         not null
-#  company_id     :bigint           not null
-#  user_id        :bigint           not null
+#  id                    :bigint           not null, primary key
+#  device_type           :string           default("laptop")
+#  insurance_bought_date :date
+#  insurance_expiry_date :date
+#  is_insured            :boolean          default(FALSE)
+#  name                  :string
+#  serial_number         :string
+#  specifications        :jsonb
+#  created_at            :datetime         not null
+#  updated_at            :datetime         not null
+#  company_id            :bigint           not null
+#  user_id               :bigint           not null
 #
 # Indexes
 #
@@ -39,6 +42,7 @@ class Device < ApplicationRecord
   # Validations
   after_initialize :set_default_specifications, if: :new_record?
   validates :name, length: { maximum: 100 }
+  validates :insurance_expiry_date, comparison: { greater_than_or_equal_to: :insurance_bought_date }
 
   private
 
