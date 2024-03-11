@@ -16,6 +16,7 @@ const Header = ({
   stripeUrl,
   stripe_connected_account,
   setShowConnectPaymentDialog,
+  setShowStripeDisabledDialog,
 }) => {
   const [isMoreOptionsVisible, setIsMoreOptionsVisible] =
     useState<boolean>(false);
@@ -80,7 +81,7 @@ const Header = ({
               onClick={() => {
                 if (status != "paid") {
                   if (!stripe_enabled) {
-                    setShowConnectPaymentDialog(true);
+                    setShowStripeDisabledDialog(true);
                   } else if (stripe_connected_account) {
                     window.location.href = stripeUrl;
                   } else {
