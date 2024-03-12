@@ -14,12 +14,12 @@ import { mapGenerateInvoice, unmapGenerateInvoice } from "mapper/mappedIndex";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import Container from "./Container";
-import InvoiceSettings from "./InvoiceSettings";
 import MobileView from "./MobileView";
 
 import Header from "../common/InvoiceForm/Header";
 import SendInvoice from "../common/InvoiceForm/SendInvoice";
 import { generateInvoiceLineItems } from "../common/utils";
+import InvoiceSettings from "../InvoiceSettings";
 import ConnectPaymentGateway from "../popups/ConnectPaymentGateway";
 
 const GenerateInvoices = () => {

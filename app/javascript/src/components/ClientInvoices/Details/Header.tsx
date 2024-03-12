@@ -80,7 +80,7 @@ const Header = ({
               }`}
               onClick={() => {
                 if (status != "paid") {
-                  if (!stripe_enabled) {
+                  if (stripe_connected_account && !stripe_enabled) {
                     setShowStripeDisabledDialog(true);
                   } else if (stripe_connected_account) {
                     window.location.href = stripeUrl;
