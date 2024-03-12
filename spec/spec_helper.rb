@@ -5,8 +5,6 @@ require "pundit/rspec"
 require "sidekiq/testing"
 require "webmock/rspec"
 require "rspec/retry"
-require 'rspec-sidekiq'
-
 # require "buildkite/test_collector"
 
 # Buildkite::TestCollector.configure(hook: :rspec)

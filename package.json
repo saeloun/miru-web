@@ -121,6 +121,12 @@
     ".eslint-rules/**/*": [
       "prettier --write",
       "eslint --fix"
+    ],
+    "./**/*.rb": [
+      "bundle exec rubocop -a --force-exclusion"
+    ],
+    "{Gemfile,Rakefile,config.ru}": [
+      "bundle exec rubocop -a --force-exclusion"
     ]
   },
   "scripts": {
