@@ -76,6 +76,8 @@ class LeaveType < ApplicationRecord
   validates :allocation_value, presence: true, numericality: { greater_than_or_equal_to: 1 }
   validates :allocation_period, :allocation_frequency, presence: true
   validates :carry_forward_days, presence: true
+  validate  :valid_allocation_combination
+  validate  :valid_allocation_value
 
   after_discard :discard_timeoff_entries
 
@@ -83,5 +85,34 @@ class LeaveType < ApplicationRecord
 
     def discard_timeoff_entries
       timeoff_entries.discard_all
+    end
+
+    def valid_allocation_combination
+      if allocation_period == "weeks" && allocation_frequency == "per_week"
+        errors.add(:base, "Invalid combination: Allocation period in weeks cannot have frequency per week")
+      end
+
+      if allocation_period == "months" && !(allocation_frequency == "per_quarter" || allocation_frequency == "per_year")
+        errors.add(:base, 'Invalid combination: Allocation period in months can only have frequency per quarter or per year')
+      end
+    end
+
+    def valid_allocation_value
+      max_values = {
+        ['days', 'per_week'] => 7,
+        ["days", "per_month"] => 31,
+        ["days", "per_quarter"] => 93,
+        ["days", "per_year"] => 365,
+        ['weeks', 'per_month'] => 5,
+        ['weeks', 'per_quarter'] => 13,
+        ['weeks', 'per_year'] => 52,
+        ['months', 'per_quarter'] => 3,
+        ['months', 'per_year'] => 12
+      }
+
+      key = [allocation_period, allocation_frequency]
+      if max_values[key] && allocation_value > max_values[key]
+        errors.add(:allocation_value, "cannot exceed #{max_values[key]} #{allocation_period} for #{allocation_frequency} frequency")
+      end
     end
 end
