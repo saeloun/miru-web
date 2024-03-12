@@ -27,9 +27,9 @@ interface IProvider {
 }
 
 const InvoiceSettings = ({
-  setShowInvoiceSetting,
   isStripeEnabled,
   setIsStripeEnabled,
+  setShowInvoiceSetting,
 }) => {
   const [status, setStatus] = useState<PaymentSettingsStatus>(
     PaymentSettingsStatus.IDLE

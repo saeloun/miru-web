@@ -5,6 +5,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Toastr } from "StyledComponents";
 
 import invoicesApi from "apis/invoices";
+// import paymentSettings from "apis/payment-settings";
 import Loader from "common/Loader/index";
 import { ApiStatus as InvoiceStatus } from "constants/index";
 import { useUserContext } from "context/UserContext";
