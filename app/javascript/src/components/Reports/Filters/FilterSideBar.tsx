@@ -18,6 +18,7 @@ import StatusFilter from "./StatusFilter";
 import TeamMembersFilter from "./TeamMembersFilter";
 
 const FilterSidebar = ({
+  isTimeEntryFilter = true,
   setIsFilterVisible,
   selectedFilter,
   setFilterCounter,
@@ -26,9 +27,24 @@ const FilterSidebar = ({
   setSelectedInput,
   selectedInput,
 }) => {
+  const { timeEntryReport, outstandingOverdueInvoice } = useEntry();
   const {
-    timeEntryReport: { selectedFilter: selectedContextFilter, filterOptions },
-  } = useEntry();
+    selectedFilter: selectedTimeEntryContextFilter,
+    filterOptions: timeEntryFilterOptions,
+  } = timeEntryReport;
+
+  const {
+    selectedFilter: selectOverdueInvoiceContextFilter,
+    filterOptions: overdueInvoiceFilterOptions,
+  } = outstandingOverdueInvoice;
+
+  const selectedContextFilter = isTimeEntryFilter
+    ? selectedTimeEntryContextFilter
+    : { ...selectOverdueInvoiceContextFilter, teamMember: [], status: [] };
+
+  const filterOptions = isTimeEntryFilter
+    ? timeEntryFilterOptions
+    : overdueInvoiceFilterOptions;
 
   const {
     clients: clientList,
@@ -103,14 +119,18 @@ const FilterSidebar = ({
 
   useEffect(() => {
     if (filteredClientList.length) {
-      const sortedClients = filteredClientList.sort((a, b) =>
-        a.label.localeCompare(b.label)
-      );
+      const sortedClients = filteredClientList?.sort((a, b) => {
+        if (a?.label && b?.label) {
+          return a.label.localeCompare(b.label);
+        }
+
+        return a.name.localeCompare(b.name);
+      });
       if (debouncedSearchQuery && filteredClientList.length > 0) {
-        const newClientList = sortedClients.filter(client =>
-          client.label
-            .toLowerCase()
-            .includes(debouncedSearchQuery.toLowerCase())
+        const newClientList = sortedClients?.filter(client =>
+          client?.label
+            ?.toLowerCase()
+            ?.includes(debouncedSearchQuery?.toLowerCase())
         );
 
         newClientList.length > 0
@@ -162,7 +182,9 @@ const FilterSidebar = ({
           ? setFilteredTeamsList(newClientList)
           : setFilteredTeamsList([]);
       } else {
-        setFilteredTeamsList(filterOptions?.teamMembers);
+        if (filterOptions?.teamMembers) {
+          setFilteredTeamsList(filterOptions?.teamMembers);
+        }
       }
     } else {
       if (!debouncedTeamsSearchQuery) {
@@ -174,7 +196,9 @@ const FilterSidebar = ({
   const handleSelectClient = selectedClient => {
     if (filters.clients.includes(selectedClient)) {
       const newarr = selectedClients.filter(
-        client => client.value != selectedClient.value
+        client =>
+          client.value != selectedClient.value ||
+          client.id != selectedClient.value
       );
 
       setFilters({
@@ -393,23 +417,25 @@ const FilterSidebar = ({
           </Button>
         </SidePanel.Header>
         <SidePanel.Body className="sidebar__filters max-h-70v min-h-70v overflow-y-auto lg:max-h-80v lg:min-h-80v">
-          <DateRangeFilter
-            dateRange={dateRange}
-            dateRangeList={dateRangeOptions}
-            filters={filters}
-            handleDateRangeToggle={handleDateRangeToggle}
-            handleOpenDateCalendar={handleOpenDateCalendar}
-            handleSelectDate={handleSelectDate}
-            handleSelectFilter={handleSelectFilter}
-            isDateRangeOpen={isDateRangeOpen}
-            selectedInput={selectedInput}
-            setShowCustomCalendar={setShowCustomCalendar}
-            showCustomCalendar={showCustomCalendar}
-            showCustomFilter={showCustomFilter}
-            submitCustomDatePicker={submitCustomDatePicker}
-            wrapperRef={wrapperRef}
-            onClickInput={onClickInput}
-          />
+          {isTimeEntryFilter && (
+            <DateRangeFilter
+              dateRange={dateRange}
+              dateRangeList={dateRangeOptions}
+              filters={filters}
+              handleDateRangeToggle={handleDateRangeToggle}
+              handleOpenDateCalendar={handleOpenDateCalendar}
+              handleSelectDate={handleSelectDate}
+              handleSelectFilter={handleSelectFilter}
+              isDateRangeOpen={isDateRangeOpen}
+              selectedInput={selectedInput}
+              setShowCustomCalendar={setShowCustomCalendar}
+              showCustomCalendar={showCustomCalendar}
+              showCustomFilter={showCustomFilter}
+              submitCustomDatePicker={submitCustomDatePicker}
+              wrapperRef={wrapperRef}
+              onClickInput={onClickInput}
+            />
+          )}
           <ClientFilter
             filteredClientList={filteredClientList}
             handleClientFilterToggle={handleClientFilterToggle}
@@ -419,28 +445,34 @@ const FilterSidebar = ({
             selectedClients={filters.clients}
             setSearchQuery={setSearchQuery}
           />
-          <TeamMembersFilter
-            filteredTeamsList={filteredTeamsList}
-            handleSelectTeamMember={handleSelectTeamMember}
-            handleTeamMembersFilterToggle={handleTeamMembersFilterToggle}
-            isTeamMemberOpen={isTeamMemberOpen}
-            searchQuery={TeamMembersearchQuery}
-            selectedTeams={selectedTeams}
-            setSearchQuery={setTeamMemberSearchQuery}
-          />
-          <StatusFilter
-            filters={filters}
-            handleSelectStatus={handleSelectStatus}
-            handleStatusFilterToggle={handleStatusFilterToggle}
-            isStatusOpen={isStatusOpen}
-            statusOptions={statusOption}
-          />
-          <GroupByFilter
-            filters={filters}
-            handleGroupByFilterToggle={handleGroupByFilterToggle}
-            handleSelectFilter={handleSelectGroupByFilter}
-            isGroupByOpen={isGroupByOpen}
-          />
+          {isTimeEntryFilter && (
+            <TeamMembersFilter
+              filteredTeamsList={filteredTeamsList}
+              handleSelectTeamMember={handleSelectTeamMember}
+              handleTeamMembersFilterToggle={handleTeamMembersFilterToggle}
+              isTeamMemberOpen={isTeamMemberOpen}
+              searchQuery={TeamMembersearchQuery}
+              selectedTeams={selectedTeams}
+              setSearchQuery={setTeamMemberSearchQuery}
+            />
+          )}
+          {isTimeEntryFilter && (
+            <StatusFilter
+              filters={filters}
+              handleSelectStatus={handleSelectStatus}
+              handleStatusFilterToggle={handleStatusFilterToggle}
+              isStatusOpen={isStatusOpen}
+              statusOptions={statusOption}
+            />
+          )}
+          {isTimeEntryFilter && (
+            <GroupByFilter
+              filters={filters}
+              handleGroupByFilterToggle={handleGroupByFilterToggle}
+              handleSelectFilter={handleSelectGroupByFilter}
+              isGroupByOpen={isGroupByOpen}
+            />
+          )}
         </SidePanel.Body>
       </div>
       <SidePanel.Footer className="sidebar__footer justify-between pt-1">

@@ -1,6 +1,7 @@
 const OutstandingOverdueInvoiceContext = {
   filterOptions: {
     clients: [],
+    teamMembers: [],
   },
   selectedFilter: {
     dateRange: { label: "All", value: "" },

@@ -34,7 +34,7 @@ const getQueryParams = selectedFilter => {
 
     if (Array.isArray(filterValue) && isNotEmptyArray(filterValue)) {
       filterValue.forEach(item => {
-        params += `&${apiKeys[filterKey]}[]=${item.value}`;
+        params += `&${apiKeys[filterKey]}[]=${item.value || item?.id}`;
       });
     }
 
