@@ -23,17 +23,11 @@ const StripeDisabledInvoice = ({
       </button>
     </div>
     <div className="my-8 flex-col">
-      <p className="m-2 font-normal">
-        Stripe payment gateway is disabled for paying this invoice.
+      <p className="mt-2 font-normal">
+        We apologize, but Stripe is currently unavailable for this invoice.
         <br />
-        <br />
-        Please reach out to the invoice sender to connect stripe payment gateway
-        to enable you to make invoice payment using stripe.
-      </p>
-      <p className="m-2 text-center font-semibold">OR</p>
-      <p className="m-2 font-normal">
-        Please pay the invoice amount to the invoice sender directly by using
-        ACH Bank transfer.
+        Please contact the sender to enable Stripe or use another payment option
+        like ACH.
       </p>
     </div>
   </Modal>
