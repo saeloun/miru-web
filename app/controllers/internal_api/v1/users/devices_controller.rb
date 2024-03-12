@@ -9,22 +9,15 @@ class InternalApi::V1::Users::DevicesController < InternalApi::V1::ApplicationCo
     render :index, locals: { devices: }, status: :ok
   end
 
-  def create
-    authorize @user, policy_class: Users::DevicePolicy
-    device = @user.devices.new(device_params.merge(issued_to: @user, issued_by: @user.current_workspace))
-    device.save!
-    render :create, locals: { device: }, status: :ok
-  end
-
   def show
     authorize device, policy_class: Users::DevicePolicy
     render :show, locals: { device: }, status: :ok
   end
 
-  def update
-    authorize device, policy_class: Users::DevicePolicy
-    device.update!(device_params)
-    render :update, locals: { device: }, status: :ok
+  def create
+    authorize @user, policy_class: Users::DevicePolicy
+    BulkDevicesService.new(device_params,set_user).process
+    render json:  { notice: I18n.t("devices.update.success") }
   end
 
   private
@@ -39,7 +32,9 @@ class InternalApi::V1::Users::DevicesController < InternalApi::V1::ApplicationCo
 
     def device_params
       params.require(:device).permit(
-        :device_type, :name, :serial_number, specifications: {}
+      add_devices: [:device_type, :name, :serial_number, specifications: [:processor, :ram, :graphics]],
+      update_devices:[:id,:device_type, :name, :serial_number, specifications:  [:processor, :ram, :graphics]],
+      remove_devices: []
       )
     end
 end
