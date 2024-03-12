@@ -24,10 +24,10 @@ const StripeDisabledInvoice = ({
     </div>
     <div className="my-8 flex-col">
       <p className="mt-2 font-normal">
-        We apologize, but Stripe is currently unavailable for this invoice.
+        The sender hasn't enabled Stripe payments for this invoice.
         <br />
-        Please contact the sender to enable Stripe or use another payment option
-        like ACH.
+        You can reach out to them to activate it, or choose an alternative
+        payment method like ACH.
       </p>
     </div>
   </Modal>
