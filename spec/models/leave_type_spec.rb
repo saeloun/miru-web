@@ -97,7 +97,9 @@ RSpec.describe LeaveType, type: :model do
       it "is valid with monthly allocation period and quarterly or yearly frequencies" do
         valid_frequencies = ["per_quarter", "per_year"]
         valid_frequencies.each do |freq|
-          leave_type = build(:leave_type, allocation_period: "months", allocation_frequency: freq, leave:)
+          leave_type = build(
+            :leave_type, allocation_period: "months", allocation_frequency: freq,
+            allocation_value: 2, leave:)
           expect(leave_type).to be_valid
         end
       end
