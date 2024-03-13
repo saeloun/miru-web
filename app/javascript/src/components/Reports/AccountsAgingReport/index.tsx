@@ -3,12 +3,14 @@ import React, { useState, useEffect } from "react";
 import Logger from "js-logger";
 import { useNavigate } from "react-router-dom";
 
+import accountsAgingApi from "apis/reports/accountsAging";
 import Loader from "common/Loader/index";
 
 import Container from "./Container";
 import FilterSideBar from "./Filters";
 
 import getReportData from "../api/accountsAging";
+import { getQueryParams } from "../api/applyFilter";
 import EntryContext from "../context/EntryContext";
 import OutstandingOverdueInvoiceContext from "../context/outstandingOverdueInvoiceContext";
 import RevenueByClientReportContext from "../context/RevenueByClientContext";
@@ -75,6 +77,18 @@ const AccountsAgingReport = () => {
     },
   };
 
+  const handleDownload = async type => {
+    const queryParams = getQueryParams(selectedFilter).substring(1);
+    const response = await accountsAgingApi.download(type, `?${queryParams}`);
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement("a");
+    // const filename = `${selectedFilter.dateRange.label}.${type}`;
+    const filename = `report.${type}`;
+    link.href = url;
+    link.setAttribute("download", filename);
+    link.click();
+  };
+
   if (loading) {
     return <Loader />;
   }
@@ -82,12 +96,12 @@ const AccountsAgingReport = () => {
   return (
     <EntryContext.Provider value={{ ...contextValues }}>
       <Header
-        handleDownload
+        showExportButon
+        handleDownload={handleDownload}
         isFilterVisible={isFilterVisible}
         resetFilter={resetFilter}
         revenueFilterCounter={() => {}} // eslint-disable-line  @typescript-eslint/no-empty-function
         setIsFilterVisible={setIsFilterVisible}
-        showExportButon={false}
         showNavFilters={showNavFilters}
         type="Accounts Aging Report"
       />
