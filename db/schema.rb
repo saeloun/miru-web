@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_01_29_091400) do
+ActiveRecord::Schema[7.0].define(version: 2024_03_04_143641) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -299,6 +299,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_29_091400) do
     t.datetime "sent_at"
     t.datetime "payment_sent_at"
     t.datetime "client_payment_sent_at"
+    t.boolean "stripe_enabled", default: true
     t.index ["client_id"], name: "index_invoices_on_client_id"
     t.index ["company_id"], name: "index_invoices_on_company_id"
     t.index ["discarded_at"], name: "index_invoices_on_discarded_at"

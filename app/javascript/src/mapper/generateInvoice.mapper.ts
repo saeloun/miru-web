@@ -58,6 +58,7 @@ const mapGenerateInvoice = input => ({
   amount: input.amount,
   discount: input.discount,
   tax: input.tax,
+  stripe_enabled: input.isStripeEnabled,
   invoice_line_items_attributes: input.invoiceLineItems.map(ilt => ({
     name: ilt.name,
     description: ilt.description,

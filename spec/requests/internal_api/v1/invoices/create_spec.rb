@@ -37,10 +37,10 @@ RSpec.describe "InternalApi::V1::Invoices#create", type: :request do
       it "creates invoice successfully & reindex it" do
         send_request :post, internal_api_v1_invoices_path(invoice:), headers: auth_headers(user)
         expect(response).to have_http_status(:ok)
-        expected_attrs = ["amount", "amountDue", "amountPaid",
-                          "client", "discount", "dueDate", "id",
-                          "invoiceLineItems", "invoiceNumber", "issueDate",
-                          "outstandingAmount", "reference", "status", "tax"]
+        expected_attrs =
+          ["amount", "amountDue", "amountPaid", "client", "discount", "dueDate",
+           "id", "invoiceLineItems", "invoiceNumber", "issueDate",
+           "outstandingAmount", "reference", "status", "stripeEnabled", "tax"]
         expect(json_response.keys.sort).to match(expected_attrs)
         Invoice.reindex
         assert_equal ["SAI-C1-03"], Invoice.search("SAI-C1-03").map(&:invoice_number)

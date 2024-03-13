@@ -14,12 +14,12 @@ import { mapGenerateInvoice, unmapGenerateInvoice } from "mapper/mappedIndex";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import Container from "./Container";
-import InvoiceSettings from "./InvoiceSettings";
 import MobileView from "./MobileView";
 
 import Header from "../common/InvoiceForm/Header";
 import SendInvoice from "../common/InvoiceForm/SendInvoice";
 import { generateInvoiceLineItems } from "../common/utils";
+import InvoiceSettings from "../InvoiceSettings";
 import ConnectPaymentGateway from "../popups/ConnectPaymentGateway";
 
 const GenerateInvoices = () => {
@@ -48,6 +48,7 @@ const GenerateInvoices = () => {
   const [showConnectPaymentDialog, setShowConnectPaymentDialog] =
     useState<boolean>(false);
   const [isStripeConnected, setIsStripeConnected] = useState<boolean>(null);
+  const [isStripeEnabled, setIsStripeEnabled] = useState<boolean>(true);
 
   const amountPaid = 0;
   const clientId = searchParams.get("clientId");
@@ -63,8 +64,8 @@ const GenerateInvoices = () => {
     try {
       setIsLoading(true);
       const res = await companiesApi.index();
-      const sanitzed = await unmapGenerateInvoice(res.data);
-      setInvoiceDetails(sanitzed);
+      const sanitized = await unmapGenerateInvoice(res.data);
+      setInvoiceDetails(sanitized);
       setIsLoading(false);
     } catch {
       navigate("invoices/error");
@@ -119,6 +120,7 @@ const GenerateInvoices = () => {
       tax,
       dateFormat: invoiceDetails.companyDetails.date_format,
       setShowSendInvoiceModal,
+      isStripeEnabled,
     });
 
     return await invoicesApi.post(sanitized);
@@ -255,7 +257,11 @@ const GenerateInvoices = () => {
           />
         )}
         {showInvoiceSetting && (
-          <InvoiceSettings setShowInvoiceSetting={setShowInvoiceSetting} />
+          <InvoiceSettings
+            isStripeEnabled={isStripeEnabled}
+            setIsStripeEnabled={setIsStripeEnabled}
+            setShowInvoiceSetting={setShowInvoiceSetting}
+          />
         )}
       </Fragment>
     );
