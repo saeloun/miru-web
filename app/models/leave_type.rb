@@ -78,6 +78,7 @@ class LeaveType < ApplicationRecord
   validates :carry_forward_days, presence: true
   validate :valid_allocation_combination
   validate :valid_allocation_value
+  validate :valid_carry_forward
 
   after_discard :discard_timeoff_entries
 
@@ -118,6 +119,40 @@ class LeaveType < ApplicationRecord
             :allocation_value,
             "cannot exceed #{max_values[key]} #{allocation_period} for #{allocation_frequency} frequency")
         end
+      end
+    end
+
+    def valid_carry_forward
+      total_days = convert_allocation_to_days
+
+      if carry_forward_days.present? && total_days.present? && carry_forward_days > total_days
+        errors.add(:carry_forward_days, "cannot exceed the total allocated days")
+      end
+    end
+
+    def convert_allocation_to_days
+      base_days = case allocation_period
+                  when "days"
+                    allocation_value
+                  when "weeks"
+                    allocation_value * 7
+                  when "months"
+                    allocation_value * 31
+                  else
+                    return nil
+      end
+
+      case allocation_frequency
+      when "per_week"
+        base_days * 52
+      when "per_month"
+        base_days * 12
+      when "per_quarter"
+        base_days * 4
+      when "per_year"
+        base_days
+      else
+        nil
       end
     end
 end
