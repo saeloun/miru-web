@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 import invoicesApi from "apis/invoices";
 import Loader from "common/Loader/index";
 import ConnectPaymentGateway from "components/Invoices/popups/ConnectPaymentGateway";
+import StripeDisabledInvoice from "components/Invoices/popups/StripeDisabledInvoice";
 import { useUserContext } from "context/UserContext";
 
 import Header from "./Header";
@@ -20,6 +21,9 @@ const ClientInvoiceDetails = () => {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState(null);
   const [showConnectPaymentDialog, setShowConnectPaymentDialog] =
+    useState<boolean>(false);
+
+  const [showStripeDisabledDialog, setShowStripeDisabledDialog] =
     useState<boolean>(false);
 
   useEffect(() => {
@@ -57,6 +61,7 @@ const ClientInvoiceDetails = () => {
           <Header
             invoice={invoice}
             setShowConnectPaymentDialog={setShowConnectPaymentDialog}
+            setShowStripeDisabledDialog={setShowStripeDisabledDialog}
             stripeUrl={url}
             stripe_connected_account={stripe_connected_account}
           />
@@ -75,6 +80,12 @@ const ClientInvoiceDetails = () => {
               invoice={invoice}
               setShowConnectPaymentDialog={setShowConnectPaymentDialog}
               showConnectPaymentDialog={showConnectPaymentDialog}
+            />
+          )}
+          {showStripeDisabledDialog && (
+            <StripeDisabledInvoice
+              setShowStripeDisabledDialog={setShowStripeDisabledDialog}
+              showStripeDisabledDialog={showStripeDisabledDialog}
             />
           )}
         </div>
