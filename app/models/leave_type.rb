@@ -131,6 +131,8 @@ class LeaveType < ApplicationRecord
     end
 
     def convert_allocation_to_days
+      return nil unless allocation_value
+
       base_days = case allocation_period
                   when "days"
                     allocation_value
