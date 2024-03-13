@@ -103,20 +103,21 @@ class LeaveType < ApplicationRecord
       max_values = {
         ["days", "per_week"] => 7,
         ["days", "per_month"] => 31,
-        ["days", "per_quarter"] => 93,
-        ["days", "per_year"] => 365,
+        ["days", "per_quarter"] => 92,
+        ["days", "per_year"] => 366,
         ["weeks", "per_month"] => 5,
         ["weeks", "per_quarter"] => 13,
         ["weeks", "per_year"] => 52,
         ["months", "per_quarter"] => 3,
         ["months", "per_year"] => 12
       }
-
-      key = [allocation_period, allocation_frequency]
-      if max_values[key] && allocation_value > max_values[key]
-        errors.add(
-          :allocation_value,
-          "cannot exceed #{max_values[key]} #{allocation_period} for #{allocation_frequency} frequency")
+      if allocation_value.present?
+        key = [allocation_period, allocation_frequency]
+        if max_values[key] && allocation_value > max_values[key]
+          errors.add(
+            :allocation_value,
+            "cannot exceed #{max_values[key]} #{allocation_period} for #{allocation_frequency} frequency")
+        end
       end
     end
 end
