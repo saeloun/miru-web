@@ -5,7 +5,6 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Toastr } from "StyledComponents";
 
 import invoicesApi from "apis/invoices";
-// import paymentSettings from "apis/payment-settings";
 import Loader from "common/Loader/index";
 import { ApiStatus as InvoiceStatus } from "constants/index";
 import { useUserContext } from "context/UserContext";
@@ -85,19 +84,9 @@ const EditInvoice = () => {
     }
   };
 
-  // const fetchPaymentSettings = async () => {
-  //   try {
-  //     const res = await paymentSettings.get();
-  //     setIsStripeEnabled(res.data.providers.stripe.connected);
-  //   } catch {
-  //     Toastr.error("ERROR! CONNECTING TO PAYMENTS");
-  //   }
-  // };
-
   useEffect(() => {
     sendGAPageView();
     fetchInvoice();
-    // fetchPaymentSettings();
   }, []);
 
   const updateInvoice = async () => {

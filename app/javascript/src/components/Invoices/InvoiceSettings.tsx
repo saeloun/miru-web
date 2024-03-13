@@ -36,7 +36,6 @@ const InvoiceSettings = ({
   );
   const [isChecked, setIsChecked] = useState<boolean>(true);
   const [isStripeConnected, setIsStripeConnected] = useState<boolean>(null);
-  // const [isStripeEnabled, setIsStripeEnabled] = useState<boolean>(null);
   const [isPaypalConnected, setPaypalConnected] = useState<boolean>(false); //eslint-disable-line
   const [accountLink, setAccountLink] = useState<string>(null);
   const [stripeAcceptedPaymentMethods, setStripeAcceptedPaymentMethods] =
@@ -55,7 +54,6 @@ const InvoiceSettings = ({
       const paymentsProviders = res.data.paymentsProviders;
       const stripe = paymentsProviders.find(p => p.name === "stripe");
       setIsStripeConnected(!!stripe && stripe.connected);
-      // setIsStripeEnabled(!!stripe && stripe.enabled);
       setStripeAcceptedPaymentMethods(
         !!stripe && stripe.acceptedPaymentMethods
       );
@@ -71,9 +69,6 @@ const InvoiceSettings = ({
   };
 
   const toggleStripe = async () => {
-    // await updatePaymentsProvidersSettings(stripe.id, {
-    //   enabled: !isStripeEnabled,
-    // });
     setIsStripeEnabled(!isStripeEnabled);
   };
 
