@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { getYear } from "date-fns";
+import { getYear, format } from "date-fns";
 
 import timeoffEntryApi from "apis/timeoffEntry";
 import Loader from "common/Loader/index";
@@ -95,6 +95,16 @@ const LeaveManagement = () => {
       return <Loader />;
     }
 
+    const getLeaveBlanaceDateText = () => {
+      const presentYear = getYear(new Date());
+      let date = new Date(currentYear, 11, 31);
+      if (currentYear == presentYear) {
+        date = new Date();
+      }
+
+      return `Leave Balance Untill ${format(date, "do 'of' MMM yyyy")}`;
+    };
+
     return (
       <div className="h-full w-full py-6">
         <Header
@@ -106,7 +116,7 @@ const LeaveManagement = () => {
           setSelectedEmployeeId={setSelectedEmployeeId}
         />
         <Container
-          currentYear={currentYear}
+          getLeaveBlanaceDateText={getLeaveBlanaceDateText}
           leaveBalance={leaveBalance}
           selectedLeaveType={selectedLeaveType}
           setSelectedLeaveType={setSelectedLeaveType}
