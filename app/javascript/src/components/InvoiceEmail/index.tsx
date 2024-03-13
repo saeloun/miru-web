@@ -7,6 +7,7 @@ import invoicesApi from "apis/invoices";
 import Loader from "common/Loader";
 import MobileView from "components/ClientInvoices/Details/MobileView";
 import ConnectPaymentGateway from "components/Invoices/popups/ConnectPaymentGateway";
+import StripeDisabledInvoice from "components/Invoices/popups/StripeDisabledInvoice";
 import { useUserContext } from "context/UserContext";
 
 import Header from "./Header";
@@ -21,6 +22,9 @@ const InvoiceEmail = () => {
   const [isStripeConnected, setIsStripeConnected] = useState<boolean>(null);
   const [isInvoiceEmail, setIsInvoiceEmail] = useState<boolean>(false);
   const [showConnectPaymentDialog, setShowConnectPaymentDialog] =
+    useState<boolean>(false);
+
+  const [showStripeDisabledDialog, setShowStripeDisabledDialog] =
     useState<boolean>(false);
 
   useEffect(() => {
@@ -55,6 +59,7 @@ const InvoiceEmail = () => {
           isStripeConnected={isStripeConnected}
           setIsInvoiceEmail={setIsInvoiceEmail}
           setShowConnectPaymentDialog={setShowConnectPaymentDialog}
+          setShowStripeDisabledDialog={setShowStripeDisabledDialog}
           stripeUrl={url}
         />
         <div className="m-0 mt-5 mb-10 w-full bg-miru-gray-100 p-0">
@@ -72,6 +77,12 @@ const InvoiceEmail = () => {
             invoice={invoice}
             setShowConnectPaymentDialog={setShowConnectPaymentDialog}
             showConnectPaymentDialog={showConnectPaymentDialog}
+          />
+        )}
+        {showStripeDisabledDialog && (
+          <StripeDisabledInvoice
+            setShowStripeDisabledDialog={setShowStripeDisabledDialog}
+            showStripeDisabledDialog={showStripeDisabledDialog}
           />
         )}
       </div>
