@@ -2,12 +2,13 @@ import React from "react";
 
 import EmptyStates from "common/EmptyStates";
 
-import ExpensesSummary from "./ExpensesSummary";
 import Table from "./Table";
 
 const Container = ({ expenseData }) => (
   <div className="mt-6">
-    <ExpensesSummary />
+    {/* TODO: Uncomment and integrate when API is ready
+      <ExpensesSummary />
+    */}
     {expenseData?.expenses?.length > 0 ? (
       <Table expenses={expenseData?.expenses} />
     ) : (

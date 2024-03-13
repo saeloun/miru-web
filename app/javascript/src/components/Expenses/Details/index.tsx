@@ -4,6 +4,7 @@ import Logger from "js-logger";
 import { useNavigate, useParams } from "react-router-dom";
 
 import expensesApi from "apis/expenses";
+import Loader from "common/Loader/index";
 import { useUserContext } from "context/UserContext";
 
 import Expense from "./Expense";
@@ -21,6 +22,7 @@ const ExpenseDetails = () => {
   const [showEditExpenseModal, setShowEditExpenseModal] =
     useState<boolean>(false);
   const [expense, setExpense] = useState<any>();
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [expenseData, setExpenseData] = useState<any>();
 
   const params = useParams();
@@ -36,6 +38,7 @@ const ExpenseDetails = () => {
       setVendorData(res.data.vendors);
       setExpenseData(res.data);
       setExpense(resData.data);
+      setIsLoading(false);
     } catch (e) {
       Logger.error(e);
       navigate("/expenses");
@@ -80,40 +83,46 @@ const ExpenseDetails = () => {
   }, []);
 
   return (
-    <div>
-      {!isDesktop && showEditExpenseModal ? null : (
+    <div className="h-full">
+      {isLoading ? (
+        <Loader />
+      ) : (
         <div>
-          <Header
-            expense={expense}
-            handleDelete={handleDelete}
-            handleEdit={handleEdit}
-          />
-          <Expense currency={company.base_currency} expense={expense} />
+          {!isDesktop && showEditExpenseModal ? null : (
+            <div>
+              <Header
+                expense={expense}
+                handleDelete={handleDelete}
+                handleEdit={handleEdit}
+              />
+              <Expense currency={company.base_currency} expense={expense} />
+            </div>
+          )}
+          {showEditExpenseModal &&
+            (isDesktop ? (
+              <EditExpenseModal
+                expense={expense}
+                expenseData={expenseData}
+                handleEditExpense={handleEditExpense}
+                setShowEditExpenseModal={setShowEditExpenseModal}
+                showEditExpenseModal={showEditExpenseModal}
+              />
+            ) : (
+              <EditExpense
+                expense={expense}
+                expenseData={expenseData}
+                handleEditExpense={handleEditExpense}
+                setShowEditExpenseModal={setShowEditExpenseModal}
+              />
+            ))}
+          {showDeleteExpenseModal && (
+            <DeleteExpenseModal
+              handleDeleteExpense={handleDeleteExpense}
+              setShowDeleteExpenseModal={setShowDeleteExpenseModal}
+              showDeleteExpenseModal={showDeleteExpenseModal}
+            />
+          )}
         </div>
-      )}
-      {showEditExpenseModal &&
-        (isDesktop ? (
-          <EditExpenseModal
-            expense={expense}
-            expenseData={expenseData}
-            handleEditExpense={handleEditExpense}
-            setShowEditExpenseModal={setShowEditExpenseModal}
-            showEditExpenseModal={showEditExpenseModal}
-          />
-        ) : (
-          <EditExpense
-            expense={expense}
-            expenseData={expenseData}
-            handleEditExpense={handleEditExpense}
-            setShowEditExpenseModal={setShowEditExpenseModal}
-          />
-        ))}
-      {showDeleteExpenseModal && (
-        <DeleteExpenseModal
-          handleDeleteExpense={handleDeleteExpense}
-          setShowDeleteExpenseModal={setShowDeleteExpenseModal}
-          showDeleteExpenseModal={showDeleteExpenseModal}
-        />
       )}
     </div>
   );

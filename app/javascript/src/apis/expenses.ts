@@ -2,9 +2,14 @@ import axios from "./api";
 
 const path = "/expenses";
 
-const index = async () => await axios.get(path);
+const index = (query = "") => axios.get(query ? `${path}?${query}` : path);
 
-const create = async payload => await axios.post(path, payload);
+const create = async payload =>
+  await axios.post(path, payload, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
 
 const show = async id => await axios.get(`${path}/${id}`);
 
@@ -15,6 +20,8 @@ const destroy = async id => axios.delete(`${path}/${id}`);
 const createCategory = async payload =>
   axios.post("/expense_categories", payload);
 
+const createVendors = async payload => axios.post("/vendors", payload);
+
 const expensesApi = {
   index,
   create,
@@ -22,6 +29,7 @@ const expensesApi = {
   update,
   destroy,
   createCategory,
+  createVendors,
 };
 
 export default expensesApi;

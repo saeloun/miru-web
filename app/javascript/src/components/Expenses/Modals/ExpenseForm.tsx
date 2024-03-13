@@ -1,8 +1,8 @@
-import React, { useRef, useState, ChangeEvent, useEffect } from "react";
+import React, { useRef, useState, useEffect } from "react";
 
 import dayjs from "dayjs";
 import { useOutsideClick } from "helpers";
-import { CalendarIcon, FileIcon, FilePdfIcon, XIcon } from "miruIcons";
+import { CalendarIcon, FileIcon, XIcon } from "miruIcons";
 import { components } from "react-select";
 import { Button } from "StyledComponents";
 
@@ -11,7 +11,6 @@ import CustomCreatableSelect from "common/CustomCreatableSelect";
 import CustomDatePicker from "common/CustomDatePicker";
 import { CustomInputText } from "common/CustomInputText";
 import CustomRadioButton from "common/CustomRadio";
-import CustomReactSelect from "common/CustomReactSelect";
 import { CustomTextareaAutosize } from "common/CustomTextareaAutosize";
 import { ErrorSpan } from "common/ErrorSpan";
 
@@ -29,21 +28,22 @@ const ExpenseForm = ({
     dayjs(expense?.date) || dayjs()
   );
   const [vendor, setVendor] = useState<any>("");
-  const [amount, setAmount] = useState<number | string>(expense?.amount || "");
+  const [amount, setAmount] = useState<string>(expense?.amount || "");
   const [category, setCategory] = useState<any>("");
   const [newCategory, setNewCategory] = useState<any>("");
+  const [newVendor, setNewVendor] = useState<any>("");
   const [description, setDescription] = useState<string>(
     expense?.description || ""
   );
 
   const [expenseType, setExpenseType] = useState<string>(
-    expense?.type || "personal"
+    expense?.type || "business"
   );
-  const [receipt, setReceipt] = useState<File>(expense?.receipt || "");
+  const [receipts, setReceipts] = useState<File[]>(expense?.receipt || "");
 
   const isFormActionDisabled = !(
     expenseDate &&
-    vendor &&
+    (vendor || newVendor) &&
     amount &&
     (category || newCategory)
   );
@@ -105,7 +105,35 @@ const ExpenseForm = ({
         newCategoryValue.label = newCategoryValue.name;
         delete newCategoryValue.name;
 
+        setCategory(null);
         setNewCategory(newCategoryValue);
+      }
+    }
+  };
+
+  const handleVendor = async vendor => {
+    if (expenseData.vendors.includes(vendor)) {
+      setVendor(vendor);
+    } else {
+      const payload = {
+        vendor: {
+          name: vendor.value,
+        },
+      };
+      const res = await expensesApi.createVendors(payload);
+      const expenses = await expensesApi.index();
+
+      if (res.status == 200 && expenses.status == 200) {
+        const newVendorValue = expenses.data.vendors.find(
+          val => val.name == vendor.value
+        );
+
+        newVendorValue.value = newVendorValue.name;
+        newVendorValue.label = newVendorValue.name;
+        delete newVendorValue.name;
+
+        setVendor(null);
+        setNewVendor(newVendorValue);
       }
     }
   };
@@ -116,49 +144,61 @@ const ExpenseForm = ({
     }
   };
 
-  const handleFileSelection = (event: ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = event.target.files?.[0];
-    if (selectedFile) {
-      setReceipt(selectedFile);
-    }
+  const handleFileSelection = event => {
+    const uploadedFiles = [...event.target.files];
+    // We are restricting uploads to a max of 10 files, each with a size limit of 2 mb.
+    const sortedFiles = uploadedFiles?.filter(
+      (file, index) => file.size < 2097152 && index < 10
+    );
+    setReceipts(sortedFiles);
   };
 
   const handleSubmit = () => {
-    const payload = {
-      amount,
-      date: expenseDate,
-      description,
-      expense_type: expenseType,
-      expense_category_id: category?.id || newCategory?.id,
-      vendor_id: vendor.id,
-      receipts: receipt,
-    };
-    handleFormAction(payload);
+    const formData = new FormData();
+
+    formData.append("expense[amount]", amount);
+    formData.append("expense[date]", expenseDate);
+    formData.append("expense[description]", description);
+    formData.append("expense[expense_type]", expenseType);
+    formData.append(
+      "expense[expense_category_id]",
+      category?.id || newCategory?.id
+    );
+    formData.append("expense[vendor_id]", vendor.id || newVendor?.id);
+    receipts?.forEach(file => {
+      formData.append(`expense[receipts][]`, file);
+    });
+
+    handleFormAction(formData);
   };
 
   const ReceiptCard = () => (
-    <div
-      className="my-2 flex w-full items-center justify-between rounded bg-miru-gray-100 p-3"
-      key={receipt.name}
-    >
-      <div className="rounded bg-miru-han-purple-100 p-3">
-        <FilePdfIcon
-          className="text-miru-han-purple-400"
-          size={16}
-          weight="bold"
-        />
-      </div>
-      <div className="ml-4 mr-2 flex w-full flex-col items-start truncate">
-        <span className="text-sm font-medium">{receipt.name}</span>
-        <div className="flex items-center text-xs font-medium text-miru-dark-purple-400">
-          <span>PDF</span>
-          <div className="mx-2 h-1 w-1 rounded-xl bg-miru-dark-purple-200" />
-          <span>{Math.ceil(receipt.size / 1024)}kb</span>
+    <div className="flex w-full flex-col">
+      {receipts.map(receipt => (
+        <div
+          className="my-2 flex w-full items-center justify-between rounded bg-miru-gray-100 p-3"
+          key={receipt.name}
+        >
+          <div className="rounded bg-miru-han-purple-100 p-3">
+            <FileIcon
+              className="text-miru-han-purple-400"
+              size={16}
+              weight="bold"
+            />
+          </div>
+          <div className="ml-4 mr-2 flex w-full flex-col items-start truncate">
+            <span className="text-sm font-medium">{receipt.name}</span>
+            <div className="flex items-center text-xs font-medium text-miru-dark-purple-400">
+              <span>PDF</span>
+              <div className="mx-2 h-1 w-1 rounded-xl bg-miru-dark-purple-200" />
+              <span>{Math.ceil(receipt.size / 1024)}kb</span>
+            </div>
+          </div>
+          <Button style="ternary" onClick={() => setReceipts(null)}>
+            <XIcon size={16} />
+          </Button>
         </div>
-      </div>
-      <Button style="ternary" onClick={() => setReceipt(null)}>
-        <XIcon size={16} />
-      </Button>
+      ))}
     </div>
   );
 
@@ -172,7 +212,8 @@ const ExpenseForm = ({
         Upload file
       </span>
       <input
-        accept="application/pdf"
+        multiple
+        accept=".jpg,.jpeg,.xls,.xlsx,.csv,.pdf,.png; max-size:2097152"
         className="hidden cursor-pointer"
         ref={fileRef}
         type="file"
@@ -221,13 +262,14 @@ const ExpenseForm = ({
           )}
         </div>
         <div className="mt-6">
-          <CustomReactSelect
-            handleOnChange={vendor => setVendor(vendor)}
+          <CustomCreatableSelect
+            components={{ Option: IconOption }}
+            handleOnChange={handleVendor}
             id="vendor"
             label="Vendor"
             name="vendor"
             options={expenseData.vendors}
-            value={vendor}
+            value={vendor || newVendor}
           />
           <ErrorSpan message="" />
         </div>
@@ -266,27 +308,13 @@ const ExpenseForm = ({
         </div>
         <div className="mt-6 flex flex-col">
           <span className="text-base font-medium text-miru-dark-purple-400">
-            Expense Type (optional)
+            Expense Type
           </span>
           <div className="flex">
             <CustomRadioButton
               classNameLabel="font-medium text-sm text-miru-dark-purple-1000"
               classNameRadioIcon="lg:w-4 lg:h-4 lg:border-2"
               classNameWrapper="pt-3 mr-4"
-              defaultCheck={expenseType == "personal"}
-              groupName="expenseType"
-              id="Personal"
-              key="Personal"
-              label="Personal"
-              value={expenseType}
-              handleOnChange={() => {
-                setExpenseType("personal");
-              }}
-            />
-            <CustomRadioButton
-              classNameLabel="font-medium text-sm text-miru-dark-purple-1000"
-              classNameRadioIcon="lg:w-4 lg:h-4 lg:border-2"
-              classNameWrapper="pt-3"
               defaultCheck={expenseType == "business"}
               groupName="expenseType"
               id="Business"
@@ -297,13 +325,27 @@ const ExpenseForm = ({
                 setExpenseType("business");
               }}
             />
+            <CustomRadioButton
+              classNameLabel="font-medium text-sm text-miru-dark-purple-1000"
+              classNameRadioIcon="lg:w-4 lg:h-4 lg:border-2"
+              classNameWrapper="pt-3"
+              defaultCheck={expenseType == "personal"}
+              groupName="expenseType"
+              id="Personal"
+              key="Personal"
+              label="Personal"
+              value={expenseType}
+              handleOnChange={() => {
+                setExpenseType("personal");
+              }}
+            />
           </div>
         </div>
         <div className="mt-6">
           <span className="text-base font-medium text-miru-dark-purple-400">
             Receipt (optional)
           </span>
-          {receipt ? <ReceiptCard /> : <UploadCard />}
+          {receipts ? <ReceiptCard /> : <UploadCard />}
         </div>
       </div>
       <div>
