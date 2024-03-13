@@ -100,7 +100,7 @@ module TimeoffEntries
                          when :per_month
                            case allocation_period.to_sym
                            when :days
-                             allocation_value * months_per_year
+                             calculate_leave_duration_for_a_user(usgstllocation_value)
                            when :weeks
                              allocation_value * days_per_week * months_per_year
                            end
@@ -124,6 +124,27 @@ module TimeoffEntries
                            0
         end
         total_duration
+      end
+
+      def calculate_leave_duration_for_a_user(joining_date, allocation_value)
+        current_date = DateTime.now
+        current_year = current_date.year
+        current_month = current_date.month
+
+        first_month_allocation_value = allocation_value
+        if joining_date && joining_date.year == current_year
+          total_month_duration = current_month - joining_date.month
+          first_month_allocation_value /= 2 if joining_date.day > 15
+          total_month_duration.zero? ? first_month_allocation_value
+           : first_month_allocation_value + allocation_value * total_month_duration
+        else
+          first_month_allocation_value * current_month
+        end
+      end
+
+      def user_joined_date
+        user = User.find(user_id)
+        user.joined_date_for_company(current_company)
       end
 
       def calculate_previous_year_carryforward(leave_type)
