@@ -100,7 +100,7 @@ module TimeoffEntries
                          when :per_month
                            case allocation_period.to_sym
                            when :days
-                             calculate_leave_duration_for_a_user(usgstllocation_value)
+                             calculate_leave_duration_for_a_user(user_joined_date, allocation_value)
                            when :weeks
                              allocation_value * days_per_week * months_per_year
                            end
@@ -143,7 +143,8 @@ module TimeoffEntries
       end
 
       def user_joined_date
-        user = User.find(user_id)
+        employee_id = is_admin? ? user_id : current_user.id
+        user = User.find(employee_id)
         user.joined_date_for_company(current_company)
       end
 
