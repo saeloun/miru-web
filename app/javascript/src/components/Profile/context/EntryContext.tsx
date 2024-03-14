@@ -1,11 +1,13 @@
 import { createContext, useContext } from "react";
 
+import { CompensationDetailsState } from "./CompensationDetailsState";
 import { EmploymentDetailsState } from "./EmploymentDetailsState";
 import { PersonalDetailsState } from "./PersonalDetailsState";
 
 const EntryContext = createContext({
   profileSettings: PersonalDetailsState,
   employmentDetails: EmploymentDetailsState,
+  compensationDetails: CompensationDetailsState,
   organizationSettings: {},
   bankAccDetails: {},
   paymentSettings: {},
