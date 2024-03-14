@@ -11,3 +11,4 @@ json.amount_paid invoice.amount_paid
 json.amount_due invoice.amount_due
 json.discount invoice.discount
 json.status invoice.status
+json.stripe_enabled invoice.stripe_enabled

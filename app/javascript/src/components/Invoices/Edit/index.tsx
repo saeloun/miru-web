@@ -5,7 +5,6 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Toastr } from "StyledComponents";
 
 import invoicesApi from "apis/invoices";
-import paymentSettings from "apis/payment-settings";
 import Loader from "common/Loader/index";
 import { ApiStatus as InvoiceStatus } from "constants/index";
 import { useUserContext } from "context/UserContext";
@@ -21,6 +20,7 @@ import SendInvoice from "../common/InvoiceForm/SendInvoice";
 import InvoiceTable from "../common/InvoiceTable";
 import InvoiceTotal from "../common/InvoiceTotal";
 import { generateInvoiceLineItems } from "../common/utils";
+import InvoiceSettings from "../InvoiceSettings";
 import ConnectPaymentGateway from "../popups/ConnectPaymentGateway";
 import DeleteInvoice from "../popups/DeleteInvoice";
 
@@ -52,6 +52,7 @@ const EditInvoice = () => {
   const [invoiceToDelete, setInvoiceToDelete] = useState(null);
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
   const [isSendReminder, setIsSendReminder] = useState<boolean>(false);
+  const [showInvoiceSetting, setShowInvoiceSetting] = useState<boolean>(false);
   const [isStripeEnabled, setIsStripeEnabled] = useState<boolean>(false);
   const [showConnectPaymentDialog, setShowConnectPaymentDialog] =
     useState<boolean>(false);
@@ -76,25 +77,16 @@ const EditInvoice = () => {
       setAmountDue(data.amountDue);
       setAmountPaid(data.amountPaid);
       setStatus(InvoiceStatus.SUCCESS);
+      setIsStripeEnabled(data.stripeEnabled);
     } catch {
       navigate("/invoices/error");
       setStatus(InvoiceStatus.ERROR);
     }
   };
 
-  const fetchPaymentSettings = async () => {
-    try {
-      const res = await paymentSettings.get();
-      setIsStripeEnabled(res.data.providers.stripe.connected);
-    } catch {
-      Toastr.error("ERROR! CONNECTING TO PAYMENTS");
-    }
-  };
-
   useEffect(() => {
     sendGAPageView();
     fetchInvoice();
-    fetchPaymentSettings();
   }, []);
 
   const updateInvoice = async () => {
@@ -120,6 +112,7 @@ const EditInvoice = () => {
         discount: Number(discount),
         tax: tax || invoiceDetails.tax,
         client_id: selectedClient.id,
+        stripe_enabled: isStripeEnabled,
         invoice_line_items_attributes: generateInvoiceLineItems(
           selectedLineItems,
           manualEntryArr,
@@ -229,7 +222,7 @@ const EditInvoice = () => {
             id={invoiceDetails.id}
             invoiceNumber={invoiceDetails.invoiceNumber}
             setIsSendReminder={setIsSendReminder}
-            setShowInvoiceSetting={false}
+            setShowInvoiceSetting={setShowInvoiceSetting}
             deleteInvoice={() => {
               setShowDeleteDialog(true);
               setInvoiceToDelete(invoiceDetails.id);
@@ -312,6 +305,13 @@ const EditInvoice = () => {
               invoice={invoiceToDelete}
               setShowDeleteDialog={setShowDeleteDialog}
               showDeleteDialog={showDeleteDialog}
+            />
+          )}
+          {showInvoiceSetting && (
+            <InvoiceSettings
+              isStripeEnabled={isStripeEnabled}
+              setIsStripeEnabled={setIsStripeEnabled}
+              setShowInvoiceSetting={setShowInvoiceSetting}
             />
           )}
         </Fragment>

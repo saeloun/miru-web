@@ -15,6 +15,7 @@ json.amount_due invoice.amount_due
 json.discount invoice.discount
 json.tax invoice.tax
 json.status invoice.status
+json.stripe_enabled invoice.stripe_enabled
 json.invoice_line_items invoice.invoice_line_items do |invoice_line_item|
   json.id invoice_line_item.id
   json.name invoice_line_item.name
