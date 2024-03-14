@@ -9,7 +9,7 @@ import LeaveBlock from "./LeaveBlock";
 import Table from "./Table";
 
 const Container = ({
-  getLeaveBlanaceDateText,
+  getLeaveBalanaceDateText,
   leaveBalance,
   timeoffEntries,
   totalTimeoffEntriesDuration,
@@ -19,7 +19,7 @@ const Container = ({
   <div className="mx-4 my-6 h-full lg:mx-0">
     <div className="flex justify-between">
       <span className="text-base font-normal text-miru-dark-purple-1000 lg:text-2xl">
-        {getLeaveBlanaceDateText()}
+        {getLeaveBalanaceDateText()}
       </span>
       <Button style="ternary" onClick={() => setSelectedLeaveType(null)}>
         {selectedLeaveType && "View all leaves"}

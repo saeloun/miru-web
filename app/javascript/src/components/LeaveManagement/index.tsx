@@ -95,7 +95,7 @@ const LeaveManagement = () => {
       return <Loader />;
     }
 
-    const getLeaveBlanaceDateText = () => {
+    const getLeaveBalanaceDateText = () => {
       const presentYear = getYear(new Date());
       let date = new Date(currentYear, 11, 31);
       if (currentYear == presentYear) {
@@ -116,7 +116,7 @@ const LeaveManagement = () => {
           setSelectedEmployeeId={setSelectedEmployeeId}
         />
         <Container
-          getLeaveBlanaceDateText={getLeaveBlanaceDateText}
+          getLeaveBalanaceDateText={getLeaveBalanaceDateText}
           leaveBalance={leaveBalance}
           selectedLeaveType={selectedLeaveType}
           setSelectedLeaveType={setSelectedLeaveType}
