@@ -53,7 +53,7 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
         year: Date.today.year
       }
 
-      service = service = TimeoffEntries::IndexService.new(user, company, params[:user_id], params[:year])
+      service = TimeoffEntries::IndexService.new(user, company, params[:user_id], params[:year])
       @data = service.process
     end
 
