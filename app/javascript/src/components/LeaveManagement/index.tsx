@@ -102,7 +102,7 @@ const LeaveManagement = () => {
         date = new Date();
       }
 
-      return `Leave Balance Untill ${format(date, "do 'of' MMM yyyy")}`;
+      return `Leave Balance Untill ${format(date, "do MMM yyyy")}`;
     };
 
     return (
