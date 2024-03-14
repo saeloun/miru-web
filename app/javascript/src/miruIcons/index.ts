@@ -54,6 +54,7 @@ import {
   Cake,
   DeviceMobileCamera,
   ArrowCounterClockwise,
+  Coins,
   Percent,
   House,
   ShieldCheck,
@@ -73,6 +74,8 @@ const reportcalendarIcon = require("./svgIcons/Calendar.svg");
 const calendarBlack = require("./svgIcons/calendarBlack.svg");
 const calendarHoverIcon = require("./svgIcons/CalendarHover.svg");
 const car = require("./svgIcons/car.svg");
+const deductions = require("./svgIcons/Deductions.svg");
+const earnings = require("./svgIcons/Earnings.svg");
 const emptyState = require("./svgIcons/emptyState.svg");
 const expenseIcon = require("./svgIcons/expenseIcon.svg");
 const flower = require("./svgIcons/flower.svg");
@@ -216,6 +219,7 @@ export const GoogleIcon = GoogleLogo;
 export const IntegrateIcon = Plugs;
 export const CakeIcon = Cake;
 export const MobileIcon = DeviceMobileCamera;
+export const CoinsIcon = Coins;
 export const FoodIcon = ForkKnife;
 export const PercentIcon = Percent;
 export const HouseIcon = House;
@@ -320,4 +324,6 @@ export const CarIconSVG = car;
 export const UserIconSVG = user;
 export const CalendarBlackIconSVG = calendarBlack;
 export const MedicineIconSVG = medicine;
+export const EarningsIconSVG = earnings;
+export const DeductionIconSVG = deductions;
 export const ExpenseIconSVG = expenseIcon;
