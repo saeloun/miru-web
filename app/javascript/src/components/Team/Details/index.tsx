@@ -3,6 +3,7 @@ import React, { Fragment, useState } from "react";
 import { TeamDetailsContext } from "context/TeamDetailsContext";
 import { useUserContext } from "context/UserContext";
 
+import { CompensationDetailsState } from "./CompensationDetails/CompensationDetailsState";
 import { EmploymentDetailsState } from "./EmploymentDetails/EmploymentDetailsState";
 import Header from "./Layout/Header";
 import OutletWrapper from "./Layout/OutletWrapper";
@@ -15,7 +16,7 @@ const TeamDetails = () => {
     employmentDetails: EmploymentDetailsState,
     documentDetails: {},
     deviceDetails: {},
-    compensationDetails: {},
+    compensationDetails: CompensationDetailsState,
     reimburstmentDetails: {},
   });
   const { isDesktop } = useUserContext();
