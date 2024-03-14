@@ -4,8 +4,8 @@ const path = "/expenses";
 
 const index = (query = "") => axios.get(query ? `${path}?${query}` : path);
 
-const create = async payload =>
-  await axios.post(path, payload, {
+const create = payload =>
+  axios.post(path, payload, {
     headers: {
       "Content-Type": "multipart/form-data",
     },

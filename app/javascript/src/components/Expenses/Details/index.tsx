@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 
 import Logger from "js-logger";
 import { useNavigate, useParams } from "react-router-dom";
@@ -82,47 +82,49 @@ const ExpenseDetails = () => {
     getExpenseData();
   }, []);
 
+  if (isLoading) {
+    return (
+      <div className="flex h-80v w-full flex-col justify-center">
+        <Loader />
+      </div>
+    );
+  }
+
   return (
     <div className="h-full">
-      {isLoading ? (
-        <Loader />
-      ) : (
-        <div>
-          {!isDesktop && showEditExpenseModal ? null : (
-            <div>
-              <Header
-                expense={expense}
-                handleDelete={handleDelete}
-                handleEdit={handleEdit}
-              />
-              <Expense currency={company.base_currency} expense={expense} />
-            </div>
-          )}
-          {showEditExpenseModal &&
-            (isDesktop ? (
-              <EditExpenseModal
-                expense={expense}
-                expenseData={expenseData}
-                handleEditExpense={handleEditExpense}
-                setShowEditExpenseModal={setShowEditExpenseModal}
-                showEditExpenseModal={showEditExpenseModal}
-              />
-            ) : (
-              <EditExpense
-                expense={expense}
-                expenseData={expenseData}
-                handleEditExpense={handleEditExpense}
-                setShowEditExpenseModal={setShowEditExpenseModal}
-              />
-            ))}
-          {showDeleteExpenseModal && (
-            <DeleteExpenseModal
-              handleDeleteExpense={handleDeleteExpense}
-              setShowDeleteExpenseModal={setShowDeleteExpenseModal}
-              showDeleteExpenseModal={showDeleteExpenseModal}
-            />
-          )}
-        </div>
+      {!isDesktop && showEditExpenseModal ? null : (
+        <Fragment>
+          <Header
+            expense={expense}
+            handleDelete={handleDelete}
+            handleEdit={handleEdit}
+          />
+          <Expense currency={company.base_currency} expense={expense} />
+        </Fragment>
+      )}
+      {showEditExpenseModal &&
+        (isDesktop ? (
+          <EditExpenseModal
+            expense={expense}
+            expenseData={expenseData}
+            handleEditExpense={handleEditExpense}
+            setShowEditExpenseModal={setShowEditExpenseModal}
+            showEditExpenseModal={showEditExpenseModal}
+          />
+        ) : (
+          <EditExpense
+            expense={expense}
+            expenseData={expenseData}
+            handleEditExpense={handleEditExpense}
+            setShowEditExpenseModal={setShowEditExpenseModal}
+          />
+        ))}
+      {showDeleteExpenseModal && (
+        <DeleteExpenseModal
+          handleDeleteExpense={handleDeleteExpense}
+          setShowDeleteExpenseModal={setShowDeleteExpenseModal}
+          showDeleteExpenseModal={showDeleteExpenseModal}
+        />
       )}
     </div>
   );

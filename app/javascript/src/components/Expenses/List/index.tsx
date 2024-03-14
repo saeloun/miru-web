@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { Pagination, Toastr } from "StyledComponents";
 
@@ -93,40 +93,42 @@ const Expenses = () => {
     fetchExpenses();
   }, []);
 
+  if (isLoading) {
+    return (
+      <div className="flex h-80v w-full flex-col justify-center">
+        <Loader />
+      </div>
+    );
+  }
+
   const ExpensesLayout = () => (
     <div className="h-full p-4 lg:p-0">
-      {isLoading ? (
-        <Loader />
-      ) : (
-        <Fragment>
-          <Header
-            clearSearch={fetchExpenses}
-            fetchSearchResults={fetchSearchResults}
-            setShowAddExpenseModal={setShowAddExpenseModal}
-          />
-          <Container expenseData={expenseData} />
-          <Pagination
-            isPerPageVisible
-            currentPage={pagy?.page}
-            handleClick={handlePageChange}
-            handleClickOnPerPage={handleClickOnPerPage}
-            isFirstPage={isFirstPage()}
-            isLastPage={isLastPage()}
-            itemsPerPage={pagy?.items}
-            nextPage={pagy?.next}
-            prevPage={pagy?.prev}
-            title="expenses/page"
-            totalPages={pagy?.pages}
-          />
-          {showAddExpenseModal && (
-            <AddExpenseModal
-              expenseData={expenseData}
-              handleAddExpense={handleAddExpense}
-              setShowAddExpenseModal={setShowAddExpenseModal}
-              showAddExpenseModal={showAddExpenseModal}
-            />
-          )}
-        </Fragment>
+      <Header
+        clearSearch={fetchExpenses}
+        fetchSearchResults={fetchSearchResults}
+        setShowAddExpenseModal={setShowAddExpenseModal}
+      />
+      <Container expenseData={expenseData} />
+      <Pagination
+        isPerPageVisible
+        currentPage={pagy?.page}
+        handleClick={handlePageChange}
+        handleClickOnPerPage={handleClickOnPerPage}
+        isFirstPage={isFirstPage()}
+        isLastPage={isLastPage()}
+        itemsPerPage={pagy?.items}
+        nextPage={pagy?.next}
+        prevPage={pagy?.prev}
+        title="expenses/page"
+        totalPages={pagy?.pages}
+      />
+      {showAddExpenseModal && (
+        <AddExpenseModal
+          expenseData={expenseData}
+          handleAddExpense={handleAddExpense}
+          setShowAddExpenseModal={setShowAddExpenseModal}
+          showAddExpenseModal={showAddExpenseModal}
+        />
       )}
     </div>
   );
