@@ -4,6 +4,7 @@ import React, { Fragment, useState } from "react";
 import { useUserContext } from "context/UserContext";
 
 import Header from "./CommonComponents/Header";
+import { CompensationDetailsState } from "./context/CompensationDetailsState";
 import { EmploymentDetailsState } from "./context/EmploymentDetailsState";
 import EntryContext from "./context/EntryContext";
 import { PersonalDetailsState } from "./context/PersonalDetailsState";
@@ -16,6 +17,7 @@ const Layout = ({ isAdminUser, user, company }) => {
   const [settingsStates, setSettingsStates] = useState({
     profileSettings: PersonalDetailsState,
     employmentDetails: EmploymentDetailsState,
+    compensationDetails: CompensationDetailsState,
     organizationSettings: {},
     bankAccDetails: {},
     paymentSettings: {},
