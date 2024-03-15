@@ -28,9 +28,9 @@ const DASHED =
 
 const DELETE = "bg-miru-red-400 hover:bg-miru-red-200 text-white";
 
-const SMALL = "px-5/100 py-1vh text-xs font-bold leading-4";
-const MEDIUM = "px-10/100 py-1vh text-base font-bold leading-5";
-const LARGE = "px-15/100 py-1vh text-xl font-bold leading-7";
+const SMALL = "p-2 text-xs font-bold leading-4";
+const MEDIUM = "p-2 text-base font-bold leading-5";
+const LARGE = "p-2 text-xl font-bold leading-7";
 
 type ButtonProps = {
   id?: string;
