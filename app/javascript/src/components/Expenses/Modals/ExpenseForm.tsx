@@ -165,11 +165,18 @@ const ExpenseForm = ({
       category?.id || newCategory?.id
     );
     formData.append("expense[vendor_id]", vendor.id || newVendor?.id);
-    receipts?.forEach(file => {
-      formData.append(`expense[receipts][]`, file);
-    });
+    if (receipts) {
+      receipts?.forEach(file => {
+        formData.append(`expense[receipts][]`, file);
+      });
+    }
 
     handleFormAction(formData);
+  };
+
+  const removeReceipt = receipt => {
+    const updatedReceipts = receipts.filter(item => item !== receipt);
+    setReceipts(updatedReceipts);
   };
 
   const ReceiptCard = () => (
@@ -194,7 +201,7 @@ const ExpenseForm = ({
               <span>{Math.ceil(receipt.size / 1024)}kb</span>
             </div>
           </div>
-          <Button style="ternary" onClick={() => setReceipts(null)}>
+          <Button style="ternary" onClick={() => removeReceipt(receipt)}>
             <XIcon size={16} />
           </Button>
         </div>
