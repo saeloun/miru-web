@@ -44,10 +44,9 @@ const MobileTimeoffForm = ({
   selectedDate,
   setSelectedDate,
   handleDateChangeFromDatePicker,
-  handleDecreaseTime,
+  incrementOrDecrementTime,
   duration,
   handleDurationChange,
-  handleIncreaseTime,
   handleDuplicateTimeoffEntry,
   showDeleteDialog,
   setShowDeleteDialog,
@@ -234,7 +233,10 @@ const MobileTimeoffForm = ({
                 )}
               </div>
               <div className="flex items-center justify-between rounded border border-miru-gray-1000">
-                <Button style="ternary" onClick={handleDecreaseTime}>
+                <Button
+                  style="ternary"
+                  onClick={() => incrementOrDecrementTime(false)}
+                >
                   <MinusIcon
                     className="m-4 text-miru-dark-purple-1000"
                     size={20}
@@ -247,7 +249,7 @@ const MobileTimeoffForm = ({
                   name="timeInput"
                   onTimeChange={handleDurationChange}
                 />
-                <Button style="ternary" onClick={handleIncreaseTime}>
+                <Button style="ternary" onClick={incrementOrDecrementTime}>
                   <PlusIcon
                     className="m-4 text-miru-dark-purple-1000"
                     size={20}

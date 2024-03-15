@@ -159,28 +159,13 @@ const TimeoffForm = ({ isDisplayEditTimeoffEntryForm = false }) => {
     setDuration(val);
   };
 
-  const handleDecreaseTime = () => {
-    if (parseInt(duration) > 0) {
-      const mint = minFromHHMM(duration);
-      const formattedHHMM = minToHHMM(mint);
-      const times = formattedHHMM.split(":");
-      const hour = times[0];
-      const min = times[1];
-      const hhmm = ((parseInt(hour) * 60 + parseInt(min) - 15) / 60).toFixed(2);
-      const substraction = minToHHMM(minFromHHMM(hhmm));
-      setDuration(substraction);
-    }
-  };
-
-  const handleIncreaseTime = () => {
-    const mint = minFromHHMM(duration);
-    const formattedHHMM = minToHHMM(mint);
-    const times = formattedHHMM.split(":");
-    const hour = times[0];
-    const min = times[1];
-    const hhmm = ((parseInt(hour) * 60 + parseInt(min) + 15) / 60).toFixed(2);
-    const addition = minToHHMM(minFromHHMM(hhmm));
-    setDuration(addition);
+  const incrementOrDecrementTime = (increment = true) => {
+    const currentMinutes = minFromHHMM(duration);
+    const updatedMinutes = increment
+      ? currentMinutes + 15
+      : currentMinutes - 15;
+    const updatedDuration = minToHHMM(updatedMinutes);
+    setDuration(updatedDuration);
   };
 
   const isValidTimeEntry = () => {
@@ -342,14 +327,13 @@ const TimeoffForm = ({ isDisplayEditTimeoffEntryForm = false }) => {
           duration={duration}
           handleClose={handleClose}
           handleDateChangeFromDatePicker={handleDateChangeFromDatePicker}
-          handleDecreaseTime={handleDecreaseTime}
           handleDeleteTimeoffEntry={handleDeleteTimeoffEntry}
           handleDuplicateTimeoffEntry={handleDuplicateTimeoffEntry}
           handleDurationChange={handleDurationChange}
-          handleIncreaseTime={handleIncreaseTime}
           handleSubmit={handleSubmit}
           holiday={holiday}
           holidayOptions={holidayOptions}
+          incrementOrDecrementTime={incrementOrDecrementTime}
           isHolidayEntry={isHolidayEntry}
           isShowHolidayList={isShowHolidayList}
           isValidTimeEntry={isValidTimeEntry}
