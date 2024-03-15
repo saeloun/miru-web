@@ -142,6 +142,36 @@ module TimeoffEntries
         end
       end
 
+      def calculate_days_per_week_leave_allocation(joining_date, allocation_value)
+        current_date = Date.today
+        current_month_week = current_date.cweek
+
+        if joining_date.nil? || joining_date.year != current_date.year
+          return allocation_value * current_date.month
+        end
+
+        joining_month_week = joining_date.cweek
+        total_week_duration = current_month_week - joining_month_week
+
+        if total_week_duration == 0
+          allocation_value
+        else
+          allocation_value + allocation_value * total_week_duration
+        end
+      end
+
+      def calculate_days_per_year_leave_allocation(joining_date, allocation_value)
+        current_date = DateTime.now
+        current_year = current_date.year
+        current_month = current_date.month
+
+        if joining_date && joining_date.year == current_year
+          joining_date.month > current_month / 2 ? allocation_value / 2 : allocation_value
+        else
+          allocation_value
+        end
+      end
+
       def user_joined_date
         employee_id = is_admin? ? user_id : current_user.id
         user = User.find(employee_id)
