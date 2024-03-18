@@ -38,10 +38,12 @@ const getReportData = async ({
       case "last_quarter":
         fromDate = dayjs(dayjs().month(firstMonthOfQuarter))
           .subtract(3, "month")
+          .startOf("month")
           .format("DD-MM-YYYY");
 
         toDate = dayjs(dayjs().month(lastMonthOfQuarter))
           .subtract(3, "month")
+          .endOf("month")
           .format("DD-MM-YYYY");
         break;
 
