@@ -96,25 +96,25 @@ module TimeoffEntries
 
         total_duration = case allocation_frequency.to_sym
                          when :per_week
-                           allocation_value * weeks_per_month * months_per_year
+                           calculate_days_per_week_leave_allocation(user_joined_date, allocation_value)
                          when :per_month
                            case allocation_period.to_sym
                            when :days
-                             calculate_leave_duration_for_a_user(user_joined_date, allocation_value)
+                             calculate_days_per_month_leave_allocation(user_joined_date, allocation_value)
                            when :weeks
                              allocation_value * days_per_week * months_per_year
                            end
                          when :per_quarter
                            case allocation_period.to_sym
                            when :days
-                             allocation_value * quarters_per_year
+                             calculate_days_per_quarter_leave_allocation(user_joined_date, allocation_value)
                            when :weeks
                              allocation_value * days_per_week * quarters_per_year
                            end
                          when :per_year
                            case allocation_period.to_sym
                            when :days
-                             allocation_value
+                             calculate_days_per_year_leave_allocation(user_joined_date, allocation_value)
                            when :weeks
                              allocation_value * days_per_week
                            when :months
@@ -126,7 +126,7 @@ module TimeoffEntries
         total_duration
       end
 
-      def calculate_leave_duration_for_a_user(joining_date, allocation_value)
+      def calculate_days_per_month_leave_allocation(joining_date, allocation_value)
         current_date = DateTime.now
         current_year = current_date.year
         current_month = current_date.month
@@ -144,19 +144,29 @@ module TimeoffEntries
 
       def calculate_days_per_week_leave_allocation(joining_date, allocation_value)
         current_date = Date.today
-        current_month_week = current_date.cweek
+        current_week = current_date.cweek
 
-        if joining_date.nil? || joining_date.year != current_date.year
-          return allocation_value * current_date.month
-        end
-
-        joining_month_week = joining_date.cweek
-        total_week_duration = current_month_week - joining_month_week
-
-        if total_week_duration == 0
-          allocation_value
+        if joining_date && joining_date.year == current_date.year
+          total_weeks = (current_week - joining_date.cweek)
+          first_week_allocation_value = allocation_value /= 2 if joining_date.wday >= 3 && joining_date.wday <= 5
+          first_week_allocation_value + allocation_value * total_weeks
         else
-          allocation_value + allocation_value * total_week_duration
+          allocation_value * current_week
+        end
+      end
+
+      def calculate_days_per_quarter_leave_allocation(joining_date, allocation_value)
+        current_date = Date.today
+        current_quarter = quarter_position_and_after_mid_quarter(current_date)
+        joining_date_quarter, is_joining_date_after_mid_quarter = quarter_position_and_after_mid_quarter(joining_date)
+        first_week_allocation_value = allocation_value
+
+        if joining_date && joining_date.year == current_date.year
+          total_quarter = current_quarter[0] - joining_date_quarter
+          first_week_allocation_value = allocation_value /= 2 if is_joining_date_after_mid_quarter
+          first_week_allocation_value + allocation_value * total_quarter
+        else
+          allocation_value * current_quarter[0]
         end
       end
 
@@ -176,6 +186,27 @@ module TimeoffEntries
         employee_id = is_admin? ? user_id : current_user.id
         user = User.find(employee_id)
         user.joined_date_for_company(current_company)
+      end
+
+      def quarter_position_and_after_mid_quarter(date)
+        case date.month
+        when 1..3
+          quarter = 1
+          mid_date = Date.new(date.year, 1, 1) + 1.month + 15.days # January 15th
+        when 4..6
+          quarter = 2
+          mid_date = Date.new(date.year, 4, 1) + 1.month + 15.days # April 15th
+        when 7..9
+          quarter = 3
+          mid_date = Date.new(date.year, 7, 1) + 1.month + 15.days # July 15th
+        when 10..12
+          quarter = 4
+          mid_date = Date.new(date.year, 10, 1) + 1.month + 15.days # October 15th
+        end
+
+        after_mid_quarter = date > mid_date
+
+        [quarter, after_mid_quarter]
       end
 
       def calculate_previous_year_carryforward(leave_type)
