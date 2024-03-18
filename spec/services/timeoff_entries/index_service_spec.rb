@@ -5,15 +5,60 @@ require "rails_helper"
 RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
+  # let(:employment) { create(:employment, user_id: user.id, company_id: company.id, joined_at: Date.new(2023, 1, 1) ) }
+
   let!(:leave) { create(:leave, company:, year: Date.today.year) }
   let!(:leave_type) {
     create(
       :leave_type,
       name: "Annual",
       allocation_value: 2,
+      icon: LeaveType.icons[:calendar],
+      color: LeaveType.colors[:chart_blue],
       allocation_period: :days,
       allocation_frequency: :per_month,
       carry_forward_days: 5,
+      leave:
+    )
+  }
+  let!(:leave_type_days_per_week) {
+    create(
+      :leave_type,
+      name: "Annual",
+      icon: LeaveType.icons[:cake],
+      color: LeaveType.colors[:chart_pink],
+      allocation_value: 2,
+      allocation_period: :days,
+      allocation_frequency: :per_week,
+      carry_forward_days: 2,
+      leave:
+    )
+  }
+
+  let!(:leave_type_days_per_quarter) {
+    create(
+      :leave_type,
+      name: "Annual",
+      icon: LeaveType.icons[:car],
+      color: LeaveType.colors[:chart_green],
+      allocation_value: 2,
+      allocation_period: :days,
+      allocation_frequency: :per_quarter,
+      carry_forward_days: 2,
+      leave:
+    )
+  }
+
+  let!(:leave_type_days_per_year) {
+    create(
+      :leave_type,
+      name: "Annual",
+      icon: LeaveType.icons[:medicine],
+      color: LeaveType.colors[:chart_orange],
+      allocation_value: 2,
+      allocation_period: :days,
+      allocation_frequency: :per_year,
+      carry_forward_days: 2,
       leave:
     )
   }
@@ -45,7 +90,7 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
 
   describe "#process" do
     before do
-      create(:employment, company:, user:)
+      create(:employment, company:, user:, joined_at: Date.new(Time.current.year, 1, 1))
       user.add_role :admin, company
 
       params = {
@@ -78,7 +123,7 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
       expect(@data[:total_timeoff_entries_duration]).to eq(timeoff_entries_duration)
     end
 
-    it "returns leave balance" do
+    it "returns leave balance for days per month " do
       summary_object = {
         id: leave_type.id,
         name: leave_type.name,
@@ -92,5 +137,67 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
 
       expect(@data[:leave_balance][0]).to eq(summary_object)
     end
+
+    it "returns leave balance for days per week " do
+      summary_object = {
+        id: leave_type.id,
+        name: leave_type.name,
+        icon: leave_type.icon,
+        color: leave_type.color,
+        total_leave_type_days: 6,
+        timeoff_entries_duration: 60,
+        net_duration: 2820,
+        net_days: 5
+      }
+
+      expect(@data[:leave_balance][1]).to eq(summary_object)
+    end
+
+    it "returns leave balance for days per quarter" do
+      summary_object = {
+        id: leave_type.id,
+        name: leave_type.name,
+        icon: leave_type.icon,
+        color: leave_type.color,
+        total_leave_type_days: 6,
+        timeoff_entries_duration: 60,
+        net_duration: 2820,
+        net_days: 5
+      }
+
+      expect(@data[:leave_balance][2]).to eq(summary_object)
+    end
+
+    it "returns leave balance for days per year" do
+      summary_object = {
+        id: leave_type.id,
+        name: leave_type.name,
+        icon: leave_type.icon,
+        color: leave_type.color,
+        total_leave_type_days: 6,
+        timeoff_entries_duration: 60,
+        net_duration: 2820,
+        net_days: 5
+      }
+
+      expect(@data[:leave_balance][3]).to eq(summary_object)
+    end
+
+    it "returns leave balance for days per month" do
+      summary_object = {
+        id: leave_type.id,
+        name: leave_type.name,
+        icon: leave_type.icon,
+        color: leave_type.color,
+        total_leave_type_days: 6,
+        timeoff_entries_duration: 60,
+        net_duration: 2820,
+        net_days: 5
+      }
+
+      expect(@data[:leave_balance][3]).to eq(summary_object)
+    end
+  end
+
   end
 end
