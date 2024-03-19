@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
@@ -71,19 +71,23 @@ const StaticPage = ({ personalDetails, handleEditClick }) => (
       <div className="w-4/5">
         <div className="flex">
           <div className="w-full">
-            <span className="text-xs text-miru-dark-purple-1000">Address</span>
-            <p className="text-miru-dark-purple-1000">
-              {personalDetails.addresses && (
-                <>
+            {personalDetails.addresses.address_line_1 ? (
+              <Fragment>
+                <span className="text-xs text-miru-dark-purple-1000">
+                  Address
+                </span>
+                <p className="text-miru-dark-purple-1000">
                   {personalDetails.addresses.address_line_1},
-                  {personalDetails.addresses.address_line_2}
+                  {personalDetails.addresses.address_line_2},
                   {personalDetails.addresses.city},
                   {personalDetails.addresses.state},
                   {personalDetails.addresses.country} -
                   {personalDetails.addresses.pin}
-                </>
-              )}
-            </p>
+                </p>
+              </Fragment>
+            ) : (
+              "-"
+            )}
           </div>
         </div>
       </div>

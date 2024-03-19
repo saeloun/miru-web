@@ -376,6 +376,7 @@ const CompanyDetailsForm = ({
                       id="business_phone"
                       inputClassName="form__input block w-full appearance-none bg-white border-0 focus:border-0 px-0 text-base border-transparent focus:border-transparent focus:ring-0 border-miru-gray-1000 w-full border-bottom-none "
                       name="business_phone"
+                      placeholder=" +919876543210"
                       value={values.business_phone}
                       onChange={phone => {
                         setFieldValue("business_phone", phone);
