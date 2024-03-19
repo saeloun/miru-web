@@ -5,8 +5,6 @@ require "rails_helper"
 RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
-  # let(:employment) { create(:employment, user_id: user.id, company_id: company.id, joined_at: Date.new(2023, 1, 1) ) }
-
   let!(:leave) { create(:leave, company:, year: Date.today.year) }
   let!(:leave_type) {
     create(
@@ -274,33 +272,33 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
     end
   end
 
-  # describe "#process days per year when joining date is current year" do
-  #   before do
-  #     create(:employment, company:, user:, joined_at: Date.new(Time.current.year, 1, 5), resigned_at: nil)
-  #     user.add_role :admin, company
+  describe "#process days per year when joining date is current year" do
+    before do
+      create(:employment, company:, user:, joined_at: Date.new(Time.current.year, 1, 5), resigned_at: nil)
+      user.add_role :admin, company
 
-  #     params = {
-  #       user_id: user.id,
-  #       year: Date.today.year
-  #     }
+      params = {
+        user_id: user.id,
+        year: Date.today.year
+      }
 
-  #     service = TimeoffEntries::IndexService.new(user, company, params[:user_id], params[:year])
-  #     @data = service.process
-  #   end
+      service = TimeoffEntries::IndexService.new(user, company, params[:user_id], params[:year])
+      @data = service.process
+    end
 
-  #   it "returns leave balance for days per year" do
-  #     summary_object = {
-  #       id: leave_type_days_per_year.id,
-  #       name: leave_type_days_per_year.name,
-  #       icon: leave_type_days_per_year.icon,
-  #       color: leave_type_days_per_year.color,
-  #       total_leave_type_days: 2,
-  #       timeoff_entries_duration: 0,
-  #       net_duration: 960,
-  #       net_days: 2
-  #     }
+    it "returns leave balance for days per year" do
+      summary_object = {
+        id: leave_type_days_per_year.id,
+        name: leave_type_days_per_year.name,
+        icon: leave_type_days_per_year.icon,
+        color: leave_type_days_per_year.color,
+        total_leave_type_days: 2,
+        timeoff_entries_duration: 0,
+        net_duration: 960,
+        net_days: 2
+      }
 
-  #     expect(@data[:leave_balance][3]).to eq(summary_object)
-  #   end
-  # end
+      expect(@data[:leave_balance][3]).to eq(summary_object)
+    end
+  end
 end
