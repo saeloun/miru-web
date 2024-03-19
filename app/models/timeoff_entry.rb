@@ -42,6 +42,7 @@ class TimeoffEntry < ApplicationRecord
 
   validate :either_leave_type_or_holiday_info_present
   validate :optional_holiday_timeoff_entry
+  validate :allow_one_holiday_per_day
 
   scope :during, -> (from, to) { where(leave_date: from..to).order(leave_date: :desc) }
 
@@ -110,6 +111,14 @@ class TimeoffEntry < ApplicationRecord
         end
       else
         errors.add(:base, error_message)
+      end
+    end
+
+    def allow_one_holiday_per_day
+      return unless holiday_info.present?
+
+      if holiday_info&.holiday.optional_timeoff_entries.where(leave_date:, user:).exists?
+        errors.add(:base, "Can't add two holidays on the same day")
       end
     end
 end
