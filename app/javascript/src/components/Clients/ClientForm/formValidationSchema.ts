@@ -21,10 +21,10 @@ export const clientSchema = Yup.object().shape({
   }),
   state: Yup.string()
     .required("State cannot be blank")
-    .max(20, "Maximum 20 characters are allowed"),
+    .max(50, "Maximum 50 characters are allowed"),
   city: Yup.string()
     .required("City cannot be blank")
-    .max(20, "Maximum 20 characters are allowed"),
+    .max(50, "Maximum 50 characters are allowed"),
   zipcode: Yup.string()
     .required("Zipcode line cannot be blank")
     .max(10, "Maximum 10 characters are allowed"),
