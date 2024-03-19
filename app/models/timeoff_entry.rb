@@ -77,10 +77,6 @@ class TimeoffEntry < ApplicationRecord
         total_optional_entries = optional_timeoff_entries.where(
           leave_date: start_of_week..end_of_week,
           user:).count
-
-        if total_optional_entries >= no_of_allowed_optional_holidays
-          errors.add(:base, error_message)
-        end
       when :per_month
         start_of_month = leave_date.beginning_of_month
         end_of_month = leave_date.end_of_month
@@ -88,10 +84,6 @@ class TimeoffEntry < ApplicationRecord
         total_optional_entries = optional_timeoff_entries.where(
           leave_date: start_of_month..end_of_month,
           user:).count
-
-        if total_optional_entries >= no_of_allowed_optional_holidays
-          errors.add(:base, error_message)
-        end
       when :per_quarter
         start_of_quarter = leave_date.beginning_of_quarter
         end_of_quarter = leave_date.end_of_quarter
@@ -99,17 +91,13 @@ class TimeoffEntry < ApplicationRecord
         total_optional_entries = optional_timeoff_entries.where(
           leave_date: start_of_quarter..end_of_quarter,
           user:).count
-
-        if total_optional_entries >= no_of_allowed_optional_holidays
-          errors.add(:base, error_message)
-        end
       when :per_year
         total_optional_entries = optional_timeoff_entries.where(user:).count
-
-        if total_optional_entries >= no_of_allowed_optional_holidays
-          errors.add(:base, error_message)
-        end
       else
+        errors.add(:base, error_message)
+      end
+
+      if total_optional_entries >= no_of_allowed_optional_holidays
         errors.add(:base, error_message)
       end
     end
