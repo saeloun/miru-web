@@ -36,12 +36,36 @@ RSpec.describe TimeoffEntry, type: :model do
         leave_type_id: nil,
         holiday_info_id: optional_holiday.id,
         duration: 400,
-        leave_date: Date.current,
+        leave_date: Date.current + 1,
       )
 
       expect(new_time_off_entry).not_to be_valid
       expect(new_time_off_entry.errors[:base]).to include(
         "You have exceeded the maximum number of permitted optional holidays")
+    end
+
+    it "is not valid if adding two holidays on the same day" do # rubocop:disable RSpec/ExampleLength
+      existing_timeoff_entry = create(
+        :timeoff_entry,
+        user_id: user.id,
+        leave_type_id: nil,
+        holiday_info_id: optional_holiday.id,
+        duration: 400,
+        leave_date: Date.current
+      )
+
+      new_time_off_entry = build(
+        :timeoff_entry,
+        user_id: user.id,
+        leave_type_id: nil,
+        holiday_info_id: national_holiday.id,
+        duration: 400,
+        leave_date: Date.current,
+      )
+
+      expect(new_time_off_entry).not_to be_valid
+      expect(new_time_off_entry.errors[:base]).to include(
+        "You are adding two holidays on the same day, please recheck")
     end
   end
 
