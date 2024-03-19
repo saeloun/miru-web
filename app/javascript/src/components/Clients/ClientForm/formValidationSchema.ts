@@ -19,12 +19,12 @@ export const clientSchema = Yup.object().shape({
   country: Yup.object().shape({
     value: Yup.string().required("Country cannot be blank"),
   }),
-  state: Yup.object().shape({
-    value: Yup.string().required("State cannot be blank"),
-  }),
-  city: Yup.object().shape({
-    value: Yup.string().required("City cannot be blank"),
-  }),
+  state: Yup.string()
+    .required("State cannot be blank")
+    .max(20, "Maximum 20 characters are allowed"),
+  city: Yup.string()
+    .required("City cannot be blank")
+    .max(20, "Maximum 20 characters are allowed"),
   zipcode: Yup.string()
     .required("Zipcode line cannot be blank")
     .max(10, "Maximum 10 characters are allowed"),
@@ -51,16 +51,8 @@ export const getInitialvalues = (client?: any) => ({
     code: client?.address?.country || "",
     value: client?.address?.country || "",
   },
-  state: {
-    label: client?.address?.state || "",
-    code: client?.address?.state || "",
-    value: client?.address?.state || "",
-  },
-  city: {
-    label: client?.address?.city || "",
-    code: client?.address?.city || "",
-    value: client?.address?.city || "",
-  },
+  state: client?.address?.state || "",
+  city: client?.address?.city || "",
   zipcode: client?.address?.pin || "",
   minutes: client?.minutes || "",
   logo: client?.logo || null,
