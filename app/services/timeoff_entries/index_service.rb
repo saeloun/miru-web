@@ -148,7 +148,8 @@ module TimeoffEntries
 
         if joining_date && joining_date.year == current_date.year
           total_weeks = (current_week - joining_date.cweek)
-          first_week_allocation_value = allocation_value /= 2 if joining_date.wday >= 3 && joining_date.wday <= 5
+          first_week_allocation_value = (joining_date.wday >= 3 && joining_date.wday <= 5) ?
+            (allocation_value / 2) : allocation_value
           first_week_allocation_value + allocation_value * total_weeks
         else
           allocation_value * current_week

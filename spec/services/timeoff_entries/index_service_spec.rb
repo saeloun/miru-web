@@ -90,7 +90,7 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
 
   describe "#process" do
     before do
-      create(:employment, company:, user:, joined_at: Date.new(Time.current.year, 1, 1))
+      create(:employment, company:, user:)
       user.add_role :admin, company
 
       params = {
@@ -123,7 +123,7 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
       expect(@data[:total_timeoff_entries_duration]).to eq(timeoff_entries_duration)
     end
 
-    it "returns leave balance for days per month " do
+    it "returns leave balance for days per month" do
       summary_object = {
         id: leave_type.id,
         name: leave_type.name,
@@ -138,16 +138,16 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
       expect(@data[:leave_balance][0]).to eq(summary_object)
     end
 
-    it "returns leave balance for days per week " do
+    it "returns leave balance for days per week" do
       summary_object = {
-        id: leave_type.id,
-        name: leave_type.name,
-        icon: leave_type.icon,
-        color: leave_type.color,
-        total_leave_type_days: 6,
-        timeoff_entries_duration: 60,
-        net_duration: 2820,
-        net_days: 5
+        id: leave_type_days_per_week.id,
+        name: leave_type_days_per_week.name,
+        icon: leave_type_days_per_week.icon,
+        color: leave_type_days_per_week.color,
+        total_leave_type_days: 24,
+        timeoff_entries_duration: 0,
+        net_duration: 11520,
+        net_days: 24
       }
 
       expect(@data[:leave_balance][1]).to eq(summary_object)
@@ -155,14 +155,14 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
 
     it "returns leave balance for days per quarter" do
       summary_object = {
-        id: leave_type.id,
-        name: leave_type.name,
-        icon: leave_type.icon,
-        color: leave_type.color,
-        total_leave_type_days: 6,
-        timeoff_entries_duration: 60,
-        net_duration: 2820,
-        net_days: 5
+        id: leave_type_days_per_quarter.id,
+        name: leave_type_days_per_quarter.name,
+        icon: leave_type_days_per_quarter.icon,
+        color: leave_type_days_per_quarter.color,
+        total_leave_type_days: 2,
+        timeoff_entries_duration: 0,
+        net_duration: 960,
+        net_days: 2
       }
 
       expect(@data[:leave_balance][2]).to eq(summary_object)
@@ -170,17 +170,32 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
 
     it "returns leave balance for days per year" do
       summary_object = {
-        id: leave_type.id,
-        name: leave_type.name,
-        icon: leave_type.icon,
-        color: leave_type.color,
-        total_leave_type_days: 6,
-        timeoff_entries_duration: 60,
-        net_duration: 2820,
-        net_days: 5
+        id: leave_type_days_per_year.id,
+        name: leave_type_days_per_year.name,
+        icon: leave_type_days_per_year.icon,
+        color: leave_type_days_per_year.color,
+        total_leave_type_days: 2,
+        timeoff_entries_duration: 0,
+        net_duration: 960,
+        net_days: 2
       }
 
       expect(@data[:leave_balance][3]).to eq(summary_object)
+    end
+  end
+
+  describe "#process when joining date is current year" do
+    before do
+      create(:employment, company:, user:, joined_at: Date.new(Time.current.year, 1, 5), resigned_at: nil)
+      user.add_role :admin, company
+
+      params = {
+        user_id: user.id,
+        year: Date.today.year
+      }
+
+      service = TimeoffEntries::IndexService.new(user, company, params[:user_id], params[:year])
+      @data = service.process
     end
 
     it "returns leave balance for days per month" do
@@ -195,9 +210,52 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
         net_days: 5
       }
 
+      expect(@data[:leave_balance][0]).to eq(summary_object)
+    end
+
+    it "returns leave balance for days per week" do
+      summary_object = {
+        id: leave_type_days_per_week.id,
+        name: leave_type_days_per_week.name,
+        icon: leave_type_days_per_week.icon,
+        color: leave_type_days_per_week.color,
+        total_leave_type_days: 23,
+        timeoff_entries_duration: 0,
+        net_duration: 11040,
+        net_days: 23
+      }
+
+      expect(@data[:leave_balance][1]).to eq(summary_object)
+    end
+
+    it "returns leave balance for days per quarter" do
+      summary_object = {
+        id: leave_type_days_per_quarter.id,
+        name: leave_type_days_per_quarter.name,
+        icon: leave_type_days_per_quarter.icon,
+        color: leave_type_days_per_quarter.color,
+        total_leave_type_days: 2,
+        timeoff_entries_duration: 0,
+        net_duration: 960,
+        net_days: 2
+      }
+
+      expect(@data[:leave_balance][2]).to eq(summary_object)
+    end
+
+    it "returns leave balance for days per year" do
+      summary_object = {
+        id: leave_type_days_per_year.id,
+        name: leave_type_days_per_year.name,
+        icon: leave_type_days_per_year.icon,
+        color: leave_type_days_per_year.color,
+        total_leave_type_days: 2,
+        timeoff_entries_duration: 0,
+        net_duration: 960,
+        net_days: 2
+      }
+
       expect(@data[:leave_balance][3]).to eq(summary_object)
     end
-  end
-
   end
 end
