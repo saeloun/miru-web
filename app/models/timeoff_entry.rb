@@ -118,7 +118,7 @@ class TimeoffEntry < ApplicationRecord
       return unless holiday_info.present?
 
       if holiday_info&.holiday.optional_timeoff_entries.where(leave_date:, user:).exists?
-        errors.add(:base, "Can't add two holidays on the same day")
+        errors.add(:base, "You are adding two holidays on the same day, please recheck")
       end
     end
 end
