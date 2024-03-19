@@ -41,6 +41,7 @@ class TimeoffEntry < ApplicationRecord
   validates :leave_date, presence: true
 
   validate :either_leave_type_or_holiday_info_present
+  validate :optional_holiday_timeoff_entry
 
   scope :during, -> (from, to) { where(leave_date: from..to).order(leave_date: :desc) }
 
@@ -55,6 +56,60 @@ class TimeoffEntry < ApplicationRecord
         errors.add(:base, "Either leave type or holiday info must be present")
       elsif leave_type_id.present? && holiday_info_id.present?
         errors.add(:base, "Choose either leave type or holiday info, not both")
+      end
+    end
+
+    def optional_holiday_timeoff_entry
+      return unless holiday_info&.category == "optional" &&
+                  holiday_info&.holiday&.no_of_allowed_optional_holidays.present?
+
+      no_of_allowed_optional_holidays = holiday_info&.holiday.no_of_allowed_optional_holidays
+      time_period_optional_holidays = holiday_info&.holiday.time_period_optional_holidays
+      optional_timeoff_entries = holiday_info&.holiday.optional_timeoff_entries
+
+      error_message = "You have exceeded the maximum number of permitted optional holidays"
+      case time_period_optional_holidays.to_sym
+      when :per_week
+        start_of_week = leave_date.beginning_of_week
+        end_of_week = leave_date.end_of_week
+
+        total_optional_entries = optional_timeoff_entries.where(
+          leave_date: start_of_week..end_of_week,
+          user:).count
+
+        if total_optional_entries >= no_of_allowed_optional_holidays
+          errors.add(:base, error_message)
+        end
+      when :per_month
+        start_of_month = leave_date.beginning_of_month
+        end_of_month = leave_date.end_of_month
+
+        total_optional_entries = optional_timeoff_entries.where(
+          leave_date: start_of_month..end_of_month,
+          user:).count
+
+        if total_optional_entries >= no_of_allowed_optional_holidays
+          errors.add(:base, error_message)
+        end
+      when :per_quarter
+        start_of_quarter = leave_date.beginning_of_quarter
+        end_of_quarter = leave_date.end_of_quarter
+
+        total_optional_entries = optional_timeoff_entries.where(
+          leave_date: start_of_quarter..end_of_quarter,
+          user:).count
+
+        if total_optional_entries >= no_of_allowed_optional_holidays
+          errors.add(:base, error_message)
+        end
+      when :per_year
+        total_optional_entries = optional_timeoff_entries.where(user:).count
+
+        if total_optional_entries >= no_of_allowed_optional_holidays
+          errors.add(:base, error_message)
+        end
+      else
+        errors.add(:base, error_message)
       end
     end
 end
