@@ -126,7 +126,7 @@ class TimesheetEntry < ApplicationRecord
 
     def validate_billable_project
       if !project&.billable && bill_status == "unbilled"
-        errors.add(:base, I18n.t(:errors)[:validate_billable_project])
+        errors.add(:base, I18n.t("errors.validate_billable_project"))
       end
     end
 end
