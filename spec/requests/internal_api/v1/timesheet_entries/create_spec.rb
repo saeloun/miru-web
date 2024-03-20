@@ -6,7 +6,7 @@ RSpec.describe "InternalApi::V1::TimesheetEntry#create", type: :request do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
   let(:client) { create(:client, company:) }
-  let(:project) { create(:project, client:) }
+  let(:project) { create(:project, billable: true, client:) }
 
   context "when user is an admin" do
     before do
