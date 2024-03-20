@@ -58,10 +58,13 @@ const MonthCalender = ({
         `${currentYear}-${currentMonthNumber + 1}-${i}`
       ).format("YYYY-MM-DD");
 
-      const totalDuration = entryList[date]?.reduce(
-        (acc: number, cv: number) => cv["duration"] + acc,
-        0
-      );
+      const totalDuration =
+        entryList && entryList[date]
+          ? entryList[date]?.reduce(
+              (acc: number, cv: number) => cv["duration"] + acc,
+              0
+            )
+          : 0;
       if (totalDuration) currentWeekTotalHours += totalDuration;
       weeksData[dayInWeekCounter] = {
         date,
