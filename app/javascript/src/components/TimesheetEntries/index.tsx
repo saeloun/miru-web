@@ -49,7 +49,7 @@ const TimesheetEntries = ({ user, isAdminUser }: Iprops) => {
   const [endOfTheMonth, setEndOfTheMonth] = useState<string>(
     dayjs().endOf("month").format("YYYY-MM-DD")
   );
-  const [view, setView] = useState<string>("month");
+  const [view, setView] = useState<string>("day");
   const [newEntryView, setNewEntryView] = useState<boolean>(false);
   const [newTimeoffEntryView, setNewTimeoffEntryView] =
     useState<boolean>(false);
@@ -676,7 +676,7 @@ const TimesheetEntries = ({ user, isAdminUser }: Iprops) => {
           <div className="mt-8 mb-6 flex items-center justify-between">
             {isDesktop && (
               <nav className="flex">
-                {["month", "week", "day"].map((item, index) => (
+                {["day", "month"].map((item, index) => (
                   <button
                     key={index}
                     className={`mr-10 tracking-widest
