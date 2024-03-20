@@ -49,13 +49,13 @@ RSpec.describe TimeoffEntry, type: :model do
 
     it { is_expected.to validate_presence_of(:leave_date) }
 
-    it "is not valid if adding two holidays on the same day" do # rubocop:disable RSpec/ExampleLength
+    it "is not valid if adding two holidays on the same day" do
       expect(@new_time_off_entry).not_to be_valid
       expect(@new_time_off_entry.errors[:base]).to include(
         "You are adding two holidays on the same day, please recheck")
     end
 
-    it "is not valid if it exceeds the maximum number of permitted optional holidays" do # rubocop:disable RSpec/ExampleLength
+    it "is not valid if it exceeds the maximum number of permitted optional holidays" do
       expect(@new_optional_time_off_entry).not_to be_valid
       expect(@new_optional_time_off_entry.errors[:base]).to include(
         "You have exceeded the maximum number of permitted optional holidays")
