@@ -6,20 +6,20 @@
   </head>
   <body style="color:#1D1A31">
   <div class="mail invitation">
-    <img class="background" src=<%= Rails.root.join('public', 'Background.svg') %> alt="background">
-    <img class="banner" src=<%= Rails.root.join('public', 'Banner.svg') %> alt="banner">
+    <%= image_tag "Background.svg", class: "background", alt: "background" %>
+    <%= image_tag "Banner.svg", class: "banner", alt: "banner" %>
     <p class="header">You have been invited to Miru</p>
 
     <p><%= @sender_details&.[](:name) %> (<%= @sender_details&.[](:email) %>) has invited you to join <%=@company_details&.[](:name) %> team on Miru</p>
 
     <div class='sender_company_container'> 
       <div class='sender'>
-        <img src=<%= @sender_details&.[](:avatar) ? @sender_details&.[](:avatar) : Rails.root.join('public', 'avatar.svg') %> alt="User avatar" height="40px" width="40px">
+        <%= image_tag(@sender_details&.[](:avatar) || "avatar.svg", alt:"User avatar", height: "40", width: "40") %>
         <b><%= @sender_details&.[](:name) %></b>
         <%= @sender_details&.[](:email) %>
       </div>
       <div class='company'>
-      <img src=<%=@company_details&.[](:logo) ?@company_details&.[](:logo) : Rails.root.join('public', 'miru-logo.svg') %> alt="User avatar" height="40px" width="40px">
+      <%= image_tag(@company_details&.[](:logo) || "miru-logo.svg", alt:"Company logo", height: "40px", width: "40px") %>
         <b><%=@company_details&.[](:name) %></b>
         <%=@company_details&.[](:employee_count) %> members
       </div>
@@ -31,12 +31,12 @@
 
     <hr />
 
-    If you don’t know this user or think this was sent by mistake, please flag this request to our team at <a href="mailto:support@miru.so" class="purple">support@miru.so</a>
+    <p>If you don’t know this user or think this was sent by mistake, please flag this request to our team at <a href="mailto:support@miru.so" class="purple">support@miru.so</a></p>
 
     <div class="about-miru-container">
       <div class="about-miru">
-        <img class="about-miru-background" src=<%= Rails.root.join('public', 'about-miru-background.svg') %> alt="about-miru-background">
-        <img class="miru-logo" src=<%= Rails.root.join('public', 'miru-logo.svg') %> alt="miru-logo">
+        <%= image_tag "about-miru-background.svg", class:"about-miru-background", alt:"about-miru-background" %>
+        <%= image_tag "miru-logo.svg", class:"miru-logo", alt:"miru-logo" %>
 
         <div class="desc">
             <p class="header">About Miru</p>

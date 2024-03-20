@@ -67,6 +67,8 @@
 }
 
 .invitation {
+  width: 640px;
+
   .sender_company_container {
     display: flex;
     margin-top: 40px;
