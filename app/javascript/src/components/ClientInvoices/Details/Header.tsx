@@ -16,11 +16,12 @@ const Header = ({
   stripeUrl,
   stripe_connected_account,
   setShowConnectPaymentDialog,
+  setShowStripeDisabledDialog,
 }) => {
   const [isMoreOptionsVisible, setIsMoreOptionsVisible] =
     useState<boolean>(false);
   const wrapperRef = useRef(null);
-  const { invoice_number, status } = invoice;
+  const { invoice_number, status, stripe_enabled } = invoice;
 
   useOutsideClick(
     wrapperRef,
@@ -79,7 +80,9 @@ const Header = ({
               }`}
               onClick={() => {
                 if (status != "paid") {
-                  if (stripe_connected_account) {
+                  if (stripe_connected_account && !stripe_enabled) {
+                    setShowStripeDisabledDialog(true);
+                  } else if (stripe_connected_account) {
                     window.location.href = stripeUrl;
                   } else {
                     setShowConnectPaymentDialog(true);

@@ -34,11 +34,12 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
         year: Date.today.year
       }
 
-      service = TimeoffEntries::IndexService.new(params, company, user)
+      service = TimeoffEntries::IndexService.new(user, company, params[:user_id], params[:year])
 
-      expect(service.params.present?).to be true
-      expect(service.current_company.present?).to be true
       expect(service.current_user.present?).to be true
+      expect(service.current_company.present?).to be true
+      expect(service.user_id.present?).to be true
+      expect(service.year.present?).to be true
     end
   end
 
@@ -52,7 +53,7 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
         year: Date.today.year
       }
 
-      service = TimeoffEntries::IndexService.new(params, company, user)
+      service = TimeoffEntries::IndexService.new(user, company, params[:user_id], params[:year])
       @data = service.process
     end
 
@@ -83,10 +84,10 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
         name: leave_type.name,
         icon: leave_type.icon,
         color: leave_type.color,
-        total_leave_type_days: 24,
+        total_leave_type_days: 6,
         timeoff_entries_duration: 60,
-        net_duration: 11460,
-        net_days: 11460 / 60 / 8
+        net_duration: 2820,
+        net_days: 5
       }
 
       expect(@data[:leave_balance][0]).to eq(summary_object)

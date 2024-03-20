@@ -28,6 +28,21 @@ const getSettingsNavUrls = memberId => [
         text: "PERSONAL DETAILS",
         icon: <UserIcon size={16} />,
       },
+      {
+        url: "/settings/employment",
+        text: "EMPLOYMENT DETAILS",
+        icon: <ProjectsIcon size={16} />,
+      },
+      {
+        url: "/settings/devices",
+        text: "ALLOCATED DEVICES",
+        icon: <MobileIcon size={16} />,
+      },
+      {
+        url: "/settings/compensation",
+        text: "COMPENSATION",
+        icon: <PaymentsIcon size={16} />,
+      },
     ],
   },
 
@@ -43,16 +58,6 @@ const getSettingsNavUrls = memberId => [
         url: "/settings/payment",
         text: "PAYMENT SETTINGS",
         icon: <PaymentsIcon size={16} />,
-      },
-      {
-        url: "/settings/employment",
-        text: "EMPLOYMENT DETAILS",
-        icon: <ProjectsIcon size={16} />,
-      },
-      {
-        url: "/settings/devices",
-        text: "ALLOCATED DEVICES",
-        icon: <MobileIcon size={16} />,
       },
       // {
       //   url: "/settings/leaves",
@@ -76,6 +81,21 @@ const getEmployeeSettingsNavUrls = memberId => [
         url: "/settings/profile",
         text: "PERSONAL DETAILS",
         icon: <UserIcon size={16} />,
+      },
+      {
+        url: "/settings/employment",
+        text: "EMPLOYMENT DETAILS",
+        icon: <ProjectsIcon size={16} />,
+      },
+      {
+        url: "/settings/devices",
+        text: "ALLOCATED DEVICES",
+        icon: <MobileIcon size={16} />,
+      },
+      {
+        url: "/settings/compensation",
+        text: "COMPENSATION",
+        icon: <PaymentsIcon size={16} />,
       },
     ],
   },
