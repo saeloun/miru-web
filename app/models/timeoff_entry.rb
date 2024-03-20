@@ -61,7 +61,8 @@ class TimeoffEntry < ApplicationRecord
     end
 
     def optional_holiday_timeoff_entry
-      holiday = holiday_info&.holiday
+      return unless holiday_info.present?
+
       return unless holiday_info&.category == "optional" &&
                   holiday&.no_of_allowed_optional_holidays.present?
 
@@ -106,7 +107,9 @@ class TimeoffEntry < ApplicationRecord
     def allow_one_holiday_per_day
       return unless holiday_info.present?
 
-      if holiday_info&.holiday.optional_timeoff_entries.where(leave_date:, user:).exists?
+      optional_timeoff_entries = holiday.optional_timeoff_entries.where(leave_date:, user:).exists?
+      national_timeoff_entries = holiday.national_timeoff_entries.where(leave_date:, user:).exists?
+      if optional_timeoff_entries || national_timeoff_entries
         errors.add(:base, "You are adding two holidays on the same day, please recheck")
       end
     end
