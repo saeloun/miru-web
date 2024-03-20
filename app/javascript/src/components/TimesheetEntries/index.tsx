@@ -360,7 +360,7 @@ const TimesheetEntries = ({ user, isAdminUser }: Iprops) => {
       const day = dayjs()
         .weekday(weekCounter + weekDay)
         .format("YYYY-MM-DD");
-      if (entryList[day]) {
+      if (entryList && entryList[day]) {
         let dayTotal = 0;
         entryList[day].forEach(e => {
           dayTotal += e.duration;
@@ -432,7 +432,7 @@ const TimesheetEntries = ({ user, isAdminUser }: Iprops) => {
         .weekday(weekDay + weekCounter)
         .format("YYYY-MM-DD");
 
-      if (!entryList[date]) continue;
+      if (!entryList || !entryList[date]) continue;
 
       entryList[date].forEach(entry => {
         if (entry["type"] == "timesheet") {
@@ -549,10 +549,13 @@ const TimesheetEntries = ({ user, isAdminUser }: Iprops) => {
         `${currentYear}-${currentMonthNumber + 1}-${i}`
       ).format("YYYY-MM-DD");
 
-      const totalDuration = entryList[date]?.reduce(
-        (acc: number, cv: number) => cv["duration"] + acc,
-        0
-      );
+      const totalDuration =
+        entryList && entryList[date]
+          ? entryList[date]?.reduce(
+              (acc: number, cv: number) => cv["duration"] + acc,
+              0
+            )
+          : 0;
       if (totalDuration) currentWeekTotalHours += totalDuration;
       weeksData[dayInWeekCounter] = {
         date,
