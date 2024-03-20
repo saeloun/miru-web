@@ -293,3 +293,6 @@ en:
   sessions:
     failure:
       invalid: Invalid email or password
+  expenses:
+    update: "Expense updated successfully"
+    destroy: "Expense deleted successfully"

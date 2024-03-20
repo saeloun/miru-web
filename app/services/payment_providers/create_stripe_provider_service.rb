@@ -10,13 +10,16 @@ class PaymentProviders::CreateStripeProviderService < ApplicationService
   end
 
   def process
-    current_company.payments_providers.create(
-      {
-        name: STRIPE_PROVIDER,
-        connected: true,
-        enabled: true,
-        accepted_payment_methods: ACCEPTED_PAYMENT_METHODS
-      }) if stripe_connected_account.present? && stripe_connected_account.details_submitted
+    if stripe_connected_account.present? && stripe_connected_account.details_submitted
+      unless current_company.payments_providers.exists?(name: STRIPE_PROVIDER)
+        current_company.payments_providers.create(
+          name: STRIPE_PROVIDER,
+          connected: true,
+          enabled: true,
+          accepted_payment_methods: ACCEPTED_PAYMENT_METHODS
+        )
+      end
+    end
   end
 
   private

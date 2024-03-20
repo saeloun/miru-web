@@ -19,6 +19,7 @@
 #  reference              :text
 #  sent_at                :datetime
 #  status                 :integer          default("draft"), not null
+#  stripe_enabled         :boolean          default(TRUE)
 #  tax                    :decimal(20, 2)   default(0.0)
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null

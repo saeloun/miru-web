@@ -24,7 +24,7 @@ import TimeEntryManager from "./TimeEntryManager";
 import ViewToggler from "./ViewToggler";
 import { TimesheetEntriesContext } from "context/TimesheetEntries";
 import TimeoffForm from "components/TimeoffEntries/TimeoffForm";
-import { VacationIconSVG } from "miruIcons";
+import EntryButtons from "./EntryButtons";
 
 dayjs.extend(updateLocale);
 dayjs.extend(weekday);
@@ -49,7 +49,7 @@ const TimesheetEntries = ({ user, isAdminUser }: Iprops) => {
   const [endOfTheMonth, setEndOfTheMonth] = useState<string>(
     dayjs().endOf("month").format("YYYY-MM-DD")
   );
-  const [view, setView] = useState<string>("month");
+  const [view, setView] = useState<string>("day");
   const [newEntryView, setNewEntryView] = useState<boolean>(false);
   const [newTimeoffEntryView, setNewTimeoffEntryView] =
     useState<boolean>(false);
@@ -333,7 +333,7 @@ const TimesheetEntries = ({ user, isAdminUser }: Iprops) => {
     if (!id) return;
     const entry = entryList[selectedFullDate].find(entry => entry.id === id);
     const data = {
-      work_date: entry.work_date,
+      work_date: dayjs(entry.work_date).format("YYYY-MM-DD"),
       duration: entry.duration,
       note: entry.note,
       bill_status:
@@ -676,7 +676,7 @@ const TimesheetEntries = ({ user, isAdminUser }: Iprops) => {
           <div className="mt-8 mb-6 flex items-center justify-between">
             {isDesktop && (
               <nav className="flex">
-                {["month", "week", "day"].map((item, index) => (
+                {["day", "month"].map((item, index) => (
                   <button
                     key={index}
                     className={`mr-10 tracking-widest
@@ -717,52 +717,9 @@ const TimesheetEntries = ({ user, isAdminUser }: Iprops) => {
             </div>
             {!editEntryId && newEntryView && view !== "week" && <EntryForm />}
             {newTimeoffEntryView && <TimeoffForm />}
-            <div className="flex">
-              {view !== "week" &&
-                !newEntryView &&
-                !newTimeoffEntryView &&
-                isDesktop && (
-                  <button
-                    className="flex h-10 w-full items-center justify-center rounded border-2 border-miru-han-purple-600 p-2 text-lg font-bold tracking-widest text-miru-han-purple-600 lg:h-14 lg:p-4"
-                    onClick={() => {
-                      setNewEntryView(true);
-                      setEditEntryId(0);
-                      setEditTimeoffEntryId(0);
-                    }}
-                  >
-                    + NEW ENTRY
-                  </button>
-                )}
-              {/* --- On mobile view we don't need New Entry button for Empty States --- */}
-              {view !== "week" &&
-                !newEntryView &&
-                !isDesktop &&
-                entryList[selectedFullDate] && (
-                  <button
-                    className="flex h-10 w-full items-center justify-center rounded border-2 border-miru-han-purple-600 p-2 text-lg font-bold tracking-widest text-miru-han-purple-600 lg:h-14 lg:p-4"
-                    onClick={() => {
-                      setNewEntryView(true);
-                      setEditEntryId(0);
-                    }}
-                  >
-                    + NEW ENTRY
-                  </button>
-                )}
-              {view !== "week" &&
-                !newEntryView &&
-                !newTimeoffEntryView &&
-                isDesktop && (
-                  <button
-                    className="ml-2 flex h-10 w-full items-center justify-center rounded border-2 border-miru-han-purple-600 p-2 text-lg font-bold uppercase tracking-widest text-miru-han-purple-600 lg:h-14 lg:p-4"
-                    onClick={() => {
-                      setNewTimeoffEntryView(true);
-                    }}
-                  >
-                    <img src={VacationIconSVG} className="icon" />
-                    <span className="ml-2">Mark Time Off</span>
-                  </button>
-                )}
-            </div>
+            {view !== "week" && !newEntryView && !newTimeoffEntryView && (
+              <EntryButtons />
+            )}
           </div>
           {/* Render existing time entry cards in bottom */}
           <TimeEntryManager />

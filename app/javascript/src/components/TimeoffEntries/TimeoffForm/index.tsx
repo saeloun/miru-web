@@ -1,21 +1,20 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 
-import { format } from "date-fns";
 import dayjs from "dayjs";
 import { minFromHHMM, minToHHMM } from "helpers";
-import TextareaAutosize from "react-textarea-autosize";
-import { Button, BUTTON_STYLES, TimeInput } from "StyledComponents";
 
 import timeoffEntryApi from "apis/timeoff-entry";
-import CustomDatePicker from "common/CustomDatePicker";
 import { HOLIDAY_TYPES } from "constants/index";
 import { useTimesheetEntries } from "context/TimesheetEntries";
 import { useUserContext } from "context/UserContext";
 
-const TimeoffForm = ({ isDisplayEditTimeoffEntryForm = false }: Iprops) => {
-  const datePickerRef = useRef();
+import DesktopTimeoffForm from "./DesktopTimeoffForm";
+import MobileTimeoffForm from "./MobileTimeoffForm";
+
+const TimeoffForm = ({ isDisplayEditTimeoffEntryForm = false }) => {
   const { isDesktop } = useUserContext();
+
   const {
     leaveTypes,
     setLeaveTypes,
@@ -42,13 +41,16 @@ const TimeoffForm = ({ isDisplayEditTimeoffEntryForm = false }: Iprops) => {
   const [displayDatePicker, setDisplayDatePicker] = useState<boolean>(false);
   const [duration, setDuration] = useState<string>("");
   const [selectedDate, setSelectedDate] = useState<string>(selectedFullDate);
-  const [leaveTypeId, setLeaveTypeId] = useState<number | string>(0);
-  const [holidayId, setHolidayId] = useState(0);
+  const [leaveTypeId, setLeaveTypeId] = useState<number | string>("");
+  const [leaveType, setLeaveType] = useState<string>("");
+  const [holidayId, setHolidayId] = useState<number | string>("");
+  const [holiday, setHoliday] = useState<string>("");
   const [isShowHolidayList, setIsShowHolidayList] = useState<boolean>(false);
   const [holidayOptions, setHolidayOptions] = useState([]);
+  const [showLeavesList, setShowLeavesList] = useState<boolean>(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
 
   useEffect(() => {
-    // Append National and Optional holiday as a leave type
     const tempLeaveTypes = [...leaveTypes];
     if (hasNationalHoliday) {
       const isNationalHolidayAlreadyAdded = leaveTypes?.find(
@@ -91,11 +93,10 @@ const TimeoffForm = ({ isDisplayEditTimeoffEntryForm = false }: Iprops) => {
 
   useEffect(() => {
     if (isHolidayEntry()) {
-      setIsShowHolidayList(true);
       const tempHolidayOptions =
         holidayList?.filter(holiday => holiday?.category === leaveTypeId) || [];
       setHolidayOptions([...tempHolidayOptions]);
-      setSuggestedHolidayBasedOnDate(tempHolidayOptions);
+      handleSuggestedHolidayBasedOnDate(tempHolidayOptions);
     } else {
       setIsShowHolidayList(false);
     }
@@ -107,7 +108,7 @@ const TimeoffForm = ({ isDisplayEditTimeoffEntryForm = false }: Iprops) => {
     }
   }, [selectedFullDate, isDisplayEditTimeoffEntryForm]);
 
-  const setSuggestedHolidayBasedOnDate = (currentHolidayOptions: any[]) => {
+  const handleSuggestedHolidayBasedOnDate = (currentHolidayOptions: any[]) => {
     if (!isDisplayEditTimeoffEntryForm && currentHolidayOptions?.length > 0) {
       const suggestedHoliday = currentHolidayOptions?.find(
         holiday => holiday?.date === selectedDate
@@ -115,6 +116,10 @@ const TimeoffForm = ({ isDisplayEditTimeoffEntryForm = false }: Iprops) => {
       setHolidayId(suggestedHoliday?.id || 0);
     }
   };
+
+  const isHolidayEntry = () =>
+    leaveTypeId === HOLIDAY_TYPES.NATIONAL ||
+    leaveTypeId === HOLIDAY_TYPES.OPTIONAL;
 
   const handleFillData = () => {
     const timeoffEntry = entryList[selectedFullDate]?.find(
@@ -128,11 +133,19 @@ const TimeoffForm = ({ isDisplayEditTimeoffEntryForm = false }: Iprops) => {
       if (timeoffEntry?.holiday_info_id) {
         const currentHolidayId = timeoffEntry.holiday_info_id || 0;
         const currentHolidayDetails = holidaysHashObj[currentHolidayId];
-
-        setLeaveTypeId(currentHolidayDetails?.category);
+        const selectedLeaveType = leaveTypes.find(
+          leaveType => leaveType.id === currentHolidayDetails?.category
+        );
+        setLeaveTypeId(selectedLeaveType?.id);
+        setLeaveType(selectedLeaveType?.name);
         setHolidayId(currentHolidayId);
+        setHoliday(currentHolidayDetails?.name);
       } else {
+        const selectedLeaveType = leaveTypes.find(
+          leaveType => leaveType.id === timeoffEntry.leave_type_id
+        );
         setLeaveTypeId(timeoffEntry.leave_type_id);
+        setLeaveType(selectedLeaveType.name);
       }
     }
   };
@@ -146,13 +159,18 @@ const TimeoffForm = ({ isDisplayEditTimeoffEntryForm = false }: Iprops) => {
     setDuration(val);
   };
 
-  const isHolidayEntry = () =>
-    leaveTypeId === HOLIDAY_TYPES.NATIONAL ||
-    leaveTypeId === HOLIDAY_TYPES.OPTIONAL;
+  const incrementOrDecrementTime = (increment = true) => {
+    const currentMinutes = minFromHHMM(duration);
+    const updatedMinutes = increment
+      ? currentMinutes + 15
+      : currentMinutes - 15;
+    const updatedDuration = minToHHMM(updatedMinutes);
+    setDuration(updatedDuration);
+  };
 
   const isValidTimeEntry = () => {
     const isValidLeaveTypeOrHolidayId =
-      (isHolidayEntry() && holidayId > 0) || Number(leaveTypeId) > 0;
+      (isHolidayEntry() && Number(holidayId) > 0) || Number(leaveTypeId) > 0;
 
     return (
       isValidLeaveTypeOrHolidayId &&
@@ -161,19 +179,25 @@ const TimeoffForm = ({ isDisplayEditTimeoffEntryForm = false }: Iprops) => {
     );
   };
 
-  const getPayload = () => {
+  const getPayload = (timeoffEntry?: any) => {
     if (isValidTimeEntry()) {
-      const payload: Payload = {
-        duration: minFromHHMM(duration),
-        leave_date: selectedDate,
+      const payload = {
+        duration: timeoffEntry?.duration || minFromHHMM(duration),
+        leave_date: timeoffEntry?.leave_date
+          ? dayjs(timeoffEntry.leave_date).format("YYYY-MM-DD")
+          : selectedDate,
         user_id: selectedEmployeeId,
-        note,
+        note: timeoffEntry?.note || note,
       };
 
       if (isHolidayEntry()) {
-        payload["holiday_info_id"] = Number(holidayId);
+        payload["holiday_info_id"] =
+          timeoffEntry?.holiday_info_id || Number(holidayId);
+        payload["leave_type_id"] = null;
       } else {
-        payload["leave_type_id"] = Number(leaveTypeId);
+        payload["leave_type_id"] =
+          timeoffEntry?.leave_type_id || Number(leaveTypeId);
+        payload["holiday_info_id"] = null;
       }
 
       return { timeoff_entry: { ...payload } };
@@ -211,6 +235,7 @@ const TimeoffForm = ({ isDisplayEditTimeoffEntryForm = false }: Iprops) => {
 
   const handleEditTimeoffEntry = async () => {
     const payload = getPayload();
+
     if (payload) {
       const updateRes = await timeoffEntryApi.update(
         editTimeoffEntryId,
@@ -237,141 +262,100 @@ const TimeoffForm = ({ isDisplayEditTimeoffEntryForm = false }: Iprops) => {
     }
   };
 
+  const handleClose = () => {
+    setNewTimeoffEntryView(false);
+    setEditTimeoffEntryId(0);
+  };
+
+  const handleDeleteTimeoffEntry = async timeoffEntryId => {
+    if (!timeoffEntryId) return;
+    setEditTimeoffEntryId(0);
+    setNewTimeoffEntryView(false);
+    const res = await timeoffEntryApi.destroy(timeoffEntryId);
+
+    if (res.status === 200) {
+      await handleFilterEntry(selectedFullDate, timeoffEntryId);
+    }
+  };
+
+  const handleDuplicateTimeoffEntry = async () => {
+    if (!editTimeoffEntryId) return;
+    setEditTimeoffEntryId(0);
+    setNewTimeoffEntryView(false);
+    const timeoffEntry = entryList[selectedFullDate]?.find(
+      entry => entry.id === editTimeoffEntryId
+    );
+
+    if (timeoffEntry) {
+      const payload = getPayload(timeoffEntry);
+      if (payload) {
+        const res = await timeoffEntryApi.create(payload, selectedEmployeeId);
+        if (res.status === 200) {
+          await fetchEntries(selectedFullDate, selectedFullDate);
+          await fetchEntriesOfMonths();
+        }
+      }
+    }
+  };
+
   return (
-    <div className="mt-10 hidden min-h-24 justify-between rounded-lg p-4 shadow-2xl lg:flex">
-      <div className="w-1/2">
-        <div className="mb-2 flex w-129 justify-between">
-          <select
-            id="leaves"
-            name="leaves"
-            value={`${leaveTypeId}`}
-            className={`h-8 rounded-sm bg-miru-gray-100 ${
-              isShowHolidayList ? "w-12/25" : "w-full"
-            }`}
-            onChange={e => setLeaveTypeId(e?.target?.value || 0)}
-          >
-            <option className="text-miru-gray-100" key={0} value={0}>
-              Leave Type
-            </option>
-            {leaveTypes?.length > 0 &&
-              leaveTypes?.map(leave => (
-                <option
-                  className="text-miru-gray-100"
-                  key={leave.id}
-                  value={leave.id}
-                >
-                  {leave.name}
-                </option>
-              ))}
-          </select>
-          {isShowHolidayList && (
-            <select
-              className="h-8 w-12/25 rounded-sm bg-miru-gray-100"
-              id="holidays"
-              name="holidays"
-              value={`${holidayId}`}
-              onChange={e => setHolidayId(Number(e?.target?.value) || 0)}
-            >
-              <option className="text-miru-gray-100" key={0} value={0}>
-                Select Holiday
-              </option>
-              {holidayOptions?.length > 0 &&
-                holidayOptions?.map(holiday => (
-                  <option
-                    className="text-miru-gray-100"
-                    key={holiday.id}
-                    value={holiday.id}
-                  >
-                    {holiday.name}
-                  </option>
-                ))}
-            </select>
-          )}
-        </div>
-        <TextareaAutosize
-          cols={60}
-          name="notes"
-          placeholder=" Notes"
-          rows={5}
-          value={note}
-          className={`
-            focus:miru-han-purple-1000 outline-none "h-8" mt-2 w-129 resize-none overflow-y-auto rounded-sm bg-miru-gray-100 px-1
-          `}
-          onChange={e => setNote(e.target["value"])}
+    <>
+      {isDesktop ? (
+        <DesktopTimeoffForm
+          displayDatePicker={displayDatePicker}
+          duration={duration}
+          handleDateChangeFromDatePicker={handleDateChangeFromDatePicker}
+          handleDurationChange={handleDurationChange}
+          handleSubmit={handleSubmit}
+          holidayId={holidayId}
+          holidayOptions={holidayOptions}
+          isDisplayEditTimeoffEntryForm={isDisplayEditTimeoffEntryForm}
+          isHolidayEntry={isHolidayEntry}
+          isShowHolidayList={isShowHolidayList}
+          isValidTimeEntry={isValidTimeEntry}
+          leaveTypeId={leaveTypeId}
+          note={note}
+          selectedDate={selectedDate}
+          setDisplayDatePicker={setDisplayDatePicker}
+          setHolidayId={setHolidayId}
+          setLeaveTypeId={setLeaveTypeId}
+          setNote={setNote}
         />
-      </div>
-      <div className="w-60">
-        <div className="mb-2 flex justify-between">
-          <div>
-            {displayDatePicker && (
-              <div className="relative" ref={datePickerRef}>
-                <div className="h-100 w-100 absolute top-8 z-10">
-                  <CustomDatePicker
-                    date={dayjs(selectedDate).toDate()}
-                    handleChange={handleDateChangeFromDatePicker}
-                  />
-                </div>
-              </div>
-            )}
-            <div
-              className="formatted-date flex h-8 w-29 items-center justify-center rounded-sm bg-miru-gray-100 p-1 text-sm"
-              id="formattedDate"
-              onClick={() => {
-                setDisplayDatePicker(true);
-              }}
-            >
-              {format(new Date(selectedDate), "do MMM, yyyy")}
-            </div>
-          </div>
-          <TimeInput
-            className="h-8 w-20 rounded-sm bg-miru-gray-100 p-1 text-sm placeholder:text-miru-gray-1000"
-            initTime={duration}
-            name="timeInput"
-            onTimeChange={handleDurationChange}
-          />
-        </div>
-      </div>
-      <div className="max-w-min">
-        <Button
-          disabled={!isValidTimeEntry()}
-          style={BUTTON_STYLES.primary}
-          className={`mb-1 h-8 w-38 rounded border py-1 px-6 text-xs font-bold uppercase tracking-widest text-white hover:border-transparent ${
-            !isValidTimeEntry()
-              ? "cursor-not-allowed bg-miru-gray-1000"
-              : "cursor-pointer bg-miru-han-purple-1000 hover:border-transparent"
-          }
-          `}
-          onClick={handleSubmit}
-        >
-          {isDisplayEditTimeoffEntryForm ? "Update" : "Save"}
-        </Button>
-        <Button
-          className="mt-1 h-8 w-38 rounded border border-miru-han-purple-1000 bg-transparent py-1 px-6 text-xs font-bold uppercase tracking-widest text-miru-han-purple-600 hover:border-transparent hover:bg-miru-han-purple-1000 hover:text-white"
-          style={BUTTON_STYLES.secondary}
-          onClick={() => {
-            setNewTimeoffEntryView(false);
-            if (editTimeoffEntryId) {
-              setEditTimeoffEntryId(0);
-            }
-          }}
-        >
-          CANCEL
-        </Button>
-      </div>
-    </div>
+      ) : (
+        <MobileTimeoffForm
+          displayDatePicker={displayDatePicker}
+          duration={duration}
+          handleClose={handleClose}
+          handleDateChangeFromDatePicker={handleDateChangeFromDatePicker}
+          handleDeleteTimeoffEntry={handleDeleteTimeoffEntry}
+          handleDuplicateTimeoffEntry={handleDuplicateTimeoffEntry}
+          handleDurationChange={handleDurationChange}
+          handleSubmit={handleSubmit}
+          holiday={holiday}
+          holidayOptions={holidayOptions}
+          incrementOrDecrementTime={incrementOrDecrementTime}
+          isHolidayEntry={isHolidayEntry}
+          isShowHolidayList={isShowHolidayList}
+          isValidTimeEntry={isValidTimeEntry}
+          leaveType={leaveType}
+          note={note}
+          selectedDate={selectedDate}
+          setDisplayDatePicker={setDisplayDatePicker}
+          setHoliday={setHoliday}
+          setHolidayId={setHolidayId}
+          setIsShowHolidayList={setIsShowHolidayList}
+          setLeaveType={setLeaveType}
+          setLeaveTypeId={setLeaveTypeId}
+          setNote={setNote}
+          setSelectedDate={setSelectedDate}
+          setShowDeleteDialog={setShowDeleteDialog}
+          setShowLeavesList={setShowLeavesList}
+          showDeleteDialog={showDeleteDialog}
+          showLeavesList={showLeavesList}
+        />
+      )}
+    </>
   );
 };
-
-interface Payload {
-  duration: number;
-  note?: string;
-  leave_date: string;
-  user_id: number;
-  leave_type_id?: number;
-  holiday_info_id?: number;
-}
-interface Iprops {
-  isDisplayEditTimeoffEntryForm?: boolean;
-}
 
 export default TimeoffForm;
