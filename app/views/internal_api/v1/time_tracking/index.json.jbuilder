@@ -15,10 +15,23 @@ json.entries do
     json.set! date do
       if data.is_a?(Array)
         json.array! data do |entry|
+          json.id entry[:id]
+          json.duration entry[:duration]
+          json.note entry[:note]
           if entry[:type] == "timesheet"
-            json.partial! "internal_api/v1/partial/timesheet_entry", locals: { entry:, company: }
+            json.type entry[:type]
+            json.work_date CompanyDateFormattingService.new(entry[:work_date], company:).process
+            json.bill_status entry[:bill_status]
+            json.client entry[:client]
+            json.project entry[:project]
+            json.project_id entry[:project_id]
+            json.team_member entry[:team_member]
           else
-            json.partial! "internal_api/v1/partial/timeoff_entry", locals: { entry:, company: }
+            json.type "leave"
+            json.leave_date CompanyDateFormattingService.new(entry[:leave_date], company:).process
+            json.holiday_info_id entry[:holiday_info_id]
+            json.leave_type_id entry[:leave_type_id]
+            json.user_id entry[:user_id]
           end
         end
       end

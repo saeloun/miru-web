@@ -33,6 +33,13 @@ export const personalSettingsList = [
     icon: <MobileIcon className="mr-2" size={20} weight="bold" />,
     authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE],
   },
+  //TODO: Uncomment when Integrating with API
+  // {
+  //   label: "COMPENSATION",
+  //   link: "/settings/compensation",
+  //   icon: <PaymentsIcon className="mr-2" size={20} weight="bold" />,
+  //   authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE],
+  // },
 ];
 
 export const companySettingsList = [

@@ -169,7 +169,6 @@ const TeamForm = ({
                 className={`w-full p-2 text-center text-base font-bold ${
                   !isValid || (!dirty && "bg-miru-gray-400")
                 }`}
-                onClick={() => handleSubmit(values)}
               >
                 {isEdit ? "SAVE CHANGES" : "SEND INVITE"}
               </Button>

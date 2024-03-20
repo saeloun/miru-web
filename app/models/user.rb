@@ -141,6 +141,11 @@ class User < ApplicationRecord
     super and self.kept? and (!self.employments.kept.empty? or self.companies.empty?)
   end
 
+  def joined_date_for_company(company)
+    employment = employments.find_by(company:)
+    employment&.joined_at
+  end
+
   def inactive_message
     if self.employments.kept.empty? && self.kept?
       I18n.t("user.login.failure.disabled")

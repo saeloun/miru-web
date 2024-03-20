@@ -53,7 +53,7 @@ const HolidayModal = ({
           {yearCalendar[quarters].quarter.map(
             (
               month,
-                key //eslint-disable-line
+              key //eslint-disable-line
             ) => (
               <CalendarComponent
                 id={month.id}
