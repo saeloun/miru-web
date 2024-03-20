@@ -61,12 +61,13 @@ class TimeoffEntry < ApplicationRecord
     end
 
     def optional_holiday_timeoff_entry
+      holiday = holiday_info&.holiday
       return unless holiday_info&.category == "optional" &&
-                  holiday_info&.holiday&.no_of_allowed_optional_holidays.present?
+                  holiday&.no_of_allowed_optional_holidays.present?
 
-      no_of_allowed_optional_holidays = holiday_info&.holiday.no_of_allowed_optional_holidays
-      time_period_optional_holidays = holiday_info&.holiday.time_period_optional_holidays
-      optional_timeoff_entries = holiday_info&.holiday.optional_timeoff_entries
+      no_of_allowed_optional_holidays = holiday.no_of_allowed_optional_holidays
+      time_period_optional_holidays = holiday.time_period_optional_holidays
+      optional_timeoff_entries = holiday.optional_timeoff_entries
 
       error_message = "You have exceeded the maximum number of permitted optional holidays"
       case time_period_optional_holidays.to_sym
