@@ -4,6 +4,11 @@ module TimeoffEntries
   class IndexService < ApplicationService
     attr_reader :current_company, :current_user, :user_id, :year
 
+    CURRENT_DATE = DateTime.now
+    CURRENT_YEAR = CURRENT_DATE.year
+    CURRENT_MONTH = CURRENT_DATE.month
+    CURRENT_WEEK = CURRENT_DATE.cweek
+
     def initialize(current_user, current_company, user_id, year)
       @current_user = current_user
       @current_company = current_company
@@ -127,42 +132,34 @@ module TimeoffEntries
       end
 
       def calculate_days_per_month_leave_allocation(joining_date, allocation_value)
-        current_date = DateTime.now
-        current_year = current_date.year
-        current_month = current_date.month
-
         first_month_allocation_value = allocation_value
-        if joining_date && joining_date.year == current_year
-          total_month_duration = current_month - joining_date.month
+        if joining_date && joining_date.year == CURRENT_YEAR
+          total_month_duration = CURRENT_MONTH - joining_date.month
           first_month_allocation_value /= 2 if joining_date.day > 15
           total_month_duration.zero? ? first_month_allocation_value
            : first_month_allocation_value + allocation_value * total_month_duration
         else
-          first_month_allocation_value * current_month
+          first_month_allocation_value * CURRENT_MONTH
         end
       end
 
       def calculate_days_per_week_leave_allocation(joining_date, allocation_value)
-        current_date = Date.today
-        current_week = current_date.cweek
-
-        if joining_date && joining_date.year == current_date.year
-          total_weeks = (current_week - joining_date.cweek)
+        if joining_date && joining_date.year == CURRENT_YEAR
+          total_weeks = (CURRENT_WEEK - joining_date.cweek)
           first_week_allocation_value = (joining_date.wday >= 3 && joining_date.wday <= 5) ?
             (allocation_value / 2) : allocation_value
           first_week_allocation_value + allocation_value * total_weeks
         else
-          allocation_value * current_week
+          allocation_value * CURRENT_WEEK
         end
       end
 
       def calculate_days_per_quarter_leave_allocation(joining_date, allocation_value)
-        current_date = Date.today
-        current_quarter = quarter_position_and_after_mid_quarter(current_date)
+        current_quarter = quarter_position_and_after_mid_quarter(CURRENT_DATE)
         joining_date_quarter, is_joining_date_after_mid_quarter = quarter_position_and_after_mid_quarter(joining_date)
         first_week_allocation_value = allocation_value
 
-        if joining_date && joining_date.year == current_date.year
+        if joining_date && joining_date.year == CURRENT_YEAR
           total_quarter = current_quarter[0] - joining_date_quarter
           first_week_allocation_value = allocation_value /= 2 if is_joining_date_after_mid_quarter
           first_week_allocation_value + allocation_value * total_quarter
@@ -172,12 +169,8 @@ module TimeoffEntries
       end
 
       def calculate_days_per_year_leave_allocation(joining_date, allocation_value)
-        current_date = DateTime.now
-        current_year = current_date.year
-        current_month = current_date.month
-
-        if joining_date && joining_date.year == current_year
-          joining_date.month > current_month / 2 ? allocation_value / 2 : allocation_value
+        if joining_date && joining_date.year == CURRENT_YEAR
+          joining_date.month > CURRENT_MONTH / 2 ? allocation_value / 2 : allocation_value
         else
           allocation_value
         end
@@ -190,20 +183,8 @@ module TimeoffEntries
       end
 
       def quarter_position_and_after_mid_quarter(date)
-        case date.month
-        when 1..3
-          quarter = 1
-          mid_date = Date.new(date.year, 1, 1) + 1.month + 15.days # January 15th
-        when 4..6
-          quarter = 2
-          mid_date = Date.new(date.year, 4, 1) + 1.month + 15.days # April 15th
-        when 7..9
-          quarter = 3
-          mid_date = Date.new(date.year, 7, 1) + 1.month + 15.days # July 15th
-        when 10..12
-          quarter = 4
-          mid_date = Date.new(date.year, 10, 1) + 1.month + 15.days # October 15th
-        end
+        quarter = (date.month / 3.0).ceil
+        mid_date = Date.new(date.year, (((quarter - 1) * 3) + 2), 15)
 
         after_mid_quarter = date > mid_date
 
