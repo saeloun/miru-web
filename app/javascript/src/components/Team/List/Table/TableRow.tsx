@@ -48,11 +48,7 @@ const TableRow = ({ item }) => {
   const handleRowClick = () => {
     if (status) return;
 
-    if (isDesktop) {
-      navigate(`/team/${id}`, { replace: true });
-    } else {
-      navigate(`/team/${id}/options`, { replace: true });
-    }
+    navigate(`/team/${id}`, { replace: true });
   };
 
   return (
