@@ -85,7 +85,7 @@ const Container = ({ selectedFilter }: ContainerProps) => {
       {timeEntryReport.reports?.length > 0 ? (
         getAlphabeticallySortedReportList(timeEntryReport.reports)?.map(
           ({ label, entries }, index) => {
-            const clientLogo = entries[0].clientLogo;
+            const clientLogo = entries[0]?.clientLogo || "";
 
             return (
               <Fragment key={index}>
