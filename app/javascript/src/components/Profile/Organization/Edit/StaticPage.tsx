@@ -14,6 +14,7 @@ import "react-phone-number-input/style.css";
 import { CustomAsyncSelect } from "common/CustomAsyncSelect";
 import { CustomInputText } from "common/CustomInputText";
 import CustomReactSelect from "common/CustomReactSelect";
+import { CustomTextareaAutosize } from "common/CustomTextareaAutosize";
 import { ErrorSpan } from "common/ErrorSpan";
 
 import FileAcceptanceText from "./FileAcceptanceText";
@@ -183,11 +184,12 @@ export const StaticPage = ({
       </div>
       <div className="w-full md:w-72">
         <div className="flex w-full flex-col px-2 pb-3 text-sm font-medium">
-          <CustomInputText
+          <CustomTextareaAutosize
             id="addressLine1"
             label="Address line 1"
+            maxRows={5}
             name="addressLine1"
-            type="text"
+            rows={1}
             value={companyAddr.addressLine1}
             onChange={e => handleAddrChange(e, "addressLine1")}
           />
@@ -199,11 +201,12 @@ export const StaticPage = ({
           )}
         </div>
         <div className="flex w-full flex-col px-2 py-3">
-          <CustomInputText
+          <CustomTextareaAutosize
             id="addressLine2"
             label="Address line 2 (optional)"
+            maxRows={5}
             name="addressLine2"
-            type="text"
+            rows={1}
             value={companyAddr.addressLine2}
             onChange={e => handleAddrChange(e, "addressLine2")}
           />
