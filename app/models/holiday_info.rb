@@ -35,7 +35,6 @@ class HolidayInfo < ApplicationRecord
     format: { with: /\A[a-zA-Z\s]+\z/ },
     length: { maximum: 30 }
   validates :date, :category, presence: true
-  validate :validate_optional_holidays, if: -> { category == "optional" }
   validate :validate_holiday_category
   validate :validate_year
 
@@ -48,12 +47,6 @@ class HolidayInfo < ApplicationRecord
   }
 
   private
-
-    def validate_optional_holidays
-      unless holiday&.enable_optional_holidays
-        errors.add(:base, "optional holidays are disabled")
-      end
-    end
 
     def validate_holiday_category
       unless holiday&.holiday_types&.include?(category)
