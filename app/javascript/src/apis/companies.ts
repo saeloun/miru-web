@@ -12,11 +12,18 @@ const authApi = axios.create({
   },
 });
 
+const formHeaders = {
+  headers: {
+    "Content-Type": "multipart/form-data",
+  },
+};
+
 const index = async () => axios.get(`${path}`);
 
-const create = payload => authApi.post(path, payload);
+const create = payload => authApi.post(path, payload, formHeaders);
 
-const update = (id, payload) => axios.put(`${path}/${id}`, payload);
+const update = (id, payload) =>
+  axios.put(`${path}/${id}`, payload, formHeaders);
 
 const destroy = id => axios.delete(`${path}/${id}`);
 
