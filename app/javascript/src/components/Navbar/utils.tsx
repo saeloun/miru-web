@@ -10,6 +10,7 @@ import {
   PaymentsIcon,
   SettingIcon,
   CalendarIcon,
+  // ExpenseIconSVG
 } from "miruIcons";
 import { NavLink } from "react-router-dom";
 
@@ -65,6 +66,12 @@ const navOptions = [
     path: Paths.Leave_Management,
     allowedRoles: ["admin", "owner", "employee"],
   },
+  // {
+  //   logo: <img className="mr-0 h-5 w-5 md:mr-4" src={ExpenseIconSVG} />,
+  //   label: "Expenses",
+  //   path: Paths.EXPENSES,
+  //   allowedRoles: ["admin", "owner", "book_keeper"],
+  // },
 ];
 
 const navAdminMobileOptions = [
@@ -103,6 +110,12 @@ const navAdminMobileOptions = [
     label: "Payments",
     path: Paths.PAYMENTS,
   },
+  // {
+  //   logo: <PaymentsIcon className="mr-0 md:mr-4" size={26} />,
+  //   label: "Expenses",
+  //   dataCy: "expenses-tab",
+  //   path: Paths.EXPENSES,
+  // },
 ];
 
 const navClientOptions = [
@@ -118,6 +131,12 @@ const navClientOptions = [
     path: "/settings/profile",
     allowedRoles: ["admin", "owner", "book_keeper", "client"],
   },
+  // {
+  //   logo: <PaymentsIcon className="mr-0 md:mr-4" size={26} />,
+  //   label: "Expenses",
+  //   dataCy: "expenses-tab",
+  //   path: Paths.EXPENSES,
+  // },
 ];
 
 const activeClassName =

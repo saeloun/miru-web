@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 
 import { format } from "date-fns";
+import dayjs from "dayjs";
 import { minToHHMM } from "helpers";
 
 import timeoffEntryApi from "apis/timeoff-entry";
@@ -31,6 +32,7 @@ const TimeoffEntryCard = ({
     fetchEntriesOfMonths,
     setEditEntryId,
     setNewEntryView,
+    setNewTimeoffEntryView,
   } = useTimesheetEntries();
   const { id, note, duration, bill_status } = timeoffEntry;
   const [isHolidayTimeoffEntry, setIsHolidayTimeoffEntry] =
@@ -48,7 +50,7 @@ const TimeoffEntryCard = ({
     if (timeOffEntry) {
       const payload: Payload = {
         duration: timeOffEntry.duration,
-        leave_date: timeOffEntry.leave_date,
+        leave_date: dayjs(timeoffEntry.leave_date).format("YYYY-MM-DD"),
         user_id: selectedEmployeeId,
         note,
       };
@@ -64,9 +66,9 @@ const TimeoffEntryCard = ({
   };
 
   const handleCardClick = () => {
-    const isDisableCardClick = true;
-    if (!isDesktop && !isDisableCardClick) {
+    if (!isDesktop) {
       setEditTimeoffEntryId(id);
+      setNewTimeoffEntryView(true);
     }
   };
 

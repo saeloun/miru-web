@@ -146,10 +146,6 @@ module.exports = {
           800: "#ADA4CE",
           50: "#CDD6DF33",
         },
-        "miru-red": {
-          400: "#E04646",
-          200: "#EB5B5B",
-        },
         "miru-white": {
           1000: "#FFFFFF",
         },
@@ -205,6 +201,10 @@ module.exports = {
         "miru-report-purple": {
           600: "#3111A6",
           400: "#8062EF",
+        },
+        "miru-red": {
+          400: "#E04646",
+          200: "#EB5B5B",
         },
       },
       fontFamily: {

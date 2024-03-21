@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class InternalApi::V1::ExpensesController < ApplicationController
-  before_action :set_expense, only: :show
+  before_action :set_expense, only: [:show, :update, :destroy]
 
   def index
     authorize Expense
@@ -25,6 +25,22 @@ class InternalApi::V1::ExpensesController < ApplicationController
     authorize @expense
 
     render :show, locals: { expense: Expense::ShowPresenter.new(@expense).process }
+  end
+
+  def update
+    authorize @expense
+
+    @expense.update!(expense_params)
+
+    render json: { notice: I18n.t("expenses.update") }, status: :ok
+  end
+
+  def destroy
+    authorize @expense
+
+    @expense.destroy!
+
+    render json: { notice: I18n.t("expenses.destroy") }, status: :ok
   end
 
   private

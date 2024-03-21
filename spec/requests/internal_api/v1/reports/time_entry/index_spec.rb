@@ -6,9 +6,9 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController::#index", type: :r
   let(:company) { create(:company, name: "company_one") }
   let(:user) { create(:user, current_workspace_id: company.id) }
   let(:client) { create(:client, :with_logo, company:, name: "American_Client") }
-  let(:project) { create(:project, client:, name: "A class project") }
+  let(:project) { create(:project, billable: true, client:, name: "A class project") }
   let(:client2) { create(:client, company_id: company.id, name: "European_Client") }
-  let(:project2) { create(:project, client_id: client2.id, name: "B class project") }
+  let(:project2) { create(:project, billable: true, client_id: client2.id, name: "B class project") }
   let(:client3) { create(:client, company_id: company.id, name: "Indian_Client") }
   let(:project3) { create(:project, client_id: client3.id, name: "C class project") }
   let(:last_month_start_date) { 1.month.ago.beginning_of_month + 1.days }

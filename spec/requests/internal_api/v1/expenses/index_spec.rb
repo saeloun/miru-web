@@ -53,7 +53,8 @@ RSpec.describe "InternalApi::V1::Expense#index", type: :request do
                             "date" => CompanyDateFormattingService.new(expense.date, company:).process,
                             "expenseType" => expense.expense_type,
                             "categoryName" => expense.expense_category.name,
-                            "vendorName" => expense.vendor&.name
+                            "vendorName" => expense.vendor&.name,
+                            "description" => expense.description
                           }
                         end
         expect(json_response["expenses"]).to eq(expected_data)

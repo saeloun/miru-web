@@ -11,6 +11,7 @@ const Header = ({
   isStripeConnected,
   setIsInvoiceEmail,
   setShowConnectPaymentDialog,
+  setShowStripeDisabledDialog,
 }: InvoiceEmailProps) => (
   <div className="mt-6 mb-3 sm:flex sm:items-center sm:justify-between">
     <div className="flex flex-row">
@@ -56,7 +57,9 @@ const Header = ({
               }`}
             onClick={() => {
               if (invoice.status != "paid") {
-                if (isStripeConnected) {
+                if (isStripeConnected && !invoice.stripe_enabled) {
+                  setShowStripeDisabledDialog(true);
+                } else if (isStripeConnected) {
                   window.location.href = stripeUrl;
                 } else {
                   setIsInvoiceEmail(true);
@@ -83,6 +86,7 @@ const Header = ({
 interface Invoice {
   invoice_number: number;
   status: string;
+  stripe_enabled: boolean;
 }
 
 interface InvoiceEmailProps {
@@ -91,6 +95,7 @@ interface InvoiceEmailProps {
   isStripeConnected: boolean;
   setIsInvoiceEmail: (_value) => void;
   setShowConnectPaymentDialog: (_value) => void;
+  setShowStripeDisabledDialog: (_value) => void;
 }
 
 export default Header;

@@ -10,7 +10,7 @@ class Expenses::FetchService
   end
 
   def process
-    @expenses = search_expenses
+    @expenses = search_expenses.includes(:expense_category, :vendor, :company)
 
     {
       expenses:,
