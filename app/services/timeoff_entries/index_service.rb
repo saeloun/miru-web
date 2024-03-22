@@ -2,7 +2,8 @@
 
 module TimeoffEntries
   class IndexService < ApplicationService
-    attr_reader :current_company, :current_user, :user_id, :year
+    attr_reader :current_company, :current_user, :user_id, :year, :optional_timeoff_entries, :national_timeoff_entries
+    attr_accessor :leave_balance
 
     CURRENT_DATE = DateTime.now
     CURRENT_YEAR = CURRENT_DATE.year
@@ -14,14 +15,17 @@ module TimeoffEntries
       @current_company = current_company
       @user_id = user_id
       @year = year.to_i
+      @leave_balance = []
     end
 
     def process
       {
         timeoff_entries:,
         employees:,
-        leave_balance:,
-        total_timeoff_entries_duration: timeoff_entries.sum(:duration)
+        leave_balance: process_leave_balance,
+        total_timeoff_entries_duration: timeoff_entries.sum(:duration),
+        optional_timeoff_entries:,
+        national_timeoff_entries:
       }
     end
 
@@ -49,41 +53,9 @@ module TimeoffEntries
         current_user.has_role?(:owner, current_company) || current_user.has_role?(:admin, current_company)
       end
 
-      def leave_balance
-        leave_balance = []
-
-        leave = current_company.leaves.kept.find_by(year:)
-
-        if leave
-          previous_year_leave = current_company.leaves.kept.find_by(year: leave.year - 1)
-
-          leave.leave_types.kept.all.each do |leave_type|
-            total_leave_type_days = calculate_total_duration(leave_type)
-
-            timeoff_entries_duration = leave_type.timeoff_entries.kept.where(user_id:).sum(:duration)
-
-            previous_year_leave_type = previous_year_leave &&
-              previous_year_leave.leave_types.kept.find_by(name: leave_type.name)
-
-            previous_year_carryforward = calculate_previous_year_carryforward(previous_year_leave_type)
-
-            net_duration = (total_leave_type_days * 8 * 60) + previous_year_carryforward - timeoff_entries_duration
-
-            summary_object = {
-              id: leave_type.id,
-              name: leave_type.name,
-              icon: leave_type.icon,
-              color: leave_type.color,
-              total_leave_type_days:,
-              timeoff_entries_duration:,
-              net_duration:,
-              net_days: net_duration / 60 / 8
-            }
-
-            leave_balance << summary_object
-          end
-        end
-
+      def process_leave_balance
+        calculate_leave_balance
+        calculate_holiday_balance
         leave_balance
       end
 
@@ -203,6 +175,91 @@ module TimeoffEntries
         carry_forward_duration = leave_type.carry_forward_days * 8 * 60
 
         net_duration > carry_forward_duration ? carry_forward_duration : net_duration > 0 ? net_duration : 0
+      end
+
+      def calculate_leave_balance
+        leave = current_company.leaves.kept.find_by(year: Date.current.year)
+        return unless leave
+
+        previous_year_leave = current_company.leaves.kept.find_by(year: leave.year - 1)
+
+        leave.leave_types.kept.all.each do |leave_type|
+          total_leave_type_days = calculate_total_duration(leave_type)
+
+          timeoff_entries_duration = leave_type.timeoff_entries.kept.where(user_id:).sum(:duration)
+
+          previous_year_leave_type = previous_year_leave &&
+            previous_year_leave.leave_types.kept.find_by(name: leave_type.name)
+
+          previous_year_carryforward = calculate_previous_year_carryforward(previous_year_leave_type)
+
+          net_duration = (total_leave_type_days * 8 * 60) + previous_year_carryforward - timeoff_entries_duration
+
+          summary_object = {
+            id: leave_type.id,
+            name: leave_type.name,
+            icon: leave_type.icon,
+            color: leave_type.color,
+            total_leave_type_days:,
+            timeoff_entries_duration:,
+            net_duration:,
+            net_days: net_duration / 60 / 8,
+            type: "leave"
+          }
+
+          @leave_balance << summary_object
+        end
+      end
+
+      def calculate_holiday_balance
+        holiday = current_company.holidays.kept.find_by(year:)
+
+        return unless holiday
+
+        no_of_allowed_optional_holidays = holiday.no_of_allowed_optional_holidays
+        time_period_optional_holidays = holiday.time_period_optional_holidays
+        @optional_timeoff_entries = holiday.optional_timeoff_entries.where(user: user_id)
+        @national_timeoff_entries = holiday.national_timeoff_entries.where(user: user_id)
+
+        total_optional_entries = TimeoffEntries::CalculateOptionalHolidayTimeoffEntriesService.new(
+          time_period_optional_holidays,
+          holiday.optional_timeoff_entries,
+          Date.current,
+          user_id
+        ).process
+
+        if total_optional_entries >= no_of_allowed_optional_holidays
+          net_days = 0
+        else
+          net_days = no_of_allowed_optional_holidays - total_optional_entries
+        end
+
+        optional_holidays = {
+          id: "optional",
+          name: "Optional Holidays",
+          icon: "optional",
+          color: "optional",
+          net_duration: net_days * 60 * 8,
+          net_days:,
+          timeoff_entries_duration: @optional_timeoff_entries.sum(:duration),
+          type: "holiday",
+          category: "optional",
+          time_period: time_period_optional_holidays.to_s.sub("per_", "")
+        }
+
+        leave_balance << optional_holidays
+
+        national_holidays = {
+          id: "national",
+          name: "National Holidays",
+          icon: "national",
+          color: "national",
+          timeoff_entries_duration: @national_timeoff_entries.sum(:duration),
+          type: "holiday",
+          category: "national"
+        }
+
+        leave_balance << national_holidays
       end
   end
 end

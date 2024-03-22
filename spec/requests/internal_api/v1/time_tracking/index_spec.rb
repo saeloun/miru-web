@@ -13,9 +13,6 @@ RSpec.describe "InternalApi::V1::TimeTracking#index", type: :request do
   let!(:project2) { create(:project, client: client1) }
   let!(:project3) { create(:project, client: client2) }
   let!(:project4) { create(:project, client: client3) }
-  let!(:holiday) { create(:holiday, year: Date.current.year, company: company1) }
-  let(:national_holiday) { create(:holiday_info, date: Date.current, category: "national", holiday:) }
-  let(:optional_holiday) { create(:holiday_info, date: Date.current + 2.days, category: "optional", holiday:) }
 
   before do
     create(:project_member, user:, project: project1)
