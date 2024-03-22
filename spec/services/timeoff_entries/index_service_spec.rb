@@ -130,7 +130,8 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
         total_leave_type_days: 6,
         timeoff_entries_duration: 60,
         net_duration: 2820,
-        net_days: 5
+        net_days: 5,
+        type: "leave"
       }
 
       expect(@data[:leave_balance][0]).to eq(summary_object)
@@ -145,7 +146,8 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
         total_leave_type_days: 24,
         timeoff_entries_duration: 0,
         net_duration: 11520,
-        net_days: 24
+        net_days: 24,
+        type: "leave"
       }
 
       expect(@data[:leave_balance][1]).to eq(summary_object)
@@ -160,7 +162,8 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
         total_leave_type_days: 2,
         timeoff_entries_duration: 0,
         net_duration: 960,
-        net_days: 2
+        net_days: 2,
+        type: "leave"
       }
 
       expect(@data[:leave_balance][2]).to eq(summary_object)
@@ -175,7 +178,8 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
         total_leave_type_days: 2,
         timeoff_entries_duration: 0,
         net_duration: 960,
-        net_days: 2
+        net_days: 2,
+        type: "leave"
       }
 
       expect(@data[:leave_balance][3]).to eq(summary_object)
@@ -205,7 +209,8 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
         total_leave_type_days: 5,
         timeoff_entries_duration: 60,
         net_duration: 2340,
-        net_days: 4
+        net_days: 4,
+        type: "leave"
       }
 
       expect(@data[:leave_balance][0]).to eq(summary_object)
@@ -235,7 +240,8 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
         total_leave_type_days: 23,
         timeoff_entries_duration: 0,
         net_duration: 11040,
-        net_days: 23
+        net_days: 23,
+        type: "leave"
       }
 
       expect(@data[:leave_balance][1]).to eq(summary_object)
@@ -265,7 +271,8 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
         total_leave_type_days: 1,
         timeoff_entries_duration: 0,
         net_duration: 480,
-        net_days: 1
+        net_days: 1,
+        type: "leave"
       }
 
       expect(@data[:leave_balance][2]).to eq(summary_object)
@@ -295,7 +302,8 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
         total_leave_type_days: 2,
         timeoff_entries_duration: 0,
         net_duration: 960,
-        net_days: 2
+        net_days: 2,
+        type: "leave"
       }
 
       expect(@data[:leave_balance][3]).to eq(summary_object)
