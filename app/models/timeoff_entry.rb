@@ -72,7 +72,6 @@ class TimeoffEntry < ApplicationRecord
 
       error_message = "You have exceeded the maximum number of permitted optional holidays"
       total_optional_entries = TimeoffEntries::CalculateOptionalHolidayTimeoffEntriesService.new(
-        no_of_allowed_optional_holidays,
         time_period_optional_holidays,
         optional_timeoff_entries,
         leave_date,
