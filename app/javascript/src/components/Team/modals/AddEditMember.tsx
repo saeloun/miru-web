@@ -51,7 +51,7 @@ interface Props {
 
 const EditClient = ({ user = {}, isEdit = false }: Props) => {
   const [apiError, setApiError] = useState<string>(""); // eslint-disable-line
-  const { setModalState, modal } = useList();
+  const { setModalState, modal, setRefreshList } = useList();
   const wrapperRef = useRef();
   const { isDesktop } = useUserContext();
 
@@ -72,13 +72,17 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
       if (isEdit) {
         if (user.isTeamMember) {
           await teamApi.updateTeamMember(user.id, payload);
+          setRefreshList(true);
         } else {
           await teamApi.updateInvitedMember(user.id, payload);
+          setRefreshList(true);
         }
       } else {
         await teamApi.inviteMember(payload);
+        setRefreshList(true);
       }
       setModalState("");
+      setRefreshList(true);
     } catch (err) {
       setApiError(err.message);
     }
