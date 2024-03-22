@@ -4,15 +4,29 @@ import { minToHHMM } from "helpers";
 import { Avatar } from "StyledComponents";
 
 import {
-  generateLeaveColor,
   generateLeaveIcon,
+  generateLeaveColor,
+  generateHolidayIcon,
+  generateHolidayColor,
 } from "components/Profile/Organization/Leaves/utils";
 
 const LeaveBlock = ({ leaveType, setSelectedLeaveType }) => {
-  const { icon, color, name, netDuration, netDays } = leaveType;
+  const {
+    icon,
+    color,
+    name,
+    netDuration,
+    netDays,
+    type,
+    category,
+    timePeriod,
+  } = leaveType;
 
-  const leaveIcon = generateLeaveIcon(icon);
-  const leaveColor = generateLeaveColor(color);
+  const leaveIcon =
+    type == "leave" ? generateLeaveIcon(icon) : generateHolidayIcon(icon);
+
+  const leaveColor =
+    type == "leave" ? generateLeaveColor(color) : generateHolidayColor(color);
 
   return (
     <div
@@ -29,7 +43,9 @@ const LeaveBlock = ({ leaveType, setSelectedLeaveType }) => {
       <div className="mt-4 flex flex-col">
         <span className="text-xs font-semibold lg:text-sm">{name}</span>
         <span className="mt-2 text-base font-semibold lg:text-2xl">
-          {`${minToHHMM(netDuration)} h (${netDays} days)`}
+          {category != "national" &&
+            `${minToHHMM(netDuration)} h (${netDays} days)`}
+          {category == "optional" && `this ${timePeriod}`}
         </span>
       </div>
     </div>
