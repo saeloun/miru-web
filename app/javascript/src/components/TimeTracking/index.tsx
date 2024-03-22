@@ -264,7 +264,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
       const day = dayjs()
         .weekday(weekCounter + weekDay)
         .format("YYYY-MM-DD");
-      if (entryList[day]) {
+      if (entryList && entryList[day]) {
         let dayTotal = 0;
         entryList[day].forEach(e => {
           dayTotal += e.duration;
@@ -332,7 +332,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
         .weekday(weekDay + weekCounter)
         .format("YYYY-MM-DD");
 
-      if (!entryList[date]) continue;
+      if (!entryList || !entryList[date]) continue;
 
       entryList[date].forEach(entry => {
         let entryAdded = false;
