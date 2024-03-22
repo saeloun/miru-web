@@ -21,7 +21,9 @@ module TimeoffEntries
         timeoff_entries:,
         employees:,
         leave_balance:,
-        total_timeoff_entries_duration: timeoff_entries.sum(:duration)
+        total_timeoff_entries_duration: timeoff_entries.sum(:duration),
+        optional_timeoff_entries: @optional_timeoff_entries,
+        national_timeoff_entries: @national_timeoff_entries
       }
     end
 
@@ -54,6 +56,8 @@ module TimeoffEntries
 
         leave = current_company.leaves.kept.find_by(year:)
 
+        holiday = current_company.holidays.kept.find_by(year:)
+
         if leave
           previous_year_leave = current_company.leaves.kept.find_by(year: leave.year - 1)
 
@@ -77,11 +81,59 @@ module TimeoffEntries
               total_leave_type_days:,
               timeoff_entries_duration:,
               net_duration:,
-              net_days: net_duration / 60 / 8
+              net_days: net_duration / 60 / 8,
+              type: "leave"
             }
 
             leave_balance << summary_object
           end
+        end
+
+        if holiday
+          no_of_allowed_optional_holidays = holiday.no_of_allowed_optional_holidays
+          time_period_optional_holidays = holiday.time_period_optional_holidays
+          @optional_timeoff_entries = holiday.optional_timeoff_entries.where(user: user_id)
+          @national_timeoff_entries = holiday.national_timeoff_entries.where(user: user_id)
+
+          total_optional_entries = TimeoffEntries::CalculateOptionalHolidayTimeoffEntriesService.new(
+            time_period_optional_holidays,
+            holiday.optional_timeoff_entries,
+            Date.current,
+            user_id
+          ).process
+
+          if total_optional_entries >= no_of_allowed_optional_holidays
+            net_days = 0
+          else
+            net_days = no_of_allowed_optional_holidays - total_optional_entries
+          end
+
+          optional_holidays = {
+            id: "optional",
+            name: "Optional Holidays",
+            icon: "optional",
+            color: "optional",
+            net_duration: net_days * 60 * 8,
+            net_days:,
+            timeoff_entries_duration: @optional_timeoff_entries.sum(:duration),
+            type: "holiday",
+            category: "optional",
+            time_period: time_period_optional_holidays.to_s.sub("per_", "")
+          }
+
+          leave_balance << optional_holidays
+
+          national_holidays = {
+            id: "national",
+            name: "National Holidays",
+            icon: "national",
+            color: "national",
+            timeoff_entries_duration: @national_timeoff_entries.sum(:duration),
+            type: "holiday",
+            category: "national"
+          }
+
+          leave_balance << national_holidays
         end
 
         leave_balance
