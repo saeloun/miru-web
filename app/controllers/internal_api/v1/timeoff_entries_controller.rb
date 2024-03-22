@@ -15,7 +15,9 @@ class InternalApi::V1::TimeoffEntriesController < InternalApi::V1::ApplicationCo
       timeoff_entries: data[:timeoff_entries],
       employees: data[:employees],
       leave_balance: data[:leave_balance],
-      total_timeoff_entries_duration: data[:total_timeoff_entries_duration]
+      total_timeoff_entries_duration: data[:total_timeoff_entries_duration],
+      optional_timeoff_entries: data[:optional_timeoff_entries],
+      national_timeoff_entries: data[:national_timeoff_entries]
     }, status: :ok
   end
 

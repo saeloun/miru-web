@@ -49,7 +49,7 @@ const TimesheetEntries = ({ user, isAdminUser }: Iprops) => {
   const [endOfTheMonth, setEndOfTheMonth] = useState<string>(
     dayjs().endOf("month").format("YYYY-MM-DD")
   );
-  const [view, setView] = useState<string>("month");
+  const [view, setView] = useState<string>("day");
   const [newEntryView, setNewEntryView] = useState<boolean>(false);
   const [newTimeoffEntryView, setNewTimeoffEntryView] =
     useState<boolean>(false);
@@ -360,7 +360,7 @@ const TimesheetEntries = ({ user, isAdminUser }: Iprops) => {
       const day = dayjs()
         .weekday(weekCounter + weekDay)
         .format("YYYY-MM-DD");
-      if (entryList[day]) {
+      if (entryList && entryList[day]) {
         let dayTotal = 0;
         entryList[day].forEach(e => {
           dayTotal += e.duration;
@@ -432,7 +432,7 @@ const TimesheetEntries = ({ user, isAdminUser }: Iprops) => {
         .weekday(weekDay + weekCounter)
         .format("YYYY-MM-DD");
 
-      if (!entryList[date]) continue;
+      if (!entryList || !entryList[date]) continue;
 
       entryList[date].forEach(entry => {
         if (entry["type"] == "timesheet") {
@@ -549,10 +549,13 @@ const TimesheetEntries = ({ user, isAdminUser }: Iprops) => {
         `${currentYear}-${currentMonthNumber + 1}-${i}`
       ).format("YYYY-MM-DD");
 
-      const totalDuration = entryList[date]?.reduce(
-        (acc: number, cv: number) => cv["duration"] + acc,
-        0
-      );
+      const totalDuration =
+        entryList && entryList[date]
+          ? entryList[date]?.reduce(
+              (acc: number, cv: number) => cv["duration"] + acc,
+              0
+            )
+          : 0;
       if (totalDuration) currentWeekTotalHours += totalDuration;
       weeksData[dayInWeekCounter] = {
         date,
@@ -676,7 +679,7 @@ const TimesheetEntries = ({ user, isAdminUser }: Iprops) => {
           <div className="mt-8 mb-6 flex items-center justify-between">
             {isDesktop && (
               <nav className="flex">
-                {["month", "week", "day"].map((item, index) => (
+                {["day", "month"].map((item, index) => (
                   <button
                     key={index}
                     className={`mr-10 tracking-widest

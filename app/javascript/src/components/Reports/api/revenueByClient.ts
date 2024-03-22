@@ -21,8 +21,8 @@ const getReportData = async ({
     const currentYear = dayjs().year();
     const lastMonthOfQuarter = dayjs()["quarter"]() * 3 - 1;
     const firstMonthOfQuarter = dayjs()["quarter"]() * 3 - 3;
-    const thisQuarterFirstDate = dayjs()
-      .month(firstMonthOfQuarter)
+    const thisQuarterFirstDate = dayjs(dayjs().month(firstMonthOfQuarter))
+      .startOf("month")
       .format("DD-MM-YYYY");
 
     const thisQuarterLastDate = dayjs(dayjs().month(lastMonthOfQuarter))
@@ -38,10 +38,12 @@ const getReportData = async ({
       case "last_quarter":
         fromDate = dayjs(dayjs().month(firstMonthOfQuarter))
           .subtract(3, "month")
+          .startOf("month")
           .format("DD-MM-YYYY");
 
         toDate = dayjs(dayjs().month(lastMonthOfQuarter))
           .subtract(3, "month")
+          .endOf("month")
           .format("DD-MM-YYYY");
         break;
 

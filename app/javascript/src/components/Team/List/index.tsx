@@ -50,10 +50,8 @@ const TeamList = () => {
   };
 
   useEffect(() => {
-    if (modal == TeamModalType.NONE) {
-      getTeamList();
-    }
-  }, [modal]);
+    getTeamList();
+  }, []);
 
   const handlePageChange = async (pageData, items = pagy.items) => {
     if (pageData == "...") return;
