@@ -28,6 +28,11 @@ const LeaveBlock = ({ leaveType, setSelectedLeaveType }) => {
   const leaveColor =
     type == "leave" ? generateLeaveColor(color) : generateHolidayColor(color);
 
+  const formattedDuration =
+    netDuration < 0
+      ? `-${minToHHMM(-netDuration)} h (${netDays} days)`
+      : `${minToHHMM(netDuration)} h (${netDays} days)`;
+
   return (
     <div
       className="flex w-full cursor-pointer justify-start rounded-lg p-2 text-white lg:flex-col lg:p-6"
@@ -43,8 +48,7 @@ const LeaveBlock = ({ leaveType, setSelectedLeaveType }) => {
       <div className="mt-4 flex flex-col">
         <span className="text-xs font-semibold lg:text-sm">{name}</span>
         <span className="mt-2 text-base font-semibold lg:text-2xl">
-          {category != "national" &&
-            `${minToHHMM(netDuration)} h (${netDays} days)`}
+          {category !== "national" && formattedDuration}
           {category == "optional" && `this ${timePeriod}`}
         </span>
       </div>
