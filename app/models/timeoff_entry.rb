@@ -95,6 +95,8 @@ class TimeoffEntry < ApplicationRecord
     end
 
     def leave_date_and_holiday_year_should_be_same
+      return unless holiday_info.present?
+
       if leave_date&.year != holiday_info&.date&.year
         errors.add(:base, "Can not apply for a leave by selecting holiday from another year")
       end
