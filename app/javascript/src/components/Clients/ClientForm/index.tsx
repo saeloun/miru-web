@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 
 import "react-phone-number-input/style.css"; //eslint-disable-line
-import { Country, State, City } from "country-state-city";
+import { Country } from "country-state-city";
 import { Formik, Form, FormikProps } from "formik";
 import PhoneInput from "react-phone-number-input";
 import flags from "react-phone-number-input/flags";
@@ -48,32 +48,6 @@ const ClientForm = ({
     const allCountries = Country.getAllCountries();
     assignCountries(allCountries);
   }, []);
-
-  const updatedStates = countryCode =>
-    State.getStatesOfCountry(countryCode).map(state => ({
-      label: state.name,
-      value: state.name,
-      code: state?.isoCode && state.isoCode,
-      ...state,
-    }));
-
-  const updatedCities = values => {
-    const allStates = State.getAllStates();
-    const currentCity = allStates.filter(
-      state => state.name == values.state.label
-    );
-
-    const cities = City.getCitiesOfState(
-      values.country.code,
-      currentCity[0] && currentCity[0].isoCode
-    ).map(city => ({
-      label: city.name,
-      value: city.name,
-      ...city,
-    }));
-
-    return cities;
-  };
 
   const handleSubmit = async values => {
     setSubmitting(true);
@@ -229,34 +203,35 @@ const ClientForm = ({
                 />
               </div>
               <div className="flex w-1/2 flex-col pl-2">
-                <CustomReactSelect
+                <InputField
+                  resetErrorOnChange
+                  hasError={errors.state && touched.state}
                   id="state"
-                  isErr={!!errors.state && touched.state}
                   label="State"
                   name="state"
-                  value={values.state ? values.state : null}
-                  handleOnChange={state => {
-                    setFieldValue("state", state);
-                    setFieldValue("city", "");
-                    setFieldValue("zipcode", "");
-                    updatedCities(values);
-                  }}
-                  options={updatedStates(
-                    values.country.code ? values.country.code : "US"
-                  )}
+                  setFieldValue={setFieldValue}
+                />
+                <InputErrors
+                  addMargin={false}
+                  fieldErrors={errors.state}
+                  fieldTouched={touched.state}
                 />
               </div>
             </div>
             <div className="flex flex-row">
               <div className="flex w-1/2 flex-col pr-2" id="city">
-                <CustomReactSelect
-                  handleOnChange={city => setFieldValue("city", city)}
-                  id="city-list"
-                  isErr={!!errors.city && touched.city}
+                <InputField
+                  resetErrorOnChange
+                  hasError={errors.city && touched.city}
+                  id="city"
                   label="City"
                   name="city"
-                  options={updatedCities(values)}
-                  value={values.city.value ? values.city : null}
+                  setFieldValue={setFieldValue}
+                />
+                <InputErrors
+                  addMargin={false}
+                  fieldErrors={errors.city}
+                  fieldTouched={touched.city}
                 />
               </div>
               <div className="flex w-1/2 flex-col pl-2">
@@ -314,8 +289,8 @@ interface FormValues {
   address1: string;
   address2: string;
   country: any;
-  state: any;
-  city: any;
+  state: string;
+  city: string;
   zipcode: string;
   logo: any;
 }

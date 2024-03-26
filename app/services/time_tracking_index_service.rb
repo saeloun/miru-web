@@ -98,6 +98,9 @@ class TimeTrackingIndexService
 
     def holiday_infos
       holiday = current_company.holidays.find_by(year:)
-      holiday&.holiday_infos&.kept || []
+      all_holidays = holiday&.holiday_infos&.kept
+      return [] if holiday.blank? || all_holidays.blank?
+
+      holiday.enable_optional_holidays ? all_holidays : all_holidays.national
     end
 end

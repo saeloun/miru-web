@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React, { Fragment, useEffect, useRef, useState } from "react";
 
-import { Country, State, City } from "country-state-city";
+import { Country } from "country-state-city";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import { useOutsideClick } from "helpers";
@@ -40,11 +40,6 @@ const EmploymentDetails = () => {
     pin_err: "",
   };
 
-  const initialSelectValue = {
-    label: "",
-    value: "",
-    code: "",
-  };
   const { memberId } = useParams();
   const {
     updateDetails,
@@ -52,12 +47,8 @@ const EmploymentDetails = () => {
   } = useTeamDetails();
   const navigate = useNavigate();
   const { isDesktop } = useUserContext();
-
   const wrapperRef = useRef(null);
 
-  const [currentCountryDetails, setCurrentCountryDetails] =
-    useState(initialSelectValue);
-  const [currentCityList, setCurrentCityList] = useState([]);
   const [addrType, setAddrType] = useState({ label: "", value: "" });
   const [showDatePicker, setShowDatePicker] = useState({ visibility: false });
   const [countries, setCountries] = useState([]);
@@ -99,42 +90,7 @@ const EmploymentDetails = () => {
     getDetails();
   }, []);
 
-  useEffect(() => {
-    const currentCountry = Country.getAllCountries().filter(
-      country =>
-        country.name == personalDetails.addresses.country ||
-        country.isoCode == personalDetails.addresses.country
-    )[0];
-
-    currentCountry &&
-      setCurrentCountryDetails({
-        label: currentCountry.name,
-        value: currentCountry.name,
-        code: currentCountry?.isoCode,
-      });
-
-    if (personalDetails.addresses.city) {
-      const stateCode =
-        currentCountry &&
-        State.getStatesOfCountry(currentCountry?.isoCode).filter(
-          state => state.name == personalDetails.addresses.state
-        )[0]?.isoCode;
-
-      setCurrentCityList(
-        City.getCitiesOfState(
-          currentCountry?.isoCode,
-          stateCode ?? personalDetails.addresses.state
-        ).map(city => ({
-          label: city.name,
-          value: city.name,
-          ...city,
-        }))
-      );
-    }
-  }, [personalDetails]);
-
   const handleOnChangeCountry = selectCountry => {
-    setCurrentCountryDetails(selectCountry);
     updateDetails("personal", {
       ...personalDetails,
       ...{
@@ -145,14 +101,6 @@ const EmploymentDetails = () => {
       },
     });
   };
-
-  const updatedStates = countryCode =>
-    State.getStatesOfCountry(countryCode).map(state => ({
-      label: state.name,
-      value: state.name,
-      code: state?.isoCode,
-      ...state,
-    }));
 
   const handleOnChangeAddrType = addreType => {
     setAddrType(addreType);
@@ -166,40 +114,6 @@ const EmploymentDetails = () => {
       },
     });
   };
-
-  const handleOnChangeState = selectState => {
-    updateDetails("personal", {
-      ...personalDetails,
-      ...{
-        addresses: {
-          ...personalDetails.addresses,
-          ...{ state: selectState.value },
-          ...{ state: selectState.value, city: "" },
-        },
-      },
-    });
-
-    const cities = City.getCitiesOfState(
-      currentCountryDetails.code,
-      selectState.code
-    ).map(city => ({ label: city.name, value: city.name, ...city }));
-    setCurrentCityList(cities);
-  };
-
-  const filterCities = (inputValue: string) => {
-    const city = currentCityList.filter(i =>
-      i.label.toLowerCase().includes(inputValue.toLowerCase())
-    );
-
-    return city.length ? city : [{ label: inputValue, value: inputValue }];
-  };
-
-  const promiseOptions = (inputValue: string) =>
-    new Promise(resolve => {
-      setTimeout(() => {
-        resolve(filterCities(inputValue));
-      }, 1000);
-    });
 
   const updateBasicDetails = (value, type, isAddress = false) => {
     if (isAddress) {
@@ -298,18 +212,6 @@ const EmploymentDetails = () => {
     }
   };
 
-  const handleOnChangeCity = selectCity => {
-    updateDetails("personal", {
-      ...personalDetails,
-      ...{
-        addresses: {
-          ...personalDetails.addresses,
-          ...{ city: selectCity.value },
-        },
-      },
-    });
-  };
-
   const handlePhoneNumberChange = phoneNumber => {
     updateBasicDetails(phoneNumber, "phone_number", false);
   };
@@ -347,22 +249,16 @@ const EmploymentDetails = () => {
               addrType={addrType}
               addressOptions={addressOptions}
               countries={countries}
-              currentCityList={currentCityList}
-              currentCountryDetails={currentCountryDetails}
               dateFormat={personalDetails.date_format}
               errDetails={errDetails}
               handleDatePicker={handleDatePicker}
               handleOnChangeAddrType={handleOnChangeAddrType}
-              handleOnChangeCity={handleOnChangeCity}
               handleOnChangeCountry={handleOnChangeCountry}
-              handleOnChangeState={handleOnChangeState}
               handlePhoneNumberChange={handlePhoneNumberChange}
               personalDetails={personalDetails}
-              promiseOptions={promiseOptions}
               setShowDatePicker={setShowDatePicker}
               showDatePicker={showDatePicker}
               updateBasicDetails={updateBasicDetails}
-              updatedStates={updatedStates}
               wrapperRef={wrapperRef}
             />
           )}
@@ -383,23 +279,18 @@ const EmploymentDetails = () => {
               addrType={addrType}
               addressOptions={addressOptions}
               countries={countries}
-              currentCountryDetails={currentCountryDetails}
               dateFormat={personalDetails.date_format}
               errDetails={errDetails}
               handleCancelDetails={handleCancelDetails}
               handleDatePicker={handleDatePicker}
               handleOnChangeAddrType={handleOnChangeAddrType}
-              handleOnChangeCity={handleOnChangeCity}
               handleOnChangeCountry={handleOnChangeCountry}
-              handleOnChangeState={handleOnChangeState}
               handlePhoneNumberChange={handlePhoneNumberChange}
               handleUpdateDetails={handleUpdateDetails}
               personalDetails={personalDetails}
-              promiseOptions={promiseOptions}
               setShowDatePicker={setShowDatePicker}
               showDatePicker={showDatePicker}
               updateBasicDetails={updateBasicDetails}
-              updatedStates={updatedStates}
               wrapperRef={wrapperRef}
             />
           )}

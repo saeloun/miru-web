@@ -2,13 +2,20 @@ import axios from "./api";
 
 const path = "/clients";
 
+const formHeaders = {
+  headers: {
+    "Content-Type": "multipart/form-data",
+  },
+};
+
 const get = async queryParam => axios.get(`${path}${queryParam}`);
 
-const create = async payload => axios.post(`${path}`, payload);
+const create = async payload => axios.post(`${path}`, payload, formHeaders);
 
 const show = async (id, queryParam) => axios.get(`${path}/${id}${queryParam}`);
 
-const update = async (id, payload) => axios.patch(`${path}/${id}`, payload);
+const update = async (id, payload) =>
+  axios.patch(`${path}/${id}`, payload, formHeaders);
 
 const destroy = async id => axios.delete(`${path}/${id}`);
 
