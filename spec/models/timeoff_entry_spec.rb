@@ -8,6 +8,11 @@ RSpec.describe TimeoffEntry, type: :model do
   let(:holiday) { create(:holiday, year: Date.current.year, company:) }
   let(:national_holiday) { create(:holiday_info, date: Date.current, category: "national", holiday:) }
   let(:optional_holiday) { create(:holiday_info, date: Date.current, category: "optional", holiday:) }
+  let(:previous_year_holiday) { create(:holiday, year: Date.current.year - 1, company:) }
+  let(:previous_year_national_holiday) { create(
+    :holiday_info,
+    date: Date.current - 1.year, category: "national", holiday: previous_year_holiday)
+  }
 
   describe "validations" do
     before do
@@ -37,6 +42,15 @@ RSpec.describe TimeoffEntry, type: :model do
         duration: 400,
         leave_date: Date.current + 1,
       )
+
+      @national_time_off_entry = build(
+        :timeoff_entry,
+        user_id: user.id,
+        leave_type_id: nil,
+        holiday_info_id: previous_year_national_holiday.id,
+        duration: 400,
+        leave_date: Date.current,
+      )
     end
 
     it { is_expected.to validate_presence_of(:duration) }
@@ -48,6 +62,12 @@ RSpec.describe TimeoffEntry, type: :model do
     end
 
     it { is_expected.to validate_presence_of(:leave_date) }
+
+    it "is not valid if leave date and holiday are not from same year" do
+      expect(@national_time_off_entry).not_to be_valid
+      expect(@national_time_off_entry.errors[:base]).to include(
+        "Can not apply for a leave by selecting holiday from another year")
+    end
 
     it "is not valid if adding two holidays on the same day" do
       expect(@new_time_off_entry).not_to be_valid

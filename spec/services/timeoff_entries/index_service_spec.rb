@@ -3,6 +3,11 @@
 require "rails_helper"
 
 RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
+  CURRENT_DATE = DateTime.now
+  CURRENT_YEAR = CURRENT_DATE.year
+  CURRENT_MONTH = CURRENT_DATE.month
+  CURRENT_WEEK = CURRENT_DATE.cweek
+
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
   let!(:leave) { create(:leave, company:, year: Date.today.year) }
@@ -138,15 +143,16 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
     end
 
     it "returns leave balance for days per week" do
+      total_leave_type_days = leave_type.allocation_value * CURRENT_WEEK
       summary_object = {
         id: leave_type_days_per_week.id,
         name: leave_type_days_per_week.name,
         icon: leave_type_days_per_week.icon,
         color: leave_type_days_per_week.color,
-        total_leave_type_days: 24,
+        total_leave_type_days:,
         timeoff_entries_duration: 0,
-        net_duration: 11520,
-        net_days: 24,
+        net_duration: total_leave_type_days * 8 * 60,
+        net_days: total_leave_type_days,
         type: "leave"
       }
 
@@ -231,16 +237,23 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
       @data = service.process
     end
 
-    it "returns leave balance for days per week" do
+    it "returns leave balance for days per week" do # rubocop:disable RSpec/ExampleLength
+      joining_date = user.joined_date_for_company(company)
+      total_weeks = (CURRENT_WEEK - joining_date.cweek)
+      allocation_value = leave_type.allocation_value
+      first_week_allocation_value = (joining_date.wday >= 3 && joining_date.wday <= 5) ?
+        (allocation_value / 2) : allocation_value
+      total_leave_type_days = first_week_allocation_value + allocation_value * total_weeks
+
       summary_object = {
         id: leave_type_days_per_week.id,
         name: leave_type_days_per_week.name,
         icon: leave_type_days_per_week.icon,
         color: leave_type_days_per_week.color,
-        total_leave_type_days: 23,
+        total_leave_type_days:,
         timeoff_entries_duration: 0,
-        net_duration: 11040,
-        net_days: 23,
+        net_duration: total_leave_type_days * 8 * 60,
+        net_days: total_leave_type_days,
         type: "leave"
       }
 
