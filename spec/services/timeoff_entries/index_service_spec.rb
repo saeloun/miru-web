@@ -133,21 +133,23 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
         net_days: 5,
         type: "leave"
       }
-
       expect(@data[:leave_balance][0]).to eq(summary_object)
     end
 
     it "returns leave balance for days per week" do
+      current_week = Date.today.cweek
+      expected_net_days = current_week * 2
+      expected_net_duration = expected_net_days * 8 * 60
       summary_object = {
         id: leave_type_days_per_week.id,
         name: leave_type_days_per_week.name,
         icon: leave_type_days_per_week.icon,
         color: leave_type_days_per_week.color,
-        total_leave_type_days: 24,
+        total_leave_type_days: expected_net_days,
         timeoff_entries_duration: 0,
-        net_duration: 11520,
-        net_days: 24,
-        type: "leave"
+        type: "leave",
+        net_duration: expected_net_duration,
+        net_days: expected_net_days
       }
 
       expect(@data[:leave_balance][1]).to eq(summary_object)
@@ -231,17 +233,26 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
       @data = service.process
     end
 
-    it "returns leave balance for days per week" do
+    it "returns leave balance for days per week" do # rubocop:disable RSpec/ExampleLength
+      allocation_value_per_week = 2
+      current_week = Date.today.cweek
+      joining_date = Date.new(Time.current.year, 1, 5)
+      total_weeks_since_joining = current_week - joining_date.cweek
+      first_week_adjustment = joining_date.wday >= 3 && joining_date.wday <= 5 ? (allocation_value_per_week / 2) :
+        allocation_value_per_week
+      expected_net_days = first_week_adjustment + (allocation_value_per_week * total_weeks_since_joining)
+      expected_net_duration = expected_net_days * 8 * 60
       summary_object = {
         id: leave_type_days_per_week.id,
         name: leave_type_days_per_week.name,
         icon: leave_type_days_per_week.icon,
         color: leave_type_days_per_week.color,
-        total_leave_type_days: 23,
+        total_leave_type_days: expected_net_days,
         timeoff_entries_duration: 0,
-        net_duration: 11040,
-        net_days: 23,
-        type: "leave"
+        type: "leave",
+        net_duration: expected_net_duration,
+        net_days: expected_net_days
+
       }
 
       expect(@data[:leave_balance][1]).to eq(summary_object)
