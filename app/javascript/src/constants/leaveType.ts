@@ -83,11 +83,11 @@ export const leaveIcons = [
 export const holidayColors = [
   {
     label: "national",
-    value: "#FFFFE0",
+    value: "#7CC984",
   },
   {
     label: "optional",
-    value: "#FFC0CB",
+    value: "#68AEAA",
   },
 ];
 
