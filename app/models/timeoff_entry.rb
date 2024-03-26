@@ -41,6 +41,7 @@ class TimeoffEntry < ApplicationRecord
   validates :leave_date, presence: true
 
   validate :either_leave_type_or_holiday_info_present
+  validate :leave_date_and_holiday_year_should_be_same
   validate :allow_one_holiday_per_day
   validate :optional_holiday_timeoff_entry
 
@@ -90,6 +91,14 @@ class TimeoffEntry < ApplicationRecord
       national_timeoff_entries = holiday.national_timeoff_entries.where(leave_date:, user:).exists?
       if optional_timeoff_entries || national_timeoff_entries
         errors.add(:base, "You are adding two holidays on the same day, please recheck")
+      end
+    end
+
+    def leave_date_and_holiday_year_should_be_same
+      return unless holiday_info.present?
+
+      if leave_date&.year != holiday_info&.date&.year
+        errors.add(:base, "Can not apply for a leave by selecting holiday from another year")
       end
     end
 end
