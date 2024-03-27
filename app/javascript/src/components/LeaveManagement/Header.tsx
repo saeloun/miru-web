@@ -16,6 +16,7 @@ const Header = ({
       Leave Management
     </span>
     <CustomYearPicker
+      nextYearButtonDisabled
       currentYear={currentYear}
       setCurrentYear={setCurrentYear}
       wrapperClassName="text-miru-han-purple-1000"

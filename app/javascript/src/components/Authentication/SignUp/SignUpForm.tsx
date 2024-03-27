@@ -187,7 +187,11 @@ const SignUpForm = () => {
                       setFieldError={setFieldError}
                       setFieldValue={setFieldValue}
                       type="password"
-                      wrapperClassName="mb-6"
+                      wrapperClassName={`${!errors.password && "mb-6"}`}
+                    />
+                    <InputErrors
+                      fieldErrors={errors.password}
+                      fieldTouched={touched.password}
                     />
                   </div>
                   <div className="field">
@@ -210,24 +214,10 @@ const SignUpForm = () => {
                         and 1 special character
                       </p>
                     )}
-                    {errors.confirm_password == errors.password &&
-                    (touched.password || touched.confirm_password) ? (
-                      <InputErrors
-                        fieldErrors={errors.confirm_password}
-                        fieldTouched={
-                          touched.confirm_password || touched.password
-                        }
-                      />
-                    ) : (
-                      (errors.confirm_password || errors.password) && (
-                        <InputErrors
-                          fieldErrors="Passwords must match"
-                          fieldTouched={
-                            touched.confirm_password || touched.password
-                          }
-                        />
-                      )
-                    )}
+                    <InputErrors
+                      fieldErrors={errors.confirm_password}
+                      fieldTouched={touched.confirm_password}
+                    />
                   </div>
                   <div className="my-6 flex text-xs font-normal leading-4 text-miru-dark-purple-1000">
                     <div className="mt-2 flex">
