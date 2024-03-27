@@ -36,5 +36,31 @@ RSpec.describe Employment, type: :model do
     it "joining date should not be after than resigned_at date" do
       expect(employment.joined_at).to be <= employment.resigned_at
     end
+
+    context "when joined_at is in the future" do
+      it "is not valid and returns an error message" do
+        employment.joined_at = Date.tomorrow
+        expect(employment.valid?(:update)).to be false
+        expect(employment.errors[:joined_at]).to include("date must be in past")
+      end
+    end
+
+    context "when updating and joined_at is today" do
+      it "is valid" do
+        employment.joined_at = Date.today
+        employment.resigned_at = Date.tomorrow
+        expect(employment.valid?(:update)).to be true
+        expect(employment.errors[:joined_at]).to be_empty
+      end
+    end
+
+    context "when updating and joined_at is in the past" do
+      it "is valid" do
+        employment.joined_at = Date.yesterday
+        employment.resigned_at = Date.today
+        expect(employment.valid?(:update)).to be true
+        expect(employment.errors[:joined_at]).to be_empty
+      end
+    end
   end
 end

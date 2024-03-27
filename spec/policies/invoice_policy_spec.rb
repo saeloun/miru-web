@@ -108,7 +108,7 @@ RSpec.describe InvoicePolicy, type: :policy do
     let(:attributes) do
       %i[
         issue_date due_date status invoice_number reference amount outstanding_amount
-        tax amount_paid amount_due discount client_id external_view_key
+        tax amount_paid amount_due discount client_id external_view_key stripe_enabled
       ].push(invoice_line_items_attributes:)
     end
 

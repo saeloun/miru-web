@@ -271,6 +271,7 @@ en:
       Only owner or admin users are authorized to perform this action
     bill_status_billed: You can't bill an entry that has already been billed
     create_billed_entry: You can't create a billed timesheet entry
+    validate_billable_project: You can't create an unbilled entry for non-billable projects
     internal_server_error: Something went wrong
     user_already_member: Email id is already in use. Please enter another email id
     updation_not_allowed: updation is not allowed

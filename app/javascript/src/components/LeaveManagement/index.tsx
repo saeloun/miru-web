@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { getYear } from "date-fns";
+import { getYear, format } from "date-fns";
 
 import timeoffEntryApi from "apis/timeoffEntry";
 import Loader from "common/Loader/index";
@@ -25,6 +25,8 @@ const LeaveManagement = () => {
   const [filterTimeoffEntries, setFilterTimeoffEntries] = useState([]);
   const [filterTimeoffEntriesDuration, setFilterTimeoffEntriesDuration] =
     useState(0);
+  const [optionalTimeoffEntries, setOptionalTimeoffEntries] = useState([]);
+  const [nationalTimeoffEntries, setNationalTimeoffEntries] = useState([]);
 
   useEffect(() => {
     fetchTimeoffEntries();
@@ -45,6 +47,8 @@ const LeaveManagement = () => {
       employees,
       leaveBalance,
       totalTimeoffEntriesDuration,
+      optionalTimeoffEntries,
+      nationalTimeoffEntries,
     } = res.data;
 
     setSelectedLeaveType(null);
@@ -52,6 +56,8 @@ const LeaveManagement = () => {
     setEmployees(employees);
     setLeaveBalance(leaveBalance);
     setTotalTimeoffEntriesDuration(totalTimeoffEntriesDuration);
+    setOptionalTimeoffEntries(optionalTimeoffEntries);
+    setNationalTimeoffEntries(nationalTimeoffEntries);
     handlefilterTimeoffEntries(
       timeoffEntries,
       totalTimeoffEntriesDuration,
@@ -66,15 +72,21 @@ const LeaveManagement = () => {
     selectedLeaveType
   ) => {
     if (selectedLeaveType) {
-      const sortedTimeoffEntries =
-        timeoffEntries.length &&
-        selectedLeaveType &&
-        timeoffEntries.filter(
-          timeoffEntry => timeoffEntry.leaveType?.id === selectedLeaveType.id
-        );
+      let sortedTimeoffEntries = [];
+      if (selectedLeaveType.id == "optional") {
+        sortedTimeoffEntries = optionalTimeoffEntries;
+      } else if (selectedLeaveType.id == "national") {
+        sortedTimeoffEntries = nationalTimeoffEntries;
+      } else {
+        sortedTimeoffEntries =
+          timeoffEntries.length &&
+          timeoffEntries.filter(
+            timeoffEntry => timeoffEntry.leaveType?.id === selectedLeaveType.id
+          );
+      }
 
       const leaveType = leaveBalance.find(
-        item => item.id === selectedLeaveType.id
+        item => item.id == selectedLeaveType.id
       );
 
       setFilterTimeoffEntries(sortedTimeoffEntries);
@@ -95,6 +107,16 @@ const LeaveManagement = () => {
       return <Loader />;
     }
 
+    const getLeaveBalanaceDateText = () => {
+      const presentYear = getYear(new Date());
+      let date = new Date(currentYear, 11, 31);
+      if (currentYear == presentYear) {
+        date = new Date();
+      }
+
+      return `Leave Balance Untill ${format(date, "do MMM yyyy")}`;
+    };
+
     return (
       <div className="h-full w-full py-6">
         <Header
@@ -106,7 +128,7 @@ const LeaveManagement = () => {
           setSelectedEmployeeId={setSelectedEmployeeId}
         />
         <Container
-          currentYear={currentYear}
+          getLeaveBalanaceDateText={getLeaveBalanaceDateText}
           leaveBalance={leaveBalance}
           selectedLeaveType={selectedLeaveType}
           setSelectedLeaveType={setSelectedLeaveType}

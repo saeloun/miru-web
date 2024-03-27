@@ -23,9 +23,9 @@ module Clients
 
       def clients_list
         if query.present?
-          search_clients(search_term, where_clause)
+          search_clients(search_term, where_clause).includes(:logo_attachment)
         else
-          current_company.clients
+          current_company.clients.includes(:logo_attachment)
         end
       end
 

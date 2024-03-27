@@ -8,6 +8,7 @@ type customYearPickerProps = {
   yearClassName?: string;
   currentYear: number;
   setCurrentYear: React.Dispatch<React.SetStateAction<number>>;
+  nextYearButtonDisabled?: boolean;
 };
 
 const defaultWrapperClassName = "flex items-center justify-center";
@@ -20,6 +21,7 @@ const CustomYearPicker = ({
   yearClassName,
   currentYear,
   setCurrentYear,
+  nextYearButtonDisabled = false,
 }: customYearPickerProps) => {
   const range = (start, end) => {
     const ans = [];
@@ -31,6 +33,10 @@ const CustomYearPicker = ({
   };
 
   const years = range(1920, currentYear + 1);
+  const actualYear = new Date().getFullYear();
+  const isNextYearButtonDisabled = nextYearButtonDisabled
+    ? currentYear >= actualYear
+    : false;
 
   const handleOnChange = selected => {
     const current = parseInt(selected);
@@ -67,8 +73,16 @@ const CustomYearPicker = ({
           ))}
         </select>
       )}
-      <button className="pl-2" onClick={handleNext}>
-        <CaretCircleRightIcon size={13} weight="bold" />
+      <button
+        className="pl-2"
+        disabled={isNextYearButtonDisabled}
+        onClick={handleNext}
+      >
+        {isNextYearButtonDisabled ? (
+          <CaretCircleRightIcon color="#ADA4CE" size={13} weight="bold" />
+        ) : (
+          <CaretCircleRightIcon size={13} weight="bold" />
+        )}
       </button>
     </div>
   );

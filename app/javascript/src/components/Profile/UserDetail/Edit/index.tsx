@@ -1,11 +1,11 @@
 /* eslint-disable no-unused-vars */
 import React, { Fragment, useEffect, useRef, useState } from "react";
 
-import { Country, State, City } from "country-state-city";
+import { Country } from "country-state-city";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import { useOutsideClick } from "helpers";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 
 import profileApi from "apis/profile";
@@ -40,21 +40,11 @@ const UserDetailsEdit = () => {
     pin_err: "",
   };
 
-  const initialSelectValue = {
-    label: "",
-    value: "",
-    code: "",
-  };
-  const { memberId } = useParams();
-
   const navigate = useNavigate();
   const { isDesktop } = useUserContext();
 
   const wrapperRef = useRef(null);
 
-  const [currentCountryDetails, setCurrentCountryDetails] =
-    useState(initialSelectValue);
-  const [currentCityList, setCurrentCityList] = useState([]);
   const [addrType, setAddrType] = useState({ label: "", value: "" });
   const [showDatePicker, setShowDatePicker] = useState({ visibility: false });
   const [countries, setCountries] = useState([]);
@@ -82,40 +72,6 @@ const UserDetailsEdit = () => {
     }));
     setCountries(countryData);
   };
-
-  useEffect(() => {
-    const currentCountry = Country.getAllCountries().filter(
-      country =>
-        country.name == profileSettings.addresses.country ||
-        country.isoCode == profileSettings.addresses.country
-    )[0];
-
-    currentCountry &&
-      setCurrentCountryDetails({
-        label: currentCountry.name,
-        value: currentCountry.name,
-        code: currentCountry?.isoCode,
-      });
-
-    if (profileSettings.addresses.city) {
-      const stateCode =
-        currentCountry &&
-        State.getStatesOfCountry(currentCountry?.isoCode).filter(
-          state => state.name == profileSettings.addresses.state
-        )[0]?.isoCode;
-
-      setCurrentCityList(
-        City.getCitiesOfState(
-          currentCountry?.isoCode,
-          stateCode ?? profileSettings.addresses.state
-        ).map(city => ({
-          label: city.name,
-          value: city.name,
-          ...city,
-        }))
-      );
-    }
-  }, [profileSettings]);
 
   const getDetails = async () => {
     const data = await profileApi.index();
@@ -151,7 +107,6 @@ const UserDetailsEdit = () => {
   };
 
   const handleOnChangeCountry = selectCountry => {
-    setCurrentCountryDetails(selectCountry);
     setUserState("profileSettings", {
       ...profileSettings,
       ...{
@@ -162,14 +117,6 @@ const UserDetailsEdit = () => {
       },
     });
   };
-
-  const updatedStates = countryCode =>
-    State.getStatesOfCountry(countryCode).map(state => ({
-      label: state.name,
-      value: state.name,
-      code: state?.isoCode,
-      ...state,
-    }));
 
   const handleOnChangeAddrType = addreType => {
     setAddrType(addreType);
@@ -183,39 +130,6 @@ const UserDetailsEdit = () => {
       },
     });
   };
-
-  const handleOnChangeState = selectState => {
-    setUserState("profileSettings", {
-      ...profileSettings,
-      ...{
-        addresses: {
-          ...profileSettings.addresses,
-          ...{ state: selectState.value, city: "" },
-        },
-      },
-    });
-
-    const cities = City.getCitiesOfState(
-      currentCountryDetails.code,
-      selectState.code
-    ).map(city => ({ label: city.name, value: city.name, ...city }));
-    setCurrentCityList(cities);
-  };
-
-  const filterCities = (inputValue: string) => {
-    const city = currentCityList.filter(i =>
-      i.label.toLowerCase().includes(inputValue.toLowerCase())
-    );
-
-    return city.length ? city : [{ label: inputValue, value: inputValue }];
-  };
-
-  const promiseOptions = (inputValue: string) =>
-    new Promise(resolve => {
-      setTimeout(() => {
-        resolve(filterCities(inputValue));
-      }, 1000);
-    });
 
   const updateBasicDetails = (value, type, isAddress = false) => {
     if (isAddress) {
@@ -325,18 +239,6 @@ const UserDetailsEdit = () => {
     }
   };
 
-  const handleOnChangeCity = selectCity => {
-    setUserState("profileSettings", {
-      ...profileSettings,
-      ...{
-        addresses: {
-          ...profileSettings.addresses,
-          ...{ city: selectCity.value },
-        },
-      },
-    });
-  };
-
   const handlePhoneNumberChange = phoneNumber => {
     updateBasicDetails(phoneNumber, "phone_number", false);
   };
@@ -391,8 +293,6 @@ const UserDetailsEdit = () => {
               changePassword={changePassword}
               confirmPassword={confirmPassword}
               countries={countries}
-              currentCityList={currentCityList}
-              currentCountryDetails={currentCountryDetails}
               currentPassword={currentPassword}
               dateFormat={profileSettings.date_format}
               errDetails={errDetails}
@@ -401,14 +301,11 @@ const UserDetailsEdit = () => {
               handleCurrentPasswordChange={handleCurrentPasswordChange}
               handleDatePicker={handleDatePicker}
               handleOnChangeAddrType={handleOnChangeAddrType}
-              handleOnChangeCity={handleOnChangeCity}
               handleOnChangeCountry={handleOnChangeCountry}
-              handleOnChangeState={handleOnChangeState}
               handlePasswordChange={handlePasswordChange}
               handlePhoneNumberChange={handlePhoneNumberChange}
               password={password}
               personalDetails={profileSettings}
-              promiseOptions={promiseOptions}
               setChangePassword={setChangePassword}
               setErrDetails={setErrDetails}
               setShowConfirmPassword={setShowConfirmPassword}
@@ -420,7 +317,6 @@ const UserDetailsEdit = () => {
               showDatePicker={showDatePicker}
               showPassword={showPassword}
               updateBasicDetails={updateBasicDetails}
-              updatedStates={updatedStates}
               wrapperRef={wrapperRef}
             />
           )}
@@ -441,7 +337,6 @@ const UserDetailsEdit = () => {
               cancelPasswordChange={cancelPasswordChange}
               changePassword={changePassword}
               countries={countries}
-              currentCountryDetails={currentCountryDetails}
               currentPassword={currentPassword}
               dateFormat={profileSettings.date_format}
               errDetails={errDetails}
@@ -449,13 +344,10 @@ const UserDetailsEdit = () => {
               handleCurrentPasswordChange={handleCurrentPasswordChange}
               handleDatePicker={handleDatePicker}
               handleOnChangeAddrType={handleOnChangeAddrType}
-              handleOnChangeCity={handleOnChangeCity}
               handleOnChangeCountry={handleOnChangeCountry}
-              handleOnChangeState={handleOnChangeState}
               handlePhoneNumberChange={handlePhoneNumberChange}
               handleUpdateDetails={handleUpdateDetails}
               personalDetails={profileSettings}
-              promiseOptions={promiseOptions}
               setChangePassword={setChangePassword}
               setErrDetails={setErrDetails}
               setShowConfirmPassword={setShowConfirmPassword}
@@ -467,7 +359,6 @@ const UserDetailsEdit = () => {
               showDatePicker={showDatePicker}
               showPassword={showPassword}
               updateBasicDetails={updateBasicDetails}
-              updatedStates={updatedStates}
               wrapperRef={wrapperRef}
             />
           )}
