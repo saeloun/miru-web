@@ -42,8 +42,8 @@ class TimeoffEntry < ApplicationRecord
 
   validate :either_leave_type_or_holiday_info_present
   validate :leave_date_and_holiday_year_should_be_same
-  validate :allow_one_holiday_per_day
   validate :ensure_unique_holiday_info
+  validate :allow_one_holiday_per_day, on: :create
   validate :optional_holiday_timeoff_entry
 
   scope :during, -> (from, to) { where(leave_date: from..to).order(leave_date: :desc) }
@@ -106,7 +106,7 @@ class TimeoffEntry < ApplicationRecord
     def ensure_unique_holiday_info
       return unless holiday_info.present?
 
-      if self.class.where.not(id:).exists?(holiday_info_id:, user_id:)
+      if self.class.kept.where.not(id:).exists?(holiday_info_id:, user_id:)
         errors.add(:base, "You already applied for this holiday, please recheck")
       end
     end
