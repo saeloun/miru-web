@@ -2,6 +2,7 @@
 
 import React from "react";
 
+import { UserIcon, ProjectsIcon, MobileIcon } from "miruIcons";
 import { useParams } from "react-router-dom";
 
 import withLayout from "common/Mobile/HOC/withLayout";
@@ -13,6 +14,17 @@ const getTeamUrls = memberId => [
   {
     url: `/team/${memberId}/details`,
     text: "PERSONAL DETAILS",
+    icon: <UserIcon size={16} />,
+  },
+  {
+    url: `/team/${memberId}/employment`,
+    text: "EMPLOYMENT DETAILS",
+    icon: <ProjectsIcon size={16} />,
+  },
+  {
+    url: "/settings/devices",
+    text: "ALLOCATED DEVICES",
+    icon: <MobileIcon size={16} />,
   },
 ];
 

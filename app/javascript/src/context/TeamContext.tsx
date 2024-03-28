@@ -5,6 +5,7 @@ export const ListContext = createContext({
   teamList: [],
   setModalState: (modalName, user = {}) => {}, // eslint-disable-line
   modal: "",
+  setRefreshList: (value: boolean) => {}, // eslint-disable-line
 });
 
 // Custom Hooks

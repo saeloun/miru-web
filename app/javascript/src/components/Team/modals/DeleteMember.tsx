@@ -11,14 +11,16 @@ import { useList } from "context/TeamContext";
 const DeleteMember = ({ user }) => {
   const wrapperRef = useRef();
 
-  const { setModalState, modal } = useList();
+  const { setModalState, modal, setRefreshList } = useList();
 
   const deleteTeamMember = async () => {
     try {
       if (user.isTeamMember) {
         await teamApi.destroyTeamMember(user.id);
+        setRefreshList(true);
       } else {
         await teamApi.deleteInvitedMember(user.id);
+        setRefreshList(true);
       }
       setModalState(TeamModalType.NONE);
     } catch (error) {
