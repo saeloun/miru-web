@@ -89,6 +89,11 @@ RSpec.describe TimeoffEntry, type: :model do
         "You are adding two holidays on the same day, please recheck")
     end
 
+    it "is valid to edit an existing holiday without triggering the same-day validation" do
+      @existing_timeoff_entry.holiday_info_id = national_holiday.id
+      expect(@existing_timeoff_entry).to be_valid
+    end
+
     it "is not valid if apply for same holiday again" do
       expect(@entry_with_optional_holiday).not_to be_valid
       expect(@entry_with_optional_holiday.errors[:base]).to include(
