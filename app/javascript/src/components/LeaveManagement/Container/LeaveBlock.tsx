@@ -11,16 +11,8 @@ import {
 } from "components/Profile/Organization/Leaves/utils";
 
 const LeaveBlock = ({ leaveType, setSelectedLeaveType }) => {
-  const {
-    icon,
-    color,
-    name,
-    netDuration,
-    netDays,
-    type,
-    category,
-    timePeriod,
-  } = leaveType;
+  const { icon, color, name, netDuration, netDays, type, category, label } =
+    leaveType;
 
   const leaveIcon =
     type == "leave" ? generateLeaveIcon(icon) : generateHolidayIcon(icon);
@@ -48,8 +40,10 @@ const LeaveBlock = ({ leaveType, setSelectedLeaveType }) => {
       <div className="mt-4 flex flex-col">
         <span className="text-xs font-semibold lg:text-sm">{name}</span>
         <span className="mt-2 text-base font-semibold lg:text-2xl">
-          {category !== "national" && formattedDuration}
-          {category == "optional" && `this ${timePeriod}`}
+          {category !== "national" &&
+            category != "optional" &&
+            formattedDuration}
+          {label}
         </span>
       </div>
     </div>
