@@ -106,7 +106,7 @@ class TimeoffEntry < ApplicationRecord
     def ensure_unique_holiday_info
       return unless holiday_info.present?
 
-      if self.class.where.not(id:).exists?(holiday_info_id:, user_id:)
+      if self.class.kept.where.not(id:).exists?(holiday_info_id:, user_id:)
         errors.add(:base, "You already applied for this holiday, please recheck")
       end
     end
