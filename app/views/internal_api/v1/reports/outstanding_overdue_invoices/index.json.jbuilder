@@ -5,6 +5,7 @@ json.deep_format_keys!
 
 json.currency current_company.base_currency
 json.clients clients do |client|
+  json.id client[:id]
   json.name client[:name]
   json.logo client[:logo]
   json.invoices client[:invoices] do |invoice|

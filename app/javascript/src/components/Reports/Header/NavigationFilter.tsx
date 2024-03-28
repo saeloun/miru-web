@@ -26,7 +26,7 @@ const NavigationFilter = () => {
 
   const filterHtml = (value, key, filterKey) => (
     <li
-      className="my-1 mr-4 flex rounded-xl bg-miru-gray-400 px-2 py-1 px-1 text-xs font-semibold tracking-widest tracking-widest text-miru-dark-purple-1000"
+      className="my-1 mr-4 flex rounded-xl bg-miru-gray-400 px-2 py-1 text-xs font-semibold tracking-widest text-miru-dark-purple-1000"
       key={key}
     >
       <span className="whitespace-nowrap">
@@ -35,7 +35,11 @@ const NavigationFilter = () => {
       <button
         className="ml-1 inline-block"
         onClick={() =>
-          selectedReport.handleRemoveSingleFilter(filterKey, value)
+          selectedReport.handleRemoveSingleFilter(
+            filterKey,
+            value,
+            selectedReport
+          )
         }
       >
         <XIcon
@@ -58,7 +62,7 @@ const NavigationFilter = () => {
         filterOptions = [
           ...filterOptions,
           filterValue.map((item, index) =>
-            filterHtml(item.label, `${item}-${index}`, filterKey)
+            filterHtml(item.label || item.name, `${item}-${index}`, filterKey)
           ),
         ];
       } else if (filterValue.value !== "") {

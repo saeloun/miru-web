@@ -20,6 +20,7 @@ import { getReports } from "./fetchReport";
 import NavigationFilter from "./NavigationFilter";
 
 import { useEntry } from "../context/EntryContext";
+import { OUTSTANDING_INVOICE_REPORT_PAGE } from "../OutstandingInvoiceReport/utils";
 import { REVENUE_REPORT_PAGE } from "../RevenueByClientReport/util";
 import { TIME_ENTRY_REPORT_PAGE } from "../TimeEntryReport/utils";
 
@@ -65,6 +66,11 @@ const Header = ({
           : 2;
     } else if (type == REVENUE_REPORT_PAGE) {
       return revenueFilterCounter > minNumberOfFilters;
+    } else if (type == OUTSTANDING_INVOICE_REPORT_PAGE) {
+      return (
+        filterCounter > minNumberOfFilters &&
+        selectedReport?.selectedFilter?.clients?.length > 0
+      );
     }
 
     return filterCounter > minNumberOfFilters;
@@ -107,6 +113,12 @@ const Header = ({
                       {revenueFilterCounter}
                     </sup>
                   )}
+                  {type == OUTSTANDING_INVOICE_REPORT_PAGE &&
+                    showClearAllFilterBtn(selectedReport.filterCounter) && (
+                      <sup className="filter__counter">
+                        {selectedReport.filterCounter}
+                      </sup>
+                    )}
                 </>
               ) : (
                 <img className="h-4 w-4" src={MoreOptionIcon} />

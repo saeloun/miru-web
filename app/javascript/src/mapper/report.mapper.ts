@@ -8,4 +8,10 @@ const unmapper = input => {
   };
 };
 
-export { unmapper };
+const filteredReportUnmapper = input => {
+  const { clients, summary, currency } = input;
+
+  return { clients, summary, currency };
+};
+
+export { unmapper, filteredReportUnmapper };
