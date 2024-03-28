@@ -211,6 +211,17 @@ const Header = ({
             <span className="ml-3">Payment Reminder</span>
           </li>
           <li
+            onClick={() => {
+              setShowContactModal(true);
+              setShowMobileModal(false);
+            }}
+          >
+            <button className="menuButton__list-item px-0">
+              <TeamsIcon size={16} />
+              <span className="ml-3">Add / View Contacts</span>
+            </button>
+          </li>
+          <li
             className="menuButton__list-item px-0"
             onClick={() => {
               handleEdit();
