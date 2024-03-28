@@ -11,7 +11,6 @@ import PhoneInput from "react-phone-number-input";
 import flags from "react-phone-number-input/flags";
 import "react-phone-number-input/style.css";
 
-import { CustomAsyncSelect } from "common/CustomAsyncSelect";
 import { CustomInputText } from "common/CustomInputText";
 import CustomReactSelect from "common/CustomReactSelect";
 import { CustomTextareaAutosize } from "common/CustomTextareaAutosize";
@@ -49,12 +48,9 @@ export const StaticPage = ({
   handleAddrChange,
   handleOnChangeCountry,
   countries,
-  handleOnChangeState,
-  stateList,
-  currentCityList,
-  handleOnChangeCity,
-  promiseOptions,
   handleZipcodeChange,
+  handleStateChange,
+  handleCityChange,
   handleCurrencyChange,
   currenciesOption,
   handleTimezoneChange,
@@ -234,19 +230,15 @@ export const StaticPage = ({
             )}
           </div>
           <div className="flex w-1/2 flex-col px-2 pb-3 text-sm font-medium">
-            <CustomReactSelect
-              handleOnChange={state => handleOnChangeState(state)}
+            <CustomInputText
+              id="state"
               label="State"
-              name="stateSelect"
-              options={stateList}
-              value={
-                companyAddr.state
-                  ? {
-                      label: companyAddr.state.label,
-                      value: companyAddr.state.value,
-                    }
-                  : null
-              }
+              name="state"
+              type="text"
+              value={companyAddr.state}
+              onChange={e => {
+                handleStateChange(e);
+              }}
             />
             {errDetails.stateErr && (
               <ErrorSpan
@@ -261,16 +253,14 @@ export const StaticPage = ({
             className="flex w-1/2 flex-col px-2 pb-3 text-sm font-medium"
             id="citySelect"
           >
-            <CustomAsyncSelect
-              defaultOptions={currentCityList}
-              handleOnChange={city => handleOnChangeCity(city)}
-              isErr={false}
+            <CustomInputText
+              id="city"
               label="City"
-              loadOptions={inputVal => promiseOptions(inputVal)}
-              name="citySelect"
-              value={{
-                label: companyAddr.city.label,
-                value: companyAddr.city.value,
+              name="city"
+              type="text"
+              value={companyAddr.city}
+              onChange={e => {
+                handleCityChange(e);
               }}
             />
             {errDetails.cityErr && (

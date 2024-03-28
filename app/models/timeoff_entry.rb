@@ -41,6 +41,7 @@ class TimeoffEntry < ApplicationRecord
   validates :leave_date, presence: true
 
   validate :either_leave_type_or_holiday_info_present
+  validate :leave_date_and_holiday_year_should_be_same
   validate :allow_one_holiday_per_day
   validate :optional_holiday_timeoff_entry
 
@@ -71,33 +72,12 @@ class TimeoffEntry < ApplicationRecord
       optional_timeoff_entries = holiday.optional_timeoff_entries
 
       error_message = "You have exceeded the maximum number of permitted optional holidays"
-      case time_period_optional_holidays.to_sym
-      when :per_week
-        start_of_week = leave_date.beginning_of_week
-        end_of_week = leave_date.end_of_week
-
-        total_optional_entries = optional_timeoff_entries.where(
-          leave_date: start_of_week..end_of_week,
-          user:).count
-      when :per_month
-        start_of_month = leave_date.beginning_of_month
-        end_of_month = leave_date.end_of_month
-
-        total_optional_entries = optional_timeoff_entries.where(
-          leave_date: start_of_month..end_of_month,
-          user:).count
-      when :per_quarter
-        start_of_quarter = leave_date.beginning_of_quarter
-        end_of_quarter = leave_date.end_of_quarter
-
-        total_optional_entries = optional_timeoff_entries.where(
-          leave_date: start_of_quarter..end_of_quarter,
-          user:).count
-      when :per_year
-        total_optional_entries = optional_timeoff_entries.where(user:).count
-      else
-        errors.add(:base, error_message)
-      end
+      total_optional_entries = TimeoffEntries::CalculateOptionalHolidayTimeoffEntriesService.new(
+        time_period_optional_holidays,
+        optional_timeoff_entries,
+        leave_date,
+        user
+      ).process
 
       if total_optional_entries >= no_of_allowed_optional_holidays
         errors.add(:base, error_message)
@@ -111,6 +91,14 @@ class TimeoffEntry < ApplicationRecord
       national_timeoff_entries = holiday.national_timeoff_entries.where(leave_date:, user:).exists?
       if optional_timeoff_entries || national_timeoff_entries
         errors.add(:base, "You are adding two holidays on the same day, please recheck")
+      end
+    end
+
+    def leave_date_and_holiday_year_should_be_same
+      return unless holiday_info.present?
+
+      if leave_date&.year != holiday_info&.date&.year
+        errors.add(:base, "Can not apply for a leave by selecting holiday from another year")
       end
     end
 end
