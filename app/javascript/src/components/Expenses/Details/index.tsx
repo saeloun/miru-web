@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 
 import Logger from "js-logger";
 import { useNavigate, useParams } from "react-router-dom";
 
 import expensesApi from "apis/expenses";
+import Loader from "common/Loader/index";
 import { useUserContext } from "context/UserContext";
 
 import Expense from "./Expense";
@@ -21,6 +22,7 @@ const ExpenseDetails = () => {
   const [showEditExpenseModal, setShowEditExpenseModal] =
     useState<boolean>(false);
   const [expense, setExpense] = useState<any>();
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [expenseData, setExpenseData] = useState<any>();
 
   const params = useParams();
@@ -36,6 +38,7 @@ const ExpenseDetails = () => {
       setVendorData(res.data.vendors);
       setExpenseData(res.data);
       setExpense(resData.data);
+      setIsLoading(false);
     } catch (e) {
       Logger.error(e);
       navigate("/expenses");
@@ -79,17 +82,25 @@ const ExpenseDetails = () => {
     getExpenseData();
   }, []);
 
+  if (isLoading) {
+    return (
+      <div className="flex h-80v w-full flex-col justify-center">
+        <Loader />
+      </div>
+    );
+  }
+
   return (
-    <div>
+    <div className="h-full">
       {!isDesktop && showEditExpenseModal ? null : (
-        <div>
+        <Fragment>
           <Header
             expense={expense}
             handleDelete={handleDelete}
             handleEdit={handleEdit}
           />
           <Expense currency={company.base_currency} expense={expense} />
-        </div>
+        </Fragment>
       )}
       {showEditExpenseModal &&
         (isDesktop ? (

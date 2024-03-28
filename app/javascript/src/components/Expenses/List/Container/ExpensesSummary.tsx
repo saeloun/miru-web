@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Categories } from "../../utils";
+import { Categories } from "components/Expenses/utils";
 
 const ExpensesSummary = () => (
   <div className="flex w-full flex-wrap bg-miru-gray-100 px-4 py-10 lg:py-6 lg:px-20">

@@ -4,6 +4,8 @@ import { DeleteIcon, EditIcon, DownloadSimpleIcon } from "miruIcons";
 import { useNavigate } from "react-router-dom";
 import { Tooltip, Modal, Button } from "StyledComponents";
 
+import { DownloadAll } from "components/Expenses/utils";
+
 const MoreOptions = ({
   expense,
   isDesktop,
@@ -18,7 +20,13 @@ const MoreOptions = ({
       onClick={e => e.stopPropagation()}
     >
       <Tooltip content="Download">
-        <Button disabled style="ternary">
+        <Button
+          style="ternary"
+          onClick={e => {
+            e.stopPropagation();
+            DownloadAll(expense.receipts);
+          }}
+        >
           <DownloadSimpleIcon size={16} weight="bold" />
         </Button>
       </Tooltip>
@@ -39,6 +47,7 @@ const MoreOptions = ({
           style="ternary"
           onClick={e => {
             e.stopPropagation();
+            navigate(`/expenses/${expense.id}`);
           }}
         >
           <DeleteIcon size={16} weight="bold" />

@@ -1,53 +1,71 @@
-import React, { useState } from "react";
+import React from "react";
 
-import { SearchIcon, PlusIcon, XIcon } from "miruIcons";
+import { currencyFormat } from "helpers";
+import { PlusIcon } from "miruIcons";
+import { useNavigate } from "react-router-dom";
+import { Button } from "StyledComponents";
 
-const Header = ({ setShowAddExpenseModal }) => {
-  const [searchQuery, setSearchQuery] = useState<string>("");
+import AutoSearch from "common/AutoSearch";
+import { useUserContext } from "context/UserContext";
+
+const SearchDataRow = ({ item }) => {
+  const { company } = useUserContext();
+  const navigate = useNavigate();
+
+  const handleClick = item => {
+    navigate(`/expenses/${item.value}`);
+  };
 
   return (
-    <div className="mt-6 mb-3 flex flex-wrap items-center justify-between">
-      <h2 className="header__title hidden lg:inline" data-cy="header__invoices">
-        Expenses
-      </h2>
-      <div className="header__searchWrap">
-        <div className="header__searchInnerWrapper relative rounded-full">
-          <div className="">
-            <input
-              className="header__searchInput rounded-full px-4"
-              data-cy="search-invoice"
-              placeholder="Search"
-              type="text"
-              value={searchQuery}
-              onChange={e => setSearchQuery(e.target.value)}
-            />
-            <button className=" absolute inset-y-0 right-0 flex cursor-pointer items-center pr-3 ">
-              {searchQuery ? <XIcon size={12} /> : <SearchIcon size={12} />}
-            </button>
-          </div>
-        </div>
-      </div>
-      {/* Todo: Uncomment when filter functionality is added
+    <div
+      className="flex cursor-pointer items-center p-3 last:border-b-0 hover:bg-miru-gray-100"
+      onClick={() => handleClick(item)}
+    >
+      <span className="w-4/12 truncate whitespace-nowrap text-left text-base font-normal tracking-wider text-miru-dark-purple-1000">
+        {item.label}
+      </span>
+      <span className="w-4/12 truncate whitespace-nowrap text-center text-base font-normal tracking-wider text-miru-dark-purple-1000">
+        {item.date}
+      </span>
+      <span className="w-4/12 truncate whitespace-nowrap text-right text-base font-normal tracking-wider text-miru-dark-purple-1000">
+        {currencyFormat(company.base_currency, item.amount)}
+      </span>
+    </div>
+  );
+};
+
+const Header = ({
+  setShowAddExpenseModal,
+  fetchSearchResults,
+  clearSearch,
+}) => (
+  <div className="mt-6 mb-3 flex items-center justify-between">
+    <h2 className="header__title hidden lg:inline" data-cy="header__invoices">
+      Expenses
+    </h2>
+    <AutoSearch
+      SearchDataRow={SearchDataRow}
+      clearSearch={clearSearch}
+      handleEnter={fetchSearchResults}
+      searchAction={fetchSearchResults}
+    />
+    {/* Todo: Uncomment when filter functionality is added
       <Button className="relative ml-7" style="ternary">
         <FilterIcon color="#5B34EA" size={16} />
       </Button>
       */}
-      <div className="flex">
-        <button
-          className="header__button"
-          onClick={() => setShowAddExpenseModal(true)}
-        >
-          <PlusIcon size={16} weight="fill" />
-          <span
-            className="ml-2 hidden lg:inline-block"
-            data-cy="new-invoice-button"
-          >
-            Add Expense
-          </span>
-        </button>
-      </div>
-    </div>
-  );
-};
+
+    <Button
+      className="ml-2 flex items-center px-2 py-2 lg:ml-0 lg:px-4"
+      style="secondary"
+      onClick={() => setShowAddExpenseModal(true)}
+    >
+      <PlusIcon size={16} weight="bold" />
+      <span className="ml-2 hidden text-base font-medium tracking-widest lg:inline-block">
+        Add Expense
+      </span>
+    </Button>
+  </div>
+);
 
 export default Header;
