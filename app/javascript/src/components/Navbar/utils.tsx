@@ -62,7 +62,7 @@ const navOptions = [
   },
   {
     logo: <CalendarIcon className="mr-0 md:mr-4" size={26} />,
-    label: "Leave Management",
+    label: "Leaves & Holidays",
     path: Paths.Leave_Management,
     allowedRoles: ["admin", "owner", "employee"],
   },
