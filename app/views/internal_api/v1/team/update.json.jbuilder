@@ -5,6 +5,7 @@ json.deep_format_keys!
 
 json.user do
   json.extract! user, :id, :first_name, :last_name, :email
+  json.name user.full_name
   json.role user.primary_role(current_company)
   json.status nil
   json.is_team_member true
