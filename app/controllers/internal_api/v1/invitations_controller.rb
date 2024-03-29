@@ -17,14 +17,18 @@ class InternalApi::V1::InvitationsController < InternalApi::V1::ApplicationContr
     authorize @invitation
 
     @invitation.update!(invitation_params)
-    render json: { notice: I18n.t("invitation.update.success.message") }, status: :ok
+    render json: {
+      invitation: InvitationPresenter.new(@invitation).process,
+      notice: I18n.t("invitation.update.success.message")
+    }, status: :ok
   end
 
   def destroy
     authorize @invitation
 
+    invitation_id = @invitation.id
     @invitation.destroy!
-    render json: { notice: I18n.t("invitation.delete.success.message") }, status: :ok
+    render json: { id: invitation_id, notice: I18n.t("invitation.delete.success.message") }, status: :ok
   end
 
   def resend
