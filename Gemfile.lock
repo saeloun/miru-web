@@ -464,7 +464,7 @@ GEM
       activerecord (>= 6.1.5)
       activesupport (>= 6.1.5)
       i18n
-    rdoc (6.5.0)
+    rdoc (6.6.3.1)
       psych (>= 4.0.0)
     react-rails (2.6.2)
       babel-transpiler (>= 0.7.0)
