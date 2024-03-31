@@ -82,7 +82,7 @@ gem "money"
 gem "aws-sdk-s3", require: false
 
 # Ransack gem for advanced searching
-gem "ransack"
+gem "ransack", "~> 4.1"
 
 # For Soft deletion
 gem "discard", "~> 1.2"
