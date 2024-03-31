@@ -209,7 +209,7 @@ group :test, :ci do
   # Strategies for cleaning databases in Ruby.
   gem "database_cleaner", "~> 2.0"
   gem "hash_dot"
-  gem "rspec-sidekiq"
+  gem "rspec-sidekiq", "~> 4.1"
 
   gem "rspec-buildkite"
   gem "rspec-retry"

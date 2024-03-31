@@ -508,9 +508,11 @@ GEM
       rspec-support (~> 3.12)
     rspec-retry (0.6.2)
       rspec-core (> 3.3)
-    rspec-sidekiq (3.1.0)
-      rspec-core (~> 3.0, >= 3.0.0)
-      sidekiq (>= 2.4.0)
+    rspec-sidekiq (4.1.0)
+      rspec-core (~> 3.0)
+      rspec-expectations (~> 3.0)
+      rspec-mocks (~> 3.0)
+      sidekiq (>= 5, < 8)
     rspec-support (3.12.1)
     rubocop (1.44.1)
       json (~> 2.3)
@@ -708,7 +710,7 @@ DEPENDENCIES
   rspec-buildkite
   rspec-rails (~> 6.1)
   rspec-retry
-  rspec-sidekiq
+  rspec-sidekiq (~> 4.1)
   rubocop
   rubocop-performance
   rubocop-rails
