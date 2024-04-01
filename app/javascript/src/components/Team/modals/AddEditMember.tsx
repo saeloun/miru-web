@@ -51,7 +51,7 @@ interface Props {
 
 const EditClient = ({ user = {}, isEdit = false }: Props) => {
   const [apiError, setApiError] = useState<string>(""); // eslint-disable-line
-  const { setModalState, modal, setRefreshList } = useList();
+  const { setModalState, modal, setTeamList, teamList } = useList();
   const wrapperRef = useRef();
   const { isDesktop } = useUserContext();
 
@@ -71,18 +71,41 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
     try {
       if (isEdit) {
         if (user.isTeamMember) {
-          await teamApi.updateTeamMember(user.id, payload);
-          setRefreshList(true);
+          const res = await teamApi.updateTeamMember(user.id, payload);
+          const updatedUser = res.data.user;
+          const updatedTeamList = teamList.map(member => {
+            if (member.id === updatedUser.id) {
+              return updatedUser;
+            }
+
+            return member;
+          });
+          setTeamList(updatedTeamList);
         } else {
-          await teamApi.updateInvitedMember(user.id, payload);
-          setRefreshList(true);
+          const res = await teamApi.updateInvitedMember(user.id, payload);
+          const updatedUser = res.data.invitation;
+          const updatedTeamList = teamList.map(member => {
+            if (member.id === updatedUser.id) {
+              return updatedUser;
+            }
+
+            return member;
+          });
+          setTeamList(updatedTeamList);
         }
       } else {
-        await teamApi.inviteMember(payload);
-        setRefreshList(true);
+        const res = await teamApi.inviteMember(payload);
+        const invitation = res.data.invitation;
+        const updatedTeamList = teamList;
+        const IsMemberPresent = updatedTeamList.findIndex(
+          user => user.id === invitation.id
+        );
+        if (IsMemberPresent === -1) {
+          updatedTeamList.push(...[invitation]);
+        }
+        setTeamList(updatedTeamList);
       }
       setModalState("");
-      setRefreshList(true);
     } catch (err) {
       setApiError(err.message);
     }

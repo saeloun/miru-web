@@ -11,16 +11,22 @@ import { useList } from "context/TeamContext";
 const DeleteMember = ({ user }) => {
   const wrapperRef = useRef();
 
-  const { setModalState, modal, setRefreshList } = useList();
+  const { setModalState, modal, setTeamList, teamList } = useList();
 
   const deleteTeamMember = async () => {
     try {
       if (user.isTeamMember) {
-        await teamApi.destroyTeamMember(user.id);
-        setRefreshList(true);
+        const res = await teamApi.destroyTeamMember(user.id);
+        const updatedTeamList = teamList.filter(
+          member => member.id !== res.data.user.id
+        );
+        setTeamList(updatedTeamList);
       } else {
-        await teamApi.deleteInvitedMember(user.id);
-        setRefreshList(true);
+        const res = await teamApi.deleteInvitedMember(user.id);
+        const updatedTeamList = teamList.filter(
+          member => member.id !== res.data.id
+        );
+        setTeamList(updatedTeamList);
       }
       setModalState(TeamModalType.NONE);
     } catch (error) {
