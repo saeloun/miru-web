@@ -23,12 +23,9 @@ export const formatFormData = (
     values.address2
   );
 
-  formData.append(
-    "client[addresses_attributes[0][state]]",
-    values.state?.value
-  );
+  formData.append("client[addresses_attributes[0][state]]", values.state);
 
-  formData.append("client[addresses_attributes[0][city]]", values.city?.value);
+  formData.append("client[addresses_attributes[0][city]]", values.city);
 
   formData.append(
     "client[addresses_attributes[0][country]]",

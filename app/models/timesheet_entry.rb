@@ -44,6 +44,7 @@ class TimesheetEntry < ApplicationRecord
 
   validates :duration, :work_date, :bill_status, presence: true
   validates :duration, numericality: { less_than_or_equal_to: 6000000, greater_than_or_equal_to: 0.0 }
+  validate :validate_billable_project
 
   scope :in_workspace, -> (company) { where(project_id: company&.project_ids) }
   scope :during, -> (from, to) { where(work_date: from..to).order(work_date: :desc) }
@@ -121,5 +122,11 @@ class TimesheetEntry < ApplicationRecord
 
       errors.add(:timesheet_entry, I18n.t(:errors)[:bill_status_billed]) if
       self.bill_status_changed? && self.bill_status_was == "billed" && Current.user.primary_role(Current.company) == "employee"
+    end
+
+    def validate_billable_project
+      if !project&.billable && bill_status == "unbilled"
+        errors.add(:base, I18n.t("errors.validate_billable_project"))
+      end
     end
 end

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import React, { useEffect, useState } from "react";
 
-import { Country, State, City } from "country-state-city";
+import { Country } from "country-state-city";
 import { Form, Formik, FormikProps } from "formik";
 import { XIcon } from "miruIcons";
 import PhoneInput from "react-phone-number-input";
@@ -50,32 +50,6 @@ const MobileClientForm = ({
     const allCountries = Country.getAllCountries();
     assignCountries(allCountries);
   }, []);
-
-  const updatedStates = countryCode =>
-    State.getStatesOfCountry(countryCode).map(state => ({
-      label: state.name,
-      value: state.name,
-      code: state.isoCode,
-      ...state,
-    }));
-
-  const updatedCities = values => {
-    const allStates = State.getAllStates();
-    const currentCity = allStates.filter(
-      state => state.name == values.state.label
-    );
-
-    const cities = City.getCitiesOfState(
-      values.country.code,
-      currentCity[0] && currentCity[0].isoCode
-    ).map(city => ({
-      label: city.name,
-      value: city.name,
-      ...city,
-    }));
-
-    return cities;
-  };
 
   const handleSubmit = async values => {
     const formData = new FormData();
@@ -160,6 +134,7 @@ const MobileClientForm = ({
                     resetErrorOnChange
                     id="name"
                     label="Name"
+                    marginBottom="mb-0"
                     name="name"
                     setFieldValue={setFieldValue}
                   />
@@ -167,21 +142,6 @@ const MobileClientForm = ({
                     fieldErrors={errors.name}
                     fieldTouched={touched.name}
                   />
-                </div>
-                <div className="mt-4">
-                  <div className="field relative">
-                    <InputField
-                      resetErrorOnChange
-                      id="email"
-                      label="Email"
-                      name="email"
-                      setFieldValue={setFieldValue}
-                    />
-                    <InputErrors
-                      fieldErrors={errors.email}
-                      fieldTouched={touched.email}
-                    />
-                  </div>
                 </div>
                 <div className="mt-4">
                   <div className="field relative">
@@ -260,32 +220,32 @@ const MobileClientForm = ({
                     />
                   </div>
                   <div className="flex w-1/2 flex-col pl-2">
-                    <CustomReactSelect
-                      isErr={!!errors.state && touched.state}
+                    <InputField
+                      resetErrorOnChange
+                      id="state"
                       label="State"
                       name="state"
-                      value={values.state.value ? values.state : null}
-                      handleOnChange={state => {
-                        setFieldValue("state", state);
-                        setFieldValue("city", "");
-                        setFieldValue("zipcode", "");
-                        updatedCities(values);
-                      }}
-                      options={updatedStates(
-                        values.country.code ? values.country.code : "US"
-                      )}
+                      setFieldValue={setFieldValue}
+                    />
+                    <InputErrors
+                      addMargin={false}
+                      fieldErrors={errors.state}
+                      fieldTouched={touched.state}
                     />
                   </div>
                 </div>
                 <div className="flex flex-row">
                   <div className="flex w-1/2 flex-col pr-2" id="city">
-                    <CustomReactSelect
-                      handleOnChange={city => setFieldValue("city", city)}
-                      isErr={!!errors.city && touched.city}
+                    <InputField
+                      resetErrorOnChange
+                      id="city"
                       label="City"
                       name="city"
-                      options={updatedCities(values)}
-                      value={values.city.value ? values.city : null}
+                      setFieldValue={setFieldValue}
+                    />
+                    <InputErrors
+                      fieldErrors={errors.city}
+                      fieldTouched={touched.city}
                     />
                   </div>
                   <div className="flex w-1/2 flex-col pl-2">
@@ -358,7 +318,6 @@ interface IClientForm {
 
 interface FormValues {
   name: string;
-  email: string;
   phone: string;
   address1: string;
   address2: string;

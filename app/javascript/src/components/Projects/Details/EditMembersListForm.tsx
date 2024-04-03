@@ -318,7 +318,7 @@ const EditMembersListForm = ({
           disabled={!isSubmitBtnActive(members)}
           name="commit"
           type="submit"
-          value="Add team members to project"
+          value="Save Changes"
           className={`form__button whitespace-nowrap text-tiny md:text-base ${
             isSubmitBtnActive(members)
               ? "cursor-pointer"

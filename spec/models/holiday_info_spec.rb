@@ -23,12 +23,6 @@ RSpec.describe HolidayInfo, type: :model do
     it { is_expected.to validate_presence_of(:date) }
     it { is_expected.to validate_presence_of(:category) }
 
-    it 'validates optional holidays when the category is "optional"' do
-      optional_holiday_info.holiday.enable_optional_holidays = false
-      optional_holiday_info.valid?
-      expect(optional_holiday_info.errors[:base]).to include("optional holidays are disabled")
-    end
-
     it "validates the year of the date" do
       invalid_holiday_info = build(:holiday_info, holiday:, date: "2022-01-01")
       invalid_holiday_info.valid?

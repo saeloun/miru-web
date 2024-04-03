@@ -30,6 +30,7 @@
 #
 class LeaveType < ApplicationRecord
   include Discard::Model
+  include LeaveTypeValidatable
 
   enum :color, {
     chart_blue: 0,

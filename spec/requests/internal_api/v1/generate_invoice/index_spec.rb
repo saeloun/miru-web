@@ -6,7 +6,7 @@ RSpec.describe "InternalApi::V1::GeneratInvoice#index", type: :request do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
   let(:client) { create(:client, company:) }
-  let!(:project) { create(:project, client:) }
+  let!(:project) { create(:project, billable: true, client:) }
   let!(:project_member) { create(:project_member, user:, project:) }
   let!(:timesheet_entry) { create(:timesheet_entry, user:, project:, bill_status: "unbilled") }
 

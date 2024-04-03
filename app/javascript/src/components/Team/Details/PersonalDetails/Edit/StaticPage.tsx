@@ -12,7 +12,6 @@ import PhoneInput from "react-phone-number-input";
 import flags from "react-phone-number-input/flags";
 import "react-phone-number-input/style.css";
 
-import { CustomAsyncSelect } from "common/CustomAsyncSelect";
 import CustomDatePicker from "common/CustomDatePicker";
 import { CustomInputText } from "common/CustomInputText";
 import { CustomReactSelect } from "common/CustomReactSelect";
@@ -30,18 +29,12 @@ const StaticPage = ({
   countries,
   handleOnChangeAddrType,
   handleOnChangeCountry,
-  currentCountryDetails,
-  currentCityList,
-  updatedStates,
-  promiseOptions,
-  handleOnChangeState,
   updateBasicDetails,
   personalDetails,
   showDatePicker,
   setShowDatePicker,
   handleDatePicker,
   errDetails,
-  handleOnChangeCity,
   handlePhoneNumberChange,
   wrapperRef,
   dateFormat,
@@ -298,22 +291,25 @@ const StaticPage = ({
             )}
           </div>
           <div className="flex w-1/2 flex-col px-2 py-3">
-            <CustomReactSelect
-              handleOnChange={state => handleOnChangeState(state)}
-              isErr={!!errDetails.state_err}
+            <CustomInputText
+              id="state"
               label="State"
-              name="state_select"
-              options={updatedStates(
-                currentCountryDetails.code ? currentCountryDetails.code : null
-              )}
-              value={
-                personalDetails.addresses.state
-                  ? {
-                      label: personalDetails.addresses.state,
-                      value: personalDetails.addresses.state,
-                    }
-                  : null
-              }
+              name="state"
+              type="text"
+              value={personalDetails.addresses.state}
+              inputBoxClassName={`${inputClass} ${
+                errDetails.state_err
+                  ? "border-red-600"
+                  : "border-miru-gray-1000"
+              }`}
+              labelClassName={`${labelClass} ${
+                errDetails.state_err
+                  ? "text-red-600"
+                  : "text-miru-dark-purple-200"
+              }`}
+              onChange={e => {
+                updateBasicDetails(e.target.value, "state", true);
+              }}
             />
             {errDetails.state_err && (
               <ErrorSpan
@@ -325,16 +321,22 @@ const StaticPage = ({
         </div>
         <div className="flex flex-row">
           <div className="flex w-1/2 flex-col px-2 py-3">
-            <CustomAsyncSelect
-              defaultOptions={currentCityList}
-              handleOnChange={city => handleOnChangeCity(city)}
-              isErr={!!errDetails.city_err}
+            <CustomInputText
+              id="city"
               label="City"
-              loadOptions={promiseOptions}
-              name="country_select"
-              value={{
-                label: personalDetails.addresses.city,
-                value: personalDetails.addresses.city,
+              name="city"
+              type="text"
+              value={personalDetails.addresses.city}
+              inputBoxClassName={`${inputClass} ${
+                errDetails.city_err ? "border-red-600" : "border-miru-gray-1000"
+              }`}
+              labelClassName={`${labelClass} ${
+                errDetails.city_err
+                  ? "text-red-600"
+                  : "text-miru-dark-purple-200"
+              }`}
+              onChange={e => {
+                updateBasicDetails(e.target.value, "city", true);
               }}
             />
             {errDetails.city_err && (
