@@ -21,7 +21,7 @@ module Team
       end
 
       def teams
-        user_ids = current_company.employments.kept.pluck(:user_id)
+        user_ids = current_company.employees_without_client_role.pluck(:id)
 
         User.search(
           search_term,
