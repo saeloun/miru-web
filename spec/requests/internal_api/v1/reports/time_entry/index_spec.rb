@@ -39,6 +39,7 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController::#index", type: :r
 
         filter_options = {
           clients: [{ "label": client.name, "value": client.id }],
+          projects:[{ "label": project.name, "value": project.id }],
           teamMembers: [{ "label": user.full_name, "value": user.id }]
         }
         expect(json_response["filterOptions"]).to eq(JSON.parse(filter_options.to_json))

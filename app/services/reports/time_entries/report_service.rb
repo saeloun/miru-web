@@ -71,12 +71,12 @@ class Reports::TimeEntries::ReportService
       group_by = params[:group_by]&.to_sym
       return unless [:client, :project, :team_member].include?(group_by)
 
-      filter_service = TimeEntries::Filters.new(params)
-      where_conditions = filter_service.process
+      filter_service = TimeEntries::Filters.new(params.slice(:date_range, :from, :to))
+      where_conditions = filter_service.date_range_filter
 
       joins_clause, group_field = case group_by
                                   when :client
-                                    [:client, "clients.id"]
+                                    [{project: :client}, "clients.id"]
                                   when :project
                                     [:project, "projects.id"]
                                   when :team_member
