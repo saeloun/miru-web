@@ -38,9 +38,9 @@ const AllocatedDevicesDetails = () => {
     <Fragment>
       {isDesktop ? (
         <DetailsHeader
+          showButtons
           editAction={handleEdit}
           isDisableUpdateBtn={false}
-          showButtons={false}
           subTitle=""
           title="Allocated Devices"
         />
