@@ -76,7 +76,7 @@ class Reports::TimeEntries::ReportService
 
       joins_clause, group_field = case group_by
                                   when :client
-                                    [{project: :client}, "clients.id"]
+                                    [{ project: :client }, "clients.id"]
                                   when :project
                                     [:project, "projects.id"]
                                   when :team_member
