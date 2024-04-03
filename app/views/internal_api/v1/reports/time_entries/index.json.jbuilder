@@ -2,9 +2,9 @@
 
 json.key_format! camelize: :lower
 json.deep_format_keys!
+json.group_by_total_duration group_by_total_duration
 json.reports reports do |grouped_report|
   json.label grouped_report[:label]
-
   json.entries grouped_report[:entries] do |report|
     json.id report.id
     json.note report.note
@@ -31,6 +31,10 @@ json.filter_options do
    json.label team_member.full_name
    json.value team_member.id
  end
+  json.projects filter_options[:projects] do |project|
+    json.label project["name"]
+    json.value project["id"]
+  end
 end
 
 json.pagy pagination_details
