@@ -136,7 +136,7 @@ const SubNav = ({ isAdmin, firstName, company, lastName, designation }) => {
   );
 
   return (
-    <div className="flex flex-col ">
+    <div className="flex h-full flex-col">
       <UserInformation
         designation={designation}
         firstName={firstName}
