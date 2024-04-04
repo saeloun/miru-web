@@ -10,7 +10,7 @@ json.user do
   json.status nil
   json.is_team_member true
   json.data_type "Team"
-  json.profile_picture user.avatar_url
+  json.profile_picture user_avatar user
   json.employment_type employment&.employment_type
   json.joined_at_date employment&.joined_at
 end
