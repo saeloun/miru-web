@@ -13,7 +13,7 @@ const Header = ({
 }) => (
   <div className="m-4 flex items-center justify-between lg:mx-0">
     <span className="hidden text-3xl font-bold text-miru-dark-purple-1000 lg:inline">
-      Leave Management
+      Leaves & Holidays
     </span>
     <CustomYearPicker
       nextYearButtonDisabled
