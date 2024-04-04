@@ -40,16 +40,34 @@ const ReportHeader = () => (
 const Container = ({ selectedFilter }: ContainerProps) => {
   const { timeEntryReport } = useEntry();
 
-  const getTotalHoursLogged = entries => {
-    const totalHours = entries?.reduce((totalDuration, currentEntry) => {
-      if (currentEntry?.duration) {
-        totalDuration += currentEntry.duration;
-      }
+  const getTotalHoursLogged = label => {
+    //to match the keys in filterOptions object
+    let selectedGroupByFilter;
+    switch (timeEntryReport.groupByTotalDuration.groupBy) {
+      case "client":
+        selectedGroupByFilter = "clients";
+        break;
+      case "team_member":
+        selectedGroupByFilter = "teamMembers";
+        break;
+      case "project":
+        selectedGroupByFilter = "projects";
+        break;
+    }
 
-      return totalDuration;
-    }, 0);
+    //Extract the id for provided label
+    const group = timeEntryReport.filterOptions[selectedGroupByFilter];
+    const extractedIdForProvidedLabel = group?.filter(
+      groupItem => groupItem.label == label
+    )[0]?.value;
 
-    return minToHHMM(totalHours || 0);
+    //get the total duration in minutes
+    const totalHoursForProvidedLabel =
+      timeEntryReport.groupByTotalDuration.groupedDurations[
+        extractedIdForProvidedLabel
+      ];
+
+    return minToHHMM(totalHoursForProvidedLabel || 0);
   };
 
   const getTableLogo = (groupedBy: string | null, clientLogo: string) => {
@@ -103,7 +121,7 @@ const Container = ({ selectedFilter }: ContainerProps) => {
                     {entries?.length > 0 && (
                       <p className="text-right font-manrope text-base font-medium text-miru-dark-purple-1000">
                         Total Hours for {label} : &nbsp;
-                        {getTotalHoursLogged(entries)}
+                        {getTotalHoursLogged(label)}
                       </p>
                     )}
                   </div>
