@@ -33,7 +33,7 @@ module Team
       end
 
       def invitations
-        invitation_ids = current_company.invitations.valid_invitations.pluck(:id)
+        invitation_ids = current_company.invitations.valid_invitations.where.not(role: "client").pluck(:id)
 
         Invitation.search(
           search_term,
