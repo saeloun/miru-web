@@ -40,34 +40,11 @@ const ReportHeader = () => (
 const Container = ({ selectedFilter }: ContainerProps) => {
   const { timeEntryReport } = useEntry();
 
-  const getTotalHoursLogged = label => {
-    //to match the keys in filterOptions object
-    let selectedGroupByFilter;
-    switch (timeEntryReport.groupByTotalDuration.groupBy) {
-      case "client":
-        selectedGroupByFilter = "clients";
-        break;
-      case "team_member":
-        selectedGroupByFilter = "teamMembers";
-        break;
-      case "project":
-        selectedGroupByFilter = "projects";
-        break;
-    }
+  const getTotalHoursLogged = id => {
+    const totalHours =
+      timeEntryReport.groupByTotalDuration.groupedDurations[id];
 
-    //Extract the id for provided label
-    const group = timeEntryReport.filterOptions[selectedGroupByFilter];
-    const extractedIdForProvidedLabel = group?.filter(
-      groupItem => groupItem.label == label
-    )[0]?.value;
-
-    //get the total duration in minutes
-    const totalHoursForProvidedLabel =
-      timeEntryReport.groupByTotalDuration.groupedDurations[
-        extractedIdForProvidedLabel
-      ];
-
-    return minToHHMM(totalHoursForProvidedLabel || 0);
+    return minToHHMM(totalHours || 0);
   };
 
   const getTableLogo = (groupedBy: string | null, clientLogo: string) => {
@@ -102,7 +79,7 @@ const Container = ({ selectedFilter }: ContainerProps) => {
     <Fragment>
       {timeEntryReport.reports?.length > 0 ? (
         getAlphabeticallySortedReportList(timeEntryReport.reports)?.map(
-          ({ label, entries }, index) => {
+          ({ id, label, entries }, index) => {
             const clientLogo = entries[0]?.clientLogo || "";
 
             return (
@@ -121,7 +98,7 @@ const Container = ({ selectedFilter }: ContainerProps) => {
                     {entries?.length > 0 && (
                       <p className="text-right font-manrope text-base font-medium text-miru-dark-purple-1000">
                         Total Hours for {label} : &nbsp;
-                        {getTotalHoursLogged(label)}
+                        {getTotalHoursLogged(id)}
                       </p>
                     )}
                   </div>
