@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 
 import dayjs from "dayjs";
 import { lineTotalCalc, minToHHMM } from "helpers";
-import { EmptyState } from "miruIcons";
 
 import NewLineItemTableHeader from "./Header";
 
@@ -48,7 +47,7 @@ const NewLineItemTable = ({
           Loading..
         </p>
       )}
-      {filteredLineItems.length > 0 ? (
+      {filteredLineItems.length > 0 && (
         <div className="relative mt-4 flex flex-col overflow-scroll p-2 md:h-50">
           {filteredLineItems.map((item, index) => {
             const hoursLogged = minToHHMM(item.quantity);
@@ -88,18 +87,6 @@ const NewLineItemTable = ({
             );
           })}
         </div>
-      ) : (
-        !loading && (
-          <div className="mx-auto w-full">
-            <img
-              className="mx-auto mt-10 w-320 object-contain"
-              src={EmptyState}
-            />
-            <p className="my-10 text-center font-manrope text-sm font-semibold not-italic leading-5 text-miru-dark-purple-200">
-              There are no unbilled time entries for this client
-            </p>
-          </div>
-        )
       )}
     </div>
   );
