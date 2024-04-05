@@ -301,21 +301,25 @@ const AddLineItemContainer = ({
                     />
                   </div>
                   {showNewLineItemTable && (
-                    <div className="absolute z-50 h-96 w-full rounded-md bg-white pb-4 shadow-lg">
-                      <NewLineItemTable
-                        dateFormat={dateFormat}
-                        filteredLineItems={filteredLineItems}
-                        loadMoreItems={loadNewLineItems}
-                        loading={loading}
-                        selectedLineItems={selectedLineItems}
-                        setAddNew={setShowMenu}
-                        setFilteredLineItems={setFilteredLineItems}
-                        setLineItem={setLineItem}
-                        setLoading={setLoading}
-                        setMultiLineItemModal={setMultiLineItemModal}
-                        setSelectedLineItems={setSelectedLineItems}
-                      />
-                    </div>
+                    <>
+                      {filteredLineItems.length > 0 && (
+                        <div className="absolute z-50 h-96 w-full rounded-md bg-white pb-4 shadow-lg">
+                          <NewLineItemTable
+                            dateFormat={dateFormat}
+                            filteredLineItems={filteredLineItems}
+                            loadMoreItems={loadNewLineItems}
+                            loading={loading}
+                            selectedLineItems={selectedLineItems}
+                            setAddNew={setShowMenu}
+                            setFilteredLineItems={setFilteredLineItems}
+                            setLineItem={setLineItem}
+                            setLoading={setLoading}
+                            setMultiLineItemModal={setMultiLineItemModal}
+                            setSelectedLineItems={setSelectedLineItems}
+                          />
+                        </div>
+                      )}
+                    </>
                   )}
                 </div>
                 <div className="pb-6">
