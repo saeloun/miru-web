@@ -10,7 +10,7 @@ json.invitation do
   json.last_name invitation.last_name
   json.email invitation.recipient_email
   json.role invitation.role
-  json.status invitation.accepted_at
-  json.is_team_member invitation.accepted_at
+  json.status invitation.accepted_at?
+  json.is_team_member invitation.accepted_at?
   json.profile_picture image_url "avatar.svg"
 end

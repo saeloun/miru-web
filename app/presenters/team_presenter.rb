@@ -58,7 +58,7 @@ class TeamPresenter
     end
 
     def invited_user_status(member)
-      user_employed_at_current_company && member.accepted_at
+      user_employed_at_current_company && member.accepted_at?
     end
 
     def user_employed_at_current_company
