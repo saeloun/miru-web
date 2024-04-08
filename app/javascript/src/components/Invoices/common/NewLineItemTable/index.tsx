@@ -1,7 +1,8 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import dayjs from "dayjs";
 import { lineTotalCalc, minToHHMM } from "helpers";
+import { EmptyState } from "miruIcons";
 
 import NewLineItemTableHeader from "./Header";
 
@@ -18,6 +19,18 @@ const NewLineItemTable = ({
   setLineItem,
   dateFormat,
 }) => {
+  const [showNoEntriesMessage, setShowNoEntriesMessage] = useState(false);
+  useEffect(() => {
+    if (!loading && filteredLineItems.length === 0) {
+      setShowNoEntriesMessage(true);
+      const timer = setTimeout(() => {
+        setShowNoEntriesMessage(false);
+      }, 2000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [loading, filteredLineItems.length]);
+
   const selectRowId = items => {
     setLineItem({});
     const option = {
@@ -86,6 +99,17 @@ const NewLineItemTable = ({
               </div>
             );
           })}
+        </div>
+      )}
+      {showNoEntriesMessage && filteredLineItems.length === 0 && !loading && (
+        <div className="mx-auto w-full">
+          <img
+            className="mx-auto mt-10 w-320 object-contain"
+            src={EmptyState}
+          />
+          <p className="my-10 text-center font-manrope text-sm font-semibold not-italic leading-5 text-miru-dark-purple-200">
+            There are no unbilled time entries for this client
+          </p>
         </div>
       )}
     </div>
