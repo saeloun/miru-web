@@ -58,7 +58,6 @@ class Company < ApplicationRecord
 
   # scopes
   scope :with_kept_employments, -> { merge(Employment.kept) }
-  scope :valid_invitations, -> { where(company: self).valid_invitations }
 
   def client_list
     clients.kept.map do |client|
