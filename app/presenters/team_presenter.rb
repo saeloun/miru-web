@@ -46,7 +46,7 @@ class TeamPresenter
             last_name: member.last_name,
             email: member.recipient_email,
             role: member.role,
-            status: invited_user_status,
+            status: invited_user_status(member),
             is_team_member: false,
             data_type: "Invitation"
           }
@@ -54,21 +54,20 @@ class TeamPresenter
     end
 
     def team_member_status(member)
-      return unless is_current_user_employee && member.unconfirmed_email?
-
-      I18n.t("team.reconfirmation")
+      user_employed_at_current_company && member.confirmed_at?
     end
 
-    def invited_user_status
-      return unless is_current_user_employee
-
-      I18n.t("team.invitation")
+    def invited_user_status(member)
+      user_employed_at_current_company && member.accepted_at?
     end
 
-    def is_current_user_employee
-      is_current_user_employee ||= current_user.has_any_role?(
+    def user_employed_at_current_company
+      user_employed_at_current_company ||= current_user.has_any_role?(
         { name: :owner, resource: current_company },
-        { name: :admin, resource: current_company })
+        { name: :admin, resource: current_company },
+        { name: :employee, resource: current_company },
+        { name: :book_keeper, resource: current_company }
+        )
     end
 
     def employment_data(user)
