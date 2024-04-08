@@ -6,10 +6,9 @@ class InternalApi::V1::InvitationsController < InternalApi::V1::ApplicationContr
   def create
     authorize :invitation
     invitation = Invitations::CreateInvitationService.new(invitation_params, current_company, current_user).process
-    render json: {
-             invitation: InvitationPresenter.new(invitation).process,
-             notice: I18n.t("invitation.create.success.message")
-           },
+    render :create, locals: {
+                      invitation:
+                    },
       status: :created
   end
 
@@ -17,9 +16,8 @@ class InternalApi::V1::InvitationsController < InternalApi::V1::ApplicationContr
     authorize @invitation
 
     @invitation.update!(invitation_params)
-    render json: {
-      invitation: InvitationPresenter.new(@invitation).process,
-      notice: I18n.t("invitation.update.success.message")
+    render :update, locals: {
+      invitation: @invitation
     }, status: :ok
   end
 
