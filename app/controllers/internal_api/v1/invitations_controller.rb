@@ -5,22 +5,28 @@ class InternalApi::V1::InvitationsController < InternalApi::V1::ApplicationContr
 
   def create
     authorize :invitation
-    Invitations::CreateInvitationService.new(invitation_params, current_company, current_user).process
-    render json: { notice: I18n.t("invitation.create.success.message") }, status: :created
+    invitation = Invitations::CreateInvitationService.new(invitation_params, current_company, current_user).process
+    render :create, locals: {
+                      invitation:
+                    },
+      status: :created
   end
 
   def update
     authorize @invitation
 
     @invitation.update!(invitation_params)
-    render json: { notice: I18n.t("invitation.update.success.message") }, status: :ok
+    render :update, locals: {
+      invitation: @invitation
+    }, status: :ok
   end
 
   def destroy
     authorize @invitation
 
+    invitation_id = @invitation.id
     @invitation.destroy!
-    render json: { notice: I18n.t("invitation.delete.success.message") }, status: :ok
+    render json: { id: invitation_id, notice: I18n.t("invitation.delete.success.message") }, status: :ok
   end
 
   def resend
