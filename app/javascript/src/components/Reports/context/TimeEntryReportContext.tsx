@@ -14,6 +14,11 @@ const TimeEntryReportContext = {
   filterOptions: {
     clients: [],
     teamMembers: [],
+    projects: [],
+  },
+  groupByTotalDuration: {
+    groupBy: "",
+    groupedDurations: {},
   },
   filterCounter: 0,
   handleRemoveSingleFilter: (key, value) => {}, //eslint-disable-line
