@@ -3,77 +3,26 @@
 require "rails_helper"
 
 RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
-  CURRENT_DATE = DateTime.now
-  CURRENT_YEAR = CURRENT_DATE.year
-  CURRENT_MONTH = CURRENT_DATE.month
-  CURRENT_WEEK = CURRENT_DATE.cweek
-
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
   let!(:leave) { create(:leave, company:, year: Date.today.year) }
-  let!(:leave_type) {
-    create(
-      :leave_type,
-      name: "Annual",
-      allocation_value: 2,
-      icon: LeaveType.icons[:calendar],
-      color: LeaveType.colors[:chart_blue],
-      allocation_period: :days,
-      allocation_frequency: :per_month,
-      carry_forward_days: 5,
-      leave:
-    )
-  }
-  let!(:leave_type_days_per_week) {
-    create(
-      :leave_type,
-      name: "Annual",
-      icon: LeaveType.icons[:cake],
-      color: LeaveType.colors[:chart_pink],
-      allocation_value: 2,
-      allocation_period: :days,
-      allocation_frequency: :per_week,
-      carry_forward_days: 2,
-      leave:
-    )
-  }
+  let!(:leave_types) do
+    [
+      create_leave_type("Annual", 2, :days, :per_month, LeaveType.icons[:calendar], LeaveType.colors[:chart_blue], 5),
+      create_leave_type("Annual", 2, :days, :per_week, LeaveType.icons[:cake], LeaveType.colors[:chart_pink], 2),
+      create_leave_type("Annual", 2, :days, :per_quarter, LeaveType.icons[:car], LeaveType.colors[:chart_green], 2),
+      create_leave_type("Annual", 2, :days, :per_year, LeaveType.icons[:medicine], LeaveType.colors[:chart_orange], 2)
+    ]
+  end
 
-  let!(:leave_type_days_per_quarter) {
-    create(
-      :leave_type,
-      name: "Annual",
-      icon: LeaveType.icons[:car],
-      color: LeaveType.colors[:chart_green],
-      allocation_value: 2,
-      allocation_period: :days,
-      allocation_frequency: :per_quarter,
-      carry_forward_days: 2,
-      leave:
-    )
-  }
-
-  let!(:leave_type_days_per_year) {
-    create(
-      :leave_type,
-      name: "Annual",
-      icon: LeaveType.icons[:medicine],
-      color: LeaveType.colors[:chart_orange],
-      allocation_value: 2,
-      allocation_period: :days,
-      allocation_frequency: :per_year,
-      carry_forward_days: 2,
-      leave:
-    )
-  }
-
-  let!(:timeoff_entry) { # rubocop:disable RSpec/LetSetup
-      create(
-        :timeoff_entry,
-        duration: 60,
-        leave_date: Date.today,
-        user:,
-        leave_type:)
-    }
+  let!(:timeoff_entries) do # rubocop:disable RSpec/LetSetup
+    [
+      create(:timeoff_entry, duration: 60, leave_date: Date.today, user:, leave_type: leave_types[0]),
+      create(:timeoff_entry, duration: 90, leave_date: Date.today, user:, leave_type: leave_types[1]),
+      create(:timeoff_entry, duration: 120, leave_date: Date.today, user:, leave_type: leave_types[2]),
+      create(:timeoff_entry, duration: 150, leave_date: Date.today, user:, leave_type: leave_types[3]),
+    ]
+  end
 
   describe "#initialize" do
     it "checks preset values in initialize method" do
@@ -93,12 +42,14 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
 
   describe "#process" do
     before do
-      create(:employment, company:, user:)
+      @joined_at = Date.today - 1.year
+      @year = Date.today.year
+      create(:employment, company:, user:, joined_at: @joined_at, resigned_at: nil)
       user.add_role :admin, company
 
       params = {
         user_id: user.id,
-        year: Date.today.year
+        year: @year
       }
 
       service = TimeoffEntries::IndexService.new(user, company, params[:user_id], params[:year])
@@ -126,65 +77,84 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
       expect(@data[:total_timeoff_entries_duration]).to eq(timeoff_entries_duration)
     end
 
-    it "returns leave balance for days per month" do
+    it "returns leave balance for days per month when joining date is previous year" do
+      leave_type = leave_types[0]
+      total_days = calculate_leave_type_days(@joined_at, leave_type, @year)
+      timeoff_entries_duration = leave_type.timeoff_entries.sum(:duration)
+      net_duration = (total_days * 8 * 60) - timeoff_entries_duration
+
       summary_object = {
         id: leave_type.id,
         name: leave_type.name,
         icon: leave_type.icon,
         color: leave_type.color,
-        total_leave_type_days: 6,
-        timeoff_entries_duration: 60,
-        net_duration: 2820,
-        net_days: 5,
+        total_leave_type_days: total_days,
+        timeoff_entries_duration:,
+        net_duration:,
+        net_days: net_duration / 60 / 8,
         type: "leave"
       }
 
       expect(@data[:leave_balance][0]).to eq(summary_object)
     end
 
-    it "returns leave balance for days per week" do
-      total_leave_type_days = leave_type.allocation_value * CURRENT_WEEK
+    it "returns leave balance for days per week when joining date is previous year" do
+      leave_type = leave_types[1]
+      total_days = calculate_leave_type_days(@joined_at, leave_type, @year)
+      timeoff_entries_duration = leave_type.timeoff_entries.sum(:duration)
+      net_duration = (total_days * 8 * 60) - timeoff_entries_duration
+
       summary_object = {
-        id: leave_type_days_per_week.id,
-        name: leave_type_days_per_week.name,
-        icon: leave_type_days_per_week.icon,
-        color: leave_type_days_per_week.color,
-        total_leave_type_days:,
-        timeoff_entries_duration: 0,
-        net_duration: total_leave_type_days * 8 * 60,
-        net_days: total_leave_type_days,
+        id: leave_type.id,
+        name: leave_type.name,
+        icon: leave_type.icon,
+        color: leave_type.color,
+        total_leave_type_days: total_days,
+        timeoff_entries_duration:,
+        net_duration:,
+        net_days: net_duration / 60 / 8,
         type: "leave"
       }
 
       expect(@data[:leave_balance][1]).to eq(summary_object)
     end
 
-    it "returns leave balance for days per quarter" do
+    it "returns leave balance for days per quarter when joining date is previous year" do
+      leave_type = leave_types[2]
+      total_days = calculate_leave_type_days(@joined_at, leave_type, @year)
+      timeoff_entries_duration = leave_type.timeoff_entries.sum(:duration)
+      net_duration = (total_days * 8 * 60) - timeoff_entries_duration
+
       summary_object = {
-        id: leave_type_days_per_quarter.id,
-        name: leave_type_days_per_quarter.name,
-        icon: leave_type_days_per_quarter.icon,
-        color: leave_type_days_per_quarter.color,
-        total_leave_type_days: 2,
-        timeoff_entries_duration: 0,
-        net_duration: 960,
-        net_days: 2,
+        id: leave_type.id,
+        name: leave_type.name,
+        icon: leave_type.icon,
+        color: leave_type.color,
+        total_leave_type_days: total_days,
+        timeoff_entries_duration:,
+        net_duration:,
+        net_days: net_duration / 60 / 8,
         type: "leave"
       }
 
       expect(@data[:leave_balance][2]).to eq(summary_object)
     end
 
-    it "returns leave balance for days per year" do
+    it "returns leave balance for days per year when joining date is previous year" do
+      leave_type = leave_types[3]
+      total_days = calculate_leave_type_days(@joined_at, leave_type, @year)
+      timeoff_entries_duration = leave_type.timeoff_entries.sum(:duration)
+      net_duration = (total_days * 8 * 60) - timeoff_entries_duration
+
       summary_object = {
-        id: leave_type_days_per_year.id,
-        name: leave_type_days_per_year.name,
-        icon: leave_type_days_per_year.icon,
-        color: leave_type_days_per_year.color,
-        total_leave_type_days: 2,
-        timeoff_entries_duration: 0,
-        net_duration: 960,
-        net_days: 2,
+        id: leave_type.id,
+        name: leave_type.name,
+        icon: leave_type.icon,
+        color: leave_type.color,
+        total_leave_type_days: total_days,
+        timeoff_entries_duration:,
+        net_duration:,
+        net_days: net_duration / 60 / 8,
         type: "leave"
       }
 
@@ -192,134 +162,133 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
     end
   end
 
-  describe "#process days per month when joining date is current year" do
+  describe "#process when joining date is current year" do
     before do
-      create(:employment, company:, user:, joined_at: Date.new(Time.current.year, 1, 16), resigned_at: nil)
+      @joined_at = Date.new(Time.current.year, 1, 16)
+      @year = Date.today.year
+
+      create(:employment, company:, user:, joined_at: @joined_at, resigned_at: nil)
       user.add_role :admin, company
 
       params = {
         user_id: user.id,
-        year: Date.today.year
+        year: @year
       }
 
       service = TimeoffEntries::IndexService.new(user, company, params[:user_id], params[:year])
+
       @data = service.process
     end
 
-    it "returns leave balance for days per month" do
+    it "returns leave balance for days per month when joining date is current year" do
+      leave_type = leave_types[0]
+      total_days = calculate_leave_type_days(@joined_at, leave_type, @year)
+      timeoff_entries_duration = leave_type.timeoff_entries.sum(:duration)
+      net_duration = (total_days * 8 * 60) - timeoff_entries_duration
+
       summary_object = {
         id: leave_type.id,
         name: leave_type.name,
         icon: leave_type.icon,
         color: leave_type.color,
-        total_leave_type_days: 5,
-        timeoff_entries_duration: 60,
-        net_duration: 2340,
-        net_days: 4,
+        total_leave_type_days: total_days,
+        timeoff_entries_duration:,
+        net_duration:,
+        net_days: net_duration / 60 / 8,
         type: "leave"
       }
 
       expect(@data[:leave_balance][0]).to eq(summary_object)
     end
-  end
 
-  describe "#process days per week when joining date is current year" do
-    before do
-      create(:employment, company:, user:, joined_at: Date.new(Time.current.year, 1, 5), resigned_at: nil)
-      user.add_role :admin, company
-
-      params = {
-        user_id: user.id,
-        year: Date.today.year
-      }
-
-      service = TimeoffEntries::IndexService.new(user, company, params[:user_id], params[:year])
-      @data = service.process
-    end
-
-    it "returns leave balance for days per week" do # rubocop:disable RSpec/ExampleLength
-      joining_date = user.joined_date_for_company(company)
-      total_weeks = (CURRENT_WEEK - joining_date.cweek)
-      allocation_value = leave_type.allocation_value
-      first_week_allocation_value = (joining_date.wday >= 3 && joining_date.wday <= 5) ?
-        (allocation_value / 2) : allocation_value
-      total_leave_type_days = first_week_allocation_value + allocation_value * total_weeks
+    it "returns leave balance for days per week when joining date is current year" do
+      leave_type = leave_types[1]
+      total_days = calculate_leave_type_days(@joined_at, leave_type, @year)
+      timeoff_entries_duration = leave_type.timeoff_entries.sum(:duration)
+      net_duration = (total_days * 8 * 60) - timeoff_entries_duration
 
       summary_object = {
-        id: leave_type_days_per_week.id,
-        name: leave_type_days_per_week.name,
-        icon: leave_type_days_per_week.icon,
-        color: leave_type_days_per_week.color,
-        total_leave_type_days:,
-        timeoff_entries_duration: 0,
-        net_duration: total_leave_type_days * 8 * 60,
-        net_days: total_leave_type_days,
+        id: leave_type.id,
+        name: leave_type.name,
+        icon: leave_type.icon,
+        color: leave_type.color,
+        total_leave_type_days: total_days,
+        timeoff_entries_duration:,
+        net_duration:,
+        net_days: net_duration / 60 / 8,
         type: "leave"
       }
 
       expect(@data[:leave_balance][1]).to eq(summary_object)
     end
-  end
 
-  describe "#process days per quarter when joining date is current year" do
-    before do
-      create(:employment, company:, user:, joined_at: Date.new(Time.current.year, 2, 17), resigned_at: nil)
-      user.add_role :admin, company
+    it "returns leave balance for days per quarter when joining date is current year" do
+      leave_type = leave_types[2]
+      total_days = calculate_leave_type_days(@joined_at, leave_type, @year)
+      timeoff_entries_duration = leave_type.timeoff_entries.sum(:duration)
+      net_duration = (total_days * 8 * 60) - timeoff_entries_duration
 
-      params = {
-        user_id: user.id,
-        year: Date.today.year
-      }
-
-      service = TimeoffEntries::IndexService.new(user, company, params[:user_id], params[:year])
-      @data = service.process
-    end
-
-    it "returns leave balance for days per quarter" do
       summary_object = {
-        id: leave_type_days_per_quarter.id,
-        name: leave_type_days_per_quarter.name,
-        icon: leave_type_days_per_quarter.icon,
-        color: leave_type_days_per_quarter.color,
-        total_leave_type_days: 1,
-        timeoff_entries_duration: 0,
-        net_duration: 480,
-        net_days: 1,
+        id: leave_type.id,
+        name: leave_type.name,
+        icon: leave_type.icon,
+        color: leave_type.color,
+        total_leave_type_days: total_days,
+        timeoff_entries_duration:,
+        net_duration:,
+        net_days: net_duration / 60 / 8,
         type: "leave"
       }
 
       expect(@data[:leave_balance][2]).to eq(summary_object)
     end
-  end
 
-  describe "#process days per year when joining date is current year" do
-    before do
-      create(:employment, company:, user:, joined_at: Date.new(Time.current.year, 1, 5), resigned_at: nil)
-      user.add_role :admin, company
+    it "returns leave balance for days per year when joining date is current year" do
+      leave_type = leave_types[3]
+      total_days = calculate_leave_type_days(@joined_at, leave_type, @year)
+      timeoff_entries_duration = leave_type.timeoff_entries.sum(:duration)
+      net_duration = (total_days * 8 * 60) - timeoff_entries_duration
 
-      params = {
-        user_id: user.id,
-        year: Date.today.year
-      }
-
-      service = TimeoffEntries::IndexService.new(user, company, params[:user_id], params[:year])
-      @data = service.process
-    end
-
-    it "returns leave balance for days per year" do
       summary_object = {
-        id: leave_type_days_per_year.id,
-        name: leave_type_days_per_year.name,
-        icon: leave_type_days_per_year.icon,
-        color: leave_type_days_per_year.color,
-        total_leave_type_days: 2,
-        timeoff_entries_duration: 0,
-        net_duration: 960,
-        net_days: 2,
+        id: leave_type.id,
+        name: leave_type.name,
+        icon: leave_type.icon,
+        color: leave_type.color,
+        total_leave_type_days: total_days,
+        timeoff_entries_duration:,
+        net_duration:,
+        net_days: net_duration / 60 / 8,
         type: "leave"
       }
 
       expect(@data[:leave_balance][3]).to eq(summary_object)
     end
   end
+
+  private
+
+    def create_leave_type(name, allocation_value, allocation_period, allocation_frequency, icon, color,
+carry_forward_days)
+      create(
+        :leave_type,
+        name:,
+        allocation_period:,
+        allocation_frequency:,
+        allocation_value:,
+        icon:,
+        color:,
+        carry_forward_days:,
+        leave:
+      )
+    end
+
+    def calculate_leave_type_days(joined_at, leave_type, year)
+      TimeoffEntries::CalculateTotalDurationOfDefinedLeavesService.new(
+        joined_at,
+        leave_type.allocation_value,
+        leave_type.allocation_period.to_sym,
+        leave_type.allocation_frequency.to_sym,
+        year
+      ).process
+    end
 end
