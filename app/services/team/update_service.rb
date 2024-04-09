@@ -18,6 +18,7 @@ module Team
         user.skip_reconfirmation!
         user.update!(user_params)
         update_company_user_role
+        user
       end
     end
 
