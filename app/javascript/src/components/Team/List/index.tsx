@@ -19,7 +19,6 @@ import Modals from "../modals/Modals";
 const TeamList = () => {
   const [teamList, setTeamList] = useState([]);
   const [modal, setModal] = useState("");
-  const [refreshList, setRefreshList] = useState<boolean>(false);
   const [modalUser, setModalUser] = useState({});
   const [loading, setLoading] = useState<boolean>(false);
   const [pagy, setPagy] = useState<any>(null);
@@ -44,7 +43,6 @@ const TeamList = () => {
         setPagy(pagyData);
       }
       setLoading(false);
-      setRefreshList(false);
     } catch (e) {
       Logger.error(e);
       setLoading(false);
@@ -54,12 +52,6 @@ const TeamList = () => {
   useEffect(() => {
     getTeamList();
   }, []);
-
-  useEffect(() => {
-    if (refreshList) {
-      getTeamList();
-    }
-  }, [refreshList]);
 
   const handlePageChange = async (pageData, items = pagy.items) => {
     if (pageData == "...") return;
