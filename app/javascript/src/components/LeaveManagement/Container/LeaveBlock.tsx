@@ -10,7 +10,7 @@ import {
   generateHolidayColor,
 } from "components/Profile/Organization/Leaves/utils";
 
-const LeaveBlock = ({ leaveType, setSelectedLeaveType }) => {
+const LeaveBlock = ({ leaveType, selectedLeaveType, setSelectedLeaveType }) => {
   const { icon, color, name, netDuration, type, category, label } = leaveType;
 
   const leaveIcon =
@@ -26,9 +26,14 @@ const LeaveBlock = ({ leaveType, setSelectedLeaveType }) => {
       ? `-${minToHHMM(-netDuration)} h (${label})`
       : `${minToHHMM(netDuration)} h (${label})`;
 
+  const selectedDiv =
+    selectedLeaveType?.name == name
+      ? "flex w-full cursor-pointer justify-start rounded-lg p-2 text-white lg:flex-col lg:p-6 shadow-2xl"
+      : "flex w-full cursor-pointer justify-start rounded-lg p-2 text-white lg:flex-col lg:p-6";
+
   return (
     <div
-      className="flex w-full cursor-pointer justify-start rounded-lg p-2 text-white lg:flex-col lg:p-6"
+      className={selectedDiv}
       style={{ background: leaveColor.value }}
       onClick={() => setSelectedLeaveType(leaveType)}
     >

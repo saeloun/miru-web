@@ -25,6 +25,7 @@ const Container = ({
         <LeaveBlock
           key={index}
           leaveType={leaveType}
+          selectedLeaveType={selectedLeaveType}
           setSelectedLeaveType={setSelectedLeaveType}
         />
       ))}
