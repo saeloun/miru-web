@@ -11,6 +11,17 @@ GIT
       rubocop
       smart_properties
 
+GIT
+  remote: https://github.com/wspurgin/rspec-sidekiq
+  revision: 0e710d7698c2fcea77245c7d458bb00b0fc50dae
+  branch: main
+  specs:
+    rspec-sidekiq (4.1.0)
+      rspec-core (~> 3.0)
+      rspec-expectations (~> 3.0)
+      rspec-mocks (~> 3.0)
+      sidekiq (>= 5, < 8)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -508,11 +519,6 @@ GEM
       rspec-support (~> 3.12)
     rspec-retry (0.6.2)
       rspec-core (> 3.3)
-    rspec-sidekiq (4.1.0)
-      rspec-core (~> 3.0)
-      rspec-expectations (~> 3.0)
-      rspec-mocks (~> 3.0)
-      sidekiq (>= 5, < 8)
     rspec-support (3.12.1)
     rubocop (1.44.1)
       json (~> 2.3)
@@ -710,7 +716,7 @@ DEPENDENCIES
   rspec-buildkite
   rspec-rails (~> 6.1)
   rspec-retry
-  rspec-sidekiq (~> 4.1)
+  rspec-sidekiq!
   rubocop
   rubocop-performance
   rubocop-rails
