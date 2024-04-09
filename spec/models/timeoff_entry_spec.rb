@@ -7,7 +7,12 @@ RSpec.describe TimeoffEntry, type: :model do
   let(:user) { create(:user, current_workspace_id: company.id) }
   let(:holiday) { create(:holiday, year: Date.current.year, company:) }
   let(:national_holiday) { create(:holiday_info, date: Date.current, category: "national", holiday:) }
-  let(:optional_holiday) { create(:holiday_info, date: Date.current, category: "optional", holiday:) }
+  let(:optional_holiday) {
+  create(:holiday_info, name: "Mahashivaratri", date: Date.current, category: "optional", holiday:)
+}
+  let(:second_optional_holiday) {
+  create(:holiday_info, name: "Sankranthi", date: Date.current, category: "optional", holiday:)
+}
   let(:previous_year_holiday) { create(:holiday, year: Date.current.year - 1, company:) }
   let(:previous_year_national_holiday) { create(
     :holiday_info,
@@ -16,7 +21,7 @@ RSpec.describe TimeoffEntry, type: :model do
 
   describe "validations" do
     before do
-      @existing_timeoff_entry = create(
+      @timeoff_entry = create(
         :timeoff_entry,
         user_id: user.id,
         leave_type_id: nil,
@@ -25,20 +30,29 @@ RSpec.describe TimeoffEntry, type: :model do
         leave_date: Date.current
       )
 
-      @new_time_off_entry = build(
+      @entry_with_second_optional_holiday = build(
+        :timeoff_entry,
+        user_id: user.id,
+        leave_type_id: nil,
+        holiday_info_id: second_optional_holiday.id,
+        duration: 400,
+        leave_date: Date.current,
+      )
+
+      @entry_with_optional_holiday = build(
         :timeoff_entry,
         user_id: user.id,
         leave_type_id: nil,
         holiday_info_id: optional_holiday.id,
         duration: 400,
-        leave_date: Date.current,
+        leave_date: Date.current + 1,
       )
 
-      @new_optional_time_off_entry = build(
+      @entry_with_second_optional_holiday_in_same_quarter = build(
         :timeoff_entry,
         user_id: user.id,
         leave_type_id: nil,
-        holiday_info_id: optional_holiday.id,
+        holiday_info_id: second_optional_holiday.id,
         duration: 400,
         leave_date: Date.current + 1,
       )
@@ -70,14 +84,25 @@ RSpec.describe TimeoffEntry, type: :model do
     end
 
     it "is not valid if adding two holidays on the same day" do
-      expect(@new_time_off_entry).not_to be_valid
-      expect(@new_time_off_entry.errors[:base]).to include(
+      expect(@entry_with_second_optional_holiday).not_to be_valid
+      expect(@entry_with_second_optional_holiday.errors[:base]).to include(
         "You are adding two holidays on the same day, please recheck")
     end
 
+    it "is valid to edit an existing holiday without triggering the same-day validation" do
+      @timeoff_entry.holiday_info_id = national_holiday.id
+      expect(@timeoff_entry).to be_valid
+    end
+
+    it "is not valid if apply for same holiday again" do
+      expect(@entry_with_optional_holiday).not_to be_valid
+      expect(@entry_with_optional_holiday.errors[:base]).to include(
+        "You already applied for this holiday, please recheck")
+    end
+
     it "is not valid if it exceeds the maximum number of permitted optional holidays" do
-      expect(@new_optional_time_off_entry).not_to be_valid
-      expect(@new_optional_time_off_entry.errors[:base]).to include(
+      expect(@entry_with_second_optional_holiday_in_same_quarter).not_to be_valid
+      expect(@entry_with_second_optional_holiday_in_same_quarter.errors[:base]).to include(
         "You have exceeded the maximum number of permitted optional holidays")
     end
   end

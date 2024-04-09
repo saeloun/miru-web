@@ -47,11 +47,11 @@ RSpec.describe "InternalApi::V1::Team#index", type: :request do
                                  end
 
       expected_team_data = [{
-        "id" => user.id, "name" => user.full_name, "email" => user.email, "role" => "admin", "status" => nil
+        "id" => user.id, "name" => user.full_name, "email" => user.email, "role" => "admin", "status" => true
       }]
 
       expected_invited_user_data = [{
-        "id" => invitation.id, "name" => invitation.full_name, "email" => invitation.recipient_email, "role" => "employee", "status" => I18n.t("team.invitation")
+        "id" => invitation.id, "name" => invitation.full_name, "email" => invitation.recipient_email, "role" => "employee", "status" => false
       }]
 
       expect(actual_team_data).to eq(expected_team_data)
@@ -66,7 +66,7 @@ RSpec.describe "InternalApi::V1::Team#index", type: :request do
 
       service_arr = [{
         "id" => user.id, "firstName" => user.first_name, "lastName" => user.last_name, "name" => "#{user.first_name} #{user.last_name}",
-        "email" => user.email, "role" => "admin", "status" => nil, "isTeamMember" => true, "employmentType" => employment.employment_type, "joinedAtDate" => employment.joined_at.strftime("%Y-%m-%d"),
+        "email" => user.email, "role" => "admin", "status" => true, "isTeamMember" => true, "employmentType" => employment.employment_type, "joinedAtDate" => employment.joined_at.strftime("%Y-%m-%d"),
         "profilePicture" => user.avatar_url
       }]
 
