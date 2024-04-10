@@ -166,7 +166,7 @@ const EmploymentDetails = () => {
                 .utc(personalDetails.date_of_birth, personalDetails.date_format)
                 .toISOString()
             : null,
-          phone: personalDetails.phone_number,
+          phone: personalDetails.phone_number || "",
           personal_email_id: personalDetails.email_id,
           social_accounts: {
             linkedin_url: personalDetails.linkedin,

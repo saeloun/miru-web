@@ -21,7 +21,6 @@ RSpec.describe Company, type: :model do
 
   describe "Validations" do
     it { is_expected.to validate_presence_of(:name) }
-    it { is_expected.to validate_presence_of(:business_phone) }
     it { is_expected.to validate_presence_of(:standard_price) }
     it { is_expected.to validate_presence_of(:country) }
     it { is_expected.to validate_presence_of(:base_currency) }

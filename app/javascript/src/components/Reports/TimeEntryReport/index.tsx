@@ -38,6 +38,12 @@ const TimeEntryReport = () => {
   const [filterOptions, setFilterOptions] = useState({
     clients: [],
     teamMembers: [],
+    projects: [],
+  });
+
+  const [groupByTotalDuration, setGroupByTotalDuration] = useState({
+    groupBy: "",
+    groupedDurations: {},
   });
   const [selectedFilter, setSelectedFilter] = useState(filterIntialValues);
   const [isFilterVisible, setIsFilterVisible] = useState<boolean>(false);
@@ -83,7 +89,8 @@ const TimeEntryReport = () => {
       setShowNavFilters,
       setIsFilterVisible,
       setFilterOptions,
-      setPaginationDetails
+      setPaginationDetails,
+      setGroupByTotalDuration
     );
   }, [selectedFilter]);
 
@@ -161,6 +168,7 @@ const TimeEntryReport = () => {
     timeEntryReport: {
       reports: timeEntries,
       filterOptions,
+      groupByTotalDuration,
       selectedFilter: {
         ...selectedFilter,
         customDateFilter: {
