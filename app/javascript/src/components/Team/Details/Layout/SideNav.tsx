@@ -25,10 +25,11 @@ const getTeamUrls = memberId => [
     url: `/team/${memberId}/employment`,
     text: "EMPLOYMENT DETAILS",
   },
-  {
-    url: `/team/${memberId}/compensation`,
-    text: "COMPENSATION",
-  },
+  //Todo: Uncomment while API integration
+  // {
+  //   url: `/team/${memberId}/compensation`,
+  //   text: "COMPENSATION",
+  // },
 ];
 
 const UserInformation = ({ memberId }) => {
