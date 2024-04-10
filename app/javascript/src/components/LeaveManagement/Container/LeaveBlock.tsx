@@ -28,7 +28,7 @@ const LeaveBlock = ({ leaveType, selectedLeaveType, setSelectedLeaveType }) => {
 
   const selectedDiv =
     selectedLeaveType?.name == name
-      ? "flex w-full cursor-pointer justify-start rounded-lg p-2 text-white lg:flex-col lg:p-6 shadow-2xl opacity-20 border-2 border-miru-dark-purple-1000"
+      ? "flex w-full cursor-pointer justify-start rounded-lg p-2 text-white lg:flex-col lg:p-6 shadow-2xl border-2 border-miru-dark-purple-1000 border-opacity-20"
       : "flex w-full cursor-pointer justify-start rounded-lg p-2 text-white lg:flex-col lg:p-6 hover:opacity-80";
 
   return (
