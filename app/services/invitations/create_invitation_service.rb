@@ -16,6 +16,7 @@ module Invitations
       set_company
       set_sender
       invitation.save!
+      invitation
     end
 
     private

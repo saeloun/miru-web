@@ -20,7 +20,8 @@ class Reports::TimeEntries::ReportService
       reports: Reports::TimeEntries::Result.process(reports, params[:group_by]),
       pagination_details:,
       filter_options:,
-      client_logos:
+      client_logos:,
+      group_by_total_duration:
     }
   end
 
@@ -30,7 +31,8 @@ class Reports::TimeEntries::ReportService
       if get_filters
         @_filter_options ||= {
           clients: current_company.clients.includes([:logo_attachment]).order(:name),
-          team_members: users_not_client_role.order(:first_name)
+          team_members: users_not_client_role.order(:first_name),
+          projects: current_company.projects.as_json(only: [:id, :name])
         }
       end
     end
@@ -64,6 +66,38 @@ class Reports::TimeEntries::ReportService
         load: false,
       )
     end
+
+    def group_by_total_duration
+      group_by = params[:group_by]&.to_sym
+      return unless [:client, :project, :team_member].include?(group_by)
+
+      filter_service = TimeEntries::Filters.new(params.slice(:date_range, :from, :to))
+      where_conditions = filter_service.date_range_filter
+
+      joins_clause, group_field = case group_by
+                                  when :client
+                                    [{ project: :client }, "clients.id"]
+                                  when :project
+                                    [:project, "projects.id"]
+                                  when :team_member
+                                    [:user, "users.id"]
+                                  else
+                                    raise ArgumentError, "Unsupported group_by: #{group_by}"
+      end
+
+      grouped_durations = TimesheetEntry.where(where_conditions)
+        .joins(joins_clause)
+        .reorder("")
+        .group(group_field)
+        .sum(:duration)
+
+      descriptive_aggregated_data = {
+        group_by:,
+        grouped_durations:
+      }
+
+      descriptive_aggregated_data
+  end
 
     def client_logos
       if filter_options

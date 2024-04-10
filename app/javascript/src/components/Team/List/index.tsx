@@ -96,6 +96,7 @@ const TeamList = () => {
         teamList,
         setModalState,
         modal,
+        setTeamList,
       }}
     >
       {!hideContainer && (

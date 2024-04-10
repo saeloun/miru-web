@@ -51,9 +51,20 @@ interface Props {
 
 const EditClient = ({ user = {}, isEdit = false }: Props) => {
   const [apiError, setApiError] = useState<string>(""); // eslint-disable-line
-  const { setModalState, modal } = useList();
+  const { setModalState, modal, setTeamList, teamList } = useList();
   const wrapperRef = useRef();
   const { isDesktop } = useUserContext();
+
+  const updateTeamList = updatedUser => {
+    const updatedTeamList = teamList.map(member => {
+      if (member.id === updatedUser.id) {
+        return updatedUser;
+      }
+
+      return member;
+    });
+    setTeamList(updatedTeamList);
+  };
 
   const handleSubmit = async values => {
     const { id, firstName, lastName, email, role } = values;
@@ -71,12 +82,23 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
     try {
       if (isEdit) {
         if (user.isTeamMember) {
-          await teamApi.updateTeamMember(user.id, payload);
+          const res = await teamApi.updateTeamMember(user.id, payload);
+          updateTeamList(res.data.user);
         } else {
-          await teamApi.updateInvitedMember(user.id, payload);
+          const res = await teamApi.updateInvitedMember(user.id, payload);
+          updateTeamList(res.data.invitation);
         }
       } else {
-        await teamApi.inviteMember(payload);
+        const res = await teamApi.inviteMember(payload);
+        const invitation = res.data.invitation;
+        const updatedTeamList = teamList;
+        const IsMemberPresent = updatedTeamList.findIndex(
+          user => user.id === invitation.id
+        );
+        if (IsMemberPresent === -1) {
+          updatedTeamList.push(...[invitation]);
+        }
+        setTeamList(updatedTeamList);
       }
       setModalState("");
     } catch (err) {

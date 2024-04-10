@@ -21,14 +21,9 @@ class InternalApi::V1::TeamController < InternalApi::V1::ApplicationController
 
   def update
     authorize employment, policy_class: TeamPolicy
-
-    Team::UpdateService.new(
+    user = Team::UpdateService.new(
       user_params:, current_company:, new_role: params[:role], user: employment.user).process
-
-    render json: {
-      user: employment.user,
-      notice: I18n.t("team.update.success.message")
-    }, status: :ok
+    render :update, locals: { user:, employment: }, status: :ok
   end
 
   def update_team_members
