@@ -46,7 +46,7 @@ const TableRow = ({ item }) => {
   };
 
   const handleRowClick = () => {
-    if (status) return;
+    if (!status) return;
 
     navigate(`/team/${id}`, { replace: true });
   };
@@ -65,7 +65,7 @@ const TableRow = ({ item }) => {
             <p className="mr-2 text-sm font-bold leading-5 text-miru-dark-purple-1000 lg:text-base">
               {name}
             </p>
-            {status && (
+            {!status && (
               <Badge
                 text="pending"
                 className={`${getStatusCssClass(

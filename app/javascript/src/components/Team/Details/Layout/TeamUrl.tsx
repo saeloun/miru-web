@@ -1,5 +1,6 @@
 import React from "react";
 
+import { RightArrowIcon } from "miruIcons";
 import { NavLink } from "react-router-dom";
 
 const getActiveClassName = isActive => {
@@ -20,7 +21,15 @@ export const TeamUrl = ({ urlList }) => (
             className={({ isActive }) => getActiveClassName(isActive)}
             to={item.url}
           >
-            {item.text}
+            <div className="flex w-full items-center justify-between gap-4">
+              <div className="flex items-center gap-4">
+                {item.icon}
+                {item.text}
+              </div>
+              <div className="pr-4">
+                <RightArrowIcon size={16} />
+              </div>
+            </div>
           </NavLink>
         </li>
       ))}
