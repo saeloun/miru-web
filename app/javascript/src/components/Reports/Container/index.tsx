@@ -40,14 +40,9 @@ const ReportHeader = () => (
 const Container = ({ selectedFilter }: ContainerProps) => {
   const { timeEntryReport } = useEntry();
 
-  const getTotalHoursLogged = entries => {
-    const totalHours = entries?.reduce((totalDuration, currentEntry) => {
-      if (currentEntry?.duration) {
-        totalDuration += currentEntry.duration;
-      }
-
-      return totalDuration;
-    }, 0);
+  const getTotalHoursLogged = id => {
+    const totalHours =
+      timeEntryReport.groupByTotalDuration.groupedDurations[id];
 
     return minToHHMM(totalHours || 0);
   };
@@ -84,7 +79,7 @@ const Container = ({ selectedFilter }: ContainerProps) => {
     <Fragment>
       {timeEntryReport.reports?.length > 0 ? (
         getAlphabeticallySortedReportList(timeEntryReport.reports)?.map(
-          ({ label, entries }, index) => {
+          ({ id, label, entries }, index) => {
             const clientLogo = entries[0]?.clientLogo || "";
 
             return (
@@ -103,7 +98,7 @@ const Container = ({ selectedFilter }: ContainerProps) => {
                     {entries?.length > 0 && (
                       <p className="text-right font-manrope text-base font-medium text-miru-dark-purple-1000">
                         Total Hours for {label} : &nbsp;
-                        {getTotalHoursLogged(entries)}
+                        {getTotalHoursLogged(id)}
                       </p>
                     )}
                   </div>

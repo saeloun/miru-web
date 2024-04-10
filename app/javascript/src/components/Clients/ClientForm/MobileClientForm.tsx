@@ -134,6 +134,7 @@ const MobileClientForm = ({
                     resetErrorOnChange
                     id="name"
                     label="Name"
+                    marginBottom="mb-0"
                     name="name"
                     setFieldValue={setFieldValue}
                   />
@@ -141,21 +142,6 @@ const MobileClientForm = ({
                     fieldErrors={errors.name}
                     fieldTouched={touched.name}
                   />
-                </div>
-                <div className="mt-4">
-                  <div className="field relative">
-                    <InputField
-                      resetErrorOnChange
-                      id="email"
-                      label="Email"
-                      name="email"
-                      setFieldValue={setFieldValue}
-                    />
-                    <InputErrors
-                      fieldErrors={errors.email}
-                      fieldTouched={touched.email}
-                    />
-                  </div>
                 </div>
                 <div className="mt-4">
                   <div className="field relative">
@@ -332,7 +318,6 @@ interface IClientForm {
 
 interface FormValues {
   name: string;
-  email: string;
   phone: string;
   address1: string;
   address2: string;
