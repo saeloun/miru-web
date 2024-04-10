@@ -72,6 +72,9 @@ module TimeoffEntries
           previous_year_carryforward = calculate_previous_year_carryforward(previous_year_leave_type)
 
           net_duration = (total_leave_type_days * 8 * 60) + previous_year_carryforward - timeoff_entries_duration
+          net_hours = net_duration / 60
+          net_days = net_hours / 8
+          extra_hours = net_hours % 8
 
           summary_object = {
             id: leave_type.id,
@@ -81,8 +84,9 @@ module TimeoffEntries
             total_leave_type_days:,
             timeoff_entries_duration:,
             net_duration:,
-            net_days: net_duration / 60 / 8,
-            type: "leave"
+            net_days:,
+            type: "leave",
+            label: "#{net_days} days #{extra_hours} hours"
           }
 
           leave_balance << summary_object
@@ -144,7 +148,7 @@ module TimeoffEntries
           timeoff_entries_duration: optional_timeoff_entries.sum(:duration),
           type: "holiday",
           category: "optional",
-          label: "#{total_optional_entries} out of #{no_of_allowed_optional_holidays}"
+          label: "#{total_optional_entries} out of #{no_of_allowed_optional_holidays} (this #{time_period_optional_holidays.to_s.gsub("per_", "")})"
         }
 
         leave_balance << optional_holidays

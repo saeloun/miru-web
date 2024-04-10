@@ -77,11 +77,14 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
       expect(@data[:total_timeoff_entries_duration]).to eq(timeoff_entries_duration)
     end
 
-    it "returns leave balance for days per month when joining date is previous year" do
+    it "returns leave balance for days per month when joining date is previous year" do # rubocop:disable RSpec/ExampleLength
       leave_type = leave_types[0]
       total_days = calculate_leave_type_days(@joined_at, leave_type, @year)
       timeoff_entries_duration = leave_type.timeoff_entries.sum(:duration)
       net_duration = (total_days * 8 * 60) - timeoff_entries_duration
+      net_hours = net_duration / 60
+      net_days = net_hours / 8
+      extra_hours = net_hours % 8
 
       summary_object = {
         id: leave_type.id,
@@ -91,18 +94,22 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
         total_leave_type_days: total_days,
         timeoff_entries_duration:,
         net_duration:,
-        net_days: net_duration / 60 / 8,
+        net_days:,
+        label: "#{net_days} days #{extra_hours} hours",
         type: "leave"
       }
 
       expect(@data[:leave_balance][0]).to eq(summary_object)
     end
 
-    it "returns leave balance for days per week when joining date is previous year" do
+    it "returns leave balance for days per week when joining date is previous year" do # rubocop:disable RSpec/ExampleLength
       leave_type = leave_types[1]
       total_days = calculate_leave_type_days(@joined_at, leave_type, @year)
       timeoff_entries_duration = leave_type.timeoff_entries.sum(:duration)
       net_duration = (total_days * 8 * 60) - timeoff_entries_duration
+      net_hours = net_duration / 60
+      net_days = net_hours / 8
+      extra_hours = net_hours % 8
 
       summary_object = {
         id: leave_type.id,
@@ -112,18 +119,22 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
         total_leave_type_days: total_days,
         timeoff_entries_duration:,
         net_duration:,
-        net_days: net_duration / 60 / 8,
+        net_days:,
+        label: "#{net_days} days #{extra_hours} hours",
         type: "leave"
       }
 
       expect(@data[:leave_balance][1]).to eq(summary_object)
     end
 
-    it "returns leave balance for days per quarter when joining date is previous year" do
+    it "returns leave balance for days per quarter when joining date is previous year" do # rubocop:disable RSpec/ExampleLength
       leave_type = leave_types[2]
       total_days = calculate_leave_type_days(@joined_at, leave_type, @year)
       timeoff_entries_duration = leave_type.timeoff_entries.sum(:duration)
       net_duration = (total_days * 8 * 60) - timeoff_entries_duration
+      net_hours = net_duration / 60
+      net_days = net_hours / 8
+      extra_hours = net_hours % 8
 
       summary_object = {
         id: leave_type.id,
@@ -133,18 +144,22 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
         total_leave_type_days: total_days,
         timeoff_entries_duration:,
         net_duration:,
-        net_days: net_duration / 60 / 8,
+        net_days:,
+        label: "#{net_days} days #{extra_hours} hours",
         type: "leave"
       }
 
       expect(@data[:leave_balance][2]).to eq(summary_object)
     end
 
-    it "returns leave balance for days per year when joining date is previous year" do
+    it "returns leave balance for days per year when joining date is previous year" do # rubocop:disable RSpec/ExampleLength
       leave_type = leave_types[3]
       total_days = calculate_leave_type_days(@joined_at, leave_type, @year)
       timeoff_entries_duration = leave_type.timeoff_entries.sum(:duration)
       net_duration = (total_days * 8 * 60) - timeoff_entries_duration
+      net_hours = net_duration / 60
+      net_days = net_hours / 8
+      extra_hours = net_hours % 8
 
       summary_object = {
         id: leave_type.id,
@@ -154,7 +169,8 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
         total_leave_type_days: total_days,
         timeoff_entries_duration:,
         net_duration:,
-        net_days: net_duration / 60 / 8,
+        net_days:,
+        label: "#{net_days} days #{extra_hours} hours",
         type: "leave"
       }
 
@@ -180,11 +196,14 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
       @data = service.process
     end
 
-    it "returns leave balance for days per month when joining date is current year" do
+    it "returns leave balance for days per month when joining date is current year" do # rubocop:disable RSpec/ExampleLength
       leave_type = leave_types[0]
       total_days = calculate_leave_type_days(@joined_at, leave_type, @year)
       timeoff_entries_duration = leave_type.timeoff_entries.sum(:duration)
       net_duration = (total_days * 8 * 60) - timeoff_entries_duration
+      net_hours = net_duration / 60
+      net_days = net_hours / 8
+      extra_hours = net_hours % 8
 
       summary_object = {
         id: leave_type.id,
@@ -194,18 +213,22 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
         total_leave_type_days: total_days,
         timeoff_entries_duration:,
         net_duration:,
-        net_days: net_duration / 60 / 8,
+        net_days:,
+        label: "#{net_days} days #{extra_hours} hours",
         type: "leave"
       }
 
       expect(@data[:leave_balance][0]).to eq(summary_object)
     end
 
-    it "returns leave balance for days per week when joining date is current year" do
+    it "returns leave balance for days per week when joining date is current year" do # rubocop:disable RSpec/ExampleLength
       leave_type = leave_types[1]
       total_days = calculate_leave_type_days(@joined_at, leave_type, @year)
       timeoff_entries_duration = leave_type.timeoff_entries.sum(:duration)
       net_duration = (total_days * 8 * 60) - timeoff_entries_duration
+      net_hours = net_duration / 60
+      net_days = net_hours / 8
+      extra_hours = net_hours % 8
 
       summary_object = {
         id: leave_type.id,
@@ -215,18 +238,22 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
         total_leave_type_days: total_days,
         timeoff_entries_duration:,
         net_duration:,
-        net_days: net_duration / 60 / 8,
+        net_days:,
+        label: "#{net_days} days #{extra_hours} hours",
         type: "leave"
       }
 
       expect(@data[:leave_balance][1]).to eq(summary_object)
     end
 
-    it "returns leave balance for days per quarter when joining date is current year" do
+    it "returns leave balance for days per quarter when joining date is current year" do # rubocop:disable RSpec/ExampleLength
       leave_type = leave_types[2]
       total_days = calculate_leave_type_days(@joined_at, leave_type, @year)
       timeoff_entries_duration = leave_type.timeoff_entries.sum(:duration)
       net_duration = (total_days * 8 * 60) - timeoff_entries_duration
+      net_hours = net_duration / 60
+      net_days = net_hours / 8
+      extra_hours = net_hours % 8
 
       summary_object = {
         id: leave_type.id,
@@ -236,18 +263,22 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
         total_leave_type_days: total_days,
         timeoff_entries_duration:,
         net_duration:,
-        net_days: net_duration / 60 / 8,
+        net_days:,
+        label: "#{net_days} days #{extra_hours} hours",
         type: "leave"
       }
 
       expect(@data[:leave_balance][2]).to eq(summary_object)
     end
 
-    it "returns leave balance for days per year when joining date is current year" do
+    it "returns leave balance for days per year when joining date is current year" do # rubocop:disable RSpec/ExampleLength
       leave_type = leave_types[3]
       total_days = calculate_leave_type_days(@joined_at, leave_type, @year)
       timeoff_entries_duration = leave_type.timeoff_entries.sum(:duration)
       net_duration = (total_days * 8 * 60) - timeoff_entries_duration
+      net_hours = net_duration / 60
+      net_days = net_hours / 8
+      extra_hours = net_hours % 8
 
       summary_object = {
         id: leave_type.id,
@@ -257,7 +288,8 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
         total_leave_type_days: total_days,
         timeoff_entries_duration:,
         net_duration:,
-        net_days: net_duration / 60 / 8,
+        net_days:,
+        label: "#{net_days} days #{extra_hours} hours",
         type: "leave"
       }
 
