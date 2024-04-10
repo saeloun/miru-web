@@ -55,6 +55,17 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
   const wrapperRef = useRef();
   const { isDesktop } = useUserContext();
 
+  const updateTeamList = updatedUser => {
+    const updatedTeamList = teamList.map(member => {
+      if (member.id === updatedUser.id) {
+        return updatedUser;
+      }
+
+      return member;
+    });
+    setTeamList(updatedTeamList);
+  };
+
   const handleSubmit = async values => {
     const { id, firstName, lastName, email, role } = values;
     const payload = {
@@ -72,26 +83,10 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
       if (isEdit) {
         if (user.isTeamMember) {
           const res = await teamApi.updateTeamMember(user.id, payload);
-          const updatedUser = res.data.user;
-          const updatedTeamList = teamList.map(member => {
-            if (member.id === updatedUser.id) {
-              return updatedUser;
-            }
-
-            return member;
-          });
-          setTeamList(updatedTeamList);
+          updateTeamList(res.data.user);
         } else {
           const res = await teamApi.updateInvitedMember(user.id, payload);
-          const updatedUser = res.data.invitation;
-          const updatedTeamList = teamList.map(member => {
-            if (member.id === updatedUser.id) {
-              return updatedUser;
-            }
-
-            return member;
-          });
-          setTeamList(updatedTeamList);
+          updateTeamList(res.data.invitation);
         }
       } else {
         const res = await teamApi.inviteMember(payload);

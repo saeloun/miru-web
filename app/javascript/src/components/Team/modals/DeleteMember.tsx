@@ -13,20 +13,19 @@ const DeleteMember = ({ user }) => {
 
   const { setModalState, modal, setTeamList, teamList } = useList();
 
+  const updateTeamListAferDelete = id => {
+    const updatedTeamList = teamList.filter(member => member.id !== id);
+    setTeamList(updatedTeamList);
+  };
+
   const deleteTeamMember = async () => {
     try {
       if (user.isTeamMember) {
         const res = await teamApi.destroyTeamMember(user.id);
-        const updatedTeamList = teamList.filter(
-          member => member.id !== res.data.user.id
-        );
-        setTeamList(updatedTeamList);
+        updateTeamListAferDelete(res.data.user.id);
       } else {
         const res = await teamApi.deleteInvitedMember(user.id);
-        const updatedTeamList = teamList.filter(
-          member => member.id !== res.data.id
-        );
-        setTeamList(updatedTeamList);
+        updateTeamListAferDelete(res.data.id);
       }
       setModalState(TeamModalType.NONE);
     } catch (error) {
