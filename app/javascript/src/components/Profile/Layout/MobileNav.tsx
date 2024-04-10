@@ -38,11 +38,12 @@ const getSettingsNavUrls = memberId => [
         text: "ALLOCATED DEVICES",
         icon: <MobileIcon size={16} />,
       },
-      {
-        url: "/settings/compensation",
-        text: "COMPENSATION",
-        icon: <PaymentsIcon size={16} />,
-      },
+      //Todo: Uncomment while API integration
+      // {
+      //   url: "/settings/compensation",
+      //   text: "COMPENSATION",
+      //   icon: <PaymentsIcon size={16} />,
+      // },
     ],
   },
 
