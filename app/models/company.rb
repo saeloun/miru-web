@@ -51,7 +51,7 @@ class Company < ApplicationRecord
   accepts_nested_attributes_for :addresses, reject_if: :address_attributes_blank?, allow_destroy: true
 
   # Validations
-  validates :name, :business_phone, :standard_price, :country, :base_currency, presence: true
+  validates :name, :standard_price, :country, :base_currency, presence: true
   validates :name, length: { maximum: 30 }
   validates :business_phone, length: { maximum: 15 }
   validates :standard_price, numericality: { greater_than_or_equal_to: 0 }

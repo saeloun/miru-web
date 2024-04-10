@@ -9,9 +9,10 @@ export const companyDetailsFormValidationSchema = Yup.object().shape({
   company_name: Yup.string()
     .required("Company name cannot be blank")
     .max(30, "Maximum 30 characters are allowed"),
-  business_phone: Yup.string()
-    .required("Business phone number cannot be blank")
-    .matches(phoneRegExp, "Please enter a valid business phone number"),
+  business_phone: Yup.string().matches(
+    phoneRegExp,
+    "Please enter a valid business phone number"
+  ),
   address_line_1: Yup.string()
     .required("Address line cannot be blank")
     .max(50, "Maximum 50 characters are allowed"),
