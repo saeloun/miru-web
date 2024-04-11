@@ -99,11 +99,6 @@ export const SETTINGS_ROUTES = [
     authorisedRoles: [ADMIN, OWNER],
   },
   // {
-  //   path: "/leave-balance",
-  //   Component: LeaveBalance,
-  //   authorisedRoles: [ADMIN, OWNER],
-  // },
-  // {
   //   path: "/integrations",
   //   Component: GoogleCalendar,
   //   authorisedRoles: [ADMIN, OWNER],
