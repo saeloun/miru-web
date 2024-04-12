@@ -14,7 +14,7 @@ module ProjectSqlQueries
         FROM (
           SELECT user_id, SUM(duration) AS total_duration
           FROM timesheet_entries
-          WHERE project_id = #{id} AND work_date BETWEEN '#{date_range.first}' AND '#{date_range.last}'
+          WHERE project_id = #{id} AND discarded_at IS NULL AND work_date BETWEEN '#{date_range.first}' AND '#{date_range.last}'
           GROUP BY user_id
         ) te
         RIGHT JOIN (

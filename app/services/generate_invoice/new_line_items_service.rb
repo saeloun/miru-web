@@ -26,7 +26,7 @@ module GenerateInvoice
       # Sending team members list for filter dropdown options
       def team_members_of_projects
         @team_members_of_projects ||= User.where(
-          id: TimesheetEntry.where(project_id: @projects).pluck(:user_id)
+          id: TimesheetEntry.kept.where(project_id: @projects).pluck(:user_id)
         )
       end
 
@@ -35,7 +35,7 @@ module GenerateInvoice
         discarded_invoice_ids = Invoice.kept.pluck(:id)
         @filtered_ids ||= params[:selected_entries].to_a | InvoiceLineItem.joins(:timesheet_entry)
           .where(invoice_id: discarded_invoice_ids)
-          .where(timesheet_entries: { bill_status: "unbilled" })
+          .where(timesheet_entries: { bill_status: "unbilled", discarded_at: nil })
           .pluck(:timesheet_entry_id)
       end
 
@@ -63,7 +63,7 @@ module GenerateInvoice
       end
 
       def new_line_item_entries
-        timesheet_entries = search_timesheet_entries(search_term, where_clause)
+        timesheet_entries = search_timesheet_entries(search_term, where_clause).where(discarded_at: nil)
 
         @total_count = timesheet_entries.total_count
         format_timesheet_entries(timesheet_entries)

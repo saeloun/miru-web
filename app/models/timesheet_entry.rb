@@ -4,22 +4,24 @@
 #
 # Table name: timesheet_entries
 #
-#  id          :bigint           not null, primary key
-#  bill_status :integer          not null
-#  duration    :float            not null
-#  note        :text             default("")
-#  work_date   :date             not null
-#  created_at  :datetime         not null
-#  updated_at  :datetime         not null
-#  project_id  :bigint           not null
-#  user_id     :bigint           not null
+#  id           :bigint           not null, primary key
+#  bill_status  :integer          not null
+#  discarded_at :datetime
+#  duration     :float            not null
+#  note         :text             default("")
+#  work_date    :date             not null
+#  created_at   :datetime         not null
+#  updated_at   :datetime         not null
+#  project_id   :bigint           not null
+#  user_id      :bigint           not null
 #
 # Indexes
 #
-#  index_timesheet_entries_on_bill_status  (bill_status)
-#  index_timesheet_entries_on_project_id   (project_id)
-#  index_timesheet_entries_on_user_id      (user_id)
-#  index_timesheet_entries_on_work_date    (work_date)
+#  index_timesheet_entries_on_bill_status   (bill_status)
+#  index_timesheet_entries_on_discarded_at  (discarded_at)
+#  index_timesheet_entries_on_project_id    (project_id)
+#  index_timesheet_entries_on_user_id       (user_id)
+#  index_timesheet_entries_on_work_date     (work_date)
 #
 # Foreign Keys
 #
@@ -28,6 +30,7 @@
 #
 
 class TimesheetEntry < ApplicationRecord
+  include Discard::Model
   extend Pagy::Searchkick
   enum bill_status: [:non_billable, :unbilled, :billed]
 

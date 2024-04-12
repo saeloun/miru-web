@@ -85,7 +85,7 @@ class Reports::TimeEntries::ReportService
                                     raise ArgumentError, "Unsupported group_by: #{group_by}"
       end
 
-      grouped_durations = TimesheetEntry.where(where_conditions)
+      grouped_durations = TimesheetEntry.kept.where(where_conditions)
         .joins(joins_clause)
         .reorder("")
         .group(group_field)
