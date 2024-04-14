@@ -115,7 +115,7 @@ gem "active_interaction"
 gem "stripe"
 
 # Background job processing adapter
-gem "sidekiq", "<8"
+gem "sidekiq", "~> 7.2"
 
 #  job scheduler extension for Sidekiq
 gem "sidekiq-scheduler"
