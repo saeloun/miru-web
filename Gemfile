@@ -88,7 +88,7 @@ gem "ransack", "~> 4.1"
 gem "discard", "~> 1.2"
 
 # Use newrelic for monitoring
-gem "newrelic_rpm", "~> 8.4"
+gem "newrelic_rpm", "~> 9.8.0"
 
 # Role management library with resource scoping
 gem "rolify", "~> 6.0"
@@ -225,7 +225,7 @@ gem "strong_migrations"
 
 # Error tracking: https://docs.sentry.io/platforms/ruby/guides/rails/
 gem "sentry-rails"
-gem "sentry-ruby"
+gem "sentry-ruby", "~> 5.17"
 
 # https://github.com/grosser/parallel_tests
 gem "parallel_tests", group: [:development, :test]

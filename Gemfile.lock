@@ -371,7 +371,7 @@ GEM
       timeout
     net-smtp (0.3.3)
       net-protocol
-    newrelic_rpm (8.16.0)
+    newrelic_rpm (9.8.0)
     nio4r (2.5.9)
     nokogiri (1.16.2-arm64-darwin)
       racc (~> 1.4)
@@ -574,10 +574,11 @@ GEM
       rubyzip (>= 1.2.2, < 3.0)
       websocket (~> 1.0)
     semantic_range (3.0.0)
-    sentry-rails (5.7.0)
+    sentry-rails (5.17.3)
       railties (>= 5.0)
-      sentry-ruby (~> 5.7.0)
-    sentry-ruby (5.7.0)
+      sentry-ruby (~> 5.17.3)
+    sentry-ruby (5.17.3)
+      bigdecimal
       concurrent-ruby (~> 1.0, >= 1.0.2)
     shakapacker (6.0.0)
       activesupport (>= 5.2)
@@ -659,6 +660,7 @@ GEM
 PLATFORMS
   arm64-darwin-21
   arm64-darwin-22
+  arm64-darwin-23
   x86_64-darwin-21
   x86_64-darwin-22
   x86_64-linux
@@ -696,7 +698,7 @@ DEPENDENCIES
   letter_opener
   letter_opener_web
   money
-  newrelic_rpm (~> 8.4)
+  newrelic_rpm (~> 9.8.0)
   nokogiri (>= 1.16.2)
   omniauth-google-oauth2 (~> 1.0)
   omniauth-rails_csrf_protection (~> 1.0)
@@ -727,7 +729,7 @@ DEPENDENCIES
   searchkick
   selenium-webdriver (>= 4.0.0)
   sentry-rails
-  sentry-ruby
+  sentry-ruby (~> 5.17)
   shakapacker (= 6.0.0)
   shoulda-callback-matchers (~> 1.1.1)
   shoulda-matchers (~> 5.1)
