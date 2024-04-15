@@ -2,9 +2,8 @@
 
 module TimeoffEntries
   class IndexService < ApplicationService
-    attr_reader :current_company, :current_user, :user_id, :year, :optional_timeoff_entries, :national_timeoff_entries,
-      :previous_year
-    attr_accessor :leave_balance
+    attr_reader :current_company, :current_user, :user_id, :year, :previous_year
+    attr_accessor :leave_balance, :optional_timeoff_entries, :national_timeoff_entries
 
     def initialize(current_user, current_company, user_id, year)
       @current_user = current_user
@@ -72,6 +71,9 @@ module TimeoffEntries
           previous_year_carryforward = calculate_previous_year_carryforward(previous_year_leave_type)
 
           net_duration = (total_leave_type_days * 8 * 60) + previous_year_carryforward - timeoff_entries_duration
+          net_hours = net_duration / 60
+          net_days = net_hours / 8
+          extra_hours = net_hours % 8
 
           summary_object = {
             id: leave_type.id,
@@ -81,8 +83,9 @@ module TimeoffEntries
             total_leave_type_days:,
             timeoff_entries_duration:,
             net_duration:,
-            net_days: net_duration / 60 / 8,
-            type: "leave"
+            net_days:,
+            type: "leave",
+            label: "#{net_days} days #{extra_hours} hours"
           }
 
           leave_balance << summary_object
@@ -100,7 +103,7 @@ module TimeoffEntries
 
       def calculate_national_holiday_balance(holiday)
         total_national_holidays = holiday.holiday_infos.national.count
-        national_timeoff_entries = holiday.national_timeoff_entries.where(user: user_id)
+        @national_timeoff_entries = holiday.national_timeoff_entries.where(user: user_id)
 
         national_holidays = {
           id: "national",
@@ -119,7 +122,7 @@ module TimeoffEntries
       def calculate_optional_holiday_balance(holiday)
         no_of_allowed_optional_holidays = holiday.no_of_allowed_optional_holidays
         time_period_optional_holidays = holiday.time_period_optional_holidays
-        optional_timeoff_entries = holiday.optional_timeoff_entries.where(user: user_id)
+        @optional_timeoff_entries = holiday.optional_timeoff_entries.where(user: user_id)
 
         total_optional_entries = TimeoffEntries::CalculateOptionalHolidayTimeoffEntriesService.new(
           time_period_optional_holidays,
@@ -144,7 +147,7 @@ module TimeoffEntries
           timeoff_entries_duration: optional_timeoff_entries.sum(:duration),
           type: "holiday",
           category: "optional",
-          label: "#{total_optional_entries} out of #{no_of_allowed_optional_holidays}"
+          label: "#{total_optional_entries} out of #{no_of_allowed_optional_holidays} (this #{time_period_optional_holidays.to_s.gsub("per_", "")})"
         }
 
         leave_balance << optional_holidays
