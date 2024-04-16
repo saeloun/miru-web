@@ -30,7 +30,7 @@ class Reports::TimeEntries::FilterService < ApplicationService
     end
 
     def set_default_pagination_data
-      @es_filter = { id: current_company.timesheet_entries.pluck(:id) }
+      @es_filter = { id: current_company.timesheet_entries.kept.pluck(:id) }
     end
 
     def team_member_filter

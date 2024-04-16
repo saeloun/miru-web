@@ -46,6 +46,6 @@ def send_mail(recipients:, name:, start_date:, end_date:, company_name:)
 end
 
 def get_entries_for_period(user:, company:, start_date:, end_date:)
-  user.timesheet_entries.in_workspace(company).during(start_date, end_date) +
+  user.timesheet_entries.kept.in_workspace(company).during(start_date, end_date) +
     user.timeoff_entries.during(start_date, end_date)
 end
