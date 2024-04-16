@@ -34,7 +34,7 @@ class InternalApi::V1::TimesheetEntryController < InternalApi::V1::ApplicationCo
 
   def destroy
     authorize current_timesheet_entry
-    render json: { notice: I18n.t("timesheet_entry.destroy.message") } if current_timesheet_entry.destroy
+    render json: { notice: I18n.t("timesheet_entry.destroy.message") } if current_timesheet_entry.discard!
   end
 
   private
@@ -44,7 +44,7 @@ class InternalApi::V1::TimesheetEntryController < InternalApi::V1::ApplicationCo
     end
 
     def current_timesheet_entry
-      @_current_timesheet_entry ||= current_company.timesheet_entries.find(params[:id])
+      @_current_timesheet_entry ||= current_company.timesheet_entries.kept.find(params[:id])
     end
 
     def timesheet_entry_params
