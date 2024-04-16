@@ -38,7 +38,7 @@ class Reports::TimeEntries::ReportService
     end
 
     def fetch_reports
-      default_filter = current_company_filter.merge(this_month_filter)
+      default_filter = current_company_filter.merge(this_month_filter).merge(active_time_entries)
       where_clause = default_filter.merge(TimeEntries::Filters.process(params))
       pagy_reports(where_clause)
     end
@@ -113,6 +113,10 @@ class Reports::TimeEntries::ReportService
 
     def this_month_filter
       { work_date: DateTime.current.beginning_of_month..DateTime.current.end_of_month }
+    end
+
+    def active_time_entries
+      { discarded_at: nil }
     end
 
     def users_not_client_role
