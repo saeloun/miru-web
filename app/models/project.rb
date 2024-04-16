@@ -68,7 +68,7 @@ class Project < ApplicationRecord
   end
 
   def total_logged_duration(time_frame)
-    @_total_logged_duration = timesheet_entries.joins(
+    @_total_logged_duration = timesheet_entries.kept.joins(
       "RIGHT JOIN project_members ON project_members.user_id = timesheet_entries.user_id"
     ).where(
       project_members: { project_id: id },
@@ -85,7 +85,7 @@ class Project < ApplicationRecord
 
   def overdue_and_outstanding_amounts
     currency = client.company.base_currency
-    timesheet_entries_ids = timesheet_entries.ids
+    timesheet_entries_ids = timesheet_entries.kept.ids
     invoices = Invoice
       .joins(:invoice_line_items)
       .where(
@@ -107,7 +107,7 @@ class Project < ApplicationRecord
   end
 
   def minutes_spent
-    timesheet_entries.sum(:duration)
+    timesheet_entries.kept.sum(:duration)
   end
 
   private
