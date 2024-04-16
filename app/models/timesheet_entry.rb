@@ -74,7 +74,8 @@ class TimesheetEntry < ApplicationRecord
       client_name: project.client.name,
       bill_status:,
       duration: duration.to_i,
-      created_at: created_at.to_time
+      created_at: created_at.to_time,
+      discarded_at:
     }
   end
 

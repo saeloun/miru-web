@@ -5,7 +5,7 @@ class InternalApi::V1::TimesheetEntryController < InternalApi::V1::ApplicationCo
   after_action :verify_policy_scoped, only: [:index]
 
   def index
-    timesheet_entries = policy_scope(TimesheetEntry).kept
+    timesheet_entries = policy_scope(TimesheetEntry)
     timesheet_entries = timesheet_entries
       .where(user_id: params[:user_id] || current_user.id)
       .during(params[:from], params[:to])

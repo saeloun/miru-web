@@ -39,23 +39,13 @@ module GenerateInvoice
           .pluck(:timesheet_entry_id)
       end
 
-      def unselected_time_entries_filter
-        { id: { not: filtered_ids } }
-      end
-
-      def project_filter
-        { project_id: @projects.pluck(:id) }
-      end
-
-      def unbilled_status_filter
-        { bill_status: "unbilled" }
-      end
-
       def where_clause
-        project_filter
-          .merge(unselected_time_entries_filter)
-          .merge(unbilled_status_filter)
-          .merge(TimeEntries::Filters.process(params))
+        {
+          project_id: @projects.pluck(:id),
+          id: { not: filtered_ids },
+          bill_status: "unbilled",
+          discarded_at: nil
+        }.merge(TimeEntries::Filters.process(params))
       end
 
       def search_term
@@ -63,7 +53,7 @@ module GenerateInvoice
       end
 
       def new_line_item_entries
-        timesheet_entries = search_timesheet_entries(search_term, where_clause).where(discarded_at: nil)
+        timesheet_entries = search_timesheet_entries(search_term, where_clause)
 
         @total_count = timesheet_entries.total_count
         format_timesheet_entries(timesheet_entries)
