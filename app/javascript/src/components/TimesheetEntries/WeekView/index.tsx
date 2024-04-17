@@ -1,6 +1,6 @@
 import React from "react";
 
-import { VacationIconSVG } from "miruIcons";
+import { VacationIcon } from "miruIcons";
 
 import TimeoffEntryManager from "components/TimeoffEntries/TimeoffEntryManager";
 import { useTimesheetEntries } from "context/TimesheetEntries";
@@ -49,7 +49,7 @@ const WeekView = () => {
               setNewTimeoffEntryView(true);
             }}
           >
-            <img className="icon" src={VacationIconSVG} />
+            <VacationIcon className="icon" size={16} weight="bold" />
             <span className="ml-2">Mark Time Off</span>
           </button>
         </div>

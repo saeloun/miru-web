@@ -1,6 +1,6 @@
 import React from "react";
 
-import { VacationIconSVG } from "miruIcons";
+import { VacationIcon } from "miruIcons";
 import { Button } from "StyledComponents";
 
 import { useTimesheetEntries } from "context/TimesheetEntries";
@@ -38,7 +38,7 @@ const EntryButtons = () => {
           setNewTimeoffEntryView(true);
         }}
       >
-        <img alt="Vacation Icon" className="icon mr-4" src={VacationIconSVG} />
+        <VacationIcon className="icon mr-4" size={16} weight="bold" />
         MARK TIME OFF
       </Button>
     </div>
@@ -65,7 +65,7 @@ const EntryButtons = () => {
           setNewTimeoffEntryView(true);
         }}
       >
-        <img alt="Vacation Icon" className="icon mr-2" src={VacationIconSVG} />
+        <VacationIcon className="icon mr-2" size={16} weight="bold" />
         MARK TIME OFF
       </Button>
     </div>
