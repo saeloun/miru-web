@@ -50,7 +50,7 @@ class TimeTrackingIndexService
     end
 
     def fetch_timesheet_entries
-      user.timesheet_entries.includes([:project, :user])
+      user.timesheet_entries.kept.includes([:project, :user])
         .in_workspace(current_company)
         .during(from, to)
     end

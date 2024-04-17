@@ -23,8 +23,8 @@ RSpec.describe "InternalApi::V1::TimesheetEntry::BulkActionController#destroy", 
     it "deletes the timesheet entries for the selected ids" do
       expect(response).to be_successful
       expect(json_response["notice"]).to match("Timesheet deleted")
-      expect(TimesheetEntry.where(id: [timesheet_entry1.id, timesheet_entry2.id]).count).to eq(0)
-      expect(TimesheetEntry.where(id: timesheet_entry3.id).count).to eq(1)
+      expect(TimesheetEntry.where(id: [timesheet_entry1.id, timesheet_entry2.id]).kept.count).to eq(0)
+      expect(TimesheetEntry.where(id: timesheet_entry3.id).kept.count).to eq(1)
     end
   end
 end
