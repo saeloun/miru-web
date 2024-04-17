@@ -100,6 +100,17 @@ input:checked+.slider:before {
   align-items: center !important;
   width: 25px !important;
   height: 22px !important;
+
+  @media (min-width:1024px) and (max-width:1279px) {
+    font-size: 10px !important;
+    width: 15px !important;
+    height: 15px !important;
+  }
+  @media (min-width:1280px) and (max-width:1535px) {
+    font-size: 12px !important;
+    width: 18px !important;
+    height: 18px !important;
+  }
 }
 
 .holiday {
@@ -302,11 +313,27 @@ input:checked+.slider:before {
   color: inherit !important;
 }
 
+.react-calendar {
+  width: 100%;
+
+  @media (min-width:1024px) and (max-width:1279px) {
+    font-size: 10px;
+  }
+  @media (min-width:1280px) and (max-width:1535px) {
+    font-size: 12px;
+  }
+}
+
 .react-calendar__month-view__days__day {
   position: relative;
+  overflow: visible !important;
 
   abbr {
     display: none;
+  }
+
+  @media (min-width:1024px) and (max-width:1535px) {
+    max-width: 10% !important;
   }
 }
 
