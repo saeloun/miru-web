@@ -20,7 +20,7 @@ const HolidayModal = ({
   const { isDesktop } = useUserContext();
 
   const CalendarForm = () => (
-    <div className="modal__form flex-col bg-white px-4">
+    <div className="modal__form flex-col bg-white lg:px-4">
       <div className="mt-3 flex w-full items-center justify-between lg:justify-end">
         <div className="flex flex-row items-center">
           <div className="mr-4 flex flex-row items-center text-xs font-medium lg:text-sm">

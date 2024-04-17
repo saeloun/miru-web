@@ -151,6 +151,10 @@ input:checked+.slider:before {
 .react-calendar-month-picker {
   max-width: 248px !important;
   border: 0 !important;
+
+  @media screen  {
+    max-width: 100% !important;
+  }
 }
 
 .react-calendar__tile--active .react-calendar__tile--now {
