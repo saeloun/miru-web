@@ -23,7 +23,6 @@ class Company < ApplicationRecord
   # Associations
   has_many :employments, dependent: :destroy
   has_many :users, -> { kept }, through: :employments
-  has_many :timesheet_entries, through: :users
   has_many :clients, dependent: :destroy
   has_many :projects, through: :clients, dependent: :destroy
   has_many :current_workspace_users, foreign_key: "current_workspace_id", class_name: "User", dependent: :nullify

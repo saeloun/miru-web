@@ -102,6 +102,31 @@ export const holidayIcons = [
   },
 ];
 
+export const getAllocationPeriod = selectedFrequency => {
+  switch (selectedFrequency) {
+    case "per_week":
+      return [{ value: "days", label: "days" }];
+    case "per_month":
+    case "per_quarter":
+      return [
+        { value: "days", label: "days" },
+        { value: "weeks", label: "weeks" },
+      ];
+    case "per_year":
+      return [
+        { value: "days", label: "days" },
+        { value: "weeks", label: "weeks" },
+        { value: "months", label: "months" },
+      ];
+    default:
+      return [
+        { value: "days", label: "days" },
+        { value: "weeks", label: "weeks" },
+        { value: "months", label: "months" },
+      ];
+  }
+};
+
 export const allocationPeriod = [
   { value: "days", label: "days" },
   { value: "weeks", label: "weeks" },

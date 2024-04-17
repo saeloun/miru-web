@@ -11,7 +11,7 @@ module Projects
     end
 
     def process
-      minutes_spent = @current_company.timesheet_entries.group(:project_id).sum(:duration)
+      minutes_spent = @current_company.timesheet_entries.kept.group(:project_id).sum(:duration)
       project_list = project_list_query.ransack({ name_or_client_name_cont: @query }).result
       project_ids = project_list.ids.uniq
 
