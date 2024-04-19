@@ -31,6 +31,7 @@ class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationControlle
 
     render locals: {
              client_details: Client::ShowPresenter.new(client).process,
+             client_member_emails: client.send_invoice_emails(@virtual_verified_invitations_allowed),
              project_details: client.project_details(params[:time_frame]),
              total_minutes: client.total_hours_logged(params[:time_frame]),
              overdue_outstanding_amount: client.client_overdue_and_outstanding_calculation,
@@ -78,7 +79,7 @@ class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationControlle
       subject: client_email_params[:email_params][:subject],
     ).send_payment_reminder.deliver_later
 
-    render json: { notice: "Payment reminder has been sent to #{client.email}" }, status: :accepted
+    render json: { notice: "Payment reminder has been sent" }, status: :accepted
   end
 
   private
