@@ -71,13 +71,15 @@ const Header = ({
             </Tooltip>
           ) : (
             <button
-              disabled={status == "paid"}
               className={`flex h-10 w-44 flex-row items-center justify-center rounded
               ${
-                status == "paid"
+                status == "paid" || status == "waived" || invoice.amount <= 0
                   ? "cursor-not-allowed bg-indigo-100"
                   : "bg-miru-han-purple-1000"
               }`}
+              disabled={
+                status == "paid" || status == "waived" || invoice.amount <= 0
+              }
               onClick={() => {
                 if (status != "paid") {
                   if (stripe_connected_account && !stripe_enabled) {
