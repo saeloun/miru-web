@@ -1,7 +1,6 @@
 import React from "react";
 
 import { minToHHMM } from "helpers";
-import { Avatar } from "StyledComponents";
 
 import {
   generateLeaveIcon,
@@ -27,16 +26,14 @@ const TableRow = ({ timeoffEntry }) => {
       <td className="flex text-left text-base font-normal tracking-widest lg:w-1/4">
         {leaveDate}
       </td>
-      <td className="flex w-1/3 items-center whitespace-pre-wrap py-2.5 text-left text-base font-normal text-miru-dark-purple-1000 lg:table-cell lg:w-4/12">
-        <dt className="hidden text-base text-miru-dark-purple-400 lg:inline">
-          <Avatar
-            classNameImg="mr-2 p-2"
-            size="w-8 h-8"
-            style={{ backgroundColor: leaveColor?.value }}
-            url={leaveIcon?.icon}
-          />
-        </dt>
-        {leaveName}
+      <td className="flex w-1/3 items-center whitespace-pre-wrap py-2.5 text-left text-base font-normal text-miru-dark-purple-1000 lg:w-4/12">
+        <div
+          className="mr-2 hidden h-6 w-6 items-center justify-center rounded-full text-white lg:flex"
+          style={{ backgroundColor: leaveColor?.value }}
+        >
+          {leaveIcon?.icon}
+        </div>
+        <span>{leaveName}</span>
       </td>
       <td className="flex w-1/3 flex-col whitespace-nowrap pb-2.5 text-right text-base lg:mt-0 lg:table-cell lg:w-3/12 lg:items-center lg:pl-8">
         {minToHHMM(duration)}

@@ -1,7 +1,5 @@
 import React from "react";
 
-import { Avatar } from "StyledComponents";
-
 import { allocationFrequency as allocationFrequencyProp } from "constants/leaveType";
 
 const TableRow = ({ leave, key }) => {
@@ -22,11 +20,12 @@ const TableRow = ({ leave, key }) => {
   return (
     <tr className="flex w-full" key={key}>
       <td className="flex w-4/12 cursor-pointer items-center border-b border-miru-gray-400 py-6 pr-2">
-        <Avatar
-          classNameImg="mr-2 p-2"
-          style={{ backgroundColor: leaveColor.value }}
-          url={leaveIcon.icon}
-        />
+        <div
+          className="mr-2 flex h-8 w-8 items-center justify-center rounded-full p-px text-white"
+          style={{ backgroundColor: leaveColor?.value }}
+        >
+          {leaveIcon?.icon}
+        </div>
         <span className="text-left text-sm font-medium text-miru-dark-purple-1000">
           {leaveType}
         </span>

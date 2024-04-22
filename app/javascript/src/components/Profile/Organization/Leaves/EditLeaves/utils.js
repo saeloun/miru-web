@@ -92,8 +92,8 @@ export const customStyles = {
 };
 
 export const IconOption = props => (
-  <Option {...props} className="h-10 w-10 items-center">
-    <img alt={props.data.label} className="m-3 h-5 w-5" src={props.data.icon} />
+  <Option {...props} className="m-1 h-8 w-8 items-center">
+    {props?.data?.icon}
   </Option>
 );
 
