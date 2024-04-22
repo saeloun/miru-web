@@ -83,7 +83,7 @@ const EditLeaves = ({
                         IndicatorSeparator: () => null,
                       }}
                       getOptionLabel={e => (
-                        <img alt={e.label} className="h-5 w-5" src={e.icon} />
+                        <div className="h-7 w-7">{e.icon}</div>
                       )}
                       handleOnChange={e =>
                         updateCondition("leaveIcon", e, index)

@@ -1,7 +1,6 @@
 import React from "react";
 
 import { minToHHMM } from "helpers";
-import { Avatar } from "StyledComponents";
 
 import {
   generateLeaveIcon,
@@ -28,8 +27,8 @@ const LeaveBlock = ({ leaveType, selectedLeaveType, setSelectedLeaveType }) => {
 
   const selectedDiv =
     selectedLeaveType?.name == name
-      ? "flex w-full cursor-pointer justify-start rounded-lg p-2 text-white lg:flex-col lg:p-6 shadow-2xl border-2 border-miru-dark-purple-1000 border-opacity-20"
-      : "flex w-full cursor-pointer justify-start rounded-lg p-2 text-white lg:flex-col lg:p-6 hover:opacity-80";
+      ? "flex w-full cursor-pointer justify-between rounded-lg p-2 text-white lg:p-6 shadow-2xl border-2 border-miru-dark-purple-1000 border-opacity-20 relative"
+      : "flex w-full cursor-pointer justify-between rounded-lg p-2 text-white lg:p-6 hover:opacity-80 relative";
 
   return (
     <div
@@ -37,17 +36,22 @@ const LeaveBlock = ({ leaveType, selectedLeaveType, setSelectedLeaveType }) => {
       style={{ background: leaveColor.value }}
       onClick={() => setSelectedLeaveType(leaveType)}
     >
-      <Avatar
-        classNameImg="mr-2 p-2"
-        size="w-8 h-8"
-        style={{ backgroundColor: "white" }}
-        url={leaveIcon.icon}
-      />
-      <div className="mt-4 flex flex-col">
-        <span className="text-xs font-semibold lg:text-sm">{name}</span>
-        <span className="mt-2 text-base font-semibold lg:text-2xl">
-          {formattedDuration}
-        </span>
+      <div className="z-10 flex-col">
+        <div
+          className="hidden h-8 w-8 items-center justify-center rounded-full lg:flex"
+          style={{ backgroundColor: "white", color: leaveColor.value }}
+        >
+          {leaveIcon?.icon}
+        </div>
+        <div className="mt-4 flex flex-col">
+          <span className="text-xs font-semibold lg:text-sm">{name}</span>
+          <span className="mt-2 text-base font-semibold lg:text-2xl">
+            {formattedDuration}
+          </span>
+        </div>
+      </div>
+      <div className="absolute right-0 hidden h-3/4 items-end justify-end p-2 text-white opacity-10 lg:flex">
+        {leaveIcon?.icon}
       </div>
     </div>
   );

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import dayjs from "dayjs";
-import { X, MagnifyingGlass } from "phosphor-react";
+import { XIcon, SearchIcon } from "miruIcons";
 import Select from "react-select";
 
 import CustomDateRangePicker from "common/CustomDateRangePicker";
@@ -199,18 +199,14 @@ const Filters = ({
           onChange={e => setFilters({ ...filters, searchTerm: e.target.value })}
         />
         {filters.searchTerm ? (
-          <X
+          <XIcon
             className="absolute right-3"
             color="#1D1A31"
             size={16}
             onClick={() => setFilters({ ...filters, searchTerm: "" })}
           />
         ) : (
-          <MagnifyingGlass
-            className="absolute right-3"
-            color="#CDD6DF"
-            size={16}
-          />
+          <SearchIcon className="absolute right-3" color="#CDD6DF" size={16} />
         )}
       </div>
       <div className="flex w-full items-center justify-between py-4 lg:w-6/12 lg:justify-evenly">
