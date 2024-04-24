@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_03_31_034308) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_11_174949) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -157,6 +157,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_31_034308) do
     t.jsonb "specifications"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "is_insured", default: false
+    t.date "insurance_bought_date"
+    t.date "insurance_expiry_date"
     t.index ["company_id"], name: "index_devices_on_company_id"
     t.index ["device_type"], name: "index_devices_on_device_type"
     t.index ["user_id"], name: "index_devices_on_user_id"
@@ -454,7 +457,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_31_034308) do
     t.integer "bill_status", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "discarded_at"
     t.index ["bill_status"], name: "index_timesheet_entries_on_bill_status"
+    t.index ["discarded_at"], name: "index_timesheet_entries_on_discarded_at"
     t.index ["project_id"], name: "index_timesheet_entries_on_project_id"
     t.index ["user_id"], name: "index_timesheet_entries_on_user_id"
     t.index ["work_date"], name: "index_timesheet_entries_on_work_date"

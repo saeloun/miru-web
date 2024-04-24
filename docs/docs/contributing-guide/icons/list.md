@@ -30,7 +30,7 @@ MasterCardSVG
 LogoutIconSVG
 LogoSVG
 CloseInfoSVG
-HelpIconSVG
+OptionIcon
 CircleInfoSVG
 GoogleSVG
 ErrorOctagonSVG
@@ -93,12 +93,11 @@ GreenCheckCirleIcon
 deleteImageIcon
 Animation_404
 GoogleCalendarIcon
-VacationIconSVG
-BabyIconSVG
-CakeIconSVG
-FlowerIconSVG
-CarIconSVG
+VacationIcon
+BabyIcon
+CakeIcon
+FlowerIcon
+CarIcon
 UserIconSVG
-CalendarBlackIconSVG
-MedicineIconSVG
+MedicineIcon
 ```

@@ -13,8 +13,11 @@ class InternalApi::V1::TimesheetEntry::BulkActionController < InternalApi::V1::A
 
   def destroy
     timesheet_entries = policy_scope(TimesheetEntry)
-    if timesheet_entries.where(id: ids_params).destroy_all
+    timesheet_entries_discarded = timesheet_entries.where(id: ids_params).discard_all
+    if timesheet_entries_discarded
       render json: { notice: I18n.t("timesheet_entry.destroy.message") }
+    else
+      render json: { notice: "Some of the timesheet entries were failed to delete" }
     end
   end
 
