@@ -6,13 +6,11 @@
   </head>
   <body style="color:#1D1A31">
   <div class="mail invitation">
-    <%= image_tag "Background.svg", class: "background", alt: "background" %>
     <%= image_tag "Banner.svg", class: "banner", alt: "banner" %>
     <p class="header">You have been invited to Miru</p>
-
     <p><%= @sender_details&.[](:name) %> (<%= @sender_details&.[](:email) %>) has invited you to join <%=@company_details&.[](:name) %> team on Miru</p>
 
-    <div class='sender_company_container'> 
+    <div class='sender_company_container'>
       <div class='sender'>
         <%= image_tag(@sender_details&.[](:avatar) || "avatar.svg", alt:"User avatar", height: "40", width: "40") %>
         <b><%= @sender_details&.[](:name) %></b>
@@ -31,19 +29,21 @@
 
     <hr />
 
-    <p>If you don’t know this user or think this was sent by mistake, please flag this request to our team at <a href="mailto:support@miru.so" class="purple">support@miru.so</a></p>
+    <p>If you don’t know this user or think this was sent by mistake, please flag this request to our team at <a href="mailto:hello@saeloun.com" class="purple"> hello@saeloun.com</a></p>
 
     <div class="about-miru-container">
-      <div class="about-miru">
-        <%= image_tag "about-miru-background.svg", class:"about-miru-background", alt:"about-miru-background" %>
-        <%= image_tag "miru-logo.svg", class:"miru-logo", alt:"miru-logo" %>
-
-        <div class="desc">
-            <p class="header">About Miru</p>
-            <p>Miru is an open-source time-tracking & invoicing tool developed by a team of experienced developers. Using Miru, you can track your time, create and send invoices for those time entries to your clients & received instant payments.</p>
-            <p class="button"><%= link_to 'Learn More >', 'https://www.miru.so/', target: "_blank" %></p>
-        </div>
-      </div>
+        <table class="about-miru-background">
+        <tr>
+          <td class="desc">
+              <p class="header">About Miru</p>
+              <p>Miru is an open-source time-tracking & invoicing tool developed by a team of experienced developers. Using Miru, you can track your time, create and send invoices for those time entries to your clients & received instant payments.</p>
+              <p class="button"><%= link_to 'Learn More >', 'https://www.miru.so/', target: "_blank" %></p>
+          </td>
+        <td>
+          <%= image_tag "miru-logo.svg", class:"miru-logo", alt:"miru-logo" %>
+        </td>
+        </tr>
+        </table>
     </div>
 
     <%= render "devise/shared/footer" %>
