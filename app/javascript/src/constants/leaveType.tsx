@@ -1,14 +1,16 @@
+import React from "react";
+
 import {
-  CakeIconSVG,
-  CalendarBlackIconSVG,
-  CarIconSVG,
-  VacationIconSVG,
-  FlowerIconSVG,
-  UserIconSVG,
-  MedicineIconSVG,
-  BabyIconSVG,
-  ShieldSVG,
-  HelpIconSVG,
+  CakeIcon,
+  CalendarIcon,
+  CarIcon,
+  VacationIcon,
+  FlowerIcon,
+  UserIcon,
+  MedicineIcon,
+  BabyIcon,
+  ShieldIcon,
+  OptionIcon,
 } from "miruIcons";
 
 export const leaveTypes = [
@@ -70,14 +72,46 @@ export const leaveColors = [
 ];
 
 export const leaveIcons = [
-  { value: "calendar", label: "label", icon: CalendarBlackIconSVG },
-  { value: "cake", label: "label2", icon: CakeIconSVG },
-  { value: "vacation", label: "label3", icon: VacationIconSVG },
-  { value: "medicine", label: "label4", icon: MedicineIconSVG },
-  { value: "baby", label: "label5", icon: BabyIconSVG },
-  { value: "flower", label: "label6", icon: FlowerIconSVG },
-  { value: "car", label: "label7", icon: CarIconSVG },
-  { value: "user", label: "label8", icon: UserIconSVG },
+  {
+    value: "calendar",
+    label: "label",
+    icon: <CalendarIcon className="h-full w-full p-1" weight="bold" />,
+  },
+  {
+    value: "cake",
+    label: "label2",
+    icon: <CakeIcon className="h-full w-full p-1" weight="bold" />,
+  },
+  {
+    value: "vacation",
+    label: "label3",
+    icon: <VacationIcon className="h-full w-full p-1" weight="bold" />,
+  },
+  {
+    value: "medicine",
+    label: "label4",
+    icon: <MedicineIcon className="h-full w-full p-1" weight="bold" />,
+  },
+  {
+    value: "baby",
+    label: "label5",
+    icon: <BabyIcon className="h-full w-full p-1" weight="bold" />,
+  },
+  {
+    value: "flower",
+    label: "label6",
+    icon: <FlowerIcon className="h-full w-full p-1" weight="bold" />,
+  },
+  {
+    value: "car",
+    label: "label7",
+    icon: <CarIcon className="h-full w-full p-1" weight="bold" />,
+  },
+  {
+    value: "user",
+    label: "label8",
+    icon: <UserIcon className="h-full w-full p-1" weight="bold" />,
+  },
 ];
 
 export const holidayColors = [
@@ -94,11 +128,11 @@ export const holidayColors = [
 export const holidayIcons = [
   {
     label: "national",
-    icon: ShieldSVG,
+    icon: <ShieldIcon className="h-full w-full p-1" weight="bold" />,
   },
   {
     label: "optional",
-    icon: HelpIconSVG,
+    icon: <OptionIcon className="h-full w-full p-1" weight="bold" />,
   },
 ];
 
