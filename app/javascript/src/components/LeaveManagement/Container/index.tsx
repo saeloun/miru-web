@@ -20,6 +20,8 @@ const Container = ({
   totalTimeoffEntriesDuration,
   selectedLeaveType,
   setSelectedLeaveType,
+  optionalHolidayList,
+  nationalHolidayList,
 }) => {
   const [showCalendar, setShowCalendar] = useState<boolean>(false);
   const [currentYear, setCurrentYear] = useState<number>(getYear(new Date()));
@@ -29,7 +31,7 @@ const Container = ({
 
   const HolidayButton = ({ content, date, className }) => (
     <div className={`holiday-wrapper ${className}`}>
-      <Tooltip className="tooltip" content={content}>
+      <Tooltip className="tooltip" content={content.name}>
         <span>{date.getDate()}</span>
       </Tooltip>
     </div>
@@ -37,20 +39,20 @@ const Container = ({
 
   const tileContent = ({ date }) => {
     const currentDate = dayjs(date).format(dateFormat);
-    const holiday = timeoffEntries?.find(
-      entry => entry.type == "holiday" && entry.leaveDate === currentDate
+    const isHoliday = nationalHolidayList?.find(
+      holiday => holiday.date === currentDate
     );
 
-    if (holiday) {
+    const isOptionalHoliday = optionalHolidayList?.find(
+      holiday => holiday.date === currentDate
+    );
+
+    if (isHoliday || isOptionalHoliday) {
       return (
         <HolidayButton
-          content={holiday?.holidayInfo?.name}
+          className={isHoliday ? "holiday" : "optional-holiday"}
+          content={isHoliday || isOptionalHoliday}
           date={date}
-          className={
-            holiday?.holidayInfo?.category === "national"
-              ? "holiday"
-              : "optional-holiday"
-          }
         />
       );
     }

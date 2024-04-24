@@ -100,6 +100,7 @@ input:checked+.slider:before {
   align-items: center !important;
   width: 25px !important;
   height: 22px !important;
+  margin: auto;
 
   @media (min-width:1024px) and (max-width:1279px) {
     font-size: 10px !important;
