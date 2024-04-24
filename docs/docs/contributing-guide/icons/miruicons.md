@@ -56,7 +56,7 @@ One of the strengths of MiruIcons is its flexibility. If we need an icon that
 isn't already in the collection, we can easily add it. Follow these steps:
 
 - **Step 1: Prepare the Icon File** Before adding a new icon, we'll need the
-  icon's SVG file or import it from `phosphor-react` package or we can even add
+  icon's SVG file or import it from `@phosphor-icons/react` package or we can even add
   gif file. Basically we can create our own or obtain one that suits our needs.
   Ensure the file adheres to any format or dimension requirements.
 

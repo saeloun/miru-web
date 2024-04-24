@@ -1,6 +1,6 @@
 import React from "react";
 
-import { DotsThreeVertical } from "phosphor-react";
+import { DotsThreeVerticalIcon } from "miruIcons";
 
 const MoreButton = ({ onClick }) => (
   <button
@@ -8,7 +8,7 @@ const MoreButton = ({ onClick }) => (
     id="menuOpen"
     onClick={onClick}
   >
-    <DotsThreeVertical size={16} />
+    <DotsThreeVerticalIcon size={16} />
   </button>
 );
 

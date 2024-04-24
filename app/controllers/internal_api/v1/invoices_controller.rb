@@ -93,7 +93,7 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
         message: invoice_email_params[:message]
       ).send_reminder.deliver_later
 
-      render json: { message: "A reminder has been sent to #{invoice.client.email}" }, status: :accepted
+      render json: { message: "A reminder has been sent" }, status: :accepted
     end
   end
 
