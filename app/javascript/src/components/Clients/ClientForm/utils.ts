@@ -9,30 +9,24 @@ export const formatFormData = (
   formData.append("client[name]", values.name);
   formData.append("client[phone]", values.phone);
 
-  if (!isNewForm) {
-    formData.append("client[addresses_attributes[0][id]]", client.address.id);
+  // eslint-disable-next-line no-nested-ternary
+  const addressIndex = isNewForm
+    ? 0
+    : client.address?.id
+    ? client.address.id
+    : 0;
+  const addressPrefix = `client[addresses_attributes][${addressIndex}]`;
+
+  if (!isNewForm && client.address && client.address.id) {
+    formData.append(`${addressPrefix}[id]`, client.address.id);
   }
 
-  formData.append(
-    "client[addresses_attributes[0][address_line_1]]",
-    values.address1
-  );
-
-  formData.append(
-    "client[addresses_attributes[0][address_line_2]]",
-    values.address2
-  );
-
-  formData.append("client[addresses_attributes[0][state]]", values.state);
-
-  formData.append("client[addresses_attributes[0][city]]", values.city);
-
-  formData.append(
-    "client[addresses_attributes[0][country]]",
-    values.country?.value
-  );
-
-  formData.append("client[addresses_attributes[0][pin]]", values.zipcode);
+  formData.append(`${addressPrefix}[address_line_1]`, values.address1);
+  formData.append(`${addressPrefix}[address_line_2]`, values.address2);
+  formData.append(`${addressPrefix}[city]`, values.city);
+  formData.append(`${addressPrefix}[state]`, values.state);
+  formData.append(`${addressPrefix}[country]`, values.country?.value);
+  formData.append(`${addressPrefix}[pin]`, values.zipcode);
 
   if (clientLogo && isNewForm) formData.append("client[logo]", clientLogo);
 
@@ -50,7 +44,6 @@ export const formatFormData = (
 export const disableBtn = (values, errors, submitting) => {
   if (
     errors.name ||
-    errors.phone ||
     errors.address1 ||
     errors.country ||
     errors.state ||
