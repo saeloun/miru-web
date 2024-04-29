@@ -11,7 +11,7 @@ const CalendarComponent = ({
 }) => (
   <div
     key={id}
-    className={`flex flex-col items-center justify-start bg-miru-gray-100 py-3 ${
+    className={`flex w-full flex-col items-center justify-start bg-miru-gray-100 py-3 lg:w-1/3 ${
       isWiderScreen ? "px-3" : "px-2"
     }`}
   >
