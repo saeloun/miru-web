@@ -1,5 +1,6 @@
 import { bytesToSize } from "./byteToSizeConverter";
 import { cashFormatter } from "./cashFormater";
+import { companyDateFormater } from "./companyDateFormater";
 import { currencyFormat } from "./currency";
 import { currencySymbol } from "./currencySymbol";
 import { getMonthFromString } from "./dateParser";
@@ -19,6 +20,7 @@ export {
   bankFieldValidationRequirements,
   bytesToSize,
   cashFormatter,
+  companyDateFormater,
   currencyFormat,
   currencySymbol,
   getMonthFromString,
