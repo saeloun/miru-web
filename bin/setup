@@ -7,7 +7,7 @@ require "fileutils"
 APP_ROOT = File.expand_path("..", __dir__)
 
 def system!(*args)
-  system(*args) || abort("\n== Command #{args} failed ==")
+  system(*args, exception: true)
 end
 
 FileUtils.chdir APP_ROOT do
@@ -20,6 +20,11 @@ FileUtils.chdir APP_ROOT do
   puts "Executing #{cmd}"
   system! cmd
   system("bundle check") || system!("bundle install")
+
+  # puts "\n== Copying sample files =="
+  # unless File.exist?("config/database.yml")
+  #   FileUtils.cp "config/database.yml.sample", "config/database.yml"
+  # end
 
   puts "\n== Executing yarn =="
   system!("bin/yarn --frozen-lockfile ")

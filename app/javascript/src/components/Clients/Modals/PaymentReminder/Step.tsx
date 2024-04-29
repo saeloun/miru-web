@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { CheckCircle } from "phosphor-react";
+import { CheckCircleIcon } from "miruIcons";
 
 const Step = (props: any) => {
   const [stepNumber, setStepNumber] = useState<number>(1);
@@ -32,7 +32,7 @@ const Step = (props: any) => {
         <div className="rc-steps-item-tail" />
         {stepIsFinished(status) ? (
           <div className="rc-steps-item-icon flex items-center justify-center md:pb-0">
-            <CheckCircle
+            <CheckCircleIcon
               className="green-tick block"
               color="#0DA163"
               size="30"
