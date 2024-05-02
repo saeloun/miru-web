@@ -2,14 +2,14 @@
 
 class HolidayPolicy < ApplicationPolicy
   def update?
-    authorize_current_user
+    admin_access?
   end
 
   def index?
-    authorize_current_user
+    admin_access? || user_employee_role?
   end
 
-  def authorize_current_user
+  def admin_access?
     user_owner_role? || user_admin_role?
   end
 end
