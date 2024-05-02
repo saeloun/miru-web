@@ -27,7 +27,7 @@ const Header = ({
     </div>
     <div className="justify-items-right flex flex-row">
       <div className="send-button-container ml-1 flex flex-col justify-items-center">
-        {invoice.status == "waived" ? (
+        {invoice.status == "waived" || invoice.amount <= 0 ? (
           <Tooltip
             content="This invoice has been waived off by the sender"
             wrapperClassName="relative block max-w-full "
@@ -86,6 +86,7 @@ const Header = ({
 interface Invoice {
   invoice_number: number;
   status: string;
+  amount: number;
   stripe_enabled: boolean;
 }
 
