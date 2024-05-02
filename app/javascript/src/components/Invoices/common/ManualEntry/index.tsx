@@ -146,7 +146,7 @@ const ManualEntry = ({
           <input
             className=" focus:outline-none w-full rounded bg-white p-1 px-2 text-right text-sm font-medium text-miru-dark-purple-1000 focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
             placeholder="Rate"
-            type="text"
+            type="number"
             value={rate}
             onChange={handleSetRate}
             onKeyDown={handleEnter}
