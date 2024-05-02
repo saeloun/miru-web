@@ -3,7 +3,7 @@
 source "https://rubygems.org"
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby "3.2.2"
+ruby "3.2.4"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 7.1.3"
@@ -101,7 +101,7 @@ gem "omniauth-rails_csrf_protection", "~> 1.0"
 gem "pundit", "~> 2.2"
 
 # Data migration gem to migrate data alongside schema changes
-gem "data_migrate", "~> 8.0.0.rc2"
+gem "data_migrate"
 
 # pagy for Pagination
 gem "pagy", "~> 5.10"
@@ -235,3 +235,5 @@ gem "rack-cors", "2.0.0"
 
 # Administrate dashboard
 gem "administrate"
+
+gem "psych", "~> 4"
