@@ -9,15 +9,10 @@ export const formatFormData = (
   formData.append("client[name]", values.name);
   formData.append("client[phone]", values.phone);
 
-  // eslint-disable-next-line no-nested-ternary
-  const addressIndex = isNewForm
-    ? 0
-    : client.address?.id
-    ? client.address.id
-    : 0;
+  const addressIndex = isNewForm ? 0 : client.address?.id ?? 0;
   const addressPrefix = `client[addresses_attributes][${addressIndex}]`;
 
-  if (!isNewForm && client.address && client.address.id) {
+  if (!isNewForm && client?.address?.id) {
     formData.append(`${addressPrefix}[id]`, client.address.id);
   }
 
