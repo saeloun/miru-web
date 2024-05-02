@@ -6,7 +6,7 @@ class HolidayPolicy < ApplicationPolicy
   end
 
   def index?
-    user_owner_role? || user_admin_role? || user_employee_role?
+    admin_access? || user_employee_role?
   end
 
   def admin_access?
