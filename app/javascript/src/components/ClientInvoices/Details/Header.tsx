@@ -35,6 +35,9 @@ const Header = ({
     setIsMoreOptionsVisible(false);
   };
 
+  const isNonActionable =
+    status === "paid" || status === "waived" || invoice.amount <= 0;
+
   return (
     <div className="mt-6 mb-3 sm:flex sm:items-center sm:justify-between">
       <div className="flex flex-row">
@@ -71,15 +74,13 @@ const Header = ({
             </Tooltip>
           ) : (
             <button
+              disabled={isNonActionable}
               className={`flex h-10 w-44 flex-row items-center justify-center rounded
               ${
-                status == "paid" || status == "waived" || invoice.amount <= 0
+                isNonActionable
                   ? "cursor-not-allowed bg-indigo-100"
                   : "bg-miru-han-purple-1000"
               }`}
-              disabled={
-                status == "paid" || status == "waived" || invoice.amount <= 0
-              }
               onClick={() => {
                 if (status != "paid") {
                   if (stripe_connected_account && !stripe_enabled) {
