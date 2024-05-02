@@ -44,6 +44,7 @@ class Company < ApplicationRecord
   has_many :timeoff_entries, through: :users
   has_many :holidays, dependent: :destroy
   has_many :holiday_infos, through: :holidays, dependent: :destroy
+  has_many :carryovers
 
   resourcify
 
