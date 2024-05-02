@@ -3,7 +3,9 @@
 }
 
 .banner {
-  position: relative;
+  background-color: #5B34EA;
+  padding-top: 2%;
+  padding-bottom: 2%;
 }
 
 .password {
@@ -70,7 +72,8 @@
   width: 640px;
 
   .sender_company_container {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     margin-top: 40px;
     margin-bottom: 40px;
     color: #000;
@@ -99,33 +102,27 @@
     width: 640px;
     margin-top: 40px;
 
-    .about-miru {
-      width: 560px;
-      height: 265px;
-      clip-path: stroke-box;
-      margin: auto;
-      margin-top: 40px;
-
       .about-miru-background {
-        position: absolute;
+        background-image: linear-gradient(#453E75, #1D1A31);
+        border-radius: 16px;
+        width: 560px;
+        height: 265px;
+        overflow: hidden;
+        margin: auto;
+        margin-top: 40px;
       }
 
       .miru-logo {
-        position: relative;
-        height: 400px;
-        width: 400px;
-        left: 288px;
-        top: -60px;
+        height: 150%;
         opacity: 20%;
       }
 
       .desc {
-        position: relative;
-        top: -444px;
-        left: 24px;
+        padding: 5%;
         color: #fff;
-        width: 272px;
+        width: 53%;
         font-size: 14px;
+        padding-right: 0px;
 
         .header {
           color: #fff;
@@ -134,9 +131,10 @@
           font-weight: 800;
           font-size: 24px;
           line-height: 33px;
+          padding: 0px;
+          margin: 0px;
         }
       }
-    }
   }
 
   hr {
