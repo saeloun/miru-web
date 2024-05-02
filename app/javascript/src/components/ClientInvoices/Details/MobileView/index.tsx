@@ -44,8 +44,12 @@ const MobileView = ({ data }) => {
       <div className="sticky bottom-0 left-0 right-0 z-50 flex w-full items-center justify-between  bg-white p-4 shadow-c1">
         <Button
           className="mr-2 flex w-full items-center justify-center px-4 py-2"
-          disabled={invoice.status == "paid" || invoice.status == "waived"}
           style="primary"
+          disabled={
+            invoice.status == "paid" ||
+            invoice.status == "waived" ||
+            invoice.amount <= 0
+          }
           onClick={() => {
             invoice.status != "paid" && (window.location.href = url);
           }}

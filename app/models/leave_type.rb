@@ -70,6 +70,7 @@ class LeaveType < ApplicationRecord
   belongs_to :leave, class_name: "Leave"
 
   has_many :timeoff_entries, dependent: :destroy
+  has_many :carryovers
 
   validates :name, presence: true, format: { with: /\A[a-zA-Z\s]+\z/ }, length: { maximum: 20 }
   validates :color, presence: true, uniqueness: { scope: :leave_id, message: "has already been taken for this leave" }
