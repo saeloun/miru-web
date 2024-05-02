@@ -72,6 +72,7 @@ class User < ApplicationRecord
   has_many :clients, through: :projects
   has_many :client_members, dependent: :destroy
   has_many :timeoff_entries, dependent: :destroy
+  has_many :carryovers
 
   rolify strict: true
 
