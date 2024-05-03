@@ -35,6 +35,7 @@ module TimeoffEntries
           .where(user_id:)
           .where(leave_date: start_date..end_date)
           .order(leave_date: :desc)
+          .distinct
       end
 
       def employees
@@ -42,7 +43,7 @@ module TimeoffEntries
       end
 
       def current_company_users
-        current_company.employees_without_client_role.select(:id, :first_name, :last_name)
+        current_company.employees_without_client_role.distinct.select(:id, :first_name, :last_name)
       end
 
       def is_admin?
