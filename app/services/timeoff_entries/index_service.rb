@@ -31,11 +31,9 @@ module TimeoffEntries
         start_date = Date.new(year, 1, 1)
         end_date = Date.new(year, 12, 31)
 
-        @_timeoff_entries ||= TimeoffEntry.kept.left_joins(:leave, :holiday)
-          .where("leaves.company_id = ? OR holidays.company_id = ?", current_company.id, current_company.id)
+        @_timeoff_entries ||= TimeoffEntry.from_workspace(current_company.id)
           .where(user_id:)
-          .where(leave_date: start_date..end_date)
-          .order(leave_date: :desc)
+          .during(start_date, end_date)
           .distinct
       end
 
@@ -44,7 +42,7 @@ module TimeoffEntries
       end
 
       def current_company_users
-        current_company.employees_without_client_role.distinct.select(:id, :first_name, :last_name)
+        current_company.employees_without_client_role.select(:id, :first_name, :last_name)
       end
 
       def is_admin?

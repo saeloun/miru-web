@@ -118,6 +118,6 @@ class Company < ApplicationRecord
   end
 
   def employees_without_client_role
-    users.with_kept_employments.joins(:roles).where.not(roles: { name: "client" })
+    users.with_kept_employments.joins(:roles).where.not(roles: { name: "client" }).distinct
   end
 end
