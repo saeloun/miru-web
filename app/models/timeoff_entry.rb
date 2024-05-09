@@ -47,6 +47,11 @@ class TimeoffEntry < ApplicationRecord
   validate :optional_holiday_timeoff_entry
 
   scope :during, -> (from, to) { where(leave_date: from..to).order(leave_date: :desc) }
+  scope :from_workspace, -> (company_id) {
+    kept.left_joins(:leave, :holiday)
+      .where("leaves.company_id = ? OR holidays.company_id = ?",
+        company_id, company_id)
+  }
 
   def company
     leave&.company || holiday&.company
