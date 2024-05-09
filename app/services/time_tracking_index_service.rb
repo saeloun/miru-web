@@ -75,13 +75,10 @@ class TimeTrackingIndexService
     end
 
     def timeoff_entries
-      @_timeoff_entries ||= current_company.timeoff_entries.kept.includes([:leave_type])
+      @_timeoff_entries ||= TimeoffEntry.from_workspace(current_company.id)
         .where(user_id: user.id)
-        .order(leave_date: :desc)
-        .during(
-          from,
-          to
-        )
+        .during(from, to)
+        .distinct
     end
 
     def group_timeoff_entries_by_leave_date

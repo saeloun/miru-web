@@ -38,8 +38,11 @@ const LeaveManagement = () => {
 
   const fetchHolidayData = async () => {
     const res = await holidaysApi.allHolidays();
-    setOptionalHolidayList(res.data.holidays[0].optional_holidays);
-    setNationalHolidayList(res.data.holidays[0].national_holidays);
+    const holidays = res.data.holidays;
+    if (holidays.length) {
+      setOptionalHolidayList(holidays[0].optional_holidays);
+      setNationalHolidayList(holidays[0].national_holidays);
+    }
   };
 
   useEffect(() => {
