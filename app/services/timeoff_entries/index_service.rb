@@ -19,7 +19,7 @@ module TimeoffEntries
         timeoff_entries:,
         employees:,
         leave_balance: process_leave_balance,
-        total_timeoff_entries_duration: timeoff_entries.sum(:duration),
+        total_timeoff_entries_duration: timeoff_entries.sum(&:duration),
         optional_timeoff_entries:,
         national_timeoff_entries:
       }
@@ -31,10 +31,10 @@ module TimeoffEntries
         start_date = Date.new(year, 1, 1)
         end_date = Date.new(year, 12, 31)
 
-        @_timeoff_entries ||= current_company.timeoff_entries.kept.includes([:leave_type], [:holiday_info])
+        @_timeoff_entries ||= TimeoffEntry.from_workspace(current_company.id)
           .where(user_id:)
-          .where(leave_date: start_date..end_date)
-          .order(leave_date: :desc)
+          .during(start_date, end_date)
+          .distinct
       end
 
       def employees
