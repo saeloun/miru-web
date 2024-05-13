@@ -121,8 +121,14 @@ class Reports::TimeEntries::ReportService
     end
 
     def users_not_client_role
-      users_with_client_role_ids = current_company.users.joins(:roles).where(roles: { name: "client" }).pluck(:id)
-      current_company.users.where.not(id: users_with_client_role_ids)
+      user_ids_with_only_client_role = current_company.users
+        .joins(:roles)
+        .group("users.id, roles.resource_id, roles.resource_type")
+        .having("COUNT(roles.id) = 1 AND MAX(roles.name) = 'client' \
+                AND roles.resource_id = #{current_company.id} \
+                AND roles.resource_type = 'Company'")
+        .pluck("users.id")
+      current_company.users.where.not(id: user_ids_with_only_client_role).distinct
     end
 
     def pagination_details
