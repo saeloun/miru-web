@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class InternalApi::V1::CustomLeavesController < InternalApi::V1::ApplicationController
-  before_action :leave, only: [:update]
+  before_action :set_leave, only: [:update]
 
   def update
     authorize current_user, policy_class: LeaveWithLeaveTypesPolicy
@@ -11,7 +11,7 @@ class InternalApi::V1::CustomLeavesController < InternalApi::V1::ApplicationCont
 
   private
 
-    def leave
+    def set_leave
       @_leave ||= current_company.leaves.find_or_create_by(year: params[:year])
     end
 
