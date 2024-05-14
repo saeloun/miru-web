@@ -15,8 +15,7 @@ const contactSchema = Yup.object().shape({
     .required("First Name cannot be blank"),
   lastName: Yup.string()
     .matches(/^[a-zA-Z]+$/, "Last Name must contain only letters")
-    .max(20, "Maximum 20 characters are allowed")
-    .required("Last Name cannot be blank"),
+    .max(20, "Maximum 20 characters are allowed"),
   email: Yup.string()
     .email("Invalid email ID")
     .required("Email ID cannot be blank"),
@@ -82,9 +81,11 @@ const AddContacts = ({
               <div>
                 <InputField
                   autoComplete="off"
+                  hasError={errors.firstName && touched.firstName}
                   id="firstName"
                   inputBoxClassName="border focus:border-miru-han-purple-1000"
                   label="First Name"
+                  marginBottom={errors.firstName && "mb-0"}
                   name="firstName"
                   setFieldError={setFieldError}
                   setFieldValue={setFieldValue}
@@ -96,9 +97,11 @@ const AddContacts = ({
                 />
                 <InputField
                   autoComplete="off"
+                  hasError={errors.lastName && touched.lastName}
                   id="lastName"
                   inputBoxClassName="border focus:border-miru-han-purple-1000"
                   label="Last Name"
+                  marginBottom={errors.lastName && "mb-0"}
                   name="lastName"
                   setFieldError={setFieldError}
                   setFieldValue={setFieldValue}
@@ -110,8 +113,10 @@ const AddContacts = ({
                 />
                 <InputField
                   autoComplete="off"
+                  hasError={errors.email && touched.email}
                   id="email"
                   label="Email"
+                  marginBottom={errors.email && "mb-0"}
                   name="email"
                   readOnly={false}
                   setFieldError={setFieldError}
