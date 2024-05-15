@@ -19,7 +19,7 @@ module TimeoffEntries
         timeoff_entries:,
         employees:,
         leave_balance: process_leave_balance,
-        total_timeoff_entries_duration: timeoff_entries.sum(:duration),
+        total_timeoff_entries_duration: timeoff_entries.sum(&:duration),
         optional_timeoff_entries:,
         national_timeoff_entries:
       }
@@ -31,10 +31,10 @@ module TimeoffEntries
         start_date = Date.new(year, 1, 1)
         end_date = Date.new(year, 12, 31)
 
-        @_timeoff_entries ||= current_company.timeoff_entries.kept.includes([:leave_type], [:holiday_info])
+        @_timeoff_entries ||= TimeoffEntry.from_workspace(current_company.id)
           .where(user_id:)
-          .where(leave_date: start_date..end_date)
-          .order(leave_date: :desc)
+          .during(start_date, end_date)
+          .distinct
       end
 
       def employees
@@ -176,15 +176,15 @@ module TimeoffEntries
       def calculate_previous_year_carryforward(leave_type)
         return 0 unless leave_type
 
-        total_leave_type_days = calculate_total_duration(leave_type, previous_year)
+        last_year_carryover =
+          Carryover.find_by(
+            user_id:,
+            company_id: current_company.id,
+            leave_type_id: leave_type.id,
+            from_year: previous_year
+          )
 
-        timeoff_entries_duration = leave_type.timeoff_entries.kept.where(user_id:).sum(:duration)
-
-        net_duration = (total_leave_type_days * 8 * 60) - timeoff_entries_duration
-
-        carry_forward_duration = leave_type.carry_forward_days * 8 * 60
-
-        net_duration > carry_forward_duration ? carry_forward_duration : net_duration > 0 ? net_duration : 0
+        last_year_carryover && (last_year_carryover.duration > 0) ? last_year_carryover.duration : 0
       end
   end
 end

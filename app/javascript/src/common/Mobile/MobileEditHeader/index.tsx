@@ -9,14 +9,17 @@ export const MobileEditHeader = ({
   title = "",
   backHref,
   href,
+  showEdit = true,
 }) => (
   <div className={wrapperClassName}>
     <div className="flex flex-row items-center">
       <BackButton href={backHref} />
       <span>{title}</span>
     </div>
-    <div className="items-center pr-4 font-bold text-miru-han-purple-1000">
-      <Link to={href}>Edit</Link>
-    </div>
+    {showEdit && (
+      <div className="items-center pr-4 font-bold text-miru-han-purple-1000">
+        <Link to={href}>Edit</Link>
+      </div>
+    )}
   </div>
 );
