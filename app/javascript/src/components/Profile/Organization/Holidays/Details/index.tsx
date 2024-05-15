@@ -1,12 +1,13 @@
-import React from "react";
+import React, { Fragment } from "react";
 
 import dayjs from "dayjs";
+import { Tooltip } from "StyledComponents";
+
+import HolidayModal from "common/HolidayModal";
 
 import Header from "./Header";
 import TableHeader from "./TableHeader";
 import TableRow from "./TableRow";
-
-import HolidayModal from "../HolidaysModal";
 
 const Details = ({
   currentYear,
@@ -18,15 +19,12 @@ const Details = ({
   showCalendar,
   toggleCalendarModal,
 }) => {
-  const CalendarButton = ({ result, date, className }) => (
-    <button
-      className={`holiday-wrapper ${className}`}
-      data-bs-placement="right"
-      data-bs-toggle="tooltip"
-      title={result.name}
-    >
-      {date.getDate()}
-    </button>
+  const CalendarButton = ({ content, date, className }) => (
+    <div className={`holiday-wrapper ${className}`}>
+      <Tooltip className="tooltip" content={content.name}>
+        <span>{date.getDate()}</span>
+      </Tooltip>
+    </div>
   );
 
   const tileContent = ({ date }) => {
@@ -43,8 +41,8 @@ const Details = ({
       return (
         <CalendarButton
           className={isHoliday ? "holiday" : "optional-holiday"}
+          content={isHoliday || isOptionalHoliday}
           date={date}
-          result={isHoliday || isOptionalHoliday}
         />
       );
     }
@@ -53,7 +51,7 @@ const Details = ({
   };
 
   return (
-    <>
+    <Fragment>
       <Header
         currentYear={currentYear}
         editAction={editAction}
@@ -122,7 +120,7 @@ const Details = ({
           toggleCalendarModal={toggleCalendarModal}
         />
       )}
-    </>
+    </Fragment>
   );
 };
 
