@@ -72,8 +72,14 @@ module TimeoffEntries
 
           net_duration = (total_leave_type_days * 8 * 60) + previous_year_carryforward - timeoff_entries_duration
           net_hours = net_duration / 60
-          net_days = net_hours / 8
-          extra_hours = net_hours % 8
+          net_days = net_hours.abs / 8
+          extra_hours = net_hours.abs % 8
+
+          if net_hours.abs < 8
+            label = "#{net_hours} hours"
+          else
+            label = "#{net_days} days #{extra_hours} hours"
+          end
 
           summary_object = {
             id: leave_type.id,
@@ -85,7 +91,7 @@ module TimeoffEntries
             net_duration:,
             net_days:,
             type: "leave",
-            label: "#{net_days} days #{extra_hours} hours"
+            label:
           }
 
           leave_balance << summary_object
