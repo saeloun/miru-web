@@ -40,9 +40,9 @@ class Device < ApplicationRecord
   store_accessor :specifications, :processor, :ram, :graphics
 
   # Validations
-  # after_initialize :set_default_specifications, if: :new_record?
+  after_initialize :set_default_specifications, if: :new_record?
   validates :name, length: { maximum: 100 }
-  # validates :insurance_expiry_date, comparison: { greater_than_or_equal_to: :insurance_bought_date }
+  validates :insurance_expiry_date, comparison: { greater_than_or_equal_to: :insurance_bought_date }
 
   private
 
