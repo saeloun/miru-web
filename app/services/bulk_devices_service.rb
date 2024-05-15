@@ -18,29 +18,29 @@ class BulkDevicesService
 
   private
 
-  def add_new_devices
-    return if device_params[:add_devices].blank?
+    def add_new_devices
+      return if device_params[:add_devices].blank?
 
-    device_params[:add_devices].each do |params|
-      new_device = user.devices.new(params)
-      new_device.issued_to = user
-      new_device.issued_by = user.current_workspace
-      new_device.save!
+      device_params[:add_devices].each do |params|
+        new_device = user.devices.new(params)
+        new_device.issued_to = user
+        new_device.issued_by = user.current_workspace
+        new_device.save!
+      end
     end
-  end
 
-  def update_devices
-    return if device_params[:update_devices].blank?
+    def update_devices
+      return if device_params[:update_devices].blank?
 
-    device_params[:update_devices].each do |params|
-      device = Device.find_by!(id: params[:id])
-      device.update!(params.except(:id))
+      device_params[:update_devices].each do |params|
+        device = Device.find_by!(id: params[:id])
+        device.update!(params.except(:id))
+      end
     end
-  end
 
+    def remove_devices
+      return if device_params[:remove_devices].blank?
 
-  def remove_devices
-    return if device_params[:remove_devices].blank?
-    user.devices.where(id: device_params[:remove_devices]).destroy_all
-  end
+      user.devices.where(id: device_params[:remove_devices]).destroy_all
+    end
 end
