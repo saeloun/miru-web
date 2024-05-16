@@ -42,7 +42,9 @@ class Device < ApplicationRecord
   # Validations
   after_initialize :set_default_specifications, if: :new_record?
   validates :name, length: { maximum: 100 }
-  validates :insurance_expiry_date, comparison: { greater_than_or_equal_to: :insurance_bought_date }
+  validates :insurance_bought_date, presence: true, if: :is_insured?
+  validates :insurance_expiry_date, presence: true, if: :is_insured?
+  validates :insurance_expiry_date, comparison: { greater_than_or_equal_to: :insurance_bought_date }, if: :is_insured?
 
   private
 
@@ -52,5 +54,9 @@ class Device < ApplicationRecord
         "ram": "",
         "graphics": ""
       }
+    end
+
+    def is_insured?
+      is_insured
     end
 end
