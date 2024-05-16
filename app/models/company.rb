@@ -23,7 +23,6 @@ class Company < ApplicationRecord
   # Associations
   has_many :employments, dependent: :destroy
   has_many :users, -> { kept }, through: :employments
-  has_many :timesheet_entries, through: :users
   has_many :clients, dependent: :destroy
   has_many :projects, through: :clients, dependent: :destroy
   has_many :current_workspace_users, foreign_key: "current_workspace_id", class_name: "User", dependent: :nullify
@@ -45,20 +44,20 @@ class Company < ApplicationRecord
   has_many :timeoff_entries, through: :users
   has_many :holidays, dependent: :destroy
   has_many :holiday_infos, through: :holidays, dependent: :destroy
+  has_many :carryovers
 
   resourcify
 
   accepts_nested_attributes_for :addresses, reject_if: :address_attributes_blank?, allow_destroy: true
 
   # Validations
-  validates :name, :business_phone, :standard_price, :country, :base_currency, presence: true
+  validates :name, :standard_price, :country, :base_currency, presence: true
   validates :name, length: { maximum: 30 }
   validates :business_phone, length: { maximum: 15 }
   validates :standard_price, numericality: { greater_than_or_equal_to: 0 }
 
   # scopes
   scope :with_kept_employments, -> { merge(Employment.kept) }
-  scope :valid_invitations, -> { where(company: self).valid_invitations }
 
   def client_list
     clients.kept.map do |client|
@@ -119,6 +118,6 @@ class Company < ApplicationRecord
   end
 
   def employees_without_client_role
-    users.with_kept_employments.joins(:roles).where.not(roles: { name: "client" })
+    users.with_kept_employments.joins(:roles).where.not(roles: { name: "client" }).distinct
   end
 end

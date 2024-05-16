@@ -3,10 +3,10 @@
 source "https://rubygems.org"
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby "3.2.2"
+ruby "3.2.4"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
-gem "rails", "~> 7.0.8.1"
+gem "rails", "~> 7.1.3"
 
 # Use postgresql as the database for Active Record
 gem "pg"
@@ -65,7 +65,7 @@ gem "react-rails", "2.6.2"
 # Use SCSS for stylesheets
 gem "sass-rails"
 
-##--- gems for server & infra configuration ---##
+# #--- gems for server & infra configuration ---##
 gem "dotenv-rails"
 gem "foreman"
 
@@ -82,13 +82,13 @@ gem "money"
 gem "aws-sdk-s3", require: false
 
 # Ransack gem for advanced searching
-gem "ransack"
+gem "ransack", "~> 4.1"
 
 # For Soft deletion
 gem "discard", "~> 1.2"
 
 # Use newrelic for monitoring
-gem "newrelic_rpm", "~> 8.4"
+gem "newrelic_rpm", "~> 9.8.0"
 
 # Role management library with resource scoping
 gem "rolify", "~> 6.0"
@@ -101,7 +101,7 @@ gem "omniauth-rails_csrf_protection", "~> 1.0"
 gem "pundit", "~> 2.2"
 
 # Data migration gem to migrate data alongside schema changes
-gem "data_migrate", "~> 8.0.0.rc2"
+gem "data_migrate"
 
 # pagy for Pagination
 gem "pagy", "~> 5.10"
@@ -115,7 +115,7 @@ gem "active_interaction"
 gem "stripe"
 
 # Background job processing adapter
-gem "sidekiq", "<8"
+gem "sidekiq", "~> 7.2"
 
 #  job scheduler extension for Sidekiq
 gem "sidekiq-scheduler"
@@ -155,7 +155,7 @@ group :development, :test, :ci do
   gem "rubocop-rspec", require: false
 
   # Use RSpec as the testing framework
-  gem "rspec-rails", "~> 5.0", ">= 5.0.2"
+  gem "rspec-rails", "~> 6.1"
 
   # For linting ERB files
   gem "erb_lint", require: false, git: "https://github.com/Shopify/erb-lint.git", branch: "main"
@@ -174,7 +174,7 @@ group :development, :test, :ci do
   gem "rails-controller-testing", "~> 1.0", ">= 1.0.5"
 
   # help to kill N+1 queries and unused eager loading. https://github.com/flyerhzm/bullet
-  gem "bullet"
+  gem "bullet", "~> 7.1"
 
   # To record response of outgoing API calls
   gem "vcr", "~> 6.1"
@@ -209,7 +209,7 @@ group :test, :ci do
   # Strategies for cleaning databases in Ruby.
   gem "database_cleaner", "~> 2.0"
   gem "hash_dot"
-  gem "rspec-sidekiq"
+  gem "rspec-sidekiq", git: "https://github.com/wspurgin/rspec-sidekiq", branch: "main"
 
   gem "rspec-buildkite"
   gem "rspec-retry"
@@ -225,7 +225,7 @@ gem "strong_migrations"
 
 # Error tracking: https://docs.sentry.io/platforms/ruby/guides/rails/
 gem "sentry-rails"
-gem "sentry-ruby"
+gem "sentry-ruby", "~> 5.17"
 
 # https://github.com/grosser/parallel_tests
 gem "parallel_tests", group: [:development, :test]
@@ -235,3 +235,5 @@ gem "rack-cors", "2.0.0"
 
 # Administrate dashboard
 gem "administrate"
+
+gem "psych", "~> 4"

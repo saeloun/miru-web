@@ -9,6 +9,12 @@ class Reports::TimeEntries::Result < ApplicationService
     "project" => :project_name
   }
 
+  GROUP_BY_INPUT_TO_GROUP_ID_FIELD = {
+    "team_member" => :user_id,
+    "client" => :client_id,
+    "project" => :project_id
+  }
+
   def initialize(es_response, group_by)
     @es_response = es_response
     @group_by = group_by
@@ -25,9 +31,19 @@ class Reports::TimeEntries::Result < ApplicationService
   private
 
     def process_response_by_group_by
-      grouped_data = es_response.group_by(&GROUP_BY_INPUT_TO_GROUP_LABEL_FIELD[group_by]).sort
-      grouped_data.map do | label, entries |
-        { label:, entries: }
-      end
+      label_field = GROUP_BY_INPUT_TO_GROUP_LABEL_FIELD[group_by.to_s]
+      id_field = GROUP_BY_INPUT_TO_GROUP_ID_FIELD[group_by.to_s]
+
+      grouped_data = es_response.group_by { |entry| entry[label_field] }.map do |label, entries|
+      id = entries.first[id_field]
+
+      {
+        label:,
+        id:,
+        entries:
+      }
+    end
+
+      grouped_data.sort_by { |group| group[:label] } # Optionally sort groups by label
     end
 end

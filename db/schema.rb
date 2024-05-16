@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_03_04_143641) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_29_142938) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -100,6 +100,23 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_04_143641) do
     t.index ["visit_token"], name: "index_ahoy_visits_on_visit_token", unique: true
   end
 
+  create_table "carryovers", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "company_id", null: false
+    t.bigint "leave_type_id", null: false
+    t.integer "from_year"
+    t.integer "to_year"
+    t.integer "total_leave_balance"
+    t.integer "duration"
+    t.datetime "discarded_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_carryovers_on_company_id"
+    t.index ["discarded_at"], name: "index_carryovers_on_discarded_at"
+    t.index ["leave_type_id"], name: "index_carryovers_on_leave_type_id"
+    t.index ["user_id"], name: "index_carryovers_on_user_id"
+  end
+
   create_table "client_members", force: :cascade do |t|
     t.bigint "client_id", null: false
     t.bigint "user_id", null: false
@@ -157,6 +174,9 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_04_143641) do
     t.jsonb "specifications"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "is_insured", default: false
+    t.date "insurance_bought_date"
+    t.date "insurance_expiry_date"
     t.index ["company_id"], name: "index_devices_on_company_id"
     t.index ["device_type"], name: "index_devices_on_device_type"
     t.index ["user_id"], name: "index_devices_on_user_id"
@@ -454,7 +474,9 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_04_143641) do
     t.integer "bill_status", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "discarded_at"
     t.index ["bill_status"], name: "index_timesheet_entries_on_bill_status"
+    t.index ["discarded_at"], name: "index_timesheet_entries_on_discarded_at"
     t.index ["project_id"], name: "index_timesheet_entries_on_project_id"
     t.index ["user_id"], name: "index_timesheet_entries_on_user_id"
     t.index ["work_date"], name: "index_timesheet_entries_on_work_date"
@@ -527,6 +549,9 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_04_143641) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "carryovers", "companies"
+  add_foreign_key "carryovers", "leave_types"
+  add_foreign_key "carryovers", "users"
   add_foreign_key "client_members", "clients"
   add_foreign_key "client_members", "companies"
   add_foreign_key "client_members", "users"

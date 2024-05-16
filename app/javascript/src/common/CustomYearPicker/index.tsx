@@ -13,8 +13,7 @@ type customYearPickerProps = {
 
 const defaultWrapperClassName = "flex items-center justify-center";
 
-const defaultYearClassName =
-  "outline-none appearance-none bg-transparent text-white";
+const defaultYearClassName = "outline-none appearance-none bg-transparent";
 
 const CustomYearPicker = ({
   wrapperClassName,
@@ -64,7 +63,7 @@ const CustomYearPicker = ({
         >
           {years.map((year, index) => (
             <option
-              className="text-base font-medium text-white"
+              className="text-base font-medium"
               key={`year${index}`}
               value={year}
             >

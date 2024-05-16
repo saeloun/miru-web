@@ -19,9 +19,17 @@ module Reports::ClientRevenues
     private
 
       def clients
-        current_clients.includes(:invoices).map do |client|
-          client.payment_summary(duration_params).merge({ name: client.name, logo: client.logo_url })
+        client_data = current_clients.includes(:invoices).map do |client|
+          summary = client.payment_summary(duration_params)
+          {
+            name: client.name,
+            logo: client.logo_url,
+            paid_amount: summary[:paid_amount],
+            outstanding_amount: summary[:outstanding_amount],
+            overdue_amount: summary[:overdue_amount]
+          }
         end
+        client_data.sort_by { |client| -(client[:paid_amount] + client[:outstanding_amount] + client[:overdue_amount]) }
       end
 
       def summary
