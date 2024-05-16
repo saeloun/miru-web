@@ -53,7 +53,8 @@ const applyFilter = async (
   setFilterVisibilty,
   getFilterOptions,
   getPaginationDetails,
-  setGroupByTotalDuration
+  setGroupByTotalDuration,
+  setLoading
 ) => {
   const queryParams = getQueryParams(selectedFilter);
   const sanitizedParam = queryParams.substring(1);
@@ -66,6 +67,7 @@ const applyFilter = async (
   getPaginationDetails(sanitizedData.pagy);
   setNavFilters(true);
   setFilterVisibilty(false);
+  setLoading(false);
 };
 
 export { applyFilter, getQueryParams };
