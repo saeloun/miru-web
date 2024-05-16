@@ -88,7 +88,7 @@ const InvoiceEmail = () => {
       </div>
       <div className="flex justify-between bg-miru-han-purple-1000 px-28 py-3 font-manrope text-white">
         <span className="text-center text-xs font-normal leading-4">
-          © Miru 2023. All rights reserved.
+          © Miru. All rights reserved.
         </span>
         <span className="flex w-1/4 justify-between text-center text-xs font-normal leading-4">
           <a href="https://www.miru.so/" rel="noreferrer" target="_blank">

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import { getYear, format } from "date-fns";
 
+import holidaysApi from "apis/holidays";
 import timeoffEntryApi from "apis/timeoffEntry";
 import Loader from "common/Loader/index";
 import withLayout from "common/Mobile/HOC/withLayout";
@@ -27,6 +28,26 @@ const LeaveManagement = () => {
     useState(0);
   const [optionalTimeoffEntries, setOptionalTimeoffEntries] = useState([]);
   const [nationalTimeoffEntries, setNationalTimeoffEntries] = useState([]);
+  const [optionalHolidayList, setOptionalHolidayList] = useState<Array<any>>(
+    []
+  );
+
+  const [nationalHolidayList, setNationalHolidayList] = useState<Array<any>>(
+    []
+  );
+
+  const fetchHolidayData = async () => {
+    const res = await holidaysApi.allHolidays();
+    const holidays = res.data.holidays;
+    if (holidays.length) {
+      setOptionalHolidayList(holidays[0].optional_holidays);
+      setNationalHolidayList(holidays[0].national_holidays);
+    }
+  };
+
+  useEffect(() => {
+    fetchHolidayData();
+  }, []);
 
   useEffect(() => {
     fetchTimeoffEntries();
@@ -130,6 +151,8 @@ const LeaveManagement = () => {
         <Container
           getLeaveBalanaceDateText={getLeaveBalanaceDateText}
           leaveBalance={leaveBalance}
+          nationalHolidayList={nationalHolidayList}
+          optionalHolidayList={optionalHolidayList}
           selectedLeaveType={selectedLeaveType}
           setSelectedLeaveType={setSelectedLeaveType}
           timeoffEntries={filterTimeoffEntries}

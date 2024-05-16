@@ -33,7 +33,7 @@ const MoreOptions = ({ item, setShowMoreOptions, showMoreOptions }: Iprops) => {
     <HoverMoreOptions position="bottom-10 right-0">
       <Tooltip content="Re-Invite">
         <Button
-          disabled={!item.status}
+          disabled={item.status}
           style="ternary"
           onClick={handleResendInvite}
         >

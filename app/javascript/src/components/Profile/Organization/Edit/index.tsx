@@ -24,9 +24,10 @@ const orgSchema = Yup.object().shape({
   companyName: Yup.string()
     .required("Name cannot be blank")
     .max(30, "Maximum 30 characters are allowed"),
-  companyPhone: Yup.string()
-    .required("Phone number cannot be blank")
-    .matches(phoneRegExp, "Please enter a valid business phone number"),
+  companyPhone: Yup.string().matches(
+    phoneRegExp,
+    "Please enter a valid business phone number"
+  ),
   companyAddr: Yup.object().shape({
     addressLine1: Yup.string()
       .required("Address Line 1 cannot be blank")
@@ -407,7 +408,7 @@ const OrgEdit = () => {
       setIsLoading(true);
       const formD = new FormData();
       formD.append("company[name]", orgDetails.companyName);
-      formD.append("company[business_phone]", orgDetails.companyPhone);
+      formD.append("company[business_phone]", orgDetails.companyPhone || "");
       formD.append("company[country]", orgDetails.companyAddr.country.value);
       formD.append("company[base_currency]", orgDetails.companyCurrency);
       formD.append(

@@ -13,9 +13,9 @@ module TimeEntries
     def process
       FILTER_PARAM_LIST.reduce({}) do |where_condition, filter_param_key|
         if filter_params[filter_param_key].present?
-          where_condition.merge(public_send("#{filter_param_key}_filter"))
+          where_condition.merge(public_send("#{filter_param_key}_filter")).merge(active_time_entries)
         else
-          where_condition
+          where_condition.merge(active_time_entries)
         end
       end
     end
@@ -38,6 +38,10 @@ module TimeEntries
 
     def team_member_filter
       { user_id: filter_params[:team_member] }
+    end
+
+    def active_time_entries
+      { discarded_at: nil }
     end
   end
 end
