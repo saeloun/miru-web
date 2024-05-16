@@ -87,7 +87,7 @@ const TableRow = ({ item }) => {
           <p className="truncate text-xs lg:text-sm">
             {role.replace(/_/g, " ")}
           </p>
-          {status && (
+          {!status && (
             <Badge
               text="pending"
               className={`${getStatusCssClass(
