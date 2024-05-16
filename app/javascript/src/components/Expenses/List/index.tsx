@@ -1,7 +1,7 @@
 import React, { Fragment, useEffect, useState } from "react";
 
 import expensesApi from "apis/expenses";
-import Loader from "common/Loader";
+import Loader from "common/Loader/index";
 import withLayout from "common/Mobile/HOC/withLayout";
 import { useUserContext } from "context/UserContext";
 

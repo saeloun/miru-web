@@ -18,7 +18,7 @@ import Table from "./Table";
 const Payments = () => {
   const [showManualEntryModal, setShowManualEntryModal] =
     useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
   const [paymentList, setPaymentList] = useState<any>([]);
   const [invoiceList, setInvoiceList] = useState<any>([]);
   const [dateFormat, setDateFormat] = useState<any>("");
@@ -90,11 +90,7 @@ const Payments = () => {
   };
 
   if (loading) {
-    return (
-      <div className="flex h-full w-full items-center justify-center">
-        <Loader />
-      </div>
-    );
+    return <Loader />;
   }
 
   const PaymentsLayout = () => (
