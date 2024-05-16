@@ -22,7 +22,7 @@ const LeaveBlock = ({ leaveType, selectedLeaveType, setSelectedLeaveType }) => {
     category == "national" || category == "optional"
       ? label
       : netDuration < 0
-      ? `-${minToHHMM(-netDuration)} h (${label})`
+      ? `-${minToHHMM(-netDuration)} h (-${label})`
       : `${minToHHMM(netDuration)} h (${label})`;
 
   const selectedDiv =
