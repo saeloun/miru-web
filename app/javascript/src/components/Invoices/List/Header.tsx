@@ -2,7 +2,8 @@ import React, { useEffect, useState, useRef } from "react";
 
 import { useDebounce, useOutsideClick } from "helpers";
 import { PlusIcon, FilterIcon, XIcon, SearchIcon } from "miruIcons";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { Button } from "StyledComponents";
 
 import invoicesApi from "apis/invoices";
 import { ApiStatus as InvoiceStatus, LocalStorageKeys } from "constants/index";
@@ -29,6 +30,7 @@ const Header = ({
     (appliedFilterCount = appliedFilterCount - 2);
 
   const searchRef = useRef(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (searchQuery) {
@@ -118,7 +120,7 @@ const Header = ({
               onChange={e => setSearchQuery(e.target.value)}
               onKeyDown={e => onKeydownHandler(e)}
             />
-            <button className="absolute inset-y-0 right-3 flex cursor-pointer items-center">
+            <div className="absolute inset-y-0 right-3 flex items-center">
               {searchQuery ? (
                 <XIcon size={12} weight="bold" onClick={onSearchClear} />
               ) : (
@@ -128,15 +130,16 @@ const Header = ({
                   weight="bold"
                 />
               )}
-            </button>
+            </div>
             <SearchDropdown
               display={params.query !== searchQuery}
               list={searchResult}
               status={status}
             />
           </div>
-          <button
-            className="relative ml-auto ml-4 h-10 w-10 rounded p-3 hover:bg-miru-gray-1000"
+          <Button
+            className="relative ml-3"
+            style="ternary"
             onClick={() => setIsFilterVisible(true)}
           >
             {appliedFilterCount > 0 && (
@@ -144,13 +147,8 @@ const Header = ({
                 {appliedFilterCount}
               </span>
             )}
-            <FilterIcon
-              className="hover:bg-miru-gray-1000"
-              color="#5B34EA"
-              size={16}
-              weight="bold"
-            />
-          </button>
+            <FilterIcon color="#5B34EA" size={16} weight="bold" />
+          </Button>
         </div>
       ) : (
         <div className="flex w-10/12 md:w-11/12 lg:w-1/3">
@@ -171,7 +169,7 @@ const Header = ({
               onFocus={() => setExpandSearchBox(true)}
               onKeyDown={e => onKeydownHandler(e)}
             />
-            <button className="absolute inset-y-0 right-3 flex cursor-pointer items-center">
+            <div className="absolute inset-y-0 right-3 flex items-center">
               {searchQuery || expandSearchBox ? (
                 <XIcon
                   color="#CDD6DF"
@@ -186,7 +184,7 @@ const Header = ({
                   weight="bold"
                 />
               )}
-            </button>
+            </div>
             <SearchDropdown
               display={params.query !== searchQuery}
               list={searchResult}
@@ -194,8 +192,9 @@ const Header = ({
               status={status}
             />
           </div>
-          <button
-            className="relative ml-2 h-10 w-10 rounded p-3 hover:bg-miru-gray-1000"
+          <Button
+            className="relative ml-3"
+            style="ternary"
             onClick={() => setIsFilterVisible(true)}
           >
             {appliedFilterCount > 0 && (
@@ -203,29 +202,20 @@ const Header = ({
                 {appliedFilterCount}
               </span>
             )}
-            <FilterIcon
-              className="hover:bg-miru-gray-1000"
-              color="#5B34EA"
-              size={16}
-              weight="bold"
-            />
-          </button>
+            <FilterIcon color="#5B34EA" size={16} weight="bold" />
+          </Button>
         </div>
       )}
-      <div className="flex">
-        <Link
-          className="header__button border md:p-3"
-          to="/invoices/generate"
-          type="button"
-        >
-          <PlusIcon size={16} weight="bold" />
-          {isDesktop && (
-            <span className="ml-2 inline-block tracking-normal">
-              NEW INVOICE
-            </span>
-          )}
-        </Link>
-      </div>
+      <Button
+        className="ml-2 flex items-center px-2 py-2 lg:ml-0 lg:px-4"
+        style="secondary"
+        onClick={() => navigate("/invoices/generate")}
+      >
+        <PlusIcon size={16} weight="bold" />
+        <span className="ml-2 hidden text-base font-bold tracking-widest lg:inline-block">
+          New Invoice
+        </span>
+      </Button>
     </div>
   );
 };

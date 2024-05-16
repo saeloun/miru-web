@@ -1,6 +1,7 @@
 import React from "react";
 
 import { PlusIcon } from "miruIcons";
+import { Button } from "StyledComponents";
 
 import { HeaderProps } from "./interfaces";
 import MobileHeader from "./Mobile/Header";
@@ -38,15 +39,17 @@ const Header = ({
         <h2 className="header__title">Payments</h2>
       </div>
       <div className="hidden md:flex">
-        <button
-          className="header__button"
+        <Button
+          className="ml-2 flex items-center px-2 py-2 lg:ml-0 lg:px-4"
           id="addEntry"
-          type="button"
+          style="secondary"
           onClick={() => setShowManualEntryModal(true)}
         >
-          <PlusIcon size={16} weight="fill" />
-          <span className="ml-2 inline-block uppercase">ADD MANUAL ENTRY</span>
-        </button>
+          <PlusIcon size={16} weight="bold" />
+          <span className="ml-2 hidden text-base font-bold tracking-widest lg:inline-block">
+            Add Manual Entry
+          </span>
+        </Button>
       </div>
       <MobileHeader
         fetchSearchedPayments={fetchSearchedPayments}
