@@ -32,9 +32,10 @@ class InternalApi::V1::Users::DevicesController < InternalApi::V1::ApplicationCo
 
     def device_params
       params.require(:device).permit(
-        add_devices: [:device_type, :name, :serial_number, :insurance_bought_date, :insurance_expiry_date,
+        add_devices: [:device_type, :name, :serial_number, :is_insured, :insurance_bought_date, :insurance_expiry_date,
                       specifications: [:processor, :ram, :graphics]],
-        update_devices: [:id, :device_type, :name, :serial_number, specifications: [:processor, :ram, :graphics]],
+        update_devices: [:id, :device_type, :name, :serial_number, :is_insured,
+                         specifications: [:processor, :ram, :graphics]],
         remove_devices: []
       )
     end
