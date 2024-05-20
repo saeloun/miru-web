@@ -5,8 +5,9 @@ import { Button } from "StyledComponents";
 
 import { CustomInputText } from "common/CustomInputText";
 import CustomReactSelect from "common/CustomReactSelect";
+import CustomToggle from "common/CustomToggle";
+import DatePickerWithInputBox from "common/DatePickerWithInputBox";
 import { Divider } from "common/Divider";
-import EmptyStates from "common/EmptyStates";
 import { ErrorSpan } from "common/ErrorSpan";
 
 import { deviceTypes } from "../helpers";
@@ -23,11 +24,30 @@ const DeviceForm = ({
   errDetails,
   addAnotherDevice,
   handleDeleteDevice,
+  DOARef,
+  DOERef,
+  dateFormat,
+  showDOAPicker,
+  showDOEPicker,
+  setShowDOAPicker,
+  setShowDOEPicker,
+  handleDOAChage,
+  handleDOEChage,
+  handleIsInsured,
 }) => (
   <div className="mt-6 w-full lg:mt-0 lg:w-10/12">
     {devices.length > 0 ? (
       devices.map((device, index) => {
-        const { id, device_type, name, serial_number, specifications } = device;
+        const {
+          id,
+          device_type,
+          name,
+          serial_number,
+          specifications,
+          is_insured,
+          insurance_bought_date,
+          insurance_expiry_date,
+        } = device;
 
         const typeLabel =
           device_type.charAt(0).toUpperCase() + device_type.slice(1);
@@ -223,6 +243,49 @@ const DeviceForm = ({
                     </div>
                   </div>
                 </div>
+                <div className="flex items-center justify-between py-3">
+                  <label className="flex items-center justify-center px-3">
+                    Is device insured?
+                  </label>
+                  <CustomToggle
+                    id={`is_insured_${index}`}
+                    isChecked={is_insured}
+                    toggleCss="mt-5"
+                    onToggle={value => handleIsInsured(value, index)}
+                  />
+                </div>
+                {is_insured && (
+                  <div className="flex flex-row pb-3">
+                    <DatePickerWithInputBox
+                      date={insurance_bought_date}
+                      dateFormat={dateFormat}
+                      errorMessage={errDetails[index]?.device_insurance_bought}
+                      handleDateChange={date => handleDOAChage(date, index)}
+                      id={`insurance_bought_${index}`}
+                      isDatePickerVisible={showDOAPicker}
+                      isError={errDetails[index]?.device_insurance_bought}
+                      label="Insurance Activation Date"
+                      ref={DOARef}
+                      handleDatePickerVisibility={() =>
+                        setShowDOAPicker(!showDOAPicker)
+                      }
+                    />
+                    <DatePickerWithInputBox
+                      date={insurance_expiry_date}
+                      dateFormat={dateFormat}
+                      errorMessage={errDetails[index]?.device_insurance_expiry}
+                      handleDateChange={date => handleDOEChage(date, index)}
+                      id={`insurance_expiry_${index}`}
+                      isDatePickerVisible={showDOEPicker}
+                      isError={errDetails[index]?.device_insurance_expiry}
+                      label="Insurance Expiration Date"
+                      ref={DOERef}
+                      handleDatePickerVisibility={() =>
+                        setShowDOEPicker(!showDOEPicker)
+                      }
+                    />
+                  </div>
+                )}
               </div>
               <div className="flex w-1/12 items-center justify-center py-5">
                 <Button
@@ -241,15 +304,11 @@ const DeviceForm = ({
         );
       })
     ) : (
-      <EmptyStates
-        Message="No devices found"
-        containerClassName="h-full"
-        showNoSearchResultState={false}
-      />
+      <div className="mb-2">No devices found</div>
     )}
     <div className="mt-10 flex w-full items-center justify-between">
       <Button className="w-full py-3" style="dashed" onClick={addAnotherDevice}>
-        + Add Another Device
+        {devices.length > 0 ? "+ Add Another Device" : "+ Add Device"}
       </Button>
     </div>
   </div>

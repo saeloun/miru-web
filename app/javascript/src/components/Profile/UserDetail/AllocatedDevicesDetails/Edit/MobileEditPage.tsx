@@ -9,10 +9,20 @@ import DeviceForm from "./DeviceForm";
 const MobileEditPage = ({
   devices,
   addAnotherDevice,
-  handleCancelDetails,
-  errDetails,
   handleDeviceChange,
   handleDeleteDevice,
+  errDetails,
+  DOARef,
+  DOERef,
+  dateFormat,
+  showDOAPicker,
+  showDOEPicker,
+  setShowDOAPicker,
+  setShowDOEPicker,
+  handleDOAChage,
+  handleDOEChage,
+  handleIsInsured,
+  handleCancelDetails,
 }) => (
   <div className="flex h-full flex-col justify-between overflow-scroll bg-miru-gray-100 p-4">
     <div className="flex flex-col py-10">
@@ -27,11 +37,21 @@ const MobileEditPage = ({
         </span>
       </div>
       <DeviceForm
+        DOARef={DOARef}
+        DOERef={DOERef}
         addAnotherDevice={addAnotherDevice}
+        dateFormat={dateFormat}
         devices={devices}
         errDetails={errDetails}
+        handleDOAChage={handleDOAChage}
+        handleDOEChage={handleDOEChage}
         handleDeleteDevice={handleDeleteDevice}
         handleDeviceChange={handleDeviceChange}
+        handleIsInsured={handleIsInsured}
+        setShowDOAPicker={setShowDOAPicker}
+        setShowDOEPicker={setShowDOEPicker}
+        showDOAPicker={showDOAPicker}
+        showDOEPicker={showDOEPicker}
       />
     </div>
     <div className="mt-10 mb-5 flex items-center justify-between gap-x-2">
