@@ -11,6 +11,10 @@ const StaticPage = ({ devices }) => {
       device_type,
       name,
       serial_number,
+      is_insured,
+      insurance_bought_date,
+      insurance_expiry_date,
+
       specifications: { ram = "", graphics = "", processor = "" } = {},
     } = device;
 
@@ -21,11 +25,11 @@ const StaticPage = ({ devices }) => {
             <span className="text-xs text-miru-dark-purple-1000">
               Device Type
             </span>
-            <p className="text-miru-dark-purple-1000">{device_type}</p>
+            <p className="text-miru-dark-purple-1000">{device_type || "-"}</p>
           </div>
           <div className="w-6/12">
             <span className="text-xs text-miru-dark-purple-1000">Model</span>
-            <p className="text-miru-dark-purple-1000">{name}</p>
+            <p className="text-miru-dark-purple-1000">{name || "-"}</p>
           </div>
         </div>
         <div className="mt-4 flex">
@@ -33,25 +37,45 @@ const StaticPage = ({ devices }) => {
             <span className="text-xs text-miru-dark-purple-1000">
               Serial Number
             </span>
-            <p className="text-miru-dark-purple-1000">{serial_number}</p>
+            <p className="text-miru-dark-purple-1000">{serial_number || "-"}</p>
           </div>
           <div className="w-6/12">
             <span className="text-xs text-miru-dark-purple-1000">Memory</span>
-            <p className="text-miru-dark-purple-1000">{ram}</p>
+            <p className="text-miru-dark-purple-1000">{ram || "-"}</p>
           </div>
         </div>
         <div className="mt-4 flex">
           <div className="w-6/12">
             <span className="text-xs text-miru-dark-purple-1000">Graphics</span>
-            <p className="text-miru-dark-purple-1000">{graphics}</p>
+            <p className="text-miru-dark-purple-1000">{graphics || "-"}</p>
           </div>
           <div className="w-6/12">
             <span className="text-xs text-miru-dark-purple-1000">
               Processor
             </span>
-            <p className="text-miru-dark-purple-1000">{processor}</p>
+            <p className="text-miru-dark-purple-1000">{processor || "-"}</p>
           </div>
         </div>
+        {is_insured && (
+          <div className="mt-4 flex">
+            <div className="w-6/12">
+              <span className="text-xs text-miru-dark-purple-1000">
+                Insurance Activation Date
+              </span>
+              <p className="text-miru-dark-purple-1000">
+                {insurance_bought_date || "-"}
+              </p>
+            </div>
+            <div className="w-6/12">
+              <span className="text-xs text-miru-dark-purple-1000">
+                Insurance Expiry Date
+              </span>
+              <p className="text-miru-dark-purple-1000">
+                {insurance_expiry_date || "-"}
+              </p>
+            </div>
+          </div>
+        )}
       </div>
     );
   };

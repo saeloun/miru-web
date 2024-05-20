@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useRef, useState } from "react";
 
+import { useOutsideClick } from "helpers";
 import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 
@@ -27,16 +28,26 @@ const AllocatedDevicesEdit = () => {
   const ArrayOfDevicesSchema = Yup.array().of(devicesSchema);
 
   const navigate = useNavigate();
-  const { isDesktop, user } = useUserContext();
+  const { isDesktop, user, company } = useUserContext();
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [devices, setDevices] = useState<Device[]>([]);
   const [updatedDevices, setUpdatedDevices] = useState<Device[]>(devices);
-  const [errDetails, setErrDetails] = useState(initialErrState);
+  const [errDetails, setErrDetails] = useState<object>(initialErrState);
+  const [dateFormat, setDateFormat] = useState<string>("DD-MM-YYYY");
+  const [showDOAPicker, setShowDOAPicker] = useState<boolean>(false);
+  const [showDOEPicker, setShowDOEPicker] = useState<boolean>(false);
+
+  const DOARef = useRef(null);
+  const DOERef = useRef(null);
+
+  useOutsideClick(DOARef, () => setShowDOAPicker(!showDOAPicker));
+  useOutsideClick(DOERef, () => setShowDOEPicker(!showDOEPicker));
 
   useEffect(() => {
     setIsLoading(true);
     getDevicesDetail();
+    setDateFormat(company.date_format);
   }, []);
 
   const getDevicesDetail = async () => {
@@ -60,6 +71,9 @@ const AllocatedDevicesEdit = () => {
         device_type: "",
         name: "",
         serial_number: "",
+        insurance_bought_date: "",
+        insurance_expiry_date: "",
+        is_insured: false,
         specifications: {
           graphics: "",
           processor: "",
@@ -73,6 +87,20 @@ const AllocatedDevicesEdit = () => {
     setUpdatedDevices(updatedDevices.filter(dev => dev !== deletedDevice));
   };
 
+  const handleDOAChage = (date, index) => {
+    setShowDOAPicker(false);
+    handleDeviceChange(date, "insurance_bought_date", index);
+  };
+
+  const handleIsInsured = (value, index) => {
+    handleDeviceChange(value.target.checked, "is_insured", index);
+  };
+
+  const handleDOEChage = (date, index) => {
+    setShowDOEPicker(false);
+    handleDeviceChange(date, "insurance_expiry_date", index);
+  };
+
   const handleDeviceChange = (value, field, index) => {
     const changedDevices = updatedDevices.map((device, i) => {
       const shouldUpdate = i === index;
@@ -81,7 +109,7 @@ const AllocatedDevicesEdit = () => {
       if (field !== "specifications") {
         return { ...device, [field]: value };
       }
-      //Here the value is an object:{ field: actualValue }
+      //Here the value is an object: { field: actualValue }
       const updatedSpecs = { ...device.specifications, ...value };
 
       return { ...device, specifications: updatedSpecs };
@@ -192,11 +220,21 @@ const AllocatedDevicesEdit = () => {
             <Loader className="min-h-70v" />
           ) : (
             <EditPage
+              DOARef={DOARef}
+              DOERef={DOERef}
               addAnotherDevice={addAnotherDevice}
+              dateFormat={dateFormat}
               devices={updatedDevices}
               errDetails={errDetails}
+              handleDOAChage={handleDOAChage}
+              handleDOEChage={handleDOEChage}
               handleDeleteDevice={handleDeleteDevice}
               handleDeviceChange={handleDeviceChange}
+              handleIsInsured={handleIsInsured}
+              setShowDOAPicker={setShowDOAPicker}
+              setShowDOEPicker={setShowDOEPicker}
+              showDOAPicker={showDOAPicker}
+              showDOEPicker={showDOEPicker}
             />
           )}
         </Fragment>
@@ -211,12 +249,22 @@ const AllocatedDevicesEdit = () => {
             <Loader className="min-h-70v" />
           ) : (
             <MobileEditPage
+              DOARef={DOARef}
+              DOERef={DOERef}
               addAnotherDevice={addAnotherDevice}
+              dateFormat={dateFormat}
               devices={updatedDevices}
               errDetails={errDetails}
               handleCancelDetails={handleCancelDetails}
+              handleDOAChage={handleDOAChage}
+              handleDOEChage={handleDOEChage}
               handleDeleteDevice={handleDeleteDevice}
               handleDeviceChange={handleDeviceChange}
+              handleIsInsured={handleIsInsured}
+              setShowDOAPicker={setShowDOAPicker}
+              setShowDOEPicker={setShowDOEPicker}
+              showDOAPicker={showDOAPicker}
+              showDOEPicker={showDOEPicker}
             />
           )}
         </Fragment>
