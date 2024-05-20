@@ -20,7 +20,7 @@ import Header from "../Header";
 const AccountsAgingReport = () => {
   const [isFilterVisible, setIsFilterVisible] = useState<boolean>(false);
   const [showNavFilters, setShowNavFilters] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
   const [selectedFilter, setSelectedFilter] = useState([]); //eslint-disable-line
   const [filterCounter, setFilterCounter] = useState(0); //eslint-disable-line
   const [clientList, setClientList] = useState<any>([]);
