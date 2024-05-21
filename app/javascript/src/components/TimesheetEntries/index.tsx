@@ -98,7 +98,16 @@ const TimesheetEntries = ({ user, isAdminUser }: Iprops) => {
     sendGAPageView();
     fetchTimeTrackingData();
     !isDesktop && setView("day");
+    const savedView = localStorage.getItem("calendarView");
+    if (isDesktop && savedView) {
+      setView(savedView);
+    }
   }, []);
+
+  const handleChangeView = newView => {
+    setView(newView);
+    localStorage.setItem("calendarView", newView);
+  };
 
   const fetchTimeTrackingData = async () => {
     try {
@@ -688,7 +697,7 @@ const TimesheetEntries = ({ user, isAdminUser }: Iprops) => {
                           ? "border-b-2 border-miru-han-purple-1000 font-bold text-miru-han-purple-1000"
                           : "font-medium text-miru-han-purple-600"
                       }`}
-                    onClick={() => setView(item)}
+                    onClick={() => handleChangeView(item)}
                   >
                     {item.toUpperCase()}
                   </button>

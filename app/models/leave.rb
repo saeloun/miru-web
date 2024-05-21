@@ -28,8 +28,10 @@ class Leave < ApplicationRecord
   include Discard::Model
 
   belongs_to :company
+
   has_many :leave_types, class_name: "LeaveType", dependent: :destroy
   has_many :custom_leaves, class_name: "CustomLeave", dependent: :destroy
+  has_many :timeoff_entries, through: :leave_types
 
   validates :year, presence: true,
     numericality: { greater_than_or_equal_to: 1000, less_than_or_equal_to: 9999 }
