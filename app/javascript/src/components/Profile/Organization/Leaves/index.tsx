@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 
 import leavesApi from "apis/leaves";
 import teamApi from "apis/team";
-import Loader from "common/Loader";
+import Loader from "common/Loader/index";
 import { leaveIcons, leaveColors } from "constants/leaveType";
 import { useUserContext } from "context/UserContext";
 import { sendGAPageView } from "utils/googleAnalytics";

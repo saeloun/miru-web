@@ -32,4 +32,5 @@ class CustomLeave < ApplicationRecord
   }
 
   validates :name, :allocation_value, :allocation_period, presence: true
+  validates :allocation_value, numericality: { greater_than_or_equal_to: 1 }
 end
