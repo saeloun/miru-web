@@ -18,6 +18,8 @@ const DatePickerWithInputBox = ({
   date,
   id,
   label,
+  minDate = null,
+  maxDate = null,
 }) => (
   <div className="flex w-1/2 cursor-pointer flex-col" ref={ref}>
     <div
@@ -31,7 +33,7 @@ const DatePickerWithInputBox = ({
         label={label}
         name={id}
         type="text"
-        value={date || ""}
+        value={date ? dayjs(date).format(dateFormat) : ""}
       />
       <CalendarIcon
         className="absolute top-0 bottom-0 right-4 my-auto"
@@ -45,8 +47,10 @@ const DatePickerWithInputBox = ({
     {isDatePickerVisible && (
       <CustomDatePicker
         date={date || dayjs()}
-        dateFormat={dateFormat}
+        dateFormat="YYYY-MM-DD"
         handleChange={handleDateChange}
+        maxDate={maxDate}
+        minDate={minDate}
       />
     )}
   </div>

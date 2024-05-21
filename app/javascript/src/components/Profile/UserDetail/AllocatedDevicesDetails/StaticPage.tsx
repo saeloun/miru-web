@@ -1,11 +1,12 @@
 import React, { Fragment } from "react";
 
+import dayjs from "dayjs";
 import { MobileIcon } from "miruIcons";
 
 import { Divider } from "common/Divider";
 import EmptyStates from "common/EmptyStates";
 
-const StaticPage = ({ devices }) => {
+const StaticPage = ({ devices, dateFormat }) => {
   const DeviceDetails = ({ device }) => {
     const {
       device_type,
@@ -63,7 +64,7 @@ const StaticPage = ({ devices }) => {
                 Insurance Activation Date
               </span>
               <p className="text-miru-dark-purple-1000">
-                {insurance_bought_date || "-"}
+                {dayjs(insurance_bought_date).format(dateFormat) || "-"}
               </p>
             </div>
             <div className="w-6/12">
@@ -71,7 +72,7 @@ const StaticPage = ({ devices }) => {
                 Insurance Expiry Date
               </span>
               <p className="text-miru-dark-purple-1000">
-                {insurance_expiry_date || "-"}
+                {dayjs(insurance_expiry_date).format(dateFormat) || "-"}
               </p>
             </div>
           </div>

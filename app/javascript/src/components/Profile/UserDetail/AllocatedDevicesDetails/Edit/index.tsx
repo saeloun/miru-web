@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React, { Fragment, useEffect, useRef, useState } from "react";
 
+import dayjs from "dayjs";
 import { useOutsideClick } from "helpers";
 import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
@@ -35,14 +36,32 @@ const AllocatedDevicesEdit = () => {
   const [updatedDevices, setUpdatedDevices] = useState<Device[]>(devices);
   const [errDetails, setErrDetails] = useState<object>(initialErrState);
   const [dateFormat, setDateFormat] = useState<string>("DD-MM-YYYY");
-  const [showDOAPicker, setShowDOAPicker] = useState<boolean>(false);
-  const [showDOEPicker, setShowDOEPicker] = useState<boolean>(false);
+  const [showDOAPicker, setShowDOAPicker] = useState<object>({
+    visibility: false,
+    index: 0,
+  });
+
+  const [showDOEPicker, setShowDOEPicker] = useState<object>({
+    visibility: false,
+    index: 0,
+  });
 
   const DOARef = useRef(null);
   const DOERef = useRef(null);
 
-  useOutsideClick(DOARef, () => setShowDOAPicker(!showDOAPicker));
-  useOutsideClick(DOERef, () => setShowDOEPicker(!showDOEPicker));
+  useOutsideClick(DOARef, () =>
+    setShowDOAPicker({
+      visibility: false,
+      index: 0,
+    })
+  );
+
+  useOutsideClick(DOERef, () =>
+    setShowDOEPicker({
+      visibility: false,
+      index: 0,
+    })
+  );
 
   useEffect(() => {
     setIsLoading(true);
@@ -88,8 +107,12 @@ const AllocatedDevicesEdit = () => {
   };
 
   const handleDOAChage = (date, index) => {
-    setShowDOAPicker(false);
-    handleDeviceChange(date, "insurance_bought_date", index);
+    setShowDOAPicker({
+      visibility: false,
+      index: 0,
+    });
+    const FormattedDate = dayjs(date).format("YYYY-MM-DD");
+    handleDeviceChange(FormattedDate, "insurance_bought_date", index);
   };
 
   const handleIsInsured = (value, index) => {
@@ -97,8 +120,12 @@ const AllocatedDevicesEdit = () => {
   };
 
   const handleDOEChage = (date, index) => {
-    setShowDOEPicker(false);
-    handleDeviceChange(date, "insurance_expiry_date", index);
+    setShowDOEPicker({
+      visibility: false,
+      index: 0,
+    });
+    const FormattedDate = dayjs(date).format("YYYY-MM-DD");
+    handleDeviceChange(FormattedDate, "insurance_expiry_date", index);
   };
 
   const handleDeviceChange = (value, field, index) => {
