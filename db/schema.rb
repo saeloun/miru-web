@@ -162,6 +162,25 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_29_142938) do
     t.boolean "calendar_enabled", default: true
   end
 
+  create_table "custom_leave_users", force: :cascade do |t|
+    t.bigint "custom_leave_id", null: false
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["custom_leave_id"], name: "index_custom_leave_users_on_custom_leave_id"
+    t.index ["user_id"], name: "index_custom_leave_users_on_user_id"
+  end
+
+  create_table "custom_leaves", force: :cascade do |t|
+    t.string "name", null: false
+    t.integer "allocation_value", null: false
+    t.integer "allocation_period", null: false
+    t.bigint "leave_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["leave_id"], name: "index_custom_leaves_on_leave_id"
+  end
+
   create_table "data_migrations", primary_key: "version", id: :string, force: :cascade do |t|
   end
 
@@ -556,6 +575,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_29_142938) do
   add_foreign_key "client_members", "companies"
   add_foreign_key "client_members", "users"
   add_foreign_key "clients", "companies"
+  add_foreign_key "custom_leave_users", "custom_leaves", column: "custom_leave_id"
+  add_foreign_key "custom_leave_users", "users"
+  add_foreign_key "custom_leaves", "leaves", column: "leave_id"
   add_foreign_key "devices", "companies"
   add_foreign_key "devices", "users"
   add_foreign_key "employments", "companies"
