@@ -12,8 +12,9 @@ import { Device } from "./Device";
 import StaticPage from "./StaticPage";
 
 const AllocatedDevicesDetails = () => {
-  const { user, isDesktop } = useUserContext();
+  const { user, isDesktop, company } = useUserContext();
   const navigate = useNavigate();
+  const dateFormat = company.date_format;
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [devices, setDevices] = useState<Device[]>([]);
@@ -56,7 +57,7 @@ const AllocatedDevicesDetails = () => {
           <Loader />
         </div>
       ) : (
-        <StaticPage devices={devices} />
+        <StaticPage dateFormat={dateFormat} devices={devices} />
       )}
     </Fragment>
   );

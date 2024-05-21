@@ -262,12 +262,17 @@ const DeviceForm = ({
                       errorMessage={errDetails[index]?.device_insurance_bought}
                       handleDateChange={date => handleDOAChage(date, index)}
                       id={`insurance_bought_${index}`}
-                      isDatePickerVisible={showDOAPicker}
                       isError={errDetails[index]?.device_insurance_bought}
                       label="Insurance Activation Date"
                       ref={DOARef}
                       handleDatePickerVisibility={() =>
-                        setShowDOAPicker(!showDOAPicker)
+                        setShowDOAPicker({
+                          visibility: !showDOAPicker.visibility,
+                          index,
+                        })
+                      }
+                      isDatePickerVisible={
+                        index == showDOAPicker.index && showDOAPicker.visibility
                       }
                     />
                     <DatePickerWithInputBox
@@ -276,12 +281,18 @@ const DeviceForm = ({
                       errorMessage={errDetails[index]?.device_insurance_expiry}
                       handleDateChange={date => handleDOEChage(date, index)}
                       id={`insurance_expiry_${index}`}
-                      isDatePickerVisible={showDOEPicker}
                       isError={errDetails[index]?.device_insurance_expiry}
                       label="Insurance Expiration Date"
+                      minDate={insurance_bought_date}
                       ref={DOERef}
                       handleDatePickerVisibility={() =>
-                        setShowDOEPicker(!showDOEPicker)
+                        setShowDOEPicker({
+                          visibility: !showDOEPicker.visibility,
+                          index,
+                        })
+                      }
+                      isDatePickerVisible={
+                        index == showDOEPicker.index && showDOEPicker.visibility
                       }
                     />
                   </div>
