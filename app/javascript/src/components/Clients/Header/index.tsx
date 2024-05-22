@@ -2,6 +2,7 @@ import React, { Fragment } from "react";
 
 import Logger from "js-logger";
 import { PlusIcon } from "miruIcons";
+import { Button } from "StyledComponents";
 
 import clientApi from "apis/clients";
 import AutoSearch from "common/AutoSearch";
@@ -34,19 +35,19 @@ const Header = ({ setnewClient, isAdminUser, setShowDialog }) => {
             SearchDataRow={SearchDataRow}
             searchAction={fetchClients}
           />
-          <div className="flex">
-            <button
-              className="header__button md:px-2 "
-              type="button"
-              onClick={() => {
-                setShowDialog(true);
-                setnewClient(true);
-              }}
-            >
-              <PlusIcon size={16} weight="fill" />
-              <span className="ml-2 hidden md:inline">NEW CLIENT</span>
-            </button>
-          </div>
+          <Button
+            className="ml-2 flex items-center px-2 py-2 lg:ml-0 lg:px-4"
+            style="secondary"
+            onClick={() => {
+              setShowDialog(true);
+              setnewClient(true);
+            }}
+          >
+            <PlusIcon size={16} weight="bold" />
+            <span className="ml-2 hidden text-base font-bold tracking-widest lg:inline-block">
+              New Client
+            </span>
+          </Button>
         </Fragment>
       )}
     </div>
