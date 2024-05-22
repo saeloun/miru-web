@@ -32,8 +32,8 @@ const Header = () => {
           onClick={() => setModalState(TeamModalType.ADD_EDIT)}
         >
           <PlusIcon size={16} weight="bold" />
-          <span className="ml-2 hidden text-base font-medium tracking-widest lg:inline-block">
-            NEW USER
+          <span className="ml-2 hidden text-base font-bold tracking-widest lg:inline-block">
+            New User
           </span>
         </Button>
       </div>

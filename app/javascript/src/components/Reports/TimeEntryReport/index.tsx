@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Pagination } from "StyledComponents";
 
 import reportsApi from "apis/reports";
+import Loader from "common/Loader/index";
 import { useUserContext } from "context/UserContext";
 import { sendGAPageView } from "utils/googleAnalytics";
 
@@ -35,6 +36,7 @@ const TimeEntryReport = () => {
   const { isDesktop } = useUserContext();
 
   const [timeEntries, setTimeEntries] = useState<Array<ITimeEntry>>([]);
+  const [loading, setLoading] = useState<boolean>(true);
   const [filterOptions, setFilterOptions] = useState({
     clients: [],
     teamMembers: [],
@@ -90,7 +92,8 @@ const TimeEntryReport = () => {
       setIsFilterVisible,
       setFilterOptions,
       setPaginationDetails,
-      setGroupByTotalDuration
+      setGroupByTotalDuration,
+      setLoading
     );
   }, [selectedFilter]);
 
@@ -150,6 +153,7 @@ const TimeEntryReport = () => {
 
   const handlePageClick = async page => {
     if (page == "...") return;
+    setLoading(true);
 
     const queryParams = getQueryParams(selectedFilter);
     const sanitizedParam = queryParams.substring(1);
@@ -158,9 +162,11 @@ const TimeEntryReport = () => {
 
     if (res.data.reports.length === 0) {
       setPaginationDetails(res.data.pagy);
+      setLoading(false);
     } else {
       setTimeEntries(res.data.reports);
       setPaginationDetails(res.data.pagy);
+      setLoading(false);
     }
   };
 
@@ -185,6 +191,10 @@ const TimeEntryReport = () => {
     outstandingOverdueInvoice: OutstandingOverdueInvoiceContext,
     accountsAgingReport: AccountsAgingReportContext,
   };
+
+  if (loading) {
+    return <Loader />;
+  }
 
   return (
     <div className="h-full">
