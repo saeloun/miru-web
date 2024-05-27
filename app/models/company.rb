@@ -117,6 +117,14 @@ class Company < ApplicationRecord
   end
 
   def employees_without_client_role
-    users.with_kept_employments.joins(:roles).where.not(roles: { name: "client" }).distinct
+    user_ids_with_only_client_role = users.with_kept_employments
+      .joins(:roles)
+      .group("users.id, roles.resource_id, roles.resource_type")
+      .having("COUNT(roles.id) = 1 AND MAX(roles.name) = 'client' \
+              AND roles.resource_id = #{id} \
+              AND roles.resource_type = 'Company'")
+      .pluck("users.id")
+
+    users.with_kept_employments.where.not(id: user_ids_with_only_client_role).distinct
   end
 end
