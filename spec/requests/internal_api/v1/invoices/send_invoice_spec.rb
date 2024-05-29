@@ -9,6 +9,11 @@ RSpec.describe "InternalApi::V1::Invoices#send_invoice", type: :request do
   let(:company) { invoice.company }
   let(:user) { create :user, current_workspace_id: company.id }
 
+  before do
+    allow(Current).to receive(:user).and_return(user)
+    allow(Current).to receive(:company).and_return(company)
+  end
+
   context "when user is signed in" do
     before do
       create(:employment, company:, user:)
