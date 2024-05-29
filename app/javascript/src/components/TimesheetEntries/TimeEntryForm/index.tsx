@@ -136,10 +136,10 @@ const AddEntry = () => {
   };
 
   const handleEdit = async () => {
-    const tse = getPayload();
+    const tsEntry = getPayload();
     const updateRes = await timesheetEntryApi.update(editEntryId, {
       project_id: projectId,
-      timesheet_entry: tse,
+      timesheet_entry: tsEntry,
     });
 
     if (updateRes.status >= 200 && updateRes.status < 300) {
