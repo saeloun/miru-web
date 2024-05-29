@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import Logger from "js-logger";
 import { useNavigate } from "react-router-dom";
 
+import clientRevenueApi from "apis/reports/clientRevenue";
 import Loader from "common/Loader/index";
 import { LocalStorageKeys } from "constants/index";
 import { sendGAPageView } from "utils/googleAnalytics";
@@ -12,6 +13,7 @@ import Container from "./Container";
 import Filters from "./Filters";
 import { RevenueByClients } from "./interface";
 
+import { getQueryParams } from "../api/applyFilter";
 import getReportData from "../api/revenueByClient";
 import AccountsAgingReportContext from "../context/AccountsAgingReportContext";
 import EntryContext from "../context/EntryContext";
@@ -134,7 +136,16 @@ const RevenueByClientReport = () => {
     setFilterCounter(0);
   };
 
-  const handleDownload = () => {}; //eslint-disable-line
+  const handleDownload = async type => {
+    const queryParams = getQueryParams(selectedFilter).substring(1);
+    const response = await clientRevenueApi.download(type, `?${queryParams}`);
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement("a");
+    const filename = `report.${type}`;
+    link.href = url;
+    link.setAttribute("download", filename);
+    link.click();
+  };
 
   if (loading) {
     return <Loader />;
@@ -148,12 +159,12 @@ const RevenueByClientReport = () => {
         }}
       >
         <Header
+          showExportButon
           handleDownload={handleDownload}
           isFilterVisible={isFilterVisible}
           resetFilter={resetFilter}
           revenueFilterCounter={filterCounter}
           setIsFilterVisible={setIsFilterVisible}
-          showExportButon={false}
           showFilterIcon={undefined}
           showNavFilters={showNavFilters}
           type="Revenue Report"
