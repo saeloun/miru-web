@@ -42,8 +42,8 @@
 
     </thead>
     <tbody>
+      <% base_currency = report_data[:base_currency] %>
       <% if report_data[:clients].present? %>
-        <% base_currency = report_data[:base_currency] %>
         <% report_data[:clients].each do |client| %>
           <tr>
         <th>Client</th>
