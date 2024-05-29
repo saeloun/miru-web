@@ -5,7 +5,7 @@ class InternalApi::V1::EmploymentsController < InternalApi::V1::ApplicationContr
 
   def index
     authorize Employment
-    render :index, locals: { users: users_with_not_client_role }, status: :ok
+    render :index, locals: { users: current_company.employees_without_client_role }, status: :ok
   end
 
   def show
@@ -27,10 +27,5 @@ class InternalApi::V1::EmploymentsController < InternalApi::V1::ApplicationContr
 
     def employment_params
       params.require(:employment).permit(:designation, :employment_type, :joined_at, :resigned_at, :employee_id)
-    end
-
-    def users_with_not_client_role
-      users_with_client_role_ids = current_company.users.joins(:roles).where(roles: { name: "client" }).pluck(:id)
-      current_company.users.kept.where.not(id: users_with_client_role_ids)
     end
 end
