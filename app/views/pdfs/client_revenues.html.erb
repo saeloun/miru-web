@@ -46,12 +46,13 @@
     </thead>
     <tbody>
       <% report_data[:clients].each do |client| %>
+        <% base_currency = report_data[:base_currency] %>
         <tr>
           <td><%= client[:name] %></td>
-          <td><%= FormatAmountService.new(report_data[:base_currency],client[:overdue_amount]).process %></td>
-          <td><%= FormatAmountService.new(report_data[:base_currency],client[:outstanding_amount]).process %></td>
-          <td><%= FormatAmountService.new(report_data[:base_currency],client[:paid_amount]).process %></td>
-          <td><%= FormatAmountService.new(report_data[:base_currency],client[:paid_amount] + client[:outstanding_amount] + client[:overdue_amount]).process %></td>
+          <td><%= FormatAmountService.new(base_currency,client[:overdue_amount]).process %></td>
+          <td><%= FormatAmountService.new(base_currency,client[:outstanding_amount]).process %></td>
+          <td><%= FormatAmountService.new(base_currency,client[:paid_amount]).process %></td>
+          <td><%= FormatAmountService.new(base_currency,client[:paid_amount] + client[:outstanding_amount] + client[:overdue_amount]).process %></td>
         </tr>
       <% end %>
     </tbody>
