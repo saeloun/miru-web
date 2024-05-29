@@ -43,8 +43,8 @@
     </thead>
     <tbody>
       <% if report_data[:clients].present? %>
+        <% base_currency = report_data[:base_currency] %>
         <% report_data[:clients].each do |client| %>
-          <% base_currency = report_data[:base_currency] %>
           <tr>
         <th>Client</th>
         <th>Outstanding Amount</th>
@@ -78,7 +78,7 @@
                         <td><%= invoice.invoice_number %></td>
                         <td><%= CompanyDateFormattingService.new(invoice.issue_date, company: current_company).process %></td>
                         <td><%= CompanyDateFormattingService.new(invoice.due_date, company: current_company).process %></td>
-                        <td><%= FormatAmountService.new(report_data[:base_currency],invoice.amount).process %></td>
+                        <td><%= FormatAmountService.new(base_currency,invoice.amount).process %></td>
                         <td><%= invoice.status %></td>
                       </tr>
                     <% end %>
@@ -95,9 +95,9 @@
       <% end %>
       <tr class="total-row">
         <td>Total Amounts</td>
-        <td><%= FormatAmountService.new(report_data[:base_currency],report_data[:summary][:total_outstanding_amount]).process %></td>
-        <td><%= FormatAmountService.new(report_data[:base_currency],report_data[:summary][:total_overdue_amount]).process %></td>
-        <td><%= FormatAmountService.new(report_data[:base_currency],report_data[:summary][:total_invoice_amount]).process %></td>
+        <td><%= FormatAmountService.new(base_currency,report_data[:summary][:total_outstanding_amount]).process %></td>
+        <td><%= FormatAmountService.new(base_currency,report_data[:summary][:total_overdue_amount]).process %></td>
+        <td><%= FormatAmountService.new(base_currency,report_data[:summary][:total_invoice_amount]).process %></td>
       </tr>
     </tbody>
   </table>

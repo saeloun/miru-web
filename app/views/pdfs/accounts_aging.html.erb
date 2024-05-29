@@ -25,8 +25,8 @@
       </th>
     </thead>
     <tbody>
+      <% base_currency = report_data[:base_currency] %>
       <% report_data[:clients].each do |client| %>
-        <% base_currency = report_data[:base_currency] %>
       <tr>
         <td style="font-size: 14px; text-align: center; flex-basis: 25%; padding: 2px; border: 1px solid #000;">
           <p style="color: #1F2937; margin: 0;">
@@ -66,27 +66,27 @@
         </td>
         <td style="text-align: left; font-size: 14px; flex-basis: 25%; padding: 2px;border: 1px solid #000;">
           <p style="color: #6B7280; margin: 0;">
-            <%= FormatAmountService.new(report_data[:base_currency],report_data[:total_amount_overdue_by_date_range][:zero_to_thirty_days]).process %>
+            <%= FormatAmountService.new(base_currency,report_data[:total_amount_overdue_by_date_range][:zero_to_thirty_days]).process %>
           </p>
         </td>
         <td style="text-align: left; font-size: 14px; flex-basis: 25%; padding: 2px;border: 1px solid #000;">
           <p style="color: #6B7280; margin: 0;">
-            <%= FormatAmountService.new(report_data[:base_currency],report_data[:total_amount_overdue_by_date_range][:thirty_one_to_sixty_days]).process %>
+            <%= FormatAmountService.new(base_currency,report_data[:total_amount_overdue_by_date_range][:thirty_one_to_sixty_days]).process %>
           </p>
         </td>
         <td style="text-align: left; font-size: 14px; flex-basis: 25%; padding: 2px;border: 1px solid #000;">
         <p style="color: #6B7280; margin: 0;">
-          <%= FormatAmountService.new(report_data[:base_currency],report_data[:total_amount_overdue_by_date_range][:sixty_one_to_ninety_days]).process %>
+          <%= FormatAmountService.new(base_currency,report_data[:total_amount_overdue_by_date_range][:sixty_one_to_ninety_days]).process %>
         </p>
       </td>
       <td style="text-align: left; font-size: 14px; flex-basis: 25%; padding: 2px;border: 1px solid #000;">
         <p style="color: #6B7280; margin: 0;">
-          <%= FormatAmountService.new(report_data[:base_currency],report_data[:total_amount_overdue_by_date_range][:ninety_plus_days]).process %>
+          <%= FormatAmountService.new(base_currency,report_data[:total_amount_overdue_by_date_range][:ninety_plus_days]).process %>
         </p>
       </td>
       <td style="text-align: left; font-size: 14px; flex-basis: 25%; padding: 2px;border: 1px solid #000;">
         <p style="color: #6B7280; margin: 0;">
-          <%= FormatAmountService.new(report_data[:base_currency],report_data[:total_amount_overdue_by_date_range][:total]).process %>
+          <%= FormatAmountService.new(base_currency,report_data[:total_amount_overdue_by_date_range][:total]).process %>
         </p>
       </td>
       </tr>
