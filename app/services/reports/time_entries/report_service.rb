@@ -31,7 +31,7 @@ class Reports::TimeEntries::ReportService
       if get_filters
         @_filter_options ||= {
           clients: current_company.clients.includes([:logo_attachment]).order(:name),
-          team_members: users_not_client_role.order(:first_name),
+          team_members: current_company.employees_without_client_role.order(:first_name),
           projects: current_company.projects.as_json(only: [:id, :name])
         }
       end
@@ -118,11 +118,6 @@ class Reports::TimeEntries::ReportService
 
     def active_time_entries
       { discarded_at: nil }
-    end
-
-    def users_not_client_role
-      users_with_client_role_ids = current_company.users.joins(:roles).where(roles: { name: "client" }).pluck(:id)
-      current_company.users.where.not(id: users_with_client_role_ids)
     end
 
     def pagination_details
