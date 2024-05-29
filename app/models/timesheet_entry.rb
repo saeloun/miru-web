@@ -8,6 +8,7 @@
 #  bill_status  :integer          not null
 #  discarded_at :datetime
 #  duration     :float            not null
+#  locked       :boolean          default(FALSE)
 #  note         :text             default("")
 #  work_date    :date             not null
 #  created_at   :datetime         not null
@@ -48,6 +49,7 @@ class TimesheetEntry < ApplicationRecord
   validates :duration, :work_date, :bill_status, presence: true
   validates :duration, numericality: { less_than_or_equal_to: 6000000, greater_than_or_equal_to: 0.0 }
   validate :validate_billable_project
+  validate :prevent_edit_if_locked, on: :update
 
   scope :in_workspace, -> (company) { where(project_id: company&.project_ids) }
   scope :during, -> (from, to) { where(work_date: from..to).order(work_date: :desc) }
@@ -131,6 +133,12 @@ class TimesheetEntry < ApplicationRecord
     def validate_billable_project
       if !project&.billable && bill_status == "unbilled"
         errors.add(:base, I18n.t("errors.validate_billable_project"))
+      end
+    end
+
+    def prevent_edit_if_locked
+      if locked && Current.user.primary_role(Current.company) == "employee"
+        errors.add(:base, "Cannot edit a locked timesheet entry. Please contact admin.")
       end
     end
 end
