@@ -10,7 +10,10 @@ import {
 } from "mapper/generateInvoice.mapper";
 import { unmapPayment, mapPayment } from "mapper/payment.mapper";
 import { unmapper } from "mapper/project.mapper";
-import { unmapper as reportUnmapper } from "mapper/report.mapper";
+import {
+  unmapper as reportUnmapper,
+  filteredReportUnmapper,
+} from "mapper/report.mapper";
 import { unmapList } from "mapper/team.mapper";
 
 export {
@@ -25,4 +28,5 @@ export {
   unmapper,
   reportUnmapper,
   unmapList,
+  filteredReportUnmapper,
 };
