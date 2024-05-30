@@ -182,15 +182,15 @@ module TimeoffEntries
       def calculate_previous_year_carryforward(leave_type)
         return 0 unless leave_type
 
-        total_leave_type_days = calculate_total_duration(leave_type, previous_year)
+        last_year_carryover =
+          Carryover.find_by(
+            user_id:,
+            company_id: current_company.id,
+            leave_type_id: leave_type.id,
+            from_year: previous_year
+          )
 
-        timeoff_entries_duration = leave_type.timeoff_entries.kept.where(user_id:).sum(:duration)
-
-        net_duration = (total_leave_type_days * 8 * 60) - timeoff_entries_duration
-
-        carry_forward_duration = leave_type.carry_forward_days * 8 * 60
-
-        net_duration > carry_forward_duration ? carry_forward_duration : net_duration > 0 ? net_duration : 0
+        last_year_carryover && (last_year_carryover.duration > 0) ? last_year_carryover.duration : 0
       end
   end
 end
