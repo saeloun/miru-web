@@ -83,7 +83,7 @@ export const UserDetails = () => {
       const headers = {
         "Content-Type": "multipart/form-data",
       };
-      await profileApi.upadteAvatar(payload, { headers });
+      await profileApi.updateAvatar(payload, { headers });
     } catch (error) {
       Toastr.error(error.message);
     }

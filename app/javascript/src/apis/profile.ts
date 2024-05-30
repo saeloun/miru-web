@@ -8,7 +8,7 @@ const getAddress = id => axios.get(`/users/${id}/addresses`);
 
 const update = payload => axios.put(`${path}`, payload);
 
-const upadteAvatar = (payload, config) => axios.put(`${path}`, payload, config);
+const updateAvatar = (payload, config) => axios.put(`${path}`, payload, config);
 
 const createAddress = (userId, payload) =>
   axios.post(`/users/${userId}/addresses`, payload);
@@ -25,7 +25,7 @@ const profileApi = {
   getAddress,
   updateAddress,
   createAddress,
-  upadteAvatar,
+  updateAvatar,
 };
 
 export default profileApi;
