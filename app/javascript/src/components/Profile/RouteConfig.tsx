@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 
 import { Routes, Route, Navigate } from "react-router-dom";
 
-import profileApi from "apis/profile";
+import teamsApi from "apis/teams";
 import ErrorPage from "common/Error";
 import { useUserContext } from "context/UserContext";
 import { teamsMapper } from "mapper/teams.mapper";
@@ -19,7 +19,7 @@ const ProtectedRoute = ({ role, authorisedRoles, children }) => {
 };
 
 const RouteConfig = () => {
-  const { companyRole } = useUserContext();
+  const { user, companyRole } = useUserContext();
   const {
     setUserState,
     profileSettings: { first_name, last_name },
@@ -27,13 +27,10 @@ const RouteConfig = () => {
 
   const getData = async () => {
     if (!first_name && !last_name) {
-      const res = await profileApi.index();
+      const res = await teamsApi.get(user.id);
       if (res.status && res.status == 200) {
-        const addressData = await profileApi.getAddress(res.data.user.id);
-        const userObj = teamsMapper(
-          res.data.user,
-          addressData.data.addresses[0]
-        );
+        const addressData = await teamsApi.getAddress(user.id);
+        const userObj = teamsMapper(res.data, addressData.data.addresses[0]);
         setUserState("profileSettings", userObj);
       }
     }

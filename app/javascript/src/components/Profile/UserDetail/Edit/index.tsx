@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 
 import profileApi from "apis/profile";
+import teamsApi from "apis/teams";
 import Loader from "common/Loader/index";
 import { MobileDetailsHeader } from "common/Mobile/MobileDetailsHeader";
 import { useProfile } from "components/Profile/context/EntryContext";
@@ -41,7 +42,7 @@ const UserDetailsEdit = () => {
   };
 
   const navigate = useNavigate();
-  const { isDesktop } = useUserContext();
+  const { user, isDesktop } = useUserContext();
 
   const wrapperRef = useRef(null);
 
@@ -74,11 +75,11 @@ const UserDetailsEdit = () => {
   };
 
   const getDetails = async () => {
-    const data = await profileApi.index();
-    const addressData = await profileApi.getAddress(data.data.user.id);
-    setUserId(data.data.user.id);
+    const data = await teamsApi.get(user.id);
+    const addressData = await teamsApi.getAddress(user.id);
+    setUserId(data.data.id);
 
-    const userObj = teamsMapper(data.data.user, addressData.data.addresses[0]);
+    const userObj = teamsMapper(data.data, addressData.data.addresses[0]);
     setUserState("profileSettings", userObj);
     if (userObj.addresses?.address_type?.length > 0) {
       setAddrType(

@@ -13,10 +13,12 @@ import { Toastr } from "StyledComponents";
 import * as Yup from "yup";
 
 import profileApi from "apis/profile";
+import teamsApi from "apis/teams";
 import { Divider } from "common/Divider";
 import Loader from "common/Loader/index";
 import { sendGAPageView } from "utils/googleAnalytics";
 
+import { useUserContext } from "../../../context/UserContext";
 import { useProfile } from "../context/EntryContext";
 import Header from "../Header";
 
@@ -52,6 +54,7 @@ const UserDetails = () => {
   };
 
   const { setUserState } = useProfile();
+  const { user } = useUserContext();
   const [profileImage, setProfileImage] = useState("");
   const [imageFile, setImageFile] = useState(null);
   const [firstName, setFirstName] = useState("");
@@ -162,16 +165,16 @@ const UserDetails = () => {
 
   const getData = async () => {
     setIsLoading(true);
-    const data = await profileApi.index();
+    const data = await teamsApi.get(user.id);
     if (data.status && data.status == 200) {
-      setFirstName(data.data.user.first_name);
-      setLastName(data.data.user.last_name);
-      setProfileImage(data.data.user.avatar_url);
-      setEmail(data.data.user.email);
+      setFirstName(data.data.first_name);
+      setLastName(data.data.last_name);
+      setProfileImage(data.data.avatar_url);
+      setEmail(data.data.email);
       setUserState("profileSettings", {
-        firstName: data.data.user.first_name,
-        lastName: data.data.user.last_name,
-        email: data.data.user.email,
+        firstName: data.data.first_name,
+        lastName: data.data.last_name,
+        email: data.data.email,
       });
       setIsLoading(false);
     } else {

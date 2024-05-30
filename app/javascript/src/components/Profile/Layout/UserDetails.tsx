@@ -20,18 +20,19 @@ export const UserDetails = () => {
 
   const [showImageUpdateOptions, setShowImageUpdateOptions] =
     useState<boolean>(false);
-  const { avatarUrl, setCurrentAvatarUrl, companyRole } = useUserContext();
+
+  const { user, avatarUrl, setCurrentAvatarUrl, companyRole } =
+    useUserContext();
+
   const getDetails = async () => {
     try {
       if (!first_name && !last_name) {
-        const userData = await profileApi.index();
+        const userData = await teamsApi.get(user.id);
         if (userData.status && userData.status == 200) {
-          const addressData = await profileApi.getAddress(
-            userData.data.user.id
-          );
+          const addressData = await teamsApi.getAddress(user.id);
 
           const userObj = teamsMapper(
-            userData.data.user,
+            userData.data,
             addressData.data.addresses[0]
           );
           setUserState("profileSettings", userObj);
@@ -39,12 +40,13 @@ export const UserDetails = () => {
 
         if (companyRole !== "client" && !designation) {
           const employmentData: any = await teamsApi.getEmploymentDetails(
-            userData.data.user.id
+            user.id
           );
 
           const previousEmploymentData = await teamsApi.getPreviousEmployments(
-            userData.data.user.id
+            user.id
           );
+
           if (employmentData.status && employmentData.status == 200) {
             const employmentObj = employmentMapper(
               employmentData?.data?.employment,

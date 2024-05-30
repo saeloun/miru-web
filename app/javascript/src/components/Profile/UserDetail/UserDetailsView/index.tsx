@@ -4,7 +4,6 @@ import React, { Fragment, useEffect, useState } from "react";
 
 import { Outlet, useNavigate } from "react-router-dom";
 
-import profileApi from "apis/profile";
 import teamsApi from "apis/teams";
 import Loader from "common/Loader/index";
 import { MobileEditHeader } from "common/Mobile/MobileEditHeader";
@@ -20,23 +19,23 @@ import StaticPage from "./StaticPage";
 const UserDetailsView = () => {
   const { setUserState, profileSettings } = useProfile();
   const [isLoading, setIsLoading] = useState(false);
-  const { isDesktop, companyRole } = useUserContext();
+  const { user, isDesktop, companyRole } = useUserContext();
 
   const getData = async () => {
     setIsLoading(true);
-    const res = await profileApi.index();
+    const res = await teamsApi.get(user.id);
     if (res.status && res.status == 200) {
-      const addressData = await profileApi.getAddress(res.data.user.id);
-      const userObj = teamsMapper(res.data.user, addressData.data.addresses[0]);
+      const addressData = await teamsApi.getAddress(user.id);
+      const userObj = teamsMapper(res.data, addressData.data.addresses[0]);
 
       setUserState("profileSettings", userObj);
       if (companyRole !== "client") {
         const employmentData: any = await teamsApi.getEmploymentDetails(
-          res?.data?.user.id
+          user.id
         );
 
         const previousEmploymentData: any =
-          await teamsApi.getPreviousEmployments(res?.data?.user.id);
+          await teamsApi.getPreviousEmployments(user.id);
 
         if (employmentData.status && employmentData.status == 200) {
           const employmentObj = employmentMapper(
