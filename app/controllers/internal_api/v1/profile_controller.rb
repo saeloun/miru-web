@@ -1,12 +1,6 @@
 # frozen_string_literal: true
 
 class InternalApi::V1::ProfileController < InternalApi::V1::ApplicationController
-  def remove_avatar
-    authorize :remove_avatar, policy_class: ProfilePolicy
-    current_user.avatar.destroy
-    render json: { notice: "Avatar deleted successfully" }, status: :ok
-  end
-
   def update
     authorize :update, policy_class: ProfilePolicy
     service = UpdateProfileSettingsService.new(current_user, user_params).process

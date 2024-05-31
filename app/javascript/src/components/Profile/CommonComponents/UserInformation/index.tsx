@@ -3,12 +3,12 @@ import React, { useState } from "react";
 import { EditIcon, ImageIcon, DeleteIcon } from "miruIcons";
 import { Avatar, MoreOptions, Toastr, Tooltip } from "StyledComponents";
 
-import profileApi from "apis/profile";
+import teamApi from "apis/team";
 import { useUserContext } from "context/UserContext";
 
 const UserInformation = ({ firstName, lastName, designation }) => {
   const [showProfileOptions, setShowProfileOptions] = useState(false);
-  const { avatarUrl, setCurrentAvatarUrl } = useUserContext();
+  const { user, avatarUrl, setCurrentAvatarUrl } = useUserContext();
 
   const validateFileSize = file => {
     const sizeInKB = file.size / 1024;
@@ -36,7 +36,7 @@ const UserInformation = ({ firstName, lastName, designation }) => {
         "Content-Type": "multipart/form-data",
       };
 
-      await profileApi.updateAvatar(payload, { headers });
+      await teamApi.updateTeamMemberAvatar(user.id, payload, { headers });
     } catch (error) {
       Toastr.error(error.message);
     }
@@ -44,7 +44,7 @@ const UserInformation = ({ firstName, lastName, designation }) => {
 
   const handleDeleteProfileImage = async () => {
     setShowProfileOptions(false);
-    await profileApi.removeAvatar();
+    await teamApi.destroyTeamMemberAvatar(user.id);
     setCurrentAvatarUrl(null);
   };
 

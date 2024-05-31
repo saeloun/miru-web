@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 import { DeleteIcon, EditIcon, ImageIcon } from "miruIcons";
 import { Avatar, MobileMoreOptions, Toastr, Tooltip } from "StyledComponents";
 
-import profileApi from "apis/profile";
+import teamApi from "apis/team";
 import teamsApi from "apis/teams";
 import { useProfile } from "components/Profile/context/EntryContext";
 import { useUserContext } from "context/UserContext";
@@ -85,7 +85,7 @@ export const UserDetails = () => {
       const headers = {
         "Content-Type": "multipart/form-data",
       };
-      await profileApi.updateAvatar(payload, { headers });
+      await teamApi.updateTeamMemberAvatar(user.id, payload, { headers });
     } catch (error) {
       Toastr.error(error.message);
     }
@@ -93,7 +93,7 @@ export const UserDetails = () => {
 
   const handleDeleteProfileImage = async () => {
     setShowImageUpdateOptions(false);
-    await profileApi.removeAvatar();
+    await teamApi.destroyTeamMemberAvatar(user.id);
     setCurrentAvatarUrl(null);
   };
 

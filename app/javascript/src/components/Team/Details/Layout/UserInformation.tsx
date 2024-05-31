@@ -53,7 +53,10 @@ export const UserInformation = () => {
       validateFileSize(file);
       setUserImageUrl(URL.createObjectURL(file));
       const payload = createFormData(file);
-      await teamApi.updateTeamMemberAvatar(memberId, payload);
+      const headers = {
+        "Content-Type": "multipart/form-data",
+      };
+      await teamApi.updateTeamMemberAvatar(memberId, payload, { headers });
     } catch (error) {
       Toastr.error(error.message);
     }

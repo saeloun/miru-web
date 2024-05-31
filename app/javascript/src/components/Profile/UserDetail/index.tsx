@@ -13,6 +13,7 @@ import { Toastr } from "StyledComponents";
 import * as Yup from "yup";
 
 import profileApi from "apis/profile";
+import teamApi from "apis/team";
 import teamsApi from "apis/teams";
 import { Divider } from "common/Divider";
 import Loader from "common/Loader/index";
@@ -202,7 +203,7 @@ const UserDetails = () => {
   };
 
   const handleDeleteLogo = async () => {
-    const removeProfile = await profileApi.removeAvatar();
+    const removeProfile = await teamApi.destroyTeamMemberAvatar(user.id);
     if (removeProfile.status === 200) {
       setImageFile(null);
       setProfileImage("");

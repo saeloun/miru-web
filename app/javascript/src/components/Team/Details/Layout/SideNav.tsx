@@ -76,7 +76,10 @@ const UserInformation = ({ memberId }) => {
       validateFileSize(file);
       setImageUrl(URL.createObjectURL(file));
       const payload = createFormData(file);
-      await teamApi.updateTeamMemberAvatar(memberId, payload);
+      const headers = {
+        "Content-Type": "multipart/form-data",
+      };
+      await teamApi.updateTeamMemberAvatar(memberId, payload, { headers });
     } catch (error) {
       Toastr.error(error.message);
     }
@@ -87,9 +90,8 @@ const UserInformation = ({ memberId }) => {
       setShowProfileOptions(false);
       await teamApi.destroyTeamMemberAvatar(memberId);
       setImageUrl(null);
-      Toastr.success("Image deleted successfully");
     } catch {
-      Toastr.success("Error in deleting Profile Image");
+      Toastr.error("Error in deleting Profile Image");
     }
   };
 
