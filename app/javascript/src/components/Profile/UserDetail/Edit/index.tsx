@@ -215,11 +215,11 @@ const UserDetailsEdit = () => {
       });
 
       if (addrId) {
-        await profileApi.updateAddress(userId, addrId, {
+        await teamsApi.updateAddress(userId, addrId, {
           address: { ...profileSettings.addresses },
         });
       } else {
-        await profileApi.createAddress(userId, payload);
+        await teamsApi.createAddress(userId, payload);
       }
 
       setErrDetails(initialErrState);
