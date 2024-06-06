@@ -5,14 +5,14 @@ class InternalApi::V1::CustomLeavesController < InternalApi::V1::ApplicationCont
 
   def update
     authorize current_user, policy_class: LeaveWithLeaveTypesPolicy
-    CustomLeavesService.new(leave, update_params).process
-    render json: { notice: "Leaves updated successfully" }, status: :ok
+    CustomLeavesService.new(@leave, update_params).process
+    render json: { notice: "Custom Leaves updated successfully" }, status: :ok
   end
 
   private
 
     def set_leave
-      @_leave ||= current_company.leaves.find_or_create_by(year: params[:year])
+      @leave ||= current_company.leaves.find_or_create_by(year: params[:year])
     end
 
     def update_params
