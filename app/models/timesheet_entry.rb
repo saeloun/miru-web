@@ -137,6 +137,8 @@ class TimesheetEntry < ApplicationRecord
     end
 
     def prevent_edit_if_locked
+      return if Current.user.nil?
+
       if locked && Current.user.primary_role(Current.company) == "employee"
         errors.add(:base, "Cannot edit a locked timesheet entry. Please contact admin.")
       end
