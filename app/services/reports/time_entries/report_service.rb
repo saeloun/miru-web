@@ -73,22 +73,26 @@ class Reports::TimeEntries::ReportService
 
       filter_service = TimeEntries::Filters.new(params)
       where_conditions = filter_service.process
-      where_conditions.delete(:client_id) if where_conditions.key?(:client_id)
 
-      joins_clause, group_field = case group_by
-                                  when :client
-                                    [{ project: :client }, "clients.id"]
-                                  when :project
-                                    [:project, "projects.id"]
-                                  when :team_member
-                                    [:user, "users.id"]
-                                  else
-                                    raise ArgumentError, "Unsupported group_by: #{group_by}"
+      if where_conditions.key?(:client_id)
+        where_conditions["clients.id"] = where_conditions[:client_id]
+        where_conditions.delete(:client_id)
       end
 
-      grouped_durations = TimesheetEntry.kept.joins(joins_clause)
+      group_field = case group_by
+                    when :client
+                      "clients.id"
+                    when :project
+                      "projects.id"
+                    when :team_member
+                      "users.id"
+                    else
+                      raise ArgumentError, "Unsupported group_by: #{group_by}"
+      end
+
+      grouped_durations = TimesheetEntry.kept
+        .joins(user: [], project: :client)
         .where(where_conditions)
-        .reorder("")
         .group(group_field)
         .sum(:duration)
 
