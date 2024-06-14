@@ -8,8 +8,8 @@ class InternalApi::V1::TimeTrackingController < InternalApi::V1::ApplicationCont
   def index
     authorize :index, policy_class: TimeTrackingPolicy
     year = params[:year] || Date.today.year
-    from = params[:from] || 1.month.ago.beginning_of_month
-    to = params[:to] || 1.month.since.end_of_month
+    from = params[:from] || Time.current.beginning_of_month
+    to = params[:to] || Time.current.end_of_month
 
     data = TimeTrackingIndexService.new(current_user:, user: @user, company: current_company, from:, to:, year:).process
 
