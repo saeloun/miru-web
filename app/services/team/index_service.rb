@@ -21,7 +21,7 @@ module Team
       end
 
       def teams
-        user_ids = current_company.employments.kept.pluck(:user_id)
+        user_ids = current_company.employees_without_client_role.pluck(:id)
 
         User.search(
           search_term,
@@ -33,7 +33,7 @@ module Team
       end
 
       def invitations
-        invitation_ids = current_company.invitations.valid_invitations.pluck(:id)
+        invitation_ids = current_company.invitations.valid_invitations.where.not(role: "client").pluck(:id)
 
         Invitation.search(
           search_term,

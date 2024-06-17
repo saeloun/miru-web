@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 
-import { Country, State, City } from "country-state-city";
+import { Country } from "country-state-city";
 import { useDropzone } from "react-dropzone";
 import { useNavigate } from "react-router-dom";
 import { Toastr } from "StyledComponents";
@@ -24,9 +24,10 @@ const orgSchema = Yup.object().shape({
   companyName: Yup.string()
     .required("Name cannot be blank")
     .max(30, "Maximum 30 characters are allowed"),
-  companyPhone: Yup.string()
-    .required("Phone number cannot be blank")
-    .matches(phoneRegExp, "Please enter a valid business phone number"),
+  companyPhone: Yup.string().matches(
+    phoneRegExp,
+    "Please enter a valid business phone number"
+  ),
   companyAddr: Yup.object().shape({
     addressLine1: Yup.string()
       .required("Address Line 1 cannot be blank")
@@ -74,20 +75,13 @@ const initialState = {
     id: null,
     addressLine1: "",
     addressLine2: "",
-    city: {
-      label: "",
-      value: "",
-    },
+    city: "",
     country: {
       label: "",
       value: "",
       code: "",
     },
-    state: {
-      label: "",
-      value: "",
-      code: "",
-    },
+    state: "",
     zipcode: "",
   },
   companyPhone: "",
@@ -146,17 +140,7 @@ const OrgEdit = () => {
   const [timezones, setTimezones] = useState({});
   const [isDetailUpdated, setIsDetailUpdated] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
-  const [stateList, setStateList] = useState([]);
-  const [currentCityList, setCurrentCityList] = useState([]);
-  const initialSelectValue = {
-    label: "",
-    value: "",
-    code: "",
-  };
   const [countries, setCountries] = useState([]);
-  const [currentCountryDetails, setCurrentCountryDetails] =
-    useState(initialSelectValue);
 
   const getCurrencies = async () => {
     const currencies = currencyList.map(item => ({
@@ -189,29 +173,17 @@ const OrgEdit = () => {
       name = countryData ? countryData.name : "";
     }
 
-    const stateData = State.getStatesOfCountry(country).find(
-      item => item.name === state
-    );
-    const StateCode = stateData ? stateData.isoCode : "";
-
     const orgAddr = {
       id,
       addressLine1,
       addressLine2,
-      city: {
-        value: city,
-        label: city,
-      },
+      city,
       country: {
         label: name,
         value: isoCode,
         code: isoCode,
       },
-      state: {
-        value: state,
-        label: state,
-        code: StateCode,
-      },
+      state,
       zipcode: pin,
     };
 
@@ -248,7 +220,6 @@ const OrgEdit = () => {
     }
 
     setTimezoneOption(timezoneOptionList);
-    addCity(isoCode, StateCode ?? state);
     setIsLoading(false);
   };
 
@@ -268,19 +239,6 @@ const OrgEdit = () => {
     const allCountries = Country.getAllCountries();
     assignCountries(allCountries);
   }, []);
-
-  useEffect(() => {
-    const currentCountry = Country.getAllCountries().filter(
-      country => country.isoCode == orgDetails.companyAddr.country.code
-    )[0];
-
-    currentCountry &&
-      setCurrentCountryDetails({
-        label: currentCountry.name,
-        value: currentCountry.name,
-        code: currentCountry.isoCode,
-      });
-  }, [orgDetails]);
 
   const handleAddrChange = useCallback(
     (e, type) => {
@@ -331,7 +289,6 @@ const OrgEdit = () => {
       state: {},
       city: {},
     };
-    setCurrentCountryDetails(selectCountry);
 
     setupTimezone(
       { ...orgDetails, companyAddr: changedCountry },
@@ -339,68 +296,6 @@ const OrgEdit = () => {
     );
     setIsDetailUpdated(true);
   };
-
-  const addCity = (country, state) => {
-    const cities = City.getCitiesOfState(country, state).map(city => ({
-      label: city.name,
-      value: city.name,
-      ...city,
-    }));
-    setCurrentCityList(cities);
-  };
-
-  const handleOnChangeState = selectState => {
-    const { companyAddr } = orgDetails;
-    const changedState = {
-      ...companyAddr,
-      state: {
-        value: selectState.name,
-        label: selectState.name,
-        code: selectState.code,
-      },
-      city: { label: "", value: "" },
-    };
-    setOrgDetails({ ...orgDetails, companyAddr: changedState });
-    addCity(currentCountryDetails.code, selectState.code);
-  };
-
-  const updatedStates = countryCode =>
-    State.getStatesOfCountry(countryCode).map(state => ({
-      label: state.name,
-      value: state.name,
-      code: state.isoCode,
-      ...state,
-    }));
-
-  useEffect(() => {
-    const stateList = updatedStates(orgDetails.companyAddr.country.value);
-    setStateList(stateList);
-  }, [orgDetails.companyAddr.country]);
-
-  useEffect(() => {
-    setCurrentCityList(
-      City.getCitiesOfState(
-        orgDetails.companyAddr.country.code,
-        orgDetails?.companyAddr?.state?.code ??
-          orgDetails?.companyAddr?.state?.value
-      ).map(city => ({ label: city.name, value: city.name, ...city }))
-    );
-  }, [orgDetails.companyAddr.state]);
-
-  const filterCities = (inputValue: string) => {
-    const city = currentCityList.filter(i =>
-      i.label.toLowerCase().includes(inputValue.toLowerCase())
-    );
-
-    return city.length ? city : [{ label: inputValue, value: inputValue }];
-  };
-
-  const promiseOptions = (inputValue: string) =>
-    new Promise(resolve => {
-      setTimeout(() => {
-        resolve(filterCities(inputValue));
-      }, 1000);
-    });
 
   const handleCurrencyChange = useCallback(
     option => {
@@ -441,6 +336,20 @@ const OrgEdit = () => {
     setIsDetailUpdated(true);
   };
 
+  const handleStateChange = e => {
+    const { companyAddr } = orgDetails;
+    const changedState = { ...companyAddr, state: e.target.value };
+    setOrgDetails({ ...orgDetails, companyAddr: changedState });
+    setIsDetailUpdated(true);
+  };
+
+  const handleCityChange = e => {
+    const { companyAddr } = orgDetails;
+    const changedCity = { ...companyAddr, city: e.target.value };
+    setOrgDetails({ ...orgDetails, companyAddr: changedCity });
+    setIsDetailUpdated(true);
+  };
+
   const onLogoChange = useCallback(
     e => {
       const file = e.target.files[0];
@@ -464,8 +373,8 @@ const OrgEdit = () => {
             addressLine1: orgDetails.companyAddr.addressLine1,
             addressLine2: orgDetails.companyAddr.addressLine2,
             country: orgDetails.companyAddr.country.value,
-            state: orgDetails.companyAddr.state.value,
-            city: orgDetails.companyAddr.city.value,
+            state: orgDetails.companyAddr.state,
+            city: orgDetails.companyAddr.city,
             zipcode: orgDetails.companyAddr.zipcode,
           },
           companyRate: orgDetails.companyRate,
@@ -499,7 +408,7 @@ const OrgEdit = () => {
       setIsLoading(true);
       const formD = new FormData();
       formD.append("company[name]", orgDetails.companyName);
-      formD.append("company[business_phone]", orgDetails.companyPhone);
+      formD.append("company[business_phone]", orgDetails.companyPhone || "");
       formD.append("company[country]", orgDetails.companyAddr.country.value);
       formD.append("company[base_currency]", orgDetails.companyCurrency);
       formD.append(
@@ -527,12 +436,12 @@ const OrgEdit = () => {
 
       formD.append(
         "company[addresses_attributes[0][state]]",
-        orgDetails.companyAddr.state?.value
+        orgDetails.companyAddr.state
       );
 
       formD.append(
         "company[addresses_attributes[0][city]]",
-        orgDetails.companyAddr.city?.value
+        orgDetails.companyAddr.city
       );
 
       formD.append(
@@ -572,12 +481,6 @@ const OrgEdit = () => {
     }
   };
 
-  const handleOnChangeCity = selectCity => {
-    const { companyAddr } = orgDetails;
-    const changedCountry = { ...companyAddr, city: selectCity };
-    setOrgDetails({ ...orgDetails, companyAddr: changedCountry });
-  };
-
   return (
     <div className="flex w-full flex-col">
       <Header
@@ -595,7 +498,6 @@ const OrgEdit = () => {
           cancelAction={handleCancelAction}
           countries={countries}
           currenciesOption={currenciesOption}
-          currentCityList={currentCityList}
           dateFormatOptions={dateFormatOptions}
           errDetails={errDetails}
           fiscalYearOptions={fiscalYearOptions}
@@ -603,20 +505,18 @@ const OrgEdit = () => {
           getRootProps={getRootProps}
           handleAddrChange={handleAddrChange}
           handleChangeCompanyDetails={handleChangeCompanyDetails}
+          handleCityChange={handleCityChange}
           handleCurrencyChange={handleCurrencyChange}
           handleDateFormatChange={handleDateFormatChange}
           handleDeleteLogo={handleDeleteLogo}
           handleFiscalYearChange={handleFiscalYearChange}
-          handleOnChangeCity={handleOnChangeCity}
           handleOnChangeCountry={handleOnChangeCountry}
-          handleOnChangeState={handleOnChangeState}
+          handleStateChange={handleStateChange}
           handleTimezoneChange={handleTimezoneChange}
           handleZipcodeChange={handleZipcodeChange}
           isDragActive={isDragActive}
           orgDetails={orgDetails}
-          promiseOptions={promiseOptions}
           saveAction={handleUpdateOrgDetails}
-          stateList={stateList}
           timezoneOption={timezoneOption}
           onLogoChange={onLogoChange}
         />

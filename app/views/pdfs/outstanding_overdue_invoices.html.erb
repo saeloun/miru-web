@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Outstanding and Overdue Invoices Report</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #f4f4f4;
+    }
+    .client-logo {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+    }
+    .total-row {
+      font-weight: bold;
+    }
+    .invoice-table {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Outstanding and Overdue Invoices Report</h1>
+  <table>
+    <thead>
+
+    </thead>
+    <tbody>
+      <% base_currency = report_data[:base_currency] %>
+      <% if report_data[:clients].present? %>
+        <% report_data[:clients].each do |client| %>
+          <tr>
+        <th>Client</th>
+        <th>Outstanding Amount</th>
+        <th>Overdue Amount</th>
+        <th>Total Invoice Amount</th>
+      </tr>
+          <tr>
+            <td>
+              <%= client[:name] %>
+            </td>
+            <td><%= FormatAmountService.new(base_currency, client[:total_outstanding_amount]).process %></td>
+            <td><%= FormatAmountService.new(base_currency,client[:total_overdue_amount]).process %></td>
+            <td><%= FormatAmountService.new(base_currency,client[:total_outstanding_amount].to_f + client[:total_overdue_amount].to_f).process %></td>
+          </tr>
+          <% if client[:invoices].present? %>
+            <tr>
+              <td colspan="4">
+                <table class="invoice-table">
+                  <thead>
+                    <tr>
+                      <th>Invoice No</th>
+                      <th>Issue Date</th>
+                      <th>Due Date</th>
+                      <th>Amount</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% client[:invoices].each do |invoice| %>
+                      <tr>
+                        <td><%= invoice.invoice_number %></td>
+                        <td><%= CompanyDateFormattingService.new(invoice.issue_date, company: current_company).process %></td>
+                        <td><%= CompanyDateFormattingService.new(invoice.due_date, company: current_company).process %></td>
+                        <td><%= FormatAmountService.new(base_currency,invoice.amount).process %></td>
+                        <td><%= invoice.status %></td>
+                      </tr>
+                    <% end %>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+          <% end %>
+        <% end %>
+      <% else %>
+        <tr>
+          <td colspan="4">No clients found</td>
+        </tr>
+      <% end %>
+      <tr class="total-row">
+        <td>Total Amounts</td>
+        <td><%= FormatAmountService.new(base_currency,report_data[:summary][:total_outstanding_amount]).process %></td>
+        <td><%= FormatAmountService.new(base_currency,report_data[:summary][:total_overdue_amount]).process %></td>
+        <td><%= FormatAmountService.new(base_currency,report_data[:summary][:total_invoice_amount]).process %></td>
+      </tr>
+    </tbody>
+  </table>
+</body>
+</html>

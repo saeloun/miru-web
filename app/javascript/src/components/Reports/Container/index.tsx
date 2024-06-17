@@ -40,14 +40,9 @@ const ReportHeader = () => (
 const Container = ({ selectedFilter }: ContainerProps) => {
   const { timeEntryReport } = useEntry();
 
-  const getTotalHoursLogged = entries => {
-    const totalHours = entries?.reduce((totalDuration, currentEntry) => {
-      if (currentEntry?.duration) {
-        totalDuration += currentEntry.duration;
-      }
-
-      return totalDuration;
-    }, 0);
+  const getTotalHoursLogged = id => {
+    const totalHours =
+      timeEntryReport.groupByTotalDuration.groupedDurations[id];
 
     return minToHHMM(totalHours || 0);
   };
@@ -84,33 +79,37 @@ const Container = ({ selectedFilter }: ContainerProps) => {
     <Fragment>
       {timeEntryReport.reports?.length > 0 ? (
         getAlphabeticallySortedReportList(timeEntryReport.reports)?.map(
-          ({ label, clientLogo, entries }, index) => (
-            <Fragment key={index}>
-              {label !== "" && (
-                <div className="flex items-center justify-between border-b border-miru-han-purple-1000 py-5">
-                  <div className="flex items-center">
-                    {getTableLogo(
-                      selectedFilter?.groupBy?.value || null,
-                      clientLogo
+          ({ id, label, entries }, index) => {
+            const clientLogo = entries[0]?.clientLogo || "";
+
+            return (
+              <Fragment key={index}>
+                {label !== "" && (
+                  <div className="flex items-center justify-between border-b border-miru-han-purple-1000 py-5">
+                    <div className="flex items-center">
+                      {getTableLogo(
+                        selectedFilter?.groupBy?.value || null,
+                        clientLogo
+                      )}
+                      <h1 className="font-manrope text-xl font-bold text-miru-han-purple-1000">
+                        {label}
+                      </h1>
+                    </div>
+                    {entries?.length > 0 && (
+                      <p className="text-right font-manrope text-base font-medium text-miru-dark-purple-1000">
+                        Total Hours for {label} : &nbsp;
+                        {getTotalHoursLogged(id)}
+                      </p>
                     )}
-                    <h1 className="font-manrope text-xl font-bold text-miru-han-purple-1000">
-                      {label}
-                    </h1>
                   </div>
-                  {entries?.length > 0 && (
-                    <p className="text-right font-manrope text-base font-medium text-miru-dark-purple-1000">
-                      Total Hours for {label} : &nbsp;
-                      {getTotalHoursLogged(entries)}
-                    </p>
-                  )}
+                )}
+                <ReportHeader />
+                <div className="mb-6">
+                  {entries.length > 0 && getEntryList(entries)}
                 </div>
-              )}
-              <ReportHeader />
-              <div className="mb-6">
-                {entries.length > 0 && getEntryList(entries)}
-              </div>
-            </Fragment>
-          )
+              </Fragment>
+            );
+          }
         )
       ) : (
         <EmptyStates

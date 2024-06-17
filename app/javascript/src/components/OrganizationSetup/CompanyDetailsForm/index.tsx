@@ -215,7 +215,6 @@ const CompanyDetailsForm = ({
       values.city?.value?.trim() &&
       values.timezone?.value?.trim() &&
       values.address_line_1?.trim() &&
-      values.business_phone?.trim() &&
       values.zipcode?.trim()
     );
 

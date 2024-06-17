@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import Logger from "js-logger";
 import { useNavigate } from "react-router-dom";
 
+import reportsApi from "apis/reports/outstandingOverdueInvoice";
 import Loader from "common/Loader/index";
 import { sendGAPageView } from "utils/googleAnalytics";
 
@@ -27,7 +28,7 @@ const OutstandingInvoiceReport = () => {
   const [selectedFilter, setSelectedFilter] = useState(filterIntialValues);
   const [isFilterVisible, setIsFilterVisible] = useState<boolean>(false);
   const [showNavFilters, setShowNavFilters] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
   const [filterCounter, setFilterCounter] = useState(0); // eslint-disable-line
   const [dateRange, setDateRange] = useState({ from: "", to: "" });
   const [selectedInput, setSelectedInput] = useState("from-input");
@@ -113,7 +114,15 @@ const OutstandingInvoiceReport = () => {
     setShowNavFilters(false);
   };
 
-  const handleDownload = () => {}; //eslint-disable-line
+  const handleDownload = async type => {
+    const response = await reportsApi.download(type);
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement("a");
+    const filename = `report.${type}`;
+    link.href = url;
+    link.setAttribute("download", filename);
+    link.click();
+  };
 
   const handleSelectDate = date => {
     if (selectedInput === "from-input") {
@@ -134,12 +143,12 @@ const OutstandingInvoiceReport = () => {
       }}
     >
       <Header
+        showExportButon
         handleDownload={handleDownload}
         isFilterVisible={isFilterVisible}
         resetFilter={resetFilter}
         revenueFilterCounter={() => {}} // eslint-disable-line  @typescript-eslint/no-empty-function
         setIsFilterVisible={setIsFilterVisible}
-        showExportButon={false}
         showFilterIcon={false}
         showNavFilters={showNavFilters}
         type="Invoices Report"

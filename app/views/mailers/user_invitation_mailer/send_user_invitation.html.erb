@@ -1,26 +1,51 @@
 <!DOCTYPE html>
+<%= stylesheet_link_tag "application" %>
 <html>
   <head>
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'/>
   </head>
   <body style="color:#1D1A31">
-    <p>Hi <%= @name %>, </p>
+  <div class="mail invitation">
+    <%= image_tag "Banner.svg", class: "banner", alt: "banner" %>
+    <p class="header">You have been invited to Miru</p>
+    <p><%= @sender_details&.[](:name) %> (<%= @sender_details&.[](:email) %>) has invited you to join <%=@company_details&.[](:name) %> team on Miru</p>
 
-    <p>We are so delighted to have you onboard. We want to let you know some of the best ways to get up and running on Miru,</p>
+    <div class='sender_company_container'>
+      <div class='sender'>
+        <%= image_tag(@sender_details&.[](:avatar) || "avatar.svg", alt:"User avatar", height: "40", width: "40") %>
+        <b><%= @sender_details&.[](:name) %></b>
+        <%= @sender_details&.[](:email) %>
+      </div>
+      <div class='company'>
+      <%= image_tag(@company_details&.[](:logo) || "miru-logo.svg", alt:"Company logo", height: "40px", width: "40px") %>
+        <b><%=@company_details&.[](:name) %></b>
+        <%=@company_details&.[](:employee_count) %> members
+      </div>
+    </div>
 
-    <ul>
-      <li>Send professional invoices instantly</li>
-      <li>Accept payments from clients seamlessly</li>
-      <li>Manage your team and track their progress</li>
-      <li>Track your time and overall expenses with ease</li>
-    </ul>
+    To get started, set your password by clicking the button below:
 
-    <p>
-      Please <%= link_to "click here", invitations_accepts_url(token: @token), target: "_blank" %> to accept the invitation.
-      <small>(This link will only be valid for 14 days.)</small>
-    </p>
+    <p class="button"><%= link_to 'Join Miru', invitations_accepts_url(token: @token), target: "_blank" %></p>
 
-    <p>Cheers,</p>
-    <p>Team Miru</p>
+    <hr />
+
+    <p>If you don’t know this user or think this was sent by mistake, please flag this request to our team at <a href="mailto:hello@saeloun.com" class="purple">hello@saeloun.com</a></p>
+
+    <div class="about-miru-container">
+        <table class="about-miru-background">
+        <tr>
+          <td class="desc">
+              <p class="header">About Miru</p>
+              <p>Miru is an open-source time-tracking & invoicing tool developed by a team of experienced developers. Using Miru, you can track your time, create and send invoices for those time entries to your clients & received instant payments.</p>
+              <p class="button"><%= link_to 'Learn More >', 'https://www.miru.so/', target: "_blank" %></p>
+          </td>
+        <td>
+          <%= image_tag "miru-logo.svg", class:"miru-logo", alt:"miru-logo" %>
+        </td>
+        </tr>
+        </table>
+    </div>
+
+    <%= render "devise/shared/footer" %>
   </body>
 </html>

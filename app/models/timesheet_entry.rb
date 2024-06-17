@@ -4,22 +4,25 @@
 #
 # Table name: timesheet_entries
 #
-#  id          :bigint           not null, primary key
-#  bill_status :integer          not null
-#  duration    :float            not null
-#  note        :text             default("")
-#  work_date   :date             not null
-#  created_at  :datetime         not null
-#  updated_at  :datetime         not null
-#  project_id  :bigint           not null
-#  user_id     :bigint           not null
+#  id           :bigint           not null, primary key
+#  bill_status  :integer          not null
+#  discarded_at :datetime
+#  duration     :float            not null
+#  locked       :boolean          default(FALSE)
+#  note         :text             default("")
+#  work_date    :date             not null
+#  created_at   :datetime         not null
+#  updated_at   :datetime         not null
+#  project_id   :bigint           not null
+#  user_id      :bigint           not null
 #
 # Indexes
 #
-#  index_timesheet_entries_on_bill_status  (bill_status)
-#  index_timesheet_entries_on_project_id   (project_id)
-#  index_timesheet_entries_on_user_id      (user_id)
-#  index_timesheet_entries_on_work_date    (work_date)
+#  index_timesheet_entries_on_bill_status   (bill_status)
+#  index_timesheet_entries_on_discarded_at  (discarded_at)
+#  index_timesheet_entries_on_project_id    (project_id)
+#  index_timesheet_entries_on_user_id       (user_id)
+#  index_timesheet_entries_on_work_date     (work_date)
 #
 # Foreign Keys
 #
@@ -28,6 +31,7 @@
 #
 
 class TimesheetEntry < ApplicationRecord
+  include Discard::Model
   extend Pagy::Searchkick
   enum bill_status: [:non_billable, :unbilled, :billed]
 
@@ -44,6 +48,8 @@ class TimesheetEntry < ApplicationRecord
 
   validates :duration, :work_date, :bill_status, presence: true
   validates :duration, numericality: { less_than_or_equal_to: 6000000, greater_than_or_equal_to: 0.0 }
+  validate :validate_billable_project
+  validate :prevent_edit_if_locked, on: :update
 
   scope :in_workspace, -> (company) { where(project_id: company&.project_ids) }
   scope :during, -> (from, to) { where(work_date: from..to).order(work_date: :desc) }
@@ -70,7 +76,8 @@ class TimesheetEntry < ApplicationRecord
       client_name: project.client.name,
       bill_status:,
       duration: duration.to_i,
-      created_at: created_at.to_time
+      created_at: created_at.to_time,
+      discarded_at:
     }
   end
 
@@ -121,5 +128,19 @@ class TimesheetEntry < ApplicationRecord
 
       errors.add(:timesheet_entry, I18n.t(:errors)[:bill_status_billed]) if
       self.bill_status_changed? && self.bill_status_was == "billed" && Current.user.primary_role(Current.company) == "employee"
+    end
+
+    def validate_billable_project
+      if !project&.billable && bill_status == "unbilled"
+        errors.add(:base, I18n.t("errors.validate_billable_project"))
+      end
+    end
+
+    def prevent_edit_if_locked
+      return if Current.user.nil?
+
+      if locked && Current.user.primary_role(Current.company) == "employee"
+        errors.add(:base, "Cannot edit a locked timesheet entry. Please contact admin.")
+      end
     end
 end

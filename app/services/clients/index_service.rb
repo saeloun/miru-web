@@ -14,8 +14,7 @@ module Clients
       {
         client_details:,
         total_minutes:,
-        overdue_outstanding_amount:,
-        users_not_in_client_members:
+        overdue_outstanding_amount:
       }
     end
 
@@ -58,11 +57,6 @@ module Clients
 
       def overdue_outstanding_amount
         current_company.overdue_and_outstanding_and_draft_amount
-      end
-
-      def users_not_in_client_members
-        users_with_client_role = current_company.users.includes(:roles).where(roles: { name: "client" })
-        users_with_client_role.where.not(id: current_company.client_members.pluck(:user_id))
       end
   end
 end

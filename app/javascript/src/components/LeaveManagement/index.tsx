@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import { getYear, format } from "date-fns";
 
+import holidaysApi from "apis/holidays";
 import timeoffEntryApi from "apis/timeoffEntry";
 import Loader from "common/Loader/index";
 import withLayout from "common/Mobile/HOC/withLayout";
@@ -25,6 +26,28 @@ const LeaveManagement = () => {
   const [filterTimeoffEntries, setFilterTimeoffEntries] = useState([]);
   const [filterTimeoffEntriesDuration, setFilterTimeoffEntriesDuration] =
     useState(0);
+  const [optionalTimeoffEntries, setOptionalTimeoffEntries] = useState([]);
+  const [nationalTimeoffEntries, setNationalTimeoffEntries] = useState([]);
+  const [optionalHolidayList, setOptionalHolidayList] = useState<Array<any>>(
+    []
+  );
+
+  const [nationalHolidayList, setNationalHolidayList] = useState<Array<any>>(
+    []
+  );
+
+  const fetchHolidayData = async () => {
+    const res = await holidaysApi.allHolidays();
+    const holidays = res.data.holidays;
+    if (holidays.length) {
+      setOptionalHolidayList(holidays[0].optional_holidays);
+      setNationalHolidayList(holidays[0].national_holidays);
+    }
+  };
+
+  useEffect(() => {
+    fetchHolidayData();
+  }, []);
 
   useEffect(() => {
     fetchTimeoffEntries();
@@ -45,6 +68,8 @@ const LeaveManagement = () => {
       employees,
       leaveBalance,
       totalTimeoffEntriesDuration,
+      optionalTimeoffEntries,
+      nationalTimeoffEntries,
     } = res.data;
 
     setSelectedLeaveType(null);
@@ -52,6 +77,8 @@ const LeaveManagement = () => {
     setEmployees(employees);
     setLeaveBalance(leaveBalance);
     setTotalTimeoffEntriesDuration(totalTimeoffEntriesDuration);
+    setOptionalTimeoffEntries(optionalTimeoffEntries);
+    setNationalTimeoffEntries(nationalTimeoffEntries);
     handlefilterTimeoffEntries(
       timeoffEntries,
       totalTimeoffEntriesDuration,
@@ -66,15 +93,21 @@ const LeaveManagement = () => {
     selectedLeaveType
   ) => {
     if (selectedLeaveType) {
-      const sortedTimeoffEntries =
-        timeoffEntries.length &&
-        selectedLeaveType &&
-        timeoffEntries.filter(
-          timeoffEntry => timeoffEntry.leaveType?.id === selectedLeaveType.id
-        );
+      let sortedTimeoffEntries = [];
+      if (selectedLeaveType.id == "optional") {
+        sortedTimeoffEntries = optionalTimeoffEntries;
+      } else if (selectedLeaveType.id == "national") {
+        sortedTimeoffEntries = nationalTimeoffEntries;
+      } else {
+        sortedTimeoffEntries =
+          timeoffEntries.length &&
+          timeoffEntries.filter(
+            timeoffEntry => timeoffEntry.leaveType?.id === selectedLeaveType.id
+          );
+      }
 
       const leaveType = leaveBalance.find(
-        item => item.id === selectedLeaveType.id
+        item => item.id == selectedLeaveType.id
       );
 
       setFilterTimeoffEntries(sortedTimeoffEntries);
@@ -102,7 +135,7 @@ const LeaveManagement = () => {
         date = new Date();
       }
 
-      return `Leave Balance Untill ${format(date, "do MMM yyyy")}`;
+      return `Balance Until ${format(date, "do MMM yyyy")}`;
     };
 
     return (
@@ -118,6 +151,8 @@ const LeaveManagement = () => {
         <Container
           getLeaveBalanaceDateText={getLeaveBalanaceDateText}
           leaveBalance={leaveBalance}
+          nationalHolidayList={nationalHolidayList}
+          optionalHolidayList={optionalHolidayList}
           selectedLeaveType={selectedLeaveType}
           setSelectedLeaveType={setSelectedLeaveType}
           timeoffEntries={filterTimeoffEntries}

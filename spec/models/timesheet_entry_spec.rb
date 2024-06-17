@@ -9,6 +9,7 @@ RSpec.describe TimesheetEntry, type: :model do
   let(:client2) { create(:client, company_id: company2.id) }
   let(:project) { create(:project, client_id: client.id) }
   let(:project2) { create(:project, client_id: client2.id) }
+  let(:billable_project) { create(:project, billable: true, client_id: client.id) }
   let(:timesheet_entry) { create(:timesheet_entry, project:) }
 
   describe "Associations" do
@@ -97,6 +98,26 @@ RSpec.describe TimesheetEntry, type: :model do
     end
   end
 
+  describe "#validate_billable_project" do
+    let(:error_message) { "You can't create an unbilled entry for non-billable projects" }
+
+    context "when the project is non-billable" do
+      it "returns an error if project is non billable and user try to create unbilled entry" do
+        timesheet_entry = build(:timesheet_entry, bill_status: "unbilled")
+        expect(timesheet_entry.valid?).to be_falsey
+        expect(timesheet_entry.errors.messages[:base]).to include(error_message)
+      end
+    end
+
+    context "when the project is billable" do
+      it "does not return an error if the user tries to create an unbilled entry" do
+        timesheet_entry = build(:timesheet_entry, bill_status: "unbilled", project: billable_project)
+        expect(timesheet_entry.valid?).to be_truthy
+        expect(timesheet_entry.errors.messages[:base]).not_to include(error_message)
+      end
+    end
+  end
+
   describe "#ensure_billed_status_should_not_be_changed" do
     context "when admin or owner is updating the time entry" do
       before do
@@ -106,7 +127,7 @@ RSpec.describe TimesheetEntry, type: :model do
       end
 
       let(:admin) { create(:user) }
-      let(:timesheet_entry) { create(:timesheet_entry, project:) }
+      let(:timesheet_entry) { create(:timesheet_entry, project: billable_project) }
 
       context "when time entry is billed" do
         it "allows owners and admins to edit the billed time entry" do
@@ -160,7 +181,7 @@ RSpec.describe TimesheetEntry, type: :model do
       end
 
       let(:user) { create(:user) }
-      let(:timesheet_entry) { create(:timesheet_entry, project:) }
+      let(:timesheet_entry) { create(:timesheet_entry, project: billable_project) }
       let(:error_message) { "You can't bill an entry that has already been billed" }
 
       context "when time entry is billed" do
@@ -180,6 +201,44 @@ RSpec.describe TimesheetEntry, type: :model do
           expect(timesheet_entry.valid?).to be_truthy
           expect(timesheet_entry.errors.blank?).to be true
         end
+      end
+    end
+  end
+
+  describe "#prevent_edit_if_locked" do
+    let(:admin) { create(:user) }
+    let(:employee) { create(:user) }
+    let(:timesheet_entry) { create(:timesheet_entry, project: billable_project, locked: true) }
+
+    before do
+      admin.add_role(:admin, company)
+      employee.add_role(:employee, company)
+      Current.company = company
+    end
+
+    context "when employee is editing a locked timesheet entry" do
+      before do
+        Current.user = employee
+      end
+
+      it "does not allow the employee to edit the locked timesheet entry" do
+        timesheet_entry.update(duration: 10)
+
+        expect(timesheet_entry.errors[:base]).to include("Cannot edit a locked timesheet entry. Please contact admin.")
+      end
+    end
+
+    context "when admin is editing a locked timesheet entry" do
+      before do
+        Current.user = admin
+      end
+
+      it "allows the admin to edit the locked timesheet entry" do
+        timesheet_entry.update(duration: 10)
+
+        expect(timesheet_entry.errors[:base]).not_to include(
+          "Cannot edit a locked timesheet entry.
+          Please contact admin.")
       end
     end
   end

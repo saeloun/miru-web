@@ -43,13 +43,21 @@ namespace :internal_api, defaults: { format: "json" } do
     resources :timesheet_entry, only: [:index, :create, :update, :destroy]
 
     namespace :reports do
-      resources :client_revenues, only: [:index, :new]
+      resources :client_revenues, only: [:index, :new] do
+        collection do
+          get :download
+        end
+      end
       resources :time_entries, only: [:index] do
         collection do
           get :download
         end
       end
-      resources :outstanding_overdue_invoices, only: [:index]
+      resources :outstanding_overdue_invoices, only: [:index] do
+        collection do
+          get :download
+        end
+      end
       resources :accounts_aging, only: [:index] do
         collection do
           get :download
@@ -155,7 +163,7 @@ namespace :internal_api, defaults: { format: "json" } do
     resources :timeoff_entries, except: [:new, :edit]
 
     patch "leave_with_leave_type/:year", to: "leave_with_leave_types#update", as: :update_leave_with_leave_types
-
+    patch "custom_leaves/:year", to: "custom_leaves#update"
     match "*path", to: "application#not_found", via: :all, constraints: lambda { |req|
       req.path.exclude?("rails/active_storage") && req.path.include?("internal_api")
     }

@@ -78,6 +78,11 @@ const SendInvoice = ({
             <XIcon size={16} weight="bold" />
           </button>
         </div>
+        {!invoiceEmail?.recipients?.length && (
+          <div className="mb-6 w-full items-center justify-center rounded bg-miru-alert-pink-400 p-2 text-center font-manrope text-xs tracking-xs-widest text-miru-alert-red-1000">
+            <p>Please add email from client settings page</p>
+          </div>
+        )}
         <form className="space-y-4">
           <fieldset className="field_with_errors flex flex-col">
             <label className="form__label mb-2" htmlFor="to">

@@ -2,6 +2,7 @@ import React from "react";
 
 import Logger from "js-logger";
 import { PlusIcon } from "miruIcons";
+import { Button } from "StyledComponents";
 
 import projectApi from "apis/projects";
 import AutoSearch from "common/AutoSearch";
@@ -38,13 +39,16 @@ const Header = ({ projectDataPresent, setShowProjectModal, isAdminUser }) => {
               searchAction={fetchProjects}
             />
           )}
-          <button
-            className="header__button flex"
+          <Button
+            className="ml-2 flex items-center px-2 py-2 lg:ml-0 lg:px-4"
+            style="secondary"
             onClick={() => setShowProjectModal(true)}
           >
-            <PlusIcon size={16} weight="fill" />
-            <span className="ml-2 hidden lg:inline">NEW PROJECT</span>
-          </button>
+            <PlusIcon size={16} weight="bold" />
+            <span className="ml-2 hidden text-base font-bold tracking-widest lg:inline-block">
+              New Project
+            </span>
+          </Button>
         </>
       )}
     </div>

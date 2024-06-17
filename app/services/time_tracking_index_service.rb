@@ -50,7 +50,7 @@ class TimeTrackingIndexService
     end
 
     def fetch_timesheet_entries
-      user.timesheet_entries.includes([:project, :user])
+      user.timesheet_entries.kept.includes([:project, :user])
         .in_workspace(current_company)
         .during(from, to)
     end
@@ -75,13 +75,10 @@ class TimeTrackingIndexService
     end
 
     def timeoff_entries
-      @_timeoff_entries ||= current_company.timeoff_entries.kept.includes([:leave_type])
+      @_timeoff_entries ||= TimeoffEntry.from_workspace(current_company.id)
         .where(user_id: user.id)
-        .order(leave_date: :desc)
-        .during(
-          from,
-          to
-        )
+        .during(from, to)
+        .distinct
     end
 
     def group_timeoff_entries_by_leave_date
@@ -98,6 +95,9 @@ class TimeTrackingIndexService
 
     def holiday_infos
       holiday = current_company.holidays.find_by(year:)
-      holiday&.holiday_infos&.kept || []
+      all_holidays = holiday&.holiday_infos&.kept
+      return [] if holiday.blank? || all_holidays.blank?
+
+      holiday.enable_optional_holidays ? all_holidays : all_holidays.national
     end
 end
