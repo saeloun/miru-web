@@ -11,6 +11,7 @@ const MoreOptions = ({
   isDesktop,
   showMoreOptions,
   setShowMoreOptions,
+  handleDelete,
 }) => {
   const navigate = useNavigate();
 
@@ -47,7 +48,7 @@ const MoreOptions = ({
           style="ternary"
           onClick={e => {
             e.stopPropagation();
-            navigate(`/expenses/${expense.id}`);
+            handleDelete();
           }}
         >
           <DeleteIcon size={16} weight="bold" />

@@ -102,7 +102,7 @@ const Expenses = () => {
   }
 
   const ExpensesLayout = () => (
-    <div className="h-full p-4 lg:p-0">
+    <div className="flex h-full flex-col justify-between p-4 lg:p-0 ">
       <Header
         clearSearch={fetchExpenses}
         fetchSearchResults={fetchSearchResults}

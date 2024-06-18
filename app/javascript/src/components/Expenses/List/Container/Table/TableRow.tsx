@@ -4,6 +4,7 @@ import { currencyFormat } from "helpers";
 import { DotsThreeVerticalIcon, ExpenseIconSVG, InvoicesIcon } from "miruIcons";
 import { useNavigate } from "react-router-dom";
 
+import DeleteExpenseModal from "components/Expenses/Modals/DeleteExpenseModal";
 import { Categories } from "components/Expenses/utils";
 import { useUserContext } from "context/UserContext";
 
@@ -25,6 +26,8 @@ const TableRow = ({ expense, currency }) => {
   } = expense;
 
   const [showMoreOptions, setShowMoreOptions] = useState<boolean>(false);
+  const [showDeleteExpenseModal, setShowDeleteExpenseModal] =
+    useState<boolean>(false);
 
   const getCategoryIcon = () => {
     const icon = Categories.find(category => category.label === categoryName)
@@ -39,6 +42,10 @@ const TableRow = ({ expense, currency }) => {
 
   const handleExpenseClick = id => {
     navigate(`${id}`);
+  };
+
+  const handleDelete = () => {
+    setShowDeleteExpenseModal(true);
   };
 
   return (
@@ -91,6 +98,7 @@ const TableRow = ({ expense, currency }) => {
             {isDesktop && (
               <MoreOptions
                 expense={expense}
+                handleDelete={handleDelete}
                 isDesktop={isDesktop}
                 setShowMoreOptions={setShowMoreOptions}
                 showMoreOptions={showMoreOptions}
@@ -114,9 +122,17 @@ const TableRow = ({ expense, currency }) => {
       {showMoreOptions && !isDesktop && (
         <MoreOptions
           expense={expense}
+          handleDelete={handleDelete}
           isDesktop={isDesktop}
           setShowMoreOptions={setShowMoreOptions}
           showMoreOptions={showMoreOptions}
+        />
+      )}
+      {showDeleteExpenseModal && (
+        <DeleteExpenseModal
+          expense={expense}
+          setShowDeleteExpenseModal={setShowDeleteExpenseModal}
+          showDeleteExpenseModal={showDeleteExpenseModal}
         />
       )}
     </Fragment>

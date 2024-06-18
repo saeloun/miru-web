@@ -5,7 +5,7 @@ import EmptyStates from "common/EmptyStates";
 import Table from "./Table";
 
 const Container = ({ expenseData }) => (
-  <div className="mt-6">
+  <div className="mt-6 h-full">
     {/* TODO: Uncomment and integrate when API is ready
       <ExpensesSummary />
     */}
@@ -14,9 +14,9 @@ const Container = ({ expenseData }) => (
     ) : (
       <EmptyStates
         Message="Looks like there aren’t any expenses added yet."
+        containerClassName="w-full"
         messageClassName="w-full lg:mt-5"
         showNoSearchResultState={false}
-        wrapperClassName="mt-5"
       />
     )}
   </div>

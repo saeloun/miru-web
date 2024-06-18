@@ -64,11 +64,6 @@ const ExpenseDetails = () => {
     fetchExpense();
   };
 
-  const handleDeleteExpense = async () => {
-    await expensesApi.destroy(expense.id);
-    navigate("/expenses");
-  };
-
   const handleDelete = () => {
     setShowDeleteExpenseModal(true);
   };
@@ -121,7 +116,7 @@ const ExpenseDetails = () => {
         ))}
       {showDeleteExpenseModal && (
         <DeleteExpenseModal
-          handleDeleteExpense={handleDeleteExpense}
+          expense={expense}
           setShowDeleteExpenseModal={setShowDeleteExpenseModal}
           showDeleteExpenseModal={showDeleteExpenseModal}
         />
