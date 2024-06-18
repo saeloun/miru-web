@@ -2,7 +2,6 @@
 
 class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationController
   before_action :load_client, only: [:create, :update]
-  after_action :ensure_time_entries_billed, only: [:send_invoice]
   after_action :track_event, only: [:create, :update, :destroy, :send_invoice, :download]
 
   def index
@@ -120,10 +119,6 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
 
     def invoice_email_params
       params.require(:invoice_email).permit(:subject, :message, recipients: [])
-    end
-
-    def ensure_time_entries_billed
-      invoice.update_timesheet_entry_status!
     end
 
     def track_event

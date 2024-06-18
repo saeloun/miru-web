@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class InvoiceMailer < ApplicationMailer
-  after_action -> { @invoice.sent! if @invoice.draft? || @invoice.viewed? || @invoice.declined? || @invoice.sending? }
+  after_action :update_status, only: [:invoice]
 
   def invoice
     @invoice = Invoice.find(params[:invoice_id])
@@ -36,5 +36,12 @@ class InvoiceMailer < ApplicationMailer
 
     def can_send_invoice?
       @invoice.sending? && @invoice.recently_sent_mail?
+    end
+
+    def update_status
+      if @invoice.draft? || @invoice.viewed? || @invoice.declined? || @invoice.sending?
+        @invoice.sent!
+        @invoice.update_timesheet_entry_status!
+      end
     end
 end
