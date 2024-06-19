@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { Pagination, Toastr } from "StyledComponents";
+import { Toastr } from "StyledComponents";
 
 import expensesApi from "apis/expenses";
 import Loader from "common/Loader/index";
@@ -23,7 +23,6 @@ const Expenses = () => {
   const [showAddExpenseModal, setShowAddExpenseModal] =
     useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [pagy, setPagy] = useState<any>(null);
   const [expenseData, setExpenseData] = useState<Array<object>>([]);
 
   const fetchExpenses = async () => {
@@ -32,7 +31,6 @@ const Expenses = () => {
     res.data.categories = data;
     setVendorData(res.data.vendors);
     setExpenseData(res.data);
-    setPagy(res.data.pagy);
     setIsLoading(false);
   };
 
@@ -63,33 +61,6 @@ const Expenses = () => {
     }
   };
 
-  const isFirstPage = () => {
-    if (typeof pagy?.first == "boolean") {
-      return pagy?.first;
-    }
-
-    return pagy?.page == 1;
-  };
-
-  const isLastPage = () => {
-    if (typeof pagy?.last == "boolean") {
-      return pagy?.last;
-    }
-
-    return pagy?.last == pagy?.page;
-  };
-
-  const handlePageChange = async (pageData, items = pagy.items) => {
-    if (pageData == "...") return;
-
-    await expensesApi.index(`page=${pageData}&items=${items}`);
-  };
-
-  const handleClickOnPerPage = e => {
-    handlePageChange(Number(1), Number(e.target.value));
-    setPagy({ ...pagy, items: Number(e.target.value) });
-  };
-
   useEffect(() => {
     fetchExpenses();
   }, []);
@@ -110,6 +81,7 @@ const Expenses = () => {
         setShowAddExpenseModal={setShowAddExpenseModal}
       />
       <Container expenseData={expenseData} fetchExpenses={fetchExpenses} />
+      {/* TODO: Fix pagination backend (missing attributes: items,page) and uncomment
       <Pagination
         isPerPageVisible
         currentPage={pagy?.page}
@@ -122,7 +94,7 @@ const Expenses = () => {
         prevPage={pagy?.prev}
         title="expenses/page"
         totalPages={pagy?.pages}
-      />
+      /> */}
       {showAddExpenseModal && (
         <AddExpenseModal
           expenseData={expenseData}
