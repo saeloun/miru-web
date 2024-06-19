@@ -10,6 +10,11 @@ RSpec.describe "InternalApi::V1::Invoices::BulkDeletionController", type: :reque
   let(:company) { client.company }
   let(:user) { create :user, current_workspace_id: company.id }
 
+  before do
+    allow(Current).to receive(:user).and_return(user)
+    allow(Current).to receive(:company).and_return(company)
+  end
+
   context "when the user is an admin" do
     before do
       create(:employment, company:, user:)

@@ -35,6 +35,7 @@ type CustomReactSelectProps = {
   wrapperClassName?: string;
   options?: Array<any>;
   name?: string;
+  isMulti?: boolean;
 };
 
 export const CustomReactSelect = ({
@@ -62,6 +63,7 @@ export const CustomReactSelect = ({
   defaultValue,
   getOptionLabel,
   wrapperClassName,
+  isMulti,
 }: CustomReactSelectProps) => {
   const { isDesktop } = useUserContext();
 
@@ -90,6 +92,7 @@ export const CustomReactSelect = ({
         getOptionLabel={getOptionLabel}
         id={id || name}
         isDisabled={isDisabled}
+        isMulti={isMulti}
         isSearchable={isSearchable}
         name={name}
         options={options}
@@ -134,6 +137,7 @@ CustomReactSelect.defaultProps = {
   autoFocus: false,
   value: null,
   wrapperClassName: "",
+  isMulti: false,
 };
 
 export default CustomReactSelect;

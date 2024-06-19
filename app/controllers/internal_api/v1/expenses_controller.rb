@@ -47,7 +47,7 @@ class InternalApi::V1::ExpensesController < ApplicationController
 
     def expense_params
       params.require(:expense).permit(
-        :amount, :date, :description, :expense_type, :expense_category_id, :vendor_id, :receipts
+        :amount, :date, :description, :expense_type, :expense_category_id, :vendor_id, receipts: []
       )
     end
 

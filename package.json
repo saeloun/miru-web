@@ -1,6 +1,6 @@
 {
   "name": "@saeloun/miru-web",
-  "version": "1.5.3",
+  "version": "1.6.5",
   "dependencies": {
     "@babel/core": "^7.21.3",
     "@babel/plugin-proposal-private-methods": "^7.16.5",
@@ -44,6 +44,7 @@
     "jquery": "^3.6.0",
     "js-cookie": "^3.0.5",
     "js-logger": "^1.6.1",
+    "jszip": "^3.10.1",
     "mini-css-extract-plugin": "^2.7.2",
     "pnp-webpack-plugin": "^1.7.0",
     "postcss": "^8.4.21",

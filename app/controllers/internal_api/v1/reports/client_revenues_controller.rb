@@ -9,6 +9,12 @@ class InternalApi::V1::Reports::ClientRevenuesController < InternalApi::V1::Appl
       status: :ok
   end
 
+  def download
+    authorize :report
+
+    send_data Reports::ClientRevenues::DownloadService.new(params, current_company).process
+  end
+
   def new
     authorize :report
 

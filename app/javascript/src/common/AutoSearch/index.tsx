@@ -10,6 +10,8 @@ const AutoSearch = ({
   searchAction,
   SearchDataRow,
   wrapperClassName,
+  handleEnter,
+  clearSearch,
 }: Iprops) => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [searchResult, setSearchResult] = useState<any[]>([]);
@@ -36,6 +38,7 @@ const AutoSearch = ({
 
   const onSearchClear = () => {
     setSearchQuery("");
+    clearSearch();
   };
 
   return (
@@ -47,6 +50,7 @@ const AutoSearch = ({
         type="text"
         value={searchQuery}
         onChange={e => setSearchQuery(e.target.value)}
+        onKeyDown={e => handleEnter(debouncedSearchQuery, e.key === "Enter")}
       />
       <button className=" absolute inset-y-0 right-3 flex cursor-pointer items-center pr-3 ">
         {searchQuery ? (
@@ -68,6 +72,8 @@ interface Iprops {
   searchAction: (val) => any; // eslint-disable-line
   SearchDataRow;
   wrapperClassName?: string;
+  handleEnter?: (val, shouldUpdate) => any; // eslint-disable-line
+  clearSearch?: () => any;
 }
 
 export default AutoSearch;
