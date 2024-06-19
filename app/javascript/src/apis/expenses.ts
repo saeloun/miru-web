@@ -13,7 +13,8 @@ const create = payload =>
 
 const show = id => axios.get(`${path}/${id}`);
 
-const update = (id, payload) => axios.patch(`${path}/${id}`, payload);
+const update = (id, payload, config) =>
+  axios.patch(`${path}/${id}`, payload, config);
 
 const destroy = id => axios.delete(`${path}/${id}`);
 

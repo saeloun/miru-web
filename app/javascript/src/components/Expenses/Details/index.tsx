@@ -29,6 +29,10 @@ const ExpenseDetails = () => {
   const navigate = useNavigate();
   const { company, isDesktop } = useUserContext();
 
+  const headers = {
+    "Content-Type": "multipart/form-data",
+  };
+
   const fetchExpense = async () => {
     try {
       const resData = await expensesApi.show(params.expenseId);
@@ -59,7 +63,7 @@ const ExpenseDetails = () => {
   };
 
   const handleEditExpense = async payload => {
-    const res = await expensesApi.update(expense.id, payload);
+    const res = await expensesApi.update(expense.id, payload, { headers });
     setShowEditExpenseModal(false);
     setIsLoading(true);
     if (res.status === 200) {
