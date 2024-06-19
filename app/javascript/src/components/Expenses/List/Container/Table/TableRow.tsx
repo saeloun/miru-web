@@ -10,7 +10,7 @@ import { useUserContext } from "context/UserContext";
 
 import MoreOptions from "./MoreOptions";
 
-const TableRow = ({ expense, currency }) => {
+const TableRow = ({ expense, currency, fetchExpenses }) => {
   const navigate = useNavigate();
   const { isDesktop } = useUserContext();
 
@@ -131,6 +131,7 @@ const TableRow = ({ expense, currency }) => {
       {showDeleteExpenseModal && (
         <DeleteExpenseModal
           expense={expense}
+          fetchExpenses={fetchExpenses}
           setShowDeleteExpenseModal={setShowDeleteExpenseModal}
           showDeleteExpenseModal={showDeleteExpenseModal}
         />

@@ -9,12 +9,16 @@ const DeleteExpenseModal = ({
   setShowDeleteExpenseModal,
   showDeleteExpenseModal,
   expense,
+  fetchExpenses,
 }) => {
   const navigate = useNavigate();
 
   const handleDeleteExpense = async () => {
-    await expensesApi.destroy(expense.id);
-    navigate("/expenses", { replace: true });
+    const res = await expensesApi.destroy(expense.id);
+    if (res.status === 200) {
+      navigate("/expenses/", { replace: true });
+      fetchExpenses();
+    }
     setShowDeleteExpenseModal(false);
   };
 

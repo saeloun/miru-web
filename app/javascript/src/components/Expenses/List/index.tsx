@@ -57,6 +57,7 @@ const Expenses = () => {
   const handleAddExpense = async payload => {
     const res = await expensesApi.create(payload);
     setShowAddExpenseModal(false);
+    setIsLoading(true);
     if (res.status == 200) {
       fetchExpenses();
     }
@@ -108,7 +109,7 @@ const Expenses = () => {
         fetchSearchResults={fetchSearchResults}
         setShowAddExpenseModal={setShowAddExpenseModal}
       />
-      <Container expenseData={expenseData} />
+      <Container expenseData={expenseData} fetchExpenses={fetchExpenses} />
       <Pagination
         isPerPageVisible
         currentPage={pagy?.page}

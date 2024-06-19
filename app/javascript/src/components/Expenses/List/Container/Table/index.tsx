@@ -5,7 +5,7 @@ import { useUserContext } from "context/UserContext";
 import TableHeader from "./TableHeader";
 import TableRow from "./TableRow";
 
-const Table = ({ expenses }) => {
+const Table = ({ expenses, fetchExpenses }) => {
   const { company } = useUserContext();
 
   return (
@@ -16,6 +16,7 @@ const Table = ({ expenses }) => {
           <TableRow
             currency={company.base_currency}
             expense={expense}
+            fetchExpenses={fetchExpenses}
             key={expense.id}
           />
         ))}

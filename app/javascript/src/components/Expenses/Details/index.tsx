@@ -59,9 +59,12 @@ const ExpenseDetails = () => {
   };
 
   const handleEditExpense = async payload => {
-    await expensesApi.update(expense.id, payload);
+    const res = await expensesApi.update(expense.id, payload);
     setShowEditExpenseModal(false);
-    fetchExpense();
+    setIsLoading(true);
+    if (res.status === 200) {
+      fetchExpense();
+    }
   };
 
   const handleDelete = () => {
@@ -117,6 +120,7 @@ const ExpenseDetails = () => {
       {showDeleteExpenseModal && (
         <DeleteExpenseModal
           expense={expense}
+          fetchExpenses={fetchExpense}
           setShowDeleteExpenseModal={setShowDeleteExpenseModal}
           showDeleteExpenseModal={showDeleteExpenseModal}
         />

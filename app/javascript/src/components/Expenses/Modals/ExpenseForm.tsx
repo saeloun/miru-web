@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, memo } from "react";
 
 import dayjs from "dayjs";
 import { useOutsideClick } from "helpers";
@@ -48,14 +48,25 @@ const ExpenseForm = ({
     (category || newCategory)
   );
 
-  const { Option } = components;
+  const { Option, SingleValue } = components;
+
   const IconOption = props => (
-    <Option {...props}>
+    <Option {...props} key={props?.data?.id}>
       <div className="flex w-full items-center gap-4">
-        {props.data.icon}
-        {props.data.label}
+        {props?.data?.icon}
+        {props?.data?.label}
       </div>
     </Option>
+  );
+  const MemoizedIconOption = memo(IconOption);
+
+  const CustomSingleValue = props => (
+    <SingleValue {...props} key={props?.data?.id}>
+      <div className="flex w-full items-center gap-4">
+        {props?.data?.icon}
+        {props?.data?.label}
+      </div>
+    </SingleValue>
   );
 
   const setExpenseData = () => {
@@ -78,12 +89,6 @@ const ExpenseForm = ({
   };
 
   const handleCategory = async category => {
-    category.label = (
-      <div className="flex w-full items-center gap-4">
-        {category.icon}
-        {category.label}
-      </div>
-    );
     if (expenseData.categories.includes(category)) {
       setCategory(category);
     } else {
@@ -164,7 +169,7 @@ const ExpenseForm = ({
       "expense[expense_category_id]",
       category?.id || newCategory?.id
     );
-    formData.append("expense[vendor_id]", vendor.id || newVendor?.id);
+    formData.append("expense[vendor_id]", vendor?.id || newVendor?.id);
     if (receipts) {
       receipts?.forEach(file => {
         formData.append(`expense[receipts][]`, file);
@@ -270,7 +275,6 @@ const ExpenseForm = ({
         </div>
         <div className="mt-6">
           <CustomCreatableSelect
-            components={{ Option: IconOption }}
             handleOnChange={handleVendor}
             id="vendor"
             label="Vendor"
@@ -293,13 +297,16 @@ const ExpenseForm = ({
         </div>
         <div className="mt-6">
           <CustomCreatableSelect
-            components={{ Option: IconOption }}
             handleOnChange={handleCategory}
             id="category"
             label="Category"
             name="category"
             options={expenseData.categories}
             value={category || newCategory}
+            components={{
+              Option: MemoizedIconOption,
+              SingleValue: CustomSingleValue,
+            }}
           />
         </div>
         <div className="mt-6">
