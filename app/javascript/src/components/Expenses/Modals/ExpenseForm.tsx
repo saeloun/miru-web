@@ -39,8 +39,7 @@ const ExpenseForm = ({
   const [expenseType, setExpenseType] = useState<string>(
     expense?.type || "business"
   );
-  const [receipts, setReceipts] = useState<File[]>(expense?.receipt || "");
-
+  const [receipts, setReceipts] = useState<File[]>(expense?.receipts || "");
   const isFormActionDisabled = !(
     expenseDate &&
     (vendor || newVendor) &&
@@ -359,7 +358,7 @@ const ExpenseForm = ({
           <span className="text-base font-medium text-miru-dark-purple-400">
             Receipt (optional)
           </span>
-          {receipts ? <ReceiptCard /> : <UploadCard />}
+          {receipts.length > 0 ? <ReceiptCard /> : <UploadCard />}
         </div>
       </div>
       <div>
