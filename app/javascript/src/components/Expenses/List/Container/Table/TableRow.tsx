@@ -1,21 +1,33 @@
 import React, { Fragment, useState } from "react";
 
 import { currencyFormat } from "helpers";
-import { DotsThreeVerticalIcon, ExpenseIconSVG } from "miruIcons";
+import { DotsThreeVerticalIcon, ExpenseIconSVG, InvoicesIcon } from "miruIcons";
 import { useNavigate } from "react-router-dom";
 
+import DeleteExpenseModal from "components/Expenses/Modals/DeleteExpenseModal";
+import { Categories } from "components/Expenses/utils";
 import { useUserContext } from "context/UserContext";
 
 import MoreOptions from "./MoreOptions";
 
-import { Categories } from "../../../utils";
-
-const TableRow = ({ expense, currency }) => {
+const TableRow = ({ expense, currency, fetchExpenses }) => {
   const navigate = useNavigate();
   const { isDesktop } = useUserContext();
-  const { id, expenseType, amount, categoryName, date, vendorName } = expense;
+
+  const {
+    id,
+    expenseType,
+    amount,
+    categoryName,
+    date,
+    vendorName,
+    description,
+    receipts,
+  } = expense;
 
   const [showMoreOptions, setShowMoreOptions] = useState<boolean>(false);
+  const [showDeleteExpenseModal, setShowDeleteExpenseModal] =
+    useState<boolean>(false);
 
   const getCategoryIcon = () => {
     const icon = Categories.find(category => category.label === categoryName)
@@ -30,6 +42,10 @@ const TableRow = ({ expense, currency }) => {
 
   const handleExpenseClick = id => {
     navigate(`${id}`);
+  };
+
+  const handleDelete = () => {
+    setShowDeleteExpenseModal(true);
   };
 
   return (
@@ -47,19 +63,19 @@ const TableRow = ({ expense, currency }) => {
             </div>
           </div>
         </td>
-        <td className="hidden w-2/12 truncate py-4 pr-4 text-left text-base font-medium text-miru-dark-purple-1000 lg:table-cell">
+        <td className="hidden w-2/12 py-4 pr-4 text-left text-base font-medium text-miru-dark-purple-1000 lg:table-cell">
           {date}
         </td>
-        <td className="w-2/5 truncate py-4 pr-4 text-left lg:table-cell lg:w-2/12">
+        <td className="w-2/5 py-4 pr-4 text-left lg:table-cell lg:w-2/12">
           <div className="flex w-full">
             {!isDesktop && getCategoryIcon()}
-            <div className="flex flex-col items-start justify-start truncate">
+            <div className="flex flex-col items-start justify-start">
               <span className="text-sm font-semibold text-miru-dark-purple-1000 lg:text-base">
                 {vendorName}
               </span>
-              <span className="text-xs font-medium text-miru-dark-purple-400 lg:text-sm">
-                clientName
-              </span>
+              <p className="truncateOverflowText text-xs font-medium text-miru-dark-purple-400 lg:text-sm">
+                {description}
+              </p>
             </div>
           </div>
         </td>
@@ -71,16 +87,24 @@ const TableRow = ({ expense, currency }) => {
             </dl>
           </div>
         </td>
-        <td className="relative w-1/5 whitespace-nowrap py-4 pl-4 text-right text-sm lg:table-cell lg:w-2/12 lg:pr-2 lg:text-xl lg:font-bold">
-          {currencyFormat(currency, amount)}
-          {isDesktop && (
-            <MoreOptions
-              expense={expense}
-              isDesktop={isDesktop}
-              setShowMoreOptions={setShowMoreOptions}
-              showMoreOptions={showMoreOptions}
-            />
-          )}
+        <td className="relative w-1/5 whitespace-nowrap py-4 pl-4 text-sm lg:w-2/12 lg:pr-2 lg:text-xl lg:font-bold">
+          <div className="flex items-center">
+            {receipts?.length > 0 && isDesktop && (
+              <InvoicesIcon size={24} weight="bold" />
+            )}
+            <span className="flex w-full justify-end">
+              {currencyFormat(currency, amount)}
+            </span>
+            {isDesktop && (
+              <MoreOptions
+                expense={expense}
+                handleDelete={handleDelete}
+                isDesktop={isDesktop}
+                setShowMoreOptions={setShowMoreOptions}
+                showMoreOptions={showMoreOptions}
+              />
+            )}
+          </div>
         </td>
         <td className="w-1/6 text-center lg:hidden">
           <DotsThreeVerticalIcon
@@ -98,9 +122,18 @@ const TableRow = ({ expense, currency }) => {
       {showMoreOptions && !isDesktop && (
         <MoreOptions
           expense={expense}
+          handleDelete={handleDelete}
           isDesktop={isDesktop}
           setShowMoreOptions={setShowMoreOptions}
           showMoreOptions={showMoreOptions}
+        />
+      )}
+      {showDeleteExpenseModal && (
+        <DeleteExpenseModal
+          expense={expense}
+          fetchExpenses={fetchExpenses}
+          setShowDeleteExpenseModal={setShowDeleteExpenseModal}
+          showDeleteExpenseModal={showDeleteExpenseModal}
         />
       )}
     </Fragment>

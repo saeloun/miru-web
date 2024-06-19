@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Client Revenue Report</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #f4f4f4;
+    }
+    .client-logo {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+    }
+    .total-row {
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>Client Revenue Report</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>Client</th>
+        <th>Overdue Amount</th>
+        <th>Outstanding Amount</th>
+        <th>Paid Amount</th>
+        <th>Total Revenue</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% report_data[:clients].each do |client| %>
+        <% base_currency = report_data[:base_currency] %>
+        <tr>
+          <td><%= client[:name] %></td>
+          <td><%= FormatAmountService.new(base_currency,client[:overdue_amount]).process %></td>
+          <td><%= FormatAmountService.new(base_currency,client[:outstanding_amount]).process %></td>
+          <td><%= FormatAmountService.new(base_currency,client[:paid_amount]).process %></td>
+          <td><%= FormatAmountService.new(base_currency,client[:paid_amount] + client[:outstanding_amount] + client[:overdue_amount]).process %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</body>
+</html>

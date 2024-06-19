@@ -56,11 +56,11 @@ const TableRow = ({ item }) => {
       className="group flex cursor-pointer border-b border-miru-gray-200 last:border-0 lg:grid lg:grid-cols-10 lg:gap-4"
       onClick={handleRowClick}
     >
-      <td className="flex w-3/5 py-2 text-left text-xs font-medium leading-4 tracking-widest text-miru-dark-purple-600 lg:col-span-4 lg:py-3">
-        <div className="my-auto">
+      <td className="flex w-3/5 py-2 text-left text-xs font-medium leading-4 tracking-widest text-miru-dark-purple-600 lg:col-span-4 lg:w-auto lg:py-3">
+        <div className="my-auto lg:w-1/6">
           <Avatar url={profilePicture} />
         </div>
-        <div className="ml-2 truncate capitalize lg:ml-4">
+        <div className="mx-2 truncate capitalize lg:ml-4 lg:w-5/6">
           <dt className="lg:flex">
             <p className="mr-2 text-sm font-bold leading-5 text-miru-dark-purple-1000 lg:text-base">
               {name}

@@ -9,6 +9,11 @@ RSpec.describe "InternalApi::V1::Invoices#send_invoice", type: :request do
   let(:company) { invoice.company }
   let(:user) { create :user, current_workspace_id: company.id }
 
+  before do
+    allow(Current).to receive(:user).and_return(user)
+    allow(Current).to receive(:company).and_return(company)
+  end
+
   context "when user is signed in" do
     before do
       create(:employment, company:, user:)
@@ -24,24 +29,31 @@ RSpec.describe "InternalApi::V1::Invoices#send_invoice", type: :request do
         sign_in user
       end
 
-      # it "returns a 202 response" do
-      #   post send_invoice_internal_api_v1_invoice_path(id: invoice.id), params: { invoice_email: },
-      #     headers: auth_headers(user)
-
-      #   expect(response).to have_http_status :accepted
-      #   expect(json_response["message"]).to eq("Invoice will be sent!")
-      # end
-
-      # it "enqueues an email for delivery" do
-      #   expect do
-      #     post send_invoice_internal_api_v1_invoice_path(id: invoice.id), params: { invoice_email: },
-      #       headers: auth_headers(user)
-      #   end.to have_enqueued_mail(InvoiceMailer, :invoice)
-      # end
-
-      it "changes time_sheet_entries status to billed" do
+      it "returns a 202 response" do
         post send_invoice_internal_api_v1_invoice_path(id: invoice.id), params: { invoice_email: },
           headers: auth_headers(user)
+
+        expect(response).to have_http_status :accepted
+        expect(json_response["message"]).to eq("Invoice will be sent!")
+      end
+
+      it "enqueues an email for delivery" do
+        expect do
+          post send_invoice_internal_api_v1_invoice_path(id: invoice.id), params: { invoice_email: },
+            headers: auth_headers(user)
+        end.to have_enqueued_mail(InvoiceMailer, :invoice)
+      end
+
+      it "changes time_sheet_entries status to billed" do
+        expect do
+          post send_invoice_internal_api_v1_invoice_path(id: invoice.id), params: { invoice_email: },
+            headers: auth_headers(user)
+        end.to have_enqueued_mail(InvoiceMailer, :invoice)
+
+        perform_enqueued_jobs do
+          InvoiceMailer.with({ invoice_id: invoice.id }.merge(invoice_email)).invoice.deliver_later
+        end
+
         invoice.invoice_line_items.reload.each do |line_item|
           expect(line_item.timesheet_entry.bill_status).to eq("billed")
         end

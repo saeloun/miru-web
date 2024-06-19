@@ -1,5 +1,6 @@
 import React from "react";
 
+import JSZip from "jszip";
 import {
   ExpenseIconSVG,
   PaymentsIcon,
@@ -11,6 +12,7 @@ import {
   CarIcon,
   HouseIcon,
 } from "miruIcons";
+import { Toastr } from "StyledComponents";
 
 export const Categories = [
   {
@@ -111,4 +113,94 @@ export const setCategoryData = rawCategories => {
   });
 
   return newCategories;
+};
+
+export const unmapExpenseListForDropdown = input => {
+  const ExpenseList = input.data.expenses;
+
+  return ExpenseList.map(item => ({
+    label: item.categoryName,
+    value: item.id,
+    date: item.date,
+    amount: item.amount,
+  }));
+};
+
+export const FileDownloader = ({ fileUrl }) => {
+  // Extracting filename from URL
+  const fileName = fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
+  const handleDownload = async () => {
+    try {
+      const response = await fetch(fileUrl);
+      const blob = await response.blob();
+
+      // Creating a URL for the blob
+      const url = window.URL.createObjectURL(blob);
+
+      // Creating a link element
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", fileName);
+      document.body.appendChild(link);
+      link.click();
+
+      //cleanup
+      link.parentNode.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch {
+      Toastr.error("Error downloading file");
+    }
+  };
+
+  return <span onClick={handleDownload}>{fileName}</span>;
+};
+
+export const DownloadAll = async fileUrls => {
+  try {
+    const fetchBlobs = async () => {
+      const blobs = [];
+
+      //Creating array of URLs for blob
+      for (const fileUrl of fileUrls) {
+        const response = await fetch(fileUrl);
+        const blob = await response.blob();
+        const fileName = fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
+        blobs.push({ fileName, blob });
+      }
+
+      return blobs;
+    };
+
+    //Array of blob URLs
+    const fetchedFiles = await fetchBlobs();
+
+    //Creating zip
+    const createZipBlob = async files => {
+      const zip = new JSZip();
+
+      files.forEach(({ fileName, blob }) => {
+        zip.file(fileName, blob);
+      });
+
+      return await zip.generateAsync({ type: "blob" });
+    };
+
+    //Creating zip URL
+    const zipBlob = await createZipBlob(fetchedFiles);
+    const zipUrl = window.URL.createObjectURL(zipBlob);
+
+    // Creating a link element and downloading zip file
+    const link = document.createElement("a");
+    link.href = zipUrl;
+    link.setAttribute("download", "Receipt(s).zip");
+    document.body.appendChild(link);
+
+    link.click();
+
+    //cleanup
+    link.parentNode.removeChild(link);
+    window.URL.revokeObjectURL(zipUrl);
+  } catch {
+    Toastr.error("Error downloading file");
+  }
 };
