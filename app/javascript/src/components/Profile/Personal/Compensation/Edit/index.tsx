@@ -5,6 +5,7 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import Loader from "common/Loader/index";
 import { CompensationDetailsState } from "components/Profile/Context/CompensationDetailsState";
+import { useProfileContext } from "context/Profile/ProfileContext";
 import { useUserContext } from "context/UserContext";
 
 import EditPage from "./EditPage";
@@ -21,9 +22,11 @@ const CompensationEditPage = () => {
   };
   const navigate = useNavigate();
   const { memberId } = useParams();
-  const { isDesktop, company, user } = useUserContext();
-  const navigateToPath =
-    user.id == memberId ? "/settings" : `/team/${memberId}`;
+  const { isDesktop, company } = useUserContext();
+  const { isCalledFromSettings } = useProfileContext();
+  const navigateToPath = isCalledFromSettings
+    ? "/settings"
+    : `/team/${memberId}`;
   const [isLoading, setIsLoading] = useState(false);
   const [earnings, setEarnings] = useState<Array<object>>(
     CompensationDetailsState.earnings

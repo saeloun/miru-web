@@ -20,10 +20,11 @@ const EmploymentDetails = () => {
   const { memberId } = useParams();
 
   const [isLoading, setIsLoading] = useState(false);
+  const currentUserId = isCalledFromSettings ? user.id : memberId;
 
   const getDetails = async () => {
-    const res1: any = await teamsApi.getEmploymentDetails(user.id);
-    const res: any = await teamsApi.getPreviousEmployments(user.id);
+    const res1: any = await teamsApi.getEmploymentDetails(currentUserId);
+    const res: any = await teamsApi.getPreviousEmployments(currentUserId);
     const employmentData = employmentMapper(
       res1.data.employment,
       res.data.previous_employments

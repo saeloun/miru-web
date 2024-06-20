@@ -17,12 +17,13 @@ const AllocatedDevicesDetails = () => {
   const { isCalledFromSettings } = useProfileContext();
   const navigate = useNavigate();
   const { memberId } = useParams();
+  const currentUserId = isCalledFromSettings ? user.id : memberId;
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [devices, setDevices] = useState<Device[]>([]);
 
   const getDevicesDetail = async () => {
-    const res: any = await deviceApi.get(user.id);
+    const res: any = await deviceApi.get(currentUserId);
     const devicesDetails: Device[] = res.data.devices;
     setDevices(devicesDetails);
     setIsLoading(false);

@@ -43,9 +43,10 @@ const UserDetailsEdit = () => {
   };
 
   const navigate = useNavigate();
-  const { isDesktop, user } = useUserContext();
+  const { isDesktop } = useUserContext();
   const {
     personalDetails: { id },
+    isCalledFromSettings,
   } = useProfileContext();
 
   const wrapperRef = useRef(null);
@@ -68,7 +69,7 @@ const UserDetailsEdit = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const navigateToPath = user.id == id ? "/settings" : `/team/${id}`;
+  const navigateToPath = isCalledFromSettings ? "/settings" : `/team/${id}`;
 
   useOutsideClick(wrapperRef, () => setShowDatePicker({ visibility: false }));
   const assignCountries = async allCountries => {
@@ -216,7 +217,7 @@ const UserDetailsEdit = () => {
         },
       };
 
-      if (user.id == id) {
+      if (isCalledFromSettings) {
         await profileApi.update({
           user: userSchema,
         });

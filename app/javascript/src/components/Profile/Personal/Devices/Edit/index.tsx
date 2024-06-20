@@ -7,6 +7,7 @@ import deviceApi from "apis/devices";
 import Loader from "common/Loader/index";
 import { MobileDetailsHeader } from "common/Mobile/MobileDetailsHeader";
 import EditHeader from "components/Profile/Common/EditHeader";
+import { useProfileContext } from "context/Profile/ProfileContext";
 import { useUserContext } from "context/UserContext";
 
 import EditPage from "./EditPage";
@@ -28,9 +29,12 @@ const AllocatedDevicesEdit = () => {
   const navigate = useNavigate();
   const { isDesktop, user } = useUserContext();
   const { memberId } = useParams();
-  const navigateToPath =
-    user.id == memberId ? "/settings" : `/team/${memberId}`;
+  const { isCalledFromSettings } = useProfileContext();
+  const navigateToPath = isCalledFromSettings
+    ? "/settings"
+    : `/team/${memberId}`;
 
+  const currentUserId = isCalledFromSettings ? user.id : memberId;
   const [isLoading, setIsLoading] = useState(false);
   const [devices, setDevices] = useState<Device[]>([]);
   const [errDetails, setErrDetails] = useState(initialErrState);
@@ -41,7 +45,7 @@ const AllocatedDevicesEdit = () => {
   }, []);
 
   const getDevicesDetail = async () => {
-    const res: any = await deviceApi.get(user.id);
+    const res: any = await deviceApi.get(currentUserId);
     const devicesDetails: Device[] = res.data.devices;
     setDevices(devicesDetails);
     setIsLoading(false);

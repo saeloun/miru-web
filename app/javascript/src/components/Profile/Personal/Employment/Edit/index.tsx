@@ -37,7 +37,8 @@ const EmploymentDetailsEdit = () => {
     role_err: "",
   };
   const { user } = useUserContext();
-  const { updateDetails, employmentDetails } = useProfileContext();
+  const { updateDetails, employmentDetails, isCalledFromSettings } =
+    useProfileContext();
   const navigate = useNavigate();
   const { memberId } = useParams();
   const { isDesktop } = useUserContext();
@@ -66,15 +67,18 @@ const EmploymentDetailsEdit = () => {
   const [resignedAt, setResignedAt] = useState(null);
   const [joinedAt, setJoinedAt] = useState(null);
 
-  const navigateToPath =
-    user.id == memberId ? "/settings" : `/team/${memberId}`;
+  const currentUserId = isCalledFromSettings ? user.id : memberId;
+
+  const navigateToPath = isCalledFromSettings
+    ? "/settings"
+    : `/team/${memberId}`;
 
   useOutsideClick(DOJRef, () => setShowDOJDatePicker({ visibility: false }));
   useOutsideClick(DORRef, () => setShowDORDatePicker({ visibility: false }));
 
   const getDetails = async () => {
-    const curr: any = await teamsApi.getEmploymentDetails(user.id);
-    const prev: any = await teamsApi.getPreviousEmployments(user.id);
+    const curr: any = await teamsApi.getEmploymentDetails(currentUserId);
+    const prev: any = await teamsApi.getPreviousEmployments(currentUserId);
     setDateFormat(curr.data.date_format);
     setJoinedAt(curr.data.employment.joined_at);
     setResignedAt(curr.data.employment.resigned_at);
@@ -251,7 +255,7 @@ const EmploymentDetailsEdit = () => {
         },
       };
 
-      await teamsApi.updatePreviousEmployments(user.id, {
+      await teamsApi.updatePreviousEmployments(currentUserId, {
         employments: payload,
       });
       setIsLoading(false);
