@@ -170,9 +170,6 @@ en:
   employment:
     update:
       success: Employment updated successfully
-  devices:
-    update:
-      success: Devices updated successfully
   registration:
     sign_up: sign up
     sign_in: sign in
