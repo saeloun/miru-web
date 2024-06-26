@@ -15,7 +15,7 @@ import { sendGAPageView } from "utils/googleAnalytics";
 
 import { StaticPage } from "./StaticPage";
 
-import Header from "../../Header";
+import EditHeader from "../../Common/EditHeader";
 
 const phoneRegExp =
   /^((\+\d{1,3}(-| )?\(?\d\)?(-| )?\d{1,3})|(\(?\d{2,3}\)?))(-| )?(\d{3,4})(-| )?(\d{4})(( x| ext)\d{1,5}){0,1}$/;
@@ -483,7 +483,7 @@ const OrgEdit = () => {
 
   return (
     <div className="flex w-full flex-col">
-      <Header
+      <EditHeader
         showButtons
         cancelAction={handleCancelAction}
         isDisableUpdateBtn={isDetailUpdated}

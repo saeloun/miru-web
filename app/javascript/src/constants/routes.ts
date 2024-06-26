@@ -10,6 +10,7 @@ import InvoiceEmail from "components/InvoiceEmail";
 import InvoicesRouteConfig from "components/Invoices/InvoicesRouteConfig";
 import LeaveManagement from "components/LeaveManagement";
 import Success from "components/payments/Success";
+import ProfileRouteConfig from "components/Profile/Layout/RouteConfig";
 import Projects from "components/Projects";
 import AccountsAgingReport from "components/Reports/AccountsAgingReport";
 import InvalidLink from "components/Team/List/InvalidLink";
@@ -19,7 +20,6 @@ import { Roles, Paths } from "constants/index";
 import Clients from "../components/Clients";
 import ClientDetails from "../components/Clients/Details";
 import Payments from "../components/payments";
-import ProfileLayout from "../components/Profile/Layout";
 import ProjectDetails from "../components/Projects/Details";
 import ReportList from "../components/Reports/List";
 import OutstandingInvoiceReport from "../components/Reports/OutstandingInvoiceReport";
@@ -27,7 +27,6 @@ import RevenueByClientReport from "../components/Reports/RevenueByClientReport";
 import TimeEntryReports from "../components/Reports/TimeEntryReport";
 import TotalHoursReport from "../components/Reports/totalHoursLogged";
 import PlanSelection from "../components/Subscriptions/PlanSelection";
-import RouteConfig from "../components/Team/RouteConfig";
 import TimesheetEntries from "../components/TimesheetEntries";
 
 const ClientsRoutes = [
@@ -70,13 +69,13 @@ const LeaveManagementRoutes = [
   { path: "*", Component: ErrorPage },
 ];
 
-const TeamRoutes = [{ path: "*", Component: RouteConfig }];
+const TeamRoutes = [{ path: "*", Component: ProfileRouteConfig }];
 
 const TeamsRoutes = [{ path: "*", Component: TeamsRouteConfig }];
 
 const InvoiceRoutes = [{ path: "*", Component: InvoicesRouteConfig }];
 
-const SettingsRoutes = [{ path: "*", Component: ProfileLayout }];
+const SettingsRoutes = [{ path: "*", Component: ProfileRouteConfig }];
 
 const ExpenseRoutes = [
   { path: "", Component: Expenses },

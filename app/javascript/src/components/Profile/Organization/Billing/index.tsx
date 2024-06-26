@@ -5,14 +5,14 @@ import { sendGAPageView } from "utils/googleAnalytics";
 
 import Table from "./Table";
 
-import Header from "../../Header";
+import EditHeader from "../../Common/EditHeader";
 
 const Billing = () => {
   useEffect(() => sendGAPageView(), []);
 
   return (
     <div className="flex w-4/5 flex-col">
-      <Header
+      <EditHeader
         showButtons={false}
         subTitle="View upcoming bill amount, due date and past bills"
         title="Billing"
