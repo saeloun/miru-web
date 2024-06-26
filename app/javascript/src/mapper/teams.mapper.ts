@@ -1,6 +1,7 @@
 import dayjs from "dayjs";
 
 export const teamsMapper = (user, address) => ({
+  id: user.id,
   first_name: user.first_name,
   last_name: user.last_name,
   date_of_birth:

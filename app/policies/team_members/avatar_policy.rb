@@ -17,6 +17,6 @@ class TeamMembers::AvatarPolicy < ApplicationPolicy
         return false
       end
 
-      user_owner_role? || user_admin_role?
+      has_owner_or_admin_role? || record_belongs_to_user?
     end
 end
