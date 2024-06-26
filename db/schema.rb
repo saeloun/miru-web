@@ -378,16 +378,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_03_053942) do
     t.index ["year", "company_id"], name: "index_leaves_on_year_and_company_id", unique: true
   end
 
-  create_table "packages", force: :cascade do |t|
-    t.string "name", null: false
-    t.integer "min_users", null: false
-    t.integer "max_users", null: false
-    t.decimal "price", precision: 8, scale: 2, null: false
-    t.string "payment_frequency", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "payments", force: :cascade do |t|
     t.bigint "invoice_id", null: false
     t.date "transaction_date", null: false
