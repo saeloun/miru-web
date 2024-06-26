@@ -13,7 +13,7 @@ const StaticPage = ({ devices, dateFormat }) => {
       name,
       serial_number,
       is_insured,
-      insurance_bought_date,
+      insurance_activation_date,
       insurance_expiry_date,
 
       specifications: { ram = "", graphics = "", processor = "" } = {},
@@ -64,7 +64,7 @@ const StaticPage = ({ devices, dateFormat }) => {
                 Insurance Activation Date
               </span>
               <p className="text-miru-dark-purple-1000">
-                {dayjs(insurance_bought_date).format(dateFormat) || "-"}
+                {dayjs(insurance_activation_date).format(dateFormat) || "-"}
               </p>
             </div>
             <div className="w-6/12">

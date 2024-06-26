@@ -10,12 +10,12 @@ import deviceApi from "apis/devices";
 import Loader from "common/Loader/index";
 import { MobileDetailsHeader } from "common/Mobile/MobileDetailsHeader";
 import EditHeader from "components/Profile/Common/EditHeader";
+import { devicesSchema } from "components/Profile/Schema/devicesSchema";
 import { useProfileContext } from "context/Profile/ProfileContext";
 import { useUserContext } from "context/UserContext";
 
 import EditPage from "./EditPage";
 import MobileEditPage from "./MobileEditPage";
-import { devicesSchema } from "./validationSchema";
 
 import { Device } from "../Device";
 
@@ -98,7 +98,7 @@ const AllocatedDevicesEdit = () => {
         device_type: "",
         name: "",
         serial_number: "",
-        insurance_bought_date: "",
+        insurance_activation_date: "",
         insurance_expiry_date: "",
         is_insured: false,
         specifications: {
@@ -120,7 +120,7 @@ const AllocatedDevicesEdit = () => {
       index: 0,
     });
     const FormattedDate = dayjs(date).format("YYYY-MM-DD");
-    handleDeviceChange(FormattedDate, "insurance_bought_date", index);
+    handleDeviceChange(FormattedDate, "insurance_activation_date", index);
   };
 
   const handleIsInsured = (value, index) => {
