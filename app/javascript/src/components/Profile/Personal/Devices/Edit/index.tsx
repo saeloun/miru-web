@@ -225,9 +225,9 @@ const AllocatedDevicesEdit = () => {
       device: updatedDevices,
     };
 
-    await deviceApi.post(user.id, payload);
+    await deviceApi.post(currentUserId, payload);
     setIsLoading(false);
-    navigate(`/settings/devices`, { replace: true });
+    navigate(`${navigateToPath}/devices`, { replace: true });
   };
 
   return (
