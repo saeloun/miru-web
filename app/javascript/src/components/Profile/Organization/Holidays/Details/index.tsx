@@ -4,8 +4,8 @@ import dayjs from "dayjs";
 import { Tooltip } from "StyledComponents";
 
 import HolidayModal from "common/HolidayModal";
+import DetailsHeader from "components/Profile/Common/DetailsHeader";
 
-import Header from "./Header";
 import TableHeader from "./TableHeader";
 import TableRow from "./TableRow";
 
@@ -52,10 +52,15 @@ const Details = ({
 
   return (
     <Fragment>
-      <Header
+      <DetailsHeader
+        showButtons
+        showYearPicker
         currentYear={currentYear}
         editAction={editAction}
+        isDisableUpdateBtn={false}
         setCurrentYear={setCurrentYear}
+        subTitle=""
+        title="Holidays"
       />
       <div className="mb-10 min-h-40v bg-miru-gray-100 p-4 lg:mt-4 lg:p-10">
         <div className="flex w-full flex-col py-6">

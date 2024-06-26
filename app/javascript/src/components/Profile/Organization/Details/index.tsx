@@ -5,7 +5,7 @@ import { Outlet, useNavigate } from "react-router-dom";
 
 import companiesApi from "apis/companies";
 import Loader from "common/Loader/index";
-import DetailsHeader from "components/Profile/DetailsHeader";
+import DetailsHeader from "components/Profile/Common/DetailsHeader";
 import { useUserContext } from "context/UserContext";
 import { sendGAPageView } from "utils/googleAnalytics";
 
