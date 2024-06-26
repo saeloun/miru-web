@@ -9,9 +9,9 @@ import CustomReactSelect from "common/CustomReactSelect";
 import CustomToggle from "common/CustomToggle";
 import SingleYearDatePicker from "common/CustomYearPicker/SingleYearDatePicker";
 import { Divider } from "common/Divider";
+import EditHeader from "components/Profile/Common/EditHeader";
 import { allocationFrequency } from "constants/leaveType";
 
-import Header from "./Header";
 import { customStyles } from "./utils";
 
 const EditHolidays = ({
@@ -43,12 +43,16 @@ const EditHolidays = ({
   updateHolidayDetails,
 }) => (
   <>
-    <Header
+    <EditHeader
+      showButtons
+      showYearPicker
       cancelAction={handleCancelAction}
       currentYear={currentYear}
       isDisableUpdateBtn={isDisableUpdateBtn}
       saveAction={updateHolidayDetails}
       setCurrentYear={setCurrentYear}
+      subTitle=""
+      title="Holidays"
     />
     <div className="mt-4 p-4 lg:min-h-80v lg:bg-miru-gray-100 lg:p-10">
       <div className="flex flex-col py-6 lg:flex-row">

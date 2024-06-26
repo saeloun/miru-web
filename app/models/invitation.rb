@@ -116,17 +116,13 @@ class Invitation < ApplicationRecord
       end
     end
 
-    def users_not_with_client_role
-      company.employments.kept.joins(user: :roles).where.not(roles: { name: "client" })
-    end
-
     def send_invitation_mail
       user_already_exists = User.exists?(email: recipient_email)
 
       company_details = {
         name: company.name,
         logo: company.company_logo,
-        employee_count: users_not_with_client_role.count
+        employee_count: company.employees_without_client_role.count
       }
 
       sender_details = {
