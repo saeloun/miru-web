@@ -12,7 +12,8 @@ module Reports::ClientRevenues
     def process
       {
         clients:,
-        summary:
+        summary:,
+        base_currency: current_company.base_currency
       }
     end
 

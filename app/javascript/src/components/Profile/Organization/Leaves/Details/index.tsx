@@ -1,6 +1,7 @@
 import React from "react";
 
-import Header from "./Header";
+import DetailsHeader from "components/Profile/Common/DetailsHeader";
+
 import TableHeader from "./TableHeader";
 import TableRow from "./TableRow";
 
@@ -12,11 +13,15 @@ const Details = ({
   setCurrentYear,
 }) => (
   <>
-    <Header
+    <DetailsHeader
+      showButtons
       currentYear={currentYear}
       editAction={editAction}
+      isDisableUpdateBtn={false}
       setCurrentYear={setCurrentYear}
       showYearPicker={showYearPicker}
+      subTitle=""
+      title="Leaves"
     />
     <div className="mt-4 min-h-80v bg-miru-gray-100 p-4 lg:p-10">
       <div className="flex w-full flex-col">

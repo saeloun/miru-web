@@ -5,7 +5,7 @@ class InternalApi::V1::LeavesController < InternalApi::V1::ApplicationController
 
   def index
     authorize Leave
-    leaves = current_company.leaves.includes([:leave_types])
+    leaves = current_company.leaves.includes([:leave_types, :custom_leaves])
     render :index, locals: {
       leaves:
     }

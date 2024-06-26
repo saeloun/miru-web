@@ -2,6 +2,8 @@ import React from "react";
 
 import { currencyFormat } from "helpers";
 
+import { FileDownloader } from "../utils";
+
 const Expense = ({ expense, currency }) => (
   <div className="mt-8 flex flex-col px-4 lg:px-0">
     <div className="flex flex-col">
@@ -41,9 +43,18 @@ const Expense = ({ expense, currency }) => (
         <span className="text-xs font-medium text-miru-dark-purple-1000">
           Receipt
         </span>
-        <span className="text-base font-medium text-miru-dark-purple-1000">
-          {expense?.receipt || "-"}
-        </span>
+        <div className="flex flex-col">
+          {expense?.receipts.length > 0
+            ? expense?.receipts.map((receipt, index) => (
+                <span
+                  className="my-2 cursor-pointer text-base font-medium text-miru-dark-purple-1000 underline"
+                  key={index}
+                >
+                  <FileDownloader fileUrl={receipt} />
+                </span>
+              ))
+            : "-"}
+        </div>
       </div>
     </div>
     <div className="flex flex-col">

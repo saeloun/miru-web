@@ -105,7 +105,6 @@ const Pagination = ({
         <div className="flex items-center justify-end">
           <select
             className="p-2 text-xs font-bold text-miru-han-purple-1000"
-            defaultValue={itemsPerPage}
             value={itemsPerPage}
             onChange={handleClickOnPerPage}
           >
