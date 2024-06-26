@@ -8,6 +8,7 @@
 #  bill_status  :integer          not null
 #  discarded_at :datetime
 #  duration     :float            not null
+#  locked       :boolean          default(FALSE)
 #  note         :text             default("")
 #  work_date    :date             not null
 #  created_at   :datetime         not null

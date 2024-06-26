@@ -31,11 +31,12 @@ class InternalApi::V1::Users::DevicesController < InternalApi::V1::ApplicationCo
     end
 
     def device_params
+      shared_params = [:device_type, :name, :serial_number, :is_insured, :insurance_activation_date,
+                       :insurance_expiry_date, specifications: [:processor, :ram, :graphics]]
+
       params.require(:device).permit(
-        add_devices: [:device_type, :name, :serial_number, :is_insured, :insurance_bought_date, :insurance_expiry_date,
-                      specifications: [:processor, :ram, :graphics]],
-        update_devices: [:id, :device_type, :name, :serial_number, :is_insured, :insurance_bought_date,
-                         :insurance_expiry_date, specifications: [:processor, :ram, :graphics]],
+        add_devices: shared_params,
+        update_devices: [:id] + shared_params,
         remove_devices: []
       )
     end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_29_142938) do
+ActiveRecord::Schema[7.1].define(version: 2024_06_03_053942) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -162,6 +162,25 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_29_142938) do
     t.boolean "calendar_enabled", default: true
   end
 
+  create_table "custom_leave_users", force: :cascade do |t|
+    t.bigint "custom_leave_id", null: false
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["custom_leave_id"], name: "index_custom_leave_users_on_custom_leave_id"
+    t.index ["user_id"], name: "index_custom_leave_users_on_user_id"
+  end
+
+  create_table "custom_leaves", force: :cascade do |t|
+    t.string "name", null: false
+    t.integer "allocation_value", null: false
+    t.integer "allocation_period", null: false
+    t.bigint "leave_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["leave_id"], name: "index_custom_leaves_on_leave_id"
+  end
+
   create_table "data_migrations", primary_key: "version", id: :string, force: :cascade do |t|
   end
 
@@ -175,7 +194,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_29_142938) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "is_insured", default: false
-    t.date "insurance_bought_date"
+    t.date "insurance_activation_date"
     t.date "insurance_expiry_date"
     t.index ["company_id"], name: "index_devices_on_company_id"
     t.index ["device_type"], name: "index_devices_on_device_type"
@@ -359,6 +378,16 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_29_142938) do
     t.index ["year", "company_id"], name: "index_leaves_on_year_and_company_id", unique: true
   end
 
+  create_table "packages", force: :cascade do |t|
+    t.string "name", null: false
+    t.integer "min_users", null: false
+    t.integer "max_users", null: false
+    t.decimal "price", precision: 8, scale: 2, null: false
+    t.string "payment_frequency", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "payments", force: :cascade do |t|
     t.bigint "invoice_id", null: false
     t.date "transaction_date", null: false
@@ -475,6 +504,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_29_142938) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "discarded_at"
+    t.boolean "locked", default: false
     t.index ["bill_status"], name: "index_timesheet_entries_on_bill_status"
     t.index ["discarded_at"], name: "index_timesheet_entries_on_discarded_at"
     t.index ["project_id"], name: "index_timesheet_entries_on_project_id"
@@ -556,6 +586,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_29_142938) do
   add_foreign_key "client_members", "companies"
   add_foreign_key "client_members", "users"
   add_foreign_key "clients", "companies"
+  add_foreign_key "custom_leave_users", "custom_leaves", column: "custom_leave_id"
+  add_foreign_key "custom_leave_users", "users"
+  add_foreign_key "custom_leaves", "leaves", column: "leave_id"
   add_foreign_key "devices", "companies"
   add_foreign_key "devices", "users"
   add_foreign_key "employments", "companies"

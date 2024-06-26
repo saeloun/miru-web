@@ -7,7 +7,7 @@ FactoryBot.define do
     name { Faker::Alphanumeric.alphanumeric }
     serial_number { Faker::Alphanumeric.alphanumeric }
     is_insured { true }
-    insurance_bought_date { Faker::Date.between(from: "2019-04-01", to: Date.today) }
-    insurance_expiry_date { Faker::Date.between(from: self.insurance_bought_date, to: Date.today) }
+    insurance_activation_date { Faker::Date.between(from: "2019-04-01", to: Date.today) }
+    insurance_expiry_date { Faker::Date.between(from: self.insurance_activation_date, to: Date.today) }
   end
 end

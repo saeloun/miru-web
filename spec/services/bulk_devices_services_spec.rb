@@ -8,7 +8,7 @@ RSpec.describe BulkDevicesService do
   let!(:device1) { Device.create(
     issued_to: user, issued_by: company, device_type: "laptop",
     name: "Device 1", serial_number: "123456", specifications: { processor: "i5", ram: "8GB", graphics: "Intel" },
-    is_insured: true, insurance_bought_date: "2020-01-01", insurance_expiry_date: "2023-01-01")
+    is_insured: true, insurance_activation_date: "2020-01-01", insurance_expiry_date: "2023-01-01")
 }
   let!(:device2) { Device.create(
     issued_to: user, issued_by: company, device_type: "mobile",
@@ -26,7 +26,7 @@ RSpec.describe BulkDevicesService do
               name: "New Laptop",
               serial_number: "123ABC",
               is_insured: true,
-              insurance_bought_date: "2023-01-01",
+              insurance_activation_date: "2023-01-01",
               insurance_expiry_date: "2024-01-01",
               specifications: { processor: "i7", ram: "16GB", graphics: "NVIDIA" }
             }
@@ -48,7 +48,7 @@ RSpec.describe BulkDevicesService do
         expect(new_device.name).to eq("New Laptop")
         expect(new_device.serial_number).to eq("123ABC")
         expect(new_device.is_insured).to be true
-        expect(new_device.insurance_bought_date).to eq(Date.parse("2023-01-01"))
+        expect(new_device.insurance_activation_date).to eq(Date.parse("2023-01-01"))
         expect(new_device.insurance_expiry_date).to eq(Date.parse("2024-01-01"))
         expect(new_device.specifications).to eq({ "processor" => "i7", "ram" => "16GB", "graphics" => "NVIDIA" })
       end
@@ -105,7 +105,7 @@ RSpec.describe BulkDevicesService do
               name: "New Laptop",
               serial_number: "123ABC",
               is_insured: true,
-              insurance_bought_date: "2023-01-01",
+              insurance_activation_date: "2023-01-01",
               insurance_expiry_date: "2024-01-01",
               specifications: { processor: "i7", ram: "16GB", graphics: "NVIDIA" }
             }
