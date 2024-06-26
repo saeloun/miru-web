@@ -45,7 +45,7 @@ const DeviceForm = ({
           serial_number,
           specifications,
           is_insured,
-          insurance_bought_date,
+          insurance_activation_date,
           insurance_expiry_date,
         } = device;
 
@@ -257,7 +257,7 @@ const DeviceForm = ({
                 {is_insured && (
                   <div className="flex flex-row pb-3">
                     <DatePickerWithInputBox
-                      date={insurance_bought_date}
+                      date={insurance_activation_date}
                       dateFormat={dateFormat}
                       errorMessage={errDetails[index]?.device_insurance_bought}
                       handleDateChange={date => handleDOAChage(date, index)}
@@ -283,7 +283,7 @@ const DeviceForm = ({
                       id={`insurance_expiry_${index}`}
                       isError={errDetails[index]?.device_insurance_expiry}
                       label="Insurance Expiration Date"
-                      minDate={insurance_bought_date}
+                      minDate={insurance_activation_date}
                       ref={DOERef}
                       handleDatePickerVisibility={() =>
                         setShowDOEPicker({
