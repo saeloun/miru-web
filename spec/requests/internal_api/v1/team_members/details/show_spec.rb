@@ -2,11 +2,11 @@
 
 require "rails_helper"
 
-RSpec.describe "Details#show", type: :request do
+RSpec.describe "InternalApi::V1::TeamMembers::DetailsController#show", type: :request do
   let(:company) { create(:company) }
   let(:company2) { create(:company) }
-  let(:user) { create(:user, current_workspace_id: company.id) }
-  let(:user2) { create(:user, current_workspace_id: company2.id) }
+  let(:user) { create(:user, :with_avatar, current_workspace_id: company.id) }
+  let(:user2) { create(:user, :with_avatar, current_workspace_id: company2.id) }
   let(:employment) { create(:employment, user:, company:) }
 
   context "when Owner wants to see details of employee of his company" do
@@ -52,9 +52,15 @@ RSpec.describe "Details#show", type: :request do
       send_request :get, internal_api_v1_team_details_path(employment.user_id), headers: auth_headers(user)
     end
 
-    it "is unsuccessful" do
-      expect(response).to have_http_status(:forbidden)
-      expect(json_response["errors"]).to eq("You are not authorized to perform this action.")
+    it "is successful" do
+      expect(response).to have_http_status(:ok)
+      expect(json_response["avatar_url"]).to eq(JSON.parse(user.avatar_url.to_json))
+      expect(json_response["first_name"]).to eq(JSON.parse(user.first_name.to_json))
+      expect(json_response["last_name"]).to eq(JSON.parse(user.last_name.to_json))
+      expect(json_response["personal_email_id"]).to eq(JSON.parse(user.personal_email_id.to_json))
+      expect(json_response["date_of_birth"]).to eq(JSON.parse(user.date_of_birth.to_json))
+      expect(json_response["phone"]).to eq(JSON.parse(user.phone.to_json))
+      expect(json_response["social_accounts"]).to eq(JSON.parse(user.social_accounts.to_json))
     end
   end
 
