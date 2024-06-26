@@ -3,7 +3,6 @@ import React, { useState, useEffect, useRef, MutableRefObject } from "react";
 
 import dayjs from "dayjs";
 import { minFromHHMM, minToHHMM, useDebounce, useOutsideClick } from "helpers";
-import { Toastr } from "StyledComponents";
 
 import timesheetEntryApi from "apis/timesheet-entry";
 import { useTimesheetEntries } from "context/TimesheetEntries";
@@ -137,32 +136,28 @@ const AddEntry = () => {
   };
 
   const handleEdit = async () => {
-    try {
-      const tse = getPayload();
-      const updateRes = await timesheetEntryApi.update(editEntryId, {
-        project_id: projectId,
-        timesheet_entry: tse,
-      });
+    const tsEntry = getPayload();
+    const updateRes = await timesheetEntryApi.update(editEntryId, {
+      project_id: projectId,
+      timesheet_entry: tsEntry,
+    });
 
-      if (updateRes.status >= 200 && updateRes.status < 300) {
-        if (selectedDate !== selectedFullDate) {
-          await handleFilterEntry(selectedFullDate, editEntryId);
-          await handleRelocateEntry(selectedDate, updateRes.data.entry);
-          if (!isDesktop) {
-            fetchEntriesOfMonths();
-          }
-        } else {
-          await fetchEntries(selectedDate, selectedDate);
+    if (updateRes.status >= 200 && updateRes.status < 300) {
+      if (selectedDate !== selectedFullDate) {
+        await handleFilterEntry(selectedFullDate, editEntryId);
+        await handleRelocateEntry(selectedDate, updateRes.data.entry);
+        if (!isDesktop) {
           fetchEntriesOfMonths();
         }
-        setEditEntryId(0);
-        setNewEntryView(false);
-        setUpdateView(true);
-        handleAddEntryDateChange(dayjs(selectedDate));
-        setSelectedFullDate(dayjs(selectedDate).format("YYYY-MM-DD"));
+      } else {
+        await fetchEntries(selectedDate, selectedDate);
+        fetchEntriesOfMonths();
       }
-    } catch (error) {
-      Toastr.error(error);
+      setEditEntryId(0);
+      setNewEntryView(false);
+      setUpdateView(true);
+      handleAddEntryDateChange(dayjs(selectedDate));
+      setSelectedFullDate(dayjs(selectedDate).format("YYYY-MM-DD"));
     }
   };
 

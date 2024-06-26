@@ -6,9 +6,9 @@ import { Button } from "StyledComponents";
 import { CustomInputText } from "common/CustomInputText";
 import CustomReactSelect from "common/CustomReactSelect";
 import { Divider } from "common/Divider";
+import EditHeader from "components/Profile/Common/EditHeader";
 import { allocationFrequency, getAllocationPeriod } from "constants/leaveType";
 
-import Header from "./Header";
 import {
   ColorOption,
   iconColorStyles,
@@ -43,13 +43,16 @@ const EditLeaves = ({
 
   return (
     <>
-      <Header
+      <EditHeader
+        showButtons
         cancelAction={handleCancelAction}
         currentYear={currentYear}
         isDisableUpdateBtn={isDisableUpdateBtn}
         saveAction={updateLeaveDetails}
         setCurrentYear={setCurrentYear}
         showYearPicker={showYearPicker}
+        subTitle=""
+        title="Leaves"
       />
       <div className="mt-4 min-h-full p-4 lg:min-h-80v lg:bg-miru-gray-100 lg:p-10">
         <div className="flex flex-col lg:flex-row lg:py-6">

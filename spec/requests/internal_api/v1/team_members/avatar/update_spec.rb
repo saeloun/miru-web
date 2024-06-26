@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe "InternalApi::V1::TeamMembers::AvatarController::#update", type: :request do
+RSpec.describe "InternalApi::V1::TeamMembers::AvatarController#update", type: :request do
   let(:company) { create(:company) }
   let(:company2) { create(:company) }
   let(:admin) { create(:user, current_workspace_id: company.id) }

@@ -4,6 +4,13 @@ const path = "/reports/outstanding_overdue_invoices/";
 
 const get = () => axios.get(path);
 
-const reports = { get };
+const download = type =>
+  axios({
+    method: "GET",
+    url: `${path}/download.${type}`,
+    responseType: "blob",
+  });
+
+const reports = { get, download };
 
 export default reports;

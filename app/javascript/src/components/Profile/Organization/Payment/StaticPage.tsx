@@ -5,7 +5,7 @@ import { ConnectSVG, StripeLogoSVG, disconnectAccountSVG } from "miruIcons";
 import Loader from "common/Loader/index";
 import { ApiStatus as PaymentSettingsStatus } from "constants/index";
 
-import Header from "../../Header";
+import EditHeader from "../../Common/EditHeader";
 
 const StaticPage = ({
   isStripeConnected,
@@ -14,7 +14,7 @@ const StaticPage = ({
   status,
 }) => (
   <>
-    <Header
+    <EditHeader
       showButtons={false}
       subTitle="Connect payment gateways"
       title="Payment Settings"
