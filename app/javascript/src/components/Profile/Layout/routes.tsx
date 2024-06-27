@@ -8,6 +8,7 @@ import {
   CalendarIcon,
   CakeIcon,
   ClientsIcon,
+  ReminderIcon,
 } from "miruIcons";
 
 import OrgDetails from "components/Profile/Organization/Details";
@@ -84,7 +85,7 @@ export const SETTINGS = [
   {
     label: "NOTIFICATION SETTINGS",
     path: "notifications",
-    icon: <MobileIcon className="mr-2" size={20} weight="bold" />,
+    icon: <ReminderIcon className="mr-2" size={20} weight="bold" />,
     authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE],
     Component: NotificationPreferences,
     category: "personal",

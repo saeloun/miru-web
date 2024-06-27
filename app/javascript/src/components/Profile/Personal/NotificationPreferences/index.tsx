@@ -4,14 +4,15 @@ import React, { Fragment, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import preferencesApi from "apis/preferences";
-import CustomCheckbox from "common/CustomCheckbox";
+import CustomToggle from "common/CustomToggle";
 import Loader from "common/Loader/index";
+import { MobileEditHeader } from "common/Mobile/MobileEditHeader";
 import DetailsHeader from "components/Profile/Common/DetailsHeader";
 import { useProfileContext } from "context/Profile/ProfileContext";
 import { useUserContext } from "context/UserContext";
 
 const NotificationPreferences = () => {
-  const { user } = useUserContext();
+  const { user, isDesktop } = useUserContext();
   const { memberId } = useParams();
   const { isCalledFromSettings } = useProfileContext();
   const currentUserId = isCalledFromSettings ? user.id : memberId;
@@ -30,7 +31,6 @@ const NotificationPreferences = () => {
     const res = await preferencesApi.updatePreference(currentUserId, {
       notification_enabled: !isSelected,
     });
-    setIsSelected(res.data.notification_enabled);
     setIsLoading(false);
   };
 
@@ -41,21 +41,29 @@ const NotificationPreferences = () => {
 
   return (
     <Fragment>
-      <DetailsHeader subTitle="" title="Notification Settings" />
+      {isDesktop ? (
+        <DetailsHeader subTitle="" title="Notification Settings" />
+      ) : (
+        <MobileEditHeader
+          backHref={isCalledFromSettings ? "/settings/" : `/team/${memberId}`}
+          href=""
+          showEdit={false}
+          title="Notification Settings"
+        />
+      )}
       {isLoading ? (
         <Loader className="min-h-70v" />
       ) : (
-        <CustomCheckbox
-          isUpdatedDesign
-          checkboxValue={isSelected}
-          handleCheck={updatePreferences}
-          handleOnClick={e => e.stopPropagation()}
-          id={currentUserId}
-          isChecked={isSelected}
-          labelClassName="ml-4"
-          text="Weekly Email Reminder"
-          wrapperClassName="py-3 px-5 flex items-center hover:bg-miru-gray-100"
-        />
+        <div className="mt-10 flex h-full items-center justify-between bg-miru-gray-100 p-10 lg:mt-4">
+          <span className="w-1/2">Weekly Email Reminder</span>
+          <CustomToggle
+            id={currentUserId}
+            isChecked={isSelected}
+            setIsChecked={setIsSelected}
+            toggleCss="mt-5"
+            onToggle={updatePreferences}
+          />
+        </div>
       )}
     </Fragment>
   );
