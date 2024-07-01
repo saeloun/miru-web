@@ -13,6 +13,7 @@ class CreateCompanyService
   def process
     company.save!
     add_current_user_to_company
+    create_notification_preference
     company
   end
 
@@ -23,5 +24,11 @@ class CreateCompanyService
       current_user.current_workspace_id = company.id
       current_user.add_role(:owner, company)
       current_user.save!
+    end
+
+    def create_notification_preference
+      NotificationPreference.find_or_create_by(
+        user_id: current_user.id,
+        company_id: company.id)
     end
 end

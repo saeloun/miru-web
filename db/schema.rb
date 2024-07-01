@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_05_16_054849) do
+ActiveRecord::Schema[7.1].define(version: 2024_06_17_135248) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -378,6 +378,17 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_16_054849) do
     t.index ["year", "company_id"], name: "index_leaves_on_year_and_company_id", unique: true
   end
 
+  create_table "notification_preferences", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "company_id", null: false
+    t.boolean "notification_enabled", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_notification_preferences_on_company_id"
+    t.index ["user_id", "company_id"], name: "index_notification_preferences_on_user_id_and_company_id", unique: true
+    t.index ["user_id"], name: "index_notification_preferences_on_user_id"
+  end
+
   create_table "payments", force: :cascade do |t|
     t.bigint "invoice_id", null: false
     t.date "transaction_date", null: false
@@ -599,6 +610,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_16_054849) do
   add_foreign_key "invoices", "companies"
   add_foreign_key "leave_types", "leaves", column: "leave_id"
   add_foreign_key "leaves", "companies"
+  add_foreign_key "notification_preferences", "companies"
+  add_foreign_key "notification_preferences", "users"
   add_foreign_key "payments", "invoices"
   add_foreign_key "payments_providers", "companies"
   add_foreign_key "previous_employments", "users"
