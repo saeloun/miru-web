@@ -14,7 +14,7 @@ FactoryBot.define do
     # amount_paid { Faker::Number.decimal(r_digits: 2) }
     # amount_due { Faker::Number.decimal(r_digits: 2) }
     # discount { Faker::Number.decimal(r_digits: 2) }
-    status { [:draft, :paid, :overdue].sample }
+    status { :draft }
     external_view_key { "#{SecureRandom.hex}" }
     factory :invoice_with_invoice_line_items do
       transient do
