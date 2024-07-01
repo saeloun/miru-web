@@ -13,7 +13,7 @@ organizations to help them streamline their workflow.
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/saeloun/miru-web)
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/m/saeloun/miru-web)
 [![GitHub license](https://img.shields.io/github/license/saeloun/miru-web)](https://github.com/saeloun/miru-web)
-[![Twitter Follow](https://img.shields.io/twitter/follow/GetMiru?style=social)](https://twitter.com/getmiru)
+[![Twitter Follow](https://img.shields.io/twitter/follow/GetMiru?style=social)](https://x.com/getmiru)
 
 <img src="https://user-images.githubusercontent.com/22231095/170423540-e10ada9e-cf1b-4a05-bbb6-2342955f46b0.png"  width="100%" alt="Miru Monthly Timetracking page"/>
 
@@ -64,7 +64,7 @@ The documentation covers everything from installation and setup to advanced usag
 - Subscribe to our latest [blog articles](https://blog.miru.so) and tutorials.
 - [Discussions](https://github.com/saeloun/miru-web/discussions): Post your
   questions regarding Miru Web
-- [**Twitter**](https://twitter.com/getmiru)
+- [**Twitter**](https://x.com/getmiru)
 
 ## Contributing
 
