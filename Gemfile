@@ -115,7 +115,7 @@ gem "active_interaction"
 gem "stripe"
 
 gem "mission_control-jobs"
-gem "solid_queue"
+gem "solid_queue", "~> 0.3"
 # Background job processing adapter
 gem "sidekiq", "~> 7.2"
 

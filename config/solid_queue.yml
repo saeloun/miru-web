@@ -5,18 +5,15 @@ default: &default
       recurring_tasks:
         update_invoice_status:
           class: UpdateInvoiceStatusToOverdueJob
-          schedule: every minute  # Runs every day at 12AM UTC
+          schedule: '0 0 * * *'  # Runs every day at 12AM UTC
         weekly_reminder:
           class: WeeklyReminderToUserJob
-          schedule: every minute  # Runs every Monday at 14:00
+          schedule: '0 14 * * 1 Asia/Kolkata' # Runs every Monday at 14:00
   workers:
     - queues: "*"
       threads: 5
       processes: 1
       polling_interval: 0.1
-  logger:
-    level: debug
-    formatter: detailed
 
 development:
  <<: *default
