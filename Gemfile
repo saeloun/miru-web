@@ -114,6 +114,8 @@ gem "active_interaction"
 # For stripe payments
 gem "stripe"
 
+gem "mission_control-jobs"
+gem "solid_queue"
 # Background job processing adapter
 gem "sidekiq", "~> 7.2"
 
