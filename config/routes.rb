@@ -9,6 +9,8 @@ class ActionDispatch::Routing::Mapper
 end
 
 Rails.application.routes.draw do
+  mount MissionControl::Jobs::Engine, at: "/jobs"
+
   namespace :admin do
       resources :users
       resources :timesheet_entries

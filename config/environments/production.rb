@@ -70,7 +70,7 @@ Rails.application.configure do
   # config.cache_store = :mem_cache_store
 
   # Use a real queuing backend for Active Job (and separate queues per environment).
-  # config.active_job.queue_adapter     = :resque
+  config.active_job.queue_adapter = :solid_queue
   # config.active_job.queue_name_prefix = "miru_web_production"
 
   config.action_mailer.perform_caching = false
@@ -101,5 +101,5 @@ Rails.application.configure do
   host = ENV.fetch("APP_BASE_URL")
   config.action_mailer.default_url_options = { host: }
   config.action_mailer.asset_host = host
-  config.active_job.queue_adapter = :sidekiq
+  config.active_job.queue_adapter = :solid_queue
 end
