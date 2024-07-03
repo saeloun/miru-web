@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "sidekiq/web"
-
 class ActionDispatch::Routing::Mapper
   def draw(routes_name)
     instance_eval(File.read(Rails.root.join("config/routes/#{routes_name}.rb")))
@@ -39,16 +37,6 @@ Rails.application.routes.draw do
   if ENV["EMAIL_DELIVERY_METHOD"] == "letter_opener_web"
     mount LetterOpenerWeb::Engine, at: "/sent_emails"
   end
-
-  Sidekiq::Web.use Rack::Auth::Basic do |username, password|
-    ActiveSupport::SecurityUtils.secure_compare(
-      ::Digest::SHA256.hexdigest(username),
-      ::Digest::SHA256.hexdigest(ENV["SIDEKIQ_USERNAME"])) &
-      ActiveSupport::SecurityUtils.secure_compare(
-        ::Digest::SHA256.hexdigest(password),
-        ::Digest::SHA256.hexdigest(ENV["SIDEKIQ_PASSWORD"]))
-  end
-  mount Sidekiq::Web, at: "/sidekiq"
 
   draw(:internal_api)
   draw(:api)

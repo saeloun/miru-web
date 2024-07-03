@@ -11,17 +11,6 @@ GIT
       rubocop
       smart_properties
 
-GIT
-  remote: https://github.com/wspurgin/rspec-sidekiq
-  revision: 0e710d7698c2fcea77245c7d458bb00b0fc50dae
-  branch: main
-  specs:
-    rspec-sidekiq (4.1.0)
-      rspec-core (~> 3.0)
-      rspec-expectations (~> 3.0)
-      rspec-mocks (~> 3.0)
-      sidekiq (>= 5, < 8)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -492,8 +481,6 @@ GEM
       railties (>= 3.2)
       tilt
     redis (4.8.0)
-    redis-client (0.22.1)
-      connection_pool
     regexp_parser (2.9.0)
     reline (0.5.3)
       io-console (~> 0.5)
@@ -561,8 +548,6 @@ GEM
     ruby_audit (2.2.0)
       bundler-audit (~> 0.9.0)
     rubyzip (2.3.2)
-    rufus-scheduler (3.8.2)
-      fugit (~> 1.1, >= 1.1.6)
     safely_block (0.4.0)
     sass-rails (6.0.0)
       sassc-rails (~> 2.1, >= 2.1.1)
@@ -598,15 +583,6 @@ GEM
       activesupport (>= 3)
     shoulda-matchers (5.3.0)
       activesupport (>= 5.2.0)
-    sidekiq (7.2.4)
-      concurrent-ruby (< 2)
-      connection_pool (>= 2.3.0)
-      rack (>= 2.2.4)
-      redis-client (>= 0.19.0)
-    sidekiq-scheduler (5.0.1)
-      rufus-scheduler (~> 3.2)
-      sidekiq (>= 4, < 8)
-      tilt (>= 1.4.0)
     signet (0.17.0)
       addressable (~> 2.8)
       faraday (>= 0.17.5, < 3.a)
@@ -742,7 +718,6 @@ DEPENDENCIES
   rspec-buildkite
   rspec-rails (~> 6.1)
   rspec-retry
-  rspec-sidekiq!
   rubocop
   rubocop-performance
   rubocop-rails
@@ -757,8 +732,6 @@ DEPENDENCIES
   shakapacker (= 6.0.0)
   shoulda-callback-matchers (~> 1.1.1)
   shoulda-matchers (~> 5.1)
-  sidekiq (~> 7.2)
-  sidekiq-scheduler
   simplecov
   solid_queue (~> 0.3)
   spring
