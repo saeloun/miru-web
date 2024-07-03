@@ -5,7 +5,7 @@ default: &default
       recurring_tasks:
         update_invoice_status:
           class: UpdateInvoiceStatusToOverdueJob
-          schedule: 'every 10 minutes'  # Runs every day at 12AM UTC
+          schedule: '0 0 * * *'  # Runs every day at 12AM UTC
         weekly_reminder:
           class: WeeklyReminderToUserJob
           schedule: '0 14 * * 1 Asia/Kolkata' # Runs every Monday at 14:00
