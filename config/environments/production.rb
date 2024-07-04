@@ -101,5 +101,4 @@ Rails.application.configure do
   host = ENV.fetch("APP_BASE_URL")
   config.action_mailer.default_url_options = { host: }
   config.action_mailer.asset_host = host
-  config.active_job.queue_adapter = :solid_queue
 end
