@@ -38,7 +38,8 @@ RSpec.describe "InternalApi::V1::Invoices::BulkDownbload#index", type: :request 
       end
 
       it "check if bulk invoice download job is queued" do
-        expect(BulkInvoiceDownloadJob).to be_processed_in :default
+        subject
+        expect(BulkInvoiceDownloadJob).to have_been_enqueued.on_queue("default")
       end
     end
 
@@ -52,17 +53,18 @@ RSpec.describe "InternalApi::V1::Invoices::BulkDownbload#index", type: :request 
     end
 
     context "when user is book_keeper" do
-      let(:role) { :book_keeper }
+        let(:role) { :book_keeper }
 
-      it "send the download request successfully" do
-        subject
-        expect(response).to have_http_status(:accepted)
-      end
+        it "send the download request successfully" do
+          subject
+          expect(response).to have_http_status(:accepted)
+        end
 
-      it "check if bulk invoice download job is queued" do
-        expect(BulkInvoiceDownloadJob).to be_processed_in :default
+        it "check if bulk invoice download job is queued" do
+          subject
+          expect(BulkInvoiceDownloadJob).to have_been_enqueued.on_queue("default")
+        end
       end
-    end
   end
 
   context "when unauthenticated" do
