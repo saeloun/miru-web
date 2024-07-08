@@ -75,6 +75,7 @@ class Invoice < ApplicationRecord
   before_validation :set_external_view_key, on: :create
   after_commit :refresh_invoice_index
   after_save :lock_timesheet_entries, if: :draft?
+  after_discard :unlock_timesheet_entries, if: :draft?
 
   validates :issue_date, :due_date, :invoice_number, presence: true
   validates :due_date, comparison: { greater_than_or_equal_to: :issue_date }, if: :not_waived
@@ -201,5 +202,10 @@ class Invoice < ApplicationRecord
     def lock_timesheet_entries
       timesheet_entry_ids = invoice_line_items.pluck(:timesheet_entry_id)
       TimesheetEntry.where(id: timesheet_entry_ids).update!(locked: true)
+    end
+
+    def unlock_timesheet_entries
+      timesheet_entry_ids = invoice_line_items.pluck(:timesheet_entry_id)
+      TimesheetEntry.where(id: timesheet_entry_ids).update!(locked: false)
     end
 end
