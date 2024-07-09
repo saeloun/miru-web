@@ -11,7 +11,7 @@ RSpec.describe "InternalApi::V1::Payments#create", type: :request do
   let!(:client1_viewed_invoice1) { create(:invoice, client: client1, company:, status: "viewed") }
   let!(:client1_paid_invoice1) { create(:invoice, client: client1, company:, status: "paid") }
   let!(:client1_overdue_invoice1) { create(:invoice, client: client1, company:, status: "overdue") }
-  let!(:client1_draft_invoice1) { create(:invoice, client: client1, company:, status: "draft") }
+  let!(:client1_draft_invoice1) { create(:invoice, client: client1, company:) }
 
   context "when user is an admin" do
     before do
