@@ -30,6 +30,8 @@ class InvoiceLineItem < ApplicationRecord
   belongs_to :invoice
   belongs_to :timesheet_entry, optional: true
 
+  before_destroy :unlock_timesheet_entry
+
   validates :name, :date, :rate, :quantity, presence: true
   validates :rate, numericality: { greater_than_or_equal_to: 0 }
   validates :quantity, numericality: { greater_than_or_equal_to: 0 }
@@ -67,4 +69,12 @@ class InvoiceLineItem < ApplicationRecord
   def formatted_date
     CompanyDateFormattingService.new(date, company: invoice.company).process
   end
+
+  private
+
+    def unlock_timesheet_entry
+      if invoice.draft?
+        timesheet_entry.update!(locked: false)
+      end
+    end
 end
