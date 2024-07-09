@@ -10,7 +10,7 @@ RSpec.describe UpdateInvoiceStatusToOverdueService do
   let!(:client1_sent_invoice2) { create(:invoice, client: client1, status: "sent", due_date: Date.current - 1) }
   let!(:client1_sent_invoice3) { create(:invoice, client: client1, status: "sent", due_date: Date.current - 2) }
   let(:client1_paid_invoice2) { create(:invoice, client: client1, status: "paid", due_date: Date.current - 1) }
-  let!(:client1_draft_invoice1) { create(:invoice, client: client1, status: "draft", due_date: Date.current - 1) }
+  let!(:client1_draft_invoice1) { create(:invoice, client: client1, due_date: Date.current - 1) }
   let!(:client1_viewed_invoice1) { create(:invoice, client: client1, status: "viewed", due_date: Date.current + 1) }
   let!(:client1_viewed_invoice2) { create(:invoice, client: client1, status: "viewed", due_date: Date.current - 1) }
 
