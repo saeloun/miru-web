@@ -23,7 +23,6 @@ RSpec.describe "InternalApi::V1::Invoices#create", type: :request do
           invoice_number: "SAI-C1-03",
           client: company.clients.first,
           client_id: company.clients.first.id,
-          status: :draft,
           invoice_line_item: {
             name: "Test",
             description: "test description",
@@ -72,7 +71,6 @@ RSpec.describe "InternalApi::V1::Invoices#create", type: :request do
           :invoice,
           client: company.clients.first,
           client_id: company.clients.first.id,
-          status: :draft,
           invoice_line_item: {
             name: "Test",
             description: "test description",
@@ -99,7 +97,6 @@ RSpec.describe "InternalApi::V1::Invoices#create", type: :request do
           :invoice,
           client: company.clients.first,
           client_id: company.clients.first.id,
-          status: :draft,
           invoice_line_item: {
             name: "Test",
             description: "test description",
@@ -122,8 +119,7 @@ RSpec.describe "InternalApi::V1::Invoices#create", type: :request do
         invoice: attributes_for(
           :invoice,
           client: company.clients.first,
-          client_id: company.clients.first.id,
-          status: :draft
+          client_id: company.clients.first.id
         )
       )
       expect(response).to have_http_status(:unauthorized)

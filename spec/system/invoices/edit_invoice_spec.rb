@@ -3,7 +3,7 @@
 require "rails_helper"
 
 RSpec.describe "Edit Invoice", type: :system do
-  let!(:invoice) { create :invoice_with_invoice_line_items, status: :draft }
+  let!(:invoice) { create :invoice_with_invoice_line_items }
   let(:client) { invoice.client }
   let!(:company) { invoice.company }
   let(:admin) { create(:user, current_workspace_id: company.id) }
