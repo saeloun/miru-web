@@ -56,7 +56,7 @@ const config = {
       announcementBar: {
         id: "star_us",
         content:
-          '⭐️ If you like Miru, give it a star on <a href="https://github.com/saeloun/miru-web">GitHub</a> and follow us on <a href="https://twitter.com/getmiru">Twitter</a>!',
+          '⭐️ If you like Miru, give it a star on <a href="https://github.com/saeloun/miru-web">GitHub</a> and follow us on <a href="https://x.com/getmiru">Twitter</a>!',
         isCloseable: true,
         backgroundColor: "#5B34EA",
         textColor: "#ffffff",
@@ -110,7 +110,7 @@ const config = {
               },
               {
                 label: "Twitter",
-                href: "https://twitter.com/getmiru",
+                href: "https://x.com/getmiru",
               },
             ],
           },

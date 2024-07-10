@@ -45,6 +45,7 @@ class Company < ApplicationRecord
   has_many :holidays, dependent: :destroy
   has_many :holiday_infos, through: :holidays, dependent: :destroy
   has_many :carryovers
+  has_many :notification_preferences, dependent: :destroy
 
   resourcify
 

@@ -7,7 +7,7 @@ primary_region = "ewr"
 
 [processes]
   web = "bin/rails fly:server"
-  worker = "bundle exec sidekiq -e production -C config/sidekiq.yml"
+  worker = "bundle exec rake solid_queue:start"
 
 [build]
   dockerfile = "Dockerfile"

@@ -8,7 +8,11 @@ class WeeklyReminderForMissedEntriesService
 
     Company.find_each do |company|
       company.users.kept.find_each do |user|
-        check_entries_and_send_mail(user, company)
+        notification_preference = NotificationPreference.find_by(user_id: user.id, company_id: company.id)
+
+        if notification_preference.present? && notification_preference.notification_enabled
+          check_entries_and_send_mail(user, company)
+        end
       end
     end
   end
