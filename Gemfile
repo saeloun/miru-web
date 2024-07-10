@@ -114,11 +114,9 @@ gem "active_interaction"
 # For stripe payments
 gem "stripe"
 
-# Background job processing adapter
-gem "sidekiq", "~> 7.2"
-
-#  job scheduler extension for Sidekiq
-gem "sidekiq-scheduler"
+# Background job processing adapter and dashboard
+gem "mission_control-jobs"
+gem "solid_queue", "~> 0.3"
 
 # searchkick for elasticsearch
 gem "elasticsearch", "< 7.14" # select one
@@ -209,7 +207,6 @@ group :test, :ci do
   # Strategies for cleaning databases in Ruby.
   gem "database_cleaner", "~> 2.0"
   gem "hash_dot"
-  gem "rspec-sidekiq", git: "https://github.com/wspurgin/rspec-sidekiq", branch: "main"
 
   gem "rspec-buildkite"
   gem "rspec-retry"
