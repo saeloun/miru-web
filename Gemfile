@@ -114,6 +114,7 @@ gem "active_interaction"
 # For stripe payments
 gem "stripe"
 
+# Background job processing adapter and dashboard
 gem "mission_control-jobs"
 gem "solid_queue", "~> 0.3"
 
