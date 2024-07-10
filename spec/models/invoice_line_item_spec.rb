@@ -19,6 +19,10 @@ RSpec.describe InvoiceLineItem, type: :model do
     end
   end
 
+  describe "callbacks" do
+    it { is_expected.to callback(:unlock_timesheet_entry).before(:destroy) }
+  end
+
   describe "Associations" do
     describe "belongs to" do
       it { is_expected.to belong_to(:invoice) }

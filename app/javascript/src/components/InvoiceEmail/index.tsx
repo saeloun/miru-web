@@ -101,11 +101,7 @@ const InvoiceEmail = () => {
           >
             <img height="16px" src={InstagramSVG} width="16px" />
           </a>
-          <a
-            href="https://twitter.com/i/flow/login?redirect_after_login=%2Fgetmiru"
-            rel="noreferrer"
-            target="_blank"
-          >
+          <a href="https://x.com/getmiru" rel="noreferrer" target="_blank">
             <img height="16px" src={TwitterSVG} width="16px" />
           </a>
         </span>

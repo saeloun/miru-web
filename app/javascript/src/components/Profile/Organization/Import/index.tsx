@@ -6,7 +6,7 @@ import Loader from "common/Loader/index";
 import ImportCard from "./importCard";
 import ImportModal from "./importModal";
 
-import Header from "../../Header";
+import EditHeader from "../../Common/EditHeader";
 
 const importList = [
   {
@@ -77,7 +77,7 @@ const Import = () => {
 
   return (
     <div className="flex w-4/5 flex-col">
-      <Header
+      <EditHeader
         isDisableUpdateBtn={false}
         showButtons={false}
         subTitle="Import your data into Miru"

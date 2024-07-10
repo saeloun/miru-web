@@ -48,7 +48,7 @@ const TableRow = ({ item }) => {
   const handleRowClick = () => {
     if (!status) return;
 
-    navigate(`/team/${id}`, { replace: true });
+    navigate(`/team/${id}/profile`, { replace: true });
   };
 
   return (

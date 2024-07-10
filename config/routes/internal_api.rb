@@ -112,6 +112,7 @@ namespace :internal_api, defaults: { format: "json" } do
       resource :details, only: [:show, :update], controller: "team_members/details"
       resource :avatar, only: [:update, :destroy], controller: "team_members/avatar"
       collection { put "update_team_members" }
+      resource :notification_preferences, only: [:show, :update], controller: "team_members/notification_preferences"
     end
 
     resources :invitations, only: [:create, :update, :destroy] do
@@ -138,18 +139,12 @@ namespace :internal_api, defaults: { format: "json" } do
       resources :providers, only: [:index, :update]
     end
 
-    resources :team, only: [:index, :destroy] do
-      resource :details, only: [:show, :update], controller: "team_members/details"
-    end
-
     resources :users, concerns: :addressable do
       resources :previous_employments, only: [:create, :index, :show, :update], controller: "users/previous_employments"
       resources :devices, only: [:create, :index, :show, :update], controller: "users/devices"
     end
 
-    resource :profile, only: [:update, :show], controller: "profile" do
-      delete "/remove_avatar", to: "profile#remove_avatar"
-    end
+    resource :profile, only: [:update], controller: "profile"
 
     resources :vendors, only: [:create]
     resources :expense_categories, only: [:create]

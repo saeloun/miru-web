@@ -16,8 +16,8 @@ const updateTeamMember = (id, payload) => axios.put(`${path}/${id}`, payload);
 
 const destroyTeamMemberAvatar = id => axios.delete(`${path}/${id}/avatar`);
 
-const updateTeamMemberAvatar = (id, payload) =>
-  axios.put(`${path}/${id}/avatar`, payload);
+const updateTeamMemberAvatar = (id, payload, config) =>
+  axios.put(`${path}/${id}/avatar`, payload, config);
 
 const updateTeamMembers = payload =>
   axios.put(`${path}/update_team_members`, payload);

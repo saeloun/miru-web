@@ -2,7 +2,6 @@
 
 require "simplecov"
 require "pundit/rspec"
-require "sidekiq/testing"
 require "webmock/rspec"
 require "rspec/retry"
 # require "buildkite/test_collector"
