@@ -8,6 +8,7 @@ import {
   CalendarIcon,
   CakeIcon,
   ClientsIcon,
+  ReminderIcon,
 } from "miruIcons";
 
 import OrgDetails from "components/Profile/Organization/Details";
@@ -19,6 +20,7 @@ import AllocatedDevicesDetails from "components/Profile/Personal/Devices";
 import AllocatedDevicesEdit from "components/Profile/Personal/Devices/Edit";
 import EmploymentDetails from "components/Profile/Personal/Employment";
 import EmploymentDetailsEdit from "components/Profile/Personal/Employment/Edit";
+import NotificationPreferences from "components/Profile/Personal/NotificationPreferences";
 import UserDetailsView from "components/Profile/Personal/User";
 import UserDetailsEdit from "components/Profile/Personal/User/Edit";
 import { Roles } from "constants/index";
@@ -79,6 +81,15 @@ export const SETTINGS = [
     Component: AllocatedDevicesEdit,
     category: "personal",
     isTab: false,
+  },
+  {
+    label: "NOTIFICATION SETTINGS",
+    path: "notifications",
+    icon: <ReminderIcon className="mr-2" size={20} weight="bold" />,
+    authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE],
+    Component: NotificationPreferences,
+    category: "personal",
+    isTab: true,
   },
   // Uncomment when Integrating with API
   // {
