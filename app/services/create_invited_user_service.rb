@@ -34,6 +34,7 @@ class CreateInvitedUserService
       find_or_create_user!
       add_role_to_invited_user
       create_client_member
+      create_notification_preference
     end
   rescue StandardError => e
     service_failed(e.message)
@@ -105,6 +106,12 @@ class CreateInvitedUserService
       return unless invitation.client
 
       invitation.company.client_members.create!(client: invitation.client, user:)
+    end
+
+    def create_notification_preference
+      NotificationPreference.find_or_create_by(
+        user_id: user.id,
+        company_id: invitation.company.id)
     end
 
     def create_reset_password_token
