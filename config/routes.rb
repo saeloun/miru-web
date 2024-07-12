@@ -7,7 +7,9 @@ class ActionDispatch::Routing::Mapper
 end
 
 Rails.application.routes.draw do
-  mount MissionControl::Jobs::Engine, at: "/jobs"
+  if Rails.env.development? || Rails.env.test?
+    mount MissionControl::Jobs::Engine, at: "/jobs"
+  end
 
   namespace :admin do
       resources :users
