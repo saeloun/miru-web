@@ -118,6 +118,7 @@ gem "stripe"
 gem "mission_control-jobs"
 gem "solid_queue", "~> 0.3"
 
+gem "benchmark-ips"
 gem "solid_cable"
 
 # searchkick for elasticsearch
@@ -235,5 +236,4 @@ gem "rack-cors", "2.0.0"
 # Administrate dashboard
 gem "administrate"
 
-gem 'benchmark-ips'gem "psych", "~> 4"
-
+gem "psych", "~> 4"
