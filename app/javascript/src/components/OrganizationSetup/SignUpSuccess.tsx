@@ -1,6 +1,6 @@
 import React from "react";
 
-import { GreenCheckCirleIcon } from "miruIcons";
+import { GreenCheckCircleIcon } from "miruIcons";
 
 import MiruLogoWatermark from "common/MiruLogoWatermark";
 import { Paths } from "constants/index";
@@ -16,7 +16,7 @@ const SignUpSuccess = () => {
         <div>
           <img
             className="d-block mx-auto mb-4 h-10 w-10 font-bold text-miru-chart-green-400 md:mb-10 md:h-16 md:w-16 lg:mb-11"
-            src={GreenCheckCirleIcon}
+            src={GreenCheckCircleIcon}
           />
         </div>
         <h1 className="text-center font-manrope text-2xl font-extrabold text-miru-chart-green-400 md:text-3xl lg:text-4.5xl">
