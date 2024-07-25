@@ -89,7 +89,7 @@ MiruManagingProjectsScreen
 MiruManagingClientsScreen
 MiruManagingEmployeesScreen
 MoreOptionIcon
-GreenCheckCirleIcon
+GreenCheckCircleIcon
 deleteImageIcon
 Animation_404
 GoogleCalendarIcon

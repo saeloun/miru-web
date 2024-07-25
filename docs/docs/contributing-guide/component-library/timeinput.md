@@ -45,9 +45,9 @@ appearance. Here are some examples of how we can use it:
 
 | Name           | Description                                                                 | Default Value |
 | -------------- | --------------------------------------------------------------------------- | ------------- |
-| `initTime`     | Provide the intital time value for the input `string`                       | `""`          |
+| `initTime`     | Provide the initial time value for the input `string`                       | `""`          |
 | `disabled`     | To set input as disabled `bool`                                             | `false`       |
 | `onTimeChange` | To specify the action to be triggered on changing of the input value `func` | `-`           |
-| `placeholder`  | Provide the input placholder value `string`                                 | `"HH:MM"`     |
+| `placeholder`  | Provide the input placeholder value `string`                                | `"HH:MM"`     |
 | `className`    | To provide external classnames to input `string`                            | `""`          |
 | `name`         | Provide the name for the input `string`                                     | `""`          |

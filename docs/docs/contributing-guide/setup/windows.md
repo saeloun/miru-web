@@ -9,7 +9,7 @@ If you already have WSL installed on your Windows machine, then you can skip
 this step.
 
 Install
-[Windows Subystem for Linux](https://learn.microsoft.com/en-us/windows/wsl/install-manual)
+[Windows Subsystem for Linux](https://learn.microsoft.com/en-us/windows/wsl/install-manual)
 on your Windows machine.
 
 ## Installation
