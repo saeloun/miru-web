@@ -18,7 +18,7 @@ RSpec.describe "Api::V1::TimesheetEntry#create", type: :request do
     }
   }
 
-  context "when sucessful creation" do
+  context "when successful creation" do
     before do
       create(:employment, company:, user:)
       create(:project_member, project:, user:)

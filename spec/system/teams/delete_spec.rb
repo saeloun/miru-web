@@ -16,7 +16,7 @@ RSpec.describe "Delete team member", type: :system do
       sign_in(user)
     end
 
-    context "when deleting team memeber" do
+    context "when deleting team member" do
       it "can delete a team member" do
         with_forgery_protection do
           visit "/teams"

@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe "Add team memebr to project", type: :system do
+RSpec.describe "Add team member to project", type: :system do
   let(:company) { create(:company) }
   let!(:user) { create(:user, current_workspace_id: company.id) }
   let!(:user_2) { create(:user, current_workspace_id: company.id) }
