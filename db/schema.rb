@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_07_02_063359) do
+ActiveRecord::Schema[7.1].define(version: 2024_07_15_045448) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -194,7 +194,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_02_063359) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "is_insured", default: false
-    t.date "insurance_bought_date"
+    t.date "insurance_activation_date"
     t.date "insurance_expiry_date"
     t.index ["company_id"], name: "index_devices_on_company_id"
     t.index ["device_type"], name: "index_devices_on_device_type"
@@ -389,6 +389,16 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_02_063359) do
     t.index ["user_id"], name: "index_notification_preferences_on_user_id"
   end
 
+  create_table "packages", force: :cascade do |t|
+    t.string "name", null: false
+    t.integer "min_users", null: false
+    t.integer "max_users", null: false
+    t.decimal "price", precision: 8, scale: 2, null: false
+    t.string "payment_frequency", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "payments", force: :cascade do |t|
     t.bigint "invoice_id", null: false
     t.date "transaction_date", null: false
@@ -468,6 +478,15 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_02_063359) do
     t.boolean "compliant", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "solid_cable_messages", force: :cascade do |t|
+    t.text "channel"
+    t.text "payload"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["channel"], name: "index_solid_cable_messages_on_channel"
+    t.index ["created_at"], name: "index_solid_cable_messages_on_created_at"
   end
 
   create_table "solid_queue_blocked_executions", force: :cascade do |t|

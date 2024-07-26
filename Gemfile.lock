@@ -133,6 +133,7 @@ GEM
       execjs (~> 2.0)
     base64 (0.2.0)
     bcrypt (3.1.18)
+    benchmark-ips (2.13.0)
     better_html (2.0.1)
       actionview (>= 6.0)
       activesupport (>= 6.0)
@@ -598,6 +599,8 @@ GEM
     snaky_hash (2.0.1)
       hashie
       version_gem (~> 1.1, >= 1.1.1)
+    solid_cable (1.0.3)
+      rails (< 9)
     solid_queue (0.3.3)
       activejob (>= 7.1)
       activerecord (>= 7.1)
@@ -670,6 +673,7 @@ DEPENDENCIES
   ahoy_matey
   annotate
   aws-sdk-s3
+  benchmark-ips
   bootsnap (>= 1.4.4)
   bullet (~> 7.1)
   bundler-audit
@@ -733,6 +737,7 @@ DEPENDENCIES
   shoulda-callback-matchers (~> 1.1.1)
   shoulda-matchers (~> 5.1)
   simplecov
+  solid_cable
   solid_queue (~> 0.3)
   spring
   stripe
