@@ -96,7 +96,7 @@ RSpec.describe "InternalApi::V1::Employments#index", type: :request do
         }
       end
 
-      it "creates, updates and destroyes the respective project_members associated wih the project" do
+      it "creates, updates and destroys the respective project_members associated with the project" do
         send_request(
           :put, internal_api_v1_project_member_path(project.id), params: @update_member_params,
           headers: auth_headers(user1))
