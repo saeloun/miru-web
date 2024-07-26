@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe "Inviting team memeber", type: :system do
+RSpec.describe "Inviting team member", type: :system do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
   let(:invitation) { create(:invitation) }
@@ -14,7 +14,7 @@ RSpec.describe "Inviting team memeber", type: :system do
       sign_in(user)
     end
 
-    context "when inviting team memeber" do
+    context "when inviting team member" do
       before do
         with_forgery_protection do
           visit "/teams"

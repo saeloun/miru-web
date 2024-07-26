@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe "Editing team memeber details", type: :system do
+RSpec.describe "Editing team member details", type: :system do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
   let(:employee_user) { create(:user, current_workspace_id: company.id) }
@@ -16,7 +16,7 @@ RSpec.describe "Editing team memeber details", type: :system do
       sign_in(user)
     end
 
-    context "when editing team memeber" do
+    context "when editing team member" do
       it "can edit a team member name" do
         with_forgery_protection do
           visit "/teams"

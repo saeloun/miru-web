@@ -150,7 +150,7 @@ RSpec.describe Invoice, type: :model do
     end
   end
 
-  describe ".unit_amout" do
+  describe ".unit_amount" do
     let(:invoice) { create :invoice }
 
     it "returns the unit amount for normal_currencies" do
