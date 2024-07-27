@@ -13,10 +13,11 @@ import { Device } from "./Device";
 import StaticPage from "./StaticPage";
 
 const AllocatedDevicesDetails = () => {
-  const { user, isDesktop } = useUserContext();
+  const { user, isDesktop, company } = useUserContext();
   const { isCalledFromSettings } = useProfileContext();
   const navigate = useNavigate();
   const { memberId } = useParams();
+  const dateFormat = company.date_format;
   const currentUserId = isCalledFromSettings ? user.id : memberId;
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -42,9 +43,9 @@ const AllocatedDevicesDetails = () => {
     <Fragment>
       {isDesktop ? (
         <DetailsHeader
+          showButtons
           editAction={handleEdit}
           isDisableUpdateBtn={false}
-          showButtons={false}
           subTitle=""
           title="Allocated Devices"
         />
@@ -60,7 +61,7 @@ const AllocatedDevicesDetails = () => {
           <Loader />
         </div>
       ) : (
-        <StaticPage devices={devices} />
+        <StaticPage dateFormat={dateFormat} devices={devices} />
       )}
     </Fragment>
   );

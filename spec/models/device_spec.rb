@@ -33,4 +33,10 @@ RSpec.describe Device, type: :model do
       expect(device.device_type).to eq("laptop")
     end
   end
+
+  describe "validate comparisons" do
+    it "insurance expiry date should not be after bought date" do
+      expect(device.insurance_expiry_date).to be >= device.insurance_bought_date
+    end
+  end
 end

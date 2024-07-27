@@ -1,18 +1,30 @@
 import React from "react";
 
-const CustomToggle = (
-  { isChecked = false, setIsChecked, toggleCss, id, onToggle = () => {} } // eslint-disable-line
-) => (
+type customToggleProps = {
+  isChecked: boolean;
+  setIsChecked?: React.Dispatch<React.SetStateAction<boolean>>;
+  toggleCss: string;
+  id: number | string;
+  onToggle?: (e?: any) => void; // eslint-disable-line
+};
+
+const CustomToggle = ({
+  isChecked = false,
+  setIsChecked,
+  toggleCss,
+  id,
+  onToggle,
+}: customToggleProps) => (
   <div className={`customToggle__container ${toggleCss}`}>
     <label>
       <input
         checked={isChecked}
         className="customToggle"
-        id={id}
+        id={id.toString()}
         type="checkbox"
-        onChange={() => {
-          onToggle();
-          setIsChecked(!isChecked);
+        onChange={e => {
+          onToggle(e);
+          setIsChecked && setIsChecked(!isChecked);
         }}
       />
       <div>
