@@ -40,7 +40,7 @@ class TimeTrackingIndexService
     end
 
     def current_company_users
-      current_company.employees_without_client_role.select(:id, :first_name, :last_name)
+      current_company.employees_without_client_role.select(:id, :first_name, :last_name).order(:first_name, :last_name)
     end
 
     def format_entries
