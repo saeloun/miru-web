@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module EmployeeFetcher
+  extend ActiveSupport::Concern
+
   def set_employees
     @employees = is_admin? ? current_company_users : [current_user]
   end
