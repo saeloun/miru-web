@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class TimeTrackingIndexService
+  include EmployeeFetcher
+
   attr_reader :current_user, :user, :current_company, :entries, :from, :to, :year
   attr_accessor :clients, :projects, :is_admin, :employees
 
@@ -35,14 +37,6 @@ class TimeTrackingIndexService
       set_employees
     end
 
-    def set_employees
-      @employees = is_admin ? current_company_users : [current_user]
-    end
-
-    def current_company_users
-      current_company.employees_without_client_role.select(:id, :first_name, :last_name).order(:first_name, :last_name)
-    end
-
     def format_entries
       formatted_timesheet_entries
       group_timeoff_entries_by_leave_date
@@ -61,7 +55,7 @@ class TimeTrackingIndexService
     end
 
     def set_is_admin
-      @is_admin = current_user.has_role?(:owner, current_company) || current_user.has_role?(:admin, current_company)
+      @is_admin = is_admin?
     end
 
     def set_clients
