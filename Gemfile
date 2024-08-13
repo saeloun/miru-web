@@ -6,7 +6,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 ruby "3.2.4"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
-gem "rails", "~> 7.1.3"
+gem "rails", "~> 7.2.0"
 
 # Use postgresql as the database for Active Record
 gem "pg"
@@ -164,6 +164,9 @@ group :development, :test, :ci do
 
   # Use factory-bot to replace fixtures
   gem "factory_bot_rails"
+
+  gem "rubocop-factory_bot"
+  gem "rubocop-rspec_rails"
 
   # Use Faker for fake data
   gem "faker"

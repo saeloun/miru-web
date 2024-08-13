@@ -2,6 +2,8 @@ require:
   - rubocop-performance
   - rubocop-rails
   - rubocop-rspec
+  - rubocop-rspec_rails
+  - rubocop-factory_bot
 
 AllCops:
   TargetRubyVersion: 3.1.2
@@ -602,10 +604,10 @@ RSpec/ExpectInHook:
   Enabled: true
   StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/ExpectInHook
 
-RSpec/FilePath:
+Rails/FilePath:
   Description: Checks that spec file paths are consistent and well-formed.
   Enabled: true
-  StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/FilePath
+  StyleGuide: https://www.rubydoc.info/gems/rubocop-rails/RuboCop/Cop/Rails/FilePath
 
 RSpec/HookArgument:
   Description: Checks the arguments passed to before, around, and after.
@@ -739,29 +741,21 @@ RSpec/Rails/AvoidSetupHook:
   Enabled: true
   StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/Rails/AvoidSetupHook
 
-RSpec/Rails/HttpStatus:
+Rails/HttpStatus:
   Description:
     Enforces use of symbolic or numeric value to describe HTTP status.
   Enabled: true
-  StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/Rails/HttpStatus
+  StyleGuide: https://www.rubydoc.info/gems/rubocop-rails/RuboCop/Cop/Rails/HttpStatus
 
 # RSpec x FactoryBot
-RSpec/FactoryBot/AttributeDefinedStatically:
-  Description: Always declare attribute values as blocks.
+FactoryBot/AttributeDefinedStatically:
   Enabled: true
-  StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/FactoryBot/AttributeDefinedStatically
 
-RSpec/FactoryBot/CreateList:
-  Description: Checks for create_list usage.
+FactoryBot/CreateList:
   Enabled: true
-  StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/FactoryBot/CreateList
 
-RSpec/FactoryBot/FactoryClassName:
-  Description: Use string value when setting the class attribute explicitly.
+FactoryBot/FactoryClassName:
   Enabled: true
-  StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/FactoryBot/FactoryClassName
 
-RSpec/FactoryBot/SyntaxMethods:
-  Description: Use shorthands from FactoryBot::Syntax::Methods in your specs.
+FactoryBot/SyntaxMethods:
   Enabled: true
-  StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/FactoryBot/SyntaxMethods
