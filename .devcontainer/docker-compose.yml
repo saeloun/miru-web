@@ -24,12 +24,10 @@ services:
       - DATABASE_CLEANER_ALLOW_REMOTE_DATABASE_URL="true"
       - POSTGRES_PASSWORD="postgres"
       - POSTGRES_USER="postgres"
-      - REDIS_URL=redis://redis:6379/1
       - ELASTICSEARCH_URL=http://elastic:x2Sy5FK51zu@elasticsearch:9200
       - PIDFILE=/tmp/pids/server.pid
     depends_on:
       - database
-      - redis
       - elasticsearch
     tmpfs:
       - /tmp/pids/
@@ -64,14 +62,6 @@ services:
 
       # Add "forwardPorts": ["5432"] to **devcontainer.json** to forward PostgreSQL locally.
       # (Adding the "ports" property to this file will not forward from a Codespace.)
-  redis:
-    image: redis:6.2.7
-    command: redis-server
-    restart: always
-    ports:
-      - "6379:6379"
-    volumes:
-      - redis:/data
 
   webpack:
     build:
@@ -87,27 +77,9 @@ services:
       - DATABASE_CLEANER_ALLOW_REMOTE_DATABASE_URL="true"
       - POSTGRES_PASSWORD="postgres"
       - POSTGRES_USER="postgres"
-      - REDIS_URL=redis://redis:6379/1
       - ELASTICSEARCH_URL=http://elastic:x2Sy5FK51zu@elasticsearch:9200
     depends_on:
       - database
-
-  sidekiq:
-    build:
-      context: ..
-      dockerfile: .devcontainer/Dockerfile
-    command: bundle exec sidekiq -C config/sidekiq.yml
-    volumes:
-      - ..:/app
-      - gem_cache:/usr/local/bundle/gems
-      - node_modules:/app/node_modules
-    environment:
-      - DATABASE_URL=postgres://postgres:postgres@database:5432/
-      - REDIS_URL=redis://redis:6379/1
-    depends_on:
-      - redis
-      - database
-      - app
 
   elasticsearch:
     image: elasticsearch:7.13.3
@@ -123,4 +95,3 @@ volumes:
   gem_cache:
   postgres:
   node_modules:
-  redis:
