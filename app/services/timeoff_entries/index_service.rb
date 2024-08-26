@@ -2,7 +2,7 @@
 
 module TimeoffEntries
   class IndexService < ApplicationService
-    include EmployeeFetcher
+    include EmployeeFetchingConcern
 
     attr_reader :current_company, :current_user, :user_id, :year, :previous_year
     attr_accessor :leave_balance, :optional_timeoff_entries, :national_timeoff_entries
