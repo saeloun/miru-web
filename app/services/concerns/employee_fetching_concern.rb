@@ -5,7 +5,7 @@ module EmployeeFetchingConcern
 
   included do
     def set_employees
-      @employees = admin? ? current_company_users : [current_user]
+      @employees = admin? ? current_company_users : [current_user_data]
     end
 
     private
@@ -16,8 +16,14 @@ module EmployeeFetchingConcern
           :last_name)
       end
 
+      def current_user_data
+        OpenStruct.new(current_user.slice(:id, :first_name, :last_name))
+      end
+
       def admin?
-        @admin ||= current_user.has_role?(:owner, current_company) || current_user.has_role?(:admin, current_company)
+        @admin ||= current_user.has_any_role?(
+          { name: :owner, resource: current_company },
+          { name: :admin, resource: current_company })
       end
   end
 end
