@@ -480,7 +480,6 @@ GEM
       execjs
       railties (>= 3.2)
       tilt
-    redis (4.8.0)
     regexp_parser (2.9.0)
     reline (0.5.3)
       io-console (~> 0.5)
@@ -713,7 +712,6 @@ DEPENDENCIES
   rails-controller-testing (~> 1.0, >= 1.0.5)
   ransack (~> 4.1)
   react-rails (= 2.6.2)
-  redis (~> 4.0)
   rolify (~> 6.0)
   rspec-buildkite
   rspec-rails (~> 6.1)
