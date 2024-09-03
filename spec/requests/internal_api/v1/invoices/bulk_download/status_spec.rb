@@ -8,10 +8,10 @@ RSpec.describe "InternalApi::V1::Invoices::BulkDownload#status", type: :request 
   let(:download_id) { Faker::Alphanumeric.unique.alpha(number: 10) }
   let(:bulk_download_status) { create(:bulk_invoice_download_status, download_id:, status: "processing") }
 
-  subject {
+  subject do
     send_request :get, status_internal_api_v1_invoices_bulk_download_index_path(download_id:),
       headers: auth_headers(user)
-  }
+  end
 
   context "when authenticated" do
     before do

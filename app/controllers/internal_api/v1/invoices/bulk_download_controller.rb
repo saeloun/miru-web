@@ -21,7 +21,7 @@ class InternalApi::V1::Invoices::BulkDownloadController < InternalApi::V1::Appli
     if download_status
       render json: { status: download_status.status, file_url: download_status.file_url }
     else
-      render json: { status: "not_found" }
+      render json: { status: :not_found }
     end
   end
 

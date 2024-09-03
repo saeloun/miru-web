@@ -31,21 +31,23 @@ const BulkDownloadInvoices = ({
     };
     const queryString = new URLSearchParams();
 
-    for (const key in payload.bulk_invoices) {
-      if (Array.isArray(payload.bulk_invoices[key])) {
-        payload.bulk_invoices[key].forEach(item => {
+    Object.entries(payload.bulk_invoices).forEach(([key, value]) => {
+      if (Array.isArray(value)) {
+        value.forEach(item => {
           queryString.append(`bulk_invoices[${key}][]`, item);
         });
       } else {
-        queryString.append(`bulk_invoices[${key}]`, payload.bulk_invoices[key]);
+        queryString.append(`bulk_invoices[${key}]`, value);
       }
-    }
+    });
     try {
       await invoicesApi.bulkDownloadInvoices(queryString.toString());
       setDownloading(true);
       setTimeout(() => setIsPolling(true), 3000);
     } catch {
       setDownloadStatus({ label: "Something went wrong!", icon: "" });
+      setDownloading(false);
+      setIsPolling(false);
     }
   };
 
