@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 
 class TimeTrackingIndexService
+  include EmployeeFetchingConcern
+
   attr_reader :current_user, :user, :current_company, :entries, :from, :to, :year
-  attr_accessor :clients, :projects, :is_admin, :employees
+  attr_accessor :clients, :projects, :employees
 
   def initialize(current_user:, user:, company:, from:, to:, year:)
     @current_user = current_user
@@ -29,18 +31,9 @@ class TimeTrackingIndexService
   private
 
     def setup_data
-      set_is_admin
       set_clients
       set_projects
       set_employees
-    end
-
-    def set_employees
-      @employees = is_admin ? current_company_users : [current_user]
-    end
-
-    def current_company_users
-      current_company.employees_without_client_role.select(:id, :first_name, :last_name)
     end
 
     def format_entries
@@ -58,10 +51,6 @@ class TimeTrackingIndexService
     def formatted_timesheet_entries
       timesheet_entries = fetch_timesheet_entries
       @entries = TimesheetEntriesPresenter.new(timesheet_entries).group_snippets_by_work_date
-    end
-
-    def set_is_admin
-      @is_admin = current_user.has_role?(:owner, current_company) || current_user.has_role?(:admin, current_company)
     end
 
     def set_clients
