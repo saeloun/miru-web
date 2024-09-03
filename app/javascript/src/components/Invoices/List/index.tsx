@@ -63,9 +63,6 @@ const Invoices = () => {
   const [recentlyUpdatedInvoices, setRecentlyUpdatedInvoices] =
     useState<any>(null);
   const [downloading, setDownloading] = useState<boolean>(false);
-  const [connected, setConnected] = useState<boolean>(false);
-  const [received, setReceived] = useState<any>(null);
-  const [counter, setCounter] = useState<number>(1);
   const [isStripeEnabled, setIsStripeEnabled] = useState<boolean>(null);
   const selectedInvoiceCount = selectedInvoices.length;
   const isInvoiceSelected = selectedInvoiceCount > 0;
@@ -76,10 +73,7 @@ const Invoices = () => {
 
   useEffect(() => sendGAPageView(), []);
 
-  const aferDownloadActions = () => {
-    setCounter(0);
-    setReceived(null);
-    setConnected(false);
+  const afterDownloadActions = () => {
     setSelectedInvoiceCounter(selectedInvoices.length);
     setShowBulkDownloadDialog(false);
   };
@@ -87,12 +81,11 @@ const Invoices = () => {
   useEffect(() => {
     if (!downloading) {
       if (isDesktop) {
-        const timer = setTimeout(aferDownloadActions, 3000);
+        const timer = setTimeout(afterDownloadActions, 3000);
 
         return () => clearTimeout(timer);
       }
-
-      aferDownloadActions();
+      afterDownloadActions();
     }
   }, [downloading]);
 
@@ -121,7 +114,6 @@ const Invoices = () => {
   useEffect(() => {
     if (!invoices || !invoiceIsSending) return;
     const DELAY = 5000;
-
     const timer = setTimeout(() => fetchInvoicesWithoutRefresh(), DELAY);
 
     return () => clearTimeout(timer);
@@ -334,16 +326,10 @@ const Invoices = () => {
           )}
           {showBulkDownloadDialog && (
             <BulkDownloadInvoices
-              connected={connected}
-              counter={counter}
               downloading={downloading}
-              received={received}
               selectedInvoiceCounter={selectedInvoiceCounter}
               selectedInvoices={selectedInvoices}
-              setConnected={setConnected}
-              setCounter={setCounter}
               setDownloading={setDownloading}
-              setReceived={setReceived}
               setSelectedInvoiceCounter={setSelectedInvoiceCounter}
             />
           )}

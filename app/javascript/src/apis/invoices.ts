@@ -39,6 +39,11 @@ const invoiceLogs = async id => axios.get(`${path}/action_trails/${id}`);
 const sendReminder = async (id, payload) =>
   await axios.post(`${path}/${id}/send_reminder`, payload);
 
+const getDownloadStatus = async downloadId =>
+  axios.get(`invoices/bulk_download/status`, {
+    params: { download_id: downloadId },
+  });
+
 const invoicesApi = {
   get,
   post,
@@ -56,6 +61,7 @@ const invoicesApi = {
   wavieInvoice,
   invoiceLogs,
   sendReminder,
+  getDownloadStatus,
 };
 
 export default invoicesApi;
