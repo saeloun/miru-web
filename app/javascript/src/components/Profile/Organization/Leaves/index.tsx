@@ -1,10 +1,10 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 import React, { useEffect, useState } from "react";
 
 import { getYear } from "date-fns";
 import { useNavigate } from "react-router-dom";
 
 import leavesApi from "apis/leaves";
+import teamApi from "apis/team";
 import Loader from "common/Loader/index";
 import { leaveIcons, leaveColors } from "constants/leaveType";
 import { useUserContext } from "context/UserContext";
@@ -12,18 +12,26 @@ import { sendGAPageView } from "utils/googleAnalytics";
 
 import Details from "./Details";
 import EditLeaves from "./EditLeaves";
-import { makeLeavePayload, makeLeavesList } from "./utils";
+import {
+  makeLeavePayload,
+  makeLeavesList,
+  makeCustomLeavesList,
+  makeCustomLeavePayload,
+} from "./utils";
 
 const Leaves = () => {
   const [leaveBalanceList, setLeaveBalanceList] = useState([]);
+  const [leaves, setLeaves] = useState([]);
+  const [customLeavesList, setCustomLeavesList] = useState([]);
   const [iconOptions, setIconOptions] = useState(leaveIcons);
   const [colorOptions, setColorOptions] = useState(leaveColors);
   const [isLoading, setIsLoading] = useState(true);
   const [currentYear, setCurrentYear] = useState<number>(getYear(new Date()));
-  const [leaves, setLeaves] = useState([]);
   const [currentYearLeaves, setCurrentYearLeaves] = useState([]);
+  const [currentYearCustomLeaves, setCurrentYearCustomLeaves] = useState([]);
   const [isEditable, setIsEditable] = useState(false);
   const [isDisableUpdateBtn, setIsDisableUpdateBtn] = useState(false);
+  const [employees, setEmployees] = useState<Array<any>>([]);
 
   const { isDesktop } = useUserContext();
   const navigate = useNavigate();
@@ -32,6 +40,7 @@ const Leaves = () => {
 
   useEffect(() => {
     fetchLeaves();
+    fetchEmployees();
   }, []);
 
   useEffect(() => {
@@ -48,6 +57,19 @@ const Leaves = () => {
     setIsLoading(false);
   };
 
+  const fetchEmployees = async () => {
+    const res = await teamApi.get();
+    const empData = res.data.combinedDetails;
+    const empList = empData
+      .filter(emp => emp.isTeamMember)
+      .map(emp => ({
+        value: emp.id,
+        label: emp.name,
+      }));
+
+    setEmployees(empList);
+  };
+
   useEffect(() => {
     if (leaves.length) {
       updateLeaveBalanceList();
@@ -56,12 +78,23 @@ const Leaves = () => {
 
   const updateLeaveBalanceList = (allLeaves = leaves) => {
     const currentLeaves = allLeaves.find(leave => leave.year == currentYear);
-    if (currentLeaves?.leave_types.length) {
-      setLeaveBalanceList(makeLeavesList(currentLeaves?.leave_types));
-      setCurrentYearLeaves(makeLeavesList(currentLeaves?.leave_types));
+    if (currentLeaves) {
+      if (currentLeaves?.leave_types.length) {
+        setLeaveBalanceList(makeLeavesList(currentLeaves?.leave_types));
+        setCurrentYearLeaves(makeLeavesList(currentLeaves?.leave_types));
+      }
+
+      if (currentLeaves?.custom_leaves.length) {
+        setCustomLeavesList(makeCustomLeavesList(currentLeaves?.custom_leaves));
+        setCurrentYearCustomLeaves(
+          makeCustomLeavesList(currentLeaves?.custom_leaves)
+        );
+      }
     } else {
       setLeaveBalanceList([]);
+      setCustomLeavesList([]);
       setCurrentYearLeaves([]);
+      setCurrentYearCustomLeaves([]);
     }
   };
 
@@ -82,10 +115,30 @@ const Leaves = () => {
     ]);
   };
 
-  const updateCondition = (type, value, index) => {
+  const handleAddCustomLeave = () => {
+    setCustomLeavesList([
+      ...customLeavesList,
+      ...[
+        {
+          customLeaveType: "",
+          customLeaveTotal: 0,
+          customAllocationPeriod: "days",
+          employees: [],
+        },
+      ],
+    ]);
+  };
+
+  const handleOnChangeLeaves = (type, value, index) => {
     const editLeaveList = [...leaveBalanceList];
     editLeaveList[index][type] = value;
     setLeaveBalanceList([...editLeaveList]);
+  };
+
+  const handleOnChangeCustomLeaves = (type, value, index) => {
+    const editCustomLeaveList = [...customLeavesList];
+    editCustomLeaveList[index][type] = value;
+    setCustomLeavesList([...editCustomLeaveList]);
   };
 
   const handleUpdateDetails = async () => {
@@ -95,8 +148,15 @@ const Leaves = () => {
       removed_leave_type_ids: [],
     };
 
+    const customPayload = {
+      add_custom_leaves: [],
+      update_custom_leaves: [],
+      remove_custom_leaves: [],
+    };
+
     setIsDisableUpdateBtn(true);
 
+    //filtering out removed leaves
     const removedLeaves = currentYearLeaves
       .filter(
         currentLeave =>
@@ -104,7 +164,17 @@ const Leaves = () => {
       )
       .map(removedLeave => removedLeave.id);
 
+    //filtering out removed custom leaves
+    const removedCustomLeaves = currentYearCustomLeaves
+      .filter(
+        currentLeave =>
+          !customLeavesList.some(leave => leave.id === currentLeave.id)
+      )
+      .map(removedLeave => removedLeave.id);
+
+    //updating payload
     payload.removed_leave_type_ids.push(...removedLeaves);
+    customPayload.remove_custom_leaves.push(...removedCustomLeaves);
 
     const leavesList = leaveBalanceList.filter(
       leave =>
@@ -116,6 +186,7 @@ const Leaves = () => {
         })
     );
 
+    //updating leaves payload for add and update
     leavesList.forEach(leave => {
       if (leave.id) {
         payload.updated_leave_types.push(makeLeavePayload(leave));
@@ -124,12 +195,38 @@ const Leaves = () => {
       }
     });
 
-    updateLeaveDetails(payload);
+    const customLeaves = customLeavesList.filter(
+      customLeave =>
+        !currentYearCustomLeaves.some(currentLeave => {
+          const leaveJSON = JSON.stringify(customLeave);
+          const currentLeaveJSON = JSON.stringify(currentLeave);
+
+          return leaveJSON === currentLeaveJSON;
+        })
+    );
+
+    //updating custom leaves payload for add and update
+    customLeaves.forEach(customLeave => {
+      if (customLeave.id) {
+        customPayload.update_custom_leaves.push(
+          makeCustomLeavePayload(customLeave)
+        );
+      } else {
+        customPayload.add_custom_leaves.push(
+          makeCustomLeavePayload(customLeave)
+        );
+      }
+    });
+
+    updateLeaveDetails(payload, customPayload);
   };
 
-  const updateLeaveDetails = async payload => {
+  const updateLeaveDetails = async (payload, customPayload) => {
     try {
       await leavesApi.updateLeaveWithLeaveTypes(currentYear, payload);
+      await leavesApi.customLeaves(currentYear, {
+        custom_leaves: customPayload,
+      });
       setIsDisableUpdateBtn(false);
       setIsEditable(false);
       fetchLeaves();
@@ -148,13 +245,21 @@ const Leaves = () => {
     }
   };
 
-  const handleDeleteLeaveBalance = leave => {
-    setLeaveBalanceList(leaveBalanceList.filter(prev => prev !== leave));
+  const handleDeleteLeave = (leave, isCustom = false) => {
+    if (isCustom) {
+      setCustomLeavesList(customLeavesList.filter(prev => prev !== leave));
+    } else {
+      setLeaveBalanceList(leaveBalanceList.filter(prev => prev !== leave));
+    }
   };
 
-  const handleLeaveTypeChange = (e, index) => {
+  const handleLeaveTypeChange = (e, index, isCustom = false) => {
     const result = e.target.value.replace(/[^a-zA-Z- ]/g, "");
-    updateCondition("leaveType", result, index);
+    if (isCustom) {
+      handleOnChangeCustomLeaves("customLeaveType", result, index);
+    } else {
+      handleOnChangeLeaves("leaveType", result, index);
+    }
   };
 
   const handleIconSelect = () => {
@@ -188,22 +293,27 @@ const Leaves = () => {
           showYearPicker
           colorOptions={colorOptions}
           currentYear={currentYear}
+          customLeavesList={customLeavesList}
+          employees={employees}
+          handleAddCustomLeave={handleAddCustomLeave}
           handleAddLeaveType={handleAddLeaveType}
           handleCancelAction={handleCancelAction}
-          handleDeleteLeaveBalance={handleDeleteLeaveBalance}
+          handleDeleteLeave={handleDeleteLeave}
           handleLeaveTypeChange={handleLeaveTypeChange}
+          handleOnChangeCustomLeaves={handleOnChangeCustomLeaves}
+          handleOnChangeLeaves={handleOnChangeLeaves}
           iconOptions={iconOptions}
           isDesktop={isDesktop}
           isDisableUpdateBtn={isDisableUpdateBtn}
           leaveBalanceList={leaveBalanceList}
           setCurrentYear={setCurrentYear}
-          updateCondition={updateCondition}
           updateLeaveDetails={handleUpdateDetails}
         />
       ) : (
         <Details
           showYearPicker
           currentYear={currentYear}
+          customLeavesList={currentYearCustomLeaves}
           editAction={() => setIsEditable(true)}
           leavesList={currentYearLeaves}
           setCurrentYear={setCurrentYear}
