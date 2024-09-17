@@ -26,6 +26,13 @@ module TimeoffEntries
     end
 
     def process
+      puts "______________________________________________________________________-"
+      puts "calucalte leave type service"
+      puts CURRENT_DATE
+      puts CURRENT_YEAR
+      puts CURRENT_MONTH
+      puts CURRENT_WEEK
+
       total_duration = case allocation_frequency
                        when :per_week
                          calculate_days_per_week_leave_allocation
@@ -55,6 +62,8 @@ module TimeoffEntries
                        else
                          0
       end
+      puts "Total Duration Calculated"
+      puts total_duration
       total_duration
     end
 
