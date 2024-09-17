@@ -8,7 +8,7 @@ default: &default
 
 development:
   <<: *default
-  database: "miru_web_development"
+  database: "miru_production_database"
 
 test:
   <<: *default

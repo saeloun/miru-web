@@ -8,8 +8,11 @@ class InternalApi::V1::TimeoffEntriesController < InternalApi::V1::ApplicationCo
 
   def index
     authorize TimeoffEntry
+    puts "----- TimeoffEntriesController#index -----"
+    puts "Params: #{params.inspect}"
 
     data = TimeoffEntries::IndexService.new(current_user, current_company, params[:user_id], params[:year]).process
+    puts "API Response Data: #{data.inspect}"
 
     render :index, locals: {
       timeoff_entries: data[:timeoff_entries],

@@ -22,7 +22,10 @@ module TimeoffEntries
         total_timeoff_entries_duration: timeoff_entries.sum(&:duration),
         optional_timeoff_entries:,
         national_timeoff_entries:
-      }
+      }.tap do |result|
+        puts "Leave balance calculated"
+        puts result[:leave_balance]
+      end
     end
 
     private
@@ -160,6 +163,7 @@ module TimeoffEntries
       end
 
       def calculate_total_duration(leave_type, passed_year)
+        puts "+++++++++++++++++++++++++++++++++++"
         allocation_value = leave_type.allocation_value
         allocation_period = leave_type.allocation_period.to_sym
         allocation_frequency = leave_type.allocation_frequency.to_sym
