@@ -11,3 +11,6 @@ end
 json.client do
   json.partial! "internal_api/v1/partial/client", locals: { client: invoice.client }
 end
+json.bank_account do
+  json.partial! "internal_api/v1/invoices/bank_account",  bank_account: 
+end

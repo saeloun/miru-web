@@ -177,6 +177,10 @@ class Invoice < ApplicationRecord
     Invoice.search_index.refresh
   end
 
+  def bank_account_details
+    company.bank_account
+  end
+
   private
 
     def set_external_view_key
