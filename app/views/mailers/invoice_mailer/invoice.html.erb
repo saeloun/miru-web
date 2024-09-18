@@ -50,6 +50,29 @@
         >
           Invoice Summary
         </div>
+           <% if @bank_account.present? %>
+        <div style="margin: 40px; text-align: center; font-weight:bold; font-size: 20px; line-height:24px;">
+          Bank Account Details
+        </div>
+        <table style="width: 100%; margin: 0 40px; border-collapse: collapse;">
+          <tr>
+            <td style="font-weight: normal; font-size: 14px; padding: 8px;">Bank Name:</td>
+            <td style="font-weight: normal; font-size: 14px;"><%= @bank_account.bank_name %></td>
+          </tr>
+          <tr>
+            <td style="font-weight: normal; font-size: 14px; padding: 8px;">Account Type:</td>
+            <td style="font-weight: normal; font-size: 14px;"><%= @bank_account.account_type.capitalize %></td>
+          </tr>
+          <tr>
+            <td style="font-weight: normal; font-size: 14px; padding: 8px;">Routing Number:</td>
+            <td style="font-weight: normal; font-size: 14px;"><%= @bank_account.routing_number %></td>
+          </tr>
+          <tr>
+            <td style="font-weight: normal; font-size: 14px; padding: 8px;">Account Number:</td>
+            <td style="font-weight: normal; font-size: 14px;"><%= @bank_account.account_number %></td>
+          </tr>
+        </table>
+      <% end %>
         <table style="width: 100%; margin: 40px ; border-collapse: separate;border-spacing: 0 15px; ">
           <colgroup>
             <col width="40%">

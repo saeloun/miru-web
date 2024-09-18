@@ -16,4 +16,8 @@ class PaymentSettingsPolicy < ApplicationPolicy
   def refresh_stripe_connect?
     user_owner_role? || user_admin_role?
   end
+
+  def update_bank_account?
+    user_owner_role? || user_admin_role?
+  end
 end

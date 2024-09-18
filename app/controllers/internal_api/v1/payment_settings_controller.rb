@@ -6,7 +6,7 @@ class InternalApi::V1::PaymentSettingsController < InternalApi::V1::ApplicationC
   def index
     authorize :index, policy_class: PaymentSettingsPolicy
 
-    render :index, locals: { stripe_connected_account: }
+    render :index, locals: { stripe_connected_account:, bank_account: current_company.bank_account }
   end
 
   def connect_stripe
@@ -27,6 +27,17 @@ class InternalApi::V1::PaymentSettingsController < InternalApi::V1::ApplicationC
     end
   end
 
+  def update_bank_account
+    authorize :update_bank_account, policy_class: PaymentSettingsPolicy
+
+    @bank_account = current_company.bank_account || current_company.build_bank_account
+    if @bank_account.update(bank_account_params)
+      render json: { notice: "Bank account details updated successfully" }, status: :ok
+    else
+      render json: { error: @bank_account.errors.full_messages }, status: :unprocessable_entity
+    end
+  end
+
   private
 
     def stripe_connected_account
@@ -35,5 +46,9 @@ class InternalApi::V1::PaymentSettingsController < InternalApi::V1::ApplicationC
 
     def save_stripe_settings
       PaymentProviders::CreateStripeProviderService.process(current_company)
+    end
+
+    def bank_account_params
+      params.require(:bank_account).permit(:routing_number, :account_number, :account_type, :bank_name)
     end
 end

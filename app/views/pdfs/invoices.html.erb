@@ -137,4 +137,13 @@ html {
       </tbody>
     </table>
   </div>
+  <% if bank_account %>
+    <div class="bank-account-details">
+      <h3>Bank Account Details</h3>
+      <p>Bank Name: <%= bank_account[:bank_name] %></p>
+      <p>Account Type: <%= bank_account[:account_type].capitalize %></p>
+      <p>Routing Number: <%= bank_account[:routing_number] %></p>
+      <p>Account Number: <%= bank_account[:account_number] %></p>
+    </div>
+  <% end %>
 </div>
