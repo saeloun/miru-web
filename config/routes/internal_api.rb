@@ -125,11 +125,15 @@ namespace :internal_api, defaults: { format: "json" } do
 
     resources :time_tracking, only: [:index], path: "time-tracking"
 
+    resources :payment_settings, only: [:index, :update], path: "payments/settings" do
+      collection do
+        post "stripe/connect", to: "payment_settings#connect_stripe"
+        delete "stripe/disconnect", to: "payment_settings#destroy"
+        put "bank_account", to: "payment_settings#update_bank_account"
+      end
+    end
+
     # Non-Resourceful Routes
-    get "payments/settings", to: "payment_settings#index"
-    post "payments/settings/stripe/connect", to: "payment_settings#connect_stripe"
-    delete "payments/settings/stripe/disconnect", to: "payment_settings#destroy"
-    patch "payments/settings/bank_account", to: "payment_settings#update_bank_account"
     get "calendars/redirect", to: "calendars#redirect", as: "redirect"
     get "calendars/callback", to: "calendars#callback", as: "callback"
     get "calendars/calendars", to: "calendars#calendars", as: "calendars"
