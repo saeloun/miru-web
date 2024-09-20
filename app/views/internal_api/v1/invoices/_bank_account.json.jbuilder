@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 
 if bank_account.present?
   json.bank_name bank_account.bank_name
