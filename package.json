@@ -30,7 +30,6 @@
     "babel-plugin-transform-react-remove-prop-types": "^0.4.24",
     "classnames": "^2.3.1",
     "compression-webpack-plugin": "^10.0.0",
-    "country-state-city": "^3.1.2",
     "css-loader": "^6.7.3",
     "css-minimizer-webpack-plugin": "^4.2.2",
     "currency-symbol-map": "^5.0.1",
@@ -89,6 +88,7 @@
     "webpack-cli": "^5.0.1",
     "webpack-merge": "^5.8.0",
     "webpack-sources": "^3.2.3",
+    "world-countries": "^5.0.0",
     "yup": "^0.32.11"
   },
   "devDependencies": {

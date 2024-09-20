@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 
-import { City, Country, State } from "country-state-city";
 import { Formik, Form, FormikProps } from "formik";
 import { EditImageButtonSVG, deleteImageIcon } from "miruIcons";
 import PhoneInput from "react-phone-number-input";
@@ -8,9 +7,9 @@ import flags from "react-phone-number-input/flags";
 import "react-phone-number-input/style.css";
 import Select, { components } from "react-select";
 import { Avatar } from "StyledComponents";
+import worldCountries from "world-countries";
 
 import companyProfileApi from "apis/companyProfile";
-import { CustomAsyncSelect } from "common/CustomAsyncSelect";
 import CustomReactSelect from "common/CustomReactSelect";
 import { InputErrors, InputField } from "common/FormikFields";
 
@@ -76,74 +75,21 @@ const CompanyDetailsForm = ({
   );
   const [fileUploadError, setFileUploadError] = useState<string>("");
 
-  const initialSelectValue = {
-    label: "",
-    value: "",
-    code: "",
-  };
   const [countries, setCountries] = useState([]);
-  const [currentCountryDetails, setCurrentCountryDetails] =
-    useState(initialSelectValue);
-  const [currentCityList, setCurrentCityList] = useState([]);
 
   const assignCountries = async allCountries => {
     const countryData = await allCountries.map(country => ({
-      value: country.isoCode,
-      label: country.name,
-      code: country.isoCode,
+      value: country.cca2,
+      label: country.name.common,
+      code: country.cca2,
     }));
     setCountries(countryData);
   };
 
   useEffect(() => {
     getAllTimezones();
-    const allCountries = Country.getAllCountries();
-    assignCountries(allCountries);
+    assignCountries(worldCountries);
   }, []);
-
-  const updatedStates = countryCode =>
-    State.getStatesOfCountry(countryCode).map(state => ({
-      label: state.name,
-      value: state.name,
-      code: state.isoCode,
-      ...state,
-    }));
-
-  const filterCities = (inputValue: string, currentCityList) => {
-    const city = currentCityList.filter(i =>
-      i.label.toLowerCase().includes(inputValue.toLowerCase())
-    );
-
-    return city.length ? city : [{ label: inputValue, value: inputValue }];
-  };
-
-  const promiseOptions = (inputValue: string) =>
-    new Promise(resolve => {
-      setTimeout(() => {
-        resolve(filterCities(inputValue, currentCityList));
-      }, 1000);
-    });
-
-  const getOptions = (inputValue: string, values) => {
-    if (currentCityList.length === 0) {
-      const cities = City.getCitiesOfState(
-        values.country.code,
-        values.state.code
-      ).map(city => ({
-        label: city.name,
-        value: city.name,
-        ...city,
-      }));
-
-      return new Promise(resolve => {
-        setTimeout(() => {
-          resolve(filterCities(inputValue, cities));
-        }, 1000);
-      });
-    }
-
-    return promiseOptions(inputValue);
-  };
 
   useEffect(() => {
     if (Object.keys(allTimezones || {})?.length) {
@@ -151,7 +97,6 @@ const CompanyDetailsForm = ({
         ? previousSubmittedValues.country?.value
         : companyDetailsFormInitialValues?.country?.code || "US";
       getTimezonesOfCurrentCountry(selectedCountryCode);
-      updatedStates(selectedCountryCode);
     }
   }, [allTimezones]); // eslint-disable-line
 
@@ -429,58 +374,39 @@ const CompanyDetailsForm = ({
                     options={countries}
                     value={values.country.value ? values.country : null}
                     handleOnChange={e => {
-                      setCurrentCountryDetails(e);
                       getTimezonesOfCurrentCountry(e.code, setFieldValue);
                       setFieldValue("country", e);
                       setFieldValue("state", { value: null, label: null });
                       setFieldValue("city", { value: null, label: null });
-                      setCurrentCityList([]);
                     }}
                   />
                 </div>
                 <div className="flex w-1/2 flex-col pl-2">
-                  <CustomReactSelect
-                    isErr={!!errors.state && touched.state}
+                  <InputField
+                    resetErrorOnChange
+                    id="state"
                     label="State"
                     name="state"
-                    value={values.state.value ? values.state : null}
-                    handleOnChange={state => {
-                      setFieldValue("state", state);
-                      const countryCode =
-                        currentCountryDetails.code == ""
-                          ? values.country?.value
-                          : currentCountryDetails.code;
-
-                      const cities = City.getCitiesOfState(
-                        countryCode,
-                        state.code
-                      ).map(city => ({
-                        label: city.name,
-                        value: city.name,
-                        ...city,
-                      }));
-                      setCurrentCityList(cities);
-                    }}
-                    options={updatedStates(
-                      currentCountryDetails.code
-                        ? currentCountryDetails.code
-                        : "US"
-                    )}
+                    setFieldValue={setFieldValue}
+                  />
+                  <InputErrors
+                    fieldErrors={errors.state}
+                    fieldTouched={touched.state}
                   />
                 </div>
               </div>
               <div className="flex flex-row">
-                <div className="flex w-1/2 flex-col pr-2" id="city">
-                  <CustomAsyncSelect
-                    defaultOptions={currentCityList}
-                    isErr={!!errors.city && touched.city}
+                <div className="flex w-1/2 flex-col pr-2">
+                  <InputField
+                    resetErrorOnChange
+                    id="city"
                     label="City"
-                    loadOptions={option => getOptions(option, values)}
                     name="city"
-                    value={values.city.value ? values.city : null}
-                    handleOnChange={city => {
-                      setFieldValue("city", city);
-                    }}
+                    setFieldValue={setFieldValue}
+                  />
+                  <InputErrors
+                    fieldErrors={errors.city}
+                    fieldTouched={touched.city}
                   />
                 </div>
                 <div className="flex w-1/2 flex-col pl-2">

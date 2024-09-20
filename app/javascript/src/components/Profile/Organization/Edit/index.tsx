@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useState } from "react";
 
-import { Country } from "country-state-city";
 import { useDropzone } from "react-dropzone";
 import { useNavigate } from "react-router-dom";
 import { Toastr } from "StyledComponents";
+import worldCountries from "world-countries";
 import * as Yup from "yup";
 
 import companiesApi from "apis/companies";
@@ -168,9 +168,11 @@ const OrgEdit = () => {
     let isoCode = "";
     let name = "";
     if (country && country !== "") {
-      const countryData = Country.getCountryByCode(country);
-      isoCode = countryData ? countryData.isoCode : "";
-      name = countryData ? countryData.name : "";
+      const countryData = worldCountries.find(
+        worldCountry => worldCountry["cca2"] == country
+      );
+      isoCode = countryData ? countryData.cca2 : "";
+      name = countryData ? countryData.name.common : "";
     }
 
     const orgAddr = {
@@ -225,9 +227,9 @@ const OrgEdit = () => {
 
   const assignCountries = async allCountries => {
     const countryData = await allCountries.map(country => ({
-      value: country.isoCode,
-      label: country.name,
-      code: country.isoCode,
+      value: country.cca2,
+      label: country.name.common,
+      code: country.cca2,
     }));
     setCountries(countryData);
   };
@@ -236,8 +238,7 @@ const OrgEdit = () => {
     sendGAPageView();
     getCurrencies();
     getData();
-    const allCountries = Country.getAllCountries();
-    assignCountries(allCountries);
+    assignCountries(worldCountries);
   }, []);
 
   const handleAddrChange = useCallback(
