@@ -369,7 +369,7 @@ GEM
     net-smtp (0.3.3)
       net-protocol
     newrelic_rpm (9.8.0)
-    nio4r (2.5.9)
+    nio4r (2.7.3)
     nokogiri (1.16.5-arm64-darwin)
       racc (~> 1.4)
     nokogiri (1.16.5-x86_64-darwin)
@@ -411,7 +411,7 @@ GEM
     psych (4.0.6)
       stringio
     public_suffix (5.0.4)
-    puma (6.4.2)
+    puma (6.4.3)
       nio4r (~> 2.0)
     pundit (2.3.0)
       activesupport (>= 3.0.0)
@@ -704,7 +704,7 @@ DEPENDENCIES
   parallel_tests
   pg
   psych (~> 4)
-  puma (~> 6.4.2)
+  puma (~> 6.4.3)
   pundit (~> 2.2)
   rack-cors (= 2.0.0)
   rack-mini-profiler (>= 2.3.3)
