@@ -35,7 +35,7 @@ export const SETTINGS = [
     authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE, CLIENT],
     Component: UserDetailsView,
     category: "personal",
-    isTab: true,
+    isNavigationTab: true,
   },
   {
     label: "PROFILE SETTINGS",
@@ -44,7 +44,7 @@ export const SETTINGS = [
     authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE, CLIENT],
     Component: UserDetailsEdit,
     category: "personal",
-    isTab: false,
+    isNavigationTab: false,
   },
   {
     label: "EMPLOYMENT DETAILS",
@@ -53,7 +53,7 @@ export const SETTINGS = [
     authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE],
     Component: EmploymentDetails,
     category: "personal",
-    isTab: true,
+    isNavigationTab: true,
   },
   {
     label: "EMPLOYMENT DETAILS",
@@ -62,7 +62,7 @@ export const SETTINGS = [
     authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE],
     Component: EmploymentDetailsEdit,
     category: "personal",
-    isTab: false,
+    isNavigationTab: false,
   },
   {
     label: "ALLOCATED DEVICES",
@@ -71,7 +71,7 @@ export const SETTINGS = [
     authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE],
     Component: AllocatedDevicesDetails,
     category: "personal",
-    isTab: true,
+    isNavigationTab: true,
   },
   {
     label: "ALLOCATED DEVICES",
@@ -80,7 +80,7 @@ export const SETTINGS = [
     authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE],
     Component: AllocatedDevicesEdit,
     category: "personal",
-    isTab: false,
+    isNavigationTab: false,
   },
   {
     label: "NOTIFICATION SETTINGS",
@@ -89,7 +89,7 @@ export const SETTINGS = [
     authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE],
     Component: NotificationPreferences,
     category: "personal",
-    isTab: true,
+    isNavigationTab: true,
   },
   // Uncomment when Integrating with API
   // {
@@ -99,7 +99,7 @@ export const SETTINGS = [
   //   authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE],
   //   Component: CompensationDetails,
   //   category: "personal",
-  //isTab: false,
+  //isNavigationTab: false,
   //},
   // {
   //   label: "COMPENSATION",
@@ -108,7 +108,7 @@ export const SETTINGS = [
   //   authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE],
   //   Component: CompensationDetailsEdit,
   //   category: "personal",
-  // isTab: false,
+  // isNavigationTab: false,
   //},
   {
     label: "ORG. SETTINGS",
@@ -117,7 +117,7 @@ export const SETTINGS = [
     authorisedRoles: [ADMIN, OWNER],
     Component: OrgDetails,
     category: "organization",
-    isTab: true,
+    isNavigationTab: true,
   },
   {
     label: "ORG. SETTINGS",
@@ -126,7 +126,7 @@ export const SETTINGS = [
     authorisedRoles: [ADMIN, OWNER],
     Component: OrgEdit,
     category: "organization",
-    isTab: false,
+    isNavigationTab: false,
   },
   {
     label: "PAYMENT SETTINGS",
@@ -135,7 +135,7 @@ export const SETTINGS = [
     authorisedRoles: [ADMIN, OWNER],
     Component: PaymentSettings,
     category: "organization",
-    isTab: true,
+    isNavigationTab: true,
   },
   {
     label: "LEAVES",
@@ -144,7 +144,7 @@ export const SETTINGS = [
     authorisedRoles: [ADMIN, OWNER],
     Component: Leaves,
     category: "organization",
-    isTab: true,
+    isNavigationTab: true,
   },
   {
     label: "HOLIDAYS",
@@ -153,7 +153,7 @@ export const SETTINGS = [
     authorisedRoles: [ADMIN, OWNER],
     Component: Holidays,
     category: "organization",
-    isTab: true,
+    isNavigationTab: true,
   },
   // Uncomment when Integrating with API
   // {
@@ -163,20 +163,20 @@ export const SETTINGS = [
   //   authorisedRoles: [ADMIN, OWNER],
   //   Component: GoogleCalendar,
   //   category: "organization",
-  // isTab: false,
+  // isNavigationTab: false,
   // },
   // {
   //   path: "/import",
   //   Component: OrganizationImport,
   //   authorisedRoles: [ADMIN, OWNER],
   //   category: "organization",
-  // isTab: false,
+  // isNavigationTab: false,
   // },
   // {
   //   path: "/billing",
   //   Component: Billing,
   //   authorisedRoles: [ADMIN, OWNER],
   //   category: "organization",
-  //isTab: false,
+  //isNavigationTab: false,
   // },
 ];

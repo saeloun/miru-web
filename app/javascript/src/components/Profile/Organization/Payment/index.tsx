@@ -23,18 +23,57 @@ const PaymentSettings = () => {
   const [isStripeConnected, setIsStripeConnected] = useState<boolean>(null);
   const [showDisconnectDialog, setShowDisconnectDialog] =
     useState<boolean>(false);
+  const [editBankDetails, setEditBankDetails] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [bankName, setBankName] = useState<string>("");
+  const [accountNumber, setAccountNumber] = useState<string>("");
+  const [accountType, setAccountType] = useState<string>("");
+  const [routingNumber, setRoutingNumber] = useState<string>("");
 
   const connectStripe = async () => {
     const res = await paymentSettings.connectStripe();
     setAccountLink(res.data.accountLink);
   };
 
+  const handleCancelAction = () => {
+    setEditBankDetails(false);
+  };
+
+  const handleUpdateDetails = async () => {
+    setIsLoading(true);
+    const payload = {
+      bank_account: {
+        routing_number: routingNumber,
+        account_number: accountNumber,
+        account_type: accountType,
+        bank_name: bankName,
+      },
+    };
+    const res = await paymentSettings.updateBankDetails(payload);
+    if (res.status == 200) {
+      setBankName("");
+      setAccountNumber("");
+      setAccountType("");
+      setRoutingNumber("");
+      setEditBankDetails(false);
+      fetchPaymentSettings();
+      setIsLoading(false);
+    }
+  };
+
   const fetchPaymentSettings = async () => {
     try {
       setStatus(PaymentSettingsStatus.LOADING);
+      setIsLoading(true);
       const res = await paymentSettings.get();
+      const bankDetails = res.data.providers.bankAccount;
+      setBankName(bankDetails.bankName);
+      setAccountNumber(bankDetails.accountNumber);
+      setAccountType(bankDetails.accountType);
+      setRoutingNumber(bankDetails.routingNumber);
       setIsStripeConnected(res.data.providers.stripe.connected);
       setStatus(PaymentSettingsStatus.SUCCESS);
+      setIsLoading(false);
     } catch {
       setStatus(PaymentSettingsStatus.ERROR);
     }
@@ -60,15 +99,41 @@ const PaymentSettings = () => {
     <div className="flex w-full flex-col">
       {isDesktop ? (
         <StaticPage
+          accountNumber={accountNumber}
+          accountType={accountType}
+          bankName={bankName}
           connectStripe={connectStripe}
+          editBankDetails={editBankDetails}
+          handleCancelAction={handleCancelAction}
+          handleUpdateDetails={handleUpdateDetails}
+          isLoading={isLoading}
           isStripeConnected={isStripeConnected}
+          routingNumber={routingNumber}
+          setAccountNumber={setAccountNumber}
+          setAccountType={setAccountType}
+          setBankName={setBankName}
+          setEditBankDetails={setEditBankDetails}
+          setRoutingNumber={setRoutingNumber}
           setShowDisconnectDialog={setShowDisconnectDialog}
           status={status}
         />
       ) : (
         <MobileView
+          accountNumber={accountNumber}
+          accountType={accountType}
+          bankName={bankName}
           connectStripe={connectStripe}
+          editBankDetails={editBankDetails}
+          handleCancelAction={handleCancelAction}
+          handleUpdateDetails={handleUpdateDetails}
+          isLoading={isLoading}
           isStripeConnected={isStripeConnected}
+          routingNumber={routingNumber}
+          setAccountNumber={setAccountNumber}
+          setAccountType={setAccountType}
+          setBankName={setBankName}
+          setEditBankDetails={setEditBankDetails}
+          setRoutingNumber={setRoutingNumber}
           setShowDisconnectDialog={setShowDisconnectDialog}
           status={status}
           title="Payment Settings"
