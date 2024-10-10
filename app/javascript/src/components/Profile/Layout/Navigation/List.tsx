@@ -13,7 +13,10 @@ const getActiveClassName = isActive => {
 const List = ({ settingsList, companyRole }) => (
   <ul className="list-none text-sm font-medium leading-5 tracking-wider">
     {settingsList.map((setting, index) => {
-      if (setting.isTab && setting.authorisedRoles.includes(companyRole)) {
+      if (
+        setting.isNavigationTab &&
+        setting.authorisedRoles.includes(companyRole)
+      ) {
         return (
           <li className="border-b-2 border-miru-gray-400" key={index}>
             <NavLink
