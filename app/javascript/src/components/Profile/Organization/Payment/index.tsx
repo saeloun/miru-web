@@ -62,19 +62,19 @@ const PaymentSettings = () => {
   };
 
   const fetchPaymentSettings = async () => {
-    try {
-      setStatus(PaymentSettingsStatus.LOADING);
-      setIsLoading(true);
-      const res = await paymentSettings.get();
+    setStatus(PaymentSettingsStatus.LOADING);
+    const res = await paymentSettings.get();
+    if (res.status == 200) {
       const bankDetails = res.data.providers.bankAccount;
-      setBankName(bankDetails.bankName);
-      setAccountNumber(bankDetails.accountNumber);
-      setAccountType(bankDetails.accountType);
-      setRoutingNumber(bankDetails.routingNumber);
+      if (bankDetails) {
+        setBankName(bankDetails.bankName);
+        setAccountNumber(bankDetails.accountNumber);
+        setAccountType(bankDetails.accountType);
+        setRoutingNumber(bankDetails.routingNumber);
+      }
       setIsStripeConnected(res.data.providers.stripe.connected);
       setStatus(PaymentSettingsStatus.SUCCESS);
-      setIsLoading(false);
-    } catch {
+    } else {
       setStatus(PaymentSettingsStatus.ERROR);
     }
   };

@@ -101,14 +101,43 @@ html {
       </tbody>
     </table>
   </div>
-  <div class="pt-1 pb-10 pr-10 mb-5 w-full flex justify-end">
+  <div class="py-10 px-10 mb-5 w-full flex justify-between">
+    <% if bank_account %>
+      <table class="w-2/5">
+        <tbody>
+          <tr class="pb-5">
+            <td class="pb-2 font-bold text-base text-miru-dark-purple-1000 text-left">Bank Account Details:</td>
+          </tr>
+          <tr>
+            <td class="pt-4 font-normal text-base text-miru-dark-purple-1000 text-left">Bank Name:</td>
+            <td class="pt-4 font-bold text-base text-miru-dark-purple-1000 text-left "><%= bank_account[:bank_name] %></td>
+          </tr>
+          <tr>
+            <td class="pt-4 font-normal text-base text-miru-dark-purple-1000 text-left">Account Type:</td>
+            <td class="pt-4 font-bold text-base text-miru-dark-purple-1000 text-left w-22">
+              <%= bank_account[:account_type].capitalize %>
+            </td>
+          </tr>
+          <tr>
+            <td class="pt-4 font-normal text-base text-miru-dark-purple-1000 text-left">Routing Number: </td>
+            <td class="pt-4 font-bold text-base text-miru-dark-purple-1000 text-left">
+              <%= bank_account[:routing_number] %>
+            </td>
+          </tr>
+          <tr>
+            <td class="pt-4 font-normal text-base text-miru-dark-purple-1000 text-left">Account Number:</td>
+            <td class="pt-4 font-bold text-base text-miru-dark-purple-1000 text-left "><%= bank_account[:account_number] %></td>
+          </tr>
+        </tbody>
+      </table>
+    <% end %>
     <table class="w-2/5">
       <tbody>
         <tr>
           <td class="font-normal text-base text-miru-dark-purple-1000 text-right pr-10">Sub total</td>
           <td class="font-bold text-base text-miru-dark-purple-1000 text-right "><%=sub_total%></td>
         </tr>
-        <tr class="pb-5 border-b-2 miru-gray-400 ">
+        <tr class="pb-5 border-b-2 miru-gray-400">
           <td class="py-2 font-normal text-base text-miru-dark-purple-1000 text-right pr-10">Discount</td>
           <td class="font-bold text-base text-miru-dark-purple-1000 text-right "><%=invoice_discount%></td>
         </tr>
@@ -137,13 +166,4 @@ html {
       </tbody>
     </table>
   </div>
-  <% if bank_account %>
-    <div class="bank-account-details">
-      <h3>Bank Account Details</h3>
-      <p>Bank Name: <%= bank_account[:bank_name] %></p>
-      <p>Account Type: <%= bank_account[:account_type].capitalize %></p>
-      <p>Routing Number: <%= bank_account[:routing_number] %></p>
-      <p>Account Number: <%= bank_account[:account_number] %></p>
-    </div>
-  <% end %>
 </div>
