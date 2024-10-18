@@ -180,12 +180,37 @@ class Client < ApplicationRecord
     invitations.where(virtual_verified: true, accepted_at: nil).pluck(:recipient_email)
   end
 
-  def send_invoice_emails(virtual_verified)
+  def send_invoice_emails(virtual_verified, list_type = "Payment Notifications")
+    recipients = subscribed_client_emails_for(list_type)
     if virtual_verified
-      client_members_emails + client_virtual_verified_emails
+      recipients + client_virtual_verified_emails
     else
-      client_members_emails
+      recipients
     end
+  end
+
+  # def subscribed_recipients
+  #   client_members.joins(:user).pluck('users.email').select do |email|
+  #     User.find_by(email:)&.subscribed?('Client Payment Reminders')
+  #   end
+  # end
+
+  def subscribed_client_emails_for(list_type)
+    client_members.joins(:user).pluck("users.email").select do |email|
+      User.find_by(email:)&.subscribed?(list_type)
+    end
+  end
+
+  def subscribed_client_recipients
+    subscribed_client_emails_for("Payment Notifications")
+  end
+
+  def subscribed_client_invoice_recipients
+    subscribed_client_emails_for("Client Invoices")
+  end
+
+  def subscribed_client_reminders_recipients
+    subscribed_client_emails_for("Client Payment Reminders")
   end
 
   private

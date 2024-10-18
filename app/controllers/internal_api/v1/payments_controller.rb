@@ -20,10 +20,14 @@ class InternalApi::V1::PaymentsController < ApplicationController
     name_attr = { name: current_user.full_name }
 
     payment = InvoicePayment::Settle.process(payment_params.merge(name_attr), @invoice)
-    if @invoice.paid?
+    subscribed_recipients = @invoice.client.client_members.joins(:user).pluck(:email).select do |email|
+      User.find_by(email:)&.subscribed?("Payment Notifications")
+    end
+    if @invoice.paid? && subscribed_recipients.any?
       @invoice.send_to_client_email(
         invoice_id: @invoice.id,
-        subject: "Payment Confirmation of Invoice #{@invoice.invoice_number} for #{@invoice.company.name}"
+        subject: "Payment Confirmation of Invoice #{@invoice.invoice_number} for #{@invoice.company.name}",
+        recipients: subscribed_recipients
       )
     end
 

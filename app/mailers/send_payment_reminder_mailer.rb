@@ -3,7 +3,7 @@
 class SendPaymentReminderMailer < ApplicationMailer
   def send_payment_reminder
     @invoices = Invoice.where(id: params[:selected_invoices])
-    recipients = params[:recipients]
+    @recipients = params[:recipients]
     subject = params[:subject]
     @message = params[:message]
     @company = @invoices.first.company
@@ -16,7 +16,7 @@ class SendPaymentReminderMailer < ApplicationMailer
     attachments.inline["Instagram.png"] = File.read("public/Instagram.png")
     attachments.inline["Twitter.png"] = File.read("public/Twitter.png")
 
-    mail(to: recipients, subject:, reply_to: ENV["REPLY_TO_EMAIL"])
+    mail(to: @recipients, subject:, reply_to: ENV["REPLY_TO_EMAIL"])
   end
 
   private

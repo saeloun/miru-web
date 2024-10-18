@@ -45,7 +45,7 @@ const PaymentReminder = ({
     subject: "Reminder to complete payments for unpaid invoices",
     message:
       "This is a gentle reminder to complete payments for the following invoices. You can find the respective payment links along with the invoice details given below",
-    recipients: client.clientMembersEmails,
+    recipients: client.subscribedRecipients,
   });
 
   const isStepFormSubmittedOrVisited = stepNo => {
