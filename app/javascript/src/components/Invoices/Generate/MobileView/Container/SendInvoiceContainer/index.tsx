@@ -49,11 +49,12 @@ const SendInvoiceContainer = ({
     subject: string;
     message: string;
   }
-
   const [invoiceEmail, setInvoiceEmail] = useState<InvoiceEmail>({
     subject: emailSubject(invoice, isSendReminder),
     message: emailBody(invoice, isSendReminder),
-    recipients: invoice.client.clientMembersEmails,
+    recipients: isSendReminder
+      ? invoice.client.clientPaymentReminderEmails
+      : invoice.client.clientMembersEmails,
   });
   // eslint-disable-next-line no-unused-vars
   const [newRecipient, setNewRecipient] = useState<string>("");
@@ -137,6 +138,15 @@ const SendInvoiceContainer = ({
       status === InvoiceStatus.SUCCESS && navigate("/invoices");
     }, 5000);
   }, [status]);
+
+  useEffect(() => {
+    setInvoiceEmail(prevEmail => ({
+      ...prevEmail,
+      recipients: isSendReminder
+        ? invoice.client.clientPaymentReminderEmails
+        : invoice.client.clientMembersEmails,
+    }));
+  }, [isSendReminder, invoice]);
 
   return (
     <div className="h-full w-full p-4">

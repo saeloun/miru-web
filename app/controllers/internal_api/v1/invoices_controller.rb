@@ -21,7 +21,9 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
     render :create, locals: {
       invoice: @invoice,
       client: @client,
-      client_member_emails: @invoice.client.send_invoice_emails(@virtual_verified_invitations_allowed)
+      client_member_emails: @invoice.client.send_invoice_emails(
+        @virtual_verified_invitations_allowed,
+        "Client Invoices")
     }
   end
 
@@ -31,7 +33,7 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
       invoice:,
       client: invoice.client,
       client_list: current_company.clients.kept,
-      client_member_emails: invoice.client.send_invoice_emails(@virtual_verified_invitations_allowed)
+      client_member_emails: invoice.client.send_invoice_emails(@virtual_verified_invitations_allowed, "Client Invoices")
     }
   end
 
@@ -49,7 +51,10 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
     render :show, locals: {
       invoice:,
       client: invoice.client,
-      client_member_emails: invoice.client.send_invoice_emails(@virtual_verified_invitations_allowed)
+      client_member_emails: invoice.client.send_invoice_emails(
+        @virtual_verified_invitations_allowed,
+        "Client Invoices"),
+      subscribed_client_reminders_recipients: invoice.client.subscribed_client_reminders_recipients
     }
   end
 
@@ -65,14 +70,14 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
       return render json: { message: "Invoice was sent just a minute ago." }, status: :accepted
     end
 
-    recipients = invoice_email_params[:recipients]
+    recipients = invoice.client.subscribed_client_invoice_recipients
 
     if recipients.size < 6
       invoice.sending! unless invoice.paid? || invoice.overdue?
       invoice.send_to_email(
         subject: invoice_email_params[:subject],
         message: invoice_email_params[:message],
-        recipients: invoice_email_params[:recipients]
+        recipients:
       )
 
       render json: { message: "Invoice will be sent!" }, status: :accepted
@@ -88,7 +93,7 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
       SendReminderMailer.with(
         invoice:,
         subject: invoice_email_params[:subject],
-        recipients: invoice_email_params[:recipients],
+        recipients: invoice.client.subscribed_client_reminders_recipients,
         message: invoice_email_params[:message]
       ).send_reminder.deliver_later
 
