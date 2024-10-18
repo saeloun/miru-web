@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_08_05_040547) do
+ActiveRecord::Schema[7.1].define(version: 2024_10_15_064421) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -98,6 +98,17 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_05_040547) do
     t.datetime "started_at"
     t.index ["user_id"], name: "index_ahoy_visits_on_user_id"
     t.index ["visit_token"], name: "index_ahoy_visits_on_visit_token", unique: true
+  end
+
+  create_table "bank_accounts", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.string "routing_number", null: false
+    t.string "account_number", null: false
+    t.string "account_type", null: false
+    t.string "bank_name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_bank_accounts_on_company_id"
   end
 
   create_table "bulk_invoice_download_statuses", force: :cascade do |t|
@@ -384,6 +395,15 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_05_040547) do
     t.index ["company_id"], name: "index_leaves_on_company_id"
     t.index ["discarded_at"], name: "index_leaves_on_discarded_at"
     t.index ["year", "company_id"], name: "index_leaves_on_year_and_company_id", unique: true
+  end
+
+  create_table "mailkick_subscriptions", force: :cascade do |t|
+    t.string "subscriber_type"
+    t.bigint "subscriber_id"
+    t.string "list"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["subscriber_type", "subscriber_id", "list"], name: "index_mailkick_subscriptions_on_subscriber_and_list", unique: true
   end
 
   create_table "notification_preferences", force: :cascade do |t|
@@ -691,6 +711,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_05_040547) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "bank_accounts", "companies"
   add_foreign_key "carryovers", "companies"
   add_foreign_key "carryovers", "leave_types"
   add_foreign_key "carryovers", "users"

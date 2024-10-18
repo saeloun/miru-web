@@ -23,7 +23,9 @@ const SendInvoice = ({
   const [invoiceEmail, setInvoiceEmail] = useState<InvoiceEmail>({
     subject: emailSubject(invoice, isSendReminder),
     message: emailBody(invoice, isSendReminder),
-    recipients: invoice.client.clientMembersEmails,
+    recipients: isSendReminder
+      ? invoice.client.clientPaymentReminderEmails
+      : invoice.client.clientMembersEmails,
   });
 
   const navigate = useNavigate();
@@ -42,6 +44,15 @@ const SendInvoice = ({
       status === InvoiceStatus.SUCCESS && navigate("/invoices");
     }, 5000);
   }, [status]);
+
+  useEffect(() => {
+    setInvoiceEmail(prevEmail => ({
+      ...prevEmail,
+      recipients: isSendReminder
+        ? invoice.client.clientPaymentReminderEmails
+        : invoice.client.clientMembersEmails,
+    }));
+  }, [isSendReminder, invoice]);
 
   return (
     <Modal

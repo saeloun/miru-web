@@ -33,7 +33,7 @@ const EmailPreview = ({
                 "h-9": !emailParams.recipients,
               })}
             >
-              {emailParams.recipients.map(recipient => (
+              {emailParams?.recipients?.map(recipient => (
                 <div
                   className="space-XIcon-2 m-0.5 mr-2 flex w-fit items-center rounded-full border bg-miru-gray-400 px-2 py-1"
                   key={recipient}

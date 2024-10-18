@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   if ENV["MISSION_CONTROL_ENABLED"] == "true"
     mount MissionControl::Jobs::Engine, at: "/jobs"
   end
+  mount Mailkick::Engine, at: "/mailkick"
 
   namespace :admin do
       resources :users

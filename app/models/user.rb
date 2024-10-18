@@ -56,6 +56,7 @@ class User < ApplicationRecord
   end
 
   # Associations
+  has_subscriptions
   has_many :employments, dependent: :destroy
   has_many :companies, through: :employments
   has_many :project_members, dependent: :destroy
@@ -108,6 +109,7 @@ class User < ApplicationRecord
   before_create :set_token
 
   after_commit :send_to_hubspot, on: :create
+  after_create :subscribe_based_on_role
 
   searchkick filterable: [:first_name, :last_name, :email],
     word_middle: [:first_name, :last_name, :email]
@@ -231,5 +233,17 @@ class User < ApplicationRecord
 
     def send_to_hubspot
       HubspotIntegrationJob.perform_later(email, first_name, last_name)
+    end
+
+    def subscribe_based_on_role
+      if has_role?(:client, current_company)
+        subscribe("Client Invoices")
+        subscribe("Client Payment Reminders")
+        subscribe("Payment Notifications")
+      elsif has_role?(:admin, current_company) || has_role?(:owner, current_company)
+        subscribe("Payment Notifications")
+      elsif has_role?(:employee, current_company) || has_role?(:admin, current_company)
+        subscribe("Weekly Reminders")
+      end
     end
 end

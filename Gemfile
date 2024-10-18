@@ -231,3 +231,6 @@ gem "rack-cors", "2.0.0"
 gem "administrate"
 
 gem "psych", "~> 4"
+
+# Manage email subscriptions
+gem "mailkick"

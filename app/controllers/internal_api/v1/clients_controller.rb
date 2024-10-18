@@ -35,7 +35,8 @@ class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationControlle
              project_details: client.project_details(params[:time_frame]),
              total_minutes: client.total_hours_logged(params[:time_frame]),
              overdue_outstanding_amount: client.client_overdue_and_outstanding_calculation,
-             invoices: client.invoices.includes([:company])
+             invoices: client.invoices.includes([:company]),
+             subscribed_recipients: client.subscribed_client_reminders_recipients
            },
       status: :ok
   end
@@ -71,13 +72,14 @@ class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationControlle
 
   def send_payment_reminder
     authorize client
-
-    SendPaymentReminderMailer.with(
-      recipients: client_email_params[:email_params][:recipients],
-      selected_invoices: client_email_params[:selected_invoices],
-      message: client_email_params[:email_params][:message],
-      subject: client_email_params[:email_params][:subject],
-    ).send_payment_reminder.deliver_later
+    if client.subscribed_client_reminders_recipients.any?
+      SendPaymentReminderMailer.with(
+        recipients: client.subscribed_client_reminders_recipients,
+        selected_invoices: client_email_params[:selected_invoices],
+        message: client_email_params[:email_params][:message],
+        subject: client_email_params[:email_params][:subject],
+      ).send_payment_reminder.deliver_later
+    end
 
     render json: { notice: "Payment reminder has been sent" }, status: :accepted
   end

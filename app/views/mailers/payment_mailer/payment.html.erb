@@ -74,6 +74,9 @@
           <div>
             Time tracking and Invoicing Software for every business
           </div>
+          <div>
+             <%= link_to "Unsubscribe from this email", mailkick_unsubscribe_url(User.find_by(email: @recipients), "Payment Notifications"), style: "color:#5B34EA; font-size: 12px;" %>
+          </div>
         </div>
         <div
           style="font-family: 'Manrope'; padding-left:40px; padding-right:40px; padding-top:12px; padding-bottom:12px;  justify-content:space-between; color:white; background:#5B34EA;"
@@ -168,6 +171,9 @@
           <p style="font-family: 'Manrope'; font-style: normal; font-size:14px; font-weight:400; line-height: 19px; text-align: center; color:#A5A3AD; width: 80%; margin: 8px auto 0px auto;">
             Time tracking and Invoicing Software for every business
           </p>
+          <div>
+             <%= link_to "Unsubscribe from this email", mailkick_unsubscribe_url(User.find_by(email: @recipients), "Payment Notifications"), style: "color:#5B34EA; font-size: 12px;" %>
+          </div>
         </div>
         <div
           style="font-family: 'Manrope'; padding-left:16px; padding-right:px; padding-top:12px; padding-bottom:12px; display: flex; align-items: center; justify-content:space-between; color:white; background:#5B34EA;"

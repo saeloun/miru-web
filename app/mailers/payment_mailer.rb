@@ -3,7 +3,7 @@
 class PaymentMailer < ApplicationMailer
   def payment
     @invoice = Invoice.find(params[:invoice_id])
-    recipients = recipients_with_role
+    @recipients = params[:recipients]
     subject = params[:subject]
     @invoice_url = "#{ENV['APP_BASE_URL']}/invoices/#{@invoice.external_view_key}/view"
     @company = @invoice.company
@@ -16,7 +16,7 @@ class PaymentMailer < ApplicationMailer
       attachments.inline["Instagram.png"] = File.read("public/Instagram.png")
       attachments.inline["Twitter.png"] = File.read("public/Twitter.png")
 
-      mail(to: recipients, subject:, reply_to: ENV["REPLY_TO_EMAIL"])
+      mail(to: @recipients, subject:, reply_to: ENV["REPLY_TO_EMAIL"])
 
       @invoice.update_columns(payment_sent_at: DateTime.current)
     end
@@ -28,11 +28,6 @@ class PaymentMailer < ApplicationMailer
       @invoice.company.logo.attached? ?
         polymorphic_url(@invoice.company.logo) :
         ""
-    end
-
-    def recipients_with_role
-      client_company = @invoice.client.company
-      client_company.users.with_role([:admin, :owner], client_company).pluck(:email)
     end
 
     def email_message
