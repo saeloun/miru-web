@@ -79,6 +79,13 @@ const AddEntryMobile = () => {
   }, [debouncedSearchQuery]);
 
   useEffect(() => {
+    if (!showClientList) {
+      setClientList(clients);
+      setSearchQuery("");
+    }
+  }, [showClientList]);
+
+  useEffect(() => {
     if (debouncedProjectSearchQuery && projectList.length > 0) {
       const newList = projectList.filter(project =>
         project.name
