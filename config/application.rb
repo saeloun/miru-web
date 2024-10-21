@@ -40,6 +40,7 @@ module MiruWeb
     if (email_delivery_method = ENV["EMAIL_DELIVERY_METHOD"])
       config.action_mailer.delivery_method = email_delivery_method.to_sym
     end
+    config.action_mailer.postmark_settings = { api_token: ENV["POSTMARK_API_TOKEN"] }
 
     config.active_model.i18n_customize_full_message = true
     config.react.camelize_props = true
