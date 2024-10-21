@@ -234,3 +234,5 @@ gem "rack-cors", "2.0.0"
 gem "administrate"
 
 gem "psych", "~> 4"
+
+gem "postmark-rails"
