@@ -6,6 +6,7 @@ import {
   MapPinIcon,
   MoneyIcon,
   PhoneIcon,
+  ClockIcon,
 } from "miruIcons";
 import PhoneInput from "react-phone-number-input";
 import flags from "react-phone-number-input/flags";
@@ -37,6 +38,8 @@ export const StaticPage = ({
     companyTimezone,
     companyDateFormat,
     companyFiscalYear,
+    companyWorkingDays,
+    companyWorkingHours,
   },
   isDragActive,
   getInputProps,
@@ -404,6 +407,79 @@ export const StaticPage = ({
                   : fiscalYearOptions[0]
               }
             />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div className="flex flex-col gap-y-6 py-6 md:flex-row md:py-8">
+      <div className="w-full md:w-18">
+        <span className="flex flex-row items-center text-sm font-medium text-miru-dark-purple-1000">
+          <span className="mr-2 w-13">
+            <ClockIcon color="#1D1A31" size={13.5} weight="bold" />
+          </span>
+          Days & Hours
+        </span>
+      </div>
+      <div className="w-full md:w-72">
+        <div className="flex flex-row text-sm font-medium">
+          <div className="w-1/2 p-2" data-cy="base-currency">
+            <CustomInputText
+              id="companyWorkingDays"
+              label="Weekly Working Days"
+              min={0.0}
+              name="companyWorkingDays"
+              value={companyWorkingDays || ""}
+              inputBoxClassName={`${inputClass} ${
+                errDetails.companyWorkingDays
+                  ? "border-red-600"
+                  : "border-miru-gray-1000"
+              }`}
+              labelClassName={`${labelClass} ${
+                errDetails.companyWorkingDays
+                  ? "text-red-600"
+                  : "text-miru-dark-purple-200"
+              }`}
+              onChange={e =>
+                handleChangeCompanyDetails(e.target.value, "companyWorkingDays")
+              }
+            />
+            {errDetails.companyWorkingDays && (
+              <ErrorSpan
+                className="text-xs text-red-600"
+                message={errDetails.companyWorkingDays}
+              />
+            )}
+          </div>
+          <div className="w-1/2 p-2 text-sm font-medium">
+            <CustomInputText
+              id="companyWorkingHours"
+              label="Weekly Working Hours"
+              min={0.0}
+              name="companyWorkingHours"
+              value={companyWorkingHours || ""}
+              inputBoxClassName={`${inputClass} ${
+                errDetails.companyNameErr
+                  ? "border-red-600"
+                  : "border-miru-gray-1000"
+              }`}
+              labelClassName={`${labelClass} ${
+                errDetails.companyNameErr
+                  ? "text-red-600"
+                  : "text-miru-dark-purple-200"
+              }`}
+              onChange={e =>
+                handleChangeCompanyDetails(
+                  e.target.value,
+                  "companyWorkingHours"
+                )
+              }
+            />
+            {errDetails.companyWorkingHoursErr && (
+              <ErrorSpan
+                className="text-xs text-red-600"
+                message={errDetails.companyWorkingHoursErr}
+              />
+            )}
           </div>
         </div>
       </div>

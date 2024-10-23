@@ -13,6 +13,8 @@ json.company_details do
   json.date_format current_company.date_format
   json.calendar_enabled current_company.calendar_enabled
   json.logo_url
+  json.working_days current_company.working_days
+  json.working_hours current_company.working_hours
   json.address do
     json.partial! "internal_api/v1/partial/address", locals: { address: }
   end

@@ -8,6 +8,7 @@ import {
   MoneyIcon,
   PhoneIcon,
   CalendarIcon,
+  ClockIcon,
 } from "miruIcons";
 import { Avatar } from "StyledComponents";
 
@@ -52,6 +53,8 @@ const StaticPage = ({
     companyFiscalYear,
     companyDateFormat,
     companyTimezone,
+    companyWorkingHours,
+    companyWorkingDays,
   },
 }) => (
   <div className="mt-4 h-full bg-miru-gray-100 px-4 md:min-h-screen md:px-10 lg:min-h-full">
@@ -177,7 +180,7 @@ const StaticPage = ({
         </div>
       </div>
     </div>
-    <div className="flex flex-col gap-y-6 py-6 md:flex-row md:gap-y-0 md:py-8">
+    <div className="flex flex-col gap-y-6 border-b border-b-miru-gray-400 py-6 md:flex-row md:gap-y-0 md:py-8">
       <div className="w-full md:w-18">
         <div className="flex flex-row items-center text-sm font-medium text-miru-dark-purple-1000">
           <div>
@@ -215,6 +218,41 @@ const StaticPage = ({
             </span>
             <p className="min-h-24 font-manrope text-base font-medium text-miru-dark-purple-1000">
               {getFilterValue(companyFiscalYear)}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div className="flex flex-col gap-y-6 py-6 md:flex-row md:gap-y-0 md:py-8">
+      <div className="w-full md:w-18">
+        <div className="flex flex-row items-center text-sm font-medium text-miru-dark-purple-1000">
+          <div>
+            <ClockIcon
+              className="mr-2"
+              color="#1D1A31"
+              size={13.5}
+              weight="bold"
+            />
+          </div>
+          <p>Days & Hours</p>
+        </div>
+      </div>
+      <div className="w-full md:w-72">
+        <div className="flex md:px-2">
+          <div className="flex w-6/12 flex-col">
+            <span className="text-xs text-miru-dark-purple-1000">
+              Weekly working days
+            </span>
+            <p className="min-h-24 font-manrope text-base font-medium text-miru-dark-purple-1000">
+              {companyWorkingDays || "-"}
+            </p>
+          </div>
+          <div className="flex w-6/12 flex-col">
+            <span className="text-xs text-miru-dark-purple-1000">
+              Weekly working hours
+            </span>
+            <p className="min-h-24 font-manrope text-base font-medium text-miru-dark-purple-1000">
+              {companyWorkingHours || "-"}
             </p>
           </div>
         </div>

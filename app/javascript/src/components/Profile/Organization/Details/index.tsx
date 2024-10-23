@@ -25,6 +25,8 @@ const initialState = {
   companyDateFormat: "",
   companyTimezone: "",
   logo: null,
+  companyWorkingHours: "",
+  companyWorkingDays: "",
 };
 
 const OrgDetails = () => {
@@ -48,6 +50,8 @@ const OrgDetails = () => {
       date_format,
       timezone,
       id,
+      working_hours,
+      working_days,
     } = companyDetails;
 
     const { address_line_1, address_line_2, city, state, pin, country } =
@@ -83,6 +87,8 @@ const OrgDetails = () => {
       companyTimezone: timezone,
       id,
       logo: null,
+      companyWorkingHours: working_hours,
+      companyWorkingDays: working_days,
     });
     setIsLoading(false);
   };

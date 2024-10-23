@@ -13,6 +13,8 @@
 #  name             :string           not null
 #  standard_price   :decimal(, )      default(0.0), not null
 #  timezone         :string
+#  working_days     :string
+#  working_hours    :string
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
 #
