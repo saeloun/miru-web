@@ -67,6 +67,7 @@ import {
   Baby,
   Pill,
   Option,
+  Bank,
 } from "@phosphor-icons/react";
 
 const error404Animation = require("./GIFS/404_animation.gif");
@@ -230,6 +231,7 @@ export const BabyIcon = Baby;
 export const FlowerIcon = Flower;
 export const MedicineIcon = Pill;
 export const OptionIcon = Option;
+export const BankIcon = Bank;
 
 // custom svg icons
 export const WarningTriangleSVG = warningTriangle;

@@ -46,7 +46,7 @@ const InvoiceEmail = () => {
     );
   }
 
-  const { url, invoice, logo, lineItems, company, client } = data;
+  const { url, invoice, logo, lineItems, company, client, bank_account } = data;
 
   return isDesktop ? (
     <div className="flex flex-col justify-between">
@@ -64,6 +64,7 @@ const InvoiceEmail = () => {
         />
         <div className="m-0 mt-5 mb-10 w-full bg-miru-gray-100 p-0">
           <InvoiceDetails
+            bank_account={bank_account}
             client={client}
             company={company}
             invoice={invoice}

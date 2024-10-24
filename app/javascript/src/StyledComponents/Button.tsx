@@ -28,6 +28,9 @@ const DASHED =
 
 const DELETE = "bg-miru-red-400 hover:bg-miru-red-200 text-white";
 
+const WHITE_BORDER =
+  "bg-transparent hover:bg-miru-han-purple-600 text-white border border-white";
+
 const SMALL = "p-2 text-xs font-bold leading-4";
 const MEDIUM = "p-2 text-base font-bold leading-5";
 const LARGE = "p-2 text-xl font-bold leading-7";
@@ -51,6 +54,7 @@ export const BUTTON_STYLES = {
   dashed: "dashed",
   delete: "delete",
   calendarCell: "calendarCell",
+  whiteBorder: "whiteBorder",
 };
 const SIZES = { small: "small", medium: "medium", large: "large" };
 
@@ -86,6 +90,8 @@ const Button = ({
       style == BUTTON_STYLES.delete && !disabled && DELETE,
 
       style == BUTTON_STYLES.calendarCell && Calendar_Cell,
+
+      style == BUTTON_STYLES.whiteBorder && WHITE_BORDER,
 
       size == SIZES.small && SMALL,
       size == SIZES.medium && MEDIUM,
