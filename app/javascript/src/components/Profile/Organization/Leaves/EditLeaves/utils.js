@@ -74,6 +74,14 @@ export const customStyles = {
     letterSpacing: "2px",
     zIndex: 5,
   }),
+  valueContainer: provided => ({
+    ...provided,
+    overflow: "visible",
+  }),
+  multiValue: provided => ({
+    ...provided,
+    fontSize: "14px",
+  }),
   placeholder: base => ({
     ...base,
     position: "absolute",

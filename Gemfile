@@ -12,7 +12,7 @@ gem "rails", "~> 7.1.3"
 gem "pg"
 
 # Use the Puma web server [https://github.com/puma/puma]
-gem "puma", "~> 6.4.2"
+gem "puma", "~> 6.4.3"
 
 # Use JavaScript with ESM import maps [https://github.com/rails/importmap-rails]
 # gem "importmap-rails", ">= 0.9.2"
@@ -231,3 +231,5 @@ gem "rack-cors", "2.0.0"
 gem "administrate"
 
 gem "psych", "~> 4"
+
+gem "postmark-rails"
