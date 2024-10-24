@@ -10,4 +10,7 @@ json.providers do
   json.paypal do
     json.connected false
   end
+  json.bank_account do
+    json.partial! "internal_api/v1/invoices/bank_account", bank_account:
+  end
 end

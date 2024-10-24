@@ -129,6 +129,7 @@ namespace :internal_api, defaults: { format: "json" } do
     get "payments/settings", to: "payment_settings#index"
     post "payments/settings/stripe/connect", to: "payment_settings#connect_stripe"
     delete "payments/settings/stripe/disconnect", to: "payment_settings#destroy"
+    put "payments/settings/bank_account", to: "payment_settings#update_bank_account"
     get "calendars/redirect", to: "calendars#redirect", as: "redirect"
     get "calendars/callback", to: "calendars#callback", as: "callback"
     get "calendars/calendars", to: "calendars#calendars", as: "calendars"
