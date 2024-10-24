@@ -2,11 +2,11 @@
 import React, { useEffect, useState } from "react";
 
 import "react-phone-number-input/style.css"; //eslint-disable-line
-import { Country } from "country-state-city";
 import { Formik, Form, FormikProps } from "formik";
 import PhoneInput from "react-phone-number-input";
 import flags from "react-phone-number-input/flags";
 import { Button, Toastr } from "StyledComponents";
+import worldCountries from "world-countries";
 
 import clientApi from "apis/clients";
 import CustomReactSelect from "common/CustomReactSelect";
@@ -37,16 +37,15 @@ const ClientForm = ({
 
   const assignCountries = async allCountries => {
     const countryData = await allCountries.map(country => ({
-      value: country?.isoCode && country.isoCode,
-      label: country.name,
-      code: country?.isoCode && country?.isoCode,
+      value: country?.cca2 && country.cca2,
+      label: country.name.common,
+      code: country?.cca2 && country?.cca2,
     }));
     setCountries(countryData);
   };
 
   useEffect(() => {
-    const allCountries = Country.getAllCountries();
-    assignCountries(allCountries);
+    assignCountries(worldCountries);
   }, []);
 
   const handleSubmit = async values => {
