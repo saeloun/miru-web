@@ -9,7 +9,7 @@ module InvoicePayment
       @base_currency = invoice.company.base_currency
       @root_url = root_url
       @filepath = filepath
-      @bank_account = invoice.bank_account_details
+      @bank_account = invoice.company.bank_account
     end
 
     def process
