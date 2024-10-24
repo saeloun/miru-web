@@ -1,10 +1,8 @@
 #!/usr/bin/env ruby
-# frozen_string_literal: true
-
 require "fileutils"
 
-# path to your application root.
 APP_ROOT = File.expand_path("..", __dir__)
+APP_NAME = "miru-web"
 
 def system!(*args)
   system(*args, exception: true)
@@ -16,9 +14,7 @@ FileUtils.chdir APP_ROOT do
   # Add necessary setup steps to this file.
 
   puts "== Installing dependencies =="
-  cmd = "gem install bundler --conservative"
-  puts "Executing #{cmd}"
-  system! cmd
+  system! "gem install bundler --conservative"
   system("bundle check") || system!("bundle install")
 
   # puts "\n== Copying sample files =="
@@ -44,4 +40,8 @@ FileUtils.chdir APP_ROOT do
 
   puts "\n== Restarting application server =="
   system! "bin/rails restart"
+
+  # puts "\n== Configuring puma-dev =="
+  # system "ln -nfs #{APP_ROOT} ~/.puma-dev/#{APP_NAME}"
+  # system "curl -Is https://#{APP_NAME}.test/up | head -n 1"
 end
