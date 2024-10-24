@@ -12,7 +12,7 @@ gem "rails", "~> 7.2.0"
 gem "pg"
 
 # Use the Puma web server [https://github.com/puma/puma]
-gem "puma", "~> 6.4.2"
+gem "puma", "~> 6.4.3"
 
 # Use JavaScript with ESM import maps [https://github.com/rails/importmap-rails]
 # gem "importmap-rails", ">= 0.9.2"
@@ -31,9 +31,6 @@ gem "jbuilder", "~> 2.11"
 
 # Use devise for authentication
 gem "devise"
-
-# Use Redis adapter to run Action Cable in production
-gem "redis", "~> 4.0"
 
 # Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
 # gem "kredis"
@@ -237,3 +234,5 @@ gem "rack-cors", "2.0.0"
 gem "administrate"
 
 gem "psych", "~> 4"
+
+gem "postmark-rails"

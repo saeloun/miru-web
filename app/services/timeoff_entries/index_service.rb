@@ -2,6 +2,8 @@
 
 module TimeoffEntries
   class IndexService < ApplicationService
+    include EmployeeFetchingConcern
+
     attr_reader :current_company, :current_user, :user_id, :year, :previous_year
     attr_accessor :leave_balance, :optional_timeoff_entries, :national_timeoff_entries
 
@@ -17,7 +19,7 @@ module TimeoffEntries
     def process
       {
         timeoff_entries:,
-        employees:,
+        employees: set_employees,
         leave_balance: process_leave_balance,
         total_timeoff_entries_duration: timeoff_entries.sum(&:duration),
         optional_timeoff_entries:,
@@ -35,18 +37,6 @@ module TimeoffEntries
           .where(user_id:)
           .during(start_date, end_date)
           .distinct
-      end
-
-      def employees
-        @_employees ||= is_admin? ? current_company_users : [current_user]
-      end
-
-      def current_company_users
-        current_company.employees_without_client_role.select(:id, :first_name, :last_name)
-      end
-
-      def is_admin?
-        current_user.has_role?(:owner, current_company) || current_user.has_role?(:admin, current_company)
       end
 
       def process_leave_balance
@@ -174,7 +164,7 @@ module TimeoffEntries
       end
 
       def user_joined_date
-        employee_id = is_admin? ? user_id : current_user.id
+        employee_id = admin? ? user_id : current_user.id
         user = User.find(employee_id)
         user.joined_date_for_company(current_company)
       end

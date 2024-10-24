@@ -248,7 +248,7 @@ GEM
     ffi (1.17.0-x86_64-darwin)
     ffi (1.17.0-x86_64-linux-gnu)
     foreman (0.88.1)
-    fugit (1.11.0)
+    fugit (1.11.1)
       et-orbi (~> 1, >= 1.2.11)
       raabro (~> 1.4)
     gems (1.2.0)
@@ -418,10 +418,15 @@ GEM
       ast (~> 2.4.1)
       racc
     pg (1.5.7)
+    postmark (1.25.1)
+      json
+    postmark-rails (0.22.1)
+      actionmailer (>= 3.0.0)
+      postmark (>= 1.21.3, < 2.0)
     psych (4.0.6)
       stringio
     public_suffix (6.0.1)
-    puma (6.4.2)
+    puma (6.4.3)
       nio4r (~> 2.0)
     pundit (2.3.2)
       activesupport (>= 3.0.0)
@@ -491,7 +496,6 @@ GEM
       execjs
       railties (>= 3.2)
       tilt
-    redis (4.8.1)
     regexp_parser (2.9.2)
     reline (0.5.9)
       io-console (~> 0.5)
@@ -724,8 +728,9 @@ DEPENDENCIES
   pagy (~> 5.10)
   parallel_tests
   pg
+  postmark-rails
   psych (~> 4)
-  puma (~> 6.4.2)
+  puma (~> 6.4.3)
   pundit (~> 2.2)
   rack-cors (= 2.0.0)
   rack-mini-profiler (>= 2.3.3)
@@ -733,7 +738,6 @@ DEPENDENCIES
   rails-controller-testing (~> 1.0, >= 1.0.5)
   ransack (~> 4.1)
   react-rails (= 2.6.2)
-  redis (~> 4.0)
   rolify (~> 6.0)
   rspec-buildkite
   rspec-rails (~> 6.1)
