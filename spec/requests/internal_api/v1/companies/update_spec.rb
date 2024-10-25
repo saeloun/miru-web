@@ -29,7 +29,9 @@ RSpec.describe "InternalApi::V1::Companies::update", type: :request do
               addresses_attributes: [{
                 id: company.current_address.id,
                 address_line_1: "updated address"
-              }]
+              }],
+              working_days: "5",
+              working_hours: "40",
             }
           }, headers: auth_headers(user))
       end
@@ -50,6 +52,8 @@ RSpec.describe "InternalApi::V1::Companies::update", type: :request do
         expect(company.standard_price).to eq(1000)
         expect(company.fiscal_year_end).to eq("April")
         expect(company.base_currency).to eq("Rs")
+        expect(company.working_days).to eq("5")
+        expect(company.working_hours).to eq("40")
         expect(company.current_address.address_line_1).to eq("updated address")
       end
     end
@@ -92,7 +96,9 @@ RSpec.describe "InternalApi::V1::Companies::update", type: :request do
               addresses_attributes: [{
                 id: company.current_address.id,
                 address_line_1: ""
-              }]
+              },
+              working_days: "5",
+              working_hours: "40",
             }
           }, headers: auth_headers(user))
       end
@@ -126,7 +132,9 @@ RSpec.describe "InternalApi::V1::Companies::update", type: :request do
               addresses_attributes: [{
                 id: company.current_address.id,
                 address_line_2: "updated address"
-              }]
+              }],
+              working_days: "5",
+              working_hours: "40",
             }
           }, headers: auth_headers(user))
       end
