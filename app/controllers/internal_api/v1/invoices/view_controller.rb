@@ -9,7 +9,7 @@ class InternalApi::V1::Invoices::ViewController < InternalApi::V1::ApplicationCo
   def show
     invoice.viewed! if invoice.sent?
     Invoices::EventTrackerService.new("view", invoice, params).process
-    render :show, locals: { invoice:, stripe_connected_account:, bank_account: invoice.bank_account_details }
+    render :show, locals: { invoice:, stripe_connected_account:, bank_account: invoice.company.bank_account }
   end
 
   private
