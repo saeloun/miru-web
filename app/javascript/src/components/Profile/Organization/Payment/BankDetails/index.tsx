@@ -15,6 +15,7 @@ const BankDetails = ({
   setAccountNumber,
   setAccountType,
   setRoutingNumber,
+  errDetails,
 }) => (
   <div className="flex flex-col lg:flex-row">
     <div className="flex w-1/3 pr-4">
@@ -26,6 +27,7 @@ const BankDetails = ({
         accountNumber={accountNumber}
         accountType={accountType}
         bankName={bankName}
+        errDetails={errDetails}
         isLoading={isLoading}
         routingNumber={routingNumber}
         setAccountNumber={setAccountNumber}

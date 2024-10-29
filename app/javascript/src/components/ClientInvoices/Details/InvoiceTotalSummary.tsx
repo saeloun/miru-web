@@ -7,7 +7,7 @@ const InvoiceTotalSummary = ({
   company,
   lineItems,
   strikeAmount,
-  bank_account,
+  bankAccount,
 }) => {
   const subTotal = lineItems
     .reduce((prev, curr) => prev + (curr.rate * curr.quantity) / 60, 0)
@@ -31,7 +31,7 @@ const InvoiceTotalSummary = ({
               Bank Name:
             </td>
             <td className="pt-1 text-left text-base font-bold text-miru-dark-purple-1000 ">
-              {bank_account.bank_name || "-"}
+              {bankAccount.bank_name || "-"}
             </td>
           </tr>
           <tr>
@@ -39,7 +39,7 @@ const InvoiceTotalSummary = ({
               Account Type:
             </td>
             <td className="w-22 pt-1 text-left text-base font-bold text-miru-dark-purple-1000">
-              {bank_account.account_type || "-"}
+              {bankAccount.account_type || "-"}
             </td>
           </tr>
           <tr>
@@ -47,7 +47,7 @@ const InvoiceTotalSummary = ({
               Routing Number:
             </td>
             <td className="pt-1 text-left text-base font-bold text-miru-dark-purple-1000">
-              {bank_account.routing_number || "-"}
+              {bankAccount.routing_number || "-"}
             </td>
           </tr>
           <tr>
@@ -55,7 +55,7 @@ const InvoiceTotalSummary = ({
               Account Number:
             </td>
             <td className="pt-1 text-left text-base font-bold text-miru-dark-purple-1000 ">
-              {bank_account.account_number || "-"}
+              {bankAccount.account_number || "-"}
             </td>
           </tr>
         </tbody>

@@ -27,6 +27,7 @@ const StaticPage = ({
   setAccountNumber,
   setAccountType,
   setRoutingNumber,
+  errDetails,
 }) => (
   <>
     <div className="flex h-16 items-center justify-between bg-miru-han-purple-1000 p-4 pl-10 text-white">
@@ -101,6 +102,7 @@ const StaticPage = ({
                   accountType={accountType}
                   bankName={bankName}
                   editBankDetails={editBankDetails}
+                  errDetails={errDetails}
                   isLoading={isLoading}
                   routingNumber={routingNumber}
                   setAccountNumber={setAccountNumber}
