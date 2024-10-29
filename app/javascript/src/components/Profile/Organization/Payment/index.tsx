@@ -8,6 +8,7 @@ import { ApiStatus as PaymentSettingsStatus } from "constants/index";
 import { useUserContext } from "context/UserContext";
 import { sendGAPageView } from "utils/googleAnalytics";
 
+import BankSchema from "./BankDetails/BankSchema";
 import MobileView from "./MobileView";
 import StaticPage from "./StaticPage";
 
@@ -29,6 +30,7 @@ const PaymentSettings = () => {
   const [accountNumber, setAccountNumber] = useState<string>("");
   const [accountType, setAccountType] = useState<string>("");
   const [routingNumber, setRoutingNumber] = useState<string>("");
+  const [errDetails, setErrDetails] = useState<object>({});
 
   const connectStripe = async () => {
     const res = await paymentSettings.connectStripe();
@@ -40,24 +42,46 @@ const PaymentSettings = () => {
   };
 
   const handleUpdateDetails = async () => {
-    setIsLoading(true);
-    const payload = {
-      bank_account: {
-        routing_number: routingNumber,
-        account_number: accountNumber,
-        account_type: accountType,
-        bank_name: bankName,
-      },
+    const bankAccount = {
+      routingNumber,
+      accountNumber,
+      accountType,
+      bankName,
     };
-    const res = await paymentSettings.updateBankDetails(payload);
-    if (res.status == 200) {
-      setBankName("");
-      setAccountNumber("");
-      setAccountType("");
-      setRoutingNumber("");
-      setEditBankDetails(false);
-      fetchPaymentSettings();
-      setIsLoading(false);
+
+    try {
+      await BankSchema.validate(bankAccount, { abortEarly: false });
+      setIsLoading(true);
+      const payload = {
+        bank_account: {
+          routing_number: routingNumber,
+          account_number: accountNumber,
+          account_type: accountType,
+          bank_name: bankName,
+        },
+      };
+      const res = await paymentSettings.updateBankDetails(payload);
+      if (res.status == 200) {
+        setBankName("");
+        setAccountNumber("");
+        setAccountType("");
+        setRoutingNumber("");
+        setEditBankDetails(false);
+        fetchPaymentSettings();
+        setIsLoading(false);
+      }
+    } catch (err) {
+      const errObj = {
+        bankNameErr: "",
+        routingNumberErr: "",
+        accountNumberErr: "",
+        accountTypeErr: "",
+      };
+
+      err.inner.map(item => {
+        errObj[`${item.path.split(".").pop()}Err`] = item.message;
+      });
+      setErrDetails(errObj);
     }
   };
 
@@ -96,7 +120,7 @@ const PaymentSettings = () => {
   };
 
   return (
-    <div className="flex w-full flex-col">
+    <div className="flex h-full w-full flex-col">
       {isDesktop ? (
         <StaticPage
           accountNumber={accountNumber}
@@ -104,6 +128,7 @@ const PaymentSettings = () => {
           bankName={bankName}
           connectStripe={connectStripe}
           editBankDetails={editBankDetails}
+          errDetails={errDetails}
           handleCancelAction={handleCancelAction}
           handleUpdateDetails={handleUpdateDetails}
           isLoading={isLoading}
@@ -124,6 +149,7 @@ const PaymentSettings = () => {
           bankName={bankName}
           connectStripe={connectStripe}
           editBankDetails={editBankDetails}
+          errDetails={errDetails}
           handleCancelAction={handleCancelAction}
           handleUpdateDetails={handleUpdateDetails}
           isLoading={isLoading}

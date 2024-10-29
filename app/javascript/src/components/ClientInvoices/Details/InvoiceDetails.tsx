@@ -13,7 +13,7 @@ const InvoiceDetails = ({
   lineItems,
   client,
   logo,
-  bank_account,
+  bankAccount,
 }) => {
   const invoiceWaived = invoice?.status === "waived";
   const strikeAmount = invoiceWaived && "line-through";
@@ -44,7 +44,7 @@ const InvoiceDetails = ({
         strikeAmount={strikeAmount}
       />
       <InvoiceTotalSummary
-        bank_account={bank_account}
+        bankAccount={bankAccount}
         company={company}
         invoice={invoice}
         lineItems={lineItems}

@@ -34,6 +34,7 @@ interface MobileViewProps {
   setAccountNumber: React.Dispatch<React.SetStateAction<string>>;
   setAccountType: React.Dispatch<React.SetStateAction<string>>;
   setRoutingNumber: React.Dispatch<React.SetStateAction<string>>;
+  errDetails: object;
 }
 
 const MobileView = ({
@@ -56,6 +57,7 @@ const MobileView = ({
   setAccountNumber,
   setAccountType,
   setRoutingNumber,
+  errDetails,
 }: MobileViewProps) => (
   <>
     <section className="flex h-12 w-full items-center justify-between bg-miru-white-1000 p-3 shadow-c1">
@@ -150,6 +152,7 @@ const MobileView = ({
           accountType={accountType}
           bankName={bankName}
           editBankDetails={editBankDetails}
+          errDetails={errDetails}
           isLoading={isLoading}
           routingNumber={routingNumber}
           setAccountNumber={setAccountNumber}

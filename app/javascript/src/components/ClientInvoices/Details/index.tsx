@@ -68,7 +68,7 @@ const ClientInvoiceDetails = () => {
           />
           <div className="m-0 mt-5 mb-10 w-full bg-miru-gray-100 p-0">
             <InvoiceDetails
-              bank_account={bank_account}
+              bankAccount={bank_account}
               client={client}
               company={company}
               invoice={invoice}
