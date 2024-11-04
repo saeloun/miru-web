@@ -7,7 +7,7 @@ RSpec.describe BulkInvoiceDownloadJob, type: :job do
     it "enqueues the job" do
       ActiveJob::Base.queue_adapter = :test
       expect {
-        BulkInvoiceDownloadJob.perform_later([6], nil, "abc", "")
+        BulkInvoiceDownloadJob.perform_later([6], nil, "abc", "", { host: "example.com" })
       }.to enqueue_job
     end
   end
