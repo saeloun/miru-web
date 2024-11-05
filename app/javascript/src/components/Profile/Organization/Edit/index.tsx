@@ -287,8 +287,8 @@ const OrgEdit = () => {
     const changedCountry = {
       ...companyAddr,
       country: selectCountry,
-      state: {},
-      city: {},
+      state: "",
+      city: "",
     };
 
     setupTimezone(
@@ -383,7 +383,7 @@ const OrgEdit = () => {
         { abortEarly: false }
       );
       await updateOrgDetails();
-      navigate(`/settings/organization`, { replace: true });
+      //navigate(`/settings/organization`, { replace: true });
     } catch (err) {
       const errObj = {
         companyNameErr: "",
@@ -408,6 +408,7 @@ const OrgEdit = () => {
     try {
       setIsLoading(true);
       const formD = new FormData();
+
       formD.append("company[name]", orgDetails.companyName);
       formD.append("company[business_phone]", orgDetails.companyPhone || "");
       formD.append("company[country]", orgDetails.companyAddr.country.value);
@@ -416,42 +417,43 @@ const OrgEdit = () => {
         "company[standard_price]",
         orgDetails.companyRate.toString()
       );
-
       formD.append("company[fiscal_year_end]", orgDetails.companyFiscalYear);
       formD.append("company[date_format]", orgDetails.companyDateFormat);
       formD.append("company[timezone]", orgDetails.companyTimezone);
+
+      // Nested attributes for addresses
       formD.append(
-        "company[addresses_attributes[0][id]]",
+        "company[addresses_attributes][0][id]",
         orgDetails.companyAddr.id
       );
 
       formD.append(
-        "company[addresses_attributes[0][address_line_1]]",
+        "company[addresses_attributes][0][address_line_1]",
         orgDetails.companyAddr.addressLine1
       );
 
       formD.append(
-        "company[addresses_attributes[0][address_line_2]]",
+        "company[addresses_attributes][0][address_line_2]",
         orgDetails.companyAddr.addressLine2
       );
 
       formD.append(
-        "company[addresses_attributes[0][state]]",
+        "company[addresses_attributes][0][state]",
         orgDetails.companyAddr.state
       );
 
       formD.append(
-        "company[addresses_attributes[0][city]]",
+        "company[addresses_attributes][0][city]",
         orgDetails.companyAddr.city
       );
 
       formD.append(
-        "company[addresses_attributes[0][country]]",
+        "company[addresses_attributes][0][country]",
         orgDetails.companyAddr.country?.value
       );
 
       formD.append(
-        "company[addresses_attributes[0][pin]]",
+        "company[addresses_attributes][0][pin]",
         orgDetails.companyAddr.zipcode
       );
 
@@ -487,7 +489,7 @@ const OrgEdit = () => {
       <EditHeader
         showButtons
         cancelAction={handleCancelAction}
-        isDisableUpdateBtn={isDetailUpdated}
+        isDisableUpdateBtn={!isDetailUpdated}
         saveAction={handleUpdateOrgDetails}
         subTitle=""
         title="Organization Settings"

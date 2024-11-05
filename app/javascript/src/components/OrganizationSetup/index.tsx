@@ -49,32 +49,29 @@ const OrganizationSetup = () => {
     const formD = new FormData();
 
     formD.append(
-      "company[addresses_attributes[0][address_line_1]]",
+      "company[addresses_attributes][0][address_line_1]",
       companyDetails.address_line_1
     );
 
     formD.append(
-      "company[addresses_attributes[0][address_line_2]]",
+      "company[addresses_attributes][0][address_line_2]",
       companyDetails.address_line_2
     );
 
     formD.append(
-      "company[addresses_attributes[0][state]]",
-      companyDetails.state?.value
+      "company[addresses_attributes][0][state]",
+      companyDetails.state
     );
 
-    formD.append(
-      "company[addresses_attributes[0][city]]",
-      companyDetails.city?.value
-    );
+    formD.append("company[addresses_attributes][0][city]", companyDetails.city);
 
     formD.append(
-      "company[addresses_attributes[0][country]]",
+      "company[addresses_attributes][0][country]",
       companyDetails.country?.value
     );
 
     formD.append(
-      "company[addresses_attributes[0][pin]]",
+      "company[addresses_attributes][0][pin]",
       companyDetails.zipcode
     );
 

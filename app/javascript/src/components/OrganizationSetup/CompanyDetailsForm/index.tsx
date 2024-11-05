@@ -156,8 +156,8 @@ const CompanyDetailsForm = ({
   const isBtnDisabled = (values: CompanyDetailsFormValues) =>
     !(
       values.country?.value?.trim() &&
-      values.state?.value?.trim() &&
-      values.city?.value?.trim() &&
+      values.state?.trim() &&
+      values.city?.trim() &&
       values.timezone?.value?.trim() &&
       values.address_line_1?.trim() &&
       values.zipcode?.trim()
@@ -301,6 +301,7 @@ const CompanyDetailsForm = ({
                 <InputField
                   autoFocus
                   resetErrorOnChange
+                  hasError={errors.company_name && touched.company_name}
                   id="company_name"
                   label="Company Name"
                   name="company_name"
@@ -341,6 +342,7 @@ const CompanyDetailsForm = ({
               <div className="field relative mt-4">
                 <InputField
                   resetErrorOnChange
+                  hasError={errors.address_line_1 && touched.address_line_1}
                   id="address_line_1"
                   label="Address line 1"
                   name="address_line_1"
@@ -354,6 +356,7 @@ const CompanyDetailsForm = ({
               <div className="field relative mb-5">
                 <InputField
                   resetErrorOnChange
+                  hasError={errors.address_line_2 && touched.address_line_2}
                   id="address_line_2"
                   label="Address line 2 (optional)"
                   name="address_line_2"
@@ -365,7 +368,7 @@ const CompanyDetailsForm = ({
                 />
               </div>
               {/* Country */}
-              <div className="mb-5 flex flex-row">
+              <div className="flex flex-row">
                 <div className="flex w-1/2 flex-col py-0 pr-2">
                   <CustomReactSelect
                     isErr={!!errors.country}
@@ -376,14 +379,15 @@ const CompanyDetailsForm = ({
                     handleOnChange={e => {
                       getTimezonesOfCurrentCountry(e.code, setFieldValue);
                       setFieldValue("country", e);
-                      setFieldValue("state", { value: null, label: null });
-                      setFieldValue("city", { value: null, label: null });
+                      setFieldValue("state", "");
+                      setFieldValue("city", "");
                     }}
                   />
                 </div>
                 <div className="flex w-1/2 flex-col pl-2">
                   <InputField
                     resetErrorOnChange
+                    hasError={errors.state && touched.state}
                     id="state"
                     label="State"
                     name="state"
@@ -399,6 +403,7 @@ const CompanyDetailsForm = ({
                 <div className="flex w-1/2 flex-col pr-2">
                   <InputField
                     resetErrorOnChange
+                    hasError={errors.city && touched.city}
                     id="city"
                     label="City"
                     name="city"
@@ -412,6 +417,7 @@ const CompanyDetailsForm = ({
                 <div className="flex w-1/2 flex-col pl-2">
                   <InputField
                     resetErrorOnChange
+                    hasError={errors.zipcode && touched.zipcode}
                     id="zipcode"
                     label="zipcode"
                     name="zipcode"
