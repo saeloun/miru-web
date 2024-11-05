@@ -8,8 +8,8 @@ const BankSchema = Yup.object().shape({
     .max(9, "Routing number must have 9 characters")
     .min(9, "Routing number must have 9 characters"),
   accountNumber: Yup.string()
-    .max(12, "Account number must have 12 characters")
-    .min(12, "Account number must have 12 characters"),
+    .max(17, "Maximum 17 characters are allowed")
+    .min(6, "Minimum 6 characters are required"),
   accountType: Yup.string().required("Account type cannot be blank"),
 });
 
