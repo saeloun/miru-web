@@ -31,7 +31,7 @@ RSpec.describe "InternalApi::V1::Companies::update", type: :request do
                 address_line_1: "updated address"
               }],
               working_days: "5",
-              working_hours: "40",
+              working_hours: "40"
             }
           }, headers: auth_headers(user))
       end
@@ -96,9 +96,9 @@ RSpec.describe "InternalApi::V1::Companies::update", type: :request do
               addresses_attributes: [{
                 id: company.current_address.id,
                 address_line_1: ""
-              },
+              }],
               working_days: "5",
-              working_hours: "40",
+              working_hours: "40"
             }
           }, headers: auth_headers(user))
       end
@@ -134,7 +134,7 @@ RSpec.describe "InternalApi::V1::Companies::update", type: :request do
                 address_line_2: "updated address"
               }],
               working_days: "5",
-              working_hours: "40",
+              working_hours: "40"
             }
           }, headers: auth_headers(user))
       end

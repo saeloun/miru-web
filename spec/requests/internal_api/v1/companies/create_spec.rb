@@ -46,6 +46,8 @@ RSpec.describe "InternalApi::V1::Companies::create", type: :request do
       end
 
       it "returns correct working_days and working_hours" do
+        company = Company.last
+        change(Company, :count).by(1)
         expect(company.working_days).to eq("5")
         expect(company.working_hours).to eq("40")
       end
