@@ -6,13 +6,13 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 ruby "3.2.4"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
-gem "rails", "~> 7.1.3"
+gem "rails", "~> 7.1.5"
 
 # Use postgresql as the database for Active Record
 gem "pg"
 
 # Use the Puma web server [https://github.com/puma/puma]
-gem "puma", "~> 6.4.2"
+gem "puma", "~> 6.4.3"
 
 # Use JavaScript with ESM import maps [https://github.com/rails/importmap-rails]
 # gem "importmap-rails", ">= 0.9.2"
@@ -150,7 +150,7 @@ group :development, :test, :ci do
   gem "rubocop-rspec", require: false
 
   # Use RSpec as the testing framework
-  gem "rspec-rails", "~> 6.1"
+  gem "rspec-rails", "~> 7.0"
 
   # For linting ERB files
   gem "erb_lint", require: false, git: "https://github.com/Shopify/erb-lint.git", branch: "main"
@@ -231,3 +231,5 @@ gem "rack-cors", "2.0.0"
 gem "administrate"
 
 gem "psych", "~> 4"
+
+gem "postmark-rails"
