@@ -343,7 +343,7 @@ const EditLeaves = ({
           </div>
         </div>
         {!isDesktop &&
-          (leaveBalanceList.length > 0 || customLeavesList.legth > 0) && (
+          (leaveBalanceList.length > 0 || customLeavesList.length > 0) && (
             <div className="mt-5 flex w-full justify-between px-2">
               <Button
                 className="mr-2 flex w-1/2 items-center justify-center rounded border border-miru-red-400 px-4 py-2"
