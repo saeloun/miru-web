@@ -7,12 +7,14 @@ Grover.configure do |config|
       top: "5px",
       bottom: "5px"
     },
-    prefer_css_page_size: true,
+    prefer_css_page_size: false,
     emulate_media: "screen",
     cache: false,
-    timeout: 0, # Timeout in ms. A value of `0` means 'no timeout'
+    timeout: 30000,
     wait_until: "domcontentloaded",
-    launch_args: ["--no-sandbox", "--disable-setuid-sandbox"]
+    launch_args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    viewport: { width: 800, height: 600 },
+    javascript_enabled: false
   }
 
   if !(Rails.env.development? || Rails.env.test?)
