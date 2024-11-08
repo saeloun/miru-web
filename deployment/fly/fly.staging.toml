@@ -7,7 +7,7 @@ primary_region = "ewr"
 
 [processes]
   web = "bin/rails fly:server"
-  worker = "bundle exec rake solid_queue:start"
+  worker = "bin/rails fly:worker"
 
 [build]
   dockerfile = "Dockerfile"
