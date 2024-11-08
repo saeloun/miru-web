@@ -21,6 +21,15 @@ namespace :fly do
     sh 'bin/rails server -b [::] -p 8080'
   end
 
+  # Worker step:
+  #  - changes to the filesystem made here are deployed
+  #  - full access to secrets, databases
+  #  - failures here result in VM being stated, shutdown, and rolled back
+  #    to last successful deploy (if any).
+  task :worker => :swapfile do
+    sh 'bundle exec rake solid_queue:start'
+  end
+
   # optional SWAPFILE task:
   #  - adjust fallocate size as needed
   #  - performance critical applications should scale memory to the
