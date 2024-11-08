@@ -421,37 +421,37 @@ const OrgEdit = () => {
       formD.append("company[date_format]", orgDetails.companyDateFormat);
       formD.append("company[timezone]", orgDetails.companyTimezone);
       formD.append(
-        "company[addresses_attributes[0][id]]",
+        "company[addresses_attributes][0][id]",
         orgDetails.companyAddr.id
       );
 
       formD.append(
-        "company[addresses_attributes[0][address_line_1]]",
+        "company[addresses_attributes][0][address_line_1]",
         orgDetails.companyAddr.addressLine1
       );
 
       formD.append(
-        "company[addresses_attributes[0][address_line_2]]",
+        "company[addresses_attributes][0][address_line_2]",
         orgDetails.companyAddr.addressLine2
       );
 
       formD.append(
-        "company[addresses_attributes[0][state]]",
+        "company[addresses_attributes][0][state]",
         orgDetails.companyAddr.state
       );
 
       formD.append(
-        "company[addresses_attributes[0][city]]",
+        "company[addresses_attributes][0][city]",
         orgDetails.companyAddr.city
       );
 
       formD.append(
-        "company[addresses_attributes[0][country]]",
+        "company[addresses_attributes][0][country]",
         orgDetails.companyAddr.country?.value
       );
 
       formD.append(
-        "company[addresses_attributes[0][pin]]",
+        "company[addresses_attributes][0][pin]",
         orgDetails.companyAddr.zipcode
       );
 
