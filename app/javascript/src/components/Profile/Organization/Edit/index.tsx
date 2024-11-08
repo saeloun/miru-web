@@ -420,10 +420,12 @@ const OrgEdit = () => {
       formD.append("company[fiscal_year_end]", orgDetails.companyFiscalYear);
       formD.append("company[date_format]", orgDetails.companyDateFormat);
       formD.append("company[timezone]", orgDetails.companyTimezone);
-      formD.append(
-        "company[addresses_attributes][0][id]",
-        orgDetails.companyAddr.id
-      );
+      if (orgDetails.companyAddr.id) {
+        formD.append(
+          "company[addresses_attributes][0][id]",
+          orgDetails.companyAddr.id
+        );
+      }
 
       formD.append(
         "company[addresses_attributes][0][address_line_1]",
