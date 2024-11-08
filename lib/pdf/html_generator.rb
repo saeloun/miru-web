@@ -25,7 +25,7 @@ class Pdf::HtmlGenerator
         @options = user_defined_options
       else
         @options = {
-          wait_until: ["networkidle0", "load", "domcontentloaded", "networkidle2"]
+          wait_until: ["load", "domcontentloaded"]
         }
       end
 

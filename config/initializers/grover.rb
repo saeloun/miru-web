@@ -12,7 +12,7 @@ Grover.configure do |config|
     cache: false,
     timeout: 30000,
     wait_until: "domcontentloaded",
-    launch_args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    launch_args: ["--no-sandbox", "--disable-setuid-sandbox", "--disable-gpu"],
     viewport: { width: 800, height: 600 },
     javascript_enabled: false
   }
