@@ -133,12 +133,13 @@ const OrgEdit = () => {
       });
       setIsDetailUpdated(true);
     }
-  }, [file]);
+  }, [file, orgDetails]);
 
   const [currenciesOption, setCurrenciesOption] = useState([]);
   const [timezoneOption, setTimezoneOption] = useState([]);
   const [timezones, setTimezones] = useState({});
-  const [isDetailUpdated, setIsDetailUpdated] = useState(false);
+  /* eslint-disable-next-line */
+  const [_isDetailUpdated, setIsDetailUpdated] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [countries, setCountries] = useState([]);
 
@@ -286,8 +287,8 @@ const OrgEdit = () => {
     const changedCountry = {
       ...companyAddr,
       country: selectCountry,
-      state: {},
-      city: {},
+      state: "",
+      city: "",
     };
 
     setupTimezone(
@@ -486,7 +487,7 @@ const OrgEdit = () => {
       <EditHeader
         showButtons
         cancelAction={handleCancelAction}
-        isDisableUpdateBtn={isDetailUpdated}
+        isDisableUpdateBtn={false}
         saveAction={handleUpdateOrgDetails}
         subTitle=""
         title="Organization Settings"
