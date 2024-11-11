@@ -233,3 +233,6 @@ gem "administrate"
 gem "psych", "~> 4"
 
 gem "postmark-rails"
+
+# rails-settings-cached for storing global settings
+gem "rails-settings-cached", "~> 2.9", ">= 2.9.5"

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class InvoiceMailer < ApplicationMailer
+  before_action :email_within_rate_limit
+  after_action :update_email_rate_limiter
   after_action :update_status, only: [:invoice]
 
   def invoice

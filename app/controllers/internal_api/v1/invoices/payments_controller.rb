@@ -12,11 +12,14 @@ class InternalApi::V1::Invoices::PaymentsController < InternalApi::V1::Applicati
       if @invoice.paid?
         PaymentMailer.with(
           invoice_id: @invoice.id,
-          subject: "Payment details by #{@invoice.client.name}").payment.deliver_later
+          subject: "Payment details by #{@invoice.client.name}",
+          current_user_id: current_user.id
+        ).payment.deliver_later
 
         @invoice.send_to_client_email(
           invoice_id: @invoice.id,
-          subject: "Payment Confirmation of Invoice #{@invoice.invoice_number} by #{@invoice.client.name}"
+          subject: "Payment Confirmation of Invoice #{@invoice.invoice_number} by #{@invoice.client.name}",
+          current_user_id: current_user.id
         )
         render json: { invoice: @invoice, notice: I18n.t("invoices.payments.success.success") }, status: :ok
       else

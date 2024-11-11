@@ -5,6 +5,8 @@ class ClientPaymentMailerPreview < ActionMailer::Preview
     invoice = Invoice.last
     ClientPaymentMailer.with(
       invoice_id: invoice.id,
-      subject: "Payment Receipt of Invoice #{invoice.invoice_number} from #{invoice.company.name}").payment
+      subject: "Payment Receipt of Invoice #{invoice.invoice_number} from #{invoice.company.name}",
+      current_user_id: User.first.id
+    ).payment
   end
 end
