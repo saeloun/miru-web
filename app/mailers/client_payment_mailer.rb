@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 class ClientPaymentMailer < ApplicationMailer
+  before_action :email_within_rate_limit
+  after_action :update_email_rate_limiter
+
   def payment
     @invoice = Invoice.find(params[:invoice_id])
     subject = params[:subject]

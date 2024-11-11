@@ -72,7 +72,8 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
       invoice.send_to_email(
         subject: invoice_email_params[:subject],
         message: invoice_email_params[:message],
-        recipients: invoice_email_params[:recipients]
+        recipients: invoice_email_params[:recipients],
+        current_user_id: current_user.id
       )
 
       render json: { message: "Invoice will be sent!" }, status: :accepted
