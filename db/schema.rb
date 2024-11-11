@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_08_05_040547) do
+ActiveRecord::Schema[7.1].define(version: 2024_11_11_095146) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -201,12 +201,18 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_05_040547) do
     t.jsonb "specifications"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.boolean "is_insured", default: false
-    t.date "insurance_bought_date"
-    t.date "insurance_expiry_date"
     t.index ["company_id"], name: "index_devices_on_company_id"
     t.index ["device_type"], name: "index_devices_on_device_type"
     t.index ["user_id"], name: "index_devices_on_user_id"
+  end
+
+  create_table "email_rate_limiters", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.integer "number_of_emails_sent", default: 0
+    t.datetime "current_interval_started_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_email_rate_limiters_on_user_id"
   end
 
   create_table "employments", force: :cascade do |t|
@@ -478,6 +484,14 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_05_040547) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "settings", force: :cascade do |t|
+    t.string "var", null: false
+    t.text "value"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["var"], name: "index_settings_on_var", unique: true
+  end
+
   create_table "solid_queue_blocked_executions", force: :cascade do |t|
     t.bigint "job_id", null: false
     t.string "queue_name", null: false
@@ -703,6 +717,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_05_040547) do
   add_foreign_key "custom_leaves", "leaves", column: "leave_id"
   add_foreign_key "devices", "companies"
   add_foreign_key "devices", "users"
+  add_foreign_key "email_rate_limiters", "users"
   add_foreign_key "employments", "companies"
   add_foreign_key "employments", "users"
   add_foreign_key "expense_categories", "companies"
@@ -710,7 +725,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_05_040547) do
   add_foreign_key "expenses", "expense_categories"
   add_foreign_key "expenses", "vendors"
   add_foreign_key "holiday_infos", "holidays"
-  add_foreign_key "holidays", "companies"
+  add_foreign_key "holidays", "companies", validate: false
   add_foreign_key "identities", "users"
   add_foreign_key "invitations", "clients"
   add_foreign_key "invitations", "companies"

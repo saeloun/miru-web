@@ -76,6 +76,7 @@ class User < ApplicationRecord
   has_many :custom_leaves, through: :custom_leave_users, source: :custom_leave
   has_many :carryovers
   has_many :notification_preferences, dependent: :destroy
+  has_one :email_rate_limiter, dependent: :destroy
 
   rolify strict: true
 
