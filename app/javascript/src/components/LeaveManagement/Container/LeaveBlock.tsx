@@ -36,7 +36,7 @@ const LeaveBlock = ({ leaveType, selectedLeaveType, setSelectedLeaveType }) => {
       style={{ background: leaveColor.value }}
       onClick={() => setSelectedLeaveType(leaveType)}
     >
-      <div className="z-10 flex-col">
+      <div className="z-10 w-3/4 flex-col">
         <div
           className="hidden h-8 w-8 items-center justify-center rounded-full lg:flex"
           style={{ backgroundColor: "white", color: leaveColor.value }}
@@ -50,7 +50,7 @@ const LeaveBlock = ({ leaveType, selectedLeaveType, setSelectedLeaveType }) => {
           </span>
         </div>
       </div>
-      <div className="absolute right-0 hidden h-3/4 items-end justify-end p-2 text-white opacity-10 lg:flex">
+      <div className="absolute right-0 hidden h-3/4 w-1/4 items-end justify-end p-2 text-white opacity-10 lg:flex">
         {leaveIcon?.icon}
       </div>
     </div>
