@@ -7,14 +7,8 @@ export interface CompanyDetailsFormValues {
     label: string;
     value: string;
   };
-  state: {
-    label: string;
-    value: string;
-  };
-  city: {
-    label: string;
-    value: string;
-  };
+  state: string;
+  city: string;
   timezone: {
     label: string;
     value: string;
