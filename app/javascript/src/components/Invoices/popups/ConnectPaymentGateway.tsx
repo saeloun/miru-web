@@ -66,7 +66,7 @@ const ConnectPaymentGateway = ({
           </div>
           <div className="text-center">
             <button
-              className="button__bg_purple mb-3 block w-full"
+              className="button__bg_purple mb-3 block w-full text-xs sm:text-base"
               onClick={e => {
                 e.stopPropagation();
                 setShowConnectPaymentDialog(false);
@@ -77,7 +77,7 @@ const ConnectPaymentGateway = ({
               Go to Payment Settings
             </button>
             <button
-              className="button__bg_purple w-full"
+              className="button__bg_purple w-full text-xs sm:text-base"
               onClick={e => {
                 e.stopPropagation();
                 setIsSending(true);
