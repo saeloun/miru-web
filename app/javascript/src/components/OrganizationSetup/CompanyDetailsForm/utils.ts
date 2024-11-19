@@ -20,12 +20,8 @@ export const companyDetailsFormValidationSchema = Yup.object().shape({
   country: Yup.object().shape({
     value: Yup.string().required("Country cannot be blank"),
   }),
-  state: Yup.object().shape({
-    value: Yup.string().required("State cannot be blank"),
-  }),
-  city: Yup.object().shape({
-    value: Yup.string().required("City cannot be blank"),
-  }),
+  state: Yup.string().required("State cannot be blank"),
+  city: Yup.string().required("City cannot be blank"),
   zipcode: Yup.string()
     .required("Zipcode line cannot be blank")
     .max(10, "Maximum 10 characters are allowed"),
@@ -74,8 +70,8 @@ export const companyDetailsFormInitialValues = {
   logo_url: null,
   logo: null,
   country: mostSelectedCountries[0], //{ value: null, label: null, code: null },
-  state: { value: "", label: "" },
-  city: { value: "", label: "" },
+  state: "",
+  city: "",
   zipcode: "",
   timezone: {
     label: "(GMT-05:00) Eastern Time (US & Canada)",

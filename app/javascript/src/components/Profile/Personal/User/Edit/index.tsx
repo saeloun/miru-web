@@ -1,11 +1,11 @@
 /* eslint-disable no-unused-vars */
 import React, { Fragment, useEffect, useRef, useState } from "react";
 
-import { Country } from "country-state-city";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import { useOutsideClick } from "helpers";
 import { useNavigate } from "react-router-dom";
+import worldCountries from "world-countries";
 import * as Yup from "yup";
 
 import profileApi from "apis/profile";
@@ -74,9 +74,9 @@ const UserDetailsEdit = () => {
   useOutsideClick(wrapperRef, () => setShowDatePicker({ visibility: false }));
   const assignCountries = async allCountries => {
     const countryData = await allCountries.map(country => ({
-      value: country.name,
-      label: country.name,
-      code: country.isoCode,
+      value: country.cca2,
+      label: country.name.common,
+      code: country.cca2,
     }));
     setCountries(countryData);
   };
@@ -101,8 +101,7 @@ const UserDetailsEdit = () => {
 
   useEffect(() => {
     setIsLoading(true);
-    const allCountries = Country.getAllCountries();
-    assignCountries(allCountries);
+    assignCountries(worldCountries);
     getDetails();
   }, [id]);
 

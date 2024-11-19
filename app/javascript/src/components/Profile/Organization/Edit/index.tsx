@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useState } from "react";
 
-import { Country } from "country-state-city";
 import { useDropzone } from "react-dropzone";
 import { useNavigate } from "react-router-dom";
 import { Toastr } from "StyledComponents";
+import worldCountries from "world-countries";
 import * as Yup from "yup";
 
 import companiesApi from "apis/companies";
@@ -168,9 +168,11 @@ const OrgEdit = () => {
     let isoCode = "";
     let name = "";
     if (country && country !== "") {
-      const countryData = Country.getCountryByCode(country);
-      isoCode = countryData ? countryData.isoCode : "";
-      name = countryData ? countryData.name : "";
+      const countryData = worldCountries.find(
+        worldCountry => worldCountry["cca2"] == country
+      );
+      isoCode = countryData ? countryData.cca2 : "";
+      name = countryData ? countryData.name.common : "";
     }
 
     const orgAddr = {
@@ -225,9 +227,9 @@ const OrgEdit = () => {
 
   const assignCountries = async allCountries => {
     const countryData = await allCountries.map(country => ({
-      value: country.isoCode,
-      label: country.name,
-      code: country.isoCode,
+      value: country.cca2,
+      label: country.name.common,
+      code: country.cca2,
     }));
     setCountries(countryData);
   };
@@ -236,8 +238,7 @@ const OrgEdit = () => {
     sendGAPageView();
     getCurrencies();
     getData();
-    const allCountries = Country.getAllCountries();
-    assignCountries(allCountries);
+    assignCountries(worldCountries);
   }, []);
 
   const handleAddrChange = useCallback(
@@ -286,8 +287,8 @@ const OrgEdit = () => {
     const changedCountry = {
       ...companyAddr,
       country: selectCountry,
-      state: {},
-      city: {},
+      state: "",
+      city: "",
     };
 
     setupTimezone(
@@ -382,7 +383,7 @@ const OrgEdit = () => {
         { abortEarly: false }
       );
       await updateOrgDetails();
-      navigate(`/settings/organization`, { replace: true });
+      //navigate(`/settings/organization`, { replace: true });
     } catch (err) {
       const errObj = {
         companyNameErr: "",
@@ -407,6 +408,7 @@ const OrgEdit = () => {
     try {
       setIsLoading(true);
       const formD = new FormData();
+
       formD.append("company[name]", orgDetails.companyName);
       formD.append("company[business_phone]", orgDetails.companyPhone || "");
       formD.append("company[country]", orgDetails.companyAddr.country.value);
@@ -415,42 +417,43 @@ const OrgEdit = () => {
         "company[standard_price]",
         orgDetails.companyRate.toString()
       );
-
       formD.append("company[fiscal_year_end]", orgDetails.companyFiscalYear);
       formD.append("company[date_format]", orgDetails.companyDateFormat);
       formD.append("company[timezone]", orgDetails.companyTimezone);
+
+      // Nested attributes for addresses
       formD.append(
-        "company[addresses_attributes[0][id]]",
+        "company[addresses_attributes][0][id]",
         orgDetails.companyAddr.id
       );
 
       formD.append(
-        "company[addresses_attributes[0][address_line_1]]",
+        "company[addresses_attributes][0][address_line_1]",
         orgDetails.companyAddr.addressLine1
       );
 
       formD.append(
-        "company[addresses_attributes[0][address_line_2]]",
+        "company[addresses_attributes][0][address_line_2]",
         orgDetails.companyAddr.addressLine2
       );
 
       formD.append(
-        "company[addresses_attributes[0][state]]",
+        "company[addresses_attributes][0][state]",
         orgDetails.companyAddr.state
       );
 
       formD.append(
-        "company[addresses_attributes[0][city]]",
+        "company[addresses_attributes][0][city]",
         orgDetails.companyAddr.city
       );
 
       formD.append(
-        "company[addresses_attributes[0][country]]",
+        "company[addresses_attributes][0][country]",
         orgDetails.companyAddr.country?.value
       );
 
       formD.append(
-        "company[addresses_attributes[0][pin]]",
+        "company[addresses_attributes][0][pin]",
         orgDetails.companyAddr.zipcode
       );
 
@@ -486,7 +489,7 @@ const OrgEdit = () => {
       <EditHeader
         showButtons
         cancelAction={handleCancelAction}
-        isDisableUpdateBtn={isDetailUpdated}
+        isDisableUpdateBtn={!isDetailUpdated}
         saveAction={handleUpdateOrgDetails}
         subTitle=""
         title="Organization Settings"

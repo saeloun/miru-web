@@ -102,7 +102,7 @@ input:checked+.slider:before {
   height: 22px !important;
   margin: auto;
 
-  @media (min-width:1024px) and (max-width:1279px) {
+@media (min-width:1024px) and (max-width:1279px) {
     font-size: 10px !important;
     width: 15px !important;
     height: 15px !important;
@@ -335,10 +335,6 @@ input:checked+.slider:before {
 
   abbr {
     display: none;
-  }
-
-  @media (min-width:1024px) and (max-width:1535px) {
-    max-width: 10% !important;
   }
 }
 
