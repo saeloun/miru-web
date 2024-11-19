@@ -1,0 +1,24 @@
+<div style="padding: 40px;">
+  <h1>Edit Settings</h1>
+
+  <%= form_with url: admin_setting_path, method: :put, local: true do |form| %>
+    <div>
+      <%= form.label :number_of_email, "Number of emails" %>
+      <%= form.number_field :number_of_email, value: @number_of_email %>
+    </div>
+
+    <div>
+      <%= form.label :interval_length, "Interval Length" %>
+      <%= form.number_field :interval_length, value: @interval_length %>
+    </div>
+
+    <div>
+      <%= form.label :interval_unit, "Interval Unit" %>
+      <%= form.select :interval_unit, options_for_select(Setting::TIME_INTERVAL, @interval_unit) %>
+    </div>
+
+    <div style="padding: 10px 0;">
+      <%= form.submit "Save Settings" %>
+    </div>
+  <% end %>
+</div>

@@ -12,6 +12,10 @@ FactoryBot.define do
     personal_email_id { Faker::Internet.email }
     current_workspace factory: :company
 
+    after :create do |user|
+      create(:email_rate_limiter, user:)
+    end
+
     trait :with_avatar do
       transient do
         upload_file_name { "test-image.png" }

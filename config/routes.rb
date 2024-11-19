@@ -25,6 +25,7 @@ Rails.application.routes.draw do
       resources :companies
       resources :clients
       resources :addresses
+      resource :setting, only: %i[edit update], controller: "settings"
 
       root to: "users#index"
     end
