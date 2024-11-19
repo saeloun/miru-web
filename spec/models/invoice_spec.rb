@@ -153,10 +153,10 @@ RSpec.describe Invoice, type: :model do
 
     it "sends the invoice on email" do
       expect {
-  invoice.send_to_email(
-    subject:, recipients:, message:,
-    current_user_id: user.id)
-}.to have_enqueued_mail(InvoiceMailer, :invoice)
+        invoice.send_to_email(
+          subject:, recipients:, message:,
+          current_user_id: user.id)
+      }.to have_enqueued_mail(InvoiceMailer, :invoice)
     end
   end
 
