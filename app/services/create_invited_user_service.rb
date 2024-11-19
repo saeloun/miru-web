@@ -116,7 +116,7 @@ class CreateInvitedUserService
     end
 
     def create_email_rate_limiter
-      user.email_rate_limiter.create!
+      user.create_email_rate_limiter!
     end
 
     def create_reset_password_token

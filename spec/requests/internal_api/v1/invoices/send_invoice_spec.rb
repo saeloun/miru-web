@@ -51,7 +51,11 @@ RSpec.describe "InternalApi::V1::Invoices#send_invoice", type: :request do
         end.to have_enqueued_mail(InvoiceMailer, :invoice)
 
         perform_enqueued_jobs do
-          InvoiceMailer.with({ invoice_id: invoice.id }.merge(invoice_email)).invoice.deliver_later
+          InvoiceMailer.with(
+            {
+              invoice_id: invoice.id,
+              current_user_id: user.id
+            }.merge(invoice_email)).invoice.deliver_later
         end
 
         invoice.invoice_line_items.reload.each do |line_item|

@@ -6,6 +6,7 @@ class Setting < RailsSettings::Base
   TIME_INTERVAL = %i[min hr]
 
   # Define your fields
+  field :number_of_email, type: :integer, default: "5"
   field :interval_length, type: :integer, default: "5"
   field :interval_unit,
     default: :min,
