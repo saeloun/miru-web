@@ -7,7 +7,7 @@ RSpec.describe "InternalApi::V1::Invoices#send_invoice", type: :request do
   let(:overdue_invoice) { create :invoice, status: "overdue" }
   let(:client) { invoice.client }
   let(:company) { invoice.company }
-  let(:user) { create :user, current_workspace_id: company.id }
+  let(:user) { create :user, :with_email_rate_limiter, current_workspace_id: company.id }
 
   before do
     allow(Current).to receive(:user).and_return(user)

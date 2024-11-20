@@ -7,8 +7,8 @@ RSpec.describe ClientPaymentMailer, type: :mailer do
     let(:company) { create :company, :with_logo }
     let(:client) { create :client, company: }
     let(:invoice) { create :invoice, client: }
-    let!(:user) { create(:user, current_workspace_id: company.id, companies: [company]) }
-    let!(:email_rate_limiter) { create(:email_rate_limiter, user:) }
+    let!(:user) { create(:user, :with_email_rate_limiter, current_workspace_id: company.id, companies: [company]) }
+    let!(:email_rate_limiter) { user.email_rate_limiter }
     let(:subject) { "Payment Receipt of Invoice #{invoice.invoice_number} from #{invoice.company.name}" }
     let(:mail) { ClientPaymentMailer.with(invoice_id: invoice.id, subject:, current_user_id: user.id).payment }
 
