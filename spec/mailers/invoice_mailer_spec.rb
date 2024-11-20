@@ -5,7 +5,7 @@ require "rails_helper"
 RSpec.describe InvoiceMailer, type: :mailer do
   describe "invoice" do
     let(:company) { create :company, :with_logo }
-    let(:user) { create :user }
+    let(:user) { create(:user, :with_email_rate_limiter) }
     let(:client) { create :client, company: }
     let(:invoice) { create :invoice, client:, company:, status: :sending }
     let(:recipients) { [invoice.client.email, "miru@example.com"] }
