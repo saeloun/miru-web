@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 class ClientPaymentMailer < ApplicationMailer
-  before_action :raise_email_limit_crossed_error
-  after_action :update_email_rate_limiter
+  include EmailRateLimiterAction
 
   def payment
     @invoice = Invoice.find(params[:invoice_id])

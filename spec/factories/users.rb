@@ -12,8 +12,10 @@ FactoryBot.define do
     personal_email_id { Faker::Internet.email }
     current_workspace factory: :company
 
-    after :create do |user|
-      create(:email_rate_limiter, user:)
+    trait :with_email_rate_limiter do
+      after :create do |user|
+        create(:email_rate_limiter, user:)
+      end
     end
 
     trait :with_avatar do
