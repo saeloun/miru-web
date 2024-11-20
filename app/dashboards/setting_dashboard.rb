@@ -12,7 +12,7 @@ class SettingDashboard < Administrate::BaseDashboard
   ATTRIBUTE_TYPES = {
     id: Field::Number,
     interval_length: Field::Number,
-    interval_unit: Field::Select.with_options(collection: TIME_INTERVAL),
+    interval_unit: Field::Select.with_options(collection: ::Setting::TIME_INTERVAL),
     created_at: Field::DateTime,
     updated_at: Field::DateTime
   }.freeze
