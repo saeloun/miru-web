@@ -322,7 +322,9 @@ carry_forward_days)
         leave_type.allocation_value,
         leave_type.allocation_period.to_sym,
         leave_type.allocation_frequency.to_sym,
-        year
+        year,
+        working_hours_per_day,
+        company.working_days
       ).process
     end
 end
