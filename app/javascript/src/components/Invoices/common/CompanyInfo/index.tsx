@@ -20,7 +20,7 @@ const CompanyInfo = ({ company, logo = "" }) => {
           url={company.logo || logo}
         />
         <div className="text-center md:text-left lg:mt-2">
-          <p className="text-xl font-bold leading-7 text-miru-dark-purple-1000 lg:text-3xl">
+          <p className="text-base font-bold leading-7 text-miru-dark-purple-1000 sm:text-xl lg:text-3xl">
             {company.name}
           </p>
           <p className="mt-1 text-left text-xs font-normal text-miru-dark-purple-1000 lg:text-base">
