@@ -154,7 +154,7 @@ const MobileView = ({
               }}
             >
               <EditIcon className="text-white" size={16} weight="bold" />
-              <span className="ml-2 text-center text-base font-bold leading-5 text-white">
+              <span className="ml-2 text-center text-xs font-bold leading-5 text-white sm:text-base">
                 Edit
               </span>
             </Button>
@@ -174,7 +174,7 @@ const MobileView = ({
                 size={16}
                 weight="bold"
               />
-              <span className="ml-2 text-center text-base font-bold leading-5 text-white">
+              <span className="ml-2 text-center text-xs font-bold leading-5 text-white sm:text-base">
                 Send to
               </span>
             </Button>
