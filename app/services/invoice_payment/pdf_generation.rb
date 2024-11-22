@@ -9,6 +9,7 @@ module InvoicePayment
       @base_currency = invoice.company.base_currency
       @root_url = root_url
       @filepath = filepath
+      @bank_account = invoice.company.bank_account
     end
 
     def process
@@ -24,7 +25,8 @@ module InvoicePayment
         client: @invoice.client,
         invoice_line_items: invoice_data[:invoice_line_items],
         sub_total: format_currency(invoice_data[:sub_total]),
-        total: format_currency(invoice_data[:total])
+        total: format_currency(invoice_data[:total]),
+        bank_account: @bank_account
       }
 
       Pdf::HtmlGenerator.new(
