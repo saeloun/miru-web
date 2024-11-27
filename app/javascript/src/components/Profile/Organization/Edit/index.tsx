@@ -44,6 +44,8 @@ const orgSchema = Yup.object().shape({
     .typeError("Amount must be a number")
     .min(0, "please enter larger amount")
     .required("Rate cannot be blank"),
+  companyWorkingHours: Yup.string().required("Working hours cannot be blank"),
+  companyWorkingDays: Yup.string().required("Working days cannot be blank"),
 });
 
 const fiscalYearOptions = [
@@ -92,6 +94,8 @@ const initialState = {
   companyDateFormat: "",
   companyTimezone: "",
   logo: null,
+  companyWorkingHours: "0",
+  companyWorkingDays: "0",
 };
 
 const errorState = {
@@ -204,6 +208,8 @@ const OrgEdit = () => {
       companyTimezone: companyDetails.timezone,
       id: companyDetails.id,
       logo: null,
+      companyWorkingHours: companyDetails.working_hours,
+      companyWorkingDays: companyDetails.working_days,
     };
 
     setOrgDetails(organizationSchema);
@@ -379,6 +385,8 @@ const OrgEdit = () => {
             zipcode: orgDetails.companyAddr.zipcode,
           },
           companyRate: orgDetails.companyRate,
+          companyWorkingDays: orgDetails.companyWorkingDays,
+          companyWorkingHours: orgDetails.companyWorkingHours,
         },
         { abortEarly: false }
       );
@@ -456,6 +464,9 @@ const OrgEdit = () => {
         "company[addresses_attributes][0][pin]",
         orgDetails.companyAddr.zipcode
       );
+
+      formD.append("company[working_hours]", orgDetails.companyWorkingHours);
+      formD.append("company[working_days]", orgDetails.companyWorkingDays);
 
       if (orgDetails.logo) {
         formD.append("company[logo]", orgDetails.logo);

@@ -66,4 +66,6 @@ export const financialDetailsFormInitialValues = {
   standard_rate: "00.00",
   year_end: fiscalYearEndOptions[0],
   date_format: dateFormatOptions[0],
+  working_days: "5",
+  working_hours: "40",
 };
