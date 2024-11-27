@@ -95,6 +95,8 @@ const OrganizationSetup = () => {
     if (companyDetails.logo) {
       formD.append("company[logo]", companyDetails.logo);
     }
+    formD.append("company[working_hours]", financialDetails.working_hours);
+    formD.append("company[working_days]", financialDetails.working_days);
 
     return formD;
   };

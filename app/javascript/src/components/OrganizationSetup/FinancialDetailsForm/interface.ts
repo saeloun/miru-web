@@ -12,6 +12,8 @@ export interface FinancialDetailsFormValues {
     label: string;
     value: string;
   };
+  working_hours: string;
+  working_days: string;
 }
 
 export interface FinancialDetailsFormProps {

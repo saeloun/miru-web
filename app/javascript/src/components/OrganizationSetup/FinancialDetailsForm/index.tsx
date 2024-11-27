@@ -75,8 +75,11 @@ const FinancialDetailsForm = ({
       values.base_currency?.value?.trim() &&
       values.year_end?.value?.trim() &&
       values.date_format?.value?.trim() &&
-      values.standard_rate >= 0 &&
-      values.standard_rate != "" &&
+      values.working_days != "" &&
+      values.working_hours != "" &&
+      (typeof values.standard_rate == "number"
+        ? values.standard_rate >= 0
+        : values.standard_rate != "") &&
       (typeof values.standard_rate == "number" ||
         !isNaN(Number(values.standard_rate)))
     );
@@ -207,6 +210,73 @@ const FinancialDetailsForm = ({
                 <div className="mx-0 mt-1 mb-5 block text-xs tracking-wider text-red-600">
                   {errors.date_format && touched.date_format && (
                     <div>{errors.date_format.value}</div>
+                  )}
+                </div>
+              </div>
+              {/* working hours and days */}
+              <div className="field relative">
+                <div className="outline relative">
+                  <Field
+                    name="working_days"
+                    placeholder=" "
+                    step="0.01"
+                    type="text"
+                    className={`form__input block h-12 w-full appearance-none bg-transparent p-4 text-base focus-within:border-miru-han-purple-1000 ${
+                      errors.working_days &&
+                      touched.working_days &&
+                      "border-red-600 focus:border-red-600 focus:ring-red-600"
+                    } `}
+                    onChange={e => {
+                      setFieldValue("working_days", e.target.value);
+                      handleFormFieldValueChange(
+                        "working_days",
+                        e.target.value
+                      );
+                    }}
+                  />
+                  <label
+                    className="absolute top-3 z-1 origin-0 bg-white px-1 text-sm font-medium text-miru-dark-purple-200 duration-300"
+                    htmlFor="working_days"
+                  >
+                    Working Days (per week)
+                  </label>
+                </div>
+                <div className="mx-0 mt-1 mb-5 block text-xs tracking-wider text-red-600">
+                  {errors.working_days && touched.working_days && (
+                    <div>{errors.working_days}</div>
+                  )}
+                </div>
+              </div>
+              <div className="field relative">
+                <div className="outline relative">
+                  <Field
+                    name="working_hours"
+                    placeholder=" "
+                    step="0.01"
+                    type="text"
+                    className={`form__input block h-12 w-full appearance-none bg-transparent p-4 text-base focus-within:border-miru-han-purple-1000 ${
+                      errors.working_hours &&
+                      touched.working_hours &&
+                      "border-red-600 focus:border-red-600 focus:ring-red-600"
+                    } `}
+                    onChange={e => {
+                      setFieldValue("working_hours", e.target.value);
+                      handleFormFieldValueChange(
+                        "working_hours",
+                        e.target.value
+                      );
+                    }}
+                  />
+                  <label
+                    className="absolute top-3 z-1 origin-0 bg-white px-1 text-sm font-medium text-miru-dark-purple-200 duration-300"
+                    htmlFor="working_hours"
+                  >
+                    Working Hours (per week)
+                  </label>
+                </div>
+                <div className="mx-0 mt-1 mb-5 block text-xs tracking-wider text-red-600">
+                  {errors.working_hours && touched.working_hours && (
+                    <div>{errors.working_hours}</div>
                   )}
                 </div>
               </div>

@@ -24,6 +24,8 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
     ]
   end
 
+  let(:working_hours_per_day) { company.working_hours.to_i / company.working_days.to_i }
+
   describe "#initialize" do
     it "checks preset values in initialize method" do
       params = {
@@ -81,10 +83,10 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
       leave_type = leave_types[0]
       total_days = calculate_leave_type_days(@joined_at, leave_type, @year)
       timeoff_entries_duration = leave_type.timeoff_entries.sum(:duration)
-      net_duration = (total_days * 8 * 60) - timeoff_entries_duration
+      net_duration = (total_days * working_hours_per_day * 60) - timeoff_entries_duration
       net_hours = net_duration / 60
-      net_days = net_hours / 8
-      extra_hours = net_hours % 8
+      net_days = net_hours / working_hours_per_day
+      extra_hours = net_hours % working_hours_per_day
 
       summary_object = {
         id: leave_type.id,
@@ -106,10 +108,10 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
       leave_type = leave_types[1]
       total_days = calculate_leave_type_days(@joined_at, leave_type, @year)
       timeoff_entries_duration = leave_type.timeoff_entries.sum(:duration)
-      net_duration = (total_days * 8 * 60) - timeoff_entries_duration
+      net_duration = (total_days * working_hours_per_day * 60) - timeoff_entries_duration
       net_hours = net_duration / 60
-      net_days = net_hours / 8
-      extra_hours = net_hours % 8
+      net_days = net_hours / working_hours_per_day
+      extra_hours = net_hours % working_hours_per_day
 
       summary_object = {
         id: leave_type.id,
@@ -131,10 +133,10 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
       leave_type = leave_types[2]
       total_days = calculate_leave_type_days(@joined_at, leave_type, @year)
       timeoff_entries_duration = leave_type.timeoff_entries.sum(:duration)
-      net_duration = (total_days * 8 * 60) - timeoff_entries_duration
+      net_duration = (total_days * working_hours_per_day * 60) - timeoff_entries_duration
       net_hours = net_duration / 60
-      net_days = net_hours / 8
-      extra_hours = net_hours % 8
+      net_days = net_hours / working_hours_per_day
+      extra_hours = net_hours % working_hours_per_day
 
       summary_object = {
         id: leave_type.id,
@@ -156,10 +158,10 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
       leave_type = leave_types[3]
       total_days = calculate_leave_type_days(@joined_at, leave_type, @year)
       timeoff_entries_duration = leave_type.timeoff_entries.sum(:duration)
-      net_duration = (total_days * 8 * 60) - timeoff_entries_duration
+      net_duration = (total_days * working_hours_per_day * 60) - timeoff_entries_duration
       net_hours = net_duration / 60
-      net_days = net_hours / 8
-      extra_hours = net_hours % 8
+      net_days = net_hours / working_hours_per_day
+      extra_hours = net_hours % working_hours_per_day
 
       summary_object = {
         id: leave_type.id,
@@ -200,10 +202,10 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
       leave_type = leave_types[0]
       total_days = calculate_leave_type_days(@joined_at, leave_type, @year)
       timeoff_entries_duration = leave_type.timeoff_entries.sum(:duration)
-      net_duration = (total_days * 8 * 60) - timeoff_entries_duration
+      net_duration = (total_days * working_hours_per_day * 60) - timeoff_entries_duration
       net_hours = net_duration / 60
-      net_days = net_hours / 8
-      extra_hours = net_hours % 8
+      net_days = net_hours / working_hours_per_day
+      extra_hours = net_hours % working_hours_per_day
 
       summary_object = {
         id: leave_type.id,
@@ -225,10 +227,10 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
       leave_type = leave_types[1]
       total_days = calculate_leave_type_days(@joined_at, leave_type, @year)
       timeoff_entries_duration = leave_type.timeoff_entries.sum(:duration)
-      net_duration = (total_days * 8 * 60) - timeoff_entries_duration
+      net_duration = (total_days * working_hours_per_day * 60) - timeoff_entries_duration
       net_hours = net_duration / 60
-      net_days = net_hours / 8
-      extra_hours = net_hours % 8
+      net_days = net_hours / working_hours_per_day
+      extra_hours = net_hours % working_hours_per_day
 
       summary_object = {
         id: leave_type.id,
@@ -250,10 +252,10 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
       leave_type = leave_types[2]
       total_days = calculate_leave_type_days(@joined_at, leave_type, @year)
       timeoff_entries_duration = leave_type.timeoff_entries.sum(:duration)
-      net_duration = (total_days * 8 * 60) - timeoff_entries_duration
+      net_duration = (total_days * working_hours_per_day * 60) - timeoff_entries_duration
       net_hours = net_duration / 60
-      net_days = net_hours / 8
-      extra_hours = net_hours % 8
+      net_days = net_hours / working_hours_per_day
+      extra_hours = net_hours % working_hours_per_day
 
       summary_object = {
         id: leave_type.id,
@@ -275,10 +277,10 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
       leave_type = leave_types[3]
       total_days = calculate_leave_type_days(@joined_at, leave_type, @year)
       timeoff_entries_duration = leave_type.timeoff_entries.sum(:duration)
-      net_duration = (total_days * 8 * 60) - timeoff_entries_duration
+      net_duration = (total_days * working_hours_per_day * 60) - timeoff_entries_duration
       net_hours = net_duration / 60
-      net_days = net_hours / 8
-      extra_hours = net_hours % 8
+      net_days = net_hours / working_hours_per_day
+      extra_hours = net_hours % working_hours_per_day
 
       summary_object = {
         id: leave_type.id,
@@ -320,7 +322,9 @@ carry_forward_days)
         leave_type.allocation_value,
         leave_type.allocation_period.to_sym,
         leave_type.allocation_frequency.to_sym,
-        year
+        year,
+        working_hours_per_day,
+        company.working_days
       ).process
     end
 end
