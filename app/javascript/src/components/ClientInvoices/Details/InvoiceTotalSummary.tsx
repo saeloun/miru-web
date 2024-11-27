@@ -2,7 +2,13 @@ import React from "react";
 
 import { currencyFormat } from "helpers";
 
-const InvoiceTotalSummary = ({ invoice, company, lineItems, strikeAmount }) => {
+const InvoiceTotalSummary = ({
+  invoice,
+  company,
+  lineItems,
+  strikeAmount,
+  bankAccount,
+}) => {
   const subTotal = lineItems
     .reduce((prev, curr) => prev + (curr.rate * curr.quantity) / 60, 0)
     .toFixed(2);
@@ -12,7 +18,48 @@ const InvoiceTotalSummary = ({ invoice, company, lineItems, strikeAmount }) => {
   const total = Number(subTotal) + Number(tax) - Number(discount);
 
   return (
-    <div className="mb-5 flex w-full justify-end px-10 pt-3 pb-10">
+    <div className="mb-5 flex w-full justify-between px-10 pt-3 pb-10">
+      <table className="w-2/5">
+        <tbody>
+          <tr className="pb-5">
+            <td className="pb-2 text-left text-base font-bold text-miru-dark-purple-1000">
+              Bank Account Details:
+            </td>
+          </tr>
+          <tr>
+            <td className="pt-1 text-left text-base font-normal text-miru-dark-purple-1000">
+              Bank Name:
+            </td>
+            <td className="pt-1 text-left text-base font-bold text-miru-dark-purple-1000 ">
+              {bankAccount.bank_name || "-"}
+            </td>
+          </tr>
+          <tr>
+            <td className="pt-1 text-left text-base font-normal text-miru-dark-purple-1000">
+              Account Type:
+            </td>
+            <td className="w-22 pt-1 text-left text-base font-bold text-miru-dark-purple-1000">
+              {bankAccount.account_type || "-"}
+            </td>
+          </tr>
+          <tr>
+            <td className="pt-1 text-left text-base font-normal text-miru-dark-purple-1000">
+              Routing Number:
+            </td>
+            <td className="pt-1 text-left text-base font-bold text-miru-dark-purple-1000">
+              {bankAccount.routing_number || "-"}
+            </td>
+          </tr>
+          <tr>
+            <td className="pt-1 text-left text-base font-normal text-miru-dark-purple-1000">
+              Account Number:
+            </td>
+            <td className="pt-1 text-left text-base font-bold text-miru-dark-purple-1000 ">
+              {bankAccount.account_number || "-"}
+            </td>
+          </tr>
+        </tbody>
+      </table>
       <table className="w-1/3">
         <tbody>
           <tr>

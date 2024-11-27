@@ -5,6 +5,6 @@ class BankAccount < ApplicationRecord
 
   validates :routing_number, presence: true
   validates :account_number, presence: true
-  validates :account_type, presence: true, inclusion: { in: %w[checking savings] }
+  validates :account_type, presence: true
   validates :bank_name, presence: true
 end

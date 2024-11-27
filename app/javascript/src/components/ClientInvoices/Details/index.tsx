@@ -53,6 +53,7 @@ const ClientInvoiceDetails = () => {
       company,
       client,
       stripe_connected_account,
+      bank_account,
     } = data;
 
     return isDesktop ? (
@@ -67,6 +68,7 @@ const ClientInvoiceDetails = () => {
           />
           <div className="m-0 mt-5 mb-10 w-full bg-miru-gray-100 p-0">
             <InvoiceDetails
+              bankAccount={bank_account}
               client={client}
               company={company}
               invoice={invoice}

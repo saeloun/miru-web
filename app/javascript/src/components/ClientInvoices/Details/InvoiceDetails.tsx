@@ -7,7 +7,14 @@ import InvoiceLineItems from "components/Invoices/Invoice/InvoiceLineItems";
 import InvoiceInfo from "./InvoiceInfo";
 import InvoiceTotalSummary from "./InvoiceTotalSummary";
 
-const InvoiceDetails = ({ invoice, company, lineItems, client, logo }) => {
+const InvoiceDetails = ({
+  invoice,
+  company,
+  lineItems,
+  client,
+  logo,
+  bankAccount,
+}) => {
   const invoiceWaived = invoice?.status === "waived";
   const strikeAmount = invoiceWaived && "line-through";
 
@@ -37,6 +44,7 @@ const InvoiceDetails = ({ invoice, company, lineItems, client, logo }) => {
         strikeAmount={strikeAmount}
       />
       <InvoiceTotalSummary
+        bankAccount={bankAccount}
         company={company}
         invoice={invoice}
         lineItems={lineItems}
