@@ -4,7 +4,8 @@ module TimeoffEntries
   class IndexService < ApplicationService
     include EmployeeFetchingConcern
 
-    attr_reader :current_company, :current_user, :user_id, :year, :previous_year
+    attr_reader :current_company, :current_user, :user_id, :year, :previous_year, :working_hours_per_day,
+      :working_days_per_week
     attr_accessor :leave_balance, :optional_timeoff_entries, :national_timeoff_entries
 
     def initialize(current_user, current_company, user_id, year)
@@ -14,6 +15,8 @@ module TimeoffEntries
       @year = year.to_i
       @leave_balance = []
       @previous_year = year.to_i - 1
+      @working_days_per_week = current_company.working_days.to_i
+      @working_hours_per_day = working_hours_per_day
     end
 
     def process
@@ -59,13 +62,13 @@ module TimeoffEntries
           previous_year_leave_type = previous_year_leave&.leave_types&.kept&.find_by(name: leave_type.name)
 
           previous_year_carryforward = calculate_previous_year_carryforward(previous_year_leave_type)
-
-          net_duration = (total_leave_type_days * 8 * 60) + previous_year_carryforward - timeoff_entries_duration
+          total_minutes = total_leave_type_days * @working_hours_per_day * 60
+          net_duration = total_minutes + previous_year_carryforward - timeoff_entries_duration
           net_hours = net_duration / 60
-          net_days = net_hours.abs / 8
-          extra_hours = net_hours.abs % 8
+          net_days = net_hours.abs / @working_hours_per_day
+          extra_hours = net_hours.abs % @working_hours_per_day
 
-          if net_hours.abs < 8
+          if net_hours.abs < @working_hours_per_day
             label = "#{net_hours} hours"
           else
             label = "#{net_days} days #{extra_hours} hours"
@@ -138,7 +141,7 @@ module TimeoffEntries
           name: "Optional Holidays",
           icon: "optional",
           color: "optional",
-          net_duration: net_days * 60 * 8,
+          net_duration: net_days * 60 * @working_hours_per_day,
           net_days:,
           timeoff_entries_duration: optional_timeoff_entries.sum(:duration),
           type: "holiday",
@@ -153,13 +156,14 @@ module TimeoffEntries
         allocation_value = leave_type.allocation_value
         allocation_period = leave_type.allocation_period.to_sym
         allocation_frequency = leave_type.allocation_frequency.to_sym
-
         TimeoffEntries::CalculateTotalDurationOfDefinedLeavesService.new(
           user_joined_date,
           allocation_value,
           allocation_period,
           allocation_frequency,
-          passed_year
+          passed_year,
+          @working_hours_per_day,
+          @working_days_per_week,
         ).process
       end
 
@@ -181,6 +185,12 @@ module TimeoffEntries
           )
 
         last_year_carryover && (last_year_carryover.duration > 0) ? last_year_carryover.duration : 0
+      end
+
+      def working_hours_per_day
+        return 0 if current_company.working_hours.to_i == 0
+
+        current_company.working_hours.to_i / current_company.working_days.to_i
       end
   end
 end
