@@ -37,6 +37,8 @@ const DesktopTimeoffForm = ({
     setEditTimeoffEntryId,
   } = useTimesheetEntries();
 
+  const holidayEntry = isHolidayEntry();
+
   return (
     <div className="mt-10 hidden min-h-24 justify-between rounded-lg p-4 shadow-2xl lg:flex">
       <div className="w-1/2">
@@ -124,9 +126,12 @@ const DesktopTimeoffForm = ({
             </div>
           </div>
           <TimeInput
-            className="h-8 w-20 rounded-sm bg-miru-gray-100 p-1 text-sm placeholder:text-miru-gray-1000"
+            disabled={holidayEntry}
             initTime={duration}
             name="timeInput"
+            className={`h-8 w-20 rounded-sm bg-miru-gray-100 p-1 text-sm placeholder:text-miru-gray-1000 ${
+              holidayEntry && "text-miru-dark-purple-200"
+            }`}
             onTimeChange={handleDurationChange}
           />
         </div>
