@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import dayjs from "dayjs";
 import { minFromHHMM, minToHHMM } from "helpers";
 
+import companiesApi from "apis/companies";
 import timeoffEntryApi from "apis/timeoff-entry";
 import { HOLIDAY_TYPES } from "constants/index";
 import { useTimesheetEntries } from "context/TimesheetEntries";
@@ -49,6 +50,22 @@ const TimeoffForm = ({ isDisplayEditTimeoffEntryForm = false }) => {
   const [holidayOptions, setHolidayOptions] = useState([]);
   const [showLeavesList, setShowLeavesList] = useState<boolean>(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
+  const [workingHoursPerDay, setWorkingHoursPerDay] = useState<string>("");
+
+  const fetchCompanyWorkingHours = async () => {
+    const res = await companiesApi.index();
+
+    const companyDetails = res.data.company_details;
+    const MinutesPerDay = minFromHHMM(
+      (companyDetails.working_hours / companyDetails.working_days).toString()
+    );
+    const hoursPerDay = minToHHMM(MinutesPerDay);
+    setWorkingHoursPerDay(hoursPerDay);
+  };
+
+  useEffect(() => {
+    fetchCompanyWorkingHours();
+  }, []);
 
   useEffect(() => {
     const tempLeaveTypes = [...leaveTypes];
@@ -96,6 +113,7 @@ const TimeoffForm = ({ isDisplayEditTimeoffEntryForm = false }) => {
       const tempHolidayOptions =
         holidayList?.filter(holiday => holiday?.category === leaveTypeId) || [];
       setHolidayOptions([...tempHolidayOptions]);
+      setDuration(workingHoursPerDay);
       handleSuggestedHolidayBasedOnDate(tempHolidayOptions);
     } else {
       setIsShowHolidayList(false);

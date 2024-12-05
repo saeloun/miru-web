@@ -24,7 +24,7 @@ module TimeoffEntries
         timeoff_entries:,
         employees: set_employees,
         leave_balance: process_leave_balance,
-        total_timeoff_entries_duration: timeoff_entries.sum(&:duration),
+        total_timeoff_entries_duration: timeoff_leave_entries.sum(&:duration),
         optional_timeoff_entries:,
         national_timeoff_entries:
       }
@@ -76,7 +76,7 @@ module TimeoffEntries
 
           summary_object = {
             id: leave_type.id,
-            name: leave_type.name,
+            name: "Available #{leave_type.name}",
             icon: leave_type.icon,
             color: leave_type.color,
             total_leave_type_days:,
@@ -106,13 +106,13 @@ module TimeoffEntries
 
         national_holidays = {
           id: "national",
-          name: "National Holidays",
+          name: "Available National Holidays",
           icon: "national",
           color: "national",
           timeoff_entries_duration: national_timeoff_entries.sum(:duration),
           type: "holiday",
           category: "national",
-          label: "#{national_timeoff_entries.count} out of #{total_national_holidays}"
+          label: "#{total_national_holidays - national_timeoff_entries.count} out of #{total_national_holidays}"
         }
 
         leave_balance << national_holidays
@@ -138,7 +138,7 @@ module TimeoffEntries
 
         optional_holidays = {
           id: "optional",
-          name: "Optional Holidays",
+          name: "Available Optional Holidays",
           icon: "optional",
           color: "optional",
           net_duration: net_days * 60 * @working_hours_per_day,
@@ -146,7 +146,7 @@ module TimeoffEntries
           timeoff_entries_duration: optional_timeoff_entries.sum(:duration),
           type: "holiday",
           category: "optional",
-          label: "#{total_optional_entries} out of #{no_of_allowed_optional_holidays} (this #{time_period_optional_holidays.to_s.gsub("per_", "")})"
+          label: "#{no_of_allowed_optional_holidays - total_optional_entries} out of #{no_of_allowed_optional_holidays} (this #{time_period_optional_holidays.to_s.gsub("per_", "")})"
         }
 
         leave_balance << optional_holidays
@@ -191,6 +191,10 @@ module TimeoffEntries
         return 0 if current_company.working_hours.to_i == 0
 
         current_company.working_hours.to_i / current_company.working_days.to_i
+      end
+
+      def timeoff_leave_entries
+        timeoff_entries.select { |entry| entry.leave_type_id.present? }
       end
   end
 end
