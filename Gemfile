@@ -26,6 +26,9 @@ gem "puma", "~> 6.4.3"
 # Use Tailwind CSS [https://github.com/rails/tailwindcss-rails]
 # gem "tailwindcss-rails", ">= 0.5.3"
 
+# Use CSSBundling to bundle CSS
+gem "cssbundling-rails", "~> 1.4"
+
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 gem "jbuilder", "~> 2.11"
 
@@ -48,7 +51,6 @@ gem "tzinfo-data", platforms: %i[mingw mswin x64_mingw jruby]
 gem "bootsnap", ">= 1.4.4", require: false
 
 # Use Sass to process CSS
-# gem "sassc-rails", "~> 2.1"
 
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 gem "image_processing", ">= 1.2"
@@ -60,7 +62,6 @@ gem "shakapacker", "6.0.0"
 gem "react-rails", "2.6.2"
 
 # Use SCSS for stylesheets
-gem "sass-rails"
 
 # #--- gems for server & infra configuration ---##
 gem "dotenv-rails"

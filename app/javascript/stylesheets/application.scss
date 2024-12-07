@@ -1,15 +1,17 @@
-@import "tailwindcss/base";
-@import "tailwindcss/components";
-@import "tailwindcss/utilities";
+@use "tailwindcss/base";
+@use "tailwindcss/components";
+@use "tailwindcss/utilities";
+@use "team";
+@use "time-tracking";
+@use "react-calendar";
+@use "toast";
+@use "pto";
+@use "authentication";
+@use "rc-steps";
+@use "navbar";
 @import "react-toastify/dist/ReactToastify.min.css";
 @import "react-responsive-carousel/lib/styles/carousel.min.css";
-@import "team";
-@import "time-tracking";
-@import "react-calendar";
-@import "toast";
-@import "pto";
-@import "authentication";
-@import "rc-steps";
+
 
 @layer base {
   @font-face {
@@ -29,7 +31,6 @@
 }
 
 @layer components {
-  @import "navbar";
   .sidebar {
     &__container {
       box-shadow: -2px 6px 11px grey;
