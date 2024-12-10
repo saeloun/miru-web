@@ -50,8 +50,6 @@ gem "tzinfo-data", platforms: %i[mingw mswin x64_mingw jruby]
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", ">= 1.4.4", require: false
 
-# Use Sass to process CSS
-
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 gem "image_processing", ">= 1.2"
 
@@ -60,8 +58,6 @@ gem "shakapacker", "6.0.0"
 
 # React hook for rails
 gem "react-rails", "2.6.2"
-
-# Use SCSS for stylesheets
 
 # #--- gems for server & infra configuration ---##
 gem "dotenv-rails"
