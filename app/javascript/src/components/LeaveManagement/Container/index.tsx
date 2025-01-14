@@ -47,7 +47,11 @@ const Container = ({
       holiday => holiday.date === currentDate
     );
 
-    const isOptionalHoliday = optionalHolidayList?.find(
+    const currentYearOptionalHolidayList = optionalHolidayList?.find(
+      holiday => holiday.year == currentYear
+    ).optional_holidays;
+
+    const isOptionalHoliday = currentYearOptionalHolidayList?.find(
       holiday => holiday.date === currentDate
     );
 
