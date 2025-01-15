@@ -1,5 +1,5 @@
 /* eslint-disable import/exports-last */
-import { Country } from "country-state-city";
+import worldCountries from "world-countries";
 import * as Yup from "yup";
 
 const phoneRegExp =
@@ -33,9 +33,11 @@ export const clientSchema = Yup.object().shape({
 
 const getCountryLabel = countryCode => {
   if (countryCode) {
-    const countryObj = Country.getCountryByCode(countryCode);
+    const countryObj = worldCountries.find(
+      country => country["cca2"] === countryCode
+    );
 
-    return countryObj.name;
+    return countryObj.name.common;
   }
 
   return "";

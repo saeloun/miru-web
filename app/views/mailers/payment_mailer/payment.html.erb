@@ -35,7 +35,7 @@
             <% if @company_logo.present? %>
                 <%= image_tag @company_logo, height: 80, width: 80, style: "border-radius: 80px" %>
             <% else %>
-              <div style="width:80px;height:80px;border-radius: 80px;text-align: center;background: #CDD6DF;font-size: 40px;justify-content:center;display: flex; align-items: center; color:white"><%= @invoice.company.name.slice(0) %></div>
+              <div style="margin:auto;width:80px;height:80px;border-radius: 80px;text-align: center;background: #CDD6DF;font-size: 40px; color:white; display: table;"><div style="display:table-cell; vertical-align: middle;"><%= @invoice.company.name.slice(0) %></div>
             <% end %>
           </div>
         </div>
@@ -67,7 +67,7 @@
                 style="font-size:14px; font-weight:normal; color:#A5A3AD; display: inline-block;"
               >Powered by</td>
               <td align="left" style="vertical-align: middle; display: inline-block;">
-                <%= image_tag attachments['miruLogoWithText.png'].url, height:'48px', width:'120px' %>
+                <%= image_tag '/miruLogoWithText.png', height:'48px', width:'120px' %>
               </td>
             </tr>
           </table>
@@ -88,13 +88,13 @@
               href="https://www.instagram.com/getmiru/"
               target="_blank"
             >
-              <%= image_tag attachments['Instagram.png'].url, height: '16px' ,width:'16px', style: 'padding-left: 10px' %>
+              <%= image_tag '/Instagram.png', height: '16px' ,width:'16px', style: 'padding-left: 10px' %>
             </a>
             <a
               href="https://x.com/getmiru"
               target="_blank"
             >
-              <%= image_tag attachments['Twitter.png'].url, height: '16px' ,width:'16px', style: 'padding-left: 10px' %>
+              <%= image_tag '/Twitter.png', height: '16px' ,width:'16px', style: 'padding-left: 10px' %>
             </a>
           </span>
           <span
@@ -143,7 +143,7 @@
         </div>
         <div>
           <p style="font-family: 'Manrope'; margin: 0px; padding: 0px;">Reference</p>
-          <p style="font-family: 'Manrope' font-style: normal; font-size: 16px; font-style: normal; font-weight: 400; line-height: 22px; color: #1D1A31; margin: 0px; padding: 4px 0px 16px 0px;"><%= @invoice.reference %></p>
+          <p style="font-family: 'Manrope' font-style: normal; font-size: 16px; font-style: normal; font-weight: 400; line-height: 22px; color: #1D1A31; margin: 0px; padding: 4px 0px 16px 0px;"><%= @invoice.reference.blank? ? "-" : @invoice.reference %></p>
         </div>
         <div>
           <p style="font-family: 'Manrope';margin: 0px; padding: 0px;">Total Amount</p>
@@ -161,7 +161,7 @@
                 style="font-family: 'Manrope'; font-style: normal; font-size:14px; font-weight:400; line-height: 19px; color:#A5A3AD; display: inline-block; text-align: center;"
               >Powered by</td>
               <td align="left" style="vertical-align: middle; display: inline-block;">
-                <%= image_tag attachments['miruLogoWithText.png'].url, height:'48px', width:'120px' %>
+                <%= image_tag '/miruLogoWithText.png', height:'48px', width:'120px' %>
               </td>
             </tr>
           </table>
@@ -193,13 +193,13 @@
               href="https://www.instagram.com/getmiru/"
               target="_blank"
             >
-              <%= image_tag attachments['Instagram.png'].url, height: '16px' ,width:'16px', style: 'margin: 0px 20px;' %>
+              <%= image_tag '/Instagram.png', height: '16px' ,width:'16px', style: 'margin: 0px 20px;' %>
             </a>
             <a
               href="https://x.com/getmiru"
               target="_blank"
             >
-              <%= image_tag attachments['Twitter.png'].url, height: '16px' ,width:'16px' %>
+              <%= image_tag '/Twitter.png', height: '16px' ,width:'16px' %>
             </a>
           </div>
         </div>

@@ -238,7 +238,7 @@ en:
     name: name
     email: email
     change_password: change password
-    current_passowrd: current password
+    current_password: current password
     password: password
     confirm_password: confirm password
   pundit:

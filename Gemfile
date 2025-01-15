@@ -150,7 +150,7 @@ group :development, :test, :ci do
   gem "rubocop-rspec", require: false
 
   # Use RSpec as the testing framework
-  gem "rspec-rails", "~> 6.1"
+  gem "rspec-rails", "~> 7.0"
 
   # For linting ERB files
   gem "erb_lint", require: false, git: "https://github.com/Shopify/erb-lint.git", branch: "main"
