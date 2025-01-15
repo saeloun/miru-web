@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class WeeklyReminderForMissedEntriesService
-  WEEKLY_LIMIT = 40.hours.in_minutes
-
   def process
     @invalid_emails = SesInvalidEmail.pluck(:email)
 
@@ -25,11 +23,13 @@ class WeeklyReminderForMissedEntriesService
     start_date = 1.week.ago.beginning_of_week
     end_date = 1.week.ago.end_of_week
 
+    limit = weekly_limit(company:)
+
     entries = get_entries_for_period(user:, company:, start_date:, end_date:)
 
     entries_total_duration = entries.sum(&:duration)
 
-    if entries_total_duration < WEEKLY_LIMIT && !@invalid_emails.include?(user.email)
+    if entries_total_duration < limit && !@invalid_emails.include?(user.email)
       send_mail(recipients: user.email, name:, start_date:, end_date:, company_name:)
     end
   end
@@ -52,4 +52,10 @@ end
 def get_entries_for_period(user:, company:, start_date:, end_date:)
   user.timesheet_entries.kept.in_workspace(company).during(start_date, end_date) +
     user.timeoff_entries.during(start_date, end_date)
+end
+
+def weekly_limit(company:)
+  return 0 if company.working_hours.to_i == 0
+
+  company.working_hours.to_i.hours.in_minutes
 end

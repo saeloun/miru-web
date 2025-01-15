@@ -23,7 +23,9 @@ RSpec.describe "InternalApi::V1::Companies::create", type: :request do
             standard_price: 1000,
             fiscal_year_end: "Jan-Dec",
             date_format: "DD-MM-YYYY",
-            addresses_attributes: [address]
+            addresses_attributes: [address],
+            working_days: "5",
+            working_hours: "40"
           }
         }, headers: auth_headers(user)
       end
@@ -41,6 +43,13 @@ RSpec.describe "InternalApi::V1::Companies::create", type: :request do
         expect(company_address.address_line_1).to eq(address[:address_line_1])
         expect(company_address.city).to eq(address[:city])
         expect(company_address.pin).to eq(address[:pin])
+      end
+
+      it "returns correct working_days and working_hours" do
+        company = Company.last
+        change(Company, :count).by(1)
+        expect(company.working_days).to eq("5")
+        expect(company.working_hours).to eq("40")
       end
 
       it "response should be successful" do
@@ -66,11 +75,11 @@ RSpec.describe "InternalApi::V1::Companies::create", type: :request do
         }, headers: auth_headers(user)
       end
 
-      it "will fail" do
+      it "fails" do
         expect(json_response["errors"]).to eq("Name can't be blank")
       end
 
-      it "will not be created" do
+      it "does not be created" do
         expect(Company.count).to eq(1)
       end
     end
@@ -93,7 +102,9 @@ RSpec.describe "InternalApi::V1::Companies::create", type: :request do
               standard_price: 1000,
               fiscal_year_end: "Jan-Dec",
               date_format: "DD-MM-YYYY",
-              addresses_attributes: [address]
+              addresses_attributes: [address],
+              working_days: "5",
+              working_hours: "40"
             }
           }, headers: auth_headers(user)
         end
@@ -121,11 +132,11 @@ RSpec.describe "InternalApi::V1::Companies::create", type: :request do
           }, headers: auth_headers(user)
         end
 
-        it "will fail" do
+        it "fails" do
           expect(json_response["errors"]).to eq("Name can't be blank")
         end
 
-        it "will not be created" do
+        it "does not be created" do
           expect(Company.count).to eq(1)
         end
       end

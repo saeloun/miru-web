@@ -29,7 +29,9 @@ RSpec.describe "InternalApi::V1::Companies::update", type: :request do
               addresses_attributes: [{
                 id: company.current_address.id,
                 address_line_1: "updated address"
-              }]
+              }],
+              working_days: "5",
+              working_hours: "40"
             }
           }, headers: auth_headers(user))
       end
@@ -50,6 +52,8 @@ RSpec.describe "InternalApi::V1::Companies::update", type: :request do
         expect(company.standard_price).to eq(1000)
         expect(company.fiscal_year_end).to eq("April")
         expect(company.base_currency).to eq("Rs")
+        expect(company.working_days).to eq("5")
+        expect(company.working_hours).to eq("40")
         expect(company.current_address.address_line_1).to eq("updated address")
       end
     end
@@ -69,11 +73,11 @@ RSpec.describe "InternalApi::V1::Companies::update", type: :request do
           }, headers: auth_headers(user))
       end
 
-      it "will fail" do
+      it "fails" do
         expect(json_response["errors"]).to eq("Standard price can't be blank")
       end
 
-      it "will not be created" do
+      it "does not be created" do
         change(Company, :count).by(0)
       end
     end
@@ -92,12 +96,14 @@ RSpec.describe "InternalApi::V1::Companies::update", type: :request do
               addresses_attributes: [{
                 id: company.current_address.id,
                 address_line_1: ""
-              }]
+              }],
+              working_days: "5",
+              working_hours: "40"
             }
           }, headers: auth_headers(user))
       end
 
-      it "will fail" do
+      it "fails" do
         expect(json_response["errors"]).to eq("Addresses address line 1 can't be blank")
       end
     end
@@ -126,7 +132,9 @@ RSpec.describe "InternalApi::V1::Companies::update", type: :request do
               addresses_attributes: [{
                 id: company.current_address.id,
                 address_line_2: "updated address"
-              }]
+              }],
+              working_days: "5",
+              working_hours: "40"
             }
           }, headers: auth_headers(user))
       end
