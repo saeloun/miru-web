@@ -20,12 +20,14 @@ jobs:
       S3_BUCKET: miru-db-backup
 
     steps:
-      - uses: s3-actions/s3cmd@v1.5.0
+      - uses: ryand56/r2-upload-action@latest
         with:
-          provider: aws
-          region: auto
-          access_key: ${{ secrets.R2_ACCESS_KEY }}
-          secret_key: ${{ secrets.R2_SECRET_KEY }}
+            r2-account-id: ${{ secrets.R2_ACCOUNT_ID }}
+            r2-access-key-id: ${{ secrets.R2_ACCESS_KEY }}
+            r2-secret-access-key: ${{ secrets.R2_SECRET_KEY }}
+            r2-bucket: ${{ secrets.R2_DB_BUCKET }}
+            source-dir: /
+            destination-dir: ./
       - uses: superfly/flyctl-actions/setup-flyctl@master
       - name: Set filename
         run: echo "filename=db-$(date -u +"%Y-%m-%d-%H%M%S").sql" >> $GITHUB_ENV
