@@ -20,7 +20,7 @@ jobs:
       S3_BUCKET: miru-db-backup
 
     steps:
-      - uses: s3-actions/s3cmd@v1.2.0
+      - uses: s3-actions/s3cmd@v1.9.0
         with:
           provider: cloudfare
           region: auto
