@@ -26,7 +26,7 @@ jobs:
             r2-access-key-id: ${{ secrets.R2_ACCESS_KEY }}
             r2-secret-access-key: ${{ secrets.R2_SECRET_KEY }}
             r2-bucket: ${{ secrets.R2_DB_BUCKET }}
-            source-dir: /
+            source-dir: backups
             destination-dir: ./
       - uses: superfly/flyctl-actions/setup-flyctl@master
       - name: Set filename
