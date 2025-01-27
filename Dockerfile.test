@@ -1,7 +1,7 @@
 #syntax=docker/dockerfile:1
 FROM ruby:3.2.4-slim AS base
 
-ARG NODE_VERSION=18.14.2
+ARG NODE_VERSION=20.18.2
 
 RUN mkdir /app
 WORKDIR /app
