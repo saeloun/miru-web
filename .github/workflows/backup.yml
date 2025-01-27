@@ -24,7 +24,6 @@ jobs:
         with:
           provider: cloudfare
           region: auto
-          endpoint: ${{ secrets.R2_ENDPOINT }}
           access_key: ${{ secrets.R2_ACCESS_KEY }}
           secret_key: ${{ secrets.R2_SECRET_KEY }}
           account_id: ${{ secrets.R2_ACCOUNT_ID }}
