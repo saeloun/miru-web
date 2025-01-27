@@ -22,11 +22,10 @@ jobs:
     steps:
       - uses: s3-actions/s3cmd@v1.5.0
         with:
-          provider: cloudfare
+          provider: aws
           region: auto
           access_key: ${{ secrets.R2_ACCESS_KEY }}
           secret_key: ${{ secrets.R2_SECRET_KEY }}
-          account_id: ${{ secrets.R2_ACCOUNT_ID }}
       - uses: superfly/flyctl-actions/setup-flyctl@master
       - name: Set filename
         run: echo "filename=db-$(date -u +"%Y-%m-%d-%H%M%S").sql" >> $GITHUB_ENV
