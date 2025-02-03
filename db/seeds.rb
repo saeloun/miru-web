@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 
+if ENV["CI"]
+  Searchkick.disable_callbacks
+end
+
 company = Company.create!(
   {
     name: "Saeloun Inc",
