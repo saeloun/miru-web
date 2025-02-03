@@ -75,11 +75,11 @@ RSpec.describe "InternalApi::V1::Companies::create", type: :request do
         }, headers: auth_headers(user)
       end
 
-      it "will fail" do
+      it "fails" do
         expect(json_response["errors"]).to eq("Name can't be blank")
       end
 
-      it "will not be created" do
+      it "does not be created" do
         expect(Company.count).to eq(1)
       end
     end
@@ -132,11 +132,11 @@ RSpec.describe "InternalApi::V1::Companies::create", type: :request do
           }, headers: auth_headers(user)
         end
 
-        it "will fail" do
+        it "fails" do
           expect(json_response["errors"]).to eq("Name can't be blank")
         end
 
-        it "will not be created" do
+        it "does not be created" do
           expect(Company.count).to eq(1)
         end
       end

@@ -73,11 +73,11 @@ RSpec.describe "InternalApi::V1::Companies::update", type: :request do
           }, headers: auth_headers(user))
       end
 
-      it "will fail" do
+      it "fails" do
         expect(json_response["errors"]).to eq("Standard price can't be blank")
       end
 
-      it "will not be created" do
+      it "does not be created" do
         change(Company, :count).by(0)
       end
     end
@@ -103,7 +103,7 @@ RSpec.describe "InternalApi::V1::Companies::update", type: :request do
           }, headers: auth_headers(user))
       end
 
-      it "will fail" do
+      it "fails" do
         expect(json_response["errors"]).to eq("Addresses address line 1 can't be blank")
       end
     end
