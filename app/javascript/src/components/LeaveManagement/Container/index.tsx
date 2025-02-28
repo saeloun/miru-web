@@ -39,11 +39,19 @@ const Container = ({
 
   const tileContent = ({ date }) => {
     const currentDate = dayjs(date).format(dateFormat);
-    const isHoliday = nationalHolidayList?.find(
+    const currentYearNationalHolidayList = nationalHolidayList.find(
+      holiday => holiday.year == currentYear
+    ).national_holidays;
+
+    const isHoliday = currentYearNationalHolidayList?.find(
       holiday => holiday.date === currentDate
     );
 
-    const isOptionalHoliday = optionalHolidayList?.find(
+    const currentYearOptionalHolidayList = optionalHolidayList?.find(
+      holiday => holiday.year == currentYear
+    ).optional_holidays;
+
+    const isOptionalHoliday = currentYearOptionalHolidayList?.find(
       holiday => holiday.date === currentDate
     );
 
