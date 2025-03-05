@@ -24,7 +24,7 @@ module TimeoffEntries
       @passed_year = passed_year
       @working_hours_per_day = working_hours_per_day
       @working_days_per_week = working_days_per_week
-      @current_date = DateTime.now
+      @current_date = Date.current
       @current_year = @current_date.year
       @current_month = @current_date.month
       @current_week = @current_date.cweek
