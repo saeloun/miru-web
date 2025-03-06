@@ -24,7 +24,7 @@ RSpec.describe CreateInvitedUserService do
         @service.process
       end
 
-      it "updates inivitation as accepeted with timestamp" do
+      it "updates invitation as accepted with timestamp" do
         expect(invitation.reload.accepted_at).not_to be_nil
         expect(invitation.reload.accepted_at.class).to eq(ActiveSupport::TimeWithZone)
       end
@@ -59,7 +59,7 @@ RSpec.describe CreateInvitedUserService do
         @service.process
       end
 
-      it "updates inivitation as accepeted with timestamp" do
+      it "updates invitation as accepted with timestamp" do
         expect(invitation.reload.accepted_at).not_to be_nil
         expect(invitation.reload.accepted_at.class).to eq(ActiveSupport::TimeWithZone)
       end
@@ -135,7 +135,7 @@ RSpec.describe CreateInvitedUserService do
         @service.process
       end
 
-      it "returns error when inivitation expired" do
+      it "returns error when invitation expired" do
         expect(@service.success).to be_falsey
         expect(@service.error_message).to eq("Invitation expired")
       end

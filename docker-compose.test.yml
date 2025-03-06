@@ -10,15 +10,6 @@ services:
     environment:
       POSTGRES_PASSWORD: postgres
 
-  redis:
-    image: redis:6.2.7
-    command: redis-server
-    restart: always
-    ports:
-      - "6379:6379"
-    volumes:
-      - redis:/data
-
   app:
     build:
       context: .
@@ -34,7 +25,6 @@ services:
       - DATABASE_CLEANER_ALLOW_REMOTE_DATABASE_URL="true"
       - POSTGRES_PASSWORD="postgres"
       - POSTGRES_USER="postgres"
-      - REDIS_URL=redis://redis:6379/1
       - ELASTICSEARCH_URL=http://elastic:x2Sy5FK51zu@elasticsearch:9200
       - PIDFILE=/tmp/pids/server.pid
       - RAILS_ENV=test
@@ -56,7 +46,6 @@ services:
       - CI=true
     depends_on:
       - database
-      - redis
       - elasticsearch
       - chrome
     tmpfs:
@@ -78,7 +67,6 @@ services:
     environment:
       - WEBPACKER_DEV_SERVER_HOST=0.0.0.0
       - DATABASE_URL=postgres://postgres:postgres@database:5432/
-      - REDIS_URL=redis://redis:6379/1
       - ELASTICSEARCH_URL=http://elastic:x2Sy5FK51zu@elasticsearch:9200
     depends_on:
       - database
@@ -97,4 +85,3 @@ volumes:
   gem_cache:
   postgres:
   node_modules:
-  redis:

@@ -11,7 +11,7 @@ const BackButton = ({ href = "" }) => {
     LocalStorageKeys.INVOICE_SEARCH_PARAM
   );
 
-  const naviagteToPath = () => {
+  const navigateToPath = () => {
     if (href == "/invoices") {
       return navigate({
         pathname: href,
@@ -25,7 +25,7 @@ const BackButton = ({ href = "" }) => {
   return (
     <div
       className="mr-1 flex h-14 w-14 cursor-pointer flex-row items-center justify-center"
-      onClick={naviagteToPath}
+      onClick={navigateToPath}
     >
       <ArrowLeftIcon size={20} />
     </div>

@@ -206,7 +206,7 @@ const ImportModal = ({
               </div>
               <div className="h-px min-w-24 border border-miru-gray-200 bg-miru-gray-200" />
               {step <= 2 ? (
-                <div className="mport-modal__header-number">2</div>
+                <div className="import-modal__header-number">2</div>
               ) : (
                 <img alt="step" height="20px" src={Step} width="20px" />
               )}
@@ -221,7 +221,7 @@ const ImportModal = ({
               </div>
               <div className="h-px min-w-24 border border-miru-gray-200 bg-miru-gray-200" />
               {step <= 3 ? (
-                <div className="mport-modal__header-number">3</div>
+                <div className="import-modal__header-number">3</div>
               ) : (
                 <img alt="step" height="20px" src={Step} width="20px" />
               )}

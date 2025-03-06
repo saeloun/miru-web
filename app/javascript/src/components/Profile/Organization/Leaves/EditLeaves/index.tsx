@@ -18,8 +18,10 @@ import {
 
 const EditLeaves = ({
   leaveBalanceList,
-  updateCondition,
-  handleDeleteLeaveBalance,
+  customLeavesList,
+  handleOnChangeLeaves,
+  handleOnChangeCustomLeaves,
+  handleDeleteLeave,
   handleAddLeaveType,
   handleLeaveTypeChange,
   iconOptions,
@@ -31,6 +33,8 @@ const EditLeaves = ({
   currentYear,
   setCurrentYear,
   isDisableUpdateBtn,
+  handleAddCustomLeave,
+  employees,
 }) => {
   const getAllocationPeriodValue = (allocationFrequency, allocationPeriod) => {
     const availableOptions = getAllocationPeriod(allocationFrequency);
@@ -89,7 +93,7 @@ const EditLeaves = ({
                         <div className="h-7 w-7">{e.icon}</div>
                       )}
                       handleOnChange={e =>
-                        updateCondition("leaveIcon", e, index)
+                        handleOnChangeLeaves("leaveIcon", e, index)
                       }
                     />
                     <CustomReactSelect
@@ -111,7 +115,7 @@ const EditLeaves = ({
                         />
                       )}
                       handleOnChange={e =>
-                        updateCondition("leaveColor", e, index)
+                        handleOnChangeLeaves("leaveColor", e, index)
                       }
                     />
                     <div className="w-1/12" />
@@ -128,7 +132,7 @@ const EditLeaves = ({
                       value={leaveBalance.total || ""}
                       wrapperClassName="w-full lg:w-2/12 lg:mr-2 mb-6 lg:mb-0"
                       onChange={e =>
-                        updateCondition("total", e.target.value, index)
+                        handleOnChangeLeaves("total", e.target.value, index)
                       }
                     />
                     <CustomReactSelect
@@ -141,7 +145,7 @@ const EditLeaves = ({
                         IndicatorSeparator: () => null,
                       }}
                       handleOnChange={e =>
-                        updateCondition("allocationPeriod", e.value, index)
+                        handleOnChangeLeaves("allocationPeriod", e.value, index)
                       }
                       options={getAllocationPeriod(
                         leaveBalance.allocationFrequency
@@ -162,8 +166,13 @@ const EditLeaves = ({
                         IndicatorSeparator: () => null,
                       }}
                       handleOnChange={e => {
-                        updateCondition("allocationFrequency", e.value, index);
-                        updateCondition(
+                        handleOnChangeLeaves(
+                          "allocationFrequency",
+                          e.value,
+                          index
+                        );
+
+                        handleOnChangeLeaves(
                           "allocationPeriod",
                           getAllocationPeriodValue(
                             leaveBalance.allocationFrequency,
@@ -193,7 +202,7 @@ const EditLeaves = ({
                       value={leaveBalance.carryForwardDays || ""}
                       wrapperClassName="w-full lg:w-4/12 mb-6 lg:mb-0"
                       onChange={e =>
-                        updateCondition(
+                        handleOnChangeLeaves(
                           "carryForwardDays",
                           e.target.value,
                           index
@@ -201,15 +210,13 @@ const EditLeaves = ({
                       }
                     />
                     <div className="flex h-12 w-1/12 items-center">
-                      <button
-                        onClick={() => handleDeleteLeaveBalance(leaveBalance)}
+                      <Button
+                        className="ml-1 xsm:p-1"
+                        style="ternary"
+                        onClick={() => handleDeleteLeave(leaveBalance)}
                       >
-                        <DeleteIcon
-                          className="cursor-pointer rounded-full"
-                          color="#5b34ea"
-                          style={{ minWidth: "40px" }}
-                        />
-                      </button>
+                        <DeleteIcon className="cursor-pointer rounded-full text-miru-han-purple-1000" />
+                      </Button>
                     </div>
                   </div>
                   {leaveBalanceList.length - 1 != index && (
@@ -219,17 +226,124 @@ const EditLeaves = ({
                   )}
                 </div>
               ))}
-              <div
-                className="dotted-btn w-11/12 px-4 py-2 text-center text-miru-dark-purple-200"
+              <Button
+                className="w-11/12"
+                style="dashed"
                 onClick={handleAddLeaveType}
               >
                 {leaveBalanceList.length > 0
                   ? "+ Add Another Leave Type"
                   : "+ Add Leave Type"}
-              </div>
+              </Button>
             </div>
           </div>
-          {!isDesktop && leaveBalanceList.length > 0 && (
+        </div>
+        <Divider CustomStyle="my-5" />
+        <div className="flex flex-col lg:flex-row lg:py-6">
+          <div className="p-2 lg:w-2/12">Customised Leaves</div>
+          <div className="p-2 lg:w-10/12">
+            {customLeavesList.map((customLeave, index) => (
+              <div className="flex flex-col" key={index}>
+                <div className="flex w-full flex-col items-center justify-between lg:mb-6 lg:flex-row">
+                  <CustomInputText
+                    id={`customLeaveType_${index}`}
+                    inputBoxClassName="border focus:border-miru-han-purple-1000 cursor-pointer"
+                    label="Leave Type"
+                    labelClassName="cursor-pointer"
+                    name={`customLeaveType_${index}`}
+                    type="text"
+                    value={customLeave.customLeaveType || ""}
+                    wrapperClassName="w-full lg:w-5/12 mb-6 lg:mb-0"
+                    onChange={e => handleLeaveTypeChange(e, index, true)}
+                  />
+                  <CustomInputText
+                    id={`customLeaveTotal_${index}`}
+                    inputBoxClassName="border focus:border-miru-han-purple-1000 cursor-pointer"
+                    label="Total"
+                    labelClassName="cursor-pointer"
+                    name={`customLeaveTotal_${index}`}
+                    type="text"
+                    value={customLeave.customLeaveTotal || ""}
+                    wrapperClassName="w-full lg:mx-4 lg:w-3/12 mb-6 lg:mb-0"
+                    onChange={e =>
+                      handleOnChangeCustomLeaves(
+                        "customLeaveTotal",
+                        e.target.value,
+                        index
+                      )
+                    }
+                  />
+                  <CustomReactSelect
+                    id={`customAllocationPeriod_${index}`}
+                    label=""
+                    name={`customAllocationPeriod_${index}`}
+                    options={getAllocationPeriod("")}
+                    styles={customStyles}
+                    wrapperClassName="w-full lg:w-3/12 h-12 mb-6 lg:mb-0"
+                    components={{
+                      IndicatorSeparator: () => null,
+                    }}
+                    handleOnChange={e =>
+                      handleOnChangeCustomLeaves(
+                        "customAllocationPeriod",
+                        e.value,
+                        index
+                      )
+                    }
+                    value={getAllocationPeriodValue(
+                      "",
+                      customLeave.customAllocationPeriod
+                    )}
+                  />
+                  <div className="w-1/12" />
+                </div>
+                <div className="mb-6 flex w-full flex-col items-center justify-between lg:flex-row">
+                  <CustomReactSelect
+                    isMulti
+                    id={`employees_${index}`}
+                    label="Employees"
+                    name={`employees_${index}`}
+                    options={employees}
+                    styles={customStyles}
+                    value={customLeave.employees}
+                    wrapperClassName="w-full h-12 mb-6 lg:mb-0"
+                    components={{
+                      IndicatorSeparator: () => null,
+                    }}
+                    handleOnChange={e => {
+                      handleOnChangeCustomLeaves("employees", e, index);
+                    }}
+                  />
+                  <div className="flex h-12 w-1/12 items-center">
+                    <Button
+                      className="ml-1 xsm:p-1"
+                      style="ternary"
+                      onClick={() => handleDeleteLeave(customLeave, true)}
+                    >
+                      <DeleteIcon className="cursor-pointer rounded-full text-miru-han-purple-1000" />
+                    </Button>
+                  </div>
+                </div>
+                {leaveBalanceList.length - 1 != index && (
+                  <div className="mb-6 w-full lg:w-11/12">
+                    <Divider />
+                  </div>
+                )}
+              </div>
+            ))}
+            <Button
+              className="w-11/12"
+              style="dashed"
+              onClick={handleAddCustomLeave}
+            >
+              {customLeavesList.length > 0
+                ? "+ Add Another Custom Leave"
+                : "+ Add Custom Leave"}
+            </Button>
+          </div>
+        </div>
+        {!isDesktop &&
+          (leaveBalanceList.length > 0 || customLeavesList.length > 0) && (
             <div className="mt-5 flex w-full justify-between px-2">
               <Button
                 className="mr-2 flex w-1/2 items-center justify-center rounded border border-miru-red-400 px-4 py-2"
@@ -250,7 +364,6 @@ const EditLeaves = ({
               </Button>
             </div>
           )}
-        </div>
       </div>
     </>
   );

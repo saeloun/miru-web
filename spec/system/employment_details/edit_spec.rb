@@ -40,7 +40,7 @@ RSpec.describe "Edit employment details", type: :system do
         click_button "Edit"
         sleep 10
         click_button "+ Add Past Employment"
-        find(:css, "#company_name").set("test comapny")
+        find(:css, "#company_name").set("test company")
         find(:css, "#role").set("test role")
 
         click_button "Update"

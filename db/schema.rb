@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_07_02_063359) do
+ActiveRecord::Schema[7.1].define(version: 2024_10_24_045449) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -100,6 +100,14 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_02_063359) do
     t.index ["visit_token"], name: "index_ahoy_visits_on_visit_token", unique: true
   end
 
+  create_table "bulk_invoice_download_statuses", force: :cascade do |t|
+    t.string "download_id"
+    t.string "status"
+    t.string "file_url"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "carryovers", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "company_id", null: false
@@ -160,6 +168,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_02_063359) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "calendar_enabled", default: true
+    t.string "working_days", default: "5"
+    t.string "working_hours", default: "40"
   end
 
   create_table "custom_leave_users", force: :cascade do |t|
