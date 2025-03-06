@@ -2,7 +2,10 @@
 
 module TimeoffEntries
   class IndexService < ApplicationService
-    attr_reader :current_company, :current_user, :user_id, :year, :previous_year
+    include EmployeeFetchingConcern
+
+    attr_reader :current_company, :current_user, :user_id, :year, :previous_year, :working_hours_per_day,
+      :working_days_per_week
     attr_accessor :leave_balance, :optional_timeoff_entries, :national_timeoff_entries
 
     def initialize(current_user, current_company, user_id, year)
@@ -12,12 +15,14 @@ module TimeoffEntries
       @year = year.to_i
       @leave_balance = []
       @previous_year = year.to_i - 1
+      @working_days_per_week = current_company.working_days.to_i
+      @working_hours_per_day = working_hours_per_day
     end
 
     def process
       {
         timeoff_entries:,
-        employees:,
+        employees: set_employees,
         leave_balance: process_leave_balance,
         total_timeoff_entries_duration: timeoff_entries.sum(&:duration),
         optional_timeoff_entries:,
@@ -35,18 +40,6 @@ module TimeoffEntries
           .where(user_id:)
           .during(start_date, end_date)
           .distinct
-      end
-
-      def employees
-        @_employees ||= is_admin? ? current_company_users : [current_user]
-      end
-
-      def current_company_users
-        current_company.employees_without_client_role.select(:id, :first_name, :last_name)
-      end
-
-      def is_admin?
-        current_user.has_role?(:owner, current_company) || current_user.has_role?(:admin, current_company)
       end
 
       def process_leave_balance
@@ -69,13 +62,13 @@ module TimeoffEntries
           previous_year_leave_type = previous_year_leave&.leave_types&.kept&.find_by(name: leave_type.name)
 
           previous_year_carryforward = calculate_previous_year_carryforward(previous_year_leave_type)
-
-          net_duration = (total_leave_type_days * 8 * 60) + previous_year_carryforward - timeoff_entries_duration
+          total_minutes = total_leave_type_days * @working_hours_per_day * 60
+          net_duration = total_minutes + previous_year_carryforward - timeoff_entries_duration
           net_hours = net_duration / 60
-          net_days = net_hours.abs / 8
-          extra_hours = net_hours.abs % 8
+          net_days = net_hours.abs / @working_hours_per_day
+          extra_hours = net_hours.abs % @working_hours_per_day
 
-          if net_hours.abs < 8
+          if net_hours.abs < @working_hours_per_day
             label = "#{net_hours} hours"
           else
             label = "#{net_days} days #{extra_hours} hours"
@@ -148,7 +141,7 @@ module TimeoffEntries
           name: "Optional Holidays",
           icon: "optional",
           color: "optional",
-          net_duration: net_days * 60 * 8,
+          net_duration: net_days * 60 * @working_hours_per_day,
           net_days:,
           timeoff_entries_duration: optional_timeoff_entries.sum(:duration),
           type: "holiday",
@@ -163,18 +156,19 @@ module TimeoffEntries
         allocation_value = leave_type.allocation_value
         allocation_period = leave_type.allocation_period.to_sym
         allocation_frequency = leave_type.allocation_frequency.to_sym
-
         TimeoffEntries::CalculateTotalDurationOfDefinedLeavesService.new(
           user_joined_date,
           allocation_value,
           allocation_period,
           allocation_frequency,
-          passed_year
+          passed_year,
+          @working_hours_per_day,
+          @working_days_per_week,
         ).process
       end
 
       def user_joined_date
-        employee_id = is_admin? ? user_id : current_user.id
+        employee_id = admin? ? user_id : current_user.id
         user = User.find(employee_id)
         user.joined_date_for_company(current_company)
       end
@@ -191,6 +185,12 @@ module TimeoffEntries
           )
 
         last_year_carryover && (last_year_carryover.duration > 0) ? last_year_carryover.duration : 0
+      end
+
+      def working_hours_per_day
+        return 0 if current_company.working_hours.to_i == 0
+
+        current_company.working_hours.to_i / current_company.working_days.to_i
       end
   end
 end

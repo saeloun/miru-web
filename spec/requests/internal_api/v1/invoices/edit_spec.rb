@@ -20,7 +20,7 @@ RSpec.describe "InternalApi::V1::InvoicesController", type: :request do
     context "when user is an admin" do
       before { sign_in admin }
 
-      it "returns 200 successfull response with data" do
+      it "returns 200 successful response with data" do
         send_request :get, edit_internal_api_v1_invoice_path(invoice), headers: auth_headers(admin)
         expect(response).to have_http_status(:ok)
         expect(json_response["id"]).to eq invoice.id

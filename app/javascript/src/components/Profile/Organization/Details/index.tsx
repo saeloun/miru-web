@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 
-import { Country } from "country-state-city";
 import { Outlet, useNavigate } from "react-router-dom";
+import worldCountries from "world-countries";
 
 import companiesApi from "apis/companies";
 import Loader from "common/Loader/index";
@@ -25,6 +25,8 @@ const initialState = {
   companyDateFormat: "",
   companyTimezone: "",
   logo: null,
+  companyWorkingHours: "",
+  companyWorkingDays: "",
 };
 
 const OrgDetails = () => {
@@ -48,14 +50,18 @@ const OrgDetails = () => {
       date_format,
       timezone,
       id,
+      working_hours,
+      working_days,
     } = companyDetails;
 
     const { address_line_1, address_line_2, city, state, pin, country } =
       address;
 
-    const { name: CountryName } = country
-      ? Country.getCountryByCode(country)
-      : { name: "" };
+    const {
+      name: { common: CountryName },
+    } = country
+      ? worldCountries.find(worldCountry => worldCountry["cca2"] === country)
+      : { name: { common: "" } };
 
     const companyAddrParts = [
       address_line_1,
@@ -83,6 +89,8 @@ const OrgDetails = () => {
       companyTimezone: timezone,
       id,
       logo: null,
+      companyWorkingHours: working_hours,
+      companyWorkingDays: working_days,
     });
     setIsLoading(false);
   };

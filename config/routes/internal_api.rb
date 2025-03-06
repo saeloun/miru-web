@@ -68,7 +68,9 @@ namespace :internal_api, defaults: { format: "json" } do
     resources :workspaces, only: [:index, :update]
     namespace :invoices do
       resources :bulk_deletion, only: [:create]
-      resources :bulk_download, only: [:index]
+      resources :bulk_download, only: [:index] do
+        get :status, on: :collection
+      end
       resources :action_trails, only: [:show]
       resources :waived, only: [:update]
       get "(:id)/view", to: "view#show", as: "view"
