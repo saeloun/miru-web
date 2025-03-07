@@ -40,8 +40,12 @@ class CompanyPolicy < ApplicationPolicy
   end
 
   def permitted_attributes
-    [:name, :business_phone, :country, :timezone, :base_currency, :standard_price, :fiscal_year_end, :logo,
-     :date_format, addresses_attributes: [:id, :address_line_1, :address_line_2, :city, :state, :country, :pin]]
+    [:name, :business_phone, :country, :timezone,
+     :base_currency, :standard_price, :fiscal_year_end,
+     :logo, :date_format, :working_days, :working_hours,
+     addresses_attributes: [:id, :address_line_1, :address_line_2,
+                            :city, :state, :country, :pin]
+    ]
   end
 
   def purge_logo?
