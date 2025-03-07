@@ -112,4 +112,23 @@ RSpec.describe CompanyPolicy, type: :policy do
       end
     end
   end
+
+  describe "#permitted_attributes" do
+    subject { described_class.new(user, company).permitted_attributes }
+
+    let(:addresses_attributes) do
+      %i[id address_line_1 address_line_2 city state country pin]
+    end
+
+    let(:attributes) do
+      %i[
+        name business_phone country timezone base_currency standard_price
+        fiscal_year_end logo date_format working_days working_hours
+      ].push(addresses_attributes:)
+    end
+
+    it "returns array of an attributes" do
+      expect(subject).to match_array(attributes)
+    end
+  end
 end
