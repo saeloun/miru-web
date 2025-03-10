@@ -62,6 +62,7 @@ const unmapClientDetails = input => {
       phone: data.client_details.phone || "--",
       address: data.client_details.address || "--",
       logo: data.client_details.logo,
+      currency: data.client_details.currency,
       clientMembersEmails: data.client_members_emails,
       invitations: data.invitations,
     },

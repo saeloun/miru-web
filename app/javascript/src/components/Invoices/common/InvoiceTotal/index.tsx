@@ -4,6 +4,7 @@ import { currencyFormat } from "helpers";
 
 const InvoiceTotal = ({
   currency,
+  clientCurrency,
   newLineItems,
   amountPaid,
   amountDue,
@@ -60,7 +61,7 @@ const InvoiceTotal = ({
               Sub total
             </td>
             <td className="text-right text-base font-bold text-miru-dark-purple-1000 ">
-              {subTotal ? currencyFormat(currency, subTotal.toFixed(2)) : 0}
+              {subTotal ? currencyFormat(clientCurrency, subTotal.toFixed(2)) : 0}
             </td>
           </tr>
           <tr className="miru-gray-400 border-b-2 pb-5">
@@ -110,7 +111,7 @@ const InvoiceTotal = ({
               Total
             </td>
             <td className="text-right text-base font-bold text-miru-dark-purple-1000">
-              {total ? currencyFormat(currency, total) : 0}
+              {total ? currencyFormat(clientCurrency, total) : 0}
             </td>
           </tr>
           <tr>
@@ -118,7 +119,7 @@ const InvoiceTotal = ({
               Amount Paid
             </td>
             <td className="text-right text-base font-bold text-miru-dark-purple-1000 ">
-              {amountPaid ? currencyFormat(currency, amountPaid) : 0}
+              {amountPaid ? currencyFormat(clientCurrency, amountPaid) : 0}
             </td>
           </tr>
           <tr>
@@ -126,7 +127,7 @@ const InvoiceTotal = ({
               Amount Due
             </td>
             <td className="text-right text-base font-bold text-miru-dark-purple-1000">
-              {amountDue ? currencyFormat(currency, amountDue) : 0}
+              {amountDue ? currencyFormat(clientCurrency, amountDue) : 0}
             </td>
           </tr>
         </tbody>

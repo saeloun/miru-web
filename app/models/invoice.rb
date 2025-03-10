@@ -7,6 +7,7 @@
 #  amount_due             :decimal(20, 2)   default(0.0)
 #  amount_paid            :decimal(20, 2)   default(0.0)
 #  client_payment_sent_at :datetime
+#  currency               :string           default("USD"), not null
 #  discarded_at           :datetime
 #  discount               :decimal(20, 2)   default(0.0)
 #  due_date               :date

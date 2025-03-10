@@ -15,6 +15,7 @@ import { InputErrors, InputField } from "common/FormikFields";
 import { clientSchema, getInitialvalues } from "./formValidationSchema";
 import UploadLogo from "./UploadLogo";
 import { disableBtn, formatFormData } from "./utils";
+import { currencyListOptions } from "../../OrganizationSetup/FinancialDetailsForm/utils";
 
 const ClientForm = ({
   client,
@@ -248,6 +249,20 @@ const ClientForm = ({
                 />
               </div>
             </div>
+            <div className="mt-4">
+              <div className="field relative mb-5">
+                <CustomReactSelect
+                  isErr={!!errors.currency && touched.currency}
+                  label="Currency"
+                  name="currency"
+                  options={currencyListOptions}
+                  value={values.currency ? values.currency : null}
+                  handleOnChange={e => {
+                    setFieldValue("currency", e);
+                  }}
+                />
+              </div>
+            </div>
             <div className="actions mt-4">
               <Button
                 className="w-full p-2 text-center text-base font-bold"
@@ -291,6 +306,7 @@ interface FormValues {
   state: string;
   city: string;
   zipcode: string;
+  currency: any;
   logo: any;
 }
 

@@ -30,6 +30,7 @@ const GenerateInvoices = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [selectedClient, setSelectedClient] = useState<any>();
   const [invoiceNumber, setInvoiceNumber] = useState<any>("");
+  const [clientCurrency, setClientCurrency] = useState<string>("USD");
   const [reference, setReference] = useState<string>("");
   const [amount, setAmount] = useState<any>(0);
   const [amountDue, setAmountDue] = useState<any>(0);
@@ -212,6 +213,8 @@ const GenerateInvoices = () => {
           dueDate={dueDate}
           invoiceDetails={invoiceDetails}
           invoiceNumber={invoiceNumber}
+          clientCurrency={clientCurrency}
+          setClientCurrency={setClientCurrency}
           issueDate={issueDate}
           lineItems={lineItems}
           manualEntryArr={manualEntryArr}

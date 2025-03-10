@@ -1,5 +1,6 @@
 /* eslint-disable import/exports-last */
 import worldCountries from "world-countries";
+import { currencyList } from "constants/currencyList";
 import * as Yup from "yup";
 
 const phoneRegExp =
@@ -29,6 +30,9 @@ export const clientSchema = Yup.object().shape({
   zipcode: Yup.string()
     .required("Zipcode line cannot be blank")
     .max(10, "Maximum 10 characters are allowed"),
+  currency: Yup.object().shape({
+    value: Yup.string().required("Currency cannot be blank"),
+  }),
 });
 
 const getCountryLabel = countryCode => {
@@ -42,6 +46,19 @@ const getCountryLabel = countryCode => {
 
   return "";
 };
+
+const getCurrencyLabel = currency => {
+  if (currency) {
+    const currencyObj = currencyList.find(
+      cur => cur.code === currency
+    );
+
+    return `${currencyObj.symbol} (${currencyObj.code})`;
+  }
+
+  return "";
+};
+
 
 export const getInitialvalues = (client?: any) => ({
   name: client?.name || "",
@@ -59,4 +76,8 @@ export const getInitialvalues = (client?: any) => ({
   zipcode: client?.address?.pin || "",
   minutes: client?.minutes || "",
   logo: client?.logo || null,
+  currency: {
+    label: getCurrencyLabel(client?.currency),
+    value: client?.currency || "",
+  },
 });

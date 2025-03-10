@@ -8,6 +8,7 @@ export const formatFormData = (
 ) => {
   formData.append("client[name]", values.name);
   formData.append("client[phone]", values.phone);
+  formData.append("client[currency]", values.currency?.value);
 
   const addressIndex = isNewForm ? 0 : client.address?.id ?? 0;
   const addressPrefix = `client[addresses_attributes][${addressIndex}]`;
@@ -44,6 +45,7 @@ export const disableBtn = (values, errors, submitting) => {
     errors.state ||
     errors.city ||
     errors.zipcode ||
+    errors.currency ||
     submitting
   ) {
     return true;
@@ -55,7 +57,8 @@ export const disableBtn = (values, errors, submitting) => {
     values.country &&
     values.state &&
     values.city &&
-    values.zipcode
+    values.zipcode &&
+    values.currency
   ) {
     return false;
   }

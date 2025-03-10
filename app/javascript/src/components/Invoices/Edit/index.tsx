@@ -38,6 +38,7 @@ const EditInvoice = () => {
   const [selectedLineItems, setSelectedLineItems] = useState<any>([]);
   const [manualEntryArr, setManualEntryArr] = useState<any>([]);
   const [selectedClient, setSelectedClient] = useState<any>({ value: 0 });
+  const [clientCurrency, setClientCurrency] = useState<string>("USD");
   const [invoiceNumber, setInvoiceNumber] = useState<any>("");
   const [reference, setReference] = useState<string>("");
   const [amount, setAmount] = useState<any>(0);
@@ -236,6 +237,8 @@ const EditInvoice = () => {
               clientList={invoiceDetails.companyClientList}
               clientVisible={false}
               currency={invoiceDetails.company.currency}
+              clientCurrency={clientCurrency}
+              setClientCurrency={setClientCurrency}
               dateFormat={invoiceDetails.company.dateFormat}
               dueDate={dueDate || invoiceDetails.dueDate}
               invoiceNumber={invoiceNumber}
@@ -251,6 +254,7 @@ const EditInvoice = () => {
             <div className="py-5 pl-10">
               <InvoiceTable
                 currency={invoiceDetails.company.currency}
+                clientCurrency={clientCurrency}
                 dateFormat={invoiceDetails.company.dateFormat}
                 lineItems={lineItems}
                 manualEntryArr={manualEntryArr}
@@ -265,6 +269,7 @@ const EditInvoice = () => {
               amountDue={amountDue}
               amountPaid={amountPaid}
               currency={invoiceDetails.company.currency}
+              clientCurrency={clientCurrency}
               discount={discount}
               manualEntryArr={manualEntryArr}
               newLineItems={selectedLineItems}

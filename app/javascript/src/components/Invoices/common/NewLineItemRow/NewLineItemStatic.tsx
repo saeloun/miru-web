@@ -9,6 +9,7 @@ import CustomDatePicker from "common/CustomDatePicker";
 
 const NewLineItemStatic = ({
   currency,
+  clientCurrency,
   item,
   handleDelete,
   setSelectedOption,
@@ -147,7 +148,7 @@ const NewLineItemStatic = ({
           />
         </td>
         <td className="px-1 py-3 text-right text-base font-normal text-miru-dark-purple-1000 ">
-          {currencyFormat(currency, lineTotal)}
+          {currencyFormat(clientCurrency, lineTotal)}
         </td>
         <td className="w-10">
           <button

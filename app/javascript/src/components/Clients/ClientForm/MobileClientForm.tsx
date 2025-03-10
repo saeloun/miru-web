@@ -15,6 +15,7 @@ import { InputErrors, InputField } from "common/FormikFields";
 import { clientSchema, getInitialvalues } from "./formValidationSchema";
 import UploadLogo from "./UploadLogo";
 import { formatFormData, disableBtn } from "./utils";
+import { currencyListOptions } from "../../OrganizationSetup/FinancialDetailsForm/utils";
 
 const MobileClientForm = ({
   client,
@@ -261,6 +262,20 @@ const MobileClientForm = ({
                     />
                   </div>
                 </div>
+                <div className="mt-4">
+                  <div className="field relative mb-5">
+                    <CustomReactSelect
+                      isErr={!!errors.currency && touched.currency}
+                      label="Currency"
+                      name="currency"
+                      options={currencyListOptions}
+                      value={values.currency ? values.currency : null}
+                      handleOnChange={e => {
+                        setFieldValue("currency", e);
+                      }}
+                    />
+                  </div>
+                </div>
                 <div className="actions mt-auto">
                   {client?.id ? (
                     <Button
@@ -324,6 +339,7 @@ interface FormValues {
   state: any;
   city: any;
   zipcode: string;
+  currency: any;
   logo: any;
 }
 

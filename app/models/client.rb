@@ -5,6 +5,7 @@
 #
 #  id           :bigint           not null, primary key
 #  address      :string
+#  currency     :string           default("USD"), not null
 #  discarded_at :datetime
 #  email        :string
 #  name         :string           not null
@@ -88,6 +89,7 @@ class Client < ApplicationRecord
       name:,
       email:,
       phone:,
+      currency:,
       logo: logo_url,
       minutes_spent: total_hours_logged(time_frame),
       address: current_address

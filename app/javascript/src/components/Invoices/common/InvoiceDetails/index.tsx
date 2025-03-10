@@ -11,6 +11,8 @@ import ClientSelection from "./ClientSelection";
 
 const InvoiceDetails = ({
   currency,
+  clientCurrency,
+  setClientCurrency,
   clientList,
   amount,
   selectedClient,
@@ -64,6 +66,7 @@ const InvoiceDetails = ({
         selectedClient={selectedClient}
         setInvoiceNumber={setInvoiceNumber}
         setSelectedClient={setSelectedClient}
+        setClientCurrency={setClientCurrency}
       />
       <div className="mr-2 flex w-2/12 flex-col justify-between">
         <CustomInputText
@@ -152,7 +155,7 @@ const InvoiceDetails = ({
           Amount
         </p>
         <p className="mt-6 text-right text-4xl font-normal text-miru-dark-purple-1000">
-          {currencyFormat(currency, amount)}
+          {currencyFormat(clientCurrency, amount)}
         </p>
       </div>
     </div>
