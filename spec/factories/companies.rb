@@ -10,6 +10,8 @@ FactoryBot.define do
     date_format { "MM-DD-YYYY" }
     country { "US" }
     timezone { "Eastern Time (US & Canada)" }
+    working_days { "5" }
+    working_hours { "40" }
 
     after :create do |company|
       create(:address, addressable_type: "Company", addressable_id: company.id)
