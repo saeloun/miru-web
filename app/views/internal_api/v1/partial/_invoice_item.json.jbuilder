@@ -9,12 +9,14 @@ json.array! invoices do |invoice|
     json.issue_date invoice.formatted_issue_date
     json.due_date invoice.formatted_due_date
     json.amount invoice.amount
+    json.base_currency_amount invoice.base_currency_amount
     json.external_view_key invoice.external_view_key
     json.client do
       json.name invoice.client_name
       json.email invoice.client_email
       json.logo invoice.client_logo_url
       json.client_members_emails invoice.client.send_invoice_emails(@virtual_verified_invitations_allowed)
+      json.client_currency invoice.client.currency
     end
     json.company do
       json.name current_company.name

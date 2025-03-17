@@ -9,7 +9,7 @@ module Invoices
     def initialize(params, current_company)
       @params = params
       @current_company = current_company
-     end
+    end
 
     def process
       {
@@ -70,7 +70,9 @@ module Invoices
 
         currency = current_company.base_currency
         invoices = search_invoices.to_a
-        status_and_amount = invoices.group_by(&:status).transform_values { |invoices| invoices.sum(&:amount) }
+        status_and_amount = invoices.group_by(&:status).transform_values { |invoices|
+          invoices.sum { |invoice| invoice.base_currency_amount || invoice.amount }
+        }
         status_and_amount.default = 0
         outstanding_amount = status_and_amount["sent"] + status_and_amount["viewed"] + status_and_amount["overdue"]
         {
