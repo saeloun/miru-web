@@ -10,7 +10,6 @@ import { CustomInputText } from "common/CustomInputText";
 import ClientSelection from "./ClientSelection";
 
 const InvoiceDetails = ({
-  currency,
   clientCurrency,
   setClientCurrency,
   clientList,
@@ -64,9 +63,9 @@ const InvoiceDetails = ({
         invoiceNumber={invoiceNumber}
         optionSelected={optionSelected}
         selectedClient={selectedClient}
+        setClientCurrency={setClientCurrency}
         setInvoiceNumber={setInvoiceNumber}
         setSelectedClient={setSelectedClient}
-        setClientCurrency={setClientCurrency}
       />
       <div className="mr-2 flex w-2/12 flex-col justify-between">
         <CustomInputText

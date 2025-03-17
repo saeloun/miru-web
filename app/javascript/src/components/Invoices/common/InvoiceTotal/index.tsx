@@ -5,6 +5,7 @@ import { currencyFormat } from "helpers";
 const InvoiceTotal = ({
   currency,
   clientCurrency,
+  baseCurrency,
   newLineItems,
   amountPaid,
   amountDue,
@@ -12,6 +13,7 @@ const InvoiceTotal = ({
   setAmount,
   discount,
   setDiscount,
+  setBaseCurrency,
   tax,
   setTax,
   manualEntryArr,
@@ -61,7 +63,9 @@ const InvoiceTotal = ({
               Sub total
             </td>
             <td className="text-right text-base font-bold text-miru-dark-purple-1000 ">
-              {subTotal ? currencyFormat(clientCurrency, subTotal.toFixed(2)) : 0}
+              {subTotal
+                ? currencyFormat(clientCurrency, subTotal.toFixed(2))
+                : 0}
             </td>
           </tr>
           <tr className="miru-gray-400 border-b-2 pb-5">
@@ -112,6 +116,21 @@ const InvoiceTotal = ({
             </td>
             <td className="text-right text-base font-bold text-miru-dark-purple-1000">
               {total ? currencyFormat(clientCurrency, total) : 0}
+            </td>
+          </tr>
+          <tr className="miru-gray-400 border-b-2 pb-5">
+            <td className="py-2 pr-10 text-right text-base font-normal text-miru-dark-purple-1000">
+              <label className="cursor-pointer">Amount in {currency}</label>
+            </td>
+            <td className="pb-1 text-right">
+              <input
+                className="focusPadding focus:outline-none w-20 cursor-pointer rounded bg-transparent py-1 text-right text-base font-bold text-miru-dark-purple-1000 focus:border-miru-gray-1000 focus:bg-white focus:ring-1 focus:ring-miru-gray-1000"
+                id="baseCurrency"
+                type="text"
+                value={baseCurrency}
+                onChange={e => setBaseCurrency(e.target.value)}
+                onKeyDown={e => onEnter(e, "Discount")}
+              />
             </td>
           </tr>
           <tr>

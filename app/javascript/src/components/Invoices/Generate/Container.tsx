@@ -15,7 +15,9 @@ const Container = ({
   setInvoiceNumber,
   clientCurrency,
   setClientCurrency,
+  setBaseCurrency,
   amount,
+  baseCurrency,
   setAmount,
   reference,
   setReference,
@@ -40,11 +42,10 @@ const Container = ({
     <CompanyInfo company={invoiceDetails.companyDetails} />
     <InvoiceDetails
       amount={amount}
+      clientCurrency={clientCurrency}
       clientList={invoiceDetails.clientList}
       clientVisible={false}
       currency={invoiceDetails.companyDetails.currency}
-      clientCurrency={clientCurrency}
-      setClientCurrency={setClientCurrency}
       dateFormat={dateFormat}
       dueDate={dueDate}
       invoiceNumber={invoiceNumber}
@@ -52,6 +53,7 @@ const Container = ({
       optionSelected={false}
       reference={reference}
       selectedClient={selectedClient}
+      setClientCurrency={setClientCurrency}
       setDueDate={setDueDate}
       setInvoiceNumber={setInvoiceNumber}
       setIssueDate={setIssueDate}
@@ -60,8 +62,8 @@ const Container = ({
     />
     <div className="block overflow-x-auto whitespace-nowrap py-5 md:overflow-x-visible md:whitespace-normal md:pl-10">
       <InvoiceTable
-        currency={invoiceDetails.companyDetails.currency}
         clientCurrency={clientCurrency}
+        currency={invoiceDetails.companyDetails.currency}
         dateFormat={invoiceDetails.companyDetails.date_format}
         lineItems={lineItems}
         manualEntryArr={manualEntryArr}
@@ -75,13 +77,15 @@ const Container = ({
     <InvoiceTotal
       amountDue={amountDue}
       amountPaid={amountPaid}
-      currency={invoiceDetails.companyDetails.currency}
+      baseCurrency={baseCurrency}
       clientCurrency={clientCurrency}
+      currency={invoiceDetails.companyDetails.currency}
       discount={discount}
       manualEntryArr={manualEntryArr}
       newLineItems={selectedOption}
       setAmount={setAmount}
       setAmountDue={setAmountDue}
+      setBaseCurrency={setBaseCurrency}
       setDiscount={setDiscount}
       setTax={setTax}
       tax={tax}

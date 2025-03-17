@@ -6,6 +6,7 @@
 #  amount                 :decimal(20, 2)   default(0.0)
 #  amount_due             :decimal(20, 2)   default(0.0)
 #  amount_paid            :decimal(20, 2)   default(0.0)
+#  base_currency_amount   :decimal(20, 2)   default(0.0)
 #  client_payment_sent_at :datetime
 #  currency               :string           default("USD"), not null
 #  discarded_at           :datetime
@@ -86,6 +87,7 @@ class Invoice < ApplicationRecord
   validates :reference, length: { maximum: 12 }, allow_blank: true
   validate :check_if_invoice_paid, on: :update
   validate :prevent_waived_change, on: :update
+  # Todo add validation for base_currency
 
   scope :with_statuses, -> (statuses) { where(status: statuses) if statuses.present? }
   scope :issue_date_range, -> (date_range) { where(issue_date: date_range) if date_range.present? }

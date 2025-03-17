@@ -26,6 +26,7 @@ const MobileView = ({
   amount,
   amountDue,
   amountPaid,
+  baseCurrency,
   discount,
   setAmount,
   setAmountDue,
@@ -54,6 +55,7 @@ const MobileView = ({
         amount={amount}
         amountDue={amountDue}
         amountPaid={amountPaid}
+        baseCurrency={baseCurrency}
         dateFormat={dateFormat}
         discount={discount}
         dueDate={dueDate}

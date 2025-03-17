@@ -16,6 +16,7 @@ import { generateInvoiceLineItems } from "../../../common/utils";
 import { sections } from "../utils";
 
 const Container = ({
+  baseCurrency,
   dueDate,
   issueDate,
   invoiceDetails,
@@ -70,6 +71,7 @@ const Container = ({
 
   const saveInvoice = async () => {
     const sanitized = mapGenerateInvoice({
+      baseCurrency,
       selectedClient,
       invoiceNumber,
       reference,

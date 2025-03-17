@@ -164,8 +164,8 @@ const InvoiceTable = ({
               (item, index) =>
                 !item._destroy && (
                   <NewLineItemRow
-                    currency={currency}
                     clientCurrency={clientCurrency}
+                    currency={currency}
                     dateFormat={dateFormat}
                     item={item}
                     key={index}
@@ -179,8 +179,8 @@ const InvoiceTable = ({
               (item, index) =>
                 !item._destroy && (
                   <NewLineItemRow
-                    currency={currency}
                     clientCurrency={clientCurrency}
+                    currency={currency}
                     dateFormat={dateFormat}
                     item={item}
                     key={index}

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_12_30_093324) do
+ActiveRecord::Schema[7.1].define(version: 2025_03_14_154909) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -351,6 +351,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_30_093324) do
     t.datetime "client_payment_sent_at"
     t.boolean "stripe_enabled", default: true
     t.string "currency", default: "USD", null: false
+    t.decimal "base_currency_amount", precision: 20, scale: 2, default: "0.0"
     t.index ["client_id"], name: "index_invoices_on_client_id"
     t.index ["company_id"], name: "index_invoices_on_company_id"
     t.index ["discarded_at"], name: "index_invoices_on_discarded_at"
