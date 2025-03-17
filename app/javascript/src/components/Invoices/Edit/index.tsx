@@ -39,7 +39,7 @@ const EditInvoice = () => {
   const [manualEntryArr, setManualEntryArr] = useState<any>([]);
   const [selectedClient, setSelectedClient] = useState<any>({ value: 0 });
   const [clientCurrency, setClientCurrency] = useState<string>("USD");
-  const [baseCurrency, setBaseCurrency] = useState<any>(0);
+  const [baseCurrencyAmount, setBaseCurrencyAmount] = useState<any>(0);
   const [invoiceNumber, setInvoiceNumber] = useState<any>("");
   const [reference, setReference] = useState<string>("");
   const [amount, setAmount] = useState<any>(0);
@@ -80,7 +80,7 @@ const EditInvoice = () => {
       setAmountPaid(data.amountPaid);
       setStatus(InvoiceStatus.SUCCESS);
       setIsStripeEnabled(data.stripeEnabled);
-      setBaseCurrency(data.baseCurrency);
+      setBaseCurrencyAmount(data.baseCurrency);
     } catch {
       navigate("/invoices/error");
       setStatus(InvoiceStatus.ERROR);
@@ -112,7 +112,7 @@ const EditInvoice = () => {
         amount_due: amountDue,
         amount_paid: amountPaid,
         amount,
-        base_currency: baseCurrency,
+        base_currency_amount: baseCurrencyAmount,
         discount: Number(discount),
         tax: tax || invoiceDetails.tax,
         client_id: selectedClient.id,
@@ -271,7 +271,7 @@ const EditInvoice = () => {
             <InvoiceTotal
               amountDue={amountDue}
               amountPaid={amountPaid}
-              baseCurrency={baseCurrency}
+              baseCurrencyAmount={baseCurrencyAmount}
               clientCurrency={clientCurrency}
               currency={invoiceDetails.company.currency}
               discount={discount}
@@ -279,7 +279,7 @@ const EditInvoice = () => {
               newLineItems={selectedLineItems}
               setAmount={setAmount}
               setAmountDue={setAmountDue}
-              setBaseCurrency={setBaseCurrency}
+              setBaseCurrencyAmount={setBaseCurrencyAmount}
               setDiscount={setDiscount}
               setTax={setTax}
               tax={tax || invoiceDetails.tax}
@@ -333,7 +333,7 @@ const EditInvoice = () => {
         amount={amount}
         amountDue={amountDue}
         amountPaid={amountPaid}
-        baseCurrency={baseCurrency}
+        baseCurrencyAmount={baseCurrencyAmount}
         discount={discount}
         dueDate={dueDate}
         handleSaveInvoice={handleSaveInvoice}
@@ -348,7 +348,7 @@ const EditInvoice = () => {
         selectedLineItems={selectedLineItems}
         setAmount={setAmount}
         setAmountDue={setAmountDue}
-        setBaseCurrency={setBaseCurrency}
+        setBaseCurrencyAmount={setBaseCurrencyAmount}
         setDiscount={setDiscount}
         setDueDate={setDueDate}
         setInvoiceNumber={setInvoiceNumber}

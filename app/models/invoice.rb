@@ -87,7 +87,7 @@ class Invoice < ApplicationRecord
   validates :reference, length: { maximum: 12 }, allow_blank: true
   validate :check_if_invoice_paid, on: :update
   validate :prevent_waived_change, on: :update
-  # Todo add validation for base_currency
+  # Todo add validation for base_currency_amount
 
   scope :with_statuses, -> (statuses) { where(status: statuses) if statuses.present? }
   scope :issue_date_range, -> (date_range) { where(issue_date: date_range) if date_range.present? }

@@ -31,7 +31,7 @@ const GenerateInvoices = () => {
   const [selectedClient, setSelectedClient] = useState<any>();
   const [invoiceNumber, setInvoiceNumber] = useState<any>("");
   const [clientCurrency, setClientCurrency] = useState<string>("USD");
-  const [baseCurrency, setBaseCurrency] = useState<any>(0);
+  const [baseCurrencyAmount, setBaseCurrencyAmount] = useState<any>(0);
   const [reference, setReference] = useState<string>("");
   const [amount, setAmount] = useState<any>(0);
   const [amountDue, setAmountDue] = useState<any>(0);
@@ -119,7 +119,7 @@ const GenerateInvoices = () => {
       amountDue,
       amountPaid,
       discount,
-      baseCurrency,
+      baseCurrencyAmount,
       tax,
       dateFormat: invoiceDetails.companyDetails.date_format,
       setShowSendInvoiceModal,
@@ -210,7 +210,7 @@ const GenerateInvoices = () => {
           amount={amount}
           amountDue={amountDue}
           amountPaid={amountPaid}
-          baseCurrency={baseCurrency}
+          baseCurrencyAmount={baseCurrencyAmount}
           clientCurrency={clientCurrency}
           dateFormat={invoiceDetails.companyDetails.date_format}
           discount={discount}
@@ -225,7 +225,7 @@ const GenerateInvoices = () => {
           selectedOption={selectedOption}
           setAmount={setAmount}
           setAmountDue={setAmountDue}
-          setBaseCurrency={setBaseCurrency}
+          setBaseCurrencyAmount={setBaseCurrencyAmount}
           setClientCurrency={setClientCurrency}
           setDiscount={setDiscount}
           setDueDate={setDueDate}
@@ -280,7 +280,7 @@ const GenerateInvoices = () => {
         amount={amount}
         amountDue={amountDue}
         amountPaid={amountPaid}
-        baseCurrency={baseCurrency}
+        baseCurrencyAmount={baseCurrencyAmount}
         dateFormat={invoiceDetails.companyDetails.date_format}
         discount={discount}
         dueDate={dueDate}
@@ -297,7 +297,7 @@ const GenerateInvoices = () => {
         selectedLineItems={selectedOption}
         setAmount={setAmount}
         setAmountDue={setAmountDue}
-        setBaseCurrency={setBaseCurrency}
+        setBaseCurrencyAmount={setBaseCurrencyAmount}
         setDiscount={setDiscount}
         setDueDate={setDueDate}
         setInvoiceNumber={setInvoiceNumber}

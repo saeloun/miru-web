@@ -15,9 +15,9 @@ const Container = ({
   setInvoiceNumber,
   clientCurrency,
   setClientCurrency,
-  setBaseCurrency,
+  setBaseCurrencyAmount,
   amount,
-  baseCurrency,
+  baseCurrencyAmount,
   setAmount,
   reference,
   setReference,
@@ -77,7 +77,7 @@ const Container = ({
     <InvoiceTotal
       amountDue={amountDue}
       amountPaid={amountPaid}
-      baseCurrency={baseCurrency}
+      baseCurrencyAmount={baseCurrencyAmount}
       clientCurrency={clientCurrency}
       currency={invoiceDetails.companyDetails.currency}
       discount={discount}
@@ -85,7 +85,7 @@ const Container = ({
       newLineItems={selectedOption}
       setAmount={setAmount}
       setAmountDue={setAmountDue}
-      setBaseCurrency={setBaseCurrency}
+      setBaseCurrencyAmount={setBaseCurrencyAmount}
       setDiscount={setDiscount}
       setTax={setTax}
       tax={tax}

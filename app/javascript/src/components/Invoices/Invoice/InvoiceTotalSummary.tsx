@@ -10,6 +10,8 @@ const InvoiceTotalSummary = ({ invoice, strikeAmount = "" }) => {
   const tax = invoice.tax;
   const discount = invoice.discount;
   const total = Number(subTotal) + Number(tax) - Number(discount);
+  // eslint-disable-next-line no-console
+  console.log(invoice);
 
   return (
     <div className="mb-5 flex w-full justify-end px-10 pt-3 pb-10">
@@ -68,7 +70,10 @@ const InvoiceTotalSummary = ({ invoice, strikeAmount = "" }) => {
             <td
               className={`text-right text-base font-bold text-miru-dark-purple-1000 ${strikeAmount}`}
             >
-              {currencyFormat(invoice.company.currency, total)}
+              {currencyFormat(
+                invoice.company.currency,
+                invoice.baseCurrencyAmount
+              )}
             </td>
           </tr>
           <tr>
