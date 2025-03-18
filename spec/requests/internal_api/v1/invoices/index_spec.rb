@@ -265,7 +265,9 @@ RSpec.describe "InternalApi::V1::Invoices#index", type: :request do
         Invoice.sent.first&.discard!
         Invoice.draft.first&.discard!
         status_and_amount = Invoice.all.kept.group_by(&:status).transform_values { |invoices|
-          invoices.sum { |invoice| invoice.base_currency_amount || invoice.amount }
+          invoices.sum { |invoice|
+            invoice.base_currency_amount.to_f > 0.00 ? invoice.base_currency_amount : invoice.amount
+          }
         }
         status_and_amount.default = 0
         @outstanding_amount = status_and_amount["sent"] + status_and_amount["viewed"] + status_and_amount["overdue"]

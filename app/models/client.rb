@@ -104,7 +104,11 @@ class Client < ApplicationRecord
 
   def client_overdue_and_outstanding_calculation
     currency = company.base_currency
-    status_and_amount = invoices.group(:status).sum(:amount)
+    status_and_amount = invoices.group_by(&:status).transform_values { |invoices|
+      invoices.sum { |invoice|
+        invoice.base_currency_amount.to_f > 0.00 ? invoice.base_currency_amount : invoice.amount
+      }
+    }
     status_and_amount.default = 0
     outstanding_amount = status_and_amount["sent"] + status_and_amount["viewed"] + status_and_amount["overdue"]
     {
@@ -133,7 +137,11 @@ class Client < ApplicationRecord
   end
 
   def payment_summary(duration)
-    status_and_amount = invoices.kept.during(duration).group(:status).sum(:amount)
+    status_and_amount = invoices.kept.during(duration).group_by(&:status).transform_values { |invoices|
+      invoices.sum { |invoice|
+        invoice.base_currency_amount.to_f > 0.00 ? invoice.base_currency_amount : invoice.amount
+      }
+    }
     status_and_amount.default = 0
     {
       paid_amount: status_and_amount["paid"],
@@ -148,7 +156,13 @@ class Client < ApplicationRecord
       .order(issue_date: :desc)
       .includes(:company)
       .select { |invoice| outstanding_overdue_statuses.include?(invoice.status) }
-    status_and_amount = invoices.kept.group(:status).sum(:amount)
+
+    status_and_amount = invoices.kept.group_by(&:status).transform_values { |invoices|
+      invoices.sum { |invoice|
+        invoice.base_currency_amount.to_f > 0.00 ? invoice.base_currency_amount : invoice.amount
+      }
+    }
+
     status_and_amount.default = 0
 
     {
