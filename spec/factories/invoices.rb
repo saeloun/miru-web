@@ -15,6 +15,7 @@ FactoryBot.define do
     # amount_due { Faker::Number.decimal(r_digits: 2) }
     # discount { Faker::Number.decimal(r_digits: 2) }
     status { :draft }
+    base_currency_amount { 0.0 }
     external_view_key { "#{SecureRandom.hex}" }
     factory :invoice_with_invoice_line_items do
       transient do
