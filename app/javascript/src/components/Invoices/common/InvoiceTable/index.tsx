@@ -10,7 +10,6 @@ import NewLineItemTable from "../NewLineItemTable";
 import { fetchNewLineItems } from "../utils";
 
 const InvoiceTable = ({
-  currency,
   clientCurrency,
   dateFormat,
   selectedClient,
@@ -165,7 +164,6 @@ const InvoiceTable = ({
                 !item._destroy && (
                   <NewLineItemRow
                     clientCurrency={clientCurrency}
-                    currency={currency}
                     dateFormat={dateFormat}
                     item={item}
                     key={index}
@@ -180,7 +178,6 @@ const InvoiceTable = ({
                 !item._destroy && (
                   <NewLineItemRow
                     clientCurrency={clientCurrency}
-                    currency={currency}
                     dateFormat={dateFormat}
                     item={item}
                     key={index}

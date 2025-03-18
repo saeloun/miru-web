@@ -240,7 +240,6 @@ const EditInvoice = () => {
               clientCurrency={clientCurrency}
               clientList={invoiceDetails.companyClientList}
               clientVisible={false}
-              currency={invoiceDetails.company.currency}
               dateFormat={invoiceDetails.company.dateFormat}
               dueDate={dueDate || invoiceDetails.dueDate}
               invoiceNumber={invoiceNumber}
@@ -257,7 +256,6 @@ const EditInvoice = () => {
             <div className="py-5 pl-10">
               <InvoiceTable
                 clientCurrency={clientCurrency}
-                currency={invoiceDetails.company.currency}
                 dateFormat={invoiceDetails.company.dateFormat}
                 lineItems={lineItems}
                 manualEntryArr={manualEntryArr}

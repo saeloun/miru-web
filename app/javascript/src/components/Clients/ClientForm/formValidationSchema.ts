@@ -1,7 +1,8 @@
 /* eslint-disable import/exports-last */
 import worldCountries from "world-countries";
-import { currencyList } from "constants/currencyList";
 import * as Yup from "yup";
+
+import { currencyList } from "constants/currencyList";
 
 const phoneRegExp =
   /^((\+\d{1,3}(-| )?\(?\d\)?(-| )?\d{1,3})|(\(?\d{2,3}\)?))(-| )?(\d{3,4})(-| )?(\d{4})(( x| ext)\d{1,5}){0,1}$/;
@@ -49,16 +50,13 @@ const getCountryLabel = countryCode => {
 
 const getCurrencyLabel = currency => {
   if (currency) {
-    const currencyObj = currencyList.find(
-      cur => cur.code === currency
-    );
+    const currencyObj = currencyList.find(cur => cur.code === currency);
 
     return `${currencyObj.symbol} (${currencyObj.code})`;
   }
 
   return "";
 };
-
 
 export const getInitialvalues = (client?: any) => ({
   name: client?.name || "",

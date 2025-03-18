@@ -8,7 +8,6 @@ import TextareaAutosize from "react-textarea-autosize";
 import CustomDatePicker from "common/CustomDatePicker";
 
 const NewLineItemStatic = ({
-  currency,
   clientCurrency,
   item,
   handleDelete,
