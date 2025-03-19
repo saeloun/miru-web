@@ -85,9 +85,9 @@ class Invoice < ApplicationRecord
     :amount_paid, :amount_due, :discount, numericality: { greater_than_or_equal_to: 0 }
   validates :invoice_number, uniqueness: { scope: :company_id }
   validates :reference, length: { maximum: 12 }, allow_blank: true
+  validates :base_currency_amount, presence: true, unless: :same_currency?
   validate :check_if_invoice_paid, on: :update
   validate :prevent_waived_change, on: :update
-  validates :base_currency_amount, presence: true, unless: :same_currency?
 
   scope :with_statuses, -> (statuses) { where(status: statuses) if statuses.present? }
   scope :issue_date_range, -> (date_range) { where(issue_date: date_range) if date_range.present? }
@@ -213,6 +213,8 @@ class Invoice < ApplicationRecord
     end
 
     def same_currency?
+      return false unless company && client
+
       client.currency == company.base_currency
     end
 end
