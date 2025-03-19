@@ -7,6 +7,11 @@ import { currencyList } from "constants/currencyList";
 const phoneRegExp =
   /^((\+\d{1,3}(-| )?\(?\d\)?(-| )?\d{1,3})|(\(?\d{2,3}\)?))(-| )?(\d{3,4})(-| )?(\d{4})(( x| ext)\d{1,5}){0,1}$/;
 
+interface Currency {
+  code: string;
+  symbol: string;
+}
+
 export const clientSchema = Yup.object().shape({
   name: Yup.string()
     .required("Name cannot be blank")
@@ -48,9 +53,11 @@ const getCountryLabel = countryCode => {
   return "";
 };
 
-const getCurrencyLabel = currency => {
+const getCurrencyLabel = (currency?: string): string => {
   if (currency) {
-    const currencyObj = currencyList.find(cur => cur.code === currency);
+    const currencyObj: Currency | undefined = currencyList.find(
+      (cur: Currency) => cur.code === currency
+    );
 
     return `${currencyObj.symbol} (${currencyObj.code})`;
   }
