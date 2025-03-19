@@ -87,7 +87,7 @@ class Invoice < ApplicationRecord
   validates :reference, length: { maximum: 12 }, allow_blank: true
   validate :check_if_invoice_paid, on: :update
   validate :prevent_waived_change, on: :update
-  # Todo add validation for base_currency_amount
+  validates :base_currency_amount, presence: true, unless: :same_currency?
 
   scope :with_statuses, -> (statuses) { where(status: statuses) if statuses.present? }
   scope :issue_date_range, -> (date_range) { where(issue_date: date_range) if date_range.present? }
@@ -210,5 +210,9 @@ class Invoice < ApplicationRecord
     def unlock_timesheet_entries
       timesheet_entry_ids = invoice_line_items.pluck(:timesheet_entry_id)
       TimesheetEntry.where(id: timesheet_entry_ids).update!(locked: false)
+    end
+
+    def same_currency?
+      client.currency == company.base_currency
     end
 end
