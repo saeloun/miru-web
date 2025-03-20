@@ -13,3 +13,4 @@ json.base_currency_amount invoice.base_currency_amount
 json.discount invoice.discount
 json.status invoice.status
 json.stripe_enabled invoice.stripe_enabled
+json.currency invoice.currency

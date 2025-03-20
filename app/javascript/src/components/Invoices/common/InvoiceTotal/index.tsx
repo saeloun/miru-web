@@ -70,7 +70,7 @@ const InvoiceTotal = ({
           </tr>
           <tr className="miru-gray-400 border-b-2 pb-5">
             {discount ? (
-              <td className="py-2 pr-10 pr-10 text-right text-base font-normal text-miru-dark-purple-1000">
+              <td className="py-2 pr-10 text-right text-base font-normal text-miru-dark-purple-1000">
                 <label className="cursor-pointer" htmlFor="Discount">
                   Discount
                 </label>
@@ -139,7 +139,7 @@ const InvoiceTotal = ({
                 type="text"
                 value={baseCurrencyAmount}
                 onChange={e => setBaseCurrencyAmount(e.target.value)}
-                onKeyDown={e => onEnter(e, "Discount")}
+                onKeyDown={e => onEnter(e, "baseCurrency")}
               />
             </td>
           </tr>

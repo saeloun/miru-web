@@ -67,6 +67,7 @@ const EditInvoice = () => {
     try {
       setStatus(InvoiceStatus.LOADING);
       const { data } = await invoicesApi.editInvoice(params.id);
+
       setInvoiceDetails(data);
       setReference(data.reference);
       setIssueDate(data.issueDate);
@@ -80,7 +81,8 @@ const EditInvoice = () => {
       setAmountPaid(data.amountPaid);
       setStatus(InvoiceStatus.SUCCESS);
       setIsStripeEnabled(data.stripeEnabled);
-      setBaseCurrencyAmount(data.baseCurrency);
+      setBaseCurrencyAmount(data.baseCurrencyAmount);
+      setClientCurrency(data.currency);
     } catch {
       navigate("/invoices/error");
       setStatus(InvoiceStatus.ERROR);
@@ -113,6 +115,7 @@ const EditInvoice = () => {
         amount_paid: amountPaid,
         amount,
         base_currency_amount: baseCurrencyAmount,
+        currency: clientCurrency,
         discount: Number(discount),
         tax: tax || invoiceDetails.tax,
         client_id: selectedClient.id,

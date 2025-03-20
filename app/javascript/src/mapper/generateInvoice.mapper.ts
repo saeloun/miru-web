@@ -58,6 +58,7 @@ const mapGenerateInvoice = input => ({
   amount_due: input.amountDue,
   amount_paid: input.amountPaid,
   amount: input.amount,
+  currency: input.selectedClient.clientCurrency,
   base_currency_amount: input.baseCurrencyAmount,
   discount: input.discount,
   tax: input.tax,
