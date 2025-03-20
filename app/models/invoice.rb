@@ -79,13 +79,12 @@ class Invoice < ApplicationRecord
   after_save :lock_timesheet_entries, if: :draft?
   after_discard :unlock_timesheet_entries, if: :draft?
 
-  validates :issue_date, :due_date, :invoice_number, presence: true
+  validates :issue_date, :due_date, :invoice_number, :base_currency_amount, presence: true
   validates :due_date, comparison: { greater_than_or_equal_to: :issue_date }, if: :not_waived
   validates :amount, :outstanding_amount, :tax,
     :amount_paid, :amount_due, :discount, numericality: { greater_than_or_equal_to: 0 }
   validates :invoice_number, uniqueness: { scope: :company_id }
   validates :reference, length: { maximum: 12 }, allow_blank: true
-  validates :base_currency_amount, presence: true, unless: :same_currency?
   validate :check_if_invoice_paid, on: :update
   validate :prevent_waived_change, on: :update
 
@@ -210,11 +209,5 @@ class Invoice < ApplicationRecord
     def unlock_timesheet_entries
       timesheet_entry_ids = invoice_line_items.pluck(:timesheet_entry_id)
       TimesheetEntry.where(id: timesheet_entry_ids).update!(locked: false)
-    end
-
-    def same_currency?
-      return false unless company && client
-
-      client.currency == company.base_currency
     end
 end
