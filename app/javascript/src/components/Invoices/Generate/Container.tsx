@@ -45,7 +45,6 @@ const Container = ({
       clientCurrency={clientCurrency}
       clientList={invoiceDetails.clientList}
       clientVisible={false}
-      currency={invoiceDetails.companyDetails.currency}
       dateFormat={dateFormat}
       dueDate={dueDate}
       invoiceNumber={invoiceNumber}
@@ -63,7 +62,6 @@ const Container = ({
     <div className="block overflow-x-auto whitespace-nowrap py-5 md:overflow-x-visible md:whitespace-normal md:pl-10">
       <InvoiceTable
         clientCurrency={clientCurrency}
-        currency={invoiceDetails.companyDetails.currency}
         dateFormat={invoiceDetails.companyDetails.date_format}
         lineItems={lineItems}
         manualEntryArr={manualEntryArr}
