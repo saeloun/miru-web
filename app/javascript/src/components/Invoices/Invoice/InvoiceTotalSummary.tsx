@@ -10,6 +10,8 @@ const InvoiceTotalSummary = ({ invoice, strikeAmount = "" }) => {
   const tax = invoice.tax;
   const discount = invoice.discount;
   const total = Number(subTotal) + Number(tax) - Number(discount);
+  // eslint-disable-next-line no-console
+  console.log(invoice);
 
   return (
     <div className="mb-5 flex w-full justify-end px-10 pt-3 pb-10">
@@ -23,20 +25,20 @@ const InvoiceTotalSummary = ({ invoice, strikeAmount = "" }) => {
               className={`text-right text-base font-bold text-miru-dark-purple-1000 ${strikeAmount}`}
             >
               {currencyFormat(
-                invoice.company.currency,
+                invoice.client.currency,
                 parseFloat(subTotal).toFixed(2)
               )}
             </td>
           </tr>
           <tr className="miru-gray-400 border-b-2 pb-5 ">
-            <td className="py-2 pr-10 pr-10 text-right text-base font-normal text-miru-dark-purple-1000">
+            <td className="py-2 pr-10 text-right text-base font-normal text-miru-dark-purple-1000">
               Discount
             </td>
             <td
               className={`text-right text-base font-bold text-miru-dark-purple-1000 ${strikeAmount}`}
             >
               {currencyFormat(
-                invoice.company.currency,
+                invoice.client.currency,
                 parseFloat(discount).toFixed(2)
               )}
             </td>
@@ -48,7 +50,7 @@ const InvoiceTotalSummary = ({ invoice, strikeAmount = "" }) => {
             <td
               className={`w-22 pt-4 text-right text-base font-bold text-miru-dark-purple-1000 ${strikeAmount}`}
             >
-              {currencyFormat(invoice.company.currency, tax)}
+              {currencyFormat(invoice.client.currency, tax)}
             </td>
           </tr>
           <tr>
@@ -58,7 +60,20 @@ const InvoiceTotalSummary = ({ invoice, strikeAmount = "" }) => {
             <td
               className={`text-right text-base font-bold text-miru-dark-purple-1000 ${strikeAmount}`}
             >
-              {currencyFormat(invoice.company.currency, total)}
+              {currencyFormat(invoice.client.currency, total)}
+            </td>
+          </tr>
+          <tr>
+            <td className="pt-1 pr-10 text-right text-base font-normal text-miru-dark-purple-1000">
+              Amount in {invoice.company.currency}
+            </td>
+            <td
+              className={`text-right text-base font-bold text-miru-dark-purple-1000 ${strikeAmount}`}
+            >
+              {currencyFormat(
+                invoice.company.currency,
+                invoice.baseCurrencyAmount
+              )}
             </td>
           </tr>
           <tr>
@@ -68,7 +83,7 @@ const InvoiceTotalSummary = ({ invoice, strikeAmount = "" }) => {
             <td
               className={`text-right text-base font-bold text-miru-dark-purple-1000 ${strikeAmount}`}
             >
-              {currencyFormat(invoice.company.currency, invoice.amountPaid)}
+              {currencyFormat(invoice.client.currency, invoice.amountPaid)}
             </td>
           </tr>
           <tr>
@@ -78,7 +93,7 @@ const InvoiceTotalSummary = ({ invoice, strikeAmount = "" }) => {
             <td
               className={`text-right text-base font-bold text-miru-dark-purple-1000 ${strikeAmount}`}
             >
-              {currencyFormat(invoice.company.currency, invoice.amountDue)}
+              {currencyFormat(invoice.client.currency, invoice.amountDue)}
             </td>
           </tr>
         </tbody>

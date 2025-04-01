@@ -55,7 +55,7 @@ const TableRow = ({
   } = invoice;
 
   const { baseCurrency } = company;
-  const { name, logo } = client;
+  const { name, logo, clientCurrency } = client;
 
   const handleCheckboxChange = () => {
     if (isSelected) {
@@ -155,7 +155,7 @@ const TableRow = ({
           </td>
         )}
         <td className="hidden px-2 text-right text-sm font-bold tracking-normal text-miru-dark-purple-1000 lg:table-cell lg:w-1/6 lg:px-6 lg:pt-2 lg:pb-7 lg:text-xl">
-          {currencyFormat(baseCurrency, amount)}
+          {currencyFormat(clientCurrency, amount)}
         </td>
         <td
           className="relative px-2 text-right font-medium lg:px-6 lg:pb-10"

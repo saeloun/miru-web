@@ -37,7 +37,6 @@ const InvoiceDetails = ({ invoice, company, lineItems, client, logo }) => {
         strikeAmount={strikeAmount}
       />
       <InvoiceTotalSummary
-        company={company}
         invoice={invoice}
         lineItems={lineItems}
         strikeAmount={strikeAmount}

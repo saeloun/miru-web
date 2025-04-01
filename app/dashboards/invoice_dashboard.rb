@@ -14,6 +14,7 @@ class InvoiceDashboard < Administrate::BaseDashboard
     amount: Field::String.with_options(searchable: false),
     amount_due: Field::String.with_options(searchable: false),
     amount_paid: Field::String.with_options(searchable: false),
+    base_currency_amount: Field::String.with_options(searchable: false),
     client: Field::BelongsTo,
     company: Field::BelongsTo,
     discarded_at: Field::DateTime,
@@ -56,6 +57,7 @@ class InvoiceDashboard < Administrate::BaseDashboard
     amount
     amount_due
     amount_paid
+    base_currency_amount
     client
     company
     discarded_at
@@ -82,6 +84,7 @@ class InvoiceDashboard < Administrate::BaseDashboard
     amount
     amount_due
     amount_paid
+    base_currency_amount
     client
     company
     discarded_at
