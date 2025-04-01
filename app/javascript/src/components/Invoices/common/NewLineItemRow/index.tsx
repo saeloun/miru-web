@@ -3,7 +3,7 @@ import React from "react";
 import NewLineItemStatic from "./NewLineItemStatic";
 
 const NewLineItemRow = ({
-  currency,
+  clientCurrency,
   item,
   setSelectedOption,
   selectedOption,
@@ -33,7 +33,7 @@ const NewLineItemRow = ({
 
   return (
     <NewLineItemStatic
-      currency={currency}
+      clientCurrency={clientCurrency}
       dateFormat={dateFormat}
       handleDelete={handleDelete}
       item={item}

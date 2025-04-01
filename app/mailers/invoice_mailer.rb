@@ -11,7 +11,7 @@ class InvoiceMailer < ApplicationMailer
     @invoice_url = "#{ENV['APP_BASE_URL']}/invoices/#{@invoice.external_view_key}/view"
     @company = @invoice.company
     @company_logo = company_logo
-    @amount = FormatAmountService.new(@company.base_currency, @invoice.amount).process
+    @amount = FormatAmountService.new(@invoice.currency, @invoice.amount).process
 
     if can_send_invoice?
       pdf = InvoicePayment::PdfGeneration.process(@invoice, @company_logo, root_url)

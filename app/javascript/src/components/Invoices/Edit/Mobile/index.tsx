@@ -3,6 +3,7 @@ import React from "react";
 import MobileView from "components/Invoices/Generate/MobileView";
 
 const EditInvoiceForm = ({
+  baseCurrencyAmount,
   invoiceDetails,
   handleSaveInvoice,
   lineItems,
@@ -16,6 +17,7 @@ const EditInvoiceForm = ({
   setReference,
   setTax,
   setSelectedClient,
+  setBaseCurrencyAmount,
   selectedClient,
   setSelectedLineItems,
   setManualEntryArr,
@@ -42,6 +44,7 @@ const EditInvoiceForm = ({
       amount={amount}
       amountDue={amountDue}
       amountPaid={amountPaid}
+      baseCurrencyAmount={baseCurrencyAmount}
       dateFormat={company.dateFormat}
       discount={discount}
       dueDate={dueDate}
@@ -57,6 +60,7 @@ const EditInvoiceForm = ({
       selectedLineItems={selectedLineItems}
       setAmount={setAmount}
       setAmountDue={setAmountDue}
+      setBaseCurrencyAmount={setBaseCurrencyAmount}
       setDiscount={setDiscount}
       setDueDate={setDueDate}
       setInvoiceNumber={setInvoiceNumber}

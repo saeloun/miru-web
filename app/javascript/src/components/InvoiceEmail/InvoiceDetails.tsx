@@ -30,14 +30,13 @@ const InvoiceDetails = ({ invoice, company, lineItems, client, logo }) => {
         />
       </div>
       <InvoiceLineItems
-        currency={company.currency}
+        currency={client.currency}
         dateFormat={company.dateFormat || company.date_format}
         items={sortedLineItems}
         showHeader={lineItems.length > 0}
         strikeAmount={strikeAmount}
       />
       <InvoiceTotalSummary
-        company={company}
         invoice={invoice}
         lineItems={lineItems}
         strikeAmount={strikeAmount}
