@@ -27,7 +27,7 @@ const InvoiceDetails = ({ invoice }) => {
       </div>
       <InvoiceLineItems
         showHeader
-        currency={invoice.company.currency}
+        currency={invoice.client.currency}
         dateFormat={invoice.company.dateFormat}
         items={sortedLineItems}
         strikeAmount={strikeAmount}

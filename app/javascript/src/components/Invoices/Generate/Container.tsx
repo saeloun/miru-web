@@ -13,7 +13,11 @@ const Container = ({
   setSelectedClient,
   invoiceNumber,
   setInvoiceNumber,
+  clientCurrency,
+  setClientCurrency,
+  setBaseCurrencyAmount,
   amount,
+  baseCurrencyAmount,
   setAmount,
   reference,
   setReference,
@@ -38,9 +42,9 @@ const Container = ({
     <CompanyInfo company={invoiceDetails.companyDetails} />
     <InvoiceDetails
       amount={amount}
+      clientCurrency={clientCurrency}
       clientList={invoiceDetails.clientList}
       clientVisible={false}
-      currency={invoiceDetails.companyDetails.currency}
       dateFormat={dateFormat}
       dueDate={dueDate}
       invoiceNumber={invoiceNumber}
@@ -48,6 +52,7 @@ const Container = ({
       optionSelected={false}
       reference={reference}
       selectedClient={selectedClient}
+      setClientCurrency={setClientCurrency}
       setDueDate={setDueDate}
       setInvoiceNumber={setInvoiceNumber}
       setIssueDate={setIssueDate}
@@ -56,7 +61,7 @@ const Container = ({
     />
     <div className="block overflow-x-auto whitespace-nowrap py-5 md:overflow-x-visible md:whitespace-normal md:pl-10">
       <InvoiceTable
-        currency={invoiceDetails.companyDetails.currency}
+        clientCurrency={clientCurrency}
         dateFormat={invoiceDetails.companyDetails.date_format}
         lineItems={lineItems}
         manualEntryArr={manualEntryArr}
@@ -70,12 +75,15 @@ const Container = ({
     <InvoiceTotal
       amountDue={amountDue}
       amountPaid={amountPaid}
+      baseCurrencyAmount={baseCurrencyAmount}
+      clientCurrency={clientCurrency}
       currency={invoiceDetails.companyDetails.currency}
       discount={discount}
       manualEntryArr={manualEntryArr}
       newLineItems={selectedOption}
       setAmount={setAmount}
       setAmountDue={setAmountDue}
+      setBaseCurrencyAmount={setBaseCurrencyAmount}
       setDiscount={setDiscount}
       setTax={setTax}
       tax={tax}

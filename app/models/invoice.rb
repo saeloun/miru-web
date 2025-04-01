@@ -6,7 +6,9 @@
 #  amount                 :decimal(20, 2)   default(0.0)
 #  amount_due             :decimal(20, 2)   default(0.0)
 #  amount_paid            :decimal(20, 2)   default(0.0)
+#  base_currency_amount   :decimal(20, 2)   default(0.0)
 #  client_payment_sent_at :datetime
+#  currency               :string           default("USD"), not null
 #  discarded_at           :datetime
 #  discount               :decimal(20, 2)   default(0.0)
 #  due_date               :date
@@ -77,7 +79,7 @@ class Invoice < ApplicationRecord
   after_save :lock_timesheet_entries, if: :draft?
   after_discard :unlock_timesheet_entries, if: :draft?
 
-  validates :issue_date, :due_date, :invoice_number, presence: true
+  validates :issue_date, :due_date, :invoice_number, :base_currency_amount, presence: true
   validates :due_date, comparison: { greater_than_or_equal_to: :issue_date }, if: :not_waived
   validates :amount, :outstanding_amount, :tax,
     :amount_paid, :amount_due, :discount, numericality: { greater_than_or_equal_to: 0 }

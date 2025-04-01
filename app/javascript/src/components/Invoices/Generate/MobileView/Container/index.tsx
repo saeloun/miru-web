@@ -16,6 +16,7 @@ import { generateInvoiceLineItems } from "../../../common/utils";
 import { sections } from "../utils";
 
 const Container = ({
+  baseCurrencyAmount,
   dueDate,
   issueDate,
   invoiceDetails,
@@ -49,6 +50,8 @@ const Container = ({
   isStripeEnabled,
   setShowConnectPaymentDialog,
   showConnectPaymentDialog,
+  // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
+  setBaseCurrencyAmount,
 }) => {
   const [multiLineItemModal, setMultiLineItemModal] = useState<boolean>(false);
   const [editItem, setEditItem] = useState<any>({});
@@ -70,6 +73,7 @@ const Container = ({
 
   const saveInvoice = async () => {
     const sanitized = mapGenerateInvoice({
+      baseCurrencyAmount,
       selectedClient,
       invoiceNumber,
       reference,
