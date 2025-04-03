@@ -103,7 +103,7 @@ gem "data_migrate"
 # pagy for Pagination
 gem "pagy", "~> 5.10"
 
-gem "nokogiri", ">= 1.18.3"
+gem "nokogiri", ">= 1.18.4"
 
 # Manage application specific business logic. https://github.com/AaronLasseigne/active_interaction
 gem "active_interaction"
