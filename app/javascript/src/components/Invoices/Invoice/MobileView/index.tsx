@@ -106,7 +106,6 @@ const MobileView = ({
         <CompanyInfo company={company} />
         <InvoiceInfo
           amount={amount}
-          currency={company.currency}
           dateFormat={company.dateFormat}
           dueDate={dueDate}
           invoiceNumber={invoiceNumber}

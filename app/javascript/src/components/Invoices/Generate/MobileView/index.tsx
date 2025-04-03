@@ -18,6 +18,7 @@ const MobileView = ({
   setDueDate,
   setIssueDate,
   setInvoiceNumber,
+  clientCurrency,
   manualEntryArr,
   setManualEntryArr,
   lineItems,
@@ -38,6 +39,7 @@ const MobileView = ({
   isStripeEnabled,
   setShowConnectPaymentDialog,
   setBaseCurrencyAmount,
+  setClientCurrency,
   showConnectPaymentDialog,
 }) => {
   const [activeSection, setActiveSection] = useState<string>(
@@ -57,6 +59,7 @@ const MobileView = ({
         amountDue={amountDue}
         amountPaid={amountPaid}
         baseCurrencyAmount={baseCurrencyAmount}
+        clientCurrency={clientCurrency}
         dateFormat={dateFormat}
         discount={discount}
         dueDate={dueDate}
@@ -74,6 +77,7 @@ const MobileView = ({
         setAmount={setAmount}
         setAmountDue={setAmountDue}
         setBaseCurrencyAmount={setBaseCurrencyAmount}
+        setClientCurrency={setClientCurrency}
         setDiscount={setDiscount}
         setDueDate={setDueDate}
         setInvoiceNumber={setInvoiceNumber}

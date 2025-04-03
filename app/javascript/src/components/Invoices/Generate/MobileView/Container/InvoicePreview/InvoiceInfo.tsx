@@ -14,12 +14,11 @@ const InvoiceInfo = ({
   reference,
   amount,
   dateFormat,
-  currency,
   setActiveSection,
   showEditButton = true,
   strikeAmount = "",
 }) => {
-  const { name, phone, label } = selectedClient;
+  const { name, phone, label, currency } = selectedClient;
   const { address_line_1, address_line_2, city, state, country, pin } =
     selectedClient?.address ?? {};
 

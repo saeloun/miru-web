@@ -43,18 +43,9 @@ const TableRow = ({
   const navigate = useNavigate();
   const toolTipRef = useRef(null);
 
-  const {
-    amount,
-    client,
-    company,
-    dueDate,
-    id,
-    invoiceNumber,
-    issueDate,
-    status,
-  } = invoice;
+  const { amount, client, dueDate, id, invoiceNumber, issueDate, status } =
+    invoice;
 
-  const { baseCurrency } = company;
   const { name, logo, clientCurrency } = client;
 
   const handleCheckboxChange = () => {
@@ -186,7 +177,7 @@ const TableRow = ({
             text={status}
           />
           <dl className="text-right text-sm font-medium leading-5 lg:hidden">
-            <dt className="mt-1">{currencyFormat(baseCurrency, amount)}</dt>
+            <dt className="mt-1">{currencyFormat(clientCurrency, amount)}</dt>
           </dl>
         </td>
         {!isDesktop && (

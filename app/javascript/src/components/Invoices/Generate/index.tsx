@@ -281,6 +281,7 @@ const GenerateInvoices = () => {
         amountDue={amountDue}
         amountPaid={amountPaid}
         baseCurrencyAmount={baseCurrencyAmount}
+        clientCurrency={clientCurrency}
         dateFormat={invoiceDetails.companyDetails.date_format}
         discount={discount}
         dueDate={dueDate}
@@ -298,6 +299,7 @@ const GenerateInvoices = () => {
         setAmount={setAmount}
         setAmountDue={setAmountDue}
         setBaseCurrencyAmount={setBaseCurrencyAmount}
+        setClientCurrency={setClientCurrency}
         setDiscount={setDiscount}
         setDueDate={setDueDate}
         setInvoiceNumber={setInvoiceNumber}

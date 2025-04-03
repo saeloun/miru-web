@@ -17,6 +17,7 @@ import { sections } from "../utils";
 
 const Container = ({
   baseCurrencyAmount,
+  clientCurrency,
   dueDate,
   issueDate,
   invoiceDetails,
@@ -49,9 +50,9 @@ const Container = ({
   handleSaveInvoice,
   isStripeEnabled,
   setShowConnectPaymentDialog,
-  showConnectPaymentDialog,
-  // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
   setBaseCurrencyAmount,
+  setClientCurrency,
+  showConnectPaymentDialog,
 }) => {
   const [multiLineItemModal, setMultiLineItemModal] = useState<boolean>(false);
   const [editItem, setEditItem] = useState<any>({});
@@ -63,9 +64,7 @@ const Container = ({
   const [showSendInvoiceModal, setShowSendInvoiceModal] =
     useState<boolean>(true);
 
-  const currency =
-    invoiceDetails?.companyDetails?.currency ||
-    invoiceDetails?.company?.currency;
+  const currency = clientCurrency || invoiceDetails?.company?.currency;
 
   const INVOICE_NUMBER_ERROR = "Please enter invoice number to proceed";
   const SELECT_CLIENT_ERROR =
@@ -141,7 +140,8 @@ const Container = ({
           <MenuContainer
             amountDue={amountDue}
             amountPaid={amountPaid}
-            currency={currency}
+            baseCurrencyAmount={baseCurrencyAmount}
+            currency={clientCurrency}
             dateFormat={dateFormat}
             discount={discount}
             dueDate={dueDate}
@@ -158,6 +158,8 @@ const Container = ({
             setActiveSection={setActiveSection}
             setAmount={setAmount}
             setAmountDue={setAmountDue}
+            setBaseCurrencyAmount={setBaseCurrencyAmount}
+            setClientCurrency={setClientCurrency}
             setDiscount={setDiscount}
             setDueDate={setDueDate}
             setEditItem={setEditItem}

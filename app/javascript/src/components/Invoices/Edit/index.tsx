@@ -335,6 +335,7 @@ const EditInvoice = () => {
         amountDue={amountDue}
         amountPaid={amountPaid}
         baseCurrencyAmount={baseCurrencyAmount}
+        clientCurrency={clientCurrency}
         discount={discount}
         dueDate={dueDate}
         handleSaveInvoice={handleSaveInvoice}
@@ -350,6 +351,7 @@ const EditInvoice = () => {
         setAmount={setAmount}
         setAmountDue={setAmountDue}
         setBaseCurrencyAmount={setBaseCurrencyAmount}
+        setClientCurrency={setClientCurrency}
         setDiscount={setDiscount}
         setDueDate={setDueDate}
         setInvoiceNumber={setInvoiceNumber}
