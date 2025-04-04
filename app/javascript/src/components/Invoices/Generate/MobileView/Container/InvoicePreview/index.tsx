@@ -41,6 +41,7 @@ const InvoicePreviewContainer = ({
       {companyDetails && <CompanyInfo company={companyDetails} />}
       <InvoiceInfo
         amount={amount}
+        currency={currency}
         dueDate={dueDate}
         invoiceNumber={invoiceNumber}
         issueDate={issueDate}

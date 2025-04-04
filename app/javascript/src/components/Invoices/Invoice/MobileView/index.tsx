@@ -45,6 +45,7 @@ const MobileView = ({
     invoiceNumber,
     status,
     company,
+    currency,
     amount,
     dueDate,
     issueDate,
@@ -67,7 +68,6 @@ const MobileView = ({
   const total = Number(subTotal) + Number(tax) - Number(discount);
   const invoiceWaived = invoice?.status === "waived";
   const strikeAmount = invoice?.status === "waived" && "line-through";
-  const currency = company?.currency;
   const dateFormat = company?.dateFormat;
 
   if (showHistory) {
@@ -106,6 +106,7 @@ const MobileView = ({
         <CompanyInfo company={company} />
         <InvoiceInfo
           amount={amount}
+          currency={currency}
           dateFormat={company.dateFormat}
           dueDate={dueDate}
           invoiceNumber={invoiceNumber}
@@ -119,7 +120,7 @@ const MobileView = ({
         <div className="border-b border-miru-gray-400 px-4 py-2">
           <LineItems
             isInvoicePreviewCall
-            currency={client.currency}
+            currency={currency}
             dateFormat={company.dateFormat}
             manualEntryArr={[]}
             selectedClient={client}
@@ -132,7 +133,7 @@ const MobileView = ({
         <InvoiceTotal
           amountDue={amountDue}
           amountPaid={amountPaid}
-          currency={client.currency}
+          currency={currency}
           discount={discount}
           setActiveSection={() => {}} //eslint-disable-line
           showEditButton={false}
