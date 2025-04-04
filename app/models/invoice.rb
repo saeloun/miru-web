@@ -213,6 +213,6 @@ class Invoice < ApplicationRecord
     end
 
     def same_currency?
-      client.currency == company.base_currency
+      client&.currency == company&.base_currency
     end
 end
