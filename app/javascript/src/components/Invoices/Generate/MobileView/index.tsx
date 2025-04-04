@@ -5,6 +5,7 @@ import Header from "./Header";
 import { sections } from "./utils";
 
 const MobileView = ({
+  baseCurrency,
   baseCurrencyAmount,
   dueDate,
   issueDate,
@@ -58,6 +59,7 @@ const MobileView = ({
         amount={amount}
         amountDue={amountDue}
         amountPaid={amountPaid}
+        baseCurrency={baseCurrency}
         baseCurrencyAmount={baseCurrencyAmount}
         clientCurrency={clientCurrency}
         dateFormat={dateFormat}

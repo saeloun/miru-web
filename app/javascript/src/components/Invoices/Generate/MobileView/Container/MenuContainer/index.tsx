@@ -8,6 +8,7 @@ import InvoicePreview from "./InvoicePreview";
 import LineItems from "./LineItems";
 
 const MenuContainer = ({
+  baseCurrency,
   baseCurrencyAmount,
   dueDate,
   issueDate,
@@ -178,7 +179,9 @@ const MenuContainer = ({
             <Billing
               amountDue={amountDue}
               amountPaid={amountPaid}
+              baseCurrency={baseCurrency}
               baseCurrencyAmount={baseCurrencyAmount}
+              currency={currency}
               discount={discount}
               invoiceDetails={invoiceDetails}
               setAmount={setAmount}

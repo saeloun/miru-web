@@ -16,6 +16,7 @@ import { generateInvoiceLineItems } from "../../../common/utils";
 import { sections } from "../utils";
 
 const Container = ({
+  baseCurrency,
   baseCurrencyAmount,
   clientCurrency,
   dueDate,
@@ -140,6 +141,7 @@ const Container = ({
           <MenuContainer
             amountDue={amountDue}
             amountPaid={amountPaid}
+            baseCurrency={baseCurrency}
             baseCurrencyAmount={baseCurrencyAmount}
             currency={clientCurrency}
             dateFormat={dateFormat}

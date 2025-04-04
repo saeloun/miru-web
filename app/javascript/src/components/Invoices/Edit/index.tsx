@@ -334,6 +334,7 @@ const EditInvoice = () => {
         amount={amount}
         amountDue={amountDue}
         amountPaid={amountPaid}
+        baseCurrency={invoiceDetails.company?.currency}
         baseCurrencyAmount={baseCurrencyAmount}
         clientCurrency={clientCurrency}
         discount={discount}

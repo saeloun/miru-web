@@ -21,7 +21,9 @@ const InputComponent = ({ label, value, onChange, readOnly = false }) => (
 const Billing = ({
   amountDue,
   amountPaid,
+  baseCurrency,
   baseCurrencyAmount,
+  currency,
   discount,
   invoiceDetails,
   setAmount,
@@ -61,11 +63,13 @@ const Billing = ({
         value={total}
         onChange={e => setTotal(e.target.value)}
       />
-      <InputComponent
-        label={`Amount in ${invoiceDetails?.companyDetails?.currency}`}
-        value={baseCurrencyAmount}
-        onChange={e => setBaseCurrencyAmount(e.target.value)}
-      />
+      {invoiceDetails?.companyDetails?.currency !== currency && (
+        <InputComponent
+          label={`Amount in ${baseCurrency}`}
+          value={baseCurrencyAmount}
+          onChange={e => setBaseCurrencyAmount(e.target.value)}
+        />
+      )}
       <InputComponent
         readOnly
         label="Amount Paid"
