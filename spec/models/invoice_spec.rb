@@ -71,6 +71,13 @@ RSpec.describe Invoice, type: :model do
       @current_invoice.discard!
       expect { @current_invoice.discard! }.to raise_error(Discard::RecordNotDiscarded)
     end
+
+    it "update invoice number" do
+      @current_invoice.discard!
+      expect(@current_invoice.invoice_number).to start_with(
+        "#{Invoice::ARCHIVED_PREFIX}-#{@current_invoice.id}-"
+      )
+    end
   end
 
   describe "Scopes" do
