@@ -119,7 +119,7 @@ const MobileView = ({
         <div className="border-b border-miru-gray-400 px-4 py-2">
           <LineItems
             isInvoicePreviewCall
-            currency={company.currency}
+            currency={client.currency}
             dateFormat={company.dateFormat}
             manualEntryArr={[]}
             selectedClient={client}
@@ -132,7 +132,7 @@ const MobileView = ({
         <InvoiceTotal
           amountDue={amountDue}
           amountPaid={amountPaid}
-          currency={company.currency}
+          currency={client.currency}
           discount={discount}
           setActiveSection={() => {}} //eslint-disable-line
           showEditButton={false}

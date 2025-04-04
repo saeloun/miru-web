@@ -104,6 +104,7 @@ class Client < ApplicationRecord
 
   def client_overdue_and_outstanding_calculation
     currency = company.base_currency
+    client_currency = self.currency
     status_and_amount = invoices.group_by(&:status).transform_values { |invoices|
       invoices.sum { |invoice|
         invoice.base_currency_amount.to_f > 0.00 ? invoice.base_currency_amount : invoice.amount
@@ -114,7 +115,8 @@ class Client < ApplicationRecord
     {
       overdue_amount: status_and_amount["overdue"],
       outstanding_amount:,
-      currency:
+      currency:,
+      client_currency:
     }
   end
 
