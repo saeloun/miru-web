@@ -6,6 +6,8 @@ import { EditIcon } from "miruIcons";
 import { sections } from "../../utils";
 
 const InvoiceTotal = ({
+  baseCurrency,
+  baseCurrencyAmount,
   currency,
   subTotal,
   discount,
@@ -17,7 +19,7 @@ const InvoiceTotal = ({
   showEditButton = true,
   strikeAmount = "",
 }) => {
-  const AmountComponent = ({ label, value }) => (
+  const AmountComponent = ({ label, value, currencyName }) => (
     <div className="flex w-full items-center justify-between">
       <span className="mb-2 w-1/2 text-right text-sm font-normal leading-5 text-miru-dark-purple-1000">
         {label}
@@ -25,7 +27,7 @@ const InvoiceTotal = ({
       <span
         className={`text-right text-sm font-bold leading-5 text-miru-dark-purple-1000 ${strikeAmount}`}
       >
-        {currencyFormat(currency, value)}
+        {currencyFormat(currencyName, value)}
       </span>
     </div>
   );
@@ -33,14 +35,35 @@ const InvoiceTotal = ({
   return (
     <div className="py-6 px-4">
       <div className="border-b border-miru-gray-400">
-        <AmountComponent label="Sub total" value={subTotal} />
-        <AmountComponent label="Discount" value={discount} />
+        <AmountComponent
+          currencyName={currency}
+          label="Sub total"
+          value={subTotal}
+        />
+        <AmountComponent
+          currencyName={currency}
+          label="Discount"
+          value={discount}
+        />
       </div>
       <div className="py-2">
-        <AmountComponent label="Tax" value={tax} />
-        <AmountComponent label="Total" value={total} />
-        <AmountComponent label="Amount Paid" value={amountPaid} />
-        <AmountComponent label="Amount Due" value={amountDue} />
+        <AmountComponent currencyName={currency} label="Tax" value={tax} />
+        <AmountComponent currencyName={currency} label="Total" value={total} />
+        <AmountComponent
+          currencyName={currency}
+          label="Amount Paid"
+          value={amountPaid}
+        />
+        <AmountComponent
+          currencyName={baseCurrency}
+          label={`Amount in ${baseCurrency}`}
+          value={baseCurrencyAmount}
+        />
+        <AmountComponent
+          currencyName={currency}
+          label="Amount Due"
+          value={amountDue}
+        />
       </div>
       {showEditButton && (
         <div

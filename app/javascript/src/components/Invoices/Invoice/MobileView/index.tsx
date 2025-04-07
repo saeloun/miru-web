@@ -44,6 +44,7 @@ const MobileView = ({
     discount,
     invoiceNumber,
     status,
+    baseCurrencyAmount,
     company,
     currency,
     amount,
@@ -133,6 +134,8 @@ const MobileView = ({
         <InvoiceTotal
           amountDue={amountDue}
           amountPaid={amountPaid}
+          baseCurrency={company?.currency}
+          baseCurrencyAmount={baseCurrencyAmount}
           currency={currency}
           discount={discount}
           setActiveSection={() => {}} //eslint-disable-line

@@ -34,7 +34,7 @@ const InvoicePreviewContainer = ({
   handleSaveInvoice,
   handleSendButtonClick,
 }) => {
-  const { companyDetails } = invoiceDetails;
+  const { companyDetails, baseCurrencyAmount, company } = invoiceDetails;
 
   return (
     <div className="flex-1 overflow-y-scroll">
@@ -80,6 +80,8 @@ const InvoicePreviewContainer = ({
       <InvoiceTotal
         amountDue={amountDue}
         amountPaid={amountPaid}
+        baseCurrency={company?.currency}
+        baseCurrencyAmount={baseCurrencyAmount}
         currency={currency}
         discount={discount}
         setActiveSection={setActiveSection}
