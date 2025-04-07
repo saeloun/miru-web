@@ -54,11 +54,13 @@ const InvoiceTotal = ({
           label="Amount Paid"
           value={amountPaid}
         />
-        <AmountComponent
-          currencyName={baseCurrency}
-          label={`Amount in ${baseCurrency}`}
-          value={baseCurrencyAmount}
-        />
+        {baseCurrency !== currency && (
+          <AmountComponent
+            currencyName={baseCurrency}
+            label={`Amount in ${baseCurrency}`}
+            value={baseCurrencyAmount}
+          />
+        )}
         <AmountComponent
           currencyName={currency}
           label="Amount Due"

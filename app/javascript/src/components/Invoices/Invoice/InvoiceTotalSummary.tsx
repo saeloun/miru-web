@@ -63,19 +63,21 @@ const InvoiceTotalSummary = ({ invoice, strikeAmount = "" }) => {
               {currencyFormat(invoice.currency, total)}
             </td>
           </tr>
-          <tr>
-            <td className="pt-1 pr-10 text-right text-base font-normal text-miru-dark-purple-1000">
-              Amount in {invoice.company.currency}
-            </td>
-            <td
-              className={`text-right text-base font-bold text-miru-dark-purple-1000 ${strikeAmount}`}
-            >
-              {currencyFormat(
-                invoice.company.currency,
-                invoice.baseCurrencyAmount
-              )}
-            </td>
-          </tr>
+          {invoice.currency !== invoice.company.currency && (
+            <tr>
+              <td className="pt-1 pr-10 text-right text-base font-normal text-miru-dark-purple-1000">
+                Amount in {invoice.company.currency}
+              </td>
+              <td
+                className={`text-right text-base font-bold text-miru-dark-purple-1000 ${strikeAmount}`}
+              >
+                {currencyFormat(
+                  invoice.company.currency,
+                  invoice.baseCurrencyAmount
+                )}
+              </td>
+            </tr>
+          )}
           <tr>
             <td className="pt-1 pr-10 text-right text-base font-normal text-miru-dark-purple-1000">
               Amount Paid
