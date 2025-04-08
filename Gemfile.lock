@@ -174,6 +174,8 @@ GEM
     crack (0.4.5)
       rexml
     crass (1.0.6)
+    cssbundling-rails (1.4.1)
+      railties (>= 6.0.0)
     data_migrate (9.3.0)
       activerecord (>= 6.1)
       railties (>= 6.1)
@@ -558,8 +560,6 @@ GEM
       bundler-audit (~> 0.9.0)
     rubyzip (2.3.2)
     safely_block (0.4.0)
-    sass-rails (6.0.0)
-      sassc-rails (~> 2.1, >= 2.1.1)
     sassc (2.4.0)
       ffi (~> 1.9)
     sassc-rails (2.1.2)
@@ -669,6 +669,7 @@ PLATFORMS
   arm64-darwin-21
   arm64-darwin-22
   arm64-darwin-23
+  arm64-darwin-24
   x86_64-darwin-21
   x86_64-darwin-22
   x86_64-darwin-23
@@ -686,6 +687,7 @@ DEPENDENCIES
   bundler-audit
   capybara (>= 3.26)
   countries
+  cssbundling-rails (~> 1.4)
   data_migrate
   database_cleaner (~> 2.0)
   debug (>= 1.0.0)
@@ -735,7 +737,6 @@ DEPENDENCIES
   rubocop-rspec
   ruby_audit
   rubyzip
-  sass-rails
   searchkick
   selenium-webdriver (>= 4.0.0)
   sentry-rails

@@ -12,3 +12,8 @@ Rails.application.config.assets.version = "1.0"
 # application.js, application.css, and all non-JS/CSS in the app/assets
 # folder are already added.
 # Rails.application.config.assets.precompile += %w( admin.js admin.css )
+
+# Setting `Rails.application.config.assets.css_compressor = nil` is disabling the CSS compression for
+# assets in a Ruby on Rails application. By setting it to `nil`, the CSS files will not be compressed
+# when they are served to the client. We are using cssbundling-rails gem to compress the CSS files.
+Rails.application.config.assets.css_compressor = nil
