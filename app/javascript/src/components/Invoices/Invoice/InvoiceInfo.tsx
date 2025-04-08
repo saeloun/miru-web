@@ -3,7 +3,7 @@ import React from "react";
 import { currencyFormat } from "helpers";
 
 const InvoiceInfo = ({
-  invoice: { client, invoiceNumber, reference, issueDate, dueDate, amount },
+  invoice: { currency, invoiceNumber, reference, issueDate, dueDate, amount },
   strikeAmount = "",
 }) => (
   <>
@@ -50,7 +50,7 @@ const InvoiceInfo = ({
       <p
         className={`mt-6 pr-4 text-right text-4xl font-medium text-miru-dark-purple-1000 ${strikeAmount}`}
       >
-        {currencyFormat(client.currency, amount)}
+        {currencyFormat(currency, amount)}
       </p>
     </div>
   </>

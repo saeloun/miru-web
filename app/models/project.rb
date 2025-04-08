@@ -85,6 +85,7 @@ class Project < ApplicationRecord
 
   def overdue_and_outstanding_amounts
     currency = client.company.base_currency
+    client_currency = client.currency
     timesheet_entries_ids = timesheet_entries.kept.ids
     invoices = Invoice
       .joins(:invoice_line_items)
@@ -104,7 +105,8 @@ class Project < ApplicationRecord
     {
       overdue_amount: status_and_amount["overdue"],
       outstanding_amount:,
-      currency:
+      currency:,
+      client_currency:
     }
   end
 

@@ -24,7 +24,6 @@ const Table = ({ outstandingOverdueInvoice }) => (
                   report.invoices.map((invoice, index) => (
                     <Fragment key={index}>
                       <TableRow
-                        currency={outstandingOverdueInvoice.currency}
                         key="index"
                         logo={report.logo}
                         reportData={invoice}

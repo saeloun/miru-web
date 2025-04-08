@@ -7,7 +7,7 @@ import { Avatar, Badge } from "StyledComponents";
 import getStatusCssClass from "utils/getBadgeStatus";
 
 const RecentlyUpdatedCard = ({
-  invoice: { client, id, invoiceNumber, amount, status },
+  invoice: { client, currency, id, invoiceNumber, amount, status },
   index,
 }) => {
   const navigate = useNavigate();
@@ -29,7 +29,7 @@ const RecentlyUpdatedCard = ({
         <p className="truncateOverflowText">{client.name}</p>
       </div>
       <h1 className="mb-2 truncate text-base font-bold text-miru-dark-purple-1000 lg:text-xl">
-        {currencyFormat(client.clientCurrency, amount)}
+        {currencyFormat(currency, amount)}
       </h1>
       <div>
         <Badge
