@@ -27,7 +27,7 @@ const MobileView = ({ data }) => {
         />
         <div className="border-b border-miru-gray-400 px-4 py-2">
           <InvoiceLineItems
-            currency={company.currency}
+            currency={invoice.currency}
             dateFormat={company.dateFormat || company.date_format}
             items={lineItems}
             showHeader={lineItems.length > 0}
@@ -35,7 +35,6 @@ const MobileView = ({ data }) => {
           />
         </div>
         <InvoiceTotal
-          company={company}
           invoice={invoice}
           lineItems={lineItems}
           strikeAmount={strikeAmount}
