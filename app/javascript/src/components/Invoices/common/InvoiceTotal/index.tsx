@@ -118,31 +118,33 @@ const InvoiceTotal = ({
               {total ? currencyFormat(clientCurrency, total) : 0}
             </td>
           </tr>
-          <tr className="miru-gray-400 border-b-2 pb-5">
-            {baseCurrencyAmount ? (
-              <td className="py-2 pr-10 text-right text-base font-normal text-miru-dark-purple-1000">
-                <label className="cursor-pointer" htmlFor="baseCurrency">
-                  Amount in {currency}
-                </label>
+          {currency !== clientCurrency && (
+            <tr className="miru-gray-400 border-b-2 pb-5">
+              {baseCurrencyAmount ? (
+                <td className="py-2 pr-10 text-right text-base font-normal text-miru-dark-purple-1000">
+                  <label className="cursor-pointer" htmlFor="baseCurrency">
+                    Amount in {currency}
+                  </label>
+                </td>
+              ) : (
+                <td className="cursor-pointer pt-2 pr-10 pb-3 text-right text-xs font-bold tracking-widest text-miru-han-purple-1000">
+                  <label className="cursor-pointer" htmlFor="baseCurrency">
+                    ADD AMOUNT IN {currency}
+                  </label>
+                </td>
+              )}
+              <td className="pb-1 text-right">
+                <input
+                  className="focusPadding focus:outline-none w-20 cursor-pointer rounded bg-transparent py-1 text-right text-base font-bold text-miru-dark-purple-1000 focus:border-miru-gray-1000 focus:bg-white focus:ring-1 focus:ring-miru-gray-1000"
+                  id="baseCurrency"
+                  type="text"
+                  value={baseCurrencyAmount}
+                  onChange={e => setBaseCurrencyAmount(e.target.value)}
+                  onKeyDown={e => onEnter(e, "baseCurrency")}
+                />
               </td>
-            ) : (
-              <td className="cursor-pointer pt-2 pr-10 pb-3 text-right text-xs font-bold tracking-widest text-miru-han-purple-1000">
-                <label className="cursor-pointer" htmlFor="baseCurrency">
-                  ADD AMOUNT IN {currency}
-                </label>
-              </td>
-            )}
-            <td className="pb-1 text-right">
-              <input
-                className="focusPadding focus:outline-none w-20 cursor-pointer rounded bg-transparent py-1 text-right text-base font-bold text-miru-dark-purple-1000 focus:border-miru-gray-1000 focus:bg-white focus:ring-1 focus:ring-miru-gray-1000"
-                id="baseCurrency"
-                type="text"
-                value={baseCurrencyAmount}
-                onChange={e => setBaseCurrencyAmount(e.target.value)}
-                onKeyDown={e => onEnter(e, "baseCurrency")}
-              />
-            </td>
-          </tr>
+            </tr>
+          )}
           <tr>
             <td className="pt-1 pr-10 text-right text-base font-normal text-miru-dark-purple-1000">
               Amount Paid

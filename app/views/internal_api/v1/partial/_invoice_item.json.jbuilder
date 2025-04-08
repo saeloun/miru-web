@@ -11,6 +11,7 @@ json.array! invoices do |invoice|
     json.amount invoice.amount
     json.base_currency_amount invoice.base_currency_amount
     json.external_view_key invoice.external_view_key
+    json.currency invoice.currency
     json.client do
       json.name invoice.client_name
       json.email invoice.client_email

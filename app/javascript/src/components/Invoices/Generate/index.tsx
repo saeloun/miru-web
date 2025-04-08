@@ -31,7 +31,7 @@ const GenerateInvoices = () => {
   const [selectedClient, setSelectedClient] = useState<any>();
   const [invoiceNumber, setInvoiceNumber] = useState<any>("");
   const [clientCurrency, setClientCurrency] = useState<string>("USD");
-  const [baseCurrencyAmount, setBaseCurrencyAmount] = useState<any>(0);
+  const [baseCurrencyAmount, setBaseCurrencyAmount] = useState<any>(null);
   const [reference, setReference] = useState<string>("");
   const [amount, setAmount] = useState<any>(0);
   const [amountDue, setAmountDue] = useState<any>(0);
@@ -280,7 +280,9 @@ const GenerateInvoices = () => {
         amount={amount}
         amountDue={amountDue}
         amountPaid={amountPaid}
+        baseCurrency={invoiceDetails?.companyDetails?.currency}
         baseCurrencyAmount={baseCurrencyAmount}
+        clientCurrency={clientCurrency}
         dateFormat={invoiceDetails.companyDetails.date_format}
         discount={discount}
         dueDate={dueDate}
@@ -298,6 +300,7 @@ const GenerateInvoices = () => {
         setAmount={setAmount}
         setAmountDue={setAmountDue}
         setBaseCurrencyAmount={setBaseCurrencyAmount}
+        setClientCurrency={setClientCurrency}
         setDiscount={setDiscount}
         setDueDate={setDueDate}
         setInvoiceNumber={setInvoiceNumber}
