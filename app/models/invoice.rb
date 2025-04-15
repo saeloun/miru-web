@@ -78,6 +78,7 @@ class Invoice < ApplicationRecord
   after_commit :refresh_invoice_index
   after_save :lock_timesheet_entries, if: :draft?
   after_discard :unlock_timesheet_entries, if: :draft?
+  after_discard :update_invoice_number
 
   validates :issue_date, :due_date, :invoice_number, presence: true
   validates :due_date, comparison: { greater_than_or_equal_to: :issue_date }, if: :not_waived
@@ -95,6 +96,7 @@ class Invoice < ApplicationRecord
   scope :during, -> (duration) {
     where(issue_date: duration) if duration.present?
   }
+  scope :active, -> { where(discarded_at: nil) }
 
   delegate :name, to: :client, prefix: :client
   delegate :email, to: :client, prefix: :client
@@ -102,6 +104,8 @@ class Invoice < ApplicationRecord
 
   searchkick filterable: [:issue_date, :created_at, :updated_at, :client_name, :status, :invoice_number ],
     word_middle: [:invoice_number, :client_name]
+
+  ARCHIVED_PREFIX = "ARC"
 
   def search_data
     {
@@ -214,5 +218,9 @@ class Invoice < ApplicationRecord
 
     def same_currency?
       client&.currency == company&.base_currency
+    end
+
+    def update_invoice_number
+      self.update(invoice_number: "#{ARCHIVED_PREFIX}-#{id}-#{invoice_number}")
     end
 end
