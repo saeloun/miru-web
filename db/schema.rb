@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_10_24_045449) do
+ActiveRecord::Schema[7.1].define(version: 2025_03_14_154909) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -149,6 +149,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_10_24_045449) do
     t.datetime "updated_at", null: false
     t.datetime "discarded_at"
     t.string "stripe_id"
+    t.string "currency", default: "USD", null: false
     t.index ["company_id"], name: "index_clients_on_company_id"
     t.index ["discarded_at"], name: "index_clients_on_discarded_at"
     t.index ["email", "company_id"], name: "index_clients_on_email_and_company_id", unique: true
@@ -349,6 +350,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_10_24_045449) do
     t.datetime "payment_sent_at"
     t.datetime "client_payment_sent_at"
     t.boolean "stripe_enabled", default: true
+    t.string "currency", default: "USD", null: false
+    t.decimal "base_currency_amount", precision: 20, scale: 2, default: "0.0"
     t.index ["client_id"], name: "index_invoices_on_client_id"
     t.index ["company_id"], name: "index_invoices_on_company_id"
     t.index ["discarded_at"], name: "index_invoices_on_discarded_at"

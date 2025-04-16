@@ -71,6 +71,20 @@ RSpec.describe Invoice, type: :model do
       @current_invoice.discard!
       expect { @current_invoice.discard! }.to raise_error(Discard::RecordNotDiscarded)
     end
+
+    it "update invoice number" do
+      @current_invoice.discard!
+      expect(@current_invoice.invoice_number).to start_with(
+        "#{Invoice::ARCHIVED_PREFIX}-#{@current_invoice.id}-"
+      )
+    end
+
+    it "reuses invoice number after discard for new invoice" do
+      invoice_number = @current_invoice.invoice_number
+      @current_invoice.discard!
+      new_invoice = create(:invoice, client: @current_invoice.client, company:, invoice_number:)
+      expect(new_invoice.invoice_number).to eq(invoice_number)
+    end
   end
 
   describe "Scopes" do

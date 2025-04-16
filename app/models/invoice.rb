@@ -6,7 +6,9 @@
 #  amount                 :decimal(20, 2)   default(0.0)
 #  amount_due             :decimal(20, 2)   default(0.0)
 #  amount_paid            :decimal(20, 2)   default(0.0)
+#  base_currency_amount   :decimal(20, 2)   default(0.0)
 #  client_payment_sent_at :datetime
+#  currency               :string           default("USD"), not null
 #  discarded_at           :datetime
 #  discount               :decimal(20, 2)   default(0.0)
 #  due_date               :date
@@ -76,6 +78,7 @@ class Invoice < ApplicationRecord
   after_commit :refresh_invoice_index
   after_save :lock_timesheet_entries, if: :draft?
   after_discard :unlock_timesheet_entries, if: :draft?
+  after_discard :update_invoice_number
 
   validates :issue_date, :due_date, :invoice_number, presence: true
   validates :due_date, comparison: { greater_than_or_equal_to: :issue_date }, if: :not_waived
@@ -85,6 +88,7 @@ class Invoice < ApplicationRecord
   validates :reference, length: { maximum: 12 }, allow_blank: true
   validate :check_if_invoice_paid, on: :update
   validate :prevent_waived_change, on: :update
+  validates :base_currency_amount, presence: true, unless: :same_currency?
 
   scope :with_statuses, -> (statuses) { where(status: statuses) if statuses.present? }
   scope :issue_date_range, -> (date_range) { where(issue_date: date_range) if date_range.present? }
@@ -92,6 +96,7 @@ class Invoice < ApplicationRecord
   scope :during, -> (duration) {
     where(issue_date: duration) if duration.present?
   }
+  scope :active, -> { where(discarded_at: nil) }
 
   delegate :name, to: :client, prefix: :client
   delegate :email, to: :client, prefix: :client
@@ -99,6 +104,8 @@ class Invoice < ApplicationRecord
 
   searchkick filterable: [:issue_date, :created_at, :updated_at, :client_name, :status, :invoice_number ],
     word_middle: [:invoice_number, :client_name]
+
+  ARCHIVED_PREFIX = "ARC"
 
   def search_data
     {
@@ -207,5 +214,17 @@ class Invoice < ApplicationRecord
     def unlock_timesheet_entries
       timesheet_entry_ids = invoice_line_items.pluck(:timesheet_entry_id)
       TimesheetEntry.where(id: timesheet_entry_ids).update!(locked: false)
+    end
+
+    def same_currency?
+      if currency.present?
+        currency == company&.base_currency
+      else
+        client&.currency == company&.base_currency
+      end
+    end
+
+    def update_invoice_number
+      self.update(invoice_number: "#{ARCHIVED_PREFIX}-#{id}-#{invoice_number}")
     end
 end

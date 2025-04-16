@@ -46,7 +46,7 @@ const TableRow = ({
   const {
     amount,
     client,
-    company,
+    currency,
     dueDate,
     id,
     invoiceNumber,
@@ -54,7 +54,6 @@ const TableRow = ({
     status,
   } = invoice;
 
-  const { baseCurrency } = company;
   const { name, logo } = client;
 
   const handleCheckboxChange = () => {
@@ -155,7 +154,7 @@ const TableRow = ({
           </td>
         )}
         <td className="hidden px-2 text-right text-sm font-bold tracking-normal text-miru-dark-purple-1000 lg:table-cell lg:w-1/6 lg:px-6 lg:pt-2 lg:pb-7 lg:text-xl">
-          {currencyFormat(baseCurrency, amount)}
+          {currencyFormat(currency, amount)}
         </td>
         <td
           className="relative px-2 text-right font-medium lg:px-6 lg:pb-10"
@@ -186,7 +185,7 @@ const TableRow = ({
             text={status}
           />
           <dl className="text-right text-sm font-medium leading-5 lg:hidden">
-            <dt className="mt-1">{currencyFormat(baseCurrency, amount)}</dt>
+            <dt className="mt-1">{currencyFormat(currency, amount)}</dt>
           </dl>
         </td>
         {!isDesktop && (

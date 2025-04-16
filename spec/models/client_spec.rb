@@ -170,13 +170,19 @@ RSpec.describe Client, type: :model do
 
       it "return outstanding_amount overdue_amount amounts" do
         currency = client.company.base_currency
-        status_and_amount = client.invoices.group(:status).sum(:amount)
+        client_currency = client.currency
+        status_and_amount = client.invoices.group_by(&:status).transform_values { |invoices|
+          invoices.sum { |invoice|
+            invoice.base_currency_amount.to_f > 0.00 ? invoice.base_currency_amount : invoice.amount
+          }
+        }
         status_and_amount.default = 0
         outstanding_amount = status_and_amount["sent"] + status_and_amount["viewed"] + status_and_amount["overdue"]
         result = {
           overdue_amount: status_and_amount["overdue"],
           outstanding_amount:,
-          currency:
+          currency:,
+          client_currency:
         }
         expect(client.client_overdue_and_outstanding_calculation).to match_array(result)
       end

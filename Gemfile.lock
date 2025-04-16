@@ -351,6 +351,7 @@ GEM
     memoist (0.16.2)
     mini_magick (4.12.0)
     mini_mime (1.1.5)
+    mini_portile2 (2.8.8)
     minitest (5.25.4)
     mission_control-jobs (0.2.1)
       importmap-rails
@@ -375,11 +376,14 @@ GEM
       net-protocol
     newrelic_rpm (9.8.0)
     nio4r (2.7.3)
-    nokogiri (1.18.3-arm64-darwin)
+    nokogiri (1.18.7)
+      mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
-    nokogiri (1.18.3-x86_64-darwin)
+    nokogiri (1.18.7-arm64-darwin)
       racc (~> 1.4)
-    nokogiri (1.18.3-x86_64-linux-gnu)
+    nokogiri (1.18.7-x86_64-darwin)
+      racc (~> 1.4)
+    nokogiri (1.18.7-x86_64-linux-gnu)
       racc (~> 1.4)
     oauth2 (2.0.9)
       faraday (>= 0.17.3, < 3.0)
@@ -427,7 +431,7 @@ GEM
       activesupport (>= 3.0.0)
     raabro (1.4.0)
     racc (1.8.1)
-    rack (3.1.10)
+    rack (3.1.12)
     rack-cors (2.0.0)
       rack (>= 2.0.0)
     rack-mini-profiler (3.0.0)
@@ -669,6 +673,7 @@ PLATFORMS
   arm64-darwin-21
   arm64-darwin-22
   arm64-darwin-23
+  ruby
   x86_64-darwin-21
   x86_64-darwin-22
   x86_64-darwin-23
@@ -709,7 +714,7 @@ DEPENDENCIES
   mission_control-jobs
   money
   newrelic_rpm (~> 9.8.0)
-  nokogiri (>= 1.18.3)
+  nokogiri (>= 1.18.4)
   omniauth-google-oauth2 (~> 1.0)
   omniauth-rails_csrf_protection (~> 1.0)
   pagy (~> 5.10)
