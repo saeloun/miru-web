@@ -21,7 +21,11 @@ const InputComponent = ({ label, value, onChange, readOnly = false }) => (
 const Billing = ({
   amountDue,
   amountPaid,
+  baseCurrency,
+  baseCurrencyAmount,
+  currency,
   discount,
+  invoiceDetails,
   setAmount,
   setAmountDue,
   setDiscount,
@@ -31,6 +35,7 @@ const Billing = ({
   setTotal,
   subTotal,
   setSubTotal,
+  setBaseCurrencyAmount,
 }) => (
   <div className="py-6">
     <div className="border-b border-miru-gray-400">
@@ -58,6 +63,13 @@ const Billing = ({
         value={total}
         onChange={e => setTotal(e.target.value)}
       />
+      {invoiceDetails?.companyDetails?.currency !== currency && (
+        <InputComponent
+          label={`Amount in ${baseCurrency}`}
+          value={baseCurrencyAmount}
+          onChange={e => setBaseCurrencyAmount(e.target.value)}
+        />
+      )}
       <InputComponent
         readOnly
         label="Amount Paid"

@@ -1,6 +1,7 @@
 export interface OutstandingOverdueInvoice {
   id: number;
   clientName: string;
+  currency: string;
   dueDate: string;
   amount: string;
   invoiceNo: string;

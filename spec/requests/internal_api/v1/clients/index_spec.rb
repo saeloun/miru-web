@@ -33,7 +33,7 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
         user.current_workspace.clients.kept.map do |client|
           {
             id: client.id, name: client.name, email: client.email, phone: client.phone, address: client.current_address,
-            minutes_spent: client.total_hours_logged(time_frame), logo: ""
+            minutes_spent: client.total_hours_logged(time_frame), logo: "", currency: client.currency
           }
         end
       end
@@ -64,7 +64,8 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
       it "finds specific client by name" do
         client_details = [{
           id: client_1.id, name: client_1.name, email: client_1.email, phone: client_1.phone,
-          address: client_1.current_address, minutes_spent: client_1.total_hours_logged(time_frame), logo: ""
+          address: client_1.current_address, minutes_spent: client_1.total_hours_logged(time_frame),
+          logo: "", currency: client_1.currency
         }]
         expect(response).to have_http_status(:ok)
         expect(json_response["client_details"]).to eq(JSON.parse(client_details.to_json))
@@ -74,10 +75,12 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
     it "returns all the clients when query params are empty" do
       client_details = [{
         id: client_1.id, name: client_1.name, email: client_1.email, phone: client_1.phone,
-        address: client_1.current_address, minutes_spent: client_1.total_hours_logged(time_frame), logo: ""
+        address: client_1.current_address, minutes_spent: client_1.total_hours_logged(time_frame),
+        logo: "", currency: client_1.currency
       }, id: client_2.id, name: client_2.name, email: client_2.email, phone: client_2.phone,
-         address: client_2.current_address, minutes_spent: client_2.total_hours_logged(time_frame), logo: "" ]
-
+         address: client_2.current_address, minutes_spent: client_2.total_hours_logged(time_frame),
+         logo: "", currency: client_2.currency
+      ]
       expect(response).to have_http_status(:ok)
       expect(json_response["client_details"]).to eq(JSON.parse(client_details.to_json))
     end
@@ -102,7 +105,7 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
         client_details = user.current_workspace.clients.kept.map do |client|
           {
             id: client.id, name: client.name, email: client.email, phone: client.phone, address: client.current_address,
-            minutes_spent: client.total_hours_logged(time_frame), logo: ""
+            minutes_spent: client.total_hours_logged(time_frame), logo: "", currency: client.currency
           }
         end
         total_minutes = (client_details.map { |client| client[:minutes_spent] }).sum
