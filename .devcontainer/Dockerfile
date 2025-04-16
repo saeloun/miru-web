@@ -11,7 +11,7 @@ FROM mcr.microsoft.com/vscode/devcontainers/ruby:${VARIANT} AS base
 #     && chmod -R $USER_UID:$USER_GID /home/vscode; \
 #     fi
 
-ARG NODE_VERSION=18.14.2
+ARG NODE_VERSION=20.18.2
 
 ENV BUNDLE_PATH="/usr/local/bundle"
 ENV GEM_HOME="/usr/local/bundle/gems"
