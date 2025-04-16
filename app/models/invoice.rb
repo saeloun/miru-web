@@ -217,7 +217,11 @@ class Invoice < ApplicationRecord
     end
 
     def same_currency?
-      client&.currency == company&.base_currency
+      if currency.present?
+        currency == company&.base_currency
+      else
+        client&.currency == company&.base_currency
+      end
     end
 
     def update_invoice_number
