@@ -23,6 +23,8 @@ jobs:
           postgresql password: "password"
       - name: Setup ElasticSearch
         uses: ankane/setup-elasticsearch@v1
+        with:
+          elasticsearch-version: 7.13.3
       - name: Setup chrome
         uses: nanasess/setup-chromedriver@v2
         with:
