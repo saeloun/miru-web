@@ -50,10 +50,10 @@ jobs:
         run: |
           bundle config path vendor/bundle
           bundle install --jobs 4 --retry 3
-      # - name: Audit gems
-      #   run: |
-      #     bundle exec bundle-audit --update
-      #     bundle exec ruby-audit check
+      - name: Audit gems
+        run: |
+          bundle exec bundle-audit --update
+          bundle exec ruby-audit check
       - name: Setup Node
         uses: actions/setup-node@v1
         with:
