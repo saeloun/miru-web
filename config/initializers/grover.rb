@@ -4,23 +4,30 @@ Grover.configure do |config|
   config.options = {
     format: "A4",
     margin: {
-      top: "5px",
-      bottom: "5px"
+      top: "0.5in",
+      bottom: "0.5in",
+      left: "0.5in",
+      right: "0.5in"
     },
-    prefer_css_page_size: true,
-    emulate_media: "screen",
-    cache: false,
-    timeout: 30000, # Timeout in ms. A value of `0` means 'no timeout'
-    wait_until: "domcontentloaded",
-    launch_args: [
+    printBackground: true,
+    preferCSSPageSize: true,
+    args: [
       "--no-sandbox",
       "--disable-setuid-sandbox",
-      # Additional performance flags
-      "--disable-gpu", # Disable GPU acceleration
-      "--single-process", # Run in single process mode to reduce memory
-      "--no-zygote" # Disable zygote process
+      "--disable-dev-shm-usage",
+      "--disable-gpu",
+      "--disable-software-rasterizer",
+      "--disable-extensions",
+      "--disable-web-security",
+      "--disable-features=IsolateOrigins,site-per-process"
     ],
-    javascript_enabled: false
+    timeout: 60000, # 30 seconds timeout
+    wait_until: "networkidle0",
+    emulate_media: "screen",
+    cache: false,
+    timeout: 0, # Timeout in ms. A value of `0` means 'no timeout'
+    wait_until: "domcontentloaded",
+    launch_args: ["--no-sandbox", "--disable-setuid-sandbox"]
   }
 
   if !(Rails.env.development? || Rails.env.test?)

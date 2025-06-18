@@ -1,140 +1,298 @@
-<style>
-html {
-  -webkit-print-color-adjust: exact;
-}
- body {
-  font-family: "Roboto";
-  font-size: 14px !important;
-}
-</style>
-<div class="main">
-  <div class="flex justify-between border-b-2 border-miru-gray-400 p-10 h-50">
-    <div class="flex">
-      <div class="h-20 w-20 mr-5">
-        <%=image_tag company_logo%>
-      </div>
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Invoice</title>
+  <style>
+    html {
+      -webkit-print-color-adjust: exact;
+    }
+    body {
+      font-family: "Roboto";
+      font-size: 14px !important;
+      margin: 0;
+      padding: 0;
+    }
+    .main {
+      width: 100%;
+    }
+    .flex {
+      display: flex;
+    }
+    .justify-between {
+      justify-content: space-between;
+    }
+    .border-b-2 {
+      border-bottom-width: 2px;
+    }
+    .border-miru-gray-400 {
+      border-color: #E5E7EB;
+    }
+    .p-10 {
+      padding: 2.5rem;
+    }
+    .px-10 {
+      padding-left: 2.5rem;
+      padding-right: 2.5rem;
+    }
+    .py-5 {
+      padding-top: 1.25rem;
+      padding-bottom: 1.25rem;
+    }
+    .pt-5 {
+      padding-top: 1.25rem;
+    }
+    .h-50 {
+      height: 12.5rem;
+    }
+    .h-36 {
+      height: 9rem;
+    }
+    .h-20 {
+      height: 5rem;
+    }
+    .w-20 {
+      width: 5rem;
+    }
+    .w-40 {
+      width: 10rem;
+    }
+    .w-1/3 {
+      width: 33.333333%;
+    }
+    .w-1/4 {
+      width: 25%;
+    }
+    .w-1/5 {
+      width: 20%;
+    }
+    .w-2/5 {
+      width: 40%;
+    }
+    .w-full {
+      width: 100%;
+    }
+    .mr-5 {
+      margin-right: 1.25rem;
+    }
+    .mt-1 {
+      margin-top: 0.25rem;
+    }
+    .mt-2 {
+      margin-top: 0.5rem;
+    }
+    .mt-4 {
+      margin-top: 1rem;
+    }
+    .text-right {
+      text-align: right;
+    }
+    .text-left {
+      text-align: left;
+    }
+    .text-base {
+      font-size: 1rem;
+    }
+    .text-xs {
+      font-size: 0.75rem;
+    }
+    .text-2xl {
+      font-size: 1.5rem;
+    }
+    .text-3xl {
+      font-size: 1.875rem;
+    }
+    .font-normal {
+      font-weight: 400;
+    }
+    .font-bold {
+      font-weight: 700;
+    }
+    .text-miru-dark-purple-1000 {
+      color: #1D1A31;
+    }
+    .text-miru-dark-purple-600 {
+      color: #5B5B5B;
+    }
+    .text-miru-dark-purple-400 {
+      color: #6B7280;
+    }
+    .truncate {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .table-fixed {
+      table-layout: fixed;
+    }
+    .tracking-widest {
+      letter-spacing: 0.1em;
+    }
+    .pl-2 {
+      padding-left: 0.5rem;
+    }
+    .px-1 {
+      padding-left: 0.25rem;
+      padding-right: 0.25rem;
+    }
+    .py-3 {
+      padding-top: 0.75rem;
+      padding-bottom: 0.75rem;
+    }
+    .pr-10 {
+      padding-right: 2.5rem;
+    }
+    .pb-5 {
+      padding-bottom: 1.25rem;
+    }
+    .pb-10 {
+      padding-bottom: 2.5rem;
+    }
+    .pt-1 {
+      padding-top: 0.25rem;
+    }
+    .pt-4 {
+      padding-top: 1rem;
+    }
+    .mb-5 {
+      margin-bottom: 1.25rem;
+    }
+    .w-22 {
+      width: 5.5rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="main">
+    <div class="flex justify-between border-b-2 border-miru-gray-400 p-10 h-50">
+      <div class="flex">
+        <div class="h-20 w-20 mr-5">
+          <%=image_tag company_logo%>
+        </div>
 
-      <div class="mt-2">
-        <p class="font-bold text-3xl text-miru-dark-purple-1000">
-          <%=invoice.company.name%>
-        </p>
-        <p class="mt-1 font-normal text-base text-miru-dark-purple-1000">
-          <%=invoice.company.business_phone%>
-        </p>
+        <div class="mt-2">
+          <p class="font-bold text-3xl text-miru-dark-purple-1000">
+            <%=invoice.company.name%>
+          </p>
+          <p class="mt-1 font-normal text-base text-miru-dark-purple-1000">
+            <%=invoice.company.business_phone%>
+          </p>
+        </div>
+      </div>
+      <div class="mt-2 font-normal text-base text-right text-miru-dark-purple-1000 w-40">
+        <p><%=invoice.company.formatted_address%></p>
       </div>
     </div>
-    <div class="mt-2 font-normal text-base text-right text-miru-dark-purple-1000 w-40">
-      <p><%=invoice.company.formatted_address%></p>
-    </div>
-  </div>
 
-  <div class="flex justify-between border-b-2 border-miru-gray-400 px-10 py-5 h-36">
-    <div class="w-1/3">
-      <p class="font-normal text-xs text-miru-dark-purple-1000 flex">Billed to</p>
-      <div>
-        <p class="font-bold text-base text-miru-dark-purple-1000">
-          <%=client.name%>
+    <div class="flex justify-between border-b-2 border-miru-gray-400 px-10 py-5 h-36">
+      <div class="w-1/3">
+        <p class="font-normal text-xs text-miru-dark-purple-1000 flex">Billed to</p>
+        <div>
+          <p class="font-bold text-base text-miru-dark-purple-1000">
+            <%=client.name%>
+          </p>
+          <p class="font-normal text-xs text-miru-dark-purple-400 truncate">
+            <%=client.formatted_address%><br><%=client.phone%>
+          </p>
+        </div>
+      </div>
+      <div class="w-1/4">
+        <p class="font-normal text-xs text-miru-dark-purple-1000 flex">Date of Issue</p>
+        <p class="font-normal text-base text-miru-dark-purple-1000">
+          <%= invoice.formatted_issue_date %>
         </p>
-        <p class="font-normal text-xs text-miru-dark-purple-400 truncate">
-          <%=client.formatted_address%><br><%=client.phone%>
+        <p class="font-normal text-xs text-miru-dark-purple-1000 mt-4">Due Date</p>
+        <p class="font-normal text-base text-miru-dark-purple-1000">
+          <%= invoice.formatted_due_date %>
+        </p>
+      </div>
+      <div class="w-1/3">
+        <p class="font-normal text-xs text-miru-dark-purple-1000">Invoice Number</p>
+        <p class="font-normal text-base text-miru-dark-purple-1000">
+          <%=invoice["invoice_number"]%>
+        </p>
+        <p class="font-normal text-xs text-miru-dark-purple-1000 mt-4">Reference</p>
+        <p class="font-normal text-base text-miru-dark-purple-1000 truncate">
+          <%=invoice["reference"]%>
+        </p>
+      </div>
+      <div class="w-1/5 text-right">
+        <p class="font-normal text-xs text-miru-dark-purple-1000 text-right">Amount</p>
+        <p class="font-normal text-2xl text-miru-dark-purple-1000 mt-1">
+          <%=invoice_amount%>
         </p>
       </div>
     </div>
-    <div class="w-1/4">
-      <p class="font-normal text-xs text-miru-dark-purple-1000 flex">Date of Issue</p>
-      <p class="font-normal text-base text-miru-dark-purple-1000">
-        <%= invoice.formatted_issue_date %>
-      </p>
-      <p class="font-normal text-xs text-miru-dark-purple-1000 mt-4">Due Date</p>
-      <p class="font-normal text-base text-miru-dark-purple-1000">
-        <%= invoice.formatted_due_date %>
-      </p>
-    </div>
-    <div class="w-1/3">
-      <p class="font-normal text-xs text-miru-dark-purple-1000">Invoice Number</p>
-      <p class="font-normal text-base text-miru-dark-purple-1000">
-        <%=invoice["invoice_number"]%>
-      </p>
-      <p class="font-normal text-xs text-miru-dark-purple-1000 mt-4">Reference</p>
-      <p class="font-normal text-base text-miru-dark-purple-1000 truncate">
-        <%=invoice["reference"]%>
-      </p>
-    </div>
-    <div class="w-1/5 text-right">
-      <p class="font-normal text-xs text-miru-dark-purple-1000 text-right">Amount</p>
-      <p class="font-normal text-2xl text-miru-dark-purple-1000 mt-1">
-        <%=invoice_amount%>
-      </p>
-    </div>
-  </div>
-  <div class="px-10 pt-5">
-    <table class="w-full table-fixed">
-      <thead class="my-2">
-        <tr>
-          <th class="text-miru-dark-purple-600 font-normal text-xs text-left tracking-widest">NAME</th>
-          <th class="px-3 text-miru-dark-purple-600 font-normal text-xs text-left tracking-widest">DATE</th>
-          <th class="pl-2 text-miru-dark-purple-600 font-normal text-xs text-left tracking-widest w-1/3">DESCRIPTION</th>
-          <th class="text-miru-dark-purple-600 font-normal text-xs text-right tracking-widest">RATE</th>
-          <th class="text-miru-dark-purple-600 font-normal text-xs text-right tracking-widest">QTY</th>
-          <th class="text-miru-dark-purple-600 font-normal text-xs text-right tracking-widest">LINE TOTAL</th>
-        </tr>
-      </thead>
-      <tbody class="w-full">
-        <%invoice_line_items.each do |item| %>
+    <div class="px-10 pt-5">
+      <table class="w-full table-fixed">
+        <thead class="my-2">
           <tr>
-            <td class="border-b-2 border-miru-gray-200 px-1 py-3 font-normal text-base text-miru-dark-purple-1000 text-left "><%=item[:name]%></td>
-            <td class="border-b-2 border-miru-gray-200 py-3 font-normal text-base text-miru-dark-purple-1000 text-left"><%=item[:date]%></td>
-            <td class="border-b-2 border-miru-gray-200 px-1 pl-2 py-3 font-normal text-base text-miru-dark-purple-1000 text-left ">
-              <%=item[:description]%>
+            <th class="text-miru-dark-purple-600 font-normal text-xs text-left tracking-widest">NAME</th>
+            <th class="px-3 text-miru-dark-purple-600 font-normal text-xs text-left tracking-widest">DATE</th>
+            <th class="pl-2 text-miru-dark-purple-600 font-normal text-xs text-left tracking-widest w-1/3">DESCRIPTION</th>
+            <th class="text-miru-dark-purple-600 font-normal text-xs text-right tracking-widest">RATE</th>
+            <th class="text-miru-dark-purple-600 font-normal text-xs text-right tracking-widest">QTY</th>
+            <th class="text-miru-dark-purple-600 font-normal text-xs text-right tracking-widest">LINE TOTAL</th>
+          </tr>
+        </thead>
+        <tbody class="w-full">
+          <%invoice_line_items.each do |item| %>
+            <tr>
+              <td class="border-b-2 border-miru-gray-200 px-1 py-3 font-normal text-base text-miru-dark-purple-1000 text-left "><%=item[:name]%></td>
+              <td class="border-b-2 border-miru-gray-200 py-3 font-normal text-base text-miru-dark-purple-1000 text-left"><%=item[:date]%></td>
+              <td class="border-b-2 border-miru-gray-200 px-1 pl-2 py-3 font-normal text-base text-miru-dark-purple-1000 text-left ">
+                <%=item[:description]%>
+              </td>
+              <td class="border-b-2 border-miru-gray-200 px-1 py-3 font-normal text-base text-miru-dark-purple-1000 text-right ">
+                <%=item[:rate]%>
+              </td>
+              <td class="border-b-2 border-miru-gray-200 px-1 py-3 font-normal text-base text-miru-dark-purple-1000 text-right ">
+                <%=item[:quantity]%>
+              </td>
+              <td class="border-b-2 border-miru-gray-200 px-1 py-3 font-normal text-base text-miru-dark-purple-1000 text-right ">
+                <%=item[:line_total]%>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+    <div class="pt-1 pb-10 pr-10 mb-5 w-full flex justify-end">
+      <table class="w-2/5">
+        <tbody>
+          <tr>
+            <td class="font-normal text-base text-miru-dark-purple-1000 text-right pr-10">Sub total</td>
+            <td class="font-bold text-base text-miru-dark-purple-1000 text-right "><%=sub_total%></td>
+          </tr>
+          <tr class="pb-5 border-b-2 miru-gray-400 ">
+            <td class="py-2 font-normal text-base text-miru-dark-purple-1000 text-right pr-10">Discount</td>
+            <td class="font-bold text-base text-miru-dark-purple-1000 text-right "><%=invoice_discount%></td>
+          </tr>
+          <tr>
+            <td class="pt-4 font-normal text-base text-miru-dark-purple-1000 text-right pr-10">Tax</td>
+            <td class="pt-4 font-bold text-base text-miru-dark-purple-1000 text-right w-22">
+              <%=invoice_tax%>
             </td>
-            <td class="border-b-2 border-miru-gray-200 px-1 py-3 font-normal text-base text-miru-dark-purple-1000 text-right ">
-              <%=item[:rate]%>
+          </tr>
+          <tr>
+            <td class="pt-1 font-normal text-base text-miru-dark-purple-1000 text-right pr-10">Total</td>
+            <td class="font-bold text-base text-miru-dark-purple-1000 text-right">
+              <%=total%>
             </td>
-            <td class="border-b-2 border-miru-gray-200 px-1 py-3 font-normal text-base text-miru-dark-purple-1000 text-right ">
-              <%=item[:quantity]%>
+          </tr>
+          <tr>
+            <td class="pt-1 font-normal text-base text-miru-dark-purple-1000 text-right pr-10">Amount Paid</td>
+            <td class="font-bold text-base text-miru-dark-purple-1000 text-right "><%=invoice_amount_paid%></td>
+          </tr>
+          <tr>
+            <td class="pt-1 font-normal text-base text-miru-dark-purple-1000 text-right pr-10">Amount Due</td>
+            <td class="font-bold text-base text-miru-dark-purple-1000 text-right">
+              <%=invoice_amount_due%>
             </td>
-            <td class="border-b-2 border-miru-gray-200 px-1 py-3 font-normal text-base text-miru-dark-purple-1000 text-right ">
-              <%=item[:line_total]%>
-            </td>
-        </tr>
-        <% end %>
-      </tbody>
-    </table>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
-  <div class="pt-1 pb-10 pr-10 mb-5 w-full flex justify-end">
-    <table class="w-2/5">
-      <tbody>
-        <tr>
-          <td class="font-normal text-base text-miru-dark-purple-1000 text-right pr-10">Sub total</td>
-          <td class="font-bold text-base text-miru-dark-purple-1000 text-right "><%=sub_total%></td>
-        </tr>
-        <tr class="pb-5 border-b-2 miru-gray-400 ">
-          <td class="py-2 font-normal text-base text-miru-dark-purple-1000 text-right pr-10">Discount</td>
-          <td class="font-bold text-base text-miru-dark-purple-1000 text-right "><%=invoice_discount%></td>
-        </tr>
-        <tr>
-          <td class="pt-4 font-normal text-base text-miru-dark-purple-1000 text-right pr-10">Tax</td>
-          <td class="pt-4 font-bold text-base text-miru-dark-purple-1000 text-right w-22">
-            <%=invoice_tax%>
-          </td>
-        </tr>
-        <tr>
-          <td class="pt-1 font-normal text-base text-miru-dark-purple-1000 text-right pr-10">Total</td>
-          <td class="font-bold text-base text-miru-dark-purple-1000 text-right">
-            <%=total%>
-          </td>
-        </tr>
-        <tr>
-          <td class="pt-1 font-normal text-base text-miru-dark-purple-1000 text-right pr-10">Amount Paid</td>
-          <td class="font-bold text-base text-miru-dark-purple-1000 text-right "><%=invoice_amount_paid%></td>
-        </tr>
-        <tr>
-          <td class="pt-1 font-normal text-base text-miru-dark-purple-1000 text-right pr-10">Amount Due</td>
-          <td class="font-bold text-base text-miru-dark-purple-1000 text-right">
-            <%=invoice_amount_due%>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</div>
+</body>
+</html>
