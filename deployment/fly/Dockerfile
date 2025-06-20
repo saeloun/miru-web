@@ -75,10 +75,10 @@ RUN --mount=type=cache,id=prod-apt-cache,sharing=locked,target=/var/cache/apt \
     apt-get update -qq && \
     apt-get install --no-install-recommends -y \
     ${PROD_PACKAGES} \
-    && wget -q "https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_103.0.5060.134-1_amd64.deb" \
-    && dpkg -i "google-chrome-stable_103.0.5060.134-1_amd64.deb" || apt-get install -f -y \
-    && rm "google-chrome-stable_103.0.5060.134-1_amd64.deb" \
-    && apt-mark hold google-chrome-stable \
+    && curl --location --silent https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
+    && sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' \
+    && apt-get update \
+    && apt-get install google-chrome-stable -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 COPY --from=gems /app /app
