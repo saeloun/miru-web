@@ -108,6 +108,9 @@ export const fetchMultipleNewLineItems = async (
 
 export const handleDownloadInvoice = async invoice => {
   try {
+    // Show processing message
+    Toastr.success("Generating PDF... Please wait");
+
     const res = await invoicesApi.downloadInvoice(invoice.id);
     const url = window.URL.createObjectURL(new Blob([res.data]));
     const link = document.createElement("a");
@@ -116,7 +119,10 @@ export const handleDownloadInvoice = async invoice => {
     link.setAttribute("download", `${filename}.pdf`);
     document.body.appendChild(link);
     link.click();
+
+    // Show success message after download starts
+    Toastr.success("PDF downloaded successfully!");
   } catch {
-    Toastr.error("Something went wrong");
+    Toastr.error("Failed to generate PDF. Please try again.");
   }
 };
