@@ -6,7 +6,7 @@ import {
   DotsThreeVerticalIcon,
   DownloadSimpleIcon,
 } from "miruIcons";
-import { Badge, Button, MoreOptions, Toastr, Tooltip } from "StyledComponents";
+import { Badge, Button, MoreOptions, Tooltip } from "StyledComponents";
 
 import { handleDownloadInvoice } from "components/Invoices/common/utils";
 import getStatusCssClass from "utils/getBadgeStatus";
@@ -30,7 +30,6 @@ const Header = ({
   );
 
   const handleDownloadAction = invoice => {
-    Toastr.success("Download request sent");
     handleDownloadInvoice(invoice);
     setIsMoreOptionsVisible(false);
   };
