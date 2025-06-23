@@ -7,13 +7,14 @@ local:
   root: <%= Rails.root.join("storage") %>
 
 # Use bin/rails credentials:edit to set the AWS secrets (as aws:access_key_id|secret_access_key)
-cloudfare:
+cloudflare:
   service: S3
-  access_key_id: <%= ENV.fetch('CLOUDFLARE_R2_ACCESS_KEY_ID', '') %>
-  secret_access_key: <%= ENV.fetch('CLOUDFLARE_R2_SECRET_ACCESS_KEY', '') %>
-  region: <%= ENV.fetch('CLOUDFLARE_R2_REGION', '') %>
-  bucket: <%= ENV.fetch('CLOUDFLARE_R2_BUCKET_NAME', '') %>
-  endpoint: <%= ENV.fetch('CLOUDFLARE_R2_ENDPOINT', '') %>
+  access_key_id: <%= ENV['CLOUDFLARE_R2_ACCESS_KEY_ID'] %>
+  secret_access_key: <%= ENV['CLOUDFLARE_R2_SECRET_ACCESS_KEY'] %>
+  region: <%= ENV['CLOUDFLARE_R2_REGION'] %>
+  bucket: <%= ENV['CLOUDFLARE_R2_BUCKET_NAME'] %>
+  endpoint: <%= ENV['CLOUDFLARE_R2_ENDPOINT'] %>
+
 # Remember not to checkin your GCS keyfile to a repository
 # google:
 #   service: GCS

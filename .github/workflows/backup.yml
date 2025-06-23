@@ -17,7 +17,7 @@ jobs:
       PGDATABASE: miru_production
       PGHOST: localhost
       PGPORT: 5434
-      S3_BUCKET: miru-db-backup
+      R2_DB_BUCKET: db-backup
 
     steps:
       - uses: ryand56/r2-upload-action@latest
