@@ -1,5 +1,5 @@
 name: Back up database
-run-name: Task
+run-name: Backup database to R2
 
 # every sunday
 on:
@@ -37,7 +37,9 @@ jobs:
           echo Dumping ...
           PGPASSWORD=${PGPASSWORD} pg_dump -h $PGHOST -p $PGPORT -x -U $PGUSER -F c -b -v  -Z0 -f ${{ env.filename }} ${PGDATABASE}
           gzip ${{ env.filename }}
-          ls
+          mkdir -p backup
+          mv ${{ env.filename }}.gz backup/
+          ls -la backup/
       - name: Upload backup to R2
         uses: ryand56/r2-upload-action@latest
         with:
@@ -45,6 +47,5 @@ jobs:
             r2-access-key-id: ${{ secrets.R2_ACCESS_KEY }}
             r2-secret-access-key: ${{ secrets.R2_SECRET_KEY }}
             r2-bucket: ${{ secrets.R2_DB_BUCKET }}
-            source-dir: ./
+            source-dir: backup
             destination-dir: ./
-            include-pattern: "${{ env.filename }}.gz"
