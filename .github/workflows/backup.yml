@@ -49,3 +49,8 @@ jobs:
             r2-bucket: ${{ secrets.R2_DB_BUCKET }}
             source-dir: backup
             destination-dir: ./
+      - name: Cleanup backup files
+        run: |
+          echo "Cleaning up backup files..."
+          rm -rf backup/
+          echo "Cleanup completed"
