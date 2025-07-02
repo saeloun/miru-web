@@ -106,6 +106,7 @@ class User < ApplicationRecord
   before_validation :prevent_spam_user_sign_up
   after_discard :discard_project_members
   before_create :set_token
+  before_validation :validate_email_with_zerobounce, on: :create
 
   after_commit :send_to_hubspot, on: :create
 
@@ -231,5 +232,15 @@ class User < ApplicationRecord
 
     def send_to_hubspot
       HubspotIntegrationJob.perform_later(email, first_name, last_name)
+    end
+
+    def validate_email_with_zerobounce
+      return unless email.present? && ENV["ENABLE_EMAIL_VALIDATION"] == "true"
+
+      response = Zerobounce.validate(email)
+
+      if response["status"] != "valid"
+        errors.add(:email, "Email is not valid or undeliverable.")
+      end
     end
 end
