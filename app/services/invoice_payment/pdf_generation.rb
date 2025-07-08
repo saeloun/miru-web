@@ -6,7 +6,8 @@ module InvoicePayment
       @invoice = invoice
       @invoice_line_items = @invoice.invoice_line_items
       @company_logo = company_logo || ""
-      @base_currency = invoice.company.base_currency
+      # Updated to use the invoice currency instead of the company currency
+      @base_currency = invoice.currency
       @root_url = root_url
       @filepath = filepath
     end
