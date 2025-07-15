@@ -5,7 +5,7 @@ if defined? Rack::Cors
     allow do
       origins %W[
         #{ENV["APP_BASE_URL"]}
-        #{ENV["CLOUDFRONT_ASSET_HOST"]}
+        #{ENV["CLOUDFLARE_R2_ENDPOINT"]}
         https://miru-staging.fly.dev
         https://miru-production.fly.dev
         https://staging.miru.so

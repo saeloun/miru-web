@@ -14,6 +14,7 @@ cloudflare:
   region: <%= ENV['CLOUDFLARE_R2_REGION'] %>
   bucket: <%= ENV['CLOUDFLARE_R2_BUCKET_NAME'] %>
   endpoint: <%= ENV['CLOUDFLARE_R2_ENDPOINT'] %>
+  force_path_style: true
 
 # Remember not to checkin your GCS keyfile to a repository
 # google:
