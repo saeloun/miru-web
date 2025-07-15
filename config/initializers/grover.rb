@@ -24,9 +24,10 @@ Grover.configure do |config|
       "--disable-features=VizDisplayCompositor"
     ],
     timeout: 60000, # 60 seconds timeout
-    wait_until: "networkidle0",
+    wait_until: "domcontentloaded",
     emulate_media: "screen",
-    cache: false
+    cache: false,
+    launch_args: ["--no-sandbox", "--disable-setuid-sandbox"]
   }
 
   if !(Rails.env.development? || Rails.env.test?)
