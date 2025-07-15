@@ -19,15 +19,14 @@ Grover.configure do |config|
       "--disable-software-rasterizer",
       "--disable-extensions",
       "--disable-web-security",
-      "--disable-features=IsolateOrigins,site-per-process"
+      "--disable-features=IsolateOrigins,site-per-process",
+      "--allow-running-insecure-content",
+      "--disable-features=VizDisplayCompositor"
     ],
-    timeout: 60000, # 30 seconds timeout
+    timeout: 60000, # 60 seconds timeout
     wait_until: "networkidle0",
     emulate_media: "screen",
-    cache: false,
-    timeout: 0, # Timeout in ms. A value of `0` means 'no timeout'
-    wait_until: "domcontentloaded",
-    launch_args: ["--no-sandbox", "--disable-setuid-sandbox"]
+    cache: false
   }
 
   if !(Rails.env.development? || Rails.env.test?)
