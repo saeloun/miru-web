@@ -121,6 +121,7 @@ gem "searchkick"
 
 # PDF generator
 gem "grover"
+gem "puppeteer-ruby"
 
 gem "activerecord-import"
 
