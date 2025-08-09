@@ -192,9 +192,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_14_154909) do
     t.index ["leave_id"], name: "index_custom_leaves_on_leave_id"
   end
 
-  create_table "data_migrations", primary_key: "version", id: :string, force: :cascade do |t|
-  end
-
   create_table "devices", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "company_id", null: false
