@@ -11,6 +11,9 @@ gem "rails", "~> 7.1.5.1"
 # Use postgresql as the database for Active Record
 gem "pg"
 
+# Security updates  
+gem "thor", ">= 1.4.0"
+
 # Use the Puma web server [https://github.com/puma/puma]
 gem "puma", "~> 6.4.3"
 
@@ -105,7 +108,7 @@ gem "data_migrate"
 # pagy for Pagination
 gem "pagy", "~> 5.10"
 
-gem "nokogiri", ">= 1.18.4"
+gem "nokogiri", ">= 1.18.9"
 
 # Manage application specific business logic. https://github.com/AaronLasseigne/active_interaction
 gem "active_interaction"

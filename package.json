@@ -24,18 +24,13 @@
     "alpinejs": "^2.2.5",
     "autoprefixer": "^10.4.20",
     "axios": "^1.7.4",
-    "babel-loader": "^9.1.2",
     "babel-plugin-js-logger": "^1.0.17",
     "babel-plugin-transform-react-remove-prop-types": "^0.4.24",
     "classnames": "^2.3.1",
-    "compression-webpack-plugin": "^10.0.0",
-    "css-loader": "^6.7.3",
-    "css-minimizer-webpack-plugin": "^4.2.2",
     "currency-symbol-map": "^5.0.1",
     "date-fns": "^2.28.0",
     "dayjs": "^1.11.0",
     "faker": "5.5.3",
-    "fork-ts-checker-webpack-plugin": "^7.3.0",
     "formik": "^2.2.9",
     "html-react-parser": "^3.0.15",
     "i18n-js": "^4.2.2",
@@ -43,12 +38,9 @@
     "js-cookie": "^3.0.5",
     "js-logger": "^1.6.1",
     "jszip": "^3.10.1",
-    "mini-css-extract-plugin": "^2.7.2",
-    "pnp-webpack-plugin": "^1.7.0",
     "postcss": "^8.4.21",
     "postcss-flexbugs-fixes": "^5.0.2",
     "postcss-import": "^15.1.0",
-    "postcss-loader": "^7.2.4",
     "postcss-preset-env": "^8.0.1",
     "prop-types": "^15.8.1",
     "puppeteer": "^18.0.0",
@@ -74,19 +66,10 @@
     "react-transition-group": "4.4.5",
     "react_ujs": "^2.6.1",
     "sass": "^1.58.3",
-    "sass-loader": "^13.2.0",
-    "shakapacker": "^6.0.0",
-    "style-loader": "^3.3.1",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat",
-    "terser-webpack-plugin": "^5.3.7",
     "ts-node": "^10.9.1",
     "typescript": "^4.9.5",
     "uuid": "^9.0.0",
-    "webpack": "^5.94.0",
-    "webpack-assets-manifest": "^5.1.0",
-    "webpack-cli": "^5.0.1",
-    "webpack-merge": "^5.8.0",
-    "webpack-sources": "^3.2.3",
     "world-countries": "^5.0.0",
     "yup": "^0.32.11"
   },
@@ -94,7 +77,6 @@
     "@babel/eslint-parser": "^7.16.3",
     "@types/node": "^18.15.11",
     "@vitejs/plugin-react": "^5.0.0",
-    "@webpack-cli/serve": "^2.0.1",
     "eslint": "^8.4.1",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-import": "^2.25.3",
@@ -111,8 +93,7 @@
     "prettier-plugin-tailwindcss": "^0.1.13",
     "vite": "^5.0.0",
     "vite-plugin-ruby": "^5.1.0",
-    "vite-tsconfig-paths": "^5.1.4",
-    "webpack-dev-server": "^4.13.1"
+    "vite-tsconfig-paths": "^5.1.4"
   },
   "lint-staged": {
     "app/**/*.{js,jsx,json,ts,tsx}": [
@@ -137,14 +118,9 @@
   "scripts": {
     "prepare": "husky install",
     "lint": "eslint ./app/javascript",
-    "dev": "pnpm exec webpack serve --config config/webpack/webpack.config.js",
-    "build": "pnpm exec webpack --config config/webpack/webpack.config.js"
-  },
-  "babel": {
-    "presets": [
-      "./node_modules/shakapacker/package/babel/preset.js",
-      "@babel/preset-react"
-    ]
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
   },
   "browserslist": [
     "defaults"
