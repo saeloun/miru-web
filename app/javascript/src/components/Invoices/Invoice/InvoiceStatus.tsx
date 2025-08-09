@@ -1,7 +1,6 @@
 import React from "react";
 
 import { Badge } from "StyledComponents";
-
 import getStatusCssClass from "utils/getBadgeStatus";
 
 const InvoiceStatus = ({ invoice }) => (

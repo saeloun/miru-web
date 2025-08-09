@@ -1,12 +1,12 @@
 /* eslint-disable no-unused-vars */
+import { ApiStatus as InvoiceStatus } from "constants/index";
+
 import React, { useEffect, useState } from "react";
 
 import cn from "classnames";
 import { XIcon } from "miruIcons";
 import { useNavigate } from "react-router-dom";
 import { Button, Modal } from "StyledComponents";
-
-import { ApiStatus as InvoiceStatus } from "constants/index";
 
 import Recipient from "./Recipient";
 import { emailSubject, emailBody, isDisabled, buttonText } from "./utils";

@@ -11,7 +11,7 @@ FROM mcr.microsoft.com/vscode/devcontainers/ruby:${VARIANT} AS base
 #     && chmod -R $USER_UID:$USER_GID /home/vscode; \
 #     fi
 
-ARG NODE_VERSION=20.18.2
+ARG NODE_VERSION=22.18.0
 
 ENV BUNDLE_PATH="/usr/local/bundle"
 ENV GEM_HOME="/usr/local/bundle/gems"
@@ -22,11 +22,10 @@ WORKDIR /app
 RUN mkdir -p tmp/pids
 
 RUN apt-get update && apt-get install -y --no-install-recommends curl gnupg2 && \
-    echo "deb https://dl.yarnpkg.com/debian/ stable main" > /etc/apt/sources.list.d/yarn.list && \
-    curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
-    curl -sL https://deb.nodesource.com/setup_lts.x | bash - && \
-    apt-get install -y --no-install-recommends nodejs yarn && \
-    npm --version && \
+    curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
+    apt-get install -y --no-install-recommends nodejs && \
+    npm install -g pnpm@9.15.2 && \
+    npm --version && pnpm --version && \
     apt-get clean && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
 
@@ -58,9 +57,9 @@ RUN bundle install &&  rm -rf vendor/bundle/ruby/*/cache
 
 FROM base AS node_modules
 
-COPY package.json yarn.lock ./
+COPY package.json pnpm-lock.yaml ./
 
-RUN yarn install --check-files
+RUN pnpm install --frozen-lockfile
 
 FROM base
 

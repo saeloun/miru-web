@@ -1,12 +1,11 @@
 import React, { Fragment } from "react";
 
-import Logger from "js-logger";
-import { PlusIcon } from "miruIcons";
-import { Button } from "StyledComponents";
-
 import clientApi from "apis/clients";
 import AutoSearch from "common/AutoSearch";
+import Logger from "js-logger";
 import { unmapClientListForDropdown } from "mapper/mappedIndex";
+import { PlusIcon } from "miruIcons";
+import { Button } from "StyledComponents";
 
 import SearchDataRow from "./SearchDataRow";
 

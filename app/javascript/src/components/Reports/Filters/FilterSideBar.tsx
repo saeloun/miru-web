@@ -1,13 +1,12 @@
 /* eslint-disable react/hook-use-state */
 import React, { useState, useEffect, useRef } from "react";
 
+import { useEntry } from "components/Reports/context/EntryContext";
+import { useUserContext } from "context/UserContext";
 import dayjs from "dayjs";
 import { useDebounce, useOutsideClick } from "helpers";
 import { XIcon, FilterIcon } from "miruIcons";
 import { SidePanel, Button } from "StyledComponents";
-
-import { useEntry } from "components/Reports/context/EntryContext";
-import { useUserContext } from "context/UserContext";
 
 import ClientFilter from "./ClientFilter";
 import DateRangeFilter from "./DateRangeFilter";

@@ -2,7 +2,6 @@ import React from "react";
 
 import { ReportsIcon } from "miruIcons";
 import { Badge, Tooltip } from "StyledComponents";
-
 import getStatusCssClass from "utils/getBadgeStatus";
 
 const Header = ({

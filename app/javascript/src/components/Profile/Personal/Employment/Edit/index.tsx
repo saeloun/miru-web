@@ -1,12 +1,6 @@
 /* eslint-disable no-unused-vars */
 import React, { Fragment, useEffect, useRef, useState } from "react";
 
-import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc";
-import { useOutsideClick } from "helpers";
-import { useNavigate, useParams } from "react-router-dom";
-import * as Yup from "yup";
-
 import teamsApi from "apis/teams";
 import Loader from "common/Loader/index";
 import { MobileDetailsHeader } from "common/Mobile/MobileDetailsHeader";
@@ -14,7 +8,12 @@ import EditHeader from "components/Profile/Common/EditHeader";
 import { employmentSchema } from "components/Profile/Schema/employmentSchema";
 import { useProfileContext } from "context/Profile/ProfileContext";
 import { useUserContext } from "context/UserContext";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import { useOutsideClick } from "helpers";
 import { employmentMapper } from "mapper/teams.mapper";
+import { useNavigate, useParams } from "react-router-dom";
+import * as Yup from "yup";
 
 import MobileEditPage from "./MobileEditPage";
 import StaticPage from "./StaticPage";

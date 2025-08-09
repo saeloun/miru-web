@@ -1,9 +1,8 @@
 import React from "react";
 
+import invoicesApi from "apis/invoices";
 import { useNavigate } from "react-router-dom";
 import { Modal, Button } from "StyledComponents";
-
-import invoicesApi from "apis/invoices";
 
 interface IProps {
   invoice: any;

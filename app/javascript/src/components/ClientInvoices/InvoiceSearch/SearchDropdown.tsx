@@ -1,6 +1,6 @@
-import React from "react";
-
 import { ApiStatus } from "constants/index";
+
+import React from "react";
 
 import SearchedDataRow from "./SearchedDataRow";
 

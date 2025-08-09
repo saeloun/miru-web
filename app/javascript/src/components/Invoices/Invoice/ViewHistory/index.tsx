@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
 
-import { ClockIcon, XIcon } from "miruIcons";
-import { Button, SidePanel } from "StyledComponents";
-
 import Loader from "common/Loader/index";
 import { useUserContext } from "context/UserContext";
+import { ClockIcon, XIcon } from "miruIcons";
+import { Button, SidePanel } from "StyledComponents";
 
 import History from "./History";
 import { getHistory } from "./utils";

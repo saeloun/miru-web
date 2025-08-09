@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
 
-import { UserAvatarSVG, DeleteIcon, ImageIcon, EditIcon } from "miruIcons";
-import { MoreOptions, Toastr, Tooltip } from "StyledComponents";
-
 import teamApi from "apis/team";
 import teamsApi from "apis/teams";
 import { useProfileContext } from "context/Profile/ProfileContext";
+import { UserAvatarSVG, DeleteIcon, ImageIcon, EditIcon } from "miruIcons";
+import { MoreOptions, Toastr, Tooltip } from "StyledComponents";
 
 const UserInformation = () => {
   const {

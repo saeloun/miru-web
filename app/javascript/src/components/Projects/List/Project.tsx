@@ -1,11 +1,10 @@
 import React from "react";
 
+import { useUserContext } from "context/UserContext";
 import { minToHHMM } from "helpers";
 import { DeleteIcon, DotsThreeVerticalIcon, EditIcon } from "miruIcons";
 import { useNavigate } from "react-router-dom";
 import { Badge, MobileMoreOptions } from "StyledComponents";
-
-import { useUserContext } from "context/UserContext";
 
 import { IProject } from "../interface";
 

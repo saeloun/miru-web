@@ -1,10 +1,9 @@
 import React, { Fragment } from "react";
 
-import dayjs from "dayjs";
-import { Tooltip } from "StyledComponents";
-
 import HolidayModal from "common/HolidayModal";
 import DetailsHeader from "components/Profile/Common/DetailsHeader";
+import dayjs from "dayjs";
+import { Tooltip } from "StyledComponents";
 
 import TableHeader from "./TableHeader";
 import TableRow from "./TableRow";

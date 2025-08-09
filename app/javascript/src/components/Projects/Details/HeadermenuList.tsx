@@ -1,9 +1,8 @@
 import React, { useRef } from "react";
 
+import { useUserContext } from "context/UserContext";
 import { useOutsideClick } from "helpers";
 import { PencilIcon, DeleteIcon, InvoicesIcon, TeamsIcon } from "miruIcons";
-
-import { useUserContext } from "context/UserContext";
 
 const HeaderMenuList = ({
   handleGenerateInvoice,

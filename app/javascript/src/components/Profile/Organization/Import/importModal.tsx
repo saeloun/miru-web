@@ -1,10 +1,9 @@
 /* eslint-disable no-constant-condition */
 import React, { Fragment } from "react";
 
+import ProgressBar from "common/ProgressBar";
 import { bytesToSize } from "helpers";
 import { XIcon } from "miruIcons";
-
-import ProgressBar from "common/ProgressBar";
 
 import TableHeader from "./TableHeader";
 import TableRow from "./TableRow";

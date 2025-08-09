@@ -2,7 +2,6 @@ import React from "react";
 
 import { currencyFormat } from "helpers";
 import { Avatar, Badge } from "StyledComponents";
-
 import getStatusCssClass from "utils/getBadgeStatus";
 
 import { OutstandingOverdueInvoice } from "../../interface";

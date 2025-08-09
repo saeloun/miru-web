@@ -1,9 +1,8 @@
 import React from "react";
 
+import clientApi from "apis/clients";
 import { useNavigate } from "react-router-dom";
 import { Modal, Button } from "StyledComponents";
-
-import clientApi from "apis/clients";
 
 interface IProps {
   client: any;

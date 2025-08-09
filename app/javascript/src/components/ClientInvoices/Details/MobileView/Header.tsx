@@ -3,7 +3,6 @@ import React from "react";
 import { ArrowLeftIcon } from "miruIcons";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Badge, Button } from "StyledComponents";
-
 import getStatusCssClass from "utils/getBadgeStatus";
 
 const Header = ({ invoice }) => {

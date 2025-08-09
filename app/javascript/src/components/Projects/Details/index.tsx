@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from "react";
 
+import projectAPI from "apis/projects";
+import Loader from "common/Loader/index";
+import Table from "common/Table";
+import { useUserContext } from "context/UserContext";
 import { currencySymbol } from "helpers";
 import Logger from "js-logger";
+import { unmapper } from "mapper/mappedIndex";
 import {
   ArrowLeftIcon,
   DotsThreeVerticalIcon,
@@ -10,12 +15,6 @@ import {
 } from "miruIcons";
 import { useParams, useNavigate } from "react-router-dom";
 import { Badge, Tooltip } from "StyledComponents";
-
-import projectAPI from "apis/projects";
-import Loader from "common/Loader/index";
-import Table from "common/Table";
-import { useUserContext } from "context/UserContext";
-import { unmapper } from "mapper/mappedIndex";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import EditMembersList from "./EditMembersList";

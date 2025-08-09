@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
 
+import CustomDateRangePicker from "common/CustomDateRangePicker";
 import { XIcon } from "miruIcons";
 import Select from "react-select";
-import * as Yup from "yup";
-
-import CustomDateRangePicker from "common/CustomDateRangePicker";
 import getStatusCssClass from "utils/getBadgeStatus";
+import * as Yup from "yup";
 
 import { dateRangeOptions, statusOption, groupBy } from "./filterOptions";
 import { customStyles } from "./style";

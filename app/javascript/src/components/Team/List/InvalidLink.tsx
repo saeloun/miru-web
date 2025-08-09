@@ -1,8 +1,7 @@
 import React from "react";
 
-import { useNavigate } from "react-router-dom";
-
 import MiruLogoWatermark from "common/MiruLogoWatermark";
+import { useNavigate } from "react-router-dom";
 
 const InvalidLink = () => {
   const navigate = useNavigate();

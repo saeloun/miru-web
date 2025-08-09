@@ -1,9 +1,8 @@
+import generateInvoice from "apis/generateInvoice";
+import invoicesApi from "apis/invoices";
 import dayjs from "dayjs";
 import { lineTotalCalc } from "helpers";
 import { Toastr } from "StyledComponents";
-
-import generateInvoice from "apis/generateInvoice";
-import invoicesApi from "apis/invoices";
 
 export const generateInvoiceLineItems = (
   selectedLineItems,

@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
+import { ApiStatus as PaymentSettingsStatus } from "constants/index";
+
 import React, { useState, useEffect } from "react";
 
-import { useNavigate } from "react-router-dom";
-
 import paymentSettings from "apis/payment-settings";
-import { ApiStatus as PaymentSettingsStatus } from "constants/index";
 import { useUserContext } from "context/UserContext";
+import { useNavigate } from "react-router-dom";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import MobileView from "./MobileView";

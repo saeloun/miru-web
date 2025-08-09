@@ -1,6 +1,5 @@
 import axios from "axios";
 import { Toastr } from "StyledComponents";
-
 import {
   clearCredentialsFromLocalStorage,
   getValueFromLocalStorage,

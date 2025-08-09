@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # Be sure to restart your server when you modify this file.
 
 # Define an application-wide content security policy.
@@ -8,24 +9,24 @@
 Rails.application.configure do
   config.content_security_policy do |policy|
     policy.default_src :self, :https
-    policy.font_src    :self, :https, :data, "https://fonts.googleapis.com", "https://fonts.gstatic.com"
-    policy.img_src     :self, :https, :data, :blob
-    policy.object_src  :none
-    policy.script_src  :self, :https, "https://cdn.tailwindcss.com"
-    
+    policy.font_src :self, :https, :data, "https://fonts.googleapis.com", "https://fonts.gstatic.com"
+    policy.img_src :self, :https, :data, :blob
+    policy.object_src :none
+    policy.script_src :self, :https, "https://cdn.tailwindcss.com"
+
     # Allow Vite to hot reload in development
     if Rails.env.development?
-      policy.script_src *policy.script_src, :unsafe_eval, "http://#{ ViteRuby.config.host_with_port }"
+      policy.script_src(*policy.script_src, :unsafe_eval, "http://#{ ViteRuby.config.host_with_port }")
       policy.connect_src :self, :https, "http://localhost:3036", "ws://localhost:3036"
     end
 
     # Allow blob URLs in test environment
-    policy.script_src *policy.script_src, :blob if Rails.env.test?
+    policy.script_src(*policy.script_src, :blob) if Rails.env.test?
 
-    policy.style_src   :self, :https, :unsafe_inline
-    
+    policy.style_src :self, :https, :unsafe_inline
+
     # Allow Vite to hot reload style changes in development
-    policy.style_src *policy.style_src, :unsafe_inline if Rails.env.development?
+    policy.style_src(*policy.style_src, :unsafe_inline) if Rails.env.development?
 
     # Specify URI for violation reports
     # policy.report_uri "/csp-violation-report-endpoint"

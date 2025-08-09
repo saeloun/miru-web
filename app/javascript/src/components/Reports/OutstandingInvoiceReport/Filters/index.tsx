@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 
+import CustomDateRangePicker from "common/CustomDateRangePicker";
 import { XIcon } from "miruIcons";
 import Select from "react-select";
 import * as Yup from "yup";
-
-import CustomDateRangePicker from "common/CustomDateRangePicker";
 
 import { dateRangeOptions } from "./filterOptions";
 import { customStyles } from "./style";

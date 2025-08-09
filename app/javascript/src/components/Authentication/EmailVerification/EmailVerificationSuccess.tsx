@@ -1,9 +1,8 @@
 import React from "react";
 
+import MiruLogoWatermark from "common/MiruLogoWatermark";
 import { GreenCheckCircleIcon } from "miruIcons";
 import { useNavigate } from "react-router-dom";
-
-import MiruLogoWatermark from "common/MiruLogoWatermark";
 
 const EmailVerificationSuccess = () => {
   const navigate = useNavigate();

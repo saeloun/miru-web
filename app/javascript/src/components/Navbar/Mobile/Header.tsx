@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
+import { Roles, Paths } from "constants/index";
+
 import React, { Fragment } from "react";
 
+import { useUserContext } from "context/UserContext";
 import { MiruLogoSVG, PurpleMiruLogoWithTextSVG } from "miruIcons";
 import { Link } from "react-router-dom";
-
-import { Roles, Paths } from "constants/index";
-import { useUserContext } from "context/UserContext";
 
 const Header = ({ selectedTab }) => {
   const { user, companyRole } = useUserContext();

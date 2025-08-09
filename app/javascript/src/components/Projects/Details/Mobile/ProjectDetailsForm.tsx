@@ -1,5 +1,6 @@
 import React from "react";
 
+import EmptyStates from "common/EmptyStates";
 import { minToHHMM, currencyFormat } from "helpers";
 import { ArrowLeftIcon, DotsThreeVerticalIcon, PlusIcon } from "miruIcons";
 import { useNavigate } from "react-router-dom";
@@ -9,8 +10,6 @@ import {
   MobileMoreOptions,
   SummaryDashboard,
 } from "StyledComponents";
-
-import EmptyStates from "common/EmptyStates";
 
 import HeaderMenuList from "../HeadermenuList";
 

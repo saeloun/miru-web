@@ -3,7 +3,6 @@ import React from "react";
 import { currencyFormat } from "helpers";
 import { useNavigate } from "react-router-dom";
 import { Avatar, Badge } from "StyledComponents";
-
 import getStatusCssClass from "utils/getBadgeStatus";
 
 const RecentlyUpdatedCard = ({

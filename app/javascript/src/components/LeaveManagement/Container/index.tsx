@@ -1,14 +1,13 @@
 import React, { Fragment, useState } from "react";
 
+import { Divider } from "common/Divider";
+import HolidayModal from "common/HolidayModal";
+import { useUserContext } from "context/UserContext";
 import { getYear } from "date-fns";
 import dayjs from "dayjs";
 import { minToHHMM, companyDateFormater } from "helpers";
 import { XIcon, CalendarIcon } from "miruIcons";
 import { Button, Tooltip } from "StyledComponents";
-
-import { Divider } from "common/Divider";
-import HolidayModal from "common/HolidayModal";
-import { useUserContext } from "context/UserContext";
 
 import LeaveBlock from "./LeaveBlock";
 import Table from "./Table";

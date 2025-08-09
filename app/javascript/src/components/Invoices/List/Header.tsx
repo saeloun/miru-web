@@ -1,12 +1,12 @@
+import { ApiStatus as InvoiceStatus, LocalStorageKeys } from "constants/index";
+
 import React, { useEffect, useState, useRef } from "react";
 
+import invoicesApi from "apis/invoices";
 import { useDebounce, useOutsideClick } from "helpers";
 import { PlusIcon, FilterIcon, XIcon, SearchIcon } from "miruIcons";
 import { useNavigate } from "react-router-dom";
 import { Button } from "StyledComponents";
-
-import invoicesApi from "apis/invoices";
-import { ApiStatus as InvoiceStatus, LocalStorageKeys } from "constants/index";
 
 import SearchDropdown from "./InvoiceSearch/SearchDropdown";
 

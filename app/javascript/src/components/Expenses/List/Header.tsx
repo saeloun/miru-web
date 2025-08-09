@@ -1,12 +1,11 @@
 import React from "react";
 
+import AutoSearch from "common/AutoSearch";
+import { useUserContext } from "context/UserContext";
 import { currencyFormat } from "helpers";
 import { PlusIcon } from "miruIcons";
 import { useNavigate } from "react-router-dom";
 import { Button } from "StyledComponents";
-
-import AutoSearch from "common/AutoSearch";
-import { useUserContext } from "context/UserContext";
 
 const SearchDataRow = ({ item }) => {
   const { company } = useUserContext();

@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import React from "react";
 
+import withLayout from "common/Mobile/HOC/withLayout";
+import { useUserContext } from "context/UserContext";
 import {
   ReportcalendarIcon,
   CalendarHoverIcon,
@@ -13,9 +15,6 @@ import {
   AccountsAgingIcon,
   AccountsAgingHoverIcon,
 } from "miruIcons";
-
-import withLayout from "common/Mobile/HOC/withLayout";
-import { useUserContext } from "context/UserContext";
 
 import ReportCard from "./reportCard";
 

@@ -11,7 +11,7 @@ gem "rails", "~> 7.1.5.1"
 # Use postgresql as the database for Active Record
 gem "pg"
 
-# Security updates  
+# Security updates
 gem "thor", ">= 1.4.0"
 
 # Use the Puma web server [https://github.com/puma/puma]

@@ -1,16 +1,16 @@
-import React, { useEffect, useRef, useState } from "react";
+import { LocalStorageKeys } from "constants/index";
 
-import dayjs from "dayjs";
-import advancedFormat from "dayjs/plugin/advancedFormat";
-import { useDebounce, useOutsideClick } from "helpers";
-import { XIcon, FilterIcon, PlusIcon, MinusIcon, SearchIcon } from "miruIcons";
-import { Badge, Button, SidePanel } from "StyledComponents";
+import React, { useEffect, useRef, useState } from "react";
 
 import companiesApi from "apis/companies";
 import CustomCheckbox from "common/CustomCheckbox";
 import CustomDateRangePicker from "common/CustomDateRangePicker";
 import CustomRadioButton from "common/CustomRadio";
-import { LocalStorageKeys } from "constants/index";
+import dayjs from "dayjs";
+import advancedFormat from "dayjs/plugin/advancedFormat";
+import { useDebounce, useOutsideClick } from "helpers";
+import { XIcon, FilterIcon, PlusIcon, MinusIcon, SearchIcon } from "miruIcons";
+import { Badge, Button, SidePanel } from "StyledComponents";
 import getStatusCssClass from "utils/getBadgeStatus";
 
 import { dateRangeOptions, statusOptions } from "./filterOptions";

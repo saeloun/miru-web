@@ -1,9 +1,8 @@
 import React from "react";
 
+import CompanyInfo from "components/Invoices/common/CompanyInfo";
 import { ReportsIcon } from "miruIcons";
 import { Button } from "StyledComponents";
-
-import CompanyInfo from "components/Invoices/common/CompanyInfo";
 
 import Header from "./Header";
 import InvoiceInfo from "./InvoiceInfo";

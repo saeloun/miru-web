@@ -1,8 +1,8 @@
+import { LocalStorageKeys } from "constants/index";
+
 import React from "react";
 
 import { XIcon } from "miruIcons";
-
-import { LocalStorageKeys } from "constants/index";
 
 const AppliedFilters = ({
   filterParams,

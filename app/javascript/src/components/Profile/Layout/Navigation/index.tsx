@@ -1,11 +1,10 @@
 import React, { useEffect } from "react";
 
-import { useParams } from "react-router-dom";
-
 import teamsApi from "apis/teams";
 import { useProfileContext } from "context/Profile/ProfileContext";
 import { useUserContext } from "context/UserContext";
 import { teamsMapper } from "mapper/teams.mapper";
+import { useParams } from "react-router-dom";
 
 import AdminNav from "./AdminNav";
 import List from "./List";

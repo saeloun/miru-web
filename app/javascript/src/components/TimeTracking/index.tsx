@@ -1,18 +1,17 @@
 /* eslint-disable no-unexpected-multiline */
 import React, { useEffect, useState } from "react";
 
-import dayjs from "dayjs";
-import updateLocale from "dayjs/plugin/updateLocale";
-import weekday from "dayjs/plugin/weekday";
-import { minToHHMM } from "helpers";
-import Logger from "js-logger";
-
 import timesheetEntryApi from "apis/timesheet-entry";
 import timeTrackingApi from "apis/timeTracking";
 import Loader from "common/Loader/index";
 import withLayout from "common/Mobile/HOC/withLayout";
 import SearchTimeEntries from "common/SearchTimeEntries";
 import { useUserContext } from "context/UserContext";
+import dayjs from "dayjs";
+import updateLocale from "dayjs/plugin/updateLocale";
+import weekday from "dayjs/plugin/weekday";
+import { minToHHMM } from "helpers";
+import Logger from "js-logger";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import DatesInWeek from "./DatesInWeek";

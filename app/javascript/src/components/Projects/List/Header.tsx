@@ -1,12 +1,11 @@
 import React from "react";
 
-import Logger from "js-logger";
-import { PlusIcon } from "miruIcons";
-import { Button } from "StyledComponents";
-
 import projectApi from "apis/projects";
 import AutoSearch from "common/AutoSearch";
 import { useUserContext } from "context/UserContext";
+import Logger from "js-logger";
+import { PlusIcon } from "miruIcons";
+import { Button } from "StyledComponents";
 
 import SearchDataRow from "./SearchDataRow";
 

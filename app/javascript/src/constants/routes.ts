@@ -1,3 +1,5 @@
+import { Roles, Paths } from "constants/index";
+
 import ErrorPage from "common/Error";
 import EmailVerification from "components/Authentication/EmailVerification";
 import EmailVerificationSuccess from "components/Authentication/EmailVerification/EmailVerificationSuccess";
@@ -15,7 +17,6 @@ import Projects from "components/Projects";
 import AccountsAgingReport from "components/Reports/AccountsAgingReport";
 import InvalidLink from "components/Team/List/InvalidLink";
 import TeamsRouteConfig from "components/Team/TeamsRouteConfig";
-import { Roles, Paths } from "constants/index";
 
 import Clients from "../components/Clients";
 import ClientDetails from "../components/Clients/Details";

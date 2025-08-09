@@ -1,13 +1,12 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import React, { useEffect, useRef, useState } from "react";
 
-import { getYear } from "date-fns";
-import { useOutsideClick } from "helpers";
-import { useNavigate } from "react-router-dom";
-
 import holidaysApi from "apis/holidays";
 import Loader from "common/Loader/index";
 import { useUserContext } from "context/UserContext";
+import { getYear } from "date-fns";
+import { useOutsideClick } from "helpers";
+import { useNavigate } from "react-router-dom";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import Details from "./Details";

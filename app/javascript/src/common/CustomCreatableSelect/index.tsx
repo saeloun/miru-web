@@ -1,14 +1,13 @@
 /* eslint-disable import/exports-last */
 import React from "react";
 
-import CreatableSelect from "react-select/creatable";
-
 import {
   customErrStyles,
   customStyles,
   CustomValueContainer,
 } from "common/CustomReactSelectStyle";
 import { useUserContext } from "context/UserContext";
+import CreatableSelect from "react-select/creatable";
 
 type CustomCreatableSelectProps = {
   id?: string;

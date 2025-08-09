@@ -1,11 +1,10 @@
 import React, { useRef, useState, useEffect } from "react";
 
+import CustomDatePicker from "common/CustomDatePicker";
 import dayjs from "dayjs";
 import { minFromHHMM, minToHHMM, lineTotalCalc, currencyFormat } from "helpers";
 import { DeleteIcon, CalendarIcon } from "miruIcons";
 import TextareaAutosize from "react-textarea-autosize";
-
-import CustomDatePicker from "common/CustomDatePicker";
 
 const NewLineItemStatic = ({
   clientCurrency,

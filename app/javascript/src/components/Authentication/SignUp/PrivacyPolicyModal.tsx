@@ -1,14 +1,14 @@
-import React from "react";
-
-import { XIcon } from "miruIcons";
-import { Modal } from "StyledComponents";
-
 import {
   MIRU_APP_SUPPORT_EMAIL_ID,
   GOOGLE_PRIVACY_URL,
   AWS_PRIVACY_URL,
   STRIPE_PRIVACY_URL,
 } from "constants/index";
+
+import React from "react";
+
+import { XIcon } from "miruIcons";
+import { Modal } from "StyledComponents";
 
 const PrivacyPolicyModal = ({ isOpen, onClose }) => (
   <Modal customStyle="max-w-screen-xl" isOpen={isOpen} onClose={onClose}>

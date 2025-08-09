@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import React, { useState, useEffect } from "react";
+import { LocalStorageKeys } from "constants/index";
 
-import Logger from "js-logger";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
 
 import clientRevenueApi from "apis/reports/clientRevenue";
 import Loader from "common/Loader/index";
-import { LocalStorageKeys } from "constants/index";
+import Logger from "js-logger";
+import { useNavigate } from "react-router-dom";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import Container from "./Container";

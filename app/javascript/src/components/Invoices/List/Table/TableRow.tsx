@@ -1,16 +1,16 @@
-import React, { useState, useRef } from "react";
+import { ApiStatus as InvoicesStatus } from "constants/index";
 
-import { currencyFormat, useDebounce } from "helpers";
-import { ArrowLeftIcon, DotsThreeVerticalIcon, XIcon } from "miruIcons";
-import { useNavigate } from "react-router-dom";
-import { Avatar, Badge, Button, Toastr, Tooltip } from "StyledComponents";
+import React, { useState, useRef } from "react";
 
 import invoicesApi from "apis/invoices";
 import CustomCheckbox from "common/CustomCheckbox";
 import SendInvoice from "components/Invoices/common/InvoiceForm/SendInvoice";
 import SendInvoiceContainer from "components/Invoices/Generate/MobileView/Container/SendInvoiceContainer";
 import ConnectPaymentGateway from "components/Invoices/popups/ConnectPaymentGateway";
-import { ApiStatus as InvoicesStatus } from "constants/index";
+import { currencyFormat, useDebounce } from "helpers";
+import { ArrowLeftIcon, DotsThreeVerticalIcon, XIcon } from "miruIcons";
+import { useNavigate } from "react-router-dom";
+import { Avatar, Badge, Button, Toastr, Tooltip } from "StyledComponents";
 import getStatusCssClass from "utils/getBadgeStatus";
 
 import MoreOptions from "../MoreOptions";

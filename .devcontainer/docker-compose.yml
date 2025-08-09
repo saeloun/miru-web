@@ -16,7 +16,7 @@ services:
       - gem_cache:/usr/local/bundle/gems
       - node_modules:/app/node_modules
     environment:
-      - WEBPACKER_DEV_SERVER_HOST=0.0.0.0
+      - VITE_RUBY_HOST=0.0.0.0
       - DATABASE_URL=postgres://postgres:postgres@database:5432/
       - DB_HOST=database
       - DB_USER=postgres
@@ -63,16 +63,16 @@ services:
       # Add "forwardPorts": ["5432"] to **devcontainer.json** to forward PostgreSQL locally.
       # (Adding the "ports" property to this file will not forward from a Codespace.)
 
-  webpack:
+  vite:
     build:
       context: ..
       dockerfile: .devcontainer/Dockerfile
-    command: bin/webpacker-dev-server
+    command: bin/vite dev
     image: miru-web:latest
     ports:
-      - "3035:3035"
+      - "3036:3036"
     environment:
-      - WEBPACKER_DEV_SERVER_HOST=0.0.0.0
+      - VITE_RUBY_HOST=0.0.0.0
       - DATABASE_URL=postgres://postgres:postgres@database:5432/
       - DATABASE_CLEANER_ALLOW_REMOTE_DATABASE_URL="true"
       - POSTGRES_PASSWORD="postgres"

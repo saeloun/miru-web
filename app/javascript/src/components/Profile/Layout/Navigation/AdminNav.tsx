@@ -1,8 +1,7 @@
 import React, { Fragment, useState } from "react";
 
-import { MinusIcon, PlusIcon } from "miruIcons";
-
 import { useUserContext } from "context/UserContext";
+import { MinusIcon, PlusIcon } from "miruIcons";
 
 import List from "./List";
 

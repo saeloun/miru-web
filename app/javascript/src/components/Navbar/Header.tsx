@@ -1,10 +1,10 @@
+import { Roles, Paths } from "constants/index";
+
 import React from "react";
 
+import { useUserContext } from "context/UserContext";
 import { MiruLogoSVG } from "miruIcons";
 import { Link } from "react-router-dom";
-
-import { Roles, Paths } from "constants/index";
-import { useUserContext } from "context/UserContext";
 
 const Header = () => {
   const { user, companyRole } = useUserContext();

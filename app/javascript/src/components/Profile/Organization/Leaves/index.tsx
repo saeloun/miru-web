@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from "react";
+import { leaveIcons, leaveColors } from "constants/leaveType";
 
-import { getYear } from "date-fns";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
 
 import leavesApi from "apis/leaves";
 import teamApi from "apis/team";
 import Loader from "common/Loader/index";
-import { leaveIcons, leaveColors } from "constants/leaveType";
 import { useUserContext } from "context/UserContext";
+import { getYear } from "date-fns";
+import { useNavigate } from "react-router-dom";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import Details from "./Details";

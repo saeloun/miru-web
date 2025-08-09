@@ -1,7 +1,6 @@
 import { createContext, useContext } from "react";
 
 import dayjs from "dayjs";
-
 import { getValueFromLocalStorage } from "utils/storage";
 
 const initialNote = getValueFromLocalStorage("note") || "";
