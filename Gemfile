@@ -103,7 +103,7 @@ gem "data_migrate"
 # pagy for Pagination
 gem "pagy", "~> 5.10"
 
-gem "nokogiri", ">= 1.18.4"
+gem "nokogiri", ">= 1.18.9"
 
 # Manage application specific business logic. https://github.com/AaronLasseigne/active_interaction
 gem "active_interaction"
@@ -233,3 +233,6 @@ gem "administrate"
 gem "psych", "~> 4"
 
 gem "postmark-rails"
+
+# rails-settings-cached for storing global settings
+gem "rails-settings-cached", "~> 2.9", ">= 2.9.5"

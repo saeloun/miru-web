@@ -144,6 +144,7 @@ RSpec.describe Invoice, type: :model do
 
   describe ".send_to_email" do
     let(:invoice) { create :invoice }
+    let(:user) { create(:user, :with_email_rate_limiter) }
     let(:recipients) { [invoice.client.email, "miru@example.com"] }
     let(:subject) { "Invoice (#{invoice.invoice_number}) due on #{invoice.due_date}" }
     let(:message) do
@@ -151,7 +152,11 @@ RSpec.describe Invoice, type: :model do
     end
 
     it "sends the invoice on email" do
-      expect { invoice.send_to_email(subject:, recipients:, message:) }.to have_enqueued_mail(InvoiceMailer, :invoice)
+      expect {
+        invoice.send_to_email(
+          subject:, recipients:, message:,
+          current_user_id: user.id)
+      }.to have_enqueued_mail(InvoiceMailer, :invoice)
     end
   end
 

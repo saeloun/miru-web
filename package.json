@@ -24,7 +24,7 @@
     "alpine-turbo-drive-adapter": "^2.0.0",
     "alpinejs": "^2.2.5",
     "autoprefixer": "^10.4.20",
-    "axios": "^1.7.4",
+    "axios": "^1.11.0",
     "babel-loader": "^9.1.2",
     "babel-plugin-js-logger": "^1.0.17",
     "babel-plugin-transform-react-remove-prop-types": "^0.4.24",
@@ -52,7 +52,7 @@
     "postcss-loader": "^7.2.4",
     "postcss-preset-env": "^8.0.1",
     "prop-types": "^15.8.1",
-    "puppeteer": "^18.0.0",
+    "puppeteer": "^24.16.0",
     "ramda": "^0.28.0",
     "rc-steps": "^6.0.0",
     "react": "^18.2.0",
@@ -108,7 +108,7 @@
     "lint-staged": "^12.1.2",
     "prettier": "^2.7.1",
     "prettier-plugin-tailwindcss": "^0.1.13",
-    "webpack-dev-server": "^4.13.1"
+    "webpack-dev-server": "^4.15.2"
   },
   "lint-staged": {
     "app/**/*.{js,jsx,json,ts,tsx}": [

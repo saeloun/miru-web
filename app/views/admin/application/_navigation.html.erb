@@ -18,4 +18,6 @@ as defined by the routes in the `admin/` namespace
       class: "navigation__link navigation__link--#{nav_link_state(resource)}"
     ) if accessible_action?(model_from_resource(resource), :index) %>
   <% end %>
+
+  <%= link_to "Settings", edit_admin_setting_path, class: "navigation__link" %>
 </nav>

@@ -35,6 +35,7 @@ class CreateInvitedUserService
       add_role_to_invited_user
       create_client_member
       create_notification_preference
+      create_email_rate_limiter
     end
   rescue StandardError => e
     service_failed(e.message)
@@ -112,6 +113,10 @@ class CreateInvitedUserService
       NotificationPreference.find_or_create_by(
         user_id: user.id,
         company_id: invitation.company.id)
+    end
+
+    def create_email_rate_limiter
+      user.create_email_rate_limiter!
     end
 
     def create_reset_password_token
