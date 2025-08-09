@@ -23,7 +23,7 @@ RSpec.describe Setting, type: :model do
     end
   end
 
-  describe ".current_inteval_start_timestamp" do
+  describe ".current_interval_start_timestamp" do
     context "when interval_unit is minutes" do
       before do
         Setting.interval_unit = :min
@@ -33,7 +33,7 @@ RSpec.describe Setting, type: :model do
       it "returns timestamp 10 minutes ago" do
         current_time = Time.current
         expected_time = current_time - 10.minutes
-        expect(Setting.current_inteval_start_timestamp).to be_within(2.seconds).of(expected_time)
+        expect(Setting.current_interval_start_timestamp).to be_within(2.seconds).of(expected_time)
       end
     end
 
@@ -46,7 +46,7 @@ RSpec.describe Setting, type: :model do
       it "returns timestamp 2 hours ago" do
         current_time = Time.current
         expected_time = current_time - 2.hours
-        expect(Setting.current_inteval_start_timestamp).to be_within(2.seconds).of(expected_time)
+        expect(Setting.current_interval_start_timestamp).to be_within(2.seconds).of(expected_time)
       end
     end
   end

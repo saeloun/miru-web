@@ -13,7 +13,7 @@ class Setting < RailsSettings::Base
     validates: { presence: true, inclusion: { in: TIME_INTERVAL } },
     option_values: TIME_INTERVAL
 
-  def self.current_inteval_start_timestamp
+  def self.current_interval_start_timestamp
     current_time = Time.current
 
     interval = if interval_unit == :min

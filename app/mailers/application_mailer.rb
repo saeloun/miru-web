@@ -10,6 +10,8 @@ class ApplicationMailer < ActionMailer::Base
   end
 
   def email_rate_limiter
+    return nil unless current_user
+
     @email_rate_limiter ||= current_user.email_rate_limiter
   end
 
@@ -38,7 +40,7 @@ class ApplicationMailer < ActionMailer::Base
 
   def rate_within_time_limit
     email_rate_limiter.current_interval_started_at &&
-      (Setting.current_inteval_start_timestamp < email_rate_limiter.current_interval_started_at)
+      (Setting.current_interval_start_timestamp < email_rate_limiter.current_interval_started_at)
   end
 
   def email_sent_within_limit
