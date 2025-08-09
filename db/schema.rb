@@ -216,7 +216,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_08_09_134514) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_email_rate_limiters_on_user_id"
-    t.check_constraint "number_of_emails_sent >= 0", name: "email_rate_limiters_non_negative_count", validate: false
+    t.check_constraint "number_of_emails_sent >= 0", name: "email_rate_limiters_non_negative_count"
   end
 
   create_table "employments", force: :cascade do |t|
