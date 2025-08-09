@@ -15,7 +15,6 @@ class ApplicationMailer < ActionMailer::Base
 
   def email_within_rate_limit
     return if email_rate_limiter.nil? || current_user.nil?
-    # When the user's last email interval reset time is greater then send email
     return true unless rate_within_time_limit
 
     rate_within_time_limit && email_sent_within_limit
@@ -30,23 +29,14 @@ class ApplicationMailer < ActionMailer::Base
       if email_rate_limiter.current_interval_started_at.nil?
         email_rate_limiter.current_interval_started_at = Time.current
       end
-      # Update the count of emails sent in the rate limiter, as this email was sent within the current rate limit interval.
       email_rate_limiter.number_of_emails_sent = @email_rate_limiter.number_of_emails_sent + 1
       email_rate_limiter.save
     else
-      # Reset the email rate limiter and set the new time interval started at time.
       email_rate_limiter.update(number_of_emails_sent: 1, current_interval_started_at: Time.current)
     end
   end
 
   def rate_within_time_limit
-    # Returns true when the current interval start timestamp is earlier than the user's last email interval reset time.
-    # Condition: (current time - global interval length) < user's email reset timestamp
-    # Example:
-    # X = (current time - global interval length) = (6:25 PM - 5.minutes) = 6:20 PM
-    # Y = user's email reset timestamp = 6:21 PM
-    # Result: 6:20 PM (X) < 6:21 PM (Y) = True
-
     email_rate_limiter.current_interval_started_at &&
       (Setting.current_inteval_start_timestamp < email_rate_limiter.current_interval_started_at)
   end
