@@ -53,14 +53,16 @@ gem "bootsnap", ">= 1.4.4", require: false
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 gem "image_processing", ">= 1.2"
 
-# Webpack bundler for rails
-gem "shakapacker", "6.0.0"
+# Vite bundler for rails
+gem "vite_rails", "~> 3.0"
 
 # React hook for rails
 gem "react-rails", "2.6.2"
 
 # Use SCSS for stylesheets
 gem "sass-rails"
+
+# Note: Shakapacker has been replaced with Vite Rails
 
 # #--- gems for server & infra configuration ---##
 gem "dotenv-rails"

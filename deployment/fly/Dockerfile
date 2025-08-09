@@ -3,9 +3,9 @@ ARG RUBY_VERSION=3.2.4
 ARG VARIANT=jemalloc-slim
 FROM quay.io/evl.ms/fullstaq-ruby:${RUBY_VERSION}-${VARIANT} as base
 
-ARG NODE_VERSION=18.14.2
+ARG NODE_VERSION=22.18.0
 ARG BUNDLER_VERSION=2.4.10
-ARG YARN_VERSION=1.22.17
+ARG PNPM_VERSION=9.15.2
 
 ARG RAILS_ENV=production
 ENV RAILS_ENV=${RAILS_ENV}
@@ -34,7 +34,7 @@ ENV BASH_ENV ~/.bashrc
 ENV VOLTA_HOME /root/.volta
 ENV PATH $VOLTA_HOME/bin:/usr/local/bin:$PATH
 
-RUN volta install node@${NODE_VERSION} && volta install yarn@${YARN_VERSION}
+RUN volta install node@${NODE_VERSION} && volta install pnpm@${PNPM_VERSION}
 
 FROM base as build_deps
 
@@ -60,10 +60,9 @@ RUN bundle install &&  rm -rf vendor/bundle/ruby/*/cache
 
 FROM build_deps as node_modules
 
-COPY package*json ./
-COPY yarn.* ./
+COPY package.json pnpm-lock.yaml ./
 
-RUN yarn install
+RUN pnpm install --frozen-lockfile
 
 FROM base
 
