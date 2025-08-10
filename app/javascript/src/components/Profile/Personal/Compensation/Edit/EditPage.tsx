@@ -1,6 +1,5 @@
 import React from "react";
 
-import { currencyFormat } from "helpers";
 import {
   DeleteIcon,
   CoinsIcon,
@@ -11,6 +10,7 @@ import "react-phone-number-input/style.css";
 import { Button } from "StyledComponents";
 import { CustomInputText } from "common/CustomInputText";
 import { ErrorSpan } from "common/ErrorSpan";
+import { currencyFormat } from "helpers";
 
 const EditPage = ({
   handleAddEarning,

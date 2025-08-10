@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import React, { useEffect, useState } from "react";
 
-import "react-phone-number-input/style.css"; //eslint-disable-line
 import { Formik, Form, FormikProps } from "formik";
 import PhoneInput from "react-phone-number-input";
 import flags from "react-phone-number-input/flags";
+import "react-phone-number-input/style.css"; //eslint-disable-line
 import { Button, Toastr } from "StyledComponents";
 import worldCountries from "world-countries";
 import clientApi from "apis/clients";
