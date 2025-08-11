@@ -1,13 +1,12 @@
 import React from "react";
 
-import { minToHHMM } from "helpers";
-
 import {
   generateLeaveIcon,
   generateLeaveColor,
   generateHolidayIcon,
   generateHolidayColor,
 } from "components/Profile/Organization/Leaves/utils";
+import { minToHHMM } from "helpers";
 
 const TableRow = ({ timeoffEntry }) => {
   const { leaveDate, duration, leaveType, holidayInfo } = timeoffEntry;

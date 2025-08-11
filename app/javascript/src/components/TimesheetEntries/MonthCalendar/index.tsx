@@ -2,10 +2,9 @@
 /* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
 
+import { useTimesheetEntries } from "context/TimesheetEntries";
 import dayjs from "dayjs";
 import { minToHHMM } from "helpers";
-
-import { useTimesheetEntries } from "context/TimesheetEntries";
 
 import CalendarCell from "./CalendarCell";
 import InvalidEmptyCalendarCell from "./InvalidEmptyCalendarCell";

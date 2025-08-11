@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
 
+import CustomDateRangePicker from "common/CustomDateRangePicker";
+import { useUserContext } from "context/UserContext";
 import dayjs from "dayjs";
 import { XIcon, SearchIcon } from "miruIcons";
 import Select from "react-select";
-
-import CustomDateRangePicker from "common/CustomDateRangePicker";
-import { useUserContext } from "context/UserContext";
 
 import { handleDateRangeOptions } from "./DateRange";
 import SearchTeamMembers from "./SearchTeamMembers";

@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
 
-import Logger from "js-logger";
-
 import payment from "apis/payments/payments";
 import Loader from "common/Loader/index";
 import withLayout from "common/Mobile/HOC/withLayout";
 import { useUserContext } from "context/UserContext";
+import Logger from "js-logger";
 import { unmapPayment } from "mapper/mappedIndex";
 
 import Header from "./Header";

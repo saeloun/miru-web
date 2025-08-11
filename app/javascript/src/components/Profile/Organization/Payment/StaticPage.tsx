@@ -1,9 +1,9 @@
+import { ApiStatus as PaymentSettingsStatus } from "constants/index";
+
 import React from "react";
 
-import { ConnectSVG, StripeLogoSVG, disconnectAccountSVG } from "miruIcons";
-
 import Loader from "common/Loader/index";
-import { ApiStatus as PaymentSettingsStatus } from "constants/index";
+import { ConnectSVG, StripeLogoSVG, disconnectAccountSVG } from "miruIcons";
 
 import EditHeader from "../../Common/EditHeader";
 

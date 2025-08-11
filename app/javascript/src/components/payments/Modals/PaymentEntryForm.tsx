@@ -1,13 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
 
-import dayjs from "dayjs";
-import { Form, Formik, FormikProps } from "formik";
-import { currencyFormat, useOutsideClick } from "helpers";
-import { CalendarIcon, SearchIcon } from "miruIcons";
-import { useNavigate } from "react-router-dom";
-import Select, { DropdownIndicatorProps, components } from "react-select";
-import { Badge, MobileMoreOptions, Toastr } from "StyledComponents";
-
 import payment from "apis/payments/payments";
 import CustomDatePicker from "common/CustomDatePicker";
 import { CustomInputText } from "common/CustomInputText";
@@ -15,7 +7,14 @@ import CustomReactSelect from "common/CustomReactSelect";
 import { CustomValueContainer } from "common/CustomReactSelectStyle";
 import { CustomTextareaAutosize } from "common/CustomTextareaAutosize";
 import { useUserContext } from "context/UserContext";
+import dayjs from "dayjs";
+import { Form, Formik, FormikProps } from "formik";
+import { currencyFormat, useOutsideClick } from "helpers";
 import { mapPayment } from "mapper/mappedIndex";
+import { CalendarIcon, SearchIcon } from "miruIcons";
+import { useNavigate } from "react-router-dom";
+import Select, { DropdownIndicatorProps, components } from "react-select";
+import { Badge, MobileMoreOptions, Toastr } from "StyledComponents";
 import getStatusCssClass from "utils/getBadgeStatus";
 
 import { transactionTypes } from "./constants";

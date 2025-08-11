@@ -1,9 +1,8 @@
 import React, { Fragment, useState, useEffect } from "react";
 
-import { useLocation, useParams } from "react-router-dom";
-
 import { ProfileContext } from "context/Profile/ProfileContext";
 import { useUserContext } from "context/UserContext";
+import { useLocation, useParams } from "react-router-dom";
 
 import { CompensationDetailsState } from "./Context/CompensationDetailsState";
 import { EmploymentDetailsState } from "./Context/EmploymentDetailsState";

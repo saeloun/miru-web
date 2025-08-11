@@ -1,14 +1,13 @@
 /* eslint-disable import/exports-last */
 import React from "react";
 
-import Select from "react-select";
-
 import {
   customErrStyles,
   customStyles,
   CustomValueContainer,
 } from "common/CustomReactSelectStyle";
 import { useUserContext } from "context/UserContext";
+import Select from "react-select";
 
 type CustomReactSelectProps = {
   id?: string;

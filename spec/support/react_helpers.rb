@@ -5,7 +5,7 @@ module ReactHelpers
   def wait_for_react
     # Wait for the main App component to be present
     expect(page).to have_css('[data-testid="app-root"]', wait: 10)
-    
+
     # Wait for React to finish initial rendering
     sleep(0.5)
   end
@@ -26,11 +26,11 @@ module ReactHelpers
   # Wait for page to be fully loaded including React hydration
   def wait_for_page_load
     # Wait for document ready state
-    expect(page.evaluate_script('document.readyState')).to eq('complete')
-    
+    expect(page.evaluate_script("document.readyState")).to eq("complete")
+
     # Wait for React to mount
     wait_for_react
-    
+
     # Additional wait for any async loading
     sleep(1)
   end
@@ -39,12 +39,12 @@ module ReactHelpers
   def sign_in_with(email, password)
     visit "/login"
     wait_for_page_load
-    
+
     fill_in "email", with: email
     fill_in "password", with: password
-    
+
     click_button "Sign In"
-    
+
     # Wait for redirect and React to load
     wait_for_page_load
   end
@@ -71,7 +71,7 @@ module ReactHelpers
   def fill_react_field(field_name, value)
     field = find_field(field_name)
     field.fill_in(with: value)
-    
+
     # Trigger React onChange event
     field.native.send_keys(:tab)
   end
@@ -89,7 +89,7 @@ RSpec.configure do |config|
   config.before(:each, type: :system) do
     # Set longer default wait time for system specs
     Capybara.default_max_wait_time = 10
-    
+
     # Ensure we have a clean slate (only for Chrome/Selenium drivers)
     if page.driver.respond_to?(:browser) && page.driver.browser.respond_to?(:manage)
       page.driver.browser.manage.delete_all_cookies

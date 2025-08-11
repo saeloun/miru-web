@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
 
+import { useUserContext } from "context/UserContext";
 import { useDebounce } from "helpers";
 import { CaretDownIcon, SearchIcon, XIcon } from "miruIcons";
 import Select from "react-select";
 import { MobileMoreOptions } from "StyledComponents";
-
-import { useUserContext } from "context/UserContext";
 
 const SearchTimeEntries = ({
   selectedEmployeeId,

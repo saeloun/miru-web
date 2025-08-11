@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 
+import { useUserContext } from "context/UserContext";
 import { intervalToDuration } from "date-fns";
 import { DotsThreeVerticalIcon } from "miruIcons";
 import { useNavigate } from "react-router-dom";
 import { Avatar, Badge, Button } from "StyledComponents";
-
-import { useUserContext } from "context/UserContext";
 import getStatusCssClass from "utils/getBadgeStatus";
 
 import MoreOptions from "./MoreOptions";

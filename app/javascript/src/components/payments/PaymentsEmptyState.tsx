@@ -1,8 +1,7 @@
 import React from "react";
 
-import { PlusIcon } from "miruIcons";
-
 import EmptyStates from "common/EmptyStates";
+import { PlusIcon } from "miruIcons";
 
 import { PaymentsEmptyStateProps } from "./interfaces";
 

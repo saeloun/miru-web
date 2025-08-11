@@ -1,5 +1,13 @@
 import React, { useState } from "react";
 
+import CompanyInfo from "components/Invoices/common/CompanyInfo";
+import InvoiceInfo from "components/Invoices/Generate/MobileView/Container/InvoicePreview/InvoiceInfo";
+import InvoiceTotal from "components/Invoices/Generate/MobileView/Container/InvoicePreview/InvoiceTotal";
+import LineItems from "components/Invoices/Generate/MobileView/Container/MenuContainer/LineItems";
+import MarkInvoiceAsPaidModal from "components/Invoices/Invoice/MarkInvoicePaidModal";
+import ConnectPaymentGateway from "components/Invoices/popups/ConnectPaymentGateway";
+import DeleteInvoice from "components/Invoices/popups/DeleteInvoice";
+import WavieOffInvoice from "components/Invoices/popups/WavieOffInvoice";
 import {
   PaperPlaneTiltIcon,
   PrinterIcon,
@@ -14,15 +22,6 @@ import {
 } from "miruIcons";
 import { useNavigate } from "react-router-dom";
 import { Button, MobileMoreOptions, Badge } from "StyledComponents";
-
-import CompanyInfo from "components/Invoices/common/CompanyInfo";
-import InvoiceInfo from "components/Invoices/Generate/MobileView/Container/InvoicePreview/InvoiceInfo";
-import InvoiceTotal from "components/Invoices/Generate/MobileView/Container/InvoicePreview/InvoiceTotal";
-import LineItems from "components/Invoices/Generate/MobileView/Container/MenuContainer/LineItems";
-import MarkInvoiceAsPaidModal from "components/Invoices/Invoice/MarkInvoicePaidModal";
-import ConnectPaymentGateway from "components/Invoices/popups/ConnectPaymentGateway";
-import DeleteInvoice from "components/Invoices/popups/DeleteInvoice";
-import WavieOffInvoice from "components/Invoices/popups/WavieOffInvoice";
 import getStatusCssClass from "utils/getBadgeStatus";
 
 import HistoryMobileView from "../ViewHistory/HistoryMobileView";

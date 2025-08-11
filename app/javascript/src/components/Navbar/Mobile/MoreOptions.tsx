@@ -1,8 +1,7 @@
 import React from "react";
 
-import { SidePanel } from "StyledComponents";
-
 import { useUserContext } from "context/UserContext";
+import { SidePanel } from "StyledComponents";
 
 import UserActions from "../UserActions";
 import UserInfo from "../UserInfo";

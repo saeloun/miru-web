@@ -1,7 +1,5 @@
 import React, { Fragment, useEffect, useState } from "react";
 
-import { Outlet, useNavigate, useParams } from "react-router-dom";
-
 import teamsApi from "apis/teams";
 import Loader from "common/Loader/index";
 import { MobileEditHeader } from "common/Mobile/MobileEditHeader";
@@ -9,6 +7,7 @@ import DetailsHeader from "components/Profile/Common/DetailsHeader";
 import { useProfileContext } from "context/Profile/ProfileContext";
 import { useUserContext } from "context/UserContext";
 import { employmentMapper } from "mapper/teams.mapper";
+import { Outlet, useNavigate, useParams } from "react-router-dom";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import MobilePersonalDetails from "./MobilePersonalDetails";

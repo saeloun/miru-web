@@ -1,13 +1,13 @@
-import React from "react";
+import { MIRU_APP_URL, Paths } from "constants/index";
 
-import { Formik, Form, FormikProps } from "formik";
-import { MiruLogoSVG } from "miruIcons";
-import { ToastContainer } from "react-toastify";
+import React from "react";
 
 import authenticationApi from "apis/authentication";
 import { InputErrors, InputField } from "common/FormikFields";
 import MiruLogoWatermark from "common/MiruLogoWatermark";
-import { MIRU_APP_URL, Paths } from "constants/index";
+import { Formik, Form, FormikProps } from "formik";
+import { MiruLogoSVG } from "miruIcons";
+import { ToastContainer } from "react-toastify";
 import { setToLocalStorage } from "utils/storage";
 
 import {

@@ -1,9 +1,8 @@
 import React from "react";
 
+import CustomCheckbox from "common/CustomCheckbox";
 import { currencyFormat } from "helpers";
 import { Badge } from "StyledComponents";
-
-import CustomCheckbox from "common/CustomCheckbox";
 import getStatusCssClass from "utils/getBadgeStatus";
 
 const InvoicesList = ({

@@ -1,16 +1,15 @@
 import React, { useState, useRef, useEffect } from "react";
 
-import dayjs from "dayjs";
-import { Formik, Form, FormikProps } from "formik";
-import { useOutsideClick } from "helpers";
-import { SearchIcon, CalendarIcon, CaretDownIcon } from "miruIcons";
-import Select, { components, DropdownIndicatorProps } from "react-select";
-
 import { CustomAdvanceInput } from "common/CustomAdvanceInput";
 import CustomDatePicker from "common/CustomDatePicker";
 import { CustomInputText } from "common/CustomInputText";
 import { InputErrors, InputField } from "common/FormikFields";
 import { reactSelectStyles } from "components/Invoices/common/InvoiceDetails/Styles";
+import dayjs from "dayjs";
+import { Formik, Form, FormikProps } from "formik";
+import { useOutsideClick } from "helpers";
+import { SearchIcon, CalendarIcon, CaretDownIcon } from "miruIcons";
+import Select, { components, DropdownIndicatorProps } from "react-select";
 
 import { invoiceDetailsFormInitialValues, invoiceDetailsSchema } from "./utils";
 

@@ -1,7 +1,6 @@
 import React, { createContext, useReducer } from "react";
 
 import PropTypes from "prop-types";
-
 import { getValueFromLocalStorage } from "utils/storage";
 
 import authReducer from "../reducers/auth";

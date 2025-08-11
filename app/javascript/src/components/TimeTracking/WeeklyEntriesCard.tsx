@@ -2,11 +2,10 @@
 /* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
 
+import timesheetEntryApi from "apis/timesheet-entry";
 import { minFromHHMM, minToHHMM, validateTimesheetEntry } from "helpers";
 import { CheckedCheckboxSVG, UncheckedCheckboxSVG, EditIcon } from "miruIcons";
 import { TimeInput, Toastr } from "StyledComponents";
-
-import timesheetEntryApi from "apis/timesheet-entry";
 
 const WeeklyEntriesCard = ({
   client,

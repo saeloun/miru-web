@@ -2,7 +2,6 @@ import React from "react";
 
 import { currencyFormat } from "helpers";
 import { useNavigate } from "react-router-dom";
-
 import getStatusCssClass from "utils/getBadgeStatus";
 
 const SearchDataRow = ({ invoice }) => {

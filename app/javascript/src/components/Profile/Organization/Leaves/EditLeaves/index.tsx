@@ -1,13 +1,13 @@
-import React from "react";
+import { allocationFrequency, getAllocationPeriod } from "constants/leaveType";
 
-import { DeleteIcon } from "miruIcons";
-import { Button } from "StyledComponents";
+import React from "react";
 
 import { CustomInputText } from "common/CustomInputText";
 import CustomReactSelect from "common/CustomReactSelect";
 import { Divider } from "common/Divider";
 import EditHeader from "components/Profile/Common/EditHeader";
-import { allocationFrequency, getAllocationPeriod } from "constants/leaveType";
+import { DeleteIcon } from "miruIcons";
+import { Button } from "StyledComponents";
 
 import {
   ColorOption,

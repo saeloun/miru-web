@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 
+import CustomDatePicker from "common/CustomDatePicker";
 import dayjs from "dayjs";
 import {
   lineTotalCalc,
@@ -9,8 +10,6 @@ import {
 } from "helpers";
 import { DeleteIcon, CalendarIcon } from "miruIcons";
 import TextareaAutosize from "react-textarea-autosize";
-
-import CustomDatePicker from "common/CustomDatePicker";
 
 const ManualEntry = ({
   addNew,

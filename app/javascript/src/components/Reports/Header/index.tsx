@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import React, { Fragment, useState } from "react";
 
+import { useUserContext } from "context/UserContext";
 import {
   CaretDownIcon,
   FileCsvIcon,
@@ -13,8 +14,6 @@ import {
 } from "miruIcons";
 import { Link } from "react-router-dom";
 import { MobileMoreOptions } from "StyledComponents";
-
-import { useUserContext } from "context/UserContext";
 
 import { getReports } from "./fetchReport";
 import NavigationFilter from "./NavigationFilter";

@@ -1,8 +1,7 @@
 import React from "react";
 
-import { Modal, Button } from "StyledComponents";
-
 import invoicesApi from "apis/invoices";
+import { Modal, Button } from "StyledComponents";
 
 interface IProps {
   invoices_ids: any;

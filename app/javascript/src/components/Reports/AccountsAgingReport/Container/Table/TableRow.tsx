@@ -1,9 +1,8 @@
 import React, { useState, useRef } from "react";
 
+import { useUserContext } from "context/UserContext";
 import { currencyFormat } from "helpers";
 import { Avatar, Tooltip } from "StyledComponents";
-
-import { useUserContext } from "context/UserContext";
 
 const TableRow = ({ currency, report }) => {
   const { id, name, amount_overdue, logo } = report;

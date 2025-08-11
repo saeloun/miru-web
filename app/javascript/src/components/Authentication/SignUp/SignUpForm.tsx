@@ -1,13 +1,13 @@
-import React, { useRef, useState } from "react";
+import { MIRU_APP_URL, Paths } from "constants/index";
 
-import { Formik, Form, FormikProps } from "formik";
-import { GoogleSVG, MiruLogoSVG } from "miruIcons";
-import { useNavigate } from "react-router-dom";
+import React, { useRef, useState } from "react";
 
 import authenticationApi from "apis/authentication";
 import CustomCheckbox from "common/CustomCheckbox";
 import { InputErrors, InputField } from "common/FormikFields";
-import { MIRU_APP_URL, Paths } from "constants/index";
+import { Formik, Form, FormikProps } from "formik";
+import { GoogleSVG, MiruLogoSVG } from "miruIcons";
+import { useNavigate } from "react-router-dom";
 
 import PrivacyPolicyModal from "./PrivacyPolicyModal";
 import TermsOfServiceModal from "./TermsOfServiceModal";

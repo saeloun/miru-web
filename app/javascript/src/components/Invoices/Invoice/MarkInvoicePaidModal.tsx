@@ -1,10 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
 
-import dayjs from "dayjs";
-import { currencyFormat, useOutsideClick } from "helpers";
-import { CalendarIcon, XIcon } from "miruIcons";
-import { Button, MobileMoreOptions, Modal, Toastr } from "StyledComponents";
-
 import payment from "apis/payments/payments";
 import CustomDatePicker from "common/CustomDatePicker";
 import { CustomInputText } from "common/CustomInputText";
@@ -12,7 +7,11 @@ import CustomReactSelect from "common/CustomReactSelect";
 import { CustomTextareaAutosize } from "common/CustomTextareaAutosize";
 import { transactionTypes } from "components/payments/Modals/constants";
 import { useUserContext } from "context/UserContext";
+import dayjs from "dayjs";
+import { currencyFormat, useOutsideClick } from "helpers";
 import { mapPayment } from "mapper/payment.mapper";
+import { CalendarIcon, XIcon } from "miruIcons";
+import { Button, MobileMoreOptions, Modal, Toastr } from "StyledComponents";
 
 const MarkInvoiceAsPaidModal = ({
   invoice,

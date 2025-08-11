@@ -1,8 +1,7 @@
 import React, { Fragment } from "react";
 
-import { MobileIcon } from "miruIcons";
-
 import EmptyStates from "common/EmptyStates";
+import { MobileIcon } from "miruIcons";
 
 const StaticPage = ({ devices }) => {
   const DeviceDetails = ({ device }) => {

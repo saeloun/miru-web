@@ -1,6 +1,10 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import React, { useState, useRef, useEffect } from "react";
 
+import CustomCheckbox from "common/CustomCheckbox";
+import CustomDatePicker from "common/CustomDatePicker";
+import { CustomInputText } from "common/CustomInputText";
+import { CustomTextareaAutosize } from "common/CustomTextareaAutosize";
 import dayjs from "dayjs";
 import { minFromHHMM, minToHHMM, useDebounce } from "helpers";
 import {
@@ -19,11 +23,6 @@ import {
   SidePanel,
   TimeInput,
 } from "StyledComponents";
-
-import CustomCheckbox from "common/CustomCheckbox";
-import CustomDatePicker from "common/CustomDatePicker";
-import { CustomInputText } from "common/CustomInputText";
-import { CustomTextareaAutosize } from "common/CustomTextareaAutosize";
 
 import DeleteEntryModal from "./DeleteEntryModal";
 

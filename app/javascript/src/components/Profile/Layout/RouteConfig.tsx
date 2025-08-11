@@ -1,11 +1,10 @@
 import React, { useEffect } from "react";
 
-import { Routes, Route, Navigate } from "react-router-dom";
-
 import ErrorPage from "common/Error";
 import Layout from "components/Profile/index";
 import { useProfileContext } from "context/Profile/ProfileContext";
 import { useUserContext } from "context/UserContext";
+import { Routes, Route, Navigate } from "react-router-dom";
 
 import { SETTINGS } from "./routes";
 

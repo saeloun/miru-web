@@ -1,8 +1,6 @@
 /* eslint-disable no-unused-vars */
 import React, { Fragment, useEffect, useState } from "react";
 
-import { useParams } from "react-router-dom";
-
 import preferencesApi from "apis/preferences";
 import CustomToggle from "common/CustomToggle";
 import Loader from "common/Loader/index";
@@ -10,6 +8,7 @@ import { MobileEditHeader } from "common/Mobile/MobileEditHeader";
 import DetailsHeader from "components/Profile/Common/DetailsHeader";
 import { useProfileContext } from "context/Profile/ProfileContext";
 import { useUserContext } from "context/UserContext";
+import { useParams } from "react-router-dom";
 
 const NotificationPreferences = () => {
   const { user, isDesktop } = useUserContext();

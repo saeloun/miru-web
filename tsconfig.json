@@ -25,6 +25,9 @@
       "miruIcons": ["./app/javascript/src/miruIcons"],
     }
   },
+  "include": [
+    "app/javascript/**/*"
+  ],
   "exclude": [
     "**/*.spec.ts",
     "node_modules",

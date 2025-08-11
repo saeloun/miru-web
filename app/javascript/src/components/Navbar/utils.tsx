@@ -1,5 +1,8 @@
+import { Paths, LocalStorageKeys } from "constants/index";
+
 import React from "react";
 
+import { logoutApi } from "apis/logoutApi";
 import {
   TimeTrackingIcon,
   ClientsIcon,
@@ -13,9 +16,6 @@ import {
   CoinsIcon,
 } from "miruIcons";
 import { NavLink } from "react-router-dom";
-
-import { logoutApi } from "apis/logoutApi";
-import { Paths, LocalStorageKeys } from "constants/index";
 
 const navOptions = [
   {

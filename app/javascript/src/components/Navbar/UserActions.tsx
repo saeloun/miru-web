@@ -1,14 +1,13 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import React, { useState, useEffect, useRef } from "react";
 
+import WorkspaceApi from "apis/workspaces";
+import { useAuthDispatch } from "context/auth";
+import { useUserContext } from "context/UserContext";
 import { useOutsideClick } from "helpers";
 import { SettingIcon, SignOutIcon, Switcher } from "miruIcons";
 import { NavLink } from "react-router-dom";
 import { Avatar, Tooltip } from "StyledComponents";
-
-import WorkspaceApi from "apis/workspaces";
-import { useAuthDispatch } from "context/auth";
-import { useUserContext } from "context/UserContext";
 
 import { activeClassName, handleLogout } from "./utils";
 

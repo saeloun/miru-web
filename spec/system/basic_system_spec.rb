@@ -9,7 +9,7 @@ RSpec.describe "Basic System Test", type: :system do
 
     # Check if we're on the login page
     expect(page).to have_current_path("/login")
-    
+
     # Check if React app loaded
     expect(page).to have_css('[data-testid="app-root"]')
     expect(page).to have_css('[data-component="App"]')
@@ -22,7 +22,7 @@ RSpec.describe "Basic System Test", type: :system do
     # Check if React app is loaded
     expect(page).to have_css('[data-testid="app-root"]')
     expect(page).to have_css('[data-component="App"]')
-    
+
     # Check if page contains Miru branding
     expect(page.html).to include("Miru")
   end

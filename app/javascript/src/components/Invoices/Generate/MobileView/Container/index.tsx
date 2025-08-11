@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
 
-import { Toastr } from "StyledComponents";
-
 import invoicesApi from "apis/invoices";
 import ConnectPaymentGateway from "components/Invoices/popups/ConnectPaymentGateway";
 import { mapGenerateInvoice } from "mapper/mappedIndex";
+import { Toastr } from "StyledComponents";
 
 import AddLineItemContainer from "./AddLineItemContainer";
 import InvoicePreviewContainer from "./InvoicePreview";

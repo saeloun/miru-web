@@ -1,11 +1,11 @@
-import React from "react";
-
-import Cookies from "js-cookie";
-import { Routes, Route, Outlet, Navigate } from "react-router-dom";
-
-import ErrorPage from "common/Error";
 import { Roles, Paths } from "constants/index";
 import { ROUTES } from "constants/routes";
+
+import React from "react";
+
+import ErrorPage from "common/Error";
+import Cookies from "js-cookie";
+import { Routes, Route, Outlet, Navigate } from "react-router-dom";
 import { dashboardUrl } from "utils/dashboardUrl";
 
 const redirectUrl = role => {

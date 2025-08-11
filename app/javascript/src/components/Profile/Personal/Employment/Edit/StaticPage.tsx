@@ -4,7 +4,6 @@ import dayjs from "dayjs";
 import { ProjectsIcon, CalendarIcon, DeleteIcon } from "miruIcons";
 import "react-phone-number-input/style.css";
 import { Button } from "StyledComponents";
-
 import CustomDatePicker from "common/CustomDatePicker";
 import { CustomInputText } from "common/CustomInputText";
 import { CustomReactSelect } from "common/CustomReactSelect";

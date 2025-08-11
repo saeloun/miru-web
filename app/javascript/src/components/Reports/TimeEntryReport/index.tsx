@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
 
-import { Pagination } from "StyledComponents";
-
 import reportsApi from "apis/reports";
 import Loader from "common/Loader/index";
 import { useUserContext } from "context/UserContext";
+import { Pagination } from "StyledComponents";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import { TimeEntryReportMobileView } from "./TimeEntryReportMobileView";

@@ -1,6 +1,9 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import React, { useState, useEffect, useRef, MutableRefObject } from "react";
 
+import timesheetEntryApi from "apis/timesheet-entry";
+import CustomDatePicker from "common/CustomDatePicker";
+import { useUserContext } from "context/UserContext";
 import { format } from "date-fns";
 import dayjs from "dayjs";
 import {
@@ -13,10 +16,6 @@ import {
 import { CheckedCheckboxSVG, UncheckedCheckboxSVG } from "miruIcons";
 import TextareaAutosize from "react-textarea-autosize";
 import { TimeInput, Toastr } from "StyledComponents";
-
-import timesheetEntryApi from "apis/timesheet-entry";
-import CustomDatePicker from "common/CustomDatePicker";
-import { useUserContext } from "context/UserContext";
 import { getValueFromLocalStorage, setToLocalStorage } from "utils/storage";
 
 import MobileEntryForm from "./MobileView/MobileEntryForm";

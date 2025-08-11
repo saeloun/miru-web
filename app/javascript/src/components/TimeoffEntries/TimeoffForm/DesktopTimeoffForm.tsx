@@ -1,13 +1,12 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import React, { useRef } from "react";
 
+import CustomDatePicker from "common/CustomDatePicker";
+import { useTimesheetEntries } from "context/TimesheetEntries";
 import { format } from "date-fns";
 import dayjs from "dayjs";
 import TextareaAutosize from "react-textarea-autosize";
 import { Button, BUTTON_STYLES, TimeInput } from "StyledComponents";
-
-import CustomDatePicker from "common/CustomDatePicker";
-import { useTimesheetEntries } from "context/TimesheetEntries";
 
 const DesktopTimeoffForm = ({
   isDisplayEditTimeoffEntryForm,

@@ -1,12 +1,11 @@
 import React, { Fragment, useState } from "react";
 
-import { currencyFormat } from "helpers";
-import { DotsThreeVerticalIcon, ExpenseIconSVG, InvoicesIcon } from "miruIcons";
-import { useNavigate } from "react-router-dom";
-
 import DeleteExpenseModal from "components/Expenses/Modals/DeleteExpenseModal";
 import { Categories } from "components/Expenses/utils";
 import { useUserContext } from "context/UserContext";
+import { currencyFormat } from "helpers";
+import { DotsThreeVerticalIcon, ExpenseIconSVG, InvoicesIcon } from "miruIcons";
+import { useNavigate } from "react-router-dom";
 
 import MoreOptions from "./MoreOptions";
 

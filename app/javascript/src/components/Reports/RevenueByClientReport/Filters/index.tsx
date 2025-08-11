@@ -1,18 +1,18 @@
-import React, { useEffect, useRef, useState } from "react";
+import { LocalStorageKeys } from "constants/index";
 
-import dayjs from "dayjs";
-import { useDebounce, useOutsideClick } from "helpers";
-import Logger from "js-logger";
-import { FilterIcon, MinusIcon, PlusIcon, XIcon } from "miruIcons";
-import { Button, SidePanel } from "StyledComponents";
+import React, { useEffect, useRef, useState } from "react";
 
 import companiesApi from "apis/companies";
 import clientRevenueApi from "apis/reports/clientRevenue";
 import CustomDateRangePicker from "common/CustomDateRangePicker";
 import CustomRadioButton from "common/CustomRadio";
 import ClientFilter from "components/Reports/Filters/ClientFilter";
-import { LocalStorageKeys } from "constants/index";
 import { useUserContext } from "context/UserContext";
+import dayjs from "dayjs";
+import { useDebounce, useOutsideClick } from "helpers";
+import Logger from "js-logger";
+import { FilterIcon, MinusIcon, PlusIcon, XIcon } from "miruIcons";
+import { Button, SidePanel } from "StyledComponents";
 
 import { dateRangeOptions } from "./filterOptions";
 

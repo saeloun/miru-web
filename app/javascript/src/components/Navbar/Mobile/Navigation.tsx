@@ -1,8 +1,7 @@
 import React, { useState, Fragment, useEffect } from "react";
 
-import { DotsThreeVerticalIcon } from "miruIcons";
-
 import { useUserContext } from "context/UserContext";
+import { DotsThreeVerticalIcon } from "miruIcons";
 
 import MoreOptions from "./MoreOptions";
 

@@ -1,12 +1,11 @@
 import React, { useEffect, useState, useRef } from "react";
 
-import { useNavigate } from "react-router-dom";
-
 import clientApi from "apis/clients";
 import Loader from "common/Loader/index";
 import withLayout from "common/Mobile/HOC/withLayout";
 import { useUserContext } from "context/UserContext";
 import { unmapClientList } from "mapper/mappedIndex";
+import { useNavigate } from "react-router-dom";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import ClientMobileMoreOptions from "./ClientMobileMoreOptions";

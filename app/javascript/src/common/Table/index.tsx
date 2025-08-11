@@ -1,11 +1,10 @@
 /* eslint-disable react/display-name */
 import React, { forwardRef, useEffect, useMemo, useRef } from "react";
 
+import { useUserContext } from "context/UserContext";
 import { PencilIcon, DeleteIcon } from "miruIcons";
 import PropTypes from "prop-types";
 import { useTable, useRowSelect } from "react-table";
-
-import { useUserContext } from "context/UserContext";
 
 const IndeterminateCheckbox = forwardRef(
   ({ indeterminate, ...rest }: any, ref) => {

@@ -8,7 +8,6 @@ import "react-phone-number-input/style.css";
 import Select, { components } from "react-select";
 import { Avatar } from "StyledComponents";
 import worldCountries from "world-countries";
-
 import companyProfileApi from "apis/companyProfile";
 import CustomReactSelect from "common/CustomReactSelect";
 import { InputErrors, InputField } from "common/FormikFields";

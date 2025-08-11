@@ -1,16 +1,15 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import React, { useEffect, useState } from "react";
 
+import clientApi from "apis/clients";
+import CustomReactSelect from "common/CustomReactSelect";
+import { InputErrors, InputField } from "common/FormikFields";
 import { Form, Formik, FormikProps } from "formik";
 import { XIcon } from "miruIcons";
 import PhoneInput from "react-phone-number-input";
 import flags from "react-phone-number-input/flags";
 import { Button, SidePanel, Toastr } from "StyledComponents";
 import worldCountries from "world-countries";
-
-import clientApi from "apis/clients";
-import CustomReactSelect from "common/CustomReactSelect";
-import { InputErrors, InputField } from "common/FormikFields";
 
 import { clientSchema, getInitialvalues } from "./formValidationSchema";
 import UploadLogo from "./UploadLogo";

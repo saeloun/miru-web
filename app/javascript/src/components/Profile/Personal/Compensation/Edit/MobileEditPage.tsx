@@ -9,7 +9,6 @@ import {
 } from "miruIcons";
 import "react-phone-number-input/style.css";
 import { Button } from "StyledComponents";
-
 import { CustomInputText } from "common/CustomInputText";
 import { ErrorSpan } from "common/ErrorSpan";
 

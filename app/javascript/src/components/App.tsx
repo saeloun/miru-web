@@ -46,7 +46,7 @@ const App = props => {
   }, []);
 
   return (
-    <div data-testid="app-loaded" data-component="App">
+    <div data-component="App" data-testid="app-loaded">
       <UserContext.Provider
         value={{
           isAdminUser,

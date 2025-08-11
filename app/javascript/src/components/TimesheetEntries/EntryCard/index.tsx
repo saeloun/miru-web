@@ -1,10 +1,9 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import React from "react";
 
+import { useUserContext } from "context/UserContext";
 import { minToHHMM } from "helpers";
 import { Badge } from "StyledComponents";
-
-import { useUserContext } from "context/UserContext";
 import getStatusCssClass from "utils/getBadgeStatus";
 
 import {

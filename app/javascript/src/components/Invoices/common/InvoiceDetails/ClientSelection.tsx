@@ -1,10 +1,9 @@
 import React, { useEffect, useState, useRef } from "react";
 
+import { CustomAdvanceInput } from "common/CustomAdvanceInput";
 import { useOutsideClick } from "helpers";
 import { SearchIcon } from "miruIcons";
 import Select, { components, DropdownIndicatorProps } from "react-select";
-
-import { CustomAdvanceInput } from "common/CustomAdvanceInput";
 
 import { reactSelectStyles } from "./Styles";
 

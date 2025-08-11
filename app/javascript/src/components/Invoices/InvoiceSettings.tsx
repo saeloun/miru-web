@@ -1,6 +1,12 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
+import { ApiStatus as PaymentSettingsStatus } from "constants/index";
+
 import React, { useState, useEffect } from "react";
 
+import paymentSettings from "apis/payment-settings";
+import PaymentsProviders from "apis/payments/providers";
+import CustomCheckbox from "common/CustomCheckbox";
+import CustomToggle from "common/CustomToggle";
 import {
   XIcon,
   AmexSVG,
@@ -11,12 +17,6 @@ import {
   StripeLogoSVG,
   VisaSVG,
 } from "miruIcons";
-
-import paymentSettings from "apis/payment-settings";
-import PaymentsProviders from "apis/payments/providers";
-import CustomCheckbox from "common/CustomCheckbox";
-import CustomToggle from "common/CustomToggle";
-import { ApiStatus as PaymentSettingsStatus } from "constants/index";
 
 interface IProvider {
   id: number;

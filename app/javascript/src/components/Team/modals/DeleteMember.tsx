@@ -1,12 +1,12 @@
+import { TeamModalType } from "constants/index";
+
 import React, { useRef } from "react";
 
+import teamApi from "apis/team";
+import { useList } from "context/TeamContext";
 import { useOutsideClick, useKeypress } from "helpers";
 import { XIcon } from "miruIcons";
 import { Toastr, Modal, Button } from "StyledComponents";
-
-import teamApi from "apis/team";
-import { TeamModalType } from "constants/index";
-import { useList } from "context/TeamContext";
 
 const DeleteMember = ({ user }) => {
   const wrapperRef = useRef();

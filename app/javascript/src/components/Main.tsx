@@ -1,5 +1,10 @@
+import { Paths, Roles } from "constants/index";
+import { AUTH_ROUTES, PUBLIC_ROUTES } from "constants/routes";
+
 import React, { useEffect } from "react";
 
+import { useAuthState, useAuthDispatch } from "context/auth";
+import { useUserContext } from "context/UserContext";
 import Cookies from "js-cookie";
 import {
   Navigate,
@@ -8,11 +13,6 @@ import {
   useLocation,
   useNavigate,
 } from "react-router-dom";
-
-import { Paths, Roles } from "constants/index";
-import { AUTH_ROUTES, PUBLIC_ROUTES } from "constants/routes";
-import { useAuthState, useAuthDispatch } from "context/auth";
-import { useUserContext } from "context/UserContext";
 import { loginGoogleAuth } from "utils/googleOauthLogin";
 import {
   clearCredentialsFromLocalStorage,

@@ -1,10 +1,9 @@
 import React, { Fragment } from "react";
 
+import EmptyStates from "common/EmptyStates";
 import { minToHHMM } from "helpers";
 import { ClientsIcon } from "miruIcons";
 import { Avatar } from "StyledComponents";
-
-import EmptyStates from "common/EmptyStates";
 
 import ReportRow from "./ReportRow";
 

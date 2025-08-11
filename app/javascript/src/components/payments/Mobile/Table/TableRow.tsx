@@ -1,10 +1,9 @@
 import React from "react";
 
-import { currencyFormat } from "helpers";
-import { Badge } from "StyledComponents";
-
 import { TableRowProps } from "components/payments/interfaces";
 import { getStatusCss } from "components/payments/utils";
+import { currencyFormat } from "helpers";
+import { Badge } from "StyledComponents";
 
 const TableRow = ({ baseCurrency, payment }: TableRowProps) => {
   const { clientName, invoiceNumber, status, amount, transactionType } =

@@ -1,9 +1,8 @@
 import React, { Fragment } from "react";
 
 import cn from "classnames";
-import { CaretCircleLeftIcon, CaretCircleRightIcon } from "miruIcons";
-
 import { useUserContext } from "context/UserContext";
+import { CaretCircleLeftIcon, CaretCircleRightIcon } from "miruIcons";
 
 import { usePagination } from "./usePagination";
 

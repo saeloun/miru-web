@@ -1,10 +1,9 @@
 import React from "react";
 
-import { PlusIcon } from "miruIcons";
-
 import EmptyStates from "common/EmptyStates";
 import Table from "common/Table";
 import { useUserContext } from "context/UserContext";
+import { PlusIcon } from "miruIcons";
 
 import TableData from "./TableData";
 

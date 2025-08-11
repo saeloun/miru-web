@@ -1,13 +1,12 @@
 import React, { Fragment, useEffect, useState } from "react";
 
-import { useNavigate, useParams } from "react-router-dom";
-
 import deviceApi from "apis/devices";
 import Loader from "common/Loader/index";
 import { MobileEditHeader } from "common/Mobile/MobileEditHeader";
 import DetailsHeader from "components/Profile/Common/DetailsHeader";
 import { useProfileContext } from "context/Profile/ProfileContext";
 import { useUserContext } from "context/UserContext";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { Device } from "./Device";
 import StaticPage from "./StaticPage";

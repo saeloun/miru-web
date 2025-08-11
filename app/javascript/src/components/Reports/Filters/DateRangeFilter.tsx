@@ -1,9 +1,8 @@
 import React from "react";
 
-import { MinusIcon, PlusIcon } from "miruIcons";
-
 import CustomDateRangeWithInput from "common/CustomDateRangeWIthInput";
 import CustomRadioButton from "common/CustomRadio";
+import { MinusIcon, PlusIcon } from "miruIcons";
 
 const DateRangeFilter = ({
   isDateRangeOpen,
