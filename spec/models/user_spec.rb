@@ -1,5 +1,53 @@
 # frozen_string_literal: true
 
+# == Schema Information
+#
+# Table name: users
+#
+#  id                     :bigint           not null, primary key
+#  calendar_connected     :boolean          default(TRUE)
+#  calendar_enabled       :boolean          default(TRUE)
+#  confirmation_sent_at   :datetime
+#  confirmation_token     :string
+#  confirmed_at           :datetime
+#  current_sign_in_at     :datetime
+#  current_sign_in_ip     :string
+#  date_of_birth          :date
+#  discarded_at           :datetime
+#  email                  :string           default(""), not null
+#  encrypted_password     :string           default(""), not null
+#  first_name             :string           not null
+#  last_name              :string           not null
+#  last_sign_in_at        :datetime
+#  last_sign_in_ip        :string
+#  phone                  :string
+#  remember_created_at    :datetime
+#  reset_password_sent_at :datetime
+#  reset_password_token   :string
+#  sign_in_count          :integer          default(0), not null
+#  social_accounts        :jsonb
+#  token                  :string(50)
+#  unconfirmed_email      :string
+#  created_at             :datetime         not null
+#  updated_at             :datetime         not null
+#  current_workspace_id   :bigint
+#  personal_email_id      :string
+#
+# Indexes
+#
+#  index_users_on_confirmation_token    (confirmation_token)
+#  index_users_on_current_workspace_id  (current_workspace_id)
+#  index_users_on_discarded_at          (discarded_at)
+#  index_users_on_email                 (email) UNIQUE
+#  index_users_on_email_trgm            (email) USING gin
+#  index_users_on_first_name_trgm       (first_name) USING gin
+#  index_users_on_last_name_trgm        (last_name) USING gin
+#  index_users_on_reset_password_token  (reset_password_token) UNIQUE
+#
+# Foreign Keys
+#
+#  fk_rails_...  (current_workspace_id => companies.id)
+#
 require "rails_helper"
 
 RSpec.describe User, type: :model do

@@ -4,13 +4,13 @@
 #
 # Table name: client_members
 #
-#  id           :integer          not null, primary key
-#  client_id    :integer          not null
-#  user_id      :integer          not null
+#  id           :bigint           not null, primary key
+#  discarded_at :datetime
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
-#  company_id   :integer          not null
-#  discarded_at :datetime
+#  client_id    :bigint           not null
+#  company_id   :bigint           not null
+#  user_id      :bigint           not null
 #
 # Indexes
 #
@@ -19,6 +19,12 @@
 #  index_client_members_on_company_id             (company_id)
 #  index_client_members_on_discarded_at           (discarded_at)
 #  index_client_members_on_user_id                (user_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (client_id => clients.id)
+#  fk_rails_...  (company_id => companies.id)
+#  fk_rails_...  (user_id => users.id)
 #
 
 class ClientMember < ApplicationRecord

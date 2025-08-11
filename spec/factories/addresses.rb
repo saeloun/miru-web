@@ -1,5 +1,27 @@
 # frozen_string_literal: true
 
+# == Schema Information
+#
+# Table name: addresses
+#
+#  id               :bigint           not null, primary key
+#  address_line_1   :string           not null
+#  address_line_2   :string
+#  address_type     :string           default("current")
+#  addressable_type :string
+#  city             :string           not null
+#  country          :string           not null
+#  pin              :string           not null
+#  state            :string           not null
+#  created_at       :datetime         not null
+#  updated_at       :datetime         not null
+#  addressable_id   :bigint
+#
+# Indexes
+#
+#  index_addresses_on_addressable                   (addressable_type,addressable_id)
+#  index_addresses_on_addressable_and_address_type  (addressable_type,addressable_id,address_type) UNIQUE
+#
 FactoryBot.define do
   factory :address do
     address_line_1 { Faker::Address.full_address.slice(0, 50) }

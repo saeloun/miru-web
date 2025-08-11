@@ -131,7 +131,7 @@ gem "google-api-client", require: "google/apis/calendar_v3"
 
 group :development, :test, :ci do
   # See https://edgeguides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
-  gem "debug", ">= 1.0.0", platforms: %i[mri mingw x64_mingw]
+  gem "debug", ">= 1.0.0", platforms: %i[mri windows]
 
   # Add Rubocop to lint and format Ruby code
   gem "rubocop", require: false
@@ -181,8 +181,8 @@ group :development do
   # Playwright for modern system testing
   gem "playwright-ruby-client"
 
-  # Annotate gem for showing schema information
-  gem "annotate"
+  # Use AnnotateRb instead of annotate for Rails 8 compatibility
+  gem "annotaterb"
 
   gem "letter_opener"
 end

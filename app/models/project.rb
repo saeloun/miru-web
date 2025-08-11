@@ -2,23 +2,27 @@
 #
 # Table name: projects
 #
-#  id           :integer          not null, primary key
-#  client_id    :integer          not null
-#  name         :string           not null
-#  description  :text
+#  id           :bigint           not null, primary key
 #  billable     :boolean          not null
+#  description  :text
+#  discarded_at :datetime
+#  name         :string           not null
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
-#  discarded_at :datetime
+#  client_id    :bigint           not null
 #
 # Indexes
 #
 #  index_projects_on_billable            (billable)
 #  index_projects_on_client_id           (client_id)
-#  index_projects_on_description_trgm    (description)
+#  index_projects_on_description_trgm    (description) USING gin
 #  index_projects_on_discarded_at        (discarded_at)
 #  index_projects_on_name_and_client_id  (name,client_id) UNIQUE
-#  index_projects_on_name_trgm           (name)
+#  index_projects_on_name_trgm           (name) USING gin
+#
+# Foreign Keys
+#
+#  fk_rails_...  (client_id => clients.id)
 #
 
 # frozen_string_literal: true

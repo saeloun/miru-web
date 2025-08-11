@@ -4,17 +4,21 @@
 #
 # Table name: custom_leaves
 #
-#  id                :integer          not null, primary key
-#  name              :string           not null
-#  allocation_value  :integer          not null
+#  id                :bigint           not null, primary key
 #  allocation_period :integer          not null
-#  leave_id          :integer          not null
+#  allocation_value  :integer          not null
+#  name              :string           not null
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
+#  leave_id          :bigint           not null
 #
 # Indexes
 #
 #  index_custom_leaves_on_leave_id  (leave_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (leave_id => leaves.id)
 #
 
 class CustomLeave < ApplicationRecord

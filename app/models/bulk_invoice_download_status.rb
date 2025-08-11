@@ -4,12 +4,12 @@
 #
 # Table name: bulk_invoice_download_statuses
 #
-#  id          :integer          not null, primary key
-#  download_id :string
-#  status      :string
+#  id          :bigint           not null, primary key
 #  file_url    :string
+#  status      :string
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
+#  download_id :string
 #
 
 class BulkInvoiceDownloadStatus < ApplicationRecord

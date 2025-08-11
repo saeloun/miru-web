@@ -4,17 +4,17 @@
 #
 # Table name: carryovers
 #
-#  id                  :integer          not null, primary key
-#  user_id             :integer          not null
-#  company_id          :integer          not null
-#  leave_type_id       :integer          not null
+#  id                  :bigint           not null, primary key
+#  discarded_at        :datetime
+#  duration            :integer
 #  from_year           :integer
 #  to_year             :integer
 #  total_leave_balance :integer
-#  duration            :integer
-#  discarded_at        :datetime
 #  created_at          :datetime         not null
 #  updated_at          :datetime         not null
+#  company_id          :bigint           not null
+#  leave_type_id       :bigint           not null
+#  user_id             :bigint           not null
 #
 # Indexes
 #
