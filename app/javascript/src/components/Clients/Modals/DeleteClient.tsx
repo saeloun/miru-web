@@ -20,7 +20,11 @@ const DeleteClient = ({
   const deleteClient = async client => {
     await clientApi.destroy(client.id);
     setShowDeleteDialog(false);
-    window.location.pathname == "/clients" ? navigate(0) : navigate("/clients");
+    if (window.location.pathname === "/clients") {
+      navigate(0);
+    } else {
+      navigate("/clients");
+    }
   };
 
   return (

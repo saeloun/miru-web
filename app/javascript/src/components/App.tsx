@@ -1,12 +1,11 @@
+import { Roles } from "constants/index";
+
 import React, { useEffect, useState } from "react";
 
-import { BrowserRouter } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-
-import { Roles } from "constants/index";
 import { AuthProvider } from "context/auth";
 import UserContext from "context/UserContext";
+import { BrowserRouter } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
 
 import Main from "./Main";
 
@@ -68,7 +67,31 @@ const App = props => {
       >
         <AuthProvider>
           <BrowserRouter>
-            <ToastContainer />
+            <Toaster
+              position="top-right"
+              toastOptions={{
+                duration: 5000,
+                style: {
+                  background: '#fff',
+                  color: '#1D1A31',
+                  border: '1px solid #E1E6EC',
+                  borderRadius: '0.375rem',
+                  boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+                },
+                success: {
+                  iconTheme: {
+                    primary: '#5B34EA',
+                    secondary: '#fff',
+                  },
+                },
+                error: {
+                  iconTheme: {
+                    primary: '#E04646',
+                    secondary: '#fff',
+                  },
+                },
+              }}
+            />
             <Main
               {...props}
               googleOauthSuccess={googleOauthSuccess}

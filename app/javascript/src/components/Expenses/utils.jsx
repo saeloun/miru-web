@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 import JSZip from "jszip";
 import {
@@ -153,6 +154,10 @@ export const FileDownloader = ({ fileUrl }) => {
   };
 
   return <span onClick={handleDownload}>{fileName}</span>;
+};
+
+FileDownloader.propTypes = {
+  fileUrl: PropTypes.string.isRequired,
 };
 
 export const DownloadAll = async fileUrls => {

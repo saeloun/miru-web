@@ -1,5 +1,9 @@
 module.exports = {
-  purge: [],
+  purge: [
+    "./app/**/*.{html,js,jsx,ts,tsx,erb}",
+    "./app/javascript/**/*.{js,jsx,ts,tsx}",
+    "./public/**/*.html"
+  ],
   darkMode: false, // or 'media' or 'class'
   theme: {
     container: {

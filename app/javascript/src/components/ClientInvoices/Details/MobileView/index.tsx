@@ -49,7 +49,9 @@ const MobileView = ({ data }) => {
             invoice.amount <= 0
           }
           onClick={() => {
-            invoice.status != "paid" && (window.location.href = url);
+            if (invoice.status != "paid") {
+              window.location.href = url;
+            }
           }}
         >
           <ReportsIcon className="text-white" size={16} weight="bold" />

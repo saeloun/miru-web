@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import React, { useEffect, useRef, useState } from "react";
 
 import { getMonth, getYear } from "date-fns";
@@ -36,7 +35,7 @@ const CustomDateRangePicker = ({
   const [isValidDateRange, setIsValidDateRange] = useState<boolean>(true);
 
   const range = (start, end) =>
-    Array.from({ length: end - start }, (v, k) => k + start);
+    Array.from({ length: end - start }, (_v, k) => k + start);
 
   const years = range(1990, getYear(new Date()) + 1);
   const textInput = useRef(null);

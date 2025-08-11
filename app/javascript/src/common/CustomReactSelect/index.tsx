@@ -1,4 +1,3 @@
-/* eslint-disable import/exports-last */
 import React from "react";
 
 import {
@@ -20,17 +19,17 @@ type CustomReactSelectProps = {
   isDisabled?: boolean;
   ignoreDisabledFontColor?: boolean;
   hideDropdownIndicator?: boolean;
-  handleOnClick?: (e?: any) => void; // eslint-disable-line
-  handleOnChange?: (e?: any) => void; // eslint-disable-line
-  handleonFocus?: (e?: any) => void; // eslint-disable-line
-  onBlur?: (e?: any) => void; // eslint-disable-line
+  handleOnClick?: (e?: any) => void;
+  handleOnChange?: (e?: any) => void;
+  handleonFocus?: (e?: any) => void;
+  onBlur?: (e?: any) => void;
   defaultValue?: object;
-  onMenuClose?: (e?: any) => void; // eslint-disable-line
-  onMenuOpen?: (e?: any) => void; // eslint-disable-line
+  onMenuClose?: (e?: any) => void;
+  onMenuOpen?: (e?: any) => void;
   className?: string;
   autoFocus?: boolean;
   value?: object;
-  getOptionLabel?: (e?: any) => any; // eslint-disable-line
+  getOptionLabel?: (e?: any) => any;
   wrapperClassName?: string;
   options?: Array<any>;
   name?: string;
@@ -38,31 +37,31 @@ type CustomReactSelectProps = {
 };
 
 export const CustomReactSelect = ({
-  id,
-  isSearchable,
-  classNamePrefix,
+  id = "",
+  isSearchable = true,
+  classNamePrefix = "react-select-filter",
   options,
-  label,
-  handleOnChange,
-  handleonFocus,
-  handleOnClick,
+  label = "Select",
+  handleOnChange = () => {},
+  handleonFocus = () => {},
+  handleOnClick = () => {},
   name,
-  value,
-  isErr,
-  isDisabled,
-  styles,
-  components,
-  onMenuClose,
-  onMenuOpen,
-  ignoreDisabledFontColor,
-  hideDropdownIndicator,
-  className,
-  autoFocus,
-  onBlur,
-  defaultValue,
+  value = null,
+  isErr = false,
+  isDisabled = false,
+  styles = null,
+  components = null,
+  onMenuClose = () => {},
+  onMenuOpen = () => {},
+  ignoreDisabledFontColor = false,
+  hideDropdownIndicator = false,
+  className = "",
+  autoFocus = false,
+  onBlur = () => {},
+  defaultValue = null,
   getOptionLabel,
-  wrapperClassName,
-  isMulti,
+  wrapperClassName = "",
+  isMulti = false,
 }: CustomReactSelectProps) => {
   const { isDesktop } = useUserContext();
 
@@ -112,31 +111,6 @@ export const CustomReactSelect = ({
       />
     </div>
   );
-};
-
-CustomReactSelect.defaultProps = {
-  id: "",
-  styles: null,
-  components: null,
-  classNamePrefix: "react-select-filter",
-  label: "Select",
-  isErr: false,
-  isSearchable: true,
-  isDisabled: false,
-  ignoreDisabledFontColor: false,
-  hideDropdownIndicator: false,
-  handleOnClick: () => {}, // eslint-disable-line  @typescript-eslint/no-empty-function
-  handleOnChange: () => {}, // eslint-disable-line  @typescript-eslint/no-empty-function
-  handleonFocus: () => {}, // eslint-disable-line  @typescript-eslint/no-empty-function
-  onBlur: () => {}, // eslint-disable-line  @typescript-eslint/no-empty-function
-  defaultValue: null,
-  onMenuClose: () => {}, // eslint-disable-line  @typescript-eslint/no-empty-function
-  onMenuOpen: () => {}, // eslint-disable-line  @typescript-eslint/no-empty-function
-  className: "",
-  autoFocus: false,
-  value: null,
-  wrapperClassName: "",
-  isMulti: false,
 };
 
 export default CustomReactSelect;

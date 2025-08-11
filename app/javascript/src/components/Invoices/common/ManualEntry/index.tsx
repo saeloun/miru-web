@@ -61,7 +61,9 @@ const ManualEntry = ({
     const indexOfItem = tempManualEntryArr.findIndex(
       object => object.id === manualEntryArr.length + 1
     );
-    indexOfItem !== -1 && tempManualEntryArr.splice(indexOfItem, 1);
+    if (indexOfItem !== -1) {
+      tempManualEntryArr.splice(indexOfItem, 1);
+    }
     await setManualEntryArr(tempManualEntryArr);
     setAddNew(false);
   };

@@ -1,4 +1,3 @@
-/* eslint-disable import/exports-last */
 import { currencyList } from "constants/currencyList";
 
 import worldCountries from "world-countries";

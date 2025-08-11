@@ -19,10 +19,10 @@ function mountReactApp() {
   const rootElement = document.getElementById('react-root');
   
   if (!rootElement) {
-    console.warn('React root element not found');
+    // React root element not found - this is expected during testing
     return;
   }
-  
+
   // Get props from data attribute
   const props = JSON.parse(rootElement.dataset.props || '{}');
   
@@ -33,8 +33,6 @@ function mountReactApp() {
       <App {...props} />
     </React.StrictMode>
   );
-  
-  console.log('React app mounted successfully');
 }
 
 // Mount when DOM is ready
@@ -43,5 +41,3 @@ if (document.readyState === 'loading') {
 } else {
   mountReactApp();
 }
-
-console.log('Vite ⚡️ Rails loaded');

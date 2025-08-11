@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
+ 
 import React, { useState, useRef, useEffect } from "react";
 
 import CustomCheckbox from "common/CustomCheckbox";
@@ -71,7 +71,11 @@ const AddEntryMobile = () => {
         client.name.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
       );
 
-      newList.length > 0 ? setClientList(newList) : setClientList([]);
+      if (newList.length > 0) {
+        setClientList(newList);
+      } else {
+        setClientList([]);
+      }
     } else {
       setClientList(clients);
     }
@@ -92,7 +96,11 @@ const AddEntryMobile = () => {
           .includes(debouncedProjectSearchQuery.toLowerCase())
       );
 
-      newList.length > 0 ? setProjectList(newList) : setProjectList([]);
+      if (newList.length > 0) {
+        setProjectList(newList);
+      } else {
+        setProjectList([]);
+      }
     } else {
       setProjectList(projects[client]);
     }

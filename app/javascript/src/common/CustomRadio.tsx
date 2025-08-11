@@ -33,7 +33,7 @@ const CustomRadioButton = ({
   classNameInput = "",
   classNameWrapper = "",
   classNameRadioIcon = "",
-  handleOnChange = () => {}, //eslint-disable-line
+  handleOnChange = () => {},
 }: RadioProps) => (
   <div className={classnames(DEFAULT_STYLE_WRAPPER, classNameWrapper)}>
     <input

@@ -1,4 +1,4 @@
-/* eslint-disable */
+ 
 export interface TableProps {
   payments: any[];
   baseCurrency: any;

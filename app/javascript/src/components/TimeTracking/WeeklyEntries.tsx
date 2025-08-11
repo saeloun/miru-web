@@ -1,5 +1,5 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-/* eslint-disable no-unused-vars */
+ 
+ 
 import React, { useState, useEffect } from "react";
 
 import timesheetEntryApi from "apis/timesheet-entry";
@@ -22,8 +22,8 @@ const WeeklyEntries = ({
   dayInfo,
   isWeeklyEditing,
   setIsWeeklyEditing,
-  weeklyData,
-  setWeeklyData,
+  weeklyData, //eslint-disable-line
+  setWeeklyData, //eslint-disable-line
   selectedEmployeeId,
 }: Props) => {
   const [client, setClient] = useState("");

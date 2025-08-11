@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 import React, { useState, useEffect, useRef } from "react";
 
 import WorkspaceApi from "apis/workspaces";

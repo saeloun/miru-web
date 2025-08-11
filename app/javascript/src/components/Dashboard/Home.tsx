@@ -44,12 +44,13 @@ const RootElement = ({ role }) => {
 };
 
 const Home = (props: Iprops) => {
-  const { companyRole } = props;
+  const { companyRole, company_role } = props;
+  const role = companyRole || company_role;
 
   return (
     <div className="h-full overflow-x-scroll p-0 font-manrope lg:absolute lg:top-0 lg:bottom-0 lg:right-0 lg:w-5/6 lg:px-20 lg:py-3">
       <Routes>
-        <Route element={<RootElement role={companyRole} />} path="/" />
+        <Route element={<RootElement role={role} />} path="/" />
         {ROUTES.map(parentRoute => (
           <Route
             key={parentRoute.path}
@@ -57,7 +58,7 @@ const Home = (props: Iprops) => {
             element={
               <RestrictedRoute
                 authorisedRoles={parentRoute.authorisedRoles}
-                role={companyRole}
+                role={role}
                 user={props.user}
               />
             }

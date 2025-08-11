@@ -40,7 +40,9 @@ const ClientSelection = ({
       const selection = clientList.filter(
         client => client.label == prePopulatedClient
       );
-      selection[0] && handleClientChange(selection[0]);
+      if (selection[0]) {
+        handleClientChange(selection[0]);
+      }
     }
 
     if (selectedClient) {

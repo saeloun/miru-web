@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 import { Roles, Paths } from "constants/index";
 
 import React, { Fragment } from "react";

@@ -17,8 +17,8 @@ export interface FinancialDetailsFormValues {
 }
 
 export interface FinancialDetailsFormProps {
-  onSaveBtnClick: (financialDetails: FinancialDetailsFormValues) => void; // eslint-disable-line
-  setFinancialDetails: (values: any) => void; // eslint-disable-line
+  onSaveBtnClick: (financialDetails: FinancialDetailsFormValues) => void;  
+  setFinancialDetails: (values: any) => void;  
   isUpdatedFormValues: boolean;
   prevFormValues: FinancialDetailsFormValues;
 }

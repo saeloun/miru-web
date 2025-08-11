@@ -154,9 +154,11 @@ const EditInvoice = () => {
       await updateInvoice();
       navigate(`/invoices/${invoiceDetails.id}`);
     } else {
-      selectedClient
-        ? Toastr.error(INVOICE_NUMBER_ERROR)
-        : Toastr.error(SELECT_CLIENT_ERROR);
+      if (selectedClient) {
+        Toastr.error(INVOICE_NUMBER_ERROR);
+      } else {
+        Toastr.error(SELECT_CLIENT_ERROR);
+      }
     }
   };
 
@@ -166,9 +168,11 @@ const EditInvoice = () => {
     } else if (selectedClient && invoiceNumber && !showConnectPaymentDialog) {
       setShowSendInvoiceModal(true);
     } else {
-      selectedClient
-        ? Toastr.error(INVOICE_NUMBER_ERROR)
-        : Toastr.error(SELECT_CLIENT_ERROR);
+      if (selectedClient) {
+        Toastr.error(INVOICE_NUMBER_ERROR);
+      } else {
+        Toastr.error(SELECT_CLIENT_ERROR);
+      }
     }
   };
 

@@ -156,7 +156,7 @@ const ClientDetails = ({ isAdminUser }) => {
                     tableHeader={isDesktop ? tableHeader : mobileTableHeader}
                     tableRowArray={tableData}
                     rowOnClick={
-                      isAdminUser ? handleRowClick : () => {} // eslint-disable-line  @typescript-eslint/no-empty-function
+                      isAdminUser ? handleRowClick : () => {}
                     }
                   />
                 ) : (

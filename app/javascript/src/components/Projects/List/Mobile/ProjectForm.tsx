@@ -72,7 +72,7 @@ const ProjectForm = ({
     if (
       data.project.client_id &&
       data.project.name &&
-      data.project.billable !== (undefined || null)
+      data.project.billable !== undefined && data.project.billable !== null
     ) {
       await projectApi.create(data);
       setEditProjectData("");
@@ -94,7 +94,7 @@ const ProjectForm = ({
     if (
       data.project.client_id &&
       data.project.name &&
-      data.project.billable !== (undefined || null)
+      data.project.billable !== undefined && data.project.billable !== null
     ) {
       await projectApi.update(editProjectData.id, data);
       setEditProjectData("");
@@ -118,9 +118,11 @@ const ProjectForm = ({
         client.name.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
       );
 
-      newClientList.length > 0
-        ? setFilteredClientList(newClientList)
-        : setFilteredClientList([]);
+      if (newClientList.length > 0) {
+        setFilteredClientList(newClientList);
+      } else {
+        setFilteredClientList([]);
+      }
     } else {
       setFilteredClientList(clientList);
     }

@@ -1,4 +1,4 @@
-/* eslint-disable no-unused-vars */
+ 
 import React, { Fragment, useEffect, useRef, useState } from "react";
 
 import profileApi from "apis/profile";

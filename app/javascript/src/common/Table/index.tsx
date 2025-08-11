@@ -70,12 +70,12 @@ const Table = ({
   tableRowArray,
   hasCheckbox = false,
   hasRowIcons = false,
-  handleDeleteClick = id => {}, // eslint-disable-line
-  handleEditClick = id => {}, // eslint-disable-line
-  rowOnClick = id => {}, // eslint-disable-line
+  handleDeleteClick = _id => {},
+  handleEditClick = _id => {},
+  rowOnClick = _id => {},
 }) => {
   const data = useMemo(() => tableRowArray, [tableRowArray]);
-  const columns = useMemo(() => tableHeader, []);
+  const columns = useMemo(() => tableHeader, [tableHeader]);
   const { isDesktop } = useUserContext();
 
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
@@ -85,7 +85,7 @@ const Table = ({
         data,
       },
       useRowSelect,
-      hasCheckbox ? getTableCheckbox : () => {} // eslint-disable-line  @typescript-eslint/no-empty-function
+      hasCheckbox ? getTableCheckbox : () => {}
     );
 
   return (

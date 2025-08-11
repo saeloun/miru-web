@@ -9,7 +9,7 @@ const ConnectPaymentGateway = ({
   setShowConnectPaymentDialog,
   showConnectPaymentDialog,
   invoice,
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
+   
   setIsSending = _val => {},
   isInvoiceEmail = false,
 }) => {

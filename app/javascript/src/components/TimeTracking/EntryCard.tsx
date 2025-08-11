@@ -15,7 +15,7 @@ interface props {
   project: string;
   note: string;
   duration: number;
-  handleDeleteEntry: (id: number) => void; // eslint-disable-line
+  handleDeleteEntry: (id: number) => void;  
   setEditEntryId: React.Dispatch<React.SetStateAction<number>>;
   bill_status: string;
   setNewEntryView: any;

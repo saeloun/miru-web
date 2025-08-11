@@ -69,7 +69,9 @@ const InvoiceDetails = ({
       const selection = clientDetails.filter(
         client => client.label == prePopulatedClient
       );
-      selection[0] && handleClientChange(selection[0]);
+      if (selection[0]) {
+        handleClientChange(selection[0]);
+      }
     }
 
     if (selectedClient) {
@@ -120,7 +122,7 @@ const InvoiceDetails = ({
 
   const handleClientChange = selection => {
     const client = clientDetails.find(client => client.id == selection.value);
-    // eslint-disable-next-line no-console
+     
     setSelectedClient(client);
     setIsClientVisible(false);
     autoGenerateInvoiceNumber(client);

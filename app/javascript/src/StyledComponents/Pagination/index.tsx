@@ -7,7 +7,7 @@ import { CaretCircleLeftIcon, CaretCircleRightIcon } from "miruIcons";
 import { usePagination } from "./usePagination";
 
 type Iprops = {
-  handleClick: (e: any) => void; // eslint-disable-line
+  handleClick: (e: any) => void;
   totalPages: number;
   currentPage: number;
   isFirstPage: boolean;
@@ -17,7 +17,7 @@ type Iprops = {
   isPerPageVisible?: boolean;
   title?: string;
   itemsPerPage?: number;
-  handleClickOnPerPage?: (e: any) => void; // eslint-disable-line
+  handleClickOnPerPage?: (e: any) => void;
 };
 
 const Pagination = ({

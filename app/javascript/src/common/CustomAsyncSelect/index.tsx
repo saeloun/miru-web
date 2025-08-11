@@ -1,5 +1,3 @@
-/* eslint-disable import/exports-last */
-
 import React from "react";
 
 import {
@@ -10,17 +8,17 @@ import {
 import AsyncSelect from "react-select/async";
 
 export const CustomAsyncSelect = ({
-  classNamePrefix,
+  classNamePrefix = "react-select-filter",
   loadOptions,
-  label,
+  label = "Select",
   name,
-  handleOnChange,
+  handleOnChange = () => {},
   value,
   isErr,
-  isDesktopView,
-  ignoreDisabledFontColor,
-  cacheOptions,
-  defaultOptions,
+  isDesktopView = false,
+  ignoreDisabledFontColor = false,
+  cacheOptions = false,
+  defaultOptions = false,
 }) => {
   const getStyle = () => {
     if (isErr) {
@@ -49,15 +47,4 @@ export const CustomAsyncSelect = ({
       />
     </div>
   );
-};
-
-CustomAsyncSelect.defaultProps = {
-  classNamePrefix: "react-select-filter",
-  label: "Select",
-  placeholder: "Date Format",
-  handleOnChange: () => {}, // eslint-disable-line  @typescript-eslint/no-empty-function
-  isDesktopView: false,
-  ignoreDisabledFontColor: false,
-  cacheOptions: false,
-  defaultOptions: false,
 };

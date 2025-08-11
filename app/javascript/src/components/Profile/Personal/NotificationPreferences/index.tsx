@@ -1,4 +1,4 @@
-/* eslint-disable no-unused-vars */
+ 
 import React, { Fragment, useEffect, useState } from "react";
 
 import preferencesApi from "apis/preferences";
@@ -27,7 +27,7 @@ const NotificationPreferences = () => {
 
   const updatePreferences = async () => {
     setIsLoading(true);
-    const res = await preferencesApi.updatePreference(currentUserId, {
+    await preferencesApi.updatePreference(currentUserId, {
       notification_enabled: !isSelected,
     });
     setIsLoading(false);

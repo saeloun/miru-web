@@ -25,9 +25,11 @@ const SearchTimeEntries = ({
         client.label.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
       );
 
-      newEmployeeList.length > 0
-        ? setFilteredEmployeeList(newEmployeeList)
-        : setFilteredEmployeeList([]);
+      if (newEmployeeList.length > 0) {
+        setFilteredEmployeeList(newEmployeeList);
+      } else {
+        setFilteredEmployeeList([]);
+      }
     } else {
       setFilteredEmployeeList(employeeList);
     }

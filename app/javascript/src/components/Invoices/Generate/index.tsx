@@ -131,13 +131,17 @@ const GenerateInvoices = () => {
 
   const handleSendInvoice = () => {
     if (selectedClient && invoiceNumber !== "") {
-      isStripeConnected
-        ? setShowSendInvoiceModal(true)
-        : setShowConnectPaymentDialog(true);
+      if (isStripeConnected) {
+        setShowSendInvoiceModal(true);
+      } else {
+        setShowConnectPaymentDialog(true);
+      }
     } else {
-      selectedClient
-        ? Toastr.error(INVOICE_NUMBER_ERROR)
-        : Toastr.error(SELECT_CLIENT_ERROR);
+      if (selectedClient) {
+        Toastr.error(INVOICE_NUMBER_ERROR);
+      } else {
+        Toastr.error(SELECT_CLIENT_ERROR);
+      }
     }
   };
 
@@ -161,9 +165,11 @@ const GenerateInvoices = () => {
       await saveInvoice();
       navigate("/invoices");
     } else {
-      selectedClient
-        ? Toastr.error(INVOICE_NUMBER_ERROR)
-        : Toastr.error(SELECT_CLIENT_ERROR);
+      if (selectedClient) {
+        Toastr.error(INVOICE_NUMBER_ERROR);
+      } else {
+        Toastr.error(SELECT_CLIENT_ERROR);
+      }
     }
   };
 

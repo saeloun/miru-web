@@ -26,8 +26,9 @@ const Header = ({
     useState<boolean>(false);
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
   let appliedFilterCount = (filterParamsStr.match(/&/g) || []).length;
-  filterParamsStr.includes("custom") &&
-    (appliedFilterCount = appliedFilterCount - 2);
+  if (filterParamsStr.includes("custom")) {
+    appliedFilterCount = appliedFilterCount - 2;
+  }
 
   const searchRef = useRef(null);
   const navigate = useNavigate();

@@ -28,7 +28,7 @@ const EditMembersListForm = ({
   const debouncedSearchQuery = useDebounce(searchMemberString, 500);
 
   const getFormattedMemberList = () => {
-    allMemberList.length > 0 &&
+    if (allMemberList.length > 0) {
       allMemberList.reduce((memberList, currentMember) => {
         if (!currentMember.isAdded) {
           memberList = [
@@ -40,10 +40,14 @@ const EditMembersListForm = ({
             },
           ];
         }
-        memberList && setFormattedMemberList(memberList);
+
+        if (memberList) {
+          setFormattedMemberList(memberList);
+        }
 
         return memberList;
       }, []);
+    }
   };
 
   useEffect(() => {

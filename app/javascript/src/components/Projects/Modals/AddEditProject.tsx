@@ -10,7 +10,7 @@ const AddEditProject = ({
   editProjectData,
   setShowProjectModal,
   showProjectModal,
-  projectData,
+  projectData = {},
   fetchProjectList,
 }) => {
   const [client, setClient] = useState<number>(0);
@@ -246,10 +246,6 @@ const AddEditProject = ({
       </div>
     </Modal>
   ) : null;
-};
-
-AddEditProject.defaultProps = {
-  projectData: {},
 };
 
 export default AddEditProject;

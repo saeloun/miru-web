@@ -217,7 +217,9 @@ const FilterSideBar = ({
   });
 
   const resetCustomDatePicker = () => {
-    defaultDateRange() && setFilters(setDefaultDateRange());
+    if (defaultDateRange()) {
+      setFilters(setDefaultDateRange());
+    }
     hideCustomFilter();
     setSelectedInput("from-input");
   };
@@ -241,9 +243,11 @@ const FilterSideBar = ({
       return;
     }
 
-    defaultDateRange()
-      ? setFilterParams(setDefaultDateRange())
-      : setFilterParams(filters);
+    if (defaultDateRange()) {
+      setFilterParams(setDefaultDateRange());
+    } else {
+      setFilterParams(filters);
+    }
 
     window.localStorage.setItem(
       LocalStorageKeys.REVENUE_FILTERS,
@@ -262,9 +266,11 @@ const FilterSideBar = ({
         client.label.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
       );
 
-      newClientList.length > 0
-        ? setFilteredClientList(newClientList)
-        : setFilteredClientList([]);
+      if (newClientList.length > 0) {
+        setFilteredClientList(newClientList);
+      } else {
+        setFilteredClientList([]);
+      }
     } else {
       setFilteredClientList(clientList);
     }

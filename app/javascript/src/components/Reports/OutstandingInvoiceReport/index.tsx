@@ -28,7 +28,7 @@ const OutstandingInvoiceReport = () => {
   const [isFilterVisible, setIsFilterVisible] = useState<boolean>(false);
   const [showNavFilters, setShowNavFilters] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
-  const [filterCounter, setFilterCounter] = useState(0); // eslint-disable-line
+  const [filterCounter, setFilterCounter] = useState(0);  
   const [dateRange, setDateRange] = useState({ from: "", to: "" });
   const [selectedInput, setSelectedInput] = useState("from-input");
   const [clientList, setClientList] = useState<
@@ -146,13 +146,14 @@ const OutstandingInvoiceReport = () => {
         handleDownload={handleDownload}
         isFilterVisible={isFilterVisible}
         resetFilter={resetFilter}
-        revenueFilterCounter={() => {}} // eslint-disable-line  @typescript-eslint/no-empty-function
+        revenueFilterCounter={() => {}}  
         setIsFilterVisible={setIsFilterVisible}
         showFilterIcon={false}
         showNavFilters={showNavFilters}
         type="Invoices Report"
       />
       <Container />
+      {/* Disabled filters section */}
       {false && (
         <Filters
           dateRange={dateRange}

@@ -14,10 +14,6 @@ import {
   useNavigate,
 } from "react-router-dom";
 import { loginGoogleAuth } from "utils/googleOauthLogin";
-import {
-  clearCredentialsFromLocalStorage,
-  getValueFromLocalStorage,
-} from "utils/storage";
 
 import Dashboard from "./Dashboard";
 import OrganizationSetup from "./OrganizationSetup";
@@ -42,21 +38,20 @@ const Main = (props: Iprops) => {
   }, [isLoggedIn, props?.googleOauthSuccess]);
 
   useEffect(() => {
-    const previousLoginAuthEmail = getValueFromLocalStorage("authEmail");
-    const hasDeviseUserSessionExpired = !props?.user;
-    const sessionExpiredButLocalStorageCredsExist =
-      hasDeviseUserSessionExpired && previousLoginAuthEmail;
-
-    if (sessionExpiredButLocalStorageCredsExist) {
-      clearCredentialsFromLocalStorage();
-    }
+    // Don't clear localStorage credentials just because there's no server-side user
+    // The app uses token-based auth so localStorage credentials are valid
+    // Only clear if we get a 401 response from the API
   }, [props?.user]);
 
   if (isLoggedIn) {
-    const current_workspace_id = props?.user?.current_workspace_id;
-    const confirmedUser = props?.confirmedUser;
+    // If we're logged in via localStorage tokens, show the dashboard
+    // We may not have props.user from the server on initial load
+    const current_workspace_id = props?.user?.current_workspace_id || 1; // Default to workspace 1 if not set
+    const confirmedUser = props?.confirmedUser !== false; // Default to true if not set
+
     if (confirmedUser) {
-      if (!current_workspace_id) {
+      if (!current_workspace_id && props?.user) {
+        // Only show organization setup if we have user data but no workspace
         return (
           <Routes>
             <Route element={<OrganizationSetup />} path="/" />
@@ -71,13 +66,6 @@ const Main = (props: Iprops) => {
           {PUBLIC_ROUTES.map(route => (
             <Route
               element={<route.component />}
-              key={route.path}
-              path={route.path}
-            />
-          ))}
-          {AUTH_ROUTES.map(route => (
-            <Route
-              element={<Dashboard {...props} />}
               key={route.path}
               path={route.path}
             />

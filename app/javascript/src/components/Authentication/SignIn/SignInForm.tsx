@@ -44,10 +44,9 @@ const SignInForm = () => {
         },
       });
 
-      setTimeout(
-        () => (window.location.href = `${window.location.origin}`),
-        500
-      );
+      // Force a full page reload to re-initialize the app with auth tokens
+      // The app will read tokens from localStorage on reload and route correctly
+      window.location.href = "/";
     } catch (error) {
       if (error?.response?.data?.unconfirmed) {
         navigate(`/email_confirmation?email=${values.email}`);
@@ -164,7 +163,7 @@ const SignInForm = () => {
               initialValues={{}}
               validateOnBlur={false}
               validationSchema=""
-              onSubmit={() => {}} //eslint-disable-line
+              onSubmit={() => {}}  
             >
               {() => (
                 <Form
@@ -209,7 +208,7 @@ const SignInForm = () => {
             </span>
           </p>
           <p className="pb-10 text-center font-manrope text-xs font-normal not-italic text-miru-dark-purple-1000">
-            Don't have an account?&nbsp;
+            Don&apos;t have an account?&nbsp;
             <span className="form__link inline cursor-pointer">
               <a href={Paths.SIGNUP}>
                 <span className="mr-2 inline-block">Sign Up</span>

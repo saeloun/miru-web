@@ -190,9 +190,11 @@ const AddLineItemContainer = ({
   };
 
   const handleSubmitForm = (values: any) => {
-    editItem.id || editItem.timesheet_entry_id
-      ? handleEdit()
-      : handleAddLineItem(values);
+    if (editItem.id || editItem.timesheet_entry_id) {
+      handleEdit();
+    } else {
+      handleAddLineItem(values);
+    }
   };
 
   useOutsideClick(
@@ -267,7 +269,7 @@ const AddLineItemContainer = ({
         initialValues={addEditFormInitialValues(editItem)}
         validateOnBlur={false}
         validationSchema={addEditFormSchema}
-        onSubmit={() => {}} //eslint-disable-line
+        onSubmit={() => {}}  
       >
         {(props: FormikProps<AddLineItemFormValues>) => {
           const { touched, errors, values, setFieldValue, setFieldError } =

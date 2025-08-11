@@ -52,7 +52,7 @@ const ClientList = ({
                 hasRowIcons={isAdminUser}
                 tableRowArray={getTableData}
                 rowOnClick={
-                  isAdminUser ? handleRowClick : () => {} // eslint-disable-line  @typescript-eslint/no-empty-function
+                  isAdminUser ? handleRowClick : () => {}
                 }
                 tableHeader={
                   isAdminUser && isDesktop

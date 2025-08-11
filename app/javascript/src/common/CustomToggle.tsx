@@ -1,7 +1,7 @@
 import React from "react";
 
 const CustomToggle = (
-  { isChecked = false, setIsChecked, toggleCss, id, onToggle = () => {} } // eslint-disable-line
+  { isChecked = false, setIsChecked, toggleCss, id, onToggle = () => {} }
 ) => (
   <div className={`customToggle__container ${toggleCss}`}>
     <label>

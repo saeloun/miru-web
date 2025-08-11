@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
+ 
 import React, { useRef } from "react";
 
 import CustomDatePicker from "common/CustomDatePicker";

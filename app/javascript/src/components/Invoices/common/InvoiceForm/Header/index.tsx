@@ -22,7 +22,7 @@ const Header = ({
   id = null,
   deleteInvoice = null,
   wavieInvoice = null,
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
+   
   setIsSendReminder = _value => {},
   showMoreButton = false,
 }) => {

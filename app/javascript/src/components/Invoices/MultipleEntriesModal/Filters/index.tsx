@@ -72,11 +72,12 @@ const Filters = ({
         [field.name]: selectedValue,
       });
     } else {
-      selectedValue.value != "custom" &&
+      if (selectedValue.value !== "custom") {
         setFilters({
           ...filters,
           [field.name]: selectedValue,
         });
+      }
     }
   };
 
@@ -146,7 +147,9 @@ const Filters = ({
   });
 
   const resetCustomDatePicker = () => {
-    defaultDateRange() && setFilters(setDefaultDateRange());
+    if (defaultDateRange()) {
+      setFilters(setDefaultDateRange());
+    }
     hideCustomFilter();
   };
 

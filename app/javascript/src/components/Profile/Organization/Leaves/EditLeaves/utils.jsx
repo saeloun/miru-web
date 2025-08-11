@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 import { components } from "react-select";
 
@@ -110,3 +111,16 @@ export const ColorOption = props => (
     <div className="m-3 h-4 w-4" style={{ background: props.data.value }} />
   </Option>
 );
+
+IconOption.propTypes = {
+  data: PropTypes.shape({
+    icon: PropTypes.node,
+    value: PropTypes.any,
+  }),
+};
+
+ColorOption.propTypes = {
+  data: PropTypes.shape({
+    value: PropTypes.string,
+  }),
+};

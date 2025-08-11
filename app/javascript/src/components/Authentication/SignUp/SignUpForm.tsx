@@ -286,7 +286,7 @@ const SignUpForm = () => {
               initialValues={{}}
               validateOnBlur={false}
               validationSchema=""
-              onSubmit={() => {}} //eslint-disable-line
+              onSubmit={() => {}}  
             >
               {() => (
                 <Form

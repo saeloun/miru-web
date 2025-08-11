@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
+ 
 import React from "react";
 
 import { useUserContext } from "context/UserContext";
@@ -83,7 +83,7 @@ interface Iprops {
   project: string;
   note: string;
   duration: number;
-  handleDeleteEntry: (id: number) => void; // eslint-disable-line
+  handleDeleteEntry: (id: number) => void;  
   setEditEntryId: React.Dispatch<React.SetStateAction<number>>;
   bill_status: string;
   setNewEntryView: any;

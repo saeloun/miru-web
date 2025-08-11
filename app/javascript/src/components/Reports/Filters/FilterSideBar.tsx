@@ -1,4 +1,4 @@
-/* eslint-disable react/hook-use-state */
+ 
 import React, { useState, useEffect, useRef } from "react";
 
 import { useEntry } from "components/Reports/context/EntryContext";
@@ -112,9 +112,11 @@ const FilterSidebar = ({
             .includes(debouncedSearchQuery.toLowerCase())
         );
 
-        newClientList.length > 0
-          ? setFilteredClientList(newClientList)
-          : setFilteredClientList([]);
+        if (newClientList.length > 0) {
+          setFilteredClientList(newClientList);
+        } else {
+          setFilteredClientList([]);
+        }
       } else {
         setFilteredClientList(filterOptions?.clients);
       }
@@ -157,9 +159,11 @@ const FilterSidebar = ({
             .includes(debouncedTeamsSearchQuery.toLowerCase())
         );
 
-        newClientList.length > 0
-          ? setFilteredTeamsList(newClientList)
-          : setFilteredTeamsList([]);
+        if (newClientList.length > 0) {
+          setFilteredTeamsList(newClientList);
+        } else {
+          setFilteredTeamsList([]);
+        }
       } else {
         setFilteredTeamsList(filterOptions?.teamMembers);
       }

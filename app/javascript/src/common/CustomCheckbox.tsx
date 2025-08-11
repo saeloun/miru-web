@@ -8,11 +8,11 @@ const CustomCheckbox = ({
   checkboxValue,
   id,
   handleCheck,
-  handleOnClick,
+  handleOnClick = () => {},
   name = "",
   wrapperClassName = "",
   labelClassName = "",
-  isUpdatedDesign,
+  isUpdatedDesign = false,
 }) => (
   <div className={classnames(wrapperClassName)}>
     <div
@@ -89,10 +89,5 @@ const CustomCheckbox = ({
     )}
   </div>
 );
-
-CustomCheckbox.defaultProps = {
-  handleOnClick: () => {}, //eslint-disable-line
-  isUpdatedDesign: false,
-};
 
 export default CustomCheckbox;

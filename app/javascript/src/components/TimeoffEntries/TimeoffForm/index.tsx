@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
+ 
 import { HOLIDAY_TYPES } from "constants/index";
 
 import React, { useState, useEffect } from "react";

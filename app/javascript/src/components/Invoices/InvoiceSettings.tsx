@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
+ 
 import { ApiStatus as PaymentSettingsStatus } from "constants/index";
 
 import React, { useState, useEffect } from "react";
@@ -40,7 +40,7 @@ const InvoiceSettings = ({
   const [accountLink, setAccountLink] = useState<string>(null);
   const [stripeAcceptedPaymentMethods, setStripeAcceptedPaymentMethods] =
     useState<Array<string>>(null);
-  const [stripe, setStripeSettings] = useState<IProvider>(null); //eslint-disable-line
+  const [stripe, setStripeSettings] = useState<IProvider>(null);  
 
   const connectStripe = async () => {
     const res = await paymentSettings.connectStripe();
@@ -57,7 +57,9 @@ const InvoiceSettings = ({
       setStripeAcceptedPaymentMethods(
         !!stripe && stripe.acceptedPaymentMethods
       );
-      !!stripe && setStripeSettings(stripe);
+      if (stripe) {
+        setStripeSettings(stripe);
+      }
       setStatus(PaymentSettingsStatus.SUCCESS);
     } catch {
       setStatus(PaymentSettingsStatus.ERROR);

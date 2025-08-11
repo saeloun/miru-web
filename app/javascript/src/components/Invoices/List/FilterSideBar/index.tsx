@@ -197,7 +197,9 @@ const FilterSideBar = ({
   });
 
   const resetCustomDatePicker = () => {
-    defaultDateRange() && setFilters(setDefaultDateRange());
+    if (defaultDateRange()) {
+      setFilters(setDefaultDateRange());
+    }
     hideCustomFilter();
   };
 
@@ -219,9 +221,11 @@ const FilterSideBar = ({
       return;
     }
 
-    defaultDateRange()
-      ? setFilterParams(setDefaultDateRange())
-      : setFilterParams(filters);
+    if (defaultDateRange()) {
+      setFilterParams(setDefaultDateRange());
+    } else {
+      setFilterParams(filters);
+    }
 
     window.localStorage.setItem(
       LocalStorageKeys.INVOICE_FILTERS,

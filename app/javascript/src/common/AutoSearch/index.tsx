@@ -69,10 +69,10 @@ const AutoSearch = ({
 };
 
 interface Iprops {
-  searchAction: (val) => any; // eslint-disable-line
+  searchAction: (val) => any;
   SearchDataRow;
   wrapperClassName?: string;
-  handleEnter?: (val, shouldUpdate) => any; // eslint-disable-line
+  handleEnter?: (val, shouldUpdate) => any;
   clearSearch?: () => any;
 }
 

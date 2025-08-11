@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable no-unused-vars */
+ 
 import React, { useState, useEffect } from "react";
 
 import { useTimesheetEntries } from "context/TimesheetEntries";
@@ -61,7 +61,9 @@ const MonthCalender = () => {
   }, [currentMonthNumber, currentYear]);
 
   useEffect(() => {
-    entryList && handleMonthChange();
+    if (entryList) {
+      handleMonthChange();
+    }
   }, [entryList]);
 
   return (

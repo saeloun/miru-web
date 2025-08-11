@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 import React, { useEffect, useState } from "react";
 
-import "react-phone-number-input/style.css"; //eslint-disable-line
+import "react-phone-number-input/style.css";
 import { Formik, Form, FormikProps } from "formik";
 import PhoneInput from "react-phone-number-input";
 import flags from "react-phone-number-input/flags";

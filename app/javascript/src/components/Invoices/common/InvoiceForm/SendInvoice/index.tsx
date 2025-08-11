@@ -1,4 +1,4 @@
-/* eslint-disable no-unused-vars */
+ 
 import { ApiStatus as InvoiceStatus } from "constants/index";
 
 import React, { useEffect, useState } from "react";
@@ -39,7 +39,9 @@ const SendInvoice = ({
 
   useEffect(() => {
     setTimeout(() => {
-      status === InvoiceStatus.SUCCESS && navigate("/invoices");
+      if (status === InvoiceStatus.SUCCESS) {
+        navigate("/invoices");
+      }
     }, 5000);
   }, [status]);
 

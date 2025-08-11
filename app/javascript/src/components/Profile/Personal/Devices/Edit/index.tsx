@@ -1,4 +1,4 @@
-/* eslint-disable no-unused-vars */
+ 
 import React, { Fragment, useEffect, useState } from "react";
 
 import deviceApi from "apis/devices";
@@ -36,7 +36,7 @@ const AllocatedDevicesEdit = () => {
   const currentUserId = isCalledFromSettings ? user.id : memberId;
   const [isLoading, setIsLoading] = useState(false);
   const [devices, setDevices] = useState<Device[]>([]);
-  const [errDetails, setErrDetails] = useState(initialErrState);
+  const [errDetails, _setErrDetails] = useState(initialErrState);
 
   useEffect(() => {
     setIsLoading(true);

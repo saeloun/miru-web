@@ -1,4 +1,4 @@
-/* eslint-disable no-unused-vars */
+ 
 import React from "react";
 
 import dayjs from "dayjs";
@@ -45,17 +45,17 @@ const StaticPage = ({
   changePassword,
   setChangePassword,
   showCurrentPassword,
-  currentPassword,
-  handleCurrentPasswordChange,
+  _currentPassword,
+  _handleCurrentPasswordChange,
   setShowCurrentPassword,
-  getErr,
+  _getErr,
   showConfirmPassword,
   showPassword,
-  handlePasswordChange,
-  password,
-  confirmPassword,
+  _handlePasswordChange,
+  _password,
+  _confirmPassword,
   setShowPassword,
-  handleConfirmPasswordChange,
+  _handleConfirmPasswordChange,
   setShowConfirmPassword,
   dateFormat,
   cancelPasswordChange,

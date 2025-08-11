@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 import React, { useEffect, useState } from "react";
 
 import clientApi from "apis/clients";

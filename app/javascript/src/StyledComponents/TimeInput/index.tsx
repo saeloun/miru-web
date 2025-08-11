@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import React, { useState, useEffect, useRef } from "react";
 
 import { isValid } from "./validate";
@@ -11,7 +10,7 @@ const TimeInput = ({
   onTimeChange,
   type,
   onFocusHandler,
-  placeholder,
+  placeholder = "HH:MM",
   className,
   name,
   onBlurHandler,
@@ -20,24 +19,24 @@ const TimeInput = ({
 }: Iprops) => {
   const [time, setTime] = useState<string>("");
 
-  const _input = useRef(null);
+  const _input = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     setTime(initTime);
   }, [initTime]);
 
   useEffect(() => {
-    if (!disabled && mountFocus) {
+    if (!disabled && mountFocus && autoFocus && _input.current) {
       setTimeout(() => {
-        autoFocus && _input.current.focus();
+        _input.current?.focus();
       }, 0);
     }
-  }, [disabled, mountFocus]);
+  }, [disabled, mountFocus, autoFocus]);
 
   let lastVal = "";
 
-  const onChangeHandler = val => {
-    if (val == time) {
+  const onChangeHandler = (val: string) => {
+    if (val === time) {
       return;
     }
 
@@ -47,14 +46,14 @@ const TimeInput = ({
       }
 
       if (val.length > 10) {
-        false;
+        return;
       }
 
       lastVal = val;
 
       setTime(val);
 
-      onTimeChange(val);
+      onTimeChange?.(val);
     }
   };
 
@@ -84,10 +83,6 @@ const TimeInput = ({
   );
 };
 
-TimeInput.defaultProps = {
-  placeholder: "HH:MM",
-};
-
 interface Iprops {
   key?: number | string;
   id?: string;
@@ -95,13 +90,13 @@ interface Iprops {
   initTime?: string;
   disabled?: boolean;
   mountFocus?: string;
-  onTimeChange?: (val) => any;
+  onTimeChange?: (val: string) => void;
   type?: string;
-  onFocusHandler?: (e) => any;
+  onFocusHandler?: (e: React.FocusEvent<HTMLInputElement>) => void;
   placeholder?: string;
   className?: string;
   name?: string;
-  onBlurHandler?: (e) => any;
+  onBlurHandler?: (e: React.FocusEvent<HTMLInputElement>) => void;
 }
 
 export default TimeInput;

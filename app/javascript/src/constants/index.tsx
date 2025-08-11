@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-/* eslint-disable no-unused-vars */
-
 export enum ApiStatus {
   IDLE = "idle",
   LOADING = "loading",

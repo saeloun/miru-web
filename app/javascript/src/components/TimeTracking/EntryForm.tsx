@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
+ 
 import React, { useState, useEffect, useRef, MutableRefObject } from "react";
 
 import timesheetEntryApi from "apis/timesheet-entry";
@@ -408,7 +408,7 @@ const AddEntry: React.FC<Iprops> = ({
 
 interface Iprops {
   selectedEmployeeId: number;
-  fetchEntries: (from: string, to: string) => Promise<any>; // eslint-disable-line
+  fetchEntries: (from: string, to: string) => Promise<any>;  
   fetchEntriesofMonth: any;
   setNewEntryView: React.Dispatch<React.SetStateAction<boolean>>;
   clients: any[];
@@ -418,8 +418,8 @@ interface Iprops {
   setEditEntryId: React.Dispatch<React.SetStateAction<number>>;
   entryList: object;
   handleAddEntryDateChange: any;
-  handleFilterEntry: (date: string, entryId: string | number) => object; // eslint-disable-line
-  handleRelocateEntry: (date: string, entry: object) => void; // eslint-disable-line
+  handleFilterEntry: (date: string, entryId: string | number) => object;  
+  handleRelocateEntry: (date: string, entry: object) => void;  
   setSelectedFullDate: any;
   setUpdateView: any;
   handleDeleteEntry: any;

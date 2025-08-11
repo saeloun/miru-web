@@ -53,7 +53,9 @@ const NewLineItemStatic = ({
       return option;
     });
 
-    name && setSelectedOption(selectedOptionArr);
+    if (name) {
+      setSelectedOption(selectedOptionArr);
+    }
   }, [name, lineItemDate, description, quantity, rate, lineTotal]);
 
   const closeEditField = event => {

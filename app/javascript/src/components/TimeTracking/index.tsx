@@ -1,4 +1,4 @@
-/* eslint-disable no-unexpected-multiline */
+ 
 import React, { useEffect, useState } from "react";
 
 import timesheetEntryApi from "apis/timesheet-entry";
@@ -69,7 +69,9 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
   useEffect(() => {
     sendGAPageView();
     fetchTimeTrackingData();
-    !isDesktop && setView("day");
+    if (!isDesktop) {
+      setView("day");
+    }
   }, []);
 
   const fetchTimeTrackingData = async () => {
@@ -105,7 +107,9 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
   };
 
   useEffect(() => {
-    !isDesktop && setView("day");
+    if (!isDesktop) {
+      setView("day");
+    }
   }, [isDesktop]);
 
   useEffect(() => {

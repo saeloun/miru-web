@@ -26,8 +26,8 @@ const TableRow = ({
   isDesktop,
   index,
   isStripeEnabled,
-  // eslint-disable-next-line no-unused-vars
-  setIsStripeEnabled,
+   
+  _setIsStripeEnabled,
 }) => {
   const [sendStatus, setSendStatus] = useState<InvoicesStatus>(
     InvoicesStatus.IDLE
@@ -234,9 +234,11 @@ const TableRow = ({
               <Button
                 style="ternary"
                 onClick={() => {
-                  isSendReminder
-                    ? setIsSendReminder(false)
-                    : setIsSending(false);
+                  if (isSendReminder) {
+                    setIsSendReminder(false);
+                  } else {
+                    setIsSending(false);
+                  }
                 }}
               >
                 <ArrowLeftIcon className="text-white" size={16} weight="bold" />
@@ -248,9 +250,11 @@ const TableRow = ({
                 className="mr-4 text-miru-gray-1000"
                 type="button"
                 onClick={() => {
-                  isSendReminder
-                    ? setIsSendReminder(false)
-                    : setIsSending(false);
+                  if (isSendReminder) {
+                    setIsSendReminder(false);
+                  } else {
+                    setIsSending(false);
+                  }
                 }}
               >
                 <XIcon size={16} weight="bold" />

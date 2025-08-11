@@ -32,10 +32,12 @@ export const bankFieldValidationRequirements = (data, isUpdating) => {
       if (field["group"][0]["required"]) {
         const key = field["group"][0]["key"].split(".");
         const validKey = key[1] || key[0];
-        key[0] == "address"
-          ? (validationRequirements[type]["details"]["address"][validKey] =
-              isUpdating)
-          : (validationRequirements[type]["details"][validKey] = isUpdating);
+        
+        if (key[0] === "address") {
+          validationRequirements[type]["details"]["address"][validKey] = isUpdating;
+        } else {
+          validationRequirements[type]["details"][validKey] = isUpdating;
+        }
       }
     });
   });

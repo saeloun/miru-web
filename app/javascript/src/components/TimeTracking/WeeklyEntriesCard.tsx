@@ -1,5 +1,5 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-/* eslint-disable no-unused-vars */
+ 
+ 
 import React, { useState, useEffect } from "react";
 
 import timesheetEntryApi from "apis/timesheet-entry";
@@ -58,10 +58,14 @@ const WeeklyEntriesCard = ({
       minToHHMM(currentEntries[num] ? currentEntries[num]["duration"] : 0)
     );
 
-    currentEntries[num] &&
-    ["unbilled", "billed"].includes(currentEntries[num]["bill_status"])
-      ? setBillable(true)
-      : setBillable(false);
+    if (
+      currentEntries[num] &&
+      ["unbilled", "billed"].includes(currentEntries[num]["bill_status"])
+    ) {
+      setBillable(true);
+    } else {
+      setBillable(false);
+    }
   };
 
   const handleSaveEntry = async () => {
