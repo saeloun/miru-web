@@ -40,6 +40,7 @@
 /yarn-error.log
 yarn-debug.log*
 .yarn-integrity
+.pnpm-store/
 
 # Rails specific ignores
 /vendor/bundle
@@ -69,3 +70,11 @@ CLAUDE.md
 # Git hooks
 .husky/
 lefthook-local.yml
+
+# Vite Ruby
+/public/vite*
+node_modules
+# Vite uses dotenv and suggests to ignore local-only env files. See
+# https://vitejs.dev/guide/env-and-mode.html#env-files
+*.local
+

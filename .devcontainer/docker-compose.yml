@@ -1,22 +1,17 @@
 version: "3.9"
 services:
   app:
-    build:
-      context: ..
-      dockerfile: .devcontainer/Dockerfile
-    # command: bash -c "bundle install && bundle exec rails db:prepare && bundle exec rails s -p 3000 -b 0.0.0.0" || sleep infinity
-    # Overrides default command so things don't shut down after the process ends.
-    command: sleep infinity
+    image: ruby:3.4.5-slim
+    platform: linux/amd64
+    command: bash -c "apt-get update && apt-get install -y postgresql-client git build-essential libpq-dev curl && curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && apt-get install -y nodejs && npm install -g pnpm && bundle install && pnpm install && bundle exec rails db:prepare && bundle exec rails s -p 3000 -b 0.0.0.0"
     ports:
       - "3000:3000"
-    image: miru-web:latest
     working_dir: /app
     volumes:
       - ../:/app
       - gem_cache:/usr/local/bundle/gems
       - node_modules:/app/node_modules
     environment:
-      - WEBPACKER_DEV_SERVER_HOST=0.0.0.0
       - DATABASE_URL=postgres://postgres:postgres@database:5432/
       - DB_HOST=database
       - DB_USER=postgres
@@ -24,72 +19,36 @@ services:
       - DATABASE_CLEANER_ALLOW_REMOTE_DATABASE_URL="true"
       - POSTGRES_PASSWORD="postgres"
       - POSTGRES_USER="postgres"
-      - ELASTICSEARCH_URL=http://elastic:x2Sy5FK51zu@elasticsearch:9200
       - PIDFILE=/tmp/pids/server.pid
+      - BUNDLE_PATH=/usr/local/bundle/gems
     depends_on:
       - database
-      - elasticsearch
     tmpfs:
       - /tmp/pids/
-    # Runs app on the same network as the database container, allows "forwardPorts" in devcontainer.json function.
-    # network_mode: service:database
-    # Use "forwardPorts" in **devcontainer.json** to forward an app port locally.
-    # (Adding the "ports" property to this file will not forward from a Codespace.)
 
   database:
-    image: postgres:13.8
+    image: postgres:16-alpine
+    platform: linux/amd64
     restart: unless-stopped
-    # ports:
-    #   - "5432:5432"
     volumes:
       - postgres:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: postgres
       POSTGRES_DB: postgres
       POSTGRES_PASSWORD: postgres
-      # Your config/database.yml should use the user and password you set here,
-      # and host "db" (as that's the name of this service). You can use whatever
-      # database name you want. Use `bin/rails db:prepare` to create the database.
-      #
-      # Example:
-      #
-      #  development:
-      #    <<: *default
-      #    host: db
-      #    username: postgres
-      #    password: postgres
-      #    database: myapp_development
 
-      # Add "forwardPorts": ["5432"] to **devcontainer.json** to forward PostgreSQL locally.
-      # (Adding the "ports" property to this file will not forward from a Codespace.)
-
-  webpack:
-    build:
-      context: ..
-      dockerfile: .devcontainer/Dockerfile
-    command: bin/webpacker-dev-server
-    image: miru-web:latest
+  vite:
+    image: node:22-alpine
+    platform: linux/amd64
+    command: sh -c "npm install -g pnpm && pnpm install && pnpm vite dev --host 0.0.0.0 --port 3036"
     ports:
-      - "3035:3035"
-    environment:
-      - WEBPACKER_DEV_SERVER_HOST=0.0.0.0
-      - DATABASE_URL=postgres://postgres:postgres@database:5432/
-      - DATABASE_CLEANER_ALLOW_REMOTE_DATABASE_URL="true"
-      - POSTGRES_PASSWORD="postgres"
-      - POSTGRES_USER="postgres"
-      - ELASTICSEARCH_URL=http://elastic:x2Sy5FK51zu@elasticsearch:9200
+      - "3036:3036"
+    working_dir: /app
+    volumes:
+      - ../:/app
+      - node_modules:/app/node_modules
     depends_on:
       - database
-
-  elasticsearch:
-    image: elasticsearch:7.13.3
-    environment:
-      discovery.type: single-node
-      network.host: 0.0.0.0
-      xpack.security.enabled: "true"
-      ELASTIC_PASSWORD: "x2Sy5FK51zu"
-    ports:
-      - "9200:9200"
 
 volumes:
   gem_cache:
