@@ -38,5 +38,10 @@ RSpec.configure do |config|
     stub_stripe_account_creation
     stub_stripe_account_retrieve
     stub_stripe_account_link_creation
+
+    # Prevent the before_create callback from making real API calls
+    allow_any_instance_of(StripeConnectedAccount).to receive(:account_id=) do |instance, value|
+      instance.write_attribute(:account_id, value || "acct_test_#{SecureRandom.hex(8)}")
+    end
   end
 end
