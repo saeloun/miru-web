@@ -18,7 +18,7 @@ const AppliedFilters = ({
 
   const handleRemoveFilter = removeval => {
     let name, newArr;
-    
+
     for (const [key, value] of Object.entries(filterParams)) {
       if (Array.isArray(value)) {
         const hasValue = value.some(v => v === removeval);
@@ -28,7 +28,7 @@ const AppliedFilters = ({
         }
       } else if (value === removeval) {
         name = key;
-        if (key === 'dateRange') {
+        if (key === "dateRange") {
           newArr = filterIntialValues.dateRange;
         } else {
           newArr = null;

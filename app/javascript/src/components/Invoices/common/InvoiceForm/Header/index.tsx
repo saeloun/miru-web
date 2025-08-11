@@ -22,7 +22,7 @@ const Header = ({
   id = null,
   deleteInvoice = null,
   wavieInvoice = null,
-   
+
   setIsSendReminder = _value => {},
   showMoreButton = false,
 }) => {

@@ -256,13 +256,13 @@ const PrivacyPolicyModal = ({ isOpen, onClose }) => (
       <p className="mt-2 text-justify text-sm">
         Miru follows a standard procedure of using log files. These files log
         visitors when they visit websites. All hosting companies do this as part
-        of hosting services&apos; analytics. The information collected by log files
-        include internet protocol (IP) addresses, browser type, Internet Service
-        Provider (ISP), date and time stamp, referring/exit pages, and possibly
-        the number of clicks. These are not linked to any information that is
-        personally identifiable. The purpose of the information is for analyzing
-        trends, administering the site, tracking users&apos; movement on the website,
-        and gathering demographic information.
+        of hosting services&apos; analytics. The information collected by log
+        files include internet protocol (IP) addresses, browser type, Internet
+        Service Provider (ISP), date and time stamp, referring/exit pages, and
+        possibly the number of clicks. These are not linked to any information
+        that is personally identifiable. The purpose of the information is for
+        analyzing trends, administering the site, tracking users&apos; movement
+        on the website, and gathering demographic information.
       </p>
       <h3 className="mt-2 text-lg font-semibold">
         Advertising Partners Privacy Policies
@@ -275,8 +275,8 @@ const PrivacyPolicyModal = ({ isOpen, onClose }) => (
         Third-party ad servers or ad networks use technologies like cookies,
         JavaScript, or Web Beacons that are used in their respective
         advertisements and links that appear on Miru, which are sent directly to
-        users&apos; browsers. They automatically receive your IP address when this
-        occurs. These technologies are used to measure the effectiveness of
+        users&apos; browsers. They automatically receive your IP address when
+        this occurs. These technologies are used to measure the effectiveness of
         their advertising campaigns and/or to personalize the advertising
         content that you see on websites that you visit.
       </p>
@@ -288,11 +288,11 @@ const PrivacyPolicyModal = ({ isOpen, onClose }) => (
         Third Party Privacy Policies
       </h3>
       <p className="mt-2 text-justify text-sm">
-        Miru&apos;s Privacy Policy does not apply to other advertisers or websites.
-        Thus, we are advising you to consult the respective Privacy Policies of
-        these third-party ad servers for more detailed information. It may
-        include their practices and instructions about how to opt-out of certain
-        options.
+        Miru&apos;s Privacy Policy does not apply to other advertisers or
+        websites. Thus, we are advising you to consult the respective Privacy
+        Policies of these third-party ad servers for more detailed information.
+        It may include their practices and instructions about how to opt-out of
+        certain options.
       </p>
       <p className="mt-2 text-justify text-sm">
         You can choose to disable cookies through your individual browser
@@ -318,8 +318,8 @@ const PrivacyPolicyModal = ({ isOpen, onClose }) => (
           that a business has collected.
         </li>
         <li className="text-justify text-sm">
-          Request that a business that sells a consumer&apos;s personal data, not
-          sell the consumer&apos;s personal data.
+          Request that a business that sells a consumer&apos;s personal data,
+          not sell the consumer&apos;s personal data.
         </li>
         <li className="text-justify text-sm">
           If you make a request, we have one month to respond to you. If you
@@ -367,7 +367,9 @@ const PrivacyPolicyModal = ({ isOpen, onClose }) => (
           would like to exercise any of these rights, please contact us.
         </li>
       </ol>
-      <h3 className="mt-2 text-lg font-semibold">Children&apos;s Information</h3>
+      <h3 className="mt-2 text-lg font-semibold">
+        Children&apos;s Information
+      </h3>
       <p className="mt-2 text-justify text-sm">
         Another part of our priority is adding protection for children while
         using the internet. We encourage parents and guardians to observe,

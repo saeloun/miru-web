@@ -17,8 +17,8 @@ export interface FinancialDetailsFormValues {
 }
 
 export interface FinancialDetailsFormProps {
-  onSaveBtnClick: (financialDetails: FinancialDetailsFormValues) => void;  
-  setFinancialDetails: (values: any) => void;  
+  onSaveBtnClick: (financialDetails: FinancialDetailsFormValues) => void;
+  setFinancialDetails: (values: any) => void;
   isUpdatedFormValues: boolean;
   prevFormValues: FinancialDetailsFormValues;
 }

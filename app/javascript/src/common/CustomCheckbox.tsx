@@ -8,7 +8,9 @@ const CustomCheckbox = ({
   checkboxValue,
   id,
   handleCheck,
-  handleOnClick = () => {},
+  handleOnClick = () => {
+    // Default empty click handler - can be overridden by parent component
+  },
   name = "",
   wrapperClassName = "",
   labelClassName = "",

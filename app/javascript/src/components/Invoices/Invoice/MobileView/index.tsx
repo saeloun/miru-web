@@ -113,7 +113,7 @@ const MobileView = ({
           issueDate={issueDate}
           reference={reference}
           selectedClient={client}
-          setActiveSection={() => {}}  
+          setActiveSection={() => {}}
           showEditButton={false}
           strikeAmount={strikeAmount}
         />
@@ -125,8 +125,8 @@ const MobileView = ({
             manualEntryArr={[]}
             selectedClient={client}
             selectedLineItems={invoiceLineItems}
-            setActiveSection={() => {}}  
-            setEditItem={() => {}}  
+            setActiveSection={() => {}}
+            setEditItem={() => {}}
             strikeAmount={strikeAmount}
           />
         </div>
@@ -137,7 +137,7 @@ const MobileView = ({
           baseCurrencyAmount={baseCurrencyAmount}
           currency={currency}
           discount={discount}
-          setActiveSection={() => {}}  
+          setActiveSection={() => {}}
           showEditButton={false}
           strikeAmount={strikeAmount}
           subTotal={subTotal}

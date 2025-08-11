@@ -50,10 +50,8 @@ const ClientList = ({
                 handleDeleteClick={handleDeleteClick}
                 handleEditClick={handleEditClick}
                 hasRowIcons={isAdminUser}
+                rowOnClick={isAdminUser ? handleRowClick : () => {}}
                 tableRowArray={getTableData}
-                rowOnClick={
-                  isAdminUser ? handleRowClick : () => {}
-                }
                 tableHeader={
                   isAdminUser && isDesktop
                     ? tableHeader

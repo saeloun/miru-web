@@ -1,4 +1,3 @@
- 
 import React, { useEffect, useState } from "react";
 
 import timesheetEntryApi from "apis/timesheet-entry";

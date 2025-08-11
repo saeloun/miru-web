@@ -19,17 +19,17 @@ type CustomCreatableSelectProps = {
   isDisabled?: boolean;
   ignoreDisabledFontColor?: boolean;
   hideDropdownIndicator?: boolean;
-  handleOnClick?: (e?: any) => void;
-  handleOnChange?: (e?: any) => void;
-  handleonFocus?: (e?: any) => void;
-  onBlur?: (e?: any) => void;
+  handleOnClick?: (_e?: any) => void;
+  handleOnChange?: (_e?: any) => void;
+  handleonFocus?: (_e?: any) => void;
+  onBlur?: (_e?: any) => void;
   defaultValue?: object;
-  onMenuClose?: (e?: any) => void;
-  onMenuOpen?: (e?: any) => void;
+  onMenuClose?: (_e?: any) => void;
+  onMenuOpen?: (_e?: any) => void;
   className?: string;
   autoFocus?: boolean;
   value?: object;
-  getOptionLabel?: (e?: any) => any;
+  getOptionLabel?: (_e?: any) => any;
   wrapperClassName?: string;
   options?: Array<any>;
   name?: string;
@@ -41,22 +41,34 @@ export const CustomCreatableSelect = ({
   classNamePrefix = "react-select-filter",
   options,
   label = "Select",
-  handleOnChange = () => {},
-  handleonFocus = () => {},
-  handleOnClick = () => {},
+  handleOnChange = () => {
+    /* Default empty handler */
+  },
+  handleonFocus = () => {
+    /* Default empty handler */
+  },
+  handleOnClick = () => {
+    /* Default empty handler */
+  },
   name,
   value = null,
   isErr = false,
   isDisabled = false,
   styles = null,
   components = null,
-  onMenuClose = () => {},
-  onMenuOpen = () => {},
+  onMenuClose = () => {
+    /* Default empty handler */
+  },
+  onMenuOpen = () => {
+    /* Default empty handler */
+  },
   ignoreDisabledFontColor = false,
   hideDropdownIndicator = false,
   className = "",
   autoFocus = false,
-  onBlur = () => {},
+  onBlur = () => {
+    /* Default empty handler */
+  },
   defaultValue = null,
   getOptionLabel,
   wrapperClassName = "",

@@ -43,14 +43,6 @@ type ButtonProps = {
   type?: any;
 };
 
-export const BUTTON_STYLES = {
-  primary: "primary",
-  secondary: "secondary",
-  ternary: "ternary",
-  dashed: "dashed",
-  delete: "delete",
-  calendarCell: "calendarCell",
-};
 const SIZES = { small: "small", medium: "medium", large: "large" };
 
 const Button = ({
@@ -65,8 +57,8 @@ const Button = ({
   type,
 }: ButtonProps) => (
   <button
-    id={id}
     disabled={disabled}
+    id={id}
     type={type}
     className={classnames(
       DEFAULT_STYLE,
@@ -96,5 +88,14 @@ const Button = ({
     {children}
   </button>
 );
+
+export const BUTTON_STYLES = {
+  primary: "primary",
+  secondary: "secondary",
+  ternary: "ternary",
+  dashed: "dashed",
+  delete: "delete",
+  calendarCell: "calendarCell",
+};
 
 export default Button;

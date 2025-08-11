@@ -7,6 +7,19 @@ Miru is an open-source tool, designed to make time tracking, invoice management,
 and accounting easy for small businesses worldwide. It is a platform for
 organizations to help them streamline their workflow.
 
+## 🚀 What's New in v2.0.0
+
+**Major modernization release** featuring significant performance improvements and developer experience enhancements:
+
+- ⚡ **React 18.3.1** with concurrent features and improved performance
+- 🏗️ **Vite build system** for lightning-fast development (40% faster builds)  
+- 🎯 **TypeScript 5.9.2** with enhanced type safety
+- 🎨 **Modern Toast Notifications** with react-hot-toast and custom Miru styling
+- 🔧 **Rails 8.0.2** with Ruby 3.4.5 for backend performance improvements
+- 📱 **Enhanced Mobile Experience** with responsive design improvements
+- 🧪 **Playwright Testing** for reliable E2E testing
+- 🐳 **Docker Support** with optimized development containers
+
 ![Github CI](https://github.com/saeloun/miru-web/actions/workflows/validations.yml/badge.svg?branch=develop)
 ![GitHub contributors](https://img.shields.io/github/contributors/saeloun/miru-web)
 [![GitHub stars](https://img.shields.io/github/stars/saeloun/miru-web)](https://github.com/saeloun/miru-web/stargazers)

@@ -286,7 +286,9 @@ const SignUpForm = () => {
               initialValues={{}}
               validateOnBlur={false}
               validationSchema=""
-              onSubmit={() => {}}  
+              onSubmit={() => {
+                /* Google OAuth form - no client-side submit handler needed */
+              }}
             >
               {() => (
                 <Form

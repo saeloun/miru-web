@@ -45,7 +45,7 @@ const CustomDateRangePicker = ({
     setSelectedInput(fromInput);
     textInput.current.focus();
     resetErrors("fromInput");
-  }, []);
+  }, [setSelectedInput, resetErrors]);
 
   const handleDateInputOnBlur = (dateInput: string, fieldName: string) => {
     if (dateInput) {

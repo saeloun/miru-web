@@ -1,4 +1,3 @@
- 
 import { ApiStatus as InvoiceStatus } from "constants/index";
 
 import React, { useEffect, useState } from "react";

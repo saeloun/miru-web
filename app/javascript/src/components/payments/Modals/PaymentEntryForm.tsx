@@ -291,7 +291,7 @@ const PaymentEntryForm = ({
                   value={
                     transactionDate && dayjs(transactionDate).format(dateFormat)
                   }
-                  onChange={() => {}}  
+                  onChange={() => {}}
                 />
                 <CalendarIcon
                   className="absolute top-0 bottom-0 right-1 mx-2 my-3 cursor-pointer"
@@ -381,7 +381,7 @@ const PaymentEntryForm = ({
                 value={
                   amount && baseCurrency && currencyFormat(baseCurrency, amount)
                 }
-                onChange={() => {}}  
+                onChange={() => {}}
               />
             </div>
             <div className="mt-4">

@@ -12,7 +12,9 @@ export const CustomAsyncSelect = ({
   loadOptions,
   label = "Select",
   name,
-  handleOnChange = () => {},
+  handleOnChange = () => {
+    // Default empty handler - can be overridden by parent component
+  },
   value,
   isErr,
   isDesktopView = false,

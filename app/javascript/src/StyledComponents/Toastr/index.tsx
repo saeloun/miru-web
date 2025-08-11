@@ -28,13 +28,13 @@ const showErrorToastr = error => {
 
 const showWarningToastr = message => {
   toast(message, {
-    icon: '⚠️',
+    icon: "⚠️",
   });
 };
 
 const showInfoToastr = message => {
   toast(message, {
-    icon: 'ℹ️',
+    icon: "ℹ️",
   });
 };
 

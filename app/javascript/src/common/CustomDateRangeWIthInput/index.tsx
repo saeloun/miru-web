@@ -1,4 +1,3 @@
- 
 import React, { useEffect, useRef, useState } from "react";
 
 import { getMonth, getYear } from "date-fns";
@@ -51,7 +50,7 @@ const CustomDateRangeWithInput = ({
     setSelectedInput(fromInput);
     textInput.current.focus();
     resetErrors("fromInput");
-  }, []);
+  }, [setSelectedInput, resetErrors]);
 
   useEffect(() => {
     if (
@@ -60,7 +59,7 @@ const CustomDateRangeWithInput = ({
     ) {
       setShowCustomCalendar(true);
     }
-  }, [document.activeElement]);
+  }, [setShowCustomCalendar]);
 
   const handleDateInputChange = (dateInput: string, fieldName: string) => {
     const showErrorMsg = !dateInput?.trim();

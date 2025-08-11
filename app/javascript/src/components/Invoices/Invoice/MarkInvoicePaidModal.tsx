@@ -99,7 +99,7 @@ const MarkInvoiceAsPaidModal = ({
               name="invoice"
               type="text"
               value={client}
-              onChange={() => {}}  
+              onChange={() => {}}
             />
           </div>
         </div>
@@ -119,7 +119,7 @@ const MarkInvoiceAsPaidModal = ({
             name="transactionDate"
             type="text"
             value={transactionDate && dayjs(transactionDate).format(dateFormat)}
-            onChange={() => {}}  
+            onChange={() => {}}
           />
           <CalendarIcon
             className="absolute top-0 bottom-0 right-1 mx-2 my-3 cursor-pointer "
@@ -191,7 +191,7 @@ const MarkInvoiceAsPaidModal = ({
           name="paymentAmount"
           type="text"
           value={amount && baseCurrency && currencyFormat(baseCurrency, amount)}
-          onChange={() => {}}  
+          onChange={() => {}}
         />
       </div>
       <div className="mt-4">

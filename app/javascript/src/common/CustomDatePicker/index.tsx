@@ -109,7 +109,7 @@ type CustomDatePickerProps = {
   visibility?: boolean;
   handleChange: any;
   date: any;
-  setVisibility?: (visibility: boolean) => any;
+  setVisibility?: (_visibility: boolean) => any;
   wrapperRef?: any;
   dateFormat?: any;
 };

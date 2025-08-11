@@ -25,9 +25,9 @@ type customInputTextProps = {
   autoFocus?: boolean;
   step?: any;
   min?: any;
-  onFocus?: (e?: any) => void;
-  onBlur?: (e?: any) => void;
-  onClick?: (e?: any) => void;
+  onFocus?: (_e?: any) => void;
+  onBlur?: (_e?: any) => void;
+  onClick?: (_e?: any) => void;
 };
 
 export const CustomInputText = ({
@@ -37,9 +37,15 @@ export const CustomInputText = ({
   name,
   type = "text",
   value,
-  onChange = () => {},
-  onFocus = () => {},
-  onBlur = () => {},
+  onChange = () => {
+    /* Default empty handler */
+  },
+  onFocus = () => {
+    /* Default empty handler */
+  },
+  onBlur = () => {
+    /* Default empty handler */
+  },
   labelClassName,
   label,
   wrapperClassName,
@@ -48,7 +54,9 @@ export const CustomInputText = ({
   readOnly = false,
   step = 1,
   min = null,
-  onClick = () => {},
+  onClick = () => {
+    /* Default empty handler */
+  },
   autoFocus = false,
 }: customInputTextProps) => (
   <div className={classNames(defaultWrapperClassName, wrapperClassName)}>

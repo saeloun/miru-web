@@ -256,7 +256,7 @@ const ExpenseForm = ({
               name="transactionDate"
               type="text"
               value={expenseDate && dayjs(expenseDate).format(dateFormat)}
-              onChange={() => {}}  
+              onChange={() => {}}
             />
             <CalendarIcon
               className="absolute top-0 bottom-0 right-1 mx-2 my-3 cursor-pointer"

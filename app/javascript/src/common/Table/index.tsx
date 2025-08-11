@@ -70,9 +70,15 @@ const Table = ({
   tableRowArray,
   hasCheckbox = false,
   hasRowIcons = false,
-  handleDeleteClick = _id => {},
-  handleEditClick = _id => {},
-  rowOnClick = _id => {},
+  handleDeleteClick = _id => {
+    /* Default empty handler */
+  },
+  handleEditClick = _id => {
+    /* Default empty handler */
+  },
+  rowOnClick = _id => {
+    /* Default empty handler */
+  },
 }) => {
   const data = useMemo(() => tableRowArray, [tableRowArray]);
   const columns = useMemo(() => tableHeader, [tableHeader]);
@@ -85,7 +91,11 @@ const Table = ({
         data,
       },
       useRowSelect,
-      hasCheckbox ? getTableCheckbox : () => {}
+      hasCheckbox
+        ? getTableCheckbox
+        : () => {
+            /* No checkbox handler needed */
+          }
     );
 
   return (

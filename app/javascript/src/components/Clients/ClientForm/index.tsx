@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 
-import "react-phone-number-input/style.css";
 import { Formik, Form, FormikProps } from "formik";
 import PhoneInput from "react-phone-number-input";
 import flags from "react-phone-number-input/flags";
+import "react-phone-number-input/style.css";
 import { Button, Toastr } from "StyledComponents";
 import worldCountries from "world-countries";
 import clientApi from "apis/clients";

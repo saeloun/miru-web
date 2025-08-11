@@ -11,7 +11,7 @@ interface Currency {
   symbol: string;
 }
 
-export const clientSchema = Yup.object().shape({
+const clientSchema = Yup.object().shape({
   name: Yup.string()
     .required("Name cannot be blank")
     .max(30, "Maximum 30 characters are allowed"),
@@ -64,7 +64,7 @@ const getCurrencyLabel = (currency?: string): string => {
   return "";
 };
 
-export const getInitialvalues = (client?: any) => ({
+const getInitialvalues = (client?: any) => ({
   name: client?.name || "",
   email: client?.email || "",
   phone: client?.phone || "",
@@ -85,3 +85,5 @@ export const getInitialvalues = (client?: any) => ({
     value: client?.currency || "",
   },
 });
+
+export { clientSchema, getInitialvalues };

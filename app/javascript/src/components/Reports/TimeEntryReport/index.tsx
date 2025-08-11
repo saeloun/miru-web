@@ -207,7 +207,7 @@ const TimeEntryReport = () => {
           handleDownload={handleDownload}
           isFilterVisible={isFilterVisible}
           resetFilter={resetFilter}
-          revenueFilterCounter={() => {}}  
+          revenueFilterCounter={() => {}}
           setIsFilterVisible={setIsFilterVisible}
           showNavFilters={isDesktop && showNavFilters}
           type={TIME_ENTRY_REPORT_PAGE}

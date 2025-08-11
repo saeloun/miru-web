@@ -269,7 +269,7 @@ const AddLineItemContainer = ({
         initialValues={addEditFormInitialValues(editItem)}
         validateOnBlur={false}
         validationSchema={addEditFormSchema}
-        onSubmit={() => {}}  
+        onSubmit={() => {}}
       >
         {(props: FormikProps<AddLineItemFormValues>) => {
           const { touched, errors, values, setFieldValue, setFieldError } =

@@ -1,0 +1,16 @@
+node_modules
+build
+.eslintrc
+public
+coverage
+db
+docs
+log
+.scripts
+test
+tmp
+.vscode
+babel.config.js
+app/javascript/packs
+jsconfig.json
+package.json

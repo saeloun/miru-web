@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 import classNames from "classnames";
 import { useDebounce } from "helpers";
@@ -21,7 +21,7 @@ const AutoSearch = ({
   const defaultWrapperClassName =
     "relative w-full rounded-full md:w-1/2 lg:w-1/3";
 
-  const handleSearchAction = async () => {
+  const handleSearchAction = useCallback(async () => {
     if (searchQuery) {
       const result = await searchAction(debouncedSearchQuery);
       setSearchResult(result);
@@ -29,12 +29,12 @@ const AutoSearch = ({
     } else {
       setSearchResult([]);
     }
-  };
+  }, [searchQuery, debouncedSearchQuery, searchAction]);
 
   useEffect(() => {
     setLoading(true);
     handleSearchAction();
-  }, [debouncedSearchQuery]);
+  }, [debouncedSearchQuery, handleSearchAction]);
 
   const onSearchClear = () => {
     setSearchQuery("");
@@ -69,10 +69,10 @@ const AutoSearch = ({
 };
 
 interface Iprops {
-  searchAction: (val) => any;
+  searchAction: (_val) => any;
   SearchDataRow;
   wrapperClassName?: string;
-  handleEnter?: (val, shouldUpdate) => any;
+  handleEnter?: (_val, _shouldUpdate) => any;
   clearSearch?: () => any;
 }
 

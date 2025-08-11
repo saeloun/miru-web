@@ -153,11 +153,9 @@ const ClientDetails = ({ isAdminUser }) => {
                     hasRowIcons
                     handleDeleteClick={handleDeleteClick}
                     handleEditClick={handleEditClick}
+                    rowOnClick={isAdminUser ? handleRowClick : () => {}}
                     tableHeader={isDesktop ? tableHeader : mobileTableHeader}
                     tableRowArray={tableData}
-                    rowOnClick={
-                      isAdminUser ? handleRowClick : () => {}
-                    }
                   />
                 ) : (
                   <EmptyStates

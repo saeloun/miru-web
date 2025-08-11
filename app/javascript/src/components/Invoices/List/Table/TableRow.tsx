@@ -26,7 +26,7 @@ const TableRow = ({
   isDesktop,
   index,
   isStripeEnabled,
-   
+
   _setIsStripeEnabled,
 }) => {
   const [sendStatus, setSendStatus] = useState<InvoicesStatus>(

@@ -9,7 +9,7 @@ const ConnectPaymentGateway = ({
   setShowConnectPaymentDialog,
   showConnectPaymentDialog,
   invoice,
-   
+
   setIsSending = _val => {},
   isInvoiceEmail = false,
 }) => {

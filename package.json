@@ -1,6 +1,6 @@
 {
   "name": "@saeloun/miru-web",
-  "version": "1.9.0",
+  "version": "2.0.0",
   "dependencies": {
     "@babel/core": "7",
     "@babel/plugin-transform-private-methods": "^7.27.1",

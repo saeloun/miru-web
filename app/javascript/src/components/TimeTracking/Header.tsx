@@ -10,21 +10,35 @@ import CustomDatePicker from "common/CustomDatePicker";
 const Header = ({
   setWeekDay = ({}) => {},
   setSelectDate = ({}) => {},
-  handlePreDay = () => {},
+  handlePreDay = () => {
+    /* Default empty handler */
+  },
   dayInfo = [],
   selectDate = 0,
-  handleNextDay = () => {},
+  handleNextDay = () => {
+    /* Default empty handler */
+  },
   handleAddEntryDateChange = ({}) => {},
   selectedFullDate = "",
   dailyTotalHours = [],
   view = "",
   totalMonthDuration = 0,
   weeklyTotalHours = "",
-  handleNextMonth = () => {},
-  handlePrevMonth = () => {},
-  handleMonthTodayButton = () => {},
-  handleNextWeek = () => {},
-  handlePrevWeek = () => {},
+  handleNextMonth = () => {
+    /* Default empty handler */
+  },
+  handlePrevMonth = () => {
+    /* Default empty handler */
+  },
+  handleMonthTodayButton = () => {
+    /* Default empty handler */
+  },
+  handleNextWeek = () => {
+    /* Default empty handler */
+  },
+  handlePrevWeek = () => {
+    /* Default empty handler */
+  },
   monthsAbbr = [],
   currentMonthNumber = 0,
   currentYear = 0,

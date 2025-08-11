@@ -33,7 +33,9 @@ const CustomRadioButton = ({
   classNameInput = "",
   classNameWrapper = "",
   classNameRadioIcon = "",
-  handleOnChange = () => {},
+  handleOnChange = () => {
+    /* Default empty handler */
+  },
 }: RadioProps) => (
   <div className={classnames(DEFAULT_STYLE_WRAPPER, classNameWrapper)}>
     <input

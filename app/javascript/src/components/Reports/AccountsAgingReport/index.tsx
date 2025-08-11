@@ -20,8 +20,8 @@ const AccountsAgingReport = () => {
   const [isFilterVisible, setIsFilterVisible] = useState<boolean>(false);
   const [showNavFilters, setShowNavFilters] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
-  const [selectedFilter, setSelectedFilter] = useState([]);  
-  const [filterCounter, setFilterCounter] = useState(0);  
+  const [selectedFilter, setSelectedFilter] = useState([]);
+  const [filterCounter, setFilterCounter] = useState(0);
   const [clientList, setClientList] = useState<any>([]);
   const [currency, setCurrency] = useState<string>("USD");
   const [totalAmount, setTotalAmount] = useState<any>({
@@ -99,7 +99,7 @@ const AccountsAgingReport = () => {
         handleDownload={handleDownload}
         isFilterVisible={isFilterVisible}
         resetFilter={resetFilter}
-        revenueFilterCounter={() => {}}  
+        revenueFilterCounter={() => {}}
         setIsFilterVisible={setIsFilterVisible}
         showNavFilters={showNavFilters}
         type="Accounts Aging Report"

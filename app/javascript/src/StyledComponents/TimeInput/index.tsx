@@ -90,13 +90,13 @@ interface Iprops {
   initTime?: string;
   disabled?: boolean;
   mountFocus?: string;
-  onTimeChange?: (val: string) => void;
+  onTimeChange?: (_val: string) => void;
   type?: string;
-  onFocusHandler?: (e: React.FocusEvent<HTMLInputElement>) => void;
+  onFocusHandler?: (_e: React.FocusEvent<HTMLInputElement>) => void;
   placeholder?: string;
   className?: string;
   name?: string;
-  onBlurHandler?: (e: React.FocusEvent<HTMLInputElement>) => void;
+  onBlurHandler?: (_e: React.FocusEvent<HTMLInputElement>) => void;
 }
 
 export default TimeInput;

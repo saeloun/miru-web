@@ -1,4 +1,3 @@
- 
 import React from "react";
 
 import withLayout from "common/Mobile/HOC/withLayout";

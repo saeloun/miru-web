@@ -22,7 +22,7 @@ const SendInvoiceContainer = ({
   invoice,
   handleSaveSendInvoice,
   setIsSending,
-   
+
   setIsSendReminder = _value => {},
   isSendReminder = false,
 }) => {
@@ -55,9 +55,9 @@ const SendInvoiceContainer = ({
     message: emailBody(invoice, isSendReminder),
     recipients: invoice.client.clientMembersEmails,
   });
-   
+
   const [newRecipient, _setNewRecipient] = useState<string>("");
-   
+
   const [_width, setWidth] = useState<string>("10ch");
   const [status, setStatus] = useState<InvoiceStatus>(InvoiceStatus.IDLE);
   // const [height, setHeight] = useState<string>("h-0 py-0");

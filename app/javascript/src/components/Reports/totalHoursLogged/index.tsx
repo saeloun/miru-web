@@ -8,10 +8,10 @@ const TotalHoursReport = () => (
       setIsFilterVisible
       showExportButon
       showNavFilters
-      handleDownload={() => {}}  
-      isFilterVisible={() => {}}  
-      resetFilter={() => {}}  
-      revenueFilterCounter={() => {}}  
+      handleDownload={() => {}}
+      isFilterVisible={() => {}}
+      resetFilter={() => {}}
+      revenueFilterCounter={() => {}}
       type="Total Hours Logged"
     />
     <div>{/** Container will be listed here */}</div>

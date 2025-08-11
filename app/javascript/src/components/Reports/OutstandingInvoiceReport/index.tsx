@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState, useEffect } from "react";
 
@@ -28,7 +29,7 @@ const OutstandingInvoiceReport = () => {
   const [isFilterVisible, setIsFilterVisible] = useState<boolean>(false);
   const [showNavFilters, setShowNavFilters] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
-  const [filterCounter, setFilterCounter] = useState(0);  
+  const [filterCounter, setFilterCounter] = useState(0);
   const [dateRange, setDateRange] = useState({ from: "", to: "" });
   const [selectedInput, setSelectedInput] = useState("from-input");
   const [clientList, setClientList] = useState<
@@ -146,7 +147,7 @@ const OutstandingInvoiceReport = () => {
         handleDownload={handleDownload}
         isFilterVisible={isFilterVisible}
         resetFilter={resetFilter}
-        revenueFilterCounter={() => {}}  
+        revenueFilterCounter={() => {}}
         setIsFilterVisible={setIsFilterVisible}
         showFilterIcon={false}
         showNavFilters={showNavFilters}

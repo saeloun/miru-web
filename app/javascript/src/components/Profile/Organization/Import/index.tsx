@@ -1,4 +1,3 @@
- 
 import React, { Fragment, useState } from "react";
 
 import Loader from "common/Loader/index";

@@ -1,5 +1,6 @@
-import dayjs from "dayjs";
 import { createContext, useContext } from "react";
+
+import dayjs from "dayjs";
 import { getValueFromLocalStorage } from "utils/storage";
 
 const initialNote = getValueFromLocalStorage("note") || "";
@@ -17,7 +18,9 @@ const initialState: any = {
   entryList: {},
   dayInfo: [],
   currentYear: dayjs().year(),
-  getPayload: () => {},
+  getPayload: () => {
+    /* Placeholder - overridden by provider */
+  },
   submitting: false,
   leaveTypes: [],
   leaveTypeHashObj: {},
@@ -30,9 +33,15 @@ const initialState: any = {
   duration: initialDuration,
   editTimeoffEntryId: 0,
   editEntryId: "",
-  handleEdit: () => {},
-  handleSave: () => {},
-  handleDuplicate: (_id: any) => {},
+  handleEdit: () => {
+    /* Placeholder - overridden by provider */
+  },
+  handleSave: () => {
+    /* Placeholder - overridden by provider */
+  },
+  handleDuplicate: (_id: any) => {
+    /* Placeholder - overridden by provider */
+  },
   note: initialNote,
   project: initialProject,
   projectId: initialProjectId,
@@ -44,29 +53,73 @@ const initialState: any = {
   holidaysHashObj: {},
   hasNationalHoliday: false,
   hasOptionalHoliday: false,
-  setDuration: () => {},
-  handleAddEntryDateChange: (_date: any) => {},
-  handleNextDay: () => {},
-  handlePreDay: () => {},
-  handleNextWeek: () => {},
-  handlePrevWeek: () => {},
-  setDisplayDatePicker: () => {},
+  setDuration: () => {
+    /* Placeholder - overridden by provider */
+  },
+  handleAddEntryDateChange: (_date: any) => {
+    /* Placeholder - overridden by provider */
+  },
+  handleNextDay: () => {
+    /* Placeholder - overridden by provider */
+  },
+  handlePreDay: () => {
+    /* Placeholder - overridden by provider */
+  },
+  handleNextWeek: () => {
+    /* Placeholder - overridden by provider */
+  },
+  handlePrevWeek: () => {
+    /* Placeholder - overridden by provider */
+  },
+  setDisplayDatePicker: () => {
+    /* Placeholder - overridden by provider */
+  },
   selectedDate: dayjs().format("YYYY-MM-DD"),
-  setBillable: () => {},
-  setClient: () => {},
-  setEditEntryId: () => {},
-  setNewEntryView: () => {},
-  setNewTimeoffEntryView: () => {},
-  setNote: () => {},
-  setProject: () => {},
-  setUpdateView: () => {},
-  setSelectedDate: () => {},
-  setSubmitting: () => {},
-  setSelectedEmployeeId: () => {},
-  setLeaveTypes: () => {},
-  setLeaveTypeHashObj: () => {},
-  setEditTimeoffEntryId: () => {},
-  setEntryList: () => {},
+  setBillable: () => {
+    /* Placeholder - overridden by provider */
+  },
+  setClient: () => {
+    /* Placeholder - overridden by provider */
+  },
+  setEditEntryId: () => {
+    /* Placeholder - overridden by provider */
+  },
+  setNewEntryView: () => {
+    /* Placeholder - overridden by provider */
+  },
+  setNewTimeoffEntryView: () => {
+    /* Placeholder - overridden by provider */
+  },
+  setNote: () => {
+    /* Placeholder - overridden by provider */
+  },
+  setProject: () => {
+    /* Placeholder - overridden by provider */
+  },
+  setUpdateView: () => {
+    /* Placeholder - overridden by provider */
+  },
+  setSelectedDate: () => {
+    /* Placeholder - overridden by provider */
+  },
+  setSubmitting: () => {
+    /* Placeholder - overridden by provider */
+  },
+  setSelectedEmployeeId: () => {
+    /* Placeholder - overridden by provider */
+  },
+  setLeaveTypes: () => {
+    /* Placeholder - overridden by provider */
+  },
+  setLeaveTypeHashObj: () => {
+    /* Placeholder - overridden by provider */
+  },
+  setEditTimeoffEntryId: () => {
+    /* Placeholder - overridden by provider */
+  },
+  setEntryList: () => {
+    /* Placeholder - overridden by provider */
+  },
 };
 export const TimesheetEntriesContext = createContext(initialState);
 

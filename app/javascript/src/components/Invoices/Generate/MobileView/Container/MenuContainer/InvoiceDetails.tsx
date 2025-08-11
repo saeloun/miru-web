@@ -122,7 +122,7 @@ const InvoiceDetails = ({
 
   const handleClientChange = selection => {
     const client = clientDetails.find(client => client.id == selection.value);
-     
+
     setSelectedClient(client);
     setIsClientVisible(false);
     autoGenerateInvoiceNumber(client);

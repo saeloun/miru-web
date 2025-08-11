@@ -1,4 +1,3 @@
- 
 import { ApiStatus as PaymentSettingsStatus } from "constants/index";
 
 import React, { useState, useEffect } from "react";

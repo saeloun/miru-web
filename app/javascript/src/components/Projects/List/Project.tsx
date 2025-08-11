@@ -48,7 +48,7 @@ export const Project = ({
         key={id}
         onClick={() => isAdminUser && projectClickHandler(id)}
         onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}  
+        onMouseLeave={handleMouseLeave}
       >
         <td className="table__cell text-base capitalize">
           <div className="flex items-center justify-between text-sm font-semibold text-miru-dark-purple-1000 lg:text-base">
