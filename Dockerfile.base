@@ -1,0 +1,36 @@
+# Base image with all system dependencies
+# Build this once and push to registry for reuse
+FROM ruby:3.4.5-slim AS miru-base
+
+# Install base system dependencies
+RUN apt-get update -qq && \
+    apt-get install -y --no-install-recommends \
+    build-essential \
+    libpq-dev \
+    postgresql-client \
+    git \
+    curl \
+    wget \
+    gnupg \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Node.js 22
+RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
+    apt-get install -y nodejs && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install pnpm globally
+RUN npm install -g pnpm@9.15.5
+
+# Set environment variables
+ENV BUNDLE_PATH=/usr/local/bundle \
+    BUNDLE_BIN=/usr/local/bundle/bin \
+    GEM_HOME=/usr/local/bundle \
+    PATH="/usr/local/bundle/bin:${PATH}" \
+    DISPLAY=:99
+
+# Create necessary directories
+RUN mkdir -p /tmp/pids
+
+WORKDIR /app

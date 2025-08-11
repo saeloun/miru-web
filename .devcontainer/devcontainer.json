@@ -107,7 +107,7 @@
 		}
 	},
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	"forwardPorts": [3000, 5432, 6379, 9200],
+	"forwardPorts": [3000, 3036, 5432],
 	// Uncomment the next line if you want start specific services in your Docker Compose config.
 	// "runServices": [],
 	// Uncomment the next line if you want to keep your containers running after VS Code shuts down.
@@ -129,14 +129,12 @@
 			"label": "Rails Server",
 			"onAutoForward": "notify"
 		},
+		"3036": {
+			"label": "Vite Dev Server",
+			"onAutoForward": "notify"
+		},
 		"5432": {
 			"label": "PostgreSQL"
-		},
-		"6379": {
-			"label": "Redis"
-		},
-		"9200": {
-			"label": "Elasticsearch"
 		}
 	},
 	

@@ -39,8 +39,8 @@ gem "solid_cable"
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 gem "image_processing", ">= 1.2"
 
-# Webpack bundler for rails
-gem "shakapacker", "~> 8.0"
+# Modern frontend bundling with Vite
+gem "vite_rails", "~> 3.0"
 
 # Propshaft for asset pipeline (lighter than Sprockets)
 gem "propshaft"

@@ -1,1 +1,17 @@
-<%= react_component("Authentication/ResetPassword")%>
+<div 
+  id="react-root-reset-password" 
+  data-props="{}"
+  data-testid="reset-password"
+  data-component="Authentication/ResetPassword">
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const container = document.getElementById('react-root-reset-password')
+  if (container && window.React && window.ReactDOM) {
+    const root = ReactDOM.createRoot(container)
+    // For now, this will need the ResetPassword component to be available
+    // We'll handle this after the main migration is working
+  }
+})
+</script>

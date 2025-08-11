@@ -1,9 +1,9 @@
 /* eslint-disable no-unexpected-multiline */
 import React, { useEffect, useState } from "react";
 
-import * as dayjs from "dayjs";
-import * as updateLocale from "dayjs/plugin/updateLocale";
-import * as weekday from "dayjs/plugin/weekday";
+import dayjs from "dayjs";
+import updateLocale from "dayjs/plugin/updateLocale";
+import weekday from "dayjs/plugin/weekday";
 import { minToHHMM } from "helpers";
 import Logger from "js-logger";
 

@@ -1,71 +1,59 @@
-#syntax=docker/dockerfile:1
-ARG VARIANT=3.2.4
-FROM mcr.microsoft.com/vscode/devcontainers/ruby:${VARIANT} AS base
+# Multi-stage Dockerfile for development environment
+FROM miru-base:latest AS base
 
-# Update args in docker-compose.yaml to set the UID/GID of the "vscode" user.
-# ARG USER_UID=1000
-# ARG USER_GID=$USER_UID
-# RUN if [ "$USER_GID" != "1000" ] || [ "$USER_UID" != "1000" ]; then \
-#     groupmod --gid $USER_GID vscode \
-#     && usermod --uid $USER_UID --gid $USER_GID vscode \
-#     && chmod -R $USER_UID:$USER_GID /home/vscode; \
-#     fi
+# Stage 2: Dependencies
+FROM base AS dependencies
 
-ARG NODE_VERSION=20.18.2
-
-ENV BUNDLE_PATH="/usr/local/bundle"
-ENV GEM_HOME="/usr/local/bundle/gems"
-ENV GEM_PATH="/usr/local/bundle/gems"
-
-RUN mkdir /app
 WORKDIR /app
-RUN mkdir -p tmp/pids
 
-RUN apt-get update && apt-get install -y --no-install-recommends curl gnupg2 && \
-    echo "deb https://dl.yarnpkg.com/debian/ stable main" > /etc/apt/sources.list.d/yarn.list && \
-    curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
-    curl -sL https://deb.nodesource.com/setup_lts.x | bash - && \
-    apt-get install -y --no-install-recommends nodejs yarn && \
-    npm --version && \
-    apt-get clean && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
-
-
-RUN curl --location --silent https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
-    && sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' \
-    && apt-get update && apt-get install google-chrome-stable -y --no-install-recommends postgresql-client && \
-    apt-get clean && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
-
-# Install gh
-RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
-    && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
-    && sudo apt update \
-    && sudo apt install gh
-
-
-FROM base AS build-deps
-
-RUN apt-get update && apt-get install -y --no-install-recommends git build-essential libpq-dev && \
-    apt-get clean && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
-
-
-FROM build-deps AS gems
-
-RUN gem install bundler -v 2.3.11
-
+# Copy dependency files
 COPY Gemfile Gemfile.lock ./
+COPY package.json pnpm-lock.yaml ./
 
-RUN bundle install &&  rm -rf vendor/bundle/ruby/*/cache
+# Install Ruby dependencies
+RUN bundle config set --local path 'vendor/bundle' && \
+    bundle install --jobs 4 --retry 3
 
-FROM base AS node_modules
+# Install Node dependencies (skip postinstall for lefthook)
+RUN pnpm install --frozen-lockfile --ignore-scripts
 
-COPY package.json yarn.lock ./
+# Stage 3: Development environment
+FROM base AS development
 
-RUN yarn install --check-files
+WORKDIR /app
 
-FROM base
+# Copy installed dependencies from the dependencies stage
+COPY --from=dependencies /usr/local/bundle /usr/local/bundle
+COPY --from=dependencies /app/node_modules /app/node_modules
 
+# Set environment variables
+ENV BUNDLE_PATH=/usr/local/bundle \
+    BUNDLE_BIN=/usr/local/bundle/bin \
+    GEM_HOME=/usr/local/bundle \
+    PATH="/usr/local/bundle/bin:${PATH}" \
+    DISPLAY=:99 \
+    CHROME_BIN=/usr/bin/chromium
 
-COPY --from=gems /app /app
-COPY --from=gems /usr/local/bundle /usr/local/bundle
-COPY --from=node_modules /app/node_modules /app/node_modules
-COPY . ./
+# Create necessary directories
+RUN mkdir -p /tmp/pids
+
+# Stage 4: Test environment (extends development)
+FROM development AS test
+
+# Install additional test dependencies
+RUN apt-get update -qq && \
+    apt-get install -y --no-install-recommends xvfb && \
+    rm -rf /var/lib/apt/lists/*
+
+# Set test environment variables
+ENV RAILS_ENV=test \
+    CI=true
+
+# Start Xvfb for headless Chrome
+RUN echo '#!/bin/bash\nXvfb :99 -ac -screen 0 1280x1024x24 &\nexec "$@"' > /entrypoint.sh && \
+    chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
+
+# Default command for development
+CMD ["bash"]

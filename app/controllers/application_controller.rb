@@ -8,8 +8,7 @@ class ApplicationController < ActionController::Base
   include Pagy::Backend
   include SetCurrentDetails
 
-  # Include Shakapacker helpers for React components
-  helper Shakapacker::Helper
+  # Vite handles asset compilation
 
   before_action :authenticate_user!
 end

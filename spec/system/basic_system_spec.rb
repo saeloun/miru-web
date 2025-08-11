@@ -3,17 +3,27 @@
 require "rails_helper"
 
 RSpec.describe "Basic System Test", type: :system do
-  it "can visit the login page" do
+  it "can visit the login page and loads React app" do
     visit "/login"
+    wait_for_page_load
 
-    # Check if we can see the page
+    # Check if we're on the login page
     expect(page).to have_current_path("/login")
+    
+    # Check if React app loaded
+    expect(page).to have_css('[data-testid="app-root"]')
+    expect(page).to have_css('[data-component="App"]')
   end
 
-  it "shows content on the home page" do
+  it "shows content on the home page with React loaded" do
     visit "/"
+    wait_for_page_load
 
-    # Check if page loads - it should have something in the body
+    # Check if React app is loaded
+    expect(page).to have_css('[data-testid="app-root"]')
+    expect(page).to have_css('[data-component="App"]')
+    
+    # Check if page contains Miru branding
     expect(page.html).to include("Miru")
   end
 end

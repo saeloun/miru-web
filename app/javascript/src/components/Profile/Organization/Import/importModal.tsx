@@ -9,9 +9,9 @@ import ProgressBar from "common/ProgressBar";
 import TableHeader from "./TableHeader";
 import TableRow from "./TableRow";
 
-const fileIcon = require("../../../../../images/fileIcon.svg"); //eslint-disable-line
-const Step = require("../../../../../images/Step.svg"); //eslint-disable-line
-const xls = require("../../../../../images/xls.svg"); //eslint-disable-line
+import fileIcon from "../../../../../images/fileIcon.svg";
+import Step from "../../../../../images/Step.svg";
+import xls from "../../../../../images/xls.svg";
 
 const ImportModal = ({
   handleToggleModal,

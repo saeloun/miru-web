@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 module ApplicationHelper
-  include Shakapacker::Helper
-  include ReactHelper
 
   def user_avatar(user)
     if user.avatar.attached?

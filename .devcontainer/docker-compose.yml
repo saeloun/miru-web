@@ -1,26 +1,29 @@
 version: "3.9"
 services:
   app:
-    image: ruby:3.4.5-slim
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
+      target: development
     platform: linux/amd64
-    command: bash -c "apt-get update && apt-get install -y postgresql-client git build-essential libpq-dev curl && curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && apt-get install -y nodejs && npm install -g pnpm && bundle install && pnpm install && bundle exec rails db:prepare && bundle exec rails s -p 3000 -b 0.0.0.0"
+    command: bash -c "bundle exec rails db:prepare && bundle exec rails s -p 3000 -b 0.0.0.0"
     ports:
-      - "3000:3000"
+      - "3001:3000"
     working_dir: /app
     volumes:
       - ../:/app
-      - gem_cache:/usr/local/bundle/gems
+      - bundle_cache:/usr/local/bundle
       - node_modules:/app/node_modules
     environment:
-      - DATABASE_URL=postgres://postgres:postgres@database:5432/
+      - DATABASE_URL=postgres://postgres:postgres@database:5432/miru_web_development
       - DB_HOST=database
       - DB_USER=postgres
       - DB_PASS=postgres
-      - DATABASE_CLEANER_ALLOW_REMOTE_DATABASE_URL="true"
-      - POSTGRES_PASSWORD="postgres"
-      - POSTGRES_USER="postgres"
+      - DATABASE_CLEANER_ALLOW_REMOTE_DATABASE_URL=true
       - PIDFILE=/tmp/pids/server.pid
-      - BUNDLE_PATH=/usr/local/bundle/gems
+      - BUNDLE_PATH=/usr/local/bundle
+      - DISPLAY=:99
+      - CHROME_BIN=/usr/bin/chromium
     depends_on:
       - database
     tmpfs:
@@ -31,16 +34,21 @@ services:
     platform: linux/amd64
     restart: unless-stopped
     volumes:
-      - postgres:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: postgres
       POSTGRES_DB: postgres
       POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"
 
   vite:
-    image: node:22-alpine
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
+      target: development
     platform: linux/amd64
-    command: sh -c "npm install -g pnpm && pnpm install && pnpm vite dev --host 0.0.0.0 --port 3036"
+    command: pnpm vite dev --host 0.0.0.0 --port 3036
     ports:
       - "3036:3036"
     working_dir: /app
@@ -50,7 +58,35 @@ services:
     depends_on:
       - database
 
+  test:
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
+      target: test
+    platform: linux/amd64
+    command: bash -c "bundle exec rails db:test:prepare && bundle exec rspec"
+    working_dir: /app
+    volumes:
+      - ../:/app
+      - bundle_cache:/usr/local/bundle
+      - node_modules:/app/node_modules
+    environment:
+      - RAILS_ENV=test
+      - DATABASE_URL=postgres://postgres:postgres@database:5432/miru_web_test
+      - DB_HOST=database
+      - DB_USER=postgres
+      - DB_PASS=postgres
+      - DATABASE_CLEANER_ALLOW_REMOTE_DATABASE_URL=true
+      - BUNDLE_PATH=/usr/local/bundle
+      - DISPLAY=:99
+      - CHROME_BIN=/usr/bin/chromium
+      - CI=true
+    depends_on:
+      - database
+    tmpfs:
+      - /tmp
+
 volumes:
-  gem_cache:
-  postgres:
+  bundle_cache:
+  postgres_data:
   node_modules:

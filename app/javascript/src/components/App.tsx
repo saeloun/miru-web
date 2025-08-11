@@ -46,40 +46,42 @@ const App = props => {
   }, []);
 
   return (
-    <UserContext.Provider
-      value={{
-        isAdminUser,
-        calendarEnabled,
-        calendarConnected,
-        user,
-        avatarUrl: currentAvatarUrl,
-        setCurrentAvatarUrl,
-        companyRole,
-        confirmedUser,
-        googleOauthSuccess,
-        isDesktop,
-        handleOverlayVisibility,
-        selectedTab,
-        setSelectedTab,
-        company,
-        setCompany,
-      }}
-    >
-      <AuthProvider>
-        <BrowserRouter>
-          <ToastContainer />
-          <Main
-            {...props}
-            googleOauthSuccess={googleOauthSuccess}
-            isAdminUser={isAdminUser}
-            isDesktop={isDesktop}
-            setIsDesktop={setIsDesktop}
-            user={user}
-          />
-          <div id="overlay" />
-        </BrowserRouter>
-      </AuthProvider>
-    </UserContext.Provider>
+    <div data-testid="app-loaded" data-component="App">
+      <UserContext.Provider
+        value={{
+          isAdminUser,
+          calendarEnabled,
+          calendarConnected,
+          user,
+          avatarUrl: currentAvatarUrl,
+          setCurrentAvatarUrl,
+          companyRole,
+          confirmedUser,
+          googleOauthSuccess,
+          isDesktop,
+          handleOverlayVisibility,
+          selectedTab,
+          setSelectedTab,
+          company,
+          setCompany,
+        }}
+      >
+        <AuthProvider>
+          <BrowserRouter>
+            <ToastContainer />
+            <Main
+              {...props}
+              googleOauthSuccess={googleOauthSuccess}
+              isAdminUser={isAdminUser}
+              isDesktop={isDesktop}
+              setIsDesktop={setIsDesktop}
+              user={user}
+            />
+            <div id="overlay" />
+          </BrowserRouter>
+        </AuthProvider>
+      </UserContext.Provider>
+    </div>
   );
 };
 

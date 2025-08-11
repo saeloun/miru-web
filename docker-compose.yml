@@ -1,58 +1,102 @@
 version: "3.9"
 services:
+  # PostgreSQL Database
   database:
-    image: postgres:13.8
-    restart: always
+    image: postgres:16-alpine
+    restart: unless-stopped
     ports:
-      - "5432:5432"
+      - "5433:5432"  # Map to 5433 to avoid conflicts
     volumes:
-      - postgres:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
     environment:
+      POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: miru_web_development
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
+
+  # Rails Application
   app:
     build:
       context: .
-      dockerfile: Dockerfile.local
-    command: bundle exec rails s -p 3000 -b 0.0.0.0
+      dockerfile: .devcontainer/Dockerfile
+      target: development
+    command: bash -c "rm -f tmp/pids/server.pid && bundle install && bundle exec rails db:prepare && bundle exec rails server -b 0.0.0.0 -p 3000"
     ports:
-      - "3000:3000"
-    image: miru-web:latest
+      - "8080:3000"  # Map to 8080 as requested
     working_dir: /app
     volumes:
       - .:/app
-      - gem_cache:/usr/local/bundle/gems
+      - bundle_cache:/usr/local/bundle
       - node_modules:/app/node_modules
     environment:
-      - DATABASE_URL=postgres://postgres:postgres@database:5432/
-      - DATABASE_CLEANER_ALLOW_REMOTE_DATABASE_URL="true"
-      - POSTGRES_PASSWORD="postgres"
-      - POSTGRES_USER="postgres"
-      - PIDFILE=/tmp/pids/server.pid
+      DATABASE_URL: postgres://postgres:postgres@database:5432/miru_web_development
+      DB_HOST: database
+      DB_USER: postgres
+      DB_PASS: postgres
+      DATABASE_CLEANER_ALLOW_REMOTE_DATABASE_URL: "true"
+      RAILS_ENV: development
+      RAILS_LOG_TO_STDOUT: "true"
+      SECRET_KEY_BASE: development_secret_key_base_at_least_30_characters_long
+      BUNDLE_PATH: /usr/local/bundle
+      PIDFILE: /tmp/pids/server.pid
+      DISPLAY: ":99"
+      CHROME_BIN: /usr/bin/chromium
     depends_on:
-      - database
+      database:
+        condition: service_healthy
+    stdin_open: true
+    tty: true
     tmpfs:
       - /tmp/pids/
 
-  webpack:
+  # Vite Dev Server for frontend assets
+  vite:
     build:
       context: .
-      dockerfile: Dockerfile.local
-    command: bin/webpacker-dev-server
-    image: miru-web:latest
+      dockerfile: .devcontainer/Dockerfile
+      target: development
+    command: bash -c "pnpm install && pnpm vite dev --host 0.0.0.0 --port 3036"
     ports:
-      - "3035:3035"
+      - "3036:3036"
+    working_dir: /app
+    volumes:
+      - .:/app
+      - node_modules:/app/node_modules
     environment:
-      - WEBPACKER_DEV_SERVER_HOST=0.0.0.0
-      - DATABASE_URL=postgres://postgres:postgres@database:5432/
-      - DATABASE_CLEANER_ALLOW_REMOTE_DATABASE_URL="true"
-      - POSTGRES_PASSWORD="postgres"
-      - POSTGRES_USER="postgres"
+      NODE_ENV: development
     depends_on:
       - database
 
+  # Solid Queue Background Jobs Worker
+  worker:
+    build:
+      context: .
+      dockerfile: .devcontainer/Dockerfile
+      target: development
+    command: bundle exec rake solid_queue:start
+    working_dir: /app
+    volumes:
+      - .:/app
+      - bundle_cache:/usr/local/bundle
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@database:5432/miru_web_development
+      DB_HOST: database
+      DB_USER: postgres
+      DB_PASS: postgres
+      RAILS_ENV: development
+      BUNDLE_PATH: /usr/local/bundle
+      SECRET_KEY_BASE: development_secret_key_base_at_least_30_characters_long
+    depends_on:
+      database:
+        condition: service_healthy
+
 
 volumes:
-  gem_cache:
-  postgres:
+  postgres_data:
+  bundle_cache:
   node_modules:
