@@ -8,15 +8,15 @@ RSpec.describe "InternalApi::V1::Reports::ClientRevenuesController::#index", typ
   let!(:client1) { create(:client, :with_logo, company:, name: "Alpha") }
   let!(:client2) { create(:client, :with_logo, company:, name: "Delta") }
   let(:client3) { create(:client, company:, name: "john") }
-  let!(:client1_sent_invoice1) { create(:invoice, client: client1, status: "sent") }
-  let!(:client1_sent_invoice2) { create(:invoice, client: client1, status: "sent") }
-  let!(:client1_viewed_invoice1) { create(:invoice, client: client1, status: "viewed") }
-  let!(:client1_paid_invoice1) { create(:invoice, client: client1, status: "paid") }
-  let!(:client1_paid_invoice2) { create(:invoice, client: client1, status: "paid") }
-  let!(:client2_overdue_invoice1) { create(:invoice, client: client2, status: "overdue") }
-  let!(:client1_overdue_invoice1) { create(:invoice, client: client1, status: "overdue") }
-  let!(:client2_sent_invoice2) { create(:invoice, client: client2, status: "sent") }
-  let!(:client2_viewed_invoice1) { create(:invoice, client: client2, status: "viewed") }
+  let!(:client1_sent_invoice1) { create(:invoice, client: client1, status: "sent", issue_date: 2.weeks.ago) }
+  let!(:client1_sent_invoice2) { create(:invoice, client: client1, status: "sent", issue_date: 2.weeks.ago) }
+  let!(:client1_viewed_invoice1) { create(:invoice, client: client1, status: "viewed", issue_date: 2.weeks.ago) }
+  let!(:client1_paid_invoice1) { create(:invoice, client: client1, status: "paid", issue_date: 2.weeks.ago) }
+  let!(:client1_paid_invoice2) { create(:invoice, client: client1, status: "paid", issue_date: 2.weeks.ago) }
+  let!(:client2_overdue_invoice1) { create(:invoice, client: client2, status: "overdue", issue_date: 2.weeks.ago) }
+  let!(:client1_overdue_invoice1) { create(:invoice, client: client1, status: "overdue", issue_date: 2.weeks.ago) }
+  let!(:client2_sent_invoice2) { create(:invoice, client: client2, status: "sent", issue_date: 2.weeks.ago) }
+  let!(:client2_viewed_invoice1) { create(:invoice, client: client2, status: "viewed", issue_date: 2.weeks.ago) }
 
   context "when user is an admin" do
     before do

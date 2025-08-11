@@ -31,13 +31,13 @@ RSpec.describe "InternalApi::V1::Expense#index", type: :request do
   context "when user is an admin" do
     before do
       sign_in admin
-      expense1.reindex
-      expense2.reindex
-      Expense.reindex
     end
 
     describe "#index" do
       before do
+        # Ensure expenses are created before request
+        expense1
+        expense2
         send_request :get, internal_api_v1_expenses_path
       end
 

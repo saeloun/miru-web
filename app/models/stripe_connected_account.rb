@@ -2,20 +2,16 @@
 #
 # Table name: stripe_connected_accounts
 #
-#  id         :bigint           not null, primary key
+#  id         :integer          not null, primary key
+#  account_id :string           not null
+#  company_id :integer          not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
-#  account_id :string           not null
-#  company_id :bigint           not null
 #
 # Indexes
 #
 #  index_stripe_connected_accounts_on_account_id  (account_id) UNIQUE
 #  index_stripe_connected_accounts_on_company_id  (company_id) UNIQUE
-#
-# Foreign Keys
-#
-#  fk_rails_...  (company_id => companies.id)
 #
 
 # frozen_string_literal: true
@@ -31,9 +27,7 @@ class StripeConnectedAccount < ApplicationRecord
 
   validates :account_id, uniqueness: true
 
-  def details_submitted
-    retrieve.details_submitted
-  end
+  delegate :details_submitted, to: :retrieve
 
   def url
     Stripe::AccountLink.create(

@@ -11,7 +11,7 @@ class InternalApi::V1::Invoices::BulkDownloadController < InternalApi::V1::Appli
       root_url,
       current_url_options
     )
-    head :accepted
+    head 202
   end
 
   def status

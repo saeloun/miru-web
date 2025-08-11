@@ -1,0 +1,4 @@
+--format progress
+--format RspecJunitFormatter
+--out tmp/rspec<%= ENV['TEST_ENV_NUMBER'] %>.xml
+--exclude-pattern "spec/system/**/*_spec.rb"

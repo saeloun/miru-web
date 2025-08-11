@@ -9,6 +9,14 @@ require "rspec/retry"
 # Buildkite::TestCollector.configure(hook: :rspec)
 
 if ENV.fetch("COVERAGE", false)
+  require "simplecov"
+
+  # Configure SimpleCov for parallel tests
+  if ENV["TEST_ENV_NUMBER"]
+    SimpleCov.command_name "RSpec Process #{ENV['TEST_ENV_NUMBER']}"
+    SimpleCov.merge_timeout 3600
+  end
+
   SimpleCov.start "rails" do
     add_filter "/bin/"
     add_filter "/db/"

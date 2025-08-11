@@ -5,7 +5,7 @@ class InternalApi::V1::HolidaysController < ApplicationController
     authorize Holiday
 
     holidays = current_company.holidays.kept.includes([:holiday_infos])
-    render :index, locals: { holidays: }, status: :ok
+    render :index, locals: { holidays: }, status: 200
   end
 
   def update
@@ -13,7 +13,7 @@ class InternalApi::V1::HolidaysController < ApplicationController
 
     year = params[:year]
     BulkHolidayService.new(year, holiday_params, current_company).process
-    render json: { notice: "Holiday Info updated successfully" }, status: :ok
+    render json: { notice: "Holiday Info updated successfully" }, status: 200
   end
 
   private

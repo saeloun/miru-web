@@ -36,6 +36,7 @@
 #  index_invoices_on_due_date                       (due_date)
 #  index_invoices_on_external_view_key              (external_view_key) UNIQUE
 #  index_invoices_on_invoice_number_and_company_id  (invoice_number,company_id) UNIQUE
+#  index_invoices_on_invoice_number_trgm            (invoice_number) USING gin
 #  index_invoices_on_issue_date                     (issue_date)
 #  index_invoices_on_status                         (status)
 #
@@ -51,10 +52,21 @@ class Invoice < ApplicationRecord
   include Discard::Model
   include InvoiceSendable
   include ClientPaymentSendable
+  include Searchable
+
+  # Configure pg_search - use ILIKE for more precise matching
+  scope :pg_search, ->(query) {
+    return all if query.blank?
+
+    joins(:client).where(
+      "invoices.invoice_number ILIKE :query OR invoices.reference ILIKE :query OR clients.name ILIKE :query",
+      query: "%#{sanitize_sql_like(query)}%"
+    )
+  }
 
   attr_accessor :sub_total
 
-  enum status: [
+  enum :status, [
     :draft,
     :sent,
     :viewed,
@@ -75,7 +87,6 @@ class Invoice < ApplicationRecord
   store_accessor :payment_infos, :stripe_payment_intent
 
   before_validation :set_external_view_key, on: :create
-  after_commit :refresh_invoice_index
   after_save :lock_timesheet_entries, if: :draft?
   after_discard :unlock_timesheet_entries, if: :draft?
   after_discard :update_invoice_number
@@ -102,11 +113,9 @@ class Invoice < ApplicationRecord
   delegate :email, to: :client, prefix: :client
   delegate :logo_url, to: :client, prefix: :client
 
-  searchkick filterable: [:issue_date, :created_at, :updated_at, :client_name, :status, :invoice_number ],
-    word_middle: [:invoice_number, :client_name]
-
   ARCHIVED_PREFIX = "ARC"
 
+  # search_data kept for compatibility but not needed with PG search
   def search_data
     {
       id: id.to_i,
@@ -180,9 +189,6 @@ class Invoice < ApplicationRecord
     CompanyDateFormattingService.new(issue_date, company:).process
   end
 
-  def refresh_invoice_index
-    Invoice.search_index.refresh
-  end
 
   private
 

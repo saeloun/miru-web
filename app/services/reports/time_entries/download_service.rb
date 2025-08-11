@@ -31,7 +31,7 @@ class Reports::TimeEntries::DownloadService < Reports::DownloadService
     def generate_csv
       data = []
       headers = ["Project", "Client", "Note", "Team Member", "Date", "Hours Logged"]
-      flatten_reports = reports.map { |e| e[:entries] }.flatten
+      flatten_reports = reports.pluck(:entries).flatten
       flatten_reports.each do |entry|
           data << [
           "#{entry.project_name}",

@@ -39,11 +39,11 @@ VCR.configure do |config|
   config.ignore_localhost = true
   config.configure_rspec_metadata!
   config.allow_http_connections_when_no_cassette = true
-  config.ignore_hosts "127.0.0.1", "localhost", "elasticsearch", "analytics-api.buildkite.com"
+  config.ignore_hosts "127.0.0.1", "localhost", "analytics-api.buildkite.com"
 end
 
 RSpec.configure do |config|
-  config.fixture_path = "#{::Rails.root}/spec/fixtures"
+  config.fixture_paths = ["#{::Rails.root}/spec/fixtures"]
 
   config.include Warden::Test::Helpers
   config.include Devise::Test::IntegrationHelpers, type: :request
@@ -63,6 +63,7 @@ RSpec.configure do |config|
   config.before do
     Faker::UniqueGenerator.clear
     OmniAuth.config.test_mode = true
+    ActiveJob::Base.queue_adapter = :test
   end
   config.include ActiveJob::TestHelper
 
@@ -77,14 +78,19 @@ RSpec.configure do |config|
     WebMock.disable_net_connect!
   end
 
-  if ENV["CI"].present?
-    config.before(:each, type: :system) do
-      driven_by :chrome_headless
-
-      Capybara.app_host = "http://#{IPSocket.getaddress(Socket.gethostname)}:3000"
-      Capybara.server_host = IPSocket.getaddress(Socket.gethostname)
-      Capybara.server_port = 3000
+  # Rails 8 System Test Configuration
+  config.before(:each, type: :system) do
+    # Use the appropriate driver based on environment
+    if ENV["CI"].present?
+      Capybara.current_driver = :chrome_headless
+    else
+      Capybara.current_driver = :chrome
     end
+  end
+
+  config.after(:each, type: :system) do
+    Capybara.reset_sessions!
+    Capybara.use_default_driver
   end
 
   def auth_headers(auth_user, options = {})

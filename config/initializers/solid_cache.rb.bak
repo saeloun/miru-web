@@ -1,0 +1,35 @@
+# Rails 8 Solid Cache Configuration
+# This replaces Redis-based caching with database-backed caching
+
+if Rails.env.production? || ENV["USE_SOLID_CACHE"] == "true"
+  # Configure Rails to use Solid Cache
+  Rails.application.configure do
+    # Use Solid Cache as the primary cache store
+    config.cache_store = :solid_cache_store
+    
+    # Configure cache options
+    config.solid_cache.connects_to = { database: { writing: :cache } }
+    config.solid_cache.max_key_bytesize = 1024
+    config.solid_cache.max_entry_size = 64.megabytes
+    
+    # Enable compression for large cache entries
+    config.solid_cache.compress = true
+    config.solid_cache.compress_threshold = 1024
+    
+    # Configure clustering for better performance
+    config.solid_cache.cluster = {
+      shards: Rails.env.production? ? 8 : 4
+    }
+  end
+end
+
+# Development and test environments can still use memory/file store for speed
+unless Rails.env.production? || ENV["USE_SOLID_CACHE"] == "true"
+  Rails.application.configure do
+    if Rails.env.development?
+      config.cache_store = :memory_store, { size: 32.megabytes }
+    elsif Rails.env.test?
+      config.cache_store = :memory_store, { size: 16.megabytes }
+    end
+  end
+end

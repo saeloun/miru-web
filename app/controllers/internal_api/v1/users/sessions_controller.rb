@@ -20,7 +20,7 @@ class InternalApi::V1::Users::SessionsController < Devise::SessionsController
   def destroy
     sign_out(current_user)
     reset_session
-    render json: { notice: I18n.t("devise.sessions.signed_out"), reset_session: true }, status: :ok
+    render json: { notice: I18n.t("devise.sessions.signed_out"), reset_session: true }, status: 200
   end
 
   private
@@ -57,7 +57,7 @@ class InternalApi::V1::Users::SessionsController < Devise::SessionsController
     end
 
     def render_sign_in_response(user)
-      render json: { notice: I18n.t("devise.sessions.signed_in"), user: }, status: :ok
+      render json: { notice: I18n.t("devise.sessions.signed_in"), user: }, status: 200
     end
 
     def render_sign_in_response_for_desktop(user)
@@ -70,6 +70,6 @@ class InternalApi::V1::Users::SessionsController < Devise::SessionsController
         google_oauth_success: @google_oauth_success.present?
       }
 
-      render json: { notice: I18n.t("devise.sessions.signed_in"), **initial_props }, status: :ok
+      render json: { notice: I18n.t("devise.sessions.signed_in"), **initial_props }, status: 200
     end
 end

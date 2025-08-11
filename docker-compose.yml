@@ -28,11 +28,9 @@ services:
       - DATABASE_CLEANER_ALLOW_REMOTE_DATABASE_URL="true"
       - POSTGRES_PASSWORD="postgres"
       - POSTGRES_USER="postgres"
-      - ELASTICSEARCH_URL=http://elastic:x2Sy5FK51zu@elasticsearch:9200
       - PIDFILE=/tmp/pids/server.pid
     depends_on:
       - database
-      - elasticsearch
     tmpfs:
       - /tmp/pids/
 
@@ -50,19 +48,9 @@ services:
       - DATABASE_CLEANER_ALLOW_REMOTE_DATABASE_URL="true"
       - POSTGRES_PASSWORD="postgres"
       - POSTGRES_USER="postgres"
-      - ELASTICSEARCH_URL=http://elastic:x2Sy5FK51zu@elasticsearch:9200
     depends_on:
       - database
 
-  elasticsearch:
-    image: elasticsearch:7.13.3
-    environment:
-      discovery.type: single-node
-      network.host: 0.0.0.0
-      xpack.security.enabled: "true"
-      ELASTIC_PASSWORD: "x2Sy5FK51zu"
-    ports:
-      - "9200:9200"
 
 volumes:
   gem_cache:

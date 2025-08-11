@@ -25,14 +25,14 @@
 #  fk_rails_...  (invoice_id => invoices.id)
 #
 class Payment < ApplicationRecord
-  enum status: [
+  enum :status, [
     :paid,
     :partially_paid,
     :failed,
     :cancelled
   ]
 
-  enum transaction_type: [
+  enum :transaction_type, [
     :visa,
     :mastercard,
     :bank_transfer,

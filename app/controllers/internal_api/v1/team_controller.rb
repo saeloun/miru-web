@@ -5,25 +5,26 @@ class InternalApi::V1::TeamController < InternalApi::V1::ApplicationController
 
   def index
     authorize :index, policy_class: TeamPolicy
-    team_index_details = Team::IndexService.new(
-      current_company:,
-      current_user:,
+
+    team_data = Team::IndexDecorator.new(
+      current_company: current_company,
+      current_user: current_user,
       query: params.dig(:q, :first_name_or_last_name_or_email_cont)
     ).process
 
-    pagy_combined, combined_details = pagy_array(team_index_details[:combined_data], items: params[:items] || 10)
+    pagy_combined, combined_details = pagy_array(team_data[:combined_data], items: params[:items] || 10)
 
     render :index, locals: {
       combined_details:,
       pagination_details_combined: pagy_metadata(pagy_combined)
-    }, status: :ok
+    }, status: 200
   end
 
   def update
     authorize employment, policy_class: TeamPolicy
     user = Team::UpdateService.new(
       user_params:, current_company:, new_role: params[:role], user: employment.user).process
-    render :update, locals: { user:, employment: }, status: :ok
+    render :update, locals: { user:, employment: }, status: 200
   end
 
   def update_team_members
@@ -39,7 +40,7 @@ class InternalApi::V1::TeamController < InternalApi::V1::ApplicationController
     render json: {
              notice: "Calendar integration has been #{enabled_disabled} for all users of #{current_company.name}"
            },
-      status: :ok
+      status: 200
   end
 
   def destroy
@@ -50,7 +51,7 @@ class InternalApi::V1::TeamController < InternalApi::V1::ApplicationController
     render json: {
       user: employment.user,
       notice: I18n.t("team.delete.success.message")
-    }, status: :ok
+    }, status: 200
   end
 
   private

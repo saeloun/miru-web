@@ -20,7 +20,7 @@ RSpec.describe "Time Tracking - week view" do
       user_two = create(:user, current_workspace_id: company.id)
       create(:employment, company:, user: user_two)
       create(:project_member, user: user_two, project:)
-      time_entry = create(:timesheet_entry, user: user_two, project:)
+      create(:timesheet_entry, user: user_two, project:)
       with_forgery_protection do
         visit "time-tracking"
 

@@ -50,7 +50,7 @@ RSpec.describe "Time Tracking", type: :system do
         sign_in(employee)
 
         click_button "NEW ENTRY"
-        select = find(:css, "#client")
+        find(:css, "#client")
         expect(page).to have_select("client", options: ["Client", client.name])
       end
     end

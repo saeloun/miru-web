@@ -11,93 +11,171 @@ jobs:
     name: Running tests
     runs-on: ubuntu-latest
     if: "!contains(github.event.head_commit.message, 'skip ci')"
+    strategy:
+      fail-fast: false
+      matrix:
+        # Run tests in 4 parallel jobs
+        ci_node_index: [0, 1, 2, 3]
+        ci_node_total: [4]
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
+      
       - name: Setup PostgreSQL
         uses: Harmon758/postgresql-action@v1.0.0
         with:
-          postgresql version: 14.9-alpine3.18
-          postgresql db: miru_web_test_${{ github.event.number }}
+          postgresql version: 16
+          postgresql db: miru_web_test
           postgresql user: root
           postgresql password: "password"
-      - name: Setup ElasticSearch
-        uses: ankane/setup-elasticsearch@v1
+      
+      - name: Setup Chrome and ChromeDriver
+        uses: browser-actions/setup-chrome@v1
         with:
-          elasticsearch-version: 7.13.3
-      - name: Setup chrome
-        uses: nanasess/setup-chromedriver@v2
-        with:
-          # Optional: do not specify to match Chrome's version
-          chromedriver-version: "88.0.4324.96"
-      - run: |
-          export DISPLAY=:99
-          chromedriver --url-base=/wd/hub &
-          sudo Xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 & # optional
-      - name: Check if Elasticsearch is reachable
+          chrome-version: stable
+          install-chromedriver: true
+          install-dependencies: true
+      
+      - name: Start Xvfb
         run: |
-          curl --verbose --show-error http://localhost:9200
+          export DISPLAY=:99
+          sudo Xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 &
+      
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
-      - name: Ruby gem cache
-        uses: actions/cache@v4
         with:
-          path: vendor/bundle
-          key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-gems-
-      - name: Install gems
-        run: |
-          bundle config path vendor/bundle
-          bundle install --jobs 4 --retry 3
-      - name: Audit gems
-        run: |
-          bundle exec bundle-audit --update
-          bundle exec ruby-audit check
+          ruby-version: '3.4.5'
+          bundler-cache: true
+      
       - name: Setup Node
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v4
         with:
-          node-version: 20.18.2
-      - name: Find yarn cache location
-        id: yarn-cache
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-      - name: JS package cache
+          node-version: 20
+      
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9
+          run_install: false
+      
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_OUTPUT
+      
+      - name: Setup pnpm cache
         uses: actions/cache@v4
         with:
-          path: ${{ steps.yarn-cache.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          path: |
+            ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+            ~/.cache/puppeteer
+            node_modules/.cache
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-
-      - name: Install packages
+            ${{ runner.os }}-pnpm-
+      
+      - name: Install pnpm packages
         run: |
-          yarn install --pure-lockfile
-      - name: Setup kernel for guard, increase watchers
-        run: |
-          echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
-      - name: Setup Env's
-        run: |
-          cp .env.example .env
-      - name: ffi pristine
-        run: bundle pristine ffi
+          PUPPETEER_SKIP_DOWNLOAD=true pnpm install --frozen-lockfile
+      
+      - name: Run Rubocop
+        if: matrix.ci_node_index == 0
+        run: bundle exec rubocop
+      
+      - name: Run ESLint
+        if: matrix.ci_node_index == 0
+        run: pnpm lint
+      
       - name: Setup test database
         env:
           RAILS_ENV: test
+          DB_HOST: localhost
           DB_USER: root
-          DB_PASS: "password"
-          TEST_ENV_NUMBER: ${{ github.event.number }}
+          DB_PASS: password
+          CI_NODE_INDEX: ${{ matrix.ci_node_index }}
+          CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
         run: |
-          bundle exec rails db:prepare
-      - name: Run Rubocop
-        run: |
-          bundle exec rubocop
-      - name: Run tests
+          bundle exec rails db:create
+          bundle exec rails db:schema:load
+          bundle exec rails db:migrate
+      
+      - name: Enable PostgreSQL extensions
         env:
           RAILS_ENV: test
+          DB_HOST: localhost
           DB_USER: root
-          DB_PASS: "password"
-          TEST_ENV_NUMBER: ${{ github.event.number }}
-        run:
-          bundle exec rspec --exclude-pattern "spec/system/**/*_spec.rb"
-      - name: Run Eslint
+          DB_PASS: password
         run: |
-          npx eslint "./app/javascript/**/*.{ts,tsx,js,jsx,json}"
+          bundle exec rails runner "ActiveRecord::Base.connection.execute('CREATE EXTENSION IF NOT EXISTS pg_trgm')"
+          bundle exec rails runner "ActiveRecord::Base.connection.execute('CREATE EXTENSION IF NOT EXISTS unaccent')"
+      
+      - name: Run parallel tests (excluding system specs)
+        env:
+          RAILS_ENV: test
+          DB_HOST: localhost
+          DB_USER: root
+          DB_PASS: password
+          CI_NODE_INDEX: ${{ matrix.ci_node_index }}
+          CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
+          PARALLEL_TEST_PROCESSORS: 2
+          CI: true
+        run: |
+          mkdir -p tmp
+          NODE_GROUP=$((${CI_NODE_INDEX} + 1))
+          # Run all specs in parallel (system specs are skipped via support file)
+          bundle exec parallel_rspec spec \
+            -o "--format progress --format RspecJunitFormatter --out tmp/rspec_${CI_NODE_INDEX}.xml" \
+            --only-group ${NODE_GROUP}/${CI_NODE_TOTAL}
+      
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-${{ matrix.ci_node_index }}
+          path: |
+            tmp/rspec_*.xml
+            tmp/rspec*.xml
+          if-no-files-found: warn
+      
+      - name: Upload coverage reports
+        if: matrix.ci_node_index == 0
+        uses: codecov/codecov-action@v4
+        with:
+          file: ./coverage/coverage.xml
+          flags: unittests
+          name: codecov-umbrella
+          fail_ci_if_error: false
+
+  security-audit:
+    name: Security audit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.4.5'
+          bundler-cache: true
+      
+      - name: Cache security tools
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gem
+            ~/.bundle
+          key: ${{ runner.os }}-security-tools-${{ hashFiles('.ruby-version') }}
+          restore-keys: |
+            ${{ runner.os }}-security-tools-
+      
+      - name: Run bundler-audit
+        run: |
+          gem install bundler-audit
+          bundle audit check --update
+      
+      - name: Run brakeman
+        run: |
+          gem install brakeman
+          brakeman -q -w2

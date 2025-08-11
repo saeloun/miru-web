@@ -17,7 +17,7 @@ module Authenticable
       if user && auth_token && Devise.secure_compare(user.token, auth_token)
         sign_in user, store: false
       else
-        render json: { error: I18n.t("devise.failure.unauthenticated") }, status: :unauthorized
+        render json: { error: I18n.t("devise.failure.unauthenticated") }, status: 401
       end
     end
 end

@@ -20,6 +20,7 @@
 #
 #  index_timesheet_entries_on_bill_status   (bill_status)
 #  index_timesheet_entries_on_discarded_at  (discarded_at)
+#  index_timesheet_entries_on_note_trgm     (note) USING gin
 #  index_timesheet_entries_on_project_id    (project_id)
 #  index_timesheet_entries_on_user_id       (user_id)
 #  index_timesheet_entries_on_work_date     (work_date)
@@ -32,11 +33,20 @@
 
 class TimesheetEntry < ApplicationRecord
   include Discard::Model
-  extend Pagy::Searchkick
-  enum bill_status: [:non_billable, :unbilled, :billed]
+  include Searchable
+  enum :bill_status, [:non_billable, :unbilled, :billed]
 
   belongs_to :user
   belongs_to :project
+
+  pg_search_scope :pg_search,
+    against: [:note],
+    using: {
+      tsearch: {
+        prefix: true,
+        dictionary: "english"
+      }
+    }
 
   has_one :invoice_line_item, dependent: :destroy
   has_one :client, through: :project
@@ -58,11 +68,14 @@ class TimesheetEntry < ApplicationRecord
   delegate :name, to: :client, prefix: true, allow_nil: true
   delegate :full_name, to: :user, prefix: true, allow_nil: true
 
+  # Alias for backward compatibility
+  def user_name
+    user_full_name
+  end
+
   scope :search_import, -> { includes(:project, :client, :user) }
 
-  searchkick filterable: [:user_name, :created_at, :project_name, :client_name, :bill_status ],
-    word_middle: [:user_name, :note]
-
+  # search_data kept for compatibility but not needed with PG search
   def search_data
     {
       id: id.to_i,

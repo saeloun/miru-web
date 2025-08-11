@@ -75,12 +75,10 @@ microsoft_client.addresses.create!(
   country: "US"
 )
 
-Client.reindex
 
 project_office_com = microsoft_client.projects.create!(name: "Office.com", description: "Office 365", billable: true)
 project_azure_com = microsoft_client.projects.create!(name: "Azure.com", description: "Cloud Computing", billable: true)
 
-Project.reindex
 
 puts "Projects Created"
 
@@ -101,7 +99,6 @@ project_azure_com.project_members.each do |project_member|
       note: "Worked on #{project_azure_com.name}", bill_status: :unbilled, work_date: date)
   end
 end
-TimesheetEntry.reindex
 puts "TimeSheet entries created"
 
 invoice_1 = company.invoices.create!(
@@ -116,7 +113,6 @@ invoice_2 = company.invoices.create!(
   amount: 5000, outstanding_amount: 0, tax: 500, amount_paid: 5000,
   amount_due: 0, discount: 500, status: 3, client_id: microsoft_client.id,
   external_view_key: "403dc4e964d2dedd7727ad556df58437")
-Invoice.reindex
 puts "Invoice Created"
 
 company.addresses.create!(

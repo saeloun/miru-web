@@ -6,8 +6,8 @@ class InternalApi::V1::Wise::RecipientsController < InternalApi::V1::WiseControl
 
     response = wise_recipient.fetch(params[:recipient_id])
 
-    render json: response, status: :ok
-  rescue => error
+    render json: response, status: 200
+  rescue
     render json: "Error while fetching the recipient details", status: 500
   end
 
@@ -24,8 +24,8 @@ class InternalApi::V1::Wise::RecipientsController < InternalApi::V1::WiseControl
 
     response = wise_recipient.update(recipient_params)
 
-    render json: response.body, status: :ok
-  rescue => error
+    render json: response.body, status: 200
+  rescue
     render json: "Error while updating the recipient details", status: 500
   end
 

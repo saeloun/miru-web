@@ -5,8 +5,8 @@ class InternalApi::V1::Reports::ClientRevenuesController < InternalApi::V1::Appl
     authorize :report
 
     render :index,
-      locals: Reports::ClientRevenues::IndexService.new(params, current_company).process,
-      status: :ok
+      locals: Reports::ClientRevenues::ReportDecorator.new(params, current_company).process,
+      status: 200
   end
 
   def download
@@ -22,6 +22,6 @@ class InternalApi::V1::Reports::ClientRevenuesController < InternalApi::V1::Appl
 
     render :new,
       locals: { clients: },
-      status: :ok
+      status: 200
   end
 end

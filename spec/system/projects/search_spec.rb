@@ -13,7 +13,6 @@ RSpec.describe "Search projects", type: :system do
       create(:employment, company:, user:)
       user.add_role :admin, company
       sign_in(user)
-      Project.reindex
     end
 
     it "displays the matching client in the list" do

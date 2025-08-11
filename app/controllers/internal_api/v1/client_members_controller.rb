@@ -7,7 +7,7 @@ class InternalApi::V1::ClientMembersController < InternalApi::V1::ApplicationCon
     render locals: {
       client_members: client.client_members.kept.includes(:user),
       invitations: client.invitations
-    }, status: :ok
+    }, status: 200
   end
 
   def update
@@ -18,7 +18,7 @@ class InternalApi::V1::ClientMembersController < InternalApi::V1::ApplicationCon
 
     render json: {
       notice: "Contact updated successfully"
-    }, status: :ok
+    }, status: 200
   end
 
   def destroy
@@ -29,7 +29,7 @@ class InternalApi::V1::ClientMembersController < InternalApi::V1::ApplicationCon
       employment.discard!
       render json: {
         notice: "Contact deleted successfully"
-      }, status: :ok
+      }, status: 200
     end
   end
 

@@ -5,6 +5,6 @@ class InternalApi::V1::Invoices::BulkDeletionController < InternalApi::V1::Appli
     authorize :create, policy_class: Invoices::BulkDeletionPolicy
     invoices = Invoice.where(id: params[:invoices_ids])
     invoices.destroy_all
-    head :no_content
+    head 204
   end
 end

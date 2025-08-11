@@ -6,7 +6,7 @@ class InternalApi::V1::Users::ConfirmationsController < Devise::ConfirmationsCon
   def create
     self.resource = resource_class.send_confirmation_instructions(resource_params)
     if successfully_sent?(resource)
-      render json: { notice: I18n.t("confirmation.send_instructions", email: resource.email) }, status: :ok
+      render json: { notice: I18n.t("confirmation.send_instructions", email: resource.email) }, status: 200
     else
       respond_with_error(resource)
     end

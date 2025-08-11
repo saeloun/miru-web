@@ -1,8 +1,42 @@
-#!/bin/bash -e
+#!/bin/bash
+set -e
 
-# If running the rails server then create or migrate existing database
-if [ "${*}" == "./bin/rails server" ]; then
-  ./bin/rails db:prepare
+# Rails 8 Docker Entrypoint Script
+
+# Remove a potentially pre-existing server.pid for Rails.
+rm -f /app/tmp/pids/server.pid
+
+# Ensure databases exist and are migrated
+echo "🗄️ Setting up databases..."
+./bin/rails db:prepare
+
+# Setup Solid Cache database if configured
+if [ "$USE_SOLID_CACHE" = "true" ] || [ "$RAILS_ENV" = "production" ]; then
+  echo "💾 Setting up Solid Cache database..."
+  ./bin/rails solid_cache:install || echo "Solid Cache already installed"
 fi
 
-exec "${@}"
+# Setup Solid Cable database if configured  
+if [ "$USE_SOLID_CABLE" = "true" ] || [ "$RAILS_ENV" = "production" ]; then
+  echo "📡 Setting up Solid Cable database..."
+  ./bin/rails solid_cable:install || echo "Solid Cable already installed"
+fi
+
+# Setup Solid Queue database (already configured)
+echo "⚡ Ensuring Solid Queue is configured..."
+./bin/rails solid_queue:install || echo "Solid Queue already installed"
+
+# Precompile assets if needed and not done during build
+if [ "$RAILS_ENV" = "production" ] && [ ! -f "public/assets/.sprockets-manifest*.json" ]; then
+  echo "🎨 Precompiling assets..."
+  ./bin/rails assets:precompile
+fi
+
+# Run any pending data migrations
+echo "📊 Running data migrations..."
+./bin/rails data:migrate || echo "No data migrations to run"
+
+echo "✅ Rails 8 setup complete!"
+
+# Execute the container's main process (the CMD from Dockerfile)
+exec "$@"

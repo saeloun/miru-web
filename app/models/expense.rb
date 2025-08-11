@@ -18,6 +18,7 @@
 # Indexes
 #
 #  index_expenses_on_company_id           (company_id)
+#  index_expenses_on_description_trgm     (description) USING gin
 #  index_expenses_on_expense_category_id  (expense_category_id)
 #  index_expenses_on_expense_type         (expense_type)
 #  index_expenses_on_vendor_id            (vendor_id)
@@ -29,10 +30,27 @@
 #  fk_rails_...  (vendor_id => vendors.id)
 #
 class Expense < ApplicationRecord
-  enum expense_type: [
+  include Searchable
+  enum :expense_type, [
       :personal,
       :business
   ]
+
+  pg_search_scope :pg_search,
+    against: [:description],
+    associated_against: {
+      expense_category: [:name],
+      vendor: [:name]
+    },
+    using: {
+      tsearch: {
+        prefix: true,
+        dictionary: "simple"
+      },
+      trigram: {
+        threshold: 0.3
+      }
+    }
 
   has_many_attached :receipts
   belongs_to :company
@@ -42,9 +60,7 @@ class Expense < ApplicationRecord
   validates :date, presence: true
   validates :amount, numericality: { greater_than: 0 }
 
-  searchkick filterable: [ :amount, :date, :expense_type, :category_id, :vendor_id, :company_id],
-    word_start: [ :category_name, :vendor_name, :description]
-
+  # search_data kept for compatibility but not needed with PG search
   def search_data
     {
       id: id.to_i,

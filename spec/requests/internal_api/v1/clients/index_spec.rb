@@ -13,10 +13,7 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
   let(:project_2) { create(:project, client: client_2) }
   let(:time_frame) { "week" }
 
-  before do
-    Client.search_index.refresh
-    Client.reindex
-  end
+  # No setup needed - PG search doesn't require indexing
 
   context "when user is an admin" do
     before do
@@ -39,7 +36,7 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
       end
       let(:total_minutes) do
         user.current_workspace.clients.kept.reduce(0) do |sum, client|
-          sum += client.total_hours_logged(time_frame)
+          sum + client.total_hours_logged(time_frame)
         end
       end
 
@@ -108,7 +105,7 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
             minutes_spent: client.total_hours_logged(time_frame), logo: "", currency: client.currency
           }
         end
-        total_minutes = (client_details.map { |client| client[:minutes_spent] }).sum
+        total_minutes = (client_details.pluck(:minutes_spent)).sum
         overdue_outstanding_amount = user.current_workspace.overdue_and_outstanding_and_draft_amount
         expect(response).to have_http_status(:ok)
         expect(json_response["client_details"]).to match_array(JSON.parse(client_details.to_json))

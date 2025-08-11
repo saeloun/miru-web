@@ -6,12 +6,79 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
 
   def index
     authorize Invoice
-    data = Invoices::IndexService.new(params, current_company).process
+
+    # Build query with ransack
+    @q = current_company.invoices.kept.ransack(params[:q])
+
+    # Apply search if present (support both query and search_term params)
+    search_query = params[:query] || params[:search_term]
+    invoices = if search_query.present?
+      current_company.invoices.kept.search(search_query)
+    else
+      @q.result
+    end
+
+    # Apply filters
+    # Status filter - support both status and statuses params
+    if params[:status].present?
+      invoices = invoices.where(status: params[:status])
+    elsif params[:statuses].present?
+      invoices = invoices.where(status: params[:statuses])
+    end
+
+    # Date range filter
+    if params[:date_range].present?
+      date_range = DateRangeService.new(
+        timeframe: params[:date_range],
+        from: params[:from_date_range],
+        to: params[:to_date_range]
+      ).process
+      invoices = invoices.where(issue_date: date_range)
+    end
+
+    # Handle client filtering - support both client_id and client array parameters
+    if params[:client_id].present?
+      invoices = invoices.where(client_id: params[:client_id])
+    elsif params[:client].present?
+      client_ids = Array(params[:client])
+      invoices = invoices.where(client_id: client_ids) unless client_ids.empty?
+    end
+
+    # Pagination
+    page = (params[:page] || 1).to_i
+    page = 1 if page <= 0
+    per_page = (params[:invoices_per_page] || params[:per] || 10).to_i
+    per_page = invoices.count if per_page <= 0
+    invoices = invoices.page(page).per(per_page)
+
+    # Calculate summary
+    # For summary, include base_currency_amount calculation like the old service
+    status_amounts = current_company.invoices.kept.group_by(&:status).transform_values { |inv_list|
+      inv_list.sum { |invoice|
+        invoice.base_currency_amount.to_f > 0.00 ? invoice.base_currency_amount : invoice.amount
+      }
+    }
+    status_amounts.default = 0
+
+    summary = {
+      draftAmount: status_amounts["draft"],
+      outstandingAmount: status_amounts["sent"] + status_amounts["viewed"] + status_amounts["overdue"],
+      overdueAmount: status_amounts["overdue"],
+      currency: current_company.base_currency
+    }
+
+    # Get recently updated
+    recently_updated = current_company.invoices.kept.order(updated_at: :desc).limit(10)
+
     render :index, locals: {
-      invoices: data[:invoices],
-      pagination_details: data[:pagination_details],
-      recently_updated_invoices: data[:recently_updated_invoices],
-      summary: data[:summary]
+      invoices: invoices,
+      pagination_details: {
+        page: invoices.current_page,
+        pages: invoices.total_pages,
+        total: invoices.total_count
+      },
+      recently_updated_invoices: recently_updated,
+      summary: summary
     }
   end
 
@@ -62,7 +129,7 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
     authorize invoice
 
     unless invoice.recently_sent_mail?
-      return render json: { message: "Invoice was sent just a minute ago." }, status: :accepted
+      return render json: { message: "Invoice was sent just a minute ago." }, status: 202
     end
 
     recipients = invoice_email_params[:recipients]
@@ -75,7 +142,7 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
         recipients: invoice_email_params[:recipients]
       )
 
-      render json: { message: "Invoice will be sent!" }, status: :accepted
+      render json: { message: "Invoice will be sent!" }, status: 202
     else
       render json: { errors: "Email can only be sent to 5 recipients." }, status: :unprocessable_entity
     end
@@ -92,7 +159,7 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
         message: invoice_email_params[:message]
       ).send_reminder.deliver_later
 
-      render json: { message: "A reminder has been sent" }, status: :accepted
+      render json: { message: "A reminder has been sent" }, status: 202
     end
   end
 

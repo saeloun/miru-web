@@ -55,18 +55,29 @@ module GenerateInvoice
       def new_line_item_entries
         timesheet_entries = search_timesheet_entries(search_term, where_clause)
 
-        @total_count = timesheet_entries.total_count
+        @total_count = timesheet_entries.count
         format_timesheet_entries(timesheet_entries)
       end
 
       def search_timesheet_entries(search_term, where_clause)
-        TimesheetEntry.search(
-          search_term,
-          fields: [:note, :user_name],
-          match: :word_middle,
-          where: where_clause,
-          includes: [:user, { project: :client }]
-        )
+        # Use the custom search method from Searchable concern
+        entries = TimesheetEntry.includes(:user, project: :client)
+
+        # Apply where conditions
+        where_clause.each do |key, value|
+          entries = if value.is_a?(Hash) && value.key?(:not)
+            entries.where.not(key => value[:not])
+          else
+            entries.where(key => value)
+          end
+        end
+
+        # Apply search if not wildcard
+        if search_term.present? && search_term != "*"
+          entries = entries.pg_search(search_term) if entries.respond_to?(:pg_search)
+        end
+
+        entries
       end
 
       def format_timesheet_entries(timesheet_entries)

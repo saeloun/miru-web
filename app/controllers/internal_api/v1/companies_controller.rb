@@ -10,7 +10,7 @@ class InternalApi::V1::CompaniesController < InternalApi::V1::ApplicationControl
       current_company:,
       client_list: current_company.clients.kept,
       address: current_company.current_address
-    }, status: :ok
+    }, status: 200
   end
 
   def create

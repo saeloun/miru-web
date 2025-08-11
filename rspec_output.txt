@@ -1,0 +1,766 @@
+....................................
+1st Try error in ./spec/mailers/send_reminder_mailer_spec.rb:19:
+Navigation timeout of 60000 ms exceeded
+
+RSpec::Retry: 2nd try ./spec/mailers/send_reminder_mailer_spec.rb:19
+............................................
+1st Try error in ./spec/models/client_search_spec.rb:94:
+
+expected: 2
+     got: 5
+
+(compared using ==)
+
+
+RSpec::Retry: 2nd try ./spec/models/client_search_spec.rb:94
+
+2nd Try error in ./spec/models/client_search_spec.rb:94:
+
+expected: 2
+     got: 5
+
+(compared using ==)
+
+RSpec::Retry: 3rd try ./spec/models/client_search_spec.rb:94
+F...
+1st Try error in ./spec/models/client_search_spec.rb:134:
+expected `#<ActiveRecord::Associations::HasManyAssociation:0x0000000168e5f010 @owner=#<Client id: 109, company_...or_added_targets=#<Set: {}>, @association_ids=nil, @association_scope=nil, @skip_strict_loading=nil>.loaded?` to be truthy, got false
+
+RSpec::Retry: 2nd try ./spec/models/client_search_spec.rb:134
+
+2nd Try error in ./spec/models/client_search_spec.rb:134:
+expected `#<ActiveRecord::Associations::HasManyAssociation:0x000000016f55eba8 @owner=#<Client id: 114, company_...or_added_targets=#<Set: {}>, @association_ids=nil, @association_scope=nil, @skip_strict_loading=nil>.loaded?` to be truthy, got false
+RSpec::Retry: 3rd try ./spec/models/client_search_spec.rb:134
+F.
+1st Try error in ./spec/models/client_search_spec.rb:149:
+expected #<ActiveRecord::Relation [#<Client id: 129, company_id: 92, name: "Apple Inc", email: [FILTERED], pho...ted_at: "2025-08-10 14:42:14.983603000 +0000", discarded_at: nil, stripe_id: nil, currency: "USD">]> not to include #<Client id: 133, company_id: 93, name: "Apple Store", email: [FILTERED], phone: "+90 (925) 708-0", a...dated_at: "2025-08-10 14:42:14.983603000 +0000", discarded_at: nil, stripe_id: nil, currency: "USD">
+Diff:
+@@ -1 +1,24 @@
+-[#<Client id: 133, company_id: 93, name: "Apple Store", email: [FILTERED], phone: "+90 (925) 708-0", address: nil, created_at: "2025-08-10 14:42:14.983603000 +0000", updated_at: "2025-08-10 14:42:14.983603000 +0000", discarded_at: nil, stripe_id: nil, currency: "USD">]
++[#<Client:0x0000000145d180d0
++  id: 129,
++  company_id: 92,
++  name: "Apple Inc",
++  email: [FILTERED],
++  phone: "+64 191.365.545",
++  address: nil,
++  created_at: "2025-08-10 14:42:14.958854000 +0000",
++  updated_at: "2025-08-10 14:42:14.958854000 +0000",
++  discarded_at: nil,
++  stripe_id: nil,
++  currency: "USD">,
++ #<Client:0x0000000145d17e50
++  id: 133,
++  company_id: 93,
++  name: "Apple Store",
++  email: [FILTERED],
++  phone: "+90 (925) 708-0",
++  address: nil,
++  created_at: "2025-08-10 14:42:14.983603000 +0000",
++  updated_at: "2025-08-10 14:42:14.983603000 +0000",
++  discarded_at: nil,
++  stripe_id: nil,
++  currency: "USD">]
+
+
+RSpec::Retry: 2nd try ./spec/models/client_search_spec.rb:149
+
+2nd Try error in ./spec/models/client_search_spec.rb:149:
+expected #<ActiveRecord::Relation [#<Client id: 134, company_id: 94, name: "Apple Inc", email: [FILTERED], pho...ted_at: "2025-08-10 14:42:15.028144000 +0000", discarded_at: nil, stripe_id: nil, currency: "USD">]> not to include #<Client id: 138, company_id: 95, name: "Apple Store", email: [FILTERED], phone: "+1 257.929.8751", a...dated_at: "2025-08-10 14:42:15.028144000 +0000", discarded_at: nil, stripe_id: nil, currency: "USD">
+Diff:
+@@ -1 +1,24 @@
+-[#<Client id: 138, company_id: 95, name: "Apple Store", email: [FILTERED], phone: "+1 257.929.8751", address: nil, created_at: "2025-08-10 14:42:15.028144000 +0000", updated_at: "2025-08-10 14:42:15.028144000 +0000", discarded_at: nil, stripe_id: nil, currency: "USD">]
++[#<Client:0x0000000141b73850
++  id: 134,
++  company_id: 94,
++  name: "Apple Inc",
++  email: [FILTERED],
++  phone: "+84 754.962.635",
++  address: nil,
++  created_at: "2025-08-10 14:42:15.007243000 +0000",
++  updated_at: "2025-08-10 14:42:15.007243000 +0000",
++  discarded_at: nil,
++  stripe_id: nil,
++  currency: "USD">,
++ #<Client:0x0000000141b72950
++  id: 138,
++  company_id: 95,
++  name: "Apple Store",
++  email: [FILTERED],
++  phone: "+1 257.929.8751",
++  address: nil,
++  created_at: "2025-08-10 14:42:15.028144000 +0000",
++  updated_at: "2025-08-10 14:42:15.028144000 +0000",
++  discarded_at: nil,
++  stripe_id: nil,
++  currency: "USD">]
+
+RSpec::Retry: 3rd try ./spec/models/client_search_spec.rb:149
+F..........................................................................
+1st Try error in ./spec/models/concerns/pg_searchable_spec.rb:47:
+
+expected: 1
+     got: 2
+
+(compared using ==)
+
+
+RSpec::Retry: 2nd try ./spec/models/concerns/pg_searchable_spec.rb:47
+
+2nd Try error in ./spec/models/concerns/pg_searchable_spec.rb:47:
+
+expected: 1
+     got: 2
+
+(compared using ==)
+
+RSpec::Retry: 3rd try ./spec/models/concerns/pg_searchable_spec.rb:47
+F....
+1st Try error in ./spec/models/concerns/pg_searchable_spec.rb:99:
+undefined method 'fuzzy_search' for class Invoice
+
+RSpec::Retry: 2nd try ./spec/models/concerns/pg_searchable_spec.rb:99
+
+2nd Try error in ./spec/models/concerns/pg_searchable_spec.rb:99:
+undefined method 'fuzzy_search' for class Invoice
+RSpec::Retry: 3rd try ./spec/models/concerns/pg_searchable_spec.rb:99
+F.
+1st Try error in ./spec/models/concerns/pg_searchable_spec.rb:123:
+PG::UndefinedColumn: ERROR:  column "name" does not exist
+LINE 1: SELECT 1 AS one FROM "timesheet_entries" WHERE (name ILIKE $...
+                                                        ^
+HINT:  Perhaps you meant to reference the column "timesheet_entries.note".
+
+
+RSpec::Retry: 2nd try ./spec/models/concerns/pg_searchable_spec.rb:123
+
+2nd Try error in ./spec/models/concerns/pg_searchable_spec.rb:123:
+PG::UndefinedColumn: ERROR:  column "name" does not exist
+LINE 1: SELECT 1 AS one FROM "timesheet_entries" WHERE (name ILIKE $...
+                                                        ^
+HINT:  Perhaps you meant to reference the column "timesheet_entries.note".
+
+RSpec::Retry: 3rd try ./spec/models/concerns/pg_searchable_spec.rb:123
+F.
+1st Try error in ./spec/models/concerns/pg_searchable_spec.rb:148:
+PG::UndefinedColumn: ERROR:  column "name" does not exist
+LINE 1: SELECT 1 AS one FROM "expenses" WHERE (name ILIKE $1) AND "e...
+                                               ^
+HINT:  Perhaps you meant to reference the column "expenses.date".
+
+
+RSpec::Retry: 2nd try ./spec/models/concerns/pg_searchable_spec.rb:148
+
+2nd Try error in ./spec/models/concerns/pg_searchable_spec.rb:148:
+PG::UndefinedColumn: ERROR:  column "name" does not exist
+LINE 1: SELECT 1 AS one FROM "expenses" WHERE (name ILIKE $1) AND "e...
+                                               ^
+HINT:  Perhaps you meant to reference the column "expenses.date".
+
+RSpec::Retry: 3rd try ./spec/models/concerns/pg_searchable_spec.rb:148
+F.
+1st Try error in ./spec/models/concerns/pg_searchable_spec.rb:169:
+PG::UndefinedColumn: ERROR:  column "name" does not exist
+LINE 1: SELECT 1 AS one FROM "invitations" WHERE (name ILIKE $1) AND...
+                                                  ^
+
+
+RSpec::Retry: 2nd try ./spec/models/concerns/pg_searchable_spec.rb:169
+
+2nd Try error in ./spec/models/concerns/pg_searchable_spec.rb:169:
+PG::UndefinedColumn: ERROR:  column "name" does not exist
+LINE 1: SELECT 1 AS one FROM "invitations" WHERE (name ILIKE $1) AND...
+                                                  ^
+
+RSpec::Retry: 3rd try ./spec/models/concerns/pg_searchable_spec.rb:169
+F
+1st Try error in ./spec/models/concerns/pg_searchable_spec.rb:176:
+PG::UndefinedColumn: ERROR:  column "name" does not exist
+LINE 1: SELECT 1 AS one FROM "invitations" WHERE (name ILIKE $1) AND...
+                                                  ^
+
+
+RSpec::Retry: 2nd try ./spec/models/concerns/pg_searchable_spec.rb:176
+
+2nd Try error in ./spec/models/concerns/pg_searchable_spec.rb:176:
+PG::UndefinedColumn: ERROR:  column "name" does not exist
+LINE 1: SELECT 1 AS one FROM "invitations" WHERE (name ILIKE $1) AND...
+                                                  ^
+
+RSpec::Retry: 3rd try ./spec/models/concerns/pg_searchable_spec.rb:176
+F.............................................................................................
+1st Try error in ./spec/models/invoice_search_spec.rb:17:
+
+expected: 1
+     got: 4
+
+(compared using ==)
+
+
+RSpec::Retry: 2nd try ./spec/models/invoice_search_spec.rb:17
+
+2nd Try error in ./spec/models/invoice_search_spec.rb:17:
+
+expected: 1
+     got: 4
+
+(compared using ==)
+
+RSpec::Retry: 3rd try ./spec/models/invoice_search_spec.rb:17
+F
+1st Try error in ./spec/models/invoice_search_spec.rb:23:
+expected #<ActiveRecord::Relation []> to include #<Invoice id: 97, issue_date: "2025-08-10", due_date: "2025-08-10", invoice_number: "INV-2024-001", r...ient_payment_sent_at: nil, stripe_enabled: true, currency: "USD", base_currency_amount: 0.5388401e5>, #<Invoice id: 98, issue_date: "2025-08-03", due_date: "2025-08-10", invoice_number: "INV-2024-002", r...ient_payment_sent_at: nil, stripe_enabled: true, currency: "USD", base_currency_amount: 0.1677346e5>, #<Invoice id: 99, issue_date: "2025-07-10", due_date: "2025-08-08", invoice_number: "INV-2024-003", r...ient_payment_sent_at: nil, stripe_enabled: true, currency: "USD", base_currency_amount: 0.1551199e5>, and #<Invoice id: 100, issue_date: "2025-06-10", due_date: "2025-06-11", invoice_number: "INV-2024-004", ...ient_payment_sent_at: nil, stripe_enabled: true, currency: "USD", base_currency_amount: 0.5785083e5>
+Diff:
+@@ -1,4 +1 @@
+-[#<Invoice id: 97, issue_date: "2025-08-10", due_date: "2025-08-10", invoice_number: "INV-2024-001", reference: "969069621084", amount: 0.5388401e5, outstanding_amount: 0.0, tax: 0.0, amount_paid: 0.0, amount_due: 0.0, discount: 0.0, status: "draft", client_id: 288, created_at: "2025-08-10 14:42:19.709800000 +0000", updated_at: "2025-08-10 14:42:19.709800000 +0000", external_view_key: [FILTERED], payment_infos: {}, company_id: 398, discarded_at: nil, sent_at: nil, payment_sent_at: nil, client_payment_sent_at: nil, stripe_enabled: true, currency: "USD", base_currency_amount: 0.5388401e5>,
+- #<Invoice id: 98, issue_date: "2025-08-03", due_date: "2025-08-10", invoice_number: "INV-2024-002", reference: "52155505960", amount: 0.1677346e5, outstanding_amount: 0.0, tax: 0.0, amount_paid: 0.0, amount_due: 0.0, discount: 0.0, status: "sent", client_id: 288, created_at: "2025-08-10 14:42:19.712824000 +0000", updated_at: "2025-08-10 14:42:19.712824000 +0000", external_view_key: [FILTERED], payment_infos: {}, company_id: 398, discarded_at: nil, sent_at: nil, payment_sent_at: nil, client_payment_sent_at: nil, stripe_enabled: true, currency: "USD", base_currency_amount: 0.1677346e5>,
+- #<Invoice id: 99, issue_date: "2025-07-10", due_date: "2025-08-08", invoice_number: "INV-2024-003", reference: "797752613941", amount: 0.1551199e5, outstanding_amount: 0.0, tax: 0.0, amount_paid: 0.0, amount_due: 0.0, discount: 0.0, status: "paid", client_id: 289, created_at: "2025-08-10 14:42:19.720697000 +0000", updated_at: "2025-08-10 14:42:19.720697000 +0000", external_view_key: [FILTERED], payment_infos: {}, company_id: 398, discarded_at: nil, sent_at: nil, payment_sent_at: nil, client_payment_sent_at: nil, stripe_enabled: true, currency: "USD", base_currency_amount: 0.1551199e5>,
+- #<Invoice id: 100, issue_date: "2025-06-10", due_date: "2025-06-11", invoice_number: "INV-2024-004", reference: "329118123859", amount: 0.5785083e5, outstanding_amount: 0.0, tax: 0.0, amount_paid: 0.0, amount_due: 0.0, discount: 0.0, status: "overdue", client_id: 289, created_at: "2025-08-10 14:42:19.723374000 +0000", updated_at: "2025-08-10 14:42:19.723374000 +0000", external_view_key: [FILTERED], payment_infos: {}, company_id: 398, discarded_at: nil, sent_at: nil, payment_sent_at: nil, client_payment_sent_at: nil, stripe_enabled: true, currency: "USD", base_currency_amount: 0.5785083e5>]
++[]
+
+
+RSpec::Retry: 2nd try ./spec/models/invoice_search_spec.rb:23
+
+2nd Try error in ./spec/models/invoice_search_spec.rb:23:
+expected #<ActiveRecord::Relation []> to include #<Invoice id: 101, issue_date: "2025-08-10", due_date: "2025-08-10", invoice_number: "INV-2024-001", ...ient_payment_sent_at: nil, stripe_enabled: true, currency: "USD", base_currency_amount: 0.2496582e5>, #<Invoice id: 102, issue_date: "2025-08-03", due_date: "2025-08-07", invoice_number: "INV-2024-002", ...ient_payment_sent_at: nil, stripe_enabled: true, currency: "USD", base_currency_amount: 0.4407886e5>, #<Invoice id: 103, issue_date: "2025-07-10", due_date: "2025-07-27", invoice_number: "INV-2024-003", ...ient_payment_sent_at: nil, stripe_enabled: true, currency: "USD", base_currency_amount: 0.2106673e5>, and #<Invoice id: 104, issue_date: "2025-06-10", due_date: "2025-07-10", invoice_number: "INV-2024-004", ...ient_payment_sent_at: nil, stripe_enabled: true, currency: "USD", base_currency_amount: 0.6107887e5>
+Diff:
+@@ -1,4 +1 @@
+-[#<Invoice id: 101, issue_date: "2025-08-10", due_date: "2025-08-10", invoice_number: "INV-2024-001", reference: "0019749", amount: 0.2496582e5, outstanding_amount: 0.0, tax: 0.0, amount_paid: 0.0, amount_due: 0.0, discount: 0.0, status: "draft", client_id: 290, created_at: "2025-08-10 14:42:19.744316000 +0000", updated_at: "2025-08-10 14:42:19.744316000 +0000", external_view_key: [FILTERED], payment_infos: {}, company_id: 399, discarded_at: nil, sent_at: nil, payment_sent_at: nil, client_payment_sent_at: nil, stripe_enabled: true, currency: "USD", base_currency_amount: 0.2496582e5>,
+- #<Invoice id: 102, issue_date: "2025-08-03", due_date: "2025-08-07", invoice_number: "INV-2024-002", reference: "18999370", amount: 0.4407886e5, outstanding_amount: 0.0, tax: 0.0, amount_paid: 0.0, amount_due: 0.0, discount: 0.0, status: "sent", client_id: 290, created_at: "2025-08-10 14:42:19.747463000 +0000", updated_at: "2025-08-10 14:42:19.747463000 +0000", external_view_key: [FILTERED], payment_infos: {}, company_id: 399, discarded_at: nil, sent_at: nil, payment_sent_at: nil, client_payment_sent_at: nil, stripe_enabled: true, currency: "USD", base_currency_amount: 0.4407886e5>,
+- #<Invoice id: 103, issue_date: "2025-07-10", due_date: "2025-07-27", invoice_number: "INV-2024-003", reference: "547948969613", amount: 0.2106673e5, outstanding_amount: 0.0, tax: 0.0, amount_paid: 0.0, amount_due: 0.0, discount: 0.0, status: "paid", client_id: 291, created_at: "2025-08-10 14:42:19.755518000 +0000", updated_at: "2025-08-10 14:42:19.755518000 +0000", external_view_key: [FILTERED], payment_infos: {}, company_id: 399, discarded_at: nil, sent_at: nil, payment_sent_at: nil, client_payment_sent_at: nil, stripe_enabled: true, currency: "USD", base_currency_amount: 0.2106673e5>,
+- #<Invoice id: 104, issue_date: "2025-06-10", due_date: "2025-07-10", invoice_number: "INV-2024-004", reference: "5808241", amount: 0.6107887e5, outstanding_amount: 0.0, tax: 0.0, amount_paid: 0.0, amount_due: 0.0, discount: 0.0, status: "overdue", client_id: 291, created_at: "2025-08-10 14:42:19.757852000 +0000", updated_at: "2025-08-10 14:42:19.757852000 +0000", external_view_key: [FILTERED], payment_infos: {}, company_id: 399, discarded_at: nil, sent_at: nil, payment_sent_at: nil, client_payment_sent_at: nil, stripe_enabled: true, currency: "USD", base_currency_amount: 0.6107887e5>]
++[]
+
+RSpec::Retry: 3rd try ./spec/models/invoice_search_spec.rb:23
+F.................
+1st Try error in ./spec/models/invoice_search_spec.rb:150:
+
+expected: 5
+     got: 14
+
+(compared using ==)
+
+
+RSpec::Retry: 2nd try ./spec/models/invoice_search_spec.rb:150
+
+2nd Try error in ./spec/models/invoice_search_spec.rb:150:
+
+expected: 5
+     got: 14
+
+(compared using ==)
+
+RSpec::Retry: 3rd try ./spec/models/invoice_search_spec.rb:150
+F
+1st Try error in ./spec/models/invoice_search_spec.rb:155:
+
+expected: 5
+     got: 14
+
+(compared using ==)
+
+
+RSpec::Retry: 2nd try ./spec/models/invoice_search_spec.rb:155
+
+2nd Try error in ./spec/models/invoice_search_spec.rb:155:
+
+expected: 5
+     got: 14
+
+(compared using ==)
+
+RSpec::Retry: 3rd try ./spec/models/invoice_search_spec.rb:155
+F
+1st Try error in ./spec/models/invoice_search_spec.rb:166:
+expected #<ActiveRecord::Relation []> to include #<Invoice id: 266, issue_date: "2025-07-10", due_date: "2025-08-10", invoice_number: "INV-2024-003", ...ient_payment_sent_at: nil, stripe_enabled: true, currency: "USD", base_currency_amount: 0.6724017e5>
+Diff:
+@@ -1 +1 @@
+-[#<Invoice id: 266, issue_date: "2025-07-10", due_date: "2025-08-10", invoice_number: "INV-2024-003", reference: "86940426323", amount: 0.6724017e5, outstanding_amount: 0.0, tax: 0.0, amount_paid: 0.0, amount_due: 0.0, discount: 0.0, status: "paid", client_id: 342, created_at: "2025-08-10 14:42:20.713469000 +0000", updated_at: "2025-08-10 14:42:20.713469000 +0000", external_view_key: [FILTERED], payment_infos: {}, company_id: 425, discarded_at: nil, sent_at: nil, payment_sent_at: nil, client_payment_sent_at: nil, stripe_enabled: true, currency: "USD", base_currency_amount: 0.6724017e5>]
++[]
+
+
+RSpec::Retry: 2nd try ./spec/models/invoice_search_spec.rb:166
+
+2nd Try error in ./spec/models/invoice_search_spec.rb:166:
+expected #<ActiveRecord::Relation []> to include #<Invoice id: 270, issue_date: "2025-07-10", due_date: "2025-08-02", invoice_number: "INV-2024-003", ...ient_payment_sent_at: nil, stripe_enabled: true, currency: "USD", base_currency_amount: 0.9613586e5>
+Diff:
+@@ -1 +1 @@
+-[#<Invoice id: 270, issue_date: "2025-07-10", due_date: "2025-08-02", invoice_number: "INV-2024-003", reference: "291424161089", amount: 0.9613586e5, outstanding_amount: 0.0, tax: 0.0, amount_paid: 0.0, amount_due: 0.0, discount: 0.0, status: "paid", client_id: 344, created_at: "2025-08-10 14:42:20.746831000 +0000", updated_at: "2025-08-10 14:42:20.746831000 +0000", external_view_key: [FILTERED], payment_infos: {}, company_id: 426, discarded_at: nil, sent_at: nil, payment_sent_at: nil, client_payment_sent_at: nil, stripe_enabled: true, currency: "USD", base_currency_amount: 0.9613586e5>]
++[]
+
+RSpec::Retry: 3rd try ./spec/models/invoice_search_spec.rb:166
+..........................................................
+1st Try error in ./spec/models/metric_spec.rb:33:
+
+expected: #<Metric id: 8, trackable_type: "Client", trackable_id: 371, metric_type: "hours_logged", period: "we...reated_at: "2025-08-10 14:42:22.284875000 +0000", updated_at: "2025-08-10 14:42:22.284875000 +0000">
+     got: #<Metric id: 9, trackable_type: "Client", trackable_id: 371, metric_type: "hours_logged", period: "we...reated_at: "2025-08-10 14:42:22.294825000 +0000", updated_at: "2025-08-10 14:42:22.294825000 +0000">
+
+(compared using ==)
+
+Diff:
+
+
+@@ -1,17 +1,18 @@
+-#<Metric:0x000000016eb521c8
+- id: 8,
++#<Metric:0x000000016eb51548
++ id: 9,
+  trackable_type: "Client",
+  trackable_id: 371,
+  metric_type: "hours_logged",
+  period: "week",
+- period_date: "2025-08-10",
+- data: {"total_minutes" => 480},
++ period_date: "2025-08-04",
++ data:
++  {"total_minutes" => 0.0, "total_hours" => 0.0, "entry_count" => 0, "unique_users" => 0, "unique_projects" => 0, "by_project" => {}, "by_user" => {}, "by_date" => {}},
+  value_sum: 0.0,
+  value_count: 0,
+  value_avg: 0.0,
+  value_min: nil,
+  value_max: nil,
+  metadata: {},
+- calculated_at: "2025-08-10 13:42:22.284532000 +0000",
+- created_at: "2025-08-10 14:42:22.284875000 +0000",
+- updated_at: "2025-08-10 14:42:22.284875000 +0000">
++ calculated_at: "2025-08-10 14:42:22.294711000 +0000",
++ created_at: "2025-08-10 14:42:22.294825000 +0000",
++ updated_at: "2025-08-10 14:42:22.294825000 +0000">
+
+
+RSpec::Retry: 2nd try ./spec/models/metric_spec.rb:33
+
+2nd Try error in ./spec/models/metric_spec.rb:33:
+
+expected: #<Metric id: 10, trackable_type: "Client", trackable_id: 372, metric_type: "hours_logged", period: "w...reated_at: "2025-08-10 14:42:22.308492000 +0000", updated_at: "2025-08-10 14:42:22.308492000 +0000">
+     got: #<Metric id: 11, trackable_type: "Client", trackable_id: 372, metric_type: "hours_logged", period: "w...reated_at: "2025-08-10 14:42:22.317238000 +0000", updated_at: "2025-08-10 14:42:22.317238000 +0000">
+
+(compared using ==)
+
+Diff:
+
+
+@@ -1,17 +1,18 @@
+-#<Metric:0x000000016e8b7f80
+- id: 10,
++#<Metric:0x000000016e8b7300
++ id: 11,
+  trackable_type: "Client",
+  trackable_id: 372,
+  metric_type: "hours_logged",
+  period: "week",
+- period_date: "2025-08-10",
+- data: {"total_minutes" => 480},
++ period_date: "2025-08-04",
++ data:
++  {"total_minutes" => 0.0, "total_hours" => 0.0, "entry_count" => 0, "unique_users" => 0, "unique_projects" => 0, "by_project" => {}, "by_user" => {}, "by_date" => {}},
+  value_sum: 0.0,
+  value_count: 0,
+  value_avg: 0.0,
+  value_min: nil,
+  value_max: nil,
+  metadata: {},
+- calculated_at: "2025-08-10 13:42:22.308219000 +0000",
+- created_at: "2025-08-10 14:42:22.308492000 +0000",
+- updated_at: "2025-08-10 14:42:22.308492000 +0000">
++ calculated_at: "2025-08-10 14:42:22.317117000 +0000",
++ created_at: "2025-08-10 14:42:22.317238000 +0000",
++ updated_at: "2025-08-10 14:42:22.317238000 +0000">
+
+RSpec::Retry: 3rd try ./spec/models/metric_spec.rb:33
+F...
+1st Try error in ./spec/models/metric_spec.rb:101:
+
+expected: 2250
+     got: "0.0"
+
+(compared using ==)
+
+
+RSpec::Retry: 2nd try ./spec/models/metric_spec.rb:101
+
+2nd Try error in ./spec/models/metric_spec.rb:101:
+
+expected: 2250
+     got: "0.0"
+
+(compared using ==)
+
+RSpec::Retry: 3rd try ./spec/models/metric_spec.rb:101
+F
+1st Try error in ./spec/models/metric_spec.rb:119:
+expected `#<Metric id: nil, trackable_type: "Client", trackable_id: nil, metric_type: "hours_logged", period: "...etadata: {}, calculated_at: "2025-08-10 14:12:22.561592000 +0000", created_at: nil, updated_at: nil>.stale?` to be falsey, got true
+
+RSpec::Retry: 2nd try ./spec/models/metric_spec.rb:119
+
+2nd Try error in ./spec/models/metric_spec.rb:119:
+expected `#<Metric id: nil, trackable_type: "Client", trackable_id: nil, metric_type: "hours_logged", period: "...etadata: {}, calculated_at: "2025-08-10 14:12:22.563127000 +0000", created_at: nil, updated_at: nil>.stale?` to be falsey, got true
+RSpec::Retry: 3rd try ./spec/models/metric_spec.rb:119
+F.....................************************************************************************
+Warning from shoulda-matchers:
+
+You are using `validate_inclusion_of` to assert that a boolean column
+allows boolean values and disallows non-boolean ones. Be aware that it
+is not possible to fully test this, as boolean columns will
+automatically convert non-boolean values to boolean ones. Hence, you
+should consider removing this test.
+************************************************************************
+.........................................................
+1st Try error in ./spec/models/user_search_spec.rb:13:
+expected #<ActiveRecord::Relation [#<User id: 186, first_name: "John", last_name: "Doe", email: [FILTERED], cr...}, phone: "+55 753 890 9750", token: [FILTERED], calendar_enabled: true, calendar_connected: true>]> not to include #<User id: 188, first_name: "Bob", last_name: "Johnson", email: [FILTERED], created_at: "2025-08-10 1...""}, phone: "+55 753 890 9750", token: [FILTERED], calendar_enabled: true, calendar_connected: true>
+Diff:
+@@ -1,3 +1,2 @@
+-[#<User id: 187, first_name: "Jane", last_name: "Smith", email: [FILTERED], created_at: "2025-08-10 14:42:24.024407000 +0000", updated_at: "2025-08-10 14:42:24.024407000 +0000", current_workspace_id: 636, discarded_at: nil, personal_email_id: [FILTERED], date_of_birth: "1996-11-30", social_accounts: {"github_url" => "", "linkedin_url" => ""}, phone: "+82 (604) 173-3460", token: [FILTERED], calendar_enabled: true, calendar_connected: true>,
+- #<User id: 188, first_name: "Bob", last_name: "Johnson", email: [FILTERED], created_at: "2025-08-10 14:42:24.033181000 +0000", updated_at: "2025-08-10 14:42:24.033181000 +0000", current_workspace_id: 637, discarded_at: nil, personal_email_id: [FILTERED], date_of_birth: "1997-04-16", social_accounts: {"github_url" => "", "linkedin_url" => ""}, phone: "+55 753 890 9750", token: [FILTERED], calendar_enabled: true, calendar_connected: true>,
+- #<User id: 189, first_name: "Alice", last_name: "Doe", email: [FILTERED], created_at: "2025-08-10 14:42:24.041359000 +0000", updated_at: "2025-08-10 14:42:24.041359000 +0000", current_workspace_id: 638, discarded_at: nil, personal_email_id: [FILTERED], date_of_birth: "1998-05-19", social_accounts: {"github_url" => "", "linkedin_url" => ""}, phone: "+65 (897) 917 5146", token: [FILTERED], calendar_enabled: true, calendar_connected: true>]
++[#<User id: 186, first_name: "John", last_name: "Doe", email: [FILTERED], created_at: "2025-08-10 14:42:24.016382000 +0000", updated_at: "2025-08-10 14:42:24.016382000 +0000", current_workspace_id: 635, discarded_at: nil, personal_email_id: [FILTERED], date_of_birth: "1992-06-04", social_accounts: {"github_url" => "", "linkedin_url" => ""}, phone: "+39 1237971760", token: [FILTERED], calendar_enabled: true, calendar_connected: true>,
++ #<User id: 188, first_name: "Bob", last_name: "Johnson", email: [FILTERED], created_at: "2025-08-10 14:42:24.033181000 +0000", updated_at: "2025-08-10 14:42:24.033181000 +0000", current_workspace_id: 637, discarded_at: nil, personal_email_id: [FILTERED], date_of_birth: "1997-04-16", social_accounts: {"github_url" => "", "linkedin_url" => ""}, phone: "+55 753 890 9750", token: [FILTERED], calendar_enabled: true, calendar_connected: true>]
+
+
+RSpec::Retry: 2nd try ./spec/models/user_search_spec.rb:13
+
+2nd Try error in ./spec/models/user_search_spec.rb:13:
+expected #<ActiveRecord::Relation [#<User id: 190, first_name: "John", last_name: "Doe", email: [FILTERED], cr...""}, phone: "+49 6836939379", token: [FILTERED], calendar_enabled: true, calendar_connected: true>]> not to include #<User id: 192, first_name: "Bob", last_name: "Johnson", email: [FILTERED], created_at: "2025-08-10 1...> ""}, phone: "+49 6836939379", token: [FILTERED], calendar_enabled: true, calendar_connected: true>
+Diff:
+@@ -1,3 +1,2 @@
+-[#<User id: 191, first_name: "Jane", last_name: "Smith", email: [FILTERED], created_at: "2025-08-10 14:42:24.073744000 +0000", updated_at: "2025-08-10 14:42:24.073744000 +0000", current_workspace_id: 640, discarded_at: nil, personal_email_id: [FILTERED], date_of_birth: "1999-03-09", social_accounts: {"github_url" => "", "linkedin_url" => ""}, phone: "+20 322-642-6560", token: [FILTERED], calendar_enabled: true, calendar_connected: true>,
+- #<User id: 192, first_name: "Bob", last_name: "Johnson", email: [FILTERED], created_at: "2025-08-10 14:42:24.081976000 +0000", updated_at: "2025-08-10 14:42:24.081976000 +0000", current_workspace_id: 641, discarded_at: nil, personal_email_id: [FILTERED], date_of_birth: "1993-12-31", social_accounts: {"github_url" => "", "linkedin_url" => ""}, phone: "+49 6836939379", token: [FILTERED], calendar_enabled: true, calendar_connected: true>,
+- #<User id: 193, first_name: "Alice", last_name: "Doe", email: [FILTERED], created_at: "2025-08-10 14:42:24.090027000 +0000", updated_at: "2025-08-10 14:42:24.090027000 +0000", current_workspace_id: 642, discarded_at: nil, personal_email_id: [FILTERED], date_of_birth: "1998-04-24", social_accounts: {"github_url" => "", "linkedin_url" => ""}, phone: "+46 6575129769", token: [FILTERED], calendar_enabled: true, calendar_connected: true>]
++[#<User id: 190, first_name: "John", last_name: "Doe", email: [FILTERED], created_at: "2025-08-10 14:42:24.064757000 +0000", updated_at: "2025-08-10 14:42:24.064757000 +0000", current_workspace_id: 639, discarded_at: nil, personal_email_id: [FILTERED], date_of_birth: "1998-04-13", social_accounts: {"github_url" => "", "linkedin_url" => ""}, phone: "+49 242-667-6886", token: [FILTERED], calendar_enabled: true, calendar_connected: true>,
++ #<User id: 192, first_name: "Bob", last_name: "Johnson", email: [FILTERED], created_at: "2025-08-10 14:42:24.081976000 +0000", updated_at: "2025-08-10 14:42:24.081976000 +0000", current_workspace_id: 641, discarded_at: nil, personal_email_id: [FILTERED], date_of_birth: "1993-12-31", social_accounts: {"github_url" => "", "linkedin_url" => ""}, phone: "+49 6836939379", token: [FILTERED], calendar_enabled: true, calendar_connected: true>]
+
+RSpec::Retry: 3rd try ./spec/models/user_search_spec.rb:13
+F..............
+1st Try error in ./spec/models/user_search_spec.rb:122:
+
+expected: 1
+     got: 2
+
+(compared using ==)
+
+
+RSpec::Retry: 2nd try ./spec/models/user_search_spec.rb:122
+
+2nd Try error in ./spec/models/user_search_spec.rb:122:
+
+expected: 1
+     got: 2
+
+(compared using ==)
+
+RSpec::Retry: 3rd try ./spec/models/user_search_spec.rb:122
+F..
+1st Try error in ./spec/models/user_search_spec.rb:153:
+
+expected: 5
+     got: 14
+
+(compared using ==)
+
+
+RSpec::Retry: 2nd try ./spec/models/user_search_spec.rb:153
+
+2nd Try error in ./spec/models/user_search_spec.rb:153:
+
+expected: 5
+     got: 14
+
+(compared using ==)
+
+RSpec::Retry: 3rd try ./spec/models/user_search_spec.rb:153
+F
+1st Try error in ./spec/models/user_search_spec.rb:159:
+
+expected: 5
+     got: 14
+
+(compared using ==)
+
+
+RSpec::Retry: 2nd try ./spec/models/user_search_spec.rb:159
+
+2nd Try error in ./spec/models/user_search_spec.rb:159:
+
+expected: 5
+     got: 14
+
+(compared using ==)
+
+RSpec::Retry: 3rd try ./spec/models/user_search_spec.rb:159
+F
+1st Try error in ./spec/models/user_search_spec.rb:168:
+
+expected: 4
+     got: 0
+
+(compared using ==)
+
+
+RSpec::Retry: 2nd try ./spec/models/user_search_spec.rb:168
+
+2nd Try error in ./spec/models/user_search_spec.rb:168:
+
+expected: 4
+     got: 0
+
+(compared using ==)
+
+RSpec::Retry: 3rd try ./spec/models/user_search_spec.rb:168
+F....
+1st Try error in ./spec/models/user_search_spec.rb:211:
+expected `#<ActiveRecord::Associations::HasManyThroughAssociation:0x000000016e2b5010 @owner=#<User id: 444, fir...t: {}>, @association_ids=nil, @association_scope=nil, @skip_strict_loading=nil, @through_records={}>.loaded?` to be truthy, got false
+
+RSpec::Retry: 2nd try ./spec/models/user_search_spec.rb:211
+
+2nd Try error in ./spec/models/user_search_spec.rb:211:
+expected `#<ActiveRecord::Associations::HasManyThroughAssociation:0x000000016debb7c0 @owner=#<User id: 448, fir...t: {}>, @association_ids=nil, @association_scope=nil, @skip_strict_loading=nil, @through_records={}>.loaded?` to be truthy, got false
+RSpec::Retry: 3rd try ./spec/models/user_search_spec.rb:211
+F
+1st Try error in ./spec/models/user_search_spec.rb:219:
+expected `#<ActiveRecord::Relation [#<User id: 456, first_name: "John", last_name: "Doe", email: [FILTERED], cr...}, phone: "+62 766-018-9911", token: [FILTERED], calendar_enabled: true, calendar_connected: true>]>.empty?` to be truthy, got false
+
+RSpec::Retry: 2nd try ./spec/models/user_search_spec.rb:219
+
+2nd Try error in ./spec/models/user_search_spec.rb:219:
+expected `#<ActiveRecord::Relation [#<User id: 460, first_name: "John", last_name: "Doe", email: [FILTERED], cr...""}, phone: "+41 1548368284", token: [FILTERED], calendar_enabled: true, calendar_connected: true>]>.empty?` to be truthy, got false
+RSpec::Retry: 3rd try ./spec/models/user_search_spec.rb:219
+F
+1st Try error in ./spec/models/user_search_spec.rb:229:
+expected `#<ActiveRecord::Relation [#<User id: 468, first_name: "John", last_name: "Doe", email: [FILTERED], cr...""}, phone: "+64 6784556232", token: [FILTERED], calendar_enabled: true, calendar_connected: true>]>.empty?` to be truthy, got false
+
+RSpec::Retry: 2nd try ./spec/models/user_search_spec.rb:229
+
+2nd Try error in ./spec/models/user_search_spec.rb:229:
+expected `#<ActiveRecord::Relation [#<User id: 472, first_name: "John", last_name: "Doe", email: [FILTERED], cr... phone: "+44 (938) 050 8613", token: [FILTERED], calendar_enabled: true, calendar_connected: true>]>.empty?` to be truthy, got false
+RSpec::Retry: 3rd try ./spec/models/user_search_spec.rb:229
+F.......................................................................................................................................................................................
+1st Try error in ./spec/requests/home/index_spec.rb:12:
+undefined method 'react_component' for an instance of #<Class:0x0000000140df08e0>
+
+RSpec::Retry: 2nd try ./spec/requests/home/index_spec.rb:12
+
+2nd Try error in ./spec/requests/home/index_spec.rb:12:
+undefined method 'react_component' for an instance of #<Class:0x0000000140df08e0>
+RSpec::Retry: 3rd try ./spec/requests/home/index_spec.rb:12
+F....................................................../Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/rspec-rails-7.1.1/lib/rspec/rails/matchers/have_http_status.rb:219: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+./Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/rspec-rails-7.1.1/lib/rspec/rails/matchers/have_http_status.rb:219: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+................/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+........./Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+./Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+.../Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+./Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+............./Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+./Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+./Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+............................
+1st Try error in ./spec/requests/internal_api/v1/expenses/index_spec.rb:41:
+undefined method 'total_pages' for an instance of ActiveRecord::Relation
+
+RSpec::Retry: 2nd try ./spec/requests/internal_api/v1/expenses/index_spec.rb:41
+
+2nd Try error in ./spec/requests/internal_api/v1/expenses/index_spec.rb:41:
+undefined method 'total_pages' for an instance of ActiveRecord::Relation
+RSpec::Retry: 3rd try ./spec/requests/internal_api/v1/expenses/index_spec.rb:41
+F
+1st Try error in ./spec/requests/internal_api/v1/expenses/index_spec.rb:45:
+undefined method 'total_pages' for an instance of ActiveRecord::Relation
+
+RSpec::Retry: 2nd try ./spec/requests/internal_api/v1/expenses/index_spec.rb:45
+
+2nd Try error in ./spec/requests/internal_api/v1/expenses/index_spec.rb:45:
+undefined method 'total_pages' for an instance of ActiveRecord::Relation
+RSpec::Retry: 3rd try ./spec/requests/internal_api/v1/expenses/index_spec.rb:45
+F
+1st Try error in ./spec/requests/internal_api/v1/expenses/index_spec.rb:61:
+undefined method 'total_pages' for an instance of ActiveRecord::Relation
+
+RSpec::Retry: 2nd try ./spec/requests/internal_api/v1/expenses/index_spec.rb:61
+
+2nd Try error in ./spec/requests/internal_api/v1/expenses/index_spec.rb:61:
+undefined method 'total_pages' for an instance of ActiveRecord::Relation
+RSpec::Retry: 3rd try ./spec/requests/internal_api/v1/expenses/index_spec.rb:61
+F
+1st Try error in ./spec/requests/internal_api/v1/expenses/index_spec.rb:66:
+undefined method 'total_pages' for an instance of ActiveRecord::Relation
+
+RSpec::Retry: 2nd try ./spec/requests/internal_api/v1/expenses/index_spec.rb:66
+
+2nd Try error in ./spec/requests/internal_api/v1/expenses/index_spec.rb:66:
+undefined method 'total_pages' for an instance of ActiveRecord::Relation
+RSpec::Retry: 3rd try ./spec/requests/internal_api/v1/expenses/index_spec.rb:66
+F
+1st Try error in ./spec/requests/internal_api/v1/expenses/index_spec.rb:71:
+undefined method 'total_pages' for an instance of ActiveRecord::Relation
+
+RSpec::Retry: 2nd try ./spec/requests/internal_api/v1/expenses/index_spec.rb:71
+
+2nd Try error in ./spec/requests/internal_api/v1/expenses/index_spec.rb:71:
+undefined method 'total_pages' for an instance of ActiveRecord::Relation
+RSpec::Retry: 3rd try ./spec/requests/internal_api/v1/expenses/index_spec.rb:71
+F........
+1st Try error in ./spec/requests/internal_api/v1/generate_invoice/index_spec.rb:53:
+undefined method 'search_index' for class TimesheetEntry
+
+RSpec::Retry: 2nd try ./spec/requests/internal_api/v1/generate_invoice/index_spec.rb:53
+
+2nd Try error in ./spec/requests/internal_api/v1/generate_invoice/index_spec.rb:53:
+undefined method 'search_index' for class TimesheetEntry
+RSpec::Retry: 3rd try ./spec/requests/internal_api/v1/generate_invoice/index_spec.rb:53
+F
+1st Try error in ./spec/requests/internal_api/v1/generate_invoice/index_spec.rb:63:
+undefined method 'search_index' for class TimesheetEntry
+
+RSpec::Retry: 2nd try ./spec/requests/internal_api/v1/generate_invoice/index_spec.rb:63
+
+2nd Try error in ./spec/requests/internal_api/v1/generate_invoice/index_spec.rb:63:
+undefined method 'search_index' for class TimesheetEntry
+RSpec::Retry: 3rd try ./spec/requests/internal_api/v1/generate_invoice/index_spec.rb:63
+F
+1st Try error in ./spec/requests/internal_api/v1/generate_invoice/index_spec.rb:74:
+undefined method 'search_index' for class TimesheetEntry
+
+RSpec::Retry: 2nd try ./spec/requests/internal_api/v1/generate_invoice/index_spec.rb:74
+
+2nd Try error in ./spec/requests/internal_api/v1/generate_invoice/index_spec.rb:74:
+undefined method 'search_index' for class TimesheetEntry
+RSpec::Retry: 3rd try ./spec/requests/internal_api/v1/generate_invoice/index_spec.rb:74
+F
+1st Try error in ./spec/requests/internal_api/v1/generate_invoice/index_spec.rb:86:
+undefined method 'search_index' for class TimesheetEntry
+
+RSpec::Retry: 2nd try ./spec/requests/internal_api/v1/generate_invoice/index_spec.rb:86
+
+2nd Try error in ./spec/requests/internal_api/v1/generate_invoice/index_spec.rb:86:
+undefined method 'search_index' for class TimesheetEntry
+RSpec::Retry: 3rd try ./spec/requests/internal_api/v1/generate_invoice/index_spec.rb:86
+F
+1st Try error in ./spec/requests/internal_api/v1/generate_invoice/index_spec.rb:97:
+undefined method 'search_index' for class TimesheetEntry
+
+RSpec::Retry: 2nd try ./spec/requests/internal_api/v1/generate_invoice/index_spec.rb:97
+
+2nd Try error in ./spec/requests/internal_api/v1/generate_invoice/index_spec.rb:97:
+undefined method 'search_index' for class TimesheetEntry
+RSpec::Retry: 3rd try ./spec/requests/internal_api/v1/generate_invoice/index_spec.rb:97
+F
+1st Try error in ./spec/requests/internal_api/v1/generate_invoice/index_spec.rb:107:
+undefined method 'search_index' for class TimesheetEntry
+
+RSpec::Retry: 2nd try ./spec/requests/internal_api/v1/generate_invoice/index_spec.rb:107
+
+2nd Try error in ./spec/requests/internal_api/v1/generate_invoice/index_spec.rb:107:
+undefined method 'search_index' for class TimesheetEntry
+RSpec::Retry: 3rd try ./spec/requests/internal_api/v1/generate_invoice/index_spec.rb:107
+F
+1st Try error in ./spec/requests/internal_api/v1/generate_invoice/index_spec.rb:118:
+undefined method 'search_index' for class TimesheetEntry
+
+RSpec::Retry: 2nd try ./spec/requests/internal_api/v1/generate_invoice/index_spec.rb:118
+
+2nd Try error in ./spec/requests/internal_api/v1/generate_invoice/index_spec.rb:118:
+undefined method 'search_index' for class TimesheetEntry
+RSpec::Retry: 3rd try ./spec/requests/internal_api/v1/generate_invoice/index_spec.rb:118
+F
+1st Try error in ./spec/requests/internal_api/v1/generate_invoice/index_spec.rb:129:
+undefined method 'search_index' for class TimesheetEntry
+
+RSpec::Retry: 2nd try ./spec/requests/internal_api/v1/generate_invoice/index_spec.rb:129
+
+2nd Try error in ./spec/requests/internal_api/v1/generate_invoice/index_spec.rb:129:
+undefined method 'search_index' for class TimesheetEntry
+RSpec::Retry: 3rd try ./spec/requests/internal_api/v1/generate_invoice/index_spec.rb:129
+F.../Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/rspec-rails-7.1.1/lib/rspec/rails/matchers/have_http_status.rb:219: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+./Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+./Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+./Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/rspec-rails-7.1.1/lib/rspec/rails/matchers/have_http_status.rb:219: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+./Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+./Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+..../Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/rspec-rails-7.1.1/lib/rspec/rails/matchers/have_http_status.rb:219: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+./Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+./Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+./Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/rspec-rails-7.1.1/lib/rspec/rails/matchers/have_http_status.rb:219: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+./Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+./Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+./Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/rspec-rails-7.1.1/lib/rspec/rails/matchers/have_http_status.rb:219: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+./Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+./Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+...............................
+1st Try error in ./spec/requests/internal_api/v1/invoices/index_spec.rb:49:
+
+expected: 5
+     got: 10
+
+(compared using ==)
+
+
+RSpec::Retry: 2nd try ./spec/requests/internal_api/v1/invoices/index_spec.rb:49
+
+2nd Try error in ./spec/requests/internal_api/v1/invoices/index_spec.rb:49:
+
+expected: 5
+     got: 10
+
+(compared using ==)
+
+RSpec::Retry: 3rd try ./spec/requests/internal_api/v1/invoices/index_spec.rb:49
+F
+1st Try error in ./spec/requests/internal_api/v1/invoices/index_spec.rb:56:
+
+expected: 5
+     got: 10
+
+(compared using ==)
+
+
+RSpec::Retry: 2nd try ./spec/requests/internal_api/v1/invoices/index_spec.rb:56
+
+2nd Try error in ./spec/requests/internal_api/v1/invoices/index_spec.rb:56:
+
+expected: 5
+     got: 10
+
+(compared using ==)
+
+RSpec::Retry: 3rd try ./spec/requests/internal_api/v1/invoices/index_spec.rb:56
+F..
+1st Try error in ./spec/requests/internal_api/v1/invoices/index_spec.rb:82:
+expected collection contained:  []
+actual collection contained:    [622, 623, 624, 625, 626, 627, 628, 629, 630, 631]
+the extra elements were:        [622, 623, 624, 625, 626, 627, 628, 629, 630, 631]
+
+
+RSpec::Retry: 2nd try ./spec/requests/internal_api/v1/invoices/index_spec.rb:82
+
+2nd Try error in ./spec/requests/internal_api/v1/invoices/index_spec.rb:82:
+expected collection contained:  []
+actual collection contained:    [632, 633, 634, 635, 636, 637, 638, 639, 640, 641]
+the extra elements were:        [632, 633, 634, 635, 636, 637, 638, 639, 640, 641]
+
+RSpec::Retry: 3rd try ./spec/requests/internal_api/v1/invoices/index_spec.rb:82
+F
+1st Try error in ./spec/requests/internal_api/v1/invoices/index_spec.rb:100:
+
+expected: [661, 660, 659, 658, 657, 656, 655, 654, 653, 652]
+     got: [661, 660, 659, 658, 657]
+
+(compared using ==)
+
+
+RSpec::Retry: 2nd try ./spec/requests/internal_api/v1/invoices/index_spec.rb:100
+
+2nd Try error in ./spec/requests/internal_api/v1/invoices/index_spec.rb:100:
+
+expected: [671, 670, 669, 668, 667, 666, 665, 664, 663, 662]
+     got: [671, 670, 669, 668, 667]
+
+(compared using ==)
+
+RSpec::Retry: 3rd try ./spec/requests/internal_api/v1/invoices/index_spec.rb:100
+F..

@@ -1,0 +1,476 @@
+
+CurrentCompanyConcern
+  when current user has current workspace id
+    returns company record based on company id stored in current_workspace_id column
+  when current user doesn't have current workspace id
+    returns user's first company
+  when current user doesn't have current workspace id and not associated with any company
+    returns nil
+  when current user is nil
+    returns nil
+
+TestController
+  #record_not_discarded
+    when request is HTML type
+      returns a 500 error page
+    when request is JSON type
+      returns a 500 error page
+
+ApplicationHelper
+  .user_avatar
+    when user avatar is attached
+      returns user's avatar
+    when user avatar is not attached
+      returns user's avatar
+  .company_logo
+    when company logo is attached
+      returns company's logo
+    when company logo is not attached
+      returns company's logo
+  .error_message_on
+    when resource doesn't have errors on the attribute
+      returns nil
+    when resource have errors on the attribute
+      returns the error
+  .error_message_class
+    when resource does not have errors on the attribute
+      returns error class for no errors
+    when resource have errors on the attribute
+      returns different error class
+
+NavigationHelper
+  .nav_helper
+    returns links with the given styles
+
+TeamHelper
+  .resource_name
+    returns resource_name as :user
+  .resource
+    returns an instance of User class
+  .devise_mapping
+    returns an devise mappings of :user
+
+BulkInvoiceDownloadJob
+  #perform_later
+    enqueues the job
+
+Authentication::Google
+  user!
+    returns nil if user_data is blank
+    returns nil if user_data uid is nil or empty
+    returns the existing identity user if google uid is matched
+    returns the existing user, if user with email exists
+    returns and create a new user if user or user identity does not exists in our system
+
+FileUploader
+  #upload
+    uploads the file and returns the blob object
+    checks if correct filename is set
+  #url
+    returns the url for the uploaded file
+  #delete_after
+    check if DeleteActiveStorageBlobJob job is queued
+
+ClientPaymentMailer
+  payment
+    renders the headers
+    renders the body
+
+InvoiceMailer
+  invoice
+    renders the headers
+    renders the body
+
+PaymentMailer
+  payment
+    renders the headers
+    renders the body
+
+SendPaymentReminderMailer
+  send_payment_reminder
+    renders the headers
+
+SendReminderMailer
+  send_reminder
+    renders the headers
+    renders the body
+
+SendWeeklyReminderToUserMailer
+  notify_user_about_missed_entries
+    add mail to default queue
+
+UserInvitationMailer
+  send_user_invitation
+    renders the headers
+    renders the body
+
+Address
+  Associations
+    has a polymorphic relationship
+  Validations
+    is expected to validate that :address_type cannot be empty/falsy
+    is expected to validate that :address_line_1 cannot be empty/falsy
+    is expected to validate that :state cannot be empty/falsy
+    is expected to validate that :city cannot be empty/falsy
+    is expected to validate that :country cannot be empty/falsy
+    is expected to validate that :pin cannot be empty/falsy
+    is expected to validate that the length of :address_line_1 is at most 50
+    is expected to validate that the length of :address_line_2 is at most 50
+    is expected to validate that the length of :pin is at most 10
+    is expected to validate that :address_type is unique within the scope of :addressable_id and :addressable_type
+  Enums
+    is expected to define :address_type as an enum backed by a string with values ‹{current: "current", permanent: "permanent"}›
+  Defaults
+    default address_type to be current
+
+Carryover
+  Associations
+    is expected to belong to user required: true
+    is expected to belong to company required: true
+    is expected to belong to leave_type required: true
+  Validations
+    is expected to validate that :from_year cannot be empty/falsy
+    is expected to validate that :to_year cannot be empty/falsy
+    is expected to validate that :total_leave_balance cannot be empty/falsy
+    is expected to validate that :duration cannot be empty/falsy
+
+ClientMember
+  validations
+    is valid with valid attributes
+    is not valid without a user
+    is not valid without a client
+    is not valid without a company
+    is not valid with a duplicate client and user
+  associations
+    is expected to belong to company required: true
+    is expected to belong to client required: true
+    is expected to belong to user required: true
+
+Client search functionality
+  Client.search
+    basic search
+      finds clients by exact name
+      finds clients by partial name
+      finds clients by email domain
+      finds multiple clients with common term
+      returns empty for non-matching search
+    with company filtering
+      filters by company_id
+      searches across all companies when not filtered
+    with discarded clients
+      excludes discarded by default when filtered
+      includes discarded when not filtered
+      finds only discarded clients when filtered
+    ordering and pagination
+      orders alphabetically by name
+      orders by creation date
+      paginates results
+    case sensitivity
+      is case insensitive for name
+      is case insensitive for email
+    special characters
+      handles apostrophes and ampersands
+    with associated data
+      includes associations when specified (PENDING: Temporarily skipped with xit)
+    field-specific search
+      searches only in name field (PENDING: Temporarily skipped with xit)
+      searches only in email field (PENDING: Temporarily skipped with xit)
+
+Client
+  Validations
+    is expected to validate that :name cannot be empty/falsy
+    validates case-insensitive uniqueness of name within the scope of company_id
+    is expected to validate that the length of :name is at most 30
+    is expected to validate that the length of :phone is at most 15
+  Associations
+    is expected to have many projects
+    is expected to have many timesheet_entries
+    is expected to have many addresses dependent => destroy
+    is expected to belong to company required: true
+  Public methods
+    #total_hours_logged
+      when time_frame is last week
+        returns the total hours logged for a client in the last week
+      when time_frame in a week
+        returns the total hours logged for a client in that week
+      when time_frame in a month
+        returns the total hours logged for a client in that month
+      when time_frame in a year
+        returns the total hours logged for a client in that year
+    #strip_attributes
+      strips the whitespaces for the client name
+    #project_details
+      when time_frame is last_week
+        returns the hours_logged for a project in the last week
+      when time_frame is week
+        returns the hours_logged for a project in that week
+      when time_frame is month
+        returns the hours_logged for a project in that month
+      when time_frame is year
+        returns the hours_logged for a project in that year
+    #client_overdue_and_outstanding_calculation
+      return outstanding_amount overdue_amount amounts
+    #register_on_stripe!
+      when associated stripe connected account doesn't exist
+        raises ActiveRecord::RecordNotFound
+      when associated stripe connected account exists
+        creates customer for the connected account
+
+Company
+  Associations
+    is expected to have many users through employments
+    is expected to have many employments dependent => destroy
+    is expected to have many clients dependent => destroy
+    is expected to have many projects through clients dependent => destroy
+    is expected to have a has_one_attached called logo
+    is expected to have many current_workspace_users dependent => nullify
+    is expected to have many addresses dependent => destroy
+    is expected to have many devices dependent => destroy
+    is expected to have many expenses dependent => destroy
+    is expected to have many expense_categories dependent => destroy
+    is expected to have many vendors dependent => destroy
+  Validations
+    is expected to validate that :name cannot be empty/falsy
+    is expected to validate that :standard_price cannot be empty/falsy
+    is expected to validate that :country cannot be empty/falsy
+    is expected to validate that :base_currency cannot be empty/falsy
+    is expected to validate that the length of :name is at most 30
+    is expected to validate that the length of :business_phone is at most 15
+    is expected to validate that :standard_price looks like a number greater than or equal to 0
+  Public methods
+    #client_list
+      returns list of all the clients of a company
+    #overdue_and_outstanding_and_draft_amount
+      return invoice amounts
+      when invoice is deleted
+        returns only live invoices summary
+
+LeaveTypeValidatable
+  Custom Validations
+    when validating allocation combinations
+      is not valid with weekly allocation period and weekly frequency
+      is not valid with monthly allocation period and weekly or monthly frequencies
+      is valid with monthly allocation period and quarterly or yearly frequencies
+    when validating allocation values
+      is not valid with an allocation value exceeding the limit for the period and frequency
+      is valid with an allocation value within the limit for the period and frequency
+    when validating carry forward limits with frequency considerations
+      is valid when carry_forward is less than total days in a year for days per week
+      is not valid when carry_forward exceeds total days for weeks per year
+      is valid when carry_forward does not exceed total days for months per quarter
+      is not valid when carry_forward exceeds total days for months per year
+
+MetricsTracking
+  included models
+    adds metrics association to Client
+    adds metrics association to Project
+    adds metrics association to Company
+  #metric
+    fetches or calculates a metric
+    uses default values for period and date
+  #metric_data
+    returns the data hash from the metric
+  #hours_logged_metric
+    fetches hours logged metric for specified period
+    defaults to week period
+  #revenue_metric
+    fetches revenue metric for specified period
+    defaults to month period
+  #outstanding_amounts_metric
+    fetches outstanding amounts metric for all time
+  #recalculate_metrics!
+    recalculates all metrics for the trackable
+  #metrics_for_range
+    returns metrics of specified type within date range
+  #total_hours_logged_cached
+    returns total minutes from cached metric data
+    returns 0 when no data exists
+  #client_revenue_cached
+    returns revenue summary from cached metric data
+    returns zeros when no data exists
+  #outstanding_summary_cached
+    returns outstanding summary from cached metric data
+    returns defaults when no data exists
+
+PgSearchable
+  User search
+    finds users by first name
+    finds users by email
+    is case insensitive
+    returns all when query is blank
+    supports filtering
+    supports pagination
+  Client search
+    finds clients by name
+    finds partial matches
+  Project search
+    finds projects by name
+    filters by billable status
+  Invoice search
+    finds invoices by number (PENDING: Temporarily skipped with xit)
+    filters by status
+  TimesheetEntry search
+    finds entries by note
+    filters by bill status
+  Expense search
+    finds expenses by description
+    filters by amount range
+  Invitation search
+    finds invitations by first name
+    finds invitations by email
+
+Device
+  Associations
+    is expected to belong to issued_by required: true
+    is expected to belong to issued_to required: true
+  Enums
+    is expected to define :device_type as an enum backed by a string with values ‹{laptop: "laptop", mobile: "mobile"}›
+  Length
+    is expected to validate that the length of :name is at most 100
+  Defaults
+    default specifications to be empty strings
+    default device_type to be laptop
+
+Employment
+  Associations
+    is expected to belong to company required: true
+    is expected to belong to user required: true
+  Discard
+    discards the employments
+    does not discard the employments if already discarded
+  Validations
+    is expected to validate that :designation cannot be empty/falsy
+    is expected to validate that :employment_type cannot be empty/falsy
+    is expected to validate that :joined_at cannot be empty/falsy
+    is expected to validate that :employee_id cannot be empty/falsy
+  validate comparisons
+    joining date should not be after than resigned_at date
+    when joined_at is in the future
+      is not valid and returns an error message
+    when updating and joined_at is today
+      is valid
+    when updating and joined_at is in the past
+      is valid
+
+ExpenseCategory
+  Validations
+    is expected to validate that :name cannot be empty/falsy
+    is expected to validate that :name is case-sensitively unique within the scope of :company_id
+  Associations
+    is expected to have many expenses
+    is expected to belong to company optional: true
+
+Expense
+  Validations
+    is expected to validate that :date cannot be empty/falsy
+  validate numericality of
+    is expected to validate that :amount looks like a number greater than 0
+  validate enum
+    is expected to define :expense_type as an enum backed by an integer with values ‹[:personal, :business]›
+  Associations
+    is expected to belong to company required: true
+    is expected to belong to expense_category required: true
+    is expected to belong to vendor optional: true
+
+HolidayInfo
+  associations
+    is expected to belong to holiday required: true
+  enums
+    is expected to define :category as an enum backed by an integer with values ‹{national: 0, optional: 1}›
+  validations
+    is expected to validate that :name cannot be empty/falsy
+    is expected to validate that the length of :name is at most 30
+    is expected to allow :name to be ‹"Valid Name"›
+    is expected not to allow :name to be ‹"Invalid Name!"›
+    is expected to validate that :date cannot be empty/falsy
+    is expected to validate that :category cannot be empty/falsy
+    validates the year of the date
+  scopes
+    returns holiday_infos for a specific year and category
+
+Holiday
+  associations
+    is expected to belong to company required: true
+    is expected to have many holiday_infos dependent => destroy
+  enums
+    is expected to define :time_period_optional_holidays as an enum backed by an integer with values ‹{per_quarter: 0, per_year: 1, per_month: 2, per_week: 3}›
+  validations
+    is expected to validate that :year cannot be empty/falsy
+    is expected to validate that :year is case-sensitively unique within the scope of :company_id
+    validates that :year is an integer
+
+Identity
+  Associations
+    is expected to belong to user required: true
+  Scopes
+    .google_auth
+      returns identities where provider is google_oauth2
+      excludes identities where provider is google_oauth2
+
+Invitation
+  Associations
+    is expected to belong to company required: true
+    is expected to belong to sender required: true
+  Validations
+    is expected to validate that :recipient_email cannot be empty/falsy
+    is expected to validate that :role cannot be empty/falsy
+    is expected to validate that :token cannot be empty/falsy
+    is expected to allow :token to be ‹"9jakaxp4n7"›
+    is expected to validate that the length of :first_name is at most 20
+    is expected to validate that the length of :last_name is at most 20
+    is expected not to allow :token to be ‹"yeQbw5xctFAqQpWJqWyj"›
+    is expected to validate that :recipient_email is case-sensitively unique
+    is expected not to allow :recipient_email to be ‹"test"›
+    is expected not to allow :recipient_email to be ‹"test@example.com"›
+    is expected to allow :first_name to be ‹"foo"›
+    is expected not to allow :first_name to be ‹"foo&23423"›
+    is expected to allow :last_name to be ‹"foo"›
+    is expected not to allow :last_name to be ‹"foo&23423"›
+  Scopes
+    .valid_invitations
+      returns all valid invitations
+  Callbacks
+    is expected to callback set_token before validation
+    is expected to callback set_expired_at before validation
+    is expected to callback send_invitation_mail after commit
+  #full_name
+    returns invited users full name
+  #is_valid?
+    returns true if invitation is valid
+    returns false if invitation is already accepted
+    returns false if invitation is already expired
+  #user_invitation_present?
+    returns true if user with recipient email is not present
+    returns false if user with recipient email is present
+  #set_token
+    sets token while creating invitation
+  #set_expired_at
+    sets expired_at while creating invitation
+  #recipient_email_not_changed
+    raises error when invitation recipient_email is updated
+
+InvoiceLineItem
+  Validations
+    validate presence of
+      is expected to validate that :name cannot be empty/falsy
+      is expected to validate that :date cannot be empty/falsy
+      is expected to validate that :rate cannot be empty/falsy
+      is expected to validate that :quantity cannot be empty/falsy
+    validate numericality of
+      is expected to validate that :quantity looks like a number greater than or equal to 0
+      is expected to validate that :rate looks like a number greater than or equal to 0
+  callbacks
+    is expected to callback unlock_timesheet_entry before destroy
+  Associations
+    belongs to
+      is expected to belong to invoice required: true
+      is expected to belong to timesheet_entry optional: true
+  Class Methods
+    .total_cost_of_all_line_items
+      returns the number of hours multiplied by rate
+  .hours_spent
+    returns the hours spent
+  .minutes_spent
+    returns the hours spent
+  .time_spent
+    when quantity is 0

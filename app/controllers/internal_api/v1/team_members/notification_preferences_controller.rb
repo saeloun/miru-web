@@ -3,7 +3,7 @@
 class InternalApi::V1::TeamMembers::NotificationPreferencesController < InternalApi::V1::ApplicationController
   def show
     authorize notification_preference, policy_class: TeamMembers::NotificationPreferencePolicy
-    render json: { notification_enabled: notification_preference.notification_enabled }, status: :ok
+    render json: { notification_enabled: notification_preference.notification_enabled }, status: 200
   end
 
   def update
@@ -13,7 +13,7 @@ class InternalApi::V1::TeamMembers::NotificationPreferencesController < Internal
     render json: {
       notification_enabled: notification_preference.notification_enabled,
       notice: "Preference updated successfully"
-    }, status: :ok
+    }, status: 200
   end
 
   private

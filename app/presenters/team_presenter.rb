@@ -62,7 +62,7 @@ class TeamPresenter
     end
 
     def user_employed_at_current_company
-      user_employed_at_current_company ||= current_user.has_any_role?(
+      @user_employed_at_current_company ||= current_user.has_any_role?(
         { name: :owner, resource: current_company },
         { name: :admin, resource: current_company },
         { name: :employee, resource: current_company },

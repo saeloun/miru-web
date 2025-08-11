@@ -12,7 +12,7 @@ module Reports::ClientRevenues
     private
 
       def fetch_complete_report
-        @reports = Reports::ClientRevenues::IndexService.new(params, current_company).process
+        @reports = Reports::ClientRevenues::ReportDecorator.new(params, current_company).process
       end
 
       def generate_pdf

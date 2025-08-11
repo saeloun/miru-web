@@ -1,0 +1,36 @@
+# Rails 8 Solid Cable Configuration
+# This replaces Redis for ActionCable with database-backed pub/sub
+
+if Rails.env.production? || ENV["USE_SOLID_CABLE"] == "true"
+  Rails.application.configure do
+    # Configure ActionCable to use Solid Cable
+    config.action_cable.adapter = :solid_cable
+    
+    # Configure connection settings
+    config.solid_cable.connects_to = { database: { writing: :cable } }
+    
+    # Message retention (clean up old messages)
+    config.solid_cable.message_retention = Rails.env.production? ? 7.days : 1.day
+    
+    # Polling interval for message delivery
+    config.solid_cable.polling_interval = Rails.env.production? ? 1.second : 0.5.seconds
+    
+    # Worker settings
+    config.solid_cable.worker_pool_size = ENV.fetch("SOLID_CABLE_WORKERS", 4).to_i
+  end
+end
+
+# Development can still use Redis or async adapter
+if Rails.env.development? && ENV["USE_SOLID_CABLE"] != "true"
+  Rails.application.configure do
+    # Use async adapter for development (simpler setup)
+    config.action_cable.adapter = :async
+  end
+end
+
+# Test environment should use test adapter
+if Rails.env.test?
+  Rails.application.configure do
+    config.action_cable.adapter = :test
+  end
+end

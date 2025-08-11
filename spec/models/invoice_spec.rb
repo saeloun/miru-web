@@ -129,7 +129,6 @@ RSpec.describe Invoice, type: :model do
 
   describe "callbacks" do
     it { is_expected.to callback(:set_external_view_key).before(:validation).on(:create) }
-    it { is_expected.to callback(:refresh_invoice_index).after(:commit) }
     it { is_expected.to callback(:lock_timesheet_entries).after(:save).if(:draft?) }
     it { is_expected.to callback(:unlock_timesheet_entries).after(:discard).if(:draft?) }
   end

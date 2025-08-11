@@ -9,7 +9,7 @@ class InternalApi::V1::TimeoffEntriesController < InternalApi::V1::ApplicationCo
   def index
     authorize TimeoffEntry
 
-    data = TimeoffEntries::IndexService.new(current_user, current_company, params[:user_id], params[:year]).process
+    data = TimeoffEntries::IndexDecorator.new(current_user, current_company, params[:user_id], params[:year]).process
 
     render :index, locals: {
       timeoff_entries: data[:timeoff_entries],
@@ -18,28 +18,28 @@ class InternalApi::V1::TimeoffEntriesController < InternalApi::V1::ApplicationCo
       total_timeoff_entries_duration: data[:total_timeoff_entries_duration],
       optional_timeoff_entries: data[:optional_timeoff_entries],
       national_timeoff_entries: data[:national_timeoff_entries]
-    }, status: :ok
+    }, status: 200
   end
 
   def create
     authorize TimeoffEntry
 
     timeoff_entry = @user.timeoff_entries.create!(timeoff_params)
-    render json: { notice: "Added time off successfully", timeoff_entry: }, status: :ok
+    render json: { notice: "Added time off successfully", timeoff_entry: }, status: 200
   end
 
   def update
     authorize @timeoff_entry
 
     @timeoff_entry.update!(timeoff_params)
-    render json: { notice: "Updated time off successfully", timeoff_entry: @timeoff_entry }, status: :ok
+    render json: { notice: "Updated time off successfully", timeoff_entry: @timeoff_entry }, status: 200
   end
 
   def destroy
     authorize @timeoff_entry
 
     @timeoff_entry.discard!
-    render json: { notice: "Deleted time off successfully", timeoff_entry: @timeoff_entry }, status: :ok
+    render json: { notice: "Deleted time off successfully", timeoff_entry: @timeoff_entry }, status: 200
   end
 
   private

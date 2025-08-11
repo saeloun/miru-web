@@ -21,14 +21,17 @@
 #
 # Indexes
 #
-#  index_invitations_on_accepted_at      (accepted_at)
-#  index_invitations_on_client_id        (client_id)
-#  index_invitations_on_company_id       (company_id)
-#  index_invitations_on_expired_at       (expired_at)
-#  index_invitations_on_recipient_email  (recipient_email)
-#  index_invitations_on_role             (role)
-#  index_invitations_on_sender_id        (sender_id)
-#  index_invitations_on_token            (token) UNIQUE
+#  index_invitations_on_accepted_at           (accepted_at)
+#  index_invitations_on_client_id             (client_id)
+#  index_invitations_on_company_id            (company_id)
+#  index_invitations_on_expired_at            (expired_at)
+#  index_invitations_on_first_name_trgm       (first_name) USING gin
+#  index_invitations_on_last_name_trgm        (last_name) USING gin
+#  index_invitations_on_recipient_email       (recipient_email)
+#  index_invitations_on_recipient_email_trgm  (recipient_email) USING gin
+#  index_invitations_on_role                  (role)
+#  index_invitations_on_sender_id             (sender_id)
+#  index_invitations_on_token                 (token) UNIQUE
 #
 # Foreign Keys
 #
@@ -37,7 +40,17 @@
 #  fk_rails_...  (sender_id => users.id)
 #
 class Invitation < ApplicationRecord
-  enum role: [:owner, :admin, :employee, :book_keeper, :client]
+  include Searchable
+  enum :role, [:owner, :admin, :employee, :book_keeper, :client]
+
+  pg_search_scope :pg_search,
+    against: [:first_name, :last_name, :recipient_email],
+    using: {
+      tsearch: {
+        prefix: true,
+        dictionary: "english"
+      }
+    }
 
   # Constant
   MAX_EXPIRATION_DAY = 14.days
@@ -67,9 +80,6 @@ class Invitation < ApplicationRecord
   before_validation :set_token, on: :create
   before_validation :set_expired_at, on: :create
   after_create_commit :send_invitation_mail
-
-  searchkick filterable: [:first_name, :last_name, :recipient_email],
-    word_middle: [:first_name, :last_name, :recipient_email]
 
   def full_name
     "#{first_name} #{last_name}"

@@ -7,12 +7,12 @@ RSpec.describe "InternalApi::V1::Reports::OutstandingOverdueInvoicesController::
   let(:user) { create(:user, current_workspace_id: company.id) }
   let!(:client1) { create(:client, :with_logo, company:, name: "bob") }
   let!(:client2) { create(:client, :with_logo, company:, name: "alpha") }
-  let!(:client1_sent_invoice1) { create(:invoice, client: client1, status: "sent") }
-  let!(:client1_sent_invoice2) { create(:invoice, client: client1, status: "sent") }
-  let!(:client1_viewed_invoice1) { create(:invoice, client: client1, status: "viewed") }
-  let(:client1_paid_invoice2) { create(:invoice, client: client1, status: "paid") }
-  let!(:client2_sent_invoice1) { create(:invoice, client: client2, status: "sent") }
-  let!(:client2_overdue_invoice1) { create(:invoice, client: client2, status: "overdue") }
+  let!(:client1_sent_invoice1) { create(:invoice, client: client1, company: company, status: "sent") }
+  let!(:client1_sent_invoice2) { create(:invoice, client: client1, company: company, status: "sent") }
+  let!(:client1_viewed_invoice1) { create(:invoice, client: client1, company: company, status: "viewed") }
+  let(:client1_paid_invoice2) { create(:invoice, client: client1, company: company, status: "paid") }
+  let!(:client2_sent_invoice1) { create(:invoice, client: client2, company: company, status: "sent") }
+  let!(:client2_overdue_invoice1) { create(:invoice, client: client2, company: company, status: "overdue") }
 
   context "when user is an admin" do
     before do

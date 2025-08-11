@@ -5,9 +5,9 @@ class InternalApi::V1::Reports::OutstandingOverdueInvoicesController < InternalA
   def index
     authorize :report
 
-    report_data = Reports::OutstandingOverdueInvoices::IndexService.new(current_company).process
+    report_data = Reports::OutstandingOverdueInvoices::ReportDecorator.new(current_company).process
 
-    render :index, locals: report_data, status: :ok
+    render :index, locals: report_data, status: 200
   end
 
   def download

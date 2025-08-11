@@ -4,17 +4,17 @@
 #
 # Table name: carryovers
 #
-#  id                  :bigint           not null, primary key
-#  discarded_at        :datetime
-#  duration            :integer
+#  id                  :integer          not null, primary key
+#  user_id             :integer          not null
+#  company_id          :integer          not null
+#  leave_type_id       :integer          not null
 #  from_year           :integer
 #  to_year             :integer
 #  total_leave_balance :integer
+#  duration            :integer
+#  discarded_at        :datetime
 #  created_at          :datetime         not null
 #  updated_at          :datetime         not null
-#  company_id          :bigint           not null
-#  leave_type_id       :bigint           not null
-#  user_id             :bigint           not null
 #
 # Indexes
 #
@@ -23,12 +23,7 @@
 #  index_carryovers_on_leave_type_id  (leave_type_id)
 #  index_carryovers_on_user_id        (user_id)
 #
-# Foreign Keys
-#
-#  fk_rails_...  (company_id => companies.id)
-#  fk_rails_...  (leave_type_id => leave_types.id)
-#  fk_rails_...  (user_id => users.id)
-#
+
 class Carryover < ApplicationRecord
   include Discard::Model
 

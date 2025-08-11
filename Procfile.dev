@@ -1,3 +1,5 @@
 web: bin/rails s -b 0.0.0.0 -p 3000
-webpacker: bin/webpacker-dev-server
+webpacker: bin/shakapacker-dev-server
 solidqueue: bundle exec rake solid_queue:start
+solidcache: bundle exec rake solid_cache:prune_expired
+solidcable: echo "Solid Cable runs within Rails process"

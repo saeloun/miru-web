@@ -4,28 +4,23 @@
 #
 # Table name: employments
 #
-#  id              :bigint           not null, primary key
-#  designation     :string
+#  id              :integer          not null, primary key
+#  company_id      :integer          not null
+#  user_id         :integer          not null
+#  created_at      :datetime         not null
+#  updated_at      :datetime         not null
 #  discarded_at    :datetime
+#  employee_id     :string
+#  designation     :string
 #  employment_type :string
 #  joined_at       :date
 #  resigned_at     :date
-#  created_at      :datetime         not null
-#  updated_at      :datetime         not null
-#  company_id      :bigint           not null
-#  employee_id     :string
-#  user_id         :bigint           not null
 #
 # Indexes
 #
 #  index_employments_on_company_id    (company_id)
 #  index_employments_on_discarded_at  (discarded_at)
 #  index_employments_on_user_id       (user_id)
-#
-# Foreign Keys
-#
-#  fk_rails_...  (company_id => companies.id)
-#  fk_rails_...  (user_id => users.id)
 #
 
 class Employment < ApplicationRecord

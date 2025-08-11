@@ -8,5 +8,8 @@ class ApplicationController < ActionController::Base
   include Pagy::Backend
   include SetCurrentDetails
 
+  # Include Shakapacker helpers for React components
+  helper Shakapacker::Helper
+
   before_action :authenticate_user!
 end

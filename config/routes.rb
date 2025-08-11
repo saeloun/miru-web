@@ -11,6 +11,11 @@ Rails.application.routes.draw do
     mount MissionControl::Jobs::Engine, at: "/jobs"
   end
 
+  # Mount PgHero for database monitoring (protect with authentication in production)
+  authenticate :user, lambda { |u| u.has_role?(:owner, u.current_workspace) } do
+    mount PgHero::Engine, at: "/pghero"
+  end
+
   namespace :admin do
       resources :users
       resources :timesheet_entries
