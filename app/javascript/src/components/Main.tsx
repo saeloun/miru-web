@@ -38,23 +38,23 @@ const Main: React.FC<MainProps> = props => {
 
   // Save last visited page for unauthenticated users
   useEffect(() => {
-    if (!isLoggedIn) {
+    if (!isLoggedIn && user) {
       Cookies.set("lastVisitedPage", location.pathname, { expires: 7 });
     }
-  }, [isLoggedIn, location.pathname]);
+  }, [isLoggedIn, user, location.pathname]);
 
-  // Handle server-side authentication (e.g., system tests)
+  // Update auth context when user data is available
   useEffect(() => {
-    if (!isLoggedIn && props?.user?.email) {
+    if (user?.token && user?.email && !isLoggedIn) {
       authDispatch({
         type: "LOGIN",
         payload: {
-          token: props.user.token || "system-test-token",
-          email: props.user.email,
+          token: user.token,
+          email: user.email,
         },
       });
     }
-  }, [props?.user, isLoggedIn, authDispatch]);
+  }, [user, isLoggedIn, authDispatch]);
 
   return <AppRouter {...props} />;
 };

@@ -8,26 +8,64 @@ import { BrowserRouter } from "react-router-dom";
 import "@fontsource-variable/inter";
 
 import Main from "./Main";
-import { useUserDetails } from "../hooks/useUserDetails";
 
 const AppWithUserData = props => {
-  const { user: fetchedUser, company, companyRole, loading } = useUserDetails();
+  const [userData, setUserData] = useState({
+    user: null,
+    company: null,
+    companyRole: null,
+    loading: true,
+  });
 
-  // Use fetched user data or props/localStorage as fallback
-  const storedUser = localStorage.getItem("user");
-  const storedCompanyRole = localStorage.getItem("company_role");
-  const storedCompany = localStorage.getItem("company");
+  // Fetch user details from _me endpoint on mount
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      try {
+        const response = await fetch("/internal_api/v1/users/_me", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN":
+              document
+                .querySelector('[name="csrf-token"]')
+                ?.getAttribute("content") || "",
+          },
+          credentials: "include",
+        });
 
-  const user =
-    fetchedUser || props.user || (storedUser ? JSON.parse(storedUser) : null);
+        if (response.ok) {
+          const data = await response.json();
+          setUserData({
+            user: data.user,
+            company: data.company,
+            companyRole: data.company_role,
+            loading: false,
+          });
+        } else {
+          // No user session
+          setUserData({
+            user: null,
+            company: null,
+            companyRole: null,
+            loading: false,
+          });
+        }
+      } catch (error) {
+        console.error("Failed to fetch user details:", error);
+        setUserData({
+          user: null,
+          company: null,
+          companyRole: null,
+          loading: false,
+        });
+      }
+    };
 
-  const actualCompanyRole =
-    companyRole || props.companyRole || storedCompanyRole || user?.company_role;
+    // Always fetch fresh user data from server
+    fetchUserDetails();
+  }, []);
 
-  const actualCompany =
-    company ||
-    props.company ||
-    (storedCompany ? JSON.parse(storedCompany) : null);
+  const { user, company, companyRole, loading } = userData;
 
   const confirmedUser = props.confirmedUser ?? user?.confirmed;
   const googleOauthSuccess = props.googleOauthSuccess;
@@ -35,12 +73,12 @@ const AppWithUserData = props => {
   const calendarEnabled = props.calendarEnabled ?? user?.calendar_enabled;
   const calendarConnected = props.calendarConnected ?? user?.calendar_connected;
 
-  const isAdminUser = [Roles.ADMIN, Roles.OWNER].includes(actualCompanyRole);
+  const isAdminUser = [Roles.ADMIN, Roles.OWNER].includes(companyRole);
 
   const [isDesktop, setIsDesktop] = useState<boolean>(window.innerWidth > 1023);
   const [selectedTab, setSelectedTab] = useState(null);
   const [currentAvatarUrl, setCurrentAvatarUrl] = useState(avatarUrl);
-  const [companyState, setCompany] = useState(actualCompany);
+  const [companyState, setCompany] = useState(company);
 
   const handleOverlayVisibility = (isOverlayVisible: boolean) => {
     const overlayEl = document.getElementById("overlay");
@@ -60,16 +98,16 @@ const AppWithUserData = props => {
     handleOverlayVisibility(false);
   }, []);
 
-  // Update states when fetched data changes
+  // Update states when user data changes
   useEffect(() => {
-    if (fetchedUser) {
-      setCurrentAvatarUrl(fetchedUser.avatar_url);
+    if (user?.avatar_url) {
+      setCurrentAvatarUrl(user.avatar_url);
     }
 
     if (company) {
       setCompany(company);
     }
-  }, [fetchedUser, company]);
+  }, [user, company]);
 
   return (
     <UserContext.Provider
@@ -80,7 +118,7 @@ const AppWithUserData = props => {
         user,
         avatarUrl: currentAvatarUrl,
         setCurrentAvatarUrl,
-        companyRole: actualCompanyRole,
+        companyRole,
         confirmedUser,
         googleOauthSuccess,
         isDesktop,
@@ -94,8 +132,8 @@ const AppWithUserData = props => {
     >
       <Main
         {...props}
-        company={actualCompany}
-        companyRole={actualCompanyRole}
+        company={company}
+        companyRole={companyRole}
         googleOauthSuccess={googleOauthSuccess}
         isAdminUser={isAdminUser}
         isDesktop={isDesktop}

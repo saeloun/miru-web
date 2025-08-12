@@ -117,7 +117,11 @@ const ModernSidebar = () => {
   ];
 
   useEffect(() => {
-    fetchWorkspaces();
+    // Only fetch workspaces if user is authenticated with a token
+    const authToken = localStorage.getItem("authToken");
+    if (user && authToken) {
+      fetchWorkspaces();
+    }
   }, [user]);
 
   const fetchWorkspaces = async () => {
@@ -130,7 +134,10 @@ const ModernSidebar = () => {
         setCurrentWorkspace(current);
       }
     } catch (error) {
-      console.error("Failed to fetch workspaces:", error);
+      // Only log error if it's not a 401 (which is expected when not authenticated)
+      if (error.response?.status !== 401) {
+        console.error("Failed to fetch workspaces:", error);
+      }
     }
   };
 
