@@ -3,25 +3,32 @@ import React, { useEffect, useState } from "react";
 
 import { AuthProvider } from "context/auth";
 import UserContext from "context/UserContext";
-import { useUserDetails } from "hooks/useUserDetails";
 import { Toaster } from "sonner";
 import { BrowserRouter } from "react-router-dom";
 import "@fontsource-variable/inter";
 
 import Main from "./Main";
+import { useUserDetails } from "../hooks/useUserDetails";
 
 const AppWithUserData = props => {
   const { user: fetchedUser, company, companyRole, loading } = useUserDetails();
-  
+
   // Use fetched user data or props/localStorage as fallback
   const storedUser = localStorage.getItem("user");
   const storedCompanyRole = localStorage.getItem("company_role");
   const storedCompany = localStorage.getItem("company");
 
-  const user = fetchedUser || props.user || (storedUser ? JSON.parse(storedUser) : null);
-  const actualCompanyRole = companyRole || props.companyRole || storedCompanyRole || user?.company_role;
-  const actualCompany = company || props.company || (storedCompany ? JSON.parse(storedCompany) : null);
-  
+  const user =
+    fetchedUser || props.user || (storedUser ? JSON.parse(storedUser) : null);
+
+  const actualCompanyRole =
+    companyRole || props.companyRole || storedCompanyRole || user?.company_role;
+
+  const actualCompany =
+    company ||
+    props.company ||
+    (storedCompany ? JSON.parse(storedCompany) : null);
+
   const confirmedUser = props.confirmedUser ?? user?.confirmed;
   const googleOauthSuccess = props.googleOauthSuccess;
   const avatarUrl = props.avatarUrl || user?.avatar_url;
@@ -37,7 +44,9 @@ const AppWithUserData = props => {
 
   const handleOverlayVisibility = (isOverlayVisible: boolean) => {
     const overlayEl = document.getElementById("overlay");
-    const overlayClasses = "fixed inset-0 z-60 bg-black bg-opacity-50".split(" ");
+    const overlayClasses = "fixed inset-0 z-60 bg-black bg-opacity-50".split(
+      " "
+    );
     if (overlayEl) {
       if (isOverlayVisible) {
         overlayEl.classList.add(...overlayClasses);
@@ -56,6 +65,7 @@ const AppWithUserData = props => {
     if (fetchedUser) {
       setCurrentAvatarUrl(fetchedUser.avatar_url);
     }
+
     if (company) {
       setCompany(company);
     }
@@ -84,13 +94,13 @@ const AppWithUserData = props => {
     >
       <Main
         {...props}
-        user={user}
-        companyRole={actualCompanyRole}
         company={actualCompany}
+        companyRole={actualCompanyRole}
         googleOauthSuccess={googleOauthSuccess}
         isAdminUser={isAdminUser}
         isDesktop={isDesktop}
         setIsDesktop={setIsDesktop}
+        user={user}
       />
     </UserContext.Provider>
   );
