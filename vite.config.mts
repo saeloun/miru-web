@@ -29,6 +29,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './app/javascript'),
+      '~': path.resolve(__dirname, './app/javascript/src'),
       'components': path.resolve(__dirname, './app/javascript/src/components'),
       'constants': path.resolve(__dirname, './app/javascript/src/constants'),
       'context': path.resolve(__dirname, './app/javascript/src/context'),
@@ -46,7 +47,7 @@ export default defineConfig({
   css: {
     preprocessorOptions: {
       scss: {
-        api: 'legacy'
+        api: 'modern-compiler'
       }
     }
   },

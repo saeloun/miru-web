@@ -23,16 +23,16 @@ import { MiruLogoSVG } from "miruIcons";
 import WorkspaceApi from "apis/workspaces";
 import { handleLogout } from "./utils";
 
-import { cn } from "../../lib/utils";
-import { Button } from "../ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { cn } from "~/lib/utils";
+import { Button } from "~/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "../ui/tooltip";
-import { ScrollArea } from "../ui/scroll-area";
+} from "~/components/ui/tooltip";
+import { ScrollArea } from "~/components/ui/scroll-area";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -40,7 +40,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
+} from "~/components/ui/dropdown-menu";
 
 interface NavItem {
   icon: React.ReactNode;

@@ -123,7 +123,6 @@ class User < ApplicationRecord
   before_validation :prevent_spam_user_sign_up
   after_discard :discard_project_members
   before_create :set_token
-  before_create :generate_jti
 
   after_commit :send_to_hubspot, on: :create
 
@@ -212,10 +211,6 @@ class User < ApplicationRecord
 
     def set_token
       self.token = SecureRandom.base58(50)
-    end
-
-    def generate_jti
-      self.jti = SecureRandom.uuid
     end
 
     def discard_project_members

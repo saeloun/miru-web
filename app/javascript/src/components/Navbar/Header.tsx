@@ -5,7 +5,6 @@ import React from "react";
 import { useUserContext } from "context/UserContext";
 import { MiruLogoSVG } from "miruIcons";
 import { Link } from "react-router-dom";
-import { ModeToggle } from "../ui/mode-toggle";
 
 const Header = () => {
   const { user, companyRole } = useUserContext();
@@ -38,13 +37,10 @@ const Header = () => {
   };
 
   return (
-    <div className="relative flex h-20 items-center justify-center bg-miru-gray-100 dark:bg-miru-dark-purple-600">
+    <div className="relative flex h-20 items-center justify-center bg-miru-gray-100">
       <Link to={rootPath()}>
         <img alt="miru-logo" height="64px" src={MiruLogoSVG} width="64px" />
       </Link>
-      <div className="absolute top-2 right-2">
-        <ModeToggle />
-      </div>
     </div>
   );
 };

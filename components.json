@@ -6,7 +6,7 @@
   "tailwind": {
     "config": "tailwind.config.js",
     "css": "app/javascript/entrypoints/application.css",
-    "baseColor": "violet",
+    "baseColor": "slate",
     "cssVariables": true,
     "prefix": ""
   },
