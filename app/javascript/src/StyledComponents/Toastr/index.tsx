@@ -1,4 +1,4 @@
-import toast from "react-hot-toast";
+import { toast } from "sonner";
 
 const isError = e => e && e.stack && e.message;
 const isString = e => typeof e === "string" || e instanceof String;
@@ -27,15 +27,11 @@ const showErrorToastr = error => {
 };
 
 const showWarningToastr = message => {
-  toast(message, {
-    icon: "⚠️",
-  });
+  toast.warning(message);
 };
 
 const showInfoToastr = message => {
-  toast(message, {
-    icon: "ℹ️",
-  });
+  toast.info(message);
 };
 
 export const Toastr = {

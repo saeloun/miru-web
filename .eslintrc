@@ -84,7 +84,7 @@
     // not-auto-fixable: No undefined variables allowed.
     "no-undef": "error",
     // not-auto-fixable: Dont use console statements. Use logger which babel will remove during bundling.
-    "no-console": "error",
+    "no-console": ["error", { "allow": ["error", "warn"] }],
     // auto-fixable: sadly this doesn't support guard clauses yet.
     "padding-line-between-statements": [
       "error",

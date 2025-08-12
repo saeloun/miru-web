@@ -8,7 +8,7 @@ import { useAuthDispatch } from "context/auth";
 import { Formik, Form, FormikProps } from "formik";
 import { GoogleSVG, MiruLogoSVG } from "miruIcons";
 import { useNavigate } from "react-router-dom";
-import { Toastr } from "StyledComponents";
+import { toast } from "sonner";
 
 import { signInFormInitialValues, signInFormValidationSchema } from "./utils";
 
@@ -28,31 +28,49 @@ const SignInForm = () => {
   const navigate = useNavigate();
 
   const googleOauth = useRef(null);
-  const csrfToken = document
-    .querySelector('[name="csrf-token"]')
-    .getAttribute("content");
+  const csrfToken =
+    document.querySelector('[name="csrf-token"]')?.getAttribute("content") ||
+    "";
 
   const handleSignInFormSubmit = async (values: any, { setFieldError }) => {
     try {
       const res = await authenticationApi.signin(values);
-      //@ts-expect-error for authDispatch initial values
-      authDispatch({
-        type: "LOGIN",
-        payload: {
-          token: res.data.user.token,
-          email: res?.data?.user.email,
-        },
-      });
+      const { user, company_role, company } = res.data;
 
-      // Force a full page reload to re-initialize the app with auth tokens
-      // The app will read tokens from localStorage on reload and route correctly
-      window.location.href = "/";
+      if (user?.token) {
+        // Store auth credentials
+        authDispatch({
+          type: "LOGIN",
+          payload: {
+            token: user.token,
+            email: user.email,
+          },
+        });
+
+        // Store full user data for context
+        localStorage.setItem("user", JSON.stringify(user));
+        localStorage.setItem("company_role", company_role || "");
+        if (company) {
+          localStorage.setItem("company", JSON.stringify(company));
+        }
+
+        // Navigate to home after successful login
+        toast.success("Welcome back!");
+        setTimeout(() => {
+          window.location.href = "/";
+        }, 500);
+      } else {
+        throw new Error("No authentication token received");
+      }
     } catch (error) {
       if (error?.response?.data?.unconfirmed) {
         navigate(`/email_confirmation?email=${values.email}`);
-        Toastr.error(error.response.data.error);
+        toast.error(error.response.data.error);
       } else if (error?.response?.data?.error) {
         setFieldError("password", error.response.data.error);
+        toast.error(error.response.data.error);
+      } else {
+        toast.error("Login failed. Please try again.");
       }
     }
   };

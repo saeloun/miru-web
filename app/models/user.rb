@@ -15,7 +15,6 @@
 #  email                  :string           default(""), not null
 #  encrypted_password     :string           default(""), not null
 #  first_name             :string           not null
-#  jti                    :string
 #  last_name              :string           not null
 #  last_sign_in_at        :datetime
 #  last_sign_in_ip        :string
@@ -40,7 +39,6 @@
 #  index_users_on_email                 (email) UNIQUE
 #  index_users_on_email_trgm            (email) USING gin
 #  index_users_on_first_name_trgm       (first_name) USING gin
-#  index_users_on_jti                   (jti)
 #  index_users_on_last_name_trgm        (last_name) USING gin
 #  index_users_on_reset_password_token  (reset_password_token) UNIQUE
 #
@@ -54,7 +52,6 @@
 class User < ApplicationRecord
   include Discard::Model
   include Searchable
-  include Devise::JWT::RevocationStrategies::JTIMatcher
 
   # Configure pg_search
   pg_search_scope :pg_search,
@@ -119,9 +116,8 @@ class User < ApplicationRecord
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
     :recoverable, :rememberable, :validatable,
-    :trackable, :confirmable, :jwt_authenticatable,
-    :omniauthable, omniauth_providers: [:google_oauth2],
-    jwt_revocation_strategy: self
+    :trackable, :confirmable,
+    :omniauthable, omniauth_providers: [:google_oauth2]
 
   # Callbacks
   before_validation :prevent_spam_user_sign_up

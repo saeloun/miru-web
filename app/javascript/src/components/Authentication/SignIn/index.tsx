@@ -3,7 +3,6 @@ import React from "react";
 import MiruLogoWatermark from "common/MiruLogoWatermark";
 
 import SignInForm from "./SignInForm";
-
 import FeaturePreviews from "../FeaturePreviews";
 
 const SignIn = () => (

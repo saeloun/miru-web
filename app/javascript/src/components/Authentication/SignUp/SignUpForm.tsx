@@ -30,9 +30,9 @@ const SignUpForm = () => {
   const navigate = useNavigate();
 
   const googleOauth = useRef(null);
-  const csrfToken = document
-    .querySelector('[name="csrf-token"]')
-    .getAttribute("content");
+  const csrfToken =
+    document.querySelector('[name="csrf-token"]')?.getAttribute("content") ||
+    "";
 
   const handleSignUpFormSubmit = async (values: any, { setFieldError }) => {
     try {

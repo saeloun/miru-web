@@ -1,32 +1,62 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import Home from "./Home";
-
 import Navbar from "../Navbar";
+import ModernSidebar from "../Navbar/ModernSidebar";
+import { useUserContext } from "context/UserContext";
 
 const Dashboard = props => {
-  const { isAdminUser, user, isDesktop, setIsDesktop, companyRole } = props;
+  const userContext = useUserContext();
+  // Use context data if props are not available (for client-side navigation)
+  const user = props.user || userContext.user;
+  const companyRole = props.companyRole || userContext.companyRole;
+  const isAdminUser =
+    props.isAdminUser !== undefined
+      ? props.isAdminUser
+      : userContext.isAdminUser;
+  const { isDesktop, setIsDesktop } = props;
+  const [useModernLayout, setUseModernLayout] = React.useState(true);
 
-  window.addEventListener("resize", () =>
-    setIsDesktop(window.innerWidth > 1023)
-  );
+  useEffect(() => {
+    const handleResize = () => setIsDesktop(window.innerWidth > 1023);
+    window.addEventListener("resize", handleResize);
 
-  window.removeEventListener("resize", () =>
-    setIsDesktop(window.innerWidth > 1023)
-  );
+    return () => window.removeEventListener("resize", handleResize);
+  }, [setIsDesktop]);
 
+  const homeProps = {
+    ...props,
+    user,
+    companyRole,
+    isAdminUser,
+    isDesktop,
+    company: userContext.company || props.company,
+  };
+
+  if (useModernLayout) {
+    return (
+      <div className="flex h-screen w-full">
+        <ModernSidebar />
+        <div className="flex-1 lg:pl-16 lg:data-[sidebar-expanded=true]:pl-64">
+          <Home {...homeProps} />
+        </div>
+      </div>
+    );
+  }
+
+  // Fallback to old layout if needed
   if (isDesktop) {
     return (
       <div className="absolute inset-0 flex h-full w-full">
         <Navbar companyRole={companyRole} user={user} />
-        <Home {...props} isAdminUser={isAdminUser} isDesktop={isDesktop} />
+        <Home {...homeProps} />
       </div>
     );
   }
 
   return (
     <div className="flex h-screen w-full flex-col">
-      <Home {...props} isAdminUser={isAdminUser} isDesktop={isDesktop} />
+      <Home {...homeProps} />
     </div>
   );
 };

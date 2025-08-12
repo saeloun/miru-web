@@ -6,27 +6,34 @@ import { AuthProvider } from "context/auth";
 import UserContext from "context/UserContext";
 import { Toaster } from "sonner";
 import { BrowserRouter } from "react-router-dom";
-import { ThemeProvider } from "./ui/theme-provider";
 import "@fontsource-variable/inter";
 
 import Main from "./Main";
 
 const App = props => {
-  const {
-    user,
-    companyRole,
-    confirmedUser,
-    googleOauthSuccess,
-    avatarUrl,
-    calendarEnabled,
-    calendarConnected,
-  } = props;
+  // Get data from props or localStorage
+  const storedUser = localStorage.getItem("user");
+  const storedCompanyRole = localStorage.getItem("company_role");
+  const storedCompany = localStorage.getItem("company");
+
+  const user = props.user || (storedUser ? JSON.parse(storedUser) : null);
+  const companyRole =
+    props.companyRole || storedCompanyRole || user?.company_role;
+
+  const company =
+    props.company || (storedCompany ? JSON.parse(storedCompany) : null);
+  const confirmedUser = props.confirmedUser ?? user?.confirmed;
+  const googleOauthSuccess = props.googleOauthSuccess;
+  const avatarUrl = props.avatarUrl || user?.avatar_url;
+  const calendarEnabled = props.calendarEnabled ?? user?.calendar_enabled;
+  const calendarConnected = props.calendarConnected ?? user?.calendar_connected;
+
   const isAdminUser = [Roles.ADMIN, Roles.OWNER].includes(companyRole);
 
   const [isDesktop, setIsDesktop] = useState<boolean>(window.innerWidth > 1023);
   const [selectedTab, setSelectedTab] = useState(null);
   const [currentAvatarUrl, setCurrentAvatarUrl] = useState(avatarUrl);
-  const [company, setCompany] = useState(props.company);
+  const [companyState, setCompany] = useState(company);
 
   const handleOverlayVisibility = (isOverlayVisible: boolean) => {
     const overlayEl = document.getElementById("overlay");
@@ -48,57 +55,56 @@ const App = props => {
 
   return (
     <div data-component="App" data-testid="app-loaded">
-      <ThemeProvider defaultTheme="system" storageKey="miru-ui-theme">
-        <UserContext.Provider
-          value={{
-            isAdminUser,
-            calendarEnabled,
-            calendarConnected,
-            user,
-            avatarUrl: currentAvatarUrl,
-            setCurrentAvatarUrl,
-            companyRole,
-            confirmedUser,
-            googleOauthSuccess,
-            isDesktop,
-            handleOverlayVisibility,
-            selectedTab,
-            setSelectedTab,
-            company,
-            setCompany,
-          }}
-        >
+      <UserContext.Provider
+        value={{
+          isAdminUser,
+          calendarEnabled,
+          calendarConnected,
+          user,
+          avatarUrl: currentAvatarUrl,
+          setCurrentAvatarUrl,
+          companyRole,
+          confirmedUser,
+          googleOauthSuccess,
+          isDesktop,
+          handleOverlayVisibility,
+          selectedTab,
+          setSelectedTab,
+          company: companyState,
+          setCompany,
+        }}
+      >
+        <BrowserRouter>
           <AuthProvider>
-            <BrowserRouter>
-              <Toaster
-                position="top-right"
-                duration={5000}
-                richColors
-                toastOptions={{
-                  classNames: {
-                    toast: "bg-background text-foreground border border-border rounded-md shadow-sm",
-                    title: "text-sm font-medium",
-                    description: "text-xs text-muted-foreground",
-                    success: "bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800",
-                    error: "bg-red-50 dark:bg-red-950 border-red-200 dark:border-red-800",
-                    warning: "bg-yellow-50 dark:bg-yellow-950 border-yellow-200 dark:border-yellow-800",
-                    info: "bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800",
-                  },
-                }}
-              />
-              <Main
-                {...props}
-                googleOauthSuccess={googleOauthSuccess}
-                isAdminUser={isAdminUser}
-                isDesktop={isDesktop}
-                setIsDesktop={setIsDesktop}
-                user={user}
-              />
-              <div id="overlay" />
-            </BrowserRouter>
+            <Toaster
+              richColors
+              duration={5000}
+              position="top-right"
+              toastOptions={{
+                classNames: {
+                  toast:
+                    "bg-white text-miru-dark-purple-1000 border border-miru-gray-1000 rounded-md shadow-sm",
+                  title: "text-sm font-medium",
+                  description: "text-xs text-miru-dark-purple-400",
+                  success: "bg-green-50 border-green-200 text-green-800",
+                  error: "bg-red-50 border-red-200 text-red-800",
+                  warning: "bg-yellow-50 border-yellow-200 text-yellow-800",
+                  info: "bg-blue-50 border-blue-200 text-blue-800",
+                },
+              }}
+            />
+            <Main
+              {...props}
+              googleOauthSuccess={googleOauthSuccess}
+              isAdminUser={isAdminUser}
+              isDesktop={isDesktop}
+              setIsDesktop={setIsDesktop}
+              user={user}
+            />
+            <div id="overlay" />
           </AuthProvider>
-        </UserContext.Provider>
-      </ThemeProvider>
+        </BrowserRouter>
+      </UserContext.Provider>
     </div>
   );
 };

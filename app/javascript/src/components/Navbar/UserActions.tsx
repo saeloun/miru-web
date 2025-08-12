@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 
 import WorkspaceApi from "apis/workspaces";
-import { useAuthDispatch } from "context/auth";
 import { useUserContext } from "context/UserContext";
 import { useOutsideClick } from "helpers";
 import { SettingIcon, SignOutIcon, Switcher } from "miruIcons";
@@ -21,7 +20,6 @@ const UserActions = setVisiblity => {
   const wrapperRef = useRef(null);
   const toolTipRef = useRef(null);
 
-  const authDispatch = useAuthDispatch();
   const { user } = useUserContext();
   const { isDesktop } = useUserContext();
 
@@ -112,7 +110,7 @@ const UserActions = setVisiblity => {
       <li
         className="flex cursor-pointer border-b border-miru-gray-100 px-6 py-3 last:border-b-0 hover:bg-miru-gray-100 lg:justify-start lg:border-b-0"
         id="logoutBtn"
-        onClick={() => handleLogout(authDispatch)}
+        onClick={() => handleLogout()}
       >
         <SignOutIcon className="mr-4" size={26} />
         Logout

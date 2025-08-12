@@ -12,7 +12,8 @@ RSpec.describe "Basic System Test", type: :system do
 
     # Check if React app loaded
     expect(page).to have_css('[data-testid="app-root"]')
-    expect(page).to have_css('[data-component="App"]')
+    # Changed from App to AuthApp after Auth.js integration
+    expect(page).to have_css('[data-component="AuthApp"]', wait: 10)
   end
 
   it "shows content on the home page with React loaded" do
@@ -21,7 +22,7 @@ RSpec.describe "Basic System Test", type: :system do
 
     # Check if React app is loaded
     expect(page).to have_css('[data-testid="app-root"]')
-    expect(page).to have_css('[data-component="App"]')
+    expect(page).to have_css('[data-component="AuthApp"]')
 
     # Check if page contains Miru branding
     expect(page.html).to include("Miru")

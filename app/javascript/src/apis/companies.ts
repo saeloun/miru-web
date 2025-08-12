@@ -1,33 +1,16 @@
-import axios from "./api";
+import api from "./api";
 
 const path = "/companies";
-const authApi = axios.create({
-  baseURL: "/internal_api/v1",
-  headers: {
-    Accept: "application/json",
-    "Content-Type": "application/json",
-    "X-CSRF-TOKEN": document
-      .querySelector('[name="csrf-token"]')
-      .getAttribute("content"),
-  },
-});
 
-const formHeaders = {
-  headers: {
-    "Content-Type": "multipart/form-data",
-  },
-};
+const index = async () => api.get(`${path}`);
 
-const index = async () => axios.get(`${path}`);
+const create = payload => api.post(path, payload);
 
-const create = payload => authApi.post(path, payload, formHeaders);
+const update = (id, payload) => api.put(`${path}/${id}`, payload);
 
-const update = (id, payload) =>
-  axios.put(`${path}/${id}`, payload, formHeaders);
+const destroy = id => api.delete(`${path}/${id}`);
 
-const destroy = id => axios.delete(`${path}/${id}`);
-
-const removeLogo = id => axios.delete(`${path}/${id}/purge_logo`);
+const removeLogo = id => api.delete(`${path}/${id}/purge_logo`);
 
 const companiesApi = {
   index,

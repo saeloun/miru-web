@@ -19,26 +19,26 @@ company.logo.attach(io: File.open(Rails.root.join("app/assets/images/saeloun_log
 
 puts "Users Created"
 super_admin = User.create!(
-  first_name: "Saeloun", last_name: "Admin", email: "hello@saeloun.com", password: "welcome",
-  password_confirmation: "welcome", confirmed_at: Time.current)
+    first_name: "Saeloun", last_name: "Admin", email: "hello@saeloun.com", password: "Saeloun@2024!",
+  password_confirmation: "Saeloun@2024!", confirmed_at: Time.current)
 vipul = User.create!(
-  first_name: "Vipul", last_name: "A M", email: "vipul@example.com", password: "welcome",
-  password_confirmation: "welcome", confirmed_at: Time.current, current_workspace_id: company.id)
+  first_name: "Vipul", last_name: "A M", email: "vipul@example.com", password: "Saeloun@2024!",
+  password_confirmation: "Saeloun@2024!", confirmed_at: Time.current, current_workspace_id: company.id)
 supriya = User.create!(
-  first_name: "Supriya", last_name: "Agarwal", email: "supriya@example.com", password: "welcome",
-  password_confirmation: "welcome", confirmed_at: Time.current, current_workspace_id: company.id
+  first_name: "Supriya", last_name: "Agarwal", email: "supriya@example.com", password: "Saeloun@2024!",
+  password_confirmation: "Saeloun@2024!", confirmed_at: Time.current, current_workspace_id: company.id
 )
 book_keeper = User.create!(
-  first_name: "Book", last_name: "Keeper", email: "book.keeper@example.com", password: "welcome",
-  password_confirmation: "welcome", confirmed_at: Time.current, current_workspace_id: company.id
+  first_name: "Book", last_name: "Keeper", email: "book.keeper@example.com", password: "Saeloun@2024!",
+  password_confirmation: "Saeloun@2024!", confirmed_at: Time.current, current_workspace_id: company.id
 )
 sam = User.create!(
-  first_name: "Sam", last_name: "Smith", email: "sam@example.com", password: "welcome",
-  password_confirmation: "welcome", confirmed_at: Time.current, current_workspace_id: company.id
+  first_name: "Sam", last_name: "Smith", email: "sam@example.com", password: "Saeloun@2024!",
+  password_confirmation: "Saeloun@2024!", confirmed_at: Time.current, current_workspace_id: company.id
 )
 oliver = User.create!(
-  first_name: "Oliver", last_name: "Smith", email: "oliver@example.com", password: "welcome",
-  password_confirmation: "welcome", confirmed_at: Time.current, current_workspace_id: company.id
+  first_name: "Oliver", last_name: "Smith", email: "oliver@example.com", password: "Saeloun@2024!",
+  password_confirmation: "Saeloun@2024!", confirmed_at: Time.current, current_workspace_id: company.id
 )
 
 super_admin.add_role(:super_admin)

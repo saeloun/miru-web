@@ -1,6 +1,5 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  darkMode: ["class"],
   content: [
     "./app/**/*.{html,js,jsx,ts,tsx,erb}",
     "./app/javascript/**/*.{js,jsx,ts,tsx}",
@@ -17,11 +16,34 @@ module.exports = {
     },
     extend: {
       colors: {
+        // shadcn/ui color system
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
+        // Miru brand colors for backward compatibility
+        "miru-black-1000": "#303A4B",
+        "miru-gray-1000": "#CDD6DF",
+        "miru-gray-600": "#D7DEE5",
+        "miru-gray-400": "#E1E6EC",
+        "miru-gray-200": "#EBEFF2",
+        "miru-gray-100": "#F5F7F9",
+        "miru-gray-500": "#ADA4CE",
+        "miru-gray-800": "#ADA4CE",
+        "miru-white-1000": "#FFFFFF",
+        "miru-dark-purple-1000": "#1D1A31",
+        "miru-dark-purple-600": "#4A485A",
+        "miru-dark-purple-400": "#777683",
+        "miru-dark-purple-200": "#A5A3AD",
+        "miru-dark-purple-100": "#D2D1D6",
+        "miru-han-purple-1000": "#5B34EA",
+        "miru-han-purple-600": "#7C5DEE",
+        "miru-han-purple-400": "#9D85F2",
+        "miru-han-purple-200": "#BDAEF7",
+        "miru-han-purple-100": "#DED6FB",
+        "miru-red-400": "#E04646",
+        "miru-red-200": "#EB5B5B",
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
@@ -73,6 +95,17 @@ module.exports = {
       fontFamily: {
         sans: ["Inter", "ui-sans-serif", "system-ui", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "sans-serif"],
         manrope: ["Manrope", "serif"],
+      },
+      fontSize: {
+        tiny: "0.625rem",
+        xxs: "0.688rem",
+      },
+      spacing: {
+        22: "5.5rem",
+        xxl: "8rem",
+      },
+      maxWidth: {
+        400: "25rem",
       },
     },
   },

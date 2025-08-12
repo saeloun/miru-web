@@ -16,6 +16,9 @@ RSpec.describe "Logout", type: :system do
     it "logout the current user when user clicks on logout" do
       with_forgery_protection do
         visit "/time-tracking"
+        # Open user dropdown first
+        find("#userDropdownTrigger").click()
+        # Then click logout button
         find("#logoutBtn").click()
 
         expect(page).to have_current_path("/")

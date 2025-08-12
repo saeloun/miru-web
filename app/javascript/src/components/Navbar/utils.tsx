@@ -226,13 +226,32 @@ const MobileMenuOptions = ({
   </>
 );
 
-const handleLogout = async authDispatch => {
-  await logoutApi();
-  Object.values(LocalStorageKeys).forEach(key => {
-    localStorage.removeItem(key);
-  });
-  authDispatch({ type: "LOGOUT" });
-  window.location.href = "/";
+const handleLogout = async () => {
+  try {
+    // Call Rails logout API
+    await logoutApi();
+
+    // Clear local storage
+    Object.values(LocalStorageKeys).forEach(key => {
+      localStorage.removeItem(key);
+    });
+
+    // Clear auth token
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("authEmail");
+
+    // Redirect to home/login page
+    window.location.href = "/";
+  } catch (error) {
+    console.error("Logout error:", error);
+    // Even if logout API fails, clear local storage and redirect
+    Object.values(LocalStorageKeys).forEach(key => {
+      localStorage.removeItem(key);
+    });
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("authEmail");
+    window.location.href = "/";
+  }
 };
 
 export {

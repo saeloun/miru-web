@@ -57,7 +57,18 @@ class InternalApi::V1::Users::SessionsController < Devise::SessionsController
     end
 
     def render_sign_in_response(user)
-      render json: { notice: I18n.t("devise.sessions.signed_in"), user: }, status: 200
+      user_data = user.as_json.merge(
+        token: user.token,
+        email: user.email,
+        current_workspace_id: user.current_workspace_id
+      )
+
+      render json: {
+        notice: I18n.t("devise.sessions.signed_in"),
+        user: user_data,
+        company_role: user.roles.find_by(resource: current_company)&.name,
+        company: current_company
+      }, status: 200
     end
 
     def render_sign_in_response_for_desktop(user)

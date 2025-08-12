@@ -23,8 +23,7 @@ const redirectUrl = role => {
 
 const RestrictedRoute = ({ user, role, authorisedRoles }) => {
   if (!user) {
-    window.location.href = Paths.SIGN_IN;
-
+    // Don't redirect if user is not available, let the auth provider handle it
     return null;
   }
 
