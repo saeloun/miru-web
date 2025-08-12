@@ -7,6 +7,7 @@ import ErrorPage from "common/Error";
 import Cookies from "js-cookie";
 import { Routes, Route, Outlet, Navigate } from "react-router-dom";
 import { dashboardUrl } from "utils/dashboardUrl";
+import { useUserContext } from "context/UserContext";
 
 const redirectUrl = role => {
   const lastVisitedPage = Cookies.get("lastVisitedPage");
@@ -22,9 +23,15 @@ const redirectUrl = role => {
 };
 
 const RestrictedRoute = ({ user, role, authorisedRoles }) => {
-  if (!user) {
-    // Don't redirect if user is not available, let the auth provider handle it
-    return null;
+  const { loading } = useUserContext();
+  
+  if (loading || !user) {
+    // Show loading state while user data is being fetched
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="text-miru-dark-purple-1000">Loading...</div>
+      </div>
+    );
   }
 
   if (authorisedRoles.includes(role)) {
