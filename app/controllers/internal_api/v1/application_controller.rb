@@ -7,6 +7,7 @@ class InternalApi::V1::ApplicationController < ActionController::API
   include CurrentCompanyConcern
   include Pagy::Backend
   include SetCurrentDetails
+  include Authenticable
 
   before_action :authenticate_user!
   before_action :set_virtual_verified_invitations_allowed
