@@ -31,8 +31,8 @@ const ReportCard = ({ icon, iconHover, title, description, url }) => {
 
   return (
     <NavLink end to={`/reports/${url}`}>
-      <Card className="group cursor-pointer transition-all hover:shadow-lg hover:scale-[1.02] hover:border-primary/20">
-        <CardHeader className="flex flex-row items-start gap-4">
+      <Card className="group cursor-pointer transition-all hover:shadow-lg hover:scale-[1.02] hover:border-primary/20 h-32">
+        <CardHeader className="flex flex-row items-start gap-4 h-full">
           <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br from-purple-500/10 to-blue-500/10 group-hover:from-purple-500/20 group-hover:to-blue-500/20 transition-colors">
             <IconComponent className="h-6 w-6 text-purple-600 group-hover:text-purple-700" />
           </div>
