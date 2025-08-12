@@ -219,3 +219,5 @@ gem "postmark-rails"
 
 # https://github.com/ankane/strong_migrations
 gem "strong_migrations"
+
+gem "devise-jwt", "~> 0.12.1"

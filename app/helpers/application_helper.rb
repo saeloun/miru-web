@@ -32,8 +32,15 @@ module ApplicationHelper
   end
 
   def get_initial_props
+    user_data = if current_user
+      current_user.as_json.merge(
+        token: current_user.token,
+        email: current_user.email
+      )
+    end
+
     {
-      user: current_user,
+      user: user_data,
       avatar_url: current_user && current_user.avatar_url,
       company_role: current_user && current_user.roles.find_by(resource: current_company)&.name,
       confirmed_user: current_user && current_user.confirmed?,

@@ -1,6 +1,6 @@
-@import "tailwindcss/base";
-@import "tailwindcss/components";
-@import "tailwindcss/utilities";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 @import "react-responsive-carousel/lib/styles/carousel.min.css";
 @import "team";
 @import "time-tracking";
@@ -17,29 +17,29 @@
     font-weight: 200 800;
   }
 
-  /* CSS Variables for Modern Theme System */
+  /* CSS Variables for Modern Theme System - Violet Compact Mode */
   :root {
-    /* Core theme variables based on Miru brand */
-    --background: 255 255 255; /* #FFFFFF */
-    --foreground: 29 26 49; /* #1D1A31 - miru-dark-purple-1000 */
-    --card: 255 255 255; /* #FFFFFF */
-    --card-foreground: 29 26 49; /* #1D1A31 */
-    --popover: 255 255 255; /* #FFFFFF */
-    --popover-foreground: 29 26 49; /* #1D1A31 */
-    --primary: 91 52 234; /* #5B34EA - miru-han-purple-1000 */
-    --primary-foreground: 255 255 255; /* #FFFFFF */
-    --secondary: 245 247 249; /* #F5F7F9 - miru-gray-100 */
-    --secondary-foreground: 29 26 49; /* #1D1A31 */
-    --muted: 235 239 242; /* #EBEFF2 - miru-gray-200 */
-    --muted-foreground: 119 118 131; /* #777683 - miru-dark-purple-400 */
-    --accent: 225 230 236; /* #E1E6EC - miru-gray-400 */
-    --accent-foreground: 29 26 49; /* #1D1A31 */
-    --destructive: 224 70 70; /* #E04646 - miru-red-400 */
-    --destructive-foreground: 255 255 255; /* #FFFFFF */
-    --border: 225 230 236; /* #E1E6EC - miru-gray-400 */
-    --input: 225 230 236; /* #E1E6EC - miru-gray-400 */
-    --ring: 91 52 234; /* #5B34EA - miru-han-purple-1000 */
-    --radius: 0.5rem;
+    /* Core theme variables based on Miru brand with violet color scheme */
+    --background: 0 0% 100%; /* hsl format for shadcn compatibility */
+    --foreground: 268 29% 14%; /* #1D1A31 - miru-dark-purple-1000 */
+    --card: 0 0% 100%; /* #FFFFFF */
+    --card-foreground: 268 29% 14%; /* #1D1A31 */
+    --popover: 0 0% 100%; /* #FFFFFF */
+    --popover-foreground: 268 29% 14%; /* #1D1A31 */
+    --primary: 264 94% 56%; /* #5B34EA - miru-han-purple-1000 - violet-500 equivalent */
+    --primary-foreground: 0 0% 100%; /* #FFFFFF */
+    --secondary: 211 19% 97%; /* #F5F7F9 - miru-gray-100 */
+    --secondary-foreground: 268 29% 14%; /* #1D1A31 */
+    --muted: 207 13% 94%; /* #EBEFF2 - miru-gray-200 */
+    --muted-foreground: 261 7% 49%; /* #777683 - miru-dark-purple-400 */
+    --accent: 207 13% 91%; /* #E1E6EC - miru-gray-400 */
+    --accent-foreground: 268 29% 14%; /* #1D1A31 */
+    --destructive: 0 68% 58%; /* #E04646 - miru-red-400 */
+    --destructive-foreground: 0 0% 100%; /* #FFFFFF */
+    --border: 207 13% 91%; /* #E1E6EC - miru-gray-400 */
+    --input: 207 13% 91%; /* #E1E6EC - miru-gray-400 */
+    --ring: 264 94% 56%; /* #5B34EA - miru-han-purple-1000 */
+    --radius: 0.5rem; /* Compact mode - smaller radius */
 
     /* Extended modern colors */
     --gradient-start: 91 52 234; /* #5B34EA */
@@ -75,27 +75,27 @@
     --miru-red-200: 235 91 91; /* #EB5B5B */
   }
 
-  /* Dark mode variables */
+  /* Dark mode variables - Violet scheme with proper contrast */
   .dark {
-    --background: 29 26 49; /* #1D1A31 - miru-dark-purple-1000 */
-    --foreground: 255 255 255; /* #FFFFFF */
-    --card: 74 72 90; /* #4A485A - miru-dark-purple-600 */
-    --card-foreground: 255 255 255; /* #FFFFFF */
-    --popover: 74 72 90; /* #4A485A */
-    --popover-foreground: 255 255 255; /* #FFFFFF */
-    --primary: 91 52 234; /* #5B34EA - keep brand color */
-    --primary-foreground: 255 255 255; /* #FFFFFF */
-    --secondary: 74 72 90; /* #4A485A - miru-dark-purple-600 */
-    --secondary-foreground: 255 255 255; /* #FFFFFF */
-    --muted: 74 72 90; /* #4A485A */
-    --muted-foreground: 210 209 214; /* #D2D1D6 - miru-dark-purple-100 */
-    --accent: 74 72 90; /* #4A485A */
-    --accent-foreground: 255 255 255; /* #FFFFFF */
-    --destructive: 224 70 70; /* #E04646 */
-    --destructive-foreground: 255 255 255; /* #FFFFFF */
-    --border: 74 72 90; /* #4A485A */
-    --input: 74 72 90; /* #4A485A */
-    --ring: 91 52 234; /* #5B34EA */
+    --background: 268 29% 14%; /* #1D1A31 - miru-dark-purple-1000 */
+    --foreground: 0 0% 98%; /* #FFFFFF with slight adjustment */
+    --card: 265 17% 21%; /* #4A485A - miru-dark-purple-600 */
+    --card-foreground: 0 0% 98%; /* #FFFFFF */
+    --popover: 265 17% 21%; /* #4A485A */
+    --popover-foreground: 0 0% 98%; /* #FFFFFF */
+    --primary: 264 94% 56%; /* #5B34EA - keep brand color */
+    --primary-foreground: 0 0% 98%; /* #FFFFFF */
+    --secondary: 265 17% 21%; /* #4A485A - miru-dark-purple-600 */
+    --secondary-foreground: 0 0% 98%; /* #FFFFFF */
+    --muted: 265 17% 21%; /* #4A485A */
+    --muted-foreground: 261 9% 84%; /* #D2D1D6 - miru-dark-purple-100 */
+    --accent: 265 17% 21%; /* #4A485A */
+    --accent-foreground: 0 0% 98%; /* #FFFFFF */
+    --destructive: 0 68% 58%; /* #E04646 */
+    --destructive-foreground: 0 0% 98%; /* #FFFFFF */
+    --border: 265 17% 21%; /* #4A485A */
+    --input: 265 17% 21%; /* #4A485A */
+    --ring: 264 94% 56%; /* #5B34EA */
 
     /* Extended dark mode colors */
     --gradient-start: 91 52 234; /* #5B34EA */
@@ -117,10 +117,20 @@
     min-width: 25rem;
   }
 
-  /* Modern base styles */
+  /* Modern base styles with theme transition support */
+  * {
+    @apply border-border;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+  }
+  
   body {
-    @apply font-manrope;
+    @apply bg-background text-foreground font-sans antialiased;
     font-feature-settings: "rlig" 1, "calt" 1;
+  }
+  
+  /* Maintain Manrope for specific elements that need it */
+  .font-manrope {
+    font-family: "Manrope", serif !important;
   }
 
   /* Modern Typography Classes */

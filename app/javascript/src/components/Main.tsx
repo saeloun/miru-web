@@ -38,10 +38,20 @@ const Main = (props: Iprops) => {
   }, [isLoggedIn, props?.googleOauthSuccess]);
 
   useEffect(() => {
-    // Don't clear localStorage credentials just because there's no server-side user
-    // The app uses token-based auth so localStorage credentials are valid
-    // Only clear if we get a 401 response from the API
-  }, [props?.user]);
+    // Handle server-side authentication (e.g., system tests)
+    // If we have user props from server but no localStorage token, set auth state
+    if (!isLoggedIn && props?.user?.email) {
+      // Set auth state from server-side user props (system test mode)
+
+      authDispatch({
+        type: "LOGIN",
+        payload: {
+          token: props.user.token || "system-test-token",
+          email: props.user.email,
+        },
+      });
+    }
+  }, [props?.user, isLoggedIn, authDispatch]);
 
   if (isLoggedIn) {
     // If we're logged in via localStorage tokens, show the dashboard

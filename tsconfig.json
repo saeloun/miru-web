@@ -13,6 +13,7 @@
     "noEmit": true,
     "baseUrl": "./",
     "paths": {
+      "~/*": ["app/javascript/src/*"],
       "components/*": ["app/javascript/src/components/*"],
       "apis/*": ["./app/javascript/src/apis/*"],
       "helpers": ["./app/javascript/src/helpers"],
@@ -22,7 +23,7 @@
       "mapper/*": ["./app/javascript/src/mapper/*"],
       "constants/*": ["./app/javascript/src/constants/*"],
       "StyledComponents": ["./app/javascript/src/StyledComponents"],
-      "miruIcons": ["./app/javascript/src/miruIcons"],
+      "miruIcons": ["./app/javascript/src/miruIcons"]
     }
   },
   "include": [
