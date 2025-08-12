@@ -27,7 +27,9 @@ const Header = ({ setnewClient, isAdminUser, setShowDialog }) => {
         isAdminUser ? "justify-between" : ""
       }`}
     >
-      <h2 className="header__title ml-4 hidden lg:inline">Clients</h2>
+      <h2 className="header__title ml-4 hidden text-2xl font-bold lg:inline">
+        Clients
+      </h2>
       {isAdminUser && (
         <Fragment>
           <AutoSearch

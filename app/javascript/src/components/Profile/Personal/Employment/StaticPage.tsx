@@ -13,43 +13,43 @@ const StaticPage = ({ employmentDetails }) => (
           size={16}
           weight="bold"
         />
-        <span className="flex flex-wrap text-sm font-medium text-miru-dark-purple-1000">
+        <span className="flex flex-wrap text-base font-bold text-base font-semibold text-miru-dark-purple-1000">
           Current Employment
         </span>
       </div>
       <div className="lg:w-4/5">
         <div className="flex">
           <div className="w-6/12">
-            <span className="text-xs text-miru-dark-purple-1000">
+            <span className="text-sm font-bold text-base font-semibold text-miru-dark-purple-1000">
               Employee ID
             </span>
-            <p className="text-miru-dark-purple-1000">
+            <p className="text-base font-semibold text-miru-dark-purple-1000">
               {employmentDetails.current_employment.employee_id || "-"}
             </p>
           </div>
           <div className="w-6/12">
-            <span className="text-xs text-miru-dark-purple-1000">
+            <span className="text-sm font-bold text-base font-semibold text-miru-dark-purple-1000">
               Designation
             </span>
-            <p className="text-miru-dark-purple-1000">
+            <p className="text-base font-semibold text-miru-dark-purple-1000">
               {employmentDetails.current_employment.designation || "-"}
             </p>
           </div>
         </div>
         <div className="mt-4 flex">
           <div className="w-6/12">
-            <span className="text-xs text-miru-dark-purple-1000">
+            <span className="text-sm font-bold text-base font-semibold text-miru-dark-purple-1000">
               Email ID (Official)
             </span>
-            <p className="text-miru-dark-purple-1000">
+            <p className="text-base font-semibold text-miru-dark-purple-1000">
               {employmentDetails.current_employment.email || "-"}
             </p>
           </div>
           <div className="w-6/12">
-            <span className="text-xs text-miru-dark-purple-1000">
+            <span className="text-sm font-bold text-base font-semibold text-miru-dark-purple-1000">
               Employee Type
             </span>
-            <p className="text-miru-dark-purple-1000">
+            <p className="text-base font-semibold text-miru-dark-purple-1000">
               {getLabelForEmployeeType(
                 employmentDetails.current_employment.employment_type
               )}
@@ -58,18 +58,18 @@ const StaticPage = ({ employmentDetails }) => (
         </div>
         <div className="mt-4 flex">
           <div className="w-6/12">
-            <span className="text-xs text-miru-dark-purple-1000">
+            <span className="text-sm font-bold text-base font-semibold text-miru-dark-purple-1000">
               Date of Joining
             </span>
-            <p className="text-miru-dark-purple-1000">
+            <p className="text-base font-semibold text-miru-dark-purple-1000">
               {employmentDetails.current_employment.joined_at || "-"}
             </p>
           </div>
           <div className="w-6/12">
-            <span className="text-xs text-miru-dark-purple-1000">
+            <span className="text-sm font-bold text-base font-semibold text-miru-dark-purple-1000">
               Date of Resignation
             </span>
-            <p className="text-miru-dark-purple-1000">
+            <p className="text-base font-semibold text-miru-dark-purple-1000">
               {employmentDetails.current_employment.resigned_at || "-"}
             </p>
           </div>
@@ -83,7 +83,7 @@ const StaticPage = ({ employmentDetails }) => (
           size={16}
           weight="bold"
         />
-        <span className="flex flex-wrap text-sm font-medium text-miru-dark-purple-1000">
+        <span className="flex flex-wrap text-base font-bold text-base font-semibold text-miru-dark-purple-1000">
           Previous Employment
         </span>
       </div>
@@ -92,21 +92,25 @@ const StaticPage = ({ employmentDetails }) => (
           employmentDetails.previous_employments.map((previous, index) => (
             <div className="mb-4 flex w-full" key={index}>
               <div className="w-6/12">
-                <span className="text-xs text-miru-dark-purple-1000">
+                <span className="text-sm font-bold text-base font-semibold text-miru-dark-purple-1000">
                   Company
                 </span>
-                <p className="text-miru-dark-purple-1000">
+                <p className="text-base font-semibold text-miru-dark-purple-1000">
                   {previous.company_name}
                 </p>
               </div>
               <div className="w-6/12">
-                <span className="text-xs text-miru-dark-purple-1000">Role</span>
-                <p className="text-miru-dark-purple-1000">{previous.role}</p>
+                <span className="text-sm font-bold text-base font-semibold text-miru-dark-purple-1000">
+                  Role
+                </span>
+                <p className="text-base font-semibold text-miru-dark-purple-1000">
+                  {previous.role}
+                </p>
               </div>
             </div>
           ))
         ) : (
-          <div className="text-xs">No previous employments found</div>
+          <div className="text-sm font-bold">No previous employments found</div>
         )}
       </div>
     </div>

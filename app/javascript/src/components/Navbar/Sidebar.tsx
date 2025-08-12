@@ -50,7 +50,7 @@ interface NavItem {
   badge?: string | number;
 }
 
-const ModernSidebar = () => {
+const Sidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [workspaces, setWorkspaces] = useState<any[]>([]);
@@ -189,7 +189,7 @@ const ModernSidebar = () => {
               isCollapsed ? "h-8 w-8" : "h-10 w-10"
             )}
           />
-          {!isCollapsed && <span className="text-xl font-bold">Miru</span>}
+          {!isCollapsed && <span className="text-2xl font-bold">Miru</span>}
         </Link>
         <Button
           className="hidden lg:flex"
@@ -225,7 +225,7 @@ const ModernSidebar = () => {
                     <NavLink
                       to={item.path}
                       className={cn(
-                        "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+                        "flex items-center gap-3 rounded-lg px-3 py-2 text-base font-semibold transition-colors",
                         "hover:bg-accent hover:text-accent-foreground",
                         isActive && "bg-primary/10 text-primary",
                         isCollapsed && "justify-center"
@@ -260,7 +260,7 @@ const ModernSidebar = () => {
         <NavLink
           to="/settings/profile"
           className={cn(
-            "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+            "flex items-center gap-3 rounded-lg px-3 py-2 text-base font-semibold transition-colors",
             "hover:bg-accent hover:text-accent-foreground",
             location.pathname.startsWith("/settings") &&
               "bg-primary/10 text-primary",
@@ -302,7 +302,7 @@ const ModernSidebar = () => {
                   <Building2 className="mr-2 h-4 w-4" />
                   <span>{workspace.name}</span>
                   {workspace.id === currentWorkspace.id && (
-                    <span className="ml-auto text-xs text-muted-foreground">
+                    <span className="ml-auto text-sm font-medium text-muted-foreground">
                       Current
                     </span>
                   )}
@@ -330,10 +330,10 @@ const ModernSidebar = () => {
               </Avatar>
               {!isCollapsed && user && (
                 <div className="flex flex-col items-start text-left">
-                  <span className="text-sm font-medium">
+                  <span className="text-base font-semibold">
                     {user.first_name} {user.last_name}
                   </span>
-                  <span className="text-xs text-muted-foreground truncate max-w-[150px]">
+                  <span className="text-sm font-medium text-muted-foreground truncate max-w-[150px]">
                     {user.email}
                   </span>
                 </div>
@@ -399,4 +399,4 @@ const ModernSidebar = () => {
   );
 };
 
-export default ModernSidebar;
+export default Sidebar;

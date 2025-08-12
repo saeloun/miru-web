@@ -33,6 +33,6 @@ class InternalApi::V1::Clients::InvoicesController < InternalApi::V1::Applicatio
     end
 
     def render_error_response(message)
-      render json: { error: message }, status: :unprocessable_entity
+      render json: { error: message }, status: 422
     end
 end

@@ -20,7 +20,7 @@ class UpdateProfileSettingsService
     if current_user.update_without_password(user_params.except(:current_password))
       { res: { notice: "User updated" }, status: :ok }
     else
-      { res: { errors: current_user.errors.full_messages }, status: :unprocessable_entity }
+      { res: { errors: current_user.errors.full_messages }, status: :unprocessable_content }
     end
   end
 
@@ -28,7 +28,7 @@ class UpdateProfileSettingsService
     if current_user.update_with_password(user_params)
       { res: { notice: "Password updated" }, status: :ok }
     else
-      { res: { errors: current_user.errors.full_messages }, status: :unprocessable_entity }
+      { res: { errors: current_user.errors.full_messages }, status: :unprocessable_content }
     end
   end
 end

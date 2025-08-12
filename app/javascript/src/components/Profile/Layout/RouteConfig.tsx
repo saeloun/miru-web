@@ -23,18 +23,20 @@ const RouteConfig = () => {
   const { setIsCalledFromSettings, setIsCalledFromTeam } = useProfileContext();
 
   useEffect(() => {
-    if (window.location.pathname.startsWith("/settings")) {
+    const pathname = window.location.pathname;
+
+    if (pathname.startsWith("/settings")) {
       setIsCalledFromSettings(true);
     } else {
       setIsCalledFromSettings(false);
     }
 
-    if (window.location.pathname.startsWith("/team")) {
+    if (pathname.startsWith("/team")) {
       setIsCalledFromTeam(true);
     } else {
       setIsCalledFromTeam(false);
     }
-  }, [window.location]);
+  }, []);
 
   return (
     <Routes>
@@ -59,8 +61,8 @@ const RouteConfig = () => {
         </Route>
       )}
       {window.location.pathname.startsWith("/settings") && (
-        <Route element={<Layout />} path="/*">
-          <Route index element={<UserDetailsView />} path="profile" />
+        <Route element={<Layout />} path="profile/*">
+          <Route index element={<UserDetailsView />} />
           {SETTINGS.map(({ path, authorisedRoles, Component }) => (
             <Route
               key={path}

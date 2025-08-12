@@ -30,7 +30,7 @@ RSpec.describe InternalApi::V1::Users::SessionsController, type: :controller do
       it "returns an error" do
         post :create, params: { user: { email: user.email, password: "wrong_password" } }, format: :json
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
 
         json_response = JSON.parse(response.body)
         expect(json_response["error"]).to be_present
@@ -43,7 +43,7 @@ RSpec.describe InternalApi::V1::Users::SessionsController, type: :controller do
       it "returns an unconfirmed error" do
         post :create, params: { user: { email: unconfirmed_user.email, password: unconfirmed_user.password } }, format: :json
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
 
         json_response = JSON.parse(response.body)
         expect(json_response["unconfirmed"]).to be true

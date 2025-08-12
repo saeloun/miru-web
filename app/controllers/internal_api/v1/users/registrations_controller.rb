@@ -5,7 +5,7 @@ class InternalApi::V1::Users::RegistrationsController < Devise::RegistrationsCon
 
   def respond_with(user, _opts = {})
     if user.errors.present?
-      render json: { error: user.errors }, status: :unprocessable_entity
+      render json: { error: user.errors }, status: 422
     else
       render json: { notice: I18n.t("devise.registrations.signed_up"), email: user.email }, status: 200
     end

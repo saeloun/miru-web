@@ -41,7 +41,7 @@ RSpec.describe "InternalApi::V1::Client#create", type: :request do
             phone: "7777777777",
             addresses_attributes: [attributes_for(:address)]
           }), headers: auth_headers(user)
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         expect(json_response["errors"]).to eq("can't be blank")
       end
 
@@ -53,7 +53,7 @@ RSpec.describe "InternalApi::V1::Client#create", type: :request do
             phone: "7777777777",
             addresses_attributes: [invalid_address_attributes]
           }), headers: auth_headers(user)
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         expect(json_response["errors"]).to eq("Addresses address line 1 can't be blank")
       end
     end

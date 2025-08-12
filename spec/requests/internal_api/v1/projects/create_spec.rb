@@ -32,7 +32,7 @@ RSpec.describe "InternalApi::V1::Project#create", type: :request do
             description: "Rspec Test",
             billable: false
           }), headers: auth_headers(user)
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         expect(json_response["errors"]).to eq("Client must exist")
       end
     end

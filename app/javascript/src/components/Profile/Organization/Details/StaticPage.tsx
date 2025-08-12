@@ -11,6 +11,7 @@ import {
   ClockIcon,
 } from "miruIcons";
 import { Avatar } from "StyledComponents";
+import { Card, CardContent, CardHeader, CardTitle } from "components/ui/card";
 
 dayjs.extend(customParseFormat);
 
@@ -57,207 +58,178 @@ const StaticPage = ({
     companyWorkingDays,
   },
 }) => (
-  <div className="mt-4 h-full bg-miru-gray-100 px-4 md:min-h-screen md:px-10 lg:min-h-full">
-    <div className="flex flex-col gap-y-6 border-b border-b-miru-gray-400 py-6 md:flex-row md:py-8 md:px-2 lg:gap-y-0 lg:px-0">
-      <div className="w-full md:w-18">
-        <div className="flex flex-row items-center font-manrope text-sm font-medium leading-5 text-miru-dark-purple-1000">
-          <div>
-            <InfoIcon
-              className="mr-2"
-              color="#1D1A31"
-              size={13.5}
-              weight="bold"
+  <div className="mt-4 space-y-6 px-4 md:px-10 lg:px-0">
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center text-base font-bold text-miru-dark-purple-1000">
+          <InfoIcon className="mr-2" color="#1D1A31" size={16} weight="bold" />
+          Basic Details
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="flex flex-col items-start space-y-4 lg:flex-row lg:space-x-6 lg:space-y-0">
+          <div className="flex-shrink-0">
+            <Avatar
+              classNameImg="h-full min-w-full"
+              classNameInitials="text-4xl font-bold capitalize text-white"
+              classNameInitialsWrapper="bg-miru-gray-1000"
+              initialsLetterCount={1}
+              name={companyName}
+              size="h-20 w-20 lg:h-24 lg:w-24"
+              url={logoUrl}
             />
           </div>
-          <p>Basic Details</p>
-        </div>
-      </div>
-      <div className="w-72">
-        <div className="mb-6 flex h-20 w-20 flex-col items-start rounded border-miru-dark-purple-100 text-center text-xs lg:mb-0 lg:h-120 lg:w-30 lg:items-center lg:justify-center lg:px-2">
-          <Avatar
-            classNameImg="h-full min-w-full"
-            classNameInitials="text-4xl lg:text-5xl lg:font-bold capitalize text-white"
-            classNameInitialsWrapper="bg-miru-gray-1000"
-            initialsLetterCount={1}
-            name={companyName}
-            size="h-20 w-20 lg:h-30 lg:w-30"
-            url={logoUrl}
-          />
-        </div>
-        <div className="flex p-0 lg:mt-3 lg:px-2">
-          <div className="flex w-6/12 flex-col">
-            <span className="pb-1 font-manrope text-xs font-normal leading-4 text-miru-dark-purple-1000 md:pb-0">
-              Company Name
-            </span>
-            <p className="min-h-24 font-manrope text-base font-medium text-miru-dark-purple-1000">
-              {companyName}
-            </p>
+          <div className="flex-1">
+            <div className="space-y-1">
+              <span className="text-sm font-semibold text-miru-dark-purple-600">
+                Company Name
+              </span>
+              <p className="text-base font-bold text-miru-dark-purple-1000">
+                {companyName}
+              </p>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
-    <div className="flex flex-col items-start gap-y-6 border-b border-b-miru-gray-400 py-6 md:flex-row md:gap-y-0 md:py-8">
-      <div className="w-full md:w-18">
-        <div className="flex flex-row items-center font-manrope text-sm font-medium text-miru-dark-purple-1000 md:items-baseline lg:items-center">
-          <div className="relative top-0 md:top-0.25 lg:top-0">
-            <PhoneIcon
-              className="mr-2"
-              color="#1D1A31"
-              size={13.5}
-              weight="bold"
-            />
-          </div>
-          <p>Contact Details</p>
-        </div>
-      </div>
-      <div className="w-full md:w-72">
-        <div className="flex md:px-2">
-          <div className="flex w-6/12 flex-col">
-            <p className="pb-1 text-xs text-miru-dark-purple-1000 md:pb-0">
-              Business Phone
-            </p>
-            <p className="min-h-24 font-manrope text-base font-medium text-miru-dark-purple-1000">
-              {companyPhone}
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div className="flex flex-col gap-y-6 border-b border-b-miru-gray-400 py-6 md:flex-row md:gap-y-0 md:py-8">
-      <div className="w-full md:w-18">
-        <div className="flex flex-row items-center text-sm font-medium text-miru-dark-purple-1000">
-          <div>
-            <MapPinIcon
-              className="mr-2"
-              color="#1D1A31"
-              size={13.5}
-              weight="bold"
-            />
-          </div>
-          <p>Address</p>
-        </div>
-      </div>
-      <div className="w-full md:w-72">
-        <div className="flex w-full flex-col md:px-2">
-          <span className="pb-1 text-xs text-miru-dark-purple-1000 md:pb-0">
-            Address
+      </CardContent>
+    </Card>
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center text-base font-bold text-miru-dark-purple-1000">
+          <PhoneIcon className="mr-2" color="#1D1A31" size={16} weight="bold" />
+          Contact Details
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-1">
+          <span className="text-sm font-semibold text-miru-dark-purple-600">
+            Business Phone
           </span>
-          <p className="font-manrope text-base font-medium text-miru-dark-purple-1000">
-            {companyAddr}
+          <p className="text-base font-bold text-miru-dark-purple-1000">
+            {companyPhone || "-"}
           </p>
         </div>
-      </div>
-    </div>
-    <div className="flex flex-col gap-y-6 border-b border-b-miru-gray-400 py-6 md:flex-row md:gap-y-0 md:py-8">
-      <div className="w-full md:w-18">
-        <div className="flex flex-row items-baseline text-sm font-medium text-miru-dark-purple-1000">
-          <span className="mr-2 w-13">
-            <div className="relative top-0.25">
-              <MoneyIcon color="#1D1A31" size={13.5} weight="bold" />
-            </div>
+      </CardContent>
+    </Card>
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center text-base font-bold text-miru-dark-purple-1000">
+          <MapPinIcon
+            className="mr-2"
+            color="#1D1A31"
+            size={16}
+            weight="bold"
+          />
+          Address
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-1">
+          <span className="text-sm font-semibold text-miru-dark-purple-600">
+            Address
           </span>
-          <p>Currency and Standard Rate</p>
+          <p className="text-base font-bold text-miru-dark-purple-1000">
+            {companyAddr || "-"}
+          </p>
         </div>
-      </div>
-      <div className="w-72">
-        <div className="flex md:px-2">
-          <div className="flex w-6/12 flex-col">
-            <span className="text-xs text-miru-dark-purple-1000">
+      </CardContent>
+    </Card>
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center text-base font-bold text-miru-dark-purple-1000">
+          <MoneyIcon className="mr-2" color="#1D1A31" size={16} weight="bold" />
+          Currency and Standard Rate
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <div className="space-y-1">
+            <span className="text-sm font-semibold text-miru-dark-purple-600">
               Base Currency
             </span>
-            <p className="min-h-24 font-manrope text-base font-medium text-miru-dark-purple-1000">
-              {companyCurrency}
+            <p className="text-base font-bold text-miru-dark-purple-1000">
+              {companyCurrency || "-"}
             </p>
           </div>
-          <div className="flex w-6/12 flex-col">
-            <span className="text-xs text-miru-dark-purple-1000">
+          <div className="space-y-1">
+            <span className="text-sm font-semibold text-miru-dark-purple-600">
               Standard Rate
             </span>
-            <p className="min-h-24 font-manrope text-base font-medium  text-miru-dark-purple-1000">
-              {companyRate}
+            <p className="text-base font-bold text-miru-dark-purple-1000">
+              {companyRate || "-"}
             </p>
           </div>
         </div>
-      </div>
-    </div>
-    <div className="flex flex-col gap-y-6 border-b border-b-miru-gray-400 py-6 md:flex-row md:gap-y-0 md:py-8">
-      <div className="w-full md:w-18">
-        <div className="flex flex-row items-center text-sm font-medium text-miru-dark-purple-1000">
-          <div>
-            <CalendarIcon
-              className="mr-2"
-              color="#1D1A31"
-              size={13.5}
-              weight="bold"
-            />
-          </div>
-          <p>Date & Time</p>
-        </div>
-      </div>
-      <div className="w-full md:w-72">
-        <div className="flex md:px-2">
-          <div className="flex w-6/12 flex-col">
-            <span className="text-xs text-miru-dark-purple-1000">Timezone</span>
-            <p className="min-h-24 font-manrope text-base font-medium text-miru-dark-purple-1000">
-              {companyTimezone}
-            </p>
-          </div>
-        </div>
-        <div className="mt-6 flex md:mt-3 md:px-2">
-          <div className="flex w-6/12 flex-col">
-            <span className="text-xs text-miru-dark-purple-1000">
-              Date format
+      </CardContent>
+    </Card>
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center text-base font-bold text-miru-dark-purple-1000">
+          <CalendarIcon
+            className="mr-2"
+            color="#1D1A31"
+            size={16}
+            weight="bold"
+          />
+          Date & Time
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <div className="space-y-1">
+            <span className="text-sm font-semibold text-miru-dark-purple-600">
+              Timezone
             </span>
-            <p className="min-h-24 font-manrope text-base font-medium text-miru-dark-purple-1000">
-              {companyDateFormat}
+            <p className="text-base font-bold text-miru-dark-purple-1000">
+              {companyTimezone || "-"}
             </p>
           </div>
-          <div className="flex w-6/12 flex-col">
-            <span className="text-xs text-miru-dark-purple-1000">
+          <div className="space-y-1">
+            <span className="text-sm font-semibold text-miru-dark-purple-600">
+              Date Format
+            </span>
+            <p className="text-base font-bold text-miru-dark-purple-1000">
+              {companyDateFormat || "-"}
+            </p>
+          </div>
+          <div className="space-y-1">
+            <span className="text-sm font-semibold text-miru-dark-purple-600">
               Fiscal Year End
             </span>
-            <p className="min-h-24 font-manrope text-base font-medium text-miru-dark-purple-1000">
-              {getFilterValue(companyFiscalYear)}
+            <p className="text-base font-bold text-miru-dark-purple-1000">
+              {getFilterValue(companyFiscalYear) || "-"}
             </p>
           </div>
         </div>
-      </div>
-    </div>
-    <div className="flex flex-col gap-y-6 py-6 md:flex-row md:gap-y-0 md:py-8">
-      <div className="w-full md:w-18">
-        <div className="flex flex-row items-center text-sm font-medium text-miru-dark-purple-1000">
-          <div>
-            <ClockIcon
-              className="mr-2"
-              color="#1D1A31"
-              size={13.5}
-              weight="bold"
-            />
-          </div>
-          <p>Days & Hours</p>
-        </div>
-      </div>
-      <div className="w-full md:w-72">
-        <div className="flex md:px-2">
-          <div className="flex w-6/12 flex-col">
-            <span className="text-xs text-miru-dark-purple-1000">
-              Weekly working days
+      </CardContent>
+    </Card>
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center text-base font-bold text-miru-dark-purple-1000">
+          <ClockIcon className="mr-2" color="#1D1A31" size={16} weight="bold" />
+          Working Days & Hours
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <div className="space-y-1">
+            <span className="text-sm font-semibold text-miru-dark-purple-600">
+              Weekly Working Days
             </span>
-            <p className="min-h-24 font-manrope text-base font-medium text-miru-dark-purple-1000">
+            <p className="text-base font-bold text-miru-dark-purple-1000">
               {companyWorkingDays || "-"}
             </p>
           </div>
-          <div className="flex w-6/12 flex-col">
-            <span className="text-xs text-miru-dark-purple-1000">
-              Weekly working hours
+          <div className="space-y-1">
+            <span className="text-sm font-semibold text-miru-dark-purple-600">
+              Weekly Working Hours
             </span>
-            <p className="min-h-24 font-manrope text-base font-medium text-miru-dark-purple-1000">
+            <p className="text-base font-bold text-miru-dark-purple-1000">
               {companyWorkingHours || "-"}
             </p>
           </div>
         </div>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   </div>
 );
 

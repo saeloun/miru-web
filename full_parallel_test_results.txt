@@ -105,7 +105,7 @@ Diff:
 +  locked: false>]
 
 RSpec::Retry: 3rd try ./spec/models/concerns/pg_searchable_spec.rb:124
-.....F...../Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+.....F...../Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
 ...
 1st Try error in ./spec/models/concerns/pg_searchable_spec.rb:149:
 expected #<ActiveRecord::Relation [#<Expense id: 1, date: "2025-08-10", amount: 0.1e3, expense_type: "personal...ated_at: "2025-08-10 14:54:42.216253000 +0000", updated_at: "2025-08-10 14:54:42.216253000 +0000">]> not to include #<Expense id: 1, date: "2025-08-10", amount: 0.1e3, expense_type: "personal", description: "Office su...reated_at: "2025-08-10 14:54:42.205541000 +0000", updated_at: "2025-08-10 14:54:42.205541000 +0000">
@@ -244,10 +244,10 @@ Diff:
 +  virtual_verified: false>]
 
 RSpec::Retry: 3rd try ./spec/models/concerns/pg_searchable_spec.rb:170
-....../Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
-/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/rspec-rails-7.1.1/lib/rspec/rails/matchers/have_http_status.rb:219: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
-...F../Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
-......../Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+....../Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/rspec-rails-7.1.1/lib/rspec/rails/matchers/have_http_status.rb:219: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+...F../Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+......../Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
 ........
 1st Try error in ./spec/models/concerns/pg_searchable_spec.rb:177:
 expected #<ActiveRecord::Relation [#<Invitation id: 7, company_id: 38, sender_id: 21, recipient_email: [FILTER...0000", updated_at: "2025-08-10 14:54:42.611077000 +0000", client_id: nil, virtual_verified: false>]> not to include #<Invitation id: 7, company_id: 38, sender_id: 21, recipient_email: [FILTERED], token: [FILTERED], ac... +0000", updated_at: "2025-08-10 14:54:42.596696000 +0000", client_id: nil, virtual_verified: false>
@@ -287,9 +287,9 @@ Diff:
 
 
 RSpec::Retry: 2nd try ./spec/models/concerns/pg_searchable_spec.rb:177
-./Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
-/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/rspec-rails-7.1.1/lib/rspec/rails/matchers/have_http_status.rb:219: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
-../Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+./Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/rspec-rails-7.1.1/lib/rspec/rails/matchers/have_http_status.rb:219: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+../Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
 .
 2nd Try error in ./spec/models/concerns/pg_searchable_spec.rb:177:
 expected #<ActiveRecord::Relation [#<Invitation id: 9, company_id: 40, sender_id: 22, recipient_email: [FILTER...0000", updated_at: "2025-08-10 14:54:42.714477000 +0000", client_id: nil, virtual_verified: false>]> not to include #<Invitation id: 9, company_id: 40, sender_id: 22, recipient_email: [FILTERED], token: [FILTERED], ac... +0000", updated_at: "2025-08-10 14:54:42.647989000 +0000", client_id: nil, virtual_verified: false>
@@ -328,13 +328,13 @@ Diff:
 +  virtual_verified: false>]
 
 RSpec::Retry: 3rd try ./spec/models/concerns/pg_searchable_spec.rb:177
-./Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
-....F............................/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
-/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/rspec-rails-7.1.1/lib/rspec/rails/matchers/have_http_status.rb:219: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
-......../Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
-.../Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
-......../Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
-/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/rspec-rails-7.1.1/lib/rspec/rails/matchers/have_http_status.rb:219: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+./Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+....F............................/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/rspec-rails-7.1.1/lib/rspec/rails/matchers/have_http_status.rb:219: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+......../Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+.../Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+......../Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/rspec-rails-7.1.1/lib/rspec/rails/matchers/have_http_status.rb:219: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
 ....************************************************************************
 Warning from shoulda-matchers:
 
@@ -344,28 +344,28 @@ is not possible to fully test this, as boolean columns will
 automatically convert non-boolean values to boolean ones. Hence, you
 should consider removing this test.
 ************************************************************************
-...../Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
-....../Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
-...../Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
-/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/rspec-rails-7.1.1/lib/rspec/rails/matchers/have_http_status.rb:219: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
-...../Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
-....../Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
-......................../Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
-/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/rspec-rails-7.1.1/lib/rspec/rails/matchers/have_http_status.rb:219: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
-......../Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
-./Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/rspec-rails-7.1.1/lib/rspec/rails/matchers/have_http_status.rb:219: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
-........................................................./Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
-/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/rspec-rails-7.1.1/lib/rspec/rails/matchers/have_http_status.rb:219: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
-......./Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
-/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/rspec-rails-7.1.1/lib/rspec/rails/matchers/have_http_status.rb:219: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
-....../Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
-/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/rspec-rails-7.1.1/lib/rspec/rails/matchers/have_http_status.rb:219: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
-......./Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
-/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/rspec-rails-7.1.1/lib/rspec/rails/matchers/have_http_status.rb:219: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
-........../Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
-/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/rspec-rails-7.1.1/lib/rspec/rails/matchers/have_http_status.rb:219: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
-......./Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
-/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/rspec-rails-7.1.1/lib/rspec/rails/matchers/have_http_status.rb:219: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+...../Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+....../Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+...../Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/rspec-rails-7.1.1/lib/rspec/rails/matchers/have_http_status.rb:219: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+...../Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+....../Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+......................../Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/rspec-rails-7.1.1/lib/rspec/rails/matchers/have_http_status.rb:219: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+......../Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+./Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/rspec-rails-7.1.1/lib/rspec/rails/matchers/have_http_status.rb:219: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+........................................................./Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/rspec-rails-7.1.1/lib/rspec/rails/matchers/have_http_status.rb:219: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+......./Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/rspec-rails-7.1.1/lib/rspec/rails/matchers/have_http_status.rb:219: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+....../Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/rspec-rails-7.1.1/lib/rspec/rails/matchers/have_http_status.rb:219: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+......./Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/rspec-rails-7.1.1/lib/rspec/rails/matchers/have_http_status.rb:219: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+........../Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/rspec-rails-7.1.1/lib/rspec/rails/matchers/have_http_status.rb:219: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+......./Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/rspec-rails-7.1.1/lib/rspec/rails/matchers/have_http_status.rb:219: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
 ...............
 1st Try error in ./spec/requests/internal_api/v1/generate_invoice/index_spec.rb:53:
 undefined method 'search_index' for class TimesheetEntry
@@ -447,10 +447,10 @@ RSpec::Retry: 2nd try ./spec/models/invoice_spec.rb:152
 2nd Try error in ./spec/models/invoice_spec.rb:152:
 To use HaveEnqueuedMail matcher set `ActiveJob::Base.queue_adapter = :test`
 RSpec::Retry: 3rd try ./spec/models/invoice_spec.rb:152
-F...................../Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
-..../Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
-........../Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
-.../Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+F...................../Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+..../Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+........../Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+.../Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
 ............................................
 1st Try error in ./spec/requests/internal_api/v1/invoices/send_invoice_spec.rb:40:
 To use HaveEnqueuedMail matcher set `ActiveJob::Base.queue_adapter = :test`
@@ -477,12 +477,12 @@ the extra elements were:        [126, 127, 128, 129, 130, 131, 132, 133, 134]
 
 
 RSpec::Retry: 2nd try ./spec/requests/internal_api/v1/invoices/index_spec.rb:139
-./Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
-/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/rspec-rails-7.1.1/lib/rspec/rails/matchers/have_http_status.rb:219: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
-../Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
-/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/rspec-rails-7.1.1/lib/rspec/rails/matchers/have_http_status.rb:219: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
-..F/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
-/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/rspec-rails-7.1.1/lib/rspec/rails/matchers/have_http_status.rb:219: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+./Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/rspec-rails-7.1.1/lib/rspec/rails/matchers/have_http_status.rb:219: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+../Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/rspec-rails-7.1.1/lib/rspec/rails/matchers/have_http_status.rb:219: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+..F/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/rspec-rails-7.1.1/lib/rspec/rails/matchers/have_http_status.rb:219: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
 ..
 1st Try error in ./spec/requests/internal_api/v1/reports/outstanding_overdue_invoices/index_spec.rb:100:
 undefined local variable or method 'clients' for an instance of #<Class:0x000000013f278a40>
@@ -535,8 +535,8 @@ RSpec::Retry: 2nd try ./spec/requests/internal_api/v1/reports/outstanding_overdu
 2nd Try error in ./spec/requests/internal_api/v1/reports/outstanding_overdue_invoices/index_spec.rb:125:
 undefined local variable or method 'clients' for an instance of #<Class:0x000000013f278a40>
 RSpec::Retry: 3rd try ./spec/requests/internal_api/v1/reports/outstanding_overdue_invoices/index_spec.rb:125
-..F/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
-/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/rspec-rails-7.1.1/lib/rspec/rails/matchers/have_http_status.rb:219: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+..F/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/rspec-rails-7.1.1/lib/rspec/rails/matchers/have_http_status.rb:219: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
 ..F.....
 1st Try error in ./spec/services/reports/time_entries/download_service_spec.rb:39:
 undefined method 'search_index' for class TimesheetEntry
@@ -626,8 +626,8 @@ RSpec::Retry: 3rd try ./spec/requests/internal_api/v1/reports/time_entry/downloa
 2nd Try error in ./spec/services/reports/time_entries/download_service_spec.rb:44:
 undefined method 'search_index' for class TimesheetEntry
 RSpec::Retry: 3rd try ./spec/services/reports/time_entries/download_service_spec.rb:44
-F...../Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
-/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/rspec-rails-7.1.1/lib/rspec/rails/matchers/have_http_status.rb:219: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+F...../Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/rspec-rails-7.1.1/lib/rspec/rails/matchers/have_http_status.rb:219: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
 ..
 2nd Try error in ./spec/requests/internal_api/v1/invoices/index_spec.rb:213:
 expected collection contained:  [225, 226, 227, 228, 231, 234]
@@ -635,10 +635,10 @@ actual collection contained:    [225, 226, 227, 228, 229, 230, 231, 232, 233, 23
 the extra elements were:        [229, 230, 232, 233]
 
 RSpec::Retry: 3rd try ./spec/requests/internal_api/v1/invoices/index_spec.rb:213
-..........F......./Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
-/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/rspec-rails-7.1.1/lib/rspec/rails/matchers/have_http_status.rb:219: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
-.F/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
-/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/rspec-rails-7.1.1/lib/rspec/rails/matchers/have_http_status.rb:219: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+..........F......./Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/rspec-rails-7.1.1/lib/rspec/rails/matchers/have_http_status.rb:219: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+.F/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/rspec-rails-7.1.1/lib/rspec/rails/matchers/have_http_status.rb:219: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
 ..
 1st Try error in ./spec/requests/internal_api/v1/reports/client_revenue/index_spec.rb:64:
 undefined local variable or method 'clients' for an instance of #<Class:0x000000013e8f3218>
@@ -653,24 +653,24 @@ RSpec::Retry: 3rd try ./spec/requests/internal_api/v1/reports/client_revenue/ind
 undefined local variable or method 'clients' for an instance of #<Class:0x000000013e8f3218>
 
 RSpec::Retry: 2nd try ./spec/requests/internal_api/v1/reports/client_revenue/index_spec.rb:68
-/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
-/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/rspec-rails-7.1.1/lib/rspec/rails/matchers/have_http_status.rb:219: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
-../Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
-/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/rspec-rails-7.1.1/lib/rspec/rails/matchers/have_http_status.rb:219: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/rspec-rails-7.1.1/lib/rspec/rails/matchers/have_http_status.rb:219: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+../Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/rspec-rails-7.1.1/lib/rspec/rails/matchers/have_http_status.rb:219: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
 ...
 1st Try error in ./spec/system/clients/hours_logged_spec.rb:28:
 undefined method 'needs_server?' for nil
 undefined method 'needs_server?' for nil
 
 RSpec::Retry: 2nd try ./spec/system/clients/hours_logged_spec.rb:28
-./Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
-/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/rspec-rails-7.1.1/lib/rspec/rails/matchers/have_http_status.rb:219: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
-./Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
-/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/rspec-rails-7.1.1/lib/rspec/rails/matchers/have_http_status.rb:219: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
-../Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
-/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/rspec-rails-7.1.1/lib/rspec/rails/matchers/have_http_status.rb:219: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
-../Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
-/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/rspec-rails-7.1.1/lib/rspec/rails/matchers/have_http_status.rb:219: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+./Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/rspec-rails-7.1.1/lib/rspec/rails/matchers/have_http_status.rb:219: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+./Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/rspec-rails-7.1.1/lib/rspec/rails/matchers/have_http_status.rb:219: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+../Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/rspec-rails-7.1.1/lib/rspec/rails/matchers/have_http_status.rb:219: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+../Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/rspec-rails-7.1.1/lib/rspec/rails/matchers/have_http_status.rb:219: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
 ....
 2nd Try error in ./spec/requests/internal_api/v1/reports/client_revenue/index_spec.rb:68:
 undefined local variable or method 'clients' for an instance of #<Class:0x000000013e8f3218>
@@ -1155,11 +1155,11 @@ rspec ./spec/requests/internal_api/v1/reports/time_entry/download_spec.rb:84 # I
 rspec ./spec/requests/internal_api/v1/reports/time_entry/download_spec.rb:95 # InternalApi::V1::Reports::TimeEntryController#download when user is a book keeper when pdf file requested generates PDF and send in response
 rspec ./spec/system/users/logout_spec.rb:16 # Logout when user want to logout logout the current user when user clicks on logout
 
-.../Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
-/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/rspec-rails-7.1.1/lib/rspec/rails/matchers/have_http_status.rb:219: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+.../Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/rspec-rails-7.1.1/lib/rspec/rails/matchers/have_http_status.rb:219: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
 Duration can't be blank
-....F/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
-/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/rspec-rails-7.1.1/lib/rspec/rails/matchers/have_http_status.rb:219: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+....F/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/rspec-rails-7.1.1/lib/rspec/rails/matchers/have_http_status.rb:219: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
 Duration can't be blank
 .......
 1st Try error in ./spec/requests/internal_api/v1/reports/client_revenue/index_spec.rb:108:
@@ -1241,16 +1241,16 @@ F
 undefined method 'needs_server?' for nil
 undefined method 'needs_server?' for nil
 RSpec::Retry: 3rd try ./spec/system/teams/index_spec.rb:20
-../Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
-/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/rspec-rails-7.1.1/lib/rspec/rails/matchers/have_http_status.rb:219: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+../Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/rspec-rails-7.1.1/lib/rspec/rails/matchers/have_http_status.rb:219: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
 
 1st Try error in ./spec/system/clients/overdue_and_outstanding_calucluation_spec.rb:19:
 undefined method 'needs_server?' for nil
 undefined method 'needs_server?' for nil
 
 RSpec::Retry: 2nd try ./spec/system/clients/overdue_and_outstanding_calucluation_spec.rb:19
-..F./Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
-/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/rspec-rails-7.1.1/lib/rspec/rails/matchers/have_http_status.rb:219: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+..F./Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/rspec-rails-7.1.1/lib/rspec/rails/matchers/have_http_status.rb:219: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
 .
 1st Try error in ./spec/system/clients/due_invoice_payment_reminder_spec.rb:32:
 undefined method 'needs_server?' for nil
@@ -1889,7 +1889,7 @@ Failures:
       #   4. webpack has not yet FINISHED running to reflect updates.
       #   5. You have misconfigured Shakapacker's `config/shakapacker.yml` file.
       #   6. Your webpack configuration is not creating a manifest.
-      #   
+      #
       #   Your manifest contains:
       #   {
       #     "entrypoints": {}
@@ -4248,11 +4248,11 @@ expected: 4
 (compared using ==)
 
 RSpec::Retry: 3rd try ./spec/models/user_search_spec.rb:168
-/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
-./Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
-./Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
-....F........./Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
-/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/rspec-rails-7.1.1/lib/rspec/rails/matchers/have_http_status.rb:219: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+./Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+./Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+....F........./Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/rspec-rails-7.1.1/lib/rspec/rails/matchers/have_http_status.rb:219: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
 ....
 1st Try error in ./spec/models/user_search_spec.rb:211:
 expected `#<ActiveRecord::Associations::HasManyThroughAssociation:0x00000001326dc080 @owner=#<User id: 259, fir...t: {}>, @association_ids=nil, @association_scope=nil, @skip_strict_loading=nil, @through_records={}>.loaded?` to be truthy, got false
@@ -4624,8 +4624,8 @@ RSpec::Retry: 2nd try ./spec/system/users/signup_spec.rb:212
 undefined method 'needs_server?' for nil
 undefined method 'needs_server?' for nil
 RSpec::Retry: 3rd try ./spec/system/users/signup_spec.rb:212
-/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
-./Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_entity is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+/Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
+./Users/sward/.local/share/mise/installs/ruby/3.4.5/lib/ruby/gems/3.4.0/gems/actionpack-8.0.2/lib/action_controller/metal/rendering.rb:235: warning: Status code :unprocessable_content is deprecated and will be removed in a future version of Rack. Please use :unprocessable_content instead.
 ..F
 1st Try error in ./spec/system/users/signup_spec.rb:229:
 undefined method 'needs_server?' for nil

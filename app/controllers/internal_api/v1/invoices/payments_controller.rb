@@ -23,7 +23,7 @@ class InternalApi::V1::Invoices::PaymentsController < InternalApi::V1::Applicati
         render json: { invoice: @invoice, notice: I18n.t("invoices.payments.success.success") }, status: 200
       end
     else
-      render json: { error: I18n.t("invoices.payments.success.failure") }, status: :unprocessable_entity
+      render json: { error: I18n.t("invoices.payments.success.failure") }, status: 422
     end
   end
 

@@ -22,7 +22,7 @@ const StaticPage = ({
       {/* Basic Details Card */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-lg font-semibold">
+          <CardTitle className="flex items-center gap-2 text-xl font-bold">
             <InfoIcon className="h-5 w-5" color="#1D1A31" />
             Basic Details
           </CardTitle>
@@ -33,18 +33,20 @@ const StaticPage = ({
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <label className="text-sm font-medium text-muted-foreground">
+              <label className="text-sm font-bold text-muted-foreground">
                 Name
               </label>
-              <p className="text-sm">
+              <p className="text-base font-semibold">
                 {personalDetails.first_name} {personalDetails.last_name}
               </p>
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium text-muted-foreground">
+              <label className="text-sm font-bold text-muted-foreground">
                 Date of Birth
               </label>
-              <p className="text-sm">{personalDetails.date_of_birth}</p>
+              <p className="text-base font-semibold">
+                {personalDetails.date_of_birth}
+              </p>
             </div>
           </div>
         </CardContent>
@@ -52,7 +54,7 @@ const StaticPage = ({
       {/* Contact Details Card */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-lg font-semibold">
+          <CardTitle className="flex items-center gap-2 text-xl font-bold">
             <PhoneIcon className="h-5 w-5" color="#1D1A31" />
             Contact Details
           </CardTitle>
@@ -63,18 +65,18 @@ const StaticPage = ({
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <label className="text-sm font-medium text-muted-foreground">
+              <label className="text-sm font-bold text-muted-foreground">
                 Phone Number
               </label>
-              <p className="text-sm">
+              <p className="text-base font-semibold">
                 {personalDetails.phone_number || "Not provided"}
               </p>
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium text-muted-foreground">
+              <label className="text-sm font-bold text-muted-foreground">
                 Email ID (Personal)
               </label>
-              <p className="text-sm">
+              <p className="text-base font-semibold">
                 {personalDetails.email_id || "Not provided"}
               </p>
             </div>
@@ -84,7 +86,7 @@ const StaticPage = ({
       {/* Address Card */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-lg font-semibold">
+          <CardTitle className="flex items-center gap-2 text-xl font-bold">
             <MapPinIcon className="h-5 w-5" color="#1D1A31" />
             Address
           </CardTitle>
@@ -94,10 +96,10 @@ const StaticPage = ({
         </CardHeader>
         <CardContent>
           <div className="space-y-2">
-            <label className="text-sm font-medium text-muted-foreground">
+            <label className="text-sm font-bold text-muted-foreground">
               Address
             </label>
-            <p className="text-sm leading-relaxed">
+            <p className="text-base font-semibold leading-relaxed">
               {personalDetails.addresses ? (
                 <>
                   {personalDetails.addresses.address_line_1}
@@ -120,7 +122,7 @@ const StaticPage = ({
       {/* Social Profiles Card */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-lg font-semibold">
+          <CardTitle className="flex items-center gap-2 text-xl font-bold">
             <GlobeIcon className="h-5 w-5" color="#1D1A31" />
             Social Profiles
           </CardTitle>
@@ -131,18 +133,18 @@ const StaticPage = ({
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <label className="text-sm font-medium text-muted-foreground">
+              <label className="text-sm font-bold text-muted-foreground">
                 LinkedIn
               </label>
-              <p className="text-sm break-all">
+              <p className="text-base font-semibold break-all">
                 {personalDetails.linkedin || "Not provided"}
               </p>
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium text-muted-foreground">
+              <label className="text-sm font-bold text-muted-foreground">
                 Github
               </label>
-              <p className="text-sm break-all">
+              <p className="text-base font-semibold break-all">
                 {personalDetails.github || "Not provided"}
               </p>
             </div>
@@ -153,7 +155,7 @@ const StaticPage = ({
       {isCalledFromSettings && (
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-lg font-semibold">
+            <CardTitle className="flex items-center gap-2 text-xl font-bold">
               <KeyIcon className="h-5 w-5" color="#1D1A31" />
               Password
             </CardTitle>

@@ -412,8 +412,8 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
                   key={index}
                   className={
                     item === view
-                      ? "mr-10 border-b-2 border-miru-han-purple-1000 font-bold tracking-widest text-miru-han-purple-1000"
-                      : "mr-10 font-medium tracking-widest text-miru-han-purple-600"
+                      ? "mr-10 border-b-2 border-miru-han-purple-1000 text-lg font-bold tracking-widest text-miru-han-purple-1000"
+                      : "mr-10 text-lg font-semibold tracking-widest text-miru-han-purple-600"
                   }
                   onClick={() => setView(item)}
                 >
@@ -423,7 +423,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
             </nav>
           )}
           {!isDesktop && isAdminUser && (
-            <label className="text-sm font-normal leading-5 text-miru-dark-purple-1000">
+            <label className="text-base font-semibold leading-5 text-miru-dark-purple-1000">
               Time entries for
             </label>
           )}
@@ -506,7 +506,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
           )}
           {view !== "week" && !newEntryView && isDesktop && (
             <button
-              className="flex h-10 w-full items-center justify-center rounded border-2 border-miru-han-purple-600 p-2 text-lg font-bold tracking-widest text-miru-han-purple-600 lg:h-14 lg:p-4"
+              className="flex h-10 w-full items-center justify-center rounded border-2 border-miru-han-purple-600 p-2 text-xl font-bold tracking-widest text-miru-han-purple-600 lg:h-14 lg:p-4"
               onClick={() => {
                 setNewEntryView(true);
                 setEditEntryId(0);
@@ -521,7 +521,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
             !isDesktop &&
             entryList[selectedFullDate] && (
               <button
-                className="flex h-10 w-full items-center justify-center rounded border-2 border-miru-han-purple-600 p-2 text-lg font-bold tracking-widest text-miru-han-purple-600 lg:h-14 lg:p-4"
+                className="flex h-10 w-full items-center justify-center rounded border-2 border-miru-han-purple-600 p-2 text-xl font-bold tracking-widest text-miru-han-purple-600 lg:h-14 lg:p-4"
                 onClick={() => {
                   setNewEntryView(true);
                   setEditEntryId(0);
@@ -533,7 +533,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
           {/* --- weekly view --- */}
           {view === "week" && !newRowView && (
             <button
-              className="h-14 w-full border-2 border-miru-han-purple-600 p-4 text-lg font-bold tracking-widest text-miru-han-purple-600"
+              className="h-14 w-full border-2 border-miru-han-purple-600 p-4 text-xl font-bold tracking-widest text-miru-han-purple-600"
               onClick={() => setNewRowView(true)}
             >
               + NEW ROW

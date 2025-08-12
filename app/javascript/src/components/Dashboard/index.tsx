@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 
 import Home from "./Home";
 import Navbar from "../Navbar";
-import ModernSidebar from "../Navbar/ModernSidebar";
+import Sidebar from "../Navbar/Sidebar";
 import { useUserContext } from "context/UserContext";
 
 const Dashboard = props => {
@@ -36,7 +36,7 @@ const Dashboard = props => {
   if (useModernLayout) {
     return (
       <div className="flex h-screen w-full">
-        <ModernSidebar />
+        <Sidebar />
         <div className="flex-1 lg:pl-16 lg:data-[sidebar-expanded=true]:pl-64">
           <Home {...homeProps} />
         </div>

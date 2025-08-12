@@ -100,7 +100,7 @@ const OrgDetails = () => {
   }, []);
 
   const handleEditClick = () => {
-    navigate(`/settings/organization/edit`, { replace: true });
+    navigate(`/settings/profile/organization/edit`, { replace: true });
   };
 
   const handleBackBtnClick = () => {

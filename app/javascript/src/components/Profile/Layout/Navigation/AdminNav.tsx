@@ -1,7 +1,7 @@
-import React, { Fragment, useState } from "react";
+import React, { useState } from "react";
 
 import { useUserContext } from "context/UserContext";
-import { MinusIcon, PlusIcon } from "miruIcons";
+import { CaretDownIcon, CaretUpIcon } from "miruIcons";
 
 import List from "./List";
 
@@ -15,9 +15,21 @@ const AdminNav = () => {
   });
 
   const toggleSection = section => {
-    setOpenedSubNav({
-      personal: section === "personal",
-      organization: section === "organization",
+    setOpenedSubNav(prev => {
+      const isCurrentlyOpen = prev[section];
+      if (isCurrentlyOpen) {
+        // If clicking on already open section, close it
+        return {
+          ...prev,
+          [section]: false,
+        };
+      }
+
+      // If clicking on closed section, open it and close others
+      return {
+        personal: section === "personal",
+        organization: section === "organization",
+      };
     });
   };
 
@@ -30,28 +42,31 @@ const AdminNav = () => {
   );
 
   const renderSection = (title, section, settingsList) => (
-    <Fragment>
-      <div
-        className="flex cursor-pointer flex-row items-center justify-between py-3 px-5"
+    <div className="border-b border-border/40">
+      <button
+        className="flex w-full cursor-pointer items-center justify-between px-4 py-3 text-left transition-colors hover:bg-accent/50"
+        type="button"
         onClick={() => toggleSection(section)}
       >
-        <span className="text-base font-bold">{title}</span>
-        <div id={section}>
+        <span className="text-base font-bold text-foreground">{title}</span>
+        <div className="flex items-center justify-center">
           {openedSubNav[section] ? (
-            <MinusIcon size={16} weight="bold" />
+            <CaretUpIcon className="h-4 w-4 text-muted-foreground" />
           ) : (
-            <PlusIcon size={16} weight="bold" />
+            <CaretDownIcon className="h-4 w-4 text-muted-foreground" />
           )}
         </div>
-      </div>
+      </button>
       {openedSubNav[section] && (
-        <List companyRole={companyRole} settingsList={settingsList} />
+        <div className="pb-2">
+          <List companyRole={companyRole} settingsList={settingsList} />
+        </div>
       )}
-    </Fragment>
+    </div>
   );
 
   return (
-    <div className="list-none min-h-50v text-sm font-medium leading-5 tracking-wider">
+    <div className="min-h-[50vh] border border-border rounded-md bg-card text-card-foreground shadow-sm">
       {renderSection("Personal", "personal", personalSettings)}
       {renderSection(company.name, "organization", organizationalSettings)}
     </div>

@@ -65,9 +65,9 @@ module ErrorHandler
                    errors: exception.record.errors.full_messages.first,
                    notice: I18n.t("client.update.failure.message")
                  },
-            status: :unprocessable_entity
+            status: 422
         }
-        format.html { render file: "public/422.html", status: :unprocessable_entity, layout: false, alert: message }
+        format.html { render file: "public/422.html", status: 422, layout: false, alert: message }
       end
     end
 

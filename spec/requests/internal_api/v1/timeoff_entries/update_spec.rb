@@ -48,7 +48,7 @@ RSpec.describe "InternalApi::V1::TimeoffEntries#update", type: :request do
 
         puts json_response["errors"]
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         expect(json_response["errors"]).to match("Duration can't be blank")
       end
     end
@@ -90,7 +90,7 @@ RSpec.describe "InternalApi::V1::TimeoffEntries#update", type: :request do
 
         puts json_response["errors"]
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         expect(json_response["errors"]).to match("Duration can't be blank")
       end
     end
