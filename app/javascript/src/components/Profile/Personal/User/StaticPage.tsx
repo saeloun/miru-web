@@ -3,6 +3,13 @@ import React from "react";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import { InfoIcon, KeyIcon, PhoneIcon, MapPinIcon, GlobeIcon } from "miruIcons";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../../../ui/card";
 
 dayjs.extend(customParseFormat);
 const StaticPage = ({
@@ -10,134 +17,161 @@ const StaticPage = ({
   handleEditClick,
   isCalledFromSettings,
 }) => (
-  <div className="mt-4 h-full bg-miru-gray-100 px-10">
-    <div className="flex border-b border-b-miru-gray-400 py-10">
-      <div className="w-1/5 pr-4">
-        <span className="flex flex-row items-center text-sm font-medium text-miru-dark-purple-1000">
-          <InfoIcon className="mr-2" color="#1D1A31" size={13.5} /> Basic
-          Details
-        </span>
-      </div>
-      <div className="w-4/5">
-        <div className="flex">
-          <div className="w-6/12">
-            <span className="text-xs text-miru-dark-purple-1000">Name</span>
-            <p className="text-miru-dark-purple-1000">
-              {personalDetails.first_name} {personalDetails.last_name}
-            </p>
+  <div className="min-h-screen bg-background p-6">
+    <div className="mx-auto max-w-4xl space-y-6">
+      {/* Basic Details Card */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-lg font-semibold">
+            <InfoIcon className="h-5 w-5" color="#1D1A31" />
+            Basic Details
+          </CardTitle>
+          <CardDescription>
+            Manage your personal information and basic details
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-muted-foreground">
+                Name
+              </label>
+              <p className="text-sm">
+                {personalDetails.first_name} {personalDetails.last_name}
+              </p>
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-muted-foreground">
+                Date of Birth
+              </label>
+              <p className="text-sm">{personalDetails.date_of_birth}</p>
+            </div>
           </div>
-          <div className="w-6/12">
-            <span className="text-xs text-miru-dark-purple-1000">
-              Date of Birth
-            </span>
-            <p className="text-miru-dark-purple-1000">
-              {personalDetails.date_of_birth}
-            </p>
+        </CardContent>
+      </Card>
+      {/* Contact Details Card */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-lg font-semibold">
+            <PhoneIcon className="h-5 w-5" color="#1D1A31" />
+            Contact Details
+          </CardTitle>
+          <CardDescription>
+            Your contact information and communication preferences
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-muted-foreground">
+                Phone Number
+              </label>
+              <p className="text-sm">
+                {personalDetails.phone_number || "Not provided"}
+              </p>
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-muted-foreground">
+                Email ID (Personal)
+              </label>
+              <p className="text-sm">
+                {personalDetails.email_id || "Not provided"}
+              </p>
+            </div>
           </div>
-        </div>
-      </div>
-    </div>
-    <div className="flex border-b border-b-miru-gray-400 py-10">
-      <div className="w-1/5 pr-4">
-        <span className="flex flex-row items-center text-sm font-medium text-miru-dark-purple-1000">
-          <PhoneIcon className="mr-2" color="#1D1A31" size={13.5} />
-          Contact Details
-        </span>
-      </div>
-      <div className="w-4/5">
-        <div className="flex">
-          <div className="w-6/12">
-            <span className="text-xs text-miru-dark-purple-1000">
-              Phone Number
-            </span>
-            <p className="min-h-24 text-miru-dark-purple-1000">
-              {personalDetails.phone_number}
-            </p>
-          </div>
-          <div className="w-6/12">
-            <span className="text-xs text-miru-dark-purple-1000">
-              Email ID (Personal)
-            </span>
-            <p className="min-h-24 text-miru-dark-purple-1000">
-              {personalDetails.email_id}
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div className="flex border-b border-b-miru-gray-400 py-10">
-      <div className="w-1/5 pr-4">
-        <span className="flex flex-row items-center text-sm font-medium text-miru-dark-purple-1000">
-          <MapPinIcon className="mr-2" color="#1D1A31" size={13.5} />
-          Address
-        </span>
-      </div>
-      <div className="w-4/5">
-        <div className="flex">
-          <div className="w-full">
-            <span className="text-xs text-miru-dark-purple-1000">Address</span>
-            <p className="text-miru-dark-purple-1000">
-              {personalDetails.addresses && (
+        </CardContent>
+      </Card>
+      {/* Address Card */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-lg font-semibold">
+            <MapPinIcon className="h-5 w-5" color="#1D1A31" />
+            Address
+          </CardTitle>
+          <CardDescription>
+            Your current address and location information
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-muted-foreground">
+              Address
+            </label>
+            <p className="text-sm leading-relaxed">
+              {personalDetails.addresses ? (
                 <>
-                  {personalDetails.addresses.address_line_1},
-                  {personalDetails.addresses.address_line_2}
-                  {personalDetails.addresses.city},
-                  {personalDetails.addresses.state},
-                  {personalDetails.addresses.country} -
+                  {personalDetails.addresses.address_line_1}
+                  {personalDetails.addresses.address_line_2 &&
+                    `, ${personalDetails.addresses.address_line_2}`}
+                  <br />
+                  {personalDetails.addresses.city},{" "}
+                  {personalDetails.addresses.state}
+                  <br />
+                  {personalDetails.addresses.country} -{" "}
                   {personalDetails.addresses.pin}
                 </>
+              ) : (
+                "No address provided"
               )}
             </p>
           </div>
-        </div>
-      </div>
-    </div>
-    <div className="flex py-10">
-      <div className="w-1/5 pr-4">
-        <span className="flex flex-row items-center text-sm font-medium text-miru-dark-purple-1000">
-          <GlobeIcon className="mr-2" color="#1D1A31" size={13.5} />
-          Social Profiles
-        </span>
-      </div>
-      <div className="w-4/5">
-        <div className="flex">
-          <div className="w-6/12 break-all pr-4">
-            <span className="text-xs text-miru-dark-purple-1000">LinkedIn</span>
-            <p className="min-h-24 text-miru-dark-purple-1000">
-              {personalDetails.linkedin}
-            </p>
-          </div>
-          <div className="w-6/12 break-all pr-4">
-            <span className="text-xs text-miru-dark-purple-1000">Github</span>
-            <p className="min-h-24 text-miru-dark-purple-1000">
-              {personalDetails.github}
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-    {isCalledFromSettings && (
-      <div className="flex border-b border-b-miru-gray-400 py-10">
-        <div className="flex w-full flex-row py-6">
-          <div className="w-2/12 pr-4">
-            <span className="flex flex-row items-center text-sm font-medium text-miru-dark-purple-1000">
-              <KeyIcon className="mr-2" color="#1D1A31" size={13.5} />
-              Password
-            </span>
-          </div>
-          <div className="w-9/12">
-            <div className="ml-2">
-              <button
-                className="cursor-pointer rounded border border-miru-han-purple-600 p-1 text-xs font-bold text-miru-han-purple-600"
-                onClick={handleEditClick}
-              >
-                Change Password
-              </button>
+        </CardContent>
+      </Card>
+      {/* Social Profiles Card */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-lg font-semibold">
+            <GlobeIcon className="h-5 w-5" color="#1D1A31" />
+            Social Profiles
+          </CardTitle>
+          <CardDescription>
+            Your professional and social media profiles
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-muted-foreground">
+                LinkedIn
+              </label>
+              <p className="text-sm break-all">
+                {personalDetails.linkedin || "Not provided"}
+              </p>
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-muted-foreground">
+                Github
+              </label>
+              <p className="text-sm break-all">
+                {personalDetails.github || "Not provided"}
+              </p>
             </div>
           </div>
-        </div>
-      </div>
-    )}
+        </CardContent>
+      </Card>
+      {/* Password Section - Only show in settings */}
+      {isCalledFromSettings && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-lg font-semibold">
+              <KeyIcon className="h-5 w-5" color="#1D1A31" />
+              Password
+            </CardTitle>
+            <CardDescription>
+              Manage your account password and security settings
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <button
+              className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none"
+              onClick={handleEditClick}
+            >
+              Change Password
+            </button>
+          </CardContent>
+        </Card>
+      )}
+    </div>
   </div>
 );
 
