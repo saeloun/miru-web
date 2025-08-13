@@ -3,6 +3,7 @@ import React, { Fragment, useState, useEffect } from "react";
 import { ProfileContext } from "context/Profile/ProfileContext";
 import { useUserContext } from "context/UserContext";
 import { useLocation, useParams } from "react-router-dom";
+import { useCurrentUser } from "~/hooks/useCurrentUser";
 
 import { CompensationDetailsState } from "./Context/CompensationDetailsState";
 import { EmploymentDetailsState } from "./Context/EmploymentDetailsState";
@@ -14,6 +15,7 @@ import OutletWrapper from "./Layout/OutletWrapper";
 
 const Layout = () => {
   const { isDesktop } = useUserContext();
+  const { currentUser } = useCurrentUser();
   const location = useLocation();
   const { memberId } = useParams();
   const [settingsStates, setSettingsStates] = useState({
@@ -50,6 +52,22 @@ const Layout = () => {
 
     setShowMobileNav(mobileNavVisibility);
   }, [location]);
+
+  // Initialize personal details with current user data when in settings context
+  useEffect(() => {
+    if (isCalledFromSettings && currentUser) {
+      setSettingsStates(prevState => ({
+        ...prevState,
+        personalDetails: {
+          ...prevState.personalDetails,
+          id: String(currentUser.id),
+          first_name: currentUser.first_name || "",
+          last_name: currentUser.last_name || "",
+          email_id: currentUser.email || "",
+        },
+      }));
+    }
+  }, [isCalledFromSettings, currentUser]);
 
   const updateDetails = (key, value) => {
     setSettingsStates(previousSettings => ({

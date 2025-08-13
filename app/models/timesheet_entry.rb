@@ -75,24 +75,6 @@ class TimesheetEntry < ApplicationRecord
 
   scope :search_import, -> { includes(:project, :client, :user) }
 
-  # search_data kept for compatibility but not needed with PG search
-  def search_data
-    {
-      id: id.to_i,
-      project_id:,
-      client_id: self.project&.client_id,
-      user_id:,
-      work_date: work_date.to_time,
-      note:,
-      user_name: user.full_name,
-      project_name: project.name,
-      client_name: project.client.name,
-      bill_status:,
-      duration: duration.to_i,
-      created_at: created_at.to_time,
-      discarded_at:
-    }
-  end
 
   def snippet
     {

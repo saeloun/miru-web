@@ -60,22 +60,6 @@ class Expense < ApplicationRecord
   validates :date, presence: true
   validates :amount, numericality: { greater_than: 0 }
 
-  # search_data kept for compatibility but not needed with PG search
-  def search_data
-    {
-      id: id.to_i,
-      amount:,
-      date: date.to_time,
-      description:,
-      expense_type:,
-      category_name: expense_category.name,
-      category_id: expense_category_id,
-      vendor_name: vendor&.name,
-      vendor_id:,
-      company_id: company.id,
-      created_at:
-    }
-  end
 
   def formatted_date
     CompanyDateFormattingService.new(date, company:).process

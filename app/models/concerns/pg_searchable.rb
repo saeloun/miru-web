@@ -139,11 +139,5 @@ module PgSearchable
         end
       end
     end
-
-
-    # Compatibility method for searchkick DSL
-    def searchkick(options = {})
-      # No-op for compatibility
-    end
   end
 end

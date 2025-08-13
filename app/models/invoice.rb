@@ -115,22 +115,6 @@ class Invoice < ApplicationRecord
 
   ARCHIVED_PREFIX = "ARC"
 
-  # search_data kept for compatibility but not needed with PG search
-  def search_data
-    {
-      id: id.to_i,
-      issue_date:,
-      due_date:,
-      invoice_number:,
-      client_id:,
-      status:,
-      company_id:,
-      client_name:,
-      created_at:,
-      updated_at:,
-      discarded_at:
-    }
-  end
 
   def recently_sent_mail?
     sent_at.nil? || (sent_at && !(sent_at > 1.minute.ago))

@@ -9,6 +9,7 @@ import { useUserContext } from "context/UserContext";
 import { employmentMapper } from "mapper/teams.mapper";
 import { Outlet, useNavigate, useParams } from "react-router-dom";
 import { sendGAPageView } from "utils/googleAnalytics";
+import { useCurrentUser } from "~/hooks/useCurrentUser";
 
 import MobilePersonalDetails from "./MobilePersonalDetails";
 import StaticPage from "./StaticPage";
@@ -17,36 +18,57 @@ const UserDetailsView = () => {
   const { updateDetails, personalDetails, isCalledFromSettings } =
     useProfileContext();
   const [isLoading, setIsLoading] = useState(false);
+  const [currentUserId, setCurrentUserId] = useState(null);
   const { user, isDesktop, companyRole } = useUserContext();
+  const { currentUser } = useCurrentUser();
   const { memberId } = useParams();
-  const UserId = window.location.pathname.startsWith("/settings")
-    ? user.id
-    : memberId;
 
   const getData = async () => {
+    if (!currentUserId) return;
+
     setIsLoading(true);
-    if (companyRole !== "client") {
-      const employmentData: any = await teamsApi.getEmploymentDetails(UserId);
-
-      const previousEmploymentData: any = await teamsApi.getPreviousEmployments(
-        UserId
-      );
-
-      if (employmentData.status && employmentData.status == 200) {
-        const employmentObj = employmentMapper(
-          employmentData.data.employment,
-          previousEmploymentData.data.previous_employments
+    try {
+      if (companyRole !== "client") {
+        const employmentData: any = await teamsApi.getEmploymentDetails(
+          currentUserId
         );
-        updateDetails("employmentDetails", employmentObj);
+
+        const previousEmploymentData: any =
+          await teamsApi.getPreviousEmployments(currentUserId);
+
+        if (employmentData.status && employmentData.status == 200) {
+          const employmentObj = employmentMapper(
+            employmentData.data.employment,
+            previousEmploymentData.data.previous_employments
+          );
+          updateDetails("employmentDetails", employmentObj);
+        }
       }
+    } catch (error) {
+      console.error("Failed to fetch employment data:", error);
     }
     setIsLoading(false);
   };
 
+  // Effect to determine current user ID
+  useEffect(() => {
+    if (isCalledFromSettings) {
+      // Use fresh user data from _me endpoint for settings
+      if (currentUser) {
+        setCurrentUserId(currentUser.id);
+      }
+    } else {
+      // Use memberId for team view
+      setCurrentUserId(memberId);
+    }
+  }, [isCalledFromSettings, currentUser, memberId]);
+
   useEffect(() => {
     sendGAPageView();
-    getData();
-  }, []);
+    if (currentUserId) {
+      getData();
+    }
+  }, [currentUserId]);
 
   const navigate = useNavigate();
 
@@ -82,7 +104,7 @@ const UserDetailsView = () => {
             href="edit"
             title="Personal Details"
             backHref={
-              isCalledFromSettings ? "/settings/" : `/team/${memberId}/`
+              isCalledFromSettings ? "/settings/" : `/team/${currentUserId}/`
             }
           />
           {isLoading ? (

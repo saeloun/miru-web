@@ -8,27 +8,48 @@ import { useProfileContext } from "context/Profile/ProfileContext";
 import { useUserContext } from "context/UserContext";
 import { employmentMapper } from "mapper/teams.mapper";
 import { useNavigate, useParams } from "react-router-dom";
+import { useCurrentUser } from "~/hooks/useCurrentUser";
 
 import StaticPage from "./StaticPage";
 
 const EmploymentDetails = () => {
   const { user, isDesktop } = useUserContext();
+  const { currentUser } = useCurrentUser();
   const { updateDetails, employmentDetails, isCalledFromSettings } =
     useProfileContext();
   const navigate = useNavigate();
   const { memberId } = useParams();
 
   const [isLoading, setIsLoading] = useState(false);
-  const currentUserId = isCalledFromSettings ? user.id : memberId;
+  const [currentUserId, setCurrentUserId] = useState(null);
+
+  // Effect to determine current user ID
+  useEffect(() => {
+    if (isCalledFromSettings) {
+      // Use fresh user data from _me endpoint for settings
+      if (currentUser) {
+        setCurrentUserId(currentUser.id);
+      }
+    } else {
+      // Use memberId for team view
+      setCurrentUserId(memberId);
+    }
+  }, [isCalledFromSettings, currentUser, memberId]);
 
   const getDetails = async () => {
-    const res1: any = await teamsApi.getEmploymentDetails(currentUserId);
-    const res: any = await teamsApi.getPreviousEmployments(currentUserId);
-    const employmentData = employmentMapper(
-      res1.data.employment,
-      res.data.previous_employments
-    );
-    updateDetails("employmentDetails", employmentData);
+    if (!currentUserId) return;
+
+    try {
+      const res1: any = await teamsApi.getEmploymentDetails(currentUserId);
+      const res: any = await teamsApi.getPreviousEmployments(currentUserId);
+      const employmentData = employmentMapper(
+        res1.data.employment,
+        res.data.previous_employments
+      );
+      updateDetails("employmentDetails", employmentData);
+    } catch (error) {
+      console.error("Failed to fetch employment details:", error);
+    }
     setIsLoading(false);
   };
 
@@ -37,9 +58,11 @@ const EmploymentDetails = () => {
   };
 
   useEffect(() => {
-    setIsLoading(true);
-    getDetails();
-  }, []);
+    if (currentUserId) {
+      setIsLoading(true);
+      getDetails();
+    }
+  }, [currentUserId]);
 
   return (
     <Fragment>
@@ -54,9 +77,11 @@ const EmploymentDetails = () => {
       )}
       {!isDesktop && (
         <MobileEditHeader
-          backHref={isCalledFromSettings ? "/settings/" : `/team/${memberId}`}
           href="edit"
           title="Employment Details"
+          backHref={
+            isCalledFromSettings ? "/settings/" : `/team/${currentUserId}`
+          }
         />
       )}
       {isLoading ? (

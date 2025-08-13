@@ -37,7 +37,7 @@ const Header = ({
   const [showContactModal, setShowContactModal] = useState<boolean>(false);
 
   const navigate = useNavigate();
-  const menuRef = useRef();
+  const menuRef = useRef<HTMLUListElement>(null);
   const { isDesktop } = useUserContext();
 
   const handleClientDetails = () => {

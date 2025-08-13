@@ -11,7 +11,7 @@ const HeaderMenuList = ({
   handleAddRemoveMembers,
   setShowDeleteDialog,
 }) => {
-  const menuRef = useRef();
+  const menuRef = useRef<HTMLUListElement>(null);
   const { isDesktop } = useUserContext();
 
   useOutsideClick(menuRef, () => setIsHeaderMenuVisible(false));

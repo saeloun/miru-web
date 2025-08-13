@@ -15,7 +15,7 @@ type customInputTextProps = {
   name?: string;
   type?: string;
   value: any;
-  onChange: any;
+  onChange?: any;
   labelClassName?: string;
   label?: string;
   wrapperClassName?: string;

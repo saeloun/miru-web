@@ -117,9 +117,8 @@ const Sidebar = () => {
   ];
 
   useEffect(() => {
-    // Only fetch workspaces if user is authenticated with a token
-    const authToken = localStorage.getItem("authToken");
-    if (user && authToken) {
+    // Only fetch workspaces if user is authenticated (user context will be populated by _me endpoint)
+    if (user) {
       fetchWorkspaces();
     }
   }, [user]);

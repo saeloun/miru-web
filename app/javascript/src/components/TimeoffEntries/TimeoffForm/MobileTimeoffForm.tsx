@@ -53,7 +53,7 @@ const MobileTimeoffForm = ({
   handleSubmit,
   handleDeleteTimeoffEntry,
 }) => {
-  const datePickerRef = useRef();
+  const datePickerRef = useRef<HTMLDivElement>(null);
   const {
     leaveTypes,
     setNewTimeoffEntryView,

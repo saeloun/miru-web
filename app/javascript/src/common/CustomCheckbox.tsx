@@ -2,7 +2,20 @@ import React from "react";
 
 import classnames from "classnames";
 
-const CustomCheckbox = ({
+interface CustomCheckboxProps {
+  text?: string;
+  isChecked?: boolean;
+  checkboxValue: any;
+  id: any;
+  handleCheck: any;
+  handleOnClick?: any;
+  name?: string;
+  wrapperClassName?: string;
+  labelClassName?: string;
+  isUpdatedDesign?: any;
+}
+
+const CustomCheckbox: React.FC<CustomCheckboxProps> = ({
   text = undefined,
   isChecked = false,
   checkboxValue,

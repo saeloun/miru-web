@@ -27,6 +27,7 @@ export enum Paths {
   PROJECTS = "/projects",
   SUBSCRIPTIONS = "/subscriptions",
   PAYMENTS = "/payments",
+  PAYMENT_SUCCESS = "/payments/success",
   TIME_TRACKING = "/time-tracking",
   TEAM = "/team/*",
   TEAMS = "/teams/*",
@@ -34,6 +35,10 @@ export enum Paths {
   SETTINGS = "/settings/*",
   AUTHORIZATION = "/authorization",
   Leave_Management = "/leave-management",
+  INVALID_LINK = "/invalid_link",
+  PUBLIC_INVOICE = "/invoice/:id",
+  EMAIL_VERIFICATION = "/email_confirmation",
+  EMAIL_VERIFICATION_SUCCESS = "/email_verification_success",
 }
 
 export enum BILL_STATUS {

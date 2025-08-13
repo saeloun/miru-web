@@ -52,7 +52,7 @@ interface Props {
 const EditClient = ({ user = {}, isEdit = false }: Props) => {
   const [apiError, setApiError] = useState<string>(""); // eslint-disable-line
   const { setModalState, modal, setTeamList, teamList } = useList();
-  const wrapperRef = useRef();
+  const wrapperRef = useRef<HTMLDivElement>(null);
   const { isDesktop } = useUserContext();
 
   const updateTeamList = updatedUser => {

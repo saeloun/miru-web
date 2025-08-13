@@ -27,7 +27,7 @@ const DesktopTimeoffForm = ({
   isValidTimeEntry,
   handleSubmit,
 }) => {
-  const datePickerRef = useRef();
+  const datePickerRef = useRef<HTMLDivElement>(null);
   const {
     leaveTypes,
     setNewTimeoffEntryView,

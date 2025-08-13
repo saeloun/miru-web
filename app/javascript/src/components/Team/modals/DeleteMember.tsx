@@ -9,7 +9,7 @@ import { XIcon } from "miruIcons";
 import { Toastr, Modal, Button } from "StyledComponents";
 
 const DeleteMember = ({ user }) => {
-  const wrapperRef = useRef();
+  const wrapperRef = useRef<HTMLDivElement>(null);
 
   const { setModalState, modal, setTeamList, teamList } = useList();
 

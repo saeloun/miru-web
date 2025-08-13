@@ -5,29 +5,48 @@ import teamsApi from "apis/teams";
 import { useProfileContext } from "context/Profile/ProfileContext";
 import { UserAvatarSVG, DeleteIcon, ImageIcon, EditIcon } from "miruIcons";
 import { MoreOptions, Toastr, Tooltip } from "StyledComponents";
+import { useCurrentUser } from "~/hooks/useCurrentUser";
 
 const UserInformation = () => {
   const {
     personalDetails: { first_name, last_name, id },
+    isCalledFromSettings,
   } = useProfileContext();
+  const { currentUser } = useCurrentUser();
 
   const [showProfileOptions, setShowProfileOptions] = useState(false);
   const [imageUrl, setImageUrl] = useState(null);
 
+  // Use current user data when in settings context
+  const displayName =
+    isCalledFromSettings && currentUser
+      ? `${currentUser.first_name} ${currentUser.last_name}`
+      : `${first_name} ${last_name}`;
+
+  const userId = isCalledFromSettings && currentUser ? currentUser.id : id;
+
   const getAvatar = async () => {
+    if (!userId) return;
+
     try {
-      const responseData = await teamsApi.get(id);
-      setImageUrl(responseData.data.avatar_url);
+      if (isCalledFromSettings && currentUser) {
+        // Use current user avatar from _me endpoint
+        setImageUrl(currentUser.avatar_url);
+      } else {
+        // Use teams API for team member context
+        const responseData = await teamsApi.get(userId);
+        setImageUrl(responseData.data.avatar_url);
+      }
     } catch {
       Toastr.error("Error in getting Profile Image");
     }
   };
 
   useEffect(() => {
-    if (id) {
+    if (userId) {
       getAvatar();
     }
-  }, [id]);
+  }, [userId, currentUser]);
 
   const validateFileSize = file => {
     const sizeInKB = file.size / 1024;
@@ -53,7 +72,7 @@ const UserInformation = () => {
       const headers = {
         "Content-Type": "multipart/form-data",
       };
-      await teamApi.updateTeamMemberAvatar(id, payload, { headers });
+      await teamApi.updateTeamMemberAvatar(userId, payload, { headers });
     } catch (error) {
       Toastr.error(error.message);
     }
@@ -62,7 +81,7 @@ const UserInformation = () => {
   const handleDeleteProfileImage = async () => {
     try {
       setShowProfileOptions(false);
-      await teamApi.destroyTeamMemberAvatar(id);
+      await teamApi.destroyTeamMemberAvatar(userId);
       setImageUrl(null);
     } catch {
       Toastr.error("Error in deleting Profile Image");
@@ -119,12 +138,12 @@ const UserInformation = () => {
             </MoreOptions>
           )}
           <Tooltip
-            content={`${first_name} ${last_name}`}
+            content={displayName}
             wrapperClassName="relative block max-w-full "
           >
             <div className="mb-1 max-w-full overflow-hidden truncate whitespace-nowrap px-4">
               <span className=" text-xl font-bold text-miru-han-purple-1000">
-                {`${first_name} ${last_name}`}
+                {displayName}
               </span>
             </div>
           </Tooltip>

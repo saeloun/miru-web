@@ -60,18 +60,6 @@ class Project < ApplicationRecord
   # Concerns
   include ProjectSqlQueries
 
-  # search_data kept for compatibility but not needed with PG search
-  def search_data
-    {
-      id: id.to_i,
-      name:,
-      description:,
-      billable:,
-      client_id:,
-      client_name:,
-      discarded_at:
-    }
-  end
 
   def project_members_snippet(time_frame)
     date_range = DateRangeService.new(timeframe: time_frame).process

@@ -23,6 +23,7 @@ const UserContext = createContext({
   setCompany: value => {}, //eslint-disable-line
   calendarEnabled: false,
   calendarConnected: false,
+  loading: false,
 });
 
 export const useUserContext = () => useContext(UserContext);

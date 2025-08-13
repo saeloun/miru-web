@@ -40,14 +40,11 @@ const AppRouter: React.FC<AppRouterProps> = props => {
   return (
     <Routes>
       {/* Public Routes - Available to everyone */}
-      <Route element={<PublicRoute />}>
-        <Route element={<Success />} path={Paths.PAYMENT_SUCCESS} />
-        <Route element={<InvalidLink />} path={Paths.INVALID_LINK} />
-        <Route element={<InvoiceEmail />} path={Paths.PUBLIC_INVOICE} />
-      </Route>
+      <Route element={<Success />} path={Paths.PAYMENT_SUCCESS} />
+      <Route element={<InvalidLink />} path={Paths.INVALID_LINK} />
+      <Route element={<InvoiceEmail />} path={Paths.PUBLIC_INVOICE} />
       {/* Auth Routes - Only for non-authenticated users */}
       <Route element={<PublicRoute restricted />}>
-        <Route element={<SignIn />} path="/" />
         <Route element={<SignIn />} path={Paths.LOGIN} />
         <Route element={<SignUp />} path={Paths.SIGNUP} />
         <Route element={<ForgotPassword />} path={Paths.FORGOT_PASSWORD} />
