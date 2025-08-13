@@ -79,6 +79,9 @@ jobs:
         run: |
           PUPPETEER_SKIP_DOWNLOAD=true pnpm install --frozen-lockfile
       
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps
+      
       - name: Run Rubocop
         if: matrix.ci_node_index == 0
         run: bundle exec rubocop

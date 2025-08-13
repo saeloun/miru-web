@@ -178,8 +178,6 @@ group :development do
   # Add speed badges [https://github.com/MiniProfiler/rack-mini-profiler]
   gem "rack-mini-profiler", ">= 2.3.3"
 
-  # Playwright for modern system testing
-  gem "playwright-ruby-client"
 
   # Use AnnotateRb instead of annotate for Rails 8 compatibility
   gem "annotaterb"
@@ -189,7 +187,7 @@ end
 
 group :test, :ci do
   gem "capybara", ">= 3.26"
-  gem "selenium-webdriver", ">= 4.0.0"
+  gem "capybara-playwright-driver"
 
   # Use Codecov for code coverage analysis
   gem "simplecov", require: false

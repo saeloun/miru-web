@@ -47,7 +47,12 @@ RSpec.configure do |config|
   config.display_try_failure_messages = true
 
   config.around do |example|
-    example.run_with_retry retry: 3
+    # Don't retry system tests as they use Playwright now
+    if example.metadata[:type] == :system
+      example.run
+    else
+      example.run_with_retry retry: 3
+    end
   end
 
   # config.retry_callback = proc do |ex|

@@ -1,27 +1,36 @@
 # frozen_string_literal: true
 
-# Rails 8 System Test Configuration
+# Rails 8 System Test Configuration with Playwright
 RSpec.configure do |config|
-  config.before(:each, type: :system) do
-    # Set the driver for system tests - use Selenium drivers
-    driven_by = ENV["CI"].present? ? :chrome_headless : :chrome
-    Capybara.current_driver = driven_by
-    Capybara.javascript_driver = driven_by
+  # Use append_before to ensure this runs after other configurations
+  config.append_before(:each, type: :system) do |example|
+    # Set the driver for system tests - use Playwright drivers
+    # For JavaScript tests, use Playwright
+    if example.metadata[:js]
+      Capybara.current_driver = ENV["CI"].present? ? :playwright_headless : :playwright
+    else
+      # For non-JS tests, use rack_test
+      Capybara.current_driver = :rack_test
+    end
+    
+    # Also set javascript_driver
+    Capybara.javascript_driver = ENV["CI"].present? ? :playwright_headless : :playwright
 
     # Ensure server is running
     Capybara.server = :puma, { Silent: true }
   end
 
   config.after(:each, type: :system) do |example|
-    # Take screenshot on failure (only if driver supports it)
-    if example.exception && page && page.driver.respond_to?(:save_screenshot)
+    # Take screenshot on failure (Playwright supports screenshots)
+    if example.exception && page
       timestamp = Time.now.strftime("%Y%m%d%H%M%S")
       screenshot_name = "failure_#{timestamp}.png"
       begin
         page.save_screenshot(Rails.root.join("tmp", "capybara", screenshot_name))
         puts "Screenshot saved: tmp/capybara/#{screenshot_name}"
-      rescue Capybara::NotSupportedByDriverError
+      rescue StandardError => e
         # Ignore if driver doesn't support screenshots
+        puts "Could not save screenshot: #{e.message}"
       end
     end
 

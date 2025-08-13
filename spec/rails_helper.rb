@@ -78,20 +78,7 @@ RSpec.configure do |config|
     WebMock.disable_net_connect!
   end
 
-  # Rails 8 System Test Configuration
-  config.before(:each, type: :system) do
-    # Use the appropriate driver based on environment
-    if ENV["CI"].present?
-      Capybara.current_driver = :chrome_headless
-    else
-      Capybara.current_driver = :chrome
-    end
-  end
-
-  config.after(:each, type: :system) do
-    Capybara.reset_sessions!
-    Capybara.use_default_driver
-  end
+  # System test configuration is handled in spec/support/system_test_config.rb
 
   def auth_headers(auth_user, options = {})
     {

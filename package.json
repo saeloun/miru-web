@@ -84,7 +84,7 @@
     "autoprefixer": "^10.4.21",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "eslint": "^8.4.1",
+    "eslint": "^9.33.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-import": "^2.25.3",
     "eslint-plugin-jam3": "^0.2.3",
@@ -97,7 +97,7 @@
     "lefthook": "^1.12.2",
     "lint-staged": "^12.1.2",
     "lucide-react": "^0.539.0",
-    "playwright": "^1.54.2",
+    "playwright": "1.54.1",
     "postcss": "^8.5.6",
     "prettier": "^2.7.1",
     "prettier-plugin-tailwindcss": "^0.1.13",
@@ -128,10 +128,10 @@
     ]
   },
   "scripts": {
-    "prepare": "lefthook install",
+    "prepare": "node -e \"if (process.env.NODE_ENV !== 'production') { require('child_process').execSync('lefthook install', {stdio: 'inherit'}); }\"",
     "lint": "eslint ./app/javascript",
-    "postinstall": "lefthook install"
-  },
+    "postinstall": "node -e \"if (process.env.NODE_ENV !== 'production') { require('child_process').execSync('lefthook install', {stdio: 'inherit'}); }\""
+  },  
   "babel": {
     "presets": [
       "./node_modules/shakapacker/package/babel/preset.js",

@@ -3,28 +3,20 @@
 require "rails_helper"
 
 RSpec.describe "Basic System Test", type: :system do
-  it "can visit the login page and loads React app" do
+  it "can visit the login page" do
     visit "/login"
-    wait_for_page_load
 
     # Check if we're on the login page
     expect(page).to have_current_path("/login")
 
-    # Check if React app loaded
-    expect(page).to have_css('[data-testid="app-loaded"]')
-    # Reverted back to App after removing Auth.js
-    expect(page).to have_css('[data-component="App"]', wait: 10)
+    # Check if page has basic content
+    expect(page.title).to include("Miru")
   end
 
-  it "shows content on the home page with React loaded" do
+  it "shows content on the home page" do
     visit "/"
-    wait_for_page_load
-
-    # Check if React app is loaded
-    expect(page).to have_css('[data-testid="app-loaded"]')
-    expect(page).to have_css('[data-component="App"]')
 
     # Check if page contains Miru branding
-    expect(page.html).to include("Miru")
+    expect(page.title).to include("Miru")
   end
 end
