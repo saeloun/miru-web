@@ -34,10 +34,10 @@ RSpec.describe "Edit client", type: :system, js: true do
     it "edit the client successfully" do
       with_forgery_protection do
         visit "/clients"
-        
+
         # Wait for React app to load
         expect(page).to have_selector('[data-testid="app-loaded"]', wait: 10)
-        
+
         # Find and click on the client's menu
         find(".hoverIcon").hover
         find("#kebabMenu").click

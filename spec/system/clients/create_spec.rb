@@ -44,7 +44,7 @@ RSpec.describe "Create client", type: :system, js: true do
       it "creates the client successfully" do
         with_forgery_protection do
           visit "/clients"
-          
+
           # Wait for React app to load
           expect(page).to have_selector('[data-testid="app-loaded"]', wait: 10)
 
@@ -67,7 +67,7 @@ RSpec.describe "Create client", type: :system, js: true do
       it "throws error when leaving name and email blank" do
         with_forgery_protection do
           visit "/clients"
-          
+
           # Wait for React app to load
           expect(page).to have_selector('[data-testid="app-loaded"]', wait: 10)
 
@@ -85,7 +85,7 @@ RSpec.describe "Create client", type: :system, js: true do
       it "throws error when using email of an existing client" do
         with_forgery_protection do
           visit "/clients"
-          
+
           # Wait for React app to load
           expect(page).to have_selector('[data-testid="app-loaded"]', wait: 10)
 
@@ -105,7 +105,7 @@ RSpec.describe "Create client", type: :system, js: true do
       it "displays message for unsupported image format" do
         with_forgery_protection do
           visit "/clients"
-          
+
           # Wait for React app to load
           expect(page).to have_selector('[data-testid="app-loaded"]', wait: 10)
 
@@ -120,7 +120,7 @@ RSpec.describe "Create client", type: :system, js: true do
       it "displays message when uploading logo larger than the max. size allowed" do
         with_forgery_protection do
           visit "/clients"
-          
+
           # Wait for React app to load
           expect(page).to have_selector('[data-testid="app-loaded"]', wait: 10)
 
@@ -143,7 +143,7 @@ RSpec.describe "Create client", type: :system, js: true do
     it "add new client button should not be visible" do
       with_forgery_protection do
         visit "/clients"
-        
+
         # Wait for React app to load
         expect(page).to have_selector('[data-testid="app-loaded"]', wait: 10)
 

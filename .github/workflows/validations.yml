@@ -29,12 +29,7 @@ jobs:
           postgresql user: root
           postgresql password: "password"
       
-      - name: Setup Chrome and ChromeDriver
-        uses: browser-actions/setup-chrome@v1
-        with:
-          chrome-version: stable
-          install-chromedriver: true
-          install-dependencies: true
+      # Chrome/ChromeDriver not needed with Playwright
       
       - name: Start Xvfb
         run: |
@@ -69,18 +64,29 @@ jobs:
         with:
           path: |
             ${{ steps.pnpm-cache.outputs.STORE_PATH }}
-            ~/.cache/puppeteer
             node_modules/.cache
           key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-
       
+      - name: Cache Playwright Chromium browser
+        id: playwright-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-browsers-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+      
       - name: Install pnpm packages
         run: |
           PUPPETEER_SKIP_DOWNLOAD=true pnpm install --frozen-lockfile
       
-      - name: Install Playwright browsers
-        run: pnpm exec playwright install --with-deps
+      - name: Install Playwright Chromium browser (with deps)
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: pnpm exec playwright install --with-deps chromium
+      
+      - name: Install Playwright Chromium browser deps only
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: pnpm exec playwright install-deps chromium
       
       - name: Run Rubocop
         if: matrix.ci_node_index == 0
@@ -123,6 +129,8 @@ jobs:
           CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
           PARALLEL_TEST_PROCESSORS: 2
           CI: true
+          PLAYWRIGHT_BROWSER: chromium
+          PLAYWRIGHT_HEADLESS: true
         run: |
           mkdir -p tmp
           NODE_GROUP=$((${CI_NODE_INDEX} + 1))

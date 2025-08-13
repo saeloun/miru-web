@@ -13,11 +13,19 @@ Capybara.save_path = Rails.root.join("tmp", "capybara")
 Capybara.automatic_reload = false
 
 # Use different ports for parallel tests
-if ENV["TEST_ENV_NUMBER"]
-  Capybara.server_port = 3001 + ENV["TEST_ENV_NUMBER"].to_i
+# Each parallel test worker gets its own port to avoid conflicts
+if ENV["TEST_ENV_NUMBER"].present?
+  # For parallel tests, use different port for each worker
+  # TEST_ENV_NUMBER is empty for first process, then "2", "3", etc.
+  test_number = ENV["TEST_ENV_NUMBER"].to_s.empty? ? 1 : ENV["TEST_ENV_NUMBER"].to_i
+  Capybara.server_port = 3000 + test_number
 else
+  # For single process tests
   Capybara.server_port = 3001
 end
+
+# Also configure to use random available port if specified port is in use
+Capybara.server = :puma, { Silent: true, Port: Capybara.server_port }
 
 # Register Playwright driver with proper options
 Capybara.register_driver :playwright do |app|
@@ -25,7 +33,7 @@ Capybara.register_driver :playwright do |app|
     browser_type: ENV["PLAYWRIGHT_BROWSER"]&.to_sym || :chromium,
     headless: ENV["HEADED"].blank?,
     timeout: 30_000,
-    args: ["--disable-web-security", "--allow-insecure-localhost"])
+    args: ["--disable-web-security", "--allow-insecure-localhost", "--disable-blink-features=AutomationControlled"])
 end
 
 # Register headless Playwright driver for CI
@@ -35,7 +43,7 @@ Capybara.register_driver :playwright_headless do |app|
     headless: true,
     viewport: { width: 1400, height: 1000 },
     timeout: 30_000,
-    args: ["--disable-web-security", "--allow-insecure-localhost"])
+    args: ["--disable-web-security", "--allow-insecure-localhost", "--disable-blink-features=AutomationControlled"])
 end
 
 # Set default drivers
