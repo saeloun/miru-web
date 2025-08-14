@@ -10,10 +10,6 @@ RSpec.describe "InternalApi::V1::Team#index", type: :request do
   before do
     create(:employment, company:, user:)
     user.add_role :admin, company
-    User.search_index.refresh
-    User.reindex
-    Invitation.search_index.refresh
-    Invitation.reindex
   end
 
   context "when user is admin" do

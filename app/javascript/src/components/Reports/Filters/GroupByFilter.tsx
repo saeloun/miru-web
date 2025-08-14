@@ -1,8 +1,7 @@
 import React from "react";
 
-import { MinusIcon, PlusIcon } from "miruIcons";
-
 import CustomRadioButton from "common/CustomRadio";
+import { MinusIcon, PlusIcon } from "miruIcons";
 
 import { groupBy } from "./filterOptions";
 

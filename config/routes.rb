@@ -7,8 +7,27 @@ class ActionDispatch::Routing::Mapper
 end
 
 Rails.application.routes.draw do
+  # Health check endpoint
+  get "/health", to: "health#index"
+
   if ENV["MISSION_CONTROL_ENABLED"] == "true"
     mount MissionControl::Jobs::Engine, at: "/jobs"
+  end
+
+  # Mount PgHero for database monitoring (protect with authentication in production)
+  authenticate :user, lambda { |u| u.has_role?(:owner, u.current_workspace) } do
+    mount PgHero::Engine, at: "/pghero"
+  end
+
+  # Analytics Dashboard (Super Admin and authorized users only)
+  authenticate :user, lambda { |u| u.has_analytics_access? } do
+    resources :analytics, only: [:index] do
+      collection do
+        get :revenue
+        get :activity
+        get :currency
+      end
+    end
   end
 
   namespace :admin do

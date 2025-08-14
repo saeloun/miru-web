@@ -1,10 +1,7 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
 
-import { Toastr } from "StyledComponents";
-
 import timesheetEntryApi from "apis/timesheet-entry";
+import { Toastr } from "StyledComponents";
 
 import WeeklyEntriesCard from "./WeeklyEntriesCard";
 

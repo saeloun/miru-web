@@ -1,7 +1,16 @@
 import React from "react";
 
 import { currencyFormat } from "helpers";
-import { Badge } from "StyledComponents";
+import StatusBadge from "components/ui/status-badge";
+import { Link } from "react-router-dom";
+import {
+  CreditCard,
+  Building2,
+  Wallet,
+  Banknote,
+  ArrowRightLeft,
+  Receipt,
+} from "lucide-react";
 
 import { TableRowProps } from "../interfaces";
 
@@ -9,50 +18,145 @@ const TableRow = ({ payment, baseCurrency }: TableRowProps) => {
   const {
     clientName,
     invoiceNumber,
+    invoiceId,
     status,
     amount,
     transactionType,
     transactionDate,
     note,
+    currency,
+    exchangeRate,
   } = payment;
 
-  const getStatusCss = status => {
-    const STATUS_LIST = {
-      paid: "bg-miru-han-purple-100 text-miru-han-purple-1000",
-      partially_paid: "bg-miru-alert-yellow-400 text-miru-alert-green-1000",
-      failed: "bg-miru-alert-pink-400 text-miru-alert-red-1000",
+  const getTransactionTypeDisplay = type => {
+    const typeMap = {
+      credit_card: {
+        icon: <CreditCard className="h-4 w-4" />,
+        text: "Card Payment",
+        color: "text-blue-600",
+      },
+      bank_transfer: {
+        icon: <Building2 className="h-4 w-4" />,
+        text: "Bank Transfer",
+        color: "text-green-600",
+      },
+      wire_transfer: {
+        icon: <ArrowRightLeft className="h-4 w-4" />,
+        text: "Wire Transfer",
+        color: "text-purple-600",
+      },
+      ach: {
+        icon: <Building2 className="h-4 w-4" />,
+        text: "ACH Transfer",
+        color: "text-teal-600",
+      },
+      paypal: {
+        icon: <Wallet className="h-4 w-4" />,
+        text: "PayPal",
+        color: "text-blue-500",
+      },
+      stripe: {
+        icon: <CreditCard className="h-4 w-4" />,
+        text: "Stripe",
+        color: "text-indigo-600",
+      },
+      cash: {
+        icon: <Banknote className="h-4 w-4" />,
+        text: "Cash",
+        color: "text-green-700",
+      },
+      check: {
+        icon: <Receipt className="h-4 w-4" />,
+        text: "Check",
+        color: "text-gray-600",
+      },
     };
-    const lowerCaseStatus = status.toLowerCase();
 
-    return `rounded-lg px-1 ${STATUS_LIST[lowerCaseStatus]}`;
+    const typeInfo = typeMap[type] || {
+      icon: <Wallet className="h-4 w-4" />,
+      text: type || "Payment",
+      color: "text-gray-600",
+    };
+
+    return (
+      <div className={`inline-flex items-center gap-1.5 ${typeInfo.color}`}>
+        {typeInfo.icon}
+        <span className="text-xs font-medium lg:text-sm">{typeInfo.text}</span>
+      </div>
+    );
   };
 
+  // Check if payment currency differs from organization base currency
+  const showConversion = currency && baseCurrency && currency !== baseCurrency;
+  const convertedAmount =
+    showConversion && exchangeRate ? amount * exchangeRate : null;
+
   return (
-    <tr className="group last:border-b-0 hover:bg-miru-gray-100">
-      <td className="py-2.5 pr-6 pl-0 text-left">
-        <h1 className="text-base font-bold leading-5 text-miru-dark-purple-1000">
-          {clientName}
+    <tr className="group cursor-pointer last:border-b-0 md:hover:bg-miru-gray-100">
+      <td className="py-5 pr-2 pl-0 text-left">
+        <div className="flex flex-col">
+          {invoiceId ? (
+            <Link
+              to={`/invoices/${invoiceId}`}
+              className="text-sm font-semibold leading-4 text-miru-han-purple-600 hover:text-miru-han-purple-1000 hover:underline transition-colors lg:text-base lg:leading-5"
+              onClick={e => e.stopPropagation()}
+            >
+              {invoiceNumber}
+            </Link>
+          ) : (
+            <span className="text-sm font-semibold leading-4 text-miru-dark-purple-1000 lg:text-base lg:leading-5">
+              {invoiceNumber || "—"}
+            </span>
+          )}
+          <h3 className="text-xs font-medium leading-4 text-miru-dark-purple-400 lg:text-sm lg:leading-5">
+            {clientName}
+          </h3>
+        </div>
+      </td>
+      <td className="w-1/4 whitespace-nowrap px-4 py-5 font-medium tracking-normal lg:px-6">
+        <h1 className="text-xs font-normal text-miru-dark-purple-1000 lg:text-base lg:font-semibold">
+          {transactionDate}
         </h1>
-        <h3 className="pt-1 text-sm font-normal leading-5 text-miru-dark-purple-400">
-          {invoiceNumber}
+        <h3 className="text-xs font-medium text-miru-dark-purple-400 lg:text-sm">
+          {getTransactionTypeDisplay(transactionType)}
         </h3>
       </td>
-      <td className="px-6 py-2.5 text-left text-sm font-normal leading-4 text-miru-dark-purple-1000">
-        {transactionDate}
+      <td className="px-2 py-5 text-left lg:px-6">
+        {note && (
+          <p className="text-xs font-normal leading-4 text-miru-dark-purple-400 lg:text-sm">
+            {note}
+          </p>
+        )}
       </td>
-      <td className="px-6 py-2.5 text-left">
-        <h1 className="text-base font-bold leading-5 text-miru-dark-purple-1000">
-          {transactionType}
-        </h1>
-        <h3 className="pt-1 text-sm font-normal leading-5 text-miru-dark-purple-400">
-          {note}
-        </h3>
+      <td className="hidden px-2 text-right text-sm font-bold tracking-normal text-miru-dark-purple-1000 lg:table-cell lg:w-1/6 lg:px-6 lg:pt-2 lg:pb-7 lg:text-xl">
+        <div>
+          {currency
+            ? currencyFormat(currency, amount)
+            : baseCurrency && currencyFormat(baseCurrency, amount)}
+          {showConversion && (
+            <div className="text-xs font-normal leading-4 text-miru-dark-purple-400 mt-1">
+              ≈{" "}
+              {convertedAmount
+                ? currencyFormat(baseCurrency, convertedAmount.toFixed(2))
+                : "—"}
+              {convertedAmount && (
+                <span className="ml-1 text-miru-dark-purple-300">
+                  ({exchangeRate?.toFixed(2)} rate)
+                </span>
+              )}
+            </div>
+          )}
+        </div>
       </td>
-      <td className="px-6 py-2.5 text-right text-xl font-bold leading-7 text-miru-dark-purple-1000">
-        {baseCurrency && currencyFormat(baseCurrency, amount)}
-      </td>
-      <td className="py-2.5 pl-6 pr-0 text-right text-sm font-semibold leading-4 tracking-wider">
-        <Badge className={`${getStatusCss(status)} uppercase`} text={status} />
+      <td className="relative px-2 py-5 text-right font-medium lg:px-6">
+        <StatusBadge status={status} />
+        <dl className="text-right text-sm font-medium leading-5 lg:hidden">
+          <dt className="mt-1">
+            {currency
+              ? currencyFormat(currency, amount)
+              : baseCurrency && currencyFormat(baseCurrency, amount)}
+          </dt>
+        </dl>
       </td>
     </tr>
   );

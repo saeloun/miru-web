@@ -22,6 +22,8 @@
 # frozen_string_literal: true
 
 class Company < ApplicationRecord
+  include MetricsTracking
+
   # Associations
   has_many :employments, dependent: :destroy
   has_many :users, -> { kept }, through: :employments
@@ -111,16 +113,15 @@ class Company < ApplicationRecord
     addresses.first
   end
 
-  def formatted_address
-    current_address.formatted_address
-  end
+  delegate :formatted_address, to: :current_address
 
   def billable_clients
     clients
-      .distinct
       .joins(:projects)
       .where(projects: { billable: true })
       .kept
+      .select("clients.*")
+      .distinct
       .order(name: :asc)
   end
 

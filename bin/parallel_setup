@@ -1,0 +1,30 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "pathname"
+require "fileutils"
+
+APP_ROOT = Pathname.new File.expand_path("..", __dir__)
+
+def system!(*args)
+  system(*args, exception: true)
+end
+
+FileUtils.chdir APP_ROOT do
+  puts "== Setting up parallel test databases =="
+  
+  # Number of parallel processes
+  num_processes = ENV["PARALLEL_TEST_PROCESSORS"] || 10
+  
+  puts "Setting up #{num_processes} test databases..."
+  
+  # Create all parallel test databases
+  system! "bundle exec rails parallel:create PARALLEL_TEST_PROCESSORS=#{num_processes}"
+  
+  # Prepare all databases (run migrations and schema load)
+  system! "bundle exec rails parallel:prepare PARALLEL_TEST_PROCESSORS=#{num_processes}"
+  
+  puts "\n== Parallel test databases ready! =="
+  puts "You can now run tests with:"
+  puts "  bundle exec parallel_rspec -n #{num_processes} spec/"
+end

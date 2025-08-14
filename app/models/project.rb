@@ -15,8 +15,10 @@
 #
 #  index_projects_on_billable            (billable)
 #  index_projects_on_client_id           (client_id)
+#  index_projects_on_description_trgm    (description) USING gin
 #  index_projects_on_discarded_at        (discarded_at)
 #  index_projects_on_name_and_client_id  (name,client_id) UNIQUE
+#  index_projects_on_name_trgm           (name) USING gin
 #
 # Foreign Keys
 #
@@ -27,6 +29,16 @@
 
 class Project < ApplicationRecord
   include Discard::Model
+  include Searchable
+  include MetricsTracking
+
+  # Configure pg_search
+  pg_search_scope :pg_search,
+    against: [:name, :description],
+    using: {
+      tsearch: { prefix: true },
+      trigram: { threshold: 0.3 }
+    }
 
   # Associations
   belongs_to :client
@@ -45,22 +57,9 @@ class Project < ApplicationRecord
 
   scope :with_ids, -> (project_ids) { where(id: project_ids) if project_ids.present? }
 
-  searchkick text_middle: [:name, :client_name]
-
   # Concerns
   include ProjectSqlQueries
 
-  def search_data
-    {
-      id: id.to_i,
-      name:,
-      description:,
-      billable:,
-      client_id:,
-      client_name:,
-      discarded_at:
-    }
-  end
 
   def project_members_snippet(time_frame)
     date_range = DateRangeService.new(timeframe: time_frame).process

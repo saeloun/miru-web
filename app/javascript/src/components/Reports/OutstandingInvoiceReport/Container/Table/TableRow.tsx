@@ -1,9 +1,8 @@
 import React from "react";
 
 import { currencyFormat } from "helpers";
-import { Avatar, Badge } from "StyledComponents";
-
-import getStatusCssClass from "utils/getBadgeStatus";
+import AnimatedAvatar from "components/ui/animated-avatar";
+import StatusBadge from "components/ui/status-badge";
 
 import { OutstandingOverdueInvoice } from "../../interface";
 
@@ -23,12 +22,17 @@ const TableRow = ({ reportData, logo }) => {
     <tr className="flex items-center hover:bg-miru-gray-100" key={id}>
       <td className="w-1/2 whitespace-nowrap pt-3 pb-4 text-left lg:w-4/12 lg:py-2.5">
         <span className="flex items-center">
-          <Avatar classNameImg="mr-2 lg:mr-6" url={logo} />
-          <span>
-            <p className="whitespace-normal text-sm font-medium text-miru-dark-purple-1000 lg:text-base lg:font-semibold">
+          <AnimatedAvatar
+            url={logo}
+            name={clientName}
+            size="md"
+            animation="scale"
+          />
+          <span className="ml-2 lg:ml-4">
+            <p className="whitespace-normal text-sm font-semibold text-miru-dark-purple-1000 lg:text-base lg:font-semibold">
               {clientName}
             </p>
-            <p className="text-xs font-medium text-miru-dark-purple-400 lg:text-sm">
+            <p className="text-xs font-normal text-miru-dark-purple-400 lg:text-sm">
               {invoiceNo}
             </p>
           </span>
@@ -40,10 +44,10 @@ const TableRow = ({ reportData, logo }) => {
         </dl>
       </td>
       <td className="hidden w-3/12 whitespace-pre-wrap pt-3 pb-4 text-left text-base font-normal lg:table-cell lg:py-2.5">
-        <h1 className="font-semibold text-miru-dark-purple-1000">
+        <h1 className="text-xs font-medium text-miru-dark-purple-1000 lg:text-sm lg:font-semibold">
           {issueDate}
         </h1>
-        <h3 className="text-sm font-normal text-miru-dark-purple-400">
+        <h3 className="text-xs font-normal text-miru-dark-purple-400 lg:text-sm">
           Due on {dueDate}
         </h3>
       </td>
@@ -51,10 +55,7 @@ const TableRow = ({ reportData, logo }) => {
         {currencyFormat(currency, amount)}
       </td>
       <td className="w-1/2 self-start pt-3 pb-4 text-right font-medium lg:w-3/12 lg:self-center lg:py-6 lg:pr-2">
-        <Badge
-          className={`${getStatusCssClass(status)} uppercase`}
-          text={status}
-        />
+        <StatusBadge status={status} />
         <dl className="text-right text-sm font-medium leading-5 lg:hidden">
           <dt className="mt-1">{currencyFormat(currency, amount)}</dt>
         </dl>

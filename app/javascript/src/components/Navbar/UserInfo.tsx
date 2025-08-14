@@ -1,11 +1,14 @@
 import React from "react";
 
-import { Avatar } from "StyledComponents";
-
 import { useUserContext } from "context/UserContext";
+import { Avatar } from "StyledComponents";
 
 const UserInfo = ({ user }) => {
   const { avatarUrl } = useUserContext();
+
+  if (!user) {
+    return null;
+  }
 
   return (
     <div className="overflow-XIcon-auto flex h-16 w-full items-center bg-miru-gray-100 p-4 lg:mt-6">

@@ -1,5 +1,3 @@
-/* eslint-disable import/exports-last */
-
 import React, { useEffect, useState, useRef } from "react";
 
 import classNames from "classnames";
@@ -43,10 +41,15 @@ export const CustomAdvanceInput = ({
   const defaultLabelClassName = getDefaultLabelClassName(focused, value);
 
   useEffect(() => {
-    focused
-      ? document.getElementById(id).focus()
-      : document.getElementById(id).blur();
-  }, [focused]);
+    if (id) {
+      const element = document.getElementById(id);
+      if (focused && element) {
+        element.focus();
+      } else if (element) {
+        element.blur();
+      }
+    }
+  }, [focused, id]);
 
   useOutsideClick(inputRef, () => setFocused(false));
 

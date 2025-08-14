@@ -1,11 +1,10 @@
 import React from "react";
 
+import { useUserContext } from "context/UserContext";
 import { minToHHMM } from "helpers";
 import { DeleteIcon, DotsThreeVerticalIcon, EditIcon } from "miruIcons";
 import { useNavigate } from "react-router-dom";
 import { Badge, MobileMoreOptions } from "StyledComponents";
-
-import { useUserContext } from "context/UserContext";
 
 import { IProject } from "../interface";
 
@@ -49,7 +48,7 @@ export const Project = ({
         key={id}
         onClick={() => isAdminUser && projectClickHandler(id)}
         onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave} // eslint-disable-line
+        onMouseLeave={handleMouseLeave}
       >
         <td className="table__cell text-base capitalize">
           <div className="flex items-center justify-between text-sm font-semibold text-miru-dark-purple-1000 lg:text-base">

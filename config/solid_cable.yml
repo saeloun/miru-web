@@ -1,0 +1,49 @@
+# Solid Cable configuration for Rails 8 ActionCable
+# This replaces Redis for ActionCable pub/sub in Rails 8
+
+default: &default
+  adapter: postgresql
+  # Message retention settings
+  message_retention: <%= 1.day.to_i %>
+  # Polling settings for ActionCable
+  polling_interval: <%= 0.5.seconds %>
+
+development:
+  <<: *default
+  database: miru_web_development_cable
+  username: <%= ENV.fetch("DB_USER", "postgres") %>
+  password: <%= ENV.fetch("DB_PASS", "password") %>
+  host: <%= ENV.fetch("DB_HOST", "localhost") %>
+  port: <%= ENV.fetch("DB_PORT", 5432) %>
+  # Shorter retention for development
+  message_retention: <%= 1.hour.to_i %>
+  # More frequent polling for development
+  polling_interval: <%= 0.1.seconds %>
+
+test:
+  <<: *default
+  database: miru_web_test<%= ENV["TEST_ENV_NUMBER"] %>_cable
+  username: <%= ENV.fetch("DB_USER", "postgres") %>
+  password: <%= ENV.fetch("DB_PASS", "password") %>
+  host: <%= ENV.fetch("DB_HOST", "localhost") %>
+  port: <%= ENV.fetch("DB_PORT", 5432) %>
+  # Minimal retention for tests
+  message_retention: <%= 10.minutes.to_i %>
+  # Faster polling for tests
+  polling_interval: <%= 0.01.seconds %>
+
+production:
+  <<: *default
+  database: <%= ENV.fetch("DATABASE_URL", "").gsub(/\/\w+$/, "/miru_web_production_cable") %>
+  url: <%= ENV.fetch("SOLID_CABLE_DATABASE_URL") do
+    url = ENV.fetch("DATABASE_URL", "")
+    url.blank? ? "" : url.gsub(/\/\w+$/, "/miru_web_production_cable")
+  end %>
+  # Longer retention for production
+  message_retention: <%= 7.days.to_i %>
+  # Production-optimized polling
+  polling_interval: <%= 1.second %>
+  # Connection pooling
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 10 } %>
+  # Enable prepared statements
+  prepared_statements: true

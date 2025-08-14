@@ -1,8 +1,7 @@
 import React from "react";
 
-import { MinusIcon, PlusIcon, SearchIcon, XIcon } from "miruIcons";
-
 import ClickableCheckboxText from "common/ClickableCheckboxText";
+import { MinusIcon, PlusIcon, SearchIcon, XIcon } from "miruIcons";
 
 const ClientFilter = ({
   isClientOpen,

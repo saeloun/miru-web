@@ -1,8 +1,7 @@
 import React from "react";
 
-import { Modal, Button } from "StyledComponents";
-
 import projectApi from "apis/projects";
+import { Modal, Button } from "StyledComponents";
 
 interface IProps {
   project: any;

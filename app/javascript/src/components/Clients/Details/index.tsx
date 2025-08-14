@@ -1,9 +1,5 @@
 import React, { useEffect, useState } from "react";
 
-import Logger from "js-logger";
-import { PlusIcon } from "miruIcons";
-import { useParams, useNavigate } from "react-router-dom";
-
 import clientApi from "apis/clients";
 import EmptyStates from "common/EmptyStates";
 import Loader from "common/Loader/index";
@@ -12,8 +8,11 @@ import ProjectForm from "components/Projects/List/Mobile/ProjectForm";
 import AddEditProject from "components/Projects/Modals/AddEditProject";
 import DeleteProject from "components/Projects/Modals/DeleteProject";
 import { useUserContext } from "context/UserContext";
+import Logger from "js-logger";
 import { unmapClientInvoices } from "mapper/client.mapper";
 import { unmapClientDetails } from "mapper/mappedIndex";
+import { PlusIcon } from "miruIcons";
+import { useParams, useNavigate } from "react-router-dom";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import { tableHeader, mobileTableHeader } from "./constants";
@@ -154,11 +153,9 @@ const ClientDetails = ({ isAdminUser }) => {
                     hasRowIcons
                     handleDeleteClick={handleDeleteClick}
                     handleEditClick={handleEditClick}
+                    rowOnClick={isAdminUser ? handleRowClick : () => {}}
                     tableHeader={isDesktop ? tableHeader : mobileTableHeader}
                     tableRowArray={tableData}
-                    rowOnClick={
-                      isAdminUser ? handleRowClick : () => {} // eslint-disable-line  @typescript-eslint/no-empty-function
-                    }
                   />
                 ) : (
                   <EmptyStates

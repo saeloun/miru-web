@@ -1,14 +1,14 @@
-import React, { useRef, useState } from "react";
+import { MIRU_APP_URL, Paths } from "constants/index";
 
-import { Formik, Form, FormikProps } from "formik";
-import { GoogleSVG, MiruLogoSVG } from "miruIcons";
-import { useNavigate } from "react-router-dom";
-import { Toastr } from "StyledComponents";
+import React, { useRef, useState } from "react";
 
 import authenticationApi from "apis/authentication";
 import { InputErrors, InputField } from "common/FormikFields";
-import { MIRU_APP_URL, Paths } from "constants/index";
 import { useAuthDispatch } from "context/auth";
+import { Formik, Form, FormikProps } from "formik";
+import { GoogleSVG, MiruLogoSVG } from "miruIcons";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 import { signInFormInitialValues, signInFormValidationSchema } from "./utils";
 
@@ -28,32 +28,49 @@ const SignInForm = () => {
   const navigate = useNavigate();
 
   const googleOauth = useRef(null);
-  const csrfToken = document
-    .querySelector('[name="csrf-token"]')
-    .getAttribute("content");
+  const csrfToken =
+    document.querySelector('[name="csrf-token"]')?.getAttribute("content") ||
+    "";
 
   const handleSignInFormSubmit = async (values: any, { setFieldError }) => {
     try {
       const res = await authenticationApi.signin(values);
-      //@ts-expect-error for authDispatch initial values
-      authDispatch({
-        type: "LOGIN",
-        payload: {
-          token: res.data.user.token,
-          email: res?.data?.user.email,
-        },
-      });
+      const { user, company_role, company } = res.data;
 
-      setTimeout(
-        () => (window.location.href = `${window.location.origin}`),
-        500
-      );
+      if (user?.token) {
+        // Store auth credentials
+        authDispatch({
+          type: "LOGIN",
+          payload: {
+            token: user.token,
+            email: user.email,
+          },
+        });
+
+        // Store full user data for context
+        localStorage.setItem("user", JSON.stringify(user));
+        localStorage.setItem("company_role", company_role || "");
+        if (company) {
+          localStorage.setItem("company", JSON.stringify(company));
+        }
+
+        // Navigate to home after successful login
+        toast.success("Welcome back!");
+        setTimeout(() => {
+          window.location.href = "/";
+        }, 500);
+      } else {
+        throw new Error("No authentication token received");
+      }
     } catch (error) {
       if (error?.response?.data?.unconfirmed) {
         navigate(`/email_confirmation?email=${values.email}`);
-        Toastr.error(error.response.data.error);
+        toast.error(error.response.data.error);
       } else if (error?.response?.data?.error) {
         setFieldError("password", error.response.data.error);
+        toast.error(error.response.data.error);
+      } else {
+        toast.error("Login failed. Please try again.");
       }
     }
   };
@@ -164,7 +181,9 @@ const SignInForm = () => {
               initialValues={{}}
               validateOnBlur={false}
               validationSchema=""
-              onSubmit={() => {}} //eslint-disable-line
+              onSubmit={() => {
+                /* Google OAuth form - no client-side submit handler needed */
+              }}
             >
               {() => (
                 <Form
@@ -209,7 +228,7 @@ const SignInForm = () => {
             </span>
           </p>
           <p className="pb-10 text-center font-manrope text-xs font-normal not-italic text-miru-dark-purple-1000">
-            Don't have an account?&nbsp;
+            Don&apos;t have an account?&nbsp;
             <span className="form__link inline cursor-pointer">
               <a href={Paths.SIGNUP}>
                 <span className="mr-2 inline-block">Sign Up</span>

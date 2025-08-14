@@ -36,11 +36,23 @@ class InternalApi::V1::PaymentsController < ApplicationController
 
   def index
     authorize :index, policy_class: PaymentPolicy
+
+    payments = current_company.payments.includes(invoice: [:client])
+
+    # Add search functionality
+    if params[:query].present?
+      search_query = params[:query].strip.downcase
+      payments = payments.joins(invoice: :client)
+                        .where("LOWER(clients.name) LIKE :query OR
+                                LOWER(invoices.invoice_number) LIKE :query OR
+                                CAST(payments.amount AS TEXT) LIKE :query",
+                               query: "%#{search_query}%")
+    end
+
+    payments = payments.order(created_at: :desc)
+
     render :index,
-      locals: PaymentsPresenter.new(
-        current_company.payments.includes(invoice: [:client]).order(created_at: :desc),
-        current_company
-        ).index_data
+      locals: PaymentsPresenter.new(payments, current_company).index_data
   end
 
   private

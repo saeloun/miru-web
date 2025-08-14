@@ -1,15 +1,15 @@
-import React, { Fragment, useEffect, useState } from "react";
+import { ApiStatus as InvoicesStatus, LocalStorageKeys } from "constants/index";
 
-import Logger from "js-logger";
-import { useSearchParams } from "react-router-dom";
-import { Pagination, Toastr } from "StyledComponents";
+import React, { Fragment, useEffect, useState } from "react";
 
 import invoicesApi from "apis/invoices";
 import PaymentsProviders from "apis/payments/providers";
 import Loader from "common/Loader/index";
 import withLayout from "common/Mobile/HOC/withLayout";
-import { ApiStatus as InvoicesStatus, LocalStorageKeys } from "constants/index";
 import { useUserContext } from "context/UserContext";
+import Logger from "js-logger";
+import { useSearchParams } from "react-router-dom";
+import { Pagination, Toastr } from "StyledComponents";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import Container from "./container";
@@ -33,8 +33,8 @@ const Invoices = () => {
   const [pagy, setPagy] = useState<any>(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const [params, setParams] = useState<any>({
-    invoices_per_page: searchParams.get("invoices_per_page") || 20,
-    page: searchParams.get("page") || 1,
+    invoices_per_page: searchParams.get("invoices_per_page") || undefined,
+    page: searchParams.get("page") || undefined,
     query: searchParams.get("query") || "",
   });
 

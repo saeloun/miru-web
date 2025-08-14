@@ -1,15 +1,6 @@
-import React from "react";
+import { Roles } from "constants/index";
 
-import {
-  UserIcon,
-  ProjectsIcon,
-  MobileIcon,
-  PaymentsIcon,
-  CalendarIcon,
-  CakeIcon,
-  ClientsIcon,
-  ReminderIcon,
-} from "miruIcons";
+import React from "react";
 
 import OrgDetails from "components/Profile/Organization/Details";
 import OrgEdit from "components/Profile/Organization/Edit";
@@ -23,7 +14,16 @@ import EmploymentDetailsEdit from "components/Profile/Personal/Employment/Edit";
 import NotificationPreferences from "components/Profile/Personal/NotificationPreferences";
 import UserDetailsView from "components/Profile/Personal/User";
 import UserDetailsEdit from "components/Profile/Personal/User/Edit";
-import { Roles } from "constants/index";
+import {
+  UserIcon,
+  ProjectsIcon,
+  MobileIcon,
+  PaymentsIcon,
+  CalendarIcon,
+  CakeIcon,
+  ClientsIcon,
+  ReminderIcon,
+} from "miruIcons";
 
 const { ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE, CLIENT } = Roles;
 

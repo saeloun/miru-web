@@ -1,8 +1,7 @@
 import React from "react";
 
-import { getYear } from "date-fns";
-
 import CustomYearPicker from "common/CustomYearPicker";
+import { getYear } from "date-fns";
 
 const DetailsHeader = ({
   title,

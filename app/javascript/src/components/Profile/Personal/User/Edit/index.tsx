@@ -1,12 +1,4 @@
-/* eslint-disable no-unused-vars */
 import React, { Fragment, useEffect, useRef, useState } from "react";
-
-import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc";
-import { useOutsideClick } from "helpers";
-import { useNavigate } from "react-router-dom";
-import worldCountries from "world-countries";
-import * as Yup from "yup";
 
 import profileApi from "apis/profile";
 import teamsApi from "apis/teams";
@@ -15,7 +7,14 @@ import { MobileDetailsHeader } from "common/Mobile/MobileDetailsHeader";
 import EditHeader from "components/Profile/Common/EditHeader";
 import { useProfileContext } from "context/Profile/ProfileContext";
 import { useUserContext } from "context/UserContext";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import { useOutsideClick } from "helpers";
 import { teamsMapper } from "mapper/teams.mapper";
+import { useNavigate } from "react-router-dom";
+import worldCountries from "world-countries";
+import * as Yup from "yup";
+import { useCurrentUser } from "~/hooks/useCurrentUser";
 
 import MobileEditPage from "./MobileEditPage";
 import StaticPage from "./StaticPage";
@@ -43,11 +42,13 @@ const UserDetailsEdit = () => {
   };
 
   const navigate = useNavigate();
-  const { isDesktop } = useUserContext();
-  const {
-    personalDetails: { id },
-    isCalledFromSettings,
-  } = useProfileContext();
+  const { user, isDesktop } = useUserContext();
+  const { currentUser } = useCurrentUser();
+  const { personalDetails, isCalledFromSettings, updateDetails } =
+    useProfileContext();
+
+  // Get current user ID from _me endpoint when in settings, or use personalDetails.id for team view
+  const [currentUserId, setCurrentUserId] = useState(null);
 
   const wrapperRef = useRef(null);
 
@@ -58,7 +59,6 @@ const UserDetailsEdit = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [addrId, setAddrId] = useState();
   const [userId, setUserId] = useState();
-  const { updateDetails, personalDetails } = useProfileContext();
   const [changePassword, setChangePassword] = useState<boolean>(false);
   const [showCurrentPassword, setShowCurrentPassword] =
     useState<boolean>(false);
@@ -69,7 +69,9 @@ const UserDetailsEdit = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const navigateToPath = isCalledFromSettings ? "/settings" : `/team/${id}`;
+  const navigateToPath = isCalledFromSettings
+    ? "/settings"
+    : `/team/${currentUserId || personalDetails?.id}`;
 
   useOutsideClick(wrapperRef, () => setShowDatePicker({ visibility: false }));
   const assignCountries = async allCountries => {
@@ -82,28 +84,66 @@ const UserDetailsEdit = () => {
   };
 
   const getDetails = async () => {
-    const data = await teamsApi.get(id);
-    const addressData = await teamsApi.getAddress(id);
-    setUserId(data.data.id);
+    if (!currentUserId) return;
 
-    const userObj = teamsMapper(data.data, addressData.data.addresses[0]);
-    updateDetails("personalDetails", userObj);
-    if (userObj.addresses?.address_type?.length > 0) {
-      setAddrType(
-        addressOptions.find(
-          item => item.value === userObj.addresses.address_type
-        )
-      );
+    try {
+      let userData;
+
+      if (isCalledFromSettings) {
+        // Use fresh user data from _me endpoint for settings
+        userData = currentUser;
+        if (userData) {
+          setUserId(userData.id);
+        }
+      } else {
+        // Use teams API for team member view
+        const data = await teamsApi.get(currentUserId);
+        userData = data.data;
+        setUserId(userData.id);
+      }
+
+      if (userData) {
+        const addressData = await teamsApi.getAddress(userData.id);
+        const userObj = teamsMapper(userData, addressData.data.addresses[0]);
+
+        updateDetails("personalDetails", userObj);
+
+        if (userObj.addresses?.address_type?.length > 0) {
+          setAddrType(
+            addressOptions.find(
+              item => item.value === userObj.addresses.address_type
+            )
+          );
+        }
+        setAddrId(addressData.data.addresses[0]?.id);
+      }
+    } catch (error) {
+      console.error("Failed to fetch user details:", error);
     }
-    setAddrId(addressData.data.addresses[0]?.id);
+
     setIsLoading(false);
   };
 
+  // Effect to determine current user ID
   useEffect(() => {
-    setIsLoading(true);
-    assignCountries(worldCountries);
-    getDetails();
-  }, [id]);
+    if (isCalledFromSettings) {
+      // Use fresh user data from _me endpoint for settings
+      if (currentUser) {
+        setCurrentUserId(currentUser.id);
+      }
+    } else {
+      // Use personalDetails.id for team view
+      setCurrentUserId(personalDetails?.id);
+    }
+  }, [isCalledFromSettings, currentUser, personalDetails?.id]);
+
+  useEffect(() => {
+    if (currentUserId) {
+      setIsLoading(true);
+      assignCountries(worldCountries);
+      getDetails();
+    }
+  }, [currentUserId]);
 
   const cancelPasswordChange = () => {
     setChangePassword(false);
@@ -221,7 +261,7 @@ const UserDetailsEdit = () => {
           user: userSchema,
         });
       } else {
-        await teamsApi.updateUser(id, {
+        await teamsApi.updateUser(currentUserId, {
           user: userSchema,
         });
       }
@@ -291,24 +331,24 @@ const UserDetailsEdit = () => {
             <Loader className="min-h-70v" />
           ) : (
             <StaticPage
+              _confirmPassword={confirmPassword}
+              _currentPassword={currentPassword}
+              _getErr={getErr}
+              _handleConfirmPasswordChange={handleConfirmPasswordChange}
+              _handleCurrentPasswordChange={handleCurrentPasswordChange}
+              _handlePasswordChange={handlePasswordChange}
+              _password={password}
               addrType={addrType}
               addressOptions={addressOptions}
               cancelPasswordChange={cancelPasswordChange}
               changePassword={changePassword}
-              confirmPassword={confirmPassword}
               countries={countries}
-              currentPassword={currentPassword}
               dateFormat={personalDetails.date_format}
               errDetails={errDetails}
-              getErr={getErr}
-              handleConfirmPasswordChange={handleConfirmPasswordChange}
-              handleCurrentPasswordChange={handleCurrentPasswordChange}
               handleDatePicker={handleDatePicker}
               handleOnChangeAddrType={handleOnChangeAddrType}
               handleOnChangeCountry={handleOnChangeCountry}
-              handlePasswordChange={handlePasswordChange}
               handlePhoneNumberChange={handlePhoneNumberChange}
-              password={password}
               personalDetails={personalDetails}
               setChangePassword={setChangePassword}
               setErrDetails={setErrDetails}

@@ -1,10 +1,9 @@
 import React from "react";
 
+import EmptyStates from "common/EmptyStates";
 import { PlusIcon } from "miruIcons";
 import { useNavigate } from "react-router-dom";
 import { Button } from "StyledComponents";
-
-import EmptyStates from "common/EmptyStates";
 
 const NoInvoices = ({ isDesktop, filterParamsStr, handleReset, params }) => {
   const navigate = useNavigate();

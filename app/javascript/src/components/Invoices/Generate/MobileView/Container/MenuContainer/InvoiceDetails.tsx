@@ -1,16 +1,20 @@
 import React, { useState, useRef, useEffect } from "react";
 
-import dayjs from "dayjs";
-import { Formik, Form, FormikProps } from "formik";
-import { useOutsideClick } from "helpers";
-import { SearchIcon, CalendarIcon, CaretDownIcon } from "miruIcons";
-import Select, { components, DropdownIndicatorProps } from "react-select";
-
 import { CustomAdvanceInput } from "common/CustomAdvanceInput";
 import CustomDatePicker from "common/CustomDatePicker";
 import { CustomInputText } from "common/CustomInputText";
 import { InputErrors, InputField } from "common/FormikFields";
-import { reactSelectStyles } from "components/Invoices/common/InvoiceDetails/Styles";
+import dayjs from "dayjs";
+import { Formik, Form, FormikProps } from "formik";
+import { useOutsideClick } from "helpers";
+import { CalendarIcon, CaretDownIcon } from "miruIcons";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../../../../ui/select";
 
 import { invoiceDetailsFormInitialValues, invoiceDetailsSchema } from "./utils";
 
@@ -70,7 +74,9 @@ const InvoiceDetails = ({
       const selection = clientDetails.filter(
         client => client.label == prePopulatedClient
       );
-      selection[0] && handleClientChange(selection[0]);
+      if (selection[0]) {
+        handleClientChange(selection[0]);
+      }
     }
 
     if (selectedClient) {
@@ -113,15 +119,9 @@ const InvoiceDetails = ({
     setShowDueDatePicker(false);
   };
 
-  const DropdownIndicator = (props: DropdownIndicatorProps<true>) => (
-    <components.DropdownIndicator {...props}>
-      <SearchIcon color="#1D1A31" size={20} />
-    </components.DropdownIndicator>
-  );
-
   const handleClientChange = selection => {
     const client = clientDetails.find(client => client.id == selection.value);
-    // eslint-disable-next-line no-console
+
     setSelectedClient(client);
     setIsClientVisible(false);
     autoGenerateInvoiceNumber(client);
@@ -196,21 +196,31 @@ const InvoiceDetails = ({
               >
                 <div className="h-auto w-full" ref={wrapperRef}>
                   <Select
-                    autoFocus
-                    defaultMenuIsOpen
-                    isSearchable
-                    className="w-full text-white"
-                    classNamePrefix="m-0 truncate font-medium text-sm text-miru-dark-purple-1000 bg-white"
-                    defaultValue={null}
-                    options={createClientList()}
-                    placeholder="Search"
-                    styles={reactSelectStyles.InvoiceDetails}
-                    components={{
-                      DropdownIndicator,
-                      IndicatorSeparator: () => null,
+                    defaultOpen
+                    value={selectedClient?.id?.toString() || ""}
+                    onValueChange={value => {
+                      const selection = {
+                        value: parseInt(value),
+                        label: clientDetails.find(c => c.id === parseInt(value))
+                          ?.name,
+                      };
+                      handleClientChange(selection);
                     }}
-                    onChange={handleClientChange}
-                  />
+                  >
+                    <SelectTrigger className="w-full text-white m-0 truncate font-medium text-sm text-miru-dark-purple-1000 bg-white">
+                      <SelectValue placeholder="Search" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {createClientList().map(client => (
+                        <SelectItem
+                          key={client.value}
+                          value={client.value.toString()}
+                        >
+                          {client.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
             )}

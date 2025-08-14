@@ -11,6 +11,6 @@ class InternalApi::V1::TimezonesController < InternalApi::V1::ApplicationControl
       obj
     end
 
-    render json: { timezones: }, status: :ok
+    render json: { timezones: }, status: 200
   end
 end

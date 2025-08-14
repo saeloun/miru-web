@@ -1,13 +1,12 @@
 import React from "react";
 
-import { minToHHMM } from "helpers";
-
 import {
   generateLeaveIcon,
   generateLeaveColor,
   generateHolidayIcon,
   generateHolidayColor,
 } from "components/Profile/Organization/Leaves/utils";
+import { minToHHMM } from "helpers";
 
 const LeaveBlock = ({ leaveType, selectedLeaveType, setSelectedLeaveType }) => {
   const { icon, color, name, netDuration, type, category, label } = leaveType;

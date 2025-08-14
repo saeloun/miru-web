@@ -1,0 +1,296 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'json'
+require 'fileutils'
+require 'time'
+
+# Colors for output
+class Colors
+  RED = "\e[31m"
+  GREEN = "\e[32m"
+  YELLOW = "\e[33m"
+  BLUE = "\e[34m"
+  CYAN = "\e[36m"
+  RESET = "\e[0m"
+  BOLD = "\e[1m"
+end
+
+puts "#{Colors::CYAN}#{Colors::BOLD}🔍 Miru 2.0 - Comprehensive Test Failure Collector#{Colors::RESET}"
+puts "#{Colors::BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━#{Colors::RESET}"
+
+# Create output directory
+output_dir = "tmp/test_failures"
+FileUtils.mkdir_p(output_dir)
+
+# Configuration
+workers = ENV['WORKERS'] || 4
+spec_dir = ARGV[0] || "spec/"
+
+puts "#{Colors::GREEN}✓#{Colors::RESET} Workers: #{Colors::BOLD}#{workers}#{Colors::RESET}"
+puts "#{Colors::GREEN}✓#{Colors::RESET} Testing: #{Colors::BOLD}#{spec_dir}#{Colors::RESET}"
+puts "#{Colors::GREEN}✓#{Colors::RESET} Output: #{Colors::BOLD}#{output_dir}#{Colors::RESET}"
+puts "#{Colors::BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━#{Colors::RESET}\n"
+
+# Step 1: Run parallel tests with detailed output
+puts "#{Colors::YELLOW}⚡ Running parallel tests...#{Colors::RESET}"
+
+raw_output = "#{output_dir}/raw_output.txt"
+json_output = "#{output_dir}/failures.json"
+summary_output = "#{output_dir}/summary.md"
+
+# Run tests with multiple formatters
+cmd = <<~CMD
+  bundle exec parallel_rspec \
+    -n #{workers} \
+    #{spec_dir} \
+    --format documentation \
+    --format json --out #{json_output} \
+    --format progress \
+    2>&1 | tee #{raw_output}
+CMD
+
+system(cmd)
+test_success = $?.success?
+
+# Step 2: Parse the raw output for detailed failures
+puts "\n#{Colors::YELLOW}📊 Parsing test results...#{Colors::RESET}"
+
+failures = []
+current_failure = nil
+in_failure = false
+failure_buffer = []
+
+if File.exist?(raw_output)
+  File.readlines(raw_output).each do |line|
+    # Detect failure start
+    if line =~ /^\s*(\d+)\)\s+(.+)$/
+      if current_failure && !failure_buffer.empty?
+        current_failure[:details] = failure_buffer.join
+        failures << current_failure
+      end
+      
+      current_failure = {
+        number: $1.to_i,
+        description: $2.strip,
+        details: "",
+        error: nil,
+        location: nil
+      }
+      failure_buffer = []
+      in_failure = true
+    elsif in_failure
+      failure_buffer << line
+      
+      # Extract error message
+      if line =~ /Failure\/Error:\s*(.+)$/
+        current_failure[:error] = $1.strip if current_failure
+      end
+      
+      # Extract file location
+      if line =~ /# (\.\/spec\/.+?:\d+)/
+        current_failure[:location] = $1 if current_failure
+      end
+      
+      # End of failure block
+      if line =~ /^(Finished in|^\s*$)/ && current_failure
+        current_failure[:details] = failure_buffer.join
+        failures << current_failure
+        current_failure = nil
+        in_failure = false
+        failure_buffer = []
+      end
+    end
+  end
+  
+  # Don't forget the last failure
+  if current_failure && !failure_buffer.empty?
+    current_failure[:details] = failure_buffer.join
+    failures << current_failure
+  end
+end
+
+# Step 3: Parse JSON output if available
+json_failures = []
+if File.exist?(json_output)
+  begin
+    json_data = JSON.parse(File.read(json_output))
+    
+    if json_data["examples"]
+      json_failures = json_data["examples"].select { |e| e["status"] == "failed" }.map do |example|
+        {
+          description: example["full_description"],
+          file_path: example["file_path"],
+          line_number: example["line_number"],
+          error_message: example.dig("exception", "message"),
+          error_class: example.dig("exception", "class"),
+          backtrace: example.dig("exception", "backtrace")&.first(5)
+        }
+      end
+    end
+  rescue JSON::ParserError => e
+    puts "#{Colors::RED}Warning: Could not parse JSON output: #{e.message}#{Colors::RESET}"
+  end
+end
+
+# Step 4: Extract unique failures from raw output
+failed_specs = []
+File.readlines(raw_output).each do |line|
+  if line =~ /^rspec\s+(.+?\.rb(?::\d+)?)\s+#\s+(.+)$/
+    failed_specs << {
+      file: $1.strip,
+      description: $2.strip
+    }
+  elsif line =~ /^rspec\s+'(.+?)'\s+#\s+(.+)$/
+    failed_specs << {
+      file: $1.strip,
+      description: $2.strip
+    }
+  end
+end
+
+# Step 5: Generate comprehensive report
+File.open(summary_output, 'w') do |f|
+  f.puts "# Test Failure Report"
+  f.puts "Generated: #{Time.now.iso8601}"
+  f.puts "Test Directory: #{spec_dir}"
+  f.puts "Workers: #{workers}"
+  f.puts ""
+  
+  # Summary statistics
+  total_failures = [failures.count, json_failures.count, failed_specs.count].max
+  f.puts "## Summary"
+  f.puts "- Total Failures: **#{total_failures}**"
+  f.puts "- Unique Files: **#{failed_specs.map { |s| s[:file].split(':').first }.uniq.count}**"
+  f.puts ""
+  
+  # Group failures by file
+  f.puts "## Failures by File"
+  f.puts ""
+  
+  grouped = failed_specs.group_by { |s| s[:file].split(':').first }
+  grouped.sort.each do |file, specs|
+    f.puts "### #{file} (#{specs.count} failures)"
+    f.puts ""
+    specs.each do |spec|
+      f.puts "- #{spec[:description]}"
+      f.puts "  - Location: `#{spec[:file]}`"
+    end
+    f.puts ""
+  end
+  
+  # Detailed failures
+  if failures.any?
+    f.puts "## Detailed Failure Information"
+    f.puts ""
+    
+    failures.first(20).each do |failure|
+      f.puts "### #{failure[:number]}. #{failure[:description]}"
+      f.puts ""
+      f.puts "**Error:** #{failure[:error]}" if failure[:error]
+      f.puts ""
+      f.puts "**Location:** `#{failure[:location]}`" if failure[:location]
+      f.puts ""
+      
+      if failure[:details] && failure[:details].length > 0
+        f.puts "<details>"
+        f.puts "<summary>Full Details</summary>"
+        f.puts ""
+        f.puts "```"
+        f.puts failure[:details].split("\n").first(30).join("\n")
+        f.puts "```"
+        f.puts "</details>"
+        f.puts ""
+      end
+    end
+    
+    if failures.count > 20
+      f.puts "_... and #{failures.count - 20} more failures_"
+    end
+  end
+  
+  # Commands to run individual tests
+  f.puts "## Commands to Fix"
+  f.puts ""
+  f.puts "Run these commands to test individual failing files:"
+  f.puts ""
+  f.puts "```bash"
+  grouped.keys.first(10).each do |file|
+    f.puts "bundle exec rspec #{file}"
+  end
+  f.puts "```"
+end
+
+# Step 6: Create a structured JSON file for analysis
+all_failures = {
+  metadata: {
+    timestamp: Time.now.iso8601,
+    spec_directory: spec_dir,
+    workers: workers,
+    success: test_success
+  },
+  summary: {
+    total_failures: failed_specs.count,
+    unique_files: failed_specs.map { |s| s[:file].split(':').first }.uniq.count
+  },
+  failures: failed_specs,
+  detailed_failures: failures.first(50),
+  json_failures: json_failures.first(50)
+}
+
+File.write("#{output_dir}/all_failures.json", JSON.pretty_generate(all_failures))
+
+# Step 7: Create executable fix script
+fix_script = "#{output_dir}/fix_all.sh"
+File.open(fix_script, 'w') do |f|
+  f.puts "#!/bin/bash"
+  f.puts "# Script to fix all failing specs"
+  f.puts "set -e"
+  f.puts ""
+  f.puts "echo '🔧 Fixing all failing specs...'"
+  f.puts ""
+  
+  grouped.keys.each do |file|
+    f.puts "echo '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'"
+    f.puts "echo '📁 Testing: #{file}'"
+    f.puts "bundle exec rspec #{file} --format progress"
+    f.puts ""
+  end
+  
+  f.puts "echo '✅ All tests completed!'"
+end
+
+FileUtils.chmod(0755, fix_script)
+
+# Print final summary
+puts "\n#{Colors::BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━#{Colors::RESET}"
+puts "#{Colors::CYAN}#{Colors::BOLD}📊 Test Collection Complete!#{Colors::RESET}"
+puts "#{Colors::BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━#{Colors::RESET}"
+
+if test_success
+  puts "#{Colors::GREEN}✅ All tests passed!#{Colors::RESET}"
+else
+  puts "#{Colors::RED}❌ #{failed_specs.count} test failures found#{Colors::RESET}"
+  puts ""
+  puts "#{Colors::YELLOW}📁 Files with failures:#{Colors::RESET}"
+  grouped.keys.first(5).each do |file|
+    puts "   #{file} (#{grouped[file].count} failures)"
+  end
+  puts "   ..." if grouped.keys.count > 5
+end
+
+puts ""
+puts "#{Colors::CYAN}📄 Output files created:#{Colors::RESET}"
+puts "   • #{Colors::BOLD}#{summary_output}#{Colors::RESET} - Human-readable report"
+puts "   • #{Colors::BOLD}#{output_dir}/all_failures.json#{Colors::RESET} - Structured data for analysis"
+puts "   • #{Colors::BOLD}#{raw_output}#{Colors::RESET} - Complete test output"
+puts "   • #{Colors::BOLD}#{fix_script}#{Colors::RESET} - Script to fix each file"
+
+puts ""
+puts "#{Colors::GREEN}💡 To share with Claude:#{Colors::RESET}"
+puts "   cat #{summary_output}"
+puts ""
+puts "#{Colors::GREEN}💡 To fix all failures:#{Colors::RESET}"
+puts "   bash #{fix_script}"
+
+puts "#{Colors::BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━#{Colors::RESET}"

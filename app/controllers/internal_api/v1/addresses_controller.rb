@@ -6,24 +6,24 @@ class InternalApi::V1::AddressesController < InternalApi::V1::ApplicationControl
   def index
     authorize @addressable, policy_class: AddressPolicy
     addresses = @addressable.addresses
-    render :index, locals: { addresses: }, status: :ok
+    render :index, locals: { addresses: }, status: 200
  end
 
   def create
     authorize @addressable, policy_class: AddressPolicy
     address = @addressable.addresses.create!(address_params)
-    render :create, locals: { address: }, status: :ok
+    render :create, locals: { address: }, status: 200
  end
 
   def show
     authorize address
-    render :show, locals: { address: }, status: :ok
+    render :show, locals: { address: }, status: 200
   end
 
   def update
     authorize address
     address.update!(address_params)
-    render :update, locals: { address: }, status: :ok
+    render :update, locals: { address: }, status: 200
   end
 
   private

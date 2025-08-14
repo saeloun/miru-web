@@ -1,9 +1,8 @@
 import React from "react";
 
+import CustomYearPicker from "common/CustomYearPicker";
 import { getYear } from "date-fns";
 import { XIcon } from "miruIcons";
-
-import CustomYearPicker from "common/CustomYearPicker";
 
 const EditHeader = ({
   title,

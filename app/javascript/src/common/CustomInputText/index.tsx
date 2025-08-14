@@ -1,5 +1,3 @@
-/* eslint-disable import/exports-last */
-
 import React from "react";
 
 import classNames from "classnames";
@@ -17,7 +15,7 @@ type customInputTextProps = {
   name?: string;
   type?: string;
   value: any;
-  onChange: any;
+  onChange?: any;
   labelClassName?: string;
   label?: string;
   wrapperClassName?: string;
@@ -27,31 +25,39 @@ type customInputTextProps = {
   autoFocus?: boolean;
   step?: any;
   min?: any;
-  onFocus?: (e?: any) => void; // eslint-disable-line
-  onBlur?: (e?: any) => void; // eslint-disable-line
-  onClick?: (e?: any) => void; // eslint-disable-line
+  onFocus?: (_e?: any) => void;
+  onBlur?: (_e?: any) => void;
+  onClick?: (_e?: any) => void;
 };
 
 export const CustomInputText = ({
   id,
   inputBoxClassName,
-  disabled,
+  disabled = false,
   name,
-  type,
+  type = "text",
   value,
-  onChange,
-  onFocus,
-  onBlur,
+  onChange = () => {
+    /* Default empty handler */
+  },
+  onFocus = () => {
+    /* Default empty handler */
+  },
+  onBlur = () => {
+    /* Default empty handler */
+  },
   labelClassName,
   label,
   wrapperClassName,
-  moveLabelToRightClassName,
-  moveLabelToLeftClassName,
-  readOnly,
-  step,
-  min,
-  onClick,
-  autoFocus,
+  moveLabelToRightClassName = "",
+  moveLabelToLeftClassName = "left-1",
+  readOnly = false,
+  step = 1,
+  min = null,
+  onClick = () => {
+    /* Default empty handler */
+  },
+  autoFocus = false,
 }: customInputTextProps) => (
   <div className={classNames(defaultWrapperClassName, wrapperClassName)}>
     <input
@@ -85,18 +91,3 @@ export const CustomInputText = ({
     </label>
   </div>
 );
-
-CustomInputText.defaultProps = {
-  type: "text",
-  disabled: false,
-  readOnly: false,
-  autoFocus: false,
-  step: 1,
-  min: null,
-  moveLabelToLeftClassName: "left-1",
-  moveLabelToRightClassName: "",
-  onChange: () => {}, // eslint-disable-line @typescript-eslint/no-empty-function
-  onFocus: () => {}, // eslint-disable-line @typescript-eslint/no-empty-function
-  onBlur: () => {}, // eslint-disable-line @typescript-eslint/no-empty-function
-  onClick: () => {}, // eslint-disable-line
-};

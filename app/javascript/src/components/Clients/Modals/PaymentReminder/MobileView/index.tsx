@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 
+import clientApi from "apis/clients";
 import { XIcon } from "miruIcons";
 import Steps from "rc-steps";
 import { Button, Toastr } from "StyledComponents";
-
-import clientApi from "apis/clients";
 
 import MobileTable from "./MobileTable";
 

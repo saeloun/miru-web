@@ -17,7 +17,6 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController#download", type: :
     admin.add_role :admin, company
     employee.add_role :employee, company
     book_keeper.add_role :book_keeper, company
-    TimesheetEntry.search_index.refresh
   end
 
   context "when user is an admin or owner" do

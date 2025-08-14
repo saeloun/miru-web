@@ -1,9 +1,8 @@
 import React from "react";
 
-import { VacationIcon } from "miruIcons";
-
 import TimeoffEntryManager from "components/TimeoffEntries/TimeoffEntryManager";
 import { useTimesheetEntries } from "context/TimesheetEntries";
+import { VacationIcon } from "miruIcons";
 
 import WeeklyEntries from "./WeeklyEntries";
 

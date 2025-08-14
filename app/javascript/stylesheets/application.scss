@@ -1,7 +1,6 @@
-@import "tailwindcss/base";
-@import "tailwindcss/components";
-@import "tailwindcss/utilities";
-@import "react-toastify/dist/ReactToastify.min.css";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 @import "react-responsive-carousel/lib/styles/carousel.min.css";
 @import "team";
 @import "time-tracking";
@@ -18,6 +17,97 @@
     font-weight: 200 800;
   }
 
+  /* CSS Variables for Modern Theme System - Violet Compact Mode */
+  :root {
+    /* Core theme variables based on Miru brand with violet color scheme */
+    --background: 0 0% 100%; /* hsl format for shadcn compatibility */
+    --foreground: 268 29% 14%; /* #1D1A31 - miru-dark-purple-1000 */
+    --card: 0 0% 100%; /* #FFFFFF */
+    --card-foreground: 268 29% 14%; /* #1D1A31 */
+    --popover: 0 0% 100%; /* #FFFFFF */
+    --popover-foreground: 268 29% 14%; /* #1D1A31 */
+    --primary: 264 94% 56%; /* #5B34EA - miru-han-purple-1000 - violet-500 equivalent */
+    --primary-foreground: 0 0% 100%; /* #FFFFFF */
+    --secondary: 211 19% 97%; /* #F5F7F9 - miru-gray-100 */
+    --secondary-foreground: 268 29% 14%; /* #1D1A31 */
+    --muted: 207 13% 94%; /* #EBEFF2 - miru-gray-200 */
+    --muted-foreground: 261 7% 49%; /* #777683 - miru-dark-purple-400 */
+    --accent: 207 13% 91%; /* #E1E6EC - miru-gray-400 */
+    --accent-foreground: 268 29% 14%; /* #1D1A31 */
+    --destructive: 0 68% 58%; /* #E04646 - miru-red-400 */
+    --destructive-foreground: 0 0% 100%; /* #FFFFFF */
+    --border: 207 13% 91%; /* #E1E6EC - miru-gray-400 */
+    --input: 207 13% 91%; /* #E1E6EC - miru-gray-400 */
+    --ring: 264 94% 56%; /* #5B34EA - miru-han-purple-1000 */
+    --radius: 0.5rem; /* Compact mode - smaller radius */
+
+    /* Extended modern colors */
+    --gradient-start: 91 52 234; /* #5B34EA */
+    --gradient-end: 124 93 238; /* #7C5DEE */
+    --surface-1: 255 255 255; /* #FFFFFF */
+    --surface-2: 245 247 249; /* #F5F7F9 */
+    --surface-3: 235 239 242; /* #EBEFF2 */
+    --text-primary: 29 26 49; /* #1D1A31 */
+    --text-secondary: 74 72 90; /* #4A485A */
+    --text-muted: 119 118 131; /* #777683 */
+
+    /* Miru brand color CSS variables for v4 compatibility */
+    --miru-black-1000: 48 58 75; /* #303A4B */
+    --miru-gray-1000: 205 214 223; /* #CDD6DF */
+    --miru-gray-600: 215 222 229; /* #D7DEE5 */
+    --miru-gray-400: 225 230 236; /* #E1E6EC */
+    --miru-gray-200: 235 239 242; /* #EBEFF2 */
+    --miru-gray-100: 245 247 249; /* #F5F7F9 */
+    --miru-gray-500: 173 164 206; /* #ADA4CE */
+    --miru-gray-800: 173 164 206; /* #ADA4CE */
+    --miru-white-1000: 255 255 255; /* #FFFFFF */
+    --miru-dark-purple-1000: 29 26 49; /* #1D1A31 */
+    --miru-dark-purple-600: 74 72 90; /* #4A485A */
+    --miru-dark-purple-400: 119 118 131; /* #777683 */
+    --miru-dark-purple-200: 165 163 173; /* #A5A3AD */
+    --miru-dark-purple-100: 210 209 214; /* #D2D1D6 */
+    --miru-han-purple-1000: 91 52 234; /* #5B34EA */
+    --miru-han-purple-600: 124 93 238; /* #7C5DEE */
+    --miru-han-purple-400: 157 133 242; /* #9D85F2 */
+    --miru-han-purple-200: 189 174 247; /* #BDAEF7 */
+    --miru-han-purple-100: 222 214 251; /* #DED6FB */
+    --miru-red-400: 224 70 70; /* #E04646 */
+    --miru-red-200: 235 91 91; /* #EB5B5B */
+  }
+
+  /* Dark mode variables - Violet scheme with proper contrast */
+  .dark {
+    --background: 268 29% 14%; /* #1D1A31 - miru-dark-purple-1000 */
+    --foreground: 0 0% 98%; /* #FFFFFF with slight adjustment */
+    --card: 265 17% 21%; /* #4A485A - miru-dark-purple-600 */
+    --card-foreground: 0 0% 98%; /* #FFFFFF */
+    --popover: 265 17% 21%; /* #4A485A */
+    --popover-foreground: 0 0% 98%; /* #FFFFFF */
+    --primary: 264 94% 56%; /* #5B34EA - keep brand color */
+    --primary-foreground: 0 0% 98%; /* #FFFFFF */
+    --secondary: 265 17% 21%; /* #4A485A - miru-dark-purple-600 */
+    --secondary-foreground: 0 0% 98%; /* #FFFFFF */
+    --muted: 265 17% 21%; /* #4A485A */
+    --muted-foreground: 261 9% 84%; /* #D2D1D6 - miru-dark-purple-100 */
+    --accent: 265 17% 21%; /* #4A485A */
+    --accent-foreground: 0 0% 98%; /* #FFFFFF */
+    --destructive: 0 68% 58%; /* #E04646 */
+    --destructive-foreground: 0 0% 98%; /* #FFFFFF */
+    --border: 265 17% 21%; /* #4A485A */
+    --input: 265 17% 21%; /* #4A485A */
+    --ring: 264 94% 56%; /* #5B34EA */
+
+    /* Extended dark mode colors */
+    --gradient-start: 91 52 234; /* #5B34EA */
+    --gradient-end: 124 93 238; /* #7C5DEE */
+    --surface-1: 29 26 49; /* #1D1A31 */
+    --surface-2: 74 72 90; /* #4A485A */
+    --surface-3: 119 118 131; /* #777683 */
+    --text-primary: 255 255 255; /* #FFFFFF */
+    --text-secondary: 210 209 214; /* #D2D1D6 */
+    --text-muted: 165 163 173; /* #A5A3AD */
+  }
+
   .field_with_errors {
     display: flex;
     justify-content: space-between;
@@ -25,6 +115,79 @@
 
   .modal-width {
     min-width: 25rem;
+  }
+
+  /* Modern base styles with theme transition support */
+  * {
+    @apply border-border;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+  }
+  
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+  
+  /* Maintain Manrope for specific elements that need it */
+  .font-manrope {
+    font-family: "Manrope", serif !important;
+  }
+
+  /* Modern Typography Classes */
+  .text-h1 {
+    @apply text-4xl font-extrabold;
+  }
+
+  .text-h2 {
+    @apply border-b pb-2 text-3xl font-semibold;
+  }
+
+  .text-h3 {
+    @apply text-2xl font-semibold;
+  }
+
+  .text-h4 {
+    @apply text-xl font-semibold;
+  }
+
+  .text-p {
+    @apply leading-7;
+  }
+
+  .text-lead {
+    @apply text-xl;
+  }
+
+  .text-large {
+    @apply text-lg font-semibold;
+  }
+
+  .text-small {
+    @apply text-sm font-medium;
+  }
+
+  .text-muted {
+    @apply text-sm;
+  }
+
+  /* Modern Interactive Elements */
+  .hover-lift {
+    @apply transition-transform;
+  }
+
+  .focus-ring {
+    @apply outline-none;
+  }
+
+  .glass {
+    backdrop-filter: blur(16px) saturate(180%);
+    background-color: rgba(255, 255, 255, 0.75);
+    border: 1px solid rgba(209, 213, 219, 0.3);
+  }
+
+  .dark .glass {
+    background-color: rgba(29, 26, 49, 0.75);
+    border: 1px solid rgba(74, 72, 90, 0.3);
   }
 }
 
@@ -389,9 +552,6 @@
   }
 }
 
-body {
-  font-family: "Manrope", "sans-serif";
-}
 
 .example-enter {
   opacity: 0.01;

@@ -1,10 +1,9 @@
 import React from "react";
 
-import { PlusIcon } from "miruIcons";
-import { Button } from "StyledComponents";
-
 import EmptyStates from "common/EmptyStates";
 import { useTimesheetEntries } from "context/TimesheetEntries";
+import { PlusIcon } from "miruIcons";
+import { Button } from "StyledComponents";
 
 export const EmptyStatesMobileView = () => {
   const { setNewEntryView, setEditEntryId } = useTimesheetEntries();

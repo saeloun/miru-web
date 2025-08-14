@@ -1,18 +1,23 @@
 import React, { useRef, useState, useEffect, memo } from "react";
 
-import dayjs from "dayjs";
-import { useOutsideClick } from "helpers";
-import { CalendarIcon, FileIcon, XIcon } from "miruIcons";
-import { components } from "react-select";
-import { Button } from "StyledComponents";
-
 import expensesApi from "apis/expenses";
-import CustomCreatableSelect from "common/CustomCreatableSelect";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../ui/select";
 import CustomDatePicker from "common/CustomDatePicker";
 import { CustomInputText } from "common/CustomInputText";
 import CustomRadioButton from "common/CustomRadio";
 import { CustomTextareaAutosize } from "common/CustomTextareaAutosize";
 import { ErrorSpan } from "common/ErrorSpan";
+import dayjs from "dayjs";
+import { useOutsideClick } from "helpers";
+import { CalendarIcon, FileIcon, XIcon } from "miruIcons";
+import { components } from "react-select";
+import { Button } from "StyledComponents";
 
 const ExpenseForm = ({
   dateFormat,
@@ -257,7 +262,7 @@ const ExpenseForm = ({
               name="transactionDate"
               type="text"
               value={expenseDate && dayjs(expenseDate).format(dateFormat)}
-              onChange={() => {}} //eslint-disable-line
+              onChange={() => {}}
             />
             <CalendarIcon
               className="absolute top-0 bottom-0 right-1 mx-2 my-3 cursor-pointer"
@@ -273,14 +278,40 @@ const ExpenseForm = ({
           )}
         </div>
         <div className="mt-6">
-          <CustomCreatableSelect
-            handleOnChange={handleVendor}
-            id="vendor"
-            label="Vendor"
-            name="vendor"
-            options={expenseData.vendors}
-            value={vendor || newVendor}
-          />
+          <label className="text-base font-medium text-miru-dark-purple-400">
+            Vendor
+          </label>
+          <div className="mt-1">
+            <Select
+              value={
+                (vendor || newVendor)?.value ||
+                (vendor || newVendor)?.id?.toString() ||
+                ""
+              }
+              onValueChange={value => {
+                const selectedVendor = expenseData.vendors?.find(
+                  (v: any) => (v.value || v.id?.toString()) === value
+                );
+                if (selectedVendor) {
+                  handleVendor(selectedVendor);
+                }
+              }}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select vendor..." />
+              </SelectTrigger>
+              <SelectContent>
+                {expenseData.vendors?.map((vendorOption: any) => (
+                  <SelectItem
+                    key={vendorOption.id || vendorOption.value}
+                    value={vendorOption.value || vendorOption.id?.toString()}
+                  >
+                    {vendorOption.label || vendorOption.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
           <ErrorSpan message="" />
         </div>
         <div className="mt-6">
@@ -295,18 +326,45 @@ const ExpenseForm = ({
           <ErrorSpan message="" />
         </div>
         <div className="mt-6">
-          <CustomCreatableSelect
-            handleOnChange={handleCategory}
-            id="category"
-            label="Category"
-            name="category"
-            options={expenseData.categories}
-            value={category || newCategory}
-            components={{
-              Option: MemoizedIconOption,
-              SingleValue: CustomSingleValue,
-            }}
-          />
+          <label className="text-base font-medium text-miru-dark-purple-400">
+            Category
+          </label>
+          <div className="mt-1">
+            <Select
+              value={
+                (category || newCategory)?.value ||
+                (category || newCategory)?.id?.toString() ||
+                ""
+              }
+              onValueChange={value => {
+                const selectedCategory = expenseData.categories?.find(
+                  (c: any) => (c.value || c.id?.toString()) === value
+                );
+                if (selectedCategory) {
+                  handleCategory(selectedCategory);
+                }
+              }}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select category..." />
+              </SelectTrigger>
+              <SelectContent>
+                {expenseData.categories?.map((categoryOption: any) => (
+                  <SelectItem
+                    key={categoryOption.id || categoryOption.value}
+                    value={
+                      categoryOption.value || categoryOption.id?.toString()
+                    }
+                  >
+                    <div className="flex w-full items-center gap-4">
+                      {categoryOption.icon}
+                      {categoryOption.label || categoryOption.name}
+                    </div>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
         <div className="mt-6">
           <CustomTextareaAutosize

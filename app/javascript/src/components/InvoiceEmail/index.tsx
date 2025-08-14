@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from "react";
 
-import { InstagramSVG, TwitterSVG, MiruLogoWithTextSVG } from "miruIcons";
-import { useParams, useNavigate } from "react-router-dom";
-
 import invoicesApi from "apis/invoices";
 import Loader from "common/Loader";
 import MobileView from "components/ClientInvoices/Details/MobileView";
 import ConnectPaymentGateway from "components/Invoices/popups/ConnectPaymentGateway";
 import StripeDisabledInvoice from "components/Invoices/popups/StripeDisabledInvoice";
 import { useUserContext } from "context/UserContext";
+import { InstagramSVG, TwitterSVG, MiruLogoWithTextSVG } from "miruIcons";
+import { useParams, useNavigate } from "react-router-dom";
 
 import Header from "./Header";
 import InvoiceDetails from "./InvoiceDetails";

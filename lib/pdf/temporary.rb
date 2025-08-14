@@ -8,8 +8,6 @@ class Pdf::Temporary
     @name = name
   end
 
-  attr_reader :name
-
   def file
     Tempfile.open do |file|
       utf_8_encoded_content = pdf_content.encode(

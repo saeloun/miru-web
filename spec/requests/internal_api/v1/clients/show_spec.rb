@@ -27,7 +27,7 @@ RSpec.describe "InternalApi::V1::Clients#show", type: :request do
           address: client_1.current_address, logo: "", currency: client_1.currency
         }
         project_details = client_1.project_details(time_frame)
-        total_minutes = (project_details.map { |project| project[:minutes_spent] }).sum
+        total_minutes = (project_details.pluck(:minutes_spent)).sum
         overdue_outstanding_amount = client_1.client_overdue_and_outstanding_calculation
         expect(response).to have_http_status(:ok)
         expect(json_response["project_details"]).to eq(JSON.parse(project_details.to_json))

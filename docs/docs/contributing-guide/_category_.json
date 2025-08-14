@@ -4,6 +4,8 @@
   "collapsed": false,
   "link": {
     "type": "generated-index",
-    "description": "Guides for contributing to Miru Web"
+    "title": "Miru Contributing Guide - Open Source Development Setup & Guidelines",
+    "description": "Complete developer documentation for contributing to Miru Web. Includes setup guides for macOS, Ubuntu, Windows, Dev Containers, testing, and development guidelines.",
+    "keywords": ["contributing", "development setup", "open source", "ruby on rails", "react", "docker", "testing", "guidelines"]
   }
 }

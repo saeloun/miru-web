@@ -1,11 +1,19 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable */
 import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 import { minFromHHMM, minToHHMM, validateTimesheetEntry } from "helpers";
-import { CheckedCheckboxSVG, UncheckedCheckboxSVG, EditIcon } from "miruIcons";
-import { Button, BUTTON_STYLES, TimeInput, Toastr } from "StyledComponents";
-
+import { EditIcon, ClockIcon, CalendarIcon } from "miruIcons";
+import { Toastr } from "StyledComponents";
+import AnimatedTimeInput from "../../ui/animated-time-input";
+import { Card, CardHeader, CardContent } from "../../ui/card";
+import { Button } from "../../ui/button";
+import { Textarea } from "../../ui/textarea";
+import { AnimatedButton } from "../../ui/animated-button";
+import AnimatedCheckbox from "../../ui/animated-checkbox";
+import { Badge } from "../../ui/badge";
+import { Separator } from "../../ui/separator";
+import { cn } from "../../../lib/utils";
 import timesheetEntryApi from "apis/timesheet-entry";
 
 const WeeklyEntriesCard = ({
@@ -161,139 +169,245 @@ const WeeklyEntriesCard = ({
   }, []);
 
   return (
-    <div className="week-card mt-4 w-full rounded-lg p-6 shadow-xl">
-      <div className="flex w-full items-center justify-between">
-        <div className="mr-2 flex w-1/15 flex-wrap items-center justify-start xl:mr-10">
-          <p className="text-xs xl:text-sm xxl:text-lg">{client}</p>
-          <p className="ml-2 mr-auto text-xs xl:text-sm xxl:text-lg">•</p>
-          <p className="text-xs xl:text-sm xxl:text-lg">{project}</p>
-        </div>
-        <div className="flex w-3/5 items-center justify-between">
-          {[0, 1, 2, 3, 4, 5, 6].map((num: number) =>
-            num === selectedInputBox ? (
-              <TimeInput
-                className="focus:outline-none bold mx-auto h-15 w-auto content-center rounded border-2 border-miru-han-purple-400 bg-miru-gray-100 p-1 text-base focus:border-miru-han-purple-400 xl:w-18 xl:text-xl xxl:p-4"
-                id="selectedInput"
-                initTime={duration}
-                key={num}
-                name="timeInput"
-                onTimeChange={handleDurationChange}
-              />
-            ) : (
-              <div
-                id={`inputClick_${num}`}
-                key={num}
-                className={`bold mx-auto flex h-15 w-auto items-center  justify-center rounded border-2 border-transparent bg-miru-gray-100 p-1 text-base xl:text-xl xxl:p-4 ${
-                  currentEntries[num]
-                    ? "text-miru-gray-500"
-                    : "text-miru-dark-purple-200"
-                }`}
-                onClick={() => handleDurationClick(num)}
-              >
-                {currentEntries[num]
-                  ? minToHHMM(currentEntries[num]["duration"])
-                  : "00:00"}
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ type: "spring", stiffness: 300, damping: 25 }}
+    >
+      <Card className="mt-4 w-full shadow-lg border-0 bg-gradient-to-r from-white to-gray-50/50 overflow-hidden">
+        <CardHeader className="pb-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-3">
+                <motion.div
+                  className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10"
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                >
+                  <ClockIcon className="h-5 w-5 text-primary" />
+                </motion.div>
+                <div className="flex flex-col">
+                  <div className="flex items-center space-x-2">
+                    <span className="text-lg font-bold text-foreground">
+                      {client}
+                    </span>
+                    <Badge variant="secondary" className="text-xs">
+                      Active
+                    </Badge>
+                  </div>
+                  <span className="text-sm text-muted-foreground font-medium">
+                    {project}
+                  </span>
+                </div>
               </div>
-            )
-          )}
-        </div>
-        <div className="w-1/10 text-center text-base font-bold xl:text-xl">
-          {minToHHMM(weeklyTotalHours)}
-        </div>
-        <div className="flex w-1/10 items-center justify-center">
-          <EditIcon
-            className="cursor-pointer text-miru-han-purple-1000"
-            size={16}
-            weight="bold"
-            onClick={() => {
-              if (!isWeeklyEditing) setProjectSelected(false);
-            }}
-          />
-        </div>
-      </div>
-      {showNote && (
-        <div className="mx-54 mt-4 w-138 justify-between rounded border border-miru-gray-1000 bg-miru-gray-100">
-          <textarea
-            className="outline-none w-full resize-none rounded bg-miru-gray-100 p-2"
-            placeholder="Note"
-            value={note}
-            onChange={e => {
-              setNote(e.target.value);
-              setDataChanged(true);
-              setDataChanged(true);
-            }}
-          />
-          <div className="flex h-10 w-full justify-between bg-miru-gray-200">
-            <div className="flex items-center">
-              {billable && isProjectBillable ? (
-                <img
-                  alt="checkbox"
-                  className="inline"
-                  src={CheckedCheckboxSVG}
-                  onClick={() => {
-                    setBillable(false);
-                    setDataChanged(true);
-                  }}
-                />
-              ) : (
-                <img
-                  alt="checkbox"
-                  className="inline"
-                  src={UncheckedCheckboxSVG}
-                  onClick={() => {
-                    isProjectBillable && setBillable(true);
-                    setDataChanged(true);
-                  }}
-                />
-              )}
-              <h4>Billable</h4>
             </div>
-            <div>
-              <Button
-                style={BUTTON_STYLES.secondary}
-                className="m-2 inline-block h-6 w-30 justify-center rounded border border-miru-han-purple-1000 bg-transparent py-1 px-6 text-center align-middle text-xs font-bold tracking-widest text-miru-han-purple-600  hover:border-transparent hover:bg-miru-han-purple-1000 hover:text-white"
-                onClick={() => {
-                  setNote("");
-                  setShowNote(false);
-                  setDataChanged(false);
-                  setSelectedInputBox(-1);
-                  setBillable(false);
-                  setIsWeeklyEditing(false);
-                }}
+
+            <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-2 rounded-lg bg-muted/50 px-3 py-2">
+                <CalendarIcon className="h-4 w-4 text-muted-foreground" />
+                <span className="text-sm font-medium text-foreground">
+                  {minToHHMM(weeklyTotalHours)}
+                </span>
+                <span className="text-xs text-muted-foreground">total</span>
+              </div>
+
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
-                CANCEL
-              </Button>
-              {currentEntries[selectedInputBox] ? (
                 <Button
-                  style={BUTTON_STYLES.primary}
-                  className={`m-2 mb-1 inline-block h-6 w-30 rounded border py-1 px-6 text-xs font-bold tracking-widest text-white ${
-                    dataChanged && duration
-                      ? "bg-miru-han-purple-1000 hover:border-transparent"
-                      : "bg-miru-gray-1000"
-                  }`}
-                  onClick={handleUpdateEntry}
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 w-8 p-0 text-primary hover:text-primary/80 hover:bg-primary/10"
+                  onClick={() => {
+                    if (!isWeeklyEditing) setProjectSelected(false);
+                  }}
                 >
-                  UPDATE
+                  <EditIcon size={16} weight="bold" />
                 </Button>
-              ) : (
-                <Button
-                  style={BUTTON_STYLES.primary}
-                  disabled={!(dataChanged && duration && note)}
-                  className={`m-2 mb-1 inline-block h-6 w-30 rounded border py-1 px-6 text-xs font-bold tracking-widest text-white ${
-                    dataChanged && duration && note
-                      ? "bg-miru-han-purple-1000 hover:border-transparent"
-                      : "bg-miru-gray-1000"
-                  }`}
-                  onClick={handleSaveEntry}
-                >
-                  SAVE
-                </Button>
-              )}
+              </motion.div>
             </div>
           </div>
-        </div>
-      )}
-    </div>
+        </CardHeader>
+
+        <Separator className="mx-6" />
+
+        <CardContent className="pt-6">
+          <div className="grid grid-cols-7 gap-2 mb-4">
+            {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map(
+              (day, index) => (
+                <div key={day} className="text-center">
+                  <div className="text-xs font-medium text-muted-foreground mb-2">
+                    {day}
+                  </div>
+                  <AnimatePresence mode="wait">
+                    {index === selectedInputBox ? (
+                      <motion.div
+                        key={`input-${index}`}
+                        initial={{ scale: 0.8, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        exit={{ scale: 0.8, opacity: 0 }}
+                        transition={{
+                          type: "spring",
+                          stiffness: 400,
+                          damping: 25,
+                        }}
+                        className="w-full"
+                      >
+                        <AnimatedTimeInput
+                          initTime={duration}
+                          name="timeInput"
+                          onTimeChange={handleDurationChange}
+                          allowModeSwitch={false}
+                          defaultMode="hhmm"
+                          autoFocus={true}
+                          placeholder="HH:MM"
+                          className="text-center"
+                        />
+                      </motion.div>
+                    ) : (
+                      <motion.button
+                        key={`button-${index}`}
+                        type="button"
+                        id={`inputClick_${index}`}
+                        initial={{ scale: 0.8, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        exit={{ scale: 0.8, opacity: 0 }}
+                        whileHover={{
+                          scale: 1.05,
+                          boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+                          transition: {
+                            type: "spring",
+                            stiffness: 400,
+                            damping: 17,
+                          },
+                        }}
+                        whileTap={{ scale: 0.95 }}
+                        className={cn(
+                          "w-full h-14 flex items-center justify-center rounded-lg border-2 border-transparent transition-all duration-200 font-bold",
+                          currentEntries[index]
+                            ? "bg-muted text-muted-foreground hover:bg-muted/80"
+                            : "bg-muted text-muted-foreground/50 hover:bg-muted/80"
+                        )}
+                        onClick={() => handleDurationClick(index)}
+                      >
+                        <div className="text-center">
+                          <div className="text-sm font-mono">
+                            {currentEntries[index]
+                              ? minToHHMM(currentEntries[index]["duration"])
+                              : "00:00"}
+                          </div>
+                          {currentEntries[index] && (
+                            <div className="w-2 h-2 bg-primary rounded-full mx-auto mt-1" />
+                          )}
+                        </div>
+                      </motion.button>
+                    )}
+                  </AnimatePresence>
+                </div>
+              )
+            )}
+          </div>
+
+          <AnimatePresence>
+            {showNote && (
+              <motion.div
+                initial={{ opacity: 0, height: 0, y: -10 }}
+                animate={{ opacity: 1, height: "auto", y: 0 }}
+                exit={{ opacity: 0, height: 0, y: -10 }}
+                transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                className="overflow-hidden"
+              >
+                <Separator className="my-6" />
+
+                <div className="space-y-4">
+                  <div>
+                    <label className="text-sm font-medium text-foreground mb-2 block">
+                      Add Notes
+                    </label>
+                    <Textarea
+                      placeholder="Describe your work..."
+                      value={note}
+                      className="min-h-[80px] resize-none border-border/50 focus:border-primary transition-colors"
+                      onChange={e => {
+                        setNote(e.target.value);
+                        setDataChanged(true);
+                      }}
+                    />
+                  </div>
+
+                  <motion.div
+                    className="flex items-center justify-between rounded-xl bg-gradient-to-r from-muted/50 to-muted/30 p-4 border border-border/30"
+                    initial={{ scale: 0.95, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ delay: 0.1 }}
+                  >
+                    <div className="flex items-center space-x-4">
+                      <AnimatedCheckbox
+                        id="billable-weekly"
+                        checked={billable && isProjectBillable}
+                        disabled={!isProjectBillable}
+                        onCheckedChange={checked => {
+                          if (isProjectBillable) {
+                            setBillable(checked);
+                            setDataChanged(true);
+                          }
+                        }}
+                        label="Billable Time"
+                      />
+
+                      {billable && isProjectBillable && (
+                        <Badge variant="default" className="text-xs">
+                          Billable
+                        </Badge>
+                      )}
+                    </div>
+
+                    <div className="flex gap-3">
+                      <AnimatedButton
+                        variant="outline"
+                        size="sm"
+                        animation="scale"
+                        onClick={() => {
+                          setNote("");
+                          setShowNote(false);
+                          setDataChanged(false);
+                          setSelectedInputBox(-1);
+                          setBillable(false);
+                          setIsWeeklyEditing(false);
+                        }}
+                      >
+                        Cancel
+                      </AnimatedButton>
+
+                      {currentEntries[selectedInputBox] ? (
+                        <AnimatedButton
+                          size="sm"
+                          animation="bounce"
+                          disabled={!(dataChanged && duration)}
+                          onClick={handleUpdateEntry}
+                        >
+                          Update Entry
+                        </AnimatedButton>
+                      ) : (
+                        <AnimatedButton
+                          size="sm"
+                          animation="bounce"
+                          disabled={!(dataChanged && duration && note)}
+                          onClick={handleSaveEntry}
+                        >
+                          Save Entry
+                        </AnimatedButton>
+                      )}
+                    </div>
+                  </motion.div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </CardContent>
+      </Card>
+    </motion.div>
   );
 };
 

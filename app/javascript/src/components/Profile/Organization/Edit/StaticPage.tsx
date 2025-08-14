@@ -11,7 +11,6 @@ import {
 import PhoneInput from "react-phone-number-input";
 import flags from "react-phone-number-input/flags";
 import "react-phone-number-input/style.css";
-
 import { CustomInputText } from "common/CustomInputText";
 import CustomReactSelect from "common/CustomReactSelect";
 import { CustomTextareaAutosize } from "common/CustomTextareaAutosize";

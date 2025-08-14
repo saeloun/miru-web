@@ -26,7 +26,6 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController::#index", type: :r
     context "when reports page's request is made without any filters" do
       before do
         @timesheet_entry1 = create(:timesheet_entry, project:)
-        TimesheetEntry.search_index.refresh
         get internal_api_v1_reports_time_entries_path, headers: auth_headers(user)
       end
 
@@ -53,7 +52,6 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController::#index", type: :r
         @timesheet_entry1 = create(:timesheet_entry, project:, work_date: last_month_start_date)
         @timesheet_entry2 = create(:timesheet_entry, project:, work_date: @this_week_start_date)
         @timesheet_entry3 = create(:timesheet_entry, project:, work_date: @this_week_end_date)
-        TimesheetEntry.search_index.refresh
       end
 
       it "returns the time entry reports in given date range in descending order" do
@@ -75,7 +73,6 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController::#index", type: :r
         @timesheet_entry1 = create(:timesheet_entry, project:)
         @timesheet_entry2 = create(:timesheet_entry, project:, bill_status: "unbilled")
         @timesheet_entry3 = create(:timesheet_entry, project:)
-        TimesheetEntry.search_index.refresh
       end
 
       it "returns the time entry reports with given single status value" do
@@ -109,7 +106,6 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController::#index", type: :r
         @timesheet_entry2 = create(:timesheet_entry, project:)
         @timesheet_entry3 = create(:timesheet_entry, project: project2)
         @timesheet_entry4 = create(:timesheet_entry, project: project3)
-        TimesheetEntry.search_index.refresh
       end
 
       it "returns the time entry reports with given single client value" do
@@ -146,7 +142,6 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController::#index", type: :r
         @timesheet_entry2 = create(:timesheet_entry, user: @user1, project:)
         @timesheet_entry3 = create(:timesheet_entry, user: @user2, project:)
         @timesheet_entry4 = create(:timesheet_entry, user: @user3, project:)
-        TimesheetEntry.search_index.refresh
       end
 
       it "returns the time entry reports with given single team member value" do
@@ -214,7 +209,6 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController::#index", type: :r
           work_date: Date.today,
           user: @user1,
           bill_status: "unbilled")
-        TimesheetEntry.search_index.refresh
       end
 
       it "returns the time entry reports with given filter values" do
@@ -251,7 +245,6 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController::#index", type: :r
         @timesheet_entry4 = create(
           :timesheet_entry, user: @user2, project:,
           work_date: Date.new(Time.now.year, Time.now.month, 2))
-        TimesheetEntry.search_index.refresh
       end
 
       it "returns the time entry reports grouped by team members" do
@@ -273,7 +266,6 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController::#index", type: :r
         @timesheet_entry2 = create(:timesheet_entry, project:)
         @timesheet_entry3 = create(:timesheet_entry, project: project2)
         @timesheet_entry4 = create(:timesheet_entry, project: project2)
-        TimesheetEntry.search_index.refresh
       end
 
       it "returns the time entry reports grouped by clients" do
@@ -295,7 +287,6 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController::#index", type: :r
         @timesheet_entry2 = create(:timesheet_entry, project:)
         @timesheet_entry3 = create(:timesheet_entry, project: project2)
         @timesheet_entry4 = create(:timesheet_entry, project: project2)
-        TimesheetEntry.search_index.refresh
       end
 
       it "returns the time entry reports grouped by projects" do
@@ -326,7 +317,6 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController::#index", type: :r
         @timesheet_entry3 = create(:timesheet_entry, user: @user2, project:)
         @timesheet_entry4 = create(:timesheet_entry, user: @user2, project:)
         @timesheet_entry5 = create(:timesheet_entry, user: @user3, project:)
-        TimesheetEntry.search_index.refresh
       end
 
       it "returns the time entry reports grouped by team members for selected team members" do
@@ -350,7 +340,6 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController::#index", type: :r
         @timesheet_entry3 = create(:timesheet_entry, project: project2)
         @timesheet_entry4 = create(:timesheet_entry, project: project2)
         @timesheet_entry5 = create(:timesheet_entry, project: project3)
-        TimesheetEntry.search_index.refresh
       end
 
       it "returns the time entry reports grouped by clients for selected clients" do
@@ -372,7 +361,6 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController::#index", type: :r
         @timesheet_entry3 = create(:timesheet_entry, project: project2)
         @timesheet_entry4 = create(:timesheet_entry, project: project2)
         @timesheet_entry5 = create(:timesheet_entry, project: project3)
-        TimesheetEntry.search_index.refresh
       end
 
       it "returns the time entry reports grouped by projects for selected clients" do
@@ -382,10 +370,16 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController::#index", type: :r
         }, headers: auth_headers(user)
         expect(response).to have_http_status(:ok)
         reports = json_response["reports"]
-        expect(reports.first["label"]).to eq(project.name)
-        expect(reports.first["entries"].pluck("id")).to include(@timesheet_entry1.id, @timesheet_entry2.id)
-        expect(reports.last["label"]).to eq(project2.name)
-        expect(reports.last["entries"].pluck("id")).to include(@timesheet_entry3.id, @timesheet_entry4.id)
+
+        # Should only have 2 projects (from client1 and client2, not client3)
+        expect(reports.size).to eq(2)
+        expect(reports.pluck("label")).to contain_exactly(project.name, project2.name)
+
+        project_report = reports.find { |r| r["label"] == project.name }
+        project2_report = reports.find { |r| r["label"] == project2.name }
+
+        expect(project_report["entries"].pluck("id")).to include(@timesheet_entry1.id, @timesheet_entry2.id)
+        expect(project2_report["entries"].pluck("id")).to include(@timesheet_entry3.id, @timesheet_entry4.id)
       end
     end
   end

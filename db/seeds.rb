@@ -19,26 +19,26 @@ company.logo.attach(io: File.open(Rails.root.join("app/assets/images/saeloun_log
 
 puts "Users Created"
 super_admin = User.create!(
-  first_name: "Saeloun", last_name: "Admin", email: "hello@saeloun.com", password: "welcome",
-  password_confirmation: "welcome", confirmed_at: Time.current)
+    first_name: "Saeloun", last_name: "Admin", email: "hello@saeloun.com", password: "Saeloun@2024!",
+  password_confirmation: "Saeloun@2024!", confirmed_at: Time.current)
 vipul = User.create!(
-  first_name: "Vipul", last_name: "A M", email: "vipul@example.com", password: "welcome",
-  password_confirmation: "welcome", confirmed_at: Time.current, current_workspace_id: company.id)
+  first_name: "Vipul", last_name: "A M", email: "vipul@example.com", password: "Saeloun@2024!",
+  password_confirmation: "Saeloun@2024!", confirmed_at: Time.current, current_workspace_id: company.id)
 supriya = User.create!(
-  first_name: "Supriya", last_name: "Agarwal", email: "supriya@example.com", password: "welcome",
-  password_confirmation: "welcome", confirmed_at: Time.current, current_workspace_id: company.id
+  first_name: "Supriya", last_name: "Agarwal", email: "supriya@example.com", password: "Saeloun@2024!",
+  password_confirmation: "Saeloun@2024!", confirmed_at: Time.current, current_workspace_id: company.id
 )
 book_keeper = User.create!(
-  first_name: "Book", last_name: "Keeper", email: "book.keeper@example.com", password: "welcome",
-  password_confirmation: "welcome", confirmed_at: Time.current, current_workspace_id: company.id
+  first_name: "Book", last_name: "Keeper", email: "book.keeper@example.com", password: "Saeloun@2024!",
+  password_confirmation: "Saeloun@2024!", confirmed_at: Time.current, current_workspace_id: company.id
 )
 sam = User.create!(
-  first_name: "Sam", last_name: "Smith", email: "sam@example.com", password: "welcome",
-  password_confirmation: "welcome", confirmed_at: Time.current, current_workspace_id: company.id
+  first_name: "Sam", last_name: "Smith", email: "sam@example.com", password: "Saeloun@2024!",
+  password_confirmation: "Saeloun@2024!", confirmed_at: Time.current, current_workspace_id: company.id
 )
 oliver = User.create!(
-  first_name: "Oliver", last_name: "Smith", email: "oliver@example.com", password: "welcome",
-  password_confirmation: "welcome", confirmed_at: Time.current, current_workspace_id: company.id
+  first_name: "Oliver", last_name: "Smith", email: "oliver@example.com", password: "Saeloun@2024!",
+  password_confirmation: "Saeloun@2024!", confirmed_at: Time.current, current_workspace_id: company.id
 )
 
 super_admin.add_role(:super_admin)
@@ -75,12 +75,10 @@ microsoft_client.addresses.create!(
   country: "US"
 )
 
-Client.reindex
 
 project_office_com = microsoft_client.projects.create!(name: "Office.com", description: "Office 365", billable: true)
 project_azure_com = microsoft_client.projects.create!(name: "Azure.com", description: "Cloud Computing", billable: true)
 
-Project.reindex
 
 puts "Projects Created"
 
@@ -101,7 +99,6 @@ project_azure_com.project_members.each do |project_member|
       note: "Worked on #{project_azure_com.name}", bill_status: :unbilled, work_date: date)
   end
 end
-TimesheetEntry.reindex
 puts "TimeSheet entries created"
 
 invoice_1 = company.invoices.create!(
@@ -116,7 +113,6 @@ invoice_2 = company.invoices.create!(
   amount: 5000, outstanding_amount: 0, tax: 500, amount_paid: 5000,
   amount_due: 0, discount: 500, status: 3, client_id: microsoft_client.id,
   external_view_key: "403dc4e964d2dedd7727ad556df58437")
-Invoice.reindex
 puts "Invoice Created"
 
 company.addresses.create!(

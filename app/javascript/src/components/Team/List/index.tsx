@@ -1,15 +1,15 @@
-import React, { useEffect, useState } from "react";
+import { TeamModalType } from "constants/index";
 
-import Logger from "js-logger";
-import { Pagination } from "StyledComponents";
+import React, { useEffect, useState } from "react";
 
 import teamApi from "apis/team";
 import Loader from "common/Loader/index";
 import withLayout from "common/Mobile/HOC/withLayout";
-import { TeamModalType } from "constants/index";
 import { ListContext } from "context/TeamContext";
 import { useUserContext } from "context/UserContext";
+import Logger from "js-logger";
 import { unmapList, unmapPagyData } from "mapper/team.mapper";
+import { Pagination } from "StyledComponents";
 
 import Header from "./Header";
 import Table from "./Table";

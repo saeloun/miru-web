@@ -1,34 +1,52 @@
 import React, { useEffect, useState } from "react";
 
-import { UserAvatarSVG, DeleteIcon, ImageIcon, EditIcon } from "miruIcons";
-import { MoreOptions, Toastr, Tooltip } from "StyledComponents";
-
 import teamApi from "apis/team";
 import teamsApi from "apis/teams";
 import { useProfileContext } from "context/Profile/ProfileContext";
+import { UserAvatarSVG, DeleteIcon, ImageIcon, EditIcon } from "miruIcons";
+import { MoreOptions, Toastr, Tooltip } from "StyledComponents";
+import { useCurrentUser } from "~/hooks/useCurrentUser";
 
 const UserInformation = () => {
   const {
     personalDetails: { first_name, last_name, id },
+    isCalledFromSettings,
   } = useProfileContext();
+  const { currentUser } = useCurrentUser();
 
   const [showProfileOptions, setShowProfileOptions] = useState(false);
   const [imageUrl, setImageUrl] = useState(null);
 
+  // Use current user data when in settings context
+  const displayName =
+    isCalledFromSettings && currentUser
+      ? `${currentUser.first_name} ${currentUser.last_name}`
+      : `${first_name} ${last_name}`;
+
+  const userId = isCalledFromSettings && currentUser ? currentUser.id : id;
+
   const getAvatar = async () => {
+    if (!userId) return;
+
     try {
-      const responseData = await teamsApi.get(id);
-      setImageUrl(responseData.data.avatar_url);
+      if (isCalledFromSettings && currentUser) {
+        // Use current user avatar from _me endpoint
+        setImageUrl(currentUser.avatar_url);
+      } else {
+        // Use teams API for team member context
+        const responseData = await teamsApi.get(userId);
+        setImageUrl(responseData.data.avatar_url);
+      }
     } catch {
       Toastr.error("Error in getting Profile Image");
     }
   };
 
   useEffect(() => {
-    if (id) {
+    if (userId) {
       getAvatar();
     }
-  }, [id]);
+  }, [userId, currentUser]);
 
   const validateFileSize = file => {
     const sizeInKB = file.size / 1024;
@@ -54,7 +72,7 @@ const UserInformation = () => {
       const headers = {
         "Content-Type": "multipart/form-data",
       };
-      await teamApi.updateTeamMemberAvatar(id, payload, { headers });
+      await teamApi.updateTeamMemberAvatar(userId, payload, { headers });
     } catch (error) {
       Toastr.error(error.message);
     }
@@ -63,7 +81,7 @@ const UserInformation = () => {
   const handleDeleteProfileImage = async () => {
     try {
       setShowProfileOptions(false);
-      await teamApi.destroyTeamMemberAvatar(id);
+      await teamApi.destroyTeamMemberAvatar(userId);
       setImageUrl(null);
     } catch {
       Toastr.error("Error in deleting Profile Image");
@@ -72,23 +90,23 @@ const UserInformation = () => {
 
   return (
     <div>
-      <div className="flex h-20 w-full items-center bg-miru-han-purple-1000 p-4 text-white" />
-      <div className="flex flex-col justify-center bg-miru-gray-100">
-        <div className="relative flex h-12 justify-center">
-          <div className="userAvatarWrapper">
+      <div className="flex h-32 w-full items-center bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 p-4 text-white rounded-t-xl shadow-lg" />
+      <div className="flex flex-col justify-center bg-white rounded-b-xl">
+        <div className="relative flex h-12 justify-center -mt-12">
+          <div className="relative">
             <img
-              className="h-88 w-88 rounded-full"
+              className="h-24 w-24 rounded-full border-4 border-white shadow-xl object-cover"
               src={imageUrl || UserAvatarSVG}
             />
             <button
-              className="absolute right-0 bottom-0	flex h-6 w-6 cursor-pointer items-center justify-center rounded bg-miru-han-purple-1000"
+              className="absolute right-0 bottom-0 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 shadow-md hover:scale-110 transition-transform duration-200"
               onClick={() => setShowProfileOptions(!showProfileOptions)}
             >
-              <EditIcon color="white" size={12} weight="bold" />
+              <EditIcon color="white" size={16} weight="bold" />
             </button>
           </div>
         </div>
-        <div className="relative mt-3 flex flex-col items-center justify-center border-b-8 border-miru-gray-200 pb-8">
+        <div className="relative mt-4 flex flex-col items-center justify-center pb-6">
           {showProfileOptions && (
             <MoreOptions setVisibilty={setShowProfileOptions}>
               <li className="absolute bottom--10 z-15 mx-auto mt-6 min-h-24	w-28 flex-col items-end rounded-lg bg-white p-2 shadow-c1	group-hover:flex">
@@ -120,12 +138,12 @@ const UserInformation = () => {
             </MoreOptions>
           )}
           <Tooltip
-            content={`${first_name} ${last_name}`}
+            content={displayName}
             wrapperClassName="relative block max-w-full "
           >
-            <div className="mb-1 max-w-full overflow-hidden truncate whitespace-nowrap px-4">
-              <span className=" text-xl font-bold text-miru-han-purple-1000">
-                {`${first_name} ${last_name}`}
+            <div className="mb-2 max-w-full overflow-hidden truncate whitespace-nowrap px-4">
+              <span className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                {displayName}
               </span>
             </div>
           </Tooltip>

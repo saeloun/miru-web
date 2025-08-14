@@ -11,7 +11,7 @@ class InternalApi::V1::TimesheetEntryController < InternalApi::V1::ApplicationCo
       .during(params[:from], params[:to])
       .includes(:user, :project, :client)
     entries = TimesheetEntriesPresenter.new(timesheet_entries).group_snippets_by_work_date
-    render json: { entries: }, status: :ok
+    render json: { entries: }, status: 200
   end
 
   def create
@@ -29,7 +29,7 @@ class InternalApi::V1::TimesheetEntryController < InternalApi::V1::ApplicationCo
     current_timesheet_entry.project = current_project
     current_timesheet_entry.update!(timesheet_entry_params)
     render json: { notice: I18n.t("timesheet_entry.update.message"), entry: current_timesheet_entry.snippet },
-      status: :ok
+      status: 200
   end
 
   def destroy

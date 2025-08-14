@@ -9,7 +9,7 @@ class InternalApi::V1::InvitationsController < InternalApi::V1::ApplicationContr
     render :create, locals: {
                       invitation:
                     },
-      status: :created
+      status: 201
   end
 
   def update
@@ -18,7 +18,7 @@ class InternalApi::V1::InvitationsController < InternalApi::V1::ApplicationContr
     @invitation.update!(invitation_params)
     render :update, locals: {
       invitation: @invitation
-    }, status: :ok
+    }, status: 200
   end
 
   def destroy
@@ -26,14 +26,14 @@ class InternalApi::V1::InvitationsController < InternalApi::V1::ApplicationContr
 
     invitation_id = @invitation.id
     @invitation.destroy!
-    render json: { id: invitation_id, notice: I18n.t("invitation.delete.success.message") }, status: :ok
+    render json: { id: invitation_id, notice: I18n.t("invitation.delete.success.message") }, status: 200
   end
 
   def resend
     authorize @invitation
 
     @invitation.resend_invitation
-    render json: { notice: I18n.t("invitation.resent.success.message") }, status: :ok
+    render json: { notice: I18n.t("invitation.resent.success.message") }, status: 200
   end
 
   private

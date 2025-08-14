@@ -20,6 +20,7 @@
 #  fk_rails_...  (custom_leave_id => custom_leaves.id)
 #  fk_rails_...  (user_id => users.id)
 #
+
 class CustomLeaveUser < ApplicationRecord
   belongs_to :custom_leave
   belongs_to :user

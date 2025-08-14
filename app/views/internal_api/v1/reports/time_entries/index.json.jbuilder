@@ -20,7 +20,7 @@ json.reports reports do |grouped_report|
       .process
     json.bill_status report.bill_status
     json.team_member report.user_name
-    json.client_logo client_logos[report.client_id]
+    json.client_logo client_logos[report.project.client_id] if report.project
   end
 end
 json.filter_options do

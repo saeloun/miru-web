@@ -5,7 +5,7 @@ class InternalApi::V1::WorkspacesController < ApplicationController
 
   def index
     authorize :index, policy_class: WorkspacePolicy
-    render :index, locals: { workspaces: current_user.companies.with_kept_employments }, status: :ok
+    render :index, locals: { workspaces: current_user.companies.with_kept_employments }, status: 200
   end
 
   def update
@@ -18,6 +18,6 @@ class InternalApi::V1::WorkspacesController < ApplicationController
       success: true,
       workspace:,
       notice: I18n.t("workspaces.update.success")
-    }, status: :ok
+    }, status: 200
   end
 end

@@ -6,6 +6,7 @@ namespace :internal_api, defaults: { format: "json" } do
       devise_scope :user do
         post "login", to: "sessions#create", as: "login"
         delete "logout", to: "sessions#destroy", as: "logout"
+        get "_me", to: "sessions#me", as: "me"
         post "signup", to: "registrations#create", as: "signup"
         post "forgot_password", to: "passwords#create", as: "forgot_password"
         put "reset_password", to: "passwords#update", as: "reset_password"

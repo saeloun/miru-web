@@ -22,7 +22,7 @@ const SendInvoiceContainer = ({
   invoice,
   handleSaveSendInvoice,
   setIsSending,
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
+
   setIsSendReminder = _value => {},
   isSendReminder = false,
 }) => {
@@ -55,9 +55,9 @@ const SendInvoiceContainer = ({
     message: emailBody(invoice, isSendReminder),
     recipients: invoice.client.clientMembersEmails,
   });
-  // eslint-disable-next-line no-unused-vars
+
   const [newRecipient, setNewRecipient] = useState<string>("");
-  // eslint-disable-next-line no-unused-vars
+
   const [width, setWidth] = useState<string>("10ch");
   const [status, setStatus] = useState<InvoiceStatus>(InvoiceStatus.IDLE);
   // const [height, setHeight] = useState<string>("h-0 py-0");
