@@ -1,38 +1,31 @@
-import axios from "./api";
+import api from "./api";
 
-const authApi = axios.create({
-  baseURL: "/internal_api/v1",
-  headers: {
-    Accept: "application/json",
-    "Content-Type": "application/json",
-    "X-CSRF-TOKEN": document
-      .querySelector('[name="csrf-token"]')
-      .getAttribute("content"),
-  },
-});
+// Use the modern API client directly - it handles CSRF tokens, auth headers, and base URL automatically
+const signin = payload => api.post("/users/login", { user: payload });
 
-const signin = payload => authApi.post("/users/login", { user: payload });
-
-const signup = payload => authApi.post("/users/signup", { user: payload });
+const signup = payload => api.post("/users/signup", { user: payload });
 
 const forgotPassword = payload =>
-  authApi.post("/users/forgot_password", { user: payload });
+  api.post("/users/forgot_password", { user: payload });
 
 const resetPassword = payload =>
-  authApi.put("/users/reset_password", { user: payload });
+  api.put("/users/reset_password", { user: payload });
 
 const sendEmailConfirmation = payload =>
-  axios.post(`/users/resend_confirmation_email`, { user: payload });
+  api.post(`/users/resend_confirmation_email`, { user: payload });
 
-const googleAuth = () =>
-  axios
-    .create({
-      baseURL: "/",
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-      },
-    })
-    .get("users/auth/google_oauth2");
+const googleAuth = async () => {
+  const response = await fetch("/users/auth/google_oauth2", {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+      "Access-Control-Allow-Origin": "*",
+    },
+    credentials: "same-origin",
+  });
+
+  return response.json();
+};
 
 const authenticationApi = {
   signin,

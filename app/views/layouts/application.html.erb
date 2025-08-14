@@ -13,8 +13,9 @@
 
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-    <%= stylesheet_pack_tag "application" %>
-    <%= javascript_pack_tag "application" %>
+    <%= vite_client_tag %>
+    <%= vite_javascript_tag 'application.tsx' %>
+
   </head>
   <body>
     <main class="min-h-screen bg-miru-white-400">

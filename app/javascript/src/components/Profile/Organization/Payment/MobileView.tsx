@@ -1,5 +1,8 @@
+import { ApiStatus as PaymentSettingsStatus } from "constants/index";
+
 import React from "react";
 
+import Loader from "common/Loader/index";
 import {
   ArrowLeftIcon,
   PaymentsIcon,
@@ -7,9 +10,6 @@ import {
   disconnectAccountSVG,
   ConnectMobileSVG,
 } from "miruIcons";
-
-import Loader from "common/Loader/index";
-import { ApiStatus as PaymentSettingsStatus } from "constants/index";
 
 interface MobileViewProps {
   title: string;

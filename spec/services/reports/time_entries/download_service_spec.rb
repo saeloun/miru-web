@@ -17,7 +17,6 @@ RSpec.describe Reports::TimeEntries::DownloadService do
       create(:employment, company:, user:)
       create(:timesheet_entry, project:, user:)
     end
-    TimesheetEntry.search_index.refresh
   end
 
   describe "#process" do

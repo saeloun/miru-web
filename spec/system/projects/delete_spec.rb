@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe "Delete Project", type: :system do
+RSpec.describe "Delete Project", type: :system, js: true do
   let(:company) { create(:company) }
   let!(:user) { create(:user, current_workspace_id: company.id) }
   let(:client) { create(:client, company:) }
@@ -18,8 +18,13 @@ RSpec.describe "Delete Project", type: :system do
     it "delete the project successfully" do
       with_forgery_protection do
         visit "/projects"
+        click_link "Projects"
+        sleep 2
 
-        find("tbody").hover.click
+        expect(page).to have_content(project.name)
+
+        # Find project row by content
+        page.find(:xpath, "//tr[contains(., '#{project.name}')]").hover.click
         find("#kebabMenu").click
         click_button "Delete Project"
         click_button "DELETE"

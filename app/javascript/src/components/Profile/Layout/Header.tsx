@@ -1,10 +1,9 @@
 import React from "react";
 
+import { useProfileContext } from "context/Profile/ProfileContext";
 import { ArrowLeftIcon } from "miruIcons";
 import { useNavigate } from "react-router-dom";
 import { Button } from "StyledComponents";
-
-import { useProfileContext } from "context/Profile/ProfileContext";
 
 const Header = () => {
   const navigate = useNavigate();

@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe "Creating Project", type: :system do
+RSpec.describe "Creating Project", type: :system, js: true do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
   let!(:client) { create(:client, company:) }
@@ -18,11 +18,14 @@ RSpec.describe "Creating Project", type: :system do
       it "creates a billable project successfully" do
         with_forgery_protection do
           visit "/projects"
+          click_link "Projects"
+          sleep 2
 
-          click_button "NEW PROJECT"
+          click_button "New Project"
           sleep 1
-          select client.name, from: "select-client"
-          fill_in "project-name", with: "Test Project"
+          # Find and use the select element
+          find("select").find(:option, client.name).select_option
+          find('input[type="text"]').fill_in with: "Test Project"
           choose "Billable"
           click_button "ADD PROJECT"
 
@@ -37,11 +40,14 @@ RSpec.describe "Creating Project", type: :system do
       it "creates a non-billable project successfully" do
         with_forgery_protection do
           visit "/projects"
+          click_link "Projects"
+          sleep 2
 
-          click_button "NEW PROJECT"
+          click_button "New Project"
           sleep 1
-          select client.name, from: "select-client"
-          fill_in "project-name", with: "Non Billable Project"
+          # Find and use the select element
+          find("select").find(:option, client.name).select_option
+          find('input[type="text"]').fill_in with: "Non Billable Project"
           choose "Non-billable"
           click_button "ADD PROJECT"
 
@@ -55,11 +61,14 @@ RSpec.describe "Creating Project", type: :system do
       it "add project button is disabled" do
         with_forgery_protection do
           visit "/projects"
+          click_link "Projects"
+          sleep 2
 
-          click_button "NEW PROJECT"
+          click_button "New Project"
           sleep 1
-          select client.name, from: "select-client"
-          fill_in "project-name", with: ""
+          # Find and use the select element
+          find("select").find(:option, client.name).select_option
+          find('input[type="text"]').fill_in with: ""
           choose "Non-billable"
 
           expect(page).to have_button("ADD PROJECT", disabled: true)
@@ -78,8 +87,10 @@ RSpec.describe "Creating Project", type: :system do
     it "new project button should not be visible for employees" do
       with_forgery_protection do
         visit "/projects"
+        click_link "Projects"
+        sleep 2
 
-        expect(page).to have_no_button("NEW PROJECT")
+        expect(page).to have_no_button("New Project")
       end
     end
   end

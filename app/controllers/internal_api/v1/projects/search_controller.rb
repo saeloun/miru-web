@@ -4,9 +4,26 @@ class InternalApi::V1::Projects::SearchController < InternalApi::V1::Application
   skip_after_action :verify_authorized, only: [:index]
 
   def index
-    data = Projects::IndexService.new(current_company, params[:search_term]).process
+    # Use search directly on projects
+    projects = current_company.projects.kept.includes(:client)
+
+    if params[:search_term].present?
+      # Use pg_search if available, otherwise fall back to ILIKE
+      if projects.respond_to?(:search)
+        projects = projects.search(params[:search_term])
+      else
+        projects = projects.where(
+          "projects.name ILIKE :query OR projects.description ILIKE :query",
+          query: "%#{params[:search_term]}%"
+        )
+      end
+    end
+
+    # Order by name
+    projects = projects.order(:name)
+
     render :index, locals: {
-      projects: data[:projects]
-    }, status: :ok
+      projects: projects
+    }, status: 200
   end
 end

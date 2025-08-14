@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 
+import projectApi from "apis/projects";
 import { XIcon } from "miruIcons";
 import { Modal } from "StyledComponents";
-
-import projectApi from "apis/projects";
 
 const AddProject = ({
   showProjectModal,

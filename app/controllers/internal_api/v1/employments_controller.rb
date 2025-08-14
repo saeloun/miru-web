@@ -5,7 +5,7 @@ class InternalApi::V1::EmploymentsController < InternalApi::V1::ApplicationContr
 
   def index
     authorize Employment
-    render :index, locals: { users: current_company.employees_without_client_role }, status: :ok
+    render :index, locals: { users: current_company.employees_without_client_role }, status: 200
   end
 
   def show

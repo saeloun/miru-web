@@ -30,7 +30,7 @@ RSpec.describe "InternalApi::V1::Projects#show", type: :request do
           members: project_members_snippet,
           overdue_and_outstanding_amounts: project.overdue_and_outstanding_amounts,
           total_minutes_logged: (
-                              project_members_snippet.map { |user_details|user_details[:minutes_logged] }
+                              project_members_snippet.pluck(:minutes_logged)
                             ).sum.to_i
         }
         expect(response).to have_http_status(:ok)

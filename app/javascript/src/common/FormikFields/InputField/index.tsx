@@ -1,5 +1,3 @@
-/* eslint-disable import/exports-last */
-
 import React, { useEffect, useState } from "react";
 
 import classNames from "classnames";
@@ -14,24 +12,24 @@ const defaultLabelClassname =
 const defaultWrapperClassName = "outline relative h-12";
 
 const InputField = ({
-  readOnly,
+  readOnly = false,
   label,
   id,
   name,
-  type,
-  autoFocus,
-  disabled,
-  inputBoxClassName,
-  labelClassName,
-  wrapperClassName,
-  autoComplete,
-  onChange,
-  onClick,
-  hasError,
-  resetErrorOnChange,
-  setFieldError,
-  setFieldValue,
-  marginBottom,
+  type = "text",
+  autoFocus = false,
+  disabled = false,
+  inputBoxClassName = "",
+  labelClassName = "",
+  wrapperClassName = "",
+  autoComplete = "on",
+  onChange = undefined,
+  onClick = undefined,
+  hasError = false,
+  resetErrorOnChange = true,
+  setFieldError = null,
+  setFieldValue = null,
+  marginBottom = "mb-2 xsm:mb-6",
 }) => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [defaultMarginBottom, setDefaultMarginBottom] =
@@ -124,24 +122,6 @@ const InputField = ({
       )}
     </div>
   );
-};
-
-InputField.defaultProps = {
-  type: "text",
-  inputBoxClassName: "",
-  labelClassName: "",
-  wrapperClassName: "",
-  disabled: false,
-  autoFocus: false,
-  autoComplete: "on",
-  readOnly: false,
-  onChange: undefined,
-  onClick: undefined,
-  hasError: false,
-  resetErrorOnChange: true,
-  setFieldError: null,
-  setFieldValue: null,
-  marginBottom: "mb-2 xsm:mb-6",
 };
 
 export default InputField;

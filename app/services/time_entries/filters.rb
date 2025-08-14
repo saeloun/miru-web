@@ -13,10 +13,20 @@ module TimeEntries
     def process
       FILTER_PARAM_LIST.reduce({}) do |where_condition, filter_param_key|
         if filter_params[filter_param_key].present?
-          where_condition.merge(public_send("#{filter_param_key}_filter")).merge(active_time_entries)
+          filter_result = public_send("#{filter_param_key}_filter")
+          # Special handling for project_id to intersect rather than overwrite
+          if filter_result.key?(:project_id) && where_condition.key?(:project_id)
+            existing_ids = Array(where_condition[:project_id])
+            new_ids = Array(filter_result[:project_id])
+            where_condition[:project_id] = existing_ids & new_ids
+          else
+            where_condition.merge!(filter_result)
+          end
+          where_condition.merge!(active_time_entries)
         else
-          where_condition.merge(active_time_entries)
+          where_condition.merge!(active_time_entries)
         end
+        where_condition
       end
     end
 
@@ -33,7 +43,10 @@ module TimeEntries
     end
 
     def client_filter
-      { client_id: filter_params[:client] }
+      # TimesheetEntry doesn't have client_id, need to filter through projects
+      client_ids = Array(filter_params[:client])
+      project_ids = Project.where(client_id: client_ids).pluck(:id)
+      { project_id: project_ids }
     end
 
     def team_member_filter

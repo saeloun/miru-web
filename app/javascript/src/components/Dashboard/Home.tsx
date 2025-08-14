@@ -1,12 +1,13 @@
-import React from "react";
-
-import Cookies from "js-cookie";
-import { Routes, Route, Outlet, Navigate } from "react-router-dom";
-
-import ErrorPage from "common/Error";
 import { Roles, Paths } from "constants/index";
 import { ROUTES } from "constants/routes";
+
+import React from "react";
+
+import ErrorPage from "common/Error";
+import Cookies from "js-cookie";
+import { Routes, Route, Outlet, Navigate } from "react-router-dom";
 import { dashboardUrl } from "utils/dashboardUrl";
+import { useUserContext } from "context/UserContext";
 
 const redirectUrl = role => {
   const lastVisitedPage = Cookies.get("lastVisitedPage");
@@ -22,10 +23,15 @@ const redirectUrl = role => {
 };
 
 const RestrictedRoute = ({ user, role, authorisedRoles }) => {
-  if (!user) {
-    window.location.href = Paths.SIGN_IN;
+  const { loading } = useUserContext();
 
-    return null;
+  if (loading || !user) {
+    // Show loading state while user data is being fetched
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="text-miru-dark-purple-1000">Loading...</div>
+      </div>
+    );
   }
 
   if (authorisedRoles.includes(role)) {
@@ -44,12 +50,13 @@ const RootElement = ({ role }) => {
 };
 
 const Home = (props: Iprops) => {
-  const { companyRole } = props;
+  const { companyRole, company_role } = props;
+  const role = companyRole || company_role;
 
   return (
     <div className="h-full overflow-x-scroll p-0 font-manrope lg:absolute lg:top-0 lg:bottom-0 lg:right-0 lg:w-5/6 lg:px-20 lg:py-3">
       <Routes>
-        <Route element={<RootElement role={companyRole} />} path="/" />
+        <Route element={<RootElement role={role} />} path="/" />
         {ROUTES.map(parentRoute => (
           <Route
             key={parentRoute.path}
@@ -57,7 +64,7 @@ const Home = (props: Iprops) => {
             element={
               <RestrictedRoute
                 authorisedRoles={parentRoute.authorisedRoles}
-                role={companyRole}
+                role={role}
                 user={props.user}
               />
             }

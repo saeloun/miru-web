@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
 
-import { useSearchParams } from "react-router-dom";
-import { Pagination } from "StyledComponents";
-
 import clientApi from "apis/clients";
 import Loader from "common/Loader/index";
 import withLayout from "common/Mobile/HOC/withLayout";
 import { useUserContext } from "context/UserContext";
+import { useSearchParams } from "react-router-dom";
+import { Pagination } from "StyledComponents";
 
 import Header from "./Header";
 import List from "./List";

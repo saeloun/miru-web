@@ -29,7 +29,7 @@ class HolidayInfo < ApplicationRecord
 
   has_many :timeoff_entries, dependent: :destroy
 
-  enum category: { national: 0, optional: 1 }
+  enum :category, { national: 0, optional: 1 }
 
   validates :name, presence: true,
     format: { with: /\A[a-zA-Z\s]+\z/ },

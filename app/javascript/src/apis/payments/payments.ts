@@ -2,7 +2,7 @@ import axios from "../api";
 
 const path = "/payments";
 
-const get = () => axios.get(`${path}`);
+const get = (queryParams = "") => axios.get(`${path}${queryParams}`);
 
 const create = async payload => axios.post(`${path}`, payload);
 

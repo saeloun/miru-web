@@ -14,13 +14,13 @@ class InternalApi::V1::LeavesController < InternalApi::V1::ApplicationController
   def create
     authorize Leave
     current_company.leaves.create!(leave_params)
-    render json: { notice: "Leave created successfully" }, status: :ok
+    render json: { notice: "Leave created successfully" }, status: 200
   end
 
   def update
     authorize leave
     leave.update!(leave_params)
-    render json: { notice: "Leave updated successfully" }, status: :ok
+    render json: { notice: "Leave updated successfully" }, status: 200
   end
 
   private

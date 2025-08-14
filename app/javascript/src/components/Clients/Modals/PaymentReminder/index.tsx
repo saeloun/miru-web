@@ -4,7 +4,6 @@ import { XIcon } from "miruIcons";
 import Steps from "rc-steps";
 import "rc-steps/assets/index.css";
 import { Button, Modal, Toastr } from "StyledComponents";
-
 import clientApi from "apis/clients";
 
 import EmailPreview from "./EmailPreview";

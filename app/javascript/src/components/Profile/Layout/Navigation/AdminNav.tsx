@@ -1,6 +1,4 @@
-import React, { Fragment, useState } from "react";
-
-import { MinusIcon, PlusIcon } from "miruIcons";
+import React from "react";
 
 import { useUserContext } from "context/UserContext";
 
@@ -9,52 +7,23 @@ import List from "./List";
 import { SETTINGS } from "../routes";
 
 const AdminNav = () => {
-  const { companyRole, company } = useUserContext();
-  const [openedSubNav, setOpenedSubNav] = useState({
-    personal: true,
-    organization: false,
-  });
+  const { companyRole } = useUserContext();
 
-  const toggleSection = section => {
-    setOpenedSubNav({
-      personal: section === "personal",
-      organization: section === "organization",
-    });
-  };
-
-  const personalSettings = SETTINGS.filter(
-    ({ category }) => category === "personal"
-  );
-
-  const organizationalSettings = SETTINGS.filter(
-    ({ category }) => category === "organization"
-  );
-
-  const renderSection = (title, section, settingsList) => (
-    <Fragment>
-      <div
-        className="flex cursor-pointer flex-row items-center justify-between py-3 px-5"
-        onClick={() => toggleSection(section)}
-      >
-        <span className="text-base font-bold">{title}</span>
-        <div id={section}>
-          {openedSubNav[section] ? (
-            <MinusIcon size={16} weight="bold" />
-          ) : (
-            <PlusIcon size={16} weight="bold" />
-          )}
-        </div>
-      </div>
-      {openedSubNav[section] && (
-        <List companyRole={companyRole} settingsList={settingsList} />
-      )}
-    </Fragment>
+  // Get all settings that should be shown as tabs
+  const allSettings = SETTINGS.filter(
+    ({ isTab, authorisedRoles }) =>
+      isTab && authorisedRoles.includes(companyRole)
   );
 
   return (
-    <div className="list-none min-h-50v text-sm font-medium leading-5 tracking-wider">
-      {renderSection("Personal", "personal", personalSettings)}
-      {renderSection(company.name, "organization", organizationalSettings)}
+    <div className="min-h-[60vh] rounded-xl bg-white shadow-lg border border-gray-100 overflow-hidden">
+      <div className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 h-2"></div>
+      <div className="p-6">
+        <h2 className="text-2xl font-bold text-gray-900 mb-6 tracking-tight">
+          Settings Menu
+        </h2>
+        <List companyRole={companyRole} settingsList={allSettings} />
+      </div>
     </div>
   );
 };

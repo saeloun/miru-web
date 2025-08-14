@@ -14,17 +14,19 @@ class PaymentsPresenter
               payments.map do | payment |
                 {
                   id: payment.id,
-                  client_name: payment.invoice.client.name,
-                  invoice_number: payment.invoice.invoice_number,
-                  transaction_date: CompanyDateFormattingService.new(
+                  clientName: payment.invoice.client.name,
+                  invoiceNumber: payment.invoice.invoice_number,
+                  invoiceId: payment.invoice.id,
+                  transactionDate: CompanyDateFormattingService.new(
                     payment.transaction_date,
                     company: current_company).process,
                   note: payment.note,
-                  transaction_type: payment.transaction_type,
+                  transactionType: payment.transaction_type,
                   amount: payment.amount,
                   status: payment.status
                 }
-              end
+              end,
+      baseCurrency: current_company.base_currency
     }
   end
 end

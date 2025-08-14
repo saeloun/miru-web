@@ -1,15 +1,35 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
-
-import { Toastr } from "StyledComponents";
-
+import { Briefcase, AlertCircle } from "lucide-react";
 import timesheetEntryApi from "apis/timesheet-entry";
+import { Toastr } from "../ui/toastr";
+import { Card, CardContent } from "../ui/card";
+import { Button } from "../ui/button";
+import { Alert, AlertDescription } from "../ui/alert";
 
 import SelectProject from "./SelectProject";
 import WeeklyEntriesCard from "./WeeklyEntriesCard";
 
-const WeeklyEntries = ({
+interface Props {
+  clients: any;
+  projects: any;
+  newRowView: boolean;
+  setNewRowView: React.Dispatch<React.SetStateAction<boolean>>;
+  projectId?: number;
+  clientName?: string;
+  projectName?: string;
+  entries?: any[];
+  entryList?: any;
+  setEntryList: React.Dispatch<React.SetStateAction<any>>;
+  dayInfo: any[];
+  isWeeklyEditing: boolean;
+  setIsWeeklyEditing: React.Dispatch<React.SetStateAction<boolean>>;
+  weeklyData?: any;
+  setWeeklyData?: React.Dispatch<React.SetStateAction<any>>;
+  selectedEmployeeId: number;
+  parseWeeklyViewData?: () => void;
+}
+
+const WeeklyEntries: React.FC<Props> = ({
   clients,
   projects,
   newRowView,
@@ -18,7 +38,7 @@ const WeeklyEntries = ({
   clientName,
   projectName,
   entries,
-  entryList, //eslint-disable-line
+  entryList,
   setEntryList,
   dayInfo,
   isWeeklyEditing,
@@ -26,34 +46,48 @@ const WeeklyEntries = ({
   weeklyData,
   setWeeklyData,
   selectedEmployeeId,
-}: Props) => {
-  const [client, setClient] = useState("");
-  const [project, setProject] = useState("");
-  const [projectSelected, setProjectSelected] = useState(false);
-  const [currentEntries, setCurrentEntries] = useState([]);
-  const [currentProjectId, setCurrentProjectId] = useState(-1);
+  parseWeeklyViewData,
+}) => {
+  const [client, setClient] = useState(clientName || "");
+  const [project, setProject] = useState(projectName || "");
+  const [projectSelected, setProjectSelected] = useState(!!projectId);
+  const [currentEntries, setCurrentEntries] = useState(entries || []);
+  const [currentProjectId, setCurrentProjectId] = useState(projectId || -1);
   const [isProjectBillable, setIsProjectBillable] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (projects[client]) {
       const selectedProject = projects[client].find(
         currentProject => currentProject.name === project
       );
-      setIsProjectBillable(selectedProject?.billable);
+      setIsProjectBillable(selectedProject?.billable || false);
     }
-  }, [project, client]);
+  }, [project, client, projects]);
+
+  useEffect(() => {
+    if (projectId && clientName && projectName) {
+      setProjectSelected(true);
+      setCurrentProjectId(projectId);
+      setCurrentEntries(entries || []);
+    }
+  }, [projectId, clientName, projectName, entries]);
 
   const setProjectId = () => {
-    const pid = projects[client].find(p => p.name === project).id;
-    setCurrentProjectId(pid);
+    const pid = projects[client]?.find(p => p.name === project)?.id;
+    if (pid) {
+      setCurrentProjectId(pid);
 
-    return pid;
+      return pid;
+    }
+
+    return -1;
   };
 
   const getIds = () => {
     const ids = [];
     currentEntries.forEach(entry => {
-      if (entry) ids.push(entry["id"]);
+      if (entry?.id) ids.push(entry.id);
     });
 
     return ids;
@@ -61,109 +95,160 @@ const WeeklyEntries = ({
 
   const handleEditEntries = async () => {
     try {
+      setIsLoading(true);
       const ids = getIds();
-      const res = await timesheetEntryApi.updateBulk({
-        project_id: setProjectId(),
+      if (ids.length === 0) {
+        Toastr.warning("No entries to update");
+
+        return;
+      }
+
+      const res = await timesheetEntryApi.updateBulk(
         ids,
-      });
+        { project_id: currentProjectId },
+        selectedEmployeeId
+      );
+
       if (res.status === 200) {
+        const updatedEntries = res.data.entries;
         setEntryList(prevState => {
-          const newState = { ...prevState, ...res.data.entries };
+          const newState = { ...prevState };
+          updatedEntries.forEach(entry => {
+            const date = entry.work_date;
+            if (newState[date]) {
+              const index = newState[date].findIndex(e => e.id === entry.id);
+              if (index !== -1) {
+                newState[date][index] = entry;
+              }
+            }
+          });
 
           return newState;
         });
+
+        parseWeeklyViewData?.();
+        Toastr.success("Entries updated successfully");
       }
     } catch (error) {
-      Toastr.error(error.message);
+      console.error("Error updating entries:", error);
+      Toastr.error("Failed to update entries");
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  // const handleDeleteEntries = async () => {
-  //   try {
-  //     if (!currentEntries.length) return;
-  //     const ids = getIds();
-  //     const delRes = await timesheetEntryApi.destroyBulk({ ids: ids });
-  //     if (delRes.status === 200) {
-  //       const getRes = await timesheetEntryApi.list(dayInfo[0]["fullDate"], dayInfo[6]["fullDate"]);
-  //       if (getRes.status === 200) {
-  //         const newState = { ...entryList, ...getRes.data.entries };
-  //         setEntryList(newState);
-  //       }
-  //     }
-  //   } catch (error) {
-  //     Logger.error(error.message);
-  //   }
-  // };
+  const handleAddRow = () => {
+    if (!projectSelected || currentProjectId === -1) {
+      Toastr.warning("Please select a project first");
 
-  const handleSetData = () => {
-    if (projectId) {
-      setCurrentProjectId(projectId);
-      setProject(projectName);
-      setClient(clientName);
-      setProjectSelected(true);
-      setCurrentEntries(entries);
+      return;
     }
+    setProjectSelected(true);
+    setNewRowView(false);
   };
 
-  useEffect(() => {
-    handleSetData();
-  }, [entries]);
+  if (!projectSelected && newRowView) {
+    return (
+      <Card className="mt-4 border-dashed border-2 border-primary/30 bg-accent/5">
+        <CardContent className="p-6">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-primary/10 rounded-lg">
+                <Briefcase className="h-5 w-5 text-primary" />
+              </div>
+              <h3 className="text-lg font-semibold">Add New Project Entry</h3>
+            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setNewRowView(false)}
+              className="text-muted-foreground hover:text-foreground"
+            >
+              Cancel
+            </Button>
+          </div>
+          <SelectProject
+            client={client}
+            clients={clients}
+            project={project}
+            projects={projects}
+            setClient={setClient}
+            setProject={setProject}
+            setProjectSelected={setProjectSelected}
+            setProjectId={setProjectId}
+          />
+          <div className="flex justify-end gap-2 mt-4">
+            <Button variant="outline" onClick={() => setNewRowView(false)}>
+              Cancel
+            </Button>
+            <Button
+              onClick={handleAddRow}
+              disabled={!client || !project}
+              className="bg-primary hover:bg-primary/90"
+            >
+              Add Project Row
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
-  return projectSelected ? (
-    <WeeklyEntriesCard
-      client={client}
-      currentEntries={currentEntries}
-      currentProjectId={currentProjectId}
-      dayInfo={dayInfo}
-      isProjectBillable={isProjectBillable}
-      isWeeklyEditing={isWeeklyEditing}
-      newRowView={newRowView}
-      project={project}
-      selectedEmployeeId={selectedEmployeeId}
-      setCurrentEntries={setCurrentEntries}
-      setEntryList={setEntryList}
-      setIsWeeklyEditing={setIsWeeklyEditing}
-      setNewRowView={setNewRowView}
-      setProjectSelected={setProjectSelected}
-    />
-  ) : (
-    <SelectProject
-      client={client}
-      clientName={clientName}
-      clients={clients}
-      handleEditEntries={handleEditEntries}
-      isWeeklyEditing={isWeeklyEditing}
-      newRowView={newRowView}
-      project={project}
-      projectName={projectName}
-      projects={projects}
-      setClient={setClient}
-      setIsWeeklyEditing={setIsWeeklyEditing}
-      setNewRowView={setNewRowView}
-      setProject={setProject}
-      setProjectId={setProjectId}
-      setProjectSelected={setProjectSelected}
-    />
-  );
+  if (projectSelected && newRowView) {
+    return (
+      <WeeklyEntriesCard
+        client={client}
+        currentEntries={currentEntries}
+        currentProjectId={currentProjectId}
+        dayInfo={dayInfo}
+        isProjectBillable={isProjectBillable}
+        isWeeklyEditing={isWeeklyEditing}
+        newRowView={newRowView}
+        project={project}
+        selectedEmployeeId={selectedEmployeeId}
+        setCurrentEntries={setCurrentEntries}
+        setEntryList={setEntryList}
+        setIsWeeklyEditing={setIsWeeklyEditing}
+        setNewRowView={setNewRowView}
+        setProjectSelected={setProjectSelected}
+      />
+    );
+  }
+
+  if (currentEntries.length > 0) {
+    return (
+      <div className="relative">
+        <WeeklyEntriesCard
+          client={clientName}
+          currentEntries={currentEntries}
+          currentProjectId={currentProjectId}
+          dayInfo={dayInfo}
+          isProjectBillable={isProjectBillable}
+          isWeeklyEditing={isWeeklyEditing}
+          newRowView={false}
+          project={projectName}
+          selectedEmployeeId={selectedEmployeeId}
+          setCurrentEntries={setCurrentEntries}
+          setEntryList={setEntryList}
+          setIsWeeklyEditing={setIsWeeklyEditing}
+          setNewRowView={setNewRowView}
+          setProjectSelected={setProjectSelected}
+        />
+        {isWeeklyEditing && (
+          <div className="absolute inset-0 bg-background/50 backdrop-blur-sm rounded-lg flex items-center justify-center z-10">
+            <Alert className="max-w-md">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>
+                Editing mode is active. Complete your changes above.
+              </AlertDescription>
+            </Alert>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  return null;
 };
-
-interface Props {
-  clients: [];
-  selectedEmployeeId: number;
-  projects: object;
-  newRowView: boolean;
-  setNewRowView: React.Dispatch<React.SetStateAction<boolean>>;
-  projectId: number;
-  clientName: string;
-  projectName: string;
-  entries: [];
-  entryList: object;
-  setEntryList: React.Dispatch<React.SetStateAction<[]>>;
-  dayInfo: Array<any>;
-  isWeeklyEditing: boolean;
-  setIsWeeklyEditing: React.Dispatch<React.SetStateAction<boolean>>;
-  weeklyData: any[];
-  setWeeklyData: React.Dispatch<React.SetStateAction<any[]>>;
-}
 
 export default WeeklyEntries;

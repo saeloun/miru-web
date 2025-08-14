@@ -1,11 +1,10 @@
 import React, { useState, useRef } from "react";
 
+import CustomDatePicker from "common/CustomDatePicker";
+import { CustomInputText } from "common/CustomInputText";
 import dayjs from "dayjs";
 import { currencyFormat } from "helpers";
 import { CalendarIcon } from "miruIcons";
-
-import CustomDatePicker from "common/CustomDatePicker";
-import { CustomInputText } from "common/CustomInputText";
 
 import ClientSelection from "./ClientSelection";
 

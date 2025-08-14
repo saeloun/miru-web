@@ -4,10 +4,10 @@ class InternalApi::V1::ApplicationController < ActionController::API
   include PunditConcern
   include ActionController::MimeResponds
   include ErrorHandler
-  include Authenticable
   include CurrentCompanyConcern
   include Pagy::Backend
   include SetCurrentDetails
+  include Authenticable
 
   before_action :authenticate_user!
   before_action :set_virtual_verified_invitations_allowed
@@ -15,7 +15,7 @@ class InternalApi::V1::ApplicationController < ActionController::API
   def not_found
     skip_authorization
 
-    render json: { error: "Route not found" }, status: :not_found
+    render json: { error: "Route not found" }, status: 404
   end
 
   def set_virtual_verified_invitations_allowed

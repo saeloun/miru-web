@@ -3,34 +3,31 @@ import React from "react";
 const TableHeader = () => (
   <tr>
     <th
-      className="py-5 pr-6 pl-0 text-left text-xs font-normal tracking-widest text-miru-black-1000"
+      className="whitespace-nowrap py-5 pr-4 pl-0 text-left text-xs font-medium tracking-widest text-miru-black-1000 lg:w-1/3 lg:pr-2"
       scope="col"
     >
-      CLIENT / <br />
-      INVOICE NUMBER
+      INVOICE # / CLIENT
     </th>
     <th
-      className="px-6 py-5 text-left text-xs font-normal tracking-widest text-miru-black-1000"
+      className="w-1/5 px-4 py-5 text-left text-xs font-medium tracking-widest text-miru-black-1000 lg:px-6"
       scope="col"
     >
-      TRANSACTION DATE
+      DATE / TYPE
     </th>
     <th
-      className="w-2/5 px-6 py-5 text-left text-xs font-normal tracking-widest text-miru-black-1000"
+      className="px-2 py-5 text-left text-xs font-medium tracking-widest text-miru-black-1000 lg:px-6"
       scope="col"
     >
-      NOTES/
-      <br />
-      TRANSACTION TYPE
+      NOTES
     </th>
     <th
-      className="px-6 py-5 text-right text-xs font-normal tracking-widest text-miru-black-1000"
+      className="w-1/6 px-2 py-5 text-right text-xs font-medium tracking-widest text-miru-black-1000 lg:px-6"
       scope="col"
     >
       AMOUNT
     </th>
     <th
-      className="py-5 pl-6 pr-0 text-right text-xs font-normal tracking-widest text-miru-black-1000"
+      className="px-2 py-5 text-right text-xs font-medium tracking-widest text-miru-black-1000 lg:px-6"
       scope="col"
     >
       STATUS

@@ -12,7 +12,7 @@ module Reports::OutstandingOverdueInvoices
     private
 
       def fetch_complete_report
-        Reports::OutstandingOverdueInvoices::IndexService.new(current_company).process
+        Reports::OutstandingOverdueInvoices::ReportDecorator.new(current_company).process
       end
 
       def generate_pdf

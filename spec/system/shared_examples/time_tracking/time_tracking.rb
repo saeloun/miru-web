@@ -39,10 +39,10 @@ shared_examples_for "Time tracking" do |obj|
       visit "time-tracking"
 
       click_button "NEW ENTRY"
-      select client.name, from: "client"
-      fill_in "notes", with: "Testing note!"
-      fill_in "timeInput", with: "8"
-      click_button "SAVE"
+      find("select").find(:option, client.name).select_option
+      find('input[placeholder*="Note"], textarea[placeholder*="Note"], input[name*="note"], textarea[name*="note"]', match: :first).fill_in with: "Testing note!"
+      find('input[placeholder*="Duration"], input[name*="duration"], input[type="number"]', match: :first).fill_in with: "8:00"
+      click_button "Save", match: :first
 
       user = obj[:is_admin] == true ? admin : employee
       expect(page).to have_content(user.timesheet_entries.first.note)
@@ -53,10 +53,11 @@ shared_examples_for "Time tracking" do |obj|
     with_forgery_protection do
       visit "time-tracking"
 
-      el = find(:css, "#editIcon", visible: false).hover
-      el.click
-      fill_in "notes", with: "Testing note!"
-      click_button "UPDATE"
+      # Find and click edit button (look for edit icon or button)
+      edit_button = find('button[aria-label*="edit"], button:has(svg[data-icon="pencil"]), .edit-button', match: :first)
+      edit_button.click
+      find('input[placeholder*="Note"], textarea[placeholder*="Note"], input[name*="note"], textarea[name*="note"]', match: :first).fill_in with: "Testing note!"
+      click_button "Save", match: :first
 
       expect(page).to have_content("Testing note!")
     end
@@ -66,7 +67,9 @@ shared_examples_for "Time tracking" do |obj|
     with_forgery_protection do
       visit "time-tracking"
 
-      find(:css, "#deleteIcon", visible: :hidden).hover.click
+      # Find and click delete button
+      delete_button = find('button[aria-label*="delete"], button:has(svg[data-icon="trash"]), .delete-button', match: :first)
+      delete_button.click
       sleep 1
 
       user = obj[:is_admin] == true ? admin : employee
@@ -79,17 +82,20 @@ shared_examples_for "Time tracking" do |obj|
       visit "time-tracking"
 
       past_date = (Date.today - 1).strftime("%d")
-      formatted_date = past_date.size == 2 ? "0#{past_date}" : "00#{past_date}"
+      past_date.size == 2 ? "0#{past_date}" : "00#{past_date}"
 
-      find(:css, "#editIcon", visible: false).hover.click
-      find(:css, "#formattedDate", wait: 3).click
-      all(:css, ".react-datepicker__day.react-datepicker__day--#{formatted_date}").last.click
-      find(:css, "#formattedDate", wait: 3).click
-      all(:css, ".react-datepicker__day.react-datepicker__day--#{formatted_date}").last.click
-      click_button "UPDATE"
+      # Find and click edit button
+      edit_button = find('button[aria-label*="edit"], button:has(svg[data-icon="pencil"]), .edit-button', match: :first)
+      edit_button.click
+      # Find date input field and click it
+      date_input = find('input[type="date"], input[placeholder*="Date"], .date-input', match: :first)
+      date_input.click
+      # Set the date value directly
+      date_input.set((Date.today - 1).strftime("%Y-%m-%d"))
+      click_button "Save", match: :first
       sleep 1
 
-      user = obj[:is_admin] == true ? admin : employee
+      obj[:is_admin] == true ? admin : employee
       # expect(user.timesheet_entries.first.work_date).to eq(Date.today - 1)
     end
   end

@@ -1,0 +1,157 @@
+#!/bin/bash
+set -e
+
+echo "🚀 Hetzner Deployment Setup"
+echo "==========================="
+echo ""
+
+# Check if .env.kamal.local exists
+if [ ! -f ".env.kamal.local" ]; then
+  echo "📝 Creating .env.kamal.local from template..."
+  cp .env.kamal.local.template .env.kamal.local
+  
+  # Generate secure passwords
+  POSTGRES_PASSWORD=$(openssl rand -hex 32)
+  SECRET_KEY_BASE=$(openssl rand -hex 64)
+  
+  # Update the file with generated values
+  if [[ "$OSTYPE" == "darwin"* ]]; then
+    # macOS
+    sed -i '' "s/POSTGRES_PASSWORD=.*/POSTGRES_PASSWORD=$POSTGRES_PASSWORD/" .env.kamal.local
+    sed -i '' "s/SECRET_KEY_BASE=.*/SECRET_KEY_BASE=$SECRET_KEY_BASE/" .env.kamal.local
+  else
+    # Linux
+    sed -i "s/POSTGRES_PASSWORD=.*/POSTGRES_PASSWORD=$POSTGRES_PASSWORD/" .env.kamal.local
+    sed -i "s/SECRET_KEY_BASE=.*/SECRET_KEY_BASE=$SECRET_KEY_BASE/" .env.kamal.local
+  fi
+  
+  echo "✅ Created .env.kamal.local with generated passwords"
+  echo ""
+  echo "⚠️  IMPORTANT: Please edit .env.kamal.local and add:"
+  echo "   1. Your Hetzner API token"
+  echo "   2. Your GitHub Personal Access Token"
+  echo ""
+  echo "To get these tokens:"
+  echo ""
+  echo "📌 Hetzner API Token:"
+  echo "   1. Go to https://console.hetzner.cloud/"
+  echo "   2. Navigate to Security → API Tokens"
+  echo "   3. Generate a token with Read & Write permissions"
+  echo ""
+  echo "📌 GitHub Personal Access Token:"
+  echo "   1. Go to https://github.com/settings/tokens"
+  echo "   2. Generate a token with 'write:packages' scope"
+  echo ""
+else
+  echo "✅ .env.kamal.local already exists"
+fi
+
+# Load environment variables
+source .env.kamal.local
+
+# Check if required tokens are set
+if [ "$HETZNER_API_TOKEN" == "YOUR_API_TOKEN_HERE" ] || [ -z "$HETZNER_API_TOKEN" ]; then
+  echo "❌ Please add your HETZNER_API_TOKEN to .env.kamal.local"
+  exit 1
+fi
+
+if [ "$GITHUB_TOKEN" == "YOUR_GITHUB_PAT_HERE" ] || [ -z "$GITHUB_TOKEN" ]; then
+  echo "❌ Please add your GITHUB_TOKEN to .env.kamal.local"
+  exit 1
+fi
+
+echo "✅ Tokens configured"
+echo ""
+
+# Configure hcloud CLI
+echo "🔧 Configuring Hetzner Cloud CLI..."
+hcloud context create miru-deployment 2>/dev/null || true
+hcloud context use miru-deployment
+export HCLOUD_TOKEN=$HETZNER_API_TOKEN
+
+# Add SSH key to Hetzner if not exists
+echo "🔑 Checking SSH keys in Hetzner..."
+SSH_KEY_NAME="miru-deployment-$(whoami)"
+PUBLIC_KEY=$(cat ~/.ssh/id_ed25519_hetzner.pub)
+
+if ! hcloud ssh-key describe $SSH_KEY_NAME 2>/dev/null; then
+  echo "Adding SSH key to Hetzner..."
+  hcloud ssh-key create --name $SSH_KEY_NAME --public-key "$PUBLIC_KEY"
+  echo "✅ SSH key added to Hetzner"
+else
+  echo "✅ SSH key already exists in Hetzner"
+fi
+
+# Create server
+echo ""
+echo "🖥️  Creating Hetzner server..."
+SERVER_NAME="miru-review-apps"
+
+if ! hcloud server describe $SERVER_NAME 2>/dev/null; then
+  echo "Creating new server..."
+  hcloud server create \
+    --name $SERVER_NAME \
+    --type cx22 \
+    --image ubuntu-24.04 \
+    --location nbg1 \
+    --ssh-key $SSH_KEY_NAME
+  
+  # Get the server IP
+  SERVER_IP=$(hcloud server describe $SERVER_NAME -o json | jq -r .public_net.ipv4.ip)
+  
+  # Update .env.kamal.local with the server IP
+  if [[ "$OSTYPE" == "darwin"* ]]; then
+    sed -i '' "s/HETZNER_SERVER_IP=.*/HETZNER_SERVER_IP=$SERVER_IP/" .env.kamal.local
+  else
+    sed -i "s/HETZNER_SERVER_IP=.*/HETZNER_SERVER_IP=$SERVER_IP/" .env.kamal.local
+  fi
+  
+  # Update SSH config
+  sed -i '' "s/HostName YOUR_HETZNER_SERVER_IP/HostName $SERVER_IP/" ~/.ssh/config
+  
+  echo "✅ Server created with IP: $SERVER_IP"
+  echo ""
+  echo "Waiting for server to be ready..."
+  sleep 30
+  
+  # Setup server
+  echo "🔧 Setting up server..."
+  ssh -o StrictHostKeyChecking=no root@$SERVER_IP << 'ENDSSH'
+    apt-get update
+    apt-get upgrade -y
+    
+    # Install Docker
+    curl -fsSL https://get.docker.com | sh
+    systemctl enable docker
+    systemctl start docker
+    
+    # Setup firewall
+    ufw --force enable
+    ufw allow 22/tcp
+    ufw allow 80/tcp
+    ufw allow 443/tcp
+    
+    echo "✅ Server setup complete"
+ENDSSH
+  
+else
+  SERVER_IP=$(hcloud server describe $SERVER_NAME -o json | jq -r .public_net.ipv4.ip)
+  echo "✅ Server already exists with IP: $SERVER_IP"
+  
+  # Update .env.kamal.local if needed
+  if [[ "$OSTYPE" == "darwin"* ]]; then
+    sed -i '' "s/HETZNER_SERVER_IP=.*/HETZNER_SERVER_IP=$SERVER_IP/" .env.kamal.local
+  else
+    sed -i "s/HETZNER_SERVER_IP=.*/HETZNER_SERVER_IP=$SERVER_IP/" .env.kamal.local
+  fi
+fi
+
+echo ""
+echo "✅ Setup complete!"
+echo ""
+echo "Your server is ready at: $SERVER_IP"
+echo ""
+echo "Next steps:"
+echo "  1. Run: source .env.kamal.local"
+echo "  2. Run: bin/deploy-hetzner"
+echo ""

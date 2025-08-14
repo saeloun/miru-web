@@ -94,9 +94,4 @@ const ClickableCheckboxText = ({
   </div>
 );
 
-ClickableCheckboxText.defaultProps = {
-  handleOnClick: () => {}, //eslint-disable-line
-  isUpdatedDesign: false,
-};
-
 export default ClickableCheckboxText;

@@ -1,10 +1,9 @@
 import React from "react";
 
-import { SummaryDashboard } from "StyledComponents";
-
 import EmptyStates from "common/EmptyStates";
 import { useEntry } from "components/Reports/context/EntryContext";
 import { useUserContext } from "context/UserContext";
+import { SummaryDashboard } from "StyledComponents";
 
 import Table from "./Table";
 

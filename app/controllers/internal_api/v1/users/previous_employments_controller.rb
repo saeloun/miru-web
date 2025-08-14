@@ -8,25 +8,25 @@ class InternalApi::V1::Users::PreviousEmploymentsController < InternalApi::V1::A
   def index
     authorize @user, policy_class: Users::PreviousEmploymentPolicy
     previous_employments = @user.previous_employments
-    render :index, locals: { previous_employments: }, status: :ok
+    render :index, locals: { previous_employments: }, status: 200
   end
 
   def show
     authorize previous_employment, policy_class: Users::PreviousEmploymentPolicy
-    render :show, locals: { previous_employment: }, status: :ok
+    render :show, locals: { previous_employment: }, status: 200
   end
 
   def update
     authorize previous_employment, policy_class: Users::PreviousEmploymentPolicy
     previous_employment.update!(previous_employment_params)
-    render :update, locals: { previous_employment: }, status: :ok
+    render :update, locals: { previous_employment: }, status: 200
   end
 
   def create
     authorize @user, policy_class: Users::PreviousEmploymentPolicy
     previous_employment = @user.previous_employments.new(previous_employment_params)
     previous_employment.save!
-    render :create, locals: { previous_employment: }, status: :ok
+    render :create, locals: { previous_employment: }, status: 200
  end
 
   private

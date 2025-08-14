@@ -1,12 +1,10 @@
-/* eslint-disable no-unused-vars */
 import React, { Fragment, useEffect, useState } from "react";
-
-import { useNavigate, useParams } from "react-router-dom";
 
 import Loader from "common/Loader/index";
 import { CompensationDetailsState } from "components/Profile/Context/CompensationDetailsState";
 import { useProfileContext } from "context/Profile/ProfileContext";
 import { useUserContext } from "context/UserContext";
+import { useNavigate, useParams } from "react-router-dom";
 
 import EditPage from "./EditPage";
 import MobileEditPage from "./MobileEditPage";

@@ -1,16 +1,15 @@
 import React from "react";
 
+import invoicesApi from "apis/invoices";
 import { XIcon } from "miruIcons";
 import { useNavigate } from "react-router-dom";
 import { Modal, Toastr } from "StyledComponents";
-
-import invoicesApi from "apis/invoices";
 
 const ConnectPaymentGateway = ({
   setShowConnectPaymentDialog,
   showConnectPaymentDialog,
   invoice,
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
+
   setIsSending = _val => {},
   isInvoiceEmail = false,
 }) => {

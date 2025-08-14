@@ -4,7 +4,7 @@ require "pagy/extras/metadata"
 Pagy::DEFAULT[:metadata] = %i[scaffold_url page count in items pages prev next last] # example
 
 require "pagy/extras/items"
-require "pagy/extras/elasticsearch_rails"
+# require "pagy/extras/elasticsearch_rails" # Removed - using PostgreSQL search
 # Pagy initializer file (5.10.1)
 # Customize only what you really need and notice that the core Pagy works also without any of the following lines.
 # Should you just cherry pick part of this file, please maintain the require-order of the extras
@@ -105,16 +105,9 @@ require "pagy/extras/array"
 # For performance reasons, you should explicitly set ONLY the metadata you use in the frontend
 # Pagy::DEFAULT[:metadata] = %i[scaffold_url page count in items pages prev next last]   # example
 
-# Searchkick extra: Paginate `Searchkick::Results` objects
-# See https://ddnexus.github.io/pagy/extras/searchkick
-# Default :pagy_search method: change only if you use also
-# the elasticsearch_rails or meilisearch extra that defines the same
-# DEFAULT[:searchkick_pagy_search] = :pagy_search
-# Default original :search method called internally to do the actual search
-# Pagy::DEFAULT[:searchkick_search] = :search
-require "pagy/extras/searchkick"
-# uncomment if you are going to use Searchkick.pagy_search
-Searchkick.extend Pagy::Searchkick
+# Searchkick extra: Removed - using PostgreSQL search instead
+# require "pagy/extras/searchkick"
+# Searchkick.extend Pagy::Searchkick
 
 # Frontend Extras
 

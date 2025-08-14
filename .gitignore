@@ -40,6 +40,7 @@
 /yarn-error.log
 yarn-debug.log*
 .yarn-integrity
+.pnpm-store/
 
 # Rails specific ignores
 /vendor/bundle
@@ -65,3 +66,27 @@ yarn-debug.log*
 # Claude Code Assistant
 .claude
 CLAUDE.md
+
+# Git hooks
+.husky/
+lefthook-local.yml
+
+# Vite Ruby
+/public/vite*
+node_modules
+# Vite uses dotenv and suggests to ignore local-only env files. See
+# https://vitejs.dev/guide/env-and-mode.html#env-files
+*.local
+
+# Kamal deployment secrets and environment files
+.kamal/secrets
+.env.kamal.local
+.env.kamal.production
+
+# Test output files
+*_test_results.txt
+*_test_output.txt
+*_output.txt
+parallel_test*.txt
+rspec_output.txt
+*.env

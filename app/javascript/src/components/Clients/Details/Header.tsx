@@ -1,5 +1,6 @@
 import React, { useRef, useState } from "react";
 
+import { useUserContext } from "context/UserContext";
 import { useOutsideClick } from "helpers";
 import {
   ArrowLeftIcon,
@@ -15,8 +16,6 @@ import {
 } from "miruIcons";
 import { useNavigate } from "react-router-dom";
 import { MobileMoreOptions, Modal } from "StyledComponents";
-
-import { useUserContext } from "context/UserContext";
 
 // import AddContacts from "../Modals/AddContacts";
 import Contacts from "../Contacts";
@@ -38,7 +37,7 @@ const Header = ({
   const [showContactModal, setShowContactModal] = useState<boolean>(false);
 
   const navigate = useNavigate();
-  const menuRef = useRef();
+  const menuRef = useRef<HTMLUListElement>(null);
   const { isDesktop } = useUserContext();
 
   const handleClientDetails = () => {

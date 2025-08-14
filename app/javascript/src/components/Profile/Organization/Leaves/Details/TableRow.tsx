@@ -1,6 +1,6 @@
-import React from "react";
-
 import { allocationFrequency as allocationFrequencyProp } from "constants/leaveType";
+
+import React from "react";
 
 const TableRow = ({ leave, key }) => {
   const {

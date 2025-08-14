@@ -1,11 +1,10 @@
 import React from "react";
 
+import CustomRadioButton from "common/CustomRadio";
+import { InputField, InputErrors } from "common/FormikFields";
 import { Formik, Form, FormikProps } from "formik";
 import { XIcon } from "miruIcons";
 import { Button } from "StyledComponents";
-
-import CustomRadioButton from "common/CustomRadio";
-import { InputField, InputErrors } from "common/FormikFields";
 
 const TeamForm = ({
   initialValues,

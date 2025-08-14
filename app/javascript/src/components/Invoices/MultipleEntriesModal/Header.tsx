@@ -1,8 +1,7 @@
 import React from "react";
 
-import { XIcon } from "miruIcons";
-
 import { useUserContext } from "context/UserContext";
+import { XIcon } from "miruIcons";
 
 import Filters from "./Filters";
 

@@ -1,5 +1,4 @@
 import dayjs from "dayjs";
-
 import { month, getDayWithSuffix } from "utils/dateUtil";
 
 const getWeek = isCurrentWeek => {

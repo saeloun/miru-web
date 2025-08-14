@@ -38,7 +38,7 @@ RSpec.describe "InternalApi::V1::GenerateInvoice#index", type: :request do
       to: 1.weeks.ago.end_of_week,
       team_member: [user.id]
     }
-    TimesheetEntry.reindex
+    # Search index refresh not needed with PG search
   end
 
   context "when user is an admin" do
@@ -46,7 +46,6 @@ RSpec.describe "InternalApi::V1::GenerateInvoice#index", type: :request do
       create(:employment, company:, user:)
       user.add_role :admin, company
       sign_in user
-      TimesheetEntry.search_index.refresh
     end
 
     context "when no params are passed" do

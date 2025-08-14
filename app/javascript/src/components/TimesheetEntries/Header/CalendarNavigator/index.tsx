@@ -14,12 +14,24 @@ function CalendarNavigator() {
     dayInfo = [],
     selectedFullDate = "",
     handleAddEntryDateChange = ({}) => {},
-    handleNextDay = () => {},
-    handlePreDay = () => {},
-    handleNextMonth = () => {},
-    handlePrevMonth = () => {},
-    handleNextWeek = () => {},
-    handlePrevWeek = () => {},
+    handleNextDay = () => {
+      /* Default empty handler */
+    },
+    handlePreDay = () => {
+      /* Default empty handler */
+    },
+    handleNextMonth = () => {
+      /* Default empty handler */
+    },
+    handlePrevMonth = () => {
+      /* Default empty handler */
+    },
+    handleNextWeek = () => {
+      /* Default empty handler */
+    },
+    handlePrevWeek = () => {
+      /* Default empty handler */
+    },
   } = useTimesheetEntries();
   const [openOsCalendar, setOpenOsCalendar] = useState<boolean>(false);
 

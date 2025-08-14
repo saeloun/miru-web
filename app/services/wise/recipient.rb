@@ -23,7 +23,7 @@ module Wise
     end
 
     def delete(recipient_id)
-      response = connection.delete("/v1/accounts/#{recipient_id}")
+      connection.delete("/v1/accounts/#{recipient_id}")
     end
 
     private

@@ -1,5 +1,0 @@
-#!/bin/sh
-. "$(dirname "$0")/_/husky.sh"
-. "$(dirname "$0")/helpers/prevent_pushing_to_develop.sh"
-
-prevent_pushing_to_develop

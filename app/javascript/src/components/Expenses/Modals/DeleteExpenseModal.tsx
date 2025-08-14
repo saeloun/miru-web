@@ -1,9 +1,8 @@
 import React from "react";
 
+import expensesApi from "apis/expenses";
 import { useNavigate } from "react-router-dom";
 import { Modal, Button } from "StyledComponents";
-
-import expensesApi from "apis/expenses";
 
 const DeleteExpenseModal = ({
   setShowDeleteExpenseModal,

@@ -1,9 +1,8 @@
 import React from "react";
 
+import clientApi from "apis/clients";
 import { useNavigate } from "react-router-dom";
 import { Modal, Button } from "StyledComponents";
-
-import clientApi from "apis/clients";
 
 interface IProps {
   client: any;
@@ -21,7 +20,11 @@ const DeleteClient = ({
   const deleteClient = async client => {
     await clientApi.destroy(client.id);
     setShowDeleteDialog(false);
-    window.location.pathname == "/clients" ? navigate(0) : navigate("/clients");
+    if (window.location.pathname === "/clients") {
+      navigate(0);
+    } else {
+      navigate("/clients");
+    }
   };
 
   return (

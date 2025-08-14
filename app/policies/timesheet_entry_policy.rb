@@ -32,9 +32,9 @@ class TimesheetEntryPolicy < ApplicationPolicy
 
     def resolve
       if user_owner_role? || user_admin_role?
-        scope = user.current_workspace.timesheet_entries.kept
+        user.current_workspace.timesheet_entries.kept
       else
-        scope = user.timesheet_entries.kept.in_workspace(user.current_workspace)
+        user.timesheet_entries.kept.in_workspace(user.current_workspace)
       end
     end
   end

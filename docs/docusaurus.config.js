@@ -6,7 +6,7 @@ const darkCodeTheme = require("prism-react-renderer/themes/dracula");
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: "Miru Web",
+  title: "Miru Web Documentation",
   tagline:
     "Miru is an open-source tool, designed to make time tracking, invoice management, and accounting easy for small businesses worldwide. It is a platform for organizations to help them streamline their workflow.",
   url: "https://docs.miru.so",
@@ -14,6 +14,7 @@ const config = {
   onBrokenLinks: "ignore",
   onBrokenMarkdownLinks: "warn",
   favicon: "img/favicon.ico",
+
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
@@ -42,11 +43,39 @@ const config = {
           showLastUpdateAuthor: true,
           showLastUpdateTime: true,
           breadcrumbs: true,
+          // SEO enhancements
+          includeCurrentVersion: true,
+          disableVersioning: false,
+          lastVersion: 'current',
+          versions: {
+            current: {
+              label: 'Latest',
+              path: '/',
+            },
+          },
         },
         theme: {
           customCss: require.resolve("./src/css/custom.css"),
         },
+        sitemap: {
+          changefreq: 'weekly',
+          priority: 0.5,
+          ignorePatterns: ['/tags/**'],
+          filename: 'sitemap.xml',
+        },
       }),
+    ],
+  ],
+
+  plugins: [
+    [
+      '@docusaurus/plugin-sitemap',
+      {
+        changefreq: 'weekly',
+        priority: 0.5,
+        ignorePatterns: ['/tags/**'],
+        filename: 'sitemap.xml',
+      },
     ],
   ],
 
@@ -84,6 +113,22 @@ const config = {
         appId: "QIQQLP8ODT",
         apiKey: "fe413cd4421525316f1f677211a7fa83",
         indexName: "miru",
+        contextualSearch: true,
+        searchParameters: {},
+        searchPagePath: 'search',
+      },
+      // SEO enhancements
+      image: 'https://miru.so/static/media/miru-blue-logo-with-text.5ba2b3fe09b9f038473f0a131f8a8bec.svg',
+      docs: {
+        sidebar: {
+          hideable: true,
+          autoCollapseCategories: true,
+        },
+      },
+      colorMode: {
+        defaultMode: 'light',
+        disableSwitch: false,
+        respectPrefersColorScheme: true,
       },
       footer: {
         style: "dark",
@@ -134,6 +179,24 @@ const config = {
         theme: lightCodeTheme,
         darkTheme: darkCodeTheme,
       },
+      // SEO metadata
+      metadata: [
+        {name: 'keywords', content: 'time tracking, invoice management, accounting, open source, small business, project management, billing, payments, reporting'},
+        {name: 'description', content: 'Complete documentation for Miru - an open-source time tracking, invoice management, and accounting platform for small businesses worldwide.'},
+        {name: 'author', content: 'Saeloun'},
+        {name: 'robots', content: 'index,follow'},
+        {property: 'og:type', content: 'website'},
+        {property: 'og:title', content: 'Miru Web Documentation - Open Source Time Tracking & Invoice Management'},
+        {property: 'og:description', content: 'Complete documentation for Miru - an open-source time tracking, invoice management, and accounting platform for small businesses worldwide.'},
+        {property: 'og:image', content: 'https://miru.so/static/media/miru-blue-logo-with-text.5ba2b3fe09b9f038473f0a131f8a8bec.svg'},
+        {property: 'og:url', content: 'https://docs.miru.so'},
+        {property: 'og:site_name', content: 'Miru Web Documentation'},
+        {name: 'twitter:card', content: 'summary_large_image'},
+        {name: 'twitter:site', content: '@getmiru'},
+        {name: 'twitter:title', content: 'Miru Web Documentation - Open Source Time Tracking & Invoice Management'},
+        {name: 'twitter:description', content: 'Complete documentation for Miru - an open-source time tracking, invoice management, and accounting platform for small businesses worldwide.'},
+        {name: 'twitter:image', content: 'https://miru.so/static/media/miru-blue-logo-with-text.5ba2b3fe09b9f038473f0a131f8a8bec.svg'},
+      ],
     }),
 };
 

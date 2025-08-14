@@ -9,8 +9,8 @@ class Api::V1::SnsSubscriptionsController < ApplicationController
     sns_message = JSON.parse(request.body.read)
 
     if sns_message["Type"] == "SubscriptionConfirmation"
-      response = HTTParty.get(sns_message["SubscribeURL"])
-      render json: { message: "Subscription confirmed successfully" }, status: :ok
+      HTTParty.get(sns_message["SubscribeURL"])
+      render json: { message: "Subscription confirmed successfully" }, status: 200
     else
       message = JSON.parse(sns_message["Message"])
 
@@ -20,7 +20,7 @@ class Api::V1::SnsSubscriptionsController < ApplicationController
         handle_compliant_email(message)
       end
 
-      render json: { message: "success" }, status: :ok
+      render json: { message: "success" }, status: 200
     end
   end
 

@@ -2,9 +2,8 @@ import React from "react";
 
 import { currencyFormat } from "helpers";
 import { useNavigate } from "react-router-dom";
-import { Avatar, Badge } from "StyledComponents";
-
-import getStatusCssClass from "utils/getBadgeStatus";
+import AnimatedAvatar from "components/ui/animated-avatar";
+import StatusBadge from "components/ui/status-badge";
 
 const RecentlyUpdatedCard = ({
   invoice: { client, currency, id, invoiceNumber, amount, status },
@@ -23,7 +22,12 @@ const RecentlyUpdatedCard = ({
         {invoiceNumber}
       </h3>
       <div className="my-1 flex justify-center lg:my-3">
-        <Avatar url={client.logo} />
+        <AnimatedAvatar
+          url={client.logo}
+          name={client.name}
+          size="lg"
+          animation="pulse"
+        />
       </div>
       <div className="my-2 flex h-9 items-center justify-center text-center text-sm font-semibold capitalize leading-5 text-miru-dark-purple-1000 lg:mt-1 lg:mb-2.5 lg:h-11 lg:text-base">
         <p className="truncateOverflowText">{client.name}</p>
@@ -31,11 +35,8 @@ const RecentlyUpdatedCard = ({
       <h1 className="mb-2 truncate text-base font-bold text-miru-dark-purple-1000 lg:text-xl">
         {currencyFormat(currency, amount)}
       </h1>
-      <div>
-        <Badge
-          className={`${getStatusCssClass(status)} mt-2 uppercase`}
-          text={status}
-        />
+      <div className="flex justify-center">
+        <StatusBadge status={status} className="mt-2" />
       </div>
     </div>
   );

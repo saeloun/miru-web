@@ -37,6 +37,9 @@
 #  index_users_on_current_workspace_id  (current_workspace_id)
 #  index_users_on_discarded_at          (discarded_at)
 #  index_users_on_email                 (email) UNIQUE
+#  index_users_on_email_trgm            (email) USING gin
+#  index_users_on_first_name_trgm       (first_name) USING gin
+#  index_users_on_last_name_trgm        (last_name) USING gin
 #  index_users_on_reset_password_token  (reset_password_token) UNIQUE
 #
 # Foreign Keys
@@ -48,6 +51,21 @@
 
 class User < ApplicationRecord
   include Discard::Model
+  include Searchable
+  include SuperAdmin
+
+  # Configure pg_search
+  pg_search_scope :pg_search,
+    against: [:first_name, :last_name, :email],
+    using: {
+      tsearch: {
+        prefix: true,
+        dictionary: "simple"
+      },
+      trigram: {
+        threshold: 0.1
+      }
+    }
 
   class SpamUserSignup < StandardError
     def initialize(msg = "Spam User Login")
@@ -108,9 +126,6 @@ class User < ApplicationRecord
   before_create :set_token
 
   after_commit :send_to_hubspot, on: :create
-
-  searchkick filterable: [:first_name, :last_name, :email],
-    word_middle: [:first_name, :last_name, :email]
 
   def prevent_spam_user_sign_up
     if self.email.include?("internetkeno")

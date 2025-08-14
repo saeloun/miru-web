@@ -21,8 +21,7 @@ RSpec.describe "InternalApi::V1::Invoices#index", type: :request do
     create(:employment, company:, user: employee)
     employee.add_role :employee, company
 
-    Invoice.search_index.refresh
-    Invoice.reindex # added reindex here to make the test pass in CI
+    # No search index refresh needed with PG search
   end
 
   context "when user is a book keeper" do
@@ -86,9 +85,9 @@ RSpec.describe "InternalApi::V1::Invoices#index", type: :request do
         expected_invoices = company.invoices.select { |inv| client.include?(inv.client_id) }
         expect(response).to have_http_status(:ok)
         expect(
-          json_response["invoices"].map { |invoice| invoice["id"] }
+          json_response["invoices"].pluck("id")
         ).to match_array(
-          expected_invoices.map { |invoice| invoice["id"] }
+          expected_invoices.pluck("id")
         )
         expect(
           json_response["invoices"].map { |invoice| invoice["client"]["logo"] }
@@ -131,9 +130,9 @@ RSpec.describe "InternalApi::V1::Invoices#index", type: :request do
         expect(response).to have_http_status(:ok)
         expect(json_response["invoices"].length) .to be_positive
         expect(
-          json_response["invoices"].map { |invoice| invoice["id"] }
+          json_response["invoices"].pluck("id")
         ).to match_array(
-          expected_invoices.map { |invoice| invoice["id"] }
+          expected_invoices.pluck("id")
         )
       end
 
@@ -147,9 +146,9 @@ RSpec.describe "InternalApi::V1::Invoices#index", type: :request do
         expect(response).to have_http_status(:ok)
         expect(json_response["invoices"].length).to be_positive
         expect(
-          json_response["invoices"].map { |invoice| invoice["id"] }
+          json_response["invoices"].pluck("id")
         ).to match_array(
-          expected_invoices.map { |invoice| invoice["id"] }
+          expected_invoices.pluck("id")
         )
       end
     end
@@ -163,7 +162,6 @@ RSpec.describe "InternalApi::V1::Invoices#index", type: :request do
     describe "search for wildcard" do
       it "returns the only kept invoices" do
         company.invoices.first.discard!
-        Invoice.reindex
 
         invoices_per_page = 10
         send_request :get, internal_api_v1_invoices_path(invoices_per_page:), headers: auth_headers(admin)
@@ -222,9 +220,9 @@ RSpec.describe "InternalApi::V1::Invoices#index", type: :request do
 
         expect(response).to have_http_status(:ok)
         expect(
-          json_response["invoices"].map { |invoice| invoice["id"] }
+          json_response["invoices"].pluck("id")
         ).to match_array(
-          expected_invoices.map { |invoice| invoice["id"] }
+          expected_invoices.pluck("id")
         )
       end
     end
@@ -236,9 +234,9 @@ RSpec.describe "InternalApi::V1::Invoices#index", type: :request do
         expected_invoices = company.invoices.select { |inv| client.include?(inv.client_id) }
         expect(response).to have_http_status(:ok)
         expect(
-          json_response["invoices"].map { |invoice| invoice["id"] }
+          json_response["invoices"].pluck("id")
         ).to match_array(
-          expected_invoices.map { |invoice| invoice["id"] }
+          expected_invoices.pluck("id")
         )
       end
     end

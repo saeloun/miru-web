@@ -1,10 +1,9 @@
 import React from "react";
 
+import { DownloadAll } from "components/Expenses/utils";
 import { DeleteIcon, EditIcon, DownloadSimpleIcon } from "miruIcons";
 import { useNavigate } from "react-router-dom";
 import { Tooltip, Modal, Button } from "StyledComponents";
-
-import { DownloadAll } from "components/Expenses/utils";
 
 const MoreOptions = ({
   expense,

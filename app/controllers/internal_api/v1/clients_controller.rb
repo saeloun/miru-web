@@ -3,8 +3,29 @@
 class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationController
   def index
     authorize Client
-    data = Clients::IndexService.new(current_company, params[:query], params[:time_frame]).process
-    render json: data, status: :ok
+
+    # Use ransack for search
+    @q = current_company.clients.kept.ransack(params[:q])
+
+    # Apply text search if query present
+    clients = if params[:query].present?
+      current_company.clients.kept.search(params[:query])
+    else
+      @q.result
+    end
+
+    clients = clients.includes(:logo_attachment)
+
+    # Calculate aggregations
+    client_details = clients.map { |client| client.client_detail(params[:time_frame]) }
+    total_minutes = client_details.pluck(:minutes_spent).sum
+    overdue_outstanding_amount = current_company.overdue_and_outstanding_and_draft_amount
+
+    render json: {
+      client_details: client_details,
+      total_minutes: total_minutes,
+      overdue_outstanding_amount: overdue_outstanding_amount
+    }, status: 200
   end
 
   def create
@@ -22,8 +43,8 @@ class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationControlle
       client
     )
 
-    invitations = invitation_service.process
-    render json: { notice: "Invitation sent successfully." }, status: :ok
+    invitation_service.process
+    render json: { notice: "Invitation sent successfully." }, status: 200
   end
 
   def show
@@ -37,7 +58,7 @@ class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationControlle
              overdue_outstanding_amount: client.client_overdue_and_outstanding_calculation,
              invoices: client.invoices.includes([:company])
            },
-      status: :ok
+      status: 200
   end
 
   def update
@@ -54,7 +75,7 @@ class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationControlle
         success: true,
         client:,
         notice: I18n.t("client.update.success.message")
-      }, status: :ok
+      }, status: 200
     end
   end
 
@@ -65,7 +86,7 @@ class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationControlle
       render json: {
         client:,
         notice: I18n.t("client.delete.success.message")
-      }, status: :ok
+      }, status: 200
     end
   end
 
@@ -79,7 +100,7 @@ class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationControlle
       subject: client_email_params[:email_params][:subject],
     ).send_payment_reminder.deliver_later
 
-    render json: { notice: "Payment reminder has been sent" }, status: :accepted
+    render json: { notice: "Payment reminder has been sent" }, status: 202
   end
 
   private
