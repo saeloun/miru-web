@@ -35,19 +35,33 @@ class ApiHandler {
       },
       (error: any) => {
         if (error.response?.status === 401) {
-          clearCredentialsFromLocalStorage();
-          Toastr.error(error.response?.data?.error);
-          setTimeout(() => (window.location.href = "/"), 500);
+          // Only clear credentials and redirect if we actually had credentials
+          const token = getValueFromLocalStorage("authToken");
+          if (token) {
+            clearCredentialsFromLocalStorage();
+            Toastr.error(
+              error.response?.data?.error ||
+                "Session expired. Please login again."
+            );
+            setTimeout(() => (window.location.href = "/"), 500);
+          }
+
+          // If no token, just reject the error without redirecting
+          return Promise.reject(error);
         }
 
-        Toastr.error(
-          error.response?.data?.errors ||
-            error.response?.data?.error ||
-            error.response?.data?.notice ||
-            error.message ||
-            error.notice ||
-            "Something went wrong!"
-        );
+        // Only show error toasts for non-401 errors
+        if (error.response?.status !== 401) {
+          Toastr.error(
+            error.response?.data?.errors ||
+              error.response?.data?.error ||
+              error.response?.data?.notice ||
+              error.message ||
+              error.notice ||
+              "Something went wrong!"
+          );
+        }
+
         if (error.response?.status === 423) {
           setTimeout(() => (window.location.href = "/"), 500);
         }
@@ -57,24 +71,9 @@ class ApiHandler {
     );
 
     this.axios.interceptors.request.use(
-      async (config: any) => {
-        const token = getValueFromLocalStorage("authToken");
-        const email = getValueFromLocalStorage("authEmail");
-        const headers = {
-          "X-Auth-Email": email,
-          "X-Auth-Token": token,
-        };
-
-        const newConfig = {
-          ...config,
-          headers: {
-            ...config.headers,
-            ...headers,
-          },
-        };
-
-        return newConfig;
-      },
+      async (config: any) =>
+        // Authentication is handled by cookies now, no need to add headers
+        config,
       (error: any) => Promise.reject(error)
     );
   }

@@ -5,10 +5,18 @@ class InternalApi::V1::Clients::InvoicesController < InternalApi::V1::Applicatio
 
   def index
     authorize current_user, policy_class: Clients::InvoicesPolicy
-    data = Clients::Invoices::IndexService.new(@client, current_company, params).process
+
+    # Use ransack for filtering
+    invoices = @client.invoices.kept.includes(:company)
+    @q = invoices.ransack(params[:q])
+    invoices_query = @q.result.order(invoice_number: :desc)
+
+    # Apply pagination
+    pagy, paginated_invoices = pagy(invoices_query, items: params[:items] || 10)
+
     render :index, locals: {
-      invoices: data[:invoices_query],
-      pagination_details: data[:pagination_details]
+      invoices: paginated_invoices,
+      pagination_details: pagy_metadata(pagy)
     }
   end
 
@@ -25,6 +33,6 @@ class InternalApi::V1::Clients::InvoicesController < InternalApi::V1::Applicatio
     end
 
     def render_error_response(message)
-      render json: { error: message }, status: :unprocessable_entity
+      render json: { error: message }, status: 422
     end
 end

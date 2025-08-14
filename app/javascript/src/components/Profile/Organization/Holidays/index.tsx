@@ -1,13 +1,11 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 import React, { useEffect, useRef, useState } from "react";
-
-import { getYear } from "date-fns";
-import { useOutsideClick } from "helpers";
-import { useNavigate } from "react-router-dom";
 
 import holidaysApi from "apis/holidays";
 import Loader from "common/Loader/index";
 import { useUserContext } from "context/UserContext";
+import { getYear } from "date-fns";
+import { useOutsideClick } from "helpers";
+import { useNavigate } from "react-router-dom";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import Details from "./Details";
@@ -106,14 +104,17 @@ const Holidays = () => {
         time_period_optional_holidays,
       } = currentHoliday;
 
-      enable_optional_holidays &&
+      if (enable_optional_holidays) {
         setEnableOptionalHolidays(enable_optional_holidays);
+      }
 
-      no_of_allowed_optional_holidays &&
+      if (no_of_allowed_optional_holidays) {
         setTotalOptionalHolidays(no_of_allowed_optional_holidays);
+      }
 
-      time_period_optional_holidays &&
+      if (time_period_optional_holidays) {
         setOptionalRepetitionType(time_period_optional_holidays);
+      }
 
       const newNationalHolidays = national_holidays.map(holiday => ({
         ...holiday,

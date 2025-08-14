@@ -1,17 +1,17 @@
-import React, { useCallback, useEffect, useState } from "react";
+import { currencyList } from "constants/currencyList";
 
-import { useDropzone } from "react-dropzone";
-import { useNavigate } from "react-router-dom";
-import { Toastr } from "StyledComponents";
-import worldCountries from "world-countries";
-import * as Yup from "yup";
+import React, { useCallback, useEffect, useState } from "react";
 
 import companiesApi from "apis/companies";
 import companyProfileApi from "apis/companyProfile";
 import Loader from "common/Loader/index";
-import { currencyList } from "constants/currencyList";
 import { useUserContext } from "context/UserContext";
+import { useDropzone } from "react-dropzone";
+import { useNavigate } from "react-router-dom";
+import { Toastr } from "StyledComponents";
 import { sendGAPageView } from "utils/googleAnalytics";
+import worldCountries from "world-countries";
+import * as Yup from "yup";
 
 import { StaticPage } from "./StaticPage";
 

@@ -1,0 +1,108 @@
+# Kamal 2.0 Deployment Configuration for Hetzner
+# This is separate from Fly.io deployment
+service: miru-2-0-upgrade
+
+# Docker image configuration
+image: saeloun/miru-2-0-upgrade
+
+# Deploy to Hetzner server
+servers:
+  web:
+    - 91.98.79.189
+  worker:
+    hosts:
+      - 91.98.79.189
+    cmd: bundle exec rake solid_queue:start
+
+# Enable SSL and configure subdomain for this specific review app
+proxy:
+  ssl: true
+  host: miru-2-0-upgrade.review.miru.so
+  app_port: 3000
+  healthcheck:
+    path: "/health"
+
+# Registry configuration - required by Kamal
+registry:
+  server: ghcr.io
+  username: saeloun
+  password:
+    - GITHUB_TOKEN
+
+# Builder configuration
+builder:
+  arch: amd64
+  dockerfile: Dockerfile
+  args:
+    RUBY_VERSION: 3.4.5
+    NODE_VERSION: 20
+    RAILS_ENV: production
+
+# Environment variables
+env:
+  clear:
+    RAILS_ENV: production
+    NODE_ENV: production
+    RAILS_SERVE_STATIC_FILES: true
+    RAILS_LOG_TO_STDOUT: true
+    PORT: 3000
+    WEB_CONCURRENCY: 2
+    RAILS_MAX_THREADS: 5
+    # PostgreSQL search
+    PG_SEARCH_ENABLED: true
+    # Solid Queue
+    SOLID_QUEUE_IN_PROCESS: false
+    # App specific namespace to avoid conflicts
+    APP_NAME: miru-2-0-upgrade
+    # Redis connection for existing container
+    REDIS_URL: redis://172.17.0.1:6379
+  secret:
+    - RAILS_MASTER_KEY
+    - DATABASE_URL
+    - SECRET_KEY_BASE
+    - AWS_ACCESS_KEY_ID
+    - AWS_SECRET_ACCESS_KEY
+    - AWS_REGION
+    - AWS_BUCKET
+    - STRIPE_API_KEY
+    - STRIPE_PUBLISHABLE_KEY
+    - SENTRY_DSN
+    - GOOGLE_OAUTH_CLIENT_ID
+    - GOOGLE_OAUTH_CLIENT_SECRET
+    # Additional staging environment variables
+    - APP_BASE_URL
+    - CLOUDFLARE_R2_ACCESS_KEY_ID
+    - CLOUDFLARE_R2_SECRET_ACCESS_KEY
+    - CLOUDFLARE_R2_BUCKET_NAME
+    - CLOUDFLARE_R2_ENDPOINT
+    - CLOUDFLARE_R2_REGION
+    - DEFAULT_MAILER_SENDER
+    - EMAIL_DELIVERY_METHOD
+    - ENABLE_WEEKLY_REMINDER
+
+# Aliases for common commands
+aliases:
+  console: app exec --interactive --reuse "bin/rails console"
+  shell: app exec --interactive --reuse "bash"
+  logs: app logs --follow
+  db-migrate: app exec --reuse "bin/rails db:migrate"
+
+# SSH configuration
+ssh:
+  user: <%= ENV.fetch("SSH_USER", "root") %>
+
+# Persistent volumes for storage
+volumes:
+  - "miru_2_0_upgrade_storage:/rails/storage"
+  - "miru_2_0_upgrade_public:/rails/public/uploads"
+
+# Asset fingerprinting bridge
+asset_path: /rails/public/assets
+
+# Rolling deployment configuration
+boot:
+  limit: 1
+  wait: 10
+
+# Note: PostgreSQL and Redis are already running as separate containers
+# Container names: miru-2-0-postgres, miru-2-0-redis

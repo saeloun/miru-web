@@ -12,7 +12,7 @@ RSpec.shared_examples "Send Reminder", type: :system do
 
       find(:css, "#invoicesListTableRow").hover
       find(:css, "#openMenu").click
-      find(:css, "#reminderIcon").click
+      find('button[aria-label*="reminder"], button:has(svg[data-icon="bell"]), .reminder-button', match: :first).click
       click_button("Send Reminder")
       expect(page).to have_content("A reminder has been sent to #{invoice.client.email}")
     end
@@ -23,7 +23,7 @@ RSpec.shared_examples "Send Reminder", type: :system do
       visit "invoices/#{invoice.id}"
 
       find(:css, "#menuOpen").click
-      find(:css, "#reminderIcon").click
+      find('button[aria-label*="reminder"], button:has(svg[data-icon="bell"]), .reminder-button', match: :first).click
       click_button("Send Reminder")
     end
   end

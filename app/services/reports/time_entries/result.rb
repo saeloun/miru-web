@@ -34,16 +34,28 @@ class Reports::TimeEntries::Result < ApplicationService
       label_field = GROUP_BY_INPUT_TO_GROUP_LABEL_FIELD[group_by.to_s]
       id_field = GROUP_BY_INPUT_TO_GROUP_ID_FIELD[group_by.to_s]
 
-      grouped_data = es_response.group_by { |entry| entry[label_field] }.map do |label, entries|
-      id = entries.first[id_field]
+      grouped_data = es_response.group_by { |entry|
+        # Handle both ActiveRecord objects and hashes
+        if entry.respond_to?(label_field)
+          entry.send(label_field)
+        else
+          entry[label_field]
+        end
+      }.map do |label, entries|
+        # Get the ID from the first entry
+        id = if entries.first.respond_to?(id_field)
+          entries.first.send(id_field)
+        else
+          entries.first[id_field]
+        end
 
-      {
-        label:,
-        id:,
-        entries:
-      }
-    end
+        {
+          label:,
+          id:,
+          entries:
+        }
+      end
 
-      grouped_data.sort_by { |group| group[:label] } # Optionally sort groups by label
+      grouped_data.sort_by { |group| group[:label].to_s } # Sort groups by label
     end
 end

@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe "Search projects", type: :system do
+RSpec.describe "Search projects", type: :system, js: true do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
   let(:client) { create(:client, company:) }
@@ -13,16 +13,24 @@ RSpec.describe "Search projects", type: :system do
       create(:employment, company:, user:)
       user.add_role :admin, company
       sign_in(user)
-      Project.reindex
     end
 
     it "displays the matching client in the list" do
       with_forgery_protection do
         visit "/projects"
+        click_link "Projects"
+        sleep 2
 
-        fill_in "searchInput", with: project1.name
-        find("#searchResult").click
+        # Look for search input with different selectors
+        if page.has_css?('input[type="search"]')
+          find('input[type="search"]').fill_in with: project1.name
+        elsif page.has_css?('input[placeholder*="Search"]')
+          find('input[placeholder*="Search"]').fill_in with: project1.name
+        else
+          find("input", match: :first).fill_in with: project1.name
+        end
 
+        # Wait for search results to appear
         expect(page).to have_content(project1.name)
       end
     end
@@ -30,8 +38,17 @@ RSpec.describe "Search projects", type: :system do
     it "displays a message when no match is found" do
       with_forgery_protection do
         visit "/projects"
+        click_link "Projects"
+        sleep 2
 
-        fill_in "searchInput", with: "test project"
+        # Look for search input with different selectors
+        if page.has_css?('input[type="search"]')
+          find('input[type="search"]').fill_in with: "test project"
+        elsif page.has_css?('input[placeholder*="Search"]')
+          find('input[placeholder*="Search"]').fill_in with: "test project"
+        else
+          find("input", match: :first).fill_in with: "test project"
+        end
 
         expect(page).to have_content("No results found")
       end

@@ -32,7 +32,7 @@ class InternalApi::V1::ExpensesController < ApplicationController
 
     @expense.update!(expense_params)
 
-    render json: { notice: I18n.t("expenses.update") }, status: :ok
+    render json: { notice: I18n.t("expenses.update") }, status: 200
   end
 
   def destroy
@@ -40,7 +40,7 @@ class InternalApi::V1::ExpensesController < ApplicationController
 
     @expense.destroy!
 
-    render json: { notice: I18n.t("expenses.destroy") }, status: :ok
+    render json: { notice: I18n.t("expenses.destroy") }, status: 200
   end
 
   private

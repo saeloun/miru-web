@@ -1,5 +1,3 @@
-/* eslint-disable no-unused-vars */
-
 import { createContext, useContext } from "react";
 
 const UserContext = createContext({
@@ -13,18 +11,19 @@ const UserContext = createContext({
     id: "",
   },
   avatarUrl: "",
-  setCurrentAvatarUrl: value => {}, //eslint-disable-line
+  setCurrentAvatarUrl: value => {},
   companyRole: "", //current company user role
   confirmedUser: "",
   isDesktop: false,
-  handleOverlayVisibility: (isOverlayVisible: boolean) => {}, //eslint-disable-line
+  handleOverlayVisibility: (isOverlayVisible: boolean) => {},
   selectedTab: null,
   googleOauthSuccess: false,
-  setSelectedTab: value => {}, //eslint-disable-line
+  setSelectedTab: value => {},
   company: null,
-  setCompany: value => {}, //eslint-disable-line
+  setCompany: value => {},
   calendarEnabled: false,
   calendarConnected: false,
+  loading: false,
 });
 
 export const useUserContext = () => useContext(UserContext);

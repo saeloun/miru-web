@@ -1,6 +1,3 @@
-/* eslint-disable space-before-function-paren */
-/* eslint-disable func-style */
-
 document.addEventListener("DOMContentLoaded", () => {
   let timezones = [];
 

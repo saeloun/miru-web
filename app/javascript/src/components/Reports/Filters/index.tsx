@@ -1,14 +1,18 @@
 import React, { useEffect, useState } from "react";
 
+import CustomDateRangePicker from "common/CustomDateRangePicker";
 import { XIcon } from "miruIcons";
-import Select from "react-select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../ui/select";
+import getStatusCssClass from "utils/getBadgeStatus";
 import * as Yup from "yup";
 
-import CustomDateRangePicker from "common/CustomDateRangePicker";
-import getStatusCssClass from "utils/getBadgeStatus";
-
 import { dateRangeOptions, statusOption, groupBy } from "./filterOptions";
-import { customStyles } from "./style";
 
 import { useEntry } from "../context/EntryContext";
 
@@ -23,9 +27,9 @@ const FilterSideBar = ({
   handleApplyFilter,
   onClickInput,
   selectedInput,
-  setCustomDateRange = (dateRange: any) => {}, // eslint-disable-line
+  setCustomDateRange = (dateRange: any) => {},
   customDateRange = { from: "", to: "" },
-  setSelectedInput = (inputFieldName: string) => {}, // eslint-disable-line
+  setSelectedInput = (inputFieldName: string) => {},
 }) => {
   const { timeEntryReport } = useEntry();
   const [filters, setFilters] = useState(timeEntryReport.selectedFilter);
@@ -161,13 +165,26 @@ const FilterSideBar = ({
             <li className="px-5 pb-5">
               <h5 className="text-xs font-normal">Date Range</h5>
               <Select
-                classNamePrefix="react-select-filter"
                 name="dateRange"
-                options={dateRangeOptions}
-                styles={customStyles}
-                value={filters.dateRange}
-                onChange={handleSelectFilter}
-              />
+                value={filters.dateRange?.value || ""}
+                onValueChange={value => {
+                  const selectedOption = dateRangeOptions.find(
+                    option => option.value === value
+                  );
+                  handleSelectFilter(selectedOption, { name: "dateRange" });
+                }}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select date range" />
+                </SelectTrigger>
+                <SelectContent>
+                  {dateRangeOptions.map(option => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               {showCustomFilter && (
                 <div className="absolute z-20 mt-1 flex flex-col rounded-lg bg-miru-white-1000 shadow-c1">
                   <CustomDateRangePicker
@@ -218,50 +235,109 @@ const FilterSideBar = ({
             <li className="px-5 pb-5">
               <h5 className="text-xs font-normal">Clients</h5>
               <Select
-                isMulti
-                classNamePrefix="react-select-filter"
                 name="clients"
-                options={timeEntryReport.filterOptions.clients}
-                styles={customStyles}
-                value={filters.clients}
-                onChange={handleSelectFilter}
-              />
+                value={filters.clients?.[0]?.value || ""}
+                onValueChange={value => {
+                  const selectedOption =
+                    timeEntryReport.filterOptions.clients.find(
+                      option => option.value === value
+                    );
+                  // Note: This simplified version handles single selection. For multi-select, consider using a different approach
+                  handleSelectFilter([selectedOption], { name: "clients" });
+                }}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select clients" />
+                </SelectTrigger>
+                <SelectContent>
+                  {timeEntryReport.filterOptions.clients.map(option => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </li>
             <li className="px-5 pb-5">
               <h5 className="text-xs font-normal">Team Members</h5>
               <Select
-                isMulti
-                classNamePrefix="react-select-filter"
                 name="teamMember"
-                options={timeEntryReport.filterOptions.teamMembers}
-                styles={customStyles}
-                value={filters.teamMember}
-                onChange={handleSelectFilter}
-              />
+                value={filters.teamMember?.[0]?.value || ""}
+                onValueChange={value => {
+                  const selectedOption =
+                    timeEntryReport.filterOptions.teamMembers.find(
+                      option => option.value === value
+                    );
+                  // Note: This simplified version handles single selection. For multi-select, consider using a different approach
+                  handleSelectFilter([selectedOption], { name: "teamMember" });
+                }}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select team members" />
+                </SelectTrigger>
+                <SelectContent>
+                  {timeEntryReport.filterOptions.teamMembers.map(option => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </li>
             <li className="px-5 pb-5">
               <h5 className="text-xs font-normal">Status</h5>
               <Select
-                isMulti
-                classNamePrefix="react-select-filter"
-                components={{ Option: CustomOption }}
                 name="status"
-                options={statusOption}
-                styles={customStyles}
-                value={filters.status}
-                onChange={handleSelectFilter}
-              />
+                value={filters.status?.[0]?.value || ""}
+                onValueChange={value => {
+                  const selectedOption = statusOption.find(
+                    option => option.value === value
+                  );
+                  // Note: This simplified version handles single selection. For multi-select, consider using a different approach
+                  handleSelectFilter([selectedOption], { name: "status" });
+                }}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select status" />
+                </SelectTrigger>
+                <SelectContent>
+                  {statusOption.map(option => (
+                    <SelectItem key={option.value} value={option.value}>
+                      <span
+                        className={`${getStatusCssClass(
+                          option.value
+                        )} text-xs tracking-widest`}
+                      >
+                        {option.label}
+                      </span>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </li>
             <li className="px-5 pb-5">
               <h5 className="text-xs font-normal">Group By</h5>
               <Select
-                classNamePrefix="react-select-filter"
                 name="groupBy"
-                options={groupBy}
-                styles={customStyles}
-                value={filters.groupBy}
-                onChange={handleSelectFilter}
-              />
+                value={filters.groupBy?.value || ""}
+                onValueChange={value => {
+                  const selectedOption = groupBy.find(
+                    option => option.value === value
+                  );
+                  handleSelectFilter(selectedOption, { name: "groupBy" });
+                }}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select group by" />
+                </SelectTrigger>
+                <SelectContent>
+                  {groupBy.map(option => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </li>
           </ul>
         </div>

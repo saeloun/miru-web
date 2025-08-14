@@ -38,7 +38,7 @@ const Container = ({
   setManualEntryArr,
   dateFormat,
 }) => (
-  <div className="relative m-0 mt-5 mb-10 w-full bg-miru-gray-100 p-0">
+  <div>
     <CompanyInfo company={invoiceDetails.companyDetails} />
     <InvoiceDetails
       amount={amount}
@@ -59,7 +59,7 @@ const Container = ({
       setReference={setReference}
       setSelectedClient={setSelectedClient}
     />
-    <div className="block overflow-x-auto whitespace-nowrap py-5 md:overflow-x-visible md:whitespace-normal md:pl-10">
+    <div className="flex w-full px-10 py-6">
       <InvoiceTable
         clientCurrency={clientCurrency}
         dateFormat={invoiceDetails.companyDetails.date_format}

@@ -39,12 +39,26 @@ module Reports::AccountsAging
           thirty_one_to_sixty_days: total_amount_due_during(invoices, ((2.month.ago)...1.month.ago)),
           sixty_one_to_ninety_days: total_amount_due_during(invoices, ((3.month.ago)...2.month.ago)),
           ninety_plus_days: total_amount_due_during(invoices, (10.year.ago...3.month.ago)),
-          total: invoices.overdue.pluck(:amount_due).sum
+          total: calculate_total_overdue_in_base_currency(invoices.overdue)
         }
       end
 
       def total_amount_due_during (invoices, duration)
-        invoices.overdue.where(due_date: duration).pluck(:amount_due).sum
+        overdue_invoices = invoices.overdue.where(due_date: duration)
+        calculate_total_overdue_in_base_currency(overdue_invoices)
+      end
+
+      def calculate_total_overdue_in_base_currency(invoices)
+        invoices.sum do |invoice|
+          # Calculate the outstanding amount in base currency
+          if invoice.base_currency_amount.to_f > 0
+            # Calculate the proportion of amount_due to original amount
+            proportion = invoice.amount_due.to_f / invoice.amount.to_f rescue 1.0
+            (invoice.base_currency_amount * proportion).round(2)
+          else
+            invoice.amount_due
+          end
+        end
       end
 
       def clients

@@ -37,6 +37,6 @@ class Expenses::FiltersService < ApplicationService
 
     def add_default_filters
       @where_clause[:company_id] = current_company.id
-      @where_clause[:discarded_at] = nil
+      # Expense model doesn't use soft delete (discard)
     end
 end

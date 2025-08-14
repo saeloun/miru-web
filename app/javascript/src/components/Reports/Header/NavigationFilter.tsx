@@ -1,6 +1,7 @@
-import React, { Fragment } from "react";
+import React from "react";
 
-import { XIcon } from "miruIcons";
+import { AnimatePresence, motion } from "framer-motion";
+import AnimatedFilterBadge from "components/ui/animated-filter-badge";
 
 import { getReports } from "./fetchReport";
 
@@ -24,32 +25,21 @@ const NavigationFilter = () => {
     accountsAgingReport,
   });
 
-  const filterHtml = (value, key, filterKey) => (
-    <li
-      className="my-1 mr-4 flex rounded-xl bg-miru-gray-400 px-2 py-1 px-1 text-xs font-semibold tracking-widest tracking-widest text-miru-dark-purple-1000"
+  const filterHtml = (value, key, filterKey, index = 0) => (
+    <AnimatedFilterBadge
       key={key}
-    >
-      <span className="whitespace-nowrap">
-        {filterKey === "groupBy" && "Group By:"} {value}
-      </span>
-      <button
-        className="ml-1 inline-block"
-        onClick={() =>
-          selectedReport.handleRemoveSingleFilter(filterKey, value)
-        }
-      >
-        <XIcon
-          className="inline-block"
-          color="#1D1A31"
-          size={11}
-          weight="bold"
-        />
-      </button>
-    </li>
+      label={filterKey}
+      value={value}
+      filterKey={filterKey}
+      index={index}
+      onRemove={() => selectedReport.handleRemoveSingleFilter(filterKey, value)}
+    />
   );
 
   const getFilterValues = () => {
     let filterOptions = [];
+    let globalIndex = 0;
+
     for (const filterKey in selectedReport.selectedFilter) {
       const filterValue = selectedReport.selectedFilter[filterKey];
       if (filterKey === customDateFilter) {
@@ -58,13 +48,18 @@ const NavigationFilter = () => {
         filterOptions = [
           ...filterOptions,
           filterValue.map((item, index) =>
-            filterHtml(item.label, `${item}-${index}`, filterKey)
+            filterHtml(
+              item.label,
+              `${item.label}-${index}`,
+              filterKey,
+              globalIndex++
+            )
           ),
         ];
       } else if (filterValue.value !== "") {
         filterOptions = [
           ...filterOptions,
-          filterHtml(filterValue.label, filterKey, filterKey),
+          filterHtml(filterValue.label, filterKey, filterKey, globalIndex++),
         ];
       }
     }
@@ -72,6 +67,15 @@ const NavigationFilter = () => {
     return filterOptions;
   };
 
-  return <Fragment>{getFilterValues()}</Fragment>;
+  return (
+    <motion.div
+      className="flex flex-wrap items-center gap-2"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.3 }}
+    >
+      <AnimatePresence mode="popLayout">{getFilterValues()}</AnimatePresence>
+    </motion.div>
+  );
 };
 export default NavigationFilter;

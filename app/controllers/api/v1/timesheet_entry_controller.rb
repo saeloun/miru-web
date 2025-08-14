@@ -29,6 +29,6 @@ class Api::V1::TimesheetEntryController < Api::V1::BaseController
     end
 
     def ensure_project_member
-      return render json: { notice: "User is not a project member." }, status: :forbidden if project_member.blank?
+      render json: { notice: "User is not a project member." }, status: 403 if project_member.blank?
     end
 end

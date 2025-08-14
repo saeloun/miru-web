@@ -9,9 +9,7 @@ RSpec.describe "InternalApi::V1::Projects::Search#index", type: :request do
   let!(:project) { create(:project, client:) }
   let(:project_member) { create(:project_member, user:, project:, hourly_rate: 5000) }
 
-  before do
-    Project.reindex
-  end
+  # No setup needed - PG search doesn't require indexing
 
   context "when user search with a valid search term" do
     before do
@@ -57,7 +55,6 @@ RSpec.describe "InternalApi::V1::Projects::Search#index", type: :request do
       sign_in user
       create_list(:timesheet_entry, 5, user:, project:)
       project.discard!
-      Project.reindex
     end
 
     it "returns no result" do

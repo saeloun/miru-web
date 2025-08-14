@@ -29,7 +29,7 @@ RSpec.describe TestController, type: :controller do
 
       it "returns a 500 error page" do
         expect(response).to have_http_status(:internal_server_error)
-        expect(response.body).to include("We're sorry, but something went wrong (500)")
+        expect(response.body).to include("500 Internal Server Error")
       end
     end
 

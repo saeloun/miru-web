@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
 
-import { Outlet, useNavigate } from "react-router-dom";
-import worldCountries from "world-countries";
-
 import companiesApi from "apis/companies";
 import Loader from "common/Loader/index";
 import DetailsHeader from "components/Profile/Common/DetailsHeader";
 import { useUserContext } from "context/UserContext";
+import { Outlet, useNavigate } from "react-router-dom";
 import { sendGAPageView } from "utils/googleAnalytics";
+import worldCountries from "world-countries";
 
 import MobileHeader from "./MobileHeader";
 import StaticPage from "./StaticPage";
@@ -101,7 +100,7 @@ const OrgDetails = () => {
   }, []);
 
   const handleEditClick = () => {
-    navigate(`/settings/organization/edit`, { replace: true });
+    navigate(`/settings/profile/organization/edit`, { replace: true });
   };
 
   const handleBackBtnClick = () => {

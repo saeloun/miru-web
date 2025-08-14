@@ -8,7 +8,7 @@ class InternalApi::V1::TimesheetEntry::BulkActionController < InternalApi::V1::A
     timesheet_entries = policy_scope(TimesheetEntry)
     timesheet_entries.where(id: params[:ids]).update(project_id: params[:project_id])
     entries = TimesheetEntriesPresenter.new(timesheet_entries).group_snippets_by_work_date
-    render json: { notice: I18n.t("timesheet_entry.update.message"), entries: }, status: :ok
+    render json: { notice: I18n.t("timesheet_entry.update.message"), entries: }, status: 200
   end
 
   def destroy

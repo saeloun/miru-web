@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 
+import { useUserContext } from "context/UserContext";
 import { useKeypress } from "helpers";
 import { DeleteIcon, ImageIcon } from "miruIcons";
 import { MobileMoreOptions } from "StyledComponents";
-
-import { useUserContext } from "context/UserContext";
 
 export const ProfileImage = ({ src, handleDeleteLogo, onLogoChange }) => {
   const { isDesktop } = useUserContext();

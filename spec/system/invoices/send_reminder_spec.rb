@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe "Send Reminder", type: :system do
+RSpec.describe "Send Reminder", type: :system, js: true do
   let(:invoice) { create :invoice_with_invoice_line_items, status: :overdue }
   let(:client) { invoice.client }
   let(:company) { invoice.company }

@@ -3,9 +3,9 @@ import { createContext, useContext } from "react";
 // Context Creation
 export const ListContext = createContext({
   teamList: [],
-  setModalState: (modalName, user = {}) => {}, // eslint-disable-line
+  setModalState: (modalName, user = {}) => {},
   modal: "",
-  setTeamList: (value: any[]) => {}, // eslint-disable-line
+  setTeamList: (value: any[]) => {},
 });
 
 // Custom Hooks

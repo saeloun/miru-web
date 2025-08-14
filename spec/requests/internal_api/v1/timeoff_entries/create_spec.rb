@@ -30,7 +30,7 @@ RSpec.describe "InternalApi::V1::TimeoffEntry#create", type: :request do
         expect(response).to have_http_status(:ok)
       end
 
-      it "throws unprocessable_entity error if required attributes are missing" do
+      it "throws unprocessable_content error if required attributes are missing" do
         invalid_timeoff_entry_attributes = attributes_for(
           :timeoff_entry,
           user_id: user.id,
@@ -40,7 +40,7 @@ RSpec.describe "InternalApi::V1::TimeoffEntry#create", type: :request do
         send_request :post, internal_api_v1_timeoff_entries_path(timeoff_entry: invalid_timeoff_entry_attributes),
           headers: auth_headers(user)
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
       end
 
       it "throws 404 if required associations are missing" do
@@ -73,7 +73,7 @@ RSpec.describe "InternalApi::V1::TimeoffEntry#create", type: :request do
         expect(response).to have_http_status(:ok)
       end
 
-      it "throws unprocessable_entity error if required attributes are missing" do
+      it "throws unprocessable_content error if required attributes are missing" do
         invalid_timeoff_entry_attributes = attributes_for(
           :timeoff_entry,
           user_id: user.id,
@@ -83,7 +83,7 @@ RSpec.describe "InternalApi::V1::TimeoffEntry#create", type: :request do
         send_request :post, internal_api_v1_timeoff_entries_path(timeoff_entry: invalid_timeoff_entry_attributes),
           headers: auth_headers(user)
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
       end
 
       it "throws 404 if required associations are missing" do

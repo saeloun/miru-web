@@ -6,7 +6,7 @@ class InternalApi::V1::TeamMembers::AvatarController < InternalApi::V1::Applicat
 
     user = employment.user
     user.update!(avatar_params)
-    render json: { avatar_url: user.avatar_url, notice: "Avatar updated successfully" }, status: :ok
+    render json: { avatar_url: user.avatar_url, notice: "Avatar updated successfully" }, status: 200
   end
 
   def destroy
@@ -14,7 +14,7 @@ class InternalApi::V1::TeamMembers::AvatarController < InternalApi::V1::Applicat
 
     user = employment.user
     user.avatar.destroy!
-    render json: { notice: "Avatar deleted successfully" }, status: :ok
+    render json: { notice: "Avatar deleted successfully" }, status: 200
   end
 
   private

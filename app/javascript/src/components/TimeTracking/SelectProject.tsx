@@ -1,7 +1,34 @@
-/* eslint-disable no-unused-vars */
 import React from "react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
+import { Button } from "../ui/button";
+import { Card, CardContent } from "../ui/card";
+import { cn } from "../../lib/utils";
 
-const SelectProject = ({
+interface Iprops {
+  clients: any[];
+  client: string;
+  setClient: (client: string) => void;
+  clientName?: string;
+  projects: any;
+  project: string;
+  setProject: (project: string) => void;
+  projectName?: string;
+  setProjectId: () => void;
+  setProjectSelected: (projectSelected: boolean) => void;
+  newRowView?: boolean;
+  setNewRowView?: (newRowView: boolean) => void;
+  handleEditEntries?: () => void;
+  isWeeklyEditing?: boolean;
+  setIsWeeklyEditing?: (isWeeklyEditing: boolean) => void;
+}
+
+const SelectProject: React.FC<Iprops> = ({
   clients,
   client,
   setClient,
@@ -15,116 +42,107 @@ const SelectProject = ({
   newRowView,
   setNewRowView,
   handleEditEntries,
-  isWeeklyEditing, // eslint-disable-line
+  isWeeklyEditing,
   setIsWeeklyEditing,
-}: Iprops) => {
+}) => {
   const handleCancelButton = () => {
-    if (newRowView) {
+    if (newRowView && setNewRowView) {
       setNewRowView(false);
     } else {
       setProjectSelected(true);
-      setClient(clientName);
-      setProject(projectName);
+      if (clientName) setClient(clientName);
+
+      if (projectName) setProject(projectName);
     }
-    setIsWeeklyEditing(false);
+
+    if (setIsWeeklyEditing) setIsWeeklyEditing(false);
   };
 
   const handleSaveButton = () => {
     if (client && project) {
       setProjectSelected(true);
       setProjectId();
-      if (!newRowView) handleEditEntries();
+      if (!newRowView && handleEditEntries) handleEditEntries();
     }
   };
 
-  const handleClientChange = e => {
-    setClient(e.target.value);
-    if (projects[e.target.value].length > 0) {
-      setProject(projects[e.target.value][0]["name"]);
+  const handleClientChange = (value: string) => {
+    setClient(value);
+    if (projects[value] && projects[value].length > 0) {
+      setProject(projects[value][0]["name"]);
     } else {
       setProject("");
     }
   };
 
   return (
-    <div className="flex content-center justify-between rounded-md p-4 shadow-2xl">
-      {/* Clients */}
-      <select
-        className="h-8 w-80 rounded-sm bg-miru-gray-100"
-        id="client"
-        name="client"
-        value={client || "Client"}
-        onChange={handleClientChange}
-      >
-        {!client && (
-          <option disabled className="text-miru-gray-100">
-            Client
-          </option>
-        )}
-        {clients.map((c, i) => (
-          <option key={i.toString()}>{c["name"]}</option>
-        ))}
-      </select>
-      {/* Projects */}
-      <select
-        className="h-8 w-80 rounded-sm bg-miru-gray-100"
-        id="project"
-        name="project"
-        value={project || "Project"}
-        onChange={e => {
-          setProject(e.target.value);
-          setProjectId();
-        }}
-      >
-        {!project && (
-          <option disabled className="text-miru-gray-100">
-            Project
-          </option>
-        )}
-        {client &&
-          projects[client] &&
-          projects[client].map((p, i) => (
-            <option data-project-id={p.id} key={i.toString()}>
-              {p.name}
-            </option>
-          ))}
-      </select>
-      <button
-        className="h-8 w-38 rounded border border-miru-han-purple-1000 bg-transparent py-1 px-6 text-xs font-bold tracking-widest text-miru-han-purple-600 hover:border-transparent hover:bg-miru-han-purple-1000 hover:text-white"
-        onClick={handleCancelButton}
-      >
-        CANCEL
-      </button>
-      <button
-        className={`h-8 w-38 rounded border py-1 px-6 text-xs font-bold tracking-widest text-white ${
-          client && project
-            ? "bg-miru-han-purple-1000 hover:border-transparent"
-            : "bg-miru-gray-1000"
-        }`}
-        onClick={handleSaveButton}
-      >
-        SAVE
-      </button>
-    </div>
+    <Card className="shadow-lg">
+      <CardContent className="p-4">
+        <div className="flex items-center gap-4">
+          {/* Client Select */}
+          <div className="flex-1">
+            <Select
+              value={client || undefined}
+              onValueChange={handleClientChange}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select a client" />
+              </SelectTrigger>
+              <SelectContent>
+                {clients.map((c, i) => (
+                  <SelectItem key={i} value={c["name"]}>
+                    {c["name"]}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          {/* Project Select */}
+          <div className="flex-1">
+            <Select
+              value={project || undefined}
+              onValueChange={value => {
+                setProject(value);
+                setProjectId();
+              }}
+              disabled={!client}
+            >
+              <SelectTrigger
+                className={cn(
+                  "w-full",
+                  !client && "opacity-50 cursor-not-allowed"
+                )}
+              >
+                <SelectValue placeholder="Select a project" />
+              </SelectTrigger>
+              <SelectContent>
+                {client &&
+                  projects[client] &&
+                  projects[client].map((p: any, i: number) => (
+                    <SelectItem key={i} value={p.name}>
+                      {p.name}
+                    </SelectItem>
+                  ))}
+              </SelectContent>
+            </Select>
+          </div>
+          {/* Action Buttons */}
+          <div className="flex gap-2">
+            <Button variant="outline" size="sm" onClick={handleCancelButton}>
+              Cancel
+            </Button>
+            <Button
+              size="sm"
+              onClick={handleSaveButton}
+              disabled={!client || !project}
+            >
+              Save
+            </Button>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
   );
 };
-
-interface Iprops {
-  clients: [];
-  client: string;
-  setClient: (client: string) => void;
-  clientName: string;
-  projects: object;
-  project: string;
-  setProject: (project: string) => void;
-  projectName: string;
-  setProjectId: () => void;
-  setProjectSelected: (projectSelected: boolean) => void;
-  newRowView: boolean;
-  setNewRowView: (newRowView: boolean) => void;
-  handleEditEntries: () => void;
-  isWeeklyEditing: boolean;
-  setIsWeeklyEditing: (isWeeklyEditing: boolean) => void;
-}
 
 export default SelectProject;

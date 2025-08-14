@@ -1,6 +1,6 @@
-/* eslint-disable */
-import dayjs from "dayjs";
 import { createContext, useContext } from "react";
+
+import dayjs from "dayjs";
 import { getValueFromLocalStorage } from "utils/storage";
 
 const initialNote = getValueFromLocalStorage("note") || "";
@@ -8,7 +8,7 @@ const initialDuration = getValueFromLocalStorage("duration") || "";
 const initialClient = getValueFromLocalStorage("client") || "";
 const initialProject = getValueFromLocalStorage("project") || "";
 const initialProjectId = parseInt(getValueFromLocalStorage("projectId") || "0");
-const initialBillable = getValueFromLocalStorage("billable") === "true";
+// const _initialBillable = getValueFromLocalStorage("billable") === "true";
 const initialProjectBillable =
   getValueFromLocalStorage("projectBillable") === "true";
 
@@ -18,7 +18,9 @@ const initialState: any = {
   entryList: {},
   dayInfo: [],
   currentYear: dayjs().year(),
-  getPayload: () => {}, //eslint-disable-line
+  getPayload: () => {
+    /* Placeholder - overridden by provider */
+  },
   submitting: false,
   leaveTypes: [],
   leaveTypeHashObj: {},
@@ -31,9 +33,15 @@ const initialState: any = {
   duration: initialDuration,
   editTimeoffEntryId: 0,
   editEntryId: "",
-  handleEdit: () => {}, //eslint-disable-line
-  handleSave: () => {}, //eslint-disable-line
-  handleDuplicate: (id: any) => {}, //eslint-disable-line
+  handleEdit: () => {
+    /* Placeholder - overridden by provider */
+  },
+  handleSave: () => {
+    /* Placeholder - overridden by provider */
+  },
+  handleDuplicate: (_id: any) => {
+    /* Placeholder - overridden by provider */
+  },
   note: initialNote,
   project: initialProject,
   projectId: initialProjectId,
@@ -45,29 +53,73 @@ const initialState: any = {
   holidaysHashObj: {},
   hasNationalHoliday: false,
   hasOptionalHoliday: false,
-  setDuration: () => {}, //eslint-disable-line
-  handleAddEntryDateChange: (date: any) => {}, //eslint-disable-line
-  handleNextDay: () => {}, //eslint-disable-line
-  handlePreDay: () => {}, //eslint-disable-line
-  handleNextWeek: () => {}, //eslint-disable-line
-  handlePrevWeek: () => {}, //eslint-disable-line
-  setDisplayDatePicker: () => {}, //eslint-disable-line
+  setDuration: () => {
+    /* Placeholder - overridden by provider */
+  },
+  handleAddEntryDateChange: (_date: any) => {
+    /* Placeholder - overridden by provider */
+  },
+  handleNextDay: () => {
+    /* Placeholder - overridden by provider */
+  },
+  handlePreDay: () => {
+    /* Placeholder - overridden by provider */
+  },
+  handleNextWeek: () => {
+    /* Placeholder - overridden by provider */
+  },
+  handlePrevWeek: () => {
+    /* Placeholder - overridden by provider */
+  },
+  setDisplayDatePicker: () => {
+    /* Placeholder - overridden by provider */
+  },
   selectedDate: dayjs().format("YYYY-MM-DD"),
-  setBillable: () => {}, //eslint-disable-line
-  setClient: () => {}, //eslint-disable-line
-  setEditEntryId: () => {}, //eslint-disable-line
-  setNewEntryView: () => {}, //eslint-disable-line
-  setNewTimeoffEntryView: () => {}, //eslint-disable-line
-  setNote: () => {}, //eslint-disable-line
-  setProject: () => {}, //eslint-disable-line
-  setUpdateView: () => {}, //eslint-disable-line
-  setSelectedDate: () => {}, //eslint-disable-line
-  setSubmitting: () => {}, //eslint-disable-line
-  setSelectedEmployeeId: () => {}, //eslint-disable-line
-  setLeaveTypes: () => {}, //eslint-disable-line
-  setLeaveTypeHashObj: () => {}, //eslint-disable-line
-  setEditTimeoffEntryId: () => {}, //eslint-disable-line
-  setEntryList: () => {}, //eslint-disable-line
+  setBillable: () => {
+    /* Placeholder - overridden by provider */
+  },
+  setClient: () => {
+    /* Placeholder - overridden by provider */
+  },
+  setEditEntryId: () => {
+    /* Placeholder - overridden by provider */
+  },
+  setNewEntryView: () => {
+    /* Placeholder - overridden by provider */
+  },
+  setNewTimeoffEntryView: () => {
+    /* Placeholder - overridden by provider */
+  },
+  setNote: () => {
+    /* Placeholder - overridden by provider */
+  },
+  setProject: () => {
+    /* Placeholder - overridden by provider */
+  },
+  setUpdateView: () => {
+    /* Placeholder - overridden by provider */
+  },
+  setSelectedDate: () => {
+    /* Placeholder - overridden by provider */
+  },
+  setSubmitting: () => {
+    /* Placeholder - overridden by provider */
+  },
+  setSelectedEmployeeId: () => {
+    /* Placeholder - overridden by provider */
+  },
+  setLeaveTypes: () => {
+    /* Placeholder - overridden by provider */
+  },
+  setLeaveTypeHashObj: () => {
+    /* Placeholder - overridden by provider */
+  },
+  setEditTimeoffEntryId: () => {
+    /* Placeholder - overridden by provider */
+  },
+  setEntryList: () => {
+    /* Placeholder - overridden by provider */
+  },
 };
 export const TimesheetEntriesContext = createContext(initialState);
 

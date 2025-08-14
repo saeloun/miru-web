@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe "Time Tracking - day view", type: :system do
+RSpec.describe "Time Tracking - day view", type: :system, js: true do
   let!(:company) { create(:company) }
   let!(:client) { create(:client, company:) }
   let!(:project) { create(:project, client:) }
@@ -50,7 +50,7 @@ RSpec.describe "Time Tracking - day view", type: :system do
         visit "time-tracking"
 
         click_button "DAY"
-        el = find(:css, "#editIcon", visible: false).hover
+        el = find('button[aria-label*="edit"], button:has(svg[data-icon="pencil"]), .edit-button', match: :first).hover
         el.click
         fill_in "notes", with: "Testing note!"
         click_button "UPDATE"
@@ -64,7 +64,7 @@ RSpec.describe "Time Tracking - day view", type: :system do
         visit "time-tracking"
 
         click_button "DAY"
-        el = find(:css, "#deleteIcon", visible: false).hover
+        el = find('button[aria-label*="delete"], button:has(svg[data-icon="trash"]), .delete-button', match: :first).hover
         el.click
         sleep 1
 
@@ -83,7 +83,10 @@ RSpec.describe "Time Tracking - day view", type: :system do
 
         click_button "DAY"
 
-        find("input#react-select-2-input").set(" ").set(user_two.full_name).send_keys(:tab)
+        # Click the user dropdown in the top right
+        find('[data-testid="user-select"], [role="combobox"]', match: :first).click
+        # Select the user from dropdown options
+        find('[role="option"]', text: user_two.full_name).click
 
         expect(page).to have_content(time_entry.note)
       end
@@ -130,7 +133,7 @@ RSpec.describe "Time Tracking - day view", type: :system do
         visit "time-tracking"
 
         click_button "DAY"
-        el = find(:css, "#editIcon", visible: false).hover
+        el = find('button[aria-label*="edit"], button:has(svg[data-icon="pencil"]), .edit-button', match: :first).hover
         el.click
         fill_in "notes", with: "Testing note!"
         click_button "UPDATE"
@@ -145,7 +148,7 @@ RSpec.describe "Time Tracking - day view", type: :system do
         visit "time-tracking"
 
         click_button "DAY"
-        el = find(:css, "#deleteIcon", visible: false).hover
+        el = find('button[aria-label*="delete"], button:has(svg[data-icon="trash"]), .delete-button', match: :first).hover
         el.click
         sleep 1
 

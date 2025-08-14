@@ -1,18 +1,23 @@
 import React, { useState, useRef, useEffect } from "react";
 
-import dayjs from "dayjs";
-import { currencyFormat, useOutsideClick } from "helpers";
-import { CalendarIcon, XIcon } from "miruIcons";
-import { Button, MobileMoreOptions, Modal, Toastr } from "StyledComponents";
-
 import payment from "apis/payments/payments";
 import CustomDatePicker from "common/CustomDatePicker";
 import { CustomInputText } from "common/CustomInputText";
-import CustomReactSelect from "common/CustomReactSelect";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../ui/select";
 import { CustomTextareaAutosize } from "common/CustomTextareaAutosize";
 import { transactionTypes } from "components/payments/Modals/constants";
 import { useUserContext } from "context/UserContext";
+import dayjs from "dayjs";
+import { currencyFormat, useOutsideClick } from "helpers";
 import { mapPayment } from "mapper/payment.mapper";
+import { CalendarIcon, XIcon } from "miruIcons";
+import { Button, MobileMoreOptions, Modal, Toastr } from "StyledComponents";
 
 const MarkInvoiceAsPaidModal = ({
   invoice,
@@ -100,7 +105,7 @@ const MarkInvoiceAsPaidModal = ({
               name="invoice"
               type="text"
               value={client}
-              onChange={() => {}} //eslint-disable-line
+              onChange={() => {}}
             />
           </div>
         </div>
@@ -120,7 +125,7 @@ const MarkInvoiceAsPaidModal = ({
             name="transactionDate"
             type="text"
             value={transactionDate && dayjs(transactionDate).format(dateFormat)}
-            onChange={() => {}} //eslint-disable-line
+            onChange={() => {}}
           />
           <CalendarIcon
             className="absolute top-0 bottom-0 right-1 mx-2 my-3 cursor-pointer "
@@ -137,28 +142,49 @@ const MarkInvoiceAsPaidModal = ({
       </div>
       <div className="relative mt-4">
         {isDesktop ? (
-          <CustomReactSelect
-            isSearchable
-            handleOnChange={e => setTransactionType(e.value)}
-            label="Transaction Type"
-            name="transactionType"
-            options={transactionTypes}
-            value={transactionTypes.find(type => type.value == transactionType)}
-          />
+          <div className="field relative">
+            <label className="absolute -top-1 left-0 z-1 ml-3 origin-0 bg-white px-1 text-xsm font-medium text-miru-dark-purple-200 duration-300">
+              Transaction Type
+            </label>
+            <Select
+              value={transactionType || ""}
+              onValueChange={value => setTransactionType(value)}
+            >
+              <SelectTrigger className="mt-1">
+                <SelectValue placeholder="Select transaction type..." />
+              </SelectTrigger>
+              <SelectContent>
+                {transactionTypes.map((type: any) => (
+                  <SelectItem key={type.value} value={type.value}>
+                    {type.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         ) : (
           <>
-            <CustomReactSelect
-              isDisabled={showTransactionTypes}
-              label="Transaction Type"
-              name="transactionType"
-              options={transactionTypes}
-              value={transactionTypes.find(
-                type => type.value == transactionType
-              )}
-              onMenuOpen={() => {
-                setShowTransactionTypes(true);
-              }}
-            />
+            <div className="field relative">
+              <label className="absolute -top-1 left-0 z-1 ml-3 origin-0 bg-white px-1 text-xsm font-medium text-miru-dark-purple-200 duration-300">
+                Transaction Type
+              </label>
+              <div
+                className="mt-1 flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm cursor-pointer"
+                onClick={() => setShowTransactionTypes(true)}
+              >
+                <span
+                  className={`${
+                    transactionType ? "" : "text-muted-foreground"
+                  }`}
+                >
+                  {transactionType
+                    ? transactionTypes.find(
+                        type => type.value == transactionType
+                      )?.label
+                    : "Select transaction type..."}
+                </span>
+              </div>
+            </div>
             <MobileMoreOptions
               className="h-3/4 w-full overflow-scroll md:h-3/5 md:w-3/4 lg:h-1/4"
               setVisibilty={setShowTransactionTypes}
@@ -192,7 +218,7 @@ const MarkInvoiceAsPaidModal = ({
           name="paymentAmount"
           type="text"
           value={amount && baseCurrency && currencyFormat(baseCurrency, amount)}
-          onChange={() => {}} //eslint-disable-line
+          onChange={() => {}}
         />
       </div>
       <div className="mt-4">

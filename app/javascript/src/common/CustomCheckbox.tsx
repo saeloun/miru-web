@@ -2,17 +2,32 @@ import React from "react";
 
 import classnames from "classnames";
 
-const CustomCheckbox = ({
+interface CustomCheckboxProps {
+  text?: string;
+  isChecked?: boolean;
+  checkboxValue: any;
+  id: any;
+  handleCheck: any;
+  handleOnClick?: any;
+  name?: string;
+  wrapperClassName?: string;
+  labelClassName?: string;
+  isUpdatedDesign?: any;
+}
+
+const CustomCheckbox: React.FC<CustomCheckboxProps> = ({
   text = undefined,
   isChecked = false,
   checkboxValue,
   id,
   handleCheck,
-  handleOnClick,
+  handleOnClick = () => {
+    // Default empty click handler - can be overridden by parent component
+  },
   name = "",
   wrapperClassName = "",
   labelClassName = "",
-  isUpdatedDesign,
+  isUpdatedDesign = false,
 }) => (
   <div className={classnames(wrapperClassName)}>
     <div
@@ -89,10 +104,5 @@ const CustomCheckbox = ({
     )}
   </div>
 );
-
-CustomCheckbox.defaultProps = {
-  handleOnClick: () => {}, //eslint-disable-line
-  isUpdatedDesign: false,
-};
 
 export default CustomCheckbox;

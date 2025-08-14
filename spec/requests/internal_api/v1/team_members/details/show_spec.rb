@@ -111,7 +111,7 @@ RSpec.describe "InternalApi::V1::TeamMembers::DetailsController#show", type: :re
 
   context "when Employee wants to see details of another employee from same company" do
     before do
-      employment = create(:employment, user:, company:)
+      create(:employment, user:, company:)
       employment2 = create(:employment, user: user2, company:)
       user.add_role :employee, company
       user2.add_role :employee, company

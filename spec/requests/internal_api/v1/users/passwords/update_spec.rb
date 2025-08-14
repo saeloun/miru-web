@@ -29,7 +29,7 @@ RSpec.describe "InternalApi::V1::Users::Passwords#update", type: :request do
             password_confirmation: "newpassword"
           }
         }
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         expect(JSON.parse(response.body)).to include("error" => "Reset password token is invalid")
       end
     end
@@ -44,7 +44,7 @@ RSpec.describe "InternalApi::V1::Users::Passwords#update", type: :request do
             password_confirmation: "differentpassword"
           }
         }
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         expect(JSON.parse(response.body)).to include(
           "error" => "Password confirmation doesn't match with new password"
         )

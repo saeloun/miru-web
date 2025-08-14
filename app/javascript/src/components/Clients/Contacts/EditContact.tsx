@@ -1,12 +1,11 @@
 import React from "react";
 
+import clientMembersApi from "apis/clientMembers";
+import { InputField, InputErrors } from "common/FormikFields";
 import { Formik, Form, FormikProps } from "formik";
 import { XIcon } from "miruIcons";
 import { Button, Modal } from "StyledComponents";
 import * as Yup from "yup";
-
-import clientMembersApi from "apis/clientMembers";
-import { InputField, InputErrors } from "common/FormikFields";
 
 const contactSchema = Yup.object().shape({
   firstName: Yup.string()

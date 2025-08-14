@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe "Payments index page", type: :system do
+RSpec.describe "Payments index page", type: :system, js: true do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
   let(:client1) { create(:client, company:, name: "bob") }
@@ -22,6 +22,14 @@ RSpec.describe "Payments index page", type: :system do
       it "returns the list of payments" do
         with_forgery_protection do
           visit "/payments"
+
+          # Wait for the page to load and click on Payments in sidebar if needed
+          if page.has_content?("Time Tracking")
+            click_link "Payments"
+          end
+
+          # Wait for payments page to load
+          expect(page).to have_content("Payments")
 
           expect(page).to have_content("Payment failed")
           expect(page).to have_content("Paid invoice")

@@ -1,0 +1,69 @@
+# Miru 2.0 - Fly.io Configuration
+# fly launch --name miru-2-0-upgrade --region sjc
+
+app = "miru-2-0-upgrade"
+primary_region = "sjc"
+console_command = "/rails/bin/rails console"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[deploy]
+  release_command = "./bin/rails db:prepare"
+
+[env]
+  PORT = "3000"
+  RAILS_LOG_TO_STDOUT = "true"
+  RAILS_SERVE_STATIC_FILES = "true"
+  RAILS_ENV = "production"
+  NODE_ENV = "production"
+  # Solid Queue configuration
+  SOLID_QUEUE_IN_PROCESS = "true"
+  # PostgreSQL search configuration
+  PG_SEARCH_ENABLED = "true"
+
+[experimental]
+  auto_rollback = true
+
+[[services]]
+  protocol = "tcp"
+  internal_port = 3000
+  processes = ["app"]
+
+  [[services.ports]]
+    port = 80
+    handlers = ["http"]
+    force_https = true
+
+  [[services.ports]]
+    port = 443
+    handlers = ["tls", "http"]
+
+  [services.concurrency]
+    type = "connections"
+    hard_limit = 25
+    soft_limit = 20
+
+  [[services.tcp_checks]]
+    interval = "15s"
+    timeout = "2s"
+    grace_period = "1s"
+    restart_limit = 0
+
+  [[services.http_checks]]
+    interval = "10s"
+    timeout = "2s"
+    grace_period = "5s"
+    restart_limit = 0
+    method = "get"
+    path = "/health"
+    protocol = "http"
+    tls_skip_verify = false
+
+[[statics]]
+  guest_path = "/rails/public"
+  url_prefix = "/"
+
+[processes]
+  app = "./bin/rails server"
+  solidq = "bundle exec rake solid_queue:start"

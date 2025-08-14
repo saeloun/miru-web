@@ -4,6 +4,7 @@ import ClientInfo from "./ClientInfo";
 import InvoiceInfo from "./InvoiceInfo";
 import InvoiceLineItems from "./InvoiceLineItems";
 import InvoiceTotalSummary from "./InvoiceTotalSummary";
+import PaymentDetails from "./PaymentDetails";
 
 import CompanyInfo from "../common/CompanyInfo";
 
@@ -33,6 +34,7 @@ const InvoiceDetails = ({ invoice }) => {
         strikeAmount={strikeAmount}
       />
       <InvoiceTotalSummary invoice={invoice} strikeAmount={strikeAmount} />
+      {invoice.amountPaid > 0 && <PaymentDetails invoice={invoice} />}
     </>
   );
 };

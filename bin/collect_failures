@@ -1,0 +1,91 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# Script to collect all failing specs using parallel_rspec
+
+require 'json'
+require 'fileutils'
+
+puts "🔍 Collecting test failures..."
+puts "=" * 50
+
+# Run tests and capture output
+output_file = "tmp/parallel_test_failures.txt"
+FileUtils.mkdir_p("tmp")
+
+# Run parallel tests with fail list format
+system("bundle exec parallel_rspec -n 4 spec/system/ --format progress --format failures > #{output_file} 2>&1")
+
+# Parse the output for failures
+failures = []
+current_failure = nil
+
+File.readlines(output_file).each do |line|
+  # Match rspec failure lines
+  if line =~ /rspec (.*?)(?:\[.*?\])? # (.*)$/
+    spec_file = $1.strip
+    description = $2.strip
+    failures << {
+      file: spec_file,
+      description: description,
+      line: line.strip
+    }
+  elsif line =~ /^\s+(\d+)\) (.+)$/
+    # Alternative failure format
+    number = $1
+    description = $2
+    current_failure = { number: number, description: description }
+  elsif current_failure && line =~ /Failure\/Error: (.+)$/
+    current_failure[:error] = $1
+  elsif current_failure && line =~ /^\s+# (\.\/spec\/.+:\d+)/
+    current_failure[:location] = $1
+    failures << current_failure
+    current_failure = nil
+  end
+end
+
+# Write summary
+summary_file = "tmp/failure_summary.json"
+File.write(summary_file, JSON.pretty_generate({
+  total_failures: failures.count,
+  failures: failures.uniq { |f| f[:file] || f[:location] }
+}))
+
+# Print summary
+puts "\n📊 Test Failure Summary"
+puts "=" * 50
+puts "Total failures: #{failures.count}"
+puts "\nFailed spec files:"
+
+# Group by file
+by_file = failures.group_by { |f| f[:file] || f[:location]&.split(':')&.first }.compact
+
+by_file.each do |file, file_failures|
+  next unless file
+  puts "\n📁 #{file} (#{file_failures.count} failures)"
+  file_failures.first(3).each do |failure|
+    puts "   - #{failure[:description] || failure[:error]}"
+  end
+  puts "   ..." if file_failures.count > 3
+end
+
+puts "\n💾 Full details saved to:"
+puts "   - #{output_file}"
+puts "   - #{summary_file}"
+
+# Create a fix script
+fix_script = "tmp/fix_failures.sh"
+File.open(fix_script, 'w') do |f|
+  f.puts "#!/bin/bash"
+  f.puts "# Script to fix failing specs one by one"
+  f.puts ""
+  by_file.keys.compact.each do |file|
+    f.puts "echo 'Fixing #{file}...'"
+    f.puts "bundle exec rspec #{file}"
+    f.puts ""
+  end
+end
+
+FileUtils.chmod(0755, fix_script)
+puts "\n🔧 Fix script created: #{fix_script}"
+puts "   Run it to test each failing file individually"

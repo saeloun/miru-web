@@ -1,15 +1,12 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState, useEffect } from "react";
-
-import Logger from "js-logger";
-import { useNavigate } from "react-router-dom";
 
 import reportsApi from "apis/reports/outstandingOverdueInvoice";
 import Loader from "common/Loader/index";
+import Logger from "js-logger";
+import { useNavigate } from "react-router-dom";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import Container from "./Container";
-import Filters from "./Filters";
 import { OutstandingOverdueInvoice } from "./interface";
 
 import getReportData from "../api/outstandingOverdueInvoice";
@@ -29,7 +26,7 @@ const OutstandingInvoiceReport = () => {
   const [isFilterVisible, setIsFilterVisible] = useState<boolean>(false);
   const [showNavFilters, setShowNavFilters] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
-  const [filterCounter, setFilterCounter] = useState(0); // eslint-disable-line
+  const [filterCounter, setFilterCounter] = useState(0);
   const [dateRange, setDateRange] = useState({ from: "", to: "" });
   const [selectedInput, setSelectedInput] = useState("from-input");
   const [clientList, setClientList] = useState<
@@ -147,24 +144,14 @@ const OutstandingInvoiceReport = () => {
         handleDownload={handleDownload}
         isFilterVisible={isFilterVisible}
         resetFilter={resetFilter}
-        revenueFilterCounter={() => {}} // eslint-disable-line  @typescript-eslint/no-empty-function
+        revenueFilterCounter={() => {}}
         setIsFilterVisible={setIsFilterVisible}
         showFilterIcon={false}
         showNavFilters={showNavFilters}
         type="Invoices Report"
       />
       <Container />
-      {false && (
-        <Filters
-          dateRange={dateRange}
-          handleApplyFilter={handleApplyFilter}
-          handleSelectDate={handleSelectDate}
-          resetFilter={resetFilter}
-          selectedInput={selectedInput}
-          setIsFilterVisible={setIsFilterVisible}
-          onClickInput={onClickInput}
-        />
-      )}
+      {/* Disabled filters section - temporarily hidden */}
     </EntryContext.Provider>
   );
 };

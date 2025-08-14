@@ -13,7 +13,7 @@ RSpec.describe NavigationHelper, type: :helper do
     end
 
     it "returns links with the given styles" do
-      nav_urls = %w[team clients projects reports invoices payments]
+      %w[team clients projects reports invoices payments]
       style = "test"
       active_style = "active"
       inactive_style = "inactive"

@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe "Team Member", type: :system do
+RSpec.describe "Team Member", type: :system, js: true do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
   let(:employee_user) { create(:user, current_workspace_id: company.id) }

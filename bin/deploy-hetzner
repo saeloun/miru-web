@@ -1,0 +1,205 @@
+#!/bin/bash
+set -e
+
+echo "🚀 Miru 2.0 Upgrade - Hetzner Deployment Script"
+echo "================================================"
+
+# Load environment variables
+if [ -f ".env.kamal.local" ]; then
+  export $(cat .env.kamal.local | grep -v '^#' | xargs)
+else
+  echo "❌ Error: .env.kamal.local not found!"
+  echo "Please copy .env.kamal to .env.kamal.local and fill in your values."
+  exit 1
+fi
+
+# Check required environment variables
+required_vars=(
+  "HETZNER_SERVER_IP"
+  "GITHUB_TOKEN"
+  "RAILS_MASTER_KEY"
+  "POSTGRES_PASSWORD"
+)
+
+for var in "${required_vars[@]}"; do
+  if [ -z "${!var}" ]; then
+    echo "❌ Error: $var is not set in .env.kamal.local"
+    exit 1
+  fi
+done
+
+echo "✅ Environment variables loaded"
+
+# Function to create Hetzner server
+create_hetzner_server() {
+  echo "📦 Creating Hetzner server..."
+  
+  if [ -z "$HETZNER_API_TOKEN" ]; then
+    echo "⚠️  HETZNER_API_TOKEN not set. Please create a server manually and update HETZNER_SERVER_IP in .env.kamal.local"
+    echo "Recommended specs for review app:"
+    echo "  - Type: CX22 (2 vCPU, 4GB RAM)"
+    echo "  - Location: Nuremberg or Helsinki"
+    echo "  - OS: Ubuntu 24.04"
+    return
+  fi
+  
+  # Configure hcloud CLI
+  hcloud context create miru-deployment || true
+  hcloud context use miru-deployment
+  export HCLOUD_TOKEN=$HETZNER_API_TOKEN
+  
+  # Create server if not exists
+  if ! hcloud server describe miru-review-apps 2>/dev/null; then
+    echo "Creating new Hetzner server..."
+    hcloud server create \
+      --name miru-review-apps \
+      --type cx22 \
+      --image ubuntu-24.04 \
+      --location nbg1 \
+      --ssh-key "$(ssh-add -L | head -n 1)"
+    
+    # Get the server IP
+    SERVER_IP=$(hcloud server describe miru-review-apps -o json | jq -r .public_net.ipv4.ip)
+    echo "Server created with IP: $SERVER_IP"
+    echo "Please update HETZNER_SERVER_IP=$SERVER_IP in .env.kamal.local"
+    export HETZNER_SERVER_IP=$SERVER_IP
+    
+    # Wait for server to be ready
+    echo "Waiting for server to be ready..."
+    sleep 30
+  else
+    echo "Server 'miru-review-apps' already exists"
+  fi
+}
+
+# Function to setup server
+setup_server() {
+  echo "🔧 Setting up server..."
+  
+  # Install Docker on the server
+  echo "Installing Docker on the server..."
+  ssh $SSH_USER@$HETZNER_SERVER_IP << 'EOF'
+    # Update system
+    apt-get update
+    apt-get upgrade -y
+    
+    # Install Docker
+    if ! command -v docker &> /dev/null; then
+      curl -fsSL https://get.docker.com | sh
+      systemctl enable docker
+      systemctl start docker
+    fi
+    
+    # Install required packages
+    apt-get install -y curl git ufw fail2ban
+    
+    # Setup firewall
+    ufw --force enable
+    ufw allow 22/tcp
+    ufw allow 80/tcp
+    ufw allow 443/tcp
+    ufw allow 3000/tcp  # For the app
+    ufw allow 5432/tcp  # For PostgreSQL
+    ufw allow 6379/tcp  # For Redis
+    
+    echo "✅ Server setup complete"
+EOF
+}
+
+# Function to setup Kamal
+setup_kamal() {
+  echo "🐋 Setting up Kamal..."
+  
+  # Login to GitHub Container Registry
+  echo $GITHUB_TOKEN | docker login ghcr.io -u $GITHUB_USERNAME --password-stdin
+  
+  # Setup Kamal server
+  bundle exec kamal server bootstrap
+}
+
+# Function to deploy the application
+deploy_app() {
+  echo "🚢 Deploying application..."
+  
+  # Build and push the Docker image
+  bundle exec kamal build push
+  
+  # Deploy accessories (PostgreSQL and Redis)
+  bundle exec kamal accessory boot all
+  
+  # Deploy the application
+  bundle exec kamal deploy
+}
+
+# Function to setup database
+setup_database() {
+  echo "🗄️  Setting up database..."
+  
+  # Run database migrations
+  bundle exec kamal app exec --reuse "bin/rails db:create db:migrate db:seed"
+}
+
+# Function to clone staging data
+clone_staging_data() {
+  echo "📋 Cloning data from staging..."
+  
+  if [ -n "$STAGING_DATABASE_URL" ]; then
+    # Create a backup from staging
+    echo "Creating backup from staging database..."
+    pg_dump $STAGING_DATABASE_URL > /tmp/staging_backup.sql
+    
+    # Restore to new database
+    echo "Restoring to review database..."
+    bundle exec kamal accessory exec postgres \
+      "psql -U miru_2_0_upgrade -d miru_2_0_upgrade" < /tmp/staging_backup.sql
+    
+    rm /tmp/staging_backup.sql
+    echo "✅ Data cloned successfully"
+  else
+    echo "⚠️  STAGING_DATABASE_URL not set. Skipping data clone."
+  fi
+}
+
+# Main deployment flow
+echo ""
+echo "Starting deployment process..."
+echo ""
+
+# Step 1: Create/verify Hetzner server
+if [ "$1" == "--create-server" ]; then
+  create_hetzner_server
+fi
+
+# Step 2: Setup server (if needed)
+if [ "$1" == "--setup-server" ] || [ "$1" == "--create-server" ]; then
+  setup_server
+fi
+
+# Step 3: Setup Kamal
+if [ "$1" != "--skip-kamal-setup" ]; then
+  setup_kamal
+fi
+
+# Step 4: Deploy the application
+deploy_app
+
+# Step 5: Setup database
+setup_database
+
+# Step 6: Clone staging data (optional)
+if [ "$1" == "--clone-data" ]; then
+  clone_staging_data
+fi
+
+echo ""
+echo "✅ Deployment complete!"
+echo ""
+echo "Your application is available at:"
+echo "  https://miru-2-0-upgrade.review.saeloun.com"
+echo ""
+echo "Useful commands:"
+echo "  bundle exec kamal app logs          # View application logs"
+echo "  bundle exec kamal app exec console  # Open Rails console"
+echo "  bundle exec kamal app exec bash     # Open bash shell"
+echo "  bundle exec kamal accessory logs postgres  # View PostgreSQL logs"
+echo ""

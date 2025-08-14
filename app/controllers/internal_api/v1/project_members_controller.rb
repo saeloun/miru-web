@@ -5,7 +5,7 @@ class InternalApi::V1::ProjectMembersController < InternalApi::V1::ApplicationCo
     authorize project, policy_class: ProjectMemberPolicy
 
     ProjectMemberService.new(update_params).process
-    render json: {}, status: :ok
+    render json: {}, status: 200
   end
 
   private

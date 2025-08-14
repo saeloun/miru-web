@@ -1,12 +1,11 @@
 import React, { useRef } from "react";
 
+import companyUsersApi from "apis/company-users";
+import projectMembersApi from "apis/project-members";
 import { useKeypress, useOutsideClick } from "helpers";
 import Logger from "js-logger";
 import { XIcon } from "miruIcons";
 import { Toastr, Modal } from "StyledComponents";
-
-import companyUsersApi from "apis/company-users";
-import projectMembersApi from "apis/project-members";
 
 import EditMembersListForm from "./EditMembersListForm";
 

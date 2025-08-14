@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-describe "Client overdue and outstanding calculation", type: :system do
+describe "Client overdue and outstanding calculation", type: :system, js: true do
   let!(:company) { create(:company) }
   let!(:client) { create(:client, company:) }
   let(:user) { create(:user, current_workspace_id: company.id) }

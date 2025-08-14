@@ -1,71 +1,74 @@
-#syntax=docker/dockerfile:1
-ARG VARIANT=3.2.4
-FROM mcr.microsoft.com/vscode/devcontainers/ruby:${VARIANT} AS base
+# Miru 2.0 Multi-stage Dockerfile for Development & Testing
+FROM miru-base:latest AS base
 
-# Update args in docker-compose.yaml to set the UID/GID of the "vscode" user.
-# ARG USER_UID=1000
-# ARG USER_GID=$USER_UID
-# RUN if [ "$USER_GID" != "1000" ] || [ "$USER_UID" != "1000" ]; then \
-#     groupmod --gid $USER_GID vscode \
-#     && usermod --uid $USER_UID --gid $USER_GID vscode \
-#     && chmod -R $USER_UID:$USER_GID /home/vscode; \
-#     fi
+# Stage 2: Dependencies Installation
+FROM base AS dependencies
 
-ARG NODE_VERSION=20.18.2
-
-ENV BUNDLE_PATH="/usr/local/bundle"
-ENV GEM_HOME="/usr/local/bundle/gems"
-ENV GEM_PATH="/usr/local/bundle/gems"
-
-RUN mkdir /app
 WORKDIR /app
-RUN mkdir -p tmp/pids
 
-RUN apt-get update && apt-get install -y --no-install-recommends curl gnupg2 && \
-    echo "deb https://dl.yarnpkg.com/debian/ stable main" > /etc/apt/sources.list.d/yarn.list && \
-    curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
-    curl -sL https://deb.nodesource.com/setup_lts.x | bash - && \
-    apt-get install -y --no-install-recommends nodejs yarn && \
-    npm --version && \
-    apt-get clean && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
-
-
-RUN curl --location --silent https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
-    && sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' \
-    && apt-get update && apt-get install google-chrome-stable -y --no-install-recommends postgresql-client && \
-    apt-get clean && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
-
-# Install gh
-RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
-    && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
-    && sudo apt update \
-    && sudo apt install gh
-
-
-FROM base AS build-deps
-
-RUN apt-get update && apt-get install -y --no-install-recommends git build-essential libpq-dev && \
-    apt-get clean && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
-
-
-FROM build-deps AS gems
-
-RUN gem install bundler -v 2.3.11
-
+# Copy dependency manifests
 COPY Gemfile Gemfile.lock ./
+COPY package.json pnpm-lock.yaml ./
 
-RUN bundle install &&  rm -rf vendor/bundle/ruby/*/cache
+# Configure bundler for optimal performance
+RUN bundle config set --local path 'vendor/bundle' && \
+    bundle config set --local jobs 4 && \
+    bundle config set --local retry 3 && \
+    bundle install
 
-FROM base AS node_modules
+# Install Node dependencies with pnpm
+# Skip postinstall scripts (lefthook) in container
+RUN pnpm install --frozen-lockfile --ignore-scripts && \
+    pnpm store prune
 
-COPY package.json yarn.lock ./
+# Stage 3: Development Environment
+FROM base AS development
 
-RUN yarn install --check-files
+WORKDIR /app
 
-FROM base
+# Copy installed dependencies from the dependencies stage
+COPY --from=dependencies /usr/local/bundle /usr/local/bundle
+COPY --from=dependencies /app/node_modules /app/node_modules
 
+# Development environment variables
+ENV BUNDLE_PATH=/usr/local/bundle \
+    BUNDLE_BIN=/usr/local/bundle/bin \
+    GEM_HOME=/usr/local/bundle \
+    PATH="/usr/local/bundle/bin:${PATH}" \
+    # Rails development settings
+    RAILS_ENV=development \
+    NODE_ENV=development \
+    # Playwright browser paths
+    PLAYWRIGHT_BROWSERS_PATH=/ms-playwright \
+    # Enable better error messages
+    RAILS_LOG_TO_STDOUT=true \
+    MALLOC_ARENA_MAX=2 \
+    WEB_CONCURRENCY=2
 
-COPY --from=gems /app /app
-COPY --from=gems /usr/local/bundle /usr/local/bundle
-COPY --from=node_modules /app/node_modules /app/node_modules
-COPY . ./
+# Create necessary directories with proper permissions
+RUN mkdir -p /tmp/pids /app/tmp/cache /app/log && \
+    chmod -R 755 /tmp/pids /app/tmp /app/log
+
+# Stage 4: Test Environment (extends development)
+FROM development AS test
+
+# Test-specific environment variables
+ENV RAILS_ENV=test \
+    NODE_ENV=test \
+    CI=true \
+    # Playwright headless mode
+    PLAYWRIGHT_HEADLESS=true \
+    # Parallel test configuration
+    PARALLEL_WORKERS=4 \
+    # Disable Spring in tests
+    DISABLE_SPRING=true
+
+# Prepare test database
+RUN bundle exec rails db:test:prepare || true
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD curl -f http://localhost:3000/health || exit 1
+
+# Default command for test environment
+CMD ["bundle", "exec", "rspec"]

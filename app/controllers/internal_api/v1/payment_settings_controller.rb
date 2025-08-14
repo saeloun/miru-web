@@ -21,9 +21,9 @@ class InternalApi::V1::PaymentSettingsController < InternalApi::V1::ApplicationC
     authorize :destroy, policy_class: PaymentSettingsPolicy
 
     if stripe_connected_account.destroy
-      render json: { notice: "Stripe connection disconnected" }, status: :ok
+      render json: { notice: "Stripe connection disconnected" }, status: 200
     else
-      render json: { error: "Unable to process the request" }, status: :unprocessable_entity
+      render json: { error: "Unable to process the request" }, status: 422
     end
   end
 

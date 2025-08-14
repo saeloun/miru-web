@@ -1,11 +1,4 @@
-/* eslint-disable no-unexpected-multiline */
 import React, { useEffect, useState } from "react";
-
-import * as dayjs from "dayjs";
-import * as updateLocale from "dayjs/plugin/updateLocale";
-import * as weekday from "dayjs/plugin/weekday";
-import { minToHHMM } from "helpers";
-import Logger from "js-logger";
 
 import timesheetEntryApi from "apis/timesheet-entry";
 import timeTrackingApi from "apis/timeTracking";
@@ -13,14 +6,22 @@ import Loader from "common/Loader/index";
 import withLayout from "common/Mobile/HOC/withLayout";
 import SearchTimeEntries from "common/SearchTimeEntries";
 import { useUserContext } from "context/UserContext";
+import { Button } from "../ui/button";
+import { cn } from "../../lib/utils";
+import dayjs from "dayjs";
+import updateLocale from "dayjs/plugin/updateLocale";
+import weekday from "dayjs/plugin/weekday";
+import { minFromHHMM, minToHHMM } from "helpers";
+import Logger from "js-logger";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import DatesInWeek from "./DatesInWeek";
 import { EmptyStatesMobileView } from "./EmptyStatesMobileView";
 import EntryCard from "./EntryCard";
 import EntryForm from "./EntryForm";
+import { ModernTimeEntryForm } from "./ModernTimeEntryForm";
 import Header from "./Header";
-import MonthCalender from "./MonthCalender";
+import CalendarSuspense from "./MiruCalendar/CalendarSuspense";
 import WeeklyEntries from "./WeeklyEntries";
 
 dayjs.extend(updateLocale);
@@ -33,8 +34,12 @@ dayjs.updateLocale("en", { monthShort: monthsAbbr });
 dayjs.Ls.en.weekStart = 1;
 
 const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
+  const { isDesktop, company } = useUserContext();
+  const dateFormat =
+    company?.date_format || company?.dateFormat || "MM-DD-YYYY";
+
   const [dayInfo, setDayInfo] = useState<any[]>([]);
-  const [view, setView] = useState<string>("month");
+  const [view, setView] = useState<string>("day"); // Default to day view
   const [newEntryView, setNewEntryView] = useState<boolean>(false);
   const [newRowView, setNewRowView] = useState<boolean>(false);
   const [selectDate, setSelectDate] = useState<number>(dayjs().weekday());
@@ -43,7 +48,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
   const [dailyTotalHours, setDailyTotalHours] = useState<number[]>([]);
   const [entryList, setEntryList] = useState<object>({});
   const [selectedFullDate, setSelectedFullDate] = useState<string>(
-    dayjs().format("YYYY-MM-DD")
+    dayjs().format(dateFormat)
   );
   const [editEntryId, setEditEntryId] = useState<number>(0);
   const [weeklyData, setWeeklyData] = useState<any[]>([]);
@@ -61,7 +66,8 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
   );
   const [currentYear, setCurrentYear] = useState<number>(dayjs().year());
   const [updateView, setUpdateView] = useState(true);
-  const { isDesktop } = useUserContext();
+  const [showModernForm, setShowModernForm] = useState<boolean>(false);
+  const [modernFormEntry, setModernFormEntry] = useState<any>(null);
   const employeeOptions = employees.map(e => ({
     value: `${e["id"]}`,
     label: `${e["first_name"]} ${e["last_name"]}`,
@@ -70,7 +76,8 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
   useEffect(() => {
     sendGAPageView();
     fetchTimeTrackingData();
-    !isDesktop && setView("day");
+    // Always default to day view
+    setView("day");
   }, []);
 
   const fetchTimeTrackingData = async () => {
@@ -94,20 +101,23 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
 
   const fetchEntriesOfMonths = () => {
     const firstDateOfTheMonth = `${currentYear}-${currentMonthNumber + 1}-01`;
-    const startOfTheMonth = dayjs(firstDateOfTheMonth).format("YYYY-MM-DD");
+    const startOfTheMonth = dayjs(firstDateOfTheMonth).format(dateFormat);
     const endOfTheMonth = dayjs(firstDateOfTheMonth)
       .endOf("month")
-      .format("YYYY-MM-DD");
+      .format(dateFormat);
 
-    fetchEntries(
-      dayjs(startOfTheMonth).subtract(1, "month").format("DD-MM-YYYY"),
-      dayjs(endOfTheMonth).add(1, "month").format("DD-MM-YYYY")
-    );
+    // API expects DD-MM-YYYY format
+    const from = dayjs(startOfTheMonth)
+      .subtract(1, "month")
+      .format("DD-MM-YYYY");
+    const to = dayjs(endOfTheMonth).add(1, "month").format("DD-MM-YYYY");
+
+    // fetchEntriesOfMonths called for selectedEmployeeId and date range
+
+    fetchEntries(from, to);
   };
 
-  useEffect(() => {
-    !isDesktop && setView("day");
-  }, [isDesktop]);
+  // View is always "day" by default, user can change it manually
 
   useEffect(() => {
     handleWeekInfo();
@@ -128,13 +138,12 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
       setSelectedFullDate(
         dayjs()
           .weekday(weekDay + selectDate)
-          .format("YYYY-MM-DD")
+          .format(dateFormat)
       );
     }
   }, [selectDate, weekDay, updateView]);
 
   useEffect(() => {
-    if (dayInfo.length <= 0) return;
     fetchEntriesOfMonths();
   }, [selectedEmployeeId]);
 
@@ -145,14 +154,12 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
 
   const handleWeekInfo = () => {
     const daysInWeek = Array.from(Array(7).keys()).map(weekCounter => {
-      const [day, month, date, year] = dayjs()
-        .weekday(weekCounter + weekDay)
-        ["$d"].toString()
-        .split(" ");
+      const dayjsObj = dayjs().weekday(weekCounter + weekDay);
+      const [day, month, date, year] = dayjsObj["$d"].toString().split(" ");
 
       const fullDate = dayjs()
         .weekday(weekCounter + weekDay)
-        .format("YYYY-MM-DD");
+        .format(dateFormat);
 
       return {
         day,
@@ -174,6 +181,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
           ...allEntries[selectedEmployeeId],
           ...res.data.entries,
         };
+        // Setting entryList with fetched entries
         setAllEmployeesEntries(allEntries);
         setEntryList(allEntries[selectedEmployeeId]);
       }
@@ -181,6 +189,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
 
       return res;
     } catch (error) {
+      // Log error for debugging
       Logger.error(error);
       setLoading(false);
     }
@@ -188,7 +197,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
 
   const handleFilterEntry = async (date: string, entryId: string | number) => {
     let filteredTimesheetEntry: object;
-    const filteredDate = dayjs(date).format("YYYY-MM-DD");
+    const filteredDate = dayjs(date).format(dateFormat);
     const newValue = { ...entryList };
     newValue[filteredDate] = newValue[filteredDate].filter(e => {
       if (e["id"] == entryId) {
@@ -204,7 +213,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
   };
 
   const handleRelocateEntry = async (date: string, entry: object) => {
-    const filteredDate = dayjs(date).format("YYYY-MM-DD");
+    const filteredDate = dayjs(date).format(dateFormat);
     setEntryList(prevState => {
       const newState = { ...prevState };
       newState[filteredDate] = newState[filteredDate]
@@ -263,7 +272,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
     for (let weekCounter = 0; weekCounter < 7; weekCounter++) {
       const day = dayjs()
         .weekday(weekCounter + weekDay)
-        .format("YYYY-MM-DD");
+        .format(dateFormat);
       if (entryList && entryList[day]) {
         let dayTotal = 0;
         entryList[day].forEach(e => {
@@ -281,22 +290,22 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
 
   const handleNextDay = () => {
     setWeekDay(p => p + 1);
-    const from = dayjs().weekday(weekDay).format("YYYY-MM-DD");
+    const from = dayjs().weekday(weekDay).format(dateFormat);
 
     const to = dayjs()
       .weekday(weekDay + 1)
-      .format("YYYY-MM-DD");
+      .format(dateFormat);
     fetchEntries(from, to);
   };
 
   const handlePreDay = () => {
     setWeekDay(p => p - 1);
 
-    const from = dayjs().weekday(weekDay).format("YYYY-MM-DD");
+    const from = dayjs().weekday(weekDay).format(dateFormat);
 
     const to = dayjs()
       .weekday(weekDay - 1)
-      .format("YYYY-MM-DD");
+      .format(dateFormat);
 
     fetchEntries(from, to);
   };
@@ -305,11 +314,11 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
     setWeekDay(p => p + 7);
     const from = dayjs()
       .weekday(weekDay + 7)
-      .format("YYYY-MM-DD");
+      .format(dateFormat);
 
     const to = dayjs()
       .weekday(weekDay + 13)
-      .format("YYYY-MM-DD");
+      .format(dateFormat);
     fetchEntries(from, to);
   };
 
@@ -317,11 +326,11 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
     setWeekDay(p => p - 7);
     const from = dayjs()
       .weekday(weekDay - 7)
-      .format("YYYY-MM-DD");
+      .format(dateFormat);
 
     const to = dayjs()
       .weekday(weekDay - 1)
-      .format("YYYY-MM-DD");
+      .format(dateFormat);
     fetchEntries(from, to);
   };
 
@@ -330,7 +339,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
     for (let weekCounter = 0; weekCounter < 7; weekCounter++) {
       const date = dayjs()
         .weekday(weekDay + weekCounter)
-        .format("YYYY-MM-DD");
+        .format(dateFormat);
 
       if (!entryList || !entryList[date]) continue;
 
@@ -375,6 +384,55 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
     setCurrentYear(dayjs(date).year());
   };
 
+  const handleOpenModernForm = (entry = null) => {
+    setModernFormEntry(entry);
+    setShowModernForm(true);
+  };
+
+  const handleCloseModernForm = () => {
+    setShowModernForm(false);
+    setModernFormEntry(null);
+  };
+
+  const handleSaveModernEntry = async (formData: any) => {
+    try {
+      const payload = {
+        work_date: formData.date,
+        duration: minFromHHMM(formData.duration),
+        note: formData.note,
+        bill_status: formData.billable ? "unbilled" : "non_billable",
+      };
+
+      if (modernFormEntry) {
+        // Update existing entry
+        const res = await timesheetEntryApi.update(modernFormEntry.id, {
+          project_id: formData.projectId,
+          timesheet_entry: payload,
+        });
+        if (res.status >= 200 && res.status < 300) {
+          await fetchEntries(formData.date, formData.date);
+          fetchEntriesOfMonths();
+        }
+      } else {
+        // Create new entry
+        const res = await timesheetEntryApi.create(
+          {
+            project_id: formData.projectId,
+            timesheet_entry: payload,
+          },
+          selectedEmployeeId
+        );
+        if (res.status === 200) {
+          await fetchEntries(formData.date, formData.date);
+          fetchEntriesOfMonths();
+        }
+      }
+    } catch (error) {
+      console.error("Error saving entry:", error);
+      throw error;
+    }
+  };
+
   if (loading) {
     return <Loader />;
   }
@@ -404,26 +462,32 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
       <div className="mt-0 h-full p-4 lg:mt-6 lg:p-0">
         <div className="mb-6 flex items-center justify-between">
           {isDesktop && (
-            <nav className="flex">
-              {["month", "week", "day"].map((item, index) => (
-                <button
-                  key={index}
-                  className={
-                    item === view
-                      ? "mr-10 border-b-2 border-miru-han-purple-1000 font-bold tracking-widest text-miru-han-purple-1000"
-                      : "mr-10 font-medium tracking-widest text-miru-han-purple-600"
-                  }
-                  onClick={() => setView(item)}
-                >
-                  {item.toUpperCase()}
-                </button>
-              ))}
-            </nav>
+            <div className="flex flex-col items-start gap-3">
+              <h1 className="text-3xl font-bold tracking-tight text-foreground">
+                Time Tracking
+              </h1>
+              <div className="flex gap-1 p-1 bg-muted/50 rounded-lg backdrop-blur-sm border border-border">
+                {["day", "week", "month"].map((item, index) => (
+                  <button
+                    key={index}
+                    className={cn(
+                      "px-6 py-2 rounded-md font-bold text-sm transition-all duration-200 tracking-wide",
+                      item === view
+                        ? "bg-primary text-primary-foreground shadow-sm"
+                        : "text-muted-foreground hover:text-foreground hover:bg-accent"
+                    )}
+                    onClick={() => setView(item)}
+                  >
+                    {item.charAt(0).toUpperCase() + item.slice(1)}
+                  </button>
+                ))}
+              </div>
+            </div>
           )}
           {!isDesktop && isAdminUser && (
-            <label className="text-sm font-normal leading-5 text-miru-dark-purple-1000">
+            <h3 className="text-lg font-bold leading-6 text-foreground">
               Time entries for
-            </label>
+            </h3>
           )}
           {isAdminUser && selectedEmployeeId && (
             <SearchTimeEntries
@@ -434,26 +498,15 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
           )}
         </div>
         <div>
+          {/* Use modern Miru calendar with Suspense */}
           {view === "month" ? (
-            <MonthCalender
-              currentMonthNumber={currentMonthNumber}
-              currentYear={currentYear}
-              dayInfo={dayInfo}
-              entryList={entryList}
-              fetchEntries={fetchEntries}
-              handleWeekTodayButton={handleWeekTodayButton}
-              monthsAbbr={monthsAbbr}
+            <CalendarSuspense
               selectedEmployeeId={selectedEmployeeId}
-              selectedFullDate={selectedFullDate}
-              setCurrentMonthNumber={setCurrentMonthNumber}
-              setCurrentYear={setCurrentYear}
-              setSelectDate={setSelectDate}
-              setSelectedFullDate={setSelectedFullDate}
-              setWeekDay={setWeekDay}
+              onDateSelect={setSelectedFullDate}
             />
           ) : (
             isDesktop && (
-              <div className="mb-6">
+              <div className="mb-6 week-view" data-view="week">
                 <Header
                   currentMonthNumber={currentMonthNumber}
                   currentYear={currentYear}
@@ -503,39 +556,42 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
             />
           )}
           {view !== "week" && !newEntryView && isDesktop && (
-            <button
-              className="flex h-10 w-full items-center justify-center rounded border-2 border-miru-han-purple-600 p-2 text-lg font-bold tracking-widest text-miru-han-purple-600 lg:h-14 lg:p-4"
-              onClick={() => {
-                setNewEntryView(true);
-                setEditEntryId(0);
-              }}
+            <Button
+              size="lg"
+              className="w-full h-16 text-xl font-black tracking-wider bg-primary hover:bg-primary/90 text-primary-foreground border-2 border-primary hover:shadow-lg transition-all duration-200 rounded-xl"
+              onClick={() => handleOpenModernForm()}
             >
-              + NEW ENTRY
-            </button>
+              <span className="text-3xl mr-3">+</span>
+              NEW ENTRY
+            </Button>
           )}
           {/* --- On mobile view we don't need New Entry button for Empty States --- */}
           {view !== "week" &&
             !newEntryView &&
             !isDesktop &&
             entryList[selectedFullDate] && (
-              <button
-                className="flex h-10 w-full items-center justify-center rounded border-2 border-miru-han-purple-600 p-2 text-lg font-bold tracking-widest text-miru-han-purple-600 lg:h-14 lg:p-4"
+              <Button
+                size="lg"
+                className="w-full h-14 text-lg font-black tracking-wider bg-primary hover:bg-primary/90 text-primary-foreground border-2 border-primary hover:shadow-lg transition-all duration-200 rounded-xl"
                 onClick={() => {
                   setNewEntryView(true);
                   setEditEntryId(0);
                 }}
               >
-                + NEW ENTRY
-              </button>
+                <span className="text-2xl mr-3">+</span>
+                NEW ENTRY
+              </Button>
             )}
           {/* --- weekly view --- */}
           {view === "week" && !newRowView && (
-            <button
-              className="h-14 w-full border-2 border-miru-han-purple-600 p-4 text-lg font-bold tracking-widest text-miru-han-purple-600"
+            <Button
+              size="lg"
+              className="w-full h-16 text-xl font-black tracking-wider bg-primary hover:bg-primary/90 text-primary-foreground border-2 border-primary hover:shadow-lg transition-all duration-200 rounded-xl"
               onClick={() => setNewRowView(true)}
             >
-              + NEW ROW
-            </button>
+              <span className="text-3xl mr-3">+</span>
+              NEW ROW
+            </Button>
           )}
           {view === "week" && newRowView && (
             <WeeklyEntries
@@ -625,6 +681,16 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
           </div>
         )}
       </div>
+      {/* Modern Time Entry Form */}
+      <ModernTimeEntryForm
+        isOpen={showModernForm}
+        onClose={handleCloseModernForm}
+        onSave={handleSaveModernEntry}
+        selectedDate={dayjs(selectedFullDate).toDate()}
+        existingEntry={modernFormEntry}
+        projects={Object.values(projects).flat()}
+        clients={clients}
+      />
     </div>
   );
 

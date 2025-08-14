@@ -3,11 +3,21 @@
 class InternalApi::V1::ProjectsController < InternalApi::V1::ApplicationController
   def index
     authorize Project
-    data = Projects::IndexService.new(current_company, params[:search_term]).process
+
+    # Search projects using ransack or pg_search
+    projects = if params[:search_term].present?
+      current_company.projects.kept.search(params[:search_term])
+    else
+      current_company.projects.kept
+    end
+
+    projects = projects.includes(:client)
+    clients = current_company.clients.kept
+
     render :index, locals: {
-      projects: data[:projects],
-      clients: data[:clients]
-    }, status: :ok
+      projects: projects,
+      clients: clients
+    }, status: 200
   end
 
   def show
@@ -19,7 +29,7 @@ class InternalApi::V1::ProjectsController < InternalApi::V1::ApplicationControll
         total_duration: project.total_logged_duration(params[:time_frame]),
         overdue_and_outstanding_amounts: project.overdue_and_outstanding_amounts
       },
-      status: :ok
+      status: 200
   end
 
   def create
@@ -41,7 +51,7 @@ class InternalApi::V1::ProjectsController < InternalApi::V1::ApplicationControll
 
   def destroy
     authorize project
-    render json: { notice: I18n.t("projects.delete.success.message") }, status: :ok if project.discard!
+    render json: { notice: I18n.t("projects.delete.success.message") }, status: 200 if project.discard!
   end
 
   private

@@ -1,9 +1,9 @@
+import { MIRU_APP_URL } from "constants/index";
+
 import React from "react";
 
 import { BlurredMiruLogo } from "miruIcons";
 import { Carousel } from "react-responsive-carousel";
-
-import { MIRU_APP_URL } from "constants/index";
 
 import { carouselItems } from "./utils";
 

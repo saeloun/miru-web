@@ -38,7 +38,7 @@ class Employment < ApplicationRecord
   # Validations
   validates :designation, :employment_type, :joined_at, :employee_id, presence: true, on: :update
   validates :resigned_at, comparison: { greater_than: :joined_at }, unless: -> { resigned_at.nil? }
-  validates :joined_at, comparison: { less_than_or_equal_to: Date.current, message: "date must be in past" },
+  validates :joined_at, comparison: { less_than_or_equal_to: -> { Date.current }, message: "date must be in past" },
     on: :update
   # Callbacks
   before_destroy :remove_user_invitations

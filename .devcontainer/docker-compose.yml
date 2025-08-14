@@ -4,94 +4,92 @@ services:
     build:
       context: ..
       dockerfile: .devcontainer/Dockerfile
-    # command: bash -c "bundle install && bundle exec rails db:prepare && bundle exec rails s -p 3000 -b 0.0.0.0" || sleep infinity
-    # Overrides default command so things don't shut down after the process ends.
-    command: sleep infinity
+      target: development
+    platform: linux/amd64
+    command: bash -c "bundle exec rails db:prepare && bundle exec rails s -p 3000 -b 0.0.0.0"
     ports:
-      - "3000:3000"
-    image: miru-web:latest
+      - "3001:3000"
     working_dir: /app
     volumes:
       - ../:/app
-      - gem_cache:/usr/local/bundle/gems
+      - bundle_cache:/usr/local/bundle
       - node_modules:/app/node_modules
     environment:
-      - WEBPACKER_DEV_SERVER_HOST=0.0.0.0
-      - DATABASE_URL=postgres://postgres:postgres@database:5432/
-      - DB_HOST=database
-      - DB_USER=postgres
-      - DB_PASS=postgres
-      - DATABASE_CLEANER_ALLOW_REMOTE_DATABASE_URL="true"
-      - POSTGRES_PASSWORD="postgres"
-      - POSTGRES_USER="postgres"
-      - ELASTICSEARCH_URL=http://elastic:x2Sy5FK51zu@elasticsearch:9200
-      - PIDFILE=/tmp/pids/server.pid
+      DATABASE_URL: postgres://postgres:postgres@database:5432/miru_web_development
+      DB_HOST: database
+      DB_USER: postgres
+      DB_PASS: postgres
+      DATABASE_CLEANER_ALLOW_REMOTE_DATABASE_URL: true
+      PIDFILE: /tmp/pids/server.pid
+      BUNDLE_PATH: /usr/local/bundle
+      RAILS_ENV: development
+      NODE_ENV: development
+      PLAYWRIGHT_BROWSERS_PATH: /ms-playwright
     depends_on:
       - database
-      - elasticsearch
     tmpfs:
       - /tmp/pids/
-    # Runs app on the same network as the database container, allows "forwardPorts" in devcontainer.json function.
-    # network_mode: service:database
-    # Use "forwardPorts" in **devcontainer.json** to forward an app port locally.
-    # (Adding the "ports" property to this file will not forward from a Codespace.)
 
   database:
-    image: postgres:13.8
+    image: postgres:16-alpine
+    platform: linux/amd64
     restart: unless-stopped
-    # ports:
-    #   - "5432:5432"
     volumes:
-      - postgres:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: postgres
       POSTGRES_DB: postgres
       POSTGRES_PASSWORD: postgres
-      # Your config/database.yml should use the user and password you set here,
-      # and host "db" (as that's the name of this service). You can use whatever
-      # database name you want. Use `bin/rails db:prepare` to create the database.
-      #
-      # Example:
-      #
-      #  development:
-      #    <<: *default
-      #    host: db
-      #    username: postgres
-      #    password: postgres
-      #    database: myapp_development
+    ports:
+      - "5433:5432"
 
-      # Add "forwardPorts": ["5432"] to **devcontainer.json** to forward PostgreSQL locally.
-      # (Adding the "ports" property to this file will not forward from a Codespace.)
-
-  webpack:
+  vite:
     build:
       context: ..
       dockerfile: .devcontainer/Dockerfile
-    command: bin/webpacker-dev-server
-    image: miru-web:latest
+      target: development
+    platform: linux/amd64
+    command: pnpm vite dev --host 0.0.0.0 --port 3036
     ports:
-      - "3035:3035"
-    environment:
-      - WEBPACKER_DEV_SERVER_HOST=0.0.0.0
-      - DATABASE_URL=postgres://postgres:postgres@database:5432/
-      - DATABASE_CLEANER_ALLOW_REMOTE_DATABASE_URL="true"
-      - POSTGRES_PASSWORD="postgres"
-      - POSTGRES_USER="postgres"
-      - ELASTICSEARCH_URL=http://elastic:x2Sy5FK51zu@elasticsearch:9200
+      - "3036:3036"
+    working_dir: /app
+    volumes:
+      - ../:/app
+      - node_modules:/app/node_modules
     depends_on:
       - database
 
-  elasticsearch:
-    image: elasticsearch:7.13.3
+  test:
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
+      target: test
+    platform: linux/amd64
+    command: bash -c "bundle exec rails db:test:prepare && bundle exec parallel_rspec -n 4 spec/"
+    working_dir: /app
+    volumes:
+      - ../:/app
+      - bundle_cache:/usr/local/bundle
+      - node_modules:/app/node_modules
     environment:
-      discovery.type: single-node
-      network.host: 0.0.0.0
-      xpack.security.enabled: "true"
-      ELASTIC_PASSWORD: "x2Sy5FK51zu"
-    ports:
-      - "9200:9200"
+      RAILS_ENV: test
+      NODE_ENV: test
+      DATABASE_URL: postgres://postgres:postgres@database:5432/miru_web_test
+      DB_HOST: database
+      DB_USER: postgres
+      DB_PASS: postgres
+      DATABASE_CLEANER_ALLOW_REMOTE_DATABASE_URL: true
+      BUNDLE_PATH: /usr/local/bundle
+      PLAYWRIGHT_BROWSERS_PATH: /ms-playwright
+      PLAYWRIGHT_HEADLESS: true
+      CI: true
+      PARALLEL_WORKERS: 4
+    depends_on:
+      - database
+    tmpfs:
+      - /tmp
 
 volumes:
-  gem_cache:
-  postgres:
+  bundle_cache:
+  postgres_data:
   node_modules:

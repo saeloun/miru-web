@@ -1,9 +1,8 @@
 import React from "react";
 
+import CompanyInfo from "components/Invoices/common/CompanyInfo";
 import { EditIcon, FloppyDiskIcon, PaperPlaneTiltIcon } from "miruIcons";
 import { Button } from "StyledComponents";
-
-import CompanyInfo from "components/Invoices/common/CompanyInfo";
 
 import InvoiceInfo from "./InvoiceInfo";
 import InvoiceTotal from "./InvoiceTotal";

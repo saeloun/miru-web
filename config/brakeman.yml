@@ -1,0 +1,24 @@
+# Brakeman configuration for Rails 8
+# Run with: bundle exec brakeman
+
+# Skip these paths during scan
+skip_files:
+  - app/javascript/
+  - node_modules/
+  - vendor/
+
+# Only report issues of this severity or higher
+# 1 = High, 2 = Medium, 3 = Weak
+min_confidence: 2
+
+# Don't exit with error code on warnings (only on errors)
+exit_on_warn: false
+
+# Quiet output (only show summary)
+quiet: false
+
+# Enable parallel processing
+parallel_checks: true
+
+# Rails 8 mode
+rails8: true

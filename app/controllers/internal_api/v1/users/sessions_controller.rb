@@ -20,7 +20,27 @@ class InternalApi::V1::Users::SessionsController < Devise::SessionsController
   def destroy
     sign_out(current_user)
     reset_session
-    render json: { notice: I18n.t("devise.sessions.signed_out"), reset_session: true }, status: :ok
+    render json: { notice: I18n.t("devise.sessions.signed_out"), reset_session: true }, status: 200
+  end
+
+  def me
+    if current_user
+      user_data = current_user.as_json.merge(
+        token: current_user.token,
+        email: current_user.email,
+        current_workspace_id: current_user.current_workspace_id,
+        avatar_url: current_user.avatar_url,
+        confirmed: current_user.confirmed?
+      )
+
+      render json: {
+        user: user_data,
+        company_role: current_user.roles.find_by(resource: current_company)&.name,
+        company: current_company
+      }, status: 200
+    else
+      render json: { error: "Not authenticated" }, status: 401
+    end
   end
 
   private
@@ -34,14 +54,14 @@ class InternalApi::V1::Users::SessionsController < Devise::SessionsController
     end
 
     def render_invalid_password_error
-      render json: { error: I18n.t("sessions.failure.invalid") }, status: :unprocessable_entity
+      render json: { error: I18n.t("sessions.failure.invalid") }, status: 422
     end
 
     def render_unconfirmed_user_error(user)
       render json: {
         error: I18n.t("devise.failure.unconfirmed"),
         unconfirmed: !user.confirmed?
-      }, status: :unprocessable_entity
+      }, status: 422
     end
 
     def handle_successful_sign_in(user)
@@ -57,7 +77,18 @@ class InternalApi::V1::Users::SessionsController < Devise::SessionsController
     end
 
     def render_sign_in_response(user)
-      render json: { notice: I18n.t("devise.sessions.signed_in"), user: }, status: :ok
+      user_data = user.as_json.merge(
+        token: user.token,
+        email: user.email,
+        current_workspace_id: user.current_workspace_id
+      )
+
+      render json: {
+        notice: I18n.t("devise.sessions.signed_in"),
+        user: user_data,
+        company_role: user.roles.find_by(resource: current_company)&.name,
+        company: current_company
+      }, status: 200
     end
 
     def render_sign_in_response_for_desktop(user)
@@ -70,6 +101,6 @@ class InternalApi::V1::Users::SessionsController < Devise::SessionsController
         google_oauth_success: @google_oauth_success.present?
       }
 
-      render json: { notice: I18n.t("devise.sessions.signed_in"), **initial_props }, status: :ok
+      render json: { notice: I18n.t("devise.sessions.signed_in"), **initial_props }, status: 200
     end
 end

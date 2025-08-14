@@ -1,47 +1,121 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the
 // README at: https://github.com/devcontainers/templates/tree/main/src/docker-existing-docker-compose
 {
-	"name": "Miru Web Codespace",
-	// Update the 'dockerComposeFile' list if you have more compose files or use different names.
-	// The .devcontainer/docker-compose.yml file contains any overrides you need/want to make.
+	"name": "Miru Web - Rails 8 Development",
 	"dockerComposeFile": "docker-compose.yml",
-	// The 'service' property is the name of the service for the container that VS Code should
-	// use. Update this value and .devcontainer/docker-compose.yml to the real service name.
 	"service": "app",
-	// The optional 'workspaceFolder' property is the path VS Code should open by default when
-	// connected. This is typically a file mount in .devcontainer/docker-compose.yml
 	"workspaceFolder": "/app",
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	// "features": {},
+	"features": {
+		"ghcr.io/devcontainers/features/common-utils:2": {
+			"installZsh": true,
+			"configureZshAsDefaultShell": true,
+			"installOhMyZsh": true,
+			"upgradePackages": true,
+			"username": "vscode",
+			"userUid": "1000",
+			"userGid": "1000"
+		},
+		"ghcr.io/devcontainers/features/git:1": {
+			"ppa": true,
+			"version": "latest"
+		},
+		"ghcr.io/devcontainers/features/github-cli:1": {
+			"installDirectlyFromGitHubRelease": true,
+			"version": "latest"
+		},
+		"ghcr.io/devcontainers/features/node:1": {
+			"nodeGypDependencies": true,
+			"version": "20.18.2",
+			"nvmVersion": "latest"
+		},
+		"ghcr.io/devcontainers/features/ruby:1": {
+			"version": "3.4.5",
+			"rbenvVersion": "latest"
+		},
+		"ghcr.io/devcontainers/features/docker-outside-of-docker:1": {
+			"moby": true,
+			"dockerDashComposeVersion": "v2"
+		}
+	},
 	"customizations": {
 		"vscode": {
-			// Add the IDs of extensions you want installed when the container is created.
 			"extensions": [
-				"Shopify.ruby-lsp",
-				"misogi.ruby-rubocop",
-				"davidpallinder.rails-test-runner",
-				"eamodio.gitlens",
+				"ms-vscode.vscode-typescript-next",
+				"bradlc.vscode-tailwindcss",
+				"esbenp.prettier-vscode",
+				"ms-playwright.playwright",
+				"shopify.ruby-lsp",
+				"kaiwood.endwise",
+				"rebornix.ruby",
+				"connorshea.vscode-ruby-test-adapter",
+				"ms-vscode.test-adapter-converter",
+				"hbenl.vscode-test-explorer",
+				"formulahendry.auto-rename-tag",
+				"christian-kohler.path-intellisense",
+				"ms-vscode.vscode-json",
+				"redhat.vscode-yaml",
+				"ms-azuretools.vscode-docker",
 				"github.copilot",
-				"mrmlnc.vscode-duplicate"
+				"github.copilot-chat"
 			],
 			"settings": {
-				"terminal.integrated.shell.linux": "/bin/zsh"
+				"terminal.integrated.defaultProfile.linux": "zsh",
+				"ruby.intellisense": "rubyLsp",
+				"ruby.format": "rubocop",
+				"ruby.lint": {
+					"rubocop": {
+						"useBundler": true
+					}
+				},
+				"files.associations": {
+					"*.rb": "ruby",
+					"*.rake": "ruby",
+					"Rakefile": "ruby",
+					"Gemfile": "ruby",
+					"config.ru": "ruby",
+					".rubocop.yml": "yaml"
+				},
+				"editor.formatOnSave": true,
+				"editor.codeActionsOnSave": {
+					"source.fixAll.eslint": true,
+					"source.fixAll.rubocop": true
+				},
+				"[ruby]": {
+					"editor.defaultFormatter": "shopify.ruby-lsp",
+					"editor.formatOnSave": true,
+					"editor.tabSize": 2,
+					"editor.insertSpaces": true,
+					"files.trimTrailingWhitespace": true,
+					"files.insertFinalNewline": true,
+					"files.trimFinalNewlines": true
+				},
+				"[javascript][typescript][typescriptreact][javascriptreact]": {
+					"editor.defaultFormatter": "esbenp.prettier-vscode",
+					"editor.formatOnSave": true,
+					"editor.codeActionsOnSave": {
+						"source.fixAll.eslint": true
+					}
+				},
+				"playwright.reuseBrowser": true,
+				"playwright.showTrace": true,
+				"emmet.includeLanguages": {
+					"erb": "html"
+				}
 			}
 		}
 	},
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	"forwardPorts": [
-		3000,
-		3035,
-		9200
-	],
+	"forwardPorts": [3000, 3036, 5432],
 	// Uncomment the next line if you want start specific services in your Docker Compose config.
 	// "runServices": [],
 	// Uncomment the next line if you want to keep your containers running after VS Code shuts down.
 	// "shutdownAction": "none",
 	// Uncomment the next line to run commands after the container is created.
 	// "postCreateCommand": "",
-	"postAttachCommand": "bundle exec rails s -p 3000 -b 0.0.0.0 && bundle exec rails db:prepare",
+	"postCreateCommand": ".devcontainer/post-create.sh",
+	"postStartCommand": ".devcontainer/post-start.sh",
 	// Configure tool-specific properties.
 	// "customizations": {},
 	// Uncomment to connect as an existing user other than the container default. More info: https://aka.ms/dev-containers-non-root.
@@ -52,13 +126,30 @@
 	"remoteUser": "root",
 	"portsAttributes": {
 		"3000": {
-			"label": "Rails Server"
+			"label": "Rails Server",
+			"onAutoForward": "notify"
 		},
-		"3035": {
-			"label": "Webpack Dev Server"
+		"3036": {
+			"label": "Vite Dev Server",
+			"onAutoForward": "notify"
 		},
-		"9200": {
-			"label": "Elasticsearch"
+		"5432": {
+			"label": "PostgreSQL"
 		}
+	},
+	
+	"mounts": [
+		"source=vscode-extensions,target=/home/vscode/.vscode-server/extensions,type=volume",
+		"source=miru-web-bundle,target=/usr/local/bundle,type=volume",
+		"source=miru-web-node-modules,target=/app/node_modules,type=volume"
+	],
+	
+	"containerEnv": {
+		"RAILS_ENV": "development",
+		"NODE_ENV": "development",
+		"BUNDLE_PATH": "/usr/local/bundle",
+		"BUNDLE_BIN": "/usr/local/bundle/bin",
+		"GEM_HOME": "/usr/local/bundle",
+		"GEM_PATH": "/usr/local/bundle"
 	}
 }

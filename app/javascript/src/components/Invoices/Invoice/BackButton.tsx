@@ -1,9 +1,9 @@
+import { LocalStorageKeys } from "constants/index";
+
 import React from "react";
 
 import { ArrowLeftIcon } from "miruIcons";
 import { useNavigate } from "react-router-dom";
-
-import { LocalStorageKeys } from "constants/index";
 
 const BackButton = ({ href = "" }) => {
   const navigate = useNavigate();

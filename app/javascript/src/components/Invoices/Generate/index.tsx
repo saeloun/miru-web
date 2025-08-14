@@ -1,16 +1,16 @@
-import React, { Fragment, useEffect, useState } from "react";
+import { ApiStatus as InvoiceStatus } from "constants/index";
 
-import dayjs from "dayjs";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import { Toastr } from "StyledComponents";
+import React, { Fragment, useEffect, useState } from "react";
 
 import companiesApi from "apis/companies";
 import invoicesApi from "apis/invoices";
 import PaymentsProviders from "apis/payments/providers";
 import Loader from "common/Loader/index";
-import { ApiStatus as InvoiceStatus } from "constants/index";
 import { useUserContext } from "context/UserContext";
+import dayjs from "dayjs";
 import { mapGenerateInvoice, unmapGenerateInvoice } from "mapper/mappedIndex";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { Toastr } from "StyledComponents";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import Container from "./Container";
@@ -69,8 +69,18 @@ const GenerateInvoices = () => {
       const sanitized = await unmapGenerateInvoice(res.data);
       setInvoiceDetails(sanitized);
       setIsLoading(false);
-    } catch {
-      navigate("invoices/error");
+    } catch (error) {
+      console.error("Error fetching company details:", error);
+      // Only navigate to error page if it's a network/server error
+      // Not if it's a data mapping issue we can fix
+      if (error?.response?.status >= 500) {
+        navigate("/invoices/error");
+      } else {
+        // Try to show a more specific error
+        Toastr.error(
+          "Failed to load invoice data. Please refresh and try again."
+        );
+      }
       setIsLoading(false);
     }
   };
@@ -113,7 +123,7 @@ const GenerateInvoices = () => {
       invoiceLineItems: generateInvoiceLineItems(
         selectedOption,
         manualEntryArr,
-        invoiceDetails.companyDetails.date_format
+        invoiceDetails.companyDetails.dateFormat
       ),
       amount,
       amountDue,
@@ -131,13 +141,17 @@ const GenerateInvoices = () => {
 
   const handleSendInvoice = () => {
     if (selectedClient && invoiceNumber !== "") {
-      isStripeConnected
-        ? setShowSendInvoiceModal(true)
-        : setShowConnectPaymentDialog(true);
+      if (isStripeConnected) {
+        setShowSendInvoiceModal(true);
+      } else {
+        setShowConnectPaymentDialog(true);
+      }
     } else {
-      selectedClient
-        ? Toastr.error(INVOICE_NUMBER_ERROR)
-        : Toastr.error(SELECT_CLIENT_ERROR);
+      if (selectedClient) {
+        Toastr.error(INVOICE_NUMBER_ERROR);
+      } else {
+        Toastr.error(SELECT_CLIENT_ERROR);
+      }
     }
   };
 
@@ -161,9 +175,11 @@ const GenerateInvoices = () => {
       await saveInvoice();
       navigate("/invoices");
     } else {
-      selectedClient
-        ? Toastr.error(INVOICE_NUMBER_ERROR)
-        : Toastr.error(SELECT_CLIENT_ERROR);
+      if (selectedClient) {
+        Toastr.error(INVOICE_NUMBER_ERROR);
+      } else {
+        Toastr.error(SELECT_CLIENT_ERROR);
+      }
     }
   };
 

@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from "react";
 
+import { useUserContext } from "context/UserContext";
 import { useDebounce } from "helpers";
 import { CaretDownIcon, SearchIcon, XIcon } from "miruIcons";
-import Select from "react-select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../components/ui/select";
 import { MobileMoreOptions } from "StyledComponents";
-
-import { useUserContext } from "context/UserContext";
 
 const SearchTimeEntries = ({
   selectedEmployeeId,
@@ -26,9 +31,11 @@ const SearchTimeEntries = ({
         client.label.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
       );
 
-      newEmployeeList.length > 0
-        ? setFilteredEmployeeList(newEmployeeList)
-        : setFilteredEmployeeList([]);
+      if (newEmployeeList.length > 0) {
+        setFilteredEmployeeList(newEmployeeList);
+      } else {
+        setFilteredEmployeeList([]);
+      }
     } else {
       setFilteredEmployeeList(employeeList);
     }
@@ -70,13 +77,25 @@ const SearchTimeEntries = ({
 
   return isDesktop ? (
     <Select
-      isSearchable
-      defaultValue={currentUser}
-      options={employeeList}
-      styles={customStyles}
-      value={currentUser}
-      onChange={handleEmployeeChange}
-    />
+      value={currentUser?.value?.toString() || ""}
+      onValueChange={value => {
+        const selectedEmployee = employeeList.find(
+          emp => emp.value.toString() === value
+        );
+        handleEmployeeChange(selectedEmployee);
+      }}
+    >
+      <SelectTrigger className="w-52">
+        <SelectValue placeholder="Select employee" />
+      </SelectTrigger>
+      <SelectContent>
+        {employeeList.map(employee => (
+          <SelectItem key={employee.value} value={employee.value.toString()}>
+            {employee.label}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
   ) : (
     <>
       <div

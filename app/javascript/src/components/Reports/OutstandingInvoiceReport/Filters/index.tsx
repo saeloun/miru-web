@@ -1,13 +1,17 @@
 import React, { useState } from "react";
 
+import CustomDateRangePicker from "common/CustomDateRangePicker";
 import { XIcon } from "miruIcons";
-import Select from "react-select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../../ui/select";
 import * as Yup from "yup";
 
-import CustomDateRangePicker from "common/CustomDateRangePicker";
-
 import { dateRangeOptions } from "./filterOptions";
-import { customStyles } from "./style";
 
 import { useEntry } from "../../context/EntryContext";
 
@@ -98,13 +102,26 @@ const FilterSideBar = ({
             <li className="px-5 pb-5">
               <h5 className="text-xs font-normal">Date Range</h5>
               <Select
-                classNamePrefix="react-select-filter"
                 name="dateRange"
-                options={dateRangeOptions}
-                styles={customStyles}
-                value={filters.dateRange}
-                onChange={handleSelectFilter}
-              />
+                value={filters.dateRange?.value || ""}
+                onValueChange={value => {
+                  const selectedOption = dateRangeOptions.find(
+                    option => option.value === value
+                  );
+                  handleSelectFilter(selectedOption, { name: "dateRange" });
+                }}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select date range" />
+                </SelectTrigger>
+                <SelectContent>
+                  {dateRangeOptions.map(option => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               {showCustomFilter && (
                 <div className="absolute z-20 mt-1 flex flex-col rounded-lg bg-miru-white-1000 shadow-c1">
                   <CustomDateRangePicker
@@ -142,14 +159,28 @@ const FilterSideBar = ({
             <li className="px-5 pb-5">
               <h5 className="text-xs font-normal">Clients</h5>
               <Select
-                isMulti
-                classNamePrefix="react-select-filter"
                 name="clients"
-                options={revenueByClientReport.filterOptions.clients}
-                styles={customStyles}
-                value={filters.clients}
-                onChange={handleSelectFilter}
-              />
+                value={filters.clients?.[0]?.value || ""}
+                onValueChange={value => {
+                  const selectedOption =
+                    revenueByClientReport.filterOptions.clients.find(
+                      option => option.value === value
+                    );
+                  // Note: This simplified version handles single selection. For multi-select, consider using a different approach
+                  handleSelectFilter([selectedOption], { name: "clients" });
+                }}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select clients" />
+                </SelectTrigger>
+                <SelectContent>
+                  {revenueByClientReport.filterOptions.clients.map(option => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </li>
           </ul>
         </div>

@@ -5,7 +5,7 @@ class InternalApi::V1::GenerateInvoiceController < InternalApi::V1::ApplicationC
     authorize client, policy_class: GenerateInvoicePolicy
     render :index,
       locals: GenerateInvoice::NewLineItemsService.process(client, params),
-      status: :ok
+      status: 200
   end
 
   private

@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
 
-import { ClockIcon, XIcon } from "miruIcons";
-import { Button, SidePanel } from "StyledComponents";
-
 import Loader from "common/Loader/index";
 import { useUserContext } from "context/UserContext";
+import { ClockIcon, XIcon } from "miruIcons";
+import { Button, SidePanel } from "StyledComponents";
 
 import History from "./History";
 import { getHistory } from "./utils";
@@ -15,9 +14,15 @@ const ViewHistory = ({ setShowHistory, invoice }) => {
   const { company } = useUserContext();
 
   const getHistoryData = async () => {
-    const records = await getHistory(invoice.id, company);
-    setLogs(records);
-    setLoading(false);
+    try {
+      const records = await getHistory(invoice.id, company);
+      setLogs(records);
+    } catch (error) {
+      console.error("Error fetching invoice history:", error);
+      setLogs([]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -26,7 +31,10 @@ const ViewHistory = ({ setShowHistory, invoice }) => {
   }, []);
 
   return (
-    <SidePanel WrapperClassname="py-8 px-6" setFilterVisibilty={setShowHistory}>
+    <SidePanel
+      WrapperClassname="py-8 px-6 z-50"
+      setFilterVisibilty={setShowHistory}
+    >
       <SidePanel.Header className="flex justify-between">
         <div className="flex items-center">
           <ClockIcon className="mr-2" size={16} weight="bold" />

@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from "react";
 
-import dayjs from "dayjs";
-import { XIcon, SearchIcon } from "miruIcons";
-import Select from "react-select";
-
 import CustomDateRangePicker from "common/CustomDateRangePicker";
 import { useUserContext } from "context/UserContext";
+import dayjs from "dayjs";
+import { XIcon, SearchIcon } from "miruIcons";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../../ui/select";
 
 import { handleDateRangeOptions } from "./DateRange";
 import SearchTeamMembers from "./SearchTeamMembers";
@@ -73,11 +78,12 @@ const Filters = ({
         [field.name]: selectedValue,
       });
     } else {
-      selectedValue.value != "custom" &&
+      if (selectedValue.value !== "custom") {
         setFilters({
           ...filters,
           [field.name]: selectedValue,
         });
+      }
     }
   };
 
@@ -147,7 +153,9 @@ const Filters = ({
   });
 
   const resetCustomDatePicker = () => {
-    defaultDateRange() && setFilters(setDefaultDateRange());
+    if (defaultDateRange()) {
+      setFilters(setDefaultDateRange());
+    }
     hideCustomFilter();
   };
 
@@ -217,13 +225,26 @@ const Filters = ({
         />
         <div className="ml-2 w-1/2 lg:w-auto">
           <Select
-            classNamePrefix="react-select-filter"
             name="dateRange"
-            options={dateRangeOptions}
-            styles={customStyles}
-            value={filters.dateRange}
-            onChange={handleSelectFilter}
-          />
+            value={filters.dateRange?.value || ""}
+            onValueChange={value => {
+              const selectedOption = dateRangeOptions.find(
+                option => option.value === value
+              );
+              handleSelectFilter(selectedOption, { name: "dateRange" });
+            }}
+          >
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Select date range" />
+            </SelectTrigger>
+            <SelectContent>
+              {dateRangeOptions.map(option => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           {showCustomFilter && (
             <div className="absolute z-20 mt-1 flex flex-col rounded-lg bg-miru-white-1000 shadow-c1">
               <CustomDateRangePicker

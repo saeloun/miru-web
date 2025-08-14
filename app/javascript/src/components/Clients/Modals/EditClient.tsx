@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 
+import { useUserContext } from "context/UserContext";
 import { XIcon } from "miruIcons";
 import { Modal } from "StyledComponents";
-
-import { useUserContext } from "context/UserContext";
 
 import ClientForm from "../ClientForm";
 import MobileClientForm from "../ClientForm/MobileClientForm";

@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe "Delete team member", type: :system do
+RSpec.describe "Delete team member", type: :system, js: true do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
   let(:employee_user) { create(:user, current_workspace_id: company.id) }

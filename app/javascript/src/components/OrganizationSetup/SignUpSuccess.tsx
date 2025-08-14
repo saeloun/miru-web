@@ -1,9 +1,9 @@
+import { Paths } from "constants/index";
+
 import React from "react";
 
-import { GreenCheckCircleIcon } from "miruIcons";
-
 import MiruLogoWatermark from "common/MiruLogoWatermark";
-import { Paths } from "constants/index";
+import { GreenCheckCircleIcon } from "miruIcons";
 
 const SignUpSuccess = () => {
   const redirectToTimeTrackingPage = () => {

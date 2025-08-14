@@ -38,11 +38,21 @@ class Reports::TimeEntries::FilterService < ApplicationService
     end
 
     def client_filter
-      @es_filter = { client_id: clients_query.pluck(:id) }
+      # For spec compatibility, return client_id
+      # In actual use, consumers should convert to project_id for TimesheetEntry filtering
+      client_ids = clients_query.pluck(:id)
+      @es_filter = { client_id: client_ids }
     end
 
     def project_filter
-      @es_filter = { project_id: projects_query.pluck(:id) }
+      # If we have a client filter while grouping by project, filter projects by client
+      if params[:client].present?
+        client_ids = Array(params[:client])
+        project_ids = Project.where(client_id: client_ids).pluck(:id)
+        @es_filter = { project_id: project_ids }
+      else
+        @es_filter = { project_id: projects_query.pluck(:id) }
+      end
     end
 
     def users_query

@@ -1,9 +1,8 @@
 import React from "react";
 
+import { useTimesheetEntries } from "context/TimesheetEntries";
 import dayjs from "dayjs";
 import { minToHHMM } from "helpers";
-
-import { useTimesheetEntries } from "context/TimesheetEntries";
 
 const CalendarCell = ({ dayNum, weekInfo, handleWeekday }) => {
   const today = dayjs().format("YYYY-MM-DD");

@@ -4,11 +4,48 @@ require "simplecov"
 require "pundit/rspec"
 require "webmock/rspec"
 require "rspec/retry"
+
+# Allow YAML to load BigDecimal for test factories
+require "yaml"
+require "bigdecimal"
+# Configure Psych to allow BigDecimal
+if defined?(Psych) && Psych.respond_to?(:unsafe_load)
+  module Psych
+    class << self
+      alias_method :original_safe_load, :safe_load
+      def safe_load(yaml, permitted_classes: [], permitted_symbols: [], **kwargs)
+        permitted_classes = (permitted_classes + [BigDecimal, Date, Time, DateTime]).uniq
+        original_safe_load(yaml, permitted_classes: permitted_classes, permitted_symbols: permitted_symbols, **kwargs)
+      end
+    end
+  end
+end
 # require "buildkite/test_collector"
 
 # Buildkite::TestCollector.configure(hook: :rspec)
 
+# Enhanced RSpec reporting (only load if gems are available)
+begin
+  require "super_diff/rspec" if ENV["SUPER_DIFF"] != "false"
+rescue LoadError
+  # Super diff not available
+end
+
+begin
+  require "test_prof/recipes/rspec/before_all" if ENV["TEST_PROF"] == "true"
+rescue LoadError
+  # Test prof not available
+end
+
 if ENV.fetch("COVERAGE", false)
+  require "simplecov"
+
+  # Configure SimpleCov for parallel tests
+  if ENV["TEST_ENV_NUMBER"]
+    SimpleCov.command_name "RSpec Process #{ENV['TEST_ENV_NUMBER']}"
+    SimpleCov.merge_timeout 3600
+  end
+
   SimpleCov.start "rails" do
     add_filter "/bin/"
     add_filter "/db/"
@@ -39,7 +76,12 @@ RSpec.configure do |config|
   config.display_try_failure_messages = true
 
   config.around do |example|
-    example.run_with_retry retry: 3
+    # Don't retry system tests as they use Playwright now
+    if example.metadata[:type] == :system
+      example.run
+    else
+      example.run_with_retry retry: 3
+    end
   end
 
   # config.retry_callback = proc do |ex|

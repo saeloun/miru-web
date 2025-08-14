@@ -1,15 +1,15 @@
-import React, { useEffect, useState } from "react";
+import { ApiStatus as InvoiceStatus } from "constants/index";
 
-import { ArrowLeftIcon } from "miruIcons";
-import { useParams } from "react-router-dom";
-import { Button, Toastr } from "StyledComponents";
+import React, { useEffect, useState } from "react";
 
 import invoicesApi from "apis/invoices";
 import PaymentsProviders from "apis/payments/providers";
 import Loader from "common/Loader/index";
 import SendInvoice from "components/Invoices/common/InvoiceForm/SendInvoice";
-import { ApiStatus as InvoiceStatus } from "constants/index";
 import { useUserContext } from "context/UserContext";
+import { ArrowLeftIcon } from "miruIcons";
+import { useParams } from "react-router-dom";
+import { Button, Toastr } from "StyledComponents";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import Header from "./Header";
@@ -103,7 +103,6 @@ const Invoice = () => {
 
   return (
     status === InvoiceStatus.SUCCESS &&
-    // eslint-disable-next-line no-nested-ternary
     (isDesktop ? (
       <>
         <Header

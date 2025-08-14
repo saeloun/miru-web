@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from "react";
+import { MIRU_APP_URL, Paths } from "constants/index";
 
-import { Form, Formik, FormikProps } from "formik";
-import { MiruLogoSVG } from "miruIcons";
+import React, { useEffect, useState } from "react";
 
 import authenticationApi from "apis/authentication";
 import { InputErrors, InputField } from "common/FormikFields";
 import MiruLogoWatermark from "common/MiruLogoWatermark";
-import { MIRU_APP_URL, Paths } from "constants/index";
+import { Form, Formik, FormikProps } from "formik";
+import { MiruLogoSVG } from "miruIcons";
 
 import PasswordResetLinkSentMsg from "./PasswordResetLinkSentMsg";
 import {

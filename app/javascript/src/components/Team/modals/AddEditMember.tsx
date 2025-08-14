@@ -1,17 +1,17 @@
+import { TeamModalType } from "constants/index";
+
 import React, { useState, useRef } from "react";
 
+import teamApi from "apis/team";
+import CustomRadioButton from "common/CustomRadio";
+import { InputErrors, InputField } from "common/FormikFields";
+import { useList } from "context/TeamContext";
+import { useUserContext } from "context/UserContext";
 import { Formik, Form, FormikProps } from "formik";
 import { useOutsideClick, useKeypress } from "helpers";
 import { XIcon } from "miruIcons";
 import { Button, Modal } from "StyledComponents";
 import * as Yup from "yup";
-
-import teamApi from "apis/team";
-import CustomRadioButton from "common/CustomRadio";
-import { InputErrors, InputField } from "common/FormikFields";
-import { TeamModalType } from "constants/index";
-import { useList } from "context/TeamContext";
-import { useUserContext } from "context/UserContext";
 
 import TeamForm from "./TeamForm";
 
@@ -50,9 +50,9 @@ interface Props {
 }
 
 const EditClient = ({ user = {}, isEdit = false }: Props) => {
-  const [apiError, setApiError] = useState<string>(""); // eslint-disable-line
+  const [apiError, setApiError] = useState<string>("");
   const { setModalState, modal, setTeamList, teamList } = useList();
-  const wrapperRef = useRef();
+  const wrapperRef = useRef<HTMLDivElement>(null);
   const { isDesktop } = useUserContext();
 
   const updateTeamList = updatedUser => {

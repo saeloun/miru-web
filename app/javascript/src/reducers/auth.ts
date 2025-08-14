@@ -1,15 +1,25 @@
 import { setToLocalStorage } from "utils/storage";
 
-const authReducer = (_, { type, payload }) => {
-  switch (type) {
+export interface AuthState {
+  isLoggedIn: boolean;
+  authToken: string | null;
+  authEmail: string | null;
+}
+
+export type AuthAction =
+  | { type: "LOGIN"; payload: { token: string; email: string } }
+  | { type: "LOGOUT" };
+
+const authReducer = (state: AuthState, action: AuthAction): AuthState => {
+  switch (action.type) {
     case "LOGIN": {
-      setToLocalStorage("authToken", payload.token);
-      setToLocalStorage("authEmail", payload.email);
+      setToLocalStorage("authToken", action.payload.token);
+      setToLocalStorage("authEmail", action.payload.email);
 
       return {
         isLoggedIn: true,
-        authToken: payload.token,
-        authEmail: payload.email,
+        authToken: action.payload.token,
+        authEmail: action.payload.email,
       };
     }
     case "LOGOUT": {
@@ -19,7 +29,8 @@ const authReducer = (_, { type, payload }) => {
       return { isLoggedIn: false, authToken: null, authEmail: null };
     }
     default: {
-      throw new Error(`Unhandled action type: ${type}`);
+      const _exhaustive: never = action;
+      throw new Error(`Unhandled action type`);
     }
   }
 };

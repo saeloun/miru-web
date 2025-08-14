@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 
+import { useUserContext } from "context/UserContext";
 import { XIcon } from "miruIcons";
 import { Button } from "StyledComponents";
-
-import { useUserContext } from "context/UserContext";
 
 import History from "./History";
 import { getHistory } from "./utils";

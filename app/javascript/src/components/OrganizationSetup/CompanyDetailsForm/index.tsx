@@ -5,12 +5,16 @@ import { EditImageButtonSVG, deleteImageIcon } from "miruIcons";
 import PhoneInput from "react-phone-number-input";
 import flags from "react-phone-number-input/flags";
 import "react-phone-number-input/style.css";
-import Select, { components } from "react-select";
 import { Avatar } from "StyledComponents";
 import worldCountries from "world-countries";
-
 import companyProfileApi from "apis/companyProfile";
-import CustomReactSelect from "common/CustomReactSelect";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../ui/select";
 import { InputErrors, InputField } from "common/FormikFields";
 
 import { CompanyDetailsFormProps, CompanyDetailsFormValues } from "./interface";
@@ -20,47 +24,6 @@ import {
 } from "./utils";
 
 import { i18n } from "../../../i18n";
-
-const { ValueContainer, Placeholder } = components;
-const customStyles = {
-  control: provided => ({
-    ...provided,
-    backgroundColor: "#FFFFFF",
-    color: "red",
-    minHeight: 48,
-    padding: "0",
-  }),
-  menu: provided => ({
-    ...provided,
-    fontSize: "12px",
-    letterSpacing: "handleCountryChange2px",
-  }),
-  valueContainer: provided => ({
-    ...provided,
-    overflow: "visible",
-  }),
-  placeholder: base => ({
-    ...base,
-    position: "absolute",
-    top: "-45%",
-    transition: "top 0.2s, font-size 0.2s",
-    fontSize: 10,
-    backgroundColor: "#FFFFFF",
-  }),
-};
-
-const CustomValueContainer = props => {
-  const { children } = props;
-
-  return (
-    <ValueContainer {...props}>
-      <Placeholder {...props}>{props.selectProps.placeholder}</Placeholder>
-      {React.Children.map(children, child =>
-        child && child.key !== "placeholder" ? child : null
-      )}
-    </ValueContainer>
-  );
-};
 
 const CompanyDetailsForm = ({
   onNextBtnClick,
@@ -98,7 +61,7 @@ const CompanyDetailsForm = ({
         : companyDetailsFormInitialValues?.country?.code || "US";
       getTimezonesOfCurrentCountry(selectedCountryCode);
     }
-  }, [allTimezones]); // eslint-disable-line
+  }, [allTimezones]);
 
   const getAllTimezones = async () => {
     const res = await companyProfileApi.get();
@@ -369,22 +332,51 @@ const CompanyDetailsForm = ({
               </div>
               {/* Country */}
               <div className="flex flex-row">
-                <div className="flex w-1/2 flex-col py-0 pr-2">
-                  <CustomReactSelect
-                    isErr={!!errors.country}
-                    label="Country"
-                    name="country"
-                    options={countries}
-                    value={values.country.value ? values.country : null}
-                    handleOnChange={e => {
-                      getTimezonesOfCurrentCountry(e.code, setFieldValue);
-                      setFieldValue("country", e);
-                      setFieldValue("state", "");
-                      setFieldValue("city", "");
-                    }}
-                  />
+                <div className="flex w-1/2 flex-col py-0 pr-2" id="country">
+                  <div className="field relative">
+                    <label className="absolute -top-1 left-0 z-1 ml-3 origin-0 bg-white px-1 text-xsm font-medium text-miru-dark-purple-200 duration-300">
+                      Country
+                    </label>
+                    <Select
+                      value={values.country?.value || ""}
+                      onValueChange={value => {
+                        const selectedCountry = countries.find(
+                          c => c.value === value
+                        );
+                        if (selectedCountry) {
+                          getTimezonesOfCurrentCountry(
+                            selectedCountry.code,
+                            setFieldValue
+                          );
+                          setFieldValue("country", selectedCountry);
+                          setFieldValue("state", "");
+                          setFieldValue("city", "");
+                        }
+                      }}
+                    >
+                      <SelectTrigger
+                        data-testid="select-trigger"
+                        className={`h-12 ${
+                          errors.country ? "border-red-500" : ""
+                        }`}
+                      >
+                        <SelectValue placeholder="Select country" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {countries.map(country => (
+                          <SelectItem
+                            key={country.value}
+                            value={country.value}
+                            data-testid="select-option"
+                          >
+                            {country.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
-                <div className="flex w-1/2 flex-col pl-2">
+                <div className="flex w-1/2 flex-col pl-2" id="state">
                   <InputField
                     resetErrorOnChange
                     hasError={errors.state && touched.state}
@@ -400,7 +392,7 @@ const CompanyDetailsForm = ({
                 </div>
               </div>
               <div className="flex flex-row">
-                <div className="flex w-1/2 flex-col pr-2">
+                <div className="flex w-1/2 flex-col pr-2" id="city">
                   <InputField
                     resetErrorOnChange
                     hasError={errors.city && touched.city}
@@ -431,25 +423,39 @@ const CompanyDetailsForm = ({
               </div>
               {/* Timezone */}
               <div className="field relative">
-                <div className="outline relative">
-                  <Select
-                    className=""
-                    classNamePrefix="react-select-filter"
-                    name="timezone"
-                    options={timezonesOfSelectedCountry}
-                    placeholder="Timezone"
-                    styles={customStyles}
-                    components={{
-                      ValueContainer: CustomValueContainer,
-                    }}
-                    value={
-                      values.timezone.value
-                        ? values.timezone
-                        : timezonesOfSelectedCountry[0]
+                <label className="absolute -top-1 left-0 z-1 ml-3 origin-0 bg-white px-1 text-xsm font-medium text-miru-dark-purple-200 duration-300">
+                  Timezone
+                </label>
+                <Select
+                  value={
+                    values.timezone?.value ||
+                    timezonesOfSelectedCountry?.[0]?.value ||
+                    ""
+                  }
+                  onValueChange={value => {
+                    const selectedTimezone = timezonesOfSelectedCountry.find(
+                      tz => tz.value === value
+                    );
+                    if (selectedTimezone) {
+                      setFieldValue("timezone", selectedTimezone);
                     }
-                    onChange={e => setFieldValue("timezone", e)}
-                  />
-                </div>
+                  }}
+                >
+                  <SelectTrigger
+                    className={`h-12 ${
+                      errors.timezone ? "border-red-500" : ""
+                    }`}
+                  >
+                    <SelectValue placeholder="Select timezone" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {timezonesOfSelectedCountry?.map(timezone => (
+                      <SelectItem key={timezone.value} value={timezone.value}>
+                        {timezone.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 <div className="mx-0 mt-1 mb-5 block text-xs tracking-wider text-red-600">
                   {errors.timezone && touched.timezone && (
                     <div>{errors.timezone.value}</div>

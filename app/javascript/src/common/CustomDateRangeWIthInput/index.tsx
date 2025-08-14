@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import React, { useEffect, useRef, useState } from "react";
 
 import { getMonth, getYear } from "date-fns";
@@ -24,8 +23,8 @@ const CustomDateRangeWithInput = ({
   onClickInput,
   selectedInput,
   dateRange,
-  setSelectedInput = (inputFieldName: string) => {}, // eslint-disable-line
-  setIsDisableDoneBtn = (isDisableDoneBtn: boolean) => {}, // eslint-disable-line
+  setSelectedInput = (inputFieldName: string) => {},
+  setIsDisableDoneBtn = (isDisableDoneBtn: boolean) => {},
   submitCustomDatePicker,
   wrapperRef,
   showCustomCalendar,
@@ -41,7 +40,7 @@ const CustomDateRangeWithInput = ({
   const [isValidDateRange, setIsValidDateRange] = useState<boolean>(true);
 
   const range = (start, end) =>
-    Array.from({ length: end - start }, (v, k) => k + start);
+    Array.from({ length: end - start }, (_v, k) => k + start);
 
   const years = range(1990, getYear(new Date()) + 1);
   const textInput = useRef(null);
@@ -51,7 +50,7 @@ const CustomDateRangeWithInput = ({
     setSelectedInput(fromInput);
     textInput.current.focus();
     resetErrors("fromInput");
-  }, []);
+  }, [setSelectedInput, resetErrors]);
 
   useEffect(() => {
     if (
@@ -60,7 +59,7 @@ const CustomDateRangeWithInput = ({
     ) {
       setShowCustomCalendar(true);
     }
-  }, [document.activeElement]);
+  }, [setShowCustomCalendar]);
 
   const handleDateInputChange = (dateInput: string, fieldName: string) => {
     const showErrorMsg = !dateInput?.trim();

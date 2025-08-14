@@ -37,12 +37,12 @@ RSpec.describe "InternalApi::V1::TimeTracking#index", type: :request do
 
     it "returns all projects of all clients of the company" do
       expected_response = {
-        client1.name => [project1.id, project2.id],
+        client1.name => [project1.id, project2.id].sort,
         client2.name => [project3.id]
       }
       actual_response = json_response["projects"].transform_values { |projects|
-  projects.pluck("id")
-}
+        projects.pluck("id").sort
+      }
       expect(actual_response).to eq(expected_response)
     end
   end

@@ -1,14 +1,19 @@
 import React, { Fragment, useState } from "react";
 
+import { Divider } from "common/Divider";
+import { useUserContext } from "context/UserContext";
 import { getYear } from "date-fns";
 import dayjs from "dayjs";
 import { minToHHMM, companyDateFormater } from "helpers";
-import { XIcon, CalendarIcon } from "miruIcons";
-import { Button, Tooltip } from "StyledComponents";
-
-import { Divider } from "common/Divider";
-import HolidayModal from "common/HolidayModal";
-import { useUserContext } from "context/UserContext";
+import { X, CalendarDays, Eye } from "lucide-react";
+import { Button } from "../../ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../../ui/tooltip";
+import HolidayCalendarModal from "../HolidayCalendarModal";
 
 import LeaveBlock from "./LeaveBlock";
 import Table from "./Table";
@@ -30,26 +35,33 @@ const Container = ({
   const toggleCalendarModal = () => setShowCalendar(!showCalendar);
 
   const HolidayButton = ({ content, date, className }) => (
-    <div className={`holiday-wrapper ${className}`}>
-      <Tooltip className="tooltip" content={content.name}>
-        <span>{date.getDate()}</span>
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <div className={`holiday-wrapper ${className}`}>
+            <span>{date.getDate()}</span>
+          </div>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>{content.name}</p>
+        </TooltipContent>
       </Tooltip>
-    </div>
+    </TooltipProvider>
   );
 
   const tileContent = ({ date }) => {
     const currentDate = dayjs(date).format(dateFormat);
-    const currentYearNationalHolidayList = nationalHolidayList.find(
-      holiday => holiday.year == currentYear
-    ).national_holidays;
+    const currentYearNationalHolidayList =
+      nationalHolidayList.find(holiday => holiday.year == currentYear)
+        ?.national_holidays || [];
 
     const isHoliday = currentYearNationalHolidayList?.find(
       holiday => holiday.date === currentDate
     );
 
-    const currentYearOptionalHolidayList = optionalHolidayList?.find(
-      holiday => holiday.year == currentYear
-    ).optional_holidays;
+    const currentYearOptionalHolidayList =
+      optionalHolidayList?.find(holiday => holiday.year == currentYear)
+        ?.optional_holidays || [];
 
     const isOptionalHoliday = currentYearOptionalHolidayList?.find(
       holiday => holiday.date === currentDate
@@ -76,16 +88,14 @@ const Container = ({
             {getLeaveBalanaceDateText()}
           </p>
           <Button
-            className="flex items-center text-center text-xs font-bold lg:px-4"
-            style="secondary"
+            variant="outline"
+            size="sm"
             onClick={toggleCalendarModal}
+            className="flex items-center gap-2 border-miru-han-purple-1000 text-miru-han-purple-1000 hover:bg-miru-han-purple-1000 hover:text-white transition-all duration-200 font-semibold shadow-sm"
           >
-            <CalendarIcon
-              className="mr-2 text-miru-han-purple-1000 lg:hidden"
-              size={16}
-              weight="bold"
-            />
-            <span className="lg:hidden">Holiday</span>
+            <CalendarDays className="h-4 w-4 lg:hidden" />
+            <Eye className="hidden lg:block h-4 w-4" />
+            <span className="lg:hidden">Holidays</span>
             <span className="hidden lg:block">View Holiday Calendar</span>
           </Button>
         </div>
@@ -110,9 +120,8 @@ const Container = ({
                   <span className="tracking-wide text-base font-normal capitalize text-miru-dark-purple-1000">
                     {selectedLeaveType.name}
                   </span>
-                  <XIcon
-                    className="ml-2 cursor-pointer"
-                    size={14}
+                  <X
+                    className="ml-2 h-3.5 w-3.5 cursor-pointer"
                     onClick={() => setSelectedLeaveType(null)}
                   />
                 </div>
@@ -129,15 +138,13 @@ const Container = ({
           <Table timeoffEntries={timeoffEntries} />
         </div>
       </div>
-      {showCalendar && (
-        <HolidayModal
-          currentYear={currentYear}
-          setCurrentYear={setCurrentYear}
-          showCalendar={showCalendar}
-          tileContent={tileContent}
-          toggleCalendarModal={toggleCalendarModal}
-        />
-      )}
+      <HolidayCalendarModal
+        isOpen={showCalendar}
+        onClose={toggleCalendarModal}
+        currentYear={currentYear}
+        setCurrentYear={setCurrentYear}
+        tileContent={tileContent}
+      />
     </Fragment>
   );
 };

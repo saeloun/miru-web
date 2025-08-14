@@ -13,10 +13,7 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
   let(:project_2) { create(:project, client: client_2) }
   let(:time_frame) { "week" }
 
-  before do
-    Client.search_index.refresh
-    Client.reindex
-  end
+  # No setup needed - PG search doesn't require indexing
 
   context "when user is an admin" do
     before do
@@ -39,7 +36,7 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
       end
       let(:total_minutes) do
         user.current_workspace.clients.kept.reduce(0) do |sum, client|
-          sum += client.total_hours_logged(time_frame)
+          sum + client.total_hours_logged(time_frame)
         end
       end
 
@@ -73,13 +70,17 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
     end
 
     it "returns all the clients when query params are empty" do
-      client_details = [{
-        id: client_1.id, name: client_1.name, email: client_1.email, phone: client_1.phone,
-        address: client_1.current_address, minutes_spent: client_1.total_hours_logged(time_frame),
-        logo: "", currency: client_1.currency
-      }, id: client_2.id, name: client_2.name, email: client_2.email, phone: client_2.phone,
-         address: client_2.current_address, minutes_spent: client_2.total_hours_logged(time_frame),
-         logo: "", currency: client_2.currency
+      client_details = [
+        {
+          id: client_1.id, name: client_1.name, email: client_1.email, phone: client_1.phone,
+          address: client_1.current_address, minutes_spent: client_1.total_hours_logged(time_frame),
+          logo: "", currency: client_1.currency
+        },
+        {
+          id: client_2.id, name: client_2.name, email: client_2.email, phone: client_2.phone,
+          address: client_2.current_address, minutes_spent: client_2.total_hours_logged(time_frame),
+          logo: "", currency: client_2.currency
+        }
       ]
       expect(response).to have_http_status(:ok)
       expect(json_response["client_details"]).to eq(JSON.parse(client_details.to_json))
@@ -96,7 +97,7 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
       create_list(:timesheet_entry, 5, user:, project: project_1)
       create_list(:timesheet_entry, 5, user:, project: project_2)
       send_request :get, internal_api_v1_clients_path, params: {
-        time_frame:
+        time_frame: time_frame
       }, headers: auth_headers(user)
     end
 
@@ -108,7 +109,7 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
             minutes_spent: client.total_hours_logged(time_frame), logo: "", currency: client.currency
           }
         end
-        total_minutes = (client_details.map { |client| client[:minutes_spent] }).sum
+        total_minutes = (client_details.pluck(:minutes_spent)).sum
         overdue_outstanding_amount = user.current_workspace.overdue_and_outstanding_and_draft_amount
         expect(response).to have_http_status(:ok)
         expect(json_response["client_details"]).to match_array(JSON.parse(client_details.to_json))
@@ -128,7 +129,7 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
       create_list(:timesheet_entry, 5, user:, project: project_1)
       create_list(:timesheet_entry, 5, user:, project: project_2)
       send_request :get, internal_api_v1_clients_path, params: {
-        time_frame:
+        time_frame: time_frame
       }, headers: auth_headers(user)
     end
 
@@ -140,7 +141,7 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
   context "when unauthenticated" do
     it "is not permitted to view clients" do
       send_request :get, internal_api_v1_clients_path, params: {
-        time_frame:
+        time_frame: "last_week"
       }
       expect(response).to have_http_status(:unauthorized)
       expect(json_response["error"]).to eq(I18n.t("devise.failure.unauthenticated"))

@@ -1,11 +1,10 @@
 import React from "react";
 
-import { cashFormatter, currencySymbol } from "helpers";
-
 import AmountBoxContainer from "common/AmountBox";
 import MobileAmountBox from "common/AmountBox/MobileAmountBox";
 import ChartBar from "common/ChartBar";
 import { useUserContext } from "context/UserContext";
+import { cashFormatter, currencySymbol } from "helpers";
 
 const TotalHoursChart = ({
   clientData,

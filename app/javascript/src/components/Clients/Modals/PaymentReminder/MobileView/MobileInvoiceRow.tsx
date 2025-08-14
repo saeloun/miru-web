@@ -2,7 +2,6 @@ import React from "react";
 
 import { currencyFormat } from "helpers";
 import { Badge, Button } from "StyledComponents";
-
 import getStatusCssClass from "utils/getBadgeStatus";
 
 const MobileInvoiceRow = ({ invoice, isLast }) => {

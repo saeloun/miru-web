@@ -1,0 +1,148 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# Miru 2.0 Enhanced Test Runner
+# Provides multiple test execution modes with advanced reporting
+
+require "optparse"
+require "fileutils"
+
+class TestRunner
+  MODES = {
+    "default" => "Standard test run with documentation format",
+    "parallel" => "Parallel test execution (fastest)",
+    "fuubar" => "Progress bar visualization",
+    "coverage" => "Run with code coverage analysis",
+    "profile" => "Performance profiling with test-prof",
+    "ci" => "CI-optimized execution"
+  }.freeze
+
+  def initialize(args)
+    @mode = "default"
+    @files = []
+    @options = {}
+    parse_options(args)
+  end
+
+  def run
+    puts "\n🚀 Miru 2.0 Test Runner"
+    puts "Mode: #{@mode}"
+    puts "=" * 50
+
+    case @mode
+    when "parallel"
+      run_parallel
+    when "fuubar"
+      run_fuubar
+    when "coverage"
+      run_with_coverage
+    when "profile"
+      run_with_profiling
+    when "ci"
+      run_ci
+    else
+      run_default
+    end
+  end
+
+  private
+
+  def parse_options(args)
+    parser = OptionParser.new do |opts|
+      opts.banner = "Usage: bin/test [options] [files]"
+      
+      opts.separator ""
+      opts.separator "Modes:"
+      
+      MODES.each do |mode, description|
+        opts.on("--#{mode}", description) { @mode = mode }
+      end
+      
+      opts.separator ""
+      opts.separator "Options:"
+      
+      opts.on("-h", "--help", "Show this help") do
+        puts opts
+        exit
+      end
+    end
+    
+    parser.parse!(args)
+    @files = args.empty? ? ["spec/"] : args
+  end
+
+  def run_default
+    puts "Running tests with documentation format..."
+    system("bundle", "exec", "rspec", *@files)
+  end
+
+  def run_parallel
+    puts "Running tests in parallel (4 workers)..."
+    FileUtils.mkdir_p("tmp")
+    
+    env = {
+      "PARALLEL_WORKERS" => "4",
+      "RAILS_ENV" => "test"
+    }
+    
+    system(env, "bundle", "exec", "parallel_rspec", "-n", "4", *@files)
+  end
+
+  def run_fuubar
+    puts "Running tests with Fuubar progress bar..."
+    system("bundle", "exec", "rspec", "--format", "Fuubar", *@files)
+  end
+
+  def run_with_coverage
+    puts "Running tests with code coverage..."
+    env = {
+      "COVERAGE" => "true",
+      "RAILS_ENV" => "test"
+    }
+    
+    system(env, "bundle", "exec", "rspec", *@files)
+    
+    if File.exist?("coverage/index.html")
+      puts "\n📊 Coverage report: coverage/index.html"
+    end
+  end
+
+  def run_with_profiling
+    puts "Running tests with performance profiling..."
+    env = {
+      "TEST_PROF" => "true",
+      "TEST_STACK_PROF" => "1",
+      "TEST_RUBY_PROF" => "1",
+      "RAILS_ENV" => "test"
+    }
+    
+    system(env, "bundle", "exec", "rspec", "--tag", "profile", *@files)
+  end
+
+  def run_ci
+    puts "Running tests in CI mode..."
+    FileUtils.mkdir_p("tmp")
+    
+    env = {
+      "CI" => "true",
+      "RAILS_ENV" => "test",
+      "PARALLEL_WORKERS" => "10"
+    }
+    
+    # Run parallel tests with JUnit output
+    success = system(env, "bundle", "exec", "parallel_rspec", 
+                    "-n", "10",
+                    "--serialize-stdout",
+                    *@files)
+    
+    # Merge JUnit reports
+    if Dir.glob("tmp/rspec*.xml").any?
+      puts "\n📋 Test reports generated in tmp/"
+    end
+    
+    exit(1) unless success
+  end
+end
+
+# Run the test runner
+TestRunner.new(ARGV).run

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 import React, { Fragment, useState } from "react";
 
 import Loader from "common/Loader/index";
@@ -45,7 +44,7 @@ const importList = [
 const columnNames = [];
 
 const Import = () => {
-  const [isLoading, setisLoading] = useState(false); //eslint-disable-line
+  const [isLoading, setisLoading] = useState(false);
   const [file, setFile] = useState(null);
   const [showImportModal, setShowImportModal] = useState(false);
   const [step, setStep] = useState(1);

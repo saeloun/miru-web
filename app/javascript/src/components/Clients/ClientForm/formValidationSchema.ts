@@ -1,8 +1,7 @@
-/* eslint-disable import/exports-last */
+import { currencyList } from "constants/currencyList";
+
 import worldCountries from "world-countries";
 import * as Yup from "yup";
-
-import { currencyList } from "constants/currencyList";
 
 const phoneRegExp =
   /^((\+\d{1,3}(-| )?\(?\d\)?(-| )?\d{1,3})|(\(?\d{2,3}\)?))(-| )?(\d{3,4})(-| )?(\d{4})(( x| ext)\d{1,5}){0,1}$/;
@@ -12,7 +11,7 @@ interface Currency {
   symbol: string;
 }
 
-export const clientSchema = Yup.object().shape({
+const clientSchema = Yup.object().shape({
   name: Yup.string()
     .required("Name cannot be blank")
     .max(30, "Maximum 30 characters are allowed"),
@@ -65,7 +64,7 @@ const getCurrencyLabel = (currency?: string): string => {
   return "";
 };
 
-export const getInitialvalues = (client?: any) => ({
+const getInitialvalues = (client?: any) => ({
   name: client?.name || "",
   email: client?.email || "",
   phone: client?.phone || "",
@@ -86,3 +85,5 @@ export const getInitialvalues = (client?: any) => ({
     value: client?.currency || "",
   },
 });
+
+export { clientSchema, getInitialvalues };

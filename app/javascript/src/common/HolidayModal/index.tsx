@@ -1,12 +1,12 @@
-import React from "react";
+import { yearCalendar } from "constants/leaveType";
 
-import { XIcon } from "miruIcons";
-import { Button, Modal } from "StyledComponents";
+import React from "react";
 
 import CustomYearPicker from "common/CustomYearPicker";
 import { MobileEditHeader } from "common/Mobile/MobileEditHeader";
-import { yearCalendar } from "constants/leaveType";
 import { useUserContext } from "context/UserContext";
+import { XIcon } from "miruIcons";
+import { Dialog, DialogContent } from "components/ui/dialog";
 
 import CalendarComponent from "./CalendarComponent";
 
@@ -40,10 +40,10 @@ const HolidayModal = ({
       </div>
       {Object.keys(yearCalendar).map((quarters, key) => (
         <div className="flex flex-col gap-4 pt-4 lg:flex-row" key={key}>
-          {yearCalendar[quarters].quarter.map((month, key) => (
+          {yearCalendar[quarters].quarter.map((month, monthKey) => (
             <CalendarComponent
               id={month.id}
-              key={key}
+              key={`${key}-${monthKey}`}
               name={month.name}
               tileContent={tileContent}
               year={currentYear}
@@ -56,27 +56,37 @@ const HolidayModal = ({
 
   if (isDesktop) {
     return (
-      <Modal
-        customStyle="min-w-60v lg:p-0 lg:pb-6 hidden lg:block"
-        isOpen={showCalendar}
-        onClose={toggleCalendarModal}
-      >
-        <div className="modal__position mx-0 h-10 w-full items-center bg-miru-han-purple-1000 px-4 text-white">
-          <span className="flex-1 pl-4 text-base">
-            Public and optional holidays
-          </span>
-          <CustomYearPicker
-            currentYear={currentYear}
-            setCurrentYear={setCurrentYear}
-          />
-          <div className="modal__close flex-1 text-right">
-            <Button className="modal__button" onClick={toggleCalendarModal}>
-              <XIcon color="#CDD6DF" size={15} />
-            </Button>
+      <Dialog open={showCalendar} onOpenChange={toggleCalendarModal}>
+        <DialogContent className="max-w-[75vw] w-full max-h-[80vh] p-0 overflow-hidden bg-white shadow-lg [&>button]:hidden">
+          <div className="flex h-full flex-col">
+            <div className="modal__position mx-0 flex h-10 w-full items-center bg-miru-han-purple-1000 px-4 text-white">
+              <span className="flex-1 pl-4 text-base">
+                Public and optional holidays
+              </span>
+              <CustomYearPicker
+                currentYear={currentYear}
+                setCurrentYear={setCurrentYear}
+              />
+              <div className="modal__close flex-1 text-right">
+                <button
+                  type="button"
+                  className="modal__button p-2 hover:opacity-80 transition-opacity"
+                  onClick={e => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    toggleCalendarModal();
+                  }}
+                >
+                  <XIcon color="#CDD6DF" size={15} />
+                </button>
+              </div>
+            </div>
+            <div className="flex-1 overflow-auto pb-6">
+              <CalendarForm />
+            </div>
           </div>
-        </div>
-        <CalendarForm />
-      </Modal>
+        </DialogContent>
+      </Dialog>
     );
   }
 

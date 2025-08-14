@@ -1,6 +1,8 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 import React, { useState, useEffect, useRef, MutableRefObject } from "react";
 
+import timesheetEntryApi from "apis/timesheet-entry";
+import CustomDatePicker from "common/CustomDatePicker";
+import { useUserContext } from "context/UserContext";
 import { format } from "date-fns";
 import dayjs from "dayjs";
 import {
@@ -10,13 +12,22 @@ import {
   useOutsideClick,
   validateTimesheetEntry,
 } from "helpers";
-import { CheckedCheckboxSVG, UncheckedCheckboxSVG } from "miruIcons";
-import TextareaAutosize from "react-textarea-autosize";
-import { TimeInput, Toastr } from "StyledComponents";
-
-import timesheetEntryApi from "apis/timesheet-entry";
-import CustomDatePicker from "common/CustomDatePicker";
-import { useUserContext } from "context/UserContext";
+import { Calendar } from "lucide-react";
+import { TimeInput } from "../ui/time-input";
+import { Toastr } from "../ui/toastr";
+import { Textarea } from "../ui/textarea";
+import { Checkbox } from "../ui/checkbox";
+import { Button } from "../ui/button";
+import { Label } from "../ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
+import { Card } from "../ui/card";
+import { cn } from "../../lib/utils";
 import { getValueFromLocalStorage, setToLocalStorage } from "utils/storage";
 
 import MobileEntryForm from "./MobileView/MobileEntryForm";
@@ -65,7 +76,9 @@ const AddEntry: React.FC<Iprops> = ({
   const [submitting, setSubmitting] = useState<boolean>(false);
 
   const datePickerRef: MutableRefObject<any> = useRef();
-  const { isDesktop } = useUserContext();
+  const { isDesktop, company } = useUserContext();
+  const dateFormat =
+    company?.date_format || company?.dateFormat || "MM-DD-YYYY";
   const isNewEntry = !editEntryId;
   const debouncedNote = useDebounce(note, 500);
   useOutsideClick(datePickerRef, () => {
@@ -115,7 +128,7 @@ const AddEntry: React.FC<Iprops> = ({
   };
 
   const getPayload = () => ({
-    work_date: selectedDate,
+    work_date: dayjs(selectedDate, dateFormat).format("YYYY-MM-DD"),
     duration: minFromHHMM(duration),
     note,
     bill_status: billable ? "unbilled" : "non_billable",
@@ -169,7 +182,7 @@ const AddEntry: React.FC<Iprops> = ({
         setNewEntryView(false);
         setUpdateView(true);
         handleAddEntryDateChange(dayjs(selectedDate));
-        setSelectedFullDate(dayjs(selectedDate).format("YYYY-MM-DD"));
+        setSelectedFullDate(dayjs(selectedDate).format(dateFormat));
       }
     } catch (error) {
       Toastr.error(error);
@@ -177,7 +190,7 @@ const AddEntry: React.FC<Iprops> = ({
   };
 
   const handleDateChangeFromDatePicker = (date: Date) => {
-    setSelectedDate(dayjs(date).format("YYYY-MM-DD"));
+    setSelectedDate(dayjs(date).format(dateFormat));
     setDisplayDatePicker(false);
     setUpdateView(false);
   };
@@ -227,156 +240,133 @@ const AddEntry: React.FC<Iprops> = ({
          editEntryId ? "mt-10" : ""
        }`}
     >
-      <div className="w-1/2">
-        <div className="mb-2 flex w-129 justify-between">
-          <select
-            className="h-8 w-64 rounded-sm bg-miru-gray-100"
-            id="client"
-            name="client"
-            value={client || "Client"}
-            onChange={e => {
-              setClient(e.target.value);
-              setProject(projects ? projects[e.target.value][0]?.name : "");
+      <div className="flex-1 space-y-3">
+        <div className="flex gap-3">
+          <Select
+            value={client || undefined}
+            onValueChange={value => {
+              setClient(value);
+              setProject(projects ? projects[value][0]?.name : "");
             }}
           >
-            {!client && (
-              <option disabled selected className="text-miru-gray-100">
-                Client
-              </option>
-            )}
-            {clients.map((client, i) => (
-              <option key={i.toString()}>{client["name"]}</option>
-            ))}
-          </select>
-          <select
-            className="h-8 w-64 rounded-sm bg-miru-gray-100"
-            id="project"
-            name="project"
-            value={project}
-            onChange={e => {
-              setProject(e.target.value);
-            }}
-          >
-            {!project && (
-              <option disabled selected className="text-miru-gray-100">
-                Project
-              </option>
-            )}
-            {client &&
-              projects[client].map((project, i) => (
-                <option data-project-id={project.id} key={i.toString()}>
-                  {project.name}
-                </option>
+            <SelectTrigger className="flex-1">
+              <SelectValue placeholder="Select a client" />
+            </SelectTrigger>
+            <SelectContent>
+              {clients.map((client, i) => (
+                <SelectItem key={i} value={client["name"]}>
+                  {client["name"]}
+                </SelectItem>
               ))}
-          </select>
+            </SelectContent>
+          </Select>
+          <Select
+            value={project || undefined}
+            onValueChange={setProject}
+            disabled={!client}
+          >
+            <SelectTrigger
+              className={cn(
+                "flex-1",
+                !client && "opacity-50 cursor-not-allowed"
+              )}
+            >
+              <SelectValue placeholder="Select a project" />
+            </SelectTrigger>
+            <SelectContent>
+              {client &&
+                projects[client] &&
+                projects[client].map((project, i) => (
+                  <SelectItem key={i} value={project.name}>
+                    {project.name}
+                  </SelectItem>
+                ))}
+            </SelectContent>
+          </Select>
         </div>
-        <TextareaAutosize
-          cols={60}
+        <Textarea
           name="notes"
-          placeholder=" Notes"
-          rows={5}
+          placeholder="Add notes..."
           value={note}
-          className={`
-            focus:miru-han-purple-1000 outline-none mt-2 w-129 resize-none overflow-y-auto rounded-sm bg-miru-gray-100 px-1 ${
-              editEntryId ? "h-auto" : "h-8"
-            }
-          `}
-          onChange={e => setNote(e.target["value"])}
+          className={cn(
+            "w-full resize-none",
+            editEntryId ? "min-h-[120px]" : "min-h-[80px]"
+          )}
+          onChange={e => setNote(e.target.value)}
         />
       </div>
-      <div className="w-60">
-        <div className="mb-2 flex justify-between">
-          <div>
+      <div className="space-y-3">
+        <div className="flex gap-3">
+          <div className="relative">
             {displayDatePicker && (
-              <div className="relative" ref={datePickerRef}>
-                <div className="h-100 w-100 absolute top-8 z-10">
+              <div className="absolute top-12 z-50" ref={datePickerRef}>
+                <Card className="shadow-lg">
                   <CustomDatePicker
                     date={dayjs(selectedDate).toDate()}
                     handleChange={handleDateChangeFromDatePicker}
                   />
-                </div>
+                </Card>
               </div>
             )}
-            <div
-              className="formatted-date flex h-8 w-29 items-center justify-center rounded-sm bg-miru-gray-100 p-1 text-sm"
-              id="formattedDate"
-              onClick={() => {
-                setDisplayDatePicker(true);
-              }}
+            <Button
+              variant="outline"
+              className="w-[160px] justify-start text-left font-normal"
+              onClick={() => setDisplayDatePicker(true)}
             >
+              <Calendar className="mr-2 h-4 w-4" />
               {format(new Date(selectedDate), "do MMM, yyyy")}
-            </div>
+            </Button>
           </div>
           <TimeInput
-            className="h-8 w-20 rounded-sm bg-miru-gray-100 p-1 text-sm placeholder:text-miru-gray-1000"
+            className="h-10 w-[120px] px-3"
             initTime={duration}
             name="timeInput"
             onTimeChange={handleDurationChange}
           />
         </div>
-        <div className="mt-2 flex items-center">
-          {billable ? (
-            <img
-              alt="checkbox"
-              className="inline"
-              id="check"
-              src={CheckedCheckboxSVG}
-              onClick={() => {
-                setBillable(false);
-              }}
-            />
-          ) : (
-            <img
-              alt="checkbox"
-              className="inline"
-              id="uncheck"
-              src={UncheckedCheckboxSVG}
-              onClick={() => {
-                if (projectBillable) setBillable(true);
-              }}
-            />
-          )}
-          <h4>Billable</h4>
+        <div className="flex items-center space-x-2">
+          <Checkbox
+            id="billable"
+            checked={billable}
+            disabled={!projectBillable}
+            onCheckedChange={checked => setBillable(checked as boolean)}
+          />
+          <Label
+            htmlFor="billable"
+            className={cn(
+              "text-sm font-medium cursor-pointer",
+              !projectBillable && "text-muted-foreground cursor-not-allowed"
+            )}
+          >
+            Billable
+          </Label>
         </div>
       </div>
-      <div className="max-w-min">
+      <div className="flex flex-col gap-2">
         {editEntryId === 0 ? (
-          <button
+          <Button
             disabled={handleDisableBtn()}
-            className={`mb-1 h-8 w-38 rounded border py-1 px-6 text-xs font-bold tracking-widest text-white ${
-              handleDisableBtn()
-                ? "cursor-not-allowed bg-miru-gray-1000"
-                : "bg-miru-han-purple-1000 hover:border-transparent"
-            }`}
             onClick={() => {
               setSubmitting(true);
               handleSave();
             }}
           >
-            SAVE
-          </button>
+            Save Entry
+          </Button>
         ) : (
-          <button
-            disabled={handleDisableBtn()}
-            className={`mb-1 h-8 w-38 rounded border py-1 px-6 text-xs font-bold tracking-widest text-white ${
-              handleDisableBtn()
-                ? "cursor-not-allowed bg-miru-gray-1000"
-                : "bg-miru-han-purple-1000 hover:border-transparent"
-            }`}
-            onClick={() => handleEdit()}
-          >
-            UPDATE
-          </button>
+          <Button disabled={handleDisableBtn()} onClick={() => handleEdit()}>
+            Update Entry
+          </Button>
         )}
-        <button
-          className="mt-1 h-8 w-38 rounded border border-miru-han-purple-1000 bg-transparent py-1 px-6 text-xs font-bold tracking-widest text-miru-han-purple-600 hover:border-transparent hover:bg-miru-han-purple-1000 hover:text-white"
+        <Button
+          variant="outline"
           onClick={() => {
             setNewEntryView(false);
             setEditEntryId(0);
           }}
         >
-          CANCEL
-        </button>
+          Cancel
+        </Button>
       </div>
     </div>
   ) : (
@@ -409,7 +399,7 @@ const AddEntry: React.FC<Iprops> = ({
 
 interface Iprops {
   selectedEmployeeId: number;
-  fetchEntries: (from: string, to: string) => Promise<any>; // eslint-disable-line
+  fetchEntries: (from: string, to: string) => Promise<any>;
   fetchEntriesofMonth: any;
   setNewEntryView: React.Dispatch<React.SetStateAction<boolean>>;
   clients: any[];
@@ -419,8 +409,8 @@ interface Iprops {
   setEditEntryId: React.Dispatch<React.SetStateAction<number>>;
   entryList: object;
   handleAddEntryDateChange: any;
-  handleFilterEntry: (date: string, entryId: string | number) => object; // eslint-disable-line
-  handleRelocateEntry: (date: string, entry: object) => void; // eslint-disable-line
+  handleFilterEntry: (date: string, entryId: string | number) => object;
+  handleRelocateEntry: (date: string, entry: object) => void;
   setSelectedFullDate: any;
   setUpdateView: any;
   handleDeleteEntry: any;

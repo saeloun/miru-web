@@ -2,30 +2,76 @@
 
 require "capybara/rails"
 require "capybara/rspec"
+require "capybara-playwright-driver"
+require "playwright"
 
-Capybara.server = :puma
-Capybara.default_max_wait_time = 5
+# Configure Capybara
+Capybara.server = :puma, { Silent: true }
+Capybara.default_max_wait_time = 10
+Capybara.server_host = "localhost"
+Capybara.save_path = Rails.root.join("tmp", "capybara")
+Capybara.automatic_reload = false
 
-if ENV["CI"].present?
-  Capybara.register_driver :chrome_headless do |app|
-    options = Selenium::WebDriver::Chrome::Options.new(args: %w[headless window-size=1400,1000])
-    options.add_argument(
-      "--enable-features=NetworkService,NetworkServiceInProcess",
-    )
-
-    if ENV["HUB_URL"]
-      Capybara::Selenium::Driver.new(
-        app,
-        browser: :remote,
-        url: ENV["HUB_URL"],
-        capabilities: options,
-        timeout: 180)
-    end
-  end
-
-  Capybara.default_driver = :chrome_headless
-  Capybara.javascript_driver = :chrome_headless
+# Use different ports for parallel tests
+# Each parallel test worker gets its own port to avoid conflicts
+if ENV["TEST_ENV_NUMBER"].present?
+  # For parallel tests, use different port for each worker
+  # TEST_ENV_NUMBER is empty for first process, then "2", "3", etc.
+  test_number = ENV["TEST_ENV_NUMBER"].to_s.empty? ? 1 : ENV["TEST_ENV_NUMBER"].to_i
+  Capybara.server_port = 3000 + test_number
 else
-  Capybara.default_driver = :selenium_chrome
-  Capybara.javascript_driver = :selenium_chrome
+  # For single process tests
+  Capybara.server_port = 3001
+end
+
+# Puma server is already configured above, don't override it
+# The server_port is set separately and Puma will use it automatically
+
+# Register Playwright driver with proper options
+Capybara.register_driver :playwright do |app|
+  Capybara::Playwright::Driver.new(app,
+    browser_type: ENV["PLAYWRIGHT_BROWSER"]&.to_sym || :chromium,
+    headless: ENV["HEADED"].blank?,
+    timeout: 30_000,
+    args: ["--disable-web-security", "--allow-insecure-localhost", "--disable-blink-features=AutomationControlled"])
+end
+
+# Register headless Playwright driver for CI
+Capybara.register_driver :playwright_headless do |app|
+  Capybara::Playwright::Driver.new(app,
+    browser_type: ENV["PLAYWRIGHT_BROWSER"]&.to_sym || :chromium,
+    headless: true,
+    viewport: { width: 1400, height: 1000 },
+    timeout: 30_000,
+    args: ["--disable-web-security", "--allow-insecure-localhost", "--disable-blink-features=AutomationControlled"])
+end
+
+# Set default drivers
+Capybara.default_driver = :rack_test
+Capybara.javascript_driver = ENV["CI"].present? ? :playwright_headless : :playwright
+
+# Override selenium drivers to use Playwright instead
+# This is a workaround for tests that are hardcoded to use selenium drivers
+Capybara.register_driver :selenium_chrome_headless do |app|
+  Capybara::Playwright::Driver.new(app,
+    browser_type: :chromium,
+    headless: true)
+end
+
+Capybara.register_driver :selenium_chrome do |app|
+  Capybara::Playwright::Driver.new(app,
+    browser_type: :chromium,
+    headless: false)
+end
+
+Capybara.register_driver :chrome_headless do |app|
+  Capybara::Playwright::Driver.new(app,
+    browser_type: :chromium,
+    headless: true)
+end
+
+Capybara.register_driver :chrome do |app|
+  Capybara::Playwright::Driver.new(app,
+    browser_type: :chromium,
+    headless: false)
 end

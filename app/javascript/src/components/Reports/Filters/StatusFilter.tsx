@@ -1,8 +1,7 @@
 import React from "react";
 
-import { MinusIcon, PlusIcon } from "miruIcons";
-
 import ClickableCheckboxText from "common/ClickableCheckboxText";
+import { MinusIcon, PlusIcon } from "miruIcons";
 
 const StatusFilter = ({
   isStatusOpen,

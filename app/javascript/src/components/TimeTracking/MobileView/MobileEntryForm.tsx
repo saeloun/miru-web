@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 import React, { useState, useRef, useEffect } from "react";
 
 import dayjs from "dayjs";
@@ -24,8 +23,9 @@ import CustomCheckbox from "common/CustomCheckbox";
 import CustomDatePicker from "common/CustomDatePicker";
 import { CustomInputText } from "common/CustomInputText";
 import { CustomTextareaAutosize } from "common/CustomTextareaAutosize";
+import { useUserContext } from "../../../context/UserContext";
 
-import DeleteEntryModal from "./DeleteEntryModal";
+import DeleteEntryModal from "common/DeleteEntryModal";
 
 const AddEntryMobile = ({
   project,
@@ -51,6 +51,9 @@ const AddEntryMobile = ({
   submitting,
   setSubmitting,
 }) => {
+  const { company } = useUserContext();
+  const dateFormat =
+    company?.date_format || company?.dateFormat || "MM-DD-YYYY";
   const [showClientList, setShowClientList] = useState<boolean>(false);
   const [clientList, setClientList] = useState<any>(clients);
   const [projectList, setProjectList] = useState<any>(projects[client]);
@@ -110,7 +113,7 @@ const AddEntryMobile = ({
 
   const handleDatePicker = date => {
     setShowDatePicker(false);
-    setSelectedDate(dayjs(date).format("YYYY-MM-DD"));
+    setSelectedDate(dayjs(date).format(dateFormat));
   };
 
   const handleIncreaseTime = () => {

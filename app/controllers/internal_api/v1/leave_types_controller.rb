@@ -7,13 +7,13 @@ class InternalApi::V1::LeaveTypesController < InternalApi::V1::ApplicationContro
   def create
     authorize LeaveType
     leave.leave_types.create!(leave_type_params)
-    render json: { notice: "Added leave type successfully" }, status: :ok
+    render json: { notice: "Added leave type successfully" }, status: 200
   end
 
   def update
     authorize leave_type
     leave_type.update!(leave_type_params)
-    render json: { notice: "Updated leave type successfully" }, status: :ok
+    render json: { notice: "Updated leave type successfully" }, status: 200
   end
 
   private

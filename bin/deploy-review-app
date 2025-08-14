@@ -1,0 +1,83 @@
+#!/bin/bash
+set -e
+
+# Get branch name from git or use provided argument
+BRANCH_NAME=${1:-$(git branch --show-current)}
+BRANCH_SLUG=$(echo "$BRANCH_NAME" | sed 's/[^a-zA-Z0-9-]/-/g' | tr '[:upper:]' '[:lower:]')
+APP_NAME="miru-review-${BRANCH_SLUG}"
+
+echo "🚀 Deploying review app: $APP_NAME for branch: $BRANCH_NAME"
+
+# Check if Fly CLI is installed
+if ! command -v fly &> /dev/null; then
+    echo "❌ Fly CLI is not installed. Please install it first:"
+    echo "   curl -L https://fly.io/install.sh | sh"
+    exit 1
+fi
+
+# Create app if it doesn't exist
+if ! fly apps list | grep -q "$APP_NAME"; then
+    echo "📱 Creating new Fly app: $APP_NAME"
+    fly apps create "$APP_NAME" --org personal
+    
+    # Create PostgreSQL database
+    echo "🗄️  Creating PostgreSQL database..."
+    fly postgres create --name "${APP_NAME}-db" \
+        --region iad \
+        --initial-cluster-size 1 \
+        --vm-size shared-cpu-1x \
+        --volume-size 1
+    
+    # Attach database to app
+    fly postgres attach "${APP_NAME}-db" --app "$APP_NAME"
+    
+    # Create Redis instance for caching
+    echo "🔴 Creating Redis instance..."
+    fly redis create --name "${APP_NAME}-redis" \
+        --region iad \
+        --no-replicas \
+        --plan Free
+    
+    # Set secrets
+    echo "🔐 Setting up secrets..."
+    fly secrets set \
+        SECRET_KEY_BASE=$(bin/rails secret) \
+        RAILS_MASTER_KEY=$(cat config/master.key 2>/dev/null || echo "dummy-key-for-review") \
+        FLY_REDIS_PASSWORD=$(openssl rand -hex 32) \
+        POSTGRES_PASSWORD=$(openssl rand -hex 32) \
+        --app "$APP_NAME"
+fi
+
+# Update fly.toml with app name
+cp fly.review.toml fly.toml
+sed -i.bak "s/app = .*/app = \"$APP_NAME\"/" fly.toml
+sed -i.bak "s/REVIEW_APP_BRANCH = .*/REVIEW_APP_BRANCH = \"$BRANCH_NAME\"/" fly.toml
+
+# Deploy the app
+echo "🚢 Deploying to Fly.io..."
+fly deploy --app "$APP_NAME" --config fly.toml
+
+# Clean up temporary files
+rm -f fly.toml.bak
+
+# Get app URL
+APP_URL="https://${APP_NAME}.fly.dev"
+
+echo "✅ Review app deployed successfully!"
+echo "🌐 URL: $APP_URL"
+echo ""
+echo "📋 Useful commands:"
+echo "   fly logs --app $APP_NAME          # View logs"
+echo "   fly ssh console --app $APP_NAME   # SSH into app"
+echo "   fly status --app $APP_NAME        # Check status"
+echo "   fly destroy $APP_NAME --yes       # Destroy app"
+
+# Open in browser
+if command -v open &> /dev/null; then
+    echo ""
+    read -p "Open in browser? (y/n) " -n 1 -r
+    echo
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        open "$APP_URL"
+    fi
+fi

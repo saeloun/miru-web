@@ -15,12 +15,19 @@ const CalendarComponent = ({
       isWiderScreen ? "px-3" : "px-2"
     }`}
   >
-    <span className="text-sm">{name}</span>
+    <span className="text-sm font-medium text-miru-dark-purple-1000">
+      {name}
+    </span>
     <Calendar
       className="react-calendar-month-picker relative max-h-64"
       showNavigation={false}
       tileContent={tileContent}
       value={new Date(year, id, 1)}
+      tileDisabled={() => true}
+      onClickDay={(value, event) => {
+        // Prevent default calendar day click behavior
+        event.preventDefault();
+      }}
     />
   </div>
 );

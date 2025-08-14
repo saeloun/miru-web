@@ -1,0 +1,67 @@
+# Lefthook configuration
+# https://github.com/evilmartians/lefthook
+
+# Suppress all output except errors
+output:
+  - summary
+  - success
+
+# Skip hooks execution if it's a merge or rebase
+skip_output:
+  - meta
+  - execution
+
+pre-commit:
+  parallel: true
+  commands:
+    lint-staged:
+      glob: "*.{js,jsx,ts,tsx,json,rb}"
+      run: npx lint-staged
+    
+    rubocop:
+      glob: "*.rb"
+      run: bundle exec rubocop -a --force-exclusion {staged_files}
+      stage_fixed: true
+
+commit-msg:
+  commands:
+    commitlint:
+      run: npx commitlint --edit {1}
+
+prepare-commit-msg:
+  commands:
+    conventional-commit:
+      run: |
+        # Skip if not a regular commit or if message already follows convention
+        if [ "$2" != "" ] || grep -qE '^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\(.+\))?:' "$1"; then
+          exit 0
+        fi
+        
+        # Get branch name and determine commit type
+        BRANCH=$(git symbolic-ref --short HEAD 2>/dev/null || echo "")
+        TYPE="feat"
+        
+        case "$BRANCH" in
+          *fix*|*bug*|*hotfix*) TYPE="fix" ;;
+          *doc*|*docs*) TYPE="docs" ;;
+          *test*|*spec*) TYPE="test" ;;
+          *chore*|*upgrade*|*update*|*rm-*) TYPE="chore" ;;
+          *refactor*) TYPE="refactor" ;;
+        esac
+        
+        # Read and update commit message
+        COMMIT_MSG=$(cat "$1" 2>/dev/null || echo "")
+        if [ -n "$COMMIT_MSG" ]; then
+          echo "$TYPE: $COMMIT_MSG" > "$1"
+        fi
+
+post-commit:
+  commands:
+    update-claude:
+      run: |
+        # Update CLAUDE.md with recent commits if needed
+        echo "✅ Commit successful!"
+
+# Install hooks on npm/pnpm install
+scripts:
+  "postinstall": "lefthook install"

@@ -1,8 +1,8 @@
+import { ApiStatus as InvoiceStatus } from "constants/index";
+
 import dayjs from "dayjs";
 import { currencyFormat } from "helpers";
 import * as Yup from "yup";
-
-import { ApiStatus as InvoiceStatus } from "constants/index";
 
 export const isEmailValid = (email: string): boolean => {
   const schema = Yup.string().email();

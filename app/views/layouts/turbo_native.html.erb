@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= content_for?(:title) ? yield(:title) : "Miru" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+    <meta name="turbo-visit-control" content="reload">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    
+    <%= vite_stylesheet_tag 'application', media: 'all', 'data-turbo-track': 'reload' %>
+    <%= vite_typescript_tag 'application', defer: true, 'data-turbo-track': 'reload' %>
+    
+    <style>
+      /* iOS Safe Area Insets */
+      .safe-area-top {
+        padding-top: env(safe-area-inset-top);
+      }
+      .safe-area-bottom {
+        padding-bottom: env(safe-area-inset-bottom);
+      }
+      
+      /* Hide desktop navigation on mobile */
+      .turbo-native .desktop-only {
+        display: none !important;
+      }
+      
+      /* Mobile-specific styles */
+      .turbo-native {
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        user-select: none;
+      }
+    </style>
+    
+    <script>
+      // Detect if running in Turbo Native
+      if (window.TurboNativeBridge) {
+        document.documentElement.classList.add('turbo-native');
+      }
+    </script>
+  </head>
+
+  <body class="turbo-native">
+    <div id="app-container" class="safe-area-top safe-area-bottom">
+      <%= yield %>
+    </div>
+  </body>
+</html>

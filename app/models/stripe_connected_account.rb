@@ -31,9 +31,7 @@ class StripeConnectedAccount < ApplicationRecord
 
   validates :account_id, uniqueness: true
 
-  def details_submitted
-    retrieve.details_submitted
-  end
+  delegate :details_submitted, to: :retrieve
 
   def url
     Stripe::AccountLink.create(

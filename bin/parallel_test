@@ -1,0 +1,62 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "pathname"
+ENV["BUNDLE_GEMFILE"] ||= File.expand_path("../../Gemfile",
+  Pathname.new(__FILE__).realpath)
+
+require "bundler/setup"
+require "optparse"
+
+options = {
+  processes: ENV.fetch("PARALLEL_TEST_PROCESSES", 10),
+  setup: false,
+  exclude_system: false
+}
+
+OptionParser.new do |opts|
+  opts.banner = "Usage: bin/parallel_test [options] [spec_files]"
+
+  opts.on("-n", "--processes N", Integer, "Number of parallel processes (default: 10)") do |n|
+    options[:processes] = n
+  end
+
+  opts.on("-s", "--setup", "Setup test databases before running") do
+    options[:setup] = true
+  end
+
+  opts.on("-e", "--exclude-system", "Exclude system specs") do
+    options[:exclude_system] = true
+  end
+
+  opts.on("-h", "--help", "Show this help message") do
+    puts opts
+    exit
+  end
+end.parse!
+
+# Set up database for parallel tests if requested
+if options[:setup]
+  puts "Setting up parallel test databases..."
+  system("bundle exec rake parallel:setup PARALLEL_TEST_PROCESSES=#{options[:processes]}")
+end
+
+# Build the command
+command = ["bundle", "exec", "parallel_rspec", "-n", options[:processes].to_s]
+
+# Add spec files or directories
+if ARGV.empty?
+  if options[:exclude_system]
+    # Run all specs except system specs
+    spec_files = Dir.glob("spec/**/*_spec.rb").reject { |f| f.include?("spec/system/") }
+    command.concat(spec_files)
+  else
+    command << "spec"
+  end
+else
+  command.concat(ARGV)
+end
+
+puts "Running tests with #{options[:processes]} parallel processes..."
+puts "Command: #{command.join(" ")}"
+exec(*command)

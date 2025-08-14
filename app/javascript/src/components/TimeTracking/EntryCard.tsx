@@ -1,12 +1,19 @@
-/* eslint-disable */
 import React from "react";
-
 import { minToHHMM } from "helpers";
-import { DeleteIcon, EditIcon, CopyIcon } from "miruIcons";
-import { Badge } from "StyledComponents";
-
+import {
+  Trash2,
+  Edit3,
+  Copy,
+  Clock,
+  Briefcase,
+  FileText,
+  DollarSign,
+} from "lucide-react";
+import { Badge } from "../ui/badge";
+import { Card, CardContent } from "../ui/card";
+import { Button } from "../ui/button";
+import { cn } from "../../lib/utils";
 import { useUserContext } from "context/UserContext";
-
 import { Roles } from "../../constants";
 
 interface props {
@@ -15,7 +22,7 @@ interface props {
   project: string;
   note: string;
   duration: number;
-  handleDeleteEntry: (id: number) => void; // eslint-disable-line
+  handleDeleteEntry: (id: number) => void;
   setEditEntryId: React.Dispatch<React.SetStateAction<number>>;
   bill_status: string;
   setNewEntryView: any;
@@ -24,50 +31,6 @@ interface props {
 
 const canEditTimeEntry = (billStatus, role) =>
   billStatus != "billed" || role == Roles["OWNER"] || role == Roles["ADMIN"];
-
-const showUpdateAction = (billStatus, role, id, setEditEntryId) => {
-  if (canEditTimeEntry(billStatus, role)) {
-    return (
-      <button
-        className="icon-hover"
-        id="editIcon"
-        onClick={() => setEditEntryId(id)}
-      >
-        <EditIcon className="text-miru-han-purple-1000" size={20} />
-      </button>
-    );
-  }
-
-  return <div className="mx-10 h-4 w-4" />;
-};
-
-const showDeleteAction = (billStatus, role, id, handleDeleteEntry) => {
-  if (canEditTimeEntry(billStatus, role)) {
-    return (
-      <button
-        className="icon-hover "
-        id="deleteIcon"
-        onClick={() => handleDeleteEntry(id)}
-      >
-        <DeleteIcon className="text-miru-han-purple-1000" size={20} />
-      </button>
-    );
-  }
-
-  return <div className="mr-10 h-4 w-4" />;
-};
-
-const showDuplicateAction = (billStatus, role, id, handleDuplicate) => {
-  if (canEditTimeEntry(billStatus, role)) {
-    return (
-      <button className="icon-hover " onClick={() => handleDuplicate(id)}>
-        <CopyIcon className="text-miru-han-purple-1000" size={20} />
-      </button>
-    );
-  }
-
-  return <div className="mr-10 h-4 w-4" />;
-};
 
 const EntryCard: React.FC<props> = ({
   id,
@@ -90,83 +53,151 @@ const EntryCard: React.FC<props> = ({
     }
   };
 
+  const getBillStatusBadge = () => {
+    switch (bill_status) {
+      case "unbilled":
+        return (
+          <Badge
+            variant="default"
+            className="bg-amber-100 text-amber-800 hover:bg-amber-200 border-amber-300"
+          >
+            <DollarSign className="w-3 h-3 mr-1" />
+            UNBILLED
+          </Badge>
+        );
+      case "non_billable":
+        return (
+          <Badge
+            variant="secondary"
+            className="bg-slate-100 text-slate-600 hover:bg-slate-200 border-slate-300"
+          >
+            <FileText className="w-3 h-3 mr-1" />
+            NON BILLABLE
+          </Badge>
+        );
+      case "billed":
+        return (
+          <Badge
+            variant="default"
+            className="bg-green-100 text-green-800 hover:bg-green-200 border-green-300"
+          >
+            <DollarSign className="w-3 h-3 mr-1" />
+            BILLED
+          </Badge>
+        );
+      default:
+        return null;
+    }
+  };
+
   return (
-    <div
-      className="week-card flex w-full items-center justify-between border-b border-miru-gray-200 py-4 lg:mt-10 lg:rounded-lg lg:border-b-0 lg:p-6 lg:shadow-2xl"
+    <Card
+      className={cn(
+        "mb-4 transition-all duration-300 hover:shadow-xl group",
+        "bg-card border-border hover:border-primary/30",
+        !isDesktop && "cursor-pointer active:scale-[0.99]"
+      )}
       onClick={handleCardClick}
     >
-      <div className="w-7/12 flex-auto">
-        <div className="text-miu-dark-Purple-1000 flex">
-          <p className="text-base font-normal lg:text-lg">{client}</p>
-          <p className="mx-2 text-lg">•</p>
-          <p className="text-base font-normal lg:text-lg">{project}</p>
-        </div>
-        <div className="flex py-2 lg:hidden">
-          {bill_status === "unbilled" ? (
-            <Badge
-              bgColor="bg-miru-alert-yellow-400"
-              className="uppercase"
-              color="text-miru-alert-green-1000"
-              text="unbilled"
-            />
-          ) : bill_status === "non_billable" ? (
-            <Badge
-              bgColor="bg-miru-dark-purple-100"
-              className="uppercase"
-              color="text-miru-dark-purple-600"
-              text="non billable"
-            />
-          ) : (
-            <Badge
-              bgColor="bg-miru-alert-green-400"
-              className="uppercase"
-              color="text-miru-alert-green-800"
-              text="billed"
-            />
-          )}
-        </div>
-        <p className="max-h-32 overflow-auto whitespace-pre-wrap break-words text-sm text-miru-dark-purple-200 lg:w-160">
-          {note}
-        </p>
-      </div>
-      <p className="text-miu-dark-Purple-1000 flex self-start text-2xl lg:hidden">
-        {minToHHMM(duration)}
-      </p>
-      <div className="hidden w-5/12 items-center justify-between lg:flex">
-        <div className="flex w-7/12 items-center justify-between">
-          <div>
-            {bill_status === "unbilled" ? (
-              <Badge
-                bgColor="bg-miru-alert-yellow-400"
-                className="uppercase"
-                color="text-miru-alert-green-1000"
-                text="unbilled"
-              />
-            ) : bill_status === "non_billable" ? (
-              <Badge
-                bgColor="bg-miru-dark-purple-100"
-                className="uppercase"
-                color="text-miru-dark-purple-600"
-                text="non billable"
-              />
-            ) : (
-              <Badge
-                bgColor="bg-miru-alert-green-400"
-                className="uppercase"
-                color="text-miru-alert-green-800"
-                text="billed"
-              />
+      <CardContent className="p-6">
+        <div className="flex items-start justify-between gap-4">
+          {/* Left Section - Project Info */}
+          <div className="flex-1 space-y-3">
+            {/* Client & Project Header */}
+            <div className="flex items-center gap-3 flex-wrap">
+              <div className="flex items-center gap-2">
+                <Briefcase className="w-4 h-4 text-primary" />
+                <span className="text-xl font-bold text-foreground tracking-tight">
+                  {client}
+                </span>
+              </div>
+              <span className="text-muted-foreground">•</span>
+              <span className="text-lg font-semibold text-muted-foreground">
+                {project}
+              </span>
+            </div>
+
+            {/* Status Badge (Mobile) */}
+            <div className="lg:hidden">{getBillStatusBadge()}</div>
+
+            {/* Note */}
+            {note && (
+              <div className="bg-muted/30 rounded-lg p-3 border border-border/50">
+                <p className="text-sm font-medium text-muted-foreground whitespace-pre-wrap break-words line-clamp-3 leading-relaxed">
+                  {note}
+                </p>
+              </div>
             )}
           </div>
-          <p className="mx-auto text-2xl xl:text-4xl">{minToHHMM(duration)}</p>
+
+          {/* Duration (Mobile) */}
+          <div className="lg:hidden flex items-center gap-2 text-primary">
+            <Clock className="w-5 h-5" />
+            <span className="text-2xl font-black tracking-tight">
+              {minToHHMM(duration)}
+            </span>
+          </div>
+
+          {/* Right Section - Desktop Only */}
+          <div className="hidden lg:flex items-center gap-6">
+            {/* Status Badge */}
+            <div>{getBillStatusBadge()}</div>
+
+            {/* Duration */}
+            <div className="flex items-center gap-3 px-4 py-3 bg-primary/10 rounded-lg border border-primary/20">
+              <Clock className="w-5 h-5 text-primary" />
+              <div className="flex flex-col items-end">
+                <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                  Duration
+                </span>
+                <span className="text-2xl font-black text-primary tracking-tight">
+                  {minToHHMM(duration)}
+                </span>
+              </div>
+            </div>
+
+            {/* Actions */}
+            {canEditTimeEntry(bill_status, companyRole) && (
+              <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-9 w-9 hover:bg-primary/10 hover:text-primary"
+                  onClick={e => {
+                    e.stopPropagation();
+                    handleDuplicate(id);
+                  }}
+                >
+                  <Copy className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-9 w-9 hover:bg-primary/10 hover:text-primary"
+                  onClick={e => {
+                    e.stopPropagation();
+                    setEditEntryId(id);
+                  }}
+                >
+                  <Edit3 className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-9 w-9 hover:bg-destructive/10 hover:text-destructive"
+                  onClick={e => {
+                    e.stopPropagation();
+                    handleDeleteEntry(id);
+                  }}
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </div>
+            )}
+          </div>
         </div>
-        <div className="flex w-5/12 items-center justify-evenly">
-          {showDuplicateAction(bill_status, companyRole, id, handleDuplicate)}
-          {showUpdateAction(bill_status, companyRole, id, setEditEntryId)}
-          {showDeleteAction(bill_status, companyRole, id, handleDeleteEntry)}
-        </div>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 };
 

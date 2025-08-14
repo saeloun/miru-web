@@ -41,7 +41,9 @@ const ClientSelection = ({
       const selection = clientList.filter(
         client => client.label == prePopulatedClient
       );
-      selection[0] && handleClientChange(selection[0]);
+      if (selection[0]) {
+        handleClientChange(selection[0]);
+      }
     }
 
     if (selectedClient) {
@@ -86,7 +88,9 @@ const ClientSelection = ({
   const handleClientChange = selection => {
     const client = clientList.find(client => client.id == selection.value);
     setSelectedClient(client);
-    setClientCurrency(client.clientCurrency);
+    if (setClientCurrency && client?.clientCurrency) {
+      setClientCurrency(client.clientCurrency);
+    }
     setIsClientVisible(false);
     setIsOptionSelected(true);
     autoGenerateInvoiceNumber(client);

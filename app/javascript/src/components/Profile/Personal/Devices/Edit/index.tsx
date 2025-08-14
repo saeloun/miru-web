@@ -1,7 +1,4 @@
-/* eslint-disable no-unused-vars */
 import React, { Fragment, useEffect, useState } from "react";
-
-import { useNavigate, useParams } from "react-router-dom";
 
 import deviceApi from "apis/devices";
 import Loader from "common/Loader/index";
@@ -9,6 +6,7 @@ import { MobileDetailsHeader } from "common/Mobile/MobileDetailsHeader";
 import EditHeader from "components/Profile/Common/EditHeader";
 import { useProfileContext } from "context/Profile/ProfileContext";
 import { useUserContext } from "context/UserContext";
+import { useNavigate, useParams } from "react-router-dom";
 
 import EditPage from "./EditPage";
 import MobileEditPage from "./MobileEditPage";
@@ -37,7 +35,7 @@ const AllocatedDevicesEdit = () => {
   const currentUserId = isCalledFromSettings ? user.id : memberId;
   const [isLoading, setIsLoading] = useState(false);
   const [devices, setDevices] = useState<Device[]>([]);
-  const [errDetails, setErrDetails] = useState(initialErrState);
+  const [errDetails, _setErrDetails] = useState(initialErrState);
 
   useEffect(() => {
     setIsLoading(true);
