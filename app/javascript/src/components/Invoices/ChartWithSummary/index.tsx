@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { currencyFormat } from "helpers";
+import { currencyFormat } from "helpers/currency";
 import MonthlyRevenueChart from "../MonthlyRevenueChart";
 
 interface ChartWithSummaryProps {
@@ -87,10 +87,7 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
                     {item.label}
                   </p>
                   <p className={`text-2xl font-semibold ${item.colorClass}`}>
-                    {currencyFormat({
-                      baseCurrency,
-                      amount: item.value,
-                    })}
+                    {currencyFormat(baseCurrency, item.value)}
                   </p>
                 </div>
                 <svg
