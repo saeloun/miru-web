@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 import BulkActionsWrapper from "./BulkActionsWrapper";
 import NoInvoices from "./NoInvoices";
-import RecentlyUpdated from "./RecentlyUpdated";
+import InfiniteScrollRecentlyUpdated from "./RecentlyUpdated/InfiniteScrollRecentlyUpdated";
 import Table from "./Table";
 
 import InvoiceSummary from "../InvoiceSummary";
@@ -55,7 +55,7 @@ const Container = ({
         height={280}
         onChartTypeChange={setChartType}
       />
-      <RecentlyUpdated recentlyUpdatedInvoices={recentlyUpdatedInvoices} />
+      <InfiniteScrollRecentlyUpdated />
       <BulkActionsWrapper
         clearCheckboxes={clearCheckboxes}
         downloading={downloading}
