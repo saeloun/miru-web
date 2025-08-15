@@ -44,12 +44,19 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
       invoices = invoices.where(client_id: client_ids) unless client_ids.empty?
     end
 
-    # Pagination
+    # Pagination with Pagy
     page = (params[:page] || 1).to_i
     page = 1 if page <= 0
     per_page = (params[:invoices_per_page] || params[:per] || 10).to_i
-    per_page = invoices.count if per_page <= 0
-    invoices = invoices.page(page).per(per_page)
+    per_page = 10 if per_page <= 0  # Use default instead of all records when per_page is 0
+
+    # Use Pagy for pagination with overflow handling
+    begin
+      pagy_metadata, paginated_invoices = pagy(invoices, items: per_page, page: page, overflow: :empty_page)
+    rescue Pagy::OverflowError
+      # Handle page overflow by returning empty result
+      pagy_metadata, paginated_invoices = pagy(invoices.none, items: per_page, page: 1)
+    end
 
     # Calculate summary
     # For summary, include base_currency_amount calculation like the old service
@@ -71,11 +78,11 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
     recently_updated = current_company.invoices.kept.order(updated_at: :desc).limit(10)
 
     render :index, locals: {
-      invoices: invoices,
+      invoices: paginated_invoices,
       pagination_details: {
-        page: invoices.current_page,
-        pages: invoices.total_pages,
-        total: invoices.total_count
+        page: pagy_metadata.page,
+        pages: pagy_metadata.pages,
+        total: pagy_metadata.count
       },
       recently_updated_invoices: recently_updated,
       summary: summary
