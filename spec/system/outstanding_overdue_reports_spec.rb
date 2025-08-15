@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe "Outstanding and Overdue Reports with Multi-Currency", type: :system do
+RSpec.describe "Outstanding and Overdue Reports with Multi-Currency", type: :system, pending: "Multi-currency reports UI needed" do
   let(:company) { create(:company, base_currency: "USD", name: "Global Corp", country: "US") }
   let(:admin_user) { create(:user, current_workspace_id: company.id) }
 

@@ -50,6 +50,11 @@ const getMonthlyRevenue = async () =>
 const getRevenueByStatus = async () =>
   axios.get(`${path}/analytics/revenue_by_status`);
 
+const getRecentlyUpdated = async (page = 1, perPage = 10) =>
+  axios.get(`${path}/recently_updated`, {
+    params: { page, per_page: perPage },
+  });
+
 const invoicesApi = {
   get,
   post,
@@ -70,6 +75,7 @@ const invoicesApi = {
   getDownloadStatus,
   getMonthlyRevenue,
   getRevenueByStatus,
+  getRecentlyUpdated,
 };
 
 export default invoicesApi;
