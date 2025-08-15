@@ -74,6 +74,12 @@ namespace :internal_api, defaults: { format: "json" } do
       end
       resources :action_trails, only: [:show]
       resources :waived, only: [:update]
+      resources :analytics, only: [] do
+        collection do
+          get :monthly_revenue
+          get :revenue_by_status
+        end
+      end
       get "(:id)/view", to: "view#show", as: "view"
       get "/:id/payments/success", to: "payments#success", as: "success"
     end

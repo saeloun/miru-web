@@ -44,6 +44,12 @@ const getDownloadStatus = async downloadId =>
     params: { download_id: downloadId },
   });
 
+const getMonthlyRevenue = async () =>
+  axios.get(`${path}/analytics/monthly_revenue`);
+
+const getRevenueByStatus = async () =>
+  axios.get(`${path}/analytics/revenue_by_status`);
+
 const invoicesApi = {
   get,
   post,
@@ -62,6 +68,8 @@ const invoicesApi = {
   invoiceLogs,
   sendReminder,
   getDownloadStatus,
+  getMonthlyRevenue,
+  getRevenueByStatus,
 };
 
 export default invoicesApi;
