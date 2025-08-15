@@ -17,8 +17,7 @@ RSpec.describe "Time Tracking Calendar", type: :system, js: true do
   describe "Calendar View" do
     before do
       sign_in(user)
-      visit "/"
-      click_link "Time Tracking"
+      visit "/time-tracking"
       sleep 2
       wait_for_react_app
     end
@@ -79,8 +78,7 @@ RSpec.describe "Time Tracking Calendar", type: :system, js: true do
   describe "Calendar Date Selection" do
     before do
       sign_in(user)
-      visit "/"
-      click_link "Time Tracking"
+      visit "/time-tracking"
       sleep 2
       wait_for_react_app
     end
@@ -145,8 +143,7 @@ RSpec.describe "Time Tracking Calendar", type: :system, js: true do
   describe "Calendar Time Entry Creation" do
     before do
       sign_in(user)
-      visit "/"
-      click_link "Time Tracking"
+      visit "/time-tracking"
       sleep 2
       wait_for_react_app
     end
@@ -198,8 +195,7 @@ RSpec.describe "Time Tracking Calendar", type: :system, js: true do
 
     before do
       sign_in(user)
-      visit "/"
-      click_link "Time Tracking"
+      visit "/time-tracking"
       sleep 2
       wait_for_react_app
     end
