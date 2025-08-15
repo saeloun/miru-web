@@ -58,19 +58,42 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
       pagy_metadata, paginated_invoices = pagy(invoices.none, items: per_page, page: 1)
     end
 
-    # Calculate summary
-    # For summary, include base_currency_amount calculation like the old service
-    status_amounts = current_company.invoices.kept.group_by(&:status).transform_values { |inv_list|
-      inv_list.sum { |invoice|
-        invoice.base_currency_amount.to_f > 0.00 ? invoice.base_currency_amount : invoice.amount
-      }
+    # Calculate summary with proper amounts
+    all_invoices = current_company.invoices.kept
+
+    # For draft invoices, sum the total amount
+    draft_amount = all_invoices.draft.sum { |invoice|
+      invoice.base_currency_amount.to_f > 0 ? invoice.base_currency_amount.to_f : invoice.amount.to_f
     }
-    status_amounts.default = 0
+
+    # For outstanding, use the outstanding_amount or amount_due field
+    # Outstanding includes sent, viewed, and overdue statuses
+    outstanding_amount = all_invoices.where(status: [:sent, :viewed, :overdue]).sum { |invoice|
+      # Use outstanding_amount if available, otherwise use amount_due, fallback to amount
+      if invoice.outstanding_amount.to_f > 0
+        invoice.outstanding_amount.to_f
+      elsif invoice.amount_due.to_f > 0
+        invoice.amount_due.to_f
+      else
+        invoice.base_currency_amount.to_f > 0 ? invoice.base_currency_amount.to_f : invoice.amount.to_f
+      end
+    }
+
+    # For overdue, only get overdue invoices
+    overdue_amount = all_invoices.overdue.sum { |invoice|
+      if invoice.outstanding_amount.to_f > 0
+        invoice.outstanding_amount.to_f
+      elsif invoice.amount_due.to_f > 0
+        invoice.amount_due.to_f
+      else
+        invoice.base_currency_amount.to_f > 0 ? invoice.base_currency_amount.to_f : invoice.amount.to_f
+      end
+    }
 
     summary = {
-      draftAmount: status_amounts["draft"],
-      outstandingAmount: status_amounts["sent"] + status_amounts["viewed"] + status_amounts["overdue"],
-      overdueAmount: status_amounts["overdue"],
+      draftAmount: draft_amount,
+      outstandingAmount: outstanding_amount,
+      overdueAmount: overdue_amount,
       currency: current_company.base_currency
     }
 
