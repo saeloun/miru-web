@@ -1,6 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { cn } from "../../lib/utils";
-import { Palette, X, ChevronRight, Monitor, Sparkles, Sun, Moon, Laptop } from "lucide-react";
+import {
+  Palette,
+  X,
+  ChevronRight,
+  Monitor,
+  Sparkles,
+  Sun,
+  Moon,
+  Laptop,
+} from "lucide-react";
 import { useThemeOptional } from "contexts/ThemeContext";
 
 interface GlobalThemeToggleProps {
@@ -12,7 +21,7 @@ const GlobalThemeToggle: React.FC<GlobalThemeToggleProps> = ({ className }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const [activeTab, setActiveTab] = useState<"theme" | "layout">("theme");
-  
+
   // Auto-hide after selection - moved before conditional return
   useEffect(() => {
     if (isOpen) {
@@ -23,20 +32,24 @@ const GlobalThemeToggle: React.FC<GlobalThemeToggleProps> = ({ className }) => {
       return () => clearTimeout(timer);
     }
   }, [isOpen]);
-  
+
   // Don't render if theme context is not available
   if (!themeContext) {
-    console.warn("GlobalThemeToggle: ThemeProvider not found, theme functionality disabled");
+    console.warn(
+      "GlobalThemeToggle: ThemeProvider not found, theme functionality disabled"
+    );
+
     return null;
   }
 
-  const { theme, effectiveTheme, setTheme, layoutMode, setLayoutMode } = themeContext;
+  const { theme, effectiveTheme, setTheme, layoutMode, setLayoutMode } =
+    themeContext;
 
   const handleThemeChange = (newTheme: "light" | "dark" | "system") => {
     setTheme(newTheme);
   };
 
-  const handleLayoutChange = (newLayout: "classic" | "admin") => {
+  const handleLayoutChange = (newLayout: "classic" | "modern") => {
     setLayoutMode(newLayout);
   };
 
@@ -49,7 +62,7 @@ const GlobalThemeToggle: React.FC<GlobalThemeToggleProps> = ({ className }) => {
       preview: "bg-gradient-to-br from-white to-gray-100",
     },
     {
-      id: "dark", 
+      id: "dark",
       name: "Dark",
       description: "Dark mode",
       icon: Moon,
@@ -60,8 +73,17 @@ const GlobalThemeToggle: React.FC<GlobalThemeToggleProps> = ({ className }) => {
       name: "System",
       description: "Follow system preference",
       icon: Laptop,
-      preview: "bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-blue-900/20 dark:to-indigo-900/20",
+      preview:
+        "bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-blue-900/20 dark:to-indigo-900/20",
     },
+    // Note: Monochrome theme prepared for future release
+    // {
+    //   id: "monochrome",
+    //   name: "Monochrome",
+    //   description: "Pure black and white",
+    //   icon: Circle,
+    //   preview: "bg-gradient-to-br from-white via-gray-100 to-gray-200",
+    // },
   ];
 
   const layoutOptions = [
@@ -70,14 +92,16 @@ const GlobalThemeToggle: React.FC<GlobalThemeToggleProps> = ({ className }) => {
       name: "Classic",
       description: "Traditional Miru interface",
       icon: Monitor,
-      preview: "bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-blue-900/20 dark:to-indigo-900/20",
+      preview:
+        "bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-blue-900/20 dark:to-indigo-900/20",
     },
     {
       id: "modern",
       name: "Modern",
       description: "Shadcn Pro dashboard layout",
       icon: Sparkles,
-      preview: "bg-gradient-to-br from-purple-50 to-pink-100 dark:from-purple-900/20 dark:to-pink-900/20",
+      preview:
+        "bg-gradient-to-br from-purple-50 to-pink-100 dark:from-purple-900/20 dark:to-pink-900/20",
     },
   ];
 
@@ -106,7 +130,9 @@ const GlobalThemeToggle: React.FC<GlobalThemeToggleProps> = ({ className }) => {
           className="group flex items-center gap-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full px-4 py-2.5 shadow-lg hover:shadow-xl transition-all duration-200"
         >
           <Palette className="h-5 w-5 text-gray-600 dark:text-gray-400 group-hover:text-[#5B34EA]" />
-          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Theme</span>
+          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+            Theme
+          </span>
           <ChevronRight className="h-4 w-4 text-gray-400 dark:text-gray-500 group-hover:translate-x-0.5 transition-transform" />
         </button>
       </div>
@@ -185,7 +211,9 @@ const GlobalThemeToggle: React.FC<GlobalThemeToggleProps> = ({ className }) => {
                   <button
                     key={themeOption.id}
                     onClick={() => {
-                      handleThemeChange(themeOption.id as "light" | "dark" | "system");
+                      handleThemeChange(
+                        themeOption.id as "light" | "dark" | "system"
+                      );
                     }}
                     className={cn(
                       "w-full flex items-start gap-3 p-3 rounded-xl border-2 transition-all duration-200",
@@ -204,7 +232,9 @@ const GlobalThemeToggle: React.FC<GlobalThemeToggleProps> = ({ className }) => {
                       <Icon
                         className={cn(
                           "h-6 w-6",
-                          isActive ? "text-[#5B34EA]" : "text-gray-600 dark:text-gray-400"
+                          isActive
+                            ? "text-[#5B34EA]"
+                            : "text-gray-600 dark:text-gray-400"
                         )}
                       />
                     </div>
@@ -215,7 +245,9 @@ const GlobalThemeToggle: React.FC<GlobalThemeToggleProps> = ({ className }) => {
                         <span
                           className={cn(
                             "font-medium",
-                            isActive ? "text-[#5B34EA]" : "text-gray-900 dark:text-gray-100"
+                            isActive
+                              ? "text-[#5B34EA]"
+                              : "text-gray-900 dark:text-gray-100"
                           )}
                         >
                           {themeOption.name}
@@ -247,7 +279,9 @@ const GlobalThemeToggle: React.FC<GlobalThemeToggleProps> = ({ className }) => {
                   <button
                     key={layoutOption.id}
                     onClick={() => {
-                      handleLayoutChange(layoutOption.id as "classic" | "admin");
+                      handleLayoutChange(
+                        layoutOption.id as "classic" | "modern"
+                      );
                     }}
                     className={cn(
                       "w-full flex items-start gap-3 p-3 rounded-xl border-2 transition-all duration-200",
@@ -266,7 +300,9 @@ const GlobalThemeToggle: React.FC<GlobalThemeToggleProps> = ({ className }) => {
                       <Icon
                         className={cn(
                           "h-6 w-6",
-                          isActive ? "text-[#5B34EA]" : "text-gray-600 dark:text-gray-400"
+                          isActive
+                            ? "text-[#5B34EA]"
+                            : "text-gray-600 dark:text-gray-400"
                         )}
                       />
                     </div>
@@ -277,7 +313,9 @@ const GlobalThemeToggle: React.FC<GlobalThemeToggleProps> = ({ className }) => {
                         <span
                           className={cn(
                             "font-medium",
-                            isActive ? "text-[#5B34EA]" : "text-gray-900 dark:text-gray-100"
+                            isActive
+                              ? "text-[#5B34EA]"
+                              : "text-gray-900 dark:text-gray-100"
                           )}
                         >
                           {layoutOption.name}
