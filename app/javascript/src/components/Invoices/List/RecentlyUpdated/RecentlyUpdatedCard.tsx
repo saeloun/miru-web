@@ -2,7 +2,7 @@ import React from "react";
 
 import { currencyFormat } from "helpers";
 import { useNavigate } from "react-router-dom";
-import AnimatedAvatar from "components/ui/animated-avatar";
+import { Avatar } from "StyledComponents";
 import StatusBadge from "components/ui/status-badge";
 
 const RecentlyUpdatedCard = ({
@@ -45,13 +45,16 @@ const RecentlyUpdatedCard = ({
 
       {/* Client Info Section */}
       <div className="flex items-center gap-2 mt-2 mb-3">
-        <AnimatedAvatar
-          url={client.logo}
-          name={client.name}
-          size="sm"
-          animation="none"
-          className="flex-shrink-0 w-8 h-8"
-        />
+        <div className="flex-shrink-0">
+          <Avatar
+            url={client.logo}
+            name={client.name}
+            size="h-8 w-8"
+            classNameImg="h-8 w-8"
+            classNameInitialsWrapper="h-8 w-8 bg-[#5B34EA]/10 text-[#5B34EA]"
+            classNameInitials="text-xs font-medium"
+          />
+        </div>
         <div className="flex-1 min-w-0">
           <p
             className="text-xs font-semibold text-gray-900 truncate"
