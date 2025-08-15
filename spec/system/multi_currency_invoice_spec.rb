@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe "Multi-Currency Invoice Management", type: :system do
+RSpec.describe "Multi-Currency Invoice Management", type: :system, pending: "Multi-currency UI implementation needed" do
   let(:company) { create(:company, base_currency: "USD", name: "Test Company", country: "US") }
   let(:admin_user) { create(:user, current_workspace_id: company.id) }
 

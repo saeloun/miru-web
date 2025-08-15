@@ -80,6 +80,7 @@ namespace :internal_api, defaults: { format: "json" } do
           get :revenue_by_status
         end
       end
+      resources :recently_updated, only: [:index]
       get "(:id)/view", to: "view#show", as: "view"
       get "/:id/payments/success", to: "payments#success", as: "success"
     end
