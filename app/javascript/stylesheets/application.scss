@@ -73,29 +73,39 @@
     --miru-han-purple-100: 222 214 251; /* #DED6FB */
     --miru-red-400: 224 70 70; /* #E04646 */
     --miru-red-200: 235 91 91; /* #EB5B5B */
+
+    /* Sidebar specific variables for light mode */
+    --sidebar: 0 0% 100%; /* #FFFFFF */
+    --sidebar-foreground: 268 29% 14%; /* #1D1A31 */
+    --sidebar-primary: 264 94% 56%; /* #5B34EA */
+    --sidebar-primary-foreground: 0 0% 100%; /* #FFFFFF */
+    --sidebar-accent: 211 19% 97%; /* #F5F7F9 */
+    --sidebar-accent-foreground: 268 29% 14%; /* #1D1A31 */
+    --sidebar-border: 207 13% 91%; /* #E1E6EC */
+    --sidebar-ring: 264 94% 56%; /* #5B34EA */
   }
 
-  /* Dark mode variables - Violet scheme with proper contrast */
+  /* Dark mode variables - Improved contrast for better accessibility */
   .dark {
-    --background: 268 29% 14%; /* #1D1A31 - miru-dark-purple-1000 */
-    --foreground: 0 0% 98%; /* #FFFFFF with slight adjustment */
-    --card: 265 17% 21%; /* #4A485A - miru-dark-purple-600 */
-    --card-foreground: 0 0% 98%; /* #FFFFFF */
-    --popover: 265 17% 21%; /* #4A485A */
-    --popover-foreground: 0 0% 98%; /* #FFFFFF */
-    --primary: 264 94% 56%; /* #5B34EA - keep brand color */
-    --primary-foreground: 0 0% 98%; /* #FFFFFF */
-    --secondary: 265 17% 21%; /* #4A485A - miru-dark-purple-600 */
-    --secondary-foreground: 0 0% 98%; /* #FFFFFF */
-    --muted: 265 17% 21%; /* #4A485A */
-    --muted-foreground: 261 9% 84%; /* #D2D1D6 - miru-dark-purple-100 */
-    --accent: 265 17% 21%; /* #4A485A */
-    --accent-foreground: 0 0% 98%; /* #FFFFFF */
-    --destructive: 0 68% 58%; /* #E04646 */
-    --destructive-foreground: 0 0% 98%; /* #FFFFFF */
-    --border: 265 17% 21%; /* #4A485A */
-    --input: 265 17% 21%; /* #4A485A */
-    --ring: 264 94% 56%; /* #5B34EA */
+    --background: 268 29% 10%; /* Darker base for better contrast */
+    --foreground: 0 0% 98%; /* High contrast white text */
+    --card: 268 20% 15%; /* Slightly lighter than background */
+    --card-foreground: 0 0% 98%; /* High contrast white text */
+    --popover: 268 20% 15%; /* Match card for consistency */
+    --popover-foreground: 0 0% 98%; /* High contrast white text */
+    --primary: 264 94% 60%; /* Slightly brighter for better visibility */
+    --primary-foreground: 0 0% 100%; /* Pure white for max contrast */
+    --secondary: 268 15% 25%; /* More contrast from background */
+    --secondary-foreground: 0 0% 98%; /* High contrast white text */
+    --muted: 268 15% 25%; /* More contrast for muted elements */
+    --muted-foreground: 220 10% 75%; /* Better contrast for muted text */
+    --accent: 264 94% 60%; /* Match primary for consistency */
+    --accent-foreground: 0 0% 100%; /* Pure white for max contrast */
+    --destructive: 0 75% 65%; /* Brighter red for better visibility */
+    --destructive-foreground: 0 0% 100%; /* Pure white for max contrast */
+    --border: 268 15% 25%; /* More visible borders */
+    --input: 268 20% 15%; /* Match card background */
+    --ring: 264 94% 60%; /* Match primary for focus states */
 
     /* Extended dark mode colors */
     --gradient-start: 91 52 234; /* #5B34EA */
@@ -106,6 +116,16 @@
     --text-primary: 255 255 255; /* #FFFFFF */
     --text-secondary: 210 209 214; /* #D2D1D6 */
     --text-muted: 165 163 173; /* #A5A3AD */
+
+    /* Sidebar specific variables for dark mode - Improved contrast */
+    --sidebar: 268 20% 12%; /* Darker sidebar for separation */
+    --sidebar-foreground: 0 0% 98%; /* High contrast white text */
+    --sidebar-primary: 264 94% 60%; /* Brighter primary for visibility */
+    --sidebar-primary-foreground: 0 0% 100%; /* Pure white for max contrast */
+    --sidebar-accent: 268 15% 30%; /* More visible hover states */
+    --sidebar-accent-foreground: 0 0% 98%; /* High contrast white text */
+    --sidebar-border: 268 15% 25%; /* More visible borders */
+    --sidebar-ring: 264 94% 60%; /* Match primary for focus states */
   }
 
   .field_with_errors {

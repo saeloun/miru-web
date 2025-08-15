@@ -47,7 +47,7 @@ class InternalApi::V1::Invoices::AnalyticsController < InternalApi::V1::Applicat
     payments = current_company.payments
       .joins(:invoice)
       .where(created_at: start_date..end_date)
-      .where.not(status: ['failed', 'cancelled'])
+      .where.not(status: ["failed", "cancelled"])
 
     payments.each do |payment|
       month_key = payment.created_at.strftime("%b %Y")

@@ -17,7 +17,7 @@ RSpec.describe "Editing team member details", type: :system, js: true do
     end
 
     context "when editing team member" do
-      it "can edit a team member name", :pending do
+      it "can edit a team member name" do
         with_forgery_protection do
           visit "/"
 
@@ -52,7 +52,7 @@ RSpec.describe "Editing team member details", type: :system, js: true do
         end
       end
 
-      it "can edit a team member role", :pending do
+      it "can edit a team member role" do
         with_forgery_protection do
           visit "/"
 

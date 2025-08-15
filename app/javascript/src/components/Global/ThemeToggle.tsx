@@ -73,9 +73,9 @@ const GlobalThemeToggle: React.FC<GlobalThemeToggleProps> = ({ className }) => {
       preview: "bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-blue-900/20 dark:to-indigo-900/20",
     },
     {
-      id: "admin",
-      name: "Admin Pro",
-      description: "Modern shadcn dashboard",
+      id: "modern",
+      name: "Modern",
+      description: "Shadcn Pro dashboard layout",
       icon: Sparkles,
       preview: "bg-gradient-to-br from-purple-50 to-pink-100 dark:from-purple-900/20 dark:to-pink-900/20",
     },

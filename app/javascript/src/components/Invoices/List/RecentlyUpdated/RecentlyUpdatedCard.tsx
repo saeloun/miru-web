@@ -57,9 +57,9 @@ const RecentlyUpdatedCard = ({
     <div
       className={`${
         index == 0 ? "mr-3" : "mx-1.5"
-      } group relative flex h-36 w-48 cursor-pointer flex-col rounded-xl border ${getStatusColor(
+      } group relative flex h-44 w-56 cursor-pointer flex-col rounded-xl border ${getStatusColor(
         status
-      )} p-4 transition-all duration-200 hover:shadow-lg hover:scale-[1.02] hover:border-[#5B34EA]/40`}
+      )} p-5 transition-all duration-200 hover:shadow-lg hover:scale-[1.02] hover:border-[#5B34EA]/40`}
       onClick={() => navigate(`/invoices/${id}`)}
     >
       {/* Header with Invoice # and Status Icon */}
