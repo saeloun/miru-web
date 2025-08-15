@@ -16,13 +16,13 @@ RSpec.describe "Email confirmations", type: :system, js: true do
       end
     end
 
-    it "renders email confirmation page", :pending do
+    it "renders email confirmation page" do
       expect(page).to have_current_path("/email_confirmation?email=#{user.email}")
       expect(page).to have_content("Email Verification")
       expect(page).to have_content("Resend")
     end
 
-    it "resends confirmation mail if user clicks on resend", :pending do
+    it "resends confirmation mail if user clicks on resend" do
       click_on "Resend"
       expect(ActionMailer::Base.deliveries.last.subject).to eq("Confirmation instructions")
       expect(ActionMailer::Base.deliveries.last.to.first).to eq(user.email)
@@ -45,13 +45,13 @@ RSpec.describe "Email confirmations", type: :system, js: true do
       end
     end
 
-    it "renders email confirmation page", :pending do
+    it "renders email confirmation page" do
       expect(page).to have_current_path("/email_confirmation?email=#{user2.email}")
       expect(page).to have_content("Email Verification")
       expect(page).to have_content("Resend")
     end
 
-    it "resends confirmation mail if user clicks on resend", :pending do
+    it "resends confirmation mail if user clicks on resend" do
       click_on "Resend"
       expect(ActionMailer::Base.deliveries.last.subject).to eq("Confirmation instructions")
       expect(ActionMailer::Base.deliveries.last.to.first).to eq(user2.email)
@@ -61,7 +61,7 @@ RSpec.describe "Email confirmations", type: :system, js: true do
   context "when confirmed user visits email confirmation page" do
     let(:user) { create(:user) }
 
-    it "throws error", :pending do
+    it "throws error" do
       with_forgery_protection do
         visit "/email_confirmation?email=#{user.email}"
 
