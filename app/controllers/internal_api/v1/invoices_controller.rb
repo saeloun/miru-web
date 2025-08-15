@@ -91,9 +91,9 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
     }.round(2)
 
     summary = {
-      draftAmount: draft_amount,
-      outstandingAmount: outstanding_amount,
-      overdueAmount: overdue_amount,
+      draftAmount: draft_amount == 0 ? 0 : draft_amount.to_s,
+      outstandingAmount: outstanding_amount == 0 ? 0 : outstanding_amount.to_s,
+      overdueAmount: overdue_amount == 0 ? 0 : overdue_amount.to_s,
       currency: current_company.base_currency
     }
 
