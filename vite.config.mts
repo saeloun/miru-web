@@ -36,6 +36,7 @@ export default defineConfig({
       'components': path.resolve(__dirname, './app/javascript/src/components'),
       'constants': path.resolve(__dirname, './app/javascript/src/constants'),
       'context': path.resolve(__dirname, './app/javascript/src/context'),
+      'contexts': path.resolve(__dirname, './app/javascript/src/contexts'),
       'apis': path.resolve(__dirname, './app/javascript/src/apis'),
       'helpers': path.resolve(__dirname, './app/javascript/src/helpers'),
       'utils': path.resolve(__dirname, './app/javascript/src/utils'),
