@@ -4,6 +4,7 @@ import Home from "./Home";
 import Navbar from "../Navbar";
 import Sidebar from "../Navbar/Sidebar";
 import { useUserContext } from "context/UserContext";
+import GlobalThemeToggle from "../Global/ThemeToggle";
 
 const Dashboard = props => {
   const userContext = useUserContext();
@@ -40,6 +41,7 @@ const Dashboard = props => {
         <div className="flex-1 lg:pl-16 lg:data-[sidebar-expanded=true]:pl-64 pb-16 lg:pb-0">
           <Home {...homeProps} />
         </div>
+        <GlobalThemeToggle />
       </div>
     );
   }
@@ -50,6 +52,7 @@ const Dashboard = props => {
       <div className="absolute inset-0 flex h-full w-full">
         <Navbar companyRole={companyRole} user={user} />
         <Home {...homeProps} />
+        <GlobalThemeToggle />
       </div>
     );
   }
@@ -57,6 +60,7 @@ const Dashboard = props => {
   return (
     <div className="flex h-screen w-full flex-col">
       <Home {...homeProps} />
+      <GlobalThemeToggle />
     </div>
   );
 };
