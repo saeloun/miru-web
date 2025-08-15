@@ -64,7 +64,7 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
     # For draft invoices, sum the total amount
     draft_amount = all_invoices.draft.sum { |invoice|
       invoice.base_currency_amount.to_f > 0 ? invoice.base_currency_amount.to_f : invoice.amount.to_f
-    }
+    }.round(2)
 
     # For outstanding, use the outstanding_amount or amount_due field
     # Outstanding includes sent, viewed, and overdue statuses
@@ -77,7 +77,7 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
       else
         invoice.base_currency_amount.to_f > 0 ? invoice.base_currency_amount.to_f : invoice.amount.to_f
       end
-    }
+    }.round(2)
 
     # For overdue, only get overdue invoices
     overdue_amount = all_invoices.overdue.sum { |invoice|
@@ -88,7 +88,7 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
       else
         invoice.base_currency_amount.to_f > 0 ? invoice.base_currency_amount.to_f : invoice.amount.to_f
       end
-    }
+    }.round(2)
 
     summary = {
       draftAmount: draft_amount,

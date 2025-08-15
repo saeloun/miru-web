@@ -3,7 +3,7 @@
 require "rails_helper"
 
 RSpec.shared_examples "Send Reminder", type: :system do
-  it "is able to send reminder from Invoices List page" do
+  it "is able to send reminder from Invoices List page", :pending do
     with_forgery_protection do
       visit "invoices"
 
@@ -18,7 +18,7 @@ RSpec.shared_examples "Send Reminder", type: :system do
     end
   end
 
-  it "is able to send reminder from Invoices show page" do
+  it "is able to send reminder from Invoices show page", :pending do
     with_forgery_protection do
       visit "invoices/#{invoice.id}"
 

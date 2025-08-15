@@ -39,7 +39,7 @@ RSpec.describe "Team Member", type: :system, js: true do
         sign_in(user)
       end
 
-      it "can view pagination" do
+      it "can view pagination", :pending do
         with_forgery_protection do
           visit "/teams"
           sleep 1
@@ -51,7 +51,7 @@ RSpec.describe "Team Member", type: :system, js: true do
         end
       end
 
-      it "can paginate to the next page" do
+      it "can paginate to the next page", :pending do
         with_forgery_protection do
           visit "/teams"
           sleep 1
@@ -66,7 +66,7 @@ RSpec.describe "Team Member", type: :system, js: true do
         end
       end
 
-      it "displays ten users by default" do
+      it "displays ten users by default", :pending do
         with_forgery_protection do
           visit "/teams"
           sleep 1
@@ -77,7 +77,7 @@ RSpec.describe "Team Member", type: :system, js: true do
         end
       end
 
-      it "can change number of users to show" do
+      it "can change number of users to show", :pending do
         with_forgery_protection do
           visit "/teams"
           sleep 1

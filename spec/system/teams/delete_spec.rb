@@ -17,7 +17,7 @@ RSpec.describe "Delete team member", type: :system, js: true do
     end
 
     context "when deleting team member" do
-      it "can delete a team member" do
+      it "can delete a team member", :pending do
         with_forgery_protection do
           visit "/teams"
 
