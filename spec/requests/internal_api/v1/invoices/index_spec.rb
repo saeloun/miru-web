@@ -279,6 +279,7 @@ RSpec.describe "InternalApi::V1::Invoices#index", type: :request do
           overdueAmount: @overdue_amount,
           outstandingAmount: @outstanding_amount,
           draftAmount: @draft_amount,
+          totalAmount: (@overdue_amount + @outstanding_amount + @draft_amount).to_s,
           currency: company.base_currency
         }
         expect(json_response["summary"]).to eq(JSON.parse(expected_data.to_json))
