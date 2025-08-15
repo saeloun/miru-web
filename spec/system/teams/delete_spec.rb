@@ -19,12 +19,32 @@ RSpec.describe "Delete team member", type: :system, js: true do
     context "when deleting team member" do
       it "can delete a team member", :pending do
         with_forgery_protection do
-          visit "/teams"
+          visit "/"
 
+          # Navigate to teams
+          find("a", text: "Teams").click
+          expect(page).to have_current_path(/\/teams/)
           expect(page).to have_content(employee_user.first_name)
 
-          el = all(:css, "#deleteMember", visible: false).last.hover
-          el.click
+          # Find delete button by looking for DeleteIcon or similar
+          if page.has_css?('button[aria-label*="Delete"]', wait: 2)
+            find('button[aria-label*="Delete"]').click
+          elsif page.has_css?("button:has(svg)", wait: 2)
+            # Find button with delete icon
+            buttons_with_svg = all("button:has(svg)", visible: :all)
+            delete_button = buttons_with_svg.find { |btn|
+              btn[:title]&.include?("Delete") ||
+              btn.find("svg", visible: false)["data-icon"] == "delete" ||
+              btn.find("svg.text-miru-red-400", visible: false) rescue false
+            }
+            delete_button&.click
+          else
+            # Fallback: click on row then find delete option
+            find("tr", text: employee_user.first_name).click
+            sleep 1
+            find("button", text: "Delete").click rescue find("li", text: "Delete").click
+          end
+
           click_button "DELETE"
           expect(page).not_to have_content(employee_user.first_name)
         end
