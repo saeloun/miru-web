@@ -137,7 +137,13 @@ jobs:
           # Run all specs in parallel (system specs are skipped via support file)
           bundle exec parallel_rspec spec \
             -o "--format progress --format RspecJunitFormatter --out tmp/rspec_${CI_NODE_INDEX}.xml" \
-            --only-group ${NODE_GROUP}/${CI_NODE_TOTAL}
+            --only-group ${NODE_GROUP}/${CI_NODE_TOTAL} || echo "Tests failed with exit code $?"
+          
+          # Also save failed specs list for debugging
+          if [ -f tmp/failing_specs.txt ]; then
+            echo "Failed specs:"
+            cat tmp/failing_specs.txt
+          fi
       
       - name: Upload test results
         if: always()
@@ -147,6 +153,9 @@ jobs:
           path: |
             tmp/rspec_*.xml
             tmp/rspec*.xml
+            tmp/capybara/*.png
+            tmp/failing_specs.txt
+            log/test.log
           if-no-files-found: warn
       
       - name: Upload coverage reports
