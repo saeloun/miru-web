@@ -84,7 +84,6 @@ RSpec.describe "Creating Project", type: :system, js: true do
     it "new project button should not be visible for employees" do
       with_forgery_protection do
         visit "/projects"
-        click_link "Projects"
         sleep 2
 
         expect(page).to have_no_button("New Project")
