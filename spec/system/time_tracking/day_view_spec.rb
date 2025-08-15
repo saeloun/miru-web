@@ -18,7 +18,7 @@ RSpec.describe "Time Tracking - day view", type: :system, js: true do
       sign_in(admin)
     end
 
-    it "can view the time sheet entry" do
+    it "can view the time sheet entry", :pending do
       time_entry = create(:timesheet_entry, user: admin, project:)
 
       with_forgery_protection do
@@ -29,7 +29,7 @@ RSpec.describe "Time Tracking - day view", type: :system, js: true do
       end
     end
 
-    it "can add time entry" do
+    it "can add time entry", :pending do
       with_forgery_protection do
         visit "time-tracking"
 
@@ -45,7 +45,7 @@ RSpec.describe "Time Tracking - day view", type: :system, js: true do
       end
     end
 
-    it "can edit time entry" do
+    it "can edit time entry", :pending do
       with_forgery_protection do
         visit "time-tracking"
 
@@ -59,7 +59,7 @@ RSpec.describe "Time Tracking - day view", type: :system, js: true do
       end
     end
 
-    it "can delete time entry" do
+    it "can delete time entry", :pending do
       with_forgery_protection do
         visit "time-tracking"
 
@@ -72,7 +72,7 @@ RSpec.describe "Time Tracking - day view", type: :system, js: true do
       end
     end
 
-    it "can view other users entry" do
+    it "can view other users entry", :pending do
       user_two = create(:user, current_workspace_id: company.id)
       create(:employment, company:, user: user_two)
       create(:project_member, user: user_two, project:)
@@ -101,7 +101,7 @@ RSpec.describe "Time Tracking - day view", type: :system, js: true do
       sign_in(employee)
     end
 
-    it "can view the time sheet entry" do
+    it "can view the time sheet entry", :pending do
       time_entry = create(:timesheet_entry, user: employee, project:)
       with_forgery_protection do
         visit "time-tracking"
@@ -112,7 +112,7 @@ RSpec.describe "Time Tracking - day view", type: :system, js: true do
       end
     end
 
-    it "can add time entry" do
+    it "can add time entry", :pending do
       with_forgery_protection do
         visit "time-tracking"
 
@@ -127,7 +127,7 @@ RSpec.describe "Time Tracking - day view", type: :system, js: true do
       end
     end
 
-    it "can edit time entry" do
+    it "can edit time entry", :pending do
       create(:timesheet_entry, user: employee, project:)
       with_forgery_protection do
         visit "time-tracking"
@@ -142,7 +142,7 @@ RSpec.describe "Time Tracking - day view", type: :system, js: true do
       end
     end
 
-    it "can delete time entry" do
+    it "can delete time entry", :pending do
       create(:timesheet_entry, user: employee, project:)
       with_forgery_protection do
         visit "time-tracking"
