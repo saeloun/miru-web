@@ -50,8 +50,7 @@ const Container = ({
         summary={summary}
       />
       <MonthlyRevenueChart
-        invoices={invoices}
-        baseCurrency={invoices[0].company.baseCurrency}
+        baseCurrency={invoices[0]?.company?.baseCurrency || "USD"}
         chartType={chartType}
         height={280}
         onChartTypeChange={setChartType}
