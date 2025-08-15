@@ -28,7 +28,23 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
     });
   };
 
+  const resetFilters = () => {
+    setFilterParams({
+      ...filterParams,
+      status: [],
+    });
+  };
+
   const summaryItems = [
+    {
+      label: "All",
+      value:
+        summary.overdueAmount + summary.outstandingAmount + summary.draftAmount,
+      colorClass: "text-[#5B34EA]",
+      bgClass: "bg-[#5B34EA]/5 hover:bg-[#5B34EA]/10",
+      onClick: resetFilters,
+      isReset: true,
+    },
     {
       label: "Overdue",
       value: summary.overdueAmount,
