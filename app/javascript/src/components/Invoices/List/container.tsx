@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import BulkActionsWrapper from "./BulkActionsWrapper";
 import NoInvoices from "./NoInvoices";
@@ -6,6 +6,7 @@ import RecentlyUpdated from "./RecentlyUpdated";
 import Table from "./Table";
 
 import InvoiceSummary from "../InvoiceSummary";
+import MonthlyRevenueChart from "../MonthlyRevenueChart";
 
 const Container = ({
   summary,
@@ -32,8 +33,10 @@ const Container = ({
   params,
   isStripeEnabled,
   setIsStripeEnabled,
-}) =>
-  invoices.length > 0 ? (
+}) => {
+  const [chartType, setChartType] = useState<"area" | "bar">("area");
+
+  return invoices.length > 0 ? (
     <div
       className={`${
         isDesktop ? null : "overflow-x-scroll"
@@ -45,6 +48,13 @@ const Container = ({
         isDesktop={isDesktop}
         setFilterParams={setFilterParams}
         summary={summary}
+      />
+      <MonthlyRevenueChart
+        invoices={invoices}
+        baseCurrency={invoices[0].company.baseCurrency}
+        chartType={chartType}
+        height={280}
+        onChartTypeChange={setChartType}
       />
       <RecentlyUpdated recentlyUpdatedInvoices={recentlyUpdatedInvoices} />
       <BulkActionsWrapper
@@ -81,5 +91,6 @@ const Container = ({
       params={params}
     />
   );
+};
 
 export default Container;

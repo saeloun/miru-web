@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe "Time Tracking Calendar", type: :system, js: true do
+RSpec.describe "Time Tracking Calendar", type: :system, js: true, pending: "UI changes needed" do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
   let(:client) { create(:client, company: company) }

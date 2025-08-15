@@ -43,7 +43,7 @@ const InvoiceSummary = ({
     <SummaryDashboard
       currency={baseCurrency}
       summaryList={summaryList}
-      wrapperClassName="mt-1 lg:mt-6"
+      wrapperClassName="mt-1 lg:mt-4"
     />
   );
 };
