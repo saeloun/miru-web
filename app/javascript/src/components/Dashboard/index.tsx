@@ -3,11 +3,16 @@ import React, { useEffect } from "react";
 import Home from "./Home";
 import Navbar from "../Navbar";
 import Sidebar from "../Navbar/Sidebar";
+import ModernLayout from "./ModernLayout";
 import { useUserContext } from "context/UserContext";
+import { useThemeOptional } from "contexts/ThemeContext";
 import GlobalThemeToggle from "../Global/ThemeToggle";
 
 const Dashboard = props => {
   const userContext = useUserContext();
+  const themeContext = useThemeOptional();
+  const layoutMode = themeContext?.layoutMode || "classic";
+  
   // Use context data if props are not available (for client-side navigation)
   const user = props.user || userContext.user;
   const companyRole = props.companyRole || userContext.companyRole;
@@ -33,6 +38,18 @@ const Dashboard = props => {
     isDesktop,
     company: userContext.company || props.company,
   };
+
+  // Use modern layout when layout mode is "modern"  
+  if (layoutMode === "modern") {
+    return (
+      <>
+        <ModernLayout>
+          <Home {...homeProps} />
+        </ModernLayout>
+        <GlobalThemeToggle />
+      </>
+    );
+  }
 
   if (useModernLayout) {
     return (
