@@ -90,10 +90,14 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
       end
     }.round(2)
 
+    # Calculate total amount for ALL status
+    total_amount = (draft_amount + outstanding_amount + overdue_amount).round(2)
+
     summary = {
       draftAmount: draft_amount == 0 ? 0 : draft_amount.to_s,
       outstandingAmount: outstanding_amount == 0 ? 0 : outstanding_amount.to_s,
       overdueAmount: overdue_amount == 0 ? 0 : overdue_amount.to_s,
+      totalAmount: total_amount == 0 ? 0 : total_amount.to_s,
       currency: current_company.base_currency
     }
 

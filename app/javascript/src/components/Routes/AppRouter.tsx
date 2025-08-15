@@ -23,6 +23,7 @@ import Success from "components/payments/Success";
 import InvalidLink from "components/Team/List/InvalidLink";
 import InvoiceEmail from "components/InvoiceEmail";
 import ErrorPage from "common/Error";
+import GlobalThemeToggle from "components/Global/ThemeToggle";
 
 interface AppRouterProps {
   user?: any;
@@ -38,11 +39,12 @@ const AppRouter: React.FC<AppRouterProps> = props => {
     props.user && !props.user?.current_workspace_id;
 
   return (
-    <Routes>
-      {/* Public Routes - Available to everyone */}
-      <Route element={<Success />} path={Paths.PAYMENT_SUCCESS} />
-      <Route element={<InvalidLink />} path={Paths.INVALID_LINK} />
-      <Route element={<InvoiceEmail />} path={Paths.PUBLIC_INVOICE} />
+    <>
+      <Routes>
+        {/* Public Routes - Available to everyone */}
+        <Route element={<Success />} path={Paths.PAYMENT_SUCCESS} />
+        <Route element={<InvalidLink />} path={Paths.INVALID_LINK} />
+        <Route element={<InvoiceEmail />} path={Paths.PUBLIC_INVOICE} />
       {/* Root route handling - redirect based on auth state */}
       <Route
         element={
@@ -84,9 +86,13 @@ const AppRouter: React.FC<AppRouterProps> = props => {
           </>
         )}
       </Route>
-      {/* 404 - Catch all */}
-      <Route element={<ErrorPage />} path="*" />
-    </Routes>
+        {/* 404 - Catch all */}
+        <Route element={<ErrorPage />} path="*" />
+      </Routes>
+      
+      {/* Global Theme Toggle - available everywhere */}
+      <GlobalThemeToggle />
+    </>
   );
 };
 

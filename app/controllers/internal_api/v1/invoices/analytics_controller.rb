@@ -14,16 +14,18 @@ class InternalApi::V1::Invoices::AnalyticsController < InternalApi::V1::Applicat
       .where.not(status: :draft)
       .where(issue_date: start_date..end_date)
 
-    # Group by month and calculate revenue
+    # Group by month and calculate revenue and payments
     monthly_data = {}
 
-    # Initialize all months with zero revenue
+    # Initialize all months with zero revenue and payments
     12.times do |i|
       month_date = (11 - i).months.ago
       month_key = month_date.strftime("%b %Y")
       monthly_data[month_key] = {
         revenue: 0.0,
+        payments: 0.0,
         invoice_count: 0,
+        payment_count: 0,
         month: month_date.strftime("%b"),
         full_month: month_key,
         year: month_date.year
@@ -38,6 +40,22 @@ class InternalApi::V1::Invoices::AnalyticsController < InternalApi::V1::Applicat
         amount = invoice.base_currency_amount.to_f > 0 ? invoice.base_currency_amount.to_f : invoice.amount.to_f
         monthly_data[month_key][:revenue] += amount
         monthly_data[month_key][:invoice_count] += 1
+      end
+    end
+
+    # Process payments for the same period
+    payments = current_company.payments
+      .joins(:invoice)
+      .where(created_at: start_date..end_date)
+      .where.not(status: ['failed', 'cancelled'])
+
+    payments.each do |payment|
+      month_key = payment.created_at.strftime("%b %Y")
+      if monthly_data[month_key]
+        # Use the payment amount
+        payment_amount = payment.amount.to_f
+        monthly_data[month_key][:payments] += payment_amount
+        monthly_data[month_key][:payment_count] += 1
       end
     end
 
