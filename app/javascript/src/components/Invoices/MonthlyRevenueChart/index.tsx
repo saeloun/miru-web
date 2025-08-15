@@ -10,8 +10,9 @@ import {
   BarChart,
   Bar,
 } from "recharts";
+import invoicesApi from "apis/invoices";
 import { currencyFormat } from "helpers";
-import dayjs from "dayjs";
+import { Toastr } from "StyledComponents";
 
 interface MonthlyRevenueData {
   month: string;
@@ -20,7 +21,6 @@ interface MonthlyRevenueData {
 }
 
 interface MonthlyRevenueChartProps {
-  invoices: any[];
   baseCurrency: string;
   chartType?: "area" | "bar";
   height?: number;
@@ -28,7 +28,6 @@ interface MonthlyRevenueChartProps {
 }
 
 const MonthlyRevenueChart: React.FC<MonthlyRevenueChartProps> = ({
-  invoices,
   baseCurrency,
   chartType = "area",
   height = 300,
@@ -39,85 +38,40 @@ const MonthlyRevenueChart: React.FC<MonthlyRevenueChartProps> = ({
   const [averageRevenue, setAverageRevenue] = useState(0);
   const [trend, setTrend] = useState<number>(0);
   const [isLoading, setIsLoading] = useState(true);
+  const [currency, setCurrency] = useState(baseCurrency);
 
   useEffect(() => {
-    processInvoiceData();
-  }, [invoices]);
+    fetchMonthlyRevenue();
+  }, []);
 
-  const processInvoiceData = () => {
-    if (!invoices || invoices.length === 0) {
-      setChartData([]);
-      setTotalRevenue(0);
-      setAverageRevenue(0);
-      setTrend(0);
+  const fetchMonthlyRevenue = async () => {
+    try {
+      setIsLoading(true);
+      const response = await invoicesApi.getMonthlyRevenue();
+      const data = response.data;
+
+      // Set the chart data from API response
+      const formattedData: MonthlyRevenueData[] = data.chart_data.map(item => ({
+        month: item.month,
+        revenue: item.revenue,
+        invoiceCount: item.invoice_count,
+      }));
+
+      setChartData(formattedData);
+      setTotalRevenue(data.statistics.total_revenue);
+      setAverageRevenue(data.statistics.average_revenue);
+      setTrend(data.statistics.trend);
+      setCurrency(data.statistics.currency || baseCurrency);
       setIsLoading(false);
-
-      return;
+    } catch (error) {
+      console.error("Error fetching monthly revenue:", error);
+      Toastr.error("Failed to load revenue data");
+      setChartData([]);
+      setIsLoading(false);
     }
-
-    // Group invoices by month
-    const monthlyData: { [key: string]: { revenue: number; count: number } } =
-      {};
-
-    // Get last 12 months
-    const currentMonth = dayjs();
-    const months: string[] = [];
-
-    for (let i = 11; i >= 0; i--) {
-      const month = currentMonth.subtract(i, "month");
-      const monthKey = month.format("MMM YYYY");
-      months.push(monthKey);
-      monthlyData[monthKey] = { revenue: 0, count: 0 };
-    }
-
-    // Process invoices
-    invoices.forEach(invoice => {
-      // Include all non-draft statuses for revenue calculation
-      if (invoice.status !== "draft") {
-        const invoiceDate = dayjs(
-          invoice.invoiceDate || invoice.issueDate || invoice.createdAt
-        );
-        const monthKey = invoiceDate.format("MMM YYYY");
-
-        if (monthlyData[monthKey]) {
-          // Handle different amount field names
-          const amount = parseFloat(
-            invoice.amount || invoice.totalAmount || invoice.total || 0
-          );
-          monthlyData[monthKey].revenue += amount;
-          monthlyData[monthKey].count += 1;
-        }
-      }
-    });
-
-    // Convert to chart format
-    const formattedData: MonthlyRevenueData[] = months.map(month => ({
-      month: month.split(" ")[0], // Show only month abbreviation
-      revenue: monthlyData[month].revenue,
-      invoiceCount: monthlyData[month].count,
-    }));
-
-    // Calculate statistics
-    const total = formattedData.reduce((sum, item) => sum + item.revenue, 0);
-    const avg = total / formattedData.length;
-
-    // Calculate trend (compare last month to previous month)
-    if (formattedData.length >= 2) {
-      const lastMonth = formattedData[formattedData.length - 1].revenue;
-      const previousMonth = formattedData[formattedData.length - 2].revenue;
-      if (previousMonth > 0) {
-        setTrend(((lastMonth - previousMonth) / previousMonth) * 100);
-      }
-    }
-
-    setChartData(formattedData);
-    setTotalRevenue(total);
-    setAverageRevenue(avg);
-    setIsLoading(false);
   };
 
-  const formatTooltipValue = (value: number) =>
-    currencyFormat(baseCurrency, value);
+  const formatTooltipValue = (value: number) => currencyFormat(currency, value);
 
   const formatYAxisTick = (value: number) => {
     if (value >= 1000000) {
@@ -171,7 +125,7 @@ const MonthlyRevenueChart: React.FC<MonthlyRevenueChartProps> = ({
                 Total
               </p>
               <p className="text-lg font-semibold text-gray-900">
-                {currencyFormat(baseCurrency, totalRevenue, "compact")}
+                {currencyFormat(currency, totalRevenue, "compact")}
               </p>
             </div>
             <div>
@@ -179,7 +133,7 @@ const MonthlyRevenueChart: React.FC<MonthlyRevenueChartProps> = ({
                 Average
               </p>
               <p className="text-lg font-semibold text-gray-900">
-                {currencyFormat(baseCurrency, averageRevenue, "compact")}
+                {currencyFormat(currency, averageRevenue, "compact")}
               </p>
             </div>
             {trend !== 0 && (
