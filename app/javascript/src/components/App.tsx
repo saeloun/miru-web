@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 
 import { AuthProvider } from "context/auth";
 import UserContext from "context/UserContext";
+import { ThemeProvider } from "../contexts/ThemeContext";
 import { Toaster } from "sonner";
 import { BrowserRouter } from "react-router-dom";
 import "@fontsource-variable/inter";
@@ -183,26 +184,28 @@ const AppWithUserData = props => {
 const App = props => (
   <div data-component="App" data-testid="app-loaded">
     <BrowserRouter>
-      <AuthProvider>
-        <Toaster
-          richColors
-          duration={5000}
-          position="top-right"
-          toastOptions={{
-            classNames: {
-              toast:
-                "bg-white text-miru-dark-purple-1000 border border-miru-gray-1000 rounded-md shadow-sm",
-              title: "text-sm font-medium",
-              description: "text-xs text-miru-dark-purple-400",
-              success: "bg-green-50 border-green-200 text-green-800",
-              error: "bg-red-50 border-red-200 text-red-800",
-              warning: "bg-yellow-50 border-yellow-200 text-yellow-800",
-              info: "bg-blue-50 border-blue-200 text-blue-800",
-            },
-          }}
-        />
-        <AppWithUserData {...props} />
-      </AuthProvider>
+      <ThemeProvider>
+        <AuthProvider>
+          <Toaster
+            richColors
+            duration={5000}
+            position="top-right"
+            toastOptions={{
+              classNames: {
+                toast:
+                  "bg-white dark:bg-gray-800 text-miru-dark-purple-1000 dark:text-gray-100 border border-miru-gray-1000 dark:border-gray-700 rounded-md shadow-sm",
+                title: "text-sm font-medium",
+                description: "text-xs text-miru-dark-purple-400 dark:text-gray-400",
+                success: "bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800 text-green-800 dark:text-green-300",
+                error: "bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800 text-red-800 dark:text-red-300",
+                warning: "bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800 text-yellow-800 dark:text-yellow-300",
+                info: "bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800 text-blue-800 dark:text-blue-300",
+              },
+            }}
+          />
+          <AppWithUserData {...props} />
+        </AuthProvider>
+      </ThemeProvider>
     </BrowserRouter>
     <div id="overlay" />
   </div>
