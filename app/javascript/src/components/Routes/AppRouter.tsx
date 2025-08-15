@@ -45,51 +45,51 @@ const AppRouter: React.FC<AppRouterProps> = props => {
         <Route element={<Success />} path={Paths.PAYMENT_SUCCESS} />
         <Route element={<InvalidLink />} path={Paths.INVALID_LINK} />
         <Route element={<InvoiceEmail />} path={Paths.PUBLIC_INVOICE} />
-      {/* Root route handling - redirect based on auth state */}
-      <Route
-        element={
-          props.user ? (
-            needsOrganizationSetup ? (
-              <OrganizationSetup />
+        {/* Root route handling - redirect based on auth state */}
+        <Route
+          element={
+            props.user ? (
+              needsOrganizationSetup ? (
+                <OrganizationSetup />
+              ) : (
+                <Navigate replace to={Paths.TIME_TRACKING} />
+              )
             ) : (
-              <Navigate replace to={Paths.TIME_TRACKING} />
+              <Navigate replace to={Paths.SIGN_IN} />
             )
-          ) : (
-            <Navigate replace to={Paths.SIGN_IN} />
-          )
-        }
-        path="/"
-      />
-      {/* Auth Routes - Only for non-authenticated users */}
-      <Route element={<PublicRoute restricted />}>
-        <Route element={<SignIn />} path={Paths.SIGN_IN} />
-        <Route element={<SignUp />} path={Paths.SIGNUP} />
-        <Route element={<ForgotPassword />} path={Paths.FORGOT_PASSWORD} />
-        <Route
-          element={<EmailVerification />}
-          path={Paths.EMAIL_VERIFICATION}
+          }
+          path="/"
         />
-        <Route
-          element={<EmailVerificationSuccess />}
-          path={Paths.EMAIL_VERIFICATION_SUCCESS}
-        />
-      </Route>
-      {/* Protected Routes - Only for authenticated users */}
-      <Route element={<ProtectedRoute />}>
-        {needsOrganizationSetup && (
-          <Route element={<SignUpSuccess />} path={Paths.SIGNUP_SUCCESS} />
-        )}
-        {!needsOrganizationSetup && (
-          <>
-            {/* Dashboard handles all authenticated routes */}
-            <Route element={<Dashboard {...props} />} path="*" />
-          </>
-        )}
-      </Route>
+        {/* Auth Routes - Only for non-authenticated users */}
+        <Route element={<PublicRoute restricted />}>
+          <Route element={<SignIn />} path={Paths.SIGN_IN} />
+          <Route element={<SignUp />} path={Paths.SIGNUP} />
+          <Route element={<ForgotPassword />} path={Paths.FORGOT_PASSWORD} />
+          <Route
+            element={<EmailVerification />}
+            path={Paths.EMAIL_VERIFICATION}
+          />
+          <Route
+            element={<EmailVerificationSuccess />}
+            path={Paths.EMAIL_VERIFICATION_SUCCESS}
+          />
+        </Route>
+        {/* Protected Routes - Only for authenticated users */}
+        <Route element={<ProtectedRoute />}>
+          {needsOrganizationSetup && (
+            <Route element={<SignUpSuccess />} path={Paths.SIGNUP_SUCCESS} />
+          )}
+          {!needsOrganizationSetup && (
+            <>
+              {/* Dashboard handles all authenticated routes */}
+              <Route element={<Dashboard {...props} />} path="*" />
+            </>
+          )}
+        </Route>
         {/* 404 - Catch all */}
         <Route element={<ErrorPage />} path="*" />
       </Routes>
-      
+
       {/* Global Theme Toggle - available everywhere */}
       <GlobalThemeToggle />
     </>

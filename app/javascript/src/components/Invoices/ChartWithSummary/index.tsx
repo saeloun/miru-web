@@ -4,9 +4,9 @@ import MonthlyRevenueChart from "../MonthlyRevenueChart";
 
 interface ChartWithSummaryProps {
   summary: {
-    overdueAmount: number;
-    outstandingAmount: number;
-    draftAmount: number;
+    overdueAmount: number | string;
+    outstandingAmount: number | string;
+    draftAmount: number | string;
   };
   baseCurrency: string;
   filterParams: any;
@@ -35,11 +35,22 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
     });
   };
 
+  // Parse values to ensure they're numbers
+  const parseAmount = (value: number | string): number => {
+    if (typeof value === "number") return value;
+    const parsed = parseFloat(value.toString());
+
+    return isNaN(parsed) ? 0 : parsed;
+  };
+
+  const overdueAmount = parseAmount(summary.overdueAmount);
+  const outstandingAmount = parseAmount(summary.outstandingAmount);
+  const draftAmount = parseAmount(summary.draftAmount);
+
   const summaryItems = [
     {
       label: "All",
-      value:
-        summary.overdueAmount + summary.outstandingAmount + summary.draftAmount,
+      value: overdueAmount + outstandingAmount + draftAmount,
       colorClass: "text-[#5B34EA]",
       bgClass: "bg-[#5B34EA]/5 hover:bg-[#5B34EA]/10",
       onClick: resetFilters,
@@ -47,14 +58,14 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
     },
     {
       label: "Overdue",
-      value: summary.overdueAmount,
+      value: overdueAmount,
       colorClass: "text-red-600",
       bgClass: "bg-red-50 hover:bg-red-100",
       onClick: () => applyFilter([{ value: "overdue", label: "OVERDUE" }]),
     },
     {
       label: "Outstanding",
-      value: summary.outstandingAmount,
+      value: outstandingAmount,
       colorClass: "text-amber-600",
       bgClass: "bg-amber-50 hover:bg-amber-100",
       onClick: () =>
@@ -66,7 +77,7 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
     },
     {
       label: "Draft",
-      value: summary.draftAmount,
+      value: draftAmount,
       colorClass: "text-gray-600",
       bgClass: "bg-gray-50 hover:bg-gray-100",
       onClick: () => applyFilter([{ value: "draft", label: "DRAFT" }]),

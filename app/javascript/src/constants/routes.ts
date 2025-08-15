@@ -9,7 +9,7 @@ import SignUp from "components/Authentication/SignUp";
 import ExpenseDetails from "components/Expenses/Details";
 import Expenses from "components/Expenses/List";
 import InvoiceEmail from "components/InvoiceEmail";
-import InvoicesRouteConfig from "components/Invoices/InvoicesRouteConfig";
+import MercuryInvoicesRouteConfig from "components/Invoices/MercuryRouteConfig";
 import LeaveManagement from "components/LeaveManagement";
 import Success from "components/payments/Success";
 import ProfileRouteConfig from "components/Profile/Layout/RouteConfig";
@@ -72,7 +72,7 @@ const LeaveManagementRoutes = [
 
 const TeamRoutes = [{ path: "*", Component: TeamsRouteConfig }];
 
-const InvoiceRoutes = [{ path: "*", Component: InvoicesRouteConfig }];
+const InvoiceRoutes = [{ path: "*", Component: MercuryInvoicesRouteConfig }];
 
 const SettingsRoutes = [{ path: "*", Component: ProfileRouteConfig }];
 

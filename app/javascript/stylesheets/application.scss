@@ -128,6 +128,39 @@
     --sidebar-ring: 264 94% 60%; /* Match primary for focus states */
   }
 
+  /* Monochrome theme - Pure black and white for maximum contrast */
+  .monochrome {
+    --background: 0 0% 100%; /* Pure white */
+    --foreground: 0 0% 0%; /* Pure black */
+    --card: 0 0% 98%; /* Off-white cards */
+    --card-foreground: 0 0% 0%; /* Pure black text */
+    --popover: 0 0% 100%; /* Pure white */
+    --popover-foreground: 0 0% 0%; /* Pure black text */
+    --primary: 0 0% 0%; /* Pure black primary */
+    --primary-foreground: 0 0% 100%; /* Pure white text */
+    --secondary: 0 0% 95%; /* Light gray secondary */
+    --secondary-foreground: 0 0% 0%; /* Pure black text */
+    --muted: 0 0% 90%; /* Light gray muted */
+    --muted-foreground: 0 0% 40%; /* Dark gray text */
+    --accent: 0 0% 0%; /* Pure black accent */
+    --accent-foreground: 0 0% 100%; /* Pure white text */
+    --destructive: 0 0% 20%; /* Dark gray destructive */
+    --destructive-foreground: 0 0% 100%; /* Pure white text */
+    --border: 0 0% 85%; /* Light gray border */
+    --input: 0 0% 95%; /* Light gray input */
+    --ring: 0 0% 0%; /* Pure black focus ring */
+
+    /* Sidebar specific variables for monochrome theme */
+    --sidebar: 0 0% 95%; /* Light gray sidebar */
+    --sidebar-foreground: 0 0% 0%; /* Pure black text */
+    --sidebar-primary: 0 0% 0%; /* Pure black primary */
+    --sidebar-primary-foreground: 0 0% 100%; /* Pure white text */
+    --sidebar-accent: 0 0% 85%; /* Light gray accent */
+    --sidebar-accent-foreground: 0 0% 0%; /* Pure black text */
+    --sidebar-border: 0 0% 80%; /* Gray border */
+    --sidebar-ring: 0 0% 0%; /* Pure black focus ring */
+  }
+
   .field_with_errors {
     display: flex;
     justify-content: space-between;
