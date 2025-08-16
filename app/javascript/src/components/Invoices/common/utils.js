@@ -1,6 +1,5 @@
-import generateInvoice from "apis/generateInvoice";
-import invoicesApi from "apis/invoices";
 import dayjs from "dayjs";
+import { api } from "../../../services/api";
 import { lineTotalCalc } from "helpers";
 import { Toastr } from "StyledComponents";
 
@@ -107,7 +106,7 @@ export const fetchMultipleNewLineItems = async (
 
 export const handleDownloadInvoice = async invoice => {
   try {
-    const res = await invoicesApi.downloadInvoice(invoice.id);
+    const res = await api.invoices.downloadInvoice(invoice.id);
     const url = window.URL.createObjectURL(new window.Blob([res.data]));
     const link = document.createElement("a");
     link.href = url;
