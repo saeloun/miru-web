@@ -106,6 +106,7 @@ export const RevenueAreaChart: React.FC<RevenueChartProps> = ({
                 tickMargin={8}
                 className="text-xs text-gray-600"
                 tickFormatter={(value) => `${(value / 1000).toFixed(0)}k`}
+                domain={[0, 'dataMax']}
               />
               <ChartTooltip
                 cursor={false}

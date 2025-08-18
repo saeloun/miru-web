@@ -231,31 +231,41 @@
   border-top: 1px solid rgba(229, 229, 229, 0.5);
 }
 
-/* Different event type colors */
-.sx-shadcn-theme .sx__event--holiday {
-  background: #FEE2E2;
-  color: #DC2626;
-  border-left-color: #DC2626;
+/* Different event type colors based on calendarId */
+.sx-shadcn-theme .sx__event[data-calendar-id="holidays"] {
+  background: var(--sx-color-holiday-container) !important;
+  color: var(--sx-color-on-holiday-container) !important;
+  border-left: 3px solid var(--sx-color-holiday) !important;
 }
 
-.sx-shadcn-theme .sx__event--holiday:hover {
-  background: #FCA5A5;
+.sx-shadcn-theme .sx__event[data-calendar-id="holidays"]:hover {
+  background: #FCA5A5 !important;
 }
 
-.sx-shadcn-theme .sx__event--sick {
-  background: #FEF3C7;
-  color: #D97706;
-  border-left-color: #D97706;
+.sx-shadcn-theme .sx__event[data-calendar-id="timesheet"] {
+  background: var(--sx-color-timesheet-container) !important;
+  color: var(--sx-color-on-timesheet-container) !important;
+  border-left: 3px solid var(--sx-color-timesheet) !important;
 }
 
-.sx-shadcn-theme .sx__event--vacation {
-  background: #DBEAFE;
-  color: #2563EB;
-  border-left-color: #2563EB;
+.sx-shadcn-theme .sx__event[data-calendar-id="timesheet"]:hover {
+  background: #93C5FD !important;
 }
 
-.sx-shadcn-theme .sx__event--personal {
-  background: #E9D5FF;
-  color: #9333EA;
-  border-left-color: #9333EA;
+.sx-shadcn-theme .sx__event[data-calendar-id="leave"] {
+  background: var(--sx-color-leave-container) !important;
+  color: var(--sx-color-on-leave-container) !important;
+  border-left: 3px solid var(--sx-color-leave) !important;
+}
+
+.sx-shadcn-theme .sx__event[data-calendar-id="leave"]:hover {
+  background: #86EFAC !important;
+}
+
+/* Ensure events are visible */
+.sx-shadcn-theme .sx__calendar-event,
+.sx-shadcn-theme .sx__month-grid-event {
+  opacity: 1 !important;
+  visibility: visible !important;
+  display: block !important;
 }

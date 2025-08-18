@@ -154,9 +154,9 @@ const fetchTimeoffEntries = async (year: number): Promise<TimeoffEntry[]> => {
         id: entry.id,
         user_id: entry.user_id,
         leave_type_id: entry.leave_type_id,
-        leave_type_name: entry.leave_type?.name || 'Leave',
+        leave_type_name: entry.leave_type || 'Leave',
         leave_date: entry.leave_date,
-        duration: entry.duration || entry.total_hours,
+        duration: entry.duration,
         note: entry.note
       }));
     }
@@ -168,7 +168,7 @@ const fetchTimeoffEntries = async (year: number): Promise<TimeoffEntry[]> => {
   }
 };
 
-export const useCalendarData = (selectedDate: Date) => {
+export const useCalendarData = (selectedDate: Date, options?: { includeTimeoff?: boolean; includeTimesheet?: boolean }) => {
   const { user } = useUserContext();
   const year = selectedDate.getFullYear();
   const monthStart = startOfMonth(selectedDate);
@@ -176,27 +176,32 @@ export const useCalendarData = (selectedDate: Date) => {
   const yearStart = startOfYear(selectedDate);
   const yearEnd = endOfYear(selectedDate);
   const userId = user?.id;
+  
+  // Default options
+  const includeTimeoff = options?.includeTimeoff ?? false;
+  const includeTimesheet = options?.includeTimesheet ?? false;
 
-  // Fetch holidays for the year
+  // Fetch holidays for the year - always fetch
   const { data: holidays = [], isLoading: holidaysLoading } = useQuery({
     queryKey: ['holidays', year],
     queryFn: () => fetchHolidays(year),
     staleTime: 1000 * 60 * 30, // 30 minutes
   });
 
-  // Fetch timesheet entries for the month
+  // Fetch timesheet entries for the month - only if requested
   const { data: timesheetEntries = [], isLoading: timesheetLoading } = useQuery({
     queryKey: ['timesheet', format(monthStart, 'yyyy-MM'), format(monthEnd, 'yyyy-MM'), userId],
     queryFn: () => fetchTimesheetEntries(monthStart, monthEnd, userId),
     staleTime: 1000 * 60 * 5, // 5 minutes
-    enabled: !!userId, // Only fetch when we have a user ID
+    enabled: includeTimesheet && !!userId, // Only fetch when requested and we have a user ID
   });
 
-  // Fetch timeoff entries for the year
+  // Fetch timeoff entries for the year - only if requested
   const { data: timeoffEntries = [], isLoading: timeoffLoading } = useQuery({
     queryKey: ['timeoff', year],
     queryFn: () => fetchTimeoffEntries(year),
     staleTime: 1000 * 60 * 5, // 5 minutes
+    enabled: includeTimeoff, // Only fetch when requested
   });
 
   // Convert to Schedule-X calendar events
@@ -211,7 +216,7 @@ export const useCalendarData = (selectedDate: Date) => {
     
     const event = {
       id: `holiday-${holiday.id}`,
-      title: holiday.name,
+      title: `🎉 ${holiday.name}`,
       start: format(holidayDate, "yyyy-MM-dd 09:00"),
       end: format(holidayDate, "yyyy-MM-dd 17:00"),
       description: `${holiday.holiday_type === 'national' ? 'National' : 'Optional'} Holiday`,
@@ -224,51 +229,65 @@ export const useCalendarData = (selectedDate: Date) => {
     calendarEvents.push(event);
   });
 
-  // Add timesheet entries as events
-  timesheetEntries.forEach(entry => {
-    if (!entry.work_date) return;
-    const entryDate = new Date(entry.work_date);
-    if (isNaN(entryDate.getTime())) return; // Skip invalid dates
-    
-    const hours = Math.floor(entry.duration / 60);
-    const minutes = entry.duration % 60;
-    
-    calendarEvents.push({
-      id: `timesheet-${entry.id}`,
-      title: `${entry.project_name} (${hours}h ${minutes}m)`,
-      start: format(entryDate, "yyyy-MM-dd 09:00"),
-      end: format(entryDate, "yyyy-MM-dd 18:00"),
-      description: entry.note || `Client: ${entry.client_name}`,
-      calendarId: 'timesheet',
-      _customContent: {
-        type: 'timesheet',
-        duration: entry.duration,
-        project: entry.project_name,
-        client: entry.client_name,
-        status: entry.bill_status
-      }
+  // Add timesheet entries as events - only if requested
+  if (includeTimesheet) {
+    timesheetEntries.forEach(entry => {
+      if (!entry.work_date) return;
+      const entryDate = new Date(entry.work_date);
+      if (isNaN(entryDate.getTime())) return; // Skip invalid dates
+      
+      const hours = Math.floor(entry.duration / 60);
+      const minutes = entry.duration % 60;
+      const durationText = hours > 0 ? `${hours}h${minutes > 0 ? ` ${minutes}m` : ''}` : `${minutes}m`;
+      
+      calendarEvents.push({
+        id: `timesheet-${entry.id}`,
+        title: `💼 ${entry.project_name} • ${durationText}`,
+        start: format(entryDate, "yyyy-MM-dd 09:00"),
+        end: format(entryDate, "yyyy-MM-dd 18:00"),
+        description: `${entry.client_name} - ${entry.note || 'Time tracked'}`,
+        calendarId: 'timesheet',
+        _customContent: {
+          type: 'timesheet',
+          duration: entry.duration,
+          project: entry.project_name,
+          client: entry.client_name,
+          status: entry.bill_status
+        }
+      });
     });
-  });
+  }
 
-  // Add timeoff entries as events
-  timeoffEntries.forEach(entry => {
-    if (!entry.leave_date) return;
-    const leaveDate = new Date(entry.leave_date);
-    if (isNaN(leaveDate.getTime())) return; // Skip invalid dates
-    
-    calendarEvents.push({
-      id: `leave-${entry.id}`,
-      title: entry.leave_type_name,
-      start: format(leaveDate, "yyyy-MM-dd HH:mm"),
-      end: format(leaveDate, "yyyy-MM-dd HH:mm"),
-      description: entry.note || 'Time off',
-      calendarId: 'leave',
-      _customContent: {
-        type: 'leave',
-        duration: entry.duration
-      }
+  // Add timeoff entries as events - only if requested
+  if (includeTimeoff) {
+    timeoffEntries.forEach(entry => {
+      if (!entry.leave_date) return;
+      const leaveDate = new Date(entry.leave_date);
+      if (isNaN(leaveDate.getTime())) return; // Skip invalid dates
+      
+      const hours = Math.floor(entry.duration / 60);
+      const minutes = entry.duration % 60;
+      const durationText = hours > 0 ? `${hours}h${minutes > 0 ? ` ${minutes}m` : ''}` : `${minutes}m`;
+      const leaveIcon = entry.leave_type_name.toLowerCase().includes('sick') ? '🏥' : 
+                        entry.leave_type_name.toLowerCase().includes('vacation') ? '🏖️' : 
+                        entry.leave_type_name.toLowerCase().includes('annual') ? '📅' : '🏠';
+      
+      calendarEvents.push({
+        id: `leave-${entry.id}`,
+        title: `${leaveIcon} ${entry.leave_type_name} • ${durationText}`,
+        start: format(leaveDate, "yyyy-MM-dd 09:00"),
+        end: format(leaveDate, "yyyy-MM-dd 17:00"),
+        description: entry.note || `${entry.leave_type_name} - ${durationText}`,
+        calendarId: 'leave',
+        _customContent: {
+          type: 'leave',
+          duration: entry.duration,
+          leaveType: entry.leave_type_name
+        }
+      });
     });
-  });
+  }
+
 
 
   return {

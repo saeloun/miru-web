@@ -10,6 +10,7 @@ import { sendGAPageView } from "utils/googleAnalytics";
 
 import Details from "./Details";
 import EditHolidays from "./EditHolidays";
+import ModernHolidays from "./ModernHolidays";
 import { companyDateFormat, makePayload } from "./utils";
 
 const Holidays = () => {
@@ -319,14 +320,13 @@ const Holidays = () => {
           wrapperRef={wrapperRef}
         />
       ) : (
-        <Details
+        <ModernHolidays
           currentYear={currentYear}
           dateFormat={dateFormat}
           editAction={() => setIsEditable(true)}
-          holidaysList={currentYearPublicHolidays}
-          optionalHolidayList={currentYearOptionalHolidays}
-          setCurrentYear={setCurrentYear}
-          showCalendar={showCalendar}
+          holidays={holidays}
+          publicHolidays={currentYearPublicHolidays}
+          optionalHolidays={currentYearOptionalHolidays}
           toggleCalendarModal={toggleCalendarModal}
         />
       )}
