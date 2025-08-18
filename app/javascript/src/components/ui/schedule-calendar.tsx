@@ -85,16 +85,31 @@ const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({
     return acc;
   }, {} as Record<string, any>);
 
-  // Process events to ensure they have all required fields
-  const processedEvents = events.map(event => ({
-    id: String(event.id),
-    title: event.title || 'Event',
-    start: event.start,
-    end: event.end,
-    calendarId: event.calendarId || 'holidays',
-    ...(event.description && { description: event.description }),
-    ...(event._customContent && { _customContent: event._customContent })
-  }));
+  // Process events to ensure they have all required fields and proper date format
+  const processedEvents = events.map(event => {
+    // Convert Date objects to string format if needed
+    const formatEventDate = (date: Date | string) => {
+      if (date instanceof Date) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        return `${year}-${month}-${day} ${hours}:${minutes}`;
+      }
+      return date;
+    };
+
+    return {
+      id: String(event.id),
+      title: event.title || 'Event',
+      start: formatEventDate(event.start),
+      end: formatEventDate(event.end),
+      calendarId: event.calendarId || 'holidays',
+      ...(event.description && { description: event.description }),
+      ...(event._customContent && { _customContent: event._customContent })
+    };
+  });
 
   // Format selectedDate as YYYY-MM-DD as required by Schedule-X
   const formatDateForScheduleX = (date: Date) => {
