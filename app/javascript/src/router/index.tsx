@@ -16,7 +16,6 @@ const ExpensesTable = React.lazy(() => import("../components/Expenses/ExpensesTa
 const ExpenseDetails = React.lazy(() => import("../components/Expenses/Details"));
 const ReportsTable = React.lazy(() => import("../components/Reports/ReportsTable"));
 const PaymentsTable = React.lazy(() => import("../components/Payments/PaymentsTable"));
-const Settings = React.lazy(() => import("../components/Settings"));
 const Profile = React.lazy(() => import("../components/Profile"));
 const Preferences = React.lazy(() => import("../components/Settings/Preferences"));
 const SignIn = React.lazy(() => import("../components/Authentication/SignIn"));
@@ -110,7 +109,7 @@ export const router = createBrowserRouter([
         children: [
           {
             index: true,
-            element: <Settings />,
+            element: <Profile />,
           },
           {
             path: "preferences",
@@ -118,7 +117,7 @@ export const router = createBrowserRouter([
           },
           {
             path: "*",
-            element: <Settings />,
+            element: <Profile />,
           },
         ],
       },
