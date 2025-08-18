@@ -520,7 +520,6 @@ const ExpensesTable: React.FC = () => {
           </CardContent>
         </Card>
       </div>
-    </div>
 
       <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
         <DialogContent>
@@ -547,6 +546,7 @@ const ExpensesTable: React.FC = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+    </div>
   );
 };
 
