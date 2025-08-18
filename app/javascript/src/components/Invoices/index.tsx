@@ -54,7 +54,8 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
   const loadInvoices = async () => {
     try {
       setIsLoading(true);
-      const response = await invoiceApi.getInvoices();
+      // Fetch more invoices to ensure we get all statuses including overdue
+      const response = await invoiceApi.getInvoices({ per: 50 } as any);
       setInvoices(response.invoices);
       setSummary(response.summary);
       setRecentlyUpdatedInvoices(response.recentlyUpdatedInvoices);
@@ -153,7 +154,7 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
         await invoiceApi.createInvoice(invoiceData);
       }
 
-      await loadInvoices(); // Refresh the invoice list
+      await loadInvoices(1); // Refresh the invoice list from beginning
       setViewMode("list");
     } catch (err) {
       setError("Failed to save invoice");
@@ -186,7 +187,7 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
         });
       }
 
-      await loadInvoices(); // Refresh the invoice list
+      await loadInvoices(1); // Refresh the invoice list from beginning
       setViewMode("list");
     } catch (err) {
       setError("Failed to send invoice");
@@ -207,7 +208,7 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
         recipients: [invoice.client.email],
       });
 
-      await loadInvoices(); // Refresh the invoice list
+      await loadInvoices(1); // Refresh the invoice list from beginning
     } catch (err) {
       setError("Failed to send invoice");
       console.error("Error sending invoice:", err);
@@ -232,7 +233,7 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
       };
 
       await invoiceApi.updateInvoice(id, updatedInvoice);
-      await loadInvoices(); // Refresh the invoice list
+      await loadInvoices(1); // Refresh the invoice list from beginning
     } catch (err) {
       setError("Failed to mark invoice as paid");
       console.error("Error marking invoice as paid:", err);
