@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class Api::V1::UsersController < Api::V1::BaseController
-  skip_before_action :authenticate_user_using_x_auth_token, only: [:me]
-
   def me
     if current_user
       render json: {
