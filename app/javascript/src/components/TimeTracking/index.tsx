@@ -502,12 +502,20 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
           {view === "month" ? (
             <ScheduleCalendar
               events={Object.entries(entryList).flatMap(([date, entries]: [string, any[]]) => 
-                entries.map(entry => ({
+                entries.map((entry, index) => ({
                   id: entry.id,
                   title: `${entry.project_name}: ${minToHHMM(entry.duration)}`,
-                  start: `${date} 09:00`,
-                  end: `${date} ${Math.min(23, 17 + Math.floor(entry.duration / 60))}:59`,
-                  calendarId: 'timesheet'
+                  description: entry.note || '',
+                  start: `${date}`,
+                  end: `${date}`,
+                  calendarId: 'timesheet',
+                  _customContent: {
+                    projectName: entry.project_name,
+                    clientName: entry.client_name,
+                    duration: minToHHMM(entry.duration),
+                    note: entry.note || 'No description',
+                    billable: entry.bill_status
+                  }
                 }))
               )}
               onEventClick={(event) => {
