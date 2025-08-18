@@ -69,21 +69,25 @@ class DashboardPresenter
     def revenue_chart_data
       invoices = company.invoices.kept.where(issue_date: from_date..to_date)
 
-      # Group by month
-      monthly_data = invoices.group_by { |i| i.issue_date.beginning_of_month }
+      # Group by day for detailed hover information
+      daily_data = invoices.group_by { |i| i.issue_date.to_date }
 
-      # Build chart data
+      # Build chart data - one point per day
       chart_data = []
-      current_date = from_date.beginning_of_month
+      current_date = from_date.to_date
 
-      while current_date <= to_date
-        month_invoices = monthly_data[current_date] || []
+      while current_date <= to_date.to_date
+        day_invoices = daily_data[current_date] || []
         chart_data << {
+          date: current_date.strftime("%Y-%m-%d"),
           month: current_date.strftime("%b"),
-          revenue: month_invoices.sum(&:amount).round(2),
-          invoices: month_invoices.count
+          day: current_date.strftime("%b %d"),
+          fullDate: current_date.strftime("%B %d, %Y"),
+          revenue: day_invoices.sum(&:amount).round(2),
+          invoices: day_invoices.count,
+          dayOfMonth: current_date.day
         }
-        current_date = current_date.next_month
+        current_date = current_date + 1.day
       end
 
       chart_data
