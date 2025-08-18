@@ -9,68 +9,69 @@ module Api::V1
       def index
         authorize :report, :index?
 
-        entries = current_company.timesheet_entries
-                                 .includes(:user, :project, :client)
-                                 .order(work_date: :desc)
+        reports_data = ::Reports::TimeEntries::ReportService.new(params, current_company, get_filters: true).process
 
-        entries = filter_entries(entries)
+        # Format reports with user and project details
+        formatted_reports = reports_data[:reports].map do |report|
+          {
+            label: report[:label],
+            id: report[:id],
+            entries: report[:entries].map do |entry|
+              entry_hash = entry.as_json
+              entry_hash["user_name"] = entry.user&.full_name
+              entry_hash["project_name"] = entry.project&.name
+              entry_hash["client_name"] = entry.project&.client&.name
+              entry_hash
+            end
+          }
+        end
 
         render json: {
-          entries: entries.map { |entry| serialize_entry(entry) },
-          summary: calculate_summary(entries)
+          reports: formatted_reports,
+          pagy: reports_data[:pagination_details],
+          filterOptions: {
+            clients: format_filter_options(reports_data[:filter_options][:clients]),
+            teamMembers: format_team_members(reports_data[:filter_options][:team_members]),
+            projects: reports_data[:filter_options][:projects]
+          },
+          groupByTotalDuration: reports_data[:group_by_total_duration] || {
+            groupBy: params[:group_by] || "client",
+            groupedDurations: {}
+          }
         }
       end
 
       def download
         authorize :report, :index?
 
-        # Generate CSV or PDF download
-        respond_to do |format|
-          format.csv { send_data generate_csv, filename: "time_entries_#{Date.current}.csv" }
-          format.pdf { send_data generate_pdf, filename: "time_entries_#{Date.current}.pdf" }
-        end
+        send_data ::Reports::TimeEntries::DownloadService.new(params, current_company).process,
+                  filename: "time_entries_#{Date.current}.#{params[:format]}",
+                  type: params[:format] == "pdf" ? "application/pdf" : "text/csv"
       end
 
       private
 
-        def filter_entries(entries)
-          entries = entries.where(work_date: params[:from]..params[:to]) if params[:from] && params[:to]
-          entries = entries.where(user_id: params[:user_id]) if params[:user_id]
-          entries = entries.where(project_id: params[:project_id]) if params[:project_id]
-          entries = entries.where(client_id: params[:client_id]) if params[:client_id]
-          entries
+        def format_filter_options(clients)
+          return [] unless clients
+
+          clients.map do |client|
+            {
+              id: client.id,
+              name: client.name,
+              logo: client.logo_url
+            }
+          end
         end
 
-        def serialize_entry(entry)
-          {
-            id: entry.id,
-            date: entry.work_date,
-            user: entry.user&.full_name,
-            project: entry.project&.name,
-            client: entry.client&.name,
-            hours: entry.duration,
-            description: entry.note,
-            billable: entry.bill_status == "billable"
-          }
-        end
+        def format_team_members(team_members)
+          return [] unless team_members
 
-        def calculate_summary(entries)
-          {
-            total_hours: entries.sum(:duration),
-            billable_hours: entries.where(bill_status: "billable").sum(:duration),
-            non_billable_hours: entries.where(bill_status: "non_billable").sum(:duration),
-            total_entries: entries.count
-          }
-        end
-
-        def generate_csv
-          # CSV generation logic
-          "Date,User,Project,Client,Hours,Description,Billable\n"
-        end
-
-        def generate_pdf
-          # PDF generation logic
-          "PDF content"
+          team_members.map do |member|
+            {
+              id: member.id,
+              name: member.full_name
+            }
+          end
         end
 
         def current_company

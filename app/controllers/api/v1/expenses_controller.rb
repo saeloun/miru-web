@@ -16,7 +16,9 @@ class Api::V1::ExpensesController < Api::V1::BaseController
           date: expense.formatted_date,
           description: expense.description,
           category: expense.expense_category.name,
+          categoryId: expense.expense_category_id,
           vendor: expense.vendor&.name,
+          vendorId: expense.vendor_id,
           status: "pending", # Default status - you may want to add this field to the model
           receipts: expense.attached_receipts_urls,
           expenseType: expense.expense_type == "business" ? "billable" : "non-billable",
@@ -24,8 +26,8 @@ class Api::V1::ExpensesController < Api::V1::BaseController
           createdAt: expense.created_at.iso8601
         }
       end,
-      categories: expenses_data[:categories].map(&:name),
-      vendors: expenses_data[:vendors].map(&:name),
+      categories: expenses_data[:categories].map { |c| { id: c.id, name: c.name } },
+      vendors: expenses_data[:vendors].map { |v| { id: v.id, name: v.name } },
       pagination: expenses_data[:pagination_details]
     }
   end

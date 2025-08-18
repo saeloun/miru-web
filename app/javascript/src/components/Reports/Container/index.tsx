@@ -41,7 +41,7 @@ const Container = ({ selectedFilter }: ContainerProps) => {
 
   const getTotalHoursLogged = id => {
     const totalHours =
-      timeEntryReport.groupByTotalDuration.groupedDurations[id];
+      timeEntryReport?.groupByTotalDuration?.groupedDurations?.[id];
 
     return minToHHMM(totalHours || 0);
   };
