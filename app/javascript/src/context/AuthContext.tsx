@@ -65,7 +65,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       "";
 
     try {
-      const response = await fetch("/internal_api/v1/users/login", {
+      const response = await fetch("/api/v1/users/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -116,7 +116,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
     try {
       // Call logout API
-      await fetch("/internal_api/v1/users/logout", {
+      await fetch("/api/v1/users/logout", {
         method: "DELETE",
         headers: {
           Accept: "application/json",

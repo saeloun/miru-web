@@ -2,44 +2,43 @@
 @tailwind components;
 @tailwind utilities;
 @import "react-responsive-carousel/lib/styles/carousel.min.css";
-@import "team";
-@import "time-tracking";
-@import "react-calendar";
-@import "toast";
-@import "pto";
-@import "authentication";
-@import "rc-steps";
 
 @layer base {
-  @font-face {
-    font-family: "Manrope";
-    src: url("../fonts/Manrope/Manrope-VariableFont_wght.ttf");
-    font-weight: 200 800;
+  /* Inter font is loaded from Google Fonts via HTML head */
+  body {
+    font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   }
 
-  /* CSS Variables for Modern Theme System - Violet Compact Mode */
+  /* Mercury-Inspired Theme Variables - Modern Monochrome Design */
   :root {
-    /* Core theme variables based on Miru brand with violet color scheme */
-    --background: 0 0% 100%; /* hsl format for shadcn compatibility */
-    --foreground: 268 29% 14%; /* #1D1A31 - miru-dark-purple-1000 */
-    --card: 0 0% 100%; /* #FFFFFF */
-    --card-foreground: 268 29% 14%; /* #1D1A31 */
-    --popover: 0 0% 100%; /* #FFFFFF */
-    --popover-foreground: 268 29% 14%; /* #1D1A31 */
-    --primary: 264 94% 56%; /* #5B34EA - miru-han-purple-1000 - violet-500 equivalent */
-    --primary-foreground: 0 0% 100%; /* #FFFFFF */
-    --secondary: 211 19% 97%; /* #F5F7F9 - miru-gray-100 */
-    --secondary-foreground: 268 29% 14%; /* #1D1A31 */
-    --muted: 207 13% 94%; /* #EBEFF2 - miru-gray-200 */
-    --muted-foreground: 261 7% 49%; /* #777683 - miru-dark-purple-400 */
-    --accent: 207 13% 91%; /* #E1E6EC - miru-gray-400 */
-    --accent-foreground: 268 29% 14%; /* #1D1A31 */
-    --destructive: 0 68% 58%; /* #E04646 - miru-red-400 */
-    --destructive-foreground: 0 0% 100%; /* #FFFFFF */
-    --border: 207 13% 91%; /* #E1E6EC - miru-gray-400 */
-    --input: 207 13% 91%; /* #E1E6EC - miru-gray-400 */
-    --ring: 264 94% 56%; /* #5B34EA - miru-han-purple-1000 */
-    --radius: 0.5rem; /* Compact mode - smaller radius */
+    /* Core Mercury-inspired theme variables */
+    --background: 0 0% 100%; /* Pure white #FFFFFF */
+    --foreground: 0 0% 6%; /* Almost black #0F0F0F */
+    --card: 0 0% 100%; /* Pure white #FFFFFF */
+    --card-foreground: 0 0% 6%; /* Almost black #0F0F0F */
+    --popover: 0 0% 100%; /* Pure white #FFFFFF */
+    --popover-foreground: 0 0% 6%; /* Almost black #0F0F0F */
+    --primary: 0 0% 0%; /* Pure black #000000 */
+    --primary-foreground: 0 0% 100%; /* Pure white #FFFFFF */
+    --secondary: 0 0% 97%; /* Very light gray #F8F8F8 */
+    --secondary-foreground: 0 0% 6%; /* Almost black #0F0F0F */
+    --muted: 0 0% 94%; /* Light gray #F0F0F0 */
+    --muted-foreground: 0 0% 42%; /* Medium gray #6B6B6B */
+    --accent: 0 0% 97%; /* Very light gray #F8F8F8 */
+    --accent-foreground: 0 0% 6%; /* Almost black #0F0F0F */
+    --destructive: 0 84% 60%; /* Red for errors #EF4444 */
+    --destructive-foreground: 0 0% 100%; /* White #FFFFFF */
+    --border: 0 0% 90%; /* Light gray border #E5E5E5 */
+    --input: 0 0% 94%; /* Light gray input #F0F0F0 */
+    --ring: 0 0% 0%; /* Black for focus #000000 */
+    --radius: 0.5rem; /* Slightly smaller rounded corners */
+    
+    /* Chart colors - Mercury monochrome palette */
+    --chart-1: 0 0% 0%; /* Pure black */
+    --chart-2: 0 0% 20%; /* Dark gray */
+    --chart-3: 0 0% 40%; /* Medium gray */
+    --chart-4: 0 0% 60%; /* Light medium gray */
+    --chart-5: 0 0% 80%; /* Light gray */
 
     /* Extended modern colors */
     --gradient-start: 91 52 234; /* #5B34EA */
@@ -74,15 +73,15 @@
     --miru-red-400: 224 70 70; /* #E04646 */
     --miru-red-200: 235 91 91; /* #EB5B5B */
 
-    /* Sidebar specific variables for light mode */
-    --sidebar: 0 0% 100%; /* #FFFFFF */
-    --sidebar-foreground: 268 29% 14%; /* #1D1A31 */
-    --sidebar-primary: 264 94% 56%; /* #5B34EA */
-    --sidebar-primary-foreground: 0 0% 100%; /* #FFFFFF */
-    --sidebar-accent: 211 19% 97%; /* #F5F7F9 */
-    --sidebar-accent-foreground: 268 29% 14%; /* #1D1A31 */
-    --sidebar-border: 207 13% 91%; /* #E1E6EC */
-    --sidebar-ring: 264 94% 56%; /* #5B34EA */
+    /* Sidebar specific variables for Mercury theme */
+    --sidebar: 0 0% 98%; /* Very light gray #FAFAFA */
+    --sidebar-foreground: 0 0% 6%; /* Almost black #0F0F0F */
+    --sidebar-primary: 0 0% 0%; /* Pure black #000000 */
+    --sidebar-primary-foreground: 0 0% 100%; /* Pure white #FFFFFF */
+    --sidebar-accent: 0 0% 94%; /* Light gray #F0F0F0 */
+    --sidebar-accent-foreground: 0 0% 6%; /* Almost black #0F0F0F */
+    --sidebar-border: 0 0% 90%; /* Light gray border #E5E5E5 */
+    --sidebar-ring: 0 0% 0%; /* Black for focus #000000 */
   }
 
   /* Dark mode variables - Improved contrast for better accessibility */
@@ -245,38 +244,33 @@
 }
 
 @layer components {
-  @import "navbar";
-  .sidebar {
-    &__container {
-      box-shadow: -2px 6px 11px grey;
-      -webkit-tap-highlight-color: transparent;
-      -webkit-touch-callout: none;
-      -webkit-user-select: none;
-      -khtml-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
-      user-select: none;
-      @apply fixed right-0 bottom-0 top-0 w-80 bg-white;
-    }
-    &__footer {
-      @apply flex h-full items-end justify-center p-6;
-    }
-    &__reset {
-      @apply focus:outline-none mr-2 w-6/12 items-center rounded border-2 border-miru-han-purple-1000 bg-transparent bg-transparent py-1 px-4 text-base text-base font-medium tracking-widest text-miru-han-purple-1000 shadow-sm hover:text-miru-han-purple-600;
-    }
-    &__apply {
-      @apply focus:outline-none w-6/12 items-center rounded border-2 border-miru-han-purple-1000 bg-transparent bg-miru-han-purple-1000 py-1 px-4 text-base text-base font-medium tracking-widest text-white shadow-sm hover:border-miru-han-purple-600;
-    }
+  .sidebar__container {
+    box-shadow: -2px 6px 11px grey;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    @apply fixed right-0 bottom-0 top-0 w-80 bg-white;
+  }
+  .sidebar__footer {
+    @apply flex h-full items-end justify-center p-6;
+  }
+  .sidebar__reset {
+    @apply focus:outline-none mr-2 w-6/12 items-center rounded border-2 border-miru-han-purple-1000 bg-transparent bg-transparent py-1 px-4 text-base text-base font-medium tracking-widest text-miru-han-purple-1000 shadow-sm hover:text-miru-han-purple-600;
+  }
+  .sidebar__apply {
+    @apply focus:outline-none w-6/12 items-center rounded border-2 border-miru-han-purple-1000 bg-transparent bg-miru-han-purple-1000 py-1 px-4 text-base text-base font-medium tracking-widest text-white shadow-sm hover:border-miru-han-purple-600;
   }
 
-  .button-icon {
-    &__back {
-      @apply mr-4 h-8 p-1;
-    }
-    &__back:hover {
-      background-color: rgba(205, 214, 223, 0.2);
-      @apply rounded;
-    }
+  .button-icon__back {
+    @apply mr-4 h-8 p-1;
+  }
+  .button-icon__back:hover {
+    background-color: rgba(205, 214, 223, 0.2);
+    @apply rounded;
   }
 
   .menuButton {
@@ -506,7 +500,7 @@
 
   .modal {
     &__modal {
-      @apply animated fadeIn faster fixed inset-0 z-50 flex w-full items-center justify-center overflow-hidden px-5;
+      @apply fixed inset-0 z-50 flex w-full items-center justify-center overflow-hidden px-5;
     }
     &__container {
       @apply z-50 mx-auto w-full max-w-md overflow-y-auto rounded-xl bg-white shadow-lg;

@@ -7,36 +7,42 @@ import ForgotPassword from "components/Authentication/ForgotPassword";
 import SignIn from "components/Authentication/SignIn";
 import SignUp from "components/Authentication/SignUp";
 import ExpenseDetails from "components/Expenses/Details";
-import Expenses from "components/Expenses/List";
+import ExpensesTable from "components/Expenses/ExpensesTable";
 import InvoiceEmail from "components/InvoiceEmail";
 import MercuryInvoicesRouteConfig from "components/Invoices/MercuryRouteConfig";
 import LeaveManagement from "components/LeaveManagement";
 import Success from "components/payments/Success";
 import ProfileRouteConfig from "components/Profile/Layout/RouteConfig";
-import Projects from "components/Projects";
+import ProjectsTable from "components/Projects/ProjectsTable";
 import AccountsAgingReport from "components/Reports/AccountsAgingReport";
 import InvalidLink from "components/Team/List/InvalidLink";
 import TeamsRouteConfig from "components/Team/TeamsRouteConfig";
 
-import Clients from "../components/Clients";
+import ClientsTable from "../components/Clients/ClientsTable";
 import ClientDetails from "../components/Clients/Details";
+import DashboardHome from "../components/Dashboard/DashboardHome";
 import Payments from "../components/payments";
 import ProjectDetails from "../components/Projects/Details";
-import ReportList from "../components/Reports/List";
+import ReportsTable from "../components/Reports/ReportsTable";
 import OutstandingInvoiceReport from "../components/Reports/OutstandingInvoiceReport";
 import RevenueByClientReport from "../components/Reports/RevenueByClientReport";
 import TimeEntryReports from "../components/Reports/TimeEntryReport";
 import TotalHoursReport from "../components/Reports/totalHoursLogged";
 import PlanSelection from "../components/Subscriptions/PlanSelection";
-import TimesheetEntries from "../components/TimesheetEntries";
+import TimeTracking from "../components/TimeTracking";
+
+const DashboardRoutes = [
+  { path: "", Component: DashboardHome },
+  { path: "*", Component: ErrorPage },
+];
 
 const ClientsRoutes = [
-  { path: "", Component: Clients },
+  { path: "", Component: ClientsTable },
   { path: ":clientId", Component: ClientDetails },
 ];
 
 const ReportsRoutes = [
-  { path: "", Component: ReportList },
+  { path: "", Component: ReportsTable },
   { path: "time-entry", Component: TimeEntryReports },
   { path: "revenue-by-client", Component: RevenueByClientReport },
   { path: "outstanding-overdue-invoice", Component: OutstandingInvoiceReport },
@@ -45,7 +51,7 @@ const ReportsRoutes = [
 ];
 
 const ProjectsRoutes = [
-  { path: "", Component: Projects },
+  { path: "", Component: ProjectsTable },
   { path: ":projectId", Component: ProjectDetails },
   { path: "*", Component: ErrorPage },
 ];
@@ -61,12 +67,12 @@ const PaymentsRoutes = [
 ];
 
 const TimeTrackingRoutes = [
-  { path: "", Component: TimesheetEntries },
+  { path: "", Component: TimeTracking },
   { path: "*", Component: ErrorPage },
 ];
 
 const LeaveManagementRoutes = [
-  { path: "", Component: LeaveManagement },
+  { path: "leaves", Component: LeaveManagement },
   { path: "*", Component: ErrorPage },
 ];
 
@@ -77,7 +83,7 @@ const InvoiceRoutes = [{ path: "*", Component: MercuryInvoicesRouteConfig }];
 const SettingsRoutes = [{ path: "*", Component: ProfileRouteConfig }];
 
 const ExpenseRoutes = [
-  { path: "", Component: Expenses },
+  { path: "", Component: ExpensesTable },
   { path: ":expenseId", Component: ExpenseDetails },
   { path: "*", Component: ErrorPage },
 ];
@@ -128,6 +134,11 @@ export const PUBLIC_ROUTES = [
 
 export const ROUTES = [
   {
+    path: Paths.DASHBOARD,
+    subRoutes: DashboardRoutes,
+    authorisedRoles: [ADMIN, OWNER, EMPLOYEE, BOOK_KEEPER, CLIENT],
+  },
+  {
     path: Paths.CLIENTS,
     subRoutes: ClientsRoutes,
     authorisedRoles: [ADMIN, OWNER, EMPLOYEE],
@@ -176,10 +187,5 @@ export const ROUTES = [
     path: Paths.EXPENSES,
     subRoutes: ExpenseRoutes,
     authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER],
-  },
-  {
-    path: Paths.Leave_Management,
-    subRoutes: LeaveManagementRoutes,
-    authorisedRoles: [ADMIN, OWNER, EMPLOYEE],
   },
 ];

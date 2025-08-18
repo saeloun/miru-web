@@ -42,7 +42,9 @@
 #  index_invoices_on_invoice_number_and_company_id  (invoice_number,company_id) UNIQUE
 #  index_invoices_on_invoice_number_trgm            (invoice_number) USING gin
 #  index_invoices_on_issue_date                     (issue_date)
+#  index_invoices_on_issue_date_and_company_id      (issue_date,company_id)
 #  index_invoices_on_status                         (status)
+#  index_invoices_on_status_and_company_id          (status,company_id)
 #
 # Foreign Keys
 #

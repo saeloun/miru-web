@@ -18,12 +18,14 @@
 #
 # Indexes
 #
-#  index_timesheet_entries_on_bill_status   (bill_status)
-#  index_timesheet_entries_on_discarded_at  (discarded_at)
-#  index_timesheet_entries_on_note_trgm     (note) USING gin
-#  index_timesheet_entries_on_project_id    (project_id)
-#  index_timesheet_entries_on_user_id       (user_id)
-#  index_timesheet_entries_on_work_date     (work_date)
+#  index_timesheet_entries_on_bill_status               (bill_status)
+#  index_timesheet_entries_on_discarded_at              (discarded_at)
+#  index_timesheet_entries_on_note_trgm                 (note) USING gin
+#  index_timesheet_entries_on_project_id                (project_id)
+#  index_timesheet_entries_on_project_id_and_work_date  (project_id,work_date)
+#  index_timesheet_entries_on_user_id                   (user_id)
+#  index_timesheet_entries_on_user_id_and_work_date     (user_id,work_date)
+#  index_timesheet_entries_on_work_date                 (work_date)
 #
 # Foreign Keys
 #

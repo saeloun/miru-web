@@ -22,6 +22,10 @@ const ImportModal = ({
   columnNames,
   handleRemoveFile,
   title,
+  importProgress = 0,
+  totalEntries = 0,
+  importedEntries = 0,
+  failedEntries = 0,
 }) => {
   const firstStep = () => (
     <Fragment>
@@ -112,14 +116,14 @@ const ImportModal = ({
         <Fragment>
           <div className=" flex h-304 w-full flex-col items-center justify-around rounded-lg bg-miru-gray-100">
             <p className="tracking-wide	text-base	font-bold	">
-              Importing 172 time entries
+              Importing {totalEntries || 0} time entries
             </p>
             <div className="flex h-87 items-baseline justify-center text-miru-han-purple-1000">
-              <p className="text-6xl font-normal">37</p>
+              <p className="text-6xl font-normal">{Math.round(importProgress)}</p>
               <p className="text-base font-normal">%</p>
             </div>
             <div className="relative h-4 w-72 rounded-2xl bg-miru-gray-200">
-              <ProgressBar width="37%" />
+              <ProgressBar width={`${importProgress}%`} />
             </div>
           </div>
           <div className="mt-11 text-justify text-base	font-normal">
@@ -146,15 +150,15 @@ const ImportModal = ({
               <div className="py-5 text-base font-bold">Import Summary</div>
               <div className="flex justify-between border-b-2 border-miru-gray-200 py-2">
                 <p className="text-sm	font-normal">Total time entries</p>
-                <p className="text-base font-bold">172</p>
+                <p className="text-base font-bold">{totalEntries || 0}</p>
               </div>
               <div className="flex justify-between border-b-2 border-miru-gray-200 py-2">
                 <p className="text-sm	font-normal">Successfully imported</p>
-                <p className="text-base font-bold">165</p>
+                <p className="text-base font-bold">{importedEntries || 0}</p>
               </div>
               <div className="flex justify-between py-2">
                 <p className="text-sm	font-normal">Failed to import</p>
-                <p className="text-base font-bold">7</p>
+                <p className="text-base font-bold">{failedEntries || 0}</p>
               </div>
             </div>
             <div className="text-base font-normal	">

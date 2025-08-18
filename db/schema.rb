@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_14_065613) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_16_101915) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -243,6 +243,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_14_065613) do
     t.string "employment_type"
     t.date "joined_at"
     t.date "resigned_at"
+    t.index ["company_id", "discarded_at"], name: "index_employments_on_company_id_and_discarded_at"
     t.index ["company_id"], name: "index_employments_on_company_id"
     t.index ["discarded_at"], name: "index_employments_on_discarded_at"
     t.index ["user_id"], name: "index_employments_on_user_id"
@@ -295,6 +296,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_14_065613) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "discarded_at"
+    t.index ["date"], name: "index_holiday_infos_on_date"
     t.index ["discarded_at"], name: "index_holiday_infos_on_discarded_at"
     t.index ["holiday_id"], name: "index_holiday_infos_on_holiday_id"
   end
@@ -398,7 +400,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_14_065613) do
     t.index ["external_view_key"], name: "index_invoices_on_external_view_key", unique: true
     t.index ["invoice_number", "company_id"], name: "index_invoices_on_invoice_number_and_company_id", unique: true
     t.index ["invoice_number"], name: "index_invoices_on_invoice_number_trgm", opclass: :gin_trgm_ops, using: :gin
+    t.index ["issue_date", "company_id"], name: "index_invoices_on_issue_date_and_company_id"
     t.index ["issue_date"], name: "index_invoices_on_issue_date"
+    t.index ["status", "company_id"], name: "index_invoices_on_status_and_company_id"
     t.index ["status"], name: "index_invoices_on_status"
   end
 
@@ -459,6 +463,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_14_065613) do
     t.check_constraint "period::text = ANY (ARRAY['hour'::character varying::text, 'day'::character varying::text, 'week'::character varying::text, 'month'::character varying::text, 'quarter'::character varying::text, 'year'::character varying::text, 'all_time'::character varying::text])", name: "valid_period"
   end
 
+  create_table "noticed_events", force: :cascade do |t|
+    t.string "type", null: false
+    t.string "record_type"
+    t.bigint "record_id"
+    t.jsonb "params"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_at"], name: "index_noticed_events_on_created_at"
+    t.index ["record_type", "record_id"], name: "index_noticed_events_on_record"
+  end
+
   create_table "notification_preferences", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "company_id", null: false
@@ -468,6 +483,23 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_14_065613) do
     t.index ["company_id"], name: "index_notification_preferences_on_company_id"
     t.index ["user_id", "company_id"], name: "index_notification_preferences_on_user_id_and_company_id", unique: true
     t.index ["user_id"], name: "index_notification_preferences_on_user_id"
+  end
+
+  create_table "notifications", force: :cascade do |t|
+    t.string "recipient_type", null: false
+    t.bigint "recipient_id", null: false
+    t.bigint "company_id"
+    t.string "type", null: false
+    t.jsonb "params"
+    t.datetime "read_at"
+    t.datetime "interacted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_notifications_on_company_id"
+    t.index ["created_at"], name: "index_notifications_on_created_at"
+    t.index ["read_at"], name: "index_notifications_on_read_at"
+    t.index ["recipient_type", "recipient_id", "read_at"], name: "index_notifications_on_recipient_and_read_at"
+    t.index ["recipient_type", "recipient_id"], name: "index_notifications_on_recipient"
   end
 
   create_table "payments", force: :cascade do |t|
@@ -486,6 +518,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_14_065613) do
     t.date "exchange_rate_date"
     t.index ["invoice_id"], name: "index_payments_on_invoice_id"
     t.index ["status"], name: "index_payments_on_status"
+    t.index ["transaction_date", "invoice_id"], name: "index_payments_on_transaction_date_and_invoice_id"
   end
 
   create_table "payments_providers", force: :cascade do |t|
@@ -520,6 +553,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_14_065613) do
     t.datetime "discarded_at"
     t.index ["discarded_at"], name: "index_project_members_on_discarded_at"
     t.index ["project_id"], name: "index_project_members_on_project_id"
+    t.index ["user_id", "project_id", "discarded_at"], name: "index_project_members_on_user_project_discarded"
     t.index ["user_id"], name: "index_project_members_on_user_id"
   end
 
@@ -717,7 +751,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_14_065613) do
     t.index ["bill_status"], name: "index_timesheet_entries_on_bill_status"
     t.index ["discarded_at"], name: "index_timesheet_entries_on_discarded_at"
     t.index ["note"], name: "index_timesheet_entries_on_note_trgm", opclass: :gin_trgm_ops, using: :gin
+    t.index ["project_id", "work_date"], name: "index_timesheet_entries_on_project_id_and_work_date"
     t.index ["project_id"], name: "index_timesheet_entries_on_project_id"
+    t.index ["user_id", "work_date"], name: "index_timesheet_entries_on_user_id_and_work_date"
     t.index ["user_id"], name: "index_timesheet_entries_on_user_id"
     t.index ["work_date"], name: "index_timesheet_entries_on_work_date"
   end
@@ -750,6 +786,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_14_065613) do
     t.string "token", limit: 50
     t.boolean "calendar_enabled", default: true
     t.boolean "calendar_connected", default: true
+    t.string "provider"
+    t.string "uid"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token"
     t.index ["current_workspace_id"], name: "index_users_on_current_workspace_id"
     t.index ["discarded_at"], name: "index_users_on_discarded_at"
@@ -819,6 +857,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_14_065613) do
   add_foreign_key "leaves", "companies"
   add_foreign_key "notification_preferences", "companies"
   add_foreign_key "notification_preferences", "users"
+  add_foreign_key "notifications", "companies"
   add_foreign_key "payments", "invoices"
   add_foreign_key "payments_providers", "companies"
   add_foreign_key "previous_employments", "users"

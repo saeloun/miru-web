@@ -11,24 +11,28 @@ const Header = ({
   selectedEmployeeId,
   setSelectedEmployeeId,
 }) => (
-  <div className="m-4 flex items-center justify-between lg:mx-0">
-    <span className="hidden text-3xl font-bold text-miru-dark-purple-1000 lg:inline">
-      Leaves & Holidays
-    </span>
-    <CustomYearPicker
-      nextYearButtonDisabled
-      currentYear={currentYear}
-      setCurrentYear={setCurrentYear}
-      wrapperClassName="text-miru-han-purple-1000"
-      yearClassName="text-miru-han-purple-1000"
-    />
-    {isAdminUser && selectedEmployeeId && (
-      <SearchTimeEntries
-        employeeList={employeeList}
-        selectedEmployeeId={selectedEmployeeId}
-        setSelectedEmployeeId={setSelectedEmployeeId}
-      />
-    )}
+  <div className="mb-8">
+    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <h1 className="text-2xl font-bold text-gray-900">
+        Leaves & Time Off
+      </h1>
+      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+        <CustomYearPicker
+          nextYearButtonDisabled
+          currentYear={currentYear}
+          setCurrentYear={setCurrentYear}
+          wrapperClassName="text-gray-700"
+          yearClassName="text-gray-900 font-semibold"
+        />
+        {isAdminUser && selectedEmployeeId && (
+          <SearchTimeEntries
+            employeeList={employeeList}
+            selectedEmployeeId={selectedEmployeeId}
+            setSelectedEmployeeId={setSelectedEmployeeId}
+          />
+        )}
+      </div>
+    </div>
   </div>
 );
 

@@ -14,9 +14,10 @@
 #
 # Indexes
 #
-#  index_project_members_on_discarded_at  (discarded_at)
-#  index_project_members_on_project_id    (project_id)
-#  index_project_members_on_user_id       (user_id)
+#  index_project_members_on_discarded_at            (discarded_at)
+#  index_project_members_on_project_id              (project_id)
+#  index_project_members_on_user_id                 (user_id)
+#  index_project_members_on_user_project_discarded  (user_id,project_id,discarded_at)
 #
 # Foreign Keys
 #

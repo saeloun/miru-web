@@ -18,9 +18,10 @@
 #
 # Indexes
 #
-#  index_employments_on_company_id    (company_id)
-#  index_employments_on_discarded_at  (discarded_at)
-#  index_employments_on_user_id       (user_id)
+#  index_employments_on_company_id                   (company_id)
+#  index_employments_on_company_id_and_discarded_at  (company_id,discarded_at)
+#  index_employments_on_discarded_at                 (discarded_at)
+#  index_employments_on_user_id                      (user_id)
 #
 # Foreign Keys
 #

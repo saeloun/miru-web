@@ -1,65 +1,90 @@
 import React from "react";
-
 import * as ActiveStorage from "@rails/activestorage";
 import Rails from "@rails/ujs";
 import { createRoot } from "react-dom/client";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+// import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { BrowserRouter } from "react-router-dom";
+import { AuthProvider } from "../src/context/auth";
+import { Toaster } from "sonner";
+import "@fontsource-variable/inter";
 
 import "../settings";
-import App from "../src/components/App";
 import "../stylesheets/application.scss";
-
-// Define prop types
-interface AppProps {
-  user?: any;
-  companyRole?: string;
-  company?: any;
-  confirmedUser?: boolean;
-  isDesktop?: boolean;
-  isAdminUser?: boolean;
-  googleOauthSuccess?: boolean;
-  avatarUrl?: string;
-  calendarEnabled?: boolean;
-  calendarConnected?: boolean;
-}
+import AppWithUserData from "../src/components/AppWithUserData";
 
 // Initialize Rails
 Rails.start();
 ActiveStorage.start();
 
+// Create a client outside the component to avoid recreation
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      retry: (failureCount, error: any) => {
+        // Don't retry on 4xx errors except 408 (timeout)
+        if (error?.status >= 400 && error?.status < 500 && error?.status !== 408) {
+          return false;
+        }
+        return failureCount < 3;
+      },
+      refetchOnWindowFocus: false,
+    },
+    mutations: {
+      retry: 1,
+    },
+  },
+});
+
+const App = (props: any) => (
+  <QueryClientProvider client={queryClient}>
+    <BrowserRouter>
+      <AuthProvider>
+        <Toaster
+          richColors
+          duration={5000}
+          position="top-right"
+          toastOptions={{
+            classNames: {
+              toast:
+                "bg-white text-gray-900 border border-gray-200 rounded-md shadow-sm",
+              title: "text-sm font-medium",
+              description:
+                "text-xs text-gray-600",
+              success:
+                "bg-green-50 border-green-200 text-green-800",
+              error:
+                "bg-red-50 border-red-200 text-red-800",
+              warning:
+                "bg-yellow-50 border-yellow-200 text-yellow-800",
+              info: "bg-blue-50 border-blue-200 text-blue-800",
+            },
+          }}
+        />
+        <AppWithUserData {...props} />
+      </AuthProvider>
+    </BrowserRouter>
+    {/* {process.env.NODE_ENV === "development" && (
+      <ReactQueryDevtools initialIsOpen={false} />
+    )} */}
+  </QueryClientProvider>
+);
+
 // React mounting function
 const mountReactApp = () => {
-  const containers = document.querySelectorAll("[data-react-component]");
-
-  containers.forEach(container => {
-    const componentName = container.getAttribute("data-react-component");
-    const propsData = container.getAttribute("data-react-props");
-
-    if (componentName === "Main" || componentName === "App") {
-      const props: AppProps = propsData ? JSON.parse(propsData) : {};
-
-      // Check if root already exists (prevents duplicate mounting)
-      if (!(container as any)._reactRoot) {
-        const root = createRoot(container);
-        root.render(<App {...props} />);
-        (container as any)._reactRoot = root;
-
-        // Mark app as loaded for testing
-        container.setAttribute("data-testid", "app-loaded");
-      }
-    }
-  });
-
-  // Fallback for legacy react-root containers
   const legacyContainer = document.getElementById("react-root");
   if (legacyContainer && !(legacyContainer as any)._reactRoot) {
     const propsData = legacyContainer.getAttribute("data-props");
-    const props: AppProps = propsData ? JSON.parse(propsData) : {};
+    const props = propsData ? JSON.parse(propsData) : {};
     const root = createRoot(legacyContainer);
-    root.render(<App {...props} />);
+    root.render(
+      <div data-component="App" data-testid="app-loaded">
+        <App {...props} />
+        <div id="overlay" />
+      </div>
+    );
     (legacyContainer as any)._reactRoot = root;
-
-    // Mark app as loaded for testing
-    legacyContainer.setAttribute("data-testid", "app-loaded");
   }
 };
 
@@ -71,5 +96,3 @@ document.addEventListener("turbo:load", mountReactApp);
 
 // Export for global access
 (window as any).MiruApp = { App, mountReactApp };
-
-// Vite + Rails + React integration loaded successfully

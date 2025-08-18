@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Briefcase, AlertCircle } from "lucide-react";
 import timesheetEntryApi from "apis/timesheet-entry";
-import { Toastr } from "../ui/toastr";
+import { Toastr } from "StyledComponents";
 import { Card, CardContent } from "../ui/card";
 import { Button } from "../ui/button";
 import { Alert, AlertDescription } from "../ui/alert";

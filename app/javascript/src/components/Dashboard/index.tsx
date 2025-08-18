@@ -1,16 +1,14 @@
 import React, { useEffect } from "react";
+import { Routes, Route, useLocation } from "react-router-dom";
 
 import Home from "./Home";
-import Sidebar from "../Navbar/Sidebar";
-import ModernLayout from "./ModernLayout";
+import DashboardLayout from "./DashboardLayout";
+import DashboardHome from "./DashboardHome";
 import { useUserContext } from "context/UserContext";
-import { useThemeOptional } from "contexts/ThemeContext";
-import GlobalThemeToggle from "../Global/ThemeToggle";
 
 const Dashboard = props => {
   const userContext = useUserContext();
-  const themeContext = useThemeOptional();
-  const layoutMode = themeContext?.layoutMode || "classic";
+  const location = useLocation();
 
   // Use context data if props are not available (for client-side navigation)
   const user = props.user || userContext.user;
@@ -37,34 +35,15 @@ const Dashboard = props => {
     company: userContext.company || props.company,
   };
 
-  // Use modern layout when layout mode is "modern"
-  if (layoutMode === "modern") {
-    return (
-      <>
-        <ModernLayout>
-          <Home {...homeProps} />
-        </ModernLayout>
-      </>
-    );
-  }
+  // Check if we're at the root dashboard
+  // Only show DashboardHome on the exact root path
+  const isDashboardRoot = location.pathname === "/dashboard";
 
-  // Use enhanced classic layout with sidebar
-  if (isDesktop) {
-    return (
-      <div className="flex h-screen w-full">
-        <Sidebar />
-        <div className="flex-1 lg:pl-16 lg:data-[sidebar-expanded=true]:pl-64 pb-16 lg:pb-0 p-4 md:p-6">
-          <Home {...homeProps} />
-        </div>
-      </div>
-    );
-  }
-
+  // Wrap everything in DashboardLayout to get the sidebar
   return (
-    <div className="flex h-screen w-full flex-col">
+    <DashboardLayout>
       <Home {...homeProps} />
-      <GlobalThemeToggle />
-    </div>
+    </DashboardLayout>
   );
 };
 

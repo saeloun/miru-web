@@ -21,8 +21,9 @@
 #
 # Indexes
 #
-#  index_payments_on_invoice_id  (invoice_id)
-#  index_payments_on_status      (status)
+#  index_payments_on_invoice_id                       (invoice_id)
+#  index_payments_on_status                           (status)
+#  index_payments_on_transaction_date_and_invoice_id  (transaction_date,invoice_id)
 #
 # Foreign Keys
 #

@@ -14,6 +14,7 @@ import EmploymentDetailsEdit from "components/Profile/Personal/Employment/Edit";
 import NotificationPreferences from "components/Profile/Personal/NotificationPreferences";
 import UserDetailsView from "components/Profile/Personal/User";
 import UserDetailsEdit from "components/Profile/Personal/User/Edit";
+import LeaveManagement from "components/LeaveManagement";
 import {
   UserIcon,
   ProjectsIcon,
@@ -141,8 +142,8 @@ export const SETTINGS = [
     label: "LEAVES",
     path: "leaves",
     icon: <CalendarIcon className="mr-2" size={20} weight="bold" />,
-    authorisedRoles: [ADMIN, OWNER],
-    Component: Leaves,
+    authorisedRoles: [ADMIN, OWNER, EMPLOYEE],
+    Component: LeaveManagement,
     category: "organization",
     isTab: true,
   },

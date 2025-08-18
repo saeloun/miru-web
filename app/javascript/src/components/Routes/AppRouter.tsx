@@ -23,7 +23,6 @@ import Success from "components/payments/Success";
 import InvalidLink from "components/Team/List/InvalidLink";
 import InvoiceEmail from "components/InvoiceEmail";
 import ErrorPage from "common/Error";
-import GlobalThemeToggle from "components/Global/ThemeToggle";
 
 interface AppRouterProps {
   user?: any;
@@ -45,6 +44,7 @@ const AppRouter: React.FC<AppRouterProps> = props => {
         <Route element={<Success />} path={Paths.PAYMENT_SUCCESS} />
         <Route element={<InvalidLink />} path={Paths.INVALID_LINK} />
         <Route element={<InvoiceEmail />} path={Paths.PUBLIC_INVOICE} />
+        
         {/* Root route handling - redirect based on auth state */}
         <Route
           element={
@@ -52,7 +52,7 @@ const AppRouter: React.FC<AppRouterProps> = props => {
               needsOrganizationSetup ? (
                 <OrganizationSetup />
               ) : (
-                <Navigate replace to={Paths.TIME_TRACKING} />
+                <Navigate replace to={Paths.DASHBOARD} />
               )
             ) : (
               <Navigate replace to={Paths.SIGN_IN} />
@@ -60,9 +60,12 @@ const AppRouter: React.FC<AppRouterProps> = props => {
           }
           path="/"
         />
+        
         {/* Auth Routes - Only for non-authenticated users */}
+        {/* These routes will redirect to dashboard if user is already logged in */}
         <Route element={<PublicRoute restricted />}>
           <Route element={<SignIn />} path={Paths.SIGN_IN} />
+          <Route element={<SignIn />} path={Paths.LOGIN} />
           <Route element={<SignUp />} path={Paths.SIGNUP} />
           <Route element={<ForgotPassword />} path={Paths.FORGOT_PASSWORD} />
           <Route
@@ -74,6 +77,7 @@ const AppRouter: React.FC<AppRouterProps> = props => {
             path={Paths.EMAIL_VERIFICATION_SUCCESS}
           />
         </Route>
+        
         {/* Protected Routes - Only for authenticated users */}
         <Route element={<ProtectedRoute />}>
           {needsOrganizationSetup && (
@@ -81,17 +85,15 @@ const AppRouter: React.FC<AppRouterProps> = props => {
           )}
           {!needsOrganizationSetup && (
             <>
-              {/* Dashboard handles all authenticated routes */}
-              <Route element={<Dashboard {...props} />} path="*" />
+              {/* Dashboard handles all authenticated routes with nested routing */}
+              <Route element={<Dashboard {...props} />} path="/*" />
             </>
           )}
         </Route>
+        
         {/* 404 - Catch all */}
         <Route element={<ErrorPage />} path="*" />
       </Routes>
-
-      {/* Global Theme Toggle - available everywhere */}
-      <GlobalThemeToggle />
     </>
   );
 };

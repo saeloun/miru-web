@@ -2,17 +2,17 @@ import React from "react";
 import {
   CheckCircle,
   Clock,
-  Send,
+  PaperPlaneTilt,
   Eye,
-  AlertCircle,
+  Warning,
   XCircle,
-  DollarSign,
+  CurrencyDollar,
   FileText,
-  RefreshCw,
-  Ban,
-  Loader2,
-  ArrowDownCircle,
-} from "lucide-react";
+  ArrowsCounterClockwise,
+  Prohibit,
+  CircleNotch,
+  ArrowCircleDown,
+} from "phosphor-react";
 
 interface StatusBadgeProps {
   status: string;
@@ -29,69 +29,69 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({
     const statusConfigs = {
       // Invoice statuses
       draft: {
-        icon: <FileText className="h-3 w-3" />,
-        bg: "bg-slate-100",
-        text: "text-slate-700",
+        icon: <FileText size={12} weight="regular" />,
+        bg: "bg-gray-100",
+        text: "text-gray-800",
         label: "Draft",
       },
       sent: {
-        icon: <Send className="h-3 w-3" />,
-        bg: "bg-blue-100",
-        text: "text-blue-700",
+        icon: <PaperPlaneTilt size={12} weight="regular" />,
+        bg: "bg-blue-50",
+        text: "text-blue-800",
         label: "Sent",
       },
       viewed: {
-        icon: <Eye className="h-3 w-3" />,
-        bg: "bg-indigo-100",
-        text: "text-indigo-700",
+        icon: <Eye size={12} weight="regular" />,
+        bg: "bg-indigo-50",
+        text: "text-indigo-800",
         label: "Viewed",
       },
       paid: {
-        icon: <CheckCircle className="h-3 w-3" />,
-        bg: "bg-green-100",
-        text: "text-green-700",
+        icon: <CheckCircle size={12} weight="regular" />,
+        bg: "bg-green-50",
+        text: "text-green-800",
         label: "Paid",
       },
       overdue: {
-        icon: <AlertCircle className="h-3 w-3" />,
-        bg: "bg-red-100",
-        text: "text-red-700",
+        icon: <Warning size={12} weight="regular" />,
+        bg: "bg-red-50",
+        text: "text-red-800",
         label: "Overdue",
       },
       pending: {
-        icon: <Clock className="h-3 w-3" />,
-        bg: "bg-amber-100",
-        text: "text-amber-700",
+        icon: <Clock size={12} weight="regular" />,
+        bg: "bg-yellow-50",
+        text: "text-yellow-800",
         label: "Pending",
       },
 
       // Payment statuses
       partially_paid: {
-        icon: <ArrowDownCircle className="h-3 w-3" />,
+        icon: <ArrowCircleDown size={12} weight="regular" />,
         bg: "bg-orange-100",
         text: "text-orange-700",
         label: "Partial",
       },
       failed: {
-        icon: <XCircle className="h-3 w-3" />,
+        icon: <XCircle size={12} weight="regular" />,
         bg: "bg-red-100",
         text: "text-red-700",
         label: "Failed",
       },
       refunded: {
-        icon: <RefreshCw className="h-3 w-3" />,
+        icon: <ArrowsCounterClockwise size={12} weight="regular" />,
         bg: "bg-purple-100",
         text: "text-purple-700",
         label: "Refunded",
       },
       processing: {
-        icon: <Loader2 className="h-3 w-3 animate-spin" />,
+        icon: <CircleNotch size={12} weight="regular" className="animate-spin" />,
         bg: "bg-indigo-100",
         text: "text-indigo-700",
         label: "Processing",
       },
       cancelled: {
-        icon: <Ban className="h-3 w-3" />,
+        icon: <Prohibit size={12} weight="regular" />,
         bg: "bg-gray-100",
         text: "text-gray-600",
         label: "Cancelled",
@@ -99,43 +99,43 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({
 
       // Billing statuses
       billed: {
-        icon: <DollarSign className="h-3 w-3" />,
+        icon: <CurrencyDollar size={12} weight="regular" />,
         bg: "bg-emerald-100",
         text: "text-emerald-700",
         label: "Billed",
       },
       unbilled: {
-        icon: <Clock className="h-3 w-3" />,
+        icon: <Clock size={12} weight="regular" />,
         bg: "bg-yellow-100",
         text: "text-yellow-700",
         label: "Unbilled",
       },
       waived: {
-        icon: <Ban className="h-3 w-3" />,
+        icon: <Prohibit size={12} weight="regular" />,
         bg: "bg-gray-100",
         text: "text-gray-600",
         label: "Waived",
       },
       declined: {
-        icon: <XCircle className="h-3 w-3" />,
+        icon: <XCircle size={12} weight="regular" />,
         bg: "bg-rose-100",
         text: "text-rose-700",
         label: "Declined",
       },
       sending: {
-        icon: <Send className="h-3 w-3 animate-pulse" />,
+        icon: <PaperPlaneTilt size={12} weight="regular" className="animate-pulse" />,
         bg: "bg-sky-100",
         text: "text-sky-700",
         label: "Sending",
       },
       nonbilled: {
-        icon: <FileText className="h-3 w-3" />,
+        icon: <FileText size={12} weight="regular" />,
         bg: "bg-slate-100",
         text: "text-slate-600",
         label: "Non-billed",
       },
       non_billable: {
-        icon: <Ban className="h-3 w-3" />,
+        icon: <Prohibit size={12} weight="regular" />,
         bg: "bg-zinc-100",
         text: "text-zinc-600",
         label: "Non-billable",
@@ -144,9 +144,9 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({
 
     return (
       statusConfigs[normalizedStatus] || {
-        icon: <AlertCircle className="h-3 w-3" />,
+        icon: <Warning size={12} weight="regular" />,
         bg: "bg-gray-100",
-        text: "text-gray-700",
+        text: "text-gray-800",
         label: statusText,
       }
     );

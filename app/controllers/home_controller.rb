@@ -1,15 +1,16 @@
 # frozen_string_literal: true
 
 class HomeController < ApplicationController
-  skip_before_action :authenticate_user!
+  skip_before_action :authenticate_user!, only: [:index]
   skip_after_action :verify_authorized
   before_action :set_google_oauth_success
 
   def index
-    if current_user && current_user.has_role?(:super_admin)
-      redirect_to admin_root_path
-    else
-      render
+    # Allow all users including super_admins to use the main app
+    # They can access admin panel via /admin if needed
+    respond_to do |format|
+      format.html { render }
+      format.json { render json: { status: "ok", authenticated: user_signed_in? } }
     end
   end
 

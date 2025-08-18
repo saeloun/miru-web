@@ -100,7 +100,7 @@ RSpec.describe Project, type: :model do
       let(:time_frame) { "last_week" }
 
       it "returns the project_members_snippet for a project in the last week" do
-        timesheet_entry = create(:timesheet_entry, user:, project:, work_date: Date.today.last_week)
+        timesheet_entry = create(:timesheet_entry, user:, project:, work_date: 1.week.ago.beginning_of_week)
         result.first[:hourly_rate] = hourly_rate
         cost = (timesheet_entry.duration / 60) * member.hourly_rate
         result.first[:cost] = cost
@@ -112,7 +112,7 @@ RSpec.describe Project, type: :model do
       let(:time_frame) { "week" }
 
       it "returns the project_members_snippet for a project in a week" do
-        timesheet_entry = create(:timesheet_entry, user:, project:, work_date: Date.today.at_beginning_of_week)
+        timesheet_entry = create(:timesheet_entry, user:, project:, work_date: Date.current.beginning_of_week)
         result.first[:hourly_rate] = hourly_rate
         cost = (timesheet_entry.duration / 60) * member.hourly_rate
         result.first[:cost] = cost
@@ -158,9 +158,9 @@ RSpec.describe Project, type: :model do
     let(:project_member_3) { create(:project_member, project:, user: user_3, hourly_rate: 1000) }
 
     let(:time_frame) { "last_week" }
-    let(:timesheet_entry_1) { create(:timesheet_entry, user: user_1, project:, work_date: Date.today.last_week) }
-    let(:timesheet_entry_2) { create(:timesheet_entry, user: user_2, project:, work_date: Date.today.last_week) }
-    let(:timesheet_entry_3) { create(:timesheet_entry, user: user_3, project:, work_date: Date.today.last_week) }
+    let(:timesheet_entry_1) { create(:timesheet_entry, user: user_1, project:, work_date: 1.week.ago.beginning_of_week) }
+    let(:timesheet_entry_2) { create(:timesheet_entry, user: user_2, project:, work_date: 1.week.ago.beginning_of_week) }
+    let(:timesheet_entry_3) { create(:timesheet_entry, user: user_3, project:, work_date: 1.week.ago.beginning_of_week) }
 
     it "returns the total logged duration" do
       project.reload
