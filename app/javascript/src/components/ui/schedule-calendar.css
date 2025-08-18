@@ -1,6 +1,21 @@
 /* Schedule-X Calendar - Import Default Theme */
 @import '@schedule-x/theme-default/dist/index.css';
 
+/* Define color variables for calendar types */
+:root {
+  --sx-color-holiday: #DC2626;
+  --sx-color-holiday-container: #FEE2E2;
+  --sx-color-on-holiday-container: #7F1D1D;
+  
+  --sx-color-timesheet: #2563EB;
+  --sx-color-timesheet-container: #DBEAFE;
+  --sx-color-on-timesheet-container: #1E3A8A;
+  
+  --sx-color-leave: #10B981;
+  --sx-color-leave-container: #D1FAE5;
+  --sx-color-on-leave-container: #064E3B;
+}
+
 /* Apply Schedule-X Material Design Purple Theme */
 .sx-shadcn-theme .sx-react-calendar-wrapper {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;

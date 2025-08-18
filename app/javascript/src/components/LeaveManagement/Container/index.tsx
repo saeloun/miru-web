@@ -26,6 +26,13 @@ const Container = ({
   // Use the calendar data hook
   const { events, isLoading } = useCalendarData(selectedDate);
 
+  // Debug logging
+  console.log('Container - Calendar Events:', {
+    eventsCount: events?.length || 0,
+    events: events,
+    isLoading: isLoading
+  });
+
   const handleEventClick = (event: any) => {
     console.log('Event clicked:', event);
   };
