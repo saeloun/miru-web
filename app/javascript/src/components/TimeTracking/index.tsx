@@ -505,9 +505,9 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
                 entries.map(entry => ({
                   id: entry.id,
                   title: `${entry.project_name}: ${minToHHMM(entry.duration)}`,
-                  start: new Date(`${date}T09:00:00`),
-                  end: new Date(`${date}T${17 + Math.floor(entry.duration / 60)}:00:00`),
-                  color: '#5B34EA'
+                  start: `${date} 09:00`,
+                  end: `${date} ${17 + Math.floor(entry.duration / 60)}:00`,
+                  calendarId: 'timesheet'
                 }))
               )}
               onEventClick={(event) => {
