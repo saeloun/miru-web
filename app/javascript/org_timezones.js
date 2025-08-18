@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
   selectCountry.addEventListener("change", handleChangeCountry);
 
   async function main() {
-    const response = await fetch("/internal_api/v1/timezones");
+    const response = await fetch("/api/v1/timezones");
     const jsonResponse = await response.json();
     timezones = jsonResponse.timezones;
     if (window.location.pathname === "/company/new") {
