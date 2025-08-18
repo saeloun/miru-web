@@ -202,13 +202,6 @@ export const useCalendarData = (selectedDate: Date) => {
   // Convert to Schedule-X calendar events
   const calendarEvents: CalendarEvent[] = [];
 
-  // Debug logging
-  console.log('Calendar Data Debug:', {
-    holidaysCount: holidays.length,
-    timesheetCount: timesheetEntries.length,
-    timeoffCount: timeoffEntries.length,
-    holidays: holidays
-  });
 
   // Add holidays as events
   holidays.forEach(holiday => {
@@ -277,16 +270,6 @@ export const useCalendarData = (selectedDate: Date) => {
     });
   });
 
-  // Final debug log
-  console.log('Final Calendar Events:', {
-    totalEvents: calendarEvents.length,
-    events: calendarEvents,
-    byType: {
-      holidays: calendarEvents.filter(e => e.calendarId === 'holidays').length,
-      timesheet: calendarEvents.filter(e => e.calendarId === 'timesheet').length,
-      leave: calendarEvents.filter(e => e.calendarId === 'leave').length
-    }
-  });
 
   return {
     events: calendarEvents,

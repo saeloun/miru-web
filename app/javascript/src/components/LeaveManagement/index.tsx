@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 
-import holidaysApi from "apis/holidays";
 import timeoffEntryApi from "apis/timeoffEntry";
 import Loader from "common/Loader/index";
 import withLayout from "common/Mobile/HOC/withLayout";
@@ -27,43 +26,12 @@ const LeaveManagement = () => {
     useState(0);
   const [optionalTimeoffEntries, setOptionalTimeoffEntries] = useState([]);
   const [nationalTimeoffEntries, setNationalTimeoffEntries] = useState([]);
-  const [optionalHolidayList, setOptionalHolidayList] = useState<Array<any>>(
-    []
-  );
-
-  const [nationalHolidayList, setNationalHolidayList] = useState<Array<any>>(
-    []
-  );
-
-  const fetchHolidayData = async () => {
-    const res = await holidaysApi.allHolidays();
-    const holidays = res.data.holidays;
-    if (holidays.length) {
-      setOptionalHolidayList(
-        holidays.map(holiday => ({
-          optional_holidays: holiday.optional_holidays,
-          year: holiday.year,
-        }))
-      );
-
-      setNationalHolidayList(
-        holidays.map(holiday => ({
-          national_holidays: holiday.national_holidays,
-          year: holiday.year,
-        }))
-      );
-    }
-  };
 
   useEffect(() => {
     if (user && !selectedEmployeeId) {
       setSelectedEmployeeId(user.id);
     }
   }, [user]);
-
-  useEffect(() => {
-    fetchHolidayData();
-  }, []);
 
   useEffect(() => {
     if (selectedEmployeeId) {
@@ -170,8 +138,6 @@ const LeaveManagement = () => {
           <Container
             getLeaveBalanaceDateText={getLeaveBalanaceDateText}
             leaveBalance={leaveBalance}
-            nationalHolidayList={nationalHolidayList}
-            optionalHolidayList={optionalHolidayList}
             selectedLeaveType={selectedLeaveType}
             setSelectedLeaveType={setSelectedLeaveType}
             timeoffEntries={filterTimeoffEntries}

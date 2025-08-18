@@ -17,24 +17,15 @@ const Container = ({
   totalTimeoffEntriesDuration,
   selectedLeaveType,
   setSelectedLeaveType,
-  optionalHolidayList,
-  nationalHolidayList,
 }) => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const { company } = useUserContext();
-  
-  // Use the calendar data hook
-  const { events, isLoading } = useCalendarData(selectedDate);
 
-  // Debug logging
-  console.log('Container - Calendar Events:', {
-    eventsCount: events?.length || 0,
-    events: events,
-    isLoading: isLoading
-  });
+  // Use the calendar data hook - this fetches holidays from API
+  const { events, isLoading, holidays } = useCalendarData(selectedDate);
 
   const handleEventClick = (event: any) => {
-    console.log('Event clicked:', event);
+    // Handle event click if needed
   };
 
   const handleDateSelect = (date: Date) => {
@@ -61,11 +52,16 @@ const Container = ({
           </div>
         </div>
       )}
-      
+
       {/* Calendar Section */}
       <Card className="border-0 shadow-sm">
         <CardHeader className="pb-2">
           <CardTitle className="text-lg">Calendar</CardTitle>
+          {holidays && holidays.length > 0 && (
+            <p className="text-sm text-gray-600 mt-1">
+              Showing {holidays.filter(h => h.holiday_type === 'national').length} national and {holidays.filter(h => h.holiday_type === 'optional').length} optional holidays
+            </p>
+          )}
         </CardHeader>
         <CardContent className="p-4">
           <ScheduleCalendar
@@ -82,7 +78,7 @@ const Container = ({
           />
         </CardContent>
       </Card>
-      
+
       {/* Leave Details Table */}
       {timeoffEntries && timeoffEntries.length > 0 && (
         <Card className="border-0 shadow-sm">
