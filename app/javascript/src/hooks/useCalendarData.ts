@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import axios from '../apis/api';
 import { format, startOfMonth, endOfMonth, startOfYear, endOfYear } from 'date-fns';
+import { useUserContext } from '../context/UserContext';
 
 interface Holiday {
   id: number;
@@ -92,17 +93,21 @@ const fetchHolidays = async (year: number): Promise<Holiday[]> => {
   }
 };
 
-const fetchTimesheetEntries = async (startDate: Date, endDate: Date): Promise<TimesheetEntry[]> => {
+const fetchTimesheetEntries = async (startDate: Date, endDate: Date, userId?: string | number): Promise<TimesheetEntry[]> => {
   try {
     const fromDate = format(startDate, 'yyyy-MM-dd');
     const toDate = format(endDate, 'yyyy-MM-dd');
     
-    const { data } = await axios.get(`/timesheet_entry`, {
-      params: {
-        from: fromDate,
-        to: toDate
-      }
-    });
+    const params: any = {
+      from: fromDate,
+      to: toDate
+    };
+    
+    if (userId) {
+      params.user_id = userId;
+    }
+    
+    const { data } = await axios.get(`/timesheet_entry`, { params });
     
     // The API returns entries as an object with dates as keys
     if (data.entries && typeof data.entries === 'object') {
@@ -164,11 +169,13 @@ const fetchTimeoffEntries = async (year: number): Promise<TimeoffEntry[]> => {
 };
 
 export const useCalendarData = (selectedDate: Date) => {
+  const { user } = useUserContext();
   const year = selectedDate.getFullYear();
   const monthStart = startOfMonth(selectedDate);
   const monthEnd = endOfMonth(selectedDate);
   const yearStart = startOfYear(selectedDate);
   const yearEnd = endOfYear(selectedDate);
+  const userId = user?.id;
 
   // Fetch holidays for the year
   const { data: holidays = [], isLoading: holidaysLoading } = useQuery({
@@ -179,9 +186,10 @@ export const useCalendarData = (selectedDate: Date) => {
 
   // Fetch timesheet entries for the month
   const { data: timesheetEntries = [], isLoading: timesheetLoading } = useQuery({
-    queryKey: ['timesheet', format(monthStart, 'yyyy-MM'), format(monthEnd, 'yyyy-MM')],
-    queryFn: () => fetchTimesheetEntries(monthStart, monthEnd),
+    queryKey: ['timesheet', format(monthStart, 'yyyy-MM'), format(monthEnd, 'yyyy-MM'), userId],
+    queryFn: () => fetchTimesheetEntries(monthStart, monthEnd, userId),
     staleTime: 1000 * 60 * 5, // 5 minutes
+    enabled: !!userId, // Only fetch when we have a user ID
   });
 
   // Fetch timeoff entries for the year
@@ -194,24 +202,33 @@ export const useCalendarData = (selectedDate: Date) => {
   // Convert to Schedule-X calendar events
   const calendarEvents: CalendarEvent[] = [];
 
+  // Debug logging
+  console.log('Calendar Data Debug:', {
+    holidaysCount: holidays.length,
+    timesheetCount: timesheetEntries.length,
+    timeoffCount: timeoffEntries.length,
+    holidays: holidays
+  });
+
   // Add holidays as events
   holidays.forEach(holiday => {
     if (!holiday.date) return;
     const holidayDate = new Date(holiday.date);
     if (isNaN(holidayDate.getTime())) return; // Skip invalid dates
     
-    calendarEvents.push({
+    const event = {
       id: `holiday-${holiday.id}`,
       title: holiday.name,
-      start: format(holidayDate, "yyyy-MM-dd HH:mm"),
-      end: format(holidayDate, "yyyy-MM-dd HH:mm"),
+      start: format(holidayDate, "yyyy-MM-dd 09:00"),
+      end: format(holidayDate, "yyyy-MM-dd 17:00"),
       description: `${holiday.holiday_type === 'national' ? 'National' : 'Optional'} Holiday`,
       calendarId: 'holidays',
       _customContent: {
         type: 'holiday',
         status: holiday.holiday_type
       }
-    });
+    };
+    calendarEvents.push(event);
   });
 
   // Add timesheet entries as events
@@ -258,6 +275,17 @@ export const useCalendarData = (selectedDate: Date) => {
         duration: entry.duration
       }
     });
+  });
+
+  // Final debug log
+  console.log('Final Calendar Events:', {
+    totalEvents: calendarEvents.length,
+    events: calendarEvents,
+    byType: {
+      holidays: calendarEvents.filter(e => e.calendarId === 'holidays').length,
+      timesheet: calendarEvents.filter(e => e.calendarId === 'timesheet').length,
+      leave: calendarEvents.filter(e => e.calendarId === 'leave').length
+    }
   });
 
   return {
