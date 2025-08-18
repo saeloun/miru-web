@@ -94,11 +94,12 @@ class Reports::TimeEntries::ReportService
     end
 
     def group_by_total_duration
-      group_by = params[:group_by]&.to_sym
+      group_by = params[:group_by]&.to_sym || :client
       return unless [:client, :project, :team_member].include?(group_by)
 
-      filter_service = TimeEntries::Filters.new(params)
-      where_conditions = filter_service.process
+      # Use the same where clause as the main query
+      default_filter = current_company_filter.merge(this_month_filter).merge(active_time_entries)
+      where_conditions = default_filter.merge(TimeEntries::Filters.process(params))
 
       joins_clause, group_field = case group_by
                                   when :client
@@ -111,10 +112,11 @@ class Reports::TimeEntries::ReportService
                                     raise ArgumentError, "Unsupported group_by: #{group_by}"
       end
 
+      # Convert client_id filter to proper join condition
       if where_conditions.key?(:client_id)
-        where_conditions["clients.id"] = where_conditions[:client_id]
+        project_ids = Project.where(client_id: where_conditions[:client_id]).pluck(:id)
+        where_conditions[:project_id] = project_ids
         where_conditions.delete(:client_id)
-        joins_clause = { user: [], project: :client }
       end
 
       grouped_durations = TimesheetEntry.kept.joins(joins_clause)

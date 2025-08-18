@@ -22,7 +22,7 @@ export interface Invoice {
   id: string;
   invoiceNumber: string;
   client: Client;
-  status: "draft" | "sent" | "paid" | "overdue";
+  status: "draft" | "sent" | "paid" | "overdue" | "viewed" | "declined" | "sending" | "waived";
   issueDate: string;
   dueDate: string;
   amount: number;
@@ -52,7 +52,7 @@ export interface InvoiceFormData {
   tax?: number;
   discount?: number;
   currency: string;
-  status: "draft" | "sent" | "paid" | "overdue";
+  status: "draft" | "sent" | "paid" | "overdue" | "viewed" | "declined" | "sending" | "waived";
 }
 
 export interface InvoiceListResponse {
@@ -81,6 +81,7 @@ export interface InvoiceFilters {
   toDateRange?: string;
   page?: number;
   invoicesPerPage?: number;
+  per?: number;
 }
 
 class InvoiceApiService {

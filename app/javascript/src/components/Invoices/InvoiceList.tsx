@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Card, CardContent } from "../ui/card";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
@@ -37,6 +37,9 @@ import {
   Clock,
   FileText,
   Hourglass,
+  Funnel,
+  X,
+  CircleNotch,
 } from "phosphor-react";
 
 import { Invoice } from "../../services/invoiceApi";
@@ -52,7 +55,10 @@ interface InvoiceListProps {
   onSendInvoice?: (id: string) => void;
   onMarkPaid?: (id: string) => void;
   onDownload?: (id: string) => void;
+  onLoadMore?: () => void;
   isLoading?: boolean;
+  hasMore?: boolean;
+  isLoadingMore?: boolean;
 }
 
 const InvoiceList: React.FC<InvoiceListProps> = ({
@@ -64,7 +70,10 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
   onSendInvoice,
   onMarkPaid,
   onDownload,
+  onLoadMore,
   isLoading = false,
+  hasMore = false,
+  isLoadingMore = false,
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
@@ -74,6 +83,7 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
     clients: [],
     status: [],
   });
+  const observerTarget = useRef<HTMLDivElement>(null);
 
   // Use summary from API or calculate fallback
   const calculatedSummary = summary || {
@@ -210,8 +220,15 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
       invoice.invoiceNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
       invoice.client.name.toLowerCase().includes(searchTerm.toLowerCase());
 
-    const matchesStatus =
-      statusFilter === "all" || invoice.status === statusFilter;
+    // Check filterParams.status first (from ChartWithSummary cards), then fallback to statusFilter
+    let matchesStatus = true;
+    if (filterParams.status && filterParams.status.length > 0) {
+      matchesStatus = filterParams.status.some((statusObj: any) => 
+        invoice.status === statusObj.value
+      );
+    } else {
+      matchesStatus = statusFilter === "all" || invoice.status === statusFilter;
+    }
 
     const matchesClient =
       clientFilter === "all" || invoice.client.name === clientFilter;
@@ -222,6 +239,29 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
   const uniqueClients = Array.from(
     new Set(invoices.map(inv => inv.client.name))
   );
+
+  // Infinite scroll implementation
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      entries => {
+        if (entries[0].isIntersecting && hasMore && !isLoadingMore && onLoadMore) {
+          onLoadMore();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    const current = observerTarget.current;
+    if (current) {
+      observer.observe(current);
+    }
+
+    return () => {
+      if (current) {
+        observer.unobserve(current);
+      }
+    };
+  }, [hasMore, isLoadingMore, onLoadMore]);
 
   const getQuickActions = (invoice: Invoice) => (
     <DropdownMenu>
@@ -304,19 +344,37 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
               </div>
             </div>
 
-            {/* Status Filter */}
-            <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="w-40">
-                <SelectValue placeholder="All Statuses" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Statuses</SelectItem>
-                <SelectItem value="draft">Draft</SelectItem>
-                <SelectItem value="sent">Sent</SelectItem>
-                <SelectItem value="paid">Paid</SelectItem>
-                <SelectItem value="overdue">Overdue</SelectItem>
-              </SelectContent>
-            </Select>
+            {/* Status Filter - Show active filter from cards */}
+            {filterParams.status && filterParams.status.length > 0 ? (
+              <div className="flex items-center gap-2">
+                <div className="px-3 py-1.5 bg-blue-50 border border-blue-200 rounded-lg text-sm font-medium text-blue-700 flex items-center gap-2">
+                  <Funnel className="h-3 w-3" />
+                  {filterParams.status[0].label}
+                </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setFilterParams({ ...filterParams, status: [] })}
+                  className="h-7 px-2"
+                >
+                  <X className="h-3 w-3" />
+                </Button>
+              </div>
+            ) : (
+              <Select value={statusFilter} onValueChange={setStatusFilter}>
+                <SelectTrigger className="w-40">
+                  <SelectValue placeholder="All Statuses" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Statuses</SelectItem>
+                  <SelectItem value="draft">Draft</SelectItem>
+                  <SelectItem value="sent">Sent</SelectItem>
+                  <SelectItem value="paid">Paid</SelectItem>
+                  <SelectItem value="overdue">Overdue</SelectItem>
+                  <SelectItem value="viewed">Viewed</SelectItem>
+                </SelectContent>
+              </Select>
+            )}
 
             {/* Client Filter */}
             <Select value={clientFilter} onValueChange={setClientFilter}>
@@ -373,46 +431,64 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
                   </TableCell>
                 </TableRow>
               ) : (
-                filteredInvoices.map(invoice => (
-                  <TableRow
-                    key={invoice.id}
-                    className="cursor-pointer hover:bg-muted/50"
-                    onClick={() => onViewInvoice?.(invoice.id)}
-                  >
-                    <TableCell>{getStatusIcon(invoice.status)}</TableCell>
-                    <TableCell>
-                      <div className="font-medium">
-                        #{invoice.invoiceNumber}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div>
-                        <div className="font-medium">{invoice.client.name}</div>
-                        <div className="text-sm text-muted-foreground">
-                          {invoice.client.email}
+                <>
+                  {filteredInvoices.map(invoice => (
+                    <TableRow
+                      key={invoice.id}
+                      className="cursor-pointer hover:bg-muted/50"
+                      onClick={() => onViewInvoice?.(invoice.id)}
+                    >
+                      <TableCell>{getStatusIcon(invoice.status)}</TableCell>
+                      <TableCell>
+                        <div className="font-medium">
+                          #{invoice.invoiceNumber}
                         </div>
-                      </div>
-                    </TableCell>
-                    <TableCell>{getStatusBadge(invoice.status)}</TableCell>
-                    <TableCell className="text-muted-foreground">
-                      {formatDate(invoice.issueDate)}
-                    </TableCell>
-                    <TableCell className="text-muted-foreground">
-                      {formatDate(invoice.dueDate)}
-                    </TableCell>
-                    <TableCell className="text-right font-medium">
-                      {formatCurrency(invoice.amount, invoice.currency)}
-                    </TableCell>
-                    <TableCell onClick={e => e.stopPropagation()}>
-                      {getQuickActions(invoice)}
-                    </TableCell>
-                  </TableRow>
-                ))
+                      </TableCell>
+                      <TableCell>
+                        <div>
+                          <div className="font-medium">{invoice.client.name}</div>
+                          <div className="text-sm text-muted-foreground">
+                            {invoice.client.email}
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell>{getStatusBadge(invoice.status)}</TableCell>
+                      <TableCell className="text-muted-foreground">
+                        {formatDate(invoice.issueDate)}
+                      </TableCell>
+                      <TableCell className="text-muted-foreground">
+                        {formatDate(invoice.dueDate)}
+                      </TableCell>
+                      <TableCell className="text-right font-medium">
+                        {formatCurrency(
+                          invoice.status === "overdue" && invoice.amountDue 
+                            ? invoice.amountDue 
+                            : invoice.amount, 
+                          invoice.currency
+                        )}
+                      </TableCell>
+                      <TableCell onClick={e => e.stopPropagation()}>
+                        {getQuickActions(invoice)}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                  {isLoadingMore && (
+                    <TableRow>
+                      <TableCell colSpan={8} className="text-center py-4">
+                        <CircleNotch className="h-6 w-6 mx-auto animate-spin text-blue-600" />
+                        <span className="text-sm text-muted-foreground mt-2 block">Loading more invoices...</span>
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </>
               )}
             </TableBody>
           </Table>
         </CardContent>
       </Card>
+
+      {/* Infinite scroll trigger */}
+      <div ref={observerTarget} className="h-4" />
 
       {/* Summary Stats */}
       {filteredInvoices.length > 0 && (

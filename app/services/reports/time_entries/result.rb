@@ -31,26 +31,36 @@ class Reports::TimeEntries::Result < ApplicationService
   private
 
     def process_response_by_group_by
-      label_field = GROUP_BY_INPUT_TO_GROUP_LABEL_FIELD[group_by.to_s]
-      id_field = GROUP_BY_INPUT_TO_GROUP_ID_FIELD[group_by.to_s]
+      GROUP_BY_INPUT_TO_GROUP_LABEL_FIELD[group_by.to_s]
+      GROUP_BY_INPUT_TO_GROUP_ID_FIELD[group_by.to_s]
 
       grouped_data = es_response.group_by { |entry|
-        # Handle both ActiveRecord objects and hashes
-        if entry.respond_to?(label_field)
-          entry.send(label_field)
+        # Get the label based on group_by field
+        case group_by.to_s
+        when "client"
+          entry.project&.client&.name
+        when "project"
+          entry.project&.name
+        when "team_member"
+          entry.user&.full_name
         else
-          entry[label_field]
+          ""
         end
       }.map do |label, entries|
-        # Get the ID from the first entry
-        id = if entries.first.respond_to?(id_field)
-          entries.first.send(id_field)
-        else
-          entries.first[id_field]
+        # Get the ID from the first entry based on group_by field
+        id = case group_by.to_s
+             when "client"
+               entries.first.project&.client_id
+             when "project"
+               entries.first.project_id
+             when "team_member"
+               entries.first.user_id
+             else
+               nil
         end
 
         {
-          label:,
+          label: label || "",
           id:,
           entries:
         }

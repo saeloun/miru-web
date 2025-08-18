@@ -18,6 +18,10 @@ class Api::V1::InvoicesController < Api::V1::BaseController
       @q.result
     end
 
+    # Order by updated_at DESC to show recently updated invoices first
+    # This ensures users see the most relevant invoices at the top
+    invoices = invoices.order(updated_at: :desc)
+
     # Apply filters
     # Status filter - support both status and statuses params
     if params[:status].present?
@@ -44,11 +48,11 @@ class Api::V1::InvoicesController < Api::V1::BaseController
       invoices = invoices.where(client_id: client_ids) unless client_ids.empty?
     end
 
-    # Pagination with Pagy
+    # Pagination with Pagy - default to 20 per page for infinite scroll
     page = (params[:page] || 1).to_i
     page = 1 if page <= 0
-    per_page = (params[:invoices_per_page] || params[:per] || 10).to_i
-    per_page = 10 if per_page <= 0  # Use default instead of all records when per_page is 0
+    per_page = (params[:invoices_per_page] || params[:per] || 20).to_i
+    per_page = 20 if per_page <= 0  # Use default instead of all records when per_page is 0
 
     # Use Pagy for pagination with overflow handling
     begin
@@ -101,8 +105,11 @@ class Api::V1::InvoicesController < Api::V1::BaseController
       currency: current_company.base_currency
     }
 
-    # Get recently updated
-    recently_updated = current_company.invoices.kept.order(updated_at: :desc).limit(10)
+    # Get recently updated - show overdue invoices first, then by updated_at
+    # Note: status is an integer enum, so we need to use the integer value for overdue (5)
+    recently_updated = current_company.invoices.kept
+      .order(Arel.sql("CASE WHEN status = 5 THEN 0 ELSE 1 END"), updated_at: :desc)
+      .limit(10)
 
     render :index, locals: {
       invoices: paginated_invoices,

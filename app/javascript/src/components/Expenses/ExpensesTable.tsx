@@ -32,6 +32,14 @@ import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Checkbox } from "../ui/checkbox";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
+import { Textarea } from "../ui/textarea";
+import {
   Plus,
   DotsThree,
   PencilSimple,
@@ -60,7 +68,9 @@ interface Expense {
   description: string;
   amount: number;
   category: string;
+  categoryId: number;
   vendor?: string;
+  vendorId?: number;
   client?: string;
   project?: string;
   status: "pending" | "approved" | "rejected";
@@ -82,13 +92,13 @@ interface ExpensesData {
 
 const fetchExpenses = async (filter: string = "all"): Promise<ExpensesData> => {
   const response = await expensesApi.index(filter !== "all" ? `status=${filter}` : "");
-  
+
   // Transform the response to match our interface
   const expenses = response.data.expenses || [];
   const totalAmount = expenses.reduce((sum, e) => sum + e.amount, 0);
   const pendingAmount = expenses.filter(e => e.status === "pending").reduce((sum, e) => sum + e.amount, 0);
   const approvedAmount = expenses.filter(e => e.status === "approved").reduce((sum, e) => sum + e.amount, 0);
-  
+
   return {
     expenses,
     categories: response.data.categories || [],
@@ -107,6 +117,19 @@ const ExpensesTable: React.FC = () => {
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [selectedExpense, setSelectedExpense] = useState<Expense | null>(null);
+  
+  // Form state
+  const [formData, setFormData] = useState({
+    date: new Date().toISOString().split('T')[0],
+    description: '',
+    amount: '',
+    category: '',
+    categoryId: 0,
+    vendor: '',
+    vendorId: 0,
+    expenseType: 'billable',
+    notes: ''
+  });
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["expenses"],
@@ -127,8 +150,71 @@ const ExpensesTable: React.FC = () => {
     },
   });
 
+  const createMutation = useMutation({
+    mutationFn: async (data: any) => {
+      await expensesApi.create(data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["expenses"] });
+      toast.success("Expense created successfully");
+      setShowAddDialog(false);
+      resetForm();
+    },
+    onError: () => {
+      toast.error("Failed to create expense");
+    },
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: string; data: any }) => {
+      await expensesApi.update(id, data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["expenses"] });
+      toast.success("Expense updated successfully");
+      setShowEditDialog(false);
+      resetForm();
+    },
+    onError: () => {
+      toast.error("Failed to update expense");
+    },
+  });
+
+  const resetForm = () => {
+    setFormData({
+      date: new Date().toISOString().split('T')[0],
+      description: '',
+      amount: '',
+      category: '',
+      categoryId: 0,
+      vendor: '',
+      vendorId: 0,
+      expenseType: 'billable',
+      notes: ''
+    });
+    setSelectedExpense(null);
+  };
+
   const handleEdit = (expense: Expense) => {
     setSelectedExpense(expense);
+    // Convert date to YYYY-MM-DD format for the input field
+    let dateForInput = expense.date;
+    if (dateForInput && !dateForInput.includes('-')) {
+      // If it's in some other format, try to parse it
+      const date = new Date(dateForInput);
+      dateForInput = date.toISOString().split('T')[0];
+    }
+    setFormData({
+      date: dateForInput,
+      description: expense.description,
+      amount: expense.amount.toString(),
+      category: expense.category,
+      categoryId: expense.categoryId,
+      vendor: expense.vendor || '',
+      vendorId: expense.vendorId || 0,
+      expenseType: expense.expenseType,
+      notes: expense.notes || ''
+    });
     setShowEditDialog(true);
   };
 
@@ -143,26 +229,77 @@ const ExpensesTable: React.FC = () => {
     }
   };
 
+  const handleSubmitAdd = () => {
+    // For now, we'll use the category and vendor names directly since we have hardcoded lists
+    // In a real app, these would come from the API with IDs
+    const categoryMap: { [key: string]: number } = {
+      "Salary": 1,
+      "Rent": 2,
+      "Furniture": 3,
+      "Marketing": 4,
+      "Training": 5,
+      "Tax": 6,
+      "Other": 7
+    };
+    
+    const vendorMap: { [key: string]: number } = {
+      "Howe Inc": 1,
+      "Stanton-Buckridge": 2,
+      "Dare-Gottlieb": 3,
+      "Kuhn, Kohler and Boehm": 4,
+      "Littel-Raynor": 5
+    };
+    
+    const payload = {
+      expense: {
+        date: formData.date,
+        description: formData.description,
+        amount: parseFloat(formData.amount),
+        expense_category_id: categoryMap[formData.category] || 7, // Default to "Other"
+        vendor_id: vendorMap[formData.vendor] || null,
+        expense_type: formData.expenseType === 'billable' ? 'business' : 'personal',
+        notes: formData.notes
+      }
+    };
+    createMutation.mutate(payload);
+  };
+
+  const handleSubmitEdit = () => {
+    if (!selectedExpense) return;
+    
+    const payload = {
+      expense: {
+        date: formData.date,
+        description: formData.description,
+        amount: parseFloat(formData.amount),
+        expense_category_id: formData.categoryId,
+        vendor_id: formData.vendorId || null,
+        expense_type: formData.expenseType === 'billable' ? 'business' : 'personal'
+      }
+    };
+    updateMutation.mutate({ id: selectedExpense.id, data: payload });
+  };
+
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "approved":
         return (
-          <Badge className="bg-green-50 text-green-700 border-green-200 hover:bg-green-50">
-            <CheckCircle size={12} className="mr-1" weight="fill" />
+          <Badge className="bg-green-50 text-green-700 border-green-200 hover:bg-green-50 inline-flex items-center whitespace-nowrap px-2 py-1">
+            <CheckCircle size={12} className="mr-1 flex-shrink-0" weight="fill" />
             <span className="text-xs font-medium">Approved</span>
           </Badge>
         );
       case "rejected":
         return (
-          <Badge className="bg-red-50 text-red-700 border-red-200 hover:bg-red-50">
-            <XCircle size={12} className="mr-1" weight="fill" />
+          <Badge className="bg-red-50 text-red-700 border-red-200 hover:bg-red-50 inline-flex items-center whitespace-nowrap px-2 py-1">
+            <XCircle size={12} className="mr-1 flex-shrink-0" weight="fill" />
             <span className="text-xs font-medium">Rejected</span>
           </Badge>
         );
       default:
         return (
-          <Badge className="bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-50">
-            <Clock size={12} className="mr-1" weight="fill" />
+          <Badge className="bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-50 inline-flex items-center whitespace-nowrap px-2 py-1">
+            <Clock size={12} className="mr-1 flex-shrink-0" weight="fill" />
             <span className="text-xs font-medium">Pending</span>
           </Badge>
         );
@@ -220,16 +357,13 @@ const ExpensesTable: React.FC = () => {
       cell: ({ row }) => {
         const date = new Date(row.original.date);
         return (
-          <div className="flex items-center gap-2">
-            <Calendar size={14} className="text-gray-500" />
-            <span className="text-sm text-gray-700 font-medium">
-              {date.toLocaleDateString('en-US', { 
-                month: 'short', 
-                day: 'numeric',
-                year: 'numeric'
-              })}
-            </span>
-          </div>
+          <span className="text-sm text-gray-700">
+            {date.toLocaleDateString('en-US', {
+              month: 'short',
+              day: 'numeric',
+              year: 'numeric'
+            })}
+          </span>
         );
       },
     },
@@ -254,10 +388,7 @@ const ExpensesTable: React.FC = () => {
       header: () => <span className="text-xs font-medium text-gray-700 uppercase tracking-wider">Category</span>,
       cell: ({ row }) => {
         return (
-          <div className="flex items-center gap-2">
-            <Tag size={14} className="text-gray-500" />
-            <span className="text-sm text-gray-700">{row.original.category}</span>
-          </div>
+          <span className="text-sm text-gray-700">{row.original.category}</span>
         );
       },
     },
@@ -348,15 +479,6 @@ const ExpensesTable: React.FC = () => {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem
-                onClick={() => navigator.clipboard.writeText(expense.id)}
-              >
-                Copy expense ID
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => navigate(`/expenses/${expense.id}`)}>
-                View details
-              </DropdownMenuItem>
               <DropdownMenuItem onClick={() => handleEdit(expense)}>
                 <PencilSimple size={16} className="mr-2" />
                 Edit expense
@@ -412,22 +534,13 @@ const ExpensesTable: React.FC = () => {
                 Track and manage your business expenses
               </p>
             </div>
-            <div className="flex gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-              >
-                <Upload size={16} className="mr-2" />
-                Import
-              </Button>
-              <Button
-                onClick={() => setShowAddDialog(true)}
-                size="sm"
-              >
-                <Plus size={16} className="mr-2" />
-                Add Expense
-              </Button>
-            </div>
+            <Button
+              onClick={() => setShowAddDialog(true)}
+              size="sm"
+            >
+              <Plus size={16} className="mr-2" />
+              Add Expense
+            </Button>
           </div>
         </div>
 
@@ -521,6 +634,259 @@ const ExpensesTable: React.FC = () => {
         </Card>
       </div>
 
+      {/* Add Expense Dialog */}
+      <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Add New Expense</DialogTitle>
+            <DialogDescription>
+              Enter the details for the new expense.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="date" className="text-right">
+                Date
+              </Label>
+              <Input
+                id="date"
+                type="date"
+                value={formData.date}
+                onChange={(e) => setFormData({...formData, date: e.target.value})}
+                className="col-span-3"
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="description" className="text-right">
+                Description
+              </Label>
+              <Input
+                id="description"
+                value={formData.description}
+                onChange={(e) => setFormData({...formData, description: e.target.value})}
+                className="col-span-3"
+                placeholder="Enter expense description"
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="amount" className="text-right">
+                Amount
+              </Label>
+              <Input
+                id="amount"
+                type="number"
+                step="0.01"
+                value={formData.amount}
+                onChange={(e) => setFormData({...formData, amount: e.target.value})}
+                className="col-span-3"
+                placeholder="0.00"
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="category" className="text-right">
+                Category
+              </Label>
+              <Select
+                value={formData.category}
+                onValueChange={(value) => setFormData({...formData, category: value})}
+              >
+                <SelectTrigger className="col-span-3">
+                  <SelectValue placeholder="Select category" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Salary">Salary</SelectItem>
+                  <SelectItem value="Rent">Rent</SelectItem>
+                  <SelectItem value="Furniture">Furniture</SelectItem>
+                  <SelectItem value="Marketing">Marketing</SelectItem>
+                  <SelectItem value="Training">Training</SelectItem>
+                  <SelectItem value="Tax">Tax</SelectItem>
+                  <SelectItem value="Other">Other</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="vendor" className="text-right">
+                Vendor
+              </Label>
+              <Input
+                id="vendor"
+                value={formData.vendor}
+                onChange={(e) => setFormData({...formData, vendor: e.target.value})}
+                className="col-span-3"
+                placeholder="Enter vendor name"
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="type" className="text-right">
+                Type
+              </Label>
+              <Select
+                value={formData.expenseType}
+                onValueChange={(value) => setFormData({...formData, expenseType: value})}
+              >
+                <SelectTrigger className="col-span-3">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="billable">Billable</SelectItem>
+                  <SelectItem value="non-billable">Non-billable</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="notes" className="text-right">
+                Notes
+              </Label>
+              <Textarea
+                id="notes"
+                value={formData.notes}
+                onChange={(e) => setFormData({...formData, notes: e.target.value})}
+                className="col-span-3"
+                placeholder="Optional notes"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowAddDialog(false)}>
+              Cancel
+            </Button>
+            <Button 
+              onClick={handleSubmitAdd}
+              disabled={!formData.description || !formData.amount || !formData.category || createMutation.isPending}
+            >
+              {createMutation.isPending ? "Adding..." : "Add Expense"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Expense Dialog */}
+      <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Edit Expense</DialogTitle>
+            <DialogDescription>
+              Update the expense details.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="edit-date" className="text-right">
+                Date
+              </Label>
+              <Input
+                id="edit-date"
+                type="date"
+                value={formData.date}
+                onChange={(e) => setFormData({...formData, date: e.target.value})}
+                className="col-span-3"
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="edit-description" className="text-right">
+                Description
+              </Label>
+              <Input
+                id="edit-description"
+                value={formData.description}
+                onChange={(e) => setFormData({...formData, description: e.target.value})}
+                className="col-span-3"
+                placeholder="Enter expense description"
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="edit-amount" className="text-right">
+                Amount
+              </Label>
+              <Input
+                id="edit-amount"
+                type="number"
+                step="0.01"
+                value={formData.amount}
+                onChange={(e) => setFormData({...formData, amount: e.target.value})}
+                className="col-span-3"
+                placeholder="0.00"
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="edit-category" className="text-right">
+                Category
+              </Label>
+              <Select
+                value={formData.category}
+                onValueChange={(value) => setFormData({...formData, category: value})}
+              >
+                <SelectTrigger className="col-span-3">
+                  <SelectValue placeholder="Select category" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Salary">Salary</SelectItem>
+                  <SelectItem value="Rent">Rent</SelectItem>
+                  <SelectItem value="Furniture">Furniture</SelectItem>
+                  <SelectItem value="Marketing">Marketing</SelectItem>
+                  <SelectItem value="Training">Training</SelectItem>
+                  <SelectItem value="Tax">Tax</SelectItem>
+                  <SelectItem value="Other">Other</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="edit-vendor" className="text-right">
+                Vendor
+              </Label>
+              <Input
+                id="edit-vendor"
+                value={formData.vendor}
+                onChange={(e) => setFormData({...formData, vendor: e.target.value})}
+                className="col-span-3"
+                placeholder="Enter vendor name"
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="edit-type" className="text-right">
+                Type
+              </Label>
+              <Select
+                value={formData.expenseType}
+                onValueChange={(value) => setFormData({...formData, expenseType: value})}
+              >
+                <SelectTrigger className="col-span-3">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="billable">Billable</SelectItem>
+                  <SelectItem value="non-billable">Non-billable</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="edit-notes" className="text-right">
+                Notes
+              </Label>
+              <Textarea
+                id="edit-notes"
+                value={formData.notes}
+                onChange={(e) => setFormData({...formData, notes: e.target.value})}
+                className="col-span-3"
+                placeholder="Optional notes"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowEditDialog(false)}>
+              Cancel
+            </Button>
+            <Button 
+              onClick={handleSubmitEdit}
+              disabled={!formData.description || !formData.amount || !formData.category || updateMutation.isPending}
+            >
+              {updateMutation.isPending ? "Saving..." : "Save Changes"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Expense Dialog */}
       <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
         <DialogContent>
           <DialogHeader>
