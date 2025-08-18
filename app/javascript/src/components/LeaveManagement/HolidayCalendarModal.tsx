@@ -1,6 +1,6 @@
 import React from "react";
 import { Dialog, DialogContent, DialogTitle } from "../ui/dialog";
-import { X, ChevronLeft, ChevronRight } from "lucide-react";
+import { X, CaretLeft, CaretRight } from "phosphor-react";
 import { yearCalendar } from "constants/leaveType";
 import { Calendar } from "../ui/calendar";
 import { useUserContext } from "context/UserContext";

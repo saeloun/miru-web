@@ -6,20 +6,20 @@ import { Badge } from "../../ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "../../ui/avatar";
 import {
   Users,
-  Search,
+  MagnifyingGlass,
   Plus,
-  Filter,
-  MoreHorizontal,
-  Mail,
-  DollarSign,
+  Funnel,
+  DotsThree,
+  Envelope,
+  CurrencyDollar,
   FileText,
   Calendar,
-  Building2,
+  Buildings,
   ArrowUpRight,
   Star,
-  AlertCircle,
+  Warning,
   CheckCircle,
-} from "lucide-react";
+} from "phosphor-react";
 import { cn } from "../../../lib/utils";
 
 interface Client {
@@ -148,11 +148,11 @@ const ClientsPage: React.FC<ClientsPageProps> = ({
       },
       pending: {
         color: "bg-yellow-100 text-yellow-800 border-yellow-200",
-        icon: AlertCircle,
+        icon: Warning,
       },
       inactive: {
         color: "bg-gray-100 text-gray-800 border-gray-200",
-        icon: AlertCircle,
+        icon: Warning,
       },
     };
 
@@ -226,12 +226,12 @@ const ClientsPage: React.FC<ClientsPageProps> = ({
             </div>
 
             <div className="flex items-center gap-3">
-              {/* Search */}
+              {/* MagnifyingGlass */}
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <MagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                 <input
                   type="text"
-                  placeholder="Search clients..."
+                  placeholder="Search Clients..."
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
                   className="pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#5B34EA] focus:border-transparent bg-white dark:bg-gray-800 dark:text-gray-100"
@@ -239,8 +239,8 @@ const ClientsPage: React.FC<ClientsPageProps> = ({
               </div>
 
               <Button variant="outline" size="sm">
-                <Filter className="mr-2 h-4 w-4" />
-                Filter
+                <Funnel className="mr-2 h-4 w-4" />
+                Funnel
               </Button>
 
               <Button className="bg-[#5B34EA] hover:bg-[#4926D1]" size="sm">
@@ -267,7 +267,7 @@ const ClientsPage: React.FC<ClientsPageProps> = ({
                     {formatCurrency(totalStats.totalRevenue, "USD")}
                   </p>
                 </div>
-                <DollarSign className="w-8 h-8 text-green-500" />
+                <CurrencyDollar className="w-8 h-8 text-green-500" />
               </div>
             </CardContent>
           </Card>
@@ -321,7 +321,7 @@ const ClientsPage: React.FC<ClientsPageProps> = ({
           </Card>
         </div>
 
-        {/* Status Filter Tabs */}
+        {/* Status Funnel Tabs */}
         <div className="flex gap-1 p-1 bg-gray-100 dark:bg-gray-800 rounded-lg w-fit">
           {statusOptions.map(option => (
             <button
@@ -373,7 +373,7 @@ const ClientsPage: React.FC<ClientsPageProps> = ({
                   <div className="flex items-center gap-2">
                     {getStatusBadge(client.status)}
                     <Button variant="ghost" size="icon" className="h-8 w-8">
-                      <MoreHorizontal className="h-4 w-4" />
+                      <DotsThree className="h-4 w-4" />
                     </Button>
                   </div>
                 </div>
@@ -411,7 +411,7 @@ const ClientsPage: React.FC<ClientsPageProps> = ({
 
                 <div className="flex items-center justify-between text-sm">
                   <div className="flex items-center gap-1 text-gray-500 dark:text-gray-400">
-                    <Building2 className="w-4 h-4" />
+                    <Buildings className="w-4 h-4" />
                     <span>{client.projectsCount} projects</span>
                   </div>
                   <div className="flex items-center gap-1 text-gray-500 dark:text-gray-400">
@@ -422,7 +422,7 @@ const ClientsPage: React.FC<ClientsPageProps> = ({
 
                 <div className="flex items-center gap-2 pt-2 border-t border-gray-100 dark:border-gray-700">
                   <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
-                    <Mail className="w-3 h-3" />
+                    <Envelope className="w-3 h-3" />
                     <span className="truncate">{client.email}</span>
                   </div>
                   <ArrowUpRight className="w-4 h-4 text-gray-400 group-hover:text-[#5B34EA] transition-colors ml-auto" />

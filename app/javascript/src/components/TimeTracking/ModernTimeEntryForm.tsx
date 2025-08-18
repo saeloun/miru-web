@@ -3,15 +3,15 @@ import {
   Clock,
   Calendar,
   FileText,
-  DollarSign,
+  CurrencyDollar,
   X,
   Timer,
   Briefcase,
   User,
   Tag,
-  Save,
-  Trash2,
-} from "lucide-react";
+  FloppyDisk,
+  Trash,
+} from "phosphor-react";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Input } from "../ui/input";
@@ -304,7 +304,7 @@ export const ModernTimeEntryForm: React.FC<TimeEntryFormProps> = ({
                       : "bg-miru-gray-100 text-miru-dark-purple-600 hover:bg-miru-gray-200"
                   )}
                 >
-                  <DollarSign className="h-4 w-4" />
+                  <CurrencyDollar className="h-4 w-4" />
                   <span className="text-base font-medium">
                     {formData.billable ? "Billable" : "Non-billable"}
                   </span>
@@ -322,7 +322,7 @@ export const ModernTimeEntryForm: React.FC<TimeEntryFormProps> = ({
                   type="button"
                   className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-all"
                 >
-                  <Trash2 className="h-5 w-5" />
+                  <Trash className="h-5 w-5" />
                 </button>
               )}
             </div>
@@ -345,8 +345,8 @@ export const ModernTimeEntryForm: React.FC<TimeEntryFormProps> = ({
               </span>
             ) : (
               <span className="flex items-center gap-2">
-                <Save className="h-4 w-4" />
-                {existingEntry ? "Update Entry" : "Save Entry"}
+                <FloppyDisk className="h-4 w-4" />
+                {existingEntry ? "Update Entry" : "FloppyDisk Entry"}
               </span>
             )}
           </Button>

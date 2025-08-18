@@ -1,5 +1,5 @@
 import * as React from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { CaretLeft, CaretRight } from "phosphor-react";
 import { DayPicker } from "react-day-picker";
 import { cn } from "../../lib/utils";
 import { buttonVariants } from "./button";
@@ -51,8 +51,8 @@ function Calendar({
         ...classNames,
       }}
       components={{
-        IconLeft: ({ ...props }) => <ChevronLeft className="h-4 w-4" />,
-        IconRight: ({ ...props }) => <ChevronRight className="h-4 w-4" />,
+        IconLeft: ({ ...props }) => <CaretLeft className="h-4 w-4" />,
+        IconRight: ({ ...props }) => <CaretRight className="h-4 w-4" />,
       }}
       {...props}
     />

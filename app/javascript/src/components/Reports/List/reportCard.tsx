@@ -4,13 +4,12 @@ import { NavLink } from "react-router-dom";
 import { Card, CardDescription, CardHeader, CardTitle } from "../../ui/card";
 import {
   FileText,
-  DollarSign,
+  CurrencyDollar,
   Clock,
-  TrendingUp,
+  TrendUp,
   Calendar,
-} from "lucide-react";
+} from "phosphor-react";
 
-// Map URLs to lucide-react icons
 const getIconForUrl = (url: string) => {
   switch (url) {
     case "time-entry":
@@ -18,11 +17,11 @@ const getIconForUrl = (url: string) => {
     case "outstanding-overdue-invoice":
       return FileText;
     case "revenue-by-client":
-      return DollarSign;
+      return CurrencyDollar;
     case "accounts-aging":
       return Calendar;
     default:
-      return TrendingUp;
+      return TrendUp;
   }
 };
 

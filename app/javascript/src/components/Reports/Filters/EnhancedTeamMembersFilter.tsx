@@ -1,12 +1,12 @@
 import React from "react";
 import {
   UserCheck,
-  ChevronDown,
-  ChevronUp,
-  Search,
+  CaretDown,
+  CaretUp,
+  MagnifyingGlass,
   X,
   Check,
-} from "lucide-react";
+} from "phosphor-react";
 
 import { cn } from "../../../lib/utils";
 import {
@@ -78,9 +78,9 @@ const EnhancedTeamMembersFilter = ({
               </Badge>
             )}
             {isOpen ? (
-              <ChevronUp className="h-4 w-4 text-gray-400" />
+              <CaretUp className="h-4 w-4 text-gray-400" />
             ) : (
-              <ChevronDown className="h-4 w-4 text-gray-400" />
+              <CaretDown className="h-4 w-4 text-gray-400" />
             )}
           </div>
         </div>
@@ -88,11 +88,11 @@ const EnhancedTeamMembersFilter = ({
 
       <CollapsibleContent className="px-4 pb-3">
         <div className="mt-3 space-y-3">
-          {/* Search Input */}
+          {/* MagnifyingGlass Input */}
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
             <Input
-              placeholder="Search team members..."
+              placeholder="Search Team Members..."
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
               className="pl-9 pr-9 h-9 text-sm border-gray-200 focus:border-[#5B34EA] focus:ring-[#5B34EA]"

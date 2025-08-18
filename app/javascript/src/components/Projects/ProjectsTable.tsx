@@ -32,7 +32,6 @@ import {
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Checkbox } from "../ui/checkbox";
-import { Progress } from "../ui/progress";
 import {
   Plus,
   DotsThree,
@@ -253,35 +252,6 @@ const ProjectsTable: React.FC = () => {
                 +{remainingCount} more
               </span>
             )}
-          </div>
-        );
-      },
-    },
-    {
-      id: "progress",
-      header: "Progress",
-      cell: ({ row }) => {
-        const project = row.original;
-        const totalHours = project.totalHours || 0;
-        const allocatedHours = project.allocatedHours || 0;
-        const progressPercentage = allocatedHours > 0
-          ? Math.min((totalHours / allocatedHours) * 100, 100)
-          : 0;
-
-        return (
-          <div className="w-32 space-y-1">
-            <div className="flex justify-between text-xs">
-              <span className="text-gray-600">
-                {totalHours.toFixed(1)}h
-              </span>
-              <span className="text-gray-500">
-                / {allocatedHours}h
-              </span>
-            </div>
-            <Progress 
-              value={progressPercentage} 
-              className="h-2"
-            />
           </div>
         );
       },

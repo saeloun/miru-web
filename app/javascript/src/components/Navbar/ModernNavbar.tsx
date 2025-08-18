@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import {
-  Menu,
+  List,
   X,
-  ChevronRight,
+  CaretRight,
   Clock,
   Users,
   FolderOpen,
@@ -13,10 +13,10 @@ import {
   CreditCard,
   Calendar,
   Receipt,
-  Settings,
-  LogOut,
-  Home,
-} from "lucide-react";
+  Gear,
+  SignOut,
+  House,
+} from "phosphor-react";
 import { useUserContext } from "context/UserContext";
 import { cn } from "../../lib/utils";
 import { Paths } from "constants/index";
@@ -33,7 +33,7 @@ const navigationItems: NavItem[] = [
   {
     label: "Dashboard",
     path: "/",
-    icon: Home,
+    icon: House,
     allowedRoles: ["admin", "employee", "owner", "book_keeper", "client"],
   },
   {
@@ -176,7 +176,7 @@ export const ModernNavbar: React.FC = () => {
                 >
                   <Icon className="h-5 w-5 flex-shrink-0" />
                   <span className="text-sm">{item.label}</span>
-                  {isActive && <ChevronRight className="h-4 w-4 ml-auto" />}
+                  {isActive && <CaretRight className="h-4 w-4 ml-auto" />}
                 </NavLink>
               </li>
             );
@@ -189,14 +189,14 @@ export const ModernNavbar: React.FC = () => {
           to={Paths.SETTINGS.replace("/*", "/profile")}
           className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-miru-gray-100 transition-colors"
         >
-          <Settings className="h-5 w-5 text-miru-dark-purple-600" />
-          <span className="text-sm text-miru-dark-purple-900">Settings</span>
+          <Gear className="h-5 w-5 text-miru-dark-purple-600" />
+          <span className="text-sm text-miru-dark-purple-900">Gear</span>
         </NavLink>
         <button
           onClick={handleLogout}
           className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-red-50 hover:text-red-600 transition-colors"
         >
-          <LogOut className="h-5 w-5" />
+          <SignOut className="h-5 w-5" />
           <span className="text-sm">Logout</span>
         </button>
         {user && (
@@ -223,13 +223,13 @@ export const ModernNavbar: React.FC = () => {
 
   return (
     <>
-      {/* Mobile Menu Button */}
+      {/* Mobile List Button */}
       {!isDesktop && (
         <button
           onClick={() => setIsSidebarOpen(true)}
           className="fixed top-4 left-4 z-50 p-2 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow lg:hidden"
         >
-          <Menu className="h-6 w-6 text-miru-dark-purple-1000" />
+          <List className="h-6 w-6 text-miru-dark-purple-1000" />
         </button>
       )}
       {/* Desktop Sidebar */}
@@ -300,7 +300,7 @@ export const ModernNavbar: React.FC = () => {
               onClick={() => setIsSidebarOpen(true)}
               className="flex flex-col items-center justify-center gap-1 p-2 rounded-lg flex-1 hover:bg-miru-gray-50"
             >
-              <Menu className="h-5 w-5 text-miru-dark-purple-600" />
+              <List className="h-5 w-5 text-miru-dark-purple-600" />
               <span className="text-xs">More</span>
             </button>
           </div>

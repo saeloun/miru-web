@@ -3,7 +3,7 @@ import InvoiceList from "./InvoiceList";
 import InvoiceEditor from "./InvoiceEditor";
 import InvoicePreview from "./InvoicePreview";
 import { Button } from "../ui/button";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft } from "phosphor-react";
 import {
   invoiceApi,
   Invoice,

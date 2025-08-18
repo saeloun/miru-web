@@ -26,14 +26,14 @@ import {
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import {
-  CalendarIcon,
+  Calendar,
   Plus,
-  Trash2,
-  Save,
-  Send,
+  Trash,
+  FloppyDisk,
+  PaperPlaneTilt,
   Eye,
-  EyeOff,
-} from "lucide-react";
+  EyeSlash,
+} from "phosphor-react";
 import InvoicePreview from "../InvoicePreview";
 
 interface InvoiceEditorProps {
@@ -154,7 +154,7 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
                 className="md:hidden"
               >
                 {showPreview ? (
-                  <EyeOff className="h-4 w-4" />
+                  <EyeSlash className="h-4 w-4" />
                 ) : (
                   <Eye className="h-4 w-4" />
                 )}
@@ -163,15 +163,15 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
                 Cancel
               </Button>
               <Button onClick={() => onSave(formData)} variant="outline">
-                <Save className="mr-2 h-4 w-4" />
-                Save Draft
+                <FloppyDisk className="mr-2 h-4 w-4" />
+                FloppyDisk Draft
               </Button>
               <Button
                 onClick={() => onSave({ ...formData, status: "sent" })}
                 className="bg-[#5B34EA] hover:bg-[#4926D1]"
               >
-                <Send className="mr-2 h-4 w-4" />
-                Send Invoice
+                <PaperPlaneTilt className="mr-2 h-4 w-4" />
+                PaperPlaneTilt Invoice
               </Button>
             </div>
           </div>
@@ -253,7 +253,7 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
                           !formData.issueDate && "text-muted-foreground"
                         )}
                       >
-                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        <Calendar className="mr-2 h-4 w-4" />
                         {formData.issueDate ? (
                           format(formData.issueDate, "PPP")
                         ) : (
@@ -285,7 +285,7 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
                           !formData.dueDate && "text-muted-foreground"
                         )}
                       >
-                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        <Calendar className="mr-2 h-4 w-4" />
                         {formData.dueDate ? (
                           format(formData.dueDate, "PPP")
                         ) : (
@@ -376,7 +376,7 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
                       onClick={() => removeLineItem(index)}
                       disabled={formData.lineItems.length === 1}
                     >
-                      <Trash2 className="h-4 w-4" />
+                      <Trash className="h-4 w-4" />
                     </Button>
                   </div>
                 ))}

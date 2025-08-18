@@ -12,14 +12,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   ArrowUpIcon,
   ArrowDownIcon,
-  DollarSign,
+  CurrencyDollar,
   FileText,
   Clock,
-  AlertCircle,
+  Warning,
   Download,
   Plus,
-  Filter,
-} from "lucide-react";
+  Funnel,
+} from "phosphor-react";
 import { cn } from "@/lib/utils";
 import MonthlyRevenueChart from "../MonthlyRevenueChart";
 import InfiniteScrollRecentlyUpdated from "../List/RecentlyUpdated/InfiniteScrollRecentlyUpdated";
@@ -67,7 +67,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
         summary.outstandingAmount + summary.draftAmount
       ),
       description: "All time revenue",
-      icon: DollarSign,
+      icon: CurrencyDollar,
       trend: { value: 12.5, isPositive: true },
       color: "text-green-600",
       bgColor: "bg-green-50",
@@ -91,7 +91,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
       title: "Overdue",
       value: currencyFormat(baseCurrency, summary.overdueAmount),
       description: "Requires attention",
-      icon: AlertCircle,
+      icon: Warning,
       trend: { value: 3.1, isPositive: false },
       color: "text-red-600",
       bgColor: "bg-red-50",
@@ -237,7 +237,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
               <div className="space-y-4">
                 <div className="flex items-center">
                   <div className="w-9 h-9 rounded-lg bg-green-100 flex items-center justify-center">
-                    <DollarSign className="h-5 w-5 text-green-600" />
+                    <CurrencyDollar className="h-5 w-5 text-green-600" />
                   </div>
                   <div className="ml-4 flex-1">
                     <p className="text-sm font-medium">Paid</p>
@@ -278,7 +278,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                 <div className="flex items-center">
                   <div className="w-9 h-9 rounded-lg bg-red-100 flex items-center justify-center">
-                    <AlertCircle className="h-5 w-5 text-red-600" />
+                    <Warning className="h-5 w-5 text-red-600" />
                   </div>
                   <div className="ml-4 flex-1">
                     <p className="text-sm font-medium">Overdue</p>
@@ -357,8 +357,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </CardDescription>
               </div>
               <Button variant="outline" size="sm">
-                <Filter className="mr-2 h-4 w-4" />
-                Filter
+                <Funnel className="mr-2 h-4 w-4" />
+                Funnel
               </Button>
             </div>
           </CardHeader>
