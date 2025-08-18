@@ -84,7 +84,7 @@ export interface InvoiceFilters {
 }
 
 class InvoiceApiService {
-  private baseUrl = "/internal_api/v1";
+  private baseUrl = "/api/v1";
 
   /**
    * Fetch invoices with optional filters and pagination
@@ -104,8 +104,8 @@ class InvoiceApiService {
     const response = await axios.get(url);
 
     return {
-      invoices: response.data.invoices || [],
-      recentlyUpdatedInvoices: response.data.recentlyUpdatedInvoices || [],
+      invoices: (response.data.invoices || []).map((inv: any) => this.transformApiInvoice(inv)),
+      recentlyUpdatedInvoices: (response.data.recently_updated_invoices || response.data.recentlyUpdatedInvoices || []).map((inv: any) => this.transformApiInvoice(inv)),
       summary: response.data.summary || {
         draftAmount: 0,
         outstandingAmount: 0,
@@ -113,7 +113,7 @@ class InvoiceApiService {
         totalAmount: 0,
         currency: "USD",
       },
-      pagy: response.data.pagy || { page: 1, pages: 1, total: 0 },
+      pagy: response.data.pagination_details || response.data.pagy || { page: 1, pages: 1, total: 0 },
     };
   }
 
@@ -267,13 +267,13 @@ class InvoiceApiService {
       id: apiInvoice.id,
       invoiceNumber: apiInvoice.invoiceNumber || apiInvoice.invoice_number,
       client: {
-        id: apiInvoice.client?.id || "",
-        name: apiInvoice.client?.name || "",
+        id: apiInvoice.client?.id || apiInvoice.client_id || "",
+        name: apiInvoice.client?.name || apiInvoice.client_name || "",
         email: apiInvoice.client?.email || "",
         address: formatAddress(apiInvoice.client?.address),
         logo: apiInvoice.client?.logo,
         currency:
-          apiInvoice.client?.clientCurrency || apiInvoice.client?.currency,
+          apiInvoice.client?.clientCurrency || apiInvoice.client?.currency || apiInvoice.currency,
       },
       status: apiInvoice.status,
       issueDate: apiInvoice.issueDate || apiInvoice.issue_date,

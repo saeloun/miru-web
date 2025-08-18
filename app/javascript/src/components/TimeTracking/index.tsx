@@ -21,7 +21,7 @@ import EntryCard from "./EntryCard";
 import EntryForm from "./EntryForm";
 import { ModernTimeEntryForm } from "./ModernTimeEntryForm";
 import Header from "./Header";
-import CalendarSuspense from "./MiruCalendar/CalendarSuspense";
+import ScheduleCalendar from "../ui/schedule-calendar";
 import WeeklyEntries from "./WeeklyEntries";
 
 dayjs.extend(updateLocale);
@@ -39,7 +39,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
     company?.date_format || company?.dateFormat || "MM-DD-YYYY";
 
   const [dayInfo, setDayInfo] = useState<any[]>([]);
-  const [view, setView] = useState<string>("day"); // Default to day view
+  const [view, setView] = useState<string>("week"); // Default to week view
   const [newEntryView, setNewEntryView] = useState<boolean>(false);
   const [newRowView, setNewRowView] = useState<boolean>(false);
   const [selectDate, setSelectDate] = useState<number>(dayjs().weekday());
@@ -76,8 +76,8 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
   useEffect(() => {
     sendGAPageView();
     fetchTimeTrackingData();
-    // Always default to day view
-    setView("day");
+    // Always default to week view
+    setView("week");
   }, []);
 
   const fetchTimeTrackingData = async () => {
@@ -467,7 +467,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
                 Time Tracking
               </h1>
               <div className="flex gap-1 p-1 bg-muted/50 rounded-lg backdrop-blur-sm border border-border">
-                {["day", "week", "month"].map((item, index) => (
+                {["week", "month"].map((item, index) => (
                   <button
                     key={index}
                     className={cn(
@@ -498,11 +498,26 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
           )}
         </div>
         <div>
-          {/* Use modern Miru calendar with Suspense */}
+          {/* Use calendar view */}
           {view === "month" ? (
-            <CalendarSuspense
-              selectedEmployeeId={selectedEmployeeId}
-              onDateSelect={setSelectedFullDate}
+            <ScheduleCalendar
+              events={Object.entries(entryList).flatMap(([date, entries]: [string, any[]]) => 
+                entries.map(entry => ({
+                  id: entry.id,
+                  title: `${entry.project_name}: ${minToHHMM(entry.duration)}`,
+                  start: new Date(`${date}T09:00:00`),
+                  end: new Date(`${date}T${17 + Math.floor(entry.duration / 60)}:00:00`),
+                  color: '#5B34EA'
+                }))
+              )}
+              onEventClick={(event) => {
+                setEditEntryId(event.id);
+                setNewEntryView(true);
+              }}
+              onDateClick={(date) => {
+                setSelectedFullDate(dayjs(date).format(dateFormat));
+                setNewEntryView(true);
+              }}
             />
           ) : (
             isDesktop && (

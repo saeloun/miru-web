@@ -1,6 +1,19 @@
 # frozen_string_literal: true
 
 class LeavePolicy < ApplicationPolicy
+  class Scope < ApplicationPolicy
+    attr_reader :user, :scope
+
+    def initialize(user, scope)
+      @user = user
+      @scope = scope
+    end
+
+    def resolve
+      scope.where(company_id: user.current_workspace_id)
+    end
+  end
+
   def index?
     has_owner_or_admin_role?
   end

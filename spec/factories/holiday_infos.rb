@@ -15,6 +15,7 @@
 #
 # Indexes
 #
+#  index_holiday_infos_on_date          (date)
 #  index_holiday_infos_on_discarded_at  (discarded_at)
 #  index_holiday_infos_on_holiday_id    (holiday_id)
 #

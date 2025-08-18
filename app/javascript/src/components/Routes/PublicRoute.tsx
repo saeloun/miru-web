@@ -12,7 +12,7 @@ interface PublicRouteProps {
 const PublicRoute: React.FC<PublicRouteProps> = ({
   children,
   restricted = false,
-  redirectTo = Paths.TIME_TRACKING,
+  redirectTo = Paths.DASHBOARD,
 }) => {
   const { isLoggedIn } = useAuthState();
 

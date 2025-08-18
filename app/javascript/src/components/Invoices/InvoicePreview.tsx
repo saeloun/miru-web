@@ -94,8 +94,10 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
       {!isPrintMode && (
         <div className="mb-6 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Badge className={getStatusColor(invoice.status)}>
-              {invoice.status.charAt(0).toUpperCase() + invoice.status.slice(1)}
+            <Badge className={getStatusColor(invoice.status || 'draft')}>
+              {invoice.status 
+                ? invoice.status.charAt(0).toUpperCase() + invoice.status.slice(1)
+                : 'Draft'}
             </Badge>
             <span className="text-sm text-muted-foreground">
               Invoice #{invoice.invoiceNumber}
@@ -247,7 +249,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
                 <span>Total:</span>
                 <span>{formatCurrency(calculateTotal())}</span>
               </div>
-              {invoice.status !== "paid" && invoice.status !== "draft" && (
+              {invoice.status && invoice.status !== "paid" && invoice.status !== "draft" && (
                 <div className="flex justify-between text-sm text-red-600 font-medium">
                   <span>Amount Due:</span>
                   <span>

@@ -25,6 +25,7 @@ interface MonthlyRevenueChartProps {
   chartType?: "area" | "bar";
   height?: number;
   onChartTypeChange?: (type: "area" | "bar") => void;
+  monthlyData?: MonthlyRevenueData[];
 }
 
 const MonthlyRevenueChart: React.FC<MonthlyRevenueChartProps> = ({
@@ -32,36 +33,62 @@ const MonthlyRevenueChart: React.FC<MonthlyRevenueChartProps> = ({
   chartType = "area",
   height = 300,
   onChartTypeChange,
+  monthlyData,
 }) => {
   const [chartData, setChartData] = useState<MonthlyRevenueData[]>([]);
   const [totalRevenue, setTotalRevenue] = useState(0);
   const [averageRevenue, setAverageRevenue] = useState(0);
   const [trend, setTrend] = useState<number>(0);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [currency, setCurrency] = useState(baseCurrency);
 
   useEffect(() => {
-    fetchMonthlyRevenue();
-  }, []);
+    if (monthlyData) {
+      processMonthlyData(monthlyData);
+    } else {
+      generateMockData();
+    }
+  }, [monthlyData]);
 
-  const fetchMonthlyRevenue = async () => {
+  const generateMockData = () => {
+    // Generate mock data for the last 12 months
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const currentMonth = new Date().getMonth();
+    const mockData: MonthlyRevenueData[] = [];
+    
+    for (let i = 0; i < 12; i++) {
+      const monthIndex = (currentMonth - 11 + i + 12) % 12;
+      mockData.push({
+        month: months[monthIndex],
+        revenue: 0,
+        invoiceCount: 0
+      });
+    }
+    
+    processMonthlyData(mockData);
+  };
+
+  const processMonthlyData = (inputData: MonthlyRevenueData[]) => {
     try {
-      setIsLoading(true);
-      const response = await invoicesApi.getMonthlyRevenue();
-      const data = response.data;
+      setIsLoading(false);
 
-      // Set the chart data from API response
-      const formattedData: MonthlyRevenueData[] = data.chart_data.map(item => ({
+      // Set the chart data
+      const formattedData: MonthlyRevenueData[] = inputData.map(item => ({
         month: item.month,
         revenue: item.revenue,
-        invoiceCount: item.invoice_count,
+        invoiceCount: item.invoiceCount || item.invoice_count,
       }));
 
       setChartData(formattedData);
-      setTotalRevenue(data.statistics.total_revenue);
-      setAverageRevenue(data.statistics.average_revenue);
-      setTrend(data.statistics.trend);
-      setCurrency(data.statistics.currency || baseCurrency);
+      
+      // Calculate statistics from the data
+      const total = formattedData.reduce((sum, item) => sum + item.revenue, 0);
+      const avg = formattedData.length > 0 ? total / formattedData.length : 0;
+      
+      setTotalRevenue(total);
+      setAverageRevenue(avg);
+      setTrend(0); // Trend calculation would require historical data
+      setCurrency(baseCurrency);
       setIsLoading(false);
     } catch (error) {
       console.error("Error fetching monthly revenue:", error);

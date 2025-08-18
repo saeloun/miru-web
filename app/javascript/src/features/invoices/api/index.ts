@@ -64,13 +64,13 @@ export interface InvoiceFilters {
 
 // API endpoints
 const ENDPOINTS = {
-  invoices: "/internal_api/v1/invoices",
-  summary: "/internal_api/v1/invoices/summary",
-  recentlyUpdated: "/internal_api/v1/invoices/recently_updated",
-  monthlyRevenue: "/internal_api/v1/invoices/analytics/monthly_revenue",
-  bulkActions: "/internal_api/v1/invoices/bulk_actions",
-  send: (id: string) => `/internal_api/v1/invoices/${id}/send`,
-  download: (id: string) => `/internal_api/v1/invoices/${id}/download`,
+  invoices: "/api/v1/invoices",
+  summary: "/api/v1/invoices/summary",
+  recentlyUpdated: "/api/v1/invoices/recently_updated",
+  monthlyRevenue: "/api/v1/invoices/analytics/monthly_revenue",
+  bulkActions: "/api/v1/invoices/bulk_actions",
+  send: (id: string) => `/api/v1/invoices/${id}/send`,
+  download: (id: string) => `/api/v1/invoices/${id}/download`,
 } as const;
 
 class InvoicesAPI {

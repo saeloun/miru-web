@@ -61,13 +61,15 @@ const getReportData = async ({
           fromDate = dayjs(customDate.from).format("DD-MM-YYYY");
           toDate = dayjs(customDate.to).format("DD-MM-YYYY");
         } else {
-          fromDate = "01-01-2022";
+          // Default to showing data from the beginning of current year
+          fromDate = dayjs().startOf('year').format("DD-MM-YYYY");
           toDate = dayjs().format("DD-MM-YYYY");
         }
         break;
 
       default:
-        fromDate = "01-01-2022";
+        // Default to showing data from the beginning of current year
+        fromDate = dayjs().startOf('year').format("DD-MM-YYYY");
         toDate = dayjs().format("DD-MM-YYYY");
         break;
     }

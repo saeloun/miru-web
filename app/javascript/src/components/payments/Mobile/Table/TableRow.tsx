@@ -34,9 +34,11 @@ const TableRow = ({ baseCurrency, payment }: TableRowProps) => {
         </td>
       </tr>
       <tr className="w-full border-none">
-        <h3 className="pt-1.5 pb-1 font-manrope text-xs font-medium leading-4 text-miru-dark-purple-400">
-          {transactionType}
-        </h3>
+        <td className="border-none">
+          <h3 className="pt-1.5 pb-1 font-manrope text-xs font-medium leading-4 text-miru-dark-purple-400">
+            {transactionType}
+          </h3>
+        </td>
       </tr>
     </>
   );
