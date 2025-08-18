@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, Check } from "lucide-react";
+import { CaretDown, Check } from "phosphor-react";
 import { cn } from "../../lib/utils";
 
 interface AnimatedSelectProps {
@@ -150,7 +150,7 @@ const AnimatedSelect: React.FC<AnimatedSelectProps> = ({
           transition={{ type: "spring", stiffness: 300, damping: 20 }}
           className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2"
         >
-          <ChevronDown className="h-4 w-4 text-muted-foreground" />
+          <CaretDown className="h-4 w-4 text-muted-foreground" />
         </motion.span>
       </motion.button>
       <AnimatePresence>

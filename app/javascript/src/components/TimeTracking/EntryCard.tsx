@@ -1,14 +1,14 @@
 import React from "react";
 import { minToHHMM } from "helpers";
 import {
-  Trash2,
-  Edit3,
+  Trash,
+  PencilSimple,
   Copy,
   Clock,
   Briefcase,
   FileText,
-  DollarSign,
-} from "lucide-react";
+  CurrencyDollar,
+} from "phosphor-react";
 import { Badge } from "../ui/badge";
 import { Card, CardContent } from "../ui/card";
 import { Button } from "../ui/button";
@@ -61,7 +61,7 @@ const EntryCard: React.FC<props> = ({
             variant="default"
             className="bg-amber-100 text-amber-800 hover:bg-amber-200 border-amber-300"
           >
-            <DollarSign className="w-3 h-3 mr-1" />
+            <CurrencyDollar className="w-3 h-3 mr-1" />
             UNBILLED
           </Badge>
         );
@@ -81,7 +81,7 @@ const EntryCard: React.FC<props> = ({
             variant="default"
             className="bg-green-100 text-green-800 hover:bg-green-200 border-green-300"
           >
-            <DollarSign className="w-3 h-3 mr-1" />
+            <CurrencyDollar className="w-3 h-3 mr-1" />
             BILLED
           </Badge>
         );
@@ -179,7 +179,7 @@ const EntryCard: React.FC<props> = ({
                     setEditEntryId(id);
                   }}
                 >
-                  <Edit3 className="h-4 w-4" />
+                  <PencilSimple className="h-4 w-4" />
                 </Button>
                 <Button
                   variant="ghost"
@@ -190,7 +190,7 @@ const EntryCard: React.FC<props> = ({
                     handleDeleteEntry(id);
                   }}
                 >
-                  <Trash2 className="h-4 w-4" />
+                  <Trash className="h-4 w-4" />
                 </Button>
               </div>
             )}

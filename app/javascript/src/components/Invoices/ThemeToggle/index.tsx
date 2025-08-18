@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
-import { Palette, X, ChevronRight, Monitor, Sparkles } from "lucide-react";
+import { Palette, X, CaretRight, Desktop, Sparkles } from "phosphor-react";
 
 interface ThemeToggleProps {
   currentTheme: "classic" | "admin";
@@ -30,7 +30,7 @@ const ThemeToggle: React.FC<ThemeToggleProps> = ({
       id: "classic",
       name: "Classic",
       description: "Traditional Miru interface",
-      icon: Monitor,
+      icon: Desktop,
       preview: "bg-gradient-to-br from-blue-50 to-indigo-100",
     },
     {
@@ -68,7 +68,7 @@ const ThemeToggle: React.FC<ThemeToggleProps> = ({
         >
           <Palette className="h-5 w-5 text-gray-600 group-hover:text-[#5B34EA]" />
           <span className="text-sm font-medium text-gray-700">Theme</span>
-          <ChevronRight className="h-4 w-4 text-gray-400 group-hover:translate-x-0.5 transition-transform" />
+          <CaretRight className="h-4 w-4 text-gray-400 group-hover:translate-x-0.5 transition-transform" />
         </button>
       </div>
     );

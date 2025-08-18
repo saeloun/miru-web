@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { currencyFormat } from "helpers";
 import paymentsApi from "apis/payments/payments";
 import StatusBadge from "components/ui/status-badge";
-import { CreditCard, Calendar, DollarSign, CheckCircle } from "lucide-react";
+import { CreditCard, Calendar, CurrencyDollar, CheckCircle } from "phosphor-react";
 
 interface PaymentDetailsProps {
   invoice: any;
@@ -82,7 +82,7 @@ const PaymentDetails: React.FC<PaymentDetailsProps> = ({ invoice }) => {
                   </div>
 
                   <div className="flex items-center gap-2">
-                    <DollarSign className="h-4 w-4 text-gray-400" />
+                    <CurrencyDollar className="h-4 w-4 text-gray-400" />
                     <span className="text-gray-600">Amount:</span>
                     <span className="font-semibold text-gray-900">
                       {currencyFormat(invoice.currency, payment.amount)}

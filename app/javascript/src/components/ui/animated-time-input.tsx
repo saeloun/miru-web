@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Clock } from "lucide-react";
+import { Clock } from "phosphor-react";
 import { CaretDownIcon } from "miruIcons";
 import { cn } from "../../lib/utils";
 

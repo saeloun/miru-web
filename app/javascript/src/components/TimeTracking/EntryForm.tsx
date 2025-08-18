@@ -12,7 +12,7 @@ import {
   useOutsideClick,
   validateTimesheetEntry,
 } from "helpers";
-import { Calendar } from "lucide-react";
+import { Calendar } from "phosphor-react";
 import { TimeInput } from "../ui/time-input";
 import { Toastr } from "../ui/toastr";
 import { Textarea } from "../ui/textarea";

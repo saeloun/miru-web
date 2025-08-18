@@ -10,7 +10,7 @@ import { Switch } from "components/ui/switch";
 import { Label } from "components/ui/label";
 import { useProfileContext } from "context/Profile/ProfileContext";
 import { useUserContext } from "context/UserContext";
-import { Bell } from "lucide-react";
+import { Bell } from "phosphor-react";
 import { useParams } from "react-router-dom";
 
 const NotificationPreferences = () => {

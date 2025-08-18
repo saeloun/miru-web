@@ -1,5 +1,5 @@
 import React from "react";
-import { Users, ChevronDown, ChevronUp, Search, X, Check } from "lucide-react";
+import { Users, CaretDown, CaretUp, MagnifyingGlass, X, Check } from "phosphor-react";
 
 import { cn } from "../../../lib/utils";
 import {
@@ -62,9 +62,9 @@ const EnhancedClientFilter = ({
               </Badge>
             )}
             {isOpen ? (
-              <ChevronUp className="h-4 w-4 text-gray-400" />
+              <CaretUp className="h-4 w-4 text-gray-400" />
             ) : (
-              <ChevronDown className="h-4 w-4 text-gray-400" />
+              <CaretDown className="h-4 w-4 text-gray-400" />
             )}
           </div>
         </div>
@@ -72,11 +72,11 @@ const EnhancedClientFilter = ({
 
       <CollapsibleContent className="px-4 pb-3">
         <div className="mt-3 space-y-3">
-          {/* Search Input */}
+          {/* MagnifyingGlass Input */}
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
             <Input
-              placeholder="Search clients..."
+              placeholder="Search Clients..."
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
               className="pl-9 pr-9 h-9 text-sm border-gray-200 focus:border-[#5B34EA] focus:ring-[#5B34EA]"

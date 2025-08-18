@@ -3,7 +3,7 @@ import { Card, CardContent } from "../ui/card";
 import { Badge } from "../ui/badge";
 import { Separator } from "../ui/separator";
 import { Button } from "../ui/button";
-import { Download, Send, Eye, MoreHorizontal } from "lucide-react";
+import { Download, PaperPlaneTilt, Eye, DotsThree } from "phosphor-react";
 import { cn } from "../../lib/utils";
 
 import { Invoice } from "../../services/invoiceApi";
@@ -113,11 +113,11 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
               Download
             </Button>
             <Button size="sm">
-              <Send className="h-4 w-4 mr-2" />
-              Send
+              <PaperPlaneTilt className="h-4 w-4 mr-2" />
+              PaperPlaneTilt
             </Button>
             <Button variant="outline" size="sm">
-              <MoreHorizontal className="h-4 w-4" />
+              <DotsThree className="h-4 w-4" />
             </Button>
           </div>
         </div>

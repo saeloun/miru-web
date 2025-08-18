@@ -4,7 +4,7 @@ import HolidayModal from "common/HolidayModal";
 import CustomYearPicker from "common/CustomYearPicker";
 import dayjs from "dayjs";
 import { Tooltip } from "StyledComponents";
-import { Calendar } from "lucide-react";
+import { Calendar } from "phosphor-react";
 
 import TableHeader from "./TableHeader";
 import TableRow from "./TableRow";

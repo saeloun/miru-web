@@ -1,5 +1,5 @@
 import React from "react";
-import { MapPinIcon, Building2, Globe, Upload, X } from "lucide-react";
+import { MapPinIcon, Buildings, Globe, Upload, X } from "phosphor-react";
 import PhoneInput from "react-phone-number-input";
 import flags from "react-phone-number-input/flags";
 import "react-phone-number-input/style.css";
@@ -73,7 +73,7 @@ export const ModernStaticPage = ({
   <div className="max-w-6xl mx-auto px-4 py-6 space-y-4">
     {/* Basic Details Section */}
     <FormSection>
-      <SectionHeader icon={Building2} title="Basic Details" />
+      <SectionHeader icon={Buildings} title="Basic Details" />
       <div className="grid md:grid-cols-2 gap-4">
         {/* Logo Upload */}
         <div className="md:col-span-2">

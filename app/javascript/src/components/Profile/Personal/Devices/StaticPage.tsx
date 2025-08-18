@@ -1,7 +1,7 @@
 import React from "react";
 
 import EmptyStates from "common/EmptyStates";
-import { Monitor, Smartphone, Laptop } from "lucide-react";
+import { Desktop, DeviceMobile, Laptop } from "phosphor-react";
 import { Card, CardContent, CardHeader, CardTitle } from "components/ui/card";
 import { Badge } from "components/ui/badge";
 
@@ -9,12 +9,12 @@ const StaticPage = ({ devices }) => {
   const getDeviceIcon = (deviceType: string) => {
     const type = deviceType?.toLowerCase() || "";
     if (type.includes("phone") || type.includes("mobile")) {
-      return <Smartphone className="h-5 w-5" />;
+      return <DeviceMobile className="h-5 w-5" />;
     }
     if (type.includes("laptop") || type.includes("macbook")) {
       return <Laptop className="h-5 w-5" />;
     }
-    return <Monitor className="h-5 w-5" />;
+    return <Desktop className="h-5 w-5" />;
   };
 
   const DeviceDetails = ({ device, index }) => {

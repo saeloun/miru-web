@@ -1,5 +1,5 @@
 import React from "react";
-import { Calendar, ChevronDown, ChevronUp } from "lucide-react";
+import { Calendar, CaretDown, CaretUp } from "phosphor-react";
 
 import CustomDateRangeWithInput from "common/CustomDateRangeWIthInput";
 import { cn } from "../../../lib/utils";
@@ -67,9 +67,9 @@ const EnhancedDateRangeFilter = ({
               </Badge>
             )}
             {isOpen ? (
-              <ChevronUp className="h-4 w-4 text-gray-400" />
+              <CaretUp className="h-4 w-4 text-gray-400" />
             ) : (
-              <ChevronDown className="h-4 w-4 text-gray-400" />
+              <CaretDown className="h-4 w-4 text-gray-400" />
             )}
           </div>
         </div>

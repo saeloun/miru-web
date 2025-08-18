@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Add Entry Fix</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .calendar {
+            border: 1px solid #e5e5e5;
+            padding: 20px;
+            margin: 20px 0;
+            background: #f9fafb;
+        }
+        .day-entries {
+            margin-top: 20px;
+            padding: 20px;
+            background: white;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+        }
+        .entry-form {
+            background: #f0f9ff;
+            padding: 15px;
+            border: 2px solid #3b82f6;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+        .button {
+            padding: 8px 16px;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .button:hover {
+            background: #2563eb;
+        }
+        .hidden {
+            display: none;
+        }
+        .success {
+            color: green;
+            font-weight: bold;
+            padding: 10px;
+            background: #f0fdf4;
+            border: 1px solid #86efac;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Testing Add Entry Functionality</h1>
+    
+    <div class="calendar">
+        <h2>Calendar View (Month)</h2>
+        <p>Click on a day to see entries...</p>
+        <button class="button" onclick="selectDay()">📅 Select Today</button>
+    </div>
+    
+    <div id="dayEntries" class="day-entries hidden">
+        <h3 id="dayTitle">Entries for Selected Day</h3>
+        <button id="addEntryBtn" class="button" onclick="showAddForm()">+ Add Entry</button>
+        
+        <div id="entryForm" class="entry-form hidden">
+            <h4>New Entry Form</h4>
+            <p>Duration: <input type="text" value="02:30" /></p>
+            <p>Project: <input type="text" value="Test Project" /></p>
+            <button class="button" onclick="saveEntry()">Save Entry</button>
+            <button class="button" onclick="cancelEntry()">Cancel</button>
+        </div>
+        
+        <div id="successMsg" class="hidden success">
+            ✅ Entry added successfully!
+        </div>
+    </div>
+    
+    <script>
+        let newEntryView = false;
+        
+        function selectDay() {
+            document.getElementById('dayEntries').classList.remove('hidden');
+            document.getElementById('dayTitle').textContent = 'Entries for ' + new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        }
+        
+        function showAddForm() {
+            newEntryView = true;
+            document.getElementById('entryForm').classList.remove('hidden');
+            document.getElementById('addEntryBtn').style.display = 'none';
+            console.log('✅ Add Entry button clicked - Form shown');
+        }
+        
+        function saveEntry() {
+            document.getElementById('entryForm').classList.add('hidden');
+            document.getElementById('successMsg').classList.remove('hidden');
+            document.getElementById('addEntryBtn').style.display = 'inline-block';
+            newEntryView = false;
+            console.log('✅ Entry saved successfully');
+            
+            setTimeout(() => {
+                document.getElementById('successMsg').classList.add('hidden');
+            }, 3000);
+        }
+        
+        function cancelEntry() {
+            newEntryView = false;
+            document.getElementById('entryForm').classList.add('hidden');
+            document.getElementById('addEntryBtn').style.display = 'inline-block';
+        }
+    </script>
+</body>
+</html>

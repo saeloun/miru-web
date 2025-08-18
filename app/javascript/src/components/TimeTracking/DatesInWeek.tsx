@@ -1,7 +1,7 @@
 import React from "react";
 import { cn } from "../../lib/utils";
 import { Badge } from "../ui/badge";
-import { Calendar } from "lucide-react";
+import { Calendar } from "phosphor-react";
 
 const DatesInWeek: React.FC<Iprops> = ({
   view,

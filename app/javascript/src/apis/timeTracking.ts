@@ -2,27 +2,62 @@ import axios from "./api";
 
 const path = "/timesheet_entry";
 
-// For now, let's just get timesheet entries
-// We'll need to update this to fetch clients and projects separately
+// Fetch all required data for time tracking
 const get = async () => {
   try {
-    const response = await axios.get(path);
-    // Transform the response to match what the component expects
+    // Fetch all data in parallel
+    const [entriesResponse, teamResponse, projectsResponse, clientsResponse] = await Promise.all([
+      axios.get(path).catch(() => ({ data: { entries: [] } })),
+      axios.get("/team").catch(() => ({ data: { combinedDetails: [] } })),
+      axios.get("/projects").catch(() => ({ data: { projects: [] } })),
+      axios.get("/clients").catch(() => ({ data: { client_details: [] } }))
+    ]);
+
+    // Transform team members to the format expected by the component
+    const employees = (teamResponse.data.combinedDetails || []).map(member => ({
+      id: member.id,
+      first_name: member.firstName,
+      last_name: member.lastName,
+      full_name: member.name || `${member.firstName} ${member.lastName}`
+    }));
+
+    // Transform projects to the format expected by the component
+    const projects = (projectsResponse.data.projects || []).reduce((acc, project) => {
+      const clientId = project.client_id || project.clientId;
+      if (!acc[clientId]) {
+        acc[clientId] = [];
+      }
+      acc[clientId].push({
+        id: project.id,
+        name: project.name,
+        client_id: clientId,
+        billable: project.billable
+      });
+      return acc;
+    }, {});
+
+    // Transform clients to the format expected by the component
+    const clients = (clientsResponse.data.client_details || []).reduce((acc, client) => {
+      acc[client.id] = client.name;
+      return acc;
+    }, {});
+
     return {
       data: {
-        entries: response.data.entries || [],
-        clients: [],  // Will need to fetch separately
-        projects: [], // Will need to fetch separately
-        employees: [] // Will need to fetch separately
+        entries: entriesResponse.data.entries || [],
+        clients,
+        projects,
+        employees
       }
     };
   } catch (error) {
-    // If timesheet_entry fails, return empty data
+    console.error("Error fetching time tracking data:", error);
+    // If any request fails, return empty data
     return {
       data: {
         entries: [],
-        clients: [],
-        projects: [],
+        clients: {},
+        projects: {},
         employees: []
       }
     };

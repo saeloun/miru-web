@@ -31,17 +31,17 @@ import {
 import { Checkbox } from "../ui/checkbox";
 import {
   Plus,
-  MoreHorizontal,
+  DotsThree,
   Download,
   Eye,
   CreditCard,
-  DollarSign,
+  CurrencyDollar,
   Calendar,
   ArrowUp,
   ArrowDown,
   CaretUp,
   CaretDown,
-} from "lucide-react";
+} from "phosphor-react";
 import { currencyFormat } from "../../helpers/currency";
 import { useUserContext } from "../../context/UserContext";
 import api from "../../services/api";
@@ -104,7 +104,7 @@ const PaymentsTable: React.FC = () => {
       case "check":
       case "cash":
       default:
-        return <DollarSign className="h-4 w-4 text-gray-500" />;
+        return <CurrencyDollar className="h-4 w-4 text-gray-500" />;
     }
   };
 
@@ -260,7 +260,7 @@ const PaymentsTable: React.FC = () => {
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="h-8 w-8 p-0">
                 <span className="sr-only">Open menu</span>
-                <MoreHorizontal className="h-4 w-4" />
+                <DotsThree className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
@@ -344,7 +344,7 @@ const PaymentsTable: React.FC = () => {
         <Card className="border-gray-200">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Collected</CardTitle>
-            <DollarSign className="h-4 w-4 text-gray-400" />
+            <CurrencyDollar className="h-4 w-4 text-gray-400" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
@@ -357,7 +357,7 @@ const PaymentsTable: React.FC = () => {
         <Card className="border-gray-200">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Average Payment</CardTitle>
-            <DollarSign className="h-4 w-4 text-gray-400" />
+            <CurrencyDollar className="h-4 w-4 text-gray-400" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">

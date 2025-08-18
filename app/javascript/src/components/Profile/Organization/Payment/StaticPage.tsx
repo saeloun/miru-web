@@ -12,7 +12,7 @@ import {
   CardTitle,
 } from "components/ui/card";
 import { Button } from "components/ui/button";
-import { CreditCard } from "lucide-react";
+import { CreditCard } from "phosphor-react";
 
 import EditHeader from "../../Common/EditHeader";
 

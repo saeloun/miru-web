@@ -1,5 +1,5 @@
 import React from "react";
-import { LucideIcon } from "lucide-react";
+import { Icon } from "phosphor-react";
 import { Card, CardContent, CardHeader, CardTitle } from "./card";
 import { cn } from "../../lib/utils";
 
@@ -7,7 +7,7 @@ interface MetricCardProps {
   title: string;
   value: string | number;
   description?: string;
-  icon?: LucideIcon;
+  icon?: Icon;
   trend?: {
     value: number;
     isPositive: boolean;

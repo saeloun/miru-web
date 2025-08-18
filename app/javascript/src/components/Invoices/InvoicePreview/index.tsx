@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { currencyFormat } from "helpers/currency";
 import { format } from "date-fns";
-import { Download, Send, Printer, Share2, Eye } from "lucide-react";
+import { Download, PaperPlaneTilt, Printer, Share2, Eye } from "phosphor-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -139,8 +139,8 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
                 className="bg-[#5B34EA] hover:bg-[#4926D1]"
                 onClick={() => onAction?.("send")}
               >
-                <Send className="h-4 w-4 mr-2" />
-                Send Invoice
+                <PaperPlaneTilt className="h-4 w-4 mr-2" />
+                PaperPlaneTilt Invoice
               </Button>
             )}
           </div>

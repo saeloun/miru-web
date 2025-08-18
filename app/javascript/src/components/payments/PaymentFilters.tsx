@@ -1,5 +1,5 @@
 import React from "react";
-import { X, Filter } from "lucide-react";
+import { X, Funnel } from "phosphor-react";
 import { Button } from "../ui/button";
 import {
   Select,
@@ -58,7 +58,7 @@ const PaymentFilters: React.FC<PaymentFiltersProps> = ({
     <Card className="absolute right-0 top-12 z-50 w-80 p-4 shadow-lg">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <Filter className="h-4 w-4" />
+          <Funnel className="h-4 w-4" />
           <h3 className="font-semibold">Filters</h3>
           {activeFiltersCount > 0 && (
             <Badge variant="secondary">{activeFiltersCount}</Badge>
@@ -75,7 +75,7 @@ const PaymentFilters: React.FC<PaymentFiltersProps> = ({
       </div>
 
       <div className="space-y-4">
-        {/* Status Filter */}
+        {/* Status Funnel */}
         <div className="space-y-2">
           <Label htmlFor="status">Status</Label>
           <Select
@@ -97,7 +97,7 @@ const PaymentFilters: React.FC<PaymentFiltersProps> = ({
           </Select>
         </div>
 
-        {/* Client Filter */}
+        {/* Client Funnel */}
         <div className="space-y-2">
           <Label htmlFor="client">Client</Label>
           <Select
@@ -120,7 +120,7 @@ const PaymentFilters: React.FC<PaymentFiltersProps> = ({
           </Select>
         </div>
 
-        {/* Payment Type Filter */}
+        {/* Payment Type Funnel */}
         <div className="space-y-2">
           <Label htmlFor="paymentType">Payment Type</Label>
           <Select
@@ -146,7 +146,7 @@ const PaymentFilters: React.FC<PaymentFiltersProps> = ({
           </Select>
         </div>
 
-        {/* Date Range Filter */}
+        {/* Date Range Funnel */}
         <div className="space-y-2">
           <Label>Date Range</Label>
           <div className="flex gap-2">

@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Calendar } from "lucide-react";
+import { Calendar } from "phosphor-react";
 import { format } from "date-fns";
 import { cn } from "../../lib/utils";
 import { useOutsideClick } from "helpers";

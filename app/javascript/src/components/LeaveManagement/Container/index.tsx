@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 import { useUserContext } from "context/UserContext";
 import { minToHHMM } from "helpers";
-import { X } from "lucide-react";
+import { X } from "phosphor-react";
 import { Card, CardContent, CardHeader, CardTitle } from "../../ui/card";
 import ScheduleCalendar from "../../ui/schedule-calendar";
 import { useCalendarData } from "../../../hooks/useCalendarData";

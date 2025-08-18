@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 
 import timesheetEntryApi from "apis/timesheet-entry";
 import { minFromHHMM, minToHHMM, validateTimesheetEntry } from "helpers";
-import { Edit2 } from "lucide-react";
+import { PencilSimple } from "phosphor-react";
 import { TimeInput } from "../ui/time-input";
 import { Toastr } from "../ui/toastr";
 import { Checkbox } from "../ui/checkbox";
@@ -235,7 +235,7 @@ const WeeklyEntriesCard = ({
                 if (!isWeeklyEditing) setProjectSelected(false);
               }}
             >
-              <Edit2 className="h-4 w-4" />
+              <PencilSimple className="h-4 w-4" />
             </Button>
           </div>
         </div>

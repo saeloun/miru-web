@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { X, Filter, RotateCcw } from "lucide-react";
+import { X, Funnel, ArrowCounterClockwise } from "phosphor-react";
 import dayjs from "dayjs";
 
 import { useEntry } from "components/Reports/context/EntryContext";
@@ -327,7 +327,7 @@ const EnhancedFilterSidebar = ({
           <div className="flex items-center justify-between">
             <SheetTitle className="flex items-center gap-2 text-lg font-semibold text-gray-900">
               <div className="p-2 bg-[#5B34EA]/10 rounded-lg">
-                <Filter className="h-4 w-4 text-[#5B34EA]" />
+                <Funnel className="h-4 w-4 text-[#5B34EA]" />
               </div>
               <span>Filters</span>
               {activeFilterCount > 0 && (
@@ -412,7 +412,7 @@ const EnhancedFilterSidebar = ({
               onClick={handleReset}
               className="flex-1 font-medium border-gray-200 hover:bg-gray-50"
             >
-              <RotateCcw className="h-4 w-4 mr-2" />
+              <ArrowCounterClockwise className="h-4 w-4 mr-2" />
               Reset
             </Button>
             <Button

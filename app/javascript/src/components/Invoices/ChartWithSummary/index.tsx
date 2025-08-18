@@ -183,58 +183,24 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
 
   return (
     <div className="mt-6 mb-8">
-      {/* Summary Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        {summaryItems.map(item => (
-          <button
-            key={item.label}
-            onClick={item.onClick}
-            className={`${item.bgClass} rounded-lg p-4 text-left transition-all duration-200 border border-gray-200 hover:shadow-sm`}
-          >
-            <div className="flex justify-between items-start">
-              <div className="flex-1">
-                <p className="text-xs text-gray-500 uppercase tracking-wider mb-2 font-medium">
-                  {item.label}
-                </p>
-                <p className={`text-2xl font-bold ${item.colorClass}`}>
-                  {currencyFormat(baseCurrency, item.value)}
-                </p>
-              </div>
-              <svg
-                className="w-4 h-4 text-gray-400 mt-1"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 5l7 7-7 7"
-                />
-              </svg>
-            </div>
-          </button>
-        ))}
-      </div>
-
-      {/* Revenue Chart - Full Width with Beautiful Gradient */}
-      <div className="w-full">
-        <div className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-white to-gray-50 rounded-xl overflow-hidden">
-          <div className="border-b border-gray-100 p-6 bg-white/50 backdrop-blur-sm">
+      {/* Main container with chart (70%) and stats (30%) */}
+      <div className="flex gap-4">
+        {/* Revenue Chart - 70% width */}
+        <div className="flex-1" style={{ flex: '0 0 70%' }}>
+        <div className="border shadow-lg hover:shadow-xl transition-all duration-300 bg-white rounded-xl overflow-hidden">
+          <div className="border-b border-gray-200 p-5 bg-gray-50">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs font-semibold text-indigo-600 uppercase tracking-wider mb-1">Revenue Analytics</p>
-                <h3 className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
+                <h3 className="text-xl font-bold text-gray-900">
                   Yearly Revenue
                 </h3>
-                <p className="text-sm text-gray-600 font-medium mt-1">
-                  Monthly revenue breakdown with detailed insights
+                <p className="text-sm text-gray-600 mt-1">
+                  Monthly revenue breakdown
                 </p>
               </div>
               <div className="flex items-center gap-3">
-                <div className="flex items-center gap-2 bg-white/80 px-4 py-2 rounded-lg">
-                  <TrendUp className={`w-5 h-5 ${growthRate > 0 ? 'text-green-600' : 'text-red-600'}`} />
+                <div className="flex items-center gap-2 bg-white px-3 py-2 rounded-lg">
+                  <TrendUp className={`w-4 h-4 ${growthRate > 0 ? 'text-green-600' : 'text-red-600'}`} />
                   <span className={`text-sm font-semibold ${growthRate > 0 ? 'text-green-600' : 'text-red-600'}`}>
                     {growthRate > 0 ? '+' : ''}{(typeof growthRate === 'number' ? growthRate : 0).toFixed(1)}%
                   </span>
@@ -244,8 +210,8 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
             </div>
           </div>
           
-          <div className="p-6">
-            <div className="h-[400px]">
+          <div className="p-5">
+            <div className="h-[320px]">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={revenueData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                   <defs>
@@ -278,16 +244,16 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
                   />
                   <XAxis 
                     dataKey="month" 
-                    tick={{ fill: '#6b7280', fontSize: 11, fontWeight: 500 }}
+                    tick={{ fill: '#6b7280', fontSize: 10, fontWeight: 500 }}
                     axisLine={false}
                     tickLine={false}
-                    tickMargin={12}
+                    tickMargin={10}
                   />
                   <YAxis 
-                    tick={{ fill: '#6b7280', fontSize: 11, fontWeight: 500 }}
+                    tick={{ fill: '#6b7280', fontSize: 10, fontWeight: 500 }}
                     axisLine={false}
                     tickLine={false}
-                    tickMargin={12}
+                    tickMargin={10}
                     tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
                     domain={[0, 'dataMax + 5000']}
                   />
@@ -299,21 +265,19 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
                     type="monotone" 
                     dataKey="revenue" 
                     stroke="url(#invoiceStrokeRevenue)"
-                    strokeWidth={3}
+                    strokeWidth={2}
                     fill="url(#invoiceColorRevenue)"
                     dot={{ 
                       fill: '#6366f1', 
-                      strokeWidth: 2, 
-                      r: 3,
-                      stroke: '#ffffff',
-                      filter: 'url(#invoiceShadow)'
+                      strokeWidth: 1, 
+                      r: 2,
+                      stroke: '#ffffff'
                     }}
                     activeDot={{ 
-                      r: 6, 
-                      strokeWidth: 3,
+                      r: 4, 
+                      strokeWidth: 2,
                       stroke: '#ffffff',
-                      fill: '#6366f1',
-                      filter: 'url(#invoiceShadow)'
+                      fill: '#6366f1'
                     }}
                     animationDuration={1500}
                     animationEasing="ease-in-out"
@@ -323,27 +287,63 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
             </div>
             
             {/* Additional Stats Row */}
-            <div className="grid grid-cols-3 gap-4 mt-6 pt-6 border-t border-gray-100">
+            <div className="grid grid-cols-3 gap-4 mt-4 pt-4 border-t border-gray-200">
               <div className="text-center">
-                <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">Monthly Average</p>
-                <p className="text-lg font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">Monthly Avg</p>
+                <p className="text-base font-bold text-gray-900">
                   {currencyFormat(baseCurrency, monthlyAvg)}
                 </p>
               </div>
               <div className="text-center">
-                <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">Peak Month</p>
-                <p className="text-lg font-bold text-gray-900">
+                <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">Peak Month</p>
+                <p className="text-base font-bold text-gray-900">
                   {revenueData.reduce((max, item) => item.revenue > max.revenue ? item : max, revenueData[0] || {revenue: 0})?.month || '-'}
                 </p>
               </div>
               <div className="text-center">
-                <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">Total Invoices</p>
-                <p className="text-lg font-bold text-gray-900">
+                <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">Total Invoices</p>
+                <p className="text-base font-bold text-gray-900">
                   {revenueData.reduce((sum, item) => sum + (item.invoices || 0), 0)}
                 </p>
               </div>
             </div>
           </div>
+        </div>
+        </div>
+
+        {/* Summary Cards - 30% width, vertical layout */}
+        <div className="flex flex-col gap-3" style={{ flex: '0 0 30%' }}>
+          {summaryItems.map(item => (
+            <button
+              key={item.label}
+              onClick={item.onClick}
+              className={`${item.bgClass} rounded-xl p-4 text-left transition-all duration-200 border border-gray-200 hover:shadow-lg hover:scale-[1.02] flex-1`}
+            >
+              <div className="flex justify-between items-start">
+                <div className="flex-1">
+                  <p className="text-xs text-gray-500 uppercase tracking-wide font-semibold mb-2">
+                    {item.label}
+                  </p>
+                  <p className={`text-xl font-bold ${item.colorClass}`}>
+                    {currencyFormat(baseCurrency, item.value)}
+                  </p>
+                </div>
+                <svg
+                  className="w-4 h-4 text-gray-400 mt-1"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </div>
+            </button>
+          ))}
         </div>
       </div>
     </div>
