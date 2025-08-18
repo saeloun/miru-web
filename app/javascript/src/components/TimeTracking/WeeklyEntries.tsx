@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Briefcase, AlertCircle } from "lucide-react";
+import { Briefcase, Warning } from "phosphor-react";
 import timesheetEntryApi from "apis/timesheet-entry";
 import { Toastr } from "StyledComponents";
 import { Card, CardContent } from "../ui/card";
@@ -237,7 +237,7 @@ const WeeklyEntries: React.FC<Props> = ({
         {isWeeklyEditing && (
           <div className="absolute inset-0 bg-background/50 backdrop-blur-sm rounded-lg flex items-center justify-center z-10">
             <Alert className="max-w-md">
-              <AlertCircle className="h-4 w-4" />
+              <Warning className="h-4 w-4" />
               <AlertDescription>
                 Editing mode is active. Complete your changes above.
               </AlertDescription>

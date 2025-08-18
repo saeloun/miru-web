@@ -114,7 +114,6 @@
     "glob": "^11.0.3",
     "lefthook": "^1.12.2",
     "lint-staged": "^12.1.2",
-    "lucide-react": "^0.539.0",
     "postcss": "^8.5.6",
     "prettier": "^2.7.1",
     "prettier-plugin-tailwindcss": "^0.1.13",

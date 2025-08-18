@@ -10,7 +10,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "../../ui/avatar";
 import { Badge } from "../../ui/badge";
 import { currencyFormat } from "helpers/currency";
 import { format, parseISO } from "date-fns";
-import { TrendingUp, TrendingDown, ArrowUpRight, User } from "lucide-react";
+import { TrendUp, TrendDown, ArrowUpRight, User } from "phosphor-react";
 
 interface RecentSalesProps {
   invoices: Array<{
@@ -34,9 +34,9 @@ const RecentSales: React.FC<RecentSalesProps> = ({ invoices, className }) => {
   const getStatusIcon = (status: string) => {
     switch (status.toLowerCase()) {
       case "paid":
-        return <TrendingUp className="h-3 w-3 text-green-500" />;
+        return <TrendUp className="h-3 w-3 text-green-500" />;
       case "overdue":
-        return <TrendingDown className="h-3 w-3 text-red-500" />;
+        return <TrendDown className="h-3 w-3 text-red-500" />;
       default:
         return <ArrowUpRight className="h-3 w-3 text-blue-500" />;
     }
@@ -149,9 +149,9 @@ const RecentSales: React.FC<RecentSalesProps> = ({ invoices, className }) => {
                         }`}
                       >
                         {growth > 0 ? (
-                          <TrendingUp className="h-3 w-3" />
+                          <TrendUp className="h-3 w-3" />
                         ) : (
-                          <TrendingDown className="h-3 w-3" />
+                          <TrendDown className="h-3 w-3" />
                         )}
                         <span>{Math.abs(growth).toFixed(1)}%</span>
                       </div>

@@ -8,22 +8,22 @@ import {
   CreditCard,
   Calendar,
   Receipt,
-  Building2,
-  ChevronLeft,
-  ChevronRight,
-  ChevronDown,
+  Buildings,
+  CaretLeft,
+  CaretRight,
+  CaretDown,
   User,
   Briefcase,
-  Smartphone,
+  DeviceMobile,
   Bell,
   PartyPopper,
-  LogOut,
+  SignOut,
   UserCircle,
   Wallet,
   Palmtree,
   UsersRound,
-  Building,
-} from "lucide-react";
+  Buildings,
+} from "phosphor-react";
 
 import { cn } from "../../lib/utils";
 import { Button } from "../ui/button";
@@ -159,7 +159,7 @@ const Sidebar: React.FC = () => {
       ],
     },
     {
-      icon: <Smartphone className="h-5 w-5" />,
+      icon: <DeviceMobile className="h-5 w-5" />,
       label: "Allocated Devices",
       path: "/settings/devices",
       allowedRoles: [
@@ -185,7 +185,7 @@ const Sidebar: React.FC = () => {
   // Organization settings items
   const orgSettingsItems = [
     {
-      icon: <Building2 className="h-5 w-5" />,
+      icon: <Buildings className="h-5 w-5" />,
       label: "Org. Settings",
       path: "/settings/organization",
       allowedRoles: [Roles.ADMIN, Roles.OWNER],
@@ -344,9 +344,9 @@ const Sidebar: React.FC = () => {
             className="h-8 w-8 p-0"
           >
             {isCollapsed ? (
-              <ChevronRight className="h-4 w-4" />
+              <CaretRight className="h-4 w-4" />
             ) : (
-              <ChevronLeft className="h-4 w-4" />
+              <CaretLeft className="h-4 w-4" />
             )}
           </Button>
         </div>
@@ -382,7 +382,7 @@ const Sidebar: React.FC = () => {
                         <span className="text-xs uppercase tracking-wider">
                           Personal Settings
                         </span>
-                        <ChevronDown
+                        <CaretDown
                           className={cn(
                             "h-3 w-3 transition-transform duration-200",
                             !isPersonalExpanded && "-rotate-90"
@@ -427,7 +427,7 @@ const Sidebar: React.FC = () => {
                         <span className="text-xs uppercase tracking-wider">
                           Organization
                         </span>
-                        <ChevronDown
+                        <CaretDown
                           className={cn(
                             "h-3 w-3 transition-transform duration-200",
                             !isOrgExpanded && "-rotate-90"
@@ -471,7 +471,7 @@ const Sidebar: React.FC = () => {
                   >
                     <div className="flex items-center gap-2 min-w-0">
                       <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
-                        <Building className="h-4 w-4 text-primary" />
+                        <Buildings className="h-4 w-4 text-primary" />
                       </div>
                       {!isCollapsed && (
                         <div className="flex-1 text-left min-w-0">
@@ -485,7 +485,7 @@ const Sidebar: React.FC = () => {
                       )}
                     </div>
                     {!isCollapsed && (
-                      <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                      <CaretDown className="h-4 w-4 text-muted-foreground" />
                     )}
                   </Button>
                 </DropdownMenuTrigger>
@@ -495,7 +495,7 @@ const Sidebar: React.FC = () => {
                   sideOffset={5}
                 >
                   <DropdownMenuLabel className="flex items-center gap-2">
-                    <Building className="h-4 w-4" />
+                    <Buildings className="h-4 w-4" />
                     Switch Workspace
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
@@ -512,7 +512,7 @@ const Sidebar: React.FC = () => {
                       }}
                     >
                       <div className="flex h-6 w-6 items-center justify-center rounded bg-primary/10">
-                        <Building className="h-3 w-3 text-primary" />
+                        <Buildings className="h-3 w-3 text-primary" />
                       </div>
                       <div className="flex-1">
                         <p className="text-sm font-medium">{workspace.name}</p>
@@ -551,7 +551,7 @@ const Sidebar: React.FC = () => {
                     window.location.href = "/users/sign_out";
                   }}
                 >
-                  <LogOut className="h-5 w-5" />
+                  <SignOut className="h-5 w-5" />
                   {!isCollapsed && <span>Sign Out</span>}
                 </Button>
               </TooltipTrigger>

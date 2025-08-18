@@ -1,5 +1,5 @@
 import React from "react";
-import { Layers, ChevronDown, ChevronUp } from "lucide-react";
+import { Stack, CaretDown, CaretUp } from "phosphor-react";
 
 import { cn } from "../../../lib/utils";
 import {
@@ -63,7 +63,7 @@ const EnhancedGroupByFilter = ({ filters, handleSelectFilter }) => {
                 isActive ? "bg-[#5B34EA]/10" : "bg-gray-100"
               )}
             >
-              <Layers
+              <Stack
                 className={cn(
                   "h-4 w-4",
                   isActive ? "text-[#5B34EA]" : "text-gray-600"
@@ -89,9 +89,9 @@ const EnhancedGroupByFilter = ({ filters, handleSelectFilter }) => {
               </Badge>
             )}
             {isOpen ? (
-              <ChevronUp className="h-4 w-4 text-gray-400" />
+              <CaretUp className="h-4 w-4 text-gray-400" />
             ) : (
-              <ChevronDown className="h-4 w-4 text-gray-400" />
+              <CaretDown className="h-4 w-4 text-gray-400" />
             )}
           </div>
         </div>

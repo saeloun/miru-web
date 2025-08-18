@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import preferencesApi from "apis/preferences";
 import { useUserContext } from "context/UserContext";
-import { Bell, Mail, Calendar, Clock, Users, FileText } from "lucide-react";
+import { Bell, Envelope, Calendar, Clock, Users, FileText } from "phosphor-react";
 import {
   Card,
   CardContent,
@@ -45,7 +45,7 @@ const Preferences: React.FC = () => {
           title: "Weekly Email Reminder",
           description: "Receive weekly reminders about timesheet entries and project updates",
           enabled: res.data.notification_enabled || false,
-          icon: <Mail className="h-4 w-4" />,
+          icon: <Envelope className="h-4 w-4" />,
           category: "Email Notifications"
         },
         {

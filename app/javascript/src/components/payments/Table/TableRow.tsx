@@ -3,14 +3,7 @@ import React from "react";
 import { currencyFormat } from "helpers";
 import StatusBadge from "components/ui/status-badge";
 import { Link } from "react-router-dom";
-import {
-  CreditCard,
-  Building2,
-  Wallet,
-  Banknote,
-  ArrowRightLeft,
-  Receipt,
-} from "lucide-react";
+import { CreditCard, Buildings, Wallet, Money, ArrowsLeftRight, Receipt } from "phosphor-react";
 
 import { TableRowProps } from "../interfaces";
 
@@ -36,17 +29,17 @@ const TableRow = ({ payment, baseCurrency }: TableRowProps) => {
         color: "text-blue-600",
       },
       bank_transfer: {
-        icon: <Building2 className="h-4 w-4" />,
+        icon: <Buildings className="h-4 w-4" />,
         text: "Bank Transfer",
         color: "text-green-600",
       },
       wire_transfer: {
-        icon: <ArrowRightLeft className="h-4 w-4" />,
+        icon: <ArrowsLeftRight className="h-4 w-4" />,
         text: "Wire Transfer",
         color: "text-purple-600",
       },
       ach: {
-        icon: <Building2 className="h-4 w-4" />,
+        icon: <Buildings className="h-4 w-4" />,
         text: "ACH Transfer",
         color: "text-teal-600",
       },
@@ -61,7 +54,7 @@ const TableRow = ({ payment, baseCurrency }: TableRowProps) => {
         color: "text-indigo-600",
       },
       cash: {
-        icon: <Banknote className="h-4 w-4" />,
+        icon: <Money className="h-4 w-4" />,
         text: "Cash",
         color: "text-green-700",
       },

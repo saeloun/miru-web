@@ -1,7 +1,7 @@
 /* eslint-disable */
 import React, { useState, useRef } from "react";
 import dayjs from "dayjs";
-import { ChevronLeft, ChevronRight, Calendar, Clock } from "lucide-react";
+import { CaretLeft, CaretRight, Calendar, Clock } from "phosphor-react";
 
 import { minToHHMM } from "helpers";
 import { CaretCircleLeftIcon, CaretCircleRightIcon } from "miruIcons";
@@ -161,7 +161,7 @@ const Header = ({
               onClick={getLeftArrowAction}
               className="h-10 w-10 p-0 hover:bg-accent transition-all duration-200"
             >
-              <ChevronLeft className="h-5 w-5" />
+              <CaretLeft className="h-5 w-5" />
             </Button>
             {!!dayInfo.length && (
               <>
@@ -201,7 +201,7 @@ const Header = ({
               onClick={getRightArrowAction}
               className="h-10 w-10 p-0 hover:bg-accent transition-all duration-200"
             >
-              <ChevronRight className="h-5 w-5" />
+              <CaretRight className="h-5 w-5" />
             </Button>
           </div>
 

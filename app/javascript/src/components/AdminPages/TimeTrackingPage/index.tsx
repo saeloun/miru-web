@@ -15,16 +15,16 @@ import {
   Pause,
   Square,
   Plus,
-  Search,
+  MagnifyingGlass,
   Timer,
   Target,
-  Zap,
+  Lightning,
   BarChart3,
   Users,
   CheckCircle,
-  AlertCircle,
-  MoreHorizontal,
-} from "lucide-react";
+  Warning,
+  DotsThree,
+} from "phosphor-react";
 import { cn } from "../../../lib/utils";
 
 interface TimeEntry {
@@ -240,12 +240,12 @@ const TimeTrackingPage: React.FC<TimeTrackingPageProps> = ({ className }) => {
                 className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#5B34EA] focus:border-transparent bg-white dark:bg-gray-800 dark:text-gray-100"
               />
 
-              {/* Search */}
+              {/* MagnifyingGlass */}
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <MagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                 <input
                   type="text"
-                  placeholder="Search entries..."
+                  placeholder="Search Entries..."
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
                   className="pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#5B34EA] focus:border-transparent bg-white dark:bg-gray-800 dark:text-gray-100"
@@ -339,7 +339,7 @@ const TimeTrackingPage: React.FC<TimeTrackingPageProps> = ({ className }) => {
                     +5% this week
                   </p>
                 </div>
-                <Zap className="w-8 h-8 text-orange-500" />
+                <Lightning className="w-8 h-8 text-orange-500" />
               </div>
             </CardContent>
           </Card>
@@ -480,7 +480,7 @@ const TimeTrackingPage: React.FC<TimeTrackingPageProps> = ({ className }) => {
                         </div>
                         {getStatusBadge(entry.status)}
                         <Button variant="ghost" size="icon" className="h-8 w-8">
-                          <MoreHorizontal className="h-4 w-4" />
+                          <DotsThree className="h-4 w-4" />
                         </Button>
                       </div>
                     </div>
@@ -546,7 +546,7 @@ const TimeTrackingPage: React.FC<TimeTrackingPageProps> = ({ className }) => {
                 {weeklyStats.overtime > 0 && (
                   <div className="bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 rounded-lg p-3">
                     <div className="flex items-center gap-2 text-orange-700 dark:text-orange-400">
-                      <AlertCircle className="w-4 h-4" />
+                      <Warning className="w-4 h-4" />
                       <span className="text-sm font-medium">
                         Overtime Alert
                       </span>

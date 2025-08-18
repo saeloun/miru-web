@@ -5,18 +5,18 @@ import { Button } from "../../ui/button";
 import { Badge } from "../../ui/badge";
 import {
   BarChart3,
-  TrendingUp,
-  DollarSign,
+  TrendUp,
+  CurrencyDollar,
   Clock,
   Download,
-  Filter,
-  Search,
+  Funnel,
+  MagnifyingGlass,
   ArrowUpRight,
   FileText,
-  PieChart,
+  ChartPie,
   Activity,
   Target,
-} from "lucide-react";
+} from "phosphor-react";
 import { cn } from "../../../lib/utils";
 
 interface ReportsPageProps {
@@ -32,7 +32,7 @@ const ReportsPage: React.FC<ReportsPageProps> = ({ className }) => {
       id: "financial",
       name: "Financial Reports",
       description: "Revenue, billing, and payment analytics",
-      icon: DollarSign,
+      icon: CurrencyDollar,
       color:
         "bg-green-100 text-green-600 dark:bg-green-900/20 dark:text-green-400",
       reports: [
@@ -40,7 +40,7 @@ const ReportsPage: React.FC<ReportsPageProps> = ({ className }) => {
           title: "Revenue by Client",
           description: "Track revenue generated from each client",
           path: "/reports/revenue-by-client",
-          icon: TrendingUp,
+          icon: TrendUp,
           stats: "12 clients analyzed",
           isPopular: true,
         },
@@ -56,7 +56,7 @@ const ReportsPage: React.FC<ReportsPageProps> = ({ className }) => {
           title: "Accounts Aging Report",
           description: "Analyze payment patterns and aging",
           path: "/reports/accounts-aging",
-          icon: PieChart,
+          icon: ChartPie,
           stats: "Updated daily",
           isNew: false,
         },
@@ -95,7 +95,7 @@ const ReportsPage: React.FC<ReportsPageProps> = ({ className }) => {
       value: "$124,500",
       change: "+12.5%",
       trend: "up",
-      icon: DollarSign,
+      icon: CurrencyDollar,
     },
     {
       label: "Hours Logged",
@@ -161,12 +161,12 @@ const ReportsPage: React.FC<ReportsPageProps> = ({ className }) => {
             </div>
 
             <div className="flex items-center gap-3">
-              {/* Search */}
+              {/* MagnifyingGlass */}
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <MagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                 <input
                   type="text"
-                  placeholder="Search reports..."
+                  placeholder="Search Reports..."
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
                   className="pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#5B34EA] focus:border-transparent bg-white dark:bg-gray-800 dark:text-gray-100"
@@ -174,8 +174,8 @@ const ReportsPage: React.FC<ReportsPageProps> = ({ className }) => {
               </div>
 
               <Button variant="outline" size="sm">
-                <Filter className="mr-2 h-4 w-4" />
-                Filter
+                <Funnel className="mr-2 h-4 w-4" />
+                Funnel
               </Button>
 
               <Button className="bg-[#5B34EA] hover:bg-[#4926D1]" size="sm">
@@ -217,7 +217,7 @@ const ReportsPage: React.FC<ReportsPageProps> = ({ className }) => {
                             : "text-red-600 dark:text-red-400"
                         )}
                       >
-                        <TrendingUp
+                        <TrendUp
                           className={cn("w-3 h-3", !isPositive && "rotate-180")}
                         />
                         <span>{stat.change}</span>
@@ -315,7 +315,7 @@ const ReportsPage: React.FC<ReportsPageProps> = ({ className }) => {
         {/* No results */}
         {searchQuery && filteredReports.length === 0 && (
           <div className="text-center py-12">
-            <Search className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+            <MagnifyingGlass className="w-16 h-16 text-gray-400 mx-auto mb-4" />
             <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
               No reports found
             </h3>

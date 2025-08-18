@@ -1,7 +1,7 @@
 import React from "react";
 
 import { ProjectsIcon } from "miruIcons";
-import { Briefcase } from "lucide-react";
+import { Briefcase } from "phosphor-react";
 import { Card, CardContent, CardHeader, CardTitle } from "components/ui/card";
 
 import { getLabelForEmployeeType } from "./helpers";

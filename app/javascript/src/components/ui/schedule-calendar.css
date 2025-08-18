@@ -193,12 +193,46 @@
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
+  line-height: 1.4;
 }
 
 .sx-shadcn-theme .sx__event:hover {
   background: #D4C5E8;
   transform: translateY(-1px);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Custom event content styling for better visual hierarchy */
+.sx-shadcn-theme .sx__event-title {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* Make the first part (time) more prominent */
+.sx-shadcn-theme .sx__event:before {
+  content: '';
+  display: none;
+}
+
+/* Style for timesheet events */
+.sx-shadcn-theme .sx__event[data-calendar-id="timesheet"] {
+  background: linear-gradient(135deg, #EEF2FF 0%, #DBEAFE 100%) !important;
+  border-left: 4px solid #3B82F6 !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  padding: 5px 8px !important;
+  color: #1E40AF !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sx-shadcn-theme .sx__event[data-calendar-id="timesheet"]:hover {
+  background: linear-gradient(135deg, #DBEAFE 0%, #BFDBFE 100%) !important;
+  border-left-color: #2563EB !important;
+  transform: scale(1.02);
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
 }
 
 /* Week view styling */
@@ -242,15 +276,7 @@
   background: #FCA5A5 !important;
 }
 
-.sx-shadcn-theme .sx__event[data-calendar-id="timesheet"] {
-  background: var(--sx-color-timesheet-container) !important;
-  color: var(--sx-color-on-timesheet-container) !important;
-  border-left: 3px solid var(--sx-color-timesheet) !important;
-}
-
-.sx-shadcn-theme .sx__event[data-calendar-id="timesheet"]:hover {
-  background: #93C5FD !important;
-}
+/* Removed - Now using enhanced styles defined above */
 
 .sx-shadcn-theme .sx__event[data-calendar-id="leave"] {
   background: var(--sx-color-leave-container) !important;

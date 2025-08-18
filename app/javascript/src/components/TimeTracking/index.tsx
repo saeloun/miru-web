@@ -500,33 +500,148 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
         <div>
           {/* Use calendar view */}
           {view === "month" ? (
-            <ScheduleCalendar
-              events={Object.entries(entryList).flatMap(([date, entries]: [string, any[]]) => 
-                entries.map((entry, index) => ({
-                  id: entry.id,
-                  title: `${entry.project || entry.project_name || 'No Project'}: ${minToHHMM(entry.duration)}`,
-                  description: entry.note || '',
-                  start: `${date}`,
-                  end: `${date}`,
-                  calendarId: 'timesheet',
-                  _customContent: {
-                    projectName: entry.project || entry.project_name || 'No Project',
-                    clientName: entry.client || entry.client_name || 'No Client',
-                    duration: minToHHMM(entry.duration),
-                    note: entry.note || 'No description',
-                    billable: entry.bill_status
-                  }
-                }))
+            <>
+              <ScheduleCalendar
+                events={Object.entries(entryList).flatMap(([date, entries]: [string, any[]]) => 
+                  entries.map((entry, index) => {
+                    const duration = minToHHMM(entry.duration);
+                    const projectName = entry.project || entry.project_name || 'No Project';
+                    // Get project initials (first letters of each word, max 2-3 letters)
+                    const getInitials = (name: string) => {
+                      return name
+                        .split(' ')
+                        .map(word => word[0])
+                        .join('')
+                        .toUpperCase()
+                        .slice(0, 3);
+                    };
+                    const projectInitials = getInitials(projectName);
+                    return {
+                      id: entry.id,
+                      title: `${projectInitials} • ${duration}`,
+                      description: entry.note || '',
+                      start: `${date}`,
+                      end: `${date}`,
+                      calendarId: 'timesheet',
+                      _customContent: {
+                        projectName: projectName,
+                        clientName: entry.client || entry.client_name || 'No Client',
+                        duration: duration,
+                        note: entry.note || 'No description',
+                        billable: entry.bill_status
+                      }
+                    };
+                  })
+                )}
+                onEventClick={(event) => {
+                  setEditEntryId(event.id);
+                  setNewEntryView(true);
+                }}
+                onDateClick={(date) => {
+                  setSelectedFullDate(dayjs(date).format(dateFormat));
+                  // Don't automatically open new entry view, just show the day's entries
+                  setNewEntryView(false);
+                  setEditEntryId(0);
+                }}
+              />
+              {/* Show selected day's entries in month view */}
+              {selectedFullDate && (
+                <div className="mt-6 space-y-2">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-lg font-semibold text-foreground">
+                      Entries for {dayjs(selectedFullDate).format('dddd, MMMM D, YYYY')}
+                    </h3>
+                    {!newEntryView && (
+                      <Button
+                        size="sm"
+                        onClick={() => {
+                          setNewEntryView(true);
+                          setEditEntryId(0);
+                        }}
+                        className="bg-primary hover:bg-primary/90 text-primary-foreground"
+                      >
+                        <span className="mr-2">+</span>
+                        Add Entry
+                      </Button>
+                    )}
+                  </div>
+                  {/* Show new entry form when adding */}
+                  {newEntryView && !editEntryId && (
+                    <EntryForm
+                      clients={clients}
+                      editEntryId={editEntryId}
+                      entryList={entryList}
+                      fetchEntries={fetchEntries}
+                      fetchEntriesofMonth={fetchEntriesOfMonths}
+                      handleAddEntryDateChange={handleAddEntryDateChange}
+                      handleDeleteEntry={handleDeleteEntry}
+                      handleFilterEntry={handleFilterEntry}
+                      handleRelocateEntry={handleRelocateEntry}
+                      projects={projects}
+                      removeLocalStorageItems={removeLocalStorageItems}
+                      selectedEmployeeId={selectedEmployeeId}
+                      selectedFullDate={selectedFullDate}
+                      setEditEntryId={setEditEntryId}
+                      setNewEntryView={setNewEntryView}
+                      setSelectedFullDate={setSelectedFullDate}
+                      setUpdateView={setUpdateView}
+                    />
+                  )}
+                  {/* Show existing entries when not adding new */}
+                  {!newEntryView && entryList[selectedFullDate] && entryList[selectedFullDate].length > 0 ? (
+                    <div className="space-y-2">
+                      {entryList[selectedFullDate].map((entry, index) => (
+                        editEntryId === entry.id ? (
+                          <EntryForm
+                            clients={clients}
+                            editEntryId={editEntryId}
+                            entryList={entryList}
+                            fetchEntries={fetchEntries}
+                            fetchEntriesofMonth={fetchEntriesOfMonths}
+                            handleAddEntryDateChange={handleAddEntryDateChange}
+                            handleDeleteEntry={handleDeleteEntry}
+                            handleFilterEntry={handleFilterEntry}
+                            handleRelocateEntry={handleRelocateEntry}
+                            key={entry.id}
+                            projects={projects}
+                            removeLocalStorageItems={removeLocalStorageItems}
+                            selectedEmployeeId={selectedEmployeeId}
+                            selectedFullDate={selectedFullDate}
+                            setEditEntryId={setEditEntryId}
+                            setNewEntryView={setNewEntryView}
+                            setSelectedFullDate={setSelectedFullDate}
+                            setUpdateView={setUpdateView}
+                          />
+                        ) : (
+                          <EntryCard
+                            handleDeleteEntry={handleDeleteEntry}
+                            handleDuplicate={handleDuplicate}
+                            key={index}
+                            setEditEntryId={setEditEntryId}
+                            setNewEntryView={setNewEntryView}
+                            {...entry}
+                          />
+                        )
+                      ))}
+                    </div>
+                  ) : !newEntryView && (
+                    <div className="text-center py-8 bg-muted/50 rounded-lg">
+                      <p className="text-muted-foreground mb-4">No entries for this day</p>
+                      <Button
+                        variant="outline"
+                        onClick={() => {
+                          setNewEntryView(true);
+                          setEditEntryId(0);
+                        }}
+                      >
+                        <span className="mr-2">+</span>
+                        Add First Entry
+                      </Button>
+                    </div>
+                  )}
+                </div>
               )}
-              onEventClick={(event) => {
-                setEditEntryId(event.id);
-                setNewEntryView(true);
-              }}
-              onDateClick={(date) => {
-                setSelectedFullDate(dayjs(date).format(dateFormat));
-                setNewEntryView(true);
-              }}
-            />
+            </>
           ) : (
             isDesktop && (
               <div className="mb-6 week-view" data-view="week">
@@ -613,7 +728,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
               onClick={() => setNewRowView(true)}
             >
               <span className="text-3xl mr-3">+</span>
-              NEW ROW
+              ADD ENTRY
             </Button>
           )}
           {view === "week" && newRowView && (

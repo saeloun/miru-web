@@ -25,20 +25,19 @@ import {
   TableRow,
 } from "../ui/table";
 import {
-  Search,
+  MagnifyingGlass,
   Plus,
-  MoreHorizontal,
-  Send,
+  DotsThree,
+  PaperPlaneTilt,
   Download,
   Eye,
   CheckCircle,
   Circle,
-  AlertCircle,
+  Warning,
   Clock,
   FileText,
   Hourglass,
-} from "lucide-react";
-import { cn } from "../../lib/utils";
+} from "phosphor-react";
 
 import { Invoice } from "../../services/invoiceApi";
 import ChartWithSummary from "./ChartWithSummary";
@@ -119,7 +118,7 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
       case "sent":
         return <Clock className="h-4 w-4 text-blue-600" />;
       case "overdue":
-        return <AlertCircle className="h-4 w-4 text-red-600" />;
+        return <Warning className="h-4 w-4 text-red-600" />;
       case "draft":
         return <Circle className="h-4 w-4 text-gray-500" />;
       case "viewed":
@@ -139,14 +138,14 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
         label: "Paid"
       },
       sent: {
-        icon: Send,
+        icon: PaperPlaneTilt,
         bgColor: "#dbeafe",
         textColor: "#1e40af",
         borderColor: "#93c5fd",
         label: "Sent"
       },
       overdue: {
-        icon: AlertCircle,
+        icon: Warning,
         bgColor: "#fee2e2",
         textColor: "#991b1b",
         borderColor: "#fca5a5",
@@ -228,7 +227,7 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="sm">
-          <MoreHorizontal className="h-4 w-4" />
+          <DotsThree className="h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
@@ -243,8 +242,8 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
         <DropdownMenuSeparator />
         {invoice.status === "draft" && (
           <DropdownMenuItem onClick={() => onSendInvoice?.(invoice.id)}>
-            <Send className="h-4 w-4 mr-2" />
-            Send
+            <PaperPlaneTilt className="h-4 w-4 mr-2" />
+            PaperPlaneTilt
           </DropdownMenuItem>
         )}
         {invoice.status !== "paid" && (
@@ -292,12 +291,12 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
       <Card>
         <CardContent className="p-4">
           <div className="flex flex-col space-y-4 md:flex-row md:space-y-0 md:space-x-4">
-            {/* Search */}
+            {/* MagnifyingGlass */}
             <div className="flex-1">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <MagnifyingGlass className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <Input
-                  placeholder="Search invoices..."
+                  placeholder="Search Invoices..."
                   value={searchTerm}
                   onChange={e => setSearchTerm(e.target.value)}
                   className="pl-9"

@@ -10,17 +10,17 @@ import React, {
   memo,
 } from "react";
 import {
-  Search,
+  MagnifyingGlass,
   X,
-  Loader2,
-  ChevronDown,
-  Building,
+  CircleNotch,
+  CaretDown,
+  Buildings,
   Users,
   FolderOpen,
   Receipt,
   Clock,
-  Filter,
-} from "lucide-react";
+  Funnel,
+} from "phosphor-react";
 import { cn } from "../../lib/utils";
 import { Input } from "./input";
 import { Button } from "./button";
@@ -125,7 +125,7 @@ const getTypeIcon = (type?: SearchItem["type"]) => {
 
   switch (type) {
     case "client":
-      return <Building {...iconProps} />;
+      return <Buildings {...iconProps} />;
     case "project":
       return <FolderOpen {...iconProps} />;
     case "team":
@@ -138,11 +138,11 @@ const getTypeIcon = (type?: SearchItem["type"]) => {
     case "expense":
       return <Receipt {...iconProps} className="h-4 w-4 text-red-500" />;
     case "report":
-      return <Filter {...iconProps} className="h-4 w-4 text-blue-500" />;
+      return <Funnel {...iconProps} className="h-4 w-4 text-blue-500" />;
     case "task":
       return <Clock {...iconProps} className="h-4 w-4 text-green-500" />;
     default:
-      return <Search {...iconProps} />;
+      return <MagnifyingGlass {...iconProps} />;
   }
 };
 
@@ -310,7 +310,7 @@ const DefaultSearchResultItem = memo(
         onClick={() => onSelect(item)}
       >
         <div className="h-7 w-7 rounded-full bg-muted flex items-center justify-center group-hover:bg-primary/10 transition-colors">
-          <Search className="h-4 w-4" />
+          <MagnifyingGlass className="h-4 w-4" />
         </div>
         <div className="flex-1">
           <p className="text-sm font-medium leading-none">
@@ -424,7 +424,7 @@ export const UnifiedSearch = forwardRef<HTMLInputElement, UnifiedSearchProps>(
             }
           });
         } catch (err) {
-          console.error("Search error:", err);
+          console.error("MagnifyingGlass error:", err);
           setError(errorText);
           setResults([]);
           setGroupedResults({});
@@ -522,7 +522,7 @@ export const UnifiedSearch = forwardRef<HTMLInputElement, UnifiedSearchProps>(
       if (results.length === 0) {
         return (
           <div className="p-3 text-sm text-muted-foreground flex items-center gap-2">
-            <Search className="h-4 w-4" />
+            <MagnifyingGlass className="h-4 w-4" />
             {emptyText}
           </div>
         );
@@ -575,12 +575,12 @@ export const UnifiedSearch = forwardRef<HTMLInputElement, UnifiedSearchProps>(
             >
               <div className="flex items-center space-x-2 flex-1 overflow-hidden">
                 {showSearchIcon && (
-                  <Search className="h-4 w-4 shrink-0 opacity-50" />
+                  <MagnifyingGlass className="h-4 w-4 shrink-0 opacity-50" />
                 )}
                 <span className="truncate">{query || placeholder}</span>
               </div>
               <div className="flex items-center space-x-1 shrink-0">
-                {isLoading && <Loader2 className="h-4 w-4 animate-spin" />}
+                {isLoading && <CircleNotch className="h-4 w-4 animate-spin" />}
                 {clearable && query && (
                   <X
                     className="h-4 w-4 cursor-pointer opacity-50 hover:opacity-100 transition-opacity"
@@ -590,7 +590,7 @@ export const UnifiedSearch = forwardRef<HTMLInputElement, UnifiedSearchProps>(
                     }}
                   />
                 )}
-                <ChevronDown className="h-4 w-4 opacity-50" />
+                <CaretDown className="h-4 w-4 opacity-50" />
               </div>
             </Button>
           </PopoverTrigger>
@@ -613,7 +613,7 @@ export const UnifiedSearch = forwardRef<HTMLInputElement, UnifiedSearchProps>(
                   <Suspense fallback={<SearchSkeleton />}>
                     {isLoading ? (
                       <div className="p-3 text-sm text-muted-foreground flex items-center gap-2">
-                        <Loader2 className="h-4 w-4 animate-spin" />
+                        <CircleNotch className="h-4 w-4 animate-spin" />
                         {loadingText}
                       </div>
                     ) : groupByType &&
@@ -676,7 +676,7 @@ export const UnifiedSearch = forwardRef<HTMLInputElement, UnifiedSearchProps>(
       <div className={cn("relative w-full", className)}>
         <div className="relative">
           {showSearchIcon && (
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <MagnifyingGlass className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           )}
           <Input
             ref={ref || inputRef}
@@ -702,7 +702,7 @@ export const UnifiedSearch = forwardRef<HTMLInputElement, UnifiedSearchProps>(
           />
           <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center space-x-2">
             {isLoading ? (
-              <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+              <CircleNotch className="h-4 w-4 animate-spin text-muted-foreground" />
             ) : clearable && query ? (
               <Button
                 variant="ghost"

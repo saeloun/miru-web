@@ -10,18 +10,18 @@ import {
 import { Button } from "../../ui/button";
 import { Badge } from "../../ui/badge";
 import {
-  Settings,
+  Gear,
   User,
-  Building2,
+  Buildings,
   CreditCard,
   Calendar,
-  Smartphone,
+  DeviceMobile,
   Bell,
-  ChevronRight,
-  Search,
-  Filter,
-  MoreHorizontal,
-} from "lucide-react";
+  CaretRight,
+  MagnifyingGlass,
+  Funnel,
+  DotsThree,
+} from "phosphor-react";
 import { cn } from "../../../lib/utils";
 
 interface SettingsPageProps {
@@ -52,7 +52,7 @@ const SettingsPage: React.FC<SettingsPageProps> = ({
   // Get current path for active state
   const currentPath = location.pathname.replace("/settings/", "");
 
-  // Filter settings based on role and tab visibility
+  // Funnel settings based on role and tab visibility
   const personalSettings = settingsConfig.filter(
     setting =>
       setting.category === "personal" &&
@@ -67,7 +67,7 @@ const SettingsPage: React.FC<SettingsPageProps> = ({
       setting.authorisedRoles.includes(userRole)
   );
 
-  // Filter settings based on search
+  // Funnel settings based on search
   const filteredPersonalSettings = personalSettings.filter(setting =>
     setting.label.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -79,16 +79,16 @@ const SettingsPage: React.FC<SettingsPageProps> = ({
   const getIconForSetting = (originalIcon: React.ReactNode, label: string) => {
     const iconMap = {
       "PROFILE SETTINGS": <User className="w-5 h-5" />,
-      "EMPLOYMENT DETAILS": <Building2 className="w-5 h-5" />,
-      "ALLOCATED DEVICES": <Smartphone className="w-5 h-5" />,
+      "EMPLOYMENT DETAILS": <Buildings className="w-5 h-5" />,
+      "ALLOCATED DEVICES": <DeviceMobile className="w-5 h-5" />,
       "NOTIFICATION SETTINGS": <Bell className="w-5 h-5" />,
-      "ORG. SETTINGS": <Building2 className="w-5 h-5" />,
+      "ORG. SETTINGS": <Buildings className="w-5 h-5" />,
       "PAYMENT SETTINGS": <CreditCard className="w-5 h-5" />,
       LEAVES: <Calendar className="w-5 h-5" />,
       HOLIDAYS: <Calendar className="w-5 h-5" />,
     };
 
-    return iconMap[label] || <Settings className="w-5 h-5" />;
+    return iconMap[label] || <Gear className="w-5 h-5" />;
   };
 
   const handleSettingClick = (path: string) => {
@@ -150,7 +150,7 @@ const SettingsPage: React.FC<SettingsPageProps> = ({
                   Active
                 </Badge>
               )}
-              <ChevronRight
+              <CaretRight
                 className={cn(
                   "w-4 h-4 transition-transform group-hover:translate-x-1",
                   isActive ? "text-[#5B34EA]" : "text-gray-400"
@@ -176,11 +176,11 @@ const SettingsPage: React.FC<SettingsPageProps> = ({
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <div className="p-2 bg-[#5B34EA]/10 rounded-lg">
-                <Settings className="h-6 w-6 text-[#5B34EA]" />
+                <Gear className="h-6 w-6 text-[#5B34EA]" />
               </div>
               <div>
                 <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
-                  Settings
+                  Gear
                 </h1>
                 <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
                   Manage your account and organization preferences
@@ -189,12 +189,12 @@ const SettingsPage: React.FC<SettingsPageProps> = ({
             </div>
 
             <div className="flex items-center gap-3">
-              {/* Search */}
+              {/* MagnifyingGlass */}
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <MagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                 <input
                   type="text"
-                  placeholder="Search settings..."
+                  placeholder="Search Settings..."
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
                   className="pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#5B34EA] focus:border-transparent bg-white dark:bg-gray-800 dark:text-gray-100"
@@ -202,12 +202,12 @@ const SettingsPage: React.FC<SettingsPageProps> = ({
               </div>
 
               <Button variant="outline" size="sm">
-                <Filter className="mr-2 h-4 w-4" />
-                Filter
+                <Funnel className="mr-2 h-4 w-4" />
+                Funnel
               </Button>
 
               <Button variant="outline" size="icon">
-                <MoreHorizontal className="h-4 w-4" />
+                <DotsThree className="h-4 w-4" />
               </Button>
             </div>
           </div>
@@ -219,12 +219,12 @@ const SettingsPage: React.FC<SettingsPageProps> = ({
         <div className="grid gap-6 lg:grid-cols-4">
           {/* Sidebar Navigation */}
           <div className="lg:col-span-1 space-y-6">
-            {/* Personal Settings */}
+            {/* Personal Gear */}
             {filteredPersonalSettings.length > 0 && (
               <div>
                 <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
                   <User className="w-5 h-5 text-[#5B34EA]" />
-                  Personal Settings
+                  Personal Gear
                 </h2>
                 <div className="space-y-3">
                   {filteredPersonalSettings.map(renderSettingCard)}
@@ -232,12 +232,12 @@ const SettingsPage: React.FC<SettingsPageProps> = ({
               </div>
             )}
 
-            {/* Organization Settings */}
+            {/* Organization Gear */}
             {filteredOrganizationSettings.length > 0 && (
               <div>
                 <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
-                  <Building2 className="w-5 h-5 text-[#5B34EA]" />
-                  Organization Settings
+                  <Buildings className="w-5 h-5 text-[#5B34EA]" />
+                  Organization Gear
                 </h2>
                 <div className="space-y-3">
                   {filteredOrganizationSettings.map(renderSettingCard)}
@@ -250,7 +250,7 @@ const SettingsPage: React.FC<SettingsPageProps> = ({
               filteredPersonalSettings.length === 0 &&
               filteredOrganizationSettings.length === 0 && (
                 <div className="text-center py-8">
-                  <Search className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                  <MagnifyingGlass className="w-12 h-12 text-gray-400 mx-auto mb-4" />
                   <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">
                     No settings found
                   </h3>
@@ -271,7 +271,7 @@ const SettingsPage: React.FC<SettingsPageProps> = ({
               <Card className="h-full">
                 <CardHeader>
                   <CardTitle className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-                    Welcome to Settings
+                    Welcome to Gear
                   </CardTitle>
                   <CardDescription>
                     Select a setting from the sidebar to get started
@@ -279,7 +279,7 @@ const SettingsPage: React.FC<SettingsPageProps> = ({
                 </CardHeader>
                 <CardContent>
                   <div className="text-center py-12">
-                    <Settings className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                    <Gear className="w-16 h-16 text-gray-400 mx-auto mb-4" />
                     <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
                       Choose a setting to configure
                     </h3>

@@ -1,5 +1,5 @@
 import React from "react";
-import { Activity, ChevronDown, ChevronUp, Check } from "lucide-react";
+import { Activity, CaretDown, CaretUp, Check } from "phosphor-react";
 
 import { cn } from "../../../lib/utils";
 import {
@@ -90,9 +90,9 @@ const EnhancedStatusFilter = ({
               </Badge>
             )}
             {isOpen ? (
-              <ChevronUp className="h-4 w-4 text-gray-400" />
+              <CaretUp className="h-4 w-4 text-gray-400" />
             ) : (
-              <ChevronDown className="h-4 w-4 text-gray-400" />
+              <CaretDown className="h-4 w-4 text-gray-400" />
             )}
           </div>
         </div>

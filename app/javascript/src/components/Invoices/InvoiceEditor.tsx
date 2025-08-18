@@ -12,7 +12,7 @@ import {
 } from "../ui/select";
 import { Separator } from "../ui/separator";
 import { Badge } from "../ui/badge";
-import { Plus, Trash2, Save, Send, Eye, User, Building } from "lucide-react";
+import { Plus, Trash, FloppyDisk, PaperPlaneTilt, Eye, User, Buildings } from "phosphor-react";
 import { cn } from "../../lib/utils";
 
 import {
@@ -158,15 +158,15 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
             onClick={() => onSave?.(formData)}
             disabled={!isFormValid() || isLoading}
           >
-            <Save className="h-4 w-4 mr-2" />
-            Save Draft
+            <FloppyDisk className="h-4 w-4 mr-2" />
+            FloppyDisk Draft
           </Button>
           <Button
             onClick={() => onSend?.(formData)}
             disabled={!isFormValid() || isLoading}
           >
-            <Send className="h-4 w-4 mr-2" />
-            Send Invoice
+            <PaperPlaneTilt className="h-4 w-4 mr-2" />
+            PaperPlaneTilt Invoice
           </Button>
         </div>
       </div>
@@ -178,7 +178,7 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Building className="h-5 w-5" />
+                <Buildings className="h-5 w-5" />
                 Invoice Details
               </CardTitle>
             </CardHeader>
@@ -331,7 +331,7 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
                       onClick={() => removeItem(index)}
                       disabled={formData.invoiceLineItems.length === 1}
                     >
-                      <Trash2 className="h-4 w-4" />
+                      <Trash className="h-4 w-4" />
                     </Button>
                   </div>
                 </div>
