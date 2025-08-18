@@ -57,6 +57,7 @@ import teamApi from "../../apis/team";
 import { unmapList } from "../../mapper/team.mapper";
 import { toast } from "sonner";
 import { Roles } from "../../constants/index";
+import { getGravatarUrl } from "../../helpers";
 
 interface TeamMember {
   id: string;
@@ -216,9 +217,11 @@ const TeamTable: React.FC = () => {
       },
       cell: ({ row }) => {
         const member = row.original;
+        const gravatarUrl = getGravatarUrl(member.email, 36);
         return (
           <div className="flex items-center gap-3">
             <Avatar className="h-9 w-9">
+              <AvatarImage src={gravatarUrl} alt={member.name} />
               <AvatarImage src={member.avatar} alt={member.name} />
               <AvatarFallback className="bg-gray-100 text-sm">
                 {member.firstName?.[0]}{member.lastName?.[0]}
