@@ -213,62 +213,157 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
         ))}
       </div>
 
-      {/* Revenue Chart - Full Width */}
+      {/* Revenue Chart - Full Width with Beautiful Gradient */}
       <div className="w-full">
-        <div className="bg-white rounded-xl border border-gray-200 p-6">
-            <div className="flex items-center justify-between mb-6">
+        <div className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-white to-gray-50 rounded-xl overflow-hidden">
+          <div className="border-b border-gray-100 p-6 bg-white/50 backdrop-blur-sm">
+            <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-lg font-bold text-gray-900 mb-1">Yearly Revenue</h3>
-                <p className="text-sm text-gray-500">Track your revenue performance over time</p>
+                <p className="text-xs font-semibold text-indigo-600 uppercase tracking-wider mb-1">Revenue Analytics</p>
+                <h3 className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
+                  Yearly Revenue
+                </h3>
+                <p className="text-sm text-gray-600 font-medium mt-1">
+                  Daily revenue breakdown with detailed insights
+                </p>
               </div>
-              <div className="flex items-center gap-2">
-                <TrendUp className="w-5 h-5 text-gray-600" />
-                <span className="text-sm font-medium text-gray-600">
-                  {growthRate > 0 ? '+' : ''}{growthRate}% vs last year
-                </span>
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2 bg-white/80 px-4 py-2 rounded-lg">
+                  <TrendUp className={`w-5 h-5 ${growthRate > 0 ? 'text-green-600' : 'text-red-600'}`} />
+                  <span className={`text-sm font-semibold ${growthRate > 0 ? 'text-green-600' : 'text-red-600'}`}>
+                    {growthRate > 0 ? '+' : ''}{growthRate.toFixed(1)}%
+                  </span>
+                  <span className="text-xs text-gray-500">vs last year</span>
+                </div>
               </div>
             </div>
-            
-            <div className="h-80">
+          </div>
+          
+          <div className="p-6">
+            <div className="h-[400px]">
               <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={revenueData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                <AreaChart data={revenueData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                   <defs>
-                    <linearGradient id="revenueGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#6b7280" stopOpacity={0.2}/>
-                      <stop offset="95%" stopColor="#6b7280" stopOpacity={0}/>
+                    <linearGradient id="invoiceColorRevenue" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#6366f1" stopOpacity={0.8} />
+                      <stop offset="50%" stopColor="#8b5cf6" stopOpacity={0.5} />
+                      <stop offset="100%" stopColor="#a78bfa" stopOpacity={0.1} />
                     </linearGradient>
-                    <linearGradient id="paidGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#10b981" stopOpacity={0.3}/>
-                      <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+                    <linearGradient id="invoiceStrokeRevenue" x1="0" y1="0" x2="1" y2="0">
+                      <stop offset="0%" stopColor="#6366f1" />
+                      <stop offset="50%" stopColor="#8b5cf6" />
+                      <stop offset="100%" stopColor="#a78bfa" />
                     </linearGradient>
-                    <linearGradient id="pendingGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.3}/>
-                      <stop offset="95%" stopColor="#f59e0b" stopOpacity={0}/>
-                    </linearGradient>
+                    <filter id="invoiceShadow" x="-50%" y="-50%" width="200%" height="200%">
+                      <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
+                      <feOffset dx="0" dy="4" result="offsetblur"/>
+                      <feFlood floodColor="#6366f1" floodOpacity="0.15"/>
+                      <feComposite in2="offsetblur" operator="in"/>
+                      <feMerge>
+                        <feMergeNode/>
+                        <feMergeNode in="SourceGraphic"/>
+                      </feMerge>
+                    </filter>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" vertical={false} />
+                  <CartesianGrid 
+                    vertical={false} 
+                    stroke="#e5e7eb" 
+                    strokeDasharray="0" 
+                    strokeOpacity={0.5}
+                  />
                   <XAxis 
                     dataKey="month" 
-                    tick={{ fontSize: 12, fill: '#6b7280' }}
-                    axisLine={{ stroke: '#e5e7eb' }}
+                    tick={{ fill: '#6b7280', fontSize: 11, fontWeight: 500 }}
+                    axisLine={false}
+                    tickLine={false}
+                    tickMargin={12}
                   />
                   <YAxis 
-                    tick={{ fontSize: 12, fill: '#6b7280' }}
-                    axisLine={{ stroke: '#e5e7eb' }}
+                    tick={{ fill: '#6b7280', fontSize: 11, fontWeight: 500 }}
+                    axisLine={false}
+                    tickLine={false}
+                    tickMargin={12}
                     tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
+                    domain={[0, 'dataMax + 5000']}
                   />
-                  <Tooltip content={<CustomTooltip />} />
+                  <Tooltip 
+                    content={({ active, payload, label }) => {
+                      if (active && payload && payload.length) {
+                        const data = payload[0].payload;
+                        return (
+                          <div className="bg-white/95 backdrop-blur-sm shadow-xl border-0 rounded-lg p-4">
+                            <p className="font-semibold text-gray-900 mb-2">{data.fullDate || label}</p>
+                            <div className="space-y-1">
+                              <div className="flex items-center justify-between gap-4">
+                                <span className="text-sm text-gray-600">Revenue:</span>
+                                <span className="text-sm font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                                  {currencyFormat(baseCurrency, payload[0].value)}
+                                </span>
+                              </div>
+                              {data.invoices !== undefined && (
+                                <div className="flex items-center justify-between gap-4">
+                                  <span className="text-sm text-gray-600">Invoices:</span>
+                                  <span className="text-sm font-semibold text-gray-900">{data.invoices}</span>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      }
+                      return null;
+                    }}
+                    cursor={{ stroke: '#e5e7eb', strokeWidth: 1 }}
+                  />
                   <Area 
                     type="monotone" 
                     dataKey="revenue" 
-                    stroke="#9ca3af" 
-                    strokeWidth={2}
-                    fill="url(#revenueGradient)" 
+                    stroke="url(#invoiceStrokeRevenue)"
+                    strokeWidth={3}
+                    fill="url(#invoiceColorRevenue)"
+                    dot={{ 
+                      fill: '#6366f1', 
+                      strokeWidth: 2, 
+                      r: 3,
+                      stroke: '#ffffff',
+                      filter: 'url(#invoiceShadow)'
+                    }}
+                    activeDot={{ 
+                      r: 6, 
+                      strokeWidth: 3,
+                      stroke: '#ffffff',
+                      fill: '#6366f1',
+                      filter: 'url(#invoiceShadow)'
+                    }}
+                    animationDuration={1500}
+                    animationEasing="ease-in-out"
                   />
                 </AreaChart>
               </ResponsiveContainer>
             </div>
+            
+            {/* Additional Stats Row */}
+            <div className="grid grid-cols-3 gap-4 mt-6 pt-6 border-t border-gray-100">
+              <div className="text-center">
+                <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">Monthly Average</p>
+                <p className="text-lg font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                  {currencyFormat(baseCurrency, monthlyAvg)}
+                </p>
+              </div>
+              <div className="text-center">
+                <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">Peak Month</p>
+                <p className="text-lg font-bold text-gray-900">
+                  {revenueData.reduce((max, item) => item.revenue > max.revenue ? item : max, revenueData[0] || {revenue: 0})?.month || '-'}
+                </p>
+              </div>
+              <div className="text-center">
+                <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">Total Invoices</p>
+                <p className="text-lg font-bold text-gray-900">
+                  {revenueData.reduce((sum, item) => sum + (item.invoices || 0), 0)}
+                </p>
+              </div>
+            </div>
           </div>
+        </div>
       </div>
     </div>
   );

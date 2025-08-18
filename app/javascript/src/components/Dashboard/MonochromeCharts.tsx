@@ -115,6 +115,7 @@ export const RevenueAreaChart: React.FC<RevenueChartProps> = ({
                 axisLine={false}
                 tickMargin={12}
                 tick={{ fill: '#6b7280', fontSize: 11, fontWeight: 500 }}
+                interval="preserveStartEnd"
               />
               <YAxis
                 tickLine={false}
@@ -126,14 +127,31 @@ export const RevenueAreaChart: React.FC<RevenueChartProps> = ({
               />
               <ChartTooltip
                 cursor={{ stroke: '#e5e7eb', strokeWidth: 1 }}
-                content={
-                  <ChartTooltipContent
-                    labelFormatter={(value) => value}
-                    formatter={(value: any) => currencyFormat(baseCurrency, value)}
-                    indicator="dot"
-                    className="bg-white/95 backdrop-blur-sm shadow-xl border-0 rounded-lg"
-                  />
-                }
+                content={({ active, payload, label }) => {
+                  if (active && payload && payload.length) {
+                    const data = payload[0].payload;
+                    return (
+                      <div className="bg-white/95 backdrop-blur-sm shadow-xl border-0 rounded-lg p-4">
+                        <p className="font-semibold text-gray-900 mb-2">{data.fullDate || label}</p>
+                        <div className="space-y-1">
+                          <div className="flex items-center justify-between gap-4">
+                            <span className="text-sm text-gray-600">Revenue:</span>
+                            <span className="text-sm font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                              {currencyFormat(baseCurrency, payload[0].value)}
+                            </span>
+                          </div>
+                          {data.invoices !== undefined && (
+                            <div className="flex items-center justify-between gap-4">
+                              <span className="text-sm text-gray-600">Invoices:</span>
+                              <span className="text-sm font-semibold text-gray-900">{data.invoices}</span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  }
+                  return null;
+                }}
               />
               <Area
                 dataKey="revenue"
