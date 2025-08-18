@@ -86,7 +86,7 @@ const SearchTimeEntries = ({
       }}
     >
       <SelectTrigger className="w-52">
-        <SelectValue placeholder="Select employee" />
+        <SelectValue placeholder={currentUser?.label || "Select team member"} />
       </SelectTrigger>
       <SelectContent>
         {employeeList.map(employee => (
