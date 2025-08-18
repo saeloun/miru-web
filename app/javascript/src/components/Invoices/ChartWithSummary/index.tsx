@@ -85,8 +85,8 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
   useEffect(() => {
     if (monthlyInvoices) {
       setRevenueData(monthlyInvoices.monthlyData || []);
-      setGrowthRate(monthlyInvoices.growth || 0);
-      setMonthlyAvg(monthlyInvoices.avg || 0);
+      setGrowthRate(typeof monthlyInvoices.growth === 'number' ? monthlyInvoices.growth : 0);
+      setMonthlyAvg(typeof monthlyInvoices.avg === 'number' ? monthlyInvoices.avg : 0);
     }
   }, [monthlyInvoices]);
 
@@ -236,7 +236,7 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
                 <div className="flex items-center gap-2 bg-white/80 px-4 py-2 rounded-lg">
                   <TrendUp className={`w-5 h-5 ${growthRate > 0 ? 'text-green-600' : 'text-red-600'}`} />
                   <span className={`text-sm font-semibold ${growthRate > 0 ? 'text-green-600' : 'text-red-600'}`}>
-                    {growthRate > 0 ? '+' : ''}{growthRate.toFixed(1)}%
+                    {growthRate > 0 ? '+' : ''}{(typeof growthRate === 'number' ? growthRate : 0).toFixed(1)}%
                   </span>
                   <span className="text-xs text-gray-500">vs last year</span>
                 </div>
