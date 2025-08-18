@@ -97,6 +97,10 @@ const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({
         const minutes = String(date.getMinutes()).padStart(2, '0');
         return `${year}-${month}-${day} ${hours}:${minutes}`;
       }
+      // Handle edge case where time might be 24:00
+      if (typeof date === 'string' && date.includes(' 24:')) {
+        return date.replace(' 24:', ' 23:59');
+      }
       return date;
     };
 
