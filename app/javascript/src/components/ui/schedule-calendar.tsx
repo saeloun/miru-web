@@ -104,11 +104,16 @@ const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({
       return date;
     };
 
+    // Check if it's an all-day event (start and end are the same date without time)
+    const startStr = formatEventDate(event.start);
+    const endStr = formatEventDate(event.end);
+    const isAllDay = startStr === endStr && !startStr.includes(':');
+    
     return {
       id: String(event.id),
       title: event.title || 'Event',
-      start: formatEventDate(event.start),
-      end: formatEventDate(event.end),
+      start: isAllDay ? startStr : startStr,
+      end: isAllDay ? startStr : endStr,
       calendarId: event.calendarId || 'holidays',
       ...(event.description && { description: event.description }),
       ...(event._customContent && { _customContent: event._customContent })
