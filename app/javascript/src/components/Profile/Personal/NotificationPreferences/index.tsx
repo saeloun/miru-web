@@ -5,16 +5,12 @@ import CustomToggle from "common/CustomToggle";
 import Loader from "common/Loader/index";
 import { MobileEditHeader } from "common/Mobile/MobileEditHeader";
 import DetailsHeader from "components/Profile/Common/DetailsHeader";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "components/ui/card";
+import { Switch } from "components/ui/switch";
+import { Label } from "components/ui/label";
 import { useProfileContext } from "context/Profile/ProfileContext";
 import { useUserContext } from "context/UserContext";
-import { ReminderIcon } from "miruIcons";
+import { Bell } from "lucide-react";
 import { useParams } from "react-router-dom";
 
 const NotificationPreferences = () => {
@@ -104,39 +100,38 @@ const NotificationPreferences = () => {
           <Loader />
         </div>
       ) : currentUserId ? (
-        <div className="mt-4 space-y-6 px-4 md:px-10 lg:px-0">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center text-base font-bold text-miru-dark-purple-1000">
-                <ReminderIcon
-                  className="mr-2"
-                  color="#1D1A31"
-                  size={16}
-                  weight="bold"
-                />
+        <div className="mt-6 px-4 md:px-0">
+          <Card className="border-0 shadow-sm">
+            <CardHeader className="bg-gray-50 border-b">
+              <CardTitle className="flex items-center text-lg font-semibold text-gray-900">
+                <Bell className="mr-2 h-5 w-5 text-gray-600" />
                 Email Notifications
               </CardTitle>
-              <CardDescription>
+              <p className="text-sm text-gray-600 mt-1">
                 Manage your email notification preferences
-              </CardDescription>
+              </p>
             </CardHeader>
-            <CardContent>
+            <CardContent className="pt-6">
               <div className="flex items-center justify-between">
                 <div className="space-y-1">
-                  <p className="text-base font-bold text-miru-dark-purple-1000">
+                  <Label 
+                    htmlFor="weekly-reminder"
+                    className="text-sm font-medium text-gray-900 cursor-pointer"
+                  >
                     Weekly Email Reminder
-                  </p>
-                  <p className="text-sm text-miru-dark-purple-600">
-                    Receive weekly email reminders about timesheet entries and
-                    project updates
+                  </Label>
+                  <p className="text-sm text-gray-500">
+                    Receive weekly email reminders about timesheet entries and project updates
                   </p>
                 </div>
-                <CustomToggle
-                  id={currentUserId}
-                  isChecked={isSelected}
-                  setIsChecked={setIsSelected}
-                  toggleCss=""
-                  onToggle={updatePreferences}
+                <Switch
+                  id="weekly-reminder"
+                  checked={isSelected}
+                  onCheckedChange={(checked) => {
+                    setIsSelected(checked);
+                    updatePreferences();
+                  }}
+                  className="data-[state=checked]:bg-gray-900"
                 />
               </div>
             </CardContent>

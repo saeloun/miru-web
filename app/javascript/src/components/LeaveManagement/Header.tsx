@@ -1,11 +1,8 @@
 import React from "react";
 
-import CustomYearPicker from "common/CustomYearPicker";
 import SearchTimeEntries from "common/SearchTimeEntries";
 
 const Header = ({
-  currentYear,
-  setCurrentYear,
   isAdminUser,
   employeeList,
   selectedEmployeeId,
@@ -17,13 +14,6 @@ const Header = ({
         Leaves & Holidays
       </h1>
       <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-        <CustomYearPicker
-          nextYearButtonDisabled
-          currentYear={currentYear}
-          setCurrentYear={setCurrentYear}
-          wrapperClassName="text-gray-700"
-          yearClassName="text-gray-900 font-semibold"
-        />
         {isAdminUser && selectedEmployeeId && (
           <SearchTimeEntries
             employeeList={employeeList}
