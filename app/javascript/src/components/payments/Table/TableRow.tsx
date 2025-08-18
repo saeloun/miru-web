@@ -93,7 +93,7 @@ const TableRow = ({ payment, baseCurrency }: TableRowProps) => {
 
   return (
     <tr className="group cursor-pointer last:border-b-0 md:hover:bg-miru-gray-100">
-      <td className="py-5 pr-2 pl-0 text-left">
+      <td className="w-[25%] py-5 pr-2 pl-0 text-left">
         <div className="flex flex-col">
           {invoiceId ? (
             <Link
@@ -109,54 +109,55 @@ const TableRow = ({ payment, baseCurrency }: TableRowProps) => {
             </span>
           )}
           <h3 className="text-xs font-medium leading-4 text-miru-dark-purple-400 lg:text-sm lg:leading-5">
-            {clientName}
+            {clientName || "—"}
           </h3>
         </div>
       </td>
-      <td className="w-1/4 whitespace-nowrap px-4 py-5 font-medium tracking-normal lg:px-6">
+      <td className="w-[20%] whitespace-nowrap px-4 py-5 font-medium tracking-normal lg:px-6">
         <h1 className="text-xs font-normal text-miru-dark-purple-1000 lg:text-base lg:font-semibold">
-          {transactionDate}
+          {transactionDate || "—"}
         </h1>
         <h3 className="text-xs font-medium text-miru-dark-purple-400 lg:text-sm">
           {getTransactionTypeDisplay(transactionType)}
         </h3>
       </td>
-      <td className="px-2 py-5 text-left lg:px-6">
-        {note && (
-          <p className="text-xs font-normal leading-4 text-miru-dark-purple-400 lg:text-sm">
+      <td className="w-[25%] px-2 py-5 text-left lg:px-6">
+        {note ? (
+          <p className="text-xs font-normal leading-4 text-miru-dark-purple-400 lg:text-sm truncate max-w-[200px]">
             {note}
           </p>
+        ) : (
+          <span className="text-xs text-miru-dark-purple-300">—</span>
         )}
       </td>
-      <td className="hidden px-2 text-right text-sm font-bold tracking-normal text-miru-dark-purple-1000 lg:table-cell lg:w-1/6 lg:px-6 lg:pt-2 lg:pb-7 lg:text-xl">
+      <td className="w-[15%] px-2 text-right text-sm font-bold tracking-normal text-miru-dark-purple-1000 lg:px-6 lg:pt-2 lg:pb-7 lg:text-base">
         <div>
-          {currency
-            ? currencyFormat(currency, amount)
-            : baseCurrency && currencyFormat(baseCurrency, amount)}
-          {showConversion && (
-            <div className="text-xs font-normal leading-4 text-miru-dark-purple-400 mt-1">
-              ≈{" "}
-              {convertedAmount
-                ? currencyFormat(baseCurrency, convertedAmount.toFixed(2))
-                : "—"}
-              {convertedAmount && (
-                <span className="ml-1 text-miru-dark-purple-300">
-                  ({exchangeRate?.toFixed(2)} rate)
-                </span>
+          {amount > 0 ? (
+            <>
+              {currency
+                ? currencyFormat(currency, amount)
+                : baseCurrency && currencyFormat(baseCurrency, amount)}
+              {showConversion && (
+                <div className="text-xs font-normal leading-4 text-miru-dark-purple-400 mt-1">
+                  ≈{" "}
+                  {convertedAmount
+                    ? currencyFormat(baseCurrency, convertedAmount.toFixed(2))
+                    : "—"}
+                  {convertedAmount && (
+                    <span className="ml-1 text-miru-dark-purple-300">
+                      ({exchangeRate?.toFixed(2)} rate)
+                    </span>
+                  )}
+                </div>
               )}
-            </div>
+            </>
+          ) : (
+            <span>—</span>
           )}
         </div>
       </td>
-      <td className="relative px-2 py-5 text-right font-medium lg:px-6">
+      <td className="w-[15%] relative px-2 py-5 text-right font-medium lg:px-6">
         <StatusBadge status={status} />
-        <dl className="text-right text-sm font-medium leading-5 lg:hidden">
-          <dt className="mt-1">
-            {currency
-              ? currencyFormat(currency, amount)
-              : baseCurrency && currencyFormat(baseCurrency, amount)}
-          </dt>
-        </dl>
       </td>
     </tr>
   );

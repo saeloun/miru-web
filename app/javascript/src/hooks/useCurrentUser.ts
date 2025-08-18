@@ -33,7 +33,7 @@ export const useCurrentUser = (): UseCurrentUserReturn => {
       setLoading(true);
       setError(null);
 
-      const response = await fetch("/internal_api/v1/users/_me", {
+      const response = await fetch("/api/v1/users/_me", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

@@ -24,12 +24,15 @@ const currencyFormat = (
   amount,
   notation?: "standard" | "compact"
 ) => {
-  const formattedAmount = new Intl.NumberFormat(locale(baseCurrency), {
+  // Default to USD if no currency provided
+  const currency = baseCurrency || "USD";
+  
+  const formattedAmount = new Intl.NumberFormat(locale(currency), {
     style: "currency",
-    currency: baseCurrency,
+    currency: currency,
     maximumFractionDigits: 2,
     notation,
-  }).format(amount);
+  }).format(amount || 0);
 
   return formattedAmount;
 };

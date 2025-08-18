@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Card, CardContent } from "../ui/card";
 import { Button } from "../ui/button";
-import { Badge } from "../ui/badge";
 import { Input } from "../ui/input";
 import {
   Select,
@@ -36,6 +35,8 @@ import {
   Circle,
   AlertCircle,
   Clock,
+  FileText,
+  Hourglass,
 } from "lucide-react";
 import { cn } from "../../lib/utils";
 
@@ -120,26 +121,88 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
       case "overdue":
         return <AlertCircle className="h-4 w-4 text-red-600" />;
       case "draft":
-        return <Circle className="h-4 w-4 text-gray-400" />;
+        return <Circle className="h-4 w-4 text-gray-500" />;
+      case "viewed":
+        return <Eye className="h-4 w-4 text-indigo-600" />;
       default:
-        return <Circle className="h-4 w-4 text-gray-400" />;
+        return <Circle className="h-4 w-4 text-gray-500" />;
     }
   };
 
   const getStatusBadge = (status: string) => {
-    const variants = {
-      paid: "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300",
-      sent: "bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-300",
-      overdue: "bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-300",
-      draft: "bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-300",
+    const statusConfig = {
+      paid: {
+        icon: CheckCircle,
+        bgColor: "#dcfce7",
+        textColor: "#166534",
+        borderColor: "#86efac",
+        label: "Paid"
+      },
+      sent: {
+        icon: Send,
+        bgColor: "#dbeafe",
+        textColor: "#1e40af",
+        borderColor: "#93c5fd",
+        label: "Sent"
+      },
+      overdue: {
+        icon: AlertCircle,
+        bgColor: "#fee2e2",
+        textColor: "#991b1b",
+        borderColor: "#fca5a5",
+        label: "Overdue"
+      },
+      draft: {
+        icon: FileText,
+        bgColor: "#f3f4f6",
+        textColor: "#374151",
+        borderColor: "#d1d5db",
+        label: "Draft"
+      },
+      viewed: {
+        icon: Eye,
+        bgColor: "#e0e7ff",
+        textColor: "#3730a3",
+        borderColor: "#a5b4fc",
+        label: "Viewed"
+      },
+      pending: {
+        icon: Hourglass,
+        bgColor: "#fef3c7",
+        textColor: "#92400e",
+        borderColor: "#fde047",
+        label: "Pending"
+      },
     };
 
+    const config = statusConfig[status as keyof typeof statusConfig] || {
+      icon: Circle,
+      bgColor: "#f3f4f6",
+      textColor: "#374151",
+      borderColor: "#d1d5db",
+      label: status.charAt(0).toUpperCase() + status.slice(1)
+    };
+
+    const Icon = config.icon;
+
     return (
-      <Badge
-        className={cn("text-xs", variants[status as keyof typeof variants])}
+      <span
+        style={{
+          backgroundColor: config.bgColor,
+          color: config.textColor,
+          border: `1px solid ${config.borderColor}`,
+          padding: "4px 10px",
+          borderRadius: "9999px",
+          fontSize: "12px",
+          fontWeight: "600",
+          display: "inline-flex",
+          alignItems: "center",
+          gap: "4px"
+        }}
       >
-        {status.charAt(0).toUpperCase() + status.slice(1)}
-      </Badge>
+        <Icon size={14} />
+        <span>{config.label}</span>
+      </span>
     );
   };
 
@@ -195,7 +258,7 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
   );
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-4 w-full">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>

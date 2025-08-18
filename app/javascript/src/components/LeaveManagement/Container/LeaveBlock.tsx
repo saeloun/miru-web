@@ -1,4 +1,6 @@
 import React from "react";
+import { Card, CardContent } from "../../ui/card";
+import { cn } from "../../../lib/utils";
 
 import {
   generateLeaveIcon,
@@ -24,35 +26,40 @@ const LeaveBlock = ({ leaveType, selectedLeaveType, setSelectedLeaveType }) => {
       ? `-${minToHHMM(-netDuration)} h (-${label})`
       : `${minToHHMM(netDuration)} h (${label})`;
 
-  const selectedDiv =
-    selectedLeaveType?.name == name
-      ? "flex w-full cursor-pointer justify-between rounded-lg p-2 text-white lg:p-6 shadow-2xl border-2 border-miru-dark-purple-1000 border-opacity-20 relative"
-      : "flex w-full cursor-pointer justify-between rounded-lg p-2 text-white lg:p-6 hover:opacity-80 relative";
+  const isSelected = selectedLeaveType?.name === name;
 
   return (
-    <div
-      className={selectedDiv}
-      style={{ background: leaveColor.value }}
+    <Card 
+      className={cn(
+        "cursor-pointer transition-all hover:shadow-md border",
+        isSelected ? "border-miru-han-purple-400 bg-miru-han-purple-100/30" : "border-gray-200 bg-white"
+      )}
       onClick={() => setSelectedLeaveType(leaveType)}
     >
-      <div className="z-10 w-3/4 flex-col">
-        <div
-          className="hidden h-8 w-8 items-center justify-center rounded-full lg:flex"
-          style={{ backgroundColor: "white", color: leaveColor.value }}
-        >
-          {leaveIcon?.icon}
+      <CardContent className="p-4">
+        <div className="flex items-start justify-between">
+          <div className="flex-1">
+            <div className="flex items-center gap-3 mb-2">
+              <div 
+                className="h-8 w-8 rounded-lg flex items-center justify-center"
+                style={{ 
+                  backgroundColor: leaveColor.value + '15',
+                  color: leaveColor.value 
+                }}
+              >
+                {leaveIcon?.icon}
+              </div>
+              <h3 className="font-medium text-gray-900">
+                {name}
+              </h3>
+            </div>
+            <p className="text-2xl font-semibold text-gray-900">
+              {formattedDuration}
+            </p>
+          </div>
         </div>
-        <div className="mt-4 flex flex-col">
-          <span className="text-xs font-semibold lg:text-sm">{name}</span>
-          <span className="mt-2 text-base font-semibold lg:text-2xl">
-            {formattedDuration}
-          </span>
-        </div>
-      </div>
-      <div className="absolute right-0 hidden h-3/4 w-1/4 items-end justify-end p-2 text-white opacity-10 lg:flex">
-        {leaveIcon?.icon}
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 };
 

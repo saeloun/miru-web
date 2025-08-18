@@ -7,6 +7,9 @@ class ActionDispatch::Routing::Mapper
 end
 
 Rails.application.routes.draw do
+  # Test login route (remove in production)
+  get "test_login", to: "test_login#login" if Rails.env.development?
+
   # Health check endpoint
   get "/health", to: "health#index"
 
@@ -30,23 +33,6 @@ Rails.application.routes.draw do
     end
   end
 
-  namespace :admin do
-      resources :users
-      resources :timesheet_entries
-      resources :stripe_connected_accounts
-      resources :roles
-      resources :project_members
-      resources :projects
-      resources :payments
-      resources :invoice_line_items
-      resources :invoices
-      resources :invitations
-      resources :companies
-      resources :clients
-      resources :addresses
-
-      root to: "users#index"
-    end
   devise_for :users, skip: [:sessions, :registrations], controllers: {
     confirmations: "users/confirmations",
     omniauth_callbacks: "users/omniauth_callbacks"
@@ -59,7 +45,6 @@ Rails.application.routes.draw do
     mount LetterOpenerWeb::Engine, at: "/sent_emails"
   end
 
-  draw(:internal_api)
   draw(:api)
 
   resources :workspaces, only: [:update]

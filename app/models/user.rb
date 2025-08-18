@@ -19,12 +19,14 @@
 #  last_sign_in_at        :datetime
 #  last_sign_in_ip        :string
 #  phone                  :string
+#  provider               :string
 #  remember_created_at    :datetime
 #  reset_password_sent_at :datetime
 #  reset_password_token   :string
 #  sign_in_count          :integer          default(0), not null
 #  social_accounts        :jsonb
 #  token                  :string(50)
+#  uid                    :string
 #  unconfirmed_email      :string
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
@@ -119,6 +121,27 @@ class User < ApplicationRecord
     :recoverable, :rememberable, :validatable,
     :trackable, :confirmable,
     :omniauthable, omniauth_providers: [:google_oauth2]
+
+  # Devise session serialization fix
+  def self.serialize_into_session(record)
+    [record.id.to_s, record.authenticatable_salt]
+  end
+
+  def self.serialize_from_session(*args)
+    # Handle both old and new session formats
+    if args.length == 2
+      key, salt = args
+    elsif args.length > 2
+      # Extract just the first two arguments (id and salt)
+      key = args[0]
+      salt = args[1]
+    else
+      return nil
+    end
+
+    record = find_by(id: key)
+    record if record && record.authenticatable_salt == salt
+  end
 
   # Callbacks
   before_validation :prevent_spam_user_sign_up

@@ -60,6 +60,7 @@ gem "foreman"
 # Add Ahoy for event tracking
 gem "ahoy_matey"
 
+
 # Security scanning
 gem "brakeman", require: false
 

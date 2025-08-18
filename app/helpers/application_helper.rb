@@ -32,9 +32,7 @@ module ApplicationHelper
   end
 
   def get_initial_props
-    {
-      google_oauth_success: @google_oauth_success.present?
-    }
+    {}
   end
 
   private
