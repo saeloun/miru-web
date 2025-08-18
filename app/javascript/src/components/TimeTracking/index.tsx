@@ -39,7 +39,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
     company?.date_format || company?.dateFormat || "MM-DD-YYYY";
 
   const [dayInfo, setDayInfo] = useState<any[]>([]);
-  const [view, setView] = useState<string>("week"); // Default to week view
+  const [view, setView] = useState<string>("month"); // Default to month view
   const [newEntryView, setNewEntryView] = useState<boolean>(false);
   const [newRowView, setNewRowView] = useState<boolean>(false);
   const [selectDate, setSelectDate] = useState<number>(dayjs().weekday());
@@ -76,8 +76,8 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
   useEffect(() => {
     sendGAPageView();
     fetchTimeTrackingData();
-    // Always default to week view
-    setView("week");
+    // Default to month view
+    setView("month");
   }, []);
 
   const fetchTimeTrackingData = async () => {
@@ -506,7 +506,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
                   id: entry.id,
                   title: `${entry.project_name}: ${minToHHMM(entry.duration)}`,
                   start: `${date} 09:00`,
-                  end: `${date} ${17 + Math.floor(entry.duration / 60)}:00`,
+                  end: `${date} ${Math.min(23, 17 + Math.floor(entry.duration / 60))}:59`,
                   calendarId: 'timesheet'
                 }))
               )}
