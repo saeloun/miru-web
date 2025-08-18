@@ -117,7 +117,8 @@ const SidebarItem: React.FC<{
               <Link
                 to={item.href}
                 className={cn(
-                  "flex items-center gap-3 px-3 py-2 text-sm rounded-lg transition-colors",
+                  "flex items-center justify-center py-2 text-sm rounded-lg transition-colors",
+                  "w-10 h-10 mx-auto",
                   level > 0 && "ml-4",
                   isActive
                     ? "bg-primary/10 text-primary"

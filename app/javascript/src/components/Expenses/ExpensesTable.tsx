@@ -31,7 +31,6 @@ import {
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Checkbox } from "../ui/checkbox";
-import { Tabs, TabsList, TabsTrigger } from "../ui/tabs";
 import {
   Plus,
   DotsThree,
@@ -104,15 +103,14 @@ const ExpensesTable: React.FC = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { isAdminUser, company } = useUserContext();
-  const [statusFilter, setStatusFilter] = useState("all");
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [selectedExpense, setSelectedExpense] = useState<Expense | null>(null);
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ["expenses", statusFilter],
-    queryFn: () => fetchExpenses(statusFilter),
+    queryKey: ["expenses"],
+    queryFn: () => fetchExpenses("all"),
   });
 
   const deleteMutation = useMutation({
@@ -149,23 +147,23 @@ const ExpensesTable: React.FC = () => {
     switch (status) {
       case "approved":
         return (
-          <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
-            <CheckCircle size={14} className="mr-1" />
-            Approved
+          <Badge className="bg-green-50 text-green-700 border-green-200 hover:bg-green-50">
+            <CheckCircle size={12} className="mr-1" weight="fill" />
+            <span className="text-xs font-medium">Approved</span>
           </Badge>
         );
       case "rejected":
         return (
-          <Badge className="bg-red-100 text-red-800 hover:bg-red-100">
-            <XCircle size={14} className="mr-1" />
-            Rejected
+          <Badge className="bg-red-50 text-red-700 border-red-200 hover:bg-red-50">
+            <XCircle size={12} className="mr-1" weight="fill" />
+            <span className="text-xs font-medium">Rejected</span>
           </Badge>
         );
       default:
         return (
-          <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100">
-            <Clock size={14} className="mr-1" />
-            Pending
+          <Badge className="bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-50">
+            <Clock size={12} className="mr-1" weight="fill" />
+            <span className="text-xs font-medium">Pending</span>
           </Badge>
         );
     }
@@ -173,9 +171,9 @@ const ExpensesTable: React.FC = () => {
 
   const getTypeBadge = (type: string) => {
     return type === "billable" ? (
-      <Badge variant="outline" className="text-green-700">Billable</Badge>
+      <Badge variant="outline" className="text-xs text-green-700 border-green-300 bg-green-50">Billable</Badge>
     ) : (
-      <Badge variant="outline" className="text-gray-600">Non-billable</Badge>
+      <Badge variant="outline" className="text-xs text-gray-600 border-gray-300">Non-billable</Badge>
     );
   };
 
@@ -210,11 +208,11 @@ const ExpensesTable: React.FC = () => {
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="-ml-4"
           >
-            Date
+            <span className="text-xs font-medium text-gray-700 uppercase tracking-wider">Date</span>
             {column.getIsSorted() === "asc" ? (
-              <ArrowUp size={16} className="ml-2" />
+              <ArrowUp size={14} className="ml-1" />
             ) : column.getIsSorted() === "desc" ? (
-              <ArrowDown size={16} className="ml-2" />
+              <ArrowDown size={14} className="ml-1" />
             ) : null}
           </Button>
         );
@@ -223,8 +221,8 @@ const ExpensesTable: React.FC = () => {
         const date = new Date(row.original.date);
         return (
           <div className="flex items-center gap-2">
-            <Calendar size={16} className="text-gray-400" />
-            <span className="font-medium">
+            <Calendar size={14} className="text-gray-500" />
+            <span className="text-sm text-gray-700 font-medium">
               {date.toLocaleDateString('en-US', { 
                 month: 'short', 
                 day: 'numeric',
@@ -237,13 +235,13 @@ const ExpensesTable: React.FC = () => {
     },
     {
       accessorKey: "description",
-      header: "Description",
+      header: () => <span className="text-xs font-medium text-gray-700 uppercase tracking-wider">Description</span>,
       cell: ({ row }) => {
         return (
           <div>
-            <p className="font-medium text-gray-900">{row.original.description}</p>
+            <p className="text-sm font-medium text-gray-900">{row.original.description}</p>
             {row.original.notes && (
-              <p className="text-sm text-gray-500 truncate max-w-xs">
+              <p className="text-xs text-gray-500 truncate max-w-xs mt-1">
                 {row.original.notes}
               </p>
             )}
@@ -253,19 +251,19 @@ const ExpensesTable: React.FC = () => {
     },
     {
       accessorKey: "category",
-      header: "Category",
+      header: () => <span className="text-xs font-medium text-gray-700 uppercase tracking-wider">Category</span>,
       cell: ({ row }) => {
         return (
           <div className="flex items-center gap-2">
-            <Tag size={16} className="text-gray-400" />
-            <span className="text-sm">{row.original.category}</span>
+            <Tag size={14} className="text-gray-500" />
+            <span className="text-sm text-gray-700">{row.original.category}</span>
           </div>
         );
       },
     },
     {
       accessorKey: "vendor",
-      header: "Vendor",
+      header: () => <span className="text-xs font-medium text-gray-700 uppercase tracking-wider">Vendor</span>,
       cell: ({ row }) => {
         return (
           <span className="text-sm text-gray-600">
@@ -283,18 +281,18 @@ const ExpensesTable: React.FC = () => {
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="-ml-4"
           >
-            Amount
+            <span className="text-xs font-medium text-gray-700 uppercase tracking-wider">Amount</span>
             {column.getIsSorted() === "asc" ? (
-              <ArrowUp size={16} className="ml-2" />
+              <ArrowUp size={14} className="ml-1" />
             ) : column.getIsSorted() === "desc" ? (
-              <ArrowDown size={16} className="ml-2" />
+              <ArrowDown size={14} className="ml-1" />
             ) : null}
           </Button>
         );
       },
       cell: ({ row }) => {
         return (
-          <div className="font-medium">
+          <div className="text-sm font-semibold text-gray-900">
             {currencyFormat(baseCurrency, row.original.amount)}
           </div>
         );
@@ -302,21 +300,21 @@ const ExpensesTable: React.FC = () => {
     },
     {
       accessorKey: "expenseType",
-      header: "Type",
+      header: () => <span className="text-xs font-medium text-gray-700 uppercase tracking-wider">Type</span>,
       cell: ({ row }) => {
         return getTypeBadge(row.original.expenseType);
       },
     },
     {
       accessorKey: "status",
-      header: "Status",
+      header: () => <span className="text-xs font-medium text-gray-700 uppercase tracking-wider">Status</span>,
       cell: ({ row }) => {
         return getStatusBadge(row.original.status);
       },
     },
     {
       id: "receipts",
-      header: "Receipts",
+      header: () => <span className="text-xs font-medium text-gray-700 uppercase tracking-wider">Receipts</span>,
       cell: ({ row }) => {
         const receipts = row.original.receipts || [];
         if (receipts.length === 0) {
@@ -403,106 +401,100 @@ const ExpensesTable: React.FC = () => {
   const rejectedAmount = totalAmount - pendingAmount - approvedAmount;
 
   return (
-    <div className="space-y-6 p-6 max-w-7xl mx-auto">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Expenses</h1>
-          <p className="text-gray-600 mt-1">
-            Track and manage your business expenses
-          </p>
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Header */}
+        <div className="mb-8">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div>
+              <h1 className="text-2xl font-semibold text-gray-900">Expenses</h1>
+              <p className="text-sm text-gray-600 mt-1">
+                Track and manage your business expenses
+              </p>
+            </div>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+              >
+                <Upload size={16} className="mr-2" />
+                Import
+              </Button>
+              <Button
+                onClick={() => setShowAddDialog(true)}
+                size="sm"
+              >
+                <Plus size={16} className="mr-2" />
+                Add Expense
+              </Button>
+            </div>
+          </div>
         </div>
-        <div className="flex gap-2">
-          <Button
-            variant="outline"
-            className="bg-white"
-          >
-            <Upload size={20} className="mr-2" />
-            Import
-          </Button>
-          <Button
-            onClick={() => setShowAddDialog(true)}
-            className="bg-gray-900 hover:bg-gray-800 text-white"
-          >
-            <Plus size={20} className="mr-2" />
-            Add Expense
-          </Button>
-        </div>
-      </div>
 
-      {/* Stats Cards */}
-      <div className="grid gap-4 md:grid-cols-4">
-        <Card className="border-gray-200">
+        {/* Stats Cards */}
+        <div className="grid gap-4 md:grid-cols-4 mb-6">
+          <Card className="border-0 shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Expenses</CardTitle>
+            <CardTitle className="text-sm font-medium text-gray-700">Total Expenses</CardTitle>
             <CurrencyDollar size={20} className="text-gray-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-2xl font-semibold text-gray-900">
               {currencyFormat(baseCurrency, totalAmount)}
             </div>
-            <p className="text-xs text-gray-600 mt-1">All time</p>
+            <p className="text-xs text-gray-500 mt-1">All time</p>
           </CardContent>
         </Card>
 
-        <Card className="border-gray-200">
+        <Card className="border-0 shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Pending</CardTitle>
+            <CardTitle className="text-sm font-medium text-gray-700">Pending</CardTitle>
             <Clock size={20} className="text-yellow-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-2xl font-semibold text-gray-900">
               {currencyFormat(baseCurrency, pendingAmount)}
             </div>
-            <p className="text-xs text-gray-600 mt-1">Awaiting approval</p>
+            <p className="text-xs text-gray-500 mt-1">Awaiting approval</p>
           </CardContent>
         </Card>
 
-        <Card className="border-gray-200">
+        <Card className="border-0 shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Approved</CardTitle>
+            <CardTitle className="text-sm font-medium text-gray-700">Approved</CardTitle>
             <CheckCircle size={20} className="text-green-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-2xl font-semibold text-gray-900">
               {currencyFormat(baseCurrency, approvedAmount)}
             </div>
-            <p className="text-xs text-gray-600 mt-1">Ready to reimburse</p>
+            <p className="text-xs text-gray-500 mt-1">Ready to reimburse</p>
           </CardContent>
         </Card>
 
-        <Card className="border-gray-200">
+        <Card className="border-0 shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">This Month</CardTitle>
+            <CardTitle className="text-sm font-medium text-gray-700">This Month</CardTitle>
             <Calendar size={20} className="text-gray-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-2xl font-semibold text-gray-900">
               {expenses.length}
             </div>
-            <p className="text-xs text-gray-600 mt-1">Expense entries</p>
+            <p className="text-xs text-gray-500 mt-1">Expense entries</p>
           </CardContent>
         </Card>
       </div>
 
-      {/* Status Filter Tabs */}
-      <Tabs value={statusFilter} onValueChange={setStatusFilter}>
-        <TabsList className="grid w-full grid-cols-4 max-w-md">
-          <TabsTrigger value="all">All</TabsTrigger>
-          <TabsTrigger value="pending">Pending</TabsTrigger>
-          <TabsTrigger value="approved">Approved</TabsTrigger>
-          <TabsTrigger value="rejected">Rejected</TabsTrigger>
-        </TabsList>
-      </Tabs>
 
-      {/* Data Table */}
-      <Card className="border-gray-200">
-        <CardHeader>
-          <CardTitle>Expense List</CardTitle>
-          <CardDescription>
-            View and manage all expense entries with their approval status.
-          </CardDescription>
-        </CardHeader>
+        {/* Data Table */}
+        <Card className="border-0 shadow-sm">
+          <CardHeader className="pb-4">
+            <CardTitle className="text-lg font-semibold">All Expenses</CardTitle>
+            <CardDescription className="text-sm text-gray-600">
+              View and manage all expense entries with their approval status
+            </CardDescription>
+          </CardHeader>
         <CardContent>
           {expenses.length > 0 ? (
             <DataTable
@@ -525,10 +517,11 @@ const ExpensesTable: React.FC = () => {
               )}
             </div>
           )}
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
 
-      {/* Delete Confirmation Dialog */}
       <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
         <DialogContent>
           <DialogHeader>
@@ -554,7 +547,6 @@ const ExpensesTable: React.FC = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>
   );
 };
 

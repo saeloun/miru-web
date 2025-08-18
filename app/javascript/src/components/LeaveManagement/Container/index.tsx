@@ -21,8 +21,11 @@ const Container = ({
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const { company } = useUserContext();
 
-  // Use the calendar data hook - this fetches holidays from API
-  const { events, isLoading, holidays } = useCalendarData(selectedDate);
+  // Use the calendar data hook - for personal leaves page, fetch holidays AND user's timeoff
+  const { events, isLoading, holidays } = useCalendarData(selectedDate, { 
+    includeTimeoff: true,   // Show personal timeoff on user's leaves page
+    includeTimesheet: false // Don't show timesheet entries on leaves page
+  });
 
   const handleEventClick = (event: any) => {
     // Handle event click if needed
