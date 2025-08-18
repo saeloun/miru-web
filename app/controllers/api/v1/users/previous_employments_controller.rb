@@ -11,7 +11,7 @@ module Api
         after_action :verify_authorized, except: :index
 
         def index
-          @previous_employments = @user.previous_employments.order(from: :desc)
+          @previous_employments = @user.previous_employments.order(created_at: :desc)
           render json: {
             previous_employments: @previous_employments.map { |pe| previous_employment_details(pe) }
           }, status: 200
@@ -61,7 +61,7 @@ module Api
 
           def previous_employment_params
             params.require(:previous_employment).permit(
-              :company_name, :designation, :from, :to
+              :company_name, :role
             )
           end
 
@@ -70,9 +70,7 @@ module Api
               id: previous_employment.id,
               user_id: previous_employment.user_id,
               company_name: previous_employment.company_name,
-              designation: previous_employment.designation,
-              from: previous_employment.from,
-              to: previous_employment.to,
+              role: previous_employment.role,
               created_at: previous_employment.created_at,
               updated_at: previous_employment.updated_at
             }

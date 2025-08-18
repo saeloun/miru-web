@@ -53,8 +53,6 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
         { label: "Leaves", href: "/settings/leaves", icon: Tree },
         { label: "Company Settings", href: "/settings/organization", icon: Buildings },
         { label: "Payment Settings", href: "/settings/payment", icon: Wallet },
-        { label: "Billing", href: "/settings/billing", icon: Receipt },
-        { label: "Import/Export", href: "/settings/import-export", icon: ChartLine },
       ],
     },
     {

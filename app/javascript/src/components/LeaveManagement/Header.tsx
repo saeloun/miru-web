@@ -14,7 +14,7 @@ const Header = ({
   <div className="mb-8">
     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
       <h1 className="text-2xl font-bold text-gray-900">
-        Leaves & Time Off
+        Leaves & Holidays
       </h1>
       <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
         <CustomYearPicker

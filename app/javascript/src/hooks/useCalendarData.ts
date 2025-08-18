@@ -104,18 +104,31 @@ const fetchTimesheetEntries = async (startDate: Date, endDate: Date): Promise<Ti
       }
     });
     
-    if (data.entries) {
-      return data.entries.map((entry: any) => ({
-        id: entry.id,
-        user_id: entry.user_id,
-        project_id: entry.project_id,
-        project_name: entry.project_name || entry.project,
-        client_name: entry.client_name || entry.client,
-        duration: entry.duration || entry.logged_minutes,
-        note: entry.note || entry.description,
-        work_date: entry.work_date,
-        bill_status: entry.bill_status
-      }));
+    // The API returns entries as an object with dates as keys
+    if (data.entries && typeof data.entries === 'object') {
+      const allEntries: TimesheetEntry[] = [];
+      
+      // Iterate through each date's entries
+      Object.keys(data.entries).forEach(date => {
+        const dateEntries = data.entries[date];
+        if (Array.isArray(dateEntries)) {
+          dateEntries.forEach((entry: any) => {
+            allEntries.push({
+              id: entry.id,
+              user_id: entry.userId || entry.user_id,
+              project_id: entry.project_id,
+              project_name: entry.project || entry.project_name,
+              client_name: entry.client || entry.client_name,
+              duration: entry.duration || entry.logged_minutes,
+              note: entry.description || entry.task || entry.note,
+              work_date: entry.date || date,
+              bill_status: entry.billable ? 'billable' : 'non_billable'
+            });
+          });
+        }
+      });
+      
+      return allEntries;
     }
     
     return [];

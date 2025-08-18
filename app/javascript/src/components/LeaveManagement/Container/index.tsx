@@ -1,7 +1,6 @@
-import React, { Fragment, useState } from "react";
+import React, { useState } from "react";
 
 import { useUserContext } from "context/UserContext";
-import { getYear, format } from "date-fns";
 import { minToHHMM } from "helpers";
 import { X } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "../../ui/card";
@@ -29,7 +28,6 @@ const Container = ({
 
   const handleEventClick = (event: any) => {
     console.log('Event clicked:', event);
-    // You can open a modal or show details here
   };
 
   const handleDateSelect = (date: Date) => {
@@ -58,11 +56,11 @@ const Container = ({
       )}
       
       {/* Calendar Section */}
-      <div className="bg-white rounded-lg shadow-sm">
-        <div className="p-6 border-b border-gray-200">
-          <h2 className="text-xl font-semibold text-gray-900">Calendar</h2>
-        </div>
-        <div className="p-6">
+      <Card className="border-0 shadow-sm">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-lg">Calendar</CardTitle>
+        </CardHeader>
+        <CardContent className="p-4">
           <ScheduleCalendar
             events={events}
             onEventClick={handleEventClick}
@@ -75,8 +73,8 @@ const Container = ({
               { id: 'leave', label: 'Time Off', colorName: 'leave' }
             ]}
           />
-        </div>
-      </div>
+        </CardContent>
+      </Card>
       
       {/* Leave Details Table */}
       {timeoffEntries && timeoffEntries.length > 0 && (

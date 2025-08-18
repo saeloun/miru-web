@@ -229,14 +229,7 @@ const ProjectsTable: React.FC = () => {
       cell: ({ row }) => {
         const clientName = row.original.client_name || row.original.client?.name || "No Client";
         return (
-          <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center">
-              <span className="text-xs text-gray-500">
-                {clientName.charAt(0).toUpperCase()}
-              </span>
-            </div>
-            <span className="text-sm">{clientName}</span>
-          </div>
+          <span className="text-sm font-medium text-gray-700">{clientName}</span>
         );
       },
     },
