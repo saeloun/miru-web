@@ -50,34 +50,47 @@ const AllocatedDevicesDetails = () => {
   };
 
   return (
-    <Fragment>
-      {isDesktop ? (
-        <DetailsHeader
-          editAction={handleEdit}
-          isDisableUpdateBtn={false}
-          showButtons={false}
-          subTitle=""
-          title="Allocated Devices"
-        />
-      ) : (
-        <MobileEditHeader
-          href="edit"
-          title="Allocated Devices"
-          backHref={
-            isCalledFromSettings
-              ? "/settings/"
-              : `/team/${currentUserId || memberId}`
-          }
-        />
-      )}
-      {isLoading ? (
-        <div className="flex min-h-70v items-center justify-center">
-          <Loader />
-        </div>
-      ) : (
-        <StaticPage devices={devices} />
-      )}
-    </Fragment>
+    <div className="min-h-screen bg-gray-50">
+      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+        {isDesktop ? (
+          <div className="mb-8">
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900">Allocated Devices</h1>
+                <p className="mt-1 text-gray-600">
+                  Manage and view all devices allocated to {isFromSettings ? "you" : "this team member"}
+                </p>
+              </div>
+              {devices.length > 0 && (
+                <button
+                  onClick={handleEdit}
+                  className="rounded-lg bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800 transition-colors"
+                >
+                  Edit Devices
+                </button>
+              )}
+            </div>
+          </div>
+        ) : (
+          <MobileEditHeader
+            href="edit"
+            title="Allocated Devices"
+            backHref={
+              isCalledFromSettings
+                ? "/settings/"
+                : `/team/${currentUserId || memberId}`
+            }
+          />
+        )}
+        {isLoading ? (
+          <div className="flex min-h-[60vh] items-center justify-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+          </div>
+        ) : (
+          <StaticPage devices={devices} />
+        )}
+      </div>
+    </div>
   );
 };
 
