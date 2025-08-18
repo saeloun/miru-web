@@ -504,14 +504,14 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
               events={Object.entries(entryList).flatMap(([date, entries]: [string, any[]]) => 
                 entries.map((entry, index) => ({
                   id: entry.id,
-                  title: `${entry.project_name}: ${minToHHMM(entry.duration)}`,
+                  title: `${entry.project || entry.project_name || 'No Project'}: ${minToHHMM(entry.duration)}`,
                   description: entry.note || '',
                   start: `${date}`,
                   end: `${date}`,
                   calendarId: 'timesheet',
                   _customContent: {
-                    projectName: entry.project_name,
-                    clientName: entry.client_name,
+                    projectName: entry.project || entry.project_name || 'No Project',
+                    clientName: entry.client || entry.client_name || 'No Client',
                     duration: minToHHMM(entry.duration),
                     note: entry.note || 'No description',
                     billable: entry.bill_status
