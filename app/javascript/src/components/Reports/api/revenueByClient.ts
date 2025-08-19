@@ -1,6 +1,7 @@
-import clientRevenueApi from "apis/reports/clientRevenue";
 import dayjs from "dayjs";
 import Logger from "js-logger";
+
+import clientRevenueApi from "apis/reports/clientRevenue";
 
 dayjs.Ls.en.weekStart = 1;
 
@@ -61,15 +62,13 @@ const getReportData = async ({
           fromDate = dayjs(customDate.from).format("DD-MM-YYYY");
           toDate = dayjs(customDate.to).format("DD-MM-YYYY");
         } else {
-          // Default to showing data from the beginning of current year
-          fromDate = dayjs().startOf('year').format("DD-MM-YYYY");
+          fromDate = "01-01-2022";
           toDate = dayjs().format("DD-MM-YYYY");
         }
         break;
 
       default:
-        // Default to showing data from the beginning of current year
-        fromDate = dayjs().startOf('year').format("DD-MM-YYYY");
+        fromDate = "01-01-2022";
         toDate = dayjs().format("DD-MM-YYYY");
         break;
     }

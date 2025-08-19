@@ -13,7 +13,7 @@ import { sendGAPageView } from "utils/googleAnalytics";
 import worldCountries from "world-countries";
 import * as Yup from "yup";
 
-import { StaticPage } from "./StaticPage";
+import { ModernStaticPage } from "./ModernStaticPage";
 
 import EditHeader from "../../Common/EditHeader";
 
@@ -508,7 +508,7 @@ const OrgEdit = () => {
       {isLoading ? (
         <Loader className="min-h-70v" />
       ) : (
-        <StaticPage
+        <ModernStaticPage
           cancelAction={handleCancelAction}
           countries={countries}
           currenciesOption={currenciesOption}

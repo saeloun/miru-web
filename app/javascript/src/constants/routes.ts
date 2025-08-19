@@ -28,6 +28,7 @@ import OutstandingInvoiceReport from "../components/Reports/OutstandingInvoiceRe
 import RevenueByClientReport from "../components/Reports/RevenueByClientReport";
 import TimeEntryReports from "../components/Reports/TimeEntryReport";
 import TotalHoursReport from "../components/Reports/totalHoursLogged";
+import PaymentReport from "../components/Reports/PaymentReport";
 import PlanSelection from "../components/Subscriptions/PlanSelection";
 import TimeTracking from "../components/TimeTracking";
 
@@ -48,6 +49,7 @@ const ReportsRoutes = [
   { path: "outstanding-overdue-invoice", Component: OutstandingInvoiceReport },
   { path: "total-hours", Component: TotalHoursReport },
   { path: "accounts-aging", Component: AccountsAgingReport },
+  { path: "payments", Component: PaymentReport },
 ];
 
 const ProjectsRoutes = [

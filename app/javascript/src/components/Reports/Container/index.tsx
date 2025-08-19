@@ -1,7 +1,10 @@
 import React, { Fragment } from "react";
 
-import EmptyStates from "common/EmptyStates";
 import { minToHHMM } from "helpers";
+import { ClientsIcon } from "miruIcons";
+import { Avatar } from "StyledComponents";
+
+import EmptyStates from "common/EmptyStates";
 
 import ReportRow from "./ReportRow";
 
@@ -12,26 +15,24 @@ interface ContainerProps {
 }
 
 const ReportHeader = () => (
-  <div className="grid grid-cols-5 gap-2 border-b border-miru-gray-200 bg-miru-gray-50">
-    <div className="py-4 pr-6 text-left">
-      <span className="text-xs font-medium uppercase tracking-widest text-miru-black-1000">
-        PROJECT / CLIENT
-      </span>
+  <div className="grid grid-cols-5 items-center gap-2 border-b">
+    <div className="py-5 pr-6 text-left text-xs font-medium uppercase leading-4 tracking-widest text-miru-dark-purple-600">
+      PROJECT/
+      <br />
+      CLIENT
     </div>
-    <div className="col-span-2 px-6 py-4 text-left">
-      <span className="text-xs font-medium uppercase tracking-widest text-miru-black-1000">
-        NOTE
-      </span>
+    <div className="col-span-2 px-6 py-5 text-left text-xs font-medium uppercase leading-4 tracking-widest text-miru-dark-purple-600">
+      NOTE
     </div>
-    <div className="px-6 py-4 text-left">
-      <span className="text-xs font-medium uppercase tracking-widest text-miru-black-1000">
-        TEAM MEMBER / DATE
-      </span>
+    <div className="px-6 py-5 text-left text-xs font-medium uppercase leading-4 tracking-widest text-miru-dark-purple-600">
+      TEAM MEMBER/
+      <br />
+      DATE
     </div>
-    <div className="py-4 pl-6 text-right">
-      <span className="text-xs font-medium uppercase tracking-widest text-miru-black-1000">
-        HOURS
-      </span>
+    <div className="py-5 pl-6 text-right text-xs font-medium uppercase leading-4 tracking-widest text-miru-dark-purple-600">
+      HOURS
+      <br />
+      LOGGED
     </div>
   </div>
 );
@@ -44,6 +45,18 @@ const Container = ({ selectedFilter }: ContainerProps) => {
       timeEntryReport?.groupByTotalDuration?.groupedDurations?.[id];
 
     return minToHHMM(totalHours || 0);
+  };
+
+  const getTableLogo = (groupedBy: string | null, clientLogo: string) => {
+    const logo = {
+      client: <Avatar classNameImg="mr-2 lg:mr-6" url={clientLogo} />,
+      project: <ClientsIcon className="m-0 object-contain" size={40} />,
+      team_member: <Avatar />,
+    };
+
+    return logo[groupedBy] ? (
+      <div className="mr-6 md:h-10 md:w-10">{logo[groupedBy]}</div>
+    ) : null;
   };
 
   const getEntryList = entries =>
@@ -72,21 +85,21 @@ const Container = ({ selectedFilter }: ContainerProps) => {
             return (
               <Fragment key={index}>
                 {label !== "" && (
-                  <div className="flex items-center justify-between border-b border-miru-gray-300 bg-gradient-to-r from-miru-gray-100 to-miru-gray-50 px-4 py-3">
+                  <div className="flex items-center justify-between border-b border-miru-han-purple-1000 py-5">
                     <div className="flex items-center">
-                      <h1 className="text-base font-semibold text-miru-dark-purple-1000">
+                      {getTableLogo(
+                        selectedFilter?.groupBy?.value || null,
+                        clientLogo
+                      )}
+                      <h1 className="font-manrope text-xl font-bold text-miru-han-purple-1000">
                         {label}
                       </h1>
                     </div>
                     {entries?.length > 0 && (
-                      <div className="text-right">
-                        <span className="text-xs font-medium uppercase tracking-wide text-miru-dark-purple-500">
-                          Total:
-                        </span>
-                        <span className="ml-2 text-base font-bold text-miru-dark-purple-1000">
-                          {getTotalHoursLogged(id)}
-                        </span>
-                      </div>
+                      <p className="text-right font-manrope text-base font-medium text-miru-dark-purple-1000">
+                        Total Hours for {label} : &nbsp;
+                        {getTotalHoursLogged(id)}
+                      </p>
                     )}
                   </div>
                 )}

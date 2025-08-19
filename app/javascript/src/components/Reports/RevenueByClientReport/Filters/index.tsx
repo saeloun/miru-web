@@ -1,18 +1,18 @@
-import { LocalStorageKeys } from "constants/index";
-
 import React, { useEffect, useRef, useState } from "react";
+
+import dayjs from "dayjs";
+import { useDebounce, useOutsideClick } from "helpers";
+import Logger from "js-logger";
+import { FilterIcon, MinusIcon, PlusIcon, XIcon } from "miruIcons";
+import { Button, SidePanel } from "StyledComponents";
 
 import companiesApi from "apis/companies";
 import clientRevenueApi from "apis/reports/clientRevenue";
 import CustomDateRangePicker from "common/CustomDateRangePicker";
 import CustomRadioButton from "common/CustomRadio";
 import ClientFilter from "components/Reports/Filters/ClientFilter";
+import { LocalStorageKeys } from "constants/index";
 import { useUserContext } from "context/UserContext";
-import dayjs from "dayjs";
-import { useDebounce, useOutsideClick } from "helpers";
-import Logger from "js-logger";
-import { FilterIcon, MinusIcon, PlusIcon, XIcon } from "miruIcons";
-import { Button, SidePanel } from "StyledComponents";
 
 import { dateRangeOptions } from "./filterOptions";
 
@@ -217,9 +217,7 @@ const FilterSideBar = ({
   });
 
   const resetCustomDatePicker = () => {
-    if (defaultDateRange()) {
-      setFilters(setDefaultDateRange());
-    }
+    defaultDateRange() && setFilters(setDefaultDateRange());
     hideCustomFilter();
     setSelectedInput("from-input");
   };
@@ -243,11 +241,9 @@ const FilterSideBar = ({
       return;
     }
 
-    if (defaultDateRange()) {
-      setFilterParams(setDefaultDateRange());
-    } else {
-      setFilterParams(filters);
-    }
+    defaultDateRange()
+      ? setFilterParams(setDefaultDateRange())
+      : setFilterParams(filters);
 
     window.localStorage.setItem(
       LocalStorageKeys.REVENUE_FILTERS,
@@ -266,11 +262,9 @@ const FilterSideBar = ({
         client.label.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
       );
 
-      if (newClientList.length > 0) {
-        setFilteredClientList(newClientList);
-      } else {
-        setFilteredClientList([]);
-      }
+      newClientList.length > 0
+        ? setFilteredClientList(newClientList)
+        : setFilteredClientList([]);
     } else {
       setFilteredClientList(clientList);
     }

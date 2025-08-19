@@ -1,5 +1,5 @@
 import React from "react";
-import { MapPinIcon, Buildings, Globe, Upload, X } from "phosphor-react";
+import { MapPin, Buildings, Globe, Upload, X } from "phosphor-react";
 import PhoneInput from "react-phone-number-input";
 import flags from "react-phone-number-input/flags";
 import "react-phone-number-input/style.css";
@@ -182,7 +182,7 @@ export const ModernStaticPage = ({
     </FormSection>
     {/* Address Section */}
     <FormSection>
-      <SectionHeader icon={MapPinIcon} title="Address" />
+      <SectionHeader icon={MapPin} title="Address" />
       <div className="grid md:grid-cols-2 gap-3">
         <InputWrapper className="md:col-span-2">
           <label className="text-xs font-medium text-miru-dark-purple-600">

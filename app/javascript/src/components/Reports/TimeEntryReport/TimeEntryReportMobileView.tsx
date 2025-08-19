@@ -1,9 +1,10 @@
 import React, { Fragment } from "react";
 
-import EmptyStates from "common/EmptyStates";
 import { minToHHMM } from "helpers";
 import { ClientsIcon } from "miruIcons";
 import { Avatar, Pagination } from "StyledComponents";
+
+import EmptyStates from "common/EmptyStates";
 
 import ReportMobileRow from "./ReportMobileRow";
 

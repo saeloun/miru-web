@@ -1,7 +1,6 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 import React from "react";
 
-import withLayout from "common/Mobile/HOC/withLayout";
-import { useUserContext } from "context/UserContext";
 import {
   ReportcalendarIcon,
   CalendarHoverIcon,
@@ -14,6 +13,9 @@ import {
   AccountsAgingIcon,
   AccountsAgingHoverIcon,
 } from "miruIcons";
+
+import withLayout from "common/Mobile/HOC/withLayout";
+import { useUserContext } from "context/UserContext";
 
 import ReportCard from "./reportCard";
 
@@ -66,27 +68,21 @@ const List = () => {
   const { isDesktop } = useUserContext();
 
   const ReportsLayout = () => (
-    <div className="min-h-screen bg-background p-6">
-      {isDesktop && (
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-foreground">Reports</h1>
-          <p className="text-muted-foreground mt-2">
-            Access detailed insights and analytics for your business
-          </p>
-        </div>
-      )}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-7xl">
+    <div className="p-4">
+      {isDesktop && <div className="mt-4 text-3xl font-bold">Reports</div>}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:gap-4">
         {listDetails.map(
           (item, key) =>
             item.show && (
-              <ReportCard
-                description={item.description}
-                icon={item.icon}
-                iconHover={item.iconHover}
-                key={key}
-                title={item.title}
-                url={item.url}
-              />
+              <div key={key}>
+                <ReportCard
+                  description={item.description}
+                  icon={item.icon}
+                  iconHover={item.iconHover}
+                  title={item.title}
+                  url={item.url}
+                />
+              </div>
             )
         )}
       </div>

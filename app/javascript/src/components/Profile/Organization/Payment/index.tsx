@@ -7,10 +7,7 @@ import { useUserContext } from "context/UserContext";
 import { useNavigate } from "react-router-dom";
 import { sendGAPageView } from "utils/googleAnalytics";
 
-import MobileView from "./MobileView";
-import StaticPage from "./StaticPage";
-
-import DisconnectPayment from "../Popups/DisconnectPayment";
+import ModernPaymentSettings from "./ModernPaymentSettings";
 
 const PaymentSettings = () => {
   const [status, setStatus] = React.useState<PaymentSettingsStatus>(
@@ -55,34 +52,7 @@ const PaymentSettings = () => {
     navigate(isDesktop ? "/settings/profile" : "/settings", { replace: true });
   };
 
-  return (
-    <div className="flex w-full flex-col">
-      {isDesktop ? (
-        <StaticPage
-          connectStripe={connectStripe}
-          isStripeConnected={isStripeConnected}
-          setShowDisconnectDialog={setShowDisconnectDialog}
-          status={status}
-        />
-      ) : (
-        <MobileView
-          connectStripe={connectStripe}
-          isStripeConnected={isStripeConnected}
-          setShowDisconnectDialog={setShowDisconnectDialog}
-          status={status}
-          title="Payment Settings"
-          onBackArrowClick={handleBackBtnClick}
-        />
-      )}
-      {showDisconnectDialog && (
-        <DisconnectPayment
-          fetchPaymentSettings={fetchPaymentSettings}
-          setShowDisconnectDialog={setShowDisconnectDialog}
-          showDisconnectDialog={showDisconnectDialog}
-        />
-      )}
-    </div>
-  );
+  return <ModernPaymentSettings onBack={handleBackBtnClick} />;
 };
 
 export default PaymentSettings;

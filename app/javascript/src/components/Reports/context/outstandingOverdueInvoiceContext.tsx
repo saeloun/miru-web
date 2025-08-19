@@ -18,7 +18,7 @@ const OutstandingOverdueInvoiceContext = {
     totalOutstandingAmount: 0,
     totalOverdueAmount: 0,
   },
-  handleRemoveSingleFilter: (key, value) => {},
+  handleRemoveSingleFilter: (key, value) => {}, //eslint-disable-line
 };
 
 export default OutstandingOverdueInvoiceContext;

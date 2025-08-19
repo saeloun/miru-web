@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 
-import CustomCheckbox from "common/CustomCheckbox";
-import { useEntry } from "components/Reports/context/EntryContext";
-import { useUserContext } from "context/UserContext";
 import { useDebounce } from "helpers";
 import { XIcon, FilterIcon, PlusIcon, MinusIcon, SearchIcon } from "miruIcons";
 import { SidePanel, Button } from "StyledComponents";
+
+import CustomCheckbox from "common/CustomCheckbox";
+import { useEntry } from "components/Reports/context/EntryContext";
+import { useUserContext } from "context/UserContext";
 
 const Filters = ({
   setIsFilterVisible,
