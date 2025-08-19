@@ -1,9 +1,10 @@
 import React, { Fragment } from "react";
 
+import { SummaryDashboard } from "StyledComponents";
+
 import EmptyStates from "common/EmptyStates";
 import { useEntry } from "components/Reports/context/EntryContext";
 import { useUserContext } from "context/UserContext";
-import { SummaryDashboard } from "StyledComponents";
 
 import MobileRow from "./MobileRow";
 import TableRow from "./TableRow";

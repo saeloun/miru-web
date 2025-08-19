@@ -12,6 +12,7 @@ import AllocatedDevicesEdit from "components/Profile/Personal/Devices/Edit";
 import EmploymentDetails from "components/Profile/Personal/Employment";
 import EmploymentDetailsEdit from "components/Profile/Personal/Employment/Edit";
 import NotificationPreferences from "components/Profile/Personal/NotificationPreferences";
+import ModernPreferences from "components/Settings/ModernPreferences";
 import UserDetailsView from "components/Profile/Personal/User";
 import UserDetailsEdit from "components/Profile/Personal/User/Edit";
 import LeaveManagement from "components/LeaveManagement";
@@ -91,6 +92,15 @@ export const SETTINGS = [
     Component: NotificationPreferences,
     category: "personal",
     isTab: true,
+  },
+  {
+    label: "PREFERENCES",
+    path: "preferences",
+    icon: <ReminderIcon className="mr-2" size={20} weight="bold" />,
+    authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE],
+    Component: ModernPreferences,
+    category: "personal",
+    isTab: false,
   },
   // Uncomment when Integrating with API
   // {

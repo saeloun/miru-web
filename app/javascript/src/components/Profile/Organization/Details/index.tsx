@@ -8,8 +8,7 @@ import { Outlet, useNavigate } from "react-router-dom";
 import { sendGAPageView } from "utils/googleAnalytics";
 import worldCountries from "world-countries";
 
-import MobileHeader from "./MobileHeader";
-import StaticPage from "./StaticPage";
+import ModernOrganizationSettings from "./ModernOrganizationSettings";
 
 const initialState = {
   id: null,
@@ -109,31 +108,7 @@ const OrgDetails = () => {
     });
   };
 
-  return (
-    <div className="flex w-full flex-col">
-      {isDesktop ? (
-        <DetailsHeader
-          showButtons
-          editAction={handleEditClick}
-          isDisableUpdateBtn={false}
-          subTitle=""
-          title="Organization Settings"
-        />
-      ) : (
-        <MobileHeader
-          title="Organization Settings"
-          onBackArrowClick={handleBackBtnClick}
-          onEditBtnClick={handleEditClick}
-        />
-      )}
-      {isLoading ? (
-        <Loader className="min-h-70v" />
-      ) : (
-        <StaticPage orgDetails={orgDetails} />
-      )}
-      <Outlet />
-    </div>
-  );
+  return <ModernOrganizationSettings onBack={handleBackBtnClick} />;
 };
 
 export default OrgDetails;

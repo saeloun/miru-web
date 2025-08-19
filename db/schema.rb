@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_16_101915) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_19_091216) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -480,6 +480,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_16_101915) do
     t.boolean "notification_enabled", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "invoice_email_notifications", default: true, null: false
+    t.boolean "payment_email_notifications", default: true, null: false
+    t.boolean "timesheet_reminder_enabled", default: true, null: false
+    t.boolean "unsubscribed_from_all", default: false, null: false
     t.index ["company_id"], name: "index_notification_preferences_on_company_id"
     t.index ["user_id", "company_id"], name: "index_notification_preferences_on_user_id_and_company_id", unique: true
     t.index ["user_id"], name: "index_notification_preferences_on_user_id"

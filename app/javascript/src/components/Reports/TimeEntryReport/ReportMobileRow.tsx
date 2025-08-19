@@ -1,9 +1,10 @@
 import React from "react";
 
-import { Divider } from "common/Divider";
 import dayjs from "dayjs";
 import { minToHHMM } from "helpers";
 import { Avatar } from "StyledComponents";
+
+import { Divider } from "common/Divider";
 
 import { ITimeEntry } from "../interface";
 

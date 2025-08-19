@@ -1,50 +1,30 @@
 import React from "react";
 
 import { NavLink } from "react-router-dom";
-import { Card, CardDescription, CardHeader, CardTitle } from "../../ui/card";
-import {
-  FileText,
-  CurrencyDollar,
-  Clock,
-  TrendUp,
-  Calendar,
-} from "phosphor-react";
 
-const getIconForUrl = (url: string) => {
-  switch (url) {
-    case "time-entry":
-      return Clock;
-    case "outstanding-overdue-invoice":
-      return FileText;
-    case "revenue-by-client":
-      return CurrencyDollar;
-    case "accounts-aging":
-      return Calendar;
-    default:
-      return TrendUp;
-  }
-};
-
-const ReportCard = ({ icon, iconHover, title, description, url }) => {
-  const IconComponent = getIconForUrl(url);
-
-  return (
-    <NavLink end to={`/reports/${url}`}>
-      <Card className="group cursor-pointer transition-all hover:shadow-lg hover:scale-[1.02] hover:border-primary/20 h-32">
-        <CardHeader className="flex flex-row items-start gap-4 h-full">
-          <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br from-purple-500/10 to-blue-500/10 group-hover:from-purple-500/20 group-hover:to-blue-500/20 transition-colors">
-            <IconComponent className="h-6 w-6 text-purple-600 group-hover:text-purple-700" />
-          </div>
-          <div className="flex-1 space-y-1">
-            <CardTitle className="text-lg group-hover:text-primary transition-colors">
-              {title}
-            </CardTitle>
-            <CardDescription className="text-sm">{description}</CardDescription>
-          </div>
-        </CardHeader>
-      </Card>
-    </NavLink>
-  );
-};
+const ReportCard = ({ icon, iconHover, title, description, url }) => (
+  <NavLink end className="group" to={`/reports/${url}`}>
+    <div className="hover-component box-border flex cursor-pointer rounded-lg border-b-2 border-miru-gray-100 py-4 last:border-b-0 group-hover:shadow-c1 lg:mt-5 lg:border-2  lg:p-5">
+      <div className="flex h-14 w-14 items-center justify-center rounded bg-gradient-to-b from-miru-report-purple-400 to-miru-report-purple-600 p-2.5 lg:h-120 lg:w-30 lg:p-0">
+        <img
+          className="h-9 w-9 opacity-100 group-hover:hidden group-hover:opacity-0 lg:h-20 lg:w-20"
+          src={icon}
+        />
+        <img
+          className="hidden opacity-0 group-hover:block group-hover:opacity-100"
+          src={iconHover}
+        />
+      </div>
+      <div className="pl-5">
+        <div className="h-[27px] max-w-xs text-base font-semibold text-miru-dark-purple-1000	group-hover:text-miru-han-purple-1000 lg:text-xl">
+          {title}
+        </div>
+        <div className="h-[78px] max-w-xs pt-1 text-xs font-medium	text-miru-dark-purple-400 lg:text-sm lg:font-normal">
+          {description}
+        </div>
+      </div>
+    </div>
+  </NavLink>
+);
 
 export default ReportCard;

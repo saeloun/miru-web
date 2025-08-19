@@ -1,5 +1,7 @@
-import reports from "apis/reports/outstandingOverdueInvoice";
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Toastr } from "StyledComponents";
+
+import reports from "apis/reports/outstandingOverdueInvoice";
 
 const getReportData = async ({
   setClientList,

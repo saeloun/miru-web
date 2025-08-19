@@ -66,6 +66,12 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({
       },
 
       // Payment statuses
+      completed: {
+        icon: <CheckCircle size={12} weight="regular" />,
+        bg: "bg-green-50",
+        text: "text-green-800",
+        label: "Completed",
+      },
       partially_paid: {
         icon: <ArrowCircleDown size={12} weight="regular" />,
         bg: "bg-orange-100",
@@ -164,4 +170,5 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({
   );
 };
 
+export { StatusBadge };
 export default StatusBadge;

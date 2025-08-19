@@ -12,11 +12,10 @@ module Api
         def show
           render json: {
             notification_enabled: @notification_preference&.notification_enabled || false,
-            daily_summary: false,
-            timesheet_reminder: true,
-            team_updates: false,
-            invoice_updates: true,
-            desktop_notifications: false
+            invoice_email_notifications: @notification_preference&.invoice_email_notifications || true,
+            payment_email_notifications: @notification_preference&.payment_email_notifications || true,
+            timesheet_reminder_enabled: @notification_preference&.timesheet_reminder_enabled || true,
+            unsubscribed_from_all: @notification_preference&.unsubscribed_from_all || false
           }, status: 200
         end
 
@@ -44,7 +43,13 @@ module Api
           end
 
           def notification_params
-            params.permit(:notification_enabled)
+            params.permit(
+              :notification_enabled,
+              :invoice_email_notifications,
+              :payment_email_notifications,
+              :timesheet_reminder_enabled,
+              :unsubscribed_from_all
+            )
           end
       end
     end
