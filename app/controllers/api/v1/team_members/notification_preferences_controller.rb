@@ -4,12 +4,11 @@ module Api
   module V1
     module TeamMembers
       class NotificationPreferencesController < Api::V1::BaseController
-        skip_after_action :verify_authorized
-
         before_action :load_user
         before_action :load_notification_preference
 
         def show
+          authorize @user, :show?
           render json: {
             notification_enabled: @notification_preference&.notification_enabled || false,
             invoice_email_notifications: @notification_preference&.invoice_email_notifications || true,
@@ -20,6 +19,7 @@ module Api
         end
 
         def update
+          authorize @user, :update?
           @notification_preference ||= @user.notification_preferences.build(company: current_company)
 
           if @notification_preference.update(notification_params)
