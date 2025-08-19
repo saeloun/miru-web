@@ -23,6 +23,7 @@ import {
   Timer,
   Users,
   Briefcase,
+  CreditCard,
 } from "phosphor-react";
 import { cn } from "../../lib/utils";
 import { useUserContext } from "../../context/UserContext";
@@ -76,6 +77,16 @@ const reportCards: ReportCard[] = [
     icon: Calendar,
     color: "text-orange-600",
     url: "/reports/accounts-aging",
+    available: true,
+    category: "financial",
+  },
+  {
+    id: "payments",
+    title: "Payment Report",
+    description: "Track all payments received with detailed transaction history",
+    icon: CreditCard,
+    color: "text-indigo-600",
+    url: "/reports/payments",
     available: true,
     category: "financial",
   },

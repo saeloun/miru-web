@@ -1,11 +1,13 @@
+/* eslint-disable react/hook-use-state */
 import React, { useState, useEffect, useRef } from "react";
 
-import { useEntry } from "components/Reports/context/EntryContext";
-import { useUserContext } from "context/UserContext";
 import dayjs from "dayjs";
 import { useDebounce, useOutsideClick } from "helpers";
 import { XIcon, FilterIcon } from "miruIcons";
 import { SidePanel, Button } from "StyledComponents";
+
+import { useEntry } from "components/Reports/context/EntryContext";
+import { useUserContext } from "context/UserContext";
 
 import ClientFilter from "./ClientFilter";
 import DateRangeFilter from "./DateRangeFilter";
@@ -111,11 +113,9 @@ const FilterSidebar = ({
             .includes(debouncedSearchQuery.toLowerCase())
         );
 
-        if (newClientList.length > 0) {
-          setFilteredClientList(newClientList);
-        } else {
-          setFilteredClientList([]);
-        }
+        newClientList.length > 0
+          ? setFilteredClientList(newClientList)
+          : setFilteredClientList([]);
       } else {
         setFilteredClientList(filterOptions?.clients);
       }
@@ -158,11 +158,9 @@ const FilterSidebar = ({
             .includes(debouncedTeamsSearchQuery.toLowerCase())
         );
 
-        if (newClientList.length > 0) {
-          setFilteredTeamsList(newClientList);
-        } else {
-          setFilteredTeamsList([]);
-        }
+        newClientList.length > 0
+          ? setFilteredTeamsList(newClientList)
+          : setFilteredTeamsList([]);
       } else {
         setFilteredTeamsList(filterOptions?.teamMembers);
       }

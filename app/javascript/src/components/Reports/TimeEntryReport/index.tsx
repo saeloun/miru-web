@@ -13,7 +13,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { format, subDays, startOfMonth, endOfMonth, startOfYear, endOfYear, startOfQuarter, endOfQuarter } from "date-fns";
+import { format, subDays, startOfMonth, endOfMonth, startOfYear, endOfYear, startOfQuarter, endOfQuarter, addDays } from "date-fns";
 import { DateRange } from "react-day-picker";
 import axios from "../../../apis/api";
 import { minToHHMM } from "../../../helpers";
@@ -43,6 +43,102 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../..
 import { cn } from "../../../lib/utils";
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
 import { Calendar as CalendarComponent } from "../../ui/calendar";
+
+// Separate component to handle table rendering with hooks
+const ReportGroupTable: React.FC<{
+  group: ReportGroup;
+  columns: ColumnDef<TimeEntry>[];
+  getTotalHoursForGroup: (group: ReportGroup) => string;
+}> = ({ group, columns, getTotalHoursForGroup }) => {
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+
+  const table = useReactTable({
+    data: group.entries,
+    columns,
+    onSortingChange: setSorting,
+    onColumnFiltersChange: setColumnFilters,
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    onColumnVisibilityChange: setColumnVisibility,
+    state: {
+      sorting,
+      columnFilters,
+      columnVisibility,
+    },
+  });
+
+  return (
+    <Card>
+      <CardHeader>
+        <div className="flex justify-between items-center">
+          <CardTitle>{group.label}</CardTitle>
+          <div className="flex items-center space-x-2">
+            <span className="text-sm text-muted-foreground">Total:</span>
+            <span className="text-lg font-bold text-indigo-600">
+              {getTotalHoursForGroup(group)}
+            </span>
+          </div>
+        </div>
+      </CardHeader>
+      <CardContent>
+        <div className="rounded-md border">
+          <Table>
+            <TableHeader>
+              {table.getHeaderGroups().map((headerGroup) => (
+                <TableRow key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => {
+                    return (
+                      <TableHead key={header.id}>
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
+                      </TableHead>
+                    );
+                  })}
+                </TableRow>
+              ))}
+            </TableHeader>
+            <TableBody>
+              {table.getRowModel().rows?.length ? (
+                table.getRowModel().rows.map((row) => (
+                  <TableRow
+                    key={row.id}
+                    data-state={row.getIsSelected() && "selected"}
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id}>
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={columns.length}
+                    className="h-24 text-center"
+                  >
+                    No results.
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
 
 interface TimeEntry {
   id: number;
@@ -172,9 +268,9 @@ const TimeEntryReport: React.FC = () => {
   };
 
   const downloadMutation = useMutation({
-    mutationFn: async (format: "csv" | "pdf") => {
+    mutationFn: async (formatType: "csv" | "pdf") => {
       const params = new URLSearchParams({
-        format,
+        format: formatType,
         group_by: groupBy,
         ...(dateRange?.from && { from: format(dateRange.from, "dd/MM/yyyy") }),
         ...(dateRange?.to && { to: format(dateRange.to, "dd/MM/yyyy") }),
@@ -189,7 +285,7 @@ const TimeEntryReport: React.FC = () => {
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement("a");
       link.href = url;
-      const filename = `time_entries_${format(new Date(), "yyyy-MM-dd")}.${format}`;
+      const filename = `time_entries_${format(new Date(), "yyyy-MM-dd")}.${formatType}`;
       link.setAttribute("download", filename);
       document.body.appendChild(link);
       link.click();
@@ -249,10 +345,7 @@ const TimeEntryReport: React.FC = () => {
       <div className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
-            <div className="flex items-center space-x-4">
-              <Clock className="h-6 w-6 text-indigo-600" />
-              <h1 className="text-2xl font-semibold text-gray-900">Time Entry Report</h1>
-            </div>
+            <h1 className="text-2xl font-semibold text-gray-900">Time Entry Report</h1>
             
             <div className="flex items-center space-x-3">
               {/* Date Range Preset Selector */}
@@ -302,8 +395,12 @@ const TimeEntryReport: React.FC = () => {
                     mode="range"
                     defaultMonth={dateRange?.from}
                     selected={dateRange}
-                    onSelect={setDateRange}
+                    onSelect={(range) => {
+                      setDateRange(range);
+                      setDateRangePreset("custom");
+                    }}
                     numberOfMonths={2}
+                    disabled={(date) => date > new Date() || date < new Date("1900-01-01")}
                   />
                 </PopoverContent>
               </Popover>
@@ -390,92 +487,14 @@ const TimeEntryReport: React.FC = () => {
 
         {/* Report Tables */}
         <div className="space-y-6">
-          {data?.reports?.map((group) => {
-            const table = useReactTable({
-              data: group.entries,
-              columns,
-              onSortingChange: setSorting,
-              onColumnFiltersChange: setColumnFilters,
-              getCoreRowModel: getCoreRowModel(),
-              getPaginationRowModel: getPaginationRowModel(),
-              getSortedRowModel: getSortedRowModel(),
-              getFilteredRowModel: getFilteredRowModel(),
-              onColumnVisibilityChange: setColumnVisibility,
-              state: {
-                sorting,
-                columnFilters,
-                columnVisibility,
-              },
-            });
-
-            return (
-              <Card key={group.id}>
-                <CardHeader>
-                  <div className="flex justify-between items-center">
-                    <CardTitle>{group.label}</CardTitle>
-                    <div className="flex items-center space-x-2">
-                      <span className="text-sm text-muted-foreground">Total:</span>
-                      <span className="text-lg font-bold text-indigo-600">
-                        {getTotalHoursForGroup(group)}
-                      </span>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="rounded-md border">
-                    <Table>
-                      <TableHeader>
-                        {table.getHeaderGroups().map((headerGroup) => (
-                          <TableRow key={headerGroup.id}>
-                            {headerGroup.headers.map((header) => {
-                              return (
-                                <TableHead key={header.id}>
-                                  {header.isPlaceholder
-                                    ? null
-                                    : flexRender(
-                                        header.column.columnDef.header,
-                                        header.getContext()
-                                      )}
-                                </TableHead>
-                              );
-                            })}
-                          </TableRow>
-                        ))}
-                      </TableHeader>
-                      <TableBody>
-                        {table.getRowModel().rows?.length ? (
-                          table.getRowModel().rows.map((row) => (
-                            <TableRow
-                              key={row.id}
-                              data-state={row.getIsSelected() && "selected"}
-                            >
-                              {row.getVisibleCells().map((cell) => (
-                                <TableCell key={cell.id}>
-                                  {flexRender(
-                                    cell.column.columnDef.cell,
-                                    cell.getContext()
-                                  )}
-                                </TableCell>
-                              ))}
-                            </TableRow>
-                          ))
-                        ) : (
-                          <TableRow>
-                            <TableCell
-                              colSpan={columns.length}
-                              className="h-24 text-center"
-                            >
-                              No results.
-                            </TableCell>
-                          </TableRow>
-                        )}
-                      </TableBody>
-                    </Table>
-                  </div>
-                </CardContent>
-              </Card>
-            );
-          })}
+          {data?.reports?.map((group) => (
+            <ReportGroupTable
+              key={group.id}
+              group={group}
+              columns={columns}
+              getTotalHoursForGroup={getTotalHoursForGroup}
+            />
+          ))}
         </div>
 
         {/* Pagination */}
