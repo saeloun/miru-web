@@ -58,7 +58,14 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
       const response = await invoiceApi.getInvoices({ per: 50 } as any);
       setInvoices(response.invoices);
       setSummary(response.summary);
-      setRecentlyUpdatedInvoices(response.recentlyUpdatedInvoices);
+      
+      // Sort invoices by updated_at to get recently updated ones
+      const sortedByUpdate = [...response.invoices].sort((a, b) => {
+        const dateA = new Date(a.updatedAt || a.updated_at || 0).getTime();
+        const dateB = new Date(b.updatedAt || b.updated_at || 0).getTime();
+        return dateB - dateA; // Most recent first
+      });
+      setRecentlyUpdatedInvoices(sortedByUpdate.slice(0, 10));
     } catch (err) {
       setError("Failed to load invoices");
       console.error("Error loading invoices:", err);
@@ -154,7 +161,7 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
         await invoiceApi.createInvoice(invoiceData);
       }
 
-      await loadInvoices(1); // Refresh the invoice list from beginning
+      await loadInvoices(); // Refresh the invoice list
       setViewMode("list");
     } catch (err) {
       setError("Failed to save invoice");
@@ -187,7 +194,7 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
         });
       }
 
-      await loadInvoices(1); // Refresh the invoice list from beginning
+      await loadInvoices(); // Refresh the invoice list
       setViewMode("list");
     } catch (err) {
       setError("Failed to send invoice");
@@ -208,7 +215,7 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
         recipients: [invoice.client.email],
       });
 
-      await loadInvoices(1); // Refresh the invoice list from beginning
+      await loadInvoices(); // Refresh the invoice list
     } catch (err) {
       setError("Failed to send invoice");
       console.error("Error sending invoice:", err);
@@ -233,7 +240,7 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
       };
 
       await invoiceApi.updateInvoice(id, updatedInvoice);
-      await loadInvoices(1); // Refresh the invoice list from beginning
+      await loadInvoices(); // Refresh the invoice list
     } catch (err) {
       setError("Failed to mark invoice as paid");
       console.error("Error marking invoice as paid:", err);

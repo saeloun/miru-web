@@ -4,14 +4,15 @@ class Api::V1::ClientsController < Api::V1::ApplicationController
   def index
     authorize Client
 
-    # Use ransack for search
-    @q = current_company.clients.kept.ransack(params[:q])
+    # Apply search/filter
+    clients = current_company.clients.kept
 
     # Apply text search if query present
-    clients = if params[:query].present?
-      current_company.clients.kept.search(params[:query])
-    else
-      @q.result
+    if params[:query].present?
+      clients = clients.search(params[:query])
+    elsif params[:q].present? && params[:q][:name_cont].present?
+      # Handle legacy ransack-style search
+      clients = clients.where("name ILIKE ?", "%#{params[:q][:name_cont]}%")
     end
 
     clients = clients.includes(:logo_attachment)

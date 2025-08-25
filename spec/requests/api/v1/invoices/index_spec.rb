@@ -95,20 +95,6 @@ RSpec.describe "Api::V1::Invoices#index", type: :request do
           expected_invoices.map { |invoice| invoice.client.logo }
         )
       end
-
-      describe "recently_updated_invoices return value" do
-        it "returns top 10 recently updated invoices" do
-          send_request :get, api_v1_invoices_path(), headers: auth_headers(book_keeper)
-          expected_invoices = Invoice.order("updated_at desc").limit(10)
-          expected_ids = expected_invoices.pluck(:id)
-          expect(json_response["recentlyUpdatedInvoices"].pluck("id")).to eq(expected_ids)
-          expect(
-            json_response["recentlyUpdatedInvoices"].map { |invoice| invoice["client"]["logo"] }
-          ).to match_array(
-            expected_invoices.map { |invoice| invoice.client.logo_url }
-          )
-        end
-      end
     end
 
     describe "statuses[] param" do
@@ -246,14 +232,6 @@ RSpec.describe "Api::V1::Invoices#index", type: :request do
         statuses = [:draft, :overdue, :paid]
         send_request :get, api_v1_invoices_path(statuses:), headers: auth_headers(admin)
         expect(response).to have_http_status(:ok)
-      end
-    end
-
-    describe "recently_updated_invoices return value" do
-      it "returns top 10 recently updated invoices" do
-        send_request :get, api_v1_invoices_path(), headers: auth_headers(admin)
-        expected_ids = Invoice.kept.order("updated_at desc").limit(10).pluck(:id)
-        expect(json_response["recentlyUpdatedInvoices"].pluck("id")).to eq(expected_ids)
       end
     end
 

@@ -6,10 +6,20 @@ class Api::V1::Clients::InvoicesController < Api::V1::ApplicationController
   def index
     authorize current_user, policy_class: Clients::InvoicesPolicy
 
-    # Use ransack for filtering
+    # Apply filtering
     invoices = @client.invoices.kept.includes(:company)
-    @q = invoices.ransack(params[:q])
-    invoices_query = @q.result.order(invoice_number: :desc)
+
+    # Handle legacy ransack-style params
+    if params[:q].present?
+      if params[:q][:status_eq].present?
+        invoices = invoices.where(status: params[:q][:status_eq])
+      end
+      if params[:q][:invoice_number_cont].present?
+        invoices = invoices.where("invoice_number ILIKE ?", "%#{params[:q][:invoice_number_cont]}%")
+      end
+    end
+
+    invoices_query = invoices.order(invoice_number: :desc)
 
     # Apply pagination
     pagy, paginated_invoices = pagy(invoices_query, items: params[:items] || 10)

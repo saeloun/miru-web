@@ -16,21 +16,20 @@ json.invoices invoices do |invoice|
   json.currency invoice.currency || current_company.base_currency
   json.created_at invoice.created_at
   json.updated_at invoice.updated_at
+  
+  # Include client details for frontend to use
+  json.client do
+    json.id invoice.client_id
+    json.name invoice.client&.name
+    json.email invoice.client&.email if invoice.client&.email
+    json.logo invoice.client&.logo_url if invoice.client&.logo_url
+  end
 end
 
 json.pagination_details do
   json.page pagination_details[:page]
   json.pages pagination_details[:pages]
   json.total pagination_details[:total]
-end
-
-json.recently_updated_invoices recently_updated_invoices do |invoice|
-  json.id invoice.id
-  json.invoice_number invoice.invoice_number
-  json.client_name invoice.client&.name
-  json.status invoice.status
-  json.amount invoice.amount.to_f
-  json.updated_at invoice.updated_at
 end
 
 json.summary do
