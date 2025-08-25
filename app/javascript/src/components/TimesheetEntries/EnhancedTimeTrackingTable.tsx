@@ -119,7 +119,7 @@ const EnhancedTimeTrackingTable: React.FC = () => {
           end: currentDate.format("YYYY-MM-DD"),
           label: currentDate.format("MMMM D, YYYY"),
         };
-      case "week":
+      case "week": {
         const weekStart = currentDate.startOf("isoWeek");
         const weekEnd = currentDate.endOf("isoWeek");
 
@@ -130,7 +130,8 @@ const EnhancedTimeTrackingTable: React.FC = () => {
             "MMM D, YYYY"
           )}`,
         };
-      case "month":
+      }
+      case "month": {
         const monthStart = currentDate.startOf("month");
         const monthEnd = currentDate.endOf("month");
 
@@ -139,6 +140,7 @@ const EnhancedTimeTrackingTable: React.FC = () => {
           end: monthEnd.format("YYYY-MM-DD"),
           label: currentDate.format("MMMM YYYY"),
         };
+      }
       default:
         return {
           start: currentDate.format("YYYY-MM-DD"),
