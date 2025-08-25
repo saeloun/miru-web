@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import {
   ColumnDef,
@@ -28,13 +28,7 @@ import {
   TableHeader,
   TableRow,
 } from "../../ui/table";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../../ui/select";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -52,7 +46,6 @@ import {
   Clock,
   CurrencyDollar,
   Buildings,
-  Calendar,
   CaretUp,
   ArrowUp,
   ArrowDown,
@@ -65,7 +58,7 @@ import { currencyFormat } from "../../../helpers/currency";
 import { useUserContext } from "../../../context/UserContext";
 import invoicesApi from "../../../apis/invoices";
 import { DateRangePicker } from "../../ui/date-range-picker";
-import { addDays, format } from "date-fns";
+import { format } from "date-fns";
 import { DateRange } from "react-day-picker";
 
 interface Invoice {
@@ -120,6 +113,7 @@ const fetchOutstandingInvoices = async (filters: any = {}) => {
         format(filters.dateRange.from, "yyyy-MM-dd")
       );
     }
+
     if (filters.dateRange.to) {
       queryParams.append("to_date", format(filters.dateRange.to, "yyyy-MM-dd"));
     }
@@ -251,8 +245,8 @@ const ModernOutstandingInvoiceReport: React.FC = () => {
     {
       id: "expander",
       header: () => null,
-      cell: ({ row }) => {
-        return row.getCanExpand() ? (
+      cell: ({ row }) =>
+        row.getCanExpand() ? (
           <Button
             variant="ghost"
             size="sm"
@@ -265,8 +259,7 @@ const ModernOutstandingInvoiceReport: React.FC = () => {
               <CaretRight className="h-4 w-4" />
             )}
           </Button>
-        ) : null;
-      },
+        ) : null,
     },
     {
       accessorKey: "client_name",
@@ -291,6 +284,7 @@ const ModernOutstandingInvoiceReport: React.FC = () => {
       ),
       cell: ({ row }) => {
         const client = row.original;
+
         return (
           <div className="flex items-center gap-3">
             <Buildings className="h-4 w-4 text-gray-400" />
@@ -355,6 +349,7 @@ const ModernOutstandingInvoiceReport: React.FC = () => {
       ),
       cell: ({ row }) => {
         const amount = row.original.total_overdue;
+
         return (
           <div className={cn("font-medium", amount > 0 && "text-red-600")}>
             {currencyFormat(baseCurrency, amount)}
@@ -368,6 +363,7 @@ const ModernOutstandingInvoiceReport: React.FC = () => {
       cell: ({ row }) => {
         const total =
           row.original.total_outstanding + row.original.total_overdue;
+
         return (
           <div className="font-semibold">
             {currencyFormat(baseCurrency, total)}
@@ -580,6 +576,7 @@ const ModernOutstandingInvoiceReport: React.FC = () => {
 
                       if (isInvoice) {
                         const invoice = row.original as unknown as Invoice;
+
                         return (
                           <TableRow
                             key={row.id}

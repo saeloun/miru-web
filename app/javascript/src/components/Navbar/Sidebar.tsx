@@ -22,7 +22,6 @@ import {
   Wallet,
   Palmtree,
   UsersRound,
-  Buildings,
 } from "phosphor-react";
 
 import { cn } from "../../lib/utils";

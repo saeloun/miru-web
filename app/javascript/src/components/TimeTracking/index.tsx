@@ -17,7 +17,6 @@ import { sendGAPageView } from "utils/googleAnalytics";
 
 import DatesInWeek from "./DatesInWeek";
 import { EmptyStatesMobileView } from "./EmptyStatesMobileView";
-import EntryCard from "./EntryCard";
 import EntryForm from "./EntryForm";
 import { ModernTimeEntryForm } from "./ModernTimeEntryForm";
 import Header from "./Header";

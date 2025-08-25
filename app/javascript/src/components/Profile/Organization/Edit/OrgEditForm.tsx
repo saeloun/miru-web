@@ -3,8 +3,6 @@ import {
   Buildings,
   Phone,
   CurrencyDollar,
-  Calendar,
-  Clock,
   Globe,
   CalendarBlank,
   MapPin,

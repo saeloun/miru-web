@@ -17,7 +17,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Calendar } from "@/components/ui/calendar";
 import {
   Popover,
   PopoverContent,
@@ -253,7 +252,7 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
                           !formData.issueDate && "text-muted-foreground"
                         )}
                       >
-                        <CalendarIconIcon className="mr-2 h-4 w-4" />
+                        <CalendarIcon className="mr-2 h-4 w-4" />
                         {formData.issueDate ? (
                           format(formData.issueDate, "PPP")
                         ) : (
@@ -285,7 +284,7 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
                           !formData.dueDate && "text-muted-foreground"
                         )}
                       >
-                        <CalendarIconIcon className="mr-2 h-4 w-4" />
+                        <CalendarIcon className="mr-2 h-4 w-4" />
                         {formData.dueDate ? (
                           format(formData.dueDate, "PPP")
                         ) : (

@@ -63,6 +63,7 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
       const sortedByUpdate = [...response.invoices].sort((a, b) => {
         const dateA = new Date(a.updatedAt || a.updated_at || 0).getTime();
         const dateB = new Date(b.updatedAt || b.updated_at || 0).getTime();
+
         return dateB - dateA; // Most recent first
       });
       setRecentlyUpdatedInvoices(sortedByUpdate.slice(0, 10));
