@@ -89,7 +89,7 @@ puts "Employment Created"
 clients = []
 3.times do
   client = company.clients.create!(
-    name: Faker::Company.unique.name,
+    name: Faker::Company.unique.name[0..29],  # Truncate to 30 chars max
     email: Faker::Internet.unique.email,
     phone: Faker::PhoneNumber.phone_number
   )
@@ -331,7 +331,7 @@ puts "Expense categories created"
 vendors = []
 5.times do
   vendors << company.vendors.create!(
-    name: Faker::Company.unique.name
+    name: Faker::Company.unique.name[0..29]  # Truncate to 30 chars max
   )
 end
 
