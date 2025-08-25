@@ -2,8 +2,9 @@ import React from "react";
 import { cn } from "../../lib/utils";
 import { Badge } from "../ui/badge";
 import { Calendar } from "phosphor-react";
+import { DayInfo } from "../../types/timeTracking";
 
-const DatesInWeek: React.FC<Iprops> = ({
+const DatesInWeek: React.FC<DatesInWeekProps> = ({
   view,
   dayInfo,
   selectDate,
@@ -21,6 +22,8 @@ const DatesInWeek: React.FC<Iprops> = ({
           return (
             <button
               key={index}
+              aria-label={`View entries for ${d.day}, ${d.month} ${d.date}. ${isToday ? 'Today' : ''} ${isSelected ? 'Currently selected' : ''}`}
+              aria-pressed={isSelected}
               className={cn(
                 "relative flex-1 rounded-xl border-2 px-4 py-3 text-center transition-all duration-300 hover:shadow-lg group",
                 isSelected
@@ -179,11 +182,11 @@ const DatesInWeek: React.FC<Iprops> = ({
     </div>
   );
 
-interface Iprops {
+interface DatesInWeekProps {
   view: string;
-  dayInfo: any[];
+  dayInfo: DayInfo[];
   selectDate: number;
-  setSelectDate: any;
+  setSelectDate: (index: number) => void;
 }
 
 export default DatesInWeek;
