@@ -1,81 +1,47 @@
 # frozen_string_literal: true
 
-module Api
-  module V1
-    module Users
-      class PreviousEmploymentsController < Api::V1::BaseController
-        before_action :authenticate_user!
-        before_action :set_user
-        before_action :set_previous_employment, only: [:show, :update]
+# API for Admin and Owner only
 
-        after_action :verify_authorized, except: :index
+class InternalApi::V1::Users::PreviousEmploymentsController < InternalApi::V1::ApplicationController
+  before_action :set_user
 
-        def index
-          @previous_employments = @user.previous_employments.order(created_at: :desc)
-          render json: {
-            previous_employments: @previous_employments.map { |pe| previous_employment_details(pe) }
-          }, status: 200
-        end
-
-        def show
-          authorize @previous_employment
-          render json: { previous_employment: previous_employment_details(@previous_employment) }, status: 200
-        end
-
-        def create
-          @previous_employment = @user.previous_employments.build(previous_employment_params)
-          authorize @previous_employment
-
-          if @previous_employment.save
-            render json: {
-              previous_employment: previous_employment_details(@previous_employment),
-              notice: "Previous employment added successfully"
-            }, status: 201
-          else
-            render json: { errors: @previous_employment.errors.full_messages }, status: :unprocessable_entity
-          end
-        end
-
-        def update
-          authorize @previous_employment
-
-          if @previous_employment.update(previous_employment_params)
-            render json: {
-              previous_employment: previous_employment_details(@previous_employment),
-              notice: "Previous employment updated successfully"
-            }, status: 200
-          else
-            render json: { errors: @previous_employment.errors.full_messages }, status: :unprocessable_entity
-          end
-        end
-
-        private
-
-          def set_user
-            @user = User.find(params[:user_id])
-          end
-
-          def set_previous_employment
-            @previous_employment = @user.previous_employments.find(params[:id])
-          end
-
-          def previous_employment_params
-            params.require(:previous_employment).permit(
-              :company_name, :role
-            )
-          end
-
-          def previous_employment_details(previous_employment)
-            {
-              id: previous_employment.id,
-              user_id: previous_employment.user_id,
-              company_name: previous_employment.company_name,
-              role: previous_employment.role,
-              created_at: previous_employment.created_at,
-              updated_at: previous_employment.updated_at
-            }
-          end
-      end
-    end
+  def index
+    authorize @user, policy_class: Users::PreviousEmploymentPolicy
+    previous_employments = @user.previous_employments
+    render :index, locals: { previous_employments: }, status: 200
   end
+
+  def show
+    authorize previous_employment, policy_class: Users::PreviousEmploymentPolicy
+    render :show, locals: { previous_employment: }, status: 200
+  end
+
+  def update
+    authorize previous_employment, policy_class: Users::PreviousEmploymentPolicy
+    previous_employment.update!(previous_employment_params)
+    render :update, locals: { previous_employment: }, status: 200
+  end
+
+  def create
+    authorize @user, policy_class: Users::PreviousEmploymentPolicy
+    previous_employment = @user.previous_employments.new(previous_employment_params)
+    previous_employment.save!
+    render :create, locals: { previous_employment: }, status: 200
+ end
+
+  private
+
+    def set_user
+      @user ||= User.find(params[:user_id])
+    end
+
+    def previous_employment
+      @previous_employment ||= @user.previous_employments.find(params[:id])
+    end
+
+    def previous_employment_params
+      params.require(:previous_employment).permit(
+        :company_name, :role
+      )
+    end
 end

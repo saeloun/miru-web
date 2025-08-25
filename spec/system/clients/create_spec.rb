@@ -17,7 +17,7 @@ RSpec.describe "Create client API", type: :request do
       user.add_role :admin, company
       sign_in user
 
-      post "/internal_api/v1/clients", params: {
+      post "/api/v1/clients", params: {
         client: { name: "Test Client" }
       }
 
@@ -29,7 +29,7 @@ RSpec.describe "Create client API", type: :request do
       user.add_role :employee, company
       sign_in user
 
-      post "/internal_api/v1/clients", params: {
+      post "/api/v1/clients", params: {
         client: {
           name: "Test Client",
           email: "test@example.com"
@@ -41,7 +41,7 @@ RSpec.describe "Create client API", type: :request do
 
     it "requires authentication for client creation" do
       # Don't sign in - should get unauthorized
-      post "/internal_api/v1/clients", params: {
+      post "/api/v1/clients", params: {
         client: { name: "Test Client" }
       }
 

@@ -22,7 +22,7 @@ RSpec.describe "Delete client", type: :request do
       expect(client.discarded_at).to be_nil
 
       # Delete the client via API
-      delete "/internal_api/v1/clients/#{client.id}"
+      delete "/api/v1/clients/#{client.id}"
 
       # Verify successful response
       expect(response).to have_http_status(:success)
@@ -40,7 +40,7 @@ RSpec.describe "Delete client", type: :request do
 
     it "returns error when deleting non-existent client" do
       # Try to delete non-existent client
-      delete "/internal_api/v1/clients/999999"
+      delete "/api/v1/clients/999999"
 
       # Should return 404 or appropriate error
       expect(response).to have_http_status(:not_found)
@@ -55,7 +55,7 @@ RSpec.describe "Delete client", type: :request do
       sign_in other_user
 
       # Try to delete client
-      delete "/internal_api/v1/clients/#{client.id}"
+      delete "/api/v1/clients/#{client.id}"
 
       # Should be unauthorized or forbidden
       expect(response).to have_http_status(:forbidden).or have_http_status(:unauthorized)

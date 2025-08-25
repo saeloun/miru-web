@@ -14,12 +14,6 @@ namespace :api, defaults: { format: "json" } do
       end
     end
 
-    get "dashboard", to: "dashboard#index"
-
-    namespace :dashboard do
-      resources :activities, only: [:index]
-    end
-
     resources :clients, only: [:index, :update, :destroy, :show, :create] do
       collection do
         get "invoices", to: "clients/invoices#index"
@@ -30,6 +24,8 @@ namespace :api, defaults: { format: "json" } do
 
       member do
         post :send_payment_reminder
+      end
+      member do
         post :add_client_contact
       end
     end
@@ -40,12 +36,12 @@ namespace :api, defaults: { format: "json" } do
         resource :bulk_action, only: [:update, :destroy], controller: "timesheet_entry/bulk_action"
       end
     end
-
     resources :projects, only: [:index, :show, :create, :update, :destroy] do
       collection do
         get "search", to: "projects/search#index"
       end
     end
+    resources :timesheet_entry, only: [:index, :create, :update, :destroy]
 
     namespace :reports do
       resources :client_revenues, only: [:index, :new] do
@@ -68,15 +64,9 @@ namespace :api, defaults: { format: "json" } do
           get :download
         end
       end
-      resources :payments, only: [:index] do
-        collection do
-          get :download
-        end
-      end
     end
 
     resources :workspaces, only: [:index, :update]
-
     namespace :invoices do
       resources :bulk_deletion, only: [:create]
       resources :bulk_download, only: [:index] do
@@ -100,12 +90,6 @@ namespace :api, defaults: { format: "json" } do
         post :send_invoice
         post :send_reminder
         get :download
-        get :view
-        patch :waived
-      end
-      collection do
-        post :bulk_deletion
-        get :bulk_download
       end
     end
 
@@ -147,8 +131,7 @@ namespace :api, defaults: { format: "json" } do
       end
     end
 
-    # Time tracking moved to internal_api
-    # resources :time_tracking, only: [:index], path: "time-tracking"
+    resources :time_tracking, only: [:index], path: "time-tracking"
 
     # Non-Resourceful Routes
     get "payments/settings", to: "payment_settings#index"
@@ -186,9 +169,6 @@ namespace :api, defaults: { format: "json" } do
 
     patch "leave_with_leave_type/:year", to: "leave_with_leave_types#update", as: :update_leave_with_leave_types
     patch "custom_leaves/:year", to: "custom_leaves#update"
-
-    resources :sns_subscriptions, only: [:create]
-
     match "*path", to: "application#not_found", via: :all, constraints: lambda { |req|
       req.path.exclude?("rails/active_storage") && req.path.include?("api")
     }

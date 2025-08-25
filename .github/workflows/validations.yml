@@ -9,14 +9,14 @@ on:
 jobs:
   tests:
     name: Running tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest-4-cores  # Use larger 4-core machine
     if: "!contains(github.event.head_commit.message, 'skip ci')"
     strategy:
       fail-fast: false
       matrix:
-        # Run tests in 4 parallel jobs
-        ci_node_index: [0, 1, 2, 3]
-        ci_node_total: [4]
+        # Run tests in 2 parallel jobs on larger machines
+        ci_node_index: [0, 1]
+        ci_node_total: [2]
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -127,17 +127,28 @@ jobs:
           DB_PASS: password
           CI_NODE_INDEX: ${{ matrix.ci_node_index }}
           CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
-          PARALLEL_TEST_PROCESSORS: 2
+          PARALLEL_TEST_PROCESSORS: 8  # Use more processors on larger machine
           CI: true
-          PLAYWRIGHT_BROWSER: chromium
-          PLAYWRIGHT_HEADLESS: true
+          TEST_STACK_PROF: 1
+          TEST_PROF_FACTORY_DEFAULT: build
+          TEST_PROF_FACTORY_DOCTOR: 1
+          TEST_PROF_RB_PROF: 1
+          TEST_PROF_BEFORE_ALL: 1
         run: |
-          mkdir -p tmp
+          mkdir -p tmp tmp/test-prof
           NODE_GROUP=$((${CI_NODE_INDEX} + 1))
-          # Run all specs in parallel (system specs are skipped via support file)
+          
+          # Exclude system specs explicitly and run only unit/integration tests
           bundle exec parallel_rspec spec \
-            -o "--format progress --format RspecJunitFormatter --out tmp/rspec_${CI_NODE_INDEX}.xml" \
+            --exclude-pattern "spec/system/**/*_spec.rb" \
+            -o "--format progress --format RspecJunitFormatter --out tmp/rspec_${CI_NODE_INDEX}.xml --tag ~type:system" \
             --only-group ${NODE_GROUP}/${CI_NODE_TOTAL} || echo "Tests failed with exit code $?"
+          
+          # Save profiling results if available
+          if [ -d tmp/test-prof ]; then
+            echo "Test profiling results:"
+            ls -la tmp/test-prof/
+          fi
           
           # Also save failed specs list for debugging
           if [ -f tmp/failing_specs.txt ]; then
@@ -166,6 +177,121 @@ jobs:
           flags: unittests
           name: codecov-umbrella
           fail_ci_if_error: false
+
+  playwright-tests:
+    name: Playwright E2E Tests
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, 'skip ci')"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup PostgreSQL
+        uses: Harmon758/postgresql-action@v1.0.0
+        with:
+          postgresql version: 16
+          postgresql db: miru_web_test
+          postgresql user: root
+          postgresql password: "password"
+      
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.4.5'
+          bundler-cache: true
+      
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9
+          run_install: false
+      
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_OUTPUT
+      
+      - name: Setup pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+            node_modules/.cache
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-
+      
+      - name: Install pnpm packages
+        run: |
+          PUPPETEER_SKIP_DOWNLOAD=true pnpm install --frozen-lockfile
+      
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps chromium
+      
+      - name: Setup test database
+        env:
+          RAILS_ENV: test
+          DB_HOST: localhost
+          DB_USER: root
+          DB_PASS: password
+        run: |
+          bundle exec rails db:create
+          bundle exec rails db:schema:load
+          bundle exec rails db:migrate
+          bundle exec rails db:seed
+      
+      - name: Enable PostgreSQL extensions
+        env:
+          RAILS_ENV: test
+          DB_HOST: localhost
+          DB_USER: root
+          DB_PASS: password
+        run: |
+          bundle exec rails runner "ActiveRecord::Base.connection.execute('CREATE EXTENSION IF NOT EXISTS pg_trgm')"
+          bundle exec rails runner "ActiveRecord::Base.connection.execute('CREATE EXTENSION IF NOT EXISTS unaccent')"
+      
+      - name: Build assets
+        run: |
+          bin/vite build
+      
+      - name: Start Rails server
+        env:
+          RAILS_ENV: test
+          DB_HOST: localhost
+          DB_USER: root
+          DB_PASS: password
+        run: |
+          bundle exec rails server -p 3000 -d
+          sleep 10
+          curl -I http://127.0.0.1:3000 || (echo "Rails server failed to start" && exit 1)
+      
+      - name: Run Playwright tests
+        env:
+          RAILS_ENV: test
+          DB_HOST: localhost
+          DB_USER: root
+          DB_PASS: password
+          PLAYWRIGHT_BROWSER: chromium
+          PLAYWRIGHT_HEADLESS: true
+          CI: true
+        run: |
+          pnpm test:e2e
+      
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 30
 
   security-audit:
     name: Security audit

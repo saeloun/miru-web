@@ -1,93 +1,74 @@
 # frozen_string_literal: true
 
-class Api::V1::PaymentsController < Api::V1::BaseController
-  after_action :verify_authorized, except: [:index, :new]
-
-  def index
-    payments = current_company.payments.includes(invoice: :client).order(created_at: :desc)
-
-    render json: {
-      payments: payments.map do |payment|
-        {
-          id: payment.id,
-          invoiceId: payment.invoice_id,
-          invoiceNumber: payment.invoice&.invoice_number,
-          clientId: payment.invoice&.client_id,
-          clientName: payment.invoice&.client&.name,
-          amount: payment.amount || 0,
-          status: payment.status || "paid",
-          transactionDate: (payment.transaction_date || payment.created_at).strftime("%b %d, %Y"),
-          transactionType: payment.transaction_type || "bank_transfer",
-          transactionId: payment.id,
-          note: payment.note,
-          currency: payment.invoice&.client&.currency || current_company.base_currency,
-          exchangeRate: payment.exchange_rate
-        }
-      end,
-      baseCurrency: current_company.base_currency,
-      total: payments.count
-    }
-  end
+class InternalApi::V1::PaymentsController < ApplicationController
+  before_action :set_invoice, only: [:create]
+  after_action :track_event, only: [:create]
 
   def new
-    # Return data needed for creating a new payment
-    invoices = current_company.invoices.includes(:client)
-      .where(status: ["sent", "viewed", "overdue"])
-      .order(created_at: :desc)
+    authorize :new, policy_class: PaymentPolicy
 
-    render json: {
-      invoices: invoices.map do |invoice|
-        {
-          id: invoice.id,
-          invoice_number: invoice.invoice_number,
-          client_name: invoice.client&.name,
-          amount: invoice.amount,
-          outstanding_amount: invoice.outstanding_amount,
-          status: invoice.status
-        }
-      end,
-      payment_methods: ["manual", "stripe", "paypal", "bank_transfer", "check", "cash"]
+    render :new, locals: {
+      invoices: current_company.invoices.includes(:client)
+        .with_statuses(["sent", "viewed", "overdue"])
+        .order(created_at: :asc),
+      company: current_company
     }
   end
 
   def create
-    authorize Payment
+    authorize :create, policy_class: PaymentPolicy
+    name_attr = { name: current_user.full_name }
 
-    invoice = current_company.invoices.find(payment_params[:invoice_id])
-    payment = InvoicePayment::Settle.process(payment_params, invoice)
-
-    if payment.persisted?
-      render json: {
-        payment: {
-          id: payment.id,
-          invoiceNumber: invoice.invoice_number,
-          transactionDate: payment.transaction_date,
-          note: payment.note,
-          transactionType: payment.transaction_type,
-          clientName: invoice.client.name,
-          amount: payment.amount.to_f.to_s,
-          status: payment.status
-        },
-        baseCurrency: current_company.base_currency,
-        message: "Payment recorded successfully"
-      }, status: 201
-    else
-      render json: {
-        errors: payment.errors.full_messages
-      }, status: :unprocessable_entity
+    payment = InvoicePayment::Settle.process(payment_params.merge(name_attr), @invoice)
+    if @invoice.paid?
+      @invoice.send_to_client_email(
+        invoice_id: @invoice.id,
+        subject: "Payment Confirmation of Invoice #{@invoice.invoice_number} for #{@invoice.company.name}"
+      )
     end
-  rescue ActiveRecord::RecordInvalid => e
-    render json: {
-      errors: [e.message]
-    }, status: :unprocessable_entity
+
+    render :create, locals: {
+      payment:,
+      invoice: payment.invoice,
+      client: payment.invoice.client
+    }
+  end
+
+  def index
+    authorize :index, policy_class: PaymentPolicy
+
+    payments = current_company.payments.includes(invoice: [:client])
+
+    # Add search functionality
+    if params[:query].present?
+      search_query = params[:query].strip.downcase
+      payments = payments.joins(invoice: :client)
+                        .where("LOWER(clients.name) LIKE :query OR
+                                LOWER(invoices.invoice_number) LIKE :query OR
+                                CAST(payments.amount AS TEXT) LIKE :query",
+                               query: "%#{search_query}%")
+    end
+
+    payments = payments.order(created_at: :desc)
+
+    render :index,
+      locals: PaymentsPresenter.new(payments, current_company).index_data
   end
 
   private
 
     def payment_params
       params.require(:payment).permit(
-        :invoice_id, :amount, :transaction_date,
-        :transaction_type, :note, :name, :status
+        :invoice_id, :transaction_date, :transaction_type, :amount, :note
       )
+    end
+
+    def set_invoice
+      @invoice = current_company.invoices.find(payment_params[:invoice_id])
+    end
+
+    def track_event
+      create_payment = "create_payment"
+      Invoices::EventTrackerService.new(create_payment, @invoice || invoice, params).process
     end
 end
