@@ -23,6 +23,7 @@ import { ModernTimeEntryForm } from "./ModernTimeEntryForm";
 import Header from "./Header";
 import ScheduleCalendar from "../ui/schedule-calendar";
 import WeeklyEntries from "./WeeklyEntries";
+import EntryDetailsModal from "./EntryDetailsModal";
 
 dayjs.extend(updateLocale);
 dayjs.extend(weekday);
@@ -68,6 +69,8 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
   const [updateView, setUpdateView] = useState(true);
   const [showModernForm, setShowModernForm] = useState<boolean>(false);
   const [modernFormEntry, setModernFormEntry] = useState<any>(null);
+  const [showEntryModal, setShowEntryModal] = useState<boolean>(false);
+  const [modalSelectedDate, setModalSelectedDate] = useState<string>("");
   const employeeOptions = employees.map(e => ({
     value: `${e["id"]}`,
     label: `${e["first_name"]} ${e["last_name"]}`,
@@ -565,116 +568,16 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
                   setNewEntryView(true);
                 }}
                 onDateClick={date => {
-                  setSelectedFullDate(dayjs(date).format(dateFormat));
-                  // Don't automatically open new entry view, just show the day's entries
+                  const formattedDate = dayjs(date).format(dateFormat);
+                  setSelectedFullDate(formattedDate);
+                  setModalSelectedDate(formattedDate);
+                  setShowEntryModal(true);
+                  // Open modal to show day's entries
                   setNewEntryView(false);
                   setEditEntryId(0);
                 }}
               />
-              {/* Show selected day's entries in month view */}
-              {selectedFullDate && (
-                <div className="mt-6 space-y-2">
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-lg font-semibold text-foreground">
-                      Entries for{" "}
-                      {dayjs(selectedFullDate).format("dddd, MMMM D, YYYY")}
-                    </h3>
-                    {!newEntryView && (
-                      <Button
-                        size="sm"
-                        onClick={() => {
-                          setNewEntryView(true);
-                          setEditEntryId(0);
-                        }}
-                        className="bg-primary hover:bg-primary/90 text-primary-foreground"
-                      >
-                        <span className="mr-2">+</span>
-                        Add Entry
-                      </Button>
-                    )}
-                  </div>
-                  {/* Show new entry form when adding */}
-                  {newEntryView && !editEntryId && (
-                    <EntryForm
-                      clients={clients}
-                      editEntryId={editEntryId}
-                      entryList={entryList}
-                      fetchEntries={fetchEntries}
-                      fetchEntriesofMonth={fetchEntriesOfMonths}
-                      handleAddEntryDateChange={handleAddEntryDateChange}
-                      handleDeleteEntry={handleDeleteEntry}
-                      handleFilterEntry={handleFilterEntry}
-                      handleRelocateEntry={handleRelocateEntry}
-                      projects={projects}
-                      removeLocalStorageItems={removeLocalStorageItems}
-                      selectedEmployeeId={selectedEmployeeId}
-                      selectedFullDate={selectedFullDate}
-                      setEditEntryId={setEditEntryId}
-                      setNewEntryView={setNewEntryView}
-                      setSelectedFullDate={setSelectedFullDate}
-                      setUpdateView={setUpdateView}
-                    />
-                  )}
-                  {/* Show existing entries when not adding new */}
-                  {!newEntryView &&
-                  entryList[selectedFullDate] &&
-                  entryList[selectedFullDate].length > 0 ? (
-                    <div className="space-y-2">
-                      {entryList[selectedFullDate].map((entry, index) =>
-                        editEntryId === entry.id ? (
-                          <EntryForm
-                            clients={clients}
-                            editEntryId={editEntryId}
-                            entryList={entryList}
-                            fetchEntries={fetchEntries}
-                            fetchEntriesofMonth={fetchEntriesOfMonths}
-                            handleAddEntryDateChange={handleAddEntryDateChange}
-                            handleDeleteEntry={handleDeleteEntry}
-                            handleFilterEntry={handleFilterEntry}
-                            handleRelocateEntry={handleRelocateEntry}
-                            key={entry.id}
-                            projects={projects}
-                            removeLocalStorageItems={removeLocalStorageItems}
-                            selectedEmployeeId={selectedEmployeeId}
-                            selectedFullDate={selectedFullDate}
-                            setEditEntryId={setEditEntryId}
-                            setNewEntryView={setNewEntryView}
-                            setSelectedFullDate={setSelectedFullDate}
-                            setUpdateView={setUpdateView}
-                          />
-                        ) : (
-                          <EntryCard
-                            handleDeleteEntry={handleDeleteEntry}
-                            handleDuplicate={handleDuplicate}
-                            key={index}
-                            setEditEntryId={setEditEntryId}
-                            setNewEntryView={setNewEntryView}
-                            {...entry}
-                          />
-                        )
-                      )}
-                    </div>
-                  ) : (
-                    !newEntryView && (
-                      <div className="text-center py-8 bg-muted/50 rounded-lg">
-                        <p className="text-muted-foreground mb-4">
-                          No entries for this day
-                        </p>
-                        <Button
-                          variant="outline"
-                          onClick={() => {
-                            setNewEntryView(true);
-                            setEditEntryId(0);
-                          }}
-                        >
-                          <span className="mr-2">+</span>
-                          Add First Entry
-                        </Button>
-                      </div>
-                    )
-                  )}
-                </div>
-              )}
+              {/* Removed inline entry listing - now using modal */}
             </>
           ) : (
             isDesktop && (
@@ -700,7 +603,16 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
                 <DatesInWeek
                   dayInfo={dayInfo}
                   selectDate={selectDate}
-                  setSelectDate={setSelectDate}
+                  setSelectDate={(index) => {
+                    setSelectDate(index);
+                    // Show modal with selected day's entries
+                    const selectedDayInfo = dayInfo[index];
+                    if (selectedDayInfo) {
+                      const formattedDate = dayjs(selectedDayInfo.fullDate).format(dateFormat);
+                      setModalSelectedDate(formattedDate);
+                      setShowEntryModal(true);
+                    }
+                  }}
                   view={view}
                 />
               </div>
@@ -727,42 +639,26 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
               setUpdateView={setUpdateView}
             />
           )}
-          {view !== "week" && !newEntryView && isDesktop && (
+          {view !== "week" && !newEntryView && (
             <Button
-              size="lg"
-              className="w-full h-16 text-xl font-black tracking-wider bg-primary hover:bg-primary/90 text-primary-foreground border-2 border-primary hover:shadow-lg transition-all duration-200 rounded-xl"
+              size="default"
+              className="w-full h-10 text-sm font-medium bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg"
               onClick={() => handleOpenModernForm()}
             >
-              <span className="text-3xl mr-3">+</span>
-              NEW ENTRY
+              <span className="text-lg mr-2">+</span>
+              Add Entry
             </Button>
           )}
-          {/* --- On mobile view we don't need New Entry button for Empty States --- */}
-          {view !== "week" &&
-            !newEntryView &&
-            !isDesktop &&
-            entryList[selectedFullDate] && (
-              <Button
-                size="lg"
-                className="w-full h-14 text-lg font-black tracking-wider bg-primary hover:bg-primary/90 text-primary-foreground border-2 border-primary hover:shadow-lg transition-all duration-200 rounded-xl"
-                onClick={() => {
-                  setNewEntryView(true);
-                  setEditEntryId(0);
-                }}
-              >
-                <span className="text-2xl mr-3">+</span>
-                NEW ENTRY
-              </Button>
-            )}
-          {/* --- weekly view --- */}
+          {/* Removed duplicate mobile NEW ENTRY button for month view */}
+          {/* --- weekly view with smaller button --- */}
           {view === "week" && !newRowView && (
             <Button
-              size="lg"
-              className="w-full h-16 text-xl font-black tracking-wider bg-primary hover:bg-primary/90 text-primary-foreground border-2 border-primary hover:shadow-lg transition-all duration-200 rounded-xl"
+              size="default"
+              className="w-full h-10 text-sm font-medium bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg"
               onClick={() => setNewRowView(true)}
             >
-              <span className="text-3xl mr-3">+</span>
-              ADD ENTRY
+              <span className="text-lg mr-2">+</span>
+              Add Entry
             </Button>
           )}
           {view === "week" && newRowView && (
@@ -862,6 +758,37 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
         existingEntry={modernFormEntry}
         projects={Object.values(projects).flat()}
         clients={clients}
+      />
+
+      {/* Entry Details Modal for Month View */}
+      <EntryDetailsModal
+        isOpen={showEntryModal}
+        onClose={() => {
+          setShowEntryModal(false);
+          setNewEntryView(false);
+          setEditEntryId(0);
+        }}
+        selectedDate={modalSelectedDate}
+        entries={entryList[modalSelectedDate] || []}
+        editEntryId={editEntryId}
+        setEditEntryId={setEditEntryId}
+        handleDeleteEntry={handleDeleteEntry}
+        handleDuplicate={handleDuplicate}
+        setNewEntryView={setNewEntryView}
+        newEntryView={newEntryView}
+        // Form props
+        clients={clients}
+        projects={projects}
+        entryList={entryList}
+        fetchEntries={fetchEntries}
+        fetchEntriesofMonth={fetchEntriesOfMonths}
+        handleAddEntryDateChange={handleAddEntryDateChange}
+        handleFilterEntry={handleFilterEntry}
+        handleRelocateEntry={handleRelocateEntry}
+        removeLocalStorageItems={removeLocalStorageItems}
+        selectedEmployeeId={selectedEmployeeId}
+        setSelectedFullDate={setSelectedFullDate}
+        setUpdateView={setUpdateView}
       />
     </div>
   );

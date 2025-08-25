@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import {
   Clock,
   Users,
-  Building2,
+  Buildings as Building2,
   Download,
-  ChevronDown,
-  CalendarIcon,
-} from "lucide-react";
+  CaretDown as ChevronDown,
+  Calendar as CalendarIcon,
+} from "@phosphor-icons/react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import {
   ColumnDef,

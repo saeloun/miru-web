@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import {
-  DollarSign,
-  TrendingUp,
+  CurrencyDollar as DollarSign,
+  TrendUp as TrendingUp,
   Users,
-  Building2,
+  Buildings as Building2,
   Download,
-  ChevronDown,
-  CalendarIcon,
-} from "lucide-react";
+  CaretDown as ChevronDown,
+  Calendar as CalendarIcon,
+} from "@phosphor-icons/react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import {
   ColumnDef,
@@ -59,7 +59,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "../../ui/card";
 import { cn } from "../../../lib/utils";
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
 import { Calendar as CalendarComponent } from "../../ui/calendar";
-import { formatCurrency } from "../../../utils/currency";
+import { currencyFormat } from "../../../helpers/currency";
 
 interface ClientRevenue {
   id: number;
@@ -222,7 +222,7 @@ const RevenueByClientReport: React.FC = () => {
       header: () => <div className="text-right">Overdue Amount</div>,
       cell: ({ row }) => (
         <div className="text-right text-red-600 font-medium">
-          {formatCurrency(row.getValue("overdue_amount"), data?.currency)}
+          {currencyFormat(data?.currency, row.getValue("overdue_amount"))}
         </div>
       ),
     },
@@ -231,7 +231,7 @@ const RevenueByClientReport: React.FC = () => {
       header: () => <div className="text-right">Outstanding Amount</div>,
       cell: ({ row }) => (
         <div className="text-right text-orange-600 font-medium">
-          {formatCurrency(row.getValue("outstanding_amount"), data?.currency)}
+          {currencyFormat(data?.currency, row.getValue("outstanding_amount"))}
         </div>
       ),
     },
@@ -240,7 +240,7 @@ const RevenueByClientReport: React.FC = () => {
       header: () => <div className="text-right">Paid Amount</div>,
       cell: ({ row }) => (
         <div className="text-right text-green-600 font-medium">
-          {formatCurrency(row.getValue("paid_amount"), data?.currency)}
+          {currencyFormat(data?.currency, row.getValue("paid_amount"))}
         </div>
       ),
     },
@@ -249,7 +249,7 @@ const RevenueByClientReport: React.FC = () => {
       header: () => <div className="text-right">Total Revenue</div>,
       cell: ({ row }) => (
         <div className="text-right font-bold text-indigo-600">
-          {formatCurrency(row.getValue("total_revenue"), data?.currency)}
+          {currencyFormat(data?.currency, row.getValue("total_revenue"))}
         </div>
       ),
     },
@@ -402,9 +402,9 @@ const RevenueByClientReport: React.FC = () => {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-indigo-600">
-                {formatCurrency(
-                  data?.summary?.totalRevenue || 0,
-                  data?.currency
+                {currencyFormat(
+                  data?.currency,
+                  data?.summary?.totalRevenue || 0
                 )}
               </div>
               <p className="text-xs text-muted-foreground">
@@ -425,9 +425,9 @@ const RevenueByClientReport: React.FC = () => {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-green-600">
-                {formatCurrency(
-                  data?.summary?.totalPaidAmount || 0,
-                  data?.currency
+                {currencyFormat(
+                  data?.currency,
+                  data?.summary?.totalPaidAmount || 0
                 )}
               </div>
               <p className="text-xs text-muted-foreground">
@@ -443,9 +443,9 @@ const RevenueByClientReport: React.FC = () => {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-orange-600">
-                {formatCurrency(
-                  data?.summary?.totalOutstandingAmount || 0,
-                  data?.currency
+                {currencyFormat(
+                  data?.currency,
+                  data?.summary?.totalOutstandingAmount || 0
                 )}
               </div>
               <p className="text-xs text-muted-foreground">
@@ -461,9 +461,9 @@ const RevenueByClientReport: React.FC = () => {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-red-600">
-                {formatCurrency(
-                  data?.summary?.totalOverdueAmount || 0,
-                  data?.currency
+                {currencyFormat(
+                  data?.currency,
+                  data?.summary?.totalOverdueAmount || 0
                 )}
               </div>
               <p className="text-xs text-muted-foreground">
