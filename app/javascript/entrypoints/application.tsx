@@ -24,9 +24,14 @@ const queryClient = new QueryClient({
       staleTime: 5 * 60 * 1000, // 5 minutes
       retry: (failureCount, error: any) => {
         // Don't retry on 4xx errors except 408 (timeout)
-        if (error?.status >= 400 && error?.status < 500 && error?.status !== 408) {
+        if (
+          error?.status >= 400 &&
+          error?.status < 500 &&
+          error?.status !== 408
+        ) {
           return false;
         }
+
         return failureCount < 3;
       },
       refetchOnWindowFocus: false,
@@ -50,14 +55,10 @@ const App = (props: any) => (
               toast:
                 "bg-white text-gray-900 border border-gray-200 rounded-md shadow-sm",
               title: "text-sm font-medium",
-              description:
-                "text-xs text-gray-600",
-              success:
-                "bg-green-50 border-green-200 text-green-800",
-              error:
-                "bg-red-50 border-red-200 text-red-800",
-              warning:
-                "bg-yellow-50 border-yellow-200 text-yellow-800",
+              description: "text-xs text-gray-600",
+              success: "bg-green-50 border-green-200 text-green-800",
+              error: "bg-red-50 border-red-200 text-red-800",
+              warning: "bg-yellow-50 border-yellow-200 text-yellow-800",
               info: "bg-blue-50 border-blue-200 text-blue-800",
             },
           }}

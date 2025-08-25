@@ -26,10 +26,10 @@ const currencyFormat = (
 ) => {
   // Default to USD if no currency provided
   const currency = baseCurrency || "USD";
-  
+
   const formattedAmount = new Intl.NumberFormat(locale(currency), {
     style: "currency",
-    currency: currency,
+    currency,
     maximumFractionDigits: 2,
     notation,
   }).format(amount || 0);

@@ -1,5 +1,12 @@
 import React from "react";
-import { Users, CaretDown, CaretUp, MagnifyingGlass, X, Check } from "phosphor-react";
+import {
+  Users,
+  CaretDown,
+  CaretUp,
+  MagnifyingGlass,
+  X,
+  Check,
+} from "phosphor-react";
 
 import { cn } from "../../../lib/utils";
 import {

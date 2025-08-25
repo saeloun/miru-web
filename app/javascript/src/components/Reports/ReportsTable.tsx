@@ -9,7 +9,7 @@ import {
 } from "../ui/card";
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "../ui/tabs";
 import {
   ChartBar,
   FileText,
@@ -20,7 +20,6 @@ import {
   ArrowRight,
   TrendUp,
   Receipt,
-  Timer,
   Users,
   Briefcase,
   CreditCard,
@@ -43,7 +42,8 @@ const reportCards: ReportCard[] = [
   {
     id: "time-entry",
     title: "Time Entry Report",
-    description: "A comprehensive summary of time entries added by your team members",
+    description:
+      "A comprehensive summary of time entries added by your team members",
     icon: Clock,
     color: "text-blue-600",
     url: "/reports/time-entry",
@@ -53,7 +53,8 @@ const reportCards: ReportCard[] = [
   {
     id: "invoices",
     title: "Outstanding & Overdue Invoices",
-    description: "Detailed overview of outstanding and overdue invoices across all clients",
+    description:
+      "Detailed overview of outstanding and overdue invoices across all clients",
     icon: Receipt,
     color: "text-green-600",
     url: "/reports/outstanding-overdue-invoice",
@@ -83,7 +84,8 @@ const reportCards: ReportCard[] = [
   {
     id: "payments",
     title: "Payment Report",
-    description: "Track all payments received with detailed transaction history",
+    description:
+      "Track all payments received with detailed transaction history",
     icon: CreditCard,
     color: "text-indigo-600",
     url: "/reports/payments",
@@ -127,17 +129,21 @@ const ReportsTable: React.FC = () => {
   const { isAdminUser, company } = useUserContext();
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
 
-  const filteredReports = selectedCategory === "all" 
-    ? reportCards 
-    : reportCards.filter(report => report.category === selectedCategory);
+  const filteredReports =
+    selectedCategory === "all"
+      ? reportCards
+      : reportCards.filter(report => report.category === selectedCategory);
 
   const availableReports = filteredReports.filter(r => r.available);
   const comingSoonReports = filteredReports.filter(r => !r.available);
 
   const stats = {
     totalReports: reportCards.filter(r => r.available).length,
-    timeReports: reportCards.filter(r => r.category === "time" && r.available).length,
-    financialReports: reportCards.filter(r => r.category === "financial" && r.available).length,
+    timeReports: reportCards.filter(r => r.category === "time" && r.available)
+      .length,
+    financialReports: reportCards.filter(
+      r => r.category === "financial" && r.available
+    ).length,
     recentlyViewed: 3,
   };
 
@@ -151,10 +157,7 @@ const ReportsTable: React.FC = () => {
             Generate insights and analytics from your business data
           </p>
         </div>
-        <Button
-          variant="outline"
-          className="bg-white"
-        >
+        <Button variant="outline" className="bg-white">
           <Calendar size={20} className="mr-2" />
           Schedule Reports
         </Button>
@@ -164,7 +167,9 @@ const ReportsTable: React.FC = () => {
       <div className="grid gap-4 md:grid-cols-4">
         <Card className="border-gray-200">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Available Reports</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Available Reports
+            </CardTitle>
             <ChartBar size={20} className="text-gray-400" />
           </CardHeader>
           <CardContent>
@@ -186,7 +191,9 @@ const ReportsTable: React.FC = () => {
 
         <Card className="border-gray-200">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Financial Reports</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Financial Reports
+            </CardTitle>
             <CurrencyDollar size={20} className="text-gray-400" />
           </CardHeader>
           <CardContent>
@@ -197,7 +204,9 @@ const ReportsTable: React.FC = () => {
 
         <Card className="border-gray-200">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Recently Viewed</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Recently Viewed
+            </CardTitle>
             <FileText size={20} className="text-gray-400" />
           </CardHeader>
           <CardContent>
@@ -221,10 +230,13 @@ const ReportsTable: React.FC = () => {
       {/* Available Reports */}
       {availableReports.length > 0 && (
         <div className="space-y-4">
-          <h2 className="text-lg font-semibold text-gray-900">Available Reports</h2>
+          <h2 className="text-lg font-semibold text-gray-900">
+            Available Reports
+          </h2>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {availableReports.map((report) => {
+            {availableReports.map(report => {
               const Icon = report.icon;
+
               return (
                 <Card
                   key={report.id}
@@ -233,17 +245,21 @@ const ReportsTable: React.FC = () => {
                 >
                   <CardHeader>
                     <div className="flex items-start justify-between">
-                      <div className={cn(
-                        "p-2 rounded-lg bg-gray-100 group-hover:bg-gray-200 transition-colors",
-                      )}>
+                      <div
+                        className={cn(
+                          "p-2 rounded-lg bg-gray-100 group-hover:bg-gray-200 transition-colors"
+                        )}
+                      >
                         <Icon size={24} className="text-gray-700" />
                       </div>
-                      <ArrowRight 
-                        size={20} 
+                      <ArrowRight
+                        size={20}
                         className="text-gray-400 group-hover:text-gray-600 transition-colors"
                       />
                     </div>
-                    <CardTitle className="text-lg mt-4">{report.title}</CardTitle>
+                    <CardTitle className="text-lg mt-4">
+                      {report.title}
+                    </CardTitle>
                     <CardDescription className="text-sm mt-2">
                       {report.description}
                     </CardDescription>
@@ -251,13 +267,14 @@ const ReportsTable: React.FC = () => {
                   <CardContent>
                     <div className="flex items-center justify-between">
                       <Badge variant="outline" className="text-xs">
-                        {report.category.charAt(0).toUpperCase() + report.category.slice(1)}
+                        {report.category.charAt(0).toUpperCase() +
+                          report.category.slice(1)}
                       </Badge>
                       <Button
                         variant="ghost"
                         size="sm"
                         className="text-gray-600 hover:text-gray-900"
-                        onClick={(e) => {
+                        onClick={e => {
                           e.stopPropagation();
                           // Handle export
                         }}
@@ -279,13 +296,11 @@ const ReportsTable: React.FC = () => {
         <div className="space-y-4">
           <h2 className="text-lg font-semibold text-gray-900">Coming Soon</h2>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {comingSoonReports.map((report) => {
+            {comingSoonReports.map(report => {
               const Icon = report.icon;
+
               return (
-                <Card
-                  key={report.id}
-                  className="border-gray-200 opacity-60"
-                >
+                <Card key={report.id} className="border-gray-200 opacity-60">
                   <CardHeader>
                     <div className="flex items-start justify-between">
                       <div className="p-2 rounded-lg bg-gray-100">

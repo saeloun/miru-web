@@ -90,3 +90,10 @@ node_modules
 parallel_test*.txt
 rspec_output.txt
 *.env
+
+# Test artifacts
+test-*.spec.ts
+*.png
+!app/assets/images/*.png
+!spec/support/fixtures/*.png
+.playwright-mcp/

@@ -58,19 +58,34 @@ class Reports::OutstandingOverdueInvoices::ReportDecorator < ApplicationService
     def calculate_outstanding(client_invoices)
       client_invoices
         .select { |i| ["sent", "viewed"].include?(i.status) }
-        .sum { |invoice| invoice_amount_in_base_currency(invoice) }
+        .sum { |invoice| invoice_amount_due_in_base_currency(invoice) }
     end
 
     def calculate_overdue(client_invoices)
       client_invoices
         .select { |i| i.status == "overdue" }
-        .sum { |invoice| invoice_amount_in_base_currency(invoice) }
+        .sum { |invoice| invoice_amount_due_in_base_currency(invoice) }
     end
 
     def calculate_sum_in_base_currency(invoices)
-      invoices.sum { |invoice| invoice_amount_in_base_currency(invoice) }
+      invoices.sum { |invoice| invoice_amount_due_in_base_currency(invoice) }
     end
 
+    def invoice_amount_due_in_base_currency(invoice)
+      # Use amount_due for unpaid portion
+      amount_due = invoice.amount_due || invoice.amount
+
+      # Apply currency conversion if needed
+      if invoice.base_currency_amount.to_f > 0.00 && invoice.amount.to_f > 0.00
+        # Calculate the ratio of amount_due to full amount, then apply to base currency
+        ratio = amount_due.to_f / invoice.amount.to_f
+        ratio * invoice.base_currency_amount
+      else
+        amount_due
+      end
+    end
+
+    # Keep original method for compatibility if needed elsewhere
     def invoice_amount_in_base_currency(invoice)
       # Use base_currency_amount if available and greater than 0, otherwise use amount
       if invoice.base_currency_amount.to_f > 0.00

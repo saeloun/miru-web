@@ -29,10 +29,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../ui/dialog";
-import { Input } from "../ui/input";
-import { Label } from "../ui/label";
 import { Checkbox } from "../ui/checkbox";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "../ui/tabs";
 import {
   Plus,
   DotsThree,
@@ -78,17 +76,22 @@ interface TimeTrackingData {
   weeklyTotal: number;
 }
 
-const fetchTimeEntries = async (startDate: string, endDate: string): Promise<TimeTrackingData> => {
+const fetchTimeEntries = async (
+  startDate: string,
+  endDate: string
+): Promise<TimeTrackingData> => {
   const response = await timesheetEntryApi.index({
     from: startDate,
     to: endDate,
   });
-  
+
   // Transform the response to match our interface
   const entries = response.data.entries || [];
   const totalMinutes = entries.reduce((sum, entry) => sum + entry.duration, 0);
-  const billableMinutes = entries.filter(e => e.billable).reduce((sum, entry) => sum + entry.duration, 0);
-  
+  const billableMinutes = entries
+    .filter(e => e.billable)
+    .reduce((sum, entry) => sum + entry.duration, 0);
+
   return {
     entries,
     totalHours: totalMinutes / 60,
@@ -102,9 +105,10 @@ const TimeTrackingTable: React.FC = () => {
   const { isAdminUser, user } = useUserContext();
   const [selectedWeek, setSelectedWeek] = useState(() => {
     const now = dayjs();
+
     return {
-      start: now.startOf('week').format('YYYY-MM-DD'),
-      end: now.endOf('week').format('YYYY-MM-DD'),
+      start: now.startOf("week").format("YYYY-MM-DD"),
+      end: now.endOf("week").format("YYYY-MM-DD"),
     };
   });
   const [view, setView] = useState<"day" | "week" | "month">("week");
@@ -150,38 +154,49 @@ const TimeTrackingTable: React.FC = () => {
     }
   };
 
-  const navigateWeek = (direction: 'prev' | 'next') => {
+  const navigateWeek = (direction: "prev" | "next") => {
     const currentStart = dayjs(selectedWeek.start);
-    const newStart = direction === 'prev' 
-      ? currentStart.subtract(1, 'week')
-      : currentStart.add(1, 'week');
-    
+    const newStart =
+      direction === "prev"
+        ? currentStart.subtract(1, "week")
+        : currentStart.add(1, "week");
+
     setSelectedWeek({
-      start: newStart.startOf('week').format('YYYY-MM-DD'),
-      end: newStart.endOf('week').format('YYYY-MM-DD'),
+      start: newStart.startOf("week").format("YYYY-MM-DD"),
+      end: newStart.endOf("week").format("YYYY-MM-DD"),
     });
   };
 
   const goToToday = () => {
     const now = dayjs();
     setSelectedWeek({
-      start: now.startOf('week').format('YYYY-MM-DD'),
-      end: now.endOf('week').format('YYYY-MM-DD'),
+      start: now.startOf("week").format("YYYY-MM-DD"),
+      end: now.endOf("week").format("YYYY-MM-DD"),
     });
   };
 
-  const formatDuration = (minutes: number) => {
-    return minToHHMM(minutes);
-  };
+  const formatDuration = (minutes: number) => minToHHMM(minutes);
 
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "approved":
-        return <Badge className="bg-green-100 text-green-800 hover:bg-green-100">Approved</Badge>;
+        return (
+          <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
+            Approved
+          </Badge>
+        );
       case "rejected":
-        return <Badge className="bg-red-100 text-red-800 hover:bg-red-100">Rejected</Badge>;
+        return (
+          <Badge className="bg-red-100 text-red-800 hover:bg-red-100">
+            Rejected
+          </Badge>
+        );
       default:
-        return <Badge className="bg-gray-100 text-gray-800 hover:bg-gray-100">Pending</Badge>;
+        return (
+          <Badge className="bg-gray-100 text-gray-800 hover:bg-gray-100">
+            Pending
+          </Badge>
+        );
     }
   };
 
@@ -191,14 +206,14 @@ const TimeTrackingTable: React.FC = () => {
       header: ({ table }) => (
         <Checkbox
           checked={table.getIsAllPageRowsSelected()}
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          onCheckedChange={value => table.toggleAllPageRowsSelected(!!value)}
           aria-label="Select all"
         />
       ),
       cell: ({ row }) => (
         <Checkbox
           checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          onCheckedChange={value => row.toggleSelected(!!value)}
           aria-label="Select row"
         />
       ),
@@ -207,32 +222,31 @@ const TimeTrackingTable: React.FC = () => {
     },
     {
       accessorKey: "date",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="-ml-4"
-          >
-            Date
-            {column.getIsSorted() === "asc" ? (
-              <ArrowUp size={16} className="ml-2" />
-            ) : column.getIsSorted() === "desc" ? (
-              <ArrowDown size={16} className="ml-2" />
-            ) : (
-              <></>
-            )}
-          </Button>
-        );
-      },
+      header: ({ column }) => (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="-ml-4"
+        >
+          Date
+          {column.getIsSorted() === "asc" ? (
+            <ArrowUp size={16} className="ml-2" />
+          ) : column.getIsSorted() === "desc" ? (
+            <ArrowDown size={16} className="ml-2" />
+          ) : (
+            <></>
+          )}
+        </Button>
+      ),
       cell: ({ row }) => {
         const date = dayjs(row.original.date);
+
         return (
           <div className="flex items-center gap-2">
             <CalendarBlank size={16} className="text-gray-400" />
             <div>
-              <p className="font-medium">{date.format('ddd, MMM D')}</p>
-              <p className="text-xs text-gray-500">{date.format('YYYY')}</p>
+              <p className="font-medium">{date.format("ddd, MMM D")}</p>
+              <p className="text-xs text-gray-500">{date.format("YYYY")}</p>
             </div>
           </div>
         );
@@ -241,85 +255,76 @@ const TimeTrackingTable: React.FC = () => {
     {
       accessorKey: "client",
       header: "Client",
-      cell: ({ row }) => {
-        return (
-          <div className="font-medium text-gray-900">
-            {row.original.client}
-          </div>
-        );
-      },
+      cell: ({ row }) => (
+        <div className="font-medium text-gray-900">{row.original.client}</div>
+      ),
     },
     {
       accessorKey: "project",
       header: "Project",
-      cell: ({ row }) => {
-        return (
-          <div>
-            <p className="font-medium text-gray-900">{row.original.project}</p>
-            {row.original.task && (
-              <p className="text-sm text-gray-500">{row.original.task}</p>
-            )}
-          </div>
-        );
-      },
+      cell: ({ row }) => (
+        <div>
+          <p className="font-medium text-gray-900">{row.original.project}</p>
+          {row.original.task && (
+            <p className="text-sm text-gray-500">{row.original.task}</p>
+          )}
+        </div>
+      ),
     },
     {
       accessorKey: "description",
       header: "Description",
-      cell: ({ row }) => {
-        return (
-          <div className="max-w-xs truncate text-sm text-gray-600">
-            {row.original.description || "—"}
-          </div>
-        );
-      },
+      cell: ({ row }) => (
+        <div className="max-w-xs truncate text-sm text-gray-600">
+          {row.original.description || "—"}
+        </div>
+      ),
     },
     {
       accessorKey: "duration",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="-ml-4"
-          >
-            Duration
-            {column.getIsSorted() === "asc" ? (
-              <ArrowUp size={16} className="ml-2" />
-            ) : column.getIsSorted() === "desc" ? (
-              <ArrowDown size={16} className="ml-2" />
-            ) : (
-              <></>
-            )}
-          </Button>
-        );
-      },
-      cell: ({ row }) => {
-        return (
-          <div className="flex items-center gap-2">
-            <Timer size={16} className="text-gray-400" />
-            <span className="font-medium">{formatDuration(row.original.duration)}</span>
-          </div>
-        );
-      },
+      header: ({ column }) => (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="-ml-4"
+        >
+          Duration
+          {column.getIsSorted() === "asc" ? (
+            <ArrowUp size={16} className="ml-2" />
+          ) : column.getIsSorted() === "desc" ? (
+            <ArrowDown size={16} className="ml-2" />
+          ) : (
+            <></>
+          )}
+        </Button>
+      ),
+      cell: ({ row }) => (
+        <div className="flex items-center gap-2">
+          <Timer size={16} className="text-gray-400" />
+          <span className="font-medium">
+            {formatDuration(row.original.duration)}
+          </span>
+        </div>
+      ),
     },
     {
       accessorKey: "billable",
       header: "Type",
-      cell: ({ row }) => {
-        return row.original.billable ? (
-          <Badge variant="outline" className="text-green-700">Billable</Badge>
+      cell: ({ row }) =>
+        row.original.billable ? (
+          <Badge variant="outline" className="text-green-700">
+            Billable
+          </Badge>
         ) : (
-          <Badge variant="outline" className="text-gray-600">Non-billable</Badge>
-        );
-      },
+          <Badge variant="outline" className="text-gray-600">
+            Non-billable
+          </Badge>
+        ),
     },
     {
       accessorKey: "status",
       header: "Status",
-      cell: ({ row }) => {
-        return getStatusBadge(row.original.status);
-      },
+      cell: ({ row }) => getStatusBadge(row.original.status),
     },
     {
       id: "actions",
@@ -347,11 +352,13 @@ const TimeTrackingTable: React.FC = () => {
                 <PencilSimple size={16} className="mr-2" />
                 Edit entry
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => {
-                // Duplicate entry
-                setSelectedEntry(entry);
-                setShowAddDialog(true);
-              }}>
+              <DropdownMenuItem
+                onClick={() => {
+                  // Duplicate entry
+                  setSelectedEntry(entry);
+                  setShowAddDialog(true);
+                }}
+              >
                 Duplicate entry
               </DropdownMenuItem>
               <DropdownMenuItem
@@ -390,7 +397,8 @@ const TimeTrackingTable: React.FC = () => {
   const entries = data?.entries || [];
   const totalHours = data?.totalHours || 0;
   const billableHours = data?.billableHours || 0;
-  const billablePercentage = totalHours > 0 ? (billableHours / totalHours) * 100 : 0;
+  const billablePercentage =
+    totalHours > 0 ? (billableHours / totalHours) * 100 : 0;
 
   return (
     <div className="space-y-6 p-6 max-w-7xl mx-auto">
@@ -423,10 +431,7 @@ const TimeTrackingTable: React.FC = () => {
               </>
             )}
           </Button>
-          <Button
-            onClick={() => setShowAddDialog(true)}
-            variant="outline"
-          >
+          <Button onClick={() => setShowAddDialog(true)} variant="outline">
             <Plus size={20} className="mr-2" />
             Add Entry
           </Button>
@@ -441,29 +446,26 @@ const TimeTrackingTable: React.FC = () => {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => navigateWeek('prev')}
+                onClick={() => navigateWeek("prev")}
               >
                 <ArrowLeft size={16} />
               </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={goToToday}
-              >
+              <Button variant="outline" size="sm" onClick={goToToday}>
                 Today
               </Button>
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => navigateWeek('next')}
+                onClick={() => navigateWeek("next")}
               >
                 <ArrowRight size={16} />
               </Button>
             </div>
             <div className="text-lg font-semibold">
-              {dayjs(selectedWeek.start).format('MMM D')} - {dayjs(selectedWeek.end).format('MMM D, YYYY')}
+              {dayjs(selectedWeek.start).format("MMM D")} -{" "}
+              {dayjs(selectedWeek.end).format("MMM D, YYYY")}
             </div>
-            <Tabs value={view} onValueChange={(v) => setView(v as any)}>
+            <Tabs value={view} onValueChange={v => setView(v as any)}>
               <TabsList>
                 <TabsTrigger value="day">Day</TabsTrigger>
                 <TabsTrigger value="week">Week</TabsTrigger>
@@ -482,16 +484,16 @@ const TimeTrackingTable: React.FC = () => {
             <Timer size={20} className="text-gray-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              {totalHours.toFixed(1)}h
-            </div>
+            <div className="text-2xl font-bold">{totalHours.toFixed(1)}h</div>
             <p className="text-xs text-gray-600 mt-1">This week</p>
           </CardContent>
         </Card>
 
         <Card className="border-gray-200">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Billable Hours</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Billable Hours
+            </CardTitle>
             <Clock size={20} className="text-gray-400" />
           </CardHeader>
           <CardContent>
@@ -536,11 +538,10 @@ const TimeTrackingTable: React.FC = () => {
           ) : (
             <div className="text-center py-12">
               <Clock size={48} className="mx-auto mb-4 text-gray-300" />
-              <p className="text-gray-600 mb-4">No time entries for this period</p>
-              <Button
-                variant="outline"
-                onClick={() => setShowAddDialog(true)}
-              >
+              <p className="text-gray-600 mb-4">
+                No time entries for this period
+              </p>
+              <Button variant="outline" onClick={() => setShowAddDialog(true)}>
                 <Plus size={20} className="mr-2" />
                 Add Your First Entry
               </Button>
@@ -555,7 +556,8 @@ const TimeTrackingTable: React.FC = () => {
           <DialogHeader>
             <DialogTitle>Delete Time Entry</DialogTitle>
             <DialogDescription>
-              Are you sure you want to delete this time entry? This action cannot be undone.
+              Are you sure you want to delete this time entry? This action
+              cannot be undone.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>

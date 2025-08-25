@@ -1,5 +1,12 @@
-import React, { useState, useEffect } from "react";
-import { Calendar, Clock, Users, Building2, Filter, Download, ChevronDown, CalendarIcon } from "lucide-react";
+import React, { useState } from "react";
+import {
+  Clock,
+  Users,
+  Building2,
+  Download,
+  ChevronDown,
+  CalendarIcon,
+} from "lucide-react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import {
   ColumnDef,
@@ -13,7 +20,16 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { format, subDays, startOfMonth, endOfMonth, startOfYear, endOfYear, startOfQuarter, endOfQuarter, addDays } from "date-fns";
+import {
+  format,
+  subDays,
+  startOfMonth,
+  endOfMonth,
+  startOfYear,
+  endOfYear,
+  startOfQuarter,
+  endOfQuarter,
+} from "date-fns";
 import { DateRange } from "react-day-picker";
 import axios from "../../../apis/api";
 import { minToHHMM } from "../../../helpers";
@@ -39,7 +55,7 @@ import {
   TableHeader,
   TableRow,
 } from "../../ui/table";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "../../ui/card";
 import { cn } from "../../../lib/utils";
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
 import { Calendar as CalendarComponent } from "../../ui/calendar";
@@ -88,31 +104,29 @@ const ReportGroupTable: React.FC<{
         <div className="rounded-md border">
           <Table>
             <TableHeader>
-              {table.getHeaderGroups().map((headerGroup) => (
+              {table.getHeaderGroups().map(headerGroup => (
                 <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => {
-                    return (
-                      <TableHead key={header.id}>
-                        {header.isPlaceholder
-                          ? null
-                          : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext()
-                            )}
-                      </TableHead>
-                    );
-                  })}
+                  {headerGroup.headers.map(header => (
+                    <TableHead key={header.id}>
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
+                    </TableHead>
+                  ))}
                 </TableRow>
               ))}
             </TableHeader>
             <TableBody>
               {table.getRowModel().rows?.length ? (
-                table.getRowModel().rows.map((row) => (
+                table.getRowModel().rows.map(row => (
                   <TableRow
                     key={row.id}
                     data-state={row.getIsSelected() && "selected"}
                   >
-                    {row.getVisibleCells().map((cell) => (
+                    {row.getVisibleCells().map(cell => (
                       <TableCell key={cell.id}>
                         {flexRender(
                           cell.column.columnDef.cell,
@@ -182,7 +196,10 @@ interface TimeEntryReportData {
 
 const TimeEntryReport: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [groupBy, setGroupBy] = useState<"client" | "project" | "team_member">("client");
+  const [groupBy, setGroupBy] = useState<"client" | "project" | "team_member">(
+    "client"
+  );
+
   const [dateRange, setDateRange] = useState<DateRange | undefined>({
     from: startOfMonth(new Date()),
     to: endOfMonth(new Date()),
@@ -195,18 +212,32 @@ const TimeEntryReport: React.FC = () => {
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 
   const { data, isLoading, error, refetch } = useQuery<TimeEntryReportData>({
-    queryKey: ["timeEntryReport", currentPage, groupBy, dateRange, selectedClients, selectedTeamMembers],
+    queryKey: [
+      "timeEntryReport",
+      currentPage,
+      groupBy,
+      dateRange,
+      selectedClients,
+      selectedTeamMembers,
+    ],
     queryFn: async () => {
       const params = new URLSearchParams({
         page: currentPage.toString(),
         group_by: groupBy,
         ...(dateRange?.from && { from: format(dateRange.from, "dd/MM/yyyy") }),
         ...(dateRange?.to && { to: format(dateRange.to, "dd/MM/yyyy") }),
-        ...(selectedClients.length > 0 && { client: selectedClients.join(",") }),
-        ...(selectedTeamMembers.length > 0 && { team_member: selectedTeamMembers.join(",") }),
+        ...(selectedClients.length > 0 && {
+          client: selectedClients.join(","),
+        }),
+        ...(selectedTeamMembers.length > 0 && {
+          team_member: selectedTeamMembers.join(","),
+        }),
       });
-      
-      const response = await axios.get(`/reports/time_entries?${params.toString()}`);
+
+      const response = await axios.get(
+        `/reports/time_entries?${params.toString()}`
+      );
+
       return response.data;
     },
   });
@@ -220,11 +251,12 @@ const TimeEntryReport: React.FC = () => {
         from = startOfMonth(now);
         to = endOfMonth(now);
         break;
-      case "last_month":
+      case "last_month": {
         const lastMonth = subDays(startOfMonth(now), 1);
         from = startOfMonth(lastMonth);
         to = endOfMonth(lastMonth);
         break;
+      }
       case "this_quarter":
         from = startOfQuarter(now);
         to = endOfQuarter(now);
@@ -254,16 +286,26 @@ const TimeEntryReport: React.FC = () => {
     if (data?.groupByTotalDuration?.groupedDurations?.[group.id]) {
       return minToHHMM(data.groupByTotalDuration.groupedDurations[group.id]);
     }
-    const totalMinutes = group.entries.reduce((sum, entry) => sum + entry.duration, 0);
+
+    const totalMinutes = group.entries.reduce(
+      (sum, entry) => sum + entry.duration,
+      0
+    );
+
     return minToHHMM(totalMinutes);
   };
 
   const getTotalHoursOverall = (): string => {
     if (!data?.reports) return "00:00";
     const totalMinutes = data.reports.reduce((total, group) => {
-      const groupMinutes = group.entries.reduce((sum, entry) => sum + entry.duration, 0);
+      const groupMinutes = group.entries.reduce(
+        (sum, entry) => sum + entry.duration,
+        0
+      );
+
       return total + groupMinutes;
     }, 0);
+
     return minToHHMM(totalMinutes);
   };
 
@@ -274,18 +316,28 @@ const TimeEntryReport: React.FC = () => {
         group_by: groupBy,
         ...(dateRange?.from && { from: format(dateRange.from, "dd/MM/yyyy") }),
         ...(dateRange?.to && { to: format(dateRange.to, "dd/MM/yyyy") }),
-        ...(selectedClients.length > 0 && { client: selectedClients.join(",") }),
-        ...(selectedTeamMembers.length > 0 && { team_member: selectedTeamMembers.join(",") }),
+        ...(selectedClients.length > 0 && {
+          client: selectedClients.join(","),
+        }),
+        ...(selectedTeamMembers.length > 0 && {
+          team_member: selectedTeamMembers.join(","),
+        }),
       });
-      
-      const response = await axios.get(`/reports/time_entries/download?${params.toString()}`, {
-        responseType: "blob",
-      });
-      
+
+      const response = await axios.get(
+        `/reports/time_entries/download?${params.toString()}`,
+        {
+          responseType: "blob",
+        }
+      );
+
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement("a");
       link.href = url;
-      const filename = `time_entries_${format(new Date(), "yyyy-MM-dd")}.${formatType}`;
+      const filename = `time_entries_${format(
+        new Date(),
+        "yyyy-MM-dd"
+      )}.${formatType}`;
       link.setAttribute("download", filename);
       document.body.appendChild(link);
       link.click();
@@ -298,17 +350,20 @@ const TimeEntryReport: React.FC = () => {
     {
       accessorKey: "work_date",
       header: "Date",
-      cell: ({ row }) => format(new Date(row.getValue("work_date")), "MM/dd/yyyy"),
+      cell: ({ row }) =>
+        format(new Date(row.getValue("work_date")), "MM/dd/yyyy"),
     },
     {
       accessorKey: "user_name",
       header: "Team Member",
-      cell: ({ row }) => row.original.user_name || `User ${row.original.user_id}`,
+      cell: ({ row }) =>
+        row.original.user_name || `User ${row.original.user_id}`,
     },
     {
       accessorKey: "project_name",
       header: "Project",
-      cell: ({ row }) => row.original.project_name || `Project ${row.original.project_id}`,
+      cell: ({ row }) =>
+        row.original.project_name || `Project ${row.original.project_id}`,
     },
     {
       accessorKey: "note",
@@ -318,7 +373,9 @@ const TimeEntryReport: React.FC = () => {
       accessorKey: "duration",
       header: () => <div className="text-right">Hours</div>,
       cell: ({ row }) => (
-        <div className="text-right font-medium">{minToHHMM(row.getValue("duration"))}</div>
+        <div className="text-right font-medium">
+          {minToHHMM(row.getValue("duration"))}
+        </div>
       ),
     },
   ];
@@ -345,11 +402,16 @@ const TimeEntryReport: React.FC = () => {
       <div className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
-            <h1 className="text-2xl font-semibold text-gray-900">Time Entry Report</h1>
-            
+            <h1 className="text-2xl font-semibold text-gray-900">
+              Time Entry Report
+            </h1>
+
             <div className="flex items-center space-x-3">
               {/* Date Range Preset Selector */}
-              <Select value={dateRangePreset} onValueChange={handleDateRangePreset}>
+              <Select
+                value={dateRangePreset}
+                onValueChange={handleDateRangePreset}
+              >
                 <SelectTrigger className="w-[180px]">
                   <SelectValue placeholder="Select period" />
                 </SelectTrigger>
@@ -395,25 +457,32 @@ const TimeEntryReport: React.FC = () => {
                     mode="range"
                     defaultMonth={dateRange?.from}
                     selected={dateRange}
-                    onSelect={(range) => {
+                    onSelect={range => {
                       setDateRange(range);
                       setDateRangePreset("custom");
                     }}
                     numberOfMonths={2}
-                    disabled={(date) => date > new Date() || date < new Date("1900-01-01")}
+                    disabled={date =>
+                      date > new Date() || date < new Date("1900-01-01")
+                    }
                   />
                 </PopoverContent>
               </Popover>
 
               {/* Group By Selector */}
-              <Select value={groupBy} onValueChange={(value: any) => setGroupBy(value)}>
+              <Select
+                value={groupBy}
+                onValueChange={(value: any) => setGroupBy(value)}
+              >
                 <SelectTrigger className="w-[180px]">
                   <SelectValue placeholder="Group by" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="client">Group by Client</SelectItem>
                   <SelectItem value="project">Group by Project</SelectItem>
-                  <SelectItem value="team_member">Group by Team Member</SelectItem>
+                  <SelectItem value="team_member">
+                    Group by Team Member
+                  </SelectItem>
                 </SelectContent>
               </Select>
 
@@ -427,10 +496,14 @@ const TimeEntryReport: React.FC = () => {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={() => downloadMutation.mutate("csv")}>
+                  <DropdownMenuItem
+                    onClick={() => downloadMutation.mutate("csv")}
+                  >
                     Export as CSV
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => downloadMutation.mutate("pdf")}>
+                  <DropdownMenuItem
+                    onClick={() => downloadMutation.mutate("pdf")}
+                  >
                     Export as PDF
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -452,42 +525,61 @@ const TimeEntryReport: React.FC = () => {
               <div className="text-2xl font-bold">{getTotalHoursOverall()}</div>
               <p className="text-xs text-muted-foreground">
                 {dateRange?.from && dateRange?.to
-                  ? `${format(dateRange.from, "MMM d")} - ${format(dateRange.to, "MMM d, yyyy")}`
+                  ? `${format(dateRange.from, "MMM d")} - ${format(
+                      dateRange.to,
+                      "MMM d, yyyy"
+                    )}`
                   : "All time"}
               </p>
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Entries</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                Total Entries
+              </CardTitle>
               <Building2 className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
-                {data?.reports?.reduce((sum, group) => sum + group.entries.length, 0) || 0}
+                {data?.reports?.reduce(
+                  (sum, group) => sum + group.entries.length,
+                  0
+                ) || 0}
               </div>
-              <p className="text-xs text-muted-foreground">Time entries recorded</p>
+              <p className="text-xs text-muted-foreground">
+                Time entries recorded
+              </p>
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">
-                Active {groupBy === "client" ? "Clients" : groupBy === "project" ? "Projects" : "Team Members"}
+                Active{" "}
+                {groupBy === "client"
+                  ? "Clients"
+                  : groupBy === "project"
+                  ? "Projects"
+                  : "Team Members"}
               </CardTitle>
               <Users className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{data?.reports?.length || 0}</div>
-              <p className="text-xs text-muted-foreground">With recorded time</p>
+              <div className="text-2xl font-bold">
+                {data?.reports?.length || 0}
+              </div>
+              <p className="text-xs text-muted-foreground">
+                With recorded time
+              </p>
             </CardContent>
           </Card>
         </div>
 
         {/* Report Tables */}
         <div className="space-y-6">
-          {data?.reports?.map((group) => (
+          {data?.reports?.map(group => (
             <ReportGroupTable
               key={group.id}
               group={group}
@@ -508,7 +600,7 @@ const TimeEntryReport: React.FC = () => {
             >
               Previous
             </Button>
-            
+
             {[...Array(data.pagy.pages)].map((_, i) => (
               <Button
                 key={i + 1}
@@ -519,7 +611,7 @@ const TimeEntryReport: React.FC = () => {
                 {i + 1}
               </Button>
             ))}
-            
+
             <Button
               variant="outline"
               size="sm"

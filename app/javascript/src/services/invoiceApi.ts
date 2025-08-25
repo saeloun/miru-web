@@ -22,7 +22,15 @@ export interface Invoice {
   id: string;
   invoiceNumber: string;
   client: Client;
-  status: "draft" | "sent" | "paid" | "overdue" | "viewed" | "declined" | "sending" | "waived";
+  status:
+    | "draft"
+    | "sent"
+    | "paid"
+    | "overdue"
+    | "viewed"
+    | "declined"
+    | "sending"
+    | "waived";
   issueDate: string;
   dueDate: string;
   amount: number;
@@ -52,7 +60,15 @@ export interface InvoiceFormData {
   tax?: number;
   discount?: number;
   currency: string;
-  status: "draft" | "sent" | "paid" | "overdue" | "viewed" | "declined" | "sending" | "waived";
+  status:
+    | "draft"
+    | "sent"
+    | "paid"
+    | "overdue"
+    | "viewed"
+    | "declined"
+    | "sending"
+    | "waived";
 }
 
 export interface InvoiceListResponse {
@@ -105,8 +121,14 @@ class InvoiceApiService {
     const response = await axios.get(url);
 
     return {
-      invoices: (response.data.invoices || []).map((inv: any) => this.transformApiInvoice(inv)),
-      recentlyUpdatedInvoices: (response.data.recently_updated_invoices || response.data.recentlyUpdatedInvoices || []).map((inv: any) => this.transformApiInvoice(inv)),
+      invoices: (response.data.invoices || []).map((inv: any) =>
+        this.transformApiInvoice(inv)
+      ),
+      recentlyUpdatedInvoices: (
+        response.data.recently_updated_invoices ||
+        response.data.recentlyUpdatedInvoices ||
+        []
+      ).map((inv: any) => this.transformApiInvoice(inv)),
       summary: response.data.summary || {
         draftAmount: 0,
         outstandingAmount: 0,
@@ -114,7 +136,8 @@ class InvoiceApiService {
         totalAmount: 0,
         currency: "USD",
       },
-      pagy: response.data.pagination_details || response.data.pagy || { page: 1, pages: 1, total: 0 },
+      pagy: response.data.pagination_details ||
+        response.data.pagy || { page: 1, pages: 1, total: 0 },
     };
   }
 
@@ -274,7 +297,9 @@ class InvoiceApiService {
         address: formatAddress(apiInvoice.client?.address),
         logo: apiInvoice.client?.logo,
         currency:
-          apiInvoice.client?.clientCurrency || apiInvoice.client?.currency || apiInvoice.currency,
+          apiInvoice.client?.clientCurrency ||
+          apiInvoice.client?.currency ||
+          apiInvoice.currency,
       },
       status: apiInvoice.status,
       issueDate: apiInvoice.issueDate || apiInvoice.issue_date,

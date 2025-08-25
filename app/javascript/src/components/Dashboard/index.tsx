@@ -1,9 +1,8 @@
 import React, { useEffect } from "react";
-import { Routes, Route, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 import Home from "./Home";
 import DashboardLayout from "./DashboardLayout";
-import DashboardHome from "./DashboardHome";
 import { useUserContext } from "context/UserContext";
 
 const Dashboard = props => {

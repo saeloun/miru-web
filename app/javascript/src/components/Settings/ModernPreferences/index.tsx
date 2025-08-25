@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Bell, Mail, Clock, FileText, AlertTriangle, Check, X } from "lucide-react";
+import {
+  Bell,
+  Mail,
+  Clock,
+  FileText,
+  AlertTriangle,
+  Check,
+  X,
+} from "lucide-react";
 import preferencesApi from "apis/preferences";
 import { useUserContext } from "context/UserContext";
 import {
@@ -34,7 +42,9 @@ const ModernPreferences: React.FC = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [preferences, setPreferences] = useState<PreferenceItem[]>([]);
   const [hasChanges, setHasChanges] = useState(false);
-  const [savedPreferences, setSavedPreferences] = useState<PreferenceItem[]>([]);
+  const [savedPreferences, setSavedPreferences] = useState<PreferenceItem[]>(
+    []
+  );
   const [unsubscribedAll, setUnsubscribedAll] = useState(false);
   const [showUnsubscribeConfirm, setShowUnsubscribeConfirm] = useState(false);
 
@@ -47,52 +57,59 @@ const ModernPreferences: React.FC = () => {
   const fetchPreferences = async () => {
     try {
       const res = await preferencesApi.get(user.id);
-      
+
       const isUnsubscribed = res.data.unsubscribed_from_all || false;
       setUnsubscribedAll(isUnsubscribed);
-      
+
       // Map API response to our preference items - only show actual features
       const prefs: PreferenceItem[] = [
         {
           id: "weekly_reminder",
           title: "Weekly Timesheet Reminder",
-          description: "Receive weekly reminders every Monday about pending timesheet entries",
+          description:
+            "Receive weekly reminders every Monday about pending timesheet entries",
           enabled: !isUnsubscribed && (res.data.notification_enabled || false),
           icon: <Mail className="h-4 w-4" />,
           category: "Timesheet Notifications",
           badge: "Active",
-          dbField: "notification_enabled"
+          dbField: "notification_enabled",
         },
         {
           id: "timesheet_reminder",
           title: "Missing Entry Reminders",
-          description: "Get notified when you haven't logged time for more than 2 days",
-          enabled: !isUnsubscribed && (res.data.timesheet_reminder_enabled !== false),
+          description:
+            "Get notified when you haven't logged time for more than 2 days",
+          enabled:
+            !isUnsubscribed && res.data.timesheet_reminder_enabled !== false,
           icon: <Clock className="h-4 w-4" />,
           category: "Timesheet Notifications",
-          dbField: "timesheet_reminder_enabled"
+          dbField: "timesheet_reminder_enabled",
         },
         {
           id: "invoice_notifications",
           title: "Invoice Email Notifications",
-          description: "Receive emails when invoices are created, sent, or updated",
-          enabled: !isUnsubscribed && (res.data.invoice_email_notifications !== false),
+          description:
+            "Receive emails when invoices are created, sent, or updated",
+          enabled:
+            !isUnsubscribed && res.data.invoice_email_notifications !== false,
           icon: <FileText className="h-4 w-4" />,
           category: "Billing Notifications",
           badge: "Important",
-          dbField: "invoice_email_notifications"
+          dbField: "invoice_email_notifications",
         },
         {
           id: "payment_notifications",
           title: "Payment Email Notifications",
-          description: "Get notified when payments are received or payment status changes",
-          enabled: !isUnsubscribed && (res.data.payment_email_notifications !== false),
+          description:
+            "Get notified when payments are received or payment status changes",
+          enabled:
+            !isUnsubscribed && res.data.payment_email_notifications !== false,
           icon: <FileText className="h-4 w-4" />,
           category: "Billing Notifications",
-          dbField: "payment_email_notifications"
-        }
+          dbField: "payment_email_notifications",
+        },
       ];
-      
+
       setPreferences(prefs);
       setSavedPreferences(JSON.parse(JSON.stringify(prefs)));
       setIsLoading(false);
@@ -104,14 +121,16 @@ const ModernPreferences: React.FC = () => {
 
   const handleToggle = (preferenceId: string) => {
     if (unsubscribedAll) return; // Don't allow toggling if unsubscribed from all
-    
-    const updatedPreferences = preferences.map(pref => 
+
+    const updatedPreferences = preferences.map(pref =>
       pref.id === preferenceId ? { ...pref, enabled: !pref.enabled } : pref
     );
     setPreferences(updatedPreferences);
-    
+
     // Check if there are changes
-    const hasChanges = JSON.stringify(updatedPreferences) !== JSON.stringify(savedPreferences) || unsubscribedAll;
+    const hasChanges =
+      JSON.stringify(updatedPreferences) !== JSON.stringify(savedPreferences) ||
+      unsubscribedAll;
     setHasChanges(hasChanges);
   };
 
@@ -120,17 +139,17 @@ const ModernPreferences: React.FC = () => {
     try {
       // Build the update payload based on changed preferences
       const payload: any = {
-        unsubscribed_from_all: unsubscribedAll
+        unsubscribed_from_all: unsubscribedAll,
       };
-      
+
       if (!unsubscribedAll) {
         preferences.forEach(pref => {
           payload[pref.dbField] = pref.enabled;
         });
       }
-      
+
       await preferencesApi.updatePreference(user.id, payload);
-      
+
       setSavedPreferences(JSON.parse(JSON.stringify(preferences)));
       setHasChanges(false);
       setIsSaving(false);
@@ -161,10 +180,15 @@ const ModernPreferences: React.FC = () => {
   const handleResubscribe = () => {
     setUnsubscribedAll(false);
     // Re-enable default preferences
-    setPreferences(preferences.map(p => ({ 
-      ...p, 
-      enabled: p.badge === "Important" || p.badge === "Active" || p.dbField === "timesheet_reminder_enabled"
-    })));
+    setPreferences(
+      preferences.map(p => ({
+        ...p,
+        enabled:
+          p.badge === "Important" ||
+          p.badge === "Active" ||
+          p.dbField === "timesheet_reminder_enabled",
+      }))
+    );
     setHasChanges(true);
   };
 
@@ -173,6 +197,7 @@ const ModernPreferences: React.FC = () => {
       acc[pref.category] = [];
     }
     acc[pref.category].push(pref);
+
     return acc;
   }, {} as Record<string, PreferenceItem[]>);
 
@@ -182,6 +207,7 @@ const ModernPreferences: React.FC = () => {
     } else if (category.includes("Billing")) {
       return <FileText className="h-5 w-5 text-green-600" />;
     }
+
     return <Bell className="h-5 w-5 text-gray-600" />;
   };
 
@@ -191,6 +217,7 @@ const ModernPreferences: React.FC = () => {
     } else if (category.includes("Billing")) {
       return "Control invoice and payment notifications";
     }
+
     return "";
   };
 
@@ -209,7 +236,9 @@ const ModernPreferences: React.FC = () => {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div>
-              <h1 className="text-2xl font-semibold text-gray-900">Email Preferences</h1>
+              <h1 className="text-2xl font-semibold text-gray-900">
+                Email Preferences
+              </h1>
               <p className="text-sm text-gray-600 mt-1">
                 Manage your email notification settings
               </p>
@@ -253,11 +282,14 @@ const ModernPreferences: React.FC = () => {
           {showUnsubscribeConfirm && (
             <Alert className="border-red-200 bg-red-50">
               <AlertTriangle className="h-4 w-4 text-red-600" />
-              <AlertTitle className="text-red-900">Confirm Unsubscribe from All Emails</AlertTitle>
+              <AlertTitle className="text-red-900">
+                Confirm Unsubscribe from All Emails
+              </AlertTitle>
               <AlertDescription className="text-red-700">
                 <p className="mb-4">
-                  Are you sure you want to unsubscribe from all email notifications? 
-                  You will not receive any emails including important billing and invoice notifications.
+                  Are you sure you want to unsubscribe from all email
+                  notifications? You will not receive any emails including
+                  important billing and invoice notifications.
                 </p>
                 <div className="flex space-x-3">
                   <Button
@@ -283,10 +315,12 @@ const ModernPreferences: React.FC = () => {
           {unsubscribedAll && (
             <Alert className="border-amber-200 bg-amber-50">
               <AlertTriangle className="h-4 w-4 text-amber-600" />
-              <AlertTitle className="text-amber-900">You're Unsubscribed from All Emails</AlertTitle>
+              <AlertTitle className="text-amber-900">
+                You're Unsubscribed from All Emails
+              </AlertTitle>
               <AlertDescription className="text-amber-700">
                 <p className="mb-4">
-                  You are currently unsubscribed from all email notifications. 
+                  You are currently unsubscribed from all email notifications.
                   You won't receive any emails from Miru.
                 </p>
                 <Button
@@ -304,8 +338,8 @@ const ModernPreferences: React.FC = () => {
 
           {/* Preference Categories */}
           {Object.entries(groupedPreferences).map(([category, items]) => (
-            <Card 
-              key={category} 
+            <Card
+              key={category}
               className={cn(
                 "border-gray-200 shadow-sm overflow-hidden",
                 unsubscribedAll && "opacity-60"
@@ -316,7 +350,9 @@ const ModernPreferences: React.FC = () => {
                   <div className="flex items-center space-x-3">
                     {getCategoryIcon(category)}
                     <div>
-                      <CardTitle className="text-lg font-semibold">{category}</CardTitle>
+                      <CardTitle className="text-lg font-semibold">
+                        {category}
+                      </CardTitle>
                       <CardDescription className="text-sm text-gray-600">
                         {getCategoryDescription(category)}
                       </CardDescription>
@@ -324,7 +360,8 @@ const ModernPreferences: React.FC = () => {
                   </div>
                   {!unsubscribedAll && (
                     <Badge variant="secondary" className="text-xs">
-                      {items.filter(i => i.enabled).length} of {items.length} enabled
+                      {items.filter(i => i.enabled).length} of {items.length}{" "}
+                      enabled
                     </Badge>
                   )}
                 </div>
@@ -349,17 +386,21 @@ const ModernPreferences: React.FC = () => {
                             htmlFor={preference.id}
                             className={cn(
                               "text-sm font-medium",
-                              unsubscribedAll ? "text-gray-500" : "text-gray-900 cursor-pointer"
+                              unsubscribedAll
+                                ? "text-gray-500"
+                                : "text-gray-900 cursor-pointer"
                             )}
                           >
                             {preference.title}
                           </Label>
                           {preference.badge && !unsubscribedAll && (
-                            <Badge 
+                            <Badge
                               variant={
-                                preference.badge === "Important" ? "destructive" :
-                                preference.badge === "Active" ? "default" :
-                                "secondary"
+                                preference.badge === "Important"
+                                  ? "destructive"
+                                  : preference.badge === "Active"
+                                  ? "default"
+                                  : "secondary"
                               }
                               className="text-xs"
                             >
@@ -367,10 +408,12 @@ const ModernPreferences: React.FC = () => {
                             </Badge>
                           )}
                         </div>
-                        <p className={cn(
-                          "text-sm pr-4",
-                          unsubscribedAll ? "text-gray-400" : "text-gray-500"
-                        )}>
+                        <p
+                          className={cn(
+                            "text-sm pr-4",
+                            unsubscribedAll ? "text-gray-400" : "text-gray-500"
+                          )}
+                        >
                           {preference.description}
                         </p>
                       </div>
@@ -400,14 +443,16 @@ const ModernPreferences: React.FC = () => {
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-gray-900">Email Address</p>
+                    <p className="text-sm font-medium text-gray-900">
+                      Email Address
+                    </p>
                     <p className="text-sm text-gray-600">{user?.email}</p>
                   </div>
                 </div>
                 <Separator />
                 <p className="text-xs text-gray-600">
-                  All notifications will be sent to this email address. To change your email, 
-                  please update it in your profile settings.
+                  All notifications will be sent to this email address. To
+                  change your email, please update it in your profile settings.
                 </p>
               </div>
             </CardContent>
@@ -422,8 +467,10 @@ const ModernPreferences: React.FC = () => {
               <CardContent>
                 <div className="space-y-4">
                   <p className="text-sm text-gray-600">
-                    If you no longer wish to receive any emails from Miru, you can unsubscribe from all notifications.
-                    This will stop all email communications including important billing and invoice notifications.
+                    If you no longer wish to receive any emails from Miru, you
+                    can unsubscribe from all notifications. This will stop all
+                    email communications including important billing and invoice
+                    notifications.
                   </p>
                   <Button
                     variant="outline"

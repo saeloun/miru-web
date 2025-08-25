@@ -84,10 +84,7 @@ const SidebarItem: React.FC<{
             <CaretRight
               size={16}
               weight="light"
-              className={cn(
-                "transition-transform",
-                isExpanded && "rotate-90"
-              )}
+              className={cn("transition-transform", isExpanded && "rotate-90")}
             />
           )}
         </>
@@ -128,9 +125,7 @@ const SidebarItem: React.FC<{
                 <ItemContent />
               </Link>
             </TooltipTrigger>
-            <TooltipContent side="right">
-              {item.label}
-            </TooltipContent>
+            <TooltipContent side="right">{item.label}</TooltipContent>
           </Tooltip>
         </TooltipProvider>
       ) : (
@@ -148,7 +143,6 @@ const SidebarItem: React.FC<{
         </Link>
       )}
 
-      
       {hasChildren && isExpanded && !isCollapsed && (
         <div className="mt-1 space-y-1">
           {item.children?.map((child, index) => (
@@ -172,25 +166,22 @@ const Sidebar: React.FC<SidebarProps> = ({
   className,
   logo,
   user,
-}) => {
-  return (
-    <div className={cn("flex h-full w-full flex-col bg-card", className)}>
-      
-      {logo && (
-        <div
-          className={cn(
-            "flex items-center p-4 border-b border-border",
-            isCollapsed && "justify-center"
-          )}
-        >
-          {logo}
-        </div>
-      )}
+}) => (
+  <div className={cn("flex h-full w-full flex-col bg-card", className)}>
+    {logo && (
+      <div
+        className={cn(
+          "flex items-center p-4 border-b border-border",
+          isCollapsed && "justify-center"
+        )}
+      >
+        {logo}
+      </div>
+    )}
 
-      
-      <nav className="flex-1 space-y-4 p-4 overflow-y-auto">
-        {navigationGroups ? (
-          navigationGroups.map((group, groupIndex) => (
+    <nav className="flex-1 space-y-4 p-4 overflow-y-auto">
+      {navigationGroups
+        ? navigationGroups.map((group, groupIndex) => (
             <div key={`group-${groupIndex}`}>
               {!isCollapsed && group.title && (
                 <h3 className="mb-2 px-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
@@ -211,62 +202,60 @@ const Sidebar: React.FC<SidebarProps> = ({
               )}
             </div>
           ))
-        ) : navigation ? (
-          navigation.map((item, index) => (
+        : navigation
+        ? navigation.map((item, index) => (
             <SidebarItem
               key={`${item.href}-${index}`}
               item={item}
               isCollapsed={isCollapsed}
             />
           ))
-        ) : null}
-      </nav>
+        : null}
+    </nav>
 
-      
-      {user && (
-        <div
-          className={cn(
-            "border-t border-border p-4",
-            isCollapsed && "text-center"
-          )}
-        >
-          {isCollapsed ? (
-            <div className="flex justify-center">
-              <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                <span className="text-xs font-medium text-primary">
-                  {user.name
-                    .split(" ")
-                    .map(n => n[0])
-                    .join("")
-                    .slice(0, 2)}
-                </span>
+    {user && (
+      <div
+        className={cn(
+          "border-t border-border p-4",
+          isCollapsed && "text-center"
+        )}
+      >
+        {isCollapsed ? (
+          <div className="flex justify-center">
+            <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+              <span className="text-xs font-medium text-primary">
+                {user.name
+                  .split(" ")
+                  .map(n => n[0])
+                  .join("")
+                  .slice(0, 2)}
+              </span>
+            </div>
+          </div>
+        ) : (
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+              <span className="text-xs font-medium text-primary">
+                {user.name
+                  .split(" ")
+                  .map(n => n[0])
+                  .join("")
+                  .slice(0, 2)}
+              </span>
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="text-sm font-medium text-foreground truncate">
+                {user.name}
+              </div>
+              <div className="text-xs text-muted-foreground truncate">
+                {user.email}
               </div>
             </div>
-          ) : (
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                <span className="text-xs font-medium text-primary">
-                  {user.name
-                    .split(" ")
-                    .map(n => n[0])
-                    .join("")
-                    .slice(0, 2)}
-                </span>
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="text-sm font-medium text-foreground truncate">
-                  {user.name}
-                </div>
-                <div className="text-xs text-muted-foreground truncate">
-                  {user.email}
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-      )}
-    </div>
-  );
-};
+          </div>
+        )}
+      </div>
+    )}
+  </div>
+);
 
 export default Sidebar;

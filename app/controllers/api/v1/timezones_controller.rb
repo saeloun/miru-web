@@ -2,6 +2,7 @@
 
 class Api::V1::TimezonesController < Api::V1::ApplicationController
   before_action :authenticate_user!
+  skip_after_action :verify_authorized
 
   def index
     timezones = ActiveSupport::TimeZone.all.map do |tz|

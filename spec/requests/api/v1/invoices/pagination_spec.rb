@@ -126,7 +126,7 @@ RSpec.describe "Api::V1::Invoices#index", type: :request do
         get api_v1_invoices_path, params: { statuses: ["draft", "paid"] }
 
         json = JSON.parse(response.body)
-        statuses = json["invoices"].map { |inv| inv["status"] }
+        statuses = json["invoices"].pluck("status")
 
         expect(statuses).to match_array(["draft", "paid"])
         expect(statuses).not_to include("overdue")

@@ -1,7 +1,6 @@
 import React, { Fragment, useEffect, useState } from "react";
 
 import preferencesApi from "apis/preferences";
-import CustomToggle from "common/CustomToggle";
 import Loader from "common/Loader/index";
 import { MobileEditHeader } from "common/Mobile/MobileEditHeader";
 import DetailsHeader from "components/Profile/Common/DetailsHeader";
@@ -114,20 +113,21 @@ const NotificationPreferences = () => {
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
                 <div className="space-y-1">
-                  <Label 
+                  <Label
                     htmlFor="weekly-reminder"
                     className="text-sm font-medium text-gray-900 cursor-pointer"
                   >
                     Weekly Email Reminder
                   </Label>
                   <p className="text-sm text-gray-500">
-                    Receive weekly email reminders about timesheet entries and project updates
+                    Receive weekly email reminders about timesheet entries and
+                    project updates
                   </p>
                 </div>
                 <Switch
                   id="weekly-reminder"
                   checked={isSelected}
-                  onCheckedChange={(checked) => {
+                  onCheckedChange={checked => {
                     setIsSelected(checked);
                     updatePreferences();
                   }}

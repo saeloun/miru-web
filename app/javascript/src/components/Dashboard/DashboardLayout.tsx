@@ -50,8 +50,16 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
     {
       title: "Organization",
       items: [
-        { label: "Holiday Calendar", href: "/settings/holidays", icon: Calendar },
-        { label: "Company Settings", href: "/settings/organization", icon: Buildings },
+        {
+          label: "Holiday Calendar",
+          href: "/settings/holidays",
+          icon: Calendar,
+        },
+        {
+          label: "Company Settings",
+          href: "/settings/organization",
+          icon: Buildings,
+        },
         { label: "Payment Settings", href: "/settings/payment", icon: Wallet },
       ],
     },
@@ -62,7 +70,11 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
         { label: "Preferences", href: "/settings/preferences", icon: Gear },
         { label: "Devices", href: "/settings/devices", icon: Buildings },
         { label: "My Leaves", href: "/settings/leaves", icon: Tree },
-        { label: "Bank & Tax Info", href: "/settings/bank-info", icon: CurrencyCircleDollar },
+        {
+          label: "Bank & Tax Info",
+          href: "/settings/bank-info",
+          icon: CurrencyCircleDollar,
+        },
       ],
     },
   ];
@@ -75,12 +87,12 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
     };
 
     document.addEventListener("mousedown", handleClickOutside);
+
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [mobileOpen]);
 
   return (
     <div className={cn("min-h-screen bg-gray-50", className)}>
-      
       {mobileOpen && (
         <div
           className="fixed inset-0 z-20 bg-black/50 backdrop-blur-sm lg:hidden"
@@ -88,7 +100,6 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
         />
       )}
 
-      
       <div
         className={cn(
           "mobile-sidebar fixed inset-y-0 left-0 z-30 w-64 transform transition-transform lg:hidden",
@@ -109,8 +120,8 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
             </button>
           </div>
           <div className="p-4">
-            <Sidebar 
-              navigationGroups={navigationGroups} 
+            <Sidebar
+              navigationGroups={navigationGroups}
               isCollapsed={false}
               logo={
                 <div className="flex items-center gap-3">
@@ -123,15 +134,14 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
         </div>
       </div>
 
-      
       <aside
         className={cn(
           "hidden lg:fixed lg:inset-y-0 lg:left-0 lg:z-10 lg:block lg:bg-white lg:border-r lg:border-gray-200 transition-all duration-300",
           sidebarCollapsed ? "lg:w-16" : "lg:w-64"
         )}
       >
-        <Sidebar 
-          navigationGroups={navigationGroups} 
+        <Sidebar
+          navigationGroups={navigationGroups}
           isCollapsed={sidebarCollapsed}
           logo={
             <button
@@ -151,14 +161,12 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
         />
       </aside>
 
-      
       <div
         className={cn(
           "transition-all duration-300",
           sidebarCollapsed ? "lg:ml-16" : "lg:ml-64"
         )}
       >
-        
         {/* Mobile menu button - floating */}
         <button
           onClick={() => setMobileOpen(true)}

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_19_091216) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_21_100908) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -197,6 +197,13 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_19_091216) do
     t.boolean "calendar_enabled", default: true
     t.string "working_days", default: "5"
     t.string "working_hours", default: "40"
+    t.string "bank_name"
+    t.string "bank_account_number"
+    t.string "bank_routing_number"
+    t.string "bank_swift_code"
+    t.string "tax_id"
+    t.string "vat_number"
+    t.string "gst_number"
   end
 
   create_table "custom_leave_users", force: :cascade do |t|

@@ -26,11 +26,11 @@ const AllocatedDevicesEdit = () => {
   const { isDesktop, user } = useUserContext();
   const { memberId } = useParams();
   const { isCalledFromSettings } = useProfileContext();
-  
+
   // Determine if we're in settings based on URL path as fallback
-  const isInSettings = window.location.pathname.includes('/settings/');
+  const isInSettings = window.location.pathname.includes("/settings/");
   const shouldUseCurrentUser = isCalledFromSettings || isInSettings;
-  
+
   const navigateToPath = shouldUseCurrentUser
     ? "/settings"
     : `/team/${memberId}`;
@@ -49,7 +49,7 @@ const AllocatedDevicesEdit = () => {
 
   const getDevicesDetail = async () => {
     if (!currentUserId) return;
-    
+
     try {
       const res: any = await deviceApi.get(currentUserId);
       const devicesDetails: Device[] = res.data.devices;

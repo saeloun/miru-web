@@ -1,15 +1,14 @@
-import React, { useEffect } from 'react';
-import { 
-  viewDay, 
-  viewWeek, 
-  viewMonthGrid, 
-  viewMonthAgenda
-} from '@schedule-x/calendar';
-import { createEventsServicePlugin } from '@schedule-x/events-service';
-import { ScheduleXCalendar, useCalendarApp } from '@schedule-x/react';
-import { cn } from '../../lib/utils';
-import { Card } from './card';
-import './schedule-calendar.css';
+import React, { useEffect } from "react";
+import {
+  viewDay,
+  viewWeek,
+  viewMonthGrid,
+  viewMonthAgenda,
+} from "@schedule-x/calendar";
+import { createEventsServicePlugin } from "@schedule-x/events-service";
+import { ScheduleXCalendar, useCalendarApp } from "@schedule-x/react";
+import { cn } from "../../lib/utils";
+import "./schedule-calendar.css";
 
 interface CalendarEvent {
   id: string | number;
@@ -30,7 +29,7 @@ interface ScheduleCalendarProps {
   onDateSelect?: (date: Date) => void;
   onEventUpdate?: (event: any) => void;
   className?: string;
-  defaultView?: 'day' | 'week' | 'month-grid' | 'month-agenda';
+  defaultView?: "day" | "week" | "month-grid" | "month-agenda";
   calendars?: Array<{
     id: string;
     label: string;
@@ -45,28 +44,31 @@ const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({
   onDateSelect,
   onEventUpdate,
   className,
-  defaultView = 'month-grid',
+  defaultView = "month-grid",
   calendars = [],
-  selectedDate = new Date()
+  selectedDate = new Date(),
 }) => {
   // Define calendars with shadcn-compatible colors
-  const defaultCalendars = calendars.length > 0 ? calendars : [
-    {
-      id: 'holidays',
-      label: 'Holidays',
-      colorName: 'holiday'
-    },
-    {
-      id: 'timesheet',
-      label: 'Timesheet',
-      colorName: 'timesheet'
-    },
-    {
-      id: 'leave',
-      label: 'Leave',
-      colorName: 'leave'
-    }
-  ];
+  const defaultCalendars =
+    calendars.length > 0
+      ? calendars
+      : [
+          {
+            id: "holidays",
+            label: "Holidays",
+            colorName: "holiday",
+          },
+          {
+            id: "timesheet",
+            label: "Timesheet",
+            colorName: "timesheet",
+          },
+          {
+            id: "leave",
+            label: "Leave",
+            colorName: "leave",
+          },
+        ];
 
   const calendarsConfig = defaultCalendars.reduce((acc, cal) => {
     acc[cal.id] = {
@@ -74,14 +76,15 @@ const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({
       lightColors: {
         main: `var(--sx-color-${cal.colorName})`,
         container: `var(--sx-color-${cal.colorName}-container)`,
-        onContainer: `var(--sx-color-on-${cal.colorName}-container)`
+        onContainer: `var(--sx-color-on-${cal.colorName}-container)`,
       },
       darkColors: {
         main: `var(--sx-color-${cal.colorName})`,
         container: `var(--sx-color-${cal.colorName}-container)`,
-        onContainer: `var(--sx-color-on-${cal.colorName}-container)`
-      }
+        onContainer: `var(--sx-color-on-${cal.colorName}-container)`,
+      },
     };
+
     return acc;
   }, {} as Record<string, any>);
 
@@ -91,53 +94,57 @@ const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({
     const formatEventDate = (date: Date | string) => {
       if (date instanceof Date) {
         const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0');
-        const hours = String(date.getHours()).padStart(2, '0');
-        const minutes = String(date.getMinutes()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const day = String(date.getDate()).padStart(2, "0");
+        const hours = String(date.getHours()).padStart(2, "0");
+        const minutes = String(date.getMinutes()).padStart(2, "0");
+
         return `${year}-${month}-${day} ${hours}:${minutes}`;
       }
+
       // Handle edge case where time might be 24:00
-      if (typeof date === 'string' && date.includes(' 24:')) {
-        return date.replace(' 24:', ' 23:59');
+      if (typeof date === "string" && date.includes(" 24:")) {
+        return date.replace(" 24:", " 23:59");
       }
+
       return date;
     };
 
     // Check if it's an all-day event (start and end are the same date without time)
     const startStr = formatEventDate(event.start);
     const endStr = formatEventDate(event.end);
-    const isAllDay = startStr === endStr && !startStr.includes(':');
-    
+    const isAllDay = startStr === endStr && !startStr.includes(":");
+
     return {
       id: String(event.id),
-      title: event.title || 'Event',
+      title: event.title || "Event",
       start: isAllDay ? startStr : startStr,
       end: isAllDay ? startStr : endStr,
-      calendarId: event.calendarId || 'holidays',
+      calendarId: event.calendarId || "holidays",
       ...(event.description && { description: event.description }),
-      ...(event._customContent && { _customContent: event._customContent })
+      ...(event._customContent && { _customContent: event._customContent }),
     };
   });
 
   // Format selectedDate as YYYY-MM-DD as required by Schedule-X
   const formatDateForScheduleX = (date: Date) => {
     const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+
     return `${year}-${month}-${day}`;
   };
 
   const calendar = useCalendarApp({
-    locale: 'en-US',
+    locale: "en-US",
     defaultView,
     views: [viewDay, viewWeek, viewMonthGrid, viewMonthAgenda],
     events: processedEvents,
     calendars: calendarsConfig,
     selectedDate: formatDateForScheduleX(selectedDate || new Date()),
     dayBoundaries: {
-      start: '00:00',
-      end: '24:00'
+      start: "00:00",
+      end: "24:00",
     },
     plugins: [createEventsServicePlugin()],
     callbacks: {
@@ -155,8 +162,8 @@ const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({
         if (onEventUpdate) {
           onEventUpdate(event);
         }
-      }
-    }
+      },
+    },
   });
 
   // Update events when they change
