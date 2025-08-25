@@ -109,6 +109,8 @@
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-promise": "^6.1.1",
     "eslint-plugin-react": "^7.31.11",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-unused-imports": "^4.2.0",
     "glob": "^11.0.3",
     "lefthook": "^1.12.2",
     "lint-staged": "^12.1.2",
