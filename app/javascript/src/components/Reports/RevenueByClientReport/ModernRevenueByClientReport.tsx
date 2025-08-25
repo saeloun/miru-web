@@ -137,7 +137,9 @@ export const ModernRevenueByClientReport: React.FC<
         const amount = parseFloat(row.getValue("total_revenue"));
 
         return (
-          <div className="text-right font-medium">{currencyFormat("USD", amount)}</div>
+          <div className="text-right font-medium">
+            {currencyFormat("USD", amount)}
+          </div>
         );
       },
     },

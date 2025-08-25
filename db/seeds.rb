@@ -47,8 +47,8 @@ vipul = User.create!(
 # Create additional users with Faker
 users_data = []
 4.times do
-  first_name = Faker::Name.first_name.gsub(/[^a-zA-Z\s]/, "")
-  last_name = Faker::Name.last_name.gsub(/[^a-zA-Z\s]/, "")
+  first_name = Faker::Name.first_name.gsub(/[^a-zA-Z\s]/, "")[0..29]  # Truncate to 30 chars
+  last_name = Faker::Name.last_name.gsub(/[^a-zA-Z\s]/, "")[0..29]   # Truncate to 30 chars
   users_data << User.create!(
     first_name: first_name,
     last_name: last_name,

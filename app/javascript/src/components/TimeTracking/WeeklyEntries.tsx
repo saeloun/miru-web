@@ -91,7 +91,7 @@ const WeeklyEntries: React.FC<Props> = ({
       duration,
       note,
       bill_status: "non_billable",
-      id: null // This will be created when saved
+      id: null, // This will be created when saved
     };
     setCurrentEntries(initialEntries);
   };
@@ -168,8 +168,12 @@ const WeeklyEntries: React.FC<Props> = ({
               <Briefcase className="h-5 w-5 text-indigo-600" />
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-gray-900">Add New Project Entry</h3>
-              <p className="text-sm text-gray-500 mt-0.5">Select a client and project to start tracking time</p>
+              <h3 className="text-lg font-semibold text-gray-900">
+                Add New Project Entry
+              </h3>
+              <p className="text-sm text-gray-500 mt-0.5">
+                Select a client and project to start tracking time
+              </p>
             </div>
           </div>
           <SelectProject

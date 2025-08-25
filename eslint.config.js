@@ -88,6 +88,8 @@ export default [
         CustomEvent: 'readonly',
         KeyboardEvent: 'readonly',
         MouseEvent: 'readonly',
+        navigator: 'readonly',
+        IntersectionObserver: 'readonly',
         
         // Node globals
         process: 'readonly',

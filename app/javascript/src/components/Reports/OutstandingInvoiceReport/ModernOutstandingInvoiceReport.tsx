@@ -99,42 +99,46 @@ interface ClientGroup {
 const fetchOutstandingInvoices = async (filters: any = {}) => {
   // Build query params for filtering invoices
   const queryParams = new URLSearchParams();
-  
+
   // Filter for outstanding and overdue statuses
   queryParams.append("status[]", "sent");
   queryParams.append("status[]", "viewed");
   queryParams.append("status[]", "overdue");
-  
+
   // Add client filters if provided
   if (filters.client_ids && filters.client_ids.length > 0) {
     filters.client_ids.forEach((clientId: string) => {
       queryParams.append("client_ids[]", clientId);
     });
   }
-  
+
   // Add date range filters if provided
   if (filters.dateRange) {
     if (filters.dateRange.from) {
-      queryParams.append("from_date", format(filters.dateRange.from, "yyyy-MM-dd"));
+      queryParams.append(
+        "from_date",
+        format(filters.dateRange.from, "yyyy-MM-dd")
+      );
     }
     if (filters.dateRange.to) {
       queryParams.append("to_date", format(filters.dateRange.to, "yyyy-MM-dd"));
     }
   }
-  
+
   // Fetch all invoices without pagination
   queryParams.append("per", "1000");
-  
+
   const response = await invoicesApi.get(queryParams.toString());
   const invoices = response.data.invoices || [];
-  
+
   // Group invoices by client
   const clientsMap = new Map<string, ClientGroup>();
-  
+
   invoices.forEach((invoice: Invoice) => {
     const clientId = invoice.client_id;
-    const clientName = invoice.client_name || invoice.client?.name || "Unknown Client";
-    
+    const clientName =
+      invoice.client_name || invoice.client?.name || "Unknown Client";
+
     if (!clientsMap.has(clientId)) {
       clientsMap.set(clientId, {
         client_id: clientId,
@@ -145,43 +149,51 @@ const fetchOutstandingInvoices = async (filters: any = {}) => {
         total_overdue: 0,
       });
     }
-    
+
     const client = clientsMap.get(clientId)!;
     client.invoices.push(invoice);
-    
+
     // Calculate amounts using amount_due
-    const amountDue = parseFloat(String(invoice.amount_due || invoice.amount || 0));
-    
+    const amountDue = parseFloat(
+      String(invoice.amount_due || invoice.amount || 0)
+    );
+
     if (invoice.status === "overdue") {
       client.total_overdue += amountDue;
     } else if (["sent", "viewed"].includes(invoice.status)) {
       client.total_outstanding += amountDue;
     }
   });
-  
+
   // Convert to array and sort by client name
-  const clientsList = Array.from(clientsMap.values()).sort((a, b) => 
+  const clientsList = Array.from(clientsMap.values()).sort((a, b) =>
     a.client_name.localeCompare(b.client_name)
   );
-  
+
   // Calculate summary
   const summary = {
     total_invoices: invoices.length,
-    total_amount: invoices.reduce((sum: number, inv: Invoice) => 
-      sum + parseFloat(String(inv.amount_due || inv.amount || 0)), 0
+    total_amount: invoices.reduce(
+      (sum: number, inv: Invoice) =>
+        sum + parseFloat(String(inv.amount_due || inv.amount || 0)),
+      0
     ),
     total_outstanding: invoices
       .filter((inv: Invoice) => ["sent", "viewed"].includes(inv.status))
-      .reduce((sum: number, inv: Invoice) => 
-        sum + parseFloat(String(inv.amount_due || inv.amount || 0)), 0
+      .reduce(
+        (sum: number, inv: Invoice) =>
+          sum + parseFloat(String(inv.amount_due || inv.amount || 0)),
+        0
       ),
     total_overdue: invoices
       .filter((inv: Invoice) => inv.status === "overdue")
-      .reduce((sum: number, inv: Invoice) => 
-        sum + parseFloat(String(inv.amount_due || inv.amount || 0)), 0
+      .reduce(
+        (sum: number, inv: Invoice) =>
+          sum + parseFloat(String(inv.amount_due || inv.amount || 0)),
+        0
       ),
   };
-  
+
   return {
     clients: clientsList,
     summary,
@@ -195,13 +207,14 @@ const ModernOutstandingInvoiceReport: React.FC = () => {
   const [expanded, setExpanded] = useState<ExpandedState>({});
   const [dateRange, setDateRange] = useState<DateRange | undefined>();
   const [selectedClients, setSelectedClients] = useState<string[]>([]);
-  
+
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: ["outstanding-invoices", dateRange, selectedClients],
-    queryFn: () => fetchOutstandingInvoices({
-      dateRange,
-      client_ids: selectedClients,
-    }),
+    queryFn: () =>
+      fetchOutstandingInvoices({
+        dateRange,
+        client_ids: selectedClients,
+      }),
   });
 
   const baseCurrency = data?.currency || company?.baseCurrency || "USD";
@@ -284,7 +297,8 @@ const ModernOutstandingInvoiceReport: React.FC = () => {
             <div>
               <p className="font-medium">{client.client_name}</p>
               <p className="text-sm text-gray-500">
-                {client.invoices.length} invoice{client.invoices.length !== 1 ? 's' : ''}
+                {client.invoices.length} invoice
+                {client.invoices.length !== 1 ? "s" : ""}
               </p>
             </div>
           </div>
@@ -352,7 +366,8 @@ const ModernOutstandingInvoiceReport: React.FC = () => {
       id: "total",
       header: "Total",
       cell: ({ row }) => {
-        const total = row.original.total_outstanding + row.original.total_overdue;
+        const total =
+          row.original.total_outstanding + row.original.total_overdue;
         return (
           <div className="font-semibold">
             {currencyFormat(baseCurrency, total)}
@@ -374,10 +389,10 @@ const ModernOutstandingInvoiceReport: React.FC = () => {
       sorting,
       expanded,
     },
-    getSubRows: (row) => row.invoices as any,
+    getSubRows: row => row.invoices as any,
   });
 
-  const handleExport = async (format: 'csv' | 'pdf') => {
+  const handleExport = async (format: "csv" | "pdf") => {
     try {
       // Implementation for export
       console.log(`Exporting as ${format}`);
@@ -402,16 +417,15 @@ const ModernOutstandingInvoiceReport: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Outstanding & Overdue Invoices</h1>
+          <h1 className="text-3xl font-bold text-gray-900">
+            Outstanding & Overdue Invoices
+          </h1>
           <p className="text-gray-600 mt-1">
             Track unpaid invoices and overdue payments
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <DateRangePicker
-            date={dateRange}
-            onDateChange={setDateRange}
-          />
+          <DateRangePicker date={dateRange} onDateChange={setDateRange} />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm">
@@ -422,11 +436,11 @@ const ModernOutstandingInvoiceReport: React.FC = () => {
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Export Format</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => handleExport('csv')}>
+              <DropdownMenuItem onClick={() => handleExport("csv")}>
                 <FileText className="h-4 w-4 mr-2" />
                 CSV
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleExport('pdf')}>
+              <DropdownMenuItem onClick={() => handleExport("pdf")}>
                 <FileText className="h-4 w-4 mr-2" />
                 PDF
               </DropdownMenuItem>
@@ -439,7 +453,9 @@ const ModernOutstandingInvoiceReport: React.FC = () => {
       <div className="grid gap-4 md:grid-cols-4">
         <Card className="border-gray-200">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Invoices</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Total Invoices
+            </CardTitle>
             <Receipt className="h-4 w-4 text-gray-400" />
           </CardHeader>
           <CardContent>
@@ -447,7 +463,9 @@ const ModernOutstandingInvoiceReport: React.FC = () => {
               <Skeleton className="h-8 w-24" />
             ) : (
               <>
-                <div className="text-2xl font-bold">{data?.summary.total_invoices || 0}</div>
+                <div className="text-2xl font-bold">
+                  {data?.summary.total_invoices || 0}
+                </div>
                 <p className="text-xs text-gray-600 mt-1">Active invoices</p>
               </>
             )}
@@ -465,7 +483,10 @@ const ModernOutstandingInvoiceReport: React.FC = () => {
             ) : (
               <>
                 <div className="text-2xl font-bold">
-                  {currencyFormat(baseCurrency, data?.summary.total_amount || 0)}
+                  {currencyFormat(
+                    baseCurrency,
+                    data?.summary.total_amount || 0
+                  )}
                 </div>
                 <p className="text-xs text-gray-600 mt-1">Unpaid amount</p>
               </>
@@ -484,7 +505,10 @@ const ModernOutstandingInvoiceReport: React.FC = () => {
             ) : (
               <>
                 <div className="text-2xl font-bold text-blue-600">
-                  {currencyFormat(baseCurrency, data?.summary.total_outstanding || 0)}
+                  {currencyFormat(
+                    baseCurrency,
+                    data?.summary.total_outstanding || 0
+                  )}
                 </div>
                 <p className="text-xs text-gray-600 mt-1">Not yet due</p>
               </>
@@ -503,7 +527,10 @@ const ModernOutstandingInvoiceReport: React.FC = () => {
             ) : (
               <>
                 <div className="text-2xl font-bold text-red-600">
-                  {currencyFormat(baseCurrency, data?.summary.total_overdue || 0)}
+                  {currencyFormat(
+                    baseCurrency,
+                    data?.summary.total_overdue || 0
+                  )}
                 </div>
                 <p className="text-xs text-red-600 mt-1">Requires attention</p>
               </>
@@ -531,9 +558,9 @@ const ModernOutstandingInvoiceReport: React.FC = () => {
             <div className="rounded-md border">
               <Table>
                 <TableHeader>
-                  {table.getHeaderGroups().map((headerGroup) => (
+                  {table.getHeaderGroups().map(headerGroup => (
                     <TableRow key={headerGroup.id}>
-                      {headerGroup.headers.map((header) => (
+                      {headerGroup.headers.map(header => (
                         <TableHead key={header.id}>
                           {header.isPlaceholder
                             ? null
@@ -548,9 +575,9 @@ const ModernOutstandingInvoiceReport: React.FC = () => {
                 </TableHeader>
                 <TableBody>
                   {table.getRowModel().rows?.length ? (
-                    table.getRowModel().rows.map((row) => {
+                    table.getRowModel().rows.map(row => {
                       const isInvoice = row.depth > 0;
-                      
+
                       if (isInvoice) {
                         const invoice = row.original as unknown as Invoice;
                         return (
@@ -562,7 +589,9 @@ const ModernOutstandingInvoiceReport: React.FC = () => {
                               <div className="flex items-center gap-2">
                                 <FileText className="h-4 w-4 text-gray-400" />
                                 <div>
-                                  <p className="font-medium">#{invoice.invoice_number}</p>
+                                  <p className="font-medium">
+                                    #{invoice.invoice_number}
+                                  </p>
                                   <p className="text-sm text-gray-500">
                                     Due: {invoice.due_date}
                                   </p>
@@ -574,7 +603,10 @@ const ModernOutstandingInvoiceReport: React.FC = () => {
                             </TableCell>
                             <TableCell>
                               <div className="text-sm">
-                                {currencyFormat(baseCurrency, invoice.amount_due || invoice.amount)}
+                                {currencyFormat(
+                                  baseCurrency,
+                                  invoice.amount_due || invoice.amount
+                                )}
                               </div>
                             </TableCell>
                             <TableCell>
@@ -585,23 +617,29 @@ const ModernOutstandingInvoiceReport: React.FC = () => {
                                   </Button>
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent align="end">
-                                  <DropdownMenuItem>View Invoice</DropdownMenuItem>
-                                  <DropdownMenuItem>Send Reminder</DropdownMenuItem>
-                                  <DropdownMenuItem>Download PDF</DropdownMenuItem>
+                                  <DropdownMenuItem>
+                                    View Invoice
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem>
+                                    Send Reminder
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem>
+                                    Download PDF
+                                  </DropdownMenuItem>
                                 </DropdownMenuContent>
                               </DropdownMenu>
                             </TableCell>
                           </TableRow>
                         );
                       }
-                      
+
                       return (
                         <TableRow
                           key={row.id}
                           data-state={row.getIsSelected() && "selected"}
                           className={row.getIsExpanded() ? "border-b-0" : ""}
                         >
-                          {row.getVisibleCells().map((cell) => (
+                          {row.getVisibleCells().map(cell => (
                             <TableCell key={cell.id}>
                               {flexRender(
                                 cell.column.columnDef.cell,

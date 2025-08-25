@@ -1,16 +1,16 @@
 import React from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "../ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import { Button } from "../ui/button";
 import { minToHHMM } from "../../helpers";
 import dayjs from "dayjs";
 import EntryCard from "./EntryCard";
 import EntryForm from "./EntryForm";
-import { TimeEntry, Client, Project, EntryList } from "../../types/timeTracking";
+import {
+  TimeEntry,
+  Client,
+  Project,
+  EntryList,
+} from "../../types/timeTracking";
 
 interface EntryDetailsModalProps {
   isOpen: boolean;
@@ -63,22 +63,21 @@ const EntryDetailsModal: React.FC<EntryDetailsModalProps> = ({
   setSelectedFullDate,
   setUpdateView,
 }) => {
-  const totalDuration = entries?.reduce((sum, entry) => sum + entry.duration, 0) || 0;
+  const totalDuration =
+    entries?.reduce((sum, entry) => sum + entry.duration, 0) || 0;
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center justify-between">
-            <span>
-              {dayjs(selectedDate).format("dddd, MMMM D, YYYY")}
-            </span>
+            <span>{dayjs(selectedDate).format("dddd, MMMM D, YYYY")}</span>
             <span className="text-sm font-normal text-muted-foreground">
               Total: {minToHHMM(totalDuration)}
             </span>
           </DialogTitle>
         </DialogHeader>
-        
+
         <div className="mt-4 space-y-4">
           {/* Add Entry Button */}
           {!newEntryView && !editEntryId && (
@@ -118,7 +117,7 @@ const EntryDetailsModal: React.FC<EntryDetailsModalProps> = ({
           {/* Entries List */}
           {!newEntryView && entries && entries.length > 0 ? (
             <div className="space-y-2">
-              {entries.map((entry) =>
+              {entries.map(entry =>
                 editEntryId === entry.id ? (
                   <EntryForm
                     key={entry.id}
@@ -153,7 +152,8 @@ const EntryDetailsModal: React.FC<EntryDetailsModalProps> = ({
               )}
             </div>
           ) : (
-            !newEntryView && !editEntryId && (
+            !newEntryView &&
+            !editEntryId && (
               <div className="text-center py-8 text-muted-foreground">
                 No entries for this day
               </div>

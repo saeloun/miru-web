@@ -92,19 +92,19 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
       // Ensure clients is an array
       const clientsArray = Array.isArray(clients) ? clients : [];
       setClients(clientsArray);
-      
+
       // Ensure projects is an object keyed by client name
       const projectsObj = projects || {};
       setProjects(projectsObj);
-      
+
       // Ensure employees is an array
       const employeesArray = Array.isArray(employees) ? employees : [];
       setEmployees(employeesArray);
-      
+
       // Ensure entries is an object
       const entriesObj = entries || {};
       setEntryList(entriesObj);
-      
+
       const currentEmployeeEntries = {};
       currentEmployeeEntries[targetEmployeeId] = entriesObj;
       setAllEmployeesEntries(currentEmployeeEntries);
@@ -599,12 +599,14 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
                 <DatesInWeek
                   dayInfo={dayInfo}
                   selectDate={selectDate}
-                  setSelectDate={(index) => {
+                  setSelectDate={index => {
                     setSelectDate(index);
                     // Show modal with selected day's entries
                     const selectedDayInfo = dayInfo[index];
                     if (selectedDayInfo) {
-                      const formattedDate = dayjs(selectedDayInfo.fullDate).format(dateFormat);
+                      const formattedDate = dayjs(
+                        selectedDayInfo.fullDate
+                      ).format(dateFormat);
                       setModalSelectedDate(formattedDate);
                       setShowEntryModal(true);
                     }
