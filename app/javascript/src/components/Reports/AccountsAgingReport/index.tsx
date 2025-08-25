@@ -72,7 +72,6 @@ interface AccountsAgingData {
   currency: string;
 }
 
-
 const AccountsAgingReport: React.FC = () => {
   const [asOfDate, setAsOfDate] = useState<Date>(new Date());
   const [selectedClients, setSelectedClients] = useState<number[]>([]);

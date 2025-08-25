@@ -53,7 +53,7 @@ const RecentlyUpdatedCard = ({
           {getStatusIcon()}
         </div>
       </div>
-      
+
       <div className="mb-auto">
         <p
           className="text-sm text-gray-700 font-medium truncate"

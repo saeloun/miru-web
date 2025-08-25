@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { cn } from "../../lib/utils";
-import { List, X } from "phosphor-react";
 import Sidebar from "./Sidebar";
 import MiruLogoSVG from "../../../images/miru-logo.svg";
 import {
+  List,
+  X,
   Timer,
   Receipt,
   UsersThree,

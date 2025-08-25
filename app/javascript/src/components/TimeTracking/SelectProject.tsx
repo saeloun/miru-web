@@ -88,19 +88,20 @@ const SelectProject: React.FC<Iprops> = ({
   const handleSaveButton = () => {
     if (client && project && (hours || minutes)) {
       // Calculate total duration in minutes
-      const totalMinutes = (parseInt(hours || "0") * 60) + parseInt(minutes || "0");
-      
+      const totalMinutes =
+        parseInt(hours || "0") * 60 + parseInt(minutes || "0");
+
       // Set the project as selected
       setProjectSelected(true);
       setProjectId();
-      
+
       // Call the onSaveEntry callback with duration and description
       if (onSaveEntry) {
         onSaveEntry(totalMinutes, description);
       }
-      
+
       if (!newRowView && handleEditEntries) handleEditEntries();
-      
+
       // Reset form fields after save
       setHours("");
       setMinutes("");
@@ -134,11 +135,12 @@ const SelectProject: React.FC<Iprops> = ({
               <SelectValue placeholder="Select a client" />
             </SelectTrigger>
             <SelectContent>
-              {Array.isArray(clients) && clients.map((c) => (
-                <SelectItem key={c.id} value={c.name}>
-                  {c.name}
-                </SelectItem>
-              ))}
+              {Array.isArray(clients) &&
+                clients.map(c => (
+                  <SelectItem key={c.id} value={c.name}>
+                    {c.name}
+                  </SelectItem>
+                ))}
             </SelectContent>
           </Select>
         </div>
@@ -161,7 +163,11 @@ const SelectProject: React.FC<Iprops> = ({
                 !client && "opacity-50 cursor-not-allowed"
               )}
             >
-              <SelectValue placeholder={client ? "Select a project" : "Select a client first"} />
+              <SelectValue
+                placeholder={
+                  client ? "Select a project" : "Select a client first"
+                }
+              />
             </SelectTrigger>
             <SelectContent>
               {client &&
@@ -175,7 +181,7 @@ const SelectProject: React.FC<Iprops> = ({
           </Select>
         </div>
       </div>
-      
+
       {/* Time Duration */}
       <div>
         <label className="text-sm font-medium text-gray-700 mb-1.5 block">
@@ -187,7 +193,7 @@ const SelectProject: React.FC<Iprops> = ({
               <Input
                 type="number"
                 value={hours}
-                onChange={(e) => setHours(e.target.value)}
+                onChange={e => setHours(e.target.value)}
                 placeholder="0"
                 min="0"
                 max="23"
@@ -203,7 +209,7 @@ const SelectProject: React.FC<Iprops> = ({
               <Input
                 type="number"
                 value={minutes}
-                onChange={(e) => setMinutes(e.target.value)}
+                onChange={e => setMinutes(e.target.value)}
                 placeholder="0"
                 min="0"
                 max="59"
@@ -224,17 +230,14 @@ const SelectProject: React.FC<Iprops> = ({
         </label>
         <Textarea
           value={description}
-          onChange={(e) => setDescription(e.target.value)}
+          onChange={e => setDescription(e.target.value)}
           placeholder="What did you work on?"
           className="min-h-[80px] resize-none"
         />
       </div>
       {/* Action Buttons */}
       <div className="flex justify-end gap-3 pt-2">
-        <Button 
-          variant="outline" 
-          onClick={handleCancelButton}
-        >
+        <Button variant="outline" onClick={handleCancelButton}>
           Cancel
         </Button>
         <Button

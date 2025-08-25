@@ -10,13 +10,13 @@ const get = async (userId?: number) => {
     // If userId is provided, fetch that user's data, otherwise current user's data
     const url = userId ? `/time-tracking?user_id=${userId}` : "/time-tracking";
     const response = await internalAxios.get(url);
-    
+
     // The API returns:
     // - clients: array of client objects
     // - projects: object keyed by client name
     // - employees: array of employee objects
     // - entries: object keyed by date
-    
+
     return {
       data: {
         entries: response.data.entries || {},

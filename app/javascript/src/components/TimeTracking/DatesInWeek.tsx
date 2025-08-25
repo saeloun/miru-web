@@ -22,7 +22,9 @@ const DatesInWeek: React.FC<DatesInWeekProps> = ({
           return (
             <button
               key={index}
-              aria-label={`View entries for ${d.day}, ${d.month} ${d.date}. ${isToday ? 'Today' : ''} ${isSelected ? 'Currently selected' : ''}`}
+              aria-label={`View entries for ${d.day}, ${d.month} ${d.date}. ${
+                isToday ? "Today" : ""
+              } ${isSelected ? "Currently selected" : ""}`}
               aria-pressed={isSelected}
               className={cn(
                 "relative flex-1 rounded-xl border-2 px-4 py-3 text-center transition-all duration-300 hover:shadow-lg group",
