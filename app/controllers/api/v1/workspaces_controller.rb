@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class InternalApi::V1::WorkspacesController < ApplicationController
+class Api::V1::WorkspacesController < ApplicationController
   skip_after_action :verify_authorized
 
   def index

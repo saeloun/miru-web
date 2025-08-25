@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class InternalApi::V1::Projects::SearchController < InternalApi::V1::ApplicationController
+class Api::V1::Projects::SearchController < Api::V1::ApplicationController
   skip_after_action :verify_authorized, only: [:index]
 
   def index

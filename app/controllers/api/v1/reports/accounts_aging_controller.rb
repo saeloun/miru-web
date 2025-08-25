@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class InternalApi::V1::Reports::AccountsAgingController < InternalApi::V1::ApplicationController
+class Api::V1::Reports::AccountsAgingController < Api::V1::ApplicationController
   def index
     authorize :report
     render :index, locals: Reports::AccountsAging::FetchOverdueAmount.process(current_company), status: 200

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class InternalApi::V1::CustomLeavesController < InternalApi::V1::ApplicationController
+class Api::V1::CustomLeavesController < Api::V1::ApplicationController
   before_action :set_leave, only: [:update]
 
   def update

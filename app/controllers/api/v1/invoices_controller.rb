@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationController
+class Api::V1::InvoicesController < Api::V1::ApplicationController
   before_action :load_client, only: [:create, :update]
   after_action :track_event, only: [:create, :update, :destroy, :send_invoice, :download]
 

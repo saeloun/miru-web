@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class InternalApi::V1::TimeoffEntriesController < InternalApi::V1::ApplicationController
+class Api::V1::TimeoffEntriesController < Api::V1::ApplicationController
   before_action :load_user!, only: [:create, :update]
   before_action :load_leave_type!, only: [:create, :update]
   before_action :load_holiday_info!, only: [:create, :update]

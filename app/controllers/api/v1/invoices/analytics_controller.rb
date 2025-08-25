@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class InternalApi::V1::Invoices::AnalyticsController < InternalApi::V1::ApplicationController
+class Api::V1::Invoices::AnalyticsController < Api::V1::ApplicationController
   def monthly_revenue
     authorize Invoice, :index?
 

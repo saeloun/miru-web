@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class InternalApi::V1::ProfileController < InternalApi::V1::ApplicationController
+class Api::V1::ProfileController < Api::V1::ApplicationController
   def update
     authorize :update, policy_class: ProfilePolicy
     service = UpdateProfileSettingsService.new(current_user, user_params).process

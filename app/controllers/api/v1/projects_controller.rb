@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class InternalApi::V1::ProjectsController < InternalApi::V1::ApplicationController
+class Api::V1::ProjectsController < Api::V1::ApplicationController
   def index
     authorize Project
 
