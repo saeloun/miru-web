@@ -508,7 +508,6 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
               Time entries for
             </h3>
           )}
-          {/* Show dropdown for admin users to switch between employees */}
           {isAdminUser && employeeOptions.length > 0 && (
             <SearchTimeEntries
               employeeList={employeeOptions}
@@ -516,7 +515,6 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
               setSelectedEmployeeId={setSelectedEmployeeId}
             />
           )}
-          {/* Show current user name for non-admin users */}
           {!isAdminUser && user && (
             <div className="text-sm text-muted-foreground">
               Viewing entries for: {user.first_name} {user.last_name}
@@ -524,7 +522,6 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
           )}
         </div>
         <div>
-          {/* Use calendar view */}
           {view === "month" ? (
             <>
               <ScheduleCalendar
@@ -577,7 +574,6 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
                   setEditEntryId(0);
                 }}
               />
-              {/* Removed inline entry listing - now using modal */}
             </>
           ) : (
             isDesktop && (
@@ -649,8 +645,6 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
               Add Entry
             </Button>
           )}
-          {/* Removed duplicate mobile NEW ENTRY button for month view */}
-          {/* --- weekly view with smaller button --- */}
           {view === "week" && !newRowView && (
             <Button
               size="default"
@@ -683,50 +677,12 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
             />
           )}
         </div>
-        {/* entry cards for day and month */}
-        {view !== "week" &&
-          entryList[selectedFullDate] &&
-          entryList[selectedFullDate].map((entry, weekCounter) =>
-            editEntryId === entry.id ? (
-              <EntryForm
-                clients={clients}
-                editEntryId={editEntryId}
-                entryList={entryList}
-                fetchEntries={fetchEntries}
-                fetchEntriesofMonth={fetchEntriesOfMonths}
-                handleAddEntryDateChange={handleAddEntryDateChange}
-                handleDeleteEntry={handleDeleteEntry}
-                handleFilterEntry={handleFilterEntry}
-                handleRelocateEntry={handleRelocateEntry}
-                key={entry.id}
-                projects={projects}
-                removeLocalStorageItems={removeLocalStorageItems}
-                selectedEmployeeId={selectedEmployeeId}
-                selectedFullDate={selectedFullDate}
-                setEditEntryId={setEditEntryId}
-                setNewEntryView={setNewEntryView}
-                setSelectedFullDate={setSelectedFullDate}
-                setUpdateView={setUpdateView}
-              />
-            ) : (
-              <EntryCard
-                handleDeleteEntry={handleDeleteEntry}
-                handleDuplicate={handleDuplicate}
-                key={weekCounter}
-                setEditEntryId={setEditEntryId}
-                setNewEntryView={setNewEntryView}
-                {...entry}
-              />
-            )
-          )}
-        {/* mobile view Empty state condition */}
         {view !== "week" && !entryList[selectedFullDate] && !isDesktop && (
           <EmptyStatesMobileView
             setEditEntryId={setEditEntryId}
             setNewEntryView={setNewEntryView}
           />
         )}
-        {/* entry cards for week */}
         {view === "week" && (
           <div>
             {weeklyData.map((entry, weekCounter) => (
@@ -749,7 +705,6 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
           </div>
         )}
       </div>
-      {/* Modern Time Entry Form */}
       <ModernTimeEntryForm
         isOpen={showModernForm}
         onClose={handleCloseModernForm}
@@ -760,7 +715,6 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
         clients={clients}
       />
 
-      {/* Entry Details Modal for Month View */}
       <EntryDetailsModal
         isOpen={showEntryModal}
         onClose={() => {
