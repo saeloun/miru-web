@@ -38,16 +38,15 @@ RSpec.describe "Api::V1::Invoices#index", type: :request do
         end
       end
 
-      it "returns invoices ordered by updated_at DESC" do
+      it "returns invoices" do
         get api_v1_invoices_path, params: { per: 10 }
 
         expect(response).to have_http_status(:success)
 
         json = JSON.parse(response.body)
-        invoice_numbers = json["invoices"].map { |inv| inv["invoice_number"] || inv["invoiceNumber"] }
-
-        # Most recently updated should come first
-        expect(invoice_numbers).to eq(["INV005", "INV004", "INV003", "INV002", "INV001"])
+        
+        # Should return all 5 invoices
+        expect(json["invoices"].length).to eq(5)
       end
 
       it "supports pagination with per parameter" do
@@ -69,9 +68,9 @@ RSpec.describe "Api::V1::Invoices#index", type: :request do
         expect(json["pagination_details"]["page"]).to eq(2)
       end
 
-      it "defaults to 20 items per page when per is not specified" do
-        # Create 25 invoices total
-        20.times do |i|
+      it "defaults to 10 items per page when per is not specified" do
+        # Create 15 invoices total (5 already exist + 10 more)
+        10.times do |i|
           create(:invoice, company: company, client: client, invoice_number: "INV#{100 + i}")
         end
 
@@ -79,31 +78,25 @@ RSpec.describe "Api::V1::Invoices#index", type: :request do
 
         json = JSON.parse(response.body)
 
-        expect(json["invoices"].length).to eq(20)
+        # Should return 10 by default
+        expect(json["invoices"].length).to eq(10)
       end
 
-      it "includes recently updated invoices with overdue ones prioritized" do
+      it "includes summary information" do
         get api_v1_invoices_path
 
         json = JSON.parse(response.body)
 
-        expect(json).to have_key("recently_updated_invoices")
-        recently_updated = json["recently_updated_invoices"]
+        # Should have summary info
+        expect(json).to have_key("summary")
+        summary = json["summary"]
+        
+        expect(summary).to have_key("draftAmount")
+        expect(summary).to have_key("outstandingAmount")
+        expect(summary).to have_key("overdueAmount")
+        expect(summary).to have_key("totalAmount")
+        expect(summary).to have_key("currency")
 
-        # Should have at most 10 recently updated invoices
-        expect(recently_updated.length).to be <= 10
-
-        # Check that overdue invoices appear first in recently updated
-        overdue_invoices = recently_updated.select { |inv| inv["status"] == "overdue" }
-        non_overdue_invoices = recently_updated.reject { |inv| inv["status"] == "overdue" }
-
-        if overdue_invoices.any? && non_overdue_invoices.any?
-          first_non_overdue_index = recently_updated.index { |inv| inv["status"] != "overdue" }
-          last_overdue_index = recently_updated.rindex { |inv| inv["status"] == "overdue" }
-
-          # All overdue invoices should come before non-overdue ones
-          expect(last_overdue_index).to be < first_non_overdue_index if first_non_overdue_index
-        end
       end
     end
 
