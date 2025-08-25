@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class InternalApi::V1::ExpenseCategoriesController < ApplicationController
+class Api::V1::ExpenseCategoriesController < ApplicationController
   def create
     authorize :create, policy_class: ExpenseCategoryPolicy
 

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class InternalApi::V1::BulkPreviousEmploymentsController < InternalApi::V1::ApplicationController
+class Api::V1::BulkPreviousEmploymentsController < Api::V1::ApplicationController
   def update
     authorize user, policy_class: BulkPreviousEmploymentPolicy
     BulkPreviousEmploymentService.new(update_params, user, employment).process

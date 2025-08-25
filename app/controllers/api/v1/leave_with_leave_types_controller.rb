@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class InternalApi::V1::LeaveWithLeaveTypesController < InternalApi::V1::ApplicationController
+class Api::V1::LeaveWithLeaveTypesController < Api::V1::ApplicationController
   before_action :leave, only: [:update]
 
   def update

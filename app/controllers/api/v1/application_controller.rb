@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class InternalApi::V1::ApplicationController < ActionController::API
+class Api::V1::ApplicationController < ActionController::API
   include PunditConcern
   include ActionController::MimeResponds
   include ErrorHandler

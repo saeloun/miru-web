@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class InternalApi::V1::TeamMembers::AvatarController < InternalApi::V1::ApplicationController
+class Api::V1::TeamMembers::AvatarController < Api::V1::ApplicationController
   def update
     authorize employment, policy_class: TeamMembers::AvatarPolicy
 

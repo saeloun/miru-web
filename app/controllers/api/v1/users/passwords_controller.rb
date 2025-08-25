@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class InternalApi::V1::Users::PasswordsController < Devise::PasswordsController
+class Api::V1::Users::PasswordsController < Devise::PasswordsController
   respond_to :json
 
   def create

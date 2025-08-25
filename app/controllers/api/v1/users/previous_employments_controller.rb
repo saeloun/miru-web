@@ -2,7 +2,7 @@
 
 # API for Admin and Owner only
 
-class InternalApi::V1::Users::PreviousEmploymentsController < InternalApi::V1::ApplicationController
+class Api::V1::Users::PreviousEmploymentsController < Api::V1::ApplicationController
   before_action :set_user
 
   def index

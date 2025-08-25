@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class InternalApi::V1::Wise::RecipientsController < InternalApi::V1::WiseController
+class Api::V1::Wise::RecipientsController < Api::V1::WiseController
   def show
     authorize current_company, policy_class: Wise::RecipientPolicy
 

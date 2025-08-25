@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class InternalApi::V1::Invoices::WaivedController < ApplicationController
+class Api::V1::Invoices::WaivedController < ApplicationController
   def update
     authorize :update, policy_class: Invoices::WaivedPolicy
     invoice.waived!

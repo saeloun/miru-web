@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class InternalApi::V1::Clients::InvoicesController < InternalApi::V1::ApplicationController
+class Api::V1::Clients::InvoicesController < Api::V1::ApplicationController
   before_action :set_client
 
   def index

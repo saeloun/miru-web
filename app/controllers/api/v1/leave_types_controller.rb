@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class InternalApi::V1::LeaveTypesController < InternalApi::V1::ApplicationController
+class Api::V1::LeaveTypesController < Api::V1::ApplicationController
   before_action :leave, only: [:create, :update]
   before_action :leave_type, only: [:update]
 

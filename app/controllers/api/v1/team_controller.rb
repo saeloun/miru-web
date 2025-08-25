@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class InternalApi::V1::TeamController < InternalApi::V1::ApplicationController
+class Api::V1::TeamController < Api::V1::ApplicationController
   helper ApplicationHelper
 
   def index

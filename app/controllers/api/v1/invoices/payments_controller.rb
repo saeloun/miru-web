@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class InternalApi::V1::Invoices::PaymentsController < InternalApi::V1::ApplicationController
+class Api::V1::Invoices::PaymentsController < Api::V1::ApplicationController
   before_action :load_invoice, only: [:success]
   skip_before_action :authenticate_user_using_x_auth_token
   skip_before_action :authenticate_user!

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class InternalApi::V1::Users::ConfirmationsController < Devise::ConfirmationsController
+class Api::V1::Users::ConfirmationsController < Devise::ConfirmationsController
   respond_to :json
 
   def create

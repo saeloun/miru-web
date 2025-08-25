@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class InternalApi::V1::EmploymentsController < InternalApi::V1::ApplicationController
+class Api::V1::EmploymentsController < Api::V1::ApplicationController
   before_action :set_employment, only: [:update, :show]
 
   def index

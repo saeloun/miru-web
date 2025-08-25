@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class InternalApi::V1::TeamMembers::DetailsController < InternalApi::V1::ApplicationController
+class Api::V1::TeamMembers::DetailsController < Api::V1::ApplicationController
   def show
     authorize employment, policy_class: TeamMembers::DetailPolicy
     render :show, locals: { user: employment.user }, status: 200

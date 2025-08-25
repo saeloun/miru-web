@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class InternalApi::V1::AddressesController < InternalApi::V1::ApplicationController
+class Api::V1::AddressesController < Api::V1::ApplicationController
   before_action :set_addressable
 
   def index

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class InternalApi::V1::PaymentSettingsController < InternalApi::V1::ApplicationController
+class Api::V1::PaymentSettingsController < Api::V1::ApplicationController
   after_action :save_stripe_settings, only: :index
 
   def index

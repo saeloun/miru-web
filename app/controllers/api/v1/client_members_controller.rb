@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class InternalApi::V1::ClientMembersController < InternalApi::V1::ApplicationController
+class Api::V1::ClientMembersController < Api::V1::ApplicationController
   def index
     authorize client, policy_class: ClientMemberPolicy
 

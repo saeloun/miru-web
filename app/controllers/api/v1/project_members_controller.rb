@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class InternalApi::V1::ProjectMembersController < InternalApi::V1::ApplicationController
+class Api::V1::ProjectMembersController < Api::V1::ApplicationController
   def update
     authorize project, policy_class: ProjectMemberPolicy
 

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class InternalApi::V1::Users::DevicesController < InternalApi::V1::ApplicationController
+class Api::V1::Users::DevicesController < Api::V1::ApplicationController
   before_action :set_user
 
   def index

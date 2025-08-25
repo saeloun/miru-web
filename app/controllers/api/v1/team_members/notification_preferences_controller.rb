@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class InternalApi::V1::TeamMembers::NotificationPreferencesController < InternalApi::V1::ApplicationController
+class Api::V1::TeamMembers::NotificationPreferencesController < Api::V1::ApplicationController
   def show
     authorize notification_preference, policy_class: TeamMembers::NotificationPreferencePolicy
     render json: { notification_enabled: notification_preference.notification_enabled }, status: 200
