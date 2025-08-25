@@ -41,6 +41,8 @@ export interface Invoice {
   reference?: string;
   amountPaid?: number;
   amountDue?: number;
+  updatedAt?: string;
+  createdAt?: string;
   invoiceLineItems?: InvoiceItem[];
   company?: {
     name: string;
@@ -73,7 +75,6 @@ export interface InvoiceFormData {
 
 export interface InvoiceListResponse {
   invoices: Invoice[];
-  recentlyUpdatedInvoices: Invoice[];
   summary: {
     draftAmount: string | number;
     outstandingAmount: string | number;
@@ -124,11 +125,6 @@ class InvoiceApiService {
       invoices: (response.data.invoices || []).map((inv: any) =>
         this.transformApiInvoice(inv)
       ),
-      recentlyUpdatedInvoices: (
-        response.data.recently_updated_invoices ||
-        response.data.recentlyUpdatedInvoices ||
-        []
-      ).map((inv: any) => this.transformApiInvoice(inv)),
       summary: response.data.summary || {
         draftAmount: 0,
         outstandingAmount: 0,
@@ -316,6 +312,8 @@ class InvoiceApiService {
         apiInvoice.amountPaid || apiInvoice.amount_paid || 0
       ),
       amountDue: parseFloat(apiInvoice.amountDue || apiInvoice.amount_due || 0),
+      updatedAt: apiInvoice.updatedAt || apiInvoice.updated_at,
+      createdAt: apiInvoice.createdAt || apiInvoice.created_at,
       invoiceLineItems: (
         apiInvoice.invoiceLineItems ||
         apiInvoice.invoice_line_items ||

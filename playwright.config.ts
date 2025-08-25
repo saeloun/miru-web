@@ -29,10 +29,15 @@ export default defineConfig({
     },
   ],
 
-  webServer: {
+  webServer: process.env.CI ? {
+    command: 'bundle exec rails server -p 3000',
+    url: 'http://127.0.0.1:3000',
+    reuseExistingServer: false,
+    timeout: 120 * 1000,
+  } : {
     command: 'foreman start -f Procfile.dev',
     url: 'http://127.0.0.1:3000',
-    reuseExistingServer: !process.env.CI,
+    reuseExistingServer: true,
     timeout: 120 * 1000,
   },
 });
