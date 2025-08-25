@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import {
-  AlertCircle,
+  Warning as AlertCircle,
   Calendar,
-  DollarSign,
+  CurrencyDollar as DollarSign,
   Download,
-  ChevronDown,
-  CalendarIcon,
-} from "lucide-react";
+  CaretDown as ChevronDown,
+  Calendar as CalendarIcon,
+} from "@phosphor-icons/react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import {
   ColumnDef,
@@ -42,6 +42,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "../../ui/card";
 import { cn } from "../../../lib/utils";
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
 import { Calendar as CalendarComponent } from "../../ui/calendar";
+import { currencyFormat } from "../../../helpers/currency";
 
 interface AccountAging {
   id: number;
@@ -71,11 +72,6 @@ interface AccountsAgingData {
   currency: string;
 }
 
-const formatCurrency = (amount: number, currency = "USD") =>
-  new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency,
-  }).format(amount);
 
 const AccountsAgingReport: React.FC = () => {
   const [asOfDate, setAsOfDate] = useState<Date>(new Date());
@@ -147,7 +143,7 @@ const AccountsAgingReport: React.FC = () => {
       header: () => <div className="text-right">Total Due</div>,
       cell: ({ row }) => (
         <div className="text-right font-bold whitespace-nowrap">
-          {formatCurrency(row.getValue("amount_due"), data?.currency)}
+          {currencyFormat(data?.currency, row.getValue("amount_due"))}
         </div>
       ),
     },
@@ -166,7 +162,7 @@ const AccountsAgingReport: React.FC = () => {
               value > 0 ? "text-gray-700 font-medium" : "text-gray-300"
             )}
           >
-            {formatCurrency(value || 0, data?.currency)}
+            {currencyFormat(data?.currency, value || 0)}
           </div>
         );
       },
@@ -186,7 +182,7 @@ const AccountsAgingReport: React.FC = () => {
               value > 0 ? "text-gray-700 font-medium" : "text-gray-300"
             )}
           >
-            {formatCurrency(value || 0, data?.currency)}
+            {currencyFormat(data?.currency, value || 0)}
           </div>
         );
       },
@@ -206,7 +202,7 @@ const AccountsAgingReport: React.FC = () => {
               value > 0 ? "text-gray-700 font-medium" : "text-gray-300"
             )}
           >
-            {formatCurrency(value || 0, data?.currency)}
+            {currencyFormat(data?.currency, value || 0)}
           </div>
         );
       },
@@ -226,7 +222,7 @@ const AccountsAgingReport: React.FC = () => {
               value > 0 ? "text-gray-900 font-bold" : "text-gray-300"
             )}
           >
-            {formatCurrency(value || 0, data?.currency)}
+            {currencyFormat(data?.currency, value || 0)}
           </div>
         );
       },
@@ -335,7 +331,7 @@ const AccountsAgingReport: React.FC = () => {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-gray-900">
-              {formatCurrency(data?.summary?.total || 0, data?.currency)}
+              {currencyFormat(data?.currency, data?.summary?.total || 0)}
             </div>
           </CardContent>
         </Card>
@@ -347,9 +343,9 @@ const AccountsAgingReport: React.FC = () => {
           </CardHeader>
           <CardContent>
             <div className="text-xl font-bold text-gray-700">
-              {formatCurrency(
-                data?.summary?.["1_30_days"] || 0,
-                data?.currency
+              {currencyFormat(
+                data?.currency,
+                data?.summary?.["1_30_days"] || 0
               )}
             </div>
           </CardContent>
@@ -362,9 +358,9 @@ const AccountsAgingReport: React.FC = () => {
           </CardHeader>
           <CardContent>
             <div className="text-xl font-bold text-gray-700">
-              {formatCurrency(
-                data?.summary?.["31_60_days"] || 0,
-                data?.currency
+              {currencyFormat(
+                data?.currency,
+                data?.summary?.["31_60_days"] || 0
               )}
             </div>
           </CardContent>
@@ -377,9 +373,9 @@ const AccountsAgingReport: React.FC = () => {
           </CardHeader>
           <CardContent>
             <div className="text-xl font-bold text-gray-800">
-              {formatCurrency(
-                data?.summary?.["61_90_days"] || 0,
-                data?.currency
+              {currencyFormat(
+                data?.currency,
+                data?.summary?.["61_90_days"] || 0
               )}
             </div>
           </CardContent>
@@ -392,9 +388,9 @@ const AccountsAgingReport: React.FC = () => {
           </CardHeader>
           <CardContent>
             <div className="text-xl font-bold text-gray-900">
-              {formatCurrency(
-                data?.summary?.["over_90_days"] || 0,
-                data?.currency
+              {currencyFormat(
+                data?.currency,
+                data?.summary?.["over_90_days"] || 0
               )}
             </div>
           </CardContent>

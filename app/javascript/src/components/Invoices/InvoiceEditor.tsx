@@ -22,6 +22,7 @@ import {
   Buildings,
 } from "phosphor-react";
 import { cn } from "../../lib/utils";
+import { currencyFormat } from "../../helpers/currency";
 
 import {
   InvoiceItem,
@@ -120,11 +121,6 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
   const calculateTotal = () =>
     calculateSubtotal() + calculateTaxAmount() - calculateDiscountAmount();
 
-  const formatCurrency = (amount: number) =>
-    new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: formData.currency,
-    }).format(amount);
 
   const selectedClient = clients.find(c => c.id === formData.clientId);
 
@@ -329,7 +325,7 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
                   <div className="col-span-2">
                     <Label>Amount</Label>
                     <div className="text-sm font-medium py-2 px-3 bg-muted rounded-md">
-                      {formatCurrency(item.amount)}
+                      {currencyFormat(formData.currency, item.amount)}
                     </div>
                   </div>
                   <div className="col-span-1">
@@ -381,7 +377,7 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
               <div className="space-y-3">
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Subtotal:</span>
-                  <span>{formatCurrency(calculateSubtotal())}</span>
+                  <span>{currencyFormat(formData.currency, calculateSubtotal())}</span>
                 </div>
 
                 <div className="space-y-2">
@@ -404,7 +400,7 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
                   </div>
                   <div className="flex justify-between text-sm">
                     <span></span>
-                    <span>{formatCurrency(calculateTaxAmount())}</span>
+                    <span>{currencyFormat(formData.currency, calculateTaxAmount())}</span>
                   </div>
                 </div>
 
@@ -431,7 +427,7 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
                   </div>
                   <div className="flex justify-between text-sm">
                     <span></span>
-                    <span>-{formatCurrency(calculateDiscountAmount())}</span>
+                    <span>-{currencyFormat(formData.currency, calculateDiscountAmount())}</span>
                   </div>
                 </div>
 
@@ -439,7 +435,7 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
 
                 <div className="flex justify-between text-lg font-bold">
                   <span>Total:</span>
-                  <span>{formatCurrency(calculateTotal())}</span>
+                  <span>{currencyFormat(formData.currency, calculateTotal())}</span>
                 </div>
               </div>
 

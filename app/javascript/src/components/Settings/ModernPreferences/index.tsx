@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import {
   Bell,
-  Mail,
+  Envelope as Mail,
   Clock,
   FileText,
-  AlertTriangle,
+  Warning as AlertTriangle,
   Check,
   X,
-} from "lucide-react";
+} from "@phosphor-icons/react";
 import preferencesApi from "apis/preferences";
 import { useUserContext } from "context/UserContext";
 import {

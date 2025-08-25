@@ -1,16 +1,16 @@
 import React, { useState } from "react";
 import {
   Laptop,
-  Smartphone,
-  Tablet,
+  DeviceMobile as Smartphone,
+  DeviceTablet as Tablet,
   Monitor,
-  HardDrive,
+  HardDrives as HardDrive,
   Cpu,
   Plus,
-  Trash2,
-  Save,
+  Trash as Trash2,
+  FloppyDisk as Save,
   X,
-} from "lucide-react";
+} from "@phosphor-icons/react";
 import {
   Card,
   CardContent,
