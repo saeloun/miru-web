@@ -31,11 +31,14 @@ const UserDetailsView = () => {
       if (companyRole !== "client") {
         // First, get the list of employments to find the current one
         const employmentsResponse: any = await teamsApi.getEmployments();
-        
-        if (employmentsResponse.status === 200 && employmentsResponse.data.employments?.length > 0) {
+
+        if (
+          employmentsResponse.status === 200 &&
+          employmentsResponse.data.employments?.length > 0
+        ) {
           // Use the first employment (current employment)
           const currentEmployment = employmentsResponse.data.employments[0];
-          
+
           const employmentData: any = await teamsApi.getEmploymentDetails(
             currentEmployment.id
           );

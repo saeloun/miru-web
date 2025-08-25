@@ -3,7 +3,12 @@ import { Link } from "react-router-dom";
 import { currencyFormat } from "helpers";
 import paymentsApi from "apis/payments/payments";
 import StatusBadge from "components/ui/status-badge";
-import { CreditCard, Calendar, CurrencyDollar, CheckCircle } from "phosphor-react";
+import {
+  CreditCard,
+  Calendar,
+  CurrencyDollar,
+  CheckCircle,
+} from "phosphor-react";
 
 interface PaymentDetailsProps {
   invoice: any;

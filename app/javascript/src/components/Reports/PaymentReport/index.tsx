@@ -1,5 +1,13 @@
 import React, { useState } from "react";
-import { CreditCard, DollarSign, TrendingUp, Calendar, Download, ChevronDown, CalendarIcon, Hash } from "lucide-react";
+import {
+  CreditCard,
+  DollarSign,
+  TrendingUp,
+  Download,
+  ChevronDown,
+  CalendarIcon,
+  Hash,
+} from "lucide-react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import {
   ColumnDef,
@@ -13,7 +21,15 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { format, subDays, startOfMonth, endOfMonth, startOfYear, endOfYear, startOfQuarter, endOfQuarter } from "date-fns";
+import {
+  format,
+  subDays,
+  startOfMonth,
+  endOfMonth,
+  startOfYear,
+  startOfQuarter,
+  endOfQuarter,
+} from "date-fns";
 import { DateRange } from "react-day-picker";
 import axios from "../../../apis/api";
 import { Button } from "../../ui/button";
@@ -43,6 +59,7 @@ import { cn } from "../../../lib/utils";
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
 import { Calendar as CalendarComponent } from "../../ui/calendar";
 import { StatusBadge } from "../../ui/status-badge";
+import { formatCurrency } from "../../../utils/currency";
 
 interface Payment {
   id: number;
@@ -71,18 +88,12 @@ interface PaymentReportData {
   };
 }
 
-const formatCurrency = (amount: number, currency = "USD") => {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: currency,
-  }).format(amount);
-};
-
 const getPaymentMethodIcon = (method: string) => {
   const methodLower = method.toLowerCase();
   if (methodLower.includes("card") || methodLower.includes("credit")) {
     return <CreditCard className="h-4 w-4" />;
   }
+
   return <DollarSign className="h-4 w-4" />;
 };
 
@@ -91,22 +102,26 @@ const getPaymentMethodColor = (method: string) => {
   if (methodLower.includes("card") || methodLower.includes("credit")) {
     return "text-blue-600";
   }
+
   if (methodLower.includes("bank") || methodLower.includes("ach")) {
     return "text-green-600";
   }
+
   if (methodLower.includes("paypal")) {
     return "text-indigo-600";
   }
+
   if (methodLower.includes("stripe")) {
     return "text-purple-600";
   }
+
   return "text-gray-600";
 };
 
 const PaymentReport: React.FC = () => {
   const [dateRange, setDateRange] = useState<DateRange | undefined>({
     from: startOfYear(new Date()),
-    to: new Date()
+    to: new Date(),
   });
   const [dateRangePreset, setDateRangePreset] = useState("this_year");
   const [selectedClients, setSelectedClients] = useState<number[]>([]);
@@ -121,11 +136,16 @@ const PaymentReport: React.FC = () => {
       const params = new URLSearchParams({
         ...(dateRange?.from && { from: format(dateRange.from, "dd/MM/yyyy") }),
         ...(dateRange?.to && { to: format(dateRange.to, "dd/MM/yyyy") }),
-        ...(selectedClients.length > 0 && { client_ids: selectedClients.join(",") }),
+        ...(selectedClients.length > 0 && {
+          client_ids: selectedClients.join(","),
+        }),
         ...(paymentMethod && { payment_method: paymentMethod }),
       });
-      
-      const response = await axios.get(`/reports/payments?${params.toString()}`);
+
+      const response = await axios.get(
+        `/reports/payments?${params.toString()}`
+      );
+
       return response.data;
     },
   });
@@ -135,15 +155,17 @@ const PaymentReport: React.FC = () => {
     let from: Date, to: Date;
 
     switch (preset) {
-      case "this_month":
+      case "this_month": {
         from = startOfMonth(now);
         to = endOfMonth(now);
         break;
-      case "last_month":
+      }
+      case "last_month": {
         const lastMonth = subDays(startOfMonth(now), 1);
         from = startOfMonth(lastMonth);
         to = endOfMonth(lastMonth);
         break;
+      }
       case "this_quarter":
         from = startOfQuarter(now);
         to = endOfQuarter(now);
@@ -175,18 +197,26 @@ const PaymentReport: React.FC = () => {
         format: formatType,
         ...(dateRange?.from && { from: format(dateRange.from, "dd/MM/yyyy") }),
         ...(dateRange?.to && { to: format(dateRange.to, "dd/MM/yyyy") }),
-        ...(selectedClients.length > 0 && { client_ids: selectedClients.join(",") }),
+        ...(selectedClients.length > 0 && {
+          client_ids: selectedClients.join(","),
+        }),
         ...(paymentMethod && { payment_method: paymentMethod }),
       });
-      
-      const response = await axios.get(`/reports/payments/download?${params.toString()}`, {
-        responseType: "blob",
-      });
-      
+
+      const response = await axios.get(
+        `/reports/payments/download?${params.toString()}`,
+        {
+          responseType: "blob",
+        }
+      );
+
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement("a");
       link.href = url;
-      const filename = `payment_report_${format(new Date(), "yyyy-MM-dd")}.${formatType}`;
+      const filename = `payment_report_${format(
+        new Date(),
+        "yyyy-MM-dd"
+      )}.${formatType}`;
       link.setAttribute("download", filename);
       document.body.appendChild(link);
       link.click();
@@ -226,8 +256,14 @@ const PaymentReport: React.FC = () => {
       header: "Payment Method",
       cell: ({ row }) => {
         const method = row.getValue("payment_method") as string;
+
         return (
-          <div className={cn("flex items-center gap-2", getPaymentMethodColor(method))}>
+          <div
+            className={cn(
+              "flex items-center gap-2",
+              getPaymentMethodColor(method)
+            )}
+          >
             {getPaymentMethodIcon(method)}
             <span>{method}</span>
           </div>
@@ -257,6 +293,7 @@ const PaymentReport: React.FC = () => {
       header: "Status",
       cell: ({ row }) => {
         const status = row.getValue("status") as string;
+
         return (
           <StatusBadge
             status={status === "completed" ? "paid" : status}
@@ -307,15 +344,20 @@ const PaymentReport: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row md:justify-between md:items-center py-4 gap-4">
             <div>
-              <h1 className="text-2xl font-semibold text-gray-900">Payment Report</h1>
+              <h1 className="text-2xl font-semibold text-gray-900">
+                Payment Report
+              </h1>
               <p className="text-sm text-gray-600 mt-1">
                 Track and analyze all payment transactions
               </p>
             </div>
-            
+
             <div className="flex flex-wrap items-center gap-3">
               {/* Date Range Preset Selector */}
-              <Select value={dateRangePreset} onValueChange={handleDateRangePreset}>
+              <Select
+                value={dateRangePreset}
+                onValueChange={handleDateRangePreset}
+              >
                 <SelectTrigger className="w-[180px]">
                   <SelectValue placeholder="Select period" />
                 </SelectTrigger>
@@ -361,77 +403,104 @@ const PaymentReport: React.FC = () => {
                     mode="range"
                     defaultMonth={dateRange?.from}
                     selected={dateRange}
-                    onSelect={(range) => {
+                    onSelect={range => {
                       setDateRange(range);
                       setDateRangePreset("custom");
                     }}
                     numberOfMonths={2}
-                    disabled={(date) => date > new Date() || date < new Date("1900-01-01")}
+                    disabled={date =>
+                      date > new Date() || date < new Date("1900-01-01")
+                    }
                   />
                 </PopoverContent>
               </Popover>
 
               {/* Client Filter */}
-              {data?.filterOptions?.clients && data.filterOptions.clients.length > 0 && (
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button variant="outline" className="w-[180px] justify-between">
-                      <span className="truncate">
-                        {selectedClients.length === 0
-                          ? "All Clients"
-                          : selectedClients.length === 1
-                          ? data.filterOptions.clients.find(c => c.id === selectedClients[0])?.name
-                          : `${selectedClients.length} clients`}
-                      </span>
-                      <ChevronDown className="ml-2 h-4 w-4 shrink-0" />
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-[200px] p-2">
-                    <div className="space-y-2 max-h-[300px] overflow-y-auto">
+              {data?.filterOptions?.clients &&
+                data.filterOptions.clients.length > 0 && (
+                  <Popover>
+                    <PopoverTrigger asChild>
                       <Button
-                        variant="ghost"
-                        className="w-full justify-start"
-                        onClick={() => setSelectedClients([])}
+                        variant="outline"
+                        className="w-[180px] justify-between"
                       >
-                        All Clients
+                        <span className="truncate">
+                          {selectedClients.length === 0
+                            ? "All Clients"
+                            : selectedClients.length === 1
+                            ? data.filterOptions.clients.find(
+                                c => c.id === selectedClients[0]
+                              )?.name
+                            : `${selectedClients.length} clients`}
+                        </span>
+                        <ChevronDown className="ml-2 h-4 w-4 shrink-0" />
                       </Button>
-                      {data.filterOptions.clients.map((client) => (
+                    </PopoverTrigger>
+                    <PopoverContent className="w-[200px] p-2">
+                      <div className="space-y-2 max-h-[300px] overflow-y-auto">
                         <Button
-                          key={client.id}
-                          variant={selectedClients.includes(client.id) ? "secondary" : "ghost"}
+                          variant="ghost"
                           className="w-full justify-start"
-                          onClick={() => {
-                            setSelectedClients(
-                              selectedClients.includes(client.id)
-                                ? selectedClients.filter(id => id !== client.id)
-                                : [...selectedClients, client.id]
-                            );
-                          }}
+                          onClick={() => setSelectedClients([])}
                         >
-                          {client.name}
+                          All Clients
                         </Button>
-                      ))}
-                    </div>
-                  </PopoverContent>
-                </Popover>
-              )}
+                        {data.filterOptions.clients.map(client => (
+                          <Button
+                            key={client.id}
+                            variant={
+                              selectedClients.includes(client.id)
+                                ? "secondary"
+                                : "ghost"
+                            }
+                            className="w-full justify-start"
+                            onClick={() => {
+                              setSelectedClients(
+                                selectedClients.includes(client.id)
+                                  ? selectedClients.filter(
+                                      id => id !== client.id
+                                    )
+                                  : [...selectedClients, client.id]
+                              );
+                            }}
+                          >
+                            {client.name}
+                          </Button>
+                        ))}
+                      </div>
+                    </PopoverContent>
+                  </Popover>
+                )}
 
               {/* Payment Method Filter */}
-              <Select value={paymentMethod || "all"} onValueChange={(value) => setPaymentMethod(value === "all" ? "" : value)}>
+              <Select
+                value={paymentMethod || "all"}
+                onValueChange={value =>
+                  setPaymentMethod(value === "all" ? "" : value)
+                }
+              >
                 <SelectTrigger className="w-[180px]">
                   <SelectValue placeholder="All Methods" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Methods</SelectItem>
-                  {data?.filterOptions?.paymentMethods?.map((method) => (
+                  {data?.filterOptions?.paymentMethods?.map(method => (
                     <SelectItem key={method.value} value={method.value}>
                       {method.label}
                     </SelectItem>
                   )) || [
-                    <SelectItem key="credit_card" value="credit_card">Credit Card</SelectItem>,
-                    <SelectItem key="bank_transfer" value="bank_transfer">Bank Transfer</SelectItem>,
-                    <SelectItem key="paypal" value="paypal">PayPal</SelectItem>,
-                    <SelectItem key="stripe" value="stripe">Stripe</SelectItem>
+                    <SelectItem key="credit_card" value="credit_card">
+                      Credit Card
+                    </SelectItem>,
+                    <SelectItem key="bank_transfer" value="bank_transfer">
+                      Bank Transfer
+                    </SelectItem>,
+                    <SelectItem key="paypal" value="paypal">
+                      PayPal
+                    </SelectItem>,
+                    <SelectItem key="stripe" value="stripe">
+                      Stripe
+                    </SelectItem>,
                   ]}
                 </SelectContent>
               </Select>
@@ -446,10 +515,14 @@ const PaymentReport: React.FC = () => {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={() => downloadMutation.mutate("csv")}>
+                  <DropdownMenuItem
+                    onClick={() => downloadMutation.mutate("csv")}
+                  >
                     Export as CSV
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => downloadMutation.mutate("pdf")}>
+                  <DropdownMenuItem
+                    onClick={() => downloadMutation.mutate("pdf")}
+                  >
                     Export as PDF
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -464,47 +537,64 @@ const PaymentReport: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Payments</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                Total Payments
+              </CardTitle>
               <DollarSign className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-green-600">
-                {formatCurrency(data?.summary?.total_amount || 0, data?.currency)}
+                {formatCurrency(
+                  data?.summary?.total_amount || 0,
+                  data?.currency
+                )}
               </div>
               <p className="text-xs text-muted-foreground">
                 {dateRange?.from && dateRange?.to
-                  ? `${format(dateRange.from, "MMM d")} - ${format(dateRange.to, "MMM d, yyyy")}`
+                  ? `${format(dateRange.from, "MMM d")} - ${format(
+                      dateRange.to,
+                      "MMM d, yyyy"
+                    )}`
                   : "Selected period"}
               </p>
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Payment Count</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                Payment Count
+              </CardTitle>
               <Hash className="h-4 w-4 text-blue-600" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
                 {data?.summary?.payment_count || 0}
               </div>
-              <p className="text-xs text-muted-foreground">Total transactions</p>
+              <p className="text-xs text-muted-foreground">
+                Total transactions
+              </p>
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Average Payment</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                Average Payment
+              </CardTitle>
               <TrendingUp className="h-4 w-4 text-indigo-600" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-indigo-600">
-                {formatCurrency(data?.summary?.average_payment || 0, data?.currency)}
+                {formatCurrency(
+                  data?.summary?.average_payment || 0,
+                  data?.currency
+                )}
               </div>
               <p className="text-xs text-muted-foreground">Per transaction</p>
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Top Method</CardTitle>
@@ -512,15 +602,18 @@ const PaymentReport: React.FC = () => {
             </CardHeader>
             <CardContent>
               <div className="text-xl font-bold text-purple-600">
-                {data?.summary?.by_payment_method && 
-                  Object.entries(data.summary.by_payment_method)
-                    .sort(([,a], [,b]) => b - a)[0]?.[0] || "N/A"}
+                {(data?.summary?.by_payment_method &&
+                  Object.entries(data.summary.by_payment_method).sort(
+                    ([, a], [, b]) => b - a
+                  )[0]?.[0]) ||
+                  "N/A"}
               </div>
               <p className="text-xs text-muted-foreground">
-                {data?.summary?.by_payment_method && 
+                {data?.summary?.by_payment_method &&
                   formatCurrency(
-                    Object.entries(data.summary.by_payment_method)
-                      .sort(([,a], [,b]) => b - a)[0]?.[1] || 0,
+                    Object.entries(data.summary.by_payment_method).sort(
+                      ([, a], [, b]) => b - a
+                    )[0]?.[1] || 0,
                     data?.currency
                   )}
               </p>
@@ -529,26 +622,41 @@ const PaymentReport: React.FC = () => {
         </div>
 
         {/* Payment Method Breakdown */}
-        {data?.summary?.by_payment_method && Object.keys(data.summary.by_payment_method).length > 0 && (
-          <Card className="mb-6">
-            <CardHeader>
-              <CardTitle>Payment Methods Breakdown</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {Object.entries(data.summary.by_payment_method).map(([method, amount]) => (
-                  <div key={method} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                    <div className={cn("flex items-center gap-2", getPaymentMethodColor(method))}>
-                      {getPaymentMethodIcon(method)}
-                      <span className="font-medium capitalize">{method.replace(/_/g, " ")}</span>
-                    </div>
-                    <span className="font-bold">{formatCurrency(amount, data?.currency)}</span>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        )}
+        {data?.summary?.by_payment_method &&
+          Object.keys(data.summary.by_payment_method).length > 0 && (
+            <Card className="mb-6">
+              <CardHeader>
+                <CardTitle>Payment Methods Breakdown</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {Object.entries(data.summary.by_payment_method).map(
+                    ([method, amount]) => (
+                      <div
+                        key={method}
+                        className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                      >
+                        <div
+                          className={cn(
+                            "flex items-center gap-2",
+                            getPaymentMethodColor(method)
+                          )}
+                        >
+                          {getPaymentMethodIcon(method)}
+                          <span className="font-medium capitalize">
+                            {method.replace(/_/g, " ")}
+                          </span>
+                        </div>
+                        <span className="font-bold">
+                          {formatCurrency(amount, data?.currency)}
+                        </span>
+                      </div>
+                    )
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          )}
 
         {/* Payments Table */}
         <Card>
@@ -559,31 +667,29 @@ const PaymentReport: React.FC = () => {
             <div className="rounded-md border">
               <Table>
                 <TableHeader>
-                  {table.getHeaderGroups().map((headerGroup) => (
+                  {table.getHeaderGroups().map(headerGroup => (
                     <TableRow key={headerGroup.id}>
-                      {headerGroup.headers.map((header) => {
-                        return (
-                          <TableHead key={header.id}>
-                            {header.isPlaceholder
-                              ? null
-                              : flexRender(
-                                  header.column.columnDef.header,
-                                  header.getContext()
-                                )}
-                          </TableHead>
-                        );
-                      })}
+                      {headerGroup.headers.map(header => (
+                        <TableHead key={header.id}>
+                          {header.isPlaceholder
+                            ? null
+                            : flexRender(
+                                header.column.columnDef.header,
+                                header.getContext()
+                              )}
+                        </TableHead>
+                      ))}
                     </TableRow>
                   ))}
                 </TableHeader>
                 <TableBody>
                   {table.getRowModel().rows?.length ? (
-                    table.getRowModel().rows.map((row) => (
+                    table.getRowModel().rows.map(row => (
                       <TableRow
                         key={row.id}
                         data-state={row.getIsSelected() && "selected"}
                       >
-                        {row.getVisibleCells().map((cell) => (
+                        {row.getVisibleCells().map(cell => (
                           <TableCell key={cell.id}>
                             {flexRender(
                               cell.column.columnDef.cell,

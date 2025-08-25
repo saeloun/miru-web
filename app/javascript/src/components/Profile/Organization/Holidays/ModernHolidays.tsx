@@ -28,9 +28,9 @@ const ModernHolidays: React.FC<ModernHolidaysProps> = ({
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
   // Fetch only holidays for organization calendar - no timeoff or timesheet entries
-  const { events, isLoading } = useCalendarData(selectedDate, { 
+  const { events, isLoading } = useCalendarData(selectedDate, {
     includeTimeoff: false,
-    includeTimesheet: false
+    includeTimesheet: false,
   });
 
   const handleEventClick = (event: any) => {
@@ -51,9 +51,12 @@ const ModernHolidays: React.FC<ModernHolidaysProps> = ({
         <div className="mb-6">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">Holiday Calendar</h1>
+              <h1 className="text-2xl font-bold text-gray-900">
+                Holiday Calendar
+              </h1>
               <p className="text-sm text-gray-600 mt-1">
-                Manage organization-wide holidays and observances for {currentYear}
+                Manage organization-wide holidays and observances for{" "}
+                {currentYear}
               </p>
             </div>
             <div className="flex items-center gap-2">
@@ -77,7 +80,10 @@ const ModernHolidays: React.FC<ModernHolidaysProps> = ({
             </CardTitle>
             {(nationalHolidaysCount > 0 || optionalHolidaysCount > 0) && (
               <p className="text-sm text-gray-600 mt-1">
-                Showing {nationalHolidaysCount} national {nationalHolidaysCount === 1 ? 'holiday' : 'holidays'} and {optionalHolidaysCount} optional {optionalHolidaysCount === 1 ? 'holiday' : 'holidays'}
+                Showing {nationalHolidaysCount} national{" "}
+                {nationalHolidaysCount === 1 ? "holiday" : "holidays"} and{" "}
+                {optionalHolidaysCount} optional{" "}
+                {optionalHolidaysCount === 1 ? "holiday" : "holidays"}
               </p>
             )}
           </CardHeader>
@@ -94,7 +100,7 @@ const ModernHolidays: React.FC<ModernHolidaysProps> = ({
                 selectedDate={selectedDate}
                 defaultView="month-grid"
                 calendars={[
-                  { id: 'holidays', label: 'Holidays', colorName: 'holiday' }
+                  { id: "holidays", label: "Holidays", colorName: "holiday" },
                 ]}
               />
             )}
@@ -112,12 +118,22 @@ const ModernHolidays: React.FC<ModernHolidaysProps> = ({
               {nationalHolidaysCount > 0 ? (
                 <div className="space-y-2">
                   {publicHolidays
-                    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+                    .sort(
+                      (a, b) =>
+                        new Date(a.date).getTime() - new Date(b.date).getTime()
+                    )
                     .map((holiday, index) => (
-                      <div key={index} className="flex items-center justify-between py-2 px-3 rounded-lg bg-green-50 hover:bg-green-100 transition-colors">
-                        <span className="text-sm font-medium text-gray-900">{holiday.name}</span>
+                      <div
+                        key={index}
+                        className="flex items-center justify-between py-2 px-3 rounded-lg bg-green-50 hover:bg-green-100 transition-colors"
+                      >
+                        <span className="text-sm font-medium text-gray-900">
+                          {holiday.name}
+                        </span>
                         <span className="text-sm text-gray-600">
-                          {holiday.date ? format(new Date(holiday.date), 'MMM dd, yyyy') : '-'}
+                          {holiday.date
+                            ? format(new Date(holiday.date), "MMM dd, yyyy")
+                            : "-"}
                         </span>
                       </div>
                     ))}
@@ -139,12 +155,22 @@ const ModernHolidays: React.FC<ModernHolidaysProps> = ({
               {optionalHolidaysCount > 0 ? (
                 <div className="space-y-2">
                   {optionalHolidays
-                    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+                    .sort(
+                      (a, b) =>
+                        new Date(a.date).getTime() - new Date(b.date).getTime()
+                    )
                     .map((holiday, index) => (
-                      <div key={index} className="flex items-center justify-between py-2 px-3 rounded-lg bg-blue-50 hover:bg-blue-100 transition-colors">
-                        <span className="text-sm font-medium text-gray-900">{holiday.name}</span>
+                      <div
+                        key={index}
+                        className="flex items-center justify-between py-2 px-3 rounded-lg bg-blue-50 hover:bg-blue-100 transition-colors"
+                      >
+                        <span className="text-sm font-medium text-gray-900">
+                          {holiday.name}
+                        </span>
                         <span className="text-sm text-gray-600">
-                          {holiday.date ? format(new Date(holiday.date), 'MMM dd, yyyy') : '-'}
+                          {holiday.date
+                            ? format(new Date(holiday.date), "MMM dd, yyyy")
+                            : "-"}
                         </span>
                       </div>
                     ))}

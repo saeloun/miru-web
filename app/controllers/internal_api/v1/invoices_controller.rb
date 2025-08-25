@@ -36,11 +36,14 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
       invoices = invoices.where(issue_date: date_range)
     end
 
-    # Handle client filtering - support both client_id and client array parameters
+    # Handle client filtering - support client_id, client, and client_ids array parameters
     if params[:client_id].present?
       invoices = invoices.where(client_id: params[:client_id])
     elsif params[:client].present?
       client_ids = Array(params[:client])
+      invoices = invoices.where(client_id: client_ids) unless client_ids.empty?
+    elsif params[:client_ids].present?
+      client_ids = Array(params[:client_ids])
       invoices = invoices.where(client_id: client_ids) unless client_ids.empty?
     end
 

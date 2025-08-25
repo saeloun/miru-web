@@ -23,9 +23,9 @@ const FilterSideBar = ({
   handleApplyFilter,
   onClickInput,
   selectedInput,
-  setCustomDateRange = (dateRange: any) => {}, // eslint-disable-line
+  setCustomDateRange = (dateRange: any) => {},
   customDateRange = { from: "", to: "" },
-  setSelectedInput = (inputFieldName: string) => {}, // eslint-disable-line
+  setSelectedInput = (inputFieldName: string) => {},
 }) => {
   const { timeEntryReport } = useEntry();
   const [filters, setFilters] = useState(timeEntryReport.selectedFilter);

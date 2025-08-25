@@ -39,7 +39,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
     company?.date_format || company?.dateFormat || "MM-DD-YYYY";
 
   const [dayInfo, setDayInfo] = useState<any[]>([]);
-  const [view, setView] = useState<string>("month"); // Default to month view
+  const [view, setView] = useState<string>("week"); // Default to week view
   const [newEntryView, setNewEntryView] = useState<boolean>(false);
   const [newRowView, setNewRowView] = useState<boolean>(false);
   const [selectDate, setSelectDate] = useState<number>(dayjs().weekday());
@@ -76,21 +76,34 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
   useEffect(() => {
     sendGAPageView();
     fetchTimeTrackingData();
-    // Default to month view
-    setView("month");
+    // Default to week view
+    setView("week");
   }, []);
 
-  const fetchTimeTrackingData = async () => {
+  const fetchTimeTrackingData = async (employeeId?: number) => {
     try {
-      const { data } = await timeTrackingApi.get();
+      const targetEmployeeId = employeeId || selectedEmployeeId || user.id;
+      const { data } = await timeTrackingApi.get(targetEmployeeId);
       const { clients, projects, entries, employees } = data;
 
-      setClients(clients);
-      setProjects(projects);
-      setEmployees(employees);
-      setEntryList(entries);
+      // Ensure clients is an array
+      const clientsArray = Array.isArray(clients) ? clients : [];
+      setClients(clientsArray);
+      
+      // Ensure projects is an object keyed by client name
+      const projectsObj = projects || {};
+      setProjects(projectsObj);
+      
+      // Ensure employees is an array
+      const employeesArray = Array.isArray(employees) ? employees : [];
+      setEmployees(employeesArray);
+      
+      // Ensure entries is an object
+      const entriesObj = entries || {};
+      setEntryList(entriesObj);
+      
       const currentEmployeeEntries = {};
-      currentEmployeeEntries[user.id] = entries;
+      currentEmployeeEntries[targetEmployeeId] = entriesObj;
       setAllEmployeesEntries(currentEmployeeEntries);
       setLoading(false);
     } catch (error) {
@@ -144,7 +157,10 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
   }, [selectDate, weekDay, updateView]);
 
   useEffect(() => {
-    fetchEntriesOfMonths();
+    if (selectedEmployeeId) {
+      fetchTimeTrackingData(selectedEmployeeId);
+      fetchEntriesOfMonths();
+    }
   }, [selectedEmployeeId]);
 
   const handleWeekTodayButton = () => {
@@ -489,12 +505,19 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
               Time entries for
             </h3>
           )}
-          {isAdminUser && selectedEmployeeId && (
+          {/* Show dropdown for admin users to switch between employees */}
+          {isAdminUser && employeeOptions.length > 0 && (
             <SearchTimeEntries
               employeeList={employeeOptions}
               selectedEmployeeId={selectedEmployeeId}
               setSelectedEmployeeId={setSelectedEmployeeId}
             />
+          )}
+          {/* Show current user name for non-admin users */}
+          {!isAdminUser && user && (
+            <div className="text-sm text-muted-foreground">
+              Viewing entries for: {user.first_name} {user.last_name}
+            </div>
           )}
         </div>
         <div>
@@ -502,42 +525,46 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
           {view === "month" ? (
             <>
               <ScheduleCalendar
-                events={Object.entries(entryList).flatMap(([date, entries]: [string, any[]]) => 
-                  entries.map((entry, index) => {
-                    const duration = minToHHMM(entry.duration);
-                    const projectName = entry.project || entry.project_name || 'No Project';
-                    // Get project initials (first letters of each word, max 2-3 letters)
-                    const getInitials = (name: string) => {
-                      return name
-                        .split(' ')
-                        .map(word => word[0])
-                        .join('')
-                        .toUpperCase()
-                        .slice(0, 3);
-                    };
-                    const projectInitials = getInitials(projectName);
-                    return {
-                      id: entry.id,
-                      title: `${projectInitials} • ${duration}`,
-                      description: entry.note || '',
-                      start: `${date}`,
-                      end: `${date}`,
-                      calendarId: 'timesheet',
-                      _customContent: {
-                        projectName: projectName,
-                        clientName: entry.client || entry.client_name || 'No Client',
-                        duration: duration,
-                        note: entry.note || 'No description',
-                        billable: entry.bill_status
-                      }
-                    };
-                  })
+                events={Object.entries(entryList).flatMap(
+                  ([date, entries]: [string, any[]]) =>
+                    entries.map((entry, index) => {
+                      const duration = minToHHMM(entry.duration);
+                      const projectName =
+                        entry.project || entry.project_name || "No Project";
+
+                      // Get project initials (first letters of each word, max 2-3 letters)
+                      const getInitials = (name: string) =>
+                        name
+                          .split(" ")
+                          .map(word => word[0])
+                          .join("")
+                          .toUpperCase()
+                          .slice(0, 3);
+                      const projectInitials = getInitials(projectName);
+
+                      return {
+                        id: entry.id,
+                        title: `${projectInitials} • ${duration}`,
+                        description: entry.note || "",
+                        start: `${date}`,
+                        end: `${date}`,
+                        calendarId: "timesheet",
+                        _customContent: {
+                          projectName,
+                          clientName:
+                            entry.client || entry.client_name || "No Client",
+                          duration,
+                          note: entry.note || "No description",
+                          billable: entry.bill_status,
+                        },
+                      };
+                    })
                 )}
-                onEventClick={(event) => {
+                onEventClick={event => {
                   setEditEntryId(event.id);
                   setNewEntryView(true);
                 }}
-                onDateClick={(date) => {
+                onDateClick={date => {
                   setSelectedFullDate(dayjs(date).format(dateFormat));
                   // Don't automatically open new entry view, just show the day's entries
                   setNewEntryView(false);
@@ -549,7 +576,8 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
                 <div className="mt-6 space-y-2">
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="text-lg font-semibold text-foreground">
-                      Entries for {dayjs(selectedFullDate).format('dddd, MMMM D, YYYY')}
+                      Entries for{" "}
+                      {dayjs(selectedFullDate).format("dddd, MMMM D, YYYY")}
                     </h3>
                     {!newEntryView && (
                       <Button
@@ -588,9 +616,11 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
                     />
                   )}
                   {/* Show existing entries when not adding new */}
-                  {!newEntryView && entryList[selectedFullDate] && entryList[selectedFullDate].length > 0 ? (
+                  {!newEntryView &&
+                  entryList[selectedFullDate] &&
+                  entryList[selectedFullDate].length > 0 ? (
                     <div className="space-y-2">
-                      {entryList[selectedFullDate].map((entry, index) => (
+                      {entryList[selectedFullDate].map((entry, index) =>
                         editEntryId === entry.id ? (
                           <EntryForm
                             clients={clients}
@@ -622,22 +652,26 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
                             {...entry}
                           />
                         )
-                      ))}
+                      )}
                     </div>
-                  ) : !newEntryView && (
-                    <div className="text-center py-8 bg-muted/50 rounded-lg">
-                      <p className="text-muted-foreground mb-4">No entries for this day</p>
-                      <Button
-                        variant="outline"
-                        onClick={() => {
-                          setNewEntryView(true);
-                          setEditEntryId(0);
-                        }}
-                      >
-                        <span className="mr-2">+</span>
-                        Add First Entry
-                      </Button>
-                    </div>
+                  ) : (
+                    !newEntryView && (
+                      <div className="text-center py-8 bg-muted/50 rounded-lg">
+                        <p className="text-muted-foreground mb-4">
+                          No entries for this day
+                        </p>
+                        <Button
+                          variant="outline"
+                          onClick={() => {
+                            setNewEntryView(true);
+                            setEditEntryId(0);
+                          }}
+                        >
+                          <span className="mr-2">+</span>
+                          Add First Entry
+                        </Button>
+                      </div>
+                    )
                   )}
                 </div>
               )}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   ColumnDef,
@@ -12,14 +12,25 @@ import {
   ColumnFiltersState,
   VisibilityState,
 } from "@tanstack/react-table";
-import { format } from "date-fns";
 import { DateRange } from "react-day-picker";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../../ui/card";
 import { Button } from "../../ui/button";
 import { Badge } from "../../ui/badge";
 import { Input } from "../../ui/input";
 import { DateRangePicker } from "../../ui/date-range-picker";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../ui/select";
 import {
   Table,
   TableBody,
@@ -34,8 +45,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "../../ui/dropdown-menu";
-import { ArrowUpDown, Calendar, Download, Filter, TrendUp } from "phosphor-react";
-import { cn } from "../../../lib/utils";
+import { ArrowUpDown, Download, Filter, TrendUp } from "phosphor-react";
 import { formatCurrency } from "../../../utils/currency";
 import Loader from "../../../common/Loader";
 
@@ -73,7 +83,9 @@ const presets = [
   { label: "All Time", value: "all_time" },
 ];
 
-export const ModernRevenueByClientReport: React.FC<RevenueByClientReportProps> = ({
+export const ModernRevenueByClientReport: React.FC<
+  RevenueByClientReportProps
+> = ({
   data = [],
   summary = {
     total_revenue: 0,
@@ -95,61 +107,55 @@ export const ModernRevenueByClientReport: React.FC<RevenueByClientReportProps> =
   const columns: ColumnDef<RevenueClient>[] = [
     {
       accessorKey: "name",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="h-auto p-0 font-semibold"
-          >
-            Client Name
-            <ArrowUpDown size={16} className="ml-2" />
-          </Button>
-        );
-      },
+      header: ({ column }) => (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="h-auto p-0 font-semibold"
+        >
+          Client Name
+          <ArrowUpDown size={16} className="ml-2" />
+        </Button>
+      ),
       cell: ({ row }) => (
         <div className="font-medium">{row.getValue("name")}</div>
       ),
     },
     {
       accessorKey: "total_revenue",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="h-auto p-0 font-semibold"
-          >
-            Total Revenue
-            <ArrowUpDown size={16} className="ml-2" />
-          </Button>
-        );
-      },
+      header: ({ column }) => (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="h-auto p-0 font-semibold"
+        >
+          Total Revenue
+          <ArrowUpDown size={16} className="ml-2" />
+        </Button>
+      ),
       cell: ({ row }) => {
         const amount = parseFloat(row.getValue("total_revenue"));
+
         return (
-          <div className="text-right font-medium">
-            {formatCurrency(amount)}
-          </div>
+          <div className="text-right font-medium">{formatCurrency(amount)}</div>
         );
       },
     },
     {
       accessorKey: "paid_revenue",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="h-auto p-0 font-semibold"
-          >
-            Paid Revenue
-            <ArrowUpDown size={16} className="ml-2" />
-          </Button>
-        );
-      },
+      header: ({ column }) => (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="h-auto p-0 font-semibold"
+        >
+          Paid Revenue
+          <ArrowUpDown size={16} className="ml-2" />
+        </Button>
+      ),
       cell: ({ row }) => {
         const amount = parseFloat(row.getValue("paid_revenue"));
+
         return (
           <div className="text-right font-medium text-green-600">
             {formatCurrency(amount)}
@@ -159,20 +165,19 @@ export const ModernRevenueByClientReport: React.FC<RevenueByClientReportProps> =
     },
     {
       accessorKey: "outstanding_revenue",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="h-auto p-0 font-semibold"
-          >
-            Outstanding
-            <ArrowUpDown size={16} className="ml-2" />
-          </Button>
-        );
-      },
+      header: ({ column }) => (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="h-auto p-0 font-semibold"
+        >
+          Outstanding
+          <ArrowUpDown size={16} className="ml-2" />
+        </Button>
+      ),
       cell: ({ row }) => {
         const amount = parseFloat(row.getValue("outstanding_revenue"));
+
         return (
           <div className="text-right font-medium text-orange-600">
             {formatCurrency(amount)}
@@ -182,20 +187,19 @@ export const ModernRevenueByClientReport: React.FC<RevenueByClientReportProps> =
     },
     {
       accessorKey: "overdue_revenue",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="h-auto p-0 font-semibold"
-          >
-            Overdue
-            <ArrowUpDown size={16} className="ml-2" />
-          </Button>
-        );
-      },
+      header: ({ column }) => (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="h-auto p-0 font-semibold"
+        >
+          Overdue
+          <ArrowUpDown size={16} className="ml-2" />
+        </Button>
+      ),
       cell: ({ row }) => {
         const amount = parseFloat(row.getValue("overdue_revenue"));
+
         return (
           <div className="text-right font-medium text-red-600">
             {formatCurrency(amount)}
@@ -205,20 +209,19 @@ export const ModernRevenueByClientReport: React.FC<RevenueByClientReportProps> =
     },
     {
       accessorKey: "invoice_count",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="h-auto p-0 font-semibold"
-          >
-            Invoices
-            <ArrowUpDown size={16} className="ml-2" />
-          </Button>
-        );
-      },
+      header: ({ column }) => (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="h-auto p-0 font-semibold"
+        >
+          Invoices
+          <ArrowUpDown size={16} className="ml-2" />
+        </Button>
+      ),
       cell: ({ row }) => {
         const count = parseInt(row.getValue("invoice_count"));
+
         return (
           <div className="text-right">
             <Badge variant="outline">{count}</Badge>
@@ -249,7 +252,7 @@ export const ModernRevenueByClientReport: React.FC<RevenueByClientReportProps> =
 
   const handleExport = (format: "csv" | "pdf") => {
     // Implementation for export functionality
-    console.log(`Exporting as ${format}`);
+    // TODO: Implement export functionality
   };
 
   if (isLoading) {
@@ -261,7 +264,9 @@ export const ModernRevenueByClientReport: React.FC<RevenueByClientReportProps> =
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Revenue by Client Report</h1>
+          <h1 className="text-3xl font-bold text-gray-900">
+            Revenue by Client Report
+          </h1>
           <p className="text-gray-600 mt-1">
             Track revenue performance across all clients
           </p>
@@ -283,9 +288,7 @@ export const ModernRevenueByClientReport: React.FC<RevenueByClientReportProps> =
               </DropdownMenuCheckboxItem>
             </DropdownMenuContent>
           </DropdownMenu>
-          <Button onClick={() => navigate("/reports")}>
-            Back to Reports
-          </Button>
+          <Button onClick={() => navigate("/reports")}>Back to Reports</Button>
         </div>
       </div>
 
@@ -297,7 +300,9 @@ export const ModernRevenueByClientReport: React.FC<RevenueByClientReportProps> =
             <TrendUp size={16} className="text-gray-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{formatCurrency(summary.total_revenue)}</div>
+            <div className="text-2xl font-bold">
+              {formatCurrency(summary.total_revenue)}
+            </div>
             <p className="text-xs text-gray-600 mt-1">Across all clients</p>
           </CardContent>
         </Card>
@@ -308,7 +313,9 @@ export const ModernRevenueByClientReport: React.FC<RevenueByClientReportProps> =
             <TrendUp size={16} className="text-green-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600">{formatCurrency(summary.total_paid)}</div>
+            <div className="text-2xl font-bold text-green-600">
+              {formatCurrency(summary.total_paid)}
+            </div>
             <p className="text-xs text-gray-600 mt-1">Successfully collected</p>
           </CardContent>
         </Card>
@@ -319,7 +326,9 @@ export const ModernRevenueByClientReport: React.FC<RevenueByClientReportProps> =
             <TrendUp size={16} className="text-orange-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-orange-600">{formatCurrency(summary.total_outstanding)}</div>
+            <div className="text-2xl font-bold text-orange-600">
+              {formatCurrency(summary.total_outstanding)}
+            </div>
             <p className="text-xs text-gray-600 mt-1">Awaiting payment</p>
           </CardContent>
         </Card>
@@ -330,14 +339,18 @@ export const ModernRevenueByClientReport: React.FC<RevenueByClientReportProps> =
             <TrendUp size={16} className="text-red-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-red-600">{formatCurrency(summary.total_overdue)}</div>
+            <div className="text-2xl font-bold text-red-600">
+              {formatCurrency(summary.total_overdue)}
+            </div>
             <p className="text-xs text-gray-600 mt-1">Past due date</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Clients</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Active Clients
+            </CardTitle>
             <TrendUp size={16} className="text-blue-400" />
           </CardHeader>
           <CardContent>
@@ -361,7 +374,7 @@ export const ModernRevenueByClientReport: React.FC<RevenueByClientReportProps> =
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {presets.map((preset) => (
+                  {presets.map(preset => (
                     <SelectItem key={preset.value} value={preset.value}>
                       {preset.label}
                     </SelectItem>
@@ -384,7 +397,7 @@ export const ModernRevenueByClientReport: React.FC<RevenueByClientReportProps> =
               <Input
                 placeholder="Filter clients..."
                 value={globalFilter ?? ""}
-                onChange={(event) => setGlobalFilter(event.target.value)}
+                onChange={event => setGlobalFilter(event.target.value)}
               />
             </div>
 
@@ -399,21 +412,19 @@ export const ModernRevenueByClientReport: React.FC<RevenueByClientReportProps> =
                 <DropdownMenuContent align="end">
                   {table
                     .getAllColumns()
-                    .filter((column) => column.getCanHide())
-                    .map((column) => {
-                      return (
-                        <DropdownMenuCheckboxItem
-                          key={column.id}
-                          className="capitalize"
-                          checked={column.getIsVisible()}
-                          onCheckedChange={(value) =>
-                            column.toggleVisibility(!!value)
-                          }
-                        >
-                          {column.id}
-                        </DropdownMenuCheckboxItem>
-                      );
-                    })}
+                    .filter(column => column.getCanHide())
+                    .map(column => (
+                      <DropdownMenuCheckboxItem
+                        key={column.id}
+                        className="capitalize"
+                        checked={column.getIsVisible()}
+                        onCheckedChange={value =>
+                          column.toggleVisibility(!!value)
+                        }
+                      >
+                        {column.id}
+                      </DropdownMenuCheckboxItem>
+                    ))}
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
@@ -425,39 +436,35 @@ export const ModernRevenueByClientReport: React.FC<RevenueByClientReportProps> =
       <Card>
         <CardHeader>
           <CardTitle className="text-lg">Revenue Breakdown</CardTitle>
-          <CardDescription>
-            Detailed revenue analysis by client
-          </CardDescription>
+          <CardDescription>Detailed revenue analysis by client</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="rounded-md border">
             <Table>
               <TableHeader>
-                {table.getHeaderGroups().map((headerGroup) => (
+                {table.getHeaderGroups().map(headerGroup => (
                   <TableRow key={headerGroup.id}>
-                    {headerGroup.headers.map((header) => {
-                      return (
-                        <TableHead key={header.id}>
-                          {header.isPlaceholder
-                            ? null
-                            : flexRender(
-                                header.column.columnDef.header,
-                                header.getContext()
-                              )}
-                        </TableHead>
-                      );
-                    })}
+                    {headerGroup.headers.map(header => (
+                      <TableHead key={header.id}>
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
+                      </TableHead>
+                    ))}
                   </TableRow>
                 ))}
               </TableHeader>
               <TableBody>
                 {table.getRowModel().rows?.length ? (
-                  table.getRowModel().rows.map((row) => (
+                  table.getRowModel().rows.map(row => (
                     <TableRow
                       key={row.id}
                       data-state={row.getIsSelected() && "selected"}
                     >
-                      {row.getVisibleCells().map((cell) => (
+                      {row.getVisibleCells().map(cell => (
                         <TableCell key={cell.id}>
                           {flexRender(
                             cell.column.columnDef.cell,

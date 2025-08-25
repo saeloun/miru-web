@@ -1,7 +1,14 @@
 import React, { useEffect, useState } from "react";
 import preferencesApi from "apis/preferences";
 import { useUserContext } from "context/UserContext";
-import { Bell, Envelope, Calendar, Clock, Users, FileText } from "phosphor-react";
+import {
+  Bell,
+  Envelope,
+  Calendar,
+  Clock,
+  Users,
+  FileText,
+} from "phosphor-react";
 import {
   Card,
   CardContent,
@@ -12,7 +19,6 @@ import {
 import { Switch } from "../../ui/switch";
 import { Label } from "../../ui/label";
 import { Separator } from "../../ui/separator";
-import { Badge } from "../../ui/badge";
 
 interface PreferenceItem {
   id: string;
@@ -37,16 +43,17 @@ const Preferences: React.FC = () => {
   const fetchPreferences = async () => {
     try {
       const res = await preferencesApi.get(user.id);
-      
+
       // Map API response to our preference items
       const prefs: PreferenceItem[] = [
         {
           id: "weekly_reminder",
           title: "Weekly Email Reminder",
-          description: "Receive weekly reminders about timesheet entries and project updates",
+          description:
+            "Receive weekly reminders about timesheet entries and project updates",
           enabled: res.data.notification_enabled || false,
           icon: <Envelope className="h-4 w-4" />,
-          category: "Email Notifications"
+          category: "Email Notifications",
         },
         {
           id: "daily_summary",
@@ -54,7 +61,7 @@ const Preferences: React.FC = () => {
           description: "Get a daily summary of your tasks and activities",
           enabled: res.data.daily_summary || false,
           icon: <Calendar className="h-4 w-4" />,
-          category: "Email Notifications"
+          category: "Email Notifications",
         },
         {
           id: "timesheet_reminder",
@@ -62,7 +69,7 @@ const Preferences: React.FC = () => {
           description: "Remind me to fill timesheet entries",
           enabled: res.data.timesheet_reminder || true,
           icon: <Clock className="h-4 w-4" />,
-          category: "Email Notifications"
+          category: "Email Notifications",
         },
         {
           id: "team_updates",
@@ -70,7 +77,7 @@ const Preferences: React.FC = () => {
           description: "Notify me about team member activities and updates",
           enabled: res.data.team_updates || false,
           icon: <Users className="h-4 w-4" />,
-          category: "Team"
+          category: "Team",
         },
         {
           id: "invoice_updates",
@@ -78,7 +85,7 @@ const Preferences: React.FC = () => {
           description: "Notify me when invoices are created, sent, or paid",
           enabled: res.data.invoice_updates || true,
           icon: <FileText className="h-4 w-4" />,
-          category: "Billing"
+          category: "Billing",
         },
         {
           id: "desktop_notifications",
@@ -86,10 +93,10 @@ const Preferences: React.FC = () => {
           description: "Show desktop notifications for important events",
           enabled: res.data.desktop_notifications || false,
           icon: <Bell className="h-4 w-4" />,
-          category: "System"
-        }
+          category: "System",
+        },
       ];
-      
+
       setPreferences(prefs);
       setIsLoading(false);
     } catch (error) {
@@ -99,7 +106,7 @@ const Preferences: React.FC = () => {
   };
 
   const handleToggle = async (preferenceId: string) => {
-    const updatedPreferences = preferences.map(pref => 
+    const updatedPreferences = preferences.map(pref =>
       pref.id === preferenceId ? { ...pref, enabled: !pref.enabled } : pref
     );
     setPreferences(updatedPreferences);
@@ -109,7 +116,7 @@ const Preferences: React.FC = () => {
       const updatedPref = updatedPreferences.find(p => p.id === preferenceId);
       if (preferenceId === "weekly_reminder") {
         await preferencesApi.updatePreference(user.id, {
-          notification_enabled: updatedPref?.enabled
+          notification_enabled: updatedPref?.enabled,
         });
       }
       // Add other API calls for different preferences as needed
@@ -125,6 +132,7 @@ const Preferences: React.FC = () => {
       acc[pref.category] = [];
     }
     acc[pref.category].push(pref);
+
     return acc;
   }, {} as Record<string, PreferenceItem[]>);
 
@@ -202,7 +210,8 @@ const Preferences: React.FC = () => {
                 Email notifications are sent to: <strong>{user?.email}</strong>
               </p>
               <p className="text-sm text-gray-600 mt-2">
-                To change your email address, please update it in your profile settings.
+                To change your email address, please update it in your profile
+                settings.
               </p>
             </CardContent>
           </Card>

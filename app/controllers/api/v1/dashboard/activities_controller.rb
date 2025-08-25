@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Api::V1::Dashboard::ActivitiesController < Api::V1::ApplicationController
   after_action :verify_authorized, except: :index
 
@@ -34,8 +36,8 @@ class Api::V1::Dashboard::ActivitiesController < Api::V1::ApplicationController
         .order(updated_at: :desc)
         .limit(limit_value * 2) # Get more to account for filtering
         .offset(offset_value)
-        .map { |invoice| format_invoice_activity(invoice) }
-        .compact
+        .filter_map { |invoice| format_invoice_activity(invoice) }
+
 
       # Get recent payment activities
       payment_activities = current_company.invoices
@@ -92,7 +94,7 @@ class Api::V1::Dashboard::ActivitiesController < Api::V1::ApplicationController
     def format_payment_activities(invoice)
       return [] unless invoice&.client&.name && invoice.payments.present?
 
-      invoice.payments.map do |payment|
+      invoice.payments.filter_map do |payment|
         next nil unless payment.amount && payment.created_at
 
         currency = payment.payment_currency || invoice.currency || current_company&.base_currency || "USD"
@@ -113,7 +115,7 @@ class Api::V1::Dashboard::ActivitiesController < Api::V1::ApplicationController
             status: payment.status
           }
         }
-      end.compact
+      end
     rescue => e
       Rails.logger.error "Error formatting payment activities: #{e.message}"
       []

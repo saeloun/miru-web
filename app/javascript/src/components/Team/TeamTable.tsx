@@ -28,12 +28,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../ui/dialog";
-import { Input } from "../ui/input";
-import { Label } from "../ui/label";
-import { Checkbox } from "../ui/checkbox";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import {
-  Plus,
   DotsThree,
   PencilSimple,
   Trash,
@@ -43,15 +39,11 @@ import {
   Shield,
   User,
   Calendar,
-  EnvelopeSimple,
-  Phone,
   CaretUp,
   CaretDown,
   ArrowUp,
   ArrowDown,
-  UserCircle,
 } from "phosphor-react";
-import { cn } from "../../lib/utils";
 import { useUserContext } from "../../context/UserContext";
 import teamApi from "../../apis/team";
 import { unmapList } from "../../mapper/team.mapper";
@@ -86,6 +78,7 @@ interface TeamData {
 const fetchTeamMembers = async (): Promise<TeamData> => {
   const response = await teamApi.get();
   const sanitized = unmapList(response);
+
   return {
     teamMembers: sanitized,
     totalCount: sanitized.length,
@@ -150,13 +143,29 @@ const TeamTable: React.FC = () => {
   const getRoleBadge = (role: string) => {
     switch (role) {
       case Roles.OWNER:
-        return <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100">Owner</Badge>;
+        return (
+          <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100">
+            Owner
+          </Badge>
+        );
       case Roles.ADMIN:
-        return <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100">Admin</Badge>;
+        return (
+          <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100">
+            Admin
+          </Badge>
+        );
       case Roles.BOOK_KEEPER:
-        return <Badge className="bg-purple-100 text-purple-800 hover:bg-purple-100">Bookkeeper</Badge>;
+        return (
+          <Badge className="bg-purple-100 text-purple-800 hover:bg-purple-100">
+            Bookkeeper
+          </Badge>
+        );
       case Roles.EMPLOYEE:
-        return <Badge className="bg-gray-100 text-gray-800 hover:bg-gray-100">Employee</Badge>;
+        return (
+          <Badge className="bg-gray-100 text-gray-800 hover:bg-gray-100">
+            Employee
+          </Badge>
+        );
       default:
         return <Badge variant="outline">{role}</Badge>;
     }
@@ -165,11 +174,23 @@ const TeamTable: React.FC = () => {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "active":
-        return <Badge className="bg-green-100 text-green-800 hover:bg-green-100">Active</Badge>;
+        return (
+          <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
+            Active
+          </Badge>
+        );
       case "inactive":
-        return <Badge className="bg-gray-100 text-gray-600 hover:bg-gray-100">Inactive</Badge>;
+        return (
+          <Badge className="bg-gray-100 text-gray-600 hover:bg-gray-100">
+            Inactive
+          </Badge>
+        );
       case "invited":
-        return <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100">Invited</Badge>;
+        return (
+          <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100">
+            Invited
+          </Badge>
+        );
       default:
         return <Badge variant="outline">{status}</Badge>;
     }
@@ -177,54 +198,38 @@ const TeamTable: React.FC = () => {
 
   const columns: ColumnDef<TeamMember>[] = [
     {
-      id: "select",
-      header: ({ table }) => (
-        <Checkbox
-          checked={table.getIsAllPageRowsSelected()}
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-          aria-label="Select all"
-        />
-      ),
-      cell: ({ row }) => (
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label="Select row"
-        />
-      ),
-      enableSorting: false,
-      enableHiding: false,
-    },
-    {
       accessorKey: "name",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="-ml-4"
-          >
-            Team Member
-            {column.getIsSorted() === "asc" ? (
-              <ArrowUp size={16} className="ml-2" />
-            ) : column.getIsSorted() === "desc" ? (
-              <ArrowDown size={16} className="ml-2" />
-            ) : (
-              <><CaretUp size={8} className="ml-2 -mb-1" /><CaretDown size={8} className="ml-2 -mt-1" /></>
-            )}
-          </Button>
-        );
-      },
+      header: ({ column }) => (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="-ml-4"
+        >
+          Team Member
+          {column.getIsSorted() === "asc" ? (
+            <ArrowUp size={16} className="ml-2" />
+          ) : column.getIsSorted() === "desc" ? (
+            <ArrowDown size={16} className="ml-2" />
+          ) : (
+            <>
+              <CaretUp size={8} className="ml-2 -mb-1" />
+              <CaretDown size={8} className="ml-2 -mt-1" />
+            </>
+          )}
+        </Button>
+      ),
       cell: ({ row }) => {
         const member = row.original;
         const gravatarUrl = getGravatarUrl(member.email, 36);
+
         return (
           <div className="flex items-center gap-3">
             <Avatar className="h-9 w-9">
               <AvatarImage src={gravatarUrl} alt={member.name} />
               <AvatarImage src={member.avatar} alt={member.name} />
               <AvatarFallback className="bg-gray-100 text-sm">
-                {member.firstName?.[0]}{member.lastName?.[0]}
+                {member.firstName?.[0]}
+                {member.lastName?.[0]}
               </AvatarFallback>
             </Avatar>
             <div>
@@ -237,33 +242,33 @@ const TeamTable: React.FC = () => {
     },
     {
       accessorKey: "role",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="-ml-4"
-          >
-            Role
-            {column.getIsSorted() === "asc" ? (
-              <ArrowUp size={16} className="ml-2" />
-            ) : column.getIsSorted() === "desc" ? (
-              <ArrowDown size={16} className="ml-2" />
-            ) : (
-              <><CaretUp size={8} className="ml-2 -mb-1" /><CaretDown size={8} className="ml-2 -mt-1" /></>
-            )}
-          </Button>
-        );
-      },
-      cell: ({ row }) => {
-        return getRoleBadge(row.original.role);
-      },
+      header: ({ column }) => (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="-ml-4"
+        >
+          Role
+          {column.getIsSorted() === "asc" ? (
+            <ArrowUp size={16} className="ml-2" />
+          ) : column.getIsSorted() === "desc" ? (
+            <ArrowDown size={16} className="ml-2" />
+          ) : (
+            <>
+              <CaretUp size={8} className="ml-2 -mb-1" />
+              <CaretDown size={8} className="ml-2 -mt-1" />
+            </>
+          )}
+        </Button>
+      ),
+      cell: ({ row }) => getRoleBadge(row.original.role),
     },
     {
       accessorKey: "designation",
       header: "Position",
       cell: ({ row }) => {
         const member = row.original;
+
         return (
           <div className="text-sm">
             <p className="font-medium text-gray-900">
@@ -281,6 +286,7 @@ const TeamTable: React.FC = () => {
       header: "Projects",
       cell: ({ row }) => {
         const projects = row.original.projects || 0;
+
         return (
           <div className="text-sm text-gray-600">
             {projects} {projects === 1 ? "project" : "projects"}
@@ -290,30 +296,32 @@ const TeamTable: React.FC = () => {
     },
     {
       accessorKey: "hoursLogged",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="-ml-4"
-          >
-            Hours
-            {column.getIsSorted() === "asc" ? (
-              <ArrowUp size={16} className="ml-2" />
-            ) : column.getIsSorted() === "desc" ? (
-              <ArrowDown size={16} className="ml-2" />
-            ) : (
-              <><CaretUp size={8} className="ml-2 -mb-1" /><CaretDown size={8} className="ml-2 -mt-1" /></>
-            )}
-          </Button>
-        );
-      },
+      header: ({ column }) => (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="-ml-4"
+        >
+          Hours
+          {column.getIsSorted() === "asc" ? (
+            <ArrowUp size={16} className="ml-2" />
+          ) : column.getIsSorted() === "desc" ? (
+            <ArrowDown size={16} className="ml-2" />
+          ) : (
+            <>
+              <CaretUp size={8} className="ml-2 -mb-1" />
+              <CaretDown size={8} className="ml-2 -mt-1" />
+            </>
+          )}
+        </Button>
+      ),
       cell: ({ row }) => {
         const member = row.original;
         const totalHours = member.hoursLogged || 0;
         const billableHours = member.billableHours || 0;
-        const billablePercentage = totalHours > 0 ? (billableHours / totalHours) * 100 : 0;
-        
+        const billablePercentage =
+          totalHours > 0 ? (billableHours / totalHours) * 100 : 0;
+
         return (
           <div className="text-sm">
             <p className="font-medium">{totalHours.toFixed(1)}h</p>
@@ -327,9 +335,7 @@ const TeamTable: React.FC = () => {
     {
       accessorKey: "status",
       header: "Status",
-      cell: ({ row }) => {
-        return getStatusBadge(row.original.status);
-      },
+      cell: ({ row }) => getStatusBadge(row.original.status),
     },
     {
       id: "actions",
@@ -397,8 +403,15 @@ const TeamTable: React.FC = () => {
 
   const teamMembers = data?.teamMembers || [];
   const activeMembers = teamMembers.filter(m => m.status === "active").length;
-  const totalHours = teamMembers.reduce((sum, m) => sum + (m.hoursLogged || 0), 0);
-  const totalProjects = teamMembers.reduce((sum, m) => sum + (m.projects || 0), 0);
+  const totalHours = teamMembers.reduce(
+    (sum, m) => sum + (m.hoursLogged || 0),
+    0
+  );
+
+  const totalProjects = teamMembers.reduce(
+    (sum, m) => sum + (m.projects || 0),
+    0
+  );
 
   return (
     <div className="space-y-6 p-6 max-w-7xl mx-auto">
@@ -430,9 +443,7 @@ const TeamTable: React.FC = () => {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{teamMembers.length}</div>
-            <p className="text-xs text-gray-600 mt-1">
-              {activeMembers} active
-            </p>
+            <p className="text-xs text-gray-600 mt-1">{activeMembers} active</p>
           </CardContent>
         </Card>
 
@@ -442,16 +453,16 @@ const TeamTable: React.FC = () => {
             <Calendar size={20} className="text-gray-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              {totalHours.toFixed(0)}h
-            </div>
+            <div className="text-2xl font-bold">{totalHours.toFixed(0)}h</div>
             <p className="text-xs text-gray-600 mt-1">This month</p>
           </CardContent>
         </Card>
 
         <Card className="border-gray-200">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Projects</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Active Projects
+            </CardTitle>
             <Crown size={20} className="text-gray-400" />
           </CardHeader>
           <CardContent>
@@ -462,18 +473,24 @@ const TeamTable: React.FC = () => {
 
         <Card className="border-gray-200">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Avg Utilization</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Avg Utilization
+            </CardTitle>
             <Shield size={20} className="text-gray-400" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {teamMembers.length > 0 
-                ? Math.round(teamMembers.reduce((sum, m) => {
-                    const billable = m.billableHours || 0;
-                    const total = m.hoursLogged || 0;
-                    return sum + (total > 0 ? (billable / total) * 100 : 0);
-                  }, 0) / teamMembers.length)
-                : 0}%
+              {teamMembers.length > 0
+                ? Math.round(
+                    teamMembers.reduce((sum, m) => {
+                      const billable = m.billableHours || 0;
+                      const total = m.hoursLogged || 0;
+
+                      return sum + (total > 0 ? (billable / total) * 100 : 0);
+                    }, 0) / teamMembers.length
+                  )
+                : 0}
+              %
             </div>
             <p className="text-xs text-gray-600 mt-1">Billable hours</p>
           </CardContent>
@@ -482,12 +499,6 @@ const TeamTable: React.FC = () => {
 
       {/* Data Table */}
       <Card className="border-gray-200">
-        <CardHeader>
-          <CardTitle>Team Members</CardTitle>
-          <CardDescription>
-            View and manage all team members, their roles, and performance metrics.
-          </CardDescription>
-        </CardHeader>
         <CardContent>
           {teamMembers.length > 0 ? (
             <DataTable
@@ -519,8 +530,8 @@ const TeamTable: React.FC = () => {
           <DialogHeader>
             <DialogTitle>Remove Team Member</DialogTitle>
             <DialogDescription>
-              Are you sure you want to remove {selectedMember?.name} from your team? 
-              This action cannot be undone.
+              Are you sure you want to remove {selectedMember?.name} from your
+              team? This action cannot be undone.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>

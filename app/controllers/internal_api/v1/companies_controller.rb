@@ -37,6 +37,8 @@ class InternalApi::V1::CompaniesController < InternalApi::V1::ApplicationControl
       params.require(:company).permit(
         :name, :address, :business_phone, :country, :timezone, :base_currency,
         :standard_price, :fiscal_year_end, :date_format, :logo, :working_hours, :working_days,
+        :bank_name, :bank_account_number, :bank_routing_number, :bank_swift_code,
+        :tax_id, :vat_number, :gst_number,
         addresses_attributes: [:id, :address_line_1, :address_line_2, :city, :state, :country, :pin]
       )
     end

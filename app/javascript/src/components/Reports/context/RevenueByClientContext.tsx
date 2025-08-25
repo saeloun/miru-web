@@ -18,7 +18,7 @@ const RevenueByClientReportContext = {
     totalOutstandingAmount: 0,
     totalRevenue: 0,
   },
-  handleRemoveSingleFilter: (key, value) => {}, //eslint-disable-line
+  handleRemoveSingleFilter: (key, value) => {},
 };
 
 export default RevenueByClientReportContext;

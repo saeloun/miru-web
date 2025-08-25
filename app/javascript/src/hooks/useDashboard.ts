@@ -32,19 +32,27 @@ interface ActivitiesResponse {
   total_count: number;
 }
 
-const fetchDashboardData = async (timeframe: string): Promise<DashboardData> => {
+const fetchDashboardData = async (
+  timeframe: string
+): Promise<DashboardData> => {
   try {
     const response = await fetch(`/api/v1/dashboard?timeframe=${timeframe}`, {
       headers: {
         "Content-Type": "application/json",
-        "X-CSRF-TOKEN": document.querySelector('[name="csrf-token"]')?.getAttribute("content") || "",
+        "X-CSRF-TOKEN":
+          document
+            .querySelector('[name="csrf-token"]')
+            ?.getAttribute("content") || "",
       },
       credentials: "include",
     });
 
     if (!response.ok) {
       // Return mock data if API fails
-      console.warn(`Dashboard API error: ${response.status}, using fallback data`);
+      console.warn(
+        `Dashboard API error: ${response.status}, using fallback data`
+      );
+
       return {
         stats: {
           total_revenue: 0,
@@ -63,6 +71,7 @@ const fetchDashboardData = async (timeframe: string): Promise<DashboardData> => 
     return response.json();
   } catch (error) {
     console.warn("Dashboard API error, using fallback data", error);
+
     return {
       stats: {
         total_revenue: 0,
@@ -79,18 +88,29 @@ const fetchDashboardData = async (timeframe: string): Promise<DashboardData> => 
   }
 };
 
-const fetchActivities = async ({ pageParam = 0 }): Promise<ActivitiesResponse> => {
+const fetchActivities = async ({
+  pageParam = 0,
+}): Promise<ActivitiesResponse> => {
   try {
-    const response = await fetch(`/api/v1/dashboard/activities?offset=${pageParam}&per_page=10`, {
-      headers: {
-        "Content-Type": "application/json",
-        "X-CSRF-TOKEN": document.querySelector('[name="csrf-token"]')?.getAttribute("content") || "",
-      },
-      credentials: "include",
-    });
+    const response = await fetch(
+      `/api/v1/dashboard/activities?offset=${pageParam}&per_page=10`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRF-TOKEN":
+            document
+              .querySelector('[name="csrf-token"]')
+              ?.getAttribute("content") || "",
+        },
+        credentials: "include",
+      }
+    );
 
     if (!response.ok) {
-      console.warn(`Activities API error: ${response.status}, using fallback data`);
+      console.warn(
+        `Activities API error: ${response.status}, using fallback data`
+      );
+
       return {
         activities: [],
         has_more: false,
@@ -101,6 +121,7 @@ const fetchActivities = async ({ pageParam = 0 }): Promise<ActivitiesResponse> =
     return response.json();
   } catch (error) {
     console.warn("Activities API error, using fallback data", error);
+
     return {
       activities: [],
       has_more: false,
@@ -109,26 +130,25 @@ const fetchActivities = async ({ pageParam = 0 }): Promise<ActivitiesResponse> =
   }
 };
 
-export const useDashboardData = (timeframe: string) => {
-  return useQuery({
+export const useDashboardData = (timeframe: string) =>
+  useQuery({
     queryKey: ["dashboard", timeframe],
     queryFn: () => fetchDashboardData(timeframe),
     staleTime: 5 * 60 * 1000, // 5 minutes
     retry: 2,
   });
-};
 
-export const useActivities = () => {
-  return useInfiniteQuery({
+export const useActivities = () =>
+  useInfiniteQuery({
     queryKey: ["activities"],
     queryFn: fetchActivities,
     initialPageParam: 0,
     getNextPageParam: (lastPage, allPages) => {
       if (!lastPage.has_more) return undefined;
+
       return allPages.length * 10; // offset for next page
     },
     staleTime: 2 * 60 * 1000, // 2 minutes
   });
-};
 
 export type { DashboardData, DashboardStats, Activity, ActivitiesResponse };

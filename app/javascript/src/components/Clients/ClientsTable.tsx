@@ -28,8 +28,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../ui/dialog";
-import { Checkbox } from "../ui/checkbox";
-import { cn } from "../../lib/utils";
 import {
   Plus,
   DotsThree,
@@ -73,10 +71,12 @@ interface ClientsData {
 const fetchClients = async (): Promise<ClientsData> => {
   try {
     const res = await clientsApi.list();
+
     // unmapClientList expects { data: response } structure
     return unmapClientList({ data: res.data });
   } catch (error) {
     console.warn("Clients API error, using fallback data", error);
+
     return {
       clientList: [],
       totalMinutes: 0,
@@ -135,6 +135,7 @@ const ClientsTable: React.FC = () => {
   const formatHours = (minutes: number) => {
     const hours = Math.floor(minutes / 60);
     const mins = minutes % 60;
+
     return `${hours}h ${mins}m`;
   };
 
@@ -142,46 +143,29 @@ const ClientsTable: React.FC = () => {
 
   const columns: ColumnDef<Client>[] = [
     {
-      id: "select",
-      header: ({ table }) => (
-        <Checkbox
-          checked={table.getIsAllPageRowsSelected()}
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-          aria-label="Select all"
-        />
-      ),
-      cell: ({ row }) => (
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label="Select row"
-        />
-      ),
-      enableSorting: false,
-      enableHiding: false,
-    },
-    {
       accessorKey: "name",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="-ml-4"
-          >
-            Client
-            {column.getIsSorted() === "asc" ? (
-              <ArrowUp size={16} className="ml-2" />
-            ) : column.getIsSorted() === "desc" ? (
-              <ArrowDown size={16} className="ml-2" />
-            ) : (
-              <><CaretUp size={8} className="ml-2 -mb-1" /><CaretDown size={8} className="ml-2 -mt-1" /></>
-            )}
-          </Button>
-        );
-      },
+      header: ({ column }) => (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="-ml-4"
+        >
+          Client
+          {column.getIsSorted() === "asc" ? (
+            <ArrowUp size={16} className="ml-2" />
+          ) : column.getIsSorted() === "desc" ? (
+            <ArrowDown size={16} className="ml-2" />
+          ) : (
+            <>
+              <CaretUp size={8} className="ml-2 -mb-1" />
+              <CaretDown size={8} className="ml-2 -mt-1" />
+            </>
+          )}
+        </Button>
+      ),
       cell: ({ row }) => {
         const client = row.original;
+
         return (
           <div>
             <p className="font-medium text-gray-900">{client.name}</p>
@@ -195,6 +179,7 @@ const ClientsTable: React.FC = () => {
       header: "Contact",
       cell: ({ row }) => {
         const client = row.original;
+
         return (
           <div className="text-sm">
             {client.phone || <span className="text-gray-400">—</span>}
@@ -204,39 +189,38 @@ const ClientsTable: React.FC = () => {
     },
     {
       accessorKey: "minutes",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="-ml-4"
-          >
-            Hours Tracked
-            {column.getIsSorted() === "asc" ? (
-              <ArrowUp size={16} className="ml-2" />
-            ) : column.getIsSorted() === "desc" ? (
-              <ArrowDown size={16} className="ml-2" />
-            ) : (
-              <><CaretUp size={8} className="ml-2 -mb-1" /><CaretDown size={8} className="ml-2 -mt-1" /></>
-            )}
-          </Button>
-        );
-      },
-      cell: ({ row }) => {
-        return (
-          <div className="flex items-center gap-2">
-            <Timer size={16} className="text-gray-400" />
-            <span className="text-sm">{formatHours(row.original.minutes || 0)}</span>
-          </div>
-        );
-      },
+      header: ({ column }) => (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="-ml-4"
+        >
+          Hours Tracked
+          {column.getIsSorted() === "asc" ? (
+            <ArrowUp size={16} className="ml-2" />
+          ) : column.getIsSorted() === "desc" ? (
+            <ArrowDown size={16} className="ml-2" />
+          ) : (
+            <>
+              <CaretUp size={8} className="ml-2 -mb-1" />
+              <CaretDown size={8} className="ml-2 -mt-1" />
+            </>
+          )}
+        </Button>
+      ),
+      cell: ({ row }) => (
+        <div className="flex items-center gap-2">
+          <Timer size={16} className="text-gray-400" />
+          <span className="text-sm">
+            {formatHours(row.original.minutes || 0)}
+          </span>
+        </div>
+      ),
     },
     {
       id: "status",
       header: "Status",
-      cell: ({ row }) => {
-        return <Badge variant="outline">Active</Badge>;
-      },
+      cell: ({ row }) => <Badge variant="outline">Active</Badge>,
     },
     {
       id: "actions",
@@ -262,7 +246,9 @@ const ClientsTable: React.FC = () => {
                 Copy client ID
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => navigate(`/clients/${client.id}`)}>
+              <DropdownMenuItem
+                onClick={() => navigate(`/clients/${client.id}`)}
+              >
                 View details
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => handleEdit(client)}>
@@ -331,7 +317,9 @@ const ClientsTable: React.FC = () => {
             <Buildings size={20} className="text-gray-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{data?.clientList?.length || 0}</div>
+            <div className="text-2xl font-bold">
+              {data?.clientList?.length || 0}
+            </div>
             <p className="text-xs text-gray-600 mt-1">Active clients</p>
           </CardContent>
         </Card>
@@ -356,11 +344,18 @@ const ClientsTable: React.FC = () => {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {currencyFormat(baseCurrency, data?.overdueOutstandingAmount?.outstanding || 0)}
+              {currencyFormat(
+                baseCurrency,
+                data?.overdueOutstandingAmount?.outstanding || 0
+              )}
             </div>
             {data?.overdueOutstandingAmount?.overdue > 0 && (
               <p className="text-xs text-red-600 mt-1">
-                {currencyFormat(baseCurrency, data.overdueOutstandingAmount.overdue)} overdue
+                {currencyFormat(
+                  baseCurrency,
+                  data.overdueOutstandingAmount.overdue
+                )}{" "}
+                overdue
               </p>
             )}
           </CardContent>
@@ -372,7 +367,8 @@ const ClientsTable: React.FC = () => {
         <CardHeader>
           <CardTitle>All Clients</CardTitle>
           <CardDescription>
-            A list of all your clients with their contact information and billing status.
+            A list of all your clients with their contact information and
+            billing status.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -406,7 +402,8 @@ const ClientsTable: React.FC = () => {
           <DialogHeader>
             <DialogTitle>Delete Client</DialogTitle>
             <DialogDescription>
-              Are you sure you want to delete {selectedClient?.name}? This action cannot be undone.
+              Are you sure you want to delete {selectedClient?.name}? This
+              action cannot be undone.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>

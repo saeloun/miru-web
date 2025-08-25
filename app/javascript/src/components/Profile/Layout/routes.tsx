@@ -5,7 +5,6 @@ import React from "react";
 import OrgDetails from "components/Profile/Organization/Details";
 import OrgEdit from "components/Profile/Organization/Edit";
 import Holidays from "components/Profile/Organization/Holidays";
-import Leaves from "components/Profile/Organization/Leaves";
 import PaymentSettings from "components/Profile/Organization/Payment";
 import AllocatedDevicesDetails from "components/Profile/Personal/Devices";
 import AllocatedDevicesEdit from "components/Profile/Personal/Devices/Edit";
@@ -140,15 +139,6 @@ export const SETTINGS = [
     isTab: false,
   },
   {
-    label: "PAYMENT SETTINGS",
-    path: "payment",
-    icon: <PaymentsIcon className="mr-2" size={20} weight="bold" />,
-    authorisedRoles: [ADMIN, OWNER],
-    Component: PaymentSettings,
-    category: "organization",
-    isTab: true,
-  },
-  {
     label: "LEAVES",
     path: "leaves",
     icon: <CalendarIcon className="mr-2" size={20} weight="bold" />,
@@ -163,6 +153,15 @@ export const SETTINGS = [
     icon: <CakeIcon className="mr-2" size={20} weight="bold" />,
     authorisedRoles: [ADMIN, OWNER],
     Component: Holidays,
+    category: "organization",
+    isTab: true,
+  },
+  {
+    label: "PAYMENT SETTINGS",
+    path: "payment",
+    icon: <PaymentsIcon className="mr-2" size={20} weight="bold" />,
+    authorisedRoles: [ADMIN, OWNER],
+    Component: PaymentSettings,
     category: "organization",
     isTab: true,
   },

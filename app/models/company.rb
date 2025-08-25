@@ -2,21 +2,28 @@
 #
 # Table name: companies
 #
-#  id               :bigint           not null, primary key
-#  address          :text
-#  base_currency    :string           default("USD"), not null
-#  business_phone   :string
-#  calendar_enabled :boolean          default(TRUE)
-#  country          :string           not null
-#  date_format      :string
-#  fiscal_year_end  :string
-#  name             :string           not null
-#  standard_price   :decimal(, )      default(0.0), not null
-#  timezone         :string
-#  working_days     :string           default("5")
-#  working_hours    :string           default("40")
-#  created_at       :datetime         not null
-#  updated_at       :datetime         not null
+#  id                  :bigint           not null, primary key
+#  address             :text
+#  bank_account_number :string
+#  bank_name           :string
+#  bank_routing_number :string
+#  bank_swift_code     :string
+#  base_currency       :string           default("USD"), not null
+#  business_phone      :string
+#  calendar_enabled    :boolean          default(TRUE)
+#  country             :string           not null
+#  date_format         :string
+#  fiscal_year_end     :string
+#  gst_number          :string
+#  name                :string           not null
+#  standard_price      :decimal(, )      default(0.0), not null
+#  timezone            :string
+#  vat_number          :string
+#  working_days        :string           default("5")
+#  working_hours       :string           default("40")
+#  created_at          :datetime         not null
+#  updated_at          :datetime         not null
+#  tax_id              :string
 #
 
 # frozen_string_literal: true
@@ -78,7 +85,18 @@ class Company < ApplicationRecord
     currency = base_currency
     status_and_amount = invoices.kept.group_by(&:status).transform_values { |invoices|
       invoices.sum { |invoice|
-        invoice.base_currency_amount.to_f > 0.00 ? invoice.base_currency_amount : invoice.amount
+        # Use amount_due for unpaid portion, not the full invoice amount
+        # Draft invoices should use full amount as they haven't been sent yet
+        amount_to_use = invoice.status == "draft" ? invoice.amount : (invoice.amount_due || invoice.amount)
+
+        # Apply currency conversion if needed
+        if invoice.base_currency_amount.to_f > 0.00
+          # Calculate the ratio of amount_due to full amount, then apply to base currency
+          ratio = invoice.status == "draft" ? 1.0 : (amount_to_use.to_f / invoice.amount.to_f)
+          ratio * invoice.base_currency_amount
+        else
+          amount_to_use
+        end
       }
     }
     status_and_amount.default = 0
