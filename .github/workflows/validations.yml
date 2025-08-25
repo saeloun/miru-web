@@ -173,15 +173,6 @@ jobs:
             tmp/failing_specs.txt
             log/test.log
           if-no-files-found: warn
-      
-      - name: Upload coverage reports
-        if: matrix.ci_node_index == 0
-        uses: codecov/codecov-action@v4
-        with:
-          file: ./coverage/coverage.xml
-          flags: unittests
-          name: codecov-umbrella
-          fail_ci_if_error: false
 
   playwright-tests:
     name: Playwright E2E Tests
