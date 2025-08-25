@@ -92,29 +92,17 @@ jobs:
       - name: Build assets
         run: bin/vite build
       
-      - name: Start Rails server
+      - name: Run Playwright tests
         env:
+          CI: true
           RAILS_ENV: test
           DB_HOST: localhost
           DB_USER: root
           DB_PASS: password
+          BASE_URL: http://127.0.0.1:3000
         run: |
-          bundle exec rails server -p 3000 -d
-          echo "Waiting for Rails server to start..."
-          for i in {1..30}; do
-            if curl -s http://127.0.0.1:3000 > /dev/null; then
-              echo "Rails server is ready!"
-              break
-            fi
-            echo "Waiting... (attempt $i/30)"
-            sleep 2
-          done
-          curl -I http://127.0.0.1:3000 || (echo "Rails server failed to start" && exit 1)
-      
-      - name: Run Playwright tests
-        env:
-          CI: true
-        run: pnpm test:e2e
+          # The webServer config in playwright.config.ts will handle starting the server
+          pnpm exec playwright test --project=chromium
       
       - name: Upload test results
         uses: actions/upload-artifact@v4

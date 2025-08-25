@@ -7,15 +7,24 @@ class Api::V1::InvoicesController < Api::V1::ApplicationController
   def index
     authorize Invoice
 
-    # Build query with ransack
-    @q = current_company.invoices.kept.ransack(params[:q])
+    # Build query
+    invoices = current_company.invoices.kept
 
     # Apply search if present (support both query and search_term params)
     search_query = params[:query] || params[:search_term]
-    invoices = if search_query.present?
-      current_company.invoices.kept.search(search_query)
-    else
-      @q.result
+    if search_query.present?
+      invoices = invoices.search(search_query)
+    elsif params[:q].present?
+      # Handle legacy ransack-style params
+      if params[:q][:client_id_eq].present?
+        invoices = invoices.where(client_id: params[:q][:client_id_eq])
+      end
+      if params[:q][:status_eq].present?
+        invoices = invoices.where(status: params[:q][:status_eq])
+      end
+      if params[:q][:invoice_number_cont].present?
+        invoices = invoices.where("invoice_number ILIKE ?", "%#{params[:q][:invoice_number_cont]}%")
+      end
     end
 
     # Apply filters
@@ -104,9 +113,6 @@ class Api::V1::InvoicesController < Api::V1::ApplicationController
       currency: current_company.base_currency
     }
 
-    # Get recently updated
-    recently_updated = current_company.invoices.kept.order(updated_at: :desc).limit(10)
-
     render :index, locals: {
       invoices: paginated_invoices,
       pagination_details: {
@@ -114,7 +120,6 @@ class Api::V1::InvoicesController < Api::V1::ApplicationController
         pages: pagy_metadata.pages,
         total: pagy_metadata.count
       },
-      recently_updated_invoices: recently_updated,
       summary: summary
     }
   end
