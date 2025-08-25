@@ -1,24 +1,17 @@
 # frozen_string_literal: true
 
-module Api::V1::Wise
-  class CurrenciesController < Api::V1::ApplicationController
-    before_action :authenticate_user!
-    after_action :verify_authorized
+class InternalApi::V1::Wise::CurrenciesController < InternalApi::V1::WiseController
+  def index
+    authorize current_company, policy_class: Wise::CurrencyPolicy
 
-    def index
-      authorize :wise, :index?
+    response = wise_currency.list
 
-      currencies = [
-        { code: "USD", name: "US Dollar", symbol: "$" },
-        { code: "EUR", name: "Euro", symbol: "€" },
-        { code: "GBP", name: "British Pound", symbol: "£" },
-        { code: "INR", name: "Indian Rupee", symbol: "₹" },
-        { code: "JPY", name: "Japanese Yen", symbol: "¥" },
-        { code: "CAD", name: "Canadian Dollar", symbol: "$" },
-        { code: "AUD", name: "Australian Dollar", symbol: "$" }
-      ]
-
-      render json: { currencies: currencies }
-    end
+    render json: response.body, status: response.status
   end
+
+  private
+
+    def wise_currency
+      @_wise_currency ||= Wise::Currency.new
+    end
 end

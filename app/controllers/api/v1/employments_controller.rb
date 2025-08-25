@@ -1,61 +1,31 @@
 # frozen_string_literal: true
 
-class Api::V1::EmploymentsController < Api::V1::BaseController
-  before_action :authenticate_user!
-  before_action :set_employment, only: [:show, :update]
-
-  after_action :verify_authorized, except: :index
+class InternalApi::V1::EmploymentsController < InternalApi::V1::ApplicationController
+  before_action :set_employment, only: [:update, :show]
 
   def index
-    @employments = current_user.employments.includes(:company)
-    render json: {
-      employments: @employments.map { |e| employment_details(e) }
-    }, status: 200
+    authorize Employment
+    render :index, locals: { users: current_company.employees_without_client_role }, status: 200
   end
 
   def show
     authorize @employment
-    render json: { employment: employment_details(@employment) }, status: 200
+    render :show
   end
 
   def update
     authorize @employment
-    if @employment.update(employment_params)
-      render json: {
-        employment: employment_details(@employment),
-        notice: "Employment details updated successfully"
-      }, status: 200
-    else
-      render json: { errors: @employment.errors.full_messages }, status: :unprocessable_entity
-    end
+    @employment.update!(employment_params)
+    render json: { notice: I18n.t("employment.update.success") }
   end
 
   private
 
     def set_employment
-      @employment = current_user.employments.find_by(id: params[:id])
-      render json: { error: "Employment not found" }, status: 404 unless @employment
+      @employment = Employment.find_by!(user_id: params[:id], company_id: current_company.id)
     end
 
     def employment_params
-      params.require(:employment).permit(
-        :employee_id, :designation, :employment_type, :joined_at, :resigned_at
-      )
-    end
-
-    def employment_details(employment)
-      {
-        id: employment.id,
-        user_id: employment.user_id,
-        company_id: employment.company_id,
-        company_name: employment.company&.name,
-        designation: employment.designation,
-        employment_type: employment.employment_type,
-        joined_at: employment.joined_at,
-        resigned_at: employment.resigned_at,
-        employee_id: employment.employee_id,
-        created_at: employment.created_at,
-        updated_at: employment.updated_at
-      }
+      params.require(:employment).permit(:designation, :employment_type, :joined_at, :resigned_at, :employee_id)
     end
 end

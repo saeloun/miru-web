@@ -21,7 +21,7 @@ RSpec.describe "Due invoice payment reminder", type: :request do
   context "when accessing payment reminder data via API" do
     it "can fetch client details and invoices for payment reminder" do
       # Get the client with their due invoices
-      get "/internal_api/v1/clients/#{client.id}"
+      get "/api/v1/clients/#{client.id}"
 
       expect(response).to have_http_status(:success)
       json_response = JSON.parse(response.body)
@@ -45,7 +45,7 @@ RSpec.describe "Due invoice payment reminder", type: :request do
 
   context "when testing payment-related functionality" do
     it "calculates overdue and outstanding amounts correctly" do
-      get "/internal_api/v1/clients/#{client.id}"
+      get "/api/v1/clients/#{client.id}"
 
       expect(response).to have_http_status(:success)
       json_response = JSON.parse(response.body)
@@ -58,7 +58,7 @@ RSpec.describe "Due invoice payment reminder", type: :request do
     end
 
     it "includes payment status information in invoice data" do
-      get "/internal_api/v1/clients/#{client.id}"
+      get "/api/v1/clients/#{client.id}"
 
       expect(response).to have_http_status(:success)
       json_response = JSON.parse(response.body)
@@ -70,7 +70,7 @@ RSpec.describe "Due invoice payment reminder", type: :request do
     end
 
     it "returns appropriate data for payment reminder UI" do
-      get "/internal_api/v1/clients/#{client.id}"
+      get "/api/v1/clients/#{client.id}"
 
       expect(response).to have_http_status(:success)
       json_response = JSON.parse(response.body)

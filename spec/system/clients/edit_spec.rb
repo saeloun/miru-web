@@ -27,7 +27,7 @@ RSpec.describe "Edit client", type: :request do
       }
 
       # Update the client via API
-      put "/internal_api/v1/clients/#{client.id}", params: update_params
+      put "/api/v1/clients/#{client.id}", params: update_params
 
       # Verify successful response
       expect(response).to have_http_status(:success)
@@ -52,7 +52,7 @@ RSpec.describe "Edit client", type: :request do
         }
       }
 
-      put "/internal_api/v1/clients/#{client.id}", params: update_params
+      put "/api/v1/clients/#{client.id}", params: update_params
 
       # Should return validation errors
       expect(response).to have_http_status(:unprocessable_content)
@@ -69,7 +69,7 @@ RSpec.describe "Edit client", type: :request do
         }
       }
 
-      put "/internal_api/v1/clients/999999", params: update_params
+      put "/api/v1/clients/999999", params: update_params
 
       expect(response).to have_http_status(:not_found)
     end
@@ -88,7 +88,7 @@ RSpec.describe "Edit client", type: :request do
         }
       }
 
-      put "/internal_api/v1/clients/#{client.id}", params: update_params
+      put "/api/v1/clients/#{client.id}", params: update_params
 
       # Should be unauthorized or forbidden
       expect(response).to have_http_status(:forbidden).or have_http_status(:unauthorized)

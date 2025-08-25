@@ -1,23 +1,9 @@
 # frozen_string_literal: true
 
-class Api::V1::Companies::PurgeLogoController < Api::V1::BaseController
-  before_action :set_company
-  after_action :verify_authorized
-
+class InternalApi::V1::Companies::PurgeLogoController < InternalApi::V1::ApplicationController
   def destroy
-    authorize @company, :update?
-
-    if @company.logo.attached?
-      @company.logo.purge
-      render json: { notice: "Logo removed successfully" }, status: 200
-    else
-      render json: { error: "No logo to remove" }, status: :unprocessable_entity
-    end
+    authorize current_company, :purge_logo?
+    current_company.logo.destroy
+    render json: { notice: I18n.t("companies.purge_logo.destroy.success") }, status: 200
   end
-
-  private
-
-    def set_company
-      @company = current_user.current_workspace || current_user.companies.first
-    end
 end

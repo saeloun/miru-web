@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Api::V1::InvoicesController < Api::V1::BaseController
+class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationController
   before_action :load_client, only: [:create, :update]
   after_action :track_event, only: [:create, :update, :destroy, :send_invoice, :download]
 
@@ -17,10 +17,6 @@ class Api::V1::InvoicesController < Api::V1::BaseController
     else
       @q.result
     end
-
-    # Order by updated_at DESC to show recently updated invoices first
-    # This ensures users see the most relevant invoices at the top
-    invoices = invoices.order(updated_at: :desc)
 
     # Apply filters
     # Status filter - support both status and statuses params
@@ -40,19 +36,22 @@ class Api::V1::InvoicesController < Api::V1::BaseController
       invoices = invoices.where(issue_date: date_range)
     end
 
-    # Handle client filtering - support both client_id and client array parameters
+    # Handle client filtering - support client_id, client, and client_ids array parameters
     if params[:client_id].present?
       invoices = invoices.where(client_id: params[:client_id])
     elsif params[:client].present?
       client_ids = Array(params[:client])
       invoices = invoices.where(client_id: client_ids) unless client_ids.empty?
+    elsif params[:client_ids].present?
+      client_ids = Array(params[:client_ids])
+      invoices = invoices.where(client_id: client_ids) unless client_ids.empty?
     end
 
-    # Pagination with Pagy - default to 20 per page for infinite scroll
+    # Pagination with Pagy
     page = (params[:page] || 1).to_i
     page = 1 if page <= 0
-    per_page = (params[:invoices_per_page] || params[:per] || 20).to_i
-    per_page = 20 if per_page <= 0  # Use default instead of all records when per_page is 0
+    per_page = (params[:invoices_per_page] || params[:per] || 10).to_i
+    per_page = 10 if per_page <= 0  # Use default instead of all records when per_page is 0
 
     # Use Pagy for pagination with overflow handling
     begin
@@ -105,11 +104,8 @@ class Api::V1::InvoicesController < Api::V1::BaseController
       currency: current_company.base_currency
     }
 
-    # Get recently updated - show overdue invoices first, then by updated_at
-    # Note: status is an integer enum, so we need to use the integer value for overdue (5)
-    recently_updated = current_company.invoices.kept
-      .order(Arel.sql("CASE WHEN status = 5 THEN 0 ELSE 1 END"), updated_at: :desc)
-      .limit(10)
+    # Get recently updated
+    recently_updated = current_company.invoices.kept.order(updated_at: :desc).limit(10)
 
     render :index, locals: {
       invoices: paginated_invoices,
