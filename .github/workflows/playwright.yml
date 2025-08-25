@@ -6,6 +6,11 @@ on:
     branches: [develop, main]
   workflow_dispatch:
 
+# Cancel in-progress runs on same branch
+concurrency:
+  group: playwright-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
     timeout-minutes: 60

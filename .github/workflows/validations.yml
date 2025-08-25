@@ -6,17 +6,22 @@ on:
     types: [labeled, opened, synchronize, reopened]
   workflow_dispatch:
 
+# Cancel in-progress runs on same branch
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   tests:
     name: Running tests
-    runs-on: ubuntu-latest-4-cores  # Use larger 4-core machine
+    runs-on: ubuntu-latest  # Standard runner (4-cores not available)
     if: "!contains(github.event.head_commit.message, 'skip ci')"
     strategy:
       fail-fast: false
       matrix:
-        # Run tests in 2 parallel jobs on larger machines
-        ci_node_index: [0, 1]
-        ci_node_total: [2]
+        # Run tests in 4 parallel jobs for better distribution
+        ci_node_index: [0, 1, 2, 3]
+        ci_node_total: [4]
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -127,7 +132,7 @@ jobs:
           DB_PASS: password
           CI_NODE_INDEX: ${{ matrix.ci_node_index }}
           CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
-          PARALLEL_TEST_PROCESSORS: 8  # Use more processors on larger machine
+          PARALLEL_TEST_PROCESSORS: 2  # Optimal for standard runners
           CI: true
           TEST_STACK_PROF: 1
           TEST_PROF_FACTORY_DEFAULT: build
