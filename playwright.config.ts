@@ -4,17 +4,18 @@ export default defineConfig({
   testDir: './playwright/e2e',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 1 : 0,  // Reduce retries from 2 to 1 for faster CI
-  workers: process.env.CI ? 4 : undefined,  // Increase workers from 1 to 4 for parallel execution
-  reporter: process.env.CI ? [['list'], ['html', { open: 'never' }]] : 'html',
-  timeout: 30000,  // 30 seconds per test
+  retries: process.env.CI ? 0 : 0,  // No retries for maximum speed
+  workers: process.env.CI ? 8 : 4,  // Use 8 workers in CI, 4 locally
+  reporter: process.env.CI ? [['line']] : 'html',  // Minimal reporter in CI
+  timeout: 20000,  // 20 seconds per test (reduced from 30)
   use: {
     baseURL: process.env.BASE_URL || 'http://127.0.0.1:3000',
-    trace: process.env.CI ? 'off' : 'on-first-retry',  // Disable traces in CI for speed
-    screenshot: 'only-on-failure',
-    video: process.env.CI ? 'off' : 'retain-on-failure',  // Disable video in CI for speed
-    actionTimeout: 10000,  // 10 seconds for actions
-    navigationTimeout: 20000,  // 20 seconds for navigation
+    trace: 'off',  // Disable traces completely for speed
+    screenshot: process.env.CI ? 'off' : 'only-on-failure',  // No screenshots in CI
+    video: 'off',  // Disable video completely for speed
+    actionTimeout: 5000,  // 5 seconds for actions (reduced from 10)
+    navigationTimeout: 10000,  // 10 seconds for navigation (reduced from 20)
+    headless: true,  // Always run headless for speed
   },
 
   projects: process.env.CI ? [
@@ -45,14 +46,16 @@ export default defineConfig({
   ],
 
   webServer: process.env.CI ? {
-    command: 'bundle exec rails server -p 3000',
+    command: 'bundle exec rails server -p 3000 -e test',
     url: 'http://127.0.0.1:3000',
-    reuseExistingServer: true,  // Allow reusing if server is already running
-    timeout: 120 * 1000,
+    reuseExistingServer: true,
+    timeout: 60 * 1000,  // Reduced to 60 seconds
+    stdout: 'pipe',
+    stderr: 'pipe',
   } : {
     command: 'foreman start -f Procfile.dev',
     url: 'http://127.0.0.1:3000',
     reuseExistingServer: true,
-    timeout: 120 * 1000,
+    timeout: 60 * 1000,
   },
 });

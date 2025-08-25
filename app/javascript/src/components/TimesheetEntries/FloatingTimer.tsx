@@ -78,7 +78,7 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({ onSaveEntry }) => {
     };
   });
 
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   // Fetch projects and clients from API
   const { data: projectsData } = useQuery({

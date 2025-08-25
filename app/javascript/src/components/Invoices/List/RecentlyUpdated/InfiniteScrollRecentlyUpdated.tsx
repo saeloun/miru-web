@@ -1,4 +1,3 @@
-/* global IntersectionObserver */
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import invoicesApi from "apis/invoices";
 import { Toastr } from "StyledComponents";

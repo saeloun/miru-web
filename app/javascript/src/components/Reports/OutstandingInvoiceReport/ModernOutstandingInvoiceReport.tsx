@@ -391,7 +391,7 @@ const ModernOutstandingInvoiceReport: React.FC = () => {
   const handleExport = async (format: "csv" | "pdf") => {
     try {
       // Implementation for export
-      console.log(`Exporting as ${format}`);
+      // TODO: Implement export functionality
     } catch (error) {
       console.error("Export failed:", error);
     }
