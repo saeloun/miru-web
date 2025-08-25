@@ -1,94 +1,65 @@
 # frozen_string_literal: true
 
-class Api::V1::Profiles::BankAccountDetailsController < Api::V1::ApplicationController
-  before_action :authenticate_user!
-  before_action :set_bank_account, only: [:update]
-  after_action :verify_authorized
+class InternalApi::V1::Profiles::BankAccountDetailsController < InternalApi::V1::ApplicationController
+  before_action :load_wise_account, only: [:index]
+  before_action :fetch_wise_account, only: [:update]
 
   def index
-    authorize :bank_account_detail, :index?
-
-    bank_accounts = current_user.bank_account_details || []
-
-    render json: {
-      bank_accounts: bank_accounts.map { |account| serialize_bank_account(account) }
-    }
-  rescue StandardError
-    # Return mock data if bank accounts don't exist yet
-    render json: {
-      bank_accounts: [{
-        id: SecureRandom.uuid,
-        account_holder_name: current_user.full_name,
-        account_number: "****1234",
-        bank_name: "Example Bank",
-        routing_number: "123456789",
-        account_type: "checking",
-        is_primary: true,
-        created_at: Time.current,
-        updated_at: Time.current
-      }]
+    authorize :index, policy_class: Profiles::BillingPolicy
+    render :index, locals: {
+      wise_account: @wise_account
     }
   end
 
   def create
-    authorize :bank_account_detail, :create?
+    authorize :create, policy_class: Profiles::BillingPolicy
 
-    @bank_account = current_user.bank_account_details.build(bank_account_params)
+    @wise_account = WiseAccount.create!(
+      recipient_id: params[:id],
+      profile_id: params[:profile],
+      target_currency: params[:currency],
+      source_currency: "USD",
+      company_id: current_company.id,
+      user_id: current_user.id
+    )
 
-    if @bank_account.save
-      render json: serialize_bank_account(@bank_account), status: 201
-    else
-      render json: { errors: @bank_account.errors.full_messages }, status: :unprocessable_entity
-    end
-  rescue StandardError
-    render json: { error: "Unable to create bank account" }, status: :unprocessable_entity
+    render :index, locals: {
+      wise_account: @wise_account
+    }
+  rescue => error
+    render json: {
+      error: error.message
+    }, status: 500
   end
 
   def update
-    authorize @bank_account
+    authorize :update, policy_class: Profiles::BillingPolicy
 
-    if @bank_account.update(bank_account_params)
-      render json: serialize_bank_account(@bank_account)
-    else
-      render json: { errors: @bank_account.errors.full_messages }, status: :unprocessable_entity
-    end
-  rescue StandardError
-    render json: { error: "Unable to update bank account" }, status: :unprocessable_entity
+    @account.update!(
+      recipient_id: params[:id],
+      profile_id: params[:profile],
+      target_currency: params[:currency],
+      source_currency: "USD",
+      company_id: current_company.id,
+      user_id: current_user.id
+    )
+
+    render :index, locals: {
+      wise_account: @account
+    }
+  rescue => error
+    render json: {
+      error: error.message
+    }, status: 500
   end
 
   private
 
-    def set_bank_account
-      @bank_account = current_user.bank_account_details.find(params[:account_id])
+    def load_wise_account
+      @wise_account ||= current_user.wise_account
     end
 
-    def bank_account_params
-      params.require(:bank_account).permit(
-        :account_holder_name,
-        :account_number,
-        :bank_name,
-        :routing_number,
-        :account_type,
-        :is_primary
-      )
-    end
-
-    def serialize_bank_account(account)
-      {
-        id: account.id,
-        account_holder_name: account.account_holder_name,
-        account_number: mask_account_number(account.account_number),
-        bank_name: account.bank_name,
-        routing_number: account.routing_number,
-        account_type: account.account_type,
-        is_primary: account.is_primary,
-        created_at: account.created_at,
-        updated_at: account.updated_at
-      }
-    end
-
-    def mask_account_number(number)
-      return nil unless number.present?
-      "****#{number.last(4)}"
+    def fetch_wise_account
+      @account = WiseAccount.find(params[:account_id])
     end
 end

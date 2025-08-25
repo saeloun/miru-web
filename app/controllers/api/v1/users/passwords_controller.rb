@@ -1,44 +1,38 @@
 # frozen_string_literal: true
 
-class Api::V1::Users::PasswordsController < Devise::PasswordsController
-  skip_before_action :verify_authenticity_token
+class InternalApi::V1::Users::PasswordsController < Devise::PasswordsController
   respond_to :json
 
   def create
     self.resource = resource_class.send_reset_password_instructions(resource_params)
-    yield resource if block_given?
-
     if successfully_sent?(resource)
-      render json: {
-        message: "Reset password instructions sent to your email"
-      }, status: 200
+      render json: { notice: I18n.t("password.create.success") }, status: 200
     else
-      render json: {
-        errors: resource.errors.full_messages
-      }, status: :unprocessable_entity
+      respond_with_error(resource)
     end
   end
 
   def update
-    self.resource = resource_class.reset_password_by_token(resource_params)
-    yield resource if block_given?
-
-    if resource.errors.empty?
-      resource.unlock_access! if unlockable?(resource)
-      render json: {
-        message: "Password reset successfully"
-      }, status: 200
+    user = User.reset_password_by_token(password_params)
+    if user.errors.empty?
+      sign_in(user)
+      render json: { notice: I18n.t("password.update.success"), user: }, status: 200
     else
-      set_minimum_password_length
-      render json: {
-        errors: resource.errors.full_messages
-      }, status: :unprocessable_entity
+      respond_with_error(user)
     end
   end
 
   private
 
-    def resource_params
-      params.require(:user).permit(:email, :password, :password_confirmation, :reset_password_token)
+    def password_params
+      params.require(:user).permit(:reset_password_token, :password, :password_confirmation)
+    end
+
+    def respond_with_error(resource)
+      if resource.errors.any?
+        resource.errors.full_messages.each do |message|
+          render json: { error: message }, status: 422
+        end
+      end
     end
 end

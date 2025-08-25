@@ -1,62 +1,39 @@
 # frozen_string_literal: true
 
-class Api::V1::PaymentSettingsController < Api::V1::ApplicationController
-  before_action :authenticate_user!
+class InternalApi::V1::PaymentSettingsController < InternalApi::V1::ApplicationController
+  after_action :save_stripe_settings, only: :index
 
   def index
-    skip_authorization
-    stripe_settings = current_company.stripe_connected_account
+    authorize :index, policy_class: PaymentSettingsPolicy
 
-    render json: {
-      stripe: {
-        connected: stripe_settings.present?,
-        account_id: stripe_settings&.account_id,
-        account_name: stripe_settings&.account_name,
-        status: stripe_settings&.status || "not_connected"
-      },
-      providers: {
-        stripe: {
-          enabled: stripe_settings.present?,
-          name: "Stripe",
-          description: "Accept credit card payments"
-        },
-        paypal: {
-          enabled: false,
-          name: "PayPal",
-          description: "Accept PayPal payments"
-        },
-        bank_transfer: {
-          enabled: true,
-          name: "Bank Transfer",
-          description: "Accept bank transfers"
-        }
-      }
-    }
+    render :index, locals: { stripe_connected_account: }
   end
 
   def connect_stripe
-    skip_authorization
-    # Placeholder for Stripe Connect flow
-    # In a real implementation, this would initiate the Stripe Connect OAuth flow
-    render json: {
-      message: "Stripe Connect initiated",
-      redirect_url: "#" # Would be actual Stripe Connect URL
-    }
+    authorize :connect_stripe, policy_class: PaymentSettingsPolicy
+
+    StripeConnectedAccount.create!({ company: current_company }) if stripe_connected_account.nil?
+
+    render :connect_stripe, locals: { stripe_connected_account: }
   end
 
   def destroy
-    skip_authorization
-    stripe_account = current_company.stripe_connected_account
-    if stripe_account&.destroy
-      render json: { message: "Stripe account disconnected successfully" }
+    authorize :destroy, policy_class: PaymentSettingsPolicy
+
+    if stripe_connected_account.destroy
+      render json: { notice: "Stripe connection disconnected" }, status: 200
     else
-      render json: { error: "Failed to disconnect Stripe account" }, status: :unprocessable_entity
+      render json: { error: "Unable to process the request" }, status: 422
     end
   end
 
   private
 
-    def current_company
-      @_current_company ||= current_user.current_workspace
+    def stripe_connected_account
+      current_company.stripe_connected_account
+    end
+
+    def save_stripe_settings
+      PaymentProviders::CreateStripeProviderService.process(current_company)
     end
 end

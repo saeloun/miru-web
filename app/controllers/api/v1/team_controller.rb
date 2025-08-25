@@ -1,79 +1,70 @@
 # frozen_string_literal: true
 
-class Api::V1::TeamController < Api::V1::ApplicationController
-  before_action :authenticate_user!
-  after_action :verify_authorized, except: [:index]
+class InternalApi::V1::TeamController < InternalApi::V1::ApplicationController
+  helper ApplicationHelper
 
   def index
-    team_members = current_company.employments.kept.includes(user: [:timesheet_entries, :project_members]).map do |employment|
-      user = employment.user
+    authorize :index, policy_class: TeamPolicy
 
-      # Calculate hours for current month
-      current_month_start = Date.current.beginning_of_month
-      current_month_end = Date.current.end_of_month
+    team_data = Team::IndexDecorator.new(
+      current_company: current_company,
+      current_user: current_user,
+      query: params.dig(:q, :first_name_or_last_name_or_email_cont)
+    ).process
 
-      current_month_entries = user.timesheet_entries
-        .where(work_date: current_month_start..current_month_end)
+    pagy_combined, combined_details = pagy_array(team_data[:combined_data], items: params[:items] || 10)
 
-      total_hours = current_month_entries.sum(:duration) / 60.0 # Convert minutes to hours
-      billable_hours = current_month_entries.where(bill_status: ["unbilled", "billed"]).sum(:duration) / 60.0
-
-      # Get active projects count
-      active_projects_count = user.project_members.joins(:project).where(projects: { discarded_at: nil }).count
-
-      {
-        id: user.id,
-        firstName: user.first_name,
-        lastName: user.last_name,
-        name: user.full_name,
-        email: user.email,
-        phone: user.phone,
-        role: employment.employment_type || "employee",
-        designation: employment.designation,
-        department: nil, # Add department field to Employment model if needed
-        status: employment.discarded? ? "archived" : "active",
-        profilePicture: user.avatar_url,
-        isTeamMember: true,
-        employmentType: employment.employment_type || "employee",
-        joinedAtDate: employment.joined_at&.to_s || employment.created_at.to_s,
-        hoursLogged: total_hours.round(1),
-        billableHours: billable_hours.round(1),
-        projects: active_projects_count
-      }
-    end
-
-    render json: {
-      combinedDetails: team_members
-    }
+    render :index, locals: {
+      combined_details:,
+      pagination_details_combined: pagy_metadata(pagy_combined)
+    }, status: 200
   end
 
   def update
-    employment = current_company.employments.kept.find_by!(user_id: params[:id])
     authorize employment, policy_class: TeamPolicy
+    user = Team::UpdateService.new(
+      user_params:, current_company:, new_role: params[:role], user: employment.user).process
+    render :update, locals: { user:, employment: }, status: 200
+  end
 
-    employment.update!(employment_params)
+  def update_team_members
+    authorize current_company, policy_class: CompanyPolicy
+
+    current_company.update!(calendar_enabled: team_params[:calendar_enabled])
+    current_company.employments.includes(:user).find_each do |item|
+      item.user.update!(calendar_enabled: team_params[:calendar_enabled])
+    end
+
+    enabled_disabled = team_params[:calendar_enabled] ? "enabled" : "disabled"
 
     render json: {
-      success: true,
-      message: "Team member updated successfully"
-    }
+             notice: "Calendar integration has been #{enabled_disabled} for all users of #{current_company.name}"
+           },
+      status: 200
   end
 
   def destroy
-    employment = current_company.employments.kept.find_by!(user_id: params[:id])
     authorize employment, policy_class: TeamPolicy
-
+    employment.user.remove_roles_for(current_company)
     employment.discard!
 
     render json: {
-      success: true,
-      message: "Team member removed successfully"
-    }
+      user: employment.user,
+      notice: I18n.t("team.delete.success.message")
+    }, status: 200
   end
 
   private
 
-    def employment_params
-      params.permit(:employment_type, :joined_at)
+    def employment
+      @_employment ||= current_company.employments.includes(:user).kept.find_by!(user_id: params[:id])
+    end
+
+    def user_params
+      params.permit(policy(:team).permitted_attributes)
+    end
+
+    def team_params
+      params.require(:team).permit(:calendar_enabled)
     end
 end

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_examples "InternalApi::V1::Companies::index success response" do
+shared_examples "Api::V1::Companies::index success response" do
   it "response should be successful" do
     expect(response).to be_successful
     expect(

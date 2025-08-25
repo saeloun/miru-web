@@ -10,7 +10,7 @@ class InternalApiHandler {
   axios: any;
   constructor() {
     this.axios = axios.create({
-      baseURL: "/internal_api/v1",
+      baseURL: "/api/v1",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",

@@ -18,7 +18,7 @@ RSpec.describe "Search clients", type: :request do
 
   context "when searching for clients via API" do
     it "returns all clients when no search term provided" do
-      get "/internal_api/v1/clients"
+      get "/api/v1/clients"
 
       expect(response).to have_http_status(:success)
       json_response = JSON.parse(response.body)
@@ -30,7 +30,7 @@ RSpec.describe "Search clients", type: :request do
     end
 
     it "filters clients based on search term" do
-      get "/internal_api/v1/clients", params: { query: "John" }
+      get "/api/v1/clients", params: { query: "John" }
 
       expect(response).to have_http_status(:success)
       json_response = JSON.parse(response.body)
@@ -42,7 +42,7 @@ RSpec.describe "Search clients", type: :request do
     end
 
     it "returns empty results for non-matching search" do
-      get "/internal_api/v1/clients", params: { query: "NonExistentClient" }
+      get "/api/v1/clients", params: { query: "NonExistentClient" }
 
       expect(response).to have_http_status(:success)
       json_response = JSON.parse(response.body)

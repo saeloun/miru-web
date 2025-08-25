@@ -1,54 +1,41 @@
 # frozen_string_literal: true
 
-module Api::V1::Wise
-  class RecipientsController < Api::V1::ApplicationController
-    before_action :authenticate_user!
-    before_action :set_recipient, only: [:show, :update]
-    after_action :verify_authorized
+class InternalApi::V1::Wise::RecipientsController < InternalApi::V1::WiseController
+  def show
+    authorize current_company, policy_class: Wise::RecipientPolicy
 
-    def create
-      authorize :wise, :create?
+    response = wise_recipient.fetch(params[:recipient_id])
 
-      # Mock implementation for Wise recipient creation
-      recipient = {
-        id: SecureRandom.uuid,
-        name: params[:name],
-        email: params[:email],
-        currency: params[:currency],
-        account_number: params[:account_number],
-        created_at: Time.current
-      }
-
-      render json: { recipient: recipient }, status: 201
-    end
-
-    def show
-      authorize :wise, :show?
-      render json: { recipient: @recipient }
-    end
-
-    def update
-      authorize :wise, :update?
-
-      @recipient.merge!(recipient_params)
-      render json: { recipient: @recipient }
-    end
-
-    private
-
-      def set_recipient
-        # Mock implementation
-        @recipient = {
-          id: params[:recipient_id],
-          name: "John Doe",
-          email: "john@example.com",
-          currency: "USD",
-          account_number: "****1234"
-        }
-      end
-
-      def recipient_params
-        params.permit(:name, :email, :currency, :account_number, :routing_number)
-      end
+    render json: response, status: 200
+  rescue
+    render json: "Error while fetching the recipient details", status: 500
   end
+
+  def create
+    authorize current_company, policy_class: Wise::RecipientPolicy
+
+    response = wise_recipient.create(recipient_params.to_h)
+
+    render json: response.body, status: response.status
+  end
+
+  def update
+    authorize current_company, policy_class: Wise::RecipientPolicy
+
+    response = wise_recipient.update(recipient_params)
+
+    render json: response.body, status: 200
+  rescue
+    render json: "Error while updating the recipient details", status: 500
+  end
+
+  private
+
+    def wise_recipient
+      @_wise_recipient ||= Wise::Recipient.new
+    end
+
+    def recipient_params
+      params.require(:recipient).permit!
+    end
 end

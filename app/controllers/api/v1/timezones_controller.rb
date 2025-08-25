@@ -1,19 +1,16 @@
 # frozen_string_literal: true
 
-class Api::V1::TimezonesController < Api::V1::ApplicationController
-  before_action :authenticate_user!
-  skip_after_action :verify_authorized
+class InternalApi::V1::TimezonesController < InternalApi::V1::ApplicationController
+  skip_before_action :authenticate_user_using_x_auth_token
 
   def index
-    timezones = ActiveSupport::TimeZone.all.map do |tz|
-      {
-        name: tz.name,
-        offset: tz.formatted_offset,
-        identifier: tz.tzinfo.identifier,
-        label: "(GMT#{tz.formatted_offset}) #{tz.name}"
-      }
+    authorize :index, policy_class: TimezonePolicy
+
+    timezones = ISO3166::Country.pluck(:alpha2).flatten.reduce(Hash.new([])) do |obj, alpha|
+      obj[alpha] = ActiveSupport::TimeZone.country_zones(alpha).map(&:to_s)
+      obj
     end
 
-    render json: { timezones: timezones }
+    render json: { timezones: }, status: 200
   end
 end

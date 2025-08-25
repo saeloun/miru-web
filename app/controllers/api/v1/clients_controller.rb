@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-class Api::V1::ClientsController < Api::V1::ApplicationController
-  before_action :authenticate_user!
-  after_action :verify_authorized
+class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationController
   def index
     authorize Client
 
@@ -32,12 +30,8 @@ class Api::V1::ClientsController < Api::V1::ApplicationController
 
   def create
     authorize Client
-    client = current_company.clients.create!(client_params)
-
-    render json: {
-      client: serialize_client(client),
-      address: client.current_address
-    }, status: 201
+    client = Client.create!(client_params)
+    render :create, locals: { client:, address: client.current_address }
   end
 
   def add_client_contact
@@ -56,14 +50,15 @@ class Api::V1::ClientsController < Api::V1::ApplicationController
   def show
     authorize client
 
-    render json: {
-      client_details: Client::ShowPresenter.new(client).process,
-      client_member_emails: client.send_invoice_emails(@virtual_verified_invitations_allowed),
-      project_details: client.project_details(params[:time_frame]),
-      total_minutes: client.total_hours_logged(params[:time_frame]),
-      overdue_outstanding_amount: client.client_overdue_and_outstanding_calculation,
-      invoices: client.invoices.includes([:company]).map { |invoice| serialize_invoice(invoice) }
-    }, status: 200
+    render locals: {
+             client_details: Client::ShowPresenter.new(client).process,
+             client_member_emails: client.send_invoice_emails(@virtual_verified_invitations_allowed),
+             project_details: client.project_details(params[:time_frame]),
+             total_minutes: client.total_hours_logged(params[:time_frame]),
+             overdue_outstanding_amount: client.client_overdue_and_outstanding_calculation,
+             invoices: client.invoices.includes([:company])
+           },
+      status: 200
   end
 
   def update
@@ -133,33 +128,5 @@ class Api::V1::ClientsController < Api::V1::ApplicationController
 
     def client_email_params
       params.require(:client_email).permit(email_params: [:subject, :message, recipients: []], selected_invoices: [])
-    end
-
-    def serialize_client(client)
-      {
-        id: client.id,
-        name: client.name,
-        email: client.email,
-        phone: client.phone,
-        address: client.current_address,
-        logo_url: client.logo_url
-      }
-    end
-
-    def serialize_invoice(invoice)
-      {
-        id: invoice.id,
-        invoice_number: invoice.invoice_number,
-        amount: invoice.amount,
-        status: invoice.status,
-        due_date: invoice.due_date,
-        issue_date: invoice.issue_date
-      }
-    end
-
-    def current_company
-      return if current_user.nil?
-
-      @_current_company ||= current_user.current_workspace
     end
 end

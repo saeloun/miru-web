@@ -46,7 +46,6 @@ Rails.application.routes.draw do
   end
 
   draw(:api)
-  draw(:internal_api)
 
   resources :workspaces, only: [:update]
 

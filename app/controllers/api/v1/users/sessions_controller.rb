@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Api::V1::Users::SessionsController < Devise::SessionsController
+class InternalApi::V1::Users::SessionsController < Devise::SessionsController
   skip_before_action :verify_authenticity_token, only: :create
 
   respond_to :json
@@ -30,9 +30,7 @@ class Api::V1::Users::SessionsController < Devise::SessionsController
         email: current_user.email,
         current_workspace_id: current_user.current_workspace_id,
         avatar_url: current_user.avatar_url,
-        confirmed: current_user.confirmed?,
-        calendar_enabled: current_user.calendar_enabled,
-        calendar_connected: current_user.calendar_connected
+        confirmed: current_user.confirmed?
       )
 
       render json: {
@@ -82,9 +80,7 @@ class Api::V1::Users::SessionsController < Devise::SessionsController
       user_data = user.as_json.merge(
         token: user.token,
         email: user.email,
-        current_workspace_id: user.current_workspace_id,
-        calendar_enabled: user.calendar_enabled,
-        calendar_connected: user.calendar_connected
+        current_workspace_id: user.current_workspace_id
       )
 
       render json: {

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Api::V1::Invoices::BulkDownloadController < Api::V1::ApplicationController
+class InternalApi::V1::Invoices::BulkDownloadController < InternalApi::V1::ApplicationController
   def index
     authorize :index, policy_class: Invoices::BulkDownloadPolicy
 
