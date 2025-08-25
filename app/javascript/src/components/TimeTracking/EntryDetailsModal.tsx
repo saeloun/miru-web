@@ -10,31 +10,32 @@ import { minToHHMM } from "../../helpers";
 import dayjs from "dayjs";
 import EntryCard from "./EntryCard";
 import EntryForm from "./EntryForm";
+import { TimeEntry, Client, Project, EntryList } from "../../types/timeTracking";
 
 interface EntryDetailsModalProps {
   isOpen: boolean;
   onClose: () => void;
   selectedDate: string;
-  entries: any[];
+  entries: TimeEntry[];
   editEntryId: number;
   setEditEntryId: (id: number) => void;
   handleDeleteEntry: (id: number) => void;
-  handleDuplicate: (entry: any) => void;
+  handleDuplicate: (entry: TimeEntry) => void;
   setNewEntryView: (view: boolean) => void;
   newEntryView: boolean;
   // Form props
-  clients: any;
-  projects: any;
-  entryList: any;
-  fetchEntries: any;
-  fetchEntriesofMonth: any;
-  handleAddEntryDateChange: any;
-  handleFilterEntry: any;
-  handleRelocateEntry: any;
-  removeLocalStorageItems: any;
+  clients: Record<string, Client[]>;
+  projects: Record<string, Project[]>;
+  entryList: EntryList;
+  fetchEntries: (from: string, to: string) => void;
+  fetchEntriesofMonth: (from: string, to: string) => void;
+  handleAddEntryDateChange: (date: string) => void;
+  handleFilterEntry: (params: any) => void;
+  handleRelocateEntry: (id: number, date: string) => void;
+  removeLocalStorageItems: () => void;
   selectedEmployeeId: number;
-  setSelectedFullDate: any;
-  setUpdateView: any;
+  setSelectedFullDate: (date: string) => void;
+  setUpdateView: (view: boolean) => void;
 }
 
 const EntryDetailsModal: React.FC<EntryDetailsModalProps> = ({
