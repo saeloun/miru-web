@@ -21,6 +21,7 @@ import {
   CheckCircle,
 } from "phosphor-react";
 import { cn } from "../../../lib/utils";
+import { currencyFormat } from "../../../helpers/currency";
 
 interface Client {
   id: string;
@@ -177,11 +178,6 @@ const ClientsPage: React.FC<ClientsPageProps> = ({
       .toUpperCase()
       .slice(0, 2);
 
-  const formatCurrency = (amount: number, currency: string) =>
-    new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: currency || "USD",
-    }).format(amount);
 
   const handleClientClick = (clientId: string) => {
     navigate(`/clients/${clientId}`);
@@ -264,7 +260,7 @@ const ClientsPage: React.FC<ClientsPageProps> = ({
                     Total Revenue
                   </p>
                   <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-                    {formatCurrency(totalStats.totalRevenue, "USD")}
+                    {currencyFormat("USD", totalStats.totalRevenue)}
                   </p>
                 </div>
                 <CurrencyDollar className="w-8 h-8 text-green-500" />
@@ -280,7 +276,7 @@ const ClientsPage: React.FC<ClientsPageProps> = ({
                     Outstanding
                   </p>
                   <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-                    {formatCurrency(totalStats.outstanding, "USD")}
+                    {currencyFormat("USD", totalStats.outstanding)}
                   </p>
                 </div>
                 <FileText className="w-8 h-8 text-orange-500" />
@@ -386,7 +382,7 @@ const ClientsPage: React.FC<ClientsPageProps> = ({
                       Total Revenue
                     </p>
                     <p className="font-semibold text-gray-900 dark:text-gray-100">
-                      {formatCurrency(client.totalRevenue, client.currency)}
+                      {currencyFormat(client.currency, client.totalRevenue)}
                     </p>
                   </div>
                   <div>
@@ -401,9 +397,9 @@ const ClientsPage: React.FC<ClientsPageProps> = ({
                           : "text-green-600 dark:text-green-400"
                       )}
                     >
-                      {formatCurrency(
-                        client.outstandingAmount,
-                        client.currency
+                      {currencyFormat(
+                        client.currency,
+                        client.outstandingAmount
                       )}
                     </p>
                   </div>

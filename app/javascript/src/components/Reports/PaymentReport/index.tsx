@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import {
   CreditCard,
-  DollarSign,
-  TrendingUp,
+  CurrencyDollar as DollarSign,
+  TrendUp as TrendingUp,
   Download,
-  ChevronDown,
-  CalendarIcon,
+  CaretDown as ChevronDown,
+  Calendar as CalendarIcon,
   Hash,
-} from "lucide-react";
+} from "@phosphor-icons/react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import {
   ColumnDef,
@@ -59,7 +59,7 @@ import { cn } from "../../../lib/utils";
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
 import { Calendar as CalendarComponent } from "../../ui/calendar";
 import { StatusBadge } from "../../ui/status-badge";
-import { formatCurrency } from "../../../utils/currency";
+import { currencyFormat } from "../../../helpers";
 
 interface Payment {
   id: number;
@@ -275,7 +275,7 @@ const PaymentReport: React.FC = () => {
       header: () => <div className="text-right">Amount</div>,
       cell: ({ row }) => (
         <div className="text-right font-bold text-green-600">
-          {formatCurrency(row.getValue("amount"), data?.currency)}
+          {currencyFormat(row.getValue("amount"), data?.currency)}
         </div>
       ),
     },
@@ -544,7 +544,7 @@ const PaymentReport: React.FC = () => {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-green-600">
-                {formatCurrency(
+                {currencyFormat(
                   data?.summary?.total_amount || 0,
                   data?.currency
                 )}
@@ -586,7 +586,7 @@ const PaymentReport: React.FC = () => {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-indigo-600">
-                {formatCurrency(
+                {currencyFormat(
                   data?.summary?.average_payment || 0,
                   data?.currency
                 )}
@@ -610,7 +610,7 @@ const PaymentReport: React.FC = () => {
               </div>
               <p className="text-xs text-muted-foreground">
                 {data?.summary?.by_payment_method &&
-                  formatCurrency(
+                  currencyFormat(
                     Object.entries(data.summary.by_payment_method).sort(
                       ([, a], [, b]) => b - a
                     )[0]?.[1] || 0,
@@ -648,7 +648,7 @@ const PaymentReport: React.FC = () => {
                           </span>
                         </div>
                         <span className="font-bold">
-                          {formatCurrency(amount, data?.currency)}
+                          {currencyFormat(amount, data?.currency)}
                         </span>
                       </div>
                     )

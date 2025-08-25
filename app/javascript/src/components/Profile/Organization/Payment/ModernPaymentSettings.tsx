@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 import {
   CreditCard,
-  AlertCircle,
-  CheckCircle2,
-  ExternalLink,
-  Loader2,
-  Building2,
+  Warning as AlertCircle,
+  CheckCircle as CheckCircle2,
+  ArrowSquareOut as ExternalLink,
+  CircleNotch as Loader2,
+  Buildings as Building2,
   Shield,
   ArrowRight,
-} from "lucide-react";
+} from "@phosphor-icons/react";
 import {
   Card,
   CardContent,

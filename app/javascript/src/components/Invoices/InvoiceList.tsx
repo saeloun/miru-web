@@ -45,6 +45,7 @@ import {
 import { Invoice } from "../../services/invoiceApi";
 import ChartWithSummary from "./ChartWithSummary";
 import RecentlyUpdated from "./List/RecentlyUpdated";
+import { currencyFormat } from "../../helpers/currency";
 
 interface InvoiceListProps {
   invoices: Invoice[];
@@ -108,11 +109,6 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
       )
       .slice(0, 10);
 
-  const formatCurrency = (amount: number, currency: string = "USD") =>
-    new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency,
-    }).format(amount);
 
   const formatDate = (dateString: string) =>
     new Date(dateString).toLocaleDateString("en-US", {
@@ -469,11 +465,11 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
                         {formatDate(invoice.dueDate)}
                       </TableCell>
                       <TableCell className="text-right font-medium">
-                        {formatCurrency(
+                        {currencyFormat(
+                          invoice.currency,
                           invoice.status === "overdue" && invoice.amountDue
                             ? invoice.amountDue
-                            : invoice.amount,
-                          invoice.currency
+                            : invoice.amount
                         )}
                       </TableCell>
                       <TableCell onClick={e => e.stopPropagation()}>
@@ -534,7 +530,8 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
           <Card>
             <CardContent className="p-4">
               <div className="text-2xl font-bold">
-                {formatCurrency(
+                {currencyFormat(
+                  "USD",
                   filteredInvoices
                     .filter(inv => inv.status === "paid")
                     .reduce((sum, inv) => sum + inv.amount, 0)

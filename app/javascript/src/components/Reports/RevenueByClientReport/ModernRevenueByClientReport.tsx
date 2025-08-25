@@ -46,7 +46,7 @@ import {
   DropdownMenuTrigger,
 } from "../../ui/dropdown-menu";
 import { ArrowUpDown, Download, Filter, TrendUp } from "phosphor-react";
-import { formatCurrency } from "../../../utils/currency";
+import { currencyFormat } from "../../../helpers/currency";
 import Loader from "../../../common/Loader";
 
 interface RevenueClient {
@@ -137,7 +137,7 @@ export const ModernRevenueByClientReport: React.FC<
         const amount = parseFloat(row.getValue("total_revenue"));
 
         return (
-          <div className="text-right font-medium">{formatCurrency(amount)}</div>
+          <div className="text-right font-medium">{currencyFormat("USD", amount)}</div>
         );
       },
     },
@@ -158,7 +158,7 @@ export const ModernRevenueByClientReport: React.FC<
 
         return (
           <div className="text-right font-medium text-green-600">
-            {formatCurrency(amount)}
+            {currencyFormat("USD", amount)}
           </div>
         );
       },
@@ -180,7 +180,7 @@ export const ModernRevenueByClientReport: React.FC<
 
         return (
           <div className="text-right font-medium text-orange-600">
-            {formatCurrency(amount)}
+            {currencyFormat("USD", amount)}
           </div>
         );
       },
@@ -202,7 +202,7 @@ export const ModernRevenueByClientReport: React.FC<
 
         return (
           <div className="text-right font-medium text-red-600">
-            {formatCurrency(amount)}
+            {currencyFormat("USD", amount)}
           </div>
         );
       },
@@ -301,7 +301,7 @@ export const ModernRevenueByClientReport: React.FC<
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {formatCurrency(summary.total_revenue)}
+              {currencyFormat("USD", summary.total_revenue)}
             </div>
             <p className="text-xs text-gray-600 mt-1">Across all clients</p>
           </CardContent>
@@ -314,7 +314,7 @@ export const ModernRevenueByClientReport: React.FC<
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-green-600">
-              {formatCurrency(summary.total_paid)}
+              {currencyFormat("USD", summary.total_paid)}
             </div>
             <p className="text-xs text-gray-600 mt-1">Successfully collected</p>
           </CardContent>
@@ -327,7 +327,7 @@ export const ModernRevenueByClientReport: React.FC<
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-orange-600">
-              {formatCurrency(summary.total_outstanding)}
+              {currencyFormat("USD", summary.total_outstanding)}
             </div>
             <p className="text-xs text-gray-600 mt-1">Awaiting payment</p>
           </CardContent>
@@ -340,7 +340,7 @@ export const ModernRevenueByClientReport: React.FC<
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-red-600">
-              {formatCurrency(summary.total_overdue)}
+              {currencyFormat("USD", summary.total_overdue)}
             </div>
             <p className="text-xs text-gray-600 mt-1">Past due date</p>
           </CardContent>
