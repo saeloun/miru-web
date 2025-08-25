@@ -32,7 +32,7 @@ class Api::V1::ClientsController < Api::V1::ApplicationController
   def create
     authorize Client
     client = Client.create!(client_params)
-    render :create, locals: { client:, address: client.current_address }, status: :created
+    render :create, locals: { client:, address: client.current_address }, status: 201
   end
 
   def add_client_contact

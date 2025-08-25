@@ -44,7 +44,7 @@ RSpec.describe "Api::V1::Invoices#index", type: :request do
         expect(response).to have_http_status(:success)
 
         json = JSON.parse(response.body)
-        
+
         # Should return all 5 invoices
         expect(json["invoices"].length).to eq(5)
       end
@@ -90,13 +90,12 @@ RSpec.describe "Api::V1::Invoices#index", type: :request do
         # Should have summary info
         expect(json).to have_key("summary")
         summary = json["summary"]
-        
+
         expect(summary).to have_key("draftAmount")
         expect(summary).to have_key("outstandingAmount")
         expect(summary).to have_key("overdueAmount")
         expect(summary).to have_key("totalAmount")
         expect(summary).to have_key("currency")
-
       end
     end
 
