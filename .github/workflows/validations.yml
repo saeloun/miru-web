@@ -274,10 +274,22 @@ jobs:
           DB_HOST: localhost
           DB_USER: root
           DB_PASS: password
+          SECRET_KEY_BASE: test-secret-key-base-for-ci-testing
+          RAILS_SERVE_STATIC_FILES: true
         run: |
-          bundle exec rails server -p 3000 -d
-          sleep 10
-          curl -I http://127.0.0.1:3000 || (echo "Rails server failed to start" && exit 1)
+          # Start Rails server in background
+          bundle exec rails server -p 3000 -b 0.0.0.0 &
+          echo "Waiting for Rails server to start..."
+          for i in {1..30}; do
+            if curl -s http://localhost:3000/users/sign_in > /dev/null; then
+              echo "Rails server is ready!"
+              break
+            fi
+            echo "Waiting for server... attempt $i/30"
+            sleep 2
+          done
+          # Final check
+          curl -I http://localhost:3000/users/sign_in || (echo "Rails server failed to start" && exit 1)
       
       - name: Run Playwright tests
         env:
@@ -286,9 +298,12 @@ jobs:
           DB_USER: root
           DB_PASS: password
           CI: true
+          BASE_URL: http://localhost:3000
         run: |
-          # Run only chromium tests in CI for speed
-          pnpm exec playwright test --project=chromium --reporter=list
+          # Run smoke tests first for quick feedback
+          pnpm exec playwright test smoke.spec.ts --project=chromium --reporter=dot || true
+          # Then run all tests in parallel
+          pnpm exec playwright test --project=chromium --reporter=dot --workers=16
       
       - name: Upload Playwright report
         if: always()
