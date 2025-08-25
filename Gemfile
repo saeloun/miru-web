@@ -71,7 +71,6 @@ gem "money"
 gem "aws-sdk-s3", require: false
 
 # Search gems
-gem "ransack", "~> 4.1"
 gem "pg_search", "~> 2.3"
 
 # For Soft deletion
