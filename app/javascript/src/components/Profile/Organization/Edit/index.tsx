@@ -15,8 +15,6 @@ import * as Yup from "yup";
 
 import OrgEditForm from "./OrgEditForm";
 
-import EditHeader from "../../Common/EditHeader";
-
 const phoneRegExp =
   /^((\+\d{1,3}(-| )?\(?\d\)?(-| )?\d{1,3})|(\(?\d{2,3}\)?))(-| )?(\d{3,4})(-| )?(\d{4})(( x| ext)\d{1,5}){0,1}$/;
 
@@ -488,6 +486,7 @@ const OrgEdit = () => {
         "company[bank_account_number]",
         orgDetails.bankAccountNumber || ""
       );
+
       formD.append(
         "company[bank_routing_number]",
         orgDetails.bankRoutingNumber || ""

@@ -3,7 +3,6 @@ import { Briefcase, Warning } from "phosphor-react";
 import timesheetEntryApi from "apis/timesheet-entry";
 import { Toastr } from "StyledComponents";
 import { Card, CardContent } from "../ui/card";
-import { Button } from "../ui/button";
 import { Alert, AlertDescription } from "../ui/alert";
 
 import SelectProject from "./SelectProject";
