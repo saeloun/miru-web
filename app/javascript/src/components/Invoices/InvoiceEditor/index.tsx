@@ -26,7 +26,7 @@ import {
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import {
-  Calendar,
+  Calendar as CalendarIcon,
   Plus,
   Trash,
   FloppyDisk,
@@ -253,7 +253,7 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
                           !formData.issueDate && "text-muted-foreground"
                         )}
                       >
-                        <Calendar className="mr-2 h-4 w-4" />
+                        <CalendarIconIcon className="mr-2 h-4 w-4" />
                         {formData.issueDate ? (
                           format(formData.issueDate, "PPP")
                         ) : (
@@ -262,7 +262,7 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
                       </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0">
-                      <Calendar
+                      <CalendarIcon
                         mode="single"
                         selected={formData.issueDate}
                         onSelect={date =>
@@ -285,7 +285,7 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
                           !formData.dueDate && "text-muted-foreground"
                         )}
                       >
-                        <Calendar className="mr-2 h-4 w-4" />
+                        <CalendarIconIcon className="mr-2 h-4 w-4" />
                         {formData.dueDate ? (
                           format(formData.dueDate, "PPP")
                         ) : (
@@ -294,7 +294,7 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
                       </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0">
-                      <Calendar
+                      <CalendarIcon
                         mode="single"
                         selected={formData.dueDate}
                         onSelect={date =>

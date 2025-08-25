@@ -79,11 +79,11 @@ interface OrgEditFormProps {
   isDetailUpdated?: boolean;
 }
 
-const SectionTitle = ({ 
-  title, 
-  icon 
-}: { 
-  title: string; 
+const SectionTitle = ({
+  title,
+  icon,
+}: {
+  title: string;
   icon: React.ReactNode;
 }) => (
   <div className="flex items-center gap-2 mb-4">
@@ -94,13 +94,13 @@ const SectionTitle = ({
   </div>
 );
 
-const FormField = ({ 
-  label, 
+const FormField = ({
+  label,
   required = false,
   error,
   children,
-  className = ""
-}: { 
+  className = "",
+}: {
   label: string;
   required?: boolean;
   error?: string;
@@ -203,8 +203,8 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                 size="sm"
                 className={cn(
                   "text-white",
-                  isDetailUpdated 
-                    ? "bg-gray-900 hover:bg-gray-800" 
+                  isDetailUpdated
+                    ? "bg-gray-900 hover:bg-gray-800"
                     : "bg-gray-400 cursor-not-allowed"
                 )}
               >
@@ -224,8 +224,8 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
             {/* Logo Upload Card */}
             <Card className="overflow-hidden border-0 shadow-sm">
               <CardHeader className="pb-4">
-                <SectionTitle 
-                  title="Company Logo" 
+                <SectionTitle
+                  title="Company Logo"
                   icon={<Buildings className="h-4 w-4" />}
                 />
               </CardHeader>
@@ -293,8 +293,8 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
             {/* Company Name Card */}
             <Card className="overflow-hidden border-0 shadow-sm">
               <CardHeader className="pb-4">
-                <SectionTitle 
-                  title="Company Name" 
+                <SectionTitle
+                  title="Company Name"
                   icon={<Buildings className="h-4 w-4" />}
                 />
               </CardHeader>
@@ -307,7 +307,7 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                   <Input
                     type="text"
                     value={companyName}
-                    onChange={(e) =>
+                    onChange={e =>
                       handleChangeCompanyDetails(e.target.value, "companyName")
                     }
                     placeholder="Enter company name"
@@ -326,8 +326,8 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
             {/* Contact Information */}
             <Card className="overflow-hidden border-0 shadow-sm">
               <CardHeader className="pb-4">
-                <SectionTitle 
-                  title="Contact Information" 
+                <SectionTitle
+                  title="Contact Information"
                   icon={<Phone className="h-4 w-4" />}
                 />
               </CardHeader>
@@ -342,7 +342,7 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                       defaultCountry="US"
                       flags={flags}
                       value={companyPhone}
-                      onChange={(value) =>
+                      onChange={value =>
                         handleChangeCompanyDetails(value, "companyPhone")
                       }
                       inputClassName="w-full px-3 py-2 border border-gray-200 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-gray-200"
@@ -351,8 +351,8 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
 
                   <Separator className="my-4" />
 
-                  <SectionTitle 
-                    title="Business Address" 
+                  <SectionTitle
+                    title="Business Address"
                     icon={<MapPin className="h-3 w-3" />}
                   />
 
@@ -366,7 +366,9 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                       <Input
                         type="text"
                         value={companyAddr?.addressLine1 || ""}
-                        onChange={(e) => handleAddrChange(e.target.value, "addressLine1")}
+                        onChange={e =>
+                          handleAddrChange(e.target.value, "addressLine1")
+                        }
                         placeholder="Street address"
                         className={cn(
                           "border-gray-200",
@@ -375,14 +377,13 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                       />
                     </FormField>
 
-                    <FormField
-                      label="Address Line 2"
-                      className="md:col-span-2"
-                    >
+                    <FormField label="Address Line 2" className="md:col-span-2">
                       <Input
                         type="text"
                         value={companyAddr?.addressLine2 || ""}
-                        onChange={(e) => handleAddrChange(e.target.value, "addressLine2")}
+                        onChange={e =>
+                          handleAddrChange(e.target.value, "addressLine2")
+                        }
                         placeholder="Apartment, suite, etc. (optional)"
                         className="border-gray-200"
                       />
@@ -395,8 +396,10 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                     >
                       <Select
                         value={companyAddr?.country?.value || ""}
-                        onValueChange={(value) => {
-                          const selectedCountry = countries.find(c => c.value === value);
+                        onValueChange={value => {
+                          const selectedCountry = countries.find(
+                            c => c.value === value
+                          );
                           if (selectedCountry) {
                             handleOnChangeCountry(selectedCountry);
                           }
@@ -406,8 +409,11 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                           <SelectValue placeholder="Select country" />
                         </SelectTrigger>
                         <SelectContent>
-                          {countries.map((country) => (
-                            <SelectItem key={country.value} value={country.value}>
+                          {countries.map(country => (
+                            <SelectItem
+                              key={country.value}
+                              value={country.value}
+                            >
                               {country.label}
                             </SelectItem>
                           ))}
@@ -432,11 +438,7 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                       />
                     </FormField>
 
-                    <FormField
-                      label="City"
-                      required
-                      error={errDetails.cityErr}
-                    >
+                    <FormField label="City" required error={errDetails.cityErr}>
                       <Input
                         type="text"
                         value={companyAddr?.city || ""}
@@ -473,8 +475,8 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
             {/* Financial Configuration */}
             <Card className="overflow-hidden border-0 shadow-sm">
               <CardHeader className="pb-4">
-                <SectionTitle 
-                  title="Financial Configuration" 
+                <SectionTitle
+                  title="Financial Configuration"
                   icon={<CurrencyDollar className="h-4 w-4" />}
                 />
               </CardHeader>
@@ -482,9 +484,15 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <FormField label="Base Currency">
                     <Select
-                      value={typeof companyCurrency === 'string' ? companyCurrency : companyCurrency?.value || ""}
-                      onValueChange={(value) => {
-                        const selectedCurrency = currenciesOption.find(c => c.value === value);
+                      value={
+                        typeof companyCurrency === "string"
+                          ? companyCurrency
+                          : companyCurrency?.value || ""
+                      }
+                      onValueChange={value => {
+                        const selectedCurrency = currenciesOption.find(
+                          c => c.value === value
+                        );
                         if (selectedCurrency) {
                           handleCurrencyChange(selectedCurrency);
                         }
@@ -494,8 +502,11 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                         <SelectValue placeholder="Select currency" />
                       </SelectTrigger>
                       <SelectContent>
-                        {currenciesOption.map((currency) => (
-                          <SelectItem key={currency.value} value={currency.value}>
+                        {currenciesOption.map(currency => (
+                          <SelectItem
+                            key={currency.value}
+                            value={currency.value}
+                          >
                             {currency.label}
                           </SelectItem>
                         ))}
@@ -515,8 +526,11 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                       <Input
                         type="number"
                         value={companyRate || ""}
-                        onChange={(e) =>
-                          handleChangeCompanyDetails(e.target.value, "companyRate")
+                        onChange={e =>
+                          handleChangeCompanyDetails(
+                            e.target.value,
+                            "companyRate"
+                          )
                         }
                         className={cn(
                           "pl-8 border-gray-200",
@@ -533,9 +547,15 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
 
                   <FormField label="Fiscal Year End">
                     <Select
-                      value={typeof companyFiscalYear === 'string' ? companyFiscalYear : companyFiscalYear?.value || ""}
-                      onValueChange={(value) => {
-                        const selectedFiscalYear = fiscalYearOptions.find(f => f.value === value);
+                      value={
+                        typeof companyFiscalYear === "string"
+                          ? companyFiscalYear
+                          : companyFiscalYear?.value || ""
+                      }
+                      onValueChange={value => {
+                        const selectedFiscalYear = fiscalYearOptions.find(
+                          f => f.value === value
+                        );
                         if (selectedFiscalYear) {
                           handleFiscalYearChange(selectedFiscalYear);
                         }
@@ -545,8 +565,11 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                         <SelectValue placeholder="Select month" />
                       </SelectTrigger>
                       <SelectContent>
-                        {fiscalYearOptions.map((fiscalYear) => (
-                          <SelectItem key={fiscalYear.value} value={fiscalYear.value}>
+                        {fiscalYearOptions.map(fiscalYear => (
+                          <SelectItem
+                            key={fiscalYear.value}
+                            value={fiscalYear.value}
+                          >
                             {fiscalYear.label}
                           </SelectItem>
                         ))}
@@ -560,8 +583,8 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
             {/* Regional Settings */}
             <Card className="overflow-hidden border-0 shadow-sm">
               <CardHeader className="pb-4">
-                <SectionTitle 
-                  title="Regional Settings" 
+                <SectionTitle
+                  title="Regional Settings"
                   icon={<Globe className="h-4 w-4" />}
                 />
               </CardHeader>
@@ -569,9 +592,15 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <FormField label="Timezone">
                     <Select
-                      value={typeof companyTimezone === 'string' ? companyTimezone : companyTimezone?.value || ""}
-                      onValueChange={(value) => {
-                        const selectedTimezone = timezoneOption.find(t => t.value === value);
+                      value={
+                        typeof companyTimezone === "string"
+                          ? companyTimezone
+                          : companyTimezone?.value || ""
+                      }
+                      onValueChange={value => {
+                        const selectedTimezone = timezoneOption.find(
+                          t => t.value === value
+                        );
                         if (selectedTimezone) {
                           handleTimezoneChange(selectedTimezone);
                         }
@@ -581,8 +610,11 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                         <SelectValue placeholder="Select timezone" />
                       </SelectTrigger>
                       <SelectContent>
-                        {timezoneOption.map((timezone) => (
-                          <SelectItem key={timezone.value} value={timezone.value}>
+                        {timezoneOption.map(timezone => (
+                          <SelectItem
+                            key={timezone.value}
+                            value={timezone.value}
+                          >
                             {timezone.label}
                           </SelectItem>
                         ))}
@@ -592,9 +624,15 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
 
                   <FormField label="Date Format">
                     <Select
-                      value={typeof companyDateFormat === 'string' ? companyDateFormat : companyDateFormat?.value || ""}
-                      onValueChange={(value) => {
-                        const selectedDateFormat = dateFormatOptions.find(d => d.value === value);
+                      value={
+                        typeof companyDateFormat === "string"
+                          ? companyDateFormat
+                          : companyDateFormat?.value || ""
+                      }
+                      onValueChange={value => {
+                        const selectedDateFormat = dateFormatOptions.find(
+                          d => d.value === value
+                        );
                         if (selectedDateFormat) {
                           handleDateFormatChange(selectedDateFormat);
                         }
@@ -604,8 +642,11 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                         <SelectValue placeholder="Select format" />
                       </SelectTrigger>
                       <SelectContent>
-                        {dateFormatOptions.map((dateFormat) => (
-                          <SelectItem key={dateFormat.value} value={dateFormat.value}>
+                        {dateFormatOptions.map(dateFormat => (
+                          <SelectItem
+                            key={dateFormat.value}
+                            value={dateFormat.value}
+                          >
                             {dateFormat.label}
                           </SelectItem>
                         ))}
@@ -619,22 +660,22 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
             {/* Work Schedule */}
             <Card className="overflow-hidden border-0 shadow-sm">
               <CardHeader className="pb-4">
-                <SectionTitle 
-                  title="Work Schedule" 
+                <SectionTitle
+                  title="Work Schedule"
                   icon={<CalendarBlank className="h-4 w-4" />}
                 />
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <FormField
-                    label="Working Days per Week"
-                    required
-                  >
+                  <FormField label="Working Days per Week" required>
                     <Input
                       type="number"
                       value={companyWorkingDays || ""}
-                      onChange={(e) =>
-                        handleChangeCompanyDetails(e.target.value, "companyWorkingDays")
+                      onChange={e =>
+                        handleChangeCompanyDetails(
+                          e.target.value,
+                          "companyWorkingDays"
+                        )
                       }
                       className="border-gray-200"
                       placeholder="5"
@@ -643,15 +684,15 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                     />
                   </FormField>
 
-                  <FormField
-                    label="Working Hours per Week"
-                    required
-                  >
+                  <FormField label="Working Hours per Week" required>
                     <Input
                       type="number"
                       value={companyWorkingHours || ""}
-                      onChange={(e) =>
-                        handleChangeCompanyDetails(e.target.value, "companyWorkingHours")
+                      onChange={e =>
+                        handleChangeCompanyDetails(
+                          e.target.value,
+                          "companyWorkingHours"
+                        )
                       }
                       className="border-gray-200"
                       placeholder="40"
@@ -666,8 +707,8 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
             {/* Bank Information */}
             <Card className="overflow-hidden border-0 shadow-sm">
               <CardHeader className="pb-4">
-                <SectionTitle 
-                  title="Bank Information" 
+                <SectionTitle
+                  title="Bank Information"
                   icon={<Buildings className="h-4 w-4" />}
                 />
               </CardHeader>
@@ -677,7 +718,7 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                     <Input
                       type="text"
                       value={bankName || ""}
-                      onChange={(e) =>
+                      onChange={e =>
                         handleChangeCompanyDetails(e.target.value, "bankName")
                       }
                       className="border-gray-200"
@@ -689,8 +730,11 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                     <Input
                       type="text"
                       value={bankAccountNumber || ""}
-                      onChange={(e) =>
-                        handleChangeCompanyDetails(e.target.value, "bankAccountNumber")
+                      onChange={e =>
+                        handleChangeCompanyDetails(
+                          e.target.value,
+                          "bankAccountNumber"
+                        )
                       }
                       className="border-gray-200"
                       placeholder="Enter account number"
@@ -701,8 +745,11 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                     <Input
                       type="text"
                       value={bankRoutingNumber || ""}
-                      onChange={(e) =>
-                        handleChangeCompanyDetails(e.target.value, "bankRoutingNumber")
+                      onChange={e =>
+                        handleChangeCompanyDetails(
+                          e.target.value,
+                          "bankRoutingNumber"
+                        )
                       }
                       className="border-gray-200"
                       placeholder="Enter routing number"
@@ -713,8 +760,11 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                     <Input
                       type="text"
                       value={bankSwiftCode || ""}
-                      onChange={(e) =>
-                        handleChangeCompanyDetails(e.target.value, "bankSwiftCode")
+                      onChange={e =>
+                        handleChangeCompanyDetails(
+                          e.target.value,
+                          "bankSwiftCode"
+                        )
                       }
                       className="border-gray-200"
                       placeholder="Enter SWIFT code"
@@ -727,8 +777,8 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
             {/* Tax Information */}
             <Card className="overflow-hidden border-0 shadow-sm">
               <CardHeader className="pb-4">
-                <SectionTitle 
-                  title="Tax Information" 
+                <SectionTitle
+                  title="Tax Information"
                   icon={<Hash className="h-4 w-4" />}
                 />
               </CardHeader>
@@ -738,7 +788,7 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                     <Input
                       type="text"
                       value={taxId || ""}
-                      onChange={(e) =>
+                      onChange={e =>
                         handleChangeCompanyDetails(e.target.value, "taxId")
                       }
                       className="border-gray-200"
@@ -750,7 +800,7 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                     <Input
                       type="text"
                       value={vatNumber || ""}
-                      onChange={(e) =>
+                      onChange={e =>
                         handleChangeCompanyDetails(e.target.value, "vatNumber")
                       }
                       className="border-gray-200"
@@ -762,7 +812,7 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                     <Input
                       type="text"
                       value={gstNumber || ""}
-                      onChange={(e) =>
+                      onChange={e =>
                         handleChangeCompanyDetails(e.target.value, "gstNumber")
                       }
                       className="border-gray-200"

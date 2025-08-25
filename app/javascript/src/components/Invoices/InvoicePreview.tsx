@@ -20,7 +20,6 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
   isPrintMode = false,
   className,
 }) => {
-
   const calculateSubtotal = () =>
     (invoice.invoiceLineItems || []).reduce(
       (sum, item) => sum + item.amount,
@@ -223,14 +222,24 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
             <div className="w-80 space-y-3">
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Subtotal:</span>
-                <span>{currencyFormat(invoice.currency || "USD", calculateSubtotal())}</span>
+                <span>
+                  {currencyFormat(
+                    invoice.currency || "USD",
+                    calculateSubtotal()
+                  )}
+                </span>
               </div>
               {(invoice.tax || 0) > 0 && (
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">
                     Tax ({invoice.tax}%):
                   </span>
-                  <span>{currencyFormat(invoice.currency || "USD", calculateTaxAmount())}</span>
+                  <span>
+                    {currencyFormat(
+                      invoice.currency || "USD",
+                      calculateTaxAmount()
+                    )}
+                  </span>
                 </div>
               )}
               {(invoice.discount || 0) > 0 && (
@@ -238,13 +247,21 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
                   <span className="text-muted-foreground">
                     Discount ({invoice.discount}%):
                   </span>
-                  <span>-{currencyFormat(invoice.currency || "USD", calculateDiscountAmount())}</span>
+                  <span>
+                    -
+                    {currencyFormat(
+                      invoice.currency || "USD",
+                      calculateDiscountAmount()
+                    )}
+                  </span>
                 </div>
               )}
               <Separator />
               <div className="flex justify-between text-lg font-bold">
                 <span>Total:</span>
-                <span>{currencyFormat(invoice.currency || "USD", calculateTotal())}</span>
+                <span>
+                  {currencyFormat(invoice.currency || "USD", calculateTotal())}
+                </span>
               </div>
               {invoice.status &&
                 invoice.status !== "paid" &&
@@ -252,7 +269,10 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
                   <div className="flex justify-between text-sm text-red-600 font-medium">
                     <span>Amount Due:</span>
                     <span>
-                      {currencyFormat(invoice.currency || "USD", invoice.amountDue || calculateTotal())}
+                      {currencyFormat(
+                        invoice.currency || "USD",
+                        invoice.amountDue || calculateTotal()
+                      )}
                     </span>
                   </div>
                 )}

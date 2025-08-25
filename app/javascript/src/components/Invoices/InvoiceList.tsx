@@ -109,7 +109,6 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
       )
       .slice(0, 10);
 
-
   const formatDate = (dateString: string) =>
     new Date(dateString).toLocaleDateString("en-US", {
       month: "short",

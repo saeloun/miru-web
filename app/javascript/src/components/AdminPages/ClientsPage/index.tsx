@@ -178,7 +178,6 @@ const ClientsPage: React.FC<ClientsPageProps> = ({
       .toUpperCase()
       .slice(0, 2);
 
-
   const handleClientClick = (clientId: string) => {
     navigate(`/clients/${clientId}`);
   };

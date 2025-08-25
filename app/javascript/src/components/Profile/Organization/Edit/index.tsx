@@ -481,13 +481,19 @@ const OrgEdit = () => {
 
       formD.append("company[working_hours]", orgDetails.companyWorkingHours);
       formD.append("company[working_days]", orgDetails.companyWorkingDays);
-      
+
       // Bank information
       formD.append("company[bank_name]", orgDetails.bankName || "");
-      formD.append("company[bank_account_number]", orgDetails.bankAccountNumber || "");
-      formD.append("company[bank_routing_number]", orgDetails.bankRoutingNumber || "");
+      formD.append(
+        "company[bank_account_number]",
+        orgDetails.bankAccountNumber || ""
+      );
+      formD.append(
+        "company[bank_routing_number]",
+        orgDetails.bankRoutingNumber || ""
+      );
       formD.append("company[bank_swift_code]", orgDetails.bankSwiftCode || "");
-      
+
       // Tax information
       formD.append("company[tax_id]", orgDetails.taxId || "");
       formD.append("company[vat_number]", orgDetails.vatNumber || "");

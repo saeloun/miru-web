@@ -58,7 +58,7 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
       const response = await invoiceApi.getInvoices({ per: 50 } as any);
       setInvoices(response.invoices);
       setSummary(response.summary);
-      
+
       // Sort invoices by updated_at to get recently updated ones
       const sortedByUpdate = [...response.invoices].sort((a, b) => {
         const dateA = new Date(a.updatedAt || a.updated_at || 0).getTime();

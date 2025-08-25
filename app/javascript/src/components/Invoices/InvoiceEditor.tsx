@@ -121,7 +121,6 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
   const calculateTotal = () =>
     calculateSubtotal() + calculateTaxAmount() - calculateDiscountAmount();
 
-
   const selectedClient = clients.find(c => c.id === formData.clientId);
 
   const isFormValid = () =>
@@ -377,7 +376,9 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
               <div className="space-y-3">
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Subtotal:</span>
-                  <span>{currencyFormat(formData.currency, calculateSubtotal())}</span>
+                  <span>
+                    {currencyFormat(formData.currency, calculateSubtotal())}
+                  </span>
                 </div>
 
                 <div className="space-y-2">
@@ -400,7 +401,9 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
                   </div>
                   <div className="flex justify-between text-sm">
                     <span></span>
-                    <span>{currencyFormat(formData.currency, calculateTaxAmount())}</span>
+                    <span>
+                      {currencyFormat(formData.currency, calculateTaxAmount())}
+                    </span>
                   </div>
                 </div>
 
@@ -427,7 +430,13 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
                   </div>
                   <div className="flex justify-between text-sm">
                     <span></span>
-                    <span>-{currencyFormat(formData.currency, calculateDiscountAmount())}</span>
+                    <span>
+                      -
+                      {currencyFormat(
+                        formData.currency,
+                        calculateDiscountAmount()
+                      )}
+                    </span>
                   </div>
                 </div>
 
@@ -435,7 +444,9 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
 
                 <div className="flex justify-between text-lg font-bold">
                   <span>Total:</span>
-                  <span>{currencyFormat(formData.currency, calculateTotal())}</span>
+                  <span>
+                    {currencyFormat(formData.currency, calculateTotal())}
+                  </span>
                 </div>
               </div>
 

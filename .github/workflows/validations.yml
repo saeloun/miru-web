@@ -237,7 +237,10 @@ jobs:
           PUPPETEER_SKIP_DOWNLOAD=true pnpm install --frozen-lockfile
       
       - name: Install Playwright browsers
-        run: pnpm exec playwright install --with-deps chromium
+        run: |
+          # Only install Chromium for CI to save time
+          pnpm exec playwright install chromium
+          pnpm exec playwright install-deps chromium
       
       - name: Setup test database
         env:
@@ -282,11 +285,10 @@ jobs:
           DB_HOST: localhost
           DB_USER: root
           DB_PASS: password
-          PLAYWRIGHT_BROWSER: chromium
-          PLAYWRIGHT_HEADLESS: true
           CI: true
         run: |
-          pnpm test:e2e
+          # Run only chromium tests in CI for speed
+          pnpm exec playwright test --project=chromium --reporter=list
       
       - name: Upload Playwright report
         if: always()

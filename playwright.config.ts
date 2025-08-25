@@ -4,17 +4,32 @@ export default defineConfig({
   testDir: './playwright/e2e',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
-  reporter: 'html',
+  retries: process.env.CI ? 1 : 0,  // Reduce retries from 2 to 1 for faster CI
+  workers: process.env.CI ? 4 : undefined,  // Increase workers from 1 to 4 for parallel execution
+  reporter: process.env.CI ? [['list'], ['html', { open: 'never' }]] : 'html',
+  timeout: 30000,  // 30 seconds per test
   use: {
     baseURL: process.env.BASE_URL || 'http://127.0.0.1:3000',
-    trace: 'on-first-retry',
+    trace: process.env.CI ? 'off' : 'on-first-retry',  // Disable traces in CI for speed
     screenshot: 'only-on-failure',
-    video: 'retain-on-failure',
+    video: process.env.CI ? 'off' : 'retain-on-failure',  // Disable video in CI for speed
+    actionTimeout: 10000,  // 10 seconds for actions
+    navigationTimeout: 20000,  // 20 seconds for navigation
   },
 
-  projects: [
+  projects: process.env.CI ? [
+    // Only run Chromium in CI for speed
+    {
+      name: 'chromium',
+      use: { 
+        ...devices['Desktop Chrome'],
+        launchOptions: {
+          args: ['--disable-dev-shm-usage', '--no-sandbox'],  // Optimize for CI
+        },
+      },
+    },
+  ] : [
+    // Run all browsers locally
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
