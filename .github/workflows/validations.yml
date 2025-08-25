@@ -180,7 +180,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        shard: [1, 2, 3, 4]
+        shard: [1, 2]
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -294,7 +294,7 @@ jobs:
           CI: true
           BASE_URL: http://localhost:3000
         run: |
-          pnpm exec playwright test --project=chromium --reporter=dot --shard=${{ matrix.shard }}/4
+          pnpm exec playwright test --project=chromium --reporter=dot --shard=${{ matrix.shard }}/2
       
       - name: Upload Playwright report
         if: always()
