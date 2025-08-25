@@ -92,6 +92,29 @@ jobs:
       - name: Build assets
         run: bin/vite build
       
+      - name: Start Rails server
+        env:
+          RAILS_ENV: test
+          DB_HOST: localhost
+          DB_USER: root
+          DB_PASS: password
+          SECRET_KEY_BASE: test-secret-key-base-for-ci-testing
+          RAILS_SERVE_STATIC_FILES: true
+        run: |
+          # Start Rails server in background
+          bundle exec rails server -p 3000 -b 0.0.0.0 &
+          echo "Waiting for Rails server to start..."
+          for i in {1..30}; do
+            if curl -s http://localhost:3000/users/sign_in > /dev/null; then
+              echo "Rails server is ready!"
+              break
+            fi
+            echo "Waiting for server... attempt $i/30"
+            sleep 2
+          done
+          # Final check
+          curl -I http://localhost:3000/users/sign_in || (echo "Rails server failed to start" && exit 1)
+      
       - name: Run Playwright tests
         env:
           CI: true
@@ -99,10 +122,12 @@ jobs:
           DB_HOST: localhost
           DB_USER: root
           DB_PASS: password
-          BASE_URL: http://127.0.0.1:3000
+          BASE_URL: http://localhost:3000
         run: |
-          # The webServer config in playwright.config.ts will handle starting the server
-          pnpm exec playwright test --project=chromium
+          # Run smoke tests first for quick feedback
+          pnpm exec playwright test smoke.spec.ts --project=chromium --reporter=dot || true
+          # Then run all tests in parallel
+          pnpm exec playwright test --project=chromium --reporter=dot --workers=16
       
       - name: Upload test results
         uses: actions/upload-artifact@v4
