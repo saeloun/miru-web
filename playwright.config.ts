@@ -4,10 +4,10 @@ export default defineConfig({
   testDir: './playwright/e2e',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
-  retries: 0,  // No retries for speed
-  workers: process.env.CI ? 16 : 4,  // Maximum parallelization in CI
-  reporter: process.env.CI ? [['dot']] : 'html',  // Minimal dot reporter for speed
-  timeout: 15000,  // 15 seconds per test
+  retries: 0,
+  workers: process.env.CI ? 1 : 4,
+  reporter: process.env.CI ? [['dot']] : 'html',
+  timeout: 15000,
   use: {
     baseURL: process.env.CI ? 'http://localhost:3000' : 'http://127.0.0.1:3000',
     trace: 'off',
