@@ -3,7 +3,14 @@ import React from "react";
 import { currencyFormat } from "helpers";
 import StatusBadge from "components/ui/status-badge";
 import { Link } from "react-router-dom";
-import { CreditCard, Buildings, Wallet, Money, ArrowsLeftRight, Receipt } from "phosphor-react";
+import {
+  CreditCard,
+  Buildings,
+  Wallet,
+  Money,
+  ArrowsLeftRight,
+  Receipt,
+} from "phosphor-react";
 
 import { TableRowProps } from "../interfaces";
 

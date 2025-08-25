@@ -12,7 +12,15 @@ import {
 } from "../ui/select";
 import { Separator } from "../ui/separator";
 import { Badge } from "../ui/badge";
-import { Plus, Trash, FloppyDisk, PaperPlaneTilt, Eye, User, Buildings } from "phosphor-react";
+import {
+  Plus,
+  Trash,
+  FloppyDisk,
+  PaperPlaneTilt,
+  Eye,
+  User,
+  Buildings,
+} from "phosphor-react";
 import { cn } from "../../lib/utils";
 
 import {

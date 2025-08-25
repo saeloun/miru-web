@@ -15,6 +15,13 @@ json.company_details do
   json.logo_url
   json.working_days current_company.working_days
   json.working_hours current_company.working_hours
+  json.bank_name current_company.bank_name
+  json.bank_account_number current_company.bank_account_number
+  json.bank_routing_number current_company.bank_routing_number
+  json.bank_swift_code current_company.bank_swift_code
+  json.tax_id current_company.tax_id
+  json.vat_number current_company.vat_number
+  json.gst_number current_company.gst_number
   json.address do
     json.partial! "internal_api/v1/partial/address", locals: { address: }
   end

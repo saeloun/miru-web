@@ -18,7 +18,6 @@ import {
   Briefcase,
   SpinnerGap,
 } from "phosphor-react";
-import { cn } from "../../lib/utils";
 import { RevenueAreaChart, CustomerRevenueChart } from "./MonochromeCharts";
 import { currencyFormat } from "../../helpers/currency";
 import { useDashboardData, useActivities } from "../../hooks/useDashboard";
@@ -38,10 +37,10 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({
   const activitiesContainerRef = useRef<HTMLDivElement>(null);
 
   // TanStack Query hooks
-  const { 
-    data: dashboardData, 
-    isLoading: isDashboardLoading, 
-    error: dashboardError 
+  const {
+    data: dashboardData,
+    isLoading: isDashboardLoading,
+    error: dashboardError,
   } = useDashboardData(timeframe);
 
   const {
@@ -56,7 +55,9 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({
   const baseCurrency = company?.baseCurrency || "USD";
 
   // Derived data from TanStack Query
-  const allActivities = activitiesData?.pages.flatMap(page => page.activities) || [];
+  const allActivities =
+    activitiesData?.pages.flatMap(page => page.activities) || [];
+
   const statsData = dashboardData?.stats || {
     total_revenue: 0,
     revenue_trend: 0,
@@ -71,9 +72,9 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({
 
   const getActivityIcon = (iconName: string) => {
     switch (iconName) {
-      case 'FileText':
+      case "FileText":
         return Receipt;
-      case 'CurrencyDollar':
+      case "CurrencyDollar":
         return CurrencyCircleDollar;
       default:
         return Receipt;
@@ -124,7 +125,6 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({
       },
     },
   ];
-
 
   return (
     <div className="space-y-6 max-w-[1600px] mx-auto">
@@ -245,7 +245,7 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({
           </div>
         </CardHeader>
         <CardContent className="p-0">
-          <div 
+          <div
             ref={activitiesContainerRef}
             className="max-h-96 overflow-y-auto"
           >
@@ -256,9 +256,9 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({
                   <p>No recent activity to show</p>
                 </div>
               ) : (
-                allActivities.map((activity) => {
+                allActivities.map(activity => {
                   const Icon = getActivityIcon(activity.icon);
-                  
+
                   return (
                     <div
                       key={activity.id}
@@ -282,7 +282,10 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({
                           <div className="flex items-center gap-2 mt-1">
                             {activity.metadata.amount && (
                               <span className="text-xs font-medium text-gray-600">
-                                {currencyFormat(activity.metadata.currency, activity.metadata.amount)}
+                                {currencyFormat(
+                                  activity.metadata.currency,
+                                  activity.metadata.amount
+                                )}
                               </span>
                             )}
                             {activity.metadata.status && (
@@ -297,7 +300,7 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({
                   );
                 })
               )}
-              
+
               {hasNextPage && (
                 <div className="text-center py-4">
                   <Button
@@ -318,7 +321,7 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({
                   </Button>
                 </div>
               )}
-              
+
               {!hasNextPage && allActivities.length > 0 && (
                 <div className="text-center py-4 text-gray-400 text-sm">
                   No more activities to load

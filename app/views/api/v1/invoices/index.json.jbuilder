@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 json.invoices invoices do |invoice|
   json.id invoice.id
   json.invoice_number invoice.invoice_number

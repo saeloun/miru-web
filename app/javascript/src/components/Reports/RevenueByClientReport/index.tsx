@@ -1,5 +1,13 @@
 import React, { useState } from "react";
-import { DollarSign, TrendingUp, Users, Building2, Download, ChevronDown, CalendarIcon } from "lucide-react";
+import {
+  DollarSign,
+  TrendingUp,
+  Users,
+  Building2,
+  Download,
+  ChevronDown,
+  CalendarIcon,
+} from "lucide-react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import {
   ColumnDef,
@@ -13,7 +21,16 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { format, subDays, startOfMonth, endOfMonth, startOfYear, endOfYear, startOfQuarter, endOfQuarter } from "date-fns";
+import {
+  format,
+  subDays,
+  startOfMonth,
+  endOfMonth,
+  startOfYear,
+  endOfYear,
+  startOfQuarter,
+  endOfQuarter,
+} from "date-fns";
 import { DateRange } from "react-day-picker";
 import axios from "../../../apis/api";
 import { Button } from "../../ui/button";
@@ -42,6 +59,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "../../ui/card";
 import { cn } from "../../../lib/utils";
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
 import { Calendar as CalendarComponent } from "../../ui/calendar";
+import { formatCurrency } from "../../../utils/currency";
 
 interface ClientRevenue {
   id: number;
@@ -64,13 +82,6 @@ interface RevenueReportData {
   currency: string;
 }
 
-const formatCurrency = (amount: number, currency = "USD") => {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: currency,
-  }).format(amount);
-};
-
 const RevenueByClientReport: React.FC = () => {
   const [dateRange, setDateRange] = useState<DateRange | undefined>();
   const [dateRangePreset, setDateRangePreset] = useState("all_time");
@@ -85,10 +96,15 @@ const RevenueByClientReport: React.FC = () => {
       const params = new URLSearchParams({
         ...(dateRange?.from && { from: format(dateRange.from, "dd/MM/yyyy") }),
         ...(dateRange?.to && { to: format(dateRange.to, "dd/MM/yyyy") }),
-        ...(selectedClients.length > 0 && { client_ids: selectedClients.join(",") }),
+        ...(selectedClients.length > 0 && {
+          client_ids: selectedClients.join(","),
+        }),
       });
-      
-      const response = await axios.get(`/reports/client_revenues?${params.toString()}`);
+
+      const response = await axios.get(
+        `/reports/client_revenues?${params.toString()}`
+      );
+
       return response.data;
     },
   });
@@ -97,6 +113,7 @@ const RevenueByClientReport: React.FC = () => {
     if (preset === "all_time") {
       setDateRange(undefined);
       setDateRangePreset(preset);
+
       return;
     }
 
@@ -108,33 +125,39 @@ const RevenueByClientReport: React.FC = () => {
         from = startOfMonth(now);
         to = endOfMonth(now);
         break;
-      case "last_month":
+      case "last_month": {
         const lastMonth = subDays(startOfMonth(now), 1);
         from = startOfMonth(lastMonth);
         to = endOfMonth(lastMonth);
         break;
-      case "this_quarter":
+      }
+      case "this_quarter": {
         from = startOfQuarter(now);
         to = endOfQuarter(now);
         break;
-      case "last_quarter":
+      }
+      case "last_quarter": {
         const lastQuarter = subDays(startOfQuarter(now), 1);
         from = startOfQuarter(lastQuarter);
         to = endOfQuarter(lastQuarter);
         break;
-      case "this_year":
+      }
+      case "this_year": {
         from = startOfYear(now);
         to = endOfYear(now);
         break;
-      case "last_year":
+      }
+      case "last_year": {
         const lastYear = subDays(startOfYear(now), 1);
         from = startOfYear(lastYear);
         to = endOfYear(lastYear);
         break;
-      case "last_30_days":
+      }
+      case "last_30_days": {
         from = subDays(now, 30);
         to = now;
         break;
+      }
       default:
         from = startOfMonth(now);
         to = endOfMonth(now);
@@ -150,17 +173,25 @@ const RevenueByClientReport: React.FC = () => {
         format: formatType,
         ...(dateRange?.from && { from: format(dateRange.from, "dd/MM/yyyy") }),
         ...(dateRange?.to && { to: format(dateRange.to, "dd/MM/yyyy") }),
-        ...(selectedClients.length > 0 && { client_ids: selectedClients.join(",") }),
+        ...(selectedClients.length > 0 && {
+          client_ids: selectedClients.join(","),
+        }),
       });
-      
-      const response = await axios.get(`/reports/client_revenues/download?${params.toString()}`, {
-        responseType: "blob",
-      });
-      
+
+      const response = await axios.get(
+        `/reports/client_revenues/download?${params.toString()}`,
+        {
+          responseType: "blob",
+        }
+      );
+
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement("a");
       link.href = url;
-      const filename = `revenue_by_client_${format(new Date(), "yyyy-MM-dd")}.${formatType}`;
+      const filename = `revenue_by_client_${format(
+        new Date(),
+        "yyyy-MM-dd"
+      )}.${formatType}`;
       link.setAttribute("download", filename);
       document.body.appendChild(link);
       link.click();
@@ -176,7 +207,11 @@ const RevenueByClientReport: React.FC = () => {
       cell: ({ row }) => (
         <div className="flex items-center">
           {row.original.logo && (
-            <img src={row.original.logo} alt="" className="w-8 h-8 rounded-full mr-2" />
+            <img
+              src={row.original.logo}
+              alt=""
+              className="w-8 h-8 rounded-full mr-2"
+            />
           )}
           <span className="font-medium">{row.getValue("name")}</span>
         </div>
@@ -259,11 +294,16 @@ const RevenueByClientReport: React.FC = () => {
       <div className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
-            <h1 className="text-2xl font-semibold text-gray-900">Revenue by Client</h1>
-            
+            <h1 className="text-2xl font-semibold text-gray-900">
+              Revenue by Client
+            </h1>
+
             <div className="flex items-center space-x-3">
               {/* Date Range Preset Selector */}
-              <Select value={dateRangePreset} onValueChange={handleDateRangePreset}>
+              <Select
+                value={dateRangePreset}
+                onValueChange={handleDateRangePreset}
+              >
                 <SelectTrigger className="w-[180px]">
                   <SelectValue placeholder="Select period" />
                 </SelectTrigger>
@@ -311,12 +351,14 @@ const RevenueByClientReport: React.FC = () => {
                     mode="range"
                     defaultMonth={dateRange?.from}
                     selected={dateRange}
-                    onSelect={(range) => {
+                    onSelect={range => {
                       setDateRange(range);
                       setDateRangePreset("custom");
                     }}
                     numberOfMonths={2}
-                    disabled={(date) => date > new Date() || date < new Date("1900-01-01")}
+                    disabled={date =>
+                      date > new Date() || date < new Date("1900-01-01")
+                    }
                   />
                 </PopoverContent>
               </Popover>
@@ -331,10 +373,14 @@ const RevenueByClientReport: React.FC = () => {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={() => downloadMutation.mutate("csv")}>
+                  <DropdownMenuItem
+                    onClick={() => downloadMutation.mutate("csv")}
+                  >
                     Export as CSV
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => downloadMutation.mutate("pdf")}>
+                  <DropdownMenuItem
+                    onClick={() => downloadMutation.mutate("pdf")}
+                  >
                     Export as PDF
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -349,21 +395,29 @@ const RevenueByClientReport: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                Total Revenue
+              </CardTitle>
               <TrendingUp className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-indigo-600">
-                {formatCurrency(data?.summary?.totalRevenue || 0, data?.currency)}
+                {formatCurrency(
+                  data?.summary?.totalRevenue || 0,
+                  data?.currency
+                )}
               </div>
               <p className="text-xs text-muted-foreground">
                 {dateRange?.from && dateRange?.to
-                  ? `${format(dateRange.from, "MMM d")} - ${format(dateRange.to, "MMM d, yyyy")}`
+                  ? `${format(dateRange.from, "MMM d")} - ${format(
+                      dateRange.to,
+                      "MMM d, yyyy"
+                    )}`
                   : "All time"}
               </p>
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Paid Amount</CardTitle>
@@ -371,12 +425,17 @@ const RevenueByClientReport: React.FC = () => {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-green-600">
-                {formatCurrency(data?.summary?.totalPaidAmount || 0, data?.currency)}
+                {formatCurrency(
+                  data?.summary?.totalPaidAmount || 0,
+                  data?.currency
+                )}
               </div>
-              <p className="text-xs text-muted-foreground">Successfully collected</p>
+              <p className="text-xs text-muted-foreground">
+                Successfully collected
+              </p>
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Outstanding</CardTitle>
@@ -384,12 +443,17 @@ const RevenueByClientReport: React.FC = () => {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-orange-600">
-                {formatCurrency(data?.summary?.totalOutstandingAmount || 0, data?.currency)}
+                {formatCurrency(
+                  data?.summary?.totalOutstandingAmount || 0,
+                  data?.currency
+                )}
               </div>
-              <p className="text-xs text-muted-foreground">Pending collection</p>
+              <p className="text-xs text-muted-foreground">
+                Pending collection
+              </p>
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Overdue</CardTitle>
@@ -397,9 +461,14 @@ const RevenueByClientReport: React.FC = () => {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-red-600">
-                {formatCurrency(data?.summary?.totalOverdueAmount || 0, data?.currency)}
+                {formatCurrency(
+                  data?.summary?.totalOverdueAmount || 0,
+                  data?.currency
+                )}
               </div>
-              <p className="text-xs text-muted-foreground">Requires attention</p>
+              <p className="text-xs text-muted-foreground">
+                Requires attention
+              </p>
             </CardContent>
           </Card>
         </div>
@@ -413,31 +482,29 @@ const RevenueByClientReport: React.FC = () => {
             <div className="rounded-md border">
               <Table>
                 <TableHeader>
-                  {table.getHeaderGroups().map((headerGroup) => (
+                  {table.getHeaderGroups().map(headerGroup => (
                     <TableRow key={headerGroup.id}>
-                      {headerGroup.headers.map((header) => {
-                        return (
-                          <TableHead key={header.id}>
-                            {header.isPlaceholder
-                              ? null
-                              : flexRender(
-                                  header.column.columnDef.header,
-                                  header.getContext()
-                                )}
-                          </TableHead>
-                        );
-                      })}
+                      {headerGroup.headers.map(header => (
+                        <TableHead key={header.id}>
+                          {header.isPlaceholder
+                            ? null
+                            : flexRender(
+                                header.column.columnDef.header,
+                                header.getContext()
+                              )}
+                        </TableHead>
+                      ))}
                     </TableRow>
                   ))}
                 </TableHeader>
                 <TableBody>
                   {table.getRowModel().rows?.length ? (
-                    table.getRowModel().rows.map((row) => (
+                    table.getRowModel().rows.map(row => (
                       <TableRow
                         key={row.id}
                         data-state={row.getIsSelected() && "selected"}
                       >
-                        {row.getVisibleCells().map((cell) => (
+                        {row.getVisibleCells().map(cell => (
                           <TableCell key={cell.id}>
                             {flexRender(
                               cell.column.columnDef.cell,

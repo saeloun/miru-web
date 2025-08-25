@@ -27,11 +27,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "../ui/dialog";
-import { Input } from "../ui/input";
-import { Label } from "../ui/label";
-import { Checkbox } from "../ui/checkbox";
 import {
   Plus,
   DotsThree,
@@ -49,7 +45,6 @@ import {
   HourglassMedium,
   Pause,
 } from "phosphor-react";
-import { cn } from "../../lib/utils";
 import { useUserContext } from "../../context/UserContext";
 import projectApi from "../../apis/projects";
 import { toast } from "sonner";
@@ -90,6 +85,7 @@ interface ProjectsData {
 
 const fetchProjects = async (): Promise<ProjectsData> => {
   const res = await projectApi.get();
+
   return res.data;
 };
 
@@ -153,11 +149,23 @@ const ProjectsTable: React.FC = () => {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "active":
-        return <Badge className="bg-green-100 text-green-800 hover:bg-green-100">Active</Badge>;
+        return (
+          <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
+            Active
+          </Badge>
+        );
       case "paused":
-        return <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100">Paused</Badge>;
+        return (
+          <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100">
+            Paused
+          </Badge>
+        );
       case "completed":
-        return <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100">Completed</Badge>;
+        return (
+          <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100">
+            Completed
+          </Badge>
+        );
       default:
         return <Badge variant="outline">Unknown</Badge>;
     }
@@ -165,46 +173,29 @@ const ProjectsTable: React.FC = () => {
 
   const columns: ColumnDef<Project>[] = [
     {
-      id: "select",
-      header: ({ table }) => (
-        <Checkbox
-          checked={table.getIsAllPageRowsSelected()}
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-          aria-label="Select all"
-        />
-      ),
-      cell: ({ row }) => (
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label="Select row"
-        />
-      ),
-      enableSorting: false,
-      enableHiding: false,
-    },
-    {
       accessorKey: "name",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="-ml-4"
-          >
-            Project
-            {column.getIsSorted() === "asc" ? (
-              <ArrowUp size={16} className="ml-2" />
-            ) : column.getIsSorted() === "desc" ? (
-              <ArrowDown size={16} className="ml-2" />
-            ) : (
-              <><CaretUp size={8} className="ml-2 -mb-1" /><CaretDown size={8} className="ml-2 -mt-1" /></>
-            )}
-          </Button>
-        );
-      },
+      header: ({ column }) => (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="-ml-4"
+        >
+          Project
+          {column.getIsSorted() === "asc" ? (
+            <ArrowUp size={16} className="ml-2" />
+          ) : column.getIsSorted() === "desc" ? (
+            <ArrowDown size={16} className="ml-2" />
+          ) : (
+            <>
+              <CaretUp size={8} className="ml-2 -mb-1" />
+              <CaretDown size={8} className="ml-2 -mt-1" />
+            </>
+          )}
+        </Button>
+      ),
       cell: ({ row }) => {
         const project = row.original;
+
         return (
           <div className="flex items-center gap-3">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gray-100">
@@ -226,9 +217,13 @@ const ProjectsTable: React.FC = () => {
       accessorKey: "client_name",
       header: "Client",
       cell: ({ row }) => {
-        const clientName = row.original.client_name || row.original.client?.name || "No Client";
+        const clientName =
+          row.original.client_name || row.original.client?.name || "No Client";
+
         return (
-          <span className="text-sm font-medium text-gray-700">{clientName}</span>
+          <span className="text-sm font-medium text-gray-700">
+            {clientName}
+          </span>
         );
       },
     },
@@ -242,7 +237,7 @@ const ProjectsTable: React.FC = () => {
 
         return (
           <div className="flex flex-wrap gap-1">
-            {members.slice(0, displayCount).map((member) => (
+            {members.slice(0, displayCount).map(member => (
               <span key={member.id} className="text-sm text-gray-600">
                 {member.name}
               </span>
@@ -259,37 +254,39 @@ const ProjectsTable: React.FC = () => {
     {
       accessorKey: "billable",
       header: "Type",
-      cell: ({ row }) => {
-        return row.original.billable ? (
-          <Badge variant="outline" className="text-green-700">Billable</Badge>
+      cell: ({ row }) =>
+        row.original.billable ? (
+          <Badge variant="outline" className="text-green-700">
+            Billable
+          </Badge>
         ) : (
-          <Badge variant="outline" className="text-gray-600">Non-billable</Badge>
-        );
-      },
+          <Badge variant="outline" className="text-gray-600">
+            Non-billable
+          </Badge>
+        ),
     },
     {
       accessorKey: "status",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="-ml-4"
-          >
-            Status
-            {column.getIsSorted() === "asc" ? (
-              <ArrowUp size={16} className="ml-2" />
-            ) : column.getIsSorted() === "desc" ? (
-              <ArrowDown size={16} className="ml-2" />
-            ) : (
-              <><CaretUp size={8} className="ml-2 -mb-1" /><CaretDown size={8} className="ml-2 -mt-1" /></>
-            )}
-          </Button>
-        );
-      },
-      cell: ({ row }) => {
-        return getStatusBadge(row.original.status || "active");
-      },
+      header: ({ column }) => (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="-ml-4"
+        >
+          Status
+          {column.getIsSorted() === "asc" ? (
+            <ArrowUp size={16} className="ml-2" />
+          ) : column.getIsSorted() === "desc" ? (
+            <ArrowDown size={16} className="ml-2" />
+          ) : (
+            <>
+              <CaretUp size={8} className="ml-2 -mb-1" />
+              <CaretDown size={8} className="ml-2 -mt-1" />
+            </>
+          )}
+        </Button>
+      ),
+      cell: ({ row }) => getStatusBadge(row.original.status || "active"),
     },
     {
       id: "actions",
@@ -315,7 +312,9 @@ const ProjectsTable: React.FC = () => {
                 Copy project ID
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => navigate(`/projects/${project.id}`)}>
+              <DropdownMenuItem
+                onClick={() => navigate(`/projects/${project.id}`)}
+              >
                 View details
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => handleEdit(project)}>
@@ -358,7 +357,9 @@ const ProjectsTable: React.FC = () => {
   const projects = data?.projects || [];
   const activeProjects = projects.filter(p => p.status === "active").length;
   const totalHours = projects.reduce((sum, p) => sum + (p.totalHours || 0), 0);
-  const teamMembersSet = new Set(projects.flatMap(p => p.teamMembers?.map(m => m.id) || []));
+  const teamMembersSet = new Set(
+    projects.flatMap(p => p.teamMembers?.map(m => m.id) || [])
+  );
   const uniqueTeamMembers = teamMembersSet.size;
 
   return (
@@ -386,7 +387,9 @@ const ProjectsTable: React.FC = () => {
       <div className="grid gap-4 md:grid-cols-3">
         <Card className="border-gray-200">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Projects</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Active Projects
+            </CardTitle>
             <Briefcase size={20} className="text-gray-400" />
           </CardHeader>
           <CardContent>
@@ -403,10 +406,10 @@ const ProjectsTable: React.FC = () => {
             <Timer size={20} className="text-gray-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              {totalHours.toFixed(0)}h
-            </div>
-            <p className="text-xs text-gray-600 mt-1">Tracked across all projects</p>
+            <div className="text-2xl font-bold">{totalHours.toFixed(0)}h</div>
+            <p className="text-xs text-gray-600 mt-1">
+              Tracked across all projects
+            </p>
           </CardContent>
         </Card>
 
@@ -427,7 +430,8 @@ const ProjectsTable: React.FC = () => {
         <CardHeader>
           <CardTitle>All Projects</CardTitle>
           <CardDescription>
-            A comprehensive list of all your projects with team assignments and progress tracking.
+            A comprehensive list of all your projects with team assignments and
+            progress tracking.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -461,7 +465,8 @@ const ProjectsTable: React.FC = () => {
           <DialogHeader>
             <DialogTitle>Delete Project</DialogTitle>
             <DialogDescription>
-              Are you sure you want to delete "{selectedProject?.name}"? This action cannot be undone.
+              Are you sure you want to delete "{selectedProject?.name}"? This
+              action cannot be undone.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>

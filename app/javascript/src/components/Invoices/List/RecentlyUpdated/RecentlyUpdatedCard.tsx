@@ -2,14 +2,14 @@ import React from "react";
 
 import { currencyFormat } from "helpers";
 import { useNavigate } from "react-router-dom";
-import { 
+import {
   CheckCircle,
   PaperPlaneTilt,
   Eye,
   Warning,
   FileText,
   Clock,
-  ArrowUpRight 
+  ArrowUpRight,
 } from "phosphor-react";
 
 const RecentlyUpdatedCard = ({
@@ -22,7 +22,9 @@ const RecentlyUpdatedCard = ({
       case "paid":
         return <CheckCircle className="w-4 h-4 text-green-600" weight="fill" />;
       case "sent":
-        return <PaperPlaneTilt className="w-4 h-4 text-blue-600" weight="fill" />;
+        return (
+          <PaperPlaneTilt className="w-4 h-4 text-blue-600" weight="fill" />
+        );
       case "viewed":
         return <Eye className="w-4 h-4 text-cyan-600" weight="fill" />;
       case "overdue":
@@ -42,17 +44,21 @@ const RecentlyUpdatedCard = ({
       {/* Invoice number with status icon */}
       <div className="mb-3">
         <div className="flex items-center justify-between mb-1">
-          <p className="text-sm font-bold text-gray-900 truncate" title={invoiceNumber}>
+          <p
+            className="text-sm font-bold text-gray-900 truncate"
+            title={invoiceNumber}
+          >
             {invoiceNumber}
           </p>
           {getStatusIcon()}
         </div>
       </div>
-
-      {/* Client name */}
+      
       <div className="mb-auto">
-        <p className="text-xs text-gray-500 uppercase tracking-wide font-medium mb-1">Client</p>
-        <p className="text-sm text-gray-700 font-medium truncate" title={client.name}>
+        <p
+          className="text-sm text-gray-700 font-medium truncate"
+          title={client.name}
+        >
           {client.name}
         </p>
       </div>
@@ -61,7 +67,9 @@ const RecentlyUpdatedCard = ({
       <div className="pt-3 border-t border-gray-100">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-xs text-gray-500 uppercase tracking-wide font-medium mb-0.5">Amount</p>
+            <p className="text-xs text-gray-500 uppercase tracking-wide font-medium mb-0.5">
+              Amount
+            </p>
             <p className="text-base font-bold text-gray-900">
               {currencyFormat(currency, amount)}
             </p>

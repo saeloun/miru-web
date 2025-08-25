@@ -11,24 +11,26 @@ const api = axios.create({
 });
 
 // Add CSRF token to all requests
-api.interceptors.request.use((config) => {
+api.interceptors.request.use(config => {
   const token = document
     .querySelector('meta[name="csrf-token"]')
     ?.getAttribute("content");
   if (token) {
     config.headers["X-CSRF-Token"] = token;
   }
+
   return config;
 });
 
 // Response interceptor for error handling
 api.interceptors.response.use(
-  (response) => response,
-  (error) => {
+  response => response,
+  error => {
     if (error.response?.status === 401) {
       // Redirect to login if unauthorized
       window.location.href = "/user/sign_in";
     }
+
     return Promise.reject(error);
   }
 );
@@ -59,9 +61,11 @@ export const projectsApi = {
   list: (params?: any) => api.get("/projects", { params }),
   get: (id: string | number) => api.get(`/projects/${id}`),
   create: (data: any) => api.post("/projects", data),
-  update: (id: string | number, data: any) => api.patch(`/projects/${id}`, data),
+  update: (id: string | number, data: any) =>
+    api.patch(`/projects/${id}`, data),
   delete: (id: string | number) => api.delete(`/projects/${id}`),
-  search: (term: string) => api.get("/projects/search", { params: { q: term } }),
+  search: (term: string) =>
+    api.get("/projects/search", { params: { q: term } }),
 };
 
 // Invoice APIs
@@ -69,10 +73,13 @@ export const invoicesApi = {
   list: (params?: any) => api.get("/invoices", { params }),
   get: (id: string | number) => api.get(`/invoices/${id}`),
   create: (data: any) => api.post("/invoices", data),
-  update: (id: string | number, data: any) => api.patch(`/invoices/${id}`, data),
+  update: (id: string | number, data: any) =>
+    api.patch(`/invoices/${id}`, data),
   delete: (id: string | number) => api.delete(`/invoices/${id}`),
-  bulkDelete: (ids: number[]) => api.post("/invoices/bulk_deletion", { invoice_ids: ids }),
-  send: (id: string | number, data: any) => api.post(`/invoices/${id}/send_invoice`, data),
+  bulkDelete: (ids: number[]) =>
+    api.post("/invoices/bulk_deletion", { invoice_ids: ids }),
+  send: (id: string | number, data: any) =>
+    api.post(`/invoices/${id}/send_invoice`, data),
   sendReminder: (id: string | number, data: any) =>
     api.post(`/invoices/${id}/send_reminder`, data),
   download: (id: string | number) =>

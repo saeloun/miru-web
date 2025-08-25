@@ -1,21 +1,17 @@
-import * as React from "react"
-import { format } from "date-fns"
-import { Calendar as CalendarIcon } from "phosphor-react"
-import { DateRange } from "react-day-picker"
-import { cn } from "../../lib/utils"
-import { Button } from "./button"
-import { Calendar } from "./calendar"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "./popover"
+import * as React from "react";
+import { format } from "date-fns";
+import { Calendar as CalendarIcon } from "phosphor-react";
+import { DateRange } from "react-day-picker";
+import { cn } from "../../lib/utils";
+import { Button } from "./button";
+import { Calendar } from "./calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 
 interface DateRangePickerProps {
-  date?: DateRange
-  onSelect: (date: DateRange | undefined) => void
-  placeholder?: string
-  className?: string
+  date?: DateRange;
+  onSelect: (date: DateRange | undefined) => void;
+  placeholder?: string;
+  className?: string;
 }
 
 export function DateRangePicker({
@@ -63,5 +59,5 @@ export function DateRangePicker({
         </PopoverContent>
       </Popover>
     </div>
-  )
+  );
 }

@@ -1,4 +1,3 @@
-/* eslint-disable react/hook-use-state */
 import React, { useState, useEffect, useRef } from "react";
 
 import dayjs from "dayjs";

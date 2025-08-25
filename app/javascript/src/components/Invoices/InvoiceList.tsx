@@ -145,42 +145,42 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
         bgColor: "#dcfce7",
         textColor: "#166534",
         borderColor: "#86efac",
-        label: "Paid"
+        label: "Paid",
       },
       sent: {
         icon: PaperPlaneTilt,
         bgColor: "#dbeafe",
         textColor: "#1e40af",
         borderColor: "#93c5fd",
-        label: "Sent"
+        label: "Sent",
       },
       overdue: {
         icon: Warning,
         bgColor: "#fee2e2",
         textColor: "#991b1b",
         borderColor: "#fca5a5",
-        label: "Overdue"
+        label: "Overdue",
       },
       draft: {
         icon: FileText,
         bgColor: "#f3f4f6",
         textColor: "#374151",
         borderColor: "#d1d5db",
-        label: "Draft"
+        label: "Draft",
       },
       viewed: {
         icon: Eye,
         bgColor: "#e0e7ff",
         textColor: "#3730a3",
         borderColor: "#a5b4fc",
-        label: "Viewed"
+        label: "Viewed",
       },
       pending: {
         icon: Hourglass,
         bgColor: "#fef3c7",
         textColor: "#92400e",
         borderColor: "#fde047",
-        label: "Pending"
+        label: "Pending",
       },
     };
 
@@ -189,7 +189,7 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
       bgColor: "#f3f4f6",
       textColor: "#374151",
       borderColor: "#d1d5db",
-      label: status.charAt(0).toUpperCase() + status.slice(1)
+      label: status.charAt(0).toUpperCase() + status.slice(1),
     };
 
     const Icon = config.icon;
@@ -206,7 +206,7 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
           fontWeight: "600",
           display: "inline-flex",
           alignItems: "center",
-          gap: "4px"
+          gap: "4px",
         }}
       >
         <Icon size={14} />
@@ -223,8 +223,8 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
     // Check filterParams.status first (from ChartWithSummary cards), then fallback to statusFilter
     let matchesStatus = true;
     if (filterParams.status && filterParams.status.length > 0) {
-      matchesStatus = filterParams.status.some((statusObj: any) => 
-        invoice.status === statusObj.value
+      matchesStatus = filterParams.status.some(
+        (statusObj: any) => invoice.status === statusObj.value
       );
     } else {
       matchesStatus = statusFilter === "all" || invoice.status === statusFilter;
@@ -244,7 +244,12 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
   useEffect(() => {
     const observer = new IntersectionObserver(
       entries => {
-        if (entries[0].isIntersecting && hasMore && !isLoadingMore && onLoadMore) {
+        if (
+          entries[0].isIntersecting &&
+          hasMore &&
+          !isLoadingMore &&
+          onLoadMore
+        ) {
           onLoadMore();
         }
       },
@@ -354,7 +359,9 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => setFilterParams({ ...filterParams, status: [] })}
+                  onClick={() =>
+                    setFilterParams({ ...filterParams, status: [] })
+                  }
                   className="h-7 px-2"
                 >
                   <X className="h-3 w-3" />
@@ -446,7 +453,9 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
                       </TableCell>
                       <TableCell>
                         <div>
-                          <div className="font-medium">{invoice.client.name}</div>
+                          <div className="font-medium">
+                            {invoice.client.name}
+                          </div>
                           <div className="text-sm text-muted-foreground">
                             {invoice.client.email}
                           </div>
@@ -461,9 +470,9 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
                       </TableCell>
                       <TableCell className="text-right font-medium">
                         {formatCurrency(
-                          invoice.status === "overdue" && invoice.amountDue 
-                            ? invoice.amountDue 
-                            : invoice.amount, 
+                          invoice.status === "overdue" && invoice.amountDue
+                            ? invoice.amountDue
+                            : invoice.amount,
                           invoice.currency
                         )}
                       </TableCell>
@@ -476,7 +485,9 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
                     <TableRow>
                       <TableCell colSpan={8} className="text-center py-4">
                         <CircleNotch className="h-6 w-6 mx-auto animate-spin text-blue-600" />
-                        <span className="text-sm text-muted-foreground mt-2 block">Loading more invoices...</span>
+                        <span className="text-sm text-muted-foreground mt-2 block">
+                          Loading more invoices...
+                        </span>
                       </TableCell>
                     </TableRow>
                   )}

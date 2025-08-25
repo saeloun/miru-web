@@ -80,7 +80,7 @@ const PaymentFilters: React.FC<PaymentFiltersProps> = ({
           <Label htmlFor="status">Status</Label>
           <Select
             value={filters.status}
-            onValueChange={(value) =>
+            onValueChange={value =>
               onFilterChange({ ...filters, status: value })
             }
           >
@@ -102,7 +102,7 @@ const PaymentFilters: React.FC<PaymentFiltersProps> = ({
           <Label htmlFor="client">Client</Label>
           <Select
             value={filters.client}
-            onValueChange={(value) =>
+            onValueChange={value =>
               onFilterChange({ ...filters, client: value })
             }
           >
@@ -111,7 +111,7 @@ const PaymentFilters: React.FC<PaymentFiltersProps> = ({
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Clients</SelectItem>
-              {clients.map((client) => (
+              {clients.map(client => (
                 <SelectItem key={client.id} value={client.id}>
                   {client.name}
                 </SelectItem>
@@ -125,7 +125,7 @@ const PaymentFilters: React.FC<PaymentFiltersProps> = ({
           <Label htmlFor="paymentType">Payment Type</Label>
           <Select
             value={filters.paymentType}
-            onValueChange={(value) =>
+            onValueChange={value =>
               onFilterChange({ ...filters, paymentType: value })
             }
           >
@@ -152,14 +152,14 @@ const PaymentFilters: React.FC<PaymentFiltersProps> = ({
           <div className="flex gap-2">
             <DatePicker
               date={filters.dateFrom}
-              onDateChange={(date) =>
+              onDateChange={date =>
                 onFilterChange({ ...filters, dateFrom: date })
               }
               placeholder="From"
             />
             <DatePicker
               date={filters.dateTo}
-              onDateChange={(date) =>
+              onDateChange={date =>
                 onFilterChange({ ...filters, dateTo: date })
               }
               placeholder="To"

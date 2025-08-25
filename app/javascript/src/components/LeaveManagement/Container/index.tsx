@@ -22,9 +22,9 @@ const Container = ({
   const { company } = useUserContext();
 
   // Use the calendar data hook - for personal leaves page, fetch holidays AND user's timeoff
-  const { events, isLoading, holidays } = useCalendarData(selectedDate, { 
-    includeTimeoff: true,   // Show personal timeoff on user's leaves page
-    includeTimesheet: false // Don't show timesheet entries on leaves page
+  const { events, isLoading, holidays } = useCalendarData(selectedDate, {
+    includeTimeoff: true, // Show personal timeoff on user's leaves page
+    includeTimesheet: false, // Don't show timesheet entries on leaves page
   });
 
   const handleEventClick = (event: any) => {
@@ -62,7 +62,11 @@ const Container = ({
           <CardTitle className="text-lg">Calendar</CardTitle>
           {holidays && holidays.length > 0 && (
             <p className="text-sm text-gray-600 mt-1">
-              Showing {holidays.filter(h => h.holiday_type === 'national').length} national and {holidays.filter(h => h.holiday_type === 'optional').length} optional holidays
+              Showing{" "}
+              {holidays.filter(h => h.holiday_type === "national").length}{" "}
+              national and{" "}
+              {holidays.filter(h => h.holiday_type === "optional").length}{" "}
+              optional holidays
             </p>
           )}
         </CardHeader>
@@ -74,9 +78,13 @@ const Container = ({
             selectedDate={selectedDate}
             defaultView="month-grid"
             calendars={[
-              { id: 'holidays', label: 'Holidays', colorName: 'holiday' },
-              { id: 'timesheet', label: 'Time Tracked', colorName: 'timesheet' },
-              { id: 'leave', label: 'Time Off', colorName: 'leave' }
+              { id: "holidays", label: "Holidays", colorName: "holiday" },
+              {
+                id: "timesheet",
+                label: "Time Tracked",
+                colorName: "timesheet",
+              },
+              { id: "leave", label: "Time Off", colorName: "leave" },
             ]}
           />
         </CardContent>
@@ -88,7 +96,9 @@ const Container = ({
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <CardTitle className="text-xl font-semibold">Leave History</CardTitle>
+                <CardTitle className="text-xl font-semibold">
+                  Leave History
+                </CardTitle>
                 {selectedLeaveType && (
                   <div className="flex items-center gap-2 rounded-md bg-miru-han-purple-100 px-3 py-1.5 text-sm">
                     <span className="font-medium text-miru-han-purple-1000">
@@ -102,7 +112,8 @@ const Container = ({
                 )}
               </div>
               <div className="text-sm text-gray-600">
-                Total: <span className="font-semibold text-gray-900">
+                Total:{" "}
+                <span className="font-semibold text-gray-900">
                   {minToHHMM(totalTimeoffEntriesDuration || 0)}
                 </span>
               </div>

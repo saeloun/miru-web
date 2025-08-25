@@ -84,6 +84,18 @@ const WeeklyEntries: React.FC<Props> = ({
     return -1;
   };
 
+  const handleSaveNewEntry = (duration: number, note: string) => {
+    // Create initial entries array with the duration and note for the first day
+    const initialEntries = new Array(7).fill(null);
+    initialEntries[0] = {
+      duration,
+      note,
+      bill_status: "non_billable",
+      id: null // This will be created when saved
+    };
+    setCurrentEntries(initialEntries);
+  };
+
   const getIds = () => {
     const ids = [];
     currentEntries.forEach(entry => {
@@ -149,23 +161,16 @@ const WeeklyEntries: React.FC<Props> = ({
 
   if (!projectSelected && newRowView) {
     return (
-      <Card className="mt-4 border-dashed border-2 border-primary/30 bg-accent/5">
+      <Card className="mt-4 border-dashed border-2 border-gray-200 bg-gray-50/50">
         <CardContent className="p-6">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-primary/10 rounded-lg">
-                <Briefcase className="h-5 w-5 text-primary" />
-              </div>
-              <h3 className="text-lg font-semibold">Add New Project Entry</h3>
+          <div className="flex items-center gap-3 mb-6">
+            <div className="p-2.5 bg-indigo-100 rounded-lg">
+              <Briefcase className="h-5 w-5 text-indigo-600" />
             </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setNewRowView(false)}
-              className="text-muted-foreground hover:text-foreground"
-            >
-              Cancel
-            </Button>
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900">Add New Project Entry</h3>
+              <p className="text-sm text-gray-500 mt-0.5">Select a client and project to start tracking time</p>
+            </div>
           </div>
           <SelectProject
             client={client}
@@ -176,19 +181,11 @@ const WeeklyEntries: React.FC<Props> = ({
             setProject={setProject}
             setProjectSelected={setProjectSelected}
             setProjectId={setProjectId}
+            newRowView={newRowView}
+            setNewRowView={setNewRowView}
+            onSaveEntry={handleSaveNewEntry}
+            selectedEmployeeId={selectedEmployeeId}
           />
-          <div className="flex justify-end gap-2 mt-4">
-            <Button variant="outline" onClick={() => setNewRowView(false)}>
-              Cancel
-            </Button>
-            <Button
-              onClick={handleAddRow}
-              disabled={!client || !project}
-              className="bg-primary hover:bg-primary/90"
-            >
-              Add Project Row
-            </Button>
-          </div>
         </CardContent>
       </Card>
     );

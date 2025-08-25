@@ -1,14 +1,10 @@
-import * as React from "react"
-import { format } from "date-fns"
-import { Calendar as CalendarIcon } from "phosphor-react"
-import { cn } from "../../lib/utils"
-import { Button } from "./button"
-import { Calendar } from "./calendar"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "./popover"
+import * as React from "react";
+import { format } from "date-fns";
+import { Calendar as CalendarIcon } from "phosphor-react";
+import { cn } from "../../lib/utils";
+import { Button } from "./button";
+import { Calendar } from "./calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 
 export function DatePicker({
   date,
@@ -16,10 +12,10 @@ export function DatePicker({
   placeholder = "Pick a date",
   className,
 }: {
-  date?: Date
-  onSelect: (date: Date | undefined) => void
-  placeholder?: string
-  className?: string
+  date?: Date;
+  onSelect: (date: Date | undefined) => void;
+  placeholder?: string;
+  className?: string;
 }) {
   return (
     <Popover>
@@ -45,5 +41,5 @@ export function DatePicker({
         />
       </PopoverContent>
     </Popover>
-  )
+  );
 }

@@ -16,7 +16,10 @@ const LeaveManagement = () => {
   const [timeoffEntries, setTimeoffEntries] = useState([]);
   const [leaveBalance, setLeaveBalance] = useState([]);
   const [employees, setEmployees] = useState([]);
-  const [selectedEmployeeId, setSelectedEmployeeId] = useState(user?.id || null);
+  const [selectedEmployeeId, setSelectedEmployeeId] = useState(
+    user?.id || null
+  );
+
   const [totalTimeoffEntriesDuration, setTotalTimeoffEntriesDuration] =
     useState(0);
   const [currentYear, setCurrentYear] = useState(getYear(new Date()));

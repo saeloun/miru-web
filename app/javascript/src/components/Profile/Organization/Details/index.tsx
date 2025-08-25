@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from "react";
 
 import companiesApi from "apis/companies";
-import Loader from "common/Loader/index";
-import DetailsHeader from "components/Profile/Common/DetailsHeader";
 import { useUserContext } from "context/UserContext";
-import { Outlet, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { sendGAPageView } from "utils/googleAnalytics";
 import worldCountries from "world-countries";
 
-import ModernOrganizationSettings from "./ModernOrganizationSettings";
+import CleanOrganizationSettings from "./CleanOrganizationSettings";
 
 const initialState = {
   id: null,
@@ -108,7 +106,7 @@ const OrgDetails = () => {
     });
   };
 
-  return <ModernOrganizationSettings onBack={handleBackBtnClick} />;
+  return <CleanOrganizationSettings onBack={handleBackBtnClick} />;
 };
 
 export default OrgDetails;

@@ -44,7 +44,7 @@ const AppRouter: React.FC<AppRouterProps> = props => {
         <Route element={<Success />} path={Paths.PAYMENT_SUCCESS} />
         <Route element={<InvalidLink />} path={Paths.INVALID_LINK} />
         <Route element={<InvoiceEmail />} path={Paths.PUBLIC_INVOICE} />
-        
+
         {/* Root route handling - redirect based on auth state */}
         <Route
           element={
@@ -60,7 +60,7 @@ const AppRouter: React.FC<AppRouterProps> = props => {
           }
           path="/"
         />
-        
+
         {/* Auth Routes - Only for non-authenticated users */}
         {/* These routes will redirect to dashboard if user is already logged in */}
         <Route element={<PublicRoute restricted />}>
@@ -77,7 +77,7 @@ const AppRouter: React.FC<AppRouterProps> = props => {
             path={Paths.EMAIL_VERIFICATION_SUCCESS}
           />
         </Route>
-        
+
         {/* Protected Routes - Only for authenticated users */}
         <Route element={<ProtectedRoute />}>
           {needsOrganizationSetup && (
@@ -90,7 +90,7 @@ const AppRouter: React.FC<AppRouterProps> = props => {
             </>
           )}
         </Route>
-        
+
         {/* 404 - Catch all */}
         <Route element={<ErrorPage />} path="*" />
       </Routes>

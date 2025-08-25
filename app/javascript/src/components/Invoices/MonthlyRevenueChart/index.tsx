@@ -10,7 +10,6 @@ import {
   BarChart,
   Bar,
 } from "recharts";
-import invoicesApi from "apis/invoices";
 import { currencyFormat } from "helpers";
 import { Toastr } from "StyledComponents";
 
@@ -52,19 +51,32 @@ const MonthlyRevenueChart: React.FC<MonthlyRevenueChartProps> = ({
 
   const generateMockData = () => {
     // Generate mock data for the last 12 months
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const months = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
     const currentMonth = new Date().getMonth();
     const mockData: MonthlyRevenueData[] = [];
-    
+
     for (let i = 0; i < 12; i++) {
       const monthIndex = (currentMonth - 11 + i + 12) % 12;
       mockData.push({
         month: months[monthIndex],
         revenue: 0,
-        invoiceCount: 0
+        invoiceCount: 0,
       });
     }
-    
+
     processMonthlyData(mockData);
   };
 
@@ -80,11 +92,11 @@ const MonthlyRevenueChart: React.FC<MonthlyRevenueChartProps> = ({
       }));
 
       setChartData(formattedData);
-      
+
       // Calculate statistics from the data
       const total = formattedData.reduce((sum, item) => sum + item.revenue, 0);
       const avg = formattedData.length > 0 ? total / formattedData.length : 0;
-      
+
       setTotalRevenue(total);
       setAverageRevenue(avg);
       setTrend(0); // Trend calculation would require historical data

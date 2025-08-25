@@ -72,15 +72,20 @@ class DashboardPresenter
       # Group by month
       monthly_data = invoices.group_by { |i| i.issue_date.beginning_of_month }
 
-      # Build chart data
+      # Build chart data with cumulative revenue
       chart_data = []
       current_date = from_date.beginning_of_month
+      cumulative_revenue = 0
 
       while current_date <= to_date
         month_invoices = monthly_data[current_date] || []
+        month_revenue = month_invoices.sum(&:amount)
+        cumulative_revenue += month_revenue
+
         chart_data << {
           month: current_date.strftime("%b"),
-          revenue: month_invoices.sum(&:amount).round(2),
+          revenue: cumulative_revenue.round(2),
+          monthly_revenue: month_revenue.round(2),
           invoices: month_invoices.count
         }
         current_date = current_date.next_month

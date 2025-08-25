@@ -2,9 +2,14 @@ import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { Card, CardContent } from "../ui/card";
 import { Button } from "../ui/button";
-import { Input } from "../ui/input";
 import { Label } from "../ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 import { Textarea } from "../ui/textarea";
 import {
   Dialog,
@@ -18,7 +23,6 @@ import {
   Play,
   Pause,
   Stop,
-  Plus,
   X,
   Timer,
   CaretDown,
@@ -44,30 +48,32 @@ interface TimerState {
   projectId: number;
 }
 
-const TIMER_STORAGE_KEY = 'miru_timer_state';
+const TIMER_STORAGE_KEY = "miru_timer_state";
 
 const FloatingTimer: React.FC<FloatingTimerProps> = ({ onSaveEntry }) => {
   const { user, company } = useUserContext();
   const queryClient = useQueryClient();
-  
+
   const [isMinimized, setIsMinimized] = useState(false);
   const [showSaveDialog, setShowSaveDialog] = useState(false);
   const [timer, setTimer] = useState<TimerState>(() => {
     const saved = localStorage.getItem(TIMER_STORAGE_KEY);
     if (saved) {
       const parsed = JSON.parse(saved);
+
       return {
         ...parsed,
         startTime: parsed.isRunning ? Date.now() - parsed.elapsedTime : null,
       };
     }
+
     return {
       isRunning: false,
       startTime: null,
       elapsedTime: 0,
-      project: '',
-      client: '',
-      description: '',
+      project: "",
+      client: "",
+      description: "",
       projectId: 0,
     };
   });
@@ -80,29 +86,30 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({ onSaveEntry }) => {
     queryFn: async () => {
       try {
         // Fetch clients
-        const clientsResponse = await axios.get('/api/v1/clients');
+        const clientsResponse = await axios.get("/api/v1/clients");
         const clients = clientsResponse.data.clients || [];
-        
+
         // Fetch projects
-        const projectsResponse = await axios.get('/api/v1/projects');
+        const projectsResponse = await axios.get("/api/v1/projects");
         const projects = projectsResponse.data.projects || [];
-        
+
         // Transform data to match expected format
         return {
           clients: clients.map(client => ({
             id: client.id,
-            name: client.name
+            name: client.name,
           })),
           projects: projects.map(project => ({
             id: project.id,
             name: project.name,
             client: project.client?.name || "No Client",
             clientId: project.client?.id || null,
-            billable: project.billable || false
-          }))
+            billable: project.billable || false,
+          })),
         };
       } catch (error) {
-        console.error('Error fetching projects data:', error);
+        console.error("Error fetching projects data:", error);
+
         return { clients: [], projects: [] };
       }
     },
@@ -119,7 +126,9 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({ onSaveEntry }) => {
       intervalRef.current = setInterval(() => {
         setTimer(prev => ({
           ...prev,
-          elapsedTime: prev.startTime ? Date.now() - prev.startTime : prev.elapsedTime,
+          elapsedTime: prev.startTime
+            ? Date.now() - prev.startTime
+            : prev.elapsedTime,
         }));
       }, 1000);
     } else {
@@ -141,7 +150,10 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({ onSaveEntry }) => {
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
     const secs = seconds % 60;
-    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+
+    return `${hours.toString().padStart(2, "0")}:${minutes
+      .toString()
+      .padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
   };
 
   const startTimer = () => {
@@ -175,9 +187,9 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({ onSaveEntry }) => {
       isRunning: false,
       startTime: null,
       elapsedTime: 0,
-      project: '',
-      client: '',
-      description: '',
+      project: "",
+      client: "",
+      description: "",
       projectId: 0,
     });
     localStorage.removeItem(TIMER_STORAGE_KEY);
@@ -199,17 +211,22 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({ onSaveEntry }) => {
       const entry = {
         project_id: timer.projectId,
         timesheet_entry: {
-          work_date: new Date().toISOString().split('T')[0],
+          work_date: new Date().toISOString().split("T")[0],
           duration,
           note: timer.description,
-          bill_status: projectsData?.projects.find(p => p.id === timer.projectId)?.billable ? "unbilled" : "non_billable",
+          bill_status: projectsData?.projects.find(
+            p => p.id === timer.projectId
+          )?.billable
+            ? "unbilled"
+            : "non_billable",
         },
       };
 
       const response = await timesheetEntryApi.create(entry, user?.id);
+
       return response.data;
     },
-    onSuccess: (data) => {
+    onSuccess: data => {
       queryClient.invalidateQueries({ queryKey: ["timeEntries"] });
       toast.success("Time entry saved successfully");
       resetTimer();
@@ -248,17 +265,24 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({ onSaveEntry }) => {
     <>
       {/* Floating Timer */}
       <div className="fixed bottom-6 left-6 z-50">
-        <Card className={cn(
-          "bg-white shadow-lg border-2 transition-all duration-300",
-          timer.isRunning ? "border-green-500" : "border-gray-200",
-          isMinimized ? "w-48" : "w-80"
-        )}>
+        <Card
+          className={cn(
+            "bg-white shadow-lg border-2 transition-all duration-300",
+            timer.isRunning ? "border-green-500" : "border-gray-200",
+            isMinimized ? "w-48" : "w-80"
+          )}
+        >
           <CardContent className="p-4">
             {isMinimized ? (
               // Minimized view
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <Timer size={20} className={timer.isRunning ? "text-green-600" : "text-gray-400"} />
+                  <Timer
+                    size={20}
+                    className={
+                      timer.isRunning ? "text-green-600" : "text-gray-400"
+                    }
+                  />
                   <span className="font-mono text-lg font-bold">
                     {formatTime(timer.elapsedTime)}
                   </span>
@@ -273,7 +297,11 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({ onSaveEntry }) => {
                       <Play size={16} />
                     </Button>
                   )}
-                  <Button size="sm" variant="ghost" onClick={() => setIsMinimized(false)}>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => setIsMinimized(false)}
+                  >
                     <CaretUp size={16} />
                   </Button>
                 </div>
@@ -283,11 +311,20 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({ onSaveEntry }) => {
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <Timer size={20} className={timer.isRunning ? "text-green-600" : "text-gray-400"} />
+                    <Timer
+                      size={20}
+                      className={
+                        timer.isRunning ? "text-green-600" : "text-gray-400"
+                      }
+                    />
                     <span className="font-semibold">Timer</span>
                   </div>
                   <div className="flex gap-1">
-                    <Button size="sm" variant="ghost" onClick={() => setIsMinimized(true)}>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => setIsMinimized(true)}
+                    >
                       <CaretDown size={16} />
                     </Button>
                     <Button size="sm" variant="ghost" onClick={discardTimer}>
@@ -321,13 +358,18 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({ onSaveEntry }) => {
 
                 <div className="space-y-2">
                   <div>
-                    <Label htmlFor="timer-project" className="text-xs">Project</Label>
-                    <Select value={timer.project} onValueChange={handleProjectChange}>
+                    <Label htmlFor="timer-project" className="text-xs">
+                      Project
+                    </Label>
+                    <Select
+                      value={timer.project}
+                      onValueChange={handleProjectChange}
+                    >
                       <SelectTrigger className="h-8">
                         <SelectValue placeholder="Select project" />
                       </SelectTrigger>
                       <SelectContent>
-                        {projectsData?.projects.map((project) => (
+                        {projectsData?.projects.map(project => (
                           <SelectItem key={project.id} value={project.name}>
                             {project.name} ({project.client})
                           </SelectItem>
@@ -337,11 +379,18 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({ onSaveEntry }) => {
                   </div>
 
                   <div>
-                    <Label htmlFor="timer-description" className="text-xs">Description</Label>
+                    <Label htmlFor="timer-description" className="text-xs">
+                      Description
+                    </Label>
                     <Textarea
                       id="timer-description"
                       value={timer.description}
-                      onChange={(e) => setTimer(prev => ({ ...prev, description: e.target.value }))}
+                      onChange={e =>
+                        setTimer(prev => ({
+                          ...prev,
+                          description: e.target.value,
+                        }))
+                      }
                       placeholder="What are you working on?"
                       className="h-16 text-sm"
                     />
@@ -359,19 +408,24 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({ onSaveEntry }) => {
           <DialogHeader>
             <DialogTitle>Save Time Entry</DialogTitle>
             <DialogDescription>
-              You tracked {formatTime(timer.elapsedTime)}. Would you like to save this as a time entry?
+              You tracked {formatTime(timer.elapsedTime)}. Would you like to
+              save this as a time entry?
             </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-4">
             <div>
               <Label>Project</Label>
-              <p className="text-sm text-gray-600">{timer.project} ({timer.client})</p>
+              <p className="text-sm text-gray-600">
+                {timer.project} ({timer.client})
+              </p>
             </div>
-            
+
             <div>
               <Label>Duration</Label>
-              <p className="text-sm text-gray-600">{formatTime(timer.elapsedTime)}</p>
+              <p className="text-sm text-gray-600">
+                {formatTime(timer.elapsedTime)}
+              </p>
             </div>
 
             {timer.description && (
@@ -386,7 +440,7 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({ onSaveEntry }) => {
             <Button variant="outline" onClick={discardTimer}>
               Discard
             </Button>
-            <Button 
+            <Button
               onClick={handleSaveEntry}
               disabled={saveTimerMutation.isPending || !timer.project}
             >

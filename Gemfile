@@ -99,6 +99,11 @@ gem "pagy", "~> 5.10"
 
 gem "nokogiri", ">= 1.18.4"
 
+# Claude on Rails - AI-powered Rails development with swarm intelligence
+group :development do
+  gem "claude-on-rails", git: "https://github.com/obie/claude-on-rails.git"
+end
+
 # Manage application specific business logic. https://github.com/AaronLasseigne/active_interaction
 gem "active_interaction"
 

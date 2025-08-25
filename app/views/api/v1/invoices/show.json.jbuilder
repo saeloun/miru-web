@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 json.invoice do
   json.id invoice.id
   json.invoice_number invoice.invoice_number
@@ -15,7 +17,7 @@ json.invoice do
   json.reference invoice.reference
   json.created_at invoice.created_at
   json.updated_at invoice.updated_at
-  
+
   json.invoice_line_items invoice.invoice_line_items do |item|
     json.id item.id
     json.name item.name

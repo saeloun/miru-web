@@ -1,4 +1,4 @@
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
+import axios, { AxiosInstance, AxiosResponse } from "axios";
 import { toast } from "sonner";
 
 // API configuration
@@ -16,24 +16,23 @@ const apiClient: AxiosInstance = axios.create({
 
 // Request interceptor to add CSRF token
 apiClient.interceptors.request.use(
-  (config) => {
-    const token = document.querySelector('[name="csrf-token"]')?.getAttribute("content");
+  config => {
+    const token = document
+      .querySelector('[name="csrf-token"]')
+      ?.getAttribute("content");
     if (token) {
       config.headers["X-CSRF-TOKEN"] = token;
     }
+
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
+  error => Promise.reject(error)
 );
 
 // Response interceptor for error handling
 apiClient.interceptors.response.use(
-  (response: AxiosResponse) => {
-    return response;
-  },
-  (error) => {
+  (response: AxiosResponse) => response,
+  error => {
     if (error.response) {
       switch (error.response.status) {
         case 401:
@@ -46,15 +45,18 @@ apiClient.interceptors.response.use(
         case 404:
           toast.error("Resource not found");
           break;
-        case 422:
+        case 422: {
           // Validation errors
           const errors = error.response.data.errors;
           if (errors) {
-            Object.values(errors).flat().forEach((err: any) => {
-              toast.error(err);
-            });
+            Object.values(errors)
+              .flat()
+              .forEach((err: any) => {
+                toast.error(err);
+              });
           }
           break;
+        }
         case 500:
           toast.error("An unexpected error occurred. Please try again later.");
           break;
@@ -64,6 +66,7 @@ apiClient.interceptors.response.use(
     } else if (error.request) {
       toast.error("Network error. Please check your connection.");
     }
+
     return Promise.reject(error);
   }
 );
@@ -119,7 +122,8 @@ export const api = {
     create: (data: any) => apiClient.post("/projects", data),
     update: (id: string, data: any) => apiClient.patch(`/projects/${id}`, data),
     delete: (id: string) => apiClient.delete(`/projects/${id}`),
-    search: (query: string) => apiClient.get("/projects/search", { params: { q: query } }),
+    search: (query: string) =>
+      apiClient.get("/projects/search", { params: { q: query } }),
   },
 
   // Invoices
@@ -129,18 +133,23 @@ export const api = {
     create: (data: any) => apiClient.post("/invoices", data),
     update: (id: string, data: any) => apiClient.patch(`/invoices/${id}`, data),
     delete: (id: string) => apiClient.delete(`/invoices/${id}`),
-    send: (id: string, data: any) => apiClient.post(`/invoices/${id}/send_invoice`, data),
+    send: (id: string, data: any) =>
+      apiClient.post(`/invoices/${id}/send_invoice`, data),
     sendReminder: (id: string, data: any) =>
       apiClient.post(`/invoices/${id}/send_reminder`, data),
     download: (id: string) => apiClient.get(`/invoices/${id}/download`),
     view: (id: string) => apiClient.get(`/invoices/${id}/view`),
     waive: (id: string) => apiClient.patch(`/invoices/${id}/waived`),
-    bulkDelete: (ids: string[]) => apiClient.post("/invoices/bulk_deletion", { ids }),
-    bulkDownload: (ids: string[]) => apiClient.get("/invoices/bulk_download", { params: { ids } }),
+    bulkDelete: (ids: string[]) =>
+      apiClient.post("/invoices/bulk_deletion", { ids }),
+    bulkDownload: (ids: string[]) =>
+      apiClient.get("/invoices/bulk_download", { params: { ids } }),
     recentlyUpdated: () => apiClient.get("/invoices/recently_updated"),
     analytics: {
-      monthlyRevenue: () => apiClient.get("/invoices/analytics/monthly_revenue"),
-      revenueByStatus: () => apiClient.get("/invoices/analytics/revenue_by_status"),
+      monthlyRevenue: () =>
+        apiClient.get("/invoices/analytics/monthly_revenue"),
+      revenueByStatus: () =>
+        apiClient.get("/invoices/analytics/revenue_by_status"),
     },
   },
 
@@ -150,9 +159,11 @@ export const api = {
     entries: {
       list: (params?: any) => apiClient.get("/timesheet_entry", { params }),
       create: (data: any) => apiClient.post("/timesheet_entry", data),
-      update: (id: string, data: any) => apiClient.patch(`/timesheet_entry/${id}`, data),
+      update: (id: string, data: any) =>
+        apiClient.patch(`/timesheet_entry/${id}`, data),
       delete: (id: string) => apiClient.delete(`/timesheet_entry/${id}`),
-      bulkUpdate: (data: any) => apiClient.patch("/timesheet_entry/bulk_action", data),
+      bulkUpdate: (data: any) =>
+        apiClient.patch("/timesheet_entry/bulk_action", data),
       bulkDelete: (ids: string[]) =>
         apiClient.delete("/timesheet_entry/bulk_action", { data: { ids } }),
     },
@@ -188,21 +199,30 @@ export const api = {
   // Reports
   reports: {
     clientRevenues: {
-      list: (params?: any) => apiClient.get("/reports/client_revenues", { params }),
-      download: (params?: any) => apiClient.get("/reports/client_revenues/download", { params }),
+      list: (params?: any) =>
+        apiClient.get("/reports/client_revenues", { params }),
+      download: (params?: any) =>
+        apiClient.get("/reports/client_revenues/download", { params }),
     },
     timeEntries: {
-      list: (params?: any) => apiClient.get("/reports/time_entries", { params }),
-      download: (params?: any) => apiClient.get("/reports/time_entries/download", { params }),
+      list: (params?: any) =>
+        apiClient.get("/reports/time_entries", { params }),
+      download: (params?: any) =>
+        apiClient.get("/reports/time_entries/download", { params }),
     },
     outstandingInvoices: {
-      list: (params?: any) => apiClient.get("/reports/outstanding_overdue_invoices", { params }),
+      list: (params?: any) =>
+        apiClient.get("/reports/outstanding_overdue_invoices", { params }),
       download: (params?: any) =>
-        apiClient.get("/reports/outstanding_overdue_invoices/download", { params }),
+        apiClient.get("/reports/outstanding_overdue_invoices/download", {
+          params,
+        }),
     },
     accountsAging: {
-      list: (params?: any) => apiClient.get("/reports/accounts_aging", { params }),
-      download: (params?: any) => apiClient.get("/reports/accounts_aging/download", { params }),
+      list: (params?: any) =>
+        apiClient.get("/reports/accounts_aging", { params }),
+      download: (params?: any) =>
+        apiClient.get("/reports/accounts_aging/download", { params }),
     },
   },
 
@@ -212,12 +232,15 @@ export const api = {
     create: (data: any) => apiClient.post("/payments", data),
     settings: {
       get: () => apiClient.get("/payments/settings"),
-      connectStripe: (data: any) => apiClient.post("/payments/settings/stripe/connect", data),
-      disconnectStripe: () => apiClient.delete("/payments/settings/stripe/disconnect"),
+      connectStripe: (data: any) =>
+        apiClient.post("/payments/settings/stripe/connect", data),
+      disconnectStripe: () =>
+        apiClient.delete("/payments/settings/stripe/disconnect"),
     },
     providers: {
       list: () => apiClient.get("/payments/providers"),
-      update: (id: string, data: any) => apiClient.patch(`/payments/providers/${id}`, data),
+      update: (id: string, data: any) =>
+        apiClient.patch(`/payments/providers/${id}`, data),
     },
   },
 
@@ -225,7 +248,8 @@ export const api = {
   companies: {
     list: () => apiClient.get("/companies"),
     create: (data: any) => apiClient.post("/companies", data),
-    update: (id: string, data: any) => apiClient.patch(`/companies/${id}`, data),
+    update: (id: string, data: any) =>
+      apiClient.patch(`/companies/${id}`, data),
     deleteLogo: (id: string) => apiClient.delete(`/companies/${id}/purge_logo`),
   },
 
@@ -234,7 +258,8 @@ export const api = {
     update: (data: any) => apiClient.patch("/profile", data),
     bankDetails: {
       list: () => apiClient.get("/profiles/bank_account_details"),
-      create: (data: any) => apiClient.post("/profiles/bank_account_details", data),
+      create: (data: any) =>
+        apiClient.post("/profiles/bank_account_details", data),
       update: (accountId: string, data: any) =>
         apiClient.patch(`/profiles/bank_account_details/${accountId}`, data),
     },
@@ -243,13 +268,15 @@ export const api = {
   // Workspaces
   workspaces: {
     list: () => apiClient.get("/workspaces"),
-    update: (id: string, data: any) => apiClient.patch(`/workspaces/${id}`, data),
+    update: (id: string, data: any) =>
+      apiClient.patch(`/workspaces/${id}`, data),
   },
 
   // Invitations
   invitations: {
     create: (data: any) => apiClient.post("/invitations", data),
-    update: (id: string, data: any) => apiClient.patch(`/invitations/${id}`, data),
+    update: (id: string, data: any) =>
+      apiClient.patch(`/invitations/${id}`, data),
     delete: (id: string) => apiClient.delete(`/invitations/${id}`),
     resend: (id: string) => apiClient.post(`/invitations/${id}/resend`),
   },
@@ -257,7 +284,8 @@ export const api = {
   // Holidays
   holidays: {
     list: (year: number) => apiClient.get("/holidays", { params: { year } }),
-    update: (year: number, data: any) => apiClient.patch(`/holidays/${year}`, data),
+    update: (year: number, data: any) =>
+      apiClient.patch(`/holidays/${year}`, data),
   },
 
   // Leaves
@@ -267,7 +295,8 @@ export const api = {
     update: (id: string, data: any) => apiClient.patch(`/leaves/${id}`, data),
     delete: (id: string) => apiClient.delete(`/leaves/${id}`),
     types: {
-      list: (leaveId: string) => apiClient.get(`/leaves/${leaveId}/leave_types`),
+      list: (leaveId: string) =>
+        apiClient.get(`/leaves/${leaveId}/leave_types`),
       create: (leaveId: string, data: any) =>
         apiClient.post(`/leaves/${leaveId}/leave_types`, data),
       update: (leaveId: string, typeId: string, data: any) =>
@@ -282,7 +311,8 @@ export const api = {
     list: (params?: any) => apiClient.get("/timeoff_entries", { params }),
     get: (id: string) => apiClient.get(`/timeoff_entries/${id}`),
     create: (data: any) => apiClient.post("/timeoff_entries", data),
-    update: (id: string, data: any) => apiClient.patch(`/timeoff_entries/${id}`, data),
+    update: (id: string, data: any) =>
+      apiClient.patch(`/timeoff_entries/${id}`, data),
     delete: (id: string) => apiClient.delete(`/timeoff_entries/${id}`),
   },
 

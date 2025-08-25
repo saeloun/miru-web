@@ -29,10 +29,12 @@ const LeaveBlock = ({ leaveType, selectedLeaveType, setSelectedLeaveType }) => {
   const isSelected = selectedLeaveType?.name === name;
 
   return (
-    <Card 
+    <Card
       className={cn(
         "cursor-pointer transition-all hover:shadow-md border",
-        isSelected ? "border-miru-han-purple-400 bg-miru-han-purple-100/30" : "border-gray-200 bg-white"
+        isSelected
+          ? "border-miru-han-purple-400 bg-miru-han-purple-100/30"
+          : "border-gray-200 bg-white"
       )}
       onClick={() => setSelectedLeaveType(leaveType)}
     >
@@ -40,18 +42,16 @@ const LeaveBlock = ({ leaveType, selectedLeaveType, setSelectedLeaveType }) => {
         <div className="flex items-start justify-between">
           <div className="flex-1">
             <div className="flex items-center gap-3 mb-2">
-              <div 
+              <div
                 className="h-8 w-8 rounded-lg flex items-center justify-center"
-                style={{ 
-                  backgroundColor: leaveColor.value + '15',
-                  color: leaveColor.value 
+                style={{
+                  backgroundColor: `${leaveColor.value}15`,
+                  color: leaveColor.value,
                 }}
               >
                 {leaveIcon?.icon}
               </div>
-              <h3 className="font-medium text-gray-900">
-                {name}
-              </h3>
+              <h3 className="font-medium text-gray-900">{name}</h3>
             </div>
             <p className="text-2xl font-semibold text-gray-900">
               {formattedDuration}

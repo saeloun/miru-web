@@ -11,7 +11,7 @@ class HomeController < ApplicationController
     respond_to do |format|
       format.html { render }
       format.json { render json: { status: "ok", authenticated: user_signed_in? } }
-      format.js { head :not_found }  # Service worker requests
+      format.js { head 404 }  # Service worker requests
     end
   end
 

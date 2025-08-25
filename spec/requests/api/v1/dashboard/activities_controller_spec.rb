@@ -41,7 +41,7 @@ RSpec.describe Api::V1::Dashboard::ActivitiesController, type: :request do
           activities = response_json["activities"]
 
           expect(activities.length).to eq(2)
-          expect(activities.map { |a| a["type"] }).to all(eq("invoice"))
+          expect(activities.pluck("type")).to all(eq("invoice"))
           expect(activities.map { |a| a["metadata"]["invoice_id"] }).to contain_exactly(
             sent_invoice.id, paid_invoice.id
           )
@@ -123,7 +123,7 @@ RSpec.describe Api::V1::Dashboard::ActivitiesController, type: :request do
 
           expect(activities.length).to eq(3)
           # Should be sorted with most recent first
-          timestamps = activities.map { |a| a["timestamp"] }
+          timestamps = activities.pluck("timestamp")
           expect(timestamps).to eq(timestamps.sort.reverse)
         end
       end

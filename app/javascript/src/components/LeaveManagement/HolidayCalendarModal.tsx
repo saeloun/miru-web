@@ -1,6 +1,6 @@
 import React from "react";
 import { Dialog, DialogContent, DialogTitle } from "../ui/dialog";
-import { X, CaretLeft, CaretRight } from "phosphor-react";
+import { X } from "phosphor-react";
 import { yearCalendar } from "constants/leaveType";
 import { Calendar } from "../ui/calendar";
 import { useUserContext } from "context/UserContext";
@@ -27,33 +27,34 @@ const HolidayCalendarModal: React.FC<HolidayCalendarModalProps> = ({
 
   const CalendarComponent = ({ id, name, year }) => {
     const monthDate = new Date(year, id, 1);
-    
+
     // Get holidays for this month
     const getHolidayForDate = (date: Date) => {
       // This should come from your holiday data
       // For now, returning mock data for demonstration
-      const dateStr = date.toISOString().split('T')[0];
+      const dateStr = date.toISOString().split("T")[0];
+
       // You would check against actual holiday data here
       return null;
     };
-    
+
     const modifiers = {
       holiday: (date: Date) => {
         // Check if date is a holiday
         const holiday = getHolidayForDate(date);
+
         return holiday !== null;
       },
-      optionalHoliday: (date: Date) => {
+      optionalHoliday: (date: Date) =>
         // Check if date is an optional holiday
-        return false; // Implement based on your data
-      }
+        false, // Implement based on your data
     };
-    
+
     const modifiersClassNames = {
       holiday: "bg-miru-chart-pink-600 text-white hover:bg-miru-chart-pink-700",
-      optionalHoliday: "bg-miru-gray-800 text-white hover:bg-miru-gray-900"
+      optionalHoliday: "bg-miru-gray-800 text-white hover:bg-miru-gray-900",
     };
-    
+
     return (
       <div className="flex w-full flex-col items-center justify-start bg-miru-gray-100 py-4 px-3 lg:w-1/3 rounded-lg shadow-sm">
         <span className="text-base font-semibold text-miru-dark-purple-1000 mb-3">
@@ -84,7 +85,8 @@ const HolidayCalendarModal: React.FC<HolidayCalendarModalProps> = ({
               "hover:bg-miru-gray-200 rounded",
               "aria-selected:opacity-100"
             ),
-            day_today: "bg-miru-gray-200 text-miru-dark-purple-1000 font-semibold",
+            day_today:
+              "bg-miru-gray-200 text-miru-dark-purple-1000 font-semibold",
             day_selected: "bg-transparent",
             day_outside: "text-miru-dark-purple-400 opacity-50",
             day_disabled: "text-miru-dark-purple-400 opacity-30",

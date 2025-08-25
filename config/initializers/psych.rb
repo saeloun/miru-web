@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Allow BigDecimal and other classes for Rails 7.1+
 require "bigdecimal"
 require "bigdecimal/util"

@@ -1,9 +1,7 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import deviceApi from "apis/devices";
-import Loader from "common/Loader/index";
 import { MobileEditHeader } from "common/Mobile/MobileEditHeader";
-import DetailsHeader from "components/Profile/Common/DetailsHeader";
 import { useProfileContext } from "context/Profile/ProfileContext";
 import { useUserContext } from "context/UserContext";
 import { useNavigate, useParams } from "react-router-dom";
@@ -56,9 +54,12 @@ const AllocatedDevicesDetails = () => {
           <div className="mb-8">
             <div className="flex items-center justify-between">
               <div>
-                <h1 className="text-3xl font-bold text-gray-900">Allocated Devices</h1>
+                <h1 className="text-3xl font-bold text-gray-900">
+                  Allocated Devices
+                </h1>
                 <p className="mt-1 text-gray-600">
-                  Manage and view all devices allocated to {isFromSettings ? "you" : "this team member"}
+                  Manage and view all devices allocated to{" "}
+                  {isFromSettings ? "you" : "this team member"}
                 </p>
               </div>
               {devices.length > 0 && (

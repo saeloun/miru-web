@@ -1,6 +1,23 @@
 import React, { useState } from "react";
-import { Laptop, Smartphone, Tablet, Monitor, HardDrive, Cpu, Plus, Trash2, Save, X } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "../../../../ui/card";
+import {
+  Laptop,
+  Smartphone,
+  Tablet,
+  Monitor,
+  HardDrive,
+  Cpu,
+  Plus,
+  Trash2,
+  Save,
+  X,
+} from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "../../../../ui/card";
 import { Button } from "../../../../ui/button";
 import { Input } from "../../../../ui/input";
 import { Label } from "../../../../ui/label";
@@ -11,9 +28,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../../../ui/select";
-import { Separator } from "../../../../ui/separator";
 import { Badge } from "../../../../ui/badge";
-import { cn } from "../../../../../lib/utils";
 
 interface DeviceSpec {
   ram?: string;
@@ -48,6 +63,7 @@ const deviceTypes = [
 const getDeviceIcon = (type: string) => {
   const device = deviceTypes.find(d => d.value === type);
   const Icon = device?.icon || HardDrive;
+
   return <Icon className="h-5 w-5" />;
 };
 
@@ -107,7 +123,9 @@ const ModernEditPage: React.FC<ModernEditPageProps> = ({
 
   const handleCancel = () => {
     if (hasChanges) {
-      const confirmed = window.confirm("You have unsaved changes. Are you sure you want to cancel?");
+      const confirmed = window.confirm(
+        "You have unsaved changes. Are you sure you want to cancel?"
+      );
       if (!confirmed) return;
     }
     onCancel();
@@ -120,7 +138,9 @@ const ModernEditPage: React.FC<ModernEditPageProps> = ({
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div>
-              <h1 className="text-2xl font-semibold text-gray-900">Edit Allocated Devices</h1>
+              <h1 className="text-2xl font-semibold text-gray-900">
+                Edit Allocated Devices
+              </h1>
               <p className="text-sm text-gray-600 mt-1">
                 Manage your company-allocated devices and equipment
               </p>
@@ -157,7 +177,11 @@ const ModernEditPage: React.FC<ModernEditPageProps> = ({
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
                     <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-white border border-gray-200">
-                      {device.device_type ? getDeviceIcon(device.device_type) : <HardDrive className="h-5 w-5 text-gray-400" />}
+                      {device.device_type ? (
+                        getDeviceIcon(device.device_type)
+                      ) : (
+                        <HardDrive className="h-5 w-5 text-gray-400" />
+                      )}
                     </div>
                     <div>
                       <CardTitle className="text-lg">
@@ -187,13 +211,15 @@ const ModernEditPage: React.FC<ModernEditPageProps> = ({
                     <Label htmlFor={`device-type-${index}`}>Device Type</Label>
                     <Select
                       value={device.device_type}
-                      onValueChange={(value) => handleDeviceChange(index, "device_type", value)}
+                      onValueChange={value =>
+                        handleDeviceChange(index, "device_type", value)
+                      }
                     >
                       <SelectTrigger id={`device-type-${index}`}>
                         <SelectValue placeholder="Select device type" />
                       </SelectTrigger>
                       <SelectContent>
-                        {deviceTypes.map((type) => (
+                        {deviceTypes.map(type => (
                           <SelectItem key={type.value} value={type.value}>
                             <div className="flex items-center space-x-2">
                               <type.icon className="h-4 w-4" />
@@ -212,7 +238,9 @@ const ModernEditPage: React.FC<ModernEditPageProps> = ({
                       id={`model-${index}`}
                       type="text"
                       value={device.name}
-                      onChange={(e) => handleDeviceChange(index, "name", e.target.value)}
+                      onChange={e =>
+                        handleDeviceChange(index, "name", e.target.value)
+                      }
                       placeholder="e.g., MacBook Pro 16-inch"
                     />
                   </div>
@@ -224,7 +252,13 @@ const ModernEditPage: React.FC<ModernEditPageProps> = ({
                       id={`serial-${index}`}
                       type="text"
                       value={device.serial_number}
-                      onChange={(e) => handleDeviceChange(index, "serial_number", e.target.value)}
+                      onChange={e =>
+                        handleDeviceChange(
+                          index,
+                          "serial_number",
+                          e.target.value
+                        )
+                      }
                       placeholder="e.g., C02XX1234567"
                     />
                   </div>
@@ -239,7 +273,13 @@ const ModernEditPage: React.FC<ModernEditPageProps> = ({
                       id={`ram-${index}`}
                       type="text"
                       value={device.specifications.ram || ""}
-                      onChange={(e) => handleDeviceChange(index, "specifications.ram", e.target.value)}
+                      onChange={e =>
+                        handleDeviceChange(
+                          index,
+                          "specifications.ram",
+                          e.target.value
+                        )
+                      }
                       placeholder="e.g., 16GB DDR4"
                     />
                   </div>
@@ -254,7 +294,13 @@ const ModernEditPage: React.FC<ModernEditPageProps> = ({
                       id={`processor-${index}`}
                       type="text"
                       value={device.specifications.processor || ""}
-                      onChange={(e) => handleDeviceChange(index, "specifications.processor", e.target.value)}
+                      onChange={e =>
+                        handleDeviceChange(
+                          index,
+                          "specifications.processor",
+                          e.target.value
+                        )
+                      }
                       placeholder="e.g., Intel Core i7-10750H"
                     />
                   </div>
@@ -266,7 +312,13 @@ const ModernEditPage: React.FC<ModernEditPageProps> = ({
                       id={`graphics-${index}`}
                       type="text"
                       value={device.specifications.graphics || ""}
-                      onChange={(e) => handleDeviceChange(index, "specifications.graphics", e.target.value)}
+                      onChange={e =>
+                        handleDeviceChange(
+                          index,
+                          "specifications.graphics",
+                          e.target.value
+                        )
+                      }
                       placeholder="e.g., NVIDIA GeForce RTX 3060"
                     />
                   </div>
@@ -278,7 +330,13 @@ const ModernEditPage: React.FC<ModernEditPageProps> = ({
                       id={`storage-${index}`}
                       type="text"
                       value={device.specifications.storage || ""}
-                      onChange={(e) => handleDeviceChange(index, "specifications.storage", e.target.value)}
+                      onChange={e =>
+                        handleDeviceChange(
+                          index,
+                          "specifications.storage",
+                          e.target.value
+                        )
+                      }
                       placeholder="e.g., 512GB SSD"
                     />
                   </div>
@@ -288,8 +346,10 @@ const ModernEditPage: React.FC<ModernEditPageProps> = ({
           ))}
 
           {/* Add Device Button */}
-          <Card className="border-dashed border-2 border-gray-300 bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer"
-                onClick={addDevice}>
+          <Card
+            className="border-dashed border-2 border-gray-300 bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer"
+            onClick={addDevice}
+          >
             <CardContent className="flex items-center justify-center py-8">
               <div className="text-center">
                 <div className="flex justify-center mb-3">
@@ -297,8 +357,12 @@ const ModernEditPage: React.FC<ModernEditPageProps> = ({
                     <Plus className="h-6 w-6 text-indigo-600" />
                   </div>
                 </div>
-                <h3 className="text-sm font-medium text-gray-900">Add Another Device</h3>
-                <p className="text-sm text-gray-500 mt-1">Click to add a new device to your inventory</p>
+                <h3 className="text-sm font-medium text-gray-900">
+                  Add Another Device
+                </h3>
+                <p className="text-sm text-gray-500 mt-1">
+                  Click to add a new device to your inventory
+                </p>
               </div>
             </CardContent>
           </Card>
@@ -313,16 +377,26 @@ const ModernEditPage: React.FC<ModernEditPageProps> = ({
                 <div className="flex items-center justify-between">
                   <div className="space-y-1">
                     <p className="text-sm text-gray-600">Total Devices</p>
-                    <p className="text-2xl font-bold text-gray-900">{devices.length}</p>
+                    <p className="text-2xl font-bold text-gray-900">
+                      {devices.length}
+                    </p>
                   </div>
                   <div className="flex flex-wrap gap-2">
-                    {deviceTypes.map((type) => {
-                      const count = devices.filter(d => d.device_type === type.value).length;
+                    {deviceTypes.map(type => {
+                      const count = devices.filter(
+                        d => d.device_type === type.value
+                      ).length;
                       if (count === 0) return null;
+
                       return (
-                        <Badge key={type.value} variant="secondary" className="py-1 px-3">
+                        <Badge
+                          key={type.value}
+                          variant="secondary"
+                          className="py-1 px-3"
+                        >
                           <type.icon className="h-3 w-3 mr-1" />
-                          {count} {type.label}{count > 1 ? 's' : ''}
+                          {count} {type.label}
+                          {count > 1 ? "s" : ""}
                         </Badge>
                       );
                     })}

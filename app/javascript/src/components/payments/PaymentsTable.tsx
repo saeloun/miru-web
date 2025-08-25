@@ -72,9 +72,11 @@ interface PaymentsData {
 const fetchPayments = async (): Promise<PaymentsData> => {
   try {
     const response = await api.get("/payments");
+
     return response.data;
   } catch (error) {
     console.warn("Payments API error, using fallback data", error);
+
     return {
       payments: [],
       baseCurrency: "USD",
@@ -132,14 +134,14 @@ const PaymentsTable: React.FC = () => {
       header: ({ table }) => (
         <Checkbox
           checked={table.getIsAllPageRowsSelected()}
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          onCheckedChange={value => table.toggleAllPageRowsSelected(!!value)}
           aria-label="Select all"
         />
       ),
       cell: ({ row }) => (
         <Checkbox
           checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          onCheckedChange={value => row.toggleSelected(!!value)}
           aria-label="Select row"
         />
       ),
@@ -148,38 +150,38 @@ const PaymentsTable: React.FC = () => {
     },
     {
       accessorKey: "transactionDate",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="-ml-4"
-          >
-            Date
-            {column.getIsSorted() === "asc" ? (
-              <ArrowUp size={16} className="ml-2" />
-            ) : column.getIsSorted() === "desc" ? (
-              <ArrowDown size={16} className="ml-2" />
-            ) : (
-              <><CaretUp size={8} className="ml-2 -mb-1" /><CaretDown size={8} className="ml-2 -mt-1" /></>
-            )}
-          </Button>
-        );
-      },
-      cell: ({ row }) => {
-        return (
-          <div className="flex items-center gap-2">
-            <Calendar className="h-4 w-4 text-gray-400" />
-            <span className="text-sm">{row.original.transactionDate}</span>
-          </div>
-        );
-      },
+      header: ({ column }) => (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="-ml-4"
+        >
+          Date
+          {column.getIsSorted() === "asc" ? (
+            <ArrowUp size={16} className="ml-2" />
+          ) : column.getIsSorted() === "desc" ? (
+            <ArrowDown size={16} className="ml-2" />
+          ) : (
+            <>
+              <CaretUp size={8} className="ml-2 -mb-1" />
+              <CaretDown size={8} className="ml-2 -mt-1" />
+            </>
+          )}
+        </Button>
+      ),
+      cell: ({ row }) => (
+        <div className="flex items-center gap-2">
+          <Calendar className="h-4 w-4 text-gray-400" />
+          <span className="text-sm">{row.original.transactionDate}</span>
+        </div>
+      ),
     },
     {
       accessorKey: "invoiceNumber",
       header: "Invoice",
       cell: ({ row }) => {
         const payment = row.original;
+
         return (
           <button
             className="text-blue-600 hover:text-blue-800 hover:underline font-medium"
@@ -195,6 +197,7 @@ const PaymentsTable: React.FC = () => {
       header: "Client",
       cell: ({ row }) => {
         const payment = row.original;
+
         return (
           <div>
             <p className="font-medium text-gray-900">{payment.clientName}</p>
@@ -204,26 +207,28 @@ const PaymentsTable: React.FC = () => {
     },
     {
       accessorKey: "amount",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="-ml-4"
-          >
-            Amount
-            {column.getIsSorted() === "asc" ? (
-              <ArrowUp size={16} className="ml-2" />
-            ) : column.getIsSorted() === "desc" ? (
-              <ArrowDown size={16} className="ml-2" />
-            ) : (
-              <><CaretUp size={8} className="ml-2 -mb-1" /><CaretDown size={8} className="ml-2 -mt-1" /></>
-            )}
-          </Button>
-        );
-      },
+      header: ({ column }) => (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="-ml-4"
+        >
+          Amount
+          {column.getIsSorted() === "asc" ? (
+            <ArrowUp size={16} className="ml-2" />
+          ) : column.getIsSorted() === "desc" ? (
+            <ArrowDown size={16} className="ml-2" />
+          ) : (
+            <>
+              <CaretUp size={8} className="ml-2 -mb-1" />
+              <CaretDown size={8} className="ml-2 -mt-1" />
+            </>
+          )}
+        </Button>
+      ),
       cell: ({ row }) => {
         const payment = row.original;
+
         return (
           <div className="font-medium">
             {currencyFormat(payment.currency || baseCurrency, payment.amount)}
@@ -234,20 +239,19 @@ const PaymentsTable: React.FC = () => {
     {
       accessorKey: "transactionType",
       header: "Payment Method",
-      cell: ({ row }) => {
-        return getTransactionTypeBadge(row.original.transactionType);
-      },
+      cell: ({ row }) => getTransactionTypeBadge(row.original.transactionType),
     },
     {
       id: "status",
       header: "Status",
-      cell: ({ row }) => {
-        return (
-          <Badge variant="outline" className="bg-green-50 text-green-700 border-green-300">
-            Paid
-          </Badge>
-        );
-      },
+      cell: ({ row }) => (
+        <Badge
+          variant="outline"
+          className="bg-green-50 text-green-700 border-green-300"
+        >
+          Paid
+        </Badge>
+      ),
     },
     {
       id: "actions",
@@ -266,12 +270,16 @@ const PaymentsTable: React.FC = () => {
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <DropdownMenuItem
-                onClick={() => navigator.clipboard.writeText(payment.transactionId)}
+                onClick={() =>
+                  navigator.clipboard.writeText(payment.transactionId)
+                }
               >
                 Copy transaction ID
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => navigate(`/invoices/${payment.invoiceId}`)}>
+              <DropdownMenuItem
+                onClick={() => navigate(`/invoices/${payment.invoiceId}`)}
+              >
                 <Eye className="h-4 w-4 mr-2" />
                 View invoice
               </DropdownMenuItem>
@@ -305,7 +313,8 @@ const PaymentsTable: React.FC = () => {
     );
   }
 
-  const totalAmount = data?.payments?.reduce((sum, payment) => sum + payment.amount, 0) || 0;
+  const totalAmount =
+    data?.payments?.reduce((sum, payment) => sum + payment.amount, 0) || 0;
 
   return (
     <div className="space-y-6 p-6 max-w-7xl mx-auto">
@@ -332,7 +341,9 @@ const PaymentsTable: React.FC = () => {
       <div className="grid gap-4 md:grid-cols-3">
         <Card className="border-gray-200">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Payments</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Total Payments
+            </CardTitle>
             <CreditCard className="h-4 w-4 text-gray-400" />
           </CardHeader>
           <CardContent>
@@ -343,7 +354,9 @@ const PaymentsTable: React.FC = () => {
 
         <Card className="border-gray-200">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Collected</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Total Collected
+            </CardTitle>
             <CurrencyDollar className="h-4 w-4 text-gray-400" />
           </CardHeader>
           <CardContent>
@@ -356,7 +369,9 @@ const PaymentsTable: React.FC = () => {
 
         <Card className="border-gray-200">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Average Payment</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Average Payment
+            </CardTitle>
             <CurrencyDollar className="h-4 w-4 text-gray-400" />
           </CardHeader>
           <CardContent>
@@ -389,7 +404,9 @@ const PaymentsTable: React.FC = () => {
           ) : (
             <div className="text-center py-12">
               <CreditCard className="mx-auto h-12 w-12 text-gray-300" />
-              <p className="text-gray-600 mb-4 mt-4">No payments recorded yet</p>
+              <p className="text-gray-600 mb-4 mt-4">
+                No payments recorded yet
+              </p>
               {isAdminUser && (
                 <Button
                   variant="outline"
@@ -405,7 +422,10 @@ const PaymentsTable: React.FC = () => {
       </Card>
 
       {/* New Payment Dialog Placeholder */}
-      <Dialog open={showNewPaymentDialog} onOpenChange={setShowNewPaymentDialog}>
+      <Dialog
+        open={showNewPaymentDialog}
+        onOpenChange={setShowNewPaymentDialog}
+      >
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Record Payment</DialogTitle>
@@ -418,13 +438,18 @@ const PaymentsTable: React.FC = () => {
             <p className="text-gray-600">Payment form coming soon...</p>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setShowNewPaymentDialog(false)}>
+            <Button
+              variant="outline"
+              onClick={() => setShowNewPaymentDialog(false)}
+            >
               Cancel
             </Button>
-            <Button onClick={() => {
-              toast.success("Payment recorded successfully");
-              setShowNewPaymentDialog(false);
-            }}>
+            <Button
+              onClick={() => {
+                toast.success("Payment recorded successfully");
+                setShowNewPaymentDialog(false);
+              }}
+            >
               Save Payment
             </Button>
           </DialogFooter>

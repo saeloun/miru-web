@@ -10,6 +10,14 @@ declare global {
       navigator?: any;
     };
   }
+  
+  // Global navigator interface (available in browsers)
+  const navigator: Navigator;
+  
+  // Node.js types
+  namespace NodeJS {
+    interface Timeout {}
+  }
 }
 
 export {};

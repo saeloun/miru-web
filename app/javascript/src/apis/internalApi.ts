@@ -6,11 +6,11 @@ import {
   getValueFromLocalStorage,
 } from "utils/storage";
 
-class ApiHandler {
+class InternalApiHandler {
   axios: any;
   constructor() {
     this.axios = axios.create({
-      baseURL: "/api/v1",
+      baseURL: "/internal_api/v1",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
@@ -80,6 +80,6 @@ class ApiHandler {
   }
 }
 
-const Api = new ApiHandler();
+const InternalApi = new InternalApiHandler();
 
-export default Api.axios;
+export default InternalApi.axios;

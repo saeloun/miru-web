@@ -22,7 +22,7 @@ const AppWithUserData = (props: any) => {
         "/password/edit",
         "/email_confirmation",
       ];
-      
+
       const isAuthPage = authPaths.some(path =>
         window.location.pathname.startsWith(path)
       );
@@ -35,6 +35,7 @@ const AppWithUserData = (props: any) => {
           companyRole: null,
           loading: false,
         });
+
         return;
       }
 
@@ -42,7 +43,10 @@ const AppWithUserData = (props: any) => {
         const response = await fetch("/api/v1/users/_me", {
           headers: {
             "Content-Type": "application/json",
-            "X-CSRF-TOKEN": document.querySelector('[name="csrf-token"]')?.getAttribute("content") || "",
+            "X-CSRF-TOKEN":
+              document
+                .querySelector('[name="csrf-token"]')
+                ?.getAttribute("content") || "",
           },
           credentials: "include",
         });

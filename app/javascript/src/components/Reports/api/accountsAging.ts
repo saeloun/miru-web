@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Toastr } from "StyledComponents";
 
 import accountsAgingApi from "apis/reports/accountsAging";

@@ -11,9 +11,11 @@ const StaticPage = ({ devices }) => {
     if (type.includes("phone") || type.includes("mobile")) {
       return <DeviceMobile className="h-5 w-5" />;
     }
+
     if (type.includes("laptop") || type.includes("macbook")) {
       return <Laptop className="h-5 w-5" />;
     }
+
     return <Desktop className="h-5 w-5" />;
   };
 
@@ -26,7 +28,10 @@ const StaticPage = ({ devices }) => {
     } = device;
 
     return (
-      <Card key={index} className="border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+      <Card
+        key={index}
+        className="border-gray-200 shadow-sm hover:shadow-md transition-shadow"
+      >
         <CardHeader className="pb-4">
           <div className="flex items-center justify-between">
             <CardTitle className="flex items-center gap-3 text-lg font-semibold text-gray-900">
@@ -34,8 +39,12 @@ const StaticPage = ({ devices }) => {
                 {getDeviceIcon(device_type)}
               </div>
               <div>
-                <div className="text-lg font-semibold">{name || `Device ${index + 1}`}</div>
-                <div className="text-sm font-normal text-gray-500">{device_type || "Unknown Device"}</div>
+                <div className="text-lg font-semibold">
+                  {name || `Device ${index + 1}`}
+                </div>
+                <div className="text-sm font-normal text-gray-500">
+                  {device_type || "Unknown Device"}
+                </div>
               </div>
             </CardTitle>
             {device_type && (

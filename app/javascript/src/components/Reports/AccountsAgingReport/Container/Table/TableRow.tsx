@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 
-import { currencyFormat } from "helpers";
+import { formatCurrency } from "../../../../../utils/currency";
 import { Avatar, Tooltip } from "StyledComponents";
 
 import { useUserContext } from "context/UserContext";
@@ -47,7 +47,7 @@ const TableRow = ({ currency, report }) => {
           0 - 30 DAYS
         </dt>
         <span className="text-sm font-medium text-miru-dark-purple-1000 lg:text-base">
-          {currencyFormat(currency, amount_overdue.zero_to_thirty_days)}
+          {formatCurrency(amount_overdue.zero_to_thirty_days, currency)}
         </span>
       </td>
       <td className="flex items-center justify-between whitespace-nowrap py-2.5 text-right lg:table-cell lg:w-2/12 lg:px-8">
@@ -55,7 +55,7 @@ const TableRow = ({ currency, report }) => {
           31 - 60 DAYS
         </dt>
         <span className="text-sm font-medium text-miru-dark-purple-1000 lg:text-base">
-          {currencyFormat(currency, amount_overdue.thirty_one_to_sixty_days)}
+          {formatCurrency(amount_overdue.thirty_one_to_sixty_days, currency)}
         </span>
       </td>
       <td className="flex items-center justify-between whitespace-nowrap py-2.5 text-right lg:table-cell lg:w-2/12 lg:px-8">
@@ -63,7 +63,7 @@ const TableRow = ({ currency, report }) => {
           61 - 90 DAYS
         </dt>
         <span className="text-sm font-medium text-miru-dark-purple-1000 lg:text-base">
-          {currencyFormat(currency, amount_overdue.sixty_one_to_ninety_days)}
+          {formatCurrency(amount_overdue.sixty_one_to_ninety_days, currency)}
         </span>
       </td>
       <td className="flex items-center justify-between whitespace-nowrap py-2.5 text-right lg:table-cell lg:w-2/12 lg:px-8">
@@ -71,7 +71,7 @@ const TableRow = ({ currency, report }) => {
           90+ DAYS
         </dt>
         <span className="text-sm font-medium text-miru-dark-purple-1000 lg:text-base">
-          {currencyFormat(currency, amount_overdue.ninety_plus_days)}
+          {formatCurrency(amount_overdue.ninety_plus_days, currency)}
         </span>
       </td>
       <td className="flex items-center justify-between whitespace-nowrap pb-2.5 text-right text-xl font-bold text-miru-dark-purple-1000 lg:mt-0 lg:table-cell lg:w-2/12 lg:pl-8">
@@ -79,7 +79,7 @@ const TableRow = ({ currency, report }) => {
           Total
         </dt>
         <span className="text-sm font-bold text-miru-dark-purple-1000 lg:text-base">
-          {currencyFormat(currency, amount_overdue.total)}
+          {formatCurrency(amount_overdue.total, currency)}
         </span>
       </td>
     </tr>

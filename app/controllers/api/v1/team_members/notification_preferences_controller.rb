@@ -9,13 +9,25 @@ module Api
 
         def show
           authorize @user, :show?
-          render json: {
-            notification_enabled: @notification_preference&.notification_enabled || false,
-            invoice_email_notifications: @notification_preference&.invoice_email_notifications || true,
-            payment_email_notifications: @notification_preference&.payment_email_notifications || true,
-            timesheet_reminder_enabled: @notification_preference&.timesheet_reminder_enabled || true,
-            unsubscribed_from_all: @notification_preference&.unsubscribed_from_all || false
-          }, status: 200
+
+          if @notification_preference
+            render json: {
+              notification_enabled: @notification_preference.notification_enabled,
+              invoice_email_notifications: @notification_preference.invoice_email_notifications,
+              payment_email_notifications: @notification_preference.payment_email_notifications,
+              timesheet_reminder_enabled: @notification_preference.timesheet_reminder_enabled,
+              unsubscribed_from_all: @notification_preference.unsubscribed_from_all
+            }, status: 200
+          else
+            # Return default values when no preference exists
+            render json: {
+              notification_enabled: false,
+              invoice_email_notifications: true,
+              payment_email_notifications: true,
+              timesheet_reminder_enabled: true,
+              unsubscribed_from_all: false
+            }, status: 200
+          end
         end
 
         def update

@@ -1,21 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { 
-  Building2, 
-  Phone, 
-  MapPin, 
-  DollarSign, 
-  Calendar, 
-  Clock, 
-  Edit2,
+import {
+  Buildings,
+  Phone,
+  CurrencyDollar,
+  Calendar,
+  Clock,
+  PencilSimple,
   Globe,
-  CalendarDays,
-  Loader2,
-  AlertCircle,
-  Check
-} from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "../../../ui/card";
+  CalendarBlank,
+  Warning,
+  MapPin,
+  Briefcase,
+} from "phosphor-react";
+import { Card, CardContent, CardHeader, CardTitle } from "../../../ui/card";
 import { Button } from "../../../ui/button";
-import { Badge } from "../../../ui/badge";
 import { Separator } from "../../../ui/separator";
 import { Alert, AlertDescription } from "../../../ui/alert";
 import { Avatar, AvatarImage, AvatarFallback } from "../../../ui/avatar";
@@ -45,7 +43,9 @@ interface ModernOrganizationSettingsProps {
   onBack?: () => void;
 }
 
-const ModernOrganizationSettings: React.FC<ModernOrganizationSettingsProps> = ({ onBack }) => {
+const ModernOrganizationSettings: React.FC<ModernOrganizationSettingsProps> = ({
+  onBack,
+}) => {
   const navigate = useNavigate();
   const [orgDetails, setOrgDetails] = useState<OrganizationDetails>({
     id: null,
@@ -127,25 +127,32 @@ const ModernOrganizationSettings: React.FC<ModernOrganizationSettingsProps> = ({
 
   const formatAddress = (address: string | any) => {
     if (!address || address === "-") return "-";
-    
+
     // Handle object addresses (likely from the API)
-    if (typeof address === 'object' && address !== null) {
+    if (typeof address === "object" && address !== null) {
       const parts = [];
       if (address.address_line_1) parts.push(address.address_line_1);
+
       if (address.address_line_2) parts.push(address.address_line_2);
+
       if (address.city) parts.push(address.city);
+
       if (address.state) parts.push(address.state);
+
       if (address.zip_code) parts.push(address.zip_code);
+
       if (address.country) parts.push(address.country);
+
       return parts.filter(Boolean).join(", ") || "-";
     }
-    
+
     // Handle string addresses
-    if (typeof address === 'string') {
+    if (typeof address === "string") {
       const parts = address.split(",").map(part => part.trim());
+
       return parts.join(", ");
     }
-    
+
     return "-";
   };
 
@@ -171,10 +178,12 @@ const ModernOrganizationSettings: React.FC<ModernOrganizationSettingsProps> = ({
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <div className="bg-white shadow-sm border-b sticky top-0 z-10">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between py-4">
             <div>
-              <h1 className="text-2xl font-semibold text-gray-900">Organization Settings</h1>
+              <h1 className="text-2xl font-semibold text-gray-900">
+                Organization Settings
+              </h1>
               <p className="text-sm text-gray-600 mt-1">
                 Manage your company information and preferences
               </p>
@@ -185,8 +194,11 @@ const ModernOrganizationSettings: React.FC<ModernOrganizationSettingsProps> = ({
                   Back
                 </Button>
               )}
-              <Button onClick={handleEditClick} className="bg-indigo-600 hover:bg-indigo-700">
-                <Edit2 className="h-4 w-4 mr-2" />
+              <Button
+                onClick={handleEditClick}
+                className="bg-indigo-600 hover:bg-indigo-700"
+              >
+                <PencilSimple className="h-4 w-4 mr-2" />
                 Edit Settings
               </Button>
             </div>
@@ -195,19 +207,19 @@ const ModernOrganizationSettings: React.FC<ModernOrganizationSettingsProps> = ({
       </div>
 
       {/* Content */}
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {error ? (
           <Alert variant="destructive">
-            <AlertCircle className="h-4 w-4" />
+            <Warning className="h-4 w-4" />
             <AlertDescription>{error}</AlertDescription>
           </Alert>
         ) : (
           <div className="space-y-6">
             {/* Basic Details Card */}
             <Card className="border-gray-200 shadow-sm">
-              <CardHeader>
+              <CardHeader className="bg-gray-50 border-b">
                 <div className="flex items-center space-x-2">
-                  <Building2 className="h-5 w-5 text-gray-700" />
+                  <Buildings className="h-5 w-5 text-gray-600" />
                   <CardTitle>Basic Details</CardTitle>
                 </div>
               </CardHeader>
@@ -218,14 +230,21 @@ const ModernOrganizationSettings: React.FC<ModernOrganizationSettingsProps> = ({
                   <div className="space-y-6">
                     <div className="flex items-start space-x-4">
                       <Avatar className="h-20 w-20 rounded-lg">
-                        <AvatarImage src={orgDetails.logoUrl} alt={orgDetails.companyName} />
-                        <AvatarFallback className="rounded-lg bg-indigo-100 text-indigo-600 text-xl font-semibold">
+                        <AvatarImage
+                          src={orgDetails.logoUrl}
+                          alt={orgDetails.companyName}
+                        />
+                        <AvatarFallback className="rounded-lg bg-gray-100 text-gray-600 text-xl font-semibold">
                           {orgDetails.companyName?.charAt(0) || "C"}
                         </AvatarFallback>
                       </Avatar>
                       <div className="flex-1">
-                        <h3 className="text-xl font-semibold text-gray-900">{orgDetails.companyName || "Company Name"}</h3>
-                        <p className="text-sm text-gray-500 mt-1">{orgDetails.countryName || "Location not set"}</p>
+                        <h3 className="text-xl font-semibold text-gray-900">
+                          {orgDetails.companyName || "Company Name"}
+                        </h3>
+                        <p className="text-sm text-gray-500 mt-1">
+                          {orgDetails.countryName || "Location not set"}
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -235,9 +254,9 @@ const ModernOrganizationSettings: React.FC<ModernOrganizationSettingsProps> = ({
 
             {/* Contact & Address Card */}
             <Card className="border-gray-200 shadow-sm">
-              <CardHeader>
+              <CardHeader className="bg-gray-50 border-b">
                 <div className="flex items-center space-x-2">
-                  <Phone className="h-5 w-5 text-gray-700" />
+                  <Phone className="h-5 w-5 text-gray-600" />
                   <CardTitle>Contact & Location</CardTitle>
                 </div>
               </CardHeader>
@@ -247,14 +266,18 @@ const ModernOrganizationSettings: React.FC<ModernOrganizationSettingsProps> = ({
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
-                      <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">Business Phone</p>
-                      <p className="text-lg font-medium text-gray-900">
+                      <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Business Phone
+                      </p>
+                      <p className="text-base font-medium text-gray-900">
                         {orgDetails.companyPhone || "-"}
                       </p>
                     </div>
                     <div className="space-y-2">
-                      <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">Address</p>
-                      <p className="text-lg font-medium text-gray-900">
+                      <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Address
+                      </p>
+                      <p className="text-base font-medium text-gray-900">
                         {formatAddress(orgDetails.companyAddr)}
                       </p>
                     </div>
@@ -265,9 +288,9 @@ const ModernOrganizationSettings: React.FC<ModernOrganizationSettingsProps> = ({
 
             {/* Financial Settings Card */}
             <Card className="border-gray-200 shadow-sm">
-              <CardHeader>
+              <CardHeader className="bg-gray-50 border-b">
                 <div className="flex items-center space-x-2">
-                  <DollarSign className="h-5 w-5 text-gray-700" />
+                  <CurrencyDollar className="h-5 w-5 text-gray-600" />
                   <CardTitle>Financial Settings</CardTitle>
                 </div>
               </CardHeader>
@@ -277,21 +300,36 @@ const ModernOrganizationSettings: React.FC<ModernOrganizationSettingsProps> = ({
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div className="space-y-2">
-                      <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">Base Currency</p>
-                      <p className="text-lg font-semibold text-gray-900">
+                      <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Base Currency
+                      </p>
+                      <p className="text-base font-semibold text-gray-900">
                         {orgDetails.companyCurrency}
                       </p>
                     </div>
                     <div className="space-y-2">
-                      <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">Standard Rate</p>
-                      <p className="text-lg font-semibold text-gray-900">
-                        <span className="text-2xl">${(typeof orgDetails.companyRate === 'number' ? orgDetails.companyRate.toFixed(2) : parseFloat(orgDetails.companyRate || 0).toFixed(2))}</span>
-                        <span className="text-sm text-gray-500 ml-1">/ hour</span>
+                      <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Standard Rate
+                      </p>
+                      <p className="text-base font-semibold text-gray-900">
+                        <span className="text-xl">
+                          $
+                          {typeof orgDetails.companyRate === "number"
+                            ? orgDetails.companyRate.toFixed(2)
+                            : parseFloat(orgDetails.companyRate || 0).toFixed(
+                                2
+                              )}
+                        </span>
+                        <span className="text-sm text-gray-500 ml-1">
+                          / hour
+                        </span>
                       </p>
                     </div>
                     <div className="space-y-2">
-                      <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">Fiscal Year End</p>
-                      <p className="text-lg font-semibold text-gray-900">
+                      <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Fiscal Year End
+                      </p>
+                      <p className="text-base font-semibold text-gray-900">
                         {orgDetails.companyFiscalYear || "-"}
                       </p>
                     </div>
@@ -302,9 +340,9 @@ const ModernOrganizationSettings: React.FC<ModernOrganizationSettingsProps> = ({
 
             {/* Date & Time Settings Card */}
             <Card className="border-gray-200 shadow-sm">
-              <CardHeader>
+              <CardHeader className="bg-gray-50 border-b">
                 <div className="flex items-center space-x-2">
-                  <Clock className="h-5 w-5 text-gray-700" />
+                  <Clock className="h-5 w-5 text-gray-600" />
                   <CardTitle>Date & Time Settings</CardTitle>
                 </div>
               </CardHeader>
@@ -314,19 +352,23 @@ const ModernOrganizationSettings: React.FC<ModernOrganizationSettingsProps> = ({
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
-                      <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">Timezone</p>
+                      <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Timezone
+                      </p>
                       <div className="flex items-center space-x-2">
                         <Globe className="h-4 w-4 text-gray-400" />
-                        <p className="text-lg font-medium text-gray-900">
+                        <p className="text-base font-medium text-gray-900">
                           {orgDetails.companyTimezone || "-"}
                         </p>
                       </div>
                     </div>
                     <div className="space-y-2">
-                      <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">Date Format</p>
+                      <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Date Format
+                      </p>
                       <div className="flex items-center space-x-2">
                         <Calendar className="h-4 w-4 text-gray-400" />
-                        <p className="text-lg font-medium text-gray-900">
+                        <p className="text-base font-medium text-gray-900">
                           {orgDetails.companyDateFormat || "-"}
                         </p>
                       </div>
@@ -338,9 +380,9 @@ const ModernOrganizationSettings: React.FC<ModernOrganizationSettingsProps> = ({
 
             {/* Working Hours Card */}
             <Card className="border-gray-200 shadow-sm">
-              <CardHeader>
+              <CardHeader className="bg-gray-50 border-b">
                 <div className="flex items-center space-x-2">
-                  <CalendarDays className="h-5 w-5 text-gray-700" />
+                  <CalendarBlank className="h-5 w-5 text-gray-600" />
                   <CardTitle>Working Hours</CardTitle>
                 </div>
               </CardHeader>
@@ -350,14 +392,18 @@ const ModernOrganizationSettings: React.FC<ModernOrganizationSettingsProps> = ({
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
-                      <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">Weekly Working Days</p>
-                      <p className="text-lg font-semibold text-gray-900">
+                      <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Weekly Working Days
+                      </p>
+                      <p className="text-base font-semibold text-gray-900">
                         {orgDetails.companyWorkingDays}
                       </p>
                     </div>
                     <div className="space-y-2">
-                      <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">Weekly Working Hours</p>
-                      <p className="text-lg font-semibold text-gray-900">
+                      <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Weekly Working Hours
+                      </p>
+                      <p className="text-base font-semibold text-gray-900">
                         {orgDetails.companyWorkingHours}
                       </p>
                     </div>
@@ -367,34 +413,31 @@ const ModernOrganizationSettings: React.FC<ModernOrganizationSettingsProps> = ({
             </Card>
 
             {/* Quick Actions */}
-            <Card className="border-blue-200 bg-blue-50">
-              <CardHeader>
-                <CardTitle className="text-lg">Quick Actions</CardTitle>
+            <Card className="border-gray-200 shadow-sm">
+              <CardHeader className="bg-gray-50 border-b">
+                <CardTitle>Quick Actions</CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="pt-6">
                 <div className="flex flex-col sm:flex-row gap-3">
-                  <Button 
-                    variant="outline" 
-                    className="bg-white"
+                  <Button
+                    variant="outline"
                     onClick={() => navigate("/settings/holidays")}
                   >
                     <Calendar className="h-4 w-4 mr-2" />
-                    Manage Holiday Calendar
+                    Manage Holidays
                   </Button>
-                  <Button 
-                    variant="outline" 
-                    className="bg-white"
+                  <Button
+                    variant="outline"
                     onClick={() => navigate("/settings/payment")}
                   >
-                    <DollarSign className="h-4 w-4 mr-2" />
+                    <CurrencyDollar className="h-4 w-4 mr-2" />
                     Payment Settings
                   </Button>
-                  <Button 
-                    variant="outline" 
-                    className="bg-white"
+                  <Button
+                    variant="outline"
                     onClick={() => navigate("/settings/leaves")}
                   >
-                    <CalendarDays className="h-4 w-4 mr-2" />
+                    <CalendarBlank className="h-4 w-4 mr-2" />
                     Leave Types
                   </Button>
                 </div>
