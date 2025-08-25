@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class InternalApi::V1::TimesheetEntryController < InternalApi::V1::ApplicationController
+class Api::V1::TimesheetEntryController < Api::V1::ApplicationController
   skip_after_action :verify_authorized, only: [:index]
   after_action :verify_policy_scoped, only: [:index]
 

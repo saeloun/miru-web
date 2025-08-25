@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class InternalApi::V1::Invoices::ActionTrailsController < InternalApi::V1::ApplicationController
+class Api::V1::Invoices::ActionTrailsController < Api::V1::ApplicationController
   def show
     authorize :show, policy_class: Invoices::ActionTrailsPolicy
 

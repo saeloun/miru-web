@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class InternalApi::V1::InvitationsController < InternalApi::V1::ApplicationController
+class Api::V1::InvitationsController < Api::V1::ApplicationController
   before_action :set_invitation, only: [:update, :destroy, :resend]
 
   def create

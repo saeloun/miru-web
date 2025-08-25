@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class InternalApi::V1::PaymentsController < ApplicationController
+class Api::V1::PaymentsController < ApplicationController
   before_action :set_invoice, only: [:create]
   after_action :track_event, only: [:create]
 

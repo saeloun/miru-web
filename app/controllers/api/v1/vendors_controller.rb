@@ -1,7 +1,7 @@
 
 # frozen_string_literal: true
 
-class InternalApi::V1::VendorsController < ApplicationController
+class Api::V1::VendorsController < ApplicationController
   def create
     authorize :create, policy_class: VendorPolicy
 
