@@ -147,7 +147,8 @@ namespace :api, defaults: { format: "json" } do
       end
     end
 
-    resources :time_tracking, only: [:index], path: "time-tracking"
+    # Time tracking moved to internal_api
+    # resources :time_tracking, only: [:index], path: "time-tracking"
 
     # Non-Resourceful Routes
     get "payments/settings", to: "payment_settings#index"
