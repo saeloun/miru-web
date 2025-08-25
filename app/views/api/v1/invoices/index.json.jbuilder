@@ -16,7 +16,7 @@ json.invoices invoices do |invoice|
   json.currency invoice.currency || current_company.base_currency
   json.created_at invoice.created_at
   json.updated_at invoice.updated_at
-  
+
   # Include client details for frontend to use
   json.client do
     json.id invoice.client_id

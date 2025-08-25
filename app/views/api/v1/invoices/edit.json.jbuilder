@@ -1,38 +1,24 @@
 # frozen_string_literal: true
 
-json.invoice do
-  json.id invoice.id
-  json.invoice_number invoice.invoice_number
-  json.client_id invoice.client_id
-  json.client_name invoice.client&.name
-  json.status invoice.status
-  json.issue_date invoice.issue_date
-  json.due_date invoice.due_date
-  json.amount invoice.amount.to_f
-  json.amount_due invoice.amount_due.to_f
-  json.currency invoice.currency || invoice.company.base_currency
-  json.reference invoice.reference
-  json.created_at invoice.created_at
-  json.updated_at invoice.updated_at
+json.key_format! camelize: :lower
+json.deep_format_keys!
 
-  json.invoice_line_items invoice.invoice_line_items do |item|
-    json.id item.id
-    json.name item.name
-    json.description item.description
-    json.quantity item.quantity
-    json.rate item.rate.to_f
-  end
-end
-
+json.partial! "internal_api/v1/partial/invoice", locals: { invoice: }
 json.client do
   json.id client.id
   json.name client.name
+  json.address client.current_address
+  json.phone client.phone
   json.email client.email
+  json.client_members_emails client_member_emails
+  json.currency client.currency
 end
-
-json.client_list client_list do |c|
-  json.id c.id
-  json.name c.name
+json.company do
+  json.partial! "internal_api/v1/partial/company", locals: { company: client.company }
 end
-
-json.client_member_emails client_member_emails
+json.invoice_line_items invoice.invoice_line_items do |invoice_line_item|
+  json.partial! "internal_api/v1/partial/invoice_line_item", locals: { invoice_line_item: }
+end
+json.company_client_list client_list do |client|
+  json.partial! "internal_api/v1/partial/client_list", locals: { client: }
+end
