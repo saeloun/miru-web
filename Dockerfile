@@ -52,12 +52,15 @@ FROM build-deps AS ruby-deps
 # Copy only Gemfile for better caching
 COPY Gemfile Gemfile.lock ./
 
-# Install gems with optimal settings
-RUN bundle config set --local deployment 'true' && \
+# Install gems with optimal settings and cache mount
+RUN --mount=type=cache,target=/tmp/bundle-cache \
+    bundle config set --local deployment 'true' && \
     bundle config set --local without 'development test' && \
     bundle config set --local jobs $(nproc) && \
     bundle config set --local retry 3 && \
+    bundle config set --local path /tmp/bundle-cache && \
     bundle install && \
+    cp -ar /tmp/bundle-cache/* /usr/local/bundle/ && \
     bundle clean --force && \
     rm -rf /usr/local/bundle/cache/*.gem && \
     find /usr/local/bundle/gems/ -name "*.c" -delete && \
