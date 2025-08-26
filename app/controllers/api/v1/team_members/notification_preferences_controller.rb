@@ -25,6 +25,6 @@ class Api::V1::TeamMembers::NotificationPreferencesController < Api::V1::Applica
     end
 
     def notification_preference_params
-      params.require(:notification_preference).permit(:notification_enabled)
+      params.require(:notification_preference).permit(:notification_enabled, :unsubscribed_from_all)
     end
 end

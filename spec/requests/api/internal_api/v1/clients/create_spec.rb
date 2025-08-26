@@ -21,7 +21,7 @@ RSpec.describe "Api::V1::Client#create", type: :request do
         address_details = attributes_for(:address)
         client = attributes_for(:client, addresses_attributes: [address_details])
         send_request :post, api_v1_clients_path(client:), headers: auth_headers(user)
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:created)
         change(Client, :count).by(1)
         change(Address, :count).by(1)
         [ "address", "id", "logo", "name", "phone" ]
