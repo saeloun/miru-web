@@ -53,8 +53,8 @@ RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
 # Install pnpm (fast, disk space efficient package manager)
 RUN npm install -g pnpm@9.15.5
 
-# Install Playwright browsers
-RUN npx playwright install chromium firefox webkit
+# Install only Chromium for Playwright (no Firefox or WebKit needed)
+RUN npx playwright install chromium
 
 # Set Ruby and Node environment variables
 ENV BUNDLE_PATH=/usr/local/bundle \
