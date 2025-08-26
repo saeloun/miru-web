@@ -68,10 +68,6 @@ Rails.application.routes.draw do
 
   namespace :webhooks do
     post "stripe/checkout/fulfillment", to: "stripe#fulfill_stripe_checkout"
-    
-    # Postmark bounce and spam complaint handling
-    post "postmark/bounces", to: "postmark#bounces"
-    post "postmark/spam", to: "postmark#spam_complaints"
   end
 
   root "home#index"
