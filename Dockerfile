@@ -36,6 +36,14 @@ RUN apt-get update -qq && \
 # Install pnpm
 RUN npm install -g pnpm@9.15.5
 
+# Set environment variables from original config
+ENV BUNDLE_PATH=/usr/local/bundle \
+    BUNDLE_BIN=/usr/local/bundle/bin \
+    GEM_HOME=/usr/local/bundle \
+    PATH="/usr/local/bundle/bin:${PATH}" \
+    PLAYWRIGHT_BROWSERS_PATH=/ms-playwright \
+    PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=0
+
 WORKDIR /app
 
 # Stage 3: Ruby dependencies
@@ -91,7 +99,15 @@ RUN SECRET_KEY_BASE=dummy RAILS_ENV=production bundle exec rails assets:precompi
 FROM build-deps AS development
 
 ENV RAILS_ENV=development \
-    NODE_ENV=development
+    NODE_ENV=development \
+    MALLOC_ARENA_MAX=2 \
+    WEB_CONCURRENCY=2 \
+    RAILS_LOG_TO_STDOUT=true \
+    BUNDLE_PATH=/usr/local/bundle \
+    BUNDLE_BIN=/usr/local/bundle/bin \
+    GEM_HOME=/usr/local/bundle \
+    PATH="/usr/local/bundle/bin:${PATH}" \
+    PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
 
 WORKDIR /app
 
@@ -113,7 +129,15 @@ FROM build-deps AS test
 
 ENV RAILS_ENV=test \
     NODE_ENV=test \
-    CI=true
+    CI=true \
+    PLAYWRIGHT_HEADLESS=true \
+    PARALLEL_WORKERS=4 \
+    DISABLE_SPRING=true \
+    BUNDLE_PATH=/usr/local/bundle \
+    BUNDLE_BIN=/usr/local/bundle/bin \
+    GEM_HOME=/usr/local/bundle \
+    PATH="/usr/local/bundle/bin:${PATH}" \
+    PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
 
 WORKDIR /app
 

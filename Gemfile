@@ -171,6 +171,11 @@ group :development, :test, :ci do
 
   # Use Faker for fake data
   gem "faker"
+  
+  # Tapioca for Sorbet type checking [https://github.com/Shopify/tapioca]
+  gem "tapioca", require: false
+  gem "sorbet-runtime"
+  gem "spoom", require: false
 
   # Added rails controller to use render_template
   gem "rails-controller-testing", "~> 1.0", ">= 1.0.5"
