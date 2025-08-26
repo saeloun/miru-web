@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_21_100908) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_26_064100) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -332,6 +332,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_21_100908) do
     t.index ["user_id"], name: "index_identities_on_user_id"
   end
 
+  create_table "invalid_emails", force: :cascade do |t|
+    t.string "email", null: false
+    t.boolean "bounce", default: false
+    t.boolean "compliant", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["email", "bounce"], name: "index_invalid_emails_on_email_and_bounce"
+    t.index ["email", "compliant"], name: "index_invalid_emails_on_email_and_compliant"
+    t.index ["email"], name: "index_invalid_emails_on_email", unique: true
+  end
+
   create_table "invitations", force: :cascade do |t|
     t.bigint "company_id", null: false
     t.bigint "sender_id", null: false
@@ -592,14 +603,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_21_100908) do
     t.datetime "updated_at", null: false
     t.index ["name", "resource_type", "resource_id"], name: "index_roles_on_name_and_resource_type_and_resource_id"
     t.index ["resource_type", "resource_id"], name: "index_roles_on_resource"
-  end
-
-  create_table "ses_invalid_emails", force: :cascade do |t|
-    t.string "email"
-    t.boolean "bounce", default: false
-    t.boolean "compliant", default: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
   end
 
   create_table "solid_queue_blocked_executions", force: :cascade do |t|

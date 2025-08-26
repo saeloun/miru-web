@@ -2,17 +2,23 @@
 
 # == Schema Information
 #
-# Table name: ses_invalid_emails (legacy name, stores all invalid emails)
+# Table name: invalid_emails
 #
 #  id         :bigint           not null, primary key
 #  bounce     :boolean          default(FALSE)
 #  compliant  :boolean          default(FALSE)
-#  email      :string
+#  email      :string           not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #
+# Indexes
+#
+#  index_invalid_emails_on_email                (email) UNIQUE
+#  index_invalid_emails_on_email_and_bounce     (email,bounce)
+#  index_invalid_emails_on_email_and_compliant  (email,compliant)
+#
 class InvalidEmail < ApplicationRecord
-  self.table_name = "ses_invalid_emails" # Keep using existing table
+  # Table renamed from ses_invalid_emails via migration
   
   validates :email, presence: true, uniqueness: { case_sensitive: false }
   
