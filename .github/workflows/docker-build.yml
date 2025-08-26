@@ -7,6 +7,11 @@ on:
     types: [opened, synchronize, reopened]
   workflow_dispatch:
 
+# Cancel previous Docker builds when new commits are pushed
+concurrency:
+  group: docker-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
