@@ -171,7 +171,7 @@ group :development, :test, :ci do
 
   # Use Faker for fake data
   gem "faker"
-  
+
   # Tapioca for Sorbet type checking [https://github.com/Shopify/tapioca]
   gem "tapioca", require: false
   gem "sorbet-runtime"

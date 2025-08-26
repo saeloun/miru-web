@@ -38,11 +38,11 @@ class Reports::TimeEntries::Result < ApplicationService
         # Get the label based on group_by field
         case group_by.to_s
         when "client"
-          entry.project&.client&.name
+          entry.try(:client_name) || entry[:client_name] || ""
         when "project"
-          entry.project&.name
+          entry.try(:project_name) || entry[:project_name] || ""
         when "team_member"
-          entry.user&.full_name
+          entry.try(:user_name) || entry[:user_name] || ""
         else
           ""
         end
@@ -50,11 +50,11 @@ class Reports::TimeEntries::Result < ApplicationService
         # Get the ID from the first entry based on group_by field
         id = case group_by.to_s
              when "client"
-               entries.first.project&.client_id
+               entries.first.try(:client_id) || entries.first[:client_id]
              when "project"
-               entries.first.project_id
+               entries.first.try(:project_id) || entries.first[:project_id]
              when "team_member"
-               entries.first.user_id
+               entries.first.try(:user_id) || entries.first[:user_id]
              else
                nil
         end

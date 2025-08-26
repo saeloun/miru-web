@@ -64,6 +64,11 @@ namespace :api, defaults: { format: "json" } do
           get :download
         end
       end
+      resources :payments, only: [:index] do
+        collection do
+          get :download
+        end
+      end
     end
 
     resources :workspaces, only: [:index, :update]

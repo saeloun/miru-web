@@ -117,7 +117,7 @@ RSpec.describe Api::V1::TeamMembers::NotificationPreferencesController, type: :r
 
       it "sets unsubscribed_from_all flag" do
         patch "/api/v1/team/#{another_user.id}/notification_preferences",
-          params: { unsubscribed_from_all: true }
+          params: { notification_preference: { unsubscribed_from_all: true } }
 
         expect(response).to have_http_status(:ok)
 
@@ -130,9 +130,10 @@ RSpec.describe Api::V1::TeamMembers::NotificationPreferencesController, type: :r
 
         patch "/api/v1/team/#{another_user.id}/notification_preferences",
           params: {
-            unsubscribed_from_all: false,
-            notification_enabled: true,
-            invoice_email_notifications: true
+            notification_preference: {
+              unsubscribed_from_all: false,
+              notification_enabled: true
+            }
           }
 
         expect(response).to have_http_status(:ok)
