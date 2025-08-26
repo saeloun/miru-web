@@ -154,7 +154,7 @@ group :development, :test, :ci do
   gem "rubocop-thread_safety", require: false
 
   # Use RSpec as the testing framework
-  gem "rspec-rails", "~> 7.0"
+  gem "rspec-rails", "~> 8.0"
 
   # For JUnit test output for CI
   gem "rspec_junit_formatter"
@@ -228,11 +228,12 @@ gem "parallel_tests", group: [:development, :test]
 # CORS: https://github.com/cyu/rack-cors
 gem "rack-cors", "2.0.0"
 
-# Administrate dashboard
-gem "administrate"
+# Administrate dashboard - removed
+# gem "administrate"
 
-# YAML parser
-gem "psych", "~> 4"
+# YAML parser - Ruby 3.4.5 includes Psych 5 by default
+# Uncommenting would force a specific version if needed
+# gem "psych", "~> 5"
 
 # Email delivery service
 gem "postmark-rails"
