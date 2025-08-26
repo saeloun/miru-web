@@ -50,8 +50,10 @@
 #
 
 # frozen_string_literal: true
+# typed: true
 
 class User < ApplicationRecord
+  extend T::Sig
   include Discard::Model
   include Searchable
   include SuperAdmin
@@ -169,6 +171,7 @@ class User < ApplicationRecord
     end
   end
 
+  sig { returns(String) }
   def full_name
     "#{first_name} #{last_name}"
   end
@@ -179,15 +182,11 @@ class User < ApplicationRecord
   # 2.1 user is part of atleast one active employment OR
   # 2.2 initial phase i.e, user is owner and setting up the company
   #     and hence no associated company
+  sig { returns(T::Boolean) }
   def active_for_authentication?
     super and self.kept? and (!self.employments.kept.empty? or self.companies.empty?)
   end
-
-  def joined_date_for_company(company)
-    employment = employments.find_by(company:)
-    employment&.joined_at
-  end
-
+  
   def inactive_message
     if self.employments.kept.empty? && self.kept?
       I18n.t("user.login.failure.disabled")
