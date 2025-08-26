@@ -1,75 +1,83 @@
-version: "3.9"
+version: '3.8'
+
 services:
-  database:
-    image: postgres:13.8
-    restart: always
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres:/var/lib/postgresql/data
+  # PostgreSQL database for testing
+  postgres:
+    image: postgres:16-alpine
     environment:
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: miru_web_test
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_test_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
-  app:
+  # Test runner - uses the test stage
+  test:
     build:
       context: .
-      dockerfile: Dockerfile.test
-    image: miru-web:latest
-    working_dir: /app
+      dockerfile: Dockerfile
+      target: test
+      cache_from:
+        - ghcr.io/saeloun/miru-web:base
+        - ghcr.io/saeloun/miru-web:test-latest
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://postgres:password@postgres:5432/miru_web_test
+      RAILS_ENV: test
+      CI: "true"
+      PARALLEL_WORKERS: 4
     volumes:
-      - .:/app
-      - gem_cache:/usr/local/bundle/gems
+      - .:/app:cached
+      - bundle_cache:/usr/local/bundle
       - node_modules:/app/node_modules
-    environment:
-      - DATABASE_URL=postgres://postgres:postgres@database:5432/
-      - DATABASE_CLEANER_ALLOW_REMOTE_DATABASE_URL="true"
-      - POSTGRES_PASSWORD="postgres"
-      - POSTGRES_USER="postgres"
-      - PIDFILE=/tmp/pids/server.pid
-      - RAILS_ENV=test
-      - HUB_URL=http://chrome:4444/wd/hub
-      - BUILDKITE_ANALYTICS_TOKEN=dtnAJbMh9fgGZFBLqFvPxnJ9
-      - WISE_API_URL=https://api.sandbox.transferwise.tech
-      - WISE_ACCESS_TOKEN=access-token-12345
-      - WISE_PROFILE_ID=123456
-      - EMAIL_DELIVERY_METHOD=letter_opener
-      - DEFAULT_MAILER_SENDER=info@miru.so
-      - REPLY_TO_EMAIL=no-reply@getmiru.com
-      - STRIPE_PUBLISHABLE_KEY=stripe_publishable_key
-      - STRIPE_SECRET_KEY=stripe_secret_key
-      - STRIPE_WEBHOOK_ENDPOINT_SECRET=stripe_webhook_endpoint_secret
-      - SENDGRID_USERNAME=apikey
-      - SENDGRID_PASSWORD=pass
-      - SMTP_DOMAIN=saeloun.com
-      - SMTP_PORT=587
-      - CI=true
-    depends_on:
-      - database
-      - chrome
-    tmpfs:
-      - /tmp/pids/
+    command: |
+      bash -c "
+        bundle exec rails db:test:prepare &&
+        bundle exec rails db:migrate &&
+        bundle exec rspec --format progress
+      "
 
-  chrome:
-    image: selenium/standalone-chrome
-    volumes:
-      - /dev/shm:/dev/shm
-
-  webpack:
+  # Playwright test runner
+  playwright:
     build:
       context: .
-      dockerfile: Dockerfile.test
-    command: bin/webpacker-dev-server
-    image: miru-web:latest
-    ports:
-      - "3035:3035"
-    environment:
-      - WEBPACKER_DEV_SERVER_HOST=0.0.0.0
-      - DATABASE_URL=postgres://postgres:postgres@database:5432/
+      dockerfile: Dockerfile
+      target: test
+      cache_from:
+        - ghcr.io/saeloun/miru-web:base
+        - ghcr.io/saeloun/miru-web:test-latest
     depends_on:
-      - database
-
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://postgres:password@postgres:5432/miru_web_test
+      RAILS_ENV: test
+      CI: "true"
+      PLAYWRIGHT_HEADLESS: "true"
+    volumes:
+      - .:/app:cached
+      - bundle_cache:/usr/local/bundle
+      - node_modules:/app/node_modules
+      - playwright_cache:/ms-playwright
+    command: |
+      bash -c "
+        bundle exec rails db:test:prepare &&
+        bundle exec rails server -b 0.0.0.0 -p 3000 &
+        sleep 10 &&
+        pnpm exec playwright test --project=chromium
+      "
 
 volumes:
-  gem_cache:
-  postgres:
+  postgres_test_data:
+  bundle_cache:
   node_modules:
+  playwright_cache:
