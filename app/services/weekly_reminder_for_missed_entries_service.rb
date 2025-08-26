@@ -2,7 +2,7 @@
 
 class WeeklyReminderForMissedEntriesService
   def process
-    @invalid_emails = SesInvalidEmail.pluck(:email)
+    @invalid_emails = InvalidEmail.invalid_emails
 
     Company.find_each do |company|
       company.users.kept.find_each do |user|
