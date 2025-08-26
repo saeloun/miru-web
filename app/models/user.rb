@@ -71,12 +71,6 @@ class User < ApplicationRecord
       }
     }
 
-  class SpamUserSignup < StandardError
-    def initialize(msg = "Spam User Login")
-      super
-    end
-  end
-
   # Associations
   has_many :employments, dependent: :destroy
   has_many :companies, through: :employments
@@ -146,17 +140,10 @@ class User < ApplicationRecord
   end
 
   # Callbacks
-  before_validation :prevent_spam_user_sign_up
   after_discard :discard_project_members
   before_create :set_token
 
   after_commit :send_to_hubspot, on: :create
-
-  def prevent_spam_user_sign_up
-    if self.email.include?("internetkeno")
-      raise SpamUserSignup.new("#{self.email} Spam User Signup")
-    end
-  end
 
   def primary_role(company)
     roles = self.roles.where(resource: company)
@@ -186,7 +173,7 @@ class User < ApplicationRecord
   def active_for_authentication?
     super and self.kept? and (!self.employments.kept.empty? or self.companies.empty?)
   end
-  
+
   def inactive_message
     if self.employments.kept.empty? && self.kept?
       I18n.t("user.login.failure.disabled")
