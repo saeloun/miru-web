@@ -52,8 +52,12 @@ jobs:
           context: .
           file: ./Dockerfile.base
           push: true
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:base
-          cache-from: type=gha
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:base
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:base-${{ github.sha }}
+          cache-from: |
+            type=gha
+            type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:base
           cache-to: type=gha,mode=max
           platforms: linux/amd64,linux/arm64
       
@@ -67,10 +71,13 @@ jobs:
             ${{ steps.meta.outputs.tags }}
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:devcontainer-latest
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha
+          cache-from: |
+            type=gha
+            type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:base
           cache-to: type=gha,mode=max
           platforms: linux/amd64,linux/arm64
           build-args: |
+            BASE_IMAGE=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:base
             RUBY_VERSION=3.4.5
             NODE_VERSION=22
             POSTGRES_VERSION=16

@@ -1,5 +1,6 @@
 # Miru 2.0 Multi-stage Dockerfile for Development & Testing
-FROM miru-base:latest AS base
+# Use the GitHub Packages base image for proper caching
+FROM ghcr.io/saeloun/miru-web:base AS base
 
 # Stage 2: Dependencies Installation
 FROM base AS dependencies
