@@ -1,0 +1,93 @@
+# syntax=docker/dockerfile:1
+FROM ruby:3.4.5-slim AS base
+
+# Install runtime dependencies
+RUN apt-get update -qq && \
+    apt-get install -y --no-install-recommends \
+    libpq-dev \
+    postgresql-client \
+    curl \
+    gnupg \
+    ca-certificates \
+    libvips \
+    imagemagick \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Node.js
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
+    apt-get install -y nodejs && \
+    npm install -g pnpm@9.15.5 && \
+    rm -rf /var/lib/apt/lists/*
+
+# Build stage
+FROM base AS builder
+
+# Install build dependencies
+RUN apt-get update -qq && \
+    apt-get install -y --no-install-recommends \
+    build-essential \
+    pkg-config \
+    git \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Copy Gemfile and install gems
+COPY Gemfile Gemfile.lock ./
+RUN bundle config set --local deployment 'true' && \
+    bundle config set --local without 'development test' && \
+    bundle install --jobs 4 --retry 3
+
+# Copy package files and install node modules
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install --frozen-lockfile
+
+# Copy application code
+COPY . .
+
+# Precompile assets
+RUN SECRET_KEY_BASE=dummy RAILS_ENV=production bundle exec rails assets:precompile
+
+# Clean up unnecessary files
+RUN rm -rf node_modules tmp/cache vendor/bundle/ruby/*/cache/*.gem && \
+    find vendor/bundle/ruby/*/gems/ -name "*.c" -delete 2>/dev/null || true && \
+    find vendor/bundle/ruby/*/gems/ -name "*.o" -delete 2>/dev/null || true
+
+# Production stage
+FROM base AS production
+
+# Create rails user
+RUN useradd -m -s /bin/bash rails && \
+    mkdir -p /app && \
+    chown -R rails:rails /app
+
+WORKDIR /app
+
+# Copy bundled gems from builder
+COPY --from=builder --chown=rails:rails /usr/local/bundle /usr/local/bundle
+
+# Copy application with precompiled assets
+COPY --from=builder --chown=rails:rails /app /app
+
+# Set environment
+ENV RAILS_ENV=production \
+    NODE_ENV=production \
+    RAILS_SERVE_STATIC_FILES=true \
+    RAILS_LOG_TO_STDOUT=true \
+    BUNDLE_PATH=/usr/local/bundle \
+    BUNDLE_BIN=/usr/local/bundle/bin \
+    GEM_HOME=/usr/local/bundle \
+    PATH="/usr/local/bundle/bin:${PATH}"
+
+# Switch to rails user
+USER rails
+
+# Expose port
+EXPOSE 3000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD curl -f http://localhost:3000/health || exit 1
+
+# Start server
+CMD ["bundle", "exec", "puma", "-C", "config/puma.rb"]
