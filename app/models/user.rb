@@ -53,7 +53,7 @@
 # typed: true
 
 class User < ApplicationRecord
-  extend T::Sig
+  extend T::Sig if defined?(T::Sig)
   include Discard::Model
   include Searchable
   include SuperAdmin
