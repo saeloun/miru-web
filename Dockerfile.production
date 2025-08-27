@@ -71,6 +71,7 @@ ENV RAILS_ENV=production \
     NODE_ENV=production \
     RAILS_SERVE_STATIC_FILES=true \
     RAILS_LOG_TO_STDOUT=true \
+    BUNDLE_GEMFILE=/app/Gemfile \
     BUNDLE_PATH=/app/vendor/bundle \
     BUNDLE_BIN=/app/vendor/bundle/ruby/3.4.0/bin \
     BUNDLE_APP_CONFIG=/app/.bundle \
