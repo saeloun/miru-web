@@ -76,8 +76,11 @@ ENV RAILS_ENV=production \
     RAILS_LOG_TO_STDOUT=true \
     BUNDLE_PATH=/usr/local/bundle \
     BUNDLE_BIN=/usr/local/bundle/bin \
+    BUNDLE_APP_CONFIG=/usr/local/bundle \
     GEM_HOME=/usr/local/bundle \
-    PATH="/usr/local/bundle/bin:${PATH}"
+    PATH="/usr/local/bundle/bin:${PATH}" \
+    BUNDLE_WITHOUT="development:test" \
+    BUNDLE_DEPLOYMENT=true
 
 # Switch to rails user
 USER rails
