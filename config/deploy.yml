@@ -57,7 +57,7 @@ env:
     # App specific namespace to avoid conflicts
     APP_NAME: miru-2-0-upgrade
     # Redis connection for existing container
-    REDIS_URL: redis://172.17.0.1:6379
+    REDIS_URL: redis://miru-2-0-redis:6379
   secret:
     - RAILS_MASTER_KEY
     - DATABASE_URL
