@@ -40,7 +40,7 @@ RUN bundle config set --local deployment 'true' && \
 
 # Copy package files and install node modules
 COPY package.json pnpm-lock.yaml ./
-RUN pnpm install --frozen-lockfile
+RUN NODE_ENV=production pnpm install --frozen-lockfile --ignore-scripts
 
 # Copy application code
 COPY . .
