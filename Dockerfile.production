@@ -63,10 +63,7 @@ RUN useradd -m -s /bin/bash rails && \
 
 WORKDIR /app
 
-# Copy bundled gems from builder
-COPY --from=builder --chown=rails:rails /usr/local/bundle /usr/local/bundle
-
-# Copy application with precompiled assets
+# Copy application with precompiled assets (includes vendor/bundle)
 COPY --from=builder --chown=rails:rails /app /app
 
 # Set environment
@@ -74,11 +71,11 @@ ENV RAILS_ENV=production \
     NODE_ENV=production \
     RAILS_SERVE_STATIC_FILES=true \
     RAILS_LOG_TO_STDOUT=true \
-    BUNDLE_PATH=/usr/local/bundle \
-    BUNDLE_BIN=/usr/local/bundle/bin \
-    BUNDLE_APP_CONFIG=/usr/local/bundle \
-    GEM_HOME=/usr/local/bundle \
-    PATH="/usr/local/bundle/bin:${PATH}" \
+    BUNDLE_PATH=/app/vendor/bundle \
+    BUNDLE_BIN=/app/vendor/bundle/ruby/3.4.0/bin \
+    BUNDLE_APP_CONFIG=/app/.bundle \
+    GEM_HOME=/app/vendor/bundle \
+    PATH="/app/vendor/bundle/ruby/3.4.0/bin:${PATH}" \
     BUNDLE_WITHOUT="development:test" \
     BUNDLE_DEPLOYMENT=true
 
