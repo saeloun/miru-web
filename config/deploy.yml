@@ -93,11 +93,11 @@ ssh:
 
 # Persistent volumes for storage
 volumes:
-  - "miru_2_0_upgrade_storage:/rails/storage"
-  - "miru_2_0_upgrade_public:/rails/public/uploads"
+  - "miru_2_0_upgrade_storage:/app/storage"
+  - "miru_2_0_upgrade_public:/app/public/uploads"
 
 # Asset fingerprinting bridge
-asset_path: /rails/public/assets
+asset_path: /app/public/assets
 
 # Rolling deployment configuration
 boot:
