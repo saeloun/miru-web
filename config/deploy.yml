@@ -19,8 +19,11 @@ proxy:
   ssl: true
   host: miru-2-0-upgrade.review.miru.so
   app_port: 3000
+  deploy_timeout: 60
   healthcheck:
     path: "/health"
+    interval: 5
+    timeout: 10
 
 # Registry configuration - required by Kamal
 registry:
