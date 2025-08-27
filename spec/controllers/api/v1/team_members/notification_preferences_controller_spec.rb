@@ -64,11 +64,11 @@ RSpec.describe Api::V1::TeamMembers::NotificationPreferencesController, type: :r
 
       it "updates the notification preference" do
         patch "/api/v1/team/#{another_user.id}/notification_preferences",
-          params: { notification_enabled: true }
+          params: { notification_preference: { notification_enabled: true } }
 
         expect(response).to have_http_status(:ok)
         expect(json_response["notification_enabled"]).to be true
-        expect(json_response["message"]).to eq("Preferences updated successfully")
+        expect(json_response["notice"]).to eq("Preference updated successfully")
 
         notification_preference.reload
         expect(notification_preference.notification_enabled).to be true
@@ -77,10 +77,12 @@ RSpec.describe Api::V1::TeamMembers::NotificationPreferencesController, type: :r
       it "updates multiple preferences at once" do
         patch "/api/v1/team/#{another_user.id}/notification_preferences",
           params: {
-            notification_enabled: true,
-            invoice_email_notifications: false,
-            payment_email_notifications: false,
-            timesheet_reminder_enabled: true
+            notification_preference: {
+              notification_enabled: true,
+              invoice_email_notifications: false,
+              payment_email_notifications: false,
+              timesheet_reminder_enabled: true
+            }
           }
 
         expect(response).to have_http_status(:ok)
@@ -97,7 +99,7 @@ RSpec.describe Api::V1::TeamMembers::NotificationPreferencesController, type: :r
       it "creates a new notification preference" do
         expect {
           patch "/api/v1/team/#{another_user.id}/notification_preferences",
-            params: { notification_enabled: true }
+            params: { notification_preference: { notification_enabled: true } }
         }.to change(NotificationPreference, :count).by(1)
 
         expect(response).to have_http_status(:ok)
