@@ -111,8 +111,8 @@ RSpec.describe Api::V1::Dashboard::ActivitiesController, type: :request do
       end
 
       context "with mixed activities" do
-        let!(:invoice1) { create(:invoice, :sent, company: company, client: client, created_at: 3.days.ago) }
-        let!(:invoice2) { create(:invoice, :paid, company: company, client: client, created_at: 1.day.ago) }
+        let!(:invoice1) { create(:invoice, :sent, company: company, client: client, created_at: 3.days.ago, updated_at: 3.days.ago) }
+        let!(:invoice2) { create(:invoice, :paid, company: company, client: client, created_at: 1.day.ago, updated_at: 1.day.ago) }
         let!(:payment) { create(:payment, invoice: invoice1, amount: 500, created_at: 2.days.ago) }
 
         it "returns activities sorted by timestamp" do
