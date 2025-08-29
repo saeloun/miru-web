@@ -14,7 +14,7 @@ class Api::V1::Reports::TimeEntriesController < Api::V1::ApplicationController
     authorize :report
 
     data = Reports::TimeEntries::DownloadService.new(params, current_company).process
-    
+
     if params[:format] == "pdf"
       send_data data, type: "application/pdf", disposition: "attachment", filename: "time_entries_report.pdf"
     else
