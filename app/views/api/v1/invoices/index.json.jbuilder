@@ -52,7 +52,7 @@ json.recentlyUpdatedInvoices recently_updated_invoices do |invoice|
   json.amount_due invoice.amount_due.to_f
   json.outstanding_amount invoice.outstanding_amount.to_f
   json.updated_at invoice.updated_at
-  
+
   json.client do
     json.id invoice.client_id
     json.name invoice.client&.name
