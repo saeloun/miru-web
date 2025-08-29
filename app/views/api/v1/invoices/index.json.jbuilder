@@ -39,3 +39,24 @@ json.summary do
   json.totalAmount summary[:totalAmount]
   json.currency summary[:currency]
 end
+
+json.recentlyUpdatedInvoices recently_updated_invoices do |invoice|
+  json.id invoice.id
+  json.invoice_number invoice.invoice_number
+  json.client_id invoice.client_id
+  json.client_name invoice.client&.name
+  json.status invoice.status
+  json.issue_date invoice.issue_date
+  json.due_date invoice.due_date
+  json.amount invoice.amount.to_f
+  json.amount_due invoice.amount_due.to_f
+  json.outstanding_amount invoice.outstanding_amount.to_f
+  json.updated_at invoice.updated_at
+  
+  json.client do
+    json.id invoice.client_id
+    json.name invoice.client&.name
+    json.email invoice.client&.email if invoice.client&.email
+    json.logo invoice.client&.logo_url if invoice.client&.logo_url
+  end
+end
