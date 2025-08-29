@@ -116,7 +116,7 @@ COPY . .
 
 # Install all dependencies
 RUN bundle install && \
-    pnpm install --frozen-lockfile
+    pnpm install --frozen-lockfile --ignore-scripts
 
 # Install Playwright for development
 RUN pnpm exec playwright install chromium --with-deps
