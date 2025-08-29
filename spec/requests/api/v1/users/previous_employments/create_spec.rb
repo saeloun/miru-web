@@ -25,7 +25,7 @@ RSpec.describe "PreviousEmployments#create", type: :request do
         end
 
         it "is successful" do
-          expect(response).to have_http_status(:ok)
+          expect(response).to have_http_status(:created)
           expect(json_response["company_name"]).to eq(previous_employment_details[:company_name])
           expect(json_response["role"]).to eq(previous_employment_details[:role])
         end
@@ -43,7 +43,7 @@ RSpec.describe "PreviousEmployments#create", type: :request do
         end
 
         it "is successful" do
-          expect(response).to have_http_status(:ok)
+          expect(response).to have_http_status(:created)
           expect(json_response["company_name"]).to eq(previous_employment_details[:company_name])
           expect(json_response["role"]).to eq(previous_employment_details[:role])
         end
@@ -77,7 +77,7 @@ RSpec.describe "PreviousEmployments#create", type: :request do
         end
 
         it "is successful" do
-          expect(response).to have_http_status(:ok)
+          expect(response).to have_http_status(:created)
           expect(json_response["company_name"]).to eq(previous_employment_details[:company_name])
           expect(json_response["role"]).to eq(previous_employment_details[:role])
         end
@@ -95,7 +95,7 @@ RSpec.describe "PreviousEmployments#create", type: :request do
         end
 
         it "is successful" do
-          expect(response).to have_http_status(:ok)
+          expect(response).to have_http_status(:created)
           expect(json_response["company_name"]).to eq(previous_employment_details[:company_name])
           expect(json_response["role"]).to eq(previous_employment_details[:role])
         end
@@ -131,7 +131,7 @@ RSpec.describe "PreviousEmployments#create", type: :request do
       end
 
       it "is successful" do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:created)
         expect(json_response["company_name"]).to eq(previous_employment_details[:company_name])
         expect(json_response["role"]).to eq(previous_employment_details[:role])
       end

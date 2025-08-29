@@ -82,9 +82,8 @@ RSpec.describe Api::V1::Users::PreviousEmploymentsController, type: :request do
 
     context "when previous employment does not exist" do
       it "returns not found" do
-        expect {
-          get api_v1_user_previous_employment_path(user_id: user.id, id: 999999)
-        }.to raise_error(ActiveRecord::RecordNotFound)
+        get api_v1_user_previous_employment_path(user_id: user.id, id: 999999)
+        expect(response).to have_http_status(:not_found)
       end
     end
   end
