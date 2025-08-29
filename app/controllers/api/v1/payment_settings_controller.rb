@@ -20,10 +20,10 @@ class Api::V1::PaymentSettingsController < Api::V1::ApplicationController
   def destroy
     authorize :destroy, policy_class: PaymentSettingsPolicy
 
-    if stripe_connected_account.destroy
-      render json: { notice: "Stripe connection disconnected" }, status: 200
+    if stripe_connected_account&.destroy
+      render json: { message: "Stripe account disconnected successfully" }, status: 200
     else
-      render json: { error: "Unable to process the request" }, status: 422
+      render json: { error: "Failed to disconnect Stripe account" }, status: 422
     end
   end
 
