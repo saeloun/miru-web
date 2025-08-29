@@ -7,7 +7,7 @@ class Api::V1::Users::PreviousEmploymentsController < Api::V1::ApplicationContro
 
   def index
     authorize @user, policy_class: Users::PreviousEmploymentPolicy
-    previous_employments = @user.previous_employments
+    previous_employments = @user.previous_employments.order(created_at: :desc)
     render :index, locals: { previous_employments: }, status: 200
   end
 
@@ -26,7 +26,7 @@ class Api::V1::Users::PreviousEmploymentsController < Api::V1::ApplicationContro
     authorize @user, policy_class: Users::PreviousEmploymentPolicy
     previous_employment = @user.previous_employments.new(previous_employment_params)
     previous_employment.save!
-    render :create, locals: { previous_employment: }, status: 200
+    render :create, locals: { previous_employment: }, status: :created
  end
 
   private

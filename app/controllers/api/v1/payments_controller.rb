@@ -31,7 +31,7 @@ class Api::V1::PaymentsController < ApplicationController
       payment:,
       invoice: payment.invoice,
       client: payment.invoice.client
-    }
+    }, status: :created
   end
 
   def index
