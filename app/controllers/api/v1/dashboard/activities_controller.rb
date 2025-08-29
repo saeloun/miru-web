@@ -39,7 +39,7 @@ module Api
               .includes(invoice: :client)
               .map { |payment| build_payment_activity(payment) }
 
-            (invoices + payments).sort_by { |a| -a[:timestamp].to_i }
+            (invoices + payments).sort_by { |a| -Time.parse(a[:timestamp]).to_i }
           end
 
           def build_invoice_activity(invoice)
@@ -48,7 +48,7 @@ module Api
               type: "invoice",
               message: "Invoice ##{invoice.invoice_number} sent to #{invoice.client.name}",
               icon: "FileText",
-              timestamp: (invoice.sent_at || invoice.updated_at).iso8601(3),
+              timestamp: (invoice.sent_at || invoice.updated_at || invoice.created_at).iso8601(3),
               metadata: {
                 invoice_id: invoice.id,
                 invoice_number: invoice.invoice_number,
