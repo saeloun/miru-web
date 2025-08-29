@@ -113,6 +113,9 @@ class Api::V1::InvoicesController < Api::V1::ApplicationController
       currency: current_company.base_currency
     }
 
+    # Get recently updated invoices
+    recently_updated_invoices = current_company.invoices.kept.order(updated_at: :desc).limit(10)
+
     render :index, locals: {
       invoices: paginated_invoices,
       pagination_details: {
@@ -120,7 +123,8 @@ class Api::V1::InvoicesController < Api::V1::ApplicationController
         pages: pagy_metadata.pages,
         total: pagy_metadata.count
       },
-      summary: summary
+      summary: summary,
+      recently_updated_invoices: recently_updated_invoices
     }
   end
 
