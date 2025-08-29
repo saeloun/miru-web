@@ -154,6 +154,10 @@ namespace :api, defaults: { format: "json" } do
       resources :providers, only: [:index, :update]
     end
 
+    namespace :dashboard do
+      resources :activities, only: [:index]
+    end
+
     resources :users, concerns: :addressable do
       resources :previous_employments, only: [:create, :index, :show, :update], controller: "users/previous_employments"
       resources :devices, only: [:create, :index, :show, :update], controller: "users/devices"
