@@ -62,65 +62,31 @@ jobs:
             type=raw,value=latest,enable={{is_default_branch}}
             type=raw,value=devcontainer,enable={{is_default_branch}}
 
-      - name: Build and push base image
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: ./Dockerfile.base
-          push: ${{ github.event_name != 'pull_request' }}
-          tags: |
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:base
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:base-${{ github.sha }}
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:buildcache
-          cache-from: |
-            type=gha,scope=base
-            type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:buildcache
-            type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:base
-          cache-to: |
-            type=gha,mode=max,scope=base
-            type=inline
-            type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:buildcache,mode=max
-          platforms: linux/amd64,linux/arm64
-          build-args: |
-            BUILDKIT_INLINE_CACHE=1
-
       - name: Build and push development image
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: ./.devcontainer/Dockerfile
+          file: ./Dockerfile
+          target: development
           push: ${{ github.event_name != 'pull_request' }}
           tags: |
             ${{ steps.meta.outputs.tags }}
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:devcontainer-latest
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:devcache
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: |
             type=gha,scope=dev
-            type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:devcache
             type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:devcontainer-latest
-            type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:base
           cache-to: |
             type=gha,mode=max,scope=dev
-            type=inline
-            type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:devcache,mode=max
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64
           build-args: |
-            BASE_IMAGE=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:base
             RUBY_VERSION=3.4.5
             NODE_VERSION=22
-            POSTGRES_VERSION=16
-            BUILDKIT_INLINE_CACHE=1
 
       - name: Generate devcontainer metadata
         if: success()
         run: |
           echo "### Docker Images Published 🐳" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**Base Image:**" >> $GITHUB_STEP_SUMMARY
-          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-          echo "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:base" >> $GITHUB_STEP_SUMMARY
-          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Development Image:**" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
