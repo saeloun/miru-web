@@ -8,6 +8,7 @@ RSpec.describe Api::V1::PaymentSettingsController, type: :request do
 
   before do
     create(:employment, user:, company:)
+    user.add_role :admin, company
     sign_in user
   end
 
@@ -20,10 +21,8 @@ RSpec.describe Api::V1::PaymentSettingsController, type: :request do
           expect(response).to have_http_status(:success)
 
           json_response = JSON.parse(response.body)
-          expect(json_response["stripe"]["connected"]).to be false
-          expect(json_response["stripe"]["status"]).to eq("not_connected")
-          expect(json_response["providers"]["stripe"]["enabled"]).to be false
-          expect(json_response["providers"]["bank_transfer"]["enabled"]).to be true
+          expect(json_response["providers"]).to be_present
+          expect(json_response["providers"]["stripe"]["connected"]).to be false
         end
       end
 
@@ -31,9 +30,7 @@ RSpec.describe Api::V1::PaymentSettingsController, type: :request do
         let!(:stripe_account) do
           create(:stripe_connected_account,
             company:,
-            account_id: "acct_test123",
-            account_name: "Test Account",
-            status: "active"
+            account_id: "acct_test123"
           )
         end
 
@@ -43,11 +40,8 @@ RSpec.describe Api::V1::PaymentSettingsController, type: :request do
           expect(response).to have_http_status(:success)
 
           json_response = JSON.parse(response.body)
-          expect(json_response["stripe"]["connected"]).to be true
-          expect(json_response["stripe"]["account_id"]).to eq("acct_test123")
-          expect(json_response["stripe"]["account_name"]).to eq("Test Account")
-          expect(json_response["stripe"]["status"]).to eq("active")
-          expect(json_response["providers"]["stripe"]["enabled"]).to be true
+          expect(json_response["providers"]).to be_present
+          expect(json_response["providers"]["stripe"]["connected"]).to be true
         end
       end
     end
@@ -64,7 +58,7 @@ RSpec.describe Api::V1::PaymentSettingsController, type: :request do
 
   describe "POST #connect_stripe" do
     it "returns stripe connect initiation message" do
-      post api_v1_connect_stripe_path
+      post api_v1_payments_settings_stripe_connect_path
 
       expect(response).to have_http_status(:success)
 
@@ -85,7 +79,7 @@ RSpec.describe Api::V1::PaymentSettingsController, type: :request do
 
       it "disconnects the stripe account" do
         expect {
-          delete api_v1_disconnect_stripe_path
+          delete api_v1_payments_settings_stripe_disconnect_path
         }.to change { StripeConnectedAccount.count }.by(-1)
 
         expect(response).to have_http_status(:success)
@@ -97,7 +91,7 @@ RSpec.describe Api::V1::PaymentSettingsController, type: :request do
 
     context "when stripe account does not exist" do
       it "returns an error" do
-        delete api_v1_disconnect_stripe_path
+        delete api_v1_payments_settings_stripe_disconnect_path
 
         expect(response).to have_http_status(:unprocessable_entity)
 

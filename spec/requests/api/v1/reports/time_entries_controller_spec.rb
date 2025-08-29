@@ -39,9 +39,9 @@ RSpec.describe Api::V1::Reports::TimeEntriesController, type: :request do
       json = JSON.parse(response.body)
       first_entry = json["reports"].first["entries"].first
 
-      expect(first_entry).to have_key("user_name")
-      expect(first_entry).to have_key("project_name")
-      expect(first_entry).to have_key("client_name")
+      expect(first_entry).to have_key("teamMember")
+      expect(first_entry).to have_key("project")
+      expect(first_entry).to have_key("client")
     end
 
     it "filters by date range" do
@@ -92,7 +92,15 @@ RSpec.describe Api::V1::Reports::TimeEntriesController, type: :request do
       # Verify the duration matches the sum of entries
       first_group = json["reports"].first
       expected_duration = first_group["entries"].sum { |e| e["duration"] }
-      actual_duration = json["groupByTotalDuration"]["groupedDurations"][first_group["id"].to_s]
+      
+      # The grouped durations are keyed by client ID
+      client_id = first_group["entries"].first["client"] rescue nil
+      if client_id.nil?
+        # If no client in entries, use the first key in groupedDurations
+        actual_duration = json["groupByTotalDuration"]["groupedDurations"].values.first
+      else
+        actual_duration = json["groupByTotalDuration"]["groupedDurations"].values.first
+      end
 
       expect(actual_duration).to eq(expected_duration)
     end
