@@ -69,7 +69,7 @@ RSpec.describe "Api::V1::Payments#create", type: :request do
     describe "when tries to create manual payment entry" do
       it "returns success" do
         send_request :post, api_v1_payments_path(payment: @payment), headers: auth_headers(user)
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:created)
       end
     end
   end
