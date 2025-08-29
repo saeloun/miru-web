@@ -92,7 +92,7 @@ RSpec.describe Api::V1::Reports::TimeEntriesController, type: :request do
       # Verify the duration matches the sum of entries
       first_group = json["reports"].first
       expected_duration = first_group["entries"].sum { |e| e["duration"] }
-      
+
       # The grouped durations are keyed by client ID
       client_id = first_group["entries"].first["client"] rescue nil
       if client_id.nil?

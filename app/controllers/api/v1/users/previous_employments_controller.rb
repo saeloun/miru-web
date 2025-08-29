@@ -26,7 +26,7 @@ class Api::V1::Users::PreviousEmploymentsController < Api::V1::ApplicationContro
     authorize @user, policy_class: Users::PreviousEmploymentPolicy
     previous_employment = @user.previous_employments.new(previous_employment_params)
     previous_employment.save!
-    render :create, locals: { previous_employment: }, status: :created
+    render :create, locals: { previous_employment: }, status: 201
  end
 
   private
