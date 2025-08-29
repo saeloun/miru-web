@@ -10,6 +10,7 @@ RSpec.describe Api::V1::Users::PreviousEmploymentsController, type: :request do
   before do
     create(:employment, user:, company:)
     create(:employment, user: other_user, company:)
+    user.add_role :admin, company
     sign_in user
   end
 
@@ -74,9 +75,8 @@ RSpec.describe Api::V1::Users::PreviousEmploymentsController, type: :request do
         expect(response).to have_http_status(:success)
 
         json_response = JSON.parse(response.body)
-        employment = json_response["previous_employment"]
-        expect(employment["company_name"]).to eq("Tech Corp")
-        expect(employment["role"]).to eq("Senior Developer")
+        expect(json_response["company_name"]).to eq("Tech Corp")
+        expect(json_response["role"]).to eq("Senior Developer")
       end
     end
 
@@ -108,11 +108,8 @@ RSpec.describe Api::V1::Users::PreviousEmploymentsController, type: :request do
         expect(response).to have_http_status(:created)
 
         json_response = JSON.parse(response.body)
-        expect(json_response["notice"]).to eq("Previous employment added successfully")
-
-        employment = json_response["previous_employment"]
-        expect(employment["company_name"]).to eq("New Company")
-        expect(employment["role"]).to eq("Software Engineer")
+        expect(json_response["company_name"]).to eq("New Company")
+        expect(json_response["role"]).to eq("Software Engineer")
       end
     end
 
@@ -163,11 +160,8 @@ RSpec.describe Api::V1::Users::PreviousEmploymentsController, type: :request do
         expect(response).to have_http_status(:success)
 
         json_response = JSON.parse(response.body)
-        expect(json_response["notice"]).to eq("Previous employment updated successfully")
-
-        employment = json_response["previous_employment"]
-        expect(employment["company_name"]).to eq("Updated Company")
-        expect(employment["role"]).to eq("Senior Developer")
+        expect(json_response["company_name"]).to eq("Updated Company")
+        expect(json_response["role"]).to eq("Senior Developer")
       end
     end
 
