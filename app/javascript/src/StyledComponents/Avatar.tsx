@@ -24,7 +24,7 @@ const Avatar = ({
   initialsLetterCount = 2,
   style,
 }: AvatarProps) => {
-  const [initials, setInitials] = useState<string>(null);
+  const [initials, setInitials] = useState<string>("");
   const DEFAULT_STYLE_IMAGE = "inline-block rounded-full";
 
   const DEFAULT_STYLE_INITIALS =

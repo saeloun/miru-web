@@ -9,11 +9,19 @@ import { Routes, Route, Outlet, Navigate } from "react-router-dom";
 import { dashboardUrl } from "utils/dashboardUrl";
 import { useUserContext } from "context/UserContext";
 
+const isSafeInternalPath = (p: string): boolean => {
+  const trimmed = (p || "").trim();
+  if (!trimmed.startsWith("/")) return false;
+  if (trimmed.startsWith("//")) return false; // scheme-relative
+  if (/^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(trimmed)) return false; // absolute schemes
+  return true;
+};
+
 const redirectUrl = role => {
   const lastVisitedPage = Cookies.get("lastVisitedPage");
   let url = dashboardUrl(role);
 
-  if (lastVisitedPage && lastVisitedPage !== "/") {
+  if (lastVisitedPage && isSafeInternalPath(lastVisitedPage)) {
     url = lastVisitedPage;
   }
 

@@ -6,7 +6,22 @@ import ChartBar from "common/ChartBar";
 import { useUserContext } from "context/UserContext";
 import { cashFormatter, currencySymbol } from "helpers";
 
-const TotalHoursChart = ({
+interface OverdueOutstanding {
+  currency?: string;
+  overdue_amount?: number;
+  outstanding_amount?: number;
+}
+
+type Timeframe = "week" | "month" | "year";
+
+interface TotalHoursChartProps {
+  clientData: unknown; // TODO: replace with ChartBar data type if available
+  fetchClientDetails: (timeframe: Timeframe) => void;
+  totalMinutes: number;
+  overdueOutstandingAmount?: OverdueOutstanding | null;
+}
+
+const TotalHoursChart: React.FC<TotalHoursChartProps> = ({
   clientData,
   fetchClientDetails,
   totalMinutes,
