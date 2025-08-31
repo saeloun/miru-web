@@ -3,7 +3,7 @@ name: Build and Push Docker Images
 
 on:
   push:
-    branches: [develop, main, miru-2-0-upgrade]
+    branches: [develop, main]
   pull_request:
     types: [opened, synchronize, reopened]
   workflow_dispatch:
