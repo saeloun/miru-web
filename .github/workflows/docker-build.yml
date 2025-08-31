@@ -63,16 +63,36 @@ jobs:
             type=raw,value=latest,enable={{is_default_branch}}
             type=raw,value=devcontainer,enable={{is_default_branch}}
 
+      - name: Build and push production image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          target: production
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: |
+            type=gha,scope=prod
+            type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          cache-to: |
+            type=gha,mode=max,scope=prod
+          platforms: linux/amd64
+          build-args: |
+            RUBY_VERSION=3.4.5
+            NODE_VERSION=22.11.0
+
       - name: Build and push development image
+        if: github.ref == 'refs/heads/develop'
         uses: docker/build-push-action@v5
         with:
           context: .
           file: ./Dockerfile
           target: development
-          push: ${{ github.event_name != 'pull_request' }}
+          push: true
           tags: |
-            ${{ steps.meta.outputs.tags }}
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:devcontainer-latest
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:dev-${{ github.sha }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: |
             type=gha,scope=dev
@@ -82,7 +102,7 @@ jobs:
           platforms: linux/amd64
           build-args: |
             RUBY_VERSION=3.4.5
-            NODE_VERSION=22
+            NODE_VERSION=22.11.0
 
       - name: Generate devcontainer metadata
         if: success()
