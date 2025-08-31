@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 
-import classNames from "classnames";
 import { Field } from "formik";
 import { PasswordIconSVG, PasswordIconTextSVG } from "miruIcons";
 import { Input } from "../../../components/ui/input";
@@ -69,15 +68,9 @@ const InputField = ({
     resetErrorOnChange || onChange ? { onChange: e => handleChange(e) } : {};
 
   return (
-    <div
-      className={cn(
-        "relative",
-        wrapperClassName,
-        defaultMarginBottom
-      )}
-    >
+    <div className={cn("relative", wrapperClassName, defaultMarginBottom)}>
       {label && (
-        <Label 
+        <Label
           htmlFor={name}
           className={cn(
             "mb-2 block text-sm font-medium text-miru-dark-purple-400",
@@ -97,7 +90,9 @@ const InputField = ({
           name={name}
           placeholder={label ? "" : " "}
           readOnly={readOnly}
-          type={type === "password" ? (showPassword ? "text" : "password") : type}
+          type={
+            type === "password" ? (showPassword ? "text" : "password") : type
+          }
           className={cn(
             hasError && "border-red-500 focus-visible:ring-red-500",
             inputBoxClassName
@@ -113,7 +108,12 @@ const InputField = ({
             onClick={handleTogglePasswordVisibility}
           >
             {!showPassword ? (
-              <img alt="Show password" height="16" src={PasswordIconSVG} width="16" />
+              <img
+                alt="Show password"
+                height="16"
+                src={PasswordIconSVG}
+                width="16"
+              />
             ) : (
               <img
                 alt="Hide password"
@@ -130,3 +130,4 @@ const InputField = ({
 };
 
 export default InputField;
+

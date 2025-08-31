@@ -15,91 +15,94 @@ export interface CurrencyConfig {
 // Currency configurations
 export const CURRENCY_CONFIGS: Record<string, CurrencyConfig> = {
   USD: {
-    code: 'USD',
-    symbol: '$',
-    name: 'US Dollar',
+    code: "USD",
+    symbol: "$",
+    name: "US Dollar",
     decimal_places: 2,
-    separator: '.',
-    delimiter: ',',
-    format: '%s%v', // %s = symbol, %v = value
+    separator: ".",
+    delimiter: ",",
+    format: "%s%v", // %s = symbol, %v = value
   },
   EUR: {
-    code: 'EUR',
-    symbol: '€',
-    name: 'Euro',
+    code: "EUR",
+    symbol: "€",
+    name: "Euro",
     decimal_places: 2,
-    separator: ',',
-    delimiter: '.',
-    format: '%s %v',
+    separator: ",",
+    delimiter: ".",
+    format: "%s %v",
   },
   GBP: {
-    code: 'GBP',
-    symbol: '£',
-    name: 'British Pound',
+    code: "GBP",
+    symbol: "£",
+    name: "British Pound",
     decimal_places: 2,
-    separator: '.',
-    delimiter: ',',
-    format: '%s%v',
+    separator: ".",
+    delimiter: ",",
+    format: "%s%v",
   },
   JPY: {
-    code: 'JPY',
-    symbol: '¥',
-    name: 'Japanese Yen',
+    code: "JPY",
+    symbol: "¥",
+    name: "Japanese Yen",
     decimal_places: 0,
-    separator: '',
-    delimiter: ',',
-    format: '%s%v',
+    separator: "",
+    delimiter: ",",
+    format: "%s%v",
   },
   INR: {
-    code: 'INR',
-    symbol: '₹',
-    name: 'Indian Rupee',
+    code: "INR",
+    symbol: "₹",
+    name: "Indian Rupee",
     decimal_places: 2,
-    separator: '.',
-    delimiter: ',',
-    format: '%s %v',
+    separator: ".",
+    delimiter: ",",
+    format: "%s %v",
   },
   CAD: {
-    code: 'CAD',
-    symbol: 'C$',
-    name: 'Canadian Dollar',
+    code: "CAD",
+    symbol: "C$",
+    name: "Canadian Dollar",
     decimal_places: 2,
-    separator: '.',
-    delimiter: ',',
-    format: '%s%v',
+    separator: ".",
+    delimiter: ",",
+    format: "%s%v",
   },
   AUD: {
-    code: 'AUD',
-    symbol: 'A$',
-    name: 'Australian Dollar',
+    code: "AUD",
+    symbol: "A$",
+    name: "Australian Dollar",
     decimal_places: 2,
-    separator: '.',
-    delimiter: ',',
-    format: '%s%v',
+    separator: ".",
+    delimiter: ",",
+    format: "%s%v",
   },
 };
 
 export class CurrencyFormatter {
   private config: CurrencyConfig;
 
-  constructor(currencyCode: string = 'USD') {
+  constructor(currencyCode: string = "USD") {
     this.config = CURRENCY_CONFIGS[currencyCode] || CURRENCY_CONFIGS.USD;
   }
 
   /**
    * Format a number as currency
    */
-  format(amount: number | string, options: Partial<CurrencyConfig> = {}): string {
-    const value = typeof amount === 'string' ? parseFloat(amount) : amount;
-    
+  format(
+    amount: number | string,
+    options: Partial<CurrencyConfig> = {}
+  ): string {
+    const value = typeof amount === "string" ? parseFloat(amount) : amount;
+
     if (isNaN(value)) {
       return this.config.format
-        .replace('%s', this.config.symbol)
-        .replace('%v', '0');
+        .replace("%s", this.config.symbol)
+        .replace("%v", "0");
     }
 
     const mergedConfig = { ...this.config, ...options };
-    
+
     // Format the number with proper decimal places
     const formatted = this.formatNumber(
       value,
@@ -110,8 +113,8 @@ export class CurrencyFormatter {
 
     // Apply currency format
     return mergedConfig.format
-      .replace('%s', mergedConfig.symbol)
-      .replace('%v', formatted);
+      .replace("%s", mergedConfig.symbol)
+      .replace("%v", formatted);
   }
 
   /**
@@ -124,16 +127,19 @@ export class CurrencyFormatter {
     delimiter: string
   ): string {
     const fixed = value.toFixed(decimals);
-    const [integerPart, decimalPart] = fixed.split('.');
-    
+    const [integerPart, decimalPart] = fixed.split(".");
+
     // Add thousand separators
-    const withDelimiters = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, delimiter);
-    
+    const withDelimiters = integerPart.replace(
+      /\B(?=(\d{3})+(?!\d))/g,
+      delimiter
+    );
+
     // Combine with decimal part if needed
     if (decimals > 0 && decimalPart) {
       return `${withDelimiters}${separator}${decimalPart}`;
     }
-    
+
     return withDelimiters;
   }
 
@@ -142,16 +148,19 @@ export class CurrencyFormatter {
    */
   parse(formattedValue: string): number {
     // Remove currency symbol and whitespace
-    let cleaned = formattedValue.replace(this.config.symbol, '').trim();
-    
+    let cleaned = formattedValue.replace(this.config.symbol, "").trim();
+
     // Remove thousand delimiters
-    cleaned = cleaned.replace(new RegExp(`\\${this.config.delimiter}`, 'g'), '');
-    
+    cleaned = cleaned.replace(
+      new RegExp(`\\${this.config.delimiter}`, "g"),
+      ""
+    );
+
     // Replace decimal separator with period if needed
-    if (this.config.separator !== '.') {
-      cleaned = cleaned.replace(this.config.separator, '.');
+    if (this.config.separator !== ".") {
+      cleaned = cleaned.replace(this.config.separator, ".");
     }
-    
+
     return parseFloat(cleaned) || 0;
   }
 
@@ -173,13 +182,14 @@ export class CurrencyFormatter {
    * Format as accounting (negative in parentheses)
    */
   formatAccounting(amount: number | string): string {
-    const value = typeof amount === 'string' ? parseFloat(amount) : amount;
-    
+    const value = typeof amount === "string" ? parseFloat(amount) : amount;
+
     if (value < 0) {
       const formatted = this.format(Math.abs(value));
+
       return `(${formatted})`;
     }
-    
+
     return this.format(value);
   }
 
@@ -187,15 +197,15 @@ export class CurrencyFormatter {
    * Format with explicit positive/negative sign
    */
   formatSigned(amount: number | string): string {
-    const value = typeof amount === 'string' ? parseFloat(amount) : amount;
+    const value = typeof amount === "string" ? parseFloat(amount) : amount;
     const formatted = this.format(Math.abs(value));
-    
+
     if (value > 0) {
       return `+${formatted}`;
     } else if (value < 0) {
       return `-${formatted}`;
     }
-    
+
     return formatted;
   }
 
@@ -203,28 +213,29 @@ export class CurrencyFormatter {
    * Format as compact notation (1K, 1M, etc.)
    */
   formatCompact(amount: number | string): string {
-    const value = typeof amount === 'string' ? parseFloat(amount) : amount;
+    const value = typeof amount === "string" ? parseFloat(amount) : amount;
     const absValue = Math.abs(value);
-    
-    let suffix = '';
+
+    let suffix = "";
     let divisor = 1;
-    
+
     if (absValue >= 1e9) {
-      suffix = 'B';
+      suffix = "B";
       divisor = 1e9;
     } else if (absValue >= 1e6) {
-      suffix = 'M';
+      suffix = "M";
       divisor = 1e6;
     } else if (absValue >= 1e3) {
-      suffix = 'K';
+      suffix = "K";
       divisor = 1e3;
     }
-    
+
     if (divisor > 1) {
       const compactValue = (value / divisor).toFixed(1);
+
       return `${this.config.symbol}${compactValue}${suffix}`;
     }
-    
+
     return this.format(value);
   }
 }
@@ -232,32 +243,35 @@ export class CurrencyFormatter {
 // Convenience functions
 export function formatCurrency(
   amount: number | string,
-  currencyCode: string = 'USD',
+  currencyCode: string = "USD",
   options: Partial<CurrencyConfig> = {}
 ): string {
   const formatter = new CurrencyFormatter(currencyCode);
+
   return formatter.format(amount, options);
 }
 
 export function parseCurrency(
   formattedValue: string,
-  currencyCode: string = 'USD'
+  currencyCode: string = "USD"
 ): number {
   const formatter = new CurrencyFormatter(currencyCode);
+
   return formatter.parse(formattedValue);
 }
 
-export function getCurrencySymbol(currencyCode: string = 'USD'): string {
-  return CURRENCY_CONFIGS[currencyCode]?.symbol || '$';
+export function getCurrencySymbol(currencyCode: string = "USD"): string {
+  return CURRENCY_CONFIGS[currencyCode]?.symbol || "$";
 }
 
 export function formatCompactCurrency(
   amount: number | string,
-  currencyCode: string = 'USD'
+  currencyCode: string = "USD"
 ): string {
   const formatter = new CurrencyFormatter(currencyCode);
+
   return formatter.formatCompact(amount);
 }
 
 // Export default instance for USD
-export default new CurrencyFormatter('USD');
+export default new CurrencyFormatter("USD");

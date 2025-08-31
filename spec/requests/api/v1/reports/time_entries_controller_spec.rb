@@ -21,7 +21,7 @@ RSpec.describe Api::V1::Reports::TimeEntriesController, type: :request do
 
     it "returns time entry reports" do
       create_list(:timesheet_entry, 5, user:, project:, work_date: Date.current)
-      
+
       get api_v1_reports_time_entries_path
 
       expect(response).to have_http_status(:ok)
@@ -35,7 +35,7 @@ RSpec.describe Api::V1::Reports::TimeEntriesController, type: :request do
 
     it "includes user and project details in entries" do
       create_list(:timesheet_entry, 5, user:, project:, work_date: Date.current)
-      
+
       get api_v1_reports_time_entries_path
 
       json = JSON.parse(response.body)
@@ -49,7 +49,7 @@ RSpec.describe Api::V1::Reports::TimeEntriesController, type: :request do
     it "filters by date range" do
       create_list(:timesheet_entry, 5, user:, project:, work_date: Date.current)
       create_list(:timesheet_entry, 3, user:, project: another_project, work_date: Date.current - 1.day)
-      
+
       get api_v1_reports_time_entries_path, params: {
         from: Date.current.strftime("%d/%m/%Y"),
         to: Date.current.strftime("%d/%m/%Y")
@@ -66,7 +66,7 @@ RSpec.describe Api::V1::Reports::TimeEntriesController, type: :request do
 
     it "groups by client" do
       create_list(:timesheet_entry, 5, user:, project:, work_date: Date.current)
-      
+
       get api_v1_reports_time_entries_path, params: { group_by: "client" }
 
       json = JSON.parse(response.body)
@@ -77,7 +77,7 @@ RSpec.describe Api::V1::Reports::TimeEntriesController, type: :request do
 
     it "groups by project" do
       create_list(:timesheet_entry, 5, user:, project:, work_date: Date.current)
-      
+
       get api_v1_reports_time_entries_path, params: { group_by: "project" }
 
       json = JSON.parse(response.body)
@@ -87,7 +87,7 @@ RSpec.describe Api::V1::Reports::TimeEntriesController, type: :request do
 
     it "groups by team member" do
       create_list(:timesheet_entry, 5, user:, project:, work_date: Date.current)
-      
+
       get api_v1_reports_time_entries_path, params: { group_by: "team_member" }
 
       json = JSON.parse(response.body)
@@ -97,7 +97,7 @@ RSpec.describe Api::V1::Reports::TimeEntriesController, type: :request do
 
     it "calculates total durations correctly" do
       create_list(:timesheet_entry, 5, user:, project:, work_date: Date.current)
-      
+
       get api_v1_reports_time_entries_path, params: { group_by: "client" }
 
       json = JSON.parse(response.body)

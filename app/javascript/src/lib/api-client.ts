@@ -114,11 +114,13 @@ class ApiClient {
     if (userStr) {
       try {
         const user = JSON.parse(userStr);
+
         return user.email;
       } catch (e) {
         console.error("Failed to parse user data:", e);
       }
     }
+
     return null;
   }
 

@@ -44,7 +44,7 @@ RSpec.describe Api::V1::PaymentSettingsController, type: :request do
               payouts_enabled: true
             )
           )
-          
+
           get api_v1_payments_settings_path
 
           expect(response).to have_http_status(:success)
@@ -72,7 +72,7 @@ RSpec.describe Api::V1::PaymentSettingsController, type: :request do
       allow_any_instance_of(StripeConnectedAccount).to receive(:account_id).and_return("acct_test_new")
       stub_stripe_account_retrieve("acct_test_new", details_submitted: false)
       stub_stripe_account_link_creation
-      
+
       post api_v1_payments_settings_stripe_connect_path
 
       expect(response).to have_http_status(:success)
