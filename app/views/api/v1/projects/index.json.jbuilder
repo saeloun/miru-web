@@ -7,6 +7,9 @@ json.projects projects do |project|
   json.client_name project.client&.name
   json.billable project.billable
   json.description project.description
+  json.status project.discarded? ? "inactive" : "active"
+  json.totalHours project.timesheet_entries.sum(:duration) / 60.0
+  json.teamMembers project.project_members.map { |pm| { id: pm.user_id, name: pm.user&.full_name } }
   json.created_at project.created_at
   json.updated_at project.updated_at
 end
