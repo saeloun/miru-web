@@ -3,6 +3,7 @@ on:
   push:
     branches: [develop, main]
   pull_request:
+    branches: [develop, main]
     types: [labeled, opened, synchronize, reopened]
   workflow_dispatch:
 
