@@ -17,11 +17,6 @@ jobs:
     name: Running tests
     runs-on: ubuntu-latest  # Standard 2-core runner
     if: "!contains(github.event.head_commit.message, 'skip ci')"
-    strategy:
-      fail-fast: false
-      matrix:
-        ci_node_index: [0]
-        ci_node_total: [1]
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -165,7 +160,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: test-results-${{ matrix.ci_node_index }}
+          name: test-results
           path: |
             tmp/rspec_*.xml
             tmp/rspec*.xml
@@ -178,10 +173,6 @@ jobs:
     name: Playwright E2E Tests
     runs-on: ubuntu-latest
     if: "!contains(github.event.head_commit.message, 'skip ci')"
-    strategy:
-      fail-fast: false
-      matrix:
-        shard: [1]
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -301,7 +292,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-report-shard-${{ matrix.shard }}
+          name: playwright-report
           path: |
             playwright-report/
             test-results/

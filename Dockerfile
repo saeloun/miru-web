@@ -1,196 +1,100 @@
 # syntax=docker/dockerfile:1
-# Miru 2.0 - Optimized Multi-Stage Dockerfile
-# Leverages layer caching for faster builds
+# check=error=true
 
-# Stage 1: Base Ruby image with system dependencies
-FROM ruby:3.4.5-slim AS base
+# This Dockerfile is designed for production, not development. Use with Kamal or build'n'run by hand:
+# docker build -t demo .
+# docker run -d -p 80:80 -e RAILS_MASTER_KEY=<value from config/master.key> --name demo demo
 
-# Install only runtime dependencies
+# For a containerized dev environment, see Dev Containers: https://guides.rubyonrails.org/getting_started_with_devcontainer.html
+
+# Make sure RUBY_VERSION matches the Ruby version in .ruby-version
+ARG RUBY_VERSION=3.4.5
+FROM ruby:$RUBY_VERSION-slim AS base
+
+LABEL fly_launch_runtime="rails"
+
+# Rails app lives here
+WORKDIR /rails
+
+# Update gems and bundler
+RUN gem update --system --no-document && \
+    gem install -N bundler
+
+# Install base packages needed to install nodejs and chrome
 RUN apt-get update -qq && \
-    apt-get install -y --no-install-recommends \
-    libpq-dev \
-    postgresql-client \
-    curl \
-    gnupg \
-    ca-certificates \
-    libvips \
-    imagemagick \
-    && rm -rf /var/lib/apt/lists/*
+    apt-get install --no-install-recommends -y curl gnupg libjemalloc2 libvips postgresql-client && \
+    rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
-# Install Node.js 22 LTS (runtime only)
-RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
-    apt-get install -y nodejs && \
-    rm -rf /var/lib/apt/lists/*
+# Set production environment
+ENV BUNDLE_DEPLOYMENT="1" \
+    BUNDLE_PATH="/usr/local/bundle" \
+    BUNDLE_WITHOUT="development:test" \
+    RAILS_ENV="production"
 
-# Stage 2: Build dependencies
-FROM base AS build-deps
+# Install Node.js
+ARG NODE_VERSION=20.18.2
+ENV PATH=/usr/local/node/bin:$PATH
+RUN curl -sL https://github.com/nodenv/node-build/archive/master.tar.gz | tar xz -C /tmp/ && \
+    /tmp/node-build-master/bin/node-build "${NODE_VERSION}" /usr/local/node && \
+    rm -rf /tmp/node-build-master
 
-# Install build dependencies
+
+# Throw-away build stage to reduce size of final image
+FROM base AS build
+
+# Install packages needed to build gems and node modules
 RUN apt-get update -qq && \
-    apt-get install -y --no-install-recommends \
-    build-essential \
-    pkg-config \
-    git \
-    && rm -rf /var/lib/apt/lists/*
+    apt-get install --no-install-recommends -y build-essential git libffi-dev libpq-dev libyaml-dev node-gyp pkg-config python-is-python3 && \
+    rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
-# Install pnpm
-RUN npm install -g pnpm@9.15.5
+# Build options
+ENV PATH="/usr/local/node/bin:$PATH" \
+    PUPPETEER_SKIP_CHROMIUM_DOWNLOAD="true"
 
-# Set environment variables from original config
-ENV BUNDLE_PATH=/usr/local/bundle \
-    BUNDLE_BIN=/usr/local/bundle/bin \
-    GEM_HOME=/usr/local/bundle \
-    PATH="/usr/local/bundle/bin:${PATH}" \
-    PLAYWRIGHT_BROWSERS_PATH=/ms-playwright \
-    PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=0
-
-WORKDIR /app
-
-# Stage 3: Ruby dependencies
-FROM build-deps AS ruby-deps
-
-# Copy only Gemfile for better caching
+# Install application gems
 COPY Gemfile Gemfile.lock ./
-
-# Install gems with optimal settings
-RUN bundle config set --local deployment 'true' && \
-    bundle config set --local without 'development test' && \
-    bundle config set --local jobs $(nproc) && \
-    bundle config set --local retry 3 && \
-    bundle install && \
-    bundle clean --force && \
-    rm -rf /usr/local/bundle/cache/*.gem && \
-    find /usr/local/bundle/gems/ -name "*.c" -delete 2>/dev/null || true && \
-    find /usr/local/bundle/gems/ -name "*.o" -delete 2>/dev/null || true
-
-# Stage 4: Node dependencies
-FROM build-deps AS node-deps
-
-# Copy only package files for better caching
-COPY package.json pnpm-lock.yaml ./
-
-# Install production dependencies only
-RUN pnpm install --prod --frozen-lockfile --ignore-scripts && \
-    pnpm store prune
-
-# Stage 5: Asset compilation
-FROM build-deps AS assets
-
-# Copy node modules from node-deps
-COPY --from=node-deps /app/node_modules /app/node_modules
-
-# Copy package files
-COPY package.json pnpm-lock.yaml ./
-
-# Install all dependencies (including dev) for building
-RUN pnpm install --frozen-lockfile --ignore-scripts
-
-# Copy application code
-COPY . .
-
-# Copy gems from ruby-deps
-COPY --from=ruby-deps /usr/local/bundle /usr/local/bundle
-
-# Build assets
-RUN SECRET_KEY_BASE=dummy RAILS_ENV=production bundle exec rails assets:precompile && \
-    rm -rf node_modules tmp/cache
-
-# Stage 6: Development image
-FROM build-deps AS development
-
-ENV RAILS_ENV=development \
-    NODE_ENV=development \
-    MALLOC_ARENA_MAX=2 \
-    WEB_CONCURRENCY=2 \
-    RAILS_LOG_TO_STDOUT=true \
-    BUNDLE_PATH=/usr/local/bundle \
-    BUNDLE_BIN=/usr/local/bundle/bin \
-    GEM_HOME=/usr/local/bundle \
-    PATH="/usr/local/bundle/bin:${PATH}" \
-    PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
-
-WORKDIR /app
-
-# Copy everything for development
-COPY . .
-
-# Install all dependencies
 RUN bundle install && \
-    pnpm install --frozen-lockfile --ignore-scripts
+    rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git && \
+    bundle exec bootsnap precompile --gemfile
 
-# Install Playwright for development
-RUN pnpm exec playwright install chromium --with-deps
-
-EXPOSE 3000
-CMD ["bin/rails", "server", "-b", "0.0.0.0"]
-
-# Stage 7: Test image
-FROM build-deps AS test
-
-ENV RAILS_ENV=test \
-    NODE_ENV=test \
-    CI=true \
-    PLAYWRIGHT_HEADLESS=true \
-    PARALLEL_WORKERS=4 \
-    DISABLE_SPRING=true \
-    BUNDLE_PATH=/usr/local/bundle \
-    BUNDLE_BIN=/usr/local/bundle/bin \
-    GEM_HOME=/usr/local/bundle \
-    PATH="/usr/local/bundle/bin:${PATH}" \
-    PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
-
-WORKDIR /app
-
-# Copy gems from ruby-deps (but with test gems)
-COPY Gemfile Gemfile.lock ./
-RUN bundle config set --local deployment 'false' && \
-    bundle config set --local with 'test' && \
-    bundle install
-
-# Copy node modules and install test dependencies
-COPY package.json pnpm-lock.yaml ./
-RUN pnpm install --frozen-lockfile --ignore-scripts
-
-# Install Playwright chromium
-RUN pnpm exec playwright install chromium --with-deps
+# Install node modules
+COPY package.json ./
+RUN npm install
 
 # Copy application code
 COPY . .
 
-# Prepare test database
-RUN bundle exec rails db:test:prepare || true
+# Precompile bootsnap code for faster boot times
+RUN bundle exec bootsnap precompile app/ lib/
 
-CMD ["bundle", "exec", "rspec"]
+# Precompiling assets for production without requiring secret RAILS_MASTER_KEY
+RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
 
-# Stage 8: Production image (minimal)
-FROM base AS production
 
-ENV RAILS_ENV=production \
-    NODE_ENV=production \
-    RAILS_SERVE_STATIC_FILES=true \
-    RAILS_LOG_TO_STDOUT=true
+# Final stage for app image
+FROM base
 
-WORKDIR /app
+# Install packages needed for deployment
+RUN apt-get update -qq && \
+    apt-get install --no-install-recommends -y chromium chromium-sandbox imagemagick libvips && \
+    rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
-# Create non-root user
-RUN useradd -m -s /bin/bash rails && \
-    mkdir -p /app/log /app/tmp /app/storage && \
-    chown -R rails:rails /app
+# Copy built artifacts: gems, application
+COPY --from=build "${BUNDLE_PATH}" "${BUNDLE_PATH}"
+COPY --from=build /rails /rails
 
-# Copy only necessary files from build stages
-COPY --from=ruby-deps --chown=rails:rails /usr/local/bundle /usr/local/bundle
-COPY --from=assets --chown=rails:rails /app/public /app/public
-COPY --chown=rails:rails . .
+# Run and own only the runtime files as a non-root user for security
+RUN groupadd --system --gid 1000 rails && \
+    useradd rails --uid 1000 --gid 1000 --create-home --shell /bin/bash && \
+    chown -R 1000:1000 db log storage tmp
+USER 1000:1000
 
-# Switch to non-root user
-USER rails
+# Deployment options
+ENV GROVER_NO_SANDBOX="true" \
+    PUPPETEER_EXECUTABLE_PATH="/usr/bin/chromium"
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD curl -f http://localhost:3000/health || exit 1
+# Entrypoint prepares the database.
+ENTRYPOINT ["/rails/bin/docker-entrypoint"]
 
+# Start the server by default, this can be overwritten at runtime
 EXPOSE 3000
-
-# Use exec form for proper signal handling
-ENTRYPOINT ["bundle", "exec"]
-CMD ["puma", "-C", "config/puma.rb"]
