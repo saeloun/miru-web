@@ -39,10 +39,12 @@ class ApiClient {
           config.headers["X-CSRF-Token"] = token;
         }
 
-        // Add auth token if available
+        // Add auth token and email if available
         const authToken = this.getAuthToken();
-        if (authToken) {
-          config.headers["Authorization"] = `Bearer ${authToken}`;
+        const authEmail = this.getAuthEmail();
+        if (authToken && authEmail) {
+          config.headers["X-Auth-Token"] = authToken;
+          config.headers["X-Auth-Email"] = authEmail;
         }
 
         return config;
@@ -102,10 +104,22 @@ class ApiClient {
   }
 
   private getAuthToken(): string | null {
-    // Get token from localStorage or sessionStorage
-    return (
-      localStorage.getItem("auth_token") || sessionStorage.getItem("auth_token")
-    );
+    // Get token from localStorage
+    return localStorage.getItem("authToken");
+  }
+
+  private getAuthEmail(): string | null {
+    // Get email from stored user data
+    const userStr = localStorage.getItem("user");
+    if (userStr) {
+      try {
+        const user = JSON.parse(userStr);
+        return user.email;
+      } catch (e) {
+        console.error("Failed to parse user data:", e);
+      }
+    }
+    return null;
   }
 
   // HTTP methods
