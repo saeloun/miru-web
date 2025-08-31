@@ -121,6 +121,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         headers: {
           Accept: "application/json",
           "X-Auth-Token": token || "",
+          "X-Auth-Email": user?.email || "",
           "X-CSRF-Token": csrfToken,
         },
       });
