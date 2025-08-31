@@ -28,7 +28,8 @@ RSpec.describe "Basic System Test", type: :system, js: true do
       expect(page).to have_css("#react-root", wait: 10)
 
       # Check if we're redirected to login (which means React loaded)
-      expect(page.current_path).to eq("/login").or eq("/")
+      # Note: Devise redirects to /user/sign_in
+      expect(page.current_path).to eq("/user/sign_in").or eq("/login").or eq("/")
     end
   end
 end

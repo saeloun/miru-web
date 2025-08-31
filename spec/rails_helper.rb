@@ -10,12 +10,6 @@ require File.expand_path("../config/environment", __dir__)
 # Prevent database truncation if the environment is production
 abort("The Rails environment is running in production mode!") if Rails.env.production?
 
-# Skip system specs in CI environment
-if ENV["CI"] && ARGV.grep(/spec\/system/).any?
-  puts "System specs are disabled in CI. Use Playwright tests instead."
-  exit 0
-end
-
 # Add additional requires below this line. Rails is not loaded until this point!
 require "devise"
 require "rspec/rails"
