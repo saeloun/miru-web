@@ -15,7 +15,7 @@ concurrency:
 jobs:
   tests:
     name: Running tests
-    runs-on: ubuntu-latest  # Standard runner (4-cores not available)
+    runs-on: ubuntu-latest  # Standard 2-core runner
     if: "!contains(github.event.head_commit.message, 'skip ci')"
     strategy:
       fail-fast: false
@@ -142,11 +142,12 @@ jobs:
         run: |
           mkdir -p tmp tmp/test-prof
           
-          # Run all specs in a single container (no sharding)
-          bundle exec rspec \
+          # Run specs with parallel_rspec in single container (uses available cores)
+          bundle exec parallel_rspec spec \
             --exclude-pattern "spec/system/**/*_spec.rb" \
-            --format progress --format RspecJunitFormatter --out tmp/rspec.xml \
-            --tag ~type:system || echo "Tests failed with exit code $?"
+            -n $(nproc) \
+            -o "--format progress --format RspecJunitFormatter --out tmp/rspec.xml --tag ~type:system" \
+            || echo "Tests failed with exit code $?"
           
           # Save profiling results if available
           if [ -d tmp/test-prof ]; then
