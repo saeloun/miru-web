@@ -683,9 +683,9 @@ const TimesheetEntries = ({ user, isAdminUser }: Iprops) => {
     >
       <div className="pb-14">
         {!isDesktop && <Header />}
-        <div className="mt-0 h-full p-4 lg:mt-6 lg:p-0">
+        <div className="h-full p-4 lg:p-0">
           <h2 className="header__title hidden lg:inline">Time Tracking</h2>
-          <div className="mt-8 mb-6 flex items-center justify-between">
+          <div className="mt-6 mb-6 flex items-center justify-between">
             {isDesktop && (
               <nav className="flex">
                 {["day", "month"].map((item, index) => (
