@@ -34,19 +34,19 @@ const LARGE = "p-2 text-xl font-bold leading-7";
 type ButtonProps = {
   id?: string;
   style?: string;
-  onClick?;
+  onClick?: React.MouseEventHandler<HTMLButtonElement>;
   disabled?: boolean;
   size?: string;
   className?: string;
   fullWidth?: boolean;
-  children?: any;
-  type?: any;
+  children?: React.ReactNode;
+  type?: "button" | "submit" | "reset";
 };
 
 const SIZES = { small: "small", medium: "medium", large: "large" };
 
 const Button = ({
-  id = "",
+  id,
   style = "primary",
   size,
   disabled = false,
@@ -54,11 +54,11 @@ const Button = ({
   fullWidth = false,
   onClick,
   children,
-  type,
+  type = "button",
 }: ButtonProps) => (
   <button
     disabled={disabled}
-    id={id}
+    id={id || undefined}
     type={type}
     className={classnames(
       DEFAULT_STYLE,

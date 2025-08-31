@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Api::V1::PaymentsController < ApplicationController
+class Api::V1::PaymentsController < Api::V1::ApplicationController
   before_action :set_invoice, only: [:create]
   after_action :track_event, only: [:create]
 
@@ -69,6 +69,6 @@ class Api::V1::PaymentsController < ApplicationController
 
     def track_event
       create_payment = "create_payment"
-      Invoices::EventTrackerService.new(create_payment, @invoice || invoice, params).process
+      Invoices::EventTrackerService.new(create_payment, @invoice, params).process
     end
 end

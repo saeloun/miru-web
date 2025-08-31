@@ -36,7 +36,7 @@ const InvoiceSettings = ({
   const [isChecked, setIsChecked] = useState<boolean>(true);
   const [isStripeConnected, setIsStripeConnected] = useState<boolean>(null);
   const [isPaypalConnected, setPaypalConnected] = useState<boolean>(false);
-  const [accountLink, setAccountLink] = useState<string>(null);
+  const [accountLink, setAccountLink] = useState<string>("");
   const [stripeAcceptedPaymentMethods, setStripeAcceptedPaymentMethods] =
     useState<Array<string>>(null);
   const [stripe, setStripeSettings] = useState<IProvider>(null);

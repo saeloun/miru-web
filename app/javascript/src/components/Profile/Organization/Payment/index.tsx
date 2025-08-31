@@ -15,7 +15,7 @@ const PaymentSettings = () => {
   );
   const navigate = useNavigate();
   const { isDesktop } = useUserContext();
-  const [accountLink, setAccountLink] = useState<string>(null);
+  const [accountLink, setAccountLink] = useState<string>("");
   const [isStripeConnected, setIsStripeConnected] = useState<boolean>(null);
   const [showDisconnectDialog, setShowDisconnectDialog] =
     useState<boolean>(false);

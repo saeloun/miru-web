@@ -27,7 +27,7 @@ class Api::V1::Users::PreviousEmploymentsController < Api::V1::ApplicationContro
     previous_employment = @user.previous_employments.new(previous_employment_params)
     previous_employment.save!
     render :create, locals: { previous_employment: }, status: 201
- end
+  end
 
   private
 
