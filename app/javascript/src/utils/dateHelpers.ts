@@ -22,7 +22,7 @@ dayjs.extend(utc);
 dayjs.extend(weekOfYear);
 dayjs.extend(weekday);
 
-export type DateFormat = 
+export type DateFormat =
   | "DD/MM/YYYY"
   | "MM/DD/YYYY"
   | "YYYY-MM-DD"
@@ -43,6 +43,7 @@ export class DateHelper {
 
   constructor(dateFormat?: DateFormat, timeFormat?: TimeFormat) {
     if (dateFormat) this.defaultDateFormat = dateFormat;
+
     if (timeFormat) this.defaultTimeFormat = timeFormat;
   }
 
@@ -51,6 +52,7 @@ export class DateHelper {
    */
   formatDate(date: Date | string, format?: DateFormat): string {
     const fmt = format || this.defaultDateFormat;
+
     return dayjs(date).format(fmt);
   }
 
@@ -59,15 +61,21 @@ export class DateHelper {
    */
   formatTime(date: Date | string, format?: TimeFormat): string {
     const fmt = format || this.defaultTimeFormat;
+
     return dayjs(date).format(fmt === "12h" ? "h:mm A" : "HH:mm");
   }
 
   /**
    * Format date and time together
    */
-  formatDateTime(date: Date | string, dateFormat?: DateFormat, timeFormat?: TimeFormat): string {
+  formatDateTime(
+    date: Date | string,
+    dateFormat?: DateFormat,
+    timeFormat?: TimeFormat
+  ): string {
     const datePart = this.formatDate(date, dateFormat);
     const timePart = this.formatTime(date, timeFormat);
+
     return `${datePart} ${timePart}`;
   }
 
@@ -83,33 +91,47 @@ export class DateHelper {
    */
   getHumanDate(date: Date | string): string {
     const d = dayjs(date);
-    
+
     if (d.isToday()) return "Today";
+
     if (d.isYesterday()) return "Yesterday";
+
     if (d.isTomorrow()) return "Tomorrow";
-    
+
     const now = dayjs();
     const diffDays = d.diff(now, "day");
-    
+
     if (diffDays > 0 && diffDays <= 7) {
       return `Next ${d.format("dddd")}`;
     }
-    
+
     if (diffDays < 0 && diffDays >= -7) {
       return `Last ${d.format("dddd")}`;
     }
-    
+
     if (d.year() === now.year()) {
       return d.format("MMM DD");
     }
-    
+
     return d.format("MMM DD, YYYY");
   }
 
   /**
    * Get date range for common periods
    */
-  getDateRange(period: "today" | "yesterday" | "thisWeek" | "lastWeek" | "thisMonth" | "lastMonth" | "thisQuarter" | "lastQuarter" | "thisYear" | "lastYear"): DateRange {
+  getDateRange(
+    period:
+      | "today"
+      | "yesterday"
+      | "thisWeek"
+      | "lastWeek"
+      | "thisMonth"
+      | "lastMonth"
+      | "thisQuarter"
+      | "lastQuarter"
+      | "thisYear"
+      | "lastYear"
+  ): DateRange {
     const now = dayjs();
     let start: dayjs.Dayjs;
     let end: dayjs.Dayjs;
@@ -168,8 +190,10 @@ export class DateHelper {
    */
   getLastNDaysRange(days: number): DateRange {
     const end = dayjs().endOf("day");
-    const start = dayjs().subtract(days - 1, "day").startOf("day");
-    
+    const start = dayjs()
+      .subtract(days - 1, "day")
+      .startOf("day");
+
     return {
       start: start.toDate(),
       end: end.toDate(),
@@ -180,7 +204,12 @@ export class DateHelper {
    * Check if date is in range
    */
   isInRange(date: Date | string, range: DateRange): boolean {
-    return dayjs(date).isBetween(dayjs(range.start), dayjs(range.end), null, "[]");
+    return dayjs(date).isBetween(
+      dayjs(range.start),
+      dayjs(range.end),
+      null,
+      "[]"
+    );
   }
 
   /**
@@ -202,6 +231,7 @@ export class DateHelper {
    */
   parseDate(dateString: string, format: DateFormat): Date | null {
     const parsed = dayjs(dateString, format);
+
     return parsed.isValid() ? parsed.toDate() : null;
   }
 
@@ -266,20 +296,27 @@ export class DateHelper {
    */
   isWeekend(date: Date | string): boolean {
     const day = dayjs(date).day();
+
     return day === 0 || day === 6;
   }
 
   /**
    * Get start of period
    */
-  getStartOf(date: Date | string, unit: "day" | "week" | "month" | "quarter" | "year"): Date {
+  getStartOf(
+    date: Date | string,
+    unit: "day" | "week" | "month" | "quarter" | "year"
+  ): Date {
     return dayjs(date).startOf(unit).toDate();
   }
 
   /**
    * Get end of period
    */
-  getEndOf(date: Date | string, unit: "day" | "week" | "month" | "quarter" | "year"): Date {
+  getEndOf(
+    date: Date | string,
+    unit: "day" | "week" | "month" | "quarter" | "year"
+  ): Date {
     return dayjs(date).endOf(unit).toDate();
   }
 
@@ -289,15 +326,15 @@ export class DateHelper {
   formatDuration(minutes: number): string {
     const hours = Math.floor(minutes / 60);
     const mins = minutes % 60;
-    
+
     if (hours === 0) {
       return `${mins}m`;
     }
-    
+
     if (mins === 0) {
       return `${hours}h`;
     }
-    
+
     return `${hours}h ${mins}m`;
   }
 
@@ -308,15 +345,15 @@ export class DateHelper {
     const firstDay = dayjs().year(year).month(month).date(1);
     const startDate = firstDay.startOf("week");
     const endDate = firstDay.endOf("month").endOf("week");
-    
+
     const dates: Date[] = [];
     let current = startDate;
-    
+
     while (current.isBefore(endDate) || current.isSame(endDate)) {
       dates.push(current.toDate());
       current = current.add(1, "day");
     }
-    
+
     return dates;
   }
 }
@@ -324,25 +361,29 @@ export class DateHelper {
 // Export convenience functions
 export const dateHelper = new DateHelper();
 
-export const formatDate = (date: Date | string, format?: DateFormat) => 
+export const formatDate = (date: Date | string, format?: DateFormat) =>
   dateHelper.formatDate(date, format);
 
-export const formatTime = (date: Date | string, format?: TimeFormat) => 
+export const formatTime = (date: Date | string, format?: TimeFormat) =>
   dateHelper.formatTime(date, format);
 
-export const formatDateTime = (date: Date | string, dateFormat?: DateFormat, timeFormat?: TimeFormat) => 
-  dateHelper.formatDateTime(date, dateFormat, timeFormat);
+export const formatDateTime = (
+  date: Date | string,
+  dateFormat?: DateFormat,
+  timeFormat?: TimeFormat
+) => dateHelper.formatDateTime(date, dateFormat, timeFormat);
 
-export const getRelativeTime = (date: Date | string) => 
+export const getRelativeTime = (date: Date | string) =>
   dateHelper.getRelativeTime(date);
 
-export const getHumanDate = (date: Date | string) => 
+export const getHumanDate = (date: Date | string) =>
   dateHelper.getHumanDate(date);
 
-export const getDateRange = (period: Parameters<DateHelper["getDateRange"]>[0]) => 
-  dateHelper.getDateRange(period);
+export const getDateRange = (
+  period: Parameters<DateHelper["getDateRange"]>[0]
+) => dateHelper.getDateRange(period);
 
-export const formatDuration = (minutes: number) => 
+export const formatDuration = (minutes: number) =>
   dateHelper.formatDuration(minutes);
 
 export default dateHelper;
