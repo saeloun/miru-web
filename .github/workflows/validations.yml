@@ -20,8 +20,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ci_node_index: [0, 1]
-        ci_node_total: [2]
+        ci_node_index: [0]
+        ci_node_total: [1]
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -141,13 +141,12 @@ jobs:
           TEST_PROF_BEFORE_ALL: 1
         run: |
           mkdir -p tmp tmp/test-prof
-          NODE_GROUP=$((${CI_NODE_INDEX} + 1))
           
-          # Exclude system specs explicitly and run only unit/integration tests
-          bundle exec parallel_rspec spec \
+          # Run all specs in a single container (no sharding)
+          bundle exec rspec \
             --exclude-pattern "spec/system/**/*_spec.rb" \
-            -o "--format progress --format RspecJunitFormatter --out tmp/rspec_${CI_NODE_INDEX}.xml --tag ~type:system" \
-            --only-group ${NODE_GROUP}/${CI_NODE_TOTAL} || echo "Tests failed with exit code $?"
+            --format progress --format RspecJunitFormatter --out tmp/rspec.xml \
+            --tag ~type:system || echo "Tests failed with exit code $?"
           
           # Save profiling results if available
           if [ -d tmp/test-prof ]; then
@@ -181,7 +180,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        shard: [1, 2]
+        shard: [1]
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -295,7 +294,7 @@ jobs:
           CI: true
           BASE_URL: http://localhost:3000
         run: |
-          pnpm exec playwright test --project=chromium --reporter=dot --shard=${{ matrix.shard }}/2
+          pnpm exec playwright test --project=chromium --reporter=dot
       
       - name: Upload Playwright report
         if: always()
