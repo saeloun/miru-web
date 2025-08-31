@@ -11,7 +11,7 @@ class Api::V1::ProjectsController < Api::V1::ApplicationController
       current_company.projects.kept
     end
 
-    projects = projects.includes(:client)
+    projects = projects.includes(:client, :timesheet_entries, project_members: :user)
     clients = current_company.clients.kept
 
     render :index, locals: {
