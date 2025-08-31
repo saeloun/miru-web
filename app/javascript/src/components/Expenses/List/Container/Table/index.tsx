@@ -9,7 +9,7 @@ const Table = ({ expenses, fetchExpenses }) => {
   const { company } = useUserContext();
 
   return (
-    <table className="w-full min-w-full divide-y divide-gray-200 overflow-y-scroll lg:mt-4">
+    <table className="w-full min-w-full divide-y divide-gray-200 overflow-y-scroll">
       <TableHeader />
       <tbody>
         {expenses?.map(expense => (

@@ -93,7 +93,7 @@ const Payments = () => {
   }
 
   const PaymentsLayout = () => (
-    <div className="h-full flex-col p-4" onKeyDown={handleEscKeyPress}>
+    <div className="h-full flex-col p-4 lg:p-0" onKeyDown={handleEscKeyPress}>
       <Header
         params={params}
         payments={paymentList}
@@ -111,7 +111,7 @@ const Payments = () => {
         <PaymentsEmptyState setShowManualEntryModal={setShowManualEntryModal} />
       ) : (
         <>
-          <div className="hidden md:block mt-8">
+          <div className="hidden md:block mt-4 lg:mt-6">
             <Table
               baseCurrency={baseCurrency}
               payments={
@@ -119,7 +119,7 @@ const Payments = () => {
               }
             />
           </div>
-          <div className="block md:hidden mt-6">
+          <div className="block md:hidden mt-4">
             <TableOnMobileView
               baseCurrency={baseCurrency}
               payments={
