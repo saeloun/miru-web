@@ -1,18 +1,14 @@
-import React, { useState, useEffect, useRef, MutableRefObject } from "react";
+import React, { useState, useEffect } from "react";
 
 import timesheetEntryApi from "apis/timesheet-entry";
-import CustomDatePicker from "common/CustomDatePicker";
 import { useUserContext } from "context/UserContext";
-import { format } from "date-fns";
 import dayjs from "dayjs";
 import {
   minFromHHMM,
   minToHHMM,
   useDebounce,
-  useOutsideClick,
   validateTimesheetEntry,
 } from "helpers";
-import { Calendar } from "phosphor-react";
 import { TimeInput } from "../ui/time-input";
 import { Toastr } from "../ui/toastr";
 import { Textarea } from "../ui/textarea";
@@ -71,27 +67,21 @@ const AddEntry: React.FC<Iprops> = ({
   const [projectBillable, setProjectBillable] = useState<boolean>(
     initialProjectBillable
   );
-  const [selectedDate, setSelectedDate] = useState<string>(selectedFullDate);
-  const [displayDatePicker, setDisplayDatePicker] = useState<boolean>(false);
   const [submitting, setSubmitting] = useState<boolean>(false);
 
-  const datePickerRef: MutableRefObject<any> = useRef();
   const { isDesktop, company } = useUserContext();
   const dateFormat =
     company?.date_format || company?.dateFormat || "MM-DD-YYYY";
   const isNewEntry = !editEntryId;
   const debouncedNote = useDebounce(note, 500);
-  useOutsideClick(datePickerRef, () => {
-    setDisplayDatePicker(false);
-  });
 
-  useEffect(() => {
-    setSelectedDate(selectedFullDate);
-  }, [selectedFullDate]);
 
   const handleFillData = () => {
     if (!editEntryId) return;
-    const entry = entryList[selectedFullDate].find(
+    const isoDate = dayjs(selectedFullDate, dateFormat).format("YYYY-MM-DD");
+    const entries = entryList[isoDate];
+    if (!entries) return;
+    const entry = entries.find(
       entry => entry.id === editEntryId
     );
     if (entry) {
@@ -128,7 +118,7 @@ const AddEntry: React.FC<Iprops> = ({
   };
 
   const getPayload = () => ({
-    work_date: dayjs(selectedDate, dateFormat).format("YYYY-MM-DD"),
+    work_date: dayjs(selectedFullDate, dateFormat).format("YYYY-MM-DD"),
     duration: minFromHHMM(duration),
     note,
     bill_status: billable ? "unbilled" : "non_billable",
@@ -146,7 +136,7 @@ const AddEntry: React.FC<Iprops> = ({
     );
 
     if (res.status === 200) {
-      const fetchEntriesRes = await fetchEntries(selectedDate, selectedDate);
+      const fetchEntriesRes = await fetchEntries(selectedFullDate, selectedFullDate);
       if (!isDesktop) {
         fetchEntriesofMonth();
       }
@@ -154,13 +144,14 @@ const AddEntry: React.FC<Iprops> = ({
       if (fetchEntriesRes) {
         setNewEntryView(false);
         setUpdateView(true);
-        handleAddEntryDateChange(dayjs(selectedDate));
+        handleAddEntryDateChange(dayjs(selectedFullDate));
       }
     }
   };
 
   const handleEdit = async () => {
     try {
+      setSubmitting(true);
       const tse = getPayload();
       const updateRes = await timesheetEntryApi.update(editEntryId, {
         project_id: projectId,
@@ -168,32 +159,22 @@ const AddEntry: React.FC<Iprops> = ({
       });
 
       if (updateRes.status >= 200 && updateRes.status < 300) {
-        if (selectedDate !== selectedFullDate) {
-          await handleFilterEntry(selectedFullDate, editEntryId);
-          await handleRelocateEntry(selectedDate, updateRes.data.entry);
-          if (!isDesktop) {
-            fetchEntriesofMonth();
-          }
-        } else {
-          await fetchEntries(selectedDate, selectedDate);
+        await fetchEntries(selectedFullDate, selectedFullDate);
+        if (!isDesktop) {
           fetchEntriesofMonth();
         }
         setEditEntryId(0);
         setNewEntryView(false);
         setUpdateView(true);
-        handleAddEntryDateChange(dayjs(selectedDate));
-        setSelectedFullDate(dayjs(selectedDate).format(dateFormat));
+        handleAddEntryDateChange(dayjs(selectedFullDate));
       }
     } catch (error) {
       Toastr.error(error);
+    } finally {
+      setSubmitting(false);
     }
   };
 
-  const handleDateChangeFromDatePicker = (date: Date) => {
-    setSelectedDate(dayjs(date).format(dateFormat));
-    setDisplayDatePicker(false);
-    setUpdateView(false);
-  };
 
   const handleDisableBtn = () => {
     const tse = getPayload();
@@ -243,7 +224,7 @@ const AddEntry: React.FC<Iprops> = ({
       <div className="flex-1 space-y-3">
         <div className="flex gap-3">
           <Select
-            value={client || undefined}
+            value={client}
             onValueChange={value => {
               setClient(value);
               setProject(projects ? projects[value][0]?.name : "");
@@ -261,7 +242,7 @@ const AddEntry: React.FC<Iprops> = ({
             </SelectContent>
           </Select>
           <Select
-            value={project || undefined}
+            value={project}
             onValueChange={setProject}
             disabled={!client}
           >
@@ -297,26 +278,6 @@ const AddEntry: React.FC<Iprops> = ({
       </div>
       <div className="space-y-3">
         <div className="flex gap-3">
-          <div className="relative">
-            {displayDatePicker && (
-              <div className="absolute top-12 z-50" ref={datePickerRef}>
-                <Card className="shadow-lg">
-                  <CustomDatePicker
-                    date={dayjs(selectedDate).toDate()}
-                    handleChange={handleDateChangeFromDatePicker}
-                  />
-                </Card>
-              </div>
-            )}
-            <Button
-              variant="outline"
-              className="w-[160px] justify-start text-left font-normal"
-              onClick={() => setDisplayDatePicker(true)}
-            >
-              <Calendar className="mr-2 h-4 w-4" />
-              {format(new Date(selectedDate), "do MMM, yyyy")}
-            </Button>
-          </div>
           <TimeInput
             className="h-10 w-[120px] px-3"
             initTime={duration}
@@ -354,7 +315,12 @@ const AddEntry: React.FC<Iprops> = ({
             Save Entry
           </Button>
         ) : (
-          <Button disabled={handleDisableBtn()} onClick={() => handleEdit()}>
+          <Button 
+            disabled={handleDisableBtn()} 
+            onClick={() => {
+              handleEdit();
+            }}
+          >
             Update Entry
           </Button>
         )}
@@ -382,7 +348,7 @@ const AddEntry: React.FC<Iprops> = ({
       note={note}
       project={project}
       projects={projects}
-      selectedDate={selectedDate}
+      selectedDate={selectedFullDate}
       setBillable={setBillable}
       setClient={setClient}
       setDuration={setDuration}
@@ -390,7 +356,7 @@ const AddEntry: React.FC<Iprops> = ({
       setNewEntryView={setNewEntryView}
       setNote={setNote}
       setProject={setProject}
-      setSelectedDate={setSelectedDate}
+      setSelectedDate={setSelectedFullDate}
       setSubmitting={setSubmitting}
       submitting={submitting}
     />
