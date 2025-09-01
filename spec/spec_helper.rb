@@ -31,12 +31,6 @@ rescue LoadError
   # Super diff not available
 end
 
-begin
-  require "test_prof/recipes/rspec/before_all" if ENV["TEST_PROF"] == "true"
-rescue LoadError
-  # Test prof not available
-end
-
 if ENV.fetch("COVERAGE", false)
   require "simplecov"
 
