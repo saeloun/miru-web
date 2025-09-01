@@ -58,10 +58,9 @@ RSpec.describe Api::V1::Reports::TimeEntriesController, type: :request do
       json = JSON.parse(response.body)
       all_entries = json["reports"].flat_map { |r| r["entries"] }
 
-      # Note: The date filter appears to not be working properly in the current implementation
-      # This test documents the actual behavior - it returns all 8 entries regardless of date filter
-      # TODO: Fix the date filter implementation in Reports::TimeEntries::FilterService
-      expect(all_entries.size).to eq(8)
+      # Date filter should only return entries for the specified date range
+      # In this case, only the 5 entries from today should be returned
+      expect(all_entries.size).to eq(5)
     end
 
     it "groups by client" do

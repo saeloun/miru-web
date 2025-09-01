@@ -350,8 +350,21 @@ const TimeEntryReport: React.FC = () => {
     {
       accessorKey: "work_date",
       header: "Date",
-      cell: ({ row }) =>
-        format(new Date(row.getValue("work_date")), "MM/dd/yyyy"),
+      cell: ({ row }) => {
+        const workDate = row.getValue("work_date");
+        try {
+          const date = new Date(workDate);
+          if (isNaN(date.getTime())) {
+            return workDate?.toString() || "Invalid Date";
+          }
+
+          return format(date, "MM/dd/yyyy");
+        } catch (error) {
+          console.error("Date formatting error:", error, "Value:", workDate);
+
+          return workDate?.toString() || "Invalid Date";
+        }
+      },
     },
     {
       accessorKey: "user_name",

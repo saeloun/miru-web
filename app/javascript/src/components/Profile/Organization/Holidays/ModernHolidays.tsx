@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "../../../ui/card";
 import ScheduleCalendar from "../../../ui/schedule-calendar";
 import { useCalendarData } from "../../../../hooks/useCalendarData";
 import { Button } from "../../../ui/button";
-import { Calendar, PencilSimple } from "phosphor-react";
+import { PencilSimple } from "phosphor-react";
 
 interface ModernHolidaysProps {
   currentYear: number;
@@ -63,10 +63,6 @@ const ModernHolidays: React.FC<ModernHolidaysProps> = ({
               <Button variant="outline" onClick={editAction}>
                 <PencilSimple className="mr-2 h-4 w-4" />
                 Edit
-              </Button>
-              <Button variant="default" onClick={toggleCalendarModal}>
-                <Calendar className="mr-2 h-4 w-4" />
-                View Calendar
               </Button>
             </div>
           </div>

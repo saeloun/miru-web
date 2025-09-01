@@ -12,12 +12,15 @@ class Api::V1::TimeTrackingController < Api::V1::ApplicationController
     to = params[:to] || 1.month.since.end_of_month
 
     # Fetch data directly
-    entries = @user.timesheet_entries
+    timesheet_entries = @user.timesheet_entries
       .joins(project: :client)
       .where(work_date: from..to)
       .kept
       .includes(project: :client)
       .order(work_date: :desc)
+
+    # Format entries using presenter
+    entries = TimesheetEntriesPresenter.new(timesheet_entries).group_snippets_by_work_date
 
     # Filter projects based on user role
     if @user.has_role?(:admin, current_company) || @user.has_role?(:owner, current_company)
