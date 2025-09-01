@@ -173,28 +173,32 @@ const ModernOrganizationSettings: React.FC<ModernOrganizationSettingsProps> = ({
   );
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50/30">
       {/* Header */}
-      <div className="bg-white shadow-sm border-b sticky top-0 z-10">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between py-4">
+      <div className="bg-white/80 backdrop-blur-sm shadow-sm border-b border-slate-200/60 sticky top-0 z-10">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between py-6">
             <div>
-              <h1 className="text-2xl font-semibold text-gray-900">
+              <h1 className="text-3xl font-bold text-slate-900 tracking-tight">
                 Organization Settings
               </h1>
-              <p className="text-sm text-gray-600 mt-1">
+              <p className="text-slate-600 mt-2 text-base">
                 Manage your company information and preferences
               </p>
             </div>
             <div className="flex items-center space-x-3">
               {onBack && (
-                <Button variant="outline" onClick={onBack}>
+                <Button
+                  variant="outline"
+                  onClick={onBack}
+                  className="border-slate-300 text-slate-700 hover:bg-slate-50"
+                >
                   Back
                 </Button>
               )}
               <Button
                 onClick={handleEditClick}
-                className="bg-indigo-600 hover:bg-indigo-700"
+                className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-200"
               >
                 <PencilSimple className="h-4 w-4 mr-2" />
                 Edit Settings
@@ -205,44 +209,61 @@ const ModernOrganizationSettings: React.FC<ModernOrganizationSettingsProps> = ({
       </div>
 
       {/* Content */}
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {error ? (
           <Alert variant="destructive">
             <Warning className="h-4 w-4" />
             <AlertDescription>{error}</AlertDescription>
           </Alert>
         ) : (
-          <div className="space-y-6">
+          <div className="space-y-8">
             {/* Basic Details Card */}
-            <Card className="border-gray-200 shadow-sm">
-              <CardHeader className="bg-gray-50 border-b">
-                <div className="flex items-center space-x-2">
-                  <Buildings className="h-5 w-5 text-gray-600" />
-                  <CardTitle>Basic Details</CardTitle>
+            <Card className="border-slate-200/60 shadow-md hover:shadow-lg transition-shadow duration-200 bg-white/70 backdrop-blur-sm">
+              <CardHeader className="bg-gradient-to-r from-slate-50/80 to-blue-50/40 border-b border-slate-200/60 pb-4">
+                <div className="flex items-center space-x-3">
+                  <div className="p-2 bg-indigo-100 rounded-lg">
+                    <Buildings className="h-6 w-6 text-indigo-600" />
+                  </div>
+                  <CardTitle className="text-xl font-semibold text-slate-800">
+                    Basic Details
+                  </CardTitle>
                 </div>
               </CardHeader>
-              <CardContent>
+              <CardContent className="pt-6">
                 {isLoading ? (
                   <LoadingSkeleton />
                 ) : (
                   <div className="space-y-6">
-                    <div className="flex items-start space-x-4">
-                      <Avatar className="h-20 w-20 rounded-lg">
-                        <AvatarImage
-                          src={orgDetails.logoUrl}
-                          alt={orgDetails.companyName}
-                        />
-                        <AvatarFallback className="rounded-lg bg-gray-100 text-gray-600 text-xl font-semibold">
-                          {orgDetails.companyName?.charAt(0) || "C"}
-                        </AvatarFallback>
-                      </Avatar>
+                    <div className="flex items-start space-x-6">
+                      <div className="relative">
+                        <Avatar className="h-24 w-24 rounded-2xl shadow-md border-4 border-white">
+                          <AvatarImage
+                            src={orgDetails.logoUrl}
+                            alt={orgDetails.companyName}
+                            className="object-cover"
+                          />
+                          <AvatarFallback className="rounded-2xl bg-gradient-to-br from-indigo-100 to-purple-100 text-indigo-700 text-2xl font-bold border-4 border-white">
+                            {orgDetails.companyName?.charAt(0) || "C"}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="absolute -bottom-2 -right-2 h-6 w-6 bg-green-400 border-2 border-white rounded-full flex items-center justify-center">
+                          <div className="h-2 w-2 bg-green-600 rounded-full animate-pulse"></div>
+                        </div>
+                      </div>
                       <div className="flex-1">
-                        <h3 className="text-xl font-semibold text-gray-900">
+                        <h3 className="text-2xl font-bold text-slate-900 mb-2">
                           {orgDetails.companyName || "Company Name"}
                         </h3>
-                        <p className="text-sm text-gray-500 mt-1">
-                          {orgDetails.countryName || "Location not set"}
-                        </p>
+                        <div className="flex items-center space-x-2 text-slate-600">
+                          <Globe className="h-4 w-4" />
+                          <p className="text-base font-medium">
+                            {orgDetails.countryName || "Location not set"}
+                          </p>
+                        </div>
+                        <div className="mt-3 inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                          <div className="h-2 w-2 bg-green-400 rounded-full mr-2 animate-pulse"></div>
+                          Active Organization
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -251,31 +272,41 @@ const ModernOrganizationSettings: React.FC<ModernOrganizationSettingsProps> = ({
             </Card>
 
             {/* Contact & Address Card */}
-            <Card className="border-gray-200 shadow-sm">
-              <CardHeader className="bg-gray-50 border-b">
-                <div className="flex items-center space-x-2">
-                  <Phone className="h-5 w-5 text-gray-600" />
-                  <CardTitle>Contact & Location</CardTitle>
+            <Card className="border-slate-200/60 shadow-md hover:shadow-lg transition-shadow duration-200 bg-white/70 backdrop-blur-sm">
+              <CardHeader className="bg-gradient-to-r from-slate-50/80 to-blue-50/40 border-b border-slate-200/60 pb-4">
+                <div className="flex items-center space-x-3">
+                  <div className="p-2 bg-emerald-100 rounded-lg">
+                    <Phone className="h-6 w-6 text-emerald-600" />
+                  </div>
+                  <CardTitle className="text-xl font-semibold text-slate-800">
+                    Contact & Location
+                  </CardTitle>
                 </div>
               </CardHeader>
-              <CardContent>
+              <CardContent className="pt-6">
                 {isLoading ? (
                   <LoadingSkeleton />
                 ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                      <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Business Phone
-                      </p>
-                      <p className="text-base font-medium text-gray-900">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div className="space-y-3">
+                      <div className="flex items-center space-x-2 mb-2">
+                        <Phone className="h-4 w-4 text-emerald-600" />
+                        <p className="text-sm font-semibold text-slate-600 uppercase tracking-wider">
+                          Business Phone
+                        </p>
+                      </div>
+                      <p className="text-lg font-semibold text-slate-900 pl-6">
                         {orgDetails.companyPhone || "-"}
                       </p>
                     </div>
-                    <div className="space-y-2">
-                      <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Address
-                      </p>
-                      <p className="text-base font-medium text-gray-900">
+                    <div className="space-y-3">
+                      <div className="flex items-center space-x-2 mb-2">
+                        <Globe className="h-4 w-4 text-emerald-600" />
+                        <p className="text-sm font-semibold text-slate-600 uppercase tracking-wider">
+                          Address
+                        </p>
+                      </div>
+                      <p className="text-lg font-semibold text-slate-900 pl-6 leading-relaxed">
                         {formatAddress(orgDetails.companyAddr)}
                       </p>
                     </div>
@@ -285,32 +316,42 @@ const ModernOrganizationSettings: React.FC<ModernOrganizationSettingsProps> = ({
             </Card>
 
             {/* Financial Settings Card */}
-            <Card className="border-gray-200 shadow-sm">
-              <CardHeader className="bg-gray-50 border-b">
-                <div className="flex items-center space-x-2">
-                  <CurrencyDollar className="h-5 w-5 text-gray-600" />
-                  <CardTitle>Financial Settings</CardTitle>
+            <Card className="border-slate-200/60 shadow-md hover:shadow-lg transition-shadow duration-200 bg-white/70 backdrop-blur-sm">
+              <CardHeader className="bg-gradient-to-r from-slate-50/80 to-blue-50/40 border-b border-slate-200/60 pb-4">
+                <div className="flex items-center space-x-3">
+                  <div className="p-2 bg-green-100 rounded-lg">
+                    <CurrencyDollar className="h-6 w-6 text-green-600" />
+                  </div>
+                  <CardTitle className="text-xl font-semibold text-slate-800">
+                    Financial Settings
+                  </CardTitle>
                 </div>
               </CardHeader>
-              <CardContent>
+              <CardContent className="pt-6">
                 {isLoading ? (
                   <LoadingSkeleton />
                 ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div className="space-y-2">
-                      <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Base Currency
-                      </p>
-                      <p className="text-base font-semibold text-gray-900">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div className="space-y-4 p-4 bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl border border-green-100">
+                      <div className="flex items-center space-x-2">
+                        <CurrencyDollar className="h-5 w-5 text-green-600" />
+                        <p className="text-sm font-semibold text-slate-600 uppercase tracking-wider">
+                          Base Currency
+                        </p>
+                      </div>
+                      <p className="text-2xl font-bold text-slate-900">
                         {orgDetails.companyCurrency}
                       </p>
                     </div>
-                    <div className="space-y-2">
-                      <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Standard Rate
-                      </p>
-                      <p className="text-base font-semibold text-gray-900">
-                        <span className="text-xl">
+                    <div className="space-y-4 p-4 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl border border-blue-100">
+                      <div className="flex items-center space-x-2">
+                        <Clock className="h-5 w-5 text-blue-600" />
+                        <p className="text-sm font-semibold text-slate-600 uppercase tracking-wider">
+                          Standard Rate
+                        </p>
+                      </div>
+                      <div className="flex items-baseline space-x-1">
+                        <span className="text-3xl font-bold text-slate-900">
                           $
                           {typeof orgDetails.companyRate === "number"
                             ? orgDetails.companyRate.toFixed(2)
@@ -318,16 +359,19 @@ const ModernOrganizationSettings: React.FC<ModernOrganizationSettingsProps> = ({
                                 2
                               )}
                         </span>
-                        <span className="text-sm text-gray-500 ml-1">
+                        <span className="text-sm font-medium text-slate-500">
                           / hour
                         </span>
-                      </p>
+                      </div>
                     </div>
-                    <div className="space-y-2">
-                      <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Fiscal Year End
-                      </p>
-                      <p className="text-base font-semibold text-gray-900">
+                    <div className="space-y-4 p-4 bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl border border-purple-100">
+                      <div className="flex items-center space-x-2">
+                        <Calendar className="h-5 w-5 text-purple-600" />
+                        <p className="text-sm font-semibold text-slate-600 uppercase tracking-wider">
+                          Fiscal Year End
+                        </p>
+                      </div>
+                      <p className="text-2xl font-bold text-slate-900">
                         {orgDetails.companyFiscalYear || "-"}
                       </p>
                     </div>

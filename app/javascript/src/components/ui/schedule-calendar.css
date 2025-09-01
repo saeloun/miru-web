@@ -1,297 +1,57 @@
-/* Schedule-X Calendar - Import Default Theme */
-@import '@schedule-x/theme-default/dist/index.css';
-
-/* Define color variables for calendar types */
-:root {
-  --sx-color-holiday: #DC2626;
-  --sx-color-holiday-container: #FEE2E2;
-  --sx-color-on-holiday-container: #7F1D1D;
+/* Schedule-X Calendar Custom Styles */
+.sx-shadcn-theme {
+  /* Define custom color variables */
+  --sx-color-holiday: hsl(var(--primary));
+  --sx-color-holiday-container: hsl(var(--primary) / 0.1);
+  --sx-color-on-holiday-container: hsl(var(--primary));
   
-  --sx-color-timesheet: #2563EB;
-  --sx-color-timesheet-container: #DBEAFE;
-  --sx-color-on-timesheet-container: #1E3A8A;
+  --sx-color-timesheet: hsl(var(--chart-1));
+  --sx-color-timesheet-container: hsl(var(--chart-1) / 0.1);
+  --sx-color-on-timesheet-container: hsl(var(--chart-1));
   
-  --sx-color-leave: #10B981;
-  --sx-color-leave-container: #D1FAE5;
-  --sx-color-on-leave-container: #064E3B;
+  --sx-color-leave: hsl(var(--chart-2));
+  --sx-color-leave-container: hsl(var(--chart-2) / 0.1);
+  --sx-color-on-leave-container: hsl(var(--chart-2));
 }
 
-/* Apply Schedule-X Material Design Purple Theme */
-.sx-shadcn-theme .sx-react-calendar-wrapper {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+/* Hide debug elements and problematic text */
+.sx-shadcn-theme .sx-debug,
+.sx-shadcn-theme .debug-info,
+.sx-shadcn-theme [class*="debug"],
+.sx-shadcn-theme .sx-calendar-header .sx-calendar-header-content > div:first-child {
+  display: none !important;
 }
 
-/* Calendar wrapper with shadow and border radius */
-.sx-shadcn-theme .sx__calendar-wrapper {
-  border: 1px solid #e5e5e5;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
+/* Hide navigation debug text */
+.sx-shadcn-theme .sx-calendar-nav-button:not(.sx-calendar-nav-button-arrow)::before,
+.sx-shadcn-theme .sx-calendar-nav-button:not(.sx-calendar-nav-button-arrow)::after {
+  content: none !important;
 }
 
-/* Header styling */
-.sx-shadcn-theme .sx__calendar-header {
-  background: #ffffff;
-  border-bottom: 1px solid #e5e5e5;
-  padding: 16px;
-}
-
-/* Today button with material design */
-.sx-shadcn-theme .sx__today-button,
-.sx-shadcn-theme .sx__calendar-header button {
-  background: #ffffff;
-  border: 1px solid #e5e5e5;
-  color: #333333;
-  padding: 8px 16px;
-  border-radius: 6px;
-  font-weight: 500;
-  transition: all 0.2s ease;
-  cursor: pointer;
-}
-
-.sx-shadcn-theme .sx__today-button:hover,
-.sx-shadcn-theme .sx__calendar-header button:hover {
-  border-color: #6750A4;
-  background: #F3F0FB;
-  color: #6750A4;
-}
-
-/* Navigation arrows */
-.sx-shadcn-theme .sx__chevron-button {
-  background: transparent;
-  border: none;
-  color: #333333;
-  padding: 8px;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.sx-shadcn-theme .sx__chevron-button:hover {
-  background: #f7f7f7;
-}
-
-/* Month/Year text */
-.sx-shadcn-theme .sx__current-month {
-  font-size: 18px;
-  font-weight: 600;
-  color: #333333;
-}
-
-/* View selector buttons */
-.sx-shadcn-theme .sx__view-selection {
-  display: flex;
-  gap: 4px;
-  background: #f7f7f7;
-  padding: 4px;
-  border-radius: 8px;
-}
-
-.sx-shadcn-theme .sx__view-selection button {
-  background: transparent;
-  border: none;
-  color: #333333;
-  padding: 8px 16px;
-  border-radius: 6px;
-  font-weight: 500;
-  transition: all 0.2s ease;
-}
-
-.sx-shadcn-theme .sx__view-selection button:hover {
-  background: #e8e8e8;
-}
-
-.sx-shadcn-theme .sx__view-selection-selected,
-.sx-shadcn-theme .sx__view-selection button.is-selected {
-  background: #6750A4 !important;
-  color: #ffffff !important;
-}
-
-/* Date picker input */
-.sx-shadcn-theme .sx__date-picker input {
-  background: #ffffff;
-  border: 1px solid #e5e5e5;
-  color: #333333;
-  padding: 8px 12px;
-  border-radius: 6px;
-  font-size: 14px;
-}
-
-.sx-shadcn-theme .sx__date-picker input:hover {
-  border-color: #6750A4;
-}
-
-.sx-shadcn-theme .sx__date-picker input:focus {
-  outline: none;
-  border-color: #6750A4;
-  box-shadow: 0 0 0 3px rgba(103, 80, 164, 0.1);
-}
-
-/* Calendar grid */
-.sx-shadcn-theme .sx__month-grid {
-  background: #ffffff;
-}
-
-/* Week day headers */
-.sx-shadcn-theme .sx__month-grid-day-names {
-  background: #f7f7f7;
-  border-bottom: 1px solid #e5e5e5;
-}
-
-.sx-shadcn-theme .sx__month-grid-day-name {
-  padding: 12px 8px;
-  font-weight: 600;
-  font-size: 12px;
-  text-transform: uppercase;
-  color: #666666;
-  text-align: center;
-}
-
-/* Calendar day cells */
-.sx-shadcn-theme .sx__month-grid-day {
-  border: 1px solid #e5e5e5;
-  min-height: 100px;
-  background: #ffffff;
+/* Clean up any visible debug text in calendar header */
+.sx-shadcn-theme .sx-calendar-header {
   position: relative;
-}
-
-.sx-shadcn-theme .sx__month-grid-day:hover {
-  background: #f7f7f7;
-}
-
-/* Day numbers */
-.sx-shadcn-theme .sx__month-grid-day-header {
-  padding: 8px;
-  font-weight: 500;
-  color: #333333;
-}
-
-/* Today's date with purple circle */
-.sx-shadcn-theme .sx__is-today .sx__month-grid-day-header,
-.sx-shadcn-theme .sx__month-grid-day--is-today .sx__month-grid-day-header {
-  background: #6750A4;
-  color: #ffffff;
-  border-radius: 50%;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 4px;
-  font-weight: 600;
-}
-
-/* Events styling */
-.sx-shadcn-theme .sx__event {
-  background: #E8DEF8;
-  color: #6750A4;
-  border: none;
-  border-left: 3px solid #6750A4;
-  border-radius: 4px;
-  padding: 4px 8px;
-  margin: 2px 4px;
-  font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  line-height: 1.4;
-}
-
-.sx-shadcn-theme .sx__event:hover {
-  background: #D4C5E8;
-  transform: translateY(-1px);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-/* Custom event content styling for better visual hierarchy */
-.sx-shadcn-theme .sx__event-title {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-/* Make the first part (time) more prominent */
-.sx-shadcn-theme .sx__event:before {
-  content: '';
-  display: none;
-}
-
-/* Style for timesheet events */
-.sx-shadcn-theme .sx__event[data-calendar-id="timesheet"] {
-  background: linear-gradient(135deg, #EEF2FF 0%, #DBEAFE 100%) !important;
-  border-left: 4px solid #3B82F6 !important;
-  font-size: 12px !important;
-  font-weight: 600 !important;
-  padding: 5px 8px !important;
-  color: #1E40AF !important;
-  white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis;
 }
 
-.sx-shadcn-theme .sx__event[data-calendar-id="timesheet"]:hover {
-  background: linear-gradient(135deg, #DBEAFE 0%, #BFDBFE 100%) !important;
-  border-left-color: #2563EB !important;
-  transform: scale(1.02);
-  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
+.sx-shadcn-theme .sx-calendar-header * {
+  position: relative;
+  z-index: 1;
 }
 
-/* Week view styling */
-.sx-shadcn-theme .sx__week-view {
-  background: #ffffff;
+/* Hide text nodes that might be debug information */
+.sx-shadcn-theme .sx-calendar-header > *:not(.sx-calendar-header-content) {
+  display: none !important;
 }
 
-.sx-shadcn-theme .sx__week-grid {
-  background: #ffffff;
+/* Ensure proper calendar styling */
+.sx-shadcn-theme .sx-calendar {
+  min-height: 400px;
+  border-radius: 8px;
+  overflow: hidden;
 }
 
-.sx-shadcn-theme .sx__time-axis {
-  background: #f7f7f7;
-  border-right: 1px solid #e5e5e5;
-}
-
-.sx-shadcn-theme .sx__week-grid-hour {
-  border-top: 1px solid #e5e5e5;
-  font-size: 12px;
-  color: #666666;
-  padding: 8px;
-}
-
-.sx-shadcn-theme .sx__week-grid-day {
-  border-left: 1px solid #e5e5e5;
-  background: #ffffff;
-}
-
-.sx-shadcn-theme .sx__time-grid-line {
-  border-top: 1px solid rgba(229, 229, 229, 0.5);
-}
-
-/* Different event type colors based on calendarId */
-.sx-shadcn-theme .sx__event[data-calendar-id="holidays"] {
-  background: var(--sx-color-holiday-container) !important;
-  color: var(--sx-color-on-holiday-container) !important;
-  border-left: 3px solid var(--sx-color-holiday) !important;
-}
-
-.sx-shadcn-theme .sx__event[data-calendar-id="holidays"]:hover {
-  background: #FCA5A5 !important;
-}
-
-/* Removed - Now using enhanced styles defined above */
-
-.sx-shadcn-theme .sx__event[data-calendar-id="leave"] {
-  background: var(--sx-color-leave-container) !important;
-  color: var(--sx-color-on-leave-container) !important;
-  border-left: 3px solid var(--sx-color-leave) !important;
-}
-
-.sx-shadcn-theme .sx__event[data-calendar-id="leave"]:hover {
-  background: #86EFAC !important;
-}
-
-/* Ensure events are visible */
-.sx-shadcn-theme .sx__calendar-event,
-.sx-shadcn-theme .sx__month-grid-event {
-  opacity: 1 !important;
-  visibility: visible !important;
-  display: block !important;
+/* Hide any stray text elements */
+.sx-shadcn-theme > div:first-child > div:first-child {
+  display: none !important;
 }
