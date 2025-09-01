@@ -11,40 +11,18 @@ import { Card, CardContent } from "../ui/card";
 import CustomDatePicker from "common/CustomDatePicker";
 
 const Header = ({
-  setWeekDay = ({}) => {},
-  setSelectDate = ({}) => {},
-  handlePreDay = () => {
-    /* Default empty handler */
-  },
+  setWeekDay,
+  setSelectDate,
+  handlePreDay,
   dayInfo = [],
   selectDate = 0,
-  handleNextDay = () => {
-    /* Default empty handler */
-  },
-  handleAddEntryDateChange = ({}) => {},
+  handleNextDay,
+  handleAddEntryDateChange,
   selectedFullDate = "",
   dailyTotalHours = [],
-  view = "",
-  totalMonthDuration = 0,
   weeklyTotalHours = "",
-  handleNextMonth = () => {
-    /* Default empty handler */
-  },
-  handlePrevMonth = () => {
-    /* Default empty handler */
-  },
-  handleMonthTodayButton = () => {
-    /* Default empty handler */
-  },
-  handleNextWeek = () => {
-    /* Default empty handler */
-  },
-  handlePrevWeek = () => {
-    /* Default empty handler */
-  },
-  monthsAbbr = [],
-  currentMonthNumber = 0,
-  currentYear = 0,
+  handleNextWeek,
+  handlePrevWeek,
 }) => {
   const [openOsCalendar, setOpenOsCalendar] = useState(false);
 
@@ -52,93 +30,42 @@ const Header = ({
   const { isDesktop } = useUserContext();
 
   const getTodayAction = () => {
-    if (view === "month") {
-      handleMonthTodayButton();
-    } else {
-      setWeekDay(0);
-      setSelectDate(dayjs().weekday());
-    }
+    setWeekDay(0);
+    setSelectDate(dayjs().weekday());
   };
 
   const getRightArrowAction = () => {
-    if (view === "month") {
-      handleNextMonth();
-    }
-    if (view === "day") {
-      isDesktop ? handleNextWeek() : handleNextDay();
-    }
-    if (view === "week") {
-      handleNextWeek();
-    }
+    isDesktop ? handleNextWeek() : handleNextDay();
   };
 
   const getLeftArrowAction = () => {
-    if (view === "month") {
-      handlePrevMonth();
-    }
-    if (view === "day") {
-      isDesktop ? handlePrevWeek() : handlePreDay();
-    }
-    if (view === "week") {
-      handlePrevWeek();
-    }
+    isDesktop ? handlePrevWeek() : handlePreDay();
   };
 
   const getLabel = () => {
-    if (view === "month") {
-      return (
-        <>
-          <span className="mr-2">
-            {monthsAbbr[Math.abs(currentMonthNumber)]}
-          </span>
-          <span>{currentYear}</span>
-        </>
-      );
-    }
-    if (view === "day") {
-      return isDesktop ? (
-        <>
-          <span>
-            {parseInt(dayInfo[0]["date"], 10)} {dayInfo[0]["month"]} -
-          </span>
-          <span className="mx-1">
-            {parseInt(dayInfo[6]["date"], 10)} {dayInfo[6]["month"]}
-          </span>
-          <span> {dayInfo[6]["year"]}</span>
-        </>
-      ) : (
-        <>
-          <span>{parseInt(dayInfo[selectDate]["date"], 10)}</span>
-          <span className="mx-1">{dayInfo[selectDate].month}</span>
-          <span>{dayInfo[selectDate]["year"]}</span>
-        </>
-      );
-    }
-    if (view === "week") {
-      return (
-        <>
-          <span>
-            {parseInt(dayInfo[0]["date"], 10)} {dayInfo[0]["month"]} -
-          </span>
-          <span className="mx-1">
-            {parseInt(dayInfo[6]["date"], 10)} {dayInfo[6]["month"]}
-          </span>
-          <span> {dayInfo[6]["year"]}</span>
-        </>
-      );
-    }
+    return isDesktop ? (
+      // Week view label for desktop
+      <>
+        <span>
+          {parseInt(dayInfo[0]["date"], 10)} {dayInfo[0]["month"]} -
+        </span>
+        <span className="mx-1">
+          {parseInt(dayInfo[6]["date"], 10)} {dayInfo[6]["month"]}
+        </span>
+        <span> {dayInfo[6]["year"]}</span>
+      </>
+    ) : (
+      // Day view label for mobile
+      <>
+        <span>{parseInt(dayInfo[selectDate]["date"], 10)}</span>
+        <span className="mx-1">{dayInfo[selectDate].month}</span>
+        <span>{dayInfo[selectDate]["year"]}</span>
+      </>
+    );
   };
 
   const getTotal = () => {
-    if (view === "month") {
-      return minToHHMM(totalMonthDuration);
-    }
-    if (view === "day") {
-      return dailyTotalHours[selectDate];
-    }
-    if (view === "week") {
-      return weeklyTotalHours;
-    }
+    return isDesktop ? weeklyTotalHours : dailyTotalHours[selectDate];
   };
 
   return (
@@ -203,18 +130,6 @@ const Header = ({
             >
               <CaretRight className="h-5 w-5" />
             </Button>
-          </div>
-
-          <div className="flex items-center gap-3 px-4 py-3 bg-primary/10 rounded-lg border border-primary/20">
-            <Clock className="h-5 w-5 text-primary" />
-            <div className="flex flex-col items-end">
-              <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                Total
-              </span>
-              <span className="text-xl font-black text-primary tracking-tight">
-                {getTotal()}
-              </span>
-            </div>
           </div>
         </div>
       </CardContent>
