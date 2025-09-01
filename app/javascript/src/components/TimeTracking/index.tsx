@@ -15,14 +15,16 @@ import { minFromHHMM, minToHHMM } from "helpers";
 import Logger from "js-logger";
 import { sendGAPageView } from "utils/googleAnalytics";
 
-import DatesInWeek from "./DatesInWeek";
+import WeekDaySelector from "./WeekDaySelector";
 import { EmptyStatesMobileView } from "./EmptyStatesMobileView";
 import EntryForm from "./EntryForm";
 import { ModernTimeEntryForm } from "./ModernTimeEntryForm";
 import Header from "./Header";
-import ScheduleCalendar from "../ui/schedule-calendar";
 import WeeklyEntries from "./WeeklyEntries";
 import EntryDetailsModal from "./EntryDetailsModal";
+import EntryCard from "./EntryCard";
+import TimeEntriesDisplay from "./TimeEntriesDisplay";
+import AddEntryButton from "./AddEntryButton";
 
 dayjs.extend(updateLocale);
 dayjs.extend(weekday);
@@ -36,10 +38,9 @@ dayjs.Ls.en.weekStart = 1;
 const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
   const { isDesktop, company } = useUserContext();
   const dateFormat =
-    company?.date_format || company?.dateFormat || "MM-DD-YYYY";
+    company?.date_format || company?.dateFormat || "MM-DD-YYYY"; // Display format
 
   const [dayInfo, setDayInfo] = useState<any[]>([]);
-  const [view, setView] = useState<string>("week"); // Default to week view
   const [newEntryView, setNewEntryView] = useState<boolean>(false);
   const [newRowView, setNewRowView] = useState<boolean>(false);
   const [selectDate, setSelectDate] = useState<number>(dayjs().weekday());
@@ -78,8 +79,6 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
   useEffect(() => {
     sendGAPageView();
     fetchTimeTrackingData();
-    // Default to week view
-    setView("week");
   }, []);
 
   const fetchTimeTrackingData = async (employeeId?: number) => {
@@ -139,14 +138,13 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
   }, [weekDay]);
 
   useEffect(() => {
-    if (view === "month") return;
     parseWeeklyViewData();
     calculateTotalHours();
-  }, [weekDay, entryList, view]);
+  }, [weekDay, entryList]);
 
   useEffect(() => {
     setIsWeeklyEditing(false);
-  }, [view]);
+  }, []);
 
   useEffect(() => {
     if (updateView) {
@@ -164,6 +162,19 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
       fetchEntriesOfMonths();
     }
   }, [selectedEmployeeId]);
+
+  // Fetch entries for the current week when week changes
+  useEffect(() => {
+    if (dayInfo.length > 0) {
+      // Get first and last day of the current week
+      const firstDay = dayInfo[0]?.fullDate;
+      const lastDay = dayInfo[6]?.fullDate;
+      
+      if (firstDay && lastDay) {
+        fetchEntries(firstDay, lastDay);
+      }
+    }
+  }, [weekDay, selectedEmployeeId]);
 
   const handleWeekTodayButton = () => {
     setSelectDate(0);
@@ -192,20 +203,10 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
 
   const fetchEntries = async (from: string, to: string) => {
     try {
-      const res = await timesheetEntryApi.list(from, to, selectedEmployeeId);
-      if (res.status >= 200 && res.status < 300) {
-        const allEntries = { ...allEmployeesEntries };
-        allEntries[selectedEmployeeId] = {
-          ...allEntries[selectedEmployeeId],
-          ...res.data.entries,
-        };
-        // Setting entryList with fetched entries
-        setAllEmployeesEntries(allEntries);
-        setEntryList(allEntries[selectedEmployeeId]);
-      }
+      // Use the time_tracking API endpoint that's already authenticated
+      // This is called via fetchTimeTrackingData which sets the entries properly
+      await fetchTimeTrackingData(selectedEmployeeId);
       setLoading(false);
-
-      return res;
     } catch (error) {
       // Log error for debugging
       Logger.error(error);
@@ -215,15 +216,21 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
 
   const handleFilterEntry = async (date: string, entryId: string | number) => {
     let filteredTimesheetEntry: object;
-    const filteredDate = dayjs(date).format(dateFormat);
+    // Convert date to ISO format for entry lookup
+    const isoDate = dayjs(date, dateFormat).format("YYYY-MM-DD");
     const newValue = { ...entryList };
-    newValue[filteredDate] = newValue[filteredDate].filter(e => {
-      if (e["id"] == entryId) {
-        filteredTimesheetEntry = e;
-      } else {
-        return e;
-      }
-    });
+    
+    // Check if entries exist for this date
+    if (newValue[isoDate]) {
+      newValue[isoDate] = newValue[isoDate].filter(e => {
+        if (e["id"] == entryId) {
+          filteredTimesheetEntry = e;
+          return false; // Remove this entry
+        }
+        return true; // Keep this entry
+      });
+    }
+    
     setAllEmployeesEntries(pv => ({ ...pv, [selectedEmployeeId]: newValue }));
     setEntryList(pv => ({ ...pv, ...newValue }));
 
@@ -231,11 +238,12 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
   };
 
   const handleRelocateEntry = async (date: string, entry: object) => {
-    const filteredDate = dayjs(date).format(dateFormat);
+    // Convert date to ISO format for entry storage
+    const isoDate = dayjs(date, dateFormat).format("YYYY-MM-DD");
     setEntryList(prevState => {
       const newState = { ...prevState };
-      newState[filteredDate] = newState[filteredDate]
-        ? [...newState[filteredDate], entry]
+      newState[isoDate] = newState[isoDate]
+        ? [...newState[isoDate], entry]
         : [entry];
 
       return newState;
@@ -247,6 +255,15 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
     const res = await timesheetEntryApi.destroy(id);
     if (!(res.status === 200)) return;
     await handleFilterEntry(selectedFullDate, id);
+    
+    // Refetch entries for the week to ensure data is up to date
+    if (dayInfo.length > 0) {
+      const firstDay = dayInfo[0]?.fullDate;
+      const lastDay = dayInfo[6]?.fullDate;
+      if (firstDay && lastDay) {
+        fetchEntries(firstDay, lastDay);
+      }
+    }
   };
 
   const removeLocalStorageItems = () => {
@@ -459,8 +476,6 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
     <div className="pb-14">
       {!isDesktop && (
         <Header
-          currentMonthNumber={currentMonthNumber}
-          currentYear={currentYear}
           dailyTotalHours={dailyTotalHours}
           dayInfo={dayInfo}
           handleAddEntryDateChange={handleAddEntryDateChange}
@@ -468,12 +483,10 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
           handleNextWeek={handleNextWeek}
           handlePreDay={handlePreDay}
           handlePrevWeek={handlePrevWeek}
-          monthsAbbr={monthsAbbr}
           selectDate={selectDate}
           selectedFullDate={selectedFullDate}
           setSelectDate={setSelectDate}
           setWeekDay={setWeekDay}
-          view={view}
           weeklyTotalHours={weeklyTotalHours}
         />
       )}
@@ -484,22 +497,6 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
               <h1 className="text-3xl font-bold tracking-tight text-foreground">
                 Time Tracking
               </h1>
-              <div className="flex gap-1 p-1 bg-muted/50 rounded-lg backdrop-blur-sm border border-border">
-                {["week", "month"].map((item, index) => (
-                  <button
-                    key={index}
-                    className={cn(
-                      "px-6 py-2 rounded-md font-bold text-sm transition-all duration-200 tracking-wide",
-                      item === view
-                        ? "bg-primary text-primary-foreground shadow-sm"
-                        : "text-muted-foreground hover:text-foreground hover:bg-accent"
-                    )}
-                    onClick={() => setView(item)}
-                  >
-                    {item.charAt(0).toUpperCase() + item.slice(1)}
-                  </button>
-                ))}
-              </div>
             </div>
           )}
           {!isDesktop && isAdminUser && (
@@ -521,65 +518,9 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
           )}
         </div>
         <div>
-          {view === "month" ? (
-            <>
-              <ScheduleCalendar
-                events={Object.entries(entryList).flatMap(
-                  ([date, entries]: [string, any[]]) =>
-                    entries.map((entry, index) => {
-                      const duration = minToHHMM(entry.duration);
-                      const projectName =
-                        entry.project || entry.project_name || "No Project";
-
-                      // Get project initials (first letters of each word, max 2-3 letters)
-                      const getInitials = (name: string) =>
-                        name
-                          .split(" ")
-                          .map(word => word[0])
-                          .join("")
-                          .toUpperCase()
-                          .slice(0, 3);
-                      const projectInitials = getInitials(projectName);
-
-                      return {
-                        id: entry.id,
-                        title: `${projectInitials} • ${duration}`,
-                        description: entry.note || "",
-                        start: `${date}`,
-                        end: `${date}`,
-                        calendarId: "timesheet",
-                        _customContent: {
-                          projectName,
-                          clientName:
-                            entry.client || entry.client_name || "No Client",
-                          duration,
-                          note: entry.note || "No description",
-                          billable: entry.bill_status,
-                        },
-                      };
-                    })
-                )}
-                onEventClick={event => {
-                  setEditEntryId(event.id);
-                  setNewEntryView(true);
-                }}
-                onDateClick={date => {
-                  const formattedDate = dayjs(date).format(dateFormat);
-                  setSelectedFullDate(formattedDate);
-                  setModalSelectedDate(formattedDate);
-                  setShowEntryModal(true);
-                  // Open modal to show day's entries
-                  setNewEntryView(false);
-                  setEditEntryId(0);
-                }}
-              />
-            </>
-          ) : (
-            isDesktop && (
+          {isDesktop && (
               <div className="mb-6 week-view" data-view="week">
                 <Header
-                  currentMonthNumber={currentMonthNumber}
-                  currentYear={currentYear}
                   dailyTotalHours={dailyTotalHours}
                   dayInfo={dayInfo}
                   handleAddEntryDateChange={handleAddEntryDateChange}
@@ -587,35 +528,30 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
                   handleNextWeek={handleNextWeek}
                   handlePreDay={handlePreDay}
                   handlePrevWeek={handlePrevWeek}
-                  monthsAbbr={monthsAbbr}
                   selectDate={selectDate}
                   selectedFullDate={selectedFullDate}
                   setSelectDate={setSelectDate}
                   setWeekDay={setWeekDay}
-                  view={view}
                   weeklyTotalHours={weeklyTotalHours}
                 />
-                <DatesInWeek
+                <WeekDaySelector
                   dayInfo={dayInfo}
                   selectDate={selectDate}
                   setSelectDate={index => {
                     setSelectDate(index);
-                    // Show modal with selected day's entries
+                    // Update the selected date to show entries for that day
                     const selectedDayInfo = dayInfo[index];
                     if (selectedDayInfo) {
                       const formattedDate = dayjs(
                         selectedDayInfo.fullDate
                       ).format(dateFormat);
-                      setModalSelectedDate(formattedDate);
-                      setShowEntryModal(true);
+                      setSelectedFullDate(formattedDate);
                     }
                   }}
-                  view={view}
                 />
               </div>
-            )
-          )}
-          {!editEntryId && newEntryView && view !== "week" && (
+            )}
+          {(editEntryId || newEntryView) && (
             <EntryForm
               clients={clients}
               editEntryId={editEntryId}
@@ -636,27 +572,12 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
               setUpdateView={setUpdateView}
             />
           )}
-          {view !== "week" && !newEntryView && (
-            <Button
-              size="default"
-              className="w-full h-10 text-sm font-medium bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg"
-              onClick={() => handleOpenModernForm()}
-            >
-              <span className="text-lg mr-2">+</span>
-              Add Entry
-            </Button>
-          )}
-          {view === "week" && !newRowView && (
-            <Button
-              size="default"
-              className="w-full h-10 text-sm font-medium bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg"
-              onClick={() => setNewRowView(true)}
-            >
-              <span className="text-lg mr-2">+</span>
-              Add Entry
-            </Button>
-          )}
-          {view === "week" && newRowView && (
+          <AddEntryButton
+            newEntryView={newEntryView}
+            handleOpenModernForm={handleOpenModernForm}
+            setNewEntryView={setNewEntryView}
+          />
+          {newRowView && (
             <WeeklyEntries
               clientName=""
               clients={clients}
@@ -678,31 +599,22 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
             />
           )}
         </div>
-        {view !== "week" && !entryList[selectedFullDate] && !isDesktop && (
+        {false && !entryList[selectedFullDate] && !isDesktop && (
           <EmptyStatesMobileView
             setEditEntryId={setEditEntryId}
             setNewEntryView={setNewEntryView}
           />
         )}
-        {view === "week" && (
-          <div>
-            {weeklyData.map((entry, weekCounter) => (
-              <WeeklyEntries
-                key={weekCounter + 1}
-                {...entry}
-                clients={clients}
-                dayInfo={dayInfo}
-                entryList={entryList}
-                isWeeklyEditing={isWeeklyEditing}
-                newRowView={newRowView}
-                parseWeeklyViewData={parseWeeklyViewData}
-                projects={projects}
-                selectedEmployeeId={selectedEmployeeId}
-                setEntryList={setEntryList}
-                setIsWeeklyEditing={setIsWeeklyEditing}
-                setNewRowView={setNewRowView}
-              />
-            ))}
+        {(
+          <div className="mt-4">
+            <TimeEntriesDisplay
+              selectedFullDate={selectedFullDate}
+              entryList={entryList}
+              handleDeleteEntry={handleDeleteEntry}
+              handleDuplicate={handleDuplicate}
+              setEditEntryId={setEditEntryId}
+              setNewEntryView={setNewEntryView}
+            />
           </div>
         )}
       </div>
