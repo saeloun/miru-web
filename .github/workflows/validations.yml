@@ -125,17 +125,10 @@ jobs:
           DB_HOST: localhost
           DB_USER: root
           DB_PASS: password
-          CI_NODE_INDEX: ${{ matrix.ci_node_index }}
-          CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
           PARALLEL_TEST_PROCESSORS: 2  # Optimal for standard runners
           CI: true
-          TEST_STACK_PROF: 1
-          TEST_PROF_FACTORY_DEFAULT: build
-          TEST_PROF_FACTORY_DOCTOR: 1
-          TEST_PROF_RB_PROF: 1
-          TEST_PROF_BEFORE_ALL: 1
         run: |
-          mkdir -p tmp tmp/test-prof
+          mkdir -p tmp
           
           # Run specs with parallel_rspec in single container (uses available cores)
           bundle exec parallel_rspec spec \
@@ -144,13 +137,7 @@ jobs:
             -o "--format progress --format RspecJunitFormatter --out tmp/rspec.xml --tag ~type:system" \
             || echo "Tests failed with exit code $?"
           
-          # Save profiling results if available
-          if [ -d tmp/test-prof ]; then
-            echo "Test profiling results:"
-            ls -la tmp/test-prof/
-          fi
-          
-          # Also save failed specs list for debugging
+          # Save failed specs list for debugging
           if [ -f tmp/failing_specs.txt ]; then
             echo "Failed specs:"
             cat tmp/failing_specs.txt
