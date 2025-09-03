@@ -238,7 +238,7 @@ foreman start -f Procfile.dev
 
 # This will start:
 # - Rails server on http://localhost:3000
-# - Shakapacker dev server for assets
+# - Vite dev server for assets
 # - Solid Queue for background jobs (database-based)
 ```
 
@@ -247,8 +247,8 @@ foreman start -f Procfile.dev
 # Terminal 1: Rails server
 bin/rails server
 
-# Terminal 2: Shakapacker for assets
-bin/shakapacker-dev-server
+# Terminal 2: Vite for assets
+bin/vite dev
 
 # Terminal 3: Solid Queue for background jobs (database-based)
 bundle exec rake solid_queue:start

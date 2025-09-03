@@ -8,7 +8,6 @@ const initialDuration = getValueFromLocalStorage("duration") || "";
 const initialClient = getValueFromLocalStorage("client") || "";
 const initialProject = getValueFromLocalStorage("project") || "";
 const initialProjectId = parseInt(getValueFromLocalStorage("projectId") || "0");
-// const _initialBillable = getValueFromLocalStorage("billable") === "true";
 const initialProjectBillable =
   getValueFromLocalStorage("projectBillable") === "true";
 
