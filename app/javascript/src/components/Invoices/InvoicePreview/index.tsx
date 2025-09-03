@@ -164,7 +164,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
               </h1>
             )}
             <div className="text-sm text-gray-600 space-y-1">
-              {invoice.company.address && <p>{invoice.company.address}</p>}
+              {invoice.company.address && <p>{typeof invoice.company.address === 'object' ? JSON.stringify(invoice.company.address) : invoice.company.address}</p>}
               {invoice.company.email && <p>{invoice.company.email}</p>}
               {invoice.company.phone && <p>{invoice.company.phone}</p>}
               {invoice.company.taxId && <p>Tax ID: {invoice.company.taxId}</p>}
@@ -210,7 +210,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
               {invoice.client.name}
             </p>
             {invoice.client.address && (
-              <p className="text-gray-600">{invoice.client.address}</p>
+              <p className="text-gray-600">{typeof invoice.client.address === 'object' ? JSON.stringify(invoice.client.address) : invoice.client.address}</p>
             )}
             {invoice.client.email && (
               <p className="text-gray-600">{invoice.client.email}</p>

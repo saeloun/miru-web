@@ -325,7 +325,10 @@ class InvoiceApiService {
         rate: parseFloat(item.rate || 0),
         amount: parseFloat(item.amount || 0),
       })),
-      company: apiInvoice.company,
+      company: {
+        ...apiInvoice.company,
+        address: apiInvoice.company?.address ? formatAddress(apiInvoice.company.address) : "",
+      },
     };
   }
 }

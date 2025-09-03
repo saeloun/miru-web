@@ -17,7 +17,6 @@ import {
 import { useNavigate } from "react-router-dom";
 import { MobileMoreOptions, Modal } from "StyledComponents";
 
-// import AddContacts from "../Modals/AddContacts";
 import Contacts from "../Contacts";
 import DeleteClient from "../Modals/DeleteClient";
 import EditClient from "../Modals/EditClient";

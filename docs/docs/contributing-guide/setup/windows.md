@@ -163,7 +163,7 @@ $ foreman start -f Procfile.dev
 
 # Or run services individually:
 $ bin/rails server                    # Rails server (port 3000)
-$ bin/shakapacker-dev-server          # Shakapacker dev server
+$ bin/vite dev                        # Vite dev server
 $ bundle exec rake solid_queue:start  # Background job processor (database-based)
 ```
 

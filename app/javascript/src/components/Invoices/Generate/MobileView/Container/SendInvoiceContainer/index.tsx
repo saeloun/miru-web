@@ -60,9 +60,6 @@ const SendInvoiceContainer = ({
 
   const [width, setWidth] = useState<string>("10ch");
   const [status, setStatus] = useState<InvoiceStatus>(InvoiceStatus.IDLE);
-  // const [height, setHeight] = useState<string>("h-0 py-0");
-
-  // const input: React.RefObject<HTMLInputElement> = useRef();
   const navigate = useNavigate();
 
   const handleRemove = (recipient: string) => {
@@ -74,17 +71,7 @@ const SendInvoiceContainer = ({
     });
   };
 
-  // const handleInput = event => {
-  //   const recipients = invoiceEmail.recipients;
-
-  //   if (isEmailValid(newRecipient) && event.key === "Enter") {
-  //     setInvoiceEmail({
-  //       ...invoiceEmail,
-  //       recipients: recipients.concat(newRecipient),
-  //     });
-  //     setNewRecipient("");
-  //   }
-  // };
+  
 
   const handleSubmit = async event => {
     try {
@@ -173,27 +160,10 @@ const SendInvoiceContainer = ({
                             recipientsCount={invoiceEmail.recipients.length}
                           />
                         ))}
-                        {/* <input
-                          name="to"
-                          ref={input}
-                          style={{ width }}
-                          type="email"
-                          value={newRecipient}
-                          className={cn(
-                            "focus:outline-none mx-1.5 w-fit cursor-text",
-                            height,
-                            {
-                              "text-miru-red-400": !isEmailValid(newRecipient),
-                            }
-                          )}
-                          onBlur={() => setHeight("h-0 py-0")}
-                          onChange={e => setNewRecipient(e.target.value.trim())}
-                          onFocus={() => setHeight("h-6 py-2")}
-                          onKeyDown={handleInput}
-                        /> */}
+                        
                       </div>
                     }
-                    // onClick={() => input.current.focus()}
+                    
                   />
                   <InputErrors
                     fieldErrors={errors.recipients}

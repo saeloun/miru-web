@@ -90,7 +90,7 @@ Miru leverages modern, battle-tested technologies to ensure reliability, perform
 - **React 18.3**: Modern component-based UI
 - **TypeScript**: Type-safe JavaScript development
 - **Tailwind CSS 3.4**: Utility-first styling
-- **Shakapacker 8**: Webpack 5 integration for Rails
+- **Vite**: Fast dev server and bundler for Rails
 
 ### Infrastructure
 - **Docker**: Containerized deployment

@@ -133,7 +133,7 @@ foreman start -f Procfile.dev
 
 The application will be available at:
 - **Main app**: [http://localhost:3000](http://localhost:3000)
-- **Shakapacker dev server**: [http://localhost:3035](http://localhost:3035)
+- **Vite dev server**: [http://localhost:3036](http://localhost:3036)
 
 ### Running Tests
 
@@ -220,7 +220,7 @@ DISABLE_SPRING=true
 
 The Dev Container automatically forwards these ports:
 - **3000**: Rails server
-- **3035**: Shakapacker dev server
+- **3036**: Vite dev server
 - **5432**: PostgreSQL database
 
 Access forwarded ports in VS Code's **Ports** panel.

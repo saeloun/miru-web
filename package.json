@@ -158,12 +158,7 @@
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:report": "playwright show-report"
   },
-  "babel": {
-    "presets": [
-      "./node_modules/shakapacker/package/babel/preset.js",
-      "@babel/preset-react"
-    ]
-  },
+  
   "browserslist": [
     "defaults"
   ],

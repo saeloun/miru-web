@@ -213,7 +213,7 @@ foreman start -f Procfile.dev
 
 # This starts:
 # - Rails server on http://localhost:3000
-# - Shakapacker dev server for assets
+# - Vite dev server for assets
 # - Solid Queue for background jobs (using database)
 ```
 
@@ -222,8 +222,8 @@ foreman start -f Procfile.dev
 # Terminal 1: Rails server
 bin/rails server
 
-# Terminal 2: Shakapacker for assets
-bin/shakapacker-dev-server
+# Terminal 2: Vite for assets
+bin/vite dev
 
 # Terminal 3: Solid Queue for background jobs (database-based)
 bundle exec rake solid_queue:start
@@ -299,9 +299,9 @@ bundle install
 rm -rf node_modules
 pnpm install # or npm install
 
-# Clear Shakapacker cache
-bin/rails shakapacker:clobber
-bin/rails shakapacker:compile
+# Clear Vite cache and rebuild
+bin/rails vite:clobber
+bin/rails vite:build
 ```
 
 #### Port Already in Use

@@ -110,7 +110,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
             </Button>
             <Button size="sm">
               <PaperPlaneTilt className="h-4 w-4 mr-2" />
-              PaperPlaneTilt
+              Send
             </Button>
             <Button variant="outline" size="sm">
               <DotsThree className="h-4 w-4" />
