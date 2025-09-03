@@ -825,7 +825,7 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
       </div>
 
       {/* Add custom styles for phone input */}
-      <style jsx global>{`
+      <style>{`
         .phone-input-clean .PhoneInputInput {
           width: 100%;
           padding: 0.5rem 0.75rem;

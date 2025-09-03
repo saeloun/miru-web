@@ -26,11 +26,12 @@ const currencyFormat = (
 ) => {
   // Default to USD if no currency provided
   const currency = baseCurrency || "USD";
-  
+
   // Ensure amount is a valid number, default to 0 if not
-  const numericAmount = typeof amount === 'number' && !isNaN(amount) 
-    ? amount 
-    : parseFloat(amount) || 0;
+  const numericAmount =
+    typeof amount === "number" && !isNaN(amount)
+      ? amount
+      : parseFloat(amount) || 0;
 
   return new Intl.NumberFormat(locale(currency), {
     style: "currency",

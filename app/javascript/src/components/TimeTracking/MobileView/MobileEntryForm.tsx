@@ -19,7 +19,6 @@ import {
   TimeInput,
 } from "StyledComponents";
 
-import CustomCheckbox from "common/CustomCheckbox";
 import CustomDatePicker from "common/CustomDatePicker";
 import { CustomInputText } from "common/CustomInputText";
 import { CustomTextareaAutosize } from "common/CustomTextareaAutosize";
@@ -36,8 +35,8 @@ const AddEntryMobile = ({
   clients,
   note,
   setNote,
-  billable,
-  setBillable,
+  taskType,
+  setTaskType,
   selectedDate,
   setSelectedDate,
   duration,
@@ -62,7 +61,7 @@ const AddEntryMobile = ({
   const [projectSearchQuery, setProjectSearchQuery] = useState<string>("");
   const [showDatePicker, setShowDatePicker] = useState<boolean>(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
-  const [isProjectBillable, setIsProjectBillable] = useState<boolean>(false);
+  const [showTaskTypeList, setShowTaskTypeList] = useState<boolean>(false);
   const datePickerRef = useRef(null);
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
   const debouncedProjectSearchQuery = useDebounce(projectSearchQuery, 500);
@@ -98,17 +97,25 @@ const AddEntryMobile = ({
     setProjectList(projects[client]);
   }, [client]);
 
-  useEffect(() => {
-    if (projects[client]) {
-      const selectedProject = projects[client].find(
-        currentProject => currentProject.name === project
-      );
-      setIsProjectBillable(selectedProject?.billable);
-    }
-  }, [project, client]);
+  const taskTypes = [
+    { value: "development", label: "Development" },
+    { value: "meeting", label: "Meeting" },
+    { value: "research", label: "Research" },
+    { value: "planning", label: "Planning" },
+    { value: "testing", label: "Testing" },
+    { value: "documentation", label: "Documentation" },
+    { value: "review", label: "Code Review" },
+    { value: "debugging", label: "Debugging" },
+    { value: "deployment", label: "Deployment" },
+    { value: "support", label: "Support" },
+    { value: "training", label: "Training" },
+    { value: "other", label: "Other" },
+  ];
 
-  const handleBillableCheck = () => {
-    if (isProjectBillable) setBillable(!billable);
+  const getTaskTypeLabel = value => {
+    const taskType = taskTypes.find(type => type.value === value);
+
+    return taskType ? taskType.label : value;
   };
 
   const handleDatePicker = date => {
@@ -388,19 +395,49 @@ const AddEntryMobile = ({
                 )}
               </div>
               <div className="py-3">
-                <CustomCheckbox
-                  checkboxValue={1}
-                  handleCheck={handleBillableCheck}
-                  id={1}
-                  isChecked={billable}
-                  text="Billable"
-                  wrapperClassName="flex items-center m-auto p-2"
-                  labelClassName={`${
-                    isProjectBillable
-                      ? "text-miru-dark-purple-1000"
-                      : "text-miru-gray-1000"
-                  } text-sm font-medium`}
-                />
+                <div
+                  className="relative flex w-full flex-col"
+                  onClick={() => {
+                    setShowTaskTypeList(true);
+                  }}
+                >
+                  <CustomInputText
+                    disabled={showTaskTypeList}
+                    id="TaskType"
+                    label="Task Type"
+                    name="TaskType"
+                    type="text"
+                    value={getTaskTypeLabel(taskType)}
+                  />
+                  <CaretDownIcon
+                    className="absolute top-0 bottom-0 right-1 mx-2 my-3"
+                    color="#5B34EA"
+                    size={20}
+                    weight="bold"
+                  />
+                </div>
+                {showTaskTypeList && (
+                  <MobileMoreOptions
+                    className="h-1/2"
+                    setVisibilty={setShowTaskTypeList}
+                    visibilty={showTaskTypeList}
+                  >
+                    {taskTypes.map((type, index) => (
+                      <li
+                        key={index}
+                        className={`flex items-center px-2 pt-3 text-sm leading-5 text-miru-dark-purple-1000 hover:bg-miru-gray-100 ${
+                          type.value === taskType ? "font-bold" : "font-normal"
+                        }`}
+                        onClick={() => {
+                          setTaskType(type.value);
+                          setShowTaskTypeList(false);
+                        }}
+                      >
+                        {type.label}
+                      </li>
+                    ))}
+                  </MobileMoreOptions>
+                )}
               </div>
               <div className="flex items-center justify-between rounded border border-miru-gray-1000">
                 <Button style="ternary" onClick={handleDecreaseTime}>

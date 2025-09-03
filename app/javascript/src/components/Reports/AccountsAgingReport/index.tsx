@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Warning as AlertCircle,
   Calendar,
@@ -16,7 +16,6 @@ import {
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
-  getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
@@ -44,32 +43,31 @@ import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
 import { Calendar as CalendarComponent } from "../../ui/calendar";
 import { currencyFormat } from "../../../helpers/currency";
 
-interface AccountAging {
+interface ClientAging {
   id: number;
-  client_name: string;
-  invoice_number: string;
-  issue_date: string;
-  due_date: string;
-  amount: number;
-  amount_due: number;
-  current: number;
-  "1_30_days": number;
-  "31_60_days": number;
-  "61_90_days": number;
-  over_90_days: number;
+  name: string;
+  logo: string | null;
+  amount_overdue: {
+    zero_to_thirty_days: number;
+    thirty_one_to_sixty_days: number;
+    sixty_one_to_ninety_days: number;
+    ninety_plus_days: number;
+    total: number;
+  };
 }
 
 interface AccountsAgingData {
-  invoices: AccountAging[];
-  summary: {
-    total: number;
-    current: number;
-    "1_30_days": number;
-    "31_60_days": number;
-    "61_90_days": number;
-    over_90_days: number;
+  report: {
+    clients: ClientAging[];
+    total_amount_overdue: {
+      zero_to_thirty_days: number;
+      thirty_one_to_sixty_days: number;
+      sixty_one_to_ninety_days: number;
+      ninety_plus_days: number;
+      total: number;
+    };
+    base_currency: string;
   };
-  currency: string;
 }
 
 const AccountsAgingReport: React.FC = () => {
@@ -78,6 +76,8 @@ const AccountsAgingReport: React.FC = () => {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const [displayedItems, setDisplayedItems] = useState(10);
+  const tableRef = useRef<HTMLDivElement>(null);
 
   const { data, isLoading, error } = useQuery<AccountsAgingData>({
     queryKey: ["accountsAging", asOfDate, selectedClients],
@@ -129,30 +129,30 @@ const AccountsAgingReport: React.FC = () => {
     },
   });
 
-  const columns: ColumnDef<AccountAging>[] = [
+  const columns: ColumnDef<ClientAging>[] = [
     {
-      accessorKey: "client_name",
+      accessorKey: "name",
       header: "Client",
       cell: ({ row }) => (
-        <div className="font-medium">{row.getValue("client_name")}</div>
+        <div className="font-medium">{row.getValue("name")}</div>
       ),
     },
     {
-      accessorKey: "amount_due",
+      accessorKey: "amount_overdue.total",
       header: () => <div className="text-right">Total Due</div>,
       cell: ({ row }) => (
         <div className="text-right font-bold whitespace-nowrap">
-          {currencyFormat(data?.currency, row.getValue("amount_due"))}
+          {currencyFormat(data?.report?.base_currency, row.original.amount_overdue.total)}
         </div>
       ),
     },
     {
-      accessorKey: "1_30_days",
+      accessorKey: "amount_overdue.zero_to_thirty_days",
       header: () => (
-        <div className="text-right whitespace-nowrap">1-30 Days</div>
+        <div className="text-right whitespace-nowrap">0-30 Days</div>
       ),
       cell: ({ row }) => {
-        const value = row.getValue("1_30_days") as number;
+        const value = row.original.amount_overdue.zero_to_thirty_days;
 
         return (
           <div
@@ -161,18 +161,18 @@ const AccountsAgingReport: React.FC = () => {
               value > 0 ? "text-gray-700 font-medium" : "text-gray-300"
             )}
           >
-            {currencyFormat(data?.currency, value || 0)}
+            {currencyFormat(data?.report?.base_currency, value || 0)}
           </div>
         );
       },
     },
     {
-      accessorKey: "31_60_days",
+      accessorKey: "amount_overdue.thirty_one_to_sixty_days",
       header: () => (
         <div className="text-right whitespace-nowrap">31-60 Days</div>
       ),
       cell: ({ row }) => {
-        const value = row.getValue("31_60_days") as number;
+        const value = row.original.amount_overdue.thirty_one_to_sixty_days;
 
         return (
           <div
@@ -181,18 +181,18 @@ const AccountsAgingReport: React.FC = () => {
               value > 0 ? "text-gray-700 font-medium" : "text-gray-300"
             )}
           >
-            {currencyFormat(data?.currency, value || 0)}
+            {currencyFormat(data?.report?.base_currency, value || 0)}
           </div>
         );
       },
     },
     {
-      accessorKey: "61_90_days",
+      accessorKey: "amount_overdue.sixty_one_to_ninety_days",
       header: () => (
         <div className="text-right whitespace-nowrap">61-90 Days</div>
       ),
       cell: ({ row }) => {
-        const value = row.getValue("61_90_days") as number;
+        const value = row.original.amount_overdue.sixty_one_to_ninety_days;
 
         return (
           <div
@@ -201,18 +201,18 @@ const AccountsAgingReport: React.FC = () => {
               value > 0 ? "text-gray-700 font-medium" : "text-gray-300"
             )}
           >
-            {currencyFormat(data?.currency, value || 0)}
+            {currencyFormat(data?.report?.base_currency, value || 0)}
           </div>
         );
       },
     },
     {
-      accessorKey: "over_90_days",
+      accessorKey: "amount_overdue.ninety_plus_days",
       header: () => (
         <div className="text-right whitespace-nowrap">90+ Days</div>
       ),
       cell: ({ row }) => {
-        const value = row.getValue("over_90_days") as number;
+        const value = row.original.amount_overdue.ninety_plus_days;
 
         return (
           <div
@@ -221,20 +221,23 @@ const AccountsAgingReport: React.FC = () => {
               value > 0 ? "text-gray-900 font-bold" : "text-gray-300"
             )}
           >
-            {currencyFormat(data?.currency, value || 0)}
+            {currencyFormat(data?.report?.base_currency, value || 0)}
           </div>
         );
       },
     },
   ];
 
+  // Slice data for infinite scroll
+  const allClients = data?.report?.clients || [];
+  const visibleClients = allClients.slice(0, displayedItems);
+
   const table = useReactTable({
-    data: data?.invoices || [],
+    data: visibleClients,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
@@ -244,6 +247,24 @@ const AccountsAgingReport: React.FC = () => {
       columnVisibility,
     },
   });
+
+  // Handle infinite scroll
+  useEffect(() => {
+    const handleScroll = () => {
+      if (tableRef.current) {
+        const { scrollTop, scrollHeight, clientHeight } = tableRef.current;
+        if (scrollTop + clientHeight >= scrollHeight - 100 && displayedItems < allClients.length) {
+          setDisplayedItems(prev => Math.min(prev + 10, allClients.length));
+        }
+      }
+    };
+
+    const tableElement = tableRef.current;
+    if (tableElement) {
+      tableElement.addEventListener('scroll', handleScroll);
+      return () => tableElement.removeEventListener('scroll', handleScroll);
+    }
+  }, [displayedItems, allClients.length]);
 
   if (isLoading) {
     return (
@@ -330,21 +351,21 @@ const AccountsAgingReport: React.FC = () => {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-gray-900">
-              {currencyFormat(data?.currency, data?.summary?.total || 0)}
+              {currencyFormat(data?.report?.base_currency, data?.report?.total_amount_overdue?.total || 0)}
             </div>
           </CardContent>
         </Card>
 
         <Card className="border-gray-200">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">1-30 Days</CardTitle>
+            <CardTitle className="text-sm font-medium">0-30 Days</CardTitle>
             <Calendar className="h-4 w-4 text-gray-500" />
           </CardHeader>
           <CardContent>
             <div className="text-xl font-bold text-gray-700">
               {currencyFormat(
-                data?.currency,
-                data?.summary?.["1_30_days"] || 0
+                data?.report?.base_currency,
+                data?.report?.total_amount_overdue?.zero_to_thirty_days || 0
               )}
             </div>
           </CardContent>
@@ -358,8 +379,8 @@ const AccountsAgingReport: React.FC = () => {
           <CardContent>
             <div className="text-xl font-bold text-gray-700">
               {currencyFormat(
-                data?.currency,
-                data?.summary?.["31_60_days"] || 0
+                data?.report?.base_currency,
+                data?.report?.total_amount_overdue?.thirty_one_to_sixty_days || 0
               )}
             </div>
           </CardContent>
@@ -373,8 +394,8 @@ const AccountsAgingReport: React.FC = () => {
           <CardContent>
             <div className="text-xl font-bold text-gray-800">
               {currencyFormat(
-                data?.currency,
-                data?.summary?.["61_90_days"] || 0
+                data?.report?.base_currency,
+                data?.report?.total_amount_overdue?.sixty_one_to_ninety_days || 0
               )}
             </div>
           </CardContent>
@@ -388,8 +409,8 @@ const AccountsAgingReport: React.FC = () => {
           <CardContent>
             <div className="text-xl font-bold text-gray-900">
               {currencyFormat(
-                data?.currency,
-                data?.summary?.["over_90_days"] || 0
+                data?.report?.base_currency,
+                data?.report?.total_amount_overdue?.ninety_plus_days || 0
               )}
             </div>
           </CardContent>
@@ -402,7 +423,10 @@ const AccountsAgingReport: React.FC = () => {
           <CardTitle>Invoice Aging Details</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="rounded-md border">
+          <div 
+            ref={tableRef}
+            className="rounded-md border max-h-[600px] overflow-y-auto"
+          >
             <Table>
               <TableHeader>
                 {table.getHeaderGroups().map(headerGroup => (
@@ -443,7 +467,7 @@ const AccountsAgingReport: React.FC = () => {
                       colSpan={columns.length}
                       className="h-24 text-center"
                     >
-                      No outstanding invoices.
+                      No clients with outstanding balances.
                     </TableCell>
                   </TableRow>
                 )}
@@ -451,25 +475,14 @@ const AccountsAgingReport: React.FC = () => {
             </Table>
           </div>
 
-          {/* Pagination */}
-          <div className="flex items-center justify-end space-x-2 py-4">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => table.previousPage()}
-              disabled={!table.getCanPreviousPage()}
-            >
-              Previous
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => table.nextPage()}
-              disabled={!table.getCanNextPage()}
-            >
-              Next
-            </Button>
-          </div>
+          {/* Loading indicator for infinite scroll */}
+          {displayedItems < allClients.length && (
+            <div className="flex justify-center py-4">
+              <div className="text-sm text-muted-foreground">
+                Showing {displayedItems} of {allClients.length} clients...
+              </div>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>

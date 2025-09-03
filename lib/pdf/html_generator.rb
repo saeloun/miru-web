@@ -10,29 +10,35 @@ class Pdf::HtmlGenerator
     @locals = locals
     @path = path
     @root_url = root_url
-
-    set_options(options)
+    @options = options
   end
 
   def make
-    Grover.new(make_html, **@options).to_pdf
+    html = make_html
+
+    # Use Ferrum PDF for generation
+    pdf_options = {
+      format: "A4",
+      margin: {
+        top: "0.5in",
+        bottom: "0.5in",
+        left: "0.5in",
+        right: "0.5in"
+      },
+      print_background: true,
+      display_header_footer: false
+    }
+
+    # Merge with any provided options
+    pdf_options.merge!(@options) if @options.present?
+
+    # Generate PDF using Ferrum PDF
+    FerrumPdf::Browser.new do |browser|
+      browser.pdf_from_html(html, pdf_options)
+    end
   end
 
   private
-
-    def set_options(user_defined_options)
-      if user_defined_options.present?
-        @options = user_defined_options
-      else
-        @options = {
-          wait_until: ["networkidle0", "load", "domcontentloaded", "networkidle2"]
-        }
-      end
-
-      if @path
-        @options[:path] = @path
-      end
-    end
 
     def make_html
       html = ActionController::Base.new.render_to_string(
@@ -41,10 +47,18 @@ class Pdf::HtmlGenerator
         locals:
       )
 
+      # Process URLs in HTML to be absolute if root_url is provided
       if root_url
-        Grover::HTMLPreprocessor.process html, "#{root_url}/", "http"
+        process_html_urls(html)
       else
         html
+      end
+    end
+
+    def process_html_urls(html)
+      # Convert relative URLs to absolute URLs
+      html.gsub(/(?:src|href)=["']\/([^"']+)["']/) do |match|
+        match.sub(/\/#{$1}/, "#{root_url}/#{$1}")
       end
     end
 end

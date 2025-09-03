@@ -12,7 +12,6 @@ import {
 import { TimeInput } from "../ui/time-input";
 import { Toastr } from "../ui/toastr";
 import { Textarea } from "../ui/textarea";
-import { Checkbox } from "../ui/checkbox";
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
 import {
@@ -63,9 +62,8 @@ const AddEntry: React.FC<Iprops> = ({
   const [client, setClient] = useState<string>(initialClient);
   const [project, setProject] = useState<string>(initialProject);
   const [projectId, setProjectId] = useState<number>(initialProjectId);
-  const [billable, setBillable] = useState<boolean>(initialBillable);
-  const [projectBillable, setProjectBillable] = useState<boolean>(
-    initialProjectBillable
+  const [taskType, setTaskType] = useState<string>(
+    getValueFromLocalStorage("taskType") || "development"
   );
   const [submitting, setSubmitting] = useState<boolean>(false);
 
@@ -75,24 +73,20 @@ const AddEntry: React.FC<Iprops> = ({
   const isNewEntry = !editEntryId;
   const debouncedNote = useDebounce(note, 500);
 
-
   const handleFillData = () => {
     if (!editEntryId) return;
     const isoDate = dayjs(selectedFullDate, dateFormat).format("YYYY-MM-DD");
     const entries = entryList[isoDate];
     if (!entries) return;
-    const entry = entries.find(
-      entry => entry.id === editEntryId
-    );
+    const entry = entries.find(entry => entry.id === editEntryId);
     if (entry) {
       setDuration(minToHHMM(entry.duration));
       setClient(entry.client);
       setProject(entry.project);
       setProjectId(entry.project_id);
       setNote(entry.note);
-      if (["unbilled", "billed"].includes(entry.bill_status)) {
-        setBillable(true);
-      }
+      // Set task type from entry if available
+      setTaskType(entry.task_type || "development");
     }
   };
 
@@ -106,10 +100,6 @@ const AddEntry: React.FC<Iprops> = ({
     );
     if (selectedProject) {
       setProjectId(Number(selectedProject.id));
-      setProjectBillable(selectedProject.billable);
-      if (projectId != selectedProject.id) {
-        setBillable(selectedProject.billable);
-      }
     }
   }, [project, client]);
 
@@ -121,10 +111,17 @@ const AddEntry: React.FC<Iprops> = ({
     work_date: dayjs(selectedFullDate, dateFormat).format("YYYY-MM-DD"),
     duration: minFromHHMM(duration),
     note,
-    bill_status: billable ? "unbilled" : "non_billable",
+    task_type: taskType,
+    bill_status: "non_billable",
   });
 
   const handleSave = async () => {
+    // Save the current selections before clearing for next time
+    const savedClient = client;
+    const savedProject = project;
+    const savedProjectId = projectId;
+    const savedTaskType = taskType;
+    
     removeLocalStorageItems();
     const tse = getPayload();
     const res = await timesheetEntryApi.create(
@@ -136,7 +133,19 @@ const AddEntry: React.FC<Iprops> = ({
     );
 
     if (res.status === 200) {
-      const fetchEntriesRes = await fetchEntries(selectedFullDate, selectedFullDate);
+      // After successful save, store the last used values for next time
+      setToLocalStorage("client", savedClient);
+      setToLocalStorage("project", savedProject);
+      setToLocalStorage("projectId", savedProjectId.toString());
+      setToLocalStorage("taskType", savedTaskType);
+      // Clear only the note and duration for new entry
+      setToLocalStorage("note", "");
+      setToLocalStorage("duration", "");
+      
+      const fetchEntriesRes = await fetchEntries(
+        selectedFullDate,
+        selectedFullDate
+      );
       if (!isDesktop) {
         fetchEntriesofMonth();
       }
@@ -175,7 +184,6 @@ const AddEntry: React.FC<Iprops> = ({
     }
   };
 
-
   const handleDisableBtn = () => {
     const tse = getPayload();
     const message = validateTimesheetEntry(tse, client, projectId);
@@ -196,148 +204,193 @@ const AddEntry: React.FC<Iprops> = ({
     setToLocalStorage("client", client);
     setToLocalStorage("project", project);
     setToLocalStorage("projectId", projectId.toString());
-    setToLocalStorage("billable", billable.toString());
-    setToLocalStorage("projectBillable", projectBillable.toString());
+    setToLocalStorage("taskType", taskType);
   };
 
   useEffect(() => {
     if (isNewEntry) {
       setLocalStorageItems();
     }
-  }, [
-    debouncedNote,
-    duration,
-    client,
-    project,
-    projectId,
-    billable,
-    projectBillable,
-  ]);
+  }, [debouncedNote, duration, client, project, projectId, taskType]);
 
   return isDesktop ? (
-    <div
-      className={`
-       hidden min-h-24 justify-between rounded-lg p-4 shadow-2xl lg:flex ${
-         editEntryId ? "mt-10" : ""
-       }`}
-    >
-      <div className="flex-1 space-y-3">
-        <div className="flex gap-3">
-          <Select
-            value={client}
-            onValueChange={value => {
-              setClient(value);
-              setProject(projects ? projects[value][0]?.name : "");
-            }}
-          >
-            <SelectTrigger className="flex-1">
-              <SelectValue placeholder="Select a client" />
-            </SelectTrigger>
-            <SelectContent>
-              {clients.map((client, i) => (
-                <SelectItem key={i} value={client["name"]}>
-                  {client["name"]}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Select
-            value={project}
-            onValueChange={setProject}
-            disabled={!client}
-          >
-            <SelectTrigger
-              className={cn(
-                "flex-1",
-                !client && "opacity-50 cursor-not-allowed"
+    <Card className="w-full shadow-sm border border-border bg-card backdrop-blur-sm rounded-lg">
+      <div className={`p-8 ${editEntryId ? "mt-4" : ""}`}>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Left Column - Client and Project Selection */}
+          <div className="lg:col-span-2 space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label
+                  htmlFor="client"
+                  className="text-sm font-semibold text-foreground"
+                >
+                  Client
+                </Label>
+                <Select
+                  value={client}
+                  onValueChange={value => {
+                    setClient(value);
+                    setProject(projects ? projects[value][0]?.name : "");
+                  }}
+                >
+                  <SelectTrigger className="h-12">
+                    <SelectValue placeholder="Select a client" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {clients.map((client, i) => (
+                      <SelectItem key={i} value={client["name"]}>
+                        {client["name"]}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label
+                  htmlFor="project"
+                  className="text-sm font-semibold text-foreground"
+                >
+                  Project
+                </Label>
+                <Select
+                  value={project}
+                  onValueChange={setProject}
+                  disabled={!client}
+                >
+                  <SelectTrigger
+                    className={cn(
+                      "h-12",
+                      !client && "opacity-50 cursor-not-allowed"
+                    )}
+                  >
+                    <SelectValue placeholder="Select a project" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {client &&
+                      projects[client] &&
+                      projects[client].map((project, i) => (
+                        <SelectItem key={i} value={project.name}>
+                          {project.name}
+                        </SelectItem>
+                      ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label
+                htmlFor="notes"
+                className="text-sm font-semibold text-foreground"
+              >
+                Description
+              </Label>
+              <Textarea
+                name="notes"
+                placeholder="What did you work on? Add your notes here..."
+                value={note}
+                className={cn(
+                  "w-full resize-none min-h-[120px] text-base",
+                  editEntryId ? "min-h-[140px]" : "min-h-[120px]"
+                )}
+                onChange={e => setNote(e.target.value)}
+              />
+            </div>
+          </div>
+
+          {/* Right Column - Time, Task Type, and Actions */}
+          <div className="space-y-6">
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label
+                  htmlFor="duration"
+                  className="text-sm font-semibold text-foreground"
+                >
+                  Time Spent
+                </Label>
+                <TimeInput
+                  className="h-12 w-full px-4 text-base font-mono"
+                  initTime={duration}
+                  name="timeInput"
+                  onTimeChange={handleDurationChange}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label
+                  htmlFor="taskType"
+                  className="text-sm font-semibold text-foreground"
+                >
+                  Task Type
+                </Label>
+                <Select value={taskType} onValueChange={setTaskType}>
+                  <SelectTrigger className="h-12">
+                    <SelectValue placeholder="Select task type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="development">Development</SelectItem>
+                    <SelectItem value="meeting">Meeting</SelectItem>
+                    <SelectItem value="research">Research</SelectItem>
+                    <SelectItem value="planning">Planning</SelectItem>
+                    <SelectItem value="testing">Testing</SelectItem>
+                    <SelectItem value="documentation">Documentation</SelectItem>
+                    <SelectItem value="review">Code Review</SelectItem>
+                    <SelectItem value="debugging">Debugging</SelectItem>
+                    <SelectItem value="deployment">Deployment</SelectItem>
+                    <SelectItem value="support">Support</SelectItem>
+                    <SelectItem value="training">Training</SelectItem>
+                    <SelectItem value="other">Other</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-3 pt-4">
+              {editEntryId === 0 ? (
+                <Button
+                  size="lg"
+                  disabled={handleDisableBtn()}
+                  onClick={() => {
+                    setSubmitting(true);
+                    handleSave();
+                  }}
+                  className="h-12 text-base font-semibold"
+                >
+                  Save Entry
+                </Button>
+              ) : (
+                <Button
+                  size="lg"
+                  disabled={handleDisableBtn()}
+                  onClick={() => {
+                    handleEdit();
+                  }}
+                  className="h-12 text-base font-semibold"
+                >
+                  Update Entry
+                </Button>
               )}
-            >
-              <SelectValue placeholder="Select a project" />
-            </SelectTrigger>
-            <SelectContent>
-              {client &&
-                projects[client] &&
-                projects[client].map((project, i) => (
-                  <SelectItem key={i} value={project.name}>
-                    {project.name}
-                  </SelectItem>
-                ))}
-            </SelectContent>
-          </Select>
-        </div>
-        <Textarea
-          name="notes"
-          placeholder="Add notes..."
-          value={note}
-          className={cn(
-            "w-full resize-none",
-            editEntryId ? "min-h-[120px]" : "min-h-[80px]"
-          )}
-          onChange={e => setNote(e.target.value)}
-        />
-      </div>
-      <div className="space-y-3">
-        <div className="flex gap-3">
-          <TimeInput
-            className="h-10 w-[120px] px-3"
-            initTime={duration}
-            name="timeInput"
-            onTimeChange={handleDurationChange}
-          />
-        </div>
-        <div className="flex items-center space-x-2">
-          <Checkbox
-            id="billable"
-            checked={billable}
-            disabled={!projectBillable}
-            onCheckedChange={checked => setBillable(checked as boolean)}
-          />
-          <Label
-            htmlFor="billable"
-            className={cn(
-              "text-sm font-medium cursor-pointer",
-              !projectBillable && "text-muted-foreground cursor-not-allowed"
-            )}
-          >
-            Billable
-          </Label>
+              <Button
+                variant="outline"
+                size="lg"
+                onClick={() => {
+                  setNewEntryView(false);
+                  setEditEntryId(0);
+                }}
+                className="h-12 text-base"
+              >
+                Cancel
+              </Button>
+            </div>
+          </div>
         </div>
       </div>
-      <div className="flex flex-col gap-2">
-        {editEntryId === 0 ? (
-          <Button
-            disabled={handleDisableBtn()}
-            onClick={() => {
-              setSubmitting(true);
-              handleSave();
-            }}
-          >
-            Save Entry
-          </Button>
-        ) : (
-          <Button 
-            disabled={handleDisableBtn()} 
-            onClick={() => {
-              handleEdit();
-            }}
-          >
-            Update Entry
-          </Button>
-        )}
-        <Button
-          variant="outline"
-          onClick={() => {
-            setNewEntryView(false);
-            setEditEntryId(0);
-          }}
-        >
-          Cancel
-        </Button>
-      </div>
-    </div>
+    </Card>
   ) : (
     <MobileEntryForm
-      billable={billable}
+      taskType={taskType}
       client={client}
       clients={clients}
       duration={duration}
@@ -349,7 +402,7 @@ const AddEntry: React.FC<Iprops> = ({
       project={project}
       projects={projects}
       selectedDate={selectedFullDate}
-      setBillable={setBillable}
+      setTaskType={setTaskType}
       setClient={setClient}
       setDuration={setDuration}
       setEditEntryId={setEditEntryId}
