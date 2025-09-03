@@ -22,7 +22,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { Card } from "../ui/card";
 import { cn } from "../../lib/utils";
 import { getValueFromLocalStorage, setToLocalStorage } from "utils/storage";
 
@@ -75,15 +74,12 @@ const AddEntry: React.FC<Iprops> = ({
   const isNewEntry = !editEntryId;
   const debouncedNote = useDebounce(note, 500);
 
-
   const handleFillData = () => {
     if (!editEntryId) return;
     const isoDate = dayjs(selectedFullDate, dateFormat).format("YYYY-MM-DD");
     const entries = entryList[isoDate];
     if (!entries) return;
-    const entry = entries.find(
-      entry => entry.id === editEntryId
-    );
+    const entry = entries.find(entry => entry.id === editEntryId);
     if (entry) {
       setDuration(minToHHMM(entry.duration));
       setClient(entry.client);
@@ -136,7 +132,10 @@ const AddEntry: React.FC<Iprops> = ({
     );
 
     if (res.status === 200) {
-      const fetchEntriesRes = await fetchEntries(selectedFullDate, selectedFullDate);
+      const fetchEntriesRes = await fetchEntries(
+        selectedFullDate,
+        selectedFullDate
+      );
       if (!isDesktop) {
         fetchEntriesofMonth();
       }
@@ -174,7 +173,6 @@ const AddEntry: React.FC<Iprops> = ({
       setSubmitting(false);
     }
   };
-
 
   const handleDisableBtn = () => {
     const tse = getPayload();
@@ -241,11 +239,7 @@ const AddEntry: React.FC<Iprops> = ({
               ))}
             </SelectContent>
           </Select>
-          <Select
-            value={project}
-            onValueChange={setProject}
-            disabled={!client}
-          >
+          <Select value={project} onValueChange={setProject} disabled={!client}>
             <SelectTrigger
               className={cn(
                 "flex-1",
@@ -315,8 +309,8 @@ const AddEntry: React.FC<Iprops> = ({
             Save Entry
           </Button>
         ) : (
-          <Button 
-            disabled={handleDisableBtn()} 
+          <Button
+            disabled={handleDisableBtn()}
             onClick={() => {
               handleEdit();
             }}

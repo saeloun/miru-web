@@ -409,4 +409,3 @@ export const ModernInvoiceCard: React.FC<ModernInvoiceCardProps> = ({
     </Card>
   );
 };
-

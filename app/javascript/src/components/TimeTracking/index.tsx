@@ -6,8 +6,6 @@ import Loader from "common/Loader/index";
 import withLayout from "common/Mobile/HOC/withLayout";
 import SearchTimeEntries from "common/SearchTimeEntries";
 import { useUserContext } from "context/UserContext";
-import { Button } from "../ui/button";
-import { cn } from "../../lib/utils";
 import dayjs from "dayjs";
 import updateLocale from "dayjs/plugin/updateLocale";
 import weekday from "dayjs/plugin/weekday";
@@ -22,7 +20,6 @@ import { ModernTimeEntryForm } from "./ModernTimeEntryForm";
 import Header from "./Header";
 import WeeklyEntries from "./WeeklyEntries";
 import EntryDetailsModal from "./EntryDetailsModal";
-import EntryCard from "./EntryCard";
 import TimeEntriesDisplay from "./TimeEntriesDisplay";
 import AddEntryButton from "./AddEntryButton";
 
@@ -169,7 +166,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
       // Get first and last day of the current week
       const firstDay = dayInfo[0]?.fullDate;
       const lastDay = dayInfo[6]?.fullDate;
-      
+
       if (firstDay && lastDay) {
         fetchEntries(firstDay, lastDay);
       }
@@ -219,18 +216,20 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
     // Convert date to ISO format for entry lookup
     const isoDate = dayjs(date, dateFormat).format("YYYY-MM-DD");
     const newValue = { ...entryList };
-    
+
     // Check if entries exist for this date
     if (newValue[isoDate]) {
       newValue[isoDate] = newValue[isoDate].filter(e => {
         if (e["id"] == entryId) {
           filteredTimesheetEntry = e;
+
           return false; // Remove this entry
         }
+
         return true; // Keep this entry
       });
     }
-    
+
     setAllEmployeesEntries(pv => ({ ...pv, [selectedEmployeeId]: newValue }));
     setEntryList(pv => ({ ...pv, ...newValue }));
 
@@ -255,7 +254,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
     const res = await timesheetEntryApi.destroy(id);
     if (!(res.status === 200)) return;
     await handleFilterEntry(selectedFullDate, id);
-    
+
     // Refetch entries for the week to ensure data is up to date
     if (dayInfo.length > 0) {
       const firstDay = dayInfo[0]?.fullDate;
@@ -519,38 +518,38 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
         </div>
         <div>
           {isDesktop && (
-              <div className="mb-6 week-view" data-view="week">
-                <Header
-                  dailyTotalHours={dailyTotalHours}
-                  dayInfo={dayInfo}
-                  handleAddEntryDateChange={handleAddEntryDateChange}
-                  handleNextDay={handleNextDay}
-                  handleNextWeek={handleNextWeek}
-                  handlePreDay={handlePreDay}
-                  handlePrevWeek={handlePrevWeek}
-                  selectDate={selectDate}
-                  selectedFullDate={selectedFullDate}
-                  setSelectDate={setSelectDate}
-                  setWeekDay={setWeekDay}
-                  weeklyTotalHours={weeklyTotalHours}
-                />
-                <WeekDaySelector
-                  dayInfo={dayInfo}
-                  selectDate={selectDate}
-                  setSelectDate={index => {
-                    setSelectDate(index);
-                    // Update the selected date to show entries for that day
-                    const selectedDayInfo = dayInfo[index];
-                    if (selectedDayInfo) {
-                      const formattedDate = dayjs(
-                        selectedDayInfo.fullDate
-                      ).format(dateFormat);
-                      setSelectedFullDate(formattedDate);
-                    }
-                  }}
-                />
-              </div>
-            )}
+            <div className="mb-6 week-view" data-view="week">
+              <Header
+                dailyTotalHours={dailyTotalHours}
+                dayInfo={dayInfo}
+                handleAddEntryDateChange={handleAddEntryDateChange}
+                handleNextDay={handleNextDay}
+                handleNextWeek={handleNextWeek}
+                handlePreDay={handlePreDay}
+                handlePrevWeek={handlePrevWeek}
+                selectDate={selectDate}
+                selectedFullDate={selectedFullDate}
+                setSelectDate={setSelectDate}
+                setWeekDay={setWeekDay}
+                weeklyTotalHours={weeklyTotalHours}
+              />
+              <WeekDaySelector
+                dayInfo={dayInfo}
+                selectDate={selectDate}
+                setSelectDate={index => {
+                  setSelectDate(index);
+                  // Update the selected date to show entries for that day
+                  const selectedDayInfo = dayInfo[index];
+                  if (selectedDayInfo) {
+                    const formattedDate = dayjs(
+                      selectedDayInfo.fullDate
+                    ).format(dateFormat);
+                    setSelectedFullDate(formattedDate);
+                  }
+                }}
+              />
+            </div>
+          )}
           {(editEntryId || newEntryView) && (
             <EntryForm
               clients={clients}
@@ -599,24 +598,22 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
             />
           )}
         </div>
-        {false && !entryList[selectedFullDate] && !isDesktop && (
+        {!entryList[selectedFullDate] && !isDesktop && (
           <EmptyStatesMobileView
             setEditEntryId={setEditEntryId}
             setNewEntryView={setNewEntryView}
           />
         )}
-        {(
-          <div className="mt-4">
-            <TimeEntriesDisplay
-              selectedFullDate={selectedFullDate}
-              entryList={entryList}
-              handleDeleteEntry={handleDeleteEntry}
-              handleDuplicate={handleDuplicate}
-              setEditEntryId={setEditEntryId}
-              setNewEntryView={setNewEntryView}
-            />
-          </div>
-        )}
+        <div className="mt-4">
+          <TimeEntriesDisplay
+            selectedFullDate={selectedFullDate}
+            entryList={entryList}
+            handleDeleteEntry={handleDeleteEntry}
+            handleDuplicate={handleDuplicate}
+            setEditEntryId={setEditEntryId}
+            setNewEntryView={setNewEntryView}
+          />
+        </div>
       </div>
       <ModernTimeEntryForm
         isOpen={showModernForm}
