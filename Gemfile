@@ -117,8 +117,8 @@ gem "solid_queue", "~> 0.6"
 gem "pghero"           # PostgreSQL performance dashboard
 gem "dexter"           # Automatic index suggestions
 
-# PDF generator
-gem "grover"
+# PDF generator - using Ferrum PDF for modern Chrome-based PDF generation
+gem "ferrum_pdf"
 
 gem "activerecord-import"
 
