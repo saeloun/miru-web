@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   Card,
   CardContent,
@@ -49,10 +49,24 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({
     isFetchingNextPage,
     hasNextPage,
     fetchNextPage,
-    refetch: refetchActivities,
   } = useActivities();
 
   const baseCurrency = company?.baseCurrency || "USD";
+
+  const timeframeLabel = (() => {
+    switch (timeframe) {
+      case "year":
+        return "Year to date";
+      case "quarter":
+        return "Quarter to date";
+      case "month":
+        return "Month to date";
+      case "week":
+        return "Week to date";
+      default:
+        return "Year to date";
+    }
+  })();
 
   // Derived data from TanStack Query
   const allActivities =
@@ -87,11 +101,30 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({
     }
   };
 
+  // Infinite scroll for Workspace Activity
+  useEffect(() => {
+    const el = activitiesContainerRef.current;
+    if (!el) return;
+
+    const onScroll = () => {
+      const threshold = 120;
+      if (el.scrollTop + el.clientHeight >= el.scrollHeight - threshold) {
+        if (hasNextPage && !isFetchingNextPage) {
+          fetchNextPage();
+        }
+      }
+    };
+
+    el.addEventListener("scroll", onScroll);
+
+    return () => el.removeEventListener("scroll", onScroll);
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+
   const statsCards = [
     {
       title: "Revenue",
       value: currencyFormat(baseCurrency, statsData.total_revenue),
-      description: "This year",
+      description: timeframeLabel,
       icon: CurrencyCircleDollar,
       trend: {
         value: statsData.revenue_trend,
@@ -101,7 +134,7 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({
     {
       title: "Active Projects",
       value: statsData.active_projects.toString(),
-      description: "In progress",
+      description: "Currently active",
       icon: Briefcase,
       trend: {
         value: statsData.projects_trend,
@@ -111,13 +144,13 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({
     {
       title: "Team Size",
       value: statsData.team_size.toString(),
-      description: "Team members",
+      description: "Teammates",
       icon: UsersThree,
     },
     {
       title: "Hours Tracked",
       value: Math.round(statsData.billable_hours).toLocaleString(),
-      description: "This year",
+      description: timeframeLabel,
       icon: Timer,
       trend: {
         value: statsData.hours_trend,
@@ -131,14 +164,14 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({
       <div className="border rounded-lg p-6 bg-card">
         <div className="max-w-3xl">
           <p className="text-sm font-medium text-muted-foreground uppercase tracking-wider mb-1">
-            Dashboard Overview
+            Company Pulse
           </p>
           <h1 className="text-3xl font-bold mb-2 text-foreground">
             Welcome back,{" "}
             {user?.first_name || user?.name?.split(" ")[0] || "there"}
           </h1>
           <p className="text-muted-foreground">
-            Track your annual business performance and key metrics
+            {timeframeLabel} at a glance — revenue, projects, and team momentum.
           </p>
         </div>
       </div>
@@ -223,25 +256,12 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({
           <div className="flex items-center justify-between">
             <div>
               <CardTitle className="text-lg font-semibold text-gray-900">
-                Recent Activity
+                Workspace Activity
               </CardTitle>
               <CardDescription className="text-sm text-gray-600 mt-1">
-                Latest invoice and payment updates from your workspace
+                Latest updates across your invoices and payments
               </CardDescription>
             </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-gray-600 hover:text-gray-900"
-              onClick={() => refetchActivities()}
-              disabled={isActivitiesLoading}
-            >
-              {isActivitiesLoading ? (
-                <SpinnerGap size={16} className="animate-spin" />
-              ) : (
-                "Refresh"
-              )}
-            </Button>
           </div>
         </CardHeader>
         <CardContent className="p-0">
@@ -253,7 +273,7 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({
               {allActivities.length === 0 && !isActivitiesLoading ? (
                 <div className="text-center py-8 text-gray-500">
                   <Receipt size={48} className="mx-auto mb-3 text-gray-300" />
-                  <p>No recent activity to show</p>
+                  <p>No recent activity yet</p>
                 </div>
               ) : (
                 allActivities.map(activity => {
@@ -324,7 +344,7 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({
 
               {!hasNextPage && allActivities.length > 0 && (
                 <div className="text-center py-4 text-gray-400 text-sm">
-                  No more activities to load
+                  You’re all caught up
                 </div>
               )}
             </div>

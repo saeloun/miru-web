@@ -97,3 +97,5 @@ test-*.spec.ts
 !app/assets/images/*.png
 !spec/support/fixtures/*.png
 .playwright-mcp/
+test-results/
+playwright-report/

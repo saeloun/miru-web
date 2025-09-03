@@ -48,13 +48,13 @@ export const RevenueAreaChart: React.FC<RevenueChartProps> = ({
     <CardHeader className="border-b border-gray-100 pb-6 bg-white/70 backdrop-blur-sm">
       <div className="grid flex-1 gap-2">
         <p className="text-xs font-semibold text-indigo-600 uppercase tracking-wider">
-          Financial Performance
+          Revenue Trend
         </p>
         <CardTitle className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
-          Annual Revenue
+          Revenue Momentum
         </CardTitle>
         <CardDescription className="text-sm text-gray-600 font-medium">
-          Monthly revenue breakdown for the past 12 months
+          Month-by-month revenue across the last 12 months
         </CardDescription>
       </div>
     </CardHeader>
@@ -181,13 +181,13 @@ export const CustomerRevenueChart: React.FC<CustomerRevenueChartProps> = ({
       <CardHeader className="border-b border-gray-100 pb-6 bg-white/70 backdrop-blur-sm">
         <div className="grid flex-1 gap-2">
           <p className="text-xs font-semibold text-purple-600 uppercase tracking-wider">
-            Customer Analysis
+            Top Customers
           </p>
           <CardTitle className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
-            Top Performers
+            Revenue Leaders
           </CardTitle>
           <CardDescription className="text-sm text-gray-600 font-medium">
-            Highest revenue generating customers
+            Your highest revenue contributors
           </CardDescription>
         </div>
       </CardHeader>
@@ -233,7 +233,7 @@ export const CustomerRevenueChart: React.FC<CustomerRevenueChartProps> = ({
                 </div>
               </div>
             ))}
-            <style jsx>{`
+            <style>{`
               @keyframes slideIn {
                 from {
                   width: 0;
@@ -244,7 +244,7 @@ export const CustomerRevenueChart: React.FC<CustomerRevenueChartProps> = ({
         ) : (
           <div className="text-center text-gray-500 py-8">
             <div className="text-4xl mb-3">📊</div>
-            No revenue data available for this period
+            No revenue yet for this period
           </div>
         )}
       </CardContent>
