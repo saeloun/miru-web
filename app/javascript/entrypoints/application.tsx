@@ -3,7 +3,6 @@ import * as ActiveStorage from "@rails/activestorage";
 import Rails from "@rails/ujs";
 import { createRoot } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-// import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { BrowserRouter } from "react-router-dom";
 import { AuthProvider } from "../src/context/auth";
 import { Toaster } from "sonner";
@@ -66,9 +65,7 @@ const App = (props: any) => (
         <AppWithUserData {...props} />
       </AuthProvider>
     </BrowserRouter>
-    {/* {process.env.NODE_ENV === "development" && (
-      <ReactQueryDevtools initialIsOpen={false} />
-    )} */}
+    
   </QueryClientProvider>
 );
 

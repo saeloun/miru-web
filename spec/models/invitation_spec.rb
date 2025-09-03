@@ -151,12 +151,7 @@ RSpec.describe Invitation, type: :model do
     end
   end
 
-  # describe "#send_invitation_mail" do
-  #   it "sends user invitaiton mail" do
-  #     invitation = build(:invitation, company:)
-  #     expect { invitation.save }.to have_enqueued_job.exactly(1).and have_enqueued_job(ActionMailer::MailDeliveryJob)
-  #   end
-  # end
+  
 
   describe "#recipient_email_not_changed" do
     it "raises error when invitation recipient_email is updated" do

@@ -35,7 +35,7 @@ $ docker compose up
 ```
 
 Wait for Docker to build the image defined in `Dockerfile.local` and start your containers for defined services in `docker-compose.yml`.
-Once the database service is up, Shakapacker will compile the assets, and you will see your Rails server running with Solid Queue (database-based background job processor).
+Once the database service is up, Vite will compile the assets, and you will see your Rails server running with Solid Queue (database-based background job processor).
 
 #### 5. Setup database
 
@@ -61,7 +61,7 @@ This will setup your database with seed data.
 
 This app is built on Rails 8.0.2 with the following modern features:
 - **Solid Queue** for background job processing (database-based, no external dependencies)
-- **Shakapacker 8** for asset bundling (Webpack 5)
+- **Vite** for asset bundling and dev server
 - **Hotwire** (Turbo + Stimulus) for interactive UI
 - **PostgreSQL** with strong migrations for safe schema changes
 - **pnpm** for faster JavaScript package management

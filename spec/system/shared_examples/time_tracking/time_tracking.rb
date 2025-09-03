@@ -96,7 +96,7 @@ shared_examples_for "Time tracking" do |obj|
       sleep 1
 
       obj[:is_admin] == true ? admin : employee
-      # expect(user.timesheet_entries.first.work_date).to eq(Date.today - 1)
+      
     end
   end
 
