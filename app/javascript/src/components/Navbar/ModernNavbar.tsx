@@ -20,7 +20,7 @@ import {
 import { useUserContext } from "context/UserContext";
 import { cn } from "../../lib/utils";
 import { Paths } from "constants/index";
-import { logoutApi } from "apis/logoutApi";
+import { logoutApi } from "apis/api";
 
 interface NavItem {
   label: string;
