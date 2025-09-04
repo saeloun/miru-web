@@ -227,42 +227,52 @@ const CleanPaymentReport: React.FC = () => {
       header: "Status",
       cell: ({ row }) => {
         const status = row.getValue("status") as string;
-        
+
         // Format status for display
         const formatStatus = (status: string) => {
           const statusMap: Record<string, string> = {
-            "paid": "Paid",
-            "partially_paid": "Partially Paid",
-            "unpaid": "Unpaid",
-            "pending": "Pending",
-            "completed": "Completed",
-            "success": "Success",
-            "failed": "Failed",
-            "refunded": "Refunded",
-            "cancelled": "Cancelled"
+            paid: "Paid",
+            partially_paid: "Partially Paid",
+            unpaid: "Unpaid",
+            pending: "Pending",
+            completed: "Completed",
+            success: "Success",
+            failed: "Failed",
+            refunded: "Refunded",
+            cancelled: "Cancelled",
           };
+
           return statusMap[status.toLowerCase()] || status;
         };
-        
+
         // Determine status color
         const getStatusColor = (status: string) => {
           const lowerStatus = status.toLowerCase();
-          if (lowerStatus === "paid" || lowerStatus === "completed" || lowerStatus === "success") {
+          if (
+            lowerStatus === "paid" ||
+            lowerStatus === "completed" ||
+            lowerStatus === "success"
+          ) {
             return "bg-green-50 text-green-700";
-          } else if (lowerStatus === "partially_paid" || lowerStatus === "pending") {
+          } else if (
+            lowerStatus === "partially_paid" ||
+            lowerStatus === "pending"
+          ) {
             return "bg-yellow-50 text-yellow-700";
           } else if (lowerStatus === "failed" || lowerStatus === "cancelled") {
             return "bg-red-50 text-red-700";
           } else if (lowerStatus === "refunded") {
             return "bg-gray-50 text-gray-700";
-          } else {
-            return "bg-gray-50 text-gray-700";
           }
+
+          return "bg-gray-50 text-gray-700";
         };
 
         return (
           <span
-            className={`inline-flex items-center px-2 py-1 rounded-md text-xs font-medium ${getStatusColor(status)}`}
+            className={`inline-flex items-center px-2 py-1 rounded-md text-xs font-medium ${getStatusColor(
+              status
+            )}`}
           >
             {formatStatus(status)}
           </span>
