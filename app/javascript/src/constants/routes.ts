@@ -28,7 +28,7 @@ import OutstandingInvoiceReport from "../components/Reports/OutstandingInvoiceRe
 import RevenueByClientReport from "../components/Reports/RevenueByClientReport";
 import TimeEntryReports from "../components/Reports/TimeEntryReport";
 import TotalHoursReport from "../components/Reports/totalHoursLogged";
-import PaymentReport from "../components/Reports/PaymentReport";
+import PaymentReport from "../components/Reports/PaymentReport/CleanPaymentReport";
 import PlanSelection from "../components/Subscriptions/PlanSelection";
 import TimeTracking from "../components/TimeTracking";
 
