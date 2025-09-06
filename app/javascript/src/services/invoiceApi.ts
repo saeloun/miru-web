@@ -153,7 +153,7 @@ class InvoiceApiService {
    * Create a new invoice
    */
   async createInvoice(invoiceData: InvoiceFormData): Promise<Invoice> {
-    const response = await axios.post(`/invoices`, {
+    const response = await axios.post(`/api/v1/invoices`, {
       invoice: this.formatInvoiceForApi(invoiceData),
     });
 
@@ -167,7 +167,7 @@ class InvoiceApiService {
     id: string,
     invoiceData: InvoiceFormData
   ): Promise<Invoice> {
-    const response = await axios.patch(`/invoices/${id}`, {
+    const response = await axios.patch(`/api/v1/invoices/${id}`, {
       invoice: this.formatInvoiceForApi(invoiceData),
     });
 
@@ -178,7 +178,7 @@ class InvoiceApiService {
    * Delete an invoice
    */
   async deleteInvoice(id: string): Promise<void> {
-    await axios.delete(`/invoices/${id}`);
+    await axios.delete(`/api/v1/invoices/${id}`);
   }
 
   /**
@@ -192,7 +192,7 @@ class InvoiceApiService {
       recipients: string[];
     }
   ): Promise<{ message: string }> {
-    const response = await axios.post(`/invoices/${id}/send_invoice`, {
+    const response = await axios.post(`/api/v1/invoices/${id}/send_invoice`, {
       invoice_email: emailData,
     });
 
@@ -203,7 +203,7 @@ class InvoiceApiService {
    * Download invoice PDF
    */
   async downloadInvoice(id: string): Promise<Blob> {
-    const response = await axios.get(`/invoices/${id}/download`, {
+    const response = await axios.get(`/api/v1/invoices/${id}/download`, {
       responseType: "blob",
     });
 

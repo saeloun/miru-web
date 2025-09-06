@@ -373,10 +373,40 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
       const invoiceToPreview = previewData || selectedInvoice;
       if (!invoiceToPreview) return null;
 
+      const handleInvoiceAction = async (action: string) => {
+        switch (action) {
+          case "download":
+            if (invoiceToPreview.id) {
+              await handleDownload(invoiceToPreview.id);
+            }
+            break;
+          case "send":
+            if (invoiceToPreview.id) {
+              await handleSendInvoiceFromList(invoiceToPreview.id);
+            }
+            break;
+          case "edit":
+            if (invoiceToPreview.id) {
+              await handleEditInvoice(invoiceToPreview.id);
+            }
+            break;
+          case "print":
+            window.print();
+            break;
+          case "share":
+            // Share functionality can be implemented later
+            console.log("Share invoice");
+            break;
+        }
+      };
+
       return (
         <div>
           {renderBackButton()}
-          <InvoicePreview invoice={invoiceToPreview} />
+          <InvoicePreview 
+            invoice={invoiceToPreview} 
+            onAction={handleInvoiceAction}
+          />
         </div>
       );
     }
