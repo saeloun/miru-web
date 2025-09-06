@@ -8,7 +8,6 @@ import { useOutsideClick } from "helpers";
 import { useNavigate } from "react-router-dom";
 import { sendGAPageView } from "utils/googleAnalytics";
 
-import EditHolidays from "./EditHolidays";
 import ModernHolidaysEditor from "./ModernHolidaysEditor";
 import { companyDateFormat, makePayload } from "./utils";
 

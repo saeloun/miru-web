@@ -12,8 +12,6 @@ import {
   LinkedinLogo,
   GithubLogo,
   Envelope,
-  House,
-  IdentificationCard,
 } from "phosphor-react";
 import PhoneInput from "react-phone-number-input";
 import flags from "react-phone-number-input/flags";
@@ -94,16 +92,25 @@ const EditProfilePage = ({
                     First Name
                   </label>
                   <Input
-                    className={`font-geist-regular ${errDetails.first_name_err ? "border-red-500 focus:ring-red-500" : ""}`}
+                    className={`font-geist-regular ${
+                      errDetails.first_name_err
+                        ? "border-red-500 focus:ring-red-500"
+                        : ""
+                    }`}
                     id="first_name"
                     name="first_name"
                     type="text"
                     placeholder="Enter your first name"
                     value={personalDetails.first_name || ""}
                     onChange={e => {
-                      updateBasicDetails(e.target.value, "first_name", false, "");
+                      updateBasicDetails(
+                        e.target.value,
+                        "first_name",
+                        false,
+                        ""
+                      );
                     }}
-              />
+                  />
                   {errDetails.first_name_err && (
                     <ErrorSpan
                       className="text-xs text-red-600 font-geist-regular"
@@ -116,16 +123,25 @@ const EditProfilePage = ({
                     Last Name
                   </label>
                   <Input
-                    className={`font-geist-regular ${errDetails.last_name_err ? "border-red-500 focus:ring-red-500" : ""}`}
+                    className={`font-geist-regular ${
+                      errDetails.last_name_err
+                        ? "border-red-500 focus:ring-red-500"
+                        : ""
+                    }`}
                     id="last_name"
                     name="last_name"
                     type="text"
                     placeholder="Enter your last name"
                     value={personalDetails.last_name || ""}
                     onChange={e => {
-                      updateBasicDetails(e.target.value, "last_name", false, "");
+                      updateBasicDetails(
+                        e.target.value,
+                        "last_name",
+                        false,
+                        ""
+                      );
                     }}
-              />
+                  />
                   {errDetails.last_name_err && (
                     <ErrorSpan
                       className="text-xs text-red-600 font-geist-regular"
@@ -143,7 +159,9 @@ const EditProfilePage = ({
                 <div
                   className="relative cursor-pointer"
                   onClick={() => {
-                    setShowDatePicker({ visibility: !showDatePicker.visibility });
+                    setShowDatePicker({
+                      visibility: !showDatePicker.visibility,
+                    });
                   }}
                 >
                   <Input
@@ -155,7 +173,11 @@ const EditProfilePage = ({
                     placeholder="Select your birth date"
                     value={personalDetails.date_of_birth || ""}
                     onChange={e => {
-                      updateBasicDetails(e.target.value, "date_of_birth", false);
+                      updateBasicDetails(
+                        e.target.value,
+                        "date_of_birth",
+                        false
+                      );
                     }}
                   />
                   <Calendar
@@ -163,7 +185,7 @@ const EditProfilePage = ({
                     size={20}
                     weight="bold"
                   />
-            </div>
+                </div>
                 {showDatePicker.visibility && (
                   <CustomDatePicker
                     dateFormat={dateFormat}
@@ -213,7 +235,11 @@ const EditProfilePage = ({
                     Personal Email
                   </label>
                   <Input
-                    className={`font-geist-regular ${errDetails.email_id_err ? "border-red-500 focus:ring-red-500" : ""}`}
+                    className={`font-geist-regular ${
+                      errDetails.email_id_err
+                        ? "border-red-500 focus:ring-red-500"
+                        : ""
+                    }`}
                     id="email_id"
                     name="email_id"
                     type="email"
@@ -222,7 +248,7 @@ const EditProfilePage = ({
                     onChange={e => {
                       updateBasicDetails(e.target.value, "email_id", false);
                     }}
-              />
+                  />
                   {errDetails.email_id_err && (
                     <ErrorSpan
                       className="text-xs text-red-600 font-geist-regular"
@@ -260,7 +286,11 @@ const EditProfilePage = ({
                   Address Line 1
                 </label>
                 <Input
-                  className={`font-geist-regular ${errDetails.address_line_1_err ? "border-red-500 focus:ring-red-500" : ""}`}
+                  className={`font-geist-regular ${
+                    errDetails.address_line_1_err
+                      ? "border-red-500 focus:ring-red-500"
+                      : ""
+                  }`}
                   id="address_line_1"
                   name="address_line_1"
                   type="text"
@@ -272,7 +302,7 @@ const EditProfilePage = ({
                   onChange={e => {
                     updateBasicDetails(e.target.value, "address_line_1", true);
                   }}
-            />
+                />
                 {errDetails.address_line_1_err && (
                   <ErrorSpan
                     className="text-xs text-red-600 font-geist-regular"
@@ -283,7 +313,9 @@ const EditProfilePage = ({
               <div className="space-y-2">
                 <label className="text-xs font-geist-medium text-gray-500 uppercase tracking-wider">
                   Address Line 2
-                  <span className="text-gray-400 font-geist-regular normal-case text-xs ml-1">(Optional)</span>
+                  <span className="text-gray-400 font-geist-regular normal-case text-xs ml-1">
+                    (Optional)
+                  </span>
                 </label>
                 <Input
                   className="font-geist-regular"
@@ -329,7 +361,11 @@ const EditProfilePage = ({
                     State
                   </label>
                   <Input
-                    className={`font-geist-regular ${errDetails.state_err ? "border-red-500 focus:ring-red-500" : ""}`}
+                    className={`font-geist-regular ${
+                      errDetails.state_err
+                        ? "border-red-500 focus:ring-red-500"
+                        : ""
+                    }`}
                     id="state"
                     name="state"
                     type="text"
@@ -338,7 +374,7 @@ const EditProfilePage = ({
                     onChange={e => {
                       updateBasicDetails(e.target.value, "state", true);
                     }}
-              />
+                  />
                   {errDetails.state_err && (
                     <ErrorSpan
                       className="text-xs text-red-600 font-geist-regular"
@@ -353,7 +389,11 @@ const EditProfilePage = ({
                     City
                   </label>
                   <Input
-                    className={`font-geist-regular ${errDetails.city_err ? "border-red-500 focus:ring-red-500" : ""}`}
+                    className={`font-geist-regular ${
+                      errDetails.city_err
+                        ? "border-red-500 focus:ring-red-500"
+                        : ""
+                    }`}
                     id="city"
                     name="city"
                     type="text"
@@ -362,7 +402,7 @@ const EditProfilePage = ({
                     onChange={e => {
                       updateBasicDetails(e.target.value, "city", true);
                     }}
-              />
+                  />
                   {errDetails.city_err && (
                     <ErrorSpan
                       className="text-xs text-red-600 font-geist-regular"
@@ -375,7 +415,11 @@ const EditProfilePage = ({
                     Zip/Postal Code
                   </label>
                   <Input
-                    className={`font-geist-regular ${errDetails.pin_err ? "border-red-500 focus:ring-red-500" : ""}`}
+                    className={`font-geist-regular ${
+                      errDetails.pin_err
+                        ? "border-red-500 focus:ring-red-500"
+                        : ""
+                    }`}
                     id="zipcode"
                     name="zipcode"
                     type="text"
@@ -384,7 +428,7 @@ const EditProfilePage = ({
                     onChange={e => {
                       updateBasicDetails(e.target.value, "pin", true);
                     }}
-              />
+                  />
                   {errDetails.pin_err && (
                     <ErrorSpan
                       className="text-xs text-red-600 font-geist-regular"
@@ -453,8 +497,8 @@ const EditProfilePage = ({
             </CardHeader>
             <CardContent>
               {!changePassword && (
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   onClick={() => setChangePassword(true)}
                   className="w-full font-geist-medium"
                 >
@@ -469,7 +513,11 @@ const EditProfilePage = ({
                     </label>
                     <div className="relative">
                       <Input
-                        className={`font-geist-regular pr-10 ${errDetails.currentPassword_err ? "border-red-500 focus:ring-red-500" : ""}`}
+                        className={`font-geist-regular pr-10 ${
+                          errDetails.currentPassword_err
+                            ? "border-red-500 focus:ring-red-500"
+                            : ""
+                        }`}
                         id="current_password"
                         name="current_password"
                         type={showCurrentPassword ? "text" : "password"}
@@ -487,7 +535,9 @@ const EditProfilePage = ({
                       <button
                         className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
                         type="button"
-                        onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                        onClick={() =>
+                          setShowCurrentPassword(!showCurrentPassword)
+                        }
                       >
                         {showCurrentPassword ? (
                           <Eye className="h-4 w-4" weight="bold" />
@@ -503,16 +553,20 @@ const EditProfilePage = ({
                       />
                     )}
                   </div>
-                  
+
                   <Separator className="my-4" />
-                  
+
                   <div className="space-y-2">
                     <label className="text-xs font-geist-medium text-gray-500 uppercase tracking-wider">
                       New Password
                     </label>
                     <div className="relative">
                       <Input
-                        className={`font-geist-regular pr-10 ${errDetails.password_err ? "border-red-500 focus:ring-red-500" : ""}`}
+                        className={`font-geist-regular pr-10 ${
+                          errDetails.password_err
+                            ? "border-red-500 focus:ring-red-500"
+                            : ""
+                        }`}
                         id="password"
                         name="password"
                         type={showPassword ? "text" : "password"}
@@ -552,7 +606,11 @@ const EditProfilePage = ({
                     </label>
                     <div className="relative">
                       <Input
-                        className={`font-geist-regular pr-10 ${errDetails.confirmPassword_err ? "border-red-500 focus:ring-red-500" : ""}`}
+                        className={`font-geist-regular pr-10 ${
+                          errDetails.confirmPassword_err
+                            ? "border-red-500 focus:ring-red-500"
+                            : ""
+                        }`}
                         id="confirm_password"
                         name="confirm_password"
                         type={showConfirmPassword ? "text" : "password"}

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { cn } from "../../lib/utils";
 import Sidebar from "./Sidebar";
 import MiruLogoSVG from "../../../images/miru-logo.svg";
+// Branding inlined per request
 import {
   List,
   X,
@@ -154,7 +155,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
               {!sidebarCollapsed && (
                 <div className="text-left">
                   <span className="font-semibold text-gray-900">Miru Agency OS</span>
-                  <div className="text-xs text-gray-500">Run your agency’s ops</div>
+                  <div className="text-xs text-gray-500">Run your agency’s ops from one command center.</div>
                 </div>
               )}
             </button>

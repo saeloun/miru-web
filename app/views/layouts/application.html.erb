@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
   <head>
-  <title>Miru Agency OS | Time tracking and invoicing</title>
+  <title><%= content_for?(:title) ? yield(:title) : "Miru Agency OS | Time tracking and invoicing" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
 
-  <meta property="og:title" content="Miru Agency OS | Time tracking and invoicing">
+  <meta property="og:title" content="<%= content_for?(:title) ? yield(:title) : "Miru Agency OS | Time tracking and invoicing" %>">
   <meta property="og:description" content="Miru Agency OS is an open-source platform for time tracking, invoicing, and operations for agencies and small companies.">
     <meta property="og:image" content="<%= image_url('logo.jpg') %>">
     <meta property="og:image:width" content="1200">

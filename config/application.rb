@@ -48,5 +48,8 @@ module MiruWeb
     # Use a real queuing backend for Active Job (and separate queues per environment).
     config.active_job.queue_adapter = :solid_queue
     config.mission_control.jobs.base_controller_class = "MissionControlController"
+
+    # Branding
+    config.x.app_name = 'Miru Agency OS'
   end
 end

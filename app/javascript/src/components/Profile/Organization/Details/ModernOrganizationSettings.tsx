@@ -1,13 +1,9 @@
 import React, { useState, useEffect } from "react";
 import {
   Buildings,
-  Phone,
   CurrencyDollar,
-  Calendar,
   Clock,
   PencilSimple,
-  Globe,
-  CalendarBlank,
   MapPin,
   Briefcase,
 } from "phosphor-react";
@@ -21,7 +17,6 @@ import { companiesApi } from "apis/api";
 import { useNavigate } from "react-router-dom";
 import { Skeleton } from "../../../ui/skeleton";
 import worldCountries from "world-countries";
-import { cn } from "../../../../lib/utils";
 
 interface OrganizationDetails {
   id: string | null;
@@ -133,22 +128,31 @@ const ModernOrganizationSettings: React.FC<ModernOrganizationSettingsProps> = ({
     if (typeof address === "object" && address !== null) {
       const parts = [];
       if (address.address_line_1) parts.push(address.address_line_1);
+
       if (address.address_line_2) parts.push(address.address_line_2);
+
       if (address.city) parts.push(address.city);
+
       if (address.state) parts.push(address.state);
-      if (address.zip_code || address.pin) parts.push(address.zip_code || address.pin);
+
+      if (address.zip_code || address.pin) {
+        parts.push(address.zip_code || address.pin);
+      }
+
       if (address.country) {
         const countryDetails = worldCountries.find(
           c => c.cca2.toLowerCase() === address.country?.toLowerCase()
         );
         parts.push(countryDetails?.name?.common || address.country);
       }
+
       return parts.filter(Boolean).join(", ") || "No address configured";
     }
 
     // Handle string addresses
     if (typeof address === "string") {
       const parts = address.split(",").map(part => part.trim());
+
       return parts.join(", ");
     }
 
@@ -313,7 +317,9 @@ const ModernOrganizationSettings: React.FC<ModernOrganizationSettingsProps> = ({
                           {orgDetails.companyCurrency === "USD" ? "$" : ""}
                           {typeof orgDetails.companyRate === "number"
                             ? orgDetails.companyRate.toFixed(2)
-                            : parseFloat(orgDetails.companyRate || "0").toFixed(2)}
+                            : parseFloat(orgDetails.companyRate || "0").toFixed(
+                                2
+                              )}
                         </span>
                         <span className="text-sm text-gray-500 font-geist-regular">
                           / hour

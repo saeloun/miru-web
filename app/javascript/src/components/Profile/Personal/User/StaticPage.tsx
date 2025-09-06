@@ -1,17 +1,16 @@
 import React from "react";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
-import { 
-  User, 
-  Phone, 
-  Envelope, 
-  MapPin, 
-  GithubLogo, 
+import {
+  User,
+  Phone,
+  Envelope,
+  MapPin,
+  GithubLogo,
   LinkedinLogo,
   Calendar,
   Lock,
   Globe,
-  IdentificationCard
 } from "phosphor-react";
 import { Card, CardContent, CardHeader, CardTitle } from "../../../ui/card";
 import { Button } from "../../../ui/button";
@@ -27,16 +26,21 @@ const StaticPage = ({
 }) => {
   const formatAddress = () => {
     if (!personalDetails.addresses) return "No address provided";
-    
+
     const addr = personalDetails.addresses;
     const parts = [];
     if (addr.address_line_1) parts.push(addr.address_line_1);
+
     if (addr.address_line_2) parts.push(addr.address_line_2);
+
     if (addr.city) parts.push(addr.city);
+
     if (addr.state) parts.push(addr.state);
+
     if (addr.country) parts.push(addr.country);
+
     if (addr.pin) parts.push(addr.pin);
-    
+
     return parts.join(", ") || "No address provided";
   };
 
@@ -82,7 +86,8 @@ const StaticPage = ({
                 <div className="flex items-start gap-4">
                   <div className="h-16 w-16 rounded-lg bg-miru-han-purple-100 flex items-center justify-center">
                     <span className="text-2xl font-geist-bold text-miru-han-purple-600">
-                      {personalDetails.first_name?.charAt(0)}{personalDetails.last_name?.charAt(0)}
+                      {personalDetails.first_name?.charAt(0)}
+                      {personalDetails.last_name?.charAt(0)}
                     </span>
                   </div>
                   <div className="flex-1">
@@ -96,7 +101,10 @@ const StaticPage = ({
                       <div className="flex items-center gap-1 mt-2">
                         <Calendar className="h-4 w-4 text-gray-500" />
                         <span className="text-sm text-gray-600 font-geist-regular">
-                          Born {dayjs(personalDetails.date_of_birth).format("MMMM D, YYYY")}
+                          Born{" "}
+                          {dayjs(personalDetails.date_of_birth).format(
+                            "MMMM D, YYYY"
+                          )}
                         </span>
                       </div>
                     )}
@@ -187,7 +195,9 @@ const StaticPage = ({
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-sm font-geist-medium text-gray-900">Password</p>
+                        <p className="text-sm font-geist-medium text-gray-900">
+                          Password
+                        </p>
                         <p className="text-xs text-gray-500 font-geist-regular mt-0.5">
                           Last changed 30 days ago
                         </p>
@@ -196,9 +206,9 @@ const StaticPage = ({
                         Secure
                       </Badge>
                     </div>
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
+                    <Button
+                      variant="outline"
+                      size="sm"
                       className="w-full font-geist-medium"
                       onClick={handleEditClick}
                     >

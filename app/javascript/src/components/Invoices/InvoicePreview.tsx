@@ -1,9 +1,8 @@
 import React from "react";
 import { Card, CardContent } from "../ui/card";
-import { Badge } from "../ui/badge";
 import { Separator } from "../ui/separator";
 import { Button } from "../ui/button";
-import { Download, PaperPlaneTilt, Eye, DotsThree } from "phosphor-react";
+import { Download, PaperPlaneTilt, DotsThree } from "phosphor-react";
 import { cn } from "../../lib/utils";
 import { currencyFormat } from "../../helpers/currency";
 
@@ -89,6 +88,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
 
   const getStatusLabel = (status: string) => {
     if (!status) return "Draft";
+
     return status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
   };
 
@@ -98,7 +98,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
       {!isPrintMode && (
         <div className="mb-6 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div 
+            <div
               className={cn(
                 "inline-flex items-center rounded-md px-3 py-1.5 font-geist-semibold text-xs uppercase tracking-wider transition-colors",
                 getStatusColor(invoice.status || "draft")
@@ -111,10 +111,6 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm">
-              <Eye className="h-4 w-4 mr-2" />
-              Preview
-            </Button>
             <Button variant="outline" size="sm">
               <Download className="h-4 w-4 mr-2" />
               Download
@@ -158,7 +154,8 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
                 </div>
                 {invoice.company?.taxId && (
                   <div className="mt-1">
-                    <span className="font-geist-medium">Tax ID:</span> {invoice.company.taxId}
+                    <span className="font-geist-medium">Tax ID:</span>{" "}
+                    {invoice.company.taxId}
                   </div>
                 )}
               </div>
@@ -171,21 +168,37 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
               </h2>
               <div className="text-sm space-y-2 font-geist-regular">
                 <div className="flex justify-between gap-8">
-                  <span className="text-muted-foreground font-geist-medium">Invoice #:</span>
-                  <span className="font-geist-semibold">{invoice.invoiceNumber}</span>
+                  <span className="text-muted-foreground font-geist-medium">
+                    Invoice #:
+                  </span>
+                  <span className="font-geist-semibold">
+                    {invoice.invoiceNumber}
+                  </span>
                 </div>
                 <div className="flex justify-between gap-8">
-                  <span className="text-muted-foreground font-geist-medium">Issue Date:</span>
-                  <span className="font-geist-medium">{formatDate(invoice.issueDate)}</span>
+                  <span className="text-muted-foreground font-geist-medium">
+                    Issue Date:
+                  </span>
+                  <span className="font-geist-medium">
+                    {formatDate(invoice.issueDate)}
+                  </span>
                 </div>
                 <div className="flex justify-between gap-8">
-                  <span className="text-muted-foreground font-geist-medium">Due Date:</span>
-                  <span className="font-geist-medium">{formatDate(invoice.dueDate)}</span>
+                  <span className="text-muted-foreground font-geist-medium">
+                    Due Date:
+                  </span>
+                  <span className="font-geist-medium">
+                    {formatDate(invoice.dueDate)}
+                  </span>
                 </div>
                 {invoice.reference && (
                   <div className="flex justify-between gap-8">
-                    <span className="text-muted-foreground font-geist-medium">PO Number:</span>
-                    <span className="font-geist-medium">{invoice.reference}</span>
+                    <span className="text-muted-foreground font-geist-medium">
+                      PO Number:
+                    </span>
+                    <span className="font-geist-medium">
+                      {invoice.reference}
+                    </span>
                   </div>
                 )}
               </div>
@@ -219,13 +232,14 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
                   </div>
                   {invoice.client.taxId && (
                     <div className="mt-1">
-                      <span className="font-geist-medium">Tax ID:</span> {invoice.client.taxId}
+                      <span className="font-geist-medium">Tax ID:</span>{" "}
+                      {invoice.client.taxId}
                     </div>
                   )}
                 </div>
               </div>
             </div>
-            
+
             {/* Payment Details */}
             <div>
               <h3 className="text-xs font-geist-semibold text-muted-foreground uppercase tracking-wider mb-3">
@@ -238,12 +252,18 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Currency:</span>
-                  <span className="font-geist-medium">{invoice.currency || "USD"}</span>
+                  <span className="font-geist-medium">
+                    {invoice.currency || "USD"}
+                  </span>
                 </div>
                 {invoice.paymentMethod && (
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Payment Method:</span>
-                    <span className="font-geist-medium">{invoice.paymentMethod}</span>
+                    <span className="text-muted-foreground">
+                      Payment Method:
+                    </span>
+                    <span className="font-geist-medium">
+                      {invoice.paymentMethod}
+                    </span>
                   </div>
                 )}
               </div>
@@ -300,7 +320,9 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
           <div className="flex justify-end">
             <div className="w-96 space-y-3">
               <div className="flex justify-between text-sm font-geist-regular">
-                <span className="text-muted-foreground font-geist-medium">Subtotal:</span>
+                <span className="text-muted-foreground font-geist-medium">
+                  Subtotal:
+                </span>
                 <span className="font-geist-medium">
                   {currencyFormat(
                     invoice.currency || "USD",
@@ -370,23 +392,33 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
               <div className="text-sm space-y-2 font-geist-regular">
                 <div>
                   <span className="text-muted-foreground">Bank Name:</span>
-                  <span className="ml-2 font-geist-medium">{invoice.company?.bankName || "Chase Bank"}</span>
+                  <span className="ml-2 font-geist-medium">
+                    {invoice.company?.bankName || "Chase Bank"}
+                  </span>
                 </div>
                 <div>
                   <span className="text-muted-foreground">Account Name:</span>
-                  <span className="ml-2 font-geist-medium">{invoice.company?.name || "Miru Time Tracking LLC"}</span>
+                  <span className="ml-2 font-geist-medium">
+                    {invoice.company?.name || "Miru Time Tracking LLC"}
+                  </span>
                 </div>
                 <div>
                   <span className="text-muted-foreground">Account Number:</span>
-                  <span className="ml-2 font-geist-medium font-mono">{invoice.company?.accountNumber || "****4567"}</span>
+                  <span className="ml-2 font-geist-medium font-mono">
+                    {invoice.company?.accountNumber || "****4567"}
+                  </span>
                 </div>
                 <div>
                   <span className="text-muted-foreground">Routing Number:</span>
-                  <span className="ml-2 font-geist-medium font-mono">{invoice.company?.routingNumber || "021000021"}</span>
+                  <span className="ml-2 font-geist-medium font-mono">
+                    {invoice.company?.routingNumber || "021000021"}
+                  </span>
                 </div>
                 <div>
                   <span className="text-muted-foreground">SWIFT/BIC:</span>
-                  <span className="ml-2 font-geist-medium font-mono">{invoice.company?.swiftCode || "CHASUS33"}</span>
+                  <span className="ml-2 font-geist-medium font-mono">
+                    {invoice.company?.swiftCode || "CHASUS33"}
+                  </span>
                 </div>
               </div>
             </div>
@@ -398,12 +430,16 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
               </h3>
               <div className="text-sm text-muted-foreground space-y-2 font-geist-regular">
                 <p>
-                  Payment is due within 30 days of invoice date. Late payments may incur
-                  a {invoice.lateFee || "1.5%"} monthly interest charge.
+                  Payment is due within 30 days of invoice date. Late payments
+                  may incur a {invoice.lateFee || "1.5%"} monthly interest
+                  charge.
                 </p>
                 <p>
-                  Please include invoice number <span className="font-geist-semibold text-foreground">{invoice.invoiceNumber}</span> in
-                  your payment reference.
+                  Please include invoice number{" "}
+                  <span className="font-geist-semibold text-foreground">
+                    {invoice.invoiceNumber}
+                  </span>{" "}
+                  in your payment reference.
                 </p>
                 <p className="mt-3 pt-3 border-t border-border font-geist-medium text-foreground">
                   Thank you for your business!
@@ -417,17 +453,16 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
             <div className="pt-6 mt-6 border-t border-border">
               <div className="flex justify-between items-center text-xs text-muted-foreground font-geist-regular">
                 <span>
-                  Invoice generated on {new Date().toLocaleDateString("en-US", {
+                  Invoice generated on{" "}
+                  {new Date().toLocaleDateString("en-US", {
                     year: "numeric",
                     month: "long",
                     day: "numeric",
                     hour: "2-digit",
-                    minute: "2-digit"
+                    minute: "2-digit",
                   })}
                 </span>
-                <span>
-                  Page 1 of 1
-                </span>
+                <span>Page 1 of 1</span>
               </div>
             </div>
           )}
