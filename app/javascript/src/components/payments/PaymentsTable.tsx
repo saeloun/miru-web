@@ -44,7 +44,7 @@ import {
 } from "phosphor-react";
 import { currencyFormat } from "../../helpers/currency";
 import { useUserContext } from "../../context/UserContext";
-import api from "../../services/api";
+import { paymentsApi } from "apis/api";
 import { toast } from "sonner";
 
 interface Payment {
@@ -71,7 +71,7 @@ interface PaymentsData {
 
 const fetchPayments = async (): Promise<PaymentsData> => {
   try {
-    const response = await api.get("/payments");
+    const response = await paymentsApi.get("");
 
     return response.data;
   } catch (error) {

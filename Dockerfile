@@ -56,11 +56,14 @@ ENV BUNDLE_DEPLOYMENT="" \
 
 # Install all gems including development
 COPY Gemfile Gemfile.lock ./
-RUN bundle install
+RUN --mount=type=cache,id=bundle-cache,target=/usr/local/bundle/cache \
+    bundle install --jobs 4 --retry 3
 
-# Install node modules for development
+# Install node modules for development (skip scripts to avoid git-dependent hooks, then rebuild)
 COPY package.json pnpm-lock.yaml ./
-RUN PUPPETEER_SKIP_DOWNLOAD=true pnpm install --frozen-lockfile
+RUN --mount=type=cache,id=pnpm-store,target=/root/.local/share/pnpm/store \
+    NODE_ENV=production PUPPETEER_SKIP_DOWNLOAD=true pnpm install --frozen-lockfile --ignore-scripts && \
+    NODE_ENV=production pnpm rebuild
 
 # Copy application code
 COPY . .
@@ -79,17 +82,20 @@ RUN apt-get update -qq && \
 
 # Build options
 ENV PATH="/usr/local/node/bin:$PATH" \
-    PUPPETEER_SKIP_CHROMIUM_DOWNLOAD="true"
+    PUPPETEER_SKIP_CHROMIUM_DOWNLOAD="true" \
+    NODE_ENV="production"
 
 # Install application gems
 COPY Gemfile Gemfile.lock ./
-RUN bundle install && \
-    rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git && \
+RUN --mount=type=cache,id=bundle-cache,target=/usr/local/bundle/cache \
+    bundle install --jobs 4 --retry 3 && \
+    rm -rf ~/.bundle/ /root/.cache/gem "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git && \
     bundle exec bootsnap precompile --gemfile
 
 # Install node modules with pnpm
 COPY package.json pnpm-lock.yaml ./
-RUN PUPPETEER_SKIP_DOWNLOAD=true pnpm install --frozen-lockfile --prod
+RUN --mount=type=cache,id=pnpm-store,target=/root/.local/share/pnpm/store \
+    PUPPETEER_SKIP_DOWNLOAD=true pnpm install --frozen-lockfile --prod
 
 # Copy application code
 COPY . .
@@ -100,7 +106,8 @@ RUN bundle exec bootsnap precompile app/ lib/
 # Precompiling assets for production without requiring secret RAILS_MASTER_KEY
 # Also build Vite assets
 RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile && \
-    if [ -f "bin/vite" ]; then bin/vite build; fi
+    if [ -f "bin/vite" ]; then SECRET_KEY_BASE=DUMMY bin/vite build; fi && \
+    rm -rf tmp/cache tmp/pids node_modules/.cache
 
 
 # Final stage for production app image
@@ -109,7 +116,8 @@ FROM base AS production
 # Install packages needed for deployment
 RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y chromium chromium-sandbox imagemagick libvips && \
-    rm -rf /var/lib/apt/lists /var/cache/apt/archives
+    rm -rf /var/lib/apt/lists /var/cache/apt/archives && \
+    rm -rf /usr/local/node || true
 
 # Copy built artifacts: gems, application
 COPY --from=build "${BUNDLE_PATH}" "${BUNDLE_PATH}"

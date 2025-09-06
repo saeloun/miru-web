@@ -110,8 +110,8 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
         <div className="bg-white border-r border-gray-200 h-full">
           <div className="flex items-center justify-between p-4 border-b border-gray-200">
             <div className="flex items-center gap-3">
-              <img src={MiruLogoSVG} alt="Miru" className="h-6 w-6" />
-              <span className="font-semibold text-gray-900">Miru</span>
+              <img src={MiruLogoSVG} alt="Miru Agency OS" className="h-6 w-6" />
+              <span className="font-semibold text-gray-900">Miru Agency OS</span>
             </div>
             <button
               onClick={() => setMobileOpen(false)}
@@ -126,8 +126,8 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
               isCollapsed={false}
               logo={
                 <div className="flex items-center gap-3">
-                  <img src={MiruLogoSVG} alt="Miru" className="h-6 w-6" />
-                  <span className="font-semibold text-gray-900">Miru</span>
+                  <img src={MiruLogoSVG} alt="Miru Agency OS" className="h-6 w-6" />
+                  <span className="font-semibold text-gray-900">Miru Agency OS</span>
                 </div>
               }
             />
@@ -150,11 +150,11 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
               className="flex items-center gap-3 w-full hover:bg-gray-50 rounded-lg p-2 transition-colors"
               title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
             >
-              <img src={MiruLogoSVG} alt="Miru" className="h-6 w-6" />
+              <img src={MiruLogoSVG} alt="Miru Agency OS" className="h-6 w-6" />
               {!sidebarCollapsed && (
                 <div className="text-left">
-                  <span className="font-semibold text-gray-900">Miru</span>
-                  <div className="text-xs text-gray-500">Work OS</div>
+                  <span className="font-semibold text-gray-900">Miru Agency OS</span>
+                  <div className="text-xs text-gray-500">Run your agency’s ops</div>
                 </div>
               )}
             </button>

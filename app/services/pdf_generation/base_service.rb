@@ -15,82 +15,82 @@ module PdfGeneration
 
     private
 
-    def generate_pdf
-      require "tempfile"
-      
-      tmp = Tempfile.new(["generated", ".pdf"])
-      browser = create_browser
-      
-      begin
-        # Load HTML content
-        load_html_in_browser(browser)
-        
-        # Generate PDF
-        browser.pdf(path: tmp.path, **pdf_options)
-        
-        # Read and return the PDF content
-        File.read(tmp.path)
-      ensure
-        browser&.quit
-        tmp.close
-        tmp.unlink
+      def generate_pdf
+        require "base64"
+
+        browser = create_browser
+
+        begin
+          # Load HTML content
+          load_html_in_browser(browser)
+
+          # Generate PDF (returns Base64-encoded data)
+          pdf_base64 = browser.pdf(**pdf_options)
+
+          # Decode and return the raw PDF binary data
+          Base64.decode64(pdf_base64)
+        ensure
+          browser&.quit
+        end
       end
-    end
 
-    def create_browser
-      Ferrum::Browser.new(
-        headless: true,
-        timeout: 30,
-        browser_options: browser_options
-      )
-    end
+      def create_browser
+        Ferrum::Browser.new(
+          headless: true,
+          timeout: 30,
+          browser_options: browser_options
+        )
+      end
 
-    def browser_options
-      {
-        "no-sandbox": nil,
-        "disable-gpu": nil,
-        "disable-dev-shm-usage": nil,
-        "disable-setuid-sandbox": nil
-      }
-    end
+      def browser_options
+        {
+          "no-sandbox": nil,
+          "disable-gpu": nil,
+          "disable-dev-shm-usage": nil,
+          "disable-setuid-sandbox": nil
+        }
+      end
 
-    def load_html_in_browser(browser)
-      # Create a data URL from the HTML content
-      html_data_url = "data:text/html;charset=utf-8," + ERB::Util.url_encode(html_content)
-      browser.go_to(html_data_url)
-      browser.network.wait_for_idle
-    end
+      def load_html_in_browser(browser)
+        # Create a data URL from the HTML content
+        html_data_url = "data:text/html;charset=utf-8," + ERB::Util.url_encode(html_content)
+        browser.go_to(html_data_url)
+        browser.network.wait_for_idle
+      end
 
-    def pdf_options
-      {
-        format: options[:format],
-        landscape: options[:landscape],
-        margin: options[:margin],
-        printBackground: options[:print_background],
-        displayHeaderFooter: options[:display_header_footer],
-        headerTemplate: options[:header_template],
-        footerTemplate: options[:footer_template],
-        preferCSSPageSize: options[:prefer_css_page_size],
-        scale: options[:scale],
-        pageRanges: options[:page_ranges]
-      }.compact
-    end
+      def pdf_options
+        # Ferrum uses format as a symbol
+        opts = {
+          format: options[:format].to_sym,
+          landscape: options[:landscape],
+          margin: options[:margin],
+          print_background: options[:print_background],
+          display_header_footer: options[:display_header_footer],
+          header_template: options[:header_template],
+          footer_template: options[:footer_template],
+          prefer_css_page_size: options[:prefer_css_page_size],
+          scale: options[:scale],
+          page_ranges: options[:page_ranges]
+        }
 
-    def default_options
-      {
-        format: :A4,
-        landscape: false,
-        margin: {
-          top: 36,
-          bottom: 36,
-          left: 36,
-          right: 36
-        },
-        print_background: true,
-        display_header_footer: false,
-        prefer_css_page_size: true,
-        scale: 1
-      }
-    end
+        opts.compact
+      end
+
+      def default_options
+        {
+          format: "A4",
+          landscape: false,
+          margin: {
+            top: 36,
+            bottom: 36,
+            left: 36,
+            right: 36
+          },
+          print_background: true,
+          display_header_footer: false,
+          prefer_css_page_size: true,
+          scale: 1
+        }
+      end
   end
 end

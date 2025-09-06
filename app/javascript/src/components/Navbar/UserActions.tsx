@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 
-import WorkspaceApi from "apis/workspaces";
+import { WorkspaceApi } from "apis/api";
 import { Paths } from "constants/index";
 import { useUserContext } from "context/UserContext";
 import { useOutsideClick } from "helpers";

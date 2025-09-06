@@ -9,8 +9,8 @@ echo "🚀 Rails 8 DevContainer Post Create Setup Starting..."
 echo "📦 Installing Ruby gems..."
 bundle install
 
-echo "📦 Installing Node.js packages..."
-yarn install
+echo "📦 Installing Node.js packages (pnpm)..."
+pnpm install
 
 # Setup database
 echo "🗄️ Setting up database..."
@@ -19,6 +19,8 @@ bundle exec rails db:prepare
 # Setup assets
 echo "🎨 Precompiling assets..."
 bundle exec rails assets:precompile
+echo "🧱 Building Vite assets..."
+bin/vite build || true
 
 # Run security audits
 echo "🔒 Running security audits..."
@@ -34,12 +36,12 @@ echo "⚡ Setting up Solid Queue..."
 bundle exec rails solid_queue:install || echo "Solid Queue already configured"
 
 # Setup git hooks
-echo "🪝 Setting up git hooks..."
-yarn husky install || echo "Husky already configured"
+echo "🪝 Setting up git hooks (lefthook)..."
+lefthook install || echo "Lefthook already configured"
 
 # Install Playwright browsers
 echo "🎭 Installing Playwright browsers..."
-yarn playwright install || echo "Playwright browsers installed"
+pnpm exec playwright install || echo "Playwright browsers installed"
 
 # Create necessary directories
 echo "📁 Creating directories..."
@@ -54,8 +56,8 @@ echo ""
 echo "🔧 Available commands:"
 echo "  foreman start -f Procfile.dev  # Start all services"
 echo "  bin/rails server               # Start Rails server"
-echo "  bin/webpacker-dev-server       # Start webpack dev server" 
+echo "  bin/vite dev                   # Start Vite dev server" 
 echo "  bundle exec rspec              # Run tests"
 echo "  bundle exec rubocop            # Run linter"
-echo "  yarn lint                      # Run JS/TS linter"
+echo "  pnpm lint                      # Run JS/TS linter"
 echo ""

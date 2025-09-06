@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import projectApi from "apis/projects";
+import { projectApi } from "apis/api";
 import Logger from "js-logger";
 import { XIcon } from "miruIcons";
 import { Modal } from "StyledComponents";

@@ -96,7 +96,6 @@ shared_examples_for "Time tracking" do |obj|
       sleep 1
 
       obj[:is_admin] == true ? admin : employee
-      
     end
   end
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import projectAPI from "apis/projects";
+import { projectApi } from "apis/api";
 import Loader from "common/Loader/index";
 import Table from "common/Table";
 import { useUserContext } from "context/UserContext";
@@ -52,7 +52,7 @@ const ProjectDetails = () => {
 
   const fetchProject = async (timeframe = null) => {
     try {
-      const res = await projectAPI.show(params.projectId, timeframe);
+      const res = await projectApi.show(params.projectId, timeframe);
       const sanitized = unmapper(res.data.project_details);
       setProject(sanitized);
       setOverdueOutstandingAmount(sanitized.overdueOutstandingAmount);

@@ -1,6 +1,6 @@
 import React from "react";
 
-import expensesApi from "apis/expenses";
+import { expensesApi } from "apis/api";
 import { useNavigate } from "react-router-dom";
 import { Modal, Button } from "StyledComponents";
 

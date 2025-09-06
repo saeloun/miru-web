@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import clientApi from "apis/clients";
+import { clientApi } from "apis/api";
 import { XIcon } from "miruIcons";
 import Steps from "rc-steps";
 import { Button, Toastr } from "StyledComponents";

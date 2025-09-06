@@ -31,7 +31,7 @@ import {
 import { cn } from "../../lib/utils";
 import { toast } from "sonner";
 import { useUserContext } from "../../context/UserContext";
-import timesheetEntryApi from "../../apis/timesheet-entry";
+import { timesheetEntryApi } from "apis/api";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 
 interface FloatingTimerProps {

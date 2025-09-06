@@ -2,7 +2,7 @@ import { ApiStatus as InvoicesStatus } from "constants/index";
 
 import React, { useState, useRef } from "react";
 
-import invoicesApi from "apis/invoices";
+import { invoicesApi } from "apis/api";
 import CustomCheckbox from "common/CustomCheckbox";
 import SendInvoice from "components/Invoices/common/InvoiceForm/SendInvoice";
 import SendInvoiceContainer from "components/Invoices/Generate/MobileView/Container/SendInvoiceContainer";

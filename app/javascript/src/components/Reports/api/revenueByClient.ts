@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 import Logger from "js-logger";
 
-import clientRevenueApi from "apis/reports/clientRevenue";
+import { clientRevenueApi } from "apis/api";
 
 dayjs.Ls.en.weekStart = 1;
 

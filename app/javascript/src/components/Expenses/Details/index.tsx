@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect, useState } from "react";
 
-import expensesApi from "apis/expenses";
+import { expensesApi } from "apis/api";
 import Loader from "common/Loader/index";
 import { useUserContext } from "context/UserContext";
 import Logger from "js-logger";

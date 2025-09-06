@@ -1,6 +1,6 @@
 import React from "react";
 
-import invoicesApi from "apis/invoices";
+import { invoicesApi } from "apis/api";
 import { XIcon } from "miruIcons";
 import { useNavigate } from "react-router-dom";
 import { Modal, Toastr } from "StyledComponents";

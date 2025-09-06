@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-import timesheetEntryApi from "apis/timesheet-entry";
+import { timesheetEntryApi } from "apis/api";
 import { minFromHHMM, minToHHMM, validateTimesheetEntry } from "helpers";
 import { PencilSimple } from "phosphor-react";
 import { TimeInput } from "../ui/time-input";

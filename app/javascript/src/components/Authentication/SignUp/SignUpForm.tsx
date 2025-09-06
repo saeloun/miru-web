@@ -2,7 +2,7 @@ import { MIRU_APP_URL, Paths } from "constants/index";
 
 import React, { useRef, useState } from "react";
 
-import authenticationApi from "apis/authentication";
+import { authenticationApi } from "apis/api";
 import CustomCheckbox from "common/CustomCheckbox";
 import { InputErrors, InputField } from "common/FormikFields";
 import { Formik, Form, FormikProps } from "formik";

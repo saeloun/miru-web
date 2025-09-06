@@ -2,7 +2,7 @@ import { TeamModalType } from "constants/index";
 
 import React, { useState, useRef } from "react";
 
-import teamApi from "apis/team";
+import { teamApi } from "apis/api";
 import CustomRadioButton from "common/CustomRadio";
 import { InputErrors, InputField } from "common/FormikFields";
 import { useList } from "context/TeamContext";

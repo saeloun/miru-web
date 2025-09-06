@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 
-import payment from "apis/payments/payments";
+import { payment } from "apis/api";
 import CustomDatePicker from "common/CustomDatePicker";
 import { CustomInputText } from "common/CustomInputText";
 import {

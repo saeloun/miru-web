@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import invoicesApi from "apis/invoices";
+import { invoicesApi } from "apis/api";
 import dayjs from "dayjs";
 import { DownloadSimpleIcon, CheckCircleIcon } from "miruIcons";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";

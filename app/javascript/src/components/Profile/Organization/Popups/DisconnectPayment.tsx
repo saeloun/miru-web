@@ -1,6 +1,6 @@
 import React from "react";
 
-import paymentSettings from "apis/payment-settings";
+import { paymentSettings } from "apis/api";
 import { Modal, Button } from "StyledComponents";
 
 interface IProps {

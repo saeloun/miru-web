@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect, memo } from "react";
 
-import expensesApi from "apis/expenses";
+import { expensesApi } from "apis/api";
 import {
   Select,
   SelectContent,

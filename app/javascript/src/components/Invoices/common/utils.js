@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
-import { invoicesApi } from "../../../services/api";
-import generateInvoice from "../../../apis/generateInvoice";
+import { invoicesApi } from "apis/api";
+import { generateInvoice } from "apis/api";
 import { lineTotalCalc } from "helpers";
 import { Toastr } from "StyledComponents";
 

@@ -2,7 +2,7 @@ import { LocalStorageKeys } from "constants/index";
 
 import React, { useCallback } from "react";
 
-import invoicesApi from "apis/invoices";
+import { invoicesApi } from "apis/api";
 import { UnifiedSearch } from "../../ui/enhanced-search";
 import { PlusIcon, FilterIcon } from "miruIcons";
 import { useNavigate } from "react-router-dom";

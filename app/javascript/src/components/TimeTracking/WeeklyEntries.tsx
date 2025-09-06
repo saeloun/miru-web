@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Briefcase, Warning } from "phosphor-react";
-import timesheetEntryApi from "apis/timesheet-entry";
+import { timesheetEntryApi } from "apis/api";
 import { Toastr } from "StyledComponents";
 import { Card, CardContent } from "../ui/card";
 import { Alert, AlertDescription } from "../ui/alert";

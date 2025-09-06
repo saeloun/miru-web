@@ -44,8 +44,8 @@ echo "💎 Installing any new gems..."
 bundle check || bundle install
 
 # Install any new npm packages
-echo "📦 Installing any new npm packages..."
-yarn install --check-files
+echo "📦 Installing any new npm packages (pnpm)..."
+pnpm install --frozen-lockfile || true
 
 echo "✅ Rails 8 DevContainer ready for development!"
 echo ""

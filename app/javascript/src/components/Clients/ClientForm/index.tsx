@@ -6,7 +6,7 @@ import flags from "react-phone-number-input/flags";
 import "react-phone-number-input/style.css";
 import { Toastr } from "StyledComponents";
 import worldCountries from "world-countries";
-import clientApi from "apis/clients";
+import { clientApi } from "apis/api";
 import { motion } from "framer-motion";
 import {
   Select,

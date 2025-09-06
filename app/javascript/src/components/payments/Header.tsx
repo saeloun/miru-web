@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
 
-import paymentsApi from "apis/payments/payments";
+import { paymentsApi } from "apis/api";
 import { UnifiedSearch } from "../ui/enhanced-search";
 import { PlusIcon } from "miruIcons";
 import { useNavigate } from "react-router-dom";

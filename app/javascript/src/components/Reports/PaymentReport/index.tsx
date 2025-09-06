@@ -275,7 +275,7 @@ const PaymentReport: React.FC = () => {
       header: () => <div className="text-right">Amount</div>,
       cell: ({ row }) => (
         <div className="text-right font-bold text-green-600">
-          {currencyFormat(row.getValue("amount"), data?.currency)}
+          {currencyFormat(data?.currency, row.getValue("amount"))}
         </div>
       ),
     },
@@ -545,8 +545,8 @@ const PaymentReport: React.FC = () => {
             <CardContent>
               <div className="text-2xl font-bold text-green-600">
                 {currencyFormat(
-                  data?.summary?.total_amount || 0,
-                  data?.currency
+                  data?.currency,
+                  data?.summary?.total_amount || 0
                 )}
               </div>
               <p className="text-xs text-muted-foreground">
@@ -587,8 +587,8 @@ const PaymentReport: React.FC = () => {
             <CardContent>
               <div className="text-2xl font-bold text-indigo-600">
                 {currencyFormat(
-                  data?.summary?.average_payment || 0,
-                  data?.currency
+                  data?.currency,
+                  data?.summary?.average_payment || 0
                 )}
               </div>
               <p className="text-xs text-muted-foreground">Per transaction</p>
@@ -611,10 +611,10 @@ const PaymentReport: React.FC = () => {
               <p className="text-xs text-muted-foreground">
                 {data?.summary?.by_payment_method &&
                   currencyFormat(
+                    data?.currency,
                     Object.entries(data.summary.by_payment_method).sort(
                       ([, a], [, b]) => b - a
-                    )[0]?.[1] || 0,
-                    data?.currency
+                    )[0]?.[1] || 0
                   )}
               </p>
             </CardContent>
@@ -648,7 +648,7 @@ const PaymentReport: React.FC = () => {
                           </span>
                         </div>
                         <span className="font-bold">
-                          {currencyFormat(amount, data?.currency)}
+                          {currencyFormat(data?.currency, amount)}
                         </span>
                       </div>
                     )

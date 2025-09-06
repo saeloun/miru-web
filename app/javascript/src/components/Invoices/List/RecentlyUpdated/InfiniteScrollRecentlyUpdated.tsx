@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import invoicesApi from "apis/invoices";
+import { invoicesApi } from "apis/api";
 import { Toastr } from "StyledComponents";
 import RecentlyUpdatedCard from "./RecentlyUpdatedCard";
 

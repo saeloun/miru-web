@@ -2,8 +2,7 @@ import { leaveIcons, leaveColors } from "constants/leaveType";
 
 import React, { useEffect, useState } from "react";
 
-import leavesApi from "apis/leaves";
-import teamApi from "apis/team";
+import { leavesApi, teamApi } from "apis/api";
 import Loader from "common/Loader/index";
 import { useUserContext } from "context/UserContext";
 import { getYear } from "date-fns";

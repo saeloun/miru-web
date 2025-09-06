@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import teamApi from "apis/team";
-import teamsApi from "apis/teams";
+import { teamApi, teamsApi } from "apis/api";
 import { useProfileContext } from "context/Profile/ProfileContext";
 import { UserAvatarSVG, DeleteIcon, ImageIcon, EditIcon } from "miruIcons";
 import { MoreOptions, Toastr, Tooltip } from "StyledComponents";

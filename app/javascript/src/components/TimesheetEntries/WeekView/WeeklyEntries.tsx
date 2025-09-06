@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-import timesheetEntryApi from "apis/timesheet-entry";
+import { timesheetEntryApi } from "apis/api";
 import { Toastr } from "StyledComponents";
 
 import WeeklyEntriesCard from "./WeeklyEntriesCard";

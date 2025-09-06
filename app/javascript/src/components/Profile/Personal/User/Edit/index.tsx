@@ -1,7 +1,6 @@
 import React, { Fragment, useEffect, useRef, useState } from "react";
 
-import profileApi from "apis/profile";
-import teamsApi from "apis/teams";
+import { profileApi, teamsApi } from "apis/api";
 import Loader from "common/Loader/index";
 import { MobileDetailsHeader } from "common/Mobile/MobileDetailsHeader";
 import EditHeader from "components/Profile/Common/EditHeader";
@@ -17,7 +16,7 @@ import * as Yup from "yup";
 import { useCurrentUser } from "~/hooks/useCurrentUser";
 
 import MobileEditPage from "./MobileEditPage";
-import StaticPage from "./StaticPage";
+import EditProfilePage from "./StaticPage";
 import { userSchema } from "./validationSchema";
 
 dayjs.extend(utc);
@@ -330,7 +329,7 @@ const UserDetailsEdit = () => {
           {isLoading ? (
             <Loader className="min-h-70v" />
           ) : (
-            <StaticPage
+            <EditProfilePage
               _confirmPassword={confirmPassword}
               _currentPassword={currentPassword}
               _getErr={getErr}

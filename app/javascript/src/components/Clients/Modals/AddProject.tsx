@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import projectApi from "apis/projects";
+import { projectApi } from "apis/api";
 import { XIcon } from "miruIcons";
 import { Modal } from "StyledComponents";
 

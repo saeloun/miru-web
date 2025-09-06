@@ -21,9 +21,14 @@ class Reports::GeneratePdf
   private
 
     def generate_pdf(report_type)
-      Pdf::HtmlGenerator.new(
-        report_type,
+      # Use the new PDF generation service with Ferrum
+      template_path = "reports/#{report_type}/pdf"
+      html_content = ApplicationController.render(
+        template: template_path,
+        layout: "pdf",
         locals: { report_data:, current_company: }
-      ).make
+      )
+
+      PdfGeneration::BaseService.new(html_content).process
     end
 end

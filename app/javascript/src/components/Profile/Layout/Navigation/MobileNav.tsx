@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect, useState } from "react";
 
-import WorkspaceApi from "apis/workspaces";
+import { WorkspaceApi } from "apis/api";
 import Loader from "common/Loader/index";
 import withLayout from "common/Mobile/HOC/withLayout";
 import { useUserContext } from "context/UserContext";

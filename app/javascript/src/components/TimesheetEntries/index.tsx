@@ -7,8 +7,7 @@ import weekday from "dayjs/plugin/weekday";
 import { minToHHMM } from "helpers";
 import Logger from "js-logger";
 
-import timesheetEntryApi from "apis/timesheet-entry";
-import timeTrackingApi from "apis/timeTracking";
+import { timesheetEntryApi, timeTrackingApi } from "apis/api";
 import Loader from "common/Loader/index";
 import withLayout from "common/Mobile/HOC/withLayout";
 import SearchTimeEntries from "common/SearchTimeEntries";

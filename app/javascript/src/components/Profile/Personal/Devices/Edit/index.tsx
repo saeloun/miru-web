@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import deviceApi from "apis/devices";
+import { deviceApi } from "apis/api";
 import Loader from "common/Loader/index";
 import { useProfileContext } from "context/Profile/ProfileContext";
 import { useUserContext } from "context/UserContext";

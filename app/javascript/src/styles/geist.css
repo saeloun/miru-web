@@ -1,0 +1,77 @@
+/* Geist Font Variables */
+:root {
+  --font-geist-sans: 'Geist', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+  --font-geist-mono: 'Geist Mono', 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Mono', 'Roboto Mono', 'Droid Sans Mono', monospace;
+}
+
+/* Apply Geist font globally and to specific pages */
+body,
+.geist-font,
+[data-page="invoices"],
+.invoices-page {
+  font-family: var(--font-geist-sans) !important;
+  font-feature-settings: 'rlig' 1, 'calt' 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Geist font specific classes */
+.font-geist-sans {
+  font-family: var(--font-geist-sans) !important;
+}
+
+.font-geist-mono {
+  font-family: var(--font-geist-mono) !important;
+}
+
+/* Geist font weights */
+.font-geist-thin { font-weight: 100; }
+.font-geist-light { font-weight: 300; }
+.font-geist-regular { font-weight: 400; }
+.font-geist-medium { font-weight: 500; }
+.font-geist-semibold { font-weight: 600; }
+.font-geist-bold { font-weight: 700; }
+.font-geist-black { font-weight: 900; }
+
+/* Apply to all headings on invoice pages */
+[data-page="invoices"] h1,
+[data-page="invoices"] h2,
+[data-page="invoices"] h3,
+[data-page="invoices"] h4,
+[data-page="invoices"] h5,
+[data-page="invoices"] h6,
+.invoices-page h1,
+.invoices-page h2,
+.invoices-page h3,
+.invoices-page h4,
+.invoices-page h5,
+.invoices-page h6 {
+  font-family: var(--font-geist-sans);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+/* Apply to invoice tables */
+[data-page="invoices"] table,
+.invoices-page table {
+  font-family: var(--font-geist-sans);
+}
+
+/* Apply to buttons on invoice pages */
+[data-page="invoices"] button,
+[data-page="invoices"] .btn,
+.invoices-page button,
+.invoices-page .btn {
+  font-family: var(--font-geist-sans);
+  font-weight: 500;
+}
+
+/* Apply to form elements */
+[data-page="invoices"] input,
+[data-page="invoices"] textarea,
+[data-page="invoices"] select,
+.invoices-page input,
+.invoices-page textarea,
+.invoices-page select {
+  font-family: var(--font-geist-sans);
+}

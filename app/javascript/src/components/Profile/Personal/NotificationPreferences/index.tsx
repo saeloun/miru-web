@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect, useState } from "react";
 
-import preferencesApi from "apis/preferences";
+import { preferencesApi } from "apis/api";
 import Loader from "common/Loader/index";
 import { MobileEditHeader } from "common/Mobile/MobileEditHeader";
 import DetailsHeader from "components/Profile/Common/DetailsHeader";

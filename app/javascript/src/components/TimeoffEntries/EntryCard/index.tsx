@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import timeoffEntryApi from "apis/timeoff-entry";
+import { timeoffEntriesApi } from "apis/api";
 import { useTimesheetEntries } from "context/TimesheetEntries";
 import { useUserContext } from "context/UserContext";
 import { format } from "date-fns";
@@ -81,7 +81,7 @@ const TimeoffEntryCard = ({
 
     setNewEntryView(false);
     setEditEntryId(0);
-    const res = await timeoffEntryApi.destroy(timeoffEntryId);
+    const res = await timeoffEntriesApi.destroy(timeoffEntryId);
 
     if (res.status === 200) {
       await handleFilterEntry(selectedFullDate, timeoffEntryId);
@@ -99,7 +99,7 @@ const TimeoffEntryCard = ({
     if (timeoffEntry) {
       const payload = getPayload(timeoffEntry);
       if (payload) {
-        const res = await timeoffEntryApi.create(payload, selectedEmployeeId);
+        const res = await timeoffEntriesApi.create(payload, selectedEmployeeId);
         if (res.status === 200) {
           await fetchEntries(selectedFullDate, selectedFullDate);
           await fetchEntriesOfMonths();

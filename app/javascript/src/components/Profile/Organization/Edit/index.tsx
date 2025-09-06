@@ -2,8 +2,7 @@ import { currencyList } from "constants/currencyList";
 
 import React, { useCallback, useEffect, useState } from "react";
 
-import companiesApi from "apis/companies";
-import companyProfileApi from "apis/companyProfile";
+import { companiesApi, companyProfileApi } from "apis/api";
 import Loader from "common/Loader/index";
 import { useUserContext } from "context/UserContext";
 import { useDropzone } from "react-dropzone";

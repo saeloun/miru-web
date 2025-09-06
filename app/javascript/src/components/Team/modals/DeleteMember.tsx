@@ -2,7 +2,7 @@ import { TeamModalType } from "constants/index";
 
 import React, { useRef } from "react";
 
-import teamApi from "apis/team";
+import { teamApi } from "apis/api";
 import { useList } from "context/TeamContext";
 import { useOutsideClick, useKeypress } from "helpers";
 import { XIcon } from "miruIcons";

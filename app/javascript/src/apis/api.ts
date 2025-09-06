@@ -491,30 +491,7 @@ export const timeTrackingApi = {
     ),
 };
 
-// Wise
-export const wiseApi = {
-  fetchCurrencies: () => http.get(`/wise/currencies`),
-  fetchRecipient: (recipientId: any) =>
-    http.get(`/wise/recipients/${recipientId}`),
-  createRecipient: (payload: any) => http.post(`/wise/recipients`, payload),
-  updateRecipient: (payload: any) =>
-    http.put(`/wise/recipients/${payload["id"]}`, payload),
-  fetchAccountRequirements: (
-    sourceCurrency: string,
-    targetCurrency: string
-  ) => {
-    const query = `source_currency=${sourceCurrency}&target_currency=${targetCurrency}&source_amount=1000`;
-
-    return http.get(`/wise/fetch_bank_requirements?${query}`);
-  },
-  validateAccountDetail: (url: string) => {
-    const { pathname, search } = new URL(url);
-
-    return http.get(
-      `/wise/validate_account_details?pathname=${pathname}&search=${search}`
-    );
-  },
-};
+// Wise removed
 
 // Workspaces
 export const workspacesApi = {

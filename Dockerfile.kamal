@@ -50,14 +50,16 @@ ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD="true"
 
 # Install application gems
 COPY Gemfile Gemfile.lock ./
-RUN bundle install && \
+RUN --mount=type=cache,id=bundle-cache,target=/usr/local/bundle/cache \
+    bundle install --jobs 4 --retry 3 && \
     rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git && \
     bundle exec bootsnap precompile --gemfile
 
 # Install node modules with pnpm (skip postinstall scripts that need git)
 COPY package.json pnpm-lock.yaml ./
-RUN pnpm install --frozen-lockfile --ignore-scripts && \
-    pnpm rebuild
+RUN --mount=type=cache,id=pnpm-store,target=/root/.local/share/pnpm/store \
+    NODE_ENV=production pnpm install --frozen-lockfile --ignore-scripts && \
+    NODE_ENV=production pnpm rebuild
 
 # Copy application code
 COPY . .

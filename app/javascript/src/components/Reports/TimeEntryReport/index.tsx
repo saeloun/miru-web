@@ -156,15 +156,16 @@ const ReportGroupTable: React.FC<{
 
 interface TimeEntry {
   id: number;
-  user_id: number;
-  project_id: number;
+  userId?: number;
+  projectId?: number;
   duration: number;
   note: string;
-  work_date: string;
-  bill_status: string;
-  user_name?: string;
-  project_name?: string;
-  client_name?: string;
+  workDate: string;
+  billStatus: string;
+  teamMember?: string;
+  project?: string;
+  client?: string;
+  clientLogo?: string;
 }
 
 interface ReportGroup {
@@ -348,11 +349,21 @@ const TimeEntryReport: React.FC = () => {
 
   const columns: ColumnDef<TimeEntry>[] = [
     {
-      accessorKey: "work_date",
+      accessorKey: "workDate",
       header: "Date",
       cell: ({ row }) => {
-        const workDate = row.getValue("work_date");
+        const workDate = row.getValue("workDate");
         try {
+          // The date is already formatted by the server
+          if (!workDate || workDate === "Invalid Date") {
+            return "Invalid Date";
+          }
+
+          // If it's already formatted (e.g., "12/03/2024"), return as is
+          if (typeof workDate === "string" && workDate.includes("/")) {
+            return workDate;
+          }
+          // Otherwise try to parse and format
           const date = new Date(workDate);
           if (isNaN(date.getTime())) {
             return workDate?.toString() || "Invalid Date";
@@ -367,16 +378,16 @@ const TimeEntryReport: React.FC = () => {
       },
     },
     {
-      accessorKey: "user_name",
+      accessorKey: "teamMember",
       header: "Team Member",
       cell: ({ row }) =>
-        row.original.user_name || `User ${row.original.user_id}`,
+        row.original.teamMember || row.getValue("teamMember") || "Unknown User",
     },
     {
-      accessorKey: "project_name",
+      accessorKey: "project",
       header: "Project",
       cell: ({ row }) =>
-        row.original.project_name || `Project ${row.original.project_id}`,
+        row.original.project || row.getValue("project") || "Unknown Project",
     },
     {
       accessorKey: "note",

@@ -1,4 +1,4 @@
-import invoicesApi from "apis/invoices";
+import { invoicesApi } from "apis/api";
 import dayjs from "dayjs";
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";

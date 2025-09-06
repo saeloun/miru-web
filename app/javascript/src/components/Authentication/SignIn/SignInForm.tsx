@@ -2,7 +2,7 @@ import { MIRU_APP_URL, Paths } from "constants/index";
 
 import React, { useRef, useState } from "react";
 
-import authenticationApi from "apis/authentication";
+import { authenticationApi } from "apis/api";
 import { InputErrors, InputField } from "common/FormikFields";
 import { useAuthDispatch } from "context/auth";
 import { Formik, Form, FormikProps } from "formik";
@@ -129,6 +129,7 @@ const SignInForm = () => {
                       label="Email"
                       labelClassName="p-0"
                       name="email"
+                      inputBoxClassName="border-miru-gray-300 bg-white placeholder:text-miru-dark-purple-200 focus:border-miru-han-purple-400 focus-visible:ring-miru-han-purple-1000"
                       setFieldError={setFieldError}
                       setFieldValue={setFieldValue}
                     />
@@ -144,6 +145,7 @@ const SignInForm = () => {
                       label="Password"
                       labelClassName="p-0"
                       name="password"
+                      inputBoxClassName="border-miru-gray-300 bg-white placeholder:text-miru-dark-purple-200 focus:border-miru-han-purple-400 focus-visible:ring-miru-han-purple-1000"
                       setFieldError={setFieldError}
                       setFieldValue={setFieldValue}
                       type="password"

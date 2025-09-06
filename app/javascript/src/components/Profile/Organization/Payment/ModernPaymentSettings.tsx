@@ -27,7 +27,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../../../ui/dialog";
-import paymentSettings from "../../../../apis/payment-settings";
+import { paymentSettings } from "apis/api";
 import { ApiStatus as PaymentSettingsStatus } from "../../../../constants/index";
 import { Skeleton } from "../../../ui/skeleton";
 

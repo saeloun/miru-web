@@ -56,7 +56,7 @@ import {
 import { cn } from "../../../lib/utils";
 import { currencyFormat } from "../../../helpers/currency";
 import { useUserContext } from "../../../context/UserContext";
-import invoicesApi from "../../../apis/invoices";
+import { invoicesApi } from "apis/api";
 import { DateRangePicker } from "../../ui/date-range-picker";
 import { format } from "date-fns";
 import { DateRange } from "react-day-picker";

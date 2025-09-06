@@ -120,7 +120,9 @@ module.exports = {
         "accordion-up": "accordion-up 0.2s ease-out",
       },
       fontFamily: {
-        sans: ["Inter", "ui-sans-serif", "system-ui", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "sans-serif"],
+        sans: ["Geist", "ui-sans-serif", "system-ui", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "sans-serif"],
+        geist: ["Geist", "ui-sans-serif", "system-ui"],
+        "geist-mono": ["Geist Mono", "ui-monospace", "monospace"],
       },
       fontSize: {
         tiny: "0.625rem",

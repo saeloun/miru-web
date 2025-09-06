@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import preferencesApi from "apis/preferences";
+import { preferencesApi } from "apis/api";
 import { useUserContext } from "context/UserContext";
 import {
   Bell,

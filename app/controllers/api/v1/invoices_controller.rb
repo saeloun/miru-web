@@ -174,24 +174,47 @@ class Api::V1::InvoicesController < Api::V1::ApplicationController
   def send_invoice
     authorize invoice
 
-    unless invoice.recently_sent_mail?
-      return render json: { message: "Invoice was sent just a minute ago." }, status: 202
+    # Validate parameters
+    recipients = invoice_email_params[:recipients] || []
+    # Filter out blank entries
+    recipients = recipients.reject(&:blank?)
+
+    if recipients.empty?
+      return render json: { error: "Recipients are required" }, status: :unprocessable_entity
     end
 
-    recipients = invoice_email_params[:recipients]
-
-    if recipients.size < 6
-      invoice.sending! unless invoice.paid? || invoice.overdue?
-      invoice.send_to_email(
-        subject: invoice_email_params[:subject],
-        message: invoice_email_params[:message],
-        recipients: invoice_email_params[:recipients]
-      )
-
-      render json: { message: "Invoice will be sent!" }, status: 202
-    else
-      render json: { errors: "Email can only be sent to 5 recipients." }, status: 422
+    # Check recipient limit
+    if recipients.size > 5
+      return render json: { error: "Email can only be sent to 5 recipients." }, status: :unprocessable_entity
     end
+
+    # Don't send if already paid
+    if invoice.paid?
+      return render json: { error: "Invoice is already paid" }, status: :unprocessable_entity
+    end
+
+    # Generate PDF
+    begin
+      pdf_data = InvoicePayment::PdfGeneration.process(invoice, current_company.company_logo, root_url)
+    rescue StandardError => e
+      Rails.logger.error "Failed to generate PDF: #{e.message}"
+      return render json: { error: "Failed to generate PDF" }, status: 500
+    end
+
+    # Send email with PDF attachment
+    InvoiceMailer.with(
+      invoice: invoice,
+      pdf_data: pdf_data,
+      subject: invoice_email_params[:subject],
+      recipients: recipients,
+      message: invoice_email_params[:message]
+    ).send_invoice.deliver_later
+
+    # Update invoice status to sent if it's draft
+    invoice.update!(status: "sent") if invoice.draft?
+    invoice.update!(sent_at: Time.current) if invoice.sent_at.nil?
+
+    render json: { message: "Invoice has been sent successfully" }, status: 200
   end
 
   def send_reminder
@@ -212,7 +235,16 @@ class Api::V1::InvoicesController < Api::V1::ApplicationController
   def download
     authorize invoice
 
-    send_data InvoicePayment::PdfGeneration.process(invoice, current_company.company_logo, root_url)
+    pdf_data = InvoicePayment::PdfGeneration.process(invoice, current_company.company_logo, root_url)
+    send_data pdf_data,
+              type: "application/pdf",
+              disposition: "attachment",
+              filename: "#{invoice.invoice_number}.pdf"
+  rescue Pundit::NotAuthorizedError
+    raise # Re-raise authorization errors
+  rescue StandardError => e
+    Rails.logger.error "Failed to generate PDF for invoice #{invoice.id}: #{e.message}"
+    render json: { error: "Failed to generate PDF" }, status: 500
   end
 
   private

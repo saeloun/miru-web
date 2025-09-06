@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 
-import holidaysApi from "apis/holidays";
+import { holidaysApi } from "apis/api";
 import Loader from "common/Loader/index";
 import { useUserContext } from "context/UserContext";
 import { getYear } from "date-fns";
@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import EditHolidays from "./EditHolidays";
-import ModernHolidays from "./ModernHolidays";
+import ModernHolidaysEditor from "./ModernHolidaysEditor";
 import { companyDateFormat, makePayload } from "./utils";
 
 const Holidays = () => {
@@ -17,14 +17,14 @@ const Holidays = () => {
   const [isDetailUpdated, setIsDetailUpdated] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [currentYear, setCurrentYear] = useState<number>(getYear(new Date()));
-  const [showCalendar, setShowCalendar] = useState(false);
+  // Calendar removed
   const [showDatePicker, setShowDatePicker] = useState<any>({
     visibility: false,
     index: 0,
   });
   const wrapperRef = useRef(null);
   const optionalWrapperRef = useRef(null);
-  const modalWrapperRef = useRef(null);
+  // const modalWrapperRef = useRef(null);
 
   const [enableOptionalHolidays, setEnableOptionalHolidays] =
     useState<any>(false);
@@ -66,11 +66,7 @@ const Holidays = () => {
     });
   });
 
-  useOutsideClick(modalWrapperRef, () => {
-    setShowCalendar(false);
-  });
-
-  const toggleCalendarModal = () => setShowCalendar(!showCalendar);
+  // Calendar modal removed
 
   useEffect(() => {
     sendGAPageView();
@@ -266,7 +262,8 @@ const Holidays = () => {
   };
 
   const saveUpdatedHolidayDetails = async payload => {
-    await holidaysApi.updateHolidays(currentYear, { holiday: payload });
+    // API expects top-level keys: holiday, add_holiday_infos, update_holiday_infos, remove_holiday_infos
+    await holidaysApi.updateHolidays(currentYear, payload);
     fetchHolidays();
     setIsEditable(false);
   };
@@ -277,7 +274,7 @@ const Holidays = () => {
         updateHolidaysList(holidays);
       }
       setIsDetailUpdated(false);
-      setIsEditable(false);
+      setIsEditable(true);
     } else {
       navigate("/settings/profile");
     }
@@ -289,46 +286,35 @@ const Holidays = () => {
 
   return (
     <div className="flex h-full w-full flex-col">
-      {isEditable ? (
-        <EditHolidays
-          currentYear={currentYear}
-          dateFormat={dateFormat}
-          enableOptionalHolidays={enableOptionalHolidays}
-          handleAddHoliday={handleAddHoliday}
-          handleCancelAction={handleCancelAction}
-          handleChangeRepetitionOpHoliday={handleChangeRepetitionOpHoliday}
-          handleChangeTotalOpHoliday={handleChangeTotalOpHoliday}
-          handleCheckboxClick={handleCheckboxClick}
-          handleDatePicker={handleDatePicker}
-          handleDeleteHoliday={handleDeleteHoliday}
-          handleHolidateNameChange={handleHolidateNameChange}
-          holidayList={holidayList}
-          isDesktop={isDesktop}
-          isDisableUpdateBtn={isDetailUpdated}
-          optionalHolidaysList={optionalHolidaysList}
-          optionalRepetitionType={optionalRepetitionType}
-          optionalWrapperRef={optionalWrapperRef}
-          setCurrentYear={setCurrentYear}
-          setEnableOptionalHolidays={setEnableOptionalHolidays}
-          setShowDatePicker={setShowDatePicker}
-          setShowOptionalDatePicker={setShowOptionalDatePicker}
-          showDatePicker={showDatePicker}
-          showOptionalDatePicker={showOptionalDatePicker}
-          totalOptionalHolidays={totalOptionalHolidays}
-          updateHolidayDetails={handleUpdateHolidayDetails}
-          wrapperRef={wrapperRef}
-        />
-      ) : (
-        <ModernHolidays
-          currentYear={currentYear}
-          dateFormat={dateFormat}
-          editAction={() => setIsEditable(true)}
-          holidays={holidays}
-          publicHolidays={currentYearPublicHolidays}
-          optionalHolidays={currentYearOptionalHolidays}
-          toggleCalendarModal={toggleCalendarModal}
-        />
-      )}
+      {/* Use modern editor design */}
+      <ModernHolidaysEditor
+        currentYear={currentYear}
+        dateFormat={dateFormat}
+        enableOptionalHolidays={enableOptionalHolidays}
+        handleAddHoliday={handleAddHoliday}
+        handleCancelAction={handleCancelAction}
+        handleChangeRepetitionOpHoliday={handleChangeRepetitionOpHoliday}
+        handleChangeTotalOpHoliday={handleChangeTotalOpHoliday}
+        handleCheckboxClick={handleCheckboxClick}
+        handleDatePicker={handleDatePicker}
+        handleDeleteHoliday={handleDeleteHoliday}
+        handleHolidateNameChange={handleHolidateNameChange}
+        holidayList={holidayList}
+        isDesktop={isDesktop}
+        isDisableUpdateBtn={isDetailUpdated}
+        optionalHolidaysList={optionalHolidaysList}
+        optionalRepetitionType={optionalRepetitionType}
+        optionalWrapperRef={optionalWrapperRef}
+        setCurrentYear={setCurrentYear}
+        setEnableOptionalHolidays={setEnableOptionalHolidays}
+        setShowDatePicker={setShowDatePicker}
+        setShowOptionalDatePicker={setShowOptionalDatePicker}
+        showDatePicker={showDatePicker}
+        showOptionalDatePicker={showOptionalDatePicker}
+        totalOptionalHolidays={totalOptionalHolidays}
+        updateHolidayDetails={handleUpdateHolidayDetails}
+        wrapperRef={wrapperRef}
+      />
     </div>
   );
 };

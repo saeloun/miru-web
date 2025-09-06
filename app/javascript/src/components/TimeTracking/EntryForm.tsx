@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-import timesheetEntryApi from "apis/timesheet-entry";
+import { timesheetEntryApi } from "apis/api";
 import { useUserContext } from "context/UserContext";
 import dayjs from "dayjs";
 import {
@@ -121,7 +121,7 @@ const AddEntry: React.FC<Iprops> = ({
     const savedProject = project;
     const savedProjectId = projectId;
     const savedTaskType = taskType;
-    
+
     removeLocalStorageItems();
     const tse = getPayload();
     const res = await timesheetEntryApi.create(
@@ -141,7 +141,7 @@ const AddEntry: React.FC<Iprops> = ({
       // Clear only the note and duration for new entry
       setToLocalStorage("note", "");
       setToLocalStorage("duration", "");
-      
+
       const fetchEntriesRes = await fetchEntries(
         selectedFullDate,
         selectedFullDate

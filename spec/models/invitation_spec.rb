@@ -151,7 +151,7 @@ RSpec.describe Invitation, type: :model do
     end
   end
 
-  
+
 
   describe "#recipient_email_not_changed" do
     it "raises error when invitation recipient_email is updated" do

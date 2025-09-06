@@ -2,7 +2,7 @@ import { MIRU_APP_URL, Paths } from "constants/index";
 
 import React, { useEffect, useState } from "react";
 
-import authenticationApi from "apis/authentication";
+import { authenticationApi } from "apis/api";
 import { InputErrors, InputField } from "common/FormikFields";
 import MiruLogoWatermark from "common/MiruLogoWatermark";
 import { Form, Formik, FormikProps } from "formik";

@@ -50,7 +50,7 @@ import {
 } from "../ui/collapsible";
 
 import { useUserContext } from "../../context/UserContext";
-import WorkspaceApi from "../../apis/workspaces";
+import { WorkspaceApi } from "apis/api";
 import { MiruLogoSVG } from "miruIcons";
 import { Paths, Roles } from "../../constants";
 

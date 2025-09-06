@@ -137,9 +137,9 @@ export const ModernNavbar: React.FC = () => {
       {/* Logo Section */}
       <div className="flex items-center justify-between p-4 border-b border-miru-gray-200">
         <div className="flex items-center gap-3">
-          <img src="/assets/miru-logo.svg" alt="Miru" className="h-8 w-auto" />
+          <img src="/assets/miru-logo.svg" alt="Miru Agency OS" className="h-8 w-auto" />
           <span className="text-xl font-bold text-miru-dark-purple-1000">
-            Miru
+            Miru Agency OS
           </span>
         </div>
         {!isDesktop && (
