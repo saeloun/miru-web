@@ -21,14 +21,24 @@ class Reports::ClientRevenues::ReportDecorator < ApplicationService
     def from_date
       @from_date ||= begin
         date_param = params[:from] || params[:from_date]
-        date_param.present? ? Date.parse(date_param.to_s) : 1.month.ago.beginning_of_month
+        if date_param.present?
+          Date.parse(date_param.to_s)
+        else
+          # Default to all time if no date params provided
+          nil
+        end
       end
     end
 
     def to_date
       @to_date ||= begin
         date_param = params[:to] || params[:to_date]
-        date_param.present? ? Date.parse(date_param.to_s) : Date.current.end_of_month
+        if date_param.present?
+          Date.parse(date_param.to_s)
+        else
+          # Default to all time if no date params provided
+          nil
+        end
       end
     end
 
@@ -58,7 +68,11 @@ class Reports::ClientRevenues::ReportDecorator < ApplicationService
     end
 
     def build_client_revenue_data(client)
-      invoices = client.invoices.kept.where(issue_date: from_date..to_date)
+      invoices = if from_date.present? && to_date.present?
+        client.invoices.kept.where(issue_date: from_date..to_date)
+      else
+        client.invoices.kept
+      end
 
       # Use base currency amounts for consistent reporting
       paid_amount = calculate_sum_in_base_currency(invoices.where(status: "paid"))
@@ -79,11 +93,13 @@ class Reports::ClientRevenues::ReportDecorator < ApplicationService
     end
 
     def calculate_hours_logged(client)
-      minutes = client.timesheet_entries
-        .joins(:project)
-        .where(work_date: from_date..to_date)
-        .where(timesheet_entries: { discarded_at: nil })
-        .sum(:duration)
+      scope = client.timesheet_entries.joins(:project)
+
+      minutes = if from_date.present? && to_date.present?
+        scope.where(work_date: from_date..to_date)
+      else
+        scope
+      end.where(timesheet_entries: { discarded_at: nil }).sum(:duration)
 
       (minutes / 60.0).round(2)
     end

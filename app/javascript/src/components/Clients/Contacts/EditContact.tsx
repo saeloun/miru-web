@@ -1,6 +1,6 @@
 import React from "react";
 
-import clientMembersApi from "apis/clientMembers";
+import { clientMembersApi } from "apis/api";
 import { InputField, InputErrors } from "common/FormikFields";
 import { Formik, Form, FormikProps } from "formik";
 import { XIcon } from "miruIcons";

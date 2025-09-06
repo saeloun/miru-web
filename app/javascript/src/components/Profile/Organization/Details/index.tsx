@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import companiesApi from "apis/companies";
+import { companiesApi } from "apis/api";
 import { useUserContext } from "context/UserContext";
 import { useNavigate } from "react-router-dom";
 import { sendGAPageView } from "utils/googleAnalytics";

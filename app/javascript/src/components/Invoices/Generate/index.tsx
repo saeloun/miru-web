@@ -2,9 +2,7 @@ import { ApiStatus as InvoiceStatus } from "constants/index";
 
 import React, { Fragment, useEffect, useState } from "react";
 
-import companiesApi from "apis/companies";
-import invoicesApi from "apis/invoices";
-import PaymentsProviders from "apis/payments/providers";
+import { companiesApi, invoicesApi, PaymentsProviders } from "apis/api";
 import Loader from "common/Loader/index";
 import { useUserContext } from "context/UserContext";
 import dayjs from "dayjs";

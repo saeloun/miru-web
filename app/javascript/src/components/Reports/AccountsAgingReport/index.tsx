@@ -142,7 +142,10 @@ const AccountsAgingReport: React.FC = () => {
       header: () => <div className="text-right">Total Due</div>,
       cell: ({ row }) => (
         <div className="text-right font-bold whitespace-nowrap">
-          {currencyFormat(data?.report?.base_currency, row.original.amount_overdue.total)}
+          {currencyFormat(
+            data?.report?.base_currency,
+            row.original.amount_overdue.total
+          )}
         </div>
       ),
     },
@@ -253,7 +256,10 @@ const AccountsAgingReport: React.FC = () => {
     const handleScroll = () => {
       if (tableRef.current) {
         const { scrollTop, scrollHeight, clientHeight } = tableRef.current;
-        if (scrollTop + clientHeight >= scrollHeight - 100 && displayedItems < allClients.length) {
+        if (
+          scrollTop + clientHeight >= scrollHeight - 100 &&
+          displayedItems < allClients.length
+        ) {
           setDisplayedItems(prev => Math.min(prev + 10, allClients.length));
         }
       }
@@ -261,8 +267,9 @@ const AccountsAgingReport: React.FC = () => {
 
     const tableElement = tableRef.current;
     if (tableElement) {
-      tableElement.addEventListener('scroll', handleScroll);
-      return () => tableElement.removeEventListener('scroll', handleScroll);
+      tableElement.addEventListener("scroll", handleScroll);
+
+      return () => tableElement.removeEventListener("scroll", handleScroll);
     }
   }, [displayedItems, allClients.length]);
 
@@ -351,7 +358,10 @@ const AccountsAgingReport: React.FC = () => {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-gray-900">
-              {currencyFormat(data?.report?.base_currency, data?.report?.total_amount_overdue?.total || 0)}
+              {currencyFormat(
+                data?.report?.base_currency,
+                data?.report?.total_amount_overdue?.total || 0
+              )}
             </div>
           </CardContent>
         </Card>
@@ -380,7 +390,8 @@ const AccountsAgingReport: React.FC = () => {
             <div className="text-xl font-bold text-gray-700">
               {currencyFormat(
                 data?.report?.base_currency,
-                data?.report?.total_amount_overdue?.thirty_one_to_sixty_days || 0
+                data?.report?.total_amount_overdue?.thirty_one_to_sixty_days ||
+                  0
               )}
             </div>
           </CardContent>
@@ -395,7 +406,8 @@ const AccountsAgingReport: React.FC = () => {
             <div className="text-xl font-bold text-gray-800">
               {currencyFormat(
                 data?.report?.base_currency,
-                data?.report?.total_amount_overdue?.sixty_one_to_ninety_days || 0
+                data?.report?.total_amount_overdue?.sixty_one_to_ninety_days ||
+                  0
               )}
             </div>
           </CardContent>
@@ -423,7 +435,7 @@ const AccountsAgingReport: React.FC = () => {
           <CardTitle>Invoice Aging Details</CardTitle>
         </CardHeader>
         <CardContent>
-          <div 
+          <div
             ref={tableRef}
             className="rounded-md border max-h-[600px] overflow-y-auto"
           >

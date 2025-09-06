@@ -1,6 +1,6 @@
 import React from "react";
 
-import invoicesApi from "apis/invoices";
+import { invoicesApi } from "apis/api";
 import { useNavigate } from "react-router-dom";
 import { Modal, Button } from "StyledComponents";
 

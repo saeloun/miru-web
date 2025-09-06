@@ -7,7 +7,7 @@ module PdfGeneration
     def initialize(invoice, company_logo_url = nil, root_url = nil)
       @invoice = invoice
       @company_logo_url = company_logo_url
-      
+
       # Set up template and locals for invoice
       super(
         "pdfs/invoices",
@@ -20,52 +20,55 @@ module PdfGeneration
 
     private
 
-    def build_invoice_locals
-      {
-        invoice: invoice,
-        invoice_amount: format_currency(invoice.amount),
-        invoice_tax: format_currency(invoice.tax),
-        invoice_amount_due: format_currency(invoice.amount_due),
-        invoice_amount_paid: format_currency(invoice.amount_paid),
-        invoice_discount: format_currency(invoice.discount),
-        company_logo: company_logo_url || "",
-        client: invoice.client,
-        invoice_line_items: build_line_items,
-        sub_total: format_currency(calculate_subtotal),
-        total: format_currency(calculate_total)
-      }
-    end
-
-    def build_line_items
-      invoice.invoice_line_items.map do |item|
-        InvoiceLineItemPresenter.new(item).pdf_row(invoice.currency)
+      def build_invoice_locals
+        {
+          invoice: invoice,
+          invoice_amount: format_currency(invoice.amount),
+          invoice_tax: format_currency(invoice.tax),
+          invoice_amount_due: format_currency(invoice.amount_due),
+          invoice_amount_paid: format_currency(invoice.amount_paid),
+          invoice_discount: format_currency(invoice.discount),
+          company_logo: company_logo_url || "",
+          client: invoice.client,
+          invoice_line_items: build_line_items,
+          sub_total: format_currency(calculate_subtotal),
+          total: format_currency(calculate_total)
+        }
       end
-    end
 
-    def calculate_subtotal
-      invoice.invoice_line_items.total_cost_of_all_line_items
-    end
+      def build_line_items
+        invoice.invoice_line_items.map do |item|
+          InvoiceLineItemPresenter.new(item).pdf_row(invoice.currency)
+        end
+      end
 
-    def calculate_total
-      calculate_subtotal + invoice.tax - invoice.discount
-    end
+      def calculate_subtotal
+        invoice.invoice_line_items.total_cost_of_all_line_items
+      end
 
-    def format_currency(amount)
-      FormatAmountService.new(invoice.currency, amount).process
-    end
+      def calculate_total
+        subtotal = calculate_subtotal
+        tax = invoice.tax || 0
+        discount = invoice.discount || 0
+        subtotal + tax - discount
+      end
 
-    def invoice_pdf_options
-      {
-        format: :A4,
-        margin: {
-          top: 18,
-          bottom: 18,
-          left: 18,
-          right: 18
-        },
-        print_background: true,
-        prefer_css_page_size: false
-      }
-    end
+      def format_currency(amount)
+        FormatAmountService.new(invoice.currency, amount).process
+      end
+
+      def invoice_pdf_options
+        {
+          format: "A4",
+          margin: {
+            top: 18,
+            bottom: 18,
+            left: 18,
+            right: 18
+          },
+          print_background: true,
+          prefer_css_page_size: false
+        }
+      end
   end
 end

@@ -44,7 +44,7 @@ RSpec.describe Client, type: :model do
       expect(new_client.errors[:name]).to include("The client #{existing_client.name.upcase} already exists")
     end
 
-    
+
     it { is_expected.to validate_length_of(:name).is_at_most(30) }
     it { is_expected.to validate_length_of(:phone).is_at_most(15) }
   end

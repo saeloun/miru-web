@@ -8,7 +8,7 @@ import {
   Check,
   X,
 } from "@phosphor-icons/react";
-import preferencesApi from "apis/preferences";
+import { preferencesApi } from "apis/api";
 import { useUserContext } from "context/UserContext";
 import {
   Card,

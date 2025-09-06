@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import clientApi from "apis/clients";
+import { clientApi } from "apis/api";
 import EmptyStates from "common/EmptyStates";
 import Loader from "common/Loader/index";
 import Table from "common/Table";

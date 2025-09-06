@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import invoicesApi from "apis/invoices";
+import { invoicesApi } from "apis/api";
 import Loader from "common/Loader";
 import MobileView from "components/ClientInvoices/Details/MobileView";
 import ConnectPaymentGateway from "components/Invoices/popups/ConnectPaymentGateway";

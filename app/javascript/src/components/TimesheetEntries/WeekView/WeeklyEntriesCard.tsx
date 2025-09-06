@@ -14,7 +14,7 @@ import AnimatedCheckbox from "../../ui/animated-checkbox";
 import { Badge } from "../../ui/badge";
 import { Separator } from "../../ui/separator";
 import { cn } from "../../../lib/utils";
-import timesheetEntryApi from "apis/timesheet-entry";
+import { timesheetEntryApi } from "apis/api";
 
 const WeeklyEntriesCard = ({
   client,

@@ -2,7 +2,7 @@ import { Paths, LocalStorageKeys } from "constants/index";
 
 import React from "react";
 
-import { logoutApi } from "apis/logoutApi";
+import { logoutApi } from "apis/api";
 import {
   TimeTrackingIcon,
   ClientsIcon,

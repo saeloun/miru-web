@@ -23,6 +23,33 @@ class InvoiceMailer < ApplicationMailer
     end
   end
 
+  def send_invoice
+    @invoice = params[:invoice]
+    recipients = params[:recipients]
+    subject = params[:subject]
+    @message = params[:message]
+    pdf_data = params[:pdf_data]
+
+    @invoice_url = "#{ENV['APP_BASE_URL']}/invoices/#{@invoice.external_view_key}/view"
+    @company = @invoice.company
+    @company_logo = @invoice.company.logo.attached? ?
+      polymorphic_url(@invoice.company.logo) : ""
+    @amount = FormatAmountService.new(@invoice.currency, @invoice.amount).process
+
+    # Attach the PDF
+    attachments["#{@invoice.invoice_number}.pdf"] = {
+      mime_type: "application/pdf",
+      content: pdf_data
+    }
+
+    mail(
+      to: recipients,
+      from: ENV["DEFAULT_FROM_EMAIL"] || "noreply@example.com",
+      subject: subject,
+      reply_to: ENV["REPLY_TO_EMAIL"]
+    )
+  end
+
   private
 
     def company_logo

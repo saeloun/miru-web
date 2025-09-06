@@ -2,7 +2,7 @@ import { TeamModalType } from "constants/index";
 
 import React from "react";
 
-import teamApi from "apis/team";
+import { teamApi } from "apis/api";
 import HoverMoreOptions from "common/HoverMoreOptions";
 import { useList } from "context/TeamContext";
 import { useUserContext } from "context/UserContext";

@@ -38,6 +38,14 @@
 
 # Ignore CI service files.
 /.github
+docs/
+spec/
+playwright/
+playwright-report/
+test-results/
+.playwright-mcp/
+coverage/
+.buildx-cache/
 
 # Ignore Kamal files.
 /config/deploy*.yml

@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 
-import teamsApi from "apis/teams";
+import { teamsApi } from "apis/api";
 import { useProfileContext } from "context/Profile/ProfileContext";
 import { useUserContext } from "context/UserContext";
 import { teamsMapper } from "mapper/teams.mapper";

@@ -2,8 +2,7 @@ import { ApiStatus as InvoiceStatus } from "constants/index";
 
 import React, { useEffect, useState } from "react";
 
-import invoicesApi from "apis/invoices";
-import PaymentsProviders from "apis/payments/providers";
+import { invoicesApi, PaymentsProviders } from "apis/api";
 import Loader from "common/Loader/index";
 import SendInvoice from "components/Invoices/common/InvoiceForm/SendInvoice";
 import { useUserContext } from "context/UserContext";

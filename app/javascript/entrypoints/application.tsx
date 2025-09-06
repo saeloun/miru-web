@@ -6,10 +6,12 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter } from "react-router-dom";
 import { AuthProvider } from "../src/context/auth";
 import { Toaster } from "sonner";
-import "@fontsource-variable/inter";
+// Geist font is loaded via CSS instead of npm package
 
 import "../settings";
 import "../stylesheets/application.scss";
+import "../src/styles/geist-font.css";
+import "../src/styles/geist.css";
 import AppWithUserData from "../src/components/AppWithUserData";
 
 // Initialize Rails
@@ -65,7 +67,6 @@ const App = (props: any) => (
         <AppWithUserData {...props} />
       </AuthProvider>
     </BrowserRouter>
-    
   </QueryClientProvider>
 );
 

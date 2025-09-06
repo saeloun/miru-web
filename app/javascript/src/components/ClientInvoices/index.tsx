@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import clientApi from "apis/clients";
+import { clientApi } from "apis/api";
 import Loader from "common/Loader/index";
 import withLayout from "common/Mobile/HOC/withLayout";
 import { useUserContext } from "context/UserContext";

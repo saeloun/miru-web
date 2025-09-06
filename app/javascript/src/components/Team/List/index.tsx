@@ -2,7 +2,7 @@ import { TeamModalType } from "constants/index";
 
 import React, { useEffect, useState } from "react";
 
-import teamApi from "apis/team";
+import { teamApi } from "apis/api";
 import Loader from "common/Loader/index";
 import withLayout from "common/Mobile/HOC/withLayout";
 import { ListContext } from "context/TeamContext";

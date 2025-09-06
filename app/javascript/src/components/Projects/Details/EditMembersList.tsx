@@ -1,7 +1,6 @@
 import React, { useRef } from "react";
 
-import companyUsersApi from "apis/company-users";
-import projectMembersApi from "apis/project-members";
+import { companyUsersApi, projectMembersApi } from "apis/api";
 import { useKeypress, useOutsideClick } from "helpers";
 import Logger from "js-logger";
 import { XIcon } from "miruIcons";

@@ -2,7 +2,7 @@ import { TeamModalType } from "constants/index";
 
 import React, { useCallback } from "react";
 
-import teamApi from "apis/team";
+import { teamApi } from "apis/api";
 import { UnifiedSearch } from "../../ui/enhanced-search";
 import { useList } from "context/TeamContext";
 import { unmapList } from "mapper/team.mapper";

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import clientMembersApi from "apis/clientMembers";
-import teamApi from "apis/team";
+import { clientMembersApi, teamApi } from "apis/api";
 import Loader from "common/Loader";
 
 import AddContacts from "./AddContacts";

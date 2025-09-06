@@ -7,7 +7,7 @@ import flags from "react-phone-number-input/flags";
 import "react-phone-number-input/style.css";
 import { Avatar } from "StyledComponents";
 import worldCountries from "world-countries";
-import companyProfileApi from "apis/companyProfile";
+import { companyProfileApi } from "apis/api";
 import {
   Select,
   SelectContent,

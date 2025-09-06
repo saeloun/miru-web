@@ -1,6 +1,6 @@
 import React, { Fragment, useCallback } from "react";
 
-import clientApi from "apis/clients";
+import { clientApi } from "apis/api";
 import { UnifiedSearch } from "../../ui/enhanced-search";
 import Logger from "js-logger";
 import { unmapClientListForDropdown } from "mapper/mappedIndex";

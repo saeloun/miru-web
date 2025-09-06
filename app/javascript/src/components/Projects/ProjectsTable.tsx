@@ -46,7 +46,7 @@ import {
   Pause,
 } from "phosphor-react";
 import { useUserContext } from "../../context/UserContext";
-import projectApi from "../../apis/projects";
+import { projectApi } from "apis/api";
 import { toast } from "sonner";
 
 interface TeamMember {

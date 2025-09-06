@@ -104,14 +104,6 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
             <Button
               variant="outline"
               size="sm"
-              onClick={() => onAction?.("preview")}
-            >
-              <Eye className="h-4 w-4 mr-2" />
-              Preview
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
               onClick={() => onAction?.("download")}
             >
               <Download className="h-4 w-4 mr-2" />
@@ -140,7 +132,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
                 onClick={() => onAction?.("send")}
               >
                 <PaperPlaneTilt className="h-4 w-4 mr-2" />
-                PaperPlaneTilt Invoice
+                Send Invoice
               </Button>
             )}
           </div>
@@ -152,19 +144,27 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
         {/* Header */}
         <div className="flex justify-between items-start mb-8">
           <div>
-            {invoice.company.logo ? (
+            {invoice.company?.logo ? (
               <img
                 src={invoice.company.logo}
-                alt={invoice.company.name}
-                className="h-12 mb-4"
+                alt={invoice.company.name || "Company"}
+                className="h-16 mb-4 object-contain"
               />
             ) : (
-              <h1 className="text-2xl font-bold text-gray-900 mb-4">
-                {invoice.company.name}
-              </h1>
+              <div className="mb-4">
+                <h1 className="text-2xl font-bold text-gray-900">
+                  {invoice.company?.name || "Company Name"}
+                </h1>
+              </div>
             )}
             <div className="text-sm text-gray-600 space-y-1">
-              {invoice.company.address && <p>{typeof invoice.company.address === 'object' ? JSON.stringify(invoice.company.address) : invoice.company.address}</p>}
+              {invoice.company.address && (
+                <p>
+                  {typeof invoice.company.address === "object"
+                    ? JSON.stringify(invoice.company.address)
+                    : invoice.company.address}
+                </p>
+              )}
               {invoice.company.email && <p>{invoice.company.email}</p>}
               {invoice.company.phone && <p>{invoice.company.phone}</p>}
               {invoice.company.taxId && <p>Tax ID: {invoice.company.taxId}</p>}
@@ -210,7 +210,11 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
               {invoice.client.name}
             </p>
             {invoice.client.address && (
-              <p className="text-gray-600">{typeof invoice.client.address === 'object' ? JSON.stringify(invoice.client.address) : invoice.client.address}</p>
+              <p className="text-gray-600">
+                {typeof invoice.client.address === "object"
+                  ? JSON.stringify(invoice.client.address)
+                  : invoice.client.address}
+              </p>
             )}
             {invoice.client.email && (
               <p className="text-gray-600">{invoice.client.email}</p>

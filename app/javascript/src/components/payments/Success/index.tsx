@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import invoicesApi from "apis/invoices";
+import { invoicesApi } from "apis/api";
 import Loader from "common/Loader";
 import { LeftArrowIcon } from "miruIcons";
 import { useNavigate, useParams } from "react-router-dom";
