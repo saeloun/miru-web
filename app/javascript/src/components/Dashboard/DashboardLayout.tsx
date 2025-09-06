@@ -112,7 +112,9 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
           <div className="flex items-center justify-between p-4 border-b border-gray-200">
             <div className="flex items-center gap-3">
               <img src={MiruLogoSVG} alt="Miru Agency OS" className="h-6 w-6" />
-              <span className="font-semibold text-gray-900">Miru Agency OS</span>
+              <span className="font-semibold text-gray-900">
+                Miru Agency OS
+              </span>
             </div>
             <button
               onClick={() => setMobileOpen(false)}
@@ -127,8 +129,14 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
               isCollapsed={false}
               logo={
                 <div className="flex items-center gap-3">
-                  <img src={MiruLogoSVG} alt="Miru Agency OS" className="h-6 w-6" />
-                  <span className="font-semibold text-gray-900">Miru Agency OS</span>
+                  <img
+                    src={MiruLogoSVG}
+                    alt="Miru Agency OS"
+                    className="h-6 w-6"
+                  />
+                  <span className="font-semibold text-gray-900">
+                    Miru Agency OS
+                  </span>
                 </div>
               }
             />
@@ -154,8 +162,12 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
               <img src={MiruLogoSVG} alt="Miru Agency OS" className="h-6 w-6" />
               {!sidebarCollapsed && (
                 <div className="text-left">
-                  <span className="font-semibold text-gray-900">Miru Agency OS</span>
-                  <div className="text-xs text-gray-500">Run your agency’s ops from one command center.</div>
+                  <span className="font-semibold text-gray-900">
+                    Miru Agency OS
+                  </span>
+                  <div className="text-xs text-gray-500">
+                    Run your agency’s ops from one command center.
+                  </div>
                 </div>
               )}
             </button>

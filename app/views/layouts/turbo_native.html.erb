@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= content_for?(:title) ? yield(:title) : 'Miru Agency OS' %></title>
+    <title><%= content_for?(:title) ? yield(:title) : t('app.name') %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
     <meta name="turbo-visit-control" content="reload">
     <%= csrf_meta_tags %>

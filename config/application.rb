@@ -50,6 +50,6 @@ module MiruWeb
     config.mission_control.jobs.base_controller_class = "MissionControlController"
 
     # Branding
-    config.x.app_name = 'Miru Agency OS'
+    config.x.app_name = "Miru Agency OS"
   end
 end
