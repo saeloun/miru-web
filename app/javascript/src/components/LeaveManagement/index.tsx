@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import timeoffEntryApi from "apis/timeoffEntry";
+import { timeoffEntriesApi } from "apis/api";
 import Loader from "common/Loader/index";
 import withLayout from "common/Mobile/HOC/withLayout";
 import { useUserContext } from "context/UserContext";
@@ -51,7 +51,7 @@ const LeaveManagement = () => {
   }, [selectedLeaveType]);
 
   const fetchTimeoffEntries = async () => {
-    const res = await timeoffEntryApi.get(selectedEmployeeId, currentYear);
+    const res = await timeoffEntriesApi.get(selectedEmployeeId, currentYear);
     const {
       timeoffEntries,
       employees,

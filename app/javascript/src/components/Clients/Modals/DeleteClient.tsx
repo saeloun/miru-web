@@ -1,6 +1,6 @@
 import React from "react";
 
-import clientApi from "apis/clients";
+import { clientApi } from "apis/api";
 import { useNavigate } from "react-router-dom";
 import { Modal, Button } from "StyledComponents";
 

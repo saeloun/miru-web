@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, MutableRefObject } from "react";
 
-import timesheetEntryApi from "apis/timesheet-entry";
+import { timesheetEntryApi } from "apis/api";
 import { useTimesheetEntries } from "context/TimesheetEntries";
 import { TimeEntryFormContext } from "context/TimesheetEntries/TimeEntryFormContext";
 import { useUserContext } from "context/UserContext";

@@ -6,7 +6,7 @@ import { XIcon } from "miruIcons";
 import { useNavigate } from "react-router-dom";
 import { Toastr } from "StyledComponents";
 
-import invoicesApi from "apis/invoices";
+import { invoicesApi } from "apis/api";
 import { CustomAdvanceInput } from "common/CustomAdvanceInput";
 import { CustomTextareaAutosize } from "common/CustomTextareaAutosize";
 import { InputErrors } from "common/FormikFields";
@@ -70,8 +70,6 @@ const SendInvoiceContainer = ({
       recipients,
     });
   };
-
-  
 
   const handleSubmit = async event => {
     try {
@@ -160,10 +158,8 @@ const SendInvoiceContainer = ({
                             recipientsCount={invoiceEmail.recipients.length}
                           />
                         ))}
-                        
                       </div>
                     }
-                    
                   />
                   <InputErrors
                     fieldErrors={errors.recipients}

@@ -103,3 +103,4 @@ test-*.spec.ts
 .playwright-mcp/
 test-results/
 playwright-report/
+.buildx-cache/

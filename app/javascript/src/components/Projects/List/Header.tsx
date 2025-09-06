@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
 
-import projectApi from "apis/projects";
+import { projectApi } from "apis/api";
 import { UnifiedSearch } from "../../ui/enhanced-search";
 import { useUserContext } from "context/UserContext";
 import Logger from "js-logger";

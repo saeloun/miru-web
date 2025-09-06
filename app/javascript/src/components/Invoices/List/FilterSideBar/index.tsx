@@ -2,7 +2,7 @@ import { LocalStorageKeys } from "constants/index";
 
 import React, { useEffect, useRef, useState } from "react";
 
-import companiesApi from "apis/companies";
+import { companiesApi } from "apis/api";
 import CustomCheckbox from "common/CustomCheckbox";
 import CustomDateRangePicker from "common/CustomDateRangePicker";
 import CustomRadioButton from "common/CustomRadio";

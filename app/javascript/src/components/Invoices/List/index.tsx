@@ -2,8 +2,7 @@ import { ApiStatus as InvoicesStatus, LocalStorageKeys } from "constants/index";
 
 import React, { Fragment, useEffect, useState } from "react";
 
-import invoicesApi from "apis/invoices";
-import PaymentsProviders from "apis/payments/providers";
+import { invoicesApi, PaymentsProviders } from "apis/api";
 import Loader from "common/Loader/index";
 import withLayout from "common/Mobile/HOC/withLayout";
 import { useUserContext } from "context/UserContext";

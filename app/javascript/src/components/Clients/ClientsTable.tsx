@@ -44,7 +44,7 @@ import {
 } from "phosphor-react";
 import { currencyFormat } from "../../helpers/currency";
 import { useUserContext } from "../../context/UserContext";
-import { clientsApi } from "../../services/api";
+import { clientsApi } from "apis/api";
 import { unmapClientList } from "../../mapper/mappedIndex";
 import { toast } from "sonner";
 
@@ -70,7 +70,7 @@ interface ClientsData {
 
 const fetchClients = async (): Promise<ClientsData> => {
   try {
-    const res = await clientsApi.list();
+    const res = await clientsApi.get("");
 
     // unmapClientList expects { data: response } structure
     return unmapClientList({ data: res.data });
@@ -104,7 +104,7 @@ const ClientsTable: React.FC = () => {
 
   const deleteMutation = useMutation({
     mutationFn: async (clientId: string) => {
-      await clientsApi.delete(clientId);
+      await clientsApi.destroy(clientId);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["clients"] });

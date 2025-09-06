@@ -2,7 +2,7 @@ import { ApiStatus as InvoiceStatus, LocalStorageKeys } from "constants/index";
 
 import React, { useEffect, useState } from "react";
 
-import clientApi from "apis/clients";
+import { clientApi } from "apis/api";
 import { useUserContext } from "context/UserContext";
 import { useDebounce } from "helpers";
 import { XIcon, SearchIcon } from "miruIcons";

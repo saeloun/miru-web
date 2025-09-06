@@ -1,6 +1,6 @@
 import { Toastr } from "StyledComponents";
 
-import invoicesApi from "apis/invoices";
+import { invoicesApi } from "apis/api";
 
 const getReportData = async ({
   setClientList,

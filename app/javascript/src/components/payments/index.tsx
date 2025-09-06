@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import payment from "apis/payments/payments";
+import { payment } from "apis/api";
 import Loader from "common/Loader/index";
 import withLayout from "common/Mobile/HOC/withLayout";
 import { useUserContext } from "context/UserContext";

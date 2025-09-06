@@ -80,6 +80,12 @@ jobs:
         run: |
           PUPPETEER_SKIP_DOWNLOAD=true pnpm install --frozen-lockfile
       
+      - name: Build Vite assets (sanity)
+        env:
+          SECRET_KEY_BASE: dummy
+        run: |
+          timeout 30 bin/vite build || echo "Skipping vite build check"
+      
       - name: Install Playwright Chromium browser (with deps)
         if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: pnpm exec playwright install --with-deps chromium

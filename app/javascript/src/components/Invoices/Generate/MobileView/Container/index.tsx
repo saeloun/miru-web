@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import { Toastr } from "StyledComponents";
 
-import invoicesApi from "apis/invoices";
+import { invoicesApi } from "apis/api";
 import ConnectPaymentGateway from "components/Invoices/popups/ConnectPaymentGateway";
 import { mapGenerateInvoice } from "mapper/mappedIndex";
 

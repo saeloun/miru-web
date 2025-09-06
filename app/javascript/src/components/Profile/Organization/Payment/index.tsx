@@ -2,7 +2,7 @@ import { ApiStatus as PaymentSettingsStatus } from "constants/index";
 
 import React, { useState, useEffect } from "react";
 
-import paymentSettings from "apis/payment-settings";
+import { paymentSettings } from "apis/api";
 import { useUserContext } from "context/UserContext";
 import { useNavigate } from "react-router-dom";
 import { sendGAPageView } from "utils/googleAnalytics";

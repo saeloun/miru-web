@@ -11,10 +11,11 @@ RSpec.describe Reports::GeneratePdf do
       subject { described_class.new(:time_entries, report_data, current_company) }
 
       it "generates PDF for time entries" do
-        allow(Pdf::HtmlGenerator).to receive(:new).with(
-          :time_entries,
-          locals: { report_data:, current_company: }).and_return(double("Pdf::HtmlGenerator", make: nil))
-        subject.process
+        allow(ApplicationController).to receive(:render).and_return("<html>Report HTML</html>")
+        allow_any_instance_of(PdfGeneration::BaseService).to receive(:process).and_return("PDF Content")
+
+        result = subject.process
+        expect(result).to eq("PDF Content")
       end
     end
 
@@ -22,10 +23,11 @@ RSpec.describe Reports::GeneratePdf do
       subject { described_class.new(:accounts_aging, report_data, current_company) }
 
       it "generates PDF for accounts aging" do
-        allow(Pdf::HtmlGenerator).to receive(:new).with(
-          :accounts_aging,
-          locals: { report_data:, current_company: }).and_return(double("Pdf::HtmlGenerator", make: nil))
-        subject.process
+        allow(ApplicationController).to receive(:render).and_return("<html>Report HTML</html>")
+        allow_any_instance_of(PdfGeneration::BaseService).to receive(:process).and_return("PDF Content")
+
+        result = subject.process
+        expect(result).to eq("PDF Content")
       end
     end
 

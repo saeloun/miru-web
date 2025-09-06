@@ -19,6 +19,8 @@ module InvoicePayment
 
       # If filepath is specified, save to file
       if @filepath
+        # Create directory if it doesn't exist
+        FileUtils.mkdir_p(File.dirname(@filepath))
         File.open(@filepath, "wb") { |f| f.write(pdf_data) }
       end
 

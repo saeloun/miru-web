@@ -2,8 +2,7 @@ import { ApiStatus as PaymentSettingsStatus } from "constants/index";
 
 import React, { useState, useEffect } from "react";
 
-import paymentSettings from "apis/payment-settings";
-import PaymentsProviders from "apis/payments/providers";
+import { paymentSettings, PaymentsProviders } from "apis/api";
 import CustomCheckbox from "common/CustomCheckbox";
 import CustomToggle from "common/CustomToggle";
 import {

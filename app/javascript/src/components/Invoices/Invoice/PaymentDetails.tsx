@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { currencyFormat } from "helpers";
-import paymentsApi from "apis/payments/payments";
+import { paymentsApi } from "apis/api";
 import StatusBadge from "components/ui/status-badge";
 import {
   CreditCard,

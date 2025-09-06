@@ -45,6 +45,9 @@ export interface Invoice {
   createdAt?: string;
   invoiceLineItems?: InvoiceItem[];
   company?: {
+    phone: string;
+    address: string;
+    email: string;
     name: string;
     baseCurrency: string;
     dateFormat: string;
@@ -327,7 +330,9 @@ class InvoiceApiService {
       })),
       company: {
         ...apiInvoice.company,
-        address: apiInvoice.company?.address ? formatAddress(apiInvoice.company.address) : "",
+        address: apiInvoice.company?.address
+          ? formatAddress(apiInvoice.company.address)
+          : "",
       },
     };
   }

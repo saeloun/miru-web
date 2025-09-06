@@ -43,7 +43,7 @@ import {
 } from "phosphor-react";
 import { cn } from "../../lib/utils";
 import { useUserContext } from "../../context/UserContext";
-import timesheetEntryApi from "../../apis/timesheet-entry";
+import { timesheetEntryApi } from "apis/api";
 import { minToHHMM } from "../../helpers";
 import { toast } from "sonner";
 import FloatingTimer from "./FloatingTimer";

@@ -4,8 +4,6 @@ import { useUserContext } from "context/UserContext";
 import { minToHHMM } from "helpers";
 import { X } from "phosphor-react";
 import { Card, CardContent, CardHeader, CardTitle } from "../../ui/card";
-import ScheduleCalendar from "../../ui/schedule-calendar";
-import { useCalendarData } from "../../../hooks/useCalendarData";
 
 import LeaveBlock from "./LeaveBlock";
 import Table from "./Table";
@@ -20,20 +18,6 @@ const Container = ({
 }) => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const { company } = useUserContext();
-
-  // Use the calendar data hook - for personal leaves page, fetch holidays AND user's timeoff
-  const { events, isLoading, holidays } = useCalendarData(selectedDate, {
-    includeTimeoff: true, // Show personal timeoff on user's leaves page
-    includeTimesheet: false, // Don't show timesheet entries on leaves page
-  });
-
-  const handleEventClick = (event: any) => {
-    // Handle event click if needed
-  };
-
-  const handleDateSelect = (date: Date) => {
-    setSelectedDate(date);
-  };
 
   return (
     <div className="space-y-6">
@@ -56,39 +40,7 @@ const Container = ({
         </div>
       )}
 
-      {/* Calendar Section */}
-      <Card className="border-0 shadow-sm">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-lg">Calendar</CardTitle>
-          {holidays && holidays.length > 0 && (
-            <p className="text-sm text-gray-600 mt-1">
-              Showing{" "}
-              {holidays.filter(h => h.holiday_type === "national").length}{" "}
-              national and{" "}
-              {holidays.filter(h => h.holiday_type === "optional").length}{" "}
-              optional holidays
-            </p>
-          )}
-        </CardHeader>
-        <CardContent className="p-4">
-          <ScheduleCalendar
-            events={events}
-            onEventClick={handleEventClick}
-            onDateSelect={handleDateSelect}
-            selectedDate={selectedDate}
-            defaultView="month-grid"
-            calendars={[
-              { id: "holidays", label: "Holidays", colorName: "holiday" },
-              {
-                id: "timesheet",
-                label: "Time Tracked",
-                colorName: "timesheet",
-              },
-              { id: "leave", label: "Time Off", colorName: "leave" },
-            ]}
-          />
-        </CardContent>
-      </Card>
+      {/* Calendar display removed */}
 
       {/* Leave Details Table */}
       {timeoffEntries && timeoffEntries.length > 0 && (

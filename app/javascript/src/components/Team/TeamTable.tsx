@@ -39,7 +39,7 @@ import {
   ArrowDown,
 } from "phosphor-react";
 import { useUserContext } from "../../context/UserContext";
-import teamApi from "../../apis/team";
+import { teamApi } from "apis/api";
 import { unmapList } from "../../mapper/team.mapper";
 import { toast } from "sonner";
 import { Roles } from "../../constants/index";

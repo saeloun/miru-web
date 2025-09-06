@@ -23,7 +23,7 @@ import { Checkbox } from "../ui/checkbox";
 import { Calendar, Clock, Timer, Tag } from "phosphor-react";
 import { toast } from "sonner";
 import { useUserContext } from "../../context/UserContext";
-import timesheetEntryApi from "../../apis/timesheet-entry";
+import { timesheetEntryApi } from "apis/api";
 import dayjs from "dayjs";
 
 interface TimeEntry {

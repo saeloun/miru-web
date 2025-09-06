@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-import reportsApi from "apis/reports";
+import { reportsApi } from "apis/api";
 import Loader from "common/Loader/index";
 import { useUserContext } from "context/UserContext";
 import { Pagination } from "StyledComponents";

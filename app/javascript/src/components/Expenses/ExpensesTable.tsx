@@ -47,7 +47,7 @@ import {
   FileText,
 } from "phosphor-react";
 import { useUserContext } from "../../context/UserContext";
-import expensesApi from "../../apis/expenses";
+import { expensesApi } from "apis/api";
 import { currencyFormat } from "../../helpers/currency";
 import { toast } from "sonner";
 
