@@ -49,7 +49,6 @@ module MiruWeb
     config.active_job.queue_adapter = :solid_queue
     config.mission_control.jobs.base_controller_class = "MissionControlController"
 
-    # Branding
-    config.x.app_name = "Miru Agency OS"
+    # Branding via I18n (see config/locales/branding.*.yml)
   end
 end

@@ -162,14 +162,14 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
             disabled={!isFormValid() || isLoading}
           >
             <FloppyDisk className="h-4 w-4 mr-2" />
-            FloppyDisk Draft
+            Save Draft
           </Button>
           <Button
             onClick={() => onSend?.(formData)}
             disabled={!isFormValid() || isLoading}
           >
             <PaperPlaneTilt className="h-4 w-4 mr-2" />
-            PaperPlaneTilt Invoice
+            Send Invoice
           </Button>
         </div>
       </div>
