@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { currencyFormat } from "helpers/currency";
 import { format } from "date-fns";
-import { Download, PaperPlaneTilt, Printer, Share2, Eye } from "phosphor-react";
+import { Download, PaperPlaneTilt, Printer, Share2 } from "phosphor-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 

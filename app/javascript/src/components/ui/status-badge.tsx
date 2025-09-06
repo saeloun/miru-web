@@ -91,9 +91,7 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({
         label: "Refunded",
       },
       processing: {
-        icon: (
-          <CircleNotch size={12} weight="bold" className="animate-spin" />
-        ),
+        icon: <CircleNotch size={12} weight="bold" className="animate-spin" />,
         bg: "bg-indigo-500",
         text: "text-white",
         label: "Processing",
@@ -132,11 +130,7 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({
       },
       sending: {
         icon: (
-          <PaperPlaneTilt
-            size={12}
-            weight="bold"
-            className="animate-pulse"
-          />
+          <PaperPlaneTilt size={12} weight="bold" className="animate-pulse" />
         ),
         bg: "bg-sky-500",
         text: "text-white",
