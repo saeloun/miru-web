@@ -10,6 +10,7 @@ import {
   Client,
   InvoiceFormData,
 } from "../../services/invoiceApi";
+import { toast } from "sonner";
 
 type ViewMode = "list" | "edit" | "create" | "preview";
 
@@ -157,16 +158,32 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
       setIsLoading(true);
 
       if (invoiceData.id) {
-        await invoiceApi.updateInvoice(invoiceData.id, invoiceData);
+        const response = await invoiceApi.updateInvoice(invoiceData.id, invoiceData);
+        toast.success(response?.notice || response?.message || "Invoice updated successfully");
       } else {
-        await invoiceApi.createInvoice(invoiceData);
+        const response = await invoiceApi.createInvoice(invoiceData);
+        toast.success(response?.notice || response?.message || "Invoice created successfully");
       }
 
       await loadInvoices(); // Refresh the invoice list
       setViewMode("list");
-    } catch (err) {
-      setError("Failed to save invoice");
+    } catch (err: any) {
       console.error("Error saving invoice:", err);
+      
+      if (err.response?.data?.error) {
+        toast.error(err.response.data.error);
+      } else if (err.response?.data?.errors) {
+        const errors = err.response.data.errors;
+        const errorMessage = Array.isArray(errors) 
+          ? errors.join(", ") 
+          : Object.values(errors).flat().join(", ");
+        toast.error(errorMessage);
+      } else if (err.message) {
+        toast.error(err.message);
+      } else {
+        toast.error("Failed to save invoice. Please try again.");
+      }
+      setError(null); // Don't show the error banner
     } finally {
       setIsLoading(false);
     }
@@ -181,25 +198,42 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
       if (!invoiceId) {
         const newInvoice = await invoiceApi.createInvoice(invoiceData);
         invoiceId = newInvoice.id;
+        toast.success("Invoice created successfully");
       } else {
         await invoiceApi.updateInvoice(invoiceId, invoiceData);
+        toast.success("Invoice updated successfully");
       }
 
       // Then send the invoice
       const client = clients.find(c => c.id === invoiceData.clientId);
       if (client && invoiceId) {
-        await invoiceApi.sendInvoice(invoiceId, {
+        const response = await invoiceApi.sendInvoice(invoiceId, {
           subject: `Invoice ${invoiceData.invoiceNumber}`,
           message: "Please find your invoice attached.",
           recipients: [client.email],
         });
+        toast.success(response?.notice || response?.message || "Invoice sent successfully");
       }
 
       await loadInvoices(); // Refresh the invoice list
       setViewMode("list");
-    } catch (err) {
-      setError("Failed to send invoice");
+    } catch (err: any) {
       console.error("Error sending invoice:", err);
+      
+      if (err.response?.data?.error) {
+        toast.error(err.response.data.error);
+      } else if (err.response?.data?.errors) {
+        const errors = err.response.data.errors;
+        const errorMessage = Array.isArray(errors) 
+          ? errors.join(", ") 
+          : Object.values(errors).flat().join(", ");
+        toast.error(errorMessage);
+      } else if (err.message) {
+        toast.error(err.message);
+      } else {
+        toast.error("Failed to send invoice. Please try again.");
+      }
+      setError(null); // Don't show the error banner
     } finally {
       setIsLoading(false);
     }
@@ -207,19 +241,21 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
 
   const handleSendInvoiceFromList = async (id: string) => {
     try {
-      const invoice = invoices.find(inv => inv.id === id);
-      if (!invoice) return;
-
-      await invoiceApi.sendInvoice(id, {
+      const invoice = invoices.find(inv => inv.id === id) || selectedInvoice;
+      if (!invoice) {
+        setError("Invoice not found");
+        return;
+      }
+      
+      const response = await invoiceApi.sendInvoice(id, {
         subject: `Invoice ${invoice.invoiceNumber}`,
         message: "Please find your invoice attached.",
         recipients: [invoice.client.email],
       });
-
+      
       await loadInvoices(); // Refresh the invoice list
     } catch (err) {
       setError("Failed to send invoice");
-      console.error("Error sending invoice:", err);
     }
   };
 
@@ -250,22 +286,34 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
 
   const handleDownload = async (id: string) => {
     try {
-      const blob = await invoiceApi.downloadInvoice(id);
-      const invoice = invoices.find(inv => inv.id === id);
+      // Find the invoice to get the invoice number
+      const invoice = invoices.find(inv => inv.id === id) || selectedInvoice;
       const filename = `invoice-${invoice?.invoiceNumber || id}.pdf`;
+      
+      // Call the download API
+      const blob = await invoiceApi.downloadInvoice(id);
+      
+      // Verify we got a blob
+      if (!(blob instanceof Blob)) {
+        throw new Error("Invalid response from server - expected PDF blob");
+      }
 
       // Create download link
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
       link.download = filename;
+      link.style.display = "none";
       document.body.appendChild(link);
       link.click();
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(url);
+      
+      // Clean up
+      setTimeout(() => {
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+      }, 100);
     } catch (err) {
       setError("Failed to download invoice");
-      console.error("Error downloading invoice:", err);
     }
   };
 
@@ -327,6 +375,15 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
           {renderBackButton()}
           <InvoiceEditor
             clients={clients}
+            company={{
+              name: "Miru Time Tracking",
+              email: "support@getmiru.com",
+              baseCurrency: "USD",
+              dateFormat: "MM/dd/yyyy",
+              address: "",
+              phone: "",
+              taxId: ""
+            }}
             onSave={handleSaveInvoice}
             onSend={handleSendInvoice}
             onPreview={handlePreview}
@@ -359,6 +416,15 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
           <InvoiceEditor
             invoice={editFormData}
             clients={clients}
+            company={selectedInvoice.company || {
+              name: "Miru Time Tracking",
+              email: "support@getmiru.com",
+              baseCurrency: "USD",
+              dateFormat: "MM/dd/yyyy",
+              address: "",
+              phone: "",
+              taxId: ""
+            }}
             onSave={handleSaveInvoice}
             onSend={handleSendInvoice}
             onPreview={handlePreview}
@@ -376,13 +442,17 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
       const handleInvoiceAction = async (action: string) => {
         switch (action) {
           case "download":
-            if (invoiceToPreview.id) {
+            if (invoiceToPreview.id && invoiceToPreview.id !== "preview") {
               await handleDownload(invoiceToPreview.id);
+            } else {
+              setError("Cannot download invoice - invalid ID");
             }
             break;
           case "send":
-            if (invoiceToPreview.id) {
+            if (invoiceToPreview.id && invoiceToPreview.id !== "preview") {
               await handleSendInvoiceFromList(invoiceToPreview.id);
+            } else {
+              setError("Cannot send invoice - invalid ID");
             }
             break;
           case "edit":
@@ -395,16 +465,31 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
             break;
           case "share":
             // Share functionality can be implemented later
-            console.log("Share invoice");
             break;
         }
+      };
+
+      // Convert invoiceLineItems to lineItems for InvoicePreview
+      const previewInvoice = {
+        ...invoiceToPreview,
+        lineItems: invoiceToPreview.invoiceLineItems || [],
+        subtotal: invoiceToPreview.invoiceLineItems?.reduce(
+          (sum, item) => sum + item.amount,
+          0
+        ) || invoiceToPreview.amount,
+        company: invoiceToPreview.company || {
+          name: "Miru Time Tracking",
+          email: "support@getmiru.com",
+          baseCurrency: "USD",
+          dateFormat: "MM/dd/yyyy",
+        },
       };
 
       return (
         <div>
           {renderBackButton()}
           <InvoicePreview 
-            invoice={invoiceToPreview} 
+            invoice={previewInvoice} 
             onAction={handleInvoiceAction}
           />
         </div>

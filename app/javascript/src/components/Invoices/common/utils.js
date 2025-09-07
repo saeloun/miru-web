@@ -106,7 +106,7 @@ export const fetchMultipleNewLineItems = async (
 
 export const handleDownloadInvoice = async invoice => {
   try {
-    const res = await invoicesApi.download(invoice.id);
+    const res = await invoicesApi.downloadInvoice(invoice.id);
     const url = window.URL.createObjectURL(new window.Blob([res.data]));
     const link = document.createElement("a");
     link.href = url;
