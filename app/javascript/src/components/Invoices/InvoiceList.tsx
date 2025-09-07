@@ -356,7 +356,6 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-12"></TableHead>
                 <TableHead>Invoice</TableHead>
                 <TableHead>Client</TableHead>
                 <TableHead>Status</TableHead>
@@ -392,7 +391,6 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
                       className="cursor-pointer hover:bg-muted/50"
                       onClick={() => onViewInvoice?.(invoice.id)}
                     >
-                      <TableCell>{getStatusIcon(invoice.status)}</TableCell>
                       <TableCell>
                         <div className="font-medium">
                           #{invoice.invoiceNumber}

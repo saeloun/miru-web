@@ -3,31 +3,25 @@ import { Route, Routes, useParams } from "react-router-dom";
 import ErrorPage from "common/Error";
 import { useUserContext } from "context/UserContext";
 
-// Import Mercury-style components
 import InvoicesPage from "./index";
 
-// Import old components for backward compatibility
 import GenerateInvoices from "./Generate";
 import ClientInvoices from "components/ClientInvoices";
 import ClientInvoiceDetails from "components/ClientInvoices/Details";
 
-// Mercury wrapper for edit functionality
-const MercuryInvoiceEdit = () => {
+const InvoiceEdit = () => {
   const { id } = useParams();
 
-  // Use the Mercury InvoicesPage component but in edit mode
   return <InvoicesPage initialMode="edit" initialInvoiceId={id} />;
 };
 
-// Mercury wrapper for view functionality
-const MercuryInvoiceView = () => {
+const InvoiceView = () => {
   const { id } = useParams();
 
-  // Use the Mercury InvoicesPage component but in preview mode
   return <InvoicesPage initialMode="preview" initialInvoiceId={id} />;
 };
 
-const MercuryInvoicesRouteConfig = () => {
+const InvoicesRouteConfig = () => {
   const { companyRole } = useUserContext();
 
   const clientRoutes = () => (
@@ -39,17 +33,13 @@ const MercuryInvoicesRouteConfig = () => {
 
   const protectedRoutes = () => (
     <Routes>
-      {/* Mercury-style main invoice page - this replaces the old list */}
       <Route index element={<InvoicesPage />} />
 
-      {/* Mercury-style edit and view pages */}
-      <Route element={<MercuryInvoiceEdit />} path=":id/edit" />
-      <Route element={<MercuryInvoiceView />} path=":id" />
+      <Route element={<InvoiceEdit />} path=":id/edit" />
+      <Route element={<InvoiceView />} path=":id" />
 
-      {/* Keep generate route for backward compatibility */}
       <Route element={<GenerateInvoices />} path="generate" />
 
-      {/* Catch all for errors */}
       <Route element={<ErrorPage />} path="*" />
     </Routes>
   );
@@ -57,4 +47,4 @@ const MercuryInvoicesRouteConfig = () => {
   return companyRole == "client" ? clientRoutes() : protectedRoutes();
 };
 
-export default MercuryInvoicesRouteConfig;
+export default InvoicesRouteConfig;

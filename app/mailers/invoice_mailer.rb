@@ -28,7 +28,13 @@ class InvoiceMailer < ApplicationMailer
     recipients = params[:recipients]
     subject = params[:subject]
     @message = params[:message]
-    pdf_data = params[:pdf_data]
+
+    # Decode PDF data if it was encoded as base64
+    pdf_data = if params[:pdf_encoded]
+      Base64.strict_decode64(params[:pdf_data])
+    else
+      params[:pdf_data]
+    end
 
     @invoice_url = "#{ENV['APP_BASE_URL']}/invoices/#{@invoice.external_view_key}/view"
     @company = @invoice.company

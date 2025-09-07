@@ -44,7 +44,7 @@ const Invoice = () => {
   const fetchInvoice = async () => {
     try {
       setStatus(InvoiceStatus.LOADING);
-      const res = await invoicesApi.getInvoice(params.id);
+      const res = await invoicesApi.getInvoice(params.invoiceId);
       setInvoice(res.data);
       setStatus(InvoiceStatus.SUCCESS);
     } catch {

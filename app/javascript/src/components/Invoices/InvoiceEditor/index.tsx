@@ -24,8 +24,9 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
+import { Calendar } from "@/components/ui/calendar";
 import {
-  Calendar as CalendarIcon,
+  CalendarBlank as CalendarIcon,
   Plus,
   Trash,
   FloppyDisk,
@@ -33,22 +34,36 @@ import {
   Eye,
   EyeSlash,
 } from "phosphor-react";
-import InvoicePreview from "../InvoicePreview";
+import InvoicePreview from "../InvoicePreview/index";
 
 interface InvoiceEditorProps {
   invoice?: any;
   clients: any[];
-  company: any;
-  onSave: (invoice: any) => void;
+  company?: any;
+  onSave?: (invoice: any) => void;
+  onSend?: (invoice: any) => void;
+  onPreview?: (invoice: any) => void;
   onCancel: () => void;
+  isLoading?: boolean;
 }
 
 const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
   invoice,
   clients,
-  company,
+  company = {
+    name: "Miru Time Tracking",
+    email: "support@getmiru.com",
+    baseCurrency: "USD",
+    dateFormat: "MM/dd/yyyy",
+    address: "",
+    phone: "",
+    taxId: ""
+  },
   onSave,
+  onSend,
+  onPreview,
   onCancel,
+  isLoading = false,
 }) => {
   const [showPreview, setShowPreview] = useState(true);
   const [formData, setFormData] = useState({
@@ -67,15 +82,33 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
     tax: invoice?.tax || 0,
   });
 
-  const selectedClient = useMemo(
-    () =>
-      clients.find(c => c.id === formData.clientId) || {
+  const selectedClient = useMemo(() => {
+    const client = clients.find(c => c.id === formData.clientId);
+    if (!client) {
+      return {
         name: "Select a client",
         email: "",
         address: "",
-      },
-    [formData.clientId, clients]
-  );
+        phone: "",
+        taxId: ""
+      };
+    }
+    
+    // Ensure address is a string
+    const formattedClient = { ...client };
+    if (formattedClient.address && typeof formattedClient.address === "object") {
+      const addr = formattedClient.address;
+      formattedClient.address = [
+        addr.address_line_1,
+        addr.address_line_2,
+        addr.city,
+        addr.state,
+        addr.country,
+        addr.pin
+      ].filter(Boolean).join(", ");
+    }
+    return formattedClient;
+  }, [formData.clientId, clients]);
 
   const subtotal = useMemo(
     () => formData.lineItems.reduce((sum, item) => sum + (item.amount || 0), 0),
@@ -123,13 +156,45 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
     }
   };
 
+  const formatAddress = (address: any) => {
+    if (!address) return "";
+    if (typeof address === "string") return address;
+    if (typeof address === "object") {
+      return [
+        address.address_line_1 || address.addressLine1,
+        address.address_line_2 || address.addressLine2,
+        address.city,
+        address.state,
+        address.country,
+        address.pin || address.postalCode || address.zipCode
+      ].filter(Boolean).join(", ");
+    }
+    return "";
+  };
+
   const previewInvoice = {
     ...formData,
     amount: total,
     subtotal,
-    currency: company.baseCurrency,
+    currency: company?.baseCurrency || "USD",
     client: selectedClient,
-    company,
+    company: company ? {
+      name: company.name || "Company Name",
+      email: company.email || "",
+      phone: company.phone || "",
+      taxId: company.taxId || "",
+      baseCurrency: company.baseCurrency || "USD",
+      address: formatAddress(company.address),
+      logo: company.logo || ""
+    } : {
+      name: "Company Name",
+      email: "",
+      phone: "",
+      taxId: "",
+      baseCurrency: "USD",
+      address: "",
+      logo: ""
+    },
   };
 
   return (
@@ -161,16 +226,21 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
               <Button variant="outline" onClick={onCancel}>
                 Cancel
               </Button>
-              <Button onClick={() => onSave(formData)} variant="outline">
+              <Button 
+                onClick={() => onSave && onSave(formData)} 
+                variant="outline"
+                disabled={isLoading}
+              >
                 <FloppyDisk className="mr-2 h-4 w-4" />
-                FloppyDisk Draft
+                Save Draft
               </Button>
               <Button
-                onClick={() => onSave({ ...formData, status: "sent" })}
+                onClick={() => onSend && onSend({ ...formData, status: "sent" })}
                 className="bg-[#5B34EA] hover:bg-[#4926D1]"
+                disabled={isLoading}
               >
                 <PaperPlaneTilt className="mr-2 h-4 w-4" />
-                PaperPlaneTilt Invoice
+                Send Invoice
               </Button>
             </div>
           </div>
@@ -261,7 +331,7 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
                       </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0">
-                      <CalendarIcon
+                      <Calendar
                         mode="single"
                         selected={formData.issueDate}
                         onSelect={date =>
@@ -293,7 +363,7 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
                       </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0">
-                      <CalendarIcon
+                      <Calendar
                         mode="single"
                         selected={formData.dueDate}
                         onSelect={date =>

@@ -68,7 +68,7 @@ const EditInvoice = () => {
   const fetchInvoice = async () => {
     try {
       setStatus(InvoiceStatus.LOADING);
-      const { data } = await invoicesApi.editInvoice(params.id);
+      const { data } = await invoicesApi.editInvoice(params.invoiceId);
 
       setInvoiceDetails(data);
       setReference(data.reference);
