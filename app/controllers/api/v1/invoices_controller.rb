@@ -202,9 +202,11 @@ class Api::V1::InvoicesController < Api::V1::ApplicationController
     end
 
     # Send email with PDF attachment
+    # Encode PDF data as base64 to avoid encoding issues in job queue
     InvoiceMailer.with(
       invoice: invoice,
-      pdf_data: pdf_data,
+      pdf_data: Base64.strict_encode64(pdf_data),
+      pdf_encoded: true,
       subject: invoice_email_params[:subject],
       recipients: recipients,
       message: invoice_email_params[:message]
