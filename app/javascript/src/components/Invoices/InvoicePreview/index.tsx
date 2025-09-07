@@ -4,7 +4,12 @@ import { Badge } from "../../ui/badge";
 import { Separator } from "../../ui/separator";
 import { currencyFormat } from "../../../helpers/currency";
 import { format } from "date-fns";
-import { Download, PaperPlaneTilt, Printer, PencilSimple } from "phosphor-react";
+import {
+  Download,
+  PaperPlaneTilt,
+  Printer,
+  PencilSimple,
+} from "phosphor-react";
 import { Button } from "../../ui/button";
 import { cn } from "../../../lib/utils";
 import { invoiceApi } from "../../../services/invoiceApi";
@@ -89,17 +94,18 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
   const handleDownload = async () => {
     if (!invoice.id || invoice.id === "preview") {
       toast.error("Cannot download preview invoice");
+
       return;
     }
-    
+
     setIsDownloading(true);
     try {
       const blob = await invoiceApi.downloadInvoice(invoice.id);
-      
+
       if (!(blob instanceof Blob)) {
         throw new Error("Invalid response from server");
       }
-      
+
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
@@ -107,12 +113,12 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
       link.style.display = "none";
       document.body.appendChild(link);
       link.click();
-      
+
       setTimeout(() => {
         document.body.removeChild(link);
         window.URL.revokeObjectURL(url);
       }, 100);
-      
+
       toast.success("Invoice downloaded successfully");
     } catch (error) {
       console.error("Download failed:", error);
@@ -125,45 +131,48 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
   const handleSend = async () => {
     if (!invoice.id || invoice.id === "preview") {
       toast.error("Cannot send preview invoice");
+
       return;
     }
-    
+
     setIsSending(true);
     try {
-      const subject = invoice.status === "draft" 
-        ? `Invoice ${invoice.invoiceNumber}`
-        : `Invoice Reminder: ${invoice.invoiceNumber}`;
-      
-      const message = invoice.status === "draft"
-        ? "Please find your invoice attached."
-        : "This is a reminder about your outstanding invoice. Please find the details attached.";
-      
+      const subject =
+        invoice.status === "draft"
+          ? `Invoice ${invoice.invoiceNumber}`
+          : `Invoice Reminder: ${invoice.invoiceNumber}`;
+
+      const message =
+        invoice.status === "draft"
+          ? "Please find your invoice attached."
+          : "This is a reminder about your outstanding invoice. Please find the details attached.";
+
       const response = await invoiceApi.sendInvoice(invoice.id, {
         subject,
         message,
         recipients: [invoice.client.email],
       });
-      
+
       if (response && response.notice) {
         toast.success(response.notice);
       } else if (response && response.message) {
         toast.success(response.message);
       } else {
         toast.success(
-          invoice.status === "draft" 
-            ? "Invoice sent successfully" 
+          invoice.status === "draft"
+            ? "Invoice sent successfully"
             : "Reminder sent successfully"
         );
       }
     } catch (error: any) {
       console.error("Send failed:", error);
-      
+
       if (error.response?.data?.error) {
         toast.error(error.response.data.error);
       } else if (error.response?.data?.errors) {
         const errors = error.response.data.errors;
-        const errorMessage = Array.isArray(errors) 
-          ? errors.join(", ") 
+        const errorMessage = Array.isArray(errors)
+          ? errors.join(", ")
           : Object.values(errors).flat().join(", ");
         toast.error(errorMessage);
       } else if (error.message) {
@@ -183,6 +192,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
   const handleEdit = () => {
     if (!invoice.id || invoice.id === "preview") {
       toast.error("Cannot edit preview invoice");
+
       return;
     }
     navigate(`/invoices/${invoice.id}/edit`);
@@ -266,7 +276,9 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
                 {isSending ? "Sending..." : "Send Invoice"}
               </Button>
             )}
-            {(invoice.status === "sent" || invoice.status === "overdue" || invoice.status === "viewed") && (
+            {(invoice.status === "sent" ||
+              invoice.status === "overdue" ||
+              invoice.status === "viewed") && (
               <Button
                 size="sm"
                 className="bg-[#5B34EA] hover:bg-[#4926D1]"

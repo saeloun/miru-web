@@ -158,24 +158,36 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
       setIsLoading(true);
 
       if (invoiceData.id) {
-        const response = await invoiceApi.updateInvoice(invoiceData.id, invoiceData);
-        toast.success(response?.notice || response?.message || "Invoice updated successfully");
+        const response = await invoiceApi.updateInvoice(
+          invoiceData.id,
+          invoiceData
+        );
+
+        toast.success(
+          response?.notice ||
+            response?.message ||
+            "Invoice updated successfully"
+        );
       } else {
         const response = await invoiceApi.createInvoice(invoiceData);
-        toast.success(response?.notice || response?.message || "Invoice created successfully");
+        toast.success(
+          response?.notice ||
+            response?.message ||
+            "Invoice created successfully"
+        );
       }
 
       await loadInvoices(); // Refresh the invoice list
       setViewMode("list");
     } catch (err: any) {
       console.error("Error saving invoice:", err);
-      
+
       if (err.response?.data?.error) {
         toast.error(err.response.data.error);
       } else if (err.response?.data?.errors) {
         const errors = err.response.data.errors;
-        const errorMessage = Array.isArray(errors) 
-          ? errors.join(", ") 
+        const errorMessage = Array.isArray(errors)
+          ? errors.join(", ")
           : Object.values(errors).flat().join(", ");
         toast.error(errorMessage);
       } else if (err.message) {
@@ -212,20 +224,23 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
           message: "Please find your invoice attached.",
           recipients: [client.email],
         });
-        toast.success(response?.notice || response?.message || "Invoice sent successfully");
+
+        toast.success(
+          response?.notice || response?.message || "Invoice sent successfully"
+        );
       }
 
       await loadInvoices(); // Refresh the invoice list
       setViewMode("list");
     } catch (err: any) {
       console.error("Error sending invoice:", err);
-      
+
       if (err.response?.data?.error) {
         toast.error(err.response.data.error);
       } else if (err.response?.data?.errors) {
         const errors = err.response.data.errors;
-        const errorMessage = Array.isArray(errors) 
-          ? errors.join(", ") 
+        const errorMessage = Array.isArray(errors)
+          ? errors.join(", ")
           : Object.values(errors).flat().join(", ");
         toast.error(errorMessage);
       } else if (err.message) {
@@ -244,15 +259,16 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
       const invoice = invoices.find(inv => inv.id === id) || selectedInvoice;
       if (!invoice) {
         setError("Invoice not found");
+
         return;
       }
-      
+
       const response = await invoiceApi.sendInvoice(id, {
         subject: `Invoice ${invoice.invoiceNumber}`,
         message: "Please find your invoice attached.",
         recipients: [invoice.client.email],
       });
-      
+
       await loadInvoices(); // Refresh the invoice list
     } catch (err) {
       setError("Failed to send invoice");
@@ -289,10 +305,10 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
       // Find the invoice to get the invoice number
       const invoice = invoices.find(inv => inv.id === id) || selectedInvoice;
       const filename = `invoice-${invoice?.invoiceNumber || id}.pdf`;
-      
+
       // Call the download API
       const blob = await invoiceApi.downloadInvoice(id);
-      
+
       // Verify we got a blob
       if (!(blob instanceof Blob)) {
         throw new Error("Invalid response from server - expected PDF blob");
@@ -306,7 +322,7 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
       link.style.display = "none";
       document.body.appendChild(link);
       link.click();
-      
+
       // Clean up
       setTimeout(() => {
         document.body.removeChild(link);
@@ -382,7 +398,7 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
               dateFormat: "MM/dd/yyyy",
               address: "",
               phone: "",
-              taxId: ""
+              taxId: "",
             }}
             onSave={handleSaveInvoice}
             onSend={handleSendInvoice}
@@ -416,15 +432,17 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
           <InvoiceEditor
             invoice={editFormData}
             clients={clients}
-            company={selectedInvoice.company || {
-              name: "Miru Time Tracking",
-              email: "support@getmiru.com",
-              baseCurrency: "USD",
-              dateFormat: "MM/dd/yyyy",
-              address: "",
-              phone: "",
-              taxId: ""
-            }}
+            company={
+              selectedInvoice.company || {
+                name: "Miru Time Tracking",
+                email: "support@getmiru.com",
+                baseCurrency: "USD",
+                dateFormat: "MM/dd/yyyy",
+                address: "",
+                phone: "",
+                taxId: "",
+              }
+            }
             onSave={handleSaveInvoice}
             onSend={handleSendInvoice}
             onPreview={handlePreview}
@@ -473,10 +491,11 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
       const previewInvoice = {
         ...invoiceToPreview,
         lineItems: invoiceToPreview.invoiceLineItems || [],
-        subtotal: invoiceToPreview.invoiceLineItems?.reduce(
-          (sum, item) => sum + item.amount,
-          0
-        ) || invoiceToPreview.amount,
+        subtotal:
+          invoiceToPreview.invoiceLineItems?.reduce(
+            (sum, item) => sum + item.amount,
+            0
+          ) || invoiceToPreview.amount,
         company: invoiceToPreview.company || {
           name: "Miru Time Tracking",
           email: "support@getmiru.com",
@@ -488,8 +507,8 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
       return (
         <div>
           {renderBackButton()}
-          <InvoicePreview 
-            invoice={previewInvoice} 
+          <InvoicePreview
+            invoice={previewInvoice}
             onAction={handleInvoiceAction}
           />
         </div>
