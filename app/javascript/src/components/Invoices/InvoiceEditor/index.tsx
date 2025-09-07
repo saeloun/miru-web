@@ -57,7 +57,7 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
     dateFormat: "MM/dd/yyyy",
     address: "",
     phone: "",
-    taxId: ""
+    taxId: "",
   },
   onSave,
   onSend,
@@ -90,13 +90,16 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
         email: "",
         address: "",
         phone: "",
-        taxId: ""
+        taxId: "",
       };
     }
-    
+
     // Ensure address is a string
     const formattedClient = { ...client };
-    if (formattedClient.address && typeof formattedClient.address === "object") {
+    if (
+      formattedClient.address &&
+      typeof formattedClient.address === "object"
+    ) {
       const addr = formattedClient.address;
       formattedClient.address = [
         addr.address_line_1,
@@ -104,9 +107,12 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
         addr.city,
         addr.state,
         addr.country,
-        addr.pin
-      ].filter(Boolean).join(", ");
+        addr.pin,
+      ]
+        .filter(Boolean)
+        .join(", ");
     }
+
     return formattedClient;
   }, [formData.clientId, clients]);
 
@@ -158,7 +164,9 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
 
   const formatAddress = (address: any) => {
     if (!address) return "";
+
     if (typeof address === "string") return address;
+
     if (typeof address === "object") {
       return [
         address.address_line_1 || address.addressLine1,
@@ -166,9 +174,12 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
         address.city,
         address.state,
         address.country,
-        address.pin || address.postalCode || address.zipCode
-      ].filter(Boolean).join(", ");
+        address.pin || address.postalCode || address.zipCode,
+      ]
+        .filter(Boolean)
+        .join(", ");
     }
+
     return "";
   };
 
@@ -178,23 +189,25 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
     subtotal,
     currency: company?.baseCurrency || "USD",
     client: selectedClient,
-    company: company ? {
-      name: company.name || "Company Name",
-      email: company.email || "",
-      phone: company.phone || "",
-      taxId: company.taxId || "",
-      baseCurrency: company.baseCurrency || "USD",
-      address: formatAddress(company.address),
-      logo: company.logo || ""
-    } : {
-      name: "Company Name",
-      email: "",
-      phone: "",
-      taxId: "",
-      baseCurrency: "USD",
-      address: "",
-      logo: ""
-    },
+    company: company
+      ? {
+          name: company.name || "Company Name",
+          email: company.email || "",
+          phone: company.phone || "",
+          taxId: company.taxId || "",
+          baseCurrency: company.baseCurrency || "USD",
+          address: formatAddress(company.address),
+          logo: company.logo || "",
+        }
+      : {
+          name: "Company Name",
+          email: "",
+          phone: "",
+          taxId: "",
+          baseCurrency: "USD",
+          address: "",
+          logo: "",
+        },
   };
 
   return (
@@ -226,8 +239,8 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
               <Button variant="outline" onClick={onCancel}>
                 Cancel
               </Button>
-              <Button 
-                onClick={() => onSave && onSave(formData)} 
+              <Button
+                onClick={() => onSave && onSave(formData)}
                 variant="outline"
                 disabled={isLoading}
               >
@@ -235,7 +248,9 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
                 Save Draft
               </Button>
               <Button
-                onClick={() => onSend && onSend({ ...formData, status: "sent" })}
+                onClick={() =>
+                  onSend && onSend({ ...formData, status: "sent" })
+                }
                 className="bg-[#5B34EA] hover:bg-[#4926D1]"
                 disabled={isLoading}
               >
