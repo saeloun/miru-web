@@ -73,6 +73,27 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
     return format(new Date(date), "MMM dd, yyyy");
   };
 
+  const formatAddress = (address: any) => {
+    if (!address) return "";
+
+    if (typeof address === "string") return address;
+
+    if (typeof address === "object") {
+      return [
+        address.address_line_1 || address.addressLine1,
+        address.address_line_2 || address.addressLine2,
+        address.city,
+        address.state,
+        address.country,
+        address.pin || address.postalCode || address.zipCode,
+      ]
+        .filter(Boolean)
+        .join(", ");
+    }
+
+    return "";
+  };
+
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
       case "paid":
@@ -313,11 +334,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
             )}
             <div className="text-sm text-gray-600 space-y-1">
               {invoice.company.address && (
-                <p>
-                  {typeof invoice.company.address === "object"
-                    ? JSON.stringify(invoice.company.address)
-                    : invoice.company.address}
-                </p>
+                <p>{formatAddress(invoice.company.address)}</p>
               )}
               {invoice.company.email && <p>{invoice.company.email}</p>}
               {invoice.company.phone && <p>{invoice.company.phone}</p>}
@@ -365,9 +382,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
             </p>
             {invoice.client.address && (
               <p className="text-gray-600">
-                {typeof invoice.client.address === "object"
-                  ? JSON.stringify(invoice.client.address)
-                  : invoice.client.address}
+                {formatAddress(invoice.client.address)}
               </p>
             )}
             {invoice.client.email && (

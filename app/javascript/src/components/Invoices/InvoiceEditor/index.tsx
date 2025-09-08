@@ -75,9 +75,10 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
       invoice?.dueDate || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days from now
     reference: invoice?.reference || "",
     notes: invoice?.notes || "",
-    lineItems: invoice?.lineItems || [
-      { id: "1", description: "", quantity: 1, rate: 0, amount: 0 },
-    ],
+    lineItems: invoice?.invoiceLineItems ||
+      invoice?.lineItems || [
+        { id: "1", description: "", quantity: 1, rate: 0, amount: 0 },
+      ],
     discount: invoice?.discount || 0,
     tax: invoice?.tax || 0,
   });
