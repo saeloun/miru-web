@@ -22,9 +22,10 @@ const Header = ({
   id = null,
   deleteInvoice = null,
   wavieInvoice = null,
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
   setIsSendReminder = _value => {},
   showMoreButton = false,
+  invoice = null,
+  showHistory = () => {},
 }) => {
   const [isMoreOptionsVisible, setIsMoreOptionsVisible] =
     useState<boolean>(false);
@@ -92,11 +93,11 @@ const Header = ({
               <MoreOptions
                 deleteInvoice={deleteInvoice}
                 downloadInvoice={null}
-                invoice={undefined}
+                invoice={invoice}
                 markInvoiceAsPaid={() => null}
                 sendInvoice={handleSendInvoice}
                 setIsSendReminder={setIsSendReminder}
-                showHistory={() => null}
+                showHistory={showHistory}
                 wavieInvoice={wavieInvoice}
               />
             )}

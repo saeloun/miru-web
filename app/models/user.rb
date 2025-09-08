@@ -19,12 +19,14 @@
 #  last_sign_in_at        :datetime
 #  last_sign_in_ip        :string
 #  phone                  :string
+#  provider               :string
 #  remember_created_at    :datetime
 #  reset_password_sent_at :datetime
 #  reset_password_token   :string
 #  sign_in_count          :integer          default(0), not null
 #  social_accounts        :jsonb
 #  token                  :string(50)
+#  uid                    :string
 #  unconfirmed_email      :string
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
@@ -37,6 +39,9 @@
 #  index_users_on_current_workspace_id  (current_workspace_id)
 #  index_users_on_discarded_at          (discarded_at)
 #  index_users_on_email                 (email) UNIQUE
+#  index_users_on_email_trgm            (email) USING gin
+#  index_users_on_first_name_trgm       (first_name) USING gin
+#  index_users_on_last_name_trgm        (last_name) USING gin
 #  index_users_on_reset_password_token  (reset_password_token) UNIQUE
 #
 # Foreign Keys
@@ -45,15 +50,30 @@
 #
 
 # frozen_string_literal: true
+# typed: true
 
 class User < ApplicationRecord
-  include Discard::Model
-
-  class SpamUserSignup < StandardError
-    def initialize(msg = "Spam User Login")
-      super
-    end
+  if defined?(T::Sig)
+    extend T::Sig
+  else
+    def self.sig(&block); end
   end
+  include Discard::Model
+  include Searchable
+  include SuperAdmin
+
+  # Configure pg_search
+  pg_search_scope :pg_search,
+    against: [:first_name, :last_name, :email],
+    using: {
+      tsearch: {
+        prefix: true,
+        dictionary: "simple"
+      },
+      trigram: {
+        threshold: 0.1
+      }
+    }
 
   # Associations
   has_many :employments, dependent: :destroy
@@ -102,21 +122,32 @@ class User < ApplicationRecord
     :trackable, :confirmable,
     :omniauthable, omniauth_providers: [:google_oauth2]
 
+  # Devise session serialization fix
+  def self.serialize_into_session(record)
+    [record.id.to_s, record.authenticatable_salt]
+  end
+
+  def self.serialize_from_session(*args)
+    # Handle both old and new session formats
+    if args.length == 2
+      key, salt = args
+    elsif args.length > 2
+      # Extract just the first two arguments (id and salt)
+      key = args[0]
+      salt = args[1]
+    else
+      return nil
+    end
+
+    record = find_by(id: key)
+    record if record && record.authenticatable_salt == salt
+  end
+
   # Callbacks
-  before_validation :prevent_spam_user_sign_up
   after_discard :discard_project_members
   before_create :set_token
 
   after_commit :send_to_hubspot, on: :create
-
-  searchkick filterable: [:first_name, :last_name, :email],
-    word_middle: [:first_name, :last_name, :email]
-
-  def prevent_spam_user_sign_up
-    if self.email.include?("internetkeno")
-      raise SpamUserSignup.new("#{self.email} Spam User Signup")
-    end
-  end
 
   def primary_role(company)
     roles = self.roles.where(resource: company)
@@ -131,6 +162,7 @@ class User < ApplicationRecord
     end
   end
 
+  sig { returns(String) }
   def full_name
     "#{first_name} #{last_name}"
   end
@@ -141,13 +173,9 @@ class User < ApplicationRecord
   # 2.1 user is part of atleast one active employment OR
   # 2.2 initial phase i.e, user is owner and setting up the company
   #     and hence no associated company
+  sig { returns(T::Boolean) }
   def active_for_authentication?
     super and self.kept? and (!self.employments.kept.empty? or self.companies.empty?)
-  end
-
-  def joined_date_for_company(company)
-    employment = employments.find_by(company:)
-    employment&.joined_at
   end
 
   def inactive_message

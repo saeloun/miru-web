@@ -1,302 +1,354 @@
 # frozen_string_literal: true
 
+require "faker"
+
+# Create Company
 company = Company.create!(
-  {
-    name: "Saeloun Inc",
-    address: "475 Clermont Ave, Brooklyn, NY-12238",
-    business_phone: "+1 9296207865",
-    base_currency: "USD",
-    standard_price: 1000,
-    fiscal_year_end: "Dec",
-    date_format: "MM-DD-YYYY",
-    country: "US",
-    timezone: "(GMT-10:00) America/Adak"
-  })
+  name: "Saeloun Inc",
+  address: Faker::Address.full_address,
+  business_phone: Faker::PhoneNumber.phone_number,
+  base_currency: "USD",
+  standard_price: 1000,
+  fiscal_year_end: "Dec",
+  date_format: "MM-DD-YYYY",
+  country: "US",
+  timezone: "(GMT-10:00) America/Adak"
+)
 
 puts "Company Created"
 
-company.logo.attach(io: File.open(Rails.root.join("app/assets/images/saeloun_logo.png")), filename: "saeloun_logo.png")
+# Attach logo if file exists
+logo_path = Rails.root.join("app/assets/images/saeloun_logo.png")
+if File.exist?(logo_path)
+  company.logo.attach(io: File.open(logo_path), filename: "saeloun_logo.png")
+end
+
+# Create Users
+super_admin = User.create!(
+  first_name: "Saeloun",
+  last_name: "Admin",
+  email: "hello@saeloun.com",
+  password: "password",
+  password_confirmation: "password",
+  confirmed_at: Time.current,
+  current_workspace_id: company.id
+)
+
+vipul = User.create!(
+  first_name: "Vipul",
+  last_name: "AM",
+  email: "vipul@saeloun.com",
+  password: "password",
+  password_confirmation: "password",
+  confirmed_at: Time.current,
+  current_workspace_id: company.id
+)
+
+# Create additional users with Faker
+users_data = []
+4.times do
+  first_name = Faker::Name.first_name.gsub(/[^a-zA-Z\s]/, "")[0..29]  # Truncate to 30 chars
+  last_name = Faker::Name.last_name.gsub(/[^a-zA-Z\s]/, "")[0..29]   # Truncate to 30 chars
+  users_data << User.create!(
+    first_name: first_name,
+    last_name: last_name,
+    email: Faker::Internet.unique.email(name: "#{first_name}.#{last_name}".downcase),
+    password: "password",
+    password_confirmation: "password",
+    confirmed_at: Time.current,
+    current_workspace_id: company.id
+  )
+end
+
+supriya = users_data[0]
+book_keeper = users_data[1]
+sam = users_data[2]
+oliver = users_data[3]
 
 puts "Users Created"
-super_admin = User.create!(
-  first_name: "Saeloun", last_name: "Admin", email: "hello@saeloun.com", password: "welcome",
-  password_confirmation: "welcome", confirmed_at: Time.current)
-vipul = User.create!(
-  first_name: "Vipul", last_name: "A M", email: "vipul@example.com", password: "welcome",
-  password_confirmation: "welcome", confirmed_at: Time.current, current_workspace_id: company.id)
-supriya = User.create!(
-  first_name: "Supriya", last_name: "Agarwal", email: "supriya@example.com", password: "welcome",
-  password_confirmation: "welcome", confirmed_at: Time.current, current_workspace_id: company.id
-)
-book_keeper = User.create!(
-  first_name: "Book", last_name: "Keeper", email: "book.keeper@example.com", password: "welcome",
-  password_confirmation: "welcome", confirmed_at: Time.current, current_workspace_id: company.id
-)
-sam = User.create!(
-  first_name: "Sam", last_name: "Smith", email: "sam@example.com", password: "welcome",
-  password_confirmation: "welcome", confirmed_at: Time.current, current_workspace_id: company.id
-)
-oliver = User.create!(
-  first_name: "Oliver", last_name: "Smith", email: "oliver@example.com", password: "welcome",
-  password_confirmation: "welcome", confirmed_at: Time.current, current_workspace_id: company.id
-)
 
+# Assign Roles
 super_admin.add_role(:super_admin)
+super_admin.add_role(:owner, company)
 vipul.add_role(:owner, company)
 supriya.add_role(:admin, company)
 book_keeper.add_role(:book_keeper, company)
 sam.add_role(:employee, company)
 oliver.add_role(:client, company)
+
 puts "Users Roles Created"
 
-users = [vipul, supriya, book_keeper, sam]
-
-users.each { |user| company.employments.create!(user:) }
+# Create Employments
+users = [super_admin, vipul, supriya, book_keeper, sam]
+users.each { |user| company.employments.create!(user: user) }
 company.employments.create!(user: oliver)
+
 puts "Employment Created"
 
-microsoft_client = company.clients.create!(
-  name: "Microsoft",
-  email: oliver.email,
-  phone: "+1 9999999991"
-)
+# Create Clients
+clients = []
+3.times do
+  client = company.clients.create!(
+    name: Faker::Company.unique.name[0..29],  # Truncate to 30 chars max
+    email: Faker::Internet.unique.email,
+    phone: Faker::PhoneNumber.phone_number
+  )
+
+  client.addresses.create!(
+    address_line_1: Faker::Address.street_address,
+    city: Faker::Address.city,
+    state: Faker::Address.state,
+    pin: Faker::Address.zip_code,
+    country: "US"
+  )
+
+  clients << client
+end
+
+microsoft_client = clients.first
 
 puts "Clients Created"
 
+# Create Client Members
 company.client_members.create!(client: microsoft_client, user: oliver)
 
 puts "Client member created"
 
-microsoft_client.addresses.create!(
-  address_line_1: "475 Clermont Ave",
-  city: "Brooklyn",
-  state: "New york",
-  pin: "12238",
-  country: "US"
-)
-
-Client.reindex
-
-project_office_com = microsoft_client.projects.create!(name: "Office.com", description: "Office 365", billable: true)
-project_azure_com = microsoft_client.projects.create!(name: "Azure.com", description: "Cloud Computing", billable: true)
-
-Project.reindex
+# Create Projects
+projects = []
+clients.each do |client|
+  2.times do
+    project = client.projects.create!(
+      name: Faker::App.unique.name,
+      description: Faker::Lorem.sentence(word_count: 10),
+      billable: true
+    )
+    projects << project
+  end
+end
 
 puts "Projects Created"
 
+# Create Project Members
 users.each do |user|
-  user.project_members.create(project_id: project_office_com.id, hourly_rate: 5000)
-  user.project_members.create(project_id: project_azure_com.id, hourly_rate: 5000)
+  projects.sample(3).each do |project|
+    user.project_members.create!(
+      project_id: project.id,
+      hourly_rate: Faker::Number.between(from: 3000, to: 8000)
+    )
+  end
 end
 
 puts "Projects Members Created"
 
-timesheet_entry_start_date = (Date.today.beginning_of_month - 7)
-timesheet_entry_end_date = (Date.today.end_of_month + 7)
+# Create Holidays for 2025
+holiday = Holiday.find_or_create_by!(
+  year: 2025,
+  company_id: company.id,
+  enable_optional_holidays: false,
+  holiday_types: ["national", "optional"]
+)
 
-project_azure_com.project_members.each do |project_member|
-  (timesheet_entry_start_date..timesheet_entry_end_date).each do |date|
-    TimesheetEntry.create!(
-      user: project_member.user, project: project_member.project, duration: rand(1..1440),
-      note: "Worked on #{project_azure_com.name}", bill_status: :unbilled, work_date: date)
+# US holidays for 2025
+us_holidays = [
+  { date: Date.new(2025, 1, 1), name: "New Year Day", national_holiday: true },
+  { date: Date.new(2025, 1, 20), name: "Martin Luther King Jr Day", national_holiday: true },
+  { date: Date.new(2025, 2, 17), name: "Presidents Day", national_holiday: true },
+  { date: Date.new(2025, 5, 26), name: "Memorial Day", national_holiday: true },
+  { date: Date.new(2025, 6, 19), name: "Juneteenth", national_holiday: true },
+  { date: Date.new(2025, 7, 4), name: "Independence Day", national_holiday: true },
+  { date: Date.new(2025, 9, 1), name: "Labor Day", national_holiday: true },
+  { date: Date.new(2025, 10, 13), name: "Columbus Day", national_holiday: false },
+  { date: Date.new(2025, 11, 11), name: "Veterans Day", national_holiday: true },
+  { date: Date.new(2025, 11, 27), name: "Thanksgiving", national_holiday: true },
+  { date: Date.new(2025, 12, 25), name: "Christmas Day", national_holiday: true }
+]
+
+us_holidays.each do |holiday_data|
+  HolidayInfo.find_or_create_by!(
+    holiday_id: holiday.id,
+    date: holiday_data[:date],
+    name: holiday_data[:name],
+    category: holiday_data[:national_holiday] ? "national" : "optional"
+  )
+end
+
+puts "Holidays created"
+
+# Create Timesheet Entries
+puts "Creating timesheet entries..."
+timesheet_start_date = 2.months.ago.beginning_of_month
+timesheet_end_date = Date.today
+
+users.each do |user|
+  user.project_members.each do |project_member|
+    project = project_member.project
+
+    (timesheet_start_date.to_date..timesheet_end_date.to_date).each do |date|
+      # Skip weekends
+      next if date.saturday? || date.sunday?
+
+      # Random chance of working (75% chance on weekdays)
+      next unless rand < 0.75
+
+      duration = Faker::Number.between(from: 240, to: 480) # 4-8 hours in minutes
+      TimesheetEntry.create!(
+        user: user,
+        project: project,
+        duration: duration,
+        note: ["Development", "Testing", "Code Review", "Meeting", "Documentation"].sample,
+        bill_status: :unbilled,
+        work_date: date
+      )
+    end
   end
 end
-TimesheetEntry.reindex
-puts "TimeSheet entries created"
 
-invoice_1 = company.invoices.create!(
-  issue_date: Date.today, due_date: 30.days.from_now,
-  invoice_number: "SAI-C1-02", reference: "C1 2nd",
-  amount: 5000, outstanding_amount: 2000, tax: 500, amount_paid: 3000,
-  amount_due: 2000, discount: 500, status: 1, client_id: microsoft_client.id,
-  external_view_key: "403dc4e964d2dedd7727ad556df58437")
-invoice_2 = company.invoices.create!(
-  issue_date: Date.today, due_date: 30.days.from_now,
-  invoice_number: "SAI-C1-03", reference: "C1 3rd",
-  amount: 5000, outstanding_amount: 0, tax: 500, amount_paid: 5000,
-  amount_due: 0, discount: 500, status: 3, client_id: microsoft_client.id,
-  external_view_key: "403dc4e964d2dedd7727ad556df58437")
-Invoice.reindex
-puts "Invoice Created"
+puts "Timesheet entries created"
 
+# Create Invoices using month counts
+puts "Creating invoices..."
+invoice_number = 1
+
+# Create invoices for last 12 months
+(1..12).each do |month_count|
+  # Generate invoice date as month_count months ago minus random days
+  invoice_date = month_count.months.ago - rand(1..28).days
+
+  clients.sample(2).each do |client|
+    amount = Faker::Number.between(from: 5000, to: 25000)
+    tax = Faker::Number.between(from: 500, to: 2500)
+    discount = Faker::Number.between(from: 0, to: 500)
+    total_amount = amount + tax - discount
+
+    status = [:paid, :sent, :draft].sample
+
+    amount_paid = case status
+                  when :paid then total_amount
+                  else 0
+    end
+
+    amount_due = total_amount - amount_paid
+    outstanding_amount = status == :paid ? 0 : amount_due
+
+    invoice = Invoice.create!(
+      issue_date: invoice_date.to_date,
+      due_date: invoice_date.to_date + 30.days,
+      invoice_number: "INV#{invoice_number.to_s.rjust(4, '0')}",
+      reference: "REF#{invoice_number}",
+      amount: amount,
+      outstanding_amount: outstanding_amount,
+      tax: tax,
+      amount_paid: amount_paid,
+      amount_due: amount_due,
+      discount: discount,
+      status: status,
+      client_id: client.id,
+      company_id: company.id,
+      external_view_key: SecureRandom.hex(16),
+      sent_at: status == :sent ? invoice_date.to_date + 1.day : nil,
+      currency: "USD",
+      base_currency_amount: amount
+    )
+
+    # Add payment for paid invoices
+    if status == :paid
+      invoice.payments.create!(
+        amount: total_amount,
+        note: Faker::Lorem.sentence(word_count: 3),
+        status: :paid,
+        transaction_date: invoice_date.to_date + rand(5..20).days,
+        transaction_type: [:credit_card, :bank_transfer].sample
+      )
+    end
+
+    invoice_number += 1
+  end
+end
+
+puts "Invoices created"
+
+# Create Addresses
 company.addresses.create!(
   address_type: "permanent",
-  address_line_1: "Saeloun Inc",
-  address_line_2: "475 Clermont Ave",
-  state: "NY",
-  city: "Brooklyn",
+  address_line_1: Faker::Address.street_address,
+  address_line_2: Faker::Address.secondary_address,
+  state: Faker::Address.state_abbr,
+  city: Faker::Address.city,
   country: "US",
-  pin: "12238"
+  pin: Faker::Address.zip_code
 )
 
-users.each { |user| user.addresses.create!(
-  address_type: "current",
-  address_line_1: "Flat-1",
-  address_line_2: "Apartment A1",
-  state: "NY",
-  city: "Brooklyn",
-  country: "US",
-  pin: "12238"
-)
-}
+users.each do |user|
+  user.addresses.create!(
+    address_type: "current",
+    address_line_1: Faker::Address.street_address,
+    address_line_2: Faker::Address.secondary_address,
+    state: Faker::Address.state_abbr,
+    city: Faker::Address.city,
+    country: "US",
+    pin: Faker::Address.zip_code
+  )
+end
 
-puts "Address Created"
+puts "Addresses Created"
 
-users.each { |user| user.devices.create!(
-  device_type: "laptop",
-  name: "MacBook Pro",
-  serial_number: "1111",
-  company_id: company.id
-)
-}
+# Create Devices
+users.each do |user|
+  user.devices.create!(
+    device_type: "laptop",
+    name: ["MacBook Pro", "Dell XPS", "iPhone", "Surface Pro"].sample,
+    serial_number: Faker::Alphanumeric.alphanumeric(number: 10).upcase,
+    company_id: company.id
+  )
+end
 
-puts "Device Created"
+puts "Devices Created"
 
-users.each { |user| user.previous_employments.create!(
-  company_name: "Oracle",
-  role: "SDE"
-)
-}
+# Create Previous Employments
+users.each do |user|
+  user.previous_employments.create!(
+    company_name: Faker::Company.name,
+    role: Faker::Job.title
+  )
+end
 
 puts "Previous Employment Created"
 
-payment_1 = {
-  amount: 3000,
-  note: "This is payment note",
-  status: :partially_paid,
-  transaction_date: Date.today - 7,
-  transaction_type: :visa
-}
-payment_2 = {
-  amount: 5000,
-  note: "This is payment note",
-  status: :paid,
-  transaction_date: Date.today - 3,
-  transaction_type: :credit_card
-}
-
-invoice_1.payments.create!(payment_1)
-invoice_2.payments.create!(payment_2)
-
-puts "Payments Created"
-
+# Create Expense Categories
 ExpenseCategory::DEFAULT_CATEGORIES.each do |category|
   ExpenseCategory.find_or_create_by!(category)
 end
 
-puts "Default expense categories created"
+custom_categories = []
+["Travel", "Training", "Marketing"].each do |name|
+  custom_categories << company.expense_categories.create!(name: name)
+end
 
-outing_category = company.expense_categories.create!({ name: "Outing" })
-conference_category = company.expense_categories.create!({ name: "Conference" })
+puts "Expense categories created"
 
-puts "Custom expense Categories created"
-
-ca_vendor = company.vendors.create!({ name: "CA firm" })
-insurance_vendor = company.vendors.create!({ name: "Insurance" })
-booking_vendor = company.vendors.create!({ name: "Booking" })
-apple_repair_vendor = company.vendors.create!({ name: "Apple Maintenance" })
+# Create Vendors
+vendors = []
+5.times do
+  vendors << company.vendors.create!(
+    name: Faker::Company.unique.name[0..29]  # Truncate to 30 chars max
+  )
+end
 
 puts "Vendors created"
 
-expenses = [
-  {
-    amount: 300000,
-    date: Faker::Date.backward(days: 60),
-    description: "Salary of x,y,z employee",
-    expense_category_id: 1,
-    expense_type: :business
-  },
-  {
-    amount: 5500,
-    date: Faker::Date.backward(days: 60),
-    description: "Laptop's servicing Employee 1",
-    expense_category_id: 2,
-    vendor_id: apple_repair_vendor.id,
-    expense_type: :business
-  },
-  {
-    amount: 10000,
-    date: Faker::Date.backward(days: 60),
-    description: "Monthly rent",
-    expense_category_id: 3,
-    expense_type: :business
-  },
-  {
-    amount: 2000,
-    date: Faker::Date.backward(days: 60),
-    description: "Dinner party",
-    expense_category_id: 4,
-    vendor_id: booking_vendor.id,
-    expense_type: :personal
-  },
-  {
-    amount: 67000,
-    date: Faker::Date.backward(days: 60),
-    description: "Flight to NY",
-    expense_category_id: 5,
-    vendor_id: booking_vendor.id,
-    expense_type: :business
-  },
-  {
-    amount: 47000,
-    date: Faker::Date.backward(days: 60),
-    description: "Employee x Client visit",
-    expense_category_id: 5,
-    vendor_id: booking_vendor.id,
-    expense_type: :business
-  },
-  {
-    amount: 56703,
-    date: Faker::Date.backward(days: 60),
-    description: "Govt Tax",
-    expense_category_id: 6,
-    vendor_id: ca_vendor.id,
-    expense_type: :business
-  },
-  {
-    amount: 4350,
-    date: Faker::Date.backward(days: 60),
-    description: "Office new chair",
-    expense_category_id: 7,
-    vendor_id: booking_vendor.id,
-    expense_type: :business
-  },
-  {
-    amount: 20000,
-    date: Faker::Date.backward(days: 60),
-    description: "x,y,z employee health insurance",
-    expense_category_id: 8,
-    vendor_id: insurance_vendor.id,
-    expense_type: :business
-  },
-  {
-    amount: 6300,
-    date: Faker::Date.backward(days: 60),
-    description: "Some xyz expense",
-    expense_category_id: 9,
-    vendor_id: booking_vendor.id,
-    expense_type: :personal
-  },
-  {
-    amount: 12300,
-    date: Faker::Date.backward(days: 60),
-    description: "Team Vacation",
-    expense_category_id: outing_category.id,
-    vendor_id: booking_vendor.id,
-    expense_type: :business
-  },
-  {
-    amount: 5400,
-    date: Faker::Date.backward(days: 60),
-    description: "Rails Conf ticket",
-    expense_category_id: conference_category.id,
-    vendor_id: booking_vendor.id,
-    expense_type: :business
-  }
-]
-
-expenses.each do |expense|
-  company.expenses.create!(expense)
+# Create Expenses
+15.times do
+  company.expenses.create!(
+    amount: Faker::Number.between(from: 500, to: 10000),
+    date: Faker::Date.between(from: 2.months.ago, to: Date.today),
+    description: Faker::Lorem.sentence(word_count: 5),
+    expense_category_id: ExpenseCategory.all.sample.id,
+    vendor_id: vendors.sample.id,
+    expense_type: [:business, :personal].sample
+  )
 end
 
 puts "Expenses Created"
+
+puts "✅ Seeding completed successfully!"

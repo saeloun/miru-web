@@ -1,11 +1,9 @@
-/* eslint-disable react/display-name */
 import React, { forwardRef, useEffect, useMemo, useRef } from "react";
 
+import { useUserContext } from "context/UserContext";
 import { PencilIcon, DeleteIcon } from "miruIcons";
 import PropTypes from "prop-types";
 import { useTable, useRowSelect } from "react-table";
-
-import { useUserContext } from "context/UserContext";
 
 const IndeterminateCheckbox = forwardRef(
   ({ indeterminate, ...rest }: any, ref) => {
@@ -71,12 +69,18 @@ const Table = ({
   tableRowArray,
   hasCheckbox = false,
   hasRowIcons = false,
-  handleDeleteClick = id => {}, // eslint-disable-line
-  handleEditClick = id => {}, // eslint-disable-line
-  rowOnClick = id => {}, // eslint-disable-line
+  handleDeleteClick = _id => {
+    /* Default empty handler */
+  },
+  handleEditClick = _id => {
+    /* Default empty handler */
+  },
+  rowOnClick = _id => {
+    /* Default empty handler */
+  },
 }) => {
   const data = useMemo(() => tableRowArray, [tableRowArray]);
-  const columns = useMemo(() => tableHeader, []);
+  const columns = useMemo(() => tableHeader, [tableHeader]);
   const { isDesktop } = useUserContext();
 
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
@@ -86,7 +90,11 @@ const Table = ({
         data,
       },
       useRowSelect,
-      hasCheckbox ? getTableCheckbox : () => {} // eslint-disable-line  @typescript-eslint/no-empty-function
+      hasCheckbox
+        ? getTableCheckbox
+        : () => {
+            /* No checkbox handler needed */
+          }
     );
 
   return (

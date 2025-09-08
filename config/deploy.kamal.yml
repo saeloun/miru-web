@@ -1,0 +1,113 @@
+# Kamal 2.0 Deployment Configuration for Hetzner
+# This is separate from Fly.io deployment
+service: miru-2-0-upgrade
+
+# Docker image configuration
+image: saeloun/miru-2-0-upgrade
+
+# Deploy to Hetzner server
+servers:
+  web:
+    - 91.98.79.189
+  worker:
+    hosts:
+      - 91.98.79.189
+    cmd: bundle exec rake solid_queue:start
+
+# Enable SSL and configure subdomain for this specific review app
+proxy:
+  ssl: true
+  host: miru-2-0-upgrade.review.miru.so
+  app_port: 3000
+
+# Docker registry configuration
+registry:
+  server: ghcr.io
+  username: <%= ENV.fetch("GITHUB_USERNAME", "saeloun") %>
+  password:
+    - KAMAL_REGISTRY_PASSWORD
+
+# Builder configuration
+builder:
+  arch: amd64
+  dockerfile: Dockerfile.kamal
+  args:
+    RUBY_VERSION: 3.4.5
+    NODE_VERSION: 20
+    RAILS_ENV: production
+
+# Environment variables
+env:
+  clear:
+    RAILS_ENV: production
+    NODE_ENV: production
+    RAILS_SERVE_STATIC_FILES: true
+    RAILS_LOG_TO_STDOUT: true
+    PORT: 3000
+    WEB_CONCURRENCY: 2
+    RAILS_MAX_THREADS: 5
+    # PostgreSQL search
+    PG_SEARCH_ENABLED: true
+    # Solid Queue
+    SOLID_QUEUE_IN_PROCESS: false
+    # App specific namespace to avoid conflicts
+    APP_NAME: miru-2-0-upgrade
+  secret:
+    - RAILS_MASTER_KEY
+    - DATABASE_URL
+    - SECRET_KEY_BASE
+    - AWS_ACCESS_KEY_ID
+    - AWS_SECRET_ACCESS_KEY
+    - AWS_REGION
+    - AWS_BUCKET
+    - STRIPE_API_KEY
+    - STRIPE_PUBLISHABLE_KEY
+    - SENTRY_DSN
+    - GOOGLE_OAUTH_CLIENT_ID
+    - GOOGLE_OAUTH_CLIENT_SECRET
+
+# Aliases for common commands
+aliases:
+  console: app exec --interactive --reuse "bin/rails console"
+  shell: app exec --interactive --reuse "bash"
+  logs: app logs --follow
+  db-migrate: app exec --reuse "bin/rails db:migrate"
+
+# SSH configuration
+ssh:
+  user: <%= ENV.fetch("SSH_USER", "root") %>
+
+# Persistent volumes for storage
+volumes:
+  - "miru_2_0_upgrade_storage:/rails/storage"
+  - "miru_2_0_upgrade_public:/rails/public/uploads"
+
+# Asset fingerprinting bridge
+asset_path: /rails/public/assets
+
+# Rolling deployment configuration
+boot:
+  limit: 1
+  wait: 10
+
+# Accessory services (PostgreSQL and Redis)
+accessories:
+  postgres:
+    image: postgres:17-alpine
+    host: 91.98.79.189
+    port: 5432
+    env:
+      clear:
+        POSTGRES_DB: miru_2_0_upgrade
+        POSTGRES_USER: miru_2_0_upgrade
+      secret:
+        - POSTGRES_PASSWORD
+    directories:
+      - miru_2_0_upgrade_postgres:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    host: 91.98.79.189
+    port: 6379
+    directories:
+      - miru_2_0_upgrade_redis:/data

@@ -31,19 +31,41 @@ class Reports::TimeEntries::Result < ApplicationService
   private
 
     def process_response_by_group_by
-      label_field = GROUP_BY_INPUT_TO_GROUP_LABEL_FIELD[group_by.to_s]
-      id_field = GROUP_BY_INPUT_TO_GROUP_ID_FIELD[group_by.to_s]
+      GROUP_BY_INPUT_TO_GROUP_LABEL_FIELD[group_by.to_s]
+      GROUP_BY_INPUT_TO_GROUP_ID_FIELD[group_by.to_s]
 
-      grouped_data = es_response.group_by { |entry| entry[label_field] }.map do |label, entries|
-      id = entries.first[id_field]
+      grouped_data = es_response.group_by { |entry|
+        # Get the label based on group_by field
+        case group_by.to_s
+        when "client"
+          entry.try(:client_name) || entry[:client_name] || ""
+        when "project"
+          entry.try(:project_name) || entry[:project_name] || ""
+        when "team_member"
+          entry.try(:user_name) || entry[:user_name] || ""
+        else
+          ""
+        end
+      }.map do |label, entries|
+        # Get the ID from the first entry based on group_by field
+        id = case group_by.to_s
+             when "client"
+               entries.first.try(:client_id) || entries.first[:client_id]
+             when "project"
+               entries.first.try(:project_id) || entries.first[:project_id]
+             when "team_member"
+               entries.first.try(:user_id) || entries.first[:user_id]
+             else
+               nil
+        end
 
-      {
-        label:,
-        id:,
-        entries:
-      }
-    end
+        {
+          label: label || "",
+          id:,
+          entries:
+        }
+      end
 
-      grouped_data.sort_by { |group| group[:label] } # Optionally sort groups by label
+      grouped_data.sort_by { |group| group[:label].to_s } # Sort groups by label
     end
 end

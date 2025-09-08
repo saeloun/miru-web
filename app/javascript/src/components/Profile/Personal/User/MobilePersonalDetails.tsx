@@ -1,10 +1,9 @@
 import React from "react";
 
-import dayjs from "dayjs";
-import { GlobeIcon, InfoIcon, KeyIcon, MapPinIcon, PhoneIcon } from "miruIcons";
-
 import { Divider } from "common/Divider";
 import { InfoDescription } from "common/Mobile/InfoDescription";
+import dayjs from "dayjs";
+import { GlobeIcon, InfoIcon, KeyIcon, MapPinIcon, PhoneIcon } from "miruIcons";
 
 const MobilePersonalDetails = ({
   personalDetails: {

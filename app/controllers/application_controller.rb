@@ -8,5 +8,7 @@ class ApplicationController < ActionController::Base
   include Pagy::Backend
   include SetCurrentDetails
 
+  # Vite handles asset compilation
+
   before_action :authenticate_user!
 end

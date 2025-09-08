@@ -2,8 +2,6 @@
 
 class WeeklyReminderForMissedEntriesService
   def process
-    @invalid_emails = SesInvalidEmail.pluck(:email)
-
     Company.find_each do |company|
       company.users.kept.find_each do |user|
         notification_preference = NotificationPreference.find_by(user_id: user.id, company_id: company.id)
@@ -29,7 +27,7 @@ class WeeklyReminderForMissedEntriesService
 
     entries_total_duration = entries.sum(&:duration)
 
-    if entries_total_duration < limit && !@invalid_emails.include?(user.email)
+    if entries_total_duration < limit
       send_mail(recipients: user.email, name:, start_date:, end_date:, company_name:)
     end
   end

@@ -1,25 +1,29 @@
 import React, { useState, useRef, useEffect } from "react";
 
-import dayjs from "dayjs";
-import { Form, Formik, FormikProps } from "formik";
-import { currencyFormat, useOutsideClick } from "helpers";
-import { CalendarIcon, SearchIcon } from "miruIcons";
-import { useNavigate } from "react-router-dom";
-import Select, { DropdownIndicatorProps, components } from "react-select";
-import { Badge, MobileMoreOptions, Toastr } from "StyledComponents";
-
-import payment from "apis/payments/payments";
+import { payment } from "apis/api";
 import CustomDatePicker from "common/CustomDatePicker";
 import { CustomInputText } from "common/CustomInputText";
 import CustomReactSelect from "common/CustomReactSelect";
 import { CustomValueContainer } from "common/CustomReactSelectStyle";
 import { CustomTextareaAutosize } from "common/CustomTextareaAutosize";
 import { useUserContext } from "context/UserContext";
+import dayjs from "dayjs";
+import { Form, Formik, FormikProps } from "formik";
+import { currencyFormat, useOutsideClick } from "helpers";
 import { mapPayment } from "mapper/mappedIndex";
+import { CalendarIcon } from "miruIcons";
+import { useNavigate } from "react-router-dom";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../ui/select";
+import { Badge, MobileMoreOptions, Toastr } from "StyledComponents";
 import getStatusCssClass from "utils/getBadgeStatus";
 
 import { transactionTypes } from "./constants";
-import { customStyles } from "./styles";
 import { paymentEntryInitialValues } from "./utils";
 
 interface PaymentEntryFormValues {
@@ -123,52 +127,8 @@ const PaymentEntryForm = ({
     }
   };
 
-  const DropdownIndicator = (props: DropdownIndicatorProps<true>) => (
-    <components.DropdownIndicator {...props}>
-      <SearchIcon color="#1D1A31" size={20} />
-    </components.DropdownIndicator>
-  );
-
   const handleShowSelectMenu = () => {
     setShowSelectMenu(!showSelectMenu);
-  };
-
-  const CustomOption = props => {
-    let { innerProps, innerRef, data } = props; //eslint-disable-line
-    innerProps = { ...innerProps, id: "react-select-4-option-0" };
-
-    return (
-      <div
-        ref={innerRef}
-        {...innerProps}
-        className=" flex cursor-pointer items-center justify-between p-2"
-      >
-        <div className="w-2/6 py-3 pr-2 pl-0 text-left">
-          <div className="truncate text-sm font-medium leading-5 text-miru-dark-purple-1000">
-            {data.label}
-          </div>
-          <div className="pt-1 text-sm font-normal leading-5 text-miru-dark-purple-400">
-            {data.invoiceNumber}
-          </div>
-        </div>
-        <div className="w-2/6 px-2 py-3 text-right	">
-          <div className="text-base font-bold leading-5 text-miru-dark-purple-1000">
-            {baseCurrency && currencyFormat(baseCurrency, data.amount)}
-          </div>
-          <div className="pt-1 text-sm font-medium leading-5 text-miru-dark-purple-400">
-            {dayjs(data.invoiceDate).format(dateFormat)}
-          </div>
-        </div>
-        <div className="w-2/6 py-3 pl-2 pr-0 text-right text-sm font-semibold leading-4 tracking-wider">
-          <span className="rounded-lg">
-            <Badge
-              className={`${getStatusCssClass(data.status)} uppercase`}
-              text={data.status}
-            />
-          </span>
-        </div>
-      </div>
-    );
   };
 
   return (
@@ -248,26 +208,65 @@ const PaymentEntryForm = ({
                           onClick={e => e.stopPropagation()}
                         >
                           <Select
-                            defaultMenuIsOpen
-                            isSearchable
-                            className="m-0 mt-2 w-full border-0 font-medium text-miru-dark-purple-1000"
-                            classNamePrefix="border-0 font-medium text-miru-dark-purple-1000"
-                            defaultValue={invoice}
-                            id="selectDate"
-                            options={invoiceList.invoiceList}
-                            placeholder="Search by client name or invoice ID"
-                            styles={customStyles}
-                            components={{
-                              Option: CustomOption,
-                              DropdownIndicator,
-                              IndicatorSeparator: () => null,
-                            }}
-                            onChange={val => {
+                            defaultOpen
+                            value={invoice?.value?.toString() || ""}
+                            onValueChange={value => {
+                              const selectedInvoice =
+                                invoiceList.invoiceList.find(
+                                  inv => inv.value.toString() === value
+                                );
                               setShowSelectMenu(!showSelectMenu);
-                              setFieldValue("invoice", val);
-                              setFieldValue("amount", val.amount);
+                              setFieldValue("invoice", selectedInvoice);
+                              setFieldValue("amount", selectedInvoice.amount);
                             }}
-                          />
+                          >
+                            <SelectTrigger className="m-0 mt-2 w-full border-0 font-medium text-miru-dark-purple-1000">
+                              <SelectValue placeholder="Search by client name or invoice ID" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {invoiceList.invoiceList.map(invoiceOption => (
+                                <SelectItem
+                                  key={invoiceOption.value}
+                                  value={invoiceOption.value.toString()}
+                                >
+                                  <div className="flex cursor-pointer items-center justify-between p-2 w-full">
+                                    <div className="w-2/6 py-3 pr-2 pl-0 text-left">
+                                      <div className="truncate text-sm font-medium leading-5 text-miru-dark-purple-1000">
+                                        {invoiceOption.label}
+                                      </div>
+                                      <div className="pt-1 text-sm font-normal leading-5 text-miru-dark-purple-400">
+                                        {invoiceOption.invoiceNumber}
+                                      </div>
+                                    </div>
+                                    <div className="w-2/6 px-2 py-3 text-right">
+                                      <div className="text-base font-bold leading-5 text-miru-dark-purple-1000">
+                                        {baseCurrency &&
+                                          currencyFormat(
+                                            baseCurrency,
+                                            invoiceOption.amount
+                                          )}
+                                      </div>
+                                      <div className="pt-1 text-sm font-medium leading-5 text-miru-dark-purple-400">
+                                        {dayjs(
+                                          invoiceOption.invoiceDate
+                                        ).format(dateFormat)}
+                                      </div>
+                                    </div>
+                                    <div className="w-2/6 py-3 pl-2 pr-0 text-right text-sm font-semibold leading-4 tracking-wider">
+                                      <span className="rounded-lg">
+                                        <Badge
+                                          className={`${getStatusCssClass(
+                                            invoiceOption.status
+                                          )} uppercase`}
+                                          text={invoiceOption.status}
+                                        />
+                                      </span>
+                                    </div>
+                                  </div>
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
                         </div>
                       )}
                     </div>
@@ -292,7 +291,7 @@ const PaymentEntryForm = ({
                   value={
                     transactionDate && dayjs(transactionDate).format(dateFormat)
                   }
-                  onChange={() => {}} //eslint-disable-line
+                  onChange={() => {}}
                 />
                 <CalendarIcon
                   className="absolute top-0 bottom-0 right-1 mx-2 my-3 cursor-pointer"
@@ -382,7 +381,7 @@ const PaymentEntryForm = ({
                 value={
                   amount && baseCurrency && currencyFormat(baseCurrency, amount)
                 }
-                onChange={() => {}} //eslint-disable-line
+                onChange={() => {}}
               />
             </div>
             <div className="mt-4">

@@ -45,7 +45,7 @@ const TableHeader = ({
         />
       </th>
       <th
-        className="whitespace-nowrap py-5 pr-0 text-left text-xs font-medium tracking-widest text-miru-black-1000 md:font-normal lg:w-1/3 lg:pr-2 lg:pr-2"
+        className="whitespace-nowrap py-5 pr-0 text-left text-xs font-medium tracking-widest text-miru-black-1000 lg:w-1/3 lg:pr-2"
         scope="col"
       >
         CLIENT / INVOICE NO.
@@ -59,13 +59,13 @@ const TableHeader = ({
         </th>
       )}
       <th
-        className="hidden w-1/6 px-2 py-5 text-right text-xs font-normal tracking-widest text-miru-black-1000 lg:table-cell lg:px-6"
+        className="hidden w-1/6 px-2 py-5 text-right text-xs font-medium tracking-widest text-miru-black-1000 lg:table-cell lg:px-6"
         scope="col"
       >
         AMOUNT
       </th>
       <th
-        className="hidden px-2 py-5 text-right text-xs font-normal tracking-widest text-miru-black-1000 lg:table-cell lg:px-6"
+        className="hidden px-2 py-5 text-right text-xs font-medium tracking-widest text-miru-black-1000 lg:table-cell lg:px-6"
         scope="col"
       >
         STATUS

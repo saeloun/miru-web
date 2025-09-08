@@ -5,6 +5,7 @@ import { currencyFormat } from "./currency";
 import { currencySymbol } from "./currencySymbol";
 import { getMonthFromString } from "./dateParser";
 import { useDebounce } from "./debounce";
+import { getGravatarUrl } from "./gravatar";
 import { minFromHHMM, minToHHMM } from "./hhmmParser";
 import { lineTotalCalc } from "./lineTotalCalc";
 import { getNumberWithOrdinal } from "./ordinal";
@@ -23,6 +24,7 @@ export {
   companyDateFormater,
   currencyFormat,
   currencySymbol,
+  getGravatarUrl,
   getMonthFromString,
   getNumberWithOrdinal,
   minFromHHMM,

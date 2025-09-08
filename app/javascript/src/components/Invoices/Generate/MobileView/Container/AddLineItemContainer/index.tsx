@@ -1,5 +1,11 @@
 import React, { useState, useRef, useEffect } from "react";
 
+import CustomDatePicker from "common/CustomDatePicker";
+import { CustomInputText } from "common/CustomInputText";
+import { CustomTextareaAutosize } from "common/CustomTextareaAutosize";
+import { InputErrors, InputField } from "common/FormikFields";
+import NewLineItemTable from "components/Invoices/common/NewLineItemTable";
+import { fetchNewLineItems } from "components/Invoices/common/utils";
 import dayjs from "dayjs";
 import { Formik, Form, FormikProps } from "formik";
 import {
@@ -11,13 +17,6 @@ import {
 } from "helpers";
 import { CalendarIcon, DeleteIcon, FloppyDiskIcon } from "miruIcons";
 import { Button, TimeInput } from "StyledComponents";
-
-import CustomDatePicker from "common/CustomDatePicker";
-import { CustomInputText } from "common/CustomInputText";
-import { CustomTextareaAutosize } from "common/CustomTextareaAutosize";
-import { InputErrors, InputField } from "common/FormikFields";
-import NewLineItemTable from "components/Invoices/common/NewLineItemTable";
-import { fetchNewLineItems } from "components/Invoices/common/utils";
 
 import { addEditFormInitialValues, addEditFormSchema } from "./utils";
 
@@ -191,9 +190,11 @@ const AddLineItemContainer = ({
   };
 
   const handleSubmitForm = (values: any) => {
-    editItem.id || editItem.timesheet_entry_id
-      ? handleEdit()
-      : handleAddLineItem(values);
+    if (editItem.id || editItem.timesheet_entry_id) {
+      handleEdit();
+    } else {
+      handleAddLineItem(values);
+    }
   };
 
   useOutsideClick(
@@ -268,7 +269,7 @@ const AddLineItemContainer = ({
         initialValues={addEditFormInitialValues(editItem)}
         validateOnBlur={false}
         validationSchema={addEditFormSchema}
-        onSubmit={() => {}} //eslint-disable-line
+        onSubmit={() => {}}
       >
         {(props: FormikProps<AddLineItemFormValues>) => {
           const { touched, errors, values, setFieldValue, setFieldError } =

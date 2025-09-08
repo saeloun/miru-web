@@ -2,12 +2,11 @@ import React from "react";
 
 import { DeleteIcon, MobileIcon } from "miruIcons";
 import "react-phone-number-input/style.css";
-import { Button } from "StyledComponents";
-
 import { CustomInputText } from "common/CustomInputText";
 import { CustomReactSelect } from "common/CustomReactSelect";
 import { Divider } from "common/Divider";
 import { ErrorSpan } from "common/ErrorSpan";
+import { Button } from "StyledComponents";
 
 import { deviceTypes } from "../helpers";
 

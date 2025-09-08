@@ -20,7 +20,9 @@
 #  index_clients_on_company_id            (company_id)
 #  index_clients_on_discarded_at          (discarded_at)
 #  index_clients_on_email_and_company_id  (email,company_id) UNIQUE
+#  index_clients_on_email_trgm            (email) USING gin
 #  index_clients_on_name_and_company_id   (name,company_id) UNIQUE
+#  index_clients_on_name_trgm             (name) USING gin
 #
 # Foreign Keys
 #
@@ -31,6 +33,16 @@
 
 class Client < ApplicationRecord
   include Discard::Model
+  include Searchable
+  include MetricsTracking
+
+  # Configure pg_search
+  pg_search_scope :pg_search,
+    against: [:name, :email, :phone, :address],
+    using: {
+      tsearch: { prefix: true },
+      trigram: { threshold: 0.3 }
+    }
 
   has_many :projects
   has_many :timesheet_entries, through: :projects
@@ -48,18 +60,9 @@ class Client < ApplicationRecord
   # validates :email, presence: true, uniqueness: { scope: :company_id }, format: { with: Devise.email_regexp }
 
   after_discard :discard_projects
-  after_commit :reindex_projects
-  after_commit :refresh_client_index
 
   accepts_nested_attributes_for :addresses, reject_if: :address_attributes_blank?, allow_destroy: true
   scope :with_ids, -> (client_ids) { where(id: client_ids) if client_ids.present? }
-
-  searchkick filterable: [:name, :email, :discarded_at],
-    word_middle: [:name, :email]
-
-  def reindex_projects
-    projects.reindex
-  end
 
   def total_hours_logged(time_frame = "week")
     timesheet_entries.where(
@@ -186,9 +189,6 @@ class Client < ApplicationRecord
     current_address&.formatted_address
   end
 
-  def refresh_client_index
-    Client.search_index.refresh
-  end
 
   def client_members_emails
     client_members.kept.includes(:user).pluck("users.email")

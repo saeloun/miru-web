@@ -1,8 +1,7 @@
 import React from "react";
 
+import { clientMembersApi } from "apis/api";
 import { Modal, Button } from "StyledComponents";
-
-import clientMembersApi from "apis/clientMembers";
 
 interface IProps {
   contact: any;

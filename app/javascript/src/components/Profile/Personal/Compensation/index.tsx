@@ -1,11 +1,11 @@
 import React, { Fragment, useEffect, useState } from "react";
 
-import { useNavigate, useParams } from "react-router-dom";
-
 import Loader from "common/Loader/index";
 import { MobileEditHeader } from "common/Mobile/MobileEditHeader";
 import { useProfileContext } from "context/Profile/ProfileContext";
 import { useUserContext } from "context/UserContext";
+import { useNavigate, useParams } from "react-router-dom";
+import { useCurrentUser } from "~/hooks/useCurrentUser";
 
 import StaticPage from "./StaticPage";
 
@@ -13,11 +13,26 @@ import DetailsHeader from "../../Common/DetailsHeader";
 
 const CompensationDetails = () => {
   const { isDesktop, company } = useUserContext();
+  const { currentUser } = useCurrentUser();
   const { updateDetails, compensationDetails, isCalledFromSettings } =
     useProfileContext();
   const navigate = useNavigate();
   const { memberId } = useParams();
   const [isLoading, setIsLoading] = useState(false);
+  const [currentUserId, setCurrentUserId] = useState(null);
+
+  // Effect to determine current user ID
+  useEffect(() => {
+    if (isCalledFromSettings) {
+      // Use fresh user data from _me endpoint for settings
+      if (currentUser) {
+        setCurrentUserId(currentUser.id);
+      }
+    } else {
+      // Use memberId for team view
+      setCurrentUserId(memberId);
+    }
+  }, [isCalledFromSettings, currentUser, memberId]);
 
   const getDetails = async () => {
     //fetch compensation details from backend and store it in compensationData
@@ -57,9 +72,13 @@ const CompensationDetails = () => {
         />
       ) : (
         <MobileEditHeader
-          backHref={isCalledFromSettings ? "/settings/" : `/team/${memberId}`}
           href="edit"
           title="Compensation"
+          backHref={
+            isCalledFromSettings
+              ? "/settings/"
+              : `/team/${currentUserId || memberId}`
+          }
         />
       )}
       {isLoading ? (

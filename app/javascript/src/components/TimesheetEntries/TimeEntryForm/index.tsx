@@ -1,13 +1,11 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 import React, { useState, useEffect, useRef, MutableRefObject } from "react";
 
-import dayjs from "dayjs";
-import { minFromHHMM, minToHHMM, useDebounce, useOutsideClick } from "helpers";
-
-import timesheetEntryApi from "apis/timesheet-entry";
+import { timesheetEntryApi } from "apis/api";
 import { useTimesheetEntries } from "context/TimesheetEntries";
 import { TimeEntryFormContext } from "context/TimesheetEntries/TimeEntryFormContext";
 import { useUserContext } from "context/UserContext";
+import dayjs from "dayjs";
+import { minFromHHMM, minToHHMM, useDebounce, useOutsideClick } from "helpers";
 import { getValueFromLocalStorage, setToLocalStorage } from "utils/storage";
 
 import DesktopTimeEntryForm from "./DesktopTimeEntryForm";

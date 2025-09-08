@@ -1,10 +1,39 @@
 # frozen_string_literal: true
 
+# == Schema Information
+#
+# Table name: clients
+#
+#  id           :bigint           not null, primary key
+#  address      :string
+#  currency     :string           default("USD"), not null
+#  discarded_at :datetime
+#  email        :string
+#  name         :string           not null
+#  phone        :string
+#  created_at   :datetime         not null
+#  updated_at   :datetime         not null
+#  company_id   :bigint           not null
+#  stripe_id    :string
+#
+# Indexes
+#
+#  index_clients_on_company_id            (company_id)
+#  index_clients_on_discarded_at          (discarded_at)
+#  index_clients_on_email_and_company_id  (email,company_id) UNIQUE
+#  index_clients_on_email_trgm            (email) USING gin
+#  index_clients_on_name_and_company_id   (name,company_id) UNIQUE
+#  index_clients_on_name_trgm             (name) USING gin
+#
+# Foreign Keys
+#
+#  fk_rails_...  (company_id => companies.id)
+#
 FactoryBot.define do
   factory :client do
     company
     name { Faker::Name.unique.name[0..30] }
-    email { Faker::Internet.unique.safe_email }
+    email { Faker::Internet.unique.email }
     phone { Faker::PhoneNumber.phone_number_with_country_code.slice(0, 15) }
     currency { "USD" }
 

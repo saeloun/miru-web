@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
 
-import { Toastr } from "StyledComponents";
-
-import expensesApi from "apis/expenses";
+import { expensesApi } from "apis/api";
 import Loader from "common/Loader/index";
 import withLayout from "common/Mobile/HOC/withLayout";
 import { useUserContext } from "context/UserContext";
+import { Toastr } from "StyledComponents";
 
 import Container from "./Container";
 import Header from "./Header";
@@ -74,7 +73,7 @@ const Expenses = () => {
   }
 
   const ExpensesLayout = () => (
-    <div className="flex h-full flex-col justify-between p-4 lg:p-0 ">
+    <div className="flex h-full flex-col justify-between p-4 lg:p-0">
       <Header
         clearSearch={fetchExpenses}
         fetchSearchResults={fetchSearchResults}

@@ -39,14 +39,16 @@ VCR.configure do |config|
   config.ignore_localhost = true
   config.configure_rspec_metadata!
   config.allow_http_connections_when_no_cassette = true
-  config.ignore_hosts "127.0.0.1", "localhost", "elasticsearch", "analytics-api.buildkite.com"
+  config.ignore_hosts "127.0.0.1", "localhost", "analytics-api.buildkite.com"
 end
 
 RSpec.configure do |config|
-  config.fixture_path = "#{::Rails.root}/spec/fixtures"
+  config.fixture_paths = ["#{::Rails.root}/spec/fixtures"]
 
   config.include Warden::Test::Helpers
   config.include Devise::Test::IntegrationHelpers, type: :request
+  config.include Devise::Test::IntegrationHelpers, type: :system
+  config.include ActiveSupport::Testing::TimeHelpers
 
   config.use_transactional_fixtures = false
 
@@ -63,8 +65,15 @@ RSpec.configure do |config|
   config.before do
     Faker::UniqueGenerator.clear
     OmniAuth.config.test_mode = true
+    ActiveJob::Base.queue_adapter = :test
   end
   config.include ActiveJob::TestHelper
+
+  # Configure system tests with Playwright
+  config.before(:each, type: :system) do
+    driven_by :playwright
+    Capybara.default_max_wait_time = 10
+  end
 
   config.around do |example|
     if [:system, :feature].include?(example.metadata[:type])
@@ -77,15 +86,7 @@ RSpec.configure do |config|
     WebMock.disable_net_connect!
   end
 
-  if ENV["CI"].present?
-    config.before(:each, type: :system) do
-      driven_by :chrome_headless
-
-      Capybara.app_host = "http://#{IPSocket.getaddress(Socket.gethostname)}:3000"
-      Capybara.server_host = IPSocket.getaddress(Socket.gethostname)
-      Capybara.server_port = 3000
-    end
-  end
+  # System test configuration is handled in spec/support/system_test_config.rb
 
   def auth_headers(auth_user, options = {})
     {

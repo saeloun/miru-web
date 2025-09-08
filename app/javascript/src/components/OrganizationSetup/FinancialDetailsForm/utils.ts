@@ -1,6 +1,6 @@
-import * as Yup from "yup";
-
 import { currencyList } from "constants/currencyList";
+
+import * as Yup from "yup";
 
 export const financialDetailsFormValidationSchema = Yup.object().shape({
   base_currency: Yup.object().shape({

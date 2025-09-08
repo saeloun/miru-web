@@ -1,12 +1,16 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
 
+import { timesheetEntryApi } from "apis/api";
 import { minFromHHMM, minToHHMM, validateTimesheetEntry } from "helpers";
-import { CheckedCheckboxSVG, UncheckedCheckboxSVG, EditIcon } from "miruIcons";
-import { TimeInput, Toastr } from "StyledComponents";
-
-import timesheetEntryApi from "apis/timesheet-entry";
+import { PencilSimple } from "phosphor-react";
+import { TimeInput } from "../ui/time-input";
+import { Toastr } from "../ui/toastr";
+import { Checkbox } from "../ui/checkbox";
+import { Button } from "../ui/button";
+import { Card, CardContent } from "../ui/card";
+import { Textarea } from "../ui/textarea";
+import { Label } from "../ui/label";
+import { cn } from "../../lib/utils";
 
 const WeeklyEntriesCard = ({
   client,
@@ -59,10 +63,14 @@ const WeeklyEntriesCard = ({
       minToHHMM(currentEntries[num] ? currentEntries[num]["duration"] : 0)
     );
 
-    currentEntries[num] &&
-    ["unbilled", "billed"].includes(currentEntries[num]["bill_status"])
-      ? setBillable(true)
-      : setBillable(false);
+    if (
+      currentEntries[num] &&
+      ["unbilled", "billed"].includes(currentEntries[num]["bill_status"])
+    ) {
+      setBillable(true);
+    } else {
+      setBillable(false);
+    }
   };
 
   const handleSaveEntry = async () => {
@@ -166,136 +174,146 @@ const WeeklyEntriesCard = ({
   }, []);
 
   return (
-    <div className="week-card mt-4 w-full rounded-lg p-6 shadow-xl">
-      <div className="flex w-full items-center justify-between">
-        <div className="mr-2 flex w-1/15 flex-wrap items-center justify-start xl:mr-10">
-          <p className="text-xs xl:text-sm xxl:text-lg">{client}</p>
-          <p className="ml-2 mr-auto text-xs xl:text-sm xxl:text-lg">•</p>
-          <p className="text-xs xl:text-sm xxl:text-lg">{project}</p>
-        </div>
-        <div className="flex w-3/5 items-center justify-between">
-          {[0, 1, 2, 3, 4, 5, 6].map((num: number) =>
-            num === selectedInputBox ? (
-              <TimeInput
-                className="focus:outline-none bold mx-auto h-15 w-auto content-center rounded border-2 border-miru-han-purple-400 bg-miru-gray-100 p-1 text-base focus:border-miru-han-purple-400 xl:w-18 xl:text-xl xxl:p-4"
-                id="selectedInput"
-                initTime={duration}
-                key={num}
-                name="timeInput"
-                onTimeChange={handleDurationChange}
-              />
-            ) : (
-              <div
-                id={`inputClick_${num}`}
-                key={num}
-                className={`bold mx-auto flex h-15 w-auto items-center  justify-center rounded border-2 border-transparent bg-miru-gray-100 p-1 text-base xl:text-xl xxl:p-4 ${
-                  currentEntries[num]
-                    ? "text-miru-gray-500"
-                    : "text-miru-dark-purple-200"
-                }`}
-                onClick={() => handleDurationClick(num)}
-              >
-                {currentEntries[num]
-                  ? minToHHMM(currentEntries[num]["duration"])
-                  : "00:00"}
-              </div>
-            )
-          )}
-        </div>
-        <div className="w-1/10 text-center text-base font-bold xl:text-xl">
-          {minToHHMM(weeklyTotalHours)}
-        </div>
-        <div className="flex w-1/10 items-center justify-center">
-          <EditIcon
-            className="cursor-pointer text-miru-han-purple-1000"
-            size={16}
-            weight="bold"
-            onClick={() => {
-              if (!isWeeklyEditing) setProjectSelected(false);
-            }}
-          />
-        </div>
-      </div>
-      {showNote && (
-        <div className="mx-54 mt-4 w-138 justify-between rounded border border-miru-gray-1000 bg-miru-gray-100">
-          <textarea
-            className="outline-none w-full resize-none rounded bg-miru-gray-100 p-2"
-            placeholder="Note"
-            value={note}
-            onChange={e => {
-              setNote(e.target.value);
-              setDataChanged(true);
-              setDataChanged(true);
-            }}
-          />
-          <div className="flex h-10 w-full justify-between bg-miru-gray-200">
-            <div className="flex items-center">
-              {billable && isProjectBillable ? (
-                <img
-                  alt="checkbox"
-                  className="inline"
-                  src={CheckedCheckboxSVG}
-                  onClick={() => {
-                    setBillable(false);
-                    setDataChanged(true);
-                  }}
+    <Card className="mt-4 w-full group hover:shadow-xl transition-shadow">
+      <CardContent className="p-6">
+        <div className="flex w-full items-center justify-between gap-4">
+          {/* Project Info */}
+          <div className="flex items-center gap-2 min-w-[200px]">
+            <span className="text-base font-medium">{client}</span>
+            <span className="text-muted-foreground">•</span>
+            <span className="text-base font-medium">{project}</span>
+          </div>
+          {/* Time Inputs */}
+          <div className="flex flex-1 items-center justify-between gap-2">
+            {[0, 1, 2, 3, 4, 5, 6].map((num: number) =>
+              num === selectedInputBox ? (
+                <TimeInput
+                  className={cn(
+                    "h-12 w-20 text-center rounded-md border-2 border-primary",
+                    "bg-muted font-semibold text-lg focus:outline-none focus:ring-2 focus:ring-ring"
+                  )}
+                  id="selectedInput"
+                  initTime={duration}
+                  key={num}
+                  name="timeInput"
+                  onTimeChange={handleDurationChange}
                 />
               ) : (
-                <img
-                  alt="checkbox"
-                  className="inline"
-                  src={UncheckedCheckboxSVG}
-                  onClick={() => {
-                    isProjectBillable && setBillable(true);
-                    setDataChanged(true);
-                  }}
-                />
-              )}
-              <h4>Billable</h4>
-            </div>
-            <div>
-              <button
-                className="m-2 inline-block h-6 w-30 justify-center rounded border border-miru-han-purple-1000 bg-transparent py-1 px-6 text-center align-middle text-xs font-bold tracking-widest text-miru-han-purple-600  hover:border-transparent hover:bg-miru-han-purple-1000 hover:text-white"
-                onClick={() => {
-                  setNote("");
-                  setShowNote(false);
-                  setDataChanged(false);
-                  setSelectedInputBox(-1);
-                  setBillable(false);
-                  setIsWeeklyEditing(false);
-                }}
-              >
-                CANCEL
-              </button>
-              {currentEntries[selectedInputBox] ? (
                 <button
-                  className={`m-2 mb-1 inline-block h-6 w-30 rounded border py-1 px-6 text-xs font-bold tracking-widest text-white ${
-                    dataChanged && duration
-                      ? "bg-miru-han-purple-1000 hover:border-transparent"
-                      : "bg-miru-gray-1000"
-                  }`}
-                  onClick={handleUpdateEntry}
+                  id={`inputClick_${num}`}
+                  key={num}
+                  className={cn(
+                    "h-12 w-20 rounded-md border-2 border-transparent",
+                    "bg-muted font-semibold text-lg transition-colors",
+                    "hover:bg-accent hover:border-accent-foreground/20",
+                    currentEntries[num]
+                      ? "text-foreground"
+                      : "text-muted-foreground"
+                  )}
+                  onClick={() => handleDurationClick(num)}
                 >
-                  UPDATE
+                  {currentEntries[num]
+                    ? minToHHMM(currentEntries[num]["duration"])
+                    : "00:00"}
                 </button>
-              ) : (
-                <button
-                  disabled={!(dataChanged && duration && note)}
-                  className={`m-2 mb-1 inline-block h-6 w-30 rounded border py-1 px-6 text-xs font-bold tracking-widest text-white ${
-                    dataChanged && duration && note
-                      ? "bg-miru-han-purple-1000 hover:border-transparent"
-                      : "bg-miru-gray-1000"
-                  }`}
-                  onClick={handleSaveEntry}
-                >
-                  SAVE
-                </button>
-              )}
-            </div>
+              )
+            )}
+          </div>
+          {/* Total Hours */}
+          <div className="min-w-[80px] text-center">
+            <span className="text-lg font-bold">
+              {minToHHMM(weeklyTotalHours)}
+            </span>
+          </div>
+          {/* Edit Button */}
+          <div className="flex items-center">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8"
+              onClick={() => {
+                if (!isWeeklyEditing) setProjectSelected(false);
+              }}
+            >
+              <PencilSimple className="h-4 w-4" />
+            </Button>
           </div>
         </div>
-      )}
-    </div>
+        {showNote && (
+          <div className="mt-4 mx-auto max-w-2xl">
+            <Card className="border-2">
+              <CardContent className="p-0">
+                <Textarea
+                  className="min-h-[100px] rounded-b-none border-0 resize-none focus-visible:ring-0"
+                  placeholder="Add a note..."
+                  value={note}
+                  onChange={e => {
+                    setNote(e.target.value);
+                    setDataChanged(true);
+                  }}
+                />
+                <div className="flex items-center justify-between border-t bg-muted/50 p-3">
+                  <div className="flex items-center gap-2">
+                    <Checkbox
+                      id="weekly-billable"
+                      checked={billable && isProjectBillable}
+                      disabled={!isProjectBillable}
+                      onCheckedChange={checked => {
+                        setBillable(checked as boolean);
+                        setDataChanged(true);
+                      }}
+                    />
+                    <Label
+                      htmlFor="weekly-billable"
+                      className={cn(
+                        "text-sm font-medium cursor-pointer",
+                        !isProjectBillable &&
+                          "text-muted-foreground cursor-not-allowed"
+                      )}
+                    >
+                      Billable
+                    </Label>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setNote("");
+                        setShowNote(false);
+                        setDataChanged(false);
+                        setSelectedInputBox(-1);
+                        setBillable(false);
+                        setIsWeeklyEditing(false);
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                    {currentEntries[selectedInputBox] ? (
+                      <Button
+                        size="sm"
+                        disabled={!(dataChanged && duration)}
+                        onClick={handleUpdateEntry}
+                      >
+                        Update
+                      </Button>
+                    ) : (
+                      <Button
+                        size="sm"
+                        disabled={!(dataChanged && duration && note)}
+                        onClick={handleSaveEntry}
+                      >
+                        Save
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+      </CardContent>
+    </Card>
   );
 };
 

@@ -20,6 +20,17 @@
 #  fk_rails_...  (company_id => companies.id)
 #
 class ExpenseCategory < ApplicationRecord
+  include Searchable
+
+  pg_search_scope :pg_search,
+    against: [:name],
+    using: {
+      tsearch: {
+        prefix: true,
+        dictionary: "simple"
+      }
+    }
+
   DEFAULT_CATEGORIES = [
     { name: "Salary", default: true },
     { name: "Repairs & Maintenance", default: true },
@@ -38,12 +49,4 @@ class ExpenseCategory < ApplicationRecord
   belongs_to :company, optional: true
 
   scope :default_categories, -> { where(default: true) }
-
-  after_commit :reindex_expenses
-
-  private
-
-    def reindex_expenses
-      expenses.reindex
-    end
 end

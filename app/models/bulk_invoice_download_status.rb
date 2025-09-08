@@ -11,6 +11,7 @@
 #  updated_at  :datetime         not null
 #  download_id :string
 #
+
 class BulkInvoiceDownloadStatus < ApplicationRecord
   validates :download_id, presence: true, uniqueness: true
   validates :status, presence: true

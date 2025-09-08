@@ -1,7 +1,13 @@
 import React from "react";
 
 import { Formik, Form, Field, FormikProps } from "formik";
-import Select, { components } from "react-select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../ui/select";
 
 import {
   FinancialDetailsFormProps,
@@ -14,48 +20,6 @@ import {
   financialDetailsFormValidationSchema,
   fiscalYearEndOptions,
 } from "./utils";
-
-const customStyles = {
-  control: provided => ({
-    ...provided,
-    backgroundColor: "#FFFFFF",
-    color: "red",
-    minHeight: 48,
-    padding: "0",
-  }),
-  menu: provided => ({
-    ...provided,
-    fontSize: "12px",
-    letterSpacing: "handleCountryChange2px",
-  }),
-  valueContainer: provided => ({
-    ...provided,
-    overflow: "visible",
-  }),
-  placeholder: base => ({
-    ...base,
-    position: "absolute",
-    top: "-45%",
-    transition: "top 0.2s, font-size 0.2s",
-    fontSize: 10,
-    backgroundColor: "#FFFFFF",
-  }),
-};
-
-const { ValueContainer, Placeholder } = components;
-
-const CustomValueContainer = props => {
-  const { children } = props;
-
-  return (
-    <ValueContainer {...props}>
-      <Placeholder {...props}>{props.selectProps.placeholder}</Placeholder>
-      {React.Children.map(children, child =>
-        child && child.key !== "placeholder" ? child : null
-      )}
-    </ValueContainer>
-  );
-};
 
 const FinancialDetailsForm = ({
   onSaveBtnClick,
@@ -103,24 +67,39 @@ const FinancialDetailsForm = ({
             <Form>
               {/* Base Currency */}
               <div className="field relative">
-                <div className="outline relative">
-                  <Select
-                    className=""
-                    classNamePrefix="react-select-filter"
-                    name="base_currency"
-                    options={currencyListOptions}
-                    placeholder="Base Currency"
-                    styles={customStyles}
-                    value={values.base_currency}
-                    components={{
-                      ValueContainer: CustomValueContainer,
-                    }}
-                    onChange={e => {
-                      setFieldValue("base_currency", e);
-                      handleFormFieldValueChange("base_currency", e);
-                    }}
-                  />
-                </div>
+                <label className="absolute -top-1 left-0 z-1 ml-3 origin-0 bg-white px-1 text-xsm font-medium text-miru-dark-purple-200 duration-300">
+                  Base Currency
+                </label>
+                <Select
+                  value={values.base_currency?.value || ""}
+                  onValueChange={value => {
+                    const selectedCurrency = currencyListOptions.find(
+                      c => c.value === value
+                    );
+                    if (selectedCurrency) {
+                      setFieldValue("base_currency", selectedCurrency);
+                      handleFormFieldValueChange(
+                        "base_currency",
+                        selectedCurrency
+                      );
+                    }
+                  }}
+                >
+                  <SelectTrigger
+                    className={`h-12 ${
+                      errors.base_currency ? "border-red-500" : ""
+                    }`}
+                  >
+                    <SelectValue placeholder="Select base currency" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {currencyListOptions.map(currency => (
+                      <SelectItem key={currency.value} value={currency.value}>
+                        {currency.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 <div className="mx-0 mt-1 mb-5 block text-xs tracking-wider text-red-600">
                   {errors.base_currency && touched.base_currency && (
                     <div>{errors.base_currency.value}</div>
@@ -163,24 +142,36 @@ const FinancialDetailsForm = ({
               </div>
               {/* Fiscal Year End  */}
               <div className="field relative">
-                <div className="outline relative">
-                  <Select
-                    className=""
-                    classNamePrefix="react-select-filter"
-                    name="year_end"
-                    options={fiscalYearEndOptions}
-                    placeholder="Fiscal Year End"
-                    styles={customStyles}
-                    value={values.year_end}
-                    components={{
-                      ValueContainer: CustomValueContainer,
-                    }}
-                    onChange={e => {
-                      setFieldValue("year_end", e);
-                      handleFormFieldValueChange("year_end", e);
-                    }}
-                  />
-                </div>
+                <label className="absolute -top-1 left-0 z-1 ml-3 origin-0 bg-white px-1 text-xsm font-medium text-miru-dark-purple-200 duration-300">
+                  Fiscal Year End
+                </label>
+                <Select
+                  value={values.year_end?.value || ""}
+                  onValueChange={value => {
+                    const selectedYearEnd = fiscalYearEndOptions.find(
+                      y => y.value === value
+                    );
+                    if (selectedYearEnd) {
+                      setFieldValue("year_end", selectedYearEnd);
+                      handleFormFieldValueChange("year_end", selectedYearEnd);
+                    }
+                  }}
+                >
+                  <SelectTrigger
+                    className={`h-12 ${
+                      errors.year_end ? "border-red-500" : ""
+                    }`}
+                  >
+                    <SelectValue placeholder="Select fiscal year end" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {fiscalYearEndOptions.map(yearEnd => (
+                      <SelectItem key={yearEnd.value} value={yearEnd.value}>
+                        {yearEnd.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 <div className="mx-0 mt-1 mb-5 block text-xs tracking-wider text-red-600">
                   {errors.year_end && touched.year_end && (
                     <div>{errors.year_end.value}</div>
@@ -189,24 +180,42 @@ const FinancialDetailsForm = ({
               </div>
               {/* Date Format */}
               <div className="field relative">
-                <div className="outline relative">
-                  <Select
-                    className=""
-                    classNamePrefix="react-select-filter"
-                    name="date_format"
-                    options={dateFormatOptions}
-                    placeholder="Date Format"
-                    styles={customStyles}
-                    value={values.date_format}
-                    components={{
-                      ValueContainer: CustomValueContainer,
-                    }}
-                    onChange={e => {
-                      setFieldValue("date_format", e);
-                      handleFormFieldValueChange("date_format", e);
-                    }}
-                  />
-                </div>
+                <label className="absolute -top-1 left-0 z-1 ml-3 origin-0 bg-white px-1 text-xsm font-medium text-miru-dark-purple-200 duration-300">
+                  Date Format
+                </label>
+                <Select
+                  value={values.date_format?.value || ""}
+                  onValueChange={value => {
+                    const selectedDateFormat = dateFormatOptions.find(
+                      d => d.value === value
+                    );
+                    if (selectedDateFormat) {
+                      setFieldValue("date_format", selectedDateFormat);
+                      handleFormFieldValueChange(
+                        "date_format",
+                        selectedDateFormat
+                      );
+                    }
+                  }}
+                >
+                  <SelectTrigger
+                    className={`h-12 ${
+                      errors.date_format ? "border-red-500" : ""
+                    }`}
+                  >
+                    <SelectValue placeholder="Select date format" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {dateFormatOptions.map(dateFormat => (
+                      <SelectItem
+                        key={dateFormat.value}
+                        value={dateFormat.value}
+                      >
+                        {dateFormat.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 <div className="mx-0 mt-1 mb-5 block text-xs tracking-wider text-red-600">
                   {errors.date_format && touched.date_format && (
                     <div>{errors.date_format.value}</div>

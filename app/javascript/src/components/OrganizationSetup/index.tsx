@@ -3,10 +3,11 @@ import React, { useState } from "react";
 import Steps from "rc-steps";
 import "rc-steps/assets/index.css";
 import { useNavigate } from "react-router-dom";
-
-import companiesApi from "apis/companies";
+import { companiesApi } from "apis/api";
 import MiruLogoWatermark from "common/MiruLogoWatermark";
+
 import { Paths } from "constants/index";
+
 import { useUserContext } from "context/UserContext";
 
 import CompanyDetailsForm from "./CompanyDetailsForm";

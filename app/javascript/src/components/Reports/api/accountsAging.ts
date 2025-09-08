@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Toastr } from "StyledComponents";
 
-import accountsAgingApi from "apis/reports/accountsAging";
+import { accountsAgingApi } from "apis/api";
 
 const getReportData = async ({
   setClientList,

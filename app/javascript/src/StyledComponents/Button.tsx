@@ -1,4 +1,3 @@
-/* eslint-disable */
 import React from "react";
 
 import classnames from "classnames";
@@ -35,27 +34,19 @@ const LARGE = "p-2 text-xl font-bold leading-7";
 type ButtonProps = {
   id?: string;
   style?: string;
-  onClick?;
+  onClick?: React.MouseEventHandler<HTMLButtonElement>;
   disabled?: boolean;
   size?: string;
   className?: string;
   fullWidth?: boolean;
-  children?: any;
-  type?: any;
+  children?: React.ReactNode;
+  type?: "button" | "submit" | "reset";
 };
 
-export const BUTTON_STYLES = {
-  primary: "primary",
-  secondary: "secondary",
-  ternary: "ternary",
-  dashed: "dashed",
-  delete: "delete",
-  calendarCell: "calendarCell",
-};
 const SIZES = { small: "small", medium: "medium", large: "large" };
 
 const Button = ({
-  id = "",
+  id,
   style = "primary",
   size,
   disabled = false,
@@ -63,11 +54,11 @@ const Button = ({
   fullWidth = false,
   onClick,
   children,
-  type,
+  type = "button",
 }: ButtonProps) => (
   <button
-    id={id}
     disabled={disabled}
+    id={id || undefined}
     type={type}
     className={classnames(
       DEFAULT_STYLE,
@@ -97,5 +88,14 @@ const Button = ({
     {children}
   </button>
 );
+
+export const BUTTON_STYLES = {
+  primary: "primary",
+  secondary: "secondary",
+  ternary: "ternary",
+  dashed: "dashed",
+  delete: "delete",
+  calendarCell: "calendarCell",
+};
 
 export default Button;

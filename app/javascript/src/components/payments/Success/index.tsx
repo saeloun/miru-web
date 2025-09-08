@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
 
+import { invoicesApi } from "apis/api";
+import Loader from "common/Loader";
 import { LeftArrowIcon } from "miruIcons";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "StyledComponents";
-
-import invoicesApi from "apis/invoices";
-import Loader from "common/Loader";
 
 const Success = () => {
   const [invoice, setInvoice] = useState<any>({});

@@ -23,7 +23,7 @@ const ImportCard = ({
       {true ? (
         <button
           className="mx-1 rounded-md border bg-miru-han-purple-1000 px-5 py-2	font-manrope text-base font-bold tracking-widest text-white"
-          onClick={e => handleOnShowModalClick(id)} //eslint-disable-line
+          onClick={e => handleOnShowModalClick(id)}
         >
           {btnText}
         </button>

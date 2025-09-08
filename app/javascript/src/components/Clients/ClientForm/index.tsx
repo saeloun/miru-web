@@ -1,16 +1,23 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 import React, { useEffect, useState } from "react";
 
-import "react-phone-number-input/style.css"; //eslint-disable-line
 import { Formik, Form, FormikProps } from "formik";
 import PhoneInput from "react-phone-number-input";
 import flags from "react-phone-number-input/flags";
-import { Button, Toastr } from "StyledComponents";
+import "react-phone-number-input/style.css";
+import { Toastr } from "StyledComponents";
 import worldCountries from "world-countries";
-
-import clientApi from "apis/clients";
-import CustomReactSelect from "common/CustomReactSelect";
-import { InputErrors, InputField } from "common/FormikFields";
+import { clientApi } from "apis/api";
+import { motion } from "framer-motion";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../ui/select";
+import { Input } from "../../ui/input";
+import { Label } from "../../ui/label";
+import { Button } from "../../ui/button";
 
 import { clientSchema, getInitialvalues } from "./formValidationSchema";
 import UploadLogo from "./UploadLogo";
@@ -88,190 +95,238 @@ const ClientForm = ({
       onSubmit={handleSubmit}
     >
       {(props: FormikProps<FormValues>) => {
-        const { touched, errors, setFieldValue, values } = props;
+        const {
+          touched,
+          errors,
+          setFieldValue,
+          values,
+          handleChange,
+          handleBlur,
+        } = props;
 
         return (
-          <Form>
-            <div className="mt-4">
-              <div className="my-4">
-                <div className="field">
-                  <div className="mt-1">
-                    <UploadLogo
-                      clientLogoUrl={clientLogoUrl}
-                      formType={formType}
-                      handleDeleteLogo={handleDeleteLogo}
-                      setClientLogo={setClientLogo}
-                      setClientLogoUrl={setClientLogoUrl}
-                      setFileUploadError={setFileUploadError}
-                    />
-                    <p className="mt-3 block max-w-xs text-center text-xs tracking-wider text-red-600">
-                      {fileUploadError}
-                    </p>
-                  </div>
-                </div>
-              </div>
+          <Form className="space-y-4">
+            {/* Logo Upload */}
+            <div className="space-y-2">
+              <UploadLogo
+                clientLogoUrl={clientLogoUrl}
+                formType={formType}
+                handleDeleteLogo={handleDeleteLogo}
+                setClientLogo={setClientLogo}
+                setClientLogoUrl={setClientLogoUrl}
+                setFileUploadError={setFileUploadError}
+              />
+              {fileUploadError && (
+                <p className="mt-2 text-center text-xs text-red-600">
+                  {fileUploadError}
+                </p>
+              )}
             </div>
-            <div className="field relative">
-              <InputField
+            {/* Name Field */}
+            <motion.div
+              className="space-y-2"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: 0 }}
+            >
+              <Label htmlFor="name">
+                Name <span className="text-red-500">*</span>
+              </Label>
+              <Input
                 autoFocus
-                resetErrorOnChange
-                hasError={errors.name && touched.name}
                 id="name"
-                label="Name"
                 name="name"
-                setFieldValue={setFieldValue}
+                value={values.name}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={errors.name && touched.name ? "border-red-500" : ""}
               />
-              <InputErrors
-                fieldErrors={errors.name}
-                fieldTouched={touched.name}
+              {errors.name && touched.name && (
+                <p className="text-xs text-red-600">{errors.name}</p>
+              )}
+            </motion.div>
+            {/* Phone Field */}
+            <div className="space-y-2">
+              <Label htmlFor="phone">Phone</Label>
+              <div className="relative">
+                <PhoneInput
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                  flags={flags}
+                  id="phone"
+                  inputClassName="!border-0 !outline-none !p-0 !m-0 !h-auto !bg-transparent"
+                  name="phone"
+                  value={values.phone}
+                  onChange={phone => setFieldValue("phone", phone)}
+                />
+              </div>
+              {errors.phone && touched.phone && (
+                <p className="text-xs text-red-600">{errors.phone}</p>
+              )}
+            </div>
+            {/* Address Line 1 */}
+            <div className="space-y-2">
+              <Label htmlFor="address1">Address Line 1</Label>
+              <Input
+                id="address1"
+                name="address1"
+                value={values.address1}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={
+                  errors.address1 && touched.address1 ? "border-red-500" : ""
+                }
               />
+              {errors.address1 && touched.address1 && (
+                <p className="text-xs text-red-600">{errors.address1}</p>
+              )}
             </div>
-            <div className="mt-4">
-              <div className="field relative">
-                <div className="flex flex-col">
-                  <div className="outline relative flex h-12 flex-row rounded border border-miru-gray-1000 bg-white p-4 pt-2">
-                    <PhoneInput
-                      className="input-phone-number w-full border-transparent focus:border-transparent focus:ring-0"
-                      flags={flags}
-                      id="phone"
-                      inputClassName="form__input block w-full appearance-none bg-white border-0 focus:border-0 px-0 text-base border-transparent focus:border-transparent focus:ring-0 border-miru-gray-1000 w-full border-bottom-none "
-                      name="phone"
-                      value={formType == "edit" ? client.phone : ""}
-                      onChange={phone => {
-                        setFieldValue("phone", phone);
-                      }}
-                    />
-                    <label
-                      className="absolute -top-1 left-0 z-1 ml-3 origin-0 bg-white px-1 text-xsm font-medium text-miru-dark-purple-200 duration-300"
-                      htmlFor="phone"
-                    >
-                      Phone
-                    </label>
-                  </div>
-                </div>
-                <InputErrors
-                  fieldErrors={errors.phone}
-                  fieldTouched={touched.phone}
-                />
-              </div>
+            {/* Address Line 2 */}
+            <div className="space-y-2">
+              <Label htmlFor="address2">Address Line 2 (optional)</Label>
+              <Input
+                id="address2"
+                name="address2"
+                value={values.address2}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={
+                  errors.address2 && touched.address2 ? "border-red-500" : ""
+                }
+              />
+              {errors.address2 && touched.address2 && (
+                <p className="text-xs text-red-600">{errors.address2}</p>
+              )}
             </div>
-            <div className="mt-4">
-              <div className="field relative">
-                <InputField
-                  resetErrorOnChange
-                  hasError={errors.address1 && touched.address1}
-                  id="address1"
-                  label="Address line 1"
-                  name="address1"
-                  setFieldValue={setFieldValue}
-                />
-                <InputErrors
-                  fieldErrors={errors.address1}
-                  fieldTouched={touched.address1}
-                />
-              </div>
-            </div>
-            <div className="mt-4">
-              <div className="field relative mb-5">
-                <InputField
-                  resetErrorOnChange
-                  hasError={errors.address2 && touched.address2}
-                  id="address2"
-                  label="Address line 2 (optional)"
-                  name="address2"
-                  setFieldValue={setFieldValue}
-                />
-                <InputErrors
-                  fieldErrors={errors.address2}
-                  fieldTouched={touched.address2}
-                />
-              </div>
-            </div>
-            <div className="mb-5 flex flex-row">
-              <div className="flex w-1/2 flex-col py-0 pr-2">
-                <CustomReactSelect
-                  isErr={!!errors.country && touched.country}
-                  label="Country"
-                  name="country"
-                  options={countries}
-                  value={values.country.value ? values.country : null}
-                  handleOnChange={e => {
-                    setFieldValue("country", e);
+            {/* Country and State Row */}
+            <div className="grid grid-cols-2 gap-4">
+              {/* Country */}
+              <div className="space-y-2">
+                <Label htmlFor="country">Country</Label>
+                <Select
+                  value={values.country?.value || ""}
+                  onValueChange={value => {
+                    const selectedCountry = countries.find(
+                      (c: any) => c.value === value
+                    );
+                    setFieldValue("country", selectedCountry || null);
                     setFieldValue("state", "");
                     setFieldValue("city", "");
                     setFieldValue("zipcode", "");
                   }}
-                />
+                >
+                  <SelectTrigger
+                    className={
+                      errors.country && touched.country ? "border-red-500" : ""
+                    }
+                  >
+                    <SelectValue placeholder="Select country..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {countries.map((country: any) => (
+                      <SelectItem key={country.value} value={country.value}>
+                        {country.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {errors.country && touched.country && (
+                  <p className="text-xs text-red-600">{errors.country}</p>
+                )}
               </div>
-              <div className="flex w-1/2 flex-col pl-2">
-                <InputField
-                  resetErrorOnChange
-                  hasError={errors.state && touched.state}
+              {/* State */}
+              <div className="space-y-2">
+                <Label htmlFor="state">State</Label>
+                <Input
                   id="state"
-                  label="State"
                   name="state"
-                  setFieldValue={setFieldValue}
+                  value={values.state}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  className={
+                    errors.state && touched.state ? "border-red-500" : ""
+                  }
                 />
-                <InputErrors
-                  addMargin={false}
-                  fieldErrors={errors.state}
-                  fieldTouched={touched.state}
-                />
+                {errors.state && touched.state && (
+                  <p className="text-xs text-red-600">{errors.state}</p>
+                )}
               </div>
             </div>
-            <div className="flex flex-row">
-              <div className="flex w-1/2 flex-col pr-2" id="city">
-                <InputField
-                  resetErrorOnChange
-                  hasError={errors.city && touched.city}
+            {/* City and Zipcode Row */}
+            <div className="grid grid-cols-2 gap-4">
+              {/* City */}
+              <div className="space-y-2">
+                <Label htmlFor="city">City</Label>
+                <Input
                   id="city"
-                  label="City"
                   name="city"
-                  setFieldValue={setFieldValue}
+                  value={values.city}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  className={
+                    errors.city && touched.city ? "border-red-500" : ""
+                  }
                 />
-                <InputErrors
-                  addMargin={false}
-                  fieldErrors={errors.city}
-                  fieldTouched={touched.city}
-                />
+                {errors.city && touched.city && (
+                  <p className="text-xs text-red-600">{errors.city}</p>
+                )}
               </div>
-              <div className="flex w-1/2 flex-col pl-2">
-                <InputField
-                  resetErrorOnChange
-                  hasError={errors.zipcode && touched.zipcode}
+              {/* Zipcode */}
+              <div className="space-y-2">
+                <Label htmlFor="zipcode">Zipcode</Label>
+                <Input
                   id="zipcode"
-                  label="Zipcode"
                   name="zipcode"
-                  setFieldValue={setFieldValue}
+                  value={values.zipcode}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  className={
+                    errors.zipcode && touched.zipcode ? "border-red-500" : ""
+                  }
                 />
-                <InputErrors
-                  fieldErrors={errors.zipcode}
-                  fieldTouched={touched.zipcode}
-                />
+                {errors.zipcode && touched.zipcode && (
+                  <p className="text-xs text-red-600">{errors.zipcode}</p>
+                )}
               </div>
             </div>
-            <div className="mt-4">
-              <div className="field relative mb-5">
-                <CustomReactSelect
-                  isErr={!!errors.currency && touched.currency}
-                  label="Currency"
-                  name="currency"
-                  options={currencyListOptions}
-                  value={values.currency ? values.currency : null}
-                  handleOnChange={e => {
-                    setFieldValue("currency", e);
-                  }}
-                />
-              </div>
-            </div>
-            <div className="actions mt-4">
-              <Button
-                className="w-full p-2 text-center text-base font-bold"
-                disabled={disableBtn(values, errors, submitting)}
-                style="primary"
-                type="submit"
+            {/* Currency */}
+            <div className="space-y-2">
+              <Label htmlFor="currency">Currency</Label>
+              <Select
+                value={values.currency?.value || ""}
+                onValueChange={value => {
+                  const selectedCurrency = currencyListOptions.find(
+                    (c: any) => c.value === value
+                  );
+                  setFieldValue("currency", selectedCurrency || null);
+                }}
               >
-                SAVE CHANGES
+                <SelectTrigger
+                  className={
+                    errors.currency && touched.currency ? "border-red-500" : ""
+                  }
+                >
+                  <SelectValue placeholder="Select currency..." />
+                </SelectTrigger>
+                <SelectContent>
+                  {currencyListOptions.map((currency: any) => (
+                    <SelectItem key={currency.value} value={currency.value}>
+                      {currency.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {errors.currency && touched.currency && (
+                <p className="text-xs text-red-600">{errors.currency}</p>
+              )}
+            </div>
+            {/* Submit Button */}
+            <div className="pt-4">
+              <Button
+                type="submit"
+                className="w-full"
+                disabled={disableBtn(values, errors, submitting)}
+              >
+                {submitting ? "Saving..." : "Save Changes"}
               </Button>
             </div>
           </Form>

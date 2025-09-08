@@ -1,17 +1,18 @@
+import { ApiStatus as InvoicesStatus } from "constants/index";
+
 import React, { useState, useRef } from "react";
 
-import { currencyFormat, useDebounce } from "helpers";
-import { ArrowLeftIcon, DotsThreeVerticalIcon, XIcon } from "miruIcons";
-import { useNavigate } from "react-router-dom";
-import { Avatar, Badge, Button, Toastr, Tooltip } from "StyledComponents";
-
-import invoicesApi from "apis/invoices";
+import { invoicesApi } from "apis/api";
 import CustomCheckbox from "common/CustomCheckbox";
 import SendInvoice from "components/Invoices/common/InvoiceForm/SendInvoice";
 import SendInvoiceContainer from "components/Invoices/Generate/MobileView/Container/SendInvoiceContainer";
 import ConnectPaymentGateway from "components/Invoices/popups/ConnectPaymentGateway";
-import { ApiStatus as InvoicesStatus } from "constants/index";
-import getStatusCssClass from "utils/getBadgeStatus";
+import AnimatedAvatar from "components/ui/animated-avatar";
+import StatusBadge from "components/ui/status-badge";
+import { currencyFormat, useDebounce } from "helpers";
+import { ArrowLeftIcon, DotsThreeVerticalIcon, XIcon } from "miruIcons";
+import { useNavigate } from "react-router-dom";
+import { Button, Toastr, Tooltip } from "StyledComponents";
 
 import MoreOptions from "../MoreOptions";
 
@@ -26,8 +27,8 @@ const TableRow = ({
   isDesktop,
   index,
   isStripeEnabled,
-  // eslint-disable-next-line no-unused-vars
-  setIsStripeEnabled,
+
+  _setIsStripeEnabled,
 }) => {
   const [sendStatus, setSendStatus] = useState<InvoicesStatus>(
     InvoicesStatus.IDLE
@@ -127,16 +128,21 @@ const TableRow = ({
         <td>
           <Tooltip content={name} show={showToolTip}>
             <div className="flex w-40 cursor-pointer items-center py-5 pr-2 text-left font-medium tracking-normal sm:w-80 md:w-96 lg:w-full">
-              <Avatar url={logo} />
+              <AnimatedAvatar
+                url={logo}
+                name={name}
+                size="md"
+                animation="scale"
+              />
               <div
                 className="ml-2 overflow-hidden truncate whitespace-nowrap lg:ml-4"
                 ref={toolTipRef}
                 onMouseEnter={handleTooltip}
               >
-                <span className="text-sm font-semibold capitalize leading-4 text-miru-dark-purple-1000 lg:text-base lg:leading-5">
+                <span className="text-sm font-semibold capitalize leading-5 text-miru-dark-purple-1000 lg:text-base lg:leading-5">
                   {name}
                 </span>
-                <h3 className="text-xs font-medium leading-4 text-miru-dark-purple-400 lg:text-sm lg:leading-5">
+                <h3 className="text-xs font-normal leading-4 text-miru-dark-purple-400 lg:text-sm lg:leading-4">
                   {invoiceNumber}
                 </h3>
               </div>
@@ -145,19 +151,19 @@ const TableRow = ({
         </td>
         {isDesktop && (
           <td className="w-1/4 whitespace-nowrap px-4 py-5 font-medium tracking-normal lg:px-6">
-            <h1 className="text-xs font-normal text-miru-dark-purple-1000 lg:text-base lg:font-semibold">
+            <h1 className="text-xs font-medium text-miru-dark-purple-1000 lg:text-sm lg:font-semibold">
               {issueDate}
             </h1>
-            <h3 className="text-xs font-medium text-miru-dark-purple-400 lg:text-sm">
+            <h3 className="text-xs font-normal text-miru-dark-purple-400 lg:text-sm">
               Due on {dueDate}
             </h3>
           </td>
         )}
-        <td className="hidden px-2 text-right text-sm font-bold tracking-normal text-miru-dark-purple-1000 lg:table-cell lg:w-1/6 lg:px-6 lg:pt-2 lg:pb-7 lg:text-xl">
+        <td className="hidden px-2 text-right text-sm font-semibold tracking-normal text-miru-dark-purple-1000 lg:table-cell lg:w-1/6 lg:px-6 lg:pt-2 lg:pb-7 lg:text-lg lg:font-bold">
           {currencyFormat(currency, amount)}
         </td>
         <td
-          className="relative px-2 text-right font-medium lg:px-6 lg:pb-10"
+          className="relative px-2 py-5 text-right font-medium lg:px-6"
           onMouseLeave={() => setIsMenuOpen(false)}
         >
           {isDesktop && (
@@ -180,10 +186,7 @@ const TableRow = ({
               showSendLink={false}
             />
           )}
-          <Badge
-            className={`${getStatusCssClass(status)} uppercase`}
-            text={status}
-          />
+          <StatusBadge status={status} />
           <dl className="text-right text-sm font-medium leading-5 lg:hidden">
             <dt className="mt-1">{currencyFormat(currency, amount)}</dt>
           </dl>
@@ -234,9 +237,11 @@ const TableRow = ({
               <Button
                 style="ternary"
                 onClick={() => {
-                  isSendReminder
-                    ? setIsSendReminder(false)
-                    : setIsSending(false);
+                  if (isSendReminder) {
+                    setIsSendReminder(false);
+                  } else {
+                    setIsSending(false);
+                  }
                 }}
               >
                 <ArrowLeftIcon className="text-white" size={16} weight="bold" />
@@ -248,9 +253,11 @@ const TableRow = ({
                 className="mr-4 text-miru-gray-1000"
                 type="button"
                 onClick={() => {
-                  isSendReminder
-                    ? setIsSendReminder(false)
-                    : setIsSending(false);
+                  if (isSendReminder) {
+                    setIsSendReminder(false);
+                  } else {
+                    setIsSending(false);
+                  }
                 }}
               >
                 <XIcon size={16} weight="bold" />

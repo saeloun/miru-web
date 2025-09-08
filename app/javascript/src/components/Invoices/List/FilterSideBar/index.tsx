@@ -1,17 +1,17 @@
+import { LocalStorageKeys } from "constants/index";
+
 import React, { useEffect, useRef, useState } from "react";
 
+import { companiesApi } from "apis/api";
+import CustomCheckbox from "common/CustomCheckbox";
+import CustomDateRangePicker from "common/CustomDateRangePicker";
+import CustomRadioButton from "common/CustomRadio";
+import StatusBadge from "components/ui/status-badge";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 import { useDebounce, useOutsideClick } from "helpers";
 import { XIcon, FilterIcon, PlusIcon, MinusIcon, SearchIcon } from "miruIcons";
-import { Badge, Button, SidePanel } from "StyledComponents";
-
-import companiesApi from "apis/companies";
-import CustomCheckbox from "common/CustomCheckbox";
-import CustomDateRangePicker from "common/CustomDateRangePicker";
-import CustomRadioButton from "common/CustomRadio";
-import { LocalStorageKeys } from "constants/index";
-import getStatusCssClass from "utils/getBadgeStatus";
+import { Button, SidePanel } from "StyledComponents";
 
 import { dateRangeOptions, statusOptions } from "./filterOptions";
 
@@ -197,7 +197,9 @@ const FilterSideBar = ({
   });
 
   const resetCustomDatePicker = () => {
-    defaultDateRange() && setFilters(setDefaultDateRange());
+    if (defaultDateRange()) {
+      setFilters(setDefaultDateRange());
+    }
     hideCustomFilter();
   };
 
@@ -219,9 +221,11 @@ const FilterSideBar = ({
       return;
     }
 
-    defaultDateRange()
-      ? setFilterParams(setDefaultDateRange())
-      : setFilterParams(filters);
+    if (defaultDateRange()) {
+      setFilterParams(setDefaultDateRange());
+    } else {
+      setFilterParams(filters);
+    }
 
     window.localStorage.setItem(
       LocalStorageKeys.INVOICE_FILTERS,
@@ -472,12 +476,7 @@ const FilterSideBar = ({
                         isChecked={filters.status.some(
                           e => e.value === status.value
                         )}
-                        text={
-                          <Badge
-                            className={getStatusCssClass(status.label)}
-                            text={status.label}
-                          />
-                        }
+                        text={<StatusBadge status={status.label} />}
                       />
                     ))}
                 </div>

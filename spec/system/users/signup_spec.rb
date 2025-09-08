@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe "User Signup", type: :system do
+RSpec.describe "User Signup", type: :system, js: true do
   let(:user) { build(:user, password: "Welcome@123") }
   let(:existing_user) { create(:user) }
 
@@ -10,13 +10,16 @@ RSpec.describe "User Signup", type: :system do
     it "allows a user to sign up for the website" do
       with_forgery_protection do
         visit "/signup"
+        wait_for_signup_form
 
-        fill_in "first_name", with: user.first_name
-        fill_in "last_name", with: user.last_name
-        fill_in "email", with: user.email
-        fill_in "password", with: user.password
-        fill_in "confirm_password", with: user.password
-        find(:css, "#termsOfService", visible: false).set(true)
+        fill_signup_form(
+          first_name: user.first_name,
+          last_name: user.last_name,
+          email: user.email,
+          password: user.password
+        )
+
+        accept_terms_of_service
 
         click_on "Sign Up"
 
@@ -28,13 +31,16 @@ RSpec.describe "User Signup", type: :system do
     it "allows a user to sign up with a password containing hyphens as special characters" do
       with_forgery_protection do
         visit "/signup"
+        wait_for_signup_form
 
-        fill_in "first_name", with: user.first_name
-        fill_in "last_name", with: user.last_name
-        fill_in "email", with: user.email
-        fill_in "password", with: "wohXyq-cusgoz-fexde0"
-        fill_in "confirm_password", with: "wohXyq-cusgoz-fexde0"
-        find(:css, "#termsOfService", visible: false).set(true)
+        fill_signup_form(
+          first_name: user.first_name,
+          last_name: user.last_name,
+          email: user.email,
+          password: "wohXyq-cusgoz-fexde0"
+        )
+
+        accept_terms_of_service
 
         click_on "Sign Up"
 
@@ -46,13 +52,16 @@ RSpec.describe "User Signup", type: :system do
     it "allows a user to sign up with a password containing blank spaces in between" do
       with_forgery_protection do
         visit "/signup"
+        wait_for_signup_form
 
-        fill_in "first_name", with: user.first_name
-        fill_in "last_name", with: user.last_name
-        fill_in "email", with: user.email
-        fill_in "password", with: "My password with spaces@2023"
-        fill_in "confirm_password", with: "My password with spaces@2023"
-        find(:css, "#termsOfService", visible: false).set(true)
+        fill_signup_form(
+          first_name: user.first_name,
+          last_name: user.last_name,
+          email: user.email,
+          password: "My password with spaces@2023"
+        )
+
+        accept_terms_of_service
 
         click_on "Sign Up"
 
@@ -64,13 +73,16 @@ RSpec.describe "User Signup", type: :system do
     it "allows to verify their email" do
       with_forgery_protection do
         visit "/signup"
+        wait_for_signup_form
 
-        fill_in "first_name", with: user.first_name
-        fill_in "last_name", with: user.last_name
-        fill_in "email", with: user.email
-        fill_in "password", with: user.password
-        fill_in "confirm_password", with: user.password
-        find(:css, "#termsOfService", visible: false).set(true)
+        fill_signup_form(
+          first_name: user.first_name,
+          last_name: user.last_name,
+          email: user.email,
+          password: user.password
+        )
+
+        accept_terms_of_service
 
         click_on "Sign Up"
 
@@ -91,13 +103,16 @@ RSpec.describe "User Signup", type: :system do
     it "throws an error when using already registered email" do
       with_forgery_protection do
         visit "/signup"
+        wait_for_signup_form
 
-        fill_in "first_name", with: user.first_name
-        fill_in "last_name", with: user.last_name
-        fill_in "email", with: existing_user.email
-        fill_in "password", with: user.password
-        fill_in "confirm_password", with: user.password
-        find(:css, "#termsOfService", visible: false).set(true)
+        fill_signup_form(
+          first_name: user.first_name,
+          last_name: user.last_name,
+          email: existing_user.email,
+          password: user.password
+        )
+
+        accept_terms_of_service
 
         click_on "Sign Up"
         sleep 1
@@ -110,13 +125,16 @@ RSpec.describe "User Signup", type: :system do
     it "throws an error when using password with less than 8 characters" do
       with_forgery_protection do
         visit "/signup"
+        wait_for_signup_form
 
-        fill_in "first_name", with: user.first_name
-        fill_in "last_name", with: user.last_name
-        fill_in "email", with: existing_user.email
-        fill_in "password", with: "Pass@1"
-        fill_in "confirm_password", with: "Pass@1"
-        find(:css, "#termsOfService", visible: false).set(true)
+        fill_signup_form(
+          first_name: user.first_name,
+          last_name: user.last_name,
+          email: existing_user.email,
+          password: "Pass@1"
+        )
+
+        accept_terms_of_service
 
         click_on "Sign Up"
 
@@ -127,13 +145,16 @@ RSpec.describe "User Signup", type: :system do
     it "throws an error when using password without at least one uppercase letter" do
       with_forgery_protection do
         visit "/signup"
+        wait_for_signup_form
 
-        fill_in "first_name", with: user.first_name
-        fill_in "last_name", with: user.last_name
-        fill_in "email", with: existing_user.email
-        fill_in "password", with: "password@2023"
-        fill_in "confirm_password", with: "password@2023"
-        find(:css, "#termsOfService", visible: false).set(true)
+        fill_signup_form(
+          first_name: user.first_name,
+          last_name: user.last_name,
+          email: existing_user.email,
+          password: "password@2023"
+        )
+
+        accept_terms_of_service
 
         click_on "Sign Up"
 
@@ -144,13 +165,16 @@ RSpec.describe "User Signup", type: :system do
     it "throws an error when using password without at least one lowercase letter" do
       with_forgery_protection do
         visit "/signup"
+        wait_for_signup_form
 
-        fill_in "first_name", with: user.first_name
-        fill_in "last_name", with: user.last_name
-        fill_in "email", with: existing_user.email
-        fill_in "password", with: "PASSWORD@2023"
-        fill_in "confirm_password", with: "PASSWORD@2023"
-        find(:css, "#termsOfService", visible: false).set(true)
+        fill_signup_form(
+          first_name: user.first_name,
+          last_name: user.last_name,
+          email: existing_user.email,
+          password: "PASSWORD@2023"
+        )
+
+        accept_terms_of_service
 
         click_on "Sign Up"
 
@@ -161,13 +185,16 @@ RSpec.describe "User Signup", type: :system do
     it "throws an error when using password without at least one number" do
       with_forgery_protection do
         visit "/signup"
+        wait_for_signup_form
 
-        fill_in "first_name", with: user.first_name
-        fill_in "last_name", with: user.last_name
-        fill_in "email", with: existing_user.email
-        fill_in "password", with: "@Password"
-        fill_in "confirm_password", with: "@Password"
-        find(:css, "#termsOfService", visible: false).set(true)
+        fill_signup_form(
+          first_name: user.first_name,
+          last_name: user.last_name,
+          email: existing_user.email,
+          password: "@Password"
+        )
+
+        accept_terms_of_service
 
         click_on "Sign Up"
 
@@ -178,13 +205,16 @@ RSpec.describe "User Signup", type: :system do
     it "throws an error when using password without at least one special character" do
       with_forgery_protection do
         visit "/signup"
+        wait_for_signup_form
 
-        fill_in "first_name", with: user.first_name
-        fill_in "last_name", with: user.last_name
-        fill_in "email", with: existing_user.email
-        fill_in "password", with: "Password2023"
-        fill_in "confirm_password", with: "Password2023"
-        find(:css, "#termsOfService", visible: false).set(true)
+        fill_signup_form(
+          first_name: user.first_name,
+          last_name: user.last_name,
+          email: existing_user.email,
+          password: "Password2023"
+        )
+
+        accept_terms_of_service
 
         click_on "Sign Up"
 
@@ -195,13 +225,16 @@ RSpec.describe "User Signup", type: :system do
     it "throws an error when using a password with spaces as special characters" do
       with_forgery_protection do
         visit "/signup"
+        wait_for_signup_form
 
-        fill_in "first_name", with: user.first_name
-        fill_in "last_name", with: user.last_name
-        fill_in "email", with: existing_user.email
-        fill_in "password", with: "Password 2023"
-        fill_in "confirm_password", with: "Password 2023"
-        find(:css, "#termsOfService", visible: false).set(true)
+        fill_signup_form(
+          first_name: user.first_name,
+          last_name: user.last_name,
+          email: existing_user.email,
+          password: "Password 2023"
+        )
+
+        accept_terms_of_service
 
         click_on "Sign Up"
 
@@ -212,13 +245,16 @@ RSpec.describe "User Signup", type: :system do
     it "throws an error when using a password that starts with blank space" do
       with_forgery_protection do
         visit "/signup"
+        wait_for_signup_form
 
-        fill_in "first_name", with: user.first_name
-        fill_in "last_name", with: user.last_name
-        fill_in "email", with: existing_user.email
-        fill_in "password", with: " Password@2023"
-        fill_in "confirm_password", with: " Password@2023"
-        find(:css, "#termsOfService", visible: false).set(true)
+        fill_signup_form(
+          first_name: user.first_name,
+          last_name: user.last_name,
+          email: existing_user.email,
+          password: " Password@2023"
+        )
+
+        accept_terms_of_service
 
         click_on "Sign Up"
 
@@ -229,13 +265,16 @@ RSpec.describe "User Signup", type: :system do
     it "throws an error when using a password that ends with blank space" do
       with_forgery_protection do
         visit "/signup"
+        wait_for_signup_form
 
-        fill_in "first_name", with: user.first_name
-        fill_in "last_name", with: user.last_name
-        fill_in "email", with: existing_user.email
-        fill_in "password", with: "Password@2023 "
-        fill_in "confirm_password", with: "Password@2023 "
-        find(:css, "#termsOfService", visible: false).set(true)
+        fill_signup_form(
+          first_name: user.first_name,
+          last_name: user.last_name,
+          email: existing_user.email,
+          password: "Password@2023 "
+        )
+
+        accept_terms_of_service
 
         click_on "Sign Up"
 
@@ -246,13 +285,17 @@ RSpec.describe "User Signup", type: :system do
     it "throws an error when password and confirm password do not match" do
       with_forgery_protection do
         visit "/signup"
+        wait_for_signup_form
 
-        fill_in "first_name", with: user.first_name
-        fill_in "last_name", with: user.last_name
-        fill_in "email", with: existing_user.email
-        fill_in "password", with: "Welcome@123"
-        fill_in "confirm_password", with: "HelloWorld@123"
-        find(:css, "#termsOfService", visible: false).set(true)
+        fill_signup_form(
+          first_name: user.first_name,
+          last_name: user.last_name,
+          email: existing_user.email,
+          password: "Welcome@123",
+          confirm_password: "HelloWorld@123"
+        )
+
+        accept_terms_of_service
 
         click_on "Sign Up"
 

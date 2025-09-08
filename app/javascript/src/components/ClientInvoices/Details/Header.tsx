@@ -1,5 +1,6 @@
 import React, { useRef, useState } from "react";
 
+import { handleDownloadInvoice } from "components/Invoices/common/utils";
 import { useOutsideClick } from "helpers";
 import {
   ReportsIcon,
@@ -7,8 +8,6 @@ import {
   DownloadSimpleIcon,
 } from "miruIcons";
 import { Badge, Button, MoreOptions, Toastr, Tooltip } from "StyledComponents";
-
-import { handleDownloadInvoice } from "components/Invoices/common/utils";
 import getStatusCssClass from "utils/getBadgeStatus";
 
 const Header = ({

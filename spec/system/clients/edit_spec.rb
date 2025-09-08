@@ -1,70 +1,101 @@
 # frozen_string_literal: true
-# # frozen_string_literal: true
 
-# require "rails_helper"
+require "rails_helper"
 
-# RSpec.describe "Edit client", type: :system do
-#   let(:company) { create(:company) }
-#   let(:user) { create(:user, current_workspace_id: company.id) }
-#   let!(:client) { create(:client_with_phone_number_without_country_code, company:) }
+# Converting to request test since we're testing API functionality
+# The React SPA integration will be tested separately once rendering issues are resolved
+RSpec.describe "Edit client", type: :request do
+  let(:company) { create(:company) }
+  let(:user) { create(:user, current_workspace_id: company.id) }
+  let!(:client) { create(:client_with_phone_number_without_country_code, company:) }
 
-#   def select_values_from_select_box
-#     within("div#country") do
-#       find(".react-select-filter__control.css-digfch-control").click
-#       find("#react-select-2-option-232").click
-#     end
+  before do
+    create(:employment, company:, user:)
+    user.add_role :admin, company
+    sign_in user
+  end
 
-#     within("div#state") do
-#       find(".react-select-filter__control.css-digfch-control").click
-#       find("#react-select-3-option-1").click
-#     end
+  context "when editing a client via API" do
+    it "updates the client successfully" do
+      # Prepare update parameters
+      update_params = {
+        client: {
+          name: "Updated Client Name",
+          email: "updated@example.com",
+          phone: "9123456789"
+        }
+      }
 
-#     within("div#city") do
-#       find(".react-select-filter__control.css-digfch-control").click
-#       find("#react-select-4-option-0").click
-#     end
-#   end
+      # Update the client via API
+      put "/api/v1/clients/#{client.id}", params: update_params
 
-#   before do
-#     create(:employment, company:, user:)
-#     user.add_role :admin, company
-#     sign_in(user)
-#   end
+      # Verify successful response
+      expect(response).to have_http_status(:success)
 
-#   context "when editing a client" do
-#     it "edit the client successfully" do
-#       with_forgery_protection do
-#         visit "/clients"
-#         find(".hoverIcon").hover.click
-#         find("#kebabMenu").click()
-#         click_button "Edit"
+      # Reload client to verify changes
+      client.reload
+      expect(client.name).to eq("Updated Client Name")
+      expect(client.email).to eq("updated@example.com")
+      expect(client.phone).to eq("9123456789")
 
-#         fill_in "name", with: "test client"
-#         fill_in "email", with: "client@test.com"
-#         fill_in "phone", with: "9123456789"
-#         select_values_from_select_box
-#         fill_in "zipcode", with: "123456"
-#         click_button "SAVE CHANGES"
+      # Verify response contains success message
+      json_response = JSON.parse(response.body)
+      expect(json_response).to have_key("notice")
+    end
 
-#         expect(page).to have_content("test client")
+    it "returns error for invalid data" do
+      # Try to update with invalid email
+      update_params = {
+        client: {
+          name: "",
+          email: "invalid-email"
+        }
+      }
 
-#         expect(client.reload.name).to eq("test client")
-#         expect(client.reload.email).to eq("client@test.com")
-#       end
-#     end
-#   end
+      put "/api/v1/clients/#{client.id}", params: update_params
 
-#   context "when editing client with invalid values" do
-#     it "throws error when entering invalid email" do
-#       with_forgery_protection do
-#         visit "/clients"
+      # Should return validation errors
+      expect(response).to have_http_status(:unprocessable_content)
 
-#         find(:css, ".hoverIcon").hover.click
-#         find("#kebabMenu").click()
-#         click_button "Edit"
-#         fill_in "email", with: " "
-#         click_button "SAVE CHANGES", disabled: true
-#       end
-#     end
-#   end
-# end
+      # Client should not be updated
+      client.reload
+      expect(client.name).not_to eq("")
+    end
+
+    it "returns error when updating non-existent client" do
+      update_params = {
+        client: {
+          name: "New Name"
+        }
+      }
+
+      put "/api/v1/clients/999999", params: update_params
+
+      expect(response).to have_http_status(:not_found)
+    end
+
+    it "prevents updates when user lacks permission" do
+      # Create a user without admin role
+      other_user = create(:user, current_workspace_id: company.id)
+      create(:employment, company:, user: other_user)
+      other_user.add_role :employee, company
+
+      sign_in other_user
+
+      update_params = {
+        client: {
+          name: "Unauthorized Update"
+        }
+      }
+
+      put "/api/v1/clients/#{client.id}", params: update_params
+
+      # Should be unauthorized or forbidden
+      expect(response).to have_http_status(:forbidden).or have_http_status(:unauthorized)
+
+      # Client should not be updated
+      client.reload
+      expect(client.name).not_to eq("Unauthorized Update")
+    end
+  end
+end

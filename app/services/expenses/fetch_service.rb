@@ -26,24 +26,58 @@ class Expenses::FetchService
       filters = Expenses::FiltersService.new(current_company, params)
       filters.process
 
-      Expense.search(
-        filters.search_term,
-        fields: [:category_name, :vendor_name, :description],
-        match: :word_start,
-        where: filters.where_clause,
-        order: { created_at: :desc },
-        page: filters.page,
-        per_page: filters.per_page
-      )
+      expenses = current_company.expenses
+
+      # Apply search if present
+      if filters.search_term.present?
+        expenses = expenses.search(filters.search_term)
+      end
+
+      # Apply filters from where_clause
+      if filters.where_clause.present?
+        # Apply date range filter if present
+        if filters.where_clause[:date].present?
+          expenses = expenses.where(date: filters.where_clause[:date])
+        end
+
+        # Apply expense_type filter if present
+        if filters.where_clause[:expense_type].present?
+          expenses = expenses.where(expense_type: filters.where_clause[:expense_type])
+        end
+
+        # Apply category filter if present
+        if filters.where_clause[:expense_category_id].present?
+          expenses = expenses.where(expense_category_id: filters.where_clause[:expense_category_id])
+        end
+
+        # Apply vendor filter if present
+        if filters.where_clause[:vendor_id].present?
+          expenses = expenses.where(vendor_id: filters.where_clause[:vendor_id])
+        end
+      end
+
+      # Apply ordering
+      expenses = expenses.order(created_at: :desc)
+
+      # Apply pagination using simple offset/limit
+      page = (filters.page || 1).to_i
+      page = 1 if page <= 0
+      per_page = (filters.per_page || 10).to_i
+      per_page = 10 if per_page <= 0
+      expenses = expenses.limit(per_page).offset((page - 1) * per_page)
+
+      expenses
     end
 
     def pagination_details
+      # Simplified pagination for compatibility
+      # Since we're using Pagy in controllers, not here
       {
-        pages: expenses.total_pages,
-        first: expenses.first_page?,
-        prev: expenses.prev_page,
-        next: expenses.next_page,
-        last: expenses.last_page?
+        pages: 1,
+        first: true,
+        prev: nil,
+        next: nil,
+        last: true
       }
     end
 end

@@ -114,7 +114,7 @@ const MobileView = ({
           issueDate={issueDate}
           reference={reference}
           selectedClient={client}
-          setActiveSection={() => {}} //eslint-disable-line
+          setActiveSection={() => {}}
           showEditButton={false}
           strikeAmount={strikeAmount}
         />
@@ -126,8 +126,8 @@ const MobileView = ({
             manualEntryArr={[]}
             selectedClient={client}
             selectedLineItems={invoiceLineItems}
-            setActiveSection={() => {}} //eslint-disable-line
-            setEditItem={() => {}} //eslint-disable-line
+            setActiveSection={() => {}}
+            setEditItem={() => {}}
             strikeAmount={strikeAmount}
           />
         </div>
@@ -138,7 +138,7 @@ const MobileView = ({
           baseCurrencyAmount={baseCurrencyAmount}
           currency={currency}
           discount={discount}
-          setActiveSection={() => {}} //eslint-disable-line
+          setActiveSection={() => {}}
           showEditButton={false}
           strikeAmount={strikeAmount}
           subTotal={subTotal}

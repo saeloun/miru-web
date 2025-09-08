@@ -12,6 +12,8 @@
 #  discarded_at           :datetime
 #  discount               :decimal(20, 2)   default(0.0)
 #  due_date               :date
+#  exchange_rate          :decimal(18, 10)
+#  exchange_rate_date     :date
 #  external_view_key      :string
 #  invoice_number         :string
 #  issue_date             :date
@@ -36,8 +38,11 @@
 #  index_invoices_on_due_date                       (due_date)
 #  index_invoices_on_external_view_key              (external_view_key) UNIQUE
 #  index_invoices_on_invoice_number_and_company_id  (invoice_number,company_id) UNIQUE
+#  index_invoices_on_invoice_number_trgm            (invoice_number) USING gin
 #  index_invoices_on_issue_date                     (issue_date)
+#  index_invoices_on_issue_date_and_company_id      (issue_date,company_id)
 #  index_invoices_on_status                         (status)
+#  index_invoices_on_status_and_company_id          (status,company_id)
 #
 # Foreign Keys
 #
@@ -51,10 +56,24 @@ class Invoice < ApplicationRecord
   include Discard::Model
   include InvoiceSendable
   include ClientPaymentSendable
+  include Searchable
+
+  # Audit currency conversions and amount changes
+  audited only: [:amount, :base_currency_amount, :exchange_rate, :exchange_rate_date, :currency, :status, :amount_paid, :amount_due]
+
+  # Configure pg_search - use ILIKE for more precise matching
+  scope :pg_search, ->(query) {
+    return all if query.blank?
+
+    joins(:client).where(
+      "invoices.invoice_number ILIKE :query OR invoices.reference ILIKE :query OR clients.name ILIKE :query",
+      query: "%#{sanitize_sql_like(query)}%"
+    )
+  }
 
   attr_accessor :sub_total
 
-  enum status: [
+  enum :status, [
     :draft,
     :sent,
     :viewed,
@@ -75,7 +94,7 @@ class Invoice < ApplicationRecord
   store_accessor :payment_infos, :stripe_payment_intent
 
   before_validation :set_external_view_key, on: :create
-  after_commit :refresh_invoice_index
+  before_validation :calculate_base_currency_amount
   after_save :lock_timesheet_entries, if: :draft?
   after_discard :unlock_timesheet_entries, if: :draft?
   after_discard :update_invoice_number
@@ -102,26 +121,8 @@ class Invoice < ApplicationRecord
   delegate :email, to: :client, prefix: :client
   delegate :logo_url, to: :client, prefix: :client
 
-  searchkick filterable: [:issue_date, :created_at, :updated_at, :client_name, :status, :invoice_number ],
-    word_middle: [:invoice_number, :client_name]
-
   ARCHIVED_PREFIX = "ARC"
 
-  def search_data
-    {
-      id: id.to_i,
-      issue_date:,
-      due_date:,
-      invoice_number:,
-      client_id:,
-      status:,
-      company_id:,
-      client_name:,
-      created_at:,
-      updated_at:,
-      discarded_at:
-    }
-  end
 
   def recently_sent_mail?
     sent_at.nil? || (sent_at && !(sent_at > 1.minute.ago))
@@ -180,9 +181,6 @@ class Invoice < ApplicationRecord
     CompanyDateFormattingService.new(issue_date, company:).process
   end
 
-  def refresh_invoice_index
-    Invoice.search_index.refresh
-  end
 
   private
 
@@ -226,5 +224,30 @@ class Invoice < ApplicationRecord
 
     def update_invoice_number
       self.update(invoice_number: "#{ARCHIVED_PREFIX}-#{id}-#{invoice_number}")
+    end
+
+    def calculate_base_currency_amount
+      if same_currency?
+        self.base_currency_amount = amount if amount.present?
+        return
+      end
+      return unless amount_changed? || currency_changed? || new_record?
+
+      # Get the exchange rate for the invoice date
+      invoice_date = issue_date || Date.current
+      rate = CurrencyConversionService.get_exchange_rate(
+        currency || client&.currency,
+        company&.base_currency,
+        invoice_date
+      )
+
+      if rate
+        self.exchange_rate = rate
+        self.exchange_rate_date = invoice_date
+        self.base_currency_amount = (amount * rate).round(2)
+      else
+        # If we can't get a rate, make sure validation will fail
+        self.base_currency_amount = nil unless base_currency_amount.present?
+      end
     end
 end

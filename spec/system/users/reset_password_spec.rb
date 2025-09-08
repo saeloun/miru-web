@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe "Reset Password", type: :system do
+RSpec.describe "Reset Password", type: :system, js: true do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id, password: "testing!") }
 

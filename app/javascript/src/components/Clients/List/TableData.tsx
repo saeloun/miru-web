@@ -1,8 +1,9 @@
 import React from "react";
 
+import AnimatedAvatar from "components/ui/animated-avatar";
 import { minToHHMM } from "helpers";
 import { DotsThreeVerticalIcon } from "miruIcons";
-import { Avatar, Tooltip } from "StyledComponents";
+import { Tooltip } from "StyledComponents";
 
 const TableData = (
   clients,
@@ -18,10 +19,16 @@ const TableData = (
     return clients.map(client => ({
       col1: (
         <Tooltip content={client.name} show={showTooltip}>
-          <div className="flex">
-            <Avatar classNameImg="mr-4" url={client.logo} />
+          <div className="flex items-center">
+            <AnimatedAvatar
+              url={client.logo}
+              name={client.name}
+              size="md"
+              animation="scale"
+              className="mr-4"
+            />
             <span
-              className="my-auto overflow-hidden truncate whitespace-nowrap text-base font-medium capitalize text-miru-dark-purple-1000"
+              className="overflow-hidden truncate whitespace-nowrap text-base font-medium capitalize text-miru-dark-purple-1000"
               ref={toolTipRef}
               onMouseEnter={handleTooltip}
             >
@@ -43,10 +50,16 @@ const TableData = (
   } else if (clients && !isDesktop) {
     return clients.map(client => ({
       col1: (
-        <div className="text-base capitalize">
-          <Avatar classNameImg="mr-4 w-8 h-8" url={client.logo} />
+        <div className="flex items-center text-base capitalize">
+          <AnimatedAvatar
+            url={client.logo}
+            name={client.name}
+            size="sm"
+            animation="scale"
+            className="mr-4"
+          />
           <span
-            className="my-auto overflow-hidden truncate whitespace-nowrap text-sm font-medium capitalize text-miru-dark-purple-1000"
+            className="overflow-hidden truncate whitespace-nowrap text-sm font-medium capitalize text-miru-dark-purple-1000"
             ref={toolTipRef}
             onMouseEnter={handleTooltip}
           >

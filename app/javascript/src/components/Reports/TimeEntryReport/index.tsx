@@ -1,249 +1,652 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+import {
+  Clock,
+  Users,
+  Buildings as Building2,
+  Download,
+  CaretDown as ChevronDown,
+  Calendar as CalendarIcon,
+} from "@phosphor-icons/react";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import {
+  ColumnDef,
+  ColumnFiltersState,
+  SortingState,
+  VisibilityState,
+  flexRender,
+  getCoreRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
+import {
+  format,
+  subDays,
+  startOfMonth,
+  endOfMonth,
+  startOfYear,
+  endOfYear,
+  startOfQuarter,
+  endOfQuarter,
+} from "date-fns";
+import { DateRange } from "react-day-picker";
+import axios from "../../../apis/api";
+import { minToHHMM } from "../../../helpers";
+import { Button } from "../../ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../ui/select";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "../../ui/dropdown-menu";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "../../ui/table";
+import { Card, CardContent, CardHeader, CardTitle } from "../../ui/card";
+import { cn } from "../../../lib/utils";
+import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
+import { Calendar as CalendarComponent } from "../../ui/calendar";
 
-import { Pagination } from "StyledComponents";
+// Separate component to handle table rendering with hooks
+const ReportGroupTable: React.FC<{
+  group: ReportGroup;
+  columns: ColumnDef<TimeEntry>[];
+  getTotalHoursForGroup: (group: ReportGroup) => string;
+}> = ({ group, columns, getTotalHoursForGroup }) => {
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 
-import reportsApi from "apis/reports";
-import Loader from "common/Loader/index";
-import { useUserContext } from "context/UserContext";
-import { sendGAPageView } from "utils/googleAnalytics";
-
-import { TimeEntryReportMobileView } from "./TimeEntryReportMobileView";
-import { TIME_ENTRY_REPORT_PAGE } from "./utils";
-
-import { applyFilter, getQueryParams } from "../api/applyFilter";
-import Container from "../Container";
-import AccountsAgingReportContext from "../context/AccountsAgingReportContext";
-import EntryContext from "../context/EntryContext";
-import OutstandingOverdueInvoiceContext from "../context/outstandingOverdueInvoiceContext";
-import RevenueByClientReportContext from "../context/RevenueByClientContext";
-import { getMonth } from "../Filters/filterOptions";
-import FilterSideBar from "../Filters/FilterSideBar";
-import Header from "../Header";
-import { ITimeEntry } from "../interface";
-
-const TimeEntryReport = () => {
-  const filterIntialValues = {
-    dateRange: { label: getMonth(true), value: "this_month" },
-    clients: [],
-    teamMember: [],
-    status: [],
-    groupBy: { label: "Client", value: "client" },
-    customDateFilter: {
-      from: "",
-      to: "",
+  const table = useReactTable({
+    data: group.entries,
+    columns,
+    onSortingChange: setSorting,
+    onColumnFiltersChange: setColumnFilters,
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    onColumnVisibilityChange: setColumnVisibility,
+    state: {
+      sorting,
+      columnFilters,
+      columnVisibility,
     },
+  });
+
+  return (
+    <Card>
+      <CardHeader>
+        <div className="flex justify-between items-center">
+          <CardTitle>{group.label}</CardTitle>
+          <div className="flex items-center space-x-2">
+            <span className="text-sm text-muted-foreground">Total:</span>
+            <span className="text-lg font-bold text-indigo-600">
+              {getTotalHoursForGroup(group)}
+            </span>
+          </div>
+        </div>
+      </CardHeader>
+      <CardContent>
+        <div className="rounded-md border">
+          <Table>
+            <TableHeader>
+              {table.getHeaderGroups().map(headerGroup => (
+                <TableRow key={headerGroup.id}>
+                  {headerGroup.headers.map(header => (
+                    <TableHead key={header.id}>
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
+                    </TableHead>
+                  ))}
+                </TableRow>
+              ))}
+            </TableHeader>
+            <TableBody>
+              {table.getRowModel().rows?.length ? (
+                table.getRowModel().rows.map(row => (
+                  <TableRow
+                    key={row.id}
+                    data-state={row.getIsSelected() && "selected"}
+                  >
+                    {row.getVisibleCells().map(cell => (
+                      <TableCell key={cell.id}>
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={columns.length}
+                    className="h-24 text-center"
+                  >
+                    No results.
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
+
+interface TimeEntry {
+  id: number;
+  userId?: number;
+  projectId?: number;
+  duration: number;
+  note: string;
+  workDate: string;
+  billStatus: string;
+  teamMember?: string;
+  project?: string;
+  client?: string;
+  clientLogo?: string;
+}
+
+interface ReportGroup {
+  label: string;
+  id: number;
+  entries: TimeEntry[];
+}
+
+interface TimeEntryReportData {
+  reports: ReportGroup[];
+  pagy: {
+    pages: number;
+    first: boolean;
+    prev: number | null;
+    next: number | null;
+    last: boolean;
+    page: number;
   };
-  const { isDesktop } = useUserContext();
+  filterOptions: {
+    clients: Array<{ id: number; name: string; logo: string }>;
+    teamMembers: Array<{ id: number; name: string }>;
+    projects: Array<{ id: number; name: string }>;
+  };
+  groupByTotalDuration: {
+    groupBy: string;
+    groupedDurations: Record<string, number>;
+  };
+}
 
-  const [timeEntries, setTimeEntries] = useState<Array<ITimeEntry>>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [filterOptions, setFilterOptions] = useState({
-    clients: [],
-    teamMembers: [],
-    projects: [],
+const TimeEntryReport: React.FC = () => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const [groupBy, setGroupBy] = useState<"client" | "project" | "team_member">(
+    "client"
+  );
+
+  const [dateRange, setDateRange] = useState<DateRange | undefined>({
+    from: startOfMonth(new Date()),
+    to: endOfMonth(new Date()),
+  });
+  const [dateRangePreset, setDateRangePreset] = useState("this_month");
+  const [selectedClients, setSelectedClients] = useState<number[]>([]);
+  const [selectedTeamMembers, setSelectedTeamMembers] = useState<number[]>([]);
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+
+  const { data, isLoading, error, refetch } = useQuery<TimeEntryReportData>({
+    queryKey: [
+      "timeEntryReport",
+      currentPage,
+      groupBy,
+      dateRange,
+      selectedClients,
+      selectedTeamMembers,
+    ],
+    queryFn: async () => {
+      const params = new URLSearchParams({
+        page: currentPage.toString(),
+        group_by: groupBy,
+        ...(dateRange?.from && { from: format(dateRange.from, "dd/MM/yyyy") }),
+        ...(dateRange?.to && { to: format(dateRange.to, "dd/MM/yyyy") }),
+        ...(selectedClients.length > 0 && {
+          client: selectedClients.join(","),
+        }),
+        ...(selectedTeamMembers.length > 0 && {
+          team_member: selectedTeamMembers.join(","),
+        }),
+      });
+
+      const response = await axios.get(
+        `/reports/time_entries?${params.toString()}`
+      );
+
+      return response.data;
+    },
   });
 
-  const [groupByTotalDuration, setGroupByTotalDuration] = useState({
-    groupBy: "",
-    groupedDurations: {},
-  });
-  const [selectedFilter, setSelectedFilter] = useState(filterIntialValues);
-  const [isFilterVisible, setIsFilterVisible] = useState<boolean>(false);
-  const [showNavFilters, setShowNavFilters] = useState<boolean>(false);
-  const [filterCounter, setFilterCounter] = useState(0);
-  const [selectedInput, setSelectedInput] = useState<string>("from-input");
+  const handleDateRangePreset = (preset: string) => {
+    const now = new Date();
+    let from: Date, to: Date;
 
-  const [paginationDetails, setPaginationDetails] = useState({
-    page: 0,
-    pages: 0,
-    first: true,
-    prev: 0,
-    next: 0,
-    last: false,
-  });
-
-  useEffect(() => {
-    sendGAPageView();
-  }, []);
-
-  const updateFilterCounter = async () => {
-    let counter = 0;
-    for (const filterkey in selectedFilter) {
-      const filterValue = selectedFilter[filterkey];
-      if (filterkey == "customDateFilter") {
-        continue;
-      } else if (Array.isArray(filterValue)) {
-        counter = counter + filterValue.length;
-      } else {
-        if (filterValue?.value) {
-          counter = counter + 1;
-        }
+    switch (preset) {
+      case "this_month":
+        from = startOfMonth(now);
+        to = endOfMonth(now);
+        break;
+      case "last_month": {
+        const lastMonth = subDays(startOfMonth(now), 1);
+        from = startOfMonth(lastMonth);
+        to = endOfMonth(lastMonth);
+        break;
       }
+      case "this_quarter":
+        from = startOfQuarter(now);
+        to = endOfQuarter(now);
+        break;
+      case "this_year":
+        from = startOfYear(now);
+        to = endOfYear(now);
+        break;
+      case "last_7_days":
+        from = subDays(now, 7);
+        to = now;
+        break;
+      case "last_30_days":
+        from = subDays(now, 30);
+        to = now;
+        break;
+      default:
+        from = startOfMonth(now);
+        to = endOfMonth(now);
     }
-    await setFilterCounter(counter);
+
+    setDateRange({ from, to });
+    setDateRangePreset(preset);
   };
 
-  useEffect(() => {
-    updateFilterCounter();
-    applyFilter(
-      selectedFilter,
-      setTimeEntries,
-      setShowNavFilters,
-      setIsFilterVisible,
-      setFilterOptions,
-      setPaginationDetails,
-      setGroupByTotalDuration,
-      setLoading
+  const getTotalHoursForGroup = (group: ReportGroup): string => {
+    if (data?.groupByTotalDuration?.groupedDurations?.[group.id]) {
+      return minToHHMM(data.groupByTotalDuration.groupedDurations[group.id]);
+    }
+
+    const totalMinutes = group.entries.reduce(
+      (sum, entry) => sum + entry.duration,
+      0
     );
-  }, [selectedFilter]);
 
-  useEffect(() => {
-    const close = e => {
-      if (e.keyCode === 27) {
-        setIsFilterVisible(false);
-      }
-    };
-    window.addEventListener("keydown", close);
-
-    return () => window.removeEventListener("keydown", close);
-  }, []);
-
-  const handleApplyFilter = filters => {
-    setSelectedFilter(filters);
+    return minToHHMM(totalMinutes);
   };
 
-  const resetFilter = () => {
-    setSelectedFilter(filterIntialValues);
-    setShowNavFilters(false);
+  const getTotalHoursOverall = (): string => {
+    if (!data?.reports) return "00:00";
+    const totalMinutes = data.reports.reduce((total, group) => {
+      const groupMinutes = group.entries.reduce(
+        (sum, entry) => sum + entry.duration,
+        0
+      );
+
+      return total + groupMinutes;
+    }, 0);
+
+    return minToHHMM(totalMinutes);
   };
 
-  const handleRemoveSingleFilter = (key, value) => {
-    const filterValue = selectedFilter[key];
-    if (Array.isArray(filterValue)) {
-      const closedFilter = filterValue.filter(item => item.label !== value);
-      setSelectedFilter({ ...selectedFilter, [key]: closedFilter });
-    } else {
-      if (key === "dateRange") {
-        setSelectedFilter({
-          ...selectedFilter,
-          [key]: filterIntialValues.dateRange,
-        });
-      } else if (key === "groupBy") {
-        setSelectedFilter({
-          ...selectedFilter,
-          [key]: filterIntialValues.groupBy,
-        });
-      } else {
-        const label = "None";
-        setSelectedFilter({ ...selectedFilter, [key]: { label, value: "" } });
-      }
-    }
-  };
+  const downloadMutation = useMutation({
+    mutationFn: async (formatType: "csv" | "pdf") => {
+      const params = new URLSearchParams({
+        format: formatType,
+        group_by: groupBy,
+        ...(dateRange?.from && { from: format(dateRange.from, "dd/MM/yyyy") }),
+        ...(dateRange?.to && { to: format(dateRange.to, "dd/MM/yyyy") }),
+        ...(selectedClients.length > 0 && {
+          client: selectedClients.join(","),
+        }),
+        ...(selectedTeamMembers.length > 0 && {
+          team_member: selectedTeamMembers.join(","),
+        }),
+      });
 
-  const handleDownload = async type => {
-    const queryParams = getQueryParams(selectedFilter).substring(1);
-    const response = await reportsApi.download(type, `?${queryParams}`);
-    const url = window.URL.createObjectURL(new Blob([response.data]));
-    const link = document.createElement("a");
-    const filename = `${selectedFilter.dateRange.label}.${type}`;
-    link.href = url;
-    link.setAttribute("download", filename);
-    link.click();
-  };
+      const response = await axios.get(
+        `/reports/time_entries/download?${params.toString()}`,
+        {
+          responseType: "blob",
+        }
+      );
 
-  const handlePageClick = async page => {
-    if (page == "...") return;
-    setLoading(true);
-
-    const queryParams = getQueryParams(selectedFilter);
-    const sanitizedParam = queryParams.substring(1);
-    const sanitizedQuery = `?${sanitizedParam}`;
-    const res = await reportsApi.get(`${sanitizedQuery}&page=${page}`);
-
-    if (res.data.reports.length === 0) {
-      setPaginationDetails(res.data.pagy);
-      setLoading(false);
-    } else {
-      setTimeEntries(res.data.reports);
-      setPaginationDetails(res.data.pagy);
-      setLoading(false);
-    }
-  };
-
-  const contextValues = {
-    timeEntryReport: {
-      reports: timeEntries,
-      filterOptions,
-      groupByTotalDuration,
-      selectedFilter: {
-        ...selectedFilter,
-        customDateFilter: {
-          from: "",
-          to: "",
-        },
-      },
-      filterCounter,
-      handleRemoveSingleFilter,
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      const filename = `time_entries_${format(
+        new Date(),
+        "yyyy-MM-dd"
+      )}.${formatType}`;
+      link.setAttribute("download", filename);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
     },
+  });
 
-    currentReport: "TimeEntryReport",
-    revenueByClientReport: RevenueByClientReportContext,
-    outstandingOverdueInvoice: OutstandingOverdueInvoiceContext,
-    accountsAgingReport: AccountsAgingReportContext,
-  };
+  const columns: ColumnDef<TimeEntry>[] = [
+    {
+      accessorKey: "workDate",
+      header: "Date",
+      cell: ({ row }) => {
+        const workDate = row.getValue("workDate");
+        try {
+          // The date is already formatted by the server
+          if (!workDate || workDate === "Invalid Date") {
+            return "Invalid Date";
+          }
 
-  if (loading) {
-    return <Loader />;
+          // If it's already formatted (e.g., "12/03/2024"), return as is
+          if (typeof workDate === "string" && workDate.includes("/")) {
+            return workDate;
+          }
+          // Otherwise try to parse and format
+          const date = new Date(workDate);
+          if (isNaN(date.getTime())) {
+            return workDate?.toString() || "Invalid Date";
+          }
+
+          return format(date, "MM/dd/yyyy");
+        } catch (error) {
+          console.error("Date formatting error:", error, "Value:", workDate);
+
+          return workDate?.toString() || "Invalid Date";
+        }
+      },
+    },
+    {
+      accessorKey: "teamMember",
+      header: "Team Member",
+      cell: ({ row }) =>
+        row.original.teamMember || row.getValue("teamMember") || "Unknown User",
+    },
+    {
+      accessorKey: "project",
+      header: "Project",
+      cell: ({ row }) =>
+        row.original.project || row.getValue("project") || "Unknown Project",
+    },
+    {
+      accessorKey: "note",
+      header: "Note",
+    },
+    {
+      accessorKey: "duration",
+      header: () => <div className="text-right">Hours</div>,
+      cell: ({ row }) => (
+        <div className="text-right font-medium">
+          {minToHHMM(row.getValue("duration"))}
+        </div>
+      ),
+    },
+  ];
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="text-center text-red-600 py-8">
+        Error loading report data. Please try again.
+      </div>
+    );
   }
 
   return (
-    <div className="h-full">
-      <EntryContext.Provider
-        value={{
-          ...contextValues,
-        }}
-      >
-        <Header
-          showExportButon
-          handleDownload={handleDownload}
-          isFilterVisible={isFilterVisible}
-          resetFilter={resetFilter}
-          revenueFilterCounter={() => {}} // eslint-disable-line  @typescript-eslint/no-empty-function
-          setIsFilterVisible={setIsFilterVisible}
-          showNavFilters={isDesktop && showNavFilters}
-          type={TIME_ENTRY_REPORT_PAGE}
-        />
-        {isDesktop ? (
-          <>
-            <Container selectedFilter={selectedFilter} />
-            <Pagination
-              currentPage={paginationDetails?.page}
-              handleClick={handlePageClick}
-              isFirstPage={paginationDetails?.first}
-              isLastPage={paginationDetails?.last}
-              nextPage={paginationDetails?.next}
-              prevPage={paginationDetails?.prev}
-              totalPages={paginationDetails?.pages}
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <div className="bg-white shadow-sm border-b">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center py-4">
+            <h1 className="text-2xl font-semibold text-gray-900">
+              Time Entry Report
+            </h1>
+
+            <div className="flex items-center space-x-3">
+              {/* Date Range Preset Selector */}
+              <Select
+                value={dateRangePreset}
+                onValueChange={handleDateRangePreset}
+              >
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Select period" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="this_month">This Month</SelectItem>
+                  <SelectItem value="last_month">Last Month</SelectItem>
+                  <SelectItem value="this_quarter">This Quarter</SelectItem>
+                  <SelectItem value="this_year">This Year</SelectItem>
+                  <SelectItem value="last_7_days">Last 7 Days</SelectItem>
+                  <SelectItem value="last_30_days">Last 30 Days</SelectItem>
+                  <SelectItem value="custom">Custom Range</SelectItem>
+                </SelectContent>
+              </Select>
+
+              {/* Custom Date Range Picker */}
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className={cn(
+                      "w-[280px] justify-start text-left font-normal",
+                      !dateRange && "text-muted-foreground"
+                    )}
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {dateRange?.from ? (
+                      dateRange.to ? (
+                        <>
+                          {format(dateRange.from, "LLL dd, y")} -{" "}
+                          {format(dateRange.to, "LLL dd, y")}
+                        </>
+                      ) : (
+                        format(dateRange.from, "LLL dd, y")
+                      )
+                    ) : (
+                      <span>Pick a date range</span>
+                    )}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <CalendarComponent
+                    initialFocus
+                    mode="range"
+                    defaultMonth={dateRange?.from}
+                    selected={dateRange}
+                    onSelect={range => {
+                      setDateRange(range);
+                      setDateRangePreset("custom");
+                    }}
+                    numberOfMonths={2}
+                    disabled={date =>
+                      date > new Date() || date < new Date("1900-01-01")
+                    }
+                  />
+                </PopoverContent>
+              </Popover>
+
+              {/* Group By Selector */}
+              <Select
+                value={groupBy}
+                onValueChange={(value: any) => setGroupBy(value)}
+              >
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Group by" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="client">Group by Client</SelectItem>
+                  <SelectItem value="project">Group by Project</SelectItem>
+                  <SelectItem value="team_member">
+                    Group by Team Member
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+
+              {/* Export Dropdown */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline">
+                    <Download className="mr-2 h-4 w-4" />
+                    Export
+                    <ChevronDown className="ml-2 h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem
+                    onClick={() => downloadMutation.mutate("csv")}
+                  >
+                    Export as CSV
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => downloadMutation.mutate("pdf")}
+                  >
+                    Export as PDF
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Summary Cards */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Total Hours</CardTitle>
+              <Clock className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{getTotalHoursOverall()}</div>
+              <p className="text-xs text-muted-foreground">
+                {dateRange?.from && dateRange?.to
+                  ? `${format(dateRange.from, "MMM d")} - ${format(
+                      dateRange.to,
+                      "MMM d, yyyy"
+                    )}`
+                  : "All time"}
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">
+                Total Entries
+              </CardTitle>
+              <Building2 className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">
+                {data?.reports?.reduce(
+                  (sum, group) => sum + group.entries.length,
+                  0
+                ) || 0}
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Time entries recorded
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">
+                Active{" "}
+                {groupBy === "client"
+                  ? "Clients"
+                  : groupBy === "project"
+                  ? "Projects"
+                  : "Team Members"}
+              </CardTitle>
+              <Users className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">
+                {data?.reports?.length || 0}
+              </div>
+              <p className="text-xs text-muted-foreground">
+                With recorded time
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Report Tables */}
+        <div className="space-y-6">
+          {data?.reports?.map(group => (
+            <ReportGroupTable
+              key={group.id}
+              group={group}
+              columns={columns}
+              getTotalHoursForGroup={getTotalHoursForGroup}
             />
-          </>
-        ) : (
-          <TimeEntryReportMobileView
-            handlePageClick={handlePageClick}
-            paginationDetails={paginationDetails}
-          />
+          ))}
+        </div>
+
+        {/* Pagination */}
+        {data?.pagy && data.pagy.pages > 1 && (
+          <div className="mt-6 flex justify-center space-x-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setCurrentPage(currentPage - 1)}
+              disabled={!data.pagy.prev}
+            >
+              Previous
+            </Button>
+
+            {[...Array(data.pagy.pages)].map((_, i) => (
+              <Button
+                key={i + 1}
+                variant={currentPage === i + 1 ? "default" : "outline"}
+                size="sm"
+                onClick={() => setCurrentPage(i + 1)}
+              >
+                {i + 1}
+              </Button>
+            ))}
+
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setCurrentPage(currentPage + 1)}
+              disabled={!data.pagy.next}
+            >
+              Next
+            </Button>
+          </div>
         )}
-        {isFilterVisible && (
-          <FilterSideBar
-            handleApplyFilter={handleApplyFilter}
-            resetFilter={resetFilter}
-            selectedFilter={selectedFilter}
-            selectedInput={selectedInput}
-            setFilterCounter={setFilterCounter}
-            setIsFilterVisible={setIsFilterVisible}
-            setSelectedInput={setSelectedInput}
-          />
-        )}
-      </EntryContext.Provider>
+      </div>
     </div>
   );
 };

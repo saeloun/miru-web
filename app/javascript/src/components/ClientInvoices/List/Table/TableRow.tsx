@@ -3,7 +3,6 @@ import React, { useState, useRef } from "react";
 import { currencyFormat, useDebounce } from "helpers";
 import { useNavigate } from "react-router-dom";
 import { Avatar, Badge, Tooltip } from "StyledComponents";
-
 import getStatusCssClass from "utils/getBadgeStatus";
 
 const TableRow = ({ invoice, index }) => {

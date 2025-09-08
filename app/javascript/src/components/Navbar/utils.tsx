@@ -1,5 +1,8 @@
+import { Paths, LocalStorageKeys } from "constants/index";
+
 import React from "react";
 
+import { logoutApi } from "apis/api";
 import {
   TimeTrackingIcon,
   ClientsIcon,
@@ -13,9 +16,6 @@ import {
   CoinsIcon,
 } from "miruIcons";
 import { NavLink } from "react-router-dom";
-
-import { logoutApi } from "apis/logoutApi";
-import { Paths, LocalStorageKeys } from "constants/index";
 
 const navOptions = [
   {
@@ -39,7 +39,7 @@ const navOptions = [
   {
     logo: <TeamsIcon className="mr-0 md:mr-4" size={26} />,
     label: "Team",
-    path: Paths.TEAMS,
+    path: Paths.TEAM.replace("/*", ""),
     allowedRoles: ["admin", "owner"],
   },
   {
@@ -83,7 +83,7 @@ const navAdminMobileOptions = [
   {
     logo: <TeamsIcon className="mr-0 md:mr-4" size={26} />,
     label: "Team",
-    path: Paths.TEAMS,
+    path: Paths.TEAM.replace("/*", ""),
   },
   {
     logo: <ClientsIcon className="mr-0 md:mr-4" size={26} />,
@@ -128,7 +128,7 @@ const navClientOptions = [
   {
     logo: <SettingIcon className="mr-0 md:mr-4" size={26} />,
     label: "Settings",
-    path: "/settings/profile",
+    path: Paths.SETTINGS.replace("/*", "/profile"),
     allowedRoles: ["admin", "owner", "book_keeper", "client"],
   },
   {
@@ -226,13 +226,32 @@ const MobileMenuOptions = ({
   </>
 );
 
-const handleLogout = async authDispatch => {
-  await logoutApi();
-  Object.values(LocalStorageKeys).forEach(key => {
-    localStorage.removeItem(key);
-  });
-  authDispatch({ type: "LOGOUT" });
-  window.location.href = "/";
+const handleLogout = async () => {
+  try {
+    // Call Rails logout API
+    await logoutApi();
+
+    // Clear local storage
+    Object.values(LocalStorageKeys).forEach(key => {
+      localStorage.removeItem(key);
+    });
+
+    // Clear auth token
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("authEmail");
+
+    // Redirect to home/login page
+    window.location.href = "/";
+  } catch (error) {
+    console.error("Logout error:", error);
+    // Even if logout API fails, clear local storage and redirect
+    Object.values(LocalStorageKeys).forEach(key => {
+      localStorage.removeItem(key);
+    });
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("authEmail");
+    window.location.href = "/";
+  }
 };
 
 export {

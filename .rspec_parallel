@@ -1,0 +1,5 @@
+--format progress
+--format documentation
+--require spec_helper
+--color
+--tty

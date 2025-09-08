@@ -1,9 +1,18 @@
+import { ApiStatus as PaymentSettingsStatus } from "constants/index";
+
 import React from "react";
 
-import { ConnectSVG, StripeLogoSVG, disconnectAccountSVG } from "miruIcons";
-
 import Loader from "common/Loader/index";
-import { ApiStatus as PaymentSettingsStatus } from "constants/index";
+import { StripeLogoSVG, disconnectAccountSVG } from "miruIcons";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "components/ui/card";
+import { Button } from "components/ui/button";
+import { CreditCard } from "phosphor-react";
 
 import EditHeader from "../../Common/EditHeader";
 
@@ -20,52 +29,87 @@ const StaticPage = ({
       title="Payment Settings"
     />
     {status === PaymentSettingsStatus.LOADING ? (
-      <Loader />
+      <div className="flex min-h-70v items-center justify-center">
+        <Loader />
+      </div>
     ) : (
       status === PaymentSettingsStatus.SUCCESS && (
-        <div className="flex">
-          <div className="flex flex-col">
-            <div className="mt-4 h-screen bg-miru-gray-100 py-10 px-20">
-              <div className="flex h-36 flex-row items-center bg-white p-5">
-                <div className="w-fit border-r-2 border-miru-gray-200 pr-12">
-                  <img src={StripeLogoSVG} />
-                </div>
-                <span className="w-2/5 px-4 text-sm font-normal leading-5 text-miru-dark-purple-1000">
-                  {isStripeConnected
-                    ? "Your stripe account is now connected and ready to accept online payments"
-                    : "Connect with your existing stripe account or create a new account"}
-                </span>
-                {isStripeConnected ? (
-                  <div className="ml-12 flex flex-row">
-                    <div className="logo-container mr-1 py-2">
-                      <img src={disconnectAccountSVG} />
+        <div className="mt-4 space-y-6 px-4 md:px-10 lg:px-0">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center text-base font-bold text-miru-dark-purple-1000">
+                <CreditCard className="mr-2" color="#1D1A31" size={16} />
+                Payment Gateway Integration
+              </CardTitle>
+              <CardDescription>
+                Manage your payment gateway connections for accepting online
+                payments
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-6">
+                {/* Stripe Integration */}
+                <div className="flex items-center justify-between rounded-lg border p-6">
+                  <div className="flex items-center gap-6">
+                    <div className="flex-shrink-0 border-r border-gray-200 pr-6">
+                      <img src={StripeLogoSVG} alt="Stripe" className="h-8" />
                     </div>
-                    <button
-                      className="ml-1 text-base font-extrabold text-miru-red-400"
-                      onClick={() => setShowDisconnectDialog(true)}
-                    >
-                      Disconnect
-                    </button>
+                    <div className="max-w-md">
+                      <p className="text-sm text-miru-dark-purple-1000">
+                        {isStripeConnected
+                          ? "Your Stripe account is connected and ready to accept online payments"
+                          : "Connect with your existing Stripe account or create a new account"}
+                      </p>
+                    </div>
                   </div>
-                ) : (
-                  <button onClick={connectStripe}>
-                    <img className="pr-5" src={ConnectSVG} />
-                  </button>
-                )}
+                  <div className="flex-shrink-0">
+                    {isStripeConnected ? (
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => setShowDisconnectDialog(true)}
+                        className="flex items-center gap-2"
+                      >
+                        <img
+                          src={disconnectAccountSVG}
+                          alt=""
+                          className="h-4 w-4"
+                        />
+                        Disconnect
+                      </Button>
+                    ) : (
+                      <Button
+                        variant="default"
+                        size="sm"
+                        onClick={connectStripe}
+                        className="flex items-center gap-2"
+                      >
+                        Connect Stripe
+                      </Button>
+                    )}
+                  </div>
+                </div>
+                {/* PayPal Integration (commented out) */}
+                {/* <div className="flex items-center justify-between rounded-lg border p-6">
+                  <div className="flex items-center gap-6">
+                    <div className="flex-shrink-0 border-r border-gray-200 pr-6">
+                      <img src={Paypal_Logo} alt="PayPal" className="h-8" />
+                    </div>
+                    <div className="max-w-md">
+                      <p className="text-sm text-miru-dark-purple-1000">
+                        Connect with your existing PayPal account or create a new account
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex-shrink-0">
+                    <Button variant="default" size="sm">
+                      Connect PayPal
+                    </Button>
+                  </div>
+                </div> */}
               </div>
-              {/* <div className="h-36 p-5 mt-6 bg-white flex justify-between items-center">
-									<div className="pr-12 border-r-2 border-miru-gray-200 w-fit">
-											<img src={Paypal_Logo} />
-									</div>
-									<span className="px-4 font-normal text-sm text-miru-dark-purple-1000 leading-5 w-2/5">
-											Connect with your existing paypal account or create a new account
-									</span>
-									<button>
-											<img src={Connect_Paypal} className="pr-5" />
-									</button>
-									</div> */}
-            </div>
-          </div>
+            </CardContent>
+          </Card>
         </div>
       )
     )}

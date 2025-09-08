@@ -3,7 +3,7 @@
 class Reports::TimeEntries::ReportService
   include Pagy::Backend
   attr_reader :params, :current_company, :get_filters
-  attr_accessor :reports, :pagination_details, :pagy_data
+  attr_accessor :reports, :pagy_data
 
   def initialize(params, current_company, get_filters: false)
     @params = params
@@ -46,33 +46,60 @@ class Reports::TimeEntries::ReportService
     def pagy_reports(where_clause)
       filter_service = Reports::TimeEntries::FilterService.new(params, current_company)
       filter_service.process
-      @reports = search_timesheet_entries(where_clause.merge(filter_service.es_filter))
+
+      # Convert client_id to project_id for TimesheetEntry filtering
+      filter_hash = filter_service.es_filter
+      if filter_hash[:client_id]
+        project_ids = Project.where(client_id: filter_hash[:client_id]).pluck(:id)
+        filter_hash = { project_id: project_ids }
+      end
+
+      entries = search_timesheet_entries(where_clause.merge(filter_hash))
+
+      # Use Pagy for pagination
+      @pagy_data, @reports = pagy(entries, items: 50, page: params[:page])
     end
 
     def search_timesheet_entries(where_clause, page = nil)
-      order_fields = {
-        "project" => :project_name,
-        "client" => :client_name,
-        "team_member" => :user_name,
-        "default" => :client_name
-      }
-      order_field = order_fields[params[:group_by]] || order_fields["default"]
+      # Build the base query with necessary joins for ordering
+      base_query = TimesheetEntry.includes(:user, project: :client)
 
-      TimesheetEntry.search(
-        where: where_clause,
-        order: [order_field => :asc, work_date: :desc],
-        per_page: 50,
-        page: params[:page],
-        load: false,
-      )
+      # Apply where conditions
+      where_clause.each do |key, value|
+        base_query = if value.is_a?(Hash) && value.key?(:not)
+          base_query.where.not(key => value[:not])
+        else
+          base_query.where(key => value)
+        end
+      end
+
+      # Apply ordering based on group_by parameter
+      ordered_query = case params[:group_by]
+                      when "project"
+                        base_query.joins(:project).order("projects.name ASC, work_date DESC")
+                      when "team_member"
+                        base_query.joins(:user).order("users.first_name ASC, users.last_name ASC, work_date DESC")
+                      when "client"
+                        base_query.joins(project: :client).order("clients.name ASC, work_date DESC")
+                      else
+                        base_query.joins(project: :client).order("clients.name ASC, work_date DESC")
+      end
+
+      # Return the query result with pagination if needed
+      if page
+        ordered_query.page(page).per(50)
+      else
+        ordered_query
+      end
     end
 
     def group_by_total_duration
-      group_by = params[:group_by]&.to_sym
+      group_by = params[:group_by]&.to_sym || :client
       return unless [:client, :project, :team_member].include?(group_by)
 
-      filter_service = TimeEntries::Filters.new(params)
-      where_conditions = filter_service.process
+      # Use the same where clause as the main query
+      default_filter = current_company_filter.merge(this_month_filter).merge(active_time_entries)
+      where_conditions = default_filter.merge(TimeEntries::Filters.process(params))
 
       joins_clause, group_field = case group_by
                                   when :client
@@ -85,10 +112,11 @@ class Reports::TimeEntries::ReportService
                                     raise ArgumentError, "Unsupported group_by: #{group_by}"
       end
 
+      # Convert client_id filter to proper join condition
       if where_conditions.key?(:client_id)
-        where_conditions["clients.id"] = where_conditions[:client_id]
+        project_ids = Project.where(client_id: where_conditions[:client_id]).pluck(:id)
+        where_conditions[:project_id] = project_ids
         where_conditions.delete(:client_id)
-        joins_clause = { user: [], project: :client }
       end
 
       grouped_durations = TimesheetEntry.kept.joins(joins_clause)
@@ -106,9 +134,9 @@ class Reports::TimeEntries::ReportService
 
     def client_logos
       if filter_options
-        filter_options[:clients].map do | client |
+        filter_options[:clients].to_h do | client |
           [client.id, client.logo_url]
-        end.to_h
+        end
       end
     end
 
@@ -125,13 +153,15 @@ class Reports::TimeEntries::ReportService
     end
 
     def pagination_details
+      return {} unless @pagy_data
+
       {
-        pages: @reports.total_pages,
-        first: @reports.first_page?,
-        prev: @reports.prev_page,
-        next: @reports.next_page,
-        last: @reports.last_page?,
-        page: params[:page].to_i
+        pages: @pagy_data.pages,
+        first: @pagy_data.page == 1,
+        prev: @pagy_data.prev,
+        next: @pagy_data.next,
+        last: @pagy_data.page == @pagy_data.pages,
+        page: @pagy_data.page
       }
     end
 end

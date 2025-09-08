@@ -18,6 +18,11 @@ const InvoiceSummary = ({
 
   const summaryList = [
     {
+      label: "ALL",
+      value: summary.totalAmount,
+      onClick: () => applyFilter([]), // Clear all filters to show all invoices
+    },
+    {
       label: "OVERDUE",
       value: summary.overdueAmount,
       onClick: () => applyFilter([{ value: "overdue", label: "OVERDUE" }]),
@@ -43,7 +48,7 @@ const InvoiceSummary = ({
     <SummaryDashboard
       currency={baseCurrency}
       summaryList={summaryList}
-      wrapperClassName="mt-1 lg:mt-6"
+      wrapperClassName="mt-1 lg:mt-4"
     />
   );
 };

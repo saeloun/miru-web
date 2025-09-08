@@ -1,13 +1,11 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 import React, { useEffect, useState } from "react";
 
+import { timeoffEntriesApi } from "apis/api";
+import { useTimesheetEntries } from "context/TimesheetEntries";
+import { useUserContext } from "context/UserContext";
 import { format } from "date-fns";
 import dayjs from "dayjs";
 import { minToHHMM } from "helpers";
-
-import timeoffEntryApi from "apis/timeoff-entry";
-import { useTimesheetEntries } from "context/TimesheetEntries";
-import { useUserContext } from "context/UserContext";
 
 import {
   showDeleteAction,
@@ -83,7 +81,7 @@ const TimeoffEntryCard = ({
 
     setNewEntryView(false);
     setEditEntryId(0);
-    const res = await timeoffEntryApi.destroy(timeoffEntryId);
+    const res = await timeoffEntriesApi.destroy(timeoffEntryId);
 
     if (res.status === 200) {
       await handleFilterEntry(selectedFullDate, timeoffEntryId);
@@ -101,7 +99,7 @@ const TimeoffEntryCard = ({
     if (timeoffEntry) {
       const payload = getPayload(timeoffEntry);
       if (payload) {
-        const res = await timeoffEntryApi.create(payload, selectedEmployeeId);
+        const res = await timeoffEntriesApi.create(payload, selectedEmployeeId);
         if (res.status === 200) {
           await fetchEntries(selectedFullDate, selectedFullDate);
           await fetchEntriesOfMonths();

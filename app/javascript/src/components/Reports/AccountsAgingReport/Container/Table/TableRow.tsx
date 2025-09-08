@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 
-import { currencyFormat } from "helpers";
+import { currencyFormat } from "../../../../../helpers/currency";
 import { Avatar, Tooltip } from "StyledComponents";
 
 import { useUserContext } from "context/UserContext";

@@ -14,9 +14,11 @@ on your Windows machine.
 
 ## Installation
 
-#### 1. Open your WSL terminal and [Fork repository](https://github.com/saeloun/miru-web/fork) to your account.
+#### 1. Fork the repository and open WSL terminal
 
-#### 2. Clone repo to local
+First, [fork the repository](https://github.com/saeloun/miru-web/fork) to your GitHub account, then open your WSL terminal.
+
+#### 2. Clone repository to local machine
 
 ```bash
 $ git clone https://github.com/<your-name>/miru-web.git
@@ -28,7 +30,7 @@ $ git clone https://github.com/<your-name>/miru-web.git
 cd miru-web
 ```
 
-#### 4. Install rvm
+#### 4. Install RVM (Ruby Version Manager)
 
 First, use the gpg command to contact a public key server and request the `RVM`
 project’s key which is used to sign each `RVM` release.
@@ -66,7 +68,7 @@ Execute this command to make `rvm` accessible in your current session:
 source ~/.rvm/scripts/rvm
 ```
 
-#### 5. Install ruby
+#### 5. Install Ruby 3.4.5
 
 Now use the `rvm` command to install the required version of Ruby:
 
@@ -95,7 +97,7 @@ first source your `.bashrc` file:
 source ~/.bashrc
 ```
 
-#### 7. Install Node 18.4.2
+#### 7. Install Node 22.11.0
 
 Now use the `nvm` command to install the required version of Node:
 
@@ -112,10 +114,10 @@ nvm list
 You can switch between installed versions with `nvm` use:
 
 ```bash
-nvm use v18.4.2
+nvm use v22.11.0
 ```
 
-#### 8. Install Postgres
+#### 8. Install PostgreSQL
 
 Refresh your server’s local package index:
 
@@ -141,107 +143,31 @@ Ensure that the server is running:
 sudo service postgresql status
 ```
 
-#### 9. Install Elasticsearch
 
-Using `cURL`, import Elasticsearch public `GPG` key into `APT`. Use `-fsSL` to
-silence progress and errors. Pipe output to `gpg --dearmor` for verification of
-downloaded packages.
 
-```bash
-curl -fsSL https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo gpg --dearmor -o /usr/share/keyrings/elastic.gpg
-```
+#### 9. Setup the app
 
-Next, add the Elastic source list to the `apt` index:
 
-```bash
-echo "deb [signed-by=/usr/share/keyrings/elastic.gpg] https://artifacts.elastic.co/packages/7.x/apt stable main" | sudo tee -a /etc/apt/sources.list.d/elastic-7.x.list
-```
 
-Next, update your package lists so APT will read the new Elastic source:
 
-```bash
-sudo apt update
-```
-
-Then install Elasticsearch with this command:
-
-```bash
-sudo apt install elasticsearch
-```
-
-Start the Elasticsearch service:
-
-```bash
-sudo service elasticsearch start
-```
-
-Ensure that the server is running:
-
-```bash
-sudo service elasticsearch status
-```
-
-#### 10. Install Redis
-
-Using `cURL`, import Redis public `GPG` key into `APT`. Use `-fsSL` to silence
-progress and errors. Pipe output to `gpg --dearmor` for verification of
-downloaded packages.
-
-```bash
-curl -fsSL https://packages.redis.io/gpg | sudo gpg --dearmor -o /usr/share/keyrings/redis-archive-keyring.gpg
-```
-
-Next, add the Redis source list to the `apt` index:
-
-```bash
-echo "deb [signed-by=/usr/share/keyrings/redis-archive-keyring.gpg] https://packages.redis.io/deb $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/redis.list
-```
-
-Next, update your package lists so APT will read the new Elastic source:
-
-```bash
-sudo apt update
-```
-
-Then install Redis with this command:
-
-```bash
-sudo apt install redis
-```
-
-Start the Elasticsearch service:
-
-```bash
-sudo service redis-server start
-```
-
-Ensure that the server is running:
-
-```bash
-sudo service redis-server status
-```
-
-#### 11. Setup the database user
-
-Go to the `database.yml` file and update the default user and password with your
-postgres user and password.
-
-If you haven't changed the default settings of postgres, then your postgres user
-and password will be "postgres".
-
-#### 12. Setup the app
 
 ```bash
 $ bin/setup
 ```
 
-#### 13. Run app in local env
+#### 10. Run app in local env
 
 ```bash
+# Start all services
 $ foreman start -f Procfile.dev
+
+# Or run services individually:
+$ bin/rails server                    # Rails server (port 3000)
+$ bin/vite dev                        # Vite dev server
+$ bundle exec rake solid_queue:start  # Background job processor (database-based)
 ```
 
-#### 14. Navigate to [http://0.0.0.0:3000](http://0.0.0.0:3000)
+#### 11. Navigate to [http://0.0.0.0:3000](http://0.0.0.0:3000)
 
 ### To receive the emails in non-production apps.
 

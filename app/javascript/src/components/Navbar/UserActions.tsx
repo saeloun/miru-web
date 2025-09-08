@@ -1,14 +1,12 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 import React, { useState, useEffect, useRef } from "react";
 
+import { WorkspaceApi } from "apis/api";
+import { Paths } from "constants/index";
+import { useUserContext } from "context/UserContext";
 import { useOutsideClick } from "helpers";
 import { SettingIcon, SignOutIcon, Switcher } from "miruIcons";
 import { NavLink } from "react-router-dom";
 import { Avatar, Tooltip } from "StyledComponents";
-
-import WorkspaceApi from "apis/workspaces";
-import { useAuthDispatch } from "context/auth";
-import { useUserContext } from "context/UserContext";
 
 import { activeClassName, handleLogout } from "./utils";
 
@@ -23,7 +21,6 @@ const UserActions = setVisiblity => {
   const wrapperRef = useRef(null);
   const toolTipRef = useRef(null);
 
-  const authDispatch = useAuthDispatch();
   const { user } = useUserContext();
   const { isDesktop } = useUserContext();
 
@@ -95,7 +92,11 @@ const UserActions = setVisiblity => {
     <ul className="w-full lg:mb-2 xl:mb-6">
       <li className="flex border-b border-miru-gray-100 last:border-b-0 hover:bg-miru-gray-100 lg:justify-start lg:border-b-0">
         <NavLink
-          to={isDesktop ? "/settings/profile" : "/settings"}
+          to={
+            isDesktop
+              ? Paths.SETTINGS.replace("/*", "/profile")
+              : Paths.SETTINGS.replace("/*", "")
+          }
           className={({ isActive }) =>
             isActive
               ? activeClassName
@@ -114,7 +115,7 @@ const UserActions = setVisiblity => {
       <li
         className="flex cursor-pointer border-b border-miru-gray-100 px-6 py-3 last:border-b-0 hover:bg-miru-gray-100 lg:justify-start lg:border-b-0"
         id="logoutBtn"
-        onClick={() => handleLogout(authDispatch)}
+        onClick={() => handleLogout()}
       >
         <SignOutIcon className="mr-4" size={26} />
         Logout

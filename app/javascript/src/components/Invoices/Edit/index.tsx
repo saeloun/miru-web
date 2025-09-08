@@ -1,14 +1,14 @@
+import { ApiStatus as InvoiceStatus } from "constants/index";
+
 import React, { Fragment, useEffect, useState } from "react";
 
+import { invoicesApi } from "apis/api";
+import Loader from "common/Loader/index";
+import { useUserContext } from "context/UserContext";
 import dayjs from "dayjs";
+import { unmapLineItems } from "mapper/mappedIndex";
 import { useParams, useNavigate } from "react-router-dom";
 import { Toastr } from "StyledComponents";
-
-import invoicesApi from "apis/invoices";
-import Loader from "common/Loader/index";
-import { ApiStatus as InvoiceStatus } from "constants/index";
-import { useUserContext } from "context/UserContext";
-import { unmapLineItems } from "mapper/mappedIndex";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import EditInvoiceForm from "./Mobile";
@@ -21,6 +21,7 @@ import InvoiceTable from "../common/InvoiceTable";
 import InvoiceTotal from "../common/InvoiceTotal";
 import { generateInvoiceLineItems } from "../common/utils";
 import InvoiceSettings from "../InvoiceSettings";
+import ViewHistory from "../Invoice/ViewHistory";
 import ConnectPaymentGateway from "../popups/ConnectPaymentGateway";
 import DeleteInvoice from "../popups/DeleteInvoice";
 
@@ -58,6 +59,7 @@ const EditInvoice = () => {
   const [isStripeEnabled, setIsStripeEnabled] = useState<boolean>(false);
   const [showConnectPaymentDialog, setShowConnectPaymentDialog] =
     useState<boolean>(false);
+  const [showHistory, setShowHistory] = useState<boolean>(false);
 
   const INVOICE_NUMBER_ERROR = "Please enter invoice number to proceed";
   const SELECT_CLIENT_ERROR =
@@ -66,7 +68,7 @@ const EditInvoice = () => {
   const fetchInvoice = async () => {
     try {
       setStatus(InvoiceStatus.LOADING);
-      const { data } = await invoicesApi.editInvoice(params.id);
+      const { data } = await invoicesApi.editInvoice(params.invoiceId);
 
       setInvoiceDetails(data);
       setReference(data.reference);
@@ -154,9 +156,11 @@ const EditInvoice = () => {
       await updateInvoice();
       navigate(`/invoices/${invoiceDetails.id}`);
     } else {
-      selectedClient
-        ? Toastr.error(INVOICE_NUMBER_ERROR)
-        : Toastr.error(SELECT_CLIENT_ERROR);
+      if (selectedClient) {
+        Toastr.error(INVOICE_NUMBER_ERROR);
+      } else {
+        Toastr.error(SELECT_CLIENT_ERROR);
+      }
     }
   };
 
@@ -166,9 +170,11 @@ const EditInvoice = () => {
     } else if (selectedClient && invoiceNumber && !showConnectPaymentDialog) {
       setShowSendInvoiceModal(true);
     } else {
-      selectedClient
-        ? Toastr.error(INVOICE_NUMBER_ERROR)
-        : Toastr.error(SELECT_CLIENT_ERROR);
+      if (selectedClient) {
+        Toastr.error(INVOICE_NUMBER_ERROR);
+      } else {
+        Toastr.error(SELECT_CLIENT_ERROR);
+      }
     }
   };
 
@@ -230,6 +236,8 @@ const EditInvoice = () => {
             invoiceNumber={invoiceDetails.invoiceNumber}
             setIsSendReminder={setIsSendReminder}
             setShowInvoiceSetting={setShowInvoiceSetting}
+            invoice={invoiceDetails}
+            showHistory={() => setShowHistory(true)}
             deleteInvoice={() => {
               setShowDeleteDialog(true);
               setInvoiceToDelete(invoiceDetails.id);
@@ -323,6 +331,12 @@ const EditInvoice = () => {
               isStripeEnabled={isStripeEnabled}
               setIsStripeEnabled={setIsStripeEnabled}
               setShowInvoiceSetting={setShowInvoiceSetting}
+            />
+          )}
+          {showHistory && (
+            <ViewHistory
+              invoice={invoiceDetails}
+              setShowHistory={setShowHistory}
             />
           )}
         </Fragment>

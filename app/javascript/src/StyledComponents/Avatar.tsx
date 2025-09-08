@@ -24,7 +24,7 @@ const Avatar = ({
   initialsLetterCount = 2,
   style,
 }: AvatarProps) => {
-  const [initials, setInitials] = useState<string>(null);
+  const [initials, setInitials] = useState<string>("");
   const DEFAULT_STYLE_IMAGE = "inline-block rounded-full";
 
   const DEFAULT_STYLE_INITIALS =
@@ -33,15 +33,15 @@ const Avatar = ({
   const DEFAULT_STYLE_INITIALS_WRAPPER =
     "inline-flex rounded-full items-center justify-center bg-gray-500";
 
-  const getInitials = () => {
+  useEffect(() => {
     if (name) {
       const parts = name.match(/\b(\w)/g);
-      const initials = parts.join("").slice(0, initialsLetterCount);
-      setInitials(initials.toUpperCase());
+      if (parts) {
+        const initials = parts.join("").slice(0, initialsLetterCount);
+        setInitials(initials.toUpperCase());
+      }
     }
-  };
-
-  useEffect(() => getInitials(), []);
+  }, [name, initialsLetterCount]);
 
   if (url) {
     return (

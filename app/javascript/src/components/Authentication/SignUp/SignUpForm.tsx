@@ -1,13 +1,13 @@
+import { MIRU_APP_URL, Paths } from "constants/index";
+
 import React, { useRef, useState } from "react";
 
+import { authenticationApi } from "apis/api";
+import CustomCheckbox from "common/CustomCheckbox";
+import { InputErrors, InputField } from "common/FormikFields";
 import { Formik, Form, FormikProps } from "formik";
 import { GoogleSVG, MiruLogoSVG } from "miruIcons";
 import { useNavigate } from "react-router-dom";
-
-import authenticationApi from "apis/authentication";
-import CustomCheckbox from "common/CustomCheckbox";
-import { InputErrors, InputField } from "common/FormikFields";
-import { MIRU_APP_URL, Paths } from "constants/index";
 
 import PrivacyPolicyModal from "./PrivacyPolicyModal";
 import TermsOfServiceModal from "./TermsOfServiceModal";
@@ -30,9 +30,9 @@ const SignUpForm = () => {
   const navigate = useNavigate();
 
   const googleOauth = useRef(null);
-  const csrfToken = document
-    .querySelector('[name="csrf-token"]')
-    .getAttribute("content");
+  const csrfToken =
+    document.querySelector('[name="csrf-token"]')?.getAttribute("content") ||
+    "";
 
   const handleSignUpFormSubmit = async (values: any, { setFieldError }) => {
     try {
@@ -286,7 +286,9 @@ const SignUpForm = () => {
               initialValues={{}}
               validateOnBlur={false}
               validationSchema=""
-              onSubmit={() => {}} //eslint-disable-line
+              onSubmit={() => {
+                /* Google OAuth form - no client-side submit handler needed */
+              }}
             >
               {() => (
                 <Form

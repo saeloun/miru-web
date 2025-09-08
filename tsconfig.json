@@ -4,7 +4,7 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
-    "lib": ["es6", "dom"],
+    "lib": ["es6", "dom", "dom.iterable"],
     "module": "es6",
     "moduleResolution": "node",
     "sourceMap": true,
@@ -13,18 +13,26 @@
     "noEmit": true,
     "baseUrl": "./",
     "paths": {
+      "@/*": ["app/javascript/src/*"],
+      "~/*": ["app/javascript/src/*"],
       "components/*": ["app/javascript/src/components/*"],
       "apis/*": ["./app/javascript/src/apis/*"],
       "helpers": ["./app/javascript/src/helpers"],
       "common/*": ["./app/javascript/src/common/*"],
       "utils/*": ["./app/javascript/src/utils/*"],
       "context/*": ["./app/javascript/src/context/*"],
+      "contexts/*": ["./app/javascript/src/contexts/*"],
+      "services/*": ["./app/javascript/src/services/*"],
+      "helpers/*": ["./app/javascript/src/helpers/*"],
       "mapper/*": ["./app/javascript/src/mapper/*"],
       "constants/*": ["./app/javascript/src/constants/*"],
       "StyledComponents": ["./app/javascript/src/StyledComponents"],
-      "miruIcons": ["./app/javascript/src/miruIcons"],
+      "miruIcons": ["./app/javascript/src/miruIcons"]
     }
   },
+  "include": [
+    "app/javascript/**/*"
+  ],
   "exclude": [
     "**/*.spec.ts",
     "node_modules",

@@ -1,9 +1,7 @@
-/* eslint-disable no-unused-vars */
+import { invoicesApi } from "apis/api";
 import dayjs from "dayjs";
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
-
-import invoicesApi from "apis/invoices";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);

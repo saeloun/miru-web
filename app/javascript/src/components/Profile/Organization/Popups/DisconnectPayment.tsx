@@ -1,8 +1,7 @@
 import React from "react";
 
+import { paymentSettings } from "apis/api";
 import { Modal, Button } from "StyledComponents";
-
-import paymentSettings from "apis/payment-settings";
 
 interface IProps {
   setShowDisconnectDialog: any;

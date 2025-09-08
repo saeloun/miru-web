@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 
+import CustomDatePicker from "common/CustomDatePicker";
 import dayjs from "dayjs";
 import {
   lineTotalCalc,
@@ -9,8 +10,6 @@ import {
 } from "helpers";
 import { DeleteIcon, CalendarIcon } from "miruIcons";
 import TextareaAutosize from "react-textarea-autosize";
-
-import CustomDatePicker from "common/CustomDatePicker";
 
 const ManualEntry = ({
   addNew,
@@ -62,7 +61,9 @@ const ManualEntry = ({
     const indexOfItem = tempManualEntryArr.findIndex(
       object => object.id === manualEntryArr.length + 1
     );
-    indexOfItem !== -1 && tempManualEntryArr.splice(indexOfItem, 1);
+    if (indexOfItem !== -1) {
+      tempManualEntryArr.splice(indexOfItem, 1);
+    }
     await setManualEntryArr(tempManualEntryArr);
     setAddNew(false);
   };

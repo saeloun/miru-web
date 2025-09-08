@@ -118,7 +118,7 @@ module TimeoffEntries
     end
 
     def calculate_days_per_quarter_leave_allocation
-      current_quarter, after_mid_quarter = quarter_position_and_after_mid_quarter(current_date)
+      current_quarter, _ = quarter_position_and_after_mid_quarter(current_date)
       if passed_year == joining_date&.year
         joining_date_quarter, is_joining_date_after_mid_quarter = quarter_position_and_after_mid_quarter(joining_date)
         first_quarter_allocation_value = allocation_value
@@ -137,7 +137,7 @@ module TimeoffEntries
     end
 
     def calculate_weeks_per_quarter_leave_allocation
-      current_quarter, after_mid_quarter = quarter_position_and_after_mid_quarter(current_date)
+      current_quarter, _ = quarter_position_and_after_mid_quarter(current_date)
       if passed_year == joining_date&.year
         joining_date_quarter, is_joining_date_after_mid_quarter = quarter_position_and_after_mid_quarter(joining_date)
         first_quarter_allocation_value = allocation_value

@@ -15,6 +15,7 @@
 #
 # Indexes
 #
+#  index_holiday_infos_on_date          (date)
 #  index_holiday_infos_on_discarded_at  (discarded_at)
 #  index_holiday_infos_on_holiday_id    (holiday_id)
 #
@@ -29,7 +30,7 @@ class HolidayInfo < ApplicationRecord
 
   has_many :timeoff_entries, dependent: :destroy
 
-  enum category: { national: 0, optional: 1 }
+  enum :category, { national: 0, optional: 1 }
 
   validates :name, presence: true,
     format: { with: /\A[a-zA-Z\s]+\z/ },

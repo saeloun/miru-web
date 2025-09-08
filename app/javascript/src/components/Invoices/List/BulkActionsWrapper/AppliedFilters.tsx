@@ -1,8 +1,8 @@
+import { LocalStorageKeys } from "constants/index";
+
 import React from "react";
 
 import { XIcon } from "miruIcons";
-
-import { LocalStorageKeys } from "constants/index";
 
 const AppliedFilters = ({
   filterParams,
@@ -12,21 +12,28 @@ const AppliedFilters = ({
 }) => {
   let appliedFilterCount = (filterParamsStr.match(/&/g) || []).length;
 
-  filterParamsStr.includes("custom") &&
-    (appliedFilterCount = appliedFilterCount - 2);
+  if (filterParamsStr.includes("custom")) {
+    appliedFilterCount = appliedFilterCount - 2;
+  }
 
   const handleRemoveFilter = removeval => {
     let name, newArr;
+
     for (const [key, value] of Object.entries(filterParams)) {
-      Array.isArray(value)
-        ? value.map(v => {
-            if (v == removeval) {
-              name = key;
-              newArr = value.filter(v => v != removeval);
-            }
-          })
-        : value == removeval &&
-          ((name = key), (newArr = filterIntialValues.dateRange));
+      if (Array.isArray(value)) {
+        const hasValue = value.some(v => v === removeval);
+        if (hasValue) {
+          name = key;
+          newArr = value.filter(v => v !== removeval);
+        }
+      } else if (value === removeval) {
+        name = key;
+        if (key === "dateRange") {
+          newArr = filterIntialValues.dateRange;
+        } else {
+          newArr = null;
+        }
+      }
     }
 
     const updatedFilters = { ...filterParams, [name]: newArr };
