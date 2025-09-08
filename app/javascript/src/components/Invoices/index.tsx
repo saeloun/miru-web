@@ -79,7 +79,24 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
   const loadClients = async () => {
     try {
       const clientList = await invoiceApi.getClients();
-      setClients(clientList);
+      // Format client addresses to ensure they're strings
+      const formattedClients = clientList.map(client => ({
+        ...client,
+        address:
+          typeof client.address === "object" && client.address
+            ? [
+                client.address.address_line_1,
+                client.address.address_line_2,
+                client.address.city,
+                client.address.state,
+                client.address.country,
+                client.address.pin,
+              ]
+                .filter(Boolean)
+                .join(", ")
+            : client.address || "",
+      }));
+      setClients(formattedClients);
     } catch (err) {
       console.error("Error loading clients:", err);
     }
@@ -426,23 +443,41 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
         status: selectedInvoice.status,
       };
 
+      // Format company address if it's an object
+      const formattedCompany = selectedInvoice.company
+        ? {
+            ...selectedInvoice.company,
+            address:
+              typeof selectedInvoice.company.address === "object"
+                ? [
+                    selectedInvoice.company.address.address_line_1,
+                    selectedInvoice.company.address.address_line_2,
+                    selectedInvoice.company.address.city,
+                    selectedInvoice.company.address.state,
+                    selectedInvoice.company.address.country,
+                    selectedInvoice.company.address.pin,
+                  ]
+                    .filter(Boolean)
+                    .join(", ")
+                : selectedInvoice.company.address || "",
+          }
+        : {
+            name: "Miru Time Tracking",
+            email: "support@getmiru.com",
+            baseCurrency: "USD",
+            dateFormat: "MM/dd/yyyy",
+            address: "",
+            phone: "",
+            taxId: "",
+          };
+
       return (
         <div>
           {renderBackButton()}
           <InvoiceEditor
             invoice={editFormData}
             clients={clients}
-            company={
-              selectedInvoice.company || {
-                name: "Miru Time Tracking",
-                email: "support@getmiru.com",
-                baseCurrency: "USD",
-                dateFormat: "MM/dd/yyyy",
-                address: "",
-                phone: "",
-                taxId: "",
-              }
-            }
+            company={formattedCompany}
             onSave={handleSaveInvoice}
             onSend={handleSendInvoice}
             onPreview={handlePreview}
