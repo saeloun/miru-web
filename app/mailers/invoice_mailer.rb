@@ -14,7 +14,8 @@ class InvoiceMailer < ApplicationMailer
     @amount = FormatAmountService.new(@invoice.currency, @invoice.amount).process
 
     if can_send_invoice?
-      pdf = InvoicePayment::PdfGeneration.process(@invoice, @company_logo, root_url)
+      pdf_service = PdfGeneration::InvoiceService.new(@invoice, @company_logo, root_url)
+      pdf = pdf_service.process
       attachments["invoice_#{@invoice.invoice_number}.pdf"] = pdf
 
       mail(to: recipients, subject:, reply_to: ENV["REPLY_TO_EMAIL"])
