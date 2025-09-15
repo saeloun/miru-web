@@ -119,8 +119,8 @@ gem "solid_queue", "~> 0.3"
 gem "elasticsearch", "< 7.14" # select one
 gem "searchkick"
 
-# PDF generator
-gem "grover"
+# PDF generator - using Ferrum PDF for modern Chrome-based PDF generation
+gem "ferrum_pdf"
 
 gem "activerecord-import"
 
