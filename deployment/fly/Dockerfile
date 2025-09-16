@@ -70,16 +70,18 @@ FROM base
 ARG PROD_PACKAGES="postgresql-client file vim curl gzip libsqlite3-0 gnupg"
 ENV PROD_PACKAGES=${PROD_PACKAGES}
 
+ENV DOCKER_BUILD=1
+
 RUN --mount=type=cache,id=prod-apt-cache,sharing=locked,target=/var/cache/apt \
     --mount=type=cache,id=prod-apt-lib,sharing=locked,target=/var/lib/apt \
     apt-get update -qq && \
-    apt-get install --no-install-recommends -y \
-    ${PROD_PACKAGES} \
-    && curl --location --silent https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
-    && sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' \
-    && apt-get update \
-    && apt-get install google-chrome-stable -y --no-install-recommends \
-    && rm -rf /var/lib/apt/lists /var/cache/apt/archives
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+    ${PROD_PACKAGES} gnupg wget && \
+    wget --quiet --output-document=- https://dl-ssl.google.com/linux/linux_signing_key.pub | gpg --dearmor > /etc/apt/trusted.gpg.d/google-archive.gpg && \
+    sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' && \
+    apt-get update && \
+    apt-get install google-chrome-stable -y --no-install-recommends \
+    && rm -rf /var/lib/apt/lists/*
 
 COPY --from=gems /app /app
 COPY --from=node_modules /app/node_modules /app/node_modules

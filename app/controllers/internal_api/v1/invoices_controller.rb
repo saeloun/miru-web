@@ -99,7 +99,8 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
   def download
     authorize invoice
 
-    send_data InvoicePayment::PdfGeneration.process(invoice, current_company.company_logo, root_url)
+    pdf_service = PdfGeneration::InvoiceService.new(invoice, current_company.company_logo, root_url)
+    send_data pdf_service.process
   end
 
   private
