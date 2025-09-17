@@ -506,7 +506,7 @@ GEM
       actionpack (>= 5.2)
       railties (>= 5.2)
     retriable (3.1.2)
-    rexml (3.3.9)
+    rexml (3.4.2)
     rolify (6.0.1)
     rspec-buildkite (0.1.6)
       rspec-core (~> 3.0)
