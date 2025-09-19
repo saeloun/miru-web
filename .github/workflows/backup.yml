@@ -1,5 +1,5 @@
 name: Back up database
-run-name: Task
+run-name: Backup database to R2
 
 # every sunday
 on:
@@ -17,15 +17,9 @@ jobs:
       PGDATABASE: miru_production
       PGHOST: localhost
       PGPORT: 5434
-      S3_BUCKET: miru-db-backup
+      R2_DB_BUCKET: db-backup
 
     steps:
-      - uses: s3-actions/s3cmd@v1.2.0
-        with:
-          provider: aws
-          region: us-east-1
-          access_key: ${{ secrets.S3_ACCESS_KEY }}
-          secret_key: ${{ secrets.S3_SECRET_KEY }}
       - uses: superfly/flyctl-actions/setup-flyctl@master
       - name: Set filename
         run: echo "filename=db-$(date -u +"%Y-%m-%d-%H%M%S").sql" >> $GITHUB_ENV
@@ -36,12 +30,27 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y postgresql-client-15
           psql --version
-      - name: Dump database, gzip, and upload to S3
+      - name: Dump database and gzip
         run: |
           flyctl proxy $PGPORT:5432 -a $FLY_DB_APP &
           sleep 3
           echo Dumping ...
           PGPASSWORD=${PGPASSWORD} pg_dump -h $PGHOST -p $PGPORT -x -U $PGUSER -F c -b -v  -Z0 -f ${{ env.filename }} ${PGDATABASE}
           gzip ${{ env.filename }}
-          ls
-          s3cmd put --acl-private ${{ env.filename }}.gz s3://$S3_BUCKET/${{ env.filename }}.gz
+          mkdir -p backup
+          mv ${{ env.filename }}.gz backup/
+          ls -la backup/
+      - name: Upload backup to R2
+        uses: ryand56/r2-upload-action@latest
+        with:
+            r2-account-id: ${{ secrets.R2_ACCOUNT_ID }}
+            r2-access-key-id: ${{ secrets.R2_ACCESS_KEY }}
+            r2-secret-access-key: ${{ secrets.R2_SECRET_KEY }}
+            r2-bucket: ${{ secrets.R2_DB_BUCKET }}
+            source-dir: backup
+            destination-dir: ./
+      - name: Cleanup backup files
+        run: |
+          echo "Cleaning up backup files..."
+          rm -rf backup/
+          echo "Cleanup completed"
