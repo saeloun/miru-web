@@ -21,9 +21,10 @@ class Reports::GeneratePdf
   private
 
     def generate_pdf(report_type)
-      Pdf::HtmlGenerator.new(
-        report_type,
+      PdfGeneration::HtmlTemplateService.new(
+        "pdfs/#{report_type}",
+        layout: "layouts/pdf",
         locals: { report_data:, current_company: }
-      ).make
+      ).process
     end
 end

@@ -41,13 +41,13 @@ RSpec.describe Reports::TimeEntries::DownloadService do
       expect(data).to include(csv_headers)
     end
 
-    it "generates a PDF report using Pdf::HtmlGenerator" do
+    it "generates a PDF report using PdfGeneration::HtmlTemplateService" do
       subject { described_class.new(report_entries, current_company) }
 
-      html_generator = instance_double("Pdf::HtmlGenerator")
-      allow(Pdf::HtmlGenerator).to receive(:new).and_return(html_generator)
+      pdf_service = instance_double("PdfGeneration::HtmlTemplateService")
+      allow(PdfGeneration::HtmlTemplateService).to receive(:new).and_return(pdf_service)
 
-      allow(html_generator).to receive(:make)
+      allow(pdf_service).to receive(:process)
       subject.process
     end
   end
