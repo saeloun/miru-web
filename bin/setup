@@ -50,18 +50,25 @@ FileUtils.chdir APP_ROOT do
 
   puts "\n== Checking Chrome/Chromium installation =="
   chrome_paths = [
+    # Linux paths
     "/usr/bin/google-chrome",
     "/usr/bin/google-chrome-stable",
     "/usr/bin/chromium-browser",
-    "/usr/bin/chromium"
+    "/usr/bin/chromium",
+    # macOS paths
+    "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+    "/Applications/Chromium.app/Contents/MacOS/Chromium",
+    # macOS user-local paths
+    "#{ENV['HOME']}/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+    "#{ENV['HOME']}/Applications/Chromium.app/Contents/MacOS/Chromium"
   ]
   if chrome_paths.any? { |path| File.exist?(path) }
     puts "✓ Chrome/Chromium is installed"
   else
     puts "⚠️  WARNING: Chrome/Chromium is not installed!"
     puts "   PDF generation (invoices, etc.) will not work."
-    puts "   Install with: sudo apt-get install google-chrome-stable"
-    puts "   Or: sudo apt-get install chromium-browser"
+    puts "   Install Chrome from: https://www.google.com/chrome/"
+    puts "   Or on Linux: sudo apt-get install google-chrome-stable"
   end
 
   puts "\n== Removing old logs and tempfiles =="

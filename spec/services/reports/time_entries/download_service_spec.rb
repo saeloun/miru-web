@@ -42,13 +42,20 @@ RSpec.describe Reports::TimeEntries::DownloadService do
     end
 
     it "generates a PDF report using PdfGeneration::HtmlTemplateService" do
-      subject { described_class.new(report_entries, current_company) }
+      service = described_class.new({ group_by: "team_member", format: "pdf" }, company)
+      pdf_service = instance_double("PdfGeneration::HtmlTemplateService", process: "pdf_content")
 
-      pdf_service = instance_double("PdfGeneration::HtmlTemplateService")
-      allow(PdfGeneration::HtmlTemplateService).to receive(:new).and_return(pdf_service)
-
+      allow(PdfGeneration::HtmlTemplateService).to receive(:new).with(
+        "pdfs/time_entries",
+        layout: "layouts/pdf",
+        locals: hash_including(current_company: company)
+      ).and_return(pdf_service)
       allow(pdf_service).to receive(:process)
-      subject.process
+
+      service.process
+
+      expect(PdfGeneration::HtmlTemplateService).to have_received(:new)
+      expect(pdf_service).to have_received(:process)
     end
   end
 end
