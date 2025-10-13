@@ -58,13 +58,11 @@ module PdfGeneration
 
       def invoice_pdf_options
         {
-          format: "A4",
-          margin: {
-            top: 18,
-            bottom: 18,
-            left: 18,
-            right: 18
-          },
+          format: :A4,
+          margin_top: 0.25,
+          margin_bottom: 0.25,
+          margin_left: 0.25,
+          margin_right: 0.25,
           print_background: true,
           prefer_css_page_size: false
         }

@@ -120,7 +120,7 @@ gem "elasticsearch", "< 7.14" # select one
 gem "searchkick"
 
 # PDF generator - using Ferrum PDF for modern Chrome-based PDF generation
-gem "ferrum_pdf"
+gem "ferrum_pdf", "~> 2.1"
 
 gem "activerecord-import"
 

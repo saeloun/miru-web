@@ -704,7 +704,7 @@ DEPENDENCIES
   erb_lint!
   factory_bot_rails
   faker
-  ferrum_pdf
+  ferrum_pdf (~> 2.1)
   foreman
   google-api-client
   hash_dot

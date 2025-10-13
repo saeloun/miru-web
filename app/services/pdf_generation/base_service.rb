@@ -6,6 +6,7 @@ module PdfGeneration
 
     def initialize(html_content, options = {})
       @html_content = html_content
+      @options = options
     end
 
     def process
@@ -15,7 +16,7 @@ module PdfGeneration
     private
 
       def generate_pdf
-        FerrumPdf.render_pdf(html: html_content)
+        FerrumPdf.render_pdf(html: html_content, pdf_options: options)
       end
   end
 end
