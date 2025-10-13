@@ -22,9 +22,13 @@ jobs:
           postgresql user: root
           postgresql password: "password"
       - name: Setup ElasticSearch
-        uses: ankane/setup-elasticsearch@v1
-        with:
-          elasticsearch-version: 7
+        run: |
+          wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
+          echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | sudo tee /etc/apt/sources.list.d/elastic-7.x.list
+          sudo apt-get update
+          sudo apt-get install elasticsearch=7.13.3
+          sudo systemctl start elasticsearch
+          sleep 10
       - name: Install Chrome for FerrumPdf
         run: |
           wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
