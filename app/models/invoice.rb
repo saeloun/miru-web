@@ -159,7 +159,7 @@ class Invoice < ApplicationRecord
   end
 
   def temp_pdf(company_logo, root_url)
-    file = Tempfile.new()
+    file = Tempfile.new(["invoice", ".pdf"], encoding: "ascii-8bit")
     pdf_service = PdfGeneration::InvoiceService.new(self, company_logo, root_url)
     pdf_content = pdf_service.process
     file.write(pdf_content)
