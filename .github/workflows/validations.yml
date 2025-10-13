@@ -24,7 +24,7 @@ jobs:
       - name: Setup ElasticSearch
         uses: ankane/setup-elasticsearch@v1
         with:
-          elasticsearch-version: 7.13.3
+          elasticsearch-version: 7
       - name: Install Chrome for FerrumPdf
         run: |
           wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
