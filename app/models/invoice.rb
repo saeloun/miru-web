@@ -154,21 +154,16 @@ class Invoice < ApplicationRecord
   end
 
   def pdf_content(company_logo, root_url)
-    InvoicePayment::PdfGeneration.process(
-      self,
-      company_logo,
-      root_url
-    )
+    pdf_service = PdfGeneration::InvoiceService.new(self, company_logo, root_url)
+    pdf_service.process
   end
 
   def temp_pdf(company_logo, root_url)
-    file = Tempfile.new()
-    InvoicePayment::PdfGeneration.process(
-      self,
-      company_logo,
-      root_url,
-      file.path
-    )
+    file = Tempfile.new(["invoice", ".pdf"], encoding: "ascii-8bit")
+    pdf_service = PdfGeneration::InvoiceService.new(self, company_logo, root_url)
+    pdf_content = pdf_service.process
+    file.write(pdf_content)
+    file.rewind
     file
   end
 
