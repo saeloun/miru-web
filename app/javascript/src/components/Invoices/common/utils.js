@@ -108,6 +108,7 @@ export const fetchMultipleNewLineItems = async (
 
 export const handleDownloadInvoice = async invoice => {
   try {
+    Toastr.success("Download request sent");
     const res = await invoicesApi.downloadInvoice(invoice.id);
     const url = window.URL.createObjectURL(new Blob([res.data]));
     const link = document.createElement("a");
