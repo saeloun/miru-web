@@ -209,7 +209,7 @@ Then install Redis with this command:
 sudo apt install redis
 ```
 
-Start the Elasticsearch service:
+Start the Redis service:
 
 ```bash
 sudo service redis-server start
@@ -221,7 +221,39 @@ Ensure that the server is running:
 sudo service redis-server status
 ```
 
-#### 11. Setup the database user
+#### 11. Install Chrome/Chromium
+
+Chrome or Chromium is required for PDF generation (invoices, reports, etc.). Install either one:
+
+**Option 1: Google Chrome (Recommended)**
+
+```bash
+wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
+sudo apt-get update
+sudo apt-get install google-chrome-stable -y
+```
+
+**Option 2: Chromium (Alternative)**
+
+```bash
+sudo apt-get update
+sudo apt-get install chromium-browser -y
+```
+
+You can verify the installation by running:
+
+```bash
+google-chrome --version
+```
+
+or
+
+```bash
+chromium-browser --version
+```
+
+#### 12. Setup the database user
 
 Go to the `database.yml` file and update the default user and password with your
 postgres user and password.
@@ -229,19 +261,19 @@ postgres user and password.
 If you haven't changed the default settings of postgres, then your postgres user
 and password will be "postgres".
 
-#### 12. Setup the app
+#### 13. Setup the app
 
 ```bash
 $ bin/setup
 ```
 
-#### 13. Run app in local env
+#### 14. Run app in local env
 
 ```bash
 $ foreman start -f Procfile.dev
 ```
 
-#### 14. Navigate to [http://0.0.0.0:3000](http://0.0.0.0:3000)
+#### 15. Navigate to [http://0.0.0.0:3000](http://0.0.0.0:3000)
 
 ### To receive the emails in non-production apps.
 
