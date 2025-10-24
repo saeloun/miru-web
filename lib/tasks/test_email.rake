@@ -211,51 +211,52 @@ namespace :email do
         puts "  Please ensure you have at least one company in your database"
       end
 
+      # Send emails BEFORE rollback so mailers can access the test data
+      puts "\n" + "-"*80
+      puts "SENDING EMAILS"
+      puts "-"*80
+
+      emails.each_with_index do |email_data, index|
+        html_body = email_data[:mail].html_part ? email_data[:mail].html_part.body.to_s : email_data[:mail].body.to_s
+
+        # Save to file
+        File.write("tmp/#{email_data[:file]}", html_body)
+
+        # Analyze styling
+        has_styles = html_body.include?('<style>') || html_body.include?('style=')
+        has_colors = html_body.match?(/#[0-9A-Fa-f]{6}|rgb\(/)
+        has_images = html_body.include?('<img')
+
+        puts "\n#{index + 1}. #{email_data[:name]}:"
+        puts "   - Has styling: #{has_styles ? '✓' : '✗ NEEDS STYLING'}"
+        puts "   - Has colors: #{has_colors ? '✓' : '✗ Plain text'}"
+        puts "   - Has images: #{has_images ? '✓' : '✗ Text only'}"
+
+        if !has_styles || !has_colors
+          puts "   ⚠️  This email could benefit from rich styling"
+        end
+
+        # Deliver the email
+        begin
+          email_data[:mail].deliver_now
+          puts "   ✓ Email sent and opened in letter_opener"
+        rescue => e
+          puts "   ✗ Failed to send: #{e.message}"
+        end
+
+        # Small delay between emails
+        sleep(0.5)
+      end
+
+      puts "\n" + "="*80
+      puts "All emails sent! Check your browser to view them with letter_opener"
+      puts "Total emails generated: #{emails.count}/7"
+      puts "Files also saved to tmp/ directory for reference"
+      puts "="*80 + "\n"
+
       # Rollback transaction to avoid persisting test data
       raise ActiveRecord::Rollback
     end
-
-    puts "\n" + "-"*80
-    puts "SENDING EMAILS"
-    puts "-"*80
-
-    emails.each_with_index do |email_data, index|
-      html_body = email_data[:mail].html_part ? email_data[:mail].html_part.body.to_s : email_data[:mail].body.to_s
-
-      # Save to file
-      File.write("tmp/#{email_data[:file]}", html_body)
-
-      # Analyze styling
-      has_styles = html_body.include?('<style>') || html_body.include?('style=')
-      has_colors = html_body.match?(/#[0-9A-Fa-f]{6}|rgb\(/)
-      has_images = html_body.include?('<img')
-
-      puts "\n#{index + 1}. #{email_data[:name]}:"
-      puts "   - Has styling: #{has_styles ? '✓' : '✗ NEEDS STYLING'}"
-      puts "   - Has colors: #{has_colors ? '✓' : '✗ Plain text'}"
-      puts "   - Has images: #{has_images ? '✓' : '✗ Text only'}"
-
-      if !has_styles || !has_colors
-        puts "   ⚠️  This email could benefit from rich styling"
-      end
-
-      # Deliver the email
-      begin
-        email_data[:mail].deliver_now
-        puts "   ✓ Email sent and opened in letter_opener"
-      rescue => e
-        puts "   ✗ Failed to send: #{e.message}"
-      end
-
-      # Small delay between emails
-      sleep(0.5)
-    end
-
-    puts "\n" + "="*80
-    puts "All emails sent! Check your browser to view them with letter_opener"
-    puts "Total emails generated: #{emails.count}/7"
-    puts "Files also saved to tmp/ directory for reference"
-    puts "="*80 + "\n"
   end
 
   desc "Test invitation email with premailer"
