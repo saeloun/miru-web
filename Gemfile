@@ -72,6 +72,9 @@ gem "countries"
 # Letter opener can be configured to avoid sending sending actual emails whenever required.
 gem "letter_opener_web"
 
+# Premailer for inlining CSS in emails
+gem "premailer-rails", "~> 1.12"
+
 # currency list and conversion
 gem "money"
 
