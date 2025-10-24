@@ -5,6 +5,6 @@ Premailer::Rails.config.merge!(
   remove_classes: false,
   remove_comments: true,
   preserve_styles: true,
-  generate_text_part: false,
+  generate_text_part: true,
   strategies: [:filesystem, :asset_pipeline]
 )

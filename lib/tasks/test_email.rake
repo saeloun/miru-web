@@ -40,18 +40,19 @@ namespace :email do
       puts "✗ Weekly Reminder email failed: #{e.message}"
     end
 
-    # Setup test data for invoice-related emails
-    company = Company.first
-    if company
-      client = company.clients.first || company.clients.create!(
-        name: "Test Client Company",
-        email: "client@example.com",
-        phone: "+1234567890",
-        address: "123 Client St, City, State 12345"
-      )
+    # Setup test data for invoice-related emails (wrapped in transaction to avoid persisting)
+    ActiveRecord::Base.transaction(requires_new: true) do
+      company = Company.first
+      if company
+        client = company.clients.first || company.clients.create!(
+          name: "Test Client Company",
+          email: "client@example.com",
+          phone: "+1234567890",
+          address: "123 Client St, City, State 12345"
+        )
 
-      # 3. Invoice Email - requires status: sending and recently_sent_mail
-      begin
+        # 3. Invoice Email - requires status: sending and recently_sent_mail
+        begin
         invoice_for_sending = Invoice.create!(
           company: company,
           client: client,
@@ -205,9 +206,13 @@ namespace :email do
       rescue => e
         puts "✗ Bulk Payment Reminder email failed: #{e.message}"
       end
-    else
-      puts "⊘ Invoice-related emails skipped (no company data found)"
-      puts "  Please ensure you have at least one company in your database"
+      else
+        puts "⊘ Invoice-related emails skipped (no company data found)"
+        puts "  Please ensure you have at least one company in your database"
+      end
+
+      # Rollback transaction to avoid persisting test data
+      raise ActiveRecord::Rollback
     end
 
     puts "\n" + "-"*80
