@@ -19,29 +19,21 @@
       <div class="container">
         <%= image_tag "Banner.png", class: "banner", alt: "Miru welcome banner" %>
         <p class="header">Reminder to Update your Timesheet on Miru</p>
-
-      <p class="content">Hi <%= @name %>,</p>
-
-      <p class="content">This is a friendly reminder to update your weekly timesheet for <strong><%= @company %></strong> on Miru.</p>
-
-      <div class="highlight-box">
-        <p>Your logged hours from <span class="date-range"><%= @starting_date %></span> to <span class="date-range"><%= @ending_date %></span> are less than 40 hours.</p>
+        <p class="content">Hi <%= @name %>,</p>
+        <p class="content">This is a friendly reminder to update your weekly timesheet for <strong><%= @company %></strong> on Miru.</p>
+        <div class="highlight-box">
+          <p>Your logged hours from <span class="date-range"><%= @starting_date %></span> to <span class="date-range"><%= @ending_date %></span> are less than 40 hours.</p>
+        </div>
+        <p class="content">Please update your timesheet to ensure accurate time tracking and billing.</p>
+        <div class="button">
+          <%= link_to "Update Timesheet", "#{root_url}time-tracking", target: "_blank" %>
+        </div>
+        <hr />
+        <div class="signature">
+          <p class="content">Cheers,<br/><strong>Team Miru</strong></p>
+        </div>
       </div>
-
-      <p class="content">Please update your timesheet to ensure accurate time tracking and billing.</p>
-
-      <div class="button">
-        <%= link_to "Update Timesheet", "#{root_url}time-tracking", target: "_blank" %>
-      </div>
-
-      <hr />
-
-      <div class="signature">
-        <p class="content">Cheers,<br/><strong>Team Miru</strong></p>
-      </div>
-      </div>
-
-      <%= render "devise/shared/footer" %>
+      <%= render "shared/email_footer" %>
     </div>
   </body>
 </html>

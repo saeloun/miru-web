@@ -12,23 +12,17 @@
       <div class="container">
         <%= image_tag "Banner.png", class: "banner", alt: "Miru welcome banner" %>
         <p class="header">Email Address Changed</p>
-
         <p>Hello <%= @email %>!</p>
-
         <% if @resource.respond_to?(:pending_reconfirmation?) ? @resource.pending_reconfirmation? : (@resource.respond_to?(:unconfirmed_email) && @resource.unconfirmed_email.present?) %>
-          <p>We're contacting you to notify you that your email is being changed to <b><%= @resource.unconfirmed_email %></b>.</p>
+        <p>We're contacting you to notify you that your email is being changed to <b><%= @resource.unconfirmed_email %></b>.</p>
         <% else %>
-          <p>We're contacting you to notify you that your email has been changed to <b><%= @resource.email %></b>.</p>
+        <p>We're contacting you to notify you that your email has been changed to <b><%= @resource.email %></b>.</p>
         <% end %>
-
         <hr />
-
         <p>If you did not make this change, please contact our help center immediately at <a href="mailto:hello@saeloun.com" class="purple">hello@saeloun.com</a></p>
-
         <p>Cheers,<br/>Team Miru</p>
       </div>
-
-      <%= render "devise/shared/footer" %>
+      <%= render "shared/email_footer" %>
     </div>
   </body>
 </html>
