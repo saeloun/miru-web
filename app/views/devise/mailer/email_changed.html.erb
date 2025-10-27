@@ -1,7 +1,41 @@
-<p>Hello <%= @email %>!</p>
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'/>
+    <style>
+      body { margin: 0; padding: 0; font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; }
+      .banner { background-color: #5B34EA; padding-top: 2%; padding-bottom: 2%; width: 100%; }
+      .mail { align-items: center; text-align: center; color: #777683; font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; }
+      .container { max-width: 640px; margin: 0 auto; padding: 40px 20px; color: #1D1A31; }
+      .header { padding-top: 40px; font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; font-style: normal; font-weight: 800; font-size: 24px; line-height: 33px; color: #5B34EA; }
+      .purple { color: #5B34EA; }
+      hr { margin: 40px 0 24px; border: 0; border-top: 1px solid #ddd; }
+      .footer-container { text-align: center; width: 100%; }
+      #footer { max-width: 640px; margin: 0 auto; display: inline-block; }
+    </style>
+  </head>
+  <body>
+    <div class="mail">
+      <div class="container">
+        <%= image_tag "Banner.svg", class: "banner", alt: "banner" %>
+        <p class="header">Email Address Changed</p>
 
-<% if @resource.try(:unconfirmed_email?) %>
-  <p>We're contacting you to notify you that your email is being changed to <%= @resource.unconfirmed_email %>.</p>
-<% else %>
-  <p>We're contacting you to notify you that your email has been changed to <%= @resource.email %>.</p>
-<% end %>
+        <p>Hello <%= @email %>!</p>
+
+        <% if @resource.try(:unconfirmed_email?) %>
+          <p>We're contacting you to notify you that your email is being changed to <b><%= @resource.unconfirmed_email %></b>.</p>
+        <% else %>
+          <p>We're contacting you to notify you that your email has been changed to <b><%= @resource.email %></b>.</p>
+        <% end %>
+
+        <hr />
+
+        <p>If you did not make this change, please contact our help center immediately at <a href="mailto:hello@saeloun.com" class="purple">hello@saeloun.com</a></p>
+
+        <p>Cheers,<br/>Team Miru</p>
+      </div>
+
+      <%= render "devise/shared/footer" %>
+    </div>
+  </body>
+</html>

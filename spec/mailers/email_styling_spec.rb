@@ -105,18 +105,18 @@ RSpec.describe "Email Styling", type: :mailer do
         expect(html_body).to include("#5B34EA")
       end
 
-      it "has styled banner with icon" do
+      it "has styled banner with image" do
         html_body = get_html_body(mail)
 
         # Check for banner styling
         expect(html_body).to match(/background.*#5B34EA/i)
-        expect(html_body).to include("⏰")
+        expect(html_body).to match(/Banner-[a-f0-9]+\.svg/)
       end
 
       it "has styled header" do
         html_body = get_html_body(mail)
 
-        expect(html_body).to include("Timesheet Reminder")
+        expect(html_body).to include("Reminder to Update your Timesheet on Miru")
         expect(html_body).to match(/font-size.*24px/i)
       end
 
@@ -132,6 +132,66 @@ RSpec.describe "Email Styling", type: :mailer do
 
         expect(html_body).to include("Update Timesheet")
         expect(html_body).to match(/background.*#5B34EA/i)
+      end
+    end
+
+    describe "Devise Confirmation Instructions Email" do
+      let(:mail) do
+        user.send_confirmation_instructions
+        ActionMailer::Base.deliveries.last
+      end
+
+      before do
+        ActionMailer::Base.deliveries.clear
+      end
+
+      it "contains inline styles" do
+        html_body = get_html_body(mail)
+
+        # Check that premailer has inlined styles
+        expect(html_body).to include("style=")
+      end
+
+      it "has purple branding color" do
+        html_body = get_html_body(mail)
+
+        # Check for the primary brand color
+        expect(html_body).to include("#5B34EA")
+      end
+
+      it "has styled banner" do
+        html_body = get_html_body(mail)
+
+        # Check for banner styling
+        expect(html_body).to match(/background.*#5B34EA/i)
+        expect(html_body).to match(/Banner-[a-f0-9]+\.svg/)
+      end
+
+      it "has styled confirmation button" do
+        html_body = get_html_body(mail)
+
+        expect(html_body).to include("Confirm my email address")
+        expect(html_body).to match(/border-radius.*20px/i)
+      end
+
+      it "has proper header styling" do
+        html_body = get_html_body(mail)
+
+        expect(html_body).to include("Welcome to Miru!")
+        expect(html_body).to match(/font-size.*24px/i)
+      end
+
+      it "includes feature list" do
+        html_body = get_html_body(mail)
+
+        expect(html_body).to include("Send professional invoices")
+        expect(html_body).to include("Manage your team")
+      end
+
+      it "includes footer" do
+        html_body = get_html_body(mail)
+
+        expect(html_body).to include("All rights reserved")
       end
     end
 
@@ -164,6 +224,7 @@ RSpec.describe "Email Styling", type: :mailer do
 
         # Check for banner styling
         expect(html_body).to match(/background.*#5B34EA/i)
+        expect(html_body).to match(/Password_Banner-[a-f0-9]+\.svg/)
       end
 
       it "has styled reset password button" do
@@ -178,6 +239,106 @@ RSpec.describe "Email Styling", type: :mailer do
 
         expect(html_body).to include("Reset Your Miru Password")
         expect(html_body).to match(/font-size.*24px/i)
+      end
+
+      it "includes footer" do
+        html_body = get_html_body(mail)
+
+        expect(html_body).to include("All rights reserved")
+      end
+    end
+
+    describe "Devise Email Changed Email" do
+      let(:mail) do
+        Devise::Mailer.email_changed(user, {})
+      end
+
+      it "contains inline styles" do
+        html_body = get_html_body(mail)
+
+        # Check that premailer has inlined styles
+        expect(html_body).to include("style=")
+      end
+
+      it "has purple branding color" do
+        html_body = get_html_body(mail)
+
+        # Check for the primary brand color
+        expect(html_body).to include("#5B34EA")
+      end
+
+      it "has styled banner" do
+        html_body = get_html_body(mail)
+
+        # Check for banner styling
+        expect(html_body).to match(/background.*#5B34EA/i)
+        expect(html_body).to match(/Banner-[a-f0-9]+\.svg/)
+      end
+
+      it "has proper header styling" do
+        html_body = get_html_body(mail)
+
+        expect(html_body).to include("Email Address Changed")
+        expect(html_body).to match(/font-size.*24px/i)
+      end
+
+      it "includes security notice" do
+        html_body = get_html_body(mail)
+
+        expect(html_body).to include("hello@saeloun.com")
+      end
+
+      it "includes footer" do
+        html_body = get_html_body(mail)
+
+        expect(html_body).to include("All rights reserved")
+      end
+    end
+
+    describe "Devise Password Changed Email" do
+      let(:mail) do
+        Devise::Mailer.password_change(user, {})
+      end
+
+      it "contains inline styles" do
+        html_body = get_html_body(mail)
+
+        # Check that premailer has inlined styles
+        expect(html_body).to include("style=")
+      end
+
+      it "has purple branding color" do
+        html_body = get_html_body(mail)
+
+        # Check for the primary brand color
+        expect(html_body).to include("#5B34EA")
+      end
+
+      it "has styled banner" do
+        html_body = get_html_body(mail)
+
+        # Check for banner styling
+        expect(html_body).to match(/background.*#5B34EA/i)
+        expect(html_body).to match(/Password_Banner-[a-f0-9]+\.svg/)
+      end
+
+      it "has proper header styling" do
+        html_body = get_html_body(mail)
+
+        expect(html_body).to include("Password Changed Successfully")
+        expect(html_body).to match(/font-size.*24px/i)
+      end
+
+      it "includes security notice" do
+        html_body = get_html_body(mail)
+
+        expect(html_body).to include("hello@saeloun.com")
+      end
+
+      it "includes footer" do
+        html_body = get_html_body(mail)
+
+        expect(html_body).to include("All rights reserved")
       end
     end
   end
