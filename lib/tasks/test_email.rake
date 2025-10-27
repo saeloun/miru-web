@@ -9,7 +9,59 @@ namespace :email do
 
     emails = []
 
-    # 1. User Invitation Email
+    # Get a test user for Devise emails
+    test_user = User.first || User.new(
+      first_name: "Test",
+      last_name: "User",
+      email: "testuser@example.com",
+      password: "password123"
+    )
+
+    # 1. Devise - Confirmation Instructions
+    begin
+      mail = Devise::Mailer.confirmation_instructions(
+        test_user,
+        "test-confirmation-token-123",
+        {}
+      )
+      emails << { name: "Devise Confirmation Instructions", mail: mail, file: "devise_confirmation.html" }
+      puts "✓ Devise Confirmation Instructions email generated"
+    rescue => e
+      puts "✗ Devise Confirmation Instructions email failed: #{e.message}"
+    end
+
+    # 2. Devise - Reset Password Instructions
+    begin
+      mail = Devise::Mailer.reset_password_instructions(
+        test_user,
+        "test-reset-token-123",
+        {}
+      )
+      emails << { name: "Devise Reset Password", mail: mail, file: "devise_reset_password.html" }
+      puts "✓ Devise Reset Password email generated"
+    rescue => e
+      puts "✗ Devise Reset Password email failed: #{e.message}"
+    end
+
+    # 3. Devise - Email Changed
+    begin
+      mail = Devise::Mailer.email_changed(test_user, {})
+      emails << { name: "Devise Email Changed", mail: mail, file: "devise_email_changed.html" }
+      puts "✓ Devise Email Changed email generated"
+    rescue => e
+      puts "✗ Devise Email Changed email failed: #{e.message}"
+    end
+
+    # 4. Devise - Password Changed
+    begin
+      mail = Devise::Mailer.password_change(test_user, {})
+      emails << { name: "Devise Password Changed", mail: mail, file: "devise_password_changed.html" }
+      puts "✓ Devise Password Changed email generated"
+    rescue => e
+      puts "✗ Devise Password Changed email failed: #{e.message}"
+    end
+
+    # 5. User Invitation Email
     begin
       mail = UserInvitationMailer.with(
         recipient: "newuser@example.com",
@@ -25,7 +77,7 @@ namespace :email do
       puts "✗ User Invitation email failed: #{e.message}"
     end
 
-    # 2. Weekly Reminder Email
+    # 6. Weekly Reminder Email
     begin
       mail = SendWeeklyReminderToUserMailer.with(
         recipients: "test@example.com",
@@ -51,7 +103,7 @@ namespace :email do
           address: "123 Client St, City, State 12345"
         )
 
-        # 3. Invoice Email - requires status: sending and recently_sent_mail
+        # 7. Invoice Email - requires status: sending and recently_sent_mail
         begin
         invoice_for_sending = Invoice.create!(
           company: company,
@@ -84,7 +136,7 @@ namespace :email do
         puts "✗ Invoice email failed: #{e.message}"
       end
 
-      # 4. Payment Reminder Email - requires existing invoice
+      # 8. Payment Reminder Email - requires existing invoice
       begin
         invoice_for_reminder = Invoice.where(company: company, client: client).where.not(status: :sending).first
         invoice_for_reminder ||= Invoice.create!(
@@ -113,7 +165,7 @@ namespace :email do
         puts "✗ Payment Reminder email failed: #{e.message}"
       end
 
-      # 5. Payment Confirmation Email - requires payment_sent_at to be nil
+      # 9. Payment Confirmation Email - requires payment_sent_at to be nil
       begin
         invoice_for_payment = Invoice.create!(
           company: company,
@@ -144,7 +196,7 @@ namespace :email do
         puts "✗ Payment Confirmation email failed: #{e.message}"
       end
 
-      # 6. Client Payment Receipt Email - requires client_payment_sent_at to be nil
+      # 10. Client Payment Receipt Email - requires client_payment_sent_at to be nil
       begin
         invoice_for_receipt = Invoice.create!(
           company: company,
@@ -175,7 +227,7 @@ namespace :email do
         puts "✗ Client Payment Receipt email failed: #{e.message}"
       end
 
-      # 7. Bulk Payment Reminder Email - requires multiple invoices
+      # 11. Bulk Payment Reminder Email - requires multiple invoices
       begin
         # Create multiple overdue invoices
         bulk_invoices = []
@@ -250,7 +302,7 @@ namespace :email do
 
       puts "\n" + "="*80
       puts "All emails sent! Check your browser to view them with letter_opener"
-      puts "Total emails generated: #{emails.count}/7"
+      puts "Total emails generated: #{emails.count}/11"
       puts "Files also saved to tmp/ directory for reference"
       puts "="*80 + "\n"
 
