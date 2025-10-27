@@ -15,30 +15,21 @@
       <div class="container">
         <%= image_tag "Banner.png", class: "banner", alt: "Miru welcome banner" %>
         <p class="header">Welcome to Miru!</p>
-
         <p>Hi <%= @resource.first_name.titleize %> <%= @resource.last_name.titleize %>,</p>
-
         <p>We are so delighted to have you onboard. We want to let you know some of the best ways to get up and running on our portal:</p>
-
         <ul class="features">
           <li>Send professional invoices Instantly</li>
           <li>Send and accept payments from clients seamlessly</li>
           <li>Manage your team and track their progress</li>
           <li>Track your time and overall expenses easily</li>
         </ul>
-
         <p>We'd like to make sure we got your email address right!</p>
-
         <p class="confirm-button"><%= link_to 'Confirm my email address', confirmation_url(@resource, confirmation_token: @token) %></p>
-
         <hr />
-
         <p>If you did not create this account, please ignore this email.</p>
-
         <p>Cheers,<br/>Team Miru</p>
       </div>
-
-      <%= render "devise/shared/footer" %>
+      <%= render "shared/email_footer" %>
     </div>
   </body>
 </html>

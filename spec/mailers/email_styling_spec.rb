@@ -465,4 +465,148 @@ RSpec.describe "Email Styling", type: :mailer do
       include_examples "uses shared email styles"
     end
   end
+
+  describe "Unified email footer" do
+    let(:company) { create :company }
+    let(:user) { create :user, current_workspace_id: company.id }
+
+    shared_examples "has unified footer with required elements" do
+      it "includes Powered by Miru logo" do
+        html_body = mail.html_part ? mail.html_part.body.to_s : mail.body.to_s
+
+        expect(html_body).to include("Powered by")
+        expect(html_body).to match(/miruLogoWithText-[a-f0-9]+\.png/)
+      end
+
+      it "includes company tagline" do
+        html_body = mail.html_part ? mail.html_part.body.to_s : mail.body.to_s
+
+        expect(html_body).to include("Time tracking and Invoicing Software for every business")
+      end
+
+      it "includes copyright notice" do
+        html_body = mail.html_part ? mail.html_part.body.to_s : mail.body.to_s
+
+        expect(html_body).to include("© Miru. All rights reserved.")
+      end
+
+      it "includes website link" do
+        html_body = mail.html_part ? mail.html_part.body.to_s : mail.body.to_s
+
+        expect(html_body).to include("www.miru.so")
+        expect(html_body).to match(%r{href=["']https://miru\.so["']})
+      end
+
+      it "includes social media links" do
+        html_body = mail.html_part ? mail.html_part.body.to_s : mail.body.to_s
+
+        expect(html_body).to match(%r{href=["']https://www\.instagram\.com/getmiru/["']})
+        expect(html_body).to match(%r{href=["']https://x\.com/getmiru["']})
+        expect(html_body).to match(/Instagram-[a-f0-9]+\.png/)
+        expect(html_body).to match(/Twitter-[a-f0-9]+\.png/)
+      end
+
+      it "uses consistent background colors" do
+        html_body = mail.html_part ? mail.html_part.body.to_s : mail.body.to_s
+
+        # Top section background
+        expect(html_body).to match(/background.*#F5F7F9/i)
+        # Bottom bar background
+        expect(html_body).to match(/background.*#5B34EA/i)
+      end
+
+      it "uses table-based layout for email compatibility" do
+        html_body = mail.html_part ? mail.html_part.body.to_s : mail.body.to_s
+
+        # Footer should use table structure
+        expect(html_body).to match(/<table[^>]*>.*Powered by.*<\/table>/im)
+      end
+    end
+
+    describe "Devise mailers" do
+      describe "password change email" do
+        let(:mail) do
+          Devise::Mailer.password_change(user, {})
+        end
+
+        include_examples "has unified footer with required elements"
+      end
+
+      describe "email changed email" do
+        let(:mail) do
+          Devise::Mailer.email_changed(user, {})
+        end
+
+        include_examples "has unified footer with required elements"
+      end
+
+      describe "confirmation instructions email" do
+        let(:mail) do
+          user.send_confirmation_instructions
+          ActionMailer::Base.deliveries.last
+        end
+
+        before do
+          ActionMailer::Base.deliveries.clear
+        end
+
+        include_examples "has unified footer with required elements"
+      end
+
+      describe "password reset instructions email" do
+        let(:mail) do
+          user.send_reset_password_instructions
+          ActionMailer::Base.deliveries.last
+        end
+
+        before do
+          ActionMailer::Base.deliveries.clear
+        end
+
+        include_examples "has unified footer with required elements"
+      end
+    end
+
+    describe "Reminder mailers" do
+      describe "weekly reminder email" do
+        let(:start_date) { 1.week.ago.beginning_of_week }
+        let(:end_date) { 1.week.ago.end_of_week }
+        let(:mail) do
+          SendWeeklyReminderToUserMailer.with(
+            recipients: user.email,
+            company_name: company.name,
+            name: user.full_name,
+            start_date:,
+            end_date:
+          ).notify_user_about_missed_entries
+        end
+
+        include_examples "has unified footer with required elements"
+      end
+
+      describe "user invitation email" do
+        let(:invitation) { create :invitation, company: }
+        let(:mail) do
+          UserInvitationMailer.with(
+            recipient: invitation.recipient_email,
+            token: invitation.token,
+            user_already_exists: false,
+            name: invitation.full_name,
+            sender_details: {
+              name: user.full_name,
+              email: user.email,
+              avatar: nil
+            },
+            company_details: {
+              name: company.name,
+              employee_count: 10,
+              logo: nil
+            }
+          ).send_user_invitation
+        end
+
+        include_examples "has unified footer with required elements"
+      end
+    end
+  end
 end
