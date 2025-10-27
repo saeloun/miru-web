@@ -133,6 +133,14 @@ RSpec.describe "Email Styling", type: :mailer do
         expect(html_body).to include("Update Timesheet")
         expect(html_body).to match(/background.*#5B34EA/i)
       end
+
+      it "uses proper URL helper for time-tracking link" do
+        html_body = get_html_body(mail)
+
+        # Check that the link uses proper URL generation (not string concatenation)
+        expect(html_body).to include("time-tracking")
+        expect(html_body).to match(%r{https?://[^/]+/time-tracking})
+      end
     end
 
     describe "Devise Confirmation Instructions Email" do
@@ -379,6 +387,68 @@ RSpec.describe "Email Styling", type: :mailer do
       html_body = get_html_body(mail)
 
       expect(html_body).to include("charset=")
+    end
+  end
+
+  describe "Shared email styles partial" do
+    let(:company) { create :company }
+    let(:user) { create :user, current_workspace_id: company.id }
+
+    shared_examples "uses shared email styles" do
+      it "includes shared base styles" do
+        html_body = get_html_body(mail)
+
+        # Check for common styles that should be in the shared partial
+        expect(html_body).to match(/font-family.*system-ui/i)
+        expect(html_body).to match(/\.banner.*background.*#5B34EA/i)
+        expect(html_body).to match(/\.container.*max-width.*640px/i)
+        expect(html_body).to match(/\.header.*font-size.*24px/i)
+      end
+    end
+
+    describe "password change email" do
+      let(:mail) do
+        Devise::Mailer.password_change(user, {})
+      end
+
+      include_examples "uses shared email styles"
+    end
+
+    describe "email changed email" do
+      let(:mail) do
+        Devise::Mailer.email_changed(user, {})
+      end
+
+      include_examples "uses shared email styles"
+    end
+
+    describe "confirmation instructions email" do
+      let(:mail) do
+        user.send_confirmation_instructions
+        ActionMailer::Base.deliveries.last
+      end
+
+      before do
+        ActionMailer::Base.deliveries.clear
+      end
+
+      include_examples "uses shared email styles"
+    end
+
+    describe "weekly reminder email" do
+      let(:start_date) { 1.week.ago.beginning_of_week }
+      let(:end_date) { 1.week.ago.end_of_week }
+      let(:mail) do
+        SendWeeklyReminderToUserMailer.with(
+          recipients: user.email,
+          company_name: company.name,
+          name: user.full_name,
+          start_date:,
+          end_date:
+        ).notify_user_about_missed_entries
+      end
+
+      include_examples "uses shared email styles"
     end
   end
 end
