@@ -110,7 +110,7 @@ RSpec.describe "Email Styling", type: :mailer do
 
         # Check for banner styling
         expect(html_body).to match(/background.*#5B34EA/i)
-        expect(html_body).to match(/Banner-[a-f0-9]+\.svg/)
+        expect(html_body).to match(/Banner-[a-f0-9]+\.png/)
       end
 
       it "has styled header" do
@@ -134,12 +134,13 @@ RSpec.describe "Email Styling", type: :mailer do
         expect(html_body).to match(/background.*#5B34EA/i)
       end
 
-      it "uses proper URL helper for time-tracking link" do
+      it "uses proper URL for time-tracking link" do
         html_body = get_html_body(mail)
 
-        # Check that the link uses proper URL generation (not string concatenation)
+        # Check that the link is properly formatted without double slashes
         expect(html_body).to include("time-tracking")
         expect(html_body).to match(%r{https?://[^/]+/time-tracking})
+        expect(html_body).not_to match(%r{//time-tracking})
       end
     end
 
@@ -172,7 +173,7 @@ RSpec.describe "Email Styling", type: :mailer do
 
         # Check for banner styling
         expect(html_body).to match(/background.*#5B34EA/i)
-        expect(html_body).to match(/Banner-[a-f0-9]+\.svg/)
+        expect(html_body).to match(/Banner-[a-f0-9]+\.png/)
       end
 
       it "has styled confirmation button" do
@@ -232,7 +233,7 @@ RSpec.describe "Email Styling", type: :mailer do
 
         # Check for banner styling
         expect(html_body).to match(/background.*#5B34EA/i)
-        expect(html_body).to match(/Password_Banner-[a-f0-9]+\.svg/)
+        expect(html_body).to match(/Password_Banner-[a-f0-9]+\.png/)
       end
 
       it "has styled reset password button" do
@@ -280,7 +281,7 @@ RSpec.describe "Email Styling", type: :mailer do
 
         # Check for banner styling
         expect(html_body).to match(/background.*#5B34EA/i)
-        expect(html_body).to match(/Banner-[a-f0-9]+\.svg/)
+        expect(html_body).to match(/Banner-[a-f0-9]+\.png/)
       end
 
       it "has proper header styling" do
@@ -327,7 +328,7 @@ RSpec.describe "Email Styling", type: :mailer do
 
         # Check for banner styling
         expect(html_body).to match(/background.*#5B34EA/i)
-        expect(html_body).to match(/Password_Banner-[a-f0-9]+\.svg/)
+        expect(html_body).to match(/Password_Banner-[a-f0-9]+\.png/)
       end
 
       it "has proper header styling" do

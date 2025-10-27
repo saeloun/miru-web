@@ -20,7 +20,7 @@
   <body>
     <div class="mail">
       <div class="container">
-        <%= image_tag "Banner.svg", class: "banner", alt: "banner" %>
+        <%= image_tag "Banner.png", class: "banner", alt: "Miru welcome banner" %>
         <p class="header">Reminder to Update your Timesheet on Miru</p>
 
       <p class="content">Hi <%= @name %>,</p>
@@ -34,7 +34,7 @@
       <p class="content">Please update your timesheet to ensure accurate time tracking and billing.</p>
 
       <div class="button">
-        <%= link_to "Update Timesheet", url_for(controller: 'home', action: 'index', path: 'time-tracking', only_path: false), target: "_blank" %>
+        <%= link_to "Update Timesheet", "#{root_url}time-tracking", target: "_blank" %>
       </div>
 
       <hr />

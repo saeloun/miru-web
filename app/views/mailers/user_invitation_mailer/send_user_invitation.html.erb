@@ -28,18 +28,18 @@
   </head>
   <body style="color:#1D1A31">
   <div class="mail invitation">
-    <%= image_tag "Banner.svg", class: "banner", alt: "banner" %>
+    <%= image_tag "Banner.png", class: "banner", alt: "Miru welcome banner" %>
     <p class="header">You have been invited to Miru</p>
     <p><%= @sender_details&.[](:name) %> (<%= @sender_details&.[](:email) %>) has invited you to join <%=@company_details&.[](:name) %> team on Miru</p>
 
     <div class='sender_company_container'>
       <div class='sender'>
-        <%= image_tag(@sender_details&.[](:avatar) || "avatar.svg", alt:"User avatar", height: "40", width: "40") %>
+        <%= image_tag(@sender_details&.[](:avatar) || "avatar.png", alt:"User avatar", height: "40", width: "40") %>
         <b><%= @sender_details&.[](:name) %></b>
         <%= @sender_details&.[](:email) %>
       </div>
       <div class='company'>
-      <%= image_tag(@company_details&.[](:logo) || "miru-logo.svg", alt:"Company logo", height: "40px", width: "40px") %>
+      <%= image_tag(@company_details&.[](:logo) || "miru-logo.png", alt:"Company logo", height: "40px", width: "40px") %>
         <b><%=@company_details&.[](:name) %></b>
         <%=@company_details&.[](:employee_count) %> members
       </div>
@@ -62,7 +62,7 @@
               <p class="button"><%= link_to 'Learn More >', 'https://www.miru.so/', target: "_blank" %></p>
           </td>
         <td style="vertical-align: middle; text-align: right;">
-          <%= image_tag "miru-logo.svg", class:"miru-logo", alt:"miru-logo" %>
+          <%= image_tag "miru-logo.png", class:"miru-logo", alt:"miru-logo" %>
         </td>
         </tr>
         </table>
