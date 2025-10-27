@@ -451,5 +451,18 @@ RSpec.describe "Email Styling", type: :mailer do
 
       include_examples "uses shared email styles"
     end
+
+    describe "password reset instructions email" do
+      let(:mail) do
+        user.send_reset_password_instructions
+        ActionMailer::Base.deliveries.last
+      end
+
+      before do
+        ActionMailer::Base.deliveries.clear
+      end
+
+      include_examples "uses shared email styles"
+    end
   end
 end
