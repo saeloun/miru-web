@@ -3,5 +3,5 @@
 require "zerobounce"
 
 Zerobounce.configure do |config|
-  config.apikey = "0d422e5b9ad94f599bbf03e5c666a886"
+  config.apikey = ENV["ZERO_BOUNCE_API_KEY"]
 end
