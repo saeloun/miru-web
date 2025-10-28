@@ -90,7 +90,11 @@ RSpec.describe Company, type: :model do
       let(:user) { create(:user, current_workspace_id: company.id) }
 
       it "return invoice amounts" do
-        status_and_amount = company.invoices.kept.group(:status).sum(:amount)
+        status_and_amount = company.invoices.kept.group_by(&:status).transform_values { |invoices|
+          invoices.sum { |invoice|
+            invoice.base_currency_amount.to_f > 0.00 ? invoice.base_currency_amount : invoice.amount
+          }
+        }
         currency = company.base_currency
         status_and_amount.default = 0
         outstanding_amount = status_and_amount["sent"] + status_and_amount["viewed"]
@@ -110,7 +114,11 @@ RSpec.describe Company, type: :model do
         end
 
         it "returns only live invoices summary" do
-          status_and_amount = company.invoices.kept.group(:status).sum(:amount)
+          status_and_amount = company.invoices.kept.group_by(&:status).transform_values { |invoices|
+            invoices.sum { |invoice|
+              invoice.base_currency_amount.to_f > 0.00 ? invoice.base_currency_amount : invoice.amount
+            }
+          }
           currency = company.base_currency
           status_and_amount.default = 0
           outstanding_amount = status_and_amount["sent"] + status_and_amount["viewed"]

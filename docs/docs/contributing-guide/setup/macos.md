@@ -67,7 +67,33 @@ $ docker run -dp 127.0.0.1:9200:9200 -p 127.0.0.1:9300:9300 -e "discovery.type=s
 $ brew install redis
 ```
 
-#### 9. Setup the app
+#### 9. Install Chrome/Chromium
+
+Chrome or Chromium is required for PDF generation (invoices, reports, etc.).
+
+**Option 1: Google Chrome (Recommended)**
+
+Download and install from: https://www.google.com/chrome/
+
+**Option 2: Chromium via Homebrew**
+
+```bash
+$ brew install --cask chromium
+```
+
+You can verify the installation by running:
+
+```bash
+$ /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --version
+```
+
+or
+
+```bash
+$ /Applications/Chromium.app/Contents/MacOS/Chromium --version
+```
+
+#### 10. Setup the app
 
 ```bash
 # Go to the miru-web app directory
@@ -75,13 +101,13 @@ $ brew install redis
 $ bin/setup
 ```
 
-#### 10. Run app in local env
+#### 11. Run app in local env
 
 ```bash
 $ foreman start -f Procfile.dev
 ```
 
-#### 11. Navigate to [http://0.0.0.0:3000](http://0.0.0.0:3000)
+#### 12. Navigate to [http://0.0.0.0:3000](http://0.0.0.0:3000)
 
 ### To receive the emails in non-production apps.
 

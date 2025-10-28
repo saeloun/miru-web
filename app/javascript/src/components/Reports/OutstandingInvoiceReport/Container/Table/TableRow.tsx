@@ -7,10 +7,11 @@ import getStatusCssClass from "utils/getBadgeStatus";
 
 import { OutstandingOverdueInvoice } from "../../interface";
 
-const TableRow = ({ currency, reportData, logo }) => {
+const TableRow = ({ reportData, logo }) => {
   const {
     id,
     clientName,
+    currency,
     dueDate,
     amount,
     status,
