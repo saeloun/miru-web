@@ -2,13 +2,13 @@ import React from "react";
 
 import { currencyFormat } from "helpers";
 
-const InvoiceTotalSummary = ({ invoice, company, lineItems, strikeAmount }) => {
+const InvoiceTotalSummary = ({ invoice, lineItems, strikeAmount }) => {
   const subTotal = lineItems
     .reduce((prev, curr) => prev + (curr.rate * curr.quantity) / 60, 0)
     .toFixed(2);
 
-  const { amount_due, amount_paid, discount, tax } = invoice;
-  const { currency } = company;
+  const { amount_due, amount_paid, currency, discount, tax } = invoice;
+
   const total = Number(subTotal) + Number(tax) - Number(discount);
 
   return (
@@ -26,7 +26,7 @@ const InvoiceTotalSummary = ({ invoice, company, lineItems, strikeAmount }) => {
             </td>
           </tr>
           <tr className="miru-gray-400 border-b-2 pb-5 ">
-            <td className="py-2 pr-10 pr-10 text-right text-base font-normal text-miru-dark-purple-1000">
+            <td className="py-2 pr-10 text-right text-base font-normal text-miru-dark-purple-1000">
               Discount
             </td>
             <td

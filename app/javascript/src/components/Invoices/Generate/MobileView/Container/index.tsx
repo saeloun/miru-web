@@ -16,6 +16,9 @@ import { generateInvoiceLineItems } from "../../../common/utils";
 import { sections } from "../utils";
 
 const Container = ({
+  baseCurrency,
+  baseCurrencyAmount,
+  clientCurrency,
   dueDate,
   issueDate,
   invoiceDetails,
@@ -48,6 +51,8 @@ const Container = ({
   handleSaveInvoice,
   isStripeEnabled,
   setShowConnectPaymentDialog,
+  setBaseCurrencyAmount,
+  setClientCurrency,
   showConnectPaymentDialog,
 }) => {
   const [multiLineItemModal, setMultiLineItemModal] = useState<boolean>(false);
@@ -60,9 +65,7 @@ const Container = ({
   const [showSendInvoiceModal, setShowSendInvoiceModal] =
     useState<boolean>(true);
 
-  const currency =
-    invoiceDetails?.companyDetails?.currency ||
-    invoiceDetails?.company?.currency;
+  const currency = clientCurrency || invoiceDetails?.company?.currency;
 
   const INVOICE_NUMBER_ERROR = "Please enter invoice number to proceed";
   const SELECT_CLIENT_ERROR =
@@ -70,6 +73,7 @@ const Container = ({
 
   const saveInvoice = async () => {
     const sanitized = mapGenerateInvoice({
+      baseCurrencyAmount,
       selectedClient,
       invoiceNumber,
       reference,
@@ -137,7 +141,9 @@ const Container = ({
           <MenuContainer
             amountDue={amountDue}
             amountPaid={amountPaid}
-            currency={currency}
+            baseCurrency={baseCurrency}
+            baseCurrencyAmount={baseCurrencyAmount}
+            currency={clientCurrency}
             dateFormat={dateFormat}
             discount={discount}
             dueDate={dueDate}
@@ -154,6 +160,8 @@ const Container = ({
             setActiveSection={setActiveSection}
             setAmount={setAmount}
             setAmountDue={setAmountDue}
+            setBaseCurrencyAmount={setBaseCurrencyAmount}
+            setClientCurrency={setClientCurrency}
             setDiscount={setDiscount}
             setDueDate={setDueDate}
             setEditItem={setEditItem}

@@ -6,7 +6,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 ruby "3.2.4"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
-gem "rails", "~> 7.1.5"
+gem "rails", "~> 7.1.5.1"
 
 # Use postgresql as the database for Active Record
 gem "pg"
@@ -103,7 +103,7 @@ gem "data_migrate"
 # pagy for Pagination
 gem "pagy", "~> 5.10"
 
-gem "nokogiri", ">= 1.16.2"
+gem "nokogiri", ">= 1.18.4"
 
 # Manage application specific business logic. https://github.com/AaronLasseigne/active_interaction
 gem "active_interaction"
@@ -119,8 +119,8 @@ gem "solid_queue", "~> 0.3"
 gem "elasticsearch", "< 7.14" # select one
 gem "searchkick"
 
-# PDF generator
-gem "grover"
+# PDF generator - using Ferrum PDF for modern Chrome-based PDF generation
+gem "ferrum_pdf", "~> 2.1"
 
 gem "activerecord-import"
 

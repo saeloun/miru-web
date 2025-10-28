@@ -2,13 +2,12 @@ import React from "react";
 
 import { currencyFormat } from "helpers";
 
-const InvoiceTotal = ({ company, invoice, lineItems, strikeAmount }) => {
+const InvoiceTotal = ({ invoice, lineItems, strikeAmount }) => {
   const subTotal = lineItems
     .reduce((prev, curr) => prev + (curr.rate * curr.quantity) / 60, 0)
     .toFixed(2);
 
-  const { amount_due, amount_paid, discount, tax } = invoice;
-  const { currency } = company;
+  const { currency, amount_due, amount_paid, discount, tax } = invoice;
   const total = Number(subTotal) + Number(tax) - Number(discount);
 
   const AmountComponent = ({ label, value }) => (

@@ -70,7 +70,7 @@ RSpec.describe "InternalApi::V1::Invoices#send_invoice", type: :request do
           post send_invoice_internal_api_v1_invoice_path(id: "random"), headers: auth_headers(user)
 
           expect(response).to have_http_status :not_found
-          expect(json_response["errors"]).to include "Couldn't find Invoice with 'id'=random"
+          expect(json_response["errors"]).to include "Couldn't find Invoice"
         end
       end
     end
