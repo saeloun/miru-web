@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useCallback, useEffect, useState } from "react";
 
 import dayjs from "dayjs";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -31,7 +31,7 @@ const GenerateInvoices = () => {
   const [selectedClient, setSelectedClient] = useState<any>();
   const [invoiceNumber, setInvoiceNumber] = useState<any>("");
   const [clientCurrency, setClientCurrency] = useState<string>("USD");
-  const [baseCurrencyAmount, setBaseCurrencyAmount] = useState<any>(null);
+  const [baseCurrencyAmount, setBaseCurrencyAmount] = useState<any>("");
   const [reference, setReference] = useState<string>("");
   const [amount, setAmount] = useState<any>(0);
   const [amountDue, setAmountDue] = useState<any>(0);
@@ -61,7 +61,7 @@ const GenerateInvoices = () => {
 
   const { isDesktop } = useUserContext();
 
-  const fetchCompanyDetails = async () => {
+  const fetchCompanyDetails = useCallback(async () => {
     // here we are fetching the company and client list
     try {
       setIsLoading(true);
@@ -73,7 +73,7 @@ const GenerateInvoices = () => {
       navigate("invoices/error");
       setIsLoading(false);
     }
-  };
+  }, [navigate]);
 
   const fetchPaymentsProvidersSettings = async () => {
     try {
@@ -86,22 +86,22 @@ const GenerateInvoices = () => {
     }
   };
 
-  const setClientListIfClientIdPresent = () => {
+  const setClientListIfClientIdPresent = useCallback(() => {
     const client = invoiceDetails?.clientList?.find(
       client => client.value === parseInt(clientId)
     );
     if (client) setSelectedClient(client);
-  };
+  }, [invoiceDetails?.clientList, clientId]);
 
   useEffect(() => {
     sendGAPageView();
     fetchCompanyDetails();
     fetchPaymentsProvidersSettings();
-  }, []);
+  }, [fetchCompanyDetails]);
 
   useEffect(() => {
     if (clientId) setClientListIfClientIdPresent();
-  }, [invoiceDetails]);
+  }, [clientId, invoiceDetails, setClientListIfClientIdPresent]);
 
   const saveInvoice = async () => {
     const sanitized = mapGenerateInvoice({
@@ -145,6 +145,10 @@ const GenerateInvoices = () => {
     if (selectedClient && invoiceNumber !== "") {
       const res = await saveInvoice();
       setInvoiceId(res?.data.id);
+      // Update baseCurrencyAmount from backend response
+      if (res?.data?.baseCurrencyAmount) {
+        setBaseCurrencyAmount(res.data.baseCurrencyAmount);
+      }
 
       return res;
     }
@@ -158,7 +162,11 @@ const GenerateInvoices = () => {
 
   const handleSaveInvoice = async () => {
     if (selectedClient && invoiceNumber !== "") {
-      await saveInvoice();
+      const res = await saveInvoice();
+      // Update baseCurrencyAmount from backend response
+      if (res?.data?.baseCurrencyAmount) {
+        setBaseCurrencyAmount(res.data.baseCurrencyAmount);
+      }
       navigate("/invoices");
     } else {
       selectedClient

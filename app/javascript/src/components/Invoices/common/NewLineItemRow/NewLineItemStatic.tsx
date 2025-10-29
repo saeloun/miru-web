@@ -55,7 +55,17 @@ const NewLineItemStatic = ({
     });
 
     name && setSelectedOption(selectedOptionArr);
-  }, [name, lineItemDate, description, quantity, rate, lineTotal]);
+  }, [
+    name,
+    lineItemDate,
+    description,
+    quantity,
+    rate,
+    lineTotal,
+    item,
+    selectedOption,
+    setSelectedOption,
+  ]);
 
   const closeEditField = event => {
     if (event.key === "Enter") {
@@ -96,6 +106,7 @@ const NewLineItemStatic = ({
         <td className="relative px-1 py-3 text-right text-base font-normal text-miru-dark-purple-1000 ">
           <div onClick={() => setShowDatePicker(!showDatePicker)}>
             <input
+              readOnly
               placeholder="Select Date"
               type="text"
               value={lineItemDate}

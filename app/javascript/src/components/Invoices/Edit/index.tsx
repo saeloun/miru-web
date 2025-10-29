@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useCallback, useEffect, useState } from "react";
 
 import dayjs from "dayjs";
 import { useParams, useNavigate } from "react-router-dom";
@@ -63,7 +63,7 @@ const EditInvoice = () => {
   const SELECT_CLIENT_ERROR =
     "Please select client and enter invoice number to proceed";
 
-  const fetchInvoice = async () => {
+  const fetchInvoice = useCallback(async () => {
     try {
       setStatus(InvoiceStatus.LOADING);
       const { data } = await invoicesApi.editInvoice(params.id);
@@ -87,12 +87,12 @@ const EditInvoice = () => {
       navigate("/invoices/error");
       setStatus(InvoiceStatus.ERROR);
     }
-  };
+  }, [params.id, navigate]);
 
   useEffect(() => {
     sendGAPageView();
     fetchInvoice();
-  }, []);
+  }, [fetchInvoice]);
 
   const updateInvoice = async () => {
     try {
@@ -151,7 +151,11 @@ const EditInvoice = () => {
 
   const handleSaveInvoice = async () => {
     if (selectedClient && invoiceNumber !== "") {
-      await updateInvoice();
+      const res = await updateInvoice();
+      // Update baseCurrencyAmount from backend response
+      if (res?.data?.baseCurrencyAmount) {
+        setBaseCurrencyAmount(res.data.baseCurrencyAmount);
+      }
       navigate(`/invoices/${invoiceDetails.id}`);
     } else {
       selectedClient
@@ -175,6 +179,10 @@ const EditInvoice = () => {
   const handleSaveSendInvoice = async () => {
     if (selectedClient && invoiceNumber !== "") {
       const res = await updateInvoice();
+      // Update baseCurrencyAmount from backend response
+      if (res?.data?.baseCurrencyAmount) {
+        setBaseCurrencyAmount(res.data.baseCurrencyAmount);
+      }
 
       return res;
     }

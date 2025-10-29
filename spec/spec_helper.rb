@@ -8,6 +8,9 @@ require "rspec/retry"
 
 # Buildkite::TestCollector.configure(hook: :rspec)
 
+# Suppress deprecation warnings in test output
+ActiveSupport::Deprecation.silenced = true if defined?(ActiveSupport::Deprecation)
+
 if ENV.fetch("COVERAGE", false)
   SimpleCov.start "rails" do
     add_filter "/bin/"
