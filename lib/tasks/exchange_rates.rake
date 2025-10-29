@@ -329,9 +329,9 @@ namespace :exchange_rates do
     end
     puts ""
 
-    # Currency pairs needed
+    # Currency pairs needed (read-only analysis)
     puts "CURRENCY PAIRS NEEDED:"
-    service = ExchangeRates::CurrencyPairDiscoveryService.new
+    service = ExchangeRates::CurrencyPairDiscoveryService.new(dry_run: true)
     result = service.process
 
     if result[:discovered_pairs].any?
@@ -341,6 +341,8 @@ namespace :exchange_rates do
         rate = pair&.rate ? format("%.4f", pair.rate) : "No rate"
         puts "  #{from} → #{to}: #{status} (#{rate})"
       end
+      puts ""
+      puts "Note: This is a read-only analysis. Run 'rails exchange_rates:discover' to sync pairs."
     else
       puts "  No currency pairs needed (all same currency)"
     end

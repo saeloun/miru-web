@@ -3,10 +3,10 @@
 require "rails_helper"
 
 RSpec.describe "InternalApi::V1::Reports::ClientRevenuesController::#index", type: :request do
-  let(:company) { create(:company) }
+  let(:company) { create(:company, base_currency: "USD") }
   let(:user) { create(:user, current_workspace_id: company.id) }
-  let!(:client1) { create(:client, :with_logo, company:, name: "Alpha") }
-  let!(:client2) { create(:client, :with_logo, company:, name: "Delta") }
+  let!(:client1) { create(:client, :with_logo, company:, name: "Alpha", currency: "USD") }
+  let!(:client2) { create(:client, :with_logo, company:, name: "Delta", currency: "USD") }
   let(:client3) { create(:client, company:, name: "john") }
   let!(:client1_sent_invoice1) { create(:invoice, client: client1, status: "sent") }
   let!(:client1_sent_invoice2) { create(:invoice, client: client1, status: "sent") }

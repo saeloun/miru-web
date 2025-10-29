@@ -217,7 +217,7 @@ module ExchangeRates
       end
 
       def discover_currency_pairs
-        discovery_service = CurrencyPairDiscoveryService.new
+        discovery_service = ExchangeRates::CurrencyPairDiscoveryService.new
         result = discovery_service.process
 
         Rails.logger.info(

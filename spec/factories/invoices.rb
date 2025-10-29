@@ -13,12 +13,15 @@ FactoryBot.define do
     invoice_number { Faker::Alphanumeric.unique.alpha(number: 4) }
     reference { Faker::Invoice.reference[1..12] }
     amount { amount_value }
+    currency { client&.currency || "USD" }
     # outstanding_amount { Faker::Number.decimal(r_digits: 2) }
     # tax { Faker::Number.decimal(r_digits: 2) }
     # amount_paid { Faker::Number.decimal(r_digits: 2) }
     # amount_due { Faker::Number.decimal(r_digits: 2) }
     # discount { Faker::Number.decimal(r_digits: 2) }
     status { :draft }
+    # When invoice currency matches company base currency, base_currency_amount equals amount
+    # This prevents currency conversion in tests where all currencies are the same
     base_currency_amount { amount_value }
     external_view_key { "#{SecureRandom.hex}" }
     factory :invoice_with_invoice_line_items do
