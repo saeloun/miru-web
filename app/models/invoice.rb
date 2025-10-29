@@ -75,7 +75,7 @@ class Invoice < ApplicationRecord
   store_accessor :payment_infos, :stripe_payment_intent
 
   before_validation :set_external_view_key, on: :create
-  before_validation :calculate_base_currency_amount
+  before_validation :calculate_base_currency_amount, if: :should_recalculate_base_currency?
   after_commit :refresh_invoice_index
   after_save :lock_timesheet_entries, if: :draft?
   after_discard :unlock_timesheet_entries, if: :draft?
@@ -222,6 +222,14 @@ class Invoice < ApplicationRecord
 
     def update_invoice_number
       self.update(invoice_number: "#{ARCHIVED_PREFIX}-#{id}-#{invoice_number}")
+    end
+
+    def should_recalculate_base_currency?
+      # Recalculate if this is a new record
+      return true if new_record?
+
+      # Recalculate if amount or currency has changed
+      amount_changed? || currency_changed?
     end
 
     def calculate_base_currency_amount

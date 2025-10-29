@@ -25,12 +25,17 @@ class ExchangeRateUsage < ApplicationRecord
   scope :current_month, -> { where(month: Date.current.beginning_of_month) }
 
   def self.current
-    current_month.first_or_create(month: Date.current.beginning_of_month)
+    find_or_create_by!(month: Date.current.beginning_of_month)
   end
 
   def increment_usage!
-    increment!(:requests_count)
-    update(last_fetched_at: Time.current)
+    # Atomic SQL update to prevent race conditions
+    timestamp = Time.current
+    self.class.where(id:).update_all(
+      "requests_count = requests_count + 1, last_fetched_at = #{self.class.connection.quote(timestamp)}, updated_at = #{self.class.connection.quote(timestamp)}"
+    )
+    # Reload to get the updated values
+    reload
   end
 
   def usage_percentage

@@ -11,7 +11,7 @@ default: &default
           schedule: "0 14 * * 1 Asia/Kolkata" # Runs every Monday at 14:00
         update_exchange_rates:
           class: UpdateExchangeRatesJob
-          schedule: "0 6 * * * America/New_York" # Runs every day at 1:00 AM EST (6:00 AM UTC)
+          schedule: "0 1 * * * America/New_York" # Runs every day at 1:00 AM ET (6:00 AM UTC)
   workers:
     - queues: "*"
       threads: 5

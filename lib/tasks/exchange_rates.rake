@@ -16,13 +16,37 @@ namespace :exchange_rates do
 
     # Seed currency pairs
     puts "Creating currency pairs..."
-    load Rails.root.join('db', 'seeds', 'currency_pairs.rb')
+    seed_file = Rails.root.join('db', 'seeds', 'currency_pairs.rb')
+
+    if File.exist?(seed_file)
+      begin
+        load seed_file
+        puts "✅ Currency pairs seeded successfully"
+      rescue StandardError => e
+        puts "❌ Error loading seed file: #{e.message}"
+        Rails.logger.error("Exchange rates setup failed - seed file error: #{e.message}")
+        Rails.logger.error(e.backtrace.join("\n"))
+        exit 1
+      end
+    else
+      puts "❌ Seed file not found: #{seed_file}"
+      Rails.logger.error("Exchange rates setup failed - seed file not found: #{seed_file}")
+      exit 1
+    end
     puts ""
 
     # Fetch initial rates
     if ENV['OPEN_EXCHANGE_RATES_APP_ID'].present?
       puts "Fetching initial exchange rates..."
-      UpdateExchangeRatesJob.perform_now
+      begin
+        UpdateExchangeRatesJob.perform_now
+        puts "✅ Initial rates fetched successfully"
+      rescue StandardError => e
+        puts "❌ Error fetching rates: #{e.message}"
+        Rails.logger.error("Exchange rates fetch failed: #{e.message}")
+        Rails.logger.error(e.backtrace.join("\n"))
+        puts "   You can try fetching rates later with: rails exchange_rates:fetch"
+      end
       puts ""
     end
 
@@ -82,17 +106,27 @@ namespace :exchange_rates do
   desc "Fetch exchange rates now"
   task fetch: :environment do
     puts "Fetching exchange rates..."
-    result = ExchangeRates::FetchService.new.process
 
-    if result[:success]
-      puts "✅ Success!"
-      puts "   Your currency pairs updated: #{result[:rates_updated]}"
-      if result[:total_currencies_available]
-        puts "   (API provides #{result[:total_currencies_available]} currencies total)"
+    begin
+      result = ExchangeRates::FetchService.new.process
+
+      if result[:success]
+        puts "✅ Success!"
+        puts "   Your currency pairs updated: #{result[:rates_updated]}"
+        if result[:total_currencies_available]
+          puts "   (API provides #{result[:total_currencies_available]} currencies total)"
+        end
+        puts "   API Usage: #{result[:usage]}%"
+      else
+        puts "❌ Failed: #{result[:error]}"
+        Rails.logger.error("Exchange rates fetch failed: #{result[:error]}")
+        exit 1
       end
-      puts "   API Usage: #{result[:usage]}%"
-    else
-      puts "❌ Failed: #{result[:error]}"
+    rescue StandardError => e
+      puts "❌ Unexpected error: #{e.message}"
+      Rails.logger.error("Exchange rates fetch failed with exception: #{e.message}")
+      Rails.logger.error(e.backtrace.join("\n"))
+      exit 1
     end
   end
 
@@ -125,13 +159,37 @@ namespace :exchange_rates do
     end
 
     amount = args[:amount].to_f
-    result = CurrencyConversionService.new(
-      amount: amount,
-      from_currency: args[:from],
-      to_currency: args[:to]
-    ).process
+    from_currency = args[:from].upcase
+    to_currency = args[:to].upcase
 
-    puts "#{amount} #{args[:from].upcase} = #{result} #{args[:to].upcase}"
+    begin
+      result = CurrencyConversionService.new(
+        amount: amount,
+        from_currency: from_currency,
+        to_currency: to_currency
+      ).process
+
+      if result.nil?
+        $stderr.puts "❌ Conversion failed: No result returned"
+        $stderr.puts "   Amount: #{amount} #{from_currency} → #{to_currency}"
+        $stderr.puts "   Check that the currency pair exists and has a rate"
+        Rails.logger.error("Currency conversion failed: No result for #{amount} #{from_currency} → #{to_currency}")
+        exit 1
+      end
+
+      puts "#{amount} #{from_currency} = #{result} #{to_currency}"
+    rescue StandardError => e
+      $stderr.puts "❌ Conversion error: #{e.message}"
+      $stderr.puts "   Amount: #{amount} #{from_currency} → #{to_currency}"
+      $stderr.puts "   Possible causes:"
+      $stderr.puts "   - Currency pair not configured (run: rails exchange_rates:add[#{from_currency},#{to_currency}])"
+      $stderr.puts "   - Exchange rate not fetched (run: rails exchange_rates:fetch)"
+      $stderr.puts "   - Invalid currency codes"
+      Rails.logger.error("Currency conversion failed: #{e.message}")
+      Rails.logger.error("  Amount: #{amount}, From: #{from_currency}, To: #{to_currency}")
+      Rails.logger.error(e.backtrace.join("\n"))
+      exit 1
+    end
   end
 
   desc "Discover needed currency pairs from companies and clients"
