@@ -32,14 +32,14 @@ class CurrencyConversionService
     end
 
     def convert_with_money_gem
-      money = Money.new(@amount * 100, @from_currency)
+      money = Money.from_amount(BigDecimal(@amount.to_s), @from_currency)
       converted = money.exchange_to(@to_currency)
-      (converted.cents / 100.0).round(2)
+      BigDecimal(converted.to_d.to_s).round(2)
     rescue Money::Bank::UnknownRate, Money::Currency::UnknownCurrency
       Rails.logger.warn(
         "Exchange rate not available for #{@from_currency} to #{@to_currency}. " \
         "Using original amount."
       )
-      @amount
+      BigDecimal(@amount.to_s)
     end
 end

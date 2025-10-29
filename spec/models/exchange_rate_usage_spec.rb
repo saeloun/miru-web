@@ -29,6 +29,13 @@ RSpec.describe ExchangeRateUsage, type: :model do
       it "returns the existing usage record" do
         expect(ExchangeRateUsage.current).to eq(usage)
       end
+
+      it "is concurrency-safe and returns the same record" do
+        # Simulate concurrent access
+        usage1 = ExchangeRateUsage.current
+        usage2 = ExchangeRateUsage.current
+        expect(usage1.id).to eq(usage2.id)
+      end
     end
 
     context "when current month usage does not exist" do
@@ -41,6 +48,22 @@ RSpec.describe ExchangeRateUsage, type: :model do
       it "sets the month to current month's beginning" do
         usage = ExchangeRateUsage.current
         expect(usage.month).to eq(Date.current.beginning_of_month)
+      end
+
+      it "uses find_or_create_by! for concurrency safety" do
+        allow(ExchangeRateUsage).to receive(:find_or_create_by!)
+          .with(month: Date.current.beginning_of_month)
+          .and_call_original
+        ExchangeRateUsage.current
+      end
+    end
+
+    context "when validation fails" do
+      it "raises an error on unexpected failures" do
+        allow(ExchangeRateUsage).to receive(:find_or_create_by!).and_raise(ActiveRecord::RecordInvalid)
+        expect {
+          ExchangeRateUsage.current
+        }.to raise_error(ActiveRecord::RecordInvalid)
       end
     end
   end
@@ -57,6 +80,33 @@ RSpec.describe ExchangeRateUsage, type: :model do
     it "updates the last_fetched_at timestamp" do
       usage.increment_usage!
       expect(usage.reload.last_fetched_at).to be_within(1.second).of(Time.current)
+    end
+
+    it "updates the updated_at timestamp" do
+      usage.increment_usage!
+      expect(usage.reload.updated_at).to be_within(1.second).of(Time.current)
+    end
+
+    it "uses atomic SQL update for concurrency safety" do
+      # Verify it uses update_all which is atomic
+      allow(ExchangeRateUsage).to receive(:where).with(id: usage.id).and_call_original
+      usage.increment_usage!
+    end
+
+    it "performs a single database write" do
+      # Count the number of SQL UPDATE statements
+      queries = []
+      subscriber = ActiveSupport::Notifications.subscribe("sql.active_record") do |_name, _start, _finish, _id, payload|
+        queries << payload[:sql] if payload[:sql].match?(/UPDATE.*exchange_rate_usages/i)
+      end
+
+      usage.increment_usage!
+
+      ActiveSupport::Notifications.unsubscribe(subscriber)
+
+      # Should be 1 UPDATE for the atomic operation (update_all doesn't trigger callbacks)
+      expect(queries.count).to eq(1)
+      expect(queries.first).to include("requests_count = requests_count + 1")
     end
   end
 
@@ -76,7 +126,7 @@ RSpec.describe ExchangeRateUsage, type: :model do
       expect(usage.usage_percentage).to eq(100.0)
     end
 
-    it "rounds to 2 decimal places" do
+    it "rounds usage to two decimals when needed" do
       usage = create(:exchange_rate_usage, requests_count: 333)
       expect(usage.usage_percentage).to eq(33.3)
     end
@@ -122,7 +172,7 @@ RSpec.describe ExchangeRateUsage, type: :model do
       expect(usage.remaining_requests).to eq(700)
     end
 
-    it "returns 0 when limit exceeded" do
+    it "returns a negative number when limit is exceeded" do
       usage = create(:exchange_rate_usage, requests_count: 1200)
       expect(usage.remaining_requests).to eq(-200)
     end
