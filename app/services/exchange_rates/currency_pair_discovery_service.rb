@@ -4,14 +4,21 @@ require "set"
 
 module ExchangeRates
   class CurrencyPairDiscoveryService
-    def initialize
+    def initialize(dry_run: false)
       @discovered_pairs = Set.new
+      @dry_run = dry_run
     end
 
     def process
       discover_from_companies_and_clients
       discover_from_recent_invoices
-      sync_to_database
+
+      unless @dry_run
+        sync_to_database
+      else
+        # In dry-run mode, calculate what would happen without mutating
+        calculate_changes
+      end
 
       {
         discovered_pairs: @discovered_pairs.to_a,
@@ -76,6 +83,36 @@ module ExchangeRates
         return if from_currency == to_currency
 
         @discovered_pairs.add([from_currency, to_currency])
+      end
+
+      def calculate_changes
+        @activated_count = 0
+        @deactivated_count = 0
+
+        # Calculate how many pairs would be activated
+        @discovered_pairs.each do |(from_currency, to_currency)|
+          pair = CurrencyPair.find_by(
+            from_currency:,
+            to_currency:
+          )
+
+          # Count if it would be new or activated
+          if pair.nil? || !pair.active?
+            @activated_count += 1
+          end
+        end
+
+        # Calculate how many pairs would be deactivated
+        cutoff_date = 30.days.ago
+
+        CurrencyPair.active.each do |pair|
+          pair_tuple = [pair.from_currency, pair.to_currency]
+
+          next if @discovered_pairs.include?(pair_tuple)
+          next if pair.last_updated_at && pair.last_updated_at > cutoff_date
+
+          @deactivated_count += 1
+        end
       end
 
       def sync_to_database
