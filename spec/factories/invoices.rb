@@ -13,6 +13,8 @@ FactoryBot.define do
     invoice_number { Faker::Alphanumeric.unique.alpha(number: 4) }
     reference { Faker::Invoice.reference[1..12] }
     amount { amount_value }
+    # Invoice currency defaults to client's currency to ensure consistency
+    # This prevents unintended currency conversions in most tests
     currency { client&.currency || "USD" }
     # outstanding_amount { Faker::Number.decimal(r_digits: 2) }
     # tax { Faker::Number.decimal(r_digits: 2) }
@@ -20,8 +22,11 @@ FactoryBot.define do
     # amount_due { Faker::Number.decimal(r_digits: 2) }
     # discount { Faker::Number.decimal(r_digits: 2) }
     status { :draft }
-    # When invoice currency matches company base currency, base_currency_amount equals amount
-    # This prevents currency conversion in tests where all currencies are the same
+    # Set base_currency_amount to prevent callback from running in most tests
+    # Since invoice.currency defaults to client.currency (USD) and company.base_currency is USD in tests,
+    # base_currency_amount should equal amount. For currency conversion tests that explicitly set
+    # different currencies, they should also explicitly set base_currency_amount to nil to trigger
+    # the callback, or let the callback run after creation.
     base_currency_amount { amount_value }
     external_view_key { "#{SecureRandom.hex}" }
     factory :invoice_with_invoice_line_items do
