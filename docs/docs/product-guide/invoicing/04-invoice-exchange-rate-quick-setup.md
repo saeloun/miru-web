@@ -28,7 +28,7 @@ rails exchange_rates:fetch
 
 Your system will now:
 - ✅ **Automatically discover** needed currency pairs from your data
-- ✅ Fetch exchange rates daily at 1:00 AM EST (only for needed pairs)
+- ✅ Fetch exchange rates daily at 1:00 AM ET (DST-aware, only for needed pairs)
 - ✅ Convert invoice amounts to base currency automatically
 - ✅ Monitor API usage and warn at 70% (700/1000 requests)
 - ✅ Email admins when approaching limit
@@ -71,7 +71,7 @@ CurrencyPair.create!(from_currency: 'USD', to_currency: 'MXN', active: true)
 Edit `config/solid_queue.yml`:
 ```yaml
 update_exchange_rates:
-  schedule: '0 6 * * * America/New_York' # 1:00 AM EST
+  schedule: "0 1 * * * America/New_York" # Runs every day at 1:00 AM ET (6:00 AM UTC)
 ```
 
 ## 🆘 Troubleshooting
