@@ -197,7 +197,7 @@ namespace :exchange_rates do
     puts "🔍 Discovering currency pairs from your data..."
     puts ""
 
-    service = ExchangeRates::CurrencyPairDiscoveryService.new
+    service = ::ExchangeRates::CurrencyPairDiscoveryService.new
     result = service.process
 
     puts "DISCOVERY RESULTS:"
@@ -231,7 +231,7 @@ namespace :exchange_rates do
     puts "=" * 60
     puts ""
 
-    service = ExchangeRates::HealthCheckService.new
+    service = ::ExchangeRates::HealthCheckService.new
     result = service.check
 
     # Status indicator
@@ -331,7 +331,7 @@ namespace :exchange_rates do
 
     # Currency pairs needed (read-only analysis)
     puts "CURRENCY PAIRS NEEDED:"
-    service = ExchangeRates::CurrencyPairDiscoveryService.new(dry_run: true)
+    service = ::ExchangeRates::CurrencyPairDiscoveryService.new(dry_run: true)
     result = service.process
 
     if result[:discovered_pairs].any?
