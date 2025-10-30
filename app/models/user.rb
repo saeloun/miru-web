@@ -106,7 +106,7 @@ class User < ApplicationRecord
   before_validation :prevent_spam_user_sign_up
   after_discard :discard_project_members
   before_create :set_token
-  before_validation :validate_email_with_zerobounce, on: :create
+  before_validation :validate_email_with_zerobounce, on: [:create, :update], if: :email_changed?
 
   after_commit :send_to_hubspot, on: :create
 

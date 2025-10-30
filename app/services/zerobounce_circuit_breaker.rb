@@ -25,14 +25,15 @@ class ZerobounceCircuitBreaker
       return { skip: true, reason: "Email validation disabled" } unless validation_enabled?
 
       begin
-        response = Timeout.timeout(TIMEOUT_SECONDS) do
-          Zerobounce.validate(email)
-        end
+        # HTTP timeouts are configured in config/initializers/zerobounce.rb
+        # No need for Timeout.timeout wrapper - RestClient handles timeouts safely
+        response = Zerobounce.validate(email)
 
         record_success
         { success: true, response: }
-      rescue Timeout::Error => e
-        handle_failure("Timeout after #{TIMEOUT_SECONDS} seconds", e)
+      rescue RestClient::Exceptions::Timeout, RestClient::Exceptions::OpenTimeout,
+             RestClient::Exceptions::ReadTimeout => e
+        handle_failure("Request timeout after #{TIMEOUT_SECONDS} seconds", e)
       rescue StandardError => e
         handle_failure("API error: #{e.message}", e)
       end

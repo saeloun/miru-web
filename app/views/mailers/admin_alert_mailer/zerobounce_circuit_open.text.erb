@@ -4,12 +4,12 @@ The Zerobounce email validation service has been automatically disabled due to r
 
 DETAILS:
 - Total Failures: <%= @failures_count %>
-- Circuit Opened At: <%= @opened_at.strftime("%Y-%m-%d %H:%M:%S %Z") %>
-- Last Error: <%= @last_error %>
+- Circuit Opened At: <%= @opened_at&.strftime("%Y-%m-%d %H:%M:%S %Z") || "Unknown" %>
+- Last Error: <%= @last_error || "Unknown error" %>
 
 RECENT FAILURES:
 <% @recent_failures.each do |failure| %>
-- <%= failure[:timestamp].strftime("%H:%M:%S") %> - <%= failure[:error] %>
+- <%= failure[:timestamp]&.strftime("%H:%M:%S") || "Unknown time" %> - <%= failure[:error] || "Unknown error" %>
 <% end %>
 
 ACTION REQUIRED:

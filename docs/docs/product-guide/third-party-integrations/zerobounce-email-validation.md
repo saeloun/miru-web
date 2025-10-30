@@ -168,8 +168,10 @@ Located in `app/services/zerobounce_circuit_breaker.rb`:
 FAILURE_THRESHOLD = 10           # Number of failures before opening circuit
 FAILURE_WINDOW = 2.hours         # Time window for counting failures
 CIRCUIT_OPEN_DURATION = 30.minutes  # Auto-close after this duration
-TIMEOUT_SECONDS = 5              # API call timeout
+TIMEOUT_SECONDS = 5              # HTTP timeout (configured in initializer)
 ```
+
+HTTP timeouts are configured in `config/initializers/zerobounce.rb` using RestClient's timeout settings for safer timeout handling.
 
 ### Verify Configuration
 
