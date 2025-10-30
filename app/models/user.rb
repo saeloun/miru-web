@@ -235,12 +235,23 @@ class User < ApplicationRecord
     end
 
     def validate_email_with_zerobounce
-      return unless email.present? && ENV["ENABLE_EMAIL_VALIDATION"] == "true"
+      return unless email.present?
 
-      response = Zerobounce.validate(email)
+      result = ZerobounceCircuitBreaker.execute(email)
 
-      if response["status"] != "valid"
-        errors.add(:email, "Email is not valid or undeliverable.")
+      # Skip validation if circuit breaker is open or validation is disabled
+      if result[:skip]
+        Rails.logger.info("[User] Zerobounce validation skipped: #{result[:reason]}")
+        return
+      end
+
+      # Process successful API response
+      if result[:success] && result[:response]
+        response = result[:response]
+
+        if response["status"] != "valid"
+          errors.add(:email, "Email is not valid or undeliverable.")
+        end
       end
     end
 end

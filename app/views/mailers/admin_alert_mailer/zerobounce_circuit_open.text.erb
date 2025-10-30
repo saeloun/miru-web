@@ -1,0 +1,29 @@
+⚠️ ZEROBOUNCE EMAIL VALIDATION CIRCUIT BREAKER OPENED
+
+The Zerobounce email validation service has been automatically disabled due to repeated failures.
+
+DETAILS:
+- Total Failures: <%= @failures_count %>
+- Circuit Opened At: <%= @opened_at.strftime("%Y-%m-%d %H:%M:%S %Z") %>
+- Last Error: <%= @last_error %>
+
+RECENT FAILURES:
+<% @recent_failures.each do |failure| %>
+- <%= failure[:timestamp].strftime("%H:%M:%S") %> - <%= failure[:error] %>
+<% end %>
+
+ACTION REQUIRED:
+
+Option 1 (Recommended): Wait for auto-recovery. The circuit will automatically close after 30 minutes if no validation attempts are made.
+
+Option 2: Check Zerobounce service status and manually reset the circuit breaker:
+  bundle exec rake zerobounce:reset
+
+Option 3: If Zerobounce is down for extended period, disable validation via environment variable:
+  Set ENABLE_EMAIL_VALIDATION=false and redeploy.
+
+IMPACT:
+While the circuit is open, new user signups will proceed WITHOUT email validation.
+This prevents blocking legitimate users but may allow some invalid emails through.
+
+Check circuit status: bundle exec rake zerobounce:status
