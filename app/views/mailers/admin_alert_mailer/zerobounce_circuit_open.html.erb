@@ -11,15 +11,15 @@
   <h3>Details:</h3>
   <ul>
     <li><strong>Total Failures:</strong> <%= @failures_count %></li>
-    <li><strong>Circuit Opened At:</strong> <%= @opened_at.strftime("%Y-%m-%d %H:%M:%S %Z") %></li>
-    <li><strong>Last Error:</strong> <%= @last_error %></li>
+    <li><strong>Circuit Opened At:</strong> <%= @opened_at&.strftime("%Y-%m-%d %H:%M:%S %Z") || "Unknown" %></li>
+    <li><strong>Last Error:</strong> <%= @last_error || "Unknown error" %></li>
   </ul>
 
   <h3>Recent Failures:</h3>
   <ul>
     <% @recent_failures.each do |failure| %>
       <li>
-        <%= failure[:timestamp].strftime("%H:%M:%S") %> - <%= failure[:error] %>
+        <%= failure[:timestamp]&.strftime("%H:%M:%S") || "Unknown time" %> - <%= failure[:error] || "Unknown error" %>
       </li>
     <% end %>
   </ul>
