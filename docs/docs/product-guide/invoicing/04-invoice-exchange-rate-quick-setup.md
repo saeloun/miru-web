@@ -3,7 +3,7 @@
 ## 🚀 Setup (5 minutes)
 
 ### 1. Get API Key
-Sign up at: https://openexchangerates.org/signup/free
+Sign up at: [openexchangerates.org/signup/free](https://openexchangerates.org/signup/free)
 
 ### 2. Add to .env
 ```bash

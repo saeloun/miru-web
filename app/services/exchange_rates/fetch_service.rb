@@ -199,7 +199,7 @@ module ExchangeRates
 
       def check_usage_threshold
         if @usage.approaching_limit? && !already_notified_this_month?
-          ExchangeRates::UsageNotificationService.new(@usage).notify_admins
+          ::ExchangeRates::UsageNotificationService.new(@usage).notify_admins
           mark_as_notified
         end
       end
