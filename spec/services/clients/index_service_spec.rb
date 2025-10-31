@@ -118,6 +118,31 @@ RSpec.describe Clients::IndexService do
         expect(clients.first).to eq(client_1)
       end
     end
+
+    context "when employee is assigned to projects from different companies (cross-tenant)" do
+      let(:other_company) { create(:company) }
+      let(:other_client) { create(:client, company: other_company) }
+      let(:other_project) { create(:project, client: other_client) }
+
+      before do
+        create(:project_member, user: employee_user, project: project_1)
+        create(:project_member, user: employee_user, project: other_project)
+      end
+
+      it "returns only clients from current company" do
+        service = described_class.new(company, employee_user, nil, nil)
+
+        clients = service.send(:user_assigned_clients)
+        expect(clients).to include(client_1)
+        expect(clients).not_to include(other_client)
+      end
+
+      it "does not leak clients from other companies" do
+        service = described_class.new(company, employee_user, nil, nil)
+
+        expect(service.send(:user_assigned_clients).pluck(:company_id)).to all(eq(company.id))
+      end
+    end
   end
 
   describe "#clients_list" do

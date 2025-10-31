@@ -108,6 +108,33 @@ RSpec.describe Projects::IndexService do
           expect(service.send(:project_ids)).to eq([project_2.id])
         end
       end
+
+      context "with project assignments from different companies (cross-tenant)" do
+        let(:other_company) { create(:company) }
+        let(:other_client) { create(:client, company: other_company) }
+        let(:other_project) { create(:project, client: other_client) }
+
+        before do
+          create(:project_member, user: employee_user, project: project_1)
+          create(:project_member, user: employee_user, project: other_project)
+        end
+
+        it "returns only project ids from current company" do
+          service = described_class.new(company, employee_user, nil)
+
+          project_ids = service.send(:project_ids)
+          expect(project_ids).to include(project_1.id)
+          expect(project_ids).not_to include(other_project.id)
+        end
+
+        it "does not leak projects from other companies" do
+          service = described_class.new(company, employee_user, nil)
+
+          project_ids = service.send(:project_ids)
+          projects = Project.where(id: project_ids)
+          expect(projects.joins(:client).pluck("clients.company_id")).to all(eq(company.id))
+        end
+      end
     end
   end
 
