@@ -56,12 +56,12 @@ module Projects
     def project_ids
       # Only get projects where the user has active (not soft-deleted) project memberships
       # Scoped to current company to prevent cross-tenant data leakage
-      current_user.projects
+      Project
         .joins(:project_members, :client)
         .where(project_members: { user_id: current_user.id, discarded_at: nil })
         .where(clients: { company_id: current_company.id })
         .pluck(:id)
-        .uniq
+        .distinct
     end
 
     def user_can_see_all_projects?
