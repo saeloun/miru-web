@@ -2,10 +2,11 @@
 
 module Clients
   class IndexService < ApplicationService
-    attr_reader :current_company, :query, :time_frame
+    attr_reader :current_company, :current_user, :query, :time_frame
 
-    def initialize(current_company, query, time_frame)
+    def initialize(current_company, current_user, query, time_frame)
       @current_company = current_company
+      @current_user = current_user
       @query = query
       @time_frame = time_frame
     end
@@ -21,11 +22,22 @@ module Clients
     private
 
       def clients_list
+        base_clients = user_can_see_all_clients? ? current_company.clients : user_assigned_clients
+
         if query.present?
           search_clients(search_term, where_clause).includes(:logo_attachment)
         else
-          current_company.clients.includes(:logo_attachment)
+          base_clients.includes(:logo_attachment)
         end
+      end
+
+      def user_assigned_clients
+        # Get clients only from projects where user has active (not soft-deleted) memberships
+        # Scoped to current company to prevent cross-tenant data leakage
+        Client.joins(projects: :project_members)
+          .where(company_id: current_company.id)
+          .where(project_members: { user_id: current_user.id, discarded_at: nil })
+          .distinct
       end
 
       def search_term
@@ -33,7 +45,17 @@ module Clients
       end
 
       def where_clause
-        { company_id: current_company.id }
+        if user_can_see_all_clients?
+          { company_id: current_company.id }
+        else
+          { id: user_assigned_clients.pluck(:id) }
+        end
+      end
+
+      def user_can_see_all_clients?
+        current_user.has_role?(:owner, current_company) ||
+          current_user.has_role?(:admin, current_company) ||
+          current_user.has_role?(:bookkeeper, current_company)
       end
 
       def search_clients(search_term, where_clause)
