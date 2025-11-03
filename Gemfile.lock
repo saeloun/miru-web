@@ -171,6 +171,8 @@ GEM
     crack (0.4.5)
       rexml
     crass (1.0.6)
+    css_parser (1.21.1)
+      addressable
     data_migrate (9.3.0)
       activerecord (>= 6.1)
       railties (>= 6.1)
@@ -181,9 +183,9 @@ GEM
       database_cleaner-core (~> 2.0.0)
     database_cleaner-core (2.0.1)
     date (3.4.1)
-    debug (1.7.1)
-      irb (>= 1.5.0)
-      reline (>= 0.3.1)
+    debug (1.11.0)
+      irb (~> 1.10)
+      reline (>= 0.3.8)
     declarative (0.0.20)
     device_detector (1.1.0)
     devise (4.8.1)
@@ -293,6 +295,7 @@ GEM
     hash_dot (2.5.0)
     hashdiff (1.0.1)
     hashie (5.0.0)
+    htmlentities (4.3.4)
     httparty (0.21.0)
       mini_mime (>= 1.0.0)
       multi_xml (>= 0.5.2)
@@ -429,6 +432,14 @@ GEM
       postmark (>= 1.21.3, < 2.0)
     pp (0.6.3)
       prettyprint
+    premailer (1.27.0)
+      addressable
+      css_parser (>= 1.19.0)
+      htmlentities (>= 4.0.0)
+    premailer-rails (1.12.0)
+      actionmailer (>= 3)
+      net-smtp
+      premailer (~> 1.7, >= 1.7.9)
     prettyprint (0.2.0)
     psych (4.0.6)
       stringio
@@ -702,7 +713,7 @@ DEPENDENCIES
   countries
   data_migrate
   database_cleaner (~> 2.0)
-  debug (>= 1.0.0)
+  debug (>= 1.9.0)
   devise
   discard (~> 1.2)
   dockerfile-rails
@@ -730,6 +741,7 @@ DEPENDENCIES
   parallel_tests
   pg
   postmark-rails
+  premailer-rails (~> 1.12)
   psych (~> 4)
   puma (~> 6.4.3)
   pundit (~> 2.2)

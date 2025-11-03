@@ -72,6 +72,9 @@ gem "countries"
 # Letter opener can be configured to avoid sending sending actual emails whenever required.
 gem "letter_opener_web"
 
+# Premailer for inlining CSS in emails
+gem "premailer-rails", "~> 1.12"
+
 # currency list and conversion
 gem "money"
 
@@ -141,7 +144,7 @@ gem "google-api-client", require: "google/apis/calendar_v3"
 
 group :development, :test, :ci do
   # See https://edgeguides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
-  gem "debug", ">= 1.0.0", platforms: %i[mri mingw x64_mingw]
+  gem "debug", ">= 1.9.0", platforms: %i[mri mingw x64_mingw]
 
   # Add Rubocop to lint and format Ruby code
   gem "rubocop", require: false
