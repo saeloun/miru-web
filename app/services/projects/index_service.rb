@@ -60,8 +60,7 @@ module Projects
         .joins(:project_members, :client)
         .where(project_members: { user_id: current_user.id, discarded_at: nil })
         .where(clients: { company_id: current_company.id })
-        .pluck(:id)
-        .distinct
+        .distinct.pluck(:id)
     end
 
     def user_can_see_all_projects?
