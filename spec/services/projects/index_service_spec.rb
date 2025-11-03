@@ -165,10 +165,101 @@ RSpec.describe Projects::IndexService do
   end
 
   describe "#client_list" do
-    it "returns all company clients" do
-      service = described_class.new(company, admin_user, nil)
+    context "when user can see all projects (admin/owner/bookkeeper)" do
+      it "returns all company clients for admin" do
+        service = described_class.new(company, admin_user, nil)
 
-      expect(service.send(:client_list)).to match_array([client_1, client_2])
+        expect(service.send(:client_list)).to match_array([client_1, client_2])
+      end
+
+      it "returns all company clients for owner" do
+        service = described_class.new(company, owner_user, nil)
+
+        expect(service.send(:client_list)).to match_array([client_1, client_2])
+      end
+
+      it "returns all company clients for bookkeeper" do
+        service = described_class.new(company, bookkeeper_user, nil)
+
+        expect(service.send(:client_list)).to match_array([client_1, client_2])
+      end
+    end
+
+    context "when user is an employee" do
+      context "with no project assignments" do
+        it "returns empty array" do
+          service = described_class.new(company, employee_user, nil)
+
+          expect(service.send(:client_list)).to eq([])
+        end
+      end
+
+      context "with active project assignments" do
+        before do
+          create(:project_member, user: employee_user, project: project_1)
+          create(:project_member, user: employee_user, project: project_2)
+        end
+
+        it "returns only clients from assigned projects" do
+          service = described_class.new(company, employee_user, nil)
+
+          expect(service.send(:client_list)).to match_array([client_1, client_2])
+        end
+      end
+
+      context "with project assignments to only one client" do
+        before do
+          create(:project_member, user: employee_user, project: project_1)
+        end
+
+        it "returns only that client" do
+          service = described_class.new(company, employee_user, nil)
+
+          expect(service.send(:client_list)).to eq([client_1])
+        end
+      end
+
+      context "with multiple projects from the same client" do
+        before do
+          create(:project_member, user: employee_user, project: project_1)
+          create(:project_member, user: employee_user, project: project_3)
+        end
+
+        it "returns distinct clients (no duplicates)" do
+          service = described_class.new(company, employee_user, nil)
+
+          expect(service.send(:client_list)).to eq([client_1])
+        end
+      end
+
+      context "with soft-deleted project assignments" do
+        before do
+          pm1 = create(:project_member, user: employee_user, project: project_1)
+          create(:project_member, user: employee_user, project: project_2)
+          pm1.discard # Soft delete
+        end
+
+        it "returns only clients from active project assignments" do
+          service = described_class.new(company, employee_user, nil)
+
+          expect(service.send(:client_list)).to eq([client_2])
+        end
+      end
+
+      context "with all project assignments soft-deleted" do
+        before do
+          pm1 = create(:project_member, user: employee_user, project: project_1)
+          pm2 = create(:project_member, user: employee_user, project: project_2)
+          pm1.discard
+          pm2.discard
+        end
+
+        it "returns empty array" do
+          service = described_class.new(company, employee_user, nil)
+
+          expect(service.send(:client_list)).to eq([])
+        end
+      end
     end
   end
 
