@@ -39,7 +39,14 @@ module Projects
     end
 
     def client_list
-      @_client_list ||= current_company.clients
+      @_client_list ||= if user_can_see_all_projects?
+        current_company.clients
+      else
+        current_company.clients
+          .joins(projects: :project_members)
+          .where(project_members: { user_id: current_user.id, discarded_at: nil })
+          .distinct
+      end
     end
 
     def client_ids
