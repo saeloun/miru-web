@@ -200,6 +200,7 @@ GEM
     docile (1.4.0)
     dockerfile-rails (1.2.5)
       rails
+    domain_name (0.6.20240107)
     dotenv (2.8.1)
     dotenv-rails (2.8.1)
       dotenv (= 2.8.1)
@@ -296,6 +297,9 @@ GEM
     hashdiff (1.0.1)
     hashie (5.0.0)
     htmlentities (4.3.4)
+    http-accept (1.7.0)
+    http-cookie (1.1.0)
+      domain_name (~> 0.5)
     httparty (0.21.0)
       mini_mime (>= 1.0.0)
       multi_xml (>= 0.5.2)
@@ -357,6 +361,10 @@ GEM
     marcel (1.1.0)
     matrix (0.4.2)
     memoist (0.16.2)
+    mime-types (3.7.0)
+      logger
+      mime-types-data (~> 3.2025, >= 3.2025.0507)
+    mime-types-data (3.2025.0924)
     mini_magick (4.12.0)
     mini_mime (1.1.5)
     mini_portile2 (2.8.9)
@@ -382,6 +390,7 @@ GEM
       timeout
     net-smtp (0.5.1)
       net-protocol
+    netrc (0.11.0)
     newrelic_rpm (9.8.0)
     nio4r (2.7.4)
     nokogiri (1.18.10)
@@ -525,6 +534,11 @@ GEM
     responders (3.1.0)
       actionpack (>= 5.2)
       railties (>= 5.2)
+    rest-client (2.1.0)
+      http-accept (>= 1.7.0, < 2.0)
+      http-cookie (>= 1.0.2, < 2.0)
+      mime-types (>= 1.16, < 4.0)
+      netrc (~> 0.8)
     retriable (3.1.2)
     rexml (3.4.4)
     rolify (6.0.1)
@@ -688,6 +702,9 @@ GEM
     xpath (3.2.0)
       nokogiri (~> 1.8)
     zeitwerk (2.7.3)
+    zerobounce-sdk (1.2.0)
+      dotenv
+      rest-client (~> 2.1)
 
 PLATFORMS
   arm64-darwin-21
@@ -778,6 +795,7 @@ DEPENDENCIES
   vcr (~> 6.1)
   web-console (>= 4.1.0)
   webmock (~> 3.14.0)
+  zerobounce-sdk
 
 RUBY VERSION
    ruby 3.2.4p170

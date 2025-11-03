@@ -236,3 +236,6 @@ gem "administrate"
 gem "psych", "~> 4"
 
 gem "postmark-rails"
+
+# Zerobounce email validation
+gem "zerobounce-sdk"
