@@ -35,7 +35,15 @@ Money.default_bank.add_rate("CHF", "EUR", 1.05)
 Rails.application.config.after_initialize do
   # Only load if not in assets precompilation or other non-runtime tasks
   next if defined?(Rails::Console) && !Rails.const_defined?("Server")
-  next unless ActiveRecord::Base.connection.table_exists?("currency_pairs")
+  next if Rails.env.test? && ENV["RAILS_ENV"] != "test"
+
+  # Skip during asset precompilation or when database is not available
+  begin
+    next unless ActiveRecord::Base.connection.table_exists?("currency_pairs")
+  rescue ActiveRecord::ConnectionNotEstablished, PG::ConnectionBad
+    Rails.logger.info("Skipping currency rate loading: database not available") if defined?(Rails.logger)
+    next
+  end
 
   begin
     CurrencyPair.active.each do |pair|
