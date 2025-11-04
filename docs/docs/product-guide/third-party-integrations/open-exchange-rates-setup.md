@@ -158,7 +158,7 @@ tail -f log/development.log | grep "Exchange"
 - Stores active currency pairs
 - Tracks which conversions are needed
 
-**Exchange Rate Service** (`app/services/exchange_rate_service.rb`)
+**Exchange Rate Service** (`app/services/exchange_rates/fetch_service.rb`)
 - Fetches rates from Open Exchange Rates API
 - Handles API errors gracefully
 - Monitors usage limits

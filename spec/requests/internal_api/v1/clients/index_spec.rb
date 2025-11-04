@@ -89,8 +89,8 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
   context "when user is an employee" do
     let(:time_frame) { "last_week" }
     let(:employee_user) { create(:user, current_workspace_id: company.id) }
-    let(:client_3) { create(:client, company:) }
-    let(:project_3) { create(:project, client: client_3) }
+    let(:employee_client) { create(:client, company:) }
+    let(:project_3) { create(:project, client: employee_client) }
 
     before do
       create(:employment, company:, user: employee_user)
@@ -108,7 +108,7 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
 
     context "when time_frame is week" do
       it "returns only clients from projects assigned to the employee" do
-        # Employee should only see client_1 and client_3, not client_2
+        # Employee should only see client_1 and employee_client, not client_2
         client_details = employee_user.clients.kept.map do |client|
           {
             id: client.id, name: client.name, email: client.email, phone: client.phone, address: client.current_address,
@@ -120,7 +120,7 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
         expect(response).to have_http_status(:ok)
         expect(json_response["client_details"]).to match_array(JSON.parse(client_details.to_json))
         expect(json_response["client_details"].length).to eq(2)
-        expect(json_response["client_details"].map { |c| c["id"] }).to match_array([client_1.id, client_3.id])
+        expect(json_response["client_details"].map { |c| c["id"] }).to match_array([client_1.id, employee_client.id])
         expect(json_response["client_details"].map { |c| c["id"] }).not_to include(client_2.id)
         expect(json_response["total_minutes"]).to eq(JSON.parse(total_minutes.to_json))
         expect(json_response["overdue_outstanding_amount"]).to eq(JSON.parse(overdue_outstanding_amount.to_json))

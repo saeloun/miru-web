@@ -32,7 +32,10 @@ class ExchangeRateUsage < ApplicationRecord
     # Atomic SQL update to prevent race conditions
     timestamp = Time.current
     self.class.where(id:).update_all(
-      "requests_count = requests_count + 1, last_fetched_at = #{self.class.connection.quote(timestamp)}, updated_at = #{self.class.connection.quote(timestamp)}"
+      [
+        "requests_count = requests_count + 1, last_fetched_at = ?, updated_at = ?",
+        timestamp, timestamp
+      ]
     )
     # Reload to get the updated values
     reload

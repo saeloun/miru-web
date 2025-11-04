@@ -141,7 +141,7 @@ RSpec.describe ExchangeRates::FetchService, type: :service do
       end
 
       it "does not make API request" do
-        expect(Net::HTTP).not_to receive(:get_response)
+        expect(Net::HTTP).not_to receive(:start)
         service.process
       end
     end

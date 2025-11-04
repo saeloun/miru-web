@@ -50,12 +50,12 @@ RSpec.describe ZerobounceCircuitBreaker do
       end
 
       it "handles timeout errors gracefully" do
-        allow(Zerobounce).to receive(:validate).and_raise(Timeout::Error)
+        allow(Zerobounce).to receive(:validate).and_raise(RestClient::Exceptions::ReadTimeout)
 
         result = described_class.execute(test_email)
 
         expect(result[:skip]).to be true
-        expect(result[:reason]).to include("Timeout")
+        expect(result[:reason]).to include("timeout")
       end
 
       it "handles API errors gracefully" do

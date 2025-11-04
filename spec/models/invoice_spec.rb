@@ -144,6 +144,7 @@ RSpec.describe Invoice, type: :model do
 
         allow(invoice).to receive(:calculate_base_currency_amount).and_call_original
         invoice.save
+        expect(invoice).to have_received(:calculate_base_currency_amount)
       end
     end
 
@@ -162,6 +163,7 @@ RSpec.describe Invoice, type: :model do
         invoice.currency = "GBP"
         allow(invoice).to receive(:calculate_base_currency_amount).and_call_original
         invoice.save
+        expect(invoice).to have_received(:calculate_base_currency_amount)
       end
 
       it "does not recalculate when other fields change" do

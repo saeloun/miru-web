@@ -34,7 +34,8 @@ module Clients
       def user_assigned_clients
         # Get clients only from projects where user has active (not soft-deleted) memberships
         # Scoped to current company to prevent cross-tenant data leakage
-        Client.joins(projects: :project_members)
+        Client.kept
+          .joins(projects: :project_members)
           .where(company_id: current_company.id)
           .where(project_members: { user_id: current_user.id, discarded_at: nil })
           .distinct

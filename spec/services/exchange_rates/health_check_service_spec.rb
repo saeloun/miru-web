@@ -5,6 +5,18 @@ require "rails_helper"
 RSpec.describe ExchangeRates::HealthCheckService, type: :service do
   let(:service) { described_class.new }
 
+  # Ensure ENV variable isolation across all tests
+  around do |example|
+    original_api_key = ENV["OPEN_EXCHANGE_RATES_APP_ID"]
+    example.run
+  ensure
+    if original_api_key
+      ENV["OPEN_EXCHANGE_RATES_APP_ID"] = original_api_key
+    else
+      ENV.delete("OPEN_EXCHANGE_RATES_APP_ID")
+    end
+  end
+
   describe "#check" do
     context "when system is healthy" do
       before do
@@ -13,10 +25,6 @@ RSpec.describe ExchangeRates::HealthCheckService, type: :service do
           :currency_pair, from_currency: "EUR", to_currency: "USD", rate: 1.08, active: true,
           last_updated_at: 1.hour.ago)
         create(:exchange_rate_usage, requests_count: 100)
-      end
-
-      after do
-        ENV.delete("OPEN_EXCHANGE_RATES_APP_ID")
       end
 
       it "returns healthy status" do
@@ -75,10 +83,6 @@ RSpec.describe ExchangeRates::HealthCheckService, type: :service do
         ENV["OPEN_EXCHANGE_RATES_APP_ID"] = "test_key"
       end
 
-      after do
-        ENV.delete("OPEN_EXCHANGE_RATES_APP_ID")
-      end
-
       it "includes warning about no pairs" do
         result = service.check
         expect(result[:warnings]).to include(/No active currency pairs/)
@@ -95,10 +99,6 @@ RSpec.describe ExchangeRates::HealthCheckService, type: :service do
         ENV["OPEN_EXCHANGE_RATES_APP_ID"] = "test_key"
         create(:currency_pair, from_currency: "EUR", to_currency: "USD", rate: nil, active: true)
         create(:currency_pair, from_currency: "GBP", to_currency: "USD", rate: nil, active: true)
-      end
-
-      after do
-        ENV.delete("OPEN_EXCHANGE_RATES_APP_ID")
       end
 
       it "includes warning about missing rates" do
@@ -121,10 +121,6 @@ RSpec.describe ExchangeRates::HealthCheckService, type: :service do
         create(:exchange_rate_usage, requests_count: 750)
       end
 
-      after do
-        ENV.delete("OPEN_EXCHANGE_RATES_APP_ID")
-      end
-
       it "includes warning about approaching limit" do
         result = service.check
         expect(result[:warnings]).to include(/API usage approaching limit/)
@@ -141,10 +137,6 @@ RSpec.describe ExchangeRates::HealthCheckService, type: :service do
       before do
         ENV["OPEN_EXCHANGE_RATES_APP_ID"] = "test_key"
         create(:exchange_rate_usage, requests_count: 1050)
-      end
-
-      after do
-        ENV.delete("OPEN_EXCHANGE_RATES_APP_ID")
       end
 
       it "returns critical status" do
@@ -171,10 +163,6 @@ RSpec.describe ExchangeRates::HealthCheckService, type: :service do
           last_updated_at: 3.days.ago)
       end
 
-      after do
-        ENV.delete("OPEN_EXCHANGE_RATES_APP_ID")
-      end
-
       it "includes warning about stale rates" do
         result = service.check
         expect(result[:warnings]).to include(/haven't been updated/)
@@ -190,10 +178,6 @@ RSpec.describe ExchangeRates::HealthCheckService, type: :service do
       before do
         ENV["OPEN_EXCHANGE_RATES_APP_ID"] = "test_key"
         create(:currency_pair, from_currency: "EUR", to_currency: "USD", rate: nil, active: true, last_updated_at: nil)
-      end
-
-      after do
-        ENV.delete("OPEN_EXCHANGE_RATES_APP_ID")
       end
 
       it "includes warning about no updates" do
@@ -236,10 +220,6 @@ RSpec.describe ExchangeRates::HealthCheckService, type: :service do
         Money.default_bank.add_rate("USD", "EUR", 0.93)
         Money.default_bank.add_rate("GBP", "USD", 1.27)
         Money.default_bank.add_rate("USD", "GBP", 0.79)
-      end
-
-      after do
-        ENV.delete("OPEN_EXCHANGE_RATES_APP_ID")
       end
 
       it "includes database rates count" do

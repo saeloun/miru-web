@@ -35,7 +35,7 @@ Money.default_bank.add_rate("CHF", "EUR", 1.05)
 Rails.application.config.after_initialize do
   # Only load if not in assets precompilation or other non-runtime tasks
   next if defined?(Rails::Console) && !Rails.const_defined?("Server")
-  next if Rails.env.test? && ENV["RAILS_ENV"] != "test"
+  next if Rails.env.test?
 
   # Skip during asset precompilation or when database is not available
   begin

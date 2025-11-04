@@ -1,64 +1,92 @@
-# Added this task to quickly send all emails to preview if something is not working
+# Development/Test-only task to quickly send all emails to preview if something is not working
+# This task is restricted to development and test environments for safety
 
 namespace :email do
   desc "Preview all emails to check styling"
   task preview_all: :environment do
+    # Prevent running in production or staging environments
+    unless Rails.env.development? || Rails.env.test?
+      puts "❌ This task is only available in development and test environments"
+      puts "   Current environment: #{Rails.env}"
+      exit 1
+    end
+
     puts "\n" + "="*80
-    puts "EMAIL PREVIEW - Generating all email types"
+    puts "EMAIL PREVIEW - Generating all email types (#{Rails.env} environment)"
     puts "="*80
 
     emails = []
 
-    # Get a test user for Devise emails
-    test_user = User.first || User.new(
-      first_name: "Test",
-      last_name: "User",
-      email: "testuser@example.com",
-      password: "password123"
-    )
+    # Helper method to generate Devise emails
+    def generate_devise_emails(test_user, emails)
+      # 1. Devise - Confirmation Instructions
+      begin
+        mail = Devise::Mailer.confirmation_instructions(
+          test_user,
+          "test-confirmation-token-123",
+          {}
+        )
+        emails << { name: "Devise Confirmation Instructions", mail: mail, file: "devise_confirmation.html" }
+        puts "✓ Devise Confirmation Instructions email generated"
+      rescue => e
+        puts "✗ Devise Confirmation Instructions email failed: #{e.message}"
+      end
 
-    # 1. Devise - Confirmation Instructions
-    begin
-      mail = Devise::Mailer.confirmation_instructions(
-        test_user,
-        "test-confirmation-token-123",
-        {}
-      )
-      emails << { name: "Devise Confirmation Instructions", mail: mail, file: "devise_confirmation.html" }
-      puts "✓ Devise Confirmation Instructions email generated"
-    rescue => e
-      puts "✗ Devise Confirmation Instructions email failed: #{e.message}"
+      # 2. Devise - Reset Password Instructions
+      begin
+        mail = Devise::Mailer.reset_password_instructions(
+          test_user,
+          "test-reset-token-123",
+          {}
+        )
+        emails << { name: "Devise Reset Password", mail: mail, file: "devise_reset_password.html" }
+        puts "✓ Devise Reset Password email generated"
+      rescue => e
+        puts "✗ Devise Reset Password email failed: #{e.message}"
+      end
+
+      # 3. Devise - Email Changed
+      begin
+        mail = Devise::Mailer.email_changed(test_user, {})
+        emails << { name: "Devise Email Changed", mail: mail, file: "devise_email_changed.html" }
+        puts "✓ Devise Email Changed email generated"
+      rescue => e
+        puts "✗ Devise Email Changed email failed: #{e.message}"
+      end
+
+      # 4. Devise - Password Changed
+      begin
+        mail = Devise::Mailer.password_change(test_user, {})
+        emails << { name: "Devise Password Changed", mail: mail, file: "devise_password_changed.html" }
+        puts "✓ Devise Password Changed email generated"
+      rescue => e
+        puts "✗ Devise Password Changed email failed: #{e.message}"
+      end
     end
 
-    # 2. Devise - Reset Password Instructions
-    begin
-      mail = Devise::Mailer.reset_password_instructions(
-        test_user,
-        "test-reset-token-123",
-        {}
-      )
-      emails << { name: "Devise Reset Password", mail: mail, file: "devise_reset_password.html" }
-      puts "✓ Devise Reset Password email generated"
-    rescue => e
-      puts "✗ Devise Reset Password email failed: #{e.message}"
-    end
+    # Get a test user for Devise emails - use existing or create persisted user
+    test_user = User.first
 
-    # 3. Devise - Email Changed
-    begin
-      mail = Devise::Mailer.email_changed(test_user, {})
-      emails << { name: "Devise Email Changed", mail: mail, file: "devise_email_changed.html" }
-      puts "✓ Devise Email Changed email generated"
-    rescue => e
-      puts "✗ Devise Email Changed email failed: #{e.message}"
-    end
+    # If no existing user, create one in a transaction that will be rolled back
+    unless test_user
+      ActiveRecord::Base.transaction(requires_new: true) do
+        test_user = User.create!(
+          first_name: "Test",
+          last_name: "User",
+          email: "testuser-#{SecureRandom.hex(4)}@example.com", # Ensure unique email
+          password: "password123",
+          confirmed_at: Time.current # Skip email confirmation for test
+        )
 
-    # 4. Devise - Password Changed
-    begin
-      mail = Devise::Mailer.password_change(test_user, {})
-      emails << { name: "Devise Password Changed", mail: mail, file: "devise_password_changed.html" }
-      puts "✓ Devise Password Changed email generated"
-    rescue => e
-      puts "✗ Devise Password Changed email failed: #{e.message}"
+        # Generate Devise emails while user exists
+        generate_devise_emails(test_user, emails)
+
+        # Rollback to avoid persisting test user
+        raise ActiveRecord::Rollback
+      end
+    else
+      # Use existing user for Devise emails
+      generate_devise_emails(test_user, emails)
     end
 
     # 5. User Invitation Email
@@ -313,6 +341,13 @@ namespace :email do
 
   desc "Test invitation email with premailer"
   task test_invitation: :environment do
+    # Prevent running in production or staging environments
+    unless Rails.env.development? || Rails.env.test?
+      puts "❌ This task is only available in development and test environments"
+      puts "   Current environment: #{Rails.env}"
+      exit 1
+    end
+
     mail = UserInvitationMailer.with(
       recipient: "test@example.com",
       name: "Test User",
