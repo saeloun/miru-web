@@ -591,7 +591,7 @@ GEM
     ruby-vips (2.1.4)
       ffi (~> 1.12)
     ruby2_keywords (0.0.5)
-    ruby_audit (2.2.0)
+    ruby_audit (3.0.0)
       bundler-audit (~> 0.9.0)
     rubyzip (2.3.2)
     safely_block (0.4.0)
@@ -798,7 +798,7 @@ DEPENDENCIES
   zerobounce-sdk
 
 RUBY VERSION
-   ruby 3.2.4p170
+   ruby 3.3.10p183
 
 BUNDLED WITH
    2.4.10
