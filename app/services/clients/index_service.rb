@@ -47,7 +47,7 @@ module Clients
 
       def where_clause
         if user_can_see_all_clients?
-          { company_id: current_company.id }
+          { company_id: current_company.id, discarded_at: nil }
         else
           { id: user_assigned_clients.pluck(:id) }
         end
