@@ -25,7 +25,7 @@ const LeaveBlock = ({ leaveType, selectedLeaveType, setSelectedLeaveType }) => {
       ? `-${minToHHMM(-netDuration)} h (-${label})`
       : `${minToHHMM(netDuration)} h (${label})`;
 
-  const isSelected = selectedLeaveType?.name == name;
+  const isSelected = selectedLeaveType?.name === name;
 
   // Show "Available" text when this leave type is selected
   const displayName = isSelected ? `${name} Available` : name;
