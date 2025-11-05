@@ -56,7 +56,7 @@ module Clients
       def user_can_see_all_clients?
         current_user.has_role?(:owner, current_company) ||
           current_user.has_role?(:admin, current_company) ||
-          current_user.has_role?(:bookkeeper, current_company)
+          current_user.has_role?(:book_keeper, current_company)
       end
 
       def search_clients(search_term, where_clause)

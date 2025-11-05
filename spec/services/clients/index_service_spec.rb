@@ -6,7 +6,7 @@ RSpec.describe Clients::IndexService do
   let(:company) { create(:company) }
   let(:admin_user) { create(:user, current_workspace_id: company.id) }
   let(:owner_user) { create(:user, current_workspace_id: company.id) }
-  let(:bookkeeper_user) { create(:user, current_workspace_id: company.id) }
+  let(:book_keeper_user) { create(:user, current_workspace_id: company.id) }
   let(:employee_user) { create(:user, current_workspace_id: company.id) }
 
   let(:client_1) { create(:client, company:) }
@@ -20,12 +20,12 @@ RSpec.describe Clients::IndexService do
   before do
     create(:employment, company:, user: admin_user)
     create(:employment, company:, user: owner_user)
-    create(:employment, company:, user: bookkeeper_user)
+    create(:employment, company:, user: book_keeper_user)
     create(:employment, company:, user: employee_user)
 
     admin_user.add_role :admin, company
     owner_user.add_role :owner, company
-    bookkeeper_user.add_role :bookkeeper, company
+    book_keeper_user.add_role :book_keeper, company
     employee_user.add_role :employee, company
   end
 
@@ -43,7 +43,7 @@ RSpec.describe Clients::IndexService do
     end
 
     it "returns true for bookkeeper users" do
-      service = described_class.new(company, bookkeeper_user, nil, nil)
+      service = described_class.new(company, book_keeper_user, nil, nil)
 
       expect(service.send(:user_can_see_all_clients?)).to be true
     end

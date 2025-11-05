@@ -146,7 +146,10 @@ const GenerateInvoices = () => {
       const res = await saveInvoice();
       setInvoiceId(res?.data.id);
       // Update baseCurrencyAmount from backend response
-      if (res?.data?.baseCurrencyAmount) {
+      if (
+        res?.data?.baseCurrencyAmount !== undefined &&
+        res?.data?.baseCurrencyAmount !== null
+      ) {
         setBaseCurrencyAmount(res.data.baseCurrencyAmount);
       }
 
@@ -164,7 +167,10 @@ const GenerateInvoices = () => {
     if (selectedClient && invoiceNumber !== "") {
       const res = await saveInvoice();
       // Update baseCurrencyAmount from backend response
-      if (res?.data?.baseCurrencyAmount) {
+      if (
+        res?.data?.baseCurrencyAmount !== undefined &&
+        res?.data?.baseCurrencyAmount !== null
+      ) {
         setBaseCurrencyAmount(res.data.baseCurrencyAmount);
       }
       navigate("/invoices");
