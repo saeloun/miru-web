@@ -25,10 +25,14 @@ const LeaveBlock = ({ leaveType, selectedLeaveType, setSelectedLeaveType }) => {
       ? `-${minToHHMM(-netDuration)} h (-${label})`
       : `${minToHHMM(netDuration)} h (${label})`;
 
-  const selectedDiv =
-    selectedLeaveType?.name == name
-      ? "flex w-full cursor-pointer justify-between rounded-lg p-2 text-white lg:p-6 shadow-2xl border-2 border-miru-dark-purple-1000 border-opacity-20 relative"
-      : "flex w-full cursor-pointer justify-between rounded-lg p-2 text-white lg:p-6 hover:opacity-80 relative";
+  const isSelected = selectedLeaveType?.name == name;
+
+  // Show "Available" text when this leave type is selected
+  const displayName = isSelected ? `${name} Available` : name;
+
+  const selectedDiv = isSelected
+    ? "flex w-full cursor-pointer justify-between rounded-lg p-2 text-white lg:p-6 shadow-2xl border-2 border-miru-dark-purple-1000 border-opacity-20 relative"
+    : "flex w-full cursor-pointer justify-between rounded-lg p-2 text-white lg:p-6 hover:opacity-80 relative";
 
   return (
     <div
@@ -44,7 +48,9 @@ const LeaveBlock = ({ leaveType, selectedLeaveType, setSelectedLeaveType }) => {
           {leaveIcon?.icon}
         </div>
         <div className="mt-4 flex flex-col">
-          <span className="text-xs font-semibold lg:text-sm">{name}</span>
+          <span className="text-xs font-semibold lg:text-sm">
+            {displayName}
+          </span>
           <span className="mt-2 text-base font-semibold lg:text-2xl">
             {formattedDuration}
           </span>
