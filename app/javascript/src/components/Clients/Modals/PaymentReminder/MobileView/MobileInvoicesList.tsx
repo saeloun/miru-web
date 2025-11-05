@@ -12,10 +12,8 @@ const MobileInvoicesList = ({
   isSelected,
   selectInvoices,
 }) => {
-  const { amount, company, id, invoiceNumber, status, issueDate, dueDate } =
+  const { amount, currency, id, invoiceNumber, status, issueDate, dueDate } =
     invoice;
-
-  const { baseCurrency } = company;
 
   const handleCheckboxChange = () => {
     if (isSelected) {
@@ -49,7 +47,7 @@ const MobileInvoicesList = ({
           className={`${getStatusCssClass(status)} mt-4 uppercase`}
           text={status}
         />
-        {currencyFormat(baseCurrency, amount)}
+        {currencyFormat(currency, amount)}
       </td>
     </tr>
   );
