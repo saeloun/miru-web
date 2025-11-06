@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+    .warning-box { background-color: #fff3cd; border: 1px solid #ffc107; border-radius: 4px; padding: 15px; margin: 20px 0; }
+    .stats { background-color: #f8f9fa; padding: 15px; border-radius: 4px; margin: 20px 0; }
+    .stat-item { margin: 10px 0; }
+    .stat-label { font-weight: bold; }
+    .footer { margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; font-size: 12px; color: #666; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>⚠️ Exchange Rate API Usage Warning</h2>
+
+    <div class="warning-box">
+      <p><strong>Your Open Exchange Rates API usage has reached <%= @percentage %>% of the monthly free tier limit.</strong></p>
+    </div>
+
+    <p>Hello <%= @user.first_name.presence || 'Admin' %>,</p>
+
+    <p>This is an automated notification to inform you that your application's exchange rate API usage is approaching the monthly limit.</p>
+
+    <div class="stats">
+      <div class="stat-item">
+        <span class="stat-label">Current Usage:</span> <%= @usage.requests_count %> / <%= ExchangeRateUsage::FREE_TIER_LIMIT %> requests
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Percentage Used:</span> <%= @percentage %>%
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Remaining Requests:</span> <%= @remaining %>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Month:</span> <%= @usage.month.strftime('%B %Y') %>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Last Updated:</span> <%= @usage.last_fetched_at&.strftime('%B %d, %Y at %I:%M %p') || 'N/A' %>
+      </div>
+    </div>
+
+    <h3>What happens if the limit is exceeded?</h3>
+    <ul>
+      <li>The system will stop fetching new exchange rates</li>
+      <li>Existing cached rates will continue to be used</li>
+      <li>Invoice creation will still work with the last known rates</li>
+    </ul>
+
+    <h3>Recommended Actions:</h3>
+    <ul>
+      <li>Monitor your usage for the rest of the month</li>
+      <li>Consider upgrading to a paid plan if you need more requests</li>
+      <li>Review which currency pairs are actively being used</li>
+      <li>The limit resets on the 1st of next month</li>
+    </ul>
+
+    <div class="footer">
+      <p>This is an automated message from your Miru application.</p>
+      <p>You're receiving this because you have admin privileges.</p>
+    </div>
+  </div>
+</body>
+</html>

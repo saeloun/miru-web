@@ -106,6 +106,7 @@ class User < ApplicationRecord
   before_validation :prevent_spam_user_sign_up
   after_discard :discard_project_members
   before_create :set_token
+  before_validation :validate_email_with_zerobounce, on: [:create, :update], if: :email_changed?
 
   after_commit :send_to_hubspot, on: :create
 
@@ -231,5 +232,26 @@ class User < ApplicationRecord
 
     def send_to_hubspot
       HubspotIntegrationJob.perform_later(email, first_name, last_name)
+    end
+
+    def validate_email_with_zerobounce
+      return unless email.present?
+
+      result = ZerobounceCircuitBreaker.execute(email)
+
+      # Skip validation if circuit breaker is open or validation is disabled
+      if result[:skip]
+        Rails.logger.info("[User] Zerobounce validation skipped: #{result[:reason]}")
+        return
+      end
+
+      # Process successful API response
+      if result[:success] && result[:response]
+        response = result[:response]
+
+        if response["status"] != "valid"
+          errors.add(:email, "Email is not valid or undeliverable.")
+        end
+      end
     end
 end

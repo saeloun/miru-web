@@ -171,6 +171,8 @@ GEM
     crack (0.4.5)
       rexml
     crass (1.0.6)
+    css_parser (1.21.1)
+      addressable
     data_migrate (9.3.0)
       activerecord (>= 6.1)
       railties (>= 6.1)
@@ -181,9 +183,9 @@ GEM
       database_cleaner-core (~> 2.0.0)
     database_cleaner-core (2.0.1)
     date (3.4.1)
-    debug (1.7.1)
-      irb (>= 1.5.0)
-      reline (>= 0.3.1)
+    debug (1.11.0)
+      irb (~> 1.10)
+      reline (>= 0.3.8)
     declarative (0.0.20)
     device_detector (1.1.0)
     devise (4.8.1)
@@ -198,6 +200,7 @@ GEM
     docile (1.4.0)
     dockerfile-rails (1.2.5)
       rails
+    domain_name (0.6.20240107)
     dotenv (2.8.1)
     dotenv-rails (2.8.1)
       dotenv (= 2.8.1)
@@ -293,6 +296,10 @@ GEM
     hash_dot (2.5.0)
     hashdiff (1.0.1)
     hashie (5.0.0)
+    htmlentities (4.3.4)
+    http-accept (1.7.0)
+    http-cookie (1.1.0)
+      domain_name (~> 0.5)
     httparty (0.21.0)
       mini_mime (>= 1.0.0)
       multi_xml (>= 0.5.2)
@@ -354,6 +361,10 @@ GEM
     marcel (1.1.0)
     matrix (0.4.2)
     memoist (0.16.2)
+    mime-types (3.7.0)
+      logger
+      mime-types-data (~> 3.2025, >= 3.2025.0507)
+    mime-types-data (3.2025.0924)
     mini_magick (4.12.0)
     mini_mime (1.1.5)
     mini_portile2 (2.8.9)
@@ -379,6 +390,7 @@ GEM
       timeout
     net-smtp (0.5.1)
       net-protocol
+    netrc (0.11.0)
     newrelic_rpm (9.8.0)
     nio4r (2.7.4)
     nokogiri (1.18.10)
@@ -429,6 +441,14 @@ GEM
       postmark (>= 1.21.3, < 2.0)
     pp (0.6.3)
       prettyprint
+    premailer (1.27.0)
+      addressable
+      css_parser (>= 1.19.0)
+      htmlentities (>= 4.0.0)
+    premailer-rails (1.12.0)
+      actionmailer (>= 3)
+      net-smtp
+      premailer (~> 1.7, >= 1.7.9)
     prettyprint (0.2.0)
     psych (4.0.6)
       stringio
@@ -514,6 +534,11 @@ GEM
     responders (3.1.0)
       actionpack (>= 5.2)
       railties (>= 5.2)
+    rest-client (2.1.0)
+      http-accept (>= 1.7.0, < 2.0)
+      http-cookie (>= 1.0.2, < 2.0)
+      mime-types (>= 1.16, < 4.0)
+      netrc (~> 0.8)
     retriable (3.1.2)
     rexml (3.4.4)
     rolify (6.0.1)
@@ -566,7 +591,7 @@ GEM
     ruby-vips (2.1.4)
       ffi (~> 1.12)
     ruby2_keywords (0.0.5)
-    ruby_audit (2.2.0)
+    ruby_audit (3.0.0)
       bundler-audit (~> 0.9.0)
     rubyzip (2.3.2)
     safely_block (0.4.0)
@@ -677,6 +702,9 @@ GEM
     xpath (3.2.0)
       nokogiri (~> 1.8)
     zeitwerk (2.7.3)
+    zerobounce-sdk (1.2.0)
+      dotenv
+      rest-client (~> 2.1)
 
 PLATFORMS
   arm64-darwin-21
@@ -702,7 +730,7 @@ DEPENDENCIES
   countries
   data_migrate
   database_cleaner (~> 2.0)
-  debug (>= 1.0.0)
+  debug (>= 1.9.0)
   devise
   discard (~> 1.2)
   dockerfile-rails
@@ -730,6 +758,7 @@ DEPENDENCIES
   parallel_tests
   pg
   postmark-rails
+  premailer-rails (~> 1.12)
   psych (~> 4)
   puma (~> 6.4.3)
   pundit (~> 2.2)
@@ -766,9 +795,10 @@ DEPENDENCIES
   vcr (~> 6.1)
   web-console (>= 4.1.0)
   webmock (~> 3.14.0)
+  zerobounce-sdk
 
 RUBY VERSION
-   ruby 3.2.4p170
+   ruby 3.3.10p183
 
 BUNDLED WITH
    2.4.10
