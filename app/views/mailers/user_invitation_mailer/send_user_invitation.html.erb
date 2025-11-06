@@ -1,51 +1,72 @@
 <!DOCTYPE html>
-<%= stylesheet_link_tag "application" %>
 <html>
   <head>
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'/>
+    <style>
+      .background { position: absolute; }
+      .banner { background-color: #5B34EA; padding-top: 2%; padding-bottom: 2%; width: 100%; }
+      .header { padding-top: 40px; font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; font-style: normal; font-weight: 800; font-size: 24px; line-height: 33px; color: #5B34EA; }
+      .mail { align-items: center; text-align: center; color: #777683; font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; }
+      .button { border-radius: 20px; background: #5B34EA; text-align: center; display: inline-block; padding: 12px 24px; margin: 16px 0; }
+      .button a { font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; font-weight: 700; font-size: 12px; line-height: 16px; color: #FFFFFF !important; text-decoration: none; }
+      .purple { color: #5B34EA; }
+      .invitation { max-width: 640px; margin: 0 auto; }
+      .sender_company_container { width: 100%; margin: 40px 0; }
+      .sender, .company { display: inline-block; text-align: center; border: 1px solid #D7DEE5; border-radius: 16px; padding: 24px 16px; margin: 0 8px; width: 176px; min-height: 130px; vertical-align: top; }
+      .sender img, .company img { display: block; margin: 0 auto 8px; }
+      .sender b, .company b { display: block; margin: 8px 0; }
+      hr { margin: 40px 0 24px; border: 0; border-top: 1px solid #ddd; }
+      .about-miru-container { max-width: 640px; margin: 0 auto; padding: 0; }
+      .about-miru-background { background-color: #453E75; background-image: linear-gradient(to bottom, #453E75, #1D1A31); border-radius: 16px; width: 560px; height: 265px; margin: 0 auto; position: relative; }
+      .desc { padding: 5%; color: #fff; width: 53%; font-size: 14px; vertical-align: middle; }
+      .desc .header { color: #fff; font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; font-style: normal; font-weight: 800; font-size: 24px; line-height: 33px; padding: 0; margin: 0 0 16px 0; }
+      .desc p { color: #fff; margin: 0 0 16px 0; }
+      .miru-logo { opacity: 0.2; max-width: 180px; height: auto; }
+      .about-miru-footer-wrapper { width: 100%; margin-top: 40px; text-align: center; }
+      .about-miru-footer-wrapper-inner { background: rgb(235, 239, 242); max-width: 640px; margin: 0 auto; padding: 40px 40px; display: inline-block; }
+    </style>
   </head>
   <body style="color:#1D1A31">
-  <div class="mail invitation">
-    <%= image_tag "Banner.svg", class: "banner", alt: "banner" %>
-    <p class="header">You have been invited to Miru</p>
-    <p><%= @sender_details&.[](:name) %> (<%= @sender_details&.[](:email) %>) has invited you to join <%=@company_details&.[](:name) %> team on Miru</p>
-
-    <div class='sender_company_container'>
-      <div class='sender'>
-        <%= image_tag(@sender_details&.[](:avatar) || "avatar.svg", alt:"User avatar", height: "40", width: "40") %>
-        <b><%= @sender_details&.[](:name) %></b>
-        <%= @sender_details&.[](:email) %>
+    <div class="mail invitation">
+      <%= image_tag "Banner.png", class: "banner", alt: "Miru welcome banner" %>
+      <p class="header">You have been invited to Miru</p>
+      <p><%= @sender_details&.[](:name) %> (<%= @sender_details&.[](:email) %>) has invited you to join <%=@company_details&.[](:name) %> team on Miru</p>
+      <div class='sender_company_container'>
+        <div class='sender'>
+          <%= image_tag(@sender_details&.[](:avatar) || "avatar.png", alt:"User avatar", height: "40", width: "40") %>
+          <b><%= @sender_details&.[](:name) %></b>
+          <%= @sender_details&.[](:email) %>
+        </div>
+        <div class='company'>
+          <%= image_tag(@company_details&.[](:logo) || "miru-logo.png", alt:"Company logo", height: "40", width: "40") %>
+          <b><%=@company_details&.[](:name) %></b>
+          <%=@company_details&.[](:employee_count) %> members
+        </div>
       </div>
-      <div class='company'>
-      <%= image_tag(@company_details&.[](:logo) || "miru-logo.svg", alt:"Company logo", height: "40px", width: "40px") %>
-        <b><%=@company_details&.[](:name) %></b>
-        <%=@company_details&.[](:employee_count) %> members
+      To get started, set your password by clicking the button below:
+      <hr />
+      <p class="button"><%= link_to 'Join Miru', invitations_accepts_url(token: @token), target: "_blank" %></p>
+      <hr />
+      <p>If you don't know this user or think this was sent by mistake, please flag this request to our team at <a href="mailto:hello@saeloun.com" class="purple">hello@saeloun.com</a></p>
+    </div>
+    <div class="about-miru-footer-wrapper">
+      <div class="about-miru-footer-wrapper-inner">
+        <div class="about-miru-container">
+          <table class="about-miru-background" cellpadding="0" cellspacing="0">
+            <tr>
+              <td class="desc">
+                <p class="header">About Miru</p>
+                <p>Miru is an open-source time-tracking & invoicing tool developed by a team of experienced developers. Using Miru, you can track your time, create and send invoices for those time entries to your clients & receive instant payments.</p>
+                <p class="button"><%= link_to 'Learn More >', 'https://www.miru.so/', target: "_blank" %></p>
+              </td>
+              <td style="vertical-align: middle; text-align: right;">
+                <%= image_tag "miru-logo.png", class:"miru-logo", alt:"Miru logo" %>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <%= render "shared/email_footer" %>
       </div>
     </div>
-
-    To get started, set your password by clicking the button below:
-
-    <p class="button"><%= link_to 'Join Miru', invitations_accepts_url(token: @token), target: "_blank" %></p>
-
-    <hr />
-
-    <p>If you don’t know this user or think this was sent by mistake, please flag this request to our team at <a href="mailto:hello@saeloun.com" class="purple">hello@saeloun.com</a></p>
-
-    <div class="about-miru-container">
-        <table class="about-miru-background">
-        <tr>
-          <td class="desc">
-              <p class="header">About Miru</p>
-              <p>Miru is an open-source time-tracking & invoicing tool developed by a team of experienced developers. Using Miru, you can track your time, create and send invoices for those time entries to your clients & received instant payments.</p>
-              <p class="button"><%= link_to 'Learn More >', 'https://www.miru.so/', target: "_blank" %></p>
-          </td>
-        <td>
-          <%= image_tag "miru-logo.svg", class:"miru-logo", alt:"miru-logo" %>
-        </td>
-        </tr>
-        </table>
-    </div>
-
-    <%= render "devise/shared/footer" %>
   </body>
 </html>

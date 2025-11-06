@@ -75,6 +75,7 @@ class Invoice < ApplicationRecord
   store_accessor :payment_infos, :stripe_payment_intent
 
   before_validation :set_external_view_key, on: :create
+  before_validation :calculate_base_currency_amount, if: :should_recalculate_base_currency?
   after_commit :refresh_invoice_index
   after_save :lock_timesheet_entries, if: :draft?
   after_discard :unlock_timesheet_entries, if: :draft?
@@ -221,5 +222,44 @@ class Invoice < ApplicationRecord
 
     def update_invoice_number
       self.update(invoice_number: "#{ARCHIVED_PREFIX}-#{id}-#{invoice_number}")
+    end
+
+    def should_recalculate_base_currency?
+      # Recalculate if this is a new record
+      return true if new_record?
+
+      # Recalculate if amount or currency has changed
+      amount_changed? || currency_changed?
+    end
+
+    def calculate_base_currency_amount
+      return if amount.nil? || currency.blank? || company.blank?
+
+      if same_currency?
+        self.base_currency_amount = amount
+        return
+      end
+
+      service = CurrencyConversionService.new(
+        amount:,
+        from_currency: currency,
+        to_currency: company.base_currency
+      )
+
+      result = service.process
+
+      # Set the converted amount
+      # If no rate is available, the service returns the original amount as fallback
+      # This allows invoice creation to proceed even without API access
+      self.base_currency_amount = result
+
+      # Log warning if conversion might have failed (same amount returned for different currencies)
+      if result == amount && !same_currency?
+        Rails.logger.warn(
+          "Currency conversion may have failed for invoice. " \
+          "Using original amount as fallback. " \
+          "Currency: #{currency} -> #{company.base_currency}, Amount: #{amount}"
+        )
+      end
     end
 end

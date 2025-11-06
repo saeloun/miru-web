@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 
 import { currencyFormat } from "helpers";
 
+import currencyPairsApi from "apis/currencyPairs";
+
 const InvoiceTotal = ({
   currency,
   clientCurrency,
@@ -52,7 +54,42 @@ const InvoiceTotal = ({
     setTotal(newTotal);
     setAmount(newTotal);
     setAmountDue(newTotal - amountPaid);
-  }, [newLineItems, manualEntryArr, discount, subTotal, tax]);
+  }, [
+    newLineItems,
+    manualEntryArr,
+    discount,
+    subTotal,
+    tax,
+    amountPaid,
+    setAmount,
+    setAmountDue,
+  ]);
+
+  // Auto-calculate base currency amount when total changes
+  useEffect(() => {
+    const fetchExchangeRate = async () => {
+      if (currency !== clientCurrency && total > 0) {
+        try {
+          const response = await currencyPairsApi.getRate(
+            clientCurrency,
+            currency
+          );
+          if (response.data.rate) {
+            const convertedAmount = (
+              total * parseFloat(response.data.rate)
+            ).toFixed(2);
+            setBaseCurrencyAmount(convertedAmount);
+          }
+        } catch {
+          // Failed to fetch exchange rate - silently handle error
+        }
+      } else if (currency === clientCurrency) {
+        setBaseCurrencyAmount("");
+      }
+    };
+
+    fetchExchangeRate();
+  }, [total, currency, clientCurrency, setBaseCurrencyAmount]);
 
   return (
     <div className="mb-5 flex w-full justify-end pt-3 pb-10 pr-10">
@@ -135,12 +172,12 @@ const InvoiceTotal = ({
               )}
               <td className="pb-1 text-right">
                 <input
+                  readOnly
                   className="focusPadding focus:outline-none w-20 cursor-pointer rounded bg-transparent py-1 text-right text-base font-bold text-miru-dark-purple-1000 focus:border-miru-gray-1000 focus:bg-white focus:ring-1 focus:ring-miru-gray-1000"
                   id="baseCurrency"
+                  title="Auto-calculated based on exchange rate"
                   type="text"
                   value={baseCurrencyAmount}
-                  onChange={e => setBaseCurrencyAmount(e.target.value)}
-                  onKeyDown={e => onEnter(e, "baseCurrency")}
                 />
               </td>
             </tr>

@@ -3,7 +3,7 @@
 class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationController
   def index
     authorize Client
-    data = Clients::IndexService.new(current_company, params[:query], params[:time_frame]).process
+    data = Clients::IndexService.new(current_company, current_user, params[:query], params[:time_frame]).process
     render json: data, status: :ok
   end
 
