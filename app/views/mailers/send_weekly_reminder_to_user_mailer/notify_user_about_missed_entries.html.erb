@@ -2,15 +2,38 @@
 <html>
   <head>
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'/>
+    <%= render 'shared/email_styles' %>
+    <style>
+      .content { font-size: 16px; line-height: 24px; color: #777683; margin-bottom: 16px; }
+      .highlight-box { background: #F5F3FF; border-left: 4px solid #5B34EA; padding: 16px 20px; margin: 24px 0; border-radius: 4px; }
+      .highlight-box p { margin: 0; color: #1D1A31; font-weight: 500; }
+      .date-range { color: #5B34EA; font-weight: 600; }
+      .button { text-align: center; margin: 32px 0; }
+      .button a { background: #5B34EA; color: #FFFFFF !important; text-decoration: none; padding: 12px 24px; border-radius: 20px; display: inline-block; font-weight: 700; font-size: 12px; line-height: 16px; }
+      .signature { margin-top: 32px; color: #777683; }
+      .signature strong { color: #1D1A31; }
+    </style>
   </head>
-  <body style="color:#1D1A31">
-  <p>Hi <%= @name %>, </p>
-
-  <p>This is a reminder to update your weekly timesheet for <%= @company %> on Miru.</p>
-
-  <p>Your logged hours from <%= @starting_date %> to <%= @ending_date %> are less than 40 hours.
-  Please <%= link_to "log on to update", root_url + "time-tracking" , target: "_blank" %> your timesheet. </p>
-
-  <p>Cheers,<br/>Team Miru</p>
+  <body>
+    <div class="mail">
+      <div class="container">
+        <%= image_tag "Banner.png", class: "banner", alt: "Weekly reminder banner" %>
+        <p class="header">Reminder to Update your Timesheet on Miru</p>
+        <p class="content">Hi <%= @name %>,</p>
+        <p class="content">This is a friendly reminder to update your weekly timesheet for <strong><%= @company %></strong> on Miru.</p>
+        <div class="highlight-box">
+          <p>Your logged hours from <span class="date-range"><%= @starting_date %></span> to <span class="date-range"><%= @ending_date %></span> are less than 40 hours.</p>
+        </div>
+        <p class="content">Please update your timesheet to ensure accurate time tracking and billing.</p>
+        <div class="button">
+          <%= link_to "Update Timesheet", "#{root_url}time-tracking", target: "_blank" %>
+        </div>
+        <hr />
+        <div class="signature">
+          <p class="content">Cheers,<br/><strong>Team Miru</strong></p>
+        </div>
+      </div>
+      <%= render "shared/email_footer" %>
+    </div>
   </body>
 </html>

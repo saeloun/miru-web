@@ -12,7 +12,8 @@ const SearchDataRow = ({ invoice }) => {
     navigate(`/invoices/${invoice.id}`);
   };
 
-  const { client, invoiceNumber, company, amount, issueDate, status } = invoice;
+  const { client, invoiceNumber, currency, amount, issueDate, status } =
+    invoice;
 
   return (
     <div
@@ -28,7 +29,7 @@ const SearchDataRow = ({ invoice }) => {
         </div>
       </div>
       <div className="w-4/12 px-2/100 font-bold tracking-wider">
-        {currencyFormat(company.baseCurrency, amount)}
+        {currencyFormat(currency, amount)}
         <div className="text-sm font-normal text-miru-dark-purple-400">
           {issueDate}
         </div>

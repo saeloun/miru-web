@@ -5,7 +5,26 @@ RSpec.configure do |config|
     DatabaseCleaner.allow_remote_database_url = true
     DatabaseCleaner.url_allowlist = [ENV["DATABASE_URL"]]
 
-    DatabaseCleaner.clean_with :truncation, except: %w(ar_internal_metadata)
+    # Disconnect all active connections to avoid deadlocks
+    ActiveRecord::Base.connection_pool.disconnect!
+
+    # Retry truncation if deadlock occurs
+    retries = 3
+    begin
+      DatabaseCleaner.clean_with :truncation, except: %w(ar_internal_metadata)
+    rescue ActiveRecord::Deadlocked => e
+      retries -= 1
+      if retries > 0
+        Rails.logger.warn("Deadlock detected during database cleanup, retrying... (#{retries} attempts left)")
+        sleep(0.5)
+        retry
+      else
+        raise e
+      end
+    end
+
+    # Reconnect after cleanup
+    ActiveRecord::Base.establish_connection
   end
 
   config.before do

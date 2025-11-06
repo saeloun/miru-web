@@ -159,6 +159,10 @@ namespace :internal_api, defaults: { format: "json" } do
 
     resources :timeoff_entries, except: [:new, :edit]
 
+    resources :currency_pairs, only: [] do
+      get :rate, on: :collection
+    end
+
     patch "leave_with_leave_type/:year", to: "leave_with_leave_types#update", as: :update_leave_with_leave_types
     patch "custom_leaves/:year", to: "custom_leaves#update"
     match "*path", to: "application#not_found", via: :all, constraints: lambda { |req|

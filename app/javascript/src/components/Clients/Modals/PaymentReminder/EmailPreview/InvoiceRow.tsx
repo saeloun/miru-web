@@ -8,15 +8,13 @@ import getStatusCssClass from "utils/getBadgeStatus";
 const InvoiceRow = ({ invoice, isLast }) => {
   const {
     amount,
-    company,
+    currency,
     dueDate,
     invoiceNumber,
     issueDate,
     status,
     externalViewKey,
   } = invoice;
-
-  const { baseCurrency } = company;
 
   return (
     <table
@@ -65,7 +63,7 @@ const InvoiceRow = ({ invoice, isLast }) => {
           <td className="w-1/6 px-2 pb-10 text-base">{issueDate}</td>
           <td className="w-1/6 px-2 pb-10 text-base">{dueDate}</td>
           <td className="w-1/6 px-2 pb-10 text-left text-base tracking-normal text-miru-dark-purple-1000 lg:text-base">
-            {currencyFormat(baseCurrency, amount)}
+            {currencyFormat(currency, amount)}
           </td>
           <td className="w-1/6 px-2 pb-10 text-left font-medium">
             <Badge
