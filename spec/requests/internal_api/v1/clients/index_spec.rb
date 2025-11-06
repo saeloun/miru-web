@@ -88,30 +88,40 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
 
   context "when user is an employee" do
     let(:time_frame) { "last_week" }
+    let(:employee_user) { create(:user, current_workspace_id: company.id) }
+    let(:employee_client) { create(:client, company:) }
+    let(:project_3) { create(:project, client: employee_client) }
 
     before do
-      create(:employment, company:, user:)
-      user.add_role :admin, company
-      sign_in user
-      create_list(:timesheet_entry, 5, user:, project: project_1)
-      create_list(:timesheet_entry, 5, user:, project: project_2)
+      create(:employment, company:, user: employee_user)
+      employee_user.add_role :employee, company
+      sign_in employee_user
+      # Employee is only assigned to project_1 and project_3
+      create(:project_member, user: employee_user, project: project_1)
+      create(:project_member, user: employee_user, project: project_3)
+      create_list(:timesheet_entry, 5, user: employee_user, project: project_1)
+      create_list(:timesheet_entry, 5, user: employee_user, project: project_3)
       send_request :get, internal_api_v1_clients_path, params: {
         time_frame:
-      }, headers: auth_headers(user)
+      }, headers: auth_headers(employee_user)
     end
 
     context "when time_frame is week" do
-      it "returns the total hours logged for a Company in the last_week" do
-        client_details = user.current_workspace.clients.kept.map do |client|
+      it "returns only clients from projects assigned to the employee" do
+        # Employee should only see client_1 and employee_client, not client_2
+        client_details = employee_user.clients.kept.map do |client|
           {
             id: client.id, name: client.name, email: client.email, phone: client.phone, address: client.current_address,
             minutes_spent: client.total_hours_logged(time_frame), logo: "", currency: client.currency
           }
         end
         total_minutes = (client_details.map { |client| client[:minutes_spent] }).sum
-        overdue_outstanding_amount = user.current_workspace.overdue_and_outstanding_and_draft_amount
+        overdue_outstanding_amount = employee_user.current_workspace.overdue_and_outstanding_and_draft_amount
         expect(response).to have_http_status(:ok)
         expect(json_response["client_details"]).to match_array(JSON.parse(client_details.to_json))
+        expect(json_response["client_details"].length).to eq(2)
+        expect(json_response["client_details"].map { |c| c["id"] }).to match_array([client_1.id, employee_client.id])
+        expect(json_response["client_details"].map { |c| c["id"] }).not_to include(client_2.id)
         expect(json_response["total_minutes"]).to eq(JSON.parse(total_minutes.to_json))
         expect(json_response["overdue_outstanding_amount"]).to eq(JSON.parse(overdue_outstanding_amount.to_json))
       end

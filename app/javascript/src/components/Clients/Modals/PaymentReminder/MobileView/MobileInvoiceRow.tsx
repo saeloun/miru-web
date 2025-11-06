@@ -8,15 +8,13 @@ import getStatusCssClass from "utils/getBadgeStatus";
 const MobileInvoiceRow = ({ invoice, isLast }) => {
   const {
     amount,
-    company,
+    currency,
     dueDate,
     invoiceNumber,
     issueDate,
     status,
     externalViewKey,
   } = invoice;
-
-  const { baseCurrency } = company;
 
   return (
     <div
@@ -38,7 +36,7 @@ const MobileInvoiceRow = ({ invoice, isLast }) => {
       </div>
       <div>
         <span>AMOUNT</span>
-        <div>{currencyFormat(baseCurrency, amount)}</div>
+        <div>{currencyFormat(currency, amount)}</div>
       </div>
       <div>
         <span>STATUS</span>
