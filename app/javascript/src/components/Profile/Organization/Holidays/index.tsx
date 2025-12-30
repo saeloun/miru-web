@@ -297,33 +297,70 @@ const Holidays = () => {
         const newHolidayErrors: Record<number, string> = {};
         const newOptionalHolidayErrors: Record<number, string> = {};
 
-        // Process add_holiday_infos errors
+        // Process add_holiday_infos errors with occurrence-aware matching
         if (fieldErrors.add_holiday_infos) {
+          // Build a mapping from payload index to list index for new holidays
+          const addInfos = payload.add_holiday_infos;
+          const matchedHolidayIndices = new Set<number>();
+          const matchedOptionalIndices = new Set<number>();
+
+          // Create mapping: payload index -> list index
+          const payloadToListIndexMap: Record<
+            number,
+            { isOptional: boolean; listIndex: number }
+          > = {};
+
+          addInfos.forEach((info, payloadIndex) => {
+            const isOptional = info.category === "optional";
+            if (isOptional) {
+              // Find the next unmatched item in optionalHolidaysList with same name
+              for (let i = 0; i < optionalHolidaysList.length; i++) {
+                const h = optionalHolidaysList[i];
+                if (
+                  !h.id &&
+                  h.name === info.name &&
+                  !matchedOptionalIndices.has(i)
+                ) {
+                  matchedOptionalIndices.add(i);
+                  payloadToListIndexMap[payloadIndex] = {
+                    isOptional: true,
+                    listIndex: i,
+                  };
+                  break;
+                }
+              }
+            } else {
+              // Find the next unmatched item in holidayList with same name
+              for (let i = 0; i < holidayList.length; i++) {
+                const h = holidayList[i];
+                if (
+                  !h.id &&
+                  h.name === info.name &&
+                  !matchedHolidayIndices.has(i)
+                ) {
+                  matchedHolidayIndices.add(i);
+                  payloadToListIndexMap[payloadIndex] = {
+                    isOptional: false,
+                    listIndex: i,
+                  };
+                  break;
+                }
+              }
+            }
+          });
+
+          // Now assign errors using the mapping
           Object.entries(fieldErrors.add_holiday_infos).forEach(
             ([indexStr, errors]: [string, any]) => {
-              const index = parseInt(indexStr, 10);
+              const payloadIndex = parseInt(indexStr, 10);
               const errorMessages = Object.values(errors).flat().join(", ");
+              const mapping = payloadToListIndexMap[payloadIndex];
 
-              // Find the actual index in holidayList or optionalHolidaysList
-              const addInfos = payload.add_holiday_infos;
-              if (addInfos[index]) {
-                const isOptional = addInfos[index].category === "optional";
-                if (isOptional) {
-                  // Find the index in optionalHolidaysList
-                  const optionalIndex = optionalHolidaysList.findIndex(
-                    h => !h.id && h.name === addInfos[index].name
-                  );
-                  if (optionalIndex !== -1) {
-                    newOptionalHolidayErrors[optionalIndex] = errorMessages;
-                  }
+              if (mapping) {
+                if (mapping.isOptional) {
+                  newOptionalHolidayErrors[mapping.listIndex] = errorMessages;
                 } else {
-                  // Find the index in holidayList
-                  const holidayIndex = holidayList.findIndex(
-                    h => !h.id && h.name === addInfos[index].name
-                  );
-                  if (holidayIndex !== -1) {
-                    newHolidayErrors[holidayIndex] = errorMessages;
-                  }
+                  newHolidayErrors[mapping.listIndex] = errorMessages;
                 }
               }
             }

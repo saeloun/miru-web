@@ -68,10 +68,21 @@ module TimeoffEntries
           net_days = net_hours / @working_hours_per_day
           extra_hours = net_hours % @working_hours_per_day
 
-          if net_hours.abs < @working_hours_per_day
-            label = "#{net_hours} hours"
+          label = if net_hours.zero?
+            "0 hours"
+          elsif net_hours.negative?
+            total_overdrawn_hours = net_hours.abs
+            if total_overdrawn_hours < @working_hours_per_day
+              "Overdrawn by #{total_overdrawn_hours} hours"
+            else
+              overdrawn_days = total_overdrawn_hours / @working_hours_per_day
+              overdrawn_extra_hours = total_overdrawn_hours % @working_hours_per_day
+              "Overdrawn by #{overdrawn_days} days #{overdrawn_extra_hours} hours"
+            end
+          elsif net_hours < @working_hours_per_day
+            "#{net_hours} hours"
           else
-            label = "#{net_days} days #{extra_hours} hours"
+            "#{net_days} days #{extra_hours} hours"
           end
 
           summary_object = {

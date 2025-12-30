@@ -241,7 +241,8 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
         timeoff_entries_duration:,
         net_duration:,
         net_days:,
-        label: "#{net_days} days #{extra_hours} hours",
+        label: "Overdrawn by #{net_hours.abs / working_hours_per_day} days " \
+               "#{net_hours.abs % working_hours_per_day} hours",
         type: "leave"
       }
 
@@ -296,6 +297,121 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
       }
 
       expect(@data[:leave_balance][3]).to eq(summary_object)
+    end
+  end
+
+  describe "#process with zero leave balance" do
+    let(:zero_balance_leave_type) do
+      create(
+        :leave_type,
+        name: "Zero Balance Leave",
+        allocation_period: :days,
+        allocation_frequency: :per_year,
+        allocation_value: 1,
+        icon: LeaveType.icons[:vacation],
+        color: LeaveType.colors[:chart_purple],
+        carry_forward_days: 0,
+        leave:
+      )
+    end
+
+    before do
+      @joined_at = Date.today - 1.year
+      @year = Date.today.year
+      create(:employment, company:, user:, joined_at: @joined_at, resigned_at: nil)
+      user.add_role :admin, company
+
+      # Create timeoff entry that exactly matches the allocation (1 day = working_hours_per_day hours)
+      create(
+        :timeoff_entry,
+        duration: working_hours_per_day * 60,
+        leave_date: Date.today,
+        user:,
+        leave_type: zero_balance_leave_type
+      )
+
+      service = TimeoffEntries::IndexService.new(user, company, user.id, @year)
+      @data = service.process
+    end
+
+    it "returns '0 hours' label when balance is exactly zero" do
+      leave_balance_entry = @data[:leave_balance].find { |lb| lb[:id] == zero_balance_leave_type.id }
+
+      expect(leave_balance_entry[:net_duration]).to eq(0)
+      expect(leave_balance_entry[:label]).to eq("0 hours")
+    end
+  end
+
+  describe "#process with negative leave balance (overdrawn)" do
+    let(:overdrawn_leave_type) do
+      create(
+        :leave_type,
+        name: "Overdrawn Leave",
+        allocation_period: :days,
+        allocation_frequency: :per_year,
+        allocation_value: 1,
+        icon: LeaveType.icons[:baby],
+        color: LeaveType.colors[:chart_light_blue],
+        carry_forward_days: 0,
+        leave:
+      )
+    end
+
+    before do
+      @joined_at = Date.today - 1.year
+      @year = Date.today.year
+      create(:employment, company:, user:, joined_at: @joined_at, resigned_at: nil)
+      user.add_role :admin, company
+    end
+
+    context "when overdrawn by hours only" do
+      before do
+        # Allocation is 1 day, take 1 day + 2 hours (overdrawn by 2 hours)
+        overdrawn_hours = 2
+        create(
+          :timeoff_entry,
+          duration: (working_hours_per_day + overdrawn_hours) * 60,
+          leave_date: Date.today,
+          user:,
+          leave_type: overdrawn_leave_type
+        )
+
+        service = TimeoffEntries::IndexService.new(user, company, user.id, @year)
+        @data = service.process
+      end
+
+      it "returns 'Overdrawn by X hours' label for small negative balance" do
+        leave_balance_entry = @data[:leave_balance].find { |lb| lb[:id] == overdrawn_leave_type.id }
+
+        expect(leave_balance_entry[:net_duration]).to be_negative
+        expect(leave_balance_entry[:label]).to eq("Overdrawn by 2 hours")
+      end
+    end
+
+    context "when overdrawn by days and hours" do
+      before do
+        # Allocation is 1 day, take 3 days + 2 hours (overdrawn by 2 days 2 hours)
+        overdrawn_days = 2
+        overdrawn_hours = 2
+        total_overdrawn_minutes = ((working_hours_per_day * (1 + overdrawn_days)) + overdrawn_hours) * 60
+        create(
+          :timeoff_entry,
+          duration: total_overdrawn_minutes,
+          leave_date: Date.today,
+          user:,
+          leave_type: overdrawn_leave_type
+        )
+
+        service = TimeoffEntries::IndexService.new(user, company, user.id, @year)
+        @data = service.process
+      end
+
+      it "returns 'Overdrawn by X days Y hours' label for larger negative balance" do
+        leave_balance_entry = @data[:leave_balance].find { |lb| lb[:id] == overdrawn_leave_type.id }
+
+        expect(leave_balance_entry[:net_duration]).to be_negative
+        expect(leave_balance_entry[:label]).to eq("Overdrawn by 2 days 2 hours")
+      end
     end
   end
 
