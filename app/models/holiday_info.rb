@@ -32,7 +32,7 @@ class HolidayInfo < ApplicationRecord
   enum category: { national: 0, optional: 1 }
 
   validates :name, presence: true,
-    format: { with: /\A[a-zA-Z\s]+\z/ },
+    format: { with: /\A[a-zA-Z\s\-']+\z/, message: "can only contain letters, spaces, hyphens, and apostrophes" },
     length: { maximum: 30 }
   validates :date, :category, presence: true
   validate :validate_holiday_category

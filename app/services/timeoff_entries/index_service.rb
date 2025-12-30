@@ -65,8 +65,8 @@ module TimeoffEntries
           total_minutes = total_leave_type_days * @working_hours_per_day * 60
           net_duration = total_minutes + previous_year_carryforward - timeoff_entries_duration
           net_hours = net_duration / 60
-          net_days = net_hours.abs / @working_hours_per_day
-          extra_hours = net_hours.abs % @working_hours_per_day
+          net_days = net_hours / @working_hours_per_day
+          extra_hours = net_hours % @working_hours_per_day
 
           if net_hours.abs < @working_hours_per_day
             label = "#{net_hours} hours"
