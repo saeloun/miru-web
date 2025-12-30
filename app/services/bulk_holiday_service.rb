@@ -2,12 +2,13 @@
 
 class BulkHolidayService
   attr_reader :year, :holiday_params, :current_company
-  attr_accessor :holiday
+  attr_accessor :holiday, :errors
 
   def initialize(year, holiday_params, current_company)
     @year = year
     @holiday_params = holiday_params
     @current_company = current_company
+    @errors = { add_holiday_infos: {}, update_holiday_infos: {} }
   end
 
   def process
@@ -16,7 +17,13 @@ class BulkHolidayService
       add_holiday_info
       update_holiday_info
       remove_holiday_info
+      raise ActiveRecord::Rollback if errors_present?
     end
+    !errors_present?
+  end
+
+  def errors_present?
+    errors[:add_holiday_infos].present? || errors[:update_holiday_infos].present?
   end
 
   private
@@ -33,20 +40,28 @@ class BulkHolidayService
     def add_holiday_info
       return if holiday_params[:add_holiday_infos].blank?
 
-      holiday_params[:add_holiday_infos].each do |info|
-        holiday.holiday_infos.create!(info)
+      holiday_params[:add_holiday_infos].each_with_index do |info, index|
+        holiday_info = holiday.holiday_infos.build(info)
+        unless holiday_info.valid?
+          errors[:add_holiday_infos][index] = holiday_info.errors.messages
+        end
+        holiday_info.save! if holiday_info.valid?
       end
     end
 
     def update_holiday_info
       return if holiday_params[:update_holiday_infos].blank?
 
-      holiday_params[:update_holiday_infos].each do |info|
+      holiday_params[:update_holiday_infos].each_with_index do |info, index|
         holiday_info = holiday.holiday_infos.find_by(id: info[:id])
 
         next unless holiday_info
 
-        holiday_info.update!(info)
+        holiday_info.assign_attributes(info)
+        unless holiday_info.valid?
+          errors[:update_holiday_infos][index] = holiday_info.errors.messages
+        end
+        holiday_info.save! if holiday_info.valid?
       end
     end
 

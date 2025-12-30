@@ -9,6 +9,7 @@ import CustomReactSelect from "common/CustomReactSelect";
 import CustomToggle from "common/CustomToggle";
 import SingleYearDatePicker from "common/CustomYearPicker/SingleYearDatePicker";
 import { Divider } from "common/Divider";
+import { ErrorSpan } from "common/ErrorSpan";
 import EditHeader from "components/Profile/Common/EditHeader";
 import { allocationFrequency } from "constants/leaveType";
 
@@ -41,6 +42,8 @@ const EditHolidays = ({
   handleDeleteHoliday,
   handleHolidateNameChange,
   updateHolidayDetails,
+  holidayErrors = {},
+  optionalHolidayErrors = {},
 }) => (
   <>
     <EditHeader
@@ -110,16 +113,28 @@ const EditHolidays = ({
                     <div className="w-1/2 pl-1">
                       <CustomInputText
                         id={`Name_${index}`}
-                        inputBoxClassName="border focus:border-miru-han-purple-1000 cursor-pointer"
                         label="Name"
-                        labelClassName="cursor-pointer"
                         name={`Name_${index}`}
                         type="text"
                         value={holiday.name}
+                        inputBoxClassName={`border cursor-pointer ${
+                          holidayErrors[index]
+                            ? "border-red-600 focus:border-red-600"
+                            : "focus:border-miru-han-purple-1000"
+                        }`}
+                        labelClassName={`cursor-pointer ${
+                          holidayErrors[index] ? "text-red-600" : ""
+                        }`}
                         onChange={e =>
                           handleHolidateNameChange(e, index, false)
                         }
                       />
+                      {holidayErrors[index] && (
+                        <ErrorSpan
+                          className="text-xs text-red-600"
+                          message={holidayErrors[index]}
+                        />
+                      )}
                     </div>
                   </div>
                   <div className="flex w-1/12 items-center justify-center">
@@ -257,17 +272,29 @@ const EditHolidays = ({
                         <div className="w-1/2 pl-1">
                           <CustomInputText
                             id={`holiday_name_op_${index}`}
-                            inputBoxClassName="border focus:border-miru-han-purple-1000 cursor-pointer"
                             label="Name"
-                            labelClassName="cursor-pointer"
                             min={0}
                             name={`holiday_name_op_${index}`}
                             type="text"
                             value={optionalHoliday.name}
+                            inputBoxClassName={`border cursor-pointer ${
+                              optionalHolidayErrors[index]
+                                ? "border-red-600 focus:border-red-600"
+                                : "focus:border-miru-han-purple-1000"
+                            }`}
+                            labelClassName={`cursor-pointer ${
+                              optionalHolidayErrors[index] ? "text-red-600" : ""
+                            }`}
                             onChange={e =>
                               handleHolidateNameChange(e, index, true)
                             }
                           />
+                          {optionalHolidayErrors[index] && (
+                            <ErrorSpan
+                              className="text-xs text-red-600"
+                              message={optionalHolidayErrors[index]}
+                            />
+                          )}
                         </div>
                       </div>
                       <div className="flex w-1/12 items-center justify-center">
