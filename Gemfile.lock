@@ -176,6 +176,7 @@ GEM
     crass (1.0.6)
     css_parser (1.21.1)
       addressable
+    csv (3.3.5)
     data_migrate (9.3.0)
       activerecord (>= 6.1)
       railties (>= 6.1)
@@ -412,6 +413,7 @@ GEM
       rack (>= 1.2, < 4)
       snaky_hash (~> 2.0)
       version_gem (~> 1.1)
+    observer (0.1.2)
     omniauth (2.1.1)
       hashie (>= 3.4.6)
       rack (>= 2.2.3)
@@ -462,10 +464,10 @@ GEM
       activesupport (>= 3.0.0)
     raabro (1.4.0)
     racc (1.8.1)
-    rack (3.2.3)
+    rack (3.2.4)
     rack-cors (2.0.0)
       rack (>= 2.0.0)
-    rack-mini-profiler (3.0.0)
+    rack-mini-profiler (4.0.1)
       rack (>= 1.2.0)
     rack-protection (3.0.5)
       rack
@@ -731,6 +733,7 @@ DEPENDENCIES
   bundler-audit
   capybara (>= 3.26)
   countries
+  csv
   data_migrate
   database_cleaner (~> 2.0)
   debug (>= 1.9.0)
@@ -755,6 +758,7 @@ DEPENDENCIES
   money
   newrelic_rpm (~> 9.8.0)
   nokogiri (>= 1.18.4)
+  observer
   omniauth-google-oauth2 (~> 1.0)
   omniauth-rails_csrf_protection (~> 1.0)
   pagy (~> 5.10)
@@ -801,7 +805,7 @@ DEPENDENCIES
   zerobounce-sdk
 
 RUBY VERSION
-   ruby 3.3.10p183
+   ruby 3.4.8p72
 
 BUNDLED WITH
    2.4.10

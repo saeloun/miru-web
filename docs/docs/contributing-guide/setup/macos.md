@@ -19,7 +19,7 @@ $ git clone https://github.com/<your-name>/miru-web.git
 your project as you `cd` into the directory follow
 [this](https://github.com/nvm-sh/nvm#deeper-shell-integration))
 
-#### 4. Install ruby 3.3.10
+#### 4. Install ruby 3.4.8
 
 ```bash
 $ rvm install $(cat .ruby-version)
