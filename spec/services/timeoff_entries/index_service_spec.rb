@@ -207,6 +207,12 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
       net_days = net_hours / working_hours_per_day
       extra_hours = net_hours % working_hours_per_day
 
+      label = if net_hours < working_hours_per_day
+        "#{net_hours} hours"
+      else
+        "#{net_days} days #{extra_hours} hours"
+      end
+
       summary_object = {
         id: leave_type.id,
         name: leave_type.name,
@@ -216,7 +222,7 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
         timeoff_entries_duration:,
         net_duration:,
         net_days:,
-        label: "#{net_days} days #{extra_hours} hours",
+        label:,
         type: "leave"
       }
 
