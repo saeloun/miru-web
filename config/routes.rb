@@ -7,6 +7,7 @@ class ActionDispatch::Routing::Mapper
 end
 
 Rails.application.routes.draw do
+  mount_avo
   # Test login route (remove in production)
   get "test_login", to: "test_login#login" if Rails.env.development?
 

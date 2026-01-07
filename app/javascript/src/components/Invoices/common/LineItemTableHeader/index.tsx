@@ -1,32 +1,24 @@
 import React from "react";
 
 const LineItemTableHeader = () => (
-  <thead className="my-2 border-b border-miru-gray-400 lg:border-0">
+  <thead className="bg-gray-50 border-b border-gray-200">
     <tr>
-      <th className="w-4/12 pt-2 pb-4 text-left text-xs font-medium tracking-widest text-miru-dark-purple-600 lg:w-1/2 lg:py-0 lg:font-normal">
-        <dt className="hidden lg:inline">NAME</dt>
-        <dt className="lg:hidden">
-          NAME/
-          <br /> DATE
-        </dt>
+      <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+        Name
       </th>
-      <th className="hidden px-3 pt-2 pb-4 text-right text-xs font-medium tracking-widest text-miru-dark-purple-600 lg:flex lg:w-1/5 lg:py-0 lg:font-normal">
-        DATE
+      <th className="px-4 py-3 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider">
+        Date
       </th>
-      <th className="w-2/12 pt-2 pb-4 text-right text-xs font-medium tracking-widest text-miru-dark-purple-600 lg:w-auto lg:py-0 lg:font-normal">
-        RATE
+      <th className="px-4 py-3 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">
+        Rate
       </th>
-      <th className="w-3/12 pt-2 pb-4 text-right text-xs font-medium tracking-widest text-miru-dark-purple-600 lg:w-auto lg:py-0 lg:font-normal">
-        QTY
+      <th className="px-4 py-3 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider">
+        Qty
       </th>
-      <th className="w-3/12 pt-2 pb-4 text-right text-xs font-medium tracking-widest text-miru-dark-purple-600 lg:w-auto lg:py-0 lg:font-normal">
-        <dt className="hidden lg:inline"> LINE TOTAL</dt>
-        <dt className="lg:hidden">
-          LINE
-          <br /> TOTAL
-        </dt>
+      <th className="px-4 py-3 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">
+        Line Total
       </th>
-      <th className="w-0 pt-2 pb-4 lg:w-10 lg:py-0" />
+      <th className="px-4 py-3 w-10" />
     </tr>
   </thead>
 );

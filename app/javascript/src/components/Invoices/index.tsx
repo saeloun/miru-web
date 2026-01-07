@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import InvoiceList from "./InvoiceList";
-import InvoiceEditor from "./InvoiceEditor";
+import InvoiceEditor from "./InvoiceEditor/index";
 import InvoicePreview from "./InvoicePreview";
 import { Button } from "../ui/button";
 import { ArrowLeft } from "phosphor-react";
