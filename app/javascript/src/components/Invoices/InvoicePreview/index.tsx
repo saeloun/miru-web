@@ -69,8 +69,17 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
   const navigate = useNavigate();
   const formatDate = (date: string | Date) => {
     if (!date) return "";
-
-    return format(new Date(date), "MMM dd, yyyy");
+    
+    try {
+      const dateObj = date instanceof Date ? date : new Date(date);
+      if (isNaN(dateObj.getTime())) {
+        return ""; // Return empty string for invalid dates
+      }
+      return format(dateObj, "MMM dd, yyyy");
+    } catch (error) {
+      console.warn("Invalid date format:", date);
+      return "";
+    }
   };
 
   const formatAddress = (address: any) => {
