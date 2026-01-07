@@ -1,30 +1,40 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect, useCallback } from "react";
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
   CardDescription,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+} from "../../ui/card";
+import { Button } from "../../ui/button";
+import { Input } from "../../ui/input";
+import { Label } from "../../ui/label";
+import { Textarea } from "../../ui/textarea";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "../../ui/select";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
+} from "../../ui/popover";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "../../ui/command";
+import { Badge } from "../../ui/badge";
+import { Checkbox } from "../../ui/checkbox";
+import { cn } from "../../../lib/utils";
 import { format } from "date-fns";
-import { Calendar } from "@/components/ui/calendar";
+import { Calendar } from "../../ui/calendar";
 import {
   CalendarBlank as CalendarIcon,
   Plus,
@@ -33,8 +43,15 @@ import {
   PaperPlaneTilt,
   Eye,
   EyeSlash,
+  Clock,
+  Check,
+  X,
 } from "phosphor-react";
-import InvoicePreview from "../InvoicePreview/index";
+import { generateInvoice } from "../../../apis/api";
+import InvoiceTable from "../common/InvoiceTable";
+import { minToHHMM } from "../../../helpers";
+import InvoicePreview from "../InvoicePreview";
+import { fetchNewLineItems } from "../common/utils";
 
 interface InvoiceEditorProps {
   invoice?: any;
@@ -66,22 +83,35 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
   isLoading = false,
 }) => {
   const [showPreview, setShowPreview] = useState(true);
+  // Helper function to ensure valid Date object
+  const ensureValidDate = (date: any): Date => {
+    if (!date) return new Date();
+    if (date instanceof Date && !isNaN(date.getTime())) return date;
+    const parsed = new Date(date);
+    return isNaN(parsed.getTime()) ? new Date() : parsed;
+  };
+
   const [formData, setFormData] = useState({
     invoiceNumber: invoice?.invoiceNumber || `INV-${Date.now()}`,
     status: invoice?.status || "draft",
     clientId: invoice?.clientId || "",
-    issueDate: invoice?.issueDate || new Date(),
-    dueDate:
-      invoice?.dueDate || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days from now
+    issueDate: ensureValidDate(invoice?.issueDate),
+    dueDate: ensureValidDate(
+      invoice?.dueDate || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+    ),
     reference: invoice?.reference || "",
     notes: invoice?.notes || "",
-    lineItems: invoice?.invoiceLineItems ||
-      invoice?.lineItems || [
-        { id: "1", description: "", quantity: 1, rate: 0, amount: 0 },
-      ],
     discount: invoice?.discount || 0,
     tax: invoice?.tax || 0,
   });
+  
+  const [lineItems, setLineItems] = useState([]);
+  const [selectedLineItems, setSelectedLineItems] = useState(
+    invoice?.invoiceLineItems || invoice?.lineItems || []
+  );
+  const [manualEntryArr, setManualEntryArr] = useState([]);
+  
+  const [hasChanges, setHasChanges] = useState(false);
 
   const selectedClient = useMemo(() => {
     const client = clients.find(c => c.id === formData.clientId);
@@ -117,9 +147,35 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
     return formattedClient;
   }, [formData.clientId, clients]);
 
+  useEffect(() => {
+    setHasChanges(true);
+  }, [formData, selectedLineItems, manualEntryArr]);
+
+  useEffect(() => {
+    if (selectedClient && selectedClient.id) {
+      fetchNewLineItems(selectedClient, setLineItems, selectedLineItems);
+    }
+  }, [selectedClient?.id]);
+
+
+
   const subtotal = useMemo(
-    () => formData.lineItems.reduce((sum, item) => sum + (item.amount || 0), 0),
-    [formData.lineItems]
+    () => {
+      const selectedTotal = selectedLineItems.reduce((sum, item) => {
+        if (!item._destroy) {
+          return sum + (item.lineTotal || item.amount || (item.quantity * item.rate) || 0);
+        }
+        return sum;
+      }, 0);
+      const manualTotal = manualEntryArr.reduce((sum, item) => {
+        if (!item._destroy) {
+          return sum + (item.lineTotal || item.amount || (item.quantity * item.rate) || 0);
+        }
+        return sum;
+      }, 0);
+      return selectedTotal + manualTotal;
+    },
+    [selectedLineItems, manualEntryArr]
   );
 
   const total = useMemo(
@@ -127,41 +183,6 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
     [subtotal, formData.discount, formData.tax]
   );
 
-  const handleLineItemChange = (index: number, field: string, value: any) => {
-    const updatedItems = [...formData.lineItems];
-    updatedItems[index][field] = value;
-
-    // Calculate amount if quantity or rate changes
-    if (field === "quantity" || field === "rate") {
-      updatedItems[index].amount =
-        updatedItems[index].quantity * updatedItems[index].rate;
-    }
-
-    setFormData({ ...formData, lineItems: updatedItems });
-  };
-
-  const addLineItem = () => {
-    setFormData({
-      ...formData,
-      lineItems: [
-        ...formData.lineItems,
-        {
-          id: Date.now().toString(),
-          description: "",
-          quantity: 1,
-          rate: 0,
-          amount: 0,
-        },
-      ],
-    });
-  };
-
-  const removeLineItem = (index: number) => {
-    if (formData.lineItems.length > 1) {
-      const updatedItems = formData.lineItems.filter((_, i) => i !== index);
-      setFormData({ ...formData, lineItems: updatedItems });
-    }
-  };
 
   const formatAddress = (address: any) => {
     if (!address) return "";
@@ -190,6 +211,7 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
     subtotal,
     currency: company?.baseCurrency || "USD",
     client: selectedClient,
+    lineItems: [...selectedLineItems, ...manualEntryArr].filter(item => !item._destroy),
     company: company
       ? {
           name: company.name || "Company Name",
@@ -215,8 +237,8 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
     <div className="min-h-screen bg-gray-50/50">
       {/* Header */}
       <div className="bg-white border-b sticky top-0 z-30">
-        <div className="px-6 py-4">
-          <div className="flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
               <h1 className="text-2xl font-semibold text-gray-900">
                 {invoice ? "Edit Invoice" : "Create Invoice"}
@@ -225,11 +247,12 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
                 Fill in the details and preview your invoice in real-time
               </p>
             </div>
-            <div className="flex gap-3">
+            <div className="flex flex-wrap gap-2 sm:gap-3">
               <Button
                 variant="outline"
+                size="sm"
                 onClick={() => setShowPreview(!showPreview)}
-                className="md:hidden"
+                className="lg:hidden"
               >
                 {showPreview ? (
                   <EyeSlash className="h-4 w-4" />
@@ -237,26 +260,37 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
                   <Eye className="h-4 w-4" />
                 )}
               </Button>
-              <Button variant="outline" onClick={onCancel}>
+              <Button variant="outline" size="sm" onClick={onCancel}>
                 Cancel
               </Button>
               <Button
-                onClick={() => onSave && onSave(formData)}
+                onClick={() => onSave && onSave({
+                  ...formData,
+                  invoiceLineItems: [...selectedLineItems, ...manualEntryArr].filter(item => !item._destroy)
+                })}
                 variant="outline"
-                disabled={isLoading}
+                size="sm"
+                disabled={isLoading || !hasChanges}
               >
-                <FloppyDisk className="mr-2 h-4 w-4" />
-                Save Draft
+                <FloppyDisk className="mr-1.5 h-4 w-4" />
+                <span className="hidden sm:inline">Save</span>
+                <span className="sm:hidden">Save</span>
               </Button>
               <Button
                 onClick={() =>
-                  onSend && onSend({ ...formData, status: "sent" })
+                  onSend && onSend({ 
+                    ...formData, 
+                    status: "sent",
+                    invoiceLineItems: [...selectedLineItems, ...manualEntryArr].filter(item => !item._destroy)
+                  })
                 }
                 className="bg-[#5B34EA] hover:bg-[#4926D1]"
+                size="sm"
                 disabled={isLoading}
               >
-                <PaperPlaneTilt className="mr-2 h-4 w-4" />
-                Send Invoice
+                <PaperPlaneTilt className="mr-1.5 h-4 w-4" />
+                <span className="hidden sm:inline">Send Invoice</span>
+                <span className="sm:hidden">Send</span>
               </Button>
             </div>
           </div>
@@ -264,10 +298,11 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
       </div>
 
       {/* Content */}
-      <div className="flex flex-col lg:flex-row gap-6 p-6">
-        {/* Form Section */}
-        <div
-          className={cn("flex-1 space-y-6", showPreview ? "lg:max-w-2xl" : "")}
+      <div className="max-w-7xl mx-auto">
+        <div className="flex flex-col lg:flex-row gap-8 p-6">
+          {/* Form Section */}
+          <div
+            className={cn("flex-1 space-y-6", showPreview ? "lg:max-w-3xl" : "")}
         >
           {/* Basic Details */}
           <Card>
@@ -277,8 +312,8 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
                 Enter the basic invoice information
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+            <CardContent className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="invoiceNumber">Invoice Number</Label>
                   <Input
@@ -326,7 +361,7 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
                 </Select>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <Label>Issue Date</Label>
                   <Popover>
@@ -340,7 +375,7 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
                       >
                         <CalendarIcon className="mr-2 h-4 w-4" />
                         {formData.issueDate ? (
-                          format(formData.issueDate, "PPP")
+                          format(ensureValidDate(formData.issueDate), "PPP")
                         ) : (
                           <span>Pick a date</span>
                         )}
@@ -372,7 +407,7 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
                       >
                         <CalendarIcon className="mr-2 h-4 w-4" />
                         {formData.dueDate ? (
-                          format(formData.dueDate, "PPP")
+                          format(ensureValidDate(formData.dueDate), "PPP")
                         ) : (
                           <span>Pick a date</span>
                         )}
@@ -398,78 +433,22 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
           <Card>
             <CardHeader>
               <CardTitle>Line Items</CardTitle>
-              <CardDescription>Add the products or services</CardDescription>
+              <CardDescription>Add time entries or manual items</CardDescription>
             </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                {formData.lineItems.map((item, index) => (
-                  <div key={item.id} className="flex gap-2 items-end">
-                    <div className="flex-1">
-                      <Label>Description</Label>
-                      <Input
-                        value={item.description}
-                        onChange={e =>
-                          handleLineItemChange(
-                            index,
-                            "description",
-                            e.target.value
-                          )
-                        }
-                        placeholder="Service or product description"
-                      />
-                    </div>
-                    <div className="w-20">
-                      <Label>Qty</Label>
-                      <Input
-                        type="number"
-                        value={item.quantity}
-                        onChange={e =>
-                          handleLineItemChange(
-                            index,
-                            "quantity",
-                            Number(e.target.value)
-                          )
-                        }
-                      />
-                    </div>
-                    <div className="w-28">
-                      <Label>Rate</Label>
-                      <Input
-                        type="number"
-                        value={item.rate}
-                        onChange={e =>
-                          handleLineItemChange(
-                            index,
-                            "rate",
-                            Number(e.target.value)
-                          )
-                        }
-                      />
-                    </div>
-                    <div className="w-28">
-                      <Label>Amount</Label>
-                      <Input
-                        type="number"
-                        value={item.amount}
-                        disabled
-                        className="bg-gray-50"
-                      />
-                    </div>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => removeLineItem(index)}
-                      disabled={formData.lineItems.length === 1}
-                    >
-                      <Trash className="h-4 w-4" />
-                    </Button>
-                  </div>
-                ))}
+            <CardContent className="p-0">
+              <div className="px-6 py-4">
+                <InvoiceTable
+                  clientCurrency={company?.baseCurrency || "USD"}
+                  dateFormat={company?.dateFormat || "MM/dd/yyyy"}
+                  selectedClient={selectedClient}
+                  lineItems={lineItems}
+                  setLineItems={setLineItems}
+                  selectedLineItems={selectedLineItems}
+                  setSelectedLineItems={setSelectedLineItems}
+                  manualEntryArr={manualEntryArr}
+                  setManualEntryArr={setManualEntryArr}
+                />
               </div>
-              <Button variant="outline" onClick={addLineItem} className="mt-4">
-                <Plus className="mr-2 h-4 w-4" />
-                Add Line Item
-              </Button>
             </CardContent>
           </Card>
 
@@ -479,8 +458,8 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
               <CardTitle>Additional Details</CardTitle>
               <CardDescription>Tax, discount, and notes</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+            <CardContent className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="discount">Discount</Label>
                   <Input
@@ -524,12 +503,13 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
           </Card>
         </div>
 
-        {/* Preview Section */}
-        {showPreview && (
-          <div className="flex-1 lg:sticky lg:top-24 lg:h-fit">
-            <InvoicePreview invoice={previewInvoice} isEditing={true} />
-          </div>
-        )}
+          {/* Preview Section */}
+          {showPreview && (
+            <div className="flex-1 lg:max-w-2xl lg:sticky lg:top-24 lg:h-fit">
+              <InvoicePreview invoice={previewInvoice} isEditing={true} />
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

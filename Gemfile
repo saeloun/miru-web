@@ -3,7 +3,7 @@
 source "https://rubygems.org"
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby "3.4.5"
+ruby "4.0.0"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 8.0.2.1"
@@ -94,7 +94,10 @@ gem "audited", "~> 5.0"
 gem "data_migrate"
 
 # pagy for Pagination
-gem "pagy", "~> 5.10"
+gem "pagy", "~> 8.0"
+
+# Avo Admin Framework  
+gem "avo", ">= 3.17"
 
 gem "nokogiri", ">= 1.18.4"
 
@@ -181,7 +184,7 @@ group :development, :test, :ci do
   gem "rails-controller-testing", "~> 1.0", ">= 1.0.5"
 
   # To record response of outgoing API calls
-  gem "vcr", "~> 6.1"
+  gem "vcr", "~> 6.4.0"
   gem "webmock", "~> 3.14.0"
 
   gem "dockerfile-rails"
@@ -242,3 +245,4 @@ gem "postmark-rails"
 gem "strong_migrations"
 
 gem "redis", "~> 5.4"
+gem "dotenv", groups: [:development, :test]
