@@ -31,6 +31,7 @@ json.entries do
             json.leave_date CompanyDateFormattingService.new(entry[:leave_date], company:).process
             json.holiday_info_id entry[:holiday_info_id]
             json.leave_type_id entry[:leave_type_id]
+            json.custom_leave_id entry[:custom_leave_id]
             json.user_id entry[:user_id]
           end
         end
@@ -48,14 +49,28 @@ json.holiday_infos holiday_infos do |holiday_info|
 end
 
 json.leave_types leave_types do |leave_type|
-  json.id leave_type[:id]
+  # Use composite id to avoid conflicts between LeaveType and CustomLeave
+  if leave_type.is_a?(LeaveType)
+    json.id leave_type[:id]
+    json.type "leave_type"
+    json.allocation_frequency leave_type[:allocation_frequency]
+    json.carry_forward_days leave_type[:carry_forward_days]
+    json.color leave_type[:color]
+    json.icon leave_type[:icon]
+  else
+    # CustomLeave - prefix id to distinguish from LeaveType
+    json.id "custom_#{leave_type[:id]}"
+    json.custom_leave_id leave_type[:id]
+    json.type "custom_leave"
+    json.allocation_frequency "per_year"
+    json.carry_forward_days 0
+    json.color "custom"
+    json.icon "custom"
+  end
+
   json.name leave_type[:name]
   json.allocation_value leave_type[:allocation_value]
   json.allocation_period leave_type[:allocation_period]
-  json.allocation_frequency leave_type[:allocation_frequency]
-  json.carry_forward_days leave_type[:carry_forward_days]
-  json.color leave_type[:color]
-  json.icon leave_type[:icon]
   json.leave_id leave_type[:leave_id]
 end
 

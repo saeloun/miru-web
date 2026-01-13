@@ -9,17 +9,41 @@ import {
   generateHolidayColor,
 } from "components/Profile/Organization/Leaves/utils";
 
+// Default color for custom leaves
+const CUSTOM_LEAVE_COLOR = { value: "#9B59B6", label: "custom" };
+const CUSTOM_LEAVE_ICON = { icon: null, value: "custom" };
+
 const TableRow = ({ timeoffEntry }) => {
-  const { leaveDate, duration, leaveType, holidayInfo } = timeoffEntry;
+  const { leaveDate, duration, leaveType, holidayInfo, customLeave } =
+    timeoffEntry;
 
-  const leaveIcon = leaveType?.icon
-    ? generateLeaveIcon(leaveType?.icon)
-    : generateHolidayIcon(holidayInfo?.category);
+  const getLeaveIcon = () => {
+    if (customLeave) {
+      return generateLeaveIcon("custom") || CUSTOM_LEAVE_ICON;
+    }
 
-  const leaveColor = leaveType?.color
-    ? generateLeaveColor(leaveType?.color)
-    : generateHolidayColor(holidayInfo?.category);
-  const leaveName = leaveType?.name || holidayInfo?.name;
+    if (leaveType?.icon) {
+      return generateLeaveIcon(leaveType.icon);
+    }
+
+    return generateHolidayIcon(holidayInfo?.category);
+  };
+
+  const getLeaveColor = () => {
+    if (customLeave) {
+      return generateLeaveColor("custom") || CUSTOM_LEAVE_COLOR;
+    }
+
+    if (leaveType?.color) {
+      return generateLeaveColor(leaveType.color);
+    }
+
+    return generateHolidayColor(holidayInfo?.category);
+  };
+
+  const leaveIcon = getLeaveIcon();
+  const leaveColor = getLeaveColor();
+  const leaveName = customLeave?.name || leaveType?.name || holidayInfo?.name;
 
   return (
     <tr className="flex items-center justify-between py-4">

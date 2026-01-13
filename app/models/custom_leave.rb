@@ -24,6 +24,7 @@ class CustomLeave < ApplicationRecord
   belongs_to :leave
   has_many :custom_leave_users, dependent: :destroy
   has_many :users, through: :custom_leave_users
+  has_many :timeoff_entries, dependent: :nullify
 
   enum allocation_period: {
     days: 0,

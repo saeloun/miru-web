@@ -109,6 +109,18 @@ const LeaveManagement = () => {
         sortedTimeoffEntries = optionalTimeoffEntries;
       } else if (selectedLeaveType.id == "national") {
         sortedTimeoffEntries = nationalTimeoffEntries;
+      } else if (selectedLeaveType.type === "custom_leave") {
+        // Custom leaves have composite IDs like "custom_1", extract the numeric ID
+        const customLeaveId =
+          typeof selectedLeaveType.id === "string"
+            ? parseInt(selectedLeaveType.id.replace("custom_", ""), 10)
+            : selectedLeaveType.id;
+
+        sortedTimeoffEntries =
+          timeoffEntries.length &&
+          timeoffEntries.filter(
+            timeoffEntry => timeoffEntry.customLeave?.id === customLeaveId
+          );
       } else {
         sortedTimeoffEntries =
           timeoffEntries.length &&

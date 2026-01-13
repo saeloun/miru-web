@@ -327,4 +327,64 @@ carry_forward_days)
         company.working_days
       ).process
     end
+
+    context "with custom leaves" do
+      let(:custom_leave_company) { create(:company) }
+      let(:custom_leave_user_record) { create(:user, current_workspace_id: custom_leave_company.id) }
+      let!(:custom_leave_leave) { create(:leave, company: custom_leave_company, year: Date.today.year) }
+      let!(:custom_leave) do
+        create(
+          :custom_leave, leave: custom_leave_leave, name: "Special Leave", allocation_value: 5,
+          allocation_period: :days)
+      end
+
+      let(:custom_leave_working_hours_per_day) {
+  custom_leave_company.working_hours.to_i / custom_leave_company.working_days.to_i
+}
+
+      describe "#process with custom leaves" do
+        before do
+          @joined_at = Date.today - 1.year
+          @year = Date.today.year
+          create(
+            :employment, company: custom_leave_company, user: custom_leave_user_record, joined_at: @joined_at,
+            resigned_at: nil)
+          create(:custom_leave_user, custom_leave:, user: custom_leave_user_record)
+          custom_leave_user_record.add_role :admin, custom_leave_company
+
+          params = {
+            user_id: custom_leave_user_record.id,
+            year: @year
+          }
+
+          service = TimeoffEntries::IndexService.new(
+            custom_leave_user_record, custom_leave_company, params[:user_id],
+            params[:year])
+          @data = service.process
+        end
+
+        it "returns custom leave balance for assigned user" do
+          custom_leave_balance = @data[:leave_balance].find { |lb| lb[:type] == "custom_leave" }
+
+          expect(custom_leave_balance).not_to be_nil
+          expect(custom_leave_balance[:name]).to eq("Special Leave")
+          expect(custom_leave_balance[:total_leave_type_days]).to eq(5)
+        end
+
+        it "calculates custom leave balance correctly with timeoff entries" do
+          create(
+            :timeoff_entry, duration: 480, leave_date: Date.today, user: custom_leave_user_record, custom_leave:,
+            leave_type: nil)
+
+          service = TimeoffEntries::IndexService.new(
+            custom_leave_user_record, custom_leave_company,
+            custom_leave_user_record.id, @year)
+          data = service.process
+
+          custom_leave_balance = data[:leave_balance].find { |lb| lb[:type] == "custom_leave" }
+
+          expect(custom_leave_balance[:timeoff_entries_duration]).to eq(480)
+        end
+      end
+    end
 end

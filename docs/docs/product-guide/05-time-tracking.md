@@ -11,11 +11,25 @@ The Week view streamlines the process of entering a substantial amount of time a
 
 Lastly, the Month view provides a comprehensive snapshot of your entire month, displaying an overview of your work hours.
 
-# **Day View**
+# Day View
 
-The Day view of your timesheet lets you track your time as you work. By adding entries for work you’ve already done, you can make sure your time is accurate and accounted for.
+The Day view of your timesheet lets you track your time as you work. By adding entries for work you've already done, you can make sure your time is accurate and accounted for.
 
-You can access this view by going to **Time Tracking > DAY**.
+You can access this view by going to **Time Tracking > DAY**.
+
+## Logging Time Off
+
+In addition to tracking work hours, you can also log time off (leave) entries:
+
+1. Click to add a new entry
+2. Select a leave type from the dropdown - this includes:
+   - **Standard leave types** (e.g., PTO, Sick Leave) - available to all employees
+   - **Custom leaves** - special allocations assigned specifically to you
+3. Enter the duration and select the date
+4. Add optional notes
+5. Save the entry
+
+Your leave balance will automatically update to reflect the time off taken. For more details on leave management, see the [Leave Management guide](./team/leave-management).
 
 # Week View
 
@@ -23,7 +37,7 @@ The Weekly Overview of your timesheet provides an efficient way to input a signi
 
 Here, you can easily track your total hours worked.
 
-### **Adding Time in the Weekly Overview**
+### Adding Time in the Weekly Overview
 
 1. Start by clicking on **Add Row**.
 2. Choose your client and project, then click **Save Row**. You can expedite this process by typing the names and pressing the **Enter** key.
@@ -35,7 +49,7 @@ The Month view of your timesheet provides an efficient way to view all hours log
 
 Here, you can easily track your total hours worked for the month.
 
-### **Adding Time in the Monthly Overview**
+### Adding Time in the Monthly Overview
 
 1. Adding time entries is similar to that of DAY view.
 
