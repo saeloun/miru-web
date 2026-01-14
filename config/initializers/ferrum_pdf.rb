@@ -29,13 +29,13 @@ FerrumPdf.configure do |config|
   config.pdf_options.margin_right = 0.5
 end
 
-# Production environment: Configure browser with specific Chrome path and security options
-if Rails.env.production?
+# Configure browser for production and containerized environments
+if Rails.env.production? || ENV["DOCKER_CONTAINER"]
   FerrumPdf.browser = Ferrum::Browser.new(
     headless: true, # Run browser in headless mode (no GUI)
     timeout: 60, # Maximum time to wait for browser operations
     process_timeout: 60, # Maximum time to wait for browser process to start
-    browser_path: "/usr/bin/google-chrome-stable", # Path to Chrome binary in production
+    browser_path: "/usr/bin/google-chrome-stable", # Path to Chrome binary
     browser_options: {
       # Disable sandbox for containerized environments (e.g., Docker)
       "no-sandbox" => nil,
