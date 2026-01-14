@@ -73,6 +73,12 @@ jobs:
       - name: Install packages
         run: |
           yarn install --pure-lockfile
+      - name: Compile webpack assets
+        env:
+          RAILS_ENV: test
+          NODE_ENV: test
+        run: |
+          bundle exec rails assets:precompile
       - name: Setup kernel for guard, increase watchers
         run: |
           echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
