@@ -59,6 +59,9 @@ gem "shakapacker", ">= 9.5.0"
 # React hook for rails
 gem "react-rails", "2.6.2"
 
+# Pin connection_pool to 2.x for react-rails 2.6.2 compatibility
+gem "connection_pool", "~> 2.4"
+
 # Use SCSS for stylesheets
 gem "sass-rails"
 
