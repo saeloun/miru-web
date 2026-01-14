@@ -5,8 +5,6 @@ default: &default
   source_entry_path: /
   public_root_path: public
   public_output_path: packs
-  cache_path: tmp/shakapacker
-  webpack_compile_output: true
 
   # Additional paths webpack should look up modules
   # ['app/assets', 'engine/foo/app/assets']
@@ -14,6 +12,10 @@ default: &default
 
   # Reload manifest.json on all requests so we reload latest compiled packs
   cache_manifest: false
+
+  # Select JavaScript transpiler to use
+  # Available options: 'swc' (default, 20x faster), 'babel', 'esbuild', or 'none'
+  javascript_transpiler: "babel"
 
   # Raises an error if there is a mismatch in the shakapacker gem and npm package being used
   ensure_consistent_versioning: true
