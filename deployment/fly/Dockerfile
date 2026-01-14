@@ -1,6 +1,6 @@
 # syntax = docker/dockerfile:experimental
-ARG RUBY_VERSION=3.4.8
-ARG VARIANT=jemalloc-slim
+ARG RUBY_VERSION=3.4.8-jemalloc
+ARG VARIANT=slim
 FROM quay.io/evl.ms/fullstaq-ruby:${RUBY_VERSION}-${VARIANT} as base
 
 ARG NODE_VERSION=18.14.2

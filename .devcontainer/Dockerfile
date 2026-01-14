@@ -1,5 +1,5 @@
 #syntax=docker/dockerfile:1
-ARG VARIANT=3.4.8
+ARG VARIANT=3.4
 FROM mcr.microsoft.com/vscode/devcontainers/ruby:${VARIANT} AS base
 
 # Update args in docker-compose.yaml to set the UID/GID of the "vscode" user.
