@@ -26,7 +26,7 @@ class Address < ApplicationRecord
   # Associations
   belongs_to :addressable, polymorphic: true
 
-  # Addresss type values
+  # Address type values
   enum address_type: { current: "current", permanent: "permanent" }
 
   # Validations

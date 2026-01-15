@@ -2,8 +2,12 @@ import React, { useState, useEffect } from "react";
 
 import { currencyFormat } from "helpers";
 
+import currencyPairsApi from "apis/currencyPairs";
+
 const InvoiceTotal = ({
   currency,
+  clientCurrency,
+  baseCurrencyAmount,
   newLineItems,
   amountPaid,
   amountDue,
@@ -11,6 +15,7 @@ const InvoiceTotal = ({
   setAmount,
   discount,
   setDiscount,
+  setBaseCurrencyAmount,
   tax,
   setTax,
   manualEntryArr,
@@ -49,7 +54,42 @@ const InvoiceTotal = ({
     setTotal(newTotal);
     setAmount(newTotal);
     setAmountDue(newTotal - amountPaid);
-  }, [newLineItems, manualEntryArr, discount, subTotal, tax]);
+  }, [
+    newLineItems,
+    manualEntryArr,
+    discount,
+    subTotal,
+    tax,
+    amountPaid,
+    setAmount,
+    setAmountDue,
+  ]);
+
+  // Auto-calculate base currency amount when total changes
+  useEffect(() => {
+    const fetchExchangeRate = async () => {
+      if (currency !== clientCurrency && total > 0) {
+        try {
+          const response = await currencyPairsApi.getRate(
+            clientCurrency,
+            currency
+          );
+          if (response.data.rate) {
+            const convertedAmount = (
+              total * parseFloat(response.data.rate)
+            ).toFixed(2);
+            setBaseCurrencyAmount(convertedAmount);
+          }
+        } catch {
+          // Failed to fetch exchange rate - silently handle error
+        }
+      } else if (currency === clientCurrency) {
+        setBaseCurrencyAmount("");
+      }
+    };
+
+    fetchExchangeRate();
+  }, [total, currency, clientCurrency, setBaseCurrencyAmount]);
 
   return (
     <div className="mb-5 flex w-full justify-end pt-3 pb-10 pr-10">
@@ -60,12 +100,14 @@ const InvoiceTotal = ({
               Sub total
             </td>
             <td className="text-right text-base font-bold text-miru-dark-purple-1000 ">
-              {subTotal ? currencyFormat(currency, subTotal.toFixed(2)) : 0}
+              {subTotal
+                ? currencyFormat(clientCurrency, subTotal.toFixed(2))
+                : 0}
             </td>
           </tr>
           <tr className="miru-gray-400 border-b-2 pb-5">
             {discount ? (
-              <td className="py-2 pr-10 pr-10 text-right text-base font-normal text-miru-dark-purple-1000">
+              <td className="py-2 pr-10 text-right text-base font-normal text-miru-dark-purple-1000">
                 <label className="cursor-pointer" htmlFor="Discount">
                   Discount
                 </label>
@@ -110,15 +152,42 @@ const InvoiceTotal = ({
               Total
             </td>
             <td className="text-right text-base font-bold text-miru-dark-purple-1000">
-              {total ? currencyFormat(currency, total) : 0}
+              {total ? currencyFormat(clientCurrency, total) : 0}
             </td>
           </tr>
+          {currency !== clientCurrency && (
+            <tr className="miru-gray-400 border-b-2 pb-5">
+              {baseCurrencyAmount ? (
+                <td className="py-2 pr-10 text-right text-base font-normal text-miru-dark-purple-1000">
+                  <label className="cursor-pointer" htmlFor="baseCurrency">
+                    Amount in {currency}
+                  </label>
+                </td>
+              ) : (
+                <td className="cursor-pointer pt-2 pr-10 pb-3 text-right text-xs font-bold tracking-widest text-miru-han-purple-1000">
+                  <label className="cursor-pointer" htmlFor="baseCurrency">
+                    ADD AMOUNT IN {currency}
+                  </label>
+                </td>
+              )}
+              <td className="pb-1 text-right">
+                <input
+                  readOnly
+                  className="focusPadding focus:outline-none w-20 cursor-pointer rounded bg-transparent py-1 text-right text-base font-bold text-miru-dark-purple-1000 focus:border-miru-gray-1000 focus:bg-white focus:ring-1 focus:ring-miru-gray-1000"
+                  id="baseCurrency"
+                  title="Auto-calculated based on exchange rate"
+                  type="text"
+                  value={baseCurrencyAmount}
+                />
+              </td>
+            </tr>
+          )}
           <tr>
             <td className="pt-1 pr-10 text-right text-base font-normal text-miru-dark-purple-1000">
               Amount Paid
             </td>
             <td className="text-right text-base font-bold text-miru-dark-purple-1000 ">
-              {amountPaid ? currencyFormat(currency, amountPaid) : 0}
+              {amountPaid ? currencyFormat(clientCurrency, amountPaid) : 0}
             </td>
           </tr>
           <tr>
@@ -126,7 +195,7 @@ const InvoiceTotal = ({
               Amount Due
             </td>
             <td className="text-right text-base font-bold text-miru-dark-purple-1000">
-              {amountDue ? currencyFormat(currency, amountDue) : 0}
+              {amountDue ? currencyFormat(clientCurrency, amountDue) : 0}
             </td>
           </tr>
         </tbody>

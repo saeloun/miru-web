@@ -2,11 +2,11 @@
 import React, { useEffect, useState } from "react";
 
 import "react-phone-number-input/style.css"; //eslint-disable-line
-import { Country } from "country-state-city";
 import { Formik, Form, FormikProps } from "formik";
 import PhoneInput from "react-phone-number-input";
 import flags from "react-phone-number-input/flags";
 import { Button, Toastr } from "StyledComponents";
+import worldCountries from "world-countries";
 
 import clientApi from "apis/clients";
 import CustomReactSelect from "common/CustomReactSelect";
@@ -15,6 +15,8 @@ import { InputErrors, InputField } from "common/FormikFields";
 import { clientSchema, getInitialvalues } from "./formValidationSchema";
 import UploadLogo from "./UploadLogo";
 import { disableBtn, formatFormData } from "./utils";
+
+import { currencyListOptions } from "../../OrganizationSetup/FinancialDetailsForm/utils";
 
 const ClientForm = ({
   client,
@@ -37,16 +39,15 @@ const ClientForm = ({
 
   const assignCountries = async allCountries => {
     const countryData = await allCountries.map(country => ({
-      value: country?.isoCode && country.isoCode,
-      label: country.name,
-      code: country?.isoCode && country?.isoCode,
+      value: country?.cca2 && country.cca2,
+      label: country.name.common,
+      code: country?.cca2 && country?.cca2,
     }));
     setCountries(countryData);
   };
 
   useEffect(() => {
-    const allCountries = Country.getAllCountries();
-    assignCountries(allCountries);
+    assignCountries(worldCountries);
   }, []);
 
   const handleSubmit = async values => {
@@ -249,6 +250,20 @@ const ClientForm = ({
                 />
               </div>
             </div>
+            <div className="mt-4">
+              <div className="field relative mb-5">
+                <CustomReactSelect
+                  isErr={!!errors.currency && touched.currency}
+                  label="Currency"
+                  name="currency"
+                  options={currencyListOptions}
+                  value={values.currency ? values.currency : null}
+                  handleOnChange={e => {
+                    setFieldValue("currency", e);
+                  }}
+                />
+              </div>
+            </div>
             <div className="actions mt-4">
               <Button
                 className="w-full p-2 text-center text-base font-bold"
@@ -292,6 +307,7 @@ interface FormValues {
   state: string;
   city: string;
   zipcode: string;
+  currency: any;
   logo: any;
 }
 

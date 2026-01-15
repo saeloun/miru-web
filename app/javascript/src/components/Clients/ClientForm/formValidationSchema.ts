@@ -1,9 +1,16 @@
 /* eslint-disable import/exports-last */
-import { Country } from "country-state-city";
+import worldCountries from "world-countries";
 import * as Yup from "yup";
+
+import { currencyList } from "constants/currencyList";
 
 const phoneRegExp =
   /^((\+\d{1,3}(-| )?\(?\d\)?(-| )?\d{1,3})|(\(?\d{2,3}\)?))(-| )?(\d{3,4})(-| )?(\d{4})(( x| ext)\d{1,5}){0,1}$/;
+
+interface Currency {
+  code: string;
+  symbol: string;
+}
 
 export const clientSchema = Yup.object().shape({
   name: Yup.string()
@@ -29,13 +36,30 @@ export const clientSchema = Yup.object().shape({
   zipcode: Yup.string()
     .required("Zipcode line cannot be blank")
     .max(10, "Maximum 10 characters are allowed"),
+  currency: Yup.object().shape({
+    value: Yup.string().required("Currency cannot be blank"),
+  }),
 });
 
 const getCountryLabel = countryCode => {
   if (countryCode) {
-    const countryObj = Country.getCountryByCode(countryCode);
+    const countryObj = worldCountries.find(
+      country => country["cca2"] === countryCode
+    );
 
-    return countryObj.name;
+    return countryObj.name.common;
+  }
+
+  return "";
+};
+
+const getCurrencyLabel = (currency?: string): string => {
+  if (currency) {
+    const currencyObj: Currency | undefined = currencyList.find(
+      (cur: Currency) => cur.code === currency
+    );
+
+    return `${currencyObj.symbol} (${currencyObj.code})`;
   }
 
   return "";
@@ -57,4 +81,8 @@ export const getInitialvalues = (client?: any) => ({
   zipcode: client?.address?.pin || "",
   minutes: client?.minutes || "",
   logo: client?.logo || null,
+  currency: {
+    label: getCurrencyLabel(client?.currency),
+    value: client?.currency || "",
+  },
 });

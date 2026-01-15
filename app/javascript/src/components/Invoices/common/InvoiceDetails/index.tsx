@@ -10,7 +10,8 @@ import { CustomInputText } from "common/CustomInputText";
 import ClientSelection from "./ClientSelection";
 
 const InvoiceDetails = ({
-  currency,
+  clientCurrency,
+  setClientCurrency,
   clientList,
   amount,
   selectedClient,
@@ -62,6 +63,7 @@ const InvoiceDetails = ({
         invoiceNumber={invoiceNumber}
         optionSelected={optionSelected}
         selectedClient={selectedClient}
+        setClientCurrency={setClientCurrency}
         setInvoiceNumber={setInvoiceNumber}
         setSelectedClient={setSelectedClient}
       />
@@ -152,7 +154,7 @@ const InvoiceDetails = ({
           Amount
         </p>
         <p className="mt-6 text-right text-4xl font-normal text-miru-dark-purple-1000">
-          {currencyFormat(currency, amount)}
+          {currencyFormat(clientCurrency, amount)}
         </p>
       </div>
     </div>

@@ -12,6 +12,7 @@ json.amount invoice.amount
 json.outstanding_amount invoice.outstanding_amount
 json.amount_paid invoice.amount_paid
 json.amount_due invoice.amount_due
+json.base_currency_amount invoice.base_currency_amount
 json.discount invoice.discount
 json.tax invoice.tax
 json.status invoice.status

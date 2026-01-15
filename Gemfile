@@ -3,16 +3,16 @@
 source "https://rubygems.org"
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby "3.2.4"
+ruby "3.3.10"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
-gem "rails", "~> 7.1.3"
+gem "rails", "~> 7.1.5.1"
 
 # Use postgresql as the database for Active Record
 gem "pg"
 
 # Use the Puma web server [https://github.com/puma/puma]
-gem "puma", "~> 6.4.2"
+gem "puma", "~> 6.4.3"
 
 # Use JavaScript with ESM import maps [https://github.com/rails/importmap-rails]
 # gem "importmap-rails", ">= 0.9.2"
@@ -72,6 +72,9 @@ gem "countries"
 # Letter opener can be configured to avoid sending sending actual emails whenever required.
 gem "letter_opener_web"
 
+# Premailer for inlining CSS in emails
+gem "premailer-rails", "~> 1.12"
+
 # currency list and conversion
 gem "money"
 
@@ -103,7 +106,7 @@ gem "data_migrate"
 # pagy for Pagination
 gem "pagy", "~> 5.10"
 
-gem "nokogiri", ">= 1.16.2"
+gem "nokogiri", ">= 1.18.4"
 
 # Manage application specific business logic. https://github.com/AaronLasseigne/active_interaction
 gem "active_interaction"
@@ -119,8 +122,8 @@ gem "solid_queue", "~> 0.3"
 gem "elasticsearch", "< 7.14" # select one
 gem "searchkick"
 
-# PDF generator
-gem "grover"
+# PDF generator - using Ferrum PDF for modern Chrome-based PDF generation
+gem "ferrum_pdf", "~> 2.1"
 
 gem "activerecord-import"
 
@@ -141,7 +144,7 @@ gem "google-api-client", require: "google/apis/calendar_v3"
 
 group :development, :test, :ci do
   # See https://edgeguides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
-  gem "debug", ">= 1.0.0", platforms: %i[mri mingw x64_mingw]
+  gem "debug", ">= 1.9.0", platforms: %i[mri mingw x64_mingw]
 
   # Add Rubocop to lint and format Ruby code
   gem "rubocop", require: false
@@ -150,7 +153,7 @@ group :development, :test, :ci do
   gem "rubocop-rspec", require: false
 
   # Use RSpec as the testing framework
-  gem "rspec-rails", "~> 6.1"
+  gem "rspec-rails", "~> 7.0"
 
   # For linting ERB files
   gem "erb_lint", require: false, git: "https://github.com/Shopify/erb-lint.git", branch: "main"
@@ -231,3 +234,8 @@ gem "rack-cors", "2.0.0"
 gem "administrate"
 
 gem "psych", "~> 4"
+
+gem "postmark-rails"
+
+# Zerobounce email validation
+gem "zerobounce-sdk"

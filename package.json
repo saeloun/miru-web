@@ -1,6 +1,6 @@
 {
   "name": "@saeloun/miru-web",
-  "version": "1.6.7",
+  "version": "1.9.1",
   "dependencies": {
     "@babel/core": "^7.21.3",
     "@babel/plugin-proposal-private-methods": "^7.16.5",
@@ -23,14 +23,13 @@
     "@typescript-eslint/parser": "^5.7.0",
     "alpine-turbo-drive-adapter": "^2.0.0",
     "alpinejs": "^2.2.5",
-    "autoprefixer": "~9",
+    "autoprefixer": "^10.4.20",
     "axios": "^1.7.4",
     "babel-loader": "^9.1.2",
     "babel-plugin-js-logger": "^1.0.17",
     "babel-plugin-transform-react-remove-prop-types": "^0.4.24",
     "classnames": "^2.3.1",
     "compression-webpack-plugin": "^10.0.0",
-    "country-state-city": "^3.1.2",
     "css-loader": "^6.7.3",
     "css-minimizer-webpack-plugin": "^4.2.2",
     "currency-symbol-map": "^5.0.1",
@@ -89,6 +88,7 @@
     "webpack-cli": "^5.0.1",
     "webpack-merge": "^5.8.0",
     "webpack-sources": "^3.2.3",
+    "world-countries": "^5.0.0",
     "yup": "^0.32.11"
   },
   "devDependencies": {

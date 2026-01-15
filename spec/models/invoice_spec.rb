@@ -71,6 +71,20 @@ RSpec.describe Invoice, type: :model do
       @current_invoice.discard!
       expect { @current_invoice.discard! }.to raise_error(Discard::RecordNotDiscarded)
     end
+
+    it "update invoice number" do
+      @current_invoice.discard!
+      expect(@current_invoice.invoice_number).to start_with(
+        "#{Invoice::ARCHIVED_PREFIX}-#{@current_invoice.id}-"
+      )
+    end
+
+    it "reuses invoice number after discard for new invoice" do
+      invoice_number = @current_invoice.invoice_number
+      @current_invoice.discard!
+      new_invoice = create(:invoice, client: @current_invoice.client, company:, invoice_number:)
+      expect(new_invoice.invoice_number).to eq(invoice_number)
+    end
   end
 
   describe "Scopes" do
@@ -118,6 +132,70 @@ RSpec.describe Invoice, type: :model do
     it { is_expected.to callback(:refresh_invoice_index).after(:commit) }
     it { is_expected.to callback(:lock_timesheet_entries).after(:save).if(:draft?) }
     it { is_expected.to callback(:unlock_timesheet_entries).after(:discard).if(:draft?) }
+  end
+
+  describe "#calculate_base_currency_amount" do
+    let(:company) { create(:company, base_currency: "USD") }
+    let(:client) { create(:client, company:) }
+
+    context "when creating a new invoice" do
+      it "calculates base_currency_amount on creation" do
+        invoice = build(:invoice, company:, client:, amount: 100, currency: "EUR")
+
+        allow(invoice).to receive(:calculate_base_currency_amount).and_call_original
+        invoice.save
+        expect(invoice).to have_received(:calculate_base_currency_amount)
+      end
+    end
+
+    context "when updating an existing invoice" do
+      let!(:invoice) { create(:invoice, company:, client:, amount: 100, currency: "EUR") }
+
+      it "recalculates when amount changes" do
+        original_base_amount = invoice.base_currency_amount
+
+        invoice.amount = 200
+        allow(invoice).to receive(:calculate_base_currency_amount).and_call_original
+        invoice.save
+      end
+
+      it "recalculates when currency changes" do
+        invoice.currency = "GBP"
+        allow(invoice).to receive(:calculate_base_currency_amount).and_call_original
+        invoice.save
+        expect(invoice).to have_received(:calculate_base_currency_amount)
+      end
+
+      it "does not recalculate when other fields change" do
+        invoice.reference = "NEW-REF"
+        expect(invoice).not_to receive(:calculate_base_currency_amount)
+        invoice.save
+      end
+
+      it "does not recalculate when amount and currency remain the same" do
+        invoice.issue_date = Date.tomorrow
+        expect(invoice).not_to receive(:calculate_base_currency_amount)
+        invoice.save
+      end
+
+      it "preserves historic exchange rates when amount unchanged" do
+        # Create invoice with a specific base_currency_amount
+        original_base_amount = invoice.base_currency_amount
+
+        # Update other fields
+        invoice.update(reference: "TEST-123")
+
+        # Base currency amount should remain unchanged
+        expect(invoice.reload.base_currency_amount).to eq(original_base_amount)
+      end
+    end
+
+    context "when invoice and company have same currency" do
+      it "sets base_currency_amount equal to amount" do
+        invoice = create(:invoice, company:, client:, amount: 100, currency: "USD")
+        expect(invoice.base_currency_amount).to eq(100)
+      end
+    end
   end
 
   describe ".client_name" do

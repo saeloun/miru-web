@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useCallback, useEffect, useState } from "react";
 
 import dayjs from "dayjs";
 import { useParams, useNavigate } from "react-router-dom";
@@ -38,6 +38,8 @@ const EditInvoice = () => {
   const [selectedLineItems, setSelectedLineItems] = useState<any>([]);
   const [manualEntryArr, setManualEntryArr] = useState<any>([]);
   const [selectedClient, setSelectedClient] = useState<any>({ value: 0 });
+  const [clientCurrency, setClientCurrency] = useState<string>("USD");
+  const [baseCurrencyAmount, setBaseCurrencyAmount] = useState<any>(0);
   const [invoiceNumber, setInvoiceNumber] = useState<any>("");
   const [reference, setReference] = useState<string>("");
   const [amount, setAmount] = useState<any>(0);
@@ -61,10 +63,11 @@ const EditInvoice = () => {
   const SELECT_CLIENT_ERROR =
     "Please select client and enter invoice number to proceed";
 
-  const fetchInvoice = async () => {
+  const fetchInvoice = useCallback(async () => {
     try {
       setStatus(InvoiceStatus.LOADING);
       const { data } = await invoicesApi.editInvoice(params.id);
+
       setInvoiceDetails(data);
       setReference(data.reference);
       setIssueDate(data.issueDate);
@@ -78,16 +81,18 @@ const EditInvoice = () => {
       setAmountPaid(data.amountPaid);
       setStatus(InvoiceStatus.SUCCESS);
       setIsStripeEnabled(data.stripeEnabled);
+      setBaseCurrencyAmount(data.baseCurrencyAmount);
+      setClientCurrency(data.currency);
     } catch {
       navigate("/invoices/error");
       setStatus(InvoiceStatus.ERROR);
     }
-  };
+  }, [params.id, navigate]);
 
   useEffect(() => {
     sendGAPageView();
     fetchInvoice();
-  }, []);
+  }, [fetchInvoice]);
 
   const updateInvoice = async () => {
     try {
@@ -109,6 +114,8 @@ const EditInvoice = () => {
         amount_due: amountDue,
         amount_paid: amountPaid,
         amount,
+        base_currency_amount: baseCurrencyAmount,
+        currency: clientCurrency,
         discount: Number(discount),
         tax: tax || invoiceDetails.tax,
         client_id: selectedClient.id,
@@ -144,7 +151,11 @@ const EditInvoice = () => {
 
   const handleSaveInvoice = async () => {
     if (selectedClient && invoiceNumber !== "") {
-      await updateInvoice();
+      const res = await updateInvoice();
+      // Update baseCurrencyAmount from backend response
+      if (res?.data?.baseCurrencyAmount) {
+        setBaseCurrencyAmount(res.data.baseCurrencyAmount);
+      }
       navigate(`/invoices/${invoiceDetails.id}`);
     } else {
       selectedClient
@@ -168,6 +179,10 @@ const EditInvoice = () => {
   const handleSaveSendInvoice = async () => {
     if (selectedClient && invoiceNumber !== "") {
       const res = await updateInvoice();
+      // Update baseCurrencyAmount from backend response
+      if (res?.data?.baseCurrencyAmount) {
+        setBaseCurrencyAmount(res.data.baseCurrencyAmount);
+      }
 
       return res;
     }
@@ -233,15 +248,16 @@ const EditInvoice = () => {
             <InvoiceDetails
               optionSelected
               amount={amount}
+              clientCurrency={clientCurrency}
               clientList={invoiceDetails.companyClientList}
               clientVisible={false}
-              currency={invoiceDetails.company.currency}
               dateFormat={invoiceDetails.company.dateFormat}
               dueDate={dueDate || invoiceDetails.dueDate}
               invoiceNumber={invoiceNumber}
               issueDate={issueDate || invoiceDetails.issueDate}
               reference={reference}
               selectedClient={selectedClient || invoiceDetails.client}
+              setClientCurrency={setClientCurrency}
               setDueDate={setDueDate}
               setInvoiceNumber={setInvoiceNumber}
               setIssueDate={setIssueDate}
@@ -250,7 +266,7 @@ const EditInvoice = () => {
             />
             <div className="py-5 pl-10">
               <InvoiceTable
-                currency={invoiceDetails.company.currency}
+                clientCurrency={clientCurrency}
                 dateFormat={invoiceDetails.company.dateFormat}
                 lineItems={lineItems}
                 manualEntryArr={manualEntryArr}
@@ -264,12 +280,15 @@ const EditInvoice = () => {
             <InvoiceTotal
               amountDue={amountDue}
               amountPaid={amountPaid}
+              baseCurrencyAmount={baseCurrencyAmount}
+              clientCurrency={clientCurrency}
               currency={invoiceDetails.company.currency}
               discount={discount}
               manualEntryArr={manualEntryArr}
               newLineItems={selectedLineItems}
               setAmount={setAmount}
               setAmountDue={setAmountDue}
+              setBaseCurrencyAmount={setBaseCurrencyAmount}
               setDiscount={setDiscount}
               setTax={setTax}
               tax={tax || invoiceDetails.tax}
@@ -323,6 +342,9 @@ const EditInvoice = () => {
         amount={amount}
         amountDue={amountDue}
         amountPaid={amountPaid}
+        baseCurrency={invoiceDetails.company?.currency}
+        baseCurrencyAmount={baseCurrencyAmount}
+        clientCurrency={clientCurrency}
         discount={discount}
         dueDate={dueDate}
         handleSaveInvoice={handleSaveInvoice}
@@ -337,6 +359,8 @@ const EditInvoice = () => {
         selectedLineItems={selectedLineItems}
         setAmount={setAmount}
         setAmountDue={setAmountDue}
+        setBaseCurrencyAmount={setBaseCurrencyAmount}
+        setClientCurrency={setClientCurrency}
         setDiscount={setDiscount}
         setDueDate={setDueDate}
         setInvoiceNumber={setInvoiceNumber}

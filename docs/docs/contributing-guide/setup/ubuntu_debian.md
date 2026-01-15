@@ -119,7 +119,39 @@ If not, to start it, run:
 $ sudo systemctl enable redis.service redis-server.service --now
 ```
 
-#### 9. Setup the app
+#### 9. Install Chrome/Chromium
+
+Chrome or Chromium is required for PDF generation (invoices, reports, etc.). Install either one:
+
+**Option 1: Google Chrome (Recommended)**
+
+```bash
+$ wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+$ sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
+$ sudo apt-get update
+$ sudo apt-get install google-chrome-stable -y
+```
+
+**Option 2: Chromium (Alternative)**
+
+```bash
+$ sudo apt-get update
+$ sudo apt-get install chromium-browser -y
+```
+
+You can verify the installation by running:
+
+```bash
+$ google-chrome --version
+```
+
+or
+
+```bash
+$ chromium-browser --version
+```
+
+#### 10. Setup the app
 
 Go to the miru-web app directory
 
@@ -135,13 +167,13 @@ Run the initial setup script
 ./bin/setup
 ```
 
-#### 10. Run app in local env
+#### 11. Run app in local env
 
 ```bash
 foreman start -f Procfile.dev
 ```
 
-#### 11. Navigate to [http://0.0.0.0:3000](http://0.0.0.0:3000) for accessing the app
+#### 12. Navigate to [http://0.0.0.0:3000](http://0.0.0.0:3000) for accessing the app
 
 ### To receive the emails in non-production apps.
 

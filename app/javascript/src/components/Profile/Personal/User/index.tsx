@@ -8,7 +8,7 @@ import { MobileEditHeader } from "common/Mobile/MobileEditHeader";
 import DetailsHeader from "components/Profile/Common/DetailsHeader";
 import { useProfileContext } from "context/Profile/ProfileContext";
 import { useUserContext } from "context/UserContext";
-import { employmentMapper, teamsMapper } from "mapper/teams.mapper";
+import { employmentMapper } from "mapper/teams.mapper";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import MobilePersonalDetails from "./MobilePersonalDetails";
@@ -26,30 +26,22 @@ const UserDetailsView = () => {
 
   const getData = async () => {
     setIsLoading(true);
-    const res = await teamsApi.get(UserId);
-    if (res.status && res.status == 200) {
-      const addressData = await teamsApi.getAddress(UserId);
-      const userObj = teamsMapper(res.data, addressData.data.addresses[0]);
+    if (companyRole !== "client") {
+      const employmentData: any = await teamsApi.getEmploymentDetails(UserId);
 
-      updateDetails("personalDetails", userObj);
-      if (companyRole !== "client") {
-        const employmentData: any = await teamsApi.getEmploymentDetails(UserId);
+      const previousEmploymentData: any = await teamsApi.getPreviousEmployments(
+        UserId
+      );
 
-        const previousEmploymentData: any =
-          await teamsApi.getPreviousEmployments(UserId);
-
-        if (employmentData.status && employmentData.status == 200) {
-          const employmentObj = employmentMapper(
-            employmentData.data.employment,
-            previousEmploymentData.data.previous_employments
-          );
-          updateDetails("employmentDetails", employmentObj);
-        }
+      if (employmentData.status && employmentData.status == 200) {
+        const employmentObj = employmentMapper(
+          employmentData.data.employment,
+          previousEmploymentData.data.previous_employments
+        );
+        updateDetails("employmentDetails", employmentObj);
       }
-      setIsLoading(false);
-    } else {
-      setIsLoading(false);
     }
+    setIsLoading(false);
   };
 
   useEffect(() => {

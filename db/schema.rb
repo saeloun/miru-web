@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_08_05_040547) do
+ActiveRecord::Schema[7.1].define(version: 2025_10_29_141025) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -149,6 +149,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_05_040547) do
     t.datetime "updated_at", null: false
     t.datetime "discarded_at"
     t.string "stripe_id"
+    t.string "currency", default: "USD", null: false
     t.index ["company_id"], name: "index_clients_on_company_id"
     t.index ["discarded_at"], name: "index_clients_on_discarded_at"
     t.index ["email", "company_id"], name: "index_clients_on_email_and_company_id", unique: true
@@ -168,6 +169,20 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_05_040547) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "calendar_enabled", default: true
+    t.string "working_days", default: "5"
+    t.string "working_hours", default: "40"
+  end
+
+  create_table "currency_pairs", force: :cascade do |t|
+    t.string "from_currency", null: false
+    t.string "to_currency", null: false
+    t.decimal "rate", precision: 20, scale: 10
+    t.datetime "last_updated_at"
+    t.boolean "active", default: true
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["active"], name: "index_currency_pairs_on_active"
+    t.index ["from_currency", "to_currency"], name: "index_currency_pairs_on_from_currency_and_to_currency", unique: true
   end
 
   create_table "custom_leave_users", force: :cascade do |t|
@@ -223,6 +238,15 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_05_040547) do
     t.index ["company_id"], name: "index_employments_on_company_id"
     t.index ["discarded_at"], name: "index_employments_on_discarded_at"
     t.index ["user_id"], name: "index_employments_on_user_id"
+  end
+
+  create_table "exchange_rate_usages", force: :cascade do |t|
+    t.integer "requests_count", default: 0
+    t.date "month", null: false
+    t.datetime "last_fetched_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["month"], name: "index_exchange_rate_usages_on_month", unique: true
   end
 
   create_table "expense_categories", force: :cascade do |t|
@@ -347,6 +371,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_05_040547) do
     t.datetime "payment_sent_at"
     t.datetime "client_payment_sent_at"
     t.boolean "stripe_enabled", default: true
+    t.string "currency", default: "USD", null: false
+    t.decimal "base_currency_amount", precision: 20, scale: 2, default: "0.0"
     t.index ["client_id"], name: "index_invoices_on_client_id"
     t.index ["company_id"], name: "index_invoices_on_company_id"
     t.index ["discarded_at"], name: "index_invoices_on_discarded_at"

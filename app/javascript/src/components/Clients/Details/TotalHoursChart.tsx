@@ -11,7 +11,9 @@ const TotalHoursChart = ({
   overdueOutstandingAmount,
   handleSelectChange,
 }) => {
-  const currencySymb = currencySymbol(overdueOutstandingAmount?.currency);
+  const currencySymb = currencySymbol(
+    overdueOutstandingAmount?.client_currency
+  );
 
   const amountBox = [
     {

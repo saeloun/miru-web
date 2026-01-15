@@ -6,6 +6,7 @@ FactoryBot.define do
     name { Faker::Name.unique.name[0..30] }
     email { Faker::Internet.unique.safe_email }
     phone { Faker::PhoneNumber.phone_number_with_country_code.slice(0, 15) }
+    currency { "USD" }
 
     after :create do |client|
       create(:address, addressable_type: "Client", addressable_id: client.id)

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import { InstagramSVG, TwitterSVG, MiruLogoWithTextSVG } from "miruIcons";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
 import invoicesApi from "apis/invoices";
 import Loader from "common/Loader";
@@ -15,6 +15,7 @@ import InvoiceDetails from "./InvoiceDetails";
 
 const InvoiceEmail = () => {
   const params = useParams();
+  const navigate = useNavigate();
   const { isDesktop } = useUserContext();
 
   const [loading, setLoading] = useState(true);
@@ -32,10 +33,14 @@ const InvoiceEmail = () => {
   }, []);
 
   const fetchViewInvoice = async () => {
-    const res = await invoicesApi.viewInvoice(params.id);
-    setData(res.data);
-    setIsStripeConnected(res.data.stripe_connected_account);
-    setLoading(false);
+    try {
+      const res = await invoicesApi.viewInvoice(params.id);
+      setData(res.data);
+      setIsStripeConnected(res.data.stripe_connected_account);
+      setLoading(false);
+    } catch {
+      navigate("/");
+    }
   };
 
   if (loading) {
