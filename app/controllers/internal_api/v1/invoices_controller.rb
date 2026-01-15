@@ -99,7 +99,8 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
   def download
     authorize invoice
 
-    send_data InvoicePayment::PdfGeneration.process(invoice, current_company.company_logo, root_url)
+    pdf_service = PdfGeneration::InvoiceService.new(invoice, current_company.company_logo, root_url)
+    send_data pdf_service.process
   end
 
   private
@@ -110,7 +111,12 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
     end
 
     def invoice
-      @_invoice ||= Invoice.kept.includes(:client, :invoice_line_items).find(params[:id])
+      @_invoice ||= Invoice.kept.includes(
+        :client,
+        { invoice_line_items: :timesheet_entry },
+        { company: { logo_attachment: :blob } }
+         )
+        .find(params[:id])
     end
 
     def invoice_params

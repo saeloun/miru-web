@@ -14,7 +14,8 @@ class Client::ShowPresenter
       email: client.email,
       address: client.current_address,
       phone: client.phone,
-      logo: client.logo_url
+      logo: client.logo_url,
+      currency: client.currency
     }
   end
 end

@@ -77,7 +77,7 @@ const ProjectDetails = () => {
     navigate(`/invoices/generate/?clientId=${project?.client?.id}`);
   };
 
-  const currencySymb = currencySymbol(project?.currency);
+  const currencySymb = currencySymbol(project?.client_currency);
 
   const handleAddProjectDetails = () => {
     fetchProject();

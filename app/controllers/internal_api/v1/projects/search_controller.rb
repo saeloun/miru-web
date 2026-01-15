@@ -4,7 +4,7 @@ class InternalApi::V1::Projects::SearchController < InternalApi::V1::Application
   skip_after_action :verify_authorized, only: [:index]
 
   def index
-    data = Projects::IndexService.new(current_company, params[:search_term]).process
+    data = Projects::IndexService.new(current_company, current_user, params[:search_term]).process
     render :index, locals: {
       projects: data[:projects]
     }, status: :ok

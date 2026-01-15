@@ -4,8 +4,9 @@ import dayjs from "dayjs";
 import { currencyFormat } from "helpers";
 
 const InvoiceInfo = ({ invoice, company, strikeAmount = "" }) => {
-  const { date_format, currency } = company;
-  const { issue_date, due_date, invoice_number, reference, amount } = invoice;
+  const { date_format } = company;
+  const { currency, issue_date, due_date, invoice_number, reference, amount } =
+    invoice;
   const formattedDate = date => dayjs(date).format(date_format);
 
   return (

@@ -6,7 +6,9 @@
 #  amount                 :decimal(20, 2)   default(0.0)
 #  amount_due             :decimal(20, 2)   default(0.0)
 #  amount_paid            :decimal(20, 2)   default(0.0)
+#  base_currency_amount   :decimal(20, 2)   default(0.0)
 #  client_payment_sent_at :datetime
+#  currency               :string           default("USD"), not null
 #  discarded_at           :datetime
 #  discount               :decimal(20, 2)   default(0.0)
 #  due_date               :date
@@ -73,9 +75,11 @@ class Invoice < ApplicationRecord
   store_accessor :payment_infos, :stripe_payment_intent
 
   before_validation :set_external_view_key, on: :create
+  before_validation :calculate_base_currency_amount, if: :should_recalculate_base_currency?
   after_commit :refresh_invoice_index
   after_save :lock_timesheet_entries, if: :draft?
   after_discard :unlock_timesheet_entries, if: :draft?
+  after_discard :update_invoice_number
 
   validates :issue_date, :due_date, :invoice_number, presence: true
   validates :due_date, comparison: { greater_than_or_equal_to: :issue_date }, if: :not_waived
@@ -85,6 +89,7 @@ class Invoice < ApplicationRecord
   validates :reference, length: { maximum: 12 }, allow_blank: true
   validate :check_if_invoice_paid, on: :update
   validate :prevent_waived_change, on: :update
+  validates :base_currency_amount, presence: true, unless: :same_currency?
 
   scope :with_statuses, -> (statuses) { where(status: statuses) if statuses.present? }
   scope :issue_date_range, -> (date_range) { where(issue_date: date_range) if date_range.present? }
@@ -92,6 +97,7 @@ class Invoice < ApplicationRecord
   scope :during, -> (duration) {
     where(issue_date: duration) if duration.present?
   }
+  scope :active, -> { where(discarded_at: nil) }
 
   delegate :name, to: :client, prefix: :client
   delegate :email, to: :client, prefix: :client
@@ -99,6 +105,8 @@ class Invoice < ApplicationRecord
 
   searchkick filterable: [:issue_date, :created_at, :updated_at, :client_name, :status, :invoice_number ],
     word_middle: [:invoice_number, :client_name]
+
+  ARCHIVED_PREFIX = "ARC"
 
   def search_data
     {
@@ -147,21 +155,16 @@ class Invoice < ApplicationRecord
   end
 
   def pdf_content(company_logo, root_url)
-    InvoicePayment::PdfGeneration.process(
-      self,
-      company_logo,
-      root_url
-    )
+    pdf_service = PdfGeneration::InvoiceService.new(self, company_logo, root_url)
+    pdf_service.process
   end
 
   def temp_pdf(company_logo, root_url)
-    file = Tempfile.new()
-    InvoicePayment::PdfGeneration.process(
-      self,
-      company_logo,
-      root_url,
-      file.path
-    )
+    file = Tempfile.new(["invoice", ".pdf"], encoding: "ascii-8bit")
+    pdf_service = PdfGeneration::InvoiceService.new(self, company_logo, root_url)
+    pdf_content = pdf_service.process
+    file.write(pdf_content)
+    file.rewind
     file
   end
 
@@ -207,5 +210,56 @@ class Invoice < ApplicationRecord
     def unlock_timesheet_entries
       timesheet_entry_ids = invoice_line_items.pluck(:timesheet_entry_id)
       TimesheetEntry.where(id: timesheet_entry_ids).update!(locked: false)
+    end
+
+    def same_currency?
+      if currency.present?
+        currency == company&.base_currency
+      else
+        client&.currency == company&.base_currency
+      end
+    end
+
+    def update_invoice_number
+      self.update(invoice_number: "#{ARCHIVED_PREFIX}-#{id}-#{invoice_number}")
+    end
+
+    def should_recalculate_base_currency?
+      # Recalculate if this is a new record
+      return true if new_record?
+
+      # Recalculate if amount or currency has changed
+      amount_changed? || currency_changed?
+    end
+
+    def calculate_base_currency_amount
+      return if amount.nil? || currency.blank? || company.blank?
+
+      if same_currency?
+        self.base_currency_amount = amount
+        return
+      end
+
+      service = CurrencyConversionService.new(
+        amount:,
+        from_currency: currency,
+        to_currency: company.base_currency
+      )
+
+      result = service.process
+
+      # Set the converted amount
+      # If no rate is available, the service returns the original amount as fallback
+      # This allows invoice creation to proceed even without API access
+      self.base_currency_amount = result
+
+      # Log warning if conversion might have failed (same amount returned for different currencies)
+      if result == amount && !same_currency?
+        Rails.logger.warn(
+          "Currency conversion may have failed for invoice. " \
+          "Using original amount as fallback. " \
+          "Currency: #{currency} -> #{company.base_currency}, Amount: #{amount}"
+        )
+      end
     end
 end

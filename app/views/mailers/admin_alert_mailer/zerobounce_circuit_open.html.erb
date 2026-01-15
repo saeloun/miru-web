@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+</head>
+<body>
+  <h2>⚠️ Zerobounce Email Validation Circuit Breaker Opened</h2>
+
+  <p>The Zerobounce email validation service has been automatically disabled due to repeated failures.</p>
+
+  <h3>Details:</h3>
+  <ul>
+    <li><strong>Total Failures:</strong> <%= @failures_count %></li>
+    <li><strong>Circuit Opened At:</strong> <%= @opened_at&.strftime("%Y-%m-%d %H:%M:%S %Z") || "Unknown" %></li>
+    <li><strong>Last Error:</strong> <%= @last_error || "Unknown error" %></li>
+  </ul>
+
+  <h3>Recent Failures:</h3>
+  <ul>
+    <% @recent_failures.each do |failure| %>
+      <li>
+        <%= failure[:timestamp]&.strftime("%H:%M:%S") || "Unknown time" %> - <%= failure[:error] || "Unknown error" %>
+      </li>
+    <% end %>
+  </ul>
+
+  <h3>Action Required:</h3>
+  <p>
+    <strong>Option 1 (Recommended):</strong> Wait for auto-recovery. The circuit will automatically close after 30 minutes if no validation attempts are made.
+  </p>
+  <p>
+    <strong>Option 2:</strong> Check Zerobounce service status and manually reset the circuit breaker:
+    <br/>
+    <code>bundle exec rake zerobounce:reset</code>
+  </p>
+  <p>
+    <strong>Option 3:</strong> If Zerobounce is down for extended period, disable validation via environment variable:
+    <br/>
+    Set <code>ENABLE_EMAIL_VALIDATION=false</code> and redeploy.
+  </p>
+
+  <h3>Impact:</h3>
+  <p>
+    While the circuit is open, new user signups will proceed <strong>without email validation</strong>.
+    This prevents blocking legitimate users but may allow some invalid emails through.
+  </p>
+
+  <p>
+    Check circuit status: <code>bundle exec rake zerobounce:status</code>
+  </p>
+</body>
+</html>

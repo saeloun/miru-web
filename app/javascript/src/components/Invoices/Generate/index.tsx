@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useCallback, useEffect, useState } from "react";
 
 import dayjs from "dayjs";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -30,6 +30,8 @@ const GenerateInvoices = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [selectedClient, setSelectedClient] = useState<any>();
   const [invoiceNumber, setInvoiceNumber] = useState<any>("");
+  const [clientCurrency, setClientCurrency] = useState<string>("USD");
+  const [baseCurrencyAmount, setBaseCurrencyAmount] = useState<any>(0);
   const [reference, setReference] = useState<string>("");
   const [amount, setAmount] = useState<any>(0);
   const [amountDue, setAmountDue] = useState<any>(0);
@@ -59,7 +61,7 @@ const GenerateInvoices = () => {
 
   const { isDesktop } = useUserContext();
 
-  const fetchCompanyDetails = async () => {
+  const fetchCompanyDetails = useCallback(async () => {
     // here we are fetching the company and client list
     try {
       setIsLoading(true);
@@ -71,7 +73,7 @@ const GenerateInvoices = () => {
       navigate("invoices/error");
       setIsLoading(false);
     }
-  };
+  }, [navigate]);
 
   const fetchPaymentsProvidersSettings = async () => {
     try {
@@ -84,22 +86,22 @@ const GenerateInvoices = () => {
     }
   };
 
-  const setClientListIfClientIdPresent = () => {
+  const setClientListIfClientIdPresent = useCallback(() => {
     const client = invoiceDetails?.clientList?.find(
       client => client.value === parseInt(clientId)
     );
     if (client) setSelectedClient(client);
-  };
+  }, [invoiceDetails?.clientList, clientId]);
 
   useEffect(() => {
     sendGAPageView();
     fetchCompanyDetails();
     fetchPaymentsProvidersSettings();
-  }, []);
+  }, [fetchCompanyDetails]);
 
   useEffect(() => {
     if (clientId) setClientListIfClientIdPresent();
-  }, [invoiceDetails]);
+  }, [clientId, invoiceDetails, setClientListIfClientIdPresent]);
 
   const saveInvoice = async () => {
     const sanitized = mapGenerateInvoice({
@@ -117,6 +119,7 @@ const GenerateInvoices = () => {
       amountDue,
       amountPaid,
       discount,
+      baseCurrencyAmount,
       tax,
       dateFormat: invoiceDetails.companyDetails.date_format,
       setShowSendInvoiceModal,
@@ -142,6 +145,13 @@ const GenerateInvoices = () => {
     if (selectedClient && invoiceNumber !== "") {
       const res = await saveInvoice();
       setInvoiceId(res?.data.id);
+      // Update baseCurrencyAmount from backend response
+      if (
+        res?.data?.baseCurrencyAmount !== undefined &&
+        res?.data?.baseCurrencyAmount !== null
+      ) {
+        setBaseCurrencyAmount(res.data.baseCurrencyAmount);
+      }
 
       return res;
     }
@@ -155,7 +165,14 @@ const GenerateInvoices = () => {
 
   const handleSaveInvoice = async () => {
     if (selectedClient && invoiceNumber !== "") {
-      await saveInvoice();
+      const res = await saveInvoice();
+      // Update baseCurrencyAmount from backend response
+      if (
+        res?.data?.baseCurrencyAmount !== undefined &&
+        res?.data?.baseCurrencyAmount !== null
+      ) {
+        setBaseCurrencyAmount(res.data.baseCurrencyAmount);
+      }
       navigate("/invoices");
     } else {
       selectedClient
@@ -207,6 +224,8 @@ const GenerateInvoices = () => {
           amount={amount}
           amountDue={amountDue}
           amountPaid={amountPaid}
+          baseCurrencyAmount={baseCurrencyAmount}
+          clientCurrency={clientCurrency}
           dateFormat={invoiceDetails.companyDetails.date_format}
           discount={discount}
           dueDate={dueDate}
@@ -220,6 +239,8 @@ const GenerateInvoices = () => {
           selectedOption={selectedOption}
           setAmount={setAmount}
           setAmountDue={setAmountDue}
+          setBaseCurrencyAmount={setBaseCurrencyAmount}
+          setClientCurrency={setClientCurrency}
           setDiscount={setDiscount}
           setDueDate={setDueDate}
           setInvoiceNumber={setInvoiceNumber}
@@ -273,6 +294,9 @@ const GenerateInvoices = () => {
         amount={amount}
         amountDue={amountDue}
         amountPaid={amountPaid}
+        baseCurrency={invoiceDetails?.companyDetails?.currency}
+        baseCurrencyAmount={baseCurrencyAmount}
+        clientCurrency={clientCurrency}
         dateFormat={invoiceDetails.companyDetails.date_format}
         discount={discount}
         dueDate={dueDate}
@@ -289,6 +313,8 @@ const GenerateInvoices = () => {
         selectedLineItems={selectedOption}
         setAmount={setAmount}
         setAmountDue={setAmountDue}
+        setBaseCurrencyAmount={setBaseCurrencyAmount}
+        setClientCurrency={setClientCurrency}
         setDiscount={setDiscount}
         setDueDate={setDueDate}
         setInvoiceNumber={setInvoiceNumber}

@@ -5,6 +5,8 @@ import Header from "./Header";
 import { sections } from "./utils";
 
 const MobileView = ({
+  baseCurrency,
+  baseCurrencyAmount,
   dueDate,
   issueDate,
   invoiceDetails,
@@ -17,6 +19,7 @@ const MobileView = ({
   setDueDate,
   setIssueDate,
   setInvoiceNumber,
+  clientCurrency,
   manualEntryArr,
   setManualEntryArr,
   lineItems,
@@ -36,6 +39,8 @@ const MobileView = ({
   isEdit,
   isStripeEnabled,
   setShowConnectPaymentDialog,
+  setBaseCurrencyAmount,
+  setClientCurrency,
   showConnectPaymentDialog,
 }) => {
   const [activeSection, setActiveSection] = useState<string>(
@@ -54,6 +59,9 @@ const MobileView = ({
         amount={amount}
         amountDue={amountDue}
         amountPaid={amountPaid}
+        baseCurrency={baseCurrency}
+        baseCurrencyAmount={baseCurrencyAmount}
+        clientCurrency={clientCurrency}
         dateFormat={dateFormat}
         discount={discount}
         dueDate={dueDate}
@@ -70,6 +78,8 @@ const MobileView = ({
         setActiveSection={setActiveSection}
         setAmount={setAmount}
         setAmountDue={setAmountDue}
+        setBaseCurrencyAmount={setBaseCurrencyAmount}
+        setClientCurrency={setClientCurrency}
         setDiscount={setDiscount}
         setDueDate={setDueDate}
         setInvoiceNumber={setInvoiceNumber}

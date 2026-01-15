@@ -2,27 +2,32 @@
 
 module TimeoffEntries
   class CalculateTotalDurationOfDefinedLeavesService < ApplicationService
-    attr_reader :joining_date, :allocation_value, :allocation_period, :allocation_frequency, :passed_year
+    attr_reader :joining_date, :allocation_value, :allocation_period,
+      :allocation_frequency, :passed_year, :working_hours_per_day,
+      :working_days_per_week, :current_date, :current_year,
+      :current_month, :current_week
     attr_accessor :leave_balance
 
-    CURRENT_DATE = DateTime.now
-    CURRENT_YEAR = CURRENT_DATE.year
-    CURRENT_MONTH = CURRENT_DATE.month
-    CURRENT_WEEK = CURRENT_DATE.cweek
     TOTAL_WEEKS = 52
-    HOURS_PER_DAY = 8
-    DAYS_PER_WEEK = 5
     WEEKS_PER_MONTH = 4
     MONTHS_PER_QUARTER = 3
     QUARTERS_PER_YEAR = 4
     MONTHS_PER_YEAR = 12
 
-    def initialize(joining_date, allocation_value, allocation_period, allocation_frequency, passed_year)
+    def initialize(joining_date, allocation_value, allocation_period,
+      allocation_frequency, passed_year, working_hours_per_day,
+      working_days_per_week)
       @joining_date = joining_date
       @allocation_value = allocation_value
       @allocation_period = allocation_period
       @allocation_frequency = allocation_frequency
       @passed_year = passed_year
+      @working_hours_per_day = working_hours_per_day
+      @working_days_per_week = working_days_per_week
+      @current_date = Date.current
+      @current_year = @current_date.year
+      @current_month = @current_date.month
+      @current_week = @current_date.cweek
     end
 
     def process
@@ -60,15 +65,15 @@ module TimeoffEntries
 
     def calculate_days_per_week_leave_allocation
       if passed_year == joining_date&.year
-        weeks = passed_year == CURRENT_YEAR ?
-          CURRENT_WEEK - joining_date.cweek : TOTAL_WEEKS - joining_date.cweek
+        weeks = passed_year == current_year ?
+          current_week - joining_date.cweek : TOTAL_WEEKS - joining_date.cweek
 
         first_week_allocation_value = (joining_date.wday >= 3 && joining_date.wday <= 5) ?
           (allocation_value / 2) : allocation_value
 
         first_week_allocation_value + allocation_value * weeks
-      elsif passed_year == CURRENT_YEAR
-        allocation_value * CURRENT_WEEK
+      elsif passed_year == current_year
+        allocation_value * current_week
       else
         allocation_value * TOTAL_WEEKS
       end
@@ -78,15 +83,15 @@ module TimeoffEntries
       if passed_year == joining_date&.year
         first_month_allocation_value = allocation_value
 
-        months = passed_year == CURRENT_YEAR ?
-          CURRENT_MONTH - joining_date.month : MONTHS_PER_YEAR - joining_date.month
+        months = passed_year == current_year ?
+          current_month - joining_date.month : MONTHS_PER_YEAR - joining_date.month
 
         first_month_allocation_value /= 2 if joining_date.day > 15
 
         months.zero? ? first_month_allocation_value
           : first_month_allocation_value + allocation_value * months
-      elsif passed_year == CURRENT_YEAR
-        allocation_value * CURRENT_MONTH
+      elsif passed_year == current_year
+        allocation_value * current_month
       else
         allocation_value * MONTHS_PER_YEAR
       end
@@ -96,35 +101,35 @@ module TimeoffEntries
       if passed_year == joining_date&.year
         first_month_allocation_value = allocation_value
 
-        months = passed_year == CURRENT_YEAR ?
-          CURRENT_MONTH - joining_date.month : MONTHS_PER_YEAR - joining_date.month
+        months = passed_year == current_year ?
+          current_month - joining_date.month : MONTHS_PER_YEAR - joining_date.month
 
         first_month_allocation_value /= 2 if joining_date.day > 15
 
-        first_month = first_month_allocation_value * DAYS_PER_WEEK
+        first_month = first_month_allocation_value * @working_days_per_week
 
         months.zero? ? first_month
-          : first_month + (allocation_value * DAYS_PER_WEEK * months)
-      elsif passed_year == CURRENT_YEAR
-        allocation_value * DAYS_PER_WEEK * CURRENT_MONTH
+          : first_month + (allocation_value * @working_days_per_week * months)
+      elsif passed_year == current_year
+        allocation_value * @working_days_per_week * current_month
       else
-        allocation_value * DAYS_PER_WEEK * MONTHS_PER_YEAR
+        allocation_value * @working_days_per_week * MONTHS_PER_YEAR
       end
     end
 
     def calculate_days_per_quarter_leave_allocation
-      current_quarter, after_mid_quarter = quarter_position_and_after_mid_quarter(CURRENT_DATE)
+      current_quarter, after_mid_quarter = quarter_position_and_after_mid_quarter(current_date)
       if passed_year == joining_date&.year
         joining_date_quarter, is_joining_date_after_mid_quarter = quarter_position_and_after_mid_quarter(joining_date)
         first_quarter_allocation_value = allocation_value
 
-        quarters = passed_year == CURRENT_YEAR ?
+        quarters = passed_year == current_year ?
           current_quarter - joining_date_quarter : QUARTERS_PER_YEAR - joining_date_quarter
 
         first_quarter_allocation_value = first_quarter_allocation_value /= 2 if is_joining_date_after_mid_quarter
 
         quarters <= 0 ? first_quarter_allocation_value : first_quarter_allocation_value + (allocation_value * quarters)
-      elsif passed_year == CURRENT_YEAR
+      elsif passed_year == current_year
         allocation_value * current_quarter
       else
         allocation_value * QUARTERS_PER_YEAR
@@ -132,24 +137,24 @@ module TimeoffEntries
     end
 
     def calculate_weeks_per_quarter_leave_allocation
-      current_quarter, after_mid_quarter = quarter_position_and_after_mid_quarter(CURRENT_DATE)
+      current_quarter, after_mid_quarter = quarter_position_and_after_mid_quarter(current_date)
       if passed_year == joining_date&.year
         joining_date_quarter, is_joining_date_after_mid_quarter = quarter_position_and_after_mid_quarter(joining_date)
         first_quarter_allocation_value = allocation_value
 
-        quarters = passed_year == CURRENT_YEAR ?
+        quarters = passed_year == current_year ?
           current_quarter - joining_date_quarter : QUARTERS_PER_YEAR - joining_date_quarter
 
         first_quarter_allocation_value = first_quarter_allocation_value /= 2 if is_joining_date_after_mid_quarter
 
-        first_quarter = first_quarter_allocation_value * DAYS_PER_WEEK
+        first_quarter = first_quarter_allocation_value * @working_days_per_week
 
         quarters <= 0 ? first_quarter :
-          first_quarter + (allocation_value * DAYS_PER_WEEK * quarters)
-      elsif passed_year == CURRENT_YEAR
-        allocation_value * DAYS_PER_WEEK * current_quarter
+          first_quarter + (allocation_value * @working_days_per_week * quarters)
+      elsif passed_year == current_year
+        allocation_value * @working_days_per_week * current_quarter
       else
-        allocation_value * DAYS_PER_WEEK * QUARTERS_PER_YEAR
+        allocation_value * @working_days_per_week * QUARTERS_PER_YEAR
       end
     end
 
@@ -162,7 +167,7 @@ module TimeoffEntries
     end
 
     def calculate_weeks_per_year_leave_allocation
-      total_days = allocation_value * DAYS_PER_WEEK
+      total_days = allocation_value * @working_days_per_week
       if passed_year == joining_date&.year
         joining_date.month > 6 ? total_days / 2 : total_days
       else
@@ -171,7 +176,7 @@ module TimeoffEntries
     end
 
     def calculate_months_per_year_leave_allocation
-      total_days = allocation_value * DAYS_PER_WEEK * WEEKS_PER_MONTH
+      total_days = allocation_value * @working_days_per_week * WEEKS_PER_MONTH
       if passed_year == joining_date&.year
         joining_date.month > 6 ? total_days / 2 : total_days
       else

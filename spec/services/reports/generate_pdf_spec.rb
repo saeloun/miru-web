@@ -11,9 +11,13 @@ RSpec.describe Reports::GeneratePdf do
       subject { described_class.new(:time_entries, report_data, current_company) }
 
       it "generates PDF for time entries" do
-        allow(Pdf::HtmlGenerator).to receive(:new).with(
-          :time_entries,
-          locals: { report_data:, current_company: }).and_return(double("Pdf::HtmlGenerator", make: nil))
+        allow(PdfGeneration::HtmlTemplateService).to receive(:new).with(
+          "pdfs/time_entries",
+          layout: "layouts/pdf",
+          locals: {
+            report_data:,
+            current_company:
+          }).and_return(double("PdfGeneration::HtmlTemplateService", process: nil))
         subject.process
       end
     end
@@ -22,9 +26,13 @@ RSpec.describe Reports::GeneratePdf do
       subject { described_class.new(:accounts_aging, report_data, current_company) }
 
       it "generates PDF for accounts aging" do
-        allow(Pdf::HtmlGenerator).to receive(:new).with(
-          :accounts_aging,
-          locals: { report_data:, current_company: }).and_return(double("Pdf::HtmlGenerator", make: nil))
+        allow(PdfGeneration::HtmlTemplateService).to receive(:new).with(
+          "pdfs/accounts_aging",
+          layout: "layouts/pdf",
+          locals: {
+            report_data:,
+            current_company:
+          }).and_return(double("PdfGeneration::HtmlTemplateService", process: nil))
         subject.process
       end
     end

@@ -14,6 +14,7 @@ json.clients clients do |client|
     json.due_date invoice.formatted_due_date
     json.amount invoice.amount
     json.status invoice.status
+    json.currency invoice.currency
   end
   json.total_outstanding_amount client[:total_outstanding_amount]
   json.total_overdue_amount client[:total_overdue_amount]

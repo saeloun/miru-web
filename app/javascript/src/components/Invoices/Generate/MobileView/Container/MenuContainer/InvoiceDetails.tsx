@@ -27,6 +27,7 @@ const InvoiceDetails = ({
   setDueDate,
   setIssueDate,
   setInvoiceNumber,
+  setClientCurrency,
   handleSaveInvoice,
 }) => {
   const [isClientVisible, setIsClientVisible] = useState<boolean>(false);
@@ -120,9 +121,11 @@ const InvoiceDetails = ({
 
   const handleClientChange = selection => {
     const client = clientDetails.find(client => client.id == selection.value);
+    // eslint-disable-next-line no-console
     setSelectedClient(client);
     setIsClientVisible(false);
     autoGenerateInvoiceNumber(client);
+    setClientCurrency(client.clientCurrency);
   };
 
   useOutsideClick(wrapperRef, () => setIsClientVisible(false), isClientVisible);
