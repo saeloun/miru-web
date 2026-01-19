@@ -6,7 +6,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 ruby "3.4.8"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
-gem "rails", "~> 7.1.5.1"
+gem "rails", "~> 7.2.0"
 
 # Use postgresql as the database for Active Record
 gem "pg"
@@ -30,7 +30,7 @@ gem "puma", "~> 6.4.3"
 gem "jbuilder", "~> 2.11"
 
 # Use devise for authentication
-gem "devise"
+gem "devise", "~> 4.9"
 
 # Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
 # gem "kredis"
@@ -178,7 +178,7 @@ group :development, :test, :ci do
   gem "rails-controller-testing", "~> 1.0", ">= 1.0.5"
 
   # help to kill N+1 queries and unused eager loading. https://github.com/flyerhzm/bullet
-  gem "bullet", "~> 7.1"
+  gem "bullet", "~> 8.0"
 
   # To record response of outgoing API calls
   gem "vcr", "~> 6.1"
@@ -240,6 +240,9 @@ gem "rack-cors", "2.0.0"
 gem "administrate"
 
 gem "psych", "~> 4"
+
+# mutex_m was removed from Ruby 3.4 stdlib, required by httpclient
+gem "mutex_m"
 
 gem "postmark-rails"
 

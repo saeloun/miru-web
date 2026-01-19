@@ -29,42 +29,47 @@ FerrumPdf.configure do |config|
   config.pdf_options.margin_right = 0.5
 end
 
-# Configure browser for production and containerized environments
-if Rails.env.production? || ENV["DOCKER_CONTAINER"]
-  FerrumPdf.browser = Ferrum::Browser.new(
-    headless: true, # Run browser in headless mode (no GUI)
-    timeout: 60, # Maximum time to wait for browser operations
-    process_timeout: 60, # Maximum time to wait for browser process to start
-    browser_path: "/usr/bin/google-chrome-stable", # Path to Chrome binary
-    browser_options: {
-      # Disable sandbox for containerized environments (e.g., Docker)
-      "no-sandbox" => nil,
-      # Disable GPU acceleration (not needed in headless mode)
-      "disable-gpu" => nil,
-      # Use /tmp instead of /dev/shm for shared memory (helps in containers with limited shm)
-      "disable-dev-shm-usage" => nil,
-      # Disable setuid sandbox (required in some containerized environments)
-      "disable-setuid-sandbox" => nil
-    }
-  )
-# Development environment: Auto-detect Chrome/Chromium installation
-elsif Rails.env.development?
-  # Try common Chrome/Chromium installation paths
-  browser_path = [
-    "/usr/bin/google-chrome",
-    "/usr/bin/google-chrome-stable",
-    "/usr/bin/chromium-browser",
-    "/usr/bin/chromium",
-    ENV["BROWSER_PATH"]
-  ].compact.find { |path| File.exist?(path) }
-
-  # Configure browser if a valid Chrome/Chromium installation was found
-  if browser_path
+# Skip browser initialization during rake tasks (like db:migrate, app:update, etc.)
+# The browser will be initialized lazily when actually needed for PDF generation
+unless defined?(Rake) && Rake.application.top_level_tasks.any?
+  # Configure browser for production and containerized environments
+  if Rails.env.production? || ENV["DOCKER_CONTAINER"]
     FerrumPdf.browser = Ferrum::Browser.new(
-      headless: true, # Run browser in headless mode
+      headless: true, # Run browser in headless mode (no GUI)
       timeout: 60, # Maximum time to wait for browser operations
       process_timeout: 60, # Maximum time to wait for browser process to start
-      browser_path: # Use the auto-detected browser path
+      browser_path: "/usr/bin/google-chrome-stable", # Path to Chrome binary
+      browser_options: {
+        # Disable sandbox for containerized environments (e.g., Docker)
+        "no-sandbox" => nil,
+        # Disable GPU acceleration (not needed in headless mode)
+        "disable-gpu" => nil,
+        # Use /tmp instead of /dev/shm for shared memory (helps in containers with limited shm)
+        "disable-dev-shm-usage" => nil,
+        # Disable setuid sandbox (required in some containerized environments)
+        "disable-setuid-sandbox" => nil
+      }
     )
+  # Development environment: Auto-detect Chrome/Chromium installation
+  elsif Rails.env.development?
+    # Try common Chrome/Chromium installation paths
+    browser_path = [
+      "/usr/bin/google-chrome",
+      "/usr/bin/google-chrome-stable",
+      "/usr/bin/chromium-browser",
+      "/usr/bin/chromium",
+      "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+      ENV["BROWSER_PATH"]
+    ].compact.find { |path| File.exist?(path) }
+
+    # Configure browser if a valid Chrome/Chromium installation was found
+    if browser_path
+      FerrumPdf.browser = Ferrum::Browser.new(
+        headless: true, # Run browser in headless mode
+        timeout: 60, # Maximum time to wait for browser operations
+        process_timeout: 60, # Maximum time to wait for browser process to start
+        browser_path: # Use the auto-detected browser path
+      )
+    end
   end
 end
