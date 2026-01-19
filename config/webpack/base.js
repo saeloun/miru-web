@@ -1,7 +1,10 @@
 const webpack = require("webpack");
 const aliasConfig = require("./alias");
-const { webpackConfig, merge } = require("shakapacker");
+const { generateWebpackConfig, merge } = require("shakapacker");
 const ForkTSCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
+
+// Generate the base webpack config from shakapacker
+const webpackConfig = generateWebpackConfig();
 
 let customConfig = {
   plugins: [
