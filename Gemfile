@@ -54,7 +54,7 @@ gem "bootsnap", ">= 1.4.4", require: false
 gem "image_processing", ">= 1.2"
 
 # Webpack bundler for rails
-gem "shakapacker", "6.0.0"
+gem "shakapacker", ">= 9.5.0"
 
 # React hook for rails
 gem "react-rails", "2.6.2"
@@ -137,7 +137,7 @@ gem "rubyzip"
 
 gem "ahoy_matey"
 
-gem "httparty"
+gem "httparty", ">= 0.24.0"
 
 gem "csv"
 gem "observer"
