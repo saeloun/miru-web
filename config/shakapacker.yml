@@ -5,6 +5,7 @@ default: &default
   source_entry_path: /
   public_root_path: public
   public_output_path: packs
+  nested_entries: false
 
   # Additional paths webpack should look up modules
   # ['app/assets', 'engine/foo/app/assets']
