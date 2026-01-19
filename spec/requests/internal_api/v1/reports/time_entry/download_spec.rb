@@ -18,6 +18,9 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController#download", type: :
     employee.add_role :employee, company
     book_keeper.add_role :book_keeper, company
     TimesheetEntry.search_index.refresh
+    # Mock PDF generation to avoid Chrome browser dependency
+    pdf_service = instance_double(PdfGeneration::HtmlTemplateService, process: "%PDF-1.4 mock pdf content")
+    allow(PdfGeneration::HtmlTemplateService).to receive(:new).and_return(pdf_service)
   end
 
   context "when user is an admin or owner" do

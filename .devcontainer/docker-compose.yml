@@ -67,7 +67,7 @@ services:
     build:
       context: ..
       dockerfile: .devcontainer/Dockerfile
-    command: bin/webpacker-dev-server
+    command: bin/shakapacker-dev-server
     image: miru-web:latest
     ports:
       - "3035:3035"

@@ -15,6 +15,9 @@ RSpec.describe "InternalApi::V1::Invoices#download", type: :request do
       create(:employment, company:, user:)
       user.add_role role, company
       sign_in user
+      # Mock PDF generation to avoid Chrome browser dependency
+      pdf_service = instance_double(PdfGeneration::InvoiceService, process: "%PDF-1.4 mock pdf content")
+      allow(PdfGeneration::InvoiceService).to receive(:new).and_return(pdf_service)
     end
 
     context "when user is admin" do

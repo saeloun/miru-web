@@ -15,6 +15,9 @@ RSpec.describe BulkInvoiceDownloadService do
     before do
       # While running specs, we don't want url and to access url, we need to set ActiveStorage url
       allow_any_instance_of(ActiveStorage::Blob).to receive(:url).and_return("")
+      # Mock PDF generation to avoid Chrome browser dependency
+      pdf_service = instance_double(PdfGeneration::InvoiceService, process: "%PDF-1.4 mock pdf content")
+      allow(PdfGeneration::InvoiceService).to receive(:new).and_return(pdf_service)
 
       described_class.new([invoice1.id, invoice2.id], nil, "").process
 
