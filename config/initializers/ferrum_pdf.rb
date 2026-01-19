@@ -50,8 +50,8 @@ unless defined?(Rake) && Rake.application.top_level_tasks.any?
         "disable-setuid-sandbox" => nil
       }
     )
-  # Development environment: Auto-detect Chrome/Chromium installation
-  elsif Rails.env.development?
+  # Development and test environments: Auto-detect Chrome/Chromium installation
+  elsif Rails.env.development? || Rails.env.test?
     # Try common Chrome/Chromium installation paths
     browser_path = [
       "/usr/bin/google-chrome",

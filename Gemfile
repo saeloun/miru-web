@@ -211,7 +211,7 @@ group :test, :ci do
   gem "simplecov", require: false
 
   # Strategies for cleaning databases in Ruby.
-  gem "database_cleaner", "~> 2.0"
+  gem "database_cleaner-active_record", "~> 2.2"
   gem "hash_dot"
 
   gem "rspec-buildkite"
