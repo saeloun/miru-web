@@ -168,7 +168,7 @@ class Invoice < ApplicationRecord
   end
 
   def refresh_invoice_index
-    Invoice.search_index.refresh
+    Invoice.search_index.refresh if Invoice.search_index.exists?
   end
 
   private

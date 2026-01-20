@@ -187,7 +187,7 @@ class Client < ApplicationRecord
   end
 
   def refresh_client_index
-    Client.search_index.refresh
+    Client.search_index.refresh if Client.search_index.exists?
   end
 
   def client_members_emails

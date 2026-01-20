@@ -3,7 +3,25 @@
 class AddSolidQueueRecurringTasks < ActiveRecord::Migration[7.2]
   def change
     # Add name column to solid_queue_processes (required for SolidQueue 1.x)
-    add_column :solid_queue_processes, :name, :string, null: false, default: ""
+    # Step 1: Add nullable column without default
+    add_column :solid_queue_processes, :name, :string, null: true
+
+    # Step 2: Backfill existing rows with unique values
+    reversible do |dir|
+      dir.up do
+        execute <<-SQL.squish
+          UPDATE solid_queue_processes
+          SET name = 'process_' || id::text
+          WHERE name IS NULL
+        SQL
+      end
+    end
+
+    # Step 3: Add NOT NULL constraint and default
+    change_column_null :solid_queue_processes, :name, false
+    change_column_default :solid_queue_processes, :name, ""
+
+    # Step 4: Add unique index
     add_index :solid_queue_processes, [:name, :supervisor_id], unique: true, name: "index_solid_queue_processes_on_name_and_supervisor_id"
 
     # Create solid_queue_recurring_tasks table (required for SolidQueue 1.x)
