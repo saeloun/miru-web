@@ -95,6 +95,14 @@ jobs:
           TEST_ENV_NUMBER: ${{ github.event.number }}
         run: |
           bundle exec rails db:prepare
+      - name: Create Elasticsearch indices
+        env:
+          RAILS_ENV: test
+          DB_USER: root
+          DB_PASS: "password"
+          TEST_ENV_NUMBER: ${{ github.event.number }}
+        run: |
+          bundle exec rake searchkick:reindex:all
       - name: Run Rubocop
         run: |
           bundle exec rubocop
