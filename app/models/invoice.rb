@@ -54,16 +54,7 @@ class Invoice < ApplicationRecord
 
   attr_accessor :sub_total
 
-  enum status: [
-    :draft,
-    :sent,
-    :viewed,
-    :paid,
-    :declined,
-    :overdue,
-    :sending,
-    :waived
-  ]
+  enum :status, { draft: 0, sent: 1, viewed: 2, paid: 3, declined: 4, overdue: 5, sending: 6, waived: 7 }
 
   belongs_to :company
   belongs_to :client

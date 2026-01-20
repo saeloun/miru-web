@@ -46,7 +46,7 @@ RSpec.describe "InternalApi::V1::Users::Sessions#create", type: :request do
           password: user.password + "abc"
         }
       }
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(json_response["error"]).to eq(I18n.t("sessions.failure.invalid"))
     end
   end
@@ -59,7 +59,7 @@ RSpec.describe "InternalApi::V1::Users::Sessions#create", type: :request do
           password: user.password + "abc"
         }
       }
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(json_response["error"]).to eq(I18n.t("sessions.failure.invalid"))
     end
   end
@@ -72,7 +72,7 @@ RSpec.describe "InternalApi::V1::Users::Sessions#create", type: :request do
           password: user.password
         }
       }
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(json_response["error"]).to eq(I18n.t("sessions.failure.invalid"))
     end
   end
@@ -85,7 +85,7 @@ RSpec.describe "InternalApi::V1::Users::Sessions#create", type: :request do
           password: user.password
         }
       }
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(json_response["error"]).to eq(I18n.t("sessions.failure.invalid"))
     end
   end
@@ -97,7 +97,7 @@ RSpec.describe "InternalApi::V1::Users::Sessions#create", type: :request do
     it "returns an error message" do
       send_request :post, internal_api_v1_users_login_path, params: valid_params
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(JSON.parse(response.body)["error"]).to eq(I18n.t("devise.failure.unconfirmed"))
     end
   end
@@ -109,7 +109,7 @@ RSpec.describe "InternalApi::V1::Users::Sessions#create", type: :request do
     it "returns an error message" do
       send_request :post, internal_api_v1_users_login_path(app: "miru-desktop"), params: valid_params
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(JSON.parse(response.body)["error"]).to eq(I18n.t("devise.failure.unconfirmed"))
     end
   end

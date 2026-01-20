@@ -29,10 +29,7 @@
 #  fk_rails_...  (vendor_id => vendors.id)
 #
 class Expense < ApplicationRecord
-  enum expense_type: [
-      :personal,
-      :business
-  ]
+  enum :expense_type, { personal: 0, business: 1 }
 
   has_many_attached :receipts
   belongs_to :company

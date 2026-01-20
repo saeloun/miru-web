@@ -27,7 +27,7 @@ gem "puma", "~> 6.4.3"
 # gem "tailwindcss-rails", ">= 0.5.3"
 
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
-gem "jbuilder", "~> 2.11"
+gem "jbuilder", "~> 2.13"
 
 # Use devise for authentication
 gem "devise", "~> 4.9"
@@ -119,7 +119,7 @@ gem "stripe"
 
 # Background job processing adapter and dashboard
 gem "mission_control-jobs"
-gem "solid_queue", "~> 0.3"
+gem "solid_queue", "~> 1.0"
 
 # searchkick for elasticsearch
 gem "elasticsearch", "< 7.14" # select one

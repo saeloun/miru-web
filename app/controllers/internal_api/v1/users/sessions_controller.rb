@@ -34,14 +34,14 @@ class InternalApi::V1::Users::SessionsController < Devise::SessionsController
     end
 
     def render_invalid_password_error
-      render json: { error: I18n.t("sessions.failure.invalid") }, status: :unprocessable_entity
+      render json: { error: I18n.t("sessions.failure.invalid") }, status: :unprocessable_content
     end
 
     def render_unconfirmed_user_error(user)
       render json: {
         error: I18n.t("devise.failure.unconfirmed"),
         unconfirmed: !user.confirmed?
-      }, status: :unprocessable_entity
+      }, status: :unprocessable_content
     end
 
     def handle_successful_sign_in(user)
