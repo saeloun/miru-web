@@ -1,10 +1,7 @@
 const webpack = require("webpack");
 const aliasConfig = require("./alias");
-const { generateWebpackConfig, merge } = require("shakapacker");
+const { baseConfig, merge } = require("shakapacker");
 const ForkTSCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
-
-// Generate the base webpack config from shakapacker
-const webpackConfig = generateWebpackConfig();
 
 let customConfig = {
   plugins: [
@@ -13,7 +10,17 @@ let customConfig = {
       $: "jquery/src/jquery",
       jQuery: "jquery/src/jquery",
     }),
+    // Override DefinePlugin to prevent NODE_ENV conflict
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development')
+    }),
   ],
+  // Disable performance warnings in development
+  performance: {
+    hints: false,
+    maxEntrypointSize: 512000,
+    maxAssetSize: 512000,
+  },
 };
 
 const resolveOptions = {
@@ -38,4 +45,4 @@ const resolveOptions = {
 
 customConfig = merge({}, customConfig, resolveOptions, aliasConfig);
 
-module.exports = merge(webpackConfig, customConfig);
+module.exports = merge(baseConfig, customConfig);
