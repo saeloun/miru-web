@@ -27,7 +27,7 @@
 class Holiday < ApplicationRecord
   include Discard::Model
 
-  enum time_period_optional_holidays: { per_quarter: 0, per_year: 1, per_month: 2, per_week: 3 }
+  enum :time_period_optional_holidays, { per_quarter: 0, per_year: 1, per_month: 2, per_week: 3 }
 
   belongs_to :company
 

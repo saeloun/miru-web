@@ -25,26 +25,12 @@
 #  fk_rails_...  (invoice_id => invoices.id)
 #
 class Payment < ApplicationRecord
-  enum status: [
-    :paid,
-    :partially_paid,
-    :failed,
-    :cancelled
-  ]
+  enum :status, { paid: 0, partially_paid: 1, failed: 2, cancelled: 3 }
 
-  enum transaction_type: [
-    :visa,
-    :mastercard,
-    :bank_transfer,
-    :ach,
-    :amex,
-    :cash,
-    :cheque,
-    :credit_card,
-    :debit_card,
-    :paypal,
-    :stripe
-  ]
+  enum :transaction_type, {
+    visa: 0, mastercard: 1, bank_transfer: 2, ach: 3, amex: 4,
+    cash: 5, cheque: 6, credit_card: 7, debit_card: 8, paypal: 9, stripe: 10
+  }
 
   belongs_to :invoice
   delegate :company, to: :invoice

@@ -33,7 +33,7 @@
 class TimesheetEntry < ApplicationRecord
   include Discard::Model
   extend Pagy::Searchkick
-  enum bill_status: [:non_billable, :unbilled, :billed]
+  enum :bill_status, { non_billable: 0, unbilled: 1, billed: 2 }
 
   belongs_to :user
   belongs_to :project

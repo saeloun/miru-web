@@ -44,7 +44,7 @@ RSpec.describe "InternalApi::V1::Users::Registrations#create", type: :request do
       send_request :post, internal_api_v1_users_signup_path, params: {
         user: valid_user_json
       }
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(json_response["error"]).to eq({ "email" => ["Email ID already exists"] })
     end
 
@@ -54,7 +54,7 @@ RSpec.describe "InternalApi::V1::Users::Registrations#create", type: :request do
       send_request :post, internal_api_v1_users_signup_path, params: {
         user: valid_user_json
       }
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(json_response["error"]).to eq({ "password_confirmation" => ["doesn't match with new password"] })
     end
   end

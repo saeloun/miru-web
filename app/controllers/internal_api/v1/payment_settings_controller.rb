@@ -23,7 +23,7 @@ class InternalApi::V1::PaymentSettingsController < InternalApi::V1::ApplicationC
     if stripe_connected_account.destroy
       render json: { notice: "Stripe connection disconnected" }, status: :ok
     else
-      render json: { error: "Unable to process the request" }, status: :unprocessable_entity
+      render json: { error: "Unable to process the request" }, status: :unprocessable_content
     end
   end
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_10_29_141025) do
+ActiveRecord::Schema[7.2].define(version: 2026_01_20_064206) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -563,7 +563,9 @@ ActiveRecord::Schema[7.1].define(version: 2025_10_29_141025) do
     t.string "hostname"
     t.text "metadata"
     t.datetime "created_at", null: false
+    t.string "name", default: "", null: false
     t.index ["last_heartbeat_at"], name: "index_solid_queue_processes_on_last_heartbeat_at"
+    t.index ["name", "supervisor_id"], name: "index_solid_queue_processes_on_name_and_supervisor_id", unique: true
     t.index ["supervisor_id"], name: "index_solid_queue_processes_on_supervisor_id"
   end
 
@@ -584,6 +586,22 @@ ActiveRecord::Schema[7.1].define(version: 2025_10_29_141025) do
     t.datetime "created_at", null: false
     t.index ["job_id"], name: "index_solid_queue_recurring_executions_on_job_id", unique: true
     t.index ["task_key", "run_at"], name: "index_solid_queue_recurring_executions_on_task_key_and_run_at", unique: true
+  end
+
+  create_table "solid_queue_recurring_tasks", force: :cascade do |t|
+    t.string "key", null: false
+    t.string "schedule", null: false
+    t.string "command", limit: 2048
+    t.string "class_name"
+    t.text "arguments"
+    t.string "queue_name"
+    t.integer "priority", default: 0
+    t.boolean "static", default: true, null: false
+    t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["key"], name: "index_solid_queue_recurring_tasks_on_key", unique: true
+    t.index ["static"], name: "index_solid_queue_recurring_tasks_on_static"
   end
 
   create_table "solid_queue_scheduled_executions", force: :cascade do |t|
@@ -626,6 +644,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_10_29_141025) do
     t.bigint "leave_type_id"
     t.datetime "discarded_at"
     t.bigint "holiday_info_id"
+    t.bigint "custom_leave_id"
+    t.index ["custom_leave_id"], name: "index_timeoff_entries_on_custom_leave_id"
     t.index ["discarded_at"], name: "index_timeoff_entries_on_discarded_at"
     t.index ["holiday_info_id"], name: "index_timeoff_entries_on_holiday_info_id"
     t.index ["leave_type_id"], name: "index_timeoff_entries_on_leave_type_id"
@@ -762,6 +782,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_10_29_141025) do
   add_foreign_key "solid_queue_recurring_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_scheduled_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "stripe_connected_accounts", "companies"
+  add_foreign_key "timeoff_entries", "custom_leaves", column: "custom_leave_id"
   add_foreign_key "timeoff_entries", "leave_types"
   add_foreign_key "timeoff_entries", "users"
   add_foreign_key "timesheet_entries", "projects"

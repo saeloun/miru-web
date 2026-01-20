@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 
+# Set default currency explicitly to avoid deprecation warning
+# In the next major version of money gem, default will change from USD to nil
+Money.default_currency = "USD"
+
 Money.rounding_mode = BigDecimal::ROUND_HALF_EVEN
 
 # Fallback manual rates (used if database is empty or API unavailable)

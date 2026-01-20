@@ -327,9 +327,13 @@ RSpec.describe ExchangeRates::FetchService, type: :service do
           .then.to_return(status: 503)
           .then.to_return(status: 200, body: mock_response_body, headers: { "Content-Type" => "application/json" })
 
-        allow(service).to receive(:sleep).with(0.5).ordered
-        allow(service).to receive(:sleep).with(1.0).ordered
+        # Track sleep calls to verify exponential backoff
+        sleep_calls = []
+        allow(service).to receive(:sleep) { |duration| sleep_calls << duration }
+
         service.process
+
+        expect(sleep_calls).to eq([0.5, 1.0])
       end
     end
 
