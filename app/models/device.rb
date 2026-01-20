@@ -34,7 +34,7 @@ class Device < ApplicationRecord
   belongs_to :issued_to, class_name: "User", foreign_key: "user_id"
 
   # Device type values
-  enum device_type: { laptop: "laptop", mobile: "mobile" }
+  enum :device_type, { laptop: "laptop", mobile: "mobile" }
 
   # Specifications values
   store_accessor :specifications, :processor, :ram, :graphics

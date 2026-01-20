@@ -73,6 +73,12 @@ jobs:
       - name: Install packages
         run: |
           yarn install --pure-lockfile
+      - name: Compile webpack assets
+        env:
+          RAILS_ENV: test
+          NODE_ENV: test
+        run: |
+          bundle exec rails assets:precompile
       - name: Setup kernel for guard, increase watchers
         run: |
           echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
@@ -89,6 +95,14 @@ jobs:
           TEST_ENV_NUMBER: ${{ github.event.number }}
         run: |
           bundle exec rails db:prepare
+      - name: Create Elasticsearch indices
+        env:
+          RAILS_ENV: test
+          DB_USER: root
+          DB_PASS: "password"
+          TEST_ENV_NUMBER: ${{ github.event.number }}
+        run: |
+          bundle exec rake searchkick:reindex:all
       - name: Run Rubocop
         run: |
           bundle exec rubocop

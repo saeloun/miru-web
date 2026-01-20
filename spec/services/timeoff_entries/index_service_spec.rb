@@ -216,7 +216,7 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
         timeoff_entries_duration:,
         net_duration:,
         net_days:,
-        label: "#{net_days} days #{extra_hours} hours",
+        label: net_days.zero? ? "#{extra_hours} hours" : "#{net_days} days #{extra_hours} hours",
         type: "leave"
       }
 
@@ -241,7 +241,7 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
         timeoff_entries_duration:,
         net_duration:,
         net_days:,
-        label: "#{net_days} days #{extra_hours} hours",
+        label: net_days.zero? ? "#{extra_hours} hours" : "#{net_days} days #{extra_hours} hours",
         type: "leave"
       }
 

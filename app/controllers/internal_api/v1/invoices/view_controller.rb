@@ -24,7 +24,7 @@ class InternalApi::V1::Invoices::ViewController < InternalApi::V1::ApplicationCo
     end
 
     def render_invoice_not_found
-      render json: { error: "No invoice found" }, status: :unprocessable_entity
+      render json: { error: "No invoice found" }, status: :unprocessable_content
     end
 
     def stripe_connected_account

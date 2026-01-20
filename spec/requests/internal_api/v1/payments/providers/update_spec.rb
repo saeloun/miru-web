@@ -39,7 +39,7 @@ RSpec.describe "InternalApi::V1::Payments::Providers#update", type: :request do
                 }
               }
             ), headers: auth_headers(user)
-            expect(response).to have_http_status(:unprocessable_entity)
+            expect(response).to have_http_status(:unprocessable_content)
           end
         end
       end

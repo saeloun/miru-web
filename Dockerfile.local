@@ -1,5 +1,5 @@
 #syntax=docker/dockerfile:1
-FROM ruby:3.3.10-slim AS base
+FROM ruby:3.4.8-slim AS base
 
 ARG NODE_VERSION=20.18.2
 
@@ -22,10 +22,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl gnupg2 ca-
     apt-get clean && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
 
-RUN curl --location --silent https://dl-ssl.google.com/linux/linux_signing_key.pub | gpg --dearmor -o /usr/share/keyrings/google-chrome-keyring.gpg \
-    && echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome-keyring.gpg] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google.list \
-    && apt-get update && apt-get install google-chrome-stable -y --no-install-recommends postgresql-client && \
+RUN apt-get update && apt-get install -y --no-install-recommends postgresql-client chromium && \
     apt-get clean && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
+
+ENV CHROME_BIN=/usr/bin/chromium
 
 
 FROM base AS build-deps
@@ -36,7 +36,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends git build-essen
 
 FROM build-deps AS gems
 
-RUN gem install bundler -v 2.3.11
+RUN gem install bundler -v 2.4.10
 
 COPY Gemfile Gemfile.lock ./
 

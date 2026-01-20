@@ -1,12 +1,11 @@
-# Note: You must restart bin/webpack-dev-server for changes to take effect
+# Note: You must restart bin/shakapacker-dev-server for changes to take effect
 
 default: &default
   source_path: app/javascript
   source_entry_path: /
   public_root_path: public
   public_output_path: packs
-  cache_path: tmp/webpacker
-  webpack_compile_output: true
+  nested_entries: false
 
   # Additional paths webpack should look up modules
   # ['app/assets', 'engine/foo/app/assets']
@@ -15,18 +14,33 @@ default: &default
   # Reload manifest.json on all requests so we reload latest compiled packs
   cache_manifest: false
 
-  # Extract and emit a css file
-  extract_css: false
+  # Select JavaScript transpiler to use
+  # Available options: 'swc' (default, 20x faster), 'babel', 'esbuild', or 'none'
+  javascript_transpiler: "babel"
+
+  # Raises an error if there is a mismatch in the shakapacker gem and npm package being used
+  ensure_consistent_versioning: true
+
+  # Select whether the compiler will use SHA digest ('digest' option) or most recent modified timestamp ('mtime') to determine freshness
+  compiler_strategy: digest
+
+  # Select whether the compiler will always use a content hash and not just in production
+  useContentHash: true
 
 development:
   <<: *default
   compile: true
+  compiler_strategy: mtime
+
+  # Disable content hashes in development for faster builds
+  useContentHash: false
 
   # Reference: https://webpack.js.org/configuration/dev-server/
   dev_server:
     https: false
     host: localhost
-    port: 3035
+    port: 8080
+    public: localhost:8080
     # Hot Module Replacement updates modules while the application is running without a full reload
     hmr: false
     # Defaults to the inverse of hmr. Uncomment to manually set this.
@@ -34,11 +48,6 @@ development:
     client:
       # Should we show a full-screen overlay in the browser when there are compiler errors or warnings?
       overlay: true
-      # May also be a string
-      # webSocketURL:
-      #  hostname: "0.0.0.0"
-      #  pathname: "/ws"
-      #  port: 8080
     # Should we use gzip compression?
     compress: true
     # Note that apps that do not check the host are vulnerable to DNS rebinding attacks
@@ -62,9 +71,6 @@ production:
 
   # Production depends on precompilation of packs prior to booting for performance.
   compile: false
-
-  # Extract and emit a css file
-  extract_css: true
 
   # Cache manifest.json for performance
   cache_manifest: true

@@ -77,7 +77,7 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
 
       render json: { message: "Invoice will be sent!" }, status: :accepted
     else
-      render json: { errors: "Email can only be sent to 5 recipients." }, status: :unprocessable_entity
+      render json: { errors: "Email can only be sent to 5 recipients." }, status: :unprocessable_content
     end
   end
 

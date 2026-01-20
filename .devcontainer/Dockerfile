@@ -1,5 +1,5 @@
 #syntax=docker/dockerfile:1
-ARG VARIANT=3.3.10
+ARG VARIANT=3.4.8
 FROM mcr.microsoft.com/vscode/devcontainers/ruby:${VARIANT} AS base
 
 # Update args in docker-compose.yaml to set the UID/GID of the "vscode" user.
@@ -50,7 +50,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends git build-essen
 
 FROM build-deps AS gems
 
-RUN gem install bundler -v 2.3.11
+RUN gem install bundler -v 2.4.10
 
 COPY Gemfile Gemfile.lock ./
 

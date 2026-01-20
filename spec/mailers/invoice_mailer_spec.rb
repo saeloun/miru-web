@@ -11,6 +11,12 @@ RSpec.describe InvoiceMailer, type: :mailer do
     let(:subject) { "Invoice (#{invoice.invoice_number}) due on #{invoice.due_date}" }
     let(:mail) { InvoiceMailer.with(invoice_id: invoice.id, subject:, recipients:).invoice }
 
+    before do
+      # Mock PDF generation to avoid Chrome browser dependency in mailer tests
+      pdf_service = instance_double(PdfGeneration::InvoiceService, process: "%PDF-1.4 mock pdf content")
+      allow(PdfGeneration::InvoiceService).to receive(:new).and_return(pdf_service)
+    end
+
     it "renders the headers" do
       expect(mail.subject).to eq(subject)
       expect(mail.to).to eq(recipients)

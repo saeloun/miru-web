@@ -30,9 +30,7 @@ class InternalApi::V1::Users::PasswordsController < Devise::PasswordsController
 
     def respond_with_error(resource)
       if resource.errors.any?
-        resource.errors.full_messages.each do |message|
-          render json: { error: message }, status: :unprocessable_entity
-        end
+        render json: { error: resource.errors.full_messages.join(", ") }, status: :unprocessable_content
       end
     end
 end

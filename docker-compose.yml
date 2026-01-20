@@ -29,6 +29,7 @@ services:
       - POSTGRES_USER="postgres"
       - ELASTICSEARCH_URL=http://elastic:x2Sy5FK51zu@elasticsearch:9200
       - PIDFILE=/tmp/pids/server.pid
+      - DOCKER_CONTAINER=true
     depends_on:
       - database
       - elasticsearch
@@ -39,7 +40,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.local
-    command: bin/webpacker-dev-server
+    command: bin/shakapacker-dev-server
     image: miru-web:latest
     ports:
       - "3035:3035"
@@ -50,6 +51,7 @@ services:
       - POSTGRES_PASSWORD="postgres"
       - POSTGRES_USER="postgres"
       - ELASTICSEARCH_URL=http://elastic:x2Sy5FK51zu@elasticsearch:9200
+      - DOCKER_CONTAINER=true
     depends_on:
       - database
 

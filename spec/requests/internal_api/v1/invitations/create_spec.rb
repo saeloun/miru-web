@@ -51,7 +51,7 @@ RSpec.describe "InternalApi::V1::Invitations#create", type: :request do
 
       it "returns failed status" do
         expect(response).not_to be_successful
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
       end
 
       it "return error message" do
@@ -80,7 +80,7 @@ RSpec.describe "InternalApi::V1::Invitations#create", type: :request do
 
       it "returns failed status" do
         expect(response).not_to be_successful
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
       end
 
       it "return error message" do
@@ -141,7 +141,7 @@ RSpec.describe "InternalApi::V1::Invitations#create", type: :request do
 
       it "returns failed status" do
         expect(response).not_to be_successful
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
       end
 
       it "return error message" do
@@ -171,7 +171,7 @@ RSpec.describe "InternalApi::V1::Invitations#create", type: :request do
 
       it "returns failed status" do
         expect(response).not_to be_successful
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
       end
 
       it "return error message" do
@@ -201,7 +201,7 @@ RSpec.describe "InternalApi::V1::Invitations#create", type: :request do
 
       it "returns failed status" do
         expect(response).not_to be_successful
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
       end
 
       it "return error message" do

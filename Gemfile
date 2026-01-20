@@ -3,10 +3,10 @@
 source "https://rubygems.org"
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby "3.3.10"
+ruby "3.4.8"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
-gem "rails", "~> 7.1.5.1"
+gem "rails", "~> 7.2.0"
 
 # Use postgresql as the database for Active Record
 gem "pg"
@@ -27,10 +27,10 @@ gem "puma", "~> 6.4.3"
 # gem "tailwindcss-rails", ">= 0.5.3"
 
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
-gem "jbuilder", "~> 2.11"
+gem "jbuilder", "~> 2.13"
 
 # Use devise for authentication
-gem "devise"
+gem "devise", "~> 4.9"
 
 # Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
 # gem "kredis"
@@ -47,6 +47,9 @@ gem "tzinfo-data", platforms: %i[mingw mswin x64_mingw jruby]
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", ">= 1.4.4", require: false
 
+# MessagePack for ActiveSupport (required for Rails 7.2+)
+gem "msgpack", ">= 1.7.0"
+
 # Use Sass to process CSS
 # gem "sassc-rails", "~> 2.1"
 
@@ -54,10 +57,13 @@ gem "bootsnap", ">= 1.4.4", require: false
 gem "image_processing", ">= 1.2"
 
 # Webpack bundler for rails
-gem "shakapacker", "6.0.0"
+gem "shakapacker", ">= 9.5.0"
 
 # React hook for rails
 gem "react-rails", "2.6.2"
+
+# Pin connection_pool to 2.x for react-rails 2.6.2 compatibility
+gem "connection_pool", "~> 2.4"
 
 # Use SCSS for stylesheets
 gem "sass-rails"
@@ -79,7 +85,7 @@ gem "premailer-rails", "~> 1.12"
 gem "money"
 
 # aws storage account
-gem "aws-sdk-s3", require: false
+gem "aws-sdk-s3", ">= 1.208.0", require: false
 
 # Ransack gem for advanced searching
 gem "ransack", "~> 4.1"
@@ -116,11 +122,11 @@ gem "stripe"
 
 # Background job processing adapter and dashboard
 gem "mission_control-jobs"
-gem "solid_queue", "~> 0.3"
+gem "solid_queue", "~> 1.0"
 
 # searchkick for elasticsearch
 gem "elasticsearch", "< 7.14" # select one
-gem "searchkick"
+gem "searchkick", ">= 5.3.0"
 
 # PDF generator - using Ferrum PDF for modern Chrome-based PDF generation
 gem "ferrum_pdf", "~> 2.1"
@@ -137,7 +143,10 @@ gem "rubyzip"
 
 gem "ahoy_matey"
 
-gem "httparty"
+gem "httparty", ">= 0.24.0"
+
+gem "csv"
+gem "observer"
 
 # Use google calendar for integration with Miru
 gem "google-api-client", require: "google/apis/calendar_v3"
@@ -172,7 +181,7 @@ group :development, :test, :ci do
   gem "rails-controller-testing", "~> 1.0", ">= 1.0.5"
 
   # help to kill N+1 queries and unused eager loading. https://github.com/flyerhzm/bullet
-  gem "bullet", "~> 7.1"
+  gem "bullet", "~> 8.0"
 
   # To record response of outgoing API calls
   gem "vcr", "~> 6.1"
@@ -183,7 +192,7 @@ end
 
 group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
-  gem "web-console", ">= 4.1.0"
+  gem "web-console", ">= 4.2.1"
 
   # Add speed badges [https://github.com/MiniProfiler/rack-mini-profiler]
   gem "rack-mini-profiler", ">= 2.3.3"
@@ -205,7 +214,7 @@ group :test, :ci do
   gem "simplecov", require: false
 
   # Strategies for cleaning databases in Ruby.
-  gem "database_cleaner", "~> 2.0"
+  gem "database_cleaner-active_record", "~> 2.2"
   gem "hash_dot"
 
   gem "rspec-buildkite"
@@ -234,6 +243,9 @@ gem "rack-cors", "2.0.0"
 gem "administrate"
 
 gem "psych", "~> 4"
+
+# mutex_m was removed from Ruby 3.4 stdlib, required by httpclient
+gem "mutex_m"
 
 gem "postmark-rails"
 
