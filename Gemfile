@@ -47,6 +47,9 @@ gem "tzinfo-data", platforms: %i[mingw mswin x64_mingw jruby]
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", ">= 1.4.4", require: false
 
+# MessagePack for ActiveSupport (required for Rails 7.2+)
+gem "msgpack", ">= 1.7.0"
+
 # Use Sass to process CSS
 # gem "sassc-rails", "~> 2.1"
 
@@ -123,7 +126,7 @@ gem "solid_queue", "~> 1.0"
 
 # searchkick for elasticsearch
 gem "elasticsearch", "< 7.14" # select one
-gem "searchkick"
+gem "searchkick", ">= 5.3.0"
 
 # PDF generator - using Ferrum PDF for modern Chrome-based PDF generation
 gem "ferrum_pdf", "~> 2.1"
@@ -189,7 +192,7 @@ end
 
 group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
-  gem "web-console", ">= 4.1.0"
+  gem "web-console", ">= 4.2.1"
 
   # Add speed badges [https://github.com/MiniProfiler/rack-mini-profiler]
   gem "rack-mini-profiler", ">= 2.3.3"

@@ -294,7 +294,8 @@ GEM
       signet (>= 0.16, < 2.a)
     hash_dot (2.5.0)
     hashdiff (1.0.1)
-    hashie (5.0.0)
+    hashie (5.1.0)
+      logger
     htmlentities (4.3.4)
     http-accept (1.7.0)
     http-cookie (1.1.0)
@@ -383,7 +384,7 @@ GEM
       turbo-rails
     money (6.16.0)
       i18n (>= 0.6.4, <= 2)
-    msgpack (1.6.0)
+    msgpack (1.8.0)
     multi_json (1.15.0)
     multi_xml (0.8.1)
       bigdecimal (>= 3.1, < 5)
@@ -621,9 +622,8 @@ GEM
       sprockets (> 3.0)
       sprockets-rails
       tilt
-    searchkick (5.1.2)
-      activemodel (>= 5.2)
-      hashie
+    searchkick (6.0.3)
+      activemodel (>= 7.2)
     securerandom (0.4.1)
     selectize-rails (0.12.6)
     selenium-webdriver (4.10.0)
@@ -702,7 +702,7 @@ GEM
     version_gem (1.1.1)
     warden (1.2.9)
       rack (>= 2.0.9)
-    web-console (4.2.0)
+    web-console (4.2.1)
       actionview (>= 6.0.0)
       activemodel (>= 6.0.0)
       bindex (>= 0.4.0)
@@ -770,6 +770,7 @@ DEPENDENCIES
   letter_opener_web
   mission_control-jobs
   money
+  msgpack (>= 1.7.0)
   mutex_m
   newrelic_rpm (~> 9.8.0)
   nokogiri (>= 1.18.4)
@@ -801,7 +802,7 @@ DEPENDENCIES
   ruby_audit
   rubyzip
   sass-rails
-  searchkick
+  searchkick (>= 5.3.0)
   selenium-webdriver (>= 4.0.0)
   sentry-rails
   sentry-ruby (~> 5.17)
@@ -815,7 +816,7 @@ DEPENDENCIES
   strong_migrations
   tzinfo-data
   vcr (~> 6.1)
-  web-console (>= 4.1.0)
+  web-console (>= 4.2.1)
   webmock (~> 3.14.0)
   zerobounce-sdk
 
