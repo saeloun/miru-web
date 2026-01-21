@@ -71,4 +71,42 @@ RSpec.describe "InternalApi::V1::TimeTracking#index", type: :request do
       expect(actual_response).to eq(expected_response)
     end
   end
+
+  context "when user has custom leaves assigned" do
+    let!(:leave) { create(:leave, company: company1, year: Date.current.year) }
+    let!(:leave_type) do
+      create(
+        :leave_type, leave:, name: "Annual", allocation_value: 2, allocation_period: :days,
+        allocation_frequency: :per_month)
+    end
+    let!(:custom_leave) { create(:custom_leave, leave:, name: "Special Leave", allocation_value: 5) }
+
+    before do
+      create(:custom_leave_user, custom_leave:, user:)
+      create(:employment, company: company1, user:)
+      user.add_role :employee, company1
+      sign_in user
+      send_request :get, internal_api_v1_time_tracking_index_path(year: Date.current.year),
+        headers: auth_headers(user)
+    end
+
+    it "returns both regular leave types and custom leaves" do
+      leave_type_names = json_response["leave_types"].pluck("name")
+      expect(leave_type_names).to include("Annual")
+      expect(leave_type_names).to include("Special Leave")
+    end
+
+    it "returns custom leaves with type field set to custom_leave" do
+      custom_leave_response = json_response["leave_types"].find { |lt| lt["name"] == "Special Leave" }
+      expect(custom_leave_response["type"]).to eq("custom_leave")
+      expect(custom_leave_response["id"]).to eq("custom_#{custom_leave.id}")
+      expect(custom_leave_response["custom_leave_id"]).to eq(custom_leave.id)
+    end
+
+    it "returns regular leave types with type field set to leave_type" do
+      leave_type_response = json_response["leave_types"].find { |lt| lt["name"] == "Annual" }
+      expect(leave_type_response["type"]).to eq("leave_type")
+      expect(leave_type_response["id"]).to eq(leave_type.id)
+    end
+  end
 end

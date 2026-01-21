@@ -37,6 +37,7 @@ module TimeoffEntries
         end_date = Date.new(year, 12, 31)
 
         @_timeoff_entries ||= TimeoffEntry.from_workspace(current_company.id)
+          .includes(:leave_type, :holiday_info, :custom_leave)
           .where(user_id:)
           .during(start_date, end_date)
           .distinct
@@ -44,6 +45,7 @@ module TimeoffEntries
 
       def process_leave_balance
         calculate_leave_balance
+        calculate_custom_leave_balance
         calculate_holiday_balance
         leave_balance
       end
@@ -84,6 +86,60 @@ module TimeoffEntries
           }
 
           leave_balance << summary_object
+        end
+      end
+
+      def calculate_custom_leave_balance
+        leave = current_company.leaves&.kept&.find_by(year:)
+        return unless leave
+
+        # Get custom leaves assigned to this user
+        user_custom_leaves = leave.custom_leaves.joins(:custom_leave_users)
+          .where(custom_leave_users: { user_id: })
+
+        user_custom_leaves.each do |custom_leave|
+          total_days = calculate_custom_leave_allocation(custom_leave)
+          timeoff_entries_duration = custom_leave.timeoff_entries.kept.where(user_id:).sum(:duration)
+
+          total_minutes = total_days * @working_hours_per_day * 60
+          net_duration = total_minutes - timeoff_entries_duration
+          net_hours = net_duration / 60
+          net_days = net_hours.abs / @working_hours_per_day
+          extra_hours = net_hours.abs % @working_hours_per_day
+
+          if net_hours.abs < @working_hours_per_day
+            label = "#{net_hours} hours"
+          else
+            label = "#{net_days} days #{extra_hours} hours"
+          end
+
+          summary_object = {
+            id: custom_leave.id,
+            name: custom_leave.name,
+            icon: "custom",
+            color: "custom",
+            total_leave_type_days: total_days,
+            timeoff_entries_duration:,
+            net_duration:,
+            net_days:,
+            type: "custom_leave",
+            label:
+          }
+
+          leave_balance << summary_object
+        end
+      end
+
+      def calculate_custom_leave_allocation(custom_leave)
+        case custom_leave.allocation_period
+        when "days"
+          custom_leave.allocation_value
+        when "weeks"
+          custom_leave.allocation_value * @working_days_per_week
+        when "months"
+          custom_leave.allocation_value * @working_days_per_week * 4
+        else
+          custom_leave.allocation_value
         end
       end
 

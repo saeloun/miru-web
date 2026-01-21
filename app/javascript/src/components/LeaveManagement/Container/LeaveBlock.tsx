@@ -9,14 +9,37 @@ import {
   generateHolidayColor,
 } from "components/Profile/Organization/Leaves/utils";
 
+// Default color for custom leaves
+const CUSTOM_LEAVE_COLOR = { value: "#9B59B6", label: "custom" };
+const CUSTOM_LEAVE_ICON = { icon: null, value: "custom" };
+
 const LeaveBlock = ({ leaveType, selectedLeaveType, setSelectedLeaveType }) => {
   const { icon, color, name, netDuration, type, category, label } = leaveType;
 
-  const leaveIcon =
-    type === "leave" ? generateLeaveIcon(icon) : generateHolidayIcon(icon);
+  const getLeaveIcon = () => {
+    if (type === "custom_leave") {
+      return generateLeaveIcon("custom") || CUSTOM_LEAVE_ICON;
+    }
 
-  const leaveColor =
-    type === "leave" ? generateLeaveColor(color) : generateHolidayColor(color);
+    return type === "leave"
+      ? generateLeaveIcon(icon)
+      : generateHolidayIcon(icon);
+  };
+
+  const getLeaveColor = () => {
+    if (type === "custom_leave") {
+      return generateLeaveColor(color) || CUSTOM_LEAVE_COLOR;
+    }
+
+    if (type === "leave") {
+      return generateLeaveColor(color) || CUSTOM_LEAVE_COLOR;
+    }
+
+    return generateHolidayColor(color) || CUSTOM_LEAVE_COLOR;
+  };
+
+  const leaveIcon = getLeaveIcon();
+  const leaveColor = getLeaveColor();
 
   const formattedDuration =
     category === "national" || category === "optional"
@@ -29,7 +52,7 @@ const LeaveBlock = ({ leaveType, selectedLeaveType, setSelectedLeaveType }) => {
 
   // Show appropriate text when this leave type is selected
   // For holidays (national/optional), show "Utilized" since the data represents usage
-  // For regular leaves (PTO, sick leave, etc.), show "Available"
+  // For regular leaves and custom leaves, show "Available"
   const getSelectedText = () => {
     if (!isSelected) return name;
 

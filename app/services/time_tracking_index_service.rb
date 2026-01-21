@@ -79,7 +79,13 @@ class TimeTrackingIndexService
 
     def leave_types
       leave = current_company.leaves.find_by(year:)
-      leave&.leave_types&.kept || []
+      return [] unless leave
+
+      regular_leave_types = leave.leave_types&.kept || []
+      user_custom_leaves = leave.custom_leaves.joins(:custom_leave_users)
+        .where(custom_leave_users: { user_id: user.id })
+
+      regular_leave_types + user_custom_leaves
     end
 
     def holiday_infos

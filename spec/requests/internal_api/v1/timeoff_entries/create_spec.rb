@@ -10,6 +10,7 @@ RSpec.describe "InternalApi::V1::TimeoffEntry#create", type: :request do
     :leave_type, name: "Annual", leave:, allocation_period: "months", allocation_frequency: "per_quarter",
     allocation_value: 1, carry_forward_days: 30,)
 }
+  let!(:custom_leave) { create(:custom_leave, leave:, name: "Special Leave", allocation_value: 5) }
 
   context "when user is an admin" do
     before do
@@ -28,6 +29,19 @@ RSpec.describe "InternalApi::V1::TimeoffEntry#create", type: :request do
 
         send_request :post, internal_api_v1_timeoff_entries_path(timeoff_entry:), headers: auth_headers(user)
         expect(response).to have_http_status(:ok)
+      end
+
+      it "creates the timeoff entry with custom leave successfully" do
+        timeoff_entry = attributes_for(
+          :timeoff_entry,
+          user_id: user.id,
+          custom_leave_id: custom_leave.id,
+          leave_type_id: nil
+        )
+
+        send_request :post, internal_api_v1_timeoff_entries_path(timeoff_entry:), headers: auth_headers(user)
+        expect(response).to have_http_status(:ok)
+        expect(json_response["timeoff_entry"]["custom_leave_id"]).to eq(custom_leave.id)
       end
 
       it "throws unprocessable_entity error if required attributes are missing" do

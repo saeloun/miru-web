@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_10_29_141025) do
+ActiveRecord::Schema[7.1].define(version: 2026_01_12_175355) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -626,6 +626,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_10_29_141025) do
     t.bigint "leave_type_id"
     t.datetime "discarded_at"
     t.bigint "holiday_info_id"
+    t.bigint "custom_leave_id"
+    t.index ["custom_leave_id"], name: "index_timeoff_entries_on_custom_leave_id"
     t.index ["discarded_at"], name: "index_timeoff_entries_on_discarded_at"
     t.index ["holiday_info_id"], name: "index_timeoff_entries_on_holiday_info_id"
     t.index ["leave_type_id"], name: "index_timeoff_entries_on_leave_type_id"
@@ -762,6 +764,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_10_29_141025) do
   add_foreign_key "solid_queue_recurring_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_scheduled_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "stripe_connected_accounts", "companies"
+  add_foreign_key "timeoff_entries", "custom_leaves", column: "custom_leave_id"
   add_foreign_key "timeoff_entries", "leave_types"
   add_foreign_key "timeoff_entries", "users"
   add_foreign_key "timesheet_entries", "projects"

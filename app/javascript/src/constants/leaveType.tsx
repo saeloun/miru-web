@@ -69,6 +69,10 @@ export const leaveColors = [
     value: "#7CC984",
     label: "chart_light_green",
   },
+  {
+    value: "#9B59B6",
+    label: "custom",
+  },
 ];
 
 export const leaveIcons = [
@@ -111,6 +115,11 @@ export const leaveIcons = [
     value: "user",
     label: "label8",
     icon: <UserIcon className="h-full w-full p-1" weight="bold" />,
+  },
+  {
+    value: "custom",
+    label: "custom",
+    icon: <CalendarIcon className="h-full w-full p-1" weight="bold" />,
   },
 ];
 
