@@ -299,36 +299,7 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
     end
   end
 
-  private
-
-    def create_leave_type(name, allocation_value, allocation_period, allocation_frequency, icon, color,
-carry_forward_days)
-      create(
-        :leave_type,
-        name:,
-        allocation_period:,
-        allocation_frequency:,
-        allocation_value:,
-        icon:,
-        color:,
-        carry_forward_days:,
-        leave:
-      )
-    end
-
-    def calculate_leave_type_days(joined_at, leave_type, year)
-      TimeoffEntries::CalculateTotalDurationOfDefinedLeavesService.new(
-        joined_at,
-        leave_type.allocation_value,
-        leave_type.allocation_period.to_sym,
-        leave_type.allocation_frequency.to_sym,
-        year,
-        working_hours_per_day,
-        company.working_days
-      ).process
-    end
-
-    context "with custom leaves" do
+  context "with custom leaves" do
       let(:custom_leave_company) { create(:company) }
       let(:custom_leave_user_record) { create(:user, current_workspace_id: custom_leave_company.id) }
       let!(:custom_leave_leave) { create(:leave, company: custom_leave_company, year: Date.today.year) }
@@ -386,5 +357,34 @@ carry_forward_days)
           expect(custom_leave_balance[:timeoff_entries_duration]).to eq(480)
         end
       end
+    end
+
+  private
+
+    def create_leave_type(name, allocation_value, allocation_period, allocation_frequency, icon, color,
+carry_forward_days)
+      create(
+        :leave_type,
+        name:,
+        allocation_period:,
+        allocation_frequency:,
+        allocation_value:,
+        icon:,
+        color:,
+        carry_forward_days:,
+        leave:
+      )
+    end
+
+    def calculate_leave_type_days(joined_at, leave_type, year)
+      TimeoffEntries::CalculateTotalDurationOfDefinedLeavesService.new(
+        joined_at,
+        leave_type.allocation_value,
+        leave_type.allocation_period.to_sym,
+        leave_type.allocation_frequency.to_sym,
+        year,
+        working_hours_per_day,
+        company.working_days
+      ).process
     end
 end

@@ -62,8 +62,6 @@ json.leave_types leave_types do |leave_type|
     json.id "custom_#{leave_type[:id]}"
     json.custom_leave_id leave_type[:id]
     json.type "custom_leave"
-    json.allocation_frequency "per_year"
-    json.carry_forward_days 0
     json.color "custom"
     json.icon "custom"
   end

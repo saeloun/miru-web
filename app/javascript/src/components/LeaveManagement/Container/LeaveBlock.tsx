@@ -18,7 +18,7 @@ const LeaveBlock = ({ leaveType, selectedLeaveType, setSelectedLeaveType }) => {
 
   const getLeaveIcon = () => {
     if (type === "custom_leave") {
-      return generateLeaveIcon(icon) || CUSTOM_LEAVE_ICON;
+      return generateLeaveIcon("custom") || CUSTOM_LEAVE_ICON;
     }
 
     return type === "leave"

@@ -29,7 +29,7 @@ In addition to tracking work hours, you can also log time off (leave) entries:
 4. Add optional notes
 5. Save the entry
 
-Your leave balance will automatically update to reflect the time off taken. For more details on leave management, see the [Leave Management guide](./team/leave-management).
+Your leave balance will automatically update to reflect the time off taken. For more details on leave management, see the [Leave Management guide](./team/03-leave-management).
 
 # Week View
 
@@ -37,7 +37,7 @@ The Weekly Overview of your timesheet provides an efficient way to input a signi
 
 Here, you can easily track your total hours worked.
 
-### Adding Time in the Weekly Overview
+## Adding Time in the Weekly Overview
 
 1. Start by clicking on **Add Row**.
 2. Choose your client and project, then click **Save Row**. You can expedite this process by typing the names and pressing the **Enter** key.
@@ -49,7 +49,7 @@ The Month view of your timesheet provides an efficient way to view all hours log
 
 Here, you can easily track your total hours worked for the month.
 
-### Adding Time in the Monthly Overview
+## Adding Time in the Monthly Overview
 
 1. Adding time entries is similar to that of DAY view.
 

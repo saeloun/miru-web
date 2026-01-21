@@ -19,7 +19,7 @@ const TableRow = ({ timeoffEntry }) => {
 
   const getLeaveIcon = () => {
     if (customLeave) {
-      return generateLeaveIcon("custom") || CUSTOM_LEAVE_ICON;
+      return generateLeaveIcon(customLeave.icon) || CUSTOM_LEAVE_ICON;
     }
 
     if (leaveType?.icon) {
@@ -31,7 +31,7 @@ const TableRow = ({ timeoffEntry }) => {
 
   const getLeaveColor = () => {
     if (customLeave) {
-      return generateLeaveColor("custom") || CUSTOM_LEAVE_COLOR;
+      return generateLeaveColor(customLeave.color) || CUSTOM_LEAVE_COLOR;
     }
 
     if (leaveType?.color) {
