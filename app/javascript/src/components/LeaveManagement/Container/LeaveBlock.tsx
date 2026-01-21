@@ -31,9 +31,11 @@ const LeaveBlock = ({ leaveType, selectedLeaveType, setSelectedLeaveType }) => {
       return generateLeaveColor(color) || CUSTOM_LEAVE_COLOR;
     }
 
-    return type === "leave"
-      ? generateLeaveColor(color)
-      : generateHolidayColor(color);
+    if (type === "leave") {
+      return generateLeaveColor(color) || CUSTOM_LEAVE_COLOR;
+    }
+
+    return generateHolidayColor(color) || CUSTOM_LEAVE_COLOR;
   };
 
   const leaveIcon = getLeaveIcon();

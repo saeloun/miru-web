@@ -53,4 +53,4 @@ Here, you can easily track your total hours worked for the month.
 
 1. Adding time entries is similar to that of DAY view.
 
-If you are an admin, you can select to view time entries for team-members using the dropdown.
+If you are an admin, you can select to view time entries for team members using the dropdown.
