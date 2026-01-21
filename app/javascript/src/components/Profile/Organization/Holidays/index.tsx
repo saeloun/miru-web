@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { getYear } from "date-fns";
 import { useOutsideClick } from "helpers";
 import { useNavigate } from "react-router-dom";
+import { Toastr } from "StyledComponents";
 
 import holidaysApi from "apis/holidays";
 import Loader from "common/Loader/index";
@@ -429,6 +430,9 @@ const Holidays = () => {
 
         setHolidayErrors(newHolidayErrors);
         setOptionalHolidayErrors(newOptionalHolidayErrors);
+      } else {
+        // Handle non-field errors by showing a generic error message
+        Toastr.error("Failed to save holidays");
       }
     }
   };
