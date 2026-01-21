@@ -58,6 +58,9 @@
     .w-40 {
       width: 10rem;
     }
+    .w-48 {
+      width: 12rem;
+    }
     .w-1/3 {
       width: 33.333333%;
     }
@@ -166,13 +169,13 @@
 <body>
   <div class="main">
     <div class="flex justify-between border-b-2 border-miru-gray-400 p-10 h-50">
-      <div class="flex">
-        <div class="h-20 w-20 mr-5">
+      <div class="flex" style="width: 60%; max-width: 60%;">
+        <div class="h-20 w-20 mr-5" style="flex-shrink: 0;">
           <%=image_tag company_logo%>
         </div>
 
-        <div class="mt-2">
-          <p class="font-bold text-3xl text-miru-dark-purple-1000">
+        <div class="mt-2" style="flex: 1; min-width: 0;">
+          <p class="font-bold text-3xl text-miru-dark-purple-1000" style="word-wrap: break-word;">
             <%=invoice.company.name%>
           </p>
           <p class="mt-1 font-normal text-base text-miru-dark-purple-1000">
@@ -180,24 +183,24 @@
           </p>
         </div>
       </div>
-      <div class="mt-2 font-normal text-base text-right text-miru-dark-purple-1000 w-40">
-        <p><%=invoice.company.formatted_address%></p>
+      <div class="mt-2 font-normal text-base text-right text-miru-dark-purple-1000" style="width: 38%; max-width: 38%;">
+        <p style="word-wrap: break-word; overflow-wrap: break-word;"><%=invoice.company.formatted_address%></p>
       </div>
     </div>
 
     <div class="flex justify-between border-b-2 border-miru-gray-400 px-10 py-5 h-36">
-      <div class="w-1/3">
+      <div style="width: 28%; padding-right: 1rem;">
         <p class="font-normal text-xs text-miru-dark-purple-1000 flex">Billed to</p>
         <div>
-          <p class="font-bold text-base text-miru-dark-purple-1000">
+          <p class="font-bold text-base text-miru-dark-purple-1000" style="word-wrap: break-word;">
             <%=client.name%>
           </p>
-          <p class="font-normal text-xs text-miru-dark-purple-400 truncate">
+          <p class="font-normal text-xs text-miru-dark-purple-400" style="word-wrap: break-word; overflow-wrap: break-word;">
             <%=client.formatted_address%><br><%=client.phone%>
           </p>
         </div>
       </div>
-      <div class="w-1/4">
+      <div style="width: 20%; padding-right: 1rem;">
         <p class="font-normal text-xs text-miru-dark-purple-1000 flex">Date of Issue</p>
         <p class="font-normal text-base text-miru-dark-purple-1000">
           <%= invoice.formatted_issue_date %>
@@ -207,17 +210,17 @@
           <%= invoice.formatted_due_date %>
         </p>
       </div>
-      <div class="w-1/3">
+      <div style="width: 28%; padding-right: 1rem;">
         <p class="font-normal text-xs text-miru-dark-purple-1000">Invoice Number</p>
-        <p class="font-normal text-base text-miru-dark-purple-1000">
+        <p class="font-normal text-base text-miru-dark-purple-1000" style="word-wrap: break-word;">
           <%=invoice["invoice_number"]%>
         </p>
         <p class="font-normal text-xs text-miru-dark-purple-1000 mt-4">Reference</p>
-        <p class="font-normal text-base text-miru-dark-purple-1000 truncate">
+        <p class="font-normal text-base text-miru-dark-purple-1000" style="word-wrap: break-word; overflow-wrap: break-word;">
           <%=invoice["reference"]%>
         </p>
       </div>
-      <div class="w-1/5 text-right">
+      <div style="width: 24%;" class="text-right">
         <p class="font-normal text-xs text-miru-dark-purple-1000 text-right">Amount</p>
         <p class="font-normal text-2xl text-miru-dark-purple-1000 mt-1">
           <%=invoice_amount%>
@@ -228,29 +231,29 @@
       <table class="w-full table-fixed">
         <thead class="my-2">
           <tr>
-            <th class="text-miru-dark-purple-600 font-normal text-xs text-left tracking-widest">NAME</th>
-            <th class="px-3 text-miru-dark-purple-600 font-normal text-xs text-left tracking-widest">DATE</th>
-            <th class="pl-2 text-miru-dark-purple-600 font-normal text-xs text-left tracking-widest w-1/3">DESCRIPTION</th>
-            <th class="text-miru-dark-purple-600 font-normal text-xs text-right tracking-widest">RATE</th>
-            <th class="text-miru-dark-purple-600 font-normal text-xs text-right tracking-widest">QTY</th>
-            <th class="text-miru-dark-purple-600 font-normal text-xs text-right tracking-widest">LINE TOTAL</th>
+            <th class="text-miru-dark-purple-600 font-normal text-xs text-left tracking-widest" style="width: 18%;">NAME</th>
+            <th class="px-3 text-miru-dark-purple-600 font-normal text-xs text-left tracking-widest" style="width: 12%;">DATE</th>
+            <th class="pl-2 text-miru-dark-purple-600 font-normal text-xs text-left tracking-widest" style="width: 30%;">DESCRIPTION</th>
+            <th class="text-miru-dark-purple-600 font-normal text-xs text-right tracking-widest" style="width: 13%;">RATE</th>
+            <th class="text-miru-dark-purple-600 font-normal text-xs text-right tracking-widest" style="width: 12%;">QTY</th>
+            <th class="text-miru-dark-purple-600 font-normal text-xs text-right tracking-widest" style="width: 15%;">LINE TOTAL</th>
           </tr>
         </thead>
         <tbody class="w-full">
           <%invoice_line_items.each do |item| %>
             <tr>
-              <td class="border-b-2 border-miru-gray-200 px-1 py-3 font-normal text-base text-miru-dark-purple-1000 text-left "><%=item[:name]%></td>
-              <td class="border-b-2 border-miru-gray-200 py-3 font-normal text-base text-miru-dark-purple-1000 text-left"><%=item[:date]%></td>
-              <td class="border-b-2 border-miru-gray-200 px-1 pl-2 py-3 font-normal text-base text-miru-dark-purple-1000 text-left ">
+              <td class="border-b-2 border-miru-gray-200 px-1 py-3 font-normal text-base text-miru-dark-purple-1000 text-left" style="width: 18%; word-wrap: break-word;"><%=item[:name]%></td>
+              <td class="border-b-2 border-miru-gray-200 py-3 font-normal text-base text-miru-dark-purple-1000 text-left" style="width: 12%;"><%=item[:date]%></td>
+              <td class="border-b-2 border-miru-gray-200 px-1 pl-2 py-3 font-normal text-base text-miru-dark-purple-1000 text-left" style="width: 30%; word-wrap: break-word;">
                 <%=item[:description]%>
               </td>
-              <td class="border-b-2 border-miru-gray-200 px-1 py-3 font-normal text-base text-miru-dark-purple-1000 text-right ">
+              <td class="border-b-2 border-miru-gray-200 px-1 py-3 font-normal text-base text-miru-dark-purple-1000 text-right" style="width: 13%;">
                 <%=item[:rate]%>
               </td>
-              <td class="border-b-2 border-miru-gray-200 px-1 py-3 font-normal text-base text-miru-dark-purple-1000 text-right ">
+              <td class="border-b-2 border-miru-gray-200 px-1 py-3 font-normal text-base text-miru-dark-purple-1000 text-right" style="width: 12%;">
                 <%=item[:quantity]%>
               </td>
-              <td class="border-b-2 border-miru-gray-200 px-1 py-3 font-normal text-base text-miru-dark-purple-1000 text-right ">
+              <td class="border-b-2 border-miru-gray-200 px-1 py-3 font-normal text-base text-miru-dark-purple-1000 text-right" style="width: 15%;">
                 <%=item[:line_total]%>
               </td>
             </tr>
