@@ -192,10 +192,40 @@ const Holidays = () => {
       const updatedHolidayList = holidayList;
       updatedHolidayList.splice(index, 1);
       setHolidayList([...updatedHolidayList]);
+
+      // Rebuild error map to match new indices after deletion
+      const newHolidayErrors: Record<number, string> = {};
+      Object.entries(holidayErrors).forEach(([errorIndex, message]) => {
+        const errorIndexNum = parseInt(errorIndex, 10);
+        if (errorIndexNum < index) {
+          // Indices before deletion remain the same
+          newHolidayErrors[errorIndexNum] = message;
+        } else if (errorIndexNum > index) {
+          // Indices after deletion shift down by 1
+          newHolidayErrors[errorIndexNum - 1] = message;
+        }
+        // Skip the deleted index (errorIndexNum === index)
+      });
+      setHolidayErrors(newHolidayErrors);
     } else {
       const updatedHolidayList = optionalHolidaysList;
       updatedHolidayList.splice(index, 1);
       setOptionalHolidaysList([...updatedHolidayList]);
+
+      // Rebuild error map to match new indices after deletion
+      const newOptionalHolidayErrors: Record<number, string> = {};
+      Object.entries(optionalHolidayErrors).forEach(([errorIndex, message]) => {
+        const errorIndexNum = parseInt(errorIndex, 10);
+        if (errorIndexNum < index) {
+          // Indices before deletion remain the same
+          newOptionalHolidayErrors[errorIndexNum] = message;
+        } else if (errorIndexNum > index) {
+          // Indices after deletion shift down by 1
+          newOptionalHolidayErrors[errorIndexNum - 1] = message;
+        }
+        // Skip the deleted index (errorIndexNum === index)
+      });
+      setOptionalHolidayErrors(newOptionalHolidayErrors);
     }
   };
 
