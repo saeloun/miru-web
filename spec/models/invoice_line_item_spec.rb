@@ -21,6 +21,63 @@ RSpec.describe InvoiceLineItem, type: :model do
 
   describe "callbacks" do
     it { is_expected.to callback(:unlock_timesheet_entry).before(:destroy) }
+
+    describe "#unlock_timesheet_entry" do
+      let(:company) { create(:company) }
+      let(:client) { create(:client, company:) }
+      let(:invoice) { create(:invoice, company:, client:, status: :draft) }
+      let(:timesheet_entry) { create(:timesheet_entry, locked: true) }
+
+      context "when invoice is in draft status" do
+        context "when timesheet_entry is present" do
+          let(:invoice_line_item) do
+            create(:invoice_line_item, invoice:, timesheet_entry:)
+          end
+
+          it "unlocks the timesheet entry on destroy" do
+            expect(timesheet_entry.locked).to be true
+            invoice_line_item.destroy
+            expect(timesheet_entry.reload.locked).to be false
+          end
+        end
+
+        context "when timesheet_entry is nil" do
+          let(:invoice_line_item) do
+            create(:invoice_line_item, invoice:, timesheet_entry: nil)
+          end
+
+          it "does not raise an error on destroy" do
+            expect { invoice_line_item.destroy }.not_to raise_error
+          end
+        end
+      end
+
+      context "when invoice is not in draft status" do
+        let(:sent_invoice) { create(:invoice, company:, client:, status: :sent) }
+
+        context "when timesheet_entry is present" do
+          let(:invoice_line_item) do
+            create(:invoice_line_item, invoice: sent_invoice, timesheet_entry:)
+          end
+
+          it "does not unlock the timesheet entry on destroy" do
+            expect(timesheet_entry.locked).to be true
+            invoice_line_item.destroy
+            expect(timesheet_entry.reload.locked).to be true
+          end
+        end
+
+        context "when timesheet_entry is nil" do
+          let(:invoice_line_item) do
+            create(:invoice_line_item, invoice: sent_invoice, timesheet_entry: nil)
+          end
+
+          it "does not raise an error on destroy" do
+            expect { invoice_line_item.destroy }.not_to raise_error
+          end
+        end
+      end
+    end
   end
 
   describe "Associations" do
