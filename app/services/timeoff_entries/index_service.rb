@@ -68,11 +68,7 @@ module TimeoffEntries
           net_days = net_hours.abs / @working_hours_per_day
           extra_hours = net_hours.abs % @working_hours_per_day
 
-          if net_hours.abs < @working_hours_per_day
-            label = "#{net_hours} hours"
-          else
-            label = "#{net_days} days #{extra_hours} hours"
-          end
+          label = "#{net_days} days #{extra_hours} hours"
 
           summary_object = {
             id: leave_type.id,
