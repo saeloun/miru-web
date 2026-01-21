@@ -40,14 +40,18 @@ class ApiHandler {
           setTimeout(() => (window.location.href = "/"), 500);
         }
 
-        Toastr.error(
-          error.response?.data?.errors ||
-            error.response?.data?.error ||
-            error.response?.data?.notice ||
-            error.message ||
-            error.notice ||
-            "Something went wrong!"
-        );
+        // Skip generic toast if field_errors are present (handled by the component)
+        if (!error.response?.data?.field_errors) {
+          Toastr.error(
+            error.response?.data?.errors ||
+              error.response?.data?.error ||
+              error.response?.data?.notice ||
+              error.message ||
+              error.notice ||
+              "Something went wrong!"
+          );
+        }
+
         if (error.response?.status === 423) {
           setTimeout(() => (window.location.href = "/"), 500);
         }

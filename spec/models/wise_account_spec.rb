@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe WiseAccount, type: :model do
+RSpec.describe WiseAccount, type: :model, wise: true do
   describe "Validations" do
     subject { build(:wise_account) }
 
