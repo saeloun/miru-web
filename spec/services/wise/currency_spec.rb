@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe Wise::Currency do
+RSpec.describe Wise::Currency, :wise do
   describe "#list" do
     subject { Wise::Currency.new.list }
 

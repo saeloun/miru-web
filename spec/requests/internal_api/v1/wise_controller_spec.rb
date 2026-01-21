@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe InternalApi::V1::WiseController, type: :controller do
+RSpec.describe InternalApi::V1::WiseController, type: :controller, wise: true do
   let(:company) { create(:company) }
   let(:employee) { create(:user, current_workspace_id: company.id) }
 

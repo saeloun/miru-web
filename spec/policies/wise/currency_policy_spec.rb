@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe Wise::CurrencyPolicy, type: :policy do
+RSpec.describe Wise::CurrencyPolicy, type: :policy, wise: true do
   let(:company) { create(:company) }
 
   let(:admin) { create(:user, current_workspace_id: company.id) }

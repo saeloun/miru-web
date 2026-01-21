@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe WisePolicy, type: :policy do
+RSpec.describe WisePolicy, type: :policy, wise: true do
   let(:company) { create(:company) }
 
   let(:admin) { create(:user, current_workspace_id: company.id) }

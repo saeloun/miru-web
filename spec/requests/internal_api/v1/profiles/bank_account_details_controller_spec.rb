@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe "InternalApi::V1::Profiles::BankAccountDetailsController", type: :request do
+RSpec.describe "InternalApi::V1::Profiles::BankAccountDetailsController", type: :request, wise: true do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
 

@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe Wise::Recipient do
+RSpec.describe Wise::Recipient, :wise do
   describe "#create" do
     subject { Wise::Recipient.new.create(payload) }
 

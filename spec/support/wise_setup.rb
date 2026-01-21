@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.configure do |config|
-  config.before do
+  config.before(:each, :wise) do
     # Stub Wise environment variables for tests
     allow(ENV).to receive(:[]).and_call_original
     allow(ENV).to receive(:[]).with("WISE_API_URL").and_return("https://api.sandbox.transferwise.tech")

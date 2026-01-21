@@ -444,6 +444,8 @@ const Holidays = () => {
       }
       setIsDetailUpdated(false);
       setIsEditable(false);
+      setHolidayErrors({});
+      setOptionalHolidayErrors({});
     } else {
       navigate("/settings/profile");
     }
