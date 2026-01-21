@@ -15,6 +15,8 @@ const CustomDatePicker = ({
   setVisibility,
   wrapperRef,
   dateFormat,
+  maxDate,
+  minDate,
 }: CustomDatePickerProps) => {
   const range = (start, end) => {
     const ans = [];
@@ -59,6 +61,8 @@ const CustomDatePicker = ({
       calendarClassName="miru-calendar"
       selected={parseDate(date)}
       wrapperClassName="datePicker"
+      maxDate={maxDate ? new Date(maxDate) : null}
+      minDate={minDate ? new Date(minDate) : null}
       renderCustomHeader={({
         date,
         changeYear,
@@ -113,6 +117,8 @@ type CustomDatePickerProps = {
   setVisibility?: (visibility: boolean) => any;
   wrapperRef?: any;
   dateFormat?: any;
+  maxDate?: string;
+  minDate?: string;
 };
 
 export default CustomDatePicker;

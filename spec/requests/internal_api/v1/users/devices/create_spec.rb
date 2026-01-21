@@ -24,15 +24,13 @@ RSpec.describe "Devices#create", type: :request do
       before do
         send_request :post, internal_api_v1_user_devices_path(
           user_id: user.id,
-          device: device_details
+          device: { add_devices: [device_details] }
         ), headers: auth_headers(user)
       end
 
       it "is successful" do
         expect(response).to have_http_status(:ok)
-        expect(json_response["device_type"]).to eq("laptop")
-        expect(json_response["name"]).to eq(JSON.parse(device_details[:name].to_json))
-        expect(json_response["serial_number"]).to eq(JSON.parse(device_details[:serial_number].to_json))
+        expect(json_response["notice"]).to eq(I18n.t("devices.update.success"))
       end
     end
 
@@ -41,15 +39,13 @@ RSpec.describe "Devices#create", type: :request do
         create(:employment, company:, user: employee)
         send_request :post, internal_api_v1_user_devices_path(
           user_id: employee.id,
-          device: device_details
+          device: { add_devices: [device_details] }
         ), headers: auth_headers(user)
       end
 
       it "is successful" do
         expect(response).to have_http_status(:ok)
-        expect(json_response["device_type"]).to eq("laptop")
-        expect(json_response["name"]).to eq(JSON.parse(device_details[:name].to_json))
-        expect(json_response["serial_number"]).to eq(JSON.parse(device_details[:serial_number].to_json))
+        expect(json_response["notice"]).to eq(I18n.t("devices.update.success"))
       end
     end
 
@@ -58,7 +54,7 @@ RSpec.describe "Devices#create", type: :request do
         create(:employment, company: company2, user: user2)
         send_request :post, internal_api_v1_user_devices_path(
           user_id: user2.id,
-          device: device_details
+          device: { add_devices: [device_details] }
         ), headers: auth_headers(user)
       end
 
@@ -72,7 +68,7 @@ RSpec.describe "Devices#create", type: :request do
         create(:employment, company:, user: employee)
         send_request :post, internal_api_v1_user_devices_path(
           user_id: "abc",
-          device: device_details
+          device: { add_devices: [device_details] }
         ), headers: auth_headers(user)
       end
 
@@ -92,15 +88,13 @@ RSpec.describe "Devices#create", type: :request do
       before do
         send_request :post, internal_api_v1_user_devices_path(
           user_id: user.id,
-          device: device_details
+          device: { add_devices: [device_details] }
         ), headers: auth_headers(user)
       end
 
       it "is successful" do
         expect(response).to have_http_status(:ok)
-        expect(json_response["device_type"]).to eq("laptop")
-        expect(json_response["name"]).to eq(JSON.parse(device_details[:name].to_json))
-        expect(json_response["serial_number"]).to eq(JSON.parse(device_details[:serial_number].to_json))
+        expect(json_response["notice"]).to eq(I18n.t("devices.update.success"))
       end
     end
 
@@ -109,15 +103,13 @@ RSpec.describe "Devices#create", type: :request do
         create(:employment, company:, user: employee)
         send_request :post, internal_api_v1_user_devices_path(
           user_id: employee.id,
-          device: device_details
+          device: { add_devices: [device_details] }
         ), headers: auth_headers(user)
       end
 
       it "is successful" do
         expect(response).to have_http_status(:ok)
-        expect(json_response["device_type"]).to eq("laptop")
-        expect(json_response["name"]).to eq(JSON.parse(device_details[:name].to_json))
-        expect(json_response["serial_number"]).to eq(JSON.parse(device_details[:serial_number].to_json))
+        expect(json_response["notice"]).to eq(I18n.t("devices.update.success"))
       end
     end
   end
@@ -132,15 +124,13 @@ RSpec.describe "Devices#create", type: :request do
       before do
         send_request :post, internal_api_v1_user_devices_path(
           user_id: user.id,
-          device: device_details
+          device: { add_devices: [device_details] }
         ), headers: auth_headers(user)
       end
 
       it "is successful" do
         expect(response).to have_http_status(:ok)
-        expect(json_response["device_type"]).to eq("laptop")
-        expect(json_response["name"]).to eq(JSON.parse(device_details[:name].to_json))
-        expect(json_response["serial_number"]).to eq(JSON.parse(device_details[:serial_number].to_json))
+        expect(json_response["notice"]).to eq(I18n.t("devices.update.success"))
       end
     end
 
@@ -149,7 +139,7 @@ RSpec.describe "Devices#create", type: :request do
         create(:employment, company:, user: employee)
         send_request :post, internal_api_v1_user_devices_path(
           user_id: employee.id,
-          device: device_details
+          device: { add_devices: [device_details] }
         ), headers: auth_headers(user)
       end
 
