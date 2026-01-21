@@ -36,7 +36,6 @@ class EncodingSanitizer
     def force_utf8(value)
       value
         .encode(Encoding::UTF_8, invalid: :replace, undef: :replace, replace: "")
-        .force_encoding(Encoding::UTF_8)
     rescue Encoding::UndefinedConversionError, Encoding::InvalidByteSequenceError
       value.dup.force_encoding(Encoding::UTF_8).scrub("")
     end
