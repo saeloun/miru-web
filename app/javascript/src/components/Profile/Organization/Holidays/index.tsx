@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 
 import { getYear } from "date-fns";
 import { useOutsideClick } from "helpers";
@@ -50,12 +50,12 @@ const Holidays = () => {
   const [currentYearOptionalHolidays, setCurrentYearOptionalHolidays] =
     useState([]);
 
-  const [holidayErrors, setHolidayErrors] = useState<Record<number, string>>(
-    {}
-  );
+  const [holidayErrors, setHolidayErrors] = useState<
+    Record<number, Record<string, string[]>>
+  >({});
 
   const [optionalHolidayErrors, setOptionalHolidayErrors] = useState<
-    Record<number, string>
+    Record<number, Record<string, string[]>>
   >({});
 
   const { isDesktop, company } = useUserContext();
@@ -83,70 +83,76 @@ const Holidays = () => {
 
   const toggleCalendarModal = () => setShowCalendar(!showCalendar);
 
-  useEffect(() => {
-    sendGAPageView();
-    fetchHolidays();
-  }, []);
+  const updateHolidaysList = useCallback(
+    holidays => {
+      const currentHoliday = holidays.find(
+        holiday => holiday.year == currentYear
+      );
 
-  const fetchHolidays = async () => {
+      if (currentHoliday) {
+        const {
+          enable_optional_holidays,
+          national_holidays = [],
+          optional_holidays = [],
+          no_of_allowed_optional_holidays,
+          time_period_optional_holidays,
+        } = currentHoliday;
+
+        enable_optional_holidays &&
+          setEnableOptionalHolidays(enable_optional_holidays);
+
+        no_of_allowed_optional_holidays &&
+          setTotalOptionalHolidays(no_of_allowed_optional_holidays);
+
+        time_period_optional_holidays &&
+          setOptionalRepetitionType(time_period_optional_holidays);
+
+        const newNationalHolidays = national_holidays.map(holiday => ({
+          ...holiday,
+        }));
+
+        const newOptionalHolidays = optional_holidays.map(holiday => ({
+          ...holiday,
+        }));
+        setHolidayList(newNationalHolidays);
+        setOptionalHolidaysList(newOptionalHolidays);
+        setCurrentYearHolidaysList([
+          ...national_holidays,
+          ...optional_holidays,
+        ]);
+        setCurrentYearPublicHolidays(national_holidays);
+        setCurrentYearOptionalHolidays(optional_holidays);
+      } else {
+        setEnableOptionalHolidays(false);
+        setTotalOptionalHolidays(0);
+        setOptionalRepetitionType("per_year");
+        setHolidayList([]);
+        setCurrentYearHolidaysList([]);
+        setOptionalHolidaysList([]);
+        setCurrentYearPublicHolidays([]);
+        setCurrentYearOptionalHolidays([]);
+      }
+    },
+    [currentYear]
+  );
+
+  const fetchHolidays = useCallback(async () => {
     const res = await holidaysApi.allHolidays();
     setHolidays(res.data.holidays);
     updateHolidaysList(res.data.holidays);
     setIsLoading(false);
-  };
+  }, [updateHolidaysList]);
+
+  useEffect(() => {
+    sendGAPageView();
+    fetchHolidays();
+  }, [fetchHolidays]);
 
   useEffect(() => {
     if (holidays.length) {
       updateHolidaysList(holidays);
     }
-  }, [currentYear]);
-
-  const updateHolidaysList = holidays => {
-    const currentHoliday = holidays.find(
-      holiday => holiday.year == currentYear
-    );
-
-    if (currentHoliday) {
-      const {
-        enable_optional_holidays,
-        national_holidays = [],
-        optional_holidays = [],
-        no_of_allowed_optional_holidays,
-        time_period_optional_holidays,
-      } = currentHoliday;
-
-      enable_optional_holidays &&
-        setEnableOptionalHolidays(enable_optional_holidays);
-
-      no_of_allowed_optional_holidays &&
-        setTotalOptionalHolidays(no_of_allowed_optional_holidays);
-
-      time_period_optional_holidays &&
-        setOptionalRepetitionType(time_period_optional_holidays);
-
-      const newNationalHolidays = national_holidays.map(holiday => ({
-        ...holiday,
-      }));
-
-      const newOptionalHolidays = optional_holidays.map(holiday => ({
-        ...holiday,
-      }));
-      setHolidayList(newNationalHolidays);
-      setOptionalHolidaysList(newOptionalHolidays);
-      setCurrentYearHolidaysList([...national_holidays, ...optional_holidays]);
-      setCurrentYearPublicHolidays(national_holidays);
-      setCurrentYearOptionalHolidays(optional_holidays);
-    } else {
-      setEnableOptionalHolidays(false);
-      setTotalOptionalHolidays(0);
-      setOptionalRepetitionType("per_year");
-      setHolidayList([]);
-      setCurrentYearHolidaysList([]);
-      setOptionalHolidaysList([]);
-      setCurrentYearPublicHolidays([]);
-      setCurrentYearOptionalHolidays([]);
-    }
-  };
+  }, [currentYear, holidays, updateHolidaysList]);
 
   const handleDatePicker = (date, index, isoptionalHoliday) => {
     if (!isoptionalHoliday) {
@@ -154,11 +160,39 @@ const Holidays = () => {
       holidayListDetail[index].date = date;
       setHolidayList([...holidayListDetail]);
       setShowDatePicker({ visibility: false, index: 0 });
+      // Clear only the date field error when user selects a date
+      if (holidayErrors[index]?.date) {
+        const newErrors = { ...holidayErrors };
+        if (newErrors[index]) {
+          // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
+          const { date: _dateError, ...restErrors } = newErrors[index];
+          if (Object.keys(restErrors).length === 0) {
+            delete newErrors[index];
+          } else {
+            newErrors[index] = restErrors;
+          }
+        }
+        setHolidayErrors(newErrors);
+      }
     } else {
       const holidayListDetail = [...optionalHolidaysList];
       holidayListDetail[index].date = date;
       setOptionalHolidaysList([...holidayListDetail]);
       setShowOptionalDatePicker({ visibility: false, index: 0 });
+      // Clear only the date field error when user selects a date
+      if (optionalHolidayErrors[index]?.date) {
+        const newErrors = { ...optionalHolidayErrors };
+        if (newErrors[index]) {
+          // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
+          const { date: _dateError, ...restErrors } = newErrors[index];
+          if (Object.keys(restErrors).length === 0) {
+            delete newErrors[index];
+          } else {
+            newErrors[index] = restErrors;
+          }
+        }
+        setOptionalHolidayErrors(newErrors);
+      }
     }
   };
 
@@ -190,42 +224,48 @@ const Holidays = () => {
 
   const handleDeleteHoliday = (isoptionalHoliday, index) => {
     if (!isoptionalHoliday) {
-      const updatedHolidayList = holidayList;
+      const updatedHolidayList = [...holidayList];
       updatedHolidayList.splice(index, 1);
-      setHolidayList([...updatedHolidayList]);
+      setHolidayList(updatedHolidayList);
 
       // Rebuild error map to match new indices after deletion
-      const newHolidayErrors: Record<number, string> = {};
-      Object.entries(holidayErrors).forEach(([errorIndex, message]) => {
+      const newHolidayErrors: Record<number, Record<string, string[]>> = {};
+      Object.entries(holidayErrors).forEach(([errorIndex, errorObj]) => {
         const errorIndexNum = parseInt(errorIndex, 10);
         if (errorIndexNum < index) {
           // Indices before deletion remain the same
-          newHolidayErrors[errorIndexNum] = message;
+          newHolidayErrors[errorIndexNum] = errorObj;
         } else if (errorIndexNum > index) {
           // Indices after deletion shift down by 1
-          newHolidayErrors[errorIndexNum - 1] = message;
+          newHolidayErrors[errorIndexNum - 1] = errorObj;
         }
         // Skip the deleted index (errorIndexNum === index)
       });
       setHolidayErrors(newHolidayErrors);
     } else {
-      const updatedHolidayList = optionalHolidaysList;
+      const updatedHolidayList = [...optionalHolidaysList];
       updatedHolidayList.splice(index, 1);
-      setOptionalHolidaysList([...updatedHolidayList]);
+      setOptionalHolidaysList(updatedHolidayList);
 
       // Rebuild error map to match new indices after deletion
-      const newOptionalHolidayErrors: Record<number, string> = {};
-      Object.entries(optionalHolidayErrors).forEach(([errorIndex, message]) => {
-        const errorIndexNum = parseInt(errorIndex, 10);
-        if (errorIndexNum < index) {
-          // Indices before deletion remain the same
-          newOptionalHolidayErrors[errorIndexNum] = message;
-        } else if (errorIndexNum > index) {
-          // Indices after deletion shift down by 1
-          newOptionalHolidayErrors[errorIndexNum - 1] = message;
+      const newOptionalHolidayErrors: Record<
+        number,
+        Record<string, string[]>
+      > = {};
+
+      Object.entries(optionalHolidayErrors).forEach(
+        ([errorIndex, errorObj]) => {
+          const errorIndexNum = parseInt(errorIndex, 10);
+          if (errorIndexNum < index) {
+            // Indices before deletion remain the same
+            newOptionalHolidayErrors[errorIndexNum] = errorObj;
+          } else if (errorIndexNum > index) {
+            // Indices after deletion shift down by 1
+            newOptionalHolidayErrors[errorIndexNum - 1] = errorObj;
+          }
+          // Skip the deleted index (errorIndexNum === index)
         }
-        // Skip the deleted index (errorIndexNum === index)
-      });
+      );
       setOptionalHolidayErrors(newOptionalHolidayErrors);
     }
   };
@@ -235,20 +275,36 @@ const Holidays = () => {
       const holidayListDetail = [...holidayList];
       holidayListDetail[index].name = e.target.value;
       setHolidayList([...holidayListDetail]);
-      // Clear error when user starts typing
-      if (holidayErrors[index]) {
+      // Clear only the name field error when user starts typing
+      if (holidayErrors[index]?.name) {
         const newErrors = { ...holidayErrors };
-        delete newErrors[index];
+        if (newErrors[index]) {
+          // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
+          const { name: _name, ...restErrors } = newErrors[index];
+          if (Object.keys(restErrors).length === 0) {
+            delete newErrors[index];
+          } else {
+            newErrors[index] = restErrors;
+          }
+        }
         setHolidayErrors(newErrors);
       }
     } else {
       const holidayListDetail = [...optionalHolidaysList];
       holidayListDetail[index].name = e.target.value;
       setOptionalHolidaysList([...holidayListDetail]);
-      // Clear error when user starts typing
-      if (optionalHolidayErrors[index]) {
+      // Clear only the name field error when user starts typing
+      if (optionalHolidayErrors[index]?.name) {
         const newErrors = { ...optionalHolidayErrors };
-        delete newErrors[index];
+        if (newErrors[index]) {
+          // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
+          const { name: _name, ...restErrors } = newErrors[index];
+          if (Object.keys(restErrors).length === 0) {
+            delete newErrors[index];
+          } else {
+            newErrors[index] = restErrors;
+          }
+        }
         setOptionalHolidayErrors(newErrors);
       }
     }
@@ -317,16 +373,19 @@ const Holidays = () => {
 
   const saveUpdatedHolidayDetails = async payload => {
     try {
-      setHolidayErrors({});
-      setOptionalHolidayErrors({});
+      setHolidayErrors({} as Record<number, Record<string, string[]>>);
+      setOptionalHolidayErrors({} as Record<number, Record<string, string[]>>);
       await holidaysApi.updateHolidays(currentYear, { holiday: payload });
       fetchHolidays();
       setIsEditable(false);
     } catch (error) {
       const fieldErrors = error.response?.data?.field_errors;
       if (fieldErrors) {
-        const newHolidayErrors: Record<number, string> = {};
-        const newOptionalHolidayErrors: Record<number, string> = {};
+        const newHolidayErrors: Record<number, Record<string, string[]>> = {};
+        const newOptionalHolidayErrors: Record<
+          number,
+          Record<string, string[]>
+        > = {};
 
         // Process add_holiday_infos errors with occurrence-aware matching
         if (fieldErrors.add_holiday_infos) {
@@ -384,14 +443,13 @@ const Holidays = () => {
           Object.entries(fieldErrors.add_holiday_infos).forEach(
             ([indexStr, errors]: [string, any]) => {
               const payloadIndex = parseInt(indexStr, 10);
-              const errorMessages = Object.values(errors).flat().join(", ");
               const mapping = payloadToListIndexMap[payloadIndex];
 
               if (mapping) {
                 if (mapping.isOptional) {
-                  newOptionalHolidayErrors[mapping.listIndex] = errorMessages;
+                  newOptionalHolidayErrors[mapping.listIndex] = errors;
                 } else {
-                  newHolidayErrors[mapping.listIndex] = errorMessages;
+                  newHolidayErrors[mapping.listIndex] = errors;
                 }
               }
             }
@@ -403,7 +461,6 @@ const Holidays = () => {
           Object.entries(fieldErrors.update_holiday_infos).forEach(
             ([indexStr, errors]: [string, any]) => {
               const index = parseInt(indexStr, 10);
-              const errorMessages = Object.values(errors).flat().join(", ");
 
               const updateInfos = payload.update_holiday_infos;
               if (updateInfos[index]) {
@@ -413,14 +470,14 @@ const Holidays = () => {
                   h => h.id === holidayId
                 );
                 if (holidayIndex !== -1) {
-                  newHolidayErrors[holidayIndex] = errorMessages;
+                  newHolidayErrors[holidayIndex] = errors;
                 } else {
                   // Find in optionalHolidaysList
                   const optionalIndex = optionalHolidaysList.findIndex(
                     h => h.id === holidayId
                   );
                   if (optionalIndex !== -1) {
-                    newOptionalHolidayErrors[optionalIndex] = errorMessages;
+                    newOptionalHolidayErrors[optionalIndex] = errors;
                   }
                 }
               }
@@ -444,8 +501,8 @@ const Holidays = () => {
       }
       setIsDetailUpdated(false);
       setIsEditable(false);
-      setHolidayErrors({});
-      setOptionalHolidayErrors({});
+      setHolidayErrors({} as Record<number, Record<string, string[]>>);
+      setOptionalHolidayErrors({} as Record<number, Record<string, string[]>>);
     } else {
       navigate("/settings/profile");
     }
