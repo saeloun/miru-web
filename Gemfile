@@ -3,7 +3,7 @@
 source "https://rubygems.org"
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby "3.3.10"
+ruby "3.4.8"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 7.1.5.1"
@@ -54,7 +54,7 @@ gem "bootsnap", ">= 1.4.4", require: false
 gem "image_processing", ">= 1.2"
 
 # Webpack bundler for rails
-gem "shakapacker", "6.0.0"
+gem "shakapacker", ">= 9.5.0"
 
 # React hook for rails
 gem "react-rails", "2.6.2"
@@ -138,6 +138,9 @@ gem "rubyzip"
 gem "ahoy_matey"
 
 gem "httparty", ">= 0.24.0"
+
+gem "csv"
+gem "observer"
 
 # Use google calendar for integration with Miru
 gem "google-api-client", require: "google/apis/calendar_v3"

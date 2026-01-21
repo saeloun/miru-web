@@ -49,6 +49,14 @@ const Holidays = () => {
   const [currentYearOptionalHolidays, setCurrentYearOptionalHolidays] =
     useState([]);
 
+  const [holidayErrors, setHolidayErrors] = useState<Record<number, string>>(
+    {}
+  );
+
+  const [optionalHolidayErrors, setOptionalHolidayErrors] = useState<
+    Record<number, string>
+  >({});
+
   const { isDesktop, company } = useUserContext();
   const dateFormat = companyDateFormat(company?.date_format);
 
@@ -196,10 +204,22 @@ const Holidays = () => {
       const holidayListDetail = [...holidayList];
       holidayListDetail[index].name = e.target.value;
       setHolidayList([...holidayListDetail]);
+      // Clear error when user starts typing
+      if (holidayErrors[index]) {
+        const newErrors = { ...holidayErrors };
+        delete newErrors[index];
+        setHolidayErrors(newErrors);
+      }
     } else {
       const holidayListDetail = [...optionalHolidaysList];
       holidayListDetail[index].name = e.target.value;
       setOptionalHolidaysList([...holidayListDetail]);
+      // Clear error when user starts typing
+      if (optionalHolidayErrors[index]) {
+        const newErrors = { ...optionalHolidayErrors };
+        delete newErrors[index];
+        setOptionalHolidayErrors(newErrors);
+      }
     }
   };
 
@@ -265,9 +285,122 @@ const Holidays = () => {
   };
 
   const saveUpdatedHolidayDetails = async payload => {
-    await holidaysApi.updateHolidays(currentYear, { holiday: payload });
-    fetchHolidays();
-    setIsEditable(false);
+    try {
+      setHolidayErrors({});
+      setOptionalHolidayErrors({});
+      await holidaysApi.updateHolidays(currentYear, { holiday: payload });
+      fetchHolidays();
+      setIsEditable(false);
+    } catch (error) {
+      const fieldErrors = error.response?.data?.field_errors;
+      if (fieldErrors) {
+        const newHolidayErrors: Record<number, string> = {};
+        const newOptionalHolidayErrors: Record<number, string> = {};
+
+        // Process add_holiday_infos errors with occurrence-aware matching
+        if (fieldErrors.add_holiday_infos) {
+          // Build a mapping from payload index to list index for new holidays
+          const addInfos = payload.add_holiday_infos;
+          const matchedHolidayIndices = new Set<number>();
+          const matchedOptionalIndices = new Set<number>();
+
+          // Create mapping: payload index -> list index
+          const payloadToListIndexMap: Record<
+            number,
+            { isOptional: boolean; listIndex: number }
+          > = {};
+
+          addInfos.forEach((info, payloadIndex) => {
+            const isOptional = info.category === "optional";
+            if (isOptional) {
+              // Find the next unmatched item in optionalHolidaysList with same name
+              for (let i = 0; i < optionalHolidaysList.length; i++) {
+                const h = optionalHolidaysList[i];
+                if (
+                  !h.id &&
+                  h.name === info.name &&
+                  !matchedOptionalIndices.has(i)
+                ) {
+                  matchedOptionalIndices.add(i);
+                  payloadToListIndexMap[payloadIndex] = {
+                    isOptional: true,
+                    listIndex: i,
+                  };
+                  break;
+                }
+              }
+            } else {
+              // Find the next unmatched item in holidayList with same name
+              for (let i = 0; i < holidayList.length; i++) {
+                const h = holidayList[i];
+                if (
+                  !h.id &&
+                  h.name === info.name &&
+                  !matchedHolidayIndices.has(i)
+                ) {
+                  matchedHolidayIndices.add(i);
+                  payloadToListIndexMap[payloadIndex] = {
+                    isOptional: false,
+                    listIndex: i,
+                  };
+                  break;
+                }
+              }
+            }
+          });
+
+          // Now assign errors using the mapping
+          Object.entries(fieldErrors.add_holiday_infos).forEach(
+            ([indexStr, errors]: [string, any]) => {
+              const payloadIndex = parseInt(indexStr, 10);
+              const errorMessages = Object.values(errors).flat().join(", ");
+              const mapping = payloadToListIndexMap[payloadIndex];
+
+              if (mapping) {
+                if (mapping.isOptional) {
+                  newOptionalHolidayErrors[mapping.listIndex] = errorMessages;
+                } else {
+                  newHolidayErrors[mapping.listIndex] = errorMessages;
+                }
+              }
+            }
+          );
+        }
+
+        // Process update_holiday_infos errors
+        if (fieldErrors.update_holiday_infos) {
+          Object.entries(fieldErrors.update_holiday_infos).forEach(
+            ([indexStr, errors]: [string, any]) => {
+              const index = parseInt(indexStr, 10);
+              const errorMessages = Object.values(errors).flat().join(", ");
+
+              const updateInfos = payload.update_holiday_infos;
+              if (updateInfos[index]) {
+                const holidayId = updateInfos[index].id;
+                // Find in holidayList
+                const holidayIndex = holidayList.findIndex(
+                  h => h.id === holidayId
+                );
+                if (holidayIndex !== -1) {
+                  newHolidayErrors[holidayIndex] = errorMessages;
+                } else {
+                  // Find in optionalHolidaysList
+                  const optionalIndex = optionalHolidaysList.findIndex(
+                    h => h.id === holidayId
+                  );
+                  if (optionalIndex !== -1) {
+                    newOptionalHolidayErrors[optionalIndex] = errorMessages;
+                  }
+                }
+              }
+            }
+          );
+        }
+
+        setHolidayErrors(newHolidayErrors);
+        setOptionalHolidayErrors(newOptionalHolidayErrors);
+      }
+    }
   };
 
   const handleCancelAction = () => {
@@ -301,9 +434,11 @@ const Holidays = () => {
           handleDatePicker={handleDatePicker}
           handleDeleteHoliday={handleDeleteHoliday}
           handleHolidateNameChange={handleHolidateNameChange}
+          holidayErrors={holidayErrors}
           holidayList={holidayList}
           isDesktop={isDesktop}
           isDisableUpdateBtn={isDetailUpdated}
+          optionalHolidayErrors={optionalHolidayErrors}
           optionalHolidaysList={optionalHolidaysList}
           optionalRepetitionType={optionalRepetitionType}
           optionalWrapperRef={optionalWrapperRef}
