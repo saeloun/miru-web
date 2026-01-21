@@ -79,7 +79,7 @@ gem "premailer-rails", "~> 1.12"
 gem "money"
 
 # aws storage account
-gem "aws-sdk-s3", require: false
+gem "aws-sdk-s3", ">= 1.208.0", require: false
 
 # Ransack gem for advanced searching
 gem "ransack", "~> 4.1"
@@ -137,7 +137,7 @@ gem "rubyzip"
 
 gem "ahoy_matey"
 
-gem "httparty"
+gem "httparty", ">= 0.24.0"
 
 # Use google calendar for integration with Miru
 gem "google-api-client", require: "google/apis/calendar_v3"
