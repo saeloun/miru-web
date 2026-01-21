@@ -2,33 +2,43 @@
 
 class TimeoffEntryPolicy < ApplicationPolicy
   def index?
-    user_owner_role? || user_admin_role? || user_employee_role?
+    user_has_any_workspace_role?
   end
 
   def create?
-    user_owner_role? || user_admin_role? || user_employee_role?
+    user_has_any_workspace_role?
   end
 
   def update?
-    authorize_current_user
+    week_over? ? user_has_admin_or_owner_role? : user_has_any_workspace_role?
   end
 
   def destroy?
-    authorize_current_user
+    update?
   end
 
   def permitted_attributes
-    [
-      :duration, :note, :leave_date, :user_id, :leave_type_id, :holiday_info_id
-    ]
+    [:duration, :note, :leave_date, :user_id, :leave_type_id, :holiday_info_id]
   end
 
-  def authorize_current_user
-    unless user.current_workspace_id == record.company.id
-      @error_message_key = :different_workspace
-      return false
+  private
+
+    def week_over?
+      record.leave_date.present? && Time.current > record.leave_date.end_of_week(:sunday)
     end
 
-    user_owner_role? || user_admin_role? || user_employee_role?
-  end
+    def user_has_any_workspace_role?
+      user.has_any_role?(
+        { name: :admin, resource: user.current_workspace },
+        { name: :owner, resource: user.current_workspace },
+        { name: :employee, resource: user.current_workspace }
+      )
+    end
+
+    def user_has_admin_or_owner_role?
+      user.has_any_role?(
+        { name: :admin, resource: user.current_workspace },
+        { name: :owner, resource: user.current_workspace }
+      )
+    end
 end
