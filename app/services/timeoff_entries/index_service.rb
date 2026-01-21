@@ -116,8 +116,8 @@ module TimeoffEntries
           summary_object = {
             id: custom_leave.id,
             name: custom_leave.name,
-            icon: custom_leave.icon,
-            color: custom_leave.color,
+            icon: "custom",
+            color: "custom",
             total_leave_type_days: total_days,
             timeoff_entries_duration:,
             net_duration:,
