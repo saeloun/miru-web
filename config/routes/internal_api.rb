@@ -51,6 +51,7 @@ namespace :internal_api, defaults: { format: "json" } do
       resources :time_entries, only: [:index] do
         collection do
           get :download
+          post :share
         end
       end
       resources :outstanding_overdue_invoices, only: [:index] do

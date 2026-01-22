@@ -8,6 +8,11 @@ class Reports::TimeEntries::DownloadService < Reports::DownloadService
     @reports = []
   end
 
+  def share_report(recipients, subject, message)
+    fetch_complete_report
+    Reports::ShareService.new(:time_entries, reports, current_company, recipients, subject, message).process
+  end
+
   private
 
     def fetch_complete_report

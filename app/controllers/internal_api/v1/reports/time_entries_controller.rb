@@ -15,4 +15,15 @@ class InternalApi::V1::Reports::TimeEntriesController < InternalApi::V1::Applica
 
     send_data Reports::TimeEntries::DownloadService.new(params, current_company).process
   end
+
+  def share
+    authorize :report
+
+    recipients = params[:recipients]
+    subject = params[:subject]
+    message = params[:message]
+
+    Reports::TimeEntries::DownloadService.new(params, current_company).share_report(recipients, subject, message)
+    render json: { message: "Report shared successfully" }, status: :ok
+  end
 end
