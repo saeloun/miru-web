@@ -36,7 +36,7 @@ const TableRow = ({ timeoffEntry }) => {
         <span>{leaveName}</span>
       </td>
       <td className="flex w-1/3 flex-col whitespace-nowrap pb-2.5 text-right text-base lg:mt-0 lg:table-cell lg:w-3/12 lg:items-center lg:pl-8">
-        {minToHHMM(duration)}
+        {leaveType ? minToHHMM(duration) : "-:-"}
       </td>
     </tr>
   );
