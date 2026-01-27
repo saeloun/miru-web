@@ -19,9 +19,10 @@ RSpec.describe "Root#index", type: :request do
       expect(response).to have_http_status(:not_found)
     end
 
-    it "returns 404 for .well-known paths" do
-      send_request :get, "/.well-known/assetlinks.json"
-      expect(response).to have_http_status(:not_found)
+    it "raises routing error for .well-known paths" do
+      expect {
+        send_request :get, "/.well-known/assetlinks.json"
+      }.to raise_error(ActionController::RoutingError, /No route matches/)
     end
   end
 end
