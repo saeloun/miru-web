@@ -13,5 +13,15 @@ RSpec.describe "Root#index", type: :request do
       send_request :get, root_path
       expect(response).to be_successful
     end
+
+    it "returns 404 for JSON format requests" do
+      send_request :get, root_path, headers: { "Accept" => "application/json" }
+      expect(response).to have_http_status(:not_found)
+    end
+
+    it "returns 404 for .well-known paths" do
+      send_request :get, "/.well-known/assetlinks.json"
+      expect(response).to have_http_status(:not_found)
+    end
   end
 end
