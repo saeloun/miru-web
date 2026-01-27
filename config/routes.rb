@@ -72,6 +72,7 @@ Rails.application.routes.draw do
     req.path.exclude?("rails/active_storage") &&
     !req.path.include?("internal_api") &&
     !req.path.include?("packs/") &&
-    !req.path.include?("assets/")
+    !req.path.include?("assets/") &&
+    !req.path.start_with?("/.well-known")
   }
 end
