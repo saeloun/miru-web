@@ -38,6 +38,11 @@ RSpec.describe ApplicationMailer, type: :mailer do
       it "has rescue_from handler for Postmark::InactiveRecipientError" do
         expect(ApplicationMailer).to respond_to(:rescue_handlers)
 
+        # Verify the exception mapping is configured
+        exception_classes = ApplicationMailer.rescue_handlers.map(&:first)
+        expect(exception_classes).to include("Postmark::InactiveRecipientError")
+
+        # Verify the handler method exists
         mailer = ApplicationMailer.new
         expect(mailer.private_methods).to include(:handle_inactive_recipient)
       end
