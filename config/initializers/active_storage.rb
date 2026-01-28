@@ -47,13 +47,15 @@ ActiveSupport.on_load(:active_storage_blob) do
           # Remove checksum_algorithm to avoid conflict with multipart upload checksums
           configured_options.delete(:checksum_algorithm)
 
-          object_for(key).upload_stream(
+          # Merge with explicit parameters (explicit params take precedence)
+          upload_params = configured_options.merge(
             content_type:,
             content_disposition:,
             part_size:,
-            metadata: custom_metadata,
-            **configured_options
-          ) do |out|
+            metadata: custom_metadata
+          ).compact
+
+          object_for(key).upload_stream(**upload_params) do |out|
             IO.copy_stream(io, out)
           end
         end
@@ -68,16 +70,17 @@ ActiveSupport.on_load(:active_storage_blob) do
             # Remove checksum_algorithm to avoid conflict with content_md5
             configured_options.delete(:checksum_algorithm)
 
-            generated_url = object_for(key).presigned_url(
-              :put,
+            # Merge with explicit parameters (explicit params take precedence)
+            presigned_url_params = configured_options.merge(
               expires_in: expires_in.to_i,
               content_type:,
               content_length:,
               content_md5: checksum,
               metadata: custom_metadata,
-              whitelist_headers: ["content-length"],
-              **configured_options
-            )
+              whitelist_headers: ["content-length"]
+            ).compact
+
+            generated_url = object_for(key).presigned_url(:put, **presigned_url_params)
 
             payload[:url] = generated_url
             generated_url
@@ -94,13 +97,15 @@ ActiveSupport.on_load(:active_storage_blob) do
           # Remove checksum_algorithm to avoid conflict
           configured_options.delete(:checksum_algorithm)
 
-          object_for(destination_key).upload_stream(
+          # Merge with explicit parameters (explicit params take precedence)
+          upload_params = configured_options.merge(
             content_type:,
             content_disposition:,
             part_size: MINIMUM_UPLOAD_PART_SIZE,
-            metadata: custom_metadata,
-            **configured_options
-          ) do |out|
+            metadata: custom_metadata
+          ).compact
+
+          object_for(destination_key).upload_stream(**upload_params) do |out|
             source_keys.each do |source_key|
               stream(source_key) do |chunk|
                 IO.copy_stream(StringIO.new(chunk), out)
