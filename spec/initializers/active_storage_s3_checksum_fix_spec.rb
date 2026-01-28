@@ -24,6 +24,18 @@ RSpec.describe "ActiveStorage S3 Checksum Fix", type: :integration do
       expect(ActiveStorage::Service::S3Service.private_method_defined?(:upload_with_single_part)).to be true
     end
 
+    it "has the upload_with_multipart method" do
+      expect(ActiveStorage::Service::S3Service.private_method_defined?(:upload_with_multipart)).to be true
+    end
+
+    it "has the url_for_direct_upload method" do
+      expect(ActiveStorage::Service::S3Service.public_method_defined?(:url_for_direct_upload)).to be true
+    end
+
+    it "has the compose method" do
+      expect(ActiveStorage::Service::S3Service.public_method_defined?(:compose)).to be true
+    end
+
     it "upload_with_single_part accepts the correct parameters" do
       method = ActiveStorage::Service::S3Service.instance_method(:upload_with_single_part)
       params = method.parameters
@@ -32,7 +44,7 @@ RSpec.describe "ActiveStorage S3 Checksum Fix", type: :integration do
       expect(param_names).to include(:key, :io, :checksum, :content_type, :content_disposition, :custom_metadata)
     end
 
-    it "does not send checksum_algorithm parameter to S3" do
+    it "does not send checksum_algorithm parameter to S3 in single-part upload" do
       s3_service = create_mock_s3_service
       s3_object = double("S3Object")
       test_io = StringIO.new("test content")
@@ -43,6 +55,22 @@ RSpec.describe "ActiveStorage S3 Checksum Fix", type: :integration do
       end
 
       s3_service.send(:upload_with_single_part, "test/key", test_io, checksum: "test_checksum")
+    end
+
+    it "does not send checksum_algorithm parameter to S3 in multipart upload" do
+      s3_service = create_mock_s3_service
+      s3_object = double("S3Object")
+      test_io = StringIO.new("test content" * 1000) # Larger content for multipart
+
+      allow(s3_service).to receive(:object_for).and_return(s3_object)
+      allow(s3_object).to receive(:upload_stream) do |**args|
+        verify_s3_multipart_parameters(args)
+        # Yield to the block to simulate upload_stream behavior
+        yield_block = proc {}
+        yield_block.call if block_given?
+      end
+
+      s3_service.send(:upload_with_multipart, "test/key", test_io)
     end
   end
 
@@ -146,6 +174,11 @@ RSpec.describe "ActiveStorage S3 Checksum Fix", type: :integration do
       expect(args).to be_a(Hash)
       expect(args).to have_key(:body)
       expect(args).to have_key(:content_md5)
+      expect(args).not_to have_key(:checksum_algorithm)
+    end
+
+    def verify_s3_multipart_parameters(args)
+      expect(args).to be_a(Hash)
       expect(args).not_to have_key(:checksum_algorithm)
     end
 end

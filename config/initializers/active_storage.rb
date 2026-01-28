@@ -37,6 +37,77 @@ ActiveSupport.on_load(:active_storage_blob) do
 
           object_for(key).put(upload_params)
         end
+
+        def upload_with_multipart(key, io, content_type: nil, content_disposition: nil, custom_metadata: {})
+          part_size = [io.size.fdiv(MAXIMUM_UPLOAD_PARTS_COUNT).ceil, MINIMUM_UPLOAD_PART_SIZE].max
+
+          # Get service-configured upload options
+          configured_options = upload_options.dup
+
+          # Remove checksum_algorithm to avoid conflict with multipart upload checksums
+          configured_options.delete(:checksum_algorithm)
+
+          object_for(key).upload_stream(
+            content_type:,
+            content_disposition:,
+            part_size:,
+            metadata: custom_metadata,
+            **configured_options
+          ) do |out|
+            IO.copy_stream(io, out)
+          end
+        end
+
+      public
+
+        def url_for_direct_upload(key, expires_in:, content_type:, content_length:, checksum:, custom_metadata: {})
+          instrument :url, key: do |payload|
+            # Get service-configured upload options
+            configured_options = upload_options.dup
+
+            # Remove checksum_algorithm to avoid conflict with content_md5
+            configured_options.delete(:checksum_algorithm)
+
+            generated_url = object_for(key).presigned_url(
+              :put,
+              expires_in: expires_in.to_i,
+              content_type:,
+              content_length:,
+              content_md5: checksum,
+              metadata: custom_metadata,
+              whitelist_headers: ["content-length"],
+              **configured_options
+            )
+
+            payload[:url] = generated_url
+            generated_url
+          end
+        end
+
+        def compose(source_keys, destination_key, filename: nil, content_type: nil, disposition: nil,
+  custom_metadata: {})
+          content_disposition = content_disposition_with(type: disposition, filename:) if disposition && filename
+
+          # Get service-configured upload options
+          configured_options = upload_options.dup
+
+          # Remove checksum_algorithm to avoid conflict
+          configured_options.delete(:checksum_algorithm)
+
+          object_for(destination_key).upload_stream(
+            content_type:,
+            content_disposition:,
+            part_size: MINIMUM_UPLOAD_PART_SIZE,
+            metadata: custom_metadata,
+            **configured_options
+          ) do |out|
+            source_keys.each do |source_key|
+              stream(source_key) do |chunk|
+                IO.copy_stream(StringIO.new(chunk), out)
+              end
+            end
+          end
+        end
     end
   end
 end

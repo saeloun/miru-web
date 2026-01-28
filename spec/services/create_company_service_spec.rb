@@ -96,7 +96,7 @@ RSpec.describe CreateCompanyService, type: :service do
 
           # Verify the blob was uploaded to S3
           blob = company.logo.blob
-          expect(blob.service_name).to eq("cloudflare")
+          expect(blob.service_name).to eq(ActiveStorage::Blob.service.name.to_s)
         end
       end
     end
