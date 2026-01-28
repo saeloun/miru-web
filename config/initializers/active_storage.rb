@@ -19,15 +19,23 @@ ActiveSupport.on_load(:active_storage_blob) do
       private
 
         def upload_with_single_part(key, io, checksum: nil, content_type: nil, content_disposition: nil,
-custom_metadata: {})
-          object_for(key).put(
+  custom_metadata: {})
+          # Get service-configured upload options
+          configured_options = upload_options.dup
+
+          # Remove checksum_algorithm to avoid conflict with content_md5
+          configured_options.delete(:checksum_algorithm)
+
+          # Merge with explicit parameters (explicit params take precedence)
+          upload_params = configured_options.merge(
             body: io,
             content_type:,
             content_disposition:,
             content_md5: checksum,
             metadata: custom_metadata
-            # Explicitly omit checksum_algorithm to avoid conflict with content_md5
-          )
+          ).compact
+
+          object_for(key).put(upload_params)
         end
     end
   end

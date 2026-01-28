@@ -79,6 +79,7 @@ RSpec.describe CreateCompanyService, type: :service do
       context "with S3 storage service" do
         before do
           # Skip this test if not using S3 service in test environment
+          require "active_storage/service/s3_service"
           s3_service_defined = defined?(ActiveStorage::Service::S3Service)
           s3_service_in_use = ActiveStorage::Blob.service.is_a?(ActiveStorage::Service::S3Service)
           skip "S3 service not configured for tests" unless s3_service_defined && s3_service_in_use
@@ -115,7 +116,11 @@ RSpec.describe CreateCompanyService, type: :service do
       it "does not add user to company on failure" do
         service = described_class.new(user, params: invalid_params)
 
-        expect { service.process rescue nil }.not_to change(user.companies, :count)
+        expect do
+          service.process
+        rescue ActiveRecord::RecordInvalid
+          # Expected error - suppress it for the test
+        end.not_to change { user.companies.reload.count }
       end
     end
 
