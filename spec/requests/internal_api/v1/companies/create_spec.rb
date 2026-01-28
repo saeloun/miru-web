@@ -84,6 +84,59 @@ RSpec.describe "InternalApi::V1::Companies::create", type: :request do
       end
     end
 
+    # Test for MIRU-WEB-3G fix: Company creation with logo upload
+    context "when company is created with logo" do
+      let(:logo_file) do
+        fixture_file_upload(
+          Rails.root.join("spec", "support", "fixtures", "test-image.png"),
+          "image/png"
+        )
+      end
+
+      before do
+        send_request :post, internal_api_v1_companies_path, params: {
+          company: {
+            name: "Company with Logo",
+            business_phone: "+01 123123",
+            country: "US",
+            timezone: "Eastern Time (US & Canada)",
+            base_currency: "USD",
+            standard_price: 100,
+            fiscal_year_end: "Jan-Dec",
+            date_format: "MM-DD-YYYY",
+            logo: logo_file,
+            addresses_attributes: [address],
+            working_days: "5",
+            working_hours: "40"
+          }
+        }, headers: auth_headers(user)
+      end
+
+      it "creates company with attached logo" do
+        company = Company.last
+        expect(company.name).to eq("Company with Logo")
+        expect(company.logo).to be_attached
+        expect(company.logo.filename.to_s).to eq("test-image.png")
+      end
+
+      it "does not raise S3 checksum error" do
+        # This test verifies the fix for MIRU-WEB-3G
+        # Before fix: Aws::S3::Errors::InvalidRequest: You can only specify one non-default checksum at a time
+        # After fix: Should succeed without errors
+        expect(response).to be_successful
+      end
+
+      it "returns success json response" do
+        expect(json_response["notice"]).to eq(I18n.t("companies.create.success"))
+      end
+
+      it "stores logo in ActiveStorage" do
+        company = Company.last
+        expect(company.logo.blob).to be_present
+        expect(company.logo.blob.content_type).to eq("image/png")
+      end
+    end
+
     context "when the user is a book keeper" do
       before do
         user.add_role :book_keeper
