@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "delegate"
+
 # Middleware to handle encoding compatibility issues in requests.
 # Fixes Encoding::CompatibilityError when UTF-16LE encoded data is sent in
 # query strings or POST bodies (e.g., from certain browsers, bots, or malformed requests).
@@ -9,14 +11,19 @@ class EncodingSanitizer
   end
 
   def call(env)
-    # Sanitize URL-related env vars
-    %w[QUERY_STRING REQUEST_URI PATH_INFO HTTP_REFERER].each do |key|
-      sanitize_encoding(env, key)
-    end
+    begin
+      # Sanitize URL-related env vars
+      %w[QUERY_STRING REQUEST_URI PATH_INFO HTTP_REFERER].each do |key|
+        sanitize_encoding(env, key)
+      end
 
-    # Wrap rack.input to sanitize POST body
-    if env["rack.input"]
-      env["rack.input"] = SanitizedInput.new(env["rack.input"])
+      # Wrap rack.input to sanitize POST body
+      if env["rack.input"]
+        env["rack.input"] = SanitizedInput.new(env["rack.input"])
+      end
+    rescue => e
+      # Log error but don't crash the request
+      Rails.logger.error("EncodingSanitizer error: #{e.message}")
     end
 
     @app.call(env)
@@ -41,35 +48,27 @@ class EncodingSanitizer
     end
 
     # Wrapper for rack.input that sanitizes encoding on read
-    class SanitizedInput
+    class SanitizedInput < SimpleDelegator
       def initialize(input)
-        @input = input
+        super(input)
       end
 
       def read(*args)
-        data = @input.read(*args)
+        data = __getobj__.read(*args)
         return data unless data.is_a?(String)
 
         sanitize(data)
       end
 
       def gets(*args)
-        data = @input.gets(*args)
+        data = __getobj__.gets(*args)
         return data unless data.is_a?(String)
 
         sanitize(data)
       end
 
       def each(&block)
-        @input.each { |line| block.call(sanitize(line)) }
-      end
-
-      def rewind
-        @input.rewind
-      end
-
-      def close
-        @input.close if @input.respond_to?(:close)
+        __getobj__.each { |line| block.call(sanitize(line)) }
       end
 
       private

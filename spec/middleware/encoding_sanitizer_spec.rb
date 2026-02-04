@@ -37,6 +37,8 @@ RSpec.describe EncodingSanitizer do
         expect(status).to eq(200)
         expect(response_env["QUERY_STRING"].encoding).to eq(Encoding::UTF_8)
         expect(response_env["QUERY_STRING"]).to be_valid_encoding
+        expect(response_env["QUERY_STRING"]).to include("test")
+        expect(response_env["QUERY_STRING"]).to include("value")
       end
     end
 
@@ -127,6 +129,29 @@ RSpec.describe EncodingSanitizer do
         sanitized.each { |line| lines << line }
 
         expect(lines.all?(&:valid_encoding?)).to be true
+      end
+    end
+
+    describe "#gets" do
+      it "sanitizes line-by-line reads" do
+        body = "line1\nline2"
+        input = StringIO.new(body)
+        sanitized = described_class.new(input)
+
+        first_line = sanitized.gets
+        expect(first_line).to be_valid_encoding
+        expect(first_line).to eq("line1\n")
+      end
+    end
+
+    describe "#close" do
+      it "delegates close to underlying input" do
+        input = StringIO.new("test")
+        sanitized = described_class.new(input)
+
+        allow(input).to receive(:close)
+        sanitized.close
+        expect(input).to have_received(:close)
       end
     end
   end
