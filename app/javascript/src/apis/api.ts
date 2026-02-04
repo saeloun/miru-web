@@ -38,6 +38,8 @@ class ApiHandler {
           clearCredentialsFromLocalStorage();
           Toastr.error(error.response?.data?.error);
           setTimeout(() => (window.location.href = "/"), 500);
+
+          return Promise.reject(error);
         }
 
         // Skip generic toast if field_errors are present (handled by the component)
