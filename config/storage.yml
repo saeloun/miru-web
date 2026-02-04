@@ -14,6 +14,11 @@ cloudflare:
   region: <%= ENV['CLOUDFLARE_R2_REGION'] %>
   bucket: <%= ENV['CLOUDFLARE_R2_BUCKET_NAME'] %>
   endpoint: <%= ENV['CLOUDFLARE_R2_ENDPOINT'] %>
+  # Disable automatic checksum calculation to avoid conflicts with content_md5
+  # AWS SDK >= 1.208.0 adds checksum_algorithm by default, which conflicts with ActiveStorage's content_md5
+  # Setting to 'when_required' reverts to previous behavior compatible with S3-compatible services
+  request_checksum_calculation: when_required
+  response_checksum_validation: when_required
 
 # Remember not to checkin your GCS keyfile to a repository
 # google:
