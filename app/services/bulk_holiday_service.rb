@@ -42,10 +42,6 @@ class BulkHolidayService
 
       holiday_params[:add_holiday_infos].each_with_index do |info, index|
         holiday_info = holiday.holiday_infos.build(info)
-        unless holiday_info.valid?
-          errors[:add_holiday_infos][index] = holiday_info.errors.messages
-          next
-        end
         unless holiday_info.save
           errors[:add_holiday_infos][index] = holiday_info.errors.messages
         end
@@ -57,14 +53,9 @@ class BulkHolidayService
 
       holiday_params[:update_holiday_infos].each_with_index do |info, index|
         holiday_info = holiday.holiday_infos.find_by(id: info[:id])
-
         next unless holiday_info
 
         holiday_info.assign_attributes(info)
-        unless holiday_info.valid?
-          errors[:update_holiday_infos][index] = holiday_info.errors.messages
-          next
-        end
         unless holiday_info.save
           errors[:update_holiday_infos][index] = holiday_info.errors.messages
         end
