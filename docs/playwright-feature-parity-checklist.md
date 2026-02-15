@@ -97,8 +97,8 @@ This tracker maps current Rails `spec/system` coverage to recommended Playwright
 | P0 | `playwright/invoices/multi_currency_invoice.spec.ts` | Covered | `spec/system/multi_currency_invoice_spec.rb` | Must lock conversion display parity.
 | P1 | `playwright/invoices/public_invoice_view.spec.ts` | Missing | N/A | Validate unauthenticated invoice view.
 | P1 | `playwright/invoices/public_invoice_invalid_link.spec.ts` | Missing | N/A | Ensure proper error state.
-| P1 | `playwright/invoices/status_transition_draft_sent_paid_overdue.spec.ts` | Partial | `spec/system/invoices/index_spec.rb`, `spec/system/invoices/invoice_history_spec.rb` | Needs explicit transition matrix.
-| P1 | `playwright/invoices/partial_payment_balance_updates.spec.ts` | Missing | N/A | Critical for financial parity.
+| P1 | `playwright/invoices/status_transition_draft_sent_paid_overdue.spec.ts` | Covered | `spec/system/invoices/status_transitions_spec.rb` | Full status lifecycle: draft/sent/paid/overdue/waived, list + detail views.
+| P1 | `playwright/invoices/partial_payment_balance_updates.spec.ts` | Covered | `spec/system/invoices/partial_payments_spec.rb` | No payment, partial, full, multiple partials, cross-invoice.
 | P1 | `playwright/invoices/cancel_void_rules.spec.ts` | Missing | N/A | Add if supported by product rules.
 
 ## Payments
@@ -108,14 +108,14 @@ This tracker maps current Rails `spec/system` coverage to recommended Playwright
 | P0 | `playwright/payments/create_manual_payment.spec.ts` | Covered | `spec/system/payments/create_spec.rb` | Add validation failures.
 | P1 | `playwright/payments/stripe_checkout_success.spec.ts` | Missing | N/A | Required if Stripe checkout is active.
 | P1 | `playwright/payments/stripe_checkout_cancel.spec.ts` | Missing | N/A | Critical negative path.
-| P1 | `playwright/payments/record_payment_updates_invoice_balance.spec.ts` | Missing | N/A | Cross-module parity validation.
+| P1 | `playwright/payments/record_payment_updates_invoice_balance.spec.ts` | Covered | `spec/system/payments/invoice_balance_spec.rb` | Cross-module: payments page + invoices page balance consistency.
 | P2 | `playwright/payments/refund_or_reversal.spec.ts` | Missing | N/A | Add only if feature exists.
 
 ## Expenses
 | Priority | Playwright Spec | Parity Status | Existing Coverage (RSpec System) | Notes |
 |---|---|---|---|---|
 | P0 | `playwright/expenses/list_filters.spec.ts` | Covered | `spec/system/expenses/index_spec.rb` | Add empty state assertions.
-| P0 | `playwright/expenses/create_edit_delete_crud.spec.ts` | Missing | N/A | No explicit CRUD system specs found.
+| P0 | `playwright/expenses/create_edit_delete_crud.spec.ts` | Covered | `spec/system/expenses/crud_spec.rb` | Detail view, delete confirmation, edit/delete buttons, expense types.
 | P1 | `playwright/expenses/receipt_upload_preview_remove.spec.ts` | Missing | N/A | High-value user path.
 | P1 | `playwright/expenses/category_project_linking.spec.ts` | Missing | N/A | Ensures reporting consistency.
 
@@ -128,7 +128,7 @@ This tracker maps current Rails `spec/system` coverage to recommended Playwright
 | P1 | `playwright/reports/revenue_by_client_report.spec.ts` | Missing | N/A | High business-impact report.
 | P1 | `playwright/reports/total_hours_report.spec.ts` | Missing | N/A | Required parity for billing.
 | P1 | `playwright/reports/accounts_aging_report.spec.ts` | Missing | N/A | Required finance parity.
-| P1 | `playwright/reports/payments_report.spec.ts` | Missing | N/A | Completes report set.
+| P1 | `playwright/reports/payments_report.spec.ts` | Covered | `spec/system/reports/payments_spec.rb` | Page load, data display, multiple payment types, empty state, employee restriction.
 | P1 | `playwright/reports/shared_filters_date_client_project.spec.ts` | Missing | N/A | Cross-report consistency.
 
 ## Team & Members
@@ -185,11 +185,11 @@ This tracker maps current Rails `spec/system` coverage to recommended Playwright
 9. `playwright/time_tracking/overlap_prevention_validation.spec.ts`
 10. `playwright/invoices/public_invoice_view.spec.ts`
 11. `playwright/invoices/public_invoice_invalid_link.spec.ts`
-12. `playwright/invoices/status_transition_draft_sent_paid_overdue.spec.ts`
-13. `playwright/invoices/partial_payment_balance_updates.spec.ts`
+12. `playwright/invoices/cancel_void_rules.spec.ts`
+13. `playwright/settings/notification_preferences.spec.ts`
 14. `playwright/payments/stripe_checkout_success.spec.ts`
 15. `playwright/payments/stripe_checkout_cancel.spec.ts`
-16. `playwright/expenses/create_edit_delete_crud.spec.ts`
+16. `playwright/expenses/receipt_upload_preview_remove.spec.ts`
 17. `playwright/reports/time_entry_report.spec.ts`
 18. `playwright/reports/revenue_by_client_report.spec.ts`
 19. `playwright/team/invite_acceptance_flow.spec.ts`
