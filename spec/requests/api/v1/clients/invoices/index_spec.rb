@@ -34,7 +34,8 @@ RSpec.describe "Api::V1::Clients::Invoices#index", type: :request do
 
     it "is not permitted without client role" do
       get invoices_api_v1_clients_path, headers: auth_headers(admin)
-      expect(response).to have_http_status(:forbidden)
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(json_response["error"]).to eq("No clients associated")
     end
   end
 

@@ -43,18 +43,18 @@ RSpec.describe "Api::V1::Reports::ClientRevenuesController::#index", type: :requ
           [{
             logo: client1.logo_url,
             name: client1.name,
-            paidAmount: @client1_paid_amount,
-            outstandingAmount: @client1_unpaid_amount,
-            totalAmount: @client1_paid_amount + @client1_unpaid_amount + @client1_overdue_amount,
-            overdueAmount: @client1_overdue_amount
+            paid_amount: @client1_paid_amount,
+            outstanding_amount: @client1_unpaid_amount,
+            total_revenue: @client1_paid_amount + @client1_unpaid_amount + @client1_overdue_amount,
+            overdue_amount: @client1_overdue_amount
           },
            {
              logo: client2.logo_url,
              name: client2.name,
-             paidAmount: @client2_paid_amount,
-             outstandingAmount: @client2_unpaid_amount,
-             totalAmount: @client2_paid_amount + @client2_unpaid_amount + @client2_overdue_amount,
-             overdueAmount: @client2_overdue_amount
+             paid_amount: @client2_paid_amount,
+             outstanding_amount: @client2_unpaid_amount,
+             total_revenue: @client2_paid_amount + @client2_unpaid_amount + @client2_overdue_amount,
+             overdue_amount: @client2_overdue_amount
            }]
         get api_v1_reports_client_revenues_path,
           params: { from_date: 1.month.ago, to_date: Date.today },
@@ -83,7 +83,9 @@ RSpec.describe "Api::V1::Reports::ClientRevenuesController::#index", type: :requ
           totalOutstandingAmount: @client1_unpaid_amount + @client2_unpaid_amount + @client1_overdue_amount +
                                   @client2_overdue_amount,
           totalRevenue: @client1_paid_amount + @client2_paid_amount + @client1_unpaid_amount + @client2_unpaid_amount +
-                        @client1_overdue_amount + @client2_overdue_amount
+                        @client1_overdue_amount + @client2_overdue_amount,
+          totalOverdueAmount: @client1_unpaid_amount + @client2_unpaid_amount + @client1_overdue_amount +
+                              @client2_overdue_amount
         }
         expect(json_response["summary"]).to eq(JSON.parse(expected_summary.to_json))
       end
@@ -111,10 +113,10 @@ RSpec.describe "Api::V1::Reports::ClientRevenuesController::#index", type: :requ
             {
               name: client1.name,
               logo: client1.logo_url,
-              paidAmount: @client1_paid_amount,
-              outstandingAmount: @client1_unpaid_amount,
-              totalAmount: @client1_paid_amount + @client1_unpaid_amount + @client1_overdue_amount,
-              overdueAmount: @client1_overdue_amount
+              paid_amount: @client1_paid_amount,
+              outstanding_amount: @client1_unpaid_amount,
+              total_revenue: @client1_paid_amount + @client1_unpaid_amount + @client1_overdue_amount,
+              overdue_amount: @client1_overdue_amount
             }
           ]
         expect(json_response["clients"]).to eq(JSON.parse(expected_clients.to_json))
@@ -128,7 +130,8 @@ RSpec.describe "Api::V1::Reports::ClientRevenuesController::#index", type: :requ
         expected_summary = {
           totalPaidAmount: @client1_paid_amount,
           totalOutstandingAmount: @client1_unpaid_amount + @client1_overdue_amount,
-          totalRevenue: @client1_paid_amount + @client1_unpaid_amount + @client1_overdue_amount
+          totalRevenue: @client1_paid_amount + @client1_unpaid_amount + @client1_overdue_amount,
+          totalOverdueAmount: @client1_unpaid_amount + @client1_overdue_amount
         }
         expect(json_response["summary"]).to eq(JSON.parse(expected_summary.to_json))
       end

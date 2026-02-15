@@ -121,6 +121,12 @@ namespace :api, defaults: { format: "json" } do
       get :validate_account_details
     end
 
+    resources :currency_pairs, only: [] do
+      collection do
+        get :rate
+      end
+    end
+
     resources :team, only: [:index, :destroy, :update] do
       resource :details, only: [:show, :update], controller: "team_members/details"
       resource :avatar, only: [:update, :destroy], controller: "team_members/avatar"

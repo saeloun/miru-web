@@ -49,7 +49,8 @@ RSpec.describe "Api::V1::Reports::TimeEntryController#download", type: :request 
       it "generates PDF and send in response" do
         send_request :get, "/api/v1/reports/time_entries/download.#{type}", headers: auth_headers(admin)
         expect(response).to have_http_status(:ok)
-        expect(response.body).to include("PDF")
+        expect(response.headers["Content-Type"]).to include("application/pdf")
+        expect(response.headers["Content-Disposition"]).to include(".pdf")
       end
     end
   end
@@ -94,7 +95,8 @@ RSpec.describe "Api::V1::Reports::TimeEntryController#download", type: :request 
       it "generates PDF and send in response" do
         send_request :get, "/api/v1/reports/time_entries/download.#{type}", headers: auth_headers(admin)
         expect(response).to have_http_status(:ok)
-        expect(response.body).to include("PDF")
+        expect(response.headers["Content-Type"]).to include("application/pdf")
+        expect(response.headers["Content-Disposition"]).to include(".pdf")
       end
     end
   end

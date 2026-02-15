@@ -54,7 +54,9 @@ command = ["mise", "exec", "--", "bundle", "exec", "parallel_rspec", "-n", optio
 if ARGV.empty?
   if options[:exclude_system]
     # Run all specs except system specs
-    spec_files = Dir.glob("spec/**/*_spec.rb").reject { |f| f.include?("spec/system/") }
+    spec_files = Dir.glob("spec/**/*_spec.rb").reject do |file|
+      file.start_with?("spec/system/") || file.start_with?("spec/system_skip/")
+    end
     command.concat(spec_files)
   else
     command << "spec"

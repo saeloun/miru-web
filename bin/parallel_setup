@@ -26,5 +26,5 @@ FileUtils.chdir APP_ROOT do
 
   puts "\n== Parallel test databases ready! =="
   puts "You can now run tests with:"
-  puts "  mise exec -- bundle exec parallel_rspec -n #{num_processes} spec --exclude-pattern spec/system"
+  puts "  mise exec -- bundle exec parallel_rspec -n #{num_processes} spec --exclude-pattern 'spec/system|spec/system_skip'"
 end
