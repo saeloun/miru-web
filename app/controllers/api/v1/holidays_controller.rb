@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Api::V1::HolidaysController < ApplicationController
+class Api::V1::HolidaysController < Api::V1::ApplicationController
   def index
     authorize Holiday
 

@@ -14,8 +14,8 @@ const AmountBoxContainer = ({ amountBox, cssClass = "" }) => (
             }
           `}
       >
-        <p className="text-sm font-normal tracking-widest">{data.title}</p>
-        <p className="font-regular mt-3 text-4.5xl font-normal tracking-widest">
+        <p className="text-sm font-normal tracking-wider">{data.title}</p>
+        <p className="font-regular mt-3 text-3xl font-normal tracking-tight">
           {data.amount}
         </p>
       </li>

@@ -50,7 +50,7 @@ const GetClientBar = ({ data, totalMinutes }: IChartBarGraph) => {
   return (
     <section>
       <div className="hidden md:block">
-        <p className="mb-3 text-tiny tracking-widest text-miru-dark-purple-600">
+        <p className="mb-3 text-tiny tracking-wider text-miru-dark-purple-600">
           TOTAL HOURS:{" "}
           <span className="font-medium">{minToHHMM(totalMinutes)}</span>
         </p>
@@ -68,7 +68,7 @@ const GetClientBar = ({ data, totalMinutes }: IChartBarGraph) => {
             }
           })}
         </div>
-        <div className="mt-3 flex justify-between pb-6 text-tiny tracking-widest text-miru-dark-purple-400">
+        <div className="mt-3 flex justify-between pb-6 text-tiny tracking-wider text-miru-dark-purple-400">
           <span>0</span>
           <span>{minToHHMM(totalMinutes)}</span>
         </div>

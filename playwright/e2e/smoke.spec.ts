@@ -7,7 +7,7 @@ test.describe.parallel('Smoke Tests', () => {
   });
 
   test('login page responds', async ({ page }) => {
-    const response = await page.goto('/users/sign_in');
+    const response = await page.goto('/user/sign_in');
     expect(response?.status()).toBeLessThan(500);
   });
 
@@ -18,7 +18,7 @@ test.describe.parallel('Smoke Tests', () => {
   });
 
   test('login page has content', async ({ page }) => {
-    await page.goto('/users/sign_in');
+    await page.goto('/user/sign_in');
     const content = await page.content();
     expect(content.length).toBeGreaterThan(100);
   });

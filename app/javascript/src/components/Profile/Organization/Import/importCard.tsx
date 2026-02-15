@@ -22,7 +22,7 @@ const ImportCard = ({
     <div className="flex w-4/12	items-center justify-center p-2">
       {true ? (
         <button
-          className="mx-1 rounded-md border bg-miru-han-purple-1000 px-5 py-2	font-manrope text-base font-bold tracking-widest text-white"
+          className="mx-1 rounded-md border bg-miru-han-purple-1000 px-5 py-2	font-sans text-base font-bold tracking-wider text-white"
           onClick={e => handleOnShowModalClick(id)}
         >
           {btnText}

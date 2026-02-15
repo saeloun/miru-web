@@ -4,7 +4,7 @@ test.describe('Time Tracking CRUD Operations', () => {
   test.describe.configure({ mode: 'serial' });
   test.beforeEach(async ({ page }) => {
     // Login before each test
-    await page.goto('http://127.0.0.1:3000/users/sign_in');
+    await page.goto('http://127.0.0.1:3000/user/sign_in');
     
     // Wait for the page to load
     await page.waitForSelector('input[type="email"]', { timeout: 10000 });

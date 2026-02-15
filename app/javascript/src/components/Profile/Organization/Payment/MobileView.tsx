@@ -40,7 +40,7 @@ const MobileView = ({
           </button>
         </div>
         <div>
-          <h1 className="font-manrope text-base font-medium leading-5.5">
+          <h1 className="font-sans text-base font-medium leading-5.5">
             {title}
           </h1>
         </div>

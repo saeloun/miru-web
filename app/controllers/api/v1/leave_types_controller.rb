@@ -23,7 +23,7 @@ class Api::V1::LeaveTypesController < Api::V1::ApplicationController
     end
 
     def leave
-      @_leave ||= current_company.leaves.find(params[:id])
+      @_leave ||= current_company.leaves.find(params[:leave_id])
     end
 
     def leave_type

@@ -56,7 +56,7 @@ const ClientInvoiceDetails = () => {
 
     return isDesktop ? (
       <div className="flex flex-col justify-between">
-        <div className="font-manrope">
+        <div className="font-sans">
           <Header
             invoice={invoice}
             setShowConnectPaymentDialog={setShowConnectPaymentDialog}

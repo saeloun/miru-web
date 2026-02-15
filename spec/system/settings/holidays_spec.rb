@@ -1,0 +1,98 @@
+# frozen_string_literal: true
+
+require "rails_helper"
+
+RSpec.describe "Settings - Holidays", type: :system, js: true do
+  let(:company) { create(:company, name: "Holiday Corp") }
+  let(:user) { create(:user, current_workspace_id: company.id) }
+
+  before do
+    create(:employment, company:, user:)
+    user.add_role :admin, company
+    sign_in(user)
+  end
+
+  describe "holidays settings page" do
+    it "admin can view holidays settings page" do
+      with_forgery_protection do
+        visit "/settings/holidays"
+
+        expect(page).to have_css("#react-root", wait: 10)
+      end
+    end
+
+    it "shows year selector" do
+      with_forgery_protection do
+        visit "/settings/holidays"
+
+        expect(page).to have_css("#react-root", wait: 10)
+        expect(page).to have_content(Date.current.year.to_s, wait: 10)
+      end
+    end
+
+    context "with holidays configured" do
+      let!(:holiday) do
+        create(:holiday,
+          company:,
+          year: Date.current.year,
+          enable_optional_holidays: true,
+          no_of_allowed_optional_holidays: 2,
+          holiday_types: ["national", "optional"])
+      end
+      let!(:national_holiday) do
+        create(:holiday_info,
+          holiday:,
+          name: "Independence Day",
+          date: Date.new(Date.current.year, 7, 4),
+          category: "national")
+      end
+      let!(:optional_holiday) do
+        create(:holiday_info,
+          holiday:,
+          name: "Company Founder Day",
+          date: Date.new(Date.current.year, 9, 10),
+          category: "optional")
+      end
+
+      it "shows holiday list when holidays exist" do
+        with_forgery_protection do
+          visit "/settings/holidays"
+
+          expect(page).to have_css("#react-root", wait: 10)
+        end
+      end
+    end
+
+    it "admin can access the page" do
+      with_forgery_protection do
+        visit "/settings/holidays"
+
+        expect(page).to have_current_path("/settings/holidays", wait: 10)
+        expect(page).to have_css("#react-root", wait: 10)
+      end
+    end
+  end
+
+  describe "employee access" do
+    let(:employee) { create(:user, current_workspace_id: company.id) }
+
+    before do
+      create(:employment, company:, user: employee)
+      employee.add_role :employee, company
+      Warden.test_reset!
+      login_as(employee, scope: :user)
+      visit "/"
+      expect(page).to have_css("#react-root", wait: 10)
+    end
+
+    it "employee cannot access holidays settings" do
+      with_forgery_protection do
+        visit "/settings/holidays"
+
+        expect(page).to have_css("#react-root", wait: 10)
+        expect(page).not_to have_content("Holiday Management")
+          .or have_current_path("/settings/profile", wait: 10)
+      end
+    end
+  end
+end

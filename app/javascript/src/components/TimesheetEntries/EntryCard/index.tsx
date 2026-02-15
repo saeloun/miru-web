@@ -64,7 +64,7 @@ const EntryCard = ({
               text={bill_status}
             />
           </div>
-          <p className="mx-auto text-2xl xl:text-4xl">{minToHHMM(duration)}</p>
+          <p className="mx-auto text-2xl xl:text-2xl">{minToHHMM(duration)}</p>
         </div>
         <div className="flex w-5/12 items-center justify-evenly">
           {showDuplicateAction(bill_status, companyRole, id, handleDuplicate)}

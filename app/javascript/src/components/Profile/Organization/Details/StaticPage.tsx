@@ -71,7 +71,7 @@ const StaticPage = ({
           <div className="flex-shrink-0">
             <Avatar
               classNameImg="h-full min-w-full"
-              classNameInitials="text-4xl font-bold capitalize text-white"
+              classNameInitials="text-2xl font-semibold capitalize text-white"
               classNameInitialsWrapper="bg-miru-gray-1000"
               initialsLetterCount={1}
               name={companyName}

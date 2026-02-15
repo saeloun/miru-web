@@ -24,14 +24,12 @@ const MobileHeader = ({
         </button>
       </div>
       <div>
-        <h1 className="font-manrope text-base font-medium leading-5.5">
-          {title}
-        </h1>
+        <h1 className="font-sans text-base font-medium leading-5.5">{title}</h1>
       </div>
     </div>
     <div>
       <button
-        className="outline-none border-none bg-transparent font-manrope font-bold capitalize text-miru-han-purple-1000"
+        className="outline-none border-none bg-transparent font-sans font-bold capitalize text-miru-han-purple-1000"
         onClick={onEditBtnClick}
       >
         Edit

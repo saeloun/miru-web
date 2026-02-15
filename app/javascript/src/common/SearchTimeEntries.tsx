@@ -143,7 +143,7 @@ const SearchTimeEntries = ({
                 key={employee.value}
                 className={`flex items-center px-2 pt-3 text-sm leading-5 text-miru-dark-purple-1000 hover:bg-miru-gray-100 ${
                   currentUser.value === employee.value
-                    ? "font-extrabold"
+                    ? "font-bold"
                     : "font-medium"
                 }`}
                 onClick={() => handleEmployeeChange(employee)}

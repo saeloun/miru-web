@@ -10,7 +10,7 @@ const INVOICE_ID = process.env.INVOICE_ID || '16';
 test.describe('Invoice send and download on /invoices/:id', () => {
   test('can login, open invoice page, and download PDF', async ({ page }) => {
     // Login
-    await page.goto('/users/sign_in');
+    await page.goto('/user/sign_in');
     await page.waitForSelector('input[type="email"]');
     await page.fill('input[type="email"]', TEST_EMAIL);
     await page.fill('input[type="password"]', TEST_PASSWORD);
@@ -48,7 +48,7 @@ test.describe('Invoice send and download on /invoices/:id', () => {
 
   test('can send invoice via API with recipients', async ({ page }) => {
     // Ensure logged in
-    await page.goto('/users/sign_in');
+    await page.goto('/user/sign_in');
     await page.waitForSelector('input[type="email"]');
     await page.fill('input[type="email"]', TEST_EMAIL);
     await page.fill('input[type="password"]', TEST_PASSWORD);

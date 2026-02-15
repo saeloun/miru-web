@@ -73,7 +73,7 @@ export const ProfileImage = ({ src, handleDeleteLogo, onLogoChange }) => {
                   <div>
                     <ImageIcon color="#5B34EA" size={16} />
                   </div>
-                  <p className="font-manrope text-sm font-medium text-miru-han-purple-1000">
+                  <p className="font-sans text-sm font-medium text-miru-han-purple-1000">
                     Upload
                   </p>
                 </label>
@@ -96,7 +96,7 @@ export const ProfileImage = ({ src, handleDeleteLogo, onLogoChange }) => {
                 <div>
                   <DeleteIcon color="#E04646" size={15} />
                 </div>
-                <p className="font-manrope text-sm font-medium text-miru-red-400">
+                <p className="font-sans text-sm font-medium text-miru-red-400">
                   Delete
                 </p>
               </li>

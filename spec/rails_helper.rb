@@ -13,6 +13,8 @@ abort("The Rails environment is running in production mode!") if Rails.env.produ
 # Add additional requires below this line. Rails is not loaded until this point!
 require "devise"
 require "rspec/rails"
+
+Rails.application.routes_reloader.execute_unless_loaded
 require "support/session_helpers"
 require "support/database_cleaner"
 

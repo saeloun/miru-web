@@ -91,12 +91,12 @@ const Container = ({ selectedFilter }: ContainerProps) => {
                         selectedFilter?.groupBy?.value || null,
                         clientLogo
                       )}
-                      <h1 className="font-manrope text-xl font-bold text-miru-han-purple-1000">
+                      <h1 className="font-sans text-xl font-bold text-miru-han-purple-1000">
                         {label}
                       </h1>
                     </div>
                     {entries?.length > 0 && (
-                      <p className="text-right font-manrope text-base font-medium text-miru-dark-purple-1000">
+                      <p className="text-right font-sans text-base font-medium text-miru-dark-purple-1000">
                         Total Hours for {label} : &nbsp;
                         {getTotalHoursLogged(id)}
                       </p>

@@ -13,7 +13,7 @@ test.describe.parallel('Basic Tests', () => {
   });
 
   test('can access login', async ({ page }) => {
-    const response = await page.goto('/users/sign_in');
+    const response = await page.goto('/user/sign_in');
     expect(response?.status()).toBeLessThan(400);
   });
 });

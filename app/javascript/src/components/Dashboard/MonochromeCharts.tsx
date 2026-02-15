@@ -50,7 +50,7 @@ export const RevenueAreaChart: React.FC<RevenueChartProps> = ({
         <p className="text-xs font-semibold text-indigo-600 uppercase tracking-wider">
           Revenue Trend
         </p>
-        <CardTitle className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
+        <CardTitle className="text-xl font-semibold tracking-tight bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
           Revenue Momentum
         </CardTitle>
         <CardDescription className="text-sm text-gray-600 font-medium">
@@ -183,7 +183,7 @@ export const CustomerRevenueChart: React.FC<CustomerRevenueChartProps> = ({
           <p className="text-xs font-semibold text-purple-600 uppercase tracking-wider">
             Top Customers
           </p>
-          <CardTitle className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
+          <CardTitle className="text-xl font-semibold tracking-tight bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
             Revenue Leaders
           </CardTitle>
           <CardDescription className="text-sm text-gray-600 font-medium">
@@ -243,7 +243,7 @@ export const CustomerRevenueChart: React.FC<CustomerRevenueChartProps> = ({
           </div>
         ) : (
           <div className="text-center text-gray-500 py-8">
-            <div className="text-4xl mb-3">📊</div>
+            <div className="text-2xl mb-3">📊</div>
             No revenue yet for this period
           </div>
         )}

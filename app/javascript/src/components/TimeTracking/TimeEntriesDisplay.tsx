@@ -36,7 +36,7 @@ const TimeEntriesDisplay: React.FC<TimeEntriesDisplayProps> = ({
       <div className="space-y-4">
         <div className="flex items-center justify-between pb-6 mb-6 border-b-2 border-slate-200">
           <div>
-            <h3 className="text-3xl font-bold text-slate-900">
+            <h3 className="text-xl font-semibold tracking-tight text-slate-900">
               {dayjs(selectedFullDate).format("dddd")}
             </h3>
             <p className="text-base text-slate-600 mt-2 font-medium">
@@ -47,7 +47,7 @@ const TimeEntriesDisplay: React.FC<TimeEntriesDisplayProps> = ({
             <div className="text-sm font-semibold text-slate-600 uppercase tracking-wider mb-2">
               Day Total
             </div>
-            <div className="text-4xl font-bold text-blue-600 tabular-nums">
+            <div className="text-2xl font-semibold tracking-tight text-blue-600 tabular-nums">
               {totalHours}h {totalMinutes > 0 ? `${totalMinutes}m` : ""}
             </div>
             <div className="text-sm text-slate-500 mt-2 font-medium">
