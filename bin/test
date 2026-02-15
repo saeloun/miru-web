@@ -47,101 +47,109 @@ class TestRunner
 
   private
 
-  def parse_options(args)
-    parser = OptionParser.new do |opts|
-      opts.banner = "Usage: bin/test [options] [files]"
-      
-      opts.separator ""
-      opts.separator "Modes:"
-      
-      MODES.each do |mode, description|
-        opts.on("--#{mode}", description) { @mode = mode }
+    def parse_options(args)
+      parser = OptionParser.new do |opts|
+        opts.banner = "Usage: bin/test [options] [files]"
+
+        opts.separator ""
+        opts.separator "Modes:"
+
+        MODES.each do |mode, description|
+          opts.on("--#{mode}", description) { @mode = mode }
+        end
+
+        opts.separator ""
+        opts.separator "Options:"
+
+        opts.on("-h", "--help", "Show this help") do
+          puts opts
+          exit
+        end
       end
-      
-      opts.separator ""
-      opts.separator "Options:"
-      
-      opts.on("-h", "--help", "Show this help") do
-        puts opts
-        exit
+
+      parser.parse!(args)
+      @files = args.empty? ? ["spec/"] : args
+    end
+
+    def run_default
+      puts "Running tests with documentation format..."
+      system("mise", "exec", "--", "bundle", "exec", "rspec", *@files)
+    end
+
+    def run_parallel
+      workers = ENV.fetch("PARALLEL_WORKERS", "4")
+      parallel_files = files_for_parallel
+      puts "Running non-system tests in parallel (#{workers} workers)..."
+      FileUtils.mkdir_p("tmp")
+
+      env = {
+        "PARALLEL_WORKERS" => workers,
+        "RAILS_ENV" => "test"
+      }
+
+      system(env, "mise", "exec", "--", "bundle", "exec", "parallel_rspec", "-n", workers, *parallel_files)
+    end
+
+    def run_fuubar
+      puts "Running tests with Fuubar progress bar..."
+      system("mise", "exec", "--", "bundle", "exec", "rspec", "--format", "Fuubar", *@files)
+    end
+
+    def run_with_coverage
+      puts "Running tests with code coverage..."
+      env = {
+        "COVERAGE" => "true",
+        "RAILS_ENV" => "test"
+      }
+
+      system(env, "mise", "exec", "--", "bundle", "exec", "rspec", *@files)
+
+      if File.exist?("coverage/index.html")
+        puts "\n📊 Coverage report: coverage/index.html"
       end
     end
-    
-    parser.parse!(args)
-    @files = args.empty? ? ["spec/"] : args
-  end
 
-  def run_default
-    puts "Running tests with documentation format..."
-    system("bundle", "exec", "rspec", *@files)
-  end
+    def run_with_profiling
+      puts "Running tests with performance profiling..."
+      env = {
+        "TEST_PROF" => "true",
+        "TEST_STACK_PROF" => "1",
+        "TEST_RUBY_PROF" => "1",
+        "RAILS_ENV" => "test"
+      }
 
-  def run_parallel
-    puts "Running tests in parallel (4 workers)..."
-    FileUtils.mkdir_p("tmp")
-    
-    env = {
-      "PARALLEL_WORKERS" => "4",
-      "RAILS_ENV" => "test"
-    }
-    
-    system(env, "bundle", "exec", "parallel_rspec", "-n", "4", *@files)
-  end
-
-  def run_fuubar
-    puts "Running tests with Fuubar progress bar..."
-    system("bundle", "exec", "rspec", "--format", "Fuubar", *@files)
-  end
-
-  def run_with_coverage
-    puts "Running tests with code coverage..."
-    env = {
-      "COVERAGE" => "true",
-      "RAILS_ENV" => "test"
-    }
-    
-    system(env, "bundle", "exec", "rspec", *@files)
-    
-    if File.exist?("coverage/index.html")
-      puts "\n📊 Coverage report: coverage/index.html"
+      system(env, "mise", "exec", "--", "bundle", "exec", "rspec", "--tag", "profile", *@files)
     end
-  end
 
-  def run_with_profiling
-    puts "Running tests with performance profiling..."
-    env = {
-      "TEST_PROF" => "true",
-      "TEST_STACK_PROF" => "1",
-      "TEST_RUBY_PROF" => "1",
-      "RAILS_ENV" => "test"
-    }
-    
-    system(env, "bundle", "exec", "rspec", "--tag", "profile", *@files)
-  end
+    def run_ci
+      puts "Running tests in CI mode..."
+      FileUtils.mkdir_p("tmp")
 
-  def run_ci
-    puts "Running tests in CI mode..."
-    FileUtils.mkdir_p("tmp")
-    
-    env = {
-      "CI" => "true",
-      "RAILS_ENV" => "test",
-      "PARALLEL_WORKERS" => "10"
-    }
-    
-    # Run parallel tests with JUnit output
-    success = system(env, "bundle", "exec", "parallel_rspec", 
-                    "-n", "10",
-                    "--serialize-stdout",
-                    *@files)
-    
-    # Merge JUnit reports
-    if Dir.glob("tmp/rspec*.xml").any?
-      puts "\n📋 Test reports generated in tmp/"
+      env = {
+        "CI" => "true",
+        "RAILS_ENV" => "test",
+        "PARALLEL_WORKERS" => "10"
+      }
+
+      # Run parallel tests with JUnit output
+      success = system(env, "mise", "exec", "--", "bundle", "exec", "parallel_rspec",
+                      "-n", "10",
+                      "--serialize-stdout",
+                      *files_for_parallel)
+
+      # Merge JUnit reports
+      if Dir.glob("tmp/rspec*.xml").any?
+        puts "\n📋 Test reports generated in tmp/"
+      end
+
+      exit(1) unless success
     end
-    
-    exit(1) unless success
-  end
+
+    def files_for_parallel
+      return @files unless @files == ["spec/"] || @files == ["spec"]
+
+      Dir.glob("spec/**/*_spec.rb").reject { |file| file.start_with?("spec/system/") }.sort
+    end
 end
 
 # Run the test runner

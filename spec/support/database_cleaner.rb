@@ -5,7 +5,9 @@ RSpec.configure do |config|
     DatabaseCleaner.allow_remote_database_url = true
     DatabaseCleaner.url_allowlist = [ENV["DATABASE_URL"]]
 
-    DatabaseCleaner.clean_with :truncation, except: %w(ar_internal_metadata)
+    unless ENV.key?("TEST_ENV_NUMBER")
+      DatabaseCleaner.clean_with :truncation, except: %w(ar_internal_metadata)
+    end
   end
 
   config.before do
