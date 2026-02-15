@@ -1,5 +1,4 @@
 --color
 --require spec_helper
 --format documentation
---format RSpec::Buildkite::AnnotationFormatter
 --profile 10

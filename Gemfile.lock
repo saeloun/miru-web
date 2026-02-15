@@ -215,8 +215,6 @@ GEM
     discard (1.4.0)
       activerecord (>= 4.2, < 9.0)
     docile (1.4.1)
-    dockerfile-rails (1.7.10)
-      rails (>= 3.0.0)
     dotenv (3.1.8)
     dotenv-rails (3.1.8)
       dotenv (= 3.1.8)
@@ -574,8 +572,6 @@ GEM
       rspec-core (~> 3.13.0)
       rspec-expectations (~> 3.13.0)
       rspec-mocks (~> 3.13.0)
-    rspec-buildkite (0.1.6)
-      rspec-core (~> 3.0)
     rspec-core (3.13.5)
       rspec-support (~> 3.13.0)
     rspec-expectations (3.13.5)
@@ -818,7 +814,6 @@ DEPENDENCIES
   devise
   dexter
   discard (~> 1.2)
-  dockerfile-rails
   dotenv
   dotenv-rails
   erb_lint!
@@ -856,7 +851,6 @@ DEPENDENCIES
   rails-controller-testing (~> 1.0, >= 1.0.5)
   redis (~> 5.4)
   rolify (~> 6.0)
-  rspec-buildkite
   rspec-instafail (~> 1.0)
   rspec-rails (~> 8.0)
   rspec-retry

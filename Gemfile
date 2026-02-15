@@ -183,7 +183,6 @@ group :development, :test, :ci do
   gem "vcr", "~> 6.4.0"
   gem "webmock", "~> 3.14.0"
 
-  gem "dockerfile-rails"
 end
 
 group :development do
@@ -211,7 +210,6 @@ group :test, :ci do
   gem "database_cleaner", "~> 2.0"
   gem "hash_dot"
 
-  gem "rspec-buildkite"
   gem "rspec-retry"
 
   # Enhanced RSpec reporting and formatting
