@@ -11,7 +11,7 @@ require "optparse"
 options = {
   processes: ENV.fetch("PARALLEL_TEST_PROCESSES", 10),
   setup: false,
-  exclude_system: false
+  exclude_system: true
 }
 
 OptionParser.new do |opts|
@@ -29,6 +29,10 @@ OptionParser.new do |opts|
     options[:exclude_system] = true
   end
 
+  opts.on("-i", "--include-system", "Include system specs") do
+    options[:exclude_system] = false
+  end
+
   opts.on("-h", "--help", "Show this help message") do
     puts opts
     exit
@@ -38,11 +42,13 @@ end.parse!
 # Set up database for parallel tests if requested
 if options[:setup]
   puts "Setting up parallel test databases..."
-  system("bundle exec rake parallel:setup PARALLEL_TEST_PROCESSES=#{options[:processes]}")
+  setup_env = { "PARALLEL_TEST_PROCESSORS" => options[:processes].to_s }
+  setup_ok = system(setup_env, "mise", "exec", "--", "bin/parallel_setup")
+  exit(1) unless setup_ok
 end
 
 # Build the command
-command = ["bundle", "exec", "parallel_rspec", "-n", options[:processes].to_s]
+command = ["mise", "exec", "--", "bundle", "exec", "parallel_rspec", "-n", options[:processes].to_s]
 
 # Add spec files or directories
 if ARGV.empty?
