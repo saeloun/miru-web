@@ -10,7 +10,7 @@ echo "🔄 Checking services..."
 
 # Wait for PostgreSQL to be ready
 echo "⏳ Waiting for PostgreSQL..."
-until pg_isready -h localhost -p 5432; do
+until pg_isready -h database -p 5432; do
   sleep 1
 done
 

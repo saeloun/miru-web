@@ -38,7 +38,7 @@
     --sidebar-accent-foreground: oklch(0.3729 0.0306 259.7328);
     --sidebar-border: oklch(0.8717 0.0093 258.3382);
     --sidebar-ring: oklch(0.5854 0.2041 277.1173);
-    --font-sans: Inter, sans-serif;
+    --font-sans: Geist, sans-serif;
     --font-serif: Merriweather, serif;
     --font-mono: JetBrains Mono, monospace;
     --shadow-color: hsl(0 0% 0%);
@@ -85,7 +85,6 @@
     --chart-3: oklch(0.5106 0.2301 276.9656);
     --chart-4: oklch(0.4568 0.2146 277.0229);
     --chart-5: oklch(0.3984 0.1773 277.3662);
-    --radius: 0.5rem;
     --sidebar: oklch(0.2795 0.0368 260.0310);
     --sidebar-foreground: oklch(0.9288 0.0126 255.5078);
     --sidebar-primary: oklch(0.6801 0.1583 276.9349);
@@ -94,28 +93,9 @@
     --sidebar-accent-foreground: oklch(0.8717 0.0093 258.3382);
     --sidebar-border: oklch(0.4461 0.0263 256.8018);
     --sidebar-ring: oklch(0.6801 0.1583 276.9349);
-    --font-sans: Inter, sans-serif;
-    --font-serif: Merriweather, serif;
-    --font-mono: JetBrains Mono, monospace;
-    --shadow-color: hsl(0 0% 0%);
-    --shadow-opacity: 0.1;
-    --shadow-blur: 8px;
-    --shadow-spread: -1px;
-    --shadow-offset-x: 0px;
-    --shadow-offset-y: 4px;
-    --letter-spacing: 0em;
-    --spacing: 0.25rem;
-    --shadow-2xs: 0px 4px 8px -1px hsl(0 0% 0% / 0.05);
-    --shadow-xs: 0px 4px 8px -1px hsl(0 0% 0% / 0.05);
-    --shadow-sm: 0px 4px 8px -1px hsl(0 0% 0% / 0.10), 0px 1px 2px -2px hsl(0 0% 0% / 0.10);
-    --shadow: 0px 4px 8px -1px hsl(0 0% 0% / 0.10), 0px 1px 2px -2px hsl(0 0% 0% / 0.10);
-    --shadow-md: 0px 4px 8px -1px hsl(0 0% 0% / 0.10), 0px 2px 4px -2px hsl(0 0% 0% / 0.10);
-    --shadow-lg: 0px 4px 8px -1px hsl(0 0% 0% / 0.10), 0px 4px 6px -2px hsl(0 0% 0% / 0.10);
-    --shadow-xl: 0px 4px 8px -1px hsl(0 0% 0% / 0.10), 0px 8px 10px -2px hsl(0 0% 0% / 0.10);
-    --shadow-2xl: 0px 4px 8px -1px hsl(0 0% 0% / 0.25);
   }
   .theme {
-    --font-sans: Inter, sans-serif;
+    --font-sans: Geist, sans-serif;
     --font-mono: JetBrains Mono, monospace;
     --font-serif: Merriweather, serif;
     --radius: 0.5rem;
@@ -126,13 +106,8 @@
     --tracking-widest: calc(var(--tracking-normal) + 0.08em);
   }
   body {
-    letter-spacing: var(--tracking-normal);
-  }
-}
-
-@layer base {
-  body {
     @apply bg-background text-foreground;
     font-family: 'Geist', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    letter-spacing: var(--tracking-normal);
   }
 }

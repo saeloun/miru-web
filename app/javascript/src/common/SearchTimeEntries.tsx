@@ -26,20 +26,15 @@ const SearchTimeEntries = ({
   const { isDesktop } = useUserContext();
 
   useEffect(() => {
-    if (debouncedSearchQuery && filteredEmployeeList.length > 0) {
-      const newEmployeeList = filteredEmployeeList.filter(client =>
+    if (debouncedSearchQuery) {
+      const newEmployeeList = employeeList.filter(client =>
         client.label.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
       );
-
-      if (newEmployeeList.length > 0) {
-        setFilteredEmployeeList(newEmployeeList);
-      } else {
-        setFilteredEmployeeList([]);
-      }
+      setFilteredEmployeeList(newEmployeeList);
     } else {
       setFilteredEmployeeList(employeeList);
     }
-  }, [debouncedSearchQuery]);
+  }, [debouncedSearchQuery, employeeList]);
 
   const currentUser = employeeList?.find(
     emp => emp.value == selectedEmployeeId
@@ -47,32 +42,6 @@ const SearchTimeEntries = ({
 
   const handleEmployeeChange = selection => {
     setSelectedEmployeeId(selection["value"]);
-  };
-
-  const customStyles = {
-    container: base => ({
-      ...base,
-      width: "13rem",
-    }),
-    control: provided => ({
-      ...provided,
-      "&:hover": {
-        borderColor: "#5B34EA",
-      },
-      "&:focus": {
-        borderColor: "#5B34EA",
-      },
-      "&:active": {
-        borderColor: "#5B34EA",
-      },
-    }),
-    option: (styles, { isSelected }) => ({
-      ...styles,
-      backgroundColor: isSelected && "#5B34EA",
-      "&:hover": {
-        backgroundColor: isSelected ? "#5B34EA" : "#F5F7F9",
-      },
-    }),
   };
 
   return isDesktop ? (
@@ -142,7 +111,7 @@ const SearchTimeEntries = ({
               <li
                 key={employee.value}
                 className={`flex items-center px-2 pt-3 text-sm leading-5 text-miru-dark-purple-1000 hover:bg-miru-gray-100 ${
-                  currentUser.value === employee.value
+                  currentUser?.value === employee.value
                     ? "font-bold"
                     : "font-medium"
                 }`}

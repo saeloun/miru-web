@@ -25,8 +25,8 @@ class ApiHandler {
       (response: any) => {
         if (response) {
           const { data, status } = response;
-          (response as any).success = status === 200;
-          const { reset_session, notice } = data;
+          (response as any).success = status >= 200 && status < 300;
+          const { reset_session, notice } = data || {};
           if (data && !reset_session && notice) {
             Toastr.success(notice);
           }
