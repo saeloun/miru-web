@@ -23,6 +23,7 @@ class Api::V1::CalendarsController < ApplicationController
       redirect_to api_v1_calendars_path
     else
       current_user.update!(calendar_connected: false)
+      redirect_to root_path, alert: "Calendar authorization failed"
     end
   end
 
@@ -36,7 +37,13 @@ class Api::V1::CalendarsController < ApplicationController
     service.authorization = @client
 
     @calendar_list = service.list_calendar_lists
-    calendar_id = @calendar_list.items.select { |item| item.summary.include?("@") }.first.id
+    primary_calendar = @calendar_list.items.find { |item| item.summary.include?("@") }
+    calendar_id = primary_calendar&.id
+
+    if calendar_id.blank?
+      redirect_to root_path, alert: "No suitable calendar found"
+      return
+    end
 
     redirect_to api_v1_events_path(calendar_id)
   end
@@ -45,8 +52,8 @@ class Api::V1::CalendarsController < ApplicationController
     authorize :events, policy_class: CalendarPolicy
 
     @client.update!(session[:authorization])
-    current_month = Time.now.month
-    current_year = Time.now.year
+    current_month = Time.current.month
+    current_year = Time.current.year
     calendar_id = params[:calendar_id]
 
     meetings = Calendars::MonthlyCalendarEventsService.new(

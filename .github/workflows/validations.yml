@@ -83,8 +83,9 @@ jobs:
       - name: Build Vite assets (sanity)
         env:
           SECRET_KEY_BASE: dummy
+        continue-on-error: true
         run: |
-          timeout 30 bin/vite build || echo "Skipping vite build check"
+          timeout 30 bin/vite build
       
       - name: Install Playwright Chromium browser (with deps)
         if: steps.playwright-cache.outputs.cache-hit != 'true'
@@ -95,11 +96,9 @@ jobs:
         run: pnpm exec playwright install-deps chromium
       
       - name: Run Rubocop
-        if: matrix.ci_node_index == 0
         run: bundle exec rubocop
-      
+
       - name: Run ESLint
-        if: matrix.ci_node_index == 0
         run: pnpm lint
       
       - name: Setup test database
@@ -108,8 +107,6 @@ jobs:
           DB_HOST: localhost
           DB_USER: root
           DB_PASS: password
-          CI_NODE_INDEX: ${{ matrix.ci_node_index }}
-          CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
         run: |
           bundle exec rails db:create
           bundle exec rails db:schema:load
@@ -142,8 +139,7 @@ jobs:
           bundle exec parallel_rspec spec \
             --exclude-pattern "spec/system" \
             -n 2 \
-            -o "--format progress --format RspecJunitFormatter --out tmp/rspec.xml --tag ~type:system" \
-            || echo "Tests failed with exit code $?"
+            -o "--format progress --format RspecJunitFormatter --out tmp/rspec.xml --tag ~type:system"
           
           # Save failed specs list for debugging
           if [ -f tmp/failing_specs.txt ]; then

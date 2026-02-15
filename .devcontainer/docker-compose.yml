@@ -5,7 +5,6 @@ services:
     build:
       context: ..
       dockerfile: .devcontainer/Dockerfile
-      target: development
     platform: linux/amd64
     command: bash -c "bundle exec rails db:prepare && bundle exec rails s -p 3000 -b 0.0.0.0"
     ports:
@@ -49,7 +48,6 @@ services:
     build:
       context: ..
       dockerfile: .devcontainer/Dockerfile
-      target: development
     platform: linux/amd64
     command: pnpm vite dev --host 0.0.0.0 --port 3036
     ports:
@@ -66,7 +64,6 @@ services:
     build:
       context: ..
       dockerfile: .devcontainer/Dockerfile
-      target: test
     platform: linux/amd64
     command: bash -c "bundle exec rails db:test:prepare && bundle exec parallel_rspec -n 4 spec/"
     working_dir: /app
