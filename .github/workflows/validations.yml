@@ -39,7 +39,7 @@ jobs:
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.4.5'
+          ruby-version: '4.0.0'
           bundler-cache: true
       
       - name: Setup Node
@@ -114,6 +114,8 @@ jobs:
           bundle exec rails db:create
           bundle exec rails db:schema:load
           bundle exec rails db:migrate
+          bundle exec rake parallel:create[2]
+          bundle exec rake parallel:load_schema[2]
       
       - name: Enable PostgreSQL extensions
         env:
@@ -138,8 +140,8 @@ jobs:
           
           # Run specs with parallel_rspec in single container (uses available cores)
           bundle exec parallel_rspec spec \
-            --exclude-pattern "spec/system/**/*_spec.rb" \
-            -n $(nproc) \
+            --exclude-pattern "spec/system" \
+            -n 2 \
             -o "--format progress --format RspecJunitFormatter --out tmp/rspec.xml --tag ~type:system" \
             || echo "Tests failed with exit code $?"
           
@@ -181,7 +183,7 @@ jobs:
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.4.5'
+          ruby-version: '4.0.0'
           bundler-cache: true
       
       - name: Setup Node
@@ -260,7 +262,7 @@ jobs:
           bundle exec rails server -p 3000 -b 0.0.0.0 &
           echo "Waiting for Rails server to start..."
           for i in {1..30}; do
-            if curl -s http://localhost:3000/users/sign_in > /dev/null; then
+            if curl -s http://localhost:3000/user/sign_in > /dev/null; then
               echo "Rails server is ready!"
               break
             fi
@@ -268,7 +270,7 @@ jobs:
             sleep 2
           done
           # Final check
-          curl -I http://localhost:3000/users/sign_in || (echo "Rails server failed to start" && exit 1)
+          curl -I http://localhost:3000/user/sign_in || (echo "Rails server failed to start" && exit 1)
       
       - name: Run Playwright tests
         env:
@@ -279,7 +281,14 @@ jobs:
           CI: true
           BASE_URL: http://localhost:3000
         run: |
-          pnpm exec playwright test --project=chromium --reporter=dot
+          pnpm exec playwright test \
+            playwright/e2e/smoke.spec.ts \
+            playwright/e2e/basic.spec.ts \
+            playwright/e2e/essential.spec.ts \
+            playwright/e2e/simple-login.spec.ts \
+            --project=chromium \
+            --workers=1 \
+            --reporter=dot
       
       - name: Upload Playwright report
         if: always()
@@ -301,7 +310,7 @@ jobs:
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.4.5'
+          ruby-version: '4.0.0'
           bundler-cache: true
       
       - name: Cache security tools

@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect, useCallback } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -17,39 +17,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../ui/select";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "../../ui/popover";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "../../ui/command";
-import { Badge } from "../../ui/badge";
-import { Checkbox } from "../../ui/checkbox";
+import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
+
 import { cn } from "../../../lib/utils";
 import { format } from "date-fns";
 import { Calendar } from "../../ui/calendar";
 import {
   CalendarBlank as CalendarIcon,
-  Plus,
-  Trash,
   FloppyDisk,
   PaperPlaneTilt,
   Eye,
   EyeSlash,
-  Clock,
-  Check,
-  X,
 } from "phosphor-react";
-import { generateInvoice } from "../../../apis/api";
 import InvoiceTable from "../common/InvoiceTable";
-import { minToHHMM } from "../../../helpers";
 import InvoicePreview from "../InvoicePreview";
 import { fetchNewLineItems } from "../common/utils";
 
@@ -86,8 +66,10 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
   // Helper function to ensure valid Date object
   const ensureValidDate = (date: any): Date => {
     if (!date) return new Date();
+
     if (date instanceof Date && !isNaN(date.getTime())) return date;
     const parsed = new Date(date);
+
     return isNaN(parsed.getTime()) ? new Date() : parsed;
   };
 
@@ -104,13 +86,13 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
     discount: invoice?.discount || 0,
     tax: invoice?.tax || 0,
   });
-  
+
   const [lineItems, setLineItems] = useState([]);
   const [selectedLineItems, setSelectedLineItems] = useState(
     invoice?.invoiceLineItems || invoice?.lineItems || []
   );
   const [manualEntryArr, setManualEntryArr] = useState([]);
-  
+
   const [hasChanges, setHasChanges] = useState(false);
 
   const selectedClient = useMemo(() => {
@@ -157,32 +139,36 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
     }
   }, [selectedClient?.id]);
 
+  const subtotal = useMemo(() => {
+    const selectedTotal = selectedLineItems.reduce((sum, item) => {
+      if (!item._destroy) {
+        return (
+          sum +
+          (item.lineTotal || item.amount || item.quantity * item.rate || 0)
+        );
+      }
 
+      return sum;
+    }, 0);
 
-  const subtotal = useMemo(
-    () => {
-      const selectedTotal = selectedLineItems.reduce((sum, item) => {
-        if (!item._destroy) {
-          return sum + (item.lineTotal || item.amount || (item.quantity * item.rate) || 0);
-        }
-        return sum;
-      }, 0);
-      const manualTotal = manualEntryArr.reduce((sum, item) => {
-        if (!item._destroy) {
-          return sum + (item.lineTotal || item.amount || (item.quantity * item.rate) || 0);
-        }
-        return sum;
-      }, 0);
-      return selectedTotal + manualTotal;
-    },
-    [selectedLineItems, manualEntryArr]
-  );
+    const manualTotal = manualEntryArr.reduce((sum, item) => {
+      if (!item._destroy) {
+        return (
+          sum +
+          (item.lineTotal || item.amount || item.quantity * item.rate || 0)
+        );
+      }
+
+      return sum;
+    }, 0);
+
+    return selectedTotal + manualTotal;
+  }, [selectedLineItems, manualEntryArr]);
 
   const total = useMemo(
     () => subtotal - formData.discount + formData.tax,
     [subtotal, formData.discount, formData.tax]
   );
-
 
   const formatAddress = (address: any) => {
     if (!address) return "";
@@ -211,7 +197,9 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
     subtotal,
     currency: company?.baseCurrency || "USD",
     client: selectedClient,
-    lineItems: [...selectedLineItems, ...manualEntryArr].filter(item => !item._destroy),
+    lineItems: [...selectedLineItems, ...manualEntryArr].filter(
+      item => !item._destroy
+    ),
     company: company
       ? {
           name: company.name || "Company Name",
@@ -264,10 +252,16 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
                 Cancel
               </Button>
               <Button
-                onClick={() => onSave && onSave({
-                  ...formData,
-                  invoiceLineItems: [...selectedLineItems, ...manualEntryArr].filter(item => !item._destroy)
-                })}
+                onClick={() =>
+                  onSave &&
+                  onSave({
+                    ...formData,
+                    invoiceLineItems: [
+                      ...selectedLineItems,
+                      ...manualEntryArr,
+                    ].filter(item => !item._destroy),
+                  })
+                }
                 variant="outline"
                 size="sm"
                 disabled={isLoading || !hasChanges}
@@ -278,10 +272,14 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
               </Button>
               <Button
                 onClick={() =>
-                  onSend && onSend({ 
-                    ...formData, 
+                  onSend &&
+                  onSend({
+                    ...formData,
                     status: "sent",
-                    invoiceLineItems: [...selectedLineItems, ...manualEntryArr].filter(item => !item._destroy)
+                    invoiceLineItems: [
+                      ...selectedLineItems,
+                      ...manualEntryArr,
+                    ].filter(item => !item._destroy),
                   })
                 }
                 className="bg-[#5B34EA] hover:bg-[#4926D1]"
@@ -302,206 +300,214 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
         <div className="flex flex-col lg:flex-row gap-8 p-6">
           {/* Form Section */}
           <div
-            className={cn("flex-1 space-y-6", showPreview ? "lg:max-w-3xl" : "")}
-        >
-          {/* Basic Details */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Basic Details</CardTitle>
-              <CardDescription>
-                Enter the basic invoice information
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            className={cn(
+              "flex-1 space-y-6",
+              showPreview ? "lg:max-w-3xl" : ""
+            )}
+          >
+            {/* Basic Details */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Basic Details</CardTitle>
+                <CardDescription>
+                  Enter the basic invoice information
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="invoiceNumber">Invoice Number</Label>
+                    <Input
+                      id="invoiceNumber"
+                      value={formData.invoiceNumber}
+                      onChange={e =>
+                        setFormData({
+                          ...formData,
+                          invoiceNumber: e.target.value,
+                        })
+                      }
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="reference">Reference (Optional)</Label>
+                    <Input
+                      id="reference"
+                      value={formData.reference}
+                      onChange={e =>
+                        setFormData({ ...formData, reference: e.target.value })
+                      }
+                      placeholder="PO Number, etc."
+                    />
+                  </div>
+                </div>
+
                 <div>
-                  <Label htmlFor="invoiceNumber">Invoice Number</Label>
-                  <Input
-                    id="invoiceNumber"
-                    value={formData.invoiceNumber}
-                    onChange={e =>
-                      setFormData({
-                        ...formData,
-                        invoiceNumber: e.target.value,
-                      })
+                  <Label htmlFor="client">Client</Label>
+                  <Select
+                    value={formData.clientId}
+                    onValueChange={value =>
+                      setFormData({ ...formData, clientId: value })
                     }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a client" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {clients.map(client => (
+                        <SelectItem key={client.id} value={client.id}>
+                          {client.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label>Issue Date</Label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          className={cn(
+                            "w-full justify-start text-left font-normal",
+                            !formData.issueDate && "text-muted-foreground"
+                          )}
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {formData.issueDate ? (
+                            format(ensureValidDate(formData.issueDate), "PPP")
+                          ) : (
+                            <span>Pick a date</span>
+                          )}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0">
+                        <Calendar
+                          mode="single"
+                          selected={formData.issueDate}
+                          onSelect={date =>
+                            setFormData({ ...formData, issueDate: date })
+                          }
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+
+                  <div>
+                    <Label>Due Date</Label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          className={cn(
+                            "w-full justify-start text-left font-normal",
+                            !formData.dueDate && "text-muted-foreground"
+                          )}
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {formData.dueDate ? (
+                            format(ensureValidDate(formData.dueDate), "PPP")
+                          ) : (
+                            <span>Pick a date</span>
+                          )}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0">
+                        <Calendar
+                          mode="single"
+                          selected={formData.dueDate}
+                          onSelect={date =>
+                            setFormData({ ...formData, dueDate: date })
+                          }
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Line Items */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Line Items</CardTitle>
+                <CardDescription>
+                  Add time entries or manual items
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="p-0">
+                <div className="px-6 py-4">
+                  <InvoiceTable
+                    clientCurrency={company?.baseCurrency || "USD"}
+                    dateFormat={company?.dateFormat || "MM/dd/yyyy"}
+                    selectedClient={selectedClient}
+                    lineItems={lineItems}
+                    setLineItems={setLineItems}
+                    selectedLineItems={selectedLineItems}
+                    setSelectedLineItems={setSelectedLineItems}
+                    manualEntryArr={manualEntryArr}
+                    setManualEntryArr={setManualEntryArr}
                   />
                 </div>
+              </CardContent>
+            </Card>
+
+            {/* Additional Details */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Additional Details</CardTitle>
+                <CardDescription>Tax, discount, and notes</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="discount">Discount</Label>
+                    <Input
+                      id="discount"
+                      type="number"
+                      value={formData.discount}
+                      onChange={e =>
+                        setFormData({
+                          ...formData,
+                          discount: Number(e.target.value),
+                        })
+                      }
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="tax">Tax</Label>
+                    <Input
+                      id="tax"
+                      type="number"
+                      value={formData.tax}
+                      onChange={e =>
+                        setFormData({
+                          ...formData,
+                          tax: Number(e.target.value),
+                        })
+                      }
+                    />
+                  </div>
+                </div>
+
                 <div>
-                  <Label htmlFor="reference">Reference (Optional)</Label>
-                  <Input
-                    id="reference"
-                    value={formData.reference}
+                  <Label htmlFor="notes">Notes</Label>
+                  <Textarea
+                    id="notes"
+                    value={formData.notes}
                     onChange={e =>
-                      setFormData({ ...formData, reference: e.target.value })
+                      setFormData({ ...formData, notes: e.target.value })
                     }
-                    placeholder="PO Number, etc."
+                    placeholder="Additional notes or payment instructions"
+                    rows={4}
                   />
                 </div>
-              </div>
-
-              <div>
-                <Label htmlFor="client">Client</Label>
-                <Select
-                  value={formData.clientId}
-                  onValueChange={value =>
-                    setFormData({ ...formData, clientId: value })
-                  }
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a client" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {clients.map(client => (
-                      <SelectItem key={client.id} value={client.id}>
-                        {client.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label>Issue Date</Label>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant="outline"
-                        className={cn(
-                          "w-full justify-start text-left font-normal",
-                          !formData.issueDate && "text-muted-foreground"
-                        )}
-                      >
-                        <CalendarIcon className="mr-2 h-4 w-4" />
-                        {formData.issueDate ? (
-                          format(ensureValidDate(formData.issueDate), "PPP")
-                        ) : (
-                          <span>Pick a date</span>
-                        )}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0">
-                      <Calendar
-                        mode="single"
-                        selected={formData.issueDate}
-                        onSelect={date =>
-                          setFormData({ ...formData, issueDate: date })
-                        }
-                        initialFocus
-                      />
-                    </PopoverContent>
-                  </Popover>
-                </div>
-
-                <div>
-                  <Label>Due Date</Label>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant="outline"
-                        className={cn(
-                          "w-full justify-start text-left font-normal",
-                          !formData.dueDate && "text-muted-foreground"
-                        )}
-                      >
-                        <CalendarIcon className="mr-2 h-4 w-4" />
-                        {formData.dueDate ? (
-                          format(ensureValidDate(formData.dueDate), "PPP")
-                        ) : (
-                          <span>Pick a date</span>
-                        )}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0">
-                      <Calendar
-                        mode="single"
-                        selected={formData.dueDate}
-                        onSelect={date =>
-                          setFormData({ ...formData, dueDate: date })
-                        }
-                        initialFocus
-                      />
-                    </PopoverContent>
-                  </Popover>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Line Items */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Line Items</CardTitle>
-              <CardDescription>Add time entries or manual items</CardDescription>
-            </CardHeader>
-            <CardContent className="p-0">
-              <div className="px-6 py-4">
-                <InvoiceTable
-                  clientCurrency={company?.baseCurrency || "USD"}
-                  dateFormat={company?.dateFormat || "MM/dd/yyyy"}
-                  selectedClient={selectedClient}
-                  lineItems={lineItems}
-                  setLineItems={setLineItems}
-                  selectedLineItems={selectedLineItems}
-                  setSelectedLineItems={setSelectedLineItems}
-                  manualEntryArr={manualEntryArr}
-                  setManualEntryArr={setManualEntryArr}
-                />
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Additional Details */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Additional Details</CardTitle>
-              <CardDescription>Tax, discount, and notes</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="discount">Discount</Label>
-                  <Input
-                    id="discount"
-                    type="number"
-                    value={formData.discount}
-                    onChange={e =>
-                      setFormData({
-                        ...formData,
-                        discount: Number(e.target.value),
-                      })
-                    }
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="tax">Tax</Label>
-                  <Input
-                    id="tax"
-                    type="number"
-                    value={formData.tax}
-                    onChange={e =>
-                      setFormData({ ...formData, tax: Number(e.target.value) })
-                    }
-                  />
-                </div>
-              </div>
-
-              <div>
-                <Label htmlFor="notes">Notes</Label>
-                <Textarea
-                  id="notes"
-                  value={formData.notes}
-                  onChange={e =>
-                    setFormData({ ...formData, notes: e.target.value })
-                  }
-                  placeholder="Additional notes or payment instructions"
-                  rows={4}
-                />
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+              </CardContent>
+            </Card>
+          </div>
 
           {/* Preview Section */}
           {showPreview && (

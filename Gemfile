@@ -97,7 +97,7 @@ gem "data_migrate"
 # pagy for Pagination
 gem "pagy", "~> 8.0"
 
-# Avo Admin Framework  
+# Avo Admin Framework
 gem "avo", ">= 3.17"
 
 gem "nokogiri", ">= 1.18.4"

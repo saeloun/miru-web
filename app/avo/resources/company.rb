@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 class Avo::Resources::Company < Avo::BaseResource
   # self.includes = []
   # self.attachments = []
   # self.search = {
   #   query: -> { query.ransack(id_eq: q, m: "or").result(distinct: false) }
   # }
-  
+
   def fields
     field :id, as: :id
     field :name, as: :text

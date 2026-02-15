@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 # For more information regarding these settings check out our docs https://docs.avohq.io
 # The values disaplayed here are the default ones. Uncomment and change them to fit your needs.
 Avo.configure do |config|
   ## == Routing ==
-  config.root_path = '/avo'
+  config.root_path = "/avo"
   # used only when you have custom `map` configuration in your config.ru
   # config.prefix_path = "/internal"
 
