@@ -35,6 +35,9 @@ interface ActivitiesResponse {
 const fetchDashboardData = async (
   timeframe: string
 ): Promise<DashboardData> => {
+  const controller = new globalThis.AbortController();
+  const timeoutId = window.setTimeout(() => controller.abort(), 10000);
+
   try {
     const response = await fetch(`/api/v1/dashboard?timeframe=${timeframe}`, {
       headers: {
@@ -45,13 +48,14 @@ const fetchDashboardData = async (
             ?.getAttribute("content") || "",
       },
       credentials: "include",
+      signal: controller.signal,
     });
 
     if (!response.ok) {
-      // Return mock data if API fails
       console.warn(
         `Dashboard API error: ${response.status}, using fallback data`
       );
+      window.clearTimeout(timeoutId);
 
       return {
         stats: {
@@ -68,8 +72,12 @@ const fetchDashboardData = async (
       };
     }
 
-    return response.json();
+    const data = await response.json();
+    window.clearTimeout(timeoutId);
+
+    return data;
   } catch (error) {
+    window.clearTimeout(timeoutId);
     console.warn("Dashboard API error, using fallback data", error);
 
     return {
@@ -91,6 +99,9 @@ const fetchDashboardData = async (
 const fetchActivities = async ({
   pageParam = 0,
 }): Promise<ActivitiesResponse> => {
+  const controller = new globalThis.AbortController();
+  const timeoutId = window.setTimeout(() => controller.abort(), 10000);
+
   try {
     const response = await fetch(
       `/api/v1/dashboard/activities?offset=${pageParam}&per_page=10`,
@@ -103,6 +114,7 @@ const fetchActivities = async ({
               ?.getAttribute("content") || "",
         },
         credentials: "include",
+        signal: controller.signal,
       }
     );
 
@@ -110,6 +122,7 @@ const fetchActivities = async ({
       console.warn(
         `Activities API error: ${response.status}, using fallback data`
       );
+      window.clearTimeout(timeoutId);
 
       return {
         activities: [],
@@ -118,8 +131,12 @@ const fetchActivities = async ({
       };
     }
 
-    return response.json();
+    const data = await response.json();
+    window.clearTimeout(timeoutId);
+
+    return data;
   } catch (error) {
+    window.clearTimeout(timeoutId);
     console.warn("Activities API error, using fallback data", error);
 
     return {

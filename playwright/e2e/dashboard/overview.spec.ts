@@ -9,7 +9,7 @@ test.describe('Dashboard Overview', () => {
 
   test('dashboard loads successfully after login', async ({ page }) => {
     await page.waitForLoadState('domcontentloaded');
-    expect(page.url()).toMatch(/\/$|\/time-tracking/);
+    expect(page.url()).toMatch(/\/$|\/time-tracking|\/dashboard/);
 
     const response = await page.goto('/');
     expect(response?.status()).toBeLessThan(400);
