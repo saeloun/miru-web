@@ -51,6 +51,7 @@ RSpec.describe Api::V1::Reports::TimeEntriesController, type: :request do
       create_list(:timesheet_entry, 3, user:, project: another_project, work_date: Date.current - 1.day)
 
       get api_v1_reports_time_entries_path, params: {
+        date_range: "custom",
         from: Date.current.strftime("%d/%m/%Y"),
         to: Date.current.strftime("%d/%m/%Y")
       }
@@ -167,6 +168,7 @@ RSpec.describe Api::V1::Reports::TimeEntriesController, type: :request do
 
     it "applies filters to download" do
       get download_api_v1_reports_time_entries_path(format: :csv), params: {
+        date_range: "custom",
         from: Date.current.strftime("%d/%m/%Y"),
         to: Date.current.strftime("%d/%m/%Y")
       }

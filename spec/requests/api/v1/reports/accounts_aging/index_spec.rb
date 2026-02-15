@@ -18,23 +18,23 @@ RSpec.describe "Api::V1::Reports::AccountsAgingController::#index", type: :reque
       sign_in user
       # invoice for client 1 due between 0-30 days
       create(
-        :invoice, client: client1, status: "overdue", issue_date: 2.month.ago, due_date: 1.month.ago,
+        :invoice, client: client1, status: "overdue", issue_date: 20.days.ago, due_date: 15.days.ago,
         amount_due: 100)
       # invoice for client 1 due between 31-60 days
       create(
-        :invoice, client: client1, status: "overdue", issue_date: 3.month.ago, due_date: 2.month.ago,
+        :invoice, client: client1, status: "overdue", issue_date: 55.days.ago, due_date: 45.days.ago,
         amount_due: 200)
       # 2nd invoice for client 1 due between 31-60 days
       create(
-        :invoice, client: client1, status: "overdue", issue_date: 3.month.ago, due_date: 2.month.ago + 1.day,
+        :invoice, client: client1, status: "overdue", issue_date: 60.days.ago, due_date: 50.days.ago,
         amount_due: 500)
       # invoice for client 2 due between 61-90 days
       create(
-        :invoice, client: client2, status: "overdue", issue_date: 4.month.ago, due_date: 3.month.ago,
+        :invoice, client: client2, status: "overdue", issue_date: 85.days.ago, due_date: 75.days.ago,
         amount_due: 300)
       # invoice for client 2 due in 90+ days
       create(
-        :invoice, client: client2, status: "overdue", issue_date: 5.month.ago, due_date: 4.month.ago,
+        :invoice, client: client2, status: "overdue", issue_date: 135.days.ago, due_date: 120.days.ago,
         amount_due: 400)
     end
 

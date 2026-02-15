@@ -148,7 +148,9 @@ class TestRunner
     def files_for_parallel
       return @files unless @files == ["spec/"] || @files == ["spec"]
 
-      Dir.glob("spec/**/*_spec.rb").reject { |file| file.start_with?("spec/system/") }.sort
+      Dir.glob("spec/**/*_spec.rb").reject do |file|
+        file.start_with?("spec/system/") || file.start_with?("spec/system_skip/")
+      end.sort
     end
 end
 

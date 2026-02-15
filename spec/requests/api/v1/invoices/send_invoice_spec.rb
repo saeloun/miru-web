@@ -29,34 +29,27 @@ RSpec.describe "Api::V1::Invoices#send_invoice", type: :request do
         sign_in user
       end
 
-      it "returns a 202 response" do
+      it "returns a 200 response" do
         post send_invoice_api_v1_invoice_path(id: invoice.id), params: { invoice_email: },
           headers: auth_headers(user)
 
-        expect(response).to have_http_status :accepted
-        expect(json_response["message"]).to eq("Invoice will be sent!")
+        expect(response).to have_http_status :ok
+        expect(json_response["message"]).to eq("Invoice has been sent successfully")
       end
 
       it "enqueues an email for delivery" do
         expect do
           post send_invoice_api_v1_invoice_path(id: invoice.id), params: { invoice_email: },
             headers: auth_headers(user)
-        end.to have_enqueued_mail(InvoiceMailer, :invoice)
+        end.to have_enqueued_mail(InvoiceMailer, :send_invoice)
       end
 
-      it "changes time_sheet_entries status to billed" do
+      it "changes invoice status to sent when invoice is draft" do
         expect do
           post send_invoice_api_v1_invoice_path(id: invoice.id), params: { invoice_email: },
             headers: auth_headers(user)
-        end.to have_enqueued_mail(InvoiceMailer, :invoice)
-
-        perform_enqueued_jobs do
-          InvoiceMailer.with({ invoice_id: invoice.id }.merge(invoice_email)).invoice.deliver_later
-        end
-
-        invoice.invoice_line_items.reload.each do |line_item|
-          expect(line_item.timesheet_entry.bill_status).to eq("billed")
-        end
+        end.to have_enqueued_mail(InvoiceMailer, :send_invoice)
+        expect(invoice.reload.status).to eq("sent")
       end
 
       it "does not change the invoice status to sent after sending" do

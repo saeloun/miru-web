@@ -22,7 +22,7 @@ class Reports::GeneratePdf
 
     def generate_pdf(report_type)
       # Use the new PDF generation service with Ferrum
-      template_path = "reports/#{report_type}/pdf"
+      template_path = "pdfs/#{report_type}"
       html_content = ApplicationController.render(
         template: template_path,
         layout: "pdf",
