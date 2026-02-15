@@ -119,7 +119,7 @@ const ImportModal = ({
               Importing {totalEntries || 0} time entries
             </p>
             <div className="flex h-87 items-baseline justify-center text-miru-han-purple-1000">
-              <p className="text-6xl font-normal">
+              <p className="text-3xl font-normal">
                 {Math.round(importProgress)}
               </p>
               <p className="text-base font-normal">%</p>
@@ -145,7 +145,7 @@ const ImportModal = ({
           <div className="flex h-512 w-full flex-col items-center justify-around rounded-lg bg-miru-gray-100 p-4">
             <p className="tracking-wide	text-base	font-bold	">Import complete!</p>
             <div className="flex h-87 items-baseline justify-center text-miru-han-purple-1000">
-              <p className="text-6xl font-normal">100</p>
+              <p className="text-3xl font-normal">100</p>
               <p className="text-base font-normal">%</p>
             </div>
             <div className="w-full border-t-2 border-miru-gray-200 ">

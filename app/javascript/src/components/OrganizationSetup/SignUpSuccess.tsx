@@ -19,17 +19,17 @@ const SignUpSuccess = () => {
             src={GreenCheckCircleIcon}
           />
         </div>
-        <h1 className="text-center font-manrope text-2xl font-extrabold text-miru-chart-green-400 md:text-3xl lg:text-4.5xl">
+        <h1 className="text-center font-sans text-xl font-semibold tracking-tight text-miru-chart-green-400 md:text-2xl lg:text-3xl">
           Thanks for
           <br />
           signing up
         </h1>
         <div className="pt-10">
-          <p className="text-center font-manrope text-sm text-miru-dark-purple-1000 ">
+          <p className="text-center font-sans text-sm text-miru-dark-purple-1000 ">
             Your account has been setup and ready to use!
           </p>
         </div>
-        <div className="pt-6 text-center font-manrope text-xs font-normal not-italic">
+        <div className="pt-6 text-center font-sans text-xs font-normal not-italic">
           <button
             className="form__button cursor-pointer whitespace-nowrap"
             type="submit"

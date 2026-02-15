@@ -208,7 +208,7 @@ export const invoicesApi = {
   get: (query = "") =>
     http.get(query ? `${invoicesPath}?${query}` : `${invoicesPath}`),
   post: (body: any) => http.post(`${invoicesPath}`, body),
-  patch: (id: any, body: any) => http.post(`${invoicesPath}/${id}`, body),
+  patch: (id: any, body: any) => http.patch(`${invoicesPath}/${id}`, body),
   destroy: (id: any) => http.delete(`${invoicesPath}/${id}`),
   destroyBulk: (invoice_ids: any) =>
     http.post(`${invoicesPath}/bulk_deletion`, invoice_ids),

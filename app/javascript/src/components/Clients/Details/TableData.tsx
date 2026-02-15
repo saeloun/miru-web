@@ -33,7 +33,7 @@ const TableData = (projects, isDesktop) => {
           <div className="w-57.5">
             {project.team.map((member, index) => (
               <span
-                className="font-manrope text-xs text-miru-dark-purple-400"
+                className="font-sans text-xs text-miru-dark-purple-400"
                 key={index}
               >
                 {member},&nbsp;

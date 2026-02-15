@@ -30,26 +30,26 @@ const ReportMobileRow = ({ timeEntry, clientLogo }) => {
             <span className="truncate whitespace-normal text-sm font-semibold text-miru-dark-purple-1000">
               {project}
             </span>
-            <p className="font-manrope text-xs font-medium text-miru-dark-purple-400">
+            <p className="font-sans text-xs font-medium text-miru-dark-purple-400">
               {client}
             </p>
           </div>
         </div>
         <div className="w-2/5	break-normal  px-2 text-left">
-          <p className="mb-1 font-manrope text-sm font-semibold not-italic text-miru-dark-purple-1000">
+          <p className="mb-1 font-sans text-sm font-semibold not-italic text-miru-dark-purple-1000">
             {teamMember}
           </p>
-          <p className="font-manrope text-xs font-medium text-miru-dark-purple-400">
+          <p className="font-sans text-xs font-medium text-miru-dark-purple-400">
             {dayjs(workDate).format("MM.DD.YYYY")}
           </p>
         </div>
-        <div className="flex w-1/5 items-center justify-end whitespace-nowrap text-right font-manrope text-lg font-bold text-miru-dark-purple-1000">
+        <div className="flex w-1/5 items-center justify-end whitespace-nowrap text-right font-sans text-lg font-bold text-miru-dark-purple-1000">
           {minToHHMM(duration)}
         </div>
       </div>
       <div className="flex flex-row pb-4">
         <div className="col-span-4 overflow-hidden pt-3">
-          <div className="h-full items-center whitespace-pre-wrap break-all font-manrope text-xs font-normal text-miru-dark-purple-400">
+          <div className="h-full items-center whitespace-pre-wrap break-all font-sans text-xs font-normal text-miru-dark-purple-400">
             {note?.trim()}
           </div>
         </div>

@@ -20,7 +20,7 @@ class Api::V1::CalendarsController < ApplicationController
       response = @client.fetch_access_token!
       session[:authorization] = response
 
-      redirect_to internal_api_v1_calendars_path
+      redirect_to api_v1_calendars_path
     else
       current_user.update!(calendar_connected: false)
     end
@@ -38,7 +38,7 @@ class Api::V1::CalendarsController < ApplicationController
     @calendar_list = service.list_calendar_lists
     calendar_id = @calendar_list.items.select { |item| item.summary.include?("@") }.first.id
 
-    redirect_to internal_api_v1_events_path(calendar_id)
+    redirect_to api_v1_events_path(calendar_id)
   end
 
   def events
@@ -65,7 +65,7 @@ class Api::V1::CalendarsController < ApplicationController
         authorization_uri: "https://accounts.google.com/o/oauth2/auth",
         token_credential_uri: "https://oauth2.googleapis.com/token",
         scope: Google::Apis::CalendarV3::AUTH_CALENDAR_READONLY,
-        redirect_uri: internal_api_v1_callback_url
+        redirect_uri: api_v1_callback_url
       }
     end
 

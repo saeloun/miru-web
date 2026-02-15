@@ -123,7 +123,7 @@
     --tracking-tight: calc(var(--tracking-normal) - 0.025em);
     --tracking-wide: calc(var(--tracking-normal) + 0.025em);
     --tracking-wider: calc(var(--tracking-normal) + 0.05em);
-    --tracking-widest: calc(var(--tracking-normal) + 0.1em);
+    --tracking-widest: calc(var(--tracking-normal) + 0.08em);
   }
   body {
     letter-spacing: var(--tracking-normal);

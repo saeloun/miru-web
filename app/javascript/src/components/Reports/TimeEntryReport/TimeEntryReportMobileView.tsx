@@ -103,12 +103,12 @@ export const TimeEntryReportMobileView = ({
                       selectedFilter?.groupBy?.value || null,
                       report.clientLogo
                     )}
-                    <span className="font-manrope text-lg font-bold text-miru-han-purple-1000">
+                    <span className="font-sans text-lg font-bold text-miru-han-purple-1000">
                       {report.label}
                     </span>
                   </div>
                   {report.entries?.length > 0 && (
-                    <p className="text-right font-manrope text-sm font-medium text-miru-dark-purple-1000">
+                    <p className="text-right font-sans text-sm font-medium text-miru-dark-purple-1000">
                       Total Hours :{` ${getTotalHoursLogged(report.entries)}`}
                     </p>
                   )}

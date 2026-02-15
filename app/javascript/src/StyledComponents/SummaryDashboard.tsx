@@ -43,7 +43,7 @@ const SummaryDashboard = ({
         )}
         onClick={summary.onClick}
       >
-        <p className="truncate text-xxs font-semibold uppercase tracking-semiWidest lg:text-sm lg:tracking-widest">
+        <p className="truncate text-xxs font-semibold uppercase tracking-semiWidest lg:text-sm lg:tracking-wider">
           {summary.label}
         </p>
         <p className="mt-1 truncate text-lg font-medium md:text-xl lg:text-3xl lg:font-semibold">

@@ -68,11 +68,10 @@ interface ClientsData {
   };
 }
 
-const fetchClients = async (): Promise<ClientsData> => {
+const fetchClients = async (timeFrame = "week"): Promise<ClientsData> => {
   try {
-    const res = await clientsApi.get("");
+    const res = await clientsApi.get(`?time_frame=${timeFrame}`);
 
-    // unmapClientList expects { data: response } structure
     return unmapClientList({ data: res.data });
   } catch (error) {
     console.warn("Clients API error, using fallback data", error);
@@ -92,14 +91,15 @@ const ClientsTable: React.FC = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { isAdminUser, company } = useUserContext();
+  const [timeFrame, setTimeFrame] = useState("week");
   const [showNewClientDialog, setShowNewClientDialog] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ["clients"],
-    queryFn: () => fetchClients(),
+    queryKey: ["clients", timeFrame],
+    queryFn: () => fetchClients(timeFrame),
   });
 
   const deleteMutation = useMutation({
@@ -150,7 +150,7 @@ const ClientsTable: React.FC = () => {
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           className="-ml-4"
         >
-          Client
+          CLIENT
           {column.getIsSorted() === "asc" ? (
             <ArrowUp size={16} className="ml-2" />
           ) : column.getIsSorted() === "desc" ? (
@@ -195,7 +195,7 @@ const ClientsTable: React.FC = () => {
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           className="-ml-4"
         >
-          Hours Tracked
+          HOURS LOGGED
           {column.getIsSorted() === "asc" ? (
             <ArrowUp size={16} className="ml-2" />
           ) : column.getIsSorted() === "desc" ? (
@@ -298,15 +298,28 @@ const ClientsTable: React.FC = () => {
             Manage your client relationships and billing
           </p>
         </div>
-        {isAdminUser && (
-          <Button
-            onClick={() => setShowNewClientDialog(true)}
-            className="bg-gray-900 hover:bg-gray-800 text-white"
+        <div className="flex items-center gap-3">
+          <select
+            id="timeFrame"
+            value={timeFrame}
+            onChange={event => setTimeFrame(event.target.value)}
+            className="h-10 rounded-md border border-gray-300 bg-white px-3 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-400"
           >
-            <Plus size={20} className="mr-2" />
-            Add Client
-          </Button>
-        )}
+            <option value="week">This Week</option>
+            <option value="last_week">Last Week</option>
+            <option value="month">This Month</option>
+            <option value="last_month">Last Month</option>
+          </select>
+          {isAdminUser && (
+            <Button
+              onClick={() => setShowNewClientDialog(true)}
+              className="bg-gray-900 hover:bg-gray-800 text-white"
+            >
+              <Plus size={20} className="mr-2" />
+              Add Client
+            </Button>
+          )}
+        </div>
       </div>
 
       {/* Stats Cards */}
@@ -339,7 +352,7 @@ const ClientsTable: React.FC = () => {
 
         <Card className="border-gray-200">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Outstanding</CardTitle>
+            <CardTitle className="text-sm font-medium">OUTSTANDING</CardTitle>
             <CurrencyDollar size={20} className="text-gray-400" />
           </CardHeader>
           <CardContent>
@@ -355,7 +368,7 @@ const ClientsTable: React.FC = () => {
                   baseCurrency,
                   data.overdueOutstandingAmount.overdue
                 )}{" "}
-                overdue
+                OVERDUE
               </p>
             )}
           </CardContent>
@@ -381,7 +394,9 @@ const ClientsTable: React.FC = () => {
           ) : (
             <div className="text-center py-12">
               <Buildings size={48} className="mx-auto mb-4 text-gray-300" />
-              <p className="text-gray-600 mb-4">No clients added yet</p>
+              <p className="text-gray-600 mb-4">
+                Looks like there aren't any clients added yet.
+              </p>
               {isAdminUser && (
                 <Button
                   variant="outline"

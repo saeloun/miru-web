@@ -144,7 +144,7 @@ const TimeoffEntryCard = ({
       <div className="hidden w-5/12 items-center justify-between lg:flex">
         <div className="flex w-7/12 items-center justify-between">
           <div className="w-1/3" />
-          <p className="mx-auto text-2xl xl:text-4xl">{minToHHMM(duration)}</p>
+          <p className="mx-auto text-2xl xl:text-2xl">{minToHHMM(duration)}</p>
         </div>
         <div className="flex w-5/12 items-center justify-evenly">
           {showDuplicateAction(

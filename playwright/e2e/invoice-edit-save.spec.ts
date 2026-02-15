@@ -1,17 +1,13 @@
 import { test, expect } from '@playwright/test';
+import { loginIfNeeded } from './helpers/auth';
 
 test.describe('Invoice Edit Page', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('http://127.0.0.1:3000/invoices');
+    await page.goto('/invoices');
     await page.waitForLoadState('networkidle');
-    
-    const emailInput = page.locator('input[name="user[email]"]');
-    if (await emailInput.isVisible()) {
-      await emailInput.fill('vipul@saeloun.com');
-      await page.fill('input[name="user[password]"]', 'password');
-      await page.click('button[type="submit"]');
-      await page.waitForURL('**/invoices');
-    }
+    await loginIfNeeded(page);
+    await page.goto('/invoices');
+    await page.waitForURL('**/invoices');
   });
 
   test('should enable Save button on form changes and save successfully', async ({ page }) => {

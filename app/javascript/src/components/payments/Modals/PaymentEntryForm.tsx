@@ -349,7 +349,7 @@ const PaymentEntryForm = ({
                     >
                       {transactionTypes.map((transaction, index) => (
                         <li
-                          className="flex items-center pb-5 font-manrope text-sm font-normal capitalize leading-5 text-miru-dark-purple-1000 hover:bg-miru-gray-100"
+                          className="flex items-center pb-5 font-sans text-sm font-normal capitalize leading-5 text-miru-dark-purple-1000 hover:bg-miru-gray-100"
                           key={index}
                           onClick={() => {
                             if (transaction?.value) {

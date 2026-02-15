@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Essential User Journeys', () => {
   test('login flow', async ({ page }) => {
-    const response = await page.goto('/users/sign_in');
+    const response = await page.goto('/user/sign_in');
     expect(response?.status()).toBeLessThan(500);
     
     const content = await page.content();

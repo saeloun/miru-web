@@ -163,7 +163,7 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({
     <div className="space-y-6 max-w-[1600px] mx-auto">
       <div className="border rounded-lg p-6 bg-card">
         <div className="max-w-3xl">
-          <p className="text-sm font-medium text-muted-foreground uppercase tracking-wider mb-1">
+          <p className="text-sm font-medium text-muted-foreground tracking-wider mb-1">
             Company Pulse
           </p>
           <h1 className="text-3xl font-bold mb-2 text-foreground">

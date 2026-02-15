@@ -180,7 +180,7 @@ const ProjectsTable: React.FC = () => {
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           className="-ml-4"
         >
-          Project
+          PROJECT/CLIENT
           {column.getIsSorted() === "asc" ? (
             <ArrowUp size={16} className="ml-2" />
           ) : column.getIsSorted() === "desc" ? (
@@ -225,6 +225,15 @@ const ProjectsTable: React.FC = () => {
             {clientName}
           </span>
         );
+      },
+    },
+    {
+      accessorKey: "totalHours",
+      header: "HOURS LOGGED",
+      cell: ({ row }) => {
+        const hours = Number(row.original.totalHours || 0);
+
+        return <span className="text-sm">{`${hours.toFixed(1)}h`}</span>;
       },
     },
     {
@@ -444,7 +453,9 @@ const ProjectsTable: React.FC = () => {
           ) : (
             <div className="text-center py-12">
               <Briefcase size={48} className="mx-auto mb-4 text-gray-300" />
-              <p className="text-gray-600 mb-4">No projects created yet</p>
+              <p className="text-gray-600 mb-4">
+                Looks like there aren't any projects added yet.
+              </p>
               {isAdminUser && (
                 <Button
                   variant="outline"

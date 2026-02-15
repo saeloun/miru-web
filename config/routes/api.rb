@@ -41,8 +41,6 @@ namespace :api, defaults: { format: "json" } do
         get "search", to: "projects/search#index"
       end
     end
-    resources :timesheet_entry, only: [:index, :create, :update, :destroy]
-
     namespace :reports do
       resources :client_revenues, only: [:index, :new] do
         collection do
