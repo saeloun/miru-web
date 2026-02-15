@@ -1,7 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
 
 import { DatePicker } from "../../../ui/date-picker";
-import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "../../../ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+  TooltipProvider,
+} from "../../../ui/tooltip";
 import dayjs from "dayjs";
 import {
   lineTotalCalc,
@@ -134,7 +139,10 @@ const ManualEntry = ({
                 </div>
               </TooltipTrigger>
               <TooltipContent>
-                <p>Select the date for this entry: {dayjs(selectedDate).format(dateFormat)}</p>
+                <p>
+                  Select the date for this entry:{" "}
+                  {dayjs(selectedDate).format(dateFormat)}
+                </p>
               </TooltipContent>
             </Tooltip>
           </td>
@@ -168,7 +176,9 @@ const ManualEntry = ({
                 />
               </TooltipTrigger>
               <TooltipContent>
-                <p>Time worked: {qtyInHHrMin} ({quantity} minutes)</p>
+                <p>
+                  Time worked: {qtyInHHrMin} ({quantity} minutes)
+                </p>
               </TooltipContent>
             </Tooltip>
           </td>
@@ -178,7 +188,9 @@ const ManualEntry = ({
                 <span className="cursor-help">${lineTotal}</span>
               </TooltipTrigger>
               <TooltipContent>
-                <p>Line total: {qtyInHHrMin} × ${rate} = ${lineTotal}</p>
+                <p>
+                  Line total: {qtyInHHrMin} × ${rate} = ${lineTotal}
+                </p>
               </TooltipContent>
             </Tooltip>
           </td>
@@ -197,19 +209,19 @@ const ManualEntry = ({
               </TooltipContent>
             </Tooltip>
           </td>
-      </tr>
-      {showNewLineItemTable && (
-        <tr>
-          <td className="relative w-full" colSpan={5}>
-            <div
-              className="box-shadow absolute z-40 m-0 w-full rounded bg-white text-sm font-medium text-miru-dark-purple-1000"
-              ref={wrapperRef}
-            >
-              {getNewLineItemDropdown()}
-            </div>
-          </td>
         </tr>
-      )}
+        {showNewLineItemTable && (
+          <tr>
+            <td className="relative w-full" colSpan={5}>
+              <div
+                className="box-shadow absolute z-40 m-0 w-full rounded bg-white text-sm font-medium text-miru-dark-purple-1000"
+                ref={wrapperRef}
+              >
+                {getNewLineItemDropdown()}
+              </div>
+            </td>
+          </tr>
+        )}
         <tr>
           <td className="w-full p-1" colSpan={2}>
             <Tooltip>

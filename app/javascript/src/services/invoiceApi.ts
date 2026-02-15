@@ -244,11 +244,15 @@ class InvoiceApiService {
       invoice_line_items_attributes: invoiceData.invoiceLineItems.map(
         (item, index) => ({
           id: item.id === "new" || !item.id ? undefined : item.id,
-          name: item.name || item.description || `${item.first_name || ''} ${item.last_name || ''}`.trim(),
-          description: item.description || '',
+          name:
+            item.name ||
+            item.description ||
+            `${item.first_name || ""} ${item.last_name || ""}`.trim(),
+          description: item.description || "",
           quantity: item.quantity || 0,
           rate: item.rate || 0,
-          amount: item.amount || item.lineTotal || (item.quantity * item.rate) || 0,
+          amount:
+            item.amount || item.lineTotal || item.quantity * item.rate || 0,
           _destroy: item._destroy || false,
         })
       ),
