@@ -158,8 +158,6 @@ group :development, :test, :ci do
   # For JUnit test output for CI
   gem "rspec_junit_formatter"
 
-  # For linting ERB files
-  gem "erb_lint", require: false, git: "https://github.com/Shopify/erb-lint.git", branch: "main"
 
   # Simple one-liner tests for common Rails functionality
   gem "shoulda-callback-matchers", "~> 1.1.1"
@@ -182,7 +180,6 @@ group :development, :test, :ci do
   # To record response of outgoing API calls
   gem "vcr", "~> 6.4.0"
   gem "webmock", "~> 3.14.0"
-
 end
 
 group :development do
