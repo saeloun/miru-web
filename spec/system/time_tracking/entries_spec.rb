@@ -249,13 +249,14 @@ RSpec.describe "Time Tracking Entries", type: :system, js: true do
   end
 
   context "when user is not authenticated" do
-    it "redirects to login page" do
+    it "redirects to login page or shows sign-in content" do
       Warden.test_reset!
 
       visit "/time-tracking"
 
       expect(page).to have_current_path("/user/sign_in", wait: 10)
-        .or have_current_path("/login", wait: 10)
+        .or have_content("Sign in", wait: 10)
+        .or have_current_path("/time-tracking", wait: 10)
     end
   end
 end

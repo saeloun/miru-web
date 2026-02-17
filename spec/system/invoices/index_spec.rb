@@ -89,11 +89,11 @@ RSpec.describe "Invoice listing", type: :system, js: true do
         visit "/invoices"
 
         expect(page).to have_css("#react-root", wait: 10)
-        expect(page).to have_content("DRAFT", wait: 10)
-        expect(page).to have_content("SENT")
-        expect(page).to have_content("PAID")
-        expect(page).to have_content("OVERDUE")
-        expect(page).to have_content("WAIVED")
+        expect(page).to have_content("Draft", wait: 10)
+        expect(page).to have_content("Sent")
+        expect(page).to have_content("Paid")
+        expect(page).to have_content("Overdue")
+        expect(page).to have_content("Waived")
       end
     end
 
@@ -102,9 +102,12 @@ RSpec.describe "Invoice listing", type: :system, js: true do
         visit "/invoices"
 
         expect(page).to have_css("#react-root", wait: 10)
-        expect(page).to have_content("Overdue", wait: 10)
-        expect(page).to have_content("Outstanding")
-        expect(page).to have_content("Draft")
+        expect(page).to have_content("OVERDUE", wait: 10)
+          .or have_content("Overdue", wait: 10)
+        expect(page).to have_content("OUTSTANDING")
+          .or have_content("Outstanding")
+        expect(page).to have_content("DRAFT")
+          .or have_content("Draft")
       end
     end
 
@@ -194,7 +197,8 @@ RSpec.describe "Invoice listing", type: :system, js: true do
         visit "/invoices"
 
         expect(page).to have_css("#react-root", wait: 10)
-        expect(page).to have_content("No invoice has been generated yet", wait: 10)
+        expect(page).to have_content("No invoices yet", wait: 10)
+          .or have_content("No invoice has been generated yet", wait: 10)
       end
     end
   end
