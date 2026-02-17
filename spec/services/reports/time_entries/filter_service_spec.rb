@@ -18,7 +18,7 @@ RSpec.describe Reports::TimeEntries::FilterService do
         before do
           @page_service = described_class.new({ group_by: "team_member" }, company)
           @page_service.process
-          @expected_user_ids = User.all.order(:first_name).pluck(:id)
+          @expected_user_ids = company.users.order(:first_name).pluck(:id)
         end
 
         it "Fetches first users to page with limit of 5" do
@@ -30,7 +30,7 @@ RSpec.describe Reports::TimeEntries::FilterService do
         before do
           @page_service = described_class.new({ group_by: "team_member", page: 2 }, company)
           @page_service.process
-          @expected_user_ids = User.all.order(:first_name).pluck(:id)
+          @expected_user_ids = company.users.order(:first_name).pluck(:id)
         end
 
         it "Fetches users" do
@@ -42,7 +42,7 @@ RSpec.describe Reports::TimeEntries::FilterService do
     context "when team members filter is provided" do
       context "when no page is specified" do
         before do
-          @filter_user_ids = User.all.order(:first_name).pluck(:id)
+          @filter_user_ids = company.users.order(:first_name).pluck(:id)
           @page_service = described_class.new({ group_by: "team_member", team_member: @filter_user_ids }, company)
           @page_service.process
         end
@@ -54,7 +54,7 @@ RSpec.describe Reports::TimeEntries::FilterService do
 
       context "when next page is specified" do
         before do
-          @filter_user_ids = User.all.order(:first_name).pluck(:id)
+          @filter_user_ids = company.users.order(:first_name).pluck(:id)
           @page_service = described_class.new(
             { group_by: "team_member", team_member: @filter_user_ids, page: 2 },
             company)
@@ -78,7 +78,7 @@ RSpec.describe Reports::TimeEntries::FilterService do
         before do
           @page_service = described_class.new({ group_by: "client" }, company)
           @page_service.process
-          @expected_client_ids = Client.all.order(:name).pluck(:id)
+          @expected_client_ids = company.clients.order(:name).pluck(:id)
         end
 
         it "Fetches clients" do
@@ -90,7 +90,7 @@ RSpec.describe Reports::TimeEntries::FilterService do
         before do
           @page_service = described_class.new({ group_by: "client", page: 2 }, company)
           @page_service.process
-          @expected_client_ids = Client.all.order(:name).pluck(:id)
+          @expected_client_ids = company.clients.order(:name).pluck(:id)
         end
 
         it "Fetches clients" do
@@ -102,7 +102,7 @@ RSpec.describe Reports::TimeEntries::FilterService do
     context "when clients filter is provided" do
       context "when no page is specified" do
         before do
-          @filter_client_ids = Client.all.order(:name).pluck(:id)
+          @filter_client_ids = company.clients.order(:name).pluck(:id)
           @page_service = described_class.new({ group_by: "client", client: @filter_client_ids }, company)
           @page_service.process
         end
@@ -114,7 +114,7 @@ RSpec.describe Reports::TimeEntries::FilterService do
 
       context "when next page is specified" do
         before do
-          @filter_client_ids = Client.all.order(:name).pluck(:id)
+          @filter_client_ids = company.clients.order(:name).pluck(:id)
           @page_service = described_class.new(
             { group_by: "client", client: @filter_client_ids, page: 2 },
             company)
@@ -154,7 +154,7 @@ RSpec.describe Reports::TimeEntries::FilterService do
         before do
           @page_service = described_class.new({ group_by: "project", page: 2 }, company)
           @page_service.process
-          @expected_project_ids = Project.all.order(:name).pluck(:id)
+          @expected_project_ids = company.projects.order(:name).pluck(:id)
         end
 
         it "Fetches projects" do
@@ -166,7 +166,7 @@ RSpec.describe Reports::TimeEntries::FilterService do
     context "when projects filter is provided" do
       context "when no page is specified" do
         before do
-          @filter_project_ids = Project.all.order(:name).pluck(:id)
+          @filter_project_ids = company.projects.order(:name).pluck(:id)
           @page_service = described_class.new({ group_by: "project", project: @filter_project_ids }, company)
           @page_service.process
         end
@@ -178,7 +178,7 @@ RSpec.describe Reports::TimeEntries::FilterService do
 
       context "when next page is specified" do
         before do
-          @filter_project_ids = Project.all.order(:name).pluck(:id)
+          @filter_project_ids = company.projects.order(:name).pluck(:id)
           @page_service = described_class.new(
             { group_by: "project", project: @filter_project_ids, page: 2 },
             company)

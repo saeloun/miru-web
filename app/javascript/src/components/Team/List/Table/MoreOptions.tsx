@@ -1,13 +1,13 @@
+import { TeamModalType } from "constants/index";
+
 import React from "react";
 
-import { DeleteIcon, EditIcon, ResendInviteIcon } from "miruIcons";
-import { Button, MobileMoreOptions, Tooltip } from "StyledComponents";
-
-import teamApi from "apis/team";
+import { teamApi } from "apis/api";
 import HoverMoreOptions from "common/HoverMoreOptions";
-import { TeamModalType } from "constants/index";
 import { useList } from "context/TeamContext";
 import { useUserContext } from "context/UserContext";
+import { DeleteIcon, EditIcon, ResendInviteIcon } from "miruIcons";
+import { Button, MobileMoreOptions, Tooltip } from "StyledComponents";
 
 type Iprops = {
   item: any;

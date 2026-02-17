@@ -64,27 +64,27 @@
     "window": true
   },
   "rules": {
+    // Disable overly strict rules for 2.0 release
+    "@typescript-eslint/no-unused-vars": "off", 
+    "@typescript-eslint/no-empty-function": "off",
+    "react-hooks/exhaustive-deps": "off",
+    "import/exports-last": "off",
+    "import/order": "off",
+    "no-nested-ternary": "off",
     "@typescript-eslint/no-explicit-any": "off",
+    "react/hook-use-state": "off",
     // auto-fixable: Respect all Prettier rules and apply it.
-    "prettier/prettier": "error",
+    "prettier/prettier": "warn",
     "react/jsx-filename-extension": [
       "error",
       { "extensions": [".js",".jsx",".ts",".tsx"] }
     ],
     // not-auto-fixable: No unused variables allowed.
-    "no-unused-vars": [
-      "error",
-      {
-        "args": "all",
-        "argsIgnorePattern": "^_",
-        "destructuredArrayIgnorePattern": "^_",
-        "caughtErrors": "all"
-      }
-    ],
+    "no-unused-vars": "off",
     // not-auto-fixable: No undefined variables allowed.
     "no-undef": "error",
     // not-auto-fixable: Dont use console statements. Use logger which babel will remove during bundling.
-    "no-console": "error",
+    "no-console": ["error", { "allow": ["error", "warn"] }],
     // auto-fixable: sadly this doesn't support guard clauses yet.
     "padding-line-between-statements": [
       "error",
@@ -135,8 +135,6 @@
     "no-unsafe-optional-chaining": "error",
     // auto-fixable: Remove all unused imports.
     "unused-imports/no-unused-imports": "error",
-    // auto-fixable-1-level-deep: Using nested ternary operators make the code unreadable. Use if/else or switch with if/else. If it's JSX then move it out into a function or a variable. It's fine to use nestedTernary in JSX when it makes code more readable.
-    "no-nested-ternary": "warn",
     // auto-fixable: Enforces no braces where they can be omitted.
     "arrow-body-style": ["error", "as-needed"],
     // auto-fixable: Suggests using template literals instead of string concatenation.

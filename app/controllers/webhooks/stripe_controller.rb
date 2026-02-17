@@ -15,7 +15,7 @@ class Webhooks::StripeController < ApplicationController
     if stripe_event_service.status
       render json: stripe_event_service.json, status: stripe_event_service.status
     else
-      render json: {}, status: :ok
+      render json: {}, status: 200
     end
   end
 end

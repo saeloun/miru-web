@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import React from "react";
 
 import { Button, BUTTON_STYLES } from "StyledComponents";
@@ -17,7 +16,7 @@ const SelectProject = ({
   newRowView,
   setNewRowView,
   handleEditEntries,
-  isWeeklyEditing, // eslint-disable-line
+  isWeeklyEditing,
   setIsWeeklyEditing,
 }: Iprops) => {
   const handleCancelButton = () => {

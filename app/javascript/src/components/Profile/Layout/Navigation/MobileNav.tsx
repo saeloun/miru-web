@@ -1,13 +1,10 @@
-/* eslint-disable no-unused-vars */
-
 import React, { Fragment, useEffect, useState } from "react";
 
-import { Outlet, useNavigate } from "react-router-dom";
-
-import WorkspaceApi from "apis/workspaces";
+import { WorkspaceApi } from "apis/api";
 import Loader from "common/Loader/index";
 import withLayout from "common/Mobile/HOC/withLayout";
 import { useUserContext } from "context/UserContext";
+import { Outlet, useNavigate } from "react-router-dom";
 
 import List from "./List";
 import UserInformation from "./UserInformation";

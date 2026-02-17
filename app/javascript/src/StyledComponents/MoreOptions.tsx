@@ -8,7 +8,7 @@ const DEFAULT_STYLE =
 type MoreOptionsProps = {
   children?: any;
   className?: string;
-  setVisibilty;
+  setVisibilty: (visible: boolean) => void;
 };
 
 const MoreOptions = ({
@@ -16,7 +16,7 @@ const MoreOptions = ({
   className,
   setVisibilty,
 }: MoreOptionsProps) => {
-  const wrapperRef = useRef();
+  const wrapperRef = useRef<HTMLUListElement>(null);
   useOutsideClick(wrapperRef, () => setVisibilty(false));
 
   return (

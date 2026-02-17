@@ -1,20 +1,19 @@
-/* eslint-disable no-unused-vars */
 import React, { Fragment, useEffect, useRef, useState } from "react";
 
-import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc";
-import { useOutsideClick } from "helpers";
-import { useNavigate, useParams } from "react-router-dom";
-import * as Yup from "yup";
-
-import teamsApi from "apis/teams";
+import { teamsApi } from "apis/api";
 import Loader from "common/Loader/index";
 import { MobileDetailsHeader } from "common/Mobile/MobileDetailsHeader";
 import EditHeader from "components/Profile/Common/EditHeader";
 import { employmentSchema } from "components/Profile/Schema/employmentSchema";
 import { useProfileContext } from "context/Profile/ProfileContext";
 import { useUserContext } from "context/UserContext";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import { useOutsideClick } from "helpers";
 import { employmentMapper } from "mapper/teams.mapper";
+import { useNavigate, useParams } from "react-router-dom";
+import * as Yup from "yup";
+import { useCurrentUser } from "~/hooks/useCurrentUser";
 
 import MobileEditPage from "./MobileEditPage";
 import StaticPage from "./StaticPage";
@@ -36,12 +35,12 @@ const EmploymentDetailsEdit = () => {
     company_name_err: "",
     role_err: "",
   };
-  const { user } = useUserContext();
+  const { user, isDesktop } = useUserContext();
+  const { currentUser } = useCurrentUser();
   const { updateDetails, employmentDetails, isCalledFromSettings } =
     useProfileContext();
   const navigate = useNavigate();
   const { memberId } = useParams();
-  const { isDesktop } = useUserContext();
 
   const DOJRef = useRef(null);
   const DORRef = useRef(null);
@@ -66,49 +65,69 @@ const EmploymentDetailsEdit = () => {
   const [dateFormat, setDateFormat] = useState("DD-MM-YYYY");
   const [resignedAt, setResignedAt] = useState(null);
   const [joinedAt, setJoinedAt] = useState(null);
+  const [currentUserId, setCurrentUserId] = useState(null);
 
-  const currentUserId = isCalledFromSettings ? user.id : memberId;
+  // Effect to determine current user ID
+  useEffect(() => {
+    if (isCalledFromSettings) {
+      // Use fresh user data from _me endpoint for settings
+      if (currentUser) {
+        setCurrentUserId(currentUser.id);
+      }
+    } else {
+      // Use memberId for team view
+      setCurrentUserId(memberId);
+    }
+  }, [isCalledFromSettings, currentUser, memberId]);
 
   const navigateToPath = isCalledFromSettings
     ? "/settings"
-    : `/team/${memberId}`;
+    : `/team/${currentUserId || memberId}`;
 
   useOutsideClick(DOJRef, () => setShowDOJDatePicker({ visibility: false }));
   useOutsideClick(DORRef, () => setShowDORDatePicker({ visibility: false }));
 
   const getDetails = async () => {
-    const curr: any = await teamsApi.getEmploymentDetails(currentUserId);
-    const prev: any = await teamsApi.getPreviousEmployments(currentUserId);
-    setDateFormat(curr.data.date_format);
-    setJoinedAt(curr.data.employment.joined_at);
-    setResignedAt(curr.data.employment.resigned_at);
-    const employmentData = employmentMapper(
-      curr.data.employment,
-      prev.data.previous_employments
-    );
-    if (employmentData.current_employment?.employment_type?.length > 0) {
-      setEmployeeType(
-        employeeTypes.find(
-          item =>
-            item.value === employmentData.current_employment.employment_type
-        )
+    if (!currentUserId) return;
+
+    try {
+      const curr: any = await teamsApi.getEmploymentDetails(currentUserId);
+      const prev: any = await teamsApi.getPreviousEmployments(currentUserId);
+      setDateFormat(curr.data.date_format);
+      setJoinedAt(curr.data.employment.joined_at);
+      setResignedAt(curr.data.employment.resigned_at);
+      const employmentData = employmentMapper(
+        curr.data.employment,
+        prev.data.previous_employments
       );
-    } else {
-      setEmployeeType(employeeTypes[0]);
-      employmentData.current_employment.employment_type =
-        employeeTypes[0].value;
-    }
-    updateDetails("employmentDetails", employmentData);
-    if (employmentData.previous_employments?.length > 0) {
-      setPreviousEmployments(employmentData.previous_employments);
+      if (employmentData.current_employment?.employment_type?.length > 0) {
+        setEmployeeType(
+          employeeTypes.find(
+            item =>
+              item.value === employmentData.current_employment.employment_type
+          )
+        );
+      } else {
+        setEmployeeType(employeeTypes[0]);
+        employmentData.current_employment.employment_type =
+          employeeTypes[0].value;
+      }
+      updateDetails("employmentDetails", employmentData);
+      if (employmentData.previous_employments?.length > 0) {
+        setPreviousEmployments(employmentData.previous_employments);
+      }
+    } catch (error) {
+      console.error("Failed to fetch employment details:", error);
     }
     setIsLoading(false);
   };
 
   useEffect(() => {
-    setIsLoading(true);
-    getDetails();
-  }, []);
+    if (currentUserId) {
+      setIsLoading(true);
+      getDetails();
+    }
+  }, [currentUserId]);
 
   const handleOnChangeEmployeeType = empType => {
     setEmployeeType(empType);

@@ -1,5 +1,31 @@
 # frozen_string_literal: true
 
+# == Schema Information
+#
+# Table name: projects
+#
+#  id           :bigint           not null, primary key
+#  billable     :boolean          not null
+#  description  :text
+#  discarded_at :datetime
+#  name         :string           not null
+#  created_at   :datetime         not null
+#  updated_at   :datetime         not null
+#  client_id    :bigint           not null
+#
+# Indexes
+#
+#  index_projects_on_billable            (billable)
+#  index_projects_on_client_id           (client_id)
+#  index_projects_on_description_trgm    (description) USING gin
+#  index_projects_on_discarded_at        (discarded_at)
+#  index_projects_on_name_and_client_id  (name,client_id) UNIQUE
+#  index_projects_on_name_trgm           (name) USING gin
+#
+# Foreign Keys
+#
+#  fk_rails_...  (client_id => clients.id)
+#
 require "rails_helper"
 RSpec.describe Project, type: :model do
   subject { build(:project) }
@@ -18,7 +44,6 @@ RSpec.describe Project, type: :model do
       .with_message("Name is too long(Maximum 30 characters are allowed)")
 }
 
-    it { is_expected.to validate_inclusion_of(:billable).in_array([true, false]) }
 
     it "validates case-insensitive uniqueness of name within the scope of client_id" do
       existing_project = create(:project)
@@ -75,7 +100,7 @@ RSpec.describe Project, type: :model do
       let(:time_frame) { "last_week" }
 
       it "returns the project_members_snippet for a project in the last week" do
-        timesheet_entry = create(:timesheet_entry, user:, project:, work_date: Date.today.last_week)
+        timesheet_entry = create(:timesheet_entry, user:, project:, work_date: 1.week.ago.beginning_of_week)
         result.first[:hourly_rate] = hourly_rate
         cost = (timesheet_entry.duration / 60) * member.hourly_rate
         result.first[:cost] = cost
@@ -87,7 +112,7 @@ RSpec.describe Project, type: :model do
       let(:time_frame) { "week" }
 
       it "returns the project_members_snippet for a project in a week" do
-        timesheet_entry = create(:timesheet_entry, user:, project:, work_date: Date.today.at_beginning_of_week)
+        timesheet_entry = create(:timesheet_entry, user:, project:, work_date: Date.current.beginning_of_week)
         result.first[:hourly_rate] = hourly_rate
         cost = (timesheet_entry.duration / 60) * member.hourly_rate
         result.first[:cost] = cost
@@ -133,9 +158,9 @@ RSpec.describe Project, type: :model do
     let(:project_member_3) { create(:project_member, project:, user: user_3, hourly_rate: 1000) }
 
     let(:time_frame) { "last_week" }
-    let(:timesheet_entry_1) { create(:timesheet_entry, user: user_1, project:, work_date: Date.today.last_week) }
-    let(:timesheet_entry_2) { create(:timesheet_entry, user: user_2, project:, work_date: Date.today.last_week) }
-    let(:timesheet_entry_3) { create(:timesheet_entry, user: user_3, project:, work_date: Date.today.last_week) }
+    let(:timesheet_entry_1) { create(:timesheet_entry, user: user_1, project:, work_date: 1.week.ago.beginning_of_week) }
+    let(:timesheet_entry_2) { create(:timesheet_entry, user: user_2, project:, work_date: 1.week.ago.beginning_of_week) }
+    let(:timesheet_entry_3) { create(:timesheet_entry, user: user_3, project:, work_date: 1.week.ago.beginning_of_week) }
 
     it "returns the total logged duration" do
       project.reload

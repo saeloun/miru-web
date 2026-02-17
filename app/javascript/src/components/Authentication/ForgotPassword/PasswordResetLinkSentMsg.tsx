@@ -1,10 +1,10 @@
+import { MIRU_APP_URL } from "constants/index";
+
 import React from "react";
 
-import { MiruLogoSVG } from "miruIcons";
-
-import authenticationApi from "apis/authentication";
+import { authenticationApi } from "apis/api";
 import MiruLogoWatermark from "common/MiruLogoWatermark";
-import { MIRU_APP_URL } from "constants/index";
+import { MiruLogoSVG } from "miruIcons";
 
 interface Props {
   email: string;

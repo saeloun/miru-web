@@ -18,9 +18,10 @@
 #
 # Indexes
 #
-#  index_employments_on_company_id    (company_id)
-#  index_employments_on_discarded_at  (discarded_at)
-#  index_employments_on_user_id       (user_id)
+#  index_employments_on_company_id                   (company_id)
+#  index_employments_on_company_id_and_discarded_at  (company_id,discarded_at)
+#  index_employments_on_discarded_at                 (discarded_at)
+#  index_employments_on_user_id                      (user_id)
 #
 # Foreign Keys
 #
@@ -38,7 +39,7 @@ class Employment < ApplicationRecord
   # Validations
   validates :designation, :employment_type, :joined_at, :employee_id, presence: true, on: :update
   validates :resigned_at, comparison: { greater_than: :joined_at }, unless: -> { resigned_at.nil? }
-  validates :joined_at, comparison: { less_than_or_equal_to: Date.current, message: "date must be in past" },
+  validates :joined_at, comparison: { less_than_or_equal_to: -> { Date.current }, message: "date must be in past" },
     on: :update
   # Callbacks
   before_destroy :remove_user_invitations

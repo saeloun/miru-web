@@ -13,7 +13,7 @@ const AddManualEntryScreen = ({
   setShowManualEntryModal,
 }) => (
   <section>
-    <div className="relative mb-6 w-full bg-miru-han-purple-1000 py-3 text-center font-manrope font-medium capitalize">
+    <div className="relative mb-6 w-full bg-miru-han-purple-1000 py-3 text-center font-sans font-medium capitalize">
       <h1 className="text-miru-white-1000">Add Payment</h1>
       <button
         className="modal__button absolute top-1/5 right-0"

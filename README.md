@@ -39,15 +39,12 @@ organizations to help them streamline their workflow.
 
 - 💳 **Integration with Payment Gateways**: Seamlessly connect with STRIPE for quick and secure payments. Accept payments directly through Miru.so to streamline invoicing and payment processing.
 
-## Upcoming Features
+## Branch Highlights (miru-2-0-upgrade)
 
-- 💰 **Expense Tracking**: Keep track of project-related expenses and allocate them to clients or projects. Capture receipts and attach them to expense entries for documentation. Include expenses in invoices for transparent billing.
-
-- 🌐 **Multi-Platform Accessibility**: Access Miru.so from web browsers, desktop applications, and mobile devices. Synchronize data across platforms for flexibility and convenience.
-
-- 🏖️ **PTO Module**: A comprehensive leave management module.
-
-- 📅 **Google Integration**: Integration to track and add meetings directly.
+- Rails 8 + Ruby 3.4.5 upgrade
+- Modernized React + TypeScript frontend and UI
+- Playwright-based E2E test suite
+- Kamal + Docker deployment workflow improvements
 
 ## Documentation
 
@@ -55,7 +52,7 @@ For detailed information on how to use Miru Web and its various features, please
 
 [Official Documentation](https://docs.miru.so)
 
-The documentation covers everything from installation and setup to advanced usage and troubleshooting. It's the best resource for getting started with Miru Web.
+For local development on this branch, see CLAUDE.md and docs under `docs/`.
 
 ## Community Support
 
@@ -81,8 +78,8 @@ Thanks goes to all our contributors
 
 <a href="https://github.com/saeloun/miru-web/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=saeloun/miru-web" />
-</a>
+  </a>
 
 ## License
 
-_Miru_ &copy; 2023, Saeloun - Released under the [MIT License](LICENSE).
+_Miru_ © 2023, Saeloun - Released under the [MIT License](LICENSE).

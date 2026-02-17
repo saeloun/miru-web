@@ -1,12 +1,11 @@
-/* eslint-disable no-unused-vars */
+import { ApiStatus as InvoiceStatus } from "constants/index";
+
 import React, { useEffect, useState } from "react";
 
 import cn from "classnames";
 import { XIcon } from "miruIcons";
 import { useNavigate } from "react-router-dom";
 import { Button, Modal } from "StyledComponents";
-
-import { ApiStatus as InvoiceStatus } from "constants/index";
 
 import Recipient from "./Recipient";
 import { emailSubject, emailBody, isDisabled, buttonText } from "./utils";
@@ -39,7 +38,9 @@ const SendInvoice = ({
 
   useEffect(() => {
     setTimeout(() => {
-      status === InvoiceStatus.SUCCESS && navigate("/invoices");
+      if (status === InvoiceStatus.SUCCESS) {
+        navigate("/invoices");
+      }
     }, 5000);
   }, [status]);
 
@@ -79,7 +80,7 @@ const SendInvoice = ({
           </button>
         </div>
         {!invoiceEmail?.recipients?.length && (
-          <div className="mb-6 w-full items-center justify-center rounded bg-miru-alert-pink-400 p-2 text-center font-manrope text-xs tracking-xs-widest text-miru-alert-red-1000">
+          <div className="mb-6 w-full items-center justify-center rounded bg-miru-alert-pink-400 p-2 text-center font-sans text-xs tracking-xs-widest text-miru-alert-red-1000">
             <p>Please add email from client settings page</p>
           </div>
         )}

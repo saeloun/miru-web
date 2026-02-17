@@ -3,10 +3,11 @@ import React, { useState } from "react";
 import Steps from "rc-steps";
 import "rc-steps/assets/index.css";
 import { useNavigate } from "react-router-dom";
-
-import companiesApi from "apis/companies";
+import { companiesApi } from "apis/api";
 import MiruLogoWatermark from "common/MiruLogoWatermark";
+
 import { Paths } from "constants/index";
+
 import { useUserContext } from "context/UserContext";
 
 import CompanyDetailsForm from "./CompanyDetailsForm";
@@ -146,11 +147,11 @@ const OrganizationSetup = () => {
     >
       <div className="org-setup-form-wrapper mx-auto h-full md:w-1/2 lg:w-352">
         {isDesktop ? (
-          <h1 className="text-center font-manrope text-4.75xl font-extrabold not-italic text-miru-han-purple-1000">
+          <h1 className="text-center font-sans text-4.75xl font-bold not-italic text-miru-han-purple-1000">
             Setup Org
           </h1>
         ) : (
-          <div className="w-full text-center font-manrope text-2xl font-extrabold not-italic text-miru-han-purple-1000">
+          <div className="w-full text-center font-sans text-2xl font-bold not-italic text-miru-han-purple-1000">
             {" "}
             Setup Org
           </div>

@@ -7,14 +7,14 @@ import "react-tooltip/dist/react-tooltip.css";
 import { IChartBarGraph, ISingleClient } from "./interface";
 
 const Client = ({ element, totalMinutes, index }: ISingleClient) => {
-  const chartColor = [
-    "miru-chart-green",
-    "miru-chart-blue",
-    "miru-chart-pink",
-    "miru-chart-orange",
+  const chartColors = [
+    "bg-miru-chart-green-600",
+    "bg-miru-chart-blue-600",
+    "bg-miru-chart-pink-600",
+    "bg-miru-chart-orange-600",
   ];
   const chartColorIndex = index % 4;
-  const randomColor = chartColor[chartColorIndex];
+  const colorClass = chartColors[chartColorIndex];
   const hourPercentage = (element.minutes * 100) / totalMinutes;
   const finalHourPercentage =
     hourPercentage > 1 ? hourPercentage : Math.ceil(hourPercentage);
@@ -35,7 +35,7 @@ const Client = ({ element, totalMinutes, index }: ISingleClient) => {
       </Tooltip>
       <button
         data-tip
-        className={`bg-${randomColor}-600 block h-4 w-full border-b border-t hover:border-transparent`}
+        className={`${colorClass} block h-4 w-full border-b border-t hover:border-transparent`}
         id={`registerTip-${index}`}
         type="button"
       />
@@ -50,7 +50,7 @@ const GetClientBar = ({ data, totalMinutes }: IChartBarGraph) => {
   return (
     <section>
       <div className="hidden md:block">
-        <p className="mb-3 text-tiny tracking-widest text-miru-dark-purple-600">
+        <p className="mb-3 text-tiny tracking-wider text-miru-dark-purple-600">
           TOTAL HOURS:{" "}
           <span className="font-medium">{minToHHMM(totalMinutes)}</span>
         </p>
@@ -68,7 +68,7 @@ const GetClientBar = ({ data, totalMinutes }: IChartBarGraph) => {
             }
           })}
         </div>
-        <div className="mt-3 flex justify-between pb-6 text-tiny tracking-widest text-miru-dark-purple-400">
+        <div className="mt-3 flex justify-between pb-6 text-tiny tracking-wider text-miru-dark-purple-400">
           <span>0</span>
           <span>{minToHHMM(totalMinutes)}</span>
         </div>

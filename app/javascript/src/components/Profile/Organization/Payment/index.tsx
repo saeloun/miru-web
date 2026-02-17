@@ -1,17 +1,13 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
+import { ApiStatus as PaymentSettingsStatus } from "constants/index";
+
 import React, { useState, useEffect } from "react";
 
-import { useNavigate } from "react-router-dom";
-
-import paymentSettings from "apis/payment-settings";
-import { ApiStatus as PaymentSettingsStatus } from "constants/index";
+import { paymentSettings } from "apis/api";
 import { useUserContext } from "context/UserContext";
+import { useNavigate } from "react-router-dom";
 import { sendGAPageView } from "utils/googleAnalytics";
 
-import MobileView from "./MobileView";
-import StaticPage from "./StaticPage";
-
-import DisconnectPayment from "../Popups/DisconnectPayment";
+import ModernPaymentSettings from "./ModernPaymentSettings";
 
 const PaymentSettings = () => {
   const [status, setStatus] = React.useState<PaymentSettingsStatus>(
@@ -19,7 +15,7 @@ const PaymentSettings = () => {
   );
   const navigate = useNavigate();
   const { isDesktop } = useUserContext();
-  const [accountLink, setAccountLink] = useState<string>(null);
+  const [accountLink, setAccountLink] = useState<string>("");
   const [isStripeConnected, setIsStripeConnected] = useState<boolean>(null);
   const [showDisconnectDialog, setShowDisconnectDialog] =
     useState<boolean>(false);
@@ -56,34 +52,7 @@ const PaymentSettings = () => {
     navigate(isDesktop ? "/settings/profile" : "/settings", { replace: true });
   };
 
-  return (
-    <div className="flex w-full flex-col">
-      {isDesktop ? (
-        <StaticPage
-          connectStripe={connectStripe}
-          isStripeConnected={isStripeConnected}
-          setShowDisconnectDialog={setShowDisconnectDialog}
-          status={status}
-        />
-      ) : (
-        <MobileView
-          connectStripe={connectStripe}
-          isStripeConnected={isStripeConnected}
-          setShowDisconnectDialog={setShowDisconnectDialog}
-          status={status}
-          title="Payment Settings"
-          onBackArrowClick={handleBackBtnClick}
-        />
-      )}
-      {showDisconnectDialog && (
-        <DisconnectPayment
-          fetchPaymentSettings={fetchPaymentSettings}
-          setShowDisconnectDialog={setShowDisconnectDialog}
-          showDisconnectDialog={showDisconnectDialog}
-        />
-      )}
-    </div>
-  );
+  return <ModernPaymentSettings onBack={handleBackBtnClick} />;
 };
 
 export default PaymentSettings;

@@ -44,7 +44,7 @@ const InvoiceInfo = ({ invoice, company, strikeAmount = "" }) => {
           Amount
         </p>
         <p
-          className={`mt-6 text-4xl font-normal text-miru-dark-purple-1000 ${strikeAmount}`}
+          className={`mt-6 text-2xl font-normal tracking-tight text-miru-dark-purple-1000 ${strikeAmount}`}
         >
           {currencyFormat(currency, amount)}
         </p>

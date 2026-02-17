@@ -1,16 +1,20 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 import React, { useEffect, useState } from "react";
 
+import { clientApi } from "apis/api";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../ui/select";
+import { InputErrors, InputField } from "common/FormikFields";
 import { Form, Formik, FormikProps } from "formik";
 import { XIcon } from "miruIcons";
 import PhoneInput from "react-phone-number-input";
 import flags from "react-phone-number-input/flags";
 import { Button, SidePanel, Toastr } from "StyledComponents";
 import worldCountries from "world-countries";
-
-import clientApi from "apis/clients";
-import CustomReactSelect from "common/CustomReactSelect";
-import { InputErrors, InputField } from "common/FormikFields";
 
 import { clientSchema, getInitialvalues } from "./formValidationSchema";
 import UploadLogo from "./UploadLogo";
@@ -206,19 +210,45 @@ const MobileClientForm = ({
                 </div>
                 <div className="mb-5 flex flex-row">
                   <div className="flex w-1/2 flex-col py-0 pr-2">
-                    <CustomReactSelect
-                      isErr={!!errors.country && touched.country}
-                      label="Country"
-                      name="country"
-                      options={countries}
-                      value={values.country.value ? values.country : null}
-                      handleOnChange={e => {
-                        setFieldValue("country", e);
-                        setFieldValue("state", "");
-                        setFieldValue("city", "");
-                        setFieldValue("zipcode", "");
-                      }}
-                    />
+                    <div className="field relative">
+                      <label className="absolute -top-1 left-0 z-1 ml-3 origin-0 bg-white px-1 text-xsm font-medium text-miru-dark-purple-200 duration-300">
+                        Country
+                      </label>
+                      <Select
+                        value={values.country?.value || ""}
+                        onValueChange={value => {
+                          const selectedCountry = countries.find(
+                            c => c.value === value
+                          );
+                          if (selectedCountry) {
+                            setFieldValue("country", selectedCountry);
+                            setFieldValue("state", "");
+                            setFieldValue("city", "");
+                            setFieldValue("zipcode", "");
+                          }
+                        }}
+                      >
+                        <SelectTrigger
+                          className={`h-12 ${
+                            errors.country && touched.country
+                              ? "border-red-500"
+                              : ""
+                          }`}
+                        >
+                          <SelectValue placeholder="Select country" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {countries.map(country => (
+                            <SelectItem
+                              key={country.value}
+                              value={country.value}
+                            >
+                              {country.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
                   </div>
                   <div className="flex w-1/2 flex-col pl-2">
                     <InputField
@@ -265,16 +295,40 @@ const MobileClientForm = ({
                 </div>
                 <div className="mt-4">
                   <div className="field relative mb-5">
-                    <CustomReactSelect
-                      isErr={!!errors.currency && touched.currency}
-                      label="Currency"
-                      name="currency"
-                      options={currencyListOptions}
-                      value={values.currency ? values.currency : null}
-                      handleOnChange={e => {
-                        setFieldValue("currency", e);
+                    <label className="absolute -top-1 left-0 z-1 ml-3 origin-0 bg-white px-1 text-xsm font-medium text-miru-dark-purple-200 duration-300">
+                      Currency
+                    </label>
+                    <Select
+                      value={values.currency?.value || ""}
+                      onValueChange={value => {
+                        const selectedCurrency = currencyListOptions.find(
+                          c => c.value === value
+                        );
+                        if (selectedCurrency) {
+                          setFieldValue("currency", selectedCurrency);
+                        }
                       }}
-                    />
+                    >
+                      <SelectTrigger
+                        className={`h-12 ${
+                          errors.currency && touched.currency
+                            ? "border-red-500"
+                            : ""
+                        }`}
+                      >
+                        <SelectValue placeholder="Select currency" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {currencyListOptions.map(currency => (
+                          <SelectItem
+                            key={currency.value}
+                            value={currency.value}
+                          >
+                            {currency.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
                 <div className="actions mt-auto">

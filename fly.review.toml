@@ -1,0 +1,64 @@
+# Review app configuration for Fly.io
+app = "miru-review-miru-2-0-upgrade"
+primary_region = "iad"
+kill_signal = "SIGTERM"
+kill_timeout = 5
+
+[build]
+  dockerfile = "Dockerfile"
+  [build.args]
+    RUBY_VERSION = "3.4.5"
+    BUNDLER_VERSION = "2.5.21"
+    NODE_VERSION = "20"
+
+[deploy]
+  release_command = "bin/rails db:prepare && bin/rails data:migrate"
+
+[env]
+  PORT = "3000"
+  RAILS_ENV = "production"
+  RAILS_SERVE_STATIC_FILES = "true"
+  RAILS_LOG_TO_STDOUT = "true"
+  REDIS_URL = "redis://default:${FLY_REDIS_PASSWORD}@fly-miru-review-redis.internal:6379"
+  DATABASE_URL = "postgres://miru_review:${POSTGRES_PASSWORD}@miru-review-db.internal:5432/miru_review_${FLY_APP_NAME}"
+  
+  # Miru specific
+  ENABLE_INVOICE_DOWNLOAD = "true"
+  GOOGLE_OAUTH_ENABLED = "false"
+  PUPPETEER_SKIP_DOWNLOAD = "true"
+  
+  # Review app settings
+  IS_REVIEW_APP = "true"
+  REVIEW_APP_BRANCH = "miru-2-0-upgrade"
+
+[[services]]
+  internal_port = 3000
+  protocol = "tcp"
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 1
+
+  [[services.ports]]
+    port = 80
+    handlers = ["http"]
+    force_https = true
+
+  [[services.ports]]
+    port = 443
+    handlers = ["tls", "http"]
+
+  [[services.http_checks]]
+    interval = "30s"
+    timeout = "5s"
+    grace_period = "10s"
+    method = "GET"
+    path = "/health"
+
+[[vm]]
+  cpu_kind = "shared"
+  cpus = 1
+  memory_mb = 512
+
+[processes]
+  web = "bin/rails server"
+  worker = "bundle exec rake solid_queue:start"

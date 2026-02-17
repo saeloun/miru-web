@@ -7,8 +7,10 @@ title: Docker
 
 Make sure you have Docker installed on your system.
 If not please follow [this](https://docs.docker.com/get-docker/) guide.
-Also, don't forget to stop your local running services like postgres, redis and elasticsearch while you're using docker to run your app.
-This will prevent you from port binding conflicts which might already be taken by your local running services.
+
+**Note:** This app uses Rails 8.0.2 with Ruby 3.4.5 and Node 22.11.0. The Docker setup includes PostgreSQL for the database and Solid Queue for background jobs.
+
+Make sure to stop your local PostgreSQL service while using Docker to avoid port conflicts.
 ## Installation
 
 #### 1. [Fork repository](https://github.com/saeloun/miru-web/fork) to your account
@@ -32,8 +34,8 @@ $ cd miru-web/
 $ docker compose up
 ```
 
-Wait for the Docker to build the image defined in `Dockerfile.local` and up your containers for defined services in `docker-compose.yml`.
-Once the database and redis service are up, Webpacker will compile the assets, and you will see your rails server running with elasticsearch and sidekiq.
+Wait for Docker to build the image defined in `Dockerfile.local` and start your containers for defined services in `docker-compose.yml`.
+Once the database service is up, Vite will compile the assets, and you will see your Rails server running with Solid Queue (database-based background job processor).
 
 #### 5. Setup database
 
@@ -54,6 +56,15 @@ Note that `db:reset` and `db:setup` both will work here.
 This will setup your database with seed data.
 
 #### 6. Navigate to [http://0.0.0.0:3000](http://0.0.0.0:3000) to access your running app.
+
+### Rails 8.0.2 Features
+
+This app is built on Rails 8.0.2 with the following modern features:
+- **Solid Queue** for background job processing (database-based, no external dependencies)
+- **Vite** for asset bundling and dev server
+- **Hotwire** (Turbo + Stimulus) for interactive UI
+- **PostgreSQL** with strong migrations for safe schema changes
+- **pnpm** for faster JavaScript package management
 
 #### 7. To run rails console
 

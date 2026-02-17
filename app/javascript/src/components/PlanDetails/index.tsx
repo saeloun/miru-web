@@ -25,7 +25,7 @@ const PlanDetails = () => {
   };
 
   return (
-    <div className="modal__modal main-modal bg-miru-dark-purple-1000 font-manrope">
+    <div className="modal__modal main-modal bg-miru-dark-purple-1000 font-sans">
       <div className="modal__container modal-container  w-96">
         <div className="modal__content modal-content">
           <div className="modal__position">
@@ -129,7 +129,7 @@ const PlanDetails = () => {
             </div>
             <div className="actions">
               <button
-                className="focus:outline-none flex h-10 w-full cursor-pointer justify-center rounded border border-transparent bg-miru-han-purple-1000 py-2 px-4 font-manrope text-base font-bold tracking-widest text-miru-white-1000 shadow-sm hover:bg-miru-han-purple-600"
+                className="focus:outline-none flex h-10 w-full cursor-pointer justify-center rounded border border-transparent bg-miru-han-purple-1000 py-2 px-4 font-sans text-base font-bold tracking-wider text-miru-white-1000 shadow-sm hover:bg-miru-han-purple-600"
                 type="submit"
               >
                 REVIEW AND PAY

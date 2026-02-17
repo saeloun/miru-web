@@ -2,19 +2,20 @@ import React from "react";
 
 import { currencyFormat } from "helpers";
 import { Badge, Button } from "StyledComponents";
-
 import getStatusCssClass from "utils/getBadgeStatus";
 
 const MobileInvoiceRow = ({ invoice, isLast }) => {
   const {
     amount,
-    currency,
+    company,
     dueDate,
     invoiceNumber,
     issueDate,
     status,
     externalViewKey,
   } = invoice;
+
+  const { baseCurrency } = company;
 
   return (
     <div
@@ -36,7 +37,7 @@ const MobileInvoiceRow = ({ invoice, isLast }) => {
       </div>
       <div>
         <span>AMOUNT</span>
-        <div>{currencyFormat(currency, amount)}</div>
+        <div>{currencyFormat(baseCurrency, amount)}</div>
       </div>
       <div>
         <span>STATUS</span>

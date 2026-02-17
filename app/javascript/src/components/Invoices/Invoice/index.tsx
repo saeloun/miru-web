@@ -1,15 +1,14 @@
+import { ApiStatus as InvoiceStatus } from "constants/index";
+
 import React, { useEffect, useState } from "react";
 
+import { invoicesApi, PaymentsProviders } from "apis/api";
+import Loader from "common/Loader/index";
+import SendInvoice from "components/Invoices/common/InvoiceForm/SendInvoice";
+import { useUserContext } from "context/UserContext";
 import { ArrowLeftIcon } from "miruIcons";
 import { useParams } from "react-router-dom";
 import { Button, Toastr } from "StyledComponents";
-
-import invoicesApi from "apis/invoices";
-import PaymentsProviders from "apis/payments/providers";
-import Loader from "common/Loader/index";
-import SendInvoice from "components/Invoices/common/InvoiceForm/SendInvoice";
-import { ApiStatus as InvoiceStatus } from "constants/index";
-import { useUserContext } from "context/UserContext";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import Header from "./Header";
@@ -45,7 +44,7 @@ const Invoice = () => {
   const fetchInvoice = async () => {
     try {
       setStatus(InvoiceStatus.LOADING);
-      const res = await invoicesApi.getInvoice(params.id);
+      const res = await invoicesApi.getInvoice(params.invoiceId);
       setInvoice(res.data);
       setStatus(InvoiceStatus.SUCCESS);
     } catch {
@@ -103,7 +102,6 @@ const Invoice = () => {
 
   return (
     status === InvoiceStatus.SUCCESS &&
-    // eslint-disable-next-line no-nested-ternary
     (isDesktop ? (
       <>
         <Header

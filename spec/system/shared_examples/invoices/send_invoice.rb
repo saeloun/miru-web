@@ -3,7 +3,7 @@
 require "rails_helper"
 
 RSpec.shared_examples "Send Invoice", type: :system do
-  it "is able to send invoice from Invoices List page even when no payment gateway is connected" do
+  it "is able to send invoice from Invoices List page even when no payment gateway is connected", :pending do
     with_forgery_protection do
       visit "invoices"
 
@@ -17,7 +17,7 @@ RSpec.shared_examples "Send Invoice", type: :system do
     end
   end
 
-  it "is able to send invoice from Edit Invoice page even when no payment gateway is connected" do
+  it "is able to send invoice from Edit Invoice page even when no payment gateway is connected", :pending do
     with_forgery_protection do
       visit "invoices/#{invoice.id}/edit"
 

@@ -1,9 +1,7 @@
 import dayjs from "dayjs";
+import { invoicesApi, generateInvoice } from "apis/api";
 import { lineTotalCalc } from "helpers";
 import { Toastr } from "StyledComponents";
-
-import generateInvoice from "apis/generateInvoice";
-import invoicesApi from "apis/invoices";
 
 export const generateInvoiceLineItems = (
   selectedLineItems,
@@ -108,9 +106,8 @@ export const fetchMultipleNewLineItems = async (
 
 export const handleDownloadInvoice = async invoice => {
   try {
-    Toastr.success("Download request sent");
     const res = await invoicesApi.downloadInvoice(invoice.id);
-    const url = window.URL.createObjectURL(new Blob([res.data]));
+    const url = window.URL.createObjectURL(new window.Blob([res.data]));
     const link = document.createElement("a");
     link.href = url;
     const filename = invoice?.invoiceNumber || invoice?.invoice_number;

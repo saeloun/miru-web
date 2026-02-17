@@ -2,13 +2,13 @@
 
 require "rails_helper"
 
-RSpec.describe "Generate Invoice", type: :system do
+RSpec.describe "Generate Invoice", type: :system, js: true do
   let(:company) { create(:company, base_currency: "USD") }
   let(:admin) { create(:user, current_workspace_id: company.id) }
   let(:owner) { create(:user, current_workspace_id: company.id) }
   let(:employee) { create(:user, current_workspace_id: company.id) }
   let(:client) { create(:client, company:) }
-  let(:project) { create(:project, client:) }
+  let(:project) { create(:project, client:, billable: true) }
 
   before do
     create(:employment, company:, user: admin)

@@ -8,5 +8,5 @@ export default function useKeypress(key, action) {
     window.addEventListener("keydown", onKeyDown);
 
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, []);
+  }, [key, action]);
 }

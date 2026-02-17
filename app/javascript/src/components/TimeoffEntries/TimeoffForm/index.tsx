@@ -1,13 +1,12 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
+import { HOLIDAY_TYPES } from "constants/index";
+
 import React, { useState, useEffect } from "react";
 
-import dayjs from "dayjs";
-import { minFromHHMM, minToHHMM } from "helpers";
-
-import timeoffEntryApi from "apis/timeoff-entry";
-import { HOLIDAY_TYPES } from "constants/index";
+import { timeoffEntriesApi } from "apis/api";
 import { useTimesheetEntries } from "context/TimesheetEntries";
 import { useUserContext } from "context/UserContext";
+import dayjs from "dayjs";
+import { minFromHHMM, minToHHMM } from "helpers";
 
 import DesktopTimeoffForm from "./DesktopTimeoffForm";
 import MobileTimeoffForm from "./MobileTimeoffForm";
@@ -215,7 +214,7 @@ const TimeoffForm = ({ isDisplayEditTimeoffEntryForm = false }) => {
   const handleSaveTimeoffEntry = async () => {
     const payload = getPayload();
     if (payload) {
-      const res = await timeoffEntryApi.create(payload, selectedEmployeeId);
+      const res = await timeoffEntriesApi.create(payload, selectedEmployeeId);
 
       if (res.status === 200) {
         const fetchEntriesRes = await fetchEntries(selectedDate, selectedDate);
@@ -237,7 +236,7 @@ const TimeoffForm = ({ isDisplayEditTimeoffEntryForm = false }) => {
     const payload = getPayload();
 
     if (payload) {
-      const updateRes = await timeoffEntryApi.update(
+      const updateRes = await timeoffEntriesApi.update(
         editTimeoffEntryId,
         payload
       );
@@ -271,7 +270,7 @@ const TimeoffForm = ({ isDisplayEditTimeoffEntryForm = false }) => {
     if (!timeoffEntryId) return;
     setEditTimeoffEntryId(0);
     setNewTimeoffEntryView(false);
-    const res = await timeoffEntryApi.destroy(timeoffEntryId);
+    const res = await timeoffEntriesApi.destroy(timeoffEntryId);
 
     if (res.status === 200) {
       await handleFilterEntry(selectedFullDate, timeoffEntryId);
@@ -289,7 +288,7 @@ const TimeoffForm = ({ isDisplayEditTimeoffEntryForm = false }) => {
     if (timeoffEntry) {
       const payload = getPayload(timeoffEntry);
       if (payload) {
-        const res = await timeoffEntryApi.create(payload, selectedEmployeeId);
+        const res = await timeoffEntriesApi.create(payload, selectedEmployeeId);
         if (res.status === 200) {
           await fetchEntries(selectedFullDate, selectedFullDate);
           await fetchEntriesOfMonths();

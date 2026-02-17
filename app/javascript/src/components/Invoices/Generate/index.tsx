@@ -1,16 +1,14 @@
-import React, { Fragment, useCallback, useEffect, useState } from "react";
+import { ApiStatus as InvoiceStatus } from "constants/index";
 
+import React, { Fragment, useEffect, useState } from "react";
+
+import { companiesApi, invoicesApi, PaymentsProviders } from "apis/api";
+import Loader from "common/Loader/index";
+import { useUserContext } from "context/UserContext";
 import dayjs from "dayjs";
+import { mapGenerateInvoice, unmapGenerateInvoice } from "mapper/mappedIndex";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Toastr } from "StyledComponents";
-
-import companiesApi from "apis/companies";
-import invoicesApi from "apis/invoices";
-import PaymentsProviders from "apis/payments/providers";
-import Loader from "common/Loader/index";
-import { ApiStatus as InvoiceStatus } from "constants/index";
-import { useUserContext } from "context/UserContext";
-import { mapGenerateInvoice, unmapGenerateInvoice } from "mapper/mappedIndex";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import Container from "./Container";
@@ -31,7 +29,7 @@ const GenerateInvoices = () => {
   const [selectedClient, setSelectedClient] = useState<any>();
   const [invoiceNumber, setInvoiceNumber] = useState<any>("");
   const [clientCurrency, setClientCurrency] = useState<string>("USD");
-  const [baseCurrencyAmount, setBaseCurrencyAmount] = useState<any>(0);
+  const [baseCurrencyAmount, setBaseCurrencyAmount] = useState<any>(null);
   const [reference, setReference] = useState<string>("");
   const [amount, setAmount] = useState<any>(0);
   const [amountDue, setAmountDue] = useState<any>(0);
@@ -61,7 +59,7 @@ const GenerateInvoices = () => {
 
   const { isDesktop } = useUserContext();
 
-  const fetchCompanyDetails = useCallback(async () => {
+  const fetchCompanyDetails = async () => {
     // here we are fetching the company and client list
     try {
       setIsLoading(true);
@@ -69,11 +67,21 @@ const GenerateInvoices = () => {
       const sanitized = await unmapGenerateInvoice(res.data);
       setInvoiceDetails(sanitized);
       setIsLoading(false);
-    } catch {
-      navigate("invoices/error");
+    } catch (error) {
+      console.error("Error fetching company details:", error);
+      // Only navigate to error page if it's a network/server error
+      // Not if it's a data mapping issue we can fix
+      if (error?.response?.status >= 500) {
+        navigate("/invoices/error");
+      } else {
+        // Try to show a more specific error
+        Toastr.error(
+          "Failed to load invoice data. Please refresh and try again."
+        );
+      }
       setIsLoading(false);
     }
-  }, [navigate]);
+  };
 
   const fetchPaymentsProvidersSettings = async () => {
     try {
@@ -86,22 +94,22 @@ const GenerateInvoices = () => {
     }
   };
 
-  const setClientListIfClientIdPresent = useCallback(() => {
+  const setClientListIfClientIdPresent = () => {
     const client = invoiceDetails?.clientList?.find(
       client => client.value === parseInt(clientId)
     );
     if (client) setSelectedClient(client);
-  }, [invoiceDetails?.clientList, clientId]);
+  };
 
   useEffect(() => {
     sendGAPageView();
     fetchCompanyDetails();
     fetchPaymentsProvidersSettings();
-  }, [fetchCompanyDetails]);
+  }, []);
 
   useEffect(() => {
     if (clientId) setClientListIfClientIdPresent();
-  }, [clientId, invoiceDetails, setClientListIfClientIdPresent]);
+  }, [invoiceDetails]);
 
   const saveInvoice = async () => {
     const sanitized = mapGenerateInvoice({
@@ -113,7 +121,7 @@ const GenerateInvoices = () => {
       invoiceLineItems: generateInvoiceLineItems(
         selectedOption,
         manualEntryArr,
-        invoiceDetails.companyDetails.date_format
+        invoiceDetails.companyDetails.dateFormat
       ),
       amount,
       amountDue,
@@ -131,13 +139,17 @@ const GenerateInvoices = () => {
 
   const handleSendInvoice = () => {
     if (selectedClient && invoiceNumber !== "") {
-      isStripeConnected
-        ? setShowSendInvoiceModal(true)
-        : setShowConnectPaymentDialog(true);
+      if (isStripeConnected) {
+        setShowSendInvoiceModal(true);
+      } else {
+        setShowConnectPaymentDialog(true);
+      }
     } else {
-      selectedClient
-        ? Toastr.error(INVOICE_NUMBER_ERROR)
-        : Toastr.error(SELECT_CLIENT_ERROR);
+      if (selectedClient) {
+        Toastr.error(INVOICE_NUMBER_ERROR);
+      } else {
+        Toastr.error(SELECT_CLIENT_ERROR);
+      }
     }
   };
 
@@ -145,13 +157,6 @@ const GenerateInvoices = () => {
     if (selectedClient && invoiceNumber !== "") {
       const res = await saveInvoice();
       setInvoiceId(res?.data.id);
-      // Update baseCurrencyAmount from backend response
-      if (
-        res?.data?.baseCurrencyAmount !== undefined &&
-        res?.data?.baseCurrencyAmount !== null
-      ) {
-        setBaseCurrencyAmount(res.data.baseCurrencyAmount);
-      }
 
       return res;
     }
@@ -165,19 +170,14 @@ const GenerateInvoices = () => {
 
   const handleSaveInvoice = async () => {
     if (selectedClient && invoiceNumber !== "") {
-      const res = await saveInvoice();
-      // Update baseCurrencyAmount from backend response
-      if (
-        res?.data?.baseCurrencyAmount !== undefined &&
-        res?.data?.baseCurrencyAmount !== null
-      ) {
-        setBaseCurrencyAmount(res.data.baseCurrencyAmount);
-      }
+      await saveInvoice();
       navigate("/invoices");
     } else {
-      selectedClient
-        ? Toastr.error(INVOICE_NUMBER_ERROR)
-        : Toastr.error(SELECT_CLIENT_ERROR);
+      if (selectedClient) {
+        Toastr.error(INVOICE_NUMBER_ERROR);
+      } else {
+        Toastr.error(SELECT_CLIENT_ERROR);
+      }
     }
   };
 

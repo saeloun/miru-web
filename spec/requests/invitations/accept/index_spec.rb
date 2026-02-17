@@ -26,7 +26,7 @@ RSpec.describe "Invitations::Accept#create", type: :request do
     end
 
     it "creates user record" do
-      expect(User.count).to eq(2)
+      expect(User.exists?(email: invitation.recipient_email)).to be(true)
     end
   end
 

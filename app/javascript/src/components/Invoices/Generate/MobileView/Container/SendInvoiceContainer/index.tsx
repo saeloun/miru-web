@@ -6,7 +6,7 @@ import { XIcon } from "miruIcons";
 import { useNavigate } from "react-router-dom";
 import { Toastr } from "StyledComponents";
 
-import invoicesApi from "apis/invoices";
+import { invoicesApi } from "apis/api";
 import { CustomAdvanceInput } from "common/CustomAdvanceInput";
 import { CustomTextareaAutosize } from "common/CustomTextareaAutosize";
 import { InputErrors } from "common/FormikFields";
@@ -22,7 +22,7 @@ const SendInvoiceContainer = ({
   invoice,
   handleSaveSendInvoice,
   setIsSending,
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
+
   setIsSendReminder = _value => {},
   isSendReminder = false,
 }) => {
@@ -55,14 +55,11 @@ const SendInvoiceContainer = ({
     message: emailBody(invoice, isSendReminder),
     recipients: invoice.client.clientMembersEmails,
   });
-  // eslint-disable-next-line no-unused-vars
+
   const [newRecipient, setNewRecipient] = useState<string>("");
-  // eslint-disable-next-line no-unused-vars
+
   const [width, setWidth] = useState<string>("10ch");
   const [status, setStatus] = useState<InvoiceStatus>(InvoiceStatus.IDLE);
-  // const [height, setHeight] = useState<string>("h-0 py-0");
-
-  // const input: React.RefObject<HTMLInputElement> = useRef();
   const navigate = useNavigate();
 
   const handleRemove = (recipient: string) => {
@@ -73,18 +70,6 @@ const SendInvoiceContainer = ({
       recipients,
     });
   };
-
-  // const handleInput = event => {
-  //   const recipients = invoiceEmail.recipients;
-
-  //   if (isEmailValid(newRecipient) && event.key === "Enter") {
-  //     setInvoiceEmail({
-  //       ...invoiceEmail,
-  //       recipients: recipients.concat(newRecipient),
-  //     });
-  //     setNewRecipient("");
-  //   }
-  // };
 
   const handleSubmit = async event => {
     try {
@@ -173,27 +158,8 @@ const SendInvoiceContainer = ({
                             recipientsCount={invoiceEmail.recipients.length}
                           />
                         ))}
-                        {/* <input
-                          name="to"
-                          ref={input}
-                          style={{ width }}
-                          type="email"
-                          value={newRecipient}
-                          className={cn(
-                            "focus:outline-none mx-1.5 w-fit cursor-text",
-                            height,
-                            {
-                              "text-miru-red-400": !isEmailValid(newRecipient),
-                            }
-                          )}
-                          onBlur={() => setHeight("h-0 py-0")}
-                          onChange={e => setNewRecipient(e.target.value.trim())}
-                          onFocus={() => setHeight("h-6 py-2")}
-                          onKeyDown={handleInput}
-                        /> */}
                       </div>
                     }
-                    // onClick={() => input.current.focus()}
                   />
                   <InputErrors
                     fieldErrors={errors.recipients}

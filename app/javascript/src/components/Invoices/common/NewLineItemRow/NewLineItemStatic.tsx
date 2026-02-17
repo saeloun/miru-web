@@ -1,11 +1,10 @@
 import React, { useRef, useState, useEffect } from "react";
 
+import CustomDatePicker from "common/CustomDatePicker";
 import dayjs from "dayjs";
 import { minFromHHMM, minToHHMM, lineTotalCalc, currencyFormat } from "helpers";
 import { DeleteIcon, CalendarIcon } from "miruIcons";
 import TextareaAutosize from "react-textarea-autosize";
-
-import CustomDatePicker from "common/CustomDatePicker";
 
 const NewLineItemStatic = ({
   clientCurrency,
@@ -28,40 +27,7 @@ const NewLineItemStatic = ({
   const [showCalendarIcon, setShowCalendarIcon] = useState<boolean>(false);
   const datePickerRef = useRef(null);
 
-  // Track previous item values to prevent unnecessary updates
-  const prevItemRef = useRef({
-    name,
-    lineItemDate,
-    description,
-    quantity,
-    rate,
-    lineTotal,
-    item,
-  });
-
   useEffect(() => {
-    const currentItem = {
-      name,
-      lineItemDate,
-      description,
-      quantity,
-      rate,
-      lineTotal,
-      item,
-    };
-
-    // Check if any of the item fields actually changed
-    const hasChanged = Object.keys(currentItem).some(
-      key => currentItem[key] !== prevItemRef.current[key]
-    );
-
-    if (!hasChanged) {
-      return;
-    }
-
-    // Update the ref with current values
-    prevItemRef.current = currentItem;
-
     const names = name.split(" ");
     const newItem = {
       ...item,
@@ -87,8 +53,10 @@ const NewLineItemStatic = ({
       return option;
     });
 
-    name && setSelectedOption(selectedOptionArr);
-  }, [name, lineItemDate, description, quantity, rate, lineTotal, item]);
+    if (name) {
+      setSelectedOption(selectedOptionArr);
+    }
+  }, [name, lineItemDate, description, quantity, rate, lineTotal]);
 
   const closeEditField = event => {
     if (event.key === "Enter") {
@@ -129,7 +97,6 @@ const NewLineItemStatic = ({
         <td className="relative px-1 py-3 text-right text-base font-normal text-miru-dark-purple-1000 ">
           <div onClick={() => setShowDatePicker(!showDatePicker)}>
             <input
-              readOnly
               placeholder="Select Date"
               type="text"
               value={lineItemDate}
@@ -203,7 +170,6 @@ const NewLineItemStatic = ({
           <TextareaAutosize
             className="focus:outline-none w-full rounded bg-transparent p-1 text-sm font-medium text-miru-dark-purple-400 focus:border-miru-gray-1000 focus:bg-white focus:ring-1 focus:ring-miru-gray-1000"
             placeholder="Enter Description"
-            // type="text"
             value={description}
             onChange={e => setDescription(e.target["value"])}
             onKeyDown={closeEditField}

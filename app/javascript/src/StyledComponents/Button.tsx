@@ -1,4 +1,3 @@
-/* eslint-disable */
 import React from "react";
 
 import classnames from "classnames";
@@ -24,7 +23,7 @@ const TERNARY =
 const TERNARY_DISABLED = "bg-transparent text-miru-dark-purple-200 border-0";
 
 const DASHED =
-  "bg-white rounded border border-dashed border-miru-dark-purple-200 text-center text-base font-bold tracking-widest text-miru-dark-purple-200";
+  "bg-white rounded border border-dashed border-miru-dark-purple-200 text-center text-base font-bold tracking-wider text-miru-dark-purple-200";
 
 const DELETE = "bg-miru-red-400 hover:bg-miru-red-200 text-white";
 
@@ -35,27 +34,19 @@ const LARGE = "p-2 text-xl font-bold leading-7";
 type ButtonProps = {
   id?: string;
   style?: string;
-  onClick?;
+  onClick?: React.MouseEventHandler<HTMLButtonElement>;
   disabled?: boolean;
   size?: string;
   className?: string;
   fullWidth?: boolean;
-  children?: any;
-  type?: any;
+  children?: React.ReactNode;
+  type?: "button" | "submit" | "reset";
 };
 
-export const BUTTON_STYLES = {
-  primary: "primary",
-  secondary: "secondary",
-  ternary: "ternary",
-  dashed: "dashed",
-  delete: "delete",
-  calendarCell: "calendarCell",
-};
 const SIZES = { small: "small", medium: "medium", large: "large" };
 
 const Button = ({
-  id = "",
+  id,
   style = "primary",
   size,
   disabled = false,
@@ -63,11 +54,11 @@ const Button = ({
   fullWidth = false,
   onClick,
   children,
-  type,
+  type = "button",
 }: ButtonProps) => (
   <button
-    id={id}
     disabled={disabled}
+    id={id || undefined}
     type={type}
     className={classnames(
       DEFAULT_STYLE,
@@ -97,5 +88,14 @@ const Button = ({
     {children}
   </button>
 );
+
+export const BUTTON_STYLES = {
+  primary: "primary",
+  secondary: "secondary",
+  ternary: "ternary",
+  dashed: "dashed",
+  delete: "delete",
+  calendarCell: "calendarCell",
+};
 
 export default Button;

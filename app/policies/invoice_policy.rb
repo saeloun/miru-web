@@ -37,10 +37,6 @@ class InvoicePolicy < ApplicationPolicy
     authorize_owner_admin
   end
 
-  def rate?
-    user_owner_role? || user_admin_role? || user_book_keeper_role?
-  end
-
   def permitted_attributes
     [
       :issue_date, :due_date, :status,

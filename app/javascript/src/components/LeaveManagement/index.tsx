@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react";
 
-import { getYear, format } from "date-fns";
-
-import holidaysApi from "apis/holidays";
-import timeoffEntryApi from "apis/timeoffEntry";
+import { timeoffEntriesApi } from "apis/api";
 import Loader from "common/Loader/index";
 import withLayout from "common/Mobile/HOC/withLayout";
 import { useUserContext } from "context/UserContext";
+import { getYear, format } from "date-fns";
 
 import Container from "./Container";
 import Header from "./Header";
@@ -18,7 +16,10 @@ const LeaveManagement = () => {
   const [timeoffEntries, setTimeoffEntries] = useState([]);
   const [leaveBalance, setLeaveBalance] = useState([]);
   const [employees, setEmployees] = useState([]);
-  const [selectedEmployeeId, setSelectedEmployeeId] = useState(user.id);
+  const [selectedEmployeeId, setSelectedEmployeeId] = useState(
+    user?.id || null
+  );
+
   const [totalTimeoffEntriesDuration, setTotalTimeoffEntriesDuration] =
     useState(0);
   const [currentYear, setCurrentYear] = useState(getYear(new Date()));
@@ -28,40 +29,17 @@ const LeaveManagement = () => {
     useState(0);
   const [optionalTimeoffEntries, setOptionalTimeoffEntries] = useState([]);
   const [nationalTimeoffEntries, setNationalTimeoffEntries] = useState([]);
-  const [optionalHolidayList, setOptionalHolidayList] = useState<Array<any>>(
-    []
-  );
 
-  const [nationalHolidayList, setNationalHolidayList] = useState<Array<any>>(
-    []
-  );
-
-  const fetchHolidayData = async () => {
-    const res = await holidaysApi.allHolidays();
-    const holidays = res.data.holidays;
-    if (holidays.length) {
-      setOptionalHolidayList(
-        holidays.map(holiday => ({
-          optional_holidays: holiday.optional_holidays,
-          year: holiday.year,
-        }))
-      );
-
-      setNationalHolidayList(
-        holidays.map(holiday => ({
-          national_holidays: holiday.national_holidays,
-          year: holiday.year,
-        }))
-      );
+  useEffect(() => {
+    if (user && !selectedEmployeeId) {
+      setSelectedEmployeeId(user.id);
     }
-  };
+  }, [user]);
 
   useEffect(() => {
-    fetchHolidayData();
-  }, []);
-
-  useEffect(() => {
-    fetchTimeoffEntries();
+    if (selectedEmployeeId) {
+      fetchTimeoffEntries();
+    }
   }, [selectedEmployeeId, currentYear]);
 
   useEffect(() => {
@@ -73,7 +51,7 @@ const LeaveManagement = () => {
   }, [selectedLeaveType]);
 
   const fetchTimeoffEntries = async () => {
-    const res = await timeoffEntryApi.get(selectedEmployeeId, currentYear);
+    const res = await timeoffEntriesApi.get(selectedEmployeeId, currentYear);
     const {
       timeoffEntries,
       employees,
@@ -135,7 +113,7 @@ const LeaveManagement = () => {
   }));
 
   const LeaveManagementLayout = () => {
-    if (isLoading) {
+    if (isLoading || !user) {
       return <Loader />;
     }
 
@@ -150,25 +128,25 @@ const LeaveManagement = () => {
     };
 
     return (
-      <div className="h-full w-full py-6">
-        <Header
-          currentYear={currentYear}
-          employeeList={employeeList}
-          isAdminUser={isAdminUser}
-          selectedEmployeeId={selectedEmployeeId}
-          setCurrentYear={setCurrentYear}
-          setSelectedEmployeeId={setSelectedEmployeeId}
-        />
-        <Container
-          getLeaveBalanaceDateText={getLeaveBalanaceDateText}
-          leaveBalance={leaveBalance}
-          nationalHolidayList={nationalHolidayList}
-          optionalHolidayList={optionalHolidayList}
-          selectedLeaveType={selectedLeaveType}
-          setSelectedLeaveType={setSelectedLeaveType}
-          timeoffEntries={filterTimeoffEntries}
-          totalTimeoffEntriesDuration={filterTimeoffEntriesDuration}
-        />
+      <div className="min-h-screen bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <Header
+            currentYear={currentYear}
+            employeeList={employeeList}
+            isAdminUser={isAdminUser}
+            selectedEmployeeId={selectedEmployeeId}
+            setCurrentYear={setCurrentYear}
+            setSelectedEmployeeId={setSelectedEmployeeId}
+          />
+          <Container
+            getLeaveBalanaceDateText={getLeaveBalanaceDateText}
+            leaveBalance={leaveBalance}
+            selectedLeaveType={selectedLeaveType}
+            setSelectedLeaveType={setSelectedLeaveType}
+            timeoffEntries={filterTimeoffEntries}
+            totalTimeoffEntriesDuration={filterTimeoffEntriesDuration}
+          />
+        </div>
       </div>
     );
   };

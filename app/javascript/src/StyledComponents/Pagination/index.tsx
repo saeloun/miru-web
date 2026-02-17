@@ -1,14 +1,13 @@
 import React, { Fragment } from "react";
 
 import cn from "classnames";
-import { CaretCircleLeftIcon, CaretCircleRightIcon } from "miruIcons";
-
 import { useUserContext } from "context/UserContext";
+import { CaretCircleLeftIcon, CaretCircleRightIcon } from "miruIcons";
 
 import { usePagination } from "./usePagination";
 
 type Iprops = {
-  handleClick: (e: any) => void; // eslint-disable-line
+  handleClick: (_page: any) => void;
   totalPages: number;
   currentPage: number;
   isFirstPage: boolean;
@@ -18,7 +17,7 @@ type Iprops = {
   isPerPageVisible?: boolean;
   title?: string;
   itemsPerPage?: number;
-  handleClickOnPerPage?: (e: any) => void; // eslint-disable-line
+  handleClickOnPerPage?: (_e: any) => void;
 };
 
 const Pagination = ({

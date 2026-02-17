@@ -1,11 +1,10 @@
 import React, { useState, useRef } from "react";
 
+import CustomDatePicker from "common/CustomDatePicker";
+import { CustomInputText } from "common/CustomInputText";
 import dayjs from "dayjs";
 import { currencyFormat } from "helpers";
 import { CalendarIcon } from "miruIcons";
-
-import CustomDatePicker from "common/CustomDatePicker";
-import { CustomInputText } from "common/CustomInputText";
 
 import ClientSelection from "./ClientSelection";
 
@@ -153,7 +152,7 @@ const InvoiceDetails = ({
         <p className="text-right text-xs font-normal text-miru-dark-purple-1000 md:text-right">
           Amount
         </p>
-        <p className="mt-6 text-right text-4xl font-normal text-miru-dark-purple-1000">
+        <p className="mt-6 text-right text-2xl font-normal tracking-tight text-miru-dark-purple-1000">
           {currencyFormat(clientCurrency, amount)}
         </p>
       </div>

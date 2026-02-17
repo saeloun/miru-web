@@ -1,10 +1,8 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 import React from "react";
 
+import { useUserContext } from "context/UserContext";
 import { minToHHMM } from "helpers";
 import { Badge } from "StyledComponents";
-
-import { useUserContext } from "context/UserContext";
 import getStatusCssClass from "utils/getBadgeStatus";
 
 import {
@@ -66,7 +64,7 @@ const EntryCard = ({
               text={bill_status}
             />
           </div>
-          <p className="mx-auto text-2xl xl:text-4xl">{minToHHMM(duration)}</p>
+          <p className="mx-auto text-2xl xl:text-2xl">{minToHHMM(duration)}</p>
         </div>
         <div className="flex w-5/12 items-center justify-evenly">
           {showDuplicateAction(bill_status, companyRole, id, handleDuplicate)}
@@ -84,7 +82,7 @@ interface Iprops {
   project: string;
   note: string;
   duration: number;
-  handleDeleteEntry: (id: number) => void; // eslint-disable-line
+  handleDeleteEntry: (id: number) => void;
   setEditEntryId: React.Dispatch<React.SetStateAction<number>>;
   bill_status: string;
   setNewEntryView: any;

@@ -1,9 +1,9 @@
+import { Roles } from "constants/index";
+
 import React from "react";
 
 import { DeleteIcon, EditIcon, CopyIcon } from "miruIcons";
 import { Button, BUTTON_STYLES } from "StyledComponents";
-
-import { Roles } from "constants/index";
 
 export const canEditTimeEntry = (billStatus, role) =>
   billStatus != "billed" || role == Roles["OWNER"] || role == Roles["ADMIN"];

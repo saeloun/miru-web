@@ -1,0 +1,481 @@
+# frozen_string_literal: true
+
+company = Company.create!(
+  {
+    name: "Saeloun Inc",
+    address: "475 Clermont Ave, Brooklyn, NY-12238",
+    business_phone: "+1 9296207865",
+    base_currency: "USD",
+    standard_price: 1000,
+    fiscal_year_end: "Dec",
+    date_format: "MM-DD-YYYY",
+    country: "US",
+    timezone: "(GMT-10:00) America/Adak"
+  })
+
+puts "Company Created"
+
+company.logo.attach(io: File.open(Rails.root.join("app/assets/images/saeloun_logo.png")), filename: "saeloun_logo.png")
+
+puts "Users Created"
+super_admin = User.create!(
+  first_name: "Saeloun", last_name: "Admin", email: "hello@saeloun.com", password: "Saeloun@2024!",
+  password_confirmation: "Saeloun@2024!", confirmed_at: Time.current)
+vipul = User.create!(
+  first_name: "Vipul", last_name: "A M", email: "vipul@saeloun.com", password: "Saeloun@2024!",
+  password_confirmation: "Saeloun@2024!", confirmed_at: Time.current, current_workspace_id: company.id)
+supriya = User.create!(
+  first_name: "Supriya", last_name: "Agarwal", email: "supriya@example.com", password: "Saeloun@2024!",
+  password_confirmation: "Saeloun@2024!", confirmed_at: Time.current, current_workspace_id: company.id
+)
+book_keeper = User.create!(
+  first_name: "Book", last_name: "Keeper", email: "book.keeper@example.com", password: "Saeloun@2024!",
+  password_confirmation: "Saeloun@2024!", confirmed_at: Time.current, current_workspace_id: company.id
+)
+sam = User.create!(
+  first_name: "Sam", last_name: "Smith", email: "sam@example.com", password: "Saeloun@2024!",
+  password_confirmation: "Saeloun@2024!", confirmed_at: Time.current, current_workspace_id: company.id
+)
+oliver = User.create!(
+  first_name: "Oliver", last_name: "Smith", email: "oliver@example.com", password: "Saeloun@2024!",
+  password_confirmation: "Saeloun@2024!", confirmed_at: Time.current, current_workspace_id: company.id
+)
+
+super_admin.add_role(:super_admin)
+vipul.add_role(:owner, company)
+supriya.add_role(:admin, company)
+book_keeper.add_role(:book_keeper, company)
+sam.add_role(:employee, company)
+oliver.add_role(:client, company)
+puts "Users Roles Created"
+
+users = [vipul, supriya, book_keeper, sam]
+
+users.each { |user| company.employments.create!(user:) }
+company.employments.create!(user: oliver)
+puts "Employment Created"
+
+microsoft_client = company.clients.create!(
+  name: "Microsoft",
+  email: oliver.email,
+  phone: "+1 9999999991"
+)
+
+puts "Clients Created"
+
+company.client_members.create!(client: microsoft_client, user: oliver)
+
+puts "Client member created"
+
+microsoft_client.addresses.create!(
+  address_line_1: "475 Clermont Ave",
+  city: "Brooklyn",
+  state: "New york",
+  pin: "12238",
+  country: "US"
+)
+
+project_office_com = microsoft_client.projects.create!(name: "Office.com", description: "Office 365", billable: true)
+project_azure_com = microsoft_client.projects.create!(name: "Azure.com", description: "Cloud Computing", billable: true)
+
+puts "Projects Created"
+
+users.each do |user|
+  user.project_members.create(project_id: project_office_com.id, hourly_rate: 5000)
+  user.project_members.create(project_id: project_azure_com.id, hourly_rate: 5000)
+end
+
+puts "Projects Members Created"
+
+# Add US and India holidays
+puts "Creating holidays..."
+
+# US holidays for 2025
+us_holidays = [
+  { date: Date.new(2025, 1, 1), name: "New Year Day", national_holiday: true },
+  { date: Date.new(2025, 1, 20), name: "Martin Luther King Jr Day", national_holiday: true },
+  { date: Date.new(2025, 2, 17), name: "Presidents Day", national_holiday: true },
+  { date: Date.new(2025, 5, 26), name: "Memorial Day", national_holiday: true },
+  { date: Date.new(2025, 6, 19), name: "Juneteenth", national_holiday: true },
+  { date: Date.new(2025, 7, 4), name: "Independence Day", national_holiday: true },
+  { date: Date.new(2025, 9, 1), name: "Labor Day", national_holiday: true },
+  { date: Date.new(2025, 10, 13), name: "Columbus Day", national_holiday: true },
+  { date: Date.new(2025, 11, 11), name: "Veterans Day", national_holiday: true },
+  { date: Date.new(2025, 11, 27), name: "Thanksgiving", national_holiday: true },
+  { date: Date.new(2025, 12, 25), name: "Christmas Day", national_holiday: true }
+]
+
+# India holidays for 2025
+india_holidays = [
+  { date: Date.new(2025, 1, 26), name: "Republic Day", national_holiday: true },
+  { date: Date.new(2025, 3, 14), name: "Holi", national_holiday: true },
+  { date: Date.new(2025, 4, 18), name: "Good Friday", national_holiday: true },
+  { date: Date.new(2025, 8, 15), name: "Independence Day", national_holiday: true },
+  { date: Date.new(2025, 10, 2), name: "Gandhi Jayanti", national_holiday: true },
+  { date: Date.new(2025, 10, 20), name: "Diwali", national_holiday: true },
+  { date: Date.new(2025, 11, 5), name: "Guru Nanak Jayanti", national_holiday: true },
+  { date: Date.new(2025, 12, 25), name: "Christmas Day", national_holiday: true }
+]
+
+# Create a holiday record for 2025
+holiday = Holiday.find_or_create_by!(
+  year: 2025,
+  company_id: company.id,
+  enable_optional_holidays: false,
+  holiday_types: ["national", "optional"]
+)
+
+# Then create the individual holiday info records
+(us_holidays + india_holidays).each do |holiday_data|
+  HolidayInfo.find_or_create_by!(
+    holiday_id: holiday.id,
+    date: holiday_data[:date],
+    name: holiday_data[:name],
+    category: holiday_data[:national_holiday] ? "national" : "optional"
+  )
+end
+
+puts "Holidays created"
+
+# Create timesheet entries for last 1 month for all users
+puts "Creating timesheet entries for last 1 month..."
+timesheet_start_date = 1.month.ago.beginning_of_month
+timesheet_end_date = Date.today
+
+projects = [project_office_com, project_azure_com]
+
+users.each do |user|
+  projects.each do |project|
+    project_member = user.project_members.find_by(project: project)
+    next unless project_member
+
+    (timesheet_start_date.to_date..timesheet_end_date.to_date).each do |date|
+      # Skip weekends and holidays
+      next if date.saturday? || date.sunday?
+      next if HolidayInfo.joins(:holiday).where(date: date, holiday: { company_id: company.id }).exists?
+
+      # Random chance of working (90% chance on weekdays)
+      next unless rand < 0.9
+
+      duration = rand(240..480) # 4-8 hours in minutes
+      TimesheetEntry.create!(
+        user: user,
+        project: project,
+        duration: duration,
+        note: ["Worked on #{project.name}", "Bug fixes", "Feature development", "Code review", "Client meeting"].sample,
+        bill_status: :unbilled, # All entries start as unbilled
+        work_date: date
+      )
+    end
+  end
+end
+
+puts "Timesheet entries created"
+
+# Create a simple invoice for testing
+puts "Creating sample invoice..."
+
+# Create one simple invoice
+invoice = company.invoices.create!(
+  issue_date: Date.today - 30.days,
+  due_date: Date.today,
+  invoice_number: "SAI-0001",
+  reference: "INV-0001",
+  amount: 5000,
+  outstanding_amount: 0,
+  tax: 500,
+  amount_paid: 5500,
+  amount_due: 0,
+  discount: 0,
+  status: :paid,
+  client_id: microsoft_client.id,
+  external_view_key: SecureRandom.hex(16),
+  sent_at: Date.today - 25.days
+)
+
+puts "Sample invoice created"
+
+
+# Create invoices for last 1 year with random dates per month
+puts "Creating invoices for last 1 year..."
+invoice_number = 1
+total_revenue = 0
+
+(1.year.ago.beginning_of_month.to_date..Date.today).group_by(&:month).each do |month, dates|
+  # Create 1-3 invoices per month on random days
+  invoices_count = rand(1..3)
+
+  invoices_count.times do
+    random_date = dates.sample
+    next if random_date > Date.today
+
+    amount = rand(5000..25000)
+    tax = (amount * 0.1).round
+    discount = rand(0..1000)
+    total_amount = amount + tax - discount
+
+    # Random status distribution
+    status = case rand
+             when 0..0.6 then :paid      # 60% paid
+             when 0.6..0.8 then :sent    # 20% sent
+             when 0.8..0.9 then :viewed  # 10% viewed
+             else :overdue               # 10% overdue
+             end
+
+    amount_paid = case status
+                  when :paid then total_amount
+                  when :sent, :viewed then rand(0..total_amount/2)
+                  when :overdue then rand(0..total_amount/3)
+                  else 0
+                  end
+
+    amount_due = total_amount - amount_paid
+    outstanding_amount = status == :paid ? 0 : amount_due
+
+    invoice = company.invoices.create!(
+      issue_date: random_date,
+      due_date: random_date + 30.days,
+      invoice_number: "SAI-#{invoice_number.to_s.rjust(4, '0')}",
+      reference: "INV-#{invoice_number.to_s.rjust(4, '0')}",
+      amount: amount,
+      outstanding_amount: outstanding_amount,
+      tax: tax,
+      amount_paid: amount_paid,
+      amount_due: amount_due,
+      discount: discount,
+      status: status,
+      client_id: microsoft_client.id,
+      external_view_key: SecureRandom.hex(16),
+      sent_at: [:sent, :viewed, :paid, :overdue].include?(status) ? random_date : nil
+    )
+
+    # Add payments for paid invoices
+    if amount_paid > 0
+      payment_date = random_date + rand(1..20).days
+      payment_date = [payment_date, Date.today].min
+
+      invoice.payments.create!(
+        amount: amount_paid,
+        note: "Payment for invoice #{invoice.invoice_number}",
+        status: amount_paid >= total_amount ? :paid : :partially_paid,
+        transaction_date: payment_date,
+        transaction_type: [:visa, :credit_card, :bank_transfer, :check].sample,
+        payment_currency: "USD"
+      )
+    end
+
+    total_revenue += amount_paid if status == :paid
+    invoice_number += 1
+  end
+end
+
+
+
+puts "Seeding completed successfully!"
+
+# Skip additional revenue data for now
+
+puts "Created #{invoice_number - 1} invoices with total revenue of $#{total_revenue}"
+
+# Create additional revenue data for all projects
+puts "Creating additional revenue data for projects..."
+
+projects.each do |project|
+  (1.year.ago.to_date..Date.today).group_by(&:month).each do |month, dates|
+    # Add some project-specific revenue tracking
+    monthly_hours = project.timesheet_entries.where(
+      work_date: dates.first.beginning_of_month..dates.first.end_of_month
+    ).sum(:duration) / 60.0 # Convert to hours
+
+    if monthly_hours > 0
+      project.update!(
+        description: "#{project.description} - #{monthly_hours.round(1)} hours logged this month"
+      )
+    end
+  end
+end
+
+puts "Revenue data updated for all projects"
+
+company.addresses.create!(
+  address_type: "permanent",
+  address_line_1: "Saeloun Inc",
+  address_line_2: "475 Clermont Ave",
+  state: "NY",
+  city: "Brooklyn",
+  country: "US",
+  pin: "12238"
+)
+
+users.each { |user| user.addresses.create!(
+  address_type: "current",
+  address_line_1: "Flat-1",
+  address_line_2: "Apartment A1",
+  state: "NY",
+  city: "Brooklyn",
+  country: "US",
+  pin: "12238"
+)
+}
+
+puts "Address Created"
+
+users.each { |user| user.devices.create!(
+  device_type: "laptop",
+  name: "MacBook Pro",
+  serial_number: "1111",
+  company_id: company.id
+)
+}
+
+puts "Device Created"
+
+users.each { |user| user.previous_employments.create!(
+  company_name: "Oracle",
+  role: "SDE"
+)
+}
+
+puts "Previous Employment Created"
+
+payment_1 = {
+  amount: 3000,
+  note: "This is payment note",
+  status: :partially_paid,
+  transaction_date: Date.today - 7,
+  transaction_type: :visa
+}
+payment_2 = {
+  amount: 5000,
+  note: "This is payment note",
+  status: :paid,
+  transaction_date: Date.today - 3,
+  transaction_type: :credit_card
+}
+
+invoice_1.payments.create!(payment_1)
+invoice_2.payments.create!(payment_2)
+
+puts "Payments Created"
+
+ExpenseCategory::DEFAULT_CATEGORIES.each do |category|
+  ExpenseCategory.find_or_create_by!(category)
+end
+
+puts "Default expense categories created"
+
+outing_category = company.expense_categories.create!({ name: "Outing" })
+conference_category = company.expense_categories.create!({ name: "Conference" })
+
+puts "Custom expense Categories created"
+
+ca_vendor = company.vendors.create!({ name: "CA firm" })
+insurance_vendor = company.vendors.create!({ name: "Insurance" })
+booking_vendor = company.vendors.create!({ name: "Booking" })
+apple_repair_vendor = company.vendors.create!({ name: "Apple Maintenance" })
+
+puts "Vendors created"
+
+expenses = [
+  {
+    amount: 300000,
+    date: Faker::Date.backward(days: 60),
+    description: "Salary of x,y,z employee",
+    expense_category_id: 1,
+    expense_type: :business
+  },
+  {
+    amount: 5500,
+    date: Faker::Date.backward(days: 60),
+    description: "Laptop's servicing Employee 1",
+    expense_category_id: 2,
+    vendor_id: apple_repair_vendor.id,
+    expense_type: :business
+  },
+  {
+    amount: 10000,
+    date: Faker::Date.backward(days: 60),
+    description: "Monthly rent",
+    expense_category_id: 3,
+    expense_type: :business
+  },
+  {
+    amount: 2000,
+    date: Faker::Date.backward(days: 60),
+    description: "Dinner party",
+    expense_category_id: 4,
+    vendor_id: booking_vendor.id,
+    expense_type: :personal
+  },
+  {
+    amount: 67000,
+    date: Faker::Date.backward(days: 60),
+    description: "Flight to NY",
+    expense_category_id: 5,
+    vendor_id: booking_vendor.id,
+    expense_type: :business
+  },
+  {
+    amount: 47000,
+    date: Faker::Date.backward(days: 60),
+    description: "Employee x Client visit",
+    expense_category_id: 5,
+    vendor_id: booking_vendor.id,
+    expense_type: :business
+  },
+  {
+    amount: 56703,
+    date: Faker::Date.backward(days: 60),
+    description: "Govt Tax",
+    expense_category_id: 6,
+    vendor_id: ca_vendor.id,
+    expense_type: :business
+  },
+  {
+    amount: 4350,
+    date: Faker::Date.backward(days: 60),
+    description: "Office new chair",
+    expense_category_id: 7,
+    vendor_id: booking_vendor.id,
+    expense_type: :business
+  },
+  {
+    amount: 20000,
+    date: Faker::Date.backward(days: 60),
+    description: "x,y,z employee health insurance",
+    expense_category_id: 8,
+    vendor_id: insurance_vendor.id,
+    expense_type: :business
+  },
+  {
+    amount: 6300,
+    date: Faker::Date.backward(days: 60),
+    description: "Some xyz expense",
+    expense_category_id: 9,
+    vendor_id: booking_vendor.id,
+    expense_type: :personal
+  },
+  {
+    amount: 12300,
+    date: Faker::Date.backward(days: 60),
+    description: "Team Vacation",
+    expense_category_id: outing_category.id,
+    vendor_id: booking_vendor.id,
+    expense_type: :business
+  },
+  {
+    amount: 5400,
+    date: Faker::Date.backward(days: 60),
+    description: "Rails Conf ticket",
+    expense_category_id: conference_category.id,
+    vendor_id: booking_vendor.id,
+    expense_type: :business
+  }
+]
+
+expenses.each do |expense|
+  company.expenses.create!(expense)
+end
+
+puts "Expenses Created"
+=end

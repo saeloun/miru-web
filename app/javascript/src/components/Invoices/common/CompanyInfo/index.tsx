@@ -12,7 +12,7 @@ const CompanyInfo = ({ company, logo = "" }) => {
       <div className="flex h-full items-center">
         <Avatar
           classNameImg="mr-5"
-          classNameInitials="lg:text-5xl text-lg font-bold capitalize text-white"
+          classNameInitials="lg:text-3xl text-lg font-semibold capitalize text-white"
           classNameInitialsWrapper="mr-5 bg-miru-gray-1000 "
           initialsLetterCount={1}
           name={company.name}
@@ -20,7 +20,7 @@ const CompanyInfo = ({ company, logo = "" }) => {
           url={company.logo || logo}
         />
         <div className="text-center md:text-left lg:mt-2">
-          <p className="text-base font-bold leading-7 text-miru-dark-purple-1000 sm:text-xl lg:text-3xl">
+          <p className="text-base font-semibold leading-7 tracking-tight text-miru-dark-purple-1000 sm:text-xl lg:text-2xl">
             {company.name}
           </p>
           <p className="mt-1 text-left text-xs font-normal text-miru-dark-purple-1000 lg:text-base">

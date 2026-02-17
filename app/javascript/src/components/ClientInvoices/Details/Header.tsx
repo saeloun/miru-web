@@ -1,5 +1,6 @@
 import React, { useRef, useState } from "react";
 
+import { handleDownloadInvoice } from "components/Invoices/common/utils";
 import { useOutsideClick } from "helpers";
 import {
   ReportsIcon,
@@ -7,8 +8,6 @@ import {
   DownloadSimpleIcon,
 } from "miruIcons";
 import { Badge, Button, MoreOptions, Toastr, Tooltip } from "StyledComponents";
-
-import { handleDownloadInvoice } from "components/Invoices/common/utils";
 import getStatusCssClass from "utils/getBadgeStatus";
 
 const Header = ({
@@ -42,7 +41,9 @@ const Header = ({
     <div className="mt-6 mb-3 sm:flex sm:items-center sm:justify-between">
       <div className="flex flex-row">
         <div className="mr-2 flex self-center">
-          <p className="text-4xl font-bold">Invoice #{invoice_number}</p>
+          <p className="text-2xl font-semibold tracking-tight">
+            Invoice #{invoice_number}
+          </p>
         </div>
         <div className="ml-2 flex self-center">
           <Badge
