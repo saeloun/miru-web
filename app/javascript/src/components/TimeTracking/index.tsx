@@ -13,7 +13,6 @@ import Logger from "js-logger";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import WeekDaySelector from "./WeekDaySelector";
-import { EmptyStatesMobileView } from "./EmptyStatesMobileView";
 import EntryForm from "./EntryForm";
 import { ModernTimeEntryForm } from "./ModernTimeEntryForm";
 import Header from "./Header";
@@ -597,12 +596,6 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
             />
           )}
         </div>
-        {false && !entryList[selectedFullDate] && !isDesktop && (
-          <EmptyStatesMobileView
-            setEditEntryId={setEditEntryId}
-            setNewEntryView={setNewEntryView}
-          />
-        )}
         {
           <div className="mt-4">
             <TimeEntriesDisplay
