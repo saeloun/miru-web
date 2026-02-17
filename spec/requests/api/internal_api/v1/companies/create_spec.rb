@@ -62,7 +62,7 @@ RSpec.describe "Api::V1::Companies::create", type: :request do
     end
 
     context "when company is invalid" do
-      before do
+      it "will fail" do
         send_request :post, api_v1_companies_path, params: {
           company: {
             business_phone: "12345677",
@@ -73,14 +73,22 @@ RSpec.describe "Api::V1::Companies::create", type: :request do
             date_format: ""
           }
         }, headers: auth_headers(user)
-      end
-
-      it "will fail" do
         expect(json_response["errors"]).to eq("Name can't be blank")
       end
 
       it "will not be created" do
-        expect(Company.count).to eq(1)
+        expect do
+          send_request :post, api_v1_companies_path, params: {
+            company: {
+              business_phone: "12345677",
+              timezone: "",
+              base_currency: "",
+              standard_price: "",
+              fiscal_year_end: "",
+              date_format: ""
+            }
+          }, headers: auth_headers(user)
+        end.not_to change(Company, :count)
       end
     end
 
@@ -119,7 +127,7 @@ RSpec.describe "Api::V1::Companies::create", type: :request do
       end
 
       context "when company is invalid" do
-        before do
+        it "will fail" do
           send_request :post, api_v1_companies_path, params: {
             company: {
               business_phone: "12345677",
@@ -130,14 +138,22 @@ RSpec.describe "Api::V1::Companies::create", type: :request do
               date_format: ""
             }
           }, headers: auth_headers(user)
-        end
-
-        it "will fail" do
           expect(json_response["errors"]).to eq("Name can't be blank")
         end
 
         it "will not be created" do
-          expect(Company.count).to eq(1)
+          expect do
+            send_request :post, api_v1_companies_path, params: {
+              company: {
+                business_phone: "12345677",
+                timezone: "",
+                base_currency: "",
+                standard_price: "",
+                fiscal_year_end: "",
+                date_format: ""
+              }
+            }, headers: auth_headers(user)
+          end.not_to change(Company, :count)
         end
       end
     end

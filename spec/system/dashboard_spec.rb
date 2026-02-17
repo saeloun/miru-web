@@ -6,10 +6,10 @@ RSpec.describe "Dashboard", type: :system, js: true do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
 
-  before do
+  before do |example|
     create(:employment, company:, user:)
     user.add_role :admin, company
-    sign_in(user)
+    sign_in(user) unless example.metadata[:skip_sign_in]
   end
 
   it "loads the dashboard page for admin" do
@@ -158,13 +158,12 @@ RSpec.describe "Dashboard", type: :system, js: true do
   end
 
   context "when user is not authenticated" do
-    it "redirects to login page" do
+    it "redirects to login page", :skip_sign_in do
       Warden.test_reset!
 
       visit "/dashboard"
 
-      expect(page).to have_current_path("/user/sign_in", wait: 10)
-        .or have_current_path("/login", wait: 10)
+      expect(page).to have_current_path(%r{/(user/)?sign_in|/login}, wait: 10)
     end
   end
 
