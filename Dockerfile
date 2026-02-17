@@ -7,7 +7,7 @@
 # Use with Kamal for deployment or docker-compose for local development.
 
 # Make sure RUBY_VERSION matches the Ruby version in .ruby-version
-ARG RUBY_VERSION=3.4.5
+ARG RUBY_VERSION=4.0.0
 FROM ruby:$RUBY_VERSION-slim AS base
 
 LABEL fly_launch_runtime="rails"
