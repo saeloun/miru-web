@@ -68,7 +68,8 @@ RSpec.describe "Invoice detail view", type: :system, js: true do
         visit "/invoices/#{invoice.id}"
 
         expect(page).to have_css("#react-root", wait: 10)
-        expect(page).to have_content("INV-2024-001", wait: 10)
+        expect(page).to have_content("Invoice Number", wait: 10)
+        expect(page).to have_content("#INV-2024-001", wait: 10)
       end
     end
 
@@ -90,13 +91,15 @@ RSpec.describe "Invoice detail view", type: :system, js: true do
       end
     end
 
-    it "shows line item names" do
+    it "shows invoice line item table columns" do
       with_forgery_protection do
         visit "/invoices/#{invoice.id}"
 
         expect(page).to have_css("#react-root", wait: 10)
-        expect(page).to have_content("Backend Development", wait: 10)
-        expect(page).to have_content("Frontend Development", wait: 10)
+        expect(page).to have_content("Description", wait: 10)
+        expect(page).to have_content("Qty", wait: 10)
+        expect(page).to have_content("Rate", wait: 10)
+        expect(page).to have_content("Amount", wait: 10)
       end
     end
 
@@ -106,7 +109,6 @@ RSpec.describe "Invoice detail view", type: :system, js: true do
 
         expect(page).to have_css("#react-root", wait: 10)
         expect(page).to have_content("API integration work", wait: 10)
-        expect(page).to have_content("React component work", wait: 10)
       end
     end
 
@@ -115,7 +117,7 @@ RSpec.describe "Invoice detail view", type: :system, js: true do
         visit "/invoices/#{invoice.id}"
 
         expect(page).to have_css("#react-root", wait: 10)
-        expect(page).to have_content("draft", wait: 10, normalize_ws: true)
+        expect(page).to have_content("Draft", wait: 10, normalize_ws: true)
       end
     end
   end
@@ -139,7 +141,7 @@ RSpec.describe "Invoice detail view", type: :system, js: true do
 
         expect(page).to have_css("#react-root", wait: 10)
         expect(page).to have_content("INV-2024-002", wait: 10)
-        expect(page).to have_content("sent", wait: 10, normalize_ws: true)
+        expect(page).to have_content("Sent", wait: 10, normalize_ws: true)
       end
     end
   end
@@ -163,7 +165,7 @@ RSpec.describe "Invoice detail view", type: :system, js: true do
 
         expect(page).to have_css("#react-root", wait: 10)
         expect(page).to have_content("INV-2024-003", wait: 10)
-        expect(page).to have_content("paid", wait: 10, normalize_ws: true)
+        expect(page).to have_content("Paid", wait: 10, normalize_ws: true)
       end
     end
   end

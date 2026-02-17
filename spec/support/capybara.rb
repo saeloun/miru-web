@@ -12,16 +12,12 @@ Capybara.server_host = "localhost"
 Capybara.save_path = Rails.root.join("tmp", "capybara")
 Capybara.automatic_reload = false
 
-# Use different ports for parallel tests
-# Each parallel test worker gets its own port to avoid conflicts
-if ENV["TEST_ENV_NUMBER"].present?
-  # For parallel tests, use different port for each worker
-  # TEST_ENV_NUMBER is empty for first process, then "2", "3", etc.
-  test_number = ENV["TEST_ENV_NUMBER"].to_s.empty? ? 1 : ENV["TEST_ENV_NUMBER"].to_i
-  Capybara.server_port = 3000 + test_number
+if ENV.key?("TEST_ENV_NUMBER")
+  test_number = ENV.fetch("TEST_ENV_NUMBER", "").to_s
+  test_number = test_number.empty? ? 1 : test_number.to_i
+  Capybara.server_port = 35_000 + test_number
 else
-  # For single process tests
-  Capybara.server_port = 3001
+  Capybara.server_port = ENV.fetch("CAPYBARA_SERVER_PORT", (30_000 + (Process.pid % 10_000)).to_s).to_i
 end
 
 # Puma server is already configured above, don't override it

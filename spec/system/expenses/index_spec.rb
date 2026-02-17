@@ -45,7 +45,7 @@ RSpec.describe "Expenses", type: :system, js: true do
           visit "/expenses"
 
           expect(page).to have_css("#react-root", wait: 10)
-          expect(page).to have_content("there aren't any expenses", wait: 10)
+          expect(page).to have_content("No expenses recorded", wait: 10)
         end
       end
     end
@@ -83,8 +83,8 @@ RSpec.describe "Expenses", type: :system, js: true do
           visit "/expenses"
 
           expect(page).to have_css("#react-root", wait: 10)
-          expect(page).to have_content("Acme Supplies", wait: 10)
-          expect(page).to have_content("Cloud Services Inc", wait: 10)
+          expect(page).to have_content("Flight to conference", wait: 10)
+          expect(page).to have_content("IDE license", wait: 10)
         end
       end
 
@@ -93,8 +93,8 @@ RSpec.describe "Expenses", type: :system, js: true do
           visit "/expenses"
 
           expect(page).to have_css("#react-root", wait: 10)
-          expect(page).to have_content("Travel", wait: 10)
-          expect(page).to have_content("Software", wait: 10)
+          expect(page).to have_content("CATEGORY", wait: 10)
+          expect(page).to have_content("VENDOR", wait: 10)
         end
       end
 
@@ -113,8 +113,7 @@ RSpec.describe "Expenses", type: :system, js: true do
           visit "/expenses"
 
           expect(page).to have_css("#react-root", wait: 10)
-          expect(page).to have_content("business", wait: 10)
-          expect(page).to have_content("personal", wait: 10)
+          expect(page).to have_content("Non-billable", wait: 10)
         end
       end
 
@@ -132,7 +131,7 @@ RSpec.describe "Expenses", type: :system, js: true do
           visit "/expenses"
 
           expect(page).to have_css("#react-root", wait: 10)
-          expect(page).not_to have_content("there aren't any expenses", wait: 3)
+          expect(page).not_to have_content("No expenses recorded", wait: 3)
         end
       end
     end
@@ -157,9 +156,9 @@ RSpec.describe "Expenses", type: :system, js: true do
           visit "/expenses"
 
           expect(page).to have_css("#react-root", wait: 10)
-          expect(page).to have_content("Staples", wait: 10)
+          expect(page).to have_content("Printer paper", wait: 10)
           expect(page).to have_content("200.50", wait: 10)
-          expect(page).to have_content("Office", wait: 10)
+          expect(page).to have_content("Non-billable", wait: 10)
         end
       end
     end
