@@ -210,7 +210,6 @@ group :test, :ci do
   gem "rspec-retry"
 
   # Enhanced RSpec reporting and formatting
-  gem "fuubar", "~> 2.5"  # Progress bar for RSpec
   gem "rspec-instafail", "~> 1.0"  # Show failures immediately
   gem "super_diff", "~> 0.10"  # Better diff output
   gem "test-prof", "~> 1.3"  # Performance profiling for tests
