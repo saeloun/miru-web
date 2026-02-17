@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "rails_helper"
+require "base64"
 
 RSpec.describe "Invoice PDF Download", type: :request do
   let(:company) { create(:company) }
@@ -71,8 +72,9 @@ RSpec.describe "Invoice PDF Download", type: :request do
 
     context "with company logo" do
       let(:logo_blob) do
+        logo_data = Base64.decode64("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO2XQ9UAAAAASUVORK5CYII=")
         ActiveStorage::Blob.create_and_upload!(
-          io: File.open(Rails.root.join("spec/fixtures/files/company_logo.png")),
+          io: StringIO.new(logo_data),
           filename: "logo.png",
           content_type: "image/png"
         )
