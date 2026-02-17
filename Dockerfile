@@ -27,7 +27,6 @@ RUN apt-get update -qq && \
 # Set production environment
 ENV BUNDLE_DEPLOYMENT="1" \
     BUNDLE_PATH="/usr/local/bundle" \
-    BUNDLE_FORCE_RUBY_PLATFORM="true" \
     BUNDLE_WITHOUT="development:test" \
     RAILS_ENV="production"
 

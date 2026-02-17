@@ -26,7 +26,6 @@ jobs:
       DB_USER: root
       DB_PASS: password
       CI: true
-      BUNDLE_FORCE_RUBY_PLATFORM: "true"
     services:
       postgres:
         image: postgres:16
@@ -144,8 +143,6 @@ jobs:
     timeout-minutes: 20
     permissions:
       contents: read
-    env:
-      BUNDLE_FORCE_RUBY_PLATFORM: "true"
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
