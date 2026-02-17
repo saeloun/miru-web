@@ -85,7 +85,7 @@ jobs:
         env:
           SECRET_KEY_BASE: dummy
         run: |
-          timeout 30 bin/vite build
+          timeout 180 bin/vite build
       
       - name: Run Rubocop
         run: bundle exec rubocop
