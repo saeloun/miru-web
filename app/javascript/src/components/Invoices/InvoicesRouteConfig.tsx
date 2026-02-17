@@ -1,11 +1,10 @@
 import React from "react";
 
-import { Route, Routes } from "react-router-dom";
-
 import ErrorPage from "common/Error";
 import ClientInvoices from "components/ClientInvoices";
 import ClientInvoiceDetails from "components/ClientInvoices/Details";
 import { useUserContext } from "context/UserContext";
+import { Route, Routes } from "react-router-dom";
 
 import EditInvoice from "./Edit";
 import GenerateInvoices from "./Generate";

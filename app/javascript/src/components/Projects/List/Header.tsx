@@ -1,27 +1,37 @@
-import React from "react";
+import React, { useCallback } from "react";
 
+import { projectApi } from "apis/api";
+import { UnifiedSearch } from "../../ui/enhanced-search";
+import { useUserContext } from "context/UserContext";
 import Logger from "js-logger";
 import { PlusIcon } from "miruIcons";
 import { Button } from "StyledComponents";
 
-import projectApi from "apis/projects";
-import AutoSearch from "common/AutoSearch";
-import { useUserContext } from "context/UserContext";
-
-import SearchDataRow from "./SearchDataRow";
-
 const Header = ({ projectDataPresent, setShowProjectModal, isAdminUser }) => {
   const { isDesktop } = useUserContext();
 
-  const fetchProjects = async searchString => {
+  const fetchProjects = useCallback(async searchString => {
     try {
       const res = await projectApi.search(searchString);
 
-      return res?.data?.projects;
+      // Transform the API response to match SearchItem interface
+      return (
+        res?.data?.projects?.map(project => ({
+          id: project.id,
+          label: project.name,
+          name: project.name,
+          type: "project" as const,
+          subtitle: project.client_name || project.description,
+          description: project.description,
+          ...project,
+        })) || []
+      );
     } catch (error) {
       Logger.error(error);
+
+      return [];
     }
-  };
+  }, []);
 
   return (
     <div
@@ -34,9 +44,18 @@ const Header = ({ projectDataPresent, setShowProjectModal, isAdminUser }) => {
       {isAdminUser && (
         <>
           {projectDataPresent && (
-            <AutoSearch
-              SearchDataRow={SearchDataRow}
+            <UnifiedSearch
               searchAction={fetchProjects}
+              placeholder="Search projects..."
+              onSelect={project => {
+                // Handle project selection if needed
+              }}
+              className="w-64"
+              variant="input"
+              size="md"
+              groupByType={false}
+              highlightMatches={true}
+              minSearchLength={1}
             />
           )}
           <Button

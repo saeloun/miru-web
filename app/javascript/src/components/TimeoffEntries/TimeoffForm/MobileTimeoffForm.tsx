@@ -1,5 +1,10 @@
 import React, { useRef } from "react";
 
+import CustomDatePicker from "common/CustomDatePicker";
+import { CustomInputText } from "common/CustomInputText";
+import { CustomTextareaAutosize } from "common/CustomTextareaAutosize";
+import DeleteEntryModal from "common/DeleteEntryModal";
+import { useTimesheetEntries } from "context/TimesheetEntries";
 import dayjs from "dayjs";
 import {
   CalendarIcon,
@@ -16,12 +21,6 @@ import {
   SidePanel,
   TimeInput,
 } from "StyledComponents";
-
-import CustomDatePicker from "common/CustomDatePicker";
-import { CustomInputText } from "common/CustomInputText";
-import { CustomTextareaAutosize } from "common/CustomTextareaAutosize";
-import DeleteEntryModal from "components/TimesheetEntries/MobileView/DeleteEntryModal";
-import { useTimesheetEntries } from "context/TimesheetEntries";
 
 const MobileTimeoffForm = ({
   handleClose,
@@ -54,7 +53,7 @@ const MobileTimeoffForm = ({
   handleSubmit,
   handleDeleteTimeoffEntry,
 }) => {
-  const datePickerRef = useRef();
+  const datePickerRef = useRef<HTMLDivElement>(null);
   const {
     leaveTypes,
     setNewTimeoffEntryView,

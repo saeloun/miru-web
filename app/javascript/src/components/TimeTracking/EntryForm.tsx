@@ -1,22 +1,28 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-import React, { useState, useEffect, useRef, MutableRefObject } from "react";
+import React, { useState, useEffect } from "react";
 
-import { format } from "date-fns";
+import { timesheetEntryApi } from "apis/api";
+import { useUserContext } from "context/UserContext";
 import dayjs from "dayjs";
 import {
   minFromHHMM,
   minToHHMM,
   useDebounce,
-  useOutsideClick,
   validateTimesheetEntry,
 } from "helpers";
-import { CheckedCheckboxSVG, UncheckedCheckboxSVG } from "miruIcons";
-import TextareaAutosize from "react-textarea-autosize";
-import { TimeInput, Toastr } from "StyledComponents";
-
-import timesheetEntryApi from "apis/timesheet-entry";
-import CustomDatePicker from "common/CustomDatePicker";
-import { useUserContext } from "context/UserContext";
+import { TimeInput } from "../ui/time-input";
+import { Toastr } from "../ui/toastr";
+import { Textarea } from "../ui/textarea";
+import { Button } from "../ui/button";
+import { Label } from "../ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
+import { Card } from "../ui/card";
+import { cn } from "../../lib/utils";
 import { getValueFromLocalStorage, setToLocalStorage } from "utils/storage";
 
 import MobileEntryForm from "./MobileView/MobileEntryForm";
@@ -56,40 +62,31 @@ const AddEntry: React.FC<Iprops> = ({
   const [client, setClient] = useState<string>(initialClient);
   const [project, setProject] = useState<string>(initialProject);
   const [projectId, setProjectId] = useState<number>(initialProjectId);
-  const [billable, setBillable] = useState<boolean>(initialBillable);
-  const [projectBillable, setProjectBillable] = useState<boolean>(
-    initialProjectBillable
+  const [taskType, setTaskType] = useState<string>(
+    getValueFromLocalStorage("taskType") || "development"
   );
-  const [selectedDate, setSelectedDate] = useState<string>(selectedFullDate);
-  const [displayDatePicker, setDisplayDatePicker] = useState<boolean>(false);
   const [submitting, setSubmitting] = useState<boolean>(false);
 
-  const datePickerRef: MutableRefObject<any> = useRef();
-  const { isDesktop } = useUserContext();
+  const { isDesktop, company } = useUserContext();
+  const dateFormat =
+    company?.date_format || company?.dateFormat || "MM-DD-YYYY";
   const isNewEntry = !editEntryId;
   const debouncedNote = useDebounce(note, 500);
-  useOutsideClick(datePickerRef, () => {
-    setDisplayDatePicker(false);
-  });
-
-  useEffect(() => {
-    setSelectedDate(selectedFullDate);
-  }, [selectedFullDate]);
 
   const handleFillData = () => {
     if (!editEntryId) return;
-    const entry = entryList[selectedFullDate].find(
-      entry => entry.id === editEntryId
-    );
+    const isoDate = dayjs(selectedFullDate, dateFormat).format("YYYY-MM-DD");
+    const entries = entryList[isoDate];
+    if (!entries) return;
+    const entry = entries.find(entry => entry.id === editEntryId);
     if (entry) {
       setDuration(minToHHMM(entry.duration));
       setClient(entry.client);
       setProject(entry.project);
       setProjectId(entry.project_id);
       setNote(entry.note);
-      if (["unbilled", "billed"].includes(entry.bill_status)) {
-        setBillable(true);
-      }
+      // Set task type from entry if available
+      setTaskType(entry.task_type || "development");
     }
   };
 
@@ -103,10 +100,6 @@ const AddEntry: React.FC<Iprops> = ({
     );
     if (selectedProject) {
       setProjectId(Number(selectedProject.id));
-      setProjectBillable(selectedProject.billable);
-      if (projectId != selectedProject.id) {
-        setBillable(selectedProject.billable);
-      }
     }
   }, [project, client]);
 
@@ -115,13 +108,20 @@ const AddEntry: React.FC<Iprops> = ({
   };
 
   const getPayload = () => ({
-    work_date: selectedDate,
+    work_date: dayjs(selectedFullDate, dateFormat).format("YYYY-MM-DD"),
     duration: minFromHHMM(duration),
     note,
-    bill_status: billable ? "unbilled" : "non_billable",
+    task_type: taskType,
+    bill_status: "non_billable",
   });
 
   const handleSave = async () => {
+    // Save the current selections before clearing for next time
+    const savedClient = client;
+    const savedProject = project;
+    const savedProjectId = projectId;
+    const savedTaskType = taskType;
+
     removeLocalStorageItems();
     const tse = getPayload();
     const res = await timesheetEntryApi.create(
@@ -133,7 +133,19 @@ const AddEntry: React.FC<Iprops> = ({
     );
 
     if (res.status === 200) {
-      const fetchEntriesRes = await fetchEntries(selectedDate, selectedDate);
+      // After successful save, store the last used values for next time
+      setToLocalStorage("client", savedClient);
+      setToLocalStorage("project", savedProject);
+      setToLocalStorage("projectId", savedProjectId.toString());
+      setToLocalStorage("taskType", savedTaskType);
+      // Clear only the note and duration for new entry
+      setToLocalStorage("note", "");
+      setToLocalStorage("duration", "");
+
+      const fetchEntriesRes = await fetchEntries(
+        selectedFullDate,
+        selectedFullDate
+      );
       if (!isDesktop) {
         fetchEntriesofMonth();
       }
@@ -141,13 +153,14 @@ const AddEntry: React.FC<Iprops> = ({
       if (fetchEntriesRes) {
         setNewEntryView(false);
         setUpdateView(true);
-        handleAddEntryDateChange(dayjs(selectedDate));
+        handleAddEntryDateChange(dayjs(selectedFullDate));
       }
     }
   };
 
   const handleEdit = async () => {
     try {
+      setSubmitting(true);
       const tse = getPayload();
       const updateRes = await timesheetEntryApi.update(editEntryId, {
         project_id: projectId,
@@ -155,31 +168,20 @@ const AddEntry: React.FC<Iprops> = ({
       });
 
       if (updateRes.status >= 200 && updateRes.status < 300) {
-        if (selectedDate !== selectedFullDate) {
-          await handleFilterEntry(selectedFullDate, editEntryId);
-          await handleRelocateEntry(selectedDate, updateRes.data.entry);
-          if (!isDesktop) {
-            fetchEntriesofMonth();
-          }
-        } else {
-          await fetchEntries(selectedDate, selectedDate);
+        await fetchEntries(selectedFullDate, selectedFullDate);
+        if (!isDesktop) {
           fetchEntriesofMonth();
         }
         setEditEntryId(0);
         setNewEntryView(false);
         setUpdateView(true);
-        handleAddEntryDateChange(dayjs(selectedDate));
-        setSelectedFullDate(dayjs(selectedDate).format("YYYY-MM-DD"));
+        handleAddEntryDateChange(dayjs(selectedFullDate));
       }
     } catch (error) {
       Toastr.error(error);
+    } finally {
+      setSubmitting(false);
     }
-  };
-
-  const handleDateChangeFromDatePicker = (date: Date) => {
-    setSelectedDate(dayjs(date).format("YYYY-MM-DD"));
-    setDisplayDatePicker(false);
-    setUpdateView(false);
   };
 
   const handleDisableBtn = () => {
@@ -202,186 +204,193 @@ const AddEntry: React.FC<Iprops> = ({
     setToLocalStorage("client", client);
     setToLocalStorage("project", project);
     setToLocalStorage("projectId", projectId.toString());
-    setToLocalStorage("billable", billable.toString());
-    setToLocalStorage("projectBillable", projectBillable.toString());
+    setToLocalStorage("taskType", taskType);
   };
 
   useEffect(() => {
     if (isNewEntry) {
       setLocalStorageItems();
     }
-  }, [
-    debouncedNote,
-    duration,
-    client,
-    project,
-    projectId,
-    billable,
-    projectBillable,
-  ]);
+  }, [debouncedNote, duration, client, project, projectId, taskType]);
 
   return isDesktop ? (
-    <div
-      className={`
-       hidden min-h-24 justify-between rounded-lg p-4 shadow-2xl lg:flex ${
-         editEntryId ? "mt-10" : ""
-       }`}
-    >
-      <div className="w-1/2">
-        <div className="mb-2 flex w-129 justify-between">
-          <select
-            className="h-8 w-64 rounded-sm bg-miru-gray-100"
-            id="client"
-            name="client"
-            value={client || "Client"}
-            onChange={e => {
-              setClient(e.target.value);
-              setProject(projects ? projects[e.target.value][0]?.name : "");
-            }}
-          >
-            {!client && (
-              <option disabled selected className="text-miru-gray-100">
-                Client
-              </option>
-            )}
-            {clients.map((client, i) => (
-              <option key={i.toString()}>{client["name"]}</option>
-            ))}
-          </select>
-          <select
-            className="h-8 w-64 rounded-sm bg-miru-gray-100"
-            id="project"
-            name="project"
-            value={project}
-            onChange={e => {
-              setProject(e.target.value);
-            }}
-          >
-            {!project && (
-              <option disabled selected className="text-miru-gray-100">
-                Project
-              </option>
-            )}
-            {client &&
-              projects[client].map((project, i) => (
-                <option data-project-id={project.id} key={i.toString()}>
-                  {project.name}
-                </option>
-              ))}
-          </select>
-        </div>
-        <TextareaAutosize
-          cols={60}
-          name="notes"
-          placeholder=" Notes"
-          rows={5}
-          value={note}
-          className={`
-            focus:miru-han-purple-1000 outline-none mt-2 w-129 resize-none overflow-y-auto rounded-sm bg-miru-gray-100 px-1 ${
-              editEntryId ? "h-auto" : "h-8"
-            }
-          `}
-          onChange={e => setNote(e.target["value"])}
-        />
-      </div>
-      <div className="w-60">
-        <div className="mb-2 flex justify-between">
-          <div>
-            {displayDatePicker && (
-              <div className="relative" ref={datePickerRef}>
-                <div className="h-100 w-100 absolute top-8 z-10">
-                  <CustomDatePicker
-                    date={dayjs(selectedDate).toDate()}
-                    handleChange={handleDateChangeFromDatePicker}
-                  />
-                </div>
+    <Card className="w-full shadow-sm border border-border bg-card backdrop-blur-sm rounded-lg">
+      <div className={`p-8 ${editEntryId ? "mt-4" : ""}`}>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Left Column - Client and Project Selection */}
+          <div className="lg:col-span-2 space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label
+                  htmlFor="client"
+                  className="text-sm font-semibold text-foreground"
+                >
+                  Client
+                </Label>
+                <Select
+                  value={client}
+                  onValueChange={value => {
+                    setClient(value);
+                    setProject(projects ? projects[value][0]?.name : "");
+                  }}
+                >
+                  <SelectTrigger className="h-12">
+                    <SelectValue placeholder="Select a client" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {clients.map((client, i) => (
+                      <SelectItem key={i} value={client["name"]}>
+                        {client["name"]}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
-            )}
-            <div
-              className="formatted-date flex h-8 w-29 items-center justify-center rounded-sm bg-miru-gray-100 p-1 text-sm"
-              id="formattedDate"
-              onClick={() => {
-                setDisplayDatePicker(true);
-              }}
-            >
-              {format(new Date(selectedDate), "do MMM, yyyy")}
+
+              <div className="space-y-2">
+                <Label
+                  htmlFor="project"
+                  className="text-sm font-semibold text-foreground"
+                >
+                  Project
+                </Label>
+                <Select
+                  value={project}
+                  onValueChange={setProject}
+                  disabled={!client}
+                >
+                  <SelectTrigger
+                    className={cn(
+                      "h-12",
+                      !client && "opacity-50 cursor-not-allowed"
+                    )}
+                  >
+                    <SelectValue placeholder="Select a project" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {client &&
+                      projects[client] &&
+                      projects[client].map((project, i) => (
+                        <SelectItem key={i} value={project.name}>
+                          {project.name}
+                        </SelectItem>
+                      ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label
+                htmlFor="notes"
+                className="text-sm font-semibold text-foreground"
+              >
+                Description
+              </Label>
+              <Textarea
+                name="notes"
+                placeholder="What did you work on? Add your notes here..."
+                value={note}
+                className={cn(
+                  "w-full resize-none min-h-[120px] text-base",
+                  editEntryId ? "min-h-[140px]" : "min-h-[120px]"
+                )}
+                onChange={e => setNote(e.target.value)}
+              />
             </div>
           </div>
-          <TimeInput
-            className="h-8 w-20 rounded-sm bg-miru-gray-100 p-1 text-sm placeholder:text-miru-gray-1000"
-            initTime={duration}
-            name="timeInput"
-            onTimeChange={handleDurationChange}
-          />
-        </div>
-        <div className="mt-2 flex items-center">
-          {billable ? (
-            <img
-              alt="checkbox"
-              className="inline"
-              id="check"
-              src={CheckedCheckboxSVG}
-              onClick={() => {
-                setBillable(false);
-              }}
-            />
-          ) : (
-            <img
-              alt="checkbox"
-              className="inline"
-              id="uncheck"
-              src={UncheckedCheckboxSVG}
-              onClick={() => {
-                if (projectBillable) setBillable(true);
-              }}
-            />
-          )}
-          <h4>Billable</h4>
+
+          {/* Right Column - Time, Task Type, and Actions */}
+          <div className="space-y-6">
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label
+                  htmlFor="duration"
+                  className="text-sm font-semibold text-foreground"
+                >
+                  Time Spent
+                </Label>
+                <TimeInput
+                  className="h-12 w-full px-4 text-base font-mono"
+                  initTime={duration}
+                  name="timeInput"
+                  onTimeChange={handleDurationChange}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label
+                  htmlFor="taskType"
+                  className="text-sm font-semibold text-foreground"
+                >
+                  Task Type
+                </Label>
+                <Select value={taskType} onValueChange={setTaskType}>
+                  <SelectTrigger className="h-12">
+                    <SelectValue placeholder="Select task type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="development">Development</SelectItem>
+                    <SelectItem value="meeting">Meeting</SelectItem>
+                    <SelectItem value="research">Research</SelectItem>
+                    <SelectItem value="planning">Planning</SelectItem>
+                    <SelectItem value="testing">Testing</SelectItem>
+                    <SelectItem value="documentation">Documentation</SelectItem>
+                    <SelectItem value="review">Code Review</SelectItem>
+                    <SelectItem value="debugging">Debugging</SelectItem>
+                    <SelectItem value="deployment">Deployment</SelectItem>
+                    <SelectItem value="support">Support</SelectItem>
+                    <SelectItem value="training">Training</SelectItem>
+                    <SelectItem value="other">Other</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-3 pt-4">
+              {editEntryId === 0 ? (
+                <Button
+                  size="lg"
+                  disabled={handleDisableBtn()}
+                  onClick={() => {
+                    setSubmitting(true);
+                    handleSave();
+                  }}
+                  className="h-12 text-base font-semibold"
+                >
+                  Save Entry
+                </Button>
+              ) : (
+                <Button
+                  size="lg"
+                  disabled={handleDisableBtn()}
+                  onClick={() => {
+                    handleEdit();
+                  }}
+                  className="h-12 text-base font-semibold"
+                >
+                  Update Entry
+                </Button>
+              )}
+              <Button
+                variant="outline"
+                size="lg"
+                onClick={() => {
+                  setNewEntryView(false);
+                  setEditEntryId(0);
+                }}
+                className="h-12 text-base"
+              >
+                Cancel
+              </Button>
+            </div>
+          </div>
         </div>
       </div>
-      <div className="max-w-min">
-        {editEntryId === 0 ? (
-          <button
-            disabled={handleDisableBtn()}
-            className={`mb-1 h-8 w-38 rounded border py-1 px-6 text-xs font-bold tracking-widest text-white ${
-              handleDisableBtn()
-                ? "cursor-not-allowed bg-miru-gray-1000"
-                : "bg-miru-han-purple-1000 hover:border-transparent"
-            }`}
-            onClick={() => {
-              setSubmitting(true);
-              handleSave();
-            }}
-          >
-            SAVE
-          </button>
-        ) : (
-          <button
-            disabled={handleDisableBtn()}
-            className={`mb-1 h-8 w-38 rounded border py-1 px-6 text-xs font-bold tracking-widest text-white ${
-              handleDisableBtn()
-                ? "cursor-not-allowed bg-miru-gray-1000"
-                : "bg-miru-han-purple-1000 hover:border-transparent"
-            }`}
-            onClick={() => handleEdit()}
-          >
-            UPDATE
-          </button>
-        )}
-        <button
-          className="mt-1 h-8 w-38 rounded border border-miru-han-purple-1000 bg-transparent py-1 px-6 text-xs font-bold tracking-widest text-miru-han-purple-600 hover:border-transparent hover:bg-miru-han-purple-1000 hover:text-white"
-          onClick={() => {
-            setNewEntryView(false);
-            setEditEntryId(0);
-          }}
-        >
-          CANCEL
-        </button>
-      </div>
-    </div>
+    </Card>
   ) : (
     <MobileEntryForm
-      billable={billable}
+      taskType={taskType}
       client={client}
       clients={clients}
       duration={duration}
@@ -392,15 +401,15 @@ const AddEntry: React.FC<Iprops> = ({
       note={note}
       project={project}
       projects={projects}
-      selectedDate={selectedDate}
-      setBillable={setBillable}
+      selectedDate={selectedFullDate}
+      setTaskType={setTaskType}
       setClient={setClient}
       setDuration={setDuration}
       setEditEntryId={setEditEntryId}
       setNewEntryView={setNewEntryView}
       setNote={setNote}
       setProject={setProject}
-      setSelectedDate={setSelectedDate}
+      setSelectedDate={setSelectedFullDate}
       setSubmitting={setSubmitting}
       submitting={submitting}
     />
@@ -409,7 +418,7 @@ const AddEntry: React.FC<Iprops> = ({
 
 interface Iprops {
   selectedEmployeeId: number;
-  fetchEntries: (from: string, to: string) => Promise<any>; // eslint-disable-line
+  fetchEntries: (from: string, to: string) => Promise<any>;
   fetchEntriesofMonth: any;
   setNewEntryView: React.Dispatch<React.SetStateAction<boolean>>;
   clients: any[];
@@ -419,8 +428,8 @@ interface Iprops {
   setEditEntryId: React.Dispatch<React.SetStateAction<number>>;
   entryList: object;
   handleAddEntryDateChange: any;
-  handleFilterEntry: (date: string, entryId: string | number) => object; // eslint-disable-line
-  handleRelocateEntry: (date: string, entry: object) => void; // eslint-disable-line
+  handleFilterEntry: (date: string, entryId: string | number) => object;
+  handleRelocateEntry: (date: string, entry: object) => void;
   setSelectedFullDate: any;
   setUpdateView: any;
   handleDeleteEntry: any;

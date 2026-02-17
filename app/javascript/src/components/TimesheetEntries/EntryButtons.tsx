@@ -1,10 +1,9 @@
 import React from "react";
 
-import { VacationIcon } from "miruIcons";
-import { Button } from "StyledComponents";
-
 import { useTimesheetEntries } from "context/TimesheetEntries";
 import { useUserContext } from "context/UserContext";
+import { VacationIcon } from "miruIcons";
+import { Button } from "StyledComponents";
 
 const EntryButtons = () => {
   const {

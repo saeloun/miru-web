@@ -2,7 +2,6 @@ import React from "react";
 
 import { ReportsIcon } from "miruIcons";
 import { Badge, Tooltip } from "StyledComponents";
-
 import getStatusCssClass from "utils/getBadgeStatus";
 
 const Header = ({
@@ -16,7 +15,9 @@ const Header = ({
   <div className="mt-6 mb-3 sm:flex sm:items-center sm:justify-between">
     <div className="flex flex-row">
       <div className="mr-2 flex self-center">
-        <p className="text-4xl font-bold">Invoice #{invoice.invoice_number}</p>
+        <p className="text-2xl font-semibold tracking-tight">
+          Invoice #{invoice.invoice_number}
+        </p>
       </div>
       <div className="ml-2 flex self-center">
         <Badge

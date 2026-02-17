@@ -1,5 +1,32 @@
 # frozen_string_literal: true
 
+# == Schema Information
+#
+# Table name: companies
+#
+#  id                  :bigint           not null, primary key
+#  address             :text
+#  bank_account_number :string
+#  bank_name           :string
+#  bank_routing_number :string
+#  bank_swift_code     :string
+#  base_currency       :string           default("USD"), not null
+#  business_phone      :string
+#  calendar_enabled    :boolean          default(TRUE)
+#  country             :string           not null
+#  date_format         :string
+#  fiscal_year_end     :string
+#  gst_number          :string
+#  name                :string           not null
+#  standard_price      :decimal(, )      default(0.0), not null
+#  timezone            :string
+#  vat_number          :string
+#  working_days        :string           default("5")
+#  working_hours       :string           default("40")
+#  created_at          :datetime         not null
+#  updated_at          :datetime         not null
+#  tax_id              :string
+#
 FactoryBot.define do
   factory :company do
     name { "Saeloun" }

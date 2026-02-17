@@ -1,6 +1,10 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
+import { ApiStatus as PaymentSettingsStatus } from "constants/index";
+
 import React, { useState, useEffect } from "react";
 
+import { paymentSettings, PaymentsProviders } from "apis/api";
+import CustomCheckbox from "common/CustomCheckbox";
+import CustomToggle from "common/CustomToggle";
 import {
   XIcon,
   AmexSVG,
@@ -11,12 +15,6 @@ import {
   StripeLogoSVG,
   VisaSVG,
 } from "miruIcons";
-
-import paymentSettings from "apis/payment-settings";
-import PaymentsProviders from "apis/payments/providers";
-import CustomCheckbox from "common/CustomCheckbox";
-import CustomToggle from "common/CustomToggle";
-import { ApiStatus as PaymentSettingsStatus } from "constants/index";
 
 interface IProvider {
   id: number;
@@ -36,11 +34,11 @@ const InvoiceSettings = ({
   );
   const [isChecked, setIsChecked] = useState<boolean>(true);
   const [isStripeConnected, setIsStripeConnected] = useState<boolean>(null);
-  const [isPaypalConnected, setPaypalConnected] = useState<boolean>(false); //eslint-disable-line
-  const [accountLink, setAccountLink] = useState<string>(null);
+  const [isPaypalConnected, setPaypalConnected] = useState<boolean>(false);
+  const [accountLink, setAccountLink] = useState<string>("");
   const [stripeAcceptedPaymentMethods, setStripeAcceptedPaymentMethods] =
     useState<Array<string>>(null);
-  const [stripe, setStripeSettings] = useState<IProvider>(null); //eslint-disable-line
+  const [stripe, setStripeSettings] = useState<IProvider>(null);
 
   const connectStripe = async () => {
     const res = await paymentSettings.connectStripe();
@@ -57,7 +55,9 @@ const InvoiceSettings = ({
       setStripeAcceptedPaymentMethods(
         !!stripe && stripe.acceptedPaymentMethods
       );
-      !!stripe && setStripeSettings(stripe);
+      if (stripe) {
+        setStripeSettings(stripe);
+      }
       setStatus(PaymentSettingsStatus.SUCCESS);
     } catch {
       setStatus(PaymentSettingsStatus.ERROR);

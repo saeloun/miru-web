@@ -1,9 +1,8 @@
 import React from "react";
 
+import CustomYearPicker from "common/CustomYearPicker";
 import { getYear } from "date-fns";
 import { XIcon } from "miruIcons";
-
-import CustomYearPicker from "common/CustomYearPicker";
 
 const EditHeader = ({
   title,
@@ -48,12 +47,12 @@ const EditHeader = ({
       </div>
     </div>
     <div className="flex h-12 w-full items-center justify-between bg-miru-han-purple-1000 p-3 text-miru-white-1000 shadow-c1 md:hidden md:w-0">
-      <h1 className="mx-auto w-full text-center font-manrope text-base font-medium leading-5.5">
+      <h1 className="mx-auto w-full text-center font-sans text-base font-medium leading-5.5">
         {title}
       </h1>
       <div>
         <button
-          className="outline-none border-none bg-transparent font-manrope font-bold capitalize text-miru-han-purple-1000"
+          className="outline-none border-none bg-transparent font-sans font-bold capitalize text-miru-han-purple-1000"
           onClick={cancelAction}
         >
           <XIcon color="#fff" size={16} />

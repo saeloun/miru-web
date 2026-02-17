@@ -1,21 +1,163 @@
-@import "tailwindcss/base";
-@import "tailwindcss/components";
-@import "tailwindcss/utilities";
-@import "react-toastify/dist/ReactToastify.min.css";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 @import "react-responsive-carousel/lib/styles/carousel.min.css";
-@import "team";
-@import "time-tracking";
-@import "react-calendar";
-@import "toast";
-@import "pto";
-@import "authentication";
-@import "rc-steps";
 
 @layer base {
-  @font-face {
-    font-family: "Manrope";
-    src: url("../fonts/Manrope/Manrope-VariableFont_wght.ttf");
-    font-weight: 200 800;
+  /* Inter font is loaded from Google Fonts via HTML head */
+  body {
+    font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+
+  /* Mercury-Inspired Theme Variables - Modern Monochrome Design */
+  :root {
+    /* Core Mercury-inspired theme variables */
+    --background: 0 0% 100%; /* Pure white #FFFFFF */
+    --foreground: 0 0% 6%; /* Almost black #0F0F0F */
+    --card: 0 0% 100%; /* Pure white #FFFFFF */
+    --card-foreground: 0 0% 6%; /* Almost black #0F0F0F */
+    --popover: 0 0% 100%; /* Pure white #FFFFFF */
+    --popover-foreground: 0 0% 6%; /* Almost black #0F0F0F */
+    --primary: 0 0% 0%; /* Pure black #000000 */
+    --primary-foreground: 0 0% 100%; /* Pure white #FFFFFF */
+    --secondary: 0 0% 97%; /* Very light gray #F8F8F8 */
+    --secondary-foreground: 0 0% 6%; /* Almost black #0F0F0F */
+    --muted: 0 0% 94%; /* Light gray #F0F0F0 */
+    --muted-foreground: 0 0% 42%; /* Medium gray #6B6B6B */
+    --accent: 0 0% 97%; /* Very light gray #F8F8F8 */
+    --accent-foreground: 0 0% 6%; /* Almost black #0F0F0F */
+    --destructive: 0 84% 60%; /* Red for errors #EF4444 */
+    --destructive-foreground: 0 0% 100%; /* White #FFFFFF */
+    --border: 0 0% 90%; /* Light gray border #E5E5E5 */
+    --input: 0 0% 94%; /* Light gray input #F0F0F0 */
+    --ring: 0 0% 0%; /* Black for focus #000000 */
+    --radius: 0.5rem; /* Slightly smaller rounded corners */
+    
+    /* Chart colors - Mercury monochrome palette */
+    --chart-1: 0 0% 0%; /* Pure black */
+    --chart-2: 0 0% 20%; /* Dark gray */
+    --chart-3: 0 0% 40%; /* Medium gray */
+    --chart-4: 0 0% 60%; /* Light medium gray */
+    --chart-5: 0 0% 80%; /* Light gray */
+
+    /* Extended modern colors */
+    --gradient-start: 91 52 234; /* #5B34EA */
+    --gradient-end: 124 93 238; /* #7C5DEE */
+    --surface-1: 255 255 255; /* #FFFFFF */
+    --surface-2: 245 247 249; /* #F5F7F9 */
+    --surface-3: 235 239 242; /* #EBEFF2 */
+    --text-primary: 29 26 49; /* #1D1A31 */
+    --text-secondary: 74 72 90; /* #4A485A */
+    --text-muted: 119 118 131; /* #777683 */
+
+    /* Miru brand color CSS variables for v4 compatibility */
+    --miru-black-1000: 48 58 75; /* #303A4B */
+    --miru-gray-1000: 205 214 223; /* #CDD6DF */
+    --miru-gray-600: 215 222 229; /* #D7DEE5 */
+    --miru-gray-400: 225 230 236; /* #E1E6EC */
+    --miru-gray-200: 235 239 242; /* #EBEFF2 */
+    --miru-gray-100: 245 247 249; /* #F5F7F9 */
+    --miru-gray-500: 173 164 206; /* #ADA4CE */
+    --miru-gray-800: 173 164 206; /* #ADA4CE */
+    --miru-white-1000: 255 255 255; /* #FFFFFF */
+    --miru-dark-purple-1000: 29 26 49; /* #1D1A31 */
+    --miru-dark-purple-600: 74 72 90; /* #4A485A */
+    --miru-dark-purple-400: 119 118 131; /* #777683 */
+    --miru-dark-purple-200: 165 163 173; /* #A5A3AD */
+    --miru-dark-purple-100: 210 209 214; /* #D2D1D6 */
+    --miru-han-purple-1000: 91 52 234; /* #5B34EA */
+    --miru-han-purple-600: 124 93 238; /* #7C5DEE */
+    --miru-han-purple-400: 157 133 242; /* #9D85F2 */
+    --miru-han-purple-200: 189 174 247; /* #BDAEF7 */
+    --miru-han-purple-100: 222 214 251; /* #DED6FB */
+    --miru-red-400: 224 70 70; /* #E04646 */
+    --miru-red-200: 235 91 91; /* #EB5B5B */
+
+    /* Sidebar specific variables for Mercury theme */
+    --sidebar: 0 0% 98%; /* Very light gray #FAFAFA */
+    --sidebar-foreground: 0 0% 6%; /* Almost black #0F0F0F */
+    --sidebar-primary: 0 0% 0%; /* Pure black #000000 */
+    --sidebar-primary-foreground: 0 0% 100%; /* Pure white #FFFFFF */
+    --sidebar-accent: 0 0% 94%; /* Light gray #F0F0F0 */
+    --sidebar-accent-foreground: 0 0% 6%; /* Almost black #0F0F0F */
+    --sidebar-border: 0 0% 90%; /* Light gray border #E5E5E5 */
+    --sidebar-ring: 0 0% 0%; /* Black for focus #000000 */
+  }
+
+  /* Dark mode variables - Improved contrast for better accessibility */
+  .dark {
+    --background: 268 29% 10%; /* Darker base for better contrast */
+    --foreground: 0 0% 98%; /* High contrast white text */
+    --card: 268 20% 15%; /* Slightly lighter than background */
+    --card-foreground: 0 0% 98%; /* High contrast white text */
+    --popover: 268 20% 15%; /* Match card for consistency */
+    --popover-foreground: 0 0% 98%; /* High contrast white text */
+    --primary: 264 94% 60%; /* Slightly brighter for better visibility */
+    --primary-foreground: 0 0% 100%; /* Pure white for max contrast */
+    --secondary: 268 15% 25%; /* More contrast from background */
+    --secondary-foreground: 0 0% 98%; /* High contrast white text */
+    --muted: 268 15% 25%; /* More contrast for muted elements */
+    --muted-foreground: 220 10% 75%; /* Better contrast for muted text */
+    --accent: 264 94% 60%; /* Match primary for consistency */
+    --accent-foreground: 0 0% 100%; /* Pure white for max contrast */
+    --destructive: 0 75% 65%; /* Brighter red for better visibility */
+    --destructive-foreground: 0 0% 100%; /* Pure white for max contrast */
+    --border: 268 15% 25%; /* More visible borders */
+    --input: 268 20% 15%; /* Match card background */
+    --ring: 264 94% 60%; /* Match primary for focus states */
+
+    /* Extended dark mode colors */
+    --gradient-start: 91 52 234; /* #5B34EA */
+    --gradient-end: 124 93 238; /* #7C5DEE */
+    --surface-1: 29 26 49; /* #1D1A31 */
+    --surface-2: 74 72 90; /* #4A485A */
+    --surface-3: 119 118 131; /* #777683 */
+    --text-primary: 255 255 255; /* #FFFFFF */
+    --text-secondary: 210 209 214; /* #D2D1D6 */
+    --text-muted: 165 163 173; /* #A5A3AD */
+
+    /* Sidebar specific variables for dark mode - Improved contrast */
+    --sidebar: 268 20% 12%; /* Darker sidebar for separation */
+    --sidebar-foreground: 0 0% 98%; /* High contrast white text */
+    --sidebar-primary: 264 94% 60%; /* Brighter primary for visibility */
+    --sidebar-primary-foreground: 0 0% 100%; /* Pure white for max contrast */
+    --sidebar-accent: 268 15% 30%; /* More visible hover states */
+    --sidebar-accent-foreground: 0 0% 98%; /* High contrast white text */
+    --sidebar-border: 268 15% 25%; /* More visible borders */
+    --sidebar-ring: 264 94% 60%; /* Match primary for focus states */
+  }
+
+  /* Monochrome theme - Pure black and white for maximum contrast */
+  .monochrome {
+    --background: 0 0% 100%; /* Pure white */
+    --foreground: 0 0% 0%; /* Pure black */
+    --card: 0 0% 98%; /* Off-white cards */
+    --card-foreground: 0 0% 0%; /* Pure black text */
+    --popover: 0 0% 100%; /* Pure white */
+    --popover-foreground: 0 0% 0%; /* Pure black text */
+    --primary: 0 0% 0%; /* Pure black primary */
+    --primary-foreground: 0 0% 100%; /* Pure white text */
+    --secondary: 0 0% 95%; /* Light gray secondary */
+    --secondary-foreground: 0 0% 0%; /* Pure black text */
+    --muted: 0 0% 90%; /* Light gray muted */
+    --muted-foreground: 0 0% 40%; /* Dark gray text */
+    --accent: 0 0% 0%; /* Pure black accent */
+    --accent-foreground: 0 0% 100%; /* Pure white text */
+    --destructive: 0 0% 20%; /* Dark gray destructive */
+    --destructive-foreground: 0 0% 100%; /* Pure white text */
+    --border: 0 0% 85%; /* Light gray border */
+    --input: 0 0% 95%; /* Light gray input */
+    --ring: 0 0% 0%; /* Pure black focus ring */
+
+    /* Sidebar specific variables for monochrome theme */
+    --sidebar: 0 0% 95%; /* Light gray sidebar */
+    --sidebar-foreground: 0 0% 0%; /* Pure black text */
+    --sidebar-primary: 0 0% 0%; /* Pure black primary */
+    --sidebar-primary-foreground: 0 0% 100%; /* Pure white text */
+    --sidebar-accent: 0 0% 85%; /* Light gray accent */
+    --sidebar-accent-foreground: 0 0% 0%; /* Pure black text */
+    --sidebar-border: 0 0% 80%; /* Gray border */
+    --sidebar-ring: 0 0% 0%; /* Pure black focus ring */
   }
 
   .field_with_errors {
@@ -26,41 +168,109 @@
   .modal-width {
     min-width: 25rem;
   }
+
+  /* Modern base styles with theme transition support */
+  * {
+    @apply border-border;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+  }
+  
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+  
+  /* Maintain Manrope for specific elements that need it */
+  .font-manrope {
+    font-family: "Manrope", serif !important;
+  }
+
+  /* Modern Typography Classes */
+  .text-h1 {
+    @apply text-4xl font-extrabold;
+  }
+
+  .text-h2 {
+    @apply border-b pb-2 text-3xl font-semibold;
+  }
+
+  .text-h3 {
+    @apply text-2xl font-semibold;
+  }
+
+  .text-h4 {
+    @apply text-xl font-semibold;
+  }
+
+  .text-p {
+    @apply leading-7;
+  }
+
+  .text-lead {
+    @apply text-xl;
+  }
+
+  .text-large {
+    @apply text-lg font-semibold;
+  }
+
+  .text-small {
+    @apply text-sm font-medium;
+  }
+
+  .text-muted {
+    @apply text-sm;
+  }
+
+  /* Modern Interactive Elements */
+  .hover-lift {
+    @apply transition-transform;
+  }
+
+  .focus-ring {
+    @apply outline-none;
+  }
+
+  .glass {
+    backdrop-filter: blur(16px) saturate(180%);
+    background-color: rgba(255, 255, 255, 0.75);
+    border: 1px solid rgba(209, 213, 219, 0.3);
+  }
+
+  .dark .glass {
+    background-color: rgba(29, 26, 49, 0.75);
+    border: 1px solid rgba(74, 72, 90, 0.3);
+  }
 }
 
 @layer components {
-  @import "navbar";
-  .sidebar {
-    &__container {
-      box-shadow: -2px 6px 11px grey;
-      -webkit-tap-highlight-color: transparent;
-      -webkit-touch-callout: none;
-      -webkit-user-select: none;
-      -khtml-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
-      user-select: none;
-      @apply fixed right-0 bottom-0 top-0 w-80 bg-white;
-    }
-    &__footer {
-      @apply flex h-full items-end justify-center p-6;
-    }
-    &__reset {
-      @apply focus:outline-none mr-2 w-6/12 items-center rounded border-2 border-miru-han-purple-1000 bg-transparent bg-transparent py-1 px-4 text-base text-base font-medium tracking-widest text-miru-han-purple-1000 shadow-sm hover:text-miru-han-purple-600;
-    }
-    &__apply {
-      @apply focus:outline-none w-6/12 items-center rounded border-2 border-miru-han-purple-1000 bg-transparent bg-miru-han-purple-1000 py-1 px-4 text-base text-base font-medium tracking-widest text-white shadow-sm hover:border-miru-han-purple-600;
-    }
+  .sidebar__container {
+    box-shadow: -2px 6px 11px grey;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    @apply fixed right-0 bottom-0 top-0 w-80 bg-white;
+  }
+  .sidebar__footer {
+    @apply flex h-full items-end justify-center p-6;
+  }
+  .sidebar__reset {
+    @apply focus:outline-none mr-2 w-6/12 items-center rounded border-2 border-miru-han-purple-1000 bg-transparent bg-transparent py-1 px-4 text-base text-base font-medium tracking-widest text-miru-han-purple-1000 shadow-sm hover:text-miru-han-purple-600;
+  }
+  .sidebar__apply {
+    @apply focus:outline-none w-6/12 items-center rounded border-2 border-miru-han-purple-1000 bg-transparent bg-miru-han-purple-1000 py-1 px-4 text-base text-base font-medium tracking-widest text-white shadow-sm hover:border-miru-han-purple-600;
   }
 
-  .button-icon {
-    &__back {
-      @apply mr-4 h-8 p-1;
-    }
-    &__back:hover {
-      background-color: rgba(205, 214, 223, 0.2);
-      @apply rounded;
-    }
+  .button-icon__back {
+    @apply mr-4 h-8 p-1;
+  }
+  .button-icon__back:hover {
+    background-color: rgba(205, 214, 223, 0.2);
+    @apply rounded;
   }
 
   .menuButton {
@@ -290,7 +500,7 @@
 
   .modal {
     &__modal {
-      @apply animated fadeIn faster fixed inset-0 z-50 flex w-full items-center justify-center overflow-hidden px-5;
+      @apply fixed inset-0 z-50 flex w-full items-center justify-center overflow-hidden px-5;
     }
     &__container {
       @apply z-50 mx-auto w-full max-w-md overflow-y-auto rounded-xl bg-white shadow-lg;
@@ -389,9 +599,6 @@
   }
 }
 
-body {
-  font-family: "Manrope", "sans-serif";
-}
 
 .example-enter {
   opacity: 0.01;

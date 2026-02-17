@@ -2,7 +2,6 @@ import React from "react";
 
 import { currencyFormat } from "helpers";
 import { useNavigate } from "react-router-dom";
-
 import getStatusCssClass from "utils/getBadgeStatus";
 
 const SearchDataRow = ({ invoice }) => {
@@ -12,8 +11,7 @@ const SearchDataRow = ({ invoice }) => {
     navigate(`/invoices/${invoice.id}`);
   };
 
-  const { client, invoiceNumber, currency, amount, issueDate, status } =
-    invoice;
+  const { client, invoiceNumber, company, amount, issueDate, status } = invoice;
 
   return (
     <div
@@ -29,7 +27,7 @@ const SearchDataRow = ({ invoice }) => {
         </div>
       </div>
       <div className="w-4/12 px-2/100 font-bold tracking-wider">
-        {currencyFormat(currency, amount)}
+        {currencyFormat(company.baseCurrency, amount)}
         <div className="text-sm font-normal text-miru-dark-purple-400">
           {issueDate}
         </div>

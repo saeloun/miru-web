@@ -41,7 +41,7 @@ const InvoiceActions = ({
     isMoreOptionsVisible
   );
 
-  const currency = invoice?.currency;
+  const currency = invoice?.company?.currency;
   const dateFormat = invoice?.company?.dateFormat;
 
   return (

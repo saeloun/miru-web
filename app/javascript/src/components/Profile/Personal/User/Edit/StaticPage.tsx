@@ -1,34 +1,30 @@
-/* eslint-disable no-unused-vars */
 import React from "react";
-
 import dayjs from "dayjs";
 import {
-  InfoIcon,
-  CalendarIcon,
-  PasswordIconSVG,
-  PasswordIconTextSVG,
-  KeyIcon,
-  PhoneIcon,
-  MapPinIcon,
-  GlobeIcon,
-} from "miruIcons";
+  User,
+  Calendar,
+  Eye,
+  EyeSlash,
+  Lock,
+  Phone,
+  MapPin,
+  Globe,
+  LinkedinLogo,
+  GithubLogo,
+  Envelope,
+} from "phosphor-react";
 import PhoneInput from "react-phone-number-input";
 import flags from "react-phone-number-input/flags";
 import "react-phone-number-input/style.css";
-
 import CustomDatePicker from "common/CustomDatePicker";
-import { CustomInputText } from "common/CustomInputText";
 import CustomReactSelect from "common/CustomReactSelect";
-import { Divider } from "common/Divider";
 import { ErrorSpan } from "common/ErrorSpan";
+import { Card, CardContent, CardHeader, CardTitle } from "../../../../ui/card";
+import { Input } from "../../../../ui/input";
+import { Button } from "../../../../ui/button";
+import { Separator } from "../../../../ui/separator";
 
-const inputClass =
-  "form__input block w-full appearance-none bg-white p-4 text-base h-12 focus-within:border-miru-han-purple-1000";
-
-const labelClass =
-  "absolute top-0.5 left-1 h-6 z-1 origin-0 bg-white p-2 text-base font-medium duration-300";
-
-const StaticPage = ({
+const EditProfilePage = ({
   addressOptions,
   addrType,
   countries,
@@ -46,571 +42,632 @@ const StaticPage = ({
   changePassword,
   setChangePassword,
   showCurrentPassword,
-  currentPassword,
-  handleCurrentPasswordChange,
+  _currentPassword,
+  _handleCurrentPasswordChange,
   setShowCurrentPassword,
-  getErr,
+  _getErr,
   showConfirmPassword,
   showPassword,
-  handlePasswordChange,
-  password,
-  confirmPassword,
+  _handlePasswordChange,
+  _password,
+  _confirmPassword,
   setShowPassword,
-  handleConfirmPasswordChange,
+  _handleConfirmPasswordChange,
   setShowConfirmPassword,
   dateFormat,
   cancelPasswordChange,
 }) => (
-  <div className="mt-4 h-full bg-miru-gray-100 px-10">
-    <div className="flex border-b border-b-miru-gray-400 py-10">
-      <div className="w-2/12 pr-4">
-        <span className="flex flex-row items-center text-sm font-medium text-miru-dark-purple-1000">
-          <InfoIcon className="mr-2" color="#1D1A31" size={13.5} /> Basic
-          Details
-        </span>
-      </div>
-      <div className="w-9/12">
-        <div className="flex flex-row pb-3">
-          <div className="flex w-1/2 flex-col px-2">
-            <CustomInputText
-              id="first_name"
-              label="First name"
-              name="first_name"
-              type="text"
-              value={personalDetails.first_name || ""}
-              inputBoxClassName={`${inputClass} ${
-                errDetails.first_name_err
-                  ? "border-red-600"
-                  : "border-miru-gray-1000"
-              }`}
-              labelClassName={`${labelClass} ${
-                errDetails.first_name_err
-                  ? "text-red-600"
-                  : "text-miru-dark-purple-200"
-              }`}
-              onChange={e => {
-                updateBasicDetails(e.target.value, "first_name", false, "");
-              }}
-            />
-            {errDetails.first_name_err && (
-              <ErrorSpan
-                className="text-xs text-red-600"
-                message={errDetails.first_name_err}
-              />
-            )}
-          </div>
-          <div className="flex w-1/2 flex-col px-2">
-            <CustomInputText
-              id="last_name"
-              label="Last name"
-              name="last_name"
-              type="text"
-              value={personalDetails.last_name || ""}
-              inputBoxClassName={`${inputClass} ${
-                errDetails.last_name_err
-                  ? "border-red-600"
-                  : "border-miru-gray-1000"
-              }`}
-              labelClassName={`${labelClass} ${
-                errDetails.last_name_err
-                  ? "text-red-600"
-                  : "text-miru-dark-purple-200"
-              }`}
-              onChange={e => {
-                updateBasicDetails(e.target.value, "last_name", false, "");
-              }}
-            />
-            {errDetails.last_name_err && (
-              <ErrorSpan
-                className="text-xs text-red-600"
-                message={errDetails.last_name_err}
-              />
-            )}
-          </div>
-        </div>
-        <div className="flex w-1/2 flex-col py-3" ref={wrapperRef}>
-          <div
-            className="field relative flex w-full flex-col px-2"
-            onClick={() => {
-              setShowDatePicker({ visibility: !showDatePicker.visibility });
-            }}
-          >
-            <CustomInputText
-              disabled
-              id="date_of_birth"
-              inputBoxClassName={`${inputClass} border-miru-gray-1000`}
-              label="Date of Birth"
-              name="date_of_birth"
-              type="text"
-              value={personalDetails.date_of_birth || ""}
-              onChange={e => {
-                updateBasicDetails(e.target.value, "date_of_birth", false);
-              }}
-            />
-            <CalendarIcon
-              className="absolute top-0 bottom-0 right-1 mx-2 my-3 "
-              color="#5B34EA"
-              size={20}
-            />
-          </div>
-          {showDatePicker.visibility && (
-            <CustomDatePicker
-              dateFormat={dateFormat}
-              handleChange={e => handleDatePicker(e, true)}
-              date={
-                personalDetails.date_of_birth
-                  ? personalDetails.date_of_birth
-                  : dayjs()
-              }
-            />
-          )}
+  <div className="min-h-screen bg-gray-50 font-geist">
+    {/* Header */}
+    <div className="bg-white border-b border-gray-200">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="py-6">
+          <h1 className="text-2xl font-geist-semibold text-gray-900">
+            Edit Profile
+          </h1>
+          <p className="text-sm text-gray-600 mt-1 font-geist-regular">
+            Update your personal information and account settings
+          </p>
         </div>
       </div>
     </div>
-    <Divider />
-    <div className="flex border-b border-b-miru-gray-400 py-10">
-      <div className="w-2/12 pr-4">
-        <span className="flex flex-row items-center text-sm font-medium text-miru-dark-purple-1000">
-          <PhoneIcon className="mr-2" color="#1D1A31" size={13.5} />
-          Contact Details
-        </span>
-      </div>
-      <div className="w-9/12">
-        <div className="flex flex-row">
-          <div className="flex w-1/2 flex-col px-2">
-            <div className="outline relative flex h-12 flex-row rounded border border-miru-gray-1000 bg-white p-4">
-              <PhoneInput
-                className="input-phone-number w-full border-transparent focus:border-transparent focus:ring-0"
-                flags={flags}
-                inputclassname="form__input block w-full appearance-none bg-white border-0 focus:border-0 px-0 text-base border-transparent focus:border-transparent focus:ring-0 border-miru-gray-1000 w-full border-bottom-none "
-                value={
-                  personalDetails.phone_number
-                    ? personalDetails.phone_number
-                    : ""
-                }
-                onChange={handlePhoneNumberChange}
-              />
-              <label
-                className="absolute -top-1 left-0 z-1 ml-3 origin-0 bg-white px-1 text-xsm font-medium text-miru-dark-purple-200 duration-300"
-                htmlFor="phone_number"
-              >
-                Phone number
-              </label>
-            </div>
-          </div>
-          <div className="flex w-1/2 flex-col px-2">
-            <CustomInputText
-              id="email_id"
-              label="Email ID (Personal)"
-              name="email_id"
-              type="email"
-              value={personalDetails.email_id || ""}
-              inputBoxClassName={`${inputClass} ${
-                errDetails.email_id_err
-                  ? "border-red-600"
-                  : "border-miru-gray-1000"
-              }`}
-              labelClassName={`${labelClass} ${
-                errDetails.email_id_err
-                  ? "text-red-600"
-                  : "text-miru-dark-purple-200"
-              } `}
-              onChange={e => {
-                updateBasicDetails(e.target.value, "email_id", false);
-              }}
-            />
-            {errDetails.email_id_err && (
-              <ErrorSpan
-                className="text-xs text-red-600"
-                message={errDetails.email_id_err}
-              />
-            )}
-          </div>
-        </div>
-      </div>
-    </div>
-    <Divider />
-    <div className="flex border-b border-b-miru-gray-400 py-10">
-      <div className="w-2/12 pr-4">
-        <span className="flex flex-row items-center text-sm font-medium text-miru-dark-purple-1000">
-          <MapPinIcon className="mr-2" color="#1D1A31" size={13.5} />
-          Address
-        </span>
-      </div>
-      <div className="w-9/12">
-        <div className="flex flex-row">
-          <div className="flex w-1/2 flex-col px-2 pb-3">
-            <CustomReactSelect
-              handleOnChange={handleOnChangeAddrType}
-              label="Address type"
-              name="address_select"
-              options={addressOptions}
-              value={addrType.value ? addrType : addressOptions[0]}
-            />
-          </div>
-        </div>
-        <div className="flex w-full flex-col px-2 py-3">
-          <CustomInputText
-            id="address_line_1"
-            label="Address line 1"
-            name="address_line_1"
-            type="text"
-            inputBoxClassName={`${inputClass} ${
-              errDetails.address_line_1_err
-                ? "border-red-600"
-                : "border-miru-gray-1000"
-            }`}
-            labelClassName={`${labelClass} ${
-              errDetails.address_line_1_err
-                ? "text-red-600"
-                : "text-miru-dark-purple-200"
-            }`}
-            value={
-              personalDetails.addresses &&
-              personalDetails.addresses.address_line_1
-            }
-            onChange={e => {
-              updateBasicDetails(e.target.value, "address_line_1", true);
-            }}
-          />
-          {errDetails.address_line_1_err && (
-            <ErrorSpan
-              className="text-xs text-red-600"
-              message={errDetails.address_line_1_err}
-            />
-          )}
-        </div>
-        <div className="flex w-full flex-col px-2 py-3">
-          <CustomInputText
-            id="address_line_2"
-            label="Address line 2 (optional)"
-            name="address_line_2"
-            type="text"
-            value={
-              personalDetails.addresses &&
-              personalDetails.addresses.address_line_2
-            }
-            onChange={e => {
-              updateBasicDetails(e.target.value, "address_line_2", true);
-            }}
-          />
-        </div>
-        <div className="flex flex-row">
-          <div className="flex w-1/2 flex-col px-2 py-3">
-            <CustomReactSelect
-              handleOnChange={value => handleOnChangeCountry(value)}
-              isErr={!!errDetails.country_err}
-              label="Country"
-              name="current_country_select"
-              options={countries}
-              value={{
-                label: personalDetails.addresses.country,
-                value: personalDetails.addresses.country,
-              }}
-            />
-            {errDetails.country_err && (
-              <ErrorSpan
-                className="text-xs text-red-600"
-                message={errDetails.country_err}
-              />
-            )}
-          </div>
-          <div className="flex w-1/2 flex-col px-2 py-3">
-            <CustomInputText
-              id="state"
-              label="State"
-              name="state"
-              type="text"
-              value={personalDetails.addresses.state}
-              inputBoxClassName={`${inputClass} ${
-                errDetails.state_err
-                  ? "border-red-600"
-                  : "border-miru-gray-1000"
-              }`}
-              labelClassName={`${labelClass} ${
-                errDetails.state_err
-                  ? "text-red-600"
-                  : "text-miru-dark-purple-200"
-              }`}
-              onChange={e => {
-                updateBasicDetails(e.target.value, "state", true);
-              }}
-            />
-            {errDetails.state_err && (
-              <ErrorSpan
-                className="text-xs text-red-600"
-                message={errDetails.state_err}
-              />
-            )}
-          </div>
-        </div>
-        <div className="flex flex-row">
-          <div className="flex w-1/2 flex-col px-2 py-3">
-            <CustomInputText
-              id="city"
-              label="City"
-              name="city"
-              type="text"
-              value={personalDetails.addresses.city}
-              inputBoxClassName={`${inputClass} ${
-                errDetails.city_err ? "border-red-600" : "border-miru-gray-1000"
-              }`}
-              labelClassName={`${labelClass} ${
-                errDetails.city_err
-                  ? "text-red-600"
-                  : "text-miru-dark-purple-200"
-              }`}
-              onChange={e => {
-                updateBasicDetails(e.target.value, "city", true);
-              }}
-            />
-            {errDetails.city_err && (
-              <ErrorSpan
-                className="text-xs text-red-600"
-                message={errDetails.city_err}
-              />
-            )}
-          </div>
-          <div className="flex w-1/2 flex-col px-2 py-3">
-            <CustomInputText
-              id="zipcode"
-              label="Zipcode"
-              name="zipcode"
-              type="text"
-              value={personalDetails.addresses.pin}
-              inputBoxClassName={`${inputClass} ${
-                errDetails.pin_err ? "border-red-600" : "border-miru-gray-1000"
-              }`}
-              labelClassName={`${labelClass} ${
-                errDetails.pin_err
-                  ? "text-red-600"
-                  : "text-miru-dark-purple-200"
-              }`}
-              onChange={e => {
-                updateBasicDetails(e.target.value, "pin", true);
-              }}
-            />
-            {errDetails.pin_err && (
-              <ErrorSpan
-                className="text-xs text-red-600"
-                message={errDetails.pin_err}
-              />
-            )}
-          </div>
-        </div>
-      </div>
-    </div>
-    <div className="flex py-10">
-      <div className="w-2/12 pr-4">
-        <span className="flex flex-row items-center text-sm font-medium text-miru-dark-purple-1000">
-          <GlobeIcon className="mr-2" color="#1D1A31" size={13.5} />
-          Social Profiles
-        </span>
-      </div>
-      <div className="w-9/12">
-        <div className="flex flex-row">
-          <div className="flex w-1/2 flex-col px-2">
-            <CustomInputText
-              id="linked_in"
-              label="LinkedIn"
-              name="linked_in"
-              type="text"
-              value={personalDetails.linkedin}
-              onChange={e => {
-                updateBasicDetails(e.target.value, "linkedin", false);
-              }}
-            />
-          </div>
-          <div className="flex w-1/2 flex-col px-2">
-            <CustomInputText
-              id="github"
-              label="Github"
-              name="github"
-              type="text"
-              value={personalDetails.github}
-              onChange={e => {
-                updateBasicDetails(e.target.value, "github", false);
-              }}
-            />
-          </div>
-        </div>
-      </div>
-    </div>
-    <div className="flex flex-row py-6">
-      <div className="w-2/12 pr-4">
-        <span className="flex flex-row items-center text-sm font-medium text-miru-dark-purple-1000">
-          <KeyIcon className="mr-2" color="#1D1A31" size={13.5} />
-          Password
-        </span>
-      </div>
-      <div className="w-9/12">
-        <div>
-          {!changePassword && (
-            <div className="ml-2">
-              <button
-                className="cursor-pointer rounded border border-miru-han-purple-600 p-1 text-xs font-bold text-miru-han-purple-600"
-                onClick={() => setChangePassword(true)}
-              >
-                Change Password
-              </button>
-            </div>
-          )}
-          {changePassword && (
-            <div>
-              <div className="flex flex-col">
-                <div className="relative flex w-1/2 flex-col px-2 py-3">
-                  <CustomInputText
-                    id="current_password"
-                    label="Current Password"
-                    name="current_password"
-                    type={showCurrentPassword ? "text" : "password"}
-                    value={personalDetails.currentPassword}
-                    inputBoxClassName={`${inputClass} ${
-                      errDetails.currentPassword_err
-                        ? "border-red-600"
-                        : "border-miru-gray-1000"
+
+    {/* Content */}
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Main Column */}
+        <div className="lg:col-span-2 space-y-6">
+          {/* Basic Details Card */}
+          <Card className="border-gray-200 shadow-sm">
+            <CardHeader className="pb-4">
+              <CardTitle className="text-lg font-geist-semibold flex items-center gap-2">
+                <User className="h-5 w-5 text-gray-600" weight="bold" />
+                Personal Information
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-xs font-geist-medium text-gray-500 uppercase tracking-wider">
+                    First Name
+                  </label>
+                  <Input
+                    className={`font-geist-regular ${
+                      errDetails.first_name_err
+                        ? "border-red-500 focus:ring-red-500"
+                        : ""
                     }`}
-                    labelClassName={`${labelClass} ${
-                      errDetails.currentPassword_err
-                        ? "text-red-600"
-                        : "text-miru-dark-purple-200"
-                    }`}
+                    id="first_name"
+                    name="first_name"
+                    type="text"
+                    placeholder="Enter your first name"
+                    value={personalDetails.first_name || ""}
                     onChange={e => {
                       updateBasicDetails(
                         e.target.value,
-                        "currentPassword",
+                        "first_name",
                         false,
                         ""
                       );
                     }}
                   />
-                  <button
-                    className="btn btn-outline-primary absolute right-0 mt-4 mr-5"
-                    onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-                  >
-                    {!showCurrentPassword ? (
-                      <img alt="pass_icon" src={PasswordIconSVG} />
-                    ) : (
-                      <img alt="pass_icon_text" src={PasswordIconTextSVG} />
-                    )}
-                  </button>
-                  {errDetails.currentPassword_err && (
+                  {errDetails.first_name_err && (
                     <ErrorSpan
-                      className="text-xs text-red-600"
-                      message={errDetails.currentPassword_err}
+                      className="text-xs text-red-600 font-geist-regular"
+                      message={errDetails.first_name_err}
                     />
                   )}
                 </div>
-                <div className="flex flex-row py-3">
-                  <div className="relative flex w-1/2 flex-col px-2">
-                    <CustomInputText
-                      id="password"
-                      label="Password"
-                      name="password"
-                      type={showPassword ? "text" : "password"}
-                      value={personalDetails.password}
-                      inputBoxClassName={`${inputClass} ${
-                        errDetails.password_err
-                          ? "border-red-600"
-                          : "border-miru-gray-1000"
-                      }`}
-                      labelClassName={`${labelClass} ${
-                        errDetails.password_err
-                          ? "text-red-600"
-                          : "text-miru-dark-purple-200"
-                      }`}
-                      onChange={e => {
-                        updateBasicDetails(
-                          e.target.value,
-                          "password",
-                          false,
-                          ""
-                        );
-                      }}
+                <div className="space-y-2">
+                  <label className="text-xs font-geist-medium text-gray-500 uppercase tracking-wider">
+                    Last Name
+                  </label>
+                  <Input
+                    className={`font-geist-regular ${
+                      errDetails.last_name_err
+                        ? "border-red-500 focus:ring-red-500"
+                        : ""
+                    }`}
+                    id="last_name"
+                    name="last_name"
+                    type="text"
+                    placeholder="Enter your last name"
+                    value={personalDetails.last_name || ""}
+                    onChange={e => {
+                      updateBasicDetails(
+                        e.target.value,
+                        "last_name",
+                        false,
+                        ""
+                      );
+                    }}
+                  />
+                  {errDetails.last_name_err && (
+                    <ErrorSpan
+                      className="text-xs text-red-600 font-geist-regular"
+                      message={errDetails.last_name_err}
                     />
-                    <button
-                      className="btn btn-outline-primary absolute right-0 mt-4 mr-5"
-                      onClick={() => setShowPassword(!showPassword)}
-                    >
-                      {!showPassword ? (
-                        <img alt="pass_icon" src={PasswordIconSVG} />
-                      ) : (
-                        <img alt="pass_icon_text" src={PasswordIconTextSVG} />
-                      )}
-                    </button>
+                  )}
+                </div>
+              </div>
+
+              <div className="space-y-2" ref={wrapperRef}>
+                <label className="text-xs font-geist-medium text-gray-500 uppercase tracking-wider flex items-center gap-1">
+                  <Calendar className="h-3 w-3" weight="bold" />
+                  Date of Birth
+                </label>
+                <div
+                  className="relative cursor-pointer"
+                  onClick={() => {
+                    setShowDatePicker({
+                      visibility: !showDatePicker.visibility,
+                    });
+                  }}
+                >
+                  <Input
+                    disabled
+                    className="cursor-pointer font-geist-regular"
+                    id="date_of_birth"
+                    name="date_of_birth"
+                    type="text"
+                    placeholder="Select your birth date"
+                    value={personalDetails.date_of_birth || ""}
+                    onChange={e => {
+                      updateBasicDetails(
+                        e.target.value,
+                        "date_of_birth",
+                        false
+                      );
+                    }}
+                  />
+                  <Calendar
+                    className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-miru-han-purple-600"
+                    size={20}
+                    weight="bold"
+                  />
+                </div>
+                {showDatePicker.visibility && (
+                  <CustomDatePicker
+                    dateFormat={dateFormat}
+                    handleChange={e => handleDatePicker(e, true)}
+                    date={
+                      personalDetails.date_of_birth
+                        ? personalDetails.date_of_birth
+                        : dayjs()
+                    }
+                  />
+                )}
+              </div>
+            </CardContent>
+          </Card>
+          {/* Contact Details Card */}
+          <Card className="border-gray-200 shadow-sm">
+            <CardHeader className="pb-4">
+              <CardTitle className="text-lg font-geist-semibold flex items-center gap-2">
+                <Phone className="h-5 w-5 text-gray-600" weight="bold" />
+                Contact Information
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-xs font-geist-medium text-gray-500 uppercase tracking-wider flex items-center gap-1">
+                    <Phone className="h-3 w-3" weight="bold" />
+                    Phone Number
+                  </label>
+                  <div className="relative flex h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-miru-han-purple-600 focus-within:ring-offset-2">
+                    <PhoneInput
+                      className="input-phone-number w-full border-transparent focus:border-transparent focus:ring-0 font-geist-regular"
+                      flags={flags}
+                      inputclassname="form__input block w-full appearance-none bg-transparent border-0 focus:border-0 px-0 text-sm border-transparent focus:border-transparent focus:ring-0 outline-none font-geist-regular"
+                      value={
+                        personalDetails.phone_number
+                          ? personalDetails.phone_number
+                          : ""
+                      }
+                      onChange={handlePhoneNumberChange}
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-xs font-geist-medium text-gray-500 uppercase tracking-wider flex items-center gap-1">
+                    <Envelope className="h-3 w-3" weight="bold" />
+                    Personal Email
+                  </label>
+                  <Input
+                    className={`font-geist-regular ${
+                      errDetails.email_id_err
+                        ? "border-red-500 focus:ring-red-500"
+                        : ""
+                    }`}
+                    id="email_id"
+                    name="email_id"
+                    type="email"
+                    placeholder="your.email@example.com"
+                    value={personalDetails.email_id || ""}
+                    onChange={e => {
+                      updateBasicDetails(e.target.value, "email_id", false);
+                    }}
+                  />
+                  {errDetails.email_id_err && (
+                    <ErrorSpan
+                      className="text-xs text-red-600 font-geist-regular"
+                      message={errDetails.email_id_err}
+                    />
+                  )}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          {/* Address Card */}
+          <Card className="border-gray-200 shadow-sm">
+            <CardHeader className="pb-4">
+              <CardTitle className="text-lg font-geist-semibold flex items-center gap-2">
+                <MapPin className="h-5 w-5 text-gray-600" weight="bold" />
+                Address
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <label className="text-xs font-geist-medium text-gray-500 uppercase tracking-wider">
+                  Address Type
+                </label>
+                <CustomReactSelect
+                  handleOnChange={handleOnChangeAddrType}
+                  label="Address type"
+                  name="address_select"
+                  options={addressOptions}
+                  value={addrType.value ? addrType : addressOptions[0]}
+                  className="font-geist-regular"
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-xs font-geist-medium text-gray-500 uppercase tracking-wider">
+                  Address Line 1
+                </label>
+                <Input
+                  className={`font-geist-regular ${
+                    errDetails.address_line_1_err
+                      ? "border-red-500 focus:ring-red-500"
+                      : ""
+                  }`}
+                  id="address_line_1"
+                  name="address_line_1"
+                  type="text"
+                  placeholder="Street address"
+                  value={
+                    personalDetails.addresses &&
+                    personalDetails.addresses.address_line_1
+                  }
+                  onChange={e => {
+                    updateBasicDetails(e.target.value, "address_line_1", true);
+                  }}
+                />
+                {errDetails.address_line_1_err && (
+                  <ErrorSpan
+                    className="text-xs text-red-600 font-geist-regular"
+                    message={errDetails.address_line_1_err}
+                  />
+                )}
+              </div>
+              <div className="space-y-2">
+                <label className="text-xs font-geist-medium text-gray-500 uppercase tracking-wider">
+                  Address Line 2
+                  <span className="text-gray-400 font-geist-regular normal-case text-xs ml-1">
+                    (Optional)
+                  </span>
+                </label>
+                <Input
+                  className="font-geist-regular"
+                  id="address_line_2"
+                  name="address_line_2"
+                  type="text"
+                  placeholder="Apartment, suite, unit, etc."
+                  value={
+                    personalDetails.addresses &&
+                    personalDetails.addresses.address_line_2
+                  }
+                  onChange={e => {
+                    updateBasicDetails(e.target.value, "address_line_2", true);
+                  }}
+                />
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-xs font-geist-medium text-gray-500 uppercase tracking-wider">
+                    Country
+                  </label>
+                  <CustomReactSelect
+                    handleOnChange={value => handleOnChangeCountry(value)}
+                    isErr={!!errDetails.country_err}
+                    label="Country"
+                    name="current_country_select"
+                    options={countries}
+                    value={{
+                      label: personalDetails.addresses.country,
+                      value: personalDetails.addresses.country,
+                    }}
+                    className="font-geist-regular"
+                  />
+                  {errDetails.country_err && (
+                    <ErrorSpan
+                      className="text-xs text-red-600 font-geist-regular"
+                      message={errDetails.country_err}
+                    />
+                  )}
+                </div>
+                <div className="space-y-2">
+                  <label className="text-xs font-geist-medium text-gray-500 uppercase tracking-wider">
+                    State
+                  </label>
+                  <Input
+                    className={`font-geist-regular ${
+                      errDetails.state_err
+                        ? "border-red-500 focus:ring-red-500"
+                        : ""
+                    }`}
+                    id="state"
+                    name="state"
+                    type="text"
+                    placeholder="State or province"
+                    value={personalDetails.addresses.state}
+                    onChange={e => {
+                      updateBasicDetails(e.target.value, "state", true);
+                    }}
+                  />
+                  {errDetails.state_err && (
+                    <ErrorSpan
+                      className="text-xs text-red-600 font-geist-regular"
+                      message={errDetails.state_err}
+                    />
+                  )}
+                </div>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-xs font-geist-medium text-gray-500 uppercase tracking-wider">
+                    City
+                  </label>
+                  <Input
+                    className={`font-geist-regular ${
+                      errDetails.city_err
+                        ? "border-red-500 focus:ring-red-500"
+                        : ""
+                    }`}
+                    id="city"
+                    name="city"
+                    type="text"
+                    placeholder="City"
+                    value={personalDetails.addresses.city}
+                    onChange={e => {
+                      updateBasicDetails(e.target.value, "city", true);
+                    }}
+                  />
+                  {errDetails.city_err && (
+                    <ErrorSpan
+                      className="text-xs text-red-600 font-geist-regular"
+                      message={errDetails.city_err}
+                    />
+                  )}
+                </div>
+                <div className="space-y-2">
+                  <label className="text-xs font-geist-medium text-gray-500 uppercase tracking-wider">
+                    Zip/Postal Code
+                  </label>
+                  <Input
+                    className={`font-geist-regular ${
+                      errDetails.pin_err
+                        ? "border-red-500 focus:ring-red-500"
+                        : ""
+                    }`}
+                    id="zipcode"
+                    name="zipcode"
+                    type="text"
+                    placeholder="12345"
+                    value={personalDetails.addresses.pin}
+                    onChange={e => {
+                      updateBasicDetails(e.target.value, "pin", true);
+                    }}
+                  />
+                  {errDetails.pin_err && (
+                    <ErrorSpan
+                      className="text-xs text-red-600 font-geist-regular"
+                      message={errDetails.pin_err}
+                    />
+                  )}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+        {/* Side Column */}
+        <div className="space-y-6">
+          {/* Social Profiles Card */}
+          <Card className="border-gray-200 shadow-sm">
+            <CardHeader className="pb-4">
+              <CardTitle className="text-lg font-geist-semibold flex items-center gap-2">
+                <Globe className="h-5 w-5 text-gray-600" weight="bold" />
+                Social Profiles
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <label className="text-xs font-geist-medium text-gray-500 uppercase tracking-wider flex items-center gap-1">
+                  <LinkedinLogo className="h-3 w-3" weight="bold" />
+                  LinkedIn
+                </label>
+                <Input
+                  className="font-geist-regular"
+                  id="linked_in"
+                  name="linked_in"
+                  type="text"
+                  placeholder="linkedin.com/in/username"
+                  value={personalDetails.linkedin}
+                  onChange={e => {
+                    updateBasicDetails(e.target.value, "linkedin", false);
+                  }}
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-xs font-geist-medium text-gray-500 uppercase tracking-wider flex items-center gap-1">
+                  <GithubLogo className="h-3 w-3" weight="bold" />
+                  GitHub
+                </label>
+                <Input
+                  className="font-geist-regular"
+                  id="github"
+                  name="github"
+                  type="text"
+                  placeholder="github.com/username"
+                  value={personalDetails.github}
+                  onChange={e => {
+                    updateBasicDetails(e.target.value, "github", false);
+                  }}
+                />
+              </div>
+            </CardContent>
+          </Card>
+          {/* Password Card */}
+          <Card className="border-gray-200 shadow-sm">
+            <CardHeader className="pb-4">
+              <CardTitle className="text-lg font-geist-semibold flex items-center gap-2">
+                <Lock className="h-5 w-5 text-gray-600" weight="bold" />
+                Security
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {!changePassword && (
+                <Button
+                  variant="outline"
+                  onClick={() => setChangePassword(true)}
+                  className="w-full font-geist-medium"
+                >
+                  Change Password
+                </Button>
+              )}
+              {changePassword && (
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <label className="text-xs font-geist-medium text-gray-500 uppercase tracking-wider">
+                      Current Password
+                    </label>
+                    <div className="relative">
+                      <Input
+                        className={`font-geist-regular pr-10 ${
+                          errDetails.currentPassword_err
+                            ? "border-red-500 focus:ring-red-500"
+                            : ""
+                        }`}
+                        id="current_password"
+                        name="current_password"
+                        type={showCurrentPassword ? "text" : "password"}
+                        placeholder="Enter current password"
+                        value={personalDetails.currentPassword}
+                        onChange={e => {
+                          updateBasicDetails(
+                            e.target.value,
+                            "currentPassword",
+                            false,
+                            ""
+                          );
+                        }}
+                      />
+                      <button
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                        type="button"
+                        onClick={() =>
+                          setShowCurrentPassword(!showCurrentPassword)
+                        }
+                      >
+                        {showCurrentPassword ? (
+                          <Eye className="h-4 w-4" weight="bold" />
+                        ) : (
+                          <EyeSlash className="h-4 w-4" weight="bold" />
+                        )}
+                      </button>
+                    </div>
+                    {errDetails.currentPassword_err && (
+                      <ErrorSpan
+                        className="text-xs text-red-600 font-geist-regular"
+                        message={errDetails.currentPassword_err}
+                      />
+                    )}
+                  </div>
+
+                  <Separator className="my-4" />
+
+                  <div className="space-y-2">
+                    <label className="text-xs font-geist-medium text-gray-500 uppercase tracking-wider">
+                      New Password
+                    </label>
+                    <div className="relative">
+                      <Input
+                        className={`font-geist-regular pr-10 ${
+                          errDetails.password_err
+                            ? "border-red-500 focus:ring-red-500"
+                            : ""
+                        }`}
+                        id="password"
+                        name="password"
+                        type={showPassword ? "text" : "password"}
+                        placeholder="Enter new password"
+                        value={personalDetails.password}
+                        onChange={e => {
+                          updateBasicDetails(
+                            e.target.value,
+                            "password",
+                            false,
+                            ""
+                          );
+                        }}
+                      />
+                      <button
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                      >
+                        {showPassword ? (
+                          <Eye className="h-4 w-4" weight="bold" />
+                        ) : (
+                          <EyeSlash className="h-4 w-4" weight="bold" />
+                        )}
+                      </button>
+                    </div>
                     {errDetails.password_err && (
                       <ErrorSpan
-                        className="text-xs text-red-600"
+                        className="text-xs text-red-600 font-geist-regular"
                         message={errDetails.password_err}
                       />
                     )}
                   </div>
-                  <div className="relative flex w-1/2 flex-col px-2">
-                    <CustomInputText
-                      id="confirm_password"
-                      label="Confirm Password"
-                      name="confirm_password"
-                      type={showConfirmPassword ? "text" : "password"}
-                      value={personalDetails.confirmPassword}
-                      inputBoxClassName={`${inputClass} ${
-                        errDetails.confirmPassword_err
-                          ? "border-red-600"
-                          : "border-miru-gray-1000"
-                      }`}
-                      labelClassName={`${labelClass} ${
-                        errDetails.confirmPassword_err
-                          ? "text-red-600"
-                          : "text-miru-dark-purple-200"
-                      }`}
-                      onChange={e => {
-                        updateBasicDetails(
-                          e.target.value,
-                          "confirmPassword",
-                          false,
-                          ""
-                        );
-                      }}
-                    />
-                    <button
-                      className="btn btn-outline-primary absolute right-0 mt-4 mr-5"
-                      onClick={() =>
-                        setShowConfirmPassword(!showConfirmPassword)
-                      }
-                    >
-                      {!showConfirmPassword ? (
-                        <img alt="pass_icon" src={PasswordIconSVG} />
-                      ) : (
-                        <img alt="pass_icon_text" src={PasswordIconTextSVG} />
-                      )}
-                    </button>
+                  <div className="space-y-2">
+                    <label className="text-xs font-geist-medium text-gray-500 uppercase tracking-wider">
+                      Confirm Password
+                    </label>
+                    <div className="relative">
+                      <Input
+                        className={`font-geist-regular pr-10 ${
+                          errDetails.confirmPassword_err
+                            ? "border-red-500 focus:ring-red-500"
+                            : ""
+                        }`}
+                        id="confirm_password"
+                        name="confirm_password"
+                        type={showConfirmPassword ? "text" : "password"}
+                        placeholder="Re-enter new password"
+                        value={personalDetails.confirmPassword}
+                        onChange={e => {
+                          updateBasicDetails(
+                            e.target.value,
+                            "confirmPassword",
+                            false,
+                            ""
+                          );
+                        }}
+                      />
+                      <button
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                        type="button"
+                        onClick={() =>
+                          setShowConfirmPassword(!showConfirmPassword)
+                        }
+                      >
+                        {showConfirmPassword ? (
+                          <Eye className="h-4 w-4" weight="bold" />
+                        ) : (
+                          <EyeSlash className="h-4 w-4" weight="bold" />
+                        )}
+                      </button>
+                    </div>
                     {errDetails.confirmPassword_err && (
                       <ErrorSpan
-                        className="text-xs text-red-600"
+                        className="text-xs text-red-600 font-geist-regular"
                         message={errDetails.confirmPassword_err}
                       />
                     )}
                   </div>
+                  <Button
+                    className="text-sm font-geist-medium"
+                    variant="ghost"
+                    onClick={() => {
+                      setErrDetails({
+                        ...errDetails,
+                        password_err: "",
+                        confirmPassword_err: "",
+                      });
+                      cancelPasswordChange();
+                    }}
+                  >
+                    Cancel Password Change
+                  </Button>
                 </div>
-                <p
-                  className="ml-2 mt-2 cursor-pointer text-miru-han-purple-1000"
-                  onClick={() => {
-                    setErrDetails({
-                      ...errDetails,
-                      password_err: "",
-                      confirmPassword_err: "",
-                    });
-                    cancelPasswordChange();
-                  }}
-                >
-                  CANCEL
-                </p>
-              </div>
-            </div>
-          )}
+              )}
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>
   </div>
 );
 
-export default StaticPage;
+export default EditProfilePage;

@@ -1,9 +1,8 @@
 import React from "react";
 
+import { useUserContext } from "context/UserContext";
 import dayjs from "dayjs";
 import { minToHHMM } from "helpers";
-
-import { useUserContext } from "context/UserContext";
 
 const CheckboxIcon = () => (
   <div className="mr-2 flex h-4 w-4 flex-shrink-0 items-center justify-center border-2 border-miru-han-purple-1000 bg-white focus-within:border-blue-500 lg:h-5 lg:w-5">

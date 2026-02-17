@@ -1,123 +1,68 @@
 import React, { useEffect } from "react";
-
+import { useLocation, useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
-import {
-  Navigate,
-  Routes,
-  Route,
-  useLocation,
-  useNavigate,
-} from "react-router-dom";
 
-import { Paths, Roles } from "constants/index";
-import { AUTH_ROUTES, PUBLIC_ROUTES } from "constants/routes";
 import { useAuthState, useAuthDispatch } from "context/auth";
 import { useUserContext } from "context/UserContext";
 import { loginGoogleAuth } from "utils/googleOauthLogin";
-import {
-  clearCredentialsFromLocalStorage,
-  getValueFromLocalStorage,
-} from "utils/storage";
 
-import Dashboard from "./Dashboard";
-import OrganizationSetup from "./OrganizationSetup";
-import SignUpSuccess from "./OrganizationSetup/SignUpSuccess";
+import AppRouter from "./Routes/AppRouter";
 
-const Main = (props: Iprops) => {
+interface MainProps {
+  user?: {
+    current_workspace_id?: string;
+    email?: string;
+    token?: string;
+  };
+  companyRole?: string;
+  company?: object;
+  confirmedUser?: boolean;
+  isDesktop?: boolean;
+  isAdminUser?: boolean;
+  googleOauthSuccess?: boolean;
+}
+
+const Main: React.FC<MainProps> = props => {
   const authDispatch = useAuthDispatch();
   const location = useLocation();
-  //@ts-expect-error is used to allow authToken value on empty object
   const { isLoggedIn } = useAuthState();
   const { user } = useUserContext();
   const navigate = useNavigate();
 
+  // Handle Google OAuth success
   useEffect(() => {
     if (!isLoggedIn && props?.googleOauthSuccess) {
       loginGoogleAuth(user?.token, user?.email, authDispatch, navigate);
     }
+  }, [isLoggedIn, props?.googleOauthSuccess, user, authDispatch, navigate]);
 
-    if (!isLoggedIn) {
+  // Save last visited page for unauthenticated users
+  useEffect(() => {
+    if (!isLoggedIn && user) {
       Cookies.set("lastVisitedPage", location.pathname, { expires: 7 });
     }
-  }, [isLoggedIn, props?.googleOauthSuccess]);
+  }, [isLoggedIn, user, location.pathname]);
 
+  // Update auth context when user data is available
   useEffect(() => {
-    const previousLoginAuthEmail = getValueFromLocalStorage("authEmail");
-    const hasDeviseUserSessionExpired = !props?.user;
-    const sessionExpiredButLocalStorageCredsExist =
-      hasDeviseUserSessionExpired && previousLoginAuthEmail;
-
-    if (sessionExpiredButLocalStorageCredsExist) {
-      clearCredentialsFromLocalStorage();
+    if (user && user.email && !isLoggedIn) {
+      // User is authenticated via Rails session
+      authDispatch({
+        type: "LOGIN",
+        payload: {
+          token: user.token || "session", // Use session-based auth
+          email: user.email,
+        },
+      });
+    } else if (!user && isLoggedIn) {
+      // User is no longer authenticated, log out
+      authDispatch({
+        type: "LOGOUT",
+      });
     }
-  }, [props?.user]);
+  }, [user, isLoggedIn, authDispatch]);
 
-  if (isLoggedIn) {
-    const current_workspace_id = props?.user?.current_workspace_id;
-    const confirmedUser = props?.confirmedUser;
-    if (confirmedUser) {
-      if (!current_workspace_id) {
-        return (
-          <Routes>
-            <Route element={<OrganizationSetup />} path="/" />
-            <Route element={<SignUpSuccess />} path={Paths.SIGNUP_SUCCESS} />
-            <Route element={<Navigate to="/" />} path="*" />
-          </Routes>
-        );
-      }
-
-      return (
-        <Routes>
-          {PUBLIC_ROUTES.map(route => (
-            <Route
-              element={<route.component />}
-              key={route.path}
-              path={route.path}
-            />
-          ))}
-          {AUTH_ROUTES.map(route => (
-            <Route
-              element={<Dashboard {...props} />}
-              key={route.path}
-              path={route.path}
-            />
-          ))}
-          <Route element={<Dashboard {...props} />} path="*" />
-        </Routes>
-      );
-    }
-  }
-
-  return (
-    <Routes>
-      {AUTH_ROUTES.map(route => (
-        <Route
-          element={<route.component />}
-          key={route.path}
-          path={route.path}
-        />
-      ))}
-      {PUBLIC_ROUTES.map(route => (
-        <Route
-          element={<route.component />}
-          key={route.path}
-          path={route.path}
-        />
-      ))}
-      <Route element={<Navigate to="/" />} path="*" />
-    </Routes>
-  );
+  return <AppRouter {...props} />;
 };
-interface Iprops {
-  user: {
-    current_workspace_id: string;
-  };
-  companyRole: Roles;
-  company: object;
-  confirmedUser: boolean;
-  isDesktop: boolean;
-  isAdminUser: boolean;
-  googleOauthSuccess: boolean;
-}
 
 export default Main;

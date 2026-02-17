@@ -49,26 +49,25 @@ RSpec.describe Invoices::PaymentsController, type: :request do
 
   describe "GET success", :vcr do
     before do
-      # Using custom account creation to make this test pass and skip
-      # account setup process involved in normal stripe account creation
-      account = Stripe::Account.create(
-        {
-          type: "custom",
-          country: "US",
-          email: "jenny.rosen@example.com",
-          business_type: "company",
-          company: {
-            name: "test company"
-          },
-          business_profile: {
-            name: "test company",
-            url: "https://exampletest.com"
-          },
-          capabilities: {
-            card_payments: { requested: true },
-            transfers: { requested: true }
-          }
-        })
+      # Mock Stripe account instead of creating real one
+      account = OpenStruct.new(
+        id: "acct_test_#{SecureRandom.hex(8)}",
+        type: "custom",
+        country: "US",
+        email: "jenny.rosen@example.com",
+        business_type: "company",
+        company: {
+          name: "test company"
+        },
+        business_profile: {
+          name: "test company",
+          url: "https://exampletest.com"
+        },
+        capabilities: {
+          card_payments: { requested: true },
+          transfers: { requested: true }
+        }
+      )
 
       stripe_connected_account.update_columns(account_id: account.id)
 

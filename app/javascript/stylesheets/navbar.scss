@@ -15,7 +15,7 @@
     @apply pt-2 pb-3 px-2 space-y-1;
   }
   &__smaller-screen_titles {
-    @apply block pl-3 pr-4 py-2 border-l-4 text-base font-extrabold;
+    @apply block pl-3 pr-4 py-2 border-l-4 text-base font-semibold;
   }
   &__smaller-screen_selected {
     @apply bg-indigo-50 border-miru-han-purple-600 text-miru-han-purple-1000;
@@ -39,13 +39,13 @@
     @apply block font-bold hover:bg-gray-100 text-miru-dark-purple-600 hover:text-miru-han-purple-1000 flex items-center px-4 py-2 text-base cursor-pointer w-full;
   }
   &__small-screen-second_titles {
-    @apply text-miru-han-purple-1000 font-extrabold inline-flex items-center px-1 pt-1 text-base tracking-widest;
+    @apply text-miru-han-purple-1000 font-semibold inline-flex items-center px-1 pt-1 text-base tracking-wider;
   }
   &__large-screen_title {
     @apply inline-flex items-center px-1 pt-1 text-base tracking-wider;
   }
   &__large-screen_selected {
-    @apply  text-miru-han-purple-1000 font-extrabold;
+    @apply  text-miru-han-purple-1000 font-semibold;
   }
   &__large-screen_unselected {
     @apply border-transparent text-miru-dark-purple-1000 hover:text-miru-han-purple-1000 font-medium;

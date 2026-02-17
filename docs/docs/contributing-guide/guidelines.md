@@ -10,11 +10,11 @@ If you're here, it means this is going to be the start of something amazing! ✨
 
 ## How you can help
 
-Miru, though managed by the awesome folks at [Saeloun](https://saeloun.com/), is an open source project. This means that we're always looking for help from the community to make Miru better. Here are some ways you can help:
+Miru, though managed by the awesome folks at [Saeloun](https://saeloun.com/), is an open-source project. This means that we're always looking for help from the community to make Miru better. Here are some ways you can help:
 
 - Report a bug
 - Fix a bug (even if it's just a typo)
-- Discuss on code design and quality
+- Discuss code design and quality
 - Suggest improvements to existing workflows
 - Propose an entirely new feature
 
@@ -30,7 +30,7 @@ We use GitHub to plan and track our work as well as host the code itself! If you
 
 ## Reporting a bug
 
-If you find a bug, no matter how small, please report it by opening an issue on GitHub and following the template provided. However ensure that a duplicate issue doesn't already exist. If it does, please add a comment to the existing issue instead of opening a new one.
+If you find a bug, no matter how small, please report it by opening an issue on GitHub and following the template provided. However, ensure that a duplicate issue doesn't already exist. If it does, please add a comment to the existing issue instead of opening a new one.
 
 A **good bug report** tends to have:
 
@@ -40,7 +40,7 @@ A **good bug report** tends to have:
   - Give sample code if you can.
   - Add screenshots if needed.
 - What you expected vs what actually happened
-- Notes detailing the context in which you experienced the bug, the ways you tried to fix it or any supporting information that might help us understand the bug.
+- Notes detailing the context in which you experienced the bug, the ways you tried to fix it, or any supporting information that might help us understand the bug.
 
 ## Fixing a bug
 

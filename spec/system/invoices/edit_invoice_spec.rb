@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe "Edit Invoice", type: :system do
+RSpec.describe "Edit Invoice", type: :system, js: true do
   let!(:invoice) { create :invoice_with_invoice_line_items }
   let(:client) { invoice.client }
   let!(:company) { invoice.company }

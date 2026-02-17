@@ -48,6 +48,8 @@ RSpec.describe BulkHolidayService, type: :service do
     end
 
     context "when updating holiday info" do
+      let!(:holiday) { create(:holiday, year:, company: current_company) }
+      let!(:holiday_info) { create(:holiday_info, holiday:) }
       let(:holiday_params) do
         {
           holiday: {
@@ -57,22 +59,21 @@ RSpec.describe BulkHolidayService, type: :service do
           },
           add_holiday_infos: [],
           update_holiday_infos: [
-            { id: 1, name: "Updated Holiday", date: "2023-01-01", category: "national" }
+            { id: holiday_info.id, name: "Updated Holiday", date: "2023-01-01", category: "national" }
           ],
           remove_holiday_infos: []
         }
       end
 
       it "updates holiday info" do
-        create(:holiday, year:, company: current_company)
-        create(:holiday_info, id: 1, holiday: current_company.holidays.first)
-
-        expect { subject.process }.to change { current_company.holidays.first.holiday_infos.first.name }
+        expect { subject.process }.to change { holiday_info.reload.name }
           .to("Updated Holiday")
       end
     end
 
     context "when removing holiday info" do
+      let!(:holiday) { create(:holiday, year:, company: current_company) }
+      let!(:holiday_info) { create(:holiday_info, holiday:) }
       let(:holiday_params) do
         {
           holiday: {
@@ -82,14 +83,11 @@ RSpec.describe BulkHolidayService, type: :service do
           },
           add_holiday_infos: [],
           update_holiday_infos: [],
-          remove_holiday_infos: [1]
+          remove_holiday_infos: [holiday_info.id]
         }
       end
 
       it "removes holiday info" do
-        holiday = create(:holiday, year:, company: current_company)
-        holiday_info = create(:holiday_info, id: 1, holiday:)
-
         expect { subject.process }.to change { holiday_info.reload.discarded? }.from(false).to(true)
       end
     end

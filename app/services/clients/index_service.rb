@@ -22,7 +22,7 @@ module Clients
     private
 
       def clients_list
-        base_clients = user_can_see_all_clients? ? current_company.clients : user_assigned_clients
+        base_clients = user_can_see_all_clients? ? current_company.clients.kept : user_assigned_clients
 
         if query.present?
           search_clients(search_term, where_clause).includes(:logo_attachment)
@@ -32,8 +32,6 @@ module Clients
       end
 
       def user_assigned_clients
-        # Get clients only from projects where user has active (not soft-deleted) memberships
-        # Scoped to current company to prevent cross-tenant data leakage
         Client.kept
           .joins(projects: :project_members)
           .where(company_id: current_company.id)
@@ -59,12 +57,12 @@ module Clients
           current_user.has_role?(:book_keeper, current_company)
       end
 
-      def search_clients(search_term, where_clause)
+      def search_clients(term, where_query)
         Client.search(
-          search_term,
+          term,
           fields: [:name, :email],
           match: :word_middle,
-          where: where_clause
+          where: where_query
         )
       end
 
@@ -75,7 +73,7 @@ module Clients
       end
 
       def total_minutes
-        (client_details.map { |client| client[:minutes_spent] }).sum
+        client_details.sum { |client| client[:minutes_spent] }
       end
 
       def overdue_outstanding_amount

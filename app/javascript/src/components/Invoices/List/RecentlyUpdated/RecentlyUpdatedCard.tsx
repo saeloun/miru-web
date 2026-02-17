@@ -2,40 +2,80 @@ import React from "react";
 
 import { currencyFormat } from "helpers";
 import { useNavigate } from "react-router-dom";
-import { Avatar, Badge } from "StyledComponents";
-
-import getStatusCssClass from "utils/getBadgeStatus";
+import {
+  CheckCircle,
+  PaperPlaneTilt,
+  Eye,
+  Warning,
+  FileText,
+  Clock,
+  ArrowUpRight,
+} from "phosphor-react";
 
 const RecentlyUpdatedCard = ({
   invoice: { client, currency, id, invoiceNumber, amount, status },
-  index,
 }) => {
   const navigate = useNavigate();
 
+  const getStatusIcon = () => {
+    switch (status?.toLowerCase()) {
+      case "paid":
+        return <CheckCircle className="w-4 h-4 text-green-600" weight="fill" />;
+      case "sent":
+        return (
+          <PaperPlaneTilt className="w-4 h-4 text-blue-600" weight="fill" />
+        );
+      case "viewed":
+        return <Eye className="w-4 h-4 text-cyan-600" weight="fill" />;
+      case "overdue":
+        return <Warning className="w-4 h-4 text-red-600" weight="fill" />;
+      case "draft":
+        return <FileText className="w-4 h-4 text-gray-500" weight="fill" />;
+      default:
+        return <Clock className="w-4 h-4 text-gray-500" weight="fill" />;
+    }
+  };
+
   return (
     <div
-      className={`${
-        index == 0 ? "mr-1 lg:mr-2" : "mx-1 lg:mx-2"
-      } flex h-auto w-40 cursor-pointer flex-col justify-between rounded-xl border-2 border-miru-gray-200 p-4 text-center hover:shadow-c1`}
+      className="group flex h-44 w-40 flex-shrink-0 cursor-pointer flex-col rounded-xl border bg-white border-gray-200 hover:bg-gray-50 p-4 transition-all duration-200 hover:shadow-lg hover:border-gray-300 hover:scale-[1.02]"
       onClick={() => navigate(`/invoices/${id}`)}
     >
-      <h3 className="mr-0.5 text-center text-xs font-normal text-miru-dark-purple-400">
-        {invoiceNumber}
-      </h3>
-      <div className="my-1 flex justify-center lg:my-3">
-        <Avatar url={client.logo} />
+      {/* Invoice number with status icon */}
+      <div className="mb-3">
+        <div className="flex items-center justify-between mb-1">
+          <p
+            className="text-sm font-bold text-gray-900 truncate"
+            title={invoiceNumber}
+          >
+            {invoiceNumber}
+          </p>
+          {getStatusIcon()}
+        </div>
       </div>
-      <div className="my-2 flex h-9 items-center justify-center text-center text-sm font-semibold capitalize leading-5 text-miru-dark-purple-1000 lg:mt-1 lg:mb-2.5 lg:h-11 lg:text-base">
-        <p className="truncateOverflowText">{client.name}</p>
+
+      <div className="mb-auto">
+        <p
+          className="text-sm text-gray-700 font-medium truncate"
+          title={client.name}
+        >
+          {client.name}
+        </p>
       </div>
-      <h1 className="mb-2 truncate text-base font-bold text-miru-dark-purple-1000 lg:text-xl">
-        {currencyFormat(currency, amount)}
-      </h1>
-      <div>
-        <Badge
-          className={`${getStatusCssClass(status)} mt-2 uppercase`}
-          text={status}
-        />
+
+      {/* Amount at bottom */}
+      <div className="pt-3 border-t border-gray-100">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-xs text-gray-500 uppercase tracking-wide font-medium mb-0.5">
+              Amount
+            </p>
+            <p className="text-base font-bold text-gray-900">
+              {currencyFormat(currency, amount)}
+            </p>
+          </div>
+          <ArrowUpRight className="w-4 h-4 text-gray-400 group-hover:text-gray-600 transition-colors" />
+        </div>
       </div>
     </div>
   );

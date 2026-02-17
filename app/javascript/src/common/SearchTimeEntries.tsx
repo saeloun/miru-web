@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from "react";
 
+import { useUserContext } from "context/UserContext";
 import { useDebounce } from "helpers";
 import { CaretDownIcon, SearchIcon, XIcon } from "miruIcons";
-import Select from "react-select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../components/ui/select";
 import { MobileMoreOptions } from "StyledComponents";
-
-import { useUserContext } from "context/UserContext";
 
 const SearchTimeEntries = ({
   selectedEmployeeId,
@@ -21,18 +26,15 @@ const SearchTimeEntries = ({
   const { isDesktop } = useUserContext();
 
   useEffect(() => {
-    if (debouncedSearchQuery && filteredEmployeeList.length > 0) {
-      const newEmployeeList = filteredEmployeeList.filter(client =>
+    if (debouncedSearchQuery) {
+      const newEmployeeList = employeeList.filter(client =>
         client.label.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
       );
-
-      newEmployeeList.length > 0
-        ? setFilteredEmployeeList(newEmployeeList)
-        : setFilteredEmployeeList([]);
+      setFilteredEmployeeList(newEmployeeList);
     } else {
       setFilteredEmployeeList(employeeList);
     }
-  }, [debouncedSearchQuery]);
+  }, [debouncedSearchQuery, employeeList]);
 
   const currentUser = employeeList?.find(
     emp => emp.value == selectedEmployeeId
@@ -42,41 +44,27 @@ const SearchTimeEntries = ({
     setSelectedEmployeeId(selection["value"]);
   };
 
-  const customStyles = {
-    container: base => ({
-      ...base,
-      width: "13rem",
-    }),
-    control: provided => ({
-      ...provided,
-      "&:hover": {
-        borderColor: "#5B34EA",
-      },
-      "&:focus": {
-        borderColor: "#5B34EA",
-      },
-      "&:active": {
-        borderColor: "#5B34EA",
-      },
-    }),
-    option: (styles, { isSelected }) => ({
-      ...styles,
-      backgroundColor: isSelected && "#5B34EA",
-      "&:hover": {
-        backgroundColor: isSelected ? "#5B34EA" : "#F5F7F9",
-      },
-    }),
-  };
-
   return isDesktop ? (
     <Select
-      isSearchable
-      defaultValue={currentUser}
-      options={employeeList}
-      styles={customStyles}
-      value={currentUser}
-      onChange={handleEmployeeChange}
-    />
+      value={currentUser?.value?.toString() || ""}
+      onValueChange={value => {
+        const selectedEmployee = employeeList.find(
+          emp => emp.value.toString() === value
+        );
+        handleEmployeeChange(selectedEmployee);
+      }}
+    >
+      <SelectTrigger className="w-52">
+        <SelectValue placeholder={currentUser?.label || "Select team member"} />
+      </SelectTrigger>
+      <SelectContent>
+        {employeeList.map(employee => (
+          <SelectItem key={employee.value} value={employee.value.toString()}>
+            {employee.label}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
   ) : (
     <>
       <div
@@ -123,8 +111,8 @@ const SearchTimeEntries = ({
               <li
                 key={employee.value}
                 className={`flex items-center px-2 pt-3 text-sm leading-5 text-miru-dark-purple-1000 hover:bg-miru-gray-100 ${
-                  currentUser.value === employee.value
-                    ? "font-extrabold"
+                  currentUser?.value === employee.value
+                    ? "font-bold"
                     : "font-medium"
                 }`}
                 onClick={() => handleEmployeeChange(employee)}

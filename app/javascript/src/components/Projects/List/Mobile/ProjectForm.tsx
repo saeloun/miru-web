@@ -5,7 +5,7 @@ import { useDebounce } from "helpers";
 import { XIcon, SearchIcon } from "miruIcons";
 import { Button, MobileMoreOptions } from "StyledComponents";
 
-import projectApi from "apis/projects";
+import { projectApi } from "apis/api";
 import CustomRadioButton from "common/CustomRadio";
 import { InputField, InputErrors } from "common/FormikFields";
 
@@ -73,7 +73,8 @@ const ProjectForm = ({
     if (
       data.project.client_id &&
       data.project.name &&
-      data.project.billable !== (undefined || null)
+      data.project.billable !== undefined &&
+      data.project.billable !== null
     ) {
       await projectApi.create(data);
       setEditProjectData("");
@@ -95,7 +96,8 @@ const ProjectForm = ({
     if (
       data.project.client_id &&
       data.project.name &&
-      data.project.billable !== (undefined || null)
+      data.project.billable !== undefined &&
+      data.project.billable !== null
     ) {
       await projectApi.update(editProjectData.id, data);
       setEditProjectData("");

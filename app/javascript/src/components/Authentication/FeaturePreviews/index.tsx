@@ -1,9 +1,9 @@
+import { MIRU_APP_URL } from "constants/index";
+
 import React from "react";
 
 import { BlurredMiruLogo } from "miruIcons";
 import { Carousel } from "react-responsive-carousel";
-
-import { MIRU_APP_URL } from "constants/index";
 
 import { carouselItems } from "./utils";
 
@@ -30,10 +30,10 @@ const FeaturePreviews = () => (
               style={{ boxShadow: "0px 0px 32px rgba(0, 0, 0, 0.1)" }}
             />
             <div>
-              <h2 className="mb-3 font-manrope text-2xl font-semibold not-italic text-miru-white-1000">
+              <h2 className="mb-3 font-sans text-2xl font-semibold not-italic text-miru-white-1000">
                 {feature.texts.title}
               </h2>
-              <p className="mb-10 font-manrope text-xs font-normal not-italic text-miru-white-1000">
+              <p className="mb-10 font-sans text-xs font-normal not-italic text-miru-white-1000">
                 {feature.texts.description}
               </p>
             </div>

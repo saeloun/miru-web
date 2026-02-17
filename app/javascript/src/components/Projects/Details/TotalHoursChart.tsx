@@ -1,9 +1,8 @@
 import React from "react";
 
-import { cashFormatter } from "helpers";
-
 import AmountBoxContainer from "common/AmountBox";
 import ChartBar from "common/ChartBar";
+import { cashFormatter } from "helpers";
 
 import { getAmountBox } from "../constants";
 

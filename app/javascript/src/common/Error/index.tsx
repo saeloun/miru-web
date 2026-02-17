@@ -1,11 +1,10 @@
 import React from "react";
 
+import withLayout from "common/Mobile/HOC/withLayout";
+import { useUserContext } from "context/UserContext";
 import { Animation_404 } from "miruIcons";
 import { useNavigate } from "react-router-dom";
 import { Button } from "StyledComponents";
-
-import withLayout from "common/Mobile/HOC/withLayout";
-import { useUserContext } from "context/UserContext";
 import { dashboardUrl } from "utils/dashboardUrl";
 
 const ErrorPage = () => {

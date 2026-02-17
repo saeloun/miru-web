@@ -1,9 +1,8 @@
 import React from "react";
 
+import CustomCheckbox from "common/CustomCheckbox";
 import { currencyFormat } from "helpers";
 import { Badge } from "StyledComponents";
-
-import CustomCheckbox from "common/CustomCheckbox";
 import getStatusCssClass from "utils/getBadgeStatus";
 
 const InvoicesList = ({
@@ -12,8 +11,10 @@ const InvoicesList = ({
   selectInvoices,
   invoice,
 }) => {
-  const { amount, currency, id, invoiceNumber, status, issueDate, dueDate } =
+  const { amount, company, id, invoiceNumber, status, issueDate, dueDate } =
     invoice;
+
+  const { baseCurrency } = company;
 
   const handleCheckboxChange = () => {
     if (isSelected) {
@@ -41,7 +42,7 @@ const InvoicesList = ({
       <td className="w-1/4 px-0 py-0 lg:text-base">{issueDate}</td>
       <td className="px-0 py-0 lg:text-base">{dueDate}</td>
       <td className="w-1/5 px-0 text-right text-base tracking-normal text-miru-dark-purple-1000 lg:w-1/6 lg:px-3 lg:pt-2 lg:pb-7 lg:text-base">
-        {currencyFormat(currency, amount)}
+        {currencyFormat(baseCurrency, amount)}
       </td>
       <td className="w-1/6 px-2 text-right font-medium lg:pb-10">
         <Badge

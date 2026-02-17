@@ -1,20 +1,26 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Miru | Time tracking and invoicing</title>
+  <title><%= content_for?(:title) ? yield(:title) : "#{t('app.name')} | Time tracking and invoicing" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
 
-    <meta property="og:title" content="Miru | Time tracking and invoicing">
-    <meta property="og:description" content="Miru is an open-source tool for time tracking, invoice management, and accounting easy for small businesses worldwide.">
+  <meta property="og:title" content="<%= content_for?(:title) ? yield(:title) : "#{t('app.name')} | Time tracking and invoicing" %>">
+  <meta property="og:description" content="<%= t('app.name') %> is an open-source platform for time tracking, invoicing, and operations for agencies and small companies.">
     <meta property="og:image" content="<%= image_url('logo.jpg') %>">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:url" content="https://app.miru.so/">
 
+    <!-- Inter font from Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-    <%= stylesheet_pack_tag "application" %>
-    <%= javascript_pack_tag "application" %>
+    <%= vite_client_tag %>
+    <%= vite_javascript_tag 'application.tsx' %>
+
   </head>
   <body>
     <main class="min-h-screen bg-miru-white-400">

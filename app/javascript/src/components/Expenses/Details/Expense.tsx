@@ -10,7 +10,7 @@ const Expense = ({ expense, currency }) => (
       <span className="text-xs font-medium text-miru-dark-purple-1000">
         Amount
       </span>
-      <span className="text-4xl font-normal text-miru-dark-purple-1000">
+      <span className="text-2xl font-normal tracking-tight text-miru-dark-purple-1000">
         {currencyFormat(currency, expense?.amount)}
       </span>
     </div>

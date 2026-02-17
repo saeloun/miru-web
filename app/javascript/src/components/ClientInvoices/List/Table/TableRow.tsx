@@ -3,7 +3,6 @@ import React, { useState, useRef } from "react";
 import { currencyFormat, useDebounce } from "helpers";
 import { useNavigate } from "react-router-dom";
 import { Avatar, Badge, Tooltip } from "StyledComponents";
-
 import getStatusCssClass from "utils/getBadgeStatus";
 
 const TableRow = ({ invoice, index }) => {
@@ -16,7 +15,7 @@ const TableRow = ({ invoice, index }) => {
   const {
     amount,
     client,
-    currency,
+    company,
     dueDate,
     invoiceNumber,
     issueDate,
@@ -24,6 +23,7 @@ const TableRow = ({ invoice, index }) => {
     externalViewKey,
   } = invoice;
 
+  const { baseCurrency } = company;
   const { name, logo } = client;
 
   const handleTooltip = () => {
@@ -71,7 +71,7 @@ const TableRow = ({ invoice, index }) => {
         </h3>
       </td>
       <td className="hidden px-2 text-right text-sm font-bold tracking-normal text-miru-dark-purple-1000 lg:table-cell lg:w-1/6 lg:px-6 lg:pt-2 lg:pb-7 lg:text-xl">
-        {currencyFormat(currency, amount)}
+        {currencyFormat(baseCurrency, amount)}
       </td>
       <td
         className="relative px-2 text-right font-medium lg:px-6 lg:pb-10"
@@ -82,7 +82,7 @@ const TableRow = ({ invoice, index }) => {
           text={status}
         />
         <dl className="text-right text-sm font-medium leading-5 lg:hidden">
-          <dt className="mt-1">{currencyFormat(currency, amount)}</dt>
+          <dt className="mt-1">{currencyFormat(baseCurrency, amount)}</dt>
         </dl>
       </td>
     </tr>

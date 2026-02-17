@@ -12,11 +12,21 @@ const getClientList = input =>
 
 const unmapClientList = input => {
   const { data } = input;
+  const overdueOutstandingAmount = data.overdue_outstanding_amount || {};
 
   return {
     clientList: getClientList(data),
     totalMinutes: data.total_minutes,
-    overdueOutstandingAmount: data.overdue_outstanding_amount,
+    overdueOutstandingAmount: {
+      overdue:
+        overdueOutstandingAmount.overdue ??
+        overdueOutstandingAmount.overdue_amount ??
+        0,
+      outstanding:
+        overdueOutstandingAmount.outstanding ??
+        overdueOutstandingAmount.outstanding_amount ??
+        0,
+    },
   };
 };
 

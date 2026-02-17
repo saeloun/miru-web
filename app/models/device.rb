@@ -4,18 +4,15 @@
 #
 # Table name: devices
 #
-#  id                    :bigint           not null, primary key
-#  device_type           :string           default("laptop")
-#  insurance_bought_date :date
-#  insurance_expiry_date :date
-#  is_insured            :boolean          default(FALSE)
-#  name                  :string
-#  serial_number         :string
-#  specifications        :jsonb
-#  created_at            :datetime         not null
-#  updated_at            :datetime         not null
-#  company_id            :bigint           not null
-#  user_id               :bigint           not null
+#  id             :bigint           not null, primary key
+#  device_type    :string           default("laptop")
+#  name           :string
+#  serial_number  :string
+#  specifications :jsonb
+#  created_at     :datetime         not null
+#  updated_at     :datetime         not null
+#  company_id     :bigint           not null
+#  user_id        :bigint           not null
 #
 # Indexes
 #
@@ -34,7 +31,7 @@ class Device < ApplicationRecord
   belongs_to :issued_to, class_name: "User", foreign_key: "user_id"
 
   # Device type values
-  enum device_type: { laptop: "laptop", mobile: "mobile" }
+  enum :device_type, { laptop: "laptop", mobile: "mobile" }
 
   # Specifications values
   store_accessor :specifications, :processor, :ram, :graphics

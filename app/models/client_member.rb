@@ -26,6 +26,7 @@
 #  fk_rails_...  (company_id => companies.id)
 #  fk_rails_...  (user_id => users.id)
 #
+
 class ClientMember < ApplicationRecord
   include Discard::Model
 

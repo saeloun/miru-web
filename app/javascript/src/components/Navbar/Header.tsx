@@ -1,10 +1,10 @@
+import { Roles, Paths } from "constants/index";
+
 import React from "react";
 
+import { useUserContext } from "context/UserContext";
 import { MiruLogoSVG } from "miruIcons";
 import { Link } from "react-router-dom";
-
-import { Roles, Paths } from "constants/index";
-import { useUserContext } from "context/UserContext";
 
 const Header = () => {
   const { user, companyRole } = useUserContext();
@@ -37,7 +37,7 @@ const Header = () => {
   };
 
   return (
-    <div className="flex h-20 items-center justify-center bg-miru-gray-100">
+    <div className="relative flex h-20 items-center justify-center bg-miru-gray-100">
       <Link to={rootPath()}>
         <img alt="miru-logo" height="64px" src={MiruLogoSVG} width="64px" />
       </Link>

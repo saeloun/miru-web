@@ -1,22 +1,40 @@
 const getStatusCssClass = status => {
   const STATUS_LIST = {
-    draft: "bg-miru-alert-yellow-400 text-miru-alert-green-1000",
-    overdue: "bg-miru-alert-pink-400 text-miru-alert-red-1000",
-    sent: "bg-miru-alert-green-400 text-miru-alert-green-800",
-    viewed: "bg-miru-alert-blue-400 text-miru-alert-blue-1000",
-    billed: "bg-miru-alert-green-400 text-miru-alert-green-800",
-    unbilled: "bg-miru-alert-yellow-400 text-miru-alert-green-1000",
-    nonbilled: "bg-miru-dark-purple-100 text-miru-dark-purple-600",
-    paid: "bg-miru-han-purple-100 text-miru-han-purple-1000",
-    declined: "bg-miru-dark-purple-100 text-miru-dark-purple-600",
-    sending: "bg-miru-gray-6000 text-miru-black-1000",
-    waived: "bg-miru-gray-1000 text-miru-black-1000",
-    non_billable: "bg-miru-dark-purple-100 text-miru-dark-purple-600",
-    pending: "bg-miru-han-purple-100 text-miru-han-purple-1000",
-  };
-  const lowerCaseStatus = status.toLowerCase();
+    // Active states
+    draft: "bg-amber-100 text-amber-800",
+    sent: "bg-blue-100 text-blue-800",
+    viewed: "bg-indigo-100 text-indigo-800",
+    sending: "bg-sky-100 text-sky-800",
 
-  return `rounded-xl text-xs tracking-widest font-semibold px-1 ${STATUS_LIST[lowerCaseStatus]}`;
+    // Success states
+    paid: "bg-green-100 text-green-800",
+    billed: "bg-green-100 text-green-800",
+
+    // Warning states
+    overdue: "bg-red-100 text-red-800",
+    declined: "bg-rose-100 text-rose-800",
+
+    // Pending states
+    pending: "bg-violet-100 text-violet-800",
+    unbilled: "bg-yellow-100 text-yellow-800",
+
+    // Neutral states
+    waived: "bg-gray-200 text-gray-700",
+    nonbilled: "bg-slate-100 text-slate-700",
+    non_billable: "bg-zinc-100 text-zinc-700",
+
+    // Payment specific states
+    partially_paid: "bg-orange-100 text-orange-800",
+    failed: "bg-red-100 text-red-800",
+    refunded: "bg-purple-100 text-purple-800",
+    processing: "bg-indigo-100 text-indigo-800",
+    cancelled: "bg-gray-200 text-gray-700",
+  };
+  const lowerCaseStatus = status.toLowerCase().replace(/\s+/g, "_");
+
+  return `rounded-full px-2.5 py-1 text-xs tracking-wide font-semibold ${
+    STATUS_LIST[lowerCaseStatus] || "bg-gray-100 text-gray-700"
+  }`;
 };
 
 export default getStatusCssClass;

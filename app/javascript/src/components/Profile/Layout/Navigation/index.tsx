@@ -1,11 +1,10 @@
 import React, { useEffect } from "react";
 
-import { useParams } from "react-router-dom";
-
-import teamsApi from "apis/teams";
+import { teamsApi } from "apis/api";
 import { useProfileContext } from "context/Profile/ProfileContext";
 import { useUserContext } from "context/UserContext";
 import { teamsMapper } from "mapper/teams.mapper";
+import { useParams } from "react-router-dom";
 
 import AdminNav from "./AdminNav";
 import List from "./List";
@@ -42,9 +41,9 @@ const SideNav = () => {
   }, []);
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col bg-gray-50 rounded-xl">
       <UserInformation />
-      <div className="mt-4 flex-1 bg-miru-gray-100">
+      <div className="mt-6 flex-1 px-4 pb-4">
         {isCalledFromSettings && isAdminUser ? <AdminNav /> : <EmployeeNav />}
       </div>
     </div>

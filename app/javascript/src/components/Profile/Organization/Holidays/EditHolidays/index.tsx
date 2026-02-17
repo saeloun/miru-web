@@ -1,8 +1,6 @@
-import React from "react";
+import { allocationFrequency } from "constants/leaveType";
 
-import dayjs from "dayjs";
-import { DeleteIcon, CalendarIcon } from "miruIcons";
-import { Button } from "StyledComponents";
+import React from "react";
 
 import { CustomInputText } from "common/CustomInputText";
 import CustomReactSelect from "common/CustomReactSelect";
@@ -10,7 +8,9 @@ import CustomToggle from "common/CustomToggle";
 import SingleYearDatePicker from "common/CustomYearPicker/SingleYearDatePicker";
 import { Divider } from "common/Divider";
 import EditHeader from "components/Profile/Common/EditHeader";
-import { allocationFrequency } from "constants/leaveType";
+import dayjs from "dayjs";
+import { DeleteIcon, CalendarIcon } from "miruIcons";
+import { Button } from "StyledComponents";
 
 import { customStyles } from "./utils";
 

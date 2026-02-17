@@ -3,8 +3,7 @@ import React, { useState, useEffect } from "react";
 import { XIcon } from "miruIcons";
 import { Button, Toastr } from "StyledComponents";
 
-import companyUsersApi from "apis/company-users";
-import projectMembersApi from "apis/project-members";
+import { companyUsersApi, projectMembersApi } from "apis/api";
 
 import EditMembersListForm from "../EditMembersListForm";
 
