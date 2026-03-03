@@ -139,7 +139,6 @@ gem "ahoy_matey"
 
 gem "httparty", ">= 0.24.0"
 
-# Security updates
 gem "faraday", "~> 1.10.5"
 gem "rack", ">= 3.2.5"
 
