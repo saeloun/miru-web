@@ -14,7 +14,7 @@ http_interactions:
       Content-Type:
       - application/x-www-form-urlencoded
       X-Stripe-Client-User-Agent:
-      - '{"bindings_version":"8.2.0","lang":"ruby","lang_version":"3.4.5 p51 (2025-07-16)","platform":"arm64-darwin24","engine":"ruby","publisher":"stripe","uname":"Darwin
+      - '{"bindings_version":"8.2.0","lang":"ruby","lang_version":"4.0.1 p51 (2025-07-16)","platform":"arm64-darwin24","engine":"ruby","publisher":"stripe","uname":"Darwin
         MacBook-Pro-75.local 24.6.0 Darwin Kernel Version 24.6.0: Mon Jul 14 11:30:29
         PDT 2025; root:xnu-11417.140.69~1/RELEASE_ARM64_T6000 arm64","hostname":"MacBook-Pro-75.local"}'
       Accept-Encoding:
