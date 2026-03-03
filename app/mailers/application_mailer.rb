@@ -5,9 +5,6 @@ class ApplicationMailer < ActionMailer::Base
   default from: ENV["DEFAULT_MAILER_SENDER"]
   layout "mailer"
 
-  # Email regex based on URI::MailTo::EMAIL_REGEXP but without anchors for scanning
-  EMAIL_SCAN_REGEXP = /[a-zA-Z0-9.!\#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*/
-
   rescue_from Postmark::InactiveRecipientError do |exception|
     handle_inactive_recipient(exception)
   end
@@ -15,16 +12,22 @@ class ApplicationMailer < ActionMailer::Base
   private
 
     def handle_inactive_recipient(exception)
-      # Extract email addresses from the error message
-      inactive_emails = exception.message.scan(EMAIL_SCAN_REGEXP)
+      inactive_emails = extract_inactive_emails(exception.message)
 
       Rails.logger.warn("Email delivery failed - Inactive recipient(s): #{inactive_emails.join(', ')}")
       Rails.logger.warn("Error details: #{exception.message}")
 
-      # Store inactive emails in the database to prevent future attempts
       inactive_emails.each do |email|
         record = SesInvalidEmail.find_or_create_by(email: email.downcase)
         Rails.logger.info("Added #{email} to invalid emails list (Postmark inactive)") if record.previously_new_record?
       end
+    end
+
+    def extract_inactive_emails(message)
+      message
+        .split(/[\s,]+/)
+        .map { |value| value.gsub(/\A[^[:alnum:]]+|[^[:alnum:]]+\z/, "") }
+        .select { |value| URI::MailTo::EMAIL_REGEXP.match?(value) }
+        .uniq
     end
 end

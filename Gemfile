@@ -139,9 +139,6 @@ gem "ahoy_matey"
 
 gem "httparty", ">= 0.24.0"
 
-gem "faraday", "~> 1.10.5"
-gem "rack", ">= 3.2.5"
-
 # Use google calendar for integration with Miru
 gem "google-api-client", require: "google/apis/calendar_v3"
 

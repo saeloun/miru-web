@@ -4,31 +4,31 @@ require "rails_helper"
 
 RSpec.describe ApplicationMailer, type: :mailer do
   describe "Postmark error handling" do
-    describe "email extraction with EMAIL_SCAN_REGEXP" do
+    describe "email extraction" do
       it "extracts single email address" do
         message = "Found inactive addresses: test@example.com."
-        emails = message.scan(ApplicationMailer::EMAIL_SCAN_REGEXP)
+        emails = ApplicationMailer.new.send(:extract_inactive_emails, message)
 
         expect(emails).to eq(["test@example.com"])
       end
 
       it "extracts multiple email addresses" do
         message = "Found inactive addresses: user1@example.com, user2@example.com."
-        emails = message.scan(ApplicationMailer::EMAIL_SCAN_REGEXP)
+        emails = ApplicationMailer.new.send(:extract_inactive_emails, message)
 
         expect(emails).to contain_exactly("user1@example.com", "user2@example.com")
       end
 
       it "handles emails with subdomains" do
         message = "Found inactive addresses: user@mail.example.com."
-        emails = message.scan(ApplicationMailer::EMAIL_SCAN_REGEXP)
+        emails = ApplicationMailer.new.send(:extract_inactive_emails, message)
 
         expect(emails).to eq(["user@mail.example.com"])
       end
 
       it "handles emails with hyphens and underscores" do
         message = "Found inactive addresses: first.last@my-domain.com."
-        emails = message.scan(ApplicationMailer::EMAIL_SCAN_REGEXP)
+        emails = ApplicationMailer.new.send(:extract_inactive_emails, message)
 
         expect(emails).to eq(["first.last@my-domain.com"])
       end
