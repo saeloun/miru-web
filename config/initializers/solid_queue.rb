@@ -6,7 +6,7 @@
 
 Rails.application.config.after_initialize do
   # Ensure connections are verified before use
-  ActiveRecord::Base.connection_pool.disconnect! if Rails.env.production?
+  ActiveRecord::Base.connection_pool.verify_active_connections! if Rails.env.production?
 
   # Configure Solid Queue's on_thread_error to handle connection failures
   if defined?(SolidQueue)
@@ -17,13 +17,24 @@ Rails.application.config.after_initialize do
       # Report to Sentry if available
       Sentry.capture_exception(exception) if defined?(Sentry)
 
+      # Check exception cause chain for connection failures
+      error = exception
+      connection_failure = false
+      while error
+        if error.is_a?(ActiveRecord::ConnectionFailed) || error.is_a?(PG::ConnectionBad)
+          connection_failure = true
+          break
+        end
+        error = error.cause
+      end
+
       # Attempt to reconnect on connection failures
-      if exception.is_a?(ActiveRecord::ConnectionFailed) ||
-         exception.is_a?(PG::ConnectionBad) ||
-         exception.message.include?("server closed the connection unexpectedly")
+      if connection_failure
         Rails.logger.warn("[SolidQueue] Attempting to reconnect to database...")
         begin
-          ActiveRecord::Base.connection.reconnect!
+          ActiveRecord::Base.connection_pool.with_connection do |connection|
+            connection.reconnect!
+          end
         rescue StandardError => e
           Rails.logger.error("[SolidQueue] Reconnection failed: #{e.message}")
         end
