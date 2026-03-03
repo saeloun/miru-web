@@ -199,6 +199,21 @@ class InvoiceApiService {
     return response.data;
   }
 
+  async sendReminder(
+    id: string,
+    emailData: {
+      subject: string;
+      message: string;
+      recipients: string[];
+    }
+  ): Promise<{ message: string }> {
+    const response = await axios.post(`/invoices/${id}/send_reminder`, {
+      invoice_email: emailData,
+    });
+
+    return response.data;
+  }
+
   /**
    * Download invoice PDF
    */

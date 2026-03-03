@@ -47,7 +47,7 @@ const ReportsPage: React.FC<ReportsPageProps> = ({ className }) => {
         {
           title: "Outstanding & Overdue Invoices",
           description: "Monitor unpaid and overdue invoices",
-          path: "/reports/outstanding-overdue-invoice",
+          path: "/reports/outstanding-overdue-invoices",
           icon: FileText,
           stats: "8 overdue invoices",
           isNew: false,

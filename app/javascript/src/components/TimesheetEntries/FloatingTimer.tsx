@@ -256,9 +256,18 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({ onSaveEntry }) => {
     }
   };
 
-  // Don't render if timer has never been used
-  if (!timer.isRunning && timer.elapsedTime === 0 && !timer.project) {
-    return null;
+  const isPristineTimer =
+    !timer.isRunning && timer.elapsedTime === 0 && !timer.project;
+
+  if (isPristineTimer) {
+    return (
+      <div className="fixed bottom-6 left-6 z-50">
+        <Button onClick={startTimer} className="shadow-lg">
+          <Play size={16} className="mr-2" />
+          Start Timer
+        </Button>
+      </div>
+    );
   }
 
   return (

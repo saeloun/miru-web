@@ -6,6 +6,8 @@ const SendButton = ({ onClick }) => (
   <div className="send-button-container ml-1 flex flex-row justify-items-center">
     <button
       className="flex h-10 w-32 flex-row items-center justify-center rounded bg-miru-han-purple-1000"
+      id="sendInvoiceButton"
+      data-testid="invoice-send-button"
       onClick={onClick}
     >
       <div className="flex flex-row items-center justify-between">

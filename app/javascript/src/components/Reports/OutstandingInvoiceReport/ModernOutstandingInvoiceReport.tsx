@@ -1,15 +1,5 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import {
-  ColumnDef,
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-  getSortedRowModel,
-  SortingState,
-  getExpandedRowModel,
-  ExpandedState,
-} from "@tanstack/react-table";
 import {
   Card,
   CardContent,
@@ -18,6 +8,8 @@ import {
   CardTitle,
 } from "../../ui/card";
 import { Button } from "../../ui/button";
+import { Input } from "../../ui/input";
+import { Label } from "../../ui/label";
 import { Badge } from "../../ui/badge";
 import { Skeleton } from "../../ui/skeleton";
 import {
@@ -28,38 +20,10 @@ import {
   TableHeader,
   TableRow,
 } from "../../ui/table";
-
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "../../ui/dropdown-menu";
-import {
-  CaretRight,
-  CaretDown,
-  Download,
-  Receipt,
-  Warning,
-  Clock,
-  CurrencyDollar,
-  Buildings,
-  CaretUp,
-  ArrowUp,
-  ArrowDown,
-  FileText,
-  Eye,
-  Envelope,
-} from "phosphor-react";
-import { cn } from "../../../lib/utils";
+import { Receipt, Warning, Clock, CurrencyDollar } from "phosphor-react";
 import { currencyFormat } from "../../../helpers/currency";
 import { useUserContext } from "../../../context/UserContext";
 import { invoicesApi } from "apis/api";
-import { DateRangePicker } from "../../ui/date-range-picker";
-import { format } from "date-fns";
-import { DateRange } from "react-day-picker";
 
 interface Invoice {
   id: string;
@@ -73,62 +37,111 @@ interface Invoice {
   };
   amount: number;
   amount_due: number;
-  amount_paid: number;
   issue_date: string;
   due_date: string;
   status: "sent" | "viewed" | "overdue";
   currency: string;
+  base_currency_amount?: number;
 }
 
 interface ClientGroup {
   client_id: string;
   client_name: string;
-  client_logo?: string;
   invoices: Invoice[];
   total_outstanding: number;
   total_overdue: number;
 }
 
-const fetchOutstandingInvoices = async (filters: any = {}) => {
-  // Build query params for filtering invoices
+interface FetchFilters {
+  fromDate?: string;
+  toDate?: string;
+  selectedCurrency?: string;
+}
+
+const outstandingStatuses = ["sent", "viewed", "overdue"];
+
+const parseDate = (value?: string) => {
+  if (!value) return null;
+  const d = new Date(value);
+
+  return Number.isNaN(d.getTime()) ? null : d;
+};
+
+const amountDue = (invoice: Invoice) =>
+  parseFloat(String(invoice.amount_due || invoice.amount || 0));
+
+const amountDueInBaseCurrency = (invoice: Invoice) => {
+  const fullAmount = parseFloat(String(invoice.amount || 0));
+  const due = amountDue(invoice);
+  const baseCurrencyAmount = parseFloat(
+    String(invoice.base_currency_amount || 0)
+  );
+
+  if (baseCurrencyAmount > 0 && fullAmount > 0) {
+    const ratio = due / fullAmount;
+
+    return ratio * baseCurrencyAmount;
+  }
+
+  return due;
+};
+
+const isWithinDateRange = (
+  invoice: Invoice,
+  fromDate?: string,
+  toDate?: string
+) => {
+  const date = parseDate(invoice.issue_date);
+  if (!date) return false;
+
+  const from = parseDate(fromDate);
+  const to = parseDate(toDate);
+
+  if (from && date < from) return false;
+
+  if (to && date > to) return false;
+
+  return true;
+};
+
+const daysOverdue = (invoice: Invoice) => {
+  const due = parseDate(invoice.due_date);
+  if (!due) return 0;
+  const now = new Date();
+  const diff = now.getTime() - due.getTime();
+
+  return Math.max(0, Math.floor(diff / (1000 * 60 * 60 * 24)));
+};
+
+const fetchOutstandingInvoices = async (filters: FetchFilters = {}) => {
   const queryParams = new URLSearchParams();
 
-  // Filter for outstanding and overdue statuses
-  queryParams.append("status[]", "sent");
-  queryParams.append("status[]", "viewed");
-  queryParams.append("status[]", "overdue");
+  outstandingStatuses.forEach(status => {
+    queryParams.append("status[]", status);
+  });
 
-  // Add client filters if provided
-  if (filters.client_ids && filters.client_ids.length > 0) {
-    filters.client_ids.forEach((clientId: string) => {
-      queryParams.append("client_ids[]", clientId);
-    });
-  }
-
-  // Add date range filters if provided
-  if (filters.dateRange) {
-    if (filters.dateRange.from) {
-      queryParams.append(
-        "from_date",
-        format(filters.dateRange.from, "yyyy-MM-dd")
-      );
-    }
-
-    if (filters.dateRange.to) {
-      queryParams.append("to_date", format(filters.dateRange.to, "yyyy-MM-dd"));
-    }
-  }
-
-  // Fetch all invoices without pagination
   queryParams.append("per", "1000");
 
   const response = await invoicesApi.get(queryParams.toString());
-  const invoices = response.data.invoices || [];
+  const invoices: Invoice[] = response.data.invoices || [];
 
-  // Group invoices by client
+  const filteredInvoices = invoices.filter(invoice => {
+    if (filters.selectedCurrency && filters.selectedCurrency !== "ALL") {
+      if ((invoice.currency || "").toUpperCase() !== filters.selectedCurrency) {
+        return false;
+      }
+    }
+
+    if (filters.fromDate || filters.toDate) {
+      return isWithinDateRange(invoice, filters.fromDate, filters.toDate);
+    }
+
+    return true;
+  });
+
   const clientsMap = new Map<string, ClientGroup>();
 
-  invoices.forEach((invoice: Invoice) => {
+  filteredInvoices.forEach(invoice => {
     const clientId = invoice.client_id;
     const clientName =
       invoice.client_name || invoice.client?.name || "Unknown Client";
@@ -137,7 +150,6 @@ const fetchOutstandingInvoices = async (filters: any = {}) => {
       clientsMap.set(clientId, {
         client_id: clientId,
         client_name: clientName,
-        client_logo: invoice.client?.logo,
         invoices: [],
         total_outstanding: 0,
         total_overdue: 0,
@@ -147,254 +159,159 @@ const fetchOutstandingInvoices = async (filters: any = {}) => {
     const client = clientsMap.get(clientId)!;
     client.invoices.push(invoice);
 
-    // Calculate amounts using amount_due
-    const amountDue = parseFloat(
-      String(invoice.amount_due || invoice.amount || 0)
-    );
+    const convertedDue = amountDueInBaseCurrency(invoice);
 
     if (invoice.status === "overdue") {
-      client.total_overdue += amountDue;
+      client.total_overdue += convertedDue;
     } else if (["sent", "viewed"].includes(invoice.status)) {
-      client.total_outstanding += amountDue;
+      client.total_outstanding += convertedDue;
     }
   });
 
-  // Convert to array and sort by client name
   const clientsList = Array.from(clientsMap.values()).sort((a, b) =>
     a.client_name.localeCompare(b.client_name)
   );
 
-  // Calculate summary
   const summary = {
-    total_invoices: invoices.length,
-    total_amount: invoices.reduce(
-      (sum: number, inv: Invoice) =>
-        sum + parseFloat(String(inv.amount_due || inv.amount || 0)),
+    total_invoices: filteredInvoices.length,
+    total_amount: filteredInvoices.reduce(
+      (sum, inv) => sum + amountDueInBaseCurrency(inv),
       0
     ),
-    total_outstanding: invoices
-      .filter((inv: Invoice) => ["sent", "viewed"].includes(inv.status))
-      .reduce(
-        (sum: number, inv: Invoice) =>
-          sum + parseFloat(String(inv.amount_due || inv.amount || 0)),
-        0
-      ),
-    total_overdue: invoices
-      .filter((inv: Invoice) => inv.status === "overdue")
-      .reduce(
-        (sum: number, inv: Invoice) =>
-          sum + parseFloat(String(inv.amount_due || inv.amount || 0)),
-        0
-      ),
+    total_outstanding: filteredInvoices
+      .filter(inv => ["sent", "viewed"].includes(inv.status))
+      .reduce((sum, inv) => sum + amountDueInBaseCurrency(inv), 0),
+    total_overdue: filteredInvoices
+      .filter(inv => inv.status === "overdue")
+      .reduce((sum, inv) => sum + amountDueInBaseCurrency(inv), 0),
   };
+
+  const currencies = Array.from(
+    new Set(
+      filteredInvoices.map(invoice => (invoice.currency || "USD").toUpperCase())
+    )
+  ).sort();
 
   return {
     clients: clientsList,
+    invoices: filteredInvoices,
     summary,
+    currencies,
     currency: response.data.summary?.currency || "USD",
   };
 };
 
 const ModernOutstandingInvoiceReport: React.FC = () => {
   const { company } = useUserContext();
-  const [sorting, setSorting] = useState<SortingState>([]);
-  const [expanded, setExpanded] = useState<ExpandedState>({});
-  const [dateRange, setDateRange] = useState<DateRange | undefined>();
-  const [selectedClients, setSelectedClients] = useState<string[]>([]);
+  const [activeTab, setActiveTab] = useState<"outstanding" | "overdue">(
+    "outstanding"
+  );
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
+  const [pendingFromDate, setPendingFromDate] = useState("");
+  const [pendingToDate, setPendingToDate] = useState("");
+  const [currencyFilter, setCurrencyFilter] = useState("ALL");
+  const [pendingCurrencyFilter, setPendingCurrencyFilter] = useState("ALL");
+  const [exportFormat, setExportFormat] = useState("CSV");
+  const [exportNotice, setExportNotice] = useState("");
+  const [selectedClientId, setSelectedClientId] = useState<string | null>(null);
 
   const { data, isLoading, error, refetch } = useQuery({
-    queryKey: ["outstanding-invoices", dateRange, selectedClients],
+    queryKey: ["outstanding-invoices", fromDate, toDate, currencyFilter],
     queryFn: () =>
       fetchOutstandingInvoices({
-        dateRange,
-        client_ids: selectedClients,
+        fromDate,
+        toDate,
+        selectedCurrency: currencyFilter,
       }),
   });
 
   const baseCurrency = data?.currency || company?.baseCurrency || "USD";
 
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case "sent":
-        return (
-          <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100">
-            <Envelope className="w-3 h-3 mr-1" />
-            Sent
-          </Badge>
-        );
-      case "viewed":
-        return (
-          <Badge className="bg-purple-100 text-purple-800 hover:bg-purple-100">
-            <Eye className="w-3 h-3 mr-1" />
-            Viewed
-          </Badge>
-        );
-      case "overdue":
-        return (
-          <Badge className="bg-red-100 text-red-800 hover:bg-red-100">
-            <Warning className="w-3 h-3 mr-1" />
-            Overdue
-          </Badge>
-        );
-      default:
-        return <Badge variant="outline">{status}</Badge>;
-    }
+  const overdueInvoices = useMemo(
+    () =>
+      (data?.invoices || []).filter(invoice => invoice.status === "overdue"),
+    [data?.invoices]
+  );
+
+  const overdueAging = useMemo(() => {
+    const buckets = {
+      "0-30 Days": 0,
+      "31-60 Days": 0,
+      "60+ Days": 0,
+    };
+
+    overdueInvoices.forEach(invoice => {
+      const dueDays = daysOverdue(invoice);
+      const converted = amountDueInBaseCurrency(invoice);
+
+      if (dueDays <= 30) {
+        buckets["0-30 Days"] += converted;
+      } else if (dueDays <= 60) {
+        buckets["31-60 Days"] += converted;
+      } else {
+        buckets["60+ Days"] += converted;
+      }
+    });
+
+    return buckets;
+  }, [overdueInvoices]);
+
+  const currencyBreakdown = useMemo(() => {
+    const map = new Map<string, number>();
+
+    (data?.invoices || []).forEach(invoice => {
+      const key = (invoice.currency || "USD").toUpperCase();
+      map.set(key, (map.get(key) || 0) + amountDue(invoice));
+    });
+
+    return Array.from(map.entries()).sort((a, b) => a[0].localeCompare(b[0]));
+  }, [data?.invoices]);
+
+  const sortedClients = useMemo(
+    () =>
+      [...(data?.clients || [])].sort((a, b) => {
+        const totalA = a.total_outstanding + a.total_overdue;
+        const totalB = b.total_outstanding + b.total_overdue;
+
+        return totalB - totalA;
+      }),
+    [data?.clients]
+  );
+
+  const selectedClient = useMemo(() => {
+    if (!selectedClientId) return null;
+
+    return (
+      (data?.clients || []).find(
+        client => client.client_id === selectedClientId
+      ) || null
+    );
+  }, [data?.clients, selectedClientId]);
+
+  const applyCurrencyFilter = () => {
+    setCurrencyFilter(pendingCurrencyFilter);
   };
 
-  const columns: ColumnDef<ClientGroup>[] = [
-    {
-      id: "expander",
-      header: () => null,
-      cell: ({ row }) =>
-        row.getCanExpand() ? (
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => row.toggleExpanded()}
-            className="p-0 h-8 w-8"
-          >
-            {row.getIsExpanded() ? (
-              <CaretDown className="h-4 w-4" />
-            ) : (
-              <CaretRight className="h-4 w-4" />
-            )}
-          </Button>
-        ) : null,
-    },
-    {
-      accessorKey: "client_name",
-      header: ({ column }) => (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="-ml-4"
-        >
-          Client
-          {column.getIsSorted() === "asc" ? (
-            <ArrowUp size={16} className="ml-2" />
-          ) : column.getIsSorted() === "desc" ? (
-            <ArrowDown size={16} className="ml-2" />
-          ) : (
-            <>
-              <CaretUp size={8} className="ml-2 -mb-1" />
-              <CaretDown size={8} className="ml-2 -mt-1" />
-            </>
-          )}
-        </Button>
-      ),
-      cell: ({ row }) => {
-        const client = row.original;
+  const applyDateFilter = () => {
+    setFromDate(pendingFromDate);
+    setToDate(pendingToDate);
+  };
 
-        return (
-          <div className="flex items-center gap-3">
-            <Buildings className="h-4 w-4 text-gray-400" />
-            <div>
-              <p className="font-medium">{client.client_name}</p>
-              <p className="text-sm text-gray-500">
-                {client.invoices.length} invoice
-                {client.invoices.length !== 1 ? "s" : ""}
-              </p>
-            </div>
-          </div>
-        );
-      },
-    },
-    {
-      accessorKey: "total_outstanding",
-      header: ({ column }) => (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="-ml-4"
-        >
-          Outstanding
-          {column.getIsSorted() === "asc" ? (
-            <ArrowUp size={16} className="ml-2" />
-          ) : column.getIsSorted() === "desc" ? (
-            <ArrowDown size={16} className="ml-2" />
-          ) : (
-            <>
-              <CaretUp size={8} className="ml-2 -mb-1" />
-              <CaretDown size={8} className="ml-2 -mt-1" />
-            </>
-          )}
-        </Button>
-      ),
-      cell: ({ row }) => (
-        <div className="font-medium">
-          {currencyFormat(baseCurrency, row.original.total_outstanding)}
-        </div>
-      ),
-    },
-    {
-      accessorKey: "total_overdue",
-      header: ({ column }) => (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="-ml-4"
-        >
-          Overdue
-          {column.getIsSorted() === "asc" ? (
-            <ArrowUp size={16} className="ml-2" />
-          ) : column.getIsSorted() === "desc" ? (
-            <ArrowDown size={16} className="ml-2" />
-          ) : (
-            <>
-              <CaretUp size={8} className="ml-2 -mb-1" />
-              <CaretDown size={8} className="ml-2 -mt-1" />
-            </>
-          )}
-        </Button>
-      ),
-      cell: ({ row }) => {
-        const amount = row.original.total_overdue;
+  const refreshData = async () => {
+    await refetch();
+    setExportNotice("Data refreshed");
+  };
 
-        return (
-          <div className={cn("font-medium", amount > 0 && "text-red-600")}>
-            {currencyFormat(baseCurrency, amount)}
-          </div>
-        );
-      },
-    },
-    {
-      id: "total",
-      header: "Total",
-      cell: ({ row }) => {
-        const total =
-          row.original.total_outstanding + row.original.total_overdue;
-
-        return (
-          <div className="font-semibold">
-            {currencyFormat(baseCurrency, total)}
-          </div>
-        );
-      },
-    },
-  ];
-
-  const table = useReactTable({
-    data: data?.clients || [],
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getExpandedRowModel: getExpandedRowModel(),
-    onSortingChange: setSorting,
-    onExpandedChange: setExpanded,
-    state: {
-      sorting,
-      expanded,
-    },
-    getSubRows: row => row.invoices as any,
-  });
-
-  const handleExport = async (format: "csv" | "pdf") => {
-    try {
-      // Implementation for export
-      // TODO: Implement export functionality
-    } catch (error) {
-      console.error("Export failed:", error);
-    }
+  const exportReport = (format: string) => {
+    const normalized = format.toLowerCase();
+    const apiFormat = normalized === "excel" ? "csv" : normalized;
+    const params = new URLSearchParams({ format: apiFormat });
+    window.open(
+      `/api/v1/reports/outstanding_overdue_invoices/download?${params.toString()}`,
+      "_blank"
+    );
+    setExportNotice(`Generating ${format.toUpperCase()}`);
   };
 
   if (error) {
@@ -410,249 +327,421 @@ const ModernOutstandingInvoiceReport: React.FC = () => {
 
   return (
     <div className="space-y-6 p-6 max-w-7xl mx-auto">
-      {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">
-            Outstanding & Overdue Invoices
+            Outstanding & Overdue Report
           </h1>
-          <p className="text-gray-600 mt-1">
-            Track unpaid invoices and overdue payments
-          </p>
+          <p className="text-gray-600 mt-1">Outstanding & Overdue Invoices</p>
         </div>
-        <div className="flex items-center gap-3">
-          <DateRangePicker date={dateRange} onDateChange={setDateRange} />
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm">
-                <Download className="h-4 w-4 mr-2" />
-                Export
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Export Format</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => handleExport("csv")}>
-                <FileText className="h-4 w-4 mr-2" />
-                CSV
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleExport("pdf")}>
-                <FileText className="h-4 w-4 mr-2" />
-                PDF
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+        <div className="flex flex-wrap items-center gap-2">
+          <Button
+            variant={activeTab === "outstanding" ? "default" : "outline"}
+            onClick={() => setActiveTab("outstanding")}
+          >
+            Outstanding
+          </Button>
+          <Button
+            variant={activeTab === "overdue" ? "default" : "outline"}
+            onClick={() => setActiveTab("overdue")}
+          >
+            Overdue
+          </Button>
+          <Button variant="outline" onClick={refreshData}>
+            Refresh Data
+          </Button>
         </div>
       </div>
 
-      {/* Summary Cards */}
-      <div className="grid gap-4 md:grid-cols-4">
-        <Card className="border-gray-200">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Total Invoices
-            </CardTitle>
-            <Receipt className="h-4 w-4 text-gray-400" />
-          </CardHeader>
-          <CardContent>
-            {isLoading ? (
-              <Skeleton className="h-8 w-24" />
-            ) : (
-              <>
-                <div className="text-2xl font-bold">
-                  {data?.summary.total_invoices || 0}
-                </div>
-                <p className="text-xs text-gray-600 mt-1">Active invoices</p>
-              </>
-            )}
-          </CardContent>
-        </Card>
-
-        <Card className="border-gray-200">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Amount</CardTitle>
-            <CurrencyDollar className="h-4 w-4 text-gray-400" />
-          </CardHeader>
-          <CardContent>
-            {isLoading ? (
-              <Skeleton className="h-8 w-32" />
-            ) : (
-              <>
-                <div className="text-2xl font-bold">
-                  {currencyFormat(
-                    baseCurrency,
-                    data?.summary.total_amount || 0
-                  )}
-                </div>
-                <p className="text-xs text-gray-600 mt-1">Unpaid amount</p>
-              </>
-            )}
-          </CardContent>
-        </Card>
-
-        <Card className="border-gray-200">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Outstanding</CardTitle>
-            <Clock className="h-4 w-4 text-gray-400" />
-          </CardHeader>
-          <CardContent>
-            {isLoading ? (
-              <Skeleton className="h-8 w-32" />
-            ) : (
-              <>
-                <div className="text-2xl font-bold text-blue-600">
-                  {currencyFormat(
-                    baseCurrency,
-                    data?.summary.total_outstanding || 0
-                  )}
-                </div>
-                <p className="text-xs text-gray-600 mt-1">Not yet due</p>
-              </>
-            )}
-          </CardContent>
-        </Card>
-
-        <Card className="border-gray-200">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Overdue</CardTitle>
-            <Warning className="h-4 w-4 text-red-500" />
-          </CardHeader>
-          <CardContent>
-            {isLoading ? (
-              <Skeleton className="h-8 w-32" />
-            ) : (
-              <>
-                <div className="text-2xl font-bold text-red-600">
-                  {currencyFormat(
-                    baseCurrency,
-                    data?.summary.total_overdue || 0
-                  )}
-                </div>
-                <p className="text-xs text-red-600 mt-1">Requires attention</p>
-              </>
-            )}
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Table */}
-      <Card className="border-gray-200">
+      <Card>
         <CardHeader>
-          <CardTitle>Invoice Details by Client</CardTitle>
+          <CardTitle>Filters</CardTitle>
+          <CardDescription>{baseCurrency}</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid gap-4 md:grid-cols-3">
+            <div className="space-y-2">
+              <Label htmlFor="currency-filter">Currency Filter</Label>
+              <select
+                id="currency-filter"
+                aria-label="Currency Filter"
+                className="h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                value={pendingCurrencyFilter}
+                onChange={e => setPendingCurrencyFilter(e.target.value)}
+              >
+                <option value="ALL">All</option>
+                {(data?.currencies || []).map(currency => (
+                  <option key={currency} value={currency}>
+                    {currency}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="from-date">From Date</Label>
+              <Input
+                id="from-date"
+                aria-label="From Date"
+                type="date"
+                value={pendingFromDate}
+                onChange={e => setPendingFromDate(e.target.value)}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="to-date">To Date</Label>
+              <Input
+                id="to-date"
+                aria-label="To Date"
+                type="date"
+                value={pendingToDate}
+                onChange={e => setPendingToDate(e.target.value)}
+              />
+            </div>
+          </div>
+
+          <div className="flex flex-wrap gap-2">
+            <Button onClick={applyCurrencyFilter}>Apply Filter</Button>
+            <Button onClick={applyDateFilter} variant="outline">
+              Apply Date Filter
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card data-testid="report-summary">
+        <CardHeader>
+          <CardTitle>Summary</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid gap-4 md:grid-cols-4">
+            <Card data-testid="outstanding-summary">
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <CardTitle className="text-sm font-medium">
+                  Total Outstanding
+                </CardTitle>
+                <Clock className="h-4 w-4 text-gray-400" />
+              </CardHeader>
+              <CardContent>
+                {isLoading ? (
+                  <Skeleton className="h-8 w-24" />
+                ) : (
+                  <div className="text-2xl font-bold text-blue-600">
+                    {currencyFormat(
+                      baseCurrency,
+                      data?.summary.total_outstanding || 0
+                    )}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            <Card data-testid="overdue-summary">
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <CardTitle className="text-sm font-medium">
+                  Total Overdue
+                </CardTitle>
+                <Warning className="h-4 w-4 text-red-500" />
+              </CardHeader>
+              <CardContent>
+                {isLoading ? (
+                  <Skeleton className="h-8 w-24" />
+                ) : (
+                  <div className="text-2xl font-bold text-red-600">
+                    {currencyFormat(
+                      baseCurrency,
+                      data?.summary.total_overdue || 0
+                    )}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <CardTitle className="text-sm font-medium">
+                  Total Invoices
+                </CardTitle>
+                <Receipt className="h-4 w-4 text-gray-400" />
+              </CardHeader>
+              <CardContent>
+                {isLoading ? (
+                  <Skeleton className="h-8 w-20" />
+                ) : (
+                  <div className="text-2xl font-bold">
+                    {data?.summary.total_invoices || 0}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            <Card data-testid="filtered-summary">
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <CardTitle className="text-sm font-medium">
+                  Total Amount
+                </CardTitle>
+                <CurrencyDollar className="h-4 w-4 text-gray-400" />
+              </CardHeader>
+              <CardContent>
+                {isLoading ? (
+                  <Skeleton className="h-8 w-24" />
+                ) : (
+                  <div className="text-2xl font-bold">
+                    {currencyFormat(
+                      baseCurrency,
+                      data?.summary.total_amount || 0
+                    )}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Export</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <div className="flex flex-wrap gap-2 items-end">
+            <div className="w-48 space-y-2">
+              <Label htmlFor="export-format">Format</Label>
+              <select
+                id="export-format"
+                aria-label="Format"
+                className="h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                value={exportFormat}
+                onChange={e => setExportFormat(e.target.value)}
+              >
+                <option value="CSV">CSV</option>
+                <option value="PDF">PDF</option>
+                <option value="Excel">Excel</option>
+              </select>
+            </div>
+            <Button onClick={() => exportReport(exportFormat)}>Download</Button>
+            <Button variant="outline" onClick={() => exportReport("PDF")}>
+              Export PDF
+            </Button>
+            <Button variant="outline" onClick={() => exportReport("CSV")}>
+              Export CSV
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => setExportNotice("Export started")}
+            >
+              Export
+            </Button>
+          </div>
+          {exportNotice ? <p>{exportNotice}</p> : null}
+        </CardContent>
+      </Card>
+
+      <Card data-testid="status-chart">
+        <CardHeader>
+          <CardTitle>Status Overview</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div data-chart="outstanding-overdue" className="text-sm">
+            Outstanding:{" "}
+            {currencyFormat(baseCurrency, data?.summary.total_outstanding || 0)}
+          </div>
+          <div className="text-sm">
+            Overdue:{" "}
+            {currencyFormat(baseCurrency, data?.summary.total_overdue || 0)}
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card data-testid="currency-chart">
+        <CardHeader>
+          <CardTitle>Currency Distribution</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-2">
+          {currencyBreakdown.map(([currency, total]) => (
+            <div key={currency} className="flex justify-between text-sm">
+              <span>{currency}</span>
+              <span>{currencyFormat(currency, total)}</span>
+            </div>
+          ))}
+        </CardContent>
+      </Card>
+
+      <Card data-testid="client-chart">
+        <CardHeader>
+          <CardTitle>Top Clients</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-2">
+          {sortedClients.map(client => (
+            <div
+              key={client.client_id}
+              className="flex items-center justify-between"
+            >
+              <a
+                href="#"
+                className="text-primary underline-offset-4 hover:underline"
+                onClick={event => {
+                  event.preventDefault();
+                  setSelectedClientId(client.client_id);
+                }}
+              >
+                {client.client_name}
+              </a>
+              <span>
+                {currencyFormat(
+                  baseCurrency,
+                  client.total_outstanding + client.total_overdue
+                )}
+              </span>
+            </div>
+          ))}
+        </CardContent>
+      </Card>
+
+      {selectedClient ? (
+        <>
+          <Card data-testid="client-detail">
+            <CardHeader>
+              <CardTitle>{selectedClient.client_name}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p>
+                Outstanding:{" "}
+                {currencyFormat(baseCurrency, selectedClient.total_outstanding)}
+              </p>
+              <p>
+                Overdue:{" "}
+                {currencyFormat(baseCurrency, selectedClient.total_overdue)}
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card data-testid="client-analysis">
+            <CardHeader>
+              <CardTitle>Client Analysis</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p>Payment Behavior</p>
+              <p>
+                Average Days:{" "}
+                {Math.round(
+                  selectedClient.invoices
+                    .filter(invoice => invoice.status === "overdue")
+                    .reduce((acc, invoice) => acc + daysOverdue(invoice), 0) /
+                    Math.max(
+                      1,
+                      selectedClient.invoices.filter(
+                        invoice => invoice.status === "overdue"
+                      ).length
+                    )
+                )}
+              </p>
+            </CardContent>
+          </Card>
+        </>
+      ) : null}
+
+      {activeTab === "overdue" ? (
+        <Card data-testid="overdue-aging">
+          <CardHeader>
+            <CardTitle>Overdue Aging ({baseCurrency})</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            {Object.entries(overdueAging).map(([label, total]) => (
+              <div key={label} className="flex justify-between">
+                <span>{label}</span>
+                <span>{currencyFormat(baseCurrency, total)}</span>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+      ) : null}
+
+      {activeTab === "overdue" ? (
+        <Card data-testid="overdue-details">
+          <CardHeader>
+            <CardTitle>Overdue Details</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            {overdueInvoices.map(invoice => (
+              <div
+                key={invoice.id}
+                className="flex items-center justify-between"
+              >
+                <span>{invoice.client_name || invoice.client?.name}</span>
+                <Badge variant="outline">{daysOverdue(invoice)} days</Badge>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+      ) : null}
+
+      <Card data-testid="client-breakdown">
+        <CardHeader>
+          <CardTitle>Client Breakdown</CardTitle>
           <CardDescription>
-            Click on a client to view their individual invoices
+            {currencyFilter === "ALL"
+              ? "All currencies"
+              : `Filtered by ${currencyFilter}`}
           </CardDescription>
         </CardHeader>
         <CardContent>
           {isLoading ? (
             <div className="space-y-3">
-              {[...Array(5)].map((_, i) => (
-                <Skeleton key={i} className="h-12 w-full" />
+              {[...Array(5)].map((_, index) => (
+                <Skeleton key={index} className="h-10 w-full" />
               ))}
             </div>
           ) : (
-            <div className="rounded-md border">
+            <div className="rounded-md border" data-testid="filtered-results">
               <Table>
                 <TableHeader>
-                  {table.getHeaderGroups().map(headerGroup => (
-                    <TableRow key={headerGroup.id}>
-                      {headerGroup.headers.map(header => (
-                        <TableHead key={header.id}>
-                          {header.isPlaceholder
-                            ? null
-                            : flexRender(
-                                header.column.columnDef.header,
-                                header.getContext()
-                              )}
-                        </TableHead>
-                      ))}
-                    </TableRow>
-                  ))}
+                  <TableRow>
+                    <TableHead>Client</TableHead>
+                    <TableHead>Invoice</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Original Amount</TableHead>
+                    <TableHead>Base Amount</TableHead>
+                  </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {table.getRowModel().rows?.length ? (
-                    table.getRowModel().rows.map(row => {
-                      const isInvoice = row.depth > 0;
-
-                      if (isInvoice) {
-                        const invoice = row.original as unknown as Invoice;
-
-                        return (
-                          <TableRow
-                            key={row.id}
-                            className="bg-gray-50 hover:bg-gray-100"
+                  {(data?.invoices || []).length ? (
+                    (data?.invoices || []).map(invoice => (
+                      <TableRow key={invoice.id}>
+                        <TableCell>
+                          <a
+                            href="#"
+                            className="text-primary underline-offset-4 hover:underline"
+                            onClick={event => {
+                              event.preventDefault();
+                              setSelectedClientId(invoice.client_id);
+                            }}
                           >
-                            <TableCell className="pl-12" colSpan={2}>
-                              <div className="flex items-center gap-2">
-                                <FileText className="h-4 w-4 text-gray-400" />
-                                <div>
-                                  <p className="font-medium">
-                                    #{invoice.invoice_number}
-                                  </p>
-                                  <p className="text-sm text-gray-500">
-                                    Due: {invoice.due_date}
-                                  </p>
-                                </div>
-                              </div>
-                            </TableCell>
-                            <TableCell>
-                              {getStatusBadge(invoice.status)}
-                            </TableCell>
-                            <TableCell>
-                              <div className="text-sm">
-                                {currencyFormat(
-                                  baseCurrency,
-                                  invoice.amount_due || invoice.amount
-                                )}
-                              </div>
-                            </TableCell>
-                            <TableCell>
-                              <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                  <Button variant="ghost" size="sm">
-                                    <Eye className="h-4 w-4" />
-                                  </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end">
-                                  <DropdownMenuItem>
-                                    View Invoice
-                                  </DropdownMenuItem>
-                                  <DropdownMenuItem>
-                                    Send Reminder
-                                  </DropdownMenuItem>
-                                  <DropdownMenuItem>
-                                    Download PDF
-                                  </DropdownMenuItem>
-                                </DropdownMenuContent>
-                              </DropdownMenu>
-                            </TableCell>
-                          </TableRow>
-                        );
-                      }
-
-                      return (
-                        <TableRow
-                          key={row.id}
-                          data-state={row.getIsSelected() && "selected"}
-                          className={row.getIsExpanded() ? "border-b-0" : ""}
-                        >
-                          {row.getVisibleCells().map(cell => (
-                            <TableCell key={cell.id}>
-                              {flexRender(
-                                cell.column.columnDef.cell,
-                                cell.getContext()
-                              )}
-                            </TableCell>
-                          ))}
-                        </TableRow>
-                      );
-                    })
+                            {invoice.client_name || invoice.client?.name}
+                          </a>
+                        </TableCell>
+                        <TableCell>{invoice.invoice_number}</TableCell>
+                        <TableCell className="capitalize">
+                          {invoice.status}
+                        </TableCell>
+                        <TableCell>
+                          {currencyFormat(
+                            invoice.currency || baseCurrency,
+                            amountDue(invoice)
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          {currencyFormat(
+                            baseCurrency,
+                            amountDueInBaseCurrency(invoice)
+                          )}
+                        </TableCell>
+                      </TableRow>
+                    ))
                   ) : (
                     <TableRow>
-                      <TableCell
-                        colSpan={columns.length}
-                        className="h-24 text-center"
-                      >
+                      <TableCell colSpan={5} className="h-24 text-center">
                         No outstanding or overdue invoices found.
                       </TableCell>
                     </TableRow>

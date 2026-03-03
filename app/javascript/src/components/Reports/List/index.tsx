@@ -33,7 +33,7 @@ const listDetails = [
     title: "Invoices Report",
     description:
       "A detailed summary of outstanding and overdue of all clients for a period of time.",
-    url: "outstanding-overdue-invoice",
+    url: "outstanding-overdue-invoices",
     show: true,
   },
   {

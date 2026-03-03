@@ -1,6 +1,10 @@
 import React from "react";
 import { cn } from "../../lib/utils";
 import { DayInfo } from "../../types/timeTracking";
+import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat";
+
+dayjs.extend(customParseFormat);
 
 interface WeekDaySelectorProps {
   dayInfo: DayInfo[];
@@ -15,10 +19,15 @@ const WeekDaySelector: React.FC<WeekDaySelectorProps> = ({
 }) => {
   // Render a day button for week view
   const renderDayButton = (d: DayInfo, index: number) => {
-    const isToday =
-      new Date().toDateString() === new Date(d.fullDate).toDateString();
+    const parsedDay = dayjs(
+      d.fullDate,
+      ["YYYY-MM-DD", "MM-DD-YYYY", "DD-MM-YYYY", "MM/DD/YYYY", "DD/MM/YYYY"],
+      true
+    );
+    const isToday = parsedDay.isValid() && dayjs().isSame(parsedDay, "day");
     const isSelected = index === selectDate;
-    const isWeekend = d.day === "SUN" || d.day === "SAT";
+    const normalizedDay = (d.day || "").toUpperCase();
+    const isWeekend = normalizedDay === "SUN" || normalizedDay === "SAT";
 
     const buttonClasses = cn(
       "relative transition-all duration-200 cursor-pointer text-center rounded-lg border px-3 py-3",

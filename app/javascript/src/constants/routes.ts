@@ -46,6 +46,7 @@ const ReportsRoutes = [
   { path: "", Component: ReportsTable },
   { path: "time-entry", Component: TimeEntryReports },
   { path: "revenue-by-client", Component: RevenueByClientReport },
+  { path: "outstanding-overdue-invoices", Component: OutstandingInvoiceReport },
   { path: "outstanding-overdue-invoice", Component: OutstandingInvoiceReport },
   { path: "total-hours", Component: TotalHoursReport },
   { path: "accounts-aging", Component: AccountsAgingReport },
