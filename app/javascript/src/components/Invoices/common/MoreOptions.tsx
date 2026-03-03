@@ -58,6 +58,8 @@ const MoreOptions: FC<MoreOptionsProps> = ({
     )}
     {invoice?.status === "overdue" && (
       <li
+        id="invoiceReminderAction"
+        data-testid="invoice-reminder-action"
         className="flex cursor-pointer items-center py-2 px-4 text-miru-han-purple-1000 hover:bg-miru-gray-100"
         onClick={() => {
           setIsSendReminder(true);

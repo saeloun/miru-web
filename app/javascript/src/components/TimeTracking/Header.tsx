@@ -71,7 +71,7 @@ const Header = ({
   return (
     <Card className="w-full shadow-sm border border-border bg-card backdrop-blur-sm rounded-lg mb-6">
       <CardContent className="p-5">
-        <div className="flex w-full items-center justify-between">
+        <div className="flex w-full items-center justify-between gap-4">
           <Button
             variant="outline"
             size="sm"
@@ -130,6 +130,15 @@ const Header = ({
             >
               <CaretRight className="h-5 w-5" />
             </Button>
+          </div>
+
+          <div className="weekly-total rounded-lg border border-border bg-muted/40 px-4 py-2 text-right min-w-[96px]">
+            <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">
+              Total
+            </div>
+            <div className="text-lg font-bold tabular-nums text-foreground">
+              {getTotal() || "00:00"}
+            </div>
           </div>
         </div>
       </CardContent>

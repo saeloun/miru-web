@@ -66,6 +66,7 @@ const AddEntry: React.FC<Iprops> = ({
     getValueFromLocalStorage("taskType") || "development"
   );
   const [submitting, setSubmitting] = useState<boolean>(false);
+  const [projectBillable, setProjectBillable] = useState<boolean>(false);
 
   const { isDesktop, company } = useUserContext();
   const dateFormat =
@@ -100,6 +101,7 @@ const AddEntry: React.FC<Iprops> = ({
     );
     if (selectedProject) {
       setProjectId(Number(selectedProject.id));
+      setProjectBillable(Boolean(selectedProject.billable));
     }
   }, [project, client]);
 
@@ -112,7 +114,7 @@ const AddEntry: React.FC<Iprops> = ({
     duration: minFromHHMM(duration),
     note,
     task_type: taskType,
-    bill_status: "non_billable",
+    bill_status: projectBillable ? "unbilled" : "non_billable",
   });
 
   const handleSave = async () => {
@@ -214,7 +216,7 @@ const AddEntry: React.FC<Iprops> = ({
   }, [debouncedNote, duration, client, project, projectId, taskType]);
 
   return isDesktop ? (
-    <Card className="w-full shadow-sm border border-border bg-card backdrop-blur-sm rounded-lg">
+    <Card className="weekly-entries w-full shadow-sm border border-border bg-card backdrop-blur-sm rounded-lg">
       <div className={`p-8 ${editEntryId ? "mt-4" : ""}`}>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left Column - Client and Project Selection */}
@@ -234,7 +236,11 @@ const AddEntry: React.FC<Iprops> = ({
                     setProject(projects ? projects[value][0]?.name : "");
                   }}
                 >
-                  <SelectTrigger className="h-12">
+                  <SelectTrigger
+                    id="client"
+                    aria-label="Client"
+                    className="h-12 client-select"
+                  >
                     <SelectValue placeholder="Select a client" />
                   </SelectTrigger>
                   <SelectContent>
@@ -260,8 +266,10 @@ const AddEntry: React.FC<Iprops> = ({
                   disabled={!client}
                 >
                   <SelectTrigger
+                    id="project"
+                    aria-label="Project"
                     className={cn(
-                      "h-12",
+                      "h-12 project-select",
                       !client && "opacity-50 cursor-not-allowed"
                     )}
                   >

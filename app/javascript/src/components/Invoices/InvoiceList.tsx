@@ -47,6 +47,7 @@ interface InvoiceListProps {
   onCreateInvoice?: () => void;
   onViewInvoice?: (id: string) => void;
   onSendInvoice?: (id: string) => void;
+  onSendReminder?: (id: string) => void;
   onMarkPaid?: (id: string) => void;
   onDownload?: (id: string) => void;
   onLoadMore?: () => void;
@@ -62,6 +63,7 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
   onCreateInvoice,
   onViewInvoice,
   onSendInvoice,
+  onSendReminder,
   onMarkPaid,
   onDownload,
   onLoadMore,
@@ -231,28 +233,53 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
   const getQuickActions = (invoice: Invoice) => (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="sm">
+        <Button
+          variant="ghost"
+          size="sm"
+          data-testid={`invoice-actions-trigger-${invoice.id}`}
+        >
           <DotsThree className="h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => onViewInvoice?.(invoice.id)}>
+        <DropdownMenuItem
+          data-testid={`invoice-action-view-${invoice.id}`}
+          onClick={() => onViewInvoice?.(invoice.id)}
+        >
           <Eye className="h-4 w-4 mr-2" />
           View
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => onDownload?.(invoice.id)}>
+        <DropdownMenuItem
+          data-testid={`invoice-action-download-${invoice.id}`}
+          onClick={() => onDownload?.(invoice.id)}
+        >
           <Download className="h-4 w-4 mr-2" />
           Download
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         {invoice.status === "draft" && (
-          <DropdownMenuItem onClick={() => onSendInvoice?.(invoice.id)}>
+          <DropdownMenuItem
+            data-testid={`invoice-action-send-${invoice.id}`}
+            onClick={() => onSendInvoice?.(invoice.id)}
+          >
             <PaperPlaneTilt className="h-4 w-4 mr-2" />
-            Send
+            Send Invoice
+          </DropdownMenuItem>
+        )}
+        {invoice.status === "overdue" && (
+          <DropdownMenuItem
+            data-testid={`invoice-action-reminder-${invoice.id}`}
+            onClick={() => onSendReminder?.(invoice.id)}
+          >
+            <PaperPlaneTilt className="h-4 w-4 mr-2" />
+            Send Reminder
           </DropdownMenuItem>
         )}
         {invoice.status !== "paid" && (
-          <DropdownMenuItem onClick={() => onMarkPaid?.(invoice.id)}>
+          <DropdownMenuItem
+            data-testid={`invoice-action-mark-paid-${invoice.id}`}
+            onClick={() => onMarkPaid?.(invoice.id)}
+          >
             <CheckCircle className="h-4 w-4 mr-2" />
             Mark as Paid
           </DropdownMenuItem>
@@ -371,6 +398,7 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
                     <TableRow
                       key={invoice.id}
                       className="cursor-pointer hover:bg-muted/50"
+                      data-testid={`invoice-row-${invoice.id}`}
                       onClick={() => onViewInvoice?.(invoice.id)}
                     >
                       <TableCell>

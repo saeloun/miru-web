@@ -285,10 +285,34 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
         message: "Please find your invoice attached.",
         recipients: [invoice.client.email],
       });
+      toast.success(response?.message || "Invoice sent successfully");
 
       await loadInvoices(); // Refresh the invoice list
     } catch (err) {
-      setError("Failed to send invoice");
+      toast.error("Failed to send invoice");
+    }
+  };
+
+  const handleSendReminderFromList = async (id: string) => {
+    try {
+      const invoice = invoices.find(inv => inv.id === id) || selectedInvoice;
+      if (!invoice) {
+        setError("Invoice not found");
+
+        return;
+      }
+
+      const response = await invoiceApi.sendReminder(id, {
+        subject: `Reminder to complete payment for invoice ${invoice.invoiceNumber}`,
+        message:
+          "This is a reminder about your overdue invoice. Please complete payment.",
+        recipients: [invoice.client.email],
+      });
+      toast.success(response?.message || "Reminder sent successfully");
+
+      await loadInvoices();
+    } catch (err) {
+      toast.error("Failed to send reminder");
     }
   };
 
@@ -396,6 +420,7 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
           onCreateInvoice={handleCreateInvoice}
           onViewInvoice={handleViewInvoice}
           onSendInvoice={handleSendInvoiceFromList}
+          onSendReminder={handleSendReminderFromList}
           onMarkPaid={handleMarkPaid}
           onDownload={handleDownload}
           isLoading={isLoading}

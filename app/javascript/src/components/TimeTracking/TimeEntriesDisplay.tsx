@@ -1,6 +1,9 @@
 import React from "react";
 import dayjs from "dayjs";
 import EntryCard from "./EntryCard";
+import customParseFormat from "dayjs/plugin/customParseFormat";
+
+dayjs.extend(customParseFormat);
 
 interface TimeEntriesDisplayProps {
   selectedFullDate: string;
@@ -19,7 +22,11 @@ const TimeEntriesDisplay: React.FC<TimeEntriesDisplayProps> = ({
   setEditEntryId,
   setNewEntryView,
 }) => {
-  const isoDate = dayjs(selectedFullDate, "MM-DD-YYYY").format("YYYY-MM-DD");
+  const isoDate = dayjs(
+    selectedFullDate,
+    ["YYYY-MM-DD", "MM-DD-YYYY", "DD-MM-YYYY", "MM/DD/YYYY", "DD/MM/YYYY"],
+    true
+  ).format("YYYY-MM-DD");
   const entries = entryList[isoDate];
   const hasEntries = entries && entries.length > 0;
 

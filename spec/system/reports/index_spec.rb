@@ -274,6 +274,14 @@ RSpec.describe "Reports", type: :system, js: true do
 
     it "loads the outstanding overdue invoices report page" do
       with_forgery_protection do
+        visit "/reports/outstanding-overdue-invoices"
+
+        expect(page).to have_css("#react-root", wait: 10)
+      end
+    end
+
+    it "supports the legacy outstanding overdue invoices route alias" do
+      with_forgery_protection do
         visit "/reports/outstanding-overdue-invoice"
 
         expect(page).to have_css("#react-root", wait: 10)
@@ -282,7 +290,7 @@ RSpec.describe "Reports", type: :system, js: true do
 
     it "displays outstanding and overdue invoice data" do
       with_forgery_protection do
-        visit "/reports/outstanding-overdue-invoice"
+        visit "/reports/outstanding-overdue-invoices"
 
         expect(page).to have_css("#react-root", wait: 10)
         expect(page).to have_content("Outstanding", wait: 10)
@@ -347,8 +355,8 @@ RSpec.describe "Reports", type: :system, js: true do
         visit "/reports"
 
         expect(page).to have_css("#react-root", wait: 10)
-        expect(page).not_to have_content("Time Entry Report")
-          .or have_current_path("/time-tracking", wait: 10)
+        redirected_to_time_tracking = page.has_current_path?("/time-tracking", wait: 10)
+        expect(page).to have_no_content("Time Entry Report") unless redirected_to_time_tracking
       end
     end
   end

@@ -57,7 +57,7 @@ const reportCards: ReportCard[] = [
       "Detailed overview of outstanding and overdue invoices across all clients",
     icon: Receipt,
     color: "text-green-600",
-    url: "/reports/outstanding-overdue-invoice",
+    url: "/reports/outstanding-overdue-invoices",
     available: true,
     category: "financial",
   },
@@ -345,7 +345,7 @@ const ReportsTable: React.FC = () => {
             <Button
               variant="outline"
               className="justify-start bg-white"
-              onClick={() => navigate("/reports/outstanding-overdue-invoice")}
+              onClick={() => navigate("/reports/outstanding-overdue-invoices")}
             >
               <Receipt size={20} className="mr-2" />
               View Overdue Invoices

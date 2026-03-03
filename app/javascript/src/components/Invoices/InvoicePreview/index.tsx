@@ -169,21 +169,26 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
 
     setIsSending(true);
     try {
-      const subject =
-        invoice.status === "draft"
-          ? `Invoice ${invoice.invoiceNumber}`
-          : `Invoice Reminder: ${invoice.invoiceNumber}`;
+      const isReminder = invoice.status === "overdue";
+      const subject = isReminder
+        ? `Invoice Reminder: ${invoice.invoiceNumber}`
+        : `Invoice ${invoice.invoiceNumber}`;
 
-      const message =
-        invoice.status === "draft"
-          ? "Please find your invoice attached."
-          : "This is a reminder about your outstanding invoice. Please find the details attached.";
+      const message = isReminder
+        ? "This is a reminder about your outstanding invoice. Please find the details attached."
+        : "Please find your invoice attached.";
 
-      const response = await invoiceApi.sendInvoice(invoice.id, {
-        subject,
-        message,
-        recipients: [invoice.client.email],
-      });
+      const response = isReminder
+        ? await invoiceApi.sendReminder(invoice.id, {
+            subject,
+            message,
+            recipients: [invoice.client.email],
+          })
+        : await invoiceApi.sendInvoice(invoice.id, {
+            subject,
+            message,
+            recipients: [invoice.client.email],
+          });
 
       if (response && response.notice) {
         toast.success(response.notice);
@@ -299,6 +304,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
             </Button>
             {invoice.status === "draft" && (
               <Button
+                data-testid="invoice-preview-send-action"
                 size="sm"
                 className="bg-[#5B34EA] hover:bg-[#4926D1]"
                 onClick={() => handleAction("send")}
@@ -312,6 +318,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
               invoice.status === "overdue" ||
               invoice.status === "viewed") && (
               <Button
+                data-testid="invoice-preview-reminder-action"
                 size="sm"
                 className="bg-[#5B34EA] hover:bg-[#4926D1]"
                 onClick={() => handleAction("send")}
