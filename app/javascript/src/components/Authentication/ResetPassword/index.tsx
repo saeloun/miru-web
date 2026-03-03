@@ -31,7 +31,7 @@ const ResetPassword = () => {
     };
     try {
       const res = await authenticationApi.resetPassword(payload);
-      if (res.status == 200) {
+      if (res.status === 200) {
         setToLocalStorage("authToken", res.data.user.token);
         setToLocalStorage("authEmail", res.data.user.email);
         setTimeout(() => {
@@ -39,7 +39,9 @@ const ResetPassword = () => {
         }, 500);
       }
     } catch (error) {
-      setFieldError("confirm_password", error.response.data.error);
+      const errorMessage =
+        error.response?.data?.error || "An unexpected error occurred";
+      setFieldError("confirm_password", errorMessage);
     }
   };
 

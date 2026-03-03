@@ -23,6 +23,12 @@
 #  index_carryovers_on_leave_type_id  (leave_type_id)
 #  index_carryovers_on_user_id        (user_id)
 #
+# Foreign Keys
+#
+#  fk_rails_...  (company_id => companies.id)
+#  fk_rails_...  (leave_type_id => leave_types.id)
+#  fk_rails_...  (user_id => users.id)
+#
 require "rails_helper"
 
 RSpec.describe Carryover, type: :model do

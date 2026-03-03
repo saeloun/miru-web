@@ -60,7 +60,7 @@ class Api::V1::TimeoffEntriesController < Api::V1::ApplicationController
 
     def load_holiday_info!
       if timeoff_params[:holiday_info_id].present?
-        @hoiday_info ||= current_company.holiday_infos.find(params[:timeoff_entry][:holiday_info_id])
+        @holiday_info ||= current_company.holiday_infos.find(params[:timeoff_entry][:holiday_info_id])
       end
     end
 

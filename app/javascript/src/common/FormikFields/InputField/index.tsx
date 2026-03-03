@@ -62,7 +62,7 @@ const InputField = ({
     } else {
       setDefaultMarginBottom(marginBottom);
     }
-  }, [hasError]);
+  }, [hasError, marginBottom]);
 
   const optionalFieldProps =
     resetErrorOnChange || onChange ? { onChange: e => handleChange(e) } : {};

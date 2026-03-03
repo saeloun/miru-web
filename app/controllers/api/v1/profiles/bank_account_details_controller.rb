@@ -26,10 +26,11 @@ class Api::V1::Profiles::BankAccountDetailsController < Api::V1::ApplicationCont
     render :index, locals: {
       wise_account: @wise_account
     }
-  rescue => error
-    render json: {
-      error: error.message
-    }, status: 500
+  rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique => e
+    render json: { error: e.message }, status: 500
+  rescue StandardError => e
+    Rails.logger.error "BankAccountDetails create error: #{e.message}"
+    render json: { error: e.message }, status: 500
   end
 
   def update
@@ -47,10 +48,11 @@ class Api::V1::Profiles::BankAccountDetailsController < Api::V1::ApplicationCont
     render :index, locals: {
       wise_account: @account
     }
-  rescue => error
-    render json: {
-      error: error.message
-    }, status: 500
+  rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique => e
+    render json: { error: e.message }, status: 500
+  rescue StandardError => e
+    Rails.logger.error "BankAccountDetails update error: #{e.message}"
+    render json: { error: e.class.name }, status: 500
   end
 
   private
