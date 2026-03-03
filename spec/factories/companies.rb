@@ -41,7 +41,7 @@ FactoryBot.define do
     working_hours { "40" }
 
     after :create do |company|
-      create(:address, addressable_type: "Company", addressable_id: company.id)
+      create(:address, addressable: company)
     end
 
     factory :company_with_invoices do

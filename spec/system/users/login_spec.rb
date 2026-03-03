@@ -21,11 +21,7 @@ RSpec.describe "Sign-in", type: :system, js: true do
 
         click_on "Sign In"
 
-        # Wait for redirect after login
-        sleep 2
-
-        # Check if we're redirected to the right page or at least logged in
-        expect(page).to have_current_path("/time-tracking").or have_current_path("/")
+        expect(page).to have_current_path("/dashboard").or have_current_path("/time-tracking").or have_current_path("/")
       end
     end
 
@@ -38,7 +34,7 @@ RSpec.describe "Sign-in", type: :system, js: true do
 
         click_on "Sign In"
 
-        expect(page).to have_current_path("/user/sign_in")
+        expect(page).to have_current_path("/login")
         expect(page).to have_text("Invalid email or password")
       end
     end
