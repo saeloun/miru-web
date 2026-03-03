@@ -39,7 +39,7 @@ jobs:
             network=host
             image=moby/buildkit:latest
           buildkitd-flags: --debug
-          config-inline: |
+          buildkitd-config-inline: |
             [worker.oci]
               max-parallelism = 4
 

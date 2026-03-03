@@ -346,9 +346,9 @@ export const accountsAgingApi = reportsAccountsAgingApi;
 
 // Reports: Outstanding/Overdue
 export const reportsOutstandingOverdueInvoiceApi = {
-  get: () => http.get(`/reports/outstanding_overdue_invoices/`),
+  get: () => http.get(`/reports/outstanding_overdue_invoices`),
   download: (type: string) =>
-    downloadBlob(`/reports/outstanding_overdue_invoices//download.${type}`),
+    downloadBlob(`/reports/outstanding_overdue_invoices/download.${type}`),
 };
 export const outstandingOverdueInvoiceApi = reportsOutstandingOverdueInvoiceApi;
 
@@ -356,11 +356,11 @@ export const outstandingOverdueInvoiceApi = reportsOutstandingOverdueInvoiceApi;
 export const reportsClientRevenueApi = {
   get: (from: any, to: any, clientIds: any) =>
     http.get(
-      `/reports/client_revenues/?duration_from=${from}&duration_to=${to}&client_ids=[${clientIds}]`
+      `/reports/client_revenues?duration_from=${from}&duration_to=${to}&client_ids=[${clientIds}]`
     ),
   newReport: () => http.get(`/reports/client_revenues/new`),
   download: (type: string, queryParams: string) =>
-    downloadBlob(`/reports/client_revenues//download.${type}${queryParams}`),
+    downloadBlob(`/reports/client_revenues/download.${type}${queryParams}`),
 };
 export const clientRevenueApi = reportsClientRevenueApi;
 

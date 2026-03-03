@@ -107,7 +107,7 @@ class Api::V1::ClientsController < Api::V1::ApplicationController
   private
 
     def client
-      @_client ||= Client.find(params[:id])
+      @_client ||= current_company.clients.find(params[:id])
     end
 
     def client_params

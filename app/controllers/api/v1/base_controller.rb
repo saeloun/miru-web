@@ -7,6 +7,7 @@ class Api::V1::BaseController < ActionController::Base
   include CurrentCompanyConcern
   include Pagy::Backend
   include SetCurrentDetails
+  include Authenticable
 
   skip_before_action :verify_authenticity_token
   before_action :authenticate_user!

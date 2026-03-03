@@ -9,15 +9,15 @@ class AnalyticsController < ApplicationController
   end
 
   def revenue
-    @revenue_data = gather_revenue_analytics
+    @revenue_data = revenue_metrics
   end
 
   def activity
-    @activity_data = gather_activity_analytics
+    @activity_data = activity_metrics
   end
 
   def currency
-    @currency_data = gather_currency_analytics
+    @currency_data = currency_conversion_metrics
   end
 
   private

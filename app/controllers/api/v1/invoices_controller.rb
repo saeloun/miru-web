@@ -231,6 +231,8 @@ class Api::V1::InvoicesController < Api::V1::ApplicationController
       ).send_reminder.deliver_later
 
       render json: { message: "A reminder has been sent" }, status: 202
+    else
+      render json: { error: "Reminders can only be sent for overdue invoices" }, status: :unprocessable_entity
     end
   end
 

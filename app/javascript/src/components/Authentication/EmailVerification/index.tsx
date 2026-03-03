@@ -35,7 +35,7 @@ const EmailVerification = () => {
           </p>
         </div>
         <p className="pt-6 text-center font-manrope text-xs font-normal not-italic">
-          Didn’t recieve verification link?
+          Didn’t receive verification link?
           <button
             className="cursor-pointer pl-1 font-semibold text-miru-han-purple-1000 no-underline"
             onClick={() => resendEmailVerificationLink(email)}

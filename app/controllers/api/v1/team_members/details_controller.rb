@@ -19,7 +19,7 @@ class Api::V1::TeamMembers::DetailsController < Api::V1::ApplicationController
   private
 
     def employment
-      @_employment ||= Employment.find_by(user_id: params[:team_id], company_id: current_company.id)
+      @_employment ||= Employment.find_by(user_id: params[:team_id])
     end
 
     def detail_params

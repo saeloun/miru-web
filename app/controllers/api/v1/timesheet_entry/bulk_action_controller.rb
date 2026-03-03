@@ -13,11 +13,12 @@ class Api::V1::TimesheetEntry::BulkActionController < Api::V1::ApplicationContro
 
   def destroy
     timesheet_entries = policy_scope(TimesheetEntry)
-    timesheet_entries_discarded = timesheet_entries.where(id: ids_params).discard_all
-    if timesheet_entries_discarded
+    entries_to_discard = timesheet_entries.where(id: ids_params)
+    discarded_entries = entries_to_discard.discard_all
+    if discarded_entries.any?
       render json: { notice: I18n.t("timesheet_entry.destroy.message") }
     else
-      render json: { notice: "Some of the timesheet entries were failed to delete" }
+      render json: { error: I18n.t("timesheet_entry.destroy.failure", default: "Failed to delete timesheet entries") }, status: :unprocessable_entity
     end
   end
 

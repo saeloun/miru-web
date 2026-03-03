@@ -66,7 +66,7 @@ For local development on this branch, see CLAUDE.md and docs under `docs/`.
 ## Contributing
 
 We encourage everyone to contribute to Miru Web! Check out
-[Contributing Guide](CONTRIBUTING.md) for guidelines about how to proceed.. <br>
+[Contributing Guide](CONTRIBUTING.md) for guidelines about how to proceed. <br>
 
 Note: We are working on improving the documentation. So we created a
 docusaurus app for documentation. Check out the

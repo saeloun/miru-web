@@ -38,7 +38,7 @@ const PasswordResetLinkSentMsg = ({ email }: Props) => {
           </p>
         </div>
         <p className="pt-6 text-center font-manrope text-xs font-normal not-italic">
-          Didn’t recieve reset link?
+          Didn’t receive reset link?
           <button
             className="cursor-pointer pl-1 font-semibold text-miru-han-purple-1000 no-underline"
             onClick={() => resendPasswordResetLink(email)}
