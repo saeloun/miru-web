@@ -106,7 +106,7 @@ gem "data_migrate"
 # pagy for Pagination
 gem "pagy", "~> 5.10"
 
-gem "nokogiri", ">= 1.18.4"
+gem "nokogiri", ">= 1.19.1"
 
 # Manage application specific business logic. https://github.com/AaronLasseigne/active_interaction
 gem "active_interaction"
@@ -138,6 +138,10 @@ gem "rubyzip"
 gem "ahoy_matey"
 
 gem "httparty", ">= 0.24.0"
+
+# Security updates
+gem "faraday", "~> 1.10.5"
+gem "rack", ">= 3.2.5"
 
 # Use google calendar for integration with Miru
 gem "google-api-client", require: "google/apis/calendar_v3"
