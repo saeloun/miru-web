@@ -19,13 +19,13 @@ class Api::V1::TeamMembers::DetailsController < Api::V1::ApplicationController
   private
 
     def employment
-      @_employment ||= Employment.find_by(user_id: params[:team_id])
+      @_employment ||= Employment.kept.find_by!(user_id: params[:team_id], company_id: current_company.id)
     end
 
     def detail_params
       params.require(:user).permit(
         :first_name, :last_name, :date_of_birth, :phone, :personal_email_id,
-        social_accounts: {}
+        social_accounts: [:github_url, :linkedin_url]
       )
     end
 end

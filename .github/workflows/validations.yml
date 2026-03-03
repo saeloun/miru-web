@@ -47,7 +47,7 @@ jobs:
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '4.0.0'
+          ruby-version: '4.0.1'
           bundler-cache: true
       
       - name: Setup Node
@@ -150,11 +150,10 @@ jobs:
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '4.0.0'
+          ruby-version: '4.0.1'
           bundler-cache: true
       
       - name: Run bundler-audit
-        continue-on-error: true
         run: |
           gem install bundler-audit --no-document
           bundler-audit check --update

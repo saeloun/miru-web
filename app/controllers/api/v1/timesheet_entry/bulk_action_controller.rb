@@ -6,8 +6,10 @@ class Api::V1::TimesheetEntry::BulkActionController < Api::V1::ApplicationContro
 
   def update
     timesheet_entries = policy_scope(TimesheetEntry)
-    timesheet_entries.where(id: params[:ids]).update(project_id: params[:project_id])
-    entries = TimesheetEntriesPresenter.new(timesheet_entries).group_snippets_by_work_date
+    target_project = ProjectPolicy::Scope.new(current_user, current_company).resolve.find(params[:project_id])
+    updated_entries = timesheet_entries.where(id: params[:ids])
+    updated_entries.update(project_id: target_project.id)
+    entries = TimesheetEntriesPresenter.new(updated_entries).group_snippets_by_work_date
     render json: { notice: I18n.t("timesheet_entry.update.message"), entries: }, status: 200
   end
 

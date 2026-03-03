@@ -68,7 +68,7 @@ Execute this command to make `rvm` accessible in your current session:
 source ~/.rvm/scripts/rvm
 ```
 
-#### 5. Install Ruby 3.4.5
+#### 5. Install Ruby 4.0.1
 
 Now use the `rvm` command to install the required version of Ruby:
 

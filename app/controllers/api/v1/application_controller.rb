@@ -19,7 +19,10 @@ class Api::V1::ApplicationController < ActionController::API
   end
 
   def set_virtual_verified_invitations_allowed
-    @virtual_verified_invitations_allowed = current_user &&
-      ENV["VIRTUAL_VERIFIED_ADMIN_EMAILS"]&.include?(current_user.email)
+    allowed_emails = ENV.fetch("VIRTUAL_VERIFIED_ADMIN_EMAILS", "")
+      .split(",")
+      .map(&:strip)
+      .reject(&:blank?)
+    @virtual_verified_invitations_allowed = current_user && allowed_emails.include?(current_user.email)
   end
 end

@@ -26,42 +26,43 @@ class Api::V1::Profiles::BankAccountDetailsController < Api::V1::ApplicationCont
     render :index, locals: {
       wise_account: @wise_account
     }
-  rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique => e
-    render json: { error: e.message }, status: 500
+  rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique
+    render json: { error: "Unable to save bank account details" }, status: :unprocessable_entity
   rescue StandardError => e
     Rails.logger.error "BankAccountDetails create error: #{e.message}"
-    render json: { error: e.message }, status: 500
+    render json: { error: "Unable to save bank account details" }, status: 500
   end
 
   def update
-    authorize :update, policy_class: Profiles::BillingPolicy
+    authorize @account, :update?, policy_class: Profiles::BillingPolicy
 
     @account.update!(
       recipient_id: params[:id],
       profile_id: params[:profile],
       target_currency: params[:currency],
       source_currency: "USD",
-      company_id: current_company.id,
       user_id: current_user.id
     )
 
     render :index, locals: {
       wise_account: @account
     }
-  rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique => e
-    render json: { error: e.message }, status: 500
+  rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique
+    render json: { error: "Unable to update bank account details" }, status: :unprocessable_entity
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: "Bank account not found" }, status: 404
   rescue StandardError => e
     Rails.logger.error "BankAccountDetails update error: #{e.message}"
-    render json: { error: e.class.name }, status: 500
+    render json: { error: "Unable to update bank account details" }, status: 500
   end
 
   private
 
     def load_wise_account
-      @wise_account ||= current_user.wise_account
+      @wise_account ||= WiseAccount.find_by(user_id: current_user.id, company_id: current_company.id)
     end
 
     def fetch_wise_account
-      @account = WiseAccount.find(params[:account_id])
+      @account = WiseAccount.find_by!(id: params[:account_id], user_id: current_user.id, company_id: current_company.id)
     end
 end

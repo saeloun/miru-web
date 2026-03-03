@@ -41,7 +41,7 @@ organizations to help them streamline their workflow.
 
 ## Branch Highlights (miru-2-0-upgrade)
 
-- Rails 8 + Ruby 3.4.5 upgrade
+- Rails 8 + Ruby 4.0.1 upgrade
 - Modernized React + TypeScript frontend and UI
 - Playwright-based E2E test suite
 - Kamal + Docker deployment workflow improvements
