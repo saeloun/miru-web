@@ -1,6 +1,6 @@
 # Miru 2.0 Base Image - Optimized for Rails 8 & Playwright
 # Build once and push to registry for reuse across environments
-FROM ruby:3.4.5-slim AS miru-base
+FROM ruby:4.0.1-slim AS miru-base
 
 # Install essential system dependencies
 RUN apt-get update -qq && \

@@ -16,7 +16,8 @@ class Api::V1::Users::PasswordsController < Devise::PasswordsController
     user = User.reset_password_by_token(password_params)
     if user.errors.empty?
       sign_in(user)
-      render json: { notice: I18n.t("password.update.success"), user: }, status: 200
+      safe_user = user.as_json(only: %i[id email first_name last_name current_workspace_id])
+      render json: { notice: I18n.t("password.update.success"), user: safe_user }, status: 200
     else
       respond_with_error(user)
     end

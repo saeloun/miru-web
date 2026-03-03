@@ -32,7 +32,7 @@ builder:
   arch: amd64
   dockerfile: Dockerfile.kamal
   args:
-    RUBY_VERSION: 3.4.5
+    RUBY_VERSION: 4.0.1
     NODE_VERSION: 20
     RAILS_ENV: production
 

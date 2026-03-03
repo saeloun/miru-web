@@ -8,7 +8,7 @@ title: Docker
 Make sure you have Docker installed on your system.
 If not please follow [this](https://docs.docker.com/get-docker/) guide.
 
-**Note:** This app uses Rails 8.0.2 with Ruby 3.4.5 and Node 22.11.0. The Docker setup includes PostgreSQL for the database and Solid Queue for background jobs.
+**Note:** This app uses Rails 8.0.2 with Ruby 4.0.1 and Node 22.11.0. The Docker setup includes PostgreSQL for the database and Solid Queue for background jobs.
 
 Make sure to stop your local PostgreSQL service while using Docker to avoid port conflicts.
 ## Installation

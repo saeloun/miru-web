@@ -81,8 +81,8 @@ RSpec.describe "Api::V1::Profiles::BankAccountDetailsController", type: :request
 
       it "Returns the validation error" do
         subject
-        expect(response.status).to eq 500
-        expect(json_response["error"]).to eq("Validation failed: User has already been taken")
+        expect(response.status).to eq 422
+        expect(json_response["error"]).to eq("Unable to save bank account details")
       end
     end
 
@@ -151,7 +151,7 @@ RSpec.describe "Api::V1::Profiles::BankAccountDetailsController", type: :request
       it "returns 500 error status" do
         subject
         expect(response.status).to eq(500)
-        expect(json_response["error"]).to eq("StandardError")
+        expect(json_response["error"]).to eq("Unable to update bank account details")
       end
     end
   end

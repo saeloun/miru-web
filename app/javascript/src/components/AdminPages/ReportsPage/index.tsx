@@ -135,6 +135,16 @@ const ReportsPage: React.FC<ReportsPageProps> = ({ className }) => {
     navigate(path);
   };
 
+  const handleCardKeyDown = (
+    e: React.KeyboardEvent<HTMLDivElement>,
+    path: string
+  ) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      handleReportClick(path);
+    }
+  };
+
   return (
     <div
       className={cn(
@@ -163,8 +173,12 @@ const ReportsPage: React.FC<ReportsPageProps> = ({ className }) => {
             <div className="flex items-center gap-3">
               {/* MagnifyingGlass */}
               <div className="relative">
+                <label htmlFor="reports-search" className="sr-only">
+                  Search reports
+                </label>
                 <MagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                 <input
+                  id="reports-search"
                   type="text"
                   placeholder="Search Reports..."
                   value={searchQuery}
@@ -173,12 +187,17 @@ const ReportsPage: React.FC<ReportsPageProps> = ({ className }) => {
                 />
               </div>
 
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" disabled aria-disabled="true">
                 <Funnel className="mr-2 h-4 w-4" />
                 Funnel
               </Button>
 
-              <Button className="bg-[#5B34EA] hover:bg-[#4926D1]" size="sm">
+              <Button
+                className="bg-[#5B34EA]"
+                size="sm"
+                disabled
+                aria-disabled="true"
+              >
                 <Download className="mr-2 h-4 w-4" />
                 Export All
               </Button>
@@ -262,6 +281,10 @@ const ReportsPage: React.FC<ReportsPageProps> = ({ className }) => {
                       key={index}
                       className="group cursor-pointer transition-all duration-200 hover:shadow-lg hover:border-[#5B34EA]/30"
                       onClick={() => handleReportClick(report.path)}
+                      onKeyDown={e => handleCardKeyDown(e, report.path)}
+                      role="button"
+                      tabIndex={0}
+                      aria-label={`Open ${report.title} report`}
                     >
                       <CardHeader className="pb-3">
                         <div className="flex items-start justify-between">
@@ -298,6 +321,11 @@ const ReportsPage: React.FC<ReportsPageProps> = ({ className }) => {
                             variant="ghost"
                             size="sm"
                             className="opacity-0 group-hover:opacity-100 transition-opacity"
+                            onClick={e => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                            }}
+                            aria-label={`Export ${report.title} report`}
                           >
                             <Download className="w-3 h-3 mr-1" />
                             Export

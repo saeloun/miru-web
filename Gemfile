@@ -132,6 +132,7 @@ gem "sentry-ruby", "~> 5.17"
 gem "rubyzip"
 
 gem "httparty"
+gem "observer"
 
 # Country information and timezones
 gem "countries", "~> 6.0"
@@ -224,7 +225,7 @@ gem "rack-cors", "2.0.0"
 # Administrate dashboard - removed
 # gem "administrate"
 
-# YAML parser - Ruby 3.4.5 includes Psych 5 by default
+# YAML parser - Ruby 4.0.1 includes Psych 5 by default
 # Uncommenting would force a specific version if needed
 # gem "psych", "~> 5"
 

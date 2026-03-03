@@ -74,15 +74,15 @@ echo 'eval "$(mise activate bash)"' >> ~/.bash_profile
 source ~/.bash_profile
 
 # Install Ruby and Node
-mise install ruby@3.4.5
+mise install ruby@4.0.1
 mise install node@22.11.0
 
 # Set as default for this project
-mise use ruby@3.4.5
+mise use ruby@4.0.1
 mise use node@22.11.0
 
 # Verify installations
-ruby --version  # Should show: ruby 3.4.5
+ruby --version  # Should show: ruby 4.0.1
 node --version  # Should show: v22.11.0
 ```
 
@@ -105,8 +105,8 @@ gpg --keyserver hkp://keys.gnupg.net --recv-keys \
 source ~/.rvm/scripts/rvm
 
 # Install Ruby
-rvm install 3.4.5
-rvm use 3.4.5 --default
+rvm install 4.0.1
+rvm use 4.0.1 --default
 ```
 
 #### Install NVM for Node

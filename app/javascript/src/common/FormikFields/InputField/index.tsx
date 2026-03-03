@@ -40,15 +40,15 @@ const InputField = ({
     }
   };
 
-  const handleChange = e => {
-    if (resetErrorOnChange) {
-      if (hasError) {
-        clearErrorOnChange(name, setFieldError);
-      }
+  const handleFieldChange = (e, formikOnChange) => {
+    if (resetErrorOnChange && hasError) {
+      clearErrorOnChange(name, setFieldError);
+    }
 
-      if (setFieldValue && name) {
-        setFieldValue(name, e.target.value);
-      }
+    if (setFieldValue && name) {
+      setFieldValue(name, e.target.value);
+    } else {
+      formikOnChange(e);
     }
 
     if (onChange) {
@@ -64,14 +64,11 @@ const InputField = ({
     }
   }, [hasError, marginBottom]);
 
-  const optionalFieldProps =
-    resetErrorOnChange || onChange ? { onChange: e => handleChange(e) } : {};
-
   return (
     <div className={cn("relative", wrapperClassName, defaultMarginBottom)}>
       {label && (
         <Label
-          htmlFor={name}
+          htmlFor={id || name}
           className={cn(
             "mb-2 block text-sm font-medium text-miru-dark-purple-400",
             labelClassName
@@ -81,26 +78,32 @@ const InputField = ({
         </Label>
       )}
       <div className="relative">
-        <Field
-          as={Input}
-          autoComplete={autoComplete}
-          autoFocus={autoFocus}
-          disabled={disabled}
-          id={id || name}
-          name={name}
-          placeholder={label ? "" : " "}
-          readOnly={readOnly}
-          type={
-            type === "password" ? (showPassword ? "text" : "password") : type
-          }
-          className={cn(
-            hasError && "border-red-500 focus-visible:ring-red-500",
-            inputBoxClassName
+        <Field name={name}>
+          {({ field }) => (
+            <Input
+              {...field}
+              autoComplete={autoComplete}
+              autoFocus={autoFocus}
+              disabled={disabled}
+              id={id || name}
+              placeholder={label ? "" : " "}
+              readOnly={readOnly}
+              type={
+                type === "password"
+                  ? showPassword
+                    ? "text"
+                    : "password"
+                  : type
+              }
+              className={cn(
+                hasError && "border-red-500 focus-visible:ring-red-500",
+                inputBoxClassName
+              )}
+              onChange={e => handleFieldChange(e, field.onChange)}
+              onClick={onClick}
+            />
           )}
-          onChange={onChange}
-          onClick={onClick}
-          {...optionalFieldProps}
-        />
+        </Field>
         {type === "password" && (
           <button
             type="button"

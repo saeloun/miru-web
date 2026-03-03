@@ -60,7 +60,8 @@ class Api::V1::InvoicesController < Api::V1::ApplicationController
     page = (params[:page] || 1).to_i
     page = 1 if page <= 0
     per_page = (params[:invoices_per_page] || params[:per] || 10).to_i
-    per_page = 10 if per_page <= 0  # Use default instead of all records when per_page is 0
+    per_page = 10 if per_page <= 0
+    per_page = 100 if per_page > 100
 
     # Use Pagy for pagination with overflow handling
     begin
@@ -79,8 +80,7 @@ class Api::V1::InvoicesController < Api::V1::ApplicationController
     }.round(2)
 
     # For outstanding, use the outstanding_amount or amount_due field
-    # Outstanding includes sent, viewed, and overdue statuses
-    outstanding_amount = all_invoices.where(status: [:sent, :viewed, :overdue]).sum { |invoice|
+    outstanding_amount = all_invoices.where(status: [:sent, :viewed]).sum { |invoice|
       # Use outstanding_amount if available, otherwise use amount_due, fallback to amount
       if invoice.outstanding_amount.to_f > 0
         invoice.outstanding_amount.to_f
@@ -255,11 +255,11 @@ class Api::V1::InvoicesController < Api::V1::ApplicationController
 
     def load_client
       client = invoice_params[:client_id] || invoice[:client_id]
-      @client = Client.find(client)
+      @client = current_company.clients.find(client)
     end
 
     def invoice
-      @_invoice ||= Invoice.kept.includes(
+      @_invoice ||= current_company.invoices.kept.includes(
         :client,
         { invoice_line_items: :timesheet_entry },
         { company: { logo_attachment: :blob } }

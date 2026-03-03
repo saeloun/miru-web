@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Fix for FrozenError with parallel tests in Rails 8.0.2 + Ruby 3.4.5
+# Fix for FrozenError with parallel tests in Rails 8.0.2 + Ruby 4.0.1
 # Rails freezes autoload paths after initialization, but parallel tests
 # need to modify them. This unfreezes them for test environment only.
 

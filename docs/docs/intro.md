@@ -120,9 +120,9 @@ docker-compose exec app bundle exec rails db:setup
 ### Local Development (macOS/Linux)
 ```bash
 # Install dependencies with mise (recommended)
-mise install ruby@3.4.5
+mise install ruby@4.0.1
 mise install node@22.11.0
-mise use ruby@3.4.5
+mise use ruby@4.0.1
 mise use node@22.11.0
 
 # Install gems and packages

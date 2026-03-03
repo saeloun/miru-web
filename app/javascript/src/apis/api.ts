@@ -97,7 +97,6 @@ export const authenticationApi = {
       method: "GET",
       headers: {
         Accept: "application/json",
-        "Access-Control-Allow-Origin": "*",
       },
       credentials: "same-origin",
     });
@@ -321,7 +320,12 @@ export const projectsApi = {
     http.get(`/projects/${id}?time_frame=${timeFrame}`),
   update: (id: any, payload: any) => http.patch(`/projects/${id}`, payload),
   destroy: (id: any) => http.delete(`/projects/${id}`),
-  search: (term: string) => http.get(`/projects/search?search_term=${term}`),
+  search: (term: string) =>
+    http.get(
+      `/projects/search?${new URLSearchParams({
+        search_term: term,
+      }).toString()}`
+    ),
 };
 export const projectApi = projectsApi;
 
@@ -356,7 +360,11 @@ export const outstandingOverdueInvoiceApi = reportsOutstandingOverdueInvoiceApi;
 export const reportsClientRevenueApi = {
   get: (from: any, to: any, clientIds: any) =>
     http.get(
-      `/reports/client_revenues?duration_from=${from}&duration_to=${to}&client_ids=[${clientIds}]`
+      `/reports/client_revenues?${new URLSearchParams({
+        duration_from: String(from),
+        duration_to: String(to),
+        client_ids: `[${Array(clientIds).flat().join(",")}]`,
+      }).toString()}`
     ),
   newReport: () => http.get(`/reports/client_revenues/new`),
   download: (type: string, queryParams: string) =>
