@@ -59,8 +59,8 @@ RSpec.describe "Settings - Payment", type: :system, js: true do
         visit "/settings/payment"
 
         expect(page).to have_css("#react-root", wait: 10)
-        expect(page).not_to have_content("Payment Providers")
-          .or have_current_path("/settings/profile", wait: 10)
+        expect(page).to have_current_path("/settings/profile", wait: 10)
+          .or have_no_content("Payment Providers", wait: 10)
       end
     end
   end

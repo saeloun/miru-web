@@ -97,8 +97,8 @@ RSpec.describe "Settings - Organization", type: :system, js: true do
         visit "/settings/organization"
 
         expect(page).to have_css("#react-root", wait: 10)
-        expect(page).not_to have_content("Basic Details")
-          .or have_current_path("/settings/profile", wait: 10)
+        expect(page).to have_current_path("/settings/profile", wait: 10)
+          .or have_no_content("Basic Details", wait: 10)
       end
     end
   end

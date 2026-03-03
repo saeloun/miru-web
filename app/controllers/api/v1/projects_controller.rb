@@ -5,10 +5,12 @@ class Api::V1::ProjectsController < Api::V1::ApplicationController
     authorize Project
 
     # Search projects using ransack or pg_search
+    projects_scope = ProjectPolicy::Scope.new(current_user, current_company).resolve
+
     projects = if params[:search_term].present?
-      current_company.projects.kept.search(params[:search_term])
+      projects_scope.search(params[:search_term])
     else
-      current_company.projects.kept
+      projects_scope
     end
 
     projects = projects.includes(:client, :timesheet_entries, project_members: :user)
@@ -57,7 +59,9 @@ class Api::V1::ProjectsController < Api::V1::ApplicationController
   private
 
     def project
-      @_project ||= Project.includes(:project_members, project_members: [:user]).find(params[:id])
+      @_project ||= current_company.projects.kept
+        .includes(:project_members, project_members: [:user])
+        .find(params[:id])
     end
 
     def project_params
