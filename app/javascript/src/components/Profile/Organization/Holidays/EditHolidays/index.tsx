@@ -87,7 +87,7 @@ const EditHolidays = ({
                         />
                         <CalendarIcon
                           className="absolute top-2 right-2 m-2"
-                          color="#5B34EA"
+                          color="#5E58F1"
                           size={20}
                         />
                       </div>
@@ -231,7 +231,7 @@ const EditHolidays = ({
                             />
                             <CalendarIcon
                               className="absolute top-2 right-2 m-2"
-                              color="#5B34EA"
+                              color="#5E58F1"
                               size={20}
                             />
                           </div>

@@ -106,7 +106,7 @@ const RecentSales: React.FC<RecentSalesProps> = ({ invoices, className }) => {
                     src={invoice.client.logo}
                     alt={invoice.client.name}
                   />
-                  <AvatarFallback className="bg-[#5B34EA]/10 text-[#5B34EA] text-xs font-medium">
+                  <AvatarFallback className="bg-[#5E58F1]/10 text-[#5E58F1] text-xs font-medium">
                     {getInitials(invoice.client.name)}
                   </AvatarFallback>
                 </Avatar>
@@ -179,7 +179,7 @@ const RecentSales: React.FC<RecentSalesProps> = ({ invoices, className }) => {
           <div className="mt-4 pt-4 border-t border-border/40">
             <div className="flex items-center justify-between text-xs text-muted-foreground">
               <span>Showing {sortedInvoices.length} recent transactions</span>
-              <button className="text-[#5B34EA] hover:text-[#4926D1] font-medium">
+              <button className="text-[#5E58F1] hover:text-[#4D47E0] font-medium">
                 View all →
               </button>
             </div>

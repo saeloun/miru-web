@@ -301,7 +301,7 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
                     ].filter(item => !item._destroy),
                   })
                 }
-                className="bg-[#5B34EA] hover:bg-[#4926D1]"
+                className="bg-[#5E58F1] hover:bg-[#4D47E0]"
                 size="sm"
                 disabled={isLoading}
               >

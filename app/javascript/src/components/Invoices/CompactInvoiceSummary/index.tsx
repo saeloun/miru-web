@@ -48,8 +48,8 @@ const CompactInvoiceSummary: React.FC<CompactInvoiceSummaryProps> = ({
       value:
         summary.overdueAmount + summary.outstandingAmount + summary.draftAmount,
       icon: ArrowCounterClockwise,
-      colorClass: "text-[#5B34EA]",
-      bgClass: "bg-[#5B34EA]/5 hover:bg-[#5B34EA]/10 border-[#5B34EA]/20",
+      colorClass: "text-[#5E58F1]",
+      bgClass: "bg-[#5E58F1]/5 hover:bg-[#5E58F1]/10 border-[#5E58F1]/20",
       onClick: resetFilters,
       isReset: true,
     },

@@ -110,7 +110,7 @@ const NewLineItemStatic = ({
             {showCalendarIcon && (
               <CalendarIcon
                 className="absolute top-0 right-0 mx-3 mt-4"
-                color="#5B34EA"
+                color="#5E58F1"
                 size={20}
               />
             )}
@@ -158,7 +158,7 @@ const NewLineItemStatic = ({
               handleDelete(item);
             }}
           >
-            <DeleteIcon color="#5B34EA" size={16} weight="bold" />
+            <DeleteIcon color="#5E58F1" size={16} weight="bold" />
           </button>
         </td>
       </tr>

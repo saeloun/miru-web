@@ -127,7 +127,7 @@ const MonthlyRevenueChart: React.FC<MonthlyRevenueChartProps> = ({
       return (
         <div className="bg-white p-3 rounded-lg shadow-lg border border-gray-200">
           <p className="text-sm font-medium text-gray-900">{label}</p>
-          <p className="text-sm text-[#5B34EA] font-semibold">
+          <p className="text-sm text-[#5E58F1] font-semibold">
             {formatTooltipValue(payload[0].value)}
           </p>
           {payload[0].payload.invoiceCount !== undefined && (
@@ -218,8 +218,8 @@ const MonthlyRevenueChart: React.FC<MonthlyRevenueChartProps> = ({
               >
                 <defs>
                   <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#5B34EA" stopOpacity={0.3} />
-                    <stop offset="95%" stopColor="#5B34EA" stopOpacity={0} />
+                    <stop offset="5%" stopColor="#5E58F1" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="#5E58F1" stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
@@ -237,7 +237,7 @@ const MonthlyRevenueChart: React.FC<MonthlyRevenueChartProps> = ({
                 <Area
                   type="monotone"
                   dataKey="revenue"
-                  stroke="#5B34EA"
+                  stroke="#5E58F1"
                   strokeWidth={2}
                   fillOpacity={1}
                   fill="url(#colorRevenue)"
@@ -260,7 +260,7 @@ const MonthlyRevenueChart: React.FC<MonthlyRevenueChartProps> = ({
                   tickFormatter={formatYAxisTick}
                 />
                 <Tooltip content={<CustomTooltip />} />
-                <Bar dataKey="revenue" fill="#5B34EA" radius={[8, 8, 0, 0]} />
+                <Bar dataKey="revenue" fill="#5E58F1" radius={[8, 8, 0, 0]} />
               </BarChart>
             )}
           </ResponsiveContainer>
@@ -274,7 +274,7 @@ const MonthlyRevenueChart: React.FC<MonthlyRevenueChartProps> = ({
             onClick={() => onChartTypeChange("area")}
             className={`px-3 py-1 text-xs rounded-full transition-colors ${
               chartType === "area"
-                ? "bg-[#5B34EA] text-white"
+                ? "bg-[#5E58F1] text-white"
                 : "bg-gray-100 text-gray-600 hover:bg-gray-200"
             }`}
           >
@@ -284,7 +284,7 @@ const MonthlyRevenueChart: React.FC<MonthlyRevenueChartProps> = ({
             onClick={() => onChartTypeChange("bar")}
             className={`px-3 py-1 text-xs rounded-full transition-colors ${
               chartType === "bar"
-                ? "bg-[#5B34EA] text-white"
+                ? "bg-[#5E58F1] text-white"
                 : "bg-gray-100 text-gray-600 hover:bg-gray-200"
             }`}
           >

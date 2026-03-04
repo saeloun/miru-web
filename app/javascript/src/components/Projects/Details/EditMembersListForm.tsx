@@ -274,8 +274,8 @@ const EditMembersListForm = ({
                   onClick={() => removeMemberHandler(memberIndex, member)}
                 >
                   <DeleteIcon
-                    color="#5B34EA"
-                    fill="#5B34EA"
+                    color="#5E58F1"
+                    fill="#5E58F1"
                     size={12}
                     weight="bold"
                   />

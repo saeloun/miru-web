@@ -50,7 +50,7 @@ const Header = ({
           style="ternary"
           onClick={() => setShowInvoiceSetting(true)}
         >
-          <SettingIcon className="mr-2.5" color="#5B34EA" size={15} />
+          <SettingIcon className="mr-2.5" color="#5E58F1" size={15} />
           Settings
         </Button>
       </div>

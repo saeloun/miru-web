@@ -53,7 +53,7 @@ const ThemeToggle: React.FC<ThemeToggleProps> = ({
           className="group bg-white border border-gray-200 rounded-full p-3 shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-110"
           aria-label="Open theme selector"
         >
-          <Palette className="h-5 w-5 text-gray-600 group-hover:text-[#5B34EA]" />
+          <Palette className="h-5 w-5 text-gray-600 group-hover:text-[#5E58F1]" />
         </button>
       </div>
     );
@@ -66,7 +66,7 @@ const ThemeToggle: React.FC<ThemeToggleProps> = ({
           onClick={() => setIsOpen(true)}
           className="group flex items-center gap-2 bg-white border border-gray-200 rounded-full px-4 py-2.5 shadow-lg hover:shadow-xl transition-all duration-200"
         >
-          <Palette className="h-5 w-5 text-gray-600 group-hover:text-[#5B34EA]" />
+          <Palette className="h-5 w-5 text-gray-600 group-hover:text-[#5E58F1]" />
           <span className="text-sm font-medium text-gray-700">Theme</span>
           <CaretRight className="h-4 w-4 text-gray-400 group-hover:translate-x-0.5 transition-transform" />
         </button>
@@ -123,7 +123,7 @@ const ThemeToggle: React.FC<ThemeToggleProps> = ({
                   className={cn(
                     "w-full flex items-start gap-3 p-3 rounded-xl border-2 transition-all duration-200",
                     isActive
-                      ? "border-[#5B34EA] bg-purple-50/50"
+                      ? "border-[#5E58F1] bg-purple-50/50"
                       : "border-gray-200 hover:border-gray-300 hover:bg-gray-50/50"
                   )}
                 >
@@ -137,7 +137,7 @@ const ThemeToggle: React.FC<ThemeToggleProps> = ({
                     <Icon
                       className={cn(
                         "h-6 w-6",
-                        isActive ? "text-[#5B34EA]" : "text-gray-600"
+                        isActive ? "text-[#5E58F1]" : "text-gray-600"
                       )}
                     />
                   </div>
@@ -148,13 +148,13 @@ const ThemeToggle: React.FC<ThemeToggleProps> = ({
                       <span
                         className={cn(
                           "font-medium",
-                          isActive ? "text-[#5B34EA]" : "text-gray-900"
+                          isActive ? "text-[#5E58F1]" : "text-gray-900"
                         )}
                       >
                         {theme.name}
                       </span>
                       {isActive && (
-                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-[#5B34EA] text-white">
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-[#5E58F1] text-white">
                           Active
                         </span>
                       )}

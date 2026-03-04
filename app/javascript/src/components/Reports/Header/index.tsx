@@ -137,7 +137,7 @@ const Header = ({
                         handleDownload("csv");
                       }}
                     >
-                      <FileCsvIcon color="#5B34EA" size={16} weight="bold" />
+                      <FileCsvIcon color="#5E58F1" size={16} weight="bold" />
                       <span className="ml-3 text-sm">Export as CSV</span>
                     </button>
                   </li>
@@ -149,7 +149,7 @@ const Header = ({
                         handleDownload("pdf");
                       }}
                     >
-                      <FilePdfIcon color="#5B34EA" size={16} weight="bold" />
+                      <FilePdfIcon color="#5E58F1" size={16} weight="bold" />
                       <span className="ml-3 text-sm">Export as PDF</span>
                     </button>
                   </li>
@@ -184,7 +184,7 @@ const Header = ({
                         handleDownload("csv");
                       }}
                     >
-                      <FileCsvIcon color="#5B34EA" size={16} weight="bold" />
+                      <FileCsvIcon color="#5E58F1" size={16} weight="bold" />
                       <span className="ml-3">Export as CSV</span>
                     </button>
                   </li>
@@ -196,7 +196,7 @@ const Header = ({
                         handleDownload("pdf");
                       }}
                     >
-                      <FilePdfIcon color="#5B34EA" size={16} weight="bold" />
+                      <FilePdfIcon color="#5E58F1" size={16} weight="bold" />
                       <span className="ml-3">Export as PDF</span>
                     </button>
                   </li>
@@ -205,7 +205,7 @@ const Header = ({
                       className="menuButton__list-item"
                       onClick={() => window.print()}
                     >
-                      <PrinterIcon color="#5B34EA" size={16} weight="bold" />
+                      <PrinterIcon color="#5E58F1" size={16} weight="bold" />
                       <span className="ml-3">Print</span>
                     </button>
                   </li> */}
@@ -235,7 +235,7 @@ const Header = ({
                 >
                   <XIcon
                     className="inline-block"
-                    color="#5B34EA"
+                    color="#5E58F1"
                     size={12}
                     weight="bold"
                   />
