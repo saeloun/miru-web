@@ -48,7 +48,7 @@ const NewLineItemTable = ({
         </p>
       )}
       {filteredLineItems.length > 0 && (
-        <div className="relative mt-4 flex flex-col overflow-scroll p-2 md:h-50">
+        <div className="relative mt-4 flex flex-col overflow-y-auto p-2 md:h-50">
           {filteredLineItems.map((item, index) => {
             const hoursLogged = minToHHMM(item.quantity);
             const date = dayjs(item.date).format(dateFormat);
