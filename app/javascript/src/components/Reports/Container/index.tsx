@@ -55,7 +55,9 @@ const Container = ({ selectedFilter }: ContainerProps) => {
     };
 
     return logo[groupedBy] ? (
-      <div className="mr-6 md:h-10 md:w-10">{logo[groupedBy]}</div>
+      <div className="mr-3 h-8 w-8 sm:mr-4 sm:h-10 sm:w-10">
+        {logo[groupedBy]}
+      </div>
     ) : null;
   };
 
