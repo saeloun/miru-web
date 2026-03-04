@@ -224,12 +224,12 @@ export const invoicesApi = {
   viewInvoice: (id: any) => http.get(`${invoicesPath}/${id}/view`),
   paymentSuccess: (id: any) =>
     http.get(`${invoicesPath}/${id}/payments/success`),
-  wavieInvoice: (id: any) => http.patch(`${invoicesPath}/waived/${id}`),
+  waiveInvoice: (id: any) => http.patch(`${invoicesPath}/waived/${id}`),
   invoiceLogs: (id: any) => http.get(`${invoicesPath}/action_trails/${id}`),
   sendReminder: (id: any, payload: any) =>
     http.post(`${invoicesPath}/${id}/send_reminder`, payload),
   getDownloadStatus: (downloadId: any) =>
-    http.get(`invoices/bulk_download/status`, {
+    http.get(`/invoices/bulk_download/status`, {
       params: { download_id: downloadId },
     }),
   getMonthlyRevenue: () =>
@@ -286,24 +286,16 @@ export const PaymentsProviders = paymentsProvidersApi;
 // Preferences
 export const preferencesApi = {
   get: (userId: number | string) =>
-    http.get(`team/${userId}/notification_preferences`),
+    http.get(`/team/${userId}/notification_preferences`),
   updatePreference: (userId: number | string, payload: any) =>
-    http.patch(`team/${userId}/notification_preferences`, payload),
+    http.patch(`/team/${userId}/notification_preferences`, payload),
   updateAll: (userId: number | string, payload: any) =>
-    http.patch(`team/${userId}/notification_preferences`, payload),
+    http.patch(`/team/${userId}/notification_preferences`, payload),
 };
 
 // Profile
 export const profileApi = {
   update: (payload: any) => http.put(`/profile`, payload),
-};
-
-// Profiles
-export const profilesApi = {
-  get: () => http.get(`/profiles/bank_account_details`),
-  post: (body: any) => http.post(`/profiles/bank_account_details`, body),
-  put: (id: any, body: any) =>
-    http.put(`/profiles/bank_account_details/${id}`, body),
 };
 
 // Project Members
@@ -363,7 +355,10 @@ export const reportsClientRevenueApi = {
       `/reports/client_revenues?${new URLSearchParams({
         duration_from: String(from),
         duration_to: String(to),
-        client_ids: `[${Array(clientIds).flat().join(",")}]`,
+        client_ids: `[${(Array.isArray(clientIds) ? clientIds : [clientIds])
+          .flat()
+          .filter(id => id !== null && id !== undefined && id !== "")
+          .join(",")}]`,
       }).toString()}`
     ),
   newReport: () => http.get(`/reports/client_revenues/new`),
@@ -399,28 +394,33 @@ export const teamApi = {
 
 // Teams
 export const teamsApi = {
-  get: (id: any) => http.get(`team/${id}/details`),
+  get: (id: any) => http.get(`/team/${id}/details`),
   updateUser: (userId: any, payload: any) =>
-    http.put(`team/${userId}/details`, payload),
-  getAddress: (userId: any) => http.get(`users/${userId}/addresses`),
+    http.put(`/team/${userId}/details`, payload),
+  getAddress: (userId: any) => http.get(`/users/${userId}/addresses`),
   createAddress: (userId: any, payload: any) =>
     http.post(`/users/${userId}/addresses`, payload),
   updateAddress: (userId: any, addrId: any, payload: any) =>
-    http.put(`users/${userId}/addresses/${addrId}`, payload),
-  getEmployments: () => http.get(`employments`),
-  getEmploymentDetails: (id: any) => http.get(`employments/${id}`),
+    http.put(`/users/${userId}/addresses/${addrId}`, payload),
+  getEmployments: () => http.get(`/employments`),
+  getEmploymentDetails: (id: any) => http.get(`/employments/${id}`),
   updateEmploymentDetails: (id: any, payload: any) =>
-    http.patch(`employments/${id}`, payload),
+    http.patch(`/employments/${id}`, payload),
   getPreviousEmployments: (id: any) =>
-    http.get(`users/${id}/previous_employments`),
+    http.get(`/users/${id}/previous_employments`),
   updatePreviousEmployments: (id: any, payload: any) =>
-    http.put(`bulk_previous_employments/${id}`, payload),
+    http.put(`/bulk_previous_employments/${id}`, payload),
 };
 
 // Timeoff Entries
 export const timeoffEntriesApi = {
   get: (userId: number | string, year: number | string) =>
-    http.get(`/timeoff_entries?user_id=${userId}&year=${year}`),
+    http.get(`/timeoff_entries`, {
+      params: {
+        user_id: userId,
+        year,
+      },
+    }),
   create: (payload: any, userId: number | string) =>
     http.post(`/timeoff_entries?user_id=${userId}`, payload),
   update: (id: number | string, payload: any) =>
@@ -488,8 +488,6 @@ export const timeTrackingApi = {
       },
     }),
 };
-
-// Wise removed
 
 // Workspaces
 export const workspacesApi = {

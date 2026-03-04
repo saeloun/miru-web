@@ -47,13 +47,14 @@ RUN apt-get update -qq && \
 
 # Install Node.js 22 LTS
 RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
-    apt-get install -y nodejs && \
+    apt-get install -y --no-install-recommends nodejs && \
     rm -rf /var/lib/apt/lists/*
 
 # Install pnpm (fast, disk space efficient package manager)
 RUN npm install -g pnpm@9.15.5
 
 # Install only Chromium for Playwright (no Firefox or WebKit needed)
+ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
 RUN npx playwright install chromium
 
 # Set Ruby and Node environment variables
@@ -62,7 +63,6 @@ ENV BUNDLE_PATH=/usr/local/bundle \
     GEM_HOME=/usr/local/bundle \
     PATH="/usr/local/bundle/bin:${PATH}" \
     # Playwright configuration
-    PLAYWRIGHT_BROWSERS_PATH=/ms-playwright \
     PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=0
 
 # Create necessary directories
