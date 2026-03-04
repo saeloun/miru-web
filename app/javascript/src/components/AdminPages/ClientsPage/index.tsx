@@ -207,8 +207,8 @@ const ClientsPage: React.FC<ClientsPageProps> = ({
         <div className="px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="p-2 bg-[#5B34EA]/10 rounded-lg">
-                <Users className="h-6 w-6 text-[#5B34EA]" />
+              <div className="p-2 bg-miru-han-purple-1000/10 rounded-lg">
+                <Users className="h-6 w-6 text-miru-han-purple-1000" />
               </div>
               <div>
                 <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
@@ -229,7 +229,7 @@ const ClientsPage: React.FC<ClientsPageProps> = ({
                   placeholder="Search Clients..."
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
-                  className="pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#5B34EA] focus:border-transparent bg-white dark:bg-gray-800 dark:text-gray-100"
+                  className="pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-miru-han-purple-1000 focus:border-transparent bg-white dark:bg-gray-800 dark:text-gray-100"
                 />
               </div>
 
@@ -238,7 +238,10 @@ const ClientsPage: React.FC<ClientsPageProps> = ({
                 Funnel
               </Button>
 
-              <Button className="bg-[#5B34EA] hover:bg-[#4926D1]" size="sm">
+              <Button
+                className="bg-miru-han-purple-1000 hover:bg-miru-han-purple-600"
+                size="sm"
+              >
                 <Plus className="mr-2 h-4 w-4" />
                 Add Client
               </Button>
@@ -339,7 +342,7 @@ const ClientsPage: React.FC<ClientsPageProps> = ({
           {filteredClients.map(client => (
             <Card
               key={client.id}
-              className="group cursor-pointer transition-all duration-200 hover:shadow-lg hover:border-[#5B34EA]/30"
+              className="group cursor-pointer transition-all duration-200 hover:shadow-lg hover:border-miru-han-purple-1000/30"
               onClick={() => handleClientClick(client.id)}
             >
               <CardHeader className="pb-3">
@@ -347,13 +350,13 @@ const ClientsPage: React.FC<ClientsPageProps> = ({
                   <div className="flex items-center gap-3">
                     <Avatar className="h-12 w-12">
                       <AvatarImage src={client.avatar} alt={client.name} />
-                      <AvatarFallback className="bg-[#5B34EA]/10 text-[#5B34EA] font-medium">
+                      <AvatarFallback className="bg-miru-han-purple-1000/10 text-miru-han-purple-1000 font-medium">
                         {getInitials(client.name)}
                       </AvatarFallback>
                     </Avatar>
                     <div className="flex-1">
                       <div className="flex items-center gap-2">
-                        <h3 className="font-semibold text-gray-900 dark:text-gray-100 group-hover:text-[#5B34EA] transition-colors">
+                        <h3 className="font-semibold text-gray-900 dark:text-gray-100 group-hover:text-miru-han-purple-1000 transition-colors">
                           {client.name}
                         </h3>
                         {client.isVip && (
@@ -420,7 +423,7 @@ const ClientsPage: React.FC<ClientsPageProps> = ({
                     <Envelope className="w-3 h-3" />
                     <span className="truncate">{client.email}</span>
                   </div>
-                  <ArrowUpRight className="w-4 h-4 text-gray-400 group-hover:text-[#5B34EA] transition-colors ml-auto" />
+                  <ArrowUpRight className="w-4 h-4 text-gray-400 group-hover:text-miru-han-purple-1000 transition-colors ml-auto" />
                 </div>
               </CardContent>
             </Card>
@@ -440,7 +443,7 @@ const ClientsPage: React.FC<ClientsPageProps> = ({
                 : "Start building your client base by adding your first client"}
             </p>
             {!searchQuery && (
-              <Button className="mt-4 bg-[#5B34EA] hover:bg-[#4926D1]">
+              <Button className="mt-4 bg-miru-han-purple-1000 hover:bg-miru-han-purple-600">
                 <Plus className="mr-2 h-4 w-4" />
                 Add Your First Client
               </Button>

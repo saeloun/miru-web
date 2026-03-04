@@ -157,8 +157,8 @@ const ReportsPage: React.FC<ReportsPageProps> = ({ className }) => {
         <div className="px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="p-2 bg-[#5B34EA]/10 rounded-lg">
-                <BarChart3 className="h-6 w-6 text-[#5B34EA]" />
+              <div className="p-2 bg-miru-han-purple-1000/10 rounded-lg">
+                <BarChart3 className="h-6 w-6 text-miru-han-purple-1000" />
               </div>
               <div>
                 <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
@@ -183,7 +183,7 @@ const ReportsPage: React.FC<ReportsPageProps> = ({ className }) => {
                   placeholder="Search Reports..."
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
-                  className="pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#5B34EA] focus:border-transparent bg-white dark:bg-gray-800 dark:text-gray-100"
+                  className="pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-miru-han-purple-1000 focus:border-transparent bg-white dark:bg-gray-800 dark:text-gray-100"
                 />
               </div>
 
@@ -193,7 +193,7 @@ const ReportsPage: React.FC<ReportsPageProps> = ({ className }) => {
               </Button>
 
               <Button
-                className="bg-[#5B34EA]"
+                className="bg-miru-han-purple-1000"
                 size="sm"
                 disabled
                 aria-disabled="true"
@@ -242,8 +242,8 @@ const ReportsPage: React.FC<ReportsPageProps> = ({ className }) => {
                         <span>{stat.change}</span>
                       </div>
                     </div>
-                    <div className="p-2 bg-gray-100 dark:bg-gray-800 rounded-lg group-hover:bg-[#5B34EA]/10 transition-colors">
-                      <Icon className="w-5 h-5 text-gray-600 dark:text-gray-400 group-hover:text-[#5B34EA] transition-colors" />
+                    <div className="p-2 bg-gray-100 dark:bg-gray-800 rounded-lg group-hover:bg-miru-han-purple-1000/10 transition-colors">
+                      <Icon className="w-5 h-5 text-gray-600 dark:text-gray-400 group-hover:text-miru-han-purple-1000 transition-colors" />
                     </div>
                   </div>
                 </CardContent>
@@ -279,7 +279,7 @@ const ReportsPage: React.FC<ReportsPageProps> = ({ className }) => {
                   return (
                     <Card
                       key={index}
-                      className="group cursor-pointer transition-all duration-200 hover:shadow-lg hover:border-[#5B34EA]/30"
+                      className="group cursor-pointer transition-all duration-200 hover:shadow-lg hover:border-miru-han-purple-1000/30"
                       onClick={() => handleReportClick(report.path)}
                       onKeyDown={e => handleCardKeyDown(e, report.path)}
                       role="button"
@@ -289,11 +289,11 @@ const ReportsPage: React.FC<ReportsPageProps> = ({ className }) => {
                       <CardHeader className="pb-3">
                         <div className="flex items-start justify-between">
                           <div className="flex items-center gap-3">
-                            <div className="p-2 bg-gray-100 dark:bg-gray-800 rounded-lg group-hover:bg-[#5B34EA]/10 transition-colors">
-                              <ReportIcon className="w-5 h-5 text-gray-600 dark:text-gray-400 group-hover:text-[#5B34EA] transition-colors" />
+                            <div className="p-2 bg-gray-100 dark:bg-gray-800 rounded-lg group-hover:bg-miru-han-purple-1000/10 transition-colors">
+                              <ReportIcon className="w-5 h-5 text-gray-600 dark:text-gray-400 group-hover:text-miru-han-purple-1000 transition-colors" />
                             </div>
                             <div className="flex-1">
-                              <h3 className="font-semibold text-gray-900 dark:text-gray-100 group-hover:text-[#5B34EA] transition-colors">
+                              <h3 className="font-semibold text-gray-900 dark:text-gray-100 group-hover:text-miru-han-purple-1000 transition-colors">
                                 {report.title}
                               </h3>
                               {report.isPopular && (
@@ -306,7 +306,7 @@ const ReportsPage: React.FC<ReportsPageProps> = ({ className }) => {
                               )}
                             </div>
                           </div>
-                          <ArrowUpRight className="w-4 h-4 text-gray-400 group-hover:text-[#5B34EA] transition-colors" />
+                          <ArrowUpRight className="w-4 h-4 text-gray-400 group-hover:text-miru-han-purple-1000 transition-colors" />
                         </div>
                       </CardHeader>
                       <CardContent className="pt-0">

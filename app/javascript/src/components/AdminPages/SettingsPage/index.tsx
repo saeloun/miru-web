@@ -104,7 +104,7 @@ const SettingsPage: React.FC<SettingsPageProps> = ({
         className={cn(
           "group cursor-pointer transition-all duration-200 hover:shadow-md border-2",
           isActive
-            ? "border-[#5B34EA] bg-[#5B34EA]/5 dark:bg-[#5B34EA]/10"
+            ? "border-miru-han-purple-1000 bg-miru-han-purple-1000/5 dark:bg-miru-han-purple-1000/10"
             : "border-gray-200 hover:border-gray-300 dark:border-gray-700 dark:hover:border-gray-600"
         )}
         onClick={() => handleSettingClick(setting.path)}
@@ -116,7 +116,7 @@ const SettingsPage: React.FC<SettingsPageProps> = ({
                 className={cn(
                   "p-2 rounded-lg",
                   isActive
-                    ? "bg-[#5B34EA] text-white"
+                    ? "bg-miru-han-purple-1000 text-white"
                     : "bg-gray-100 text-gray-600 group-hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-400"
                 )}
               >
@@ -127,7 +127,7 @@ const SettingsPage: React.FC<SettingsPageProps> = ({
                   className={cn(
                     "font-semibold text-sm",
                     isActive
-                      ? "text-[#5B34EA]"
+                      ? "text-miru-han-purple-1000"
                       : "text-gray-900 dark:text-gray-100"
                   )}
                 >
@@ -145,7 +145,7 @@ const SettingsPage: React.FC<SettingsPageProps> = ({
               {isActive && (
                 <Badge
                   variant="secondary"
-                  className="bg-[#5B34EA] text-white text-xs"
+                  className="bg-miru-han-purple-1000 text-white text-xs"
                 >
                   Active
                 </Badge>
@@ -153,7 +153,7 @@ const SettingsPage: React.FC<SettingsPageProps> = ({
               <CaretRight
                 className={cn(
                   "w-4 h-4 transition-transform group-hover:translate-x-1",
-                  isActive ? "text-[#5B34EA]" : "text-gray-400"
+                  isActive ? "text-miru-han-purple-1000" : "text-gray-400"
                 )}
               />
             </div>
@@ -175,8 +175,8 @@ const SettingsPage: React.FC<SettingsPageProps> = ({
         <div className="px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="p-2 bg-[#5B34EA]/10 rounded-lg">
-                <Gear className="h-6 w-6 text-[#5B34EA]" />
+              <div className="p-2 bg-miru-han-purple-1000/10 rounded-lg">
+                <Gear className="h-6 w-6 text-miru-han-purple-1000" />
               </div>
               <div>
                 <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
@@ -197,7 +197,7 @@ const SettingsPage: React.FC<SettingsPageProps> = ({
                   placeholder="Search Settings..."
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
-                  className="pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#5B34EA] focus:border-transparent bg-white dark:bg-gray-800 dark:text-gray-100"
+                  className="pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-miru-han-purple-1000 focus:border-transparent bg-white dark:bg-gray-800 dark:text-gray-100"
                 />
               </div>
 
@@ -223,7 +223,7 @@ const SettingsPage: React.FC<SettingsPageProps> = ({
             {filteredPersonalSettings.length > 0 && (
               <div>
                 <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
-                  <User className="w-5 h-5 text-[#5B34EA]" />
+                  <User className="w-5 h-5 text-miru-han-purple-1000" />
                   Personal Gear
                 </h2>
                 <div className="space-y-3">
@@ -236,7 +236,7 @@ const SettingsPage: React.FC<SettingsPageProps> = ({
             {filteredOrganizationSettings.length > 0 && (
               <div>
                 <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
-                  <Buildings className="w-5 h-5 text-[#5B34EA]" />
+                  <Buildings className="w-5 h-5 text-miru-han-purple-1000" />
                   Organization Gear
                 </h2>
                 <div className="space-y-3">

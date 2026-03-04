@@ -54,7 +54,7 @@ const ForgotPassword = () => {
             />
           </a>
         </div>
-        <h1 className="text-center font-manrope text-2xl font-extrabold text-miru-han-purple-1000 md:text-3xl lg:text-4.5xl">
+        <h1 className="text-center font-geist text-2xl font-extrabold text-miru-han-purple-1000 md:text-3xl lg:text-4.5xl">
           Forgot Password
         </h1>
         <div className="pt-10 lg:pt-20">
@@ -98,7 +98,7 @@ const ForgotPassword = () => {
                       Send password reset link
                     </button>
                   </div>
-                  <p className="mb-3 mt-3 text-center font-manrope text-xs font-normal not-italic text-miru-dark-purple-1000">
+                  <p className="mb-3 mt-3 text-center font-geist text-xs font-normal not-italic text-miru-dark-purple-1000">
                     <span className="form__link inline cursor-pointer">
                       <a href={Paths.LOGIN}>
                         <span className="mr-2 inline-block font-bold">
