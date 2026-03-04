@@ -63,7 +63,7 @@ const Header = ({
   };
 
   return (
-    <div className="mt-6 mb-3 flex items-center justify-between">
+    <div className="mt-6 mb-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
       <h2 className="header__title hidden lg:inline" data-cy="header__invoices">
         Expenses
       </h2>
@@ -74,19 +74,19 @@ const Header = ({
         renderItem={item => <SearchDataRow item={item} />}
         clearSearch={clearSearch}
         handleEnter={fetchSearchResults}
-        className="w-64"
+        className="w-full sm:w-64"
         variant="input"
         size="md"
         minSearchLength={1}
       />
       {/* Todo: Uncomment when filter functionality is added
         <Button className="relative ml-7" style="ternary">
-          <FilterIcon color="#5B34EA" size={16} />
+          <FilterIcon color="#5E58F1" size={16} />
         </Button>
         */}
 
       <Button
-        className="ml-2 flex items-center px-2 py-2 lg:ml-0 lg:px-4"
+        className="ml-0 flex w-full items-center justify-center px-2 py-2 sm:ml-2 sm:w-auto lg:ml-0 lg:px-4"
         style="secondary"
         onClick={() => setShowAddExpenseModal(true)}
       >

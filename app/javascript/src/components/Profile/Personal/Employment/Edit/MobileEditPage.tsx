@@ -179,7 +179,7 @@ const MobileEditPage = ({
               />
               <CalendarIcon
                 className="absolute top-0 bottom-0 right-4 my-auto"
-                color="#5B34EA"
+                color="#5E58F1"
                 size={20}
               />
             </div>
@@ -217,7 +217,7 @@ const MobileEditPage = ({
               />
               <CalendarIcon
                 className="absolute top-0 bottom-0 right-4 my-auto"
-                color="#5B34EA"
+                color="#5E58F1"
                 size={20}
               />
             </div>

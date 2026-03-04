@@ -84,7 +84,7 @@ export const Project = ({
                 setEditProjectData({ id, name, clientName, isBillable });
               }}
             >
-              <EditIcon color="#5B34EA" size={16} />
+              <EditIcon color="#5E58F1" size={16} />
             </button>
           )}
         </td>
@@ -98,7 +98,7 @@ export const Project = ({
                 setDeleteProjectData({ id, name });
               }}
             >
-              <DeleteIcon color="#5B34EA" size={16} />
+              <DeleteIcon color="#5E58F1" size={16} />
             </button>
           )}
         </td>
@@ -129,7 +129,7 @@ export const Project = ({
               setShowProjectModal(true);
             }}
           >
-            <EditIcon className="mr-4" color="#5B34EA" size={16} />
+            <EditIcon className="mr-4" color="#5E58F1" size={16} />
             Edit
           </li>
           <li

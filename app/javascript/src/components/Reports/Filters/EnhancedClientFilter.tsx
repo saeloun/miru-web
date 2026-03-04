@@ -40,13 +40,13 @@ const EnhancedClientFilter = ({
             <div
               className={cn(
                 "p-1.5 rounded-md transition-colors",
-                isActive ? "bg-[#5B34EA]/10" : "bg-gray-100"
+                isActive ? "bg-[#5E58F1]/10" : "bg-gray-100"
               )}
             >
               <Users
                 className={cn(
                   "h-4 w-4",
-                  isActive ? "text-[#5B34EA]" : "text-gray-600"
+                  isActive ? "text-[#5E58F1]" : "text-gray-600"
                 )}
               />
             </div>
@@ -63,7 +63,7 @@ const EnhancedClientFilter = ({
             {activeCount > 0 && (
               <Badge
                 variant="secondary"
-                className="h-5 px-1.5 bg-[#5B34EA] text-white text-xs"
+                className="h-5 px-1.5 bg-[#5E58F1] text-white text-xs"
               >
                 {activeCount}
               </Badge>
@@ -86,7 +86,7 @@ const EnhancedClientFilter = ({
               placeholder="Search Clients..."
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
-              className="pl-9 pr-9 h-9 text-sm border-gray-200 focus:border-[#5B34EA] focus:ring-[#5B34EA]"
+              className="pl-9 pr-9 h-9 text-sm border-gray-200 focus:border-[#5E58F1] focus:ring-[#5E58F1]"
             />
             {searchQuery && (
               <button
@@ -114,13 +114,13 @@ const EnhancedClientFilter = ({
                       className={cn(
                         "flex items-center gap-3 p-2 rounded-md cursor-pointer transition-colors",
                         "hover:bg-gray-50",
-                        isChecked && "bg-[#5B34EA]/5"
+                        isChecked && "bg-[#5E58F1]/5"
                       )}
                     >
                       <Checkbox
                         id={`client-${client.id}`}
                         checked={isChecked}
-                        className="border-gray-300 data-[state=checked]:bg-[#5B34EA] data-[state=checked]:border-[#5B34EA]"
+                        className="border-gray-300 data-[state=checked]:bg-[#5E58F1] data-[state=checked]:border-[#5E58F1]"
                       />
                       <Label
                         htmlFor={`client-${client.id}`}
@@ -129,7 +129,7 @@ const EnhancedClientFilter = ({
                         {client.label}
                       </Label>
                       {isChecked && (
-                        <Check className="h-4 w-4 text-[#5B34EA]" />
+                        <Check className="h-4 w-4 text-[#5E58F1]" />
                       )}
                     </div>
                   );

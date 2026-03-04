@@ -97,7 +97,7 @@ const Header = ({
               {appliedFilterCount}
             </span>
           )}
-          <FilterIcon color="#5B34EA" size={18} weight="bold" />
+          <FilterIcon color="#5E58F1" size={18} weight="bold" />
         </Button>
       </div>
       <Button

@@ -295,7 +295,7 @@ const PaymentEntryForm = ({
                 />
                 <CalendarIcon
                   className="absolute top-0 bottom-0 right-1 mx-2 my-3 cursor-pointer"
-                  color="#5B34EA"
+                  color="#5E58F1"
                   size={20}
                 />
               </div>

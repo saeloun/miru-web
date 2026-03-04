@@ -113,7 +113,7 @@ const UserInformation = () => {
                   className="flex cursor-pointer flex-row items-center p-1.5 text-sm text-miru-han-purple-1000"
                   htmlFor="file-input"
                 >
-                  <ImageIcon color="#5B34EA" size={16} weight="bold" />
+                  <ImageIcon color="#5E58F1" size={16} weight="bold" />
                   <span className="pl-2">Upload</span>
                 </label>
                 <input

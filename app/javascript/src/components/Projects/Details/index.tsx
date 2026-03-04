@@ -205,7 +205,7 @@ const ProjectDetails = () => {
                   onMouseEnter={handleButtonMouseEnter}
                   onMouseLeave={handleButtonMouseLeave}
                 >
-                  <InvoicesIcon color="#5B34EA" size={20} weight="bold" />
+                  <InvoicesIcon color="#5E58F1" size={20} weight="bold" />
                 </button>
               </Tooltip>
               <Tooltip

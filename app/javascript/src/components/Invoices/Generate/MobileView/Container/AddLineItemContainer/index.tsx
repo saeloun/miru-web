@@ -362,7 +362,7 @@ const AddLineItemContainer = ({
                     />
                     <CalendarIcon
                       className="absolute top-4 right-4"
-                      color="#5B34EA"
+                      color="#5E58F1"
                       size={20}
                       weight="bold"
                     />
