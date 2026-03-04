@@ -55,11 +55,11 @@ const InvoiceTotal = ({
   }, [newLineItems, manualEntryArr, discount, subTotal, tax]);
 
   return (
-    <div className="mb-5 flex w-full justify-end pt-3 pb-10 pr-10">
-      <table className="w-1/3">
+    <div className="mb-5 flex w-full justify-end px-4 pt-3 pb-10 sm:px-10">
+      <table className="w-full sm:w-2/3 lg:w-1/3">
         <tbody>
           <tr>
-            <td className="pr-10 text-right text-base font-normal text-miru-dark-purple-1000">
+            <td className="pr-4 text-right text-base font-normal text-miru-dark-purple-1000 sm:pr-10">
               Sub total
             </td>
             <td className="text-right text-base font-bold text-miru-dark-purple-1000 ">
@@ -70,13 +70,13 @@ const InvoiceTotal = ({
           </tr>
           <tr className="miru-gray-400 border-b-2 pb-5">
             {discount ? (
-              <td className="py-2 pr-10 text-right text-base font-normal text-miru-dark-purple-1000">
+              <td className="py-2 pr-4 text-right text-base font-normal text-miru-dark-purple-1000 sm:pr-10">
                 <label className="cursor-pointer" htmlFor="Discount">
                   Discount
                 </label>
               </td>
             ) : (
-              <td className="cursor-pointer pt-2 pr-10 pb-3 text-right text-xs font-bold tracking-widest text-miru-han-purple-1000">
+              <td className="cursor-pointer pt-2 pr-4 pb-3 text-right text-xs font-bold tracking-widest text-miru-han-purple-1000 sm:pr-10">
                 <label className="cursor-pointer" htmlFor="Discount">
                   ADD DISCOUNT
                 </label>
@@ -94,7 +94,7 @@ const InvoiceTotal = ({
             </td>
           </tr>
           <tr className="cursor-pointer">
-            <td className="pt-4 pr-10 text-right text-base font-normal text-miru-dark-purple-1000">
+            <td className="pt-4 pr-4 text-right text-base font-normal text-miru-dark-purple-1000 sm:pr-10">
               <label className="cursor-pointer" htmlFor="Tax">
                 Tax
               </label>
@@ -111,7 +111,7 @@ const InvoiceTotal = ({
             </td>
           </tr>
           <tr>
-            <td className="pt-1 pr-10 text-right text-base font-normal text-miru-dark-purple-1000">
+            <td className="pt-1 pr-4 text-right text-base font-normal text-miru-dark-purple-1000 sm:pr-10">
               Total
             </td>
             <td className="text-right text-base font-bold text-miru-dark-purple-1000">
@@ -121,13 +121,13 @@ const InvoiceTotal = ({
           {currency !== clientCurrency && (
             <tr className="miru-gray-400 border-b-2 pb-5">
               {baseCurrencyAmount ? (
-                <td className="py-2 pr-10 text-right text-base font-normal text-miru-dark-purple-1000">
+                <td className="py-2 pr-4 text-right text-base font-normal text-miru-dark-purple-1000 sm:pr-10">
                   <label className="cursor-pointer" htmlFor="baseCurrency">
                     Amount in {currency}
                   </label>
                 </td>
               ) : (
-                <td className="cursor-pointer pt-2 pr-10 pb-3 text-right text-xs font-bold tracking-widest text-miru-han-purple-1000">
+                <td className="cursor-pointer pt-2 pr-4 pb-3 text-right text-xs font-bold tracking-widest text-miru-han-purple-1000 sm:pr-10">
                   <label className="cursor-pointer" htmlFor="baseCurrency">
                     ADD AMOUNT IN {currency}
                   </label>
@@ -146,7 +146,7 @@ const InvoiceTotal = ({
             </tr>
           )}
           <tr>
-            <td className="pt-1 pr-10 text-right text-base font-normal text-miru-dark-purple-1000">
+            <td className="pt-1 pr-4 text-right text-base font-normal text-miru-dark-purple-1000 sm:pr-10">
               Amount Paid
             </td>
             <td className="text-right text-base font-bold text-miru-dark-purple-1000 ">
@@ -154,7 +154,7 @@ const InvoiceTotal = ({
             </td>
           </tr>
           <tr>
-            <td className="pt-1 pr-10 text-right text-base font-normal text-miru-dark-purple-1000">
+            <td className="pt-1 pr-4 text-right text-base font-normal text-miru-dark-purple-1000 sm:pr-10">
               Amount Due
             </td>
             <td className="text-right text-base font-bold text-miru-dark-purple-1000">

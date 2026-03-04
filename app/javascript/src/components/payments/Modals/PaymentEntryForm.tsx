@@ -343,7 +343,7 @@ const PaymentEntryForm = ({
                   />
                   {showTransactionTypes && (
                     <MobileMoreOptions
-                      className="h-3/4 w-full overflow-scroll md:h-3/5 md:w-3/4 lg:h-1/4"
+                      className="max-h-[70vh] w-full overflow-y-auto md:max-h-[60vh] md:w-3/4 lg:max-h-[40vh]"
                       setVisibilty={setShowTransactionTypes}
                       visibilty={showTransactionTypes}
                     >
