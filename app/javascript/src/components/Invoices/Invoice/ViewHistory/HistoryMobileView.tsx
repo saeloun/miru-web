@@ -38,7 +38,7 @@ const HistoryMobileView = ({ setShowHistory, invoice }) => {
           </Button>
         </div>
       </div>
-      <div className="h-full overflow-y-scroll px-4 pt-6">
+      <div className="h-full overflow-y-auto px-4 pt-6">
         <History logs={logs} />
       </div>
     </div>
