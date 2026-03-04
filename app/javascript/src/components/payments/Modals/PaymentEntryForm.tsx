@@ -229,8 +229,8 @@ const PaymentEntryForm = ({
                                   key={invoiceOption.value}
                                   value={invoiceOption.value.toString()}
                                 >
-                                  <div className="flex cursor-pointer items-center justify-between p-2 w-full">
-                                    <div className="w-2/6 py-3 pr-2 pl-0 text-left">
+                                  <div className="flex w-full cursor-pointer flex-col gap-2 p-2 sm:flex-row sm:items-center sm:justify-between sm:gap-0">
+                                    <div className="w-full py-2 pr-0 pl-0 text-left sm:w-2/6 sm:py-3 sm:pr-2">
                                       <div className="truncate text-sm font-medium leading-5 text-miru-dark-purple-1000">
                                         {invoiceOption.label}
                                       </div>
@@ -238,7 +238,7 @@ const PaymentEntryForm = ({
                                         {invoiceOption.invoiceNumber}
                                       </div>
                                     </div>
-                                    <div className="w-2/6 px-2 py-3 text-right">
+                                    <div className="w-full px-0 py-2 text-left sm:w-2/6 sm:px-2 sm:py-3 sm:text-right">
                                       <div className="text-base font-bold leading-5 text-miru-dark-purple-1000">
                                         {baseCurrency &&
                                           currencyFormat(
@@ -252,7 +252,7 @@ const PaymentEntryForm = ({
                                         ).format(dateFormat)}
                                       </div>
                                     </div>
-                                    <div className="w-2/6 py-3 pl-2 pr-0 text-right text-sm font-semibold leading-4 tracking-wider">
+                                    <div className="w-full py-1 pl-0 pr-0 text-left text-sm font-semibold leading-4 tracking-wider sm:w-2/6 sm:py-3 sm:pl-2 sm:text-right">
                                       <span className="rounded-lg">
                                         <Badge
                                           className={`${getStatusCssClass(
