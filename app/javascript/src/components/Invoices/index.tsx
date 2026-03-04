@@ -317,6 +317,11 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
   };
 
   const handleMarkPaid = async (id: string) => {
+    const shouldMarkPaid = window.confirm(
+      "Mark this invoice as paid? This action affects accounting records."
+    );
+    if (!shouldMarkPaid) return;
+
     try {
       const invoice = await invoiceApi.getInvoice(id);
       const updatedInvoice: InvoiceFormData = {
