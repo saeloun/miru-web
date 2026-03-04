@@ -104,7 +104,7 @@ const SignInForm = () => {
         </a>
       </div>
       <div className="mx-auto w-full md:w-1/2 lg:mt-auto lg:w-352">
-        <h1 className="text-center font-manrope text-2xl font-extrabold text-miru-han-purple-1000 md:text-3xl lg:text-4.5xl">
+        <h1 className="text-center font-geist text-2xl font-extrabold text-miru-han-purple-1000 md:text-3xl lg:text-4.5xl">
           Welcome back!
         </h1>
         <div className="pt-2vh lg:pt-5vh">
@@ -222,14 +222,14 @@ const SignInForm = () => {
               />
             )}
           </div>
-          <p className="mb-3 pt-7 text-center font-manrope text-xs font-normal not-italic text-miru-dark-purple-1000">
+          <p className="mb-3 pt-7 text-center font-geist text-xs font-normal not-italic text-miru-dark-purple-1000">
             <span className="form__link inline cursor-pointer">
               <a href={Paths.FORGOT_PASSWORD}>
                 <span className="mr-2 inline-block">Forgot Password?</span>
               </a>
             </span>
           </p>
-          <p className="pb-10 text-center font-manrope text-xs font-normal not-italic text-miru-dark-purple-1000">
+          <p className="pb-10 text-center font-geist text-xs font-normal not-italic text-miru-dark-purple-1000">
             Don&apos;t have an account?&nbsp;
             <span className="form__link inline cursor-pointer">
               <a href={Paths.SIGNUP}>

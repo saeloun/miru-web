@@ -218,8 +218,8 @@ const TimeTrackingPage: React.FC<TimeTrackingPageProps> = ({ className }) => {
         <div className="px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="p-2 bg-[#5B34EA]/10 rounded-lg">
-                <Clock className="h-6 w-6 text-[#5B34EA]" />
+              <div className="p-2 bg-miru-han-purple-1000/10 rounded-lg">
+                <Clock className="h-6 w-6 text-miru-han-purple-1000" />
               </div>
               <div>
                 <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
@@ -237,7 +237,7 @@ const TimeTrackingPage: React.FC<TimeTrackingPageProps> = ({ className }) => {
                 type="date"
                 value={selectedDate}
                 onChange={e => setSelectedDate(e.target.value)}
-                className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#5B34EA] focus:border-transparent bg-white dark:bg-gray-800 dark:text-gray-100"
+                className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-miru-han-purple-1000 focus:border-transparent bg-white dark:bg-gray-800 dark:text-gray-100"
               />
 
               {/* MagnifyingGlass */}
@@ -248,11 +248,14 @@ const TimeTrackingPage: React.FC<TimeTrackingPageProps> = ({ className }) => {
                   placeholder="Search Entries..."
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
-                  className="pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#5B34EA] focus:border-transparent bg-white dark:bg-gray-800 dark:text-gray-100"
+                  className="pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-miru-han-purple-1000 focus:border-transparent bg-white dark:bg-gray-800 dark:text-gray-100"
                 />
               </div>
 
-              <Button className="bg-[#5B34EA] hover:bg-[#4926D1]" size="sm">
+              <Button
+                className="bg-miru-han-purple-1000 hover:bg-miru-han-purple-600"
+                size="sm"
+              >
                 <Plus className="mr-2 h-4 w-4" />
                 New Entry
               </Button>
@@ -351,7 +354,7 @@ const TimeTrackingPage: React.FC<TimeTrackingPageProps> = ({ className }) => {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Timer className="w-5 h-5 text-[#5B34EA]" />
+                  <Timer className="w-5 h-5 text-miru-han-purple-1000" />
                   Quick Timer
                 </CardTitle>
                 <CardDescription>
@@ -419,7 +422,7 @@ const TimeTrackingPage: React.FC<TimeTrackingPageProps> = ({ className }) => {
             <Card className="mt-6">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <BarChart3 className="w-5 h-5 text-[#5B34EA]" />
+                  <BarChart3 className="w-5 h-5 text-miru-han-purple-1000" />
                   Recent Entries
                 </CardTitle>
                 <CardDescription>
@@ -439,7 +442,7 @@ const TimeTrackingPage: React.FC<TimeTrackingPageProps> = ({ className }) => {
                             src={entry.user.avatar}
                             alt={entry.user.name}
                           />
-                          <AvatarFallback className="bg-[#5B34EA]/10 text-[#5B34EA] text-xs">
+                          <AvatarFallback className="bg-miru-han-purple-1000/10 text-miru-han-purple-1000 text-xs">
                             {getInitials(entry.user.name)}
                           </AvatarFallback>
                         </Avatar>
@@ -510,7 +513,7 @@ const TimeTrackingPage: React.FC<TimeTrackingPageProps> = ({ className }) => {
                   </div>
                   <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                     <div
-                      className="bg-[#5B34EA] h-2 rounded-full"
+                      className="bg-miru-han-purple-1000 h-2 rounded-full"
                       style={{
                         width: `${Math.min(
                           (weeklyStats.totalHours / weeklyStats.target) * 100,
