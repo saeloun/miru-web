@@ -4,7 +4,7 @@ require "rails_helper"
 
 RSpec.describe "Api::V1::Payments::Providers#index", type: :request do
   let(:company) do
-    create(:company, payments_providers: create_list(:payments_provider, 3))
+    create(:company, payments_providers: [build(:payments_provider)])
   end
 
   let(:user) { create(:user, current_workspace_id: company.id) }
@@ -20,7 +20,8 @@ RSpec.describe "Api::V1::Payments::Providers#index", type: :request do
       it "returns providers" do
         send_request :get, api_v1_payments_providers_path, headers: auth_headers(user)
         expect(response).to have_http_status(:ok)
-        expect(json_response["paymentsProviders"].size).to eq(3)
+        expect(json_response["paymentsProviders"].size).to eq(1)
+        expect(json_response["paymentsProviders"].first["name"]).to eq("stripe")
       end
     end
   end

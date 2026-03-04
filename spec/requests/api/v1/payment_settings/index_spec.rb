@@ -17,11 +17,8 @@ RSpec.describe "Api::V1::PaymentSettings#index", type: :request do
       send_request :get, api_v1_payments_settings_path, headers: auth_headers(user)
       expect(response).to have_http_status(:ok)
       expect(json_response["providers"]).to have_key("stripe")
-      expect(json_response["providers"]).to have_key("paypal")
       expect(json_response["providers"]["stripe"]).to have_key("connected")
-      expect(json_response["providers"]["paypal"]).to have_key("connected")
       expect(json_response["providers"]["stripe"]["connected"]).to be(false)
-      expect(json_response["providers"]["paypal"]["connected"]).to be(false)
     end
   end
 

@@ -28,9 +28,9 @@ RSpec.describe "Api::V1::Payments::Providers#update", type: :request do
         expect(json_response["enabled"]).to eq(true)
       end
 
-      context "when provider name is invalid" do
+      context "when provider name is passed" do
         describe "PATCH /api/v1/payments/providers/:id" do
-          it "returns 422" do
+          it "does not update provider name" do
             send_request :patch, api_v1_payments_provider_path(
               id: payments_provider.id,
               params: {
@@ -39,7 +39,9 @@ RSpec.describe "Api::V1::Payments::Providers#update", type: :request do
                 }
               }
             ), headers: auth_headers(user)
-            expect(response).to have_http_status(:unprocessable_content)
+
+            expect(response).to have_http_status(:ok)
+            expect(payments_provider.reload.name).to eq("stripe")
           end
         end
       end

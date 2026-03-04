@@ -6,7 +6,7 @@ class Api::V1::Payments::ProvidersController < ApplicationController
   def index
     authorize :index, policy_class: Payments::ProviderPolicy
     render :index, locals: {
-      payments_providers: current_company.payments_providers
+      payments_providers: current_company.payments_providers.where(name: PaymentsProvider::STRIPE_PROVIDER)
     }
   end
 
@@ -25,7 +25,7 @@ class Api::V1::Payments::ProvidersController < ApplicationController
     end
 
     def provider_params
-      params.require(:provider).permit(:name, :enabled, accepted_payment_methods: [])
+      params.require(:provider).permit(:enabled, accepted_payment_methods: [])
     end
 
     def stripe_connected_account
