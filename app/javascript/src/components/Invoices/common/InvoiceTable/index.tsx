@@ -153,41 +153,43 @@ const InvoiceTable = ({
 
   return (
     <Fragment>
-      <table className="bg-miru-han-1000 w-128 table-fixed sm:w-full">
-        <LineItemTableHeader />
-        <tbody className="w-full" ref={wrapperRef}>
-          {getAddNewButton()}
-          {addNew && getManualEntryItem()}
-          {manualEntryArr[0]?.name &&
-            manualEntryArr.map(
-              (item, index) =>
-                !item._destroy && (
-                  <NewLineItemRow
-                    clientCurrency={clientCurrency}
-                    dateFormat={dateFormat}
-                    item={item}
-                    key={index}
-                    selectedOption={manualEntryArr}
-                    setSelectedOption={setManualEntryArr}
-                  />
-                )
-            )}
-          {selectedLineItems.length > 0 &&
-            selectedLineItems.map(
-              (item, index) =>
-                !item._destroy && (
-                  <NewLineItemRow
-                    clientCurrency={clientCurrency}
-                    dateFormat={dateFormat}
-                    item={item}
-                    key={index}
-                    selectedOption={selectedLineItems}
-                    setSelectedOption={setSelectedLineItems}
-                  />
-                )
-            )}
-        </tbody>
-      </table>
+      <div className="w-full overflow-x-auto">
+        <table className="bg-miru-han-1000 min-w-[48rem] table-fixed sm:min-w-full">
+          <LineItemTableHeader />
+          <tbody className="w-full" ref={wrapperRef}>
+            {getAddNewButton()}
+            {addNew && getManualEntryItem()}
+            {manualEntryArr[0]?.name &&
+              manualEntryArr.map(
+                (item, index) =>
+                  !item._destroy && (
+                    <NewLineItemRow
+                      clientCurrency={clientCurrency}
+                      dateFormat={dateFormat}
+                      item={item}
+                      key={index}
+                      selectedOption={manualEntryArr}
+                      setSelectedOption={setManualEntryArr}
+                    />
+                  )
+              )}
+            {selectedLineItems.length > 0 &&
+              selectedLineItems.map(
+                (item, index) =>
+                  !item._destroy && (
+                    <NewLineItemRow
+                      clientCurrency={clientCurrency}
+                      dateFormat={dateFormat}
+                      item={item}
+                      key={index}
+                      selectedOption={selectedLineItems}
+                      setSelectedOption={setSelectedLineItems}
+                    />
+                  )
+              )}
+          </tbody>
+        </table>
+      </div>
       <div>
         {multiLineItemModal && (
           <MultipleEntriesModal
