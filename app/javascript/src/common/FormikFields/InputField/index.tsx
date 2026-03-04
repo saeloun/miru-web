@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 import { Field } from "formik";
 import { PasswordIconSVG, PasswordIconTextSVG } from "miruIcons";
@@ -27,8 +27,7 @@ const InputField = ({
   marginBottom = "mb-2 xsm:mb-6",
 }) => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [defaultMarginBottom, setDefaultMarginBottom] =
-    useState<string>(marginBottom);
+  const effectiveMarginBottom = hasError ? "mb-2" : marginBottom;
 
   const handleTogglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -56,16 +55,8 @@ const InputField = ({
     }
   };
 
-  useEffect(() => {
-    if (hasError) {
-      setDefaultMarginBottom("mb-2");
-    } else {
-      setDefaultMarginBottom(marginBottom);
-    }
-  }, [hasError, marginBottom]);
-
   return (
-    <div className={cn("relative", wrapperClassName, defaultMarginBottom)}>
+    <div className={cn("relative", wrapperClassName, effectiveMarginBottom)}>
       {label && (
         <Label
           htmlFor={id || name}
@@ -109,17 +100,21 @@ const InputField = ({
             type="button"
             className="absolute right-3 top-1/2 -translate-y-1/2 p-1 hover:opacity-70"
             onClick={handleTogglePasswordVisibility}
+            aria-label={showPassword ? "Hide password" : "Show password"}
+            aria-pressed={showPassword}
           >
             {!showPassword ? (
               <img
-                alt="Show password"
+                alt=""
+                aria-hidden="true"
                 height="16"
                 src={PasswordIconSVG}
                 width="16"
               />
             ) : (
               <img
-                alt="Hide password"
+                alt=""
+                aria-hidden="true"
                 height="16"
                 src={PasswordIconTextSVG}
                 width="16"

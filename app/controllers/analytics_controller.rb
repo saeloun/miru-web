@@ -86,7 +86,7 @@ class AnalyticsController < ApplicationController
         total_users: analytics_users.count,
         new_users_this_month: analytics_users.where(created_at: Date.current.beginning_of_month..Date.current.end_of_month).count,
         active_users_this_week: analytics_users.joins(timesheet_entries: { project: :client })
-                                       .where(clients: { company_id: analytics_company_ids },
+                                       .where(clients: { company_id: analytics_company_scope },
                                          timesheet_entries: { work_date: 1.week.ago..Date.current })
                                        .distinct
                                        .count,
@@ -147,11 +147,11 @@ class AnalyticsController < ApplicationController
     def revenue_by_client
       analytics_clients.joins(:invoices)
         .where(invoices: { status: :paid })
-        .group("clients.name")
+        .group("clients.id", "clients.name")
         .sum(invoice_amount_sql)
         .sort_by { |_, amount| -amount }
         .first(10)
-        .to_h
+        .to_h { |(id, name), amount| ["#{name} (#{id})", amount] }
     end
 
     def revenue_by_currency
@@ -258,7 +258,7 @@ class AnalyticsController < ApplicationController
       total_impact = invoices_with_conversion.sum do |invoice|
         current_rate = ExchangeRate.rate_for(invoice.currency, invoice.company.base_currency, Date.current)
         if current_rate
-          (invoice.amount * current_rate) - invoice.base_currency_amount
+          (invoice.amount.to_f * current_rate) - invoice.base_currency_amount.to_f
         else
           0
         end
@@ -290,11 +290,11 @@ class AnalyticsController < ApplicationController
     def top_clients_by_revenue(limit = 10)
       analytics_clients.joins(:invoices)
         .where(invoices: { status: :paid })
-        .group("clients.name")
+        .group("clients.id", "clients.name")
         .sum(invoice_amount_sql)
         .sort_by { |_, amount| -amount }
         .first(limit)
-        .to_h
+        .to_h { |(id, name), amount| ["#{name} (#{id})", amount] }
     end
 
     def calculate_payment_success_rate
@@ -326,8 +326,8 @@ class AnalyticsController < ApplicationController
       return 0 if conversions.empty?
 
       variances = conversions.filter_map do |invoice|
-        expected = invoice.amount * invoice.exchange_rate
-        actual = invoice.base_currency_amount
+        expected = invoice.amount.to_f * invoice.exchange_rate.to_f
+        actual = invoice.base_currency_amount.to_f
         ((actual - expected).abs / expected) * 100 if expected > 0
       end
 
@@ -340,37 +340,37 @@ class AnalyticsController < ApplicationController
       @analytics_companies ||= current_user.super_admin? ? Company.all : current_user.companies
     end
 
-    def analytics_company_ids
-      @analytics_company_ids ||= analytics_companies.pluck(:id)
+    def analytics_company_scope
+      @analytics_company_scope ||= analytics_companies.select(:id)
     end
 
     def analytics_users
       @analytics_users ||= User.kept.joins(:employments)
         .merge(Employment.kept)
-        .where(employments: { company_id: analytics_company_ids })
+        .where(employments: { company_id: analytics_company_scope })
         .distinct
     end
 
     def analytics_clients
-      @analytics_clients ||= Client.kept.where(company_id: analytics_company_ids)
+      @analytics_clients ||= Client.kept.where(company_id: analytics_company_scope)
     end
 
     def analytics_projects
-      @analytics_projects ||= Project.kept.joins(:client).where(clients: { company_id: analytics_company_ids })
+      @analytics_projects ||= Project.kept.joins(:client).where(clients: { company_id: analytics_company_scope })
     end
 
     def analytics_invoices
-      @analytics_invoices ||= Invoice.kept.where(company_id: analytics_company_ids)
+      @analytics_invoices ||= Invoice.kept.where(company_id: analytics_company_scope)
     end
 
     def analytics_payments
-      @analytics_payments ||= Payment.joins(:invoice).where(invoices: { company_id: analytics_company_ids })
+      @analytics_payments ||= Payment.joins(:invoice).where(invoices: { company_id: analytics_company_scope })
     end
 
     def analytics_timesheet_entries
       @analytics_timesheet_entries ||= TimesheetEntry.kept
         .joins(project: :client)
-        .where(clients: { company_id: analytics_company_ids })
+        .where(clients: { company_id: analytics_company_scope })
     end
 
     def analytics_events

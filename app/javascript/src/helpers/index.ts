@@ -12,13 +12,8 @@ import { getNumberWithOrdinal } from "./ordinal";
 import { useOutsideClick } from "./outsideClick";
 import useKeypress from "./useKeyPress";
 import { validateTimesheetEntry } from "./validateTimesheetEntry";
-import {
-  separateAddressFields,
-  bankFieldValidationRequirements,
-} from "./wiseUtilityFunctions";
 
 export {
-  bankFieldValidationRequirements,
   bytesToSize,
   cashFormatter,
   companyDateFormater,
@@ -30,7 +25,6 @@ export {
   minFromHHMM,
   minToHHMM,
   lineTotalCalc,
-  separateAddressFields,
   useDebounce,
   useOutsideClick,
   useKeypress,

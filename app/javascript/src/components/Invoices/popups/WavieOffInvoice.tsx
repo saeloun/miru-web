@@ -21,7 +21,7 @@ const WavieOffInvoice = ({
 }: IProps) => {
   const navigate = useNavigate();
   const wavieInvoice = async invoice => {
-    await invoicesApi.wavieInvoice(invoice);
+    await invoicesApi.waiveInvoice(invoice);
     setShowWavieDialog(false);
     if (fetchInvoices) {
       fetchInvoices();

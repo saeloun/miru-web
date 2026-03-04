@@ -10,8 +10,12 @@ class Api::V1::TeamMembers::DetailsController < Api::V1::ApplicationController
     authorize employment, policy_class: TeamMembers::DetailPolicy
     user = employment.user
     user.update!(detail_params)
+    safe_user = user.as_json(
+      only: [:id, :first_name, :last_name, :email, :date_of_birth, :phone, :personal_email_id],
+      methods: [:full_name]
+    )
     render json: {
-      user:,
+      user: safe_user,
       notice: ("User updated successfully.")
     }, status: 200
   end
@@ -19,7 +23,7 @@ class Api::V1::TeamMembers::DetailsController < Api::V1::ApplicationController
   private
 
     def employment
-      @_employment ||= Employment.kept.find_by!(user_id: params[:team_id], company_id: current_company.id)
+      @_employment ||= Employment.kept.find_by!(user_id: params[:team_id])
     end
 
     def detail_params

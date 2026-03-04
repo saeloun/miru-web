@@ -14,7 +14,7 @@ class Api::V1::InvoicesController < Api::V1::ApplicationController
     search_query = params[:query] || params[:search_term]
     if search_query.present?
       invoices = invoices.search(search_query)
-    elsif params[:q].present?
+    elsif params[:q].is_a?(ActionController::Parameters) || params[:q].is_a?(Hash)
       # Handle legacy ransack-style params
       if params[:q][:client_id_eq].present?
         invoices = invoices.where(client_id: params[:q][:client_id_eq])
@@ -205,8 +205,10 @@ class Api::V1::InvoicesController < Api::V1::ApplicationController
     ).send_invoice.deliver_later
 
     # Update invoice status to sent if it's draft
-    invoice.update!(status: "sent") if invoice.draft?
-    invoice.update!(sent_at: Time.current) if invoice.sent_at.nil?
+    updates = {}
+    updates[:status] = "sent" if invoice.draft?
+    updates[:sent_at] = Time.current if invoice.sent_at.nil?
+    invoice.update!(updates) if updates.present?
 
     render json: { message: "Invoice has been sent successfully" }, status: 200
   end
