@@ -97,9 +97,6 @@ gem "data_migrate"
 # pagy for Pagination
 gem "pagy", "~> 8.0"
 
-# Avo Admin Framework
-gem "avo", ">= 3.17"
-
 gem "nokogiri", ">= 1.19.1"
 
 # Manage application specific business logic. https://github.com/AaronLasseigne/active_interaction

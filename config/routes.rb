@@ -7,7 +7,6 @@ class ActionDispatch::Routing::Mapper
 end
 
 Rails.application.routes.draw do
-  mount_avo
   # Health check endpoint
   get "/health", to: "health#index"
 
