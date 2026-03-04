@@ -362,7 +362,7 @@ const AddLineItemContainer = ({
                     />
                     <CalendarIcon
                       className="absolute top-4 right-4"
-                      color="#5B34EA"
+                      color="#5E58F1"
                       size={20}
                       weight="bold"
                     />
@@ -411,9 +411,9 @@ const AddLineItemContainer = ({
                 />
               </div>
               {editItem.id || editItem.timesheet_entry_id ? (
-                <div className="flex w-full justify-between">
+                <div className="flex w-full gap-2">
                   <Button
-                    className="mr-2 flex w-1/2 items-center justify-center rounded border border-miru-red-400 px-4 py-2"
+                    className="flex w-1/2 items-center justify-center rounded border border-miru-red-400 px-4 py-2"
                     style="ternary"
                     onClick={() => handleDelete(editItem)}
                   >
@@ -427,7 +427,7 @@ const AddLineItemContainer = ({
                     </span>
                   </Button>
                   <Button
-                    className="ml-2 flex w-1/2 items-center justify-center px-4 py-2"
+                    className="flex w-1/2 items-center justify-center px-4 py-2"
                     disabled={disableBtn(values, errors)}
                     style="primary"
                     onClick={() => handleSubmitForm(values)}

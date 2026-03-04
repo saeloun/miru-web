@@ -104,8 +104,7 @@ RSpec.describe "Api::V1::TeamMembers::DetailsController#update", type: :request 
     end
 
     it "is unsuccessful" do
-      expect(response).to have_http_status(:forbidden)
-      expect(json_response["errors"]).to eq("You are not authorized to perform this action.")
+      expect(response).to have_http_status(:not_found)
     end
   end
 
@@ -142,8 +141,7 @@ RSpec.describe "Api::V1::TeamMembers::DetailsController#update", type: :request 
     end
 
     it "is unsuccessful" do
-      expect(response).to have_http_status(:forbidden)
-      expect(json_response["errors"]).to eq("You are not authorized to perform this action.")
+      expect(response).to have_http_status(:not_found)
     end
   end
 
@@ -161,8 +159,7 @@ RSpec.describe "Api::V1::TeamMembers::DetailsController#update", type: :request 
     end
 
     it "is unsuccessful" do
-      expect(response).to have_http_status(:forbidden)
-      expect(json_response["errors"]).to eq("You are not authorized to perform this action.")
+      expect(response).to have_http_status(:not_found)
     end
   end
 end

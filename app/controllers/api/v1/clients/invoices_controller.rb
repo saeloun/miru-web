@@ -10,12 +10,13 @@ class Api::V1::Clients::InvoicesController < Api::V1::ApplicationController
     invoices = @client.invoices.kept.includes(:company)
 
     # Handle legacy ransack-style params
-    if params[:q].present?
+    if params[:q].is_a?(ActionController::Parameters) || params[:q].is_a?(Hash)
       if params[:q][:status_eq].present?
         invoices = invoices.where(status: params[:q][:status_eq])
       end
       if params[:q][:invoice_number_cont].present?
-        invoices = invoices.where("invoice_number ILIKE ?", "%#{params[:q][:invoice_number_cont]}%")
+        search_term = ActiveRecord::Base.sanitize_sql_like(params[:q][:invoice_number_cont].to_s)
+        invoices = invoices.where("invoice_number ILIKE ?", "%#{search_term}%")
       end
     end
 

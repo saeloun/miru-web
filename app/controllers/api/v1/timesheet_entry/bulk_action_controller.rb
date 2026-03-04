@@ -5,9 +5,14 @@ class Api::V1::TimesheetEntry::BulkActionController < Api::V1::ApplicationContro
   after_action :verify_policy_scoped, only: [:update, :destroy]
 
   def update
+    ids = Array(params[:ids]).reject(&:blank?)
+    return render json: { error: I18n.t("timesheet_entry.update.failure", default: "No entries selected") }, status: :unprocessable_entity if ids.empty?
+
     timesheet_entries = policy_scope(TimesheetEntry)
     target_project = ProjectPolicy::Scope.new(current_user, current_company).resolve.find(params[:project_id])
-    updated_entries = timesheet_entries.where(id: params[:ids])
+    updated_entries = timesheet_entries.where(id: ids)
+    return render json: { error: I18n.t("timesheet_entry.update.failure", default: "No entries found") }, status: :unprocessable_entity if updated_entries.empty?
+
     updated_entries.update(project_id: target_project.id)
     entries = TimesheetEntriesPresenter.new(updated_entries).group_snippets_by_work_date
     render json: { notice: I18n.t("timesheet_entry.update.message"), entries: }, status: 200
@@ -20,7 +25,7 @@ class Api::V1::TimesheetEntry::BulkActionController < Api::V1::ApplicationContro
     if discarded_entries.any?
       render json: { notice: I18n.t("timesheet_entry.destroy.message") }
     else
-      render json: { error: I18n.t("timesheet_entry.destroy.failure", default: "Failed to delete timesheet entries") }, status: :unprocessable_entity
+      render json: { error: I18n.t("timesheet_entry.destroy.failure", default: "Failed to delete timesheet entries") }, status: 422
     end
   end
 

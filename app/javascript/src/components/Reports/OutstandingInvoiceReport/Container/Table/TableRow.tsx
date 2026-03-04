@@ -50,7 +50,7 @@ const TableRow = ({ reportData, logo }) => {
       <td className="hidden w-2/12 pt-3 pb-4 text-right text-xl font-bold tracking-wider text-miru-dark-purple-1000 lg:table-cell lg:py-4">
         {currencyFormat(currency, amount)}
       </td>
-      <td className="w-1/2 self-start pt-3 pb-4 text-right font-medium lg:w-3/12 lg:self-center lg:py-6 lg:pr-2">
+      <td className="w-1/2 self-start pt-3 pb-4 pl-2 text-right font-medium lg:w-3/12 lg:self-center lg:py-6 lg:pr-2 lg:pl-0">
         <Badge
           className={`${getStatusCssClass(status)} uppercase`}
           text={status}

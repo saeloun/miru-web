@@ -107,7 +107,7 @@ const SignUpForm = () => {
             />
           </a>
         </div>
-        <h1 className="text-center font-manrope text-2xl font-extrabold text-miru-han-purple-1000 md:text-3xl lg:text-4.5xl">
+        <h1 className="text-center font-geist text-2xl font-extrabold text-miru-han-purple-1000 md:text-3xl lg:text-4.5xl">
           Signup for Miru
         </h1>
         <div className="pt-2vh lg:pt-5vh">
@@ -325,7 +325,7 @@ const SignUpForm = () => {
               />
             )}
           </div>
-          <p className="py-2vh text-center font-manrope text-xs font-normal not-italic text-miru-dark-purple-1000">
+          <p className="py-2vh text-center font-geist text-xs font-normal not-italic text-miru-dark-purple-1000">
             Already have an account?&nbsp;
             <span className="form__link inline cursor-pointer">
               <a href={Paths.LOGIN}>

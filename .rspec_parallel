@@ -1,4 +1,4 @@
 --format progress
 --require spec_helper
 --color
---tty
+--exclude-pattern "spec/system_skip/**/*_spec.rb"

@@ -73,7 +73,7 @@ const MoreOptions = ({ item, setShowMoreOptions, showMoreOptions }: Iprops) => {
           handleAction(e, TeamModalType.ADD_EDIT);
         }}
       >
-        <EditIcon className="mr-4" color="#5B34EA" size={16} />
+        <EditIcon className="mr-4" color="#5E58F1" size={16} />
         Edit
       </li>
       <li

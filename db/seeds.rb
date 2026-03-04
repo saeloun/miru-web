@@ -258,7 +258,7 @@ invoice_number = 1
         note: Faker::Lorem.sentence(word_count: 3),
         status: :paid,
         transaction_date: invoice_date.to_date + rand(5..20).days,
-        transaction_type: [:credit_card, :bank_transfer].sample
+        transaction_type: :stripe
       )
     end
 

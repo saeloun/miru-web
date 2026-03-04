@@ -61,13 +61,13 @@ const EnhancedStatusFilter = ({
             <div
               className={cn(
                 "p-1.5 rounded-md transition-colors",
-                activeCount > 0 ? "bg-[#5B34EA]/10" : "bg-gray-100"
+                activeCount > 0 ? "bg-[#5E58F1]/10" : "bg-gray-100"
               )}
             >
               <Activity
                 className={cn(
                   "h-4 w-4",
-                  activeCount > 0 ? "text-[#5B34EA]" : "text-gray-600"
+                  activeCount > 0 ? "text-[#5E58F1]" : "text-gray-600"
                 )}
               />
             </div>
@@ -84,7 +84,7 @@ const EnhancedStatusFilter = ({
             {activeCount > 0 && (
               <Badge
                 variant="secondary"
-                className="h-5 px-1.5 bg-[#5B34EA] text-white text-xs"
+                className="h-5 px-1.5 bg-[#5E58F1] text-white text-xs"
               >
                 {activeCount}
               </Badge>
@@ -113,14 +113,14 @@ const EnhancedStatusFilter = ({
                   "flex items-center gap-3 p-2.5 rounded-md cursor-pointer transition-all",
                   "hover:bg-gray-50 border",
                   isChecked
-                    ? "border-[#5B34EA]/30 bg-[#5B34EA]/5"
+                    ? "border-[#5E58F1]/30 bg-[#5E58F1]/5"
                     : "border-transparent"
                 )}
               >
                 <Checkbox
                   id={`status-${status.value}`}
                   checked={isChecked}
-                  className="border-gray-300 data-[state=checked]:bg-[#5B34EA] data-[state=checked]:border-[#5B34EA]"
+                  className="border-gray-300 data-[state=checked]:bg-[#5E58F1] data-[state=checked]:border-[#5E58F1]"
                 />
                 <div className="flex items-center gap-2 flex-1">
                   <span className="text-lg">{getStatusIcon(status.label)}</span>
@@ -140,7 +140,7 @@ const EnhancedStatusFilter = ({
                 >
                   {status.label}
                 </Badge>
-                {isChecked && <Check className="h-4 w-4 text-[#5B34EA]" />}
+                {isChecked && <Check className="h-4 w-4 text-[#5E58F1]" />}
               </div>
             );
           })}

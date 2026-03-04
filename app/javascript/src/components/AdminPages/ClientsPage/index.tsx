@@ -204,14 +204,14 @@ const ClientsPage: React.FC<ClientsPageProps> = ({
     >
       {/* Header */}
       <div className="bg-white dark:bg-gray-900 border-b dark:border-gray-800 sticky top-0 z-10">
-        <div className="px-6 py-4">
-          <div className="flex items-center justify-between">
+        <div className="px-4 py-4 sm:px-6">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div className="flex items-center gap-4">
-              <div className="p-2 bg-[#5B34EA]/10 rounded-lg">
-                <Users className="h-6 w-6 text-[#5B34EA]" />
+              <div className="p-2 bg-miru-han-purple-1000/10 rounded-lg">
+                <Users className="h-6 w-6 text-miru-han-purple-1000" />
               </div>
               <div>
-                <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
+                <h1 className="text-xl font-semibold text-gray-900 dark:text-gray-100 sm:text-2xl">
                   Clients
                 </h1>
                 <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
@@ -220,25 +220,28 @@ const ClientsPage: React.FC<ClientsPageProps> = ({
               </div>
             </div>
 
-            <div className="flex items-center gap-3">
+            <div className="flex w-full flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center lg:w-auto lg:flex-nowrap">
               {/* MagnifyingGlass */}
-              <div className="relative">
+              <div className="relative w-full sm:flex-1 lg:w-72 lg:flex-none">
                 <MagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                 <input
                   type="text"
                   placeholder="Search Clients..."
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
-                  className="pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#5B34EA] focus:border-transparent bg-white dark:bg-gray-800 dark:text-gray-100"
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-miru-han-purple-1000 focus:border-transparent bg-white dark:bg-gray-800 dark:text-gray-100"
                 />
               </div>
 
-              <Button variant="outline" size="sm">
+              <Button className="w-full sm:w-auto" variant="outline" size="sm">
                 <Funnel className="mr-2 h-4 w-4" />
                 Funnel
               </Button>
 
-              <Button className="bg-[#5B34EA] hover:bg-[#4926D1]" size="sm">
+              <Button
+                className="w-full bg-miru-han-purple-1000 hover:bg-miru-han-purple-600 sm:w-auto"
+                size="sm"
+              >
                 <Plus className="mr-2 h-4 w-4" />
                 Add Client
               </Button>
@@ -248,7 +251,7 @@ const ClientsPage: React.FC<ClientsPageProps> = ({
       </div>
 
       {/* Content */}
-      <div className="p-6 space-y-6">
+      <div className="space-y-6 p-4 sm:p-6">
         {/* Quick Stats */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <Card>
@@ -317,7 +320,7 @@ const ClientsPage: React.FC<ClientsPageProps> = ({
         </div>
 
         {/* Status Funnel Tabs */}
-        <div className="flex gap-1 p-1 bg-gray-100 dark:bg-gray-800 rounded-lg w-fit">
+        <div className="flex w-full gap-1 overflow-x-auto rounded-lg bg-gray-100 p-1 dark:bg-gray-800 sm:w-fit">
           {statusOptions.map(option => (
             <button
               key={option.value}
@@ -339,21 +342,21 @@ const ClientsPage: React.FC<ClientsPageProps> = ({
           {filteredClients.map(client => (
             <Card
               key={client.id}
-              className="group cursor-pointer transition-all duration-200 hover:shadow-lg hover:border-[#5B34EA]/30"
+              className="group cursor-pointer transition-all duration-200 hover:shadow-lg hover:border-miru-han-purple-1000/30"
               onClick={() => handleClientClick(client.id)}
             >
               <CardHeader className="pb-3">
-                <div className="flex items-start justify-between">
-                  <div className="flex items-center gap-3">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                  <div className="flex min-w-0 items-center gap-3">
                     <Avatar className="h-12 w-12">
                       <AvatarImage src={client.avatar} alt={client.name} />
-                      <AvatarFallback className="bg-[#5B34EA]/10 text-[#5B34EA] font-medium">
+                      <AvatarFallback className="bg-miru-han-purple-1000/10 text-miru-han-purple-1000 font-medium">
                         {getInitials(client.name)}
                       </AvatarFallback>
                     </Avatar>
-                    <div className="flex-1">
+                    <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2">
-                        <h3 className="font-semibold text-gray-900 dark:text-gray-100 group-hover:text-[#5B34EA] transition-colors">
+                        <h3 className="truncate font-semibold text-gray-900 transition-colors group-hover:text-miru-han-purple-1000 dark:text-gray-100">
                           {client.name}
                         </h3>
                         {client.isVip && (
@@ -365,7 +368,7 @@ const ClientsPage: React.FC<ClientsPageProps> = ({
                       </p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 self-end sm:self-auto">
                     {getStatusBadge(client.status)}
                     <Button variant="ghost" size="icon" className="h-8 w-8">
                       <DotsThree className="h-4 w-4" />
@@ -420,7 +423,7 @@ const ClientsPage: React.FC<ClientsPageProps> = ({
                     <Envelope className="w-3 h-3" />
                     <span className="truncate">{client.email}</span>
                   </div>
-                  <ArrowUpRight className="w-4 h-4 text-gray-400 group-hover:text-[#5B34EA] transition-colors ml-auto" />
+                  <ArrowUpRight className="w-4 h-4 text-gray-400 group-hover:text-miru-han-purple-1000 transition-colors ml-auto" />
                 </div>
               </CardContent>
             </Card>
@@ -440,7 +443,7 @@ const ClientsPage: React.FC<ClientsPageProps> = ({
                 : "Start building your client base by adding your first client"}
             </p>
             {!searchQuery && (
-              <Button className="mt-4 bg-[#5B34EA] hover:bg-[#4926D1]">
+              <Button className="mt-4 bg-miru-han-purple-1000 hover:bg-miru-han-purple-600">
                 <Plus className="mr-2 h-4 w-4" />
                 Add Your First Client
               </Button>

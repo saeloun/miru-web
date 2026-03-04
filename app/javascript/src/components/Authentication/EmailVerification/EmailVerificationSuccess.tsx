@@ -20,7 +20,7 @@ const EmailVerificationSuccess = () => {
             src={GreenCheckCircleIcon}
           />
         </div>
-        <h1 className="text-center font-manrope text-2xl font-extrabold text-miru-chart-green-400 md:text-3xl lg:text-4.5xl">
+        <h1 className="text-center font-geist text-2xl font-extrabold text-miru-chart-green-400 md:text-3xl lg:text-4.5xl">
           Email
           <br />
           Verification
@@ -28,11 +28,11 @@ const EmailVerificationSuccess = () => {
           Successful
         </h1>
         <div className="pt-10">
-          <p className="text-center font-manrope text-sm text-miru-dark-purple-1000 ">
+          <p className="text-center font-geist text-sm text-miru-dark-purple-1000 ">
             Thanks for verifying your email.
           </p>
         </div>
-        <div className="pt-6 text-center font-manrope text-xs font-normal not-italic">
+        <div className="pt-6 text-center font-geist text-xs font-normal not-italic">
           <button
             className="form__button cursor-pointer whitespace-nowrap"
             type="submit"

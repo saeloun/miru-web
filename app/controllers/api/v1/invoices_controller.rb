@@ -14,7 +14,7 @@ class Api::V1::InvoicesController < Api::V1::ApplicationController
     search_query = params[:query] || params[:search_term]
     if search_query.present?
       invoices = invoices.search(search_query)
-    elsif params[:q].present?
+    elsif params[:q].is_a?(ActionController::Parameters) || params[:q].is_a?(Hash)
       # Handle legacy ransack-style params
       if params[:q][:client_id_eq].present?
         invoices = invoices.where(client_id: params[:q][:client_id_eq])
@@ -23,7 +23,8 @@ class Api::V1::InvoicesController < Api::V1::ApplicationController
         invoices = invoices.where(status: params[:q][:status_eq])
       end
       if params[:q][:invoice_number_cont].present?
-        invoices = invoices.where("invoice_number ILIKE ?", "%#{params[:q][:invoice_number_cont]}%")
+        search_term = ActiveRecord::Base.sanitize_sql_like(params[:q][:invoice_number_cont].to_s)
+        invoices = invoices.where("invoice_number ILIKE ?", "%#{search_term}%")
       end
     end
 
@@ -75,12 +76,11 @@ class Api::V1::InvoicesController < Api::V1::ApplicationController
     all_invoices = current_company.invoices.kept
 
     # For draft invoices, sum the total amount
-    draft_amount = all_invoices.draft.sum { |invoice|
-      invoice.base_currency_amount.to_f > 0 ? invoice.base_currency_amount.to_f : invoice.amount.to_f
-    }.round(2)
+    draft_amount = all_invoices.draft.sum(Arel.sql("COALESCE(NULLIF(base_currency_amount, 0), amount, 0)")).to_f.round(2)
 
     # For outstanding, use the outstanding_amount or amount_due field
-    outstanding_amount = all_invoices.where(status: [:sent, :viewed]).sum { |invoice|
+    # Outstanding includes sent, viewed, and overdue invoices
+    outstanding_amount = all_invoices.where(status: [:sent, :viewed, :overdue]).sum { |invoice|
       # Use outstanding_amount if available, otherwise use amount_due, fallback to amount
       if invoice.outstanding_amount.to_f > 0
         invoice.outstanding_amount.to_f
@@ -92,15 +92,12 @@ class Api::V1::InvoicesController < Api::V1::ApplicationController
     }.round(2)
 
     # For overdue, only get overdue invoices
-    overdue_amount = all_invoices.overdue.sum { |invoice|
-      if invoice.outstanding_amount.to_f > 0
-        invoice.outstanding_amount.to_f
-      elsif invoice.amount_due.to_f > 0
-        invoice.amount_due.to_f
-      else
-        invoice.base_currency_amount.to_f > 0 ? invoice.base_currency_amount.to_f : invoice.amount.to_f
-      end
-    }.round(2)
+    overdue_amount = all_invoices.overdue
+      .sum(
+        Arel.sql(
+          "COALESCE(NULLIF(outstanding_amount, 0), NULLIF(amount_due, 0), NULLIF(base_currency_amount, 0), amount, 0)"
+        )
+      ).to_f.round(2)
 
     # Calculate total amount for ALL status
     total_amount = (draft_amount + outstanding_amount + overdue_amount).round(2)
@@ -180,17 +177,17 @@ class Api::V1::InvoicesController < Api::V1::ApplicationController
     recipients = recipients.reject(&:blank?)
 
     if recipients.empty?
-      return render json: { error: "Recipients are required" }, status: :unprocessable_entity
+      return render json: { error: "Recipients are required" }, status: 422
     end
 
     # Check recipient limit
     if recipients.size > 5
-      return render json: { error: "Email can only be sent to 5 recipients." }, status: :unprocessable_entity
+      return render json: { error: "Email can only be sent to 5 recipients." }, status: 422
     end
 
     # Don't send if already paid
     if invoice.paid?
-      return render json: { error: "Invoice is already paid" }, status: :unprocessable_entity
+      return render json: { error: "Invoice is already paid" }, status: 422
     end
 
     # Generate PDF
@@ -212,9 +209,11 @@ class Api::V1::InvoicesController < Api::V1::ApplicationController
       message: invoice_email_params[:message]
     ).send_invoice.deliver_later
 
-    # Update invoice status to sent if it's draft
-    invoice.update!(status: "sent") if invoice.draft?
-    invoice.update!(sent_at: Time.current) if invoice.sent_at.nil?
+    # Update invoice status and sent_at in a single query
+    attrs = {}
+    attrs[:status] = "sent" if invoice.draft?
+    attrs[:sent_at] = Time.current if invoice.sent_at.nil?
+    invoice.update!(attrs) if attrs.any?
 
     render json: { message: "Invoice has been sent successfully" }, status: 200
   end
@@ -232,7 +231,7 @@ class Api::V1::InvoicesController < Api::V1::ApplicationController
 
       render json: { message: "A reminder has been sent" }, status: 202
     else
-      render json: { error: "Reminders can only be sent for overdue invoices" }, status: :unprocessable_entity
+      render json: { error: "Reminders can only be sent for overdue invoices" }, status: 422
     end
   end
 

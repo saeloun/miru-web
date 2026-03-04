@@ -28,7 +28,7 @@ class Api::V1::TeamMembersController < Api::V1::BaseController
         notice: "Team member added successfully"
       }, status: 201
     else
-      render json: { errors: @team_member.errors.full_messages }, status: :unprocessable_entity
+      render json: { errors: @team_member.errors.full_messages }, status: 422
     end
   end
 
@@ -45,7 +45,7 @@ class Api::V1::TeamMembersController < Api::V1::BaseController
         notice: "Team member updated successfully"
       }, status: 200
     else
-      render json: { errors: @team_member.errors.full_messages }, status: :unprocessable_entity
+      render json: { errors: @team_member.errors.full_messages }, status: 422
     end
   end
 
@@ -56,7 +56,7 @@ class Api::V1::TeamMembersController < Api::V1::BaseController
     if employment&.destroy
       render json: { notice: "Team member removed successfully" }, status: 200
     else
-      render json: { errors: ["Failed to remove team member"] }, status: :unprocessable_entity
+      render json: { errors: ["Failed to remove team member"] }, status: 422
     end
   end
 

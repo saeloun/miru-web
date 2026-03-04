@@ -256,13 +256,6 @@ export const api = {
   // Profile
   profile: {
     update: (data: any) => apiClient.patch("/profile", data),
-    bankDetails: {
-      list: () => apiClient.get("/profiles/bank_account_details"),
-      create: (data: any) =>
-        apiClient.post("/profiles/bank_account_details", data),
-      update: (accountId: string, data: any) =>
-        apiClient.patch(`/profiles/bank_account_details/${accountId}`, data),
-    },
   },
 
   // Workspaces

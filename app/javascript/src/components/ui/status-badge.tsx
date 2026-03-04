@@ -164,7 +164,7 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({
 
   return (
     <span
-      className={`inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-geist-semibold transition-all hover:shadow-md ${config.bg} ${config.text} ${className}`}
+      className={`inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold transition-all hover:shadow-md ${config.bg} ${config.text} ${className}`}
     >
       {config.icon}
       <span className="uppercase tracking-wider">{config.label || status}</span>

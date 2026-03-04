@@ -15,7 +15,7 @@ RUN apt-get update -qq && \
 
 # Install Node.js
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
-    apt-get install -y nodejs && \
+    apt-get install -y --no-install-recommends nodejs && \
     npm install -g pnpm@9.15.5 && \
     rm -rf /var/lib/apt/lists/*
 
@@ -67,16 +67,17 @@ WORKDIR /app
 COPY --from=builder --chown=rails:rails /app /app
 
 # Set environment
+ARG RUBY_ABI_VERSION=4.0.0
 ENV RAILS_ENV=production \
     NODE_ENV=production \
     RAILS_SERVE_STATIC_FILES=true \
     RAILS_LOG_TO_STDOUT=true \
     BUNDLE_GEMFILE=/app/Gemfile \
     BUNDLE_PATH=/app/vendor/bundle \
-    BUNDLE_BIN=/app/vendor/bundle/ruby/3.4.0/bin \
+    BUNDLE_BIN=/app/vendor/bundle/ruby/${RUBY_ABI_VERSION}/bin \
     BUNDLE_APP_CONFIG=/app/.bundle \
     GEM_HOME=/app/vendor/bundle \
-    PATH="/app/vendor/bundle/ruby/3.4.0/bin:${PATH}" \
+    PATH="/app/vendor/bundle/ruby/${RUBY_ABI_VERSION}/bin:${PATH}" \
     BUNDLE_WITHOUT="development:test" \
     BUNDLE_DEPLOYMENT=true
 

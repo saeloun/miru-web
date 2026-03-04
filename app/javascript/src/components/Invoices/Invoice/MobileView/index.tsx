@@ -103,7 +103,7 @@ const MobileView = ({
           />
         </div>
       </div>
-      <div className="h-full overflow-y-scroll">
+      <div className="h-full overflow-y-auto">
         <CompanyInfo company={company} />
         <InvoiceInfo
           amount={amount}
@@ -148,46 +148,48 @@ const MobileView = ({
       </div>
       {!invoiceWaived && (
         <>
-          <div className="sticky bottom-0 left-0 right-0 z-50 flex w-full items-center justify-between  bg-white p-4 shadow-c1">
-            <Button
-              className="mr-2 flex w-1/2 items-center justify-center px-4 py-2"
-              style="primary"
-              onClick={() => {
-                navigate(`/invoices/${invoice.id}/edit`);
-              }}
-            >
-              <EditIcon className="text-white" size={16} weight="bold" />
-              <span className="ml-2 text-center text-xs font-bold leading-5 text-white sm:text-base">
-                Edit
-              </span>
-            </Button>
-            <Button
-              className="ml-2 flex w-1/2 items-center justify-center px-4 py-2"
-              style="primary"
-              onClick={() => {
-                if (isStripeEnabled) {
-                  handleSendInvoice();
-                } else {
-                  setShowConnectPaymentDialog(true);
-                }
-              }}
-            >
-              <PaperPlaneTiltIcon
-                className="text-white"
-                size={16}
-                weight="bold"
-              />
-              <span className="ml-2 text-center text-xs font-bold leading-5 text-white sm:text-base">
-                Send to
-              </span>
-            </Button>
-            <Button
-              className="ml-4"
-              style="ternary"
-              onClick={() => setShowMoreOptions(true)}
-            >
-              <DotsThreeVerticalIcon size={20} weight="bold" />
-            </Button>
+          <div className="sticky bottom-0 left-0 right-0 z-50 bg-white p-4 shadow-c1">
+            <div className="flex w-full items-center gap-2">
+              <Button
+                className="flex w-full items-center justify-center px-4 py-2 sm:w-1/2"
+                style="primary"
+                onClick={() => {
+                  navigate(`/invoices/${invoice.id}/edit`);
+                }}
+              >
+                <EditIcon className="text-white" size={16} weight="bold" />
+                <span className="ml-2 text-center text-xs font-bold leading-5 text-white sm:text-base">
+                  Edit
+                </span>
+              </Button>
+              <Button
+                className="flex w-full items-center justify-center px-4 py-2 sm:w-1/2"
+                style="primary"
+                onClick={() => {
+                  if (isStripeEnabled) {
+                    handleSendInvoice();
+                  } else {
+                    setShowConnectPaymentDialog(true);
+                  }
+                }}
+              >
+                <PaperPlaneTiltIcon
+                  className="text-white"
+                  size={16}
+                  weight="bold"
+                />
+                <span className="ml-2 text-center text-xs font-bold leading-5 text-white sm:text-base">
+                  Send to
+                </span>
+              </Button>
+              <Button
+                className="ml-1 shrink-0 sm:ml-4"
+                style="ternary"
+                onClick={() => setShowMoreOptions(true)}
+              >
+                <DotsThreeVerticalIcon size={20} weight="bold" />
+              </Button>
+            </div>
           </div>
           {showMoreOptions && (
             <MobileMoreOptions

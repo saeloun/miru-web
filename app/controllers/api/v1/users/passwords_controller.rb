@@ -15,7 +15,14 @@ class Api::V1::Users::PasswordsController < Devise::PasswordsController
   def update
     user = User.reset_password_by_token(password_params)
     if user.errors.empty?
-      sign_in(user)
+      unless user.active_for_authentication?
+        return render json: {
+          error: I18n.t("devise.failure.inactive"),
+          errors: [I18n.t("devise.failure.inactive")]
+        }, status: 422
+      end
+
+      sign_in(user) if Devise.sign_in_after_reset_password
       safe_user = user.as_json(only: %i[id email first_name last_name current_workspace_id])
       render json: { notice: I18n.t("password.update.success"), user: safe_user }, status: 200
     else
@@ -31,6 +38,6 @@ class Api::V1::Users::PasswordsController < Devise::PasswordsController
 
     def respond_with_error(resource)
       error_message = resource.errors.full_messages.first || "An error occurred"
-      render json: { error: error_message }, status: :unprocessable_entity
+      render json: { error: error_message }, status: 422
     end
 end

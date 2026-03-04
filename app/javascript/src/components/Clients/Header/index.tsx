@@ -34,7 +34,7 @@ const Header = ({ setnewClient, isAdminUser, setShowDialog }) => {
 
   return (
     <div
-      className={`m-4 flex items-center lg:mx-0 lg:mt-6 lg:mb-3 ${
+      className={`m-4 flex flex-col gap-3 sm:flex-row sm:items-center lg:mx-0 lg:mt-6 lg:mb-3 ${
         isAdminUser ? "justify-between" : ""
       }`}
     >
@@ -57,13 +57,13 @@ const Header = ({ setnewClient, isAdminUser, setShowDialog }) => {
             onSelect={client => {
               // Handle client selection if needed
             }}
-            className="w-64"
+            className="w-full sm:w-64"
             variant="input"
             size="md"
             minSearchLength={1}
           />
           <Button
-            className="ml-2 flex items-center px-2 py-2 lg:ml-0 lg:px-4"
+            className="ml-0 flex w-full items-center justify-center px-2 py-2 sm:ml-2 sm:w-auto lg:ml-0 lg:px-4"
             style="secondary"
             onClick={() => {
               setShowDialog(true);

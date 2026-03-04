@@ -16,6 +16,6 @@ class Api::V1::Users::ConfirmationsController < Devise::ConfirmationsController
 
     def respond_with_error(resource)
       error_message = resource.errors.full_messages.first || "An error occurred"
-      render json: { error: error_message }, status: :unprocessable_entity
+      render json: { error: error_message }, status: 422
     end
 end

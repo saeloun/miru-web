@@ -109,7 +109,7 @@ RSpec.describe Api::V1::PaymentSettingsController, type: :request do
       it "returns an error" do
         delete api_v1_payments_settings_stripe_disconnect_path
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
 
         json_response = JSON.parse(response.body)
         expect(json_response["error"]).to eq("Failed to disconnect Stripe account")

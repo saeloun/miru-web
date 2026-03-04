@@ -47,9 +47,6 @@ GEM
     active_interaction (5.5.0)
       activemodel (>= 5.2, < 9)
       activesupport (>= 5.2, < 9)
-    active_link_to (1.0.5)
-      actionpack
-      addressable
     activejob (8.0.2.1)
       activesupport (= 8.0.2.1)
       globalid (>= 0.3.6)
@@ -80,8 +77,8 @@ GEM
       securerandom (>= 0.3)
       tzinfo (~> 2.0, >= 2.0.5)
       uri (>= 0.13.1)
-    addressable (2.8.6)
-      public_suffix (>= 2.0.2, < 6.0)
+    addressable (2.8.9)
+      public_suffix (>= 2.0.2, < 8.0)
     ahoy_matey (4.2.1)
       activesupport (>= 5.2)
       device_detector
@@ -94,23 +91,6 @@ GEM
     audited (5.8.0)
       activerecord (>= 5.2, < 8.2)
       activesupport (>= 5.2, < 8.2)
-    avo (3.29.1)
-      actionview (>= 6.1)
-      active_link_to
-      activerecord (>= 6.1)
-      activesupport (>= 6.1)
-      addressable
-      avo-icons (>= 0.1.1)
-      docile
-      meta-tags
-      pagy (>= 7.0.0, < 43)
-      prop_initializer (>= 0.2.0)
-      turbo-rails (>= 2.0.0)
-      turbo_power (>= 0.6.0)
-      view_component (>= 3.7.0)
-      zeitwerk (>= 2.6.12)
-    avo-icons (0.1.1)
-      inline_svg
     aws-eventstream (1.4.0)
     aws-partitions (1.1206.0)
     aws-sdk-core (3.241.4)
@@ -161,7 +141,8 @@ GEM
     connection_pool (3.0.2)
     countries (6.0.1)
       unaccent (~> 0.3)
-    crack (0.4.5)
+    crack (1.0.1)
+      bigdecimal
       rexml
     crass (1.0.6)
     csv (3.3.5)
@@ -212,6 +193,8 @@ GEM
       i18n (>= 1.8.11, < 2)
     faraday (2.0.0)
       ruby2_keywords (>= 0.0.4)
+    faraday-net_http (3.4.2)
+      net-http (~> 0.5)
     ferrum (0.17.1)
       addressable (~> 2.5)
       base64 (~> 0.2)
@@ -257,7 +240,7 @@ GEM
       os (>= 0.9, < 2.0)
       signet (>= 0.16, < 2.a)
     hash_dot (2.5.0)
-    hashdiff (1.0.1)
+    hashdiff (1.2.1)
     hashie (5.0.0)
     httparty (0.24.2)
       csv
@@ -273,9 +256,6 @@ GEM
       actionpack (>= 6.0.0)
       activesupport (>= 6.0.0)
       railties (>= 6.0.0)
-    inline_svg (1.10.0)
-      activesupport (>= 3.0)
-      nokogiri (>= 1.6)
     io-console (0.8.2)
     irb (1.17.0)
       pp (>= 0.6.0)
@@ -323,8 +303,6 @@ GEM
     mcp (0.8.0)
       json-schema (>= 4.1)
     memoist (0.16.2)
-    meta-tags (2.22.3)
-      actionpack (>= 6.0.0)
     mime-types (3.7.0)
       logger
       mime-types-data (~> 3.2025, >= 3.2025.0507)
@@ -351,6 +329,8 @@ GEM
     multi_xml (0.8.1)
       bigdecimal (>= 3.1, < 5)
     mutex_m (0.3.0)
+    net-http (0.9.1)
+      uri (>= 0.11.1)
     net-imap (0.5.12)
       date
       net-protocol
@@ -428,8 +408,6 @@ GEM
       prettyprint
     prettyprint (0.2.0)
     prism (1.9.0)
-    prop_initializer (0.2.0)
-      zeitwerk (>= 2.6.18)
     propshaft (1.3.1)
       actionpack (>= 7.0.0)
       activesupport (>= 7.0.0)
@@ -437,7 +415,7 @@ GEM
     psych (5.3.1)
       date
       stringio
-    public_suffix (5.0.4)
+    public_suffix (7.0.5)
     puma (6.6.1)
       nio4r (~> 2.0)
     pundit (2.3.0)
@@ -686,8 +664,6 @@ GEM
     turbo-rails (2.0.23)
       actionpack (>= 7.1.0)
       railties (>= 7.1.0)
-    turbo_power (0.7.0)
-      turbo-rails (>= 1.3.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     uber (0.1.0)
@@ -699,10 +675,6 @@ GEM
     useragent (0.16.11)
     vcr (6.4.0)
     version_gem (1.1.1)
-    view_component (4.5.0)
-      actionview (>= 7.1.0)
-      activesupport (>= 7.1.0)
-      concurrent-ruby (~> 1)
     vite_rails (3.0.20)
       railties (>= 5.1, < 9)
       vite_ruby (~> 3.0, >= 3.2.2)
@@ -719,7 +691,7 @@ GEM
       activemodel (>= 6.0.0)
       bindex (>= 0.4.0)
       railties (>= 6.0.0)
-    webmock (3.14.0)
+    webmock (3.26.1)
       addressable (>= 2.8.0)
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
@@ -752,7 +724,6 @@ DEPENDENCIES
   ahoy_matey
   annotaterb
   audited (~> 5.0)
-  avo (>= 3.17)
   aws-sdk-s3
   bootsnap (>= 1.18.0)
   brakeman
@@ -770,6 +741,7 @@ DEPENDENCIES
   dotenv-rails
   factory_bot_rails
   faker
+  faraday-net_http
   ferrum_pdf
   foreman
   google-api-client
@@ -835,7 +807,7 @@ DEPENDENCIES
   vcr (~> 6.4.0)
   vite_rails (~> 3.0)
   web-console (>= 4.1.0)
-  webmock (~> 3.14.0)
+  webmock (~> 3.26.0)
 
 RUBY VERSION
    ruby 4.0.1p0

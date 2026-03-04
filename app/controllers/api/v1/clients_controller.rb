@@ -10,9 +10,11 @@ class Api::V1::ClientsController < Api::V1::ApplicationController
     # Apply text search if query present
     if params[:query].present?
       clients = clients.search(params[:query])
-    elsif params[:q].present? && params[:q][:name_cont].present?
+    elsif (params[:q].is_a?(ActionController::Parameters) || params[:q].is_a?(Hash)) &&
+        params[:q][:name_cont].present?
       # Handle legacy ransack-style search
-      clients = clients.where("name ILIKE ?", "%#{params[:q][:name_cont]}%")
+      search_term = ActiveRecord::Base.sanitize_sql_like(params[:q][:name_cont].to_s)
+      clients = clients.where("name ILIKE ?", "%#{search_term}%")
     end
 
     clients = clients.includes(:logo_attachment)

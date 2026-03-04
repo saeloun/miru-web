@@ -82,6 +82,7 @@ node_modules
 .kamal/secrets
 .env.kamal.local
 .env.kamal.production
+.env.kamal
 
 # Test output files
 # Playwright & test artifacts

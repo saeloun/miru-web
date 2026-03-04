@@ -17,21 +17,23 @@ const Table = ({ outstandingOverdueInvoice }) => (
               currency={outstandingOverdueInvoice.currency}
               report={report}
             />
-            <table className="mt-1 min-w-full divide-y divide-gray-200">
-              <TableHeader />
-              <tbody className="divide-y divide-gray-200 bg-white">
-                {outstandingOverdueInvoice.currency &&
-                  report.invoices.map((invoice, index) => (
-                    <Fragment key={index}>
-                      <TableRow
-                        key="index"
-                        logo={report.logo}
-                        reportData={invoice}
-                      />
-                    </Fragment>
-                  ))}
-              </tbody>
-            </table>
+            <div className="overflow-x-auto">
+              <table className="mt-1 min-w-[48rem] divide-y divide-gray-200 lg:min-w-full">
+                <TableHeader />
+                <tbody className="divide-y divide-gray-200 bg-white">
+                  {outstandingOverdueInvoice.currency &&
+                    report.invoices.map((invoice, index) => (
+                      <Fragment key={index}>
+                        <TableRow
+                          key="index"
+                          logo={report.logo}
+                          reportData={invoice}
+                        />
+                      </Fragment>
+                    ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         )
     )}

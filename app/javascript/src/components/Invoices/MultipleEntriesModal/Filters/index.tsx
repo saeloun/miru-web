@@ -188,9 +188,9 @@ const Filters = ({
     }),
     option: (styles, { isSelected }) => ({
       ...styles,
-      backgroundColor: isSelected && "#5B34EA",
+      backgroundColor: isSelected && "#5E58F1",
       "&:hover": {
-        backgroundColor: isSelected ? "#5B34EA" : "#F5F7F9",
+        backgroundColor: isSelected ? "#5E58F1" : "#F5F7F9",
       },
     }),
   };

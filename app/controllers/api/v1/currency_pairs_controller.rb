@@ -2,7 +2,7 @@
 
 class Api::V1::CurrencyPairsController < Api::V1::ApplicationController
   def rate
-    authorize :wise, :fetch_bank_requirements?
+    authorize current_company, :index?, policy_class: PaymentSettingsPolicy
 
     from = params[:from].to_s.upcase
     to = params[:to].to_s.upcase

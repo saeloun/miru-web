@@ -43,30 +43,30 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: '4.0.1'
           bundler-cache: true
-      
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 22
-      
+
       - name: Setup pnpm
         uses: pnpm/action-setup@v2
         with:
           version: 9
           run_install: false
-      
+
       - name: Get pnpm store directory
         id: pnpm-cache
         shell: bash
         run: |
           echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_OUTPUT
-      
+
       - name: Setup pnpm cache
         uses: actions/cache@v4
         with:
@@ -76,23 +76,23 @@ jobs:
           key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-
-      
+
       - name: Install pnpm packages
         run: |
           PUPPETEER_SKIP_DOWNLOAD=true pnpm install --frozen-lockfile
-      
+
       - name: Build Vite assets (sanity)
         env:
           SECRET_KEY_BASE: dummy
         run: |
           timeout 180 bin/vite build
-      
+
       - name: Run Rubocop
         run: bundle exec rubocop
 
       - name: Run ESLint
         run: pnpm lint
-      
+
       - name: Setup test database
         run: |
           bundle exec rails db:create
@@ -100,30 +100,27 @@ jobs:
           bundle exec rails db:migrate
           bundle exec rake parallel:create[2]
           bundle exec rake parallel:load_schema[2]
-      
+
       - name: Enable PostgreSQL extensions
         run: |
           bundle exec rails runner "ActiveRecord::Base.connection.execute('CREATE EXTENSION IF NOT EXISTS pg_trgm')"
           bundle exec rails runner "ActiveRecord::Base.connection.execute('CREATE EXTENSION IF NOT EXISTS unaccent')"
-      
+
       - name: Run parallel tests (excluding system specs)
         env:
           PARALLEL_TEST_PROCESSORS: 2  # Optimal for standard runners
         run: |
           mkdir -p tmp
-          
-          # Run specs with parallel_rspec in single container (uses available cores)
-          bundle exec parallel_rspec spec \
-            --exclude-pattern "spec/system" \
-            -n 2 \
-            -o "--format progress --format RspecJunitFormatter --out tmp/rspec.xml --tag ~type:system"
-          
+
+          # Run specs with parallel_rspec (exclude patterns defined in .parallel_rspec)
+          bundle exec parallel_rspec spec -n 2
+
           # Save failed specs list for debugging
           if [ -f tmp/failing_specs.txt ]; then
             echo "Failed specs:"
             cat tmp/failing_specs.txt
           fi
-      
+
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v4
@@ -146,18 +143,18 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: '4.0.1'
           bundler-cache: true
-      
+
       - name: Run bundler-audit
         run: |
           gem install bundler-audit --no-document
           bundler-audit check --update
-      
+
       - name: Run brakeman
         run: |
           bundle exec brakeman -q -w2
