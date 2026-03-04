@@ -23,7 +23,8 @@ class Api::V1::InvoicesController < Api::V1::ApplicationController
         invoices = invoices.where(status: params[:q][:status_eq])
       end
       if params[:q][:invoice_number_cont].present?
-        invoices = invoices.where("invoice_number ILIKE ?", "%#{params[:q][:invoice_number_cont]}%")
+        search_term = ActiveRecord::Base.sanitize_sql_like(params[:q][:invoice_number_cont].to_s)
+        invoices = invoices.where("invoice_number ILIKE ?", "%#{search_term}%")
       end
     end
 
@@ -75,32 +76,23 @@ class Api::V1::InvoicesController < Api::V1::ApplicationController
     all_invoices = current_company.invoices.kept
 
     # For draft invoices, sum the total amount
-    draft_amount = all_invoices.draft.sum { |invoice|
-      invoice.base_currency_amount.to_f > 0 ? invoice.base_currency_amount.to_f : invoice.amount.to_f
-    }.round(2)
+    draft_amount = all_invoices.draft.sum(Arel.sql("COALESCE(NULLIF(base_currency_amount, 0), amount, 0)")).to_f.round(2)
 
     # For outstanding, use the outstanding_amount or amount_due field
-    outstanding_amount = all_invoices.where(status: [:sent, :viewed]).sum { |invoice|
-      # Use outstanding_amount if available, otherwise use amount_due, fallback to amount
-      if invoice.outstanding_amount.to_f > 0
-        invoice.outstanding_amount.to_f
-      elsif invoice.amount_due.to_f > 0
-        invoice.amount_due.to_f
-      else
-        invoice.base_currency_amount.to_f > 0 ? invoice.base_currency_amount.to_f : invoice.amount.to_f
-      end
-    }.round(2)
+    outstanding_amount = all_invoices.where(status: [:sent, :viewed])
+      .sum(
+        Arel.sql(
+          "COALESCE(NULLIF(outstanding_amount, 0), NULLIF(amount_due, 0), NULLIF(base_currency_amount, 0), amount, 0)"
+        )
+      ).to_f.round(2)
 
     # For overdue, only get overdue invoices
-    overdue_amount = all_invoices.overdue.sum { |invoice|
-      if invoice.outstanding_amount.to_f > 0
-        invoice.outstanding_amount.to_f
-      elsif invoice.amount_due.to_f > 0
-        invoice.amount_due.to_f
-      else
-        invoice.base_currency_amount.to_f > 0 ? invoice.base_currency_amount.to_f : invoice.amount.to_f
-      end
-    }.round(2)
+    overdue_amount = all_invoices.overdue
+      .sum(
+        Arel.sql(
+          "COALESCE(NULLIF(outstanding_amount, 0), NULLIF(amount_due, 0), NULLIF(base_currency_amount, 0), amount, 0)"
+        )
+      ).to_f.round(2)
 
     # Calculate total amount for ALL status
     total_amount = (draft_amount + outstanding_amount + overdue_amount).round(2)
