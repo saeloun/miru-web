@@ -456,9 +456,13 @@ export const timesheetEntryApi = {
     return http.post(url, params);
   },
   list: (from: string, to: string, uid?: string | number) =>
-    http.get(
-      `/timesheet_entry?from=${from}&to=${to}${uid ? `&user_id=${uid}` : ""}`
-    ),
+    http.get(`/timesheet_entry`, {
+      params: {
+        from,
+        to,
+        ...(uid ? { user_id: uid } : {}),
+      },
+    }),
   update: (id: string | number, payload: any) =>
     http.put(`/timesheet_entry/${id}`, payload),
   destroy: (id: string | number) => http.delete(`/timesheet_entry/${id}`),
@@ -470,33 +474,19 @@ export const timesheetEntryApi = {
 
 // Time Tracking
 export const timeTrackingApi = {
-  get: async (userId?: number) => {
-    try {
-      const url = userId
-        ? `/time-tracking?user_id=${userId}`
-        : "/time-tracking";
-      const response = await http.get(url);
-
-      return {
-        data: {
-          entries: response.data.entries || {},
-          clients: response.data.clients || [],
-          projects: response.data.projects || {},
-          employees: response.data.employees || [],
-        },
-      };
-    } catch (error) {
-      console.error("Error fetching time tracking data:", error);
-
-      return {
-        data: { entries: {}, clients: [], projects: {}, employees: [] },
-      };
-    }
-  },
+  get: async (userId?: number) =>
+    http.get("/time-tracking", {
+      params: userId ? { user_id: userId } : undefined,
+    }),
   getCurrentUserEntries: (from: any, to: any, year: any, uid: any) =>
-    http.get(
-      `/timesheet_entry?from=${from}&to=${to}&year=${year}&user_id=${uid}`
-    ),
+    http.get(`/timesheet_entry`, {
+      params: {
+        from,
+        to,
+        year,
+        user_id: uid,
+      },
+    }),
 };
 
 // Wise removed

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ColumnDef } from "@tanstack/react-table";
 import dayjs from "dayjs";
@@ -176,6 +176,10 @@ const EnhancedTimeTrackingTable: React.FC = () => {
   };
 
   const handleDelete = (entryId: string) => {
+    const shouldDelete = window.confirm(
+      "Are you sure you want to delete this time entry?"
+    );
+    if (!shouldDelete) return;
     deleteMutation.mutate(entryId);
   };
 
@@ -413,11 +417,24 @@ const EnhancedTimeTrackingTable: React.FC = () => {
     },
   ];
 
+  const entries = data?.entries || [];
+
+  const entriesByDate = useMemo(
+    () =>
+      entries.reduce((acc, entry) => {
+        const key = dayjs(entry.date).format("YYYY-MM-DD");
+
+        acc[key] ||= [];
+        acc[key].push(entry);
+
+        return acc;
+      }, {} as Record<string, TimeEntry[]>),
+    [entries]
+  );
+
   // Calendar grid for week/month view
   const renderCalendarGrid = () => {
     if (view === "day") return null;
-
-    const entries = data?.entries || [];
 
     if (view === "week") {
       const weekStart = currentDate.startOf("isoWeek");
@@ -426,9 +443,7 @@ const EnhancedTimeTrackingTable: React.FC = () => {
       return (
         <div className="grid grid-cols-7 gap-2 mb-6">
           {days.map(day => {
-            const dayEntries = entries.filter(entry =>
-              dayjs(entry.date).isSame(day, "day")
-            );
+            const dayEntries = entriesByDate[day.format("YYYY-MM-DD")] || [];
 
             const totalDuration = dayEntries.reduce(
               (sum, entry) => sum + entry.duration,
@@ -507,9 +522,7 @@ const EnhancedTimeTrackingTable: React.FC = () => {
           {/* Month grid */}
           <div className="grid grid-cols-7 gap-2">
             {days.map(day => {
-              const dayEntries = entries.filter(entry =>
-                dayjs(entry.date).isSame(day, "day")
-              );
+              const dayEntries = entriesByDate[day.format("YYYY-MM-DD")] || [];
 
               const totalDuration = dayEntries.reduce(
                 (sum, entry) => sum + entry.duration,
@@ -578,7 +591,6 @@ const EnhancedTimeTrackingTable: React.FC = () => {
     );
   }
 
-  const entries = data?.entries || [];
   const totalHours = data?.totalHours || 0;
   const billableHours = data?.billableHours || 0;
   const billablePercentage =
