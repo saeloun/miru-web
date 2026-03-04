@@ -159,7 +159,7 @@ const InvoiceDetails = ({
             >
               <CustomAdvanceInput
                 id="Billed to"
-                inputBoxClassName="min-h-80 max-h-20v overflow-y-scroll"
+                inputBoxClassName="min-h-80 max-h-20v overflow-y-auto"
                 label="Billed to"
                 wrapperClassName="h-full"
                 value={
@@ -168,7 +168,7 @@ const InvoiceDetails = ({
                       <p className="text-sm font-medium text-miru-dark-purple-1000">
                         {selectedClient.name}
                       </p>
-                      <p className="w-52 py-2 text-xs font-medium text-miru-dark-purple-600">
+                      <p className="w-full py-2 text-xs font-medium text-miru-dark-purple-600">
                         {selectedClient?.address
                           ? `${address_line_1}${
                               address_line_2 ? `, ${address_line_2}` : ""
@@ -224,7 +224,7 @@ const InvoiceDetails = ({
                 </div>
               </div>
             )}
-            <div className="flex justify-between py-3">
+            <div className="flex gap-2 py-3">
               <div className="relative w-1/2 cursor-pointer">
                 <div
                   onClick={() =>
@@ -238,7 +238,7 @@ const InvoiceDetails = ({
                     label="Date of Issue"
                     name="Date of Issue"
                     value={getIssuedDate}
-                    wrapperClassName="mr-2"
+                    wrapperClassName="w-full"
                     onChange={handleDatePickerChange}
                   />
                   <InputErrors
@@ -281,7 +281,7 @@ const InvoiceDetails = ({
                     label="Due Date"
                     name="Due Date"
                     value={getDueDate}
-                    wrapperClassName="ml-2"
+                    wrapperClassName="w-full"
                     onChange={handleDueDatePicker}
                   />
                   <InputErrors
@@ -316,7 +316,7 @@ const InvoiceDetails = ({
                 )}
               </div>
             </div>
-            <div className="flex justify-between py-3">
+            <div className="flex gap-2 py-3">
               <CustomInputText
                 id="invoiceNumber"
                 inputBoxClassName="border focus:border-miru-han-purple-1000"
@@ -324,7 +324,7 @@ const InvoiceDetails = ({
                 name="invoiceNumber"
                 type="text"
                 value={invoiceNumber}
-                wrapperClassName="mr-2 w-1/2"
+                wrapperClassName="w-1/2"
                 onChange={e => setInvoiceNumber(e.target.value)}
               />
               <InputErrors
@@ -339,7 +339,7 @@ const InvoiceDetails = ({
                 setFieldError={setFieldError}
                 setFieldValue={setFieldValue}
                 type="text"
-                wrapperClassName="ml-2 w-1/2"
+                wrapperClassName="w-1/2"
                 onChange={e => setReference(e.target.value)}
               />
               <InputErrors
