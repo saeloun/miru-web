@@ -69,9 +69,9 @@ const Header = ({
   };
 
   return (
-    <div className="relative mt-6 mb-3 flex flex-wrap items-center justify-between md:justify-start lg:justify-between">
+    <div className="relative mt-6 mb-3 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between md:justify-start lg:justify-between">
       {isDesktop && <h2 className="header__title">Invoices</h2>}
-      <div className="flex items-center gap-2 flex-1 max-w-2xl lg:max-w-lg">
+      <div className="flex w-full items-center gap-2 sm:flex-1 sm:max-w-2xl lg:max-w-lg">
         <UnifiedSearch
           searchAction={fetchInvoices}
           placeholder="Search invoices..."
@@ -101,7 +101,7 @@ const Header = ({
         </Button>
       </div>
       <Button
-        className="ml-2 flex items-center px-4 py-2.5 lg:ml-0"
+        className="ml-0 flex w-full items-center justify-center px-4 py-2.5 sm:ml-2 sm:w-auto lg:ml-0"
         style="secondary"
         onClick={() => navigate("/invoices/generate")}
       >
