@@ -45,7 +45,7 @@ const InvoiceInfo = ({
         </p>
       </div>
       <div className="mt-4 flex w-full items-center justify-between">
-        <div className="flex w-1/2 flex-col items-start justify-between">
+        <div className="flex w-1/2 flex-col items-start justify-between pr-2">
           <span className="text-xs font-normal text-miru-dark-purple-1000">
             Date of Issue
           </span>
@@ -53,7 +53,7 @@ const InvoiceInfo = ({
             {dayjs(issueDate, dateFormat).format(dateFormat)}
           </span>
         </div>
-        <div className="flex w-1/2 flex-col items-start justify-between">
+        <div className="flex w-1/2 flex-col items-start justify-between pl-2">
           <span className="text-xs font-normal text-miru-dark-purple-1000">
             Invoice Number
           </span>
@@ -63,7 +63,7 @@ const InvoiceInfo = ({
         </div>
       </div>
       <div className="mt-4 flex w-full items-center justify-between">
-        <div className="flex w-1/2 flex-col items-start justify-between">
+        <div className="flex w-1/2 flex-col items-start justify-between pr-2">
           <span className="text-xs font-normal text-miru-dark-purple-1000">
             Due Date
           </span>
@@ -71,7 +71,7 @@ const InvoiceInfo = ({
             {dayjs(dueDate, dateFormat).format(dateFormat)}
           </span>
         </div>
-        <div className="flex w-1/2 flex-col items-start justify-between">
+        <div className="flex w-1/2 flex-col items-start justify-between pl-2">
           <span className="text-xs font-normal text-miru-dark-purple-1000">
             Reference
           </span>
