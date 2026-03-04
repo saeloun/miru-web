@@ -154,14 +154,14 @@ const ReportsPage: React.FC<ReportsPageProps> = ({ className }) => {
     >
       {/* Header */}
       <div className="bg-white dark:bg-gray-900 border-b dark:border-gray-800 sticky top-0 z-10">
-        <div className="px-6 py-4">
-          <div className="flex items-center justify-between">
+        <div className="px-4 py-4 sm:px-6">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div className="flex items-center gap-4">
               <div className="p-2 bg-miru-han-purple-1000/10 rounded-lg">
                 <BarChart3 className="h-6 w-6 text-miru-han-purple-1000" />
               </div>
               <div>
-                <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
+                <h1 className="text-xl font-semibold text-gray-900 dark:text-gray-100 sm:text-2xl">
                   Reports & Analytics
                 </h1>
                 <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
@@ -170,9 +170,9 @@ const ReportsPage: React.FC<ReportsPageProps> = ({ className }) => {
               </div>
             </div>
 
-            <div className="flex items-center gap-3">
+            <div className="flex w-full flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center lg:w-auto lg:flex-nowrap">
               {/* MagnifyingGlass */}
-              <div className="relative">
+              <div className="relative w-full sm:flex-1 lg:w-72 lg:flex-none">
                 <label htmlFor="reports-search" className="sr-only">
                   Search reports
                 </label>
@@ -183,17 +183,23 @@ const ReportsPage: React.FC<ReportsPageProps> = ({ className }) => {
                   placeholder="Search Reports..."
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
-                  className="pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-miru-han-purple-1000 focus:border-transparent bg-white dark:bg-gray-800 dark:text-gray-100"
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-miru-han-purple-1000 focus:border-transparent bg-white dark:bg-gray-800 dark:text-gray-100"
                 />
               </div>
 
-              <Button variant="outline" size="sm" disabled aria-disabled="true">
+              <Button
+                className="w-full sm:w-auto"
+                variant="outline"
+                size="sm"
+                disabled
+                aria-disabled="true"
+              >
                 <Funnel className="mr-2 h-4 w-4" />
                 Funnel
               </Button>
 
               <Button
-                className="bg-miru-han-purple-1000"
+                className="w-full bg-miru-han-purple-1000 sm:w-auto"
                 size="sm"
                 disabled
                 aria-disabled="true"
@@ -207,7 +213,7 @@ const ReportsPage: React.FC<ReportsPageProps> = ({ className }) => {
       </div>
 
       {/* Content */}
-      <div className="p-6 space-y-6">
+      <div className="space-y-6 p-4 sm:p-6">
         {/* Quick Stats */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {quickStats.map((stat, index) => {

@@ -215,14 +215,14 @@ const TimeTrackingPage: React.FC<TimeTrackingPageProps> = ({ className }) => {
     >
       {/* Header */}
       <div className="bg-white dark:bg-gray-900 border-b dark:border-gray-800 sticky top-0 z-10">
-        <div className="px-6 py-4">
-          <div className="flex items-center justify-between">
+        <div className="px-4 py-4 sm:px-6">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div className="flex items-center gap-4">
               <div className="p-2 bg-miru-han-purple-1000/10 rounded-lg">
                 <Clock className="h-6 w-6 text-miru-han-purple-1000" />
               </div>
               <div>
-                <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
+                <h1 className="text-xl font-semibold text-gray-900 dark:text-gray-100 sm:text-2xl">
                   Time Tracking
                 </h1>
                 <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
@@ -231,29 +231,29 @@ const TimeTrackingPage: React.FC<TimeTrackingPageProps> = ({ className }) => {
               </div>
             </div>
 
-            <div className="flex items-center gap-3">
+            <div className="flex w-full flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center lg:w-auto lg:flex-nowrap">
               {/* Date Picker */}
               <input
                 type="date"
                 value={selectedDate}
                 onChange={e => setSelectedDate(e.target.value)}
-                className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-miru-han-purple-1000 focus:border-transparent bg-white dark:bg-gray-800 dark:text-gray-100"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-miru-han-purple-1000 focus:border-transparent bg-white dark:bg-gray-800 dark:text-gray-100 sm:w-auto"
               />
 
               {/* MagnifyingGlass */}
-              <div className="relative">
+              <div className="relative w-full sm:flex-1 lg:w-72 lg:flex-none">
                 <MagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                 <input
                   type="text"
                   placeholder="Search Entries..."
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
-                  className="pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-miru-han-purple-1000 focus:border-transparent bg-white dark:bg-gray-800 dark:text-gray-100"
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-miru-han-purple-1000 focus:border-transparent bg-white dark:bg-gray-800 dark:text-gray-100"
                 />
               </div>
 
               <Button
-                className="bg-miru-han-purple-1000 hover:bg-miru-han-purple-600"
+                className="w-full bg-miru-han-purple-1000 hover:bg-miru-han-purple-600 sm:w-auto"
                 size="sm"
               >
                 <Plus className="mr-2 h-4 w-4" />
@@ -265,7 +265,7 @@ const TimeTrackingPage: React.FC<TimeTrackingPageProps> = ({ className }) => {
       </div>
 
       {/* Content */}
-      <div className="p-6 space-y-6">
+      <div className="space-y-6 p-4 sm:p-6">
         {/* Today's Stats */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <Card>
@@ -367,7 +367,7 @@ const TimeTrackingPage: React.FC<TimeTrackingPageProps> = ({ className }) => {
                   .map(project => (
                     <div
                       key={project.id}
-                      className="flex items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-lg"
+                      className="flex flex-col gap-3 rounded-lg border border-gray-200 p-4 dark:border-gray-700 sm:flex-row sm:items-center sm:justify-between"
                     >
                       <div className="flex items-center gap-3">
                         <div
@@ -382,7 +382,7 @@ const TimeTrackingPage: React.FC<TimeTrackingPageProps> = ({ className }) => {
                           </p>
                         </div>
                       </div>
-                      <div className="flex items-center gap-2">
+                      <div className="flex w-full items-center justify-between gap-2 sm:w-auto sm:justify-end">
                         <span className="text-sm text-gray-500 dark:text-gray-400">
                           {project.totalHours}h / {project.targetHours}h
                         </span>
@@ -434,9 +434,9 @@ const TimeTrackingPage: React.FC<TimeTrackingPageProps> = ({ className }) => {
                   {filteredEntries.map(entry => (
                     <div
                       key={entry.id}
-                      className="flex items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
+                      className="flex flex-col gap-3 rounded-lg border border-gray-200 p-4 transition-colors hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800/50 sm:flex-row sm:items-center sm:justify-between"
                     >
-                      <div className="flex items-center gap-3 flex-1">
+                      <div className="flex flex-1 items-center gap-3">
                         <Avatar className="h-8 w-8">
                           <AvatarImage
                             src={entry.user.avatar}
@@ -447,7 +447,7 @@ const TimeTrackingPage: React.FC<TimeTrackingPageProps> = ({ className }) => {
                           </AvatarFallback>
                         </Avatar>
                         <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-1">
+                          <div className="mb-1 flex flex-wrap items-center gap-2">
                             <h4 className="font-medium text-gray-900 dark:text-gray-100">
                               {entry.project}
                             </h4>
@@ -472,7 +472,7 @@ const TimeTrackingPage: React.FC<TimeTrackingPageProps> = ({ className }) => {
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-3">
+                      <div className="flex w-full items-center justify-between gap-3 sm:w-auto sm:justify-end">
                         <div className="text-right">
                           <p className="font-medium text-gray-900 dark:text-gray-100">
                             {formatDuration(entry.duration)}
