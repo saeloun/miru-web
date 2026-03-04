@@ -25,8 +25,10 @@
 #  fk_rails_...  (company_id => companies.id)
 #
 class PaymentsProvider < ApplicationRecord
+  STRIPE_PROVIDER = "stripe"
+
   belongs_to :company
 
   validates :name, uniqueness: { scope: :company_id }
-  validates :name, inclusion: { in: %w(stripe paypal wise) }
+  validates :name, inclusion: { in: [STRIPE_PROVIDER] }
 end
