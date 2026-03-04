@@ -10,15 +10,13 @@ const InvoiceTotalSummary = ({ invoice, strikeAmount = "" }) => {
   const tax = invoice.tax;
   const discount = invoice.discount;
   const total = Number(subTotal) + Number(tax) - Number(discount);
-  // eslint-disable-next-line no-console
-  console.log(invoice);
 
   return (
-    <div className="mb-5 flex w-full justify-end px-10 pt-3 pb-10">
-      <table className="w-1/3">
+    <div className="mb-5 flex w-full justify-end px-4 pt-3 pb-10 sm:px-10">
+      <table className="w-full sm:w-2/3 lg:w-1/3">
         <tbody>
           <tr>
-            <td className="pr-10 text-right text-base font-normal text-miru-dark-purple-1000">
+            <td className="pr-4 text-right text-base font-normal text-miru-dark-purple-1000 sm:pr-10">
               Sub total
             </td>
             <td
@@ -31,7 +29,7 @@ const InvoiceTotalSummary = ({ invoice, strikeAmount = "" }) => {
             </td>
           </tr>
           <tr className="miru-gray-400 border-b-2 pb-5 ">
-            <td className="py-2 pr-10 text-right text-base font-normal text-miru-dark-purple-1000">
+            <td className="py-2 pr-4 text-right text-base font-normal text-miru-dark-purple-1000 sm:pr-10">
               Discount
             </td>
             <td
@@ -44,7 +42,7 @@ const InvoiceTotalSummary = ({ invoice, strikeAmount = "" }) => {
             </td>
           </tr>
           <tr>
-            <td className="pt-4 pr-10 text-right text-base font-normal text-miru-dark-purple-1000">
+            <td className="pt-4 pr-4 text-right text-base font-normal text-miru-dark-purple-1000 sm:pr-10">
               Tax
             </td>
             <td
@@ -54,7 +52,7 @@ const InvoiceTotalSummary = ({ invoice, strikeAmount = "" }) => {
             </td>
           </tr>
           <tr>
-            <td className="pt-1 pr-10 text-right text-base font-normal text-miru-dark-purple-1000">
+            <td className="pt-1 pr-4 text-right text-base font-normal text-miru-dark-purple-1000 sm:pr-10">
               Total
             </td>
             <td
@@ -65,7 +63,7 @@ const InvoiceTotalSummary = ({ invoice, strikeAmount = "" }) => {
           </tr>
           {invoice.currency !== invoice.company.currency && (
             <tr>
-              <td className="pt-1 pr-10 text-right text-base font-normal text-miru-dark-purple-1000">
+              <td className="pt-1 pr-4 text-right text-base font-normal text-miru-dark-purple-1000 sm:pr-10">
                 Amount in {invoice.company.currency}
               </td>
               <td
@@ -79,7 +77,7 @@ const InvoiceTotalSummary = ({ invoice, strikeAmount = "" }) => {
             </tr>
           )}
           <tr>
-            <td className="pt-1 pr-10 text-right text-base font-normal text-miru-dark-purple-1000">
+            <td className="pt-1 pr-4 text-right text-base font-normal text-miru-dark-purple-1000 sm:pr-10">
               Amount Paid
             </td>
             <td
@@ -89,7 +87,7 @@ const InvoiceTotalSummary = ({ invoice, strikeAmount = "" }) => {
             </td>
           </tr>
           <tr>
-            <td className="pt-1 pr-10 text-right text-base font-normal text-miru-dark-purple-1000">
+            <td className="pt-1 pr-4 text-right text-base font-normal text-miru-dark-purple-1000 sm:pr-10">
               Amount Due
             </td>
             <td

@@ -139,7 +139,7 @@ RSpec.describe "Invoice PDF Email Sending", type: :request do
              params: invalid_params,
              headers: auth_headers(user)
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         expect(ActionMailer::Base.deliveries).to be_empty
       end
 
@@ -162,7 +162,7 @@ RSpec.describe "Invoice PDF Email Sending", type: :request do
              params: email_params,
              headers: auth_headers(user)
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         expect(ActionMailer::Base.deliveries).to be_empty
       end
     end
@@ -187,7 +187,7 @@ RSpec.describe "Invoice PDF Email Sending", type: :request do
              params: email_params,
              headers: auth_headers(other_user)
 
-        expect(response).to have_http_status(:forbidden)
+        expect(response).to have_http_status(:not_found)
       end
     end
   end

@@ -25,10 +25,8 @@ class Api::V1::Users::SessionsController < Devise::SessionsController
 
   def me
     if current_user
-      user_data = current_user.as_json.merge(
+      user_data = safe_user_payload(current_user).merge(
         token: current_user.token,
-        email: current_user.email,
-        current_workspace_id: current_user.current_workspace_id,
         avatar_url: current_user.avatar_url,
         confirmed: current_user.confirmed?
       )
@@ -77,10 +75,8 @@ class Api::V1::Users::SessionsController < Devise::SessionsController
     end
 
     def render_sign_in_response(user)
-      user_data = user.as_json.merge(
+      user_data = safe_user_payload(user).merge(
         token: user.token,
-        email: user.email,
-        current_workspace_id: user.current_workspace_id
       )
 
       render json: {
@@ -93,7 +89,7 @@ class Api::V1::Users::SessionsController < Devise::SessionsController
 
     def render_sign_in_response_for_desktop(user)
       initial_props = {
-        user:,
+        user: safe_user_payload(user),
         avatar_url: current_user && current_user.avatar_url,
         company_role: current_user && current_user.roles.find_by(resource: current_company)&.name,
         confirmed_user: current_user && current_user.confirmed?,
@@ -102,5 +98,9 @@ class Api::V1::Users::SessionsController < Devise::SessionsController
       }
 
       render json: { notice: I18n.t("devise.sessions.signed_in"), **initial_props }, status: 200
+    end
+
+    def safe_user_payload(user)
+      user.as_json(only: [:id, :email, :first_name, :last_name, :current_workspace_id])
     end
 end

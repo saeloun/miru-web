@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, useRef } from "react";
 import {
   Card,
   CardContent,
@@ -74,7 +74,11 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
   };
 
   const [formData, setFormData] = useState({
-    invoiceNumber: invoice?.invoiceNumber || `INV-${Date.now()}`,
+    invoiceNumber:
+      invoice?.invoiceNumber ||
+      `INV-${(globalThis.crypto?.randomUUID?.() || `${Date.now()}`)
+        .slice(0, 8)
+        .toUpperCase()}`,
     status: invoice?.status || "draft",
     clientId: invoice?.clientId || "",
     issueDate: ensureValidDate(invoice?.issueDate),
@@ -94,6 +98,7 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
   const [manualEntryArr, setManualEntryArr] = useState([]);
 
   const [hasChanges, setHasChanges] = useState(false);
+  const initialStateRef = useRef<string | null>(null);
 
   const selectedClient = useMemo(() => {
     const client = clients.find(c => c.id === formData.clientId);
@@ -130,7 +135,21 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
   }, [formData.clientId, clients]);
 
   useEffect(() => {
-    setHasChanges(true);
+    const snapshot = JSON.stringify({
+      ...formData,
+      issueDate: ensureValidDate(formData.issueDate).toISOString(),
+      dueDate: ensureValidDate(formData.dueDate).toISOString(),
+      selectedLineItems,
+      manualEntryArr,
+    });
+
+    if (initialStateRef.current === null) {
+      initialStateRef.current = snapshot;
+      setHasChanges(false);
+
+      return;
+    }
+    setHasChanges(snapshot !== initialStateRef.current);
   }, [formData, selectedLineItems, manualEntryArr]);
 
   useEffect(() => {
@@ -282,7 +301,7 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
                     ].filter(item => !item._destroy),
                   })
                 }
-                className="bg-[#5B34EA] hover:bg-[#4926D1]"
+                className="bg-[#5E58F1] hover:bg-[#4D47E0]"
                 size="sm"
                 disabled={isLoading}
               >
@@ -468,11 +487,13 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
                     <Input
                       id="discount"
                       type="number"
+                      min={0}
+                      step="0.01"
                       value={formData.discount}
                       onChange={e =>
                         setFormData({
                           ...formData,
-                          discount: Number(e.target.value),
+                          discount: Math.max(0, Number(e.target.value || 0)),
                         })
                       }
                     />
@@ -482,11 +503,13 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
                     <Input
                       id="tax"
                       type="number"
+                      min={0}
+                      step="0.01"
                       value={formData.tax}
                       onChange={e =>
                         setFormData({
                           ...formData,
-                          tax: Number(e.target.value),
+                          tax: Math.max(0, Number(e.target.value || 0)),
                         })
                       }
                     />

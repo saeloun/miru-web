@@ -43,6 +43,14 @@ RSpec.describe "Api::V1::Invoices#index", type: :request do
         expect(response).to have_http_status(:ok)
         expect(json_response["invoices"].size).to eq(company.invoices.kept.count)
       end
+
+      it "clamps invoices_per_page to a maximum of 100" do
+        invoices_per_page = 999
+        send_request :get, api_v1_invoices_path(invoices_per_page:), headers: auth_headers(book_keeper)
+        expect(response).to have_http_status(:ok)
+        # Should not crash or return unbounded results
+        expect(json_response["invoices"].size).to be <= 100
+      end
     end
 
     describe "page param" do
@@ -169,6 +177,13 @@ RSpec.describe "Api::V1::Invoices#index", type: :request do
         send_request :get, api_v1_invoices_path(invoices_per_page:), headers: auth_headers(admin)
         expect(response).to have_http_status(:ok)
         expect(json_response["invoices"].size).to eq(company.invoices.kept.count)
+      end
+
+      it "clamps invoices_per_page to a maximum of 100" do
+        invoices_per_page = 500
+        send_request :get, api_v1_invoices_path(invoices_per_page:), headers: auth_headers(admin)
+        expect(response).to have_http_status(:ok)
+        expect(json_response["invoices"].size).to be <= 100
       end
     end
 

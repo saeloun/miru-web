@@ -71,7 +71,7 @@ export const ProfileImage = ({ src, handleDeleteLogo, onLogoChange }) => {
                   htmlFor="org-profile-image-input"
                 >
                   <div>
-                    <ImageIcon color="#5B34EA" size={16} />
+                    <ImageIcon color="#5E58F1" size={16} />
                   </div>
                   <p className="font-sans text-sm font-medium text-miru-han-purple-1000">
                     Upload

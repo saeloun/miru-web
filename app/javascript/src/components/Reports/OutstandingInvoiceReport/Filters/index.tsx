@@ -85,7 +85,7 @@ const FilterSideBar = ({
   };
 
   return (
-    <div className="sidebar__container flex min-w-max flex-col	">
+    <div className="sidebar__container flex w-full max-w-full flex-col">
       <div>
         <div className="mb-7 flex items-center justify-between px-5 pt-5">
           <h4 className="text-base font-bold">Filters</h4>

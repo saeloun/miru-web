@@ -55,7 +55,7 @@ const InvoiceDetails = ({
   };
 
   return (
-    <div className="flex w-full flex-col justify-between border-b border-miru-gray-400 px-5 py-5 md:h-40 md:flex-row md:px-10">
+    <div className="flex w-full flex-col gap-4 border-b border-miru-gray-400 px-5 py-5 md:px-10 lg:h-40 lg:flex-row lg:items-stretch lg:gap-0">
       <ClientSelection
         clientList={clientList}
         clientVisible={clientVisible}
@@ -66,7 +66,7 @@ const InvoiceDetails = ({
         setInvoiceNumber={setInvoiceNumber}
         setSelectedClient={setSelectedClient}
       />
-      <div className="mr-2 flex w-2/12 flex-col justify-between">
+      <div className="flex w-full flex-col gap-3 sm:w-1/2 lg:mr-2 lg:w-2/12 lg:gap-0">
         <CustomInputText
           id="invoiceNumber"
           inputBoxClassName="border focus:border-miru-han-purple-1000 cursor-pointer"
@@ -88,8 +88,11 @@ const InvoiceDetails = ({
           onChange={e => setReference(e.target.value)}
         />
       </div>
-      <div className="ml-2 flex w-2/12 flex-col justify-between">
-        <div className="relative w-fit cursor-pointer" ref={DateOfIssueWrapper}>
+      <div className="flex w-full flex-col gap-3 sm:w-1/2 lg:ml-2 lg:w-2/12 lg:gap-0">
+        <div
+          className="relative w-full cursor-pointer"
+          ref={DateOfIssueWrapper}
+        >
           <div onClick={() => setShowDateOfIssuePicker(!showDateOfIssuePicker)}>
             <CustomInputText
               readOnly
@@ -103,7 +106,7 @@ const InvoiceDetails = ({
             />
             <CalendarIcon
               className="absolute top-4 right-4"
-              color="#5B34EA"
+              color="#5E58F1"
               size={20}
               weight="bold"
             />
@@ -118,7 +121,7 @@ const InvoiceDetails = ({
             />
           )}
         </div>
-        <div className="relative w-fit cursor-pointer" ref={DueDateWrapper}>
+        <div className="relative w-full cursor-pointer" ref={DueDateWrapper}>
           <div onClick={() => setShowDueDatePicker(!showDueDatePicker)}>
             <CustomInputText
               readOnly
@@ -132,7 +135,7 @@ const InvoiceDetails = ({
             />
             <CalendarIcon
               className="absolute top-4 right-4"
-              color="#5B34EA"
+              color="#5E58F1"
               size={20}
               weight="bold"
             />
@@ -148,11 +151,11 @@ const InvoiceDetails = ({
           )}
         </div>
       </div>
-      <div className="w-4/12 pl-4">
-        <p className="text-right text-xs font-normal text-miru-dark-purple-1000 md:text-right">
+      <div className="w-full pt-1 lg:w-4/12 lg:pl-4">
+        <p className="text-left text-xs font-normal text-miru-dark-purple-1000 lg:text-right">
           Amount
         </p>
-        <p className="mt-6 text-right text-2xl font-normal tracking-tight text-miru-dark-purple-1000">
+        <p className="mt-2 text-left text-2xl font-normal tracking-tight text-miru-dark-purple-1000 lg:mt-6 lg:text-right">
           {currencyFormat(clientCurrency, amount)}
         </p>
       </div>

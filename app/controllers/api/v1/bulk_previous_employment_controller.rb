@@ -29,7 +29,7 @@ class Api::V1::BulkPreviousEmploymentController < Api::V1::BaseController
       render json: {
         message: "#{created_count} created, #{errors.length} failed",
         errors: errors
-      }, status: :unprocessable_entity
+      }, status: 422
     end
   end
 
@@ -46,7 +46,7 @@ class Api::V1::BulkPreviousEmploymentController < Api::V1::BaseController
     else
       render json: {
         errors: ["No employment IDs provided"]
-      }, status: :unprocessable_entity
+      }, status: 422
     end
   end
 

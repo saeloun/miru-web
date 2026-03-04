@@ -60,13 +60,13 @@ const EnhancedGroupByFilter = ({ filters, handleSelectFilter }) => {
             <div
               className={cn(
                 "p-1.5 rounded-md transition-colors",
-                isActive ? "bg-[#5B34EA]/10" : "bg-gray-100"
+                isActive ? "bg-[#5E58F1]/10" : "bg-gray-100"
               )}
             >
               <Stack
                 className={cn(
                   "h-4 w-4",
-                  isActive ? "text-[#5B34EA]" : "text-gray-600"
+                  isActive ? "text-[#5E58F1]" : "text-gray-600"
                 )}
               />
             </div>
@@ -83,7 +83,7 @@ const EnhancedGroupByFilter = ({ filters, handleSelectFilter }) => {
             {isActive && (
               <Badge
                 variant="secondary"
-                className="h-5 px-1.5 bg-[#5B34EA] text-white text-xs"
+                className="h-5 px-1.5 bg-[#5E58F1] text-white text-xs"
               >
                 1
               </Badge>
@@ -115,14 +115,14 @@ const EnhancedGroupByFilter = ({ filters, handleSelectFilter }) => {
                 "relative flex items-start gap-3 p-3 rounded-lg cursor-pointer transition-all",
                 "hover:bg-gray-50 border",
                 currentValue === option.value
-                  ? "border-[#5B34EA]/30 bg-[#5B34EA]/5"
+                  ? "border-[#5E58F1]/30 bg-[#5E58F1]/5"
                   : "border-transparent"
               )}
             >
               <RadioGroupItem
                 value={option.value}
                 id={`groupby-${option.value}`}
-                className="mt-0.5 border-gray-300 text-[#5B34EA] focus:ring-[#5B34EA]"
+                className="mt-0.5 border-gray-300 text-[#5E58F1] focus:ring-[#5E58F1]"
               />
               <div className="flex items-center gap-2 flex-1">
                 <span className="text-lg">{option.icon}</span>
@@ -140,7 +140,7 @@ const EnhancedGroupByFilter = ({ filters, handleSelectFilter }) => {
               </div>
               {currentValue === option.value && (
                 <div className="absolute top-3 right-3">
-                  <div className="h-2 w-2 rounded-full bg-[#5B34EA]" />
+                  <div className="h-2 w-2 rounded-full bg-[#5E58F1]" />
                 </div>
               )}
             </div>
@@ -153,7 +153,7 @@ const EnhancedGroupByFilter = ({ filters, handleSelectFilter }) => {
             <p className="text-xs text-gray-600 mb-2">Preview:</p>
             <div className="space-y-1">
               <div className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-[#5B34EA] rounded-full" />
+                <div className="w-2 h-2 bg-[#5E58F1] rounded-full" />
                 <span className="text-xs text-gray-700">
                   Entries will be grouped {currentOption?.label.toLowerCase()}
                 </span>

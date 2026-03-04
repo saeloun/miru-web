@@ -35,7 +35,7 @@ const Header = ({ projectDataPresent, setShowProjectModal, isAdminUser }) => {
 
   return (
     <div
-      className={`m-4 flex items-center  lg:mx-0 lg:mt-6 lg:mb-3 ${
+      className={`m-4 flex flex-col gap-3 sm:flex-row sm:items-center lg:mx-0 lg:mt-6 lg:mb-3 ${
         isAdminUser &&
         `${isDesktop || projectDataPresent ? "justify-between" : "justify-end"}`
       }`}
@@ -50,7 +50,7 @@ const Header = ({ projectDataPresent, setShowProjectModal, isAdminUser }) => {
               onSelect={project => {
                 // Handle project selection if needed
               }}
-              className="w-64"
+              className="w-full sm:w-64"
               variant="input"
               size="md"
               groupByType={false}
@@ -59,7 +59,7 @@ const Header = ({ projectDataPresent, setShowProjectModal, isAdminUser }) => {
             />
           )}
           <Button
-            className="ml-2 flex items-center px-2 py-2 lg:ml-0 lg:px-4"
+            className="ml-0 flex w-full items-center justify-center px-2 py-2 sm:ml-2 sm:w-auto lg:ml-0 lg:px-4"
             style="secondary"
             onClick={() => setShowProjectModal(true)}
           >

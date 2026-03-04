@@ -61,22 +61,24 @@ const Container = () => {
       />
       <div />
       {isDesktop ? (
-        <table className="mt-4 min-w-full table-auto divide-y divide-gray-200">
-          <TableHeader />
-          <tbody className="divide-y divide-gray-200 bg-white">
-            {revenueByClientReport.clientList.length &&
-              revenueByClientReport.currency &&
-              revenueByClientReport.clientList.map((client, index) => (
-                <Fragment key={index}>
-                  <TableRow
-                    currency={revenueByClientReport.currency}
-                    key={index}
-                    report={client}
-                  />
-                </Fragment>
-              ))}
-          </tbody>
-        </table>
+        <div className="overflow-x-auto">
+          <table className="mt-4 min-w-[56rem] table-auto divide-y divide-gray-200 lg:min-w-full">
+            <TableHeader />
+            <tbody className="divide-y divide-gray-200 bg-white">
+              {revenueByClientReport.clientList.length &&
+                revenueByClientReport.currency &&
+                revenueByClientReport.clientList.map((client, index) => (
+                  <Fragment key={index}>
+                    <TableRow
+                      currency={revenueByClientReport.currency}
+                      key={index}
+                      report={client}
+                    />
+                  </Fragment>
+                ))}
+            </tbody>
+          </table>
+        </div>
       ) : (
         <div className="my-6 mx-4">
           {revenueByClientReport.clientList.length > 0 &&

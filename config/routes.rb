@@ -7,10 +7,6 @@ class ActionDispatch::Routing::Mapper
 end
 
 Rails.application.routes.draw do
-  mount_avo
-  # Test login route (remove in production)
-  get "test_login", to: "test_login#login" if Rails.env.development?
-
   # Health check endpoint
   get "/health", to: "health#index"
 
@@ -18,8 +14,8 @@ Rails.application.routes.draw do
     mount MissionControl::Jobs::Engine, at: "/jobs"
   end
 
-  # Mount PgHero for database monitoring (protect with authentication in production)
-  authenticate :user, lambda { |u| u.has_role?(:owner, u.current_workspace) } do
+  # Mount PgHero for database monitoring (restricted to super admins)
+  authenticate :user, lambda { |u| u.super_admin? } do
     mount PgHero::Engine, at: "/pghero"
   end
 

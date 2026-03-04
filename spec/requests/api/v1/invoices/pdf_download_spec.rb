@@ -114,7 +114,7 @@ RSpec.describe "Invoice PDF Download", type: :request do
 
         get "/api/v1/invoices/#{invoice.id}/download", headers: auth_headers(other_user)
 
-        expect(response).to have_http_status(:forbidden)
+        expect(response).to have_http_status(:not_found)
       end
 
       it "allows access for users with proper role" do

@@ -201,7 +201,7 @@ const AddEntryMobile = ({
                   />
                   <CaretDownIcon
                     className="absolute top-0 bottom-0 right-1 mx-2 my-3 "
-                    color="#5B34EA"
+                    color="#5E58F1"
                     size={20}
                     weight="bold"
                   />
@@ -284,7 +284,7 @@ const AddEntryMobile = ({
                   />
                   <CaretDownIcon
                     className="absolute top-0 bottom-0 right-1 mx-2 my-3 "
-                    color="#5B34EA"
+                    color="#5E58F1"
                     size={20}
                     weight="bold"
                   />
@@ -380,7 +380,7 @@ const AddEntryMobile = ({
                   />
                   <CalendarIcon
                     className="absolute top-0 bottom-0 right-1 mx-2 my-3 "
-                    color="#5B34EA"
+                    color="#5E58F1"
                     size={20}
                     weight="bold"
                   />
@@ -411,7 +411,7 @@ const AddEntryMobile = ({
                   />
                   <CaretDownIcon
                     className="absolute top-0 bottom-0 right-1 mx-2 my-3"
-                    color="#5B34EA"
+                    color="#5E58F1"
                     size={20}
                     weight="bold"
                   />
@@ -448,7 +448,7 @@ const AddEntryMobile = ({
                   />
                 </Button>
                 <TimeInput
-                  className="focus:outline-none w-1/2 cursor-pointer rounded text-center text-xl font-bold text-miru-dark-purple-1000 placeholder:text-miru-dark-purple-200 focus:border-miru-gray-1000 focus:bg-white focus:ring-1 focus:ring-miru-gray-1000"
+                  className="focus:outline-none w-full max-w-[10rem] cursor-pointer rounded text-center text-xl font-bold text-miru-dark-purple-1000 placeholder:text-miru-dark-purple-200 focus:border-miru-gray-1000 focus:bg-white focus:ring-1 focus:ring-miru-gray-1000"
                   initTime={duration}
                   name="timeInput"
                   onTimeChange={handleDurationChange}
@@ -463,9 +463,9 @@ const AddEntryMobile = ({
               </div>
             </div>
             {editEntryId ? (
-              <div className="flex w-full items-center justify-between">
+              <div className="flex w-full items-center gap-2">
                 <Button
-                  className="mr-1 flex w-1/2 items-center justify-center py-2 px-10/100"
+                  className="flex w-1/2 items-center justify-center py-2"
                   style="secondary"
                   onClick={handleDuplicate}
                 >
@@ -476,7 +476,7 @@ const AddEntryMobile = ({
                   <span className="font-bold">Duplicate</span>
                 </Button>
                 <Button
-                  className="ml-1 flex w-1/2 items-center justify-center rounded border border-miru-red-400 py-2 px-10/100 text-miru-red-400"
+                  className="flex w-1/2 items-center justify-center rounded border border-miru-red-400 py-2 text-miru-red-400"
                   onClick={() => {
                     setShowDeleteDialog(true);
                   }}

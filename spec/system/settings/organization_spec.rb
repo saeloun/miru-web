@@ -43,9 +43,9 @@ RSpec.describe "Settings - Organization", type: :system, js: true do
         visit "/settings/organization"
 
         expect(page).to have_css("#react-root", wait: 10)
-        expect(page).to have_content("Currency", wait: 10)
-          .or have_content("Base Currency", wait: 10)
-          .or have_content("Standard Rate", wait: 10)
+        expect(page).to have_content("CURRENCY", wait: 10)
+          .or have_content("Currency", wait: 10)
+          .or have_content("STANDARD RATE", wait: 10)
       end
     end
 
@@ -54,8 +54,9 @@ RSpec.describe "Settings - Organization", type: :system, js: true do
         visit "/settings/organization"
 
         expect(page).to have_css("#react-root", wait: 10)
-        expect(page).to have_content("Timezone", wait: 10)
-          .or have_content("Date & Time", wait: 10)
+        expect(page).to have_content("TIMEZONE", wait: 10)
+          .or have_content("Timezone", wait: 10)
+          .or have_content("Schedule & Time", wait: 10)
       end
     end
 
@@ -64,9 +65,9 @@ RSpec.describe "Settings - Organization", type: :system, js: true do
         visit "/settings/organization"
 
         expect(page).to have_css("#react-root", wait: 10)
-        expect(page).to have_content("Date Format", wait: 10)
-          .or have_content("Date & Time", wait: 10)
-          .or have_content("Timezone", wait: 10)
+        expect(page).to have_content("DATE FORMAT", wait: 10)
+          .or have_content("Date Format", wait: 10)
+          .or have_content("TIMEZONE", wait: 10)
       end
     end
 

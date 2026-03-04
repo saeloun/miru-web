@@ -49,13 +49,13 @@ const EnhancedTeamMembersFilter = ({
             <div
               className={cn(
                 "p-1.5 rounded-md transition-colors",
-                activeCount > 0 ? "bg-[#5B34EA]/10" : "bg-gray-100"
+                activeCount > 0 ? "bg-[#5E58F1]/10" : "bg-gray-100"
               )}
             >
               <UserCheck
                 className={cn(
                   "h-4 w-4",
-                  activeCount > 0 ? "text-[#5B34EA]" : "text-gray-600"
+                  activeCount > 0 ? "text-[#5E58F1]" : "text-gray-600"
                 )}
               />
             </div>
@@ -72,7 +72,7 @@ const EnhancedTeamMembersFilter = ({
             {activeCount > 0 && (
               <Badge
                 variant="secondary"
-                className="h-5 px-1.5 bg-[#5B34EA] text-white text-xs"
+                className="h-5 px-1.5 bg-[#5E58F1] text-white text-xs"
               >
                 {activeCount}
               </Badge>
@@ -95,7 +95,7 @@ const EnhancedTeamMembersFilter = ({
               placeholder="Search Team Members..."
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
-              className="pl-9 pr-9 h-9 text-sm border-gray-200 focus:border-[#5B34EA] focus:ring-[#5B34EA]"
+              className="pl-9 pr-9 h-9 text-sm border-gray-200 focus:border-[#5E58F1] focus:ring-[#5E58F1]"
             />
             {searchQuery && (
               <button
@@ -123,17 +123,17 @@ const EnhancedTeamMembersFilter = ({
                       className={cn(
                         "flex items-center gap-3 p-2 rounded-md cursor-pointer transition-colors",
                         "hover:bg-gray-50",
-                        isChecked && "bg-[#5B34EA]/5"
+                        isChecked && "bg-[#5E58F1]/5"
                       )}
                     >
                       <Checkbox
                         id={`team-${member.id || member.value}`}
                         checked={isChecked}
-                        className="border-gray-300 data-[state=checked]:bg-[#5B34EA] data-[state=checked]:border-[#5B34EA]"
+                        className="border-gray-300 data-[state=checked]:bg-[#5E58F1] data-[state=checked]:border-[#5E58F1]"
                       />
                       <Avatar className="h-7 w-7">
                         <AvatarImage src={member.avatar} />
-                        <AvatarFallback className="text-xs bg-[#5B34EA]/10 text-[#5B34EA]">
+                        <AvatarFallback className="text-xs bg-[#5E58F1]/10 text-[#5E58F1]">
                           {getInitials(member.label)}
                         </AvatarFallback>
                       </Avatar>
@@ -144,7 +144,7 @@ const EnhancedTeamMembersFilter = ({
                         {member.label}
                       </Label>
                       {isChecked && (
-                        <Check className="h-4 w-4 text-[#5B34EA]" />
+                        <Check className="h-4 w-4 text-[#5E58F1]" />
                       )}
                     </div>
                   );

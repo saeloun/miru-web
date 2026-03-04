@@ -119,7 +119,7 @@ const ClientSelection = ({
     selectedClient?.address ?? {};
 
   return (
-    <div className="group w-4/12 pr-4">
+    <div className="group w-full lg:w-4/12 lg:pr-4">
       <div
         className="relative h-full"
         onClick={() => {
@@ -133,12 +133,12 @@ const ClientSelection = ({
           value={
             isOptionSelected &&
             selectedClient && (
-              <div className="h-full overflow-y-scroll">
+              <div className="h-full overflow-y-auto">
                 <p className="text-base font-bold text-miru-dark-purple-1000">
                   {selectedClient.name}
                 </p>
                 {selectedClient?.address ? (
-                  <p className="w-52 text-sm font-normal text-miru-dark-purple-600">
+                  <p className="w-full text-sm font-normal text-miru-dark-purple-600 lg:w-52">
                     {`${address_line_1}${
                       address_line_2 ? `, ${address_line_2}` : ""
                     }

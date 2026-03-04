@@ -67,7 +67,7 @@ const ImportModal = ({
               </p>
             </div>
             <button onClick={handleRemoveFile}>
-              <XIcon className="mr-2" color="#5B34EA" size={15} />
+              <XIcon className="mr-2" color="#5E58F1" size={15} />
             </button>
           </div>
         </div>

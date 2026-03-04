@@ -2,7 +2,7 @@ import React from "react";
 
 const InputComponent = ({ label, value, onChange, readOnly = false }) => (
   <div className="flex w-full items-center justify-between">
-    <span className="mb-2 w-1/2 text-right text-sm font-normal leading-5 text-miru-dark-purple-1000">
+    <span className="mb-2 w-1/2 pr-2 text-right text-sm font-normal leading-5 text-miru-dark-purple-1000">
       {label}
     </span>
     <input
@@ -10,7 +10,7 @@ const InputComponent = ({ label, value, onChange, readOnly = false }) => (
       readOnly={readOnly}
       type="number"
       value={value}
-      className={`focus:outline-none mb-2 w-2/5 rounded px-2 py-3 text-right text-sm font-medium text-miru-dark-purple-1000 placeholder:text-miru-dark-purple-200 focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000 ${
+      className={`focus:outline-none mb-2 w-1/2 rounded px-2 py-3 text-right text-sm font-medium text-miru-dark-purple-1000 placeholder:text-miru-dark-purple-200 focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000 sm:w-2/5 ${
         readOnly ? "bg-transparent" : "cursor-pointer bg-miru-gray-100"
       }`}
       onChange={onChange}

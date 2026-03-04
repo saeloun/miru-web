@@ -37,7 +37,7 @@ const Header = () => {
   }, []);
 
   return (
-    <div className="mt-6 mb-3 flex items-center justify-between">
+    <div className="mt-6 mb-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
       <h2 className="header__title hidden lg:inline">Team</h2>
       <UnifiedSearch
         searchAction={fetchTeamList}
@@ -45,14 +45,14 @@ const Header = () => {
         onSelect={member => {
           // Handle team member selection if needed
         }}
-        className="w-64"
+        className="w-full sm:w-64"
         variant="input"
         size="md"
         minSearchLength={1}
       />
-      <div className="flex justify-end">
+      <div className="flex w-full justify-end sm:w-auto">
         <Button
-          className="ml-2 flex items-center px-2 py-2 lg:ml-0 lg:px-4"
+          className="ml-0 flex w-full items-center justify-center px-2 py-2 sm:ml-2 sm:w-auto lg:ml-0 lg:px-4"
           style="secondary"
           onClick={() => setModalState(TeamModalType.ADD_EDIT)}
         >

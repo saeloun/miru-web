@@ -99,7 +99,7 @@ const MobileTimeoffForm = ({
                   />
                   <CaretDownIcon
                     className="absolute top-0 bottom-0 right-1 mx-2 my-3 "
-                    color="#5B34EA"
+                    color="#5E58F1"
                     size={20}
                     weight="bold"
                   />
@@ -153,7 +153,7 @@ const MobileTimeoffForm = ({
                     />
                     <CaretDownIcon
                       className="absolute top-0 bottom-0 right-1 mx-2 my-3 "
-                      color="#5B34EA"
+                      color="#5E58F1"
                       size={20}
                       weight="bold"
                     />
@@ -217,7 +217,7 @@ const MobileTimeoffForm = ({
                   />
                   <CalendarIcon
                     className="absolute top-0 bottom-0 right-1 mx-2 my-3 "
-                    color="#5B34EA"
+                    color="#5E58F1"
                     size={20}
                     weight="bold"
                   />

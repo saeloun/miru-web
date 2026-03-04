@@ -296,7 +296,7 @@ const Sidebar: React.FC = () => {
           <TooltipTrigger asChild>{content}</TooltipTrigger>
           <TooltipContent
             side="right"
-            className="flex flex-col gap-1.5 bg-[#5B34EA] text-white border-[#5B34EA] shadow-xl px-3 py-2"
+            className="flex flex-col gap-1.5 bg-[#5E58F1] text-white border-[#5E58F1] shadow-xl px-3 py-2"
           >
             <p className="font-semibold text-white">{item.label}</p>
             {item.description && (
@@ -557,7 +557,7 @@ const Sidebar: React.FC = () => {
               {isCollapsed && (
                 <TooltipContent
                   side="right"
-                  className="bg-[#5B34EA] text-white border-[#5B34EA] shadow-xl px-3 py-2"
+                  className="bg-[#5E58F1] text-white border-[#5E58F1] shadow-xl px-3 py-2"
                 >
                   <p className="font-semibold text-white">Sign Out</p>
                 </TooltipContent>

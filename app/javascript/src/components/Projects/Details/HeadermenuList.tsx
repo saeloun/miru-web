@@ -25,7 +25,7 @@ const HeaderMenuList = ({
               className="menuButton__list-item px-0 lg:px-5"
               onMouseDown={handleGenerateInvoice}
             >
-              <InvoicesIcon color="#5B34EA" size={16} weight="bold" />
+              <InvoicesIcon color="#5E58F1" size={16} weight="bold" />
               <span className="ml-3">Generate Invoice</span>
             </button>
           </li>

@@ -37,9 +37,9 @@ const InvoicePreview = ({
         </span>
       </div>
     </div>
-    <div className="flex w-full justify-between">
+    <div className="flex w-full gap-2">
       <Button
-        className="mr-2 flex w-1/2 items-center justify-center px-4 py-2"
+        className="flex w-1/2 items-center justify-center px-4 py-2"
         style="primary"
         onClick={handleSaveInvoice}
       >
@@ -49,7 +49,7 @@ const InvoicePreview = ({
         </span>
       </Button>
       <Button
-        className="ml-2 flex w-1/2 items-center justify-center px-4 py-2"
+        className="flex w-1/2 items-center justify-center px-4 py-2"
         style="primary"
         onClick={() => {
           handleSendButtonClick();

@@ -320,20 +320,20 @@ const EnhancedFilterSidebar = ({
         side={isDesktop ? "right" : "bottom"}
         className={cn(
           "flex flex-col p-0",
-          isDesktop ? "w-[400px] sm:max-w-[400px]" : "h-[85vh]"
+          isDesktop ? "w-[400px] sm:max-w-[400px]" : "h-[85vh] w-full"
         )}
       >
         <SheetHeader className="px-6 py-4 border-b bg-gradient-to-r from-white to-gray-50">
           <div className="flex items-center justify-between">
             <SheetTitle className="flex items-center gap-2 text-lg font-semibold text-gray-900">
-              <div className="p-2 bg-[#5B34EA]/10 rounded-lg">
-                <Funnel className="h-4 w-4 text-[#5B34EA]" />
+              <div className="rounded-lg bg-miru-han-purple-1000/10 p-2">
+                <Funnel className="h-4 w-4 text-miru-han-purple-1000" />
               </div>
               <span>Filters</span>
               {activeFilterCount > 0 && (
                 <Badge
                   variant="secondary"
-                  className="ml-2 bg-[#5B34EA] text-white hover:bg-[#5B34EA]/90"
+                  className="ml-2 bg-miru-han-purple-1000 text-white hover:bg-miru-han-purple-600"
                 >
                   {activeFilterCount} active
                 </Badge>
@@ -418,7 +418,7 @@ const EnhancedFilterSidebar = ({
             <Button
               onClick={handleApply}
               disabled={disableApplyBtn}
-              className="flex-1 font-medium bg-[#5B34EA] hover:bg-[#5B34EA]/90 text-white"
+              className="flex-1 bg-miru-han-purple-1000 font-medium text-white hover:bg-miru-han-purple-600"
             >
               Apply Filters
             </Button>

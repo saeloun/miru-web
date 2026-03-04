@@ -39,24 +39,24 @@ const Header = ({
 
   return (
     <div className="mt-6 mb-3 sm:flex sm:items-center sm:justify-between">
-      <div className="flex">
+      <div className="flex flex-wrap items-center gap-2">
         <h2 className="header__title font-bold">
           {formType == "edit"
             ? `Edit Invoice #${invoiceNumber}`
             : "Generate Invoice"}
         </h2>
         <Button
-          className="ml-5 flex items-center text-xs font-bold leading-4 tracking-widest text-miru-han-purple-1000"
+          className="ml-0 flex items-center text-xs font-bold leading-4 tracking-widest text-miru-han-purple-1000 sm:ml-5"
           style="ternary"
           onClick={() => setShowInvoiceSetting(true)}
         >
-          <SettingIcon className="mr-2.5" color="#5B34EA" size={15} />
+          <SettingIcon className="mr-2.5" color="#5E58F1" size={15} />
           Settings
         </Button>
       </div>
-      <div className="flex flex-col md:w-2/5 md:flex-row">
+      <div className="mt-3 flex w-full flex-col gap-2 sm:mt-0 md:w-2/5 md:flex-row md:gap-0">
         <Link
-          className="header__button my-1 p-0 md:my-0 md:w-1/3"
+          className="header__button my-0 w-full p-0 md:my-0 md:w-1/3"
           to={formType == "edit" ? `/invoices/${id}` : "/invoices"}
           type="button"
         >
@@ -66,7 +66,7 @@ const Header = ({
           </span>
         </Link>
         <button
-          className="header__button my-1 bg-miru-han-purple-1000 p-0 text-white hover:text-white md:my-0 md:w-1/3"
+          className="header__button my-0 w-full bg-miru-han-purple-1000 p-0 text-white hover:text-white md:my-0 md:w-1/3"
           id="saveInvoiceButton"
           type="button"
           onClick={handleSaveInvoice}
@@ -75,7 +75,7 @@ const Header = ({
           <span className="ml-2 inline-block">SAVE</span>
         </button>
         <button
-          className="header__button my-1 bg-miru-han-purple-1000 p-0 text-white hover:text-white md:my-0 md:w-1/3"
+          className="header__button my-0 w-full bg-miru-han-purple-1000 p-0 text-white hover:text-white md:my-0 md:w-1/3"
           type="button"
           onClick={handleSendInvoice}
         >

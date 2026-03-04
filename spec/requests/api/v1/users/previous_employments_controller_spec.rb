@@ -122,10 +122,10 @@ RSpec.describe Api::V1::Users::PreviousEmploymentsController, type: :request do
         }
       end
 
-      it "returns unprocessable entity with errors" do
+      it "returns unprocessable content with errors" do
         post api_v1_user_previous_employments_path(user_id: user.id), params: invalid_params
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
 
         json_response = JSON.parse(response.body)
         expect(json_response).to have_key("errors")
@@ -174,11 +174,11 @@ RSpec.describe Api::V1::Users::PreviousEmploymentsController, type: :request do
         }
       end
 
-      it "returns unprocessable entity with errors" do
+      it "returns unprocessable content with errors" do
         patch api_v1_user_previous_employment_path(user_id: user.id, id: previous_employment.id),
               params: invalid_params
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
 
         json_response = JSON.parse(response.body)
         expect(json_response).to have_key("errors")

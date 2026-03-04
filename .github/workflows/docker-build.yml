@@ -105,7 +105,7 @@ jobs:
             NODE_VERSION=22.11.0
 
       - name: Generate devcontainer metadata
-        if: success()
+        if: success() && github.event_name != 'pull_request'
         run: |
           echo "### Docker Images Published 🐳" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY

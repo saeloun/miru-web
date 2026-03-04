@@ -36,7 +36,7 @@ const InvoicePreviewContainer = ({
   const { companyDetails, baseCurrencyAmount, company } = invoiceDetails;
 
   return (
-    <div className="flex-1 overflow-y-scroll">
+    <div className="flex-1 overflow-y-auto">
       {companyDetails && <CompanyInfo company={companyDetails} />}
       <InvoiceInfo
         amount={amount}
@@ -88,9 +88,9 @@ const InvoicePreviewContainer = ({
         tax={tax}
         total={total}
       />
-      <div className="flex w-full justify-between p-4 shadow-c1">
+      <div className="flex w-full gap-2 p-4 shadow-c1">
         <Button
-          className="mr-2 flex w-1/2 items-center justify-center px-4 py-2"
+          className="flex w-1/2 items-center justify-center px-4 py-2"
           style="primary"
           onClick={handleSaveInvoice}
         >
@@ -100,7 +100,7 @@ const InvoicePreviewContainer = ({
           </span>
         </Button>
         <Button
-          className="ml-2 flex w-1/2 items-center justify-center px-4 py-2"
+          className="flex w-1/2 items-center justify-center px-4 py-2"
           style="primary"
           onClick={() => {
             handleSendButtonClick();

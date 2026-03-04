@@ -129,7 +129,7 @@ const MarkInvoiceAsPaidModal = ({
           />
           <CalendarIcon
             className="absolute top-0 bottom-0 right-1 mx-2 my-3 cursor-pointer "
-            color="#5B34EA"
+            color="#5E58F1"
             size={20}
           />
         </div>
@@ -186,7 +186,7 @@ const MarkInvoiceAsPaidModal = ({
               </div>
             </div>
             <MobileMoreOptions
-              className="h-3/4 w-full overflow-scroll md:h-3/5 md:w-3/4 lg:h-1/4"
+              className="max-h-[70vh] w-full overflow-y-auto md:max-h-[60vh] md:w-3/4 lg:max-h-[40vh]"
               setVisibilty={setShowTransactionTypes}
               visibilty={showTransactionTypes}
             >

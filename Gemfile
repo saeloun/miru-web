@@ -97,9 +97,6 @@ gem "data_migrate"
 # pagy for Pagination
 gem "pagy", "~> 8.0"
 
-# Avo Admin Framework
-gem "avo", ">= 3.17"
-
 gem "nokogiri", ">= 1.19.1"
 
 # Manage application specific business logic. https://github.com/AaronLasseigne/active_interaction
@@ -133,6 +130,9 @@ gem "rubyzip"
 
 gem "httparty"
 gem "observer"
+
+# Faraday HTTP client adapter for Faraday 2.0+
+gem "faraday-net_http"
 
 # Country information and timezones
 gem "countries", "~> 6.0"
@@ -180,7 +180,7 @@ group :development, :test, :ci do
 
   # To record response of outgoing API calls
   gem "vcr", "~> 6.4.0"
-  gem "webmock", "~> 3.14.0"
+  gem "webmock", "~> 3.26.0"
 end
 
 group :development do

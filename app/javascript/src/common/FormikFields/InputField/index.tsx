@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 import { Field } from "formik";
 import { PasswordIconSVG, PasswordIconTextSVG } from "miruIcons";
@@ -27,8 +27,8 @@ const InputField = ({
   marginBottom = "mb-2 xsm:mb-6",
 }) => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [defaultMarginBottom, setDefaultMarginBottom] =
-    useState<string>(marginBottom);
+  const effectiveMarginBottom = hasError ? "mb-2" : marginBottom;
+  const fieldId = id || name;
 
   const handleTogglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -56,19 +56,11 @@ const InputField = ({
     }
   };
 
-  useEffect(() => {
-    if (hasError) {
-      setDefaultMarginBottom("mb-2");
-    } else {
-      setDefaultMarginBottom(marginBottom);
-    }
-  }, [hasError, marginBottom]);
-
   return (
-    <div className={cn("relative", wrapperClassName, defaultMarginBottom)}>
+    <div className={cn("relative", wrapperClassName, effectiveMarginBottom)}>
       {label && (
         <Label
-          htmlFor={id || name}
+          htmlFor={fieldId}
           className={cn(
             "mb-2 block text-sm font-medium text-miru-dark-purple-400",
             labelClassName
@@ -85,7 +77,7 @@ const InputField = ({
               autoComplete={autoComplete}
               autoFocus={autoFocus}
               disabled={disabled}
-              id={id || name}
+              id={fieldId}
               placeholder={label ? "" : " "}
               readOnly={readOnly}
               type={
@@ -107,19 +99,23 @@ const InputField = ({
         {type === "password" && (
           <button
             type="button"
+            aria-label={showPassword ? "Hide password" : "Show password"}
+            aria-pressed={showPassword}
             className="absolute right-3 top-1/2 -translate-y-1/2 p-1 hover:opacity-70"
             onClick={handleTogglePasswordVisibility}
           >
             {!showPassword ? (
               <img
-                alt="Show password"
+                alt=""
+                aria-hidden="true"
                 height="16"
                 src={PasswordIconSVG}
                 width="16"
               />
             ) : (
               <img
-                alt="Hide password"
+                alt=""
+                aria-hidden="true"
                 height="16"
                 src={PasswordIconTextSVG}
                 width="16"

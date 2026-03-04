@@ -147,7 +147,7 @@ const MultipleEntriesModal = ({
             Loading...
           </p>
         ) : (
-          <div className="mx-6 flex-1 overflow-y-scroll">
+          <div className="mx-6 flex-1 overflow-y-auto">
             {lineItems.length > 0 ? (
               <Table
                 allCheckboxSelected={allCheckboxSelected}
@@ -190,7 +190,7 @@ const MultipleEntriesModal = ({
           Loading...
         </p>
       ) : (
-        <div className="mx-2 flex-1 overflow-y-scroll">
+        <div className="mx-2 flex-1 overflow-y-auto">
           {lineItems.length > 0 ? (
             <Table
               allCheckboxSelected={allCheckboxSelected}

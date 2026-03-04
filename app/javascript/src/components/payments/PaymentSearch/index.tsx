@@ -87,8 +87,8 @@ const SearchWithSuggestions = ({
   }, [debouncedSearchQuery]);
 
   return (
-    <div className="header__searchWrap w-10/12 rounded-full border py-2">
-      <div className="relative mx-auto w-11/12 rounded">
+    <div className="header__searchWrap w-full rounded-full border py-2 sm:max-w-2xl">
+      <div className="relative mx-3 rounded sm:mx-4">
         <div>
           <input
             className="outline-none w-full px-2 text-sm font-medium leading-5"

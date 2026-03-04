@@ -112,22 +112,25 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
     <div className="min-h-screen bg-gray-50/50">
       {/* Header */}
       <div className="bg-white border-b">
-        <div className="px-6 py-4">
-          <div className="flex items-center justify-between">
+        <div className="px-4 py-4 sm:px-6">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div>
-              <h1 className="text-2xl font-semibold text-gray-900">
+              <h1 className="text-xl font-semibold text-gray-900 sm:text-2xl">
                 Invoice Dashboard
               </h1>
               <p className="text-sm text-gray-500 mt-1">
                 Track and manage your invoices efficiently
               </p>
             </div>
-            <div className="flex gap-3">
-              <Button variant="outline" size="sm">
+            <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-center lg:w-auto">
+              <Button className="w-full sm:w-auto" variant="outline" size="sm">
                 <Download className="mr-2 h-4 w-4" />
                 Export
               </Button>
-              <Button size="sm" className="bg-[#5B34EA] hover:bg-[#4926D1]">
+              <Button
+                size="sm"
+                className="w-full bg-[#5E58F1] hover:bg-[#4D47E0] sm:w-auto"
+              >
                 <Plus className="mr-2 h-4 w-4" />
                 New Invoice
               </Button>
@@ -136,7 +139,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
         </div>
       </div>
 
-      <div className="p-6 space-y-6">
+      <div className="space-y-6 p-4 sm:p-6">
         {/* Stats Cards */}
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           {statsCards.map((stat, index) => {

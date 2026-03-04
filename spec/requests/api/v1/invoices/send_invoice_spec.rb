@@ -37,6 +37,30 @@ RSpec.describe "Api::V1::Invoices#send_invoice", type: :request do
         expect(json_response["message"]).to eq("Invoice has been sent successfully")
       end
 
+      it "returns unprocessable_content when recipients are empty" do
+        empty_recipients = { subject: "Test", recipients: [], message: "Hello" }
+        post send_invoice_api_v1_invoice_path(id: invoice.id),
+          params: { invoice_email: empty_recipients },
+          headers: auth_headers(user)
+
+        expect(response).to have_http_status(:unprocessable_content)
+        expect(json_response["error"]).to eq("Recipients are required")
+      end
+
+      it "returns unprocessable_content when more than 5 recipients" do
+        too_many = {
+          subject: "Test",
+          recipients: ["a@b.com", "b@b.com", "c@b.com", "d@b.com", "e@b.com", "f@b.com"],
+          message: "Hello"
+        }
+        post send_invoice_api_v1_invoice_path(id: invoice.id),
+          params: { invoice_email: too_many },
+          headers: auth_headers(user)
+
+        expect(response).to have_http_status(:unprocessable_content)
+        expect(json_response["error"]).to eq("Email can only be sent to 5 recipients.")
+      end
+
       it "enqueues an email for delivery" do
         expect do
           post send_invoice_api_v1_invoice_path(id: invoice.id), params: { invoice_email: },
@@ -50,6 +74,24 @@ RSpec.describe "Api::V1::Invoices#send_invoice", type: :request do
             headers: auth_headers(user)
         end.to have_enqueued_mail(InvoiceMailer, :send_invoice)
         expect(invoice.reload.status).to eq("sent")
+      end
+
+      it "sets sent_at and status atomically in a single update" do
+        expect(invoice.sent_at).to be_nil
+        post send_invoice_api_v1_invoice_path(id: invoice.id), params: { invoice_email: },
+          headers: auth_headers(user)
+        invoice.reload
+        expect(invoice.status).to eq("sent")
+        expect(invoice.sent_at).to be_present
+      end
+
+      it "does not overwrite sent_at if already set" do
+        original_sent_at = 2.days.ago
+        invoice.update!(sent_at: original_sent_at)
+        post send_invoice_api_v1_invoice_path(id: invoice.id), params: { invoice_email: },
+          headers: auth_headers(user)
+        invoice.reload
+        expect(invoice.sent_at).to be_within(1.second).of(original_sent_at)
       end
 
       it "does not change the invoice status to sent after sending" do

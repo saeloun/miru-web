@@ -21,10 +21,10 @@ const ReportMobileRow = ({ timeEntry, clientLogo }) => {
 
   return (
     <div key={id}>
-      <div className="flex flex-row pt-4">
-        <div className="flex	w-2/5 items-center whitespace-nowrap text-left">
-          <div className="w-3/10">
-            <Avatar classNameImg="mr-2 lg:mr-6" url={clientLogo} />
+      <div className="grid grid-cols-10 gap-2 pt-4">
+        <div className="col-span-4 flex items-start text-left">
+          <div className="mr-2">
+            <Avatar classNameImg="mr-0" url={clientLogo} />
           </div>
           <div className="overflow-hidden">
             <span className="truncate whitespace-normal text-sm font-semibold text-miru-dark-purple-1000">
@@ -35,7 +35,7 @@ const ReportMobileRow = ({ timeEntry, clientLogo }) => {
             </p>
           </div>
         </div>
-        <div className="w-2/5	break-normal  px-2 text-left">
+        <div className="col-span-4 break-normal px-2 text-left">
           <p className="mb-1 font-sans text-sm font-semibold not-italic text-miru-dark-purple-1000">
             {teamMember}
           </p>
@@ -43,15 +43,13 @@ const ReportMobileRow = ({ timeEntry, clientLogo }) => {
             {dayjs(workDate).format("MM.DD.YYYY")}
           </p>
         </div>
-        <div className="flex w-1/5 items-center justify-end whitespace-nowrap text-right font-sans text-lg font-bold text-miru-dark-purple-1000">
+        <div className="col-span-2 flex items-center justify-end whitespace-nowrap text-right font-sans text-lg font-bold text-miru-dark-purple-1000">
           {minToHHMM(duration)}
         </div>
       </div>
-      <div className="flex flex-row pb-4">
-        <div className="col-span-4 overflow-hidden pt-3">
-          <div className="h-full items-center whitespace-pre-wrap break-all font-sans text-xs font-normal text-miru-dark-purple-400">
-            {note?.trim()}
-          </div>
+      <div className="overflow-hidden pt-3 pb-4">
+        <div className="h-full items-center whitespace-pre-wrap break-all font-sans text-xs font-normal text-miru-dark-purple-400">
+          {note?.trim()}
         </div>
       </div>
       <Divider />

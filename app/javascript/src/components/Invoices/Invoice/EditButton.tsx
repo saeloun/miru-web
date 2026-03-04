@@ -12,7 +12,7 @@ const EditButton = ({ editInvoiceLink }) => (
     >
       <div className="flex flex-row items-center justify-between self-center">
         <div className="mr-1">
-          <PencilIcon color="#5B34EA" size={16} weight="bold" />
+          <PencilIcon color="#5E58F1" size={16} weight="bold" />
         </div>
         <p className="ml-1 text-base font-bold tracking-widest text-miru-han-purple-1000">
           EDIT
