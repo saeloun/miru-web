@@ -1,3 +1,0 @@
---format progress
---exclude-pattern "spec/system/**/*_spec.rb,spec/system_skip/**/*_spec.rb"
---color

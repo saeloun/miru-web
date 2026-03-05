@@ -49,6 +49,7 @@ jobs:
         with:
           ruby-version: '4.0.1'
           bundler-cache: true
+          bundler: latest
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -112,8 +113,8 @@ jobs:
         run: |
           mkdir -p tmp
 
-          # Run specs with parallel_rspec (exclude patterns defined in .parallel_rspec)
-          bundle exec parallel_rspec spec -n 2
+          # Run specs with parallel_rspec, excluding system and system_skip specs
+          bundle exec parallel_rspec spec -n 2 --exclude-pattern "spec/(system|system_skip)/"
 
           # Save failed specs list for debugging
           if [ -f tmp/failing_specs.txt ]; then
@@ -149,6 +150,7 @@ jobs:
         with:
           ruby-version: '4.0.1'
           bundler-cache: true
+          bundler: latest
 
       - name: Run bundler-audit
         run: |
