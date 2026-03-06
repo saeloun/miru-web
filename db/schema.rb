@@ -262,6 +262,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_29_141025) do
     t.string "employment_type"
     t.date "joined_at"
     t.date "resigned_at"
+    t.index ["company_id", "discarded_at"], name: "index_employments_on_company_id_and_discarded_at"
     t.index ["company_id"], name: "index_employments_on_company_id"
     t.index ["discarded_at"], name: "index_employments_on_discarded_at"
     t.index ["user_id"], name: "index_employments_on_user_id"
@@ -323,6 +324,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_29_141025) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "discarded_at"
+    t.index ["date"], name: "index_holiday_infos_on_date"
     t.index ["discarded_at"], name: "index_holiday_infos_on_discarded_at"
     t.index ["holiday_id"], name: "index_holiday_infos_on_holiday_id"
   end
@@ -426,7 +428,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_29_141025) do
     t.index ["external_view_key"], name: "index_invoices_on_external_view_key", unique: true
     t.index ["invoice_number", "company_id"], name: "index_invoices_on_invoice_number_and_company_id", unique: true
     t.index ["invoice_number"], name: "index_invoices_on_invoice_number_trgm", opclass: :gin_trgm_ops, using: :gin
+    t.index ["issue_date", "company_id"], name: "index_invoices_on_issue_date_and_company_id"
     t.index ["issue_date"], name: "index_invoices_on_issue_date"
+    t.index ["status", "company_id"], name: "index_invoices_on_status_and_company_id"
     t.index ["status"], name: "index_invoices_on_status"
   end
 
@@ -483,8 +487,19 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_29_141025) do
     t.index ["period_date"], name: "index_metrics_on_period_date"
     t.index ["trackable_type", "trackable_id", "metric_type", "period", "period_date"], name: "index_metrics_on_trackable_and_type_and_period", unique: true
     t.index ["trackable_type", "trackable_id"], name: "index_metrics_on_trackable"
-    t.check_constraint "metric_type::text = ANY (ARRAY['hours_logged'::character varying, 'invoice_summary'::character varying, 'project_stats'::character varying, 'client_revenue'::character varying, 'team_utilization'::character varying, 'outstanding_amounts'::character varying, 'overdue_amounts'::character varying, 'timesheet_summary'::character varying]::text[])", name: "valid_metric_type"
-    t.check_constraint "period::text = ANY (ARRAY['hour'::character varying, 'day'::character varying, 'week'::character varying, 'month'::character varying, 'quarter'::character varying, 'year'::character varying, 'all_time'::character varying]::text[])", name: "valid_period"
+    t.check_constraint "metric_type::text = ANY (ARRAY['hours_logged'::character varying::text, 'invoice_summary'::character varying::text, 'project_stats'::character varying::text, 'client_revenue'::character varying::text, 'team_utilization'::character varying::text, 'outstanding_amounts'::character varying::text, 'overdue_amounts'::character varying::text, 'timesheet_summary'::character varying::text])", name: "valid_metric_type"
+    t.check_constraint "period::text = ANY (ARRAY['hour'::character varying::text, 'day'::character varying::text, 'week'::character varying::text, 'month'::character varying::text, 'quarter'::character varying::text, 'year'::character varying::text, 'all_time'::character varying::text])", name: "valid_period"
+  end
+
+  create_table "noticed_events", force: :cascade do |t|
+    t.string "type", null: false
+    t.string "record_type"
+    t.bigint "record_id"
+    t.jsonb "params"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_at"], name: "index_noticed_events_on_created_at"
+    t.index ["record_type", "record_id"], name: "index_noticed_events_on_record"
   end
 
   create_table "notification_preferences", force: :cascade do |t|
@@ -500,6 +515,23 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_29_141025) do
     t.index ["company_id"], name: "index_notification_preferences_on_company_id"
     t.index ["user_id", "company_id"], name: "index_notification_preferences_on_user_id_and_company_id", unique: true
     t.index ["user_id"], name: "index_notification_preferences_on_user_id"
+  end
+
+  create_table "notifications", force: :cascade do |t|
+    t.string "recipient_type", null: false
+    t.bigint "recipient_id", null: false
+    t.bigint "company_id"
+    t.string "type", null: false
+    t.jsonb "params"
+    t.datetime "read_at"
+    t.datetime "interacted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_notifications_on_company_id"
+    t.index ["created_at"], name: "index_notifications_on_created_at"
+    t.index ["read_at"], name: "index_notifications_on_read_at"
+    t.index ["recipient_type", "recipient_id", "read_at"], name: "index_notifications_on_recipient_and_read_at"
+    t.index ["recipient_type", "recipient_id"], name: "index_notifications_on_recipient"
   end
 
   create_table "payments", force: :cascade do |t|
@@ -518,6 +550,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_29_141025) do
     t.date "exchange_rate_date"
     t.index ["invoice_id"], name: "index_payments_on_invoice_id"
     t.index ["status"], name: "index_payments_on_status"
+    t.index ["transaction_date", "invoice_id"], name: "index_payments_on_transaction_date_and_invoice_id"
   end
 
   create_table "payments_providers", force: :cascade do |t|
@@ -552,6 +585,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_29_141025) do
     t.datetime "discarded_at"
     t.index ["discarded_at"], name: "index_project_members_on_discarded_at"
     t.index ["project_id"], name: "index_project_members_on_project_id"
+    t.index ["user_id", "project_id", "discarded_at"], name: "index_project_members_on_user_project_discarded"
     t.index ["user_id"], name: "index_project_members_on_user_id"
   end
 
@@ -640,7 +674,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_29_141025) do
     t.string "hostname"
     t.text "metadata"
     t.datetime "created_at", null: false
+    t.string "name", null: false
     t.index ["last_heartbeat_at"], name: "index_solid_queue_processes_on_last_heartbeat_at"
+    t.index ["name", "supervisor_id"], name: "index_solid_queue_processes_on_name_and_supervisor_id", unique: true
     t.index ["supervisor_id"], name: "index_solid_queue_processes_on_supervisor_id"
   end
 
@@ -661,6 +697,22 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_29_141025) do
     t.datetime "created_at", null: false
     t.index ["job_id"], name: "index_solid_queue_recurring_executions_on_job_id", unique: true
     t.index ["task_key", "run_at"], name: "index_solid_queue_recurring_executions_on_task_key_and_run_at", unique: true
+  end
+
+  create_table "solid_queue_recurring_tasks", force: :cascade do |t|
+    t.string "key", null: false
+    t.string "schedule", null: false
+    t.string "command", limit: 2048
+    t.string "class_name"
+    t.text "arguments"
+    t.string "queue_name"
+    t.integer "priority", default: 0
+    t.boolean "static", default: true, null: false
+    t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["key"], name: "index_solid_queue_recurring_tasks_on_key", unique: true
+    t.index ["static"], name: "index_solid_queue_recurring_tasks_on_static"
   end
 
   create_table "solid_queue_scheduled_executions", force: :cascade do |t|
@@ -723,7 +775,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_29_141025) do
     t.index ["bill_status"], name: "index_timesheet_entries_on_bill_status"
     t.index ["discarded_at"], name: "index_timesheet_entries_on_discarded_at"
     t.index ["note"], name: "index_timesheet_entries_on_note_trgm", opclass: :gin_trgm_ops, using: :gin
+    t.index ["project_id", "work_date"], name: "index_timesheet_entries_on_project_id_and_work_date"
     t.index ["project_id"], name: "index_timesheet_entries_on_project_id"
+    t.index ["user_id", "work_date"], name: "index_timesheet_entries_on_user_id_and_work_date"
     t.index ["user_id"], name: "index_timesheet_entries_on_user_id"
     t.index ["work_date"], name: "index_timesheet_entries_on_work_date"
   end
@@ -756,6 +810,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_29_141025) do
     t.string "token", limit: 50
     t.boolean "calendar_enabled", default: true
     t.boolean "calendar_connected", default: true
+    t.string "provider"
+    t.string "uid"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token"
     t.index ["current_workspace_id"], name: "index_users_on_current_workspace_id"
     t.index ["discarded_at"], name: "index_users_on_discarded_at"
@@ -796,11 +852,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_29_141025) do
     t.index ["user_id"], name: "index_wise_accounts_on_user_id"
   end
 
-  add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
-  add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
-  add_foreign_key "carryovers", "companies"
-  add_foreign_key "carryovers", "leave_types"
-  add_foreign_key "carryovers", "users"
   add_foreign_key "client_members", "clients"
   add_foreign_key "client_members", "companies"
   add_foreign_key "client_members", "users"
@@ -830,6 +881,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_29_141025) do
   add_foreign_key "leaves", "companies"
   add_foreign_key "notification_preferences", "companies"
   add_foreign_key "notification_preferences", "users"
+  add_foreign_key "notifications", "companies"
   add_foreign_key "payments", "invoices"
   add_foreign_key "payments_providers", "companies"
   add_foreign_key "previous_employments", "users"
