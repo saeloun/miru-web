@@ -16,7 +16,6 @@ RSpec.describe "Forgot Password", type: :system, js: true do
         # Find and click the submit button (text may vary)
         find('button[type="submit"]', match: :first).click
 
-        sleep 1
 
         expect(ActionMailer::Base.deliveries.last.to).to eq [user.email]
         expect(ActionMailer::Base.deliveries.last.subject).to eq "Reset your Miru password"

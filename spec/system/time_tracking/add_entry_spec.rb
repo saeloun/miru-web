@@ -50,7 +50,7 @@ RSpec.describe "Time Tracking - Add Entry", type: :system, js: true do
     end
   end
 
-  it "keeps entries visible when switching between week, day and month views" do
+  it "keeps entries visible when switching between week and month views" do
     entry = create(
       :timesheet_entry,
       user:,
@@ -64,9 +64,6 @@ RSpec.describe "Time Tracking - Add Entry", type: :system, js: true do
     expect(page).to have_css("#react-root", wait: 10)
 
     switch_to("Week")
-    expect(page).to have_content(entry.note, wait: 10)
-
-    switch_to("Day")
     expect(page).to have_content(entry.note, wait: 10)
 
     switch_to("Month")

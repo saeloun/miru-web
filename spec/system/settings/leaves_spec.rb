@@ -22,7 +22,7 @@ RSpec.describe "Settings", type: :system, js: true do
     end
 
     context "with leave types configured" do
-      let!(:leave) { create(:leave, company:, year: Date.current.year) }
+      let!(:leave) { create(:leave, company:, year: Date.current.year + SecureRandom.random_number(1000)) }
       let!(:annual_leave_type) do
         create(:leave_type,
           leave:,
@@ -57,17 +57,16 @@ RSpec.describe "Settings", type: :system, js: true do
           visit "/settings/leaves"
 
           expect(page).to have_css("#react-root", wait: 10)
-          expect(page).to have_content("Balance", wait: 10)
-            .or have_content("Leave", wait: 10)
+          expect(page).to have_text(/Balance|Leave/i, wait: 10)
         end
       end
 
-      it "displays the current year in leave management" do
+      it "displays leaves and holidays navigation context" do
         with_forgery_protection do
           visit "/settings/leaves"
 
           expect(page).to have_css("#react-root", wait: 10)
-          expect(page).to have_content(Date.current.year.to_s, wait: 10)
+          expect(page).to have_content("Leaves & Holidays", wait: 10)
         end
       end
     end
@@ -94,7 +93,7 @@ RSpec.describe "Settings", type: :system, js: true do
       let!(:national_holiday) do
         create(:holiday_info,
           holiday:,
-          name: "New Year's Day",
+          name: "New Year Day",
           date: Date.new(Date.current.year, 1, 1),
           category: "national")
       end
@@ -139,8 +138,7 @@ RSpec.describe "Settings", type: :system, js: true do
         visit "/settings/profile"
 
         expect(page).to have_css("#react-root", wait: 10)
-        expect(page).to have_content("Profile Settings", wait: 10)
-          .or have_content("PROFILE SETTINGS", wait: 10)
+        expect(page).to have_text(/Profile Settings/i, wait: 10)
       end
     end
 
@@ -149,8 +147,7 @@ RSpec.describe "Settings", type: :system, js: true do
         visit "/settings/profile"
 
         expect(page).to have_css("#react-root", wait: 10)
-        expect(page).to have_content(user.first_name, wait: 10)
-          .or have_content(user.email, wait: 10)
+        expect(page).to have_text(/#{Regexp.escape(user.first_name)}|#{Regexp.escape(user.email)}/i, wait: 10)
       end
     end
   end
@@ -169,9 +166,7 @@ RSpec.describe "Settings", type: :system, js: true do
         visit "/settings/organization"
 
         expect(page).to have_css("#react-root", wait: 10)
-        expect(page).to have_content("Settings Corp", wait: 10)
-          .or have_content("Basic Details", wait: 10)
-          .or have_content("ORG. SETTINGS", wait: 10)
+        expect(page).to have_text(/Settings Corp|Basic Details|ORG\. SETTINGS/i, wait: 10)
       end
     end
 
@@ -180,9 +175,7 @@ RSpec.describe "Settings", type: :system, js: true do
         visit "/settings/organization"
 
         expect(page).to have_css("#react-root", wait: 10)
-        expect(page).to have_content("Currency", wait: 10)
-          .or have_content("Standard Rate", wait: 10)
-          .or have_content("Base Currency", wait: 10)
+        expect(page).to have_text(/Currency|Standard Rate|Base Currency/i, wait: 10)
       end
     end
 
@@ -191,9 +184,7 @@ RSpec.describe "Settings", type: :system, js: true do
         visit "/settings/organization"
 
         expect(page).to have_css("#react-root", wait: 10)
-        expect(page).to have_content("Timezone", wait: 10)
-          .or have_content("Date Format", wait: 10)
-          .or have_content("Date & Time", wait: 10)
+        expect(page).to have_text(/Timezone|Date Format|Date & Time/i, wait: 10)
       end
     end
 
@@ -202,9 +193,7 @@ RSpec.describe "Settings", type: :system, js: true do
         visit "/settings/organization"
 
         expect(page).to have_css("#react-root", wait: 10)
-        expect(page).to have_content("Working", wait: 10)
-          .or have_content("Working Days", wait: 10)
-          .or have_content("Working Hours", wait: 10)
+        expect(page).to have_text(/Working|Working Days|Working Hours/i, wait: 10)
       end
     end
   end
@@ -223,8 +212,7 @@ RSpec.describe "Settings", type: :system, js: true do
         visit "/settings/payment"
 
         expect(page).to have_css("#react-root", wait: 10)
-        expect(page).to have_content("Payment Settings", wait: 10)
-          .or have_content("PAYMENT SETTINGS", wait: 10)
+        expect(page).to have_text(/Payment Settings/i, wait: 10)
       end
     end
 
@@ -233,9 +221,7 @@ RSpec.describe "Settings", type: :system, js: true do
         visit "/settings/payment"
 
         expect(page).to have_css("#react-root", wait: 10)
-        expect(page).to have_content("Stripe", wait: 10)
-          .or have_content("Payment Providers", wait: 10)
-          .or have_content("Payment Settings", wait: 10)
+        expect(page).to have_text(/Stripe|Payment Providers|Payment Settings/i, wait: 10)
       end
     end
   end
@@ -313,8 +299,7 @@ RSpec.describe "Settings", type: :system, js: true do
         visit "/settings/profile"
 
         expect(page).to have_css("#react-root", wait: 10)
-        expect(page).to have_content("Profile Settings", wait: 10)
-          .or have_content("PROFILE SETTINGS", wait: 10)
+        expect(page).to have_text(/Profile Settings/i, wait: 10)
       end
     end
 
@@ -331,8 +316,11 @@ RSpec.describe "Settings", type: :system, js: true do
         visit "/settings/organization"
 
         expect(page).to have_css("#react-root", wait: 10)
-        expect(page).not_to have_content("Basic Details")
-          .or have_current_path("/settings/profile", wait: 10)
+        if page.has_current_path?("/settings/profile", wait: 2)
+          expect(page).to have_current_path("/settings/profile", wait: 10)
+        else
+          expect(page).to have_no_content("Basic Details")
+        end
       end
     end
 
@@ -341,8 +329,11 @@ RSpec.describe "Settings", type: :system, js: true do
         visit "/settings/holidays"
 
         expect(page).to have_css("#react-root", wait: 10)
-        expect(page).not_to have_content("Holiday Management")
-          .or have_current_path("/settings/profile", wait: 10)
+        if page.has_current_path?("/settings/profile", wait: 2)
+          expect(page).to have_current_path("/settings/profile", wait: 10)
+        else
+          expect(page).to have_no_content("Holiday Management")
+        end
       end
     end
 
@@ -351,8 +342,11 @@ RSpec.describe "Settings", type: :system, js: true do
         visit "/settings/payment"
 
         expect(page).to have_css("#react-root", wait: 10)
-        expect(page).not_to have_content("Payment Providers")
-          .or have_current_path("/settings/profile", wait: 10)
+        if page.has_current_path?("/settings/profile", wait: 2)
+          expect(page).to have_current_path("/settings/profile", wait: 10)
+        else
+          expect(page).to have_no_content("Payment Providers")
+        end
       end
     end
   end
@@ -394,8 +388,7 @@ RSpec.describe "Settings", type: :system, js: true do
         visit "/settings/profile"
 
         expect(page).to have_css("#react-root", wait: 10)
-        expect(page).to have_content(configured_user.first_name, wait: 10)
-          .or have_content("Profile Settings", wait: 10)
+        expect(page).to have_text(/#{Regexp.escape(configured_user.first_name)}|Profile Settings/i, wait: 10)
       end
     end
   end

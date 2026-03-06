@@ -15,10 +15,9 @@ RSpec.describe "Edit Project", type: :system, js: true do
       sign_in(user)
     end
 
-    it "updates the project successfully", :pending do
+    xit "updates the project successfully" do
       with_forgery_protection do
         visit "/projects"
-        sleep 2
 
         expect(page).to have_content(project.name)
 
@@ -26,7 +25,6 @@ RSpec.describe "Edit Project", type: :system, js: true do
         page.find(:xpath, "//tr[contains(., '#{project.name}')]").hover.click
         find("#kebabMenu").click
         click_button "Edit"
-        sleep 1
         fill_in "project-name", with: "Updated Project"
         choose "Non-billable"
         click_button "SAVE CHANGES"

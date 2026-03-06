@@ -18,7 +18,6 @@ RSpec.describe "Time Tracking Calendar", type: :system, js: true, pending: "UI c
     before do
       sign_in(user)
       visit "/time-tracking"
-      sleep 2
       wait_for_react_app
     end
 
@@ -45,7 +44,6 @@ RSpec.describe "Time Tracking Calendar", type: :system, js: true, pending: "UI c
 
       # Click next month
       find("button[aria-label*='Next']", wait: 5).click
-      sleep 1
 
       # Verify month changed
       new_month_text = find("div:has(button[aria-label*='Previous']) ~ div", wait: 10).text rescue nil
@@ -53,7 +51,6 @@ RSpec.describe "Time Tracking Calendar", type: :system, js: true, pending: "UI c
 
       # Click Today to return to current month
       click_button "Today"
-      sleep 1
     end
 
     it "switches between day and month view" do
@@ -79,7 +76,6 @@ RSpec.describe "Time Tracking Calendar", type: :system, js: true, pending: "UI c
     before do
       sign_in(user)
       visit "/time-tracking"
-      sleep 2
       wait_for_react_app
     end
 
@@ -126,7 +122,6 @@ RSpec.describe "Time Tracking Calendar", type: :system, js: true, pending: "UI c
 
       visit "/"
       click_link "Time Tracking"
-      sleep 2
       wait_for_react_app
 
       # Switch to month view to see calendar
@@ -144,7 +139,6 @@ RSpec.describe "Time Tracking Calendar", type: :system, js: true, pending: "UI c
     before do
       sign_in(user)
       visit "/time-tracking"
-      sleep 2
       wait_for_react_app
     end
 
@@ -196,7 +190,6 @@ RSpec.describe "Time Tracking Calendar", type: :system, js: true, pending: "UI c
     before do
       sign_in(user)
       visit "/time-tracking"
-      sleep 2
       wait_for_react_app
     end
 
@@ -257,7 +250,6 @@ RSpec.describe "Time Tracking Calendar", type: :system, js: true, pending: "UI c
       sign_in(user)
       visit "/"
       click_link "Time Tracking"
-      sleep 2
       wait_for_react_app
     end
 
@@ -292,7 +284,6 @@ RSpec.describe "Time Tracking Calendar", type: :system, js: true, pending: "UI c
       sign_in(user)
       visit "/"
       click_link "Time Tracking"
-      sleep 2
       wait_for_react_app
     end
 

@@ -41,7 +41,6 @@ RSpec.describe "Delete team member", type: :system, js: true do
           else
             # Fallback: click on row then find delete option
             find("tr", text: employee_user.first_name).click
-            sleep 1
             find("button", text: "Delete").click rescue find("li", text: "Delete").click
           end
 

@@ -7,7 +7,7 @@ require "playwright"
 
 # Configure Capybara
 Capybara.server = :puma, { Silent: true }
-Capybara.default_max_wait_time = 10
+Capybara.default_max_wait_time = 5
 Capybara.server_host = "localhost"
 Capybara.save_path = Rails.root.join("tmp", "capybara")
 Capybara.automatic_reload = false

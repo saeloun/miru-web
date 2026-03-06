@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import Loader from "common/Loader/index";
 import {
   Warning as AlertCircle,
   Calendar,
@@ -274,11 +275,7 @@ const AccountsAgingReport: React.FC = () => {
   }, [displayedItems, allClients.length]);
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
-      </div>
-    );
+    return <Loader className="h-64" />;
   }
 
   if (error) {

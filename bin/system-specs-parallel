@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+PROCS="${PARALLEL_TEST_PROCESSORS:-2}"
+ARGS=("$@")
+
+if [ "${#ARGS[@]}" -eq 0 ]; then
+  ARGS=("spec/system")
+fi
+
+echo "Preparing parallel test databases for ${PROCS} processes..."
+mise exec -- bundle exec rake "parallel:create[${PROCS}]" "parallel:load_schema[${PROCS}]"
+
+echo "Running system specs in parallel (${PROCS} processes)..."
+CI=true mise exec -- bundle exec parallel_rspec "${ARGS[@]}" -n "${PROCS}"

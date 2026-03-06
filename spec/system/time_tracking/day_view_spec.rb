@@ -39,7 +39,6 @@ RSpec.describe "Time Tracking - day view", type: :system, js: true do
         fill_in "notes", with: "Testing note!"
         fill_in "timeInput", with: "8"
         click_button "SAVE"
-        sleep 1
 
         expect(page).to have_content(admin.timesheet_entries.first.note)
       end
@@ -66,7 +65,6 @@ RSpec.describe "Time Tracking - day view", type: :system, js: true do
         click_button "DAY"
         el = find('button[aria-label*="delete"], button:has(svg[data-icon="trash"]), .delete-button', match: :first).hover
         el.click
-        sleep 1
 
         expect(admin.timesheet_entries.size).to eq(0)
       end
@@ -150,7 +148,6 @@ RSpec.describe "Time Tracking - day view", type: :system, js: true do
         click_button "DAY"
         el = find('button[aria-label*="delete"], button:has(svg[data-icon="trash"]), .delete-button', match: :first).hover
         el.click
-        sleep 1
 
         expect(employee.timesheet_entries.size).to eq(0)
       end

@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { ColumnDef } from "@tanstack/react-table";
+import Loader from "common/Loader/index";
 import {
   Card,
   CardContent,
@@ -20,14 +21,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "../ui/dialog";
 import { Checkbox } from "../ui/checkbox";
 import {
   Plus,
@@ -44,14 +37,15 @@ import {
 } from "phosphor-react";
 import { currencyFormat } from "../../helpers/currency";
 import { useUserContext } from "../../context/UserContext";
-import { paymentsApi } from "apis/api";
+import { payment, paymentsApi } from "apis/api";
 import { toast } from "sonner";
+import { unmapPayment } from "../../mapper/mappedIndex";
+import AddManualEntry from "./Modals/AddManualEntry";
 
 interface Payment {
-  id: string;
-  invoiceId: string;
+  id: string | number;
+  invoiceId: string | number | null;
   invoiceNumber: string;
-  clientId: string;
   clientName: string;
   amount: number;
   status: string;
@@ -61,6 +55,7 @@ interface Payment {
   note?: string;
   currency: string;
   exchangeRate?: number;
+  baseCurrencyAmount?: number;
 }
 
 interface PaymentsData {
@@ -69,11 +64,54 @@ interface PaymentsData {
   total: number;
 }
 
+const normalizeTransactionType = (transactionType: string = "") => {
+  if (transactionType === "cheque") return "check";
+
+  return transactionType;
+};
+
+const normalizePayment = (payment: any, baseCurrency: string): Payment => ({
+  id: payment.id,
+  invoiceId: payment.invoiceId ?? payment.invoice_id ?? null,
+  invoiceNumber: payment.invoiceNumber ?? payment.invoice_number ?? "N/A",
+  clientName: payment.clientName ?? payment.client_name ?? "Unknown Client",
+  amount: Number(payment.amount ?? 0),
+  status: String(payment.status ?? "paid"),
+  transactionDate: payment.transactionDate ?? payment.transaction_date ?? "N/A",
+  transactionType: normalizeTransactionType(
+    payment.transactionType ?? payment.transaction_type ?? "manual"
+  ),
+  transactionId: String(
+    payment.transactionId ??
+      payment.transaction_id ??
+      `PAY-${payment.id ?? "N/A"}`
+  ),
+  note: payment.note ?? "",
+  currency:
+    payment.currency ??
+    payment.paymentCurrency ??
+    payment.payment_currency ??
+    baseCurrency,
+  exchangeRate: payment.exchangeRate ?? payment.exchange_rate,
+  baseCurrencyAmount:
+    payment.baseCurrencyAmount ?? payment.base_currency_amount,
+});
+
 const fetchPayments = async (): Promise<PaymentsData> => {
   try {
     const response = await paymentsApi.get("");
+    const baseCurrency =
+      response.data.baseCurrency || response.data.base_currency || "USD";
 
-    return response.data;
+    const payments = (response.data.payments || []).map(payment =>
+      normalizePayment(payment, baseCurrency)
+    );
+
+    return {
+      payments,
+      baseCurrency,
+      total: response.data.total ?? payments.length,
+    };
   } catch (error) {
     console.warn("Payments API error, using fallback data", error);
 
@@ -87,28 +125,38 @@ const fetchPayments = async (): Promise<PaymentsData> => {
 
 const PaymentsTable: React.FC = () => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { isAdminUser, company } = useUserContext();
-  const [showNewPaymentDialog, setShowNewPaymentDialog] = useState(false);
+  const [showManualEntryModal, setShowManualEntryModal] = useState(false);
+  const [invoiceList, setInvoiceList] = useState<any>([]);
+  const [dateFormat, setDateFormat] = useState("");
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["payments"],
     queryFn: fetchPayments,
   });
 
-  const baseCurrency = company?.baseCurrency || data?.baseCurrency || "USD";
+  const fetchInvoiceList = async () => {
+    const { data } = await payment.getInvoiceList();
+    const sanitized = await unmapPayment(data);
+    setInvoiceList(sanitized);
+    setDateFormat(data.company.dateFormat);
+  };
 
-  const getTransactionTypeIcon = (type: string) => {
-    switch (type) {
-      case "stripe":
-      case "credit_card":
-        return <CreditCard className="h-4 w-4 text-gray-500" />;
-      case "bank_transfer":
-      case "check":
-      case "cash":
-      default:
-        return <CurrencyDollar className="h-4 w-4 text-gray-500" />;
+  const fetchPaymentList = async () => {
+    await queryClient.invalidateQueries({ queryKey: ["payments"] });
+  };
+
+  const openManualEntry = async () => {
+    try {
+      await fetchInvoiceList();
+      setShowManualEntryModal(true);
+    } catch (e) {
+      toast.error("Failed to load invoices for payment entry");
     }
   };
+
+  const baseCurrency = company?.baseCurrency || data?.baseCurrency || "USD";
 
   const getTransactionTypeBadge = (type: string) => {
     const typeLabels = {
@@ -117,6 +165,11 @@ const PaymentsTable: React.FC = () => {
       paypal: "PayPal",
       bank_transfer: "Bank Transfer",
       check: "Check",
+      ach: "ACH",
+      visa: "Visa",
+      mastercard: "Mastercard",
+      amex: "Amex",
+      debit_card: "Debit Card",
       cash: "Cash",
       credit_card: "Credit Card",
     };
@@ -127,6 +180,21 @@ const PaymentsTable: React.FC = () => {
       </Badge>
     );
   };
+
+  const getStatusBadgeClassName = (status: string) => {
+    switch (status) {
+      case "failed":
+      case "cancelled":
+        return "bg-red-50 text-red-700 border-red-300";
+      case "partially_paid":
+        return "bg-amber-50 text-amber-700 border-amber-300";
+      default:
+        return "bg-green-50 text-green-700 border-green-300";
+    }
+  };
+
+  const getStatusLabel = (status: string) =>
+    status.replaceAll("_", " ").replace(/\b\w/g, s => s.toUpperCase());
 
   const columns: ColumnDef<Payment>[] = [
     {
@@ -181,6 +249,14 @@ const PaymentsTable: React.FC = () => {
       header: "Invoice",
       cell: ({ row }) => {
         const payment = row.original;
+
+        if (!payment.invoiceId) {
+          return (
+            <span className="font-medium text-gray-600">
+              #{payment.invoiceNumber}
+            </span>
+          );
+        }
 
         return (
           <button
@@ -237,6 +313,15 @@ const PaymentsTable: React.FC = () => {
       },
     },
     {
+      accessorKey: "note",
+      header: "Notes",
+      cell: ({ row }) => (
+        <span className="text-sm text-gray-600 line-clamp-1">
+          {row.original.note || "—"}
+        </span>
+      ),
+    },
+    {
       accessorKey: "transactionType",
       header: "Payment Method",
       cell: ({ row }) => getTransactionTypeBadge(row.original.transactionType),
@@ -247,9 +332,9 @@ const PaymentsTable: React.FC = () => {
       cell: ({ row }) => (
         <Badge
           variant="outline"
-          className="bg-green-50 text-green-700 border-green-300"
+          className={getStatusBadgeClassName(row.original.status)}
         >
-          Paid
+          {getStatusLabel(row.original.status)}
         </Badge>
       ),
     },
@@ -277,12 +362,14 @@ const PaymentsTable: React.FC = () => {
                 Copy transaction ID
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem
-                onClick={() => navigate(`/invoices/${payment.invoiceId}`)}
-              >
-                <Eye className="h-4 w-4 mr-2" />
-                View invoice
-              </DropdownMenuItem>
+              {payment.invoiceId && (
+                <DropdownMenuItem
+                  onClick={() => navigate(`/invoices/${payment.invoiceId}`)}
+                >
+                  <Eye className="h-4 w-4 mr-2" />
+                  View invoice
+                </DropdownMenuItem>
+              )}
               <DropdownMenuItem>
                 <Download className="h-4 w-4 mr-2" />
                 Download receipt
@@ -295,11 +382,7 @@ const PaymentsTable: React.FC = () => {
   ];
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center h-96">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
-      </div>
-    );
+    return <Loader className="h-96" />;
   }
 
   if (error) {
@@ -314,30 +397,32 @@ const PaymentsTable: React.FC = () => {
   }
 
   const totalAmount =
-    data?.payments?.reduce((sum, payment) => sum + payment.amount, 0) || 0;
+    data?.payments?.reduce(
+      (sum, payment) =>
+        sum + Number(payment.baseCurrencyAmount ?? payment.amount),
+      0
+    ) || 0;
 
   return (
     <div className="space-y-6 p-6 max-w-7xl mx-auto">
-      {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Payments</h1>
           <p className="text-gray-600 mt-1">
-            Track and manage all payment transactions
+            Stripe and manual payment transactions in one place
           </p>
         </div>
         {isAdminUser && (
           <Button
-            onClick={() => setShowNewPaymentDialog(true)}
+            onClick={openManualEntry}
             className="bg-gray-900 hover:bg-gray-800 text-white"
           >
             <Plus className="h-4 w-4 mr-2" />
-            Record Payment
+            Add Manual Entry
           </Button>
         )}
       </div>
 
-      {/* Stats Cards */}
       <div className="grid gap-4 md:grid-cols-3">
         <Card className="border-gray-200">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -386,7 +471,6 @@ const PaymentsTable: React.FC = () => {
         </Card>
       </div>
 
-      {/* Data Table */}
       <Card className="border-gray-200">
         <CardHeader>
           <CardTitle>Payment History</CardTitle>
@@ -399,7 +483,7 @@ const PaymentsTable: React.FC = () => {
             <DataTable
               columns={columns}
               data={data.payments}
-              searchPlaceholder="Search payments..."
+              searchPlaceholder="Search by invoice, client, method, or notes..."
             />
           ) : (
             <div className="text-center py-12">
@@ -408,12 +492,9 @@ const PaymentsTable: React.FC = () => {
                 No payments recorded yet
               </p>
               {isAdminUser && (
-                <Button
-                  variant="outline"
-                  onClick={() => setShowNewPaymentDialog(true)}
-                >
+                <Button variant="outline" onClick={openManualEntry}>
                   <Plus className="h-4 w-4 mr-2" />
-                  Record Your First Payment
+                  Add Manual Entry
                 </Button>
               )}
             </div>
@@ -421,40 +502,17 @@ const PaymentsTable: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* New Payment Dialog Placeholder */}
-      <Dialog
-        open={showNewPaymentDialog}
-        onOpenChange={setShowNewPaymentDialog}
-      >
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Record Payment</DialogTitle>
-            <DialogDescription>
-              Add a new payment transaction to the system.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="py-4">
-            {/* Payment form would go here */}
-            <p className="text-gray-600">Payment form coming soon...</p>
-          </div>
-          <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => setShowNewPaymentDialog(false)}
-            >
-              Cancel
-            </Button>
-            <Button
-              onClick={() => {
-                toast.success("Payment recorded successfully");
-                setShowNewPaymentDialog(false);
-              }}
-            >
-              Save Payment
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      {showManualEntryModal && (
+        <AddManualEntry
+          baseCurrency={baseCurrency}
+          dateFormat={dateFormat}
+          fetchInvoiceList={fetchInvoiceList}
+          fetchPaymentList={fetchPaymentList}
+          invoiceList={invoiceList}
+          setShowManualEntryModal={setShowManualEntryModal}
+          showManualEntryModal={showManualEntryModal}
+        />
+      )}
     </div>
   );
 };

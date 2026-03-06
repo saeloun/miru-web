@@ -49,7 +49,6 @@ shared_examples_for "Time tracking - week view" do |obj|
       find(:css, "#selectedInput").set("8")
       fill_in placeholder: "Note", with: "Weekly note!"
       click_button "SAVE"
-      sleep 1
 
       expect(user.timesheet_entries.size).to eq(2)
     end
@@ -69,7 +68,6 @@ shared_examples_for "Time tracking - week view" do |obj|
       find(:css, "#selectedInput").set("10")
       fill_in placeholder: "Note", with: "Weekly note!"
       click_button "UPDATE"
-      sleep 2
 
       expect(user.timesheet_entries.first.duration).to eq(600.0)
       expect(user.timesheet_entries.first.note).to eq("Weekly note!")

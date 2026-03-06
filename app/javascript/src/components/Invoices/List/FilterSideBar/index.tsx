@@ -3,6 +3,7 @@ import { LocalStorageKeys } from "constants/index";
 import React, { useEffect, useRef, useState } from "react";
 
 import { companiesApi } from "apis/api";
+import Loader from "common/Loader/index";
 import CustomCheckbox from "common/CustomCheckbox";
 import CustomDateRangePicker from "common/CustomDateRangePicker";
 import CustomRadioButton from "common/CustomRadio";
@@ -250,7 +251,7 @@ const FilterSideBar = ({
   }, [debouncedSearchQuery]);
 
   if (loading) {
-    return <div>Loading....</div>;
+    return <Loader className="min-h-[20rem]" />;
   }
 
   return (

@@ -7,7 +7,6 @@ RSpec.shared_examples "Edit Invoice", type: :system do
     with_forgery_protection do
       visit "invoices"
       click_link "Invoices"
-      sleep 2
 
       expect(page).to have_content "Invoices"
       expect(page).to have_content "All Invoices"
@@ -15,7 +14,6 @@ RSpec.shared_examples "Edit Invoice", type: :system do
       # Close payment gateway modal if it appears
       if page.has_content?("No payment gateway connected", wait: 2)
         click_button "Send Without Payment Gateway"
-        sleep 1
       end
 
       # Find the invoice row and hover/click edit
@@ -33,7 +31,6 @@ RSpec.shared_examples "Edit Invoice", type: :system do
     with_forgery_protection do
       visit "invoices/#{invoice.id}/edit"
       click_link "Invoices"
-      sleep 2
 
       expect(page).to have_content "Edit Invoice ##{invoice.invoice_number}"
 
@@ -52,7 +49,6 @@ RSpec.shared_examples "Edit Invoice", type: :system do
     with_forgery_protection do
       visit "invoices/#{invoice.id}/edit"
       click_link "Invoices"
-      sleep 2
 
       expect(page).to have_content "Billed to"
       expect(page).to have_content "Invoice Number"
@@ -69,7 +65,6 @@ RSpec.shared_examples "Edit Invoice", type: :system do
     with_forgery_protection do
       visit "invoices/#{invoice.id}/edit"
       click_link "Invoices"
-      sleep 2
 
       click_button "Cancel", match: :first
 
@@ -83,7 +78,6 @@ RSpec.shared_examples "Edit Invoice", type: :system do
     with_forgery_protection do
       visit "invoices/#{invoice.id}/edit"
       click_link "Invoices"
-      sleep 2
 
       find('input[name*="invoice_number"], input[placeholder*="Invoice"]', match: :first).set("test-invoice-1-updated")
 

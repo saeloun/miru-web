@@ -70,7 +70,6 @@ shared_examples_for "Time tracking" do |obj|
       # Find and click delete button
       delete_button = find('button[aria-label*="delete"], button:has(svg[data-icon="trash"]), .delete-button', match: :first)
       delete_button.click
-      sleep 1
 
       user = obj[:is_admin] == true ? admin : employee
       expect(user.timesheet_entries.size).to eq(0)
@@ -93,7 +92,6 @@ shared_examples_for "Time tracking" do |obj|
       # Set the date value directly
       date_input.set((Date.today - 1).strftime("%Y-%m-%d"))
       click_button "Save", match: :first
-      sleep 1
 
       obj[:is_admin] == true ? admin : employee
     end

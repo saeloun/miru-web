@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { ColumnDef } from "@tanstack/react-table";
+import Loader from "common/Loader/index";
 import {
   Card,
   CardContent,
@@ -48,6 +49,7 @@ import {
 import { useUserContext } from "../../context/UserContext";
 import { projectApi } from "apis/api";
 import { toast } from "sonner";
+import AddEditProject from "./Modals/AddEditProject";
 
 interface TeamMember {
   id: string;
@@ -118,7 +120,11 @@ const ProjectsTable: React.FC = () => {
   });
 
   const handleEdit = (project: Project) => {
-    setSelectedProject(project);
+    setSelectedProject({
+      ...project,
+      clientName: project.client_name || project.client?.name || "",
+      isBillable: project.billable,
+    } as any);
     setShowEditDialog(true);
   };
 
@@ -131,6 +137,10 @@ const ProjectsTable: React.FC = () => {
     if (selectedProject) {
       deleteMutation.mutate(selectedProject.id);
     }
+  };
+
+  const refreshProjectList = () => {
+    queryClient.invalidateQueries({ queryKey: ["projects"] });
   };
 
   const getStatusIcon = (status: string) => {
@@ -308,7 +318,7 @@ const ProjectsTable: React.FC = () => {
         return (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
+              <Button id="kebabMenu" variant="ghost" className="h-8 w-8 p-0">
                 <span className="sr-only">Open menu</span>
                 <DotsThree size={20} />
               </Button>
@@ -335,7 +345,7 @@ const ProjectsTable: React.FC = () => {
                 className="text-red-600"
               >
                 <Trash size={16} className="mr-2" />
-                Delete project
+                Delete Project
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -345,11 +355,7 @@ const ProjectsTable: React.FC = () => {
   ];
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center h-96">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
-      </div>
-    );
+    return <Loader className="h-96" />;
   }
 
   if (error) {
@@ -449,6 +455,7 @@ const ProjectsTable: React.FC = () => {
               columns={columns}
               data={projects}
               searchPlaceholder="Search projects..."
+              onRowClick={project => navigate(`/projects/${project.id}`)}
             />
           ) : (
             <div className="text-center py-12">
@@ -492,11 +499,33 @@ const ProjectsTable: React.FC = () => {
               onClick={confirmDelete}
               disabled={deleteMutation.isPending}
             >
-              {deleteMutation.isPending ? "Deleting..." : "Delete"}
+              {deleteMutation.isPending ? "Deleting..." : "DELETE"}
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {showNewProjectDialog && (
+        <AddEditProject
+          setEditProjectData={setSelectedProject as any}
+          editProjectData={{}}
+          setShowProjectModal={setShowNewProjectDialog}
+          showProjectModal={showNewProjectDialog}
+          projectData={{}}
+          fetchProjectList={refreshProjectList}
+        />
+      )}
+
+      {showEditDialog && selectedProject && (
+        <AddEditProject
+          setEditProjectData={setSelectedProject as any}
+          editProjectData={selectedProject as any}
+          setShowProjectModal={setShowEditDialog}
+          showProjectModal={showEditDialog}
+          projectData={selectedProject as any}
+          fetchProjectList={refreshProjectList}
+        />
+      )}
     </div>
   );
 };

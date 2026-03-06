@@ -11,7 +11,7 @@ class PaymentsPresenter
   def index_data
     {
       payments:
-              payments.map do | payment |
+              payments.map do |payment|
                 {
                   id: payment.id,
                   clientName: payment.invoice.client.name,
@@ -19,13 +19,18 @@ class PaymentsPresenter
                   invoiceId: payment.invoice.id,
                   transactionDate: CompanyDateFormattingService.new(
                     payment.transaction_date,
-                    company: current_company).process,
+                    company: current_company
+                  ).process,
                   note: payment.note,
                   transactionType: payment.transaction_type,
                   amount: payment.amount,
-                  status: payment.status
+                  status: payment.status,
+                  currency: payment.payment_currency || payment.invoice.currency || current_company.base_currency,
+                  exchangeRate: payment.exchange_rate,
+                  baseCurrencyAmount: payment.base_currency_amount
                 }
               end,
+      total: payments.size,
       baseCurrency: current_company.base_currency
     }
   end

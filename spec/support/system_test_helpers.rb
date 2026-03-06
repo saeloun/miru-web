@@ -135,7 +135,7 @@ RSpec.configure do |config|
 
   config.before(:each, type: :system) do
     # Set up Capybara
-    Capybara.default_max_wait_time = 10
+    Capybara.default_max_wait_time = 5
 
     # Reset Warden
     Warden.test_reset!

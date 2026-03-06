@@ -9,6 +9,7 @@ import {
   X,
 } from "@phosphor-icons/react";
 import { preferencesApi } from "apis/api";
+import Loader from "common/Loader/index";
 import { useUserContext } from "context/UserContext";
 import {
   Card,
@@ -222,11 +223,7 @@ const ModernPreferences: React.FC = () => {
   };
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
-      </div>
-    );
+    return <Loader className="min-h-screen" />;
   }
 
   return (

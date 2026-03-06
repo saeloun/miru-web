@@ -223,9 +223,13 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
       ? {
           name: company.name || "Company Name",
           email: company.email || "",
-          phone: company.phone || "",
-          taxId: company.taxId || "",
-          baseCurrency: company.baseCurrency || "USD",
+          phone:
+            company.phone ||
+            company.businessPhone ||
+            company.business_phone ||
+            "",
+          taxId: company.taxId || company.tax_id || "",
+          baseCurrency: company.baseCurrency || company.base_currency || "USD",
           address: formatAddress(company.address),
           logo: company.logo || "",
         }
@@ -248,7 +252,7 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
               <h1 className="text-2xl font-semibold text-gray-900">
-                {invoice ? "Edit Invoice" : "Create Invoice"}
+                {invoice ? "Edit Invoice" : "Generate Invoice"}
               </h1>
               <p className="text-sm text-gray-500 mt-1">
                 Fill in the details and preview your invoice in real-time

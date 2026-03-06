@@ -10,6 +10,7 @@ import {
   Client,
   InvoiceFormData,
 } from "../../services/invoiceApi";
+import { useUserContext } from "../../context/UserContext";
 import { toast } from "sonner";
 
 type ViewMode = "list" | "edit" | "create" | "preview";
@@ -23,6 +24,7 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
   initialMode = "list",
   initialInvoiceId,
 }) => {
+  const { company: currentCompany } = useUserContext();
   const [viewMode, setViewMode] = useState<ViewMode>(initialMode);
   const [selectedInvoiceId, setSelectedInvoiceId] = useState<string | null>(
     initialInvoiceId || null
@@ -37,6 +39,22 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
   >([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const fallbackCompany = {
+    name: currentCompany?.name || "Miru Time Tracking",
+    email: currentCompany?.email || "support@getmiru.com",
+    baseCurrency:
+      currentCompany?.baseCurrency || currentCompany?.base_currency || "USD",
+    dateFormat:
+      currentCompany?.dateFormat || currentCompany?.date_format || "MM/dd/yyyy",
+    address: currentCompany?.address || "",
+    phone:
+      currentCompany?.phone ||
+      currentCompany?.businessPhone ||
+      currentCompany?.business_phone ||
+      "",
+    taxId: currentCompany?.taxId || currentCompany?.tax_id || "",
+  };
 
   // Load initial data
   useEffect(() => {
@@ -438,15 +456,7 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
           {renderBackButton()}
           <InvoiceEditor
             clients={clients}
-            company={{
-              name: "Miru Time Tracking",
-              email: "support@getmiru.com",
-              baseCurrency: "USD",
-              dateFormat: "MM/dd/yyyy",
-              address: "",
-              phone: "",
-              taxId: "",
-            }}
+            company={fallbackCompany}
             onSave={handleSaveInvoice}
             onSend={handleSendInvoice}
             onPreview={handlePreview}
@@ -492,13 +502,7 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
                 : selectedInvoice.company.address || "",
           }
         : {
-            name: "Miru Time Tracking",
-            email: "support@getmiru.com",
-            baseCurrency: "USD",
-            dateFormat: "MM/dd/yyyy",
-            address: "",
-            phone: "",
-            taxId: "",
+            ...fallbackCompany,
           };
 
       return (
@@ -562,10 +566,7 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
             0
           ) || invoiceToPreview.amount,
         company: invoiceToPreview.company || {
-          name: "Miru Time Tracking",
-          email: "support@getmiru.com",
-          baseCurrency: "USD",
-          dateFormat: "MM/dd/yyyy",
+          ...fallbackCompany,
         },
       };
 

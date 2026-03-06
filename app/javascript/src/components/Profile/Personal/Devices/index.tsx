@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import { deviceApi } from "apis/api";
+import Loader from "common/Loader/index";
 import { MobileEditHeader } from "common/Mobile/MobileEditHeader";
 import { useProfileContext } from "context/Profile/ProfileContext";
 import { useUserContext } from "context/UserContext";
@@ -84,9 +85,7 @@ const AllocatedDevicesDetails = () => {
           />
         )}
         {isLoading ? (
-          <div className="flex min-h-[60vh] items-center justify-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
-          </div>
+          <Loader className="min-h-[60vh]" />
         ) : (
           <StaticPage devices={devices} />
         )}

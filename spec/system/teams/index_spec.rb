@@ -42,7 +42,6 @@ RSpec.describe "Team Member", type: :system, js: true do
       it "can view pagination", :pending do
         with_forgery_protection do
           visit "/teams"
-          sleep 1
           pagination_number = find(
             "button.m-1.mx-4.p-1.text-base.font-bold.text-miru-dark-purple-400.text-miru-han-purple-1000"
           ).text
@@ -54,10 +53,8 @@ RSpec.describe "Team Member", type: :system, js: true do
       it "can paginate to the next page", :pending do
         with_forgery_protection do
           visit "/teams"
-          sleep 1
           click_button "2"
 
-          sleep 1
           pagination_number = find(
             "button.m-1.mx-4.p-1.text-base.font-bold.text-miru-dark-purple-400.text-miru-han-purple-1000"
           ).text
@@ -69,7 +66,6 @@ RSpec.describe "Team Member", type: :system, js: true do
       it "displays ten users by default", :pending do
         with_forgery_protection do
           visit "/teams"
-          sleep 1
 
           within("tbody") do
             expect(page).to have_xpath(".//tr", count: 10)
@@ -80,14 +76,12 @@ RSpec.describe "Team Member", type: :system, js: true do
       it "can change number of users to show", :pending do
         with_forgery_protection do
           visit "/teams"
-          sleep 1
 
           within("tbody") do
             expect(page).to have_xpath(".//tr", count: 10)
           end
 
           find(".p-2.text-xs.font-bold.text-miru-han-purple-1000 option[value='20']").select_option
-          sleep 1
           within("tbody") do
             expect(page).to have_xpath(".//tr", count: 20)
           end

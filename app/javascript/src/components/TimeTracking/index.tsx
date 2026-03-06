@@ -113,9 +113,9 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
   useEffect(() => {
     sendGAPageView();
     fetchTimeTrackingData();
-    const defaultView = isDesktop ? "week" : "day";
+    const defaultView = "week";
     const savedView = localStorage.getItem("timeTrackingView");
-    setView(savedView || defaultView);
+    setView(savedView === "month" ? "month" : defaultView);
   }, []);
 
   useEffect(() => {
@@ -143,12 +143,6 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
       );
     };
   }, []);
-
-  useEffect(() => {
-    if (!isDesktop && view === "week") {
-      setView("day");
-    }
-  }, [isDesktop, view]);
 
   const fetchTimeTrackingData = async (employeeId?: number) => {
     try {
@@ -592,7 +586,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
         </div>
         <div>
           <div className="mb-4 flex items-center gap-2" role="tablist">
-            {["day", "week", "month"].map(currentView => (
+            {["week", "month"].map(currentView => (
               <Button
                 key={currentView}
                 variant={view === currentView ? "default" : "outline"}
@@ -622,7 +616,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
               setWeekDay={setWeekDay}
               weeklyTotalHours={weeklyTotalHours}
             />
-            {(view === "week" || view === "day") && (
+            {view === "week" && (
               <WeekDaySelector
                 dayInfo={dayInfo}
                 selectDate={selectDate}
@@ -705,10 +699,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
             />
           )}
         </div>
-        {(view === "week" ||
-          view === "day" ||
-          view === "month" ||
-          !isDesktop) && (
+        {(view === "week" || view === "month" || !isDesktop) && (
           <div className="mt-4" data-view={view}>
             <TimeEntriesDisplay
               selectedFullDate={selectedFullDate}

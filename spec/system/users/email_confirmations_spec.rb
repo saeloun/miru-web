@@ -35,7 +35,6 @@ RSpec.describe "Email confirmations", type: :system, js: true do
         visit "/signup"
 
         # Wait for React to render
-        sleep 2
 
         # Use direct ID selectors without within block to avoid ambiguity
         find("#first_name").fill_in with: user2.first_name

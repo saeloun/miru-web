@@ -21,13 +21,11 @@ RSpec.describe "Companies index page", type: :system, js: true do
         # Navigate to organization settings through UI
         visit "/"
         find('div:has([data-testid="user-menu"]), .avatar, [data-testid="user-avatar"]', match: :first).click
-        sleep 1
 
         if page.has_link?("Organization Settings", wait: 2)
           click_link "Organization Settings"
         elsif page.has_link?("Settings", wait: 2)
           click_link "Settings"
-          sleep 1
           click_link "Organization" if page.has_link?("Organization", wait: 2)
         else
           visit "/settings/organization"

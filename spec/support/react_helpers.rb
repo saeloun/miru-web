@@ -89,7 +89,7 @@ RSpec.configure do |config|
 
   config.before(:each, type: :system) do
     # Set longer default wait time for system specs
-    Capybara.default_max_wait_time = 10
+    Capybara.default_max_wait_time = 5
 
     # Clear cookies/storage for Playwright driver
     if defined?(page) && page.respond_to?(:driver)

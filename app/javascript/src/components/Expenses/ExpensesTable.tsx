@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
 import { ColumnDef } from "@tanstack/react-table";
+import Loader from "common/Loader/index";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
@@ -40,7 +40,6 @@ import {
   CurrencyDollar,
   Calendar,
   CheckCircle,
-  Clock,
   XCircle,
   ArrowUp,
   ArrowDown,
@@ -62,21 +61,24 @@ interface Expense {
   vendorId?: number;
   client?: string;
   project?: string;
-  status: "pending" | "approved" | "rejected";
   receipts?: string[];
-  notes?: string;
-  expenseType: "billable" | "non-billable";
-  createdBy: string;
-  createdAt: string;
+  expenseType: "business" | "personal";
+  createdBy?: string;
+  createdAt?: string;
+}
+
+interface ExpenseOption {
+  id: number;
+  name: string;
 }
 
 interface ExpensesData {
   expenses: Expense[];
-  categories: string[];
-  vendors: string[];
+  categories: ExpenseOption[];
+  vendors: ExpenseOption[];
   totalAmount: number;
-  pendingAmount: number;
-  approvedAmount: number;
+  businessAmount: number;
+  personalAmount: number;
 }
 
 const fetchExpenses = async (filter: string = "all"): Promise<ExpensesData> => {
@@ -84,15 +86,25 @@ const fetchExpenses = async (filter: string = "all"): Promise<ExpensesData> => {
     filter !== "all" ? `status=${filter}` : ""
   );
 
-  // Transform the response to match our interface
-  const expenses = response.data.expenses || [];
+  const expenses = (response.data.expenses || []).map(expense => ({
+    id: String(expense.id),
+    date: expense.date,
+    description: expense.description,
+    amount: Number(expense.amount) || 0,
+    category: expense.categoryName || "",
+    categoryId: Number(expense.expenseCategoryId) || 0,
+    vendor: expense.vendorName || "",
+    vendorId: Number(expense.vendorId) || 0,
+    receipts: expense.receipts || [],
+    expenseType: expense.expenseType === "personal" ? "personal" : "business",
+  }));
   const totalAmount = expenses.reduce((sum, e) => sum + e.amount, 0);
-  const pendingAmount = expenses
-    .filter(e => e.status === "pending")
+  const businessAmount = expenses
+    .filter(e => e.expenseType === "business")
     .reduce((sum, e) => sum + e.amount, 0);
 
-  const approvedAmount = expenses
-    .filter(e => e.status === "approved")
+  const personalAmount = expenses
+    .filter(e => e.expenseType === "personal")
     .reduce((sum, e) => sum + e.amount, 0);
 
   return {
@@ -100,13 +112,12 @@ const fetchExpenses = async (filter: string = "all"): Promise<ExpensesData> => {
     categories: response.data.categories || [],
     vendors: response.data.vendors || [],
     totalAmount,
-    pendingAmount,
-    approvedAmount,
+    businessAmount,
+    personalAmount,
   };
 };
 
 const ExpensesTable: React.FC = () => {
-  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { isAdminUser, company } = useUserContext();
   const [showAddDialog, setShowAddDialog] = useState(false);
@@ -123,7 +134,7 @@ const ExpensesTable: React.FC = () => {
     categoryId: 0,
     vendor: "",
     vendorId: 0,
-    expenseType: "billable",
+    expenseType: "business",
     notes: "",
   });
 
@@ -185,7 +196,7 @@ const ExpensesTable: React.FC = () => {
       categoryId: 0,
       vendor: "",
       vendorId: 0,
-      expenseType: "billable",
+      expenseType: "business",
       notes: "",
     });
     setSelectedExpense(null);
@@ -209,7 +220,7 @@ const ExpensesTable: React.FC = () => {
       categoryId: expense.categoryId,
       vendor: expense.vendor || "",
       vendorId: expense.vendorId || 0,
-      expenseType: expense.expenseType,
+      expenseType: expense.expenseType === "personal" ? "personal" : "business",
       notes: expense.notes || "",
     });
     setShowEditDialog(true);
@@ -226,103 +237,110 @@ const ExpensesTable: React.FC = () => {
     }
   };
 
+  const ensureVendorId = async (vendorName: string) => {
+    const trimmedVendorName = vendorName.trim();
+    if (!trimmedVendorName) return null;
+
+    const vendors = data?.vendors || [];
+    const existingVendor = vendors.find(
+      vendor => vendor.name.toLowerCase() === trimmedVendorName.toLowerCase()
+    );
+
+    if (existingVendor) return existingVendor.id;
+
+    const vendorResponse = await expensesApi.createVendors({
+      vendor: { name: trimmedVendorName },
+    });
+
+    return vendorResponse.data.id || null;
+  };
+
   const handleSubmitAdd = () => {
-    // For now, we'll use the category and vendor names directly since we have hardcoded lists
-    // In a real app, these would come from the API with IDs
-    const categoryMap: { [key: string]: number } = {
-      Salary: 1,
-      Rent: 2,
-      Furniture: 3,
-      Marketing: 4,
-      Training: 5,
-      Tax: 6,
-      Other: 7,
+    const submit = async () => {
+      try {
+        const categories = data?.categories || [];
+        const selectedCategory = categories.find(
+          category => category.name === formData.category
+        );
+        if (!selectedCategory) {
+          toast.error("Please select a valid category");
+
+          return;
+        }
+
+        const vendorId = await ensureVendorId(formData.vendor);
+
+        const payload = {
+          expense: {
+            date: formData.date,
+            description: formData.description,
+            amount: parseFloat(formData.amount),
+            expense_category_id: selectedCategory.id,
+            vendor_id: vendorId,
+            expense_type: formData.expenseType,
+            notes: formData.notes,
+          },
+        };
+        createMutation.mutate(payload);
+      } catch {
+        toast.error("Failed to create expense");
+      }
     };
 
-    const vendorMap: { [key: string]: number } = {
-      "Howe Inc": 1,
-      "Stanton-Buckridge": 2,
-      "Dare-Gottlieb": 3,
-      "Kuhn, Kohler and Boehm": 4,
-      "Littel-Raynor": 5,
-    };
-
-    const payload = {
-      expense: {
-        date: formData.date,
-        description: formData.description,
-        amount: parseFloat(formData.amount),
-        expense_category_id: categoryMap[formData.category] || 7, // Default to "Other"
-        vendor_id: vendorMap[formData.vendor] || null,
-        expense_type:
-          formData.expenseType === "billable" ? "business" : "personal",
-        notes: formData.notes,
-      },
-    };
-    createMutation.mutate(payload);
+    submit();
   };
 
   const handleSubmitEdit = () => {
     if (!selectedExpense) return;
 
-    const payload = {
-      expense: {
-        date: formData.date,
-        description: formData.description,
-        amount: parseFloat(formData.amount),
-        expense_category_id: formData.categoryId,
-        vendor_id: formData.vendorId || null,
-        expense_type:
-          formData.expenseType === "billable" ? "business" : "personal",
-      },
-    };
-    updateMutation.mutate({ id: selectedExpense.id, data: payload });
-  };
+    const submit = async () => {
+      try {
+        const categories = data?.categories || [];
+        const selectedCategory = categories.find(
+          category => category.name === formData.category
+        );
+        if (!selectedCategory && !formData.categoryId) {
+          toast.error("Please select a valid category");
 
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case "approved":
-        return (
-          <Badge className="bg-green-50 text-green-700 border-green-200 hover:bg-green-50 inline-flex items-center whitespace-nowrap px-2 py-1">
-            <CheckCircle
-              size={12}
-              className="mr-1 flex-shrink-0"
-              weight="fill"
-            />
-            <span className="text-xs font-medium">Approved</span>
-          </Badge>
-        );
-      case "rejected":
-        return (
-          <Badge className="bg-red-50 text-red-700 border-red-200 hover:bg-red-50 inline-flex items-center whitespace-nowrap px-2 py-1">
-            <XCircle size={12} className="mr-1 flex-shrink-0" weight="fill" />
-            <span className="text-xs font-medium">Rejected</span>
-          </Badge>
-        );
-      default:
-        return (
-          <Badge className="bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-50 inline-flex items-center whitespace-nowrap px-2 py-1">
-            <Clock size={12} className="mr-1 flex-shrink-0" weight="fill" />
-            <span className="text-xs font-medium">Pending</span>
-          </Badge>
-        );
-    }
+          return;
+        }
+
+        const vendorId =
+          formData.vendorId || (await ensureVendorId(formData.vendor));
+
+        const payload = {
+          expense: {
+            date: formData.date,
+            description: formData.description,
+            amount: parseFloat(formData.amount),
+            expense_category_id: selectedCategory?.id || formData.categoryId,
+            vendor_id: vendorId,
+            expense_type: formData.expenseType,
+          },
+        };
+        updateMutation.mutate({ id: selectedExpense.id, data: payload });
+      } catch {
+        toast.error("Failed to update expense");
+      }
+    };
+
+    submit();
   };
 
   const getTypeBadge = (type: string) =>
-    type === "billable" ? (
+    type === "business" ? (
       <Badge
         variant="outline"
         className="text-xs text-green-700 border-green-300 bg-green-50"
       >
-        Billable
+        Business
       </Badge>
     ) : (
       <Badge
         variant="outline"
         className="text-xs text-gray-600 border-gray-300"
       >
-        Non-billable
+        Personal
       </Badge>
     );
 
@@ -439,15 +457,6 @@ const ExpensesTable: React.FC = () => {
       cell: ({ row }) => getTypeBadge(row.original.expenseType),
     },
     {
-      accessorKey: "status",
-      header: () => (
-        <span className="text-xs font-medium text-gray-700 uppercase tracking-wider">
-          Status
-        </span>
-      ),
-      cell: ({ row }) => getStatusBadge(row.original.status),
-    },
-    {
       id: "receipts",
       header: () => (
         <span className="text-xs font-medium text-gray-700 uppercase tracking-wider">
@@ -507,11 +516,7 @@ const ExpensesTable: React.FC = () => {
   ];
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center h-96">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
-      </div>
-    );
+    return <Loader className="h-96" />;
   }
 
   if (error) {
@@ -527,9 +532,8 @@ const ExpensesTable: React.FC = () => {
 
   const expenses = data?.expenses || [];
   const totalAmount = data?.totalAmount || 0;
-  const pendingAmount = data?.pendingAmount || 0;
-  const approvedAmount = data?.approvedAmount || 0;
-  const rejectedAmount = totalAmount - pendingAmount - approvedAmount;
+  const businessAmount = data?.businessAmount || 0;
+  const personalAmount = data?.personalAmount || 0;
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -570,30 +574,30 @@ const ExpensesTable: React.FC = () => {
           <Card className="border-0 shadow-sm">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-gray-700">
-                Pending
+                Business
               </CardTitle>
-              <Clock size={20} className="text-yellow-600" />
+              <CheckCircle size={20} className="text-green-600" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-semibold text-gray-900">
-                {currencyFormat(baseCurrency, pendingAmount)}
+                {currencyFormat(baseCurrency, businessAmount)}
               </div>
-              <p className="text-xs text-gray-500 mt-1">Awaiting approval</p>
+              <p className="text-xs text-gray-500 mt-1">Business expenses</p>
             </CardContent>
           </Card>
 
           <Card className="border-0 shadow-sm">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-gray-700">
-                Approved
+                Personal
               </CardTitle>
-              <CheckCircle size={20} className="text-green-600" />
+              <XCircle size={20} className="text-gray-500" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-semibold text-gray-900">
-                {currencyFormat(baseCurrency, approvedAmount)}
+                {currencyFormat(baseCurrency, personalAmount)}
               </div>
-              <p className="text-xs text-gray-500 mt-1">Ready to reimburse</p>
+              <p className="text-xs text-gray-500 mt-1">Personal expenses</p>
             </CardContent>
           </Card>
 
@@ -709,13 +713,11 @@ const ExpensesTable: React.FC = () => {
                   <SelectValue placeholder="Select category" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="Salary">Salary</SelectItem>
-                  <SelectItem value="Rent">Rent</SelectItem>
-                  <SelectItem value="Furniture">Furniture</SelectItem>
-                  <SelectItem value="Marketing">Marketing</SelectItem>
-                  <SelectItem value="Training">Training</SelectItem>
-                  <SelectItem value="Tax">Tax</SelectItem>
-                  <SelectItem value="Other">Other</SelectItem>
+                  {(data?.categories || []).map(category => (
+                    <SelectItem key={category.id} value={category.name}>
+                      {category.name}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
@@ -747,8 +749,8 @@ const ExpensesTable: React.FC = () => {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="billable">Billable</SelectItem>
-                  <SelectItem value="non-billable">Non-billable</SelectItem>
+                  <SelectItem value="business">Business</SelectItem>
+                  <SelectItem value="personal">Personal</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -852,13 +854,11 @@ const ExpensesTable: React.FC = () => {
                   <SelectValue placeholder="Select category" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="Salary">Salary</SelectItem>
-                  <SelectItem value="Rent">Rent</SelectItem>
-                  <SelectItem value="Furniture">Furniture</SelectItem>
-                  <SelectItem value="Marketing">Marketing</SelectItem>
-                  <SelectItem value="Training">Training</SelectItem>
-                  <SelectItem value="Tax">Tax</SelectItem>
-                  <SelectItem value="Other">Other</SelectItem>
+                  {(data?.categories || []).map(category => (
+                    <SelectItem key={category.id} value={category.name}>
+                      {category.name}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
@@ -890,8 +890,8 @@ const ExpensesTable: React.FC = () => {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="billable">Billable</SelectItem>
-                  <SelectItem value="non-billable">Non-billable</SelectItem>
+                  <SelectItem value="business">Business</SelectItem>
+                  <SelectItem value="personal">Personal</SelectItem>
                 </SelectContent>
               </Select>
             </div>

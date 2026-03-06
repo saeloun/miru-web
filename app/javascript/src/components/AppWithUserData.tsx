@@ -1,6 +1,7 @@
 import { Roles } from "../constants/index";
 import React, { useEffect, useState } from "react";
 import UserContext from "../context/UserContext";
+import Loader from "../common/Loader/index";
 import Main from "./Main";
 
 const AppWithUserData = (props: any) => {
@@ -130,11 +131,7 @@ const AppWithUserData = (props: any) => {
 
   // Show loading spinner while fetching user data
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
-      </div>
-    );
+    return <Loader className="h-screen" />;
   }
 
   return (

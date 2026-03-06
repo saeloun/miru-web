@@ -15,7 +15,15 @@ class Api::V1::UsersController < Api::V1::BaseController
           calendar_connected: current_user.calendar_connected,
           current_workspace_id: current_user.current_workspace_id
         },
-        company: current_company&.attributes&.slice("id", "name", "base_currency", "fiscal_year_end", "date_format"),
+        company: current_company&.attributes&.slice(
+          "id",
+          "name",
+          "base_currency",
+          "fiscal_year_end",
+          "date_format",
+          "business_phone",
+          "tax_id"
+        ),
         company_role: current_user.roles.find_by(resource: current_company)&.name
       }
     else
