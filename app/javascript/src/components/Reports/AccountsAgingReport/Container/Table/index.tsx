@@ -42,36 +42,38 @@ const Table = ({ accountsAgingReport }) => {
   };
 
   return (
-    <table className="mt-4 min-w-full divide-y divide-gray-200">
-      {isDesktop && <TableHeader sortClientList={sortClientList} />}
-      <tbody className="flex flex-col divide-y divide-gray-200 overflow-scroll bg-white">
-        {loading ? (
-          <tr className="tracking-wide flex items-center justify-center text-base font-medium text-miru-han-purple-1000">
-            <td>Loading...</td>
-          </tr>
-        ) : clientList.length ? (
-          clientList.map((client, index) => (
-            <Fragment key={index}>
-              <TableRow
-                currency={accountsAgingReport.currency}
-                key={index}
-                report={client}
-              />
-            </Fragment>
-          ))
-        ) : (
-          <tr className="tracking-wide flex items-center justify-center text-base font-medium text-miru-han-purple-1000 md:h-50">
-            <td>No Data Found</td>
-          </tr>
-        )}
-        {clientList.length > 0 && isDesktop && (
-          <TableTotal
-            clientList={clientList}
-            currency={accountsAgingReport.currency}
-          />
-        )}
-      </tbody>
-    </table>
+    <div className="overflow-x-auto">
+      <table className="mt-4 min-w-[56rem] divide-y divide-gray-200 lg:min-w-full">
+        {isDesktop && <TableHeader sortClientList={sortClientList} />}
+        <tbody className="flex flex-col divide-y divide-gray-200 bg-white">
+          {loading ? (
+            <tr className="tracking-wide flex items-center justify-center text-base font-medium text-miru-han-purple-1000">
+              <td>Loading...</td>
+            </tr>
+          ) : clientList.length ? (
+            clientList.map((client, index) => (
+              <Fragment key={index}>
+                <TableRow
+                  currency={accountsAgingReport.currency}
+                  key={index}
+                  report={client}
+                />
+              </Fragment>
+            ))
+          ) : (
+            <tr className="tracking-wide flex items-center justify-center text-base font-medium text-miru-han-purple-1000 md:h-50">
+              <td>No Data Found</td>
+            </tr>
+          )}
+          {clientList.length > 0 && isDesktop && (
+            <TableTotal
+              clientList={clientList}
+              currency={accountsAgingReport.currency}
+            />
+          )}
+        </tbody>
+      </table>
+    </div>
   );
 };
 

@@ -36,7 +36,7 @@ const TableHeader = ({ sortClientList }) => (
         scope="col"
       >
         90+ <br />
-        dAYS
+        DAYS
       </th>
       <th
         className="w-2/12 pl-8 text-right text-xs font-normal tracking-widest text-miru-dark-purple-600"
