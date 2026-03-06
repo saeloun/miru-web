@@ -5,11 +5,11 @@ class Api::V1::TeamMembers::NotificationPreferencesController < Api::V1::Applica
     pref = notification_preference || build_default_preference
     authorize pref, policy_class: TeamMembers::NotificationPreferencePolicy
     render json: {
-      notification_enabled: pref.notification_enabled,
+      notification_enabled: preference_value(pref, :notification_enabled, false),
       invoice_email_notifications: invoice_email_notifications_enabled(pref),
-      payment_email_notifications: pref.payment_email_notifications,
-      timesheet_reminder_enabled: pref.timesheet_reminder_enabled,
-      unsubscribed_from_all: pref.unsubscribed_from_all
+      payment_email_notifications: preference_value(pref, :payment_email_notifications, true),
+      timesheet_reminder_enabled: preference_value(pref, :timesheet_reminder_enabled, true),
+      unsubscribed_from_all: preference_value(pref, :unsubscribed_from_all, false)
     }, status: 200
   end
 
@@ -22,11 +22,11 @@ class Api::V1::TeamMembers::NotificationPreferencesController < Api::V1::Applica
 
     pref.update!(notification_preference_params)
     render json: {
-      notification_enabled: pref.notification_enabled,
+      notification_enabled: preference_value(pref, :notification_enabled, false),
       invoice_email_notifications: invoice_email_notifications_enabled(pref),
-      payment_email_notifications: pref.payment_email_notifications,
-      timesheet_reminder_enabled: pref.timesheet_reminder_enabled,
-      unsubscribed_from_all: pref.unsubscribed_from_all,
+      payment_email_notifications: preference_value(pref, :payment_email_notifications, true),
+      timesheet_reminder_enabled: preference_value(pref, :timesheet_reminder_enabled, true),
+      unsubscribed_from_all: preference_value(pref, :unsubscribed_from_all, false),
       notice: "Preference updated successfully"
     }, status: 200
   end
@@ -42,14 +42,11 @@ class Api::V1::TeamMembers::NotificationPreferencesController < Api::V1::Applica
     def notification_preference_params
       permitted_attributes = [
         :notification_enabled,
+        :invoice_email_notifications,
         :payment_email_notifications,
         :timesheet_reminder_enabled,
         :unsubscribed_from_all
-      ]
-
-      if NotificationPreference.attribute_names.include?("invoice_email_notifications")
-        permitted_attributes << :invoice_email_notifications
-      end
+      ].select { |attribute| NotificationPreference.attribute_names.include?(attribute.to_s) }
 
       params.require(:notification_preference).permit(*permitted_attributes)
     end
@@ -72,8 +69,12 @@ class Api::V1::TeamMembers::NotificationPreferencesController < Api::V1::Applica
     end
 
     def invoice_email_notifications_enabled(preference)
-      return preference.invoice_email_notifications if preference.respond_to?(:invoice_email_notifications)
+      preference_value(preference, :invoice_email_notifications, true)
+    end
 
-      true
+    def preference_value(preference, attribute, fallback)
+      return fallback unless preference.respond_to?(attribute)
+
+      preference.public_send(attribute)
     end
 end
