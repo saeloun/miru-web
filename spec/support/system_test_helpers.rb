@@ -41,15 +41,9 @@ module SystemTestHelpers
 
   # Wait for React app to be fully initialized
   def wait_for_app_initialization
-    # Wait for React root to be present
     expect(page).to have_css("#react-root, [data-testid='app-root'], [data-testid='app-loaded']", wait: 10)
 
-    # Give React time to fully hydrate
-    sleep 0.5
-
-    # Check if we're on the expected page (usually time-tracking after login)
     if page.current_path == "/"
-      # We should be redirected to time-tracking
       expect(page).to have_current_path("/time-tracking", wait: 10)
     end
   end
@@ -64,10 +58,8 @@ module SystemTestHelpers
   def fill_in_react(field, with:)
     field_element = find_field(field)
     field_element.fill_in(with: with)
-
-    # Trigger React events
     field_element.native.send_keys(:tab)
-    sleep 0.1
+    expect(field_element.value).to eq(with)
   end
 
   # Click and wait for React to process
@@ -77,7 +69,7 @@ module SystemTestHelpers
     else
       click_on text_or_selector
     end
-    sleep 0.5
+    expect(page).to have_css("#react-root", wait: 10)
   end
 
   # Wait for specific content to appear
@@ -109,8 +101,7 @@ module SystemTestHelpers
       click_button "Sign Up"
     end
 
-    # Wait for redirect or confirmation
-    sleep 1
+    expect(page).to have_no_current_path("/signup", wait: 10)
   end
 
   # Helper for invoice-specific navigation

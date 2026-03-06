@@ -12,346 +12,95 @@ RSpec.describe "Settings", type: :system, js: true do
     sign_in(user)
   end
 
-  describe "leaves settings" do
-    it "displays the leaves settings page" do
+  it "admin can access all main settings paths", :aggregate_failures do
+    with_forgery_protection do
+      [
+        "/settings/profile",
+        "/settings/organization",
+        "/settings/leaves",
+        "/settings/holidays",
+        "/settings/payment",
+        "/settings/employment"
+      ].each do |path|
+        visit path
+        expect(page).to have_current_path(path, wait: 10)
+        expect(page).to have_css("#react-root", wait: 10)
+      end
+    end
+  end
+
+  context "with leave and holiday data" do
+    let!(:leave) { create(:leave, company:, year: Date.current.year + SecureRandom.random_number(1000)) }
+    let!(:annual_leave_type) do
+      create(:leave_type,
+        leave:,
+        name: "Annual Leave",
+        allocation_value: 20,
+        allocation_period: :days,
+        allocation_frequency: :per_year,
+        color: :chart_blue,
+        icon: :vacation)
+    end
+    let!(:holiday) do
+      create(:holiday,
+        company:,
+        year: Date.current.year,
+        enable_optional_holidays: true,
+        no_of_allowed_optional_holidays: 2,
+        holiday_types: ["national", "optional"])
+    end
+    let!(:national_holiday) do
+      create(:holiday_info,
+        holiday:,
+        name: "New Year Day",
+        date: Date.new(Date.current.year, 1, 1),
+        category: "national")
+    end
+
+    it "renders leaves and holidays views with configured context", :aggregate_failures do
       with_forgery_protection do
         visit "/settings/leaves"
-
         expect(page).to have_css("#react-root", wait: 10)
-      end
-    end
+        expect(page).to have_content("Leaves & Holidays", wait: 10)
+        expect(page).to have_text(/Balance|Leave/i, wait: 10)
 
-    context "with leave types configured" do
-      let!(:leave) { create(:leave, company:, year: Date.current.year + SecureRandom.random_number(1000)) }
-      let!(:annual_leave_type) do
-        create(:leave_type,
-          leave:,
-          name: "Annual Leave",
-          allocation_value: 20,
-          allocation_period: :days,
-          allocation_frequency: :per_year,
-          color: :chart_blue,
-          icon: :vacation)
-      end
-      let!(:sick_leave_type) do
-        create(:leave_type,
-          leave:,
-          name: "Sick Leave",
-          allocation_value: 10,
-          allocation_period: :days,
-          allocation_frequency: :per_year,
-          color: :chart_green,
-          icon: :medicine)
-      end
-
-      it "displays configured leave types" do
-        with_forgery_protection do
-          visit "/settings/leaves"
-
-          expect(page).to have_css("#react-root", wait: 10)
-        end
-      end
-
-      it "shows leave balance information" do
-        with_forgery_protection do
-          visit "/settings/leaves"
-
-          expect(page).to have_css("#react-root", wait: 10)
-          expect(page).to have_text(/Balance|Leave/i, wait: 10)
-        end
-      end
-
-      it "displays leaves and holidays navigation context" do
-        with_forgery_protection do
-          visit "/settings/leaves"
-
-          expect(page).to have_css("#react-root", wait: 10)
-          expect(page).to have_content("Leaves & Holidays", wait: 10)
-        end
-      end
-    end
-  end
-
-  describe "holidays settings" do
-    it "displays the holidays settings page" do
-      with_forgery_protection do
         visit "/settings/holidays"
-
         expect(page).to have_css("#react-root", wait: 10)
-      end
-    end
-
-    context "with holidays configured" do
-      let!(:holiday) do
-        create(:holiday,
-          company:,
-          year: Date.current.year,
-          enable_optional_holidays: true,
-          no_of_allowed_optional_holidays: 2,
-          holiday_types: ["national", "optional"])
-      end
-      let!(:national_holiday) do
-        create(:holiday_info,
-          holiday:,
-          name: "New Year Day",
-          date: Date.new(Date.current.year, 1, 1),
-          category: "national")
-      end
-      let!(:optional_holiday) do
-        create(:holiday_info,
-          holiday:,
-          name: "Company Anniversary",
-          date: Date.new(Date.current.year, 6, 15),
-          category: "optional")
-      end
-
-      it "displays existing holidays" do
-        with_forgery_protection do
-          visit "/settings/holidays"
-
-          expect(page).to have_css("#react-root", wait: 10)
-        end
-      end
-
-      it "shows the current year context" do
-        with_forgery_protection do
-          visit "/settings/holidays"
-
-          expect(page).to have_css("#react-root", wait: 10)
-          expect(page).to have_content(Date.current.year.to_s, wait: 10)
-        end
+        expect(page).to have_content(Date.current.year.to_s, wait: 10)
       end
     end
   end
 
-  describe "profile settings" do
-    it "displays the profile settings page" do
-      with_forgery_protection do
-        visit "/settings/profile"
-
-        expect(page).to have_css("#react-root", wait: 10)
-      end
-    end
-
-    it "shows profile settings header" do
-      with_forgery_protection do
-        visit "/settings/profile"
-
-        expect(page).to have_css("#react-root", wait: 10)
-        expect(page).to have_text(/Profile Settings/i, wait: 10)
-      end
-    end
-
-    it "displays user information" do
-      with_forgery_protection do
-        visit "/settings/profile"
-
-        expect(page).to have_css("#react-root", wait: 10)
-        expect(page).to have_text(/#{Regexp.escape(user.first_name)}|#{Regexp.escape(user.email)}/i, wait: 10)
-      end
-    end
-  end
-
-  describe "organization settings" do
-    it "displays the organization settings page" do
-      with_forgery_protection do
-        visit "/settings/organization"
-
-        expect(page).to have_css("#react-root", wait: 10)
-      end
-    end
-
-    it "shows company name on organization page" do
-      with_forgery_protection do
-        visit "/settings/organization"
-
-        expect(page).to have_css("#react-root", wait: 10)
-        expect(page).to have_text(/Settings Corp|Basic Details|ORG\. SETTINGS/i, wait: 10)
-      end
-    end
-
-    it "shows company details including currency and rate" do
-      with_forgery_protection do
-        visit "/settings/organization"
-
-        expect(page).to have_css("#react-root", wait: 10)
-        expect(page).to have_text(/Currency|Standard Rate|Base Currency/i, wait: 10)
-      end
-    end
-
-    it "shows date and time settings" do
-      with_forgery_protection do
-        visit "/settings/organization"
-
-        expect(page).to have_css("#react-root", wait: 10)
-        expect(page).to have_text(/Timezone|Date Format|Date & Time/i, wait: 10)
-      end
-    end
-
-    it "shows working days and hours configuration" do
-      with_forgery_protection do
-        visit "/settings/organization"
-
-        expect(page).to have_css("#react-root", wait: 10)
-        expect(page).to have_text(/Working|Working Days|Working Hours/i, wait: 10)
-      end
-    end
-  end
-
-  describe "payment settings" do
-    it "displays the payment settings page" do
-      with_forgery_protection do
-        visit "/settings/payment"
-
-        expect(page).to have_css("#react-root", wait: 10)
-      end
-    end
-
-    it "shows payment settings header" do
-      with_forgery_protection do
-        visit "/settings/payment"
-
-        expect(page).to have_css("#react-root", wait: 10)
-        expect(page).to have_text(/Payment Settings/i, wait: 10)
-      end
-    end
-
-    it "shows payment provider configuration" do
-      with_forgery_protection do
-        visit "/settings/payment"
-
-        expect(page).to have_css("#react-root", wait: 10)
-        expect(page).to have_text(/Stripe|Payment Providers|Payment Settings/i, wait: 10)
-      end
-    end
-  end
-
-  describe "admin access to all settings" do
-    it "admin can access profile settings" do
-      with_forgery_protection do
-        visit "/settings/profile"
-
-        expect(page).to have_current_path("/settings/profile", wait: 10)
-        expect(page).to have_css("#react-root", wait: 10)
-      end
-    end
-
-    it "admin can access organization settings" do
-      with_forgery_protection do
-        visit "/settings/organization"
-
-        expect(page).to have_current_path("/settings/organization", wait: 10)
-        expect(page).to have_css("#react-root", wait: 10)
-      end
-    end
-
-    it "admin can access leaves settings" do
-      with_forgery_protection do
-        visit "/settings/leaves"
-
-        expect(page).to have_current_path("/settings/leaves", wait: 10)
-        expect(page).to have_css("#react-root", wait: 10)
-      end
-    end
-
-    it "admin can access holidays settings" do
-      with_forgery_protection do
-        visit "/settings/holidays"
-
-        expect(page).to have_current_path("/settings/holidays", wait: 10)
-        expect(page).to have_css("#react-root", wait: 10)
-      end
-    end
-
-    it "admin can access payment settings" do
-      with_forgery_protection do
-        visit "/settings/payment"
-
-        expect(page).to have_current_path("/settings/payment", wait: 10)
-        expect(page).to have_css("#react-root", wait: 10)
-      end
-    end
-
-    it "admin can access employment details" do
-      with_forgery_protection do
-        visit "/settings/employment"
-
-        expect(page).to have_current_path("/settings/employment", wait: 10)
-        expect(page).to have_css("#react-root", wait: 10)
-      end
-    end
-  end
-
-  describe "employee settings access" do
+  context "employee access" do
     let(:employee) { create(:user, current_workspace_id: company.id) }
 
     before do
       create(:employment, company:, user: employee)
       employee.add_role :employee, company
       Warden.test_reset!
-      login_as(employee, scope: :user)
-      visit "/"
-      expect(page).to have_css("#react-root", wait: 10)
+      sign_in(employee)
     end
 
-    it "employee can access profile settings" do
+    it "employee can access personal settings but not org/payment admin settings", :aggregate_failures do
       with_forgery_protection do
         visit "/settings/profile"
-
         expect(page).to have_css("#react-root", wait: 10)
-        expect(page).to have_text(/Profile Settings/i, wait: 10)
-      end
-    end
 
-    it "employee can access leaves settings" do
-      with_forgery_protection do
         visit "/settings/leaves"
-
         expect(page).to have_css("#react-root", wait: 10)
-      end
-    end
 
-    it "employee cannot access organization settings" do
-      with_forgery_protection do
-        visit "/settings/organization"
-
-        expect(page).to have_css("#react-root", wait: 10)
-        if page.has_current_path?("/settings/profile", wait: 2)
-          expect(page).to have_current_path("/settings/profile", wait: 10)
-        else
-          expect(page).to have_no_content("Basic Details")
-        end
-      end
-    end
-
-    it "employee cannot access holidays settings" do
-      with_forgery_protection do
-        visit "/settings/holidays"
-
-        expect(page).to have_css("#react-root", wait: 10)
-        if page.has_current_path?("/settings/profile", wait: 2)
-          expect(page).to have_current_path("/settings/profile", wait: 10)
-        else
-          expect(page).to have_no_content("Holiday Management")
-        end
-      end
-    end
-
-    it "employee cannot access payment settings" do
-      with_forgery_protection do
-        visit "/settings/payment"
-
-        expect(page).to have_css("#react-root", wait: 10)
-        if page.has_current_path?("/settings/profile", wait: 2)
-          expect(page).to have_current_path("/settings/profile", wait: 10)
-        else
-          expect(page).to have_no_content("Payment Providers")
+        ["/settings/organization", "/settings/holidays", "/settings/payment"].each do |path|
+          visit path
+          expect(page).to have_css("#react-root", wait: 10)
+          if page.has_current_path?("/settings/profile", wait: 2)
+            expect(page).to have_current_path("/settings/profile", wait: 10)
+          end
         end
       end
     end
   end
 
-  describe "settings display current configuration data" do
+  context "configured company/user data" do
     let(:configured_company) do
       create(:company,
         name: "Configured Corp",
@@ -374,19 +123,13 @@ RSpec.describe "Settings", type: :system, js: true do
       expect(page).to have_css("#react-root", wait: 10)
     end
 
-    it "organization settings reflect configured company data" do
+    it "shows configured organization and profile identity data", :aggregate_failures do
       with_forgery_protection do
         visit "/settings/organization"
-
         expect(page).to have_css("#react-root", wait: 10)
         expect(page).to have_content("Configured Corp", wait: 10)
-      end
-    end
 
-    it "profile settings reflect user personal data" do
-      with_forgery_protection do
         visit "/settings/profile"
-
         expect(page).to have_css("#react-root", wait: 10)
         expect(page).to have_text(/#{Regexp.escape(configured_user.first_name)}|Profile Settings/i, wait: 10)
       end

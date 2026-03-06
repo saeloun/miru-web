@@ -52,6 +52,8 @@ RSpec.describe "Api::V1::Expense#index", type: :request do
                             "amount" => expense.amount.to_s,
                             "date" => CompanyDateFormattingService.new(expense.date, company:).process,
                             "expenseType" => expense.expense_type,
+                            "expenseCategoryId" => expense.expense_category_id,
+                            "vendorId" => expense.vendor_id,
                             "categoryName" => expense.expense_category.name,
                             "vendorName" => expense.vendor&.name,
                             "description" => expense.description,
