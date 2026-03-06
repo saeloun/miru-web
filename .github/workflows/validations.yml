@@ -158,6 +158,14 @@ jobs:
             spec_args: "spec/system/payments spec/system/settings"
           - shard_name: invoices
             spec_args: "spec/system/invoices"
+          - shard_name: teams-expenses
+            spec_args: "spec/system/teams spec/system/expenses"
+          - shard_name: reports-companies
+            spec_args: "spec/system/reports spec/system/companies"
+          - shard_name: tracking-users-profile
+            spec_args: "spec/system/time_tracking spec/system/users spec/system/profile"
+          - shard_name: misc-ui
+            spec_args: "spec/system/basic_system_spec.rb spec/system/dashboard_spec.rb spec/system/navigation_spec.rb spec/system/holidays_management_spec.rb spec/system/employment_details spec/system/invoice_pdf_download_spec.rb spec/system/outstanding_overdue_reports_spec.rb"
     services:
       postgres:
         image: postgres:16
@@ -224,6 +232,8 @@ jobs:
           bundle exec rails db:create
           bundle exec rails db:schema:load
           bundle exec rails db:migrate
+          bundle exec rake parallel:create[2]
+          bundle exec rake parallel:load_schema[2]
 
       - name: Enable PostgreSQL extensions
         run: |
@@ -231,8 +241,11 @@ jobs:
           bundle exec rails runner "ActiveRecord::Base.connection.execute('CREATE EXTENSION IF NOT EXISTS unaccent')"
 
       - name: Run system specs pack
+        env:
+          PARALLEL_TEST_PROCESSORS: 2
+          SYSTEM_SPECS_QUIET: 1
         run: |
-          bundle exec rspec ${{ matrix.spec_args }} --fail-fast
+          ./bin/system-specs-parallel ${{ matrix.spec_args }}
 
       - name: Upload system test artifacts
         if: always()
