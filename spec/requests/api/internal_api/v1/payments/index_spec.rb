@@ -3,15 +3,15 @@
 require "rails_helper"
 
 RSpec.describe "Api::V1::Payments#index", type: :request do
-  let(:company) { create(:company) }
+  let_it_be(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
-  let!(:client1) { create(:client, company:, name: "bob") }
-  let!(:client1_sent_invoice1) { create(:invoice, client: client1, company:, status: "sent") }
-  let!(:client1_sent_invoice2) { create(:invoice, client: client1, company:, status: "sent") }
-  let!(:payment1) { create(:payment, invoice: client1_sent_invoice1, status: "failed") }
-  let!(:payment2) { create(:payment, invoice: client1_sent_invoice1, status: "paid") }
-  let!(:payment3) { create(:payment, invoice: client1_sent_invoice2, status: "partially_paid") }
-  let!(:expected_api_response) { [payment3, payment2, payment1].map do | payment |
+  let_it_be(:client1) { create(:client, company:, name: "bob") }
+  let_it_be(:client1_sent_invoice1) { create(:invoice, client: client1, company:, status: "sent") }
+  let_it_be(:client1_sent_invoice2) { create(:invoice, client: client1, company:, status: "sent") }
+  let_it_be(:payment1) { create(:payment, invoice: client1_sent_invoice1, status: "failed") }
+  let_it_be(:payment2) { create(:payment, invoice: client1_sent_invoice1, status: "paid") }
+  let_it_be(:payment3) { create(:payment, invoice: client1_sent_invoice2, status: "partially_paid") }
+  let(:expected_api_response) { [payment3, payment2, payment1].map do | payment |
                                     {
                                       id: payment.id,
                                       clientName: client1.name,

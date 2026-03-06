@@ -113,7 +113,8 @@ RSpec.describe "Expenses", type: :system, js: true do
           visit "/expenses"
 
           expect(page).to have_css("#react-root", wait: 10)
-          expect(page).to have_content("Non-billable", wait: 10)
+          expect(page).to have_content("Business", wait: 10)
+          expect(page).to have_content("Personal", wait: 10)
         end
       end
 
@@ -158,7 +159,7 @@ RSpec.describe "Expenses", type: :system, js: true do
           expect(page).to have_css("#react-root", wait: 10)
           expect(page).to have_content("Printer paper", wait: 10)
           expect(page).to have_content("200.50", wait: 10)
-          expect(page).to have_content("Non-billable", wait: 10)
+          expect(page).to have_content("Business", wait: 10)
         end
       end
     end

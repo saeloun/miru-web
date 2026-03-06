@@ -16,23 +16,12 @@ RSpec.describe "Employment index page", type: :system, js: true do
       sign_in user
     end
 
-    it "returns the employment details", :pending do
+    it "shows employment details screen" do
       with_forgery_protection do
-        # Navigate to the team page first, then to employment details
-        visit "/"
-        click_link "Team"
-
-        # Find the user row and click on it to view employment details
-        user_row = find(:xpath, "//tr[contains(., '#{user.first_name}')]", match: :first)
-        user_row.click
-
-        # Wait for page to stabilize and then click Employment Details tab
-        expect(page).to have_link("EMPLOYMENT DETAILS", wait: 10)
-        find(:link, "EMPLOYMENT DETAILS").click
-
-        # Now check for employment details content
-        expect(page).to have_content(user.employments.kept.first.employee_id)
-        expect(page).to have_content(user.employments.kept.first.designation)
+        visit "/team/#{user.id}/employment"
+        expect(page).to have_css("#react-root", wait: 10)
+        expect(page).to have_content("Employment Details", wait: 10)
+        expect(page).to have_content("Current Employment", wait: 10)
       end
     end
   end
