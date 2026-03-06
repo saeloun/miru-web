@@ -3,19 +3,19 @@
 require "rails_helper"
 
 RSpec.describe "Api::V1::Expense#index", type: :request do
-  let(:company) { create(:company) }
-  let(:client) { create(:client, company:) }
+  let_it_be(:company) { create(:company) }
+  let_it_be(:client) { create(:client, company:) }
   let(:project) { create(:project, client: client_1) }
-  let(:expense_category) { create(:expense_category, company:) }
-  let(:expense_category_2) { create(:expense_category, company:) }
+  let_it_be(:expense_category) { create(:expense_category, company:) }
+  let_it_be(:expense_category_2) { create(:expense_category, company:) }
 
-  let(:vendor) { create(:vendor, company:) }
-  let(:expense1) { create(:expense, company:, expense_category:, vendor:) }
-  let(:expense2) { create(:expense, company:, expense_category: expense_category_2) }
+  let_it_be(:vendor) { create(:vendor, company:) }
+  let_it_be(:expense1) { create(:expense, company:, expense_category:, vendor:) }
+  let_it_be(:expense2) { create(:expense, company:, expense_category: expense_category_2) }
 
-  let(:book_keeper) { create(:user, current_workspace_id: company.id) }
-  let(:admin) { create(:user, current_workspace_id: company.id) }
-  let(:employee) { create(:user, current_workspace_id: company.id) }
+  let_it_be(:book_keeper) { create(:user, current_workspace_id: company.id) }
+  let_it_be(:admin) { create(:user, current_workspace_id: company.id) }
+  let_it_be(:employee) { create(:user, current_workspace_id: company.id) }
 
   before do
     create(:employment, company:, user: book_keeper)

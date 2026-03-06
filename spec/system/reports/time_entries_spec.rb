@@ -158,8 +158,7 @@ RSpec.describe "Time Entry Reports", type: :system, js: true do
         visit "/reports"
 
         expect(page).to have_css("#react-root", wait: 10)
-        expect(page).not_to have_content("Time Entry Report", wait: 5)
-          .or have_current_path("/time-tracking", wait: 10)
+        expect(page).to have_no_content("Time Entry Report", wait: 5).or have_current_path("/time-tracking", wait: 10)
       end
     end
   end
