@@ -23,7 +23,10 @@ RSpec.describe "Api::V1::Payments#index", type: :request do
                                       note: payment.note,
                                       transactionType: payment.transaction_type,
                                       amount: payment.amount,
-                                      status: payment.status
+                                      status: payment.status,
+                                      currency: payment.payment_currency || payment.invoice.currency || company.base_currency,
+                                      exchangeRate: payment.exchange_rate,
+                                      baseCurrencyAmount: payment.base_currency_amount
                                     }
                                   end
                                 }
