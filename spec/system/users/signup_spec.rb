@@ -115,7 +115,6 @@ RSpec.describe "User Signup", type: :system, js: true do
         accept_terms_of_service
 
         click_on "Sign Up"
-        sleep 1
         expect(page).to have_content "Email ID already exists"
       end
     end

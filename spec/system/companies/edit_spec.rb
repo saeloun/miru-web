@@ -20,14 +20,12 @@ RSpec.describe "Edit company", type: :system, js: true do
         visit "/"
         # Look for user menu or settings access in user dropdown
         find('div:has([data-testid="user-menu"]), .avatar, [data-testid="user-avatar"]', match: :first).click
-        sleep 1
 
         # Look for organization settings or settings option
         if page.has_link?("Organization Settings", wait: 2)
           click_link "Organization Settings"
         elsif page.has_link?("Settings", wait: 2)
           click_link "Settings"
-          sleep 1
           click_link "Organization" if page.has_link?("Organization", wait: 2)
         else
           # Direct navigation as fallback - might still work in some cases
@@ -66,13 +64,11 @@ RSpec.describe "Edit company", type: :system, js: true do
         # Navigate to organization settings through UI
         visit "/"
         find('div:has([data-testid="user-menu"]), .avatar, [data-testid="user-avatar"]', match: :first).click
-        sleep 1
 
         if page.has_link?("Organization Settings", wait: 2)
           click_link "Organization Settings"
         elsif page.has_link?("Settings", wait: 2)
           click_link "Settings"
-          sleep 1
           click_link "Organization" if page.has_link?("Organization", wait: 2)
         else
           visit "/settings/organization"

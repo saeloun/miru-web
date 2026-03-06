@@ -21,7 +21,6 @@ RSpec.describe "Employment index page", type: :system, js: true do
         # Navigate to the team page first, then to employment details
         visit "/"
         click_link "Team"
-        sleep 2
 
         # Find the user row and click on it to view employment details
         user_row = find(:xpath, "//tr[contains(., '#{user.first_name}')]", match: :first)
@@ -30,7 +29,6 @@ RSpec.describe "Employment index page", type: :system, js: true do
         # Wait for page to stabilize and then click Employment Details tab
         expect(page).to have_link("EMPLOYMENT DETAILS", wait: 10)
         find(:link, "EMPLOYMENT DETAILS").click
-        sleep 2
 
         # Now check for employment details content
         expect(page).to have_content(user.employments.kept.first.employee_id)

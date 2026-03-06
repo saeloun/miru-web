@@ -18,8 +18,7 @@ RSpec.describe "Search projects", type: :system, js: true do
     it "displays the matching client in the list" do
       with_forgery_protection do
         visit "/projects"
-        click_link "Projects"
-        sleep 2
+        expect(page).to have_content("Projects", wait: 10)
 
         # Look for search input with different selectors
         if page.has_css?('input[type="search"]')
@@ -38,8 +37,7 @@ RSpec.describe "Search projects", type: :system, js: true do
     it "displays a message when no match is found" do
       with_forgery_protection do
         visit "/projects"
-        click_link "Projects"
-        sleep 2
+        expect(page).to have_content("Projects", wait: 10)
 
         # Look for search input with different selectors
         if page.has_css?('input[type="search"]')
@@ -50,7 +48,7 @@ RSpec.describe "Search projects", type: :system, js: true do
           find("input", match: :first).fill_in with: "test project"
         end
 
-        expect(page).to have_content("No results found")
+        expect(page).to have_content("No results.")
       end
     end
   end

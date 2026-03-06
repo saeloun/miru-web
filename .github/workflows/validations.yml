@@ -135,6 +135,115 @@ jobs:
             log/test.log
           if-no-files-found: warn
 
+  system-specs:
+    name: System specs (${{ matrix.shard_name }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: read
+    if: github.event_name != 'push' || !contains(github.event.head_commit.message, 'skip ci')
+    env:
+      RAILS_ENV: test
+      DB_HOST: localhost
+      DB_USER: root
+      DB_PASS: password
+      CI: true
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - shard_name: clients-projects
+            spec_args: "spec/system/clients spec/system/projects"
+          - shard_name: payments-settings
+            spec_args: "spec/system/payments spec/system/settings"
+          - shard_name: invoices
+            spec_args: "spec/system/invoices"
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: miru_web_test
+          POSTGRES_USER: root
+          POSTGRES_PASSWORD: password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U root -d miru_web_test"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '4.0.1'
+          bundler-cache: true
+          bundler: latest
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9
+          run_install: false
+
+      - name: Get pnpm store directory
+        id: pnpm-cache-system
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_OUTPUT
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ steps.pnpm-cache-system.outputs.STORE_PATH }}
+            node_modules/.cache
+          key: ${{ runner.os }}-pnpm-system-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-system-
+            ${{ runner.os }}-pnpm-
+
+      - name: Install pnpm packages
+        run: |
+          PUPPETEER_SKIP_DOWNLOAD=true pnpm install --frozen-lockfile
+
+      - name: Install Playwright browser
+        run: |
+          pnpm exec playwright install --with-deps chromium
+
+      - name: Setup test database
+        run: |
+          bundle exec rails db:create
+          bundle exec rails db:schema:load
+          bundle exec rails db:migrate
+
+      - name: Enable PostgreSQL extensions
+        run: |
+          bundle exec rails runner "ActiveRecord::Base.connection.execute('CREATE EXTENSION IF NOT EXISTS pg_trgm')"
+          bundle exec rails runner "ActiveRecord::Base.connection.execute('CREATE EXTENSION IF NOT EXISTS unaccent')"
+
+      - name: Run system specs pack
+        run: |
+          bundle exec rspec ${{ matrix.spec_args }} --fail-fast
+
+      - name: Upload system test artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: system-spec-results-${{ matrix.shard_name }}
+          path: |
+            tmp/capybara/*.png
+            log/test.log
+          if-no-files-found: warn
+
   security-audit:
     name: Security audit
     runs-on: ubuntu-latest

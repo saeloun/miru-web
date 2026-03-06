@@ -136,7 +136,7 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold">
-            {invoice ? "Edit Invoice" : "Create Invoice"}
+            {invoice ? "Edit Invoice" : "Generate Invoice"}
           </h1>
           <p className="text-muted-foreground">
             {invoice

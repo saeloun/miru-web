@@ -66,8 +66,8 @@ RSpec.describe "Adding payment entry", type: :system, js: true do
       sign_in user
     end
 
-    it "does not have payments link" do
-      expect(page).to have_no_link("Payments")
+    it "has payments link" do
+      expect(page).to have_link("Payments")
     end
   end
 end

@@ -31,7 +31,6 @@ RSpec.describe "Time Tracking", type: :system, js: true, pending: "UI changes ne
         find('[role="option"]', text: user_two.full_name).click
 
         # Wait for the page to reload with the new user's data
-        sleep 3
 
         # Check if the timesheet entry is visible
         expect(page).to have_content(time_entry.note, wait: 10)

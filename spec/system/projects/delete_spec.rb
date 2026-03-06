@@ -18,15 +18,14 @@ RSpec.describe "Delete Project", type: :system, js: true do
     it "delete the project successfully" do
       with_forgery_protection do
         visit "/projects"
-        click_link "Projects"
-        sleep 2
+        expect(page).to have_content("Projects", wait: 10)
 
         expect(page).to have_content(project.name)
 
-        # Find project row by content
-        page.find(:xpath, "//tr[contains(., '#{project.name}')]").hover.click
-        find("#kebabMenu").click
-        click_button "Delete Project"
+        within(:xpath, "//tr[contains(., '#{project.name}')]") do
+          find("button#kebabMenu", wait: 10).click
+        end
+        find("[role='menuitem']", text: "Delete Project", wait: 10).click
         click_button "DELETE"
 
         expect(page).not_to have_content(project.name)

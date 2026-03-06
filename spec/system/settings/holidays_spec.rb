@@ -90,8 +90,11 @@ RSpec.describe "Settings - Holidays", type: :system, js: true do
         visit "/settings/holidays"
 
         expect(page).to have_css("#react-root", wait: 10)
-        expect(page).not_to have_content("Holiday Management")
-          .or have_current_path("/settings/profile", wait: 10)
+        if page.has_current_path?("/settings/profile", wait: 2)
+          expect(page).to have_current_path("/settings/profile", wait: 10)
+        else
+          expect(page).to have_no_content("Holiday Management")
+        end
       end
     end
   end

@@ -4,6 +4,7 @@ import { ROUTES } from "constants/routes";
 import React from "react";
 
 import ErrorPage from "common/Error";
+import Loader from "common/Loader/index";
 import Cookies from "js-cookie";
 import { Routes, Route, Outlet, Navigate } from "react-router-dom";
 import { dashboardUrl } from "utils/dashboardUrl";
@@ -37,12 +38,7 @@ const RestrictedRoute = ({ user, role, authorisedRoles }) => {
   const { loading } = useUserContext();
 
   if (loading || !user) {
-    // Show loading state while user data is being fetched
-    return (
-      <div className="flex h-screen items-center justify-center">
-        <div className="text-miru-dark-purple-1000">Loading...</div>
-      </div>
-    );
+    return <Loader className="h-screen" />;
   }
 
   if (authorisedRoles.includes(role)) {

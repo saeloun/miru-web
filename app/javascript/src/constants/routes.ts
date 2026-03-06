@@ -21,7 +21,7 @@ import TeamsRouteConfig from "components/Team/TeamsRouteConfig";
 import ClientsTable from "../components/Clients/ClientsTable";
 import ClientDetails from "../components/Clients/Details";
 import DashboardHome from "../components/Dashboard/DashboardHome";
-import Payments from "../components/payments";
+import PaymentsTable from "../components/payments/PaymentsTable";
 import ProjectDetails from "../components/Projects/Details";
 import ReportsTable from "../components/Reports/ReportsTable";
 import OutstandingInvoiceReport from "../components/Reports/OutstandingInvoiceReport";
@@ -65,7 +65,7 @@ const SubscriptionsRoutes = [
 ];
 
 const PaymentsRoutes = [
-  { path: "", Component: Payments },
+  { path: "", Component: PaymentsTable },
   { path: "*", Component: ErrorPage },
 ];
 

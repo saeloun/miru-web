@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { preferencesApi } from "apis/api";
+import Loader from "common/Loader/index";
 import { useUserContext } from "context/UserContext";
 import {
   Bell,
@@ -137,11 +138,7 @@ const Preferences: React.FC = () => {
   }, {} as Record<string, PreferenceItem[]>);
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
-      </div>
-    );
+    return <Loader className="min-h-screen" />;
   }
 
   return (

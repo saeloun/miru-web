@@ -300,7 +300,7 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
         </div>
         <Button onClick={onCreateInvoice}>
           <Plus className="h-4 w-4 mr-2" />
-          Create Invoice
+          Create New Invoice
         </Button>
       </div>
 

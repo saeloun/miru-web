@@ -74,7 +74,7 @@ RSpec.configure do |config|
   # Configure system tests with Playwright
   config.before(:each, type: :system) do
     driven_by :playwright
-    Capybara.default_max_wait_time = 10
+    Capybara.default_max_wait_time = 5
   end
 
   config.around do |example|

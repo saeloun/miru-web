@@ -39,7 +39,6 @@ RSpec.describe "Edit employment details", type: :system, js: true do
           find("[role='option']", match: :first).click
         end
 
-        sleep 3
         click_button "Update"
         expect(page).to have_content("Employment updated successfully")
       end
@@ -59,7 +58,6 @@ RSpec.describe "Edit employment details", type: :system, js: true do
         end
 
         click_button "Edit"
-        sleep 10
         click_button "+ Add Past Employment"
         find(:css, "#company_name").set("test company")
         find(:css, "#role").set("test role")

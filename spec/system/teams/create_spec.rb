@@ -18,13 +18,11 @@ RSpec.describe "Inviting team member", type: :system, js: true do
       before do
         with_forgery_protection do
           visit "/teams"
-          sleep 2
 
           click_on "New User"
           fill_in "First Name", with: "John"
           fill_in "Last Name", with: "Doe"
           fill_in "email", with: "john@example.com"
-          sleep 1  # Wait for form to be ready
           # Employee is already selected by default, so skip choosing it
           click_button "SEND INVITE"
         end
@@ -32,7 +30,6 @@ RSpec.describe "Inviting team member", type: :system, js: true do
 
       it "with valid inputs", :pending do
         # Wait for the user to be added or page to reload
-        sleep 2
         # Check if John Doe appears or if there's a success message
         if page.has_content?("John Doe")
           expect(page).to have_content("John Doe")

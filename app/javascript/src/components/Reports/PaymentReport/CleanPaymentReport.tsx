@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Loader from "common/Loader/index";
 import {
   Download,
   CalendarBlank,
@@ -299,11 +300,7 @@ const CleanPaymentReport: React.FC = () => {
   });
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center h-96">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
-      </div>
-    );
+    return <Loader className="h-96" />;
   }
 
   if (error) {

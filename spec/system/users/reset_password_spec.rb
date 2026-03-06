@@ -21,7 +21,6 @@ RSpec.describe "Reset Password", type: :system, js: true do
         fill_in "confirm_password", with: "Welcome@123"
         click_on "Reset password"
 
-        sleep 1
         expect(ActionMailer::Base.deliveries.last.subject).to eq("Miru Password Reset Successfully!")
         expect(ActionMailer::Base.deliveries.last.to.first).to eq(user.email)
       end

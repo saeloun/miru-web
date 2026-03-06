@@ -39,7 +39,6 @@ RSpec.describe "Editing team member details", type: :system, js: true do
           else
             # Fallback: click on the row first then look for edit options
             find("tr", text: employee_user.first_name).click
-            sleep 1
             find("button", text: "Edit").click rescue find("button:has(svg)").click
           end
 
@@ -74,7 +73,6 @@ RSpec.describe "Editing team member details", type: :system, js: true do
           else
             # Fallback: click on the row first then look for edit options
             find("tr", text: employee_user.first_name).click
-            sleep 1
             find("button", text: "Edit").click rescue find("button:has(svg)").click
           end
 

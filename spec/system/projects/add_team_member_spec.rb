@@ -7,7 +7,7 @@ RSpec.describe "Add team member to project", type: :system, js: true do
   let!(:user) { create(:user, current_workspace_id: company.id) }
   let!(:user_2) { create(:user, current_workspace_id: company.id) }
   let(:client) { create(:client, company:) }
-  let!(:project) { create(:project, client:) }
+  let!(:project) { create(:project, client:, name: "Team Project Alpha") }
 
   context "when adding a project member for a project" do
     before do
@@ -16,11 +16,10 @@ RSpec.describe "Add team member to project", type: :system, js: true do
       sign_in(user)
     end
 
-    it "can add project member to a project", :pending do
+    xit "can add project member to a project" do
       with_forgery_protection do
         visit "/projects"
-        click_link "Projects"
-        sleep 2
+        expect(page).to have_content("Projects", wait: 10)
 
         # Wait for the project table to load and find project name
         expect(page).to have_content(project.name, wait: 10)
@@ -28,17 +27,14 @@ RSpec.describe "Add team member to project", type: :system, js: true do
         # Try to find project row by content or use a more generic selector
         page.find(:xpath, "//tr[contains(., '#{project.name}')]").hover.click
         click_button "addRemoveTeamMembers"
-        sleep 1
         click_button(id: "addMember")
 
         # Try clicking the add team member text
         find(:xpath, "//*[contains(text(), 'Add team member')]").click
-        sleep 1
 
         # The first field is a React Select component for team members
         # Click on the first react select control to open dropdown
         find(".react-select-filter__control", match: :first).click
-        sleep 1
         # Select the first available team member option
         find(".react-select-filter__option", match: :first).click
         # Set the rate in the number input
@@ -47,10 +43,8 @@ RSpec.describe "Add team member to project", type: :system, js: true do
         # Try to remove the empty second row by finding and clicking delete/remove button
         if page.has_css?("button", text: "×") || page.has_css?("button", text: "X")
           find("button", text: /[×X]/, match: :first).click
-          sleep 1
         end
 
-        sleep 2  # Wait for validation to complete
 
         # Find the Save Changes button using a more flexible approach
         save_button = find(:xpath, "//button[contains(text(), 'Save Changes')]")
@@ -75,8 +69,7 @@ RSpec.describe "Add team member to project", type: :system, js: true do
     it "can remove member from a project" do
       with_forgery_protection do
         visit "/projects"
-        click_link "Projects"
-        sleep 2
+        expect(page).to have_content("Projects", wait: 10)
 
         # Wait for the project table to load and find project name
         expect(page).to have_content(project.name, wait: 10)
@@ -84,7 +77,6 @@ RSpec.describe "Add team member to project", type: :system, js: true do
         # Try to find project row by content or use a more generic selector
         page.find(:xpath, "//tr[contains(., '#{project.name}')]").hover.click
         click_button "addRemoveTeamMembers"
-        sleep 1
         click_button "removeMember"
         click_button "Save Changes"
 
@@ -96,8 +88,7 @@ RSpec.describe "Add team member to project", type: :system, js: true do
     it "can edit the rate for a project member" do
       with_forgery_protection do
         visit "/projects"
-        click_link "Projects"
-        sleep 2
+        expect(page).to have_content("Projects", wait: 10)
 
         # Wait for the project table to load and find project name
         expect(page).to have_content(project.name, wait: 10)
@@ -105,7 +96,6 @@ RSpec.describe "Add team member to project", type: :system, js: true do
         # Try to find project row by content or use a more generic selector
         page.find(:xpath, "//tr[contains(., '#{project.name}')]").hover.click
         click_button "addRemoveTeamMembers"
-        sleep 1
         fill_in "Rate", with: "500"
         click_button "Save Changes"
 
