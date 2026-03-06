@@ -25,13 +25,21 @@ class PaymentsPresenter
                   transactionType: payment.transaction_type,
                   amount: payment.amount,
                   status: payment.status,
-                  currency: payment.payment_currency || payment.invoice.currency || current_company.base_currency,
-                  exchangeRate: payment.exchange_rate,
-                  baseCurrencyAmount: payment.base_currency_amount
+                  currency: attribute_value(payment, :payment_currency) || payment.invoice.currency || current_company.base_currency,
+                  exchangeRate: attribute_value(payment, :exchange_rate),
+                  baseCurrencyAmount: attribute_value(payment, :base_currency_amount)
                 }
               end,
       total: payments.size,
       baseCurrency: current_company.base_currency
     }
   end
+
+  private
+
+    def attribute_value(record, attribute)
+      return unless record.respond_to?(attribute)
+
+      record.public_send(attribute)
+    end
 end
