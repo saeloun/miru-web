@@ -67,7 +67,7 @@ const InvoicePreviewContainer = ({
           }
         />
         <div
-          className="mt-2 flex w-full items-center justify-center py-3 px-12 text-miru-han-purple-1000"
+          className="mt-2 flex w-full items-center justify-center px-4 py-3 text-miru-han-purple-1000 sm:px-12"
           onClick={() => {
             setActiveSection(sections.generateInvoice);
           }}
@@ -90,7 +90,7 @@ const InvoicePreviewContainer = ({
       />
       <div className="flex w-full gap-2 p-4 shadow-c1">
         <Button
-          className="flex w-1/2 items-center justify-center px-4 py-2"
+          className="flex flex-1 items-center justify-center px-4 py-2"
           style="primary"
           onClick={handleSaveInvoice}
         >
@@ -100,7 +100,7 @@ const InvoicePreviewContainer = ({
           </span>
         </Button>
         <Button
-          className="flex w-1/2 items-center justify-center px-4 py-2"
+          className="flex flex-1 items-center justify-center px-4 py-2"
           style="primary"
           onClick={() => {
             handleSendButtonClick();

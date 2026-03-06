@@ -16,9 +16,9 @@ const InvoicePreview = ({
   handleSendButtonClick,
 }) => (
   <div className="bg-miru-gray-100 p-4">
-    <div className="flex justify-between pb-5">
+    <div className="flex items-start gap-2 pb-5">
       <span
-        className="w-1/2 text-left text-xs font-bold leading-4 text-miru-han-purple-1000"
+        className="flex-1 text-left text-xs font-bold leading-4 text-miru-han-purple-1000"
         onClick={() => {
           if (selectedClient) {
             setActiveSection(sections.invoicePreview);
@@ -28,7 +28,7 @@ const InvoicePreview = ({
       >
         Invoice Preview
       </span>
-      <div className="flex w-1/2 justify-between pl-2">
+      <div className="flex min-w-0 flex-1 justify-between">
         <span className="text-right text-sm font-normal leading-5 text-miru-dark-purple-1000">
           Total
         </span>
@@ -39,7 +39,7 @@ const InvoicePreview = ({
     </div>
     <div className="flex w-full gap-2">
       <Button
-        className="flex w-1/2 items-center justify-center px-4 py-2"
+        className="flex flex-1 items-center justify-center px-4 py-2"
         style="primary"
         onClick={handleSaveInvoice}
       >
@@ -49,7 +49,7 @@ const InvoicePreview = ({
         </span>
       </Button>
       <Button
-        className="flex w-1/2 items-center justify-center px-4 py-2"
+        className="flex flex-1 items-center justify-center px-4 py-2"
         style="primary"
         onClick={() => {
           handleSendButtonClick();

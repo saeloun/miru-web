@@ -92,7 +92,7 @@ const InvoiceInfo = ({
       </div>
       {showEditButton && (
         <div
-          className="mt-2 flex w-full items-center justify-center py-3 px-12 text-miru-han-purple-1000"
+          className="mt-2 flex w-full items-center justify-center px-4 py-3 text-miru-han-purple-1000 sm:px-12"
           onClick={() => {
             setActiveSection(sections.generateInvoice);
           }}

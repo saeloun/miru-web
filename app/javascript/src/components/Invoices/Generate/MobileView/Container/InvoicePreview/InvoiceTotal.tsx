@@ -21,11 +21,11 @@ const InvoiceTotal = ({
 }) => {
   const AmountComponent = ({ label, value, currencyName }) => (
     <div className="flex w-full items-center justify-between">
-      <span className="mb-2 w-1/2 text-right text-sm font-normal leading-5 text-miru-dark-purple-1000">
+      <span className="mb-2 w-1/2 pr-2 text-right text-sm font-normal leading-5 text-miru-dark-purple-1000">
         {label}
       </span>
       <span
-        className={`text-right text-sm font-bold leading-5 text-miru-dark-purple-1000 ${strikeAmount}`}
+        className={`w-1/2 text-right text-sm font-bold leading-5 text-miru-dark-purple-1000 ${strikeAmount}`}
       >
         {currencyFormat(currencyName, value)}
       </span>
@@ -69,7 +69,7 @@ const InvoiceTotal = ({
       </div>
       {showEditButton && (
         <div
-          className="mt-2 flex w-full items-center justify-center py-3 px-12 text-miru-han-purple-1000"
+          className="mt-2 flex w-full items-center justify-center px-4 py-3 text-miru-han-purple-1000 sm:px-12"
           onClick={() => {
             setActiveSection(sections.generateInvoice);
           }}
