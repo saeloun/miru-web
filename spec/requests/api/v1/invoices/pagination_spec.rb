@@ -3,9 +3,9 @@
 require "rails_helper"
 
 RSpec.describe "Api::V1::Invoices#index", type: :request do
-  let(:company) { create(:company) }
+  let_it_be(:company) { create(:company) }
+  let_it_be(:client) { create(:client, company: company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
-  let(:client) { create(:client, company: company) }
 
   before do
     create(:employment, company: company, user: user)

@@ -4,8 +4,6 @@ require "rails_helper"
 
 RSpec.describe "Api::V1::Expense#index", type: :request do
   let_it_be(:company) { create(:company) }
-  let_it_be(:client) { create(:client, company:) }
-  let(:project) { create(:project, client: client_1) }
   let_it_be(:expense_category) { create(:expense_category, company:) }
   let_it_be(:expense_category_2) { create(:expense_category, company:) }
 
