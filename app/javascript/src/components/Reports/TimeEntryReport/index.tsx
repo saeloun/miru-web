@@ -418,14 +418,19 @@ const TimeEntryReport: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <div className="bg-white shadow-sm border-b">
+      <div className="border-b bg-card shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
-            <h1 className="text-2xl font-semibold text-gray-900">
-              Time Entry Report
-            </h1>
+            <div>
+              <h1 className="text-2xl font-semibold text-foreground">
+                Time Entry Report
+              </h1>
+              <p className="text-sm text-muted-foreground">
+                Review hours logged by person, client, and project.
+              </p>
+            </div>
 
             <div className="flex items-center space-x-3">
               {/* Date Range Preset Selector */}

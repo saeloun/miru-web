@@ -19,7 +19,7 @@ const TotalHoursChart = ({
   );
 
   return (
-    <div className="bg-miru-gray-100 py-10 px-10">
+    <div className="rounded-xl border border-border bg-card py-10 px-10">
       <div className="flex justify-end">
         <select
           className="focus:outline-none
@@ -30,20 +30,14 @@ const TotalHoursChart = ({
           py-1.5
           text-base
           font-normal
-          text-miru-han-purple-1000
+          text-foreground
           transition
           ease-in-out"
           onChange={({ target: { value } }) => setTimeframe(value)}
         >
-          <option className="text-miru-dark-purple-600" value="week">
-            THIS WEEK
-          </option>
-          <option className="text-miru-dark-purple-600" value="month">
-            THIS MONTH
-          </option>
-          <option className="text-miru-dark-purple-600" value="year">
-            THIS YEAR
-          </option>
+          <option value="week">THIS WEEK</option>
+          <option value="month">THIS MONTH</option>
+          <option value="year">THIS YEAR</option>
         </select>
       </div>
       {project && (

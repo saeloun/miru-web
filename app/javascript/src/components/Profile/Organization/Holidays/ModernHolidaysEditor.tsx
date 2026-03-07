@@ -47,23 +47,27 @@ const ModernHolidaysEditor = ({
   handleHolidateNameChange,
   updateHolidayDetails,
 }) => (
-  <div className="min-h-screen bg-gray-50 font-geist">
+  <div className="min-h-screen bg-muted/40 font-geist">
     {/* Header */}
-    <div className="bg-white border-b border-gray-200">
+    <div className="bg-card border-b border-border">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between py-6">
           <div>
-            <h1 className="text-2xl font-geist-semibold text-gray-900">
+            <h1 className="text-2xl font-geist-semibold text-foreground">
               Holiday Management
             </h1>
-            <p className="text-sm text-gray-600 mt-1 font-geist-regular">
+            <p className="text-sm text-muted-foreground mt-1 font-geist-regular">
               Configure public and optional holidays for {currentYear}
             </p>
           </div>
           <div className="flex items-center gap-3">
             {/* Year Selector */}
-            <div className="flex items-center gap-2 bg-gray-100 rounded-lg px-3 py-2">
-              <Calendar size={16} className="text-gray-600" weight="bold" />
+            <div className="flex items-center gap-2 bg-muted rounded-lg px-3 py-2">
+              <Calendar
+                size={16}
+                className="text-muted-foreground"
+                weight="bold"
+              />
               <select
                 value={currentYear}
                 onChange={e => setCurrentYear(parseInt(e.target.value))}
@@ -104,10 +108,10 @@ const ModernHolidaysEditor = ({
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Public Holidays */}
         <div className="lg:col-span-2">
-          <Card className="border-gray-200 shadow-sm">
+          <Card className="border-border shadow-sm">
             <CardHeader className="pb-4">
               <CardTitle className="text-lg font-geist-semibold flex items-center gap-2">
-                <Gift className="h-5 w-5 text-gray-600" weight="bold" />
+                <Gift className="h-5 w-5 text-muted-foreground" weight="bold" />
                 Public Holidays
               </CardTitle>
             </CardHeader>
@@ -118,11 +122,11 @@ const ModernHolidaysEditor = ({
                     {holidayList.map((holiday, index) => (
                       <div
                         key={index}
-                        className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg"
+                        className="flex items-start gap-3 p-3 bg-muted/40 rounded-lg"
                       >
                         <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-3">
                           <div className="relative">
-                            <Label className="text-xs font-geist-medium text-gray-500 uppercase tracking-wider mb-1">
+                            <Label className="text-xs font-geist-medium text-muted-foreground uppercase tracking-wider mb-1">
                               Date
                             </Label>
                             <div
@@ -166,7 +170,7 @@ const ModernHolidaysEditor = ({
                               )}
                           </div>
                           <div>
-                            <Label className="text-xs font-geist-medium text-gray-500 uppercase tracking-wider mb-1">
+                            <Label className="text-xs font-geist-medium text-muted-foreground uppercase tracking-wider mb-1">
                               Holiday Name
                             </Label>
                             <Input
@@ -192,7 +196,7 @@ const ModernHolidaysEditor = ({
                     <Button
                       variant="outline"
                       onClick={() => handleAddHoliday(false)}
-                      className="w-full border-dashed border-gray-300 text-gray-600 hover:text-gray-800 hover:border-gray-400 font-geist-medium"
+                      className="w-full border-dashed border-border text-muted-foreground hover:text-foreground hover:border-gray-400 font-geist-medium"
                     >
                       <Plus size={16} weight="bold" className="mr-2" />
                       Add Holiday
@@ -202,10 +206,10 @@ const ModernHolidaysEditor = ({
                   <div className="text-center py-8">
                     <Gift
                       size={48}
-                      className="mx-auto mb-3 text-gray-300"
+                      className="mx-auto mb-3 text-muted-foreground"
                       weight="thin"
                     />
-                    <p className="text-gray-500 font-geist-regular mb-3">
+                    <p className="text-muted-foreground font-geist-regular mb-3">
                       No public holidays configured
                     </p>
                     <Button
@@ -223,12 +227,12 @@ const ModernHolidaysEditor = ({
           </Card>
 
           {/* Optional Holidays */}
-          <Card className="border-gray-200 shadow-sm mt-6">
+          <Card className="border-border shadow-sm mt-6">
             <CardHeader className="pb-4">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-lg font-geist-semibold flex items-center gap-2">
                   <CalendarPlus
-                    className="h-5 w-5 text-gray-600"
+                    className="h-5 w-5 text-muted-foreground"
                     weight="bold"
                   />
                   Optional Holidays
@@ -246,7 +250,7 @@ const ModernHolidaysEditor = ({
                   ) : (
                     <ToggleLeft
                       size={32}
-                      className="text-gray-400"
+                      className="text-muted-foreground"
                       weight="fill"
                     />
                   )}
@@ -257,9 +261,9 @@ const ModernHolidaysEditor = ({
               <CardContent>
                 <div className="space-y-4">
                   {/* Configuration */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pb-4 border-b border-gray-200">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pb-4 border-b border-border">
                     <div>
-                      <Label className="text-xs font-geist-medium text-gray-500 uppercase tracking-wider">
+                      <Label className="text-xs font-geist-medium text-muted-foreground uppercase tracking-wider">
                         Total Allowed
                       </Label>
                       <Input
@@ -272,7 +276,7 @@ const ModernHolidaysEditor = ({
                       />
                     </div>
                     <div>
-                      <Label className="text-xs font-geist-medium text-gray-500 uppercase tracking-wider">
+                      <Label className="text-xs font-geist-medium text-muted-foreground uppercase tracking-wider">
                         Frequency
                       </Label>
                       <div className="mt-1">
@@ -307,11 +311,11 @@ const ModernHolidaysEditor = ({
                         {optionalHolidaysList.map((optionalHoliday, index) => (
                           <div
                             key={index}
-                            className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg"
+                            className="flex items-start gap-3 p-3 bg-muted/40 rounded-lg"
                           >
                             <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-3">
                               <div className="relative">
-                                <Label className="text-xs font-geist-medium text-gray-500 uppercase tracking-wider mb-1">
+                                <Label className="text-xs font-geist-medium text-muted-foreground uppercase tracking-wider mb-1">
                                   Date
                                 </Label>
                                 <div
@@ -358,7 +362,7 @@ const ModernHolidaysEditor = ({
                                   )}
                               </div>
                               <div>
-                                <Label className="text-xs font-geist-medium text-gray-500 uppercase tracking-wider mb-1">
+                                <Label className="text-xs font-geist-medium text-muted-foreground uppercase tracking-wider mb-1">
                                   Holiday Name
                                 </Label>
                                 <Input
@@ -384,7 +388,7 @@ const ModernHolidaysEditor = ({
                         <Button
                           variant="outline"
                           onClick={() => handleAddHoliday(true)}
-                          className="w-full border-dashed border-gray-300 text-gray-600 hover:text-gray-800 hover:border-gray-400 font-geist-medium"
+                          className="w-full border-dashed border-border text-muted-foreground hover:text-foreground hover:border-gray-400 font-geist-medium"
                         >
                           <Plus size={16} weight="bold" className="mr-2" />
                           Add Optional Holiday
@@ -394,10 +398,10 @@ const ModernHolidaysEditor = ({
                       <div className="text-center py-6">
                         <CalendarPlus
                           size={36}
-                          className="mx-auto mb-2 text-gray-300"
+                          className="mx-auto mb-2 text-muted-foreground"
                           weight="thin"
                         />
-                        <p className="text-sm text-gray-500 font-geist-regular mb-3">
+                        <p className="text-sm text-muted-foreground font-geist-regular mb-3">
                           No optional holidays configured
                         </p>
                         <Button
@@ -420,7 +424,7 @@ const ModernHolidaysEditor = ({
 
         {/* Sidebar Summary */}
         <div className="space-y-6">
-          <Card className="border-gray-200 shadow-sm">
+          <Card className="border-border shadow-sm">
             <CardHeader className="pb-4">
               <CardTitle className="text-lg font-geist-semibold">
                 Summary
@@ -429,14 +433,14 @@ const ModernHolidaysEditor = ({
             <CardContent>
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-600 font-geist-regular">
+                  <span className="text-sm text-muted-foreground font-geist-regular">
                     Year
                   </span>
                   <span className="font-geist-semibold">{currentYear}</span>
                 </div>
                 <Separator />
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-600 font-geist-regular">
+                  <span className="text-sm text-muted-foreground font-geist-regular">
                     Public Holidays
                   </span>
                   <span className="font-geist-semibold">
@@ -446,7 +450,7 @@ const ModernHolidaysEditor = ({
                 {enableOptionalHolidays && (
                   <>
                     <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-600 font-geist-regular">
+                      <span className="text-sm text-muted-foreground font-geist-regular">
                         Optional Holidays
                       </span>
                       <span className="font-geist-semibold">
@@ -454,7 +458,7 @@ const ModernHolidaysEditor = ({
                       </span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-600 font-geist-regular">
+                      <span className="text-sm text-muted-foreground font-geist-regular">
                         Allowed per Employee
                       </span>
                       <span className="font-geist-semibold">

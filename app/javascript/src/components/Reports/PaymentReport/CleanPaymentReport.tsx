@@ -317,16 +317,16 @@ const CleanPaymentReport: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen bg-background p-6">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-semibold text-gray-900">
+            <h1 className="text-2xl font-semibold text-foreground">
               Payment Report
             </h1>
-            <p className="text-sm text-gray-500 mt-1">
-              Track and analyze your payment transactions
+            <p className="mt-1 text-sm text-muted-foreground">
+              Track payment flow and collection trends.
             </p>
           </div>
         </div>

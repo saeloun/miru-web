@@ -564,6 +564,9 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
               <h1 className="text-3xl font-bold tracking-tight text-foreground">
                 Time Tracking
               </h1>
+              <p className="text-sm text-muted-foreground">
+                Log work by week or month. Keep entries clear and current.
+              </p>
             </div>
           )}
           {!isDesktop && isAdminUser && (
@@ -580,7 +583,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
           )}
           {!isAdminUser && user && (
             <div className="text-sm text-muted-foreground">
-              Viewing entries for: {user.first_name} {user.last_name}
+              Entries for {user.first_name} {user.last_name}
             </div>
           )}
         </div>

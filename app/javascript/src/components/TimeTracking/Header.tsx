@@ -69,7 +69,7 @@ const Header = ({
   };
 
   return (
-    <Card className="w-full shadow-sm border border-border bg-card backdrop-blur-sm rounded-lg mb-6">
+    <Card className="mb-6 w-full rounded-lg border border-border bg-card shadow-sm">
       <CardContent className="p-5">
         <div className="flex w-full items-center justify-between gap-4">
           <Button
@@ -95,7 +95,7 @@ const Header = ({
                 <div className="flex items-center gap-3">
                   <Calendar className="h-6 w-6 text-primary" />
                   <h2
-                    className="text-2xl font-black text-foreground cursor-pointer hover:text-primary transition-colors tracking-tight"
+                    className="cursor-pointer text-xl font-semibold tracking-tight text-foreground transition-colors hover:text-primary"
                     onClick={() => {
                       !isDesktop && setOpenOsCalendar(!openOsCalendar);
                     }}

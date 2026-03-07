@@ -316,23 +316,25 @@ const ModernOutstandingInvoiceReport: React.FC = () => {
 
   if (error) {
     return (
-      <div className="flex items-center justify-center h-96">
+      <div className="flex h-96 items-center justify-center">
         <div className="text-center">
-          <Warning size={48} className="mx-auto mb-4 text-gray-400" />
-          <p className="text-gray-600">Failed to load report data</p>
+          <Warning size={48} className="mx-auto mb-4 text-muted-foreground" />
+          <p className="text-muted-foreground">Failed to load report data</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6 p-6 max-w-7xl mx-auto">
+    <div className="mx-auto max-w-7xl space-y-6 p-6">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">
-            Outstanding & Overdue Report
+          <h1 className="text-3xl font-bold text-foreground">
+            Outstanding and Overdue
           </h1>
-          <p className="text-gray-600 mt-1">Outstanding & Overdue Invoices</p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Follow up on invoices that still need attention.
+          </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <Button
@@ -348,7 +350,7 @@ const ModernOutstandingInvoiceReport: React.FC = () => {
             Overdue
           </Button>
           <Button variant="outline" onClick={refreshData}>
-            Refresh Data
+            Refresh
           </Button>
         </div>
       </div>

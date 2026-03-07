@@ -96,16 +96,7 @@ jobs:
 
       - name: Setup test database
         run: |
-          bundle exec rails db:create
-          bundle exec rails db:schema:load
-          bundle exec rails db:migrate
-          bundle exec rake parallel:create[2]
-          bundle exec rake parallel:load_schema[2]
-
-      - name: Enable PostgreSQL extensions
-        run: |
-          bundle exec rails runner "ActiveRecord::Base.connection.execute('CREATE EXTENSION IF NOT EXISTS pg_trgm')"
-          bundle exec rails runner "ActiveRecord::Base.connection.execute('CREATE EXTENSION IF NOT EXISTS unaccent')"
+          bundle exec rake parallel:prepare[2]
 
       - name: Run parallel tests (excluding system specs)
         env:
@@ -158,14 +149,18 @@ jobs:
             spec_args: "spec/system/payments spec/system/settings"
           - shard_name: invoices
             spec_args: "spec/system/invoices"
+          - shard_name: reports
+            spec_args: "spec/system/reports"
+          - shard_name: outstanding-overdue
+            spec_args: "spec/system/outstanding_overdue_reports_spec.rb"
           - shard_name: teams-expenses
             spec_args: "spec/system/teams spec/system/expenses"
-          - shard_name: reports-companies
-            spec_args: "spec/system/reports spec/system/companies"
-          - shard_name: tracking-users-profile
-            spec_args: "spec/system/time_tracking spec/system/users spec/system/profile"
+          - shard_name: time-tracking
+            spec_args: "spec/system/time_tracking"
+          - shard_name: users-profile
+            spec_args: "spec/system/users spec/system/profile"
           - shard_name: misc-ui
-            spec_args: "spec/system/basic_system_spec.rb spec/system/dashboard_spec.rb spec/system/navigation_spec.rb spec/system/holidays_management_spec.rb spec/system/employment_details spec/system/invoice_pdf_download_spec.rb spec/system/outstanding_overdue_reports_spec.rb"
+            spec_args: "spec/system/basic_system_spec.rb spec/system/dashboard_spec.rb spec/system/navigation_spec.rb spec/system/holidays_management_spec.rb spec/system/employment_details spec/system/invoice_pdf_download_spec.rb spec/system/companies"
     services:
       postgres:
         image: postgres:16
@@ -231,14 +226,6 @@ jobs:
         run: |
           bundle exec rails db:create
           bundle exec rails db:schema:load
-          bundle exec rails db:migrate
-          bundle exec rake parallel:create[2]
-          bundle exec rake parallel:load_schema[2]
-
-      - name: Enable PostgreSQL extensions
-        run: |
-          bundle exec rails runner "ActiveRecord::Base.connection.execute('CREATE EXTENSION IF NOT EXISTS pg_trgm')"
-          bundle exec rails runner "ActiveRecord::Base.connection.execute('CREATE EXTENSION IF NOT EXISTS unaccent')"
 
       - name: Run system specs pack
         env:

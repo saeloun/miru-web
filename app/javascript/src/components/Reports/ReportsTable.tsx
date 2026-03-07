@@ -148,70 +148,72 @@ const ReportsTable: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 p-4 w-full">
+    <div className="w-full space-y-6 p-4">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Reports</h1>
-          <p className="text-gray-600 mt-1">
-            Generate insights and analytics from your business data
+          <h1 className="text-3xl font-bold text-foreground">Reports</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Understand revenue, time, and outstanding work at a glance.
           </p>
         </div>
-        <Button variant="outline" className="bg-white">
+        <Button variant="outline" className="bg-card">
           <Calendar size={20} className="mr-2" />
-          Schedule Reports
+          Schedule reports
         </Button>
       </div>
 
       {/* Stats Cards */}
       <div className="grid gap-4 md:grid-cols-4">
-        <Card className="border-gray-200">
+        <Card className="border-border">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
               Available Reports
             </CardTitle>
-            <ChartBar size={20} className="text-gray-400" />
+            <ChartBar size={20} className="text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.totalReports}</div>
-            <p className="text-xs text-gray-600 mt-1">Ready to generate</p>
+            <p className="mt-1 text-xs text-muted-foreground">Ready to run</p>
           </CardContent>
         </Card>
 
-        <Card className="border-gray-200">
+        <Card className="border-border">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Time Reports</CardTitle>
-            <Clock size={20} className="text-gray-400" />
+            <Clock size={20} className="text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.timeReports}</div>
-            <p className="text-xs text-gray-600 mt-1">Track time & hours</p>
+            <p className="mt-1 text-xs text-muted-foreground">Hours and time</p>
           </CardContent>
         </Card>
 
-        <Card className="border-gray-200">
+        <Card className="border-border">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
               Financial Reports
             </CardTitle>
-            <CurrencyDollar size={20} className="text-gray-400" />
+            <CurrencyDollar size={20} className="text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.financialReports}</div>
-            <p className="text-xs text-gray-600 mt-1">Revenue & invoices</p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              Revenue and billing
+            </p>
           </CardContent>
         </Card>
 
-        <Card className="border-gray-200">
+        <Card className="border-border">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
               Recently Viewed
             </CardTitle>
-            <FileText size={20} className="text-gray-400" />
+            <FileText size={20} className="text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.recentlyViewed}</div>
-            <p className="text-xs text-gray-600 mt-1">Last 7 days</p>
+            <p className="mt-1 text-xs text-muted-foreground">Last 7 days</p>
           </CardContent>
         </Card>
       </div>
@@ -230,7 +232,7 @@ const ReportsTable: React.FC = () => {
       {/* Available Reports */}
       {availableReports.length > 0 && (
         <div className="space-y-4">
-          <h2 className="text-lg font-semibold text-gray-900">
+          <h2 className="text-lg font-semibold text-foreground">
             Available Reports
           </h2>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -240,21 +242,21 @@ const ReportsTable: React.FC = () => {
               return (
                 <Card
                   key={report.id}
-                  className="border-gray-200 hover:shadow-lg transition-all cursor-pointer group"
+                  className="group cursor-pointer border-border transition-all hover:shadow-lg"
                   onClick={() => navigate(report.url)}
                 >
                   <CardHeader>
                     <div className="flex items-start justify-between">
                       <div
                         className={cn(
-                          "p-2 rounded-lg bg-gray-100 group-hover:bg-gray-200 transition-colors"
+                          "rounded-lg bg-muted p-2 transition-colors group-hover:bg-accent"
                         )}
                       >
-                        <Icon size={24} className="text-gray-700" />
+                        <Icon size={24} className="text-foreground" />
                       </div>
                       <ArrowRight
                         size={20}
-                        className="text-gray-400 group-hover:text-gray-600 transition-colors"
+                        className="text-muted-foreground transition-colors group-hover:text-foreground"
                       />
                     </div>
                     <CardTitle className="text-lg mt-4">

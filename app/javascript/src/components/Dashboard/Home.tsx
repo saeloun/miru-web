@@ -21,11 +21,27 @@ const isSafeInternalPath = (p: string): boolean => {
   return true;
 };
 
+const pathAllowedForRole = (path: string, role: Roles): boolean =>
+  ROUTES.some(route => {
+    if (!route.authorisedRoles.includes(role)) return false;
+
+    const basePath = route.path.replace("/*", "");
+    if (basePath === Paths.DASHBOARD) {
+      return path === Paths.DASHBOARD;
+    }
+
+    return path === basePath || path.startsWith(`${basePath}/`);
+  });
+
 const redirectUrl = role => {
   const lastVisitedPage = Cookies.get("lastVisitedPage");
   let url = dashboardUrl(role);
 
-  if (lastVisitedPage && isSafeInternalPath(lastVisitedPage)) {
+  if (
+    lastVisitedPage &&
+    isSafeInternalPath(lastVisitedPage) &&
+    pathAllowedForRole(lastVisitedPage, role)
+  ) {
     url = lastVisitedPage;
   }
 
@@ -61,7 +77,7 @@ const Home = (props: Iprops) => {
   const role = companyRole || company_role;
 
   return (
-    <div className="h-full overflow-x-scroll p-0 font-geist lg:absolute lg:top-0 lg:bottom-0 lg:right-0 lg:w-5/6 lg:px-20 lg:py-3">
+    <div className="min-h-full font-geist">
       <Routes>
         <Route element={<RootElement role={role} />} path="/" />
         {ROUTES.map(parentRoute => (

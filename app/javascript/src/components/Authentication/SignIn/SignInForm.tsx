@@ -1,4 +1,4 @@
-import { MIRU_APP_URL, Paths } from "constants/index";
+import { Paths } from "constants/index";
 
 import React, { useRef, useState } from "react";
 
@@ -12,7 +12,7 @@ import { toast } from "sonner";
 
 import { signInFormInitialValues, signInFormValidationSchema } from "./utils";
 
-import FooterLinks from "../FooterLinks";
+import AuthThemeToggle from "../AuthThemeToggle";
 import PrivacyPolicyModal from "../SignUp/PrivacyPolicyModal";
 import TermsOfServiceModal from "../SignUp/TermsOfServiceModal";
 
@@ -93,21 +93,30 @@ const SignInForm = () => {
     !(values.email?.trim() && values?.password?.trim());
 
   return (
-    <div className="relative flex w-full flex-col items-center justify-center px-8 pt-5vh md:px-0 lg:w-1/2">
-      <div className="d-block lg:hidden">
-        <a href={MIRU_APP_URL} rel="noreferrer noopener">
-          <img
-            alt="miru-logo"
-            className="d-block mx-auto mb-4 h-10 w-10 md:mb-10 md:h-16 md:w-16 lg:mb-20"
-            src={MiruLogoSVG}
-          />
-        </a>
+    <div className="flex min-h-screen items-center justify-center bg-neutral-100 px-4 py-8 text-neutral-900 dark:bg-slate-900 dark:text-slate-100">
+      <div className="absolute right-4 top-4">
+        <AuthThemeToggle />
       </div>
-      <div className="mx-auto w-full md:w-1/2 lg:mt-auto lg:w-352">
-        <h1 className="text-center font-geist text-2xl font-extrabold text-miru-han-purple-1000 md:text-3xl lg:text-4.5xl">
-          Welcome back!
-        </h1>
-        <div className="pt-2vh lg:pt-5vh">
+      <div className="w-full max-w-md rounded-2xl border border-black/10 bg-white/90 p-6 shadow-2xl backdrop-blur sm:p-8 dark:border-white/10 dark:bg-slate-800/90">
+        <div className="mb-6 space-y-2 text-center">
+          <div className="mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-xl border border-black/10 bg-white shadow-sm dark:border-white/15 dark:bg-slate-900">
+            <img
+              alt="Miru"
+              className="h-7 w-7 object-contain"
+              src={MiruLogoSVG}
+            />
+          </div>
+          <p className="text-xs uppercase tracking-[0.18em] text-neutral-500 dark:text-neutral-400">
+            Miru
+          </p>
+          <h1 className="text-2xl font-semibold text-neutral-900 dark:text-white">
+            Sign in
+          </h1>
+          <p className="text-sm text-neutral-600 dark:text-neutral-400">
+            Continue to your workspace.
+          </p>
+        </div>
+        <div>
           <Formik
             initialValues={signInFormInitialValues}
             validateOnBlur={false}
@@ -127,9 +136,9 @@ const SignInForm = () => {
                       hasError={errors.email && touched.email}
                       id="email"
                       label="Email"
-                      labelClassName="p-0"
+                      labelClassName="p-0 text-neutral-700 dark:text-neutral-300"
                       name="email"
-                      inputBoxClassName="border-miru-gray-300 bg-white placeholder:text-miru-dark-purple-200 focus:border-miru-han-purple-400 focus-visible:ring-miru-han-purple-1000"
+                      inputBoxClassName="h-11 border-black/10 bg-white text-neutral-900 placeholder:text-neutral-500 focus:border-neutral-400 focus-visible:ring-neutral-400 dark:border-white/15 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-400 dark:focus:border-slate-500 dark:focus-visible:ring-slate-500"
                       setFieldError={setFieldError}
                       setFieldValue={setFieldValue}
                     />
@@ -143,9 +152,9 @@ const SignInForm = () => {
                       hasError={errors.password && touched.password}
                       id="password"
                       label="Password"
-                      labelClassName="p-0"
+                      labelClassName="p-0 text-neutral-700 dark:text-neutral-300"
                       name="password"
-                      inputBoxClassName="border-miru-gray-300 bg-white placeholder:text-miru-dark-purple-200 focus:border-miru-han-purple-400 focus-visible:ring-miru-han-purple-1000"
+                      inputBoxClassName="h-11 border-black/10 bg-white text-neutral-900 placeholder:text-neutral-500 focus:border-neutral-400 focus-visible:ring-neutral-400 dark:border-white/15 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-400 dark:focus:border-slate-500 dark:focus-visible:ring-slate-500"
                       setFieldError={setFieldError}
                       setFieldValue={setFieldValue}
                       type="password"
@@ -158,21 +167,21 @@ const SignInForm = () => {
                   <div>
                     <button
                       type="submit"
-                      className={`form__button whitespace-nowrap ${
+                      className={`mt-2 w-full rounded-lg border px-4 py-2.5 text-sm font-medium transition ${
                         isBtnDisabled(values)
-                          ? "cursor-not-allowed border-transparent bg-indigo-100 hover:border-transparent"
-                          : "cursor-pointer"
+                          ? "cursor-not-allowed border-transparent bg-neutral-300 text-neutral-500 dark:bg-neutral-700 dark:text-neutral-400"
+                          : "cursor-pointer border-black/10 bg-neutral-900 text-white hover:bg-neutral-800 dark:border-white/15 dark:bg-white dark:text-black dark:hover:bg-neutral-200"
                       }`}
                     >
                       Sign In
                     </button>
                   </div>
-                  <div className="relative flex items-center py-7">
-                    <div className="flex-grow border-t border-miru-gray-1000" />
-                    <span className="mx-4 flex-shrink text-xs text-miru-dark-purple-1000">
+                  <div className="relative flex items-center py-5">
+                    <div className="flex-grow border-t border-black/10 dark:border-white/10" />
+                    <span className="mx-4 flex-shrink text-xs text-neutral-500 dark:text-neutral-500">
                       or
                     </span>
-                    <div className="flex-grow border-t border-miru-gray-1000" />
+                    <div className="flex-grow border-t border-black/10 dark:border-white/10" />
                   </div>
                 </Form>
               );
@@ -199,7 +208,7 @@ const SignInForm = () => {
                     value={csrfToken}
                   />
                   <button
-                    className="form__button whitespace-nowrap"
+                    className="flex w-full items-center justify-center rounded-lg border border-black/10 bg-white px-4 py-2.5 text-sm font-medium text-neutral-900 transition hover:bg-neutral-100 dark:border-white/15 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-700"
                     type="submit"
                     onClick={handleGoogleAuth}
                   >
@@ -222,27 +231,44 @@ const SignInForm = () => {
               />
             )}
           </div>
-          <p className="mb-3 pt-7 text-center font-geist text-xs font-normal not-italic text-miru-dark-purple-1000">
+          <p className="mb-2 pt-6 text-center text-sm text-neutral-500 dark:text-slate-400">
             <span className="form__link inline cursor-pointer">
               <a href={Paths.FORGOT_PASSWORD}>
-                <span className="mr-2 inline-block">Forgot Password?</span>
+                <span className="inline-block text-neutral-700 hover:text-black dark:text-neutral-300 dark:hover:text-white">
+                  Forgot password?
+                </span>
               </a>
             </span>
           </p>
-          <p className="pb-10 text-center font-geist text-xs font-normal not-italic text-miru-dark-purple-1000">
-            Don&apos;t have an account?&nbsp;
-            <span className="form__link inline cursor-pointer">
+          <p className="text-center text-sm text-neutral-500 dark:text-neutral-400">
+            Don&apos;t have an account?{" "}
+            <span className="inline cursor-pointer">
               <a href={Paths.SIGNUP}>
-                <span className="mr-2 inline-block">Sign Up</span>
+                <span className="inline-block text-black hover:text-neutral-700 dark:text-white dark:hover:text-neutral-200">
+                  Sign up
+                </span>
               </a>
             </span>
           </p>
+          <div className="mt-6 flex items-center justify-center gap-2 text-xs text-neutral-500 dark:text-slate-400">
+            <button
+              className="hover:text-neutral-700 dark:hover:text-slate-100"
+              onClick={handlePrivacyPolicy}
+              type="button"
+            >
+              Privacy
+            </button>
+            <span>•</span>
+            <button
+              className="hover:text-neutral-700 dark:hover:text-slate-100"
+              onClick={handleTermsOfService}
+              type="button"
+            >
+              Terms
+            </button>
+          </div>
         </div>
       </div>
-      <FooterLinks
-        handlePrivacyPolicy={handlePrivacyPolicy}
-        handleTermsOfService={handleTermsOfService}
-      />
     </div>
   );
 };

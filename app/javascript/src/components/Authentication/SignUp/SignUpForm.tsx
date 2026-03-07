@@ -1,9 +1,8 @@
-import { MIRU_APP_URL, Paths } from "constants/index";
+import { Paths } from "constants/index";
 
 import React, { useRef, useState } from "react";
 
 import { authenticationApi } from "apis/api";
-import CustomCheckbox from "common/CustomCheckbox";
 import { InputErrors, InputField } from "common/FormikFields";
 import { Formik, Form, FormikProps } from "formik";
 import { GoogleSVG, MiruLogoSVG } from "miruIcons";
@@ -12,8 +11,7 @@ import { useNavigate } from "react-router-dom";
 import PrivacyPolicyModal from "./PrivacyPolicyModal";
 import TermsOfServiceModal from "./TermsOfServiceModal";
 import { signUpFormInitialValues, signUpFormValidationSchema } from "./utils";
-
-import FooterLinks from "../FooterLinks";
+import AuthThemeToggle from "../AuthThemeToggle";
 
 interface SignUpFormValues {
   first_name: string;
@@ -96,21 +94,30 @@ const SignUpForm = () => {
     errors?.confirm_password?.trim();
 
   return (
-    <div className="relative flex w-full flex-col items-center justify-center px-8 pt-5vh md:px-0 lg:w-1/2">
-      <div className="mx-auto mt-auto md:w-1/2 lg:w-352">
-        <div className="d-block lg:hidden">
-          <a href={MIRU_APP_URL} rel="noreferrer noopener">
+    <div className="flex min-h-screen items-center justify-center bg-neutral-100 px-4 py-8 text-neutral-900 dark:bg-slate-900 dark:text-slate-100">
+      <div className="absolute right-4 top-4">
+        <AuthThemeToggle />
+      </div>
+      <div className="w-full max-w-lg rounded-2xl border border-black/10 bg-white/90 p-6 shadow-2xl backdrop-blur sm:p-8 dark:border-white/10 dark:bg-slate-800/90">
+        <div className="mb-6 space-y-2 text-center">
+          <div className="mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-xl border border-black/10 bg-white shadow-sm dark:border-white/15 dark:bg-slate-900">
             <img
-              alt="miru-logo"
-              className="d-block mx-auto mb-4 h-10 w-10 md:mb-10 md:h-16 md:w-16 lg:mb-20"
+              alt="Miru"
+              className="h-7 w-7 object-contain"
               src={MiruLogoSVG}
             />
-          </a>
+          </div>
+          <p className="text-xs uppercase tracking-[0.18em] text-neutral-500 dark:text-neutral-400">
+            Miru
+          </p>
+          <h1 className="text-2xl font-semibold text-neutral-900 dark:text-white">
+            Create account
+          </h1>
+          <p className="text-sm text-neutral-600 dark:text-neutral-400">
+            Start your workspace in minutes.
+          </p>
         </div>
-        <h1 className="text-center font-geist text-2xl font-extrabold text-miru-han-purple-1000 md:text-3xl lg:text-4.5xl">
-          Signup for Miru
-        </h1>
-        <div className="pt-2vh lg:pt-5vh">
+        <div>
           <Formik
             validateOnBlur
             initialValues={signUpFormInitialValues}
@@ -136,8 +143,9 @@ const SignUpForm = () => {
                         hasError={errors.first_name && touched.first_name}
                         id="first_name"
                         label="First Name"
-                        labelClassName="p-0"
+                        labelClassName="p-0 text-neutral-700 dark:text-neutral-300"
                         name="first_name"
+                        inputBoxClassName="h-11 border-black/10 bg-white text-neutral-900 placeholder:text-neutral-500 focus:border-neutral-400 focus-visible:ring-neutral-400 dark:border-white/15 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-400 dark:focus:border-slate-500 dark:focus-visible:ring-slate-500"
                         setFieldError={setFieldError}
                         setFieldValue={setFieldValue}
                       />
@@ -151,8 +159,9 @@ const SignUpForm = () => {
                         hasError={errors.last_name && touched.last_name}
                         id="last_name"
                         label="Last Name"
-                        labelClassName="p-0"
+                        labelClassName="p-0 text-neutral-700 dark:text-neutral-300"
                         name="last_name"
+                        inputBoxClassName="h-11 border-black/10 bg-white text-neutral-900 placeholder:text-neutral-500 focus:border-neutral-400 focus-visible:ring-neutral-400 dark:border-white/15 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-400 dark:focus:border-slate-500 dark:focus-visible:ring-slate-500"
                         setFieldError={setFieldError}
                         setFieldValue={setFieldValue}
                       />
@@ -167,8 +176,9 @@ const SignUpForm = () => {
                       hasError={errors.email && touched.email}
                       id="email"
                       label="Email"
-                      labelClassName="p-0"
+                      labelClassName="p-0 text-neutral-700 dark:text-neutral-300"
                       name="email"
+                      inputBoxClassName="h-11 border-black/10 bg-white text-neutral-900 placeholder:text-neutral-500 focus:border-neutral-400 focus-visible:ring-neutral-400 dark:border-white/15 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-400 dark:focus:border-slate-500 dark:focus-visible:ring-slate-500"
                       setFieldError={setFieldError}
                       setFieldValue={setFieldValue}
                     />
@@ -182,8 +192,9 @@ const SignUpForm = () => {
                       hasError={errors.password && touched.password}
                       id="password"
                       label="Password"
-                      labelClassName="p-0"
+                      labelClassName="p-0 text-neutral-700 dark:text-neutral-300"
                       name="password"
+                      inputBoxClassName="h-11 border-black/10 bg-white text-neutral-900 placeholder:text-neutral-500 focus:border-neutral-400 focus-visible:ring-neutral-400 dark:border-white/15 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-400 dark:focus:border-slate-500 dark:focus-visible:ring-slate-500"
                       setFieldError={setFieldError}
                       setFieldValue={setFieldValue}
                       type="password"
@@ -198,9 +209,10 @@ const SignUpForm = () => {
                     <InputField
                       id="confirm_password"
                       label="Confirm Password"
-                      labelClassName="p-0"
+                      labelClassName="p-0 text-neutral-700 dark:text-neutral-300"
                       marginBottom="mb-2"
                       name="confirm_password"
+                      inputBoxClassName="h-11 border-black/10 bg-white text-neutral-900 placeholder:text-neutral-500 focus:border-neutral-400 focus-visible:ring-neutral-400 dark:border-white/15 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-400 dark:focus:border-slate-500 dark:focus-visible:ring-slate-500"
                       setFieldError={setFieldError}
                       setFieldValue={setFieldValue}
                       type="password"
@@ -209,7 +221,7 @@ const SignUpForm = () => {
                       }
                     />
                     {showPasswordCriteria(errors, touched) && (
-                      <p className="text-xs font-medium leading-4 text-miru-dark-purple-400">
+                      <p className="text-xs font-medium leading-4 text-neutral-500">
                         Min. 8 characters, 1 uppercase, 1 lowercase, 1 number
                         and 1 special character
                       </p>
@@ -219,40 +231,39 @@ const SignUpForm = () => {
                       fieldTouched={touched.confirm_password}
                     />
                   </div>
-                  <div className="my-6 flex text-xs font-normal leading-4 text-miru-dark-purple-1000">
-                    <div className="mt-2 flex">
-                      <CustomCheckbox
-                        isUpdatedDesign
-                        checkboxValue="termsOfService"
-                        id="termsOfService"
-                        isChecked={values.isAgreedTermsOfServices}
-                        name="agreeToTerms"
-                        wrapperClassName=""
-                        handleCheck={event => {
-                          setFieldValue(
-                            "isAgreedTermsOfServices",
-                            event.target.checked
-                          );
-                          setFieldTouched("isAgreedTermsOfServices", false);
-                        }}
-                      />
-                      <h4 className="ml-2">
-                        I agree to the&nbsp;
-                        <span
-                          className="form__link cursor-pointer"
-                          onClick={handleTermsOfService}
-                        >
-                          Terms of Service&nbsp;
-                        </span>
-                        and&nbsp;
-                        <span
-                          className="form__link cursor-pointer"
-                          onClick={handlePrivacyPolicy}
-                        >
-                          Privacy Policy
-                        </span>
-                      </h4>
-                    </div>
+                  <div className="my-5 flex items-start gap-2 text-xs text-neutral-600 dark:text-neutral-400">
+                    <input
+                      checked={values.isAgreedTermsOfServices}
+                      className="mt-0.5 h-4 w-4 rounded border-black/20 bg-white accent-neutral-900 dark:border-white/20 dark:bg-slate-900 dark:accent-white"
+                      id="termsOfService"
+                      name="agreeToTerms"
+                      onChange={event => {
+                        setFieldValue(
+                          "isAgreedTermsOfServices",
+                          event.target.checked
+                        );
+                        setFieldTouched("isAgreedTermsOfServices", false);
+                      }}
+                      type="checkbox"
+                    />
+                    <label className="leading-5" htmlFor="termsOfService">
+                      I agree to the{" "}
+                      <button
+                        className="text-neutral-800 hover:text-black dark:text-neutral-200 dark:hover:text-white"
+                        onClick={handleTermsOfService}
+                        type="button"
+                      >
+                        Terms of Service
+                      </button>{" "}
+                      and{" "}
+                      <button
+                        className="text-neutral-800 hover:text-black dark:text-neutral-200 dark:hover:text-white"
+                        onClick={handlePrivacyPolicy}
+                        type="button"
+                      >
+                        Privacy Policy
+                      </button>
+                    </label>
                   </div>
                   <InputErrors
                     fieldErrors={errors.isAgreedTermsOfServices}
@@ -261,21 +272,21 @@ const SignUpForm = () => {
                   <div className="mb-3">
                     <button
                       type="submit"
-                      className={`form__button whitespace-nowrap ${
+                      className={`w-full rounded-lg border px-4 py-2.5 text-sm font-medium transition ${
                         isBtnDisabled(values, errors)
-                          ? "cursor-not-allowed border-transparent bg-indigo-100 hover:border-transparent"
-                          : "cursor-pointer"
+                          ? "cursor-not-allowed border-transparent bg-neutral-300 text-neutral-500 dark:bg-neutral-700 dark:text-neutral-400"
+                          : "cursor-pointer border-black/10 bg-neutral-900 text-white hover:bg-neutral-800 dark:border-white/15 dark:bg-white dark:text-black dark:hover:bg-neutral-200"
                       }`}
                     >
                       Sign Up
                     </button>
                   </div>
-                  <div className="relative flex items-center py-2vh">
-                    <div className="flex-grow border-t border-miru-gray-1000" />
-                    <span className="mx-4 flex-shrink text-xs text-miru-dark-purple-1000">
+                  <div className="relative flex items-center py-4">
+                    <div className="flex-grow border-t border-black/10 dark:border-white/10" />
+                    <span className="mx-4 flex-shrink text-xs text-neutral-500">
                       or
                     </span>
-                    <div className="flex-grow border-t border-miru-gray-1000" />
+                    <div className="flex-grow border-t border-black/10 dark:border-white/10" />
                   </div>
                 </Form>
               );
@@ -302,7 +313,7 @@ const SignUpForm = () => {
                     value={csrfToken}
                   />
                   <button
-                    className="form__button whitespace-nowrap"
+                    className="flex w-full items-center justify-center rounded-lg border border-black/10 bg-white px-4 py-2.5 text-sm font-medium text-neutral-900 transition hover:bg-neutral-100 dark:border-white/15 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-700"
                     type="submit"
                     onClick={handleGoogleAuth}
                   >
@@ -325,20 +336,35 @@ const SignUpForm = () => {
               />
             )}
           </div>
-          <p className="py-2vh text-center font-geist text-xs font-normal not-italic text-miru-dark-purple-1000">
-            Already have an account?&nbsp;
-            <span className="form__link inline cursor-pointer">
+          <p className="pt-3 text-center text-sm text-neutral-500 dark:text-neutral-400">
+            Already have an account?{" "}
+            <span className="inline cursor-pointer">
               <a href={Paths.LOGIN}>
-                <span className="mr-2 inline-block">Sign In</span>
+                <span className="inline-block text-black hover:text-neutral-700 dark:text-white dark:hover:text-neutral-200">
+                  Sign in
+                </span>
               </a>
             </span>
           </p>
+          <div className="mt-6 flex items-center justify-center gap-2 text-xs text-neutral-500 dark:text-slate-400">
+            <button
+              className="hover:text-neutral-700 dark:hover:text-slate-100"
+              onClick={handlePrivacyPolicy}
+              type="button"
+            >
+              Privacy
+            </button>
+            <span>•</span>
+            <button
+              className="hover:text-neutral-700 dark:hover:text-slate-100"
+              onClick={handleTermsOfService}
+              type="button"
+            >
+              Terms
+            </button>
+          </div>
         </div>
       </div>
-      <FooterLinks
-        handlePrivacyPolicy={handlePrivacyPolicy}
-        handleTermsOfService={handleTermsOfService}
-      />
     </div>
   );
 };

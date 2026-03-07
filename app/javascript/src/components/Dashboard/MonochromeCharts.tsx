@@ -22,18 +22,18 @@ interface RevenueChartProps {
 const chartConfig = {
   revenue: {
     label: "Revenue",
-    color: "hsl(var(--chart-1))",
+    color: "hsl(var(--primary))",
   },
   invoices: {
     label: "Invoices",
-    color: "hsl(var(--chart-2))",
+    color: "hsl(var(--primary) / 0.6)",
   },
 };
 
 const customerChartConfig = {
   revenue: {
     label: "Revenue",
-    color: "hsl(var(--chart-1))",
+    color: "hsl(var(--primary))",
   },
 };
 
@@ -44,16 +44,16 @@ export const RevenueAreaChart: React.FC<RevenueChartProps> = ({
   baseCurrency,
   loading,
 }) => (
-  <Card className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-white to-gray-50/50">
-    <CardHeader className="border-b border-gray-100 pb-6 bg-white/70 backdrop-blur-sm">
+  <Card className="border border-border shadow-sm transition-all duration-300 bg-card">
+    <CardHeader className="border-b border-border pb-6 bg-card">
       <div className="grid flex-1 gap-2">
-        <p className="text-xs font-semibold text-indigo-600 uppercase tracking-wider">
+        <p className="text-xs font-semibold text-primary uppercase tracking-wider">
           Revenue Trend
         </p>
-        <CardTitle className="text-xl font-semibold tracking-tight bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
+        <CardTitle className="text-xl font-semibold tracking-tight text-foreground">
           Revenue Momentum
         </CardTitle>
-        <CardDescription className="text-sm text-gray-600 font-medium">
+        <CardDescription className="text-sm text-muted-foreground font-medium">
           Month-by-month revenue across the last 12 months
         </CardDescription>
       </div>
@@ -61,7 +61,7 @@ export const RevenueAreaChart: React.FC<RevenueChartProps> = ({
     <CardContent className="px-2 pt-6 pb-2 sm:px-6">
       {loading ? (
         <div className="flex items-center justify-center h-[320px]">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+          <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-primary"></div>
         </div>
       ) : (
         <ChartContainer
@@ -74,19 +74,30 @@ export const RevenueAreaChart: React.FC<RevenueChartProps> = ({
           >
             <defs>
               <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#6366f1" stopOpacity={0.8} />
-                <stop offset="50%" stopColor="#8b5cf6" stopOpacity={0.5} />
-                <stop offset="100%" stopColor="#a78bfa" stopOpacity={0.1} />
+                <stop
+                  offset="0%"
+                  stopColor="hsl(var(--primary))"
+                  stopOpacity={0.26}
+                />
+                <stop
+                  offset="70%"
+                  stopColor="hsl(var(--primary))"
+                  stopOpacity={0.12}
+                />
+                <stop
+                  offset="100%"
+                  stopColor="hsl(var(--primary))"
+                  stopOpacity={0.02}
+                />
               </linearGradient>
               <linearGradient id="strokeRevenue" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0%" stopColor="#6366f1" />
-                <stop offset="50%" stopColor="#8b5cf6" />
-                <stop offset="100%" stopColor="#a78bfa" />
+                <stop offset="0%" stopColor="hsl(var(--primary))" />
+                <stop offset="100%" stopColor="hsl(var(--primary))" />
               </linearGradient>
               <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
                 <feGaussianBlur in="SourceAlpha" stdDeviation="3" />
                 <feOffset dx="0" dy="4" result="offsetblur" />
-                <feFlood floodColor="#6366f1" floodOpacity="0.15" />
+                <feFlood floodColor="hsl(var(--primary))" floodOpacity="0.15" />
                 <feComposite in2="offsetblur" operator="in" />
                 <feMerge>
                   <feMergeNode />
@@ -96,7 +107,7 @@ export const RevenueAreaChart: React.FC<RevenueChartProps> = ({
             </defs>
             <CartesianGrid
               vertical={false}
-              stroke="#e5e7eb"
+              stroke="hsl(var(--border))"
               strokeDasharray="0"
               strokeOpacity={0.5}
             />
@@ -105,25 +116,33 @@ export const RevenueAreaChart: React.FC<RevenueChartProps> = ({
               tickLine={false}
               axisLine={false}
               tickMargin={12}
-              tick={{ fill: "#6b7280", fontSize: 11, fontWeight: 500 }}
+              tick={{
+                fill: "hsl(var(--muted-foreground))",
+                fontSize: 11,
+                fontWeight: 500,
+              }}
             />
             <YAxis
               tickLine={false}
               axisLine={false}
               tickMargin={12}
-              tick={{ fill: "#6b7280", fontSize: 11, fontWeight: 500 }}
+              tick={{
+                fill: "hsl(var(--muted-foreground))",
+                fontSize: 11,
+                fontWeight: 500,
+              }}
               tickFormatter={value => `${(value / 1000).toFixed(0)}k`}
               domain={[0, "dataMax + 5000"]}
             />
             <ChartTooltip
-              cursor={{ stroke: "#e5e7eb", strokeWidth: 1 }}
+              cursor={{ stroke: "hsl(var(--border))", strokeWidth: 1 }}
               content={
                 <ChartTooltipContent
                   labelFormatter={value => `${value} 2024`}
                   formatter={(value: any) =>
                     currencyFormat(baseCurrency, value)
                   }
-                  className="bg-white/95 backdrop-blur-sm shadow-xl border-0 rounded-lg"
+                  className="bg-card/95 backdrop-blur-sm shadow-xl border-0 rounded-lg"
                 />
               }
             />
@@ -132,13 +151,13 @@ export const RevenueAreaChart: React.FC<RevenueChartProps> = ({
               type="monotone"
               fill="url(#colorRevenue)"
               stroke="url(#strokeRevenue)"
-              strokeWidth={3}
+              strokeWidth={2}
               dot={false}
               activeDot={{
-                r: 6,
-                strokeWidth: 2,
-                stroke: "#ffffff",
-                fill: "#6366f1",
+                r: 5,
+                strokeWidth: 1.5,
+                stroke: "hsl(var(--background))",
+                fill: "hsl(var(--primary))",
                 filter: "url(#shadow)",
               }}
               animationDuration={1500}
@@ -164,29 +183,25 @@ export const CustomerRevenueChart: React.FC<CustomerRevenueChartProps> = ({
   baseCurrency,
   loading,
 }) => {
-  const getGradientColor = (index: number) => {
-    const colors = [
-      "from-violet-500 to-purple-500",
-      "from-blue-500 to-indigo-500",
-      "from-cyan-500 to-teal-500",
-      "from-emerald-500 to-green-500",
-      "from-amber-500 to-orange-500",
-    ];
-
-    return colors[index % colors.length];
-  };
+  const gradientColors = [
+    "linear-gradient(90deg, hsl(var(--primary) / 0.72), hsl(var(--primary) / 0.6))",
+    "linear-gradient(90deg, hsl(var(--primary) / 0.64), hsl(var(--primary) / 0.52))",
+    "linear-gradient(90deg, hsl(var(--primary) / 0.56), hsl(var(--primary) / 0.44))",
+    "linear-gradient(90deg, hsl(var(--primary) / 0.48), hsl(var(--primary) / 0.36))",
+    "linear-gradient(90deg, hsl(var(--primary) / 0.4), hsl(var(--primary) / 0.3))",
+  ];
 
   return (
-    <Card className="border-0 shadow-lg h-full hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-white to-gray-50/50">
-      <CardHeader className="border-b border-gray-100 pb-6 bg-white/70 backdrop-blur-sm">
+    <Card className="border border-border shadow-sm h-full transition-all duration-300 bg-card">
+      <CardHeader className="border-b border-border pb-6 bg-card">
         <div className="grid flex-1 gap-2">
-          <p className="text-xs font-semibold text-purple-600 uppercase tracking-wider">
+          <p className="text-xs font-semibold text-primary uppercase tracking-wider">
             Top Customers
           </p>
-          <CardTitle className="text-xl font-semibold tracking-tight bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
+          <CardTitle className="text-xl font-semibold tracking-tight text-foreground">
             Revenue Leaders
           </CardTitle>
-          <CardDescription className="text-sm text-gray-600 font-medium">
+          <CardDescription className="text-sm text-muted-foreground font-medium">
             Your highest revenue contributors
           </CardDescription>
         </div>
@@ -194,40 +209,40 @@ export const CustomerRevenueChart: React.FC<CustomerRevenueChartProps> = ({
       <CardContent className="pt-6">
         {loading ? (
           <div className="flex items-center justify-center h-[280px]">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
+            <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-primary"></div>
           </div>
         ) : data.length > 0 ? (
           <div className="space-y-4">
             {data.slice(0, 5).map((customer, index) => (
               <div
                 key={index}
-                className="space-y-2 p-4 rounded-xl bg-white/50 hover:bg-white/80 transition-all duration-200 hover:shadow-md group"
+                className="space-y-2 p-4 rounded-xl bg-muted/20 hover:bg-muted/30 transition-all duration-200 group"
               >
                 <div className="flex justify-between items-center">
-                  <span className="text-sm font-semibold text-gray-800 truncate max-w-[150px] group-hover:text-indigo-600 transition-colors">
+                  <span className="text-sm font-semibold text-foreground truncate max-w-[150px] group-hover:text-primary transition-colors">
                     {customer.name}
                   </span>
-                  <span className="text-sm font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent tabular-nums">
+                  <span className="text-sm font-bold text-foreground tabular-nums">
                     ${(customer.revenue / 1000).toFixed(0)}k
                   </span>
                 </div>
                 <div className="space-y-1.5">
                   <div className="flex justify-between items-center">
-                    <span className="text-xs text-gray-500 font-medium">
+                    <span className="text-xs text-muted-foreground font-medium">
                       {customer.percentage}% of total
                     </span>
                   </div>
-                  <div className="w-full bg-gray-100 rounded-full h-2 overflow-hidden">
+                  <div className="w-full bg-muted rounded-full h-2 overflow-hidden">
                     <div
-                      className={`h-2 rounded-full bg-gradient-to-r ${getGradientColor(
-                        index
-                      )} transition-all duration-700 ease-out relative overflow-hidden`}
+                      className="h-2 rounded-full transition-all duration-700 ease-out relative overflow-hidden"
                       style={{
+                        background:
+                          gradientColors[index % gradientColors.length],
                         width: `${customer.percentage}%`,
                         animation: "slideIn 1s ease-out",
                       }}
                     >
-                      <div className="absolute inset-0 bg-white/20 animate-pulse"></div>
+                      <div className="absolute inset-0 bg-background/10"></div>
                     </div>
                   </div>
                 </div>
@@ -242,7 +257,7 @@ export const CustomerRevenueChart: React.FC<CustomerRevenueChartProps> = ({
             `}</style>
           </div>
         ) : (
-          <div className="text-center text-gray-500 py-8">
+          <div className="text-center text-muted-foreground py-8">
             <div className="text-2xl mb-3">📊</div>
             No revenue yet for this period
           </div>

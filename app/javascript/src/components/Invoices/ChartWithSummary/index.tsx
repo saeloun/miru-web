@@ -147,23 +147,23 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
     {
       label: "All",
       value: totalAmount,
-      colorClass: "text-gray-700",
-      bgClass: "bg-gray-50 hover:bg-gray-100",
+      colorClass: "text-foreground",
+      bgClass: "bg-muted/40 hover:bg-accent",
       onClick: resetFilters,
       isReset: true,
     },
     {
       label: "Overdue",
       value: overdueAmount,
-      colorClass: "text-gray-700",
-      bgClass: "bg-gray-50 hover:bg-gray-100",
+      colorClass: "text-foreground",
+      bgClass: "bg-muted/40 hover:bg-accent",
       onClick: () => applyFilter([{ value: "overdue", label: "OVERDUE" }]),
     },
     {
       label: "Outstanding",
       value: outstandingAmount,
-      colorClass: "text-gray-700",
-      bgClass: "bg-gray-50 hover:bg-gray-100",
+      colorClass: "text-foreground",
+      bgClass: "bg-muted/40 hover:bg-accent",
       onClick: () =>
         applyFilter([
           { value: "sent", label: "SENT" },
@@ -174,8 +174,8 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
     {
       label: "Draft",
       value: draftAmount,
-      colorClass: "text-gray-600",
-      bgClass: "bg-gray-50 hover:bg-gray-100",
+      colorClass: "text-muted-foreground",
+      bgClass: "bg-muted/40 hover:bg-accent",
       onClick: () => applyFilter([{ value: "draft", label: "DRAFT" }]),
     },
   ];
@@ -189,16 +189,18 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
       return (
-        <div className="bg-white/95 backdrop-blur-sm shadow-xl border-0 rounded-lg p-4">
-          <p className="font-semibold text-gray-900 mb-2">{`${label} ${new Date().getFullYear()}`}</p>
+        <div className="rounded-lg border border-border bg-card/95 p-4 shadow-xl backdrop-blur-sm">
+          <p className="mb-2 font-semibold text-foreground">{`${label} ${new Date().getFullYear()}`}</p>
           <div className="space-y-1">
             {payload.map((pld, index) => (
               <div
                 key={index}
                 className="flex items-center justify-between gap-4"
               >
-                <span className="text-sm text-gray-600">{pld.dataKey}:</span>
-                <span className="text-sm font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                <span className="text-sm text-muted-foreground">
+                  {pld.dataKey}:
+                </span>
+                <span className="text-sm font-bold text-primary">
                   {currencyFormat(baseCurrency, pld.value)}
                 </span>
               </div>
@@ -212,32 +214,36 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
   };
 
   return (
-    <div className="mt-6 mb-8">
+    <div className="mb-8 mt-6">
       {/* Main container with chart (70%) and stats (30%) */}
       <div className="flex gap-4">
         {/* Revenue Chart - 70% width */}
         <div className="flex-1" style={{ flex: "0 0 70%" }}>
-          <div className="border shadow-lg hover:shadow-xl transition-all duration-300 bg-white rounded-xl overflow-hidden">
-            <div className="border-b border-gray-200 p-5 bg-gray-50">
+          <div className="overflow-hidden rounded-xl border border-border bg-card shadow-lg transition-all duration-300 hover:shadow-xl">
+            <div className="border-b border-border bg-muted/40 p-5">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-xl font-bold text-gray-900">
+                  <h3 className="text-xl font-bold text-foreground">
                     Yearly Revenue
                   </h3>
-                  <p className="text-sm text-gray-600 mt-1">
+                  <p className="mt-1 text-sm text-muted-foreground">
                     Monthly revenue breakdown
                   </p>
                 </div>
                 <div className="flex items-center gap-3">
-                  <div className="flex items-center gap-2 bg-white px-3 py-2 rounded-lg">
+                  <div className="flex items-center gap-2 rounded-lg bg-card px-3 py-2">
                     <TrendUp
                       className={`w-4 h-4 ${
-                        growthRate > 0 ? "text-green-600" : "text-red-600"
+                        growthRate > 0
+                          ? "text-primary"
+                          : "text-muted-foreground"
                       }`}
                     />
                     <span
                       className={`text-sm font-semibold ${
-                        growthRate > 0 ? "text-green-600" : "text-red-600"
+                        growthRate > 0
+                          ? "text-primary"
+                          : "text-muted-foreground"
                       }`}
                     >
                       {growthRate > 0 ? "+" : ""}
@@ -247,7 +253,9 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
                       ).toFixed(1)}
                       %
                     </span>
-                    <span className="text-xs text-gray-500">vs last year</span>
+                    <span className="text-xs text-muted-foreground">
+                      vs last year
+                    </span>
                   </div>
                 </div>
               </div>
@@ -270,18 +278,18 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
                       >
                         <stop
                           offset="0%"
-                          stopColor="#6366f1"
-                          stopOpacity={0.8}
+                          stopColor="hsl(var(--primary))"
+                          stopOpacity={0.26}
                         />
                         <stop
-                          offset="50%"
-                          stopColor="#8b5cf6"
-                          stopOpacity={0.5}
+                          offset="60%"
+                          stopColor="hsl(var(--primary))"
+                          stopOpacity={0.12}
                         />
                         <stop
                           offset="100%"
-                          stopColor="#a78bfa"
-                          stopOpacity={0.1}
+                          stopColor="hsl(var(--primary))"
+                          stopOpacity={0.02}
                         />
                       </linearGradient>
                       <linearGradient
@@ -291,9 +299,8 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
                         x2="1"
                         y2="0"
                       >
-                        <stop offset="0%" stopColor="#6366f1" />
-                        <stop offset="50%" stopColor="#8b5cf6" />
-                        <stop offset="100%" stopColor="#a78bfa" />
+                        <stop offset="0%" stopColor="hsl(var(--primary))" />
+                        <stop offset="100%" stopColor="hsl(var(--primary))" />
                       </linearGradient>
                       <filter
                         id="invoiceShadow"
@@ -304,7 +311,10 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
                       >
                         <feGaussianBlur in="SourceAlpha" stdDeviation="3" />
                         <feOffset dx="0" dy="4" result="offsetblur" />
-                        <feFlood floodColor="#6366f1" floodOpacity="0.15" />
+                        <feFlood
+                          floodColor="hsl(var(--primary))"
+                          floodOpacity="0.15"
+                        />
                         <feComposite in2="offsetblur" operator="in" />
                         <feMerge>
                           <feMergeNode />
@@ -314,19 +324,27 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
                     </defs>
                     <CartesianGrid
                       vertical={false}
-                      stroke="#e5e7eb"
+                      stroke="hsl(var(--border))"
                       strokeDasharray="0"
                       strokeOpacity={0.5}
                     />
                     <XAxis
                       dataKey="month"
-                      tick={{ fill: "#6b7280", fontSize: 10, fontWeight: 500 }}
+                      tick={{
+                        fill: "hsl(var(--muted-foreground))",
+                        fontSize: 10,
+                        fontWeight: 500,
+                      }}
                       axisLine={false}
                       tickLine={false}
                       tickMargin={10}
                     />
                     <YAxis
-                      tick={{ fill: "#6b7280", fontSize: 10, fontWeight: 500 }}
+                      tick={{
+                        fill: "hsl(var(--muted-foreground))",
+                        fontSize: 10,
+                        fontWeight: 500,
+                      }}
                       axisLine={false}
                       tickLine={false}
                       tickMargin={10}
@@ -335,7 +353,7 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
                     />
                     <Tooltip
                       content={<CustomTooltip />}
-                      cursor={{ stroke: "#e5e7eb", strokeWidth: 1 }}
+                      cursor={{ stroke: "hsl(var(--border))", strokeWidth: 1 }}
                     />
                     <Area
                       type="monotone"
@@ -344,16 +362,16 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
                       strokeWidth={2}
                       fill="url(#invoiceColorRevenue)"
                       dot={{
-                        fill: "#6366f1",
+                        fill: "hsl(var(--primary))",
                         strokeWidth: 1,
                         r: 2,
-                        stroke: "#ffffff",
+                        stroke: "hsl(var(--background))",
                       }}
                       activeDot={{
                         r: 4,
                         strokeWidth: 2,
-                        stroke: "#ffffff",
-                        fill: "#6366f1",
+                        stroke: "hsl(var(--background))",
+                        fill: "hsl(var(--primary))",
                       }}
                       animationDuration={1500}
                       animationEasing="ease-in-out"
@@ -363,20 +381,20 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
               </div>
 
               {/* Additional Stats Row */}
-              <div className="grid grid-cols-3 gap-4 mt-4 pt-4 border-t border-gray-200">
+              <div className="mt-4 grid grid-cols-3 gap-4 border-t border-border pt-4">
                 <div className="text-center">
-                  <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">
+                  <p className="mb-1 text-xs uppercase tracking-wide text-muted-foreground">
                     Monthly Avg
                   </p>
-                  <p className="text-base font-bold text-gray-900">
+                  <p className="text-base font-bold text-foreground">
                     {currencyFormat(baseCurrency, monthlyAvg)}
                   </p>
                 </div>
                 <div className="text-center">
-                  <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">
+                  <p className="mb-1 text-xs uppercase tracking-wide text-muted-foreground">
                     Peak Month
                   </p>
-                  <p className="text-base font-bold text-gray-900">
+                  <p className="text-base font-bold text-foreground">
                     {revenueData.reduce(
                       (max, item) => (item.revenue > max.revenue ? item : max),
                       revenueData[0] || { revenue: 0 }
@@ -384,10 +402,10 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
                   </p>
                 </div>
                 <div className="text-center">
-                  <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">
+                  <p className="mb-1 text-xs uppercase tracking-wide text-muted-foreground">
                     Total Invoices
                   </p>
-                  <p className="text-base font-bold text-gray-900">
+                  <p className="text-base font-bold text-foreground">
                     {revenueData.reduce(
                       (sum, item) => sum + (item.invoices || 0),
                       0
@@ -405,11 +423,11 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
             <button
               key={item.label}
               onClick={item.onClick}
-              className={`${item.bgClass} rounded-xl p-4 text-left transition-all duration-200 border border-gray-200 hover:shadow-lg hover:scale-[1.02] flex-1`}
+              className={`${item.bgClass} flex-1 rounded-xl border border-border p-4 text-left transition-all duration-200 hover:scale-[1.02] hover:shadow-lg`}
             >
               <div className="flex justify-between items-start">
                 <div className="flex-1">
-                  <p className="text-xs text-gray-500 uppercase tracking-wide font-semibold mb-2">
+                  <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                     {item.label}
                   </p>
                   <p className={`text-xl font-bold ${item.colorClass}`}>
@@ -417,7 +435,7 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
                   </p>
                 </div>
                 <svg
-                  className="w-4 h-4 text-gray-400 mt-1"
+                  className="mt-1 h-4 w-4 text-muted-foreground"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"

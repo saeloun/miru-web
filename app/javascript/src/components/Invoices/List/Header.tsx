@@ -70,7 +70,16 @@ const Header = ({
 
   return (
     <div className="relative mt-6 mb-3 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between md:justify-start lg:justify-between">
-      {isDesktop && <h2 className="header__title">Invoices</h2>}
+      {isDesktop && (
+        <div>
+          <h2 className="text-2xl font-semibold tracking-tight text-foreground">
+            Invoices
+          </h2>
+          <p className="text-sm text-muted-foreground">
+            Draft, send, and track payments.
+          </p>
+        </div>
+      )}
       <div className="flex w-full items-center gap-2 sm:flex-1 sm:max-w-2xl lg:max-w-lg">
         <UnifiedSearch
           searchAction={fetchInvoices}
@@ -107,7 +116,7 @@ const Header = ({
       >
         <PlusIcon size={16} weight="bold" />
         <span className="ml-2 hidden text-sm font-bold tracking-wide lg:inline-block">
-          New Invoice
+          New invoice
         </span>
       </Button>
     </div>

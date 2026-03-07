@@ -179,7 +179,7 @@ export const ROUTES = [
   {
     path: Paths.TEAM,
     subRoutes: TeamRoutes,
-    authorisedRoles: [ADMIN, OWNER, EMPLOYEE],
+    authorisedRoles: [ADMIN, OWNER],
   },
   {
     path: Paths.SETTINGS,
