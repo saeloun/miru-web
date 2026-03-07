@@ -47,27 +47,27 @@ RSpec.describe "Api::V1::Reports::AccountsAgingController::#index", type: :reque
         expect(response).to have_http_status(:ok)
       end
 
-      it "returns the clients data in alaphabetical order with amount details" do
-        expect(json_response["report"]["clients"][0]["id"]).to eq(client2.id)
-        expect(json_response["report"]["clients"][0]["logo"]).to eq(client2.logo_url)
-        expect(json_response["report"]["clients"][1]["id"]).to eq(client1.id)
-        expect(json_response["report"]["clients"][1]["logo"]).to eq(client1.logo_url)
+      it "returns clients sorted by highest overdue total with amount details" do
+        expect(json_response["report"]["clients"][0]["id"]).to eq(client1.id)
+        expect(json_response["report"]["clients"][0]["logo"]).to eq(client1.logo_url)
+        expect(json_response["report"]["clients"][1]["id"]).to eq(client2.id)
+        expect(json_response["report"]["clients"][1]["logo"]).to eq(client2.logo_url)
       end
 
-      it "returns amount overdue for client2 in response" do
-        expect(json_response["report"]["clients"][0]["amount_overdue"]["zero_to_thirty_days"]).to eq(0)
-        expect(json_response["report"]["clients"][0]["amount_overdue"]["thirty_one_to_sixty_days"]).to eq(0)
-        expect(json_response["report"]["clients"][0]["amount_overdue"]["sixty_one_to_ninety_days"]).to eq("300.0")
-        expect(json_response["report"]["clients"][0]["amount_overdue"]["ninety_plus_days"]).to eq("400.0")
-        expect(json_response["report"]["clients"][0]["amount_overdue"]["total"]).to eq("700.0")
+      it "returns amount overdue for client1 in response" do
+        expect(json_response["report"]["clients"][0]["amount_overdue"]["zero_to_thirty_days"]).to eq("100.0")
+        expect(json_response["report"]["clients"][0]["amount_overdue"]["thirty_one_to_sixty_days"]).to eq("700.0")
+        expect(json_response["report"]["clients"][0]["amount_overdue"]["sixty_one_to_ninety_days"]).to eq(0)
+        expect(json_response["report"]["clients"][0]["amount_overdue"]["ninety_plus_days"]).to eq(0)
+        expect(json_response["report"]["clients"][0]["amount_overdue"]["total"]).to eq("800.0")
       end
 
-      it "returns correct client1 amount overdue in response" do
-        expect(json_response["report"]["clients"][1]["amount_overdue"]["zero_to_thirty_days"]).to eq("100.0")
-        expect(json_response["report"]["clients"][1]["amount_overdue"]["thirty_one_to_sixty_days"]).to eq("700.0")
-        expect(json_response["report"]["clients"][1]["amount_overdue"]["sixty_one_to_ninety_days"]).to eq(0)
-        expect(json_response["report"]["clients"][1]["amount_overdue"]["ninety_plus_days"]).to eq(0)
-        expect(json_response["report"]["clients"][1]["amount_overdue"]["total"]).to eq("800.0")
+      it "returns correct client2 amount overdue in response" do
+        expect(json_response["report"]["clients"][1]["amount_overdue"]["zero_to_thirty_days"]).to eq(0)
+        expect(json_response["report"]["clients"][1]["amount_overdue"]["thirty_one_to_sixty_days"]).to eq(0)
+        expect(json_response["report"]["clients"][1]["amount_overdue"]["sixty_one_to_ninety_days"]).to eq("300.0")
+        expect(json_response["report"]["clients"][1]["amount_overdue"]["ninety_plus_days"]).to eq("400.0")
+        expect(json_response["report"]["clients"][1]["amount_overdue"]["total"]).to eq("700.0")
       end
 
       it "returns correct response for Total amount overdue for all clients in current company" do

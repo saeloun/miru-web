@@ -97,29 +97,37 @@ RSpec.describe "Api::V1::Reports::OutstandingOverdueInvoicesController::#index",
         expect(response).to have_http_status(:ok)
       end
 
-      it "returns the clients data in alaphabetical order with invoices details" do
+      it "returns clients sorted by highest total receivable with invoices details" do
+        expected_clients = @expected_clients.sort_by do |client|
+          -(client[:totalOutstandingAmount].to_f + client[:totalOverdueAmount].to_f)
+        end
+
         expect(
           json_response["clients"][0]
                   .except("invoices")).to eq(
-                    JSON.parse(@expected_clients.first.except(:invoices).to_json))
+                    JSON.parse(expected_clients.first.except(:invoices).to_json))
         expect(
           json_response["clients"][1]
-                  .except("invoices")).to eq(JSON.parse(@expected_clients.last.except(:invoices).to_json))
+                  .except("invoices")).to eq(JSON.parse(expected_clients.last.except(:invoices).to_json))
       end
 
       it "returns the correct invoices for each client" do
+        expected_clients = @expected_clients.sort_by do |client|
+          -(client[:totalOutstandingAmount].to_f + client[:totalOverdueAmount].to_f)
+        end
+
         expect(
           json_response["clients"][0]
-                  .slice("invoices")).to include(JSON.parse(@expected_clients.first.slice(:invoices).to_json))
+                  .slice("invoices")).to include(JSON.parse(expected_clients.first.slice(:invoices).to_json))
         expect(
           json_response["clients"][0]
-                  .slice("invoices")["invoices"].count).to eq(@expected_clients.first.slice(:invoices)[:invoices].count)
+                  .slice("invoices")["invoices"].count).to eq(expected_clients.first.slice(:invoices)[:invoices].count)
         expect(
           json_response["clients"][1]
-                  .slice("invoices")).to include(JSON.parse(@expected_clients.last.slice(:invoices).to_json))
+                  .slice("invoices")).to include(JSON.parse(expected_clients.last.slice(:invoices).to_json))
         expect(
           json_response["clients"][1]
-                  .slice("invoices")["invoices"].count).to eq(@expected_clients.last.slice(:invoices)[:invoices].count)
+                  .slice("invoices")["invoices"].count).to eq(expected_clients.last.slice(:invoices)[:invoices].count)
       end
 
       it "returns the base currency" do
