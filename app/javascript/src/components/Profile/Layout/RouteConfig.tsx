@@ -72,7 +72,7 @@ const RouteConfig = () => {
       )}
       {/* Settings routes - Fixed to handle all settings paths directly */}
       {isSettingsContext && (
-        <Route element={<Layout />} path="settings">
+        <Route element={<Layout />} path="*">
           <Route index element={<Navigate to="/settings/profile" replace />} />
           {SETTINGS.map(({ path, authorisedRoles, Component }) => (
             <Route
