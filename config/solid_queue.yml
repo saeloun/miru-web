@@ -2,6 +2,13 @@ default: &default
   dispatchers:
     - polling_interval: 1
       batch_size: 500
+      recurring_tasks:
+        update_invoice_status:
+          class: UpdateInvoiceStatusToOverdueJob
+          schedule: '0 0 * * *'  # Runs every day at 12AM UTC
+        weekly_reminder:
+          class: WeeklyReminderToUserJob
+          schedule: '0 14 * * 1 Asia/Kolkata' # Runs every Monday at 14:00
   workers:
     - queues: "*"
       threads: 5
