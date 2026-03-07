@@ -26,8 +26,9 @@
 # Any libraries that use a connection pool or another resource pool should
 # be configured to provide at least as many connections as the number of
 # threads. This includes Active Record's `pool` parameter in `database.yml`.
-threads_count = ENV.fetch("RAILS_MAX_THREADS", 3)
-threads threads_count, threads_count
+max_threads = ENV.fetch("RAILS_MAX_THREADS", 3).to_i
+min_threads = ENV.fetch("RAILS_MIN_THREADS", [ max_threads, 2 ].min).to_i
+threads min_threads, max_threads
 
 # Specifies the `environment` that Puma will run in.
 environment ENV.fetch("RAILS_ENV", "development")
@@ -53,8 +54,9 @@ pidfile ENV["PIDFILE"] if ENV["PIDFILE"]
 # This directive tells Puma to first boot the application and load code
 # before forking the application. This takes advantage of Copy On Write
 # process behavior so workers use less memory.
-if ENV["WEB_CONCURRENCY"] && ENV["WEB_CONCURRENCY"].to_i > 1
-  workers ENV.fetch("WEB_CONCURRENCY", 2)
+workers_count = ENV.fetch("WEB_CONCURRENCY", 1).to_i
+if workers_count > 1
+  workers workers_count
   preload_app!
 
   # Enable hot restart capability for better zero-downtime deploys
