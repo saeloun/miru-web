@@ -50,7 +50,7 @@ const RouteConfig = () => {
     <Routes>
       {/* Team member routes */}
       {isTeamContext && (
-        <Route element={<Layout />} path="/team/:memberId">
+        <Route element={<Layout />} path="team/:memberId">
           <Route index element={<UserDetailsView />} />
           {SETTINGS.filter(({ category }) => category === "personal").map(
             ({ path, authorisedRoles, Component }) => (
@@ -72,7 +72,7 @@ const RouteConfig = () => {
       )}
       {/* Settings routes - Fixed to handle all settings paths directly */}
       {isSettingsContext && (
-        <Route element={<Layout />} path="/settings">
+        <Route element={<Layout />} path="settings">
           <Route index element={<Navigate to="/settings/profile" replace />} />
           {SETTINGS.map(({ path, authorisedRoles, Component }) => (
             <Route
