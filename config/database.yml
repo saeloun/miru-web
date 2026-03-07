@@ -2,7 +2,7 @@ default: &default
   adapter: postgresql
   encoding: unicode
   host: <%= ENV.fetch("DB_HOST") { "localhost" } %>
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  pool: <%= ENV.fetch("DB_POOL") { ENV.fetch("RAILS_MAX_THREADS", 3) } %>
   user: <%= ENV.fetch("DB_USER") { "" } %>
   password: <%= ENV.fetch("DB_PASS") { "" } %>
 
@@ -17,5 +17,5 @@ test:
 production:
   adapter: postgresql
   encoding: unicode
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  pool: <%= ENV.fetch("DB_POOL") { ENV.fetch("RAILS_MAX_THREADS", 3) } %>
   url: <%= ENV['DATABASE_URL'] %>
