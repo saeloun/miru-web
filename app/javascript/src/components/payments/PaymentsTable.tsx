@@ -387,10 +387,10 @@ const PaymentsTable: React.FC = () => {
 
   if (error) {
     return (
-      <div className="flex items-center justify-center h-96">
+      <div className="flex h-96 items-center justify-center">
         <div className="text-center">
-          <CreditCard className="mx-auto h-12 w-12 text-gray-400" />
-          <p className="text-gray-600">Failed to load payments</p>
+          <CreditCard className="mx-auto h-12 w-12 text-muted-foreground" />
+          <p className="text-muted-foreground">Failed to load payments</p>
         </div>
       </div>
     );
@@ -404,60 +404,60 @@ const PaymentsTable: React.FC = () => {
     ) || 0;
 
   return (
-    <div className="space-y-6 p-6 max-w-7xl mx-auto">
+    <div className="mx-auto max-w-7xl space-y-6 p-6">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Payments</h1>
-          <p className="text-gray-600 mt-1">
-            Stripe and manual payment transactions in one place
+          <h1 className="text-3xl font-bold text-foreground">Payments</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Stripe and manual entries in one simple ledger.
           </p>
         </div>
         {isAdminUser && (
           <Button
             onClick={openManualEntry}
-            className="bg-gray-900 hover:bg-gray-800 text-white"
+            className="bg-foreground text-background hover:opacity-90"
           >
             <Plus className="h-4 w-4 mr-2" />
-            Add Manual Entry
+            Add manual entry
           </Button>
         )}
       </div>
 
       <div className="grid gap-4 md:grid-cols-3">
-        <Card className="border-gray-200">
+        <Card className="border-border">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
               Total Payments
             </CardTitle>
-            <CreditCard className="h-4 w-4 text-gray-400" />
+            <CreditCard className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{data?.total || 0}</div>
-            <p className="text-xs text-gray-600 mt-1">Transactions recorded</p>
+            <p className="mt-1 text-xs text-muted-foreground">Transactions</p>
           </CardContent>
         </Card>
 
-        <Card className="border-gray-200">
+        <Card className="border-border">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
               Total Collected
             </CardTitle>
-            <CurrencyDollar className="h-4 w-4 text-gray-400" />
+            <CurrencyDollar className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
               {currencyFormat(baseCurrency, totalAmount)}
             </div>
-            <p className="text-xs text-gray-600 mt-1">All time</p>
+            <p className="mt-1 text-xs text-muted-foreground">All time</p>
           </CardContent>
         </Card>
 
-        <Card className="border-gray-200">
+        <Card className="border-border">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
               Average Payment
             </CardTitle>
-            <CurrencyDollar className="h-4 w-4 text-gray-400" />
+            <CurrencyDollar className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
@@ -466,16 +466,18 @@ const PaymentsTable: React.FC = () => {
                 data?.total > 0 ? totalAmount / data.total : 0
               )}
             </div>
-            <p className="text-xs text-gray-600 mt-1">Per transaction</p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              Per transaction
+            </p>
           </CardContent>
         </Card>
       </div>
 
-      <Card className="border-gray-200">
+      <Card className="border-border">
         <CardHeader>
           <CardTitle>Payment History</CardTitle>
           <CardDescription>
-            A list of all payment transactions with invoice and client details.
+            Every payment with invoice and client details.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -487,8 +489,8 @@ const PaymentsTable: React.FC = () => {
             />
           ) : (
             <div className="text-center py-12">
-              <CreditCard className="mx-auto h-12 w-12 text-gray-300" />
-              <p className="text-gray-600 mb-4 mt-4">
+              <CreditCard className="mx-auto h-12 w-12 text-muted-foreground" />
+              <p className="mb-4 mt-4 text-muted-foreground">
                 No payments recorded yet
               </p>
               {isAdminUser && (

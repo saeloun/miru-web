@@ -178,16 +178,16 @@ const ModernOrganizationSettings: React.FC<ModernOrganizationSettingsProps> = ({
   );
 
   return (
-    <div className="min-h-screen bg-gray-50 font-geist">
+    <div className="min-h-screen bg-muted/40 font-geist">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200">
+      <div className="bg-card border-b border-border">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between py-6">
             <div>
-              <h1 className="text-2xl font-geist-semibold text-gray-900">
+              <h1 className="text-2xl font-geist-semibold text-foreground">
                 Organization Settings
               </h1>
-              <p className="text-sm text-gray-600 mt-1 font-geist-regular">
+              <p className="text-sm text-muted-foreground mt-1 font-geist-regular">
                 Manage your company information and preferences
               </p>
             </div>
@@ -212,10 +212,10 @@ const ModernOrganizationSettings: React.FC<ModernOrganizationSettingsProps> = ({
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Company Profile Card */}
-            <Card className="lg:col-span-2 border-gray-200 shadow-sm">
+            <Card className="lg:col-span-2 border-border shadow-sm">
               <CardHeader className="pb-4">
                 <CardTitle className="text-lg font-geist-semibold flex items-center gap-2">
-                  <Buildings className="h-5 w-5 text-gray-600" />
+                  <Buildings className="h-5 w-5 text-muted-foreground" />
                   Company Profile
                 </CardTitle>
               </CardHeader>
@@ -237,10 +237,10 @@ const ModernOrganizationSettings: React.FC<ModernOrganizationSettingsProps> = ({
                         </AvatarFallback>
                       </Avatar>
                       <div className="flex-1">
-                        <h2 className="text-xl font-geist-semibold text-gray-900">
+                        <h2 className="text-xl font-geist-semibold text-foreground">
                           {orgDetails.companyName || "Company Name"}
                         </h2>
-                        <p className="text-sm text-gray-600 mt-1 font-geist-regular">
+                        <p className="text-sm text-muted-foreground mt-1 font-geist-regular">
                           {orgDetails.countryName || "Location not set"}
                         </p>
                         <Badge
@@ -258,18 +258,18 @@ const ModernOrganizationSettings: React.FC<ModernOrganizationSettingsProps> = ({
                     {/* Contact Information */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
-                        <label className="text-xs font-geist-medium text-gray-500 uppercase tracking-wider">
+                        <label className="text-xs font-geist-medium text-muted-foreground uppercase tracking-wider">
                           Business Phone
                         </label>
-                        <p className="text-sm font-geist-regular text-gray-900 mt-1">
+                        <p className="text-sm font-geist-regular text-foreground mt-1">
                           {orgDetails.companyPhone || "Not configured"}
                         </p>
                       </div>
                       <div>
-                        <label className="text-xs font-geist-medium text-gray-500 uppercase tracking-wider">
+                        <label className="text-xs font-geist-medium text-muted-foreground uppercase tracking-wider">
                           Currency
                         </label>
-                        <p className="text-sm font-geist-semibold text-gray-900 mt-1">
+                        <p className="text-sm font-geist-semibold text-foreground mt-1">
                           {orgDetails.companyCurrency}
                         </p>
                       </div>
@@ -277,11 +277,11 @@ const ModernOrganizationSettings: React.FC<ModernOrganizationSettingsProps> = ({
 
                     {/* Address */}
                     <div>
-                      <label className="text-xs font-geist-medium text-gray-500 uppercase tracking-wider flex items-center gap-1">
+                      <label className="text-xs font-geist-medium text-muted-foreground uppercase tracking-wider flex items-center gap-1">
                         <MapPin className="h-3 w-3" />
                         Business Address
                       </label>
-                      <p className="text-sm font-geist-regular text-gray-900 mt-1 leading-relaxed">
+                      <p className="text-sm font-geist-regular text-foreground mt-1 leading-relaxed">
                         {formatAddress(orgDetails.companyAddr)}
                       </p>
                     </div>
@@ -291,10 +291,10 @@ const ModernOrganizationSettings: React.FC<ModernOrganizationSettingsProps> = ({
             </Card>
 
             {/* Financial Settings Card */}
-            <Card className="border-gray-200 shadow-sm">
+            <Card className="border-border shadow-sm">
               <CardHeader className="pb-4">
                 <CardTitle className="text-lg font-geist-semibold flex items-center gap-2">
-                  <CurrencyDollar className="h-5 w-5 text-gray-600" />
+                  <CurrencyDollar className="h-5 w-5 text-muted-foreground" />
                   Financial
                 </CardTitle>
               </CardHeader>
@@ -309,11 +309,11 @@ const ModernOrganizationSettings: React.FC<ModernOrganizationSettingsProps> = ({
                 ) : (
                   <div className="space-y-4">
                     <div>
-                      <label className="text-xs font-geist-medium text-gray-500 uppercase tracking-wider">
+                      <label className="text-xs font-geist-medium text-muted-foreground uppercase tracking-wider">
                         Standard Rate
                       </label>
                       <div className="flex items-baseline gap-1 mt-1">
-                        <span className="text-2xl font-geist-bold text-gray-900">
+                        <span className="text-2xl font-geist-bold text-foreground">
                           {orgDetails.companyCurrency === "USD" ? "$" : ""}
                           {typeof orgDetails.companyRate === "number"
                             ? orgDetails.companyRate.toFixed(2)
@@ -321,17 +321,17 @@ const ModernOrganizationSettings: React.FC<ModernOrganizationSettingsProps> = ({
                                 2
                               )}
                         </span>
-                        <span className="text-sm text-gray-500 font-geist-regular">
+                        <span className="text-sm text-muted-foreground font-geist-regular">
                           / hour
                         </span>
                       </div>
                     </div>
 
                     <div>
-                      <label className="text-xs font-geist-medium text-gray-500 uppercase tracking-wider">
+                      <label className="text-xs font-geist-medium text-muted-foreground uppercase tracking-wider">
                         Fiscal Year End
                       </label>
-                      <p className="text-sm font-geist-regular text-gray-900 mt-1">
+                      <p className="text-sm font-geist-regular text-foreground mt-1">
                         {orgDetails.companyFiscalYear || "Not configured"}
                       </p>
                     </div>
@@ -341,10 +341,10 @@ const ModernOrganizationSettings: React.FC<ModernOrganizationSettingsProps> = ({
             </Card>
 
             {/* Schedule Settings Card */}
-            <Card className="lg:col-span-2 border-gray-200 shadow-sm">
+            <Card className="lg:col-span-2 border-border shadow-sm">
               <CardHeader className="pb-4">
                 <CardTitle className="text-lg font-geist-semibold flex items-center gap-2">
-                  <Clock className="h-5 w-5 text-gray-600" />
+                  <Clock className="h-5 w-5 text-muted-foreground" />
                   Schedule & Time
                 </CardTitle>
               </CardHeader>
@@ -354,26 +354,26 @@ const ModernOrganizationSettings: React.FC<ModernOrganizationSettingsProps> = ({
                 ) : (
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                     <div>
-                      <label className="text-xs font-geist-medium text-gray-500 uppercase tracking-wider">
+                      <label className="text-xs font-geist-medium text-muted-foreground uppercase tracking-wider">
                         Timezone
                       </label>
-                      <p className="text-sm font-geist-regular text-gray-900 mt-1">
+                      <p className="text-sm font-geist-regular text-foreground mt-1">
                         {orgDetails.companyTimezone || "UTC"}
                       </p>
                     </div>
                     <div>
-                      <label className="text-xs font-geist-medium text-gray-500 uppercase tracking-wider">
+                      <label className="text-xs font-geist-medium text-muted-foreground uppercase tracking-wider">
                         Date Format
                       </label>
-                      <p className="text-sm font-geist-regular text-gray-900 mt-1">
+                      <p className="text-sm font-geist-regular text-foreground mt-1">
                         {orgDetails.companyDateFormat || "MM/DD/YYYY"}
                       </p>
                     </div>
                     <div>
-                      <label className="text-xs font-geist-medium text-gray-500 uppercase tracking-wider">
+                      <label className="text-xs font-geist-medium text-muted-foreground uppercase tracking-wider">
                         Working Days
                       </label>
-                      <p className="text-sm font-geist-regular text-gray-900 mt-1">
+                      <p className="text-sm font-geist-regular text-foreground mt-1">
                         {orgDetails.companyWorkingDays}
                       </p>
                     </div>
@@ -383,10 +383,10 @@ const ModernOrganizationSettings: React.FC<ModernOrganizationSettingsProps> = ({
             </Card>
 
             {/* Working Hours Card */}
-            <Card className="border-gray-200 shadow-sm">
+            <Card className="border-border shadow-sm">
               <CardHeader className="pb-4">
                 <CardTitle className="text-lg font-geist-semibold flex items-center gap-2">
-                  <Briefcase className="h-5 w-5 text-gray-600" />
+                  <Briefcase className="h-5 w-5 text-muted-foreground" />
                   Working Hours
                 </CardTitle>
               </CardHeader>
@@ -394,7 +394,7 @@ const ModernOrganizationSettings: React.FC<ModernOrganizationSettingsProps> = ({
                 {isLoading ? (
                   <Skeleton className="h-8 w-3/4" />
                 ) : (
-                  <p className="text-sm font-geist-medium text-gray-900">
+                  <p className="text-sm font-geist-medium text-foreground">
                     {orgDetails.companyWorkingHours}
                   </p>
                 )}

@@ -132,16 +132,16 @@ const ModernEditPage: React.FC<ModernEditPageProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-muted/40">
       {/* Header */}
-      <div className="bg-white shadow-sm border-b sticky top-0 z-10">
+      <div className="bg-card shadow-sm border-b sticky top-0 z-10">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div>
-              <h1 className="text-2xl font-semibold text-gray-900">
+              <h1 className="text-2xl font-semibold text-foreground">
                 Edit Allocated Devices
               </h1>
-              <p className="text-sm text-gray-600 mt-1">
+              <p className="text-sm text-muted-foreground mt-1">
                 Manage your company-allocated devices and equipment
               </p>
             </div>
@@ -172,15 +172,15 @@ const ModernEditPage: React.FC<ModernEditPageProps> = ({
         <div className="space-y-6">
           {/* Devices List */}
           {devices.map((device, index) => (
-            <Card key={index} className="border-gray-200 shadow-sm">
-              <CardHeader className="bg-gray-50 border-b">
+            <Card key={index} className="border-border shadow-sm">
+              <CardHeader className="bg-muted/40 border-b">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-white border border-gray-200">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-card border border-border">
                       {device.device_type ? (
                         getDeviceIcon(device.device_type)
                       ) : (
-                        <HardDrive className="h-5 w-5 text-gray-400" />
+                        <HardDrive className="h-5 w-5 text-muted-foreground" />
                       )}
                     </div>
                     <div>
@@ -347,7 +347,7 @@ const ModernEditPage: React.FC<ModernEditPageProps> = ({
 
           {/* Add Device Button */}
           <Card
-            className="border-dashed border-2 border-gray-300 bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer"
+            className="border-dashed border-2 border-border bg-muted/40 hover:bg-muted transition-colors cursor-pointer"
             onClick={addDevice}
           >
             <CardContent className="flex items-center justify-center py-8">
@@ -357,10 +357,10 @@ const ModernEditPage: React.FC<ModernEditPageProps> = ({
                     <Plus className="h-6 w-6 text-indigo-600" />
                   </div>
                 </div>
-                <h3 className="text-sm font-medium text-gray-900">
+                <h3 className="text-sm font-medium text-foreground">
                   Add Another Device
                 </h3>
-                <p className="text-sm text-gray-500 mt-1">
+                <p className="text-sm text-muted-foreground mt-1">
                   Click to add a new device to your inventory
                 </p>
               </div>
@@ -376,8 +376,10 @@ const ModernEditPage: React.FC<ModernEditPageProps> = ({
               <CardContent>
                 <div className="flex items-center justify-between">
                   <div className="space-y-1">
-                    <p className="text-sm text-gray-600">Total Devices</p>
-                    <p className="text-2xl font-bold text-gray-900">
+                    <p className="text-sm text-muted-foreground">
+                      Total Devices
+                    </p>
+                    <p className="text-2xl font-bold text-foreground">
                       {devices.length}
                     </p>
                   </div>

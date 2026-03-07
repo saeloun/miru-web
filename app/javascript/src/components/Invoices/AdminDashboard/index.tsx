@@ -102,23 +102,23 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
       value: currencyFormat(baseCurrency, summary.draftAmount),
       description: "Not yet sent",
       icon: FileText,
-      color: "text-gray-600",
-      bgColor: "bg-gray-50",
+      color: "text-muted-foreground",
+      bgColor: "bg-muted/40",
       onClick: () => applyFilter([{ value: "draft", label: "DRAFT" }]),
     },
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50/50">
+    <div className="min-h-screen bg-muted/40">
       {/* Header */}
-      <div className="bg-white border-b">
+      <div className="bg-card border-b">
         <div className="px-4 py-4 sm:px-6">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div>
-              <h1 className="text-xl font-semibold text-gray-900 sm:text-2xl">
+              <h1 className="text-xl font-semibold text-foreground sm:text-2xl">
                 Invoice Dashboard
               </h1>
-              <p className="text-sm text-gray-500 mt-1">
+              <p className="text-sm text-muted-foreground mt-1">
                 Track and manage your invoices efficiently
               </p>
             </div>
@@ -155,7 +155,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 onClick={stat.onClick}
               >
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium text-gray-600">
+                  <CardTitle className="text-sm font-medium text-muted-foreground">
                     {stat.title}
                   </CardTitle>
                   <div className={cn("p-2 rounded-lg", stat.bgColor)}>
@@ -182,7 +182,9 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         {stat.trend.value}%
                       </div>
                     )}
-                    <p className="text-xs text-gray-500">{stat.description}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {stat.description}
+                    </p>
                   </div>
                 </CardContent>
               </Card>
@@ -303,8 +305,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </div>
 
                 <div className="flex items-center">
-                  <div className="w-9 h-9 rounded-lg bg-gray-100 flex items-center justify-center">
-                    <FileText className="h-5 w-5 text-gray-600" />
+                  <div className="w-9 h-9 rounded-lg bg-muted flex items-center justify-center">
+                    <FileText className="h-5 w-5 text-muted-foreground" />
                   </div>
                   <div className="ml-4 flex-1">
                     <p className="text-sm font-medium">Draft</p>
@@ -314,7 +316,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   </div>
                   <Badge
                     variant="outline"
-                    className="bg-gray-50 text-gray-700 border-gray-200"
+                    className="bg-muted/40 text-muted-foreground border-border"
                   >
                     {(
                       (summary.draftAmount /
@@ -378,23 +380,23 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 <div className="rounded-md border">
                   <table className="w-full">
                     <thead>
-                      <tr className="border-b bg-gray-50/50">
-                        <th className="p-3 text-left text-sm font-medium text-gray-900">
+                      <tr className="border-b bg-muted/40">
+                        <th className="p-3 text-left text-sm font-medium text-foreground">
                           Invoice
                         </th>
-                        <th className="p-3 text-left text-sm font-medium text-gray-900">
+                        <th className="p-3 text-left text-sm font-medium text-foreground">
                           Client
                         </th>
-                        <th className="p-3 text-left text-sm font-medium text-gray-900">
+                        <th className="p-3 text-left text-sm font-medium text-foreground">
                           Amount
                         </th>
-                        <th className="p-3 text-left text-sm font-medium text-gray-900">
+                        <th className="p-3 text-left text-sm font-medium text-foreground">
                           Status
                         </th>
-                        <th className="p-3 text-left text-sm font-medium text-gray-900">
+                        <th className="p-3 text-left text-sm font-medium text-foreground">
                           Date
                         </th>
-                        <th className="p-3 text-left text-sm font-medium text-gray-900">
+                        <th className="p-3 text-left text-sm font-medium text-foreground">
                           Actions
                         </th>
                       </tr>
@@ -403,12 +405,12 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       {invoices.slice(0, 5).map((invoice, index) => (
                         <tr
                           key={invoice.id}
-                          className="border-b hover:bg-gray-50/50"
+                          className="border-b hover:bg-muted/40"
                         >
                           <td className="p-3 text-sm font-medium">
                             #{invoice.invoiceNumber}
                           </td>
-                          <td className="p-3 text-sm text-gray-600">
+                          <td className="p-3 text-sm text-muted-foreground">
                             {invoice.client.name}
                           </td>
                           <td className="p-3 text-sm font-medium">
@@ -428,13 +430,13 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                 invoice.status === "overdue" &&
                                   "bg-red-50 text-red-700 border-red-200",
                                 invoice.status === "draft" &&
-                                  "bg-gray-50 text-gray-700 border-gray-200"
+                                  "bg-muted/40 text-muted-foreground border-border"
                               )}
                             >
                               {invoice.status}
                             </Badge>
                           </td>
-                          <td className="p-3 text-sm text-gray-600">
+                          <td className="p-3 text-sm text-muted-foreground">
                             {invoice.issueDate}
                           </td>
                           <td className="p-3">

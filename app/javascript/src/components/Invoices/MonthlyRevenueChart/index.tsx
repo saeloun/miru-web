@@ -125,13 +125,13 @@ const MonthlyRevenueChart: React.FC<MonthlyRevenueChartProps> = ({
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       return (
-        <div className="bg-white p-3 rounded-lg shadow-lg border border-gray-200">
-          <p className="text-sm font-medium text-gray-900">{label}</p>
-          <p className="text-sm text-[#5E58F1] font-semibold">
+        <div className="rounded-lg border border-border bg-card p-3 shadow-lg">
+          <p className="text-sm font-medium text-foreground">{label}</p>
+          <p className="text-sm font-semibold text-primary">
             {formatTooltipValue(payload[0].value)}
           </p>
           {payload[0].payload.invoiceCount !== undefined && (
-            <p className="text-xs text-gray-500">
+            <p className="text-xs text-muted-foreground">
               {payload[0].payload.invoiceCount} invoice
               {payload[0].payload.invoiceCount !== 1 ? "s" : ""}
             </p>
@@ -144,14 +144,14 @@ const MonthlyRevenueChart: React.FC<MonthlyRevenueChartProps> = ({
   };
 
   return (
-    <div className="bg-white rounded-2xl p-6 mt-6 shadow-sm border border-gray-100">
+    <div className="mt-6 rounded-2xl border border-border bg-card p-6 shadow-sm">
       {/* Header Section */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-6">
         <div className="flex-1">
-          <h3 className="text-lg font-semibold text-gray-900">
+          <h3 className="text-lg font-semibold text-foreground">
             Monthly Revenue
           </h3>
-          <p className="text-sm text-gray-500 mt-1">
+          <p className="mt-1 text-sm text-muted-foreground">
             Revenue trend over the last 12 months
           </p>
         </div>
@@ -160,29 +160,29 @@ const MonthlyRevenueChart: React.FC<MonthlyRevenueChartProps> = ({
           {/* Statistics */}
           <div className="flex items-center gap-6">
             <div>
-              <p className="text-xs text-gray-500 uppercase tracking-wider">
+              <p className="text-xs uppercase tracking-wider text-muted-foreground">
                 Total
               </p>
-              <p className="text-lg font-semibold text-gray-900">
+              <p className="text-lg font-semibold text-foreground">
                 {currencyFormat(currency, totalRevenue, "compact")}
               </p>
             </div>
             <div>
-              <p className="text-xs text-gray-500 uppercase tracking-wider">
+              <p className="text-xs uppercase tracking-wider text-muted-foreground">
                 Average
               </p>
-              <p className="text-lg font-semibold text-gray-900">
+              <p className="text-lg font-semibold text-foreground">
                 {currencyFormat(currency, averageRevenue, "compact")}
               </p>
             </div>
             {trend !== 0 && (
               <div>
-                <p className="text-xs text-gray-500 uppercase tracking-wider">
+                <p className="text-xs uppercase tracking-wider text-muted-foreground">
                   Trend
                 </p>
                 <p
                   className={`text-lg font-semibold ${
-                    trend > 0 ? "text-green-600" : "text-red-600"
+                    trend > 0 ? "text-primary" : "text-muted-foreground"
                   }`}
                 >
                   {trend > 0 ? "↑" : "↓"} {Math.abs(trend).toFixed(1)}%
@@ -199,14 +199,14 @@ const MonthlyRevenueChart: React.FC<MonthlyRevenueChartProps> = ({
           className="flex items-center justify-center"
           style={{ height: `${height}px` }}
         >
-          <div className="text-gray-400">Loading chart data...</div>
+          <div className="text-muted-foreground">Loading chart data...</div>
         </div>
       ) : chartData.length === 0 ? (
         <div
           className="flex items-center justify-center"
           style={{ height: `${height}px` }}
         >
-          <div className="text-gray-400">No invoice data available</div>
+          <div className="text-muted-foreground">No invoice data available</div>
         </div>
       ) : (
         <div className="w-full" style={{ height: `${height}px` }}>
@@ -218,26 +218,43 @@ const MonthlyRevenueChart: React.FC<MonthlyRevenueChartProps> = ({
               >
                 <defs>
                   <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#5E58F1" stopOpacity={0.3} />
-                    <stop offset="95%" stopColor="#5E58F1" stopOpacity={0} />
+                    <stop
+                      offset="5%"
+                      stopColor="hsl(var(--primary))"
+                      stopOpacity={0.28}
+                    />
+                    <stop
+                      offset="95%"
+                      stopColor="hsl(var(--primary))"
+                      stopOpacity={0.02}
+                    />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                <CartesianGrid
+                  strokeDasharray="3 3"
+                  stroke="hsl(var(--border))"
+                />
                 <XAxis
                   dataKey="month"
-                  tick={{ fontSize: 12, fill: "#6B7280" }}
-                  axisLine={{ stroke: "#E5E7EB" }}
+                  tick={{
+                    fontSize: 12,
+                    fill: "hsl(var(--muted-foreground))",
+                  }}
+                  axisLine={{ stroke: "hsl(var(--border))" }}
                 />
                 <YAxis
-                  tick={{ fontSize: 12, fill: "#6B7280" }}
-                  axisLine={{ stroke: "#E5E7EB" }}
+                  tick={{
+                    fontSize: 12,
+                    fill: "hsl(var(--muted-foreground))",
+                  }}
+                  axisLine={{ stroke: "hsl(var(--border))" }}
                   tickFormatter={formatYAxisTick}
                 />
                 <Tooltip content={<CustomTooltip />} />
                 <Area
                   type="monotone"
                   dataKey="revenue"
-                  stroke="#5E58F1"
+                  stroke="hsl(var(--primary))"
                   strokeWidth={2}
                   fillOpacity={1}
                   fill="url(#colorRevenue)"
@@ -248,19 +265,32 @@ const MonthlyRevenueChart: React.FC<MonthlyRevenueChartProps> = ({
                 data={chartData}
                 margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
               >
-                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                <CartesianGrid
+                  strokeDasharray="3 3"
+                  stroke="hsl(var(--border))"
+                />
                 <XAxis
                   dataKey="month"
-                  tick={{ fontSize: 12, fill: "#6B7280" }}
-                  axisLine={{ stroke: "#E5E7EB" }}
+                  tick={{
+                    fontSize: 12,
+                    fill: "hsl(var(--muted-foreground))",
+                  }}
+                  axisLine={{ stroke: "hsl(var(--border))" }}
                 />
                 <YAxis
-                  tick={{ fontSize: 12, fill: "#6B7280" }}
-                  axisLine={{ stroke: "#E5E7EB" }}
+                  tick={{
+                    fontSize: 12,
+                    fill: "hsl(var(--muted-foreground))",
+                  }}
+                  axisLine={{ stroke: "hsl(var(--border))" }}
                   tickFormatter={formatYAxisTick}
                 />
                 <Tooltip content={<CustomTooltip />} />
-                <Bar dataKey="revenue" fill="#5E58F1" radius={[8, 8, 0, 0]} />
+                <Bar
+                  dataKey="revenue"
+                  fill="hsl(var(--primary) / 0.72)"
+                  radius={[8, 8, 0, 0]}
+                />
               </BarChart>
             )}
           </ResponsiveContainer>
@@ -274,8 +304,8 @@ const MonthlyRevenueChart: React.FC<MonthlyRevenueChartProps> = ({
             onClick={() => onChartTypeChange("area")}
             className={`px-3 py-1 text-xs rounded-full transition-colors ${
               chartType === "area"
-                ? "bg-[#5E58F1] text-white"
-                : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                ? "bg-primary text-primary-foreground"
+                : "bg-muted text-muted-foreground hover:bg-accent hover:text-foreground"
             }`}
           >
             Area Chart
@@ -284,8 +314,8 @@ const MonthlyRevenueChart: React.FC<MonthlyRevenueChartProps> = ({
             onClick={() => onChartTypeChange("bar")}
             className={`px-3 py-1 text-xs rounded-full transition-colors ${
               chartType === "bar"
-                ? "bg-[#5E58F1] text-white"
-                : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                ? "bg-primary text-primary-foreground"
+                : "bg-muted text-muted-foreground hover:bg-accent hover:text-foreground"
             }`}
           >
             Bar Chart

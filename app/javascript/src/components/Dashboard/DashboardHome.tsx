@@ -25,12 +25,14 @@ import { useDashboardData, useActivities } from "../../hooks/useDashboard";
 interface DashboardHomeProps {
   user?: any;
   company?: any;
+  companyRole?: string;
   isDesktop?: boolean;
 }
 
 const DashboardHome: React.FC<DashboardHomeProps> = ({
   user,
   company,
+  companyRole,
   isDesktop,
 }) => {
   const [timeframe, setTimeframe] = useState("year");
@@ -159,6 +161,19 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({
     },
   ];
 
+  const roleGuidance = (() => {
+    switch (companyRole) {
+      case "employee":
+        return "Track your week, submit accurate entries, and keep work moving.";
+      case "book_keeper":
+        return "Review incoming payments, reconcile invoices, and keep cash flow clear.";
+      case "client":
+        return "Check invoice status and payment history for your account.";
+      default:
+        return "Revenue, projects, and team momentum at a glance.";
+    }
+  })();
+
   return (
     <div className="space-y-6 max-w-[1600px] mx-auto">
       <div className="border rounded-lg p-6 bg-card">
@@ -170,9 +185,7 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({
             Welcome back,{" "}
             {user?.first_name || user?.name?.split(" ")[0] || "there"}
           </h1>
-          <p className="text-muted-foreground">
-            {timeframeLabel} at a glance — revenue, projects, and team momentum.
-          </p>
+          <p className="text-muted-foreground">{roleGuidance}</p>
         </div>
       </div>
 
@@ -251,14 +264,14 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({
         </div>
       </div>
 
-      <Card className="border border-gray-200 hover:shadow-md transition-shadow">
-        <CardHeader className="border-b border-gray-200">
+      <Card className="border border-border hover:shadow-md transition-shadow">
+        <CardHeader className="border-b border-border">
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle className="text-lg font-semibold text-gray-900">
+              <CardTitle className="text-lg font-semibold text-foreground">
                 Workspace Activity
               </CardTitle>
-              <CardDescription className="text-sm text-gray-600 mt-1">
+              <CardDescription className="text-sm text-muted-foreground mt-1">
                 Latest updates across your invoices and payments
               </CardDescription>
             </div>
@@ -271,8 +284,11 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({
           >
             <div className="space-y-0 p-6">
               {allActivities.length === 0 && !isActivitiesLoading ? (
-                <div className="text-center py-8 text-gray-500">
-                  <Receipt size={48} className="mx-auto mb-3 text-gray-300" />
+                <div className="text-center py-8 text-muted-foreground">
+                  <Receipt
+                    size={48}
+                    className="mx-auto mb-3 text-muted-foreground/50"
+                  />
                   <p>No recent activity yet</p>
                 </div>
               ) : (
@@ -282,26 +298,26 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({
                   return (
                     <div
                       key={activity.id}
-                      className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors"
+                      className="flex items-start gap-3 p-3 rounded-lg hover:bg-accent/50 transition-colors"
                     >
-                      <div className="p-2 rounded-lg bg-gray-100 mt-0.5">
+                      <div className="p-2 rounded-lg bg-muted mt-0.5">
                         <Icon
                           size={16}
                           weight="light"
-                          className="text-gray-700"
+                          className="text-foreground/80"
                         />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-semibold text-gray-800">
+                        <p className="text-sm font-semibold text-foreground">
                           {activity.message}
                         </p>
-                        <p className="text-xs text-gray-500 mt-0.5">
+                        <p className="text-xs text-muted-foreground mt-0.5">
                           {activity.time_ago}
                         </p>
                         {activity.metadata && (
                           <div className="flex items-center gap-2 mt-1">
                             {activity.metadata.amount && (
-                              <span className="text-xs font-medium text-gray-600">
+                              <span className="text-xs font-medium text-muted-foreground">
                                 {currencyFormat(
                                   activity.metadata.currency,
                                   activity.metadata.amount
@@ -328,7 +344,7 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({
                     size="sm"
                     onClick={handleLoadMore}
                     disabled={isFetchingNextPage}
-                    className="text-gray-600 hover:text-gray-900"
+                    className="text-muted-foreground hover:text-foreground"
                   >
                     {isFetchingNextPage ? (
                       <>
@@ -343,7 +359,7 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({
               )}
 
               {!hasNextPage && allActivities.length > 0 && (
-                <div className="text-center py-4 text-gray-400 text-sm">
+                <div className="text-center py-4 text-muted-foreground/70 text-sm">
                   You’re all caught up
                 </div>
               )}
