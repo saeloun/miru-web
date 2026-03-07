@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 
 import ErrorPage from "common/Error";
+import Loader from "common/Loader";
 import Layout from "components/Profile/index";
 import { useProfileContext } from "context/Profile/ProfileContext";
 import { useUserContext } from "context/UserContext";
@@ -11,6 +12,12 @@ import { SETTINGS } from "./routes";
 import UserDetailsView from "../Personal/User";
 
 const ProtectedRoute = ({ role, authorisedRoles, children }) => {
+  const { loading } = useUserContext();
+
+  if (loading || !role) {
+    return <Loader className="h-screen" />;
+  }
+
   if (authorisedRoles.includes(role)) {
     return children;
   }
@@ -43,7 +50,7 @@ const RouteConfig = () => {
     <Routes>
       {/* Team member routes */}
       {isTeamContext && (
-        <Route element={<Layout />} path="/">
+        <Route element={<Layout />} path="/team/:memberId">
           <Route index element={<UserDetailsView />} />
           {SETTINGS.filter(({ category }) => category === "personal").map(
             ({ path, authorisedRoles, Component }) => (
@@ -65,7 +72,7 @@ const RouteConfig = () => {
       )}
       {/* Settings routes - Fixed to handle all settings paths directly */}
       {isSettingsContext && (
-        <Route element={<Layout />} path="/">
+        <Route element={<Layout />} path="/settings">
           <Route index element={<Navigate to="/settings/profile" replace />} />
           {SETTINGS.map(({ path, authorisedRoles, Component }) => (
             <Route

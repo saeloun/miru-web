@@ -37,7 +37,7 @@ const redirectUrl = role => {
 const RestrictedRoute = ({ user, role, authorisedRoles }) => {
   const { loading } = useUserContext();
 
-  if (loading || !user) {
+  if (loading || !user || !role) {
     return <Loader className="h-screen" />;
   }
 
