@@ -27,7 +27,7 @@ module Reports::AccountsAging
             logo: client.logo_url,
             amount_overdue: amount_overdue_by_date_range(client_outstanding_invoices)
           }
-        end
+        end.sort_by { |client| -client.dig(:amount_overdue, :total).to_f }
       end
 
       def overdue_invoices_for_all_clients

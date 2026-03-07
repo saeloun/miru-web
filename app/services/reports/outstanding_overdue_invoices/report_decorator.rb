@@ -42,17 +42,19 @@ class Reports::OutstandingOverdueInvoices::ReportDecorator < ApplicationService
 
     def clients_data
       invoices.group_by(&:client).map do |client, client_invoices|
+        outstanding = calculate_outstanding(client_invoices)
+        overdue = calculate_overdue(client_invoices)
         {
           name: client.name,
           client: client,  # For compatibility with specs
           logo: client.logo_url,
           invoices: client_invoices,
-          total_outstanding_amount: calculate_outstanding(client_invoices),
-          total_outstanding: calculate_outstanding(client_invoices),  # For compatibility with specs
-          total_overdue_amount: calculate_overdue(client_invoices),
-          total_overdue: calculate_overdue(client_invoices)  # For compatibility with specs
+          total_outstanding_amount: outstanding,
+          total_outstanding: outstanding,  # For compatibility with specs
+          total_overdue_amount: overdue,
+          total_overdue: overdue  # For compatibility with specs
         }
-      end.sort_by { |c| c[:name] }
+      end.sort_by { |c| -(c[:total_outstanding_amount].to_f + c[:total_overdue_amount].to_f) }
     end
 
     def calculate_outstanding(client_invoices)
