@@ -62,8 +62,7 @@ RUN --mount=type=cache,id=bundle-cache,target=/usr/local/bundle/cache \
 # Install node modules for development (skip scripts to avoid git-dependent hooks, then rebuild)
 COPY package.json pnpm-lock.yaml ./
 RUN --mount=type=cache,id=pnpm-store,target=/root/.local/share/pnpm/store \
-    PUPPETEER_SKIP_DOWNLOAD=true pnpm install --frozen-lockfile --ignore-scripts && \
-    pnpm rebuild
+    PUPPETEER_SKIP_DOWNLOAD=true pnpm install --frozen-lockfile --ignore-scripts
 
 # Copy application code
 COPY . .
@@ -95,8 +94,7 @@ RUN --mount=type=cache,id=bundle-cache,target=/usr/local/bundle/cache \
 # Install node modules with pnpm
 COPY package.json pnpm-lock.yaml ./
 RUN --mount=type=cache,id=pnpm-store,target=/root/.local/share/pnpm/store \
-    PUPPETEER_SKIP_DOWNLOAD=true pnpm install --frozen-lockfile --ignore-scripts && \
-    pnpm rebuild
+    PUPPETEER_SKIP_DOWNLOAD=true pnpm install --frozen-lockfile --ignore-scripts
 
 # Copy application code
 COPY . .
