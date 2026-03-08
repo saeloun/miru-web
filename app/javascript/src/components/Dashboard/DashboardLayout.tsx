@@ -19,7 +19,6 @@ import {
   House,
   CurrencyCircleDollar,
   Tree,
-  MagnifyingGlass,
   SignOut,
 } from "phosphor-react";
 import { useLocation } from "react-router-dom";
@@ -32,10 +31,7 @@ interface DashboardLayoutProps {
   className?: string;
 }
 
-const DashboardLayout: React.FC<DashboardLayoutProps> = ({
-  children,
-  className,
-}) => {
+const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children, className }) => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
@@ -151,21 +147,18 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
     },
   ];
 
-  const filteredNavigation = useMemo(
-    () =>
-      navigationGroups.map(group => ({
-        ...group,
-        items: group.items.filter(
-          item => !item.roles || item.roles.includes(companyRole)
-        ),
-      })),
-    [companyRole]
-  );
+  const filterNavigationGroup = (group) => ({
+    ...group,
+    items: group.items.filter((item) => !item.roles || item.roles.includes(companyRole)),
+  });
+
+  // prettier-ignore
+  const filteredNavigation = useMemo(() => navigationGroups.map(filterNavigationGroup), [companyRole]);
 
   const pageTitle = useMemo(() => {
     const item = filteredNavigation
-      .flatMap(group => group.items)
-      .find(navItem => location.pathname.startsWith(navItem.href));
+      .flatMap((group) => group.items)
+      .find((navItem) => location.pathname.startsWith(navItem.href));
 
     return item?.label || "Dashboard";
   }, [location.pathname, filteredNavigation]);
@@ -191,10 +184,13 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [mobileOpen]);
 
+  // prettier-ignore
+  const mobileSidebarClasses = cn("mobile-sidebar fixed inset-y-0 left-0 z-30 w-64 transform transition-transform lg:hidden", mobileOpen ? "translate-x-0" : "-translate-x-full");
+  // prettier-ignore
+  const desktopSidebarClasses = cn("hidden transition-all duration-300 lg:fixed lg:inset-y-0 lg:left-0 lg:z-10 lg:block lg:border-r lg:border-border lg:bg-card", sidebarCollapsed ? "lg:w-16" : "lg:w-64");
+
   return (
-    <div
-      className={cn("min-h-screen bg-background text-foreground", className)}
-    >
+    <div className={cn("min-h-screen bg-background text-foreground", className)}>
       {mobileOpen && (
         <div
           className="fixed inset-0 z-20 bg-black/50 backdrop-blur-sm lg:hidden"
@@ -202,12 +198,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
         />
       )}
 
-      <div
-        className={cn(
-          "mobile-sidebar fixed inset-y-0 left-0 z-30 w-64 transform transition-transform lg:hidden",
-          mobileOpen ? "translate-x-0" : "-translate-x-full"
-        )}
-      >
+      <div className={mobileSidebarClasses}>
         <div className="h-full border-r border-border bg-card">
           <div className="flex items-center justify-between border-b border-border p-4">
             <div className="flex items-center gap-3">
@@ -236,12 +227,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
         </div>
       </div>
 
-      <aside
-        className={cn(
-          "hidden transition-all duration-300 lg:fixed lg:inset-y-0 lg:left-0 lg:z-10 lg:block lg:border-r lg:border-border lg:bg-card",
-          sidebarCollapsed ? "lg:w-16" : "lg:w-64"
-        )}
-      >
+      <aside className={desktopSidebarClasses}>
         <Sidebar
           navigationGroups={filteredNavigation}
           isCollapsed={sidebarCollapsed}
@@ -255,28 +241,21 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
               {!sidebarCollapsed && (
                 <div className="text-left">
                   <span className="font-semibold text-foreground">Miru</span>
-                  <div className="text-xs text-muted-foreground">
-                    Project management workspace
-                  </div>
+                  <div className="text-xs text-muted-foreground">Agency OS</div>
                 </div>
               )}
             </button>
           }
           user={{
             name:
-              `${user?.first_name || ""} ${user?.last_name || ""}`.trim() ||
-              user?.email ||
-              "User",
+              `${user?.first_name || ""} ${user?.last_name || ""}`.trim() || user?.email || "User",
             email: user?.email || "",
           }}
         />
       </aside>
 
       <div
-        className={cn(
-          "transition-all duration-300",
-          sidebarCollapsed ? "lg:ml-16" : "lg:ml-64"
-        )}
+        className={cn("transition-all duration-300", sidebarCollapsed ? "lg:ml-16" : "lg:ml-64")}
       >
         <button
           onClick={() => setMobileOpen(true)}
@@ -288,13 +267,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
         <header className="sticky top-0 z-10 border-b border-border bg-background/90 backdrop-blur">
           <div className="flex items-center justify-between px-6 py-4 lg:px-8">
             <div className="flex items-center gap-3">
-              <h1 className="text-lg font-semibold text-foreground lg:text-xl">
-                {pageTitle}
-              </h1>
-              <div className="hidden items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-sm text-muted-foreground lg:flex">
-                <MagnifyingGlass size={15} />
-                <span>Search</span>
-              </div>
+              <h1 className="text-lg font-semibold text-foreground lg:text-xl">{pageTitle}</h1>
             </div>
             <div className="flex items-center gap-2">
               <ThemeToggle compact />
