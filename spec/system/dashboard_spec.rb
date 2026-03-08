@@ -59,7 +59,7 @@ RSpec.describe "Dashboard", type: :system, js: true do
 
         expect(page).to have_css("#react-root", wait: 10)
         expect(page).to have_content("Revenue", wait: 10)
-        expect(page).to have_content("Company Pulse", wait: 10)
+        expect(page).to have_content("Revenue Momentum", wait: 10)
       end
     end
 
