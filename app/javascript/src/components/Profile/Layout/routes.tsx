@@ -5,13 +5,14 @@ import React from "react";
 import OrgDetails from "components/Profile/Organization/Details";
 import OrgEdit from "components/Profile/Organization/Edit";
 import Holidays from "components/Profile/Organization/Holidays";
+import Billing from "components/Profile/Organization/Billing";
 import PaymentSettings from "components/Profile/Organization/Payment";
 import AllocatedDevicesDetails from "components/Profile/Personal/Devices";
 import AllocatedDevicesEdit from "components/Profile/Personal/Devices/Edit";
 import EmploymentDetails from "components/Profile/Personal/Employment";
 import EmploymentDetailsEdit from "components/Profile/Personal/Employment/Edit";
 import NotificationPreferences from "components/Profile/Personal/NotificationPreferences";
-import ModernPreferences from "components/Settings/ModernPreferences";
+import PreferencesPage from "components/Settings/Preferences";
 import UserDetailsView from "components/Profile/Personal/User";
 import UserDetailsEdit from "components/Profile/Personal/User/Edit";
 import LeaveManagement from "components/LeaveManagement";
@@ -97,7 +98,7 @@ export const SETTINGS = [
     path: "preferences",
     icon: <ReminderIcon className="mr-2" size={20} weight="bold" />,
     authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE],
-    Component: ModernPreferences,
+    Component: PreferencesPage,
     category: "personal",
     isTab: false,
   },
@@ -165,6 +166,15 @@ export const SETTINGS = [
     category: "organization",
     isTab: true,
   },
+  {
+    label: "BILLING",
+    path: "billing",
+    icon: <PaymentsIcon className="mr-2" size={20} weight="bold" />,
+    authorisedRoles: [ADMIN, OWNER],
+    Component: Billing,
+    category: "organization",
+    isTab: true,
+  },
   // Uncomment when Integrating with API
   // {
   //   label: "Integration",
@@ -181,12 +191,5 @@ export const SETTINGS = [
   //   authorisedRoles: [ADMIN, OWNER],
   //   category: "organization",
   // isTab: false,
-  // },
-  // {
-  //   path: "/billing",
-  //   Component: Billing,
-  //   authorisedRoles: [ADMIN, OWNER],
-  //   category: "organization",
-  //isTab: false,
   // },
 ];
