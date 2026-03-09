@@ -42,8 +42,9 @@ class ApiHandler {
           return Promise.reject(error);
         }
 
-        // Skip generic toast if field_errors are present (handled by the component)
-        if (!error.response?.data?.field_errors) {
+        // Skip generic toast if field_errors are present and non-empty (handled by the component)
+        const fieldErrors = error.response?.data?.field_errors;
+        if (!fieldErrors || Object.keys(fieldErrors).length === 0) {
           Toastr.error(
             error.response?.data?.errors ||
               error.response?.data?.error ||

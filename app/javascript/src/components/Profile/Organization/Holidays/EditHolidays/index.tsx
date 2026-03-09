@@ -132,7 +132,17 @@ const EditHolidays = ({
                       {holidayErrors[index] && (
                         <ErrorSpan
                           className="text-xs text-red-600"
-                          message={holidayErrors[index]}
+                          message={
+                            Object.keys(holidayErrors[index])
+                              .reduce((acc: string[], key) => {
+                                const errors = holidayErrors[index][key];
+
+                                return acc.concat(
+                                  Array.isArray(errors) ? errors : [errors]
+                                );
+                              }, [])
+                              .join(", ") || ""
+                          }
                         />
                       )}
                     </div>
@@ -292,7 +302,18 @@ const EditHolidays = ({
                           {optionalHolidayErrors[index] && (
                             <ErrorSpan
                               className="text-xs text-red-600"
-                              message={optionalHolidayErrors[index]}
+                              message={
+                                Object.keys(optionalHolidayErrors[index])
+                                  .reduce((acc: string[], key) => {
+                                    const errors =
+                                      optionalHolidayErrors[index][key];
+
+                                    return acc.concat(
+                                      Array.isArray(errors) ? errors : [errors]
+                                    );
+                                  }, [])
+                                  .join(", ") || ""
+                              }
                             />
                           )}
                         </div>

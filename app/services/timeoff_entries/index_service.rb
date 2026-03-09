@@ -73,16 +73,24 @@ module TimeoffEntries
           elsif net_hours.negative?
             total_overdrawn_hours = net_hours.abs
             if total_overdrawn_hours < @working_hours_per_day
-              "Overdrawn by #{total_overdrawn_hours} hours"
+              "Overdrawn by #{total_overdrawn_hours} #{'hour'.pluralize(total_overdrawn_hours)}"
             else
               overdrawn_days = total_overdrawn_hours / @working_hours_per_day
               overdrawn_extra_hours = total_overdrawn_hours % @working_hours_per_day
-              "Overdrawn by #{overdrawn_days} days #{overdrawn_extra_hours} hours"
+              if overdrawn_extra_hours.zero?
+                "Overdrawn by #{overdrawn_days} #{'day'.pluralize(overdrawn_days)}"
+              else
+                "Overdrawn by #{overdrawn_days} #{'day'.pluralize(overdrawn_days)} #{overdrawn_extra_hours} #{'hour'.pluralize(overdrawn_extra_hours)}"
+              end
             end
           elsif net_hours < @working_hours_per_day
-            "#{net_hours} hours"
+            "#{net_hours} #{'hour'.pluralize(net_hours)}"
           else
-            "#{net_days} days #{extra_hours} hours"
+            if extra_hours.zero?
+              "#{net_days} #{'day'.pluralize(net_days)}"
+            else
+              "#{net_days} #{'day'.pluralize(net_days)} #{extra_hours} #{'hour'.pluralize(extra_hours)}"
+            end
           end
 
           summary_object = {

@@ -88,6 +88,8 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
       net_days = net_hours / working_hours_per_day
       extra_hours = net_hours % working_hours_per_day
 
+      label = generate_label(net_hours, net_days, extra_hours)
+
       summary_object = {
         id: leave_type.id,
         name: leave_type.name,
@@ -97,7 +99,7 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
         timeoff_entries_duration:,
         net_duration:,
         net_days:,
-        label: "#{net_days} days #{extra_hours} hours",
+        label:,
         type: "leave"
       }
 
@@ -113,6 +115,8 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
       net_days = net_hours / working_hours_per_day
       extra_hours = net_hours % working_hours_per_day
 
+      label = generate_label(net_hours, net_days, extra_hours)
+
       summary_object = {
         id: leave_type.id,
         name: leave_type.name,
@@ -122,7 +126,7 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
         timeoff_entries_duration:,
         net_duration:,
         net_days:,
-        label: "#{net_days} days #{extra_hours} hours",
+        label:,
         type: "leave"
       }
 
@@ -138,6 +142,8 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
       net_days = net_hours / working_hours_per_day
       extra_hours = net_hours % working_hours_per_day
 
+      label = generate_label(net_hours, net_days, extra_hours)
+
       summary_object = {
         id: leave_type.id,
         name: leave_type.name,
@@ -147,7 +153,7 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
         timeoff_entries_duration:,
         net_duration:,
         net_days:,
-        label: "#{net_days} days #{extra_hours} hours",
+        label:,
         type: "leave"
       }
 
@@ -163,6 +169,8 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
       net_days = net_hours / working_hours_per_day
       extra_hours = net_hours % working_hours_per_day
 
+      label = generate_label(net_hours, net_days, extra_hours)
+
       summary_object = {
         id: leave_type.id,
         name: leave_type.name,
@@ -172,7 +180,7 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
         timeoff_entries_duration:,
         net_duration:,
         net_days:,
-        label: "#{net_days} days #{extra_hours} hours",
+        label:,
         type: "leave"
       }
 
@@ -207,11 +215,7 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
       net_days = net_hours / working_hours_per_day
       extra_hours = net_hours % working_hours_per_day
 
-      label = if net_hours < working_hours_per_day
-        "#{net_hours} hours"
-      else
-        "#{net_days} days #{extra_hours} hours"
-      end
+      label = generate_label(net_hours, net_days, extra_hours)
 
       summary_object = {
         id: leave_type.id,
@@ -238,11 +242,7 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
       net_days = net_hours / working_hours_per_day
       extra_hours = net_hours % working_hours_per_day
 
-      label = if net_hours < working_hours_per_day
-        "#{net_hours} hours"
-      else
-        "#{net_days} days #{extra_hours} hours"
-      end
+      label = generate_label(net_hours, net_days, extra_hours)
 
       summary_object = {
         id: leave_type.id,
@@ -269,6 +269,8 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
       net_days = net_hours / working_hours_per_day
       extra_hours = net_hours % working_hours_per_day
 
+      label = generate_label(net_hours, net_days, extra_hours)
+
       summary_object = {
         id: leave_type.id,
         name: leave_type.name,
@@ -278,7 +280,7 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
         timeoff_entries_duration:,
         net_duration:,
         net_days:,
-        label: "#{net_days} days #{extra_hours} hours",
+        label:,
         type: "leave"
       }
 
@@ -294,6 +296,8 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
       net_days = net_hours / working_hours_per_day
       extra_hours = net_hours % working_hours_per_day
 
+      label = generate_label(net_hours, net_days, extra_hours)
+
       summary_object = {
         id: leave_type.id,
         name: leave_type.name,
@@ -303,7 +307,7 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
         timeoff_entries_duration:,
         net_duration:,
         net_days:,
-        label: "#{net_days} days #{extra_hours} hours",
+        label:,
         type: "leave"
       }
 
@@ -453,5 +457,32 @@ carry_forward_days)
         working_hours_per_day,
         company.working_days
       ).process
+    end
+
+    def generate_label(net_hours, net_days, extra_hours)
+      if net_hours.zero?
+        "0 hours"
+      elsif net_hours.negative?
+        total_overdrawn_hours = net_hours.abs
+        if total_overdrawn_hours < working_hours_per_day
+          "Overdrawn by #{total_overdrawn_hours} #{'hour'.pluralize(total_overdrawn_hours)}"
+        else
+          overdrawn_days = total_overdrawn_hours / working_hours_per_day
+          overdrawn_extra_hours = total_overdrawn_hours % working_hours_per_day
+          if overdrawn_extra_hours.zero?
+            "Overdrawn by #{overdrawn_days} #{'day'.pluralize(overdrawn_days)}"
+          else
+            "Overdrawn by #{overdrawn_days} #{'day'.pluralize(overdrawn_days)} #{overdrawn_extra_hours} #{'hour'.pluralize(overdrawn_extra_hours)}"
+          end
+        end
+      elsif net_hours < working_hours_per_day
+        "#{net_hours} #{'hour'.pluralize(net_hours)}"
+      else
+        if extra_hours.zero?
+          "#{net_days} #{'day'.pluralize(net_days)}"
+        else
+          "#{net_days} #{'day'.pluralize(net_days)} #{extra_hours} #{'hour'.pluralize(extra_hours)}"
+        end
+      end
     end
 end
