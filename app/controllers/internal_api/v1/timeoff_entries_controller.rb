@@ -3,6 +3,7 @@
 class InternalApi::V1::TimeoffEntriesController < InternalApi::V1::ApplicationController
   before_action :load_user!, only: [:create, :update]
   before_action :load_leave_type!, only: [:create, :update]
+  before_action :load_custom_leave!, only: [:create, :update]
   before_action :load_holiday_info!, only: [:create, :update]
   before_action :load_timeoff_entry!, only: [:update, :destroy]
 
@@ -55,6 +56,14 @@ class InternalApi::V1::TimeoffEntriesController < InternalApi::V1::ApplicationCo
     def load_leave_type!
       if timeoff_params[:leave_type_id].present?
         @leave_type ||= current_company.leave_types.find(params[:timeoff_entry][:leave_type_id])
+      end
+    end
+
+    def load_custom_leave!
+      if timeoff_params[:custom_leave_id].present?
+        @custom_leave ||= CustomLeave.joins(:leave)
+          .where(leaves: { company_id: current_company.id })
+          .find(params[:timeoff_entry][:custom_leave_id])
       end
     end
 
