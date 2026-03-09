@@ -191,8 +191,10 @@ GEM
       railties (>= 5.0.0)
     faker (3.1.1)
       i18n (>= 1.8.11, < 2)
-    faraday (2.0.0)
-      ruby2_keywords (>= 0.0.4)
+    faraday (2.14.1)
+      faraday-net_http (>= 2.0, < 3.5)
+      json
+      logger
     faraday-net_http (3.4.2)
       net-http (~> 0.5)
     ferrum (0.17.1)
@@ -569,7 +571,6 @@ GEM
     ruby-progressbar (1.13.0)
     ruby-vips (2.1.4)
       ffi (~> 1.12)
-    ruby2_keywords (0.0.5)
     ruby_audit (3.1.0)
       bundler-audit (~> 0.9.0)
     rubyzip (2.3.2)
@@ -742,6 +743,7 @@ DEPENDENCIES
   dotenv-rails
   factory_bot_rails
   faker
+  faraday (>= 2.14.1)
   faraday-net_http
   ferrum_pdf
   foreman

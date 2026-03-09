@@ -12,7 +12,7 @@ development:
 
 test:
   <<: *default
-  database: <%= "miru_web_test_#{ENV['TEST_ENV_NUMBER']}" %>
+  database: <%= ENV["TEST_ENV_NUMBER"].present? ? "miru_web_test_#{ENV["TEST_ENV_NUMBER"]}" : "miru_web_test" %>
 
 production:
   adapter: postgresql
