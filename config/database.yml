@@ -5,6 +5,7 @@ default: &default
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   user: <%= ENV.fetch("DB_USER") { "" } %>
   password: <%= ENV.fetch("DB_PASS") { "" } %>
+  gssencmode: disable
 
 development:
   <<: *default
