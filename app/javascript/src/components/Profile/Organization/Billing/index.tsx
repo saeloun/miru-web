@@ -211,7 +211,8 @@ const Billing = () => {
         </CardHeader>
         <CardContent className="space-y-4">
           <p className="text-sm text-muted-foreground">
-            Install the Miru CLI to use Miru from your terminal, scripts, or AI agents with the same permissions as your user account.
+            Install the Miru CLI to use Miru from your terminal, scripts, or AI agents with the same
+            permissions as your user account.
           </p>
 
           <div className="rounded-md border bg-muted/40 p-3">
