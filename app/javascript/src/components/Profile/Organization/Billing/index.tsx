@@ -49,7 +49,9 @@ const Billing = () => {
       if (checkoutUrl) window.location.href = checkoutUrl;
     } catch (error: any) {
       Toastr.error(
-        error?.response?.data?.errors || error?.message || "Unable to open Stripe checkout"
+        error?.response?.data?.errors ||
+          error?.message ||
+          "Unable to open Stripe checkout"
       );
     } finally {
       setProcessingCheckout(false);
@@ -64,7 +66,9 @@ const Billing = () => {
       if (portalUrl) window.location.href = portalUrl;
     } catch (error: any) {
       Toastr.error(
-        error?.response?.data?.errors || error?.message || "Unable to open Stripe billing portal"
+        error?.response?.data?.errors ||
+          error?.message ||
+          "Unable to open Stripe billing portal"
       );
     } finally {
       setProcessingPortal(false);
@@ -105,14 +109,18 @@ const Billing = () => {
       {billingResult === "success" && (
         <Alert>
           <AlertTitle>Subscription updated</AlertTitle>
-          <AlertDescription>Your plan was updated in Stripe successfully.</AlertDescription>
+          <AlertDescription>
+            Your plan was updated in Stripe successfully.
+          </AlertDescription>
         </Alert>
       )}
 
       {billingResult === "cancelled" && (
         <Alert>
           <AlertTitle>Checkout cancelled</AlertTitle>
-          <AlertDescription>No changes were made to your subscription.</AlertDescription>
+          <AlertDescription>
+            No changes were made to your subscription.
+          </AlertDescription>
         </Alert>
       )}
 
@@ -133,7 +141,9 @@ const Billing = () => {
           {status === ApiStatus.ERROR && (
             <Alert variant="destructive">
               <AlertTitle>Unable to load billing details</AlertTitle>
-              <AlertDescription>Refresh this page and try again.</AlertDescription>
+              <AlertDescription>
+                Refresh this page and try again.
+              </AlertDescription>
             </Alert>
           )}
 
@@ -144,35 +154,50 @@ const Billing = () => {
                   <p className="text-xs uppercase tracking-wide text-muted-foreground">
                     Current plan
                   </p>
-                  <p className="mt-1 text-base font-medium text-foreground">{planLabel()}</p>
+                  <p className="mt-1 text-base font-medium text-foreground">
+                    {planLabel()}
+                  </p>
                 </div>
                 <div className="rounded-md border p-3">
                   <p className="text-xs uppercase tracking-wide text-muted-foreground">
                     Seat usage
                   </p>
-                  <p className="mt-1 text-base font-medium text-foreground">{usageLabel}</p>
+                  <p className="mt-1 text-base font-medium text-foreground">
+                    {usageLabel}
+                  </p>
                 </div>
               </div>
 
-              {summary.team_member_limit_reached && summary.plan_tier !== "paid" && (
-                <Alert>
-                  <AlertTitle>Seat limit reached</AlertTitle>
-                  <AlertDescription>
-                    Upgrade in Stripe to add more than 3 members to this workspace.
-                  </AlertDescription>
-                </Alert>
-              )}
+              {summary.team_member_limit_reached &&
+                summary.plan_tier !== "paid" && (
+                  <Alert>
+                    <AlertTitle>Seat limit reached</AlertTitle>
+                    <AlertDescription>
+                      Upgrade in Stripe to add more than 3 members to this
+                      workspace.
+                    </AlertDescription>
+                  </Alert>
+                )}
 
               <div className="flex flex-wrap gap-3">
                 {!summary.billing_exempt && summary.plan_tier !== "paid" && (
                   <Button onClick={startCheckout} disabled={processingCheckout}>
-                    {processingCheckout ? "Opening Stripe..." : "Upgrade with Stripe"}
+                    {processingCheckout
+                      ? "Opening Stripe..."
+                      : "Upgrade with Stripe"}
                   </Button>
                 )}
 
-                {(summary.plan_tier === "paid" || summary.has_stripe_customer) && (
-                  <Button variant="outline" onClick={openBillingPortal} disabled={processingPortal}>
-                    {processingPortal ? "Opening portal..." : "Manage billing in Stripe"}
+                {(summary.plan_tier === "paid" ||
+                  summary.has_stripe_customer) && (
+                  <Button
+                    variant="outline"
+                    onClick={openBillingPortal}
+                    disabled={processingPortal}
+                  >
+                    {processingPortal
+                      ? "Opening portal..."
+                      : "Manage billing in Stripe"}
                   </Button>
                 )}
               </div>
