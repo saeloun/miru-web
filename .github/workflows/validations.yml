@@ -98,6 +98,10 @@ jobs:
         run: |
           bundle exec rake parallel:prepare[2]
 
+      - name: Run CLI request specs
+        run: |
+          bundle exec rspec spec/requests/api/v1/cli
+
       - name: Run parallel tests (excluding system specs)
         env:
           PARALLEL_TEST_PROCESSORS: 2  # Optimal for standard runners
