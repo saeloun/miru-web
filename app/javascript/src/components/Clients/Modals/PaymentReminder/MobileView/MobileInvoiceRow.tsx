@@ -51,7 +51,7 @@ const MobileInvoiceRow = ({ invoice, isLast }) => {
       <div className="pb-8">
         <span />
         <div>
-          <Button className="py-2 px-5 text-base" style="primary">
+          <Button className="px-5 py-2 text-base" style="primary">
             <a
               href={`/invoices/${externalViewKey}/view`}
               rel="noreferrer"
