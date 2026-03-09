@@ -403,12 +403,13 @@ const Holidays = () => {
           addInfos.forEach((info, payloadIndex) => {
             const isOptional = info.category === "optional";
             if (isOptional) {
-              // Find the next unmatched item in optionalHolidaysList with same name
+              // Find the next unmatched item in optionalHolidaysList with same name and date
               for (let i = 0; i < optionalHolidaysList.length; i++) {
                 const h = optionalHolidaysList[i];
                 if (
                   !h.id &&
                   h.name === info.name &&
+                  h.date === info.date &&
                   !matchedOptionalIndices.has(i)
                 ) {
                   matchedOptionalIndices.add(i);
@@ -420,12 +421,13 @@ const Holidays = () => {
                 }
               }
             } else {
-              // Find the next unmatched item in holidayList with same name
+              // Find the next unmatched item in holidayList with same name and date
               for (let i = 0; i < holidayList.length; i++) {
                 const h = holidayList[i];
                 if (
                   !h.id &&
                   h.name === info.name &&
+                  h.date === info.date &&
                   !matchedHolidayIndices.has(i)
                 ) {
                   matchedHolidayIndices.add(i);
