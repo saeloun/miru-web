@@ -150,12 +150,12 @@ namespace :api, defaults: { format: "json" } do
     get "calendars/calendars", to: "calendars#calendars", as: "calendars"
     get "calendars/events/:calendar_id", to: "calendars#events", as: "events", calendar_id: /[^\/]+/
 
-    resources :payments, only: [:new, :create, :index, :show]
-    resources :holidays, only: [:update, :index], param: :year
-
     namespace :payments do
       resources :providers, only: [:index, :update]
     end
+
+    resources :payments, only: [:new, :create, :index, :show]
+    resources :holidays, only: [:update, :index], param: :year
 
     namespace :dashboard do
       resources :activities, only: [:index]

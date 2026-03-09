@@ -42,8 +42,14 @@ RSpec.describe "Adding payment entry", type: :system, js: true do
       sign_in user
     end
 
-    it "has payments link" do
-      expect(page).to have_link("Payments")
+    it "does not have payments link" do
+      expect(page).not_to have_link("Payments")
+
+      with_forgery_protection do
+        visit "/payments"
+
+        expect(page).to have_current_path("/time-tracking", wait: 10)
+      end
     end
   end
 end

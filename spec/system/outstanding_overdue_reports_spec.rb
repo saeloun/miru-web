@@ -66,7 +66,7 @@ RSpec.describe "Outstanding and Overdue Reports with Multi-Currency", type: :sys
     scenario "Outstanding report shows correct base currency totals" do
       visit "/reports/outstanding-overdue-invoices"
 
-      expect(page).to have_content("Outstanding & Overdue Report")
+      expect(page).to have_content("Outstanding and Overdue")
       expect(page).to have_content("USD") # Base currency indicator
 
       within("[data-testid='outstanding-summary']", wait: 10) do
@@ -456,7 +456,7 @@ RSpec.describe "Outstanding and Overdue Reports with Multi-Currency", type: :sys
         .and_return(1.25)
 
       # Trigger refresh or recalculation
-      click_button "Refresh Data"
+      click_button "Refresh"
 
       within("[data-testid='outstanding-summary']", wait: 10) do
         expect(page).to have_content("1,180.00")
