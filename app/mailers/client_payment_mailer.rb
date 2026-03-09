@@ -34,6 +34,6 @@ class ClientPaymentMailer < ApplicationMailer
     end
 
     def can_send_mail?
-      @invoice.client_payment_sent_at.nil?
+      @invoice.client_payment_sent_at.nil? && @invoice.client.email.present?
     end
 end
