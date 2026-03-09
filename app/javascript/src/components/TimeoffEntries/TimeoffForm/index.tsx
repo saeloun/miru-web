@@ -121,6 +121,18 @@ const TimeoffForm = ({ isDisplayEditTimeoffEntryForm = false }) => {
     leaveTypeId === HOLIDAY_TYPES.NATIONAL ||
     leaveTypeId === HOLIDAY_TYPES.OPTIONAL;
 
+  const isCustomLeaveEntry = () =>
+    typeof leaveTypeId === "string" &&
+    leaveTypeId.toString().startsWith("custom_");
+
+  const getCustomLeaveId = () => {
+    if (isCustomLeaveEntry()) {
+      return Number(leaveTypeId.toString().replace("custom_", ""));
+    }
+
+    return null;
+  };
+
   const handleFillData = () => {
     const timeoffEntry = entryList[selectedFullDate]?.find(
       entry => entry.id === editTimeoffEntryId
@@ -140,12 +152,20 @@ const TimeoffForm = ({ isDisplayEditTimeoffEntryForm = false }) => {
         setLeaveType(selectedLeaveType?.name);
         setHolidayId(currentHolidayId);
         setHoliday(currentHolidayDetails?.name);
+      } else if (timeoffEntry?.custom_leave_id) {
+        // Custom leave uses composite id format: "custom_<id>"
+        const compositeId = `custom_${timeoffEntry.custom_leave_id}`;
+        const selectedLeaveType = leaveTypes.find(
+          leaveType => leaveType.id === compositeId
+        );
+        setLeaveTypeId(compositeId);
+        setLeaveType(selectedLeaveType?.name || "");
       } else {
         const selectedLeaveType = leaveTypes.find(
           leaveType => leaveType.id === timeoffEntry.leave_type_id
         );
         setLeaveTypeId(timeoffEntry.leave_type_id);
-        setLeaveType(selectedLeaveType.name);
+        setLeaveType(selectedLeaveType?.name || "");
       }
     }
   };
@@ -170,7 +190,9 @@ const TimeoffForm = ({ isDisplayEditTimeoffEntryForm = false }) => {
 
   const isValidTimeEntry = () => {
     const isValidLeaveTypeOrHolidayId =
-      (isHolidayEntry() && Number(holidayId) > 0) || Number(leaveTypeId) > 0;
+      (isHolidayEntry() && Number(holidayId) > 0) ||
+      isCustomLeaveEntry() ||
+      Number(leaveTypeId) > 0;
 
     return (
       isValidLeaveTypeOrHolidayId &&
@@ -194,10 +216,17 @@ const TimeoffForm = ({ isDisplayEditTimeoffEntryForm = false }) => {
         payload["holiday_info_id"] =
           timeoffEntry?.holiday_info_id || Number(holidayId);
         payload["leave_type_id"] = null;
+        payload["custom_leave_id"] = null;
+      } else if (isCustomLeaveEntry()) {
+        payload["custom_leave_id"] =
+          timeoffEntry?.custom_leave_id || getCustomLeaveId();
+        payload["leave_type_id"] = null;
+        payload["holiday_info_id"] = null;
       } else {
         payload["leave_type_id"] =
           timeoffEntry?.leave_type_id || Number(leaveTypeId);
         payload["holiday_info_id"] = null;
+        payload["custom_leave_id"] = null;
       }
 
       return { timeoff_entry: { ...payload } };
