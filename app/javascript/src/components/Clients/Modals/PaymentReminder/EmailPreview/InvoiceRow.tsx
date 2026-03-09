@@ -26,19 +26,19 @@ const InvoiceRow = ({ invoice, isLast }) => {
       <thead>
         <tr>
           <th
-            className="w-1/6 whitespace-nowrap py-0 px-2 text-left text-xs font-medium tracking-widest text-miru-black-1000 md:font-normal"
+            className="w-1/6 whitespace-nowrap px-2 py-0 text-left text-xs font-medium tracking-widest text-miru-black-1000 md:font-normal"
             scope="col"
           >
             INVOICE NO.
           </th>
           <th
-            className="w-1/6 whitespace-nowrap py-0 px-2 text-left text-xs font-medium tracking-widest text-miru-black-1000 md:font-normal"
+            className="w-1/6 whitespace-nowrap px-2 py-0 text-left text-xs font-medium tracking-widest text-miru-black-1000 md:font-normal"
             scope="col"
           >
             ISSUE DATE
           </th>
           <th
-            className="w-1/6 whitespace-nowrap py-0 px-2 text-left text-xs font-medium tracking-widest text-miru-black-1000 md:font-normal"
+            className="w-1/6 whitespace-nowrap px-2 py-0 text-left text-xs font-medium tracking-widest text-miru-black-1000 md:font-normal"
             scope="col"
           >
             DUE DATE
@@ -74,7 +74,7 @@ const InvoiceRow = ({ invoice, isLast }) => {
           </td>
           <td>
             <Button
-              className="absolute top-0 right-0 py-2 px-5 text-base"
+              className="absolute right-0 top-0 px-5 py-2 text-base"
               style="primary"
             >
               <a
