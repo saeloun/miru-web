@@ -7,12 +7,19 @@ local:
   root: <%= Rails.root.join("storage") %>
 
 # Use bin/rails credentials:edit to set the AWS secrets (as aws:access_key_id|secret_access_key)
-amazon:
+cloudflare:
   service: S3
-  access_key_id: <%= ENV.fetch('AWS_ACCESS_KEY_ID', '') %>
-  secret_access_key: <%=ENV.fetch('AWS_SECRET_ACCESS_ID', '')%>
-  region: <%= ENV.fetch('AWS_REGION', '') %>
-  bucket: <%= ENV.fetch('AWS_S3_BUCKET_NAME', '') %>
+  access_key_id: <%= ENV['CLOUDFLARE_R2_ACCESS_KEY_ID'] %>
+  secret_access_key: <%= ENV['CLOUDFLARE_R2_SECRET_ACCESS_KEY'] %>
+  region: <%= ENV['CLOUDFLARE_R2_REGION'] %>
+  bucket: <%= ENV['CLOUDFLARE_R2_BUCKET_NAME'] %>
+  endpoint: <%= ENV['CLOUDFLARE_R2_ENDPOINT'] %>
+  # Disable automatic checksum calculation to avoid conflicts with content_md5
+  # AWS SDK >= 1.208.0 adds checksum_algorithm by default, which conflicts with ActiveStorage's content_md5
+  # Setting to 'when_required' reverts to previous behavior compatible with S3-compatible services
+  request_checksum_calculation: when_required
+  response_checksum_validation: when_required
+
 # Remember not to checkin your GCS keyfile to a repository
 # google:
 #   service: GCS

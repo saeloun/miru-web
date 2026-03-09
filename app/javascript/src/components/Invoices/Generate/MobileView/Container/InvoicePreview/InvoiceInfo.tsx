@@ -8,13 +8,13 @@ import { sections } from "../../utils";
 
 const InvoiceInfo = ({
   selectedClient,
+  currency,
   dueDate,
   issueDate,
   invoiceNumber,
   reference,
   amount,
   dateFormat,
-  currency,
   setActiveSection,
   showEditButton = true,
   strikeAmount = "",

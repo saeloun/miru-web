@@ -12,6 +12,7 @@ const ClientSelection = ({
   clientList,
   selectedClient,
   setSelectedClient,
+  setClientCurrency,
   optionSelected,
   clientVisible,
   setInvoiceNumber,
@@ -85,6 +86,7 @@ const ClientSelection = ({
   const handleClientChange = selection => {
     const client = clientList.find(client => client.id == selection.value);
     setSelectedClient(client);
+    setClientCurrency(client.clientCurrency);
     setIsClientVisible(false);
     setIsOptionSelected(true);
     autoGenerateInvoiceNumber(client);

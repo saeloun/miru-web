@@ -40,8 +40,19 @@ const LeaveManagement = () => {
     const res = await holidaysApi.allHolidays();
     const holidays = res.data.holidays;
     if (holidays.length) {
-      setOptionalHolidayList(holidays[0].optional_holidays);
-      setNationalHolidayList(holidays[0].national_holidays);
+      setOptionalHolidayList(
+        holidays.map(holiday => ({
+          optional_holidays: holiday.optional_holidays,
+          year: holiday.year,
+        }))
+      );
+
+      setNationalHolidayList(
+        holidays.map(holiday => ({
+          national_holidays: holiday.national_holidays,
+          year: holiday.year,
+        }))
+      );
     }
   };
 
@@ -98,6 +109,18 @@ const LeaveManagement = () => {
         sortedTimeoffEntries = optionalTimeoffEntries;
       } else if (selectedLeaveType.id == "national") {
         sortedTimeoffEntries = nationalTimeoffEntries;
+      } else if (selectedLeaveType.type === "custom_leave") {
+        // Custom leaves have composite IDs like "custom_1", extract the numeric ID
+        const customLeaveId =
+          typeof selectedLeaveType.id === "string"
+            ? parseInt(selectedLeaveType.id.replace("custom_", ""), 10)
+            : selectedLeaveType.id;
+
+        sortedTimeoffEntries =
+          timeoffEntries.length &&
+          timeoffEntries.filter(
+            timeoffEntry => timeoffEntry.customLeave?.id === customLeaveId
+          );
       } else {
         sortedTimeoffEntries =
           timeoffEntries.length &&

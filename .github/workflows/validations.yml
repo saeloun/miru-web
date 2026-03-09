@@ -10,7 +10,7 @@ jobs:
   tests:
     name: Running tests
     runs-on: ubuntu-latest
-    if: "!contains(github.event.head_commit.message, 'skip ci')"
+    if: ${{ !contains(github.event.head_commit.message, 'skip ci') }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -22,23 +22,27 @@ jobs:
           postgresql user: root
           postgresql password: "password"
       - name: Setup ElasticSearch
-        uses: ankane/setup-elasticsearch@v1
-      - name: Setup chrome
-        uses: nanasess/setup-chromedriver@v2
-        with:
-          # Optional: do not specify to match Chrome's version
-          chromedriver-version: "88.0.4324.96"
-      - run: |
-          export DISPLAY=:99
-          chromedriver --url-base=/wd/hub &
-          sudo Xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 & # optional
+        run: |
+          wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
+          echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | sudo tee /etc/apt/sources.list.d/elastic-7.x.list
+          sudo apt-get update
+          sudo apt-get install elasticsearch=7.13.3
+          sudo systemctl start elasticsearch
+          sleep 10
+      - name: Install Chrome for FerrumPdf
+        run: |
+          wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+          echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
+          sudo apt-get update
+          sudo apt-get install -y google-chrome-stable
+          google-chrome --version
       - name: Check if Elasticsearch is reachable
         run: |
           curl --verbose --show-error http://localhost:9200
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
       - name: Ruby gem cache
-        uses: actions/cache@v1
+        uses: actions/cache@v4
         with:
           path: vendor/bundle
           key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
@@ -55,12 +59,12 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v1
         with:
-          node-version: 18.14.2
+          node-version: 20.18.2
       - name: Find yarn cache location
         id: yarn-cache
         run: echo "::set-output name=dir::$(yarn cache dir)"
       - name: JS package cache
-        uses: actions/cache@v1
+        uses: actions/cache@v4
         with:
           path: ${{ steps.yarn-cache.outputs.dir }}
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
