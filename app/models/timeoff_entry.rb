@@ -11,12 +11,14 @@
 #  note            :text             default("")
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
+#  custom_leave_id :bigint
 #  holiday_info_id :bigint
 #  leave_type_id   :bigint
 #  user_id         :bigint           not null
 #
 # Indexes
 #
+#  index_timeoff_entries_on_custom_leave_id  (custom_leave_id)
 #  index_timeoff_entries_on_discarded_at     (discarded_at)
 #  index_timeoff_entries_on_holiday_info_id  (holiday_info_id)
 #  index_timeoff_entries_on_leave_type_id    (leave_type_id)
@@ -24,6 +26,7 @@
 #
 # Foreign Keys
 #
+#  fk_rails_...  (custom_leave_id => custom_leaves.id)
 #  fk_rails_...  (leave_type_id => leave_types.id)
 #  fk_rails_...  (user_id => users.id)
 #
@@ -33,6 +36,7 @@ class TimeoffEntry < ApplicationRecord
   belongs_to :user
   belongs_to :leave_type, optional: true
   belongs_to :holiday_info, optional: true
+  belongs_to :custom_leave, optional: true
 
   has_one :leave, through: :leave_type
   has_one :holiday, through: :holiday_info
@@ -40,7 +44,7 @@ class TimeoffEntry < ApplicationRecord
   validates :duration, presence: true, numericality: { less_than_or_equal_to: 6000000, greater_than_or_equal_to: 0 }
   validates :leave_date, presence: true
 
-  validate :either_leave_type_or_holiday_info_present
+  validate :either_leave_type_or_holiday_info_or_custom_leave_present
   validate :leave_date_and_holiday_year_should_be_same
   validate :ensure_unique_holiday_info
   validate :allow_one_holiday_per_day, on: :create
@@ -48,22 +52,25 @@ class TimeoffEntry < ApplicationRecord
 
   scope :during, -> (from, to) { where(leave_date: from..to).order(leave_date: :desc) }
   scope :from_workspace, -> (company_id) {
-    kept.left_joins(:leave, :holiday)
-      .where("leaves.company_id = ? OR holidays.company_id = ?",
-        company_id, company_id)
+    kept.left_joins(:leave, :holiday, custom_leave: :leave)
+      .where(
+        "leaves.company_id = :company_id OR holidays.company_id = :company_id OR leaves_custom_leaves.company_id = :company_id",
+        company_id:
+      )
   }
 
   def company
-    leave&.company || holiday&.company
+    leave&.company || holiday&.company || custom_leave&.leave&.company
   end
 
   private
 
-    def either_leave_type_or_holiday_info_present
-      if leave_type_id.blank? && holiday_info_id.blank?
-        errors.add(:base, "Either leave type or holiday info must be present")
-      elsif leave_type_id.present? && holiday_info_id.present?
-        errors.add(:base, "Choose either leave type or holiday info, not both")
+    def either_leave_type_or_holiday_info_or_custom_leave_present
+      present_count = [leave_type_id, holiday_info_id, custom_leave_id].compact.count
+      if present_count == 0
+        errors.add(:base, "Either leave type, holiday info, or custom leave must be present")
+      elsif present_count > 1
+        errors.add(:base, "Choose only one of leave type, holiday info, or custom leave")
       end
     end
 

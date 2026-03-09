@@ -41,7 +41,8 @@ RSpec.describe "InternalApi::V1::Reports::OutstandingOverdueInvoicesController::
                           issueDate: client2_overdue_invoice1.formatted_issue_date,
                           dueDate: client2_overdue_invoice1.formatted_due_date,
                           amount: client2_overdue_invoice1.amount,
-                          status: client2_overdue_invoice1.status
+                          status: client2_overdue_invoice1.status,
+                          currency: client2_overdue_invoice1.currency
                         },
                         {
                           clientName: client2.name,
@@ -49,7 +50,8 @@ RSpec.describe "InternalApi::V1::Reports::OutstandingOverdueInvoicesController::
                           issueDate: client2_sent_invoice1.formatted_issue_date,
                           dueDate: client2_sent_invoice1.formatted_due_date,
                           amount: client2_sent_invoice1.amount,
-                          status: client2_sent_invoice1.status
+                          status: client2_sent_invoice1.status,
+                          currency: client2_sent_invoice1.currency
                         }
                       ].sort_by { |k| Date.strptime(k[:issueDate], "%m.%d.%Y") }.reverse
           },
@@ -65,7 +67,8 @@ RSpec.describe "InternalApi::V1::Reports::OutstandingOverdueInvoicesController::
                           issueDate: client1_viewed_invoice1.formatted_issue_date,
                           dueDate: client1_viewed_invoice1.formatted_due_date,
                           amount: client1_viewed_invoice1.amount,
-                          status: client1_viewed_invoice1.status
+                          status: client1_viewed_invoice1.status,
+                          currency: client1_viewed_invoice1.currency
                         },
                         {
                           clientName: client1.name,
@@ -73,7 +76,8 @@ RSpec.describe "InternalApi::V1::Reports::OutstandingOverdueInvoicesController::
                           issueDate: client1_sent_invoice2.formatted_issue_date,
                           dueDate: client1_sent_invoice2.formatted_due_date,
                           amount: client1_sent_invoice2.amount,
-                          status: client1_sent_invoice2.status
+                          status: client1_sent_invoice2.status,
+                          currency: client1_sent_invoice2.currency
                         },
                         {
                           clientName: client1.name,
@@ -81,7 +85,8 @@ RSpec.describe "InternalApi::V1::Reports::OutstandingOverdueInvoicesController::
                           issueDate: client1_sent_invoice1.formatted_issue_date,
                           dueDate: client1_sent_invoice1.formatted_due_date,
                           amount: client1_sent_invoice1.amount,
-                          status: client1_sent_invoice1.status
+                          status: client1_sent_invoice1.status,
+                          currency: client1_sent_invoice1.currency
                         }
                       ].sort_by { |k| Date.strptime(k[:issueDate], "%m.%d.%Y") }.reverse
            }]

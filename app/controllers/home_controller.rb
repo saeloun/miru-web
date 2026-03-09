@@ -9,7 +9,10 @@ class HomeController < ApplicationController
     if current_user && current_user.has_role?(:super_admin)
       redirect_to admin_root_path
     else
-      render
+      respond_to do |format|
+        format.html { render }
+        format.json { head :not_found }
+      end
     end
   end
 

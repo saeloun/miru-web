@@ -1,0 +1,27 @@
+⚠️ Exchange Rate API Usage Warning
+
+Hello <%= @user.first_name.presence || 'Admin' %>,
+
+Your Open Exchange Rates API usage has reached <%= @percentage %>% of the monthly free tier limit.
+
+CURRENT USAGE STATISTICS:
+- Current Usage: <%= @usage.requests_count %> / <%= ExchangeRateUsage::FREE_TIER_LIMIT %> requests
+- Percentage Used: <%= @percentage %>%
+- Remaining Requests: <%= @remaining %>
+- Month: <%= @usage.month.strftime('%B %Y') %>
+- Last Updated: <%= @usage.last_fetched_at&.strftime('%B %d, %Y at %I:%M %p') || 'N/A' %>
+
+WHAT HAPPENS IF THE LIMIT IS EXCEEDED?
+- The system will stop fetching new exchange rates
+- Existing cached rates will continue to be used
+- Invoice creation will still work with the last known rates
+
+RECOMMENDED ACTIONS:
+- Monitor your usage for the rest of the month
+- Consider upgrading to a paid plan if you need more requests
+- Review which currency pairs are actively being used
+- The limit resets on the 1st of next month
+
+---
+This is an automated message from your Miru application.
+You're receiving this because you have admin privileges.

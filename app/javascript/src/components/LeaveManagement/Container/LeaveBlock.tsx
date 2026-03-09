@@ -9,26 +9,61 @@ import {
   generateHolidayColor,
 } from "components/Profile/Organization/Leaves/utils";
 
+// Default color for custom leaves
+const CUSTOM_LEAVE_COLOR = { value: "#9B59B6", label: "custom" };
+const CUSTOM_LEAVE_ICON = { icon: null, value: "custom" };
+
 const LeaveBlock = ({ leaveType, selectedLeaveType, setSelectedLeaveType }) => {
   const { icon, color, name, netDuration, type, category, label } = leaveType;
 
-  const leaveIcon =
-    type == "leave" ? generateLeaveIcon(icon) : generateHolidayIcon(icon);
+  const getLeaveIcon = () => {
+    if (type === "custom_leave") {
+      return generateLeaveIcon("custom") || CUSTOM_LEAVE_ICON;
+    }
 
-  const leaveColor =
-    type == "leave" ? generateLeaveColor(color) : generateHolidayColor(color);
+    return type === "leave"
+      ? generateLeaveIcon(icon)
+      : generateHolidayIcon(icon);
+  };
+
+  const getLeaveColor = () => {
+    if (type === "custom_leave" || type === "leave") {
+      return generateLeaveColor(color) || CUSTOM_LEAVE_COLOR;
+    }
+
+    return generateHolidayColor(color) || CUSTOM_LEAVE_COLOR;
+  };
+
+  const leaveIcon = getLeaveIcon();
+  const leaveColor = getLeaveColor();
 
   const formattedDuration =
-    category == "national" || category == "optional"
+    category === "national" || category === "optional"
       ? label
       : netDuration < 0
       ? `-${minToHHMM(-netDuration)} h (-${label})`
       : `${minToHHMM(netDuration)} h (${label})`;
 
-  const selectedDiv =
-    selectedLeaveType?.name == name
-      ? "flex w-full cursor-pointer justify-between rounded-lg p-2 text-white lg:p-6 shadow-2xl border-2 border-miru-dark-purple-1000 border-opacity-20 relative"
-      : "flex w-full cursor-pointer justify-between rounded-lg p-2 text-white lg:p-6 hover:opacity-80 relative";
+  const isSelected = selectedLeaveType?.name === name;
+
+  // Show appropriate text when this leave type is selected
+  // For holidays (national/optional), show "Utilized" since the data represents usage
+  // For regular leaves and custom leaves, show "Available"
+  const getSelectedText = () => {
+    if (!isSelected) return name;
+
+    if (category === "national" || category === "optional") {
+      return `${name} Utilized`;
+    }
+
+    return `${name} Available`;
+  };
+
+  const displayName = getSelectedText();
+
+  const selectedDiv = isSelected
+    ? "flex w-full cursor-pointer justify-between rounded-lg p-2 text-white lg:p-6 shadow-2xl border-2 border-miru-dark-purple-1000 border-opacity-20 relative"
+    : "flex w-full cursor-pointer justify-between rounded-lg p-2 text-white lg:p-6 hover:opacity-80 relative";
 
   return (
     <div
@@ -44,7 +79,9 @@ const LeaveBlock = ({ leaveType, selectedLeaveType, setSelectedLeaveType }) => {
           {leaveIcon?.icon}
         </div>
         <div className="mt-4 flex flex-col">
-          <span className="text-xs font-semibold lg:text-sm">{name}</span>
+          <span className="text-xs font-semibold lg:text-sm">
+            {displayName}
+          </span>
           <span className="mt-2 text-base font-semibold lg:text-2xl">
             {formattedDuration}
           </span>

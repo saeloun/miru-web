@@ -1,0 +1,8 @@
+{
+    "label": "Third-Party Integrations",
+    "position": 10,
+    "link": {
+        "type": "generated-index",
+        "description": "Documentation for third-party service integrations including email validation, payment processors, and other external APIs."
+    }
+}

@@ -3,12 +3,12 @@
     <div class="text-center mt-4">
       <p class="form__label">
         <%= t('shared_links.already_have_an_account').capitalize %>
-        <%= link_to t('registration.sign_in').titlecase, new_session_path(resource_name), class: "form__link" ,  data: { cy:  "sign-in-link" } %><br />
+        <%= link_to t('registration.sign_in').titlecase, root_path, class: "form__link" ,  data: { cy:  "sign-in-link" } %><br />
       </p>
     </div>
   <% else %>
     <div class="text-center mt-2">
-        <%= link_to t('shared_links.back_to_login').upcase, new_session_path(resource_name), class: "text-center text-miru-han-purple-1000 font-sans font-normal text-base hover:text-miru-han-purple-600" %>
+        <%= link_to t('shared_links.back_to_login').upcase, root_path, class: "text-center text-miru-han-purple-1000 font-sans font-normal text-base hover:text-miru-han-purple-600" %>
     </div>
   <%end%>
 <% end %>
