@@ -20,3 +20,6 @@ production:
   encoding: unicode
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   url: <%= ENV['DATABASE_URL'] %>
+  checkout_timeout: 10
+  reaping_frequency: 10
+  idle_timeout: 300
