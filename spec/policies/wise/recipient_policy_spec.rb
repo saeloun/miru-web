@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe Wise::RecipientPolicy, type: :policy do
+RSpec.describe Wise::RecipientPolicy, type: :policy, wise: true do
   let(:company) { create(:company) }
   let(:another_company) { create(:company) }
 

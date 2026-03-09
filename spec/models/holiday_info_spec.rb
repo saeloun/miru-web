@@ -19,7 +19,19 @@ RSpec.describe HolidayInfo, type: :model do
     it { is_expected.to validate_presence_of(:name) }
     it { is_expected.to validate_length_of(:name).is_at_most(30) }
     it { is_expected.to allow_value("Valid Name").for(:name) }
+    it { is_expected.to allow_value("New Year's Day").for(:name) }
+    it { is_expected.to allow_value("Labor-Day").for(:name) }
     it { is_expected.not_to allow_value("Invalid Name!").for(:name) }
+    it { is_expected.not_to allow_value("Holiday@123").for(:name) }
+
+    it "returns descriptive error message for invalid name format" do
+      invalid_holiday_info = build(:holiday_info, holiday:, name: "Invalid@Name")
+      invalid_holiday_info.valid?
+      expect(invalid_holiday_info.errors[:name]).to include(
+        "can only contain letters, spaces, hyphens, and apostrophes"
+      )
+    end
+
     it { is_expected.to validate_presence_of(:date) }
     it { is_expected.to validate_presence_of(:category) }
 

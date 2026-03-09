@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: https://api.sandbox.transferwise.tech/v2/borderless-accounts-configuration/profiles/123456/available-currencies
+    uri: https://api.sandbox.transferwise.tech/v2/borderless-accounts-configuration/profiles/16455649/available-currencies
     body:
       encoding: US-ASCII
       string: ''
@@ -71,7 +71,7 @@ http_interactions:
   recorded_at: Fri, 03 Jun 2022 07:20:26 GMT
 - request:
     method: get
-    uri: https://api.transferwise.com/v2/borderless-accounts-configuration/profiles/123456/available-currencies
+    uri: https://api.transferwise.com/v2/borderless-accounts-configuration/profiles/16455649/available-currencies
     body:
       encoding: US-ASCII
       string: ''

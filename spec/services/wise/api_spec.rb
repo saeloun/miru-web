@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe Wise::Api do
+RSpec.describe Wise::Api, :wise do
   describe "#initialize" do
     subject { Wise::Api.new }
 
