@@ -31,7 +31,10 @@ interface DashboardLayoutProps {
   className?: string;
 }
 
-const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children, className }) => {
+const DashboardLayout: React.FC<DashboardLayoutProps> = ({
+  children,
+  className,
+}) => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
@@ -147,9 +150,11 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children, className }
     },
   ];
 
-  const filterNavigationGroup = (group) => ({
+  const filterNavigationGroup = group => ({
     ...group,
-    items: group.items.filter((item) => !item.roles || item.roles.includes(companyRole)),
+    items: group.items.filter(
+      item => !item.roles || item.roles.includes(companyRole)
+    ),
   });
 
   // prettier-ignore
@@ -157,8 +162,8 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children, className }
 
   const pageTitle = useMemo(() => {
     const item = filteredNavigation
-      .flatMap((group) => group.items)
-      .find((navItem) => location.pathname.startsWith(navItem.href));
+      .flatMap(group => group.items)
+      .find(navItem => location.pathname.startsWith(navItem.href));
 
     return item?.label || "Dashboard";
   }, [location.pathname, filteredNavigation]);
@@ -190,7 +195,9 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children, className }
   const desktopSidebarClasses = cn("hidden transition-all duration-300 lg:fixed lg:inset-y-0 lg:left-0 lg:z-10 lg:block lg:border-r lg:border-border lg:bg-card", sidebarCollapsed ? "lg:w-16" : "lg:w-64");
 
   return (
-    <div className={cn("min-h-screen bg-background text-foreground", className)}>
+    <div
+      className={cn("min-h-screen bg-background text-foreground", className)}
+    >
       {mobileOpen && (
         <div
           className="fixed inset-0 z-20 bg-black/50 backdrop-blur-sm lg:hidden"
@@ -248,14 +255,19 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children, className }
           }
           user={{
             name:
-              `${user?.first_name || ""} ${user?.last_name || ""}`.trim() || user?.email || "User",
+              `${user?.first_name || ""} ${user?.last_name || ""}`.trim() ||
+              user?.email ||
+              "User",
             email: user?.email || "",
           }}
         />
       </aside>
 
       <div
-        className={cn("transition-all duration-300", sidebarCollapsed ? "lg:ml-16" : "lg:ml-64")}
+        className={cn(
+          "transition-all duration-300",
+          sidebarCollapsed ? "lg:ml-16" : "lg:ml-64"
+        )}
       >
         <button
           onClick={() => setMobileOpen(true)}
@@ -267,7 +279,9 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children, className }
         <header className="sticky top-0 z-10 border-b border-border bg-background/90 backdrop-blur">
           <div className="flex items-center justify-between px-6 py-4 lg:px-8">
             <div className="flex items-center gap-3">
-              <h1 className="text-lg font-semibold text-foreground lg:text-xl">{pageTitle}</h1>
+              <h1 className="text-lg font-semibold text-foreground lg:text-xl">
+                {pageTitle}
+              </h1>
             </div>
             <div className="flex items-center gap-2">
               <ThemeToggle compact />
