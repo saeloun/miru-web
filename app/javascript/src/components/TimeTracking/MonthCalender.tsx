@@ -26,6 +26,7 @@ interface Iprops {
   currentYear: any;
   setCurrentYear: any;
   dayInfo: any[];
+  setUpdateView: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const MonthCalender: React.FC<Iprops> = ({
@@ -43,6 +44,7 @@ const MonthCalender: React.FC<Iprops> = ({
   currentYear,
   setCurrentYear,
   dayInfo,
+  setUpdateView,
 }) => {
   const { company } = useUserContext();
   const dateFormat =
@@ -62,6 +64,7 @@ const MonthCalender: React.FC<Iprops> = ({
     dayjs().endOf("month").format(dateFormat)
   );
   const today = dayjs().format(dateFormat);
+  const todayIso = dayjs().format("YYYY-MM-DD");
 
   const handleMonthChange = () => {
     const monthData = [];
@@ -79,9 +82,14 @@ const MonthCalender: React.FC<Iprops> = ({
         `${currentYear}-${currentMonthNumber + 1}-${i}`
       ).format(dateFormat);
 
+      // Use ISO format (YYYY-MM-DD) for entryList lookup since API returns keys in ISO format
+      const isoDate = dayjs(
+        `${currentYear}-${currentMonthNumber + 1}-${i}`
+      ).format("YYYY-MM-DD");
+
       const totalDuration =
-        entryList && entryList[date]
-          ? entryList[date]?.reduce(
+        entryList && entryList[isoDate]
+          ? entryList[isoDate]?.reduce(
               (acc: number, cv: number) => cv["duration"] + acc,
               0
             )
@@ -89,12 +97,13 @@ const MonthCalender: React.FC<Iprops> = ({
       if (totalDuration) currentWeekTotalHours += totalDuration;
       weeksData[dayInWeekCounter] = {
         date,
+        isoDate,
         day: i,
         totalDuration,
       };
       // if the day is sunday, create a new week
       if (dayInWeekCounter === 6) {
-        if (weeksData[6].date < today) {
+        if (weeksData[6].isoDate < todayIso) {
           weeksData[7] = currentWeekTotalHours;
         } else weeksData[7] = currentWeekTotalHours || null;
         currentWeekTotalHours = 0;
@@ -106,7 +115,7 @@ const MonthCalender: React.FC<Iprops> = ({
       }
     }
     if (weeksData.length) {
-      if (weeksData[weeksData.length - 1].date < today) {
+      if (weeksData[weeksData.length - 1].isoDate < todayIso) {
         weeksData[7] = currentWeekTotalHours;
       } else weeksData[7] = currentWeekTotalHours || null;
       monthData.push(weeksData);
@@ -170,9 +179,12 @@ const MonthCalender: React.FC<Iprops> = ({
     setCurrentYear(dayjs().year());
   };
 
-  const handleWeekday = (date: any) => {
-    setSelectedFullDate(date);
-    const day = dayjs(date, dateFormat).day();
+  const handleWeekday = (isoDate: string) => {
+    // Disable updateView to prevent useEffect from overwriting our selection
+    setUpdateView(false);
+    // Always use ISO format internally for consistency
+    setSelectedFullDate(isoDate);
+    const day = dayjs(isoDate).day();
     setWeekDay(day);
   };
 
@@ -239,12 +251,12 @@ const MonthCalender: React.FC<Iprops> = ({
                       "relative h-20 rounded-lg border-2 bg-card p-2",
                       "hover:bg-accent hover:border-accent-foreground/20 transition-colors",
                       "focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
-                      weekInfo[dayNum]["date"] === selectedFullDate
+                      weekInfo[dayNum]["isoDate"] === selectedFullDate
                         ? "border-primary bg-primary/5"
                         : "border-border"
                     )}
                     onClick={() => {
-                      handleWeekday(weekInfo[dayNum].date);
+                      handleWeekday(weekInfo[dayNum].isoDate);
                       setSelectDate(dayNum);
                     }}
                   >
@@ -253,7 +265,7 @@ const MonthCalender: React.FC<Iprops> = ({
                         <span
                           className={cn(
                             "text-sm font-medium",
-                            weekInfo[dayNum]["date"] === today
+                            weekInfo[dayNum]["isoDate"] === todayIso
                               ? "bg-primary text-primary-foreground px-2 py-0.5 rounded-full"
                               : "text-muted-foreground"
                           )}
@@ -268,7 +280,7 @@ const MonthCalender: React.FC<Iprops> = ({
                               return minToHHMM(
                                 weekInfo[dayNum]["totalDuration"]
                               );
-                            } else if (weekInfo[dayNum]["date"] < today) {
+                            } else if (weekInfo[dayNum]["isoDate"] < todayIso) {
                               return "00:00";
                             }
 

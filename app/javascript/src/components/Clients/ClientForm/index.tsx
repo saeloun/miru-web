@@ -72,6 +72,7 @@ const ClientForm = ({
       try {
         const res = await clientApi.create(formData);
         setClientData([...clientData, { ...res.data.client, minutes: 0 }]);
+        setSubmitting(false);
         setnewClient(false);
         Toastr.success("Client added successfully");
       } catch {
@@ -80,8 +81,10 @@ const ClientForm = ({
     } else {
       try {
         await clientApi.update(client.id, formData);
+        setSubmitting(false);
         setShowEditDialog(false);
         fetchDetails();
+        Toastr.success("Client updated successfully");
       } catch {
         setSubmitting(false);
       }
@@ -323,10 +326,14 @@ const ClientForm = ({
             <div className="pt-4">
               <Button
                 type="submit"
-                className="w-full"
+                className="w-full bg-gray-900 hover:bg-gray-800 text-white"
                 disabled={disableBtn(values, errors, submitting)}
               >
-                {submitting ? "Saving..." : "Save Changes"}
+                {submitting
+                  ? "Saving..."
+                  : formType === "edit"
+                  ? "Update Client"
+                  : "Add Client"}
               </Button>
             </div>
           </Form>

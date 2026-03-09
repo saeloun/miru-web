@@ -48,7 +48,7 @@ import { useUserContext } from "../../context/UserContext";
 import { clientsApi } from "apis/api";
 import { unmapClientList } from "../../mapper/mappedIndex";
 import { toast } from "sonner";
-
+import ClientForm from "./ClientForm";
 interface Client {
   id: string;
   name: string;
@@ -97,8 +97,13 @@ const ClientsTable: React.FC = () => {
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
+  const [editClientData, setEditClientData] = useState<any>(null);
+  const [clientLogo, setClientLogo] = useState<any>(null);
+  const [clientLogoUrl, setClientLogoUrl] = useState<string>("");
+  const [submitting, setSubmitting] = useState(false);
+  const [loadingClient, setLoadingClient] = useState(false);
 
-  const { data, isLoading, error } = useQuery({
+  const { data, isLoading, error, refetch } = useQuery({
     queryKey: ["clients", timeFrame],
     queryFn: () => fetchClients(timeFrame),
   });
@@ -117,9 +122,25 @@ const ClientsTable: React.FC = () => {
     },
   });
 
-  const handleEdit = (client: Client) => {
+  const handleEdit = async (client: Client) => {
     setSelectedClient(client);
+    setLoadingClient(true);
+    setSubmitting(false); // Reset submitting state when opening
+    setClientLogo(null);
+    setClientLogoUrl("");
     setShowEditDialog(true);
+    try {
+      // Fetch full client details including address
+      const response = await clientsApi.show(client.id, "");
+      const fullClientData = response.data.client_details;
+      setEditClientData(fullClientData);
+      setClientLogoUrl(fullClientData?.logo || "");
+    } catch (error) {
+      console.error("Failed to fetch client details:", error);
+      toast.error("Failed to load client details");
+    } finally {
+      setLoadingClient(false);
+    }
   };
 
   const handleDelete = (client: Client) => {
@@ -309,7 +330,12 @@ const ClientsTable: React.FC = () => {
           </select>
           {isAdminUser && (
             <Button
-              onClick={() => setShowNewClientDialog(true)}
+              onClick={() => {
+                setSubmitting(false);
+                setClientLogo(null);
+                setClientLogoUrl("");
+                setShowNewClientDialog(true);
+              }}
               className="bg-gray-900 hover:bg-gray-800 text-white"
             >
               <Plus size={20} className="mr-2" />
@@ -397,7 +423,12 @@ const ClientsTable: React.FC = () => {
               {isAdminUser && (
                 <Button
                   variant="outline"
-                  onClick={() => setShowNewClientDialog(true)}
+                  onClick={() => {
+                    setSubmitting(false);
+                    setClientLogo(null);
+                    setClientLogoUrl("");
+                    setShowNewClientDialog(true);
+                  }}
                 >
                   <Plus size={20} className="mr-2" />
                   Add Your First Client
@@ -433,6 +464,100 @@ const ClientsTable: React.FC = () => {
               {deleteMutation.isPending ? "Deleting..." : "Delete"}
             </Button>
           </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* New Client Dialog */}
+      <Dialog
+        open={showNewClientDialog}
+        onOpenChange={open => {
+          setShowNewClientDialog(open);
+          if (!open) {
+            setClientLogo(null);
+            setClientLogoUrl("");
+            setSubmitting(false);
+          }
+        }}
+      >
+        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Add New Client</DialogTitle>
+            <DialogDescription>
+              Fill in the details below to add a new client.
+            </DialogDescription>
+          </DialogHeader>
+          <ClientForm
+            clientLogoUrl={clientLogoUrl}
+            handleDeleteLogo={() => {
+              setClientLogo(null);
+              setClientLogoUrl("");
+            }}
+            setClientLogoUrl={setClientLogoUrl}
+            setClientLogo={setClientLogo}
+            clientData={data?.clientList || []}
+            formType="new"
+            setClientData={newData => {
+              queryClient.invalidateQueries({ queryKey: ["clients"] });
+            }}
+            setnewClient={value => {
+              setShowNewClientDialog(value);
+              if (!value) {
+                refetch();
+              }
+            }}
+            clientLogo={clientLogo}
+            submitting={submitting}
+            setSubmitting={setSubmitting}
+          />
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Client Dialog */}
+      <Dialog
+        open={showEditDialog}
+        onOpenChange={open => {
+          setShowEditDialog(open);
+          if (!open) {
+            setSelectedClient(null);
+            setEditClientData(null);
+            setClientLogo(null);
+            setClientLogoUrl("");
+            setSubmitting(false);
+          }
+        }}
+      >
+        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Edit Client</DialogTitle>
+            <DialogDescription>
+              Update the client details below.
+            </DialogDescription>
+          </DialogHeader>
+          {loadingClient ? (
+            <div className="flex items-center justify-center py-8">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+            </div>
+          ) : editClientData ? (
+            <ClientForm
+              key={editClientData.id}
+              client={editClientData}
+              clientLogoUrl={clientLogoUrl}
+              handleDeleteLogo={() => {
+                setClientLogo(null);
+                setClientLogoUrl("");
+              }}
+              setClientLogoUrl={setClientLogoUrl}
+              setClientLogo={setClientLogo}
+              formType="edit"
+              setShowEditDialog={setShowEditDialog}
+              clientLogo={clientLogo}
+              submitting={submitting}
+              setSubmitting={setSubmitting}
+              fetchDetails={() => {
+                refetch();
+              }}
+            />
+          ) : null}
         </DialogContent>
       </Dialog>
     </div>

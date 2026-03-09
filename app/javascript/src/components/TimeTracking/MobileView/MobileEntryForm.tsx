@@ -120,7 +120,7 @@ const AddEntryMobile = ({
 
   const handleDatePicker = date => {
     setShowDatePicker(false);
-    setSelectedDate(dayjs(date).format(dateFormat));
+    setSelectedDate(dayjs(date).format("YYYY-MM-DD"));
   };
 
   const handleIncreaseTime = () => {

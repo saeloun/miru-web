@@ -260,123 +260,110 @@ const CompanyDetailsForm = ({
                   </div>
                 </div>
               </div>
-              <div className="field relative">
-                <InputField
-                  autoFocus
-                  resetErrorOnChange
-                  hasError={errors.company_name && touched.company_name}
-                  id="company_name"
-                  label="Company Name"
-                  name="company_name"
-                  setFieldValue={setFieldValue}
-                />
-                <InputErrors
-                  fieldErrors={errors.company_name}
-                  fieldTouched={touched.company_name}
-                />
-              </div>
-              <div className="field relative">
-                <div className="flex flex-col">
-                  <div className="outline relative flex h-12 flex-row rounded border border-miru-gray-1000 bg-white p-4 pt-2">
-                    <PhoneInput
-                      className="input-phone-number w-full border-transparent focus:border-transparent focus:ring-0"
-                      flags={flags}
-                      id="business_phone"
-                      inputClassName="form__input block w-full appearance-none bg-white border-0 focus:border-0 px-0 text-base border-transparent focus:border-transparent focus:ring-0 border-miru-gray-1000 w-full border-bottom-none "
-                      name="business_phone"
-                      value={values.business_phone}
-                      onChange={phone => {
-                        setFieldValue("business_phone", phone);
-                      }}
-                    />
-                    <label
-                      className="absolute -top-1 left-0 z-1 ml-3 origin-0 bg-white px-1 text-xsm font-medium text-miru-dark-purple-200 duration-300"
-                      htmlFor="business_phone"
-                    >
-                      Business Phone
-                    </label>
-                  </div>
+              <InputField
+                autoFocus
+                resetErrorOnChange
+                hasError={errors.company_name && touched.company_name}
+                id="company_name"
+                label="Company Name"
+                name="company_name"
+                setFieldValue={setFieldValue}
+              />
+              <InputErrors
+                fieldErrors={errors.company_name}
+                fieldTouched={touched.company_name}
+              />
+              <div className="mb-2 xsm:mb-6">
+                <label className="mb-2 block text-sm font-medium text-miru-dark-purple-400">
+                  Business Phone
+                </label>
+                <div className="flex h-10 w-full items-center rounded-md border border-input bg-background px-3 py-2">
+                  <PhoneInput
+                    className="input-phone-number w-full border-transparent focus:border-transparent focus:ring-0"
+                    flags={flags}
+                    id="business_phone"
+                    inputClassName="block w-full appearance-none bg-transparent border-0 focus:border-0 px-0 text-sm focus:ring-0 focus:outline-none"
+                    name="business_phone"
+                    value={values.business_phone}
+                    onChange={phone => {
+                      setFieldValue("business_phone", phone);
+                    }}
+                  />
                 </div>
                 <InputErrors
                   fieldErrors={errors.business_phone}
                   fieldTouched={touched.business_phone}
                 />
               </div>
-              <div className="field relative mt-4">
-                <InputField
-                  resetErrorOnChange
-                  hasError={errors.address_line_1 && touched.address_line_1}
-                  id="address_line_1"
-                  label="Address line 1"
-                  name="address_line_1"
-                  setFieldValue={setFieldValue}
-                />
-                <InputErrors
-                  fieldErrors={errors.address_line_1}
-                  fieldTouched={touched.address_line_1}
-                />
-              </div>
-              <div className="field relative mb-5">
-                <InputField
-                  resetErrorOnChange
-                  hasError={errors.address_line_2 && touched.address_line_2}
-                  id="address_line_2"
-                  label="Address line 2 (optional)"
-                  name="address_line_2"
-                  setFieldValue={setFieldValue}
-                />
-                <InputErrors
-                  fieldErrors={errors.address_line_2}
-                  fieldTouched={touched.address_line_2}
-                />
-              </div>
-              {/* Country */}
-              <div className="flex flex-row">
-                <div className="flex w-1/2 flex-col py-0 pr-2" id="country">
-                  <div className="field relative">
-                    <label className="absolute -top-1 left-0 z-1 ml-3 origin-0 bg-white px-1 text-xsm font-medium text-miru-dark-purple-200 duration-300">
-                      Country
-                    </label>
-                    <Select
-                      value={values.country?.value || ""}
-                      onValueChange={value => {
-                        const selectedCountry = countries.find(
-                          c => c.value === value
+              <InputField
+                resetErrorOnChange
+                hasError={errors.address_line_1 && touched.address_line_1}
+                id="address_line_1"
+                label="Address line 1"
+                name="address_line_1"
+                setFieldValue={setFieldValue}
+              />
+              <InputErrors
+                fieldErrors={errors.address_line_1}
+                fieldTouched={touched.address_line_1}
+              />
+              <InputField
+                resetErrorOnChange
+                hasError={errors.address_line_2 && touched.address_line_2}
+                id="address_line_2"
+                label="Address line 2 (optional)"
+                name="address_line_2"
+                setFieldValue={setFieldValue}
+              />
+              <InputErrors
+                fieldErrors={errors.address_line_2}
+                fieldTouched={touched.address_line_2}
+              />
+              {/* Country and State */}
+              <div className="flex flex-row gap-4">
+                <div className="mb-2 xsm:mb-6 flex w-1/2 flex-col" id="country">
+                  <label className="mb-2 block text-sm font-medium text-miru-dark-purple-400">
+                    Country
+                  </label>
+                  <Select
+                    value={values.country?.value || ""}
+                    onValueChange={value => {
+                      const selectedCountry = countries.find(
+                        c => c.value === value
+                      );
+                      if (selectedCountry) {
+                        getTimezonesOfCurrentCountry(
+                          selectedCountry.code,
+                          setFieldValue
                         );
-                        if (selectedCountry) {
-                          getTimezonesOfCurrentCountry(
-                            selectedCountry.code,
-                            setFieldValue
-                          );
-                          setFieldValue("country", selectedCountry);
-                          setFieldValue("state", "");
-                          setFieldValue("city", "");
-                        }
-                      }}
+                        setFieldValue("country", selectedCountry);
+                        setFieldValue("state", "");
+                        setFieldValue("city", "");
+                      }
+                    }}
+                  >
+                    <SelectTrigger
+                      data-testid="select-trigger"
+                      className={`h-10 ${
+                        errors.country ? "border-red-500" : ""
+                      }`}
                     >
-                      <SelectTrigger
-                        data-testid="select-trigger"
-                        className={`h-12 ${
-                          errors.country ? "border-red-500" : ""
-                        }`}
-                      >
-                        <SelectValue placeholder="Select country" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {countries.map(country => (
-                          <SelectItem
-                            key={country.value}
-                            value={country.value}
-                            data-testid="select-option"
-                          >
-                            {country.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
+                      <SelectValue placeholder="Select country" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {countries.map(country => (
+                        <SelectItem
+                          key={country.value}
+                          value={country.value}
+                          data-testid="select-option"
+                        >
+                          {country.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
-                <div className="flex w-1/2 flex-col pl-2" id="state">
+                <div className="flex w-1/2 flex-col" id="state">
                   <InputField
                     resetErrorOnChange
                     hasError={errors.state && touched.state}
@@ -391,8 +378,9 @@ const CompanyDetailsForm = ({
                   />
                 </div>
               </div>
-              <div className="flex flex-row">
-                <div className="flex w-1/2 flex-col pr-2" id="city">
+              {/* City and Zipcode */}
+              <div className="flex flex-row gap-4">
+                <div className="flex w-1/2 flex-col" id="city">
                   <InputField
                     resetErrorOnChange
                     hasError={errors.city && touched.city}
@@ -406,12 +394,12 @@ const CompanyDetailsForm = ({
                     fieldTouched={touched.city}
                   />
                 </div>
-                <div className="flex w-1/2 flex-col pl-2">
+                <div className="flex w-1/2 flex-col">
                   <InputField
                     resetErrorOnChange
                     hasError={errors.zipcode && touched.zipcode}
                     id="zipcode"
-                    label="zipcode"
+                    label="Zipcode"
                     name="zipcode"
                     setFieldValue={setFieldValue}
                   />
@@ -422,8 +410,8 @@ const CompanyDetailsForm = ({
                 </div>
               </div>
               {/* Timezone */}
-              <div className="field relative">
-                <label className="absolute -top-1 left-0 z-1 ml-3 origin-0 bg-white px-1 text-xsm font-medium text-miru-dark-purple-200 duration-300">
+              <div className="mb-2 xsm:mb-6">
+                <label className="mb-2 block text-sm font-medium text-miru-dark-purple-400">
                   Timezone
                 </label>
                 <Select
@@ -442,7 +430,7 @@ const CompanyDetailsForm = ({
                   }}
                 >
                   <SelectTrigger
-                    className={`h-12 ${
+                    className={`h-10 ${
                       errors.timezone ? "border-red-500" : ""
                     }`}
                   >
@@ -456,11 +444,11 @@ const CompanyDetailsForm = ({
                     ))}
                   </SelectContent>
                 </Select>
-                <div className="mx-0 mt-1 mb-5 block text-xs tracking-wider text-red-600">
-                  {errors.timezone && touched.timezone && (
-                    <div>{errors.timezone.value}</div>
-                  )}
-                </div>
+                {errors.timezone && touched.timezone && (
+                  <div className="mt-1 text-xs tracking-wider text-red-600">
+                    {errors.timezone.value}
+                  </div>
+                )}
               </div>
               {/* Next Button */}
               <div className="mb-3">

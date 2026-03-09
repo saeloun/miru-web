@@ -6,6 +6,6 @@ class Users::ConfirmationsController < Devise::ConfirmationsController
   protected
 
     def after_confirmation_path_for(resource_name, resource)
-      "/email_confirmed"
+      "/email_verification_success"
     end
 end

@@ -1,7 +1,45 @@
-<p>Hello <%= @resource.email %>!</p>
+<!DOCTYPE html>
+<%= stylesheet_link_tag "application" %>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  </head>
+  <body style="color:#1D1A31; margin: 0; padding: 0; font-family: 'Geist', Arial, sans-serif;">
+    <div style="max-width: 640px; margin: 0 auto;">
+      <!-- Header -->
+      <div style="padding: 30px 40px; background: white; border-bottom: 2px solid #E1E6EC; text-align: center;">
+        <div style="padding: 10px; display: inline-block; text-align: center;">
+          <img src="<%= "#{root_url}miru-logo.svg" %>" height="60" width="60" alt="Miru logo" />
+        </div>
+        <div style="margin-top: 10px;">
+          <span style="font-weight: bold; font-size: 24px; color: #5B34EA;">Account Locked</span>
+        </div>
+      </div>
 
-<p>Your account has been locked due to an excessive number of unsuccessful sign in attempts.</p>
+      <!-- Body -->
+      <div style="padding: 40px;">
+        <p style="font-size: 16px; line-height: 24px;">Hello <strong><%= @resource.email %></strong>,</p>
 
-<p>Click the link below to unlock your account:</p>
+        <div style="margin: 24px 0; padding: 20px; background: #F8D7DA; border-radius: 8px; border-left: 4px solid #DC3545;">
+          <p style="margin: 0; font-size: 16px; line-height: 24px; color: #721C24;">Your account has been locked due to an excessive number of unsuccessful sign in attempts.</p>
+        </div>
 
-<p><%= link_to 'Unlock my account', unlock_url(@resource, unlock_token: @token) %></p>
+        <p style="font-size: 16px; line-height: 24px;">Click the button below to unlock your account:</p>
+
+        <div style="text-align: center; margin: 32px 0;">
+          <%= link_to unlock_url(@resource, unlock_token: @token), target: "_blank", style: "cursor: pointer; font-weight: bold; font-size: 16px; color: white; letter-spacing: 1px; line-height: 22px; border-radius: 4px; border: none; padding: 12px 48px; text-decoration: none; background: #5B34EA; display: inline-block;" do %>
+            UNLOCK MY ACCOUNT
+          <% end %>
+        </div>
+
+        <p style="font-size: 14px; line-height: 24px; color: #666;">If you did not attempt to sign in, we recommend changing your password after unlocking your account.</p>
+
+        <p style="font-size: 16px; line-height: 24px; margin-top: 32px;">Cheers,<br/><strong>Team Miru</strong></p>
+      </div>
+
+      <!-- Footer -->
+      <%= render "devise/shared/footer" %>
+    </div>
+  </body>
+</html>

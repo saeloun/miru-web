@@ -76,7 +76,7 @@ const AddEntry: React.FC<Iprops> = ({
 
   const handleFillData = () => {
     if (!editEntryId) return;
-    const isoDate = dayjs(selectedFullDate, dateFormat).format("YYYY-MM-DD");
+    const isoDate = dayjs(selectedFullDate).format("YYYY-MM-DD");
     const entries = entryList[isoDate];
     if (!entries) return;
     const entry = entries.find(entry => entry.id === editEntryId);
@@ -96,6 +96,10 @@ const AddEntry: React.FC<Iprops> = ({
       return setProjectId(0);
     }
 
+    if (!projects || !projects[client]) {
+      return setProjectId(0);
+    }
+
     const selectedProject = projects[client].find(
       currentProject => currentProject.name === project
     );
@@ -110,7 +114,7 @@ const AddEntry: React.FC<Iprops> = ({
   };
 
   const getPayload = () => ({
-    work_date: dayjs(selectedFullDate, dateFormat).format("YYYY-MM-DD"),
+    work_date: dayjs(selectedFullDate).format("YYYY-MM-DD"),
     duration: minFromHHMM(duration),
     note,
     task_type: taskType,
@@ -233,7 +237,12 @@ const AddEntry: React.FC<Iprops> = ({
                   value={client}
                   onValueChange={value => {
                     setClient(value);
-                    setProject(projects ? projects[value][0]?.name : "");
+                    setProject(
+                      (projects &&
+                        projects[value] &&
+                        projects[value][0]?.name) ||
+                        ""
+                    );
                   }}
                 >
                   <SelectTrigger
@@ -244,11 +253,12 @@ const AddEntry: React.FC<Iprops> = ({
                     <SelectValue placeholder="Select a client" />
                   </SelectTrigger>
                   <SelectContent>
-                    {clients.map((client, i) => (
-                      <SelectItem key={i} value={client["name"]}>
-                        {client["name"]}
-                      </SelectItem>
-                    ))}
+                    {Array.isArray(clients) &&
+                      clients.map((client, i) => (
+                        <SelectItem key={i} value={client["name"]}>
+                          {client["name"]}
+                        </SelectItem>
+                      ))}
                   </SelectContent>
                 </Select>
               </div>

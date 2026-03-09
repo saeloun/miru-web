@@ -121,8 +121,9 @@ class Api::V1::ClientsController < Api::V1::ApplicationController
     end
 
     def update_client_params
-      if client_params.key?(:logo) && client_params[:logo].blank?
-        client.logo.destroy
+      logo_value = client_params[:logo]
+      if client_params.key?(:logo) && (logo_value.blank? || logo_value == "null")
+        client.logo.purge if client.logo.attached?
         client_params.except(:logo)
       else
         client_params

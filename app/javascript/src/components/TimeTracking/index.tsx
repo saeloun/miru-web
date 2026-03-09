@@ -49,7 +49,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
   const [dailyTotalHours, setDailyTotalHours] = useState<number[]>([]);
   const [entryList, setEntryList] = useState<object>({});
   const [selectedFullDate, setSelectedFullDate] = useState<string>(
-    dayjs().format(dateFormat)
+    dayjs().format("YYYY-MM-DD")
   );
   const [editEntryId, setEditEntryId] = useState<number>(0);
   const [weeklyData, setWeeklyData] = useState<any[]>([]);
@@ -214,7 +214,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
       setSelectedFullDate(
         dayjs()
           .weekday(weekDay + selectDate)
-          .format(dateFormat)
+          .format("YYYY-MM-DD")
       );
     }
   }, [selectDate, weekDay, updateView]);
@@ -628,8 +628,9 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
                   const selectedDayInfo = dayInfo[index];
                   if (selectedDayInfo) {
                     const formattedDate = dayjs(
-                      selectedDayInfo.fullDate
-                    ).format(dateFormat);
+                      selectedDayInfo.fullDate,
+                      dateFormat
+                    ).format("YYYY-MM-DD");
                     setSelectedFullDate(formattedDate);
                   }
                 }}
@@ -651,6 +652,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
                 currentYear={currentYear}
                 setCurrentYear={setCurrentYear}
                 dayInfo={dayInfo}
+                setUpdateView={setUpdateView}
               />
             )}
           </div>

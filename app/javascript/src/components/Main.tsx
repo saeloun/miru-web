@@ -62,7 +62,7 @@ const Main: React.FC<MainProps> = props => {
     }
   }, [user, isLoggedIn, authDispatch]);
 
-  return <AppRouter {...props} />;
+  return <AppRouter {...props} user={user || props.user} />;
 };
 
 export default Main;

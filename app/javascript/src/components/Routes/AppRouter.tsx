@@ -61,6 +61,12 @@ const AppRouter: React.FC<AppRouterProps> = props => {
           path="/"
         />
 
+        <Route
+          element={<EmailVerificationSuccess />}
+          path={Paths.EMAIL_VERIFICATION_SUCCESS}
+        />
+        <Route element={<EmailVerificationSuccess />} path="/email_confirmed" />
+
         {/* Auth Routes - Only for non-authenticated users */}
         {/* These routes will redirect to dashboard if user is already logged in */}
         <Route element={<PublicRoute restricted />}>
@@ -71,10 +77,6 @@ const AppRouter: React.FC<AppRouterProps> = props => {
           <Route
             element={<EmailVerification />}
             path={Paths.EMAIL_VERIFICATION}
-          />
-          <Route
-            element={<EmailVerificationSuccess />}
-            path={Paths.EMAIL_VERIFICATION_SUCCESS}
           />
         </Route>
 
