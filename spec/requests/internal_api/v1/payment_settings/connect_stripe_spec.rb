@@ -26,6 +26,39 @@ RSpec.describe "InternalApi::V1::PaymentSettings#connect_stripe", type: :request
       expect(json_response).to have_key("accountLink")
       expect(json_response["accountLink"]).to eq("https://connect.stripe.com/setup/s/something")
     end
+
+    it "returns existing stripe connected account when one already exists" do
+      allow(Stripe::Account).to receive(:create)
+        .and_return(OpenStruct.new({ id: "acct_existing123" }))
+      existing_account = create(:stripe_connected_account, company:)
+      allow(Stripe::Account).to receive(:retrieve)
+        .and_return(OpenStruct.new({ details_submitted: false }))
+      allow(Stripe::AccountLink).to receive(:create)
+        .and_return(OpenStruct.new({ url: "https://connect.stripe.com/setup/s/existing" }))
+
+      expect {
+        send_request :post, internal_api_v1_payments_settings_stripe_connect_path, headers: auth_headers(user)
+      }.not_to change(StripeConnectedAccount, :count)
+
+      expect(response).to have_http_status(:ok)
+      expect(json_response["accountLink"]).to eq("https://connect.stripe.com/setup/s/existing")
+    end
+
+    it "handles race condition when duplicate record is created concurrently" do
+      allow(Stripe::Account).to receive(:create)
+        .and_return(OpenStruct.new({ id: "acct_existing456" }))
+      existing_account = create(:stripe_connected_account, company:)
+      allow(StripeConnectedAccount).to receive(:find_or_create_by!).and_raise(ActiveRecord::RecordNotUnique)
+      allow(Stripe::Account).to receive(:retrieve)
+        .and_return(OpenStruct.new({ details_submitted: false }))
+      allow(Stripe::AccountLink).to receive(:create)
+        .and_return(OpenStruct.new({ url: "https://connect.stripe.com/setup/s/recovered" }))
+
+      send_request :post, internal_api_v1_payments_settings_stripe_connect_path, headers: auth_headers(user)
+
+      expect(response).to have_http_status(:ok)
+      expect(json_response).to have_key("accountLink")
+    end
   end
 
   context "when user is an employee" do
