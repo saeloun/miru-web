@@ -110,6 +110,22 @@ RSpec.describe "Api::V1::Invoices#send_invoice", type: :request do
       end
     end
 
+    context "when user authenticates with a cli session" do
+      let(:cli_token) { CliSession.issue_for(user:, company:).last }
+
+      before do
+        user.add_role :admin, company
+      end
+
+      it "returns a 200 response" do
+        post send_invoice_api_v1_invoice_path(id: invoice.id), params: { invoice_email: },
+          headers: cli_auth_headers(cli_token)
+
+        expect(response).to have_http_status(:ok)
+        expect(json_response["message"]).to eq("Invoice has been sent successfully")
+      end
+    end
+
     context "when user is an employee" do
       before do
         user.add_role :employee, company

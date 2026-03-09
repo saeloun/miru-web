@@ -2,6 +2,10 @@
 
 class Api::V1::Users::SessionsController < Devise::SessionsController
   skip_before_action :verify_authenticity_token, only: :create
+  include Authenticable
+  include CurrentCompanyConcern
+
+  before_action :authenticate_user_using_x_auth_token, only: :me
 
   respond_to :json
 
@@ -69,6 +73,8 @@ class Api::V1::Users::SessionsController < Devise::SessionsController
 
       if app == "miru-desktop"
         render_sign_in_response_for_desktop(user)
+      elsif app == "miru-cli"
+        render_sign_in_response_for_cli(user)
       else
         render_sign_in_response(user)
       end
@@ -98,6 +104,23 @@ class Api::V1::Users::SessionsController < Devise::SessionsController
       }
 
       render json: { notice: I18n.t("devise.sessions.signed_in"), **initial_props }, status: 200
+    end
+
+    def render_sign_in_response_for_cli(user)
+      cli_session, plain_token = CliSession.issue_for(user:, company: current_company)
+
+      render json: {
+        notice: I18n.t("devise.sessions.signed_in"),
+        user: safe_user_payload(user),
+        company: {
+          id: current_company.id,
+          name: current_company.name
+        },
+        cli_session: {
+          token: plain_token,
+          expires_at: cli_session.expires_at.iso8601
+        }
+      }, status: 200
     end
 
     def safe_user_payload(user)

@@ -294,5 +294,6 @@ en:
     failure:
       invalid: Invalid email or password
   expenses:
+    create: "Expense created successfully"
     update: "Expense updated successfully"
     destroy: "Expense deleted successfully"
