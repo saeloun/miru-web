@@ -5,13 +5,20 @@ require "rails_helper"
 RSpec.describe TimeoffEntry, type: :model do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
-  let(:holiday) { create(:holiday, year: Date.current.year, company:) }
+  let(:holiday) { create(:holiday, year: Date.current.year, company:, no_of_allowed_optional_holidays: 1) }
   let(:national_holiday) { create(:holiday_info, date: Date.current, category: "national", holiday:) }
   let(:optional_holiday) {
-  create(:holiday_info, name: "Mahashivaratri", date: Date.current, category: "optional", holiday:)
+  create(
+    :holiday_info, name: "Mahashivaratri", date: Date.current.beginning_of_year + 10.days, category: "optional",
+    holiday:)
 }
   let(:second_optional_holiday) {
-  create(:holiday_info, name: "Sankranthi", date: Date.current, category: "optional", holiday:)
+  create(
+    :holiday_info, name: "Sankranthi", date: Date.current.beginning_of_year + 20.days, category: "optional",
+    holiday:)
+}
+  let(:third_optional_holiday) {
+  create(:holiday_info, name: "Diwali", date: Date.current.beginning_of_year + 30.days, category: "optional", holiday:)
 }
   let(:previous_year_holiday) { create(:holiday, year: Date.current.year - 1, company:) }
   let(:previous_year_national_holiday) { create(
@@ -21,40 +28,44 @@ RSpec.describe TimeoffEntry, type: :model do
 
   describe "validations" do
     before do
+      # First optional holiday entry (saved)
       @timeoff_entry = create(
         :timeoff_entry,
         user_id: user.id,
         leave_type_id: nil,
         holiday_info_id: optional_holiday.id,
         duration: 400,
-        leave_date: Date.current
+        leave_date: Date.current.beginning_of_year + 10.days
       )
 
+      # Second optional holiday on same day (should fail with "same day" error)
       @entry_with_second_optional_holiday = build(
         :timeoff_entry,
         user_id: user.id,
         leave_type_id: nil,
         holiday_info_id: second_optional_holiday.id,
         duration: 400,
-        leave_date: Date.current,
+        leave_date: Date.current.beginning_of_year + 10.days,
       )
 
+      # Same optional holiday on different day (should fail with "already applied" error)
       @entry_with_optional_holiday = build(
         :timeoff_entry,
         user_id: user.id,
         leave_type_id: nil,
         holiday_info_id: optional_holiday.id,
         duration: 400,
-        leave_date: Date.current + 1,
+        leave_date: Date.current.beginning_of_year + 11.days,
       )
 
+      # Third optional holiday in same quarter (should fail with "exceeded maximum" error)
       @entry_with_second_optional_holiday_in_same_quarter = build(
         :timeoff_entry,
         user_id: user.id,
         leave_type_id: nil,
-        holiday_info_id: second_optional_holiday.id,
+        holiday_info_id: third_optional_holiday.id,
         duration: 400,
-        leave_date: Date.current + 1,
+        leave_date: Date.current.beginning_of_year + 30.days,
       )
 
       @national_time_off_entry = build(
