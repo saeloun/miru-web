@@ -132,6 +132,7 @@ gem "httparty"
 gem "observer"
 
 # Faraday HTTP client adapter for Faraday 2.0+
+gem "faraday", ">= 2.14.1"
 gem "faraday-net_http"
 
 # Country information and timezones
