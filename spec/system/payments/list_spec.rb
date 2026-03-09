@@ -88,7 +88,7 @@ RSpec.describe "Payments page", type: :system, js: true do
         expect(page).to have_content("Partially Paid")
         expect(page).to have_content("Failed")
         expect(page).to have_content("Payment declined by bank")
-        expect(page).to have_content("Add Manual Entry")
+        expect(page).to have_content("Add manual entry")
       end
     end
   end
@@ -120,7 +120,8 @@ RSpec.describe "Payments page", type: :system, js: true do
         visit "/payments"
 
         expect(page).to have_css("#react-root", wait: 10)
-        expect(page).not_to have_content("Add Manual Entry", wait: 5)
+        expect(page).not_to have_content("Add manual entry", wait: 5)
+        expect(page).to have_current_path("/time-tracking", wait: 10)
       end
     end
   end

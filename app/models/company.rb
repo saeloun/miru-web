@@ -131,6 +131,22 @@ class Company < ApplicationRecord
     addresses.first
   end
 
+  def team_member_limit
+    return Float::INFINITY if billing_exempt?
+
+    plan_tier == "paid" ? 100 : 3
+  end
+
+  def used_team_seats
+    users.with_kept_employments.distinct.count
+  end
+
+  def team_member_limit_reached?
+    return false if team_member_limit.infinite?
+
+    used_team_seats >= team_member_limit
+  end
+
   delegate :formatted_address, to: :current_address
 
   def billable_clients

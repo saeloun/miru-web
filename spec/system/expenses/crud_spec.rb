@@ -289,12 +289,13 @@ RSpec.describe "Expenses CRUD", type: :system, js: true do
       sign_in(employee)
     end
 
-    it "employee can access the expenses list" do
+    it "redirects employee away from the expenses list" do
       with_forgery_protection do
         visit "/expenses"
 
         expect(page).to have_css("#react-root", wait: 10)
-        expect(page).to have_content("Expenses", wait: 10)
+        expect(page).to have_current_path("/time-tracking", wait: 10)
+        expect(page).not_to have_content("Expenses", wait: 5)
       end
     end
   end
