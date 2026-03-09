@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 
-import { Toastr } from "StyledComponents";
 import { ApiStatus } from "constants/index";
+import { toast } from "sonner";
 
 import { subscriptionsApi } from "apis/api";
 import { sendGAPageView } from "utils/googleAnalytics";
@@ -48,10 +48,8 @@ const Billing = () => {
       const checkoutUrl = response?.data?.url;
       if (checkoutUrl) window.location.href = checkoutUrl;
     } catch (error: any) {
-      Toastr.error(
-        error?.response?.data?.errors ||
-          error?.message ||
-          "Unable to open Stripe checkout"
+      toast.error(
+        error?.response?.data?.errors || error?.message || "Unable to open Stripe checkout"
       );
     } finally {
       setProcessingCheckout(false);
@@ -65,10 +63,8 @@ const Billing = () => {
       const portalUrl = response?.data?.url;
       if (portalUrl) window.location.href = portalUrl;
     } catch (error: any) {
-      Toastr.error(
-        error?.response?.data?.errors ||
-          error?.message ||
-          "Unable to open Stripe billing portal"
+      toast.error(
+        error?.response?.data?.errors || error?.message || "Unable to open Stripe billing portal"
       );
     } finally {
       setProcessingPortal(false);
@@ -96,6 +92,9 @@ const Billing = () => {
   const usageLabel = summary
     ? `${summary.used_team_seats}/${summary.team_member_limit} seats used`
     : "";
+
+  const cliInstallCommand =
+    "curl -fsSL https://raw.githubusercontent.com/saeloun/miru-web/main/tools/miru-cli/install.sh | bash";
 
   return (
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-6 p-4 sm:p-6">
@@ -203,6 +202,86 @@ const Billing = () => {
               </div>
             </div>
           )}
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Miru CLI</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <p className="text-sm text-muted-foreground">
+            Install the Miru CLI to use Miru from your terminal, scripts, or AI agents with the same permissions as your user account.
+          </p>
+
+          <div className="rounded-md border bg-muted/40 p-3">
+            <p className="mb-2 text-xs uppercase tracking-wide text-muted-foreground">
+              Install with mise
+            </p>
+            <code className="block overflow-x-auto text-sm text-foreground">
+              {cliInstallCommand}
+            </code>
+          </div>
+
+          <div className="rounded-md border p-3">
+            <p className="mb-2 text-xs uppercase tracking-wide text-muted-foreground">
+              Log in once
+            </p>
+            <code className="block overflow-x-auto text-sm text-foreground">
+              miru login --email you@example.com --password password
+            </code>
+            <code className="mt-1 block overflow-x-auto text-sm text-foreground">
+              miru config set-base-url --url http://127.0.0.1:9000
+            </code>
+          </div>
+
+          <div className="rounded-md border p-3">
+            <p className="mb-2 text-xs uppercase tracking-wide text-muted-foreground">Try it</p>
+            <code className="block overflow-x-auto text-sm text-foreground">miru whoami</code>
+            <code className="mt-1 block overflow-x-auto text-sm text-foreground">
+              miru config show
+            </code>
+            <code className="mt-1 block overflow-x-auto text-sm text-foreground">miru version</code>
+            <code className="mt-1 block overflow-x-auto text-sm text-foreground">miru upgrade</code>
+            <code className="mt-1 block overflow-x-auto text-sm text-foreground">
+              miru capabilities
+            </code>
+            <code className="block overflow-x-auto text-sm text-foreground">miru help</code>
+            <code className="mt-1 block overflow-x-auto text-sm text-foreground">
+              miru client list
+            </code>
+            <code className="mt-1 block overflow-x-auto text-sm text-foreground">
+              miru project list
+            </code>
+            <code className="mt-1 block overflow-x-auto text-sm text-foreground">
+              miru project list --search solar
+            </code>
+            <code className="mt-1 block overflow-x-auto text-sm text-foreground">
+              miru expense list
+            </code>
+            <code className="mt-1 block overflow-x-auto text-sm text-foreground">
+              miru expense create --amount 42.25 --date 2026-03-09 --category-id 3 --description
+              "Lunch with client"
+            </code>
+            <code className="mt-1 block overflow-x-auto text-sm text-foreground">
+              miru invoice list
+            </code>
+            <code className="mt-1 block overflow-x-auto text-sm text-foreground">
+              miru invoice send --id 1 --recipients client@example.com
+            </code>
+            <code className="mt-1 block overflow-x-auto text-sm text-foreground">
+              miru payment list
+            </code>
+            <code className="mt-1 block overflow-x-auto text-sm text-foreground">
+              miru time list --from 2026-03-01 --to 2026-03-09
+            </code>
+            <code className="mt-1 block overflow-x-auto text-sm text-foreground">
+              miru time create --project-id 2 --duration 30 --date 2026-03-09 --note "CLI entry"
+            </code>
+            <code className="mt-1 block overflow-x-auto text-sm text-foreground">
+              miru time update --id 629 --project-id 2 --duration 45 --date 2026-03-09
+            </code>
+          </div>
         </CardContent>
       </Card>
     </div>

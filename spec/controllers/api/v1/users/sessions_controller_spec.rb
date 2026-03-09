@@ -24,6 +24,21 @@ RSpec.describe Api::V1::Users::SessionsController, type: :controller do
         expect(json_response["user"]["current_workspace_id"]).to eq(company.id)
         expect(json_response["company_role"]).to eq("admin")
       end
+
+      it "returns a cli session when app is miru-cli" do
+        post :create, params: {
+          user: { email: user.email, password: user.password },
+          app: "miru-cli"
+        }, format: :json
+
+        expect(response).to have_http_status(:ok)
+
+        json_response = JSON.parse(response.body)
+        expect(json_response["user"]["email"]).to eq(user.email)
+        expect(json_response.dig("cli_session", "token")).to be_present
+        expect(json_response.dig("cli_session", "expires_at")).to be_present
+        expect(CliSession.count).to eq(1)
+      end
     end
 
     context "with invalid password" do
@@ -92,7 +107,7 @@ RSpec.describe Api::V1::Users::SessionsController, type: :controller do
         expect(response).to have_http_status(:unauthorized)
 
         json_response = JSON.parse(response.body)
-        expect(json_response["error"]).to eq("Not authenticated")
+        expect(json_response["error"]).to eq("You need to sign in or sign up before continuing.")
       end
     end
 

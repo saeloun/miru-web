@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_03_07_031737) do
+ActiveRecord::Schema[8.0].define(version: 2026_03_09_221000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -149,6 +149,21 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_07_031737) do
     t.index ["user_id"], name: "index_carryovers_on_user_id"
   end
 
+  create_table "cli_sessions", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "company_id", null: false
+    t.string "token_digest", null: false
+    t.datetime "expires_at", null: false
+    t.datetime "last_used_at"
+    t.datetime "revoked_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_cli_sessions_on_company_id"
+    t.index ["expires_at"], name: "index_cli_sessions_on_expires_at"
+    t.index ["token_digest"], name: "index_cli_sessions_on_token_digest", unique: true
+    t.index ["user_id"], name: "index_cli_sessions_on_user_id"
+  end
+
   create_table "client_members", force: :cascade do |t|
     t.bigint "client_id", null: false
     t.bigint "user_id", null: false
@@ -204,6 +219,14 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_07_031737) do
     t.string "tax_id"
     t.string "vat_number"
     t.string "gst_number"
+    t.string "plan_tier", default: "free", null: false
+    t.boolean "billing_exempt", default: false, null: false
+    t.string "stripe_customer_id"
+    t.string "stripe_subscription_id"
+    t.string "subscription_status"
+    t.datetime "subscription_ends_at"
+    t.index ["stripe_customer_id"], name: "index_companies_on_stripe_customer_id", unique: true
+    t.index ["stripe_subscription_id"], name: "index_companies_on_stripe_subscription_id"
   end
 
   create_table "currency_pairs", force: :cascade do |t|
@@ -615,16 +638,6 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_07_031737) do
     t.index ["resource_type", "resource_id"], name: "index_roles_on_resource"
   end
 
-  create_table "solid_cable_messages", force: :cascade do |t|
-    t.binary "channel", null: false
-    t.binary "payload", null: false
-    t.datetime "created_at", null: false
-    t.bigint "channel_hash", null: false
-    t.index ["channel"], name: "index_solid_cable_messages_on_channel"
-    t.index ["channel_hash"], name: "index_solid_cable_messages_on_channel_hash"
-    t.index ["created_at"], name: "index_solid_cable_messages_on_created_at"
-  end
-
   create_table "solid_queue_blocked_executions", force: :cascade do |t|
     t.bigint "job_id", null: false
     t.string "queue_name", null: false
@@ -862,6 +875,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_07_031737) do
     t.index ["user_id"], name: "index_wise_accounts_on_user_id"
   end
 
+  add_foreign_key "cli_sessions", "companies"
+  add_foreign_key "cli_sessions", "users"
   add_foreign_key "client_members", "clients"
   add_foreign_key "client_members", "companies"
   add_foreign_key "client_members", "users"

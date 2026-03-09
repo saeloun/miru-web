@@ -105,3 +105,4 @@ test-*.spec.ts
 test-results/
 playwright-report/
 .buildx-cache/
+tools/miru-cli/miru

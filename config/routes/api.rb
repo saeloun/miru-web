@@ -36,6 +36,13 @@ namespace :api, defaults: { format: "json" } do
         resource :bulk_action, only: [:update, :destroy], controller: "timesheet_entry/bulk_action"
       end
     end
+    namespace :cli do
+      resource :capabilities, only: [:show], controller: "capabilities"
+      resource :session, only: [:destroy], controller: "sessions"
+      resources :clients, only: [:index]
+      resources :expenses, only: [:index, :create]
+      resources :timesheet_entries, only: [:create, :update, :destroy]
+    end
     resources :projects, only: [:index, :show, :create, :update, :destroy] do
       collection do
         get "search", to: "projects/search#index"
@@ -70,6 +77,10 @@ namespace :api, defaults: { format: "json" } do
     end
 
     resources :workspaces, only: [:index, :update]
+    resource :subscription, only: [:show] do
+      post :checkout
+      post :portal
+    end
     namespace :invoices do
       resources :bulk_deletion, only: [:create]
       resources :bulk_download, only: [:index] do
@@ -139,7 +150,7 @@ namespace :api, defaults: { format: "json" } do
     get "calendars/calendars", to: "calendars#calendars", as: "calendars"
     get "calendars/events/:calendar_id", to: "calendars#events", as: "events", calendar_id: /[^\/]+/
 
-    resources :payments, only: [:new, :create, :index]
+    resources :payments, only: [:new, :create, :index, :show]
     resources :holidays, only: [:update, :index], param: :year
 
     namespace :payments do

@@ -2,6 +2,7 @@
 
 class Api::V1::PaymentsController < Api::V1::ApplicationController
   before_action :set_invoice, only: [:create]
+  before_action :set_payment, only: [:show]
   after_action :track_event, only: [:create]
 
   def new
@@ -55,6 +56,15 @@ class Api::V1::PaymentsController < Api::V1::ApplicationController
       locals: PaymentsPresenter.new(payments, current_company).index_data
   end
 
+  def show
+    authorize :show, policy_class: PaymentPolicy
+
+    render :show, locals: {
+      payment: PaymentsPresenter.new([@payment], current_company).index_data[:payments].first,
+      base_currency: current_company.base_currency
+    }
+  end
+
   private
 
     def payment_params
@@ -65,6 +75,10 @@ class Api::V1::PaymentsController < Api::V1::ApplicationController
 
     def set_invoice
       @invoice = current_company.invoices.find(payment_params[:invoice_id])
+    end
+
+    def set_payment
+      @payment = current_company.payments.includes(invoice: [:client]).find(params[:id])
     end
 
     def track_event

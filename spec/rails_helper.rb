@@ -98,6 +98,12 @@ RSpec.configure do |config|
     }.merge(options)
   end
 
+  def cli_auth_headers(cli_token, options = {})
+    {
+      "Authorization" => "Bearer #{cli_token}"
+    }.merge(options)
+  end
+
   def with_forgery_protection
     orig = ActionController::Base.allow_forgery_protection
     begin
