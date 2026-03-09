@@ -88,6 +88,8 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
       net_days = net_hours / working_hours_per_day
       extra_hours = net_hours % working_hours_per_day
 
+      label = generate_label(net_hours, net_days, extra_hours)
+
       summary_object = {
         id: leave_type.id,
         name: leave_type.name,
@@ -97,7 +99,7 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
         timeoff_entries_duration:,
         net_duration:,
         net_days:,
-        label: "#{net_days} days #{extra_hours} hours",
+        label:,
         type: "leave"
       }
 
@@ -113,6 +115,8 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
       net_days = net_hours / working_hours_per_day
       extra_hours = net_hours % working_hours_per_day
 
+      label = generate_label(net_hours, net_days, extra_hours)
+
       summary_object = {
         id: leave_type.id,
         name: leave_type.name,
@@ -122,7 +126,7 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
         timeoff_entries_duration:,
         net_duration:,
         net_days:,
-        label: "#{net_days} days #{extra_hours} hours",
+        label:,
         type: "leave"
       }
 
@@ -138,6 +142,8 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
       net_days = net_hours / working_hours_per_day
       extra_hours = net_hours % working_hours_per_day
 
+      label = generate_label(net_hours, net_days, extra_hours)
+
       summary_object = {
         id: leave_type.id,
         name: leave_type.name,
@@ -147,7 +153,7 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
         timeoff_entries_duration:,
         net_duration:,
         net_days:,
-        label: "#{net_days} days #{extra_hours} hours",
+        label:,
         type: "leave"
       }
 
@@ -163,6 +169,8 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
       net_days = net_hours / working_hours_per_day
       extra_hours = net_hours % working_hours_per_day
 
+      label = generate_label(net_hours, net_days, extra_hours)
+
       summary_object = {
         id: leave_type.id,
         name: leave_type.name,
@@ -172,7 +180,7 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
         timeoff_entries_duration:,
         net_duration:,
         net_days:,
-        label: "#{net_days} days #{extra_hours} hours",
+        label:,
         type: "leave"
       }
 
@@ -207,6 +215,8 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
       net_days = net_hours / working_hours_per_day
       extra_hours = net_hours % working_hours_per_day
 
+      label = generate_label(net_hours, net_days, extra_hours)
+
       summary_object = {
         id: leave_type.id,
         name: leave_type.name,
@@ -216,7 +226,7 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
         timeoff_entries_duration:,
         net_duration:,
         net_days:,
-        label: "#{net_days} days #{extra_hours} hours",
+        label:,
         type: "leave"
       }
 
@@ -232,6 +242,8 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
       net_days = net_hours / working_hours_per_day
       extra_hours = net_hours % working_hours_per_day
 
+      label = generate_label(net_hours, net_days, extra_hours)
+
       summary_object = {
         id: leave_type.id,
         name: leave_type.name,
@@ -241,7 +253,7 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
         timeoff_entries_duration:,
         net_duration:,
         net_days:,
-        label: "#{net_days} days #{extra_hours} hours",
+        label:,
         type: "leave"
       }
 
@@ -257,6 +269,8 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
       net_days = net_hours / working_hours_per_day
       extra_hours = net_hours % working_hours_per_day
 
+      label = generate_label(net_hours, net_days, extra_hours)
+
       summary_object = {
         id: leave_type.id,
         name: leave_type.name,
@@ -266,7 +280,7 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
         timeoff_entries_duration:,
         net_duration:,
         net_days:,
-        label: "#{net_days} days #{extra_hours} hours",
+        label:,
         type: "leave"
       }
 
@@ -282,6 +296,8 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
       net_days = net_hours / working_hours_per_day
       extra_hours = net_hours % working_hours_per_day
 
+      label = generate_label(net_hours, net_days, extra_hours)
+
       summary_object = {
         id: leave_type.id,
         name: leave_type.name,
@@ -291,11 +307,186 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
         timeoff_entries_duration:,
         net_duration:,
         net_days:,
-        label: "#{net_days} days #{extra_hours} hours",
+        label:,
         type: "leave"
       }
 
       expect(@data[:leave_balance][3]).to eq(summary_object)
+    end
+  end
+
+  describe "#process with zero leave balance" do
+    let(:zero_balance_leave_type) do
+      create(
+        :leave_type,
+        name: "Zero Balance Leave",
+        allocation_period: :days,
+        allocation_frequency: :per_year,
+        allocation_value: 1,
+        icon: LeaveType.icons[:vacation],
+        color: LeaveType.colors[:chart_purple],
+        carry_forward_days: 0,
+        leave:
+      )
+    end
+
+    before do
+      @joined_at = Date.today - 1.year
+      @year = Date.today.year
+      create(:employment, company:, user:, joined_at: @joined_at, resigned_at: nil)
+      user.add_role :admin, company
+
+      # Create timeoff entry that exactly matches the allocation (1 day = working_hours_per_day hours)
+      create(
+        :timeoff_entry,
+        duration: working_hours_per_day * 60,
+        leave_date: Date.today,
+        user:,
+        leave_type: zero_balance_leave_type
+      )
+
+      service = TimeoffEntries::IndexService.new(user, company, user.id, @year)
+      @data = service.process
+    end
+
+    it "returns '0 hours' label when balance is exactly zero" do
+      leave_balance_entry = @data[:leave_balance].find { |lb| lb[:id] == zero_balance_leave_type.id }
+
+      expect(leave_balance_entry[:net_duration]).to eq(0)
+      expect(leave_balance_entry[:label]).to eq("0 hours")
+    end
+  end
+
+  describe "#process with negative leave balance (overdrawn)" do
+    let(:overdrawn_leave_type) do
+      create(
+        :leave_type,
+        name: "Overdrawn Leave",
+        allocation_period: :days,
+        allocation_frequency: :per_year,
+        allocation_value: 1,
+        icon: LeaveType.icons[:baby],
+        color: LeaveType.colors[:chart_light_blue],
+        carry_forward_days: 0,
+        leave:
+      )
+    end
+
+    before do
+      @joined_at = Date.today - 1.year
+      @year = Date.today.year
+      create(:employment, company:, user:, joined_at: @joined_at, resigned_at: nil)
+      user.add_role :admin, company
+    end
+
+    context "when overdrawn by hours only" do
+      before do
+        # Allocation is 1 day, take 1 day + 2 hours (overdrawn by 2 hours)
+        overdrawn_hours = 2
+        create(
+          :timeoff_entry,
+          duration: (working_hours_per_day + overdrawn_hours) * 60,
+          leave_date: Date.today,
+          user:,
+          leave_type: overdrawn_leave_type
+        )
+
+        service = TimeoffEntries::IndexService.new(user, company, user.id, @year)
+        @data = service.process
+      end
+
+      it "returns 'Overdrawn by X hours' label for small negative balance" do
+        leave_balance_entry = @data[:leave_balance].find { |lb| lb[:id] == overdrawn_leave_type.id }
+
+        expect(leave_balance_entry[:net_duration]).to be_negative
+        expect(leave_balance_entry[:label]).to eq("Overdrawn by 2 hours")
+      end
+    end
+
+    context "when overdrawn by days and hours" do
+      before do
+        # Allocation is 1 day, take 3 days + 2 hours (overdrawn by 2 days 2 hours)
+        overdrawn_days = 2
+        overdrawn_hours = 2
+        total_overdrawn_minutes = ((working_hours_per_day * (1 + overdrawn_days)) + overdrawn_hours) * 60
+        create(
+          :timeoff_entry,
+          duration: total_overdrawn_minutes,
+          leave_date: Date.today,
+          user:,
+          leave_type: overdrawn_leave_type
+        )
+
+        service = TimeoffEntries::IndexService.new(user, company, user.id, @year)
+        @data = service.process
+      end
+
+      it "returns 'Overdrawn by X days Y hours' label for larger negative balance" do
+        leave_balance_entry = @data[:leave_balance].find { |lb| lb[:id] == overdrawn_leave_type.id }
+
+        expect(leave_balance_entry[:net_duration]).to be_negative
+        expect(leave_balance_entry[:label]).to eq("Overdrawn by 2 days 2 hours")
+      end
+    end
+  end
+
+  context "with custom leaves" do
+    let(:custom_leave_company) { create(:company) }
+    let(:custom_leave_user_record) { create(:user, current_workspace_id: custom_leave_company.id) }
+    let!(:custom_leave_leave) { create(:leave, company: custom_leave_company, year: Date.today.year) }
+    let!(:custom_leave) do
+      create(
+        :custom_leave, leave: custom_leave_leave, name: "Special Leave", allocation_value: 5,
+        allocation_period: :days)
+    end
+
+    let(:custom_leave_working_hours_per_day) {
+      custom_leave_company.working_hours.to_i / custom_leave_company.working_days.to_i
+    }
+
+    describe "#process with custom leaves" do
+      before do
+        @joined_at = Date.today - 1.year
+        @year = Date.today.year
+        create(
+          :employment, company: custom_leave_company, user: custom_leave_user_record, joined_at: @joined_at,
+          resigned_at: nil)
+        create(:custom_leave_user, custom_leave:, user: custom_leave_user_record)
+        custom_leave_user_record.add_role :admin, custom_leave_company
+
+        params = {
+          user_id: custom_leave_user_record.id,
+          year: @year
+        }
+
+        service = TimeoffEntries::IndexService.new(
+          custom_leave_user_record, custom_leave_company, params[:user_id],
+          params[:year])
+        @data = service.process
+      end
+
+      it "returns custom leave balance for assigned user" do
+        custom_leave_balance = @data[:leave_balance].find { |lb| lb[:type] == "custom_leave" }
+
+        expect(custom_leave_balance).not_to be_nil
+        expect(custom_leave_balance[:name]).to eq("Special Leave")
+        expect(custom_leave_balance[:total_leave_type_days]).to eq(5)
+      end
+
+      it "calculates custom leave balance correctly with timeoff entries" do
+        create(
+          :timeoff_entry, duration: 480, leave_date: Date.today, user: custom_leave_user_record, custom_leave:,
+          leave_type: nil)
+
+        service = TimeoffEntries::IndexService.new(
+          custom_leave_user_record, custom_leave_company,
+          custom_leave_user_record.id, @year)
+        data = service.process
+
+        custom_leave_balance = data[:leave_balance].find { |lb| lb[:type] == "custom_leave" }
+
+        expect(custom_leave_balance[:timeoff_entries_duration]).to eq(480)
+      end
     end
   end
 
@@ -326,5 +517,32 @@ carry_forward_days)
         working_hours_per_day,
         company.working_days
       ).process
+    end
+
+    def generate_label(net_hours, net_days, extra_hours)
+      if net_hours.zero?
+        "0 hours"
+      elsif net_hours.negative?
+        total_overdrawn_hours = net_hours.abs
+        if total_overdrawn_hours < working_hours_per_day
+          "Overdrawn by #{total_overdrawn_hours} #{'hour'.pluralize(total_overdrawn_hours)}"
+        else
+          overdrawn_days = total_overdrawn_hours / working_hours_per_day
+          overdrawn_extra_hours = total_overdrawn_hours % working_hours_per_day
+          if overdrawn_extra_hours.zero?
+            "Overdrawn by #{overdrawn_days} #{'day'.pluralize(overdrawn_days)}"
+          else
+            "Overdrawn by #{overdrawn_days} #{'day'.pluralize(overdrawn_days)} #{overdrawn_extra_hours} #{'hour'.pluralize(overdrawn_extra_hours)}"
+          end
+        end
+      elsif net_hours < working_hours_per_day
+        "#{net_hours} #{'hour'.pluralize(net_hours)}"
+      else
+        if extra_hours.zero?
+          "#{net_days} #{'day'.pluralize(net_days)}"
+        else
+          "#{net_days} #{'day'.pluralize(net_days)} #{extra_hours} #{'hour'.pluralize(extra_hours)}"
+        end
+      end
     end
 end

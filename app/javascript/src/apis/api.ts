@@ -38,16 +38,23 @@ class ApiHandler {
           clearCredentialsFromLocalStorage();
           Toastr.error(error.response?.data?.error);
           setTimeout(() => (window.location.href = "/"), 500);
+
+          return Promise.reject(error);
         }
 
-        Toastr.error(
-          error.response?.data?.errors ||
-            error.response?.data?.error ||
-            error.response?.data?.notice ||
-            error.message ||
-            error.notice ||
-            "Something went wrong!"
-        );
+        // Skip generic toast if field_errors are present and non-empty (handled by the component)
+        const fieldErrors = error.response?.data?.field_errors;
+        if (!fieldErrors || Object.keys(fieldErrors).length === 0) {
+          Toastr.error(
+            error.response?.data?.errors ||
+              error.response?.data?.error ||
+              error.response?.data?.notice ||
+              error.message ||
+              error.notice ||
+              "Something went wrong!"
+          );
+        }
+
         if (error.response?.status === 423) {
           setTimeout(() => (window.location.href = "/"), 500);
         }
