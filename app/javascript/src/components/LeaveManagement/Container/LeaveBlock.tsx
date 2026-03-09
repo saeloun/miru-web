@@ -27,11 +27,7 @@ const LeaveBlock = ({ leaveType, selectedLeaveType, setSelectedLeaveType }) => {
   };
 
   const getLeaveColor = () => {
-    if (type === "custom_leave") {
-      return generateLeaveColor(color) || CUSTOM_LEAVE_COLOR;
-    }
-
-    if (type === "leave") {
+    if (type === "custom_leave" || type === "leave") {
       return generateLeaveColor(color) || CUSTOM_LEAVE_COLOR;
     }
 
@@ -45,8 +41,8 @@ const LeaveBlock = ({ leaveType, selectedLeaveType, setSelectedLeaveType }) => {
     category === "national" || category === "optional"
       ? label
       : netDuration < 0
-      ? `-${minToHHMM(-netDuration)} h (-${label})`
-      : `${minToHHMM(netDuration)} h (${label})`;
+        ? `-${minToHHMM(-netDuration)} h (-${label})`
+        : `${minToHHMM(netDuration)} h (${label})`;
 
   const isSelected = selectedLeaveType?.name === name;
 
