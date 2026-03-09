@@ -1,7 +1,7 @@
 import React from "react";
 import { cn } from "../../lib/utils";
 import { Link, useLocation } from "react-router-dom";
-import { CaretRight } from "phosphor-react";
+import { CaretRight, SignOut } from "phosphor-react";
 import { Badge } from "../ui/badge";
 import { Separator } from "../ui/separator";
 import {
@@ -10,6 +10,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "../ui/tooltip";
+import { logoutApi } from "apis/api";
 
 export interface NavigationItem {
   label: string;
@@ -166,96 +167,135 @@ const Sidebar: React.FC<SidebarProps> = ({
   className,
   logo,
   user,
-}) => (
-  <div className={cn("flex h-full w-full flex-col bg-card", className)}>
-    {logo && (
-      <div
-        className={cn(
-          "flex items-center p-4 border-b border-border",
-          isCollapsed && "justify-center"
-        )}
-      >
-        {logo}
-      </div>
-    )}
+}) => {
+  const handleLogout = async () => {
+    try {
+      await logoutApi();
+      window.location.href = "/";
+    } catch (error) {
+      console.error("Logout failed:", error);
+      window.location.href = "/";
+    }
+  };
 
-    <nav className="flex-1 space-y-4 p-4 overflow-y-auto">
-      {navigationGroups
-        ? navigationGroups.map((group, groupIndex) => (
-            <div key={`group-${groupIndex}`}>
-              {!isCollapsed && group.title && (
-                <h3 className="mb-2 px-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                  {group.title}
-                </h3>
-              )}
-              <div className="space-y-1">
-                {group.items.map((item, index) => (
-                  <SidebarItem
-                    key={`${item.href}-${index}`}
-                    item={item}
-                    isCollapsed={isCollapsed}
-                  />
-                ))}
+  return (
+    <div className={cn("flex h-full w-full flex-col bg-card", className)}>
+      {logo && (
+        <div
+          className={cn(
+            "flex items-center p-4 border-b border-border",
+            isCollapsed && "justify-center"
+          )}
+        >
+          {logo}
+        </div>
+      )}
+
+      <nav className="flex-1 space-y-4 p-4 overflow-y-auto">
+        {navigationGroups
+          ? navigationGroups.map((group, groupIndex) => (
+              <div key={`group-${groupIndex}`}>
+                {!isCollapsed && group.title && (
+                  <h3 className="mb-2 px-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                    {group.title}
+                  </h3>
+                )}
+                <div className="space-y-1">
+                  {group.items.map((item, index) => (
+                    <SidebarItem
+                      key={`${item.href}-${index}`}
+                      item={item}
+                      isCollapsed={isCollapsed}
+                    />
+                  ))}
+                </div>
+                {groupIndex < navigationGroups.length - 1 && (
+                  <Separator className="my-4" />
+                )}
               </div>
-              {groupIndex < navigationGroups.length - 1 && (
-                <Separator className="my-4" />
-              )}
-            </div>
-          ))
-        : navigation
-        ? navigation.map((item, index) => (
-            <SidebarItem
-              key={`${item.href}-${index}`}
-              item={item}
-              isCollapsed={isCollapsed}
-            />
-          ))
-        : null}
-    </nav>
+            ))
+          : navigation
+          ? navigation.map((item, index) => (
+              <SidebarItem
+                key={`${item.href}-${index}`}
+                item={item}
+                isCollapsed={isCollapsed}
+              />
+            ))
+          : null}
+      </nav>
 
-    {user && (
-      <div
-        className={cn(
-          "border-t border-border p-4",
-          isCollapsed && "text-center"
-        )}
-      >
+      {/* Logout Button */}
+      <div className="border-t border-border p-4">
         {isCollapsed ? (
-          <div className="flex justify-center">
-            <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-              <span className="text-xs font-medium text-primary">
-                {user.name
-                  .split(" ")
-                  .map(n => n[0])
-                  .join("")
-                  .slice(0, 2)}
-              </span>
-            </div>
-          </div>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center justify-center w-10 h-10 mx-auto rounded-lg text-destructive hover:bg-destructive/10 transition-colors"
+                >
+                  <SignOut size={20} />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="right">Sign Out</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         ) : (
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-              <span className="text-xs font-medium text-primary">
-                {user.name
-                  .split(" ")
-                  .map(n => n[0])
-                  .join("")
-                  .slice(0, 2)}
-              </span>
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="text-sm font-medium text-foreground truncate">
-                {user.name}
-              </div>
-              <div className="text-xs text-muted-foreground truncate">
-                {user.email}
-              </div>
-            </div>
-          </div>
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-3 w-full px-3 py-2 text-sm rounded-lg text-destructive hover:bg-destructive/10 transition-colors"
+          >
+            <SignOut size={20} />
+            <span>Sign Out</span>
+          </button>
         )}
       </div>
-    )}
-  </div>
-);
+
+      {user && (
+        <div
+          className={cn(
+            "border-t border-border p-4",
+            isCollapsed && "text-center"
+          )}
+        >
+          {isCollapsed ? (
+            <div className="flex justify-center">
+              <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                <span className="text-xs font-medium text-primary">
+                  {user.name
+                    .split(" ")
+                    .map(n => n[0])
+                    .join("")
+                    .slice(0, 2)}
+                </span>
+              </div>
+            </div>
+          ) : (
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                <span className="text-xs font-medium text-primary">
+                  {user.name
+                    .split(" ")
+                    .map(n => n[0])
+                    .join("")
+                    .slice(0, 2)}
+                </span>
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="text-sm font-medium text-foreground truncate">
+                  {user.name}
+                </div>
+                <div className="text-xs text-muted-foreground truncate">
+                  {user.email}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
 
 export default Sidebar;

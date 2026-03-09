@@ -22,11 +22,15 @@ const TimeEntriesDisplay: React.FC<TimeEntriesDisplayProps> = ({
   setEditEntryId,
   setNewEntryView,
 }) => {
-  const isoDate = dayjs(
-    selectedFullDate,
-    ["YYYY-MM-DD", "MM-DD-YYYY", "DD-MM-YYYY", "MM/DD/YYYY", "DD/MM/YYYY"],
-    true
-  ).format("YYYY-MM-DD");
+  const dateFormats = [
+    "YYYY-MM-DD",
+    "MM-DD-YYYY",
+    "DD-MM-YYYY",
+    "MM/DD/YYYY",
+    "DD/MM/YYYY",
+  ];
+  const parsedDate = dayjs(selectedFullDate, dateFormats, true);
+  const isoDate = parsedDate.format("YYYY-MM-DD");
   const entries = entryList[isoDate];
   const hasEntries = entries && entries.length > 0;
 
@@ -44,10 +48,10 @@ const TimeEntriesDisplay: React.FC<TimeEntriesDisplayProps> = ({
         <div className="flex items-center justify-between pb-6 mb-6 border-b-2 border-slate-200">
           <div>
             <h3 className="text-xl font-semibold tracking-tight text-slate-900">
-              {dayjs(selectedFullDate).format("dddd")}
+              {parsedDate.format("dddd")}
             </h3>
             <p className="text-base text-slate-600 mt-2 font-medium">
-              {dayjs(selectedFullDate).format("MMMM D, YYYY")}
+              {parsedDate.format("MMMM D, YYYY")}
             </p>
           </div>
           <div className="text-right bg-gradient-to-br from-blue-50 to-white rounded-2xl px-8 py-4 border border-blue-100">
@@ -106,7 +110,7 @@ const TimeEntriesDisplay: React.FC<TimeEntriesDisplayProps> = ({
           No time entries yet
         </h3>
         <p className="text-slate-500 mb-1">
-          {dayjs(selectedFullDate).format("dddd, MMMM D, YYYY")}
+          {parsedDate.format("dddd, MMMM D, YYYY")}
         </p>
         <p className="text-sm text-slate-400 mt-4">
           Click "Add Entry" to log your first time entry for this day

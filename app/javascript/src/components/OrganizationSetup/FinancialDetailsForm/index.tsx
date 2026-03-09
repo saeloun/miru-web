@@ -66,8 +66,8 @@ const FinancialDetailsForm = ({
           return (
             <Form>
               {/* Base Currency */}
-              <div className="field relative">
-                <label className="absolute -top-1 left-0 z-1 ml-3 origin-0 bg-white px-1 text-xsm font-medium text-miru-dark-purple-200 duration-300">
+              <div className="mb-2 xsm:mb-6">
+                <label className="mb-2 block text-sm font-medium text-miru-dark-purple-400">
                   Base Currency
                 </label>
                 <Select
@@ -86,7 +86,7 @@ const FinancialDetailsForm = ({
                   }}
                 >
                   <SelectTrigger
-                    className={`h-12 ${
+                    className={`h-10 ${
                       errors.base_currency ? "border-red-500" : ""
                     }`}
                   >
@@ -100,49 +100,46 @@ const FinancialDetailsForm = ({
                     ))}
                   </SelectContent>
                 </Select>
-                <div className="mx-0 mt-1 mb-5 block text-xs tracking-wider text-red-600">
-                  {errors.base_currency && touched.base_currency && (
-                    <div>{errors.base_currency.value}</div>
-                  )}
-                </div>
+                {errors.base_currency && touched.base_currency && (
+                  <div className="mt-1 text-xs tracking-wider text-red-600">
+                    {errors.base_currency.value}
+                  </div>
+                )}
               </div>
+
               {/* Standard Rate */}
-              <div className="field relative">
-                <div className="outline relative">
-                  <Field
-                    name="standard_rate"
-                    placeholder=" "
-                    step="0.01"
-                    type="number"
-                    className={`form__input block h-12 w-full appearance-none bg-transparent p-4 text-base focus-within:border-miru-han-purple-1000 ${
-                      errors.standard_rate &&
-                      touched.standard_rate &&
-                      "border-red-600 focus:border-red-600 focus:ring-red-600"
-                    } `}
-                    onChange={e => {
-                      setFieldValue("standard_rate", e.target.value);
-                      handleFormFieldValueChange(
-                        "standard_rate",
-                        Number(e.target.value)
-                      );
-                    }}
-                  />
-                  <label
-                    className="absolute top-0 z-1 origin-0 bg-white p-3 text-base font-medium text-miru-dark-purple-200 duration-300"
-                    htmlFor="standard_rate"
-                  >
-                    Standard Rate (per hour)
-                  </label>
-                </div>
-                <div className="mx-0 mt-1 mb-5 block text-xs tracking-wider text-red-600">
-                  {errors.standard_rate && touched.standard_rate && (
-                    <div>{errors.standard_rate}</div>
-                  )}
-                </div>
+              <div className="mb-2 xsm:mb-6">
+                <label className="mb-2 block text-sm font-medium text-miru-dark-purple-400">
+                  Standard Rate (per hour)
+                </label>
+                <Field
+                  name="standard_rate"
+                  placeholder="0.00"
+                  step="0.01"
+                  type="number"
+                  className={`flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${
+                    errors.standard_rate && touched.standard_rate
+                      ? "border-red-500"
+                      : ""
+                  }`}
+                  onChange={e => {
+                    setFieldValue("standard_rate", e.target.value);
+                    handleFormFieldValueChange(
+                      "standard_rate",
+                      Number(e.target.value)
+                    );
+                  }}
+                />
+                {errors.standard_rate && touched.standard_rate && (
+                  <div className="mt-1 text-xs tracking-wider text-red-600">
+                    {errors.standard_rate}
+                  </div>
+                )}
               </div>
-              {/* Fiscal Year End  */}
-              <div className="field relative">
-                <label className="absolute -top-1 left-0 z-1 ml-3 origin-0 bg-white px-1 text-xsm font-medium text-miru-dark-purple-200 duration-300">
+
+              {/* Fiscal Year End */}
+              <div className="mb-2 xsm:mb-6">
+                <label className="mb-2 block text-sm font-medium text-miru-dark-purple-400">
                   Fiscal Year End
                 </label>
                 <Select
@@ -158,7 +155,7 @@ const FinancialDetailsForm = ({
                   }}
                 >
                   <SelectTrigger
-                    className={`h-12 ${
+                    className={`h-10 ${
                       errors.year_end ? "border-red-500" : ""
                     }`}
                   >
@@ -172,15 +169,16 @@ const FinancialDetailsForm = ({
                     ))}
                   </SelectContent>
                 </Select>
-                <div className="mx-0 mt-1 mb-5 block text-xs tracking-wider text-red-600">
-                  {errors.year_end && touched.year_end && (
-                    <div>{errors.year_end.value}</div>
-                  )}
-                </div>
+                {errors.year_end && touched.year_end && (
+                  <div className="mt-1 text-xs tracking-wider text-red-600">
+                    {errors.year_end.value}
+                  </div>
+                )}
               </div>
+
               {/* Date Format */}
-              <div className="field relative">
-                <label className="absolute -top-1 left-0 z-1 ml-3 origin-0 bg-white px-1 text-xsm font-medium text-miru-dark-purple-200 duration-300">
+              <div className="mb-2 xsm:mb-6">
+                <label className="mb-2 block text-sm font-medium text-miru-dark-purple-400">
                   Date Format
                 </label>
                 <Select
@@ -199,7 +197,7 @@ const FinancialDetailsForm = ({
                   }}
                 >
                   <SelectTrigger
-                    className={`h-12 ${
+                    className={`h-10 ${
                       errors.date_format ? "border-red-500" : ""
                     }`}
                   >
@@ -216,79 +214,65 @@ const FinancialDetailsForm = ({
                     ))}
                   </SelectContent>
                 </Select>
-                <div className="mx-0 mt-1 mb-5 block text-xs tracking-wider text-red-600">
-                  {errors.date_format && touched.date_format && (
-                    <div>{errors.date_format.value}</div>
-                  )}
-                </div>
+                {errors.date_format && touched.date_format && (
+                  <div className="mt-1 text-xs tracking-wider text-red-600">
+                    {errors.date_format.value}
+                  </div>
+                )}
               </div>
-              {/* working hours and days */}
-              <div className="field relative">
-                <div className="outline relative">
-                  <Field
-                    name="working_days"
-                    placeholder=" "
-                    step="0.01"
-                    type="text"
-                    className={`form__input block h-12 w-full appearance-none bg-transparent p-4 text-base focus-within:border-miru-han-purple-1000 ${
-                      errors.working_days &&
-                      touched.working_days &&
-                      "border-red-600 focus:border-red-600 focus:ring-red-600"
-                    } `}
-                    onChange={e => {
-                      setFieldValue("working_days", e.target.value);
-                      handleFormFieldValueChange(
-                        "working_days",
-                        e.target.value
-                      );
-                    }}
-                  />
-                  <label
-                    className="absolute top-3 z-1 origin-0 bg-white px-1 text-sm font-medium text-miru-dark-purple-200 duration-300"
-                    htmlFor="working_days"
-                  >
-                    Working Days (per week)
-                  </label>
-                </div>
-                <div className="mx-0 mt-1 mb-5 block text-xs tracking-wider text-red-600">
-                  {errors.working_days && touched.working_days && (
-                    <div>{errors.working_days}</div>
-                  )}
-                </div>
+
+              {/* Working Days */}
+              <div className="mb-2 xsm:mb-6">
+                <label className="mb-2 block text-sm font-medium text-miru-dark-purple-400">
+                  Working Days (per week)
+                </label>
+                <Field
+                  name="working_days"
+                  placeholder="5"
+                  type="text"
+                  className={`flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${
+                    errors.working_days && touched.working_days
+                      ? "border-red-500"
+                      : ""
+                  }`}
+                  onChange={e => {
+                    setFieldValue("working_days", e.target.value);
+                    handleFormFieldValueChange("working_days", e.target.value);
+                  }}
+                />
+                {errors.working_days && touched.working_days && (
+                  <div className="mt-1 text-xs tracking-wider text-red-600">
+                    {errors.working_days}
+                  </div>
+                )}
               </div>
-              <div className="field relative">
-                <div className="outline relative">
-                  <Field
-                    name="working_hours"
-                    placeholder=" "
-                    step="0.01"
-                    type="text"
-                    className={`form__input block h-12 w-full appearance-none bg-transparent p-4 text-base focus-within:border-miru-han-purple-1000 ${
-                      errors.working_hours &&
-                      touched.working_hours &&
-                      "border-red-600 focus:border-red-600 focus:ring-red-600"
-                    } `}
-                    onChange={e => {
-                      setFieldValue("working_hours", e.target.value);
-                      handleFormFieldValueChange(
-                        "working_hours",
-                        e.target.value
-                      );
-                    }}
-                  />
-                  <label
-                    className="absolute top-3 z-1 origin-0 bg-white px-1 text-sm font-medium text-miru-dark-purple-200 duration-300"
-                    htmlFor="working_hours"
-                  >
-                    Working Hours (per week)
-                  </label>
-                </div>
-                <div className="mx-0 mt-1 mb-5 block text-xs tracking-wider text-red-600">
-                  {errors.working_hours && touched.working_hours && (
-                    <div>{errors.working_hours}</div>
-                  )}
-                </div>
+
+              {/* Working Hours */}
+              <div className="mb-2 xsm:mb-6">
+                <label className="mb-2 block text-sm font-medium text-miru-dark-purple-400">
+                  Working Hours (per week)
+                </label>
+                <Field
+                  name="working_hours"
+                  placeholder="40"
+                  type="text"
+                  className={`flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${
+                    errors.working_hours && touched.working_hours
+                      ? "border-red-500"
+                      : ""
+                  }`}
+                  onChange={e => {
+                    setFieldValue("working_hours", e.target.value);
+                    handleFormFieldValueChange("working_hours", e.target.value);
+                  }}
+                />
+                {errors.working_hours && touched.working_hours && (
+                  <div className="mt-1 text-xs tracking-wider text-red-600">
+                    {errors.working_hours}
+                  </div>
+                )}
               </div>
+
               {/* Save Org Details Button */}
               <div className="mb-3">
                 <button

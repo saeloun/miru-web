@@ -32,7 +32,7 @@ const CustomCheckbox: React.FC<CustomCheckboxProps> = ({
   <div className={classnames(wrapperClassName)}>
     <div
       className={classnames(
-        "grid grid-cols-1 grid-rows-1 content-center justify-items-center"
+        "relative grid grid-cols-1 grid-rows-1 content-center justify-items-center"
       )}
     >
       <input
@@ -41,14 +41,14 @@ const CustomCheckbox: React.FC<CustomCheckboxProps> = ({
         name={name}
         type="checkbox"
         value={checkboxValue}
-        className={`custom__checkbox col-start-1 row-start-1 grid ${
+        className={`custom__checkbox col-start-1 row-start-1 ${
           isUpdatedDesign ? "h-4 w-4" : "h-3 w-3 md:h-5 md:w-5"
-        } cursor-pointer opacity-0`}
+        } relative z-10 cursor-pointer opacity-0`}
         onChange={handleCheck}
         onClick={handleOnClick}
       />
       <div
-        className={`col-start-1 row-start-1 ${
+        className={`pointer-events-none col-start-1 row-start-1 ${
           isUpdatedDesign ? "mr-0 h-4 w-4" : "mr-2 h-3 w-3 md:h-5 md:w-5"
         } grid flex-shrink-0 content-center justify-items-center rounded-sm border border-miru-han-purple-1000 bg-white focus-within:border-blue-500 md:border-2`}
       >

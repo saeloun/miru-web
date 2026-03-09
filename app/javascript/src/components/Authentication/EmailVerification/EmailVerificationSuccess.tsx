@@ -3,11 +3,13 @@ import React from "react";
 import MiruLogoWatermark from "common/MiruLogoWatermark";
 import { GreenCheckCircleIcon } from "miruIcons";
 import { useNavigate } from "react-router-dom";
+import { useUserContext } from "context/UserContext";
 
 const EmailVerificationSuccess = () => {
   const navigate = useNavigate();
+  const { user } = useUserContext();
 
-  const redirectToLoginPage = () => {
+  const handleContinue = () => {
     navigate("/");
   };
 
@@ -36,7 +38,7 @@ const EmailVerificationSuccess = () => {
           <button
             className="form__button cursor-pointer whitespace-nowrap"
             type="submit"
-            onClick={redirectToLoginPage}
+            onClick={handleContinue}
           >
             Continue
           </button>

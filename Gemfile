@@ -195,6 +195,7 @@ group :development do
   gem "annotaterb"
 
   gem "letter_opener"
+  gem "nkf"
 end
 
 group :test, :ci do
