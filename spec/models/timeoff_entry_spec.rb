@@ -111,5 +111,54 @@ RSpec.describe TimeoffEntry, type: :model do
     it { is_expected.to belong_to(:user) }
     it { is_expected.to belong_to(:leave_type).optional(true) }
     it { is_expected.to belong_to(:holiday_info).optional(true) }
+    it { is_expected.to belong_to(:custom_leave).optional(true) }
+  end
+
+  describe "custom leave validations" do
+    let(:leave) { create(:leave, company:, year: Date.current.year) }
+    let(:custom_leave) { create(:custom_leave, leave:, name: "Special Leave", allocation_value: 5) }
+
+    it "is valid with only custom_leave_id" do
+      timeoff_entry = build(
+        :timeoff_entry,
+        user:,
+        leave_type: nil,
+        holiday_info: nil,
+        custom_leave:,
+        duration: 480,
+        leave_date: Date.current
+      )
+      expect(timeoff_entry).to be_valid
+    end
+
+    it "is not valid with both leave_type_id and custom_leave_id" do
+      leave_type = create(:leave_type, leave:)
+      timeoff_entry = build(
+        :timeoff_entry,
+        user:,
+        leave_type:,
+        custom_leave:,
+        duration: 480,
+        leave_date: Date.current
+      )
+      expect(timeoff_entry).not_to be_valid
+      expect(timeoff_entry.errors[:base]).to include("Choose only one of leave type, holiday info, or custom leave")
+    end
+
+    it "is not valid without any leave type, holiday info, or custom leave" do
+      timeoff_entry = build(
+        :timeoff_entry,
+        user:,
+        leave_type: nil,
+        holiday_info: nil,
+        custom_leave: nil,
+        duration: 480,
+        leave_date: Date.current
+      )
+      expect(timeoff_entry).not_to be_valid
+      expect(timeoff_entry.errors[:base]).to include(
+        "Either leave type, holiday info, or custom leave must be present"
+      )
+    end
   end
 end
