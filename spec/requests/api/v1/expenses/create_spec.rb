@@ -8,9 +8,9 @@ RSpec.describe "Api::V1::Expense#create", type: :request do
   let(:project) { create(:project, client: client_1) }
   let(:expense_category) { create(:expense_category, company:) }
   let(:vendor) { create(:vendor, company:) }
-  let(:book_keeper) { create(:user, current_workspace_id: company.id) }
   let(:admin) { create(:user, current_workspace_id: company.id) }
   let(:employee) { create(:user, current_workspace_id: company.id) }
+  let(:book_keeper) { create(:user, current_workspace_id: company.id) }
 
   before do
     create(:employment, company:, user: book_keeper)
@@ -41,6 +41,7 @@ RSpec.describe "Api::V1::Expense#create", type: :request do
 
       it "creates expense entry in the db" do
         expect(json_response["id"]).to eq(Expense.last.id)
+        expect(Expense.last.user).to eq(admin)
       end
 
       it "returns expected data in the response" do
@@ -62,11 +63,19 @@ RSpec.describe "Api::V1::Expense#create", type: :request do
     before do
       sign_in employee
 
-      send_request :post, api_v1_expenses_path(expense: {})
+      send_request :post, api_v1_expenses_path(expense: {
+        amount: 12.25,
+        date: Date.current.iso8601,
+        description: "Cab reimbursement",
+        expense_type: "business",
+        expense_category_id: expense_category.id,
+        vendor_id: vendor.id
+      })
     end
 
-    it "is not be permitted to create a expense" do
-      expect(response).to have_http_status(:forbidden)
+    it "creates the employee expense" do
+      expect(response).to have_http_status(:ok)
+      expect(Expense.last.user).to eq(employee)
     end
   end
 
@@ -74,11 +83,19 @@ RSpec.describe "Api::V1::Expense#create", type: :request do
     before do
       sign_in book_keeper
 
-      send_request :post, api_v1_expenses_path(expense: {})
+      send_request :post, api_v1_expenses_path(expense: {
+        amount: 24.50,
+        date: Date.current.iso8601,
+        description: "Team lunch reimbursement",
+        expense_type: "business",
+        expense_category_id: expense_category.id,
+        vendor_id: vendor.id
+      })
     end
 
-    it "is not be permitted to create a expense" do
-      expect(response).to have_http_status(:forbidden)
+    it "is permitted to create an expense" do
+      expect(response).to have_http_status(:ok)
+      expect(Expense.last.user).to eq(book_keeper)
     end
   end
 

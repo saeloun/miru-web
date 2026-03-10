@@ -8,7 +8,8 @@ RSpec.describe "Api::V1::Expense#show", type: :request do
   let(:project) { create(:project, client: client_1) }
   let(:expense_category) { create(:expense_category, company:) }
   let(:vendor) { create(:vendor, company:) }
-  let(:expense) { create(:expense, :with_receipts, company:, expense_category:, vendor:) }
+  let(:expense) { create(:expense, :with_receipts, company:, expense_category:, vendor:, user: admin) }
+  let(:employee_expense) { create(:expense, company:, expense_category:, vendor:, user: employee) }
 
   let(:book_keeper) { create(:user, current_workspace_id: company.id) }
   let(:admin) { create(:user, current_workspace_id: company.id) }
@@ -57,11 +58,12 @@ RSpec.describe "Api::V1::Expense#show", type: :request do
   context "when the user is an employee" do
     before do
       sign_in employee
-      send_request :get, api_v1_expense_path(expense)
+      send_request :get, api_v1_expense_path(employee_expense)
     end
 
-    it "is not be permitted to create a expense" do
-      expect(response).to have_http_status(:forbidden)
+    it "is permitted to view their own expense" do
+      expect(response).to have_http_status(:ok)
+      expect(json_response["id"]).to eq(employee_expense.id)
     end
   end
 
@@ -71,8 +73,8 @@ RSpec.describe "Api::V1::Expense#show", type: :request do
       send_request :get, api_v1_expense_path(expense)
     end
 
-    it "is not be permitted to create a expense" do
-      expect(response).to have_http_status(:forbidden)
+    it "is permitted to view expenses" do
+      expect(response).to have_http_status(:ok)
     end
   end
 

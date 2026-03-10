@@ -1,24 +1,5 @@
 # frozen_string_literal: true
 
-# == Schema Information
-#
-# Table name: exchange_rates
-#
-#  id            :bigint           not null, primary key
-#  date          :date             not null
-#  from_currency :string           not null
-#  rate          :decimal(18, 10)  not null
-#  source        :string           default("manual")
-#  to_currency   :string           not null
-#  created_at    :datetime         not null
-#  updated_at    :datetime         not null
-#
-# Indexes
-#
-#  idx_exchange_rates_unique                              (from_currency,to_currency,date) UNIQUE
-#  index_exchange_rates_on_date                           (date)
-#  index_exchange_rates_on_from_currency_and_to_currency  (from_currency,to_currency)
-#
 class ExchangeRate < ApplicationRecord
   validates :from_currency, presence: true
   validates :to_currency, presence: true

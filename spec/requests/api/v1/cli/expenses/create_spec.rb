@@ -30,9 +30,10 @@ RSpec.describe "Api::V1::Cli::Expenses#create", type: :request do
     expect(response).to have_http_status(:created)
     expect(json_response["notice"]).to eq(I18n.t("expenses.create"))
     expect(json_response.dig("expense", "category_name")).to eq("Meals")
+    expect(Expense.last.user).to eq(user)
   end
 
-  it "returns forbidden for an employee" do
+  it "creates an expense for an employee" do
     user.add_role :employee, company
 
     send_request :post, api_v1_cli_expenses_path, params: {
@@ -44,6 +45,7 @@ RSpec.describe "Api::V1::Cli::Expenses#create", type: :request do
       }
     }, headers: cli_auth_headers(cli_token)
 
-    expect(response).to have_http_status(:forbidden)
+    expect(response).to have_http_status(:created)
+    expect(Expense.last.user).to eq(user)
   end
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_03_09_221000) do
+ActiveRecord::Schema[8.0].define(version: 2026_03_10_173200) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -335,10 +335,12 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_09_221000) do
     t.bigint "vendor_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "user_id"
     t.index ["company_id"], name: "index_expenses_on_company_id"
     t.index ["description"], name: "index_expenses_on_description_trgm", opclass: :gin_trgm_ops, using: :gin
     t.index ["expense_category_id"], name: "index_expenses_on_expense_category_id"
     t.index ["expense_type"], name: "index_expenses_on_expense_type"
+    t.index ["user_id"], name: "index_expenses_on_user_id"
     t.index ["vendor_id"], name: "index_expenses_on_vendor_id"
   end
 
@@ -896,6 +898,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_09_221000) do
   add_foreign_key "expense_categories", "companies"
   add_foreign_key "expenses", "companies"
   add_foreign_key "expenses", "expense_categories"
+  add_foreign_key "expenses", "users"
   add_foreign_key "expenses", "vendors"
   add_foreign_key "holiday_infos", "holidays"
   add_foreign_key "holidays", "companies", validate: false

@@ -83,9 +83,6 @@ GEM
       activesupport (>= 5.2)
       device_detector
       safely_block (>= 0.2.1)
-    annotaterb (4.22.0)
-      activerecord (>= 6.0.0)
-      activesupport (>= 6.0.0)
     ast (2.4.3)
     attr_extras (7.1.0)
     audited (5.8.0)
@@ -716,7 +713,6 @@ DEPENDENCIES
   active_interaction
   activerecord-import
   ahoy_matey
-  annotaterb
   audited (~> 5.0)
   aws-sdk-s3
   bootsnap (>= 1.18.0)

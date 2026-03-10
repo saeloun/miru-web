@@ -12,6 +12,7 @@ RSpec.describe "Api::V1::Cli::Expenses#index", type: :request do
     create(
       :expense,
       company:,
+      user: user,
       expense_category: category,
       vendor: vendor,
       description: "Flight to client workshop",
@@ -34,11 +35,20 @@ RSpec.describe "Api::V1::Cli::Expenses#index", type: :request do
     expect(json_response["categories"]).to contain_exactly(include("id" => category.id, "name" => "Travel"))
   end
 
-  it "returns forbidden for an employee" do
+  it "returns only the employee's own expenses" do
     user.add_role :employee, company
+    create(
+      :expense,
+      company:,
+      expense_category: category,
+      vendor: vendor,
+      description: "Another team expense",
+      amount: 18.25
+    )
 
     send_request :get, api_v1_cli_expenses_path, headers: cli_auth_headers(cli_token)
 
-    expect(response).to have_http_status(:forbidden)
+    expect(response).to have_http_status(:ok)
+    expect(json_response["expenses"]).to contain_exactly(include("id" => expense.id))
   end
 end

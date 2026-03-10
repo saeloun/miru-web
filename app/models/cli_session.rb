@@ -1,31 +1,5 @@
 # frozen_string_literal: true
 
-# == Schema Information
-#
-# Table name: cli_sessions
-#
-#  id           :bigint           not null, primary key
-#  expires_at   :datetime         not null
-#  last_used_at :datetime
-#  revoked_at   :datetime
-#  token_digest :string           not null
-#  created_at   :datetime         not null
-#  updated_at   :datetime         not null
-#  company_id   :bigint           not null
-#  user_id      :bigint           not null
-#
-# Indexes
-#
-#  index_cli_sessions_on_company_id    (company_id)
-#  index_cli_sessions_on_expires_at    (expires_at)
-#  index_cli_sessions_on_token_digest  (token_digest) UNIQUE
-#  index_cli_sessions_on_user_id       (user_id)
-#
-# Foreign Keys
-#
-#  fk_rails_...  (company_id => companies.id)
-#  fk_rails_...  (user_id => users.id)
-#
 class CliSession < ApplicationRecord
   SESSION_LIFETIME = 7.days
 

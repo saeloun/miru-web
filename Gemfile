@@ -189,8 +189,6 @@ group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem "web-console", ">= 4.1.0"
 
-  # Use AnnotateRb instead of annotate for Rails 8 compatibility
-  gem "annotaterb"
 
   gem "letter_opener"
   gem "nkf"

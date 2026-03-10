@@ -6,7 +6,7 @@ class Api::V1::ExpensesController < ApplicationController
   def index
     authorize Expense
 
-    expenses = Expenses::FetchService.new(current_company, params).process
+    expenses = Expenses::FetchService.new(current_company, current_user, params).process
 
     render :index, locals: expenses
   end
@@ -14,7 +14,7 @@ class Api::V1::ExpensesController < ApplicationController
   def create
     authorize Expense
 
-    expense = current_company.expenses.create!(expense_params)
+    expense = current_company.expenses.create!(expense_params.merge(user: current_user))
 
     render :create, locals: {
       expense: Expense::ShowPresenter.new(expense).process
@@ -52,6 +52,6 @@ class Api::V1::ExpensesController < ApplicationController
     end
 
     def set_expense
-      @expense = Expense.find(params[:id])
+      @expense = current_company.expenses.find(params[:id])
     end
 end

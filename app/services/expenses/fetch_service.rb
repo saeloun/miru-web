@@ -1,12 +1,13 @@
 # frozen_string_literal: true
 
 class Expenses::FetchService
-  attr_reader :params, :current_company
+  attr_reader :params, :current_company, :current_user
   attr_accessor :expenses
 
-  def initialize(current_company, params)
+  def initialize(current_company, current_user, params)
     @params = params
     @current_company = current_company
+    @current_user = current_user
   end
 
   def process
@@ -26,7 +27,7 @@ class Expenses::FetchService
       filters = Expenses::FiltersService.new(current_company, params)
       filters.process
 
-      expenses = current_company.expenses
+      expenses = base_scope
 
       # Apply search if present
       if filters.search_term.present?
@@ -67,6 +68,16 @@ class Expenses::FetchService
       expenses = expenses.limit(per_page).offset((page - 1) * per_page)
 
       expenses
+    end
+
+    def base_scope
+      expenses = current_company.expenses
+
+      return expenses if current_user.has_cached_role?(:owner, current_company) ||
+        current_user.has_cached_role?(:admin, current_company) ||
+        current_user.has_cached_role?(:book_keeper, current_company)
+
+      expenses.where(user_id: current_user.id)
     end
 
     def pagination_details
