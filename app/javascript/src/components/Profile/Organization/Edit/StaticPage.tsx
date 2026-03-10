@@ -145,7 +145,6 @@ export const StaticPage = ({
                 defaultCountry="US"
                 flags={flags}
                 initialValueFormat="national"
-                inputClassName="form__input block w-full appearance-none border-0 bg-background px-0 text-base border-transparent focus:border-0 focus:border-transparent focus:ring-0 border-border w-full border-bottom-none "
                 value={companyPhone || ""}
                 onChange={e => handleChangeCompanyDetails(e, "companyPhone")}
               />

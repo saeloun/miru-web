@@ -16,8 +16,8 @@ export const customStyles = (
       minHeight: 48,
       padding: "0",
       border: "1px solid #CDD6DF",
-      "border-color": "#CDD6DF",
-      fontWight: 500,
+      borderColor: "#CDD6DF",
+      fontWeight: 500,
     };
   },
   menu: provided => ({

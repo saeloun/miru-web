@@ -322,7 +322,6 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                       onChange={value =>
                         handleChangeCompanyDetails(value, "companyPhone")
                       }
-                      inputClassName="w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
                     />
                   </FormField>
 
@@ -807,23 +806,6 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
       </div>
 
       {/* Add custom styles for phone input */}
-      <style>{`
-        .phone-input-clean .PhoneInputInput {
-          width: 100%;
-          padding: 0.5rem 0.75rem;
-          border: 1px solid #e5e7eb;
-          border-radius: 0.375rem;
-          font-size: 0.875rem;
-        }
-        .phone-input-clean .PhoneInputInput:focus {
-          outline: none;
-          ring: 2px;
-          ring-color: #e5e7eb;
-        }
-        .phone-input-clean .PhoneInputCountry {
-          margin-right: 0.5rem;
-        }
-      `}</style>
     </div>
   );
 };

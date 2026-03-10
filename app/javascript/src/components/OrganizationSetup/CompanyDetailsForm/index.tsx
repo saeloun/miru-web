@@ -275,7 +275,6 @@ const CompanyDetailsForm = ({
                     className="input-phone-number w-full border-transparent focus:border-transparent focus:ring-0"
                     flags={flags}
                     id="business_phone"
-                    inputClassName="block w-full appearance-none bg-transparent border-0 focus:border-0 px-0 text-sm focus:ring-0 focus:outline-none"
                     name="business_phone"
                     value={values.business_phone}
                     onChange={phone => {
