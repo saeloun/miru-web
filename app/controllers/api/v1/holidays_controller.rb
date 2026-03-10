@@ -12,8 +12,12 @@ class Api::V1::HolidaysController < Api::V1::ApplicationController
     authorize Holiday
 
     year = params[:year]
-    BulkHolidayService.new(year, holiday_params, current_company).process
-    render json: { notice: "Holiday Info updated successfully" }, status: 200
+    service = BulkHolidayService.new(year, holiday_params, current_company)
+    if service.process
+      render json: { notice: "Holiday Info updated successfully" }, status: 200
+    else
+      render json: { field_errors: service.errors }, status: :unprocessable_entity
+    end
   end
 
   private

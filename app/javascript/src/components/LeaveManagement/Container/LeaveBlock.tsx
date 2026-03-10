@@ -10,14 +10,33 @@ import {
 } from "components/Profile/Organization/Leaves/utils";
 import { minToHHMM } from "helpers";
 
+// Default color for custom leaves
+const CUSTOM_LEAVE_COLOR = { value: "#9B59B6", label: "custom" };
+const CUSTOM_LEAVE_ICON = { icon: null, value: "custom" };
+
 const LeaveBlock = ({ leaveType, selectedLeaveType, setSelectedLeaveType }) => {
   const { icon, color, name, netDuration, type, category, label } = leaveType;
 
-  const leaveIcon =
-    type == "leave" ? generateLeaveIcon(icon) : generateHolidayIcon(icon);
+  const getLeaveIcon = () => {
+    if (type === "custom_leave") {
+      return generateLeaveIcon("custom") || CUSTOM_LEAVE_ICON;
+    }
 
-  const leaveColor =
-    type == "leave" ? generateLeaveColor(color) : generateHolidayColor(color);
+    return type === "leave"
+      ? generateLeaveIcon(icon)
+      : generateHolidayIcon(icon);
+  };
+
+  const getLeaveColor = () => {
+    if (type === "custom_leave" || type === "leave") {
+      return generateLeaveColor(color) || CUSTOM_LEAVE_COLOR;
+    }
+
+    return generateHolidayColor(color) || CUSTOM_LEAVE_COLOR;
+  };
+
+  const leaveIcon = getLeaveIcon();
+  const leaveColor = getLeaveColor();
 
   const formattedDuration =
     category == "national" || category == "optional"
@@ -28,13 +47,23 @@ const LeaveBlock = ({ leaveType, selectedLeaveType, setSelectedLeaveType }) => {
 
   const isSelected = selectedLeaveType?.name === name;
 
+  const getSelectedText = () => {
+    if (!isSelected) return name;
+
+    if (category === "national" || category === "optional") {
+      return `${name} Utilized`;
+    }
+
+    return `${name} Available`;
+  };
+
+  const displayName = getSelectedText();
+
   return (
     <Card
       className={cn(
         "cursor-pointer transition-all hover:shadow-md border",
-        isSelected
-          ? "border-miru-han-purple-400 bg-miru-han-purple-100/30"
-          : "border-gray-200 bg-white"
+        isSelected ? "border-primary bg-primary/5" : "border-border bg-card"
       )}
       onClick={() => setSelectedLeaveType(leaveType)}
     >
@@ -51,9 +80,9 @@ const LeaveBlock = ({ leaveType, selectedLeaveType, setSelectedLeaveType }) => {
               >
                 {leaveIcon?.icon}
               </div>
-              <h3 className="font-medium text-gray-900">{name}</h3>
+              <h3 className="font-medium text-foreground">{displayName}</h3>
             </div>
-            <p className="text-2xl font-semibold text-gray-900">
+            <p className="text-2xl font-semibold text-foreground">
               {formattedDuration}
             </p>
           </div>

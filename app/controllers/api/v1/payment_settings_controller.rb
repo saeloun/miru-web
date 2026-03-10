@@ -12,9 +12,11 @@ class Api::V1::PaymentSettingsController < Api::V1::ApplicationController
   def connect_stripe
     authorize :connect_stripe, policy_class: PaymentSettingsPolicy
 
-    StripeConnectedAccount.create!({ company: current_company }) if stripe_connected_account.nil?
+    account = StripeConnectedAccount.find_or_create_by!(company: current_company)
 
-    render :connect_stripe, locals: { stripe_connected_account: }
+    render :connect_stripe, locals: { stripe_connected_account: account }
+  rescue ActiveRecord::RecordNotUnique
+    render :connect_stripe, locals: { stripe_connected_account: current_company.reload.stripe_connected_account }
   end
 
   def destroy
