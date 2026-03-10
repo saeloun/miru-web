@@ -156,7 +156,6 @@ const ClientForm = ({
                   className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
                   flags={flags}
                   id="phone"
-                  inputClassName="!border-0 !outline-none !p-0 !m-0 !h-auto !bg-transparent"
                   name="phone"
                   value={values.phone}
                   onChange={phone => setFieldValue("phone", phone)}

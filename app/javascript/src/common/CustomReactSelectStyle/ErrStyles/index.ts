@@ -5,7 +5,7 @@ export const customErrStyles = isDesktopView => ({
     minHeight: 48,
     padding: "0",
     border: "1px solid #E04646",
-    "border-color": "E04646",
+    borderColor: "#E04646",
   }),
   menu: provided => ({
     ...provided,

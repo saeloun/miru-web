@@ -170,7 +170,6 @@ export const ModernStaticPage = ({
               onChange={value =>
                 handleChangeCompanyDetails(value, "companyPhone")
               }
-              inputClassName="w-full px-3 py-2 border border-border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-ring/40"
             />
           </div>
         </InputWrapper>

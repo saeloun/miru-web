@@ -208,7 +208,6 @@ const EditProfilePage = ({
                     <PhoneInput
                       className="input-phone-number w-full border-transparent focus:border-transparent focus:ring-0 font-geist-regular"
                       flags={flags}
-                      inputclassname="form__input block w-full appearance-none bg-transparent border-0 focus:border-0 px-0 text-sm border-transparent focus:border-transparent focus:ring-0 outline-none font-geist-regular"
                       value={
                         personalDetails.phone_number
                           ? personalDetails.phone_number

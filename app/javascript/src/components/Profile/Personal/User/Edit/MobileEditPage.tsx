@@ -188,7 +188,6 @@ const MobileEditDetails = ({
               <PhoneInput
                 className="input-phone-number w-full border-transparent focus:border-transparent focus:ring-0"
                 flags={flags}
-                inputclassname="form__input block w-full appearance-none border-0 bg-background p-0 text-sm border-transparent focus:border-0 focus:border-transparent focus:ring-0 border-border w-full border-bottom-none "
                 value={
                   personalDetails.phone_number
                     ? personalDetails.phone_number

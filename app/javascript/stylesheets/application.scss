@@ -823,6 +823,45 @@
   box-shadow: none !important;
 }
 
+.input-phone-number .PhoneInputInput {
+  width: 100%;
+  appearance: none;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  color: inherit;
+}
+
+.phone-input-clean,
+.phone-input-modern {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.phone-input-clean .PhoneInputInput,
+.phone-input-modern .PhoneInputInput {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) - 2px);
+  background: var(--background);
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  color: var(--foreground);
+}
+
+.phone-input-clean .PhoneInputInput:focus,
+.phone-input-modern .PhoneInputInput:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px color-mix(in oklab, var(--ring) 40%, transparent);
+}
+
+.phone-input-clean .PhoneInputCountry,
+.phone-input-modern .PhoneInputCountry {
+  margin-right: 0.5rem;
+}
+
 .profile-setting-image:hover img {
   opacity: 0.3;
 }

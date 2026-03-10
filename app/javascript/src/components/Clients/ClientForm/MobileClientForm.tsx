@@ -153,7 +153,6 @@ const MobileClientForm = ({
                           className="input-phone-number w-full border-transparent focus:border-transparent focus:ring-0"
                           flags={flags}
                           id="phone"
-                          inputClassName="form__input block w-full appearance-none bg-white border-0 focus:border-0 px-0 text-base border-transparent focus:border-transparent focus:ring-0 border-border w-full border-bottom-none"
                           name="phone"
                           smartCaret={false}
                           value={formType == "edit" ? client.phone : ""}
