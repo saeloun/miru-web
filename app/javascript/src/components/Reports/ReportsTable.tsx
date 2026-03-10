@@ -25,7 +25,6 @@ import {
   CreditCard,
 } from "phosphor-react";
 import { cn } from "../../lib/utils";
-import { useUserContext } from "../../context/UserContext";
 
 interface ReportCard {
   id: string;
@@ -126,7 +125,6 @@ const reportCards: ReportCard[] = [
 
 const ReportsTable: React.FC = () => {
   const navigate = useNavigate();
-  const { isAdminUser, company } = useUserContext();
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
 
   const filteredReports =
@@ -274,7 +272,7 @@ const ReportsTable: React.FC = () => {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="text-gray-600 hover:text-gray-900"
+                        className="text-muted-foreground hover:text-foreground"
                         onClick={e => {
                           e.stopPropagation();
                           // Handle export
@@ -295,23 +293,26 @@ const ReportsTable: React.FC = () => {
       {/* Coming Soon Reports */}
       {comingSoonReports.length > 0 && (
         <div className="space-y-4">
-          <h2 className="text-lg font-semibold text-gray-900">Coming Soon</h2>
+          <h2 className="text-lg font-semibold text-foreground">Coming Soon</h2>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {comingSoonReports.map(report => {
               const Icon = report.icon;
 
               return (
-                <Card key={report.id} className="border-gray-200 opacity-60">
+                <Card
+                  key={report.id}
+                  className="border-border bg-muted/30 opacity-70"
+                >
                   <CardHeader>
                     <div className="flex items-start justify-between">
-                      <div className="p-2 rounded-lg bg-gray-100">
-                        <Icon size={24} className="text-gray-400" />
+                      <div className="rounded-lg bg-muted p-2">
+                        <Icon size={24} className="text-muted-foreground" />
                       </div>
-                      <Badge className="bg-gray-100 text-gray-600">
+                      <Badge className="border-border bg-muted text-muted-foreground hover:bg-muted">
                         Coming Soon
                       </Badge>
                     </div>
-                    <CardTitle className="text-lg mt-4 text-gray-600">
+                    <CardTitle className="mt-4 text-lg text-foreground/80">
                       {report.title}
                     </CardTitle>
                     <CardDescription className="text-sm mt-2">
@@ -326,7 +327,7 @@ const ReportsTable: React.FC = () => {
       )}
 
       {/* Quick Actions */}
-      <Card className="border-gray-200 bg-gray-50">
+      <Card className="border-border bg-muted/30">
         <CardHeader>
           <CardTitle>Quick Actions</CardTitle>
           <CardDescription>
@@ -337,7 +338,7 @@ const ReportsTable: React.FC = () => {
           <div className="grid gap-3 md:grid-cols-3">
             <Button
               variant="outline"
-              className="justify-start bg-white"
+              className="justify-start border-border bg-card hover:bg-accent"
               onClick={() => navigate("/reports/time-entry")}
             >
               <Clock size={20} className="mr-2" />
@@ -345,7 +346,7 @@ const ReportsTable: React.FC = () => {
             </Button>
             <Button
               variant="outline"
-              className="justify-start bg-white"
+              className="justify-start border-border bg-card hover:bg-accent"
               onClick={() => navigate("/reports/outstanding-overdue-invoices")}
             >
               <Receipt size={20} className="mr-2" />
@@ -353,7 +354,7 @@ const ReportsTable: React.FC = () => {
             </Button>
             <Button
               variant="outline"
-              className="justify-start bg-white"
+              className="justify-start border-border bg-card hover:bg-accent"
               onClick={() => navigate("/reports/revenue-by-client")}
             >
               <TrendUp size={20} className="mr-2" />
