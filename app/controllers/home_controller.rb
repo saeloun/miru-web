@@ -6,12 +6,14 @@ class HomeController < ApplicationController
   before_action :set_google_oauth_success
 
   def index
-    # Allow all users including super_admins to use the main app
-    # They can access admin panel via /admin if needed
-    respond_to do |format|
-      format.html { render }
-      format.json { render json: { status: "ok", authenticated: user_signed_in? } }
-      format.js { head 404 }  # Service worker requests
+    if current_user && current_user.has_role?(:super_admin)
+      redirect_to admin_root_path
+    else
+      respond_to do |format|
+        format.html { render }
+        format.json { render json: { status: "ok", authenticated: user_signed_in? } }
+        format.js { head 404 }
+      end
     end
   end
 

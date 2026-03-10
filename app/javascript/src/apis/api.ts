@@ -39,22 +39,26 @@ class ApiHandler {
           const token = getValueFromLocalStorage("authToken");
           if (token) {
             clearCredentialsFromLocalStorage();
-            Toastr.error(
-              error.response?.data?.error ||
-                "Session expired. Please login again."
-            );
-            setTimeout(() => (window.location.href = "/"), 500);
           }
+
+          Toastr.error(
+            error.response?.data?.error ||
+              "Session expired. Please login again."
+          );
+          setTimeout(() => (window.location.href = "/"), 500);
 
           return Promise.reject(error);
         }
 
-        if (error.response?.status !== 401) {
+        // Skip generic toast if field_errors are present and non-empty (handled by the component)
+        const fieldErrors = error.response?.data?.field_errors;
+        if (!fieldErrors || Object.keys(fieldErrors).length === 0) {
           Toastr.error(
             error.response?.data?.errors ||
               error.response?.data?.error ||
               error.response?.data?.notice ||
               error.message ||
+              error.notice ||
               (error as any).notice ||
               "Something went wrong!"
           );

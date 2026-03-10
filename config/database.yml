@@ -5,6 +5,7 @@ default: &default
   pool: <%= ENV.fetch("DB_POOL") { ENV.fetch("RAILS_MAX_THREADS", 3) } %>
   user: <%= ENV.fetch("DB_USER") { "" } %>
   password: <%= ENV.fetch("DB_PASS") { "" } %>
+  gssencmode: disable
 
 development:
   <<: *default
@@ -19,3 +20,6 @@ production:
   encoding: unicode
   pool: <%= ENV.fetch("DB_POOL") { ENV.fetch("RAILS_MAX_THREADS", 3) } %>
   url: <%= ENV['DATABASE_URL'] %>
+  checkout_timeout: 10
+  reaping_frequency: 10
+  idle_timeout: 300

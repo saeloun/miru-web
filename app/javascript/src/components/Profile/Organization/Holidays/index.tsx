@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 
 import { holidaysApi } from "apis/api";
 import Loader from "common/Loader/index";
@@ -6,6 +6,7 @@ import { useUserContext } from "context/UserContext";
 import { getYear } from "date-fns";
 import { useOutsideClick } from "helpers";
 import { useNavigate } from "react-router-dom";
+import { Toastr } from "StyledComponents";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import ModernHolidaysEditor from "./ModernHolidaysEditor";
@@ -16,14 +17,12 @@ const Holidays = () => {
   const [isDetailUpdated, setIsDetailUpdated] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [currentYear, setCurrentYear] = useState<number>(getYear(new Date()));
-  // Calendar removed
   const [showDatePicker, setShowDatePicker] = useState<any>({
     visibility: false,
     index: 0,
   });
   const wrapperRef = useRef(null);
   const optionalWrapperRef = useRef(null);
-  // const modalWrapperRef = useRef(null);
 
   const [enableOptionalHolidays, setEnableOptionalHolidays] =
     useState<any>(false);
@@ -46,6 +45,14 @@ const Holidays = () => {
   const [currentYearOptionalHolidays, setCurrentYearOptionalHolidays] =
     useState([]);
 
+  const [holidayErrors, setHolidayErrors] = useState<
+    Record<number, Record<string, string[]>>
+  >({});
+
+  const [optionalHolidayErrors, setOptionalHolidayErrors] = useState<
+    Record<number, Record<string, string[]>>
+  >({});
+
   const { isDesktop, company } = useUserContext();
   const dateFormat = companyDateFormat(company?.date_format);
 
@@ -65,75 +72,76 @@ const Holidays = () => {
     });
   });
 
-  // Calendar modal removed
+  const updateHolidaysList = useCallback(
+    holidays => {
+      const currentHoliday = holidays.find(
+        holiday => holiday.year == currentYear
+      );
 
-  useEffect(() => {
-    sendGAPageView();
-    fetchHolidays();
-  }, []);
+      if (currentHoliday) {
+        const {
+          enable_optional_holidays,
+          national_holidays = [],
+          optional_holidays = [],
+          no_of_allowed_optional_holidays,
+          time_period_optional_holidays,
+        } = currentHoliday;
 
-  const fetchHolidays = async () => {
+        enable_optional_holidays &&
+          setEnableOptionalHolidays(enable_optional_holidays);
+
+        no_of_allowed_optional_holidays &&
+          setTotalOptionalHolidays(no_of_allowed_optional_holidays);
+
+        time_period_optional_holidays &&
+          setOptionalRepetitionType(time_period_optional_holidays);
+
+        const newNationalHolidays = national_holidays.map(holiday => ({
+          ...holiday,
+        }));
+
+        const newOptionalHolidays = optional_holidays.map(holiday => ({
+          ...holiday,
+        }));
+        setHolidayList(newNationalHolidays);
+        setOptionalHolidaysList(newOptionalHolidays);
+        setCurrentYearHolidaysList([
+          ...national_holidays,
+          ...optional_holidays,
+        ]);
+        setCurrentYearPublicHolidays(national_holidays);
+        setCurrentYearOptionalHolidays(optional_holidays);
+      } else {
+        setEnableOptionalHolidays(false);
+        setTotalOptionalHolidays(0);
+        setOptionalRepetitionType("per_year");
+        setHolidayList([]);
+        setCurrentYearHolidaysList([]);
+        setOptionalHolidaysList([]);
+        setCurrentYearPublicHolidays([]);
+        setCurrentYearOptionalHolidays([]);
+      }
+    },
+    [currentYear]
+  );
+
+  const fetchHolidays = useCallback(async () => {
     const res = await holidaysApi.allHolidays();
     setHolidays(res.data.holidays);
     updateHolidaysList(res.data.holidays);
     setIsLoading(false);
-  };
+  }, [updateHolidaysList]);
+
+  useEffect(() => {
+    sendGAPageView();
+    fetchHolidays();
+  }, [fetchHolidays]);
 
   useEffect(() => {
     if (holidays.length) {
       updateHolidaysList(holidays);
     }
-  }, [currentYear]);
-
-  const updateHolidaysList = holidays => {
-    const currentHoliday = holidays.find(
-      holiday => holiday.year == currentYear
-    );
-
-    if (currentHoliday) {
-      const {
-        enable_optional_holidays,
-        national_holidays = [],
-        optional_holidays = [],
-        no_of_allowed_optional_holidays,
-        time_period_optional_holidays,
-      } = currentHoliday;
-
-      if (enable_optional_holidays) {
-        setEnableOptionalHolidays(enable_optional_holidays);
-      }
-
-      if (no_of_allowed_optional_holidays) {
-        setTotalOptionalHolidays(no_of_allowed_optional_holidays);
-      }
-
-      if (time_period_optional_holidays) {
-        setOptionalRepetitionType(time_period_optional_holidays);
-      }
-
-      const newNationalHolidays = national_holidays.map(holiday => ({
-        ...holiday,
-      }));
-
-      const newOptionalHolidays = optional_holidays.map(holiday => ({
-        ...holiday,
-      }));
-      setHolidayList(newNationalHolidays);
-      setOptionalHolidaysList(newOptionalHolidays);
-      setCurrentYearHolidaysList([...national_holidays, ...optional_holidays]);
-      setCurrentYearPublicHolidays(national_holidays);
-      setCurrentYearOptionalHolidays(optional_holidays);
-    } else {
-      setEnableOptionalHolidays(false);
-      setTotalOptionalHolidays(0);
-      setOptionalRepetitionType("per_year");
-      setHolidayList([]);
-      setCurrentYearHolidaysList([]);
-      setOptionalHolidaysList([]);
-      setCurrentYearPublicHolidays([]);
-      setCurrentYearOptionalHolidays([]);
-    }
-  };
+  }, [currentYear, holidays, updateHolidaysList]);
 
   const handleDatePicker = (date, index, isoptionalHoliday) => {
     if (!isoptionalHoliday) {
@@ -141,11 +149,35 @@ const Holidays = () => {
       holidayListDetail[index].date = date;
       setHolidayList([...holidayListDetail]);
       setShowDatePicker({ visibility: false, index: 0 });
+      if (holidayErrors[index]?.date) {
+        const newErrors = { ...holidayErrors };
+        if (newErrors[index]) {
+          const { date: _dateError, ...restErrors } = newErrors[index];
+          if (Object.keys(restErrors).length === 0) {
+            delete newErrors[index];
+          } else {
+            newErrors[index] = restErrors;
+          }
+        }
+        setHolidayErrors(newErrors);
+      }
     } else {
       const holidayListDetail = [...optionalHolidaysList];
       holidayListDetail[index].date = date;
       setOptionalHolidaysList([...holidayListDetail]);
       setShowOptionalDatePicker({ visibility: false, index: 0 });
+      if (optionalHolidayErrors[index]?.date) {
+        const newErrors = { ...optionalHolidayErrors };
+        if (newErrors[index]) {
+          const { date: _dateError, ...restErrors } = newErrors[index];
+          if (Object.keys(restErrors).length === 0) {
+            delete newErrors[index];
+          } else {
+            newErrors[index] = restErrors;
+          }
+        }
+        setOptionalHolidayErrors(newErrors);
+      }
     }
   };
 
@@ -177,13 +209,41 @@ const Holidays = () => {
 
   const handleDeleteHoliday = (isoptionalHoliday, index) => {
     if (!isoptionalHoliday) {
-      const updatedHolidayList = holidayList;
+      const updatedHolidayList = [...holidayList];
       updatedHolidayList.splice(index, 1);
-      setHolidayList([...updatedHolidayList]);
+      setHolidayList(updatedHolidayList);
+
+      const newHolidayErrors: Record<number, Record<string, string[]>> = {};
+      Object.entries(holidayErrors).forEach(([errorIndex, errorObj]) => {
+        const errorIndexNum = parseInt(errorIndex, 10);
+        if (errorIndexNum < index) {
+          newHolidayErrors[errorIndexNum] = errorObj;
+        } else if (errorIndexNum > index) {
+          newHolidayErrors[errorIndexNum - 1] = errorObj;
+        }
+      });
+      setHolidayErrors(newHolidayErrors);
     } else {
-      const updatedHolidayList = optionalHolidaysList;
+      const updatedHolidayList = [...optionalHolidaysList];
       updatedHolidayList.splice(index, 1);
-      setOptionalHolidaysList([...updatedHolidayList]);
+      setOptionalHolidaysList(updatedHolidayList);
+
+      const newOptionalHolidayErrors: Record<
+        number,
+        Record<string, string[]>
+      > = {};
+
+      Object.entries(optionalHolidayErrors).forEach(
+        ([errorIndex, errorObj]) => {
+          const errorIndexNum = parseInt(errorIndex, 10);
+          if (errorIndexNum < index) {
+            newOptionalHolidayErrors[errorIndexNum] = errorObj;
+          } else if (errorIndexNum > index) {
+            newOptionalHolidayErrors[errorIndexNum - 1] = errorObj;
+          }
+        }
+      );
+      setOptionalHolidayErrors(newOptionalHolidayErrors);
     }
   };
 
@@ -192,10 +252,34 @@ const Holidays = () => {
       const holidayListDetail = [...holidayList];
       holidayListDetail[index].name = e.target.value;
       setHolidayList([...holidayListDetail]);
+      if (holidayErrors[index]?.name) {
+        const newErrors = { ...holidayErrors };
+        if (newErrors[index]) {
+          const { name: _name, ...restErrors } = newErrors[index];
+          if (Object.keys(restErrors).length === 0) {
+            delete newErrors[index];
+          } else {
+            newErrors[index] = restErrors;
+          }
+        }
+        setHolidayErrors(newErrors);
+      }
     } else {
       const holidayListDetail = [...optionalHolidaysList];
       holidayListDetail[index].name = e.target.value;
       setOptionalHolidaysList([...holidayListDetail]);
+      if (optionalHolidayErrors[index]?.name) {
+        const newErrors = { ...optionalHolidayErrors };
+        if (newErrors[index]) {
+          const { name: _name, ...restErrors } = newErrors[index];
+          if (Object.keys(restErrors).length === 0) {
+            delete newErrors[index];
+          } else {
+            newErrors[index] = restErrors;
+          }
+        }
+        setOptionalHolidayErrors(newErrors);
+      }
     }
   };
 
@@ -261,10 +345,118 @@ const Holidays = () => {
   };
 
   const saveUpdatedHolidayDetails = async payload => {
-    // API expects top-level keys: holiday, add_holiday_infos, update_holiday_infos, remove_holiday_infos
-    await holidaysApi.updateHolidays(currentYear, payload);
-    fetchHolidays();
-    setIsEditable(false);
+    try {
+      setHolidayErrors({} as Record<number, Record<string, string[]>>);
+      setOptionalHolidayErrors({} as Record<number, Record<string, string[]>>);
+      await holidaysApi.updateHolidays(currentYear, payload);
+      fetchHolidays();
+      setIsEditable(false);
+    } catch (error) {
+      const fieldErrors = error.response?.data?.field_errors;
+      if (fieldErrors) {
+        const newHolidayErrors: Record<number, Record<string, string[]>> = {};
+        const newOptionalHolidayErrors: Record<
+          number,
+          Record<string, string[]>
+        > = {};
+
+        if (fieldErrors.add_holiday_infos) {
+          const addInfos = payload.add_holiday_infos;
+          const matchedHolidayIndices = new Set<number>();
+          const matchedOptionalIndices = new Set<number>();
+
+          const payloadToListIndexMap: Record<
+            number,
+            { isOptional: boolean; listIndex: number }
+          > = {};
+
+          addInfos.forEach((info, payloadIndex) => {
+            const isOptional = info.category === "optional";
+            if (isOptional) {
+              for (let i = 0; i < optionalHolidaysList.length; i++) {
+                const h = optionalHolidaysList[i];
+                if (
+                  !h.id &&
+                  h.name === info.name &&
+                  h.date === info.date &&
+                  !matchedOptionalIndices.has(i)
+                ) {
+                  matchedOptionalIndices.add(i);
+                  payloadToListIndexMap[payloadIndex] = {
+                    isOptional: true,
+                    listIndex: i,
+                  };
+                  break;
+                }
+              }
+            } else {
+              for (let i = 0; i < holidayList.length; i++) {
+                const h = holidayList[i];
+                if (
+                  !h.id &&
+                  h.name === info.name &&
+                  h.date === info.date &&
+                  !matchedHolidayIndices.has(i)
+                ) {
+                  matchedHolidayIndices.add(i);
+                  payloadToListIndexMap[payloadIndex] = {
+                    isOptional: false,
+                    listIndex: i,
+                  };
+                  break;
+                }
+              }
+            }
+          });
+
+          Object.entries(fieldErrors.add_holiday_infos).forEach(
+            ([indexStr, errors]: [string, any]) => {
+              const payloadIndex = parseInt(indexStr, 10);
+              const mapping = payloadToListIndexMap[payloadIndex];
+
+              if (mapping) {
+                if (mapping.isOptional) {
+                  newOptionalHolidayErrors[mapping.listIndex] = errors;
+                } else {
+                  newHolidayErrors[mapping.listIndex] = errors;
+                }
+              }
+            }
+          );
+        }
+
+        if (fieldErrors.update_holiday_infos) {
+          Object.entries(fieldErrors.update_holiday_infos).forEach(
+            ([indexStr, errors]: [string, any]) => {
+              const index = parseInt(indexStr, 10);
+
+              const updateInfos = payload.update_holiday_infos;
+              if (updateInfos[index]) {
+                const holidayId = updateInfos[index].id;
+                const holidayIndex = holidayList.findIndex(
+                  h => h.id === holidayId
+                );
+                if (holidayIndex !== -1) {
+                  newHolidayErrors[holidayIndex] = errors;
+                } else {
+                  const optionalIndex = optionalHolidaysList.findIndex(
+                    h => h.id === holidayId
+                  );
+                  if (optionalIndex !== -1) {
+                    newOptionalHolidayErrors[optionalIndex] = errors;
+                  }
+                }
+              }
+            }
+          );
+        }
+
+        setHolidayErrors(newHolidayErrors);
+        setOptionalHolidayErrors(newOptionalHolidayErrors);
+      } else {
+        Toastr.error("Failed to save holidays");
+      }
+    }
   };
 
   const handleCancelAction = () => {
@@ -273,7 +465,9 @@ const Holidays = () => {
         updateHolidaysList(holidays);
       }
       setIsDetailUpdated(false);
-      setIsEditable(true);
+      setIsEditable(false);
+      setHolidayErrors({} as Record<number, Record<string, string[]>>);
+      setOptionalHolidayErrors({} as Record<number, Record<string, string[]>>);
     } else {
       navigate("/settings/profile");
     }
@@ -285,7 +479,6 @@ const Holidays = () => {
 
   return (
     <div className="flex h-full w-full flex-col">
-      {/* Use modern editor design */}
       <ModernHolidaysEditor
         currentYear={currentYear}
         dateFormat={dateFormat}
@@ -304,6 +497,8 @@ const Holidays = () => {
         optionalHolidaysList={optionalHolidaysList}
         optionalRepetitionType={optionalRepetitionType}
         optionalWrapperRef={optionalWrapperRef}
+        holidayErrors={holidayErrors}
+        optionalHolidayErrors={optionalHolidayErrors}
         setCurrentYear={setCurrentYear}
         setEnableOptionalHolidays={setEnableOptionalHolidays}
         setShowDatePicker={setShowDatePicker}

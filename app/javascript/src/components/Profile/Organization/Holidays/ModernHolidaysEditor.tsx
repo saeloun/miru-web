@@ -45,6 +45,8 @@ const ModernHolidaysEditor = ({
   handleDatePicker,
   handleDeleteHoliday,
   handleHolidateNameChange,
+  holidayErrors,
+  optionalHolidayErrors,
   updateHolidayDetails,
 }) => (
   <div className="min-h-screen bg-muted/40 font-geist">
@@ -94,7 +96,7 @@ const ModernHolidaysEditor = ({
             <Button
               onClick={updateHolidayDetails}
               disabled={isDisableUpdateBtn}
-              className="bg-miru-han-purple-600 hover:bg-miru-han-purple-700 text-white font-geist-medium"
+              className="font-geist-medium"
             >
               Save Changes
             </Button>
@@ -140,12 +142,16 @@ const ModernHolidaysEditor = ({
                             >
                               <Input
                                 readOnly
-                                className="font-geist-regular cursor-pointer pr-10"
+                                className={`font-geist-regular cursor-pointer pr-10 ${
+                                  holidayErrors[index]?.date
+                                    ? "border-destructive"
+                                    : ""
+                                }`}
                                 placeholder="Select date"
                                 value={holiday.date}
                               />
                               <Calendar
-                                className="absolute right-3 top-1/2 -translate-y-1/2 text-miru-han-purple-600"
+                                className="absolute right-3 top-1/2 -translate-y-1/2 text-primary"
                                 size={16}
                                 weight="bold"
                               />
@@ -168,19 +174,33 @@ const ModernHolidaysEditor = ({
                                   />
                                 </div>
                               )}
+                            {holidayErrors[index]?.date && (
+                              <p className="mt-1 text-xs text-destructive">
+                                {holidayErrors[index].date.join(", ")}
+                              </p>
+                            )}
                           </div>
                           <div>
                             <Label className="text-xs font-geist-medium text-muted-foreground uppercase tracking-wider mb-1">
                               Holiday Name
                             </Label>
                             <Input
-                              className="font-geist-regular"
+                              className={`font-geist-regular ${
+                                holidayErrors[index]?.name
+                                  ? "border-destructive"
+                                  : ""
+                              }`}
                               placeholder="Enter holiday name"
                               value={holiday.name}
                               onChange={e =>
                                 handleHolidateNameChange(e, index, false)
                               }
                             />
+                            {holidayErrors[index]?.name && (
+                              <p className="mt-1 text-xs text-destructive">
+                                {holidayErrors[index].name.join(", ")}
+                              </p>
+                            )}
                           </div>
                         </div>
                         <Button
@@ -244,7 +264,7 @@ const ModernHolidaysEditor = ({
                   {enableOptionalHolidays ? (
                     <ToggleRight
                       size={32}
-                      className="text-miru-han-purple-600"
+                      className="text-primary"
                       weight="fill"
                     />
                   ) : (
@@ -330,12 +350,16 @@ const ModernHolidaysEditor = ({
                                 >
                                   <Input
                                     readOnly
-                                    className="font-geist-regular cursor-pointer pr-10"
+                                    className={`font-geist-regular cursor-pointer pr-10 ${
+                                      optionalHolidayErrors[index]?.date
+                                        ? "border-destructive"
+                                        : ""
+                                    }`}
                                     placeholder="Select date"
                                     value={optionalHoliday.date}
                                   />
                                   <Calendar
-                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-miru-han-purple-600"
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-primary"
                                     size={16}
                                     weight="bold"
                                   />
@@ -360,19 +384,37 @@ const ModernHolidaysEditor = ({
                                       />
                                     </div>
                                   )}
+                                {optionalHolidayErrors[index]?.date && (
+                                  <p className="mt-1 text-xs text-destructive">
+                                    {optionalHolidayErrors[index].date.join(
+                                      ", "
+                                    )}
+                                  </p>
+                                )}
                               </div>
                               <div>
                                 <Label className="text-xs font-geist-medium text-muted-foreground uppercase tracking-wider mb-1">
                                   Holiday Name
                                 </Label>
                                 <Input
-                                  className="font-geist-regular"
+                                  className={`font-geist-regular ${
+                                    optionalHolidayErrors[index]?.name
+                                      ? "border-destructive"
+                                      : ""
+                                  }`}
                                   placeholder="Enter holiday name"
                                   value={optionalHoliday.name}
                                   onChange={e =>
                                     handleHolidateNameChange(e, index, true)
                                   }
                                 />
+                                {optionalHolidayErrors[index]?.name && (
+                                  <p className="mt-1 text-xs text-destructive">
+                                    {optionalHolidayErrors[index].name.join(
+                                      ", "
+                                    )}
+                                  </p>
+                                )}
                               </div>
                             </div>
                             <Button
