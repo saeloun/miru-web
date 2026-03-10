@@ -10,7 +10,6 @@ import { Toaster } from "sonner";
 
 import "../settings";
 import "../stylesheets/application.scss";
-import "../src/styles/geist-font.css";
 import "../src/styles/geist.css";
 import AppWithUserData from "../src/components/AppWithUserData";
 
@@ -54,13 +53,15 @@ const App = (props: any) => (
           toastOptions={{
             classNames: {
               toast:
-                "bg-white text-gray-900 border border-gray-200 rounded-md shadow-sm",
+                "rounded-xl border border-border bg-card text-card-foreground shadow-lg",
               title: "text-sm font-medium",
-              description: "text-xs text-gray-600",
-              success: "bg-green-50 border-green-200 text-green-800",
-              error: "bg-red-50 border-red-200 text-red-800",
-              warning: "bg-yellow-50 border-yellow-200 text-yellow-800",
-              info: "bg-blue-50 border-blue-200 text-blue-800",
+              description: "text-xs text-muted-foreground",
+              success:
+                "border-emerald-500/20 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300",
+              error: "border-destructive/20 bg-destructive/10 text-destructive",
+              warning:
+                "border-amber-500/20 bg-amber-500/10 text-amber-700 dark:text-amber-300",
+              info: "border-primary/20 bg-primary/10 text-primary dark:text-primary",
             },
           }}
         />

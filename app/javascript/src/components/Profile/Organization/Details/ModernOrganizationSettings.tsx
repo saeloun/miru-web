@@ -179,32 +179,17 @@ const ModernOrganizationSettings: React.FC<ModernOrganizationSettingsProps> = ({
 
   return (
     <div className="min-h-screen bg-muted/40 font-geist">
-      {/* Header */}
-      <div className="bg-card border-b border-border">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between py-6">
-            <div>
-              <h1 className="text-2xl font-geist-semibold text-foreground">
-                Organization Settings
-              </h1>
-              <p className="text-sm text-muted-foreground mt-1 font-geist-regular">
-                Manage your company information and preferences
-              </p>
-            </div>
-            <Button
-              onClick={handleEditClick}
-              className="bg-miru-han-purple-600 hover:bg-miru-han-purple-700 text-white font-geist-medium"
-              size="sm"
-            >
-              <PencilSimple className="h-4 w-4 mr-2" />
-              Edit Settings
-            </Button>
-          </div>
-        </div>
-      </div>
-
-      {/* Content */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="mb-6 flex justify-end">
+          <Button
+            onClick={handleEditClick}
+            className="bg-primary hover:bg-primary text-white font-geist-medium"
+            size="sm"
+          >
+            <PencilSimple className="h-4 w-4 mr-2" />
+            Edit Settings
+          </Button>
+        </div>
         {error ? (
           <Alert variant="destructive" className="mb-6">
             <AlertDescription>{error}</AlertDescription>
@@ -232,7 +217,7 @@ const ModernOrganizationSettings: React.FC<ModernOrganizationSettingsProps> = ({
                           alt={orgDetails.companyName}
                           className="object-cover rounded-lg"
                         />
-                        <AvatarFallback className="rounded-lg bg-miru-han-purple-100 text-miru-han-purple-600 font-geist-bold text-xl">
+                        <AvatarFallback className="rounded-lg bg-accent text-primary font-geist-bold text-xl">
                           {orgDetails.companyName?.charAt(0) || "C"}
                         </AvatarFallback>
                       </Avatar>
@@ -245,9 +230,9 @@ const ModernOrganizationSettings: React.FC<ModernOrganizationSettingsProps> = ({
                         </p>
                         <Badge
                           variant="outline"
-                          className="mt-2 border-green-200 bg-green-50 text-green-700 font-geist-medium"
+                          className="mt-2 border-emerald-500/20 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 font-geist-medium"
                         >
-                          <div className="h-1.5 w-1.5 bg-green-500 rounded-full mr-2" />
+                          <div className="mr-2 h-1.5 w-1.5 rounded-full bg-emerald-500" />
                           Active
                         </Badge>
                       </div>
