@@ -136,23 +136,23 @@ export const ModernNavbar: React.FC = () => {
   const NavContent = () => (
     <>
       {/* Logo Section */}
-      <div className="flex items-center justify-between p-4 border-b border-miru-gray-200">
+      <div className="flex items-center justify-between p-4 border-b border-border">
         <div className="flex items-center gap-3">
           <img
             src="/assets/miru-logo.svg"
             alt="Miru Agency OS"
             className="h-8 w-auto"
           />
-          <span className="text-xl font-bold text-miru-dark-purple-1000">
+          <span className="text-xl font-bold text-foreground">
             Miru Agency OS
           </span>
         </div>
         {!isDesktop && (
           <button
             onClick={() => setIsSidebarOpen(false)}
-            className="p-2 hover:bg-miru-gray-100 rounded-lg transition-colors lg:hidden"
+            className="p-2 hover:bg-muted rounded-lg transition-colors lg:hidden"
           >
-            <X className="h-5 w-5 text-miru-dark-purple-600" />
+            <X className="h-5 w-5 text-muted-foreground" />
           </button>
         )}
       </div>
@@ -169,12 +169,12 @@ export const ModernNavbar: React.FC = () => {
                   to={item.path}
                   className={cn(
                     "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all",
-                    "hover:bg-miru-gray-100 hover:text-miru-han-purple-600",
+                    "hover:bg-muted hover:text-primary",
                     isActive && [
-                      "bg-miru-han-purple-50",
-                      "text-miru-han-purple-600",
+                      "bg-accent/60",
+                      "text-primary",
                       "font-medium",
-                      "border-l-4 border-miru-han-purple-600",
+                      "border-l-4 border-primary",
                       "-ml-4 pl-7",
                     ]
                   )}
@@ -189,34 +189,34 @@ export const ModernNavbar: React.FC = () => {
         </ul>
       </nav>
       {/* User Section */}
-      <div className="border-t border-miru-gray-200 p-4 space-y-2">
+      <div className="border-t border-border p-4 space-y-2">
         <NavLink
           to={Paths.SETTINGS.replace("/*", "/profile")}
-          className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-miru-gray-100 transition-colors"
+          className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-muted transition-colors"
         >
-          <Gear className="h-5 w-5 text-miru-dark-purple-600" />
-          <span className="text-sm text-miru-dark-purple-900">Gear</span>
+          <Gear className="h-5 w-5 text-muted-foreground" />
+          <span className="text-sm text-foreground">Gear</span>
         </NavLink>
         <button
           onClick={handleLogout}
-          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-red-50 hover:text-red-600 transition-colors"
+          className="w-full flex items-center gap-3 rounded-lg px-3 py-2.5 transition-colors hover:bg-destructive/10 hover:text-destructive"
         >
           <SignOut className="h-5 w-5" />
           <span className="text-sm">Logout</span>
         </button>
         {user && (
-          <div className="flex items-center gap-3 px-3 py-2 mt-4 bg-miru-gray-50 rounded-lg">
-            <div className="h-8 w-8 rounded-full bg-miru-han-purple-100 flex items-center justify-center">
-              <span className="text-sm font-medium text-miru-han-purple-600">
+          <div className="flex items-center gap-3 px-3 py-2 mt-4 bg-background rounded-lg">
+            <div className="h-8 w-8 rounded-full bg-accent flex items-center justify-center">
+              <span className="text-sm font-medium text-primary">
                 {user.first_name?.[0]}
                 {user.last_name?.[0]}
               </span>
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-miru-dark-purple-1000 truncate">
+              <p className="text-sm font-medium text-foreground truncate">
                 {user.first_name} {user.last_name}
               </p>
-              <p className="text-xs text-miru-dark-purple-600 truncate">
+              <p className="text-xs text-muted-foreground truncate">
                 {user.email}
               </p>
             </div>
@@ -232,14 +232,14 @@ export const ModernNavbar: React.FC = () => {
       {!isDesktop && (
         <button
           onClick={() => setIsSidebarOpen(true)}
-          className="fixed top-4 left-4 z-50 p-2 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow lg:hidden"
+          className="fixed top-4 left-4 z-50 p-2 bg-background rounded-lg shadow-md hover:shadow-lg transition-shadow lg:hidden"
         >
-          <List className="h-6 w-6 text-miru-dark-purple-1000" />
+          <List className="h-6 w-6 text-foreground" />
         </button>
       )}
       {/* Desktop Sidebar */}
       {isDesktop && (
-        <aside className="fixed top-0 left-0 h-full w-64 bg-white border-r border-miru-gray-200 shadow-sm flex flex-col">
+        <aside className="fixed top-0 left-0 h-full w-64 bg-background border-r border-border shadow-sm flex flex-col">
           <NavContent />
         </aside>
       )}
@@ -249,14 +249,14 @@ export const ModernNavbar: React.FC = () => {
           {/* Overlay */}
           {isSidebarOpen && (
             <div
-              className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+              className="fixed inset-0 z-40 bg-foreground/45 lg:hidden"
               onClick={() => setIsSidebarOpen(false)}
             />
           )}
           {/* Sidebar */}
           <aside
             className={cn(
-              "fixed top-0 left-0 h-full w-72 bg-white shadow-2xl z-50 flex flex-col transition-transform duration-300 lg:hidden",
+              "fixed top-0 left-0 h-full w-72 bg-background shadow-2xl z-50 flex flex-col transition-transform duration-300 lg:hidden",
               isSidebarOpen ? "translate-x-0" : "-translate-x-full"
             )}
           >
@@ -266,7 +266,7 @@ export const ModernNavbar: React.FC = () => {
       )}
       {/* Mobile Bottom Navigation Bar */}
       {!isDesktop && (
-        <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-miru-gray-200 z-30 lg:hidden">
+        <nav className="fixed bottom-0 left-0 right-0 bg-background border-t border-border z-30 lg:hidden">
           <div className="flex justify-around items-center h-16 px-2">
             {filteredNavItems.slice(0, 4).map(item => {
               const Icon = item.icon;
@@ -278,16 +278,14 @@ export const ModernNavbar: React.FC = () => {
                   to={item.path}
                   className={cn(
                     "flex flex-col items-center justify-center gap-1 p-2 rounded-lg flex-1",
-                    "hover:bg-miru-gray-50",
-                    isActive && "text-miru-han-purple-600"
+                    "hover:bg-background",
+                    isActive && "text-primary"
                   )}
                 >
                   <Icon
                     className={cn(
                       "h-5 w-5",
-                      isActive
-                        ? "text-miru-han-purple-600"
-                        : "text-miru-dark-purple-600"
+                      isActive ? "text-primary" : "text-muted-foreground"
                     )}
                   />
                   <span
@@ -303,9 +301,9 @@ export const ModernNavbar: React.FC = () => {
             })}
             <button
               onClick={() => setIsSidebarOpen(true)}
-              className="flex flex-col items-center justify-center gap-1 p-2 rounded-lg flex-1 hover:bg-miru-gray-50"
+              className="flex flex-col items-center justify-center gap-1 p-2 rounded-lg flex-1 hover:bg-background"
             >
-              <List className="h-5 w-5 text-miru-dark-purple-600" />
+              <List className="h-5 w-5 text-muted-foreground" />
               <span className="text-xs">More</span>
             </button>
           </div>
