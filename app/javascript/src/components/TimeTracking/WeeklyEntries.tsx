@@ -160,17 +160,17 @@ const WeeklyEntries: React.FC<Props> = ({
 
   if (!projectSelected && newRowView) {
     return (
-      <Card className="mt-4 border-dashed border-2 border-gray-200 bg-gray-50/50">
+      <Card className="mt-4 border-2 border-dashed border-border bg-muted/30">
         <CardContent className="p-6">
           <div className="flex items-center gap-3 mb-6">
-            <div className="p-2.5 bg-indigo-100 rounded-lg">
-              <Briefcase className="h-5 w-5 text-indigo-600" />
+            <div className="rounded-lg bg-primary/10 p-2.5">
+              <Briefcase className="h-5 w-5 text-primary" />
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-gray-900">
+              <h3 className="text-lg font-semibold text-foreground">
                 Add New Project Entry
               </h3>
-              <p className="text-sm text-gray-500 mt-0.5">
+              <p className="mt-0.5 text-sm text-muted-foreground">
                 Select a client and project to start tracking time
               </p>
             </div>

@@ -12,14 +12,23 @@ RSpec.configure do |config|
   end
 
   config.before(:each, type: :system) do
-    DatabaseCleaner.strategy = :deletion
+    DatabaseCleaner.strategy = [:truncation, { except: %w(ar_internal_metadata) }]
   end
 
   config.before do
-    DatabaseCleaner.start
+    DatabaseCleaner.start unless RSpec.current_example.metadata[:type] == :system
   end
 
   config.append_after do
-    DatabaseCleaner.clean
+    DatabaseCleaner.clean unless RSpec.current_example.metadata[:type] == :system
+  end
+
+  config.before(:each, type: :system) do
+    DatabaseCleaner.clean_with :truncation, except: %w(ar_internal_metadata)
+  end
+
+  config.append_after(:each, type: :system) do
+    Capybara.reset_sessions!
+    Warden.test_reset!
   end
 end

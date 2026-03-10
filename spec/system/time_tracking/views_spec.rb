@@ -36,6 +36,7 @@ RSpec.describe "Time Tracking Views", type: :system, js: true do
 
     with_forgery_protection do
       visit "/time-tracking"
+      find("button[aria-label*='#{Date.current.strftime("%b")} #{Date.current.day}']", wait: 10).click
 
       expect(page).to have_css("#react-root", wait: 10)
       expect(page).to have_content("Acme Corp", wait: 10)

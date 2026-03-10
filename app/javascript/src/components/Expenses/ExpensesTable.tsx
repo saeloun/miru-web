@@ -639,13 +639,15 @@ const ExpensesTable: React.FC = () => {
                   Mark as paid
                 </DropdownMenuItem>
               )}
-              <DropdownMenuItem
-                onClick={() => handleDelete(expense)}
-                className="text-red-600"
-              >
-                <Trash size={16} className="mr-2" />
-                Delete expense
-              </DropdownMenuItem>
+              {expense.status !== "paid" && (
+                <DropdownMenuItem
+                  onClick={() => handleDelete(expense)}
+                  className="text-red-600"
+                >
+                  <Trash size={16} className="mr-2" />
+                  Delete expense
+                </DropdownMenuItem>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
         );

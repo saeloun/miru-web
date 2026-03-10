@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_03_11_010500) do
+ActiveRecord::Schema[8.0].define(version: 2026_03_11_020000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -340,8 +340,10 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_11_010500) do
     t.datetime "paid_at"
     t.string "vendor_name"
     t.string "category_name"
+    t.datetime "discarded_at"
     t.index ["company_id"], name: "index_expenses_on_company_id"
     t.index ["description"], name: "index_expenses_on_description_trgm", opclass: :gin_trgm_ops, using: :gin
+    t.index ["discarded_at"], name: "index_expenses_on_discarded_at"
     t.index ["expense_category_id"], name: "index_expenses_on_expense_category_id"
     t.index ["expense_type"], name: "index_expenses_on_expense_type"
     t.index ["status"], name: "index_expenses_on_status"

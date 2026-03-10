@@ -45,23 +45,23 @@ const TimeEntriesDisplay: React.FC<TimeEntriesDisplayProps> = ({
 
     return (
       <div className="space-y-4">
-        <div className="flex items-center justify-between pb-6 mb-6 border-b-2 border-slate-200">
+        <div className="mb-6 flex items-center justify-between border-b border-border pb-6">
           <div>
-            <h3 className="text-xl font-semibold tracking-tight text-slate-900">
+            <h3 className="text-xl font-semibold tracking-tight text-foreground">
               {parsedDate.format("dddd")}
             </h3>
-            <p className="text-base text-slate-600 mt-2 font-medium">
+            <p className="mt-2 text-base font-medium text-muted-foreground">
               {parsedDate.format("MMMM D, YYYY")}
             </p>
           </div>
-          <div className="text-right bg-gradient-to-br from-blue-50 to-white rounded-2xl px-8 py-4 border border-blue-100">
-            <div className="text-sm font-semibold text-slate-600 uppercase tracking-wider mb-2">
+          <div className="rounded-2xl border border-border bg-muted/40 px-8 py-4 text-right">
+            <div className="mb-2 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
               Day Total
             </div>
-            <div className="text-2xl font-semibold tracking-tight text-blue-600 tabular-nums">
+            <div className="text-2xl font-semibold tracking-tight text-primary tabular-nums">
               {totalHours}h {totalMinutes > 0 ? `${totalMinutes}m` : ""}
             </div>
-            <div className="text-sm text-slate-500 mt-2 font-medium">
+            <div className="mt-2 text-sm font-medium text-muted-foreground">
               {entries.length} {entries.length === 1 ? "entry" : "entries"}
             </div>
           </div>
@@ -89,11 +89,11 @@ const TimeEntriesDisplay: React.FC<TimeEntriesDisplayProps> = ({
   }
 
   return (
-    <div className="bg-slate-50 rounded-xl p-12 text-center border-2 border-dashed border-slate-300">
-      <div className="max-w-md mx-auto">
-        <div className="w-16 h-16 rounded-full bg-white flex items-center justify-center mx-auto mb-4 shadow-sm">
+    <div className="rounded-xl border-2 border-dashed border-border bg-muted/30 p-12 text-center">
+      <div className="mx-auto max-w-md">
+        <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-card shadow-sm">
           <svg
-            className="w-8 h-8 text-slate-400"
+            className="h-8 w-8 text-muted-foreground"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -106,13 +106,13 @@ const TimeEntriesDisplay: React.FC<TimeEntriesDisplayProps> = ({
             />
           </svg>
         </div>
-        <h3 className="text-xl font-semibold text-slate-700 mb-2">
+        <h3 className="mb-2 text-xl font-semibold text-foreground">
           No time entries yet
         </h3>
-        <p className="text-slate-500 mb-1">
+        <p className="mb-1 text-muted-foreground">
           {parsedDate.format("dddd, MMMM D, YYYY")}
         </p>
-        <p className="text-sm text-slate-400 mt-4">
+        <p className="mt-4 text-sm text-muted-foreground">
           Click "Add Entry" to log your first time entry for this day
         </p>
       </div>

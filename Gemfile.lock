@@ -284,8 +284,13 @@ GEM
     language_server-protocol (3.17.0.5)
     launchy (2.5.2)
       addressable (~> 2.8)
-    letter_opener (1.8.1)
-      launchy (>= 2.2, < 3)
+    letter_opener (1.10.0)
+      launchy (>= 2.2, < 4)
+    letter_opener_web (3.0.0)
+      actionmailer (>= 6.1)
+      letter_opener (~> 1.9)
+      railties (>= 6.1)
+      rexml
     lint_roller (1.1.0)
     logger (1.7.0)
     loofah (2.25.0)
@@ -743,6 +748,7 @@ DEPENDENCIES
   jbuilder (~> 2.11)
   kamal
   letter_opener
+  letter_opener_web
   mission_control-jobs
   money
   nkf

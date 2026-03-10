@@ -90,6 +90,18 @@ RSpec.describe "Api::V1::Expense#index", type: :request do
     end
   end
 
+  context "when an expense has been soft deleted" do
+    before do
+      expense1.discard
+      sign_in admin
+      send_request :get, api_v1_expenses_path
+    end
+
+    it "excludes discarded expenses from the list" do
+      expect(json_response["expenses"].pluck("id")).not_to include(expense1.id)
+    end
+  end
+
   context "when the user is an book keeper" do
     before do
       sign_in book_keeper

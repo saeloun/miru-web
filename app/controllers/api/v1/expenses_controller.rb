@@ -40,7 +40,7 @@ class Api::V1::ExpensesController < ApplicationController
   def destroy
     authorize @expense
 
-    @expense.destroy!
+    @expense.discard!
 
     render json: { notice: I18n.t("expenses.destroy") }, status: 200
   end
@@ -100,7 +100,7 @@ class Api::V1::ExpensesController < ApplicationController
     end
 
     def set_expense
-      @expense = current_company.expenses.find(params[:id])
+      @expense = current_company.expenses.kept.find(params[:id])
     end
 
     def resubmit_rejected_expense!

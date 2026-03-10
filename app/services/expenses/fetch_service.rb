@@ -61,7 +61,7 @@ class Expenses::FetchService
     end
 
     def base_scope
-      expenses = current_company.expenses
+      expenses = current_company.expenses.kept
 
       return expenses if current_user.has_cached_role?(:owner, current_company) ||
         current_user.has_cached_role?(:admin, current_company) ||

@@ -5,8 +5,6 @@ require "rails_helper"
 RSpec.describe "Expenses CRUD", type: :system, js: true do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
-  let!(:category) { create(:expense_category, name: "Travel", company:) }
-  let!(:vendor) { create(:vendor, name: "Acme Supplies", company:) }
 
   before do
     create(:employment, company:, user:)
@@ -18,8 +16,8 @@ RSpec.describe "Expenses CRUD", type: :system, js: true do
     let!(:business_expense) do
       create(:expense,
         company:,
-        expense_category: category,
-        vendor:,
+        category_name: "Travel",
+        vendor_name: "Acme Supplies",
         amount: 250.00,
         expense_type: :business,
         description: "Conference registration fee",
@@ -29,8 +27,8 @@ RSpec.describe "Expenses CRUD", type: :system, js: true do
     let!(:personal_expense) do
       create(:expense,
         company:,
-        expense_category: create(:expense_category, name: "Software", company:),
-        vendor: create(:vendor, name: "App Store", company:),
+        category_name: "Software",
+        vendor_name: "App Store",
         amount: 9.99,
         expense_type: :personal,
         description: "Personal app subscription",
@@ -79,8 +77,8 @@ RSpec.describe "Expenses CRUD", type: :system, js: true do
     let!(:expense) do
       create(:expense,
         company:,
-        expense_category: category,
-        vendor:,
+        category_name: "Travel",
+        vendor_name: "Acme Supplies",
         amount: 75.50,
         expense_type: :business,
         description: "Taxi fare",
@@ -111,8 +109,8 @@ RSpec.describe "Expenses CRUD", type: :system, js: true do
       create(:expense,
         company:,
         user: employee,
-        expense_category: category,
-        vendor:,
+        category_name: "Travel",
+        vendor_name: "Acme Supplies",
         amount: 42.50,
         expense_type: :business,
         description: "Mileage reimbursement",

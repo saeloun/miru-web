@@ -20,7 +20,10 @@ class ExpensePolicy < ApplicationPolicy
   end
 
   def destroy?
-    authorize_current_user
+    return false unless same_workspace?
+    return false if record.paid?
+
+    user_owner_role? || user_admin_role? || own_submitted_expense?
   end
 
   def mark_paid?

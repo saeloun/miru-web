@@ -4,10 +4,9 @@ require "rails_helper"
 
 RSpec.describe "Api::V1::Expense#mark_paid", type: :request do
   let(:company) { create(:company) }
-  let(:expense_category) { create(:expense_category, company:) }
   let(:admin) { create(:user, current_workspace_id: company.id) }
   let(:employee) { create(:user, current_workspace_id: company.id) }
-  let(:expense) { create(:expense, company:, expense_category:, user: employee, status: :approved) }
+  let(:expense) { create(:expense, company:, category_name: "Travel", user: employee, status: :approved) }
 
   before do
     create(:employment, company:, user: admin)

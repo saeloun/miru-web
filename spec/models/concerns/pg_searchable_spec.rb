@@ -140,11 +140,8 @@ RSpec.describe PgSearchable do
   end
 
   describe "Expense search" do
-    let(:category) { create(:expense_category, company: company) }
-    let(:vendor) { create(:vendor, company: company) }
-
-    let!(:expense1) { create(:expense, amount: 100.00, description: "Office supplies", expense_category: category, company: company) }
-    let!(:expense2) { create(:expense, amount: 500.00, description: "Software license", expense_category: category, vendor: vendor, company: company) }
+    let!(:expense1) { create(:expense, amount: 100.00, description: "Office supplies", category_name: "Office", company: company) }
+    let!(:expense2) { create(:expense, amount: 500.00, description: "Software license", category_name: "Software", vendor_name: "Cloud Services Inc", company: company) }
 
     it "finds expenses by description" do
       results = Expense.search("Software")

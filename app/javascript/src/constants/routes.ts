@@ -189,6 +189,6 @@ export const ROUTES = [
   {
     path: Paths.EXPENSES,
     subRoutes: ExpenseRoutes,
-    authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER],
+    authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE],
   },
 ];

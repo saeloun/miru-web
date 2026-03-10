@@ -44,7 +44,7 @@ class ExpenseMailer < ApplicationMailer
   private
 
     def load_expense
-      @expense = Expense.includes(:company, :user, :expense_category, :vendor).find(params[:expense_id])
+      @expense = Expense.includes(:company, :user).find(params[:expense_id])
       @expense_url = "#{ENV['APP_BASE_URL']}/expenses/#{@expense.id}"
       @company = @expense.company
     end

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class Expense < ApplicationRecord
+  include Discard::Model
   include Searchable
   enum :expense_type, [
       :personal,
@@ -28,11 +29,11 @@ class Expense < ApplicationRecord
   has_many_attached :receipts
   belongs_to :company
   belongs_to :user, optional: true
-  belongs_to :expense_category, optional: true
-  belongs_to :vendor, optional: true
 
   validates :date, presence: true
   validates :amount, numericality: { greater_than: 0 }
+
+  scope :kept_ordered, -> { kept.order(created_at: :desc) }
 
   def display_vendor_name
     vendor_name.to_s.strip

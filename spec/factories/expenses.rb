@@ -36,14 +36,8 @@ FactoryBot.define do
     date { Faker::Time.between(from: 60.days.ago, to: Time.now) }
     description { Faker::Lorem.paragraphs(number: rand(2..8)).join('\n') }
     company
-    expense_category
-    category_name { expense_category&.name || "Other" }
+    category_name { "Other" }
     vendor_name { nil }
-
-    after :build do |expense|
-      expense.category_name ||= expense.expense_category&.name
-      expense.vendor_name ||= expense.vendor&.name
-    end
 
     trait :with_receipts do
       after :build do |expense|
