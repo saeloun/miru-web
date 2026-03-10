@@ -57,7 +57,7 @@ const EditHolidays = ({
       subTitle=""
       title="Holidays"
     />
-    <div className="mt-4 p-4 lg:min-h-80v lg:bg-miru-gray-100 lg:p-10">
+    <div className="mt-4 p-4 lg:min-h-80v lg:bg-muted lg:p-10">
       <div className="flex flex-col py-6 lg:flex-row">
         <div className="flex p-2 lg:w-2/12">
           <CalendarIcon className="mr-2 mt-1" size={20} weight="bold" />
@@ -81,7 +81,7 @@ const EditHolidays = ({
                         <CustomInputText
                           readOnly
                           id={`Date_${index}`}
-                          inputBoxClassName="border focus:border-miru-han-purple-1000 cursor-pointer"
+                          inputBoxClassName="border focus:border-primary cursor-pointer"
                           label="Date"
                           labelClassName="cursor-pointer"
                           name={`Date_${index}`}
@@ -90,7 +90,7 @@ const EditHolidays = ({
                         />
                         <CalendarIcon
                           className="absolute top-2 right-2 m-2"
-                          color="#5E58F1"
+                          color="currentColor"
                           size={20}
                         />
                       </div>
@@ -119,11 +119,11 @@ const EditHolidays = ({
                         value={holiday.name}
                         inputBoxClassName={`border cursor-pointer ${
                           holidayErrors[index]
-                            ? "border-red-600 focus:border-red-600"
-                            : "focus:border-miru-han-purple-1000"
+                            ? "border-destructive focus:border-destructive"
+                            : "focus:border-primary"
                         }`}
                         labelClassName={`cursor-pointer ${
-                          holidayErrors[index] ? "text-red-600" : ""
+                          holidayErrors[index] ? "text-destructive" : ""
                         }`}
                         onChange={e =>
                           handleHolidateNameChange(e, index, false)
@@ -131,7 +131,7 @@ const EditHolidays = ({
                       />
                       {holidayErrors[index] && (
                         <ErrorSpan
-                          className="text-xs text-red-600"
+                          className="text-xs text-destructive"
                           message={
                             Object.keys(holidayErrors[index])
                               .reduce((acc: string[], key) => {
@@ -151,7 +151,7 @@ const EditHolidays = ({
                     <button onClick={() => handleDeleteHoliday(false, index)}>
                       <DeleteIcon
                         className="ml-2 cursor-pointer rounded-full"
-                        color="#5b34ea"
+                        color="currentColor"
                         style={{ minWidth: "40px" }}
                       />
                     </button>
@@ -162,7 +162,7 @@ const EditHolidays = ({
               <div> No data found </div>
             )}
             <div
-              className="dotted-btn w-11/12 px-4 py-2 text-center text-miru-dark-purple-200"
+              className="dotted-btn w-11/12 px-4 py-2 text-center text-muted-foreground"
               onClick={() => handleAddHoliday(false)}
             >
               + Add Holiday
@@ -178,7 +178,7 @@ const EditHolidays = ({
         </div>
         <div className="p-2 lg:w-10/12">
           <div className="flex flex-row justify-between lg:w-11/12">
-            <span className="flex items-center text-xs font-normal text-miru-dark-purple-1000">
+            <span className="flex items-center text-xs font-normal text-foreground">
               Enable optional holidays
             </span>
             <CustomToggle
@@ -195,7 +195,7 @@ const EditHolidays = ({
                 <div className="w-1/2">
                   <CustomInputText
                     id="total_op_holidays"
-                    inputBoxClassName="border focus:border-miru-han-purple-1000 cursor-pointer"
+                    inputBoxClassName="border focus:border-primary cursor-pointer"
                     label="Total optional holidays"
                     labelClassName="cursor-pointer"
                     min={0}
@@ -228,7 +228,7 @@ const EditHolidays = ({
                 </div>
               </div>
               <div className="mt-10">
-                <label className="flex items-center text-xs font-normal text-miru-dark-purple-1000">
+                <label className="flex items-center text-xs font-normal text-foreground">
                   List of optional holidays
                 </label>
                 {optionalHolidaysList.length > 0 ? (
@@ -247,7 +247,7 @@ const EditHolidays = ({
                             <CustomInputText
                               readOnly
                               id={`op_holiday_date_picker_${index}`}
-                              inputBoxClassName="border focus:border-miru-han-purple-1000 cursor-pointer"
+                              inputBoxClassName="border focus:border-primary cursor-pointer"
                               label="Date"
                               labelClassName="cursor-pointer"
                               name={`op_holiday_date_picker_${index}`}
@@ -256,7 +256,7 @@ const EditHolidays = ({
                             />
                             <CalendarIcon
                               className="absolute top-2 right-2 m-2"
-                              color="#5E58F1"
+                              color="currentColor"
                               size={20}
                             />
                           </div>
@@ -289,11 +289,13 @@ const EditHolidays = ({
                             value={optionalHoliday.name}
                             inputBoxClassName={`border cursor-pointer ${
                               optionalHolidayErrors[index]
-                                ? "border-red-600 focus:border-red-600"
-                                : "focus:border-miru-han-purple-1000"
+                                ? "border-destructive focus:border-destructive"
+                                : "focus:border-primary"
                             }`}
                             labelClassName={`cursor-pointer ${
-                              optionalHolidayErrors[index] ? "text-red-600" : ""
+                              optionalHolidayErrors[index]
+                                ? "text-destructive"
+                                : ""
                             }`}
                             onChange={e =>
                               handleHolidateNameChange(e, index, true)
@@ -301,7 +303,7 @@ const EditHolidays = ({
                           />
                           {optionalHolidayErrors[index] && (
                             <ErrorSpan
-                              className="text-xs text-red-600"
+                              className="text-xs text-destructive"
                               message={
                                 Object.keys(optionalHolidayErrors[index])
                                   .reduce((acc: string[], key) => {
@@ -324,7 +326,7 @@ const EditHolidays = ({
                         >
                           <DeleteIcon
                             className="ml-2 cursor-pointer rounded-full"
-                            color="#5b34ea"
+                            color="currentColor"
                             style={{ minWidth: "40px" }}
                           />
                         </button>
@@ -336,7 +338,7 @@ const EditHolidays = ({
                 )}
               </div>
               <div
-                className="dotted-btn mt-4 px-4 py-2 text-center text-miru-dark-purple-200 lg:w-11/12"
+                className="dotted-btn mt-4 px-4 py-2 text-center text-muted-foreground lg:w-11/12"
                 onClick={() => handleAddHoliday(true)}
               >
                 + Add Optional Holiday
@@ -348,10 +350,10 @@ const EditHolidays = ({
       {!isDesktop && holidayList.length > 0 && (
         <div className="mt-5 flex w-full justify-between px-2">
           <Button
-            className="mr-2 flex w-1/2 items-center justify-center rounded border border-miru-red-400 px-4 py-2"
+            className="mr-2 flex w-1/2 items-center justify-center rounded border border-destructive px-4 py-2"
             onClick={handleCancelAction}
           >
-            <span className="ml-2 text-center text-base font-bold leading-5 text-miru-red-400">
+            <span className="ml-2 text-center text-base font-bold leading-5 text-destructive">
               Cancel
             </span>
           </Button>
@@ -360,7 +362,7 @@ const EditHolidays = ({
             style="primary"
             onClick={updateHolidayDetails}
           >
-            <span className="ml-2 text-center text-base font-bold leading-5 text-white">
+            <span className="ml-2 text-center text-base font-bold leading-5 text-primary-foreground">
               Save
             </span>
           </Button>

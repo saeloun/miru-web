@@ -50,63 +50,41 @@ const ModernHolidaysEditor = ({
   updateHolidayDetails,
 }) => (
   <div className="min-h-screen bg-muted/40 font-geist">
-    {/* Header */}
-    <div className="bg-card border-b border-border">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between py-6">
-          <div>
-            <h1 className="text-2xl font-geist-semibold text-foreground">
-              Holiday Management
-            </h1>
-            <p className="text-sm text-muted-foreground mt-1 font-geist-regular">
-              Configure public and optional holidays for {currentYear}
-            </p>
-          </div>
-          <div className="flex items-center gap-3">
-            {/* Year Selector */}
-            <div className="flex items-center gap-2 bg-muted rounded-lg px-3 py-2">
-              <Calendar
-                size={16}
-                className="text-muted-foreground"
-                weight="bold"
-              />
-              <select
-                value={currentYear}
-                onChange={e => setCurrentYear(parseInt(e.target.value))}
-                className="bg-transparent border-none focus:outline-none font-geist-medium text-sm"
-              >
-                {[...Array(5)].map((_, i) => {
-                  const year = new Date().getFullYear() - 2 + i;
-
-                  return (
-                    <option key={year} value={year}>
-                      {year}
-                    </option>
-                  );
-                })}
-              </select>
-            </div>
-            <Button
-              onClick={handleCancelAction}
-              variant="outline"
-              className="font-geist-medium"
-            >
-              Cancel
-            </Button>
-            <Button
-              onClick={updateHolidayDetails}
-              disabled={isDisableUpdateBtn}
-              className="font-geist-medium"
-            >
-              Save Changes
-            </Button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    {/* Content */}
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="mb-6 flex flex-wrap items-center justify-end gap-3">
+        <div className="flex items-center gap-2 bg-muted rounded-lg px-3 py-2">
+          <Calendar size={16} className="text-muted-foreground" weight="bold" />
+          <select
+            value={currentYear}
+            onChange={e => setCurrentYear(parseInt(e.target.value))}
+            className="bg-transparent border-none focus:outline-none font-geist-medium text-sm"
+          >
+            {[...Array(5)].map((_, i) => {
+              const year = new Date().getFullYear() - 2 + i;
+
+              return (
+                <option key={year} value={year}>
+                  {year}
+                </option>
+              );
+            })}
+          </select>
+        </div>
+        <Button
+          onClick={handleCancelAction}
+          variant="outline"
+          className="font-geist-medium"
+        >
+          Cancel
+        </Button>
+        <Button
+          onClick={updateHolidayDetails}
+          disabled={isDisableUpdateBtn}
+          className="font-geist-medium"
+        >
+          Save Changes
+        </Button>
+      </div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Public Holidays */}
         <div className="lg:col-span-2">
@@ -207,7 +185,7 @@ const ModernHolidaysEditor = ({
                           variant="ghost"
                           size="sm"
                           onClick={() => handleDeleteHoliday(false, index)}
-                          className="mt-7 text-red-500 hover:text-red-700 hover:bg-red-50"
+                          className="mt-7 text-destructive hover:bg-destructive/10 hover:text-destructive"
                         >
                           <Trash size={16} weight="bold" />
                         </Button>
@@ -216,7 +194,7 @@ const ModernHolidaysEditor = ({
                     <Button
                       variant="outline"
                       onClick={() => handleAddHoliday(false)}
-                      className="w-full border-dashed border-border text-muted-foreground hover:text-foreground hover:border-gray-400 font-geist-medium"
+                      className="w-full border-dashed border-border font-geist-medium text-muted-foreground hover:border-primary/40 hover:text-foreground"
                     >
                       <Plus size={16} weight="bold" className="mr-2" />
                       Add Holiday
@@ -421,7 +399,7 @@ const ModernHolidaysEditor = ({
                               variant="ghost"
                               size="sm"
                               onClick={() => handleDeleteHoliday(true, index)}
-                              className="mt-7 text-red-500 hover:text-red-700 hover:bg-red-50"
+                              className="mt-7 text-destructive hover:bg-destructive/10 hover:text-destructive"
                             >
                               <Trash size={16} weight="bold" />
                             </Button>
@@ -430,7 +408,7 @@ const ModernHolidaysEditor = ({
                         <Button
                           variant="outline"
                           onClick={() => handleAddHoliday(true)}
-                          className="w-full border-dashed border-border text-muted-foreground hover:text-foreground hover:border-gray-400 font-geist-medium"
+                          className="w-full border-dashed border-border font-geist-medium text-muted-foreground hover:border-primary/40 hover:text-foreground"
                         >
                           <Plus size={16} weight="bold" className="mr-2" />
                           Add Optional Holiday

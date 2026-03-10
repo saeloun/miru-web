@@ -57,44 +57,29 @@ const EditProfilePage = ({
   dateFormat,
   cancelPasswordChange,
 }) => (
-  <div className="min-h-screen bg-gray-50 font-geist">
-    {/* Header */}
-    <div className="bg-white border-b border-gray-200">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="py-6">
-          <h1 className="text-2xl font-geist-semibold text-gray-900">
-            Edit Profile
-          </h1>
-          <p className="text-sm text-gray-600 mt-1 font-geist-regular">
-            Update your personal information and account settings
-          </p>
-        </div>
-      </div>
-    </div>
-
-    {/* Content */}
+  <div className="min-h-screen bg-background font-geist">
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Main Column */}
         <div className="lg:col-span-2 space-y-6">
           {/* Basic Details Card */}
-          <Card className="border-gray-200 shadow-sm">
+          <Card className="border-border shadow-sm">
             <CardHeader className="pb-4">
               <CardTitle className="text-lg font-geist-semibold flex items-center gap-2">
-                <User className="h-5 w-5 text-gray-600" weight="bold" />
+                <User className="h-5 w-5 text-muted-foreground" weight="bold" />
                 Personal Information
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <label className="text-xs font-geist-medium text-gray-500 uppercase tracking-wider">
+                  <label className="text-xs font-geist-medium uppercase tracking-wider text-muted-foreground">
                     First Name
                   </label>
                   <Input
                     className={`font-geist-regular ${
                       errDetails.first_name_err
-                        ? "border-red-500 focus:ring-red-500"
+                        ? "border-destructive focus:ring-destructive"
                         : ""
                     }`}
                     id="first_name"
@@ -113,19 +98,19 @@ const EditProfilePage = ({
                   />
                   {errDetails.first_name_err && (
                     <ErrorSpan
-                      className="text-xs text-red-600 font-geist-regular"
+                      className="text-xs text-destructive font-geist-regular"
                       message={errDetails.first_name_err}
                     />
                   )}
                 </div>
                 <div className="space-y-2">
-                  <label className="text-xs font-geist-medium text-gray-500 uppercase tracking-wider">
+                  <label className="text-xs font-geist-medium uppercase tracking-wider text-muted-foreground">
                     Last Name
                   </label>
                   <Input
                     className={`font-geist-regular ${
                       errDetails.last_name_err
-                        ? "border-red-500 focus:ring-red-500"
+                        ? "border-destructive focus:ring-destructive"
                         : ""
                     }`}
                     id="last_name"
@@ -144,7 +129,7 @@ const EditProfilePage = ({
                   />
                   {errDetails.last_name_err && (
                     <ErrorSpan
-                      className="text-xs text-red-600 font-geist-regular"
+                      className="text-xs text-destructive font-geist-regular"
                       message={errDetails.last_name_err}
                     />
                   )}
@@ -152,7 +137,7 @@ const EditProfilePage = ({
               </div>
 
               <div className="space-y-2" ref={wrapperRef}>
-                <label className="text-xs font-geist-medium text-gray-500 uppercase tracking-wider flex items-center gap-1">
+                <label className="text-xs font-geist-medium uppercase tracking-wider text-muted-foreground flex items-center gap-1">
                   <Calendar className="h-3 w-3" weight="bold" />
                   Date of Birth
                 </label>
@@ -181,7 +166,7 @@ const EditProfilePage = ({
                     }}
                   />
                   <Calendar
-                    className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-miru-han-purple-600"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-primary"
                     size={20}
                     weight="bold"
                   />
@@ -201,21 +186,24 @@ const EditProfilePage = ({
             </CardContent>
           </Card>
           {/* Contact Details Card */}
-          <Card className="border-gray-200 shadow-sm">
+          <Card className="border-border shadow-sm">
             <CardHeader className="pb-4">
               <CardTitle className="text-lg font-geist-semibold flex items-center gap-2">
-                <Phone className="h-5 w-5 text-gray-600" weight="bold" />
+                <Phone
+                  className="h-5 w-5 text-muted-foreground"
+                  weight="bold"
+                />
                 Contact Information
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <label className="text-xs font-geist-medium text-gray-500 uppercase tracking-wider flex items-center gap-1">
+                  <label className="text-xs font-geist-medium uppercase tracking-wider text-muted-foreground flex items-center gap-1">
                     <Phone className="h-3 w-3" weight="bold" />
                     Phone Number
                   </label>
-                  <div className="relative flex h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-miru-han-purple-600 focus-within:ring-offset-2">
+                  <div className="relative flex h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
                     <PhoneInput
                       className="input-phone-number w-full border-transparent focus:border-transparent focus:ring-0 font-geist-regular"
                       flags={flags}
@@ -230,14 +218,14 @@ const EditProfilePage = ({
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <label className="text-xs font-geist-medium text-gray-500 uppercase tracking-wider flex items-center gap-1">
+                  <label className="text-xs font-geist-medium uppercase tracking-wider text-muted-foreground flex items-center gap-1">
                     <Envelope className="h-3 w-3" weight="bold" />
                     Personal Email
                   </label>
                   <Input
                     className={`font-geist-regular ${
                       errDetails.email_id_err
-                        ? "border-red-500 focus:ring-red-500"
+                        ? "border-destructive focus:ring-destructive"
                         : ""
                     }`}
                     id="email_id"
@@ -251,7 +239,7 @@ const EditProfilePage = ({
                   />
                   {errDetails.email_id_err && (
                     <ErrorSpan
-                      className="text-xs text-red-600 font-geist-regular"
+                      className="text-xs text-destructive font-geist-regular"
                       message={errDetails.email_id_err}
                     />
                   )}
@@ -260,16 +248,19 @@ const EditProfilePage = ({
             </CardContent>
           </Card>
           {/* Address Card */}
-          <Card className="border-gray-200 shadow-sm">
+          <Card className="border-border shadow-sm">
             <CardHeader className="pb-4">
               <CardTitle className="text-lg font-geist-semibold flex items-center gap-2">
-                <MapPin className="h-5 w-5 text-gray-600" weight="bold" />
+                <MapPin
+                  className="h-5 w-5 text-muted-foreground"
+                  weight="bold"
+                />
                 Address
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <label className="text-xs font-geist-medium text-gray-500 uppercase tracking-wider">
+                <label className="text-xs font-geist-medium uppercase tracking-wider text-muted-foreground">
                   Address Type
                 </label>
                 <CustomReactSelect
@@ -282,13 +273,13 @@ const EditProfilePage = ({
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-xs font-geist-medium text-gray-500 uppercase tracking-wider">
+                <label className="text-xs font-geist-medium uppercase tracking-wider text-muted-foreground">
                   Address Line 1
                 </label>
                 <Input
                   className={`font-geist-regular ${
                     errDetails.address_line_1_err
-                      ? "border-red-500 focus:ring-red-500"
+                      ? "border-destructive focus:ring-destructive"
                       : ""
                   }`}
                   id="address_line_1"
@@ -305,15 +296,15 @@ const EditProfilePage = ({
                 />
                 {errDetails.address_line_1_err && (
                   <ErrorSpan
-                    className="text-xs text-red-600 font-geist-regular"
+                    className="text-xs font-geist-regular text-destructive"
                     message={errDetails.address_line_1_err}
                   />
                 )}
               </div>
               <div className="space-y-2">
-                <label className="text-xs font-geist-medium text-gray-500 uppercase tracking-wider">
+                <label className="text-xs font-geist-medium uppercase tracking-wider text-muted-foreground">
                   Address Line 2
-                  <span className="text-gray-400 font-geist-regular normal-case text-xs ml-1">
+                  <span className="ml-1 text-xs font-geist-regular normal-case text-muted-foreground/70">
                     (Optional)
                   </span>
                 </label>
@@ -334,7 +325,7 @@ const EditProfilePage = ({
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <label className="text-xs font-geist-medium text-gray-500 uppercase tracking-wider">
+                  <label className="text-xs font-geist-medium uppercase tracking-wider text-muted-foreground">
                     Country
                   </label>
                   <CustomReactSelect
@@ -351,19 +342,19 @@ const EditProfilePage = ({
                   />
                   {errDetails.country_err && (
                     <ErrorSpan
-                      className="text-xs text-red-600 font-geist-regular"
+                      className="text-xs font-geist-regular text-destructive"
                       message={errDetails.country_err}
                     />
                   )}
                 </div>
                 <div className="space-y-2">
-                  <label className="text-xs font-geist-medium text-gray-500 uppercase tracking-wider">
+                  <label className="text-xs font-geist-medium uppercase tracking-wider text-muted-foreground">
                     State
                   </label>
                   <Input
                     className={`font-geist-regular ${
                       errDetails.state_err
-                        ? "border-red-500 focus:ring-red-500"
+                        ? "border-destructive focus:ring-destructive"
                         : ""
                     }`}
                     id="state"
@@ -377,7 +368,7 @@ const EditProfilePage = ({
                   />
                   {errDetails.state_err && (
                     <ErrorSpan
-                      className="text-xs text-red-600 font-geist-regular"
+                      className="text-xs font-geist-regular text-destructive"
                       message={errDetails.state_err}
                     />
                   )}
@@ -385,13 +376,13 @@ const EditProfilePage = ({
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <label className="text-xs font-geist-medium text-gray-500 uppercase tracking-wider">
+                  <label className="text-xs font-geist-medium uppercase tracking-wider text-muted-foreground">
                     City
                   </label>
                   <Input
                     className={`font-geist-regular ${
                       errDetails.city_err
-                        ? "border-red-500 focus:ring-red-500"
+                        ? "border-destructive focus:ring-destructive"
                         : ""
                     }`}
                     id="city"
@@ -405,19 +396,19 @@ const EditProfilePage = ({
                   />
                   {errDetails.city_err && (
                     <ErrorSpan
-                      className="text-xs text-red-600 font-geist-regular"
+                      className="text-xs font-geist-regular text-destructive"
                       message={errDetails.city_err}
                     />
                   )}
                 </div>
                 <div className="space-y-2">
-                  <label className="text-xs font-geist-medium text-gray-500 uppercase tracking-wider">
+                  <label className="text-xs font-geist-medium uppercase tracking-wider text-muted-foreground">
                     Zip/Postal Code
                   </label>
                   <Input
                     className={`font-geist-regular ${
                       errDetails.pin_err
-                        ? "border-red-500 focus:ring-red-500"
+                        ? "border-destructive focus:ring-destructive"
                         : ""
                     }`}
                     id="zipcode"
@@ -431,7 +422,7 @@ const EditProfilePage = ({
                   />
                   {errDetails.pin_err && (
                     <ErrorSpan
-                      className="text-xs text-red-600 font-geist-regular"
+                      className="text-xs font-geist-regular text-destructive"
                       message={errDetails.pin_err}
                     />
                   )}
@@ -443,16 +434,19 @@ const EditProfilePage = ({
         {/* Side Column */}
         <div className="space-y-6">
           {/* Social Profiles Card */}
-          <Card className="border-gray-200 shadow-sm">
+          <Card className="border-border shadow-sm">
             <CardHeader className="pb-4">
               <CardTitle className="text-lg font-geist-semibold flex items-center gap-2">
-                <Globe className="h-5 w-5 text-gray-600" weight="bold" />
+                <Globe
+                  className="h-5 w-5 text-muted-foreground"
+                  weight="bold"
+                />
                 Social Profiles
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <label className="text-xs font-geist-medium text-gray-500 uppercase tracking-wider flex items-center gap-1">
+                <label className="flex items-center gap-1 text-xs font-geist-medium uppercase tracking-wider text-muted-foreground">
                   <LinkedinLogo className="h-3 w-3" weight="bold" />
                   LinkedIn
                 </label>
@@ -469,7 +463,7 @@ const EditProfilePage = ({
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-xs font-geist-medium text-gray-500 uppercase tracking-wider flex items-center gap-1">
+                <label className="flex items-center gap-1 text-xs font-geist-medium uppercase tracking-wider text-muted-foreground">
                   <GithubLogo className="h-3 w-3" weight="bold" />
                   GitHub
                 </label>
@@ -488,10 +482,10 @@ const EditProfilePage = ({
             </CardContent>
           </Card>
           {/* Password Card */}
-          <Card className="border-gray-200 shadow-sm">
+          <Card className="border-border shadow-sm">
             <CardHeader className="pb-4">
               <CardTitle className="text-lg font-geist-semibold flex items-center gap-2">
-                <Lock className="h-5 w-5 text-gray-600" weight="bold" />
+                <Lock className="h-5 w-5 text-muted-foreground" weight="bold" />
                 Security
               </CardTitle>
             </CardHeader>
@@ -508,14 +502,14 @@ const EditProfilePage = ({
               {changePassword && (
                 <div className="space-y-4">
                   <div className="space-y-2">
-                    <label className="text-xs font-geist-medium text-gray-500 uppercase tracking-wider">
+                    <label className="text-xs font-geist-medium uppercase tracking-wider text-muted-foreground">
                       Current Password
                     </label>
                     <div className="relative">
                       <Input
                         className={`font-geist-regular pr-10 ${
                           errDetails.currentPassword_err
-                            ? "border-red-500 focus:ring-red-500"
+                            ? "border-destructive focus:ring-destructive"
                             : ""
                         }`}
                         id="current_password"
@@ -533,7 +527,7 @@ const EditProfilePage = ({
                         }}
                       />
                       <button
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors hover:text-foreground"
                         type="button"
                         onClick={() =>
                           setShowCurrentPassword(!showCurrentPassword)
@@ -548,7 +542,7 @@ const EditProfilePage = ({
                     </div>
                     {errDetails.currentPassword_err && (
                       <ErrorSpan
-                        className="text-xs text-red-600 font-geist-regular"
+                        className="text-xs font-geist-regular text-destructive"
                         message={errDetails.currentPassword_err}
                       />
                     )}
@@ -557,14 +551,14 @@ const EditProfilePage = ({
                   <Separator className="my-4" />
 
                   <div className="space-y-2">
-                    <label className="text-xs font-geist-medium text-gray-500 uppercase tracking-wider">
+                    <label className="text-xs font-geist-medium uppercase tracking-wider text-muted-foreground">
                       New Password
                     </label>
                     <div className="relative">
                       <Input
                         className={`font-geist-regular pr-10 ${
                           errDetails.password_err
-                            ? "border-red-500 focus:ring-red-500"
+                            ? "border-destructive focus:ring-destructive"
                             : ""
                         }`}
                         id="password"
@@ -582,7 +576,7 @@ const EditProfilePage = ({
                         }}
                       />
                       <button
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors hover:text-foreground"
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
                       >
@@ -595,20 +589,20 @@ const EditProfilePage = ({
                     </div>
                     {errDetails.password_err && (
                       <ErrorSpan
-                        className="text-xs text-red-600 font-geist-regular"
+                        className="text-xs font-geist-regular text-destructive"
                         message={errDetails.password_err}
                       />
                     )}
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-geist-medium text-gray-500 uppercase tracking-wider">
+                    <label className="text-xs font-geist-medium uppercase tracking-wider text-muted-foreground">
                       Confirm Password
                     </label>
                     <div className="relative">
                       <Input
                         className={`font-geist-regular pr-10 ${
                           errDetails.confirmPassword_err
-                            ? "border-red-500 focus:ring-red-500"
+                            ? "border-destructive focus:ring-destructive"
                             : ""
                         }`}
                         id="confirm_password"
@@ -626,7 +620,7 @@ const EditProfilePage = ({
                         }}
                       />
                       <button
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors hover:text-foreground"
                         type="button"
                         onClick={() =>
                           setShowConfirmPassword(!showConfirmPassword)
@@ -641,7 +635,7 @@ const EditProfilePage = ({
                     </div>
                     {errDetails.confirmPassword_err && (
                       <ErrorSpan
-                        className="text-xs text-red-600 font-geist-regular"
+                        className="text-xs font-geist-regular text-destructive"
                         message={errDetails.confirmPassword_err}
                       />
                     )}

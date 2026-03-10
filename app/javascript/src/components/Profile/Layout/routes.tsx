@@ -3,6 +3,7 @@ import { Roles } from "constants/index";
 import React from "react";
 
 import OrgDetails from "components/Profile/Organization/Details";
+import BankInfo from "components/Profile/Organization/BankInfo";
 import OrgEdit from "components/Profile/Organization/Edit";
 import Holidays from "components/Profile/Organization/Holidays";
 import Billing from "components/Profile/Organization/Billing";
@@ -12,7 +13,7 @@ import AllocatedDevicesEdit from "components/Profile/Personal/Devices/Edit";
 import EmploymentDetails from "components/Profile/Personal/Employment";
 import EmploymentDetailsEdit from "components/Profile/Personal/Employment/Edit";
 import NotificationPreferences from "components/Profile/Personal/NotificationPreferences";
-import PreferencesPage from "components/Settings/Preferences";
+import PreferencesPage from "components/Settings/ModernPreferences";
 import UserDetailsView from "components/Profile/Personal/User";
 import UserDetailsEdit from "components/Profile/Personal/User/Edit";
 import LeaveManagement from "components/LeaveManagement";
@@ -136,6 +137,15 @@ export const SETTINGS = [
     icon: <ClientsIcon className="mr-2" size={20} weight="bold" />,
     authorisedRoles: [ADMIN, OWNER],
     Component: OrgEdit,
+    category: "organization",
+    isTab: false,
+  },
+  {
+    label: "BANK & TAX INFO",
+    path: "bank-info",
+    icon: <PaymentsIcon className="mr-2" size={20} weight="bold" />,
+    authorisedRoles: [ADMIN, OWNER],
+    Component: BankInfo,
     category: "organization",
     isTab: false,
   },

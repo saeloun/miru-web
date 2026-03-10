@@ -51,6 +51,13 @@ export interface Invoice {
     name: string;
     baseCurrency: string;
     dateFormat: string;
+    taxId?: string;
+    vatNumber?: string;
+    gstNumber?: string;
+    bankName?: string;
+    bankAccountNumber?: string;
+    bankRoutingNumber?: string;
+    bankSwiftCode?: string;
   };
 }
 
@@ -352,6 +359,21 @@ class InvoiceApiService {
         address: apiInvoice.company?.address
           ? formatAddress(apiInvoice.company.address)
           : "",
+        taxId: apiInvoice.company?.taxId || apiInvoice.company?.tax_id,
+        vatNumber:
+          apiInvoice.company?.vatNumber || apiInvoice.company?.vat_number,
+        gstNumber:
+          apiInvoice.company?.gstNumber || apiInvoice.company?.gst_number,
+        bankName: apiInvoice.company?.bankName || apiInvoice.company?.bank_name,
+        bankAccountNumber:
+          apiInvoice.company?.bankAccountNumber ||
+          apiInvoice.company?.bank_account_number,
+        bankRoutingNumber:
+          apiInvoice.company?.bankRoutingNumber ||
+          apiInvoice.company?.bank_routing_number,
+        bankSwiftCode:
+          apiInvoice.company?.bankSwiftCode ||
+          apiInvoice.company?.bank_swift_code,
       },
     };
   }

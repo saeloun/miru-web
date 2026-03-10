@@ -204,12 +204,12 @@ const ModernPreferences: React.FC = () => {
 
   const getCategoryIcon = (category: string) => {
     if (category.includes("Timesheet")) {
-      return <Clock className="h-5 w-5 text-blue-600" />;
+      return <Clock className="h-5 w-5 text-primary" />;
     } else if (category.includes("Billing")) {
-      return <FileText className="h-5 w-5 text-green-600" />;
+      return <FileText className="h-5 w-5 text-primary" />;
     }
 
-    return <Bell className="h-5 w-5 text-gray-600" />;
+    return <Bell className="h-5 w-5 text-muted-foreground" />;
   };
 
   const getCategoryDescription = (category: string) => {
@@ -227,16 +227,16 @@ const ModernPreferences: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <div className="bg-white shadow-sm border-b sticky top-0 z-10">
+      <div className="sticky top-0 z-10 border-b border-border bg-background/95 backdrop-blur">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div>
-              <h1 className="text-2xl font-semibold text-gray-900">
+              <h1 className="text-2xl font-semibold text-foreground">
                 Email Preferences
               </h1>
-              <p className="text-sm text-gray-600 mt-1">
+              <p className="mt-1 text-sm text-muted-foreground">
                 Manage your email notification settings
               </p>
             </div>
@@ -252,7 +252,7 @@ const ModernPreferences: React.FC = () => {
                 <Button
                   onClick={handleSave}
                   disabled={isSaving}
-                  className="bg-indigo-600 hover:bg-indigo-700"
+                  className="bg-primary hover:bg-primary/90"
                 >
                   {isSaving ? (
                     <>
@@ -277,12 +277,12 @@ const ModernPreferences: React.FC = () => {
         <div className="space-y-6">
           {/* Unsubscribe Confirmation Dialog */}
           {showUnsubscribeConfirm && (
-            <Alert className="border-red-200 bg-red-50">
-              <AlertTriangle className="h-4 w-4 text-red-600" />
-              <AlertTitle className="text-red-900">
+            <Alert className="border-destructive/30 bg-destructive/5 text-foreground">
+              <AlertTriangle className="h-4 w-4 text-destructive" />
+              <AlertTitle className="text-foreground">
                 Confirm Unsubscribe from All Emails
               </AlertTitle>
-              <AlertDescription className="text-red-700">
+              <AlertDescription className="text-muted-foreground">
                 <p className="mb-4">
                   Are you sure you want to unsubscribe from all email
                   notifications? You will not receive any emails including
@@ -310,12 +310,12 @@ const ModernPreferences: React.FC = () => {
 
           {/* Unsubscribed Status */}
           {unsubscribedAll && (
-            <Alert className="border-amber-200 bg-amber-50">
-              <AlertTriangle className="h-4 w-4 text-amber-600" />
-              <AlertTitle className="text-amber-900">
+            <Alert className="border-border bg-card text-foreground">
+              <AlertTriangle className="h-4 w-4 text-primary" />
+              <AlertTitle className="text-foreground">
                 You're Unsubscribed from All Emails
               </AlertTitle>
-              <AlertDescription className="text-amber-700">
+              <AlertDescription className="text-muted-foreground">
                 <p className="mb-4">
                   You are currently unsubscribed from all email notifications.
                   You won't receive any emails from Miru.
@@ -324,7 +324,7 @@ const ModernPreferences: React.FC = () => {
                   size="sm"
                   variant="outline"
                   onClick={handleResubscribe}
-                  className="border-amber-600 text-amber-700 hover:bg-amber-100"
+                  className="border-border text-foreground hover:bg-accent"
                 >
                   <Mail className="h-4 w-4 mr-2" />
                   Re-enable Email Notifications
@@ -338,11 +338,11 @@ const ModernPreferences: React.FC = () => {
             <Card
               key={category}
               className={cn(
-                "border-gray-200 shadow-sm overflow-hidden",
+                "border-border shadow-sm overflow-hidden",
                 unsubscribedAll && "opacity-60"
               )}
             >
-              <CardHeader className="bg-gray-50 border-b">
+              <CardHeader className="border-b border-border bg-muted/30">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
                     {getCategoryIcon(category)}
@@ -350,7 +350,7 @@ const ModernPreferences: React.FC = () => {
                       <CardTitle className="text-lg font-semibold">
                         {category}
                       </CardTitle>
-                      <CardDescription className="text-sm text-gray-600">
+                      <CardDescription className="text-sm text-muted-foreground">
                         {getCategoryDescription(category)}
                       </CardDescription>
                     </div>
@@ -369,12 +369,13 @@ const ModernPreferences: React.FC = () => {
                     key={preference.id}
                     className={cn(
                       "px-6 py-4 flex items-start justify-between",
-                      !unsubscribedAll && "hover:bg-gray-50 transition-colors",
-                      index !== items.length - 1 && "border-b border-gray-100"
+                      !unsubscribedAll &&
+                        "transition-colors hover:bg-accent/40",
+                      index !== items.length - 1 && "border-b border-border"
                     )}
                   >
                     <div className="flex items-start space-x-3 flex-1">
-                      <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gray-100 mt-0.5">
+                      <div className="mt-0.5 flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-muted">
                         {preference.icon}
                       </div>
                       <div className="space-y-1 flex-1">
@@ -384,8 +385,8 @@ const ModernPreferences: React.FC = () => {
                             className={cn(
                               "text-sm font-medium",
                               unsubscribedAll
-                                ? "text-gray-500"
-                                : "text-gray-900 cursor-pointer"
+                                ? "text-muted-foreground"
+                                : "cursor-pointer text-foreground"
                             )}
                           >
                             {preference.title}
@@ -408,7 +409,9 @@ const ModernPreferences: React.FC = () => {
                         <p
                           className={cn(
                             "text-sm pr-4",
-                            unsubscribedAll ? "text-gray-400" : "text-gray-500"
+                            unsubscribedAll
+                              ? "text-muted-foreground/70"
+                              : "text-muted-foreground"
                           )}
                         >
                           {preference.description}
@@ -420,7 +423,7 @@ const ModernPreferences: React.FC = () => {
                       checked={preference.enabled}
                       onCheckedChange={() => handleToggle(preference.id)}
                       disabled={unsubscribedAll}
-                      className="data-[state=checked]:bg-indigo-600"
+                      className="data-[state=checked]:bg-primary"
                     />
                   </div>
                 ))}
@@ -429,10 +432,10 @@ const ModernPreferences: React.FC = () => {
           ))}
 
           {/* Email Delivery Info */}
-          <Card className="border-blue-200 bg-blue-50">
+          <Card className="border-border bg-card">
             <CardHeader>
               <CardTitle className="text-lg flex items-center gap-2">
-                <Mail className="h-5 w-5 text-blue-600" />
+                <Mail className="h-5 w-5 text-primary" />
                 Email Delivery Settings
               </CardTitle>
             </CardHeader>
@@ -440,14 +443,16 @@ const ModernPreferences: React.FC = () => {
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-gray-900">
+                    <p className="text-sm font-medium text-foreground">
                       Email Address
                     </p>
-                    <p className="text-sm text-gray-600">{user?.email}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {user?.email}
+                    </p>
                   </div>
                 </div>
                 <Separator />
-                <p className="text-xs text-gray-600">
+                <p className="text-xs text-muted-foreground">
                   All notifications will be sent to this email address. To
                   change your email, please update it in your profile settings.
                 </p>
@@ -457,13 +462,13 @@ const ModernPreferences: React.FC = () => {
 
           {/* Unsubscribe Section */}
           {!unsubscribedAll && (
-            <Card className="border-gray-200">
+            <Card className="border-border">
               <CardHeader>
                 <CardTitle className="text-lg">Unsubscribe</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-muted-foreground">
                     If you no longer wish to receive any emails from Miru, you
                     can unsubscribe from all notifications. This will stop all
                     email communications including important billing and invoice
@@ -472,7 +477,7 @@ const ModernPreferences: React.FC = () => {
                   <Button
                     variant="outline"
                     onClick={handleUnsubscribeAll}
-                    className="border-red-300 text-red-700 hover:bg-red-50"
+                    className="border-destructive/30 text-destructive hover:bg-destructive/10"
                   >
                     <X className="h-4 w-4 mr-2" />
                     Unsubscribe from All Emails

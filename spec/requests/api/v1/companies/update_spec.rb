@@ -26,6 +26,13 @@ RSpec.describe "Api::V1::Companies::update", type: :request do
               standard_price: "1000",
               fiscal_year_end: "April",
               date_format: "DD/MM/YYYY",
+              bank_name: "First Bank",
+              bank_account_number: "123456789",
+              bank_routing_number: "987654321",
+              bank_swift_code: "FSTBUS33",
+              tax_id: "TAX-123",
+              vat_number: "VAT-456",
+              gst_number: "GST-789",
               addresses_attributes: [{
                 id: company.current_address.id,
                 address_line_1: "updated address"
@@ -54,6 +61,13 @@ RSpec.describe "Api::V1::Companies::update", type: :request do
         expect(company.base_currency).to eq("Rs")
         expect(company.working_days).to eq("5")
         expect(company.working_hours).to eq("40")
+        expect(company.bank_name).to eq("First Bank")
+        expect(company.bank_account_number).to eq("123456789")
+        expect(company.bank_routing_number).to eq("987654321")
+        expect(company.bank_swift_code).to eq("FSTBUS33")
+        expect(company.tax_id).to eq("TAX-123")
+        expect(company.vat_number).to eq("VAT-456")
+        expect(company.gst_number).to eq("GST-789")
         expect(company.current_address.address_line_1).to eq("updated address")
       end
     end

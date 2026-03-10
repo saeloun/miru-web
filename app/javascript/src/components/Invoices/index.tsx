@@ -54,6 +54,19 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
       currentCompany?.business_phone ||
       "",
     taxId: currentCompany?.taxId || currentCompany?.tax_id || "",
+    vatNumber: currentCompany?.vatNumber || currentCompany?.vat_number || "",
+    gstNumber: currentCompany?.gstNumber || currentCompany?.gst_number || "",
+    bankName: currentCompany?.bankName || currentCompany?.bank_name || "",
+    bankAccountNumber:
+      currentCompany?.bankAccountNumber ||
+      currentCompany?.bank_account_number ||
+      "",
+    bankRoutingNumber:
+      currentCompany?.bankRoutingNumber ||
+      currentCompany?.bank_routing_number ||
+      "",
+    bankSwiftCode:
+      currentCompany?.bankSwiftCode || currentCompany?.bank_swift_code || "",
   };
 
   // Load initial data
@@ -178,9 +191,19 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
       reference: invoiceData.reference,
       invoiceLineItems: invoiceData.invoiceLineItems,
       company: {
-        name: "Miru Time Tracking",
-        baseCurrency: "USD",
-        dateFormat: "MM/dd/yyyy",
+        name: fallbackCompany.name,
+        email: fallbackCompany.email,
+        baseCurrency: fallbackCompany.baseCurrency,
+        dateFormat: fallbackCompany.dateFormat,
+        address: fallbackCompany.address,
+        phone: fallbackCompany.phone,
+        taxId: fallbackCompany.taxId,
+        vatNumber: fallbackCompany.vatNumber,
+        gstNumber: fallbackCompany.gstNumber,
+        bankName: fallbackCompany.bankName,
+        bankAccountNumber: fallbackCompany.bankAccountNumber,
+        bankRoutingNumber: fallbackCompany.bankRoutingNumber,
+        bankSwiftCode: fallbackCompany.bankSwiftCode,
       },
     };
 

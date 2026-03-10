@@ -44,6 +44,12 @@ interface InvoicePreviewProps {
       phone?: string;
       logo?: string;
       taxId?: string;
+      vatNumber?: string;
+      gstNumber?: string;
+      bankName?: string;
+      bankAccountNumber?: string;
+      bankRoutingNumber?: string;
+      bankSwiftCode?: string;
       baseCurrency: string;
     };
     lineItems: Array<{
@@ -357,6 +363,12 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
               {invoice.company.email && <p>{invoice.company.email}</p>}
               {invoice.company.phone && <p>{invoice.company.phone}</p>}
               {invoice.company.taxId && <p>Tax ID: {invoice.company.taxId}</p>}
+              {invoice.company.vatNumber && (
+                <p>VAT Number: {invoice.company.vatNumber}</p>
+              )}
+              {invoice.company.gstNumber && (
+                <p>GST Number: {invoice.company.gstNumber}</p>
+              )}
             </div>
           </div>
 
@@ -507,6 +519,31 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
               Notes
             </h3>
             <p className="text-sm text-gray-600">{invoice.notes}</p>
+          </div>
+        )}
+
+        {(invoice.company.bankName ||
+          invoice.company.bankAccountNumber ||
+          invoice.company.bankRoutingNumber ||
+          invoice.company.bankSwiftCode) && (
+          <div className="border-t pt-6">
+            <h3 className="text-sm font-semibold text-gray-600 uppercase tracking-wider mb-3">
+              Payment Details
+            </h3>
+            <div className="grid gap-2 text-sm text-gray-600 sm:grid-cols-2">
+              {invoice.company.bankName && (
+                <p>Bank Name: {invoice.company.bankName}</p>
+              )}
+              {invoice.company.bankAccountNumber && (
+                <p>Account Number: {invoice.company.bankAccountNumber}</p>
+              )}
+              {invoice.company.bankRoutingNumber && (
+                <p>Routing Number: {invoice.company.bankRoutingNumber}</p>
+              )}
+              {invoice.company.bankSwiftCode && (
+                <p>SWIFT Code: {invoice.company.bankSwiftCode}</p>
+              )}
+            </div>
           </div>
         )}
 

@@ -32,14 +32,14 @@ const ImportModal = ({
       {!file ? (
         <div className="mt-5 h-512 w-352">
           <label className="" htmlFor="file-input">
-            <div className="dashed-border flex min-h-full min-w-full cursor-pointer flex-col items-center justify-center rounded border-miru-dark-purple-200">
+            <div className="dashed-border flex min-h-full min-w-full cursor-pointer flex-col items-center justify-center rounded border-border">
               <div className="flex flex-row ">
                 <img className="" src={fileIcon} />
-                <p className="ml-4 text-base	font-bold tracking-widest text-miru-dark-purple-200">
+                <p className="ml-4 text-base	font-bold tracking-widest text-muted-foreground">
                   UPLOAD FILE
                 </p>
               </div>
-              <p className="text-xs font-medium text-miru-dark-purple-200">
+              <p className="text-xs font-medium text-muted-foreground">
                 Supported file formats: .xls, .xlsx, .csv
               </p>
             </div>
@@ -55,25 +55,29 @@ const ImportModal = ({
         </div>
       ) : (
         <div className=" mt-5 h-512 w-352">
-          <div className="flex h-16 items-center justify-between rounded bg-miru-gray-100 p-2">
-            <div className="flex h-12 w-12 items-center justify-center rounded bg-miru-han-purple-100">
+          <div className="flex h-16 items-center justify-between rounded bg-muted p-2">
+            <div className="flex h-12 w-12 items-center justify-center rounded bg-accent">
               <img src={xls} />
             </div>
             <div className="w-228">
               <p className="truncate	text-sm  font-medium">{file.name}</p>
-              <p className="text-xs	font-medium text-miru-dark-purple-200">
+              <p className="text-xs	font-medium text-muted-foreground">
                 {" "}
                 XLS • {bytesToSize(file.size)}
               </p>
             </div>
             <button onClick={handleRemoveFile}>
-              <XIcon className="mr-2" color="#5E58F1" size={15} />
+              <XIcon
+                className="mr-2 text-primary"
+                color="currentColor"
+                size={15}
+              />
             </button>
           </div>
         </div>
       )}
       <button
-        className="mt-5 w-352 rounded bg-miru-han-purple-1000 py-2 text-base font-bold tracking-widest text-white "
+        className="mt-5 w-352 rounded bg-primary py-2 text-base font-bold tracking-widest text-primary-foreground transition-colors hover:bg-primary/90"
         onClick={handleContinueClick}
       >
         CONTINUE
@@ -88,11 +92,11 @@ const ImportModal = ({
           We have identified following columns from the file and mapped with the
           required fields. Please review and confirm.
         </p>
-        <table className="mt-5 min-w-full divide-y divide-gray-200">
+        <table className="mt-5 min-w-full divide-y divide-border">
           <thead>
             <TableHeader />
           </thead>
-          <tbody className="min-w-full divide-y divide-gray-200">
+          <tbody className="min-w-full divide-y divide-border">
             {data.map((data, id) => (
               <Fragment key={id}>
                 <TableRow column={columnNames} field={data} id={id} />
@@ -102,7 +106,7 @@ const ImportModal = ({
         </table>
       </div>
       <button
-        className="mt-5 w-352 rounded bg-miru-han-purple-1000 py-2 text-base font-bold tracking-widest text-white "
+        className="mt-5 w-352 rounded bg-primary py-2 text-base font-bold tracking-widest text-primary-foreground transition-colors hover:bg-primary/90"
         onClick={handleContinueClick}
       >
         START IMPORT
@@ -114,17 +118,17 @@ const ImportModal = ({
     <div className=" mt-5 w-352 ">
       {true ? (
         <Fragment>
-          <div className=" flex h-304 w-full flex-col items-center justify-around rounded-lg bg-miru-gray-100">
+          <div className=" flex h-304 w-full flex-col items-center justify-around rounded-lg bg-muted">
             <p className="tracking-wide	text-base	font-bold	">
               Importing {totalEntries || 0} time entries
             </p>
-            <div className="flex h-87 items-baseline justify-center text-miru-han-purple-1000">
+            <div className="flex h-87 items-baseline justify-center text-primary">
               <p className="text-3xl font-normal">
                 {Math.round(importProgress)}
               </p>
               <p className="text-base font-normal">%</p>
             </div>
-            <div className="relative h-4 w-72 rounded-2xl bg-miru-gray-200">
+            <div className="relative h-4 w-72 rounded-2xl bg-secondary">
               <ProgressBar width={`${importProgress}%`} />
             </div>
           </div>
@@ -134,7 +138,7 @@ const ImportModal = ({
             you when it is completed.
           </div>
           <button
-            className="mt-22 w-352 rounded bg-miru-han-purple-1000 py-2 text-base font-bold tracking-widest text-white"
+            className="mt-22 w-352 rounded bg-primary py-2 text-base font-bold tracking-widest text-primary-foreground transition-colors hover:bg-primary/90"
             onClick={handleToggleModal}
           >
             CLOSE WINDOW
@@ -142,19 +146,19 @@ const ImportModal = ({
         </Fragment>
       ) : (
         <Fragment>
-          <div className="flex h-512 w-full flex-col items-center justify-around rounded-lg bg-miru-gray-100 p-4">
+          <div className="flex h-512 w-full flex-col items-center justify-around rounded-lg bg-muted p-4">
             <p className="tracking-wide	text-base	font-bold	">Import complete!</p>
-            <div className="flex h-87 items-baseline justify-center text-miru-han-purple-1000">
+            <div className="flex h-87 items-baseline justify-center text-primary">
               <p className="text-3xl font-normal">100</p>
               <p className="text-base font-normal">%</p>
             </div>
-            <div className="w-full border-t-2 border-miru-gray-200 ">
+            <div className="w-full border-t-2 border-border ">
               <div className="py-5 text-base font-bold">Import Summary</div>
-              <div className="flex justify-between border-b-2 border-miru-gray-200 py-2">
+              <div className="flex justify-between border-b-2 border-border py-2">
                 <p className="text-sm	font-normal">Total time entries</p>
                 <p className="text-base font-bold">{totalEntries || 0}</p>
               </div>
-              <div className="flex justify-between border-b-2 border-miru-gray-200 py-2">
+              <div className="flex justify-between border-b-2 border-border py-2">
                 <p className="text-sm	font-normal">Successfully imported</p>
                 <p className="text-base font-bold">{importedEntries || 0}</p>
               </div>
@@ -168,7 +172,7 @@ const ImportModal = ({
             </div>
           </div>
           <button
-            className="mt-10 w-352 rounded bg-miru-han-purple-1000 py-2 text-base font-bold tracking-widest text-white "
+            className="mt-10 w-352 rounded bg-primary py-2 text-base font-bold tracking-widest text-primary-foreground transition-colors hover:bg-primary/90"
             onClick={handleContinueClick}
           >
             IMPORT ANOTHER FILE
@@ -181,7 +185,7 @@ const ImportModal = ({
   return (
     <div
       className="modal__modal main-modal"
-      style={{ background: "rgba(29, 26, 49,0.6)" }}
+      style={{ background: "hsl(var(--foreground) / 0.45)" }}
     >
       <div className="modal__container__import__modal modal-container">
         <div className="modal__content modal-content mt-2">
@@ -189,7 +193,7 @@ const ImportModal = ({
             <h6 className="modal__title"> Import {title} </h6>
             <div className="modal__close">
               <button className="modal__button" onClick={handleToggleModal}>
-                <XIcon color="#CDD6DF" size={15} />
+                <XIcon color="currentColor" size={15} />
               </button>
             </div>
           </div>
@@ -200,43 +204,25 @@ const ImportModal = ({
               ) : (
                 <img alt="step" height="20px" src={Step} width="20px" />
               )}
-              <div
-                className={
-                  step === 1
-                    ? "text-miru-han-purple-1000"
-                    : "text-miru-chart-green-400"
-                }
-              >
+              <div className={step === 1 ? "text-primary" : "text-emerald-500"}>
                 Upload File
               </div>
-              <div className="h-px min-w-24 border border-miru-gray-200 bg-miru-gray-200" />
+              <div className="h-px min-w-24 border border-border bg-secondary" />
               {step <= 2 ? (
                 <div className="import-modal__header-number">2</div>
               ) : (
                 <img alt="step" height="20px" src={Step} width="20px" />
               )}
-              <div
-                className={
-                  step <= 2
-                    ? "text-miru-han-purple-1000 "
-                    : "text-miru-chart-green-400"
-                }
-              >
+              <div className={step <= 2 ? "text-primary " : "text-emerald-500"}>
                 Map fields
               </div>
-              <div className="h-px min-w-24 border border-miru-gray-200 bg-miru-gray-200" />
+              <div className="h-px min-w-24 border border-border bg-secondary" />
               {step <= 3 ? (
                 <div className="import-modal__header-number">3</div>
               ) : (
                 <img alt="step" height="20px" src={Step} width="20px" />
               )}
-              <div
-                className={
-                  step <= 3
-                    ? "text-miru-han-purple-1000 "
-                    : "text-miru-chart-green-400"
-                }
-              >
+              <div className={step <= 3 ? "text-primary " : "text-emerald-500"}>
                 Import
               </div>
             </div>
