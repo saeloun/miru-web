@@ -12,14 +12,14 @@ export const ResponsiveTeamMemberCard: React.FC<any> = props => {
 
   if (isDesktop) {
     return (
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
+      <div className="rounded-lg border border-border bg-card p-6 shadow-sm transition-shadow hover:shadow-md">
         <div className="flex items-start gap-4">
-          <div className="w-16 h-16 rounded-full bg-gray-300 flex items-center justify-center text-xl font-semibold">
+          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-muted text-xl font-semibold text-foreground">
             {props.avatar ? (
               <img
                 src={props.avatar}
                 alt={props.name}
-                className="w-full h-full rounded-full object-cover"
+                className="h-full w-full rounded-full object-cover"
               />
             ) : (
               <span>{props.initials}</span>
@@ -28,22 +28,26 @@ export const ResponsiveTeamMemberCard: React.FC<any> = props => {
 
           <div className="flex-1">
             <h3 className="text-lg font-semibold">{props.name}</h3>
-            <p className="text-sm text-gray-600">{props.role}</p>
-            <p className="text-sm text-gray-500 mt-1">{props.email}</p>
+            <p className="text-sm text-muted-foreground">{props.role}</p>
+            <p className="mt-1 text-sm text-muted-foreground">{props.email}</p>
 
-            <div className="flex gap-4 mt-3">
+            <div className="mt-3 flex gap-4">
               <div>
-                <p className="text-xs text-gray-500 uppercase">Department</p>
+                <p className="text-xs uppercase text-muted-foreground">
+                  Department
+                </p>
                 <p className="text-sm font-medium">{props.department}</p>
               </div>
               <div>
-                <p className="text-xs text-gray-500 uppercase">Status</p>
+                <p className="text-xs uppercase text-muted-foreground">
+                  Status
+                </p>
                 <p className="text-sm">
                   <span
-                    className={`inline-flex items-center px-2 py-1 rounded-full text-xs ${
+                    className={`inline-flex items-center rounded-full px-2 py-1 text-xs ${
                       props.isActive
-                        ? "bg-green-100 text-green-800"
-                        : "bg-gray-100 text-gray-800"
+                        ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-500/15 dark:text-emerald-300"
+                        : "bg-muted text-muted-foreground"
                     }`}
                   >
                     {props.isActive ? "Active" : "Inactive"}
@@ -57,7 +61,7 @@ export const ResponsiveTeamMemberCard: React.FC<any> = props => {
             {props.onEdit && (
               <button
                 onClick={props.onEdit}
-                className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg"
+                className="rounded-lg p-2 text-muted-foreground hover:bg-accent hover:text-accent-foreground"
               >
                 <svg
                   className="w-5 h-5"
@@ -77,7 +81,7 @@ export const ResponsiveTeamMemberCard: React.FC<any> = props => {
             {props.onDelete && (
               <button
                 onClick={props.onDelete}
-                className="p-2 text-red-600 hover:bg-red-50 rounded-lg"
+                className="rounded-lg p-2 text-destructive hover:bg-destructive/10"
               >
                 <svg
                   className="w-5 h-5"
@@ -98,15 +102,15 @@ export const ResponsiveTeamMemberCard: React.FC<any> = props => {
         </div>
 
         {props.projects && props.projects.length > 0 && (
-          <div className="mt-4 pt-4 border-t border-gray-200">
-            <p className="text-xs text-gray-500 uppercase mb-2">
+          <div className="mt-4 border-t border-border pt-4">
+            <p className="mb-2 text-xs uppercase text-muted-foreground">
               Current Projects
             </p>
             <div className="flex flex-wrap gap-2">
               {props.projects.map((project, index) => (
                 <span
                   key={index}
-                  className="px-2 py-1 bg-blue-50 text-blue-700 rounded text-xs"
+                  className="rounded bg-accent px-2 py-1 text-xs text-accent-foreground"
                 >
                   {project}
                 </span>
@@ -120,14 +124,14 @@ export const ResponsiveTeamMemberCard: React.FC<any> = props => {
 
   // Mobile view
   return (
-    <div className="bg-white border-b border-gray-200 p-4">
+    <div className="border-b border-border bg-card p-4">
       <div className="flex items-center gap-3">
-        <div className="w-12 h-12 rounded-full bg-gray-300 flex items-center justify-center font-semibold">
+        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted font-semibold text-foreground">
           {props.avatar ? (
             <img
               src={props.avatar}
               alt={props.name}
-              className="w-full h-full rounded-full object-cover"
+              className="h-full w-full rounded-full object-cover"
             />
           ) : (
             <span>{props.initials}</span>
@@ -136,15 +140,15 @@ export const ResponsiveTeamMemberCard: React.FC<any> = props => {
 
         <div className="flex-1">
           <h3 className="font-semibold">{props.name}</h3>
-          <p className="text-sm text-gray-600">{props.role}</p>
-          <p className="text-xs text-gray-500">{props.email}</p>
+          <p className="text-sm text-muted-foreground">{props.role}</p>
+          <p className="text-xs text-muted-foreground">{props.email}</p>
         </div>
 
         <span
-          className={`px-2 py-1 rounded-full text-xs ${
+          className={`rounded-full px-2 py-1 text-xs ${
             props.isActive
-              ? "bg-green-100 text-green-800"
-              : "bg-gray-100 text-gray-800"
+              ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-500/15 dark:text-emerald-300"
+              : "bg-muted text-muted-foreground"
           }`}
         >
           {props.isActive ? "Active" : "Inactive"}
@@ -152,18 +156,18 @@ export const ResponsiveTeamMemberCard: React.FC<any> = props => {
       </div>
 
       {props.projects && props.projects.length > 0 && (
-        <div className="mt-3 pt-3 border-t border-gray-100">
-          <div className="flex gap-1 flex-wrap">
+        <div className="mt-3 border-t border-border pt-3">
+          <div className="flex flex-wrap gap-1">
             {props.projects.slice(0, 3).map((project, index) => (
               <span
                 key={index}
-                className="px-2 py-1 bg-blue-50 text-blue-700 rounded text-xs"
+                className="rounded bg-accent px-2 py-1 text-xs text-accent-foreground"
               >
                 {project}
               </span>
             ))}
             {props.projects.length > 3 && (
-              <span className="px-2 py-1 bg-gray-100 text-gray-600 rounded text-xs">
+              <span className="rounded bg-muted px-2 py-1 text-xs text-muted-foreground">
                 +{props.projects.length - 3} more
               </span>
             )}
@@ -180,30 +184,30 @@ export const ResponsiveTeamStats: React.FC<any> = props => {
 
   if (isDesktop) {
     return (
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <div className="rounded-lg border border-border bg-card p-6 shadow-sm">
         <h3 className="text-lg font-semibold mb-4">Team Overview</h3>
         <div className="grid grid-cols-4 gap-6">
           <div>
             <p className="text-2xl font-bold">{props.totalMembers}</p>
-            <p className="text-sm text-gray-600">Total Members</p>
+            <p className="text-sm text-muted-foreground">Total Members</p>
           </div>
           <div>
-            <p className="text-2xl font-bold text-green-600">
+            <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-300">
               {props.activeMembers}
             </p>
-            <p className="text-sm text-gray-600">Active</p>
+            <p className="text-sm text-muted-foreground">Active</p>
           </div>
           <div>
-            <p className="text-2xl font-bold text-blue-600">
+            <p className="text-2xl font-bold text-primary">
               {props.totalProjects}
             </p>
-            <p className="text-sm text-gray-600">Projects</p>
+            <p className="text-sm text-muted-foreground">Projects</p>
           </div>
           <div>
-            <p className="text-2xl font-bold text-purple-600">
+            <p className="text-2xl font-bold text-foreground">
               {props.totalHours}h
             </p>
-            <p className="text-sm text-gray-600">This Month</p>
+            <p className="text-sm text-muted-foreground">This Month</p>
           </div>
         </div>
       </div>
@@ -211,30 +215,30 @@ export const ResponsiveTeamStats: React.FC<any> = props => {
   }
 
   return (
-    <div className="bg-white border-b border-gray-200 p-4">
+    <div className="border-b border-border bg-card p-4">
       <h3 className="font-semibold mb-3">Team Overview</h3>
       <div className="grid grid-cols-2 gap-4">
         <div className="text-center">
           <p className="text-xl font-bold">{props.totalMembers}</p>
-          <p className="text-xs text-gray-600">Total Members</p>
+          <p className="text-xs text-muted-foreground">Total Members</p>
         </div>
         <div className="text-center">
-          <p className="text-xl font-bold text-green-600">
+          <p className="text-xl font-bold text-emerald-600 dark:text-emerald-300">
             {props.activeMembers}
           </p>
-          <p className="text-xs text-gray-600">Active</p>
+          <p className="text-xs text-muted-foreground">Active</p>
         </div>
         <div className="text-center">
-          <p className="text-xl font-bold text-blue-600">
+          <p className="text-xl font-bold text-primary">
             {props.totalProjects}
           </p>
-          <p className="text-xs text-gray-600">Projects</p>
+          <p className="text-xs text-muted-foreground">Projects</p>
         </div>
         <div className="text-center">
-          <p className="text-xl font-bold text-purple-600">
+          <p className="text-xl font-bold text-foreground">
             {props.totalHours}h
           </p>
-          <p className="text-xs text-gray-600">This Month</p>
+          <p className="text-xs text-muted-foreground">This Month</p>
         </div>
       </div>
     </div>
