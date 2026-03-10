@@ -124,6 +124,14 @@ en:
     update:
       failure: "Failed to switch workspace"
       success: "Workspace switched successfully"
+  expenses:
+    create: Expense submitted successfully
+    update: Expense updated successfully
+    destroy: Expense deleted successfully
+    approve: Expense approved successfully
+    reject: Expense rejected successfully
+    mark_paid: Expense marked as paid
+    must_be_approved: Expense must be approved before marking it as paid
   team:
     team: Team
     new_user: NEW USER
@@ -295,7 +303,3 @@ en:
   sessions:
     failure:
       invalid: Invalid email or password
-  expenses:
-    create: "Expense created successfully"
-    update: "Expense updated successfully"
-    destroy: "Expense deleted successfully"

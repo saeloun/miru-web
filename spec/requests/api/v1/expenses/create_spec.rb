@@ -3,11 +3,15 @@
 require "rails_helper"
 
 RSpec.describe "Api::V1::Expense#create", type: :request do
+  let(:receipt) do
+    Rack::Test::UploadedFile.new(
+      Rails.root.join("spec/support/fixtures/test-image.png"),
+      "image/png"
+    )
+  end
   let(:company) { create(:company) }
   let(:client) { create(:client, company:) }
   let(:project) { create(:project, client: client_1) }
-  let(:expense_category) { create(:expense_category, company:) }
-  let(:vendor) { create(:vendor, company:) }
   let(:admin) { create(:user, current_workspace_id: company.id) }
   let(:employee) { create(:user, current_workspace_id: company.id) }
   let(:book_keeper) { create(:user, current_workspace_id: company.id) }
@@ -30,7 +34,7 @@ RSpec.describe "Api::V1::Expense#create", type: :request do
 
     describe "#create" do
       before do
-        @expense = attributes_for(:expense).merge(expense_category_id: expense_category.id, vendor_id: vendor.id)
+        @expense = attributes_for(:expense).merge(category_name: "Travel", vendor_name: "Jetway")
 
         send_request :post, api_v1_expenses_path(expense: @expense)
       end
@@ -48,8 +52,8 @@ RSpec.describe "Api::V1::Expense#create", type: :request do
         expected_response = {
           "amount": @expense[:amount].to_s,
           "type": @expense[:expense_type],
-          "vendorName": vendor.name,
-          "categoryName": expense_category.name,
+          "vendorName": "Jetway",
+          "categoryName": "Travel",
           "description": @expense[:description]
 
         }
@@ -62,20 +66,26 @@ RSpec.describe "Api::V1::Expense#create", type: :request do
   context "when the user is an employee" do
     before do
       sign_in employee
-
-      send_request :post, api_v1_expenses_path(expense: {
-        amount: 12.25,
-        date: Date.current.iso8601,
-        description: "Cab reimbursement",
-        expense_type: "business",
-        expense_category_id: expense_category.id,
-        vendor_id: vendor.id
-      })
     end
 
-    it "creates the employee expense" do
+    it "creates the employee expense, attaches the receipt, and notifies reviewers" do
+      expect do
+        post api_v1_expenses_path, params: {
+          expense: {
+            amount: 12.25,
+            date: Date.current.iso8601,
+            description: "Cab reimbursement",
+            expense_type: "business",
+            category_name: "Travel",
+            vendor_name: "Jetway",
+            receipts: [receipt]
+          }
+        }
+      end.to have_enqueued_mail(ExpenseMailer, :submitted)
+
       expect(response).to have_http_status(:ok)
       expect(Expense.last.user).to eq(employee)
+      expect(Expense.last.receipts.count).to eq(1)
     end
   end
 
@@ -88,8 +98,8 @@ RSpec.describe "Api::V1::Expense#create", type: :request do
         date: Date.current.iso8601,
         description: "Team lunch reimbursement",
         expense_type: "business",
-        expense_category_id: expense_category.id,
-        vendor_id: vendor.id
+        category_name: "Meals",
+        vendor_name: "Cafe 21"
       })
     end
 

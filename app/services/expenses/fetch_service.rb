@@ -11,13 +11,12 @@ class Expenses::FetchService
   end
 
   def process
-    @expenses = search_expenses.includes(:expense_category, :vendor, :company)
+    @expenses = search_expenses.includes(:company)
 
     {
       expenses:,
       pagination_details:,
-      vendors: current_company.vendors,
-      categories: current_company.all_expense_categories
+      categories: expense_categories
     }
   end
 
@@ -46,15 +45,6 @@ class Expenses::FetchService
           expenses = expenses.where(expense_type: filters.where_clause[:expense_type])
         end
 
-        # Apply category filter if present
-        if filters.where_clause[:expense_category_id].present?
-          expenses = expenses.where(expense_category_id: filters.where_clause[:expense_category_id])
-        end
-
-        # Apply vendor filter if present
-        if filters.where_clause[:vendor_id].present?
-          expenses = expenses.where(vendor_id: filters.where_clause[:vendor_id])
-        end
       end
 
       # Apply ordering
@@ -90,5 +80,11 @@ class Expenses::FetchService
         next: nil,
         last: true
       }
+    end
+
+    def expense_categories
+      ExpenseCategory::DEFAULT_CATEGORIES.map do |category|
+        { name: category[:name] }
+      end
     end
 end
