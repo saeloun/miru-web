@@ -25,6 +25,7 @@ import { Button } from "../../../../ui/button";
 import { Separator } from "../../../../ui/separator";
 
 const EditProfilePage = ({
+  avatarSection,
   addressOptions,
   addrType,
   countries,
@@ -433,6 +434,7 @@ const EditProfilePage = ({
         </div>
         {/* Side Column */}
         <div className="space-y-6">
+          {avatarSection}
           {/* Social Profiles Card */}
           <Card className="border-border shadow-sm">
             <CardHeader className="pb-4">

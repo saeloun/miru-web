@@ -70,6 +70,21 @@ RSpec.describe EncodingSanitizer do
         expect { middleware.call(env) }.not_to raise_error
       end
     end
+
+    context "with multipart form data" do
+      it "does not wrap rack.input" do
+        input = StringIO.new("binary")
+        env = {
+          "CONTENT_TYPE" => "multipart/form-data; boundary=abc123",
+          "PATH_INFO" => "/test",
+          "rack.input" => input
+        }
+
+        _status, response_env, _body = middleware.call(env)
+
+        expect(response_env["rack.input"]).to equal(input)
+      end
+    end
   end
 
   describe EncodingSanitizer::SanitizedInput do

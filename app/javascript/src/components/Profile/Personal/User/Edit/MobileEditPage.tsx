@@ -27,6 +27,7 @@ const labelClass =
   "absolute top-0.5 left-1 z-1 h-6 origin-0 bg-background p-2 text-sm font-medium duration-300";
 
 const MobileEditDetails = ({
+  avatarSection,
   addrType,
   addressOptions,
   changePassword,
@@ -71,6 +72,7 @@ const MobileEditDetails = ({
 
   return (
     <div className="mt-12 px-4 py-2">
+      {avatarSection && <div className="pb-4">{avatarSection}</div>}
       <div className="py-4">
         <span className="flex flex-row items-center px-1 text-sm font-medium text-foreground">
           <InfoIcon className="mr-2" color="#1D1A31" size={13.5} /> Basic
