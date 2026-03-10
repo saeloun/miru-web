@@ -16,8 +16,6 @@ require "rspec/rails"
 require "test_prof/recipes/rspec/let_it_be"
 
 Rails.application.routes_reloader.execute_unless_loaded
-require "support/session_helpers"
-require "support/database_cleaner"
 
 Dir[Rails.root.join("spec", "support", "**", "*.rb")].sort.each { |f| require f }
 Dir[Rails.root.join("spec/system", "shared_examples", "**", "*.rb")].sort.each { |f| require f }
@@ -58,12 +56,9 @@ RSpec.configure do |config|
   config.infer_spec_type_from_file_location!
 
   config.filter_rails_from_backtrace!
-  config.include Devise::Test::IntegrationHelpers, type: :request
-  config.include Warden::Test::Helpers
   config.include RequestHelper, type: :request
   config.include Devise::Test::ControllerHelpers, type: :controller
   config.include Capybara::DSL
-  config.include Warden::Test::Helpers
   config.include SessionHelpers, type: :system
   config.before do
     Faker::UniqueGenerator.clear
@@ -72,9 +67,9 @@ RSpec.configure do |config|
   end
   config.include ActiveJob::TestHelper
 
-  # Configure system tests with Playwright
+  # Configure system tests with Cuprite
   config.before(:each, type: :system) do
-    driven_by :playwright
+    driven_by :cuprite
     Capybara.default_max_wait_time = 5
   end
 

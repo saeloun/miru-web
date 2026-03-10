@@ -6,6 +6,9 @@
 # and recreated between test runs. Don't rely on the data there!
 
 Rails.application.configure do
+  error_logger = ActiveSupport::Logger.new($stderr)
+  error_logger.level = Logger::ERROR
+
   # Settings specified here will take precedence over those in config/application.rb.
 
   # While tests run files are not watched, reloading is not necessary.
@@ -23,6 +26,8 @@ Rails.application.configure do
   # Show full error reports.
   config.consider_all_requests_local = true
   config.cache_store = :null_store
+  config.logger = ActiveSupport::TaggedLogging.new(error_logger)
+  config.log_level = :error
 
   # Render exception templates for rescuable exceptions and raise for other exceptions.
   config.action_dispatch.show_exceptions = :rescuable

@@ -185,9 +185,9 @@ const ProjectDetails = () => {
               </h2>
               {project?.is_billable && (
                 <Badge
-                  bgColor="bg-miru-han-purple-100"
+                  bgColor="bg-accent"
                   className="tracking-wide rounded-xl uppercase"
-                  color="text-miru-han-purple-1000"
+                  color="text-primary"
                   text="billable"
                 />
               )}
@@ -200,7 +200,7 @@ const ProjectDetails = () => {
                 show={showToolTip || isButtonHovered}
               >
                 <button
-                  className="menuButton__button mr-3 hover:bg-miru-gray-100"
+                  className="menuButton__button mr-3 hover:bg-muted"
                   onClick={handleGenerateInvoice}
                   onMouseEnter={handleButtonMouseEnter}
                   onMouseLeave={handleButtonMouseLeave}
@@ -215,7 +215,7 @@ const ProjectDetails = () => {
                 show={showToolTip || isButtonHovered}
               >
                 <button
-                  className="menuButton__button mr-3 hover:bg-miru-gray-100"
+                  className="menuButton__button mr-3 hover:bg-muted"
                   id="addRemoveTeamMembers"
                   onClick={handleAddRemoveMembers}
                   onMouseEnter={handleButtonMouseEnter}
@@ -226,7 +226,7 @@ const ProjectDetails = () => {
               </Tooltip>
               <div className="relative">
                 <button
-                  className="menuButton__button hover:bg-miru-gray-100"
+                  className="menuButton__button hover:bg-muted"
                   id="kebabMenu"
                   onClick={handleMenuVisibility}
                 >
@@ -246,7 +246,7 @@ const ProjectDetails = () => {
               </div>
             </div>
           </div>
-          <p className="ml-12 mt-1 text-xs text-miru-dark-purple-400">
+          <p className="ml-12 mt-1 text-xs text-muted-foreground">
             {project && project.client.name}
           </p>
         </div>

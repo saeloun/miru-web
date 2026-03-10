@@ -57,7 +57,7 @@ const MoreOptions = ({ item, setShowMoreOptions, showMoreOptions }: Iprops) => {
             handleAction(e, TeamModalType.DELETE);
           }}
         >
-          <DeleteIcon className="text-miru-red-400" size={16} weight="bold" />
+          <DeleteIcon className="text-destructive" size={16} weight="bold" />
         </Button>
       </Tooltip>
     </HoverMoreOptions>
@@ -67,7 +67,7 @@ const MoreOptions = ({ item, setShowMoreOptions, showMoreOptions }: Iprops) => {
       visibilty={showMoreOptions}
     >
       <li
-        className="flex items-center px-2 pt-3 text-sm leading-5 text-miru-han-purple-1000"
+        className="flex items-center px-2 pt-3 text-sm leading-5 text-primary"
         onClick={e => {
           setShowMoreOptions(false);
           handleAction(e, TeamModalType.ADD_EDIT);
@@ -77,7 +77,7 @@ const MoreOptions = ({ item, setShowMoreOptions, showMoreOptions }: Iprops) => {
         Edit
       </li>
       <li
-        className="flex items-center px-2 pt-3 text-sm leading-5 text-miru-red-400"
+        className="flex items-center px-2 pt-3 text-sm leading-5 text-destructive"
         onClick={e => {
           setShowMoreOptions(false);
           handleAction(e, TeamModalType.DELETE);

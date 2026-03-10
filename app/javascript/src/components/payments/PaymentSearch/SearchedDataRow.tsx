@@ -14,7 +14,7 @@ const SearchedDataRow = ({
       setSearchQuery(suggestedPaymentClientName);
     }}
   >
-    <h1 className="font-sans text-sm font-semibold leading-4 text-miru-dark-purple-1000">
+    <h1 className="font-sans text-sm font-semibold leading-4 text-foreground">
       {suggestedPaymentClientName}
     </h1>
   </div>

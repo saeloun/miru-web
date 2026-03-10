@@ -110,7 +110,7 @@ const TimeoffEntryCard = ({
 
   return (
     <div
-      className="week-card flex w-full items-center justify-between border-b border-miru-gray-200 py-4 lg:mt-10 lg:rounded-lg lg:border-b-0 lg:p-6 lg:shadow-2xl"
+      className="week-card flex w-full items-center justify-between border-b border-border py-4 lg:mt-10 lg:rounded-lg lg:border-b-0 lg:p-6 lg:shadow-2xl"
       onClick={handleCardClick}
     >
       <div className="w-7/12 flex-auto">
@@ -134,7 +134,7 @@ const TimeoffEntryCard = ({
           )}
         </div>
         <div className="flex py-2 lg:hidden" />
-        <p className="max-h-32 overflow-auto whitespace-pre-wrap break-words text-sm text-miru-dark-purple-200 lg:w-160">
+        <p className="max-h-32 overflow-auto whitespace-pre-wrap break-words text-sm text-muted-foreground lg:w-160">
           {note}
         </p>
       </div>

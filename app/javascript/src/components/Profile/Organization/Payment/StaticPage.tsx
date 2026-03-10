@@ -37,7 +37,7 @@ const StaticPage = ({
         <div className="mt-4 space-y-6 px-4 md:px-10 lg:px-0">
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center text-base font-bold text-miru-dark-purple-1000">
+              <CardTitle className="flex items-center text-base font-bold text-foreground">
                 <CreditCard className="mr-2" color="#1D1A31" size={16} />
                 Payment Gateway Integration
               </CardTitle>
@@ -51,11 +51,11 @@ const StaticPage = ({
                 {/* Stripe Integration */}
                 <div className="flex items-center justify-between rounded-lg border p-6">
                   <div className="flex items-center gap-6">
-                    <div className="flex-shrink-0 border-r border-gray-200 pr-6">
+                    <div className="flex-shrink-0 border-r border-border pr-6">
                       <img src={StripeLogoSVG} alt="Stripe" className="h-8" />
                     </div>
                     <div className="max-w-md">
-                      <p className="text-sm text-miru-dark-purple-1000">
+                      <p className="text-sm text-foreground">
                         {isStripeConnected
                           ? "Your Stripe account is connected and ready to accept online payments"
                           : "Connect with your existing Stripe account or create a new account"}
@@ -92,11 +92,11 @@ const StaticPage = ({
                 {/* PayPal Integration (commented out) */}
                 {/* <div className="flex items-center justify-between rounded-lg border p-6">
                   <div className="flex items-center gap-6">
-                    <div className="flex-shrink-0 border-r border-gray-200 pr-6">
+                    <div className="flex-shrink-0 border-r border-border pr-6">
                       <img src={Paypal_Logo} alt="PayPal" className="h-8" />
                     </div>
                     <div className="max-w-md">
-                      <p className="text-sm text-miru-dark-purple-1000">
+                      <p className="text-sm text-foreground">
                         Connect with your existing PayPal account or create a new account
                       </p>
                     </div>

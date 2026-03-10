@@ -33,7 +33,7 @@ const TableRow = ({ expense, currency, fetchExpenses }) => {
       ?.icon || <img src={ExpenseIconSVG} />;
 
     return (
-      <div className="mr-3 flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-miru-gray-100 to-miru-gray-200 p-1.5 text-miru-dark-purple-600 lg:h-10 lg:w-10 lg:p-2">
+      <div className="mr-3 flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-muted to-secondary p-1.5 text-muted-foreground lg:h-10 lg:w-10 lg:p-2">
         {icon}
       </div>
     );
@@ -50,29 +50,29 @@ const TableRow = ({ expense, currency, fetchExpenses }) => {
   return (
     <Fragment>
       <tr
-        className="group w-full cursor-pointer border-b border-miru-gray-200 last:border-b-0 hover:bg-miru-gray-50"
+        className="group w-full cursor-pointer border-b border-border last:border-b-0 hover:bg-background"
         key={id}
         onClick={() => handleExpenseClick(id)}
       >
         <td className="hidden py-5 lg:table-cell lg:w-3/12 lg:pr-8 lg:pl-2">
           <div className="flex items-center">
             {getCategoryIcon()}
-            <div className="w-full overflow-hidden truncate whitespace-nowrap pr-2 text-sm font-semibold text-miru-dark-purple-1000 lg:text-base">
+            <div className="w-full overflow-hidden truncate whitespace-nowrap pr-2 text-sm font-semibold text-foreground lg:text-base">
               {categoryName}
             </div>
           </div>
         </td>
-        <td className="hidden w-2/12 py-5 pr-4 text-left text-xs font-normal text-miru-dark-purple-600 lg:table-cell lg:text-sm">
+        <td className="hidden w-2/12 py-5 pr-4 text-left text-xs font-normal text-muted-foreground lg:table-cell lg:text-sm">
           {date}
         </td>
         <td className="w-2/5 py-5 pr-4 text-left lg:table-cell lg:w-2/12">
           <div className="flex w-full">
             {!isDesktop && getCategoryIcon()}
             <div className="flex flex-col items-start justify-start">
-              <span className="text-sm font-semibold text-miru-dark-purple-1000 lg:text-base lg:leading-5">
+              <span className="text-sm font-semibold text-foreground lg:text-base lg:leading-5">
                 {vendorName}
               </span>
-              <p className="truncateOverflowText text-xs font-normal text-miru-dark-purple-400 lg:text-sm lg:leading-4">
+              <p className="truncateOverflowText text-xs font-normal text-muted-foreground lg:text-sm lg:leading-4">
                 {description || "—"}
               </p>
             </div>
@@ -80,10 +80,10 @@ const TableRow = ({ expense, currency, fetchExpenses }) => {
         </td>
         <td className="w-1/5 truncate whitespace-nowrap py-5 pr-4 text-left capitalize lg:table-cell lg:w-2/12">
           <div className="flex h-full flex-col items-start">
-            <span className="text-xs font-medium text-miru-dark-purple-600 lg:text-sm">
+            <span className="text-xs font-medium text-muted-foreground lg:text-sm">
               {expenseType}
             </span>
-            <dl className="truncate text-left text-xs font-normal leading-4 text-miru-dark-purple-400 lg:hidden">
+            <dl className="truncate text-left text-xs font-normal leading-4 text-muted-foreground lg:hidden">
               <dt className="mt-1">{date}</dt>
             </dl>
           </div>
@@ -92,12 +92,12 @@ const TableRow = ({ expense, currency, fetchExpenses }) => {
           <div className="flex items-center">
             {receipts?.length > 0 && isDesktop && (
               <InvoicesIcon
-                className="text-miru-dark-purple-400"
+                className="text-muted-foreground"
                 size={20}
                 weight="bold"
               />
             )}
-            <span className="flex w-full justify-end text-sm font-semibold text-miru-dark-purple-1000 lg:text-lg lg:font-bold">
+            <span className="flex w-full justify-end text-sm font-semibold text-foreground lg:text-lg lg:font-bold">
               {currencyFormat(currency, amount)}
             </span>
             {isDesktop && (
@@ -113,7 +113,7 @@ const TableRow = ({ expense, currency, fetchExpenses }) => {
         </td>
         <td className="w-1/6 text-center lg:hidden">
           <DotsThreeVerticalIcon
-            className="mx-auto font-bold text-miru-dark-purple-1000"
+            className="mx-auto font-bold text-foreground"
             size={20}
             weight="bold"
             onClick={e => {

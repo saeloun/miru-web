@@ -41,7 +41,7 @@ const Header = ({
                 <div className="mr-1">
                   <ReportsIcon color="white" size={16} weight="bold" />
                 </div>
-                <p className="ml-1 text-base font-bold tracking-widest text-miru-white-1000">
+                <p className="ml-1 text-base font-bold tracking-widest text-primary-foreground">
                   PAY
                 </p>
               </div>
@@ -54,7 +54,7 @@ const Header = ({
               ${
                 invoice.status == "paid"
                   ? "cursor-not-allowed bg-indigo-100"
-                  : "bg-miru-han-purple-1000"
+                  : "bg-primary"
               }`}
             onClick={() => {
               if (invoice.status != "paid") {
@@ -73,7 +73,7 @@ const Header = ({
               <div className="mr-1">
                 <ReportsIcon color="white" size={16} weight="bold" />
               </div>
-              <p className="ml-1 text-base font-bold tracking-widest text-miru-white-1000">
+              <p className="ml-1 text-base font-bold tracking-widest text-primary-foreground">
                 PAY
               </p>
             </div>

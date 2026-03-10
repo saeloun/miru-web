@@ -10,10 +10,10 @@ const StaticPage = ({ employmentDetails }) => (
   <div className="mt-4 space-y-6 px-4 md:px-10 lg:px-0">
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center text-base font-bold text-miru-dark-purple-1000">
+        <CardTitle className="flex items-center text-base font-bold text-foreground">
           <ProjectsIcon
             className="mr-2"
-            color="#1D1A31"
+            color="currentColor"
             size={16}
             weight="bold"
           />
@@ -23,52 +23,52 @@ const StaticPage = ({ employmentDetails }) => (
       <CardContent>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div className="space-y-1">
-            <span className="text-sm font-semibold text-miru-dark-purple-600">
+            <span className="text-sm font-semibold text-muted-foreground">
               Employee ID
             </span>
-            <p className="text-base font-medium text-miru-dark-purple-1000">
+            <p className="text-base font-medium text-foreground">
               {employmentDetails.current_employment.employee_id || "-"}
             </p>
           </div>
           <div className="space-y-1">
-            <span className="text-sm font-semibold text-miru-dark-purple-600">
+            <span className="text-sm font-semibold text-muted-foreground">
               Designation
             </span>
-            <p className="text-base font-medium text-miru-dark-purple-1000">
+            <p className="text-base font-medium text-foreground">
               {employmentDetails.current_employment.designation || "-"}
             </p>
           </div>
           <div className="space-y-1">
-            <span className="text-sm font-semibold text-miru-dark-purple-600">
+            <span className="text-sm font-semibold text-muted-foreground">
               Email ID (Official)
             </span>
-            <p className="text-base font-medium text-miru-dark-purple-1000">
+            <p className="text-base font-medium text-foreground">
               {employmentDetails.current_employment.email || "-"}
             </p>
           </div>
           <div className="space-y-1">
-            <span className="text-sm font-semibold text-miru-dark-purple-600">
+            <span className="text-sm font-semibold text-muted-foreground">
               Employee Type
             </span>
-            <p className="text-base font-medium text-miru-dark-purple-1000">
+            <p className="text-base font-medium text-foreground">
               {getLabelForEmployeeType(
                 employmentDetails.current_employment.employment_type
               )}
             </p>
           </div>
           <div className="space-y-1">
-            <span className="text-sm font-semibold text-miru-dark-purple-600">
+            <span className="text-sm font-semibold text-muted-foreground">
               Date of Joining
             </span>
-            <p className="text-base font-medium text-miru-dark-purple-1000">
+            <p className="text-base font-medium text-foreground">
               {employmentDetails.current_employment.joined_at || "-"}
             </p>
           </div>
           <div className="space-y-1">
-            <span className="text-sm font-semibold text-miru-dark-purple-600">
+            <span className="text-sm font-semibold text-muted-foreground">
               Date of Resignation
             </span>
-            <p className="text-base font-medium text-miru-dark-purple-1000">
+            <p className="text-base font-medium text-foreground">
               {employmentDetails.current_employment.resigned_at || "-"}
             </p>
           </div>
@@ -77,8 +77,13 @@ const StaticPage = ({ employmentDetails }) => (
     </Card>
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center text-base font-bold text-miru-dark-purple-1000">
-          <Briefcase className="mr-2" color="#1D1A31" size={16} weight="bold" />
+        <CardTitle className="flex items-center text-base font-bold text-foreground">
+          <Briefcase
+            className="mr-2"
+            color="currentColor"
+            size={16}
+            weight="bold"
+          />
           Previous Employment
         </CardTitle>
       </CardHeader>
@@ -87,22 +92,22 @@ const StaticPage = ({ employmentDetails }) => (
           <div className="space-y-4">
             {employmentDetails.previous_employments.map((previous, index) => (
               <div
-                className="grid grid-cols-1 gap-4 md:grid-cols-2 pb-4 border-b border-gray-200 last:border-0 last:pb-0"
+                className="grid grid-cols-1 gap-4 border-b border-border pb-4 last:border-0 last:pb-0 md:grid-cols-2"
                 key={index}
               >
                 <div className="space-y-1">
-                  <span className="text-sm font-semibold text-miru-dark-purple-600">
+                  <span className="text-sm font-semibold text-muted-foreground">
                     Company
                   </span>
-                  <p className="text-base font-medium text-miru-dark-purple-1000">
+                  <p className="text-base font-medium text-foreground">
                     {previous.company_name}
                   </p>
                 </div>
                 <div className="space-y-1">
-                  <span className="text-sm font-semibold text-miru-dark-purple-600">
+                  <span className="text-sm font-semibold text-muted-foreground">
                     Role
                   </span>
-                  <p className="text-base font-medium text-miru-dark-purple-1000">
+                  <p className="text-base font-medium text-foreground">
                     {previous.role}
                   </p>
                 </div>
@@ -110,7 +115,7 @@ const StaticPage = ({ employmentDetails }) => (
             ))}
           </div>
         ) : (
-          <div className="text-center py-8 text-miru-dark-purple-600">
+          <div className="text-center py-8 text-muted-foreground">
             No previous employments found
           </div>
         )}

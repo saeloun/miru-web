@@ -31,68 +31,64 @@ const PlanSelection = () => {
   return (
     <div className="flex min-h-screen items-center justify-center">
       <div className="w-96 rounded bg-white p-6 shadow-xl">
-        <h1 className="1000-miru-dark-purple-1000 text-base font-bold">
-          Plan Details
-        </h1>
+        <h1 className="text-base font-bold text-foreground">Plan Details</h1>
         <div className="mt-6 flex items-center justify-between">
-          <label className="text-xs text-miru-dark-purple-1000">
+          <label className="text-xs text-foreground">
             Number of Team Members:{" "}
           </label>
           <input
-            className="w-40 rounded bg-miru-gray-100 p-1 text-right"
+            className="w-40 rounded bg-muted p-1 text-right"
             type="number"
             value={teamMemberCount}
             onChange={handleChange}
           />
         </div>
-        <div className="my-6 bg-miru-gray-100 p-4">
+        <div className="my-6 bg-muted p-4">
           <div className="mb-4 border-b pb-4">
-            <h6 className="text-xs text-miru-dark-purple-1000">Plan</h6>
+            <h6 className="text-xs text-foreground">Plan</h6>
             <div className="flex justify-between">
-              <h5 className="text-base font-semibold text-miru-dark-purple-1000">
+              <h5 className="text-base font-semibold text-foreground">
                 Basic Plan
               </h5>
-              <span className="text-base font-semibold text-miru-dark-purple-1000">
+              <span className="text-base font-semibold text-foreground">
                 {plan.details.cost}$
               </span>
             </div>
             <div className="flex justify-between">
-              <p className="text-xs text-miru-dark-purple-400">
+              <p className="text-xs text-muted-foreground">
                 Basic plan includes all features. <br /> This is a one-time
                 charge.
               </p>
-              <span className="text-right text-xs text-miru-dark-purple-400">
+              <span className="text-right text-xs text-muted-foreground">
                 charged once
               </span>
             </div>
           </div>
           <div className="mb-4 border-b pb-4">
-            <h6 className="text-xs text-miru-dark-purple-1000">Add-Ons</h6>
+            <h6 className="text-xs text-foreground">Add-Ons</h6>
             <div className="flex justify-between">
-              <h5 className="text-base font-semibold text-miru-dark-purple-1000">
+              <h5 className="text-base font-semibold text-foreground">
                 1 team member
               </h5>
-              <span className="text-base font-semibold text-miru-dark-purple-1000">
+              <span className="text-base font-semibold text-foreground">
                 {plan.teammember.rate}$/mo
               </span>
             </div>
             <div className="w-half flex justify-between">
-              <p className="text-xs text-miru-dark-purple-400">{`Basic plan comes with additional ${plan.teammember.rate}$ per user per month.`}</p>
-              <span className="text-right text-xs text-miru-dark-purple-400">
+              <p className="text-xs text-muted-foreground">{`Basic plan comes with additional ${plan.teammember.rate}$ per user per month.`}</p>
+              <span className="text-right text-xs text-muted-foreground">
                 charged every month
               </span>
             </div>
           </div>
           <div>
             <div className="flex justify-between">
-              <h5 className="text-2xl font-semibold text-miru-dark-purple-1000">
-                Total
-              </h5>
+              <h5 className="text-2xl font-semibold text-foreground">Total</h5>
               <div className="text-right">
-                <h5 className="text-2xl font-semibold text-miru-dark-purple-1000">
+                <h5 className="text-2xl font-semibold text-foreground">
                   {total}$
                 </h5>
-                <span className="text-xs text-miru-dark-purple-400">
+                <span className="text-xs text-muted-foreground">
                   plus taxes
                 </span>
               </div>

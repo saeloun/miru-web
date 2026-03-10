@@ -65,7 +65,7 @@ const MobileFinancialDetailForm = ({
               <div>
                 {/* Base Currency */}
                 <div className="field relative">
-                  <label className="absolute -top-1 left-0 z-1 ml-3 origin-0 bg-white px-1 text-xsm font-medium text-miru-dark-purple-200 duration-300">
+                  <label className="absolute -top-1 left-0 z-1 ml-3 origin-0 bg-white px-1 text-xsm font-medium text-muted-foreground duration-300">
                     Base Currency
                   </label>
                   <Select
@@ -103,7 +103,7 @@ const MobileFinancialDetailForm = ({
                       placeholder=" "
                       step="0.01"
                       type="number"
-                      className={`form__input block h-12 w-full appearance-none bg-transparent p-4 text-base focus-within:border-miru-han-purple-1000 ${
+                      className={`form__input block h-12 w-full appearance-none bg-transparent p-4 text-base focus-within:border-primary ${
                         errors.standard_rate &&
                         touched.standard_rate &&
                         "border-red-600 focus:border-red-600 focus:ring-red-600"
@@ -117,7 +117,7 @@ const MobileFinancialDetailForm = ({
                       }}
                     />
                     <label
-                      className="absolute top-0 z-1 origin-0 bg-white p-3 text-base font-medium text-miru-dark-purple-200 duration-300"
+                      className="absolute top-0 z-1 origin-0 bg-white p-3 text-base font-medium text-muted-foreground duration-300"
                       htmlFor="standard_rate"
                     >
                       Standard Rate (per hour)
@@ -131,7 +131,7 @@ const MobileFinancialDetailForm = ({
                 </div>
                 {/* Fiscal Year End  */}
                 <div className="field relative">
-                  <label className="absolute -top-1 left-0 z-1 ml-3 origin-0 bg-white px-1 text-xsm font-medium text-miru-dark-purple-200 duration-300">
+                  <label className="absolute -top-1 left-0 z-1 ml-3 origin-0 bg-white px-1 text-xsm font-medium text-muted-foreground duration-300">
                     Fiscal Year End
                   </label>
                   <Select
@@ -160,7 +160,7 @@ const MobileFinancialDetailForm = ({
                 </div>
                 {/* Date Format */}
                 <div className="field relative">
-                  <label className="absolute -top-1 left-0 z-1 ml-3 origin-0 bg-white px-1 text-xsm font-medium text-miru-dark-purple-200 duration-300">
+                  <label className="absolute -top-1 left-0 z-1 ml-3 origin-0 bg-white px-1 text-xsm font-medium text-muted-foreground duration-300">
                     Date Format
                   </label>
                   <Select

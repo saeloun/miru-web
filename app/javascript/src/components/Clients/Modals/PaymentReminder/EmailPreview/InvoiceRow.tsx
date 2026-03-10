@@ -20,37 +20,37 @@ const InvoiceRow = ({ invoice, isLast }) => {
   return (
     <table
       className={`relative min-w-full overflow-x-scroll ${
-        isLast ? "border-0" : "mb-10 border-b border-miru-gray-200"
+        isLast ? "border-0" : "mb-10 border-b border-border"
       }`}
     >
       <thead>
         <tr>
           <th
-            className="w-1/6 whitespace-nowrap px-2 py-0 text-left text-xs font-medium tracking-widest text-miru-black-1000 md:font-normal"
+            className="w-1/6 whitespace-nowrap px-2 py-0 text-left text-xs font-medium tracking-widest text-foreground md:font-normal"
             scope="col"
           >
             INVOICE NO.
           </th>
           <th
-            className="w-1/6 whitespace-nowrap px-2 py-0 text-left text-xs font-medium tracking-widest text-miru-black-1000 md:font-normal"
+            className="w-1/6 whitespace-nowrap px-2 py-0 text-left text-xs font-medium tracking-widest text-foreground md:font-normal"
             scope="col"
           >
             ISSUE DATE
           </th>
           <th
-            className="w-1/6 whitespace-nowrap px-2 py-0 text-left text-xs font-medium tracking-widest text-miru-black-1000 md:font-normal"
+            className="w-1/6 whitespace-nowrap px-2 py-0 text-left text-xs font-medium tracking-widest text-foreground md:font-normal"
             scope="col"
           >
             DUE DATE
           </th>
           <th
-            className="hidden w-1/6 px-2 py-0 text-left text-xs font-normal tracking-widest text-miru-black-1000 lg:table-cell"
+            className="hidden w-1/6 px-2 py-0 text-left text-xs font-normal tracking-widest text-foreground lg:table-cell"
             scope="col"
           >
             AMOUNT
           </th>
           <th
-            className="hidden w-1/6 px-2 py-0 text-left text-xs font-normal tracking-widest text-miru-black-1000 lg:table-cell"
+            className="hidden w-1/6 px-2 py-0 text-left text-xs font-normal tracking-widest text-foreground lg:table-cell"
             scope="col"
           >
             STATUS
@@ -63,7 +63,7 @@ const InvoiceRow = ({ invoice, isLast }) => {
           <td className="w-1/6 px-2 pb-10 text-base">{invoiceNumber}</td>
           <td className="w-1/6 px-2 pb-10 text-base">{issueDate}</td>
           <td className="w-1/6 px-2 pb-10 text-base">{dueDate}</td>
-          <td className="w-1/6 px-2 pb-10 text-left text-base tracking-normal text-miru-dark-purple-1000 lg:text-base">
+          <td className="w-1/6 px-2 pb-10 text-left text-base tracking-normal text-foreground lg:text-base">
             {currencyFormat(baseCurrency, amount)}
           </td>
           <td className="w-1/6 px-2 pb-10 text-left font-medium">

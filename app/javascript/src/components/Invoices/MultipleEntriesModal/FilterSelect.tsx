@@ -19,7 +19,7 @@ const FilterSelect = ({ option, placeholder }) => {
         setSelectedOption(selected);
       }}
     >
-      <SelectTrigger className="w-40 rounded bg-miru-gray-100 text-sm font-medium">
+      <SelectTrigger className="w-40 rounded bg-muted text-sm font-medium">
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent>

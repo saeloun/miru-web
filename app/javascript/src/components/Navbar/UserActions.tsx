@@ -61,22 +61,22 @@ const UserActions = setVisiblity => {
 
   const WorkspaceList = () => (
     <ul
-      className="absolute bottom-20 w-full rounded-lg bg-white py-4 lg:shadow-c1"
+      className="absolute bottom-20 w-full rounded-lg bg-background py-4 lg:shadow-c1"
       ref={wrapperRef}
     >
-      <span className="px-4 text-xs font-medium leading-4 tracking-wider text-miru-dark-purple-200">
+      <span className="px-4 text-xs font-medium leading-4 tracking-wider text-muted-foreground">
         SELECT WORKSPACE
       </span>
       {workSpaceList.map(workspace => (
         <li
-          className="flex cursor-pointer items-start justify-start py-3 px-4 hover:bg-miru-gray-100"
+          className="flex cursor-pointer items-start justify-start py-3 px-4 hover:bg-muted"
           key={workspace.id}
           onClick={() => handleSwitch(workspace.id)}
         >
           <Avatar
             classNameImg="mr-5"
-            classNameInitials="lg:text-xs font-bold capitalize text-white"
-            classNameInitialsWrapper="lg:mr-5 bg-miru-gray-1000 "
+            classNameInitials="lg:text-xs font-bold capitalize text-primary-foreground"
+            classNameInitialsWrapper="lg:mr-5 bg-secondary "
             initialsLetterCount={1}
             name={workspace.name}
             size="w-6 h-6"
@@ -90,7 +90,7 @@ const UserActions = setVisiblity => {
 
   return (
     <ul className="w-full lg:mb-2 xl:mb-6">
-      <li className="flex border-b border-miru-gray-100 last:border-b-0 hover:bg-miru-gray-100 lg:justify-start lg:border-b-0">
+      <li className="flex border-b border-border last:border-b-0 hover:bg-muted lg:justify-start lg:border-b-0">
         <NavLink
           to={
             isDesktop
@@ -100,7 +100,7 @@ const UserActions = setVisiblity => {
           className={({ isActive }) =>
             isActive
               ? activeClassName
-              : "flex w-full items-start justify-start py-3 px-6 hover:bg-miru-gray-100"
+              : "flex w-full items-start justify-start py-3 px-6 hover:bg-muted"
           }
           onClick={() => {
             if (!isDesktop) {
@@ -113,7 +113,7 @@ const UserActions = setVisiblity => {
         </NavLink>
       </li>
       <li
-        className="flex cursor-pointer border-b border-miru-gray-100 px-6 py-3 last:border-b-0 hover:bg-miru-gray-100 lg:justify-start lg:border-b-0"
+        className="flex cursor-pointer border-b border-border px-6 py-3 last:border-b-0 hover:bg-muted lg:justify-start lg:border-b-0"
         id="logoutBtn"
         onClick={() => handleLogout()}
       >
@@ -122,7 +122,7 @@ const UserActions = setVisiblity => {
       </li>
       <Tooltip content={currentWorkspace.name} show={showToolTip}>
         <li
-          className="flex w-full cursor-pointer items-center justify-between py-3  px-6 text-sm font-bold leading-4 hover:bg-miru-gray-100"
+          className="flex w-full cursor-pointer items-center justify-between py-3  px-6 text-sm font-bold leading-4 hover:bg-muted"
           onClick={() => {
             if (workSpaceList.length > 1) {
               setShowWorkSpaceList(true);
@@ -136,8 +136,8 @@ const UserActions = setVisiblity => {
           >
             <Avatar
               classNameImg="mr-5"
-              classNameInitials="lg:text-xs font-bold capitalize text-white"
-              classNameInitialsWrapper="lg:mr-5 bg-miru-gray-1000 "
+              classNameInitials="lg:text-xs font-bold capitalize text-primary-foreground"
+              classNameInitialsWrapper="lg:mr-5 bg-secondary "
               initialsLetterCount={1}
               name={currentWorkspace.name}
               size="w-6 h-6"

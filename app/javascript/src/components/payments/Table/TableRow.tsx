@@ -92,45 +92,45 @@ const TableRow = ({ payment, baseCurrency }: TableRowProps) => {
     showConversion && exchangeRate ? amount * exchangeRate : null;
 
   return (
-    <tr className="group cursor-pointer last:border-b-0 md:hover:bg-miru-gray-100">
+    <tr className="group cursor-pointer last:border-b-0 md:hover:bg-muted">
       <td className="w-[25%] py-5 pr-2 pl-0 text-left">
         <div className="flex flex-col">
           {invoiceId ? (
             <Link
               to={`/invoices/${invoiceId}`}
-              className="text-sm font-semibold leading-4 text-miru-han-purple-600 hover:text-miru-han-purple-1000 hover:underline transition-colors lg:text-base lg:leading-5"
+              className="text-sm font-semibold leading-4 text-primary hover:text-primary hover:underline transition-colors lg:text-base lg:leading-5"
               onClick={e => e.stopPropagation()}
             >
               {invoiceNumber}
             </Link>
           ) : (
-            <span className="text-sm font-semibold leading-4 text-miru-dark-purple-1000 lg:text-base lg:leading-5">
+            <span className="text-sm font-semibold leading-4 text-foreground lg:text-base lg:leading-5">
               {invoiceNumber || "—"}
             </span>
           )}
-          <h3 className="text-xs font-medium leading-4 text-miru-dark-purple-400 lg:text-sm lg:leading-5">
+          <h3 className="text-xs font-medium leading-4 text-muted-foreground lg:text-sm lg:leading-5">
             {clientName || "—"}
           </h3>
         </div>
       </td>
       <td className="w-[20%] whitespace-nowrap px-4 py-5 font-medium tracking-normal lg:px-6">
-        <h1 className="text-xs font-normal text-miru-dark-purple-1000 lg:text-base lg:font-semibold">
+        <h1 className="text-xs font-normal text-foreground lg:text-base lg:font-semibold">
           {transactionDate || "—"}
         </h1>
-        <h3 className="text-xs font-medium text-miru-dark-purple-400 lg:text-sm">
+        <h3 className="text-xs font-medium text-muted-foreground lg:text-sm">
           {getTransactionTypeDisplay(transactionType)}
         </h3>
       </td>
       <td className="w-[25%] px-2 py-5 text-left lg:px-6">
         {note ? (
-          <p className="text-xs font-normal leading-4 text-miru-dark-purple-400 lg:text-sm truncate max-w-[200px]">
+          <p className="text-xs font-normal leading-4 text-muted-foreground lg:text-sm truncate max-w-[200px]">
             {note}
           </p>
         ) : (
-          <span className="text-xs text-miru-dark-purple-300">—</span>
+          <span className="text-xs text-muted-foreground">—</span>
         )}
       </td>
-      <td className="w-[15%] px-2 text-right text-sm font-bold tracking-normal text-miru-dark-purple-1000 lg:px-6 lg:pt-2 lg:pb-7 lg:text-base">
+      <td className="w-[15%] px-2 text-right text-sm font-bold tracking-normal text-foreground lg:px-6 lg:pt-2 lg:pb-7 lg:text-base">
         <div>
           {amount > 0 ? (
             <>
@@ -138,13 +138,13 @@ const TableRow = ({ payment, baseCurrency }: TableRowProps) => {
                 ? currencyFormat(currency, amount)
                 : baseCurrency && currencyFormat(baseCurrency, amount)}
               {showConversion && (
-                <div className="text-xs font-normal leading-4 text-miru-dark-purple-400 mt-1">
+                <div className="text-xs font-normal leading-4 text-muted-foreground mt-1">
                   ≈{" "}
                   {convertedAmount
                     ? currencyFormat(baseCurrency, convertedAmount.toFixed(2))
                     : "—"}
                   {convertedAmount && (
-                    <span className="ml-1 text-miru-dark-purple-300">
+                    <span className="ml-1 text-muted-foreground">
                       ({exchangeRate?.toFixed(2)} rate)
                     </span>
                   )}

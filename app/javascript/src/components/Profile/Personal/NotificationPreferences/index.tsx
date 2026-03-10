@@ -100,13 +100,13 @@ const NotificationPreferences = () => {
         </div>
       ) : currentUserId ? (
         <div className="mt-6 px-4 md:px-0">
-          <Card className="border-0 shadow-sm">
-            <CardHeader className="bg-gray-50 border-b">
-              <CardTitle className="flex items-center text-lg font-semibold text-gray-900">
-                <Bell className="mr-2 h-5 w-5 text-gray-600" />
+          <Card className="border-border shadow-sm">
+            <CardHeader className="border-b border-border bg-muted/40">
+              <CardTitle className="flex items-center text-lg font-semibold text-foreground">
+                <Bell className="mr-2 h-5 w-5 text-muted-foreground" />
                 Email Notifications
               </CardTitle>
-              <p className="text-sm text-gray-600 mt-1">
+              <p className="mt-1 text-sm text-muted-foreground">
                 Manage your email notification preferences
               </p>
             </CardHeader>
@@ -115,11 +115,11 @@ const NotificationPreferences = () => {
                 <div className="space-y-1">
                   <Label
                     htmlFor="weekly-reminder"
-                    className="text-sm font-medium text-gray-900 cursor-pointer"
+                    className="cursor-pointer text-sm font-medium text-foreground"
                   >
                     Weekly Email Reminder
                   </Label>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-muted-foreground">
                     Receive weekly email reminders about timesheet entries and
                     project updates
                   </p>
@@ -131,7 +131,7 @@ const NotificationPreferences = () => {
                     setIsSelected(checked);
                     updatePreferences();
                   }}
-                  className="data-[state=checked]:bg-gray-900"
+                  className="data-[state=checked]:bg-primary"
                 />
               </div>
             </CardContent>
@@ -140,8 +140,8 @@ const NotificationPreferences = () => {
       ) : (
         <div className="flex min-h-70v items-center justify-center">
           <div className="text-center space-y-2">
-            <p className="text-miru-dark-purple-600">No user data available</p>
-            <p className="text-sm text-miru-dark-purple-400">
+            <p className="text-muted-foreground">No user data available</p>
+            <p className="text-sm text-muted-foreground">
               Please log in to manage notification preferences
             </p>
           </div>

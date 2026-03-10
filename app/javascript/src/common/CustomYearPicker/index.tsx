@@ -51,13 +51,27 @@ const CustomYearPicker = ({
   };
 
   return (
-    <div className={classNames(defaultWrapperClassName, wrapperClassName)}>
-      <button className="pr-2" onClick={handlePrevious}>
+    <div
+      className={classNames(
+        "inline-flex h-10 items-center gap-1.5 rounded-xl border border-border bg-card px-1.5 shadow-sm",
+        defaultWrapperClassName,
+        wrapperClassName
+      )}
+    >
+      <button
+        className="flex h-8 w-8 items-center justify-center rounded-lg text-foreground transition hover:bg-accent disabled:cursor-not-allowed disabled:text-muted-foreground"
+        onClick={handlePrevious}
+        type="button"
+      >
         <CaretCircleLeftIcon size={13} weight="bold" />
       </button>
       {currentYear && (
         <select
-          className={classNames(defaultYearClassName, yearClassName)}
+          className={classNames(
+            "min-w-[5.5rem] px-1 text-center text-sm font-semibold text-foreground",
+            defaultYearClassName,
+            yearClassName
+          )}
           value={currentYear}
           onChange={e => handleOnChange(e.target.value)}
         >
@@ -73,12 +87,17 @@ const CustomYearPicker = ({
         </select>
       )}
       <button
-        className="pl-2"
+        className="flex h-8 w-8 items-center justify-center rounded-lg text-foreground transition hover:bg-accent disabled:cursor-not-allowed disabled:text-muted-foreground"
         disabled={isNextYearButtonDisabled}
         onClick={handleNext}
+        type="button"
       >
         {isNextYearButtonDisabled ? (
-          <CaretCircleRightIcon color="#ADA4CE" size={13} weight="bold" />
+          <CaretCircleRightIcon
+            className="text-muted-foreground"
+            size={13}
+            weight="bold"
+          />
         ) : (
           <CaretCircleRightIcon size={13} weight="bold" />
         )}

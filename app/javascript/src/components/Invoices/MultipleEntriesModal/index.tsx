@@ -143,7 +143,7 @@ const MultipleEntriesModal = ({
           teamMembers={teamMembers}
         />
         {loading ? (
-          <p className="tracking-wide flex items-center justify-center text-base font-medium text-miru-han-purple-1000">
+          <p className="tracking-wide flex items-center justify-center text-base font-medium text-primary">
             Loading...
           </p>
         ) : (
@@ -157,7 +157,7 @@ const MultipleEntriesModal = ({
                 lineItems={lineItems}
               />
             ) : (
-              <p className="tracking-wide flex items-center justify-center text-base font-medium text-miru-han-purple-1000">
+              <p className="tracking-wide flex items-center justify-center text-base font-medium text-primary">
                 No Data Found
               </p>
             )}
@@ -186,7 +186,7 @@ const MultipleEntriesModal = ({
         teamMembers={teamMembers}
       />
       {loading ? (
-        <p className="tracking-wide flex items-center justify-center text-base font-medium text-miru-han-purple-1000">
+        <p className="tracking-wide flex items-center justify-center text-base font-medium text-primary">
           Loading...
         </p>
       ) : (
@@ -200,7 +200,7 @@ const MultipleEntriesModal = ({
               lineItems={lineItems}
             />
           ) : (
-            <p className="tracking-wide flex items-center justify-center text-base font-medium text-miru-han-purple-1000">
+            <p className="tracking-wide flex items-center justify-center text-base font-medium text-primary">
               No Data Found
             </p>
           )}

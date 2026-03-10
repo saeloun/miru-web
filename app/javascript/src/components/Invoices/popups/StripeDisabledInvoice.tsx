@@ -15,7 +15,7 @@ const StripeDisabledInvoice = ({
     <div className="mt-2 mb-4 flex items-center justify-between">
       <h6 className="text-2xl font-bold">Stripe disabled for this invoice</h6>
       <Button
-        className="text-miru-gray-1000"
+        className="text-foreground"
         style="ternary"
         onClick={() => setShowStripeDisabledDialog(false)}
       >

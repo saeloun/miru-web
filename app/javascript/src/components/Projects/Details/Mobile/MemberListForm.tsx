@@ -100,7 +100,7 @@ const MembersListForm = ({
 
   return (
     <div className="flex w-full flex-col">
-      <div className="flex h-12 w-full items-center bg-miru-han-purple-1000 text-white shadow-c1">
+      <div className="flex h-12 w-full items-center bg-primary text-white shadow-c1">
         <span className="flex w-full items-center justify-center py-3 pl-8">
           Add Team Members
         </span>

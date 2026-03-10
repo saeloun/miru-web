@@ -21,11 +21,11 @@ const EmptyStates = ({
   containerClassName,
 }: EmptyStateProps) => {
   const defaultContainerClassName = `mt-6 flex h-5/6 items-center justify-center ${
-    showNoSearchResultState ? " bg-transparent" : "lg:bg-miru-gray-100"
+    showNoSearchResultState ? " bg-transparent" : "lg:bg-muted"
   }`;
 
   const defaultMessageClass =
-    "w-7/12 mt-10 mb-5 text-center text-base font-semibold leading-5 text-miru-dark-purple-200 lg:text-lg lg:leading-7";
+    "w-7/12 mt-10 mb-5 text-center text-base font-semibold leading-5 text-muted-foreground lg:text-lg lg:leading-7";
 
   const defaultWrapperClassName = "flex flex-col items-center justify-between";
 

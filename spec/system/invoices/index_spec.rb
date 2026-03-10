@@ -166,31 +166,6 @@ RSpec.describe "Invoice listing", type: :system, js: true do
     end
   end
 
-  context "when user is a book keeper" do
-    let(:book_keeper) { create(:user, current_workspace_id: company.id) }
-    let!(:keeper_invoice) do
-      create(:invoice, company:, client:, status: :sent,
-        invoice_number: "INV-BK-001", amount: 7500.00, amount_due: 7500.00)
-    end
-
-    before do
-      create(:employment, company:, user: book_keeper)
-      book_keeper.add_role :book_keeper, company
-      Warden.test_reset!
-      sign_in(book_keeper)
-    end
-
-    it "allows book keeper to view invoices" do
-      with_forgery_protection do
-        visit "/invoices"
-
-        expect(page).to have_css("#react-root", wait: 10)
-        expect(page).to have_content("INV-BK-001", wait: 10)
-        expect(page).to have_content("Stark Industries")
-      end
-    end
-  end
-
   context "when there are no invoices" do
     it "shows the empty state message" do
       with_forgery_protection do

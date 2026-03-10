@@ -62,7 +62,7 @@ const InputField = ({
         <Label
           htmlFor={fieldId}
           className={cn(
-            "mb-2 block text-sm font-medium text-miru-dark-purple-400",
+            "mb-2 block text-sm font-medium text-muted-foreground",
             labelClassName
           )}
         >

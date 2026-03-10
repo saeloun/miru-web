@@ -31,7 +31,7 @@ appearance. Here is an example of how we can use it:
       <span>Filters</span>
     </div>
     <Button
-      className="rounded p-2 hover:bg-miru-dark-purple-100"
+      className="rounded p-2 hover:bg-muted"
       onClick={}
     >
       <XIcon size={16} weight="bold" />

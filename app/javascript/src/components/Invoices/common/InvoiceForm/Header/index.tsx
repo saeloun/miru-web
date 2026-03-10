@@ -46,7 +46,7 @@ const Header = ({
             : "Generate Invoice"}
         </h2>
         <Button
-          className="ml-0 flex items-center text-xs font-bold leading-4 tracking-widest text-miru-han-purple-1000 sm:ml-5"
+          className="ml-0 flex items-center text-xs font-bold leading-4 tracking-widest text-primary sm:ml-5"
           style="ternary"
           onClick={() => setShowInvoiceSetting(true)}
         >
@@ -66,7 +66,7 @@ const Header = ({
           </span>
         </Link>
         <button
-          className="header__button my-0 w-full bg-miru-han-purple-1000 p-0 text-white hover:text-white md:my-0 md:w-1/3"
+          className="header__button my-0 w-full bg-primary p-0 text-white hover:text-white md:my-0 md:w-1/3"
           id="saveInvoiceButton"
           type="button"
           onClick={handleSaveInvoice}
@@ -75,7 +75,7 @@ const Header = ({
           <span className="ml-2 inline-block">SAVE</span>
         </button>
         <button
-          className="header__button my-0 w-full bg-miru-han-purple-1000 p-0 text-white hover:text-white md:my-0 md:w-1/3"
+          className="header__button my-0 w-full bg-primary p-0 text-white hover:text-white md:my-0 md:w-1/3"
           type="button"
           onClick={handleSendInvoice}
         >

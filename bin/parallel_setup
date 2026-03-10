@@ -21,8 +21,8 @@ FileUtils.chdir APP_ROOT do
   # Create all parallel test databases
   system! "mise exec -- bundle exec rails parallel:create PARALLEL_TEST_PROCESSORS=#{num_processes}"
 
-  # Prepare all databases (run migrations and schema load)
-  system! "mise exec -- bundle exec rails parallel:prepare PARALLEL_TEST_PROCESSORS=#{num_processes}"
+  # Load the current schema into all databases without depending on an existing test DB state
+  system! "mise exec -- bundle exec rails parallel:load_schema PARALLEL_TEST_PROCESSORS=#{num_processes}"
 
   puts "\n== Parallel test databases ready! =="
   puts "You can now run tests with:"

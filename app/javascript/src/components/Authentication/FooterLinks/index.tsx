@@ -6,34 +6,34 @@ const FooterLinks = ({ handlePrivacyPolicy, handleTermsOfService }) => (
   <div className="mx-auto mt-auto mb-4 w-4/5 md:mb-10 md:w-full">
     <ul className="flex items-center justify-center">
       <li
-        className="mb-0.5 flex cursor-pointer items-center whitespace-nowrap font-sans text-xs leading-4 text-miru-dark-purple-200 md:flex-wrap"
+        className="mb-0.5 flex cursor-pointer items-center whitespace-nowrap font-sans text-xs leading-4 text-muted-foreground md:flex-wrap"
         onClick={handlePrivacyPolicy}
       >
         Privacy Policy
       </li>
-      <span className="mx-2 mb-2 block p-0 font-sans text-base font-bold leading-4 text-miru-dark-purple-200">
+      <span className="mx-2 mb-2 block p-0 font-sans text-base font-bold leading-4 text-muted-foreground">
         .
       </span>
       <li
-        className="flex cursor-pointer items-center whitespace-nowrap font-sans text-xs leading-4 text-miru-dark-purple-200 md:flex-wrap"
+        className="flex cursor-pointer items-center whitespace-nowrap font-sans text-xs leading-4 text-muted-foreground md:flex-wrap"
         onClick={handleTermsOfService}
       >
         Terms & Conditions
       </li>
-      <span className="mx-2 mb-2 block p-0 font-sans text-base font-bold leading-4 text-miru-dark-purple-200">
+      <span className="mx-2 mb-2 block p-0 font-sans text-base font-bold leading-4 text-muted-foreground">
         .
       </span>
       {FOOTER_LINKS?.map((footerLink, i) => (
         <li className="flex items-center" key={footerLink.text}>
           <a
-            className="block font-sans text-xs leading-4 text-miru-dark-purple-200"
+            className="block font-sans text-xs leading-4 text-muted-foreground"
             href={footerLink.link}
             rel="noreferrer noopener"
           >
             {footerLink.text}
           </a>
           {i < FOOTER_LINKS.length - 1 ? (
-            <span className="mx-2 mb-2 block p-0 font-sans text-base font-bold leading-4 text-miru-dark-purple-200">
+            <span className="mx-2 mb-2 block p-0 font-sans text-base font-bold leading-4 text-muted-foreground">
               .
             </span>
           ) : null}

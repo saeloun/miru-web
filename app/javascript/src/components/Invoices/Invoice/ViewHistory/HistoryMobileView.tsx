@@ -22,7 +22,7 @@ const HistoryMobileView = ({ setShowHistory, invoice }) => {
 
   return (
     <div className="h-full">
-      <div className="sticky top-0 left-0 right-0 z-50 flex h-12 items-center bg-miru-han-purple-1000 px-4 shadow-c1">
+      <div className="sticky top-0 left-0 right-0 z-50 flex h-12 items-center bg-primary px-4 shadow-c1">
         <div className="flex w-full items-center justify-between">
           <span className="ml-4 flex w-full justify-center text-base font-medium text-white">
             History

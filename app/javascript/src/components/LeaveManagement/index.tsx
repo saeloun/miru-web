@@ -140,7 +140,7 @@ const LeaveManagement = () => {
     };
 
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-background">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <Header
             currentYear={currentYear}
@@ -153,6 +153,7 @@ const LeaveManagement = () => {
           <Container
             getLeaveBalanaceDateText={getLeaveBalanaceDateText}
             leaveBalance={leaveBalance}
+            currentYear={currentYear}
             selectedLeaveType={selectedLeaveType}
             setSelectedLeaveType={setSelectedLeaveType}
             timeoffEntries={filterTimeoffEntries}

@@ -25,7 +25,7 @@ const PlanDetails = () => {
   };
 
   return (
-    <div className="modal__modal main-modal bg-miru-dark-purple-1000 font-sans">
+    <div className="modal__modal main-modal bg-card font-sans">
       <div className="modal__container modal-container  w-96">
         <div className="modal__content modal-content">
           <div className="modal__position">
@@ -34,7 +34,7 @@ const PlanDetails = () => {
           <div className="modal__form flex-col">
             <div className="field mt-4 flex justify-between">
               <div className="field_with_errors py-2">
-                <label className="text-xs font-normal leading-4 text-miru-dark-purple-1000">
+                <label className="text-xs font-normal leading-4 text-foreground">
                   Number of Team Members
                 </label>
               </div>
@@ -49,12 +49,12 @@ const PlanDetails = () => {
                 {({ errors, touched }) => (
                   <Form className="w-1/2">
                     <Field
-                      className="focus:outline-none block h-8 w-full appearance-none rounded border-0 bg-miru-gray-100 px-3 text-right text-sm font-medium leading-4 text-miru-dark-purple-1000"
+                      className="focus:outline-none block h-8 w-full appearance-none rounded border-0 bg-muted px-3 text-right text-sm font-medium leading-4 text-foreground"
                       name="membersCount"
                       type="text"
                     />
                     {errors.membersCount && touched.membersCount ? (
-                      <div className="mt-2 text-xs font-normal leading-4 text-miru-chart-pink-600">
+                      <div className="mt-2 text-xs font-normal leading-4 text-rose-600">
                         {errors.membersCount}
                       </div>
                     ) : null}
@@ -62,66 +62,66 @@ const PlanDetails = () => {
                 )}
               </Formik>
             </div>
-            <div className="my-6 bg-miru-gray-100 p-4">
-              <div className="border-b-2 border-miru-gray-400 pb-4">
-                <h5 className="text-xs font-normal leading-4 text-miru-dark-purple-1000">
+            <div className="my-6 bg-muted p-4">
+              <div className="border-b-2 border-border pb-4">
+                <h5 className="text-xs font-normal leading-4 text-foreground">
                   Plan
                 </h5>
                 <div className="mt-2 flex justify-between">
                   <div className="w-3/4 text-left">
-                    <h1 className="pb-1 text-base font-semibold leading-5 text-miru-dark-purple-1000">
+                    <h1 className="pb-1 text-base font-semibold leading-5 text-foreground">
                       Basic plan
                     </h1>
-                    <h5 className="text-xs font-normal leading-4 text-miru-dark-purple-400">
+                    <h5 className="text-xs font-normal leading-4 text-muted-foreground">
                       Basic plan includes all features.
                       <br />
                       This is a one-time charge.
                     </h5>
                   </div>
                   <div className="text-right">
-                    <h3 className="pb-1 text-base font-bold leading-5 text-miru-dark-purple-1000">
+                    <h3 className="pb-1 text-base font-bold leading-5 text-foreground">
                       ${BASIC_PLAN_CHARGE}
                     </h3>
-                    <h5 className="text-xs font-normal leading-4 text-miru-dark-purple-400">
+                    <h5 className="text-xs font-normal leading-4 text-muted-foreground">
                       charged <br /> once
                     </h5>
                   </div>
                 </div>
               </div>
-              <div className="border-b-2 border-miru-gray-400 py-4">
-                <h5 className="text-xs font-normal leading-4 text-miru-dark-purple-1000">
+              <div className="border-b-2 border-border py-4">
+                <h5 className="text-xs font-normal leading-4 text-foreground">
                   Add-Ons
                 </h5>
                 <div className="mt-2 flex justify-between">
                   <div className="w-3/4 text-left">
-                    <h1 className="pb-1 text-base font-semibold leading-5 text-miru-dark-purple-1000">
+                    <h1 className="pb-1 text-base font-semibold leading-5 text-foreground">
                       {teamMembersCount} team{" "}
                       {teamMembersCount === 1 ? "member" : "members"}
                     </h1>
-                    <h5 className="text-xs font-normal leading-4 text-miru-dark-purple-400">
+                    <h5 className="text-xs font-normal leading-4 text-muted-foreground">
                       Basic plan comes with additional <br />{" "}
                       {TEAM_MEMBER_CHARGE}$ per user per month
                     </h5>
                   </div>
                   <div className="text-right">
-                    <h3 className="pb-1 text-base font-bold leading-5 text-miru-dark-purple-1000">
+                    <h3 className="pb-1 text-base font-bold leading-5 text-foreground">
                       {teamMembersCount * TEAM_MEMBER_CHARGE}$/mo
                     </h3>
-                    <h5 className="text-xs font-normal leading-4 text-miru-dark-purple-400">
+                    <h5 className="text-xs font-normal leading-4 text-muted-foreground">
                       charged <br /> every month
                     </h5>
                   </div>
                 </div>
               </div>
               <div className="flex justify-between py-6">
-                <h5 className="text-2xl font-bold leading-8 text-miru-dark-purple-1000">
+                <h5 className="text-2xl font-bold leading-8 text-foreground">
                   Total
                 </h5>
                 <div className="text-right">
-                  <h3 className="pb-1 text-2xl font-bold leading-8 text-miru-dark-purple-1000">
+                  <h3 className="pb-1 text-2xl font-bold leading-8 text-foreground">
                     {planTotal}$
                   </h3>
-                  <h5 className="text-xs font-normal leading-4 text-miru-dark-purple-400">
+                  <h5 className="text-xs font-normal leading-4 text-muted-foreground">
                     plus taxes
                   </h5>
                 </div>
@@ -129,7 +129,7 @@ const PlanDetails = () => {
             </div>
             <div className="actions">
               <button
-                className="focus:outline-none flex h-10 w-full cursor-pointer justify-center rounded border border-transparent bg-miru-han-purple-1000 py-2 px-4 font-sans text-base font-bold tracking-wider text-miru-white-1000 shadow-sm hover:bg-miru-han-purple-600"
+                className="focus:outline-none flex h-10 w-full cursor-pointer justify-center rounded border border-transparent bg-primary py-2 px-4 font-sans text-base font-bold tracking-wider text-primary-foreground shadow-sm hover:bg-primary/90"
                 type="submit"
               >
                 REVIEW AND PAY

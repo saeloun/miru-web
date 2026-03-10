@@ -27,14 +27,14 @@ appearance. Here are some examples of how we can use it:
 
 ```javascript
 <TimeInput
-  className="h-8 w-20 rounded-sm bg-miru-gray-100 p-1 text-sm
+  className="h-8 w-20 rounded-sm bg-muted p-1 text-sm
   onTimeChange={() => ()}
 />
 ```
 
 ```javascript
 <TimeInput
-  className="h-8 w-20 rounded-sm bg-miru-gray-100 p-1 text-sm placeholder:text-miru-gray-1000"
+  className="h-8 w-20 rounded-sm bg-muted p-1 text-sm placeholder:text-muted-foreground"
   initTime={duration}
   name="timeInput"
   onTimeChange={handleDurationChange}

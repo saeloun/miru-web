@@ -287,7 +287,7 @@ const AddLineItemContainer = ({
                     <InputField
                       autoComplete="off"
                       id="name"
-                      inputBoxClassName="border focus:border-miru-han-purple-1000"
+                      inputBoxClassName="border focus:border-primary"
                       label="Name"
                       name="name"
                       readOnly={false}
@@ -349,7 +349,7 @@ const AddLineItemContainer = ({
                     <CustomInputText
                       readOnly
                       id="date"
-                      inputBoxClassName="border focus:border-miru-han-purple-1000"
+                      inputBoxClassName="border focus:border-primary"
                       label="Date"
                       name="date"
                       type="text"
@@ -389,7 +389,7 @@ const AddLineItemContainer = ({
                 <div>
                   <InputField
                     id="rate"
-                    inputBoxClassName="border focus:border-miru-han-purple-1000"
+                    inputBoxClassName="border focus:border-primary"
                     label="Rate"
                     name="rate"
                     readOnly={false}
@@ -404,7 +404,7 @@ const AddLineItemContainer = ({
                   />
                 </div>
                 <TimeInput
-                  className="focus:outline-none h-10 w-full cursor-pointer rounded-md border border-miru-gray-1000 text-center text-xl font-bold text-miru-dark-purple-1000 placeholder:text-miru-dark-purple-200 focus:bg-white focus:ring-1 focus:ring-miru-gray-1000"
+                  className="focus:outline-none h-10 w-full cursor-pointer rounded-md border border-border text-center text-xl font-bold text-foreground placeholder:text-muted-foreground focus:bg-white focus:ring-1 focus:ring-ring"
                   initTime={qtyInHHrMin}
                   name="timeInput"
                   onTimeChange={handleSetQuantity}
@@ -413,16 +413,16 @@ const AddLineItemContainer = ({
               {editItem.id || editItem.timesheet_entry_id ? (
                 <div className="flex w-full gap-2">
                   <Button
-                    className="flex w-1/2 items-center justify-center rounded border border-miru-red-400 px-4 py-2"
+                    className="flex w-1/2 items-center justify-center rounded border border-destructive px-4 py-2"
                     style="ternary"
                     onClick={() => handleDelete(editItem)}
                   >
                     <DeleteIcon
-                      className="text-miru-red-400"
+                      className="text-destructive"
                       size={16}
                       weight="bold"
                     />
-                    <span className="ml-2 text-center text-base font-bold leading-5 text-miru-red-400">
+                    <span className="ml-2 text-center text-base font-bold leading-5 text-destructive">
                       Delete
                     </span>
                   </Button>

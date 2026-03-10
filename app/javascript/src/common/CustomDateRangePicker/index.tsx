@@ -222,7 +222,7 @@ const CustomDateRangePicker = ({
         prevMonthButtonDisabled,
         nextMonthButtonDisabled,
       }) => (
-        <div className="bg-miru-white-1000 ">
+        <div className="bg-background ">
           <div className="mt-2 flex justify-start">
             <button onClick={hideCustomFilter}>
               <LeftArrowIcon color="#5b34ea" size={10} />
@@ -237,9 +237,8 @@ const CustomDateRangePicker = ({
                 placeholder=" From "
                 ref={textInput}
                 type="text"
-                className={`mr-1 h-8 w-32 rounded bg-miru-gray-100 p-1 ${
-                  selectedInput === fromInput &&
-                  "border-2 border-miru-han-purple-1000"
+                className={`mr-1 h-8 w-32 rounded bg-muted p-1 ${
+                  selectedInput === fromInput && "border-2 border-primary"
                 }`}
                 value={
                   dateRange.from
@@ -263,9 +262,8 @@ const CustomDateRangePicker = ({
                 placeholder=" To "
                 ref={toInputRef}
                 type="text"
-                className={`ml-1 h-8 w-32 rounded bg-miru-gray-100 p-1 ${
-                  selectedInput === toInput &&
-                  "border-2 border-miru-han-purple-1000"
+                className={`ml-1 h-8 w-32 rounded bg-muted p-1 ${
+                  selectedInput === toInput && "border-2 border-primary"
                 }`}
                 value={
                   dateRange.to

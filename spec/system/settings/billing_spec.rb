@@ -17,10 +17,11 @@ RSpec.describe "Settings billing", type: :system, js: true do
       visit "/settings/billing"
 
       expect(page).to have_current_path("/settings/billing", wait: 10)
-      expect(page).to have_content("Billing", wait: 10)
-      expect(page).to have_content("Manage your workspace plan", wait: 10)
+      expect(page).to have_content("Membership", wait: 10)
+      expect(page).to have_content("CURRENT PLAN", wait: 10)
       expect(page).to have_content("1/3 seats used", wait: 10)
       expect(page).to have_button("Upgrade with Stripe", wait: 10)
+      expect(page).to have_content("Miru CLI", wait: 10)
     end
   end
 

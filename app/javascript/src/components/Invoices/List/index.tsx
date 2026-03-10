@@ -335,7 +335,7 @@ const Invoices = () => {
         </Fragment>
       ) : (
         status === InvoicesStatus.ERROR && (
-          <div className="tracking-wide mt-50 flex items-center justify-center text-2xl font-medium text-miru-han-purple-1000">
+          <div className="tracking-wide mt-50 flex items-center justify-center text-2xl font-medium text-primary">
             Something went Wrong!
           </div>
         )

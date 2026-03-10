@@ -1,10 +1,10 @@
 .org-setup-form-wrapper {
   .rc-steps-item-process {
-    .rc-steps-item-icon.bg-miru-han-purple-1000 {
-      background-color: #5b34ea !important;
+    .rc-steps-item-icon.bg-primary {
+      background-color: #171717 !important;
     }
     .rc-steps-item-title {
-      color: #5b34ea !important;
+      color: #171717 !important;
     }
   }
   .rc-steps-item-wait {
@@ -12,10 +12,10 @@
       color: #fff !important;
     }
     .rc-steps-item-icon {
-      background: #bdaef7 !important;
+      background: #e5e5e5 !important;
     }
     .rc-steps-item-title {
-      color: #9d85f2 !important;
+      color: #737373 !important;
     }
   }
 
@@ -29,10 +29,10 @@
       left: -2px !important;
       top: -2px !important;
     }
-    .text-miru-chart-green-400 {
+    .text-emerald-500 {
       color: #0da163 !important;
     }
-    .bg-miru-chart-green-400 {
+    .bg-emerald-500 {
       background-color: #0da163 !important;
     }
   }
@@ -55,6 +55,6 @@
 }
 
 .rc-steps-item-process .rc-steps-item-icon {
-  background: #5b34ea;
-  border-color: #5b34ea;
+  background: #171717;
+  border-color: #171717;
 }

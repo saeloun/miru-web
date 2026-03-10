@@ -67,7 +67,7 @@ const Header = ({
                   <div className="mr-1">
                     <ReportsIcon color="white" size={16} weight="bold" />
                   </div>
-                  <p className="ml-1 text-base font-bold tracking-widest text-miru-white-1000">
+                  <p className="ml-1 text-base font-bold tracking-widest text-primary-foreground">
                     PAY
                   </p>
                 </div>
@@ -80,7 +80,7 @@ const Header = ({
               ${
                 isNonActionable
                   ? "cursor-not-allowed bg-indigo-100"
-                  : "bg-miru-han-purple-1000"
+                  : "bg-primary"
               }`}
               onClick={() => {
                 if (status != "paid") {
@@ -98,7 +98,7 @@ const Header = ({
                 <div className="mr-1">
                   <ReportsIcon color="white" size={16} weight="bold" />
                 </div>
-                <p className="ml-1 text-base font-bold tracking-widest text-miru-white-1000">
+                <p className="ml-1 text-base font-bold tracking-widest text-primary-foreground">
                   PAY
                 </p>
               </div>
@@ -107,7 +107,7 @@ const Header = ({
         </div>
         <div className="relative">
           <Button
-            className="ml-2 rounded border border-miru-han-purple-1000 bg-miru-gray-1000 p-2.5 text-miru-han-purple-1000 opacity-50"
+            className="ml-2 rounded border border-primary bg-secondary p-2.5 text-primary opacity-50"
             style="ternary"
             onClick={() => setIsMoreOptionsVisible(!isMoreOptionsVisible)}
           >
@@ -119,7 +119,7 @@ const Header = ({
               setVisibilty={setIsMoreOptionsVisible}
             >
               <li
-                className="flex cursor-pointer items-center py-2.5 px-4 text-miru-han-purple-1000 hover:bg-miru-gray-100"
+                className="flex cursor-pointer items-center py-2.5 px-4 text-primary hover:bg-muted"
                 onClick={() => handleDownloadAction(invoice)}
               >
                 <DownloadSimpleIcon className="mr-4" size={16} weight="bold" />

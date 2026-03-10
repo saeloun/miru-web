@@ -27,7 +27,7 @@ export const Project = ({
   const { isDesktop } = useUserContext();
   const handleMouseEnter = () => {
     if (isAdminUser) {
-      setGrayColor("bg-miru-gray-100");
+      setGrayColor("bg-muted");
     }
     setIsHover(true);
   };
@@ -51,10 +51,10 @@ export const Project = ({
         onMouseLeave={handleMouseLeave}
       >
         <td className="table__cell text-base capitalize">
-          <div className="flex items-center justify-between text-sm font-semibold text-miru-dark-purple-1000 lg:text-base">
+          <div className="flex items-center justify-between text-sm font-semibold text-foreground lg:text-base">
             {name}
           </div>
-          <p className="max-h-32 overflow-auto whitespace-pre-wrap break-words text-xs font-medium text-miru-dark-purple-400 lg:text-sm">
+          <p className="max-h-32 overflow-auto whitespace-pre-wrap break-words text-xs font-medium text-muted-foreground lg:text-sm">
             {clientName}
           </p>
         </td>
@@ -62,9 +62,9 @@ export const Project = ({
           <td className="table__cell text-right">
             {isBillable && (
               <Badge
-                bgColor="bg-miru-han-purple-100"
+                bgColor="bg-accent"
                 className="rounded-lg px-1 capitalize tracking-widest"
-                color="text-miru-han-purple-1000"
+                color="text-primary"
                 text="billable"
               />
             )}
@@ -122,7 +122,7 @@ export const Project = ({
           visibilty={showMoreOptions}
         >
           <li
-            className="flex items-center pt-3 text-sm leading-5 text-miru-han-purple-1000"
+            className="flex items-center pt-3 text-sm leading-5 text-primary"
             onClick={() => {
               setShowMoreOptions(false);
               setEditProjectData({ id, name, clientName, isBillable });
@@ -133,7 +133,7 @@ export const Project = ({
             Edit
           </li>
           <li
-            className="flex items-center pt-3 text-sm leading-5 text-miru-red-400"
+            className="flex items-center pt-3 text-sm leading-5 text-destructive"
             onClick={() => {
               setShowMoreOptions(false);
               setShowDeleteDialog(true);

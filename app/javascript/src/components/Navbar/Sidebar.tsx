@@ -296,14 +296,18 @@ const Sidebar: React.FC = () => {
           <TooltipTrigger asChild>{content}</TooltipTrigger>
           <TooltipContent
             side="right"
-            className="flex flex-col gap-1.5 bg-[#5E58F1] text-white border-[#5E58F1] shadow-xl px-3 py-2"
+            className="flex flex-col gap-1.5 bg-card text-primary-foreground border-border shadow-xl px-3 py-2"
           >
-            <p className="font-semibold text-white">{item.label}</p>
+            <p className="font-semibold text-primary-foreground">
+              {item.label}
+            </p>
             {item.description && (
-              <p className="text-xs text-white/90">{item.description}</p>
+              <p className="text-xs text-primary-foreground/90">
+                {item.description}
+              </p>
             )}
             {item.badge && (
-              <Badge className="self-start text-xs bg-white/20 text-white border-white/30 hover:bg-white/30">
+              <Badge className="self-start text-xs bg-background/20 text-primary-foreground border-border hover:bg-background/30">
                 {item.badge}
               </Badge>
             )}
@@ -330,7 +334,7 @@ const Sidebar: React.FC = () => {
               alt="Miru"
               src={MiruLogoSVG}
               className={cn(
-                "transition-all",
+                "transition-all dark:invert",
                 isCollapsed ? "h-8 w-8" : "h-10 w-10"
               )}
             />
@@ -557,9 +561,11 @@ const Sidebar: React.FC = () => {
               {isCollapsed && (
                 <TooltipContent
                   side="right"
-                  className="bg-[#5E58F1] text-white border-[#5E58F1] shadow-xl px-3 py-2"
+                  className="bg-card text-primary-foreground border-border shadow-xl px-3 py-2"
                 >
-                  <p className="font-semibold text-white">Sign Out</p>
+                  <p className="font-semibold text-primary-foreground">
+                    Sign Out
+                  </p>
                 </TooltipContent>
               )}
             </Tooltip>

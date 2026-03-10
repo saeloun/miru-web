@@ -79,7 +79,7 @@ const AnimatedFilterBadge: React.FC<AnimatedFilterBadgeProps> = ({
       whileHover="hover"
       whileTap="tap"
       layout
-      className="inline-flex items-center gap-1.5 rounded-full bg-miru-han-purple-1000 px-3 py-1.5 text-xs font-semibold text-white shadow-sm"
+      className="inline-flex items-center gap-1.5 rounded-full bg-primary px-3 py-1.5 text-xs font-semibold text-white shadow-sm"
     >
       <span className="whitespace-nowrap">
         {filterKey === "groupBy" && (

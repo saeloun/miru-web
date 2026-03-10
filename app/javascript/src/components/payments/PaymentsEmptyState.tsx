@@ -15,7 +15,7 @@ export const PaymentsEmptyState = ({
   >
     <div className="flex flex-row">
       <button
-        className="flex h-14 w-336 flex-row items-center justify-center rounded bg-miru-han-purple-1000 font-bold	text-white"
+        className="flex h-14 w-336 flex-row items-center justify-center rounded bg-primary font-bold	text-white"
         type="button"
         onClick={() => setShowManualEntryModal(true)}
       >

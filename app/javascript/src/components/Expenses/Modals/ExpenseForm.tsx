@@ -192,21 +192,21 @@ const ExpenseForm = ({
     <div className="flex w-full flex-col">
       {receipts.map(receipt => (
         <div
-          className="my-2 flex w-full items-center justify-between rounded bg-miru-gray-100 p-3"
+          className="my-2 flex w-full items-center justify-between rounded bg-muted p-3"
           key={receipt.name}
         >
-          <div className="rounded bg-miru-han-purple-100 p-3">
+          <div className="rounded bg-accent p-3">
             <FileIcon
-              className="text-miru-han-purple-400"
+              className="text-muted-foreground"
               size={16}
               weight="bold"
             />
           </div>
           <div className="ml-4 mr-2 flex w-full flex-col items-start truncate">
             <span className="text-sm font-medium">{receipt.name}</span>
-            <div className="flex items-center text-xs font-medium text-miru-dark-purple-400">
+            <div className="flex items-center text-xs font-medium text-muted-foreground">
               <span>PDF</span>
-              <div className="mx-2 h-1 w-1 rounded-xl bg-miru-dark-purple-200" />
+              <div className="mx-2 h-1 w-1 rounded-xl bg-secondary" />
               <span>{Math.ceil(receipt.size / 1024)}kb</span>
             </div>
           </div>
@@ -220,11 +220,11 @@ const ExpenseForm = ({
 
   const UploadCard = () => (
     <div
-      className="mt-2 flex cursor-pointer items-center justify-center rounded border border-dashed border-miru-dark-purple-200 p-4"
+      className="mt-2 flex cursor-pointer items-center justify-center rounded border border-dashed border-border p-4"
       onClick={handleFileUpload}
     >
-      <FileIcon className="text-miru-dark-purple-200" size={16} weight="bold" />
-      <span className="text-center text-base font-bold text-miru-dark-purple-200">
+      <FileIcon className="text-muted-foreground" size={16} weight="bold" />
+      <span className="text-center text-base font-bold text-muted-foreground">
         Upload file
       </span>
       <input
@@ -278,7 +278,7 @@ const ExpenseForm = ({
           )}
         </div>
         <div className="mt-6">
-          <label className="text-base font-medium text-miru-dark-purple-400">
+          <label className="text-base font-medium text-muted-foreground">
             Vendor
           </label>
           <div className="mt-1">
@@ -326,7 +326,7 @@ const ExpenseForm = ({
           <ErrorSpan message="" />
         </div>
         <div className="mt-6">
-          <label className="text-base font-medium text-miru-dark-purple-400">
+          <label className="text-base font-medium text-muted-foreground">
             Category
           </label>
           <div className="mt-1">
@@ -378,12 +378,12 @@ const ExpenseForm = ({
           />
         </div>
         <div className="mt-6 flex flex-col">
-          <span className="text-base font-medium text-miru-dark-purple-400">
+          <span className="text-base font-medium text-muted-foreground">
             Expense Type
           </span>
           <div className="flex">
             <CustomRadioButton
-              classNameLabel="font-medium text-sm text-miru-dark-purple-1000"
+              classNameLabel="font-medium text-sm text-foreground"
               classNameRadioIcon="lg:w-4 lg:h-4 lg:border-2"
               classNameWrapper="pt-3 mr-4"
               defaultCheck={expenseType == "business"}
@@ -397,7 +397,7 @@ const ExpenseForm = ({
               }}
             />
             <CustomRadioButton
-              classNameLabel="font-medium text-sm text-miru-dark-purple-1000"
+              classNameLabel="font-medium text-sm text-foreground"
               classNameRadioIcon="lg:w-4 lg:h-4 lg:border-2"
               classNameWrapper="pt-3"
               defaultCheck={expenseType == "personal"}
@@ -413,7 +413,7 @@ const ExpenseForm = ({
           </div>
         </div>
         <div className="mt-6">
-          <span className="text-base font-medium text-miru-dark-purple-400">
+          <span className="text-base font-medium text-muted-foreground">
             Receipt (optional)
           </span>
           {receipts.length > 0 ? <ReceiptCard /> : <UploadCard />}

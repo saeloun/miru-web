@@ -546,7 +546,7 @@ const AnimatedTimeInput: React.FC<AnimatedTimeInputProps> = ({
               initial="initial"
               animate="animate"
               exit="exit"
-              className="absolute top-full mt-1 left-0 right-0 z-[99999] max-h-60 overflow-auto rounded-lg border bg-white shadow-xl ring-1 ring-black/5"
+              className="absolute top-full mt-1 left-0 right-0 z-[99999] max-h-60 overflow-auto rounded-lg border bg-background shadow-xl ring-1 ring-black/5"
             >
               <div className="p-1">
                 {COMMON_TIME_SLOTS.map((slot, index) => (
@@ -560,8 +560,8 @@ const AnimatedTimeInput: React.FC<AnimatedTimeInputProps> = ({
                     custom={index}
                     className={cn(
                       "w-full flex items-center justify-between px-3 py-2 text-left text-sm rounded-md transition-colors",
-                      "hover:bg-gray-100 hover:text-gray-900",
-                      "focus:bg-gray-100 focus:text-gray-900 focus:outline-none"
+                      "hover:bg-muted hover:text-gray-900",
+                      "focus:bg-muted focus:text-foreground focus:outline-none"
                     )}
                     onClick={e => {
                       e.preventDefault();

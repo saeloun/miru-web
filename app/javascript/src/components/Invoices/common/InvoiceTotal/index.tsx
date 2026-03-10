@@ -59,24 +59,24 @@ const InvoiceTotal = ({
       <table className="w-full sm:w-2/3 lg:w-1/3">
         <tbody>
           <tr>
-            <td className="pr-4 text-right text-base font-normal text-miru-dark-purple-1000 sm:pr-10">
+            <td className="pr-4 text-right text-base font-normal text-foreground sm:pr-10">
               Sub total
             </td>
-            <td className="text-right text-base font-bold text-miru-dark-purple-1000 ">
+            <td className="text-right text-base font-bold text-foreground ">
               {subTotal
                 ? currencyFormat(clientCurrency, subTotal.toFixed(2))
                 : 0}
             </td>
           </tr>
-          <tr className="miru-gray-400 border-b-2 pb-5">
+          <tr className="border-b-2 border-border pb-5">
             {discount ? (
-              <td className="py-2 pr-4 text-right text-base font-normal text-miru-dark-purple-1000 sm:pr-10">
+              <td className="py-2 pr-4 text-right text-base font-normal text-foreground sm:pr-10">
                 <label className="cursor-pointer" htmlFor="Discount">
                   Discount
                 </label>
               </td>
             ) : (
-              <td className="cursor-pointer pt-2 pr-4 pb-3 text-right text-xs font-bold tracking-widest text-miru-han-purple-1000 sm:pr-10">
+              <td className="cursor-pointer pt-2 pr-4 pb-3 text-right text-xs font-bold tracking-widest text-primary sm:pr-10">
                 <label className="cursor-pointer" htmlFor="Discount">
                   ADD DISCOUNT
                 </label>
@@ -84,7 +84,7 @@ const InvoiceTotal = ({
             )}
             <td className="pb-1 text-right">
               <input
-                className="focusPadding focus:outline-none w-20 cursor-pointer rounded bg-transparent py-1 text-right text-base font-bold text-miru-dark-purple-1000 focus:border-miru-gray-1000 focus:bg-white focus:ring-1 focus:ring-miru-gray-1000"
+                className="focusPadding focus:outline-none w-20 cursor-pointer rounded bg-transparent py-1 text-right text-base font-bold text-foreground focus:border-border focus:bg-white focus:ring-1 focus:ring-ring"
                 id="Discount"
                 type="text"
                 value={discount}
@@ -94,14 +94,14 @@ const InvoiceTotal = ({
             </td>
           </tr>
           <tr className="cursor-pointer">
-            <td className="pt-4 pr-4 text-right text-base font-normal text-miru-dark-purple-1000 sm:pr-10">
+            <td className="pt-4 pr-4 text-right text-base font-normal text-foreground sm:pr-10">
               <label className="cursor-pointer" htmlFor="Tax">
                 Tax
               </label>
             </td>
-            <td className="w-22 pt-4 text-right text-base font-bold text-miru-dark-purple-1000">
+            <td className="w-22 pt-4 text-right text-base font-bold text-foreground">
               <input
-                className="focusPadding focus:outline-none w-20 cursor-pointer rounded bg-transparent py-1 text-right text-base font-bold text-miru-dark-purple-1000 focus:border-miru-gray-1000 focus:bg-white focus:ring-1 focus:ring-miru-gray-1000"
+                className="focusPadding focus:outline-none w-20 cursor-pointer rounded bg-transparent py-1 text-right text-base font-bold text-foreground focus:border-border focus:bg-white focus:ring-1 focus:ring-ring"
                 id="Tax"
                 type="text"
                 value={tax}
@@ -111,23 +111,23 @@ const InvoiceTotal = ({
             </td>
           </tr>
           <tr>
-            <td className="pt-1 pr-4 text-right text-base font-normal text-miru-dark-purple-1000 sm:pr-10">
+            <td className="pt-1 pr-4 text-right text-base font-normal text-foreground sm:pr-10">
               Total
             </td>
-            <td className="text-right text-base font-bold text-miru-dark-purple-1000">
+            <td className="text-right text-base font-bold text-foreground">
               {total ? currencyFormat(clientCurrency, total) : 0}
             </td>
           </tr>
           {currency !== clientCurrency && (
-            <tr className="miru-gray-400 border-b-2 pb-5">
+            <tr className="border-b-2 border-border pb-5">
               {baseCurrencyAmount ? (
-                <td className="py-2 pr-4 text-right text-base font-normal text-miru-dark-purple-1000 sm:pr-10">
+                <td className="py-2 pr-4 text-right text-base font-normal text-foreground sm:pr-10">
                   <label className="cursor-pointer" htmlFor="baseCurrency">
                     Amount in {currency}
                   </label>
                 </td>
               ) : (
-                <td className="cursor-pointer pt-2 pr-4 pb-3 text-right text-xs font-bold tracking-widest text-miru-han-purple-1000 sm:pr-10">
+                <td className="cursor-pointer pt-2 pr-4 pb-3 text-right text-xs font-bold tracking-widest text-primary sm:pr-10">
                   <label className="cursor-pointer" htmlFor="baseCurrency">
                     ADD AMOUNT IN {currency}
                   </label>
@@ -135,7 +135,7 @@ const InvoiceTotal = ({
               )}
               <td className="pb-1 text-right">
                 <input
-                  className="focusPadding focus:outline-none w-20 cursor-pointer rounded bg-transparent py-1 text-right text-base font-bold text-miru-dark-purple-1000 focus:border-miru-gray-1000 focus:bg-white focus:ring-1 focus:ring-miru-gray-1000"
+                  className="focusPadding focus:outline-none w-20 cursor-pointer rounded bg-transparent py-1 text-right text-base font-bold text-foreground focus:border-border focus:bg-white focus:ring-1 focus:ring-ring"
                   id="baseCurrency"
                   type="text"
                   value={baseCurrencyAmount}
@@ -146,18 +146,18 @@ const InvoiceTotal = ({
             </tr>
           )}
           <tr>
-            <td className="pt-1 pr-4 text-right text-base font-normal text-miru-dark-purple-1000 sm:pr-10">
+            <td className="pt-1 pr-4 text-right text-base font-normal text-foreground sm:pr-10">
               Amount Paid
             </td>
-            <td className="text-right text-base font-bold text-miru-dark-purple-1000 ">
+            <td className="text-right text-base font-bold text-foreground ">
               {amountPaid ? currencyFormat(clientCurrency, amountPaid) : 0}
             </td>
           </tr>
           <tr>
-            <td className="pt-1 pr-4 text-right text-base font-normal text-miru-dark-purple-1000 sm:pr-10">
+            <td className="pt-1 pr-4 text-right text-base font-normal text-foreground sm:pr-10">
               Amount Due
             </td>
-            <td className="text-right text-base font-bold text-miru-dark-purple-1000">
+            <td className="text-right text-base font-bold text-foreground">
               {amountDue ? currencyFormat(clientCurrency, amountDue) : 0}
             </td>
           </tr>

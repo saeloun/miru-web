@@ -19,7 +19,7 @@ RSpec.describe "Sign-in", type: :system, js: true do
         fill_in "email", with: user.email
         fill_in "password", with: user.password
 
-        click_on "Sign In"
+        click_on "Sign in"
 
         expect(page).to have_current_path("/dashboard").or have_current_path("/time-tracking").or have_current_path("/")
       end
@@ -32,7 +32,7 @@ RSpec.describe "Sign-in", type: :system, js: true do
         fill_in "email", with: "invalid@example.com"
         fill_in "password", with: "password"
 
-        click_on "Sign In"
+        click_on "Sign in"
 
         expect(page).to have_current_path("/login")
         expect(page).to have_text("Invalid email or password")
@@ -48,10 +48,19 @@ RSpec.describe "Sign-in", type: :system, js: true do
         fill_in "email", with: user.email
         fill_in "password", with: user.password
 
-        click_on "Sign In"
+        click_on "Sign in"
 
         expect(page).to have_current_path("/email_confirmation?email=#{user.email}")
         expect(page).to have_text("You have to confirm your email address before continuing.")
+      end
+    end
+
+    it "shows both Google and GitHub sign-in options" do
+      with_forgery_protection do
+        visit "/login"
+
+        expect(page).to have_button("Continue with Google")
+        expect(page).to have_button("Continue with GitHub")
       end
     end
   end

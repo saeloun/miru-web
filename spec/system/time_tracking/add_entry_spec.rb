@@ -64,6 +64,10 @@ RSpec.describe "Time Tracking - Add Entry", type: :system, js: true do
     expect(page).to have_css("#react-root", wait: 10)
 
     switch_to("Week")
+    all("button[aria-pressed]", minimum: 1).each do |day_button|
+      day_button.click
+      break if page.has_content?(entry.note, wait: 1)
+    end
     expect(page).to have_content(entry.note, wait: 10)
 
     switch_to("Month")

@@ -9,7 +9,7 @@ const TotalHeader = ({
   thirdAmount,
 }) => (
   <div className="mt-7 px-4 lg:px-0">
-    <ul className="page-display__wrap mt-1 flex flex-wrap rounded-2xl bg-miru-han-purple-1000 py-4 text-white md:flex-nowrap lg:overflow-x-auto lg:py-10">
+    <ul className="page-display__wrap mt-1 flex flex-wrap rounded-2xl bg-primary py-4 text-white md:flex-nowrap lg:overflow-x-auto lg:py-10">
       <li className="page-display__box cursor-pointer pr-2 pt-4 xsm:flex-1 xsm:pr-6 md:w-full">
         <p className="text-xxs font-semibold uppercase tracking-semiWidest lg:text-sm lg:tracking-wider">
           {firstTitle}

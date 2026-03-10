@@ -53,9 +53,9 @@ const PaymentDetails: React.FC<PaymentDetailsProps> = ({ invoice }) => {
   }
 
   return (
-    <div className="border-t border-miru-gray-400 px-10 py-5 bg-gray-50">
+    <div className="border-t border-border px-10 py-5 bg-gray-50">
       <div className="mb-4">
-        <h3 className="text-lg font-semibold text-miru-dark-purple-1000 flex items-center gap-2">
+        <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
           <CreditCard className="h-5 w-5" />
           Payment History
         </h3>
@@ -111,7 +111,7 @@ const PaymentDetails: React.FC<PaymentDetailsProps> = ({ invoice }) => {
 
               <Link
                 to="/payments"
-                className="text-sm text-miru-han-purple-600 hover:text-miru-han-purple-1000 hover:underline"
+                className="text-sm text-primary hover:text-primary hover:underline"
               >
                 View in Payments
               </Link>
@@ -123,7 +123,7 @@ const PaymentDetails: React.FC<PaymentDetailsProps> = ({ invoice }) => {
       <div className="mt-4 pt-4 border-t border-gray-200">
         <div className="flex justify-between items-center">
           <span className="text-sm font-medium text-gray-700">Total Paid:</span>
-          <span className="text-lg font-bold text-miru-dark-purple-1000">
+          <span className="text-lg font-bold text-foreground">
             {currencyFormat(invoice.currency, invoice.amountPaid)}
           </span>
         </div>

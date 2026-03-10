@@ -138,7 +138,7 @@ const AnimatedAvatar: React.FC<AnimatedAvatarProps> = ({
           className={`${sizeClass} rounded-full object-cover ring-2 ring-white shadow-lg`}
         />
         <motion.div
-          className="absolute inset-0 rounded-full ring-2 ring-miru-han-purple-400 ring-opacity-0"
+          className="absolute inset-0 rounded-full ring-2 ring-ring/40 ring-opacity-0"
           whileHover={{ ringOpacity: 0.5 }}
           transition={{ duration: 0.3 }}
         />

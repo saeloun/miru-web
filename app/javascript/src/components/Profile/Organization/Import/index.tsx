@@ -85,7 +85,7 @@ const Import = () => {
       {isLoading ? (
         <Loader className="min-h-70v" />
       ) : (
-        <div className="mt-4 min-h-70v bg-miru-gray-100 px-10 py-5">
+        <div className="mt-4 min-h-70v bg-muted px-10 py-5">
           {importList.map((item, index) => (
             <Fragment key={index}>
               <ImportCard

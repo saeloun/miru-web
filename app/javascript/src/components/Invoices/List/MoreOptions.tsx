@@ -37,12 +37,12 @@ const MoreOptions = ({
   return isDesktop ? (
     <>
       <div
-        className="absolute bottom-16 right-0 hidden items-center justify-between rounded-xl border-2 border-miru-gray-200 bg-white lg:w-28 lg:p-2 lg:group-hover:flex xl:w-40 xl:p-3"
+        className="absolute bottom-16 right-0 hidden items-center justify-between rounded-xl border-2 border-border bg-white lg:w-28 lg:p-2 lg:group-hover:flex xl:w-40 xl:p-3"
         onClick={e => e.stopPropagation()}
       >
         <Tooltip content="Send To">
           <button
-            className="rounded p-2 text-miru-han-purple-1000 hover:bg-miru-gray-100"
+            className="rounded p-2 text-primary hover:bg-muted"
             id="sendInvoiceButton"
             onClick={e => {
               e.stopPropagation();
@@ -54,7 +54,7 @@ const MoreOptions = ({
             }}
           >
             <PaperPlaneTiltIcon
-              className="hover:bg-miru-gray-100"
+              className="hover:bg-muted"
               size={16}
               weight="bold"
             />
@@ -65,8 +65,8 @@ const MoreOptions = ({
             disabled={invoice.status == "draft"}
             className={
               invoice.status == "draft"
-                ? "text-miru-gray-1000"
-                : "rounded p-2 text-miru-han-purple-1000 hover:bg-miru-gray-100"
+                ? "text-foreground"
+                : "rounded p-2 text-primary hover:bg-muted"
             }
             onClick={e => {
               e.stopPropagation();
@@ -78,7 +78,7 @@ const MoreOptions = ({
         </Tooltip>
         <Tooltip content="Edit">
           <button
-            className="rounded p-2 text-miru-han-purple-1000 hover:bg-miru-gray-100"
+            className="rounded p-2 text-primary hover:bg-muted"
             id="editInvoiceButton"
             onClick={e => {
               e.stopPropagation();
@@ -91,8 +91,8 @@ const MoreOptions = ({
         <Tooltip content="More">
           <button
             id="openMenu"
-            className={`rounded p-2 text-miru-han-purple-1000  hover:bg-miru-gray-100 ${
-              isMenuOpen && `bg-miru-gray-100`
+            className={`rounded p-2 text-primary  hover:bg-muted ${
+              isMenuOpen && `bg-muted`
             }`}
             onClick={e => {
               e.stopPropagation();
@@ -110,15 +110,15 @@ const MoreOptions = ({
           onMouseLeave={() => setIsMenuOpen(false)}
         >
           <div className="hidden overflow-hidden lg:w-10 xl:w-12">
-            <div className="h-6 w-6 origin-bottom-left rotate-45 transform border-2 border-miru-gray-200 bg-white" />
+            <div className="h-6 w-6 origin-bottom-left rotate-45 transform border-2 border-border bg-white" />
           </div>
           <ul
-            className="mt-1 rounded-lg border-miru-gray-200 bg-white shadow-c1 lg:py-3 xl:py-4"
+            className="mt-1 rounded-lg border-border bg-white shadow-c1 lg:py-3 xl:py-4"
             onClick={e => e.stopPropagation()}
           >
             {invoice?.status === "overdue" && (
               <li
-                className="flex cursor-pointer items-center px-5 text-sm text-miru-han-purple-1000 hover:bg-miru-gray-100 lg:py-1 xl:py-2"
+                className="flex cursor-pointer items-center px-5 text-sm text-primary hover:bg-muted lg:py-1 xl:py-2"
                 id="reminderIcon"
                 onClick={() => {
                   setIsSendReminder(true);
@@ -134,9 +134,9 @@ const MoreOptions = ({
               </li>
             )}
             {showPrint && (
-              <li className="flex cursor-pointer items-center px-5 text-sm text-miru-han-purple-1000 hover:bg-miru-gray-100 lg:py-1 xl:py-2">
+              <li className="flex cursor-pointer items-center px-5 text-sm text-primary hover:bg-muted lg:py-1 xl:py-2">
                 <PrinterIcon
-                  className="text-miru-han-purple-1000 lg:mr-2 xl:mr-4"
+                  className="text-primary lg:mr-2 xl:mr-4"
                   size={16}
                   weight="bold"
                 />
@@ -144,23 +144,23 @@ const MoreOptions = ({
               </li>
             )}
             <li
-              className="flex cursor-pointer items-center px-5 text-sm text-miru-red-400 hover:bg-miru-gray-100 lg:py-1 xl:py-2"
+              className="flex cursor-pointer items-center px-5 text-sm text-destructive hover:bg-muted lg:py-1 xl:py-2"
               onClick={() => {
                 setShowDeleteDialog(true);
                 setInvoiceToDelete(invoice.id);
               }}
             >
               <DeleteIcon
-                className="text-miru-red-400 lg:mr-2 xl:mr-4"
+                className="text-destructive lg:mr-2 xl:mr-4"
                 size={16}
                 weight="bold"
               />
               Delete
             </li>
             {showSendLink && (
-              <li className="flex cursor-pointer items-center px-5 text-sm text-miru-han-purple-1000 hover:bg-miru-gray-100 lg:py-1 xl:py-2">
+              <li className="flex cursor-pointer items-center px-5 text-sm text-primary hover:bg-muted lg:py-1 xl:py-2">
                 <PaperPlaneTiltIcon
-                  className="text-miru-han-purple-1000 lg:mr-2 xl:mr-4"
+                  className="text-primary lg:mr-2 xl:mr-4"
                   size={16}
                   weight="bold"
                 />
@@ -180,7 +180,7 @@ const MoreOptions = ({
       <ul className="shadow-2 w-full rounded-lg bg-white">
         <li>
           <button
-            className="flex cursor-pointer items-center py-2 text-miru-han-purple-1000"
+            className="flex cursor-pointer items-center py-2 text-primary"
             onClick={e => {
               e.stopPropagation();
               setIsSending(!isSending);
@@ -202,8 +202,8 @@ const MoreOptions = ({
             disabled={invoice.status == "draft"}
             className={
               invoice.status == "draft"
-                ? "flex cursor-pointer items-center py-2 text-miru-gray-1000"
-                : "flex cursor-pointer items-center py-2 text-miru-han-purple-1000"
+                ? "flex cursor-pointer items-center py-2 text-foreground"
+                : "flex cursor-pointer items-center py-2 text-primary"
             }
             onClick={() => handleDownloadInvoice(invoice)}
           >
@@ -212,7 +212,7 @@ const MoreOptions = ({
         </li>
         <li>
           <button
-            className="flex cursor-pointer items-center py-2 text-miru-han-purple-1000"
+            className="flex cursor-pointer items-center py-2 text-primary"
             id="editInvoiceButton"
             onClick={() => {
               navigate(`/invoices/${invoice.id}/edit`);
@@ -223,7 +223,7 @@ const MoreOptions = ({
         </li>
         {invoice?.status === "overdue" && (
           <li
-            className="flex cursor-pointer items-center py-2 text-miru-han-purple-1000"
+            className="flex cursor-pointer items-center py-2 text-primary"
             onClick={() => {
               setIsSendReminder(true);
               setShowMoreOptions(false);
@@ -234,25 +234,25 @@ const MoreOptions = ({
           </li>
         )}
         {showPrint && (
-          <li className="flex cursor-pointer items-center py-2 text-miru-han-purple-1000">
+          <li className="flex cursor-pointer items-center py-2 text-primary">
             <PrinterIcon className="mr-4" size={16} />
             Print
           </li>
         )}
         {showSendLink && (
-          <li className="flex cursor-pointer items-center py-2 text-miru-han-purple-1000">
+          <li className="flex cursor-pointer items-center py-2 text-primary">
             <PaperPlaneTiltIcon className="mr-4" size={16} />
             Send link
           </li>
         )}
         <li
-          className="flex cursor-pointer items-center py-2 text-miru-red-400"
+          className="flex cursor-pointer items-center py-2 text-destructive"
           onClick={() => {
             setShowDeleteDialog(true);
             setInvoiceToDelete(invoice.id);
           }}
         >
-          <DeleteIcon className="mr-4 text-miru-red-400" size={16} />
+          <DeleteIcon className="mr-4 text-destructive" size={16} />
           Delete
         </li>
       </ul>

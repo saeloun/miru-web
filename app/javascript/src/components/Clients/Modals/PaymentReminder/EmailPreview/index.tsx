@@ -34,7 +34,7 @@ const EmailPreview = ({
             >
               {emailParams.recipients.map(recipient => (
                 <div
-                  className="space-XIcon-2 m-0.5 mr-2 flex w-fit items-center rounded-full border bg-miru-gray-400 px-2 py-1"
+                  className="space-XIcon-2 m-0.5 mr-2 flex w-fit items-center rounded-full border bg-secondary px-2 py-1"
                   key={recipient}
                 >
                   <p>{recipient}</p>

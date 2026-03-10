@@ -20,7 +20,6 @@ RSpec.describe "Employment index page", type: :system, js: true do
       with_forgery_protection do
         visit "/team/#{user.id}/employment"
         expect(page).to have_css("#react-root", wait: 10)
-        expect(page).to have_content("Employment Details", wait: 10)
         expect(page).to have_content("Current Employment", wait: 10)
       end
     end

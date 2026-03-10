@@ -108,4 +108,5 @@ playwright-report/
 tools/miru-cli/miru
 .playwright-cli/
 output/
+output/pinchtab/
 Procfile.dev.9000

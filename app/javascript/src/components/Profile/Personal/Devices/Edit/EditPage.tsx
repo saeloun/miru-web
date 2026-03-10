@@ -17,17 +17,15 @@ const EditPage = ({ devices, addAnotherDevice }) => {
   };
 
   return (
-    <div className="mt-4 h-full bg-miru-gray-100 px-10">
+    <div className="mt-4 h-full bg-muted px-10">
       <div className="flex py-10">
         <div className="flex w-1/5 pr-4">
           <MobileIcon
-            className="mr-2 mt-1 text-miru-dark-purple-1000"
+            className="mr-2 mt-1 text-foreground"
             size={16}
             weight="bold"
           />
-          <span className="text-sm font-medium text-miru-dark-purple-1000">
-            Devices
-          </span>
+          <span className="text-sm font-medium text-foreground">Devices</span>
         </div>
         <div className="w-10/12">
           {devices.map(device => {

@@ -52,8 +52,8 @@ const Pagination = ({
               <button
                 disabled={isFirstPage}
                 className={cn("m-1 mx-4 font-bold", {
-                  "text-miru-gray-400": isFirstPage,
-                  "text-miru-han-purple-1000": !isFirstPage,
+                  "text-muted-foreground": isFirstPage,
+                  "text-primary": !isFirstPage,
                 })}
                 onClick={() => {
                   handleClick(prevPage);
@@ -69,9 +69,9 @@ const Pagination = ({
                     disabled={currentPage === page}
                     key={page}
                     className={cn(
-                      "m-1 mx-4 p-1 text-base font-bold text-miru-dark-purple-400",
+                      "m-1 mx-4 p-1 text-base font-bold text-muted-foreground",
                       {
-                        "text-miru-han-purple-1000": prevPage + 1 === page,
+                        "text-primary": prevPage + 1 === page,
                       }
                     )}
                     onClick={() => {
@@ -87,8 +87,8 @@ const Pagination = ({
               <button
                 disabled={isLastPage}
                 className={cn("m-1 mx-4 font-bold", {
-                  "text-miru-gray-400": isLastPage,
-                  "text-miru-han-purple-1000": !isLastPage,
+                  "text-muted-foreground": isLastPage,
+                  "text-primary": !isLastPage,
                 })}
                 onClick={() => {
                   handleClick(nextPage);
@@ -103,7 +103,7 @@ const Pagination = ({
       {isDesktop && isPerPageVisible && (
         <div className="flex items-center justify-end">
           <select
-            className="p-2 text-xs font-bold text-miru-han-purple-1000"
+            className="p-2 text-xs font-bold text-primary"
             value={itemsPerPage}
             onChange={handleClickOnPerPage}
           >

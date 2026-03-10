@@ -70,7 +70,7 @@ const ClientList = ({
                 wrapperClassName="mt-5"
               >
                 <button
-                  className="mt-4 mb-10 flex h-10 flex-row items-center justify-center rounded bg-miru-han-purple-1000 px-25 font-bold text-white"
+                  className="mt-4 mb-10 flex h-10 flex-row items-center justify-center rounded bg-primary px-25 font-bold text-white"
                   type="button"
                   onClick={() => {
                     setShowDialog(true);

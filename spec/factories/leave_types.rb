@@ -34,8 +34,8 @@ FactoryBot.define do
     name { "Annual Leaves" }
     color { LeaveType.colors.keys.sample }
     icon { LeaveType.icons.keys.sample }
-    allocation_period { LeaveType.allocation_periods.keys.sample }
-    allocation_frequency { LeaveType.allocation_frequencies.keys.sample }
+    allocation_period { "days" }
+    allocation_frequency { "per_year" }
     allocation_value { rand(1..10) }
     carry_forward_days { rand(0..5) }
   end

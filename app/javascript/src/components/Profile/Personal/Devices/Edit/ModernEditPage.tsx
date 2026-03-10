@@ -133,42 +133,21 @@ const ModernEditPage: React.FC<ModernEditPageProps> = ({
 
   return (
     <div className="min-h-screen bg-muted/40">
-      {/* Header */}
-      <div className="bg-card shadow-sm border-b sticky top-0 z-10">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
-            <div>
-              <h1 className="text-2xl font-semibold text-foreground">
-                Edit Allocated Devices
-              </h1>
-              <p className="text-sm text-muted-foreground mt-1">
-                Manage your company-allocated devices and equipment
-              </p>
-            </div>
-            <div className="flex items-center space-x-3">
-              <Button
-                variant="outline"
-                onClick={handleCancel}
-                disabled={isLoading}
-              >
-                <X className="h-4 w-4 mr-2" />
-                Cancel
-              </Button>
-              <Button
-                onClick={handleSave}
-                disabled={isLoading || !hasChanges}
-                className="bg-indigo-600 hover:bg-indigo-700"
-              >
-                <Save className="h-4 w-4 mr-2" />
-                Save Changes
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Content */}
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="mb-6 flex justify-end items-center space-x-3">
+          <Button variant="outline" onClick={handleCancel} disabled={isLoading}>
+            <X className="h-4 w-4 mr-2" />
+            Cancel
+          </Button>
+          <Button
+            onClick={handleSave}
+            disabled={isLoading || !hasChanges}
+            className="bg-primary hover:bg-primary/90"
+          >
+            <Save className="h-4 w-4 mr-2" />
+            Save Changes
+          </Button>
+        </div>
         <div className="space-y-6">
           {/* Devices List */}
           {devices.map((device, index) => (
@@ -198,7 +177,7 @@ const ModernEditPage: React.FC<ModernEditPageProps> = ({
                     variant="ghost"
                     size="sm"
                     onClick={() => removeDevice(index)}
-                    className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                    className="text-destructive hover:bg-destructive/10 hover:text-destructive"
                   >
                     <Trash2 className="h-4 w-4" />
                   </Button>
@@ -353,8 +332,8 @@ const ModernEditPage: React.FC<ModernEditPageProps> = ({
             <CardContent className="flex items-center justify-center py-8">
               <div className="text-center">
                 <div className="flex justify-center mb-3">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-indigo-100">
-                    <Plus className="h-6 w-6 text-indigo-600" />
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full border border-border bg-accent">
+                    <Plus className="h-6 w-6 text-primary" />
                   </div>
                 </div>
                 <h3 className="text-sm font-medium text-foreground">
@@ -369,7 +348,7 @@ const ModernEditPage: React.FC<ModernEditPageProps> = ({
 
           {/* Summary */}
           {devices.length > 0 && (
-            <Card className="border-blue-200 bg-blue-50">
+            <Card className="border-border bg-card">
               <CardHeader>
                 <CardTitle className="text-lg">Device Summary</CardTitle>
               </CardHeader>

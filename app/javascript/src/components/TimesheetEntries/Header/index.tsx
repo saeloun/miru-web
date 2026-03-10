@@ -39,7 +39,7 @@ const Header = () => {
   };
 
   return (
-    <div className="flex w-full items-center justify-between bg-miru-han-purple-1000 px-3 py-3 text-white lg:h-10 lg:p-2">
+    <div className="flex w-full items-center justify-between bg-primary px-3 py-3 text-white lg:h-10 lg:p-2">
       <button
         className="items-center justify-center rounded border px-6 py-1 text-center text-xs font-bold leading-4"
         onClick={getTodayAction}

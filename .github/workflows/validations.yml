@@ -96,7 +96,7 @@ jobs:
 
       - name: Setup test database
         run: |
-          bundle exec rake parallel:prepare[2]
+          bundle exec rake "parallel:create[2]" "parallel:load_schema[2]"
 
       - name: Run CLI request specs
         run: |

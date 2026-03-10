@@ -1,18 +1,59 @@
 import React from "react";
-import MiruLogo from "../../../images/miru-logo.svg";
+import { CircleNotch } from "@phosphor-icons/react";
+import { cn } from "../../lib/utils";
 
-const Loader = ({ className = "" }: { className?: string }) => (
+export type LoaderSize = "sm" | "md" | "lg";
+
+interface LoaderProps {
+  className?: string;
+  message?: string;
+  size?: LoaderSize;
+  overlay?: boolean;
+}
+
+const sizeMap = {
+  sm: {
+    panel: "max-w-xs px-5 py-4",
+    icon: "h-5 w-5",
+  },
+  md: {
+    panel: "max-w-sm px-6 py-5",
+    icon: "h-6 w-6",
+  },
+  lg: {
+    panel: "max-w-md px-7 py-6",
+    icon: "h-7 w-7",
+  },
+};
+
+const Loader = ({
+  className = "",
+  message = "Loading workspace...",
+  size = "md",
+  overlay = true,
+}: LoaderProps) => (
   <div
-    className={`flex min-h-full w-full items-center justify-center bg-neutral-100 py-10 text-neutral-900 dark:bg-neutral-950 dark:text-neutral-100 ${className}`}
+    className={cn(
+      "flex min-h-screen w-full items-center justify-center bg-background text-foreground",
+      overlay
+        ? "fixed inset-0 z-50 overflow-y-auto overflow-x-hidden bg-background/70 px-4 py-8 backdrop-blur-sm"
+        : "px-4 py-10",
+      className
+    )}
   >
-    <div className="flex flex-col items-center gap-4 rounded-xl border border-black/10 bg-white/80 px-6 py-5 shadow-sm dark:border-white/10 dark:bg-neutral-900/80">
-      <div className="relative flex h-20 w-20 items-center justify-center">
-        <div className="h-20 w-20 animate-spin rounded-full border-2 border-neutral-300 border-t-neutral-900 dark:border-neutral-700 dark:border-t-neutral-100" />
-        <img alt="Miru" className="absolute h-10 w-10" src={MiruLogo} />
+    <div
+      className={cn(
+        "w-full rounded-2xl border border-border bg-card/95 shadow-lg backdrop-blur",
+        sizeMap[size].panel
+      )}
+    >
+      <div className="flex flex-col items-center gap-3 text-center">
+        <CircleNotch
+          className={cn("animate-spin text-primary", sizeMap[size].icon)}
+          weight="bold"
+        />
+        <p className="text-sm font-medium text-muted-foreground">{message}</p>
       </div>
-      <p className="text-sm font-medium tracking-wide text-neutral-700 dark:text-neutral-300">
-        Loading...
-      </p>
     </div>
   </div>
 );

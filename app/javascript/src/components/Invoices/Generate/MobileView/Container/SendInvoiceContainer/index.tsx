@@ -31,11 +31,11 @@ const SendInvoiceContainer = ({
     handleClick: any;
     recipientsCount: any;
   }> = ({ email, handleClick, recipientsCount }) => (
-    <div className="space-XIcon-2 m-0.5 flex w-fit items-center rounded-full border bg-miru-gray-400 px-2 py-1 text-sm font-medium">
+    <div className="space-XIcon-2 m-0.5 flex w-fit items-center rounded-full border bg-secondary px-2 py-1 text-sm font-medium">
       <p>{email}</p>
       {recipientsCount > 1 && (
         <button
-          className="text-miru-black-1000 hover:text-miru-red-400"
+          className="text-foreground hover:text-destructive"
           type="button"
           onClick={handleClick}
         >
@@ -215,13 +215,13 @@ const SendInvoiceContainer = ({
                     ${
                       invoiceEmail?.recipients.length > 0 &&
                       status !== InvoiceStatus.LOADING
-                        ? `focus:outline-none cursor-pointer bg-miru-han-purple-1000 hover:bg-miru-han-purple-600 focus:ring-2
-                        focus:ring-miru-han-purple-600 focus:ring-offset-2`
+                        ? `focus:outline-none cursor-pointer bg-primary hover:bg-primary/90 focus:ring-2
+                        focus:ring-ring focus:ring-offset-2`
                         : "cursor-not-allowed border-transparent bg-indigo-100 hover:border-transparent"
                     }
                     `,
                   {
-                    "bg-miru-chart-green-600 hover:bg-miru-chart-green-400":
+                    "bg-emerald-600 hover:bg-emerald-500":
                       status === InvoiceStatus.SUCCESS,
                   }
                 )}

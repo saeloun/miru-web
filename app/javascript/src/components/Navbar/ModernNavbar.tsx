@@ -140,12 +140,10 @@ export const ModernNavbar: React.FC = () => {
         <div className="flex items-center gap-3">
           <img
             src="/assets/miru-logo.svg"
-            alt="Miru Agency OS"
-            className="h-8 w-auto"
+            alt="Miru"
+            className="h-8 w-auto dark:invert"
           />
-          <span className="text-xl font-bold text-foreground">
-            Miru Agency OS
-          </span>
+          <span className="text-xl font-bold text-foreground">Miru</span>
         </div>
         {!isDesktop && (
           <button
@@ -195,7 +193,7 @@ export const ModernNavbar: React.FC = () => {
           className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-muted transition-colors"
         >
           <Gear className="h-5 w-5 text-muted-foreground" />
-          <span className="text-sm text-foreground">Gear</span>
+          <span className="text-sm text-foreground">Settings</span>
         </NavLink>
         <button
           onClick={handleLogout}

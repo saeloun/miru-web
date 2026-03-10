@@ -182,6 +182,7 @@ const ModernHolidaysEditor = ({
                           </div>
                         </div>
                         <Button
+                          aria-label="Delete holiday"
                           variant="ghost"
                           size="sm"
                           onClick={() => handleDeleteHoliday(false, index)}
@@ -396,6 +397,7 @@ const ModernHolidaysEditor = ({
                               </div>
                             </div>
                             <Button
+                              aria-label="Delete holiday"
                               variant="ghost"
                               size="sm"
                               onClick={() => handleDeleteHoliday(true, index)}

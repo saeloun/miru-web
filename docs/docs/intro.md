@@ -185,7 +185,6 @@ We take security seriously. Miru includes:
 Currently, Miru integrates with:
 - Stripe (credit cards, ACH, international payments)
 - PayPal
-- Wise (formerly TransferWise)
 - Manual payment tracking
 
 ### Can I migrate from other time tracking tools?

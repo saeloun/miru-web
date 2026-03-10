@@ -136,11 +136,7 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
         <div className="flex items-center justify-between">
           <h6 className="text-base font-extrabold">{getLabel()}</h6>
           <Button style="ternary" onClick={handleCloseModal}>
-            <XIcon
-              className="text-miru-dark-purple-1000"
-              size={16}
-              weight="bold"
-            />
+            <XIcon className="text-foreground" size={16} weight="bold" />
           </Button>
         </div>
         <Formik
@@ -209,12 +205,12 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
                   />
                 </div>
                 <div className="field">
-                  <label className="text-xs font-normal text-miru-dark-purple-1000">
+                  <label className="text-xs font-normal text-foreground">
                     Role
                   </label>
                   <div className="mt-2 flex items-center gap-6">
                     <CustomRadioButton
-                      classNameLabel="font-medium text-sm text-miru-dark-purple-1000"
+                      classNameLabel="font-medium text-sm text-foreground"
                       classNameWrapper="py-2 pr-2 rounded"
                       defaultCheck={values.role == "admin"}
                       groupName="role"
@@ -227,7 +223,7 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
                       }}
                     />
                     <CustomRadioButton
-                      classNameLabel="font-medium text-sm text-miru-dark-purple-1000"
+                      classNameLabel="font-medium text-sm text-foreground"
                       classNameWrapper="py-2 pr-2 rounded"
                       defaultCheck={values.role == "employee"}
                       groupName="role"
@@ -240,7 +236,7 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
                       }}
                     />
                     <CustomRadioButton
-                      classNameLabel="font-medium text-sm text-miru-dark-purple-1000"
+                      classNameLabel="font-medium text-sm text-foreground"
                       classNameWrapper="py-2 pr-2 rounded"
                       defaultCheck={values.role == "book_keeper"}
                       groupName="role"
@@ -253,7 +249,7 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
                       }}
                     />
                     <CustomRadioButton
-                      classNameLabel="font-medium text-sm text-miru-dark-purple-1000"
+                      classNameLabel="font-medium text-sm text-foreground"
                       classNameWrapper="py-2 pr-2 rounded"
                       defaultCheck={values.role == "client"}
                       groupName="role"
@@ -273,7 +269,7 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
                     type="submit"
                     className={
                       !isValid || !dirty
-                        ? "focus:outline-none flex h-10 w-full justify-center rounded border border-transparent bg-miru-gray-1000 text-base font-medium tracking-widest text-miru-white-1000 shadow-sm"
+                        ? "focus:outline-none flex h-10 w-full justify-center rounded border border-transparent bg-secondary text-base font-medium tracking-widest text-primary-foreground shadow-sm"
                         : "form__input_submit"
                     }
                   >

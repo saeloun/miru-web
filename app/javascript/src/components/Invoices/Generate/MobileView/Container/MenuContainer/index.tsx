@@ -103,7 +103,7 @@ const MenuContainer = ({
       onClick={() => handleDropdownClick(title)}
     >
       <span
-        className={`text-base leading-5 text-miru-dark-purple-1000 ${
+        className={`text-base leading-5 text-foreground ${
           openDropdown ? "font-bold" : "font-medium"
         }`}
       >
@@ -111,17 +111,9 @@ const MenuContainer = ({
       </span>
       <div className="flex items-center">
         {openDropdown ? (
-          <MinusIcon
-            className="mx-2 text-miru-han-purple-1000"
-            size={16}
-            weight="bold"
-          />
+          <MinusIcon className="mx-2 text-primary" size={16} weight="bold" />
         ) : (
-          <PlusIcon
-            className="mx-2 text-miru-han-purple-1000"
-            size={16}
-            weight="bold"
-          />
+          <PlusIcon className="mx-2 text-primary" size={16} weight="bold" />
         )}
       </div>
     </div>
@@ -130,7 +122,7 @@ const MenuContainer = ({
   return (
     <div className="flex flex-auto flex-col justify-between">
       <div>
-        <div className="border-b border-miru-gray-200 py-3 px-4">
+        <div className="border-b border-border py-3 px-4">
           <ListItem openDropdown={showInvoiceDetails} title="Invoice Details" />
           {showInvoiceDetails && (
             <InvoiceDetails
@@ -151,11 +143,11 @@ const MenuContainer = ({
             />
           )}
         </div>
-        <div className="border-b border-miru-gray-200 py-3 px-4">
+        <div className="border-b border-border py-3 px-4">
           <ListItem openDropdown={showLineItem} title="Line Items" />
           {showLineItem && (
             <>
-              <div className="mt-3 border-t border-miru-gray-400" />
+              <div className="mt-3 border-t border-border" />
               <LineItems
                 currency={currency}
                 dateFormat={dateFormat}
@@ -170,9 +162,7 @@ const MenuContainer = ({
           )}
         </div>
         <div
-          className={` py-3 px-4 ${
-            !showBilling && "border-b border-miru-gray-200"
-          }`}
+          className={` py-3 px-4 ${!showBilling && "border-b border-border"}`}
         >
           <ListItem openDropdown={showBilling} title="Billing Details" />
           {showBilling && (

@@ -16,7 +16,7 @@ const PrivacyPolicyModal = ({ isOpen, onClose }) => (
       <div className="mt-2 mb-6 flex items-center justify-between">
         <h2 className="text-lg font-bold">Privacy Policy for Miru Inc</h2>
         <button
-          className="left-0 text-miru-gray-1000"
+          className="left-0 text-foreground"
           type="button"
           onClick={onClose}
         >

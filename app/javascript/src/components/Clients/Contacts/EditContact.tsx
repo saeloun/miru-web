@@ -93,7 +93,7 @@ const EditContact = ({
                 <InputField
                   autoComplete="off"
                   id="firstName"
-                  inputBoxClassName="border focus:border-miru-han-purple-1000"
+                  inputBoxClassName="border focus:border-primary"
                   label="First Name"
                   name="firstName"
                   setFieldError={setFieldError}
@@ -107,7 +107,7 @@ const EditContact = ({
                 <InputField
                   autoComplete="off"
                   id="lastName"
-                  inputBoxClassName="border focus:border-miru-han-purple-1000"
+                  inputBoxClassName="border focus:border-primary"
                   label="Last Name"
                   name="lastName"
                   setFieldError={setFieldError}
@@ -131,7 +131,7 @@ const EditContact = ({
                   inputBoxClassName={`border cursor-not-allowed ${
                     errors.email && touched.email
                       ? "focus:border-red-600"
-                      : "focus:border-miru-han-purple-1000"
+                      : "focus:border-primary"
                   }`}
                 />
                 <InputErrors
@@ -144,7 +144,7 @@ const EditContact = ({
                 style="primary"
                 type="submit"
                 className={`w-full p-2 text-center text-base font-bold ${
-                  !isValid || (!dirty && "bg-miru-gray-400")
+                  !isValid || (!dirty && "bg-secondary")
                 }`}
               >
                 Update Contact

@@ -144,7 +144,7 @@ const ProjectForm = ({
 
   return (
     <div className="z-50 flex h-full w-full flex-col">
-      <div className="flex items-center justify-between bg-miru-han-purple-1000 p-3 text-white">
+      <div className="flex items-center justify-between bg-primary p-3 text-white">
         <span className="w-full pl-6 text-center text-base font-medium leading-5 text-white">
           {editProjectData?.id ? "Edit Project Details" : "Add New Project"}
         </span>
@@ -171,7 +171,7 @@ const ProjectForm = ({
                   readOnly
                   autoComplete="off"
                   id="client"
-                  inputBoxClassName="border focus:border-miru-han-purple-1000"
+                  inputBoxClassName="border focus:border-primary"
                   label="Client"
                   name="client"
                   setFieldError={setFieldError}
@@ -196,8 +196,8 @@ const ProjectForm = ({
                         placeholder="Search"
                         type="text"
                         value={clientName}
-                        className="focus:outline-none w-full rounded bg-miru-gray-100 p-2
-            text-sm font-medium focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
+                        className="focus:outline-none w-full rounded bg-muted p-2
+            text-sm font-medium focus:border-border focus:ring-1 focus:ring-ring"
                         onChange={e => {
                           setClientName(e.target.value);
                         }}
@@ -221,7 +221,7 @@ const ProjectForm = ({
                       {filteredClientList ? (
                         filteredClientList.map(clientItem => (
                           <li
-                            className="flex items-center px-2 pt-3 text-sm leading-5 text-miru-dark-purple-1000 hover:bg-miru-gray-100"
+                            className="flex items-center px-2 pt-3 text-sm leading-5 text-foreground hover:bg-muted"
                             key={clientItem?.id}
                             onClick={() => {
                               setFieldValue("client", clientItem.name, true);
@@ -242,7 +242,7 @@ const ProjectForm = ({
                 <InputField
                   autoComplete="off"
                   id="project"
-                  inputBoxClassName="border focus:border-miru-han-purple-1000"
+                  inputBoxClassName="border focus:border-primary"
                   label="Project Name"
                   name="project"
                   readOnly={false}
@@ -255,12 +255,12 @@ const ProjectForm = ({
                   fieldTouched={touched.project}
                 />
                 <div>
-                  <span className="text-base font-normal text-miru-dark-purple-1000">
+                  <span className="text-base font-normal text-foreground">
                     Project Type
                   </span>
                   <div className="flex">
                     <CustomRadioButton
-                      classNameLabel="font-medium text-base leading-5 text-miru-dark-purple-1000"
+                      classNameLabel="font-medium text-base leading-5 text-foreground"
                       classNameWrapper="py-3"
                       defaultCheck={values.isBillable == true}
                       groupName="projectType"
@@ -273,7 +273,7 @@ const ProjectForm = ({
                       }}
                     />
                     <CustomRadioButton
-                      classNameLabel="font-medium text-base leading-5 text-miru-dark-purple-1000"
+                      classNameLabel="font-medium text-base leading-5 text-foreground"
                       classNameWrapper="px-5 py-3"
                       defaultCheck={values.isBillable == false}
                       groupName="projectType"
@@ -292,7 +292,7 @@ const ProjectForm = ({
                 disabled={isSubmitDisabled}
                 style="primary"
                 className={`w-full p-2 text-center text-base font-bold ${
-                  isSubmitDisabled && "bg-miru-gray-400"
+                  isSubmitDisabled && "bg-secondary"
                 }`}
                 onClick={handleSubmit}
               >

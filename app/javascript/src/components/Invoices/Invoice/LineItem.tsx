@@ -9,33 +9,33 @@ const LineItem = ({ currency, item, dateFormat, strikeAmount = "" }) => {
   return (
     <>
       <tr>
-        <td className="px-1 pt-5 pb-2 text-left text-base font-medium text-miru-dark-purple-1000 ">
+        <td className="px-1 pt-5 pb-2 text-left text-base font-medium text-foreground ">
           {item.name}
           {item.first_name} {item.last_name}
         </td>
-        <td className="px-1 pt-5 pb-2 text-right text-base font-medium text-miru-dark-purple-1000 ">
+        <td className="px-1 pt-5 pb-2 text-right text-base font-medium text-foreground ">
           {date}
         </td>
-        <td className="px-1 pt-5 pb-2 text-right text-base font-medium text-miru-dark-purple-1000 ">
+        <td className="px-1 pt-5 pb-2 text-right text-base font-medium text-foreground ">
           {currencyFormat(currency, item.rate)}
         </td>
-        <td className="px-1 pt-5 pb-2 text-right text-base font-medium text-miru-dark-purple-1000 ">
+        <td className="px-1 pt-5 pb-2 text-right text-base font-medium text-foreground ">
           {minToHHMM(item.quantity)}
         </td>
         <td
-          className={`px-1 pt-5 pb-2 text-right text-base font-medium text-miru-dark-purple-1000 ${strikeAmount}`}
+          className={`px-1 pt-5 pb-2 text-right text-base font-medium text-foreground ${strikeAmount}`}
         >
           {currencyFormat(currency, lineTotalCalc(item.quantity, item.rate))}
         </td>
       </tr>
       <tr>
         <td
-          className="border-b-2 border-miru-gray-200 px-1 pb-3 text-left text-sm font-medium text-miru-dark-purple-400"
+          className="border-b-2 border-border px-1 pb-3 text-left text-sm font-medium text-muted-foreground"
           colSpan={2}
         >
           {item.description}
         </td>
-        <td className="border-b-2 border-miru-gray-200" colSpan={3} />
+        <td className="border-b-2 border-border" colSpan={3} />
       </tr>
     </>
   );

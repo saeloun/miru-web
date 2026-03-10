@@ -142,9 +142,7 @@ export function DataTable<TData, TValue>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  className={
-                    onRowClick ? "cursor-pointer hover:bg-gray-50" : ""
-                  }
+                  className={onRowClick ? "cursor-pointer hover:bg-accent" : ""}
                   onClick={event => {
                     if (!onRowClick) return;
                     const target = event.target as HTMLElement;
