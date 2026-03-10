@@ -24,7 +24,7 @@ export const showUpdateAction = (
         style={BUTTON_STYLES.secondary}
         onClick={() => setEditTimeoffEntryId(id)}
       >
-        <EditIcon className="text-miru-han-purple-1000" size={20} />
+        <EditIcon className="text-primary" size={20} />
       </Button>
     );
   }
@@ -46,7 +46,7 @@ export const showDeleteAction = (
         style={BUTTON_STYLES.secondary}
         onClick={() => handleDeleteTimeoffEntry(id)}
       >
-        <DeleteIcon className="text-miru-han-purple-1000" size={20} />
+        <DeleteIcon className="text-primary" size={20} />
       </Button>
     );
   }
@@ -67,7 +67,7 @@ export const showDuplicateAction = (
         style={BUTTON_STYLES.secondary}
         onClick={() => handleDuplicateTimeoffEntry(id)}
       >
-        <CopyIcon className="text-miru-han-purple-1000" size={20} />
+        <CopyIcon className="text-primary" size={20} />
       </Button>
     );
   }

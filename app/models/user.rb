@@ -117,7 +117,7 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
     :recoverable, :rememberable, :validatable,
     :trackable, :confirmable,
-    :omniauthable, omniauth_providers: [:google_oauth2]
+    :omniauthable, omniauth_providers: [:google_oauth2, :github]
 
   # Devise session serialization fix
   def self.serialize_into_session(record)

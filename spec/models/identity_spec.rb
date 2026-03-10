@@ -41,5 +41,19 @@ RSpec.describe Identity, type: :model do
         expect(described_class.google_auth).not_to include(identity3)
       end
     end
+
+    describe ".github_auth" do
+      let(:identity1) { create(:identity, provider: "github") }
+      let(:identity2) { create(:identity, provider: "github") }
+      let(:identity3) { create(:identity, provider: "google_oauth2") }
+
+      it "returns identities where provider is github" do
+        expect(described_class.github_auth).to include(identity2, identity1)
+      end
+
+      it "excludes identities where provider is github" do
+        expect(described_class.github_auth).not_to include(identity3)
+      end
+    end
   end
 end

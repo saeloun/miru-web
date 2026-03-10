@@ -2,8 +2,10 @@ import React from "react";
 
 import CustomYearPicker from "common/CustomYearPicker";
 import { getYear } from "date-fns";
-import { XIcon } from "miruIcons";
+import { X } from "phosphor-react";
 import { useLocation } from "react-router-dom";
+
+import { Button } from "../../ui/button";
 
 const EditHeader = ({
   title,
@@ -21,72 +23,49 @@ const EditHeader = ({
 
   return (
     <>
-      <div
-        className={
-          isSettingsPage
-            ? "mb-6 hidden items-center justify-end gap-3 md:flex"
-            : "hidden h-16 items-center justify-between bg-primary px-10 py-4 text-white md:flex"
-        }
-      >
-        {!isSettingsPage && (
-          <h1 className="text-2xl font-bold text-white">{title}</h1>
-        )}
-        {!isSettingsPage && subTitle && (
-          <span className="pt-2 text-sm font-normal">{subTitle}</span>
-        )}
-        {showYearPicker && (
-          <CustomYearPicker
-            currentYear={currentYear}
-            setCurrentYear={setCurrentYear}
-          />
-        )}
-        <div
-          className={`mt-1 text-center ${
-            showButtons ? "visible" : "invisible"
-          }`}
-        >
-          <div>
-            <button
-              className={
-                isSettingsPage
-                  ? "mx-1 cursor-pointer rounded-md border border-border bg-card px-3 py-2 text-sm font-medium text-foreground hover:bg-accent"
-                  : "mx-1 cursor-pointer rounded-md border border-white bg-primary px-3 py-2 font-bold text-white hover:bg-primary/90"
-              }
-              onClick={cancelAction}
-            >
-              Cancel
-            </button>
-            <button
-              disabled={isDisableUpdateBtn}
-              className={
-                isSettingsPage
-                  ? `mx-1 w-20 cursor-pointer rounded-md px-3 py-2 text-sm font-medium text-white ${
-                      isDisableUpdateBtn
-                        ? "bg-muted cursor-not-allowed"
-                        : "bg-primary hover:bg-primary/90"
-                    }`
-                  : `mx-1 w-20 cursor-pointer rounded-md border px-3 py-2 font-bold text-primary hover:bg-primary/90 hover:text-white
-              ${isDisableUpdateBtn ? "bg-secondary" : "bg-white"}`
-              }
-              onClick={saveAction}
-            >
-              Update
-            </button>
-          </div>
+      <div className="mb-6 hidden flex-col gap-4 rounded-2xl border border-border bg-card p-5 shadow-sm md:flex md:flex-row md:items-center md:justify-between">
+        <div className="space-y-1">
+          <h1 className="text-2xl font-semibold tracking-tight text-foreground">
+            {title}
+          </h1>
+          {subTitle && (
+            <p className="text-sm text-muted-foreground">{subTitle}</p>
+          )}
+        </div>
+        <div className="flex flex-wrap items-center gap-3">
+          {showYearPicker && (
+            <CustomYearPicker
+              currentYear={currentYear}
+              setCurrentYear={setCurrentYear}
+            />
+          )}
+          {showButtons && (
+            <>
+              <Button onClick={cancelAction} type="button" variant="outline">
+                Cancel
+              </Button>
+              <Button
+                disabled={isDisableUpdateBtn}
+                onClick={saveAction}
+                type="button"
+              >
+                Update
+              </Button>
+            </>
+          )}
         </div>
       </div>
-      <div className="flex h-12 w-full items-center justify-between bg-primary p-3 text-primary-foreground shadow-c1 md:hidden md:w-0">
-        <h1 className="mx-auto w-full text-center font-sans text-base font-medium leading-5.5">
+      <div className="sticky top-0 z-20 flex h-14 w-full items-center justify-between border-b border-border bg-background/95 px-4 text-foreground backdrop-blur md:hidden">
+        <h1 className="flex-1 text-center text-base font-semibold leading-6">
           {title}
         </h1>
-        <div>
-          <button
-            className="outline-none border-none bg-transparent font-sans font-bold capitalize text-primary"
-            onClick={cancelAction}
-          >
-            <XIcon color="#fff" size={16} />
-          </button>
-        </div>
+        <button
+          className="ml-3 flex h-9 w-9 items-center justify-center rounded-full border border-border bg-card text-muted-foreground transition hover:bg-accent hover:text-foreground"
+          onClick={cancelAction}
+          type="button"
+        >
+          <X className="h-4 w-4" />
+        </button>
       </div>
     </>
   );

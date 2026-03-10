@@ -37,9 +37,15 @@ const Header = () => {
   };
 
   return (
-    <div className="relative flex h-20 items-center justify-center bg-miru-gray-100">
+    <div className="relative flex h-20 items-center justify-center bg-muted">
       <Link to={rootPath()}>
-        <img alt="miru-logo" height="64px" src={MiruLogoSVG} width="64px" />
+        <img
+          alt="Miru"
+          className="dark:invert"
+          height="64px"
+          src={MiruLogoSVG}
+          width="64px"
+        />
       </Link>
     </div>
   );

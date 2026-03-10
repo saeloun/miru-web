@@ -156,8 +156,8 @@ const EditMembersListForm = ({
                 placeholder="Search"
                 type="text"
                 value={searchMemberString}
-                className="focus:outline-none w-full rounded bg-miru-gray-100 p-2
-          text-sm font-medium focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
+                className="focus:outline-none w-full rounded bg-muted p-2
+          text-sm font-medium focus:border-border focus:ring-1 focus:ring-ring"
                 onChange={e => {
                   setSearchMemberString(e.target.value);
                 }}
@@ -180,7 +180,7 @@ const EditMembersListForm = ({
             <div className="flex flex-auto flex-col overflow-y-scroll">
               {formattedMemberList.map(memberItem => (
                 <li
-                  className="flex items-center pt-3 text-sm font-medium leading-5 text-miru-dark-purple-1000"
+                  className="flex items-center pt-3 text-sm font-medium leading-5 text-foreground"
                   key={memberItem.value}
                   onMouseDown={() => {
                     member.isExisting
@@ -240,7 +240,7 @@ const EditMembersListForm = ({
                 {member.hourlyRate == "" &&
                 focusedRateInputBoxId != memberIndex ? null : (
                   <div className="pointer-events-none absolute inset-y-0 right-1 z-20 flex items-center px-1">
-                    <span className="top-0 text-miru-dark-purple-1000 sm:text-sm md:text-base">
+                    <span className="top-0 text-foreground sm:text-sm md:text-base">
                       {currencySymbol}
                     </span>
                   </div>
@@ -254,8 +254,8 @@ const EditMembersListForm = ({
                   value={member.hourlyRate}
                   inputBoxClassName={` text-right ${
                     isInvalidRateInputBox(memberIndex)
-                      ? "border-miru-red-400 error-input"
-                      : "border-miru-gray-1000 focus:border-miru-han-purple-1000"
+                      ? "border-destructive error-input"
+                      : "border-border focus:border-primary"
                   }`}
                   onChange={e => handleHourlyRateInput(e, memberIndex)}
                   onFocus={() => setFocusedRateInputBoxId(memberIndex)}
@@ -285,7 +285,7 @@ const EditMembersListForm = ({
             {isInvalidRateInputBox(memberIndex) ? (
               <div className="flex flex-row-reverse">
                 <ErrorSpan
-                  className="relative right-2 block w-1/3 text-xs text-miru-red-400"
+                  className="relative right-2 block w-1/3 text-xs text-destructive"
                   message={errorForInvalidHourlyRate[memberIndex]}
                 />
               </div>
@@ -301,8 +301,8 @@ const EditMembersListForm = ({
               type="button"
               className={`menuButton__button text-xs ${
                 formattedMemberList.length > 0
-                  ? "text-miru-han-purple-1000"
-                  : "text-miru-dark-purple-400"
+                  ? "text-primary"
+                  : "text-muted-foreground"
               }`}
               onClick={addNewMemberRowHandler}
             >
@@ -325,7 +325,7 @@ const EditMembersListForm = ({
           className={`form__button whitespace-nowrap text-tiny md:text-base ${
             isSubmitBtnActive(members)
               ? "cursor-pointer"
-              : "cursor-not-allowed border-transparent bg-miru-gray-1000 hover:border-transparent"
+              : "cursor-not-allowed border-transparent bg-secondary hover:border-transparent"
           }`}
         />
       </div>

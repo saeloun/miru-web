@@ -15,10 +15,10 @@ const InvoicePreview = ({
   selectedClient,
   handleSendButtonClick,
 }) => (
-  <div className="bg-miru-gray-100 p-4">
+  <div className="bg-muted p-4">
     <div className="flex items-start gap-2 pb-5">
       <span
-        className="flex-1 text-left text-xs font-bold leading-4 text-miru-han-purple-1000"
+        className="flex-1 text-left text-xs font-bold leading-4 text-primary"
         onClick={() => {
           if (selectedClient) {
             setActiveSection(sections.invoicePreview);
@@ -29,10 +29,10 @@ const InvoicePreview = ({
         Invoice Preview
       </span>
       <div className="flex min-w-0 flex-1 justify-between">
-        <span className="text-right text-sm font-normal leading-5 text-miru-dark-purple-1000">
+        <span className="text-right text-sm font-normal leading-5 text-foreground">
           Total
         </span>
-        <span className="text-right text-sm font-bold leading-5 text-miru-dark-purple-1000">
+        <span className="text-right text-sm font-bold leading-5 text-foreground">
           {currencyFormat(currency, total)}
         </span>
       </div>

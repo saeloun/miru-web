@@ -15,31 +15,31 @@ const TableHeader = () => (
   <thead>
     <tr className="flex flex-row items-center">
       <th
-        className="w-4/12 py-5 pr-6 text-left text-xs font-normal tracking-widest text-miru-dark-purple-600"
+        className="w-4/12 py-5 pr-6 text-left text-xs font-normal tracking-widest text-muted-foreground"
         scope="col"
       >
         CLIENT
       </th>
       <th
-        className="w-2/12 px-0 py-5 text-right text-xs font-normal tracking-widest text-miru-dark-purple-600"
+        className="w-2/12 px-0 py-5 text-right text-xs font-normal tracking-widest text-muted-foreground"
         scope="col"
       >
         OVERDUE <br /> AMOUNT
       </th>
       <th
-        className="w-2/12 px-0 py-5 text-right text-xs font-normal tracking-widest text-miru-dark-purple-600"
+        className="w-2/12 px-0 py-5 text-right text-xs font-normal tracking-widest text-muted-foreground"
         scope="col"
       >
         OUTSTANDING <br /> AMOUNT
       </th>
       <th
-        className="w-2/12 px-6 py-5 text-right text-xs font-normal tracking-widest text-miru-dark-purple-600"
+        className="w-2/12 px-6 py-5 text-right text-xs font-normal tracking-widest text-muted-foreground"
         scope="col"
       >
         PAID <br /> AMOUNT
       </th>
       <th
-        className="w-2/12 py-5 pl-6 text-right text-xs font-normal tracking-widest text-miru-dark-purple-600"
+        className="w-2/12 py-5 pl-6 text-right text-xs font-normal tracking-widest text-muted-foreground"
         scope="col"
       >
         TOTAL <br /> REVENUE

@@ -70,7 +70,7 @@ const Header = ({
 
   useOutsideClick(menuRef, () => setIsHeaderMenuVisible(false));
 
-  const menuBackground = isHeaderMenuVisible ? "bg-miru-gray-100" : "";
+  const menuBackground = isHeaderMenuVisible ? "bg-muted" : "";
 
   return (
     <div className="lg:my-6">
@@ -78,12 +78,12 @@ const Header = ({
         <div className="flex items-center">
           <button className="button-icon__back" onClick={handleBackButtonClick}>
             <ArrowLeftIcon
-              className="text-miru-dark-purple-1000"
+              className="text-foreground"
               size={20}
               weight="bold"
             />
           </button>
-          <h2 className="mr-6 py-1 text-base font-medium text-miru-dark-purple-1000 sm:truncate lg:text-4xl lg:font-extrabold">
+          <h2 className="mr-6 py-1 text-base font-medium text-foreground sm:truncate lg:text-4xl lg:font-extrabold">
             {clientDetails.name}
           </h2>
           <button onClick={handleClientDetails}>
@@ -130,7 +130,7 @@ const Header = ({
                 </button>
               </li>
               <li onClick={handleDelete}>
-                <button className="menuButton__list-item text-miru-red-400">
+                <button className="menuButton__list-item text-destructive">
                   <DeleteIcon color="#E04646" size={16} weight="bold" />
                   <span className="ml-3">Delete</span>
                 </button>
@@ -145,7 +145,7 @@ const Header = ({
             <p className="text-lg font-bold">Client Details</p>
             <div className="mt-4 text-base">
               <p className=" font-semibold">Address</p>
-              <div className="mt-1 text-miru-dark-purple-400">
+              <div className="mt-1 text-muted-foreground">
                 <p>{clientDetails.address.address_line_1}</p>
                 <p>{clientDetails.address?.address_line_2}</p>
                 <p>{clientDetails.address?.city}</p>
@@ -154,7 +154,7 @@ const Header = ({
             </div>
             <div className="mt-4 text-base">
               <p className="font-semibold">Phone number</p>
-              <p className="mt-1 text-miru-dark-purple-400">
+              <p className="mt-1 text-muted-foreground">
                 {clientDetails.phone}
               </p>
             </div>

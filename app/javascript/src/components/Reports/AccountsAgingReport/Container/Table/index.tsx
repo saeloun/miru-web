@@ -47,7 +47,7 @@ const Table = ({ accountsAgingReport }) => {
         {isDesktop && <TableHeader sortClientList={sortClientList} />}
         <tbody className="flex flex-col divide-y divide-gray-200 bg-white">
           {loading ? (
-            <tr className="tracking-wide flex items-center justify-center text-base font-medium text-miru-han-purple-1000">
+            <tr className="tracking-wide flex items-center justify-center text-base font-medium text-primary">
               <td>Loading...</td>
             </tr>
           ) : clientList.length ? (
@@ -61,7 +61,7 @@ const Table = ({ accountsAgingReport }) => {
               </Fragment>
             ))
           ) : (
-            <tr className="tracking-wide flex items-center justify-center text-base font-medium text-miru-han-purple-1000 md:h-50">
+            <tr className="tracking-wide flex items-center justify-center text-base font-medium text-primary md:h-50">
               <td>No Data Found</td>
             </tr>
           )}

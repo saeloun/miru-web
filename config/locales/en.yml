@@ -182,8 +182,10 @@ en:
     remember_me: remember me
     or: or
     signup_with_google: sign up with google
+    signup_with_github: sign up with github
     signup_with_apple: sign up with apple
     signin_with_google: sign in with google
+    signin_with_github: sign in with github
   confirmation:
     send_instructions: "A confirmation email has been sent to %{email}."
   shared_links:

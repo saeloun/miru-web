@@ -3,7 +3,7 @@
         <div class="field">
             <%= f.label t('projects.client') %>
             <div class="mt-2">
-                <%= f.collection_select :client_id, current_company.clients.order(:name),:id,:name, {}, { class: "rounded tracking-wider appearance-none border border-gray-100 block w-full px-3 py-2 bg-miru-white-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none focus:ring-miru-gray-1000 focus:border-miru-gray-1000" } %>
+                <%= f.collection_select :client_id, current_company.clients.order(:name),:id,:name, {}, { class: "rounded tracking-wider appearance-none border border-gray-100 block w-full px-3 py-2 bg-background h-8 shadow-sm font-semibold text-xs text-foreground focus:outline-none focus:ring-ring focus:border-ring" } %>
             </div>
         </div>
     </div>

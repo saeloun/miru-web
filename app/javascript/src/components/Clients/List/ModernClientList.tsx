@@ -57,7 +57,7 @@ const ModernClientList = ({
           wrapperClassName="mt-5"
         >
           <button
-            className="mt-4 mb-10 flex h-10 flex-row items-center justify-center rounded bg-miru-han-purple-1000 px-25 font-bold text-white"
+            className="mt-4 mb-10 flex h-10 flex-row items-center justify-center rounded bg-primary px-25 font-bold text-white"
             type="button"
             onClick={() => {
               setShowDialog(true);
@@ -85,7 +85,7 @@ const ModernClientList = ({
                 <div
                   key={client.id}
                   className={`cursor-pointer rounded-lg border-2 ${colorClass} p-6 transition-all duration-200 hover:shadow-lg hover:scale-[1.02] ${
-                    isAdminUser ? "hover:border-miru-han-purple-600" : ""
+                    isAdminUser ? "hover:border-primary" : ""
                   }`}
                   onClick={() => handleRowClick(client.id)}
                 >
@@ -129,7 +129,7 @@ const ModernClientList = ({
                       <span className="text-sm font-medium text-gray-600">
                         Hours Logged:
                       </span>
-                      <span className="text-lg font-bold text-miru-han-purple-1000">
+                      <span className="text-lg font-bold text-primary">
                         {minToHHMM(client.minutes || 0)}
                       </span>
                     </div>
@@ -167,7 +167,7 @@ const ModernClientList = ({
                       </div>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <span className="text-sm font-bold text-miru-han-purple-1000 bg-miru-han-purple-100 px-2 py-1 rounded">
+                      <span className="text-sm font-bold text-primary bg-accent px-2 py-1 rounded">
                         {minToHHMM(client.minutes || 0)}
                       </span>
                       {isAdminUser && (

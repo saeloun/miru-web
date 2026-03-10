@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 const EditButton = ({ editInvoiceLink }) => (
   <div className="edit-button-container mx-1 flex flex-col justify-items-center">
     <Link
-      className="flex h-10 w-32 flex-row justify-center rounded border border-miru-han-purple-1000"
+      className="flex h-10 w-32 flex-row justify-center rounded border border-primary"
       to={editInvoiceLink}
       type="button"
     >
@@ -14,7 +14,7 @@ const EditButton = ({ editInvoiceLink }) => (
         <div className="mr-1">
           <PencilIcon color="#5E58F1" size={16} weight="bold" />
         </div>
-        <p className="ml-1 text-base font-bold tracking-widest text-miru-han-purple-1000">
+        <p className="ml-1 text-base font-bold tracking-widest text-primary">
           EDIT
         </p>
       </div>

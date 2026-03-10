@@ -10,49 +10,43 @@ const InvoiceInfo = ({ invoice, company, strikeAmount = "" }) => {
   const formattedDate = date => dayjs(date).format(date_format);
 
   return (
-    <div className="flex flex-col items-start justify-between border-b border-miru-gray-400 px-4 py-2">
+    <div className="flex flex-col items-start justify-between border-b border-border px-4 py-2">
       <div className="mt-4 flex w-full items-center justify-between">
         <div className="flex w-1/2 flex-col items-start justify-between">
-          <span className="text-xs font-normal text-miru-dark-purple-1000">
+          <span className="text-xs font-normal text-foreground">
             Date of Issue
           </span>
-          <span className="text-base font-normal leading-5 text-miru-dark-purple-1000">
+          <span className="text-base font-normal leading-5 text-foreground">
             {formattedDate(issue_date)}
           </span>
         </div>
         <div className="flex w-1/2 flex-col items-start justify-between">
-          <span className="text-xs font-normal text-miru-dark-purple-1000">
+          <span className="text-xs font-normal text-foreground">
             Invoice Number
           </span>
-          <span className="text-base font-normal leading-5 text-miru-dark-purple-1000">
+          <span className="text-base font-normal leading-5 text-foreground">
             {invoice_number}
           </span>
         </div>
       </div>
       <div className="mt-4 flex w-full items-center justify-between">
         <div className="flex w-1/2 flex-col items-start justify-between">
-          <span className="text-xs font-normal text-miru-dark-purple-1000">
-            Due Date
-          </span>
-          <span className="text-base font-normal leading-5 text-miru-dark-purple-1000">
+          <span className="text-xs font-normal text-foreground">Due Date</span>
+          <span className="text-base font-normal leading-5 text-foreground">
             {formattedDate(due_date)}
           </span>
         </div>
         <div className="flex w-1/2 flex-col items-start justify-between">
-          <span className="text-xs font-normal text-miru-dark-purple-1000">
-            Reference
-          </span>
-          <span className="text-base font-normal leading-5 text-miru-dark-purple-1000">
+          <span className="text-xs font-normal text-foreground">Reference</span>
+          <span className="text-base font-normal leading-5 text-foreground">
             {reference}
           </span>
         </div>
       </div>
       <div className="mt-4 flex w-full flex-col items-start justify-between">
-        <span className="text-xs font-normal text-miru-dark-purple-1000">
-          Amount
-        </span>
+        <span className="text-xs font-normal text-foreground">Amount</span>
         <span
-          className={`mt-1 text-2xl font-semibold leading-8 text-miru-dark-purple-1000 ${strikeAmount}`}
+          className={`mt-1 text-2xl font-semibold leading-8 text-foreground ${strikeAmount}`}
         >
           {currencyFormat(currency, amount)}
         </span>

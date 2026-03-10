@@ -28,7 +28,7 @@ const TableData = (
               className="mr-4"
             />
             <span
-              className="overflow-hidden truncate whitespace-nowrap text-base font-medium capitalize text-miru-dark-purple-1000"
+              className="overflow-hidden truncate whitespace-nowrap text-base font-medium capitalize text-foreground"
               ref={toolTipRef}
               onMouseEnter={handleTooltip}
             >
@@ -39,7 +39,7 @@ const TableData = (
       ),
       col2: (
         <div
-          className="total-hours text-right text-xl font-bold text-miru-dark-purple-1000"
+          className="total-hours text-right text-xl font-bold text-foreground"
           id={`${client.id}`}
         >
           {minToHHMM(client.minutes)}
@@ -59,7 +59,7 @@ const TableData = (
             className="mr-4"
           />
           <span
-            className="overflow-hidden truncate whitespace-nowrap text-sm font-medium capitalize text-miru-dark-purple-1000"
+            className="overflow-hidden truncate whitespace-nowrap text-sm font-medium capitalize text-foreground"
             ref={toolTipRef}
             onMouseEnter={handleTooltip}
           >
@@ -69,7 +69,7 @@ const TableData = (
       ),
       col3: (
         <div
-          className="total-hours text-right text-lg font-bold text-miru-dark-purple-1000"
+          className="total-hours text-right text-lg font-bold text-foreground"
           id={`${client.id}`}
         >
           {minToHHMM(client.minutes)}

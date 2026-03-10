@@ -5,13 +5,13 @@ import React, { useRef, useState } from "react";
 import { authenticationApi } from "apis/api";
 import { InputErrors, InputField } from "common/FormikFields";
 import { Formik, Form, FormikProps } from "formik";
-import { GoogleSVG, MiruLogoSVG } from "miruIcons";
+import { GithubIcon, GoogleSVG } from "miruIcons";
 import { useNavigate } from "react-router-dom";
 
 import PrivacyPolicyModal from "./PrivacyPolicyModal";
 import TermsOfServiceModal from "./TermsOfServiceModal";
 import { signUpFormInitialValues, signUpFormValidationSchema } from "./utils";
-import AuthThemeToggle from "../AuthThemeToggle";
+import AuthShell from "../AuthShell";
 
 interface SignUpFormValues {
   first_name: string;
@@ -28,6 +28,7 @@ const SignUpForm = () => {
   const navigate = useNavigate();
 
   const googleOauth = useRef(null);
+  const githubOauth = useRef(null);
   const csrfToken =
     document.querySelector('[name="csrf-token"]')?.getAttribute("content") ||
     "";
@@ -70,6 +71,11 @@ const SignUpForm = () => {
     if (googleForm) googleForm.submit();
   };
 
+  const handleGithubAuth = async () => {
+    const githubForm = githubOauth?.current;
+    if (githubForm) githubForm.submit();
+  };
+
   const handlePrivacyPolicy = () => {
     setPrivacyModal(true);
   };
@@ -94,28 +100,62 @@ const SignUpForm = () => {
     errors?.confirm_password?.trim();
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-neutral-100 px-4 py-8 text-neutral-900 dark:bg-slate-900 dark:text-slate-100">
-      <div className="absolute right-4 top-4">
-        <AuthThemeToggle />
-      </div>
-      <div className="w-full max-w-lg rounded-2xl border border-black/10 bg-white/90 p-6 shadow-2xl backdrop-blur sm:p-8 dark:border-white/10 dark:bg-slate-800/90">
-        <div className="mb-6 space-y-2 text-center">
-          <div className="mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-xl border border-black/10 bg-white shadow-sm dark:border-white/15 dark:bg-slate-900">
-            <img
-              alt="Miru"
-              className="h-7 w-7 object-contain"
-              src={MiruLogoSVG}
-            />
-          </div>
-          <p className="text-xs uppercase tracking-[0.18em] text-neutral-500 dark:text-neutral-400">
-            Miru
-          </p>
-          <h1 className="text-2xl font-semibold text-neutral-900 dark:text-white">
-            Create account
-          </h1>
-          <p className="text-sm text-neutral-600 dark:text-neutral-400">
-            Start your workspace in minutes.
-          </p>
+    <AuthShell
+      description="Set up clients, projects, invoices, and payments in one clear operating system."
+      title="Create your workspace"
+    >
+      <div>
+        <Formik
+          initialValues={{}}
+          validateOnBlur={false}
+          validationSchema=""
+          onSubmit={() => {}}
+        >
+          {() => (
+            <div className="mb-6 space-y-3">
+              <Form
+                action="/users/auth/google_oauth2"
+                method="post"
+                ref={googleOauth}
+              >
+                <input
+                  name="authenticity_token"
+                  type="hidden"
+                  value={csrfToken}
+                />
+                <button
+                  className="flex w-full items-center justify-center rounded-xl border border-border bg-background px-4 py-3 text-sm font-medium text-foreground transition hover:bg-accent"
+                  type="submit"
+                  onClick={handleGoogleAuth}
+                >
+                  <img alt="" className="mr-2" src={GoogleSVG} />
+                  Continue with Google
+                </button>
+              </Form>
+              <Form action="/users/auth/github" method="post" ref={githubOauth}>
+                <input
+                  name="authenticity_token"
+                  type="hidden"
+                  value={csrfToken}
+                />
+                <button
+                  className="flex w-full items-center justify-center rounded-xl border border-border bg-background px-4 py-3 text-sm font-medium text-foreground transition hover:bg-accent"
+                  type="submit"
+                  onClick={handleGithubAuth}
+                >
+                  <GithubIcon className="mr-2 h-4 w-4" weight="fill" />
+                  Continue with GitHub
+                </button>
+              </Form>
+            </div>
+          )}
+        </Formik>
+        <div className="relative mb-6 flex items-center">
+          <div className="flex-grow border-t border-border" />
+          <span className="mx-4 flex-shrink text-xs uppercase tracking-[0.18em] text-muted-foreground">
+            or use email
+          </span>
+          <div className="flex-grow border-t border-border" />
         </div>
         <div>
           <Formik
@@ -143,9 +183,9 @@ const SignUpForm = () => {
                         hasError={errors.first_name && touched.first_name}
                         id="first_name"
                         label="First Name"
-                        labelClassName="p-0 text-neutral-700 dark:text-neutral-300"
+                        labelClassName="p-0 text-foreground"
                         name="first_name"
-                        inputBoxClassName="h-11 border-black/10 bg-white text-neutral-900 placeholder:text-neutral-500 focus:border-neutral-400 focus-visible:ring-neutral-400 dark:border-white/15 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-400 dark:focus:border-slate-500 dark:focus-visible:ring-slate-500"
+                        inputBoxClassName="h-11 border-border bg-background text-foreground placeholder:text-muted-foreground focus:border-primary focus-visible:ring-ring"
                         setFieldError={setFieldError}
                         setFieldValue={setFieldValue}
                       />
@@ -159,9 +199,9 @@ const SignUpForm = () => {
                         hasError={errors.last_name && touched.last_name}
                         id="last_name"
                         label="Last Name"
-                        labelClassName="p-0 text-neutral-700 dark:text-neutral-300"
+                        labelClassName="p-0 text-foreground"
                         name="last_name"
-                        inputBoxClassName="h-11 border-black/10 bg-white text-neutral-900 placeholder:text-neutral-500 focus:border-neutral-400 focus-visible:ring-neutral-400 dark:border-white/15 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-400 dark:focus:border-slate-500 dark:focus-visible:ring-slate-500"
+                        inputBoxClassName="h-11 border-border bg-background text-foreground placeholder:text-muted-foreground focus:border-primary focus-visible:ring-ring"
                         setFieldError={setFieldError}
                         setFieldValue={setFieldValue}
                       />
@@ -176,9 +216,9 @@ const SignUpForm = () => {
                       hasError={errors.email && touched.email}
                       id="email"
                       label="Email"
-                      labelClassName="p-0 text-neutral-700 dark:text-neutral-300"
+                      labelClassName="p-0 text-foreground"
                       name="email"
-                      inputBoxClassName="h-11 border-black/10 bg-white text-neutral-900 placeholder:text-neutral-500 focus:border-neutral-400 focus-visible:ring-neutral-400 dark:border-white/15 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-400 dark:focus:border-slate-500 dark:focus-visible:ring-slate-500"
+                      inputBoxClassName="h-11 border-border bg-background text-foreground placeholder:text-muted-foreground focus:border-primary focus-visible:ring-ring"
                       setFieldError={setFieldError}
                       setFieldValue={setFieldValue}
                     />
@@ -192,9 +232,9 @@ const SignUpForm = () => {
                       hasError={errors.password && touched.password}
                       id="password"
                       label="Password"
-                      labelClassName="p-0 text-neutral-700 dark:text-neutral-300"
+                      labelClassName="p-0 text-foreground"
                       name="password"
-                      inputBoxClassName="h-11 border-black/10 bg-white text-neutral-900 placeholder:text-neutral-500 focus:border-neutral-400 focus-visible:ring-neutral-400 dark:border-white/15 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-400 dark:focus:border-slate-500 dark:focus-visible:ring-slate-500"
+                      inputBoxClassName="h-11 border-border bg-background text-foreground placeholder:text-muted-foreground focus:border-primary focus-visible:ring-ring"
                       setFieldError={setFieldError}
                       setFieldValue={setFieldValue}
                       type="password"
@@ -209,10 +249,10 @@ const SignUpForm = () => {
                     <InputField
                       id="confirm_password"
                       label="Confirm Password"
-                      labelClassName="p-0 text-neutral-700 dark:text-neutral-300"
+                      labelClassName="p-0 text-foreground"
                       marginBottom="mb-2"
                       name="confirm_password"
-                      inputBoxClassName="h-11 border-black/10 bg-white text-neutral-900 placeholder:text-neutral-500 focus:border-neutral-400 focus-visible:ring-neutral-400 dark:border-white/15 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-400 dark:focus:border-slate-500 dark:focus-visible:ring-slate-500"
+                      inputBoxClassName="h-11 border-border bg-background text-foreground placeholder:text-muted-foreground focus:border-primary focus-visible:ring-ring"
                       setFieldError={setFieldError}
                       setFieldValue={setFieldValue}
                       type="password"
@@ -221,7 +261,7 @@ const SignUpForm = () => {
                       }
                     />
                     {showPasswordCriteria(errors, touched) && (
-                      <p className="text-xs font-medium leading-4 text-neutral-500">
+                      <p className="text-xs font-medium leading-4 text-muted-foreground">
                         Min. 8 characters, 1 uppercase, 1 lowercase, 1 number
                         and 1 special character
                       </p>
@@ -231,10 +271,10 @@ const SignUpForm = () => {
                       fieldTouched={touched.confirm_password}
                     />
                   </div>
-                  <div className="my-5 flex items-start gap-2 text-xs text-neutral-600 dark:text-neutral-400">
+                  <div className="my-5 flex items-start gap-2 text-xs text-muted-foreground">
                     <input
                       checked={values.isAgreedTermsOfServices}
-                      className="mt-0.5 h-4 w-4 rounded border-black/20 bg-white accent-neutral-900 dark:border-white/20 dark:bg-slate-900 dark:accent-white"
+                      className="mt-0.5 h-4 w-4 rounded border-border bg-background accent-primary"
                       id="termsOfService"
                       name="agreeToTerms"
                       onChange={event => {
@@ -249,7 +289,7 @@ const SignUpForm = () => {
                     <label className="leading-5" htmlFor="termsOfService">
                       I agree to the{" "}
                       <button
-                        className="text-neutral-800 hover:text-black dark:text-neutral-200 dark:hover:text-white"
+                        className="text-foreground hover:text-primary"
                         onClick={handleTermsOfService}
                         type="button"
                       >
@@ -257,7 +297,7 @@ const SignUpForm = () => {
                       </button>{" "}
                       and{" "}
                       <button
-                        className="text-neutral-800 hover:text-black dark:text-neutral-200 dark:hover:text-white"
+                        className="text-foreground hover:text-primary"
                         onClick={handlePrivacyPolicy}
                         type="button"
                       >
@@ -272,57 +312,20 @@ const SignUpForm = () => {
                   <div className="mb-3">
                     <button
                       type="submit"
-                      className={`w-full rounded-lg border px-4 py-2.5 text-sm font-medium transition ${
+                      className={`w-full rounded-xl border px-4 py-3 text-sm font-medium transition ${
                         isBtnDisabled(values, errors)
-                          ? "cursor-not-allowed border-transparent bg-neutral-300 text-neutral-500 dark:bg-neutral-700 dark:text-neutral-400"
-                          : "cursor-pointer border-black/10 bg-neutral-900 text-white hover:bg-neutral-800 dark:border-white/15 dark:bg-white dark:text-black dark:hover:bg-neutral-200"
+                          ? "cursor-not-allowed border-transparent bg-muted text-muted-foreground"
+                          : "cursor-pointer border-transparent bg-primary text-primary-foreground hover:bg-primary/90"
                       }`}
                     >
-                      Sign Up
+                      Create account
                     </button>
-                  </div>
-                  <div className="relative flex items-center py-4">
-                    <div className="flex-grow border-t border-black/10 dark:border-white/10" />
-                    <span className="mx-4 flex-shrink text-xs text-neutral-500">
-                      or
-                    </span>
-                    <div className="flex-grow border-t border-black/10 dark:border-white/10" />
                   </div>
                 </Form>
               );
             }}
           </Formik>
-          <div className="mb-3">
-            <Formik
-              initialValues={{}}
-              validateOnBlur={false}
-              validationSchema=""
-              onSubmit={() => {
-                /* Google OAuth form - no client-side submit handler needed */
-              }}
-            >
-              {() => (
-                <Form
-                  action="/users/auth/google_oauth2"
-                  method="post"
-                  ref={googleOauth}
-                >
-                  <input
-                    name="authenticity_token"
-                    type="hidden"
-                    value={csrfToken}
-                  />
-                  <button
-                    className="flex w-full items-center justify-center rounded-lg border border-black/10 bg-white px-4 py-2.5 text-sm font-medium text-neutral-900 transition hover:bg-neutral-100 dark:border-white/15 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-700"
-                    type="submit"
-                    onClick={handleGoogleAuth}
-                  >
-                    <img alt="" className="mr-2" src={GoogleSVG} />
-                    Sign Up with Google
-                  </button>
-                </Form>
-              )}
-            </Formik>
+          <div className="mt-4">
             {privacyModal && (
               <PrivacyPolicyModal
                 isOpen={privacyModal}
@@ -336,19 +339,19 @@ const SignUpForm = () => {
               />
             )}
           </div>
-          <p className="pt-3 text-center text-sm text-neutral-500 dark:text-neutral-400">
+          <p className="pt-3 text-center text-sm text-muted-foreground">
             Already have an account?{" "}
             <span className="inline cursor-pointer">
               <a href={Paths.LOGIN}>
-                <span className="inline-block text-black hover:text-neutral-700 dark:text-white dark:hover:text-neutral-200">
+                <span className="inline-block text-foreground hover:text-primary">
                   Sign in
                 </span>
               </a>
             </span>
           </p>
-          <div className="mt-6 flex items-center justify-center gap-2 text-xs text-neutral-500 dark:text-slate-400">
+          <div className="mt-6 flex items-center justify-center gap-2 text-xs text-muted-foreground">
             <button
-              className="hover:text-neutral-700 dark:hover:text-slate-100"
+              className="hover:text-foreground"
               onClick={handlePrivacyPolicy}
               type="button"
             >
@@ -356,7 +359,7 @@ const SignUpForm = () => {
             </button>
             <span>•</span>
             <button
-              className="hover:text-neutral-700 dark:hover:text-slate-100"
+              className="hover:text-foreground"
               onClick={handleTermsOfService}
               type="button"
             >
@@ -365,7 +368,7 @@ const SignUpForm = () => {
           </div>
         </div>
       </div>
-    </div>
+    </AuthShell>
   );
 };
 

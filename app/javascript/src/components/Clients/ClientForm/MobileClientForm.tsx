@@ -92,15 +92,12 @@ const MobileClientForm = ({
       WrapperClassname="z-50 justify-content-between lg:hidden bg-white"
       setFilterVisibilty={setShowDialog}
     >
-      <SidePanel.Header className="mb-2 flex items-center justify-between bg-miru-han-purple-1000 px-5 py-5 text-white lg:bg-white lg:font-bold lg:text-miru-dark-purple-1000">
+      <SidePanel.Header className="mb-2 flex items-center justify-between bg-primary px-5 py-5 text-white lg:bg-white lg:font-bold lg:text-foreground">
         <span className="flex w-full items-center justify-center pl-6 text-base font-medium leading-5">
           {client?.id ? "Edit Client" : "Add New Client"}
         </span>
         <Button style="ternary" onClick={() => setShowDialog(false)}>
-          <XIcon
-            className="text-white lg:text-miru-dark-purple-1000"
-            size={16}
-          />
+          <XIcon className="text-white lg:text-foreground" size={16} />
         </Button>
       </SidePanel.Header>
       <SidePanel.Body className="sidebar__filters flex h-full flex-col justify-between overflow-y-auto px-4">
@@ -151,12 +148,12 @@ const MobileClientForm = ({
                 <div className="mt-4">
                   <div className="field relative">
                     <div className="flex flex-col">
-                      <div className="outline relative flex h-12 flex-row rounded border border-miru-gray-1000 bg-white p-4 pt-2">
+                      <div className="outline relative flex h-12 flex-row rounded border border-border bg-white p-4 pt-2">
                         <PhoneInput
                           className="input-phone-number w-full border-transparent focus:border-transparent focus:ring-0"
                           flags={flags}
                           id="phone"
-                          inputClassName="form__input block w-full appearance-none bg-white border-0 focus:border-0 px-0 text-base border-transparent focus:border-transparent focus:ring-0 border-miru-gray-1000 w-full border-bottom-none"
+                          inputClassName="form__input block w-full appearance-none bg-white border-0 focus:border-0 px-0 text-base border-transparent focus:border-transparent focus:ring-0 border-border w-full border-bottom-none"
                           name="phone"
                           smartCaret={false}
                           value={formType == "edit" ? client.phone : ""}
@@ -165,7 +162,7 @@ const MobileClientForm = ({
                           }}
                         />
                         <label
-                          className="absolute -top-1 left-0 z-1 ml-3 origin-0 bg-white px-1 text-xsm font-medium text-miru-dark-purple-200 duration-300"
+                          className="absolute -top-1 left-0 z-1 ml-3 origin-0 bg-white px-1 text-xsm font-medium text-muted-foreground duration-300"
                           htmlFor="phone"
                         >
                           Phone
@@ -211,7 +208,7 @@ const MobileClientForm = ({
                 <div className="mb-5 flex flex-row">
                   <div className="flex w-1/2 flex-col py-0 pr-2">
                     <div className="field relative">
-                      <label className="absolute -top-1 left-0 z-1 ml-3 origin-0 bg-white px-1 text-xsm font-medium text-miru-dark-purple-200 duration-300">
+                      <label className="absolute -top-1 left-0 z-1 ml-3 origin-0 bg-white px-1 text-xsm font-medium text-muted-foreground duration-300">
                         Country
                       </label>
                       <Select
@@ -295,7 +292,7 @@ const MobileClientForm = ({
                 </div>
                 <div className="mt-4">
                   <div className="field relative mb-5">
-                    <label className="absolute -top-1 left-0 z-1 ml-3 origin-0 bg-white px-1 text-xsm font-medium text-miru-dark-purple-200 duration-300">
+                    <label className="absolute -top-1 left-0 z-1 ml-3 origin-0 bg-white px-1 text-xsm font-medium text-muted-foreground duration-300">
                       Currency
                     </label>
                     <Select

@@ -66,24 +66,24 @@ const MonthCalender = () => {
 
   return (
     <div className="mb-6">
-      <div className="bg-miru-gray-100 p-4">
-        <div className="mb-4 flex justify-between bg-miru-gray-100">
+      <div className="bg-muted p-4">
+        <div className="mb-4 flex justify-between bg-muted">
           {DAYS.map(day => (
             <div
-              className="w-28 items-center rounded-xl text-center text-xs font-medium text-miru-dark-purple-1000"
+              className="w-28 items-center rounded-xl text-center text-xs font-medium text-foreground"
               key={day}
             >
               {day}
             </div>
           ))}
-          <div className="w-28 items-center rounded-xl text-center text-xs font-medium text-miru-dark-purple-1000">
+          <div className="w-28 items-center rounded-xl text-center text-xs font-medium text-foreground">
             Total
           </div>
         </div>
         {monthData?.length > 0
           ? monthData.map((weekInfo, index) => (
               <div
-                className="my-4 flex justify-between bg-miru-gray-100"
+                className="my-4 flex justify-between bg-muted"
                 key={`months-${index}`}
               >
                 {DAYS.map((_day, dayNum) =>

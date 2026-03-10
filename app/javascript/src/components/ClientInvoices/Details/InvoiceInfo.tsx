@@ -12,39 +12,29 @@ const InvoiceInfo = ({ invoice, company, strikeAmount = "" }) => {
   return (
     <>
       <div className="group">
-        <p className="flex text-xs font-normal text-miru-dark-purple-1000">
+        <p className="flex text-xs font-normal text-foreground">
           Date of Issue
         </p>
-        <p className="text-base font-normal text-miru-dark-purple-1000">
+        <p className="text-base font-normal text-foreground">
           {formattedDate(issue_date)}
         </p>
-        <p className="mt-4 text-xs font-normal text-miru-dark-purple-1000">
-          Due Date
-        </p>
-        <p className="text-base font-normal text-miru-dark-purple-1000">
+        <p className="mt-4 text-xs font-normal text-foreground">Due Date</p>
+        <p className="text-base font-normal text-foreground">
           {formattedDate(due_date)}
         </p>
       </div>
       <div className="group">
-        <p className="text-xs font-normal text-miru-dark-purple-1000">
-          Invoice Number
-        </p>
-        <p className="text-base font-normal text-miru-dark-purple-1000">
+        <p className="text-xs font-normal text-foreground">Invoice Number</p>
+        <p className="text-base font-normal text-foreground">
           {invoice_number}
         </p>
-        <p className="mt-4 text-xs font-normal text-miru-dark-purple-1000">
-          Reference
-        </p>
-        <p className="text-base font-normal text-miru-dark-purple-1000">
-          {reference}
-        </p>
+        <p className="mt-4 text-xs font-normal text-foreground">Reference</p>
+        <p className="text-base font-normal text-foreground">{reference}</p>
       </div>
       <div>
-        <p className="text-right text-xs font-normal text-miru-dark-purple-1000">
-          Amount
-        </p>
+        <p className="text-right text-xs font-normal text-foreground">Amount</p>
         <p
-          className={`mt-6 text-2xl font-normal tracking-tight text-miru-dark-purple-1000 ${strikeAmount}`}
+          className={`mt-6 text-2xl font-normal tracking-tight text-foreground ${strikeAmount}`}
         >
           {currencyFormat(currency, amount)}
         </p>

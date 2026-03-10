@@ -15,20 +15,14 @@ RSpec.describe "Profile avatar upload", type: :system, js: true do
 
   before do
     create(:employment, company:, user:)
-    user.add_role :employee, company
+    user.add_role :admin, company
     sign_in(user)
   end
 
   it "opens the crop dialog for avatar upload" do
     with_forgery_protection do
-      visit "/dashboard"
-      click_link "Profile"
-      expect(page).to have_button("Edit Profile", wait: 10)
-      page.execute_script(<<~JS)
-        Array.from(document.querySelectorAll("button"))
-          .find(button => button.textContent.includes("Edit Profile"))
-          ?.click()
-      JS
+      visit "/settings/profile/edit"
+      expect(page).to have_css("#react-root", wait: 15)
 
       find("[data-testid='profile-image-input']", visible: false)
         .set(Rails.root.join("tmp/manual-fixtures/vipul.webp"))

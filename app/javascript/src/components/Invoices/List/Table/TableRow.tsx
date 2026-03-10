@@ -106,7 +106,7 @@ const TableRow = ({
   return (
     <>
       <tr
-        className="group cursor-pointer last:border-b-0 md:hover:bg-miru-gray-100"
+        className="group cursor-pointer last:border-b-0 md:hover:bg-muted"
         id="invoicesListTableRow"
         key={index}
         onClick={() => {
@@ -122,7 +122,7 @@ const TableRow = ({
             id={id}
             isChecked={isSelected}
             text=""
-            wrapperClassName="h-8 w-8 m-auto rounded-3xl p-2 hover:bg-miru-gray-1000"
+            wrapperClassName="h-8 w-8 m-auto rounded-3xl p-2 hover:bg-secondary"
           />
         </td>
         <td>
@@ -139,10 +139,10 @@ const TableRow = ({
                 ref={toolTipRef}
                 onMouseEnter={handleTooltip}
               >
-                <span className="text-sm font-semibold capitalize leading-5 text-miru-dark-purple-1000 lg:text-base lg:leading-5">
+                <span className="text-sm font-semibold capitalize leading-5 text-foreground lg:text-base lg:leading-5">
                   {name}
                 </span>
-                <h3 className="text-xs font-normal leading-4 text-miru-dark-purple-400 lg:text-sm lg:leading-4">
+                <h3 className="text-xs font-normal leading-4 text-muted-foreground lg:text-sm lg:leading-4">
                   {invoiceNumber}
                 </h3>
               </div>
@@ -151,15 +151,15 @@ const TableRow = ({
         </td>
         {isDesktop && (
           <td className="w-1/4 whitespace-nowrap px-4 py-5 font-medium tracking-normal lg:px-6">
-            <h1 className="text-xs font-medium text-miru-dark-purple-1000 lg:text-sm lg:font-semibold">
+            <h1 className="text-xs font-medium text-foreground lg:text-sm lg:font-semibold">
               {issueDate}
             </h1>
-            <h3 className="text-xs font-normal text-miru-dark-purple-400 lg:text-sm">
+            <h3 className="text-xs font-normal text-muted-foreground lg:text-sm">
               Due on {dueDate}
             </h3>
           </td>
         )}
-        <td className="hidden px-2 text-right text-sm font-semibold tracking-normal text-miru-dark-purple-1000 lg:table-cell lg:w-1/6 lg:px-6 lg:pt-2 lg:pb-7 lg:text-lg lg:font-bold">
+        <td className="hidden px-2 text-right text-sm font-semibold tracking-normal text-foreground lg:table-cell lg:w-1/6 lg:px-6 lg:pt-2 lg:pb-7 lg:text-lg lg:font-bold">
           {currencyFormat(currency, amount)}
         </td>
         <td
@@ -192,7 +192,7 @@ const TableRow = ({
           </dl>
         </td>
         {!isDesktop && (
-          <td className="text-right text-sm text-miru-dark-purple-1000">
+          <td className="text-right text-sm text-foreground">
             <button
               onClick={e => {
                 e.preventDefault();
@@ -233,7 +233,7 @@ const TableRow = ({
               e.stopPropagation();
             }}
           >
-            <div className="flex w-full bg-miru-han-purple-1000 pl-4">
+            <div className="flex w-full bg-primary pl-4">
               <Button
                 style="ternary"
                 onClick={() => {
@@ -246,11 +246,11 @@ const TableRow = ({
               >
                 <ArrowLeftIcon className="text-white" size={16} weight="bold" />
               </Button>
-              <div className="flex h-12 w-full items-center justify-center bg-miru-han-purple-1000 px-3 text-white">
+              <div className="flex h-12 w-full items-center justify-center bg-primary px-3 text-white">
                 {isSendReminder ? "Send Invoice Reminder" : "Send Invoice"}
               </div>
               <button
-                className="mr-4 text-miru-gray-1000"
+                className="mr-4 text-foreground"
                 type="button"
                 onClick={() => {
                   if (isSendReminder) {

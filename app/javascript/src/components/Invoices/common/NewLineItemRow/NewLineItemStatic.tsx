@@ -84,9 +84,9 @@ const NewLineItemStatic = ({
   return (
     <>
       <tr className="invoice-items-row cursor-pointer">
-        <td className="px-1 py-3 text-left text-base font-normal text-miru-dark-purple-1000 ">
+        <td className="px-1 py-3 text-left text-base font-normal text-foreground ">
           <input
-            className="focus:outline-none w-full rounded bg-transparent p-1 text-sm font-medium text-miru-dark-purple-1000 focus:border-miru-gray-1000 focus:bg-white focus:ring-1 focus:ring-miru-gray-1000"
+            className="focus:outline-none w-full rounded bg-transparent p-1 text-sm font-medium text-foreground focus:border-border focus:bg-white focus:ring-1 focus:ring-ring"
             placeholder={name}
             type="text"
             value={name}
@@ -94,13 +94,13 @@ const NewLineItemStatic = ({
             onKeyDown={closeEditField}
           />
         </td>
-        <td className="relative px-1 py-3 text-right text-base font-normal text-miru-dark-purple-1000 ">
+        <td className="relative px-1 py-3 text-right text-base font-normal text-foreground ">
           <div onClick={() => setShowDatePicker(!showDatePicker)}>
             <input
               placeholder="Select Date"
               type="text"
               value={lineItemDate}
-              className={`focus:outline-none w-full cursor-pointer appearance-none rounded border-0 border-transparent bg-transparent p-1 pl-2 text-right text-sm font-medium text-miru-dark-purple-1000 focus:bg-white focus:bg-white focus:ring-1 focus:ring-miru-gray-1000 ${
+              className={`focus:outline-none w-full cursor-pointer appearance-none rounded border-0 border-transparent bg-transparent p-1 pl-2 text-right text-sm font-medium text-foreground focus:bg-white focus:bg-white focus:ring-1 focus:ring-ring ${
                 showCalendarIcon ? "pr-9" : "pr-1"
               }`}
               onBlur={() => setShowCalendarIcon(false)}
@@ -127,9 +127,9 @@ const NewLineItemStatic = ({
             </div>
           )}
         </td>
-        <td className="px-1 py-3 text-right text-base font-normal text-miru-dark-purple-1000 ">
+        <td className="px-1 py-3 text-right text-base font-normal text-foreground ">
           <input
-            className="focus:outline-none w-full rounded bg-transparent p-1 text-right text-sm font-medium text-miru-dark-purple-1000 focus:border-miru-gray-1000 focus:bg-white focus:ring-1 focus:ring-miru-gray-1000"
+            className="focus:outline-none w-full rounded bg-transparent p-1 text-right text-sm font-medium text-foreground focus:border-border focus:bg-white focus:ring-1 focus:ring-ring"
             placeholder="Rate"
             type="text"
             value={rate}
@@ -137,9 +137,9 @@ const NewLineItemStatic = ({
             onKeyDown={closeEditField}
           />
         </td>
-        <td className="px-1 py-3 text-right text-base font-normal text-miru-dark-purple-1000 ">
+        <td className="px-1 py-3 text-right text-base font-normal text-foreground ">
           <input
-            className="focus:outline-none w-full rounded bg-transparent p-1 text-right text-sm font-medium text-miru-dark-purple-1000 focus:border-miru-gray-1000 focus:bg-white focus:ring-1 focus:ring-miru-gray-1000"
+            className="focus:outline-none w-full rounded bg-transparent p-1 text-right text-sm font-medium text-foreground focus:border-border focus:bg-white focus:ring-1 focus:ring-ring"
             placeholder="Quantity"
             type="text"
             value={quantity}
@@ -147,12 +147,12 @@ const NewLineItemStatic = ({
             onKeyDown={closeEditField}
           />
         </td>
-        <td className="px-1 py-3 text-right text-base font-normal text-miru-dark-purple-1000 ">
+        <td className="px-1 py-3 text-right text-base font-normal text-foreground ">
           {currencyFormat(clientCurrency, lineTotal)}
         </td>
         <td className="w-10">
           <button
-            className="flex w-full items-center rounded p-2.5 text-center hover:bg-miru-gray-200"
+            className="flex w-full items-center rounded p-2.5 text-center hover:bg-secondary"
             id="deleteLineItemButton"
             onClick={() => {
               handleDelete(item);
@@ -164,18 +164,18 @@ const NewLineItemStatic = ({
       </tr>
       <tr>
         <td
-          className="border-b-2 border-miru-gray-200 px-1 pb-4 text-left text-xs font-normal text-miru-dark-purple-400"
+          className="border-b-2 border-border px-1 pb-4 text-left text-xs font-normal text-muted-foreground"
           colSpan={2}
         >
           <TextareaAutosize
-            className="focus:outline-none w-full rounded bg-transparent p-1 text-sm font-medium text-miru-dark-purple-400 focus:border-miru-gray-1000 focus:bg-white focus:ring-1 focus:ring-miru-gray-1000"
+            className="focus:outline-none w-full rounded bg-transparent p-1 text-sm font-medium text-muted-foreground focus:border-border focus:bg-white focus:ring-1 focus:ring-ring"
             placeholder="Enter Description"
             value={description}
             onChange={e => setDescription(e.target["value"])}
             onKeyDown={closeEditField}
           />
         </td>
-        <td className="border-b-2 border-miru-gray-200" colSpan={3} />
+        <td className="border-b-2 border-border" colSpan={3} />
       </tr>
     </>
   );

@@ -15,7 +15,7 @@ const ClientMobileMoreOptions = ({
     visibilty={showMoreOptions}
   >
     <li
-      className="flex items-center px-2 pt-3 text-sm leading-5 text-miru-han-purple-1000"
+      className="flex items-center px-2 pt-3 text-sm leading-5 text-primary"
       onClick={() => {
         handleEditClick(clientId);
         setShowMoreOptions(false);
@@ -25,7 +25,7 @@ const ClientMobileMoreOptions = ({
       Edit
     </li>
     <li
-      className="flex items-center px-2 pt-3 text-sm leading-5 text-miru-red-400"
+      className="flex items-center px-2 pt-3 text-sm leading-5 text-destructive"
       onClick={() => {
         handleDeleteClick(clientId);
         setShowMoreOptions(false);

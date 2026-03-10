@@ -16,20 +16,20 @@ interface ContainerProps {
 
 const ReportHeader = () => (
   <div className="grid grid-cols-5 items-center gap-2 border-b">
-    <div className="py-5 pr-6 text-left text-xs font-medium uppercase leading-4 tracking-widest text-miru-dark-purple-600">
+    <div className="py-5 pr-6 text-left text-xs font-medium uppercase leading-4 tracking-widest text-muted-foreground">
       PROJECT/
       <br />
       CLIENT
     </div>
-    <div className="col-span-2 px-6 py-5 text-left text-xs font-medium uppercase leading-4 tracking-widest text-miru-dark-purple-600">
+    <div className="col-span-2 px-6 py-5 text-left text-xs font-medium uppercase leading-4 tracking-widest text-muted-foreground">
       NOTE
     </div>
-    <div className="px-6 py-5 text-left text-xs font-medium uppercase leading-4 tracking-widest text-miru-dark-purple-600">
+    <div className="px-6 py-5 text-left text-xs font-medium uppercase leading-4 tracking-widest text-muted-foreground">
       TEAM MEMBER/
       <br />
       DATE
     </div>
-    <div className="py-5 pl-6 text-right text-xs font-medium uppercase leading-4 tracking-widest text-miru-dark-purple-600">
+    <div className="py-5 pl-6 text-right text-xs font-medium uppercase leading-4 tracking-widest text-muted-foreground">
       HOURS
       <br />
       LOGGED
@@ -87,18 +87,18 @@ const Container = ({ selectedFilter }: ContainerProps) => {
             return (
               <Fragment key={index}>
                 {label !== "" && (
-                  <div className="flex items-center justify-between border-b border-miru-han-purple-1000 py-5">
+                  <div className="flex items-center justify-between border-b border-primary py-5">
                     <div className="flex items-center">
                       {getTableLogo(
                         selectedFilter?.groupBy?.value || null,
                         clientLogo
                       )}
-                      <h1 className="font-sans text-xl font-bold text-miru-han-purple-1000">
+                      <h1 className="font-sans text-xl font-bold text-primary">
                         {label}
                       </h1>
                     </div>
                     {entries?.length > 0 && (
-                      <p className="text-right font-sans text-base font-medium text-miru-dark-purple-1000">
+                      <p className="text-right font-sans text-base font-medium text-foreground">
                         Total Hours for {label} : &nbsp;
                         {getTotalHoursLogged(id)}
                       </p>

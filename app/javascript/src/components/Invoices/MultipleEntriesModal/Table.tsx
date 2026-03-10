@@ -5,9 +5,9 @@ import dayjs from "dayjs";
 import { minToHHMM } from "helpers";
 
 const CheckboxIcon = () => (
-  <div className="mr-2 flex h-4 w-4 flex-shrink-0 items-center justify-center border-2 border-miru-han-purple-1000 bg-white focus-within:border-blue-500 lg:h-5 lg:w-5">
+  <div className="mr-2 flex h-4 w-4 flex-shrink-0 items-center justify-center border-2 border-primary bg-white focus-within:border-blue-500 lg:h-5 lg:w-5">
     <svg
-      className="custom__checkbox-tick pointer-events-none hidden h-2 w-2 fill-current text-miru-han-purple-1000"
+      className="custom__checkbox-tick pointer-events-none hidden h-2 w-2 fill-current text-primary"
       version="1.1"
       viewBox="0 0 17 12"
       xmlns="http://www.w3.org/2000/svg"
@@ -99,16 +99,16 @@ const Table = ({
                   <CheckboxIcon />
                 </div>
               </td>
-              <td className="table__data w-1/5 text-left text-left text-sm font-medium text-miru-dark-purple-1000">
+              <td className="table__data w-1/5 text-left text-left text-sm font-medium text-foreground">
                 {item.first_name} {item.last_name}
               </td>
-              <td className="table__data w-3/5 whitespace-normal text-left text-xs font-medium text-miru-dark-purple-600">
+              <td className="table__data w-3/5 whitespace-normal text-left text-xs font-medium text-muted-foreground">
                 {item.description}
               </td>
-              <td className="table__data text-right text-xs font-medium text-miru-dark-purple-1000">
+              <td className="table__data text-right text-xs font-medium text-foreground">
                 {date}
               </td>
-              <td className="table__data w-1/12 text-right text-xs font-medium text-miru-dark-purple-1000">
+              <td className="table__data w-1/12 text-right text-xs font-medium text-foreground">
                 {hoursLogged}
               </td>
             </tr>
@@ -128,20 +128,17 @@ const Table = ({
                     <CheckboxIcon />
                   </div>
                 </td>
-                <td className="w-1/2 pt-3 text-left text-left text-sm font-medium text-miru-dark-purple-1000">
+                <td className="w-1/2 pt-3 text-left text-left text-sm font-medium text-foreground">
                   {item.first_name} {item.last_name}
                 </td>
-                <td className="pt-3 text-right text-xs font-medium text-miru-dark-purple-1000">
+                <td className="pt-3 text-right text-xs font-medium text-foreground">
                   {date} • {hoursLogged}
                 </td>
               </tr>
               <tr>
+                <td className="border-b border-border pb-3" colSpan={1} />
                 <td
-                  className="border-b border-miru-gray-200 pb-3"
-                  colSpan={1}
-                />
-                <td
-                  className="whitespace-normal border-b border-miru-gray-200 pb-3 text-left text-xs font-medium text-miru-dark-purple-400"
+                  className="whitespace-normal border-b border-border pb-3 text-left text-xs font-medium text-muted-foreground"
                   colSpan={5}
                 >
                   {item.description}

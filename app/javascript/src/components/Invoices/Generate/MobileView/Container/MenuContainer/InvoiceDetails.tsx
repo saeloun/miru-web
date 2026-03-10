@@ -165,10 +165,10 @@ const InvoiceDetails = ({
                 value={
                   selectedClient && (
                     <div>
-                      <p className="text-sm font-medium text-miru-dark-purple-1000">
+                      <p className="text-sm font-medium text-foreground">
                         {selectedClient.name}
                       </p>
-                      <p className="w-full py-2 text-xs font-medium text-miru-dark-purple-600">
+                      <p className="w-full py-2 text-xs font-medium text-muted-foreground">
                         {selectedClient?.address
                           ? `${address_line_1}${
                               address_line_2 ? `, ${address_line_2}` : ""
@@ -184,7 +184,7 @@ const InvoiceDetails = ({
                 }
               />
               <CaretDownIcon
-                className="absolute top-6 right-2 text-miru-han-purple-1000"
+                className="absolute top-6 right-2 text-primary"
                 size={16}
                 weight="bold"
               />
@@ -207,7 +207,7 @@ const InvoiceDetails = ({
                       handleClientChange(selection);
                     }}
                   >
-                    <SelectTrigger className="w-full text-white m-0 truncate font-medium text-sm text-miru-dark-purple-1000 bg-white">
+                    <SelectTrigger className="w-full text-white m-0 truncate font-medium text-sm text-foreground bg-white">
                       <SelectValue placeholder="Search" />
                     </SelectTrigger>
                     <SelectContent>
@@ -234,7 +234,7 @@ const InvoiceDetails = ({
                   <CustomInputText
                     readOnly
                     id="Date of Issue"
-                    inputBoxClassName="focus:border-miru-han-purple-1000"
+                    inputBoxClassName="focus:border-primary"
                     label="Date of Issue"
                     name="Date of Issue"
                     value={getIssuedDate}
@@ -277,7 +277,7 @@ const InvoiceDetails = ({
                   <CustomInputText
                     readOnly
                     id="Due Date"
-                    inputBoxClassName="focus:border-miru-han-purple-1000"
+                    inputBoxClassName="focus:border-primary"
                     label="Due Date"
                     name="Due Date"
                     value={getDueDate}
@@ -319,7 +319,7 @@ const InvoiceDetails = ({
             <div className="flex gap-2 py-3">
               <CustomInputText
                 id="invoiceNumber"
-                inputBoxClassName="border focus:border-miru-han-purple-1000"
+                inputBoxClassName="border focus:border-primary"
                 label="Invoice Number"
                 name="invoiceNumber"
                 type="text"
@@ -333,7 +333,7 @@ const InvoiceDetails = ({
               />
               <InputField
                 id="referenceNumber"
-                inputBoxClassName="focus:border-miru-han-purple-1000"
+                inputBoxClassName="focus:border-primary"
                 label="Reference"
                 name="referenceNumber"
                 setFieldError={setFieldError}

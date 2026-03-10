@@ -15,13 +15,9 @@ const Header = ({ expense, handleEdit, handleDelete }) => {
           style="ternary"
           onClick={() => navigate("/expenses")}
         >
-          <ArrowLeftIcon
-            className="text-miru-dark-purple-1000"
-            size={20}
-            weight="bold"
-          />
+          <ArrowLeftIcon className="text-foreground" size={20} weight="bold" />
         </Button>
-        <span className="text-base font-bold text-miru-dark-purple-1000 lg:text-32">
+        <span className="text-base font-bold text-foreground lg:text-32">
           {expense?.categoryName}
         </span>
       </div>
@@ -35,18 +31,16 @@ const Header = ({ expense, handleEdit, handleDelete }) => {
           <span className="text-base font-medium"> Edit</span>
         </Button>
         <Button
-          className="flex w-24 items-center justify-center rounded border border-miru-red-400 p-2 text-miru-red-400"
+          className="flex w-24 items-center justify-center rounded border border-destructive p-2 text-destructive"
           style="ternary"
           onClick={handleDelete}
         >
           <DeleteIcon
-            className="mr-2 text-miru-red-400"
+            className="mr-2 text-destructive"
             size={16}
             weight="bold"
           />
-          <span className="text-base font-medium text-miru-red-400">
-            Delete
-          </span>
+          <span className="text-base font-medium text-destructive">Delete</span>
         </Button>
       </div>
       <div className="flex lg:hidden">
@@ -54,7 +48,7 @@ const Header = ({ expense, handleEdit, handleDelete }) => {
           <EditIcon size={16} weight="bold" />
         </Button>
         <Button className="p-2" style="ternary" onClick={handleDelete}>
-          <DeleteIcon className="text-miru-red-400" size={16} weight="bold" />
+          <DeleteIcon className="text-destructive" size={16} weight="bold" />
         </Button>
       </div>
     </div>

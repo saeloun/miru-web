@@ -1,47 +1,6 @@
 # frozen_string_literal: true
 
-# Comprehensive system test helpers for Miru 2.0
 module SystemTestHelpers
-  def sign_in(user)
-    ensure_user_setup(user)
-    Warden.test_mode!
-    Warden.test_reset!
-    Capybara.reset_sessions!
-
-    test_password = "Password123!"
-    user.update!(password: test_password, password_confirmation: test_password)
-
-    login_as(user, scope: :user)
-    visit "/time-tracking"
-    wait_for_app_initialization
-
-    if page.has_field?("Email", wait: 1) && page.has_field?("Password", wait: 1)
-      fill_in "Email", with: user.email
-      fill_in "Password", with: test_password
-      click_button "Sign In"
-      wait_for_app_initialization
-      visit "/time-tracking"
-      wait_for_app_initialization
-    end
-  end
-
-  def ensure_user_setup(user)
-    if user.current_workspace_id.nil?
-      company = user.companies.first || create(:company)
-      user.update!(current_workspace_id: company.id)
-
-      unless user.employments.exists?(company: company)
-        create(:employment, user: user, company: company)
-      end
-
-      unless user.has_any_role?(:admin, :owner, :employee, :book_keeper)
-        user.add_role(:employee, company)
-      end
-    end
-
-    user.confirm unless user.confirmed?
-  end
-
   def wait_for_app_initialization
     expect(page).to have_css("#react-root, [data-testid='app-root'], [data-testid='app-loaded']", wait: 10)
   end
@@ -69,11 +28,6 @@ module SystemTestHelpers
 
   def wait_for_content(text, timeout: 10)
     expect(page).to have_content(text, wait: timeout)
-  end
-
-  def on_login_page?
-    page.current_path == "/login" ||
-    page.current_path == "/" && page.has_content?("Sign In", wait: 2)
   end
 
   def sign_up_user(first_name:, last_name:, email:, password:)
@@ -107,7 +61,6 @@ module SystemTestHelpers
   end
 end
 
-# Include in all system specs
 RSpec.configure do |config|
   config.include SystemTestHelpers, type: :system
   config.include Warden::Test::Helpers, type: :system

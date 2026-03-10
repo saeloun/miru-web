@@ -55,7 +55,7 @@ const InvoiceDetails = ({
   };
 
   return (
-    <div className="flex w-full flex-col gap-4 border-b border-miru-gray-400 px-5 py-5 md:px-10 lg:h-40 lg:flex-row lg:items-stretch lg:gap-0">
+    <div className="flex w-full flex-col gap-4 border-b border-border px-5 py-5 md:px-10 lg:h-40 lg:flex-row lg:items-stretch lg:gap-0">
       <ClientSelection
         clientList={clientList}
         clientVisible={clientVisible}
@@ -69,7 +69,7 @@ const InvoiceDetails = ({
       <div className="flex w-full flex-col gap-3 sm:w-1/2 lg:mr-2 lg:w-2/12 lg:gap-0">
         <CustomInputText
           id="invoiceNumber"
-          inputBoxClassName="border focus:border-miru-han-purple-1000 cursor-pointer"
+          inputBoxClassName="border focus:border-primary cursor-pointer"
           label="Invoice Number"
           labelClassName="cursor-pointer"
           name="invoiceNumber"
@@ -79,7 +79,7 @@ const InvoiceDetails = ({
         />
         <CustomInputText
           id="Reference"
-          inputBoxClassName="focus:border-miru-han-purple-1000 cursor-pointer"
+          inputBoxClassName="focus:border-primary cursor-pointer"
           label="Reference"
           labelClassName="cursor-pointer"
           name="Reference"
@@ -97,7 +97,7 @@ const InvoiceDetails = ({
             <CustomInputText
               readOnly
               id="Date of Issue"
-              inputBoxClassName="focus:border-miru-han-purple-1000 cursor-pointer pr-9 truncate"
+              inputBoxClassName="focus:border-primary cursor-pointer pr-9 truncate"
               label="Date of Issue"
               name="Date of Issue"
               type="text"
@@ -126,7 +126,7 @@ const InvoiceDetails = ({
             <CustomInputText
               readOnly
               id="Due Date"
-              inputBoxClassName="focus:border-miru-han-purple-1000 cursor-pointer pr-9 truncate"
+              inputBoxClassName="focus:border-primary cursor-pointer pr-9 truncate"
               label="Due Date"
               name="Due Date"
               type="text"
@@ -152,10 +152,10 @@ const InvoiceDetails = ({
         </div>
       </div>
       <div className="w-full pt-1 lg:w-4/12 lg:pl-4">
-        <p className="text-left text-xs font-normal text-miru-dark-purple-1000 lg:text-right">
+        <p className="text-left text-xs font-normal text-foreground lg:text-right">
           Amount
         </p>
-        <p className="mt-2 text-left text-2xl font-normal tracking-tight text-miru-dark-purple-1000 lg:mt-6 lg:text-right">
+        <p className="mt-2 text-left text-2xl font-normal tracking-tight text-foreground lg:mt-6 lg:text-right">
           {currencyFormat(clientCurrency, amount)}
         </p>
       </div>

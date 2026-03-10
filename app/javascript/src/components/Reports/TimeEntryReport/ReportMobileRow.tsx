@@ -27,28 +27,28 @@ const ReportMobileRow = ({ timeEntry, clientLogo }) => {
             <Avatar classNameImg="mr-0" url={clientLogo} />
           </div>
           <div className="overflow-hidden">
-            <span className="truncate whitespace-normal text-sm font-semibold text-miru-dark-purple-1000">
+            <span className="truncate whitespace-normal text-sm font-semibold text-foreground">
               {project}
             </span>
-            <p className="font-sans text-xs font-medium text-miru-dark-purple-400">
+            <p className="font-sans text-xs font-medium text-muted-foreground">
               {client}
             </p>
           </div>
         </div>
         <div className="col-span-4 break-normal px-2 text-left">
-          <p className="mb-1 font-sans text-sm font-semibold not-italic text-miru-dark-purple-1000">
+          <p className="mb-1 font-sans text-sm font-semibold not-italic text-foreground">
             {teamMember}
           </p>
-          <p className="font-sans text-xs font-medium text-miru-dark-purple-400">
+          <p className="font-sans text-xs font-medium text-muted-foreground">
             {dayjs(workDate).format("MM.DD.YYYY")}
           </p>
         </div>
-        <div className="col-span-2 flex items-center justify-end whitespace-nowrap text-right font-sans text-lg font-bold text-miru-dark-purple-1000">
+        <div className="col-span-2 flex items-center justify-end whitespace-nowrap text-right font-sans text-lg font-bold text-foreground">
           {minToHHMM(duration)}
         </div>
       </div>
       <div className="overflow-hidden pt-3 pb-4">
-        <div className="h-full items-center whitespace-pre-wrap break-all font-sans text-xs font-normal text-miru-dark-purple-400">
+        <div className="h-full items-center whitespace-pre-wrap break-all font-sans text-xs font-normal text-muted-foreground">
           {note?.trim()}
         </div>
       </div>

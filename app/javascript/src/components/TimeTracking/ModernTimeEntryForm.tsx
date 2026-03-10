@@ -198,8 +198,8 @@ export const ModernTimeEntryForm: React.FC<TimeEntryFormProps> = ({
             {/* Project and Client */}
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label className="flex items-center gap-2 text-base font-semibold text-miru-dark-purple-900">
-                  <Briefcase className="h-4 w-4 text-miru-dark-purple-600" />
+                <label className="flex items-center gap-2 text-base font-semibold text-foreground">
+                  <Briefcase className="h-4 w-4 text-muted-foreground" />
                   Project *
                 </label>
                 <Select
@@ -240,8 +240,8 @@ export const ModernTimeEntryForm: React.FC<TimeEntryFormProps> = ({
                 )}
               </div>
               <div className="space-y-2">
-                <label className="flex items-center gap-2 text-base font-semibold text-miru-dark-purple-900">
-                  <User className="h-4 w-4 text-miru-dark-purple-600" />
+                <label className="flex items-center gap-2 text-base font-semibold text-foreground">
+                  <User className="h-4 w-4 text-muted-foreground" />
                   Client
                 </label>
                 <Select
@@ -275,8 +275,8 @@ export const ModernTimeEntryForm: React.FC<TimeEntryFormProps> = ({
             </div>
             {/* Note */}
             <div className="space-y-2">
-              <label className="flex items-center gap-2 text-sm font-medium text-miru-dark-purple-900">
-                <FileText className="h-4 w-4 text-miru-dark-purple-600" />
+              <label className="flex items-center gap-2 text-sm font-medium text-foreground">
+                <FileText className="h-4 w-4 text-muted-foreground" />
                 Note
               </label>
               <textarea
@@ -286,7 +286,7 @@ export const ModernTimeEntryForm: React.FC<TimeEntryFormProps> = ({
                 }
                 placeholder="What did you work on?"
                 rows={3}
-                className="w-full px-4 py-3 rounded-lg border border-miru-gray-300 hover:border-miru-gray-400 focus:outline-none focus:ring-2 focus:ring-miru-han-purple-200 transition-all resize-none"
+                className="w-full px-4 py-3 rounded-lg border border-border hover:border-border focus:outline-none focus:ring-2 focus:ring-ring/40 transition-all resize-none"
               />
             </div>
             {/* Tags and Billable */}
@@ -301,7 +301,7 @@ export const ModernTimeEntryForm: React.FC<TimeEntryFormProps> = ({
                     "flex items-center gap-2 px-4 py-2 rounded-lg transition-all",
                     formData.billable
                       ? "bg-green-100 text-green-700 hover:bg-green-200"
-                      : "bg-miru-gray-100 text-miru-dark-purple-600 hover:bg-miru-gray-200"
+                      : "bg-muted text-muted-foreground hover:bg-secondary"
                   )}
                 >
                   <CurrencyDollar className="h-4 w-4" />
@@ -311,7 +311,7 @@ export const ModernTimeEntryForm: React.FC<TimeEntryFormProps> = ({
                 </button>
                 <button
                   type="button"
-                  className="flex items-center gap-2 px-4 py-2 rounded-lg bg-miru-gray-100 text-miru-dark-purple-600 hover:bg-miru-gray-200 transition-all"
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg bg-muted text-muted-foreground hover:bg-secondary transition-all"
                 >
                   <Tag className="h-4 w-4" />
                   <span className="text-base font-medium">Add Tags</span>
@@ -329,14 +329,14 @@ export const ModernTimeEntryForm: React.FC<TimeEntryFormProps> = ({
           </form>
         </CardContent>
         {/* Footer */}
-        <div className="flex justify-end gap-3 px-6 py-4 border-t border-miru-gray-200 bg-miru-gray-50 rounded-b-2xl">
+        <div className="flex justify-end gap-3 px-6 py-4 border-t border-border bg-background rounded-b-2xl">
           <Button variant="outline" onClick={onClose} className="px-6">
             Cancel
           </Button>
           <Button
             onClick={handleSubmit}
             disabled={isSubmitting}
-            className="px-6 bg-miru-han-purple-600 hover:bg-miru-han-purple-700"
+            className="px-6 bg-primary hover:bg-primary"
           >
             {isSubmitting ? (
               <span className="flex items-center gap-2">
@@ -419,7 +419,7 @@ export const ModernTimeOffForm: React.FC<{
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Time Off Type */}
             <div className="space-y-2">
-              <label className="text-sm font-medium text-miru-dark-purple-900">
+              <label className="text-sm font-medium text-foreground">
                 Type of Time Off
               </label>
               <div className="grid grid-cols-2 gap-3">
@@ -433,8 +433,8 @@ export const ModernTimeOffForm: React.FC<{
                     className={cn(
                       "flex items-center gap-3 p-3 rounded-lg border-2 transition-all",
                       formData.type === type.value
-                        ? "border-miru-han-purple-600 bg-miru-han-purple-50"
-                        : "border-miru-gray-200 hover:border-miru-gray-300"
+                        ? "border-primary bg-accent/60"
+                        : "border-border hover:border-border"
                     )}
                   >
                     <span className="text-2xl">{type.icon}</span>
@@ -445,7 +445,7 @@ export const ModernTimeOffForm: React.FC<{
             </div>
             {/* Duration */}
             <div className="space-y-2">
-              <label className="text-sm font-medium text-miru-dark-purple-900">
+              <label className="text-sm font-medium text-foreground">
                 Duration
               </label>
               <div className="flex gap-3">
@@ -455,8 +455,8 @@ export const ModernTimeOffForm: React.FC<{
                   className={cn(
                     "flex-1 py-2 px-4 rounded-lg border-2 font-medium transition-all",
                     formData.duration === "full"
-                      ? "border-miru-han-purple-600 bg-miru-han-purple-50 text-miru-han-purple-700"
-                      : "border-miru-gray-200 hover:border-miru-gray-300"
+                      ? "border-primary bg-accent/60 text-primary"
+                      : "border-border hover:border-border"
                   )}
                 >
                   Full Day
@@ -467,8 +467,8 @@ export const ModernTimeOffForm: React.FC<{
                   className={cn(
                     "flex-1 py-2 px-4 rounded-lg border-2 font-medium transition-all",
                     formData.duration === "half"
-                      ? "border-miru-han-purple-600 bg-miru-han-purple-50 text-miru-han-purple-700"
-                      : "border-miru-gray-200 hover:border-miru-gray-300"
+                      ? "border-primary bg-accent/60 text-primary"
+                      : "border-border hover:border-border"
                   )}
                 >
                   Half Day
@@ -477,7 +477,7 @@ export const ModernTimeOffForm: React.FC<{
             </div>
             {/* Date */}
             <div className="space-y-2">
-              <label className="text-sm font-medium text-miru-dark-purple-900">
+              <label className="text-sm font-medium text-foreground">
                 Date
               </label>
               <input
@@ -486,12 +486,12 @@ export const ModernTimeOffForm: React.FC<{
                 onChange={e =>
                   setFormData({ ...formData, date: e.target.value })
                 }
-                className="w-full px-4 py-2 rounded-lg border border-miru-gray-300 hover:border-miru-gray-400 focus:outline-none focus:ring-2 focus:ring-miru-han-purple-200"
+                className="w-full px-4 py-2 rounded-lg border border-border hover:border-border focus:outline-none focus:ring-2 focus:ring-ring/40"
               />
             </div>
             {/* Note */}
             <div className="space-y-2">
-              <label className="text-sm font-medium text-miru-dark-purple-900">
+              <label className="text-sm font-medium text-foreground">
                 Note (Optional)
               </label>
               <textarea
@@ -501,13 +501,13 @@ export const ModernTimeOffForm: React.FC<{
                 }
                 placeholder="Add any additional details..."
                 rows={3}
-                className="w-full px-4 py-2 rounded-lg border border-miru-gray-300 hover:border-miru-gray-400 focus:outline-none focus:ring-2 focus:ring-miru-han-purple-200 resize-none"
+                className="w-full px-4 py-2 rounded-lg border border-border hover:border-border focus:outline-none focus:ring-2 focus:ring-ring/40 resize-none"
               />
             </div>
           </form>
         </CardContent>
         {/* Footer */}
-        <div className="flex justify-end gap-3 px-6 py-4 border-t border-miru-gray-200 bg-miru-gray-50 rounded-b-2xl">
+        <div className="flex justify-end gap-3 px-6 py-4 border-t border-border bg-background rounded-b-2xl">
           <Button variant="outline" onClick={onClose} className="px-6">
             Cancel
           </Button>

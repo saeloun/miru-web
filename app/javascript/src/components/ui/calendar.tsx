@@ -31,22 +31,22 @@ function Calendar({
         table: "w-full border-collapse space-y-1",
         head_row: "flex",
         head_cell:
-          "text-miru-dark-purple-600 rounded-md w-9 font-normal text-[0.8rem]",
+          "text-muted-foreground rounded-md w-9 font-normal text-[0.8rem]",
         row: "flex w-full mt-2",
-        cell: "h-9 w-9 text-center text-sm p-0 relative [&:has([aria-selected].day-range-end)]:rounded-r-md [&:has([aria-selected].day-outside)]:bg-miru-gray-100/50 [&:has([aria-selected])]:bg-miru-gray-100 first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
+        cell: "h-9 w-9 text-center text-sm p-0 relative [&:has([aria-selected].day-range-end)]:rounded-r-md [&:has([aria-selected].day-outside)]:bg-muted/50 [&:has([aria-selected])]:bg-muted first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
         day: cn(
           buttonVariants({ variant: "ghost" }),
           "h-9 w-9 p-0 font-normal aria-selected:opacity-100"
         ),
         day_range_end: "day-range-end",
         day_selected:
-          "bg-miru-han-purple-1000 text-white hover:bg-miru-han-purple-1000 hover:text-white focus:bg-miru-han-purple-1000 focus:text-white",
-        day_today: "bg-miru-gray-100 text-miru-dark-purple-1000",
+          "bg-primary text-white hover:bg-primary hover:text-white focus:bg-primary focus:text-white",
+        day_today: "bg-muted text-foreground",
         day_outside:
-          "day-outside text-miru-dark-purple-400 opacity-50 aria-selected:bg-miru-gray-100/50 aria-selected:text-miru-dark-purple-600 aria-selected:opacity-30",
-        day_disabled: "text-miru-dark-purple-400 opacity-50",
+          "day-outside text-muted-foreground opacity-50 aria-selected:bg-muted/50 aria-selected:text-muted-foreground aria-selected:opacity-30",
+        day_disabled: "text-muted-foreground opacity-50",
         day_range_middle:
-          "aria-selected:bg-miru-gray-100 aria-selected:text-miru-dark-purple-1000",
+          "aria-selected:bg-muted aria-selected:text-foreground",
         day_hidden: "invisible",
         ...classNames,
       }}

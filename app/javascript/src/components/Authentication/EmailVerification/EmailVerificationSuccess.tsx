@@ -18,11 +18,11 @@ const EmailVerificationSuccess = () => {
       <div className="mx-auto min-h-full md:w-5/12 lg:w-352">
         <div>
           <img
-            className="d-block mx-auto mb-4 h-10 w-10 font-bold text-miru-chart-green-400 md:mb-10 md:h-16 md:w-16 lg:mb-11"
+            className="d-block mx-auto mb-4 h-10 w-10 font-bold text-emerald-500 md:mb-10 md:h-16 md:w-16 lg:mb-11"
             src={GreenCheckCircleIcon}
           />
         </div>
-        <h1 className="text-center font-geist text-2xl font-extrabold text-miru-chart-green-400 md:text-3xl lg:text-4.5xl">
+        <h1 className="text-center font-geist text-2xl font-extrabold text-emerald-500 md:text-3xl lg:text-4.5xl">
           Email
           <br />
           Verification
@@ -30,7 +30,7 @@ const EmailVerificationSuccess = () => {
           Successful
         </h1>
         <div className="pt-10">
-          <p className="text-center font-geist text-sm text-miru-dark-purple-1000 ">
+          <p className="text-center font-geist text-sm text-foreground ">
             Thanks for verifying your email.
           </p>
         </div>

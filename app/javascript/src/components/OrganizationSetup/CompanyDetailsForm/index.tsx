@@ -128,17 +128,14 @@ const CompanyDetailsForm = ({
 
   const LogoComponent = ({ values, setFieldValue }) => (
     <div className="my-4 flex flex-row">
-      <div className="mt-2 h-30 w-30 border border-dashed border-miru-dark-purple-400">
+      <div className="mt-2 h-30 w-30 border border-dashed border-border">
         <div className="profile-img relative m-auto h-30 w-30 cursor-pointer text-center text-xs font-semibold">
           <Avatar
             classNameImg="h-full w-full md:h-full md:w-full"
             url={values?.logo_url}
           />
-          <div className="hover-edit absolute top-0 left-0 h-full w-full bg-miru-white-1000 p-4 opacity-80">
-            <button
-              className="flex flex-row text-miru-han-purple-1000"
-              type="button"
-            >
+          <div className="hover-edit absolute top-0 left-0 h-full w-full bg-background p-4 opacity-80">
+            <button className="flex flex-row text-primary" type="button">
               <label className="flex cursor-pointer" htmlFor="file_input">
                 <img
                   alt="edit"
@@ -157,7 +154,7 @@ const CompanyDetailsForm = ({
               />
             </button>
             <button
-              className="flex flex-row pl-2 text-miru-red-400"
+              className="flex flex-row pl-2 text-destructive"
               type="button"
               onClick={() => setFieldValue("logo_url", null)}
             >
@@ -171,7 +168,7 @@ const CompanyDetailsForm = ({
           </div>
         </div>
       </div>
-      <div className="my-auto ml-6 text-xs font-normal text-miru-dark-purple-400">
+      <div className="my-auto ml-6 text-xs font-normal text-muted-foreground">
         <p>Accepted file formats: PNG, JPG, SVG.</p>
         <p>File size should be &#8826; 2MB.</p>
         <p>Image resolution should be 1:1.</p>
@@ -218,7 +215,7 @@ const CompanyDetailsForm = ({
                       />
                     ) : (
                       <div className="mt-2 flex flex-row">
-                        <div className="mt-2 h-30 w-30 border border-dashed border-miru-dark-purple-400 ">
+                        <div className="mt-2 h-30 w-30 border border-dashed border-border ">
                           <label
                             className="flex h-full w-full cursor-pointer justify-center"
                             htmlFor="file-input"
@@ -226,17 +223,13 @@ const CompanyDetailsForm = ({
                             <div className="m-auto cursor-pointer text-center text-xs font-semibold">
                               {isDesktop && (
                                 <>
-                                  <p className="text-miru-dark-purple-400">
+                                  <p className="text-muted-foreground">
                                     Drag logo
                                   </p>
-                                  <p className="text-miru-dark-purple-400">
-                                    or
-                                  </p>
+                                  <p className="text-muted-foreground">or</p>
                                 </>
                               )}
-                              <p className="text-miru-han-purple-1000">
-                                Select File
-                              </p>
+                              <p className="text-primary">Select File</p>
                             </div>
                           </label>
                           <input
@@ -247,7 +240,7 @@ const CompanyDetailsForm = ({
                             onChange={e => onLogoChange(e, setFieldValue)}
                           />
                         </div>
-                        <div className="my-auto ml-6 text-xs font-normal text-miru-dark-purple-400">
+                        <div className="my-auto ml-6 text-xs font-normal text-muted-foreground">
                           <p>Accepted file formats: PNG, JPG, SVG.</p>
                           <p>File size should be &#8826; 2MB.</p>
                           <p>Image resolution should be 1:1.</p>
@@ -274,7 +267,7 @@ const CompanyDetailsForm = ({
                 fieldTouched={touched.company_name}
               />
               <div className="mb-2 xsm:mb-6">
-                <label className="mb-2 block text-sm font-medium text-miru-dark-purple-400">
+                <label className="mb-2 block text-sm font-medium text-muted-foreground">
                   Business Phone
                 </label>
                 <div className="flex h-10 w-full items-center rounded-md border border-input bg-background px-3 py-2">
@@ -322,7 +315,7 @@ const CompanyDetailsForm = ({
               {/* Country and State */}
               <div className="flex flex-row gap-4">
                 <div className="mb-2 xsm:mb-6 flex w-1/2 flex-col" id="country">
-                  <label className="mb-2 block text-sm font-medium text-miru-dark-purple-400">
+                  <label className="mb-2 block text-sm font-medium text-muted-foreground">
                     Country
                   </label>
                   <Select
@@ -411,7 +404,7 @@ const CompanyDetailsForm = ({
               </div>
               {/* Timezone */}
               <div className="mb-2 xsm:mb-6">
-                <label className="mb-2 block text-sm font-medium text-miru-dark-purple-400">
+                <label className="mb-2 block text-sm font-medium text-muted-foreground">
                   Timezone
                 </label>
                 <Select

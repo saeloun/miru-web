@@ -22,7 +22,7 @@ RSpec.describe "Team Member", type: :system, js: true do
           visit "/team"
 
           expect(page).not_to have_css(
-            "button.m-1.mx-4.p-1.text-base.font-bold.text-miru-dark-purple-400.text-miru-han-purple-1000", text: "1"
+            "button.m-1.mx-4.p-1.text-base.font-bold.text-muted-foreground.text-primary", text: "1"
           )
         end
       end

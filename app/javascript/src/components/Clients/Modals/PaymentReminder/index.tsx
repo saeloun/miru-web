@@ -133,7 +133,7 @@ const PaymentReminder = ({
             />
           </div>
           <button
-            className="text-miru-gray-1000"
+            className="text-foreground"
             type="button"
             onClick={() => setSendPaymentReminder(false)}
           >

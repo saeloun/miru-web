@@ -16,21 +16,19 @@ const WeeklyEntries = () => {
   return (
     <>
       {view === "day" ? (
-        <div className="flex h-16 justify-evenly bg-miru-gray-100">
+        <div className="flex h-16 justify-evenly bg-muted">
           {dayInfo?.map((d, index) => (
             <Button
               key={index}
               style={BUTTON_STYLES.calendarCell}
               className={`my-2 h-12 w-26 items-center rounded-xl border-2 border-transparent px-5 py-1 text-left ${
-                index === selectDate && "border-miru-han-purple-1000 bg-white"
+                index === selectDate && "border-primary bg-white"
               }`}
               onClick={() => {
                 setSelectDate(index);
               }}
             >
-              <p className="text-xs font-medium text-miru-dark-purple-1000">
-                {d.day}
-              </p>
+              <p className="text-xs font-medium text-foreground">{d.day}</p>
               <p className="text-xs">
                 {getNumberWithOrdinal(parseInt(d.date, 10))} {d.month}{" "}
               </p>
@@ -39,15 +37,13 @@ const WeeklyEntries = () => {
         </div>
       ) : (
         // dates for week
-        <div className="flex h-16 justify-between bg-miru-gray-100 px-15/100 xl:px-20/100">
+        <div className="flex h-16 justify-between bg-muted px-15/100 xl:px-20/100">
           {dayInfo.map((d, index) => (
             <div
               className="my-2 h-12 w-24 items-center rounded-xl border-2 border-transparent py-2"
               key={index}
             >
-              <p className="text-xs font-medium text-miru-dark-purple-1000">
-                {d.day}
-              </p>
+              <p className="text-xs font-medium text-foreground">{d.day}</p>
               <p className="text-xs">
                 {getNumberWithOrdinal(parseInt(d.date, 10))} {d.month}{" "}
               </p>

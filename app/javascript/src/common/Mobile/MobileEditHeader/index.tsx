@@ -4,21 +4,24 @@ import BackButton from "components/Invoices/Invoice/BackButton";
 import { Link } from "react-router-dom";
 
 export const MobileEditHeader = ({
-  wrapperClassName = "w-full flex flex-row items-center justify-between h-12 shadow-c1 fixed z-15 fixed bg-white",
+  wrapperClassName = "sticky top-0 z-20 flex h-14 w-full items-center justify-between border-b border-border bg-background/95 px-4 text-foreground backdrop-blur",
   title = "",
   backHref,
   href,
   showEdit = true,
 }) => (
   <div className={wrapperClassName}>
-    <div className="flex flex-row items-center">
+    <div className="flex min-w-0 items-center gap-3">
       <BackButton href={backHref} />
-      <span>{title}</span>
+      <span className="truncate text-sm font-semibold">{title}</span>
     </div>
     {showEdit && (
-      <div className="items-center pr-4 font-bold text-miru-han-purple-1000">
-        <Link to={href}>Edit</Link>
-      </div>
+      <Link
+        className="rounded-md border border-border bg-card px-3 py-1.5 text-sm font-medium text-foreground transition hover:bg-accent"
+        to={href}
+      >
+        Edit
+      </Link>
     )}
   </div>
 );

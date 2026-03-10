@@ -326,14 +326,14 @@ const EnhancedFilterSidebar = ({
         <SheetHeader className="px-6 py-4 border-b bg-gradient-to-r from-white to-gray-50">
           <div className="flex items-center justify-between">
             <SheetTitle className="flex items-center gap-2 text-lg font-semibold text-gray-900">
-              <div className="rounded-lg bg-miru-han-purple-1000/10 p-2">
-                <Funnel className="h-4 w-4 text-miru-han-purple-1000" />
+              <div className="rounded-lg bg-primary/10 p-2">
+                <Funnel className="h-4 w-4 text-primary" />
               </div>
               <span>Filters</span>
               {activeFilterCount > 0 && (
                 <Badge
                   variant="secondary"
-                  className="ml-2 bg-miru-han-purple-1000 text-white hover:bg-miru-han-purple-600"
+                  className="ml-2 bg-primary text-white hover:bg-primary/90"
                 >
                   {activeFilterCount} active
                 </Badge>
@@ -418,7 +418,7 @@ const EnhancedFilterSidebar = ({
             <Button
               onClick={handleApply}
               disabled={disableApplyBtn}
-              className="flex-1 bg-miru-han-purple-1000 font-medium text-white hover:bg-miru-han-purple-600"
+              className="flex-1 bg-primary font-medium text-white hover:bg-primary/90"
             >
               Apply Filters
             </Button>

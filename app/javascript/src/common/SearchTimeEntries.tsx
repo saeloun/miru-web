@@ -68,7 +68,7 @@ const SearchTimeEntries = ({
   ) : (
     <>
       <div
-        className="flex items-center justify-between text-xs font-bold leading-4 text-miru-han-purple-1000"
+        className="flex items-center justify-between text-xs font-bold leading-4 text-primary"
         onClick={() => setShowEmployeeList(true)}
       >
         <label className="mr-2">{currentUser && currentUser.label}</label>
@@ -85,8 +85,8 @@ const SearchTimeEntries = ({
               placeholder="Search"
               type="text"
               value={searchQuery}
-              className="focus:outline-none w-full rounded bg-miru-gray-100 p-2
-            text-sm font-medium focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
+              className="focus:outline-none w-full rounded bg-muted p-2
+            text-sm font-medium focus:border-border focus:ring-1 focus:ring-ring"
               onChange={e => {
                 setSearchQuery(e.target.value);
               }}
@@ -110,7 +110,7 @@ const SearchTimeEntries = ({
             {filteredEmployeeList.map(employee => (
               <li
                 key={employee.value}
-                className={`flex items-center px-2 pt-3 text-sm leading-5 text-miru-dark-purple-1000 hover:bg-miru-gray-100 ${
+                className={`flex items-center px-2 pt-3 text-sm leading-5 text-foreground hover:bg-muted ${
                   currentUser?.value === employee.value
                     ? "font-bold"
                     : "font-medium"

@@ -1,5 +1,6 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import React from "react";
+import Loader from "../common/Loader";
 
 // Lazy load all components for better performance
 const Dashboard = React.lazy(() => import("../components/Dashboard"));
@@ -174,11 +175,7 @@ export const router = createBrowserRouter([
 // Export a Router component
 export const AppRouter: React.FC = () => (
   <React.Suspense
-    fallback={
-      <div className="flex items-center justify-center h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
-      </div>
-    }
+    fallback={<Loader message="Loading workspace..." size="md" />}
   >
     <RouterProvider router={router} />
   </React.Suspense>

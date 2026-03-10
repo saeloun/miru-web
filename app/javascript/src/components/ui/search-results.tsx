@@ -31,7 +31,7 @@ export const SearchResults: React.FC<SearchResultsProps> = ({
     <section
       ref={containerRef}
       className={cn(
-        "absolute z-50 w-full overflow-hidden rounded-lg bg-white shadow-lg border",
+        "absolute z-50 w-full overflow-hidden rounded-lg bg-background shadow-lg border",
         isEmpty ? "py-4" : "max-h-96 overflow-y-auto",
         className
       )}

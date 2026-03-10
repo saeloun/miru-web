@@ -60,11 +60,7 @@ const DeleteMember = ({ user }) => {
             setModalState(TeamModalType.NONE);
           }}
         >
-          <XIcon
-            className="text-miru-dark-purple-1000"
-            size={16}
-            weight="bold"
-          />
+          <XIcon className="text-foreground" size={16} weight="bold" />
         </Button>
       </div>
       <p className="mt-4 mb-10">

@@ -84,12 +84,12 @@ const Header = ({
           <Link to="/reports" type="button">
             <ArrowLeftIcon />
           </Link>
-          <span className="w-full py-1 px-3 text-left text-base font-medium leading-5 text-miru-dark-purple-1000 lg:ml-5 lg:truncate lg:px-0 lg:text-center lg:text-3.5xl lg:font-bold  lg:leading-10">
+          <span className="w-full py-1 px-3 text-left text-base font-medium leading-5 text-foreground lg:ml-5 lg:truncate lg:px-0 lg:text-center lg:text-3.5xl lg:font-bold  lg:leading-10">
             {type}
           </span>
           {showFilterIcon && (
             <button
-              className="relative rounded p-3 hover:bg-miru-gray-1000 lg:ml-7"
+              className="relative rounded p-3 hover:bg-secondary lg:ml-7"
               onClick={() => handleFilterBtnClick(isDesktop)}
             >
               {isDesktop ? (
@@ -118,7 +118,7 @@ const Header = ({
               visibilty={showMoreOptions}
             >
               <li
-                className="flex items-center py-2 text-sm text-miru-han-purple-1000"
+                className="flex items-center py-2 text-sm text-primary"
                 onClick={() => {
                   setIsFilterVisible(!isFilterVisible);
                   setShowMoreOptions(false);
@@ -165,7 +165,7 @@ const Header = ({
           >
             <div className="relative px-3">
               <button
-                className="menuButton__button inline-flex justify-center rounded-md border border-miru-han-purple-1000 bg-white p-2 text-miru-han-purple-1000 hover:bg-gray-50"
+                className="menuButton__button inline-flex justify-center rounded-md border border-primary bg-white p-2 text-primary hover:bg-gray-50"
                 onClick={() => setShowExportOptions(!showExportOptions)}
               >
                 <ShareIcon className="" size={20} weight="bold" />
@@ -213,7 +213,7 @@ const Header = ({
               )}
             </div>
             {/* <div>
-              <button className="inline-flex justify-center rounded-md border border-miru-han-purple-1000 bg-white p-2 text-miru-han-purple-1000 hover:bg-gray-50">
+              <button className="inline-flex justify-center rounded-md border border-primary bg-white p-2 text-primary hover:bg-gray-50">
                 <PaperPlaneTiltIcon size={20} weight="bold" />
                 <p className="mx-2 text-base font-medium uppercase tracking-wider">
                   Share
@@ -239,7 +239,7 @@ const Header = ({
                     size={12}
                     weight="bold"
                   />
-                  <span className="ml-1 whitespace-nowrap text-xs font-bold tracking-widest text-miru-han-purple-1000">
+                  <span className="ml-1 whitespace-nowrap text-xs font-bold tracking-widest text-primary">
                     CLEAR ALL
                   </span>
                 </button>

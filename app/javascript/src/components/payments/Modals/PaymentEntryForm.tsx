@@ -184,7 +184,7 @@ const PaymentEntryForm = ({
                         ignoreDisabledFontColor
                         isDisabled
                         isSearchable
-                        classNamePrefix="border-0 font-medium text-miru-dark-purple-1000"
+                        classNamePrefix="border-0 font-medium text-foreground"
                         defaultValue={invoice}
                         id="invoice"
                         label="Invoice"
@@ -220,7 +220,7 @@ const PaymentEntryForm = ({
                               setFieldValue("amount", selectedInvoice.amount);
                             }}
                           >
-                            <SelectTrigger className="m-0 mt-2 w-full border-0 font-medium text-miru-dark-purple-1000">
+                            <SelectTrigger className="m-0 mt-2 w-full border-0 font-medium text-foreground">
                               <SelectValue placeholder="Search by client name or invoice ID" />
                             </SelectTrigger>
                             <SelectContent>
@@ -231,22 +231,22 @@ const PaymentEntryForm = ({
                                 >
                                   <div className="flex w-full cursor-pointer flex-col gap-2 p-2 sm:flex-row sm:items-center sm:justify-between sm:gap-0">
                                     <div className="w-full py-2 pr-0 pl-0 text-left sm:w-2/6 sm:py-3 sm:pr-2">
-                                      <div className="truncate text-sm font-medium leading-5 text-miru-dark-purple-1000">
+                                      <div className="truncate text-sm font-medium leading-5 text-foreground">
                                         {invoiceOption.label}
                                       </div>
-                                      <div className="pt-1 text-sm font-normal leading-5 text-miru-dark-purple-400">
+                                      <div className="pt-1 text-sm font-normal leading-5 text-muted-foreground">
                                         {invoiceOption.invoiceNumber}
                                       </div>
                                     </div>
                                     <div className="w-full px-0 py-2 text-left sm:w-2/6 sm:px-2 sm:py-3 sm:text-right">
-                                      <div className="text-base font-bold leading-5 text-miru-dark-purple-1000">
+                                      <div className="text-base font-bold leading-5 text-foreground">
                                         {baseCurrency &&
                                           currencyFormat(
                                             baseCurrency,
                                             invoiceOption.amount
                                           )}
                                       </div>
-                                      <div className="pt-1 text-sm font-medium leading-5 text-miru-dark-purple-400">
+                                      <div className="pt-1 text-sm font-medium leading-5 text-muted-foreground">
                                         {dayjs(
                                           invoiceOption.invoiceDate
                                         ).format(dateFormat)}
@@ -349,7 +349,7 @@ const PaymentEntryForm = ({
                     >
                       {transactionTypes.map((transaction, index) => (
                         <li
-                          className="flex items-center pb-5 font-sans text-sm font-normal capitalize leading-5 text-miru-dark-purple-1000 hover:bg-miru-gray-100"
+                          className="flex items-center pb-5 font-sans text-sm font-normal capitalize leading-5 text-foreground hover:bg-muted"
                           key={index}
                           onClick={() => {
                             if (transaction?.value) {
@@ -373,9 +373,9 @@ const PaymentEntryForm = ({
               <CustomInputText
                 disabled
                 id="paymentAmount"
-                inputBoxClassName="form__input block w-full appearance-none bg-white p-4 text-base h-12 focus-within:border-miru-han-purple-1000 border-miru-gray-1000"
+                inputBoxClassName="form__input block w-full appearance-none bg-white p-4 text-base h-12 focus-within:border-primary border-border"
                 label="Payment amount"
-                labelClassName="absolute top-0.5 left-1 h-6 z-1 origin-0 bg-white p-2 text-base font-medium duration-300 text-miru-dark-purple-200"
+                labelClassName="absolute top-0.5 left-1 h-6 z-1 origin-0 bg-white p-2 text-base font-medium duration-300 text-muted-foreground"
                 name="paymentAmount"
                 type="text"
                 value={
@@ -401,8 +401,8 @@ const PaymentEntryForm = ({
                 type="submit"
                 className={
                   isPaymentBtnActive() && !isLoading
-                    ? "focus:outline-none flex h-10 w-full cursor-pointer items-center justify-center rounded border border-transparent bg-miru-han-purple-1000 py-1 px-4 font-sans text-base font-medium uppercase tracking-widest text-miru-white-1000 shadow-sm hover:bg-miru-han-purple-600"
-                    : "focus:outline-none flex h-10 w-full cursor-pointer items-center justify-center rounded border border-transparent bg-miru-gray-1000 py-1 px-4 font-sans text-base font-medium uppercase tracking-widest text-miru-white-1000 shadow-sm"
+                    ? "focus:outline-none flex h-10 w-full cursor-pointer items-center justify-center rounded border border-transparent bg-primary py-1 px-4 font-sans text-base font-medium uppercase tracking-widest text-primary-foreground shadow-sm hover:bg-primary/90"
+                    : "focus:outline-none flex h-10 w-full cursor-pointer items-center justify-center rounded border border-transparent bg-secondary py-1 px-4 font-sans text-base font-medium uppercase tracking-widest text-primary-foreground shadow-sm"
                 }
               >
                 ADD PAYMENT

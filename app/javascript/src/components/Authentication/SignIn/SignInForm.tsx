@@ -6,13 +6,13 @@ import { authenticationApi } from "apis/api";
 import { InputErrors, InputField } from "common/FormikFields";
 import { useAuthDispatch } from "context/auth";
 import { Formik, Form, FormikProps } from "formik";
-import { GoogleSVG, MiruLogoSVG } from "miruIcons";
+import { GithubIcon, GoogleSVG } from "miruIcons";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 import { signInFormInitialValues, signInFormValidationSchema } from "./utils";
 
-import AuthThemeToggle from "../AuthThemeToggle";
+import AuthShell from "../AuthShell";
 import PrivacyPolicyModal from "../SignUp/PrivacyPolicyModal";
 import TermsOfServiceModal from "../SignUp/TermsOfServiceModal";
 
@@ -28,6 +28,7 @@ const SignInForm = () => {
   const navigate = useNavigate();
 
   const googleOauth = useRef(null);
+  const githubOauth = useRef(null);
   const csrfToken =
     document.querySelector('[name="csrf-token"]')?.getAttribute("content") ||
     "";
@@ -89,30 +90,72 @@ const SignInForm = () => {
     if (googleForm) googleForm.submit();
   };
 
+  const handleGithubAuth = async () => {
+    const githubForm = githubOauth?.current;
+
+    if (githubForm) githubForm.submit();
+  };
+
   const isBtnDisabled = (values: SignInFormValues) =>
     !(values.email?.trim() && values?.password?.trim());
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4 py-8 text-foreground">
-      <div className="absolute right-4 top-4">
-        <AuthThemeToggle />
-      </div>
-      <div className="w-full max-w-md rounded-2xl border border-border bg-card/95 p-6 shadow-2xl backdrop-blur sm:p-8">
-        <div className="mb-6 space-y-2 text-center">
-          <div className="mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-xl border border-border bg-background shadow-sm">
-            <img
-              alt="Miru"
-              className="h-7 w-7 object-contain"
-              src={MiruLogoSVG}
-            />
-          </div>
-          <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
-            Miru
-          </p>
-          <h1 className="text-2xl font-semibold text-foreground">Sign in</h1>
-          <p className="text-sm text-muted-foreground">
-            Continue to your workspace.
-          </p>
+    <AuthShell
+      description="Track work, send invoices, and keep cash flow clear from one place."
+      title="Sign in to your workspace"
+    >
+      <div>
+        <Formik
+          initialValues={{}}
+          validateOnBlur={false}
+          validationSchema=""
+          onSubmit={() => {}}
+        >
+          {() => (
+            <div className="mb-6 space-y-3">
+              <Form
+                action="/users/auth/google_oauth2"
+                method="post"
+                ref={googleOauth}
+              >
+                <input
+                  name="authenticity_token"
+                  type="hidden"
+                  value={csrfToken}
+                />
+                <button
+                  className="flex w-full items-center justify-center rounded-xl border border-border bg-background px-4 py-3 text-sm font-medium text-foreground transition hover:bg-accent"
+                  type="submit"
+                  onClick={handleGoogleAuth}
+                >
+                  <img alt="" className="mr-2" src={GoogleSVG} />
+                  Continue with Google
+                </button>
+              </Form>
+              <Form action="/users/auth/github" method="post" ref={githubOauth}>
+                <input
+                  name="authenticity_token"
+                  type="hidden"
+                  value={csrfToken}
+                />
+                <button
+                  className="flex w-full items-center justify-center rounded-xl border border-border bg-background px-4 py-3 text-sm font-medium text-foreground transition hover:bg-accent"
+                  type="submit"
+                  onClick={handleGithubAuth}
+                >
+                  <GithubIcon className="mr-2 h-4 w-4" weight="fill" />
+                  Continue with GitHub
+                </button>
+              </Form>
+            </div>
+          )}
+        </Formik>
+        <div className="relative mb-6 flex items-center">
+          <div className="flex-grow border-t border-border" />
+          <span className="mx-4 flex-shrink text-xs uppercase tracking-[0.18em] text-muted-foreground">
+            or use email
+          </span>
+          <div className="flex-grow border-t border-border" />
         </div>
         <div>
           <Formik
@@ -165,57 +208,20 @@ const SignInForm = () => {
                   <div>
                     <button
                       type="submit"
-                      className={`mt-2 w-full rounded-lg border px-4 py-2.5 text-sm font-medium transition ${
+                      className={`mt-2 w-full rounded-xl border px-4 py-3 text-sm font-medium transition ${
                         isBtnDisabled(values)
                           ? "cursor-not-allowed border-transparent bg-muted text-muted-foreground"
                           : "cursor-pointer border-transparent bg-primary text-primary-foreground hover:bg-primary/90"
                       }`}
                     >
-                      Sign In
+                      Sign in
                     </button>
-                  </div>
-                  <div className="relative flex items-center py-5">
-                    <div className="flex-grow border-t border-border" />
-                    <span className="mx-4 flex-shrink text-xs text-muted-foreground">
-                      or
-                    </span>
-                    <div className="flex-grow border-t border-border" />
                   </div>
                 </Form>
               );
             }}
           </Formik>
-          <div className="mb-3">
-            <Formik
-              initialValues={{}}
-              validateOnBlur={false}
-              validationSchema=""
-              onSubmit={() => {
-                /* Google OAuth form - no client-side submit handler needed */
-              }}
-            >
-              {() => (
-                <Form
-                  action="/users/auth/google_oauth2"
-                  method="post"
-                  ref={googleOauth}
-                >
-                  <input
-                    name="authenticity_token"
-                    type="hidden"
-                    value={csrfToken}
-                  />
-                  <button
-                    className="flex w-full items-center justify-center rounded-lg border border-border bg-background px-4 py-2.5 text-sm font-medium text-foreground transition hover:bg-accent"
-                    type="submit"
-                    onClick={handleGoogleAuth}
-                  >
-                    <img alt="" className="mr-2" src={GoogleSVG} />
-                    Sign In with Google
-                  </button>
-                </Form>
-              )}
-            </Formik>
+          <div className="mt-6">
             {privacyModal && (
               <PrivacyPolicyModal
                 isOpen={privacyModal}
@@ -267,7 +273,7 @@ const SignInForm = () => {
           </div>
         </div>
       </div>
-    </div>
+    </AuthShell>
   );
 };
 

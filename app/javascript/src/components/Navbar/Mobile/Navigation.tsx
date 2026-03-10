@@ -29,7 +29,7 @@ const Navigation = () => {
       <ul
         className={`fixed bottom-0 left-0 right-0 z-40 flex h-1/12 ${
           companyRole == "client" ? "px-8" : "px-3"
-        } justify-between bg-white shadow-c1`}
+        } justify-between bg-background shadow-c1`}
       >
         <MobileMenuOptions
           companyRole={companyRole}

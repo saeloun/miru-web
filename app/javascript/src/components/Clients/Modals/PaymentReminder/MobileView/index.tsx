@@ -110,8 +110,8 @@ const MobilePaymentReminder = ({
 
   return (
     <div className="flex h-full flex-col">
-      <div className="flex w-full bg-miru-han-purple-1000 pl-4">
-        <div className="flex h-12 w-full items-center justify-center bg-miru-han-purple-1000 px-3 text-white">
+      <div className="flex w-full bg-primary pl-4">
+        <div className="flex h-12 w-full items-center justify-center bg-primary px-3 text-white">
           Send Payment Reminder
         </div>
         <Button
@@ -142,7 +142,7 @@ const MobilePaymentReminder = ({
       </div>
       {renderSelectedForm()}
       {currentStep === 1 ? (
-        <div className="flex w-full items-center justify-between bg-miru-gray-100 p-3">
+        <div className="flex w-full items-center justify-between bg-muted p-3">
           <small>
             {selectedInvoices.length > 1
               ? `${selectedInvoices.length} invoices selected`

@@ -17,19 +17,19 @@ const MobileTableHeader = ({ handleCheck, isChecked }) => (
         />
       </th>
       <th
-        className="w-1/5 py-5 text-left text-xs font-medium tracking-widest text-miru-black-1000"
+        className="w-1/5 py-5 text-left text-xs font-medium tracking-widest text-foreground"
         scope="col"
       >
         INVOICE NUMBER
       </th>
       <th
-        className="w-1/5 py-5 text-left text-xs font-medium tracking-widest text-miru-black-1000"
+        className="w-1/5 py-5 text-left text-xs font-medium tracking-widest text-foreground"
         scope="col"
       >
         ISSUE DATE/ DUE DATE
       </th>
       <th
-        className="w-1/5 px-4 py-5 text-right text-xs font-medium tracking-widest text-miru-black-1000"
+        className="w-1/5 px-4 py-5 text-right text-xs font-medium tracking-widest text-foreground"
         scope="col"
       >
         STATUS/ AMOUNT

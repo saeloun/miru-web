@@ -22,9 +22,9 @@ const IndeterminateCheckbox = forwardRef(
           {...rest}
           className="custom__checkbox absolute h-8 w-8 opacity-0"
         />
-        <div className="mr-2 flex h-5 w-5 flex-shrink-0 items-center justify-center border-2 border-miru-han-purple-1000 bg-white focus-within:border-blue-500">
+        <div className="mr-2 flex h-5 w-5 flex-shrink-0 items-center justify-center border-2 border-primary bg-white focus-within:border-blue-500">
           <svg
-            className="custom__checkbox-tick pointer-events-none hidden h-2 w-2 fill-current text-miru-han-purple-1000"
+            className="custom__checkbox-tick pointer-events-none hidden h-2 w-2 fill-current text-primary"
             version="1.1"
             viewBox="0 0 17 12"
             xmlns="http://www.w3.org/2000/svg"

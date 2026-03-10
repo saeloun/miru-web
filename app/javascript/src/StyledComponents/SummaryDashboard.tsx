@@ -20,9 +20,9 @@ const SummaryDashboard = ({
   summaryList,
   currency,
   wrapperClassName = "",
-  bgColor = "bg-miru-han-purple-1000",
+  bgColor = "bg-primary",
   textColor = "text-white",
-  borderColor = "border-miru-han-purple-600",
+  borderColor = "border-primary",
   showPointer = true,
 }: SummaryDashboardProps) => (
   <ul

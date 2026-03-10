@@ -2,13 +2,8 @@
 
 RSpec.configure do |config|
   config.append_before(:each, type: :system) do |example|
-    if example.metadata[:js]
-      Capybara.current_driver = ENV["CI"].present? ? :playwright_headless : :playwright
-    else
-      Capybara.current_driver = :rack_test
-    end
-
-    Capybara.javascript_driver = ENV["CI"].present? ? :playwright_headless : :playwright
+    Capybara.current_driver = ENV["CI"].present? ? :cuprite_headless : :cuprite
+    Capybara.javascript_driver = ENV["CI"].present? ? :cuprite_headless : :cuprite
   end
 
   config.after(:each, type: :system) do |example|

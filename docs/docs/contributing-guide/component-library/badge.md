@@ -45,7 +45,7 @@ Here are some examples of how we can use it:
 ```javascript
 <Badge
   className="uppercase"
-  bgColor="bg-miru-alert-green-400"
+  bgColor="bg-emerald-100"
   text="Paid"
 />
 ```
@@ -55,8 +55,8 @@ Here are some examples of how we can use it:
 ```javascript
 <Badge
   className="mt-2 uppercase"
-  bgColor="bg-miru-alert-blue-400"
-  color="text-miru-alert-blue-1000"
+  bgColor="bg-sky-100"
+  color="text-sky-900"
   text="Paid"
 />
 ```
@@ -65,7 +65,7 @@ Here are some examples of how we can use it:
 
 ```javascript
 <Badge
-  className="bg-miru-alert-yellow-400 text-miru-alert-green-1000 mt-2 uppercase"
+  className="bg-amber-100 text-amber-900 mt-2 uppercase"
   text="Paid"
 />
 ```

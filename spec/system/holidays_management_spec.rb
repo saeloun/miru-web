@@ -17,8 +17,8 @@ RSpec.describe "Holidays Management", type: :system, js: true do
     it "displays the holidays editor interface" do
       visit "/settings/holidays"
 
-      expect(page).to have_content("Holiday Management")
-      expect(page).to have_content("Configure public and optional holidays")
+      expect(page).to have_content("Holiday Calendar")
+      expect(page).to have_content("Public Holidays")
       expect(page).to have_content(current_year.to_s)
       expect(page).to have_button("Save Changes")
       expect(page).to have_button("Cancel")
@@ -85,13 +85,16 @@ RSpec.describe "Holidays Management", type: :system, js: true do
       it "allows deleting holidays" do
         visit "/settings/holidays"
 
-        # Find delete button for the first holiday
-        delete_button = find("button", class: "text-red-500", match: :first)
-        delete_button.click
+        initial_inputs = all("input[value='Christmas']").count
+        delete_buttons = all("button[aria-label='Delete holiday']")
+        if delete_buttons.any?
+          delete_buttons.first.click
+        else
+          all("button").find { |button| button.text.strip.empty? }&.click
+        end
 
-        # Holiday should be removed from the list
-        # Note: Changes are not saved until "Save Changes" is clicked
         expect(page).to have_button("Save Changes")
+        expect(all("input[value='Christmas']").count).to be < initial_inputs
       end
 
       it "allows editing holiday names" do

@@ -244,7 +244,7 @@ module TimeoffEntries
       def user_joined_date
         employee_id = admin? ? user_id : current_user.id
         user = User.find(employee_id)
-        user.joined_date_for_company(current_company)
+        user.employments.kept.find_by(company_id: current_company.id)&.joined_at
       end
 
       def calculate_previous_year_carryforward(leave_type)

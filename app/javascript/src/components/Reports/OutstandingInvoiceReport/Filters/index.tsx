@@ -106,7 +106,7 @@ const FilterSideBar = ({
                 onChange={handleSelectFilter}
               />
               {showCustomFilter && (
-                <div className="absolute z-20 mt-1 flex flex-col rounded-lg bg-miru-white-1000 shadow-c1">
+                <div className="absolute z-20 mt-1 flex flex-col rounded-lg bg-background shadow-c1">
                   <CustomDateRangePicker
                     dateRange={dateRange}
                     handleSelectDate={handleSelectDate}
@@ -122,7 +122,7 @@ const FilterSideBar = ({
                       {errorMessage.toDateErr}
                     </span>
                   </div>
-                  <div className="flex h-full items-end justify-center bg-miru-white-1000 p-6 ">
+                  <div className="flex h-full items-end justify-center bg-background p-6 ">
                     <button
                       className="sidebar__reset"
                       onClick={resetCustomDatePicker}

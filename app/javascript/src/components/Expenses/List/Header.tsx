@@ -17,16 +17,16 @@ const SearchDataRow = ({ item }) => {
 
   return (
     <div
-      className="flex cursor-pointer items-center p-3 last:border-b-0 hover:bg-miru-gray-100"
+      className="flex cursor-pointer items-center p-3 last:border-b-0 hover:bg-muted"
       onClick={() => handleClick(item)}
     >
-      <span className="w-4/12 truncate whitespace-nowrap text-left text-base font-normal tracking-wider text-miru-dark-purple-1000">
+      <span className="w-4/12 truncate whitespace-nowrap text-left text-base font-normal tracking-wider text-foreground">
         {item.label}
       </span>
-      <span className="w-4/12 truncate whitespace-nowrap text-center text-base font-normal tracking-wider text-miru-dark-purple-1000">
+      <span className="w-4/12 truncate whitespace-nowrap text-center text-base font-normal tracking-wider text-foreground">
         {item.date}
       </span>
-      <span className="w-4/12 truncate whitespace-nowrap text-right text-base font-normal tracking-wider text-miru-dark-purple-1000">
+      <span className="w-4/12 truncate whitespace-nowrap text-right text-base font-normal tracking-wider text-foreground">
         {currencyFormat(company.base_currency, item.amount)}
       </span>
     </div>

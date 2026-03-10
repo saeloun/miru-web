@@ -89,7 +89,7 @@ const MobileView = ({
             }}
           >
             <ArrowLeftIcon
-              className="mr-4 text-miru-dark-purple-1000"
+              className="mr-4 text-foreground"
               size={16}
               weight="bold"
             />
@@ -118,7 +118,7 @@ const MobileView = ({
           showEditButton={false}
           strikeAmount={strikeAmount}
         />
-        <div className="border-b border-miru-gray-400 px-4 py-2">
+        <div className="border-b border-border px-4 py-2">
           <LineItems
             isInvoicePreviewCall
             currency={currency}
@@ -197,28 +197,28 @@ const MobileView = ({
               visibilty={showMoreOptions}
             >
               <li
-                className="flex cursor-pointer items-center px-5 py-2 text-sm text-miru-han-purple-1000 hover:bg-miru-gray-100 lg:py-1 xl:py-2"
+                className="flex cursor-pointer items-center px-5 py-2 text-sm text-primary hover:bg-muted lg:py-1 xl:py-2"
                 onClick={() => {
                   setShowMoreOptions(false);
                   setShowHistory(true);
                 }}
               >
                 <ClockIcon
-                  className="mr-4 text-miru-han-purple-1000"
+                  className="mr-4 text-primary"
                   size={16}
                   weight="bold"
                 />
                 View History
               </li>
               <li
-                className="flex cursor-pointer items-center px-5 py-2 text-sm text-miru-han-purple-1000 hover:bg-miru-gray-100 lg:py-1 xl:py-2"
+                className="flex cursor-pointer items-center px-5 py-2 text-sm text-primary hover:bg-muted lg:py-1 xl:py-2"
                 onClick={() => {
                   setShowMoreOptions(false);
                   setShowInvoicePaymentModal(true);
                 }}
               >
                 <CurrencyCircleDollarIcon
-                  className="mr-4 text-miru-han-purple-1000"
+                  className="mr-4 text-primary"
                   size={16}
                   weight="bold"
                 />
@@ -226,7 +226,7 @@ const MobileView = ({
               </li>
               {["sent", "overdue", "viewed"].includes(invoice?.status) && (
                 <li
-                  className="flex cursor-pointer items-center py-2 px-5 text-sm text-miru-han-purple-1000 hover:bg-miru-gray-100 lg:py-1 xl:py-2"
+                  className="flex cursor-pointer items-center py-2 px-5 text-sm text-primary hover:bg-muted lg:py-1 xl:py-2"
                   onClick={() => {
                     setShowMoreOptions(false);
                     setShowWavieDialog(true);
@@ -243,7 +243,7 @@ const MobileView = ({
               )}
               {invoice?.status === "overdue" && (
                 <li
-                  className="flex cursor-pointer items-center py-2 px-5 text-sm text-miru-han-purple-1000 hover:bg-miru-gray-100 lg:py-1 xl:py-2"
+                  className="flex cursor-pointer items-center py-2 px-5 text-sm text-primary hover:bg-muted lg:py-1 xl:py-2"
                   onClick={() => {
                     setShowMoreOptions(false);
                     setIsSendReminder(true);
@@ -255,23 +255,23 @@ const MobileView = ({
                 </li>
               )}
               <li
-                className="flex cursor-pointer items-center py-2 px-5 text-sm text-miru-red-400 hover:bg-miru-gray-100 lg:py-1 xl:py-2"
+                className="flex cursor-pointer items-center py-2 px-5 text-sm text-destructive hover:bg-muted lg:py-1 xl:py-2"
                 onClick={() => {
                   setShowMoreOptions(false);
                   setShowDeleteDialog(true);
                 }}
               >
                 <DeleteIcon
-                  className="mr-4 text-miru-red-400"
+                  className="mr-4 text-destructive"
                   size={16}
                   weight="bold"
                 />
                 Delete
               </li>
               {status == "DRAFT" && (
-                <li className="flex cursor-pointer items-center px-5 py-2 text-sm text-miru-han-purple-1000 hover:bg-miru-gray-100 lg:py-1 xl:py-2">
+                <li className="flex cursor-pointer items-center px-5 py-2 text-sm text-primary hover:bg-muted lg:py-1 xl:py-2">
                   <PrinterIcon
-                    className="mr-4 text-miru-han-purple-1000"
+                    className="mr-4 text-primary"
                     size={16}
                     weight="bold"
                   />

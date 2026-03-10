@@ -173,15 +173,12 @@ const AddEntryMobile = () => {
         WrapperClassname="z-50 justify-content-between lg:hidden bg-white"
         setFilterVisibilty={setNewEntryView}
       >
-        <SidePanel.Header className="mb-2 flex items-center justify-between bg-miru-han-purple-1000 px-5 py-5 text-white lg:bg-white lg:font-bold lg:text-miru-dark-purple-1000">
+        <SidePanel.Header className="mb-2 flex items-center justify-between bg-primary px-5 py-5 text-white lg:bg-white lg:font-bold lg:text-foreground">
           <span className="flex w-full items-center justify-center pl-6 text-base font-medium leading-5">
             {editEntryId ? "Edit Time Entry" : "New Time Entry"}
           </span>
           <Button style="ternary" onClick={handleClose}>
-            <XIcon
-              className="text-white lg:text-miru-dark-purple-1000"
-              size={16}
-            />
+            <XIcon className="text-white lg:text-foreground" size={16} />
           </Button>
         </SidePanel.Header>
         <SidePanel.Body className="sidebar__filters flex h-full flex-col justify-between overflow-y-auto px-4">
@@ -222,8 +219,8 @@ const AddEntryMobile = () => {
                           placeholder="Search"
                           type="text"
                           value={searchQuery}
-                          className="focus:outline-none w-full rounded bg-miru-gray-100 p-2
-            text-sm font-medium focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
+                          className="focus:outline-none w-full rounded bg-muted p-2
+            text-sm font-medium focus:border-border focus:ring-1 focus:ring-ring"
                           onChange={e => {
                             setSearchQuery(e.target.value);
                           }}
@@ -248,7 +245,7 @@ const AddEntryMobile = () => {
                       clientList.map((eachClient, index) => (
                         <li
                           key={index}
-                          className={`flex items-center px-2 pt-3 text-sm leading-5 text-miru-dark-purple-1000 hover:bg-miru-gray-100 ${
+                          className={`flex items-center px-2 pt-3 text-sm leading-5 text-foreground hover:bg-muted ${
                             eachClient.name == client
                               ? "font-bold"
                               : "font-normal"
@@ -305,8 +302,8 @@ const AddEntryMobile = () => {
                           placeholder="Search"
                           type="text"
                           value={projectSearchQuery}
-                          className="focus:outline-none w-full rounded bg-miru-gray-100 p-2
-            text-sm font-medium focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
+                          className="focus:outline-none w-full rounded bg-muted p-2
+            text-sm font-medium focus:border-border focus:ring-1 focus:ring-ring"
                           onChange={e => {
                             setProjectSearchQuery(e.target.value);
                           }}
@@ -331,7 +328,7 @@ const AddEntryMobile = () => {
                       projectList.map((eachProject, index) => (
                         <li
                           key={index}
-                          className={`flex items-center px-2 pt-3 text-sm leading-5 text-miru-dark-purple-1000 hover:bg-miru-gray-100 ${
+                          className={`flex items-center px-2 pt-3 text-sm leading-5 text-foreground hover:bg-muted ${
                             eachProject.name == project
                               ? "font-bold"
                               : "font-normal"
@@ -407,29 +404,27 @@ const AddEntryMobile = () => {
                   text="Billable"
                   wrapperClassName="flex items-center m-auto p-2"
                   labelClassName={`${
-                    isProjectBillable
-                      ? "text-miru-dark-purple-1000"
-                      : "text-miru-gray-1000"
+                    isProjectBillable ? "text-foreground" : "text-foreground"
                   } text-sm font-medium`}
                 />
               </div>
-              <div className="flex items-center justify-between rounded border border-miru-gray-1000">
+              <div className="flex items-center justify-between rounded border border-border">
                 <Button style="ternary" onClick={handleDecreaseTime}>
                   <MinusIcon
-                    className="m-4 text-miru-dark-purple-1000"
+                    className="m-4 text-foreground"
                     size={20}
                     weight="bold"
                   />
                 </Button>
                 <TimeInput
-                  className="focus:outline-none w-1/2 cursor-pointer rounded text-center text-xl font-bold text-miru-dark-purple-1000 placeholder:text-miru-dark-purple-200 focus:border-miru-gray-1000 focus:bg-white focus:ring-1 focus:ring-miru-gray-1000"
+                  className="focus:outline-none w-1/2 cursor-pointer rounded text-center text-xl font-bold text-foreground placeholder:text-muted-foreground focus:border-border focus:bg-white focus:ring-1 focus:ring-ring"
                   initTime={duration}
                   name="timeInput"
                   onTimeChange={handleDurationChange}
                 />
                 <Button style="ternary" onClick={handleIncreaseTime}>
                   <PlusIcon
-                    className="m-4 text-miru-dark-purple-1000"
+                    className="m-4 text-foreground"
                     size={20}
                     weight="bold"
                   />
@@ -443,19 +438,16 @@ const AddEntryMobile = () => {
                   style="secondary"
                   onClick={handleDuplicate}
                 >
-                  <CopyIcon
-                    className="mr-2 text-miru-han-purple-1000"
-                    size={20}
-                  />
+                  <CopyIcon className="mr-2 text-primary" size={20} />
                   <span className="font-bold">Duplicate</span>
                 </Button>
                 <Button
-                  className="ml-1 flex w-1/2 items-center justify-center rounded border border-miru-red-400 py-2 px-10/100 text-miru-red-400"
+                  className="ml-1 flex w-1/2 items-center justify-center rounded border border-destructive py-2 px-10/100 text-destructive"
                   onClick={() => {
                     setShowDeleteDialog(true);
                   }}
                 >
-                  <DeleteIcon className="mr-2 text-miru-red-400" size={20} />
+                  <DeleteIcon className="mr-2 text-destructive" size={20} />
                   <span className="font-bold">Delete</span>
                 </Button>
               </div>

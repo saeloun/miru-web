@@ -16,7 +16,7 @@ export const EmptyStatesMobileView = () => {
       wrapperClassName="pt-8 mt-4"
     >
       <Button
-        className="mt-4 flex h-10 w-full flex-row items-center justify-center rounded bg-miru-han-purple-1000 font-bold text-white"
+        className="mt-4 flex h-10 w-full flex-row items-center justify-center rounded bg-primary font-bold text-white"
         type="button"
         onClick={() => {
           setNewEntryView(true);

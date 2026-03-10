@@ -16,12 +16,8 @@ const AdminNav = () => {
   );
 
   return (
-    <div className="min-h-[60vh] rounded-xl bg-white shadow-lg border border-gray-100 overflow-hidden">
-      <div className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 h-2"></div>
-      <div className="p-6">
-        <h2 className="text-2xl font-bold text-gray-900 mb-6 tracking-tight">
-          Settings Menu
-        </h2>
+    <div className="min-h-[60vh] overflow-hidden rounded-xl border border-border bg-card shadow-sm">
+      <div className="p-4 md:p-6">
         <List companyRole={companyRole} settingsList={allSettings} />
       </div>
     </div>

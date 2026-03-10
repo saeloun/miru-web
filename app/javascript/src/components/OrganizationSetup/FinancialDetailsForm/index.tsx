@@ -67,7 +67,7 @@ const FinancialDetailsForm = ({
             <Form>
               {/* Base Currency */}
               <div className="mb-2 xsm:mb-6">
-                <label className="mb-2 block text-sm font-medium text-miru-dark-purple-400">
+                <label className="mb-2 block text-sm font-medium text-muted-foreground">
                   Base Currency
                 </label>
                 <Select
@@ -109,7 +109,7 @@ const FinancialDetailsForm = ({
 
               {/* Standard Rate */}
               <div className="mb-2 xsm:mb-6">
-                <label className="mb-2 block text-sm font-medium text-miru-dark-purple-400">
+                <label className="mb-2 block text-sm font-medium text-muted-foreground">
                   Standard Rate (per hour)
                 </label>
                 <Field
@@ -139,7 +139,7 @@ const FinancialDetailsForm = ({
 
               {/* Fiscal Year End */}
               <div className="mb-2 xsm:mb-6">
-                <label className="mb-2 block text-sm font-medium text-miru-dark-purple-400">
+                <label className="mb-2 block text-sm font-medium text-muted-foreground">
                   Fiscal Year End
                 </label>
                 <Select
@@ -178,7 +178,7 @@ const FinancialDetailsForm = ({
 
               {/* Date Format */}
               <div className="mb-2 xsm:mb-6">
-                <label className="mb-2 block text-sm font-medium text-miru-dark-purple-400">
+                <label className="mb-2 block text-sm font-medium text-muted-foreground">
                   Date Format
                 </label>
                 <Select
@@ -223,7 +223,7 @@ const FinancialDetailsForm = ({
 
               {/* Working Days */}
               <div className="mb-2 xsm:mb-6">
-                <label className="mb-2 block text-sm font-medium text-miru-dark-purple-400">
+                <label className="mb-2 block text-sm font-medium text-muted-foreground">
                   Working Days (per week)
                 </label>
                 <Field
@@ -249,7 +249,7 @@ const FinancialDetailsForm = ({
 
               {/* Working Hours */}
               <div className="mb-2 xsm:mb-6">
-                <label className="mb-2 block text-sm font-medium text-miru-dark-purple-400">
+                <label className="mb-2 block text-sm font-medium text-muted-foreground">
                   Working Hours (per week)
                 </label>
                 <Field

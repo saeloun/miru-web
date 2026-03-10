@@ -117,7 +117,7 @@ const Invoice = () => {
           setShowHistory={setShowHistory}
           setShowWavieDialog={setShowWavieDialog}
         />
-        <div className="m-0 mt-5 mb-10 w-full bg-miru-gray-100 p-0">
+        <div className="m-0 mt-5 mb-10 w-full bg-muted p-0">
           <InvoiceDetails invoice={invoice} />
         </div>
         {!showConnectPaymentDialog &&
@@ -161,7 +161,7 @@ const Invoice = () => {
       </>
     ) : showSendInvoiceModal ? (
       <div className="flex h-full flex-col">
-        <div className="flex w-full bg-miru-han-purple-1000 pl-4">
+        <div className="flex w-full bg-primary pl-4">
           <Button
             style="ternary"
             onClick={() => {
@@ -175,7 +175,7 @@ const Invoice = () => {
           >
             <ArrowLeftIcon className="text-white" size={16} weight="bold" />
           </Button>
-          <div className="flex h-12 w-full items-center justify-center bg-miru-han-purple-1000 px-3 text-white">
+          <div className="flex h-12 w-full items-center justify-center bg-primary px-3 text-white">
             {isSendReminder ? "Send Invoice Reminder" : "Send Invoice"}
           </div>
         </div>

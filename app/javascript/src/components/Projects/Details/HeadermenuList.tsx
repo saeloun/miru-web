@@ -55,7 +55,7 @@ const HeaderMenuList = ({
       </li>
       <li>
         <button
-          className="menuButton__list-item px-0 text-miru-red-400 lg:px-5"
+          className="menuButton__list-item px-0 text-destructive lg:px-5"
           onMouseDown={() => setShowDeleteDialog(true)}
         >
           <DeleteIcon color="#E04646" size={16} weight="bold" />

@@ -3,7 +3,7 @@ import React from "react";
 import { Categories } from "components/Expenses/utils";
 
 const ExpensesSummary = () => (
-  <div className="flex w-full flex-wrap bg-miru-gray-100 px-4 py-10 lg:py-6 lg:px-20">
+  <div className="flex w-full flex-wrap bg-muted px-4 py-10 lg:py-6 lg:px-20">
     <div className="grid w-full grid-cols-2 flex-wrap gap-10 lg:grid-cols-3 lg:grid-rows-3">
       {Categories?.map(category => (
         <div
@@ -20,10 +20,10 @@ const ExpensesSummary = () => (
             {category.icon}
           </div>
           <div className="flex flex-col items-start justify-start">
-            <span className="text-base font-normal text-miru-dark-purple-600">
+            <span className="text-base font-normal text-muted-foreground">
               {category.label}
             </span>
-            <span className="text-base font-bold text-miru-dark-purple-600">
+            <span className="text-base font-bold text-muted-foreground">
               {category.color}
             </span>
           </div>

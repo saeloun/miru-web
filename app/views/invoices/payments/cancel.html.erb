@@ -8,12 +8,12 @@
 
     <div class="py-16">
       <div class="text-center">
-        <p class="text-sm font-semibold tracking-wide uppercase text-miru-han-purple-600">Invoice #<%= @invoice.invoice_number %></p>
+        <p class="text-sm font-semibold tracking-wide uppercase text-primary">Invoice #<%= @invoice.invoice_number %></p>
         <h1 class="mt-2 text-4xl font-semibold tracking-tight text-gray-900 sm:text-5xl">Payment was cancelled.</h1>
         <p class="mt-2 text-base text-gray-500">Didn't cancel the payment?</p>
         <div class="mt-6 group">
-          <%= link_to "Try again", new_invoice_payment_url(@invoice), class: "text-base font-medium text-miru-han-purple-600 group-hover:text-miru-han-purple-400", target: "_blank", rel: "nofollow" %>
-          <span aria-hidden="true" class="text-base font-medium text-miru-han-purple-600 group-hover:text-miru-han-purple-400"> &rarr;</span>
+          <%= link_to "Try again", new_invoice_payment_url(@invoice), class: "text-base font-medium text-primary group-hover:text-primary", target: "_blank", rel: "nofollow" %>
+          <span aria-hidden="true" class="text-base font-medium text-primary group-hover:text-primary"> &rarr;</span>
         </div>
       </div>
     </div>

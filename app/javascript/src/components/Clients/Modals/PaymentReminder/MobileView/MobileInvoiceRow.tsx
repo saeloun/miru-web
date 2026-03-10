@@ -20,7 +20,7 @@ const MobileInvoiceRow = ({ invoice, isLast }) => {
   return (
     <div
       className={`${
-        isLast ? "border-0" : "mb-10 border-b border-miru-gray-200"
+        isLast ? "border-0" : "mb-10 border-b border-border"
       } grid grid-cols-2 gap-4`}
     >
       <div>

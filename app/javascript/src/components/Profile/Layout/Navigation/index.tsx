@@ -41,7 +41,7 @@ const SideNav = () => {
   }, []);
 
   return (
-    <div className="flex flex-col bg-gray-50 rounded-xl">
+    <div className="flex flex-col rounded-xl bg-background">
       <UserInformation />
       <div className="mt-6 flex-1 px-4 pb-4">
         {isCalledFromSettings && isAdminUser ? <AdminNav /> : <EmployeeNav />}

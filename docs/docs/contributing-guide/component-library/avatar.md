@@ -54,7 +54,7 @@ Here are some examples of how we can use it:
 <Avatar
   classNameImg="mr-5"
   classNameInitials="lg:text-5xl text-lg font-bold capitalize text-white"
-  classNameInitialsWrapper="mr-5 bg-miru-gray-1000"
+  classNameInitialsWrapper="mr-5 bg-foreground"
   initialsLetterCount={1}
   name={company.name}
   size="h-10 w-10 lg:h-20 lg:w-20"

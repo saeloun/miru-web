@@ -19,7 +19,7 @@ const LineItems = ({
   strikeAmount = "",
 }) => (
   <table
-    className={`bg-miru-han-1000 ${
+    className={`bg-card ${
       selectedClient ? "mb-6" : "mb-0"
     } w-full table-fixed border-collapse`}
   >
@@ -33,8 +33,8 @@ const LineItems = ({
                 disabled={!selectedClient}
                 className={`w-full rounded border border-dashed  bg-white py-3 text-center text-xs font-bold tracking-widest ${
                   selectedClient
-                    ? "border-miru-dark-purple-200 text-miru-dark-purple-200"
-                    : "border-miru-dark-purple-100 text-miru-dark-purple-100"
+                    ? "border-border text-muted-foreground"
+                    : "border-border text-muted-foreground"
                 }`}
                 onClick={() => {
                   setEditItem({});

@@ -104,15 +104,15 @@ const InvoiceTable = ({
               disabled={!selectedClient}
               className={`hoverButton w-full rounded-md border-2 border-dashed  bg-white py-1 pr-10 text-center text-base font-bold tracking-widest ${
                 selectedClient
-                  ? "border-miru-dark-purple-200 text-miru-dark-purple-200"
-                  : "border-miru-dark-purple-100 text-miru-dark-purple-100"
+                  ? "border-border text-muted-foreground"
+                  : "border-border text-muted-foreground"
               }`}
               onClick={() => setAddNew(!addNew)}
             >
               + NEW LINE ITEM
             </button>
             {!selectedClient && (
-              <span className="invisible absolute top-full left-1/3 ml-10 rounded bg-miru-dark-purple-1000 p-2 text-sm font-bold text-miru-dark-purple-100">
+              <span className="invisible absolute top-full left-1/3 ml-10 rounded bg-card p-2 text-sm font-bold text-muted-foreground">
                 Please add client before adding line items
               </span>
             )}
@@ -154,7 +154,7 @@ const InvoiceTable = ({
   return (
     <Fragment>
       <div className="w-full overflow-x-auto">
-        <table className="bg-miru-han-1000 min-w-[48rem] table-fixed sm:min-w-full">
+        <table className="bg-card min-w-[48rem] table-fixed sm:min-w-full">
           <LineItemTableHeader />
           <tbody className="w-full" ref={wrapperRef}>
             {getAddNewButton()}

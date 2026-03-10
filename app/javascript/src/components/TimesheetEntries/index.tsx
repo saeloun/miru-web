@@ -693,8 +693,8 @@ const TimesheetEntries = ({ user, isAdminUser }: Iprops) => {
                     className={`mr-10 tracking-widest
                       ${
                         item === view
-                          ? "border-b-2 border-miru-han-purple-1000 font-bold text-miru-han-purple-1000"
-                          : "font-medium text-miru-han-purple-600"
+                          ? "border-b-2 border-primary font-bold text-primary"
+                          : "font-medium text-primary"
                       }`}
                     onClick={() => handleChangeView(item)}
                   >
@@ -708,7 +708,7 @@ const TimesheetEntries = ({ user, isAdminUser }: Iprops) => {
             )}
 
             {!isDesktop && isAdminUser && (
-              <label className="text-sm font-normal leading-5 text-miru-dark-purple-1000">
+              <label className="text-sm font-normal leading-5 text-foreground">
                 Time entries for
               </label>
             )}

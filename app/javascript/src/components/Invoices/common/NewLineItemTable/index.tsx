@@ -43,7 +43,7 @@ const NewLineItemTable = ({
         />
       )}
       {loading && (
-        <p className="tracking-wide flex items-center justify-center text-base font-medium text-miru-han-purple-1000 md:h-50">
+        <p className="tracking-wide flex items-center justify-center text-base font-medium text-primary md:h-50">
           Loading..
         </p>
       )}
@@ -55,32 +55,32 @@ const NewLineItemTable = ({
 
             return (
               <div
-                className="flex cursor-pointer flex-col justify-between py-2 px-3 hover:bg-miru-gray-100 lg:flex-row"
+                className="flex cursor-pointer flex-col justify-between py-2 px-3 hover:bg-muted lg:flex-row"
                 id="entriesList"
                 key={index}
                 onClick={() => selectRowId(item)}
               >
                 <div className="flex w-full lg:hidden">
-                  <span className="w-1/2 text-left text-sm font-medium text-miru-dark-purple-1000">
+                  <span className="w-1/2 text-left text-sm font-medium text-foreground">
                     {item.first_name} {item.last_name}
                   </span>
-                  <span className="w-1/2 text-right text-xs font-medium text-miru-dark-purple-1000">
+                  <span className="w-1/2 text-right text-xs font-medium text-foreground">
                     {date} • {hoursLogged}
                   </span>
                 </div>
-                <span className="inline w-full whitespace-normal text-left text-xs font-medium text-miru-dark-purple-400 lg:hidden">
+                <span className="inline w-full whitespace-normal text-left text-xs font-medium text-muted-foreground lg:hidden">
                   {item.description}
                 </span>
-                <span className="hidden w-1/5 text-left text-sm font-medium text-miru-dark-purple-1000 lg:inline">
+                <span className="hidden w-1/5 text-left text-sm font-medium text-foreground lg:inline">
                   {item.first_name} {item.last_name}
                 </span>
-                <span className="hidden w-3/5 whitespace-normal text-left text-xs font-medium text-miru-dark-purple-600 lg:inline">
+                <span className="hidden w-3/5 whitespace-normal text-left text-xs font-medium text-muted-foreground lg:inline">
                   {item.description}
                 </span>
-                <span className="hidden text-right text-xs font-medium text-miru-dark-purple-1000 lg:inline">
+                <span className="hidden text-right text-xs font-medium text-foreground lg:inline">
                   {date}
                 </span>
-                <span className="hidden w-1/12 text-right text-xs font-medium text-miru-dark-purple-1000 lg:inline">
+                <span className="hidden w-1/12 text-right text-xs font-medium text-foreground lg:inline">
                   {hoursLogged}
                 </span>
               </div>

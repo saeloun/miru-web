@@ -49,6 +49,7 @@ import {
   Clock,
   BellRinging,
   GoogleLogo,
+  GithubLogo,
   Plugs,
   Cake,
   DeviceMobileCamera,
@@ -71,7 +72,6 @@ import {
 import error404Animation from "./GIFS/404_animation.gif";
 import accountsAgingIcon from "./svgIcons/accountsAging.svg";
 import accountsAgingHoverIcon from "./svgIcons/accountsAgingHover.svg";
-import blurredMiruLogo from "./svgIcons/blurred-miru-logo.svg";
 import reportcalendarIcon from "./svgIcons/Calendar.svg";
 import calendarHoverIcon from "./svgIcons/CalendarHover.svg";
 import deductions from "./svgIcons/Deductions.svg";
@@ -123,12 +123,6 @@ import logout_icon from "../../../assets/images/logout_icon.svg";
 import masterCard from "../../../assets/images/masterCard.svg";
 import miruLogoWatermark from "../../../assets/images/miru-logo-watermark.svg";
 import miruLogo from "../../../assets/images/miru-logo.svg";
-import miruManagingClientsScreen from "../../../assets/images/miru-managing-clients-screen.png";
-import miruManagingEmployeesScreen from "../../../assets/images/miru-managing-employees-screen.png";
-import miruManagingProjectsScreen from "../../../assets/images/miru-managing-projects-screen.png";
-import miruPaymentAndInvoicesScreen from "../../../assets/images/miru-payment-and-invoices-screen.png";
-import miruReportAndAnalysisScreen from "../../../assets/images/miru-report-and-analysis-screen.png";
-import miruTimeTrackingScreen from "../../../assets/images/miru-time-tracking-screen.png";
 import miruLogoWithText from "../../../assets/images/miruLogoWithText.svg";
 import MiruWhiteLogoWithText from "../../../assets/images/MiruWhiteLogowithText.svg";
 import mobile from "../../../assets/images/mobile-menu.svg";
@@ -213,6 +207,7 @@ export const UserIcon = User;
 export const ClockIcon = Clock;
 export const ReminderIcon = BellRinging;
 export const GoogleIcon = GoogleLogo;
+export const GithubIcon = GithubLogo;
 export const IntegrateIcon = Plugs;
 export const CakeIcon = Cake;
 export const MobileIcon = DeviceMobileCamera;
@@ -305,14 +300,7 @@ export const AccountsAgingHoverIcon = accountsAgingHoverIcon;
 export const Switcher = switcher;
 export const EmptyState = emptyState;
 export const NoSearchResultsState = noSearchResultsState;
-export const BlurredMiruLogo = blurredMiruLogo;
 export const TransparentMiruLogo = transparentMiruLogo;
-export const MiruTimeTrackingScreen = miruTimeTrackingScreen;
-export const MiruReportAndAnalysisScreen = miruReportAndAnalysisScreen;
-export const MiruPaymentAndInvoicesScreen = miruPaymentAndInvoicesScreen;
-export const MiruManagingProjectsScreen = miruManagingProjectsScreen;
-export const MiruManagingClientsScreen = miruManagingClientsScreen;
-export const MiruManagingEmployeesScreen = miruManagingEmployeesScreen;
 export const MoreOptionIcon = moreOption;
 export const GreenCheckCircleIcon = greenCheckCircleIcon;
 export const deleteImageIcon = deleteImage;

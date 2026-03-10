@@ -49,7 +49,7 @@ const TableRow = ({ timeoffEntry }) => {
       <td className="flex text-left text-base font-normal tracking-widest lg:w-1/4">
         {leaveDate}
       </td>
-      <td className="flex w-1/3 items-center whitespace-pre-wrap py-2.5 text-left text-base font-normal text-miru-dark-purple-1000 lg:w-4/12">
+      <td className="flex w-1/3 items-center whitespace-pre-wrap py-2.5 text-left text-base font-normal text-foreground lg:w-4/12">
         <div
           className="mr-2 hidden h-6 w-6 items-center justify-center rounded-full text-white lg:flex"
           style={{ backgroundColor: leaveColor?.value }}

@@ -51,14 +51,14 @@ const SelectProject = ({
     <div className="flex content-center justify-between rounded-md p-4 shadow-2xl">
       {/* Clients */}
       <select
-        className="h-8 w-80 rounded-sm bg-miru-gray-100"
+        className="h-8 w-80 rounded-sm bg-muted"
         id="client"
         name="client"
         value={client || "Client"}
         onChange={handleClientChange}
       >
         {!client && (
-          <option disabled className="text-miru-gray-100">
+          <option disabled className="text-muted-foreground">
             Client
           </option>
         )}
@@ -68,7 +68,7 @@ const SelectProject = ({
       </select>
       {/* Projects */}
       <select
-        className="h-8 w-80 rounded-sm bg-miru-gray-100"
+        className="h-8 w-80 rounded-sm bg-muted"
         id="project"
         name="project"
         value={project || "Project"}
@@ -78,7 +78,7 @@ const SelectProject = ({
         }}
       >
         {!project && (
-          <option disabled className="text-miru-gray-100">
+          <option disabled className="text-muted-foreground">
             Project
           </option>
         )}
@@ -91,7 +91,7 @@ const SelectProject = ({
           ))}
       </select>
       <Button
-        className="h-8 w-38 rounded border border-miru-han-purple-1000 bg-transparent py-1 px-6 text-xs font-bold tracking-widest text-miru-han-purple-600 hover:border-transparent hover:bg-miru-han-purple-1000 hover:text-white"
+        className="h-8 w-38 rounded border border-primary bg-transparent py-1 px-6 text-xs font-bold tracking-widest text-primary hover:border-transparent hover:bg-primary hover:text-white"
         style={BUTTON_STYLES.secondary}
         onClick={handleCancelButton}
       >
@@ -101,8 +101,8 @@ const SelectProject = ({
         style={BUTTON_STYLES.primary}
         className={`h-8 w-38 rounded border py-1 px-6 text-xs font-bold tracking-widest text-white ${
           client && project
-            ? "bg-miru-han-purple-1000 hover:border-transparent"
-            : "bg-miru-gray-1000"
+            ? "bg-primary hover:border-transparent"
+            : "bg-secondary"
         }`}
         onClick={handleSaveButton}
       >

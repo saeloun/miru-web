@@ -209,7 +209,11 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
         <div className="h-full border-r border-border bg-card">
           <div className="flex items-center justify-between border-b border-border p-4">
             <div className="flex items-center gap-3">
-              <img src={MiruLogoSVG} alt="Miru Agency OS" className="h-6 w-6" />
+              <img
+                src={MiruLogoSVG}
+                alt="Miru"
+                className="h-6 w-6 dark:invert"
+              />
               <span className="font-semibold text-foreground">Miru</span>
             </div>
             <button
@@ -225,7 +229,11 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
               isCollapsed={false}
               logo={
                 <div className="flex items-center gap-3">
-                  <img src={MiruLogoSVG} alt="Miru" className="h-6 w-6" />
+                  <img
+                    src={MiruLogoSVG}
+                    alt="Miru"
+                    className="h-6 w-6 dark:invert"
+                  />
                   <span className="font-semibold text-foreground">Miru</span>
                 </div>
               }
@@ -244,11 +252,14 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
               className="flex w-full items-center gap-3 rounded-lg p-2 transition-colors hover:bg-accent"
               title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
             >
-              <img src={MiruLogoSVG} alt="Miru" className="h-6 w-6" />
+              <img
+                src={MiruLogoSVG}
+                alt="Miru"
+                className="h-6 w-6 dark:invert"
+              />
               {!sidebarCollapsed && (
                 <div className="text-left">
                   <span className="font-semibold text-foreground">Miru</span>
-                  <div className="text-xs text-muted-foreground">Agency OS</div>
                 </div>
               )}
             </button>

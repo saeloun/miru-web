@@ -1,13 +1,13 @@
 import React from "react";
 import {
-  MoreHorizontal,
-  Send,
-  Download,
-  Eye,
-  Edit,
-  Trash2,
   Copy,
-} from "lucide-react";
+  DotsThree,
+  DownloadSimple,
+  Eye,
+  PaperPlaneTilt,
+  PencilSimple,
+  Trash,
+} from "@phosphor-icons/react";
 import { Card, CardContent, CardHeader } from "../ui/card";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
@@ -160,7 +160,7 @@ export const ModernInvoiceCard: React.FC<ModernInvoiceCardProps> = ({
           <DropdownMenu>
             <DropdownMenuTrigger asChild onClick={handleAction(() => {})}>
               <Button variant="ghost" size="icon" className="h-8 w-8">
-                <MoreHorizontal className="h-4 w-4" />
+                <DotsThree className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
@@ -172,13 +172,13 @@ export const ModernInvoiceCard: React.FC<ModernInvoiceCardProps> = ({
               )}
               {onEdit && invoice.status === "draft" && (
                 <DropdownMenuItem onClick={handleAction(() => onEdit(invoice))}>
-                  <Edit className="mr-2 h-4 w-4" />
+                  <PencilSimple className="mr-2 h-4 w-4" />
                   Edit
                 </DropdownMenuItem>
               )}
               {onSend && invoice.status === "draft" && (
                 <DropdownMenuItem onClick={handleAction(() => onSend(invoice))}>
-                  <Send className="mr-2 h-4 w-4" />
+                  <PaperPlaneTilt className="mr-2 h-4 w-4" />
                   Send
                 </DropdownMenuItem>
               )}
@@ -186,7 +186,7 @@ export const ModernInvoiceCard: React.FC<ModernInvoiceCardProps> = ({
                 <DropdownMenuItem
                   onClick={handleAction(() => onDownload(invoice))}
                 >
-                  <Download className="mr-2 h-4 w-4" />
+                  <DownloadSimple className="mr-2 h-4 w-4" />
                   Download
                 </DropdownMenuItem>
               )}
@@ -204,7 +204,7 @@ export const ModernInvoiceCard: React.FC<ModernInvoiceCardProps> = ({
                   onClick={handleAction(() => onDelete(invoice))}
                   className="text-red-600"
                 >
-                  <Trash2 className="mr-2 h-4 w-4" />
+                  <Trash className="mr-2 h-4 w-4" />
                   Delete
                 </DropdownMenuItem>
               )}
@@ -249,7 +249,7 @@ export const ModernInvoiceCard: React.FC<ModernInvoiceCardProps> = ({
           <DropdownMenu>
             <DropdownMenuTrigger asChild onClick={handleAction(() => {})}>
               <Button variant="ghost" size="icon">
-                <MoreHorizontal className="h-4 w-4" />
+                <DotsThree className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
@@ -261,13 +261,13 @@ export const ModernInvoiceCard: React.FC<ModernInvoiceCardProps> = ({
               )}
               {onEdit && invoice.status === "draft" && (
                 <DropdownMenuItem onClick={handleAction(() => onEdit(invoice))}>
-                  <Edit className="mr-2 h-4 w-4" />
+                  <PencilSimple className="mr-2 h-4 w-4" />
                   Edit Invoice
                 </DropdownMenuItem>
               )}
               {onSend && invoice.status === "draft" && (
                 <DropdownMenuItem onClick={handleAction(() => onSend(invoice))}>
-                  <Send className="mr-2 h-4 w-4" />
+                  <PaperPlaneTilt className="mr-2 h-4 w-4" />
                   Send Invoice
                 </DropdownMenuItem>
               )}
@@ -275,7 +275,7 @@ export const ModernInvoiceCard: React.FC<ModernInvoiceCardProps> = ({
                 <DropdownMenuItem
                   onClick={handleAction(() => onDownload(invoice))}
                 >
-                  <Download className="mr-2 h-4 w-4" />
+                  <DownloadSimple className="mr-2 h-4 w-4" />
                   Download PDF
                 </DropdownMenuItem>
               )}
@@ -332,7 +332,7 @@ export const ModernInvoiceCard: React.FC<ModernInvoiceCardProps> = ({
                     onClick={handleAction(() => onDelete(invoice))}
                     className="text-red-600 focus:text-red-600 focus:bg-red-50"
                   >
-                    <Trash2 className="mr-2 h-4 w-4" />
+                    <Trash className="mr-2 h-4 w-4" />
                     Delete Invoice
                   </DropdownMenuItem>
                 </>
@@ -382,7 +382,7 @@ export const ModernInvoiceCard: React.FC<ModernInvoiceCardProps> = ({
               size="sm"
               onClick={handleAction(() => onSend(invoice))}
             >
-              <Send className="mr-2 h-4 w-4" />
+              <PaperPlaneTilt className="mr-2 h-4 w-4" />
               Send Invoice
             </Button>
             {onEdit && (
@@ -391,7 +391,7 @@ export const ModernInvoiceCard: React.FC<ModernInvoiceCardProps> = ({
                 size="sm"
                 onClick={handleAction(() => onEdit(invoice))}
               >
-                <Edit className="mr-2 h-4 w-4" />
+                <PencilSimple className="mr-2 h-4 w-4" />
                 Edit
               </Button>
             )}

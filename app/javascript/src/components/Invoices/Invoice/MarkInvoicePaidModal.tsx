@@ -99,9 +99,9 @@ const MarkInvoiceAsPaidModal = ({
             <CustomInputText
               disabled
               id="invoice"
-              inputBoxClassName="form__input block w-full appearance-none bg-white p-4 text-base h-12 focus-within:border-miru-han-purple-1000 border-miru-gray-1000 cursor-not-allowed"
+              inputBoxClassName="form__input block w-full appearance-none bg-white p-4 text-base h-12 focus-within:border-primary border-border cursor-not-allowed"
               label="Invoice"
-              labelClassName="absolute top-0.5 left-1 h-6 z-1 origin-0 bg-white p-2 text-base font-medium duration-300 text-miru-dark-purple-200"
+              labelClassName="absolute top-0.5 left-1 h-6 z-1 origin-0 bg-white p-2 text-base font-medium duration-300 text-muted-foreground"
               name="invoice"
               type="text"
               value={client}
@@ -143,7 +143,7 @@ const MarkInvoiceAsPaidModal = ({
       <div className="relative mt-4">
         {isDesktop ? (
           <div className="field relative">
-            <label className="absolute -top-1 left-0 z-1 ml-3 origin-0 bg-white px-1 text-xsm font-medium text-miru-dark-purple-200 duration-300">
+            <label className="absolute -top-1 left-0 z-1 ml-3 origin-0 bg-white px-1 text-xsm font-medium text-muted-foreground duration-300">
               Transaction Type
             </label>
             <Select
@@ -165,7 +165,7 @@ const MarkInvoiceAsPaidModal = ({
         ) : (
           <>
             <div className="field relative">
-              <label className="absolute -top-1 left-0 z-1 ml-3 origin-0 bg-white px-1 text-xsm font-medium text-miru-dark-purple-200 duration-300">
+              <label className="absolute -top-1 left-0 z-1 ml-3 origin-0 bg-white px-1 text-xsm font-medium text-muted-foreground duration-300">
                 Transaction Type
               </label>
               <div
@@ -192,7 +192,7 @@ const MarkInvoiceAsPaidModal = ({
             >
               {transactionTypes.map((transaction, index) => (
                 <li
-                  className="flex items-center pb-5 font-sans text-sm font-normal capitalize leading-5 text-miru-dark-purple-1000 hover:bg-miru-gray-100"
+                  className="flex items-center pb-5 font-sans text-sm font-normal capitalize leading-5 text-foreground hover:bg-muted"
                   key={index}
                   onClick={() => {
                     if (transaction?.value) {
@@ -212,9 +212,9 @@ const MarkInvoiceAsPaidModal = ({
         <CustomInputText
           disabled
           id="paymentAmount"
-          inputBoxClassName="form__input block w-full appearance-none bg-white p-4 text-base h-12 focus-within:border-miru-han-purple-1000 border-miru-gray-1000 cursor-not-allowed"
+          inputBoxClassName="form__input block w-full appearance-none bg-white p-4 text-base h-12 focus-within:border-primary border-border cursor-not-allowed"
           label="Payment amount"
-          labelClassName="absolute top-0.5 left-1 h-6 z-1 origin-0 bg-white p-2 text-base font-medium duration-300 text-miru-dark-purple-200"
+          labelClassName="absolute top-0.5 left-1 h-6 z-1 origin-0 bg-white p-2 text-base font-medium duration-300 text-muted-foreground"
           name="paymentAmount"
           type="text"
           value={amount && baseCurrency && currencyFormat(baseCurrency, amount)}
@@ -235,7 +235,7 @@ const MarkInvoiceAsPaidModal = ({
       <div className="actions mx-auto mt-4 mb-4 w-full">
         {invoice && transactionDate && transactionType && amount ? (
           <Button
-            className="focus:outline-none flex h-10 w-full cursor-pointer items-center justify-center rounded border border-transparent bg-miru-han-purple-1000 py-1 px-4 font-sans text-base font-medium uppercase tracking-widest text-miru-white-1000 shadow-sm hover:bg-miru-han-purple-600"
+            className="focus:outline-none flex h-10 w-full cursor-pointer items-center justify-center rounded border border-transparent bg-primary py-1 px-4 font-sans text-base font-medium uppercase tracking-widest text-primary-foreground shadow-sm hover:bg-primary/90"
             disabled={isLoading}
             size="medium"
             type="submit"
@@ -249,7 +249,7 @@ const MarkInvoiceAsPaidModal = ({
         ) : (
           <Button
             disabled
-            className="focus:outline-none flex h-10 w-full cursor-not-allowed items-center justify-center rounded border border-transparent bg-miru-gray-1000 py-1 px-4 font-sans text-base font-medium uppercase tracking-widest text-miru-white-1000 shadow-sm"
+            className="focus:outline-none flex h-10 w-full cursor-not-allowed items-center justify-center rounded border border-transparent bg-secondary py-1 px-4 font-sans text-base font-medium uppercase tracking-widest text-primary-foreground shadow-sm"
             size="medium"
             type="submit"
           >

@@ -16,7 +16,7 @@ const Header = ({ invoiceNumber, id, updateInvoice }) => (
         <span className="ml-2 inline-block">CANCEL</span>
       </Link>
       <button
-        className="header__button w-full bg-miru-han-purple-1000 p-0 text-white hover:text-white sm:w-1/3"
+        className="header__button w-full bg-primary p-0 text-white hover:text-white sm:w-1/3"
         type="button"
         onClick={updateInvoice}
       >
@@ -24,7 +24,7 @@ const Header = ({ invoiceNumber, id, updateInvoice }) => (
         <span className="ml-2 inline-block">SAVE</span>
       </button>
       <button
-        className="header__button w-full bg-miru-han-purple-1000 p-0 text-white hover:text-white sm:w-1/3"
+        className="header__button w-full bg-primary p-0 text-white hover:text-white sm:w-1/3"
         type="button"
       >
         <PaperPlaneTiltIcon color="White" size={18} />

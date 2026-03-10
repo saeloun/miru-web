@@ -29,11 +29,11 @@ const MobileView = ({
   status,
 }: MobileViewProps) => (
   <>
-    <section className="flex h-12 w-full items-center justify-between bg-miru-white-1000 p-3 shadow-c1">
+    <section className="flex h-12 w-full items-center justify-between bg-background p-3 shadow-c1">
       <div className="flex items-center gap-3">
         <div>
           <button
-            className="outline-none border-none bg-transparent text-miru-dark-purple-1000"
+            className="outline-none border-none bg-transparent text-foreground"
             onClick={onBackArrowClick}
           >
             <ArrowLeftIcon color="#1D1A31" size={16} />
@@ -58,7 +58,7 @@ const MobileView = ({
           <Loader />
         ) : (
           status === PaymentSettingsStatus.SUCCESS && (
-            <div className="miru-gray-400 border-b pb-4">
+            <div className="border-b border-border pb-4">
               <div className="mt-5 w-fit">
                 <img height={34} src={StripeLogoSVG} width={72} />
               </div>
@@ -69,7 +69,7 @@ const MobileView = ({
               {isStripeConnected ? (
                 <div className="flex flex-row">
                   <button
-                    className="mt-4 flex w-full flex-row items-center justify-center rounded border border-miru-red-400 px-2 text-miru-red-400"
+                    className="mt-4 flex w-full flex-row items-center justify-center rounded border border-destructive px-2 text-destructive"
                     onClick={() => setShowDisconnectDialog(true)}
                   >
                     <div className="logo-container mr-1 py-2">

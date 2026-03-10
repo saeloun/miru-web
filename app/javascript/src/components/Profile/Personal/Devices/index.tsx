@@ -49,29 +49,18 @@ const AllocatedDevicesDetails = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         {isDesktop ? (
-          <div className="mb-8">
-            <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-3xl font-bold text-gray-900">
-                  Allocated Devices
-                </h1>
-                <p className="mt-1 text-gray-600">
-                  Manage and view all devices allocated to{" "}
-                  {isFromSettings ? "you" : "this team member"}
-                </p>
-              </div>
-              {devices.length > 0 && (
-                <button
-                  onClick={handleEdit}
-                  className="rounded-lg bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800 transition-colors"
-                >
-                  Edit Devices
-                </button>
-              )}
-            </div>
+          <div className="mb-6 flex justify-end">
+            {devices.length > 0 && (
+              <button
+                onClick={handleEdit}
+                className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+              >
+                Edit Devices
+              </button>
+            )}
           </div>
         ) : (
           <MobileEditHeader

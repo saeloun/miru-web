@@ -202,8 +202,8 @@ const Filters = ({
           placeholder="Search"
           type="text"
           value={filters.searchTerm}
-          className="focus:outline-none w-full rounded bg-miru-gray-100 p-2
-            text-sm font-medium focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
+          className="focus:outline-none w-full rounded bg-muted p-2
+            text-sm font-medium focus:border-border focus:ring-1 focus:ring-ring"
           onChange={e => setFilters({ ...filters, searchTerm: e.target.value })}
         />
         {filters.searchTerm ? (
@@ -246,7 +246,7 @@ const Filters = ({
             </SelectContent>
           </Select>
           {showCustomFilter && (
-            <div className="absolute z-20 mt-1 flex flex-col rounded-lg bg-miru-white-1000 shadow-c1">
+            <div className="absolute z-20 mt-1 flex flex-col rounded-lg bg-background shadow-c1">
               <CustomDateRangePicker
                 dateRange={dateRange}
                 handleSelectDate={handleSelectDate}
@@ -254,7 +254,7 @@ const Filters = ({
                 selectedInput={selectedInput}
                 onClickInput={onClickInput}
               />
-              <div className="flex h-full items-end justify-center bg-miru-white-1000 p-6 ">
+              <div className="flex h-full items-end justify-center bg-background p-6 ">
                 <button
                   className="sidebar__reset"
                   onClick={resetCustomDatePicker}
@@ -280,10 +280,8 @@ const Filters = ({
       <div className="flex w-full items-center justify-between px-2 lg:w-2/12 lg:py-0">
         <button
           disabled={!isResetActive}
-          className={`text-base lg:hover:text-miru-han-purple-1000 ${
-            isResetActive
-              ? "text-miru-han-purple-1000"
-              : "text-miru-han-purple-100"
+          className={`text-base lg:hover:text-primary ${
+            isResetActive ? "text-primary" : "text-muted-foreground"
           }`}
           onClick={handleReset}
         >
@@ -291,10 +289,8 @@ const Filters = ({
         </button>
         <button
           disabled={!isResetActive}
-          className={`text-base lg:hover:text-miru-han-purple-1000 ${
-            isResetActive
-              ? "text-miru-han-purple-1000"
-              : "text-miru-han-purple-100"
+          className={`text-base lg:hover:text-primary ${
+            isResetActive ? "text-primary" : "text-muted-foreground"
           }`}
           onClick={handleApply}
         >

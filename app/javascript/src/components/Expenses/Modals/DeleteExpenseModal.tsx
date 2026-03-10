@@ -46,7 +46,7 @@ const DeleteExpenseModal = ({
           CANCEL
         </Button>
         <Button
-          className="ml-2 w-1/2 bg-miru-red-400 xsm:text-white"
+          className="ml-2 w-1/2 bg-destructive xsm:text-white"
           size="medium"
           style="ternary"
           onClick={handleDeleteExpense}

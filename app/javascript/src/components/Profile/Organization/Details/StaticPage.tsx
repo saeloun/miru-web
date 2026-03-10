@@ -61,7 +61,7 @@ const StaticPage = ({
   <div className="mt-4 space-y-6 px-4 md:px-10 lg:px-0">
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center text-base font-bold text-miru-dark-purple-1000">
+        <CardTitle className="flex items-center text-base font-bold text-foreground">
           <InfoIcon className="mr-2" color="#1D1A31" size={16} weight="bold" />
           Basic Details
         </CardTitle>
@@ -72,7 +72,7 @@ const StaticPage = ({
             <Avatar
               classNameImg="h-full min-w-full"
               classNameInitials="text-2xl font-semibold capitalize text-white"
-              classNameInitialsWrapper="bg-miru-gray-1000"
+              classNameInitialsWrapper="bg-secondary"
               initialsLetterCount={1}
               name={companyName}
               size="h-20 w-20 lg:h-24 lg:w-24"
@@ -81,10 +81,10 @@ const StaticPage = ({
           </div>
           <div className="flex-1">
             <div className="space-y-1">
-              <span className="text-sm font-semibold text-miru-dark-purple-600">
+              <span className="text-sm font-semibold text-muted-foreground">
                 Company Name
               </span>
-              <p className="text-base font-medium text-miru-dark-purple-1000">
+              <p className="text-base font-medium text-foreground">
                 {companyName}
               </p>
             </div>
@@ -94,17 +94,17 @@ const StaticPage = ({
     </Card>
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center text-base font-bold text-miru-dark-purple-1000">
+        <CardTitle className="flex items-center text-base font-bold text-foreground">
           <PhoneIcon className="mr-2" color="#1D1A31" size={16} weight="bold" />
           Contact Details
         </CardTitle>
       </CardHeader>
       <CardContent>
         <div className="space-y-1">
-          <span className="text-sm font-semibold text-miru-dark-purple-600">
+          <span className="text-sm font-semibold text-muted-foreground">
             Business Phone
           </span>
-          <p className="text-base font-medium text-miru-dark-purple-1000">
+          <p className="text-base font-medium text-foreground">
             {companyPhone || "-"}
           </p>
         </div>
@@ -112,7 +112,7 @@ const StaticPage = ({
     </Card>
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center text-base font-bold text-miru-dark-purple-1000">
+        <CardTitle className="flex items-center text-base font-bold text-foreground">
           <MapPinIcon
             className="mr-2"
             color="#1D1A31"
@@ -124,10 +124,10 @@ const StaticPage = ({
       </CardHeader>
       <CardContent>
         <div className="space-y-1">
-          <span className="text-sm font-semibold text-miru-dark-purple-600">
+          <span className="text-sm font-semibold text-muted-foreground">
             Address
           </span>
-          <p className="text-base font-medium text-miru-dark-purple-1000">
+          <p className="text-base font-medium text-foreground">
             {companyAddr || "-"}
           </p>
         </div>
@@ -135,7 +135,7 @@ const StaticPage = ({
     </Card>
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center text-base font-bold text-miru-dark-purple-1000">
+        <CardTitle className="flex items-center text-base font-bold text-foreground">
           <MoneyIcon className="mr-2" color="#1D1A31" size={16} weight="bold" />
           Currency and Standard Rate
         </CardTitle>
@@ -143,18 +143,18 @@ const StaticPage = ({
       <CardContent>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div className="space-y-1">
-            <span className="text-sm font-semibold text-miru-dark-purple-600">
+            <span className="text-sm font-semibold text-muted-foreground">
               Base Currency
             </span>
-            <p className="text-base font-medium text-miru-dark-purple-1000">
+            <p className="text-base font-medium text-foreground">
               {companyCurrency || "-"}
             </p>
           </div>
           <div className="space-y-1">
-            <span className="text-sm font-semibold text-miru-dark-purple-600">
+            <span className="text-sm font-semibold text-muted-foreground">
               Standard Rate
             </span>
-            <p className="text-base font-medium text-miru-dark-purple-1000">
+            <p className="text-base font-medium text-foreground">
               {companyRate || "-"}
             </p>
           </div>
@@ -163,7 +163,7 @@ const StaticPage = ({
     </Card>
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center text-base font-bold text-miru-dark-purple-1000">
+        <CardTitle className="flex items-center text-base font-bold text-foreground">
           <CalendarIcon
             className="mr-2"
             color="#1D1A31"
@@ -176,26 +176,26 @@ const StaticPage = ({
       <CardContent>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div className="space-y-1">
-            <span className="text-sm font-semibold text-miru-dark-purple-600">
+            <span className="text-sm font-semibold text-muted-foreground">
               Timezone
             </span>
-            <p className="text-base font-medium text-miru-dark-purple-1000">
+            <p className="text-base font-medium text-foreground">
               {companyTimezone || "-"}
             </p>
           </div>
           <div className="space-y-1">
-            <span className="text-sm font-semibold text-miru-dark-purple-600">
+            <span className="text-sm font-semibold text-muted-foreground">
               Date Format
             </span>
-            <p className="text-base font-medium text-miru-dark-purple-1000">
+            <p className="text-base font-medium text-foreground">
               {companyDateFormat || "-"}
             </p>
           </div>
           <div className="space-y-1">
-            <span className="text-sm font-semibold text-miru-dark-purple-600">
+            <span className="text-sm font-semibold text-muted-foreground">
               Fiscal Year End
             </span>
-            <p className="text-base font-medium text-miru-dark-purple-1000">
+            <p className="text-base font-medium text-foreground">
               {getFilterValue(companyFiscalYear) || "-"}
             </p>
           </div>
@@ -204,7 +204,7 @@ const StaticPage = ({
     </Card>
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center text-base font-bold text-miru-dark-purple-1000">
+        <CardTitle className="flex items-center text-base font-bold text-foreground">
           <ClockIcon className="mr-2" color="#1D1A31" size={16} weight="bold" />
           Working Days & Hours
         </CardTitle>
@@ -212,18 +212,18 @@ const StaticPage = ({
       <CardContent>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div className="space-y-1">
-            <span className="text-sm font-semibold text-miru-dark-purple-600">
+            <span className="text-sm font-semibold text-muted-foreground">
               Weekly Working Days
             </span>
-            <p className="text-base font-medium text-miru-dark-purple-1000">
+            <p className="text-base font-medium text-foreground">
               {companyWorkingDays || "-"}
             </p>
           </div>
           <div className="space-y-1">
-            <span className="text-sm font-semibold text-miru-dark-purple-600">
+            <span className="text-sm font-semibold text-muted-foreground">
               Weekly Working Hours
             </span>
-            <p className="text-base font-medium text-miru-dark-purple-1000">
+            <p className="text-base font-medium text-foreground">
               {companyWorkingHours || "-"}
             </p>
           </div>

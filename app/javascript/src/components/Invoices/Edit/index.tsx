@@ -243,7 +243,7 @@ const EditInvoice = () => {
               setInvoiceToDelete(invoiceDetails.id);
             }}
           />
-          <div className="m-0 mt-5 mb-10 w-full bg-miru-gray-100 p-0">
+          <div className="m-0 mt-5 mb-10 w-full bg-muted p-0">
             <CompanyInfo company={invoiceDetails.company} />
             <InvoiceDetails
               optionSelected

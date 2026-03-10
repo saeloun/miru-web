@@ -52,21 +52,17 @@ const ProjectDetailsForm = ({
             navigate("/projects");
           }}
         >
-          <ArrowLeftIcon
-            className="text-miru-dark-purple-1000"
-            size={16}
-            weight="bold"
-          />
+          <ArrowLeftIcon className="text-foreground" size={16} weight="bold" />
         </Button>
         <div className="flex w-full py-3">
-          <h2 className="mr-3 text-base font-medium text-miru-dark-purple-1000">
+          <h2 className="mr-3 text-base font-medium text-foreground">
             {project?.name}
           </h2>
           {project?.is_billable && (
             <Badge
-              bgColor="bg-miru-han-purple-100"
+              bgColor="bg-accent"
               className="uppercase"
-              color="text-miru-han-purple-1000"
+              color="text-primary"
               text="billable"
             />
           )}
@@ -77,7 +73,7 @@ const ProjectDetailsForm = ({
           onClick={() => setIsHeaderMenuVisible(true)}
         >
           <DotsThreeVerticalIcon
-            className="text-miru-dark-purple-1000"
+            className="text-foreground"
             size={16}
             weight="bold"
           />
@@ -103,28 +99,28 @@ const ProjectDetailsForm = ({
           <div>
             {project && (
               <SummaryDashboard
-                bgColor="bg-miru-gray-100"
-                borderColor="border-miru-gray-200"
+                bgColor="bg-muted"
+                borderColor="border-border"
                 currency={project.overdueOutstandingAmount.currency}
                 summaryList={summaryList}
-                textColor="text-miru-dark-purple-1000"
+                textColor="text-foreground"
               />
             )}
             {project && (
               <table className="w-full">
                 <thead>
                   <tr>
-                    <th className="w-1/4 py-3 text-left text-xs font-medium leading-4 tracking-widest text-miru-dark-purple-600">
+                    <th className="w-1/4 py-3 text-left text-xs font-medium leading-4 tracking-widest text-muted-foreground">
                       TEAM <br />
                       MEMBER
                     </th>
-                    <th className="py-3 text-right text-xs font-medium leading-4 tracking-widest text-miru-dark-purple-600">
+                    <th className="py-3 text-right text-xs font-medium leading-4 tracking-widest text-muted-foreground">
                       HOURLY <br /> RATE
                     </th>
-                    <th className="py-3 text-right text-xs font-medium leading-4 tracking-widest text-miru-dark-purple-600">
+                    <th className="py-3 text-right text-xs font-medium leading-4 tracking-widest text-muted-foreground">
                       HOURS <br /> LOGGED
                     </th>
-                    <th className="self-end py-3 text-right text-xs font-medium leading-4 tracking-widest text-miru-dark-purple-600">
+                    <th className="self-end py-3 text-right text-xs font-medium leading-4 tracking-widest text-muted-foreground">
                       COST
                     </th>
                   </tr>
@@ -133,16 +129,16 @@ const ProjectDetailsForm = ({
                   {project.members &&
                     project.members.map(member => (
                       <tr key={member.id}>
-                        <td className="py-3 text-left text-sm font-medium leading-5 text-miru-dark-purple-1000">
+                        <td className="py-3 text-left text-sm font-medium leading-5 text-foreground">
                           {member.name}
                         </td>
-                        <td className="py-3 text-right text-sm font-medium leading-5 text-miru-dark-purple-1000">
+                        <td className="py-3 text-right text-sm font-medium leading-5 text-foreground">
                           {currencyFormat(project.currency, member.hourlyRate)}
                         </td>
-                        <td className="py-3 text-right text-sm font-medium leading-5 text-miru-dark-purple-1000">
+                        <td className="py-3 text-right text-sm font-medium leading-5 text-foreground">
                           {minToHHMM(member.minutes)}
                         </td>
-                        <td className="py-3 text-right text-sm font-medium leading-5 text-miru-dark-purple-1000">
+                        <td className="py-3 text-right text-sm font-medium leading-5 text-foreground">
                           {currencyFormat(project.currency, member.cost)}
                         </td>
                       </tr>

@@ -134,11 +134,11 @@ const ClientSelection = ({
             isOptionSelected &&
             selectedClient && (
               <div className="h-full overflow-y-auto">
-                <p className="text-base font-bold text-miru-dark-purple-1000">
+                <p className="text-base font-bold text-foreground">
                   {selectedClient.name}
                 </p>
                 {selectedClient?.address ? (
-                  <p className="w-full text-sm font-normal text-miru-dark-purple-600 lg:w-52">
+                  <p className="w-full text-sm font-normal text-muted-foreground lg:w-52">
                     {`${address_line_1}${
                       address_line_2 ? `, ${address_line_2}` : ""
                     }
@@ -162,7 +162,7 @@ const ClientSelection = ({
               defaultMenuIsOpen
               isSearchable
               className="client-select m-0 mt-2  w-full text-white"
-              classNamePrefix="m-0 truncate font-medium text-sm text-miru-dark-purple-1000 bg-white"
+              classNamePrefix="m-0 truncate font-medium text-sm text-foreground bg-white"
               components={{ DropdownIndicator, IndicatorSeparator: () => null }}
               defaultValue={null}
               inputId="clientSelect"

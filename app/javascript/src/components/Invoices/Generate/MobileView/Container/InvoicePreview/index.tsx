@@ -52,7 +52,7 @@ const InvoicePreviewContainer = ({
           invoiceDetails?.company?.dateFormat
         }
       />
-      <div className="border-b border-miru-gray-400 px-4 py-2">
+      <div className="border-b border-border px-4 py-2">
         <LineItems
           currency={currency || companyDetails.currency}
           isInvoicePreviewCall={isInvoicePreviewCall}
@@ -67,7 +67,7 @@ const InvoicePreviewContainer = ({
           }
         />
         <div
-          className="mt-2 flex w-full items-center justify-center px-4 py-3 text-miru-han-purple-1000 sm:px-12"
+          className="mt-2 flex w-full items-center justify-center px-4 py-3 text-primary sm:px-12"
           onClick={() => {
             setActiveSection(sections.generateInvoice);
           }}

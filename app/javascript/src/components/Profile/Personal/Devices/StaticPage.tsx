@@ -30,25 +30,25 @@ const StaticPage = ({ devices }) => {
     return (
       <Card
         key={index}
-        className="border-gray-200 shadow-sm hover:shadow-md transition-shadow"
+        className="border-border shadow-sm transition-shadow hover:shadow-md"
       >
         <CardHeader className="pb-4">
           <div className="flex items-center justify-between">
-            <CardTitle className="flex items-center gap-3 text-lg font-semibold text-gray-900">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100">
+            <CardTitle className="flex items-center gap-3 text-lg font-semibold text-foreground">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-muted-foreground">
                 {getDeviceIcon(device_type)}
               </div>
               <div>
                 <div className="text-lg font-semibold">
                   {name || `Device ${index + 1}`}
                 </div>
-                <div className="text-sm font-normal text-gray-500">
+                <div className="text-sm font-normal text-muted-foreground">
                   {device_type || "Unknown Device"}
                 </div>
               </div>
             </CardTitle>
             {device_type && (
-              <Badge variant="outline" className="text-gray-600">
+              <Badge variant="outline" className="text-muted-foreground">
                 {device_type}
               </Badge>
             )}
@@ -57,35 +57,35 @@ const StaticPage = ({ devices }) => {
         <CardContent>
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             <div>
-              <label className="text-xs font-medium uppercase tracking-wider text-gray-500">
+              <label className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
                 Serial Number
               </label>
-              <p className="mt-1 text-sm font-medium text-gray-900">
+              <p className="mt-1 text-sm font-medium text-foreground">
                 {serial_number || "Not specified"}
               </p>
             </div>
             <div>
-              <label className="text-xs font-medium uppercase tracking-wider text-gray-500">
+              <label className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
                 Memory (RAM)
               </label>
-              <p className="mt-1 text-sm font-medium text-gray-900">
+              <p className="mt-1 text-sm font-medium text-foreground">
                 {ram || "Not specified"}
               </p>
             </div>
             <div>
-              <label className="text-xs font-medium uppercase tracking-wider text-gray-500">
+              <label className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
                 Processor
               </label>
-              <p className="mt-1 text-sm font-medium text-gray-900">
+              <p className="mt-1 text-sm font-medium text-foreground">
                 {processor || "Not specified"}
               </p>
             </div>
             {graphics && (
               <div className="md:col-span-2 lg:col-span-3">
-                <label className="text-xs font-medium uppercase tracking-wider text-gray-500">
+                <label className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
                   Graphics
                 </label>
-                <p className="mt-1 text-sm font-medium text-gray-900">
+                <p className="mt-1 text-sm font-medium text-foreground">
                   {graphics}
                 </p>
               </div>

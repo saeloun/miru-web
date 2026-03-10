@@ -32,10 +32,10 @@ const SearchDataRow = ({
 
   return (
     <div
-      className="group flex cursor-pointer items-center py-2 last:border-b-0 hover:bg-miru-gray-100"
+      className="group flex cursor-pointer items-center py-2 last:border-b-0 hover:bg-muted"
       onClick={handleClick}
     >
-      <p className="w-5/12 whitespace-nowrap pl-3 pr-6 text-base font-normal tracking-wider text-miru-dark-purple-1000">
+      <p className="w-5/12 whitespace-nowrap pl-3 pr-6 text-base font-normal tracking-wider text-foreground">
         {displayText}
       </p>
     </div>

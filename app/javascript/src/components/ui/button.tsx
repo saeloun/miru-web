@@ -4,19 +4,17 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "../../lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-miru-han-purple-600 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+  "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
-        default:
-          "bg-miru-han-purple-1000 text-white hover:bg-miru-han-purple-900",
+        default: "bg-primary text-primary-foreground hover:bg-primary/90",
         destructive: "bg-red-500 text-white hover:bg-red-600",
         outline:
-          "border border-miru-gray-400 bg-white hover:bg-miru-gray-100 hover:text-miru-dark-purple-1000",
-        secondary:
-          "bg-miru-gray-100 text-miru-dark-purple-1000 hover:bg-miru-gray-200",
-        ghost: "hover:bg-miru-gray-100 hover:text-miru-dark-purple-1000",
-        link: "text-miru-han-purple-1000 underline-offset-4 hover:underline",
+          "border border-border bg-white hover:bg-muted hover:text-foreground",
+        secondary: "bg-muted text-foreground hover:bg-secondary",
+        ghost: "hover:bg-muted hover:text-foreground",
+        link: "text-primary underline-offset-4 hover:underline",
       },
       size: {
         default: "h-10 px-4 py-2",
