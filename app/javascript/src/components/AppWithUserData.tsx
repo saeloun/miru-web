@@ -4,30 +4,31 @@ import UserContext from "../context/UserContext";
 import Loader from "../common/Loader/index";
 import Main from "./Main";
 
+const AUTH_PATH_PREFIXES = [
+  "/user/sign_in",
+  "/login",
+  "/signup",
+  "/password/new",
+  "/password/edit",
+  "/email_confirmation",
+];
+
+const isAuthPagePath = (pathname: string) =>
+  AUTH_PATH_PREFIXES.some(path => pathname.startsWith(path));
+
 const AppWithUserData = (props: any) => {
+  const isAuthPage = isAuthPagePath(window.location.pathname);
   const [userData, setUserData] = useState({
     user: null,
     company: null,
     companyRole: null,
-    loading: true,
+    loading: !isAuthPage,
   });
 
   // Fetch user details from _me endpoint on mount
   useEffect(() => {
     const fetchUserDetails = async () => {
       // Skip fetching if we're on an auth page
-      const authPaths = [
-        "/user/sign_in",
-        "/signup",
-        "/password/new",
-        "/password/edit",
-        "/email_confirmation",
-      ];
-
-      const isAuthPage = authPaths.some(path =>
-        window.location.pathname.startsWith(path)
-      );
-
       if (isAuthPage) {
         // On auth pages, don't fetch user data
         setUserData({
