@@ -536,14 +536,12 @@ const ExpensesTable: React.FC = () => {
   const personalAmount = data?.personalAmount || 0;
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
+    <div className="min-h-screen bg-background">
+      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <div className="mb-8">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div>
-              <h1 className="text-2xl font-semibold text-gray-900">Expenses</h1>
-              <p className="text-sm text-gray-600 mt-1">
+              <p className="mt-1 text-sm text-muted-foreground">
                 Track and manage your business expenses
               </p>
             </div>
@@ -556,57 +554,61 @@ const ExpensesTable: React.FC = () => {
 
         {/* Stats Cards */}
         <div className="grid gap-4 md:grid-cols-4 mb-6">
-          <Card className="border-0 shadow-sm">
+          <Card className="border-border shadow-sm">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-gray-700">
+              <CardTitle className="text-sm font-medium text-muted-foreground">
                 Total Expenses
               </CardTitle>
-              <CurrencyDollar size={20} className="text-gray-400" />
+              <CurrencyDollar size={20} className="text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-semibold text-gray-900">
+              <div className="text-2xl font-semibold text-foreground">
                 {currencyFormat(baseCurrency, totalAmount)}
               </div>
-              <p className="text-xs text-gray-500 mt-1">All time</p>
+              <p className="mt-1 text-xs text-muted-foreground">All time</p>
             </CardContent>
           </Card>
 
-          <Card className="border-0 shadow-sm">
+          <Card className="border-border shadow-sm">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-gray-700">
+              <CardTitle className="text-sm font-medium text-muted-foreground">
                 Business
               </CardTitle>
               <CheckCircle size={20} className="text-green-600" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-semibold text-gray-900">
+              <div className="text-2xl font-semibold text-foreground">
                 {currencyFormat(baseCurrency, businessAmount)}
               </div>
-              <p className="text-xs text-gray-500 mt-1">Business expenses</p>
+              <p className="mt-1 text-xs text-muted-foreground">
+                Business expenses
+              </p>
             </CardContent>
           </Card>
 
-          <Card className="border-0 shadow-sm">
+          <Card className="border-border shadow-sm">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-gray-700">
+              <CardTitle className="text-sm font-medium text-muted-foreground">
                 Personal
               </CardTitle>
-              <XCircle size={20} className="text-gray-500" />
+              <XCircle size={20} className="text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-semibold text-gray-900">
+              <div className="text-2xl font-semibold text-foreground">
                 {currencyFormat(baseCurrency, personalAmount)}
               </div>
-              <p className="text-xs text-gray-500 mt-1">Personal expenses</p>
+              <p className="mt-1 text-xs text-muted-foreground">
+                Personal expenses
+              </p>
             </CardContent>
           </Card>
 
-          <Card className="border-0 shadow-sm">
+          <Card className="border-border shadow-sm">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-gray-700">
+              <CardTitle className="text-sm font-medium text-muted-foreground">
                 This Month
               </CardTitle>
-              <Calendar size={20} className="text-gray-400" />
+              <Calendar size={20} className="text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-semibold text-gray-900">
