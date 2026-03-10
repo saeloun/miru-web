@@ -6,7 +6,8 @@ RSpec.describe "Api::V1::Expense#update", type: :request do
   let(:company) { create(:company) }
   let(:expense_category) { create(:expense_category, company:) }
   let(:vendor) { create(:vendor, company:) }
-  let(:expense) { create(:expense, company:, expense_category:, vendor:) }
+  let(:expense) { create(:expense, company:, expense_category:, vendor:, user: admin) }
+  let(:employee_expense) { create(:expense, company:, expense_category:, vendor:, user: employee) }
 
   let(:book_keeper) { create(:user, current_workspace_id: company.id) }
   let(:admin) { create(:user, current_workspace_id: company.id) }
@@ -51,22 +52,30 @@ RSpec.describe "Api::V1::Expense#update", type: :request do
   context "when the user is an employee" do
     before do
       sign_in employee
-      send_request :patch, api_v1_expense_path(expense), params: { expense: {} }, headers: auth_headers(employee)
+      send_request :patch,
+        api_v1_expense_path(employee_expense),
+        params: { expense: { description: "Updated reimbursement" } },
+        headers: auth_headers(employee)
     end
 
-    it "is not permitted to update an expense" do
-      expect(response).to have_http_status(:forbidden)
+    it "is permitted to update their own expense" do
+      expect(response).to have_http_status(:ok)
+      employee_expense.reload
+      expect(employee_expense.description).to eq("Updated reimbursement")
     end
   end
 
   context "when the user is a book keeper" do
     before do
       sign_in book_keeper
-      send_request :patch, api_v1_expense_path(expense), params: { expense: {} }, headers: auth_headers(book_keeper)
+      send_request :patch,
+        api_v1_expense_path(expense),
+        params: { expense: { description: "Bookkeeper review" } },
+        headers: auth_headers(book_keeper)
     end
 
-    it "is not permitted to update an expense" do
-      expect(response).to have_http_status(:forbidden)
+    it "is permitted to update an expense" do
+      expect(response).to have_http_status(:ok)
     end
   end
 

@@ -8,8 +8,8 @@ RSpec.describe "Api::V1::Expense#index", type: :request do
   let_it_be(:expense_category_2) { create(:expense_category, company:) }
 
   let_it_be(:vendor) { create(:vendor, company:) }
-  let_it_be(:expense1) { create(:expense, company:, expense_category:, vendor:) }
-  let_it_be(:expense2) { create(:expense, company:, expense_category: expense_category_2) }
+  let_it_be(:expense1) { create(:expense, company:, expense_category:, vendor:, user: admin) }
+  let_it_be(:expense2) { create(:expense, company:, expense_category: expense_category_2, user: employee) }
 
   let_it_be(:book_keeper) { create(:user, current_workspace_id: company.id) }
   let_it_be(:admin) { create(:user, current_workspace_id: company.id) }
@@ -80,13 +80,21 @@ RSpec.describe "Api::V1::Expense#index", type: :request do
   end
 
   context "when the user is an employee" do
+    let!(:employee_expense) { create(:expense, company:, expense_category: expense_category_2, user: employee) }
+
     before do
       sign_in employee
+      expense1
+      employee_expense
       send_request :get, api_v1_expenses_path
     end
 
-    it "is not be permitted to view a expenses" do
-      expect(response).to have_http_status(:forbidden)
+    it "returns success" do
+      expect(response).to have_http_status(:ok)
+    end
+
+    it "returns only the employee's submitted expenses" do
+      expect(json_response["expenses"].pluck("id")).to eq([employee_expense.id])
     end
   end
 
@@ -96,8 +104,8 @@ RSpec.describe "Api::V1::Expense#index", type: :request do
       send_request :get, api_v1_expenses_path
     end
 
-    it "is not be permitted to view expenses" do
-      expect(response).to have_http_status(:forbidden)
+    it "is permitted to view expenses" do
+      expect(response).to have_http_status(:ok)
     end
   end
 

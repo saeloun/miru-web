@@ -107,6 +107,17 @@ RSpec.describe "Expenses CRUD", type: :system, js: true do
 
   context "when employee views expenses" do
     let(:employee) { create(:user, current_workspace_id: company.id) }
+    let!(:employee_expense) do
+      create(:expense,
+        company:,
+        user: employee,
+        expense_category: category,
+        vendor:,
+        amount: 42.50,
+        expense_type: :business,
+        description: "Mileage reimbursement",
+        date: Date.current)
+    end
 
     before do
       create(:employment, company:, user: employee)
@@ -115,13 +126,14 @@ RSpec.describe "Expenses CRUD", type: :system, js: true do
       sign_in(employee)
     end
 
-    it "redirects the employee away from expenses" do
+    it "shows the employee their own submitted expenses" do
       with_forgery_protection do
         visit "/expenses"
 
         expect(page).to have_css("#react-root", wait: 10)
-        expect(page).to have_current_path("/time-tracking", wait: 10)
-        expect(page).not_to have_content("Expenses", wait: 5)
+        expect(page).to have_current_path("/expenses", wait: 10)
+        expect(page).to have_content("Mileage reimbursement", wait: 10)
+        expect(page).to have_content("Add Expense", wait: 10)
       end
     end
   end
