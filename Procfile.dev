@@ -1,3 +1,3 @@
-web: bin/rails s -b 0.0.0.0 -p 3000
+web: EMAIL_DELIVERY_METHOD=${EMAIL_DELIVERY_METHOD:-letter_opener_web} bin/rails s -b 0.0.0.0 -p 3000
 vite: bin/vite dev
-solidqueue: bundle exec rake solid_queue:start
+solidqueue: EMAIL_DELIVERY_METHOD=${EMAIL_DELIVERY_METHOD:-letter_opener_web} bundle exec rake solid_queue:start

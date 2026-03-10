@@ -51,7 +51,5 @@ RSpec.describe Expense, type: :model do
 
   describe "Associations" do
     it { is_expected.to belong_to(:company) }
-    it { is_expected.to belong_to(:expense_category).optional }
-    it { is_expected.to belong_to(:vendor).optional }
   end
 end

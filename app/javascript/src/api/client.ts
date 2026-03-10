@@ -191,9 +191,6 @@ export const api = {
     create: (data: any) => apiClient.post("/expenses", data),
     update: (id: string, data: any) => apiClient.patch(`/expenses/${id}`, data),
     delete: (id: string) => apiClient.delete(`/expenses/${id}`),
-    categories: {
-      create: (data: any) => apiClient.post("/expense_categories", data),
-    },
   },
 
   // Reports
@@ -307,11 +304,6 @@ export const api = {
     update: (id: string, data: any) =>
       apiClient.patch(`/timeoff_entries/${id}`, data),
     delete: (id: string) => apiClient.delete(`/timeoff_entries/${id}`),
-  },
-
-  // Vendors
-  vendors: {
-    create: (data: any) => apiClient.post("/vendors", data),
   },
 
   // Timezones

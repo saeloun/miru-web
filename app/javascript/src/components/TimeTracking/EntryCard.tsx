@@ -47,10 +47,10 @@ const EntryCard: React.FC<props> = ({
   return (
     <Card
       className={cn(
-        "mb-4 transition-all duration-200 hover:shadow-lg group relative overflow-hidden",
-        "bg-white border-slate-200 hover:border-blue-400",
+        "group relative mb-4 overflow-hidden transition-all duration-200 hover:shadow-lg",
+        "border-border bg-card hover:border-primary/60",
         !isDesktop && "cursor-pointer active:scale-[0.99]",
-        "before:absolute before:left-0 before:top-0 before:h-full before:w-1 before:bg-blue-500 before:opacity-0 before:transition-opacity hover:before:opacity-100"
+        "before:absolute before:left-0 before:top-0 before:h-full before:w-1 before:bg-primary before:opacity-0 before:transition-opacity hover:before:opacity-100"
       )}
       onClick={handleCardClick}
     >
@@ -61,16 +61,16 @@ const EntryCard: React.FC<props> = ({
             <div className="flex items-start justify-between">
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-2">
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-100 to-blue-50 flex items-center justify-center shadow-sm">
-                    <Briefcase className="w-6 h-6 text-blue-600" />
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 shadow-sm">
+                    <Briefcase className="h-6 w-6 text-primary" />
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="text-base font-bold text-slate-900">
+                      <span className="text-base font-bold text-foreground">
                         {client}
                       </span>
-                      <span className="text-slate-300">|</span>
-                      <span className="text-base font-medium text-slate-700">
+                      <span className="text-border">|</span>
+                      <span className="text-base font-medium text-muted-foreground">
                         {project}
                       </span>
                     </div>
@@ -80,10 +80,10 @@ const EntryCard: React.FC<props> = ({
 
               <div className="lg:hidden">
                 <div className="text-right">
-                  <div className="text-2xl font-bold text-slate-900 tabular-nums">
+                  <div className="text-2xl font-bold text-foreground tabular-nums">
                     {minToHHMM(duration)}
                   </div>
-                  <div className="text-xs text-slate-500 uppercase tracking-wider">
+                  <div className="text-xs uppercase tracking-wider text-muted-foreground">
                     hours
                   </div>
                 </div>
@@ -93,28 +93,26 @@ const EntryCard: React.FC<props> = ({
             {/* Note Section with Better Typography */}
             {note && (
               <div className="relative">
-                <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-blue-200 to-transparent rounded-full"></div>
+                <div className="absolute bottom-0 left-0 top-0 w-1 rounded-full bg-gradient-to-b from-primary/40 to-transparent"></div>
                 <div className="pl-6">
-                  <p className="text-base leading-relaxed text-slate-700 whitespace-pre-wrap max-w-4xl">
+                  <p className="max-w-4xl whitespace-pre-wrap text-base leading-relaxed text-muted-foreground">
                     {note.split("\n").map((line, index) => {
-                      // Check if line starts with bullet point
                       if (line.trim().startsWith("•")) {
                         return (
                           <span key={index} className="block mb-2 pl-4">
-                            <span className="text-blue-500 mr-3 -ml-4">▸</span>
-                            <span className="text-slate-600 text-sm">
+                            <span className="mr-3 -ml-4 text-primary">▸</span>
+                            <span className="text-sm text-muted-foreground">
                               {line.replace("•", "").trim()}
                             </span>
                           </span>
                         );
                       }
 
-                      // Bold the first line (title)
                       if (index === 0) {
                         return (
                           <span
                             key={index}
-                            className="block font-bold text-lg text-slate-900 mb-3"
+                            className="mb-3 block text-lg font-bold text-foreground"
                           >
                             {line}
                           </span>
@@ -124,7 +122,7 @@ const EntryCard: React.FC<props> = ({
                       return (
                         <span
                           key={index}
-                          className="block mb-1.5 text-slate-600 leading-relaxed"
+                          className="mb-1.5 block leading-relaxed text-muted-foreground"
                         >
                           {line}
                         </span>
@@ -137,16 +135,16 @@ const EntryCard: React.FC<props> = ({
           </div>
 
           <div className="hidden lg:flex items-center gap-3 flex-shrink-0">
-            <div className="bg-gradient-to-br from-blue-50 via-white to-slate-50 rounded-2xl p-5 border border-slate-200 shadow-sm">
+            <div className="rounded-2xl border border-border bg-muted/40 p-5 shadow-sm">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-xl bg-white flex items-center justify-center shadow-md">
-                  <Clock className="w-6 h-6 text-blue-600" />
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-card shadow-md">
+                  <Clock className="h-6 w-6 text-primary" />
                 </div>
                 <div>
-                  <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">
+                  <div className="mb-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                     Time Logged
                   </div>
-                  <div className="text-3xl font-bold text-slate-900 tabular-nums">
+                  <div className="text-3xl font-bold text-foreground tabular-nums">
                     {minToHHMM(duration)}
                   </div>
                 </div>
@@ -158,7 +156,7 @@ const EntryCard: React.FC<props> = ({
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-9 w-9 hover:bg-slate-100 hover:text-blue-600"
+                  className="h-9 w-9 hover:bg-accent hover:text-primary"
                   onClick={e => {
                     e.stopPropagation();
                     setEditEntryId(id);
@@ -171,7 +169,7 @@ const EntryCard: React.FC<props> = ({
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-9 w-9 hover:bg-red-50 hover:text-red-600"
+                  className="h-9 w-9 hover:bg-destructive/10 hover:text-destructive"
                   onClick={e => {
                     e.stopPropagation();
                     handleDeleteEntry(id);

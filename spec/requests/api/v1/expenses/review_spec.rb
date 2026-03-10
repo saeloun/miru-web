@@ -4,10 +4,9 @@ require "rails_helper"
 
 RSpec.describe "Api::V1::Expense review actions", type: :request do
   let(:company) { create(:company) }
-  let(:expense_category) { create(:expense_category, company:) }
   let(:admin) { create(:user, current_workspace_id: company.id) }
   let(:employee) { create(:user, current_workspace_id: company.id) }
-  let(:expense) { create(:expense, company:, expense_category:, user: employee) }
+  let(:expense) { create(:expense, company:, category_name: "Travel", user: employee) }
 
   before do
     create(:employment, company:, user: admin)
@@ -43,6 +42,15 @@ RSpec.describe "Api::V1::Expense review actions", type: :request do
     sign_in employee
 
     patch approve_api_v1_expense_path(expense)
+
+    expect(response).to have_http_status(:forbidden)
+    expect(expense.reload.status).to eq("submitted")
+  end
+
+  it "forbids employees from rejecting their own expense" do
+    sign_in employee
+
+    patch reject_api_v1_expense_path(expense)
 
     expect(response).to have_http_status(:forbidden)
     expect(expense.reload.status).to eq("submitted")

@@ -4,10 +4,8 @@ require "rails_helper"
 
 RSpec.describe "Api::V1::Expense#update", type: :request do
   let(:company) { create(:company) }
-  let(:expense_category) { create(:expense_category, company:) }
-  let(:vendor) { create(:vendor, company:) }
-  let(:expense) { create(:expense, company:, expense_category:, vendor:, user: admin) }
-  let(:employee_expense) { create(:expense, company:, expense_category:, vendor:, user: employee) }
+  let(:expense) { create(:expense, company:, category_name: "Travel", vendor_name: "Jetway", user: admin) }
+  let(:employee_expense) { create(:expense, company:, category_name: "Travel", vendor_name: "Jetway", user: employee) }
 
   let(:book_keeper) { create(:user, current_workspace_id: company.id) }
   let(:admin) { create(:user, current_workspace_id: company.id) }

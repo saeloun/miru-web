@@ -4,9 +4,7 @@ require "rails_helper"
 
 RSpec.describe "Api::V1::Expense#destroy", type: :request do
   let(:company) { create(:company) }
-  let(:expense_category) { create(:expense_category, company:) }
-  let(:vendor) { create(:vendor, company:) }
-  let!(:expense) { create(:expense, company:, expense_category:, vendor:) }
+  let!(:expense) { create(:expense, company:, category_name: "Travel", vendor_name: "Jetway") }
 
   let(:book_keeper) { create(:user, current_workspace_id: company.id) }
   let(:admin) { create(:user, current_workspace_id: company.id) }
@@ -28,13 +26,21 @@ RSpec.describe "Api::V1::Expense#destroy", type: :request do
       sign_in admin
     end
 
-    it "deletes the expense" do
-      expect {
-        send_request :delete, api_v1_expense_path(expense), headers: auth_headers(admin)
-      }.to change(Expense, :count).by(-1)
+    it "soft deletes the expense" do
+      send_request :delete, api_v1_expense_path(expense), headers: auth_headers(admin)
 
       expect(response).to have_http_status(:ok)
       expect(json_response["notice"]).to eq(I18n.t("expenses.destroy"))
+      expect(expense.reload.discarded_at).to be_present
+    end
+
+    it "does not allow deleting a paid expense" do
+      expense.update!(status: :paid, paid_at: Time.current)
+
+      send_request :delete, api_v1_expense_path(expense), headers: auth_headers(admin)
+
+      expect(response).to have_http_status(:forbidden)
+      expect(expense.reload.discarded_at).to be_nil
     end
   end
 

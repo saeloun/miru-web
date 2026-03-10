@@ -19,8 +19,6 @@ class Company < ApplicationRecord
   has_many :devices, dependent: :destroy
   has_many :invitations, dependent: :destroy
   has_many :expenses, dependent: :destroy
-  has_many :expense_categories, dependent: :destroy
-  has_many :vendors, dependent: :destroy
   has_many :client_members, dependent: :destroy
   has_many :leaves, class_name: "Leave", dependent: :destroy
   has_many :leave_types, through: :leaves, dependent: :destroy
@@ -89,10 +87,6 @@ class Company < ApplicationRecord
 
   def stripe_account_id
     stripe_connected_account&.account_id
-  end
-
-  def all_expense_categories
-    ExpenseCategory.default_categories.order(:created_at) + expense_categories.order(:created_at)
   end
 
   def address_attributes_blank?(attributes)

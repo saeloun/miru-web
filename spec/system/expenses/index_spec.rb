@@ -32,23 +32,18 @@ RSpec.describe "Expenses", type: :system, js: true do
   end
 
   it "shows a populated expenses list" do
-    category_one = create(:expense_category, name: "Travel", company:)
-    category_two = create(:expense_category, name: "Software", company:)
-    vendor_one = create(:vendor, name: "Acme Supplies", company:)
-    vendor_two = create(:vendor, name: "Cloud Services Inc", company:)
-
     create(:expense,
       company:,
-      expense_category: category_one,
-      vendor: vendor_one,
+      category_name: "Travel",
+      vendor_name: "Acme Supplies",
       amount: 150.00,
       expense_type: :business,
       description: "Flight to conference",
       date: Date.current)
     create(:expense,
       company:,
-      expense_category: category_two,
-      vendor: vendor_two,
+      category_name: "Software",
+      vendor_name: "Cloud Services Inc",
       amount: 49.99,
       expense_type: :personal,
       description: "IDE license",
@@ -66,17 +61,68 @@ RSpec.describe "Expenses", type: :system, js: true do
     end
   end
 
-  it "redirects employees away from the expenses page" do
+  it "hides delete for paid expenses" do
+    create(:expense,
+      company:,
+      user: user,
+      category_name: "Travel",
+      vendor_name: "Cafe 21",
+      amount: 20.00,
+      expense_type: :business,
+      description: "Paid reimbursement",
+      status: :paid,
+      paid_at: Time.current,
+      date: Date.current)
+
+    with_forgery_protection do
+      visit "/expenses"
+
+      find("button[aria-label='Expense actions for Paid reimbursement']", wait: 10).click
+      expect(page).to have_content("Edit expense", wait: 10)
+      expect(page).not_to have_content("Delete expense", wait: 2)
+      expect(page).not_to have_content("Mark as paid", wait: 2)
+    end
+  end
+
+  it "shows employees only their own expenses without review actions" do
     employee_user = create(:user, current_workspace_id: company.id)
     create(:employment, company:, user: employee_user)
     employee_user.add_role :employee, company
+    create(:expense,
+      company:,
+      user: employee_user,
+      category_name: "Travel",
+      vendor_name: "Cafe 21",
+      amount: 42.50,
+      expense_type: :business,
+      description: "Mileage reimbursement",
+      date: Date.current)
+    create(:expense,
+      company:,
+      user: user,
+      category_name: "Software",
+      vendor_name: "Cloud Services Inc",
+      amount: 49.99,
+      expense_type: :business,
+      description: "Admin-only expense",
+      date: Date.current)
     sign_in(employee_user)
 
     with_forgery_protection do
       visit "/expenses"
 
       expect(page).to have_css("#react-root", wait: 10)
-      expect(page).to have_current_path("/time-tracking", wait: 10)
+      expect(page).to have_current_path("/expenses", wait: 10)
+      expect(page).to have_content("Expenses", wait: 10)
+      expect(page).to have_content("Mileage reimbursement", wait: 10)
+      expect(page).not_to have_content("Admin-only expense", wait: 10)
+
+      find("button[aria-label='Expense actions for Mileage reimbursement']", wait: 10).click
+      expect(page).to have_content("Edit expense", wait: 10)
+      expect(page).to have_content("Delete expense", wait: 10)
+      expect(page).not_to have_content("Approve expense", wait: 2)
+      expect(page).not_to have_content("Reject expense", wait: 2)
+      expect(page).not_to have_content("Mark as paid", wait: 2)
     end
   end
 end

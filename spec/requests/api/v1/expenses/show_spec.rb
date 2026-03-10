@@ -6,10 +6,8 @@ RSpec.describe "Api::V1::Expense#show", type: :request do
   let(:company) { create(:company) }
   let(:client) { create(:client, company:) }
   let(:project) { create(:project, client: client_1) }
-  let(:expense_category) { create(:expense_category, company:) }
-  let(:vendor) { create(:vendor, company:) }
-  let(:expense) { create(:expense, :with_receipts, company:, expense_category:, vendor:, user: admin) }
-  let(:employee_expense) { create(:expense, company:, expense_category:, vendor:, user: employee) }
+  let(:expense) { create(:expense, :with_receipts, company:, category_name: "Travel", vendor_name: "Jetway", user: admin) }
+  let(:employee_expense) { create(:expense, company:, category_name: "Travel", vendor_name: "Jetway", user: employee) }
 
   let(:book_keeper) { create(:user, current_workspace_id: company.id) }
   let(:admin) { create(:user, current_workspace_id: company.id) }
@@ -44,8 +42,8 @@ RSpec.describe "Api::V1::Expense#show", type: :request do
         expected_response = {
           "amount": expense[:amount].to_s,
           "type": expense[:expense_type],
-          "vendorName": vendor.name,
-          "categoryName": expense_category.name,
+          "vendorName": "Jetway",
+          "categoryName": "Travel",
           "description": expense[:description],
           "receipts": expense.attached_receipts_urls
         }

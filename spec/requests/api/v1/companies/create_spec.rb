@@ -62,8 +62,8 @@ RSpec.describe "Api::V1::Companies::create", type: :request do
     end
 
     context "when company is invalid" do
-      before do
-        send_request :post, api_v1_companies_path, params: {
+      let(:invalid_params) do
+        {
           company: {
             business_phone: "12345677",
             timezone: "",
@@ -72,7 +72,11 @@ RSpec.describe "Api::V1::Companies::create", type: :request do
             fiscal_year_end: "",
             date_format: ""
           }
-        }, headers: auth_headers(user)
+        }
+      end
+
+      before do
+        send_request :post, api_v1_companies_path, params: invalid_params, headers: auth_headers(user)
       end
 
       it "will fail" do
@@ -80,7 +84,9 @@ RSpec.describe "Api::V1::Companies::create", type: :request do
       end
 
       it "will not be created" do
-        expect(Company.count).to eq(1)
+        expect {
+          send_request :post, api_v1_companies_path, params: invalid_params, headers: auth_headers(user)
+        }.not_to change(Company, :count)
       end
     end
 
@@ -119,8 +125,8 @@ RSpec.describe "Api::V1::Companies::create", type: :request do
       end
 
       context "when company is invalid" do
-        before do
-          send_request :post, api_v1_companies_path, params: {
+        let(:invalid_params) do
+          {
             company: {
               business_phone: "12345677",
               timezone: "",
@@ -129,7 +135,11 @@ RSpec.describe "Api::V1::Companies::create", type: :request do
               fiscal_year_end: "",
               date_format: ""
             }
-          }, headers: auth_headers(user)
+          }
+        end
+
+        before do
+          send_request :post, api_v1_companies_path, params: invalid_params, headers: auth_headers(user)
         end
 
         it "will fail" do
@@ -137,7 +147,9 @@ RSpec.describe "Api::V1::Companies::create", type: :request do
         end
 
         it "will not be created" do
-          expect(Company.count).to eq(1)
+          expect {
+            send_request :post, api_v1_companies_path, params: invalid_params, headers: auth_headers(user)
+          }.not_to change(Company, :count)
         end
       end
     end
