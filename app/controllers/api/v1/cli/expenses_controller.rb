@@ -4,14 +4,13 @@ class Api::V1::Cli::ExpensesController < Api::V1::Cli::BaseController
   def index
     authorize Expense
 
-    expenses = base_scope.includes(:expense_category, :vendor).order(date: :desc, id: :desc)
+    expenses = base_scope.order(date: :desc, id: :desc)
     expenses = expenses.pg_search(params[:query]) if params[:query].present?
 
     render json: {
       expenses: expenses.map { |expense| Expense::ShowPresenter.new(expense).process },
-      vendors: current_company.vendors.order(:name).map { |vendor| { id: vendor.id, name: vendor.name } },
-      categories: current_company.expense_categories.order(:name).map do |category|
-        { id: category.id, name: category.name, default: category.default }
+      categories: ExpenseCategory::DEFAULT_CATEGORIES.map do |category|
+        { name: category[:name] }
       end
     }, status: 200
   end
@@ -19,7 +18,8 @@ class Api::V1::Cli::ExpensesController < Api::V1::Cli::BaseController
   def create
     authorize Expense
 
-    expense = current_company.expenses.create!(expense_params.merge(user: current_user))
+    expense = current_company.expenses.create!(normalized_expense_params.merge(user: current_user))
+    expense.notify_submission_reviewers!
 
     render json: {
       notice: I18n.t("expenses.create"),
@@ -38,6 +38,24 @@ class Api::V1::Cli::ExpensesController < Api::V1::Cli::BaseController
     end
 
     def expense_params
-      params.require(:expense).permit(:amount, :date, :description, :expense_type, :expense_category_id, :vendor_id)
+      params.require(:expense).permit(
+        :amount,
+        :date,
+        :description,
+        :expense_type,
+        :category_name,
+        :vendor_name
+      )
+    end
+
+    def normalized_expense_params
+      permitted = expense_params.to_h
+      vendor_name = permitted.delete("vendor_name").to_s.strip
+      category_name = permitted.delete("category_name").to_s.strip
+
+      permitted["vendor_name"] = vendor_name if vendor_name.present?
+      permitted["category_name"] = category_name if category_name.present?
+
+      permitted
     end
 end

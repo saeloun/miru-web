@@ -6,8 +6,6 @@ RSpec.describe "Api::V1::Cli::Expenses#create", type: :request do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
   let(:cli_token) { CliSession.issue_for(user:, company:).last }
-  let!(:category) { create(:expense_category, company:, name: "Meals") }
-  let!(:vendor) { create(:vendor, company:, name: "Cafe") }
 
   before do
     create(:employment, company:, user:)
@@ -22,8 +20,8 @@ RSpec.describe "Api::V1::Cli::Expenses#create", type: :request do
         date: Date.current.iso8601,
         description: "Lunch with client",
         expense_type: "business",
-        expense_category_id: category.id,
-        vendor_id: vendor.id
+        category_name: "Meals",
+        vendor_name: "Cafe"
       }
     }, headers: cli_auth_headers(cli_token)
 
@@ -41,7 +39,7 @@ RSpec.describe "Api::V1::Cli::Expenses#create", type: :request do
         amount: 42.25,
         date: Date.current.iso8601,
         expense_type: "business",
-        expense_category_id: category.id
+        category_name: "Meals"
       }
     }, headers: cli_auth_headers(cli_token)
 

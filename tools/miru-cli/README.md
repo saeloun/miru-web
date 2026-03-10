@@ -60,7 +60,7 @@ miru capabilities
 miru client list [--query <term>]
 miru project list [--search <term>]
 miru expense list [--query <term>]
-miru expense create --amount <amount> --date <YYYY-MM-DD> --category-id <id> [--vendor-id <id>] [--description <text>] [--type <business|personal>]
+miru expense create --amount <amount> --date <YYYY-MM-DD> --category <name> [--vendor <name>] [--description <text>] [--type <business|personal>]
 miru invoice list [--query <term>] [--page <page>] [--per <count>] [--status <status>]
 miru invoice show --id <id>
 miru invoice send --id <id> --recipients <email1,email2> [--subject <text>] [--message <text>]

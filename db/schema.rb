@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_03_10_173200) do
+ActiveRecord::Schema[8.0].define(version: 2026_03_11_010500) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -331,15 +331,20 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_10_173200) do
     t.integer "expense_type"
     t.text "description"
     t.bigint "company_id", null: false
-    t.bigint "expense_category_id", null: false
+    t.bigint "expense_category_id"
     t.bigint "vendor_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id"
+    t.integer "status", default: 0, null: false
+    t.datetime "paid_at"
+    t.string "vendor_name"
+    t.string "category_name"
     t.index ["company_id"], name: "index_expenses_on_company_id"
     t.index ["description"], name: "index_expenses_on_description_trgm", opclass: :gin_trgm_ops, using: :gin
     t.index ["expense_category_id"], name: "index_expenses_on_expense_category_id"
     t.index ["expense_type"], name: "index_expenses_on_expense_type"
+    t.index ["status"], name: "index_expenses_on_status"
     t.index ["user_id"], name: "index_expenses_on_user_id"
     t.index ["vendor_id"], name: "index_expenses_on_vendor_id"
   end

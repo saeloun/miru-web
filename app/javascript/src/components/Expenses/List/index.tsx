@@ -11,11 +11,7 @@ import Header from "./Header";
 
 import AddExpenseModal from "../Modals/AddExpenseModal";
 import AddExpense from "../Modals/Mobile/AddExpense";
-import {
-  setCategoryData,
-  setVendorData,
-  unmapExpenseListForDropdown,
-} from "../utils";
+import { setCategoryData, unmapExpenseListForDropdown } from "../utils";
 
 const Expenses = () => {
   const { isDesktop } = useUserContext();
@@ -28,7 +24,6 @@ const Expenses = () => {
     const res = await expensesApi.index();
     const data = setCategoryData(res.data.categories);
     res.data.categories = data;
-    setVendorData(res.data.vendors);
     setExpenseData(res.data);
     setIsLoading(false);
   };

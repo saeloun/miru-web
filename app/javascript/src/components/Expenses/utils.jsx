@@ -81,31 +81,28 @@ export const Categories = [
   },
 ];
 
-export const setVendorData = vendors => {
-  vendors.map(vendor => {
-    vendor.value = vendor.name;
-    vendor.label = vendor.name;
+export const findCategoryMeta = categoryName =>
+  Categories.find(category => category.value === categoryName) || {
+    value: categoryName,
+    label: categoryName,
+    icon: <img sizes={16} src={ExpenseIconSVG} />,
+    iconColor: "#4A485A",
+    color: "#CFE4F0",
+  };
 
-    return vendor;
-  });
-};
+export const setVendorData = vendors => vendors;
 
 export const setCategoryData = rawCategories => {
   const newCategories = rawCategories.map(raw => {
-    const matchingCat = Categories.find(
-      category => category.value === raw.name
-    );
+    const matchingCat = findCategoryMeta(raw.name);
 
     const newCat = {
       ...raw,
       value: raw.name,
       label: raw.name,
-      icon: <img sizes={16} src={ExpenseIconSVG} />,
-      ...(matchingCat && {
-        icon: matchingCat.icon || <img sizes={16} src={ExpenseIconSVG} />,
-        iconColor: matchingCat.iconColor,
-        color: matchingCat.color,
-      }),
+      icon: matchingCat.icon,
+      iconColor: matchingCat.iconColor,
+      color: matchingCat.color,
     };
     delete newCat.name;
     delete newCat.default;

@@ -10,13 +10,16 @@ class Expense::ShowPresenter
   def process
     {
       id: expense.id,
-      vendor_name: expense.vendor&.name,
-      category_name: expense.expense_category.name,
+      vendor_name: expense.display_vendor_name,
+      category_name: expense.display_category_name,
       amount: expense.amount,
       date: expense.formatted_date,
       description: expense.description,
       type: expense.expense_type,
-      receipts: expense.attached_receipts_urls
+      receipts: expense.attached_receipts_urls,
+      status: expense.status,
+      paid_at: expense.paid_at,
+      submitter_name: expense.submitter_name
     }
   end
 end

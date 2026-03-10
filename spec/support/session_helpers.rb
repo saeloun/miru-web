@@ -12,7 +12,7 @@ module SessionHelpers
     company = user.companies.find(user.current_workspace_id)
     role = user.roles.where(resource: company).pick(:name)
 
-    visit "/"
+    visit "/login"
     wait_for_react_app
 
     page.execute_script <<~JS
@@ -24,7 +24,6 @@ module SessionHelpers
       window.localStorage.setItem("company_role", #{role.to_json}.replace(/^"|"$/g, ""));
       window.localStorage.setItem("company", JSON.stringify(#{company.to_json}));
     JS
-
     visit "/dashboard"
     wait_for_react_app
     expect(page).to have_content("Dashboard", wait: 15)

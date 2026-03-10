@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+  <body style="font-family: Arial, sans-serif; color: #111827; line-height: 1.6;">
+    <p><strong><%= @expense.submitter_name %></strong> submitted a reimbursement request.</p>
+    <p>Amount: <%= FormatAmountService.new(@company.base_currency, @expense.amount).process %></p>
+    <p>Category: <%= @expense.display_category_name.presence || "-" %></p>
+    <p>Date: <%= @expense.formatted_date %></p>
+    <p>Description: <%= @expense.description.presence || "-" %></p>
+    <p>
+      <a href="<%= @expense_url %>" target="_blank" rel="noreferrer">Review expense</a>
+    </p>
+  </body>
+</html>

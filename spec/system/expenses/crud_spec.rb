@@ -137,4 +137,53 @@ RSpec.describe "Expenses CRUD", type: :system, js: true do
       end
     end
   end
+
+  describe "employee reimbursement submission with receipts" do
+    let(:admin) { create(:user, current_workspace_id: company.id) }
+    let(:employee) { create(:user, current_workspace_id: company.id) }
+
+    before do
+      create(:employment, company:, user: admin)
+      admin.add_role :admin, company
+      create(:employment, company:, user: employee)
+      employee.add_role :employee, company
+    end
+
+    it "allows an employee to submit a receipt and an admin to preview, approve, and mark it paid" do
+      with_forgery_protection do
+        sign_in(employee)
+        visit "/expenses"
+
+        find_all("button", text: "Add Expense").last.click
+        fill_in "Description", with: "Client dinner reimbursement"
+        fill_in "Amount", with: "48.50"
+        find("button[role='combobox']", text: "Select category", wait: 10).click
+        find("[role='option']", text: "Travel", wait: 10).click
+        fill_in "Vendor", with: "Cafe 21"
+        attach_file "Receipts", Rails.root.join("spec/support/fixtures/test-image.png"), make_visible: true
+        within("[role='dialog']") do
+          click_on "Add Expense"
+        end
+
+        expect(page).to have_content("Client dinner reimbursement", wait: 10)
+        expect(Expense.last.receipts.count).to eq(1)
+
+        sign_in(admin)
+        visit "/expenses"
+
+        expect(page).to have_content("Client dinner reimbursement", wait: 10)
+        expect(page).to have_content("Submitted", wait: 10)
+        find("button[aria-label='View receipts for Client dinner reimbursement']", wait: 10).click
+        expect(page).to have_content("Receipt preview", wait: 10)
+        expect(page).to have_css("[role='dialog'] img", wait: 10)
+        page.find("body").send_keys(:escape)
+        find("button[aria-label='Expense actions for Client dinner reimbursement']", wait: 10).click
+        find("[role='menuitem']", text: "Approve expense", wait: 10).click
+        expect(page).to have_content("Approved", wait: 10)
+        find("button[aria-label='Expense actions for Client dinner reimbursement']", wait: 10).click
+        find("[role='menuitem']", text: "Mark as paid", wait: 10).click
+        expect(page).to have_content("Paid", wait: 10)
+      end
+    end
+  end
 end

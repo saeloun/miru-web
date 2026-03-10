@@ -170,9 +170,13 @@ namespace :api, defaults: { format: "json" } do
 
     resource :profile, only: [:update], controller: "profile"
 
-    resources :vendors, only: [:create]
-    resources :expense_categories, only: [:create]
-    resources :expenses, only: [:create, :index, :show, :update, :destroy]
+    resources :expenses, only: [:create, :index, :show, :update, :destroy] do
+      member do
+        patch :approve
+        patch :reject
+        patch :mark_paid
+      end
+    end
     resources :bulk_previous_employments, only: [:update]
 
     resources :leaves, as: "leave" do

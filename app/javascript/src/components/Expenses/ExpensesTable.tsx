@@ -49,6 +49,8 @@ import { useUserContext } from "../../context/UserContext";
 import { expensesApi } from "apis/api";
 import { currencyFormat } from "../../helpers/currency";
 import { toast } from "sonner";
+import ReceiptPreviewDialog from "./ReceiptPreviewDialog";
+import { findCategoryMeta } from "./utils";
 
 interface Expense {
   id: string;
@@ -56,26 +58,28 @@ interface Expense {
   description: string;
   amount: number;
   category: string;
-  categoryId: number;
   vendor?: string;
-  vendorId?: number;
   client?: string;
   project?: string;
   receipts?: string[];
   expenseType: "business" | "personal";
+  status: "submitted" | "approved" | "rejected" | "paid";
+  paidAt?: string | null;
   createdBy?: string;
   createdAt?: string;
 }
 
 interface ExpenseOption {
-  id: number;
   name: string;
+  label?: string;
+  icon?: React.ReactNode;
+  color?: string;
+  iconColor?: string;
 }
 
 interface ExpensesData {
   expenses: Expense[];
   categories: ExpenseOption[];
-  vendors: ExpenseOption[];
   totalAmount: number;
   businessAmount: number;
   personalAmount: number;
@@ -92,11 +96,19 @@ const fetchExpenses = async (filter: string = "all"): Promise<ExpensesData> => {
     description: expense.description,
     amount: Number(expense.amount) || 0,
     category: expense.categoryName || "",
-    categoryId: Number(expense.expenseCategoryId) || 0,
     vendor: expense.vendorName || "",
-    vendorId: Number(expense.vendorId) || 0,
     receipts: expense.receipts || [],
     expenseType: expense.expenseType === "personal" ? "personal" : "business",
+    status:
+      expense.status === "paid"
+        ? "paid"
+        : expense.status === "approved"
+        ? "approved"
+        : expense.status === "rejected"
+        ? "rejected"
+        : "submitted",
+    paidAt: expense.paidAt || null,
+    createdBy: expense.submitterName || "",
   }));
   const totalAmount = expenses.reduce((sum, e) => sum + e.amount, 0);
   const businessAmount = expenses
@@ -110,7 +122,6 @@ const fetchExpenses = async (filter: string = "all"): Promise<ExpensesData> => {
   return {
     expenses,
     categories: response.data.categories || [],
-    vendors: response.data.vendors || [],
     totalAmount,
     businessAmount,
     personalAmount,
@@ -119,11 +130,13 @@ const fetchExpenses = async (filter: string = "all"): Promise<ExpensesData> => {
 
 const ExpensesTable: React.FC = () => {
   const queryClient = useQueryClient();
-  const { isAdminUser, company } = useUserContext();
+  const { company, companyRole } = useUserContext();
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [showReceiptsDialog, setShowReceiptsDialog] = useState(false);
   const [selectedExpense, setSelectedExpense] = useState<Expense | null>(null);
+  const [receiptFiles, setReceiptFiles] = useState<File[]>([]);
 
   // Form state
   const [formData, setFormData] = useState({
@@ -131,9 +144,7 @@ const ExpensesTable: React.FC = () => {
     description: "",
     amount: "",
     category: "",
-    categoryId: 0,
     vendor: "",
-    vendorId: 0,
     expenseType: "business",
     notes: "",
   });
@@ -174,7 +185,11 @@ const ExpensesTable: React.FC = () => {
 
   const updateMutation = useMutation({
     mutationFn: async ({ id, data }: { id: string; data: any }) => {
-      await expensesApi.update(id, data);
+      await expensesApi.update(id, data, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["expenses"] });
@@ -187,19 +202,57 @@ const ExpensesTable: React.FC = () => {
     },
   });
 
+  const markPaidMutation = useMutation({
+    mutationFn: async (expenseId: string) => {
+      await expensesApi.markPaid(expenseId);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["expenses"] });
+      toast.success("Expense marked as paid");
+    },
+    onError: () => {
+      toast.error("Failed to mark expense as paid");
+    },
+  });
+
+  const approveMutation = useMutation({
+    mutationFn: async (expenseId: string) => {
+      await expensesApi.approve(expenseId);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["expenses"] });
+      toast.success("Expense approved");
+    },
+    onError: () => {
+      toast.error("Failed to approve expense");
+    },
+  });
+
+  const rejectMutation = useMutation({
+    mutationFn: async (expenseId: string) => {
+      await expensesApi.reject(expenseId);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["expenses"] });
+      toast.success("Expense rejected");
+    },
+    onError: () => {
+      toast.error("Failed to reject expense");
+    },
+  });
+
   const resetForm = () => {
     setFormData({
       date: new Date().toISOString().split("T")[0],
       description: "",
       amount: "",
       category: "",
-      categoryId: 0,
       vendor: "",
-      vendorId: 0,
       expenseType: "business",
       notes: "",
     });
     setSelectedExpense(null);
+    setReceiptFiles([]);
   };
 
   const handleEdit = (expense: Expense) => {
@@ -217,12 +270,11 @@ const ExpensesTable: React.FC = () => {
       description: expense.description,
       amount: expense.amount.toString(),
       category: expense.category,
-      categoryId: expense.categoryId,
       vendor: expense.vendor || "",
-      vendorId: expense.vendorId || 0,
       expenseType: expense.expenseType === "personal" ? "personal" : "business",
       notes: expense.notes || "",
     });
+    setReceiptFiles([]);
     setShowEditDialog(true);
   };
 
@@ -231,56 +283,63 @@ const ExpensesTable: React.FC = () => {
     setShowDeleteDialog(true);
   };
 
+  const handleReceiptFiles = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(event.target.files || []).filter(
+      file => file.size <= 2 * 1024 * 1024
+    );
+    setReceiptFiles(prev => [...prev, ...files].slice(0, 10));
+    event.target.value = "";
+  };
+
+  const removeReceiptFile = (fileName: string) => {
+    setReceiptFiles(prev => prev.filter(file => file.name !== fileName));
+  };
+
+  const openReceiptsPreview = (expense: Expense) => {
+    setSelectedExpense(expense);
+    setShowReceiptsDialog(true);
+  };
+
+  const buildExpensePayload = async () => {
+    const trimmedCategory = formData.category.trim();
+    if (!trimmedCategory) {
+      throw new Error("invalid-category");
+    }
+    const payload = new FormData();
+
+    payload.append("expense[date]", formData.date);
+    payload.append("expense[description]", formData.description);
+    payload.append("expense[amount]", String(parseFloat(formData.amount)));
+    payload.append("expense[category_name]", trimmedCategory);
+    payload.append("expense[expense_type]", formData.expenseType);
+
+    if (formData.vendor.trim()) {
+      payload.append("expense[vendor_name]", formData.vendor.trim());
+    }
+
+    receiptFiles.forEach(file => {
+      payload.append("expense[receipts][]", file);
+    });
+
+    return payload;
+  };
+
   const confirmDelete = () => {
     if (selectedExpense) {
       deleteMutation.mutate(selectedExpense.id);
     }
   };
 
-  const ensureVendorId = async (vendorName: string) => {
-    const trimmedVendorName = vendorName.trim();
-    if (!trimmedVendorName) return null;
-
-    const vendors = data?.vendors || [];
-    const existingVendor = vendors.find(
-      vendor => vendor.name.toLowerCase() === trimmedVendorName.toLowerCase()
-    );
-
-    if (existingVendor) return existingVendor.id;
-
-    const vendorResponse = await expensesApi.createVendors({
-      vendor: { name: trimmedVendorName },
-    });
-
-    return vendorResponse.data.id || null;
-  };
-
   const handleSubmitAdd = () => {
     const submit = async () => {
       try {
-        const categories = data?.categories || [];
-        const selectedCategory = categories.find(
-          category => category.name === formData.category
-        );
-        if (!selectedCategory) {
+        if (!formData.category.trim()) {
           toast.error("Please select a valid category");
 
           return;
         }
 
-        const vendorId = await ensureVendorId(formData.vendor);
-
-        const payload = {
-          expense: {
-            date: formData.date,
-            description: formData.description,
-            amount: parseFloat(formData.amount),
-            expense_category_id: selectedCategory.id,
-            vendor_id: vendorId,
-            expense_type: formData.expenseType,
-            notes: formData.notes,
-          },
-        };
+        const payload = await buildExpensePayload();
         createMutation.mutate(payload);
       } catch {
         toast.error("Failed to create expense");
@@ -295,30 +354,17 @@ const ExpensesTable: React.FC = () => {
 
     const submit = async () => {
       try {
-        const categories = data?.categories || [];
-        const selectedCategory = categories.find(
-          category => category.name === formData.category
-        );
-        if (!selectedCategory && !formData.categoryId) {
+        if (!formData.category.trim()) {
           toast.error("Please select a valid category");
 
           return;
         }
 
-        const vendorId =
-          formData.vendorId || (await ensureVendorId(formData.vendor));
-
-        const payload = {
-          expense: {
-            date: formData.date,
-            description: formData.description,
-            amount: parseFloat(formData.amount),
-            expense_category_id: selectedCategory?.id || formData.categoryId,
-            vendor_id: vendorId,
-            expense_type: formData.expenseType,
-          },
-        };
-        updateMutation.mutate({ id: selectedExpense.id, data: payload });
+        const payload = await buildExpensePayload();
+        updateMutation.mutate({
+          id: selectedExpense.id,
+          data: payload,
+        });
       } catch {
         toast.error("Failed to update expense");
       }
@@ -344,7 +390,41 @@ const ExpensesTable: React.FC = () => {
       </Badge>
     );
 
+  const getStatusBadge = (status: Expense["status"]) =>
+    status === "paid" ? (
+      <Badge
+        variant="outline"
+        className="border-emerald-300 bg-emerald-50 text-emerald-700"
+      >
+        Paid
+      </Badge>
+    ) : status === "approved" ? (
+      <Badge
+        variant="outline"
+        className="border-sky-300 bg-sky-50 text-sky-700"
+      >
+        Approved
+      </Badge>
+    ) : status === "rejected" ? (
+      <Badge
+        variant="outline"
+        className="border-rose-300 bg-rose-50 text-rose-700"
+      >
+        Rejected
+      </Badge>
+    ) : (
+      <Badge
+        variant="outline"
+        className="border-amber-300 bg-amber-50 text-amber-700"
+      >
+        Submitted
+      </Badge>
+    );
+
   const baseCurrency = company?.baseCurrency || "USD";
+  const canManageReimbursements = ["admin", "owner", "book_keeper"].includes(
+    companyRole || ""
+  );
 
   const columns: ColumnDef<Expense>[] = [
     {
@@ -406,9 +486,24 @@ const ExpensesTable: React.FC = () => {
           Category
         </span>
       ),
-      cell: ({ row }) => (
-        <span className="text-sm text-gray-700">{row.original.category}</span>
-      ),
+      cell: ({ row }) => {
+        const category = findCategoryMeta(row.original.category);
+
+        return (
+          <div className="inline-flex items-center gap-2 rounded-full border border-border/70 bg-muted/70 px-2.5 py-1">
+            <span
+              className="flex h-5 w-5 items-center justify-center rounded-full"
+              style={{
+                backgroundColor: category.color,
+                color: category.iconColor,
+              }}
+            >
+              {category.icon}
+            </span>
+            <span className="text-sm text-gray-700">{category.label}</span>
+          </div>
+        );
+      },
     },
     {
       accessorKey: "vendor",
@@ -457,6 +552,15 @@ const ExpensesTable: React.FC = () => {
       cell: ({ row }) => getTypeBadge(row.original.expenseType),
     },
     {
+      accessorKey: "status",
+      header: () => (
+        <span className="text-xs font-medium text-gray-700 uppercase tracking-wider">
+          Status
+        </span>
+      ),
+      cell: ({ row }) => getStatusBadge(row.original.status),
+    },
+    {
       id: "receipts",
       header: () => (
         <span className="text-xs font-medium text-gray-700 uppercase tracking-wider">
@@ -474,6 +578,8 @@ const ExpensesTable: React.FC = () => {
             variant="ghost"
             size="sm"
             className="text-gray-600 hover:text-gray-900"
+            onClick={() => openReceiptsPreview(row.original)}
+            aria-label={`View receipts for ${row.original.description}`}
           >
             <FileText size={16} className="mr-1" />
             {receipts.length}
@@ -490,7 +596,11 @@ const ExpensesTable: React.FC = () => {
         return (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
+              <Button
+                variant="ghost"
+                className="h-8 w-8 p-0"
+                aria-label={`Expense actions for ${expense.description}`}
+              >
                 <span className="sr-only">Open menu</span>
                 <DotsThree size={20} />
               </Button>
@@ -501,6 +611,34 @@ const ExpensesTable: React.FC = () => {
                 <PencilSimple size={16} className="mr-2" />
                 Edit expense
               </DropdownMenuItem>
+              {canManageReimbursements &&
+                expense.status !== "approved" &&
+                expense.status !== "paid" && (
+                  <DropdownMenuItem
+                    onClick={() => approveMutation.mutate(expense.id)}
+                  >
+                    <CheckCircle size={16} className="mr-2" />
+                    Approve expense
+                  </DropdownMenuItem>
+                )}
+              {canManageReimbursements &&
+                expense.status !== "rejected" &&
+                expense.status !== "paid" && (
+                  <DropdownMenuItem
+                    onClick={() => rejectMutation.mutate(expense.id)}
+                  >
+                    <XCircle size={16} className="mr-2" />
+                    Reject expense
+                  </DropdownMenuItem>
+                )}
+              {canManageReimbursements && expense.status === "approved" && (
+                <DropdownMenuItem
+                  onClick={() => markPaidMutation.mutate(expense.id)}
+                >
+                  <CheckCircle size={16} className="mr-2" />
+                  Mark as paid
+                </DropdownMenuItem>
+              )}
               <DropdownMenuItem
                 onClick={() => handleDelete(expense)}
                 className="text-red-600"
@@ -632,15 +770,13 @@ const ExpensesTable: React.FC = () => {
               <div className="text-center py-12">
                 <Receipt size={48} className="mx-auto mb-4 text-gray-300" />
                 <p className="text-gray-600 mb-4">No expenses recorded</p>
-                {isAdminUser && (
-                  <Button
-                    variant="outline"
-                    onClick={() => setShowAddDialog(true)}
-                  >
-                    <Plus size={20} className="mr-2" />
-                    Add Your First Expense
-                  </Button>
-                )}
+                <Button
+                  variant="outline"
+                  onClick={() => setShowAddDialog(true)}
+                >
+                  <Plus size={20} className="mr-2" />
+                  Submit your first expense
+                </Button>
               </div>
             )}
           </CardContent>
@@ -716,8 +852,20 @@ const ExpensesTable: React.FC = () => {
                 </SelectTrigger>
                 <SelectContent>
                   {(data?.categories || []).map(category => (
-                    <SelectItem key={category.id} value={category.name}>
-                      {category.name}
+                    <SelectItem key={category.name} value={category.name}>
+                      <div className="flex items-center gap-2">
+                        <span
+                          className="flex h-5 w-5 items-center justify-center rounded-full"
+                          style={{
+                            backgroundColor: findCategoryMeta(category.name)
+                              .color,
+                            color: findCategoryMeta(category.name).iconColor,
+                          }}
+                        >
+                          {findCategoryMeta(category.name).icon}
+                        </span>
+                        <span>{category.name}</span>
+                      </div>
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -769,6 +917,42 @@ const ExpensesTable: React.FC = () => {
                 className="col-span-3"
                 placeholder="Optional notes"
               />
+            </div>
+            <div className="grid grid-cols-4 items-start gap-4">
+              <Label htmlFor="receipts" className="pt-2 text-right">
+                Receipts
+              </Label>
+              <div className="col-span-3 space-y-3">
+                <Input
+                  id="receipts"
+                  type="file"
+                  multiple
+                  accept=".jpg,.jpeg,.png,.webp,.pdf"
+                  onChange={handleReceiptFiles}
+                />
+                {receiptFiles.length > 0 && (
+                  <div className="space-y-2 rounded-lg border border-border bg-muted/40 p-3">
+                    {receiptFiles.map(file => (
+                      <div
+                        key={`${file.name}-${file.size}`}
+                        className="flex items-center justify-between gap-3 text-sm"
+                      >
+                        <span className="truncate text-foreground">
+                          {file.name}
+                        </span>
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => removeReceiptFile(file.name)}
+                        >
+                          Remove
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
           <DialogFooter>
@@ -857,8 +1041,20 @@ const ExpensesTable: React.FC = () => {
                 </SelectTrigger>
                 <SelectContent>
                   {(data?.categories || []).map(category => (
-                    <SelectItem key={category.id} value={category.name}>
-                      {category.name}
+                    <SelectItem key={category.name} value={category.name}>
+                      <div className="flex items-center gap-2">
+                        <span
+                          className="flex h-5 w-5 items-center justify-center rounded-full"
+                          style={{
+                            backgroundColor: findCategoryMeta(category.name)
+                              .color,
+                            color: findCategoryMeta(category.name).iconColor,
+                          }}
+                        >
+                          {findCategoryMeta(category.name).icon}
+                        </span>
+                        <span>{category.name}</span>
+                      </div>
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -911,6 +1107,52 @@ const ExpensesTable: React.FC = () => {
                 placeholder="Optional notes"
               />
             </div>
+            <div className="grid grid-cols-4 items-start gap-4">
+              <Label htmlFor="edit-receipts" className="pt-2 text-right">
+                Receipts
+              </Label>
+              <div className="col-span-3 space-y-3">
+                {selectedExpense?.receipts?.length ? (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => openReceiptsPreview(selectedExpense)}
+                  >
+                    View existing receipts ({selectedExpense.receipts.length})
+                  </Button>
+                ) : null}
+                <Input
+                  id="edit-receipts"
+                  type="file"
+                  multiple
+                  accept=".jpg,.jpeg,.png,.webp,.pdf"
+                  onChange={handleReceiptFiles}
+                />
+                {receiptFiles.length > 0 && (
+                  <div className="space-y-2 rounded-lg border border-border bg-muted/40 p-3">
+                    {receiptFiles.map(file => (
+                      <div
+                        key={`${file.name}-${file.size}`}
+                        className="flex items-center justify-between gap-3 text-sm"
+                      >
+                        <span className="truncate text-foreground">
+                          {file.name}
+                        </span>
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => removeReceiptFile(file.name)}
+                        >
+                          Remove
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowEditDialog(false)}>
@@ -958,6 +1200,12 @@ const ExpensesTable: React.FC = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <ReceiptPreviewDialog
+        open={showReceiptsDialog}
+        onOpenChange={setShowReceiptsDialog}
+        expense={selectedExpense}
+      />
     </div>
   );
 };

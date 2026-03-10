@@ -748,27 +748,23 @@ func (c *client) createExpense(args []string) error {
 		return fmt.Errorf("type must be either business or personal")
 	}
 
-	categoryID, err := strconv.Atoi(flags["category-id"])
-	if err != nil || categoryID <= 0 {
-		return fmt.Errorf("category-id must be a positive integer")
+	categoryName := strings.TrimSpace(flags["category"])
+	if categoryName == "" {
+		return fmt.Errorf("category is required")
 	}
 
 	body := map[string]any{
 		"expense": map[string]any{
-			"amount":              amount,
-			"date":                date,
-			"description":         flags["description"],
-			"expense_type":        expenseType,
-			"expense_category_id": categoryID,
+			"amount":        amount,
+			"date":          date,
+			"description":   flags["description"],
+			"expense_type":  expenseType,
+			"category_name": categoryName,
 		},
 	}
 
-	if vendorIDValue := strings.TrimSpace(flags["vendor-id"]); vendorIDValue != "" {
-		vendorID, err := strconv.Atoi(vendorIDValue)
-		if err != nil || vendorID <= 0 {
-			return fmt.Errorf("vendor-id must be a positive integer")
-		}
-		body["expense"].(map[string]any)["vendor_id"] = vendorID
+	if vendorName := strings.TrimSpace(flags["vendor"]); vendorName != "" {
+		body["expense"].(map[string]any)["vendor_name"] = vendorName
 	}
 
 	return c.post("/api/v1/cli/expenses", body)
@@ -961,7 +957,7 @@ miru capabilities
 miru client list [--query <term>]
 miru project list [--search <term>]
 miru expense list [--query <term>]
-miru expense create --amount <amount> --date <YYYY-MM-DD> --category-id <id> [--vendor-id <id>] [--description <text>] [--type <business|personal>]
+miru expense create --amount <amount> --date <YYYY-MM-DD> --category <name> [--vendor <name>] [--description <text>] [--type <business|personal>]
 miru invoice list [--query <term>] [--page <page>] [--per <count>] [--status <status>]
 miru invoice show --id <id>
 miru invoice send --id <id> --recipients <email1,email2> [--subject <text>] [--message <text>]

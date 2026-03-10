@@ -1,13 +1,5 @@
-import React, { useRef, useState, useEffect, memo } from "react";
+import React, { useRef, useState } from "react";
 
-import { expensesApi } from "apis/api";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../../ui/select";
 import CustomDatePicker from "common/CustomDatePicker";
 import { CustomInputText } from "common/CustomInputText";
 import CustomRadioButton from "common/CustomRadio";
@@ -16,8 +8,14 @@ import { ErrorSpan } from "common/ErrorSpan";
 import dayjs from "dayjs";
 import { useOutsideClick } from "helpers";
 import { CalendarIcon, FileIcon, XIcon } from "miruIcons";
-import { components } from "react-select";
 import { Button } from "StyledComponents";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../ui/select";
 
 const ExpenseForm = ({
   dateFormat,
@@ -28,135 +26,33 @@ const ExpenseForm = ({
   const wrapperCalendarRef = useRef(null);
   const fileRef = useRef(null);
 
-  const [showDatePicker, setShowDatePicker] = useState<boolean>(false);
-  const [expenseDate, setExpenseDate] = useState<any>(
-    dayjs(expense?.date) || dayjs()
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [expenseDate, setExpenseDate] = useState(
+    expense?.date ? dayjs(expense.date) : dayjs()
   );
-  const [vendor, setVendor] = useState<any>("");
-  const [amount, setAmount] = useState<string>(expense?.amount || "");
-  const [category, setCategory] = useState<any>("");
-  const [newCategory, setNewCategory] = useState<any>("");
-  const [newVendor, setNewVendor] = useState<any>("");
-  const [description, setDescription] = useState<string>(
-    expense?.description || ""
+  const [vendor, setVendor] = useState(expense?.vendorName || "");
+  const [amount, setAmount] = useState(expense?.amount || "");
+  const [category, setCategory] = useState(expense?.categoryName || "");
+  const [description, setDescription] = useState(expense?.description || "");
+  const [expenseType, setExpenseType] = useState(
+    expense?.type || expense?.expenseType || "business"
   );
+  const [receipts, setReceipts] = useState(expense?.receipts || []);
 
-  const [expenseType, setExpenseType] = useState<string>(
-    expense?.type || "business"
-  );
-  const [receipts, setReceipts] = useState<File[]>(expense?.receipts || "");
-  const isFormActionDisabled = !(
-    expenseDate &&
-    (vendor || newVendor) &&
-    amount &&
-    (category || newCategory)
-  );
-
-  const { Option, SingleValue } = components;
-
-  const IconOption = props => (
-    <Option {...props} key={props?.data?.id}>
-      <div className="flex w-full items-center gap-4">
-        {props?.data?.icon}
-        {props?.data?.label}
-      </div>
-    </Option>
-  );
-  const MemoizedIconOption = memo(IconOption);
-
-  const CustomSingleValue = props => (
-    <SingleValue {...props} key={props?.data?.id}>
-      <div className="flex w-full items-center gap-4">
-        {props?.data?.icon}
-        {props?.data?.label}
-      </div>
-    </SingleValue>
-  );
-
-  const setExpenseData = () => {
-    if (expense) {
-      const selectedCategory = expenseData?.categories?.find(
-        category => expense.categoryName == category.label
-      );
-
-      const selectedVendor = expenseData?.vendors?.find(
-        vendor => expense.vendorName == vendor.label
-      );
-      setCategory(selectedCategory);
-      setVendor(selectedVendor);
-    }
-  };
+  const isFormActionDisabled = !(expenseDate && amount && category);
 
   const handleDatePicker = date => {
     setExpenseDate(date);
     setShowDatePicker(false);
   };
 
-  const handleCategory = async category => {
-    if (expenseData.categories.includes(category)) {
-      setCategory(category);
-    } else {
-      const payload = {
-        expense_category: {
-          name: category.value,
-        },
-      };
-
-      const res = await expensesApi.createCategory(payload);
-      const expenses = await expensesApi.index();
-
-      if (res.status == 200 && expenses.status == 200) {
-        const newCategoryValue = expenses.data.categories.find(
-          val => val.name == category.value
-        );
-
-        newCategoryValue.value = newCategoryValue.name;
-        newCategoryValue.label = newCategoryValue.name;
-        delete newCategoryValue.name;
-
-        setCategory(null);
-        setNewCategory(newCategoryValue);
-      }
-    }
-  };
-
-  const handleVendor = async vendor => {
-    if (expenseData.vendors.includes(vendor)) {
-      setVendor(vendor);
-    } else {
-      const payload = {
-        vendor: {
-          name: vendor.value,
-        },
-      };
-      const res = await expensesApi.createVendors(payload);
-      const expenses = await expensesApi.index();
-
-      if (res.status == 200 && expenses.status == 200) {
-        const newVendorValue = expenses.data.vendors.find(
-          val => val.name == vendor.value
-        );
-
-        newVendorValue.value = newVendorValue.name;
-        newVendorValue.label = newVendorValue.name;
-        delete newVendorValue.name;
-
-        setVendor(null);
-        setNewVendor(newVendorValue);
-      }
-    }
-  };
-
   const handleFileUpload = () => {
-    if (fileRef.current) {
-      fileRef.current.click();
-    }
+    if (fileRef.current) fileRef.current.click();
   };
 
   const handleFileSelection = event => {
     const uploadedFiles = [...event.target.files];
-    // We are restricting uploads to a max of 10 files, each with a size limit of 2 mb.
-    const sortedFiles = uploadedFiles?.filter(
+    const sortedFiles = uploadedFiles.filter(
       (file, index) => file.size < 2097152 && index < 10
     );
     setReceipts(sortedFiles);
@@ -169,23 +65,17 @@ const ExpenseForm = ({
     formData.append("expense[date]", expenseDate);
     formData.append("expense[description]", description);
     formData.append("expense[expense_type]", expenseType);
-    formData.append(
-      "expense[expense_category_id]",
-      category?.id || newCategory?.id
-    );
-    formData.append("expense[vendor_id]", vendor?.id || newVendor?.id);
-    if (receipts) {
-      receipts?.forEach(file => {
-        formData.append(`expense[receipts][]`, file);
-      });
-    }
+    formData.append("expense[category_name]", category);
+    if (vendor.trim()) formData.append("expense[vendor_name]", vendor.trim());
+    receipts?.forEach(file => {
+      if (file instanceof File) formData.append("expense[receipts][]", file);
+    });
 
     handleFormAction(formData);
   };
 
   const removeReceipt = receipt => {
-    const updatedReceipts = receipts.filter(item => item !== receipt);
-    setReceipts(updatedReceipts);
+    setReceipts(receipts.filter(item => item !== receipt));
   };
 
   const ReceiptCard = () => (
@@ -193,7 +83,7 @@ const ExpenseForm = ({
       {receipts.map(receipt => (
         <div
           className="my-2 flex w-full items-center justify-between rounded bg-muted p-3"
-          key={receipt.name}
+          key={receipt.name || receipt}
         >
           <div className="rounded bg-accent p-3">
             <FileIcon
@@ -203,12 +93,14 @@ const ExpenseForm = ({
             />
           </div>
           <div className="ml-4 mr-2 flex w-full flex-col items-start truncate">
-            <span className="text-sm font-medium">{receipt.name}</span>
-            <div className="flex items-center text-xs font-medium text-muted-foreground">
-              <span>PDF</span>
-              <div className="mx-2 h-1 w-1 rounded-xl bg-secondary" />
-              <span>{Math.ceil(receipt.size / 1024)}kb</span>
-            </div>
+            <span className="text-sm font-medium">
+              {receipt.name || "Receipt"}
+            </span>
+            {receipt.size && (
+              <div className="flex items-center text-xs font-medium text-muted-foreground">
+                <span>{Math.ceil(receipt.size / 1024)}kb</span>
+              </div>
+            )}
           </div>
           <Button style="ternary" onClick={() => removeReceipt(receipt)}>
             <XIcon size={16} />
@@ -242,10 +134,6 @@ const ExpenseForm = ({
     setShowDatePicker(false);
   });
 
-  useEffect(() => {
-    setExpenseData();
-  }, []);
-
   return (
     <div className="my-6 flex flex-1 flex-col justify-between px-4 lg:px-0 ">
       <div>
@@ -278,40 +166,14 @@ const ExpenseForm = ({
           )}
         </div>
         <div className="mt-6">
-          <label className="text-base font-medium text-muted-foreground">
-            Vendor
-          </label>
-          <div className="mt-1">
-            <Select
-              value={
-                (vendor || newVendor)?.value ||
-                (vendor || newVendor)?.id?.toString() ||
-                ""
-              }
-              onValueChange={value => {
-                const selectedVendor = expenseData.vendors?.find(
-                  (v: any) => (v.value || v.id?.toString()) === value
-                );
-                if (selectedVendor) {
-                  handleVendor(selectedVendor);
-                }
-              }}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select vendor..." />
-              </SelectTrigger>
-              <SelectContent>
-                {expenseData.vendors?.map((vendorOption: any) => (
-                  <SelectItem
-                    key={vendorOption.id || vendorOption.value}
-                    value={vendorOption.value || vendorOption.id?.toString()}
-                  >
-                    {vendorOption.label || vendorOption.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          <CustomInputText
+            id="vendor"
+            label="Vendor"
+            name="vendor"
+            type="text"
+            value={vendor}
+            onChange={e => setVendor(e.target.value)}
+          />
           <ErrorSpan message="" />
         </div>
         <div className="mt-6">
@@ -331,30 +193,17 @@ const ExpenseForm = ({
           </label>
           <div className="mt-1">
             <Select
-              value={
-                (category || newCategory)?.value ||
-                (category || newCategory)?.id?.toString() ||
-                ""
-              }
-              onValueChange={value => {
-                const selectedCategory = expenseData.categories?.find(
-                  (c: any) => (c.value || c.id?.toString()) === value
-                );
-                if (selectedCategory) {
-                  handleCategory(selectedCategory);
-                }
-              }}
+              value={category}
+              onValueChange={value => setCategory(value)}
             >
               <SelectTrigger>
                 <SelectValue placeholder="Select category..." />
               </SelectTrigger>
               <SelectContent>
-                {expenseData.categories?.map((categoryOption: any) => (
+                {expenseData.categories?.map(categoryOption => (
                   <SelectItem
-                    key={categoryOption.id || categoryOption.value}
-                    value={
-                      categoryOption.value || categoryOption.id?.toString()
-                    }
+                    key={categoryOption.value || categoryOption.name}
+                    value={categoryOption.value || categoryOption.name}
                   >
                     <div className="flex w-full items-center gap-4">
                       {categoryOption.icon}
@@ -386,29 +235,25 @@ const ExpenseForm = ({
               classNameLabel="font-medium text-sm text-foreground"
               classNameRadioIcon="lg:w-4 lg:h-4 lg:border-2"
               classNameWrapper="pt-3 mr-4"
-              defaultCheck={expenseType == "business"}
+              defaultCheck={expenseType === "business"}
               groupName="expenseType"
               id="Business"
               key="Business"
               label="Business"
               value={expenseType}
-              handleOnChange={() => {
-                setExpenseType("business");
-              }}
+              handleOnChange={() => setExpenseType("business")}
             />
             <CustomRadioButton
               classNameLabel="font-medium text-sm text-foreground"
               classNameRadioIcon="lg:w-4 lg:h-4 lg:border-2"
               classNameWrapper="pt-3"
-              defaultCheck={expenseType == "personal"}
+              defaultCheck={expenseType === "personal"}
               groupName="expenseType"
               id="Personal"
               key="Personal"
               label="Personal"
               value={expenseType}
-              handleOnChange={() => {
-                setExpenseType("personal");
-              }}
+              handleOnChange={() => setExpenseType("personal")}
             />
           </div>
         </div>
@@ -420,23 +265,13 @@ const ExpenseForm = ({
         </div>
       </div>
       <div>
-        {expense ? (
-          <Button
-            className="mt-6 w-full text-base font-bold"
-            disabled={isFormActionDisabled}
-            onClick={handleSubmit}
-          >
-            Save Changes
-          </Button>
-        ) : (
-          <Button
-            className="mt-6 w-full text-base font-bold"
-            disabled={isFormActionDisabled}
-            onClick={handleSubmit}
-          >
-            Add Expense
-          </Button>
-        )}
+        <Button
+          className="mt-6 w-full text-base font-bold"
+          disabled={isFormActionDisabled}
+          onClick={handleSubmit}
+        >
+          {expense ? "Save Changes" : "Add Expense"}
+        </Button>
       </div>
     </div>
   );

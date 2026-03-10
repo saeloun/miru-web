@@ -4,12 +4,8 @@ require "rails_helper"
 
 RSpec.describe "Api::V1::Expense#index", type: :request do
   let_it_be(:company) { create(:company) }
-  let_it_be(:expense_category) { create(:expense_category, company:) }
-  let_it_be(:expense_category_2) { create(:expense_category, company:) }
-
-  let_it_be(:vendor) { create(:vendor, company:) }
-  let_it_be(:expense1) { create(:expense, company:, expense_category:, vendor:, user: admin) }
-  let_it_be(:expense2) { create(:expense, company:, expense_category: expense_category_2, user: employee) }
+  let_it_be(:expense1) { create(:expense, company:, category_name: "Travel", vendor_name: "Jetway", user: admin) }
+  let_it_be(:expense2) { create(:expense, company:, category_name: "Food", vendor_name: "Cafe 21", user: employee) }
 
   let_it_be(:book_keeper) { create(:user, current_workspace_id: company.id) }
   let_it_be(:admin) { create(:user, current_workspace_id: company.id) }
@@ -50,12 +46,14 @@ RSpec.describe "Api::V1::Expense#index", type: :request do
                             "amount" => expense.amount.to_s,
                             "date" => CompanyDateFormattingService.new(expense.date, company:).process,
                             "expenseType" => expense.expense_type,
-                            "expenseCategoryId" => expense.expense_category_id,
-                            "vendorId" => expense.vendor_id,
-                            "categoryName" => expense.expense_category.name,
-                            "vendorName" => expense.vendor&.name,
+                            "categoryName" => expense.category_name,
+                            "vendorName" => expense.vendor_name,
                             "description" => expense.description,
-                            "receipts" => []
+                            "receipts" => [],
+                            "status" => expense.status,
+                            "paidAt" => expense.paid_at,
+                            "userId" => expense.user_id,
+                            "submitterName" => expense.submitter_name
                           }
                         end
         expect(json_response["expenses"]).to eq(expected_data)
@@ -66,21 +64,15 @@ RSpec.describe "Api::V1::Expense#index", type: :request do
           { "pages" => 1, "first" => true, "prev" => nil, "next" => nil, "last" => true })
       end
 
-      it "returns list of vendors in the response" do
-        expect(json_response["vendors"]).to eq(
-          [{ "id" => vendor.id, "name" => vendor.name }])
-      end
-
       it "returns list of categories in the response" do
         expect(json_response["categories"]).to eq(
-          [{ "id" => expense_category.id, "name" => expense_category.name, "default" => false },
-           { "id" => expense_category_2.id, "name" => expense_category_2.name, "default" => false }])
+          ExpenseCategory::DEFAULT_CATEGORIES.map { |category| { "name" => category[:name] } })
       end
     end
   end
 
   context "when the user is an employee" do
-    let!(:employee_expense) { create(:expense, company:, expense_category: expense_category_2, user: employee) }
+    let!(:employee_expense) { create(:expense, company:, category_name: "Food", vendor_name: "Cafe 21", user: employee) }
 
     before do
       sign_in employee

@@ -186,8 +186,9 @@ export const expensesApi = {
   update: (id: any, payload: any, config?: any) =>
     http.patch(`${expensesPath}/${id}`, payload, config),
   destroy: (id: any) => http.delete(`${expensesPath}/${id}`),
-  createCategory: (payload: any) => http.post(`/expense_categories`, payload),
-  createVendors: (payload: any) => http.post(`/vendors`, payload),
+  approve: (id: any) => http.patch(`${expensesPath}/${id}/approve`),
+  reject: (id: any) => http.patch(`${expensesPath}/${id}/reject`),
+  markPaid: (id: any) => http.patch(`${expensesPath}/${id}/mark_paid`),
 };
 
 // Generate Invoice
