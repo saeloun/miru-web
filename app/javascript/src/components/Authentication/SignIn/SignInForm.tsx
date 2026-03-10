@@ -93,26 +93,24 @@ const SignInForm = () => {
     !(values.email?.trim() && values?.password?.trim());
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-neutral-100 px-4 py-8 text-neutral-900 dark:bg-slate-900 dark:text-slate-100">
+    <div className="flex min-h-screen items-center justify-center bg-background px-4 py-8 text-foreground">
       <div className="absolute right-4 top-4">
         <AuthThemeToggle />
       </div>
-      <div className="w-full max-w-md rounded-2xl border border-black/10 bg-white/90 p-6 shadow-2xl backdrop-blur sm:p-8 dark:border-white/10 dark:bg-slate-800/90">
+      <div className="w-full max-w-md rounded-2xl border border-border bg-card/95 p-6 shadow-2xl backdrop-blur sm:p-8">
         <div className="mb-6 space-y-2 text-center">
-          <div className="mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-xl border border-black/10 bg-white shadow-sm dark:border-white/15 dark:bg-slate-900">
+          <div className="mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-xl border border-border bg-background shadow-sm">
             <img
               alt="Miru"
               className="h-7 w-7 object-contain"
               src={MiruLogoSVG}
             />
           </div>
-          <p className="text-xs uppercase tracking-[0.18em] text-neutral-500 dark:text-neutral-400">
+          <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
             Miru
           </p>
-          <h1 className="text-2xl font-semibold text-neutral-900 dark:text-white">
-            Sign in
-          </h1>
-          <p className="text-sm text-neutral-600 dark:text-neutral-400">
+          <h1 className="text-2xl font-semibold text-foreground">Sign in</h1>
+          <p className="text-sm text-muted-foreground">
             Continue to your workspace.
           </p>
         </div>
@@ -136,9 +134,9 @@ const SignInForm = () => {
                       hasError={errors.email && touched.email}
                       id="email"
                       label="Email"
-                      labelClassName="p-0 text-neutral-700 dark:text-neutral-300"
+                      labelClassName="p-0 text-foreground"
                       name="email"
-                      inputBoxClassName="h-11 border-black/10 bg-white text-neutral-900 placeholder:text-neutral-500 focus:border-neutral-400 focus-visible:ring-neutral-400 dark:border-white/15 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-400 dark:focus:border-slate-500 dark:focus-visible:ring-slate-500"
+                      inputBoxClassName="h-11 border-border bg-background text-foreground placeholder:text-muted-foreground focus:border-primary focus-visible:ring-ring"
                       setFieldError={setFieldError}
                       setFieldValue={setFieldValue}
                     />
@@ -152,9 +150,9 @@ const SignInForm = () => {
                       hasError={errors.password && touched.password}
                       id="password"
                       label="Password"
-                      labelClassName="p-0 text-neutral-700 dark:text-neutral-300"
+                      labelClassName="p-0 text-foreground"
                       name="password"
-                      inputBoxClassName="h-11 border-black/10 bg-white text-neutral-900 placeholder:text-neutral-500 focus:border-neutral-400 focus-visible:ring-neutral-400 dark:border-white/15 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-400 dark:focus:border-slate-500 dark:focus-visible:ring-slate-500"
+                      inputBoxClassName="h-11 border-border bg-background text-foreground placeholder:text-muted-foreground focus:border-primary focus-visible:ring-ring"
                       setFieldError={setFieldError}
                       setFieldValue={setFieldValue}
                       type="password"
@@ -169,19 +167,19 @@ const SignInForm = () => {
                       type="submit"
                       className={`mt-2 w-full rounded-lg border px-4 py-2.5 text-sm font-medium transition ${
                         isBtnDisabled(values)
-                          ? "cursor-not-allowed border-transparent bg-neutral-300 text-neutral-500 dark:bg-neutral-700 dark:text-neutral-400"
-                          : "cursor-pointer border-black/10 bg-neutral-900 text-white hover:bg-neutral-800 dark:border-white/15 dark:bg-white dark:text-black dark:hover:bg-neutral-200"
+                          ? "cursor-not-allowed border-transparent bg-muted text-muted-foreground"
+                          : "cursor-pointer border-transparent bg-primary text-primary-foreground hover:bg-primary/90"
                       }`}
                     >
                       Sign In
                     </button>
                   </div>
                   <div className="relative flex items-center py-5">
-                    <div className="flex-grow border-t border-black/10 dark:border-white/10" />
-                    <span className="mx-4 flex-shrink text-xs text-neutral-500 dark:text-neutral-500">
+                    <div className="flex-grow border-t border-border" />
+                    <span className="mx-4 flex-shrink text-xs text-muted-foreground">
                       or
                     </span>
-                    <div className="flex-grow border-t border-black/10 dark:border-white/10" />
+                    <div className="flex-grow border-t border-border" />
                   </div>
                 </Form>
               );
@@ -208,7 +206,7 @@ const SignInForm = () => {
                     value={csrfToken}
                   />
                   <button
-                    className="flex w-full items-center justify-center rounded-lg border border-black/10 bg-white px-4 py-2.5 text-sm font-medium text-neutral-900 transition hover:bg-neutral-100 dark:border-white/15 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-700"
+                    className="flex w-full items-center justify-center rounded-lg border border-border bg-background px-4 py-2.5 text-sm font-medium text-foreground transition hover:bg-accent"
                     type="submit"
                     onClick={handleGoogleAuth}
                   >
@@ -231,28 +229,28 @@ const SignInForm = () => {
               />
             )}
           </div>
-          <p className="mb-2 pt-6 text-center text-sm text-neutral-500 dark:text-slate-400">
+          <p className="mb-2 pt-6 text-center text-sm text-muted-foreground">
             <span className="form__link inline cursor-pointer">
               <a href={Paths.FORGOT_PASSWORD}>
-                <span className="inline-block text-neutral-700 hover:text-black dark:text-neutral-300 dark:hover:text-white">
+                <span className="inline-block text-foreground hover:text-primary">
                   Forgot password?
                 </span>
               </a>
             </span>
           </p>
-          <p className="text-center text-sm text-neutral-500 dark:text-neutral-400">
+          <p className="text-center text-sm text-muted-foreground">
             Don&apos;t have an account?{" "}
             <span className="inline cursor-pointer">
               <a href={Paths.SIGNUP}>
-                <span className="inline-block text-black hover:text-neutral-700 dark:text-white dark:hover:text-neutral-200">
+                <span className="inline-block text-foreground hover:text-primary">
                   Sign up
                 </span>
               </a>
             </span>
           </p>
-          <div className="mt-6 flex items-center justify-center gap-2 text-xs text-neutral-500 dark:text-slate-400">
+          <div className="mt-6 flex items-center justify-center gap-2 text-xs text-muted-foreground">
             <button
-              className="hover:text-neutral-700 dark:hover:text-slate-100"
+              className="hover:text-foreground"
               onClick={handlePrivacyPolicy}
               type="button"
             >
@@ -260,7 +258,7 @@ const SignInForm = () => {
             </button>
             <span>•</span>
             <button
-              className="hover:text-neutral-700 dark:hover:text-slate-100"
+              className="hover:text-foreground"
               onClick={handleTermsOfService}
               type="button"
             >

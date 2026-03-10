@@ -33,8 +33,7 @@ const ReportsPage: React.FC<ReportsPageProps> = ({ className }) => {
       name: "Financial Reports",
       description: "Revenue, billing, and payment analytics",
       icon: CurrencyDollar,
-      color:
-        "bg-green-100 text-green-600 dark:bg-green-900/20 dark:text-green-400",
+      color: "bg-emerald-100 text-emerald-700",
       reports: [
         {
           title: "Revenue by Client",
@@ -67,7 +66,7 @@ const ReportsPage: React.FC<ReportsPageProps> = ({ className }) => {
       name: "Time & Productivity",
       description: "Time tracking and productivity insights",
       icon: Clock,
-      color: "bg-blue-100 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400",
+      color: "bg-sky-100 text-sky-700",
       reports: [
         {
           title: "Time Entry Report",
@@ -149,25 +148,20 @@ const ReportsPage: React.FC<ReportsPageProps> = ({ className }) => {
   };
 
   return (
-    <div
-      className={cn(
-        "min-h-screen bg-gray-50/50 dark:bg-gray-900/50",
-        className
-      )}
-    >
+    <div className={cn("min-h-screen bg-muted/30", className)}>
       {/* Header */}
-      <div className="bg-white dark:bg-gray-900 border-b dark:border-gray-800 sticky top-0 z-10">
+      <div className="bg-background border-b border-border sticky top-0 z-10">
         <div className="px-4 py-4 sm:px-6">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div className="flex items-center gap-4">
-              <div className="p-2 bg-miru-han-purple-1000/10 rounded-lg">
-                <BarChart3 className="h-6 w-6 text-miru-han-purple-1000" />
+              <div className="p-2 bg-primary/10 rounded-lg">
+                <BarChart3 className="h-6 w-6 text-primary" />
               </div>
               <div>
-                <h1 className="text-xl font-semibold text-gray-900 dark:text-gray-100 sm:text-2xl">
+                <h1 className="text-xl font-semibold text-foreground sm:text-2xl">
                   Reports & Analytics
                 </h1>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                <p className="text-sm text-muted-foreground mt-1">
                   Comprehensive insights into your business performance
                 </p>
               </div>
@@ -179,14 +173,14 @@ const ReportsPage: React.FC<ReportsPageProps> = ({ className }) => {
                 <label htmlFor="reports-search" className="sr-only">
                   Search reports
                 </label>
-                <MagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <MagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                 <input
                   id="reports-search"
                   type="text"
                   placeholder="Search Reports..."
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-miru-han-purple-1000 focus:border-transparent bg-white dark:bg-gray-800 dark:text-gray-100"
+                  className="w-full rounded-lg border border-border bg-background py-2 pl-10 pr-4 text-sm text-foreground focus:border-transparent focus:outline-none focus:ring-2 focus:ring-ring"
                 />
               </div>
 
@@ -202,7 +196,7 @@ const ReportsPage: React.FC<ReportsPageProps> = ({ className }) => {
               </Button>
 
               <Button
-                className="w-full bg-miru-han-purple-1000 sm:w-auto"
+                className="w-full bg-primary sm:w-auto"
                 size="sm"
                 disabled
                 aria-disabled="true"
@@ -231,18 +225,16 @@ const ReportsPage: React.FC<ReportsPageProps> = ({ className }) => {
                 <CardContent className="p-4">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">
+                      <p className="text-sm text-muted-foreground mb-1">
                         {stat.label}
                       </p>
-                      <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                      <p className="text-2xl font-bold text-foreground">
                         {stat.value}
                       </p>
                       <div
                         className={cn(
                           "flex items-center gap-1 text-xs mt-2",
-                          isPositive
-                            ? "text-green-600 dark:text-green-400"
-                            : "text-red-600 dark:text-red-400"
+                          isPositive ? "text-emerald-600" : "text-destructive"
                         )}
                       >
                         <TrendUp
@@ -251,8 +243,8 @@ const ReportsPage: React.FC<ReportsPageProps> = ({ className }) => {
                         <span>{stat.change}</span>
                       </div>
                     </div>
-                    <div className="p-2 bg-gray-100 dark:bg-gray-800 rounded-lg group-hover:bg-miru-han-purple-1000/10 transition-colors">
-                      <Icon className="w-5 h-5 text-gray-600 dark:text-gray-400 group-hover:text-miru-han-purple-1000 transition-colors" />
+                    <div className="p-2 bg-muted rounded-lg group-hover:bg-primary/10 transition-colors">
+                      <Icon className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
                     </div>
                   </div>
                 </CardContent>
@@ -272,10 +264,10 @@ const ReportsPage: React.FC<ReportsPageProps> = ({ className }) => {
                   <CategoryIcon className="w-5 h-5" />
                 </div>
                 <div>
-                  <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                  <h2 className="text-lg font-semibold text-foreground">
                     {category.name}
                   </h2>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                  <p className="text-sm text-muted-foreground">
                     {category.description}
                   </p>
                 </div>
@@ -288,7 +280,7 @@ const ReportsPage: React.FC<ReportsPageProps> = ({ className }) => {
                   return (
                     <Card
                       key={index}
-                      className="group cursor-pointer transition-all duration-200 hover:shadow-lg hover:border-miru-han-purple-1000/30"
+                      className="group cursor-pointer transition-all duration-200 hover:shadow-lg hover:border-primary/30"
                       onClick={() => handleReportClick(report.path)}
                       onKeyDown={e => handleCardKeyDown(e, report.path)}
                       role="button"
@@ -298,32 +290,32 @@ const ReportsPage: React.FC<ReportsPageProps> = ({ className }) => {
                       <CardHeader className="pb-3">
                         <div className="flex items-start justify-between">
                           <div className="flex items-center gap-3">
-                            <div className="p-2 bg-gray-100 dark:bg-gray-800 rounded-lg group-hover:bg-miru-han-purple-1000/10 transition-colors">
-                              <ReportIcon className="w-5 h-5 text-gray-600 dark:text-gray-400 group-hover:text-miru-han-purple-1000 transition-colors" />
+                            <div className="p-2 bg-muted rounded-lg group-hover:bg-primary/10 transition-colors">
+                              <ReportIcon className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
                             </div>
                             <div className="flex-1">
-                              <h3 className="font-semibold text-gray-900 dark:text-gray-100 group-hover:text-miru-han-purple-1000 transition-colors">
+                              <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors">
                                 {report.title}
                               </h3>
                               {report.isPopular && (
                                 <Badge
                                   variant="secondary"
-                                  className="mt-1 bg-orange-100 text-orange-600 text-xs"
+                                  className="mt-1 bg-amber-100 text-amber-700 text-xs"
                                 >
                                   Popular
                                 </Badge>
                               )}
                             </div>
                           </div>
-                          <ArrowUpRight className="w-4 h-4 text-gray-400 group-hover:text-miru-han-purple-1000 transition-colors" />
+                          <ArrowUpRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
                         </div>
                       </CardHeader>
                       <CardContent className="pt-0">
-                        <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                        <p className="text-sm text-muted-foreground mb-3">
                           {report.description}
                         </p>
                         <div className="flex items-center justify-between">
-                          <span className="text-xs text-gray-500 dark:text-gray-400">
+                          <span className="text-xs text-muted-foreground">
                             {report.stats}
                           </span>
                           <Button
@@ -352,11 +344,11 @@ const ReportsPage: React.FC<ReportsPageProps> = ({ className }) => {
         {/* No results */}
         {searchQuery && filteredReports.length === 0 && (
           <div className="text-center py-12">
-            <MagnifyingGlass className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
+            <MagnifyingGlass className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-foreground mb-2">
               No reports found
             </h3>
-            <p className="text-gray-500 dark:text-gray-400">
+            <p className="text-muted-foreground">
               Try adjusting your search query to find the reports you're looking
               for
             </p>
@@ -366,11 +358,11 @@ const ReportsPage: React.FC<ReportsPageProps> = ({ className }) => {
         {/* Empty state when no search */}
         {!searchQuery && filteredReports.length === 0 && (
           <div className="text-center py-12">
-            <BarChart3 className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
+            <BarChart3 className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-foreground mb-2">
               Welcome to Reports
             </h3>
-            <p className="text-gray-500 dark:text-gray-400 max-w-md mx-auto">
+            <p className="text-muted-foreground max-w-md mx-auto">
               Generate comprehensive reports to analyze your business
               performance, track revenue, and monitor productivity.
             </p>

@@ -69,7 +69,7 @@ const TimeTrackingPage: React.FC<TimeTrackingPageProps> = ({ className }) => {
       id: "1",
       name: "Website Redesign",
       client: "Acme Corp",
-      color: "bg-blue-500",
+      color: "bg-sky-500",
       totalHours: 45.5,
       targetHours: 60,
       isActive: true,
@@ -87,7 +87,7 @@ const TimeTrackingPage: React.FC<TimeTrackingPageProps> = ({ className }) => {
       id: "3",
       name: "Brand Identity",
       client: "Creative Studio",
-      color: "bg-purple-500",
+      color: "bg-primary",
       totalHours: 18.5,
       targetHours: 25,
       isActive: false,
@@ -162,7 +162,7 @@ const TimeTrackingPage: React.FC<TimeTrackingPageProps> = ({ className }) => {
         icon: Pause,
       },
       completed: {
-        color: "bg-blue-100 text-blue-800 border-blue-200",
+        color: "bg-sky-100 text-sky-800 border-sky-200",
         icon: CheckCircle,
       },
     };
@@ -207,25 +207,20 @@ const TimeTrackingPage: React.FC<TimeTrackingPageProps> = ({ className }) => {
   );
 
   return (
-    <div
-      className={cn(
-        "min-h-screen bg-gray-50/50 dark:bg-gray-900/50",
-        className
-      )}
-    >
+    <div className={cn("min-h-screen bg-muted/30", className)}>
       {/* Header */}
-      <div className="bg-white dark:bg-gray-900 border-b dark:border-gray-800 sticky top-0 z-10">
+      <div className="bg-background border-b border-border sticky top-0 z-10">
         <div className="px-4 py-4 sm:px-6">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div className="flex items-center gap-4">
-              <div className="p-2 bg-miru-han-purple-1000/10 rounded-lg">
-                <Clock className="h-6 w-6 text-miru-han-purple-1000" />
+              <div className="p-2 bg-primary/10 rounded-lg">
+                <Clock className="h-6 w-6 text-primary" />
               </div>
               <div>
-                <h1 className="text-xl font-semibold text-gray-900 dark:text-gray-100 sm:text-2xl">
+                <h1 className="text-xl font-semibold text-foreground sm:text-2xl">
                   Time Tracking
                 </h1>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                <p className="text-sm text-muted-foreground mt-1">
                   Track time across projects and monitor productivity
                 </p>
               </div>
@@ -237,23 +232,23 @@ const TimeTrackingPage: React.FC<TimeTrackingPageProps> = ({ className }) => {
                 type="date"
                 value={selectedDate}
                 onChange={e => setSelectedDate(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-miru-han-purple-1000 focus:border-transparent bg-white dark:bg-gray-800 dark:text-gray-100 sm:w-auto"
+                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:border-transparent focus:outline-none focus:ring-2 focus:ring-ring sm:w-auto"
               />
 
               {/* MagnifyingGlass */}
               <div className="relative w-full sm:flex-1 lg:w-72 lg:flex-none">
-                <MagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <MagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                 <input
                   type="text"
                   placeholder="Search Entries..."
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-miru-han-purple-1000 focus:border-transparent bg-white dark:bg-gray-800 dark:text-gray-100"
+                  className="w-full rounded-lg border border-border bg-background py-2 pl-10 pr-4 text-sm text-foreground focus:border-transparent focus:outline-none focus:ring-2 focus:ring-ring"
                 />
               </div>
 
               <Button
-                className="w-full bg-miru-han-purple-1000 hover:bg-miru-han-purple-600 sm:w-auto"
+                className="w-full bg-primary hover:bg-primary/90 sm:w-auto"
                 size="sm"
               >
                 <Plus className="mr-2 h-4 w-4" />
@@ -272,17 +267,15 @@ const TimeTrackingPage: React.FC<TimeTrackingPageProps> = ({ className }) => {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    Today's Hours
-                  </p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                  <p className="text-sm text-muted-foreground">Today's Hours</p>
+                  <p className="text-2xl font-bold text-foreground">
                     {todayStats.totalHours}h
                   </p>
-                  <p className="text-xs text-green-600 dark:text-green-400 mt-1">
+                  <p className="mt-1 text-xs text-emerald-600">
                     +1.2h from yesterday
                   </p>
                 </div>
-                <Timer className="w-8 h-8 text-blue-500" />
+                <Timer className="w-8 h-8 text-primary" />
               </div>
             </CardContent>
           </Card>
@@ -291,13 +284,13 @@ const TimeTrackingPage: React.FC<TimeTrackingPageProps> = ({ className }) => {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                  <p className="text-sm text-muted-foreground">
                     Billable Hours
                   </p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                  <p className="text-2xl font-bold text-foreground">
                     {todayStats.billableHours}h
                   </p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                  <p className="text-xs text-muted-foreground mt-1">
                     {Math.round(
                       (todayStats.billableHours / todayStats.totalHours) * 100
                     )}
@@ -313,17 +306,17 @@ const TimeTrackingPage: React.FC<TimeTrackingPageProps> = ({ className }) => {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                  <p className="text-sm text-muted-foreground">
                     Active Projects
                   </p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                  <p className="text-2xl font-bold text-foreground">
                     {todayStats.projects}
                   </p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                  <p className="text-xs text-muted-foreground mt-1">
                     Across {mockProjects.filter(p => p.isActive).length} clients
                   </p>
                 </div>
-                <Users className="w-8 h-8 text-purple-500" />
+                <Users className="w-8 h-8 text-primary" />
               </div>
             </CardContent>
           </Card>
@@ -332,15 +325,11 @@ const TimeTrackingPage: React.FC<TimeTrackingPageProps> = ({ className }) => {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    Productivity
-                  </p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                  <p className="text-sm text-muted-foreground">Productivity</p>
+                  <p className="text-2xl font-bold text-foreground">
                     {todayStats.productivity}%
                   </p>
-                  <p className="text-xs text-green-600 dark:text-green-400 mt-1">
-                    +5% this week
-                  </p>
+                  <p className="mt-1 text-xs text-emerald-600">+5% this week</p>
                 </div>
                 <Lightning className="w-8 h-8 text-orange-500" />
               </div>
@@ -354,7 +343,7 @@ const TimeTrackingPage: React.FC<TimeTrackingPageProps> = ({ className }) => {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Timer className="w-5 h-5 text-miru-han-purple-1000" />
+                  <Timer className="w-5 h-5 text-primary" />
                   Quick Timer
                 </CardTitle>
                 <CardDescription>
@@ -367,23 +356,23 @@ const TimeTrackingPage: React.FC<TimeTrackingPageProps> = ({ className }) => {
                   .map(project => (
                     <div
                       key={project.id}
-                      className="flex flex-col gap-3 rounded-lg border border-gray-200 p-4 dark:border-gray-700 sm:flex-row sm:items-center sm:justify-between"
+                      className="flex flex-col gap-3 rounded-lg border border-border p-4 border-border sm:flex-row sm:items-center sm:justify-between"
                     >
                       <div className="flex items-center gap-3">
                         <div
                           className={cn("w-3 h-3 rounded-full", project.color)}
                         />
                         <div>
-                          <h4 className="font-medium text-gray-900 dark:text-gray-100">
+                          <h4 className="font-medium text-foreground">
                             {project.name}
                           </h4>
-                          <p className="text-sm text-gray-500 dark:text-gray-400">
+                          <p className="text-sm text-muted-foreground">
                             {project.client}
                           </p>
                         </div>
                       </div>
                       <div className="flex w-full items-center justify-between gap-2 sm:w-auto sm:justify-end">
-                        <span className="text-sm text-gray-500 dark:text-gray-400">
+                        <span className="text-sm text-muted-foreground">
                           {project.totalHours}h / {project.targetHours}h
                         </span>
                         <Button
@@ -422,7 +411,7 @@ const TimeTrackingPage: React.FC<TimeTrackingPageProps> = ({ className }) => {
             <Card className="mt-6">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <BarChart3 className="w-5 h-5 text-miru-han-purple-1000" />
+                  <BarChart3 className="w-5 h-5 text-primary" />
                   Recent Entries
                 </CardTitle>
                 <CardDescription>
@@ -434,7 +423,7 @@ const TimeTrackingPage: React.FC<TimeTrackingPageProps> = ({ className }) => {
                   {filteredEntries.map(entry => (
                     <div
                       key={entry.id}
-                      className="flex flex-col gap-3 rounded-lg border border-gray-200 p-4 transition-colors hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800/50 sm:flex-row sm:items-center sm:justify-between"
+                      className="flex flex-col gap-3 rounded-lg border border-border p-4 transition-colors hover:bg-accent sm:flex-row sm:items-center sm:justify-between"
                     >
                       <div className="flex flex-1 items-center gap-3">
                         <Avatar className="h-8 w-8">
@@ -442,31 +431,31 @@ const TimeTrackingPage: React.FC<TimeTrackingPageProps> = ({ className }) => {
                             src={entry.user.avatar}
                             alt={entry.user.name}
                           />
-                          <AvatarFallback className="bg-miru-han-purple-1000/10 text-miru-han-purple-1000 text-xs">
+                          <AvatarFallback className="bg-primary/10 text-primary text-xs">
                             {getInitials(entry.user.name)}
                           </AvatarFallback>
                         </Avatar>
                         <div className="flex-1">
                           <div className="mb-1 flex flex-wrap items-center gap-2">
-                            <h4 className="font-medium text-gray-900 dark:text-gray-100">
+                            <h4 className="font-medium text-foreground">
                               {entry.project}
                             </h4>
-                            <span className="text-sm text-gray-500 dark:text-gray-400">
+                            <span className="text-sm text-muted-foreground">
                               •
                             </span>
-                            <span className="text-sm text-gray-500 dark:text-gray-400">
+                            <span className="text-sm text-muted-foreground">
                               {entry.client}
                             </span>
                             {entry.billable && (
                               <Badge
                                 variant="secondary"
-                                className="text-xs bg-green-100 text-green-700"
+                                className="text-xs bg-emerald-100 text-emerald-700"
                               >
                                 Billable
                               </Badge>
                             )}
                           </div>
-                          <p className="text-sm text-gray-600 dark:text-gray-400 truncate">
+                          <p className="text-sm text-muted-foreground truncate">
                             {entry.description}
                           </p>
                         </div>
@@ -474,10 +463,10 @@ const TimeTrackingPage: React.FC<TimeTrackingPageProps> = ({ className }) => {
 
                       <div className="flex w-full items-center justify-between gap-3 sm:w-auto sm:justify-end">
                         <div className="text-right">
-                          <p className="font-medium text-gray-900 dark:text-gray-100">
+                          <p className="font-medium text-foreground">
                             {formatDuration(entry.duration)}
                           </p>
-                          <p className="text-xs text-gray-500 dark:text-gray-400">
+                          <p className="text-xs text-muted-foreground">
                             {entry.date}
                           </p>
                         </div>
@@ -504,16 +493,14 @@ const TimeTrackingPage: React.FC<TimeTrackingPageProps> = ({ className }) => {
               <CardContent className="space-y-4">
                 <div>
                   <div className="flex justify-between text-sm mb-2">
-                    <span className="text-gray-500 dark:text-gray-400">
-                      Total Hours
-                    </span>
+                    <span className="text-muted-foreground">Total Hours</span>
                     <span className="font-medium">
                       {weeklyStats.totalHours}h / {weeklyStats.target}h
                     </span>
                   </div>
-                  <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                  <div className="w-full bg-secondary rounded-full h-2">
                     <div
-                      className="bg-miru-han-purple-1000 h-2 rounded-full"
+                      className="bg-primary h-2 rounded-full"
                       style={{
                         width: `${Math.min(
                           (weeklyStats.totalHours / weeklyStats.target) * 100,
@@ -526,14 +513,14 @@ const TimeTrackingPage: React.FC<TimeTrackingPageProps> = ({ className }) => {
 
                 <div>
                   <div className="flex justify-between text-sm mb-2">
-                    <span className="text-gray-500 dark:text-gray-400">
+                    <span className="text-muted-foreground">
                       Billable Hours
                     </span>
                     <span className="font-medium">
                       {weeklyStats.billableHours}h
                     </span>
                   </div>
-                  <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                  <div className="w-full bg-secondary rounded-full h-2">
                     <div
                       className="bg-green-500 h-2 rounded-full"
                       style={{
@@ -576,15 +563,15 @@ const TimeTrackingPage: React.FC<TimeTrackingPageProps> = ({ className }) => {
                         <div
                           className={cn("w-2 h-2 rounded-full", project.color)}
                         />
-                        <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                        <span className="text-sm font-medium text-foreground">
                           {project.name}
                         </span>
                       </div>
-                      <span className="text-sm text-gray-500 dark:text-gray-400">
+                      <span className="text-sm text-muted-foreground">
                         {project.totalHours}h
                       </span>
                     </div>
-                    <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5">
+                    <div className="w-full bg-secondary rounded-full h-1.5">
                       <div
                         className={cn("h-1.5 rounded-full", project.color)}
                         style={{

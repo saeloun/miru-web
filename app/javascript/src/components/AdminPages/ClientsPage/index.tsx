@@ -152,7 +152,7 @@ const ClientsPage: React.FC<ClientsPageProps> = ({
         icon: Warning,
       },
       inactive: {
-        color: "bg-gray-100 text-gray-800 border-gray-200",
+        color: "bg-muted text-foreground border-border",
         icon: Warning,
       },
     };
@@ -196,25 +196,20 @@ const ClientsPage: React.FC<ClientsPageProps> = ({
   };
 
   return (
-    <div
-      className={cn(
-        "min-h-screen bg-gray-50/50 dark:bg-gray-900/50",
-        className
-      )}
-    >
+    <div className={cn("min-h-screen bg-muted/30", className)}>
       {/* Header */}
-      <div className="bg-white dark:bg-gray-900 border-b dark:border-gray-800 sticky top-0 z-10">
+      <div className="bg-background border-b border-border sticky top-0 z-10">
         <div className="px-4 py-4 sm:px-6">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div className="flex items-center gap-4">
-              <div className="p-2 bg-miru-han-purple-1000/10 rounded-lg">
-                <Users className="h-6 w-6 text-miru-han-purple-1000" />
+              <div className="p-2 bg-primary/10 rounded-lg">
+                <Users className="h-6 w-6 text-primary" />
               </div>
               <div>
-                <h1 className="text-xl font-semibold text-gray-900 dark:text-gray-100 sm:text-2xl">
+                <h1 className="text-xl font-semibold text-foreground sm:text-2xl">
                   Clients
                 </h1>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                <p className="text-sm text-muted-foreground mt-1">
                   Manage your client relationships and projects
                 </p>
               </div>
@@ -223,13 +218,13 @@ const ClientsPage: React.FC<ClientsPageProps> = ({
             <div className="flex w-full flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center lg:w-auto lg:flex-nowrap">
               {/* MagnifyingGlass */}
               <div className="relative w-full sm:flex-1 lg:w-72 lg:flex-none">
-                <MagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <MagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                 <input
                   type="text"
                   placeholder="Search Clients..."
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-miru-han-purple-1000 focus:border-transparent bg-white dark:bg-gray-800 dark:text-gray-100"
+                  className="w-full rounded-lg border border-border bg-background py-2 pl-10 pr-4 text-sm text-foreground focus:border-transparent focus:outline-none focus:ring-2 focus:ring-ring"
                 />
               </div>
 
@@ -239,7 +234,7 @@ const ClientsPage: React.FC<ClientsPageProps> = ({
               </Button>
 
               <Button
-                className="w-full bg-miru-han-purple-1000 hover:bg-miru-han-purple-600 sm:w-auto"
+                className="w-full bg-primary hover:bg-primary/90 sm:w-auto"
                 size="sm"
               >
                 <Plus className="mr-2 h-4 w-4" />
@@ -258,10 +253,8 @@ const ClientsPage: React.FC<ClientsPageProps> = ({
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    Total Revenue
-                  </p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                  <p className="text-sm text-muted-foreground">Total Revenue</p>
+                  <p className="text-2xl font-bold text-foreground">
                     {currencyFormat("USD", totalStats.totalRevenue)}
                   </p>
                 </div>
@@ -274,10 +267,8 @@ const ClientsPage: React.FC<ClientsPageProps> = ({
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    Outstanding
-                  </p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                  <p className="text-sm text-muted-foreground">Outstanding</p>
+                  <p className="text-2xl font-bold text-foreground">
                     {currencyFormat("USD", totalStats.outstanding)}
                   </p>
                 </div>
@@ -290,14 +281,14 @@ const ClientsPage: React.FC<ClientsPageProps> = ({
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                  <p className="text-sm text-muted-foreground">
                     Active Clients
                   </p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                  <p className="text-2xl font-bold text-foreground">
                     {totalStats.activeClients}
                   </p>
                 </div>
-                <Users className="w-8 h-8 text-blue-500" />
+                <Users className="w-8 h-8 text-primary" />
               </div>
             </CardContent>
           </Card>
@@ -306,21 +297,19 @@ const ClientsPage: React.FC<ClientsPageProps> = ({
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    VIP Clients
-                  </p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                  <p className="text-sm text-muted-foreground">VIP Clients</p>
+                  <p className="text-2xl font-bold text-foreground">
                     {totalStats.vipClients}
                   </p>
                 </div>
-                <Star className="w-8 h-8 text-purple-500" />
+                <Star className="w-8 h-8 text-primary" />
               </div>
             </CardContent>
           </Card>
         </div>
 
         {/* Status Funnel Tabs */}
-        <div className="flex w-full gap-1 overflow-x-auto rounded-lg bg-gray-100 p-1 dark:bg-gray-800 sm:w-fit">
+        <div className="flex w-full gap-1 overflow-x-auto rounded-lg bg-muted p-1 dark:bg-gray-800 sm:w-fit">
           {statusOptions.map(option => (
             <button
               key={option.value}
@@ -328,8 +317,8 @@ const ClientsPage: React.FC<ClientsPageProps> = ({
               className={cn(
                 "px-4 py-2 rounded-md text-sm font-medium transition-all duration-200",
                 selectedStatus === option.value
-                  ? "bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm"
-                  : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
+                  ? "bg-background dark:bg-gray-700 text-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
               )}
             >
               {option.label} ({option.count})
@@ -342,7 +331,7 @@ const ClientsPage: React.FC<ClientsPageProps> = ({
           {filteredClients.map(client => (
             <Card
               key={client.id}
-              className="group cursor-pointer transition-all duration-200 hover:shadow-lg hover:border-miru-han-purple-1000/30"
+              className="group cursor-pointer transition-all duration-200 hover:shadow-lg hover:border-primary/30"
               onClick={() => handleClientClick(client.id)}
             >
               <CardHeader className="pb-3">
@@ -350,20 +339,20 @@ const ClientsPage: React.FC<ClientsPageProps> = ({
                   <div className="flex min-w-0 items-center gap-3">
                     <Avatar className="h-12 w-12">
                       <AvatarImage src={client.avatar} alt={client.name} />
-                      <AvatarFallback className="bg-miru-han-purple-1000/10 text-miru-han-purple-1000 font-medium">
+                      <AvatarFallback className="bg-primary/10 text-primary font-medium">
                         {getInitials(client.name)}
                       </AvatarFallback>
                     </Avatar>
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2">
-                        <h3 className="truncate font-semibold text-gray-900 transition-colors group-hover:text-miru-han-purple-1000 dark:text-gray-100">
+                        <h3 className="truncate font-semibold text-gray-900 transition-colors group-hover:text-primary dark:text-gray-100">
                           {client.name}
                         </h3>
                         {client.isVip && (
                           <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
                         )}
                       </div>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                      <p className="text-sm text-muted-foreground">
                         {client.company}
                       </p>
                     </div>
@@ -380,17 +369,13 @@ const ClientsPage: React.FC<ClientsPageProps> = ({
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div>
-                    <p className="text-gray-500 dark:text-gray-400">
-                      Total Revenue
-                    </p>
-                    <p className="font-semibold text-gray-900 dark:text-gray-100">
+                    <p className="text-muted-foreground">Total Revenue</p>
+                    <p className="font-semibold text-foreground">
                       {currencyFormat(client.currency, client.totalRevenue)}
                     </p>
                   </div>
                   <div>
-                    <p className="text-gray-500 dark:text-gray-400">
-                      Outstanding
-                    </p>
+                    <p className="text-muted-foreground">Outstanding</p>
                     <p
                       className={cn(
                         "font-semibold",
@@ -408,22 +393,22 @@ const ClientsPage: React.FC<ClientsPageProps> = ({
                 </div>
 
                 <div className="flex items-center justify-between text-sm">
-                  <div className="flex items-center gap-1 text-gray-500 dark:text-gray-400">
+                  <div className="flex items-center gap-1 text-muted-foreground">
                     <Buildings className="w-4 h-4" />
                     <span>{client.projectsCount} projects</span>
                   </div>
-                  <div className="flex items-center gap-1 text-gray-500 dark:text-gray-400">
+                  <div className="flex items-center gap-1 text-muted-foreground">
                     <Calendar className="w-4 h-4" />
                     <span>{client.lastActivity}</span>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2 pt-2 border-t border-gray-100 dark:border-gray-700">
-                  <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
+                <div className="flex items-center gap-2 pt-2 border-t border-gray-100 border-border">
+                  <div className="flex items-center gap-1 text-xs text-muted-foreground">
                     <Envelope className="w-3 h-3" />
                     <span className="truncate">{client.email}</span>
                   </div>
-                  <ArrowUpRight className="w-4 h-4 text-gray-400 group-hover:text-miru-han-purple-1000 transition-colors ml-auto" />
+                  <ArrowUpRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors ml-auto" />
                 </div>
               </CardContent>
             </Card>
@@ -433,17 +418,17 @@ const ClientsPage: React.FC<ClientsPageProps> = ({
         {/* Empty State */}
         {filteredClients.length === 0 && (
           <div className="text-center py-12">
-            <Users className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
+            <Users className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-foreground mb-2">
               {searchQuery ? "No clients found" : "No clients yet"}
             </h3>
-            <p className="text-gray-500 dark:text-gray-400 max-w-md mx-auto">
+            <p className="text-muted-foreground max-w-md mx-auto">
               {searchQuery
                 ? "Try adjusting your search query to find the clients you're looking for"
                 : "Start building your client base by adding your first client"}
             </p>
             {!searchQuery && (
-              <Button className="mt-4 bg-miru-han-purple-1000 hover:bg-miru-han-purple-600">
+              <Button className="mt-4 bg-primary hover:bg-primary/90">
                 <Plus className="mr-2 h-4 w-4" />
                 Add Your First Client
               </Button>
