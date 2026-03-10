@@ -5,8 +5,7 @@
 # (e.g., during server restarts, maintenance, or container orchestration events)
 
 Rails.application.config.after_initialize do
-  # Ensure connections are verified before use
-  ActiveRecord::Base.connection_pool.verify_active_connections! if Rails.env.production?
+  ActiveRecord::Base.connection_pool.flush! if Rails.env.production?
 
   # Configure Solid Queue's on_thread_error to handle connection failures
   if defined?(SolidQueue)

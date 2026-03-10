@@ -4,11 +4,9 @@ import { ROUTES } from "constants/routes";
 import React from "react";
 
 import ErrorPage from "common/Error";
-import Loader from "common/Loader/index";
 import Cookies from "js-cookie";
 import { Routes, Route, Outlet, Navigate } from "react-router-dom";
 import { dashboardUrl } from "utils/dashboardUrl";
-import { useUserContext } from "context/UserContext";
 
 const isSafeInternalPath = (p: string): boolean => {
   const trimmed = (p || "").trim();
@@ -51,10 +49,8 @@ const redirectUrl = role => {
 };
 
 const RestrictedRoute = ({ user, role, authorisedRoles }) => {
-  const { loading } = useUserContext();
-
-  if (loading || !user || !role) {
-    return <Loader className="h-screen" />;
+  if (!user || !role) {
+    return <Navigate to="/user/sign_in" />;
   }
 
   if (authorisedRoles.includes(role)) {

@@ -2,32 +2,58 @@
 
 module SessionHelpers
   def sign_in(user)
+    ensure_user_setup(user)
+
+    Capybara.reset_sessions!
     Warden.test_mode!
     Warden.test_reset!
-    Capybara.reset_sessions!
-
-    if user.current_workspace_id.nil? && user.companies.any?
-      user.update!(current_workspace_id: user.companies.first.id)
-    end
-
-    test_password = "Password123!"
-    user.update!(password: test_password, password_confirmation: test_password)
-
+    logout(:user) if respond_to?(:logout)
     login_as(user, scope: :user)
-    visit "/time-tracking"
+    company = user.companies.find(user.current_workspace_id)
+    role = user.roles.where(resource: company).pick(:name)
+
+    visit "/"
     wait_for_react_app
 
-    if page.has_field?("Email", wait: 1) && page.has_field?("Password", wait: 1)
-      perform_ui_login(user.email, test_password)
-      visit "/time-tracking"
-      wait_for_react_app
-    end
+    page.execute_script <<~JS
+      window.localStorage.clear();
+      window.sessionStorage.clear();
+      window.localStorage.setItem("authToken", #{user.token.to_json}.replace(/^"|"$/g, ""));
+      window.localStorage.setItem("authEmail", #{user.email.to_json}.replace(/^"|"$/g, ""));
+      window.localStorage.setItem("user", JSON.stringify(#{user.to_json}));
+      window.localStorage.setItem("company_role", #{role.to_json}.replace(/^"|"$/g, ""));
+      window.localStorage.setItem("company", JSON.stringify(#{company.to_json}));
+    JS
 
-    expect(page).to have_no_current_path(%r{/users/sign_in}, wait: 10)
+    visit "/dashboard"
+    wait_for_react_app
+    expect(page).to have_content("Dashboard", wait: 15)
   end
 
   def wait_for_react_app
-    expect(page).to have_css("#react-root", wait: 10)
+    expect(page).to have_css("#react-root", wait: 15)
+  end
+
+  def ensure_user_setup(user)
+    if user.current_workspace_id.nil? || !user.companies.exists?(id: user.current_workspace_id)
+      company = user.companies.first || create(:company)
+      create(:employment, user:, company:) unless user.employments.exists?(company:)
+      user.update!(current_workspace_id: company.id)
+    end
+
+    current_company = user.companies.find_by(id: user.current_workspace_id)
+
+    unless current_company
+      current_company = create(:company)
+      create(:employment, user:, company: current_company)
+      user.update!(current_workspace_id: current_company.id)
+    end
+
+    unless user.has_any_role?(:admin, :owner, :employee, :book_keeper, :client)
+      user.add_role(:employee, current_company)
+    end
+
+    user.confirm unless user.confirmed?
   end
 
   def navigate_to_spa_page(path)
@@ -38,29 +64,4 @@ module SessionHelpers
   def skip_react_app_for_functionality_test
     true
   end
-
-  def sign_in_via_ui(user, password = "Password123!")
-    Warden.test_mode!
-    Warden.test_reset!
-    Capybara.reset_sessions!
-    perform_ui_login(user.email, password)
-    visit "/time-tracking"
-    wait_for_react_app
-    expect(page).to have_current_path("/time-tracking", wait: 10)
-  end
-
-  private
-
-    def perform_ui_login(email, password)
-      visit "/users/sign_in"
-      wait_for_react_app
-
-      expect(page).to have_field("Email", wait: 15)
-      expect(page).to have_field("Password", wait: 15)
-      fill_in "Email", with: email
-      fill_in "Password", with: password
-      click_button "Sign In"
-      wait_for_react_app
-      expect(page).to have_no_current_path(%r{/users/sign_in}, wait: 15)
-    end
 end
