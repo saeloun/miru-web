@@ -1,15 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { MIRU_APP_URL } from "constants/index";
 import { MiruLogoWithTextSVG } from "miruIcons";
-import dashboardPreview from "../../../../assets/images/auth/dashboard-preview.png";
-import dashboardPreviewDark from "../../../../assets/images/auth/dashboard-preview-dark.png";
-import invoicesPreview from "../../../../assets/images/auth/invoices-preview.png";
-import invoicesPreviewDark from "../../../../assets/images/auth/invoices-preview-dark.png";
-import paymentsPreview from "../../../../assets/images/auth/payments-preview.png";
-import paymentsPreviewDark from "../../../../assets/images/auth/payments-preview-dark.png";
-import timeTrackingPreview from "../../../../assets/images/auth/time-tracking-preview.png";
-import timeTrackingPreviewDark from "../../../../assets/images/auth/time-tracking-preview-dark.png";
-
 import AuthThemeToggle from "./AuthThemeToggle";
 
 interface AuthShellProps {
@@ -21,8 +12,8 @@ interface AuthShellProps {
 const slides = [
   {
     id: "dashboard",
-    image: dashboardPreview,
-    darkImage: dashboardPreviewDark,
+    image: "/assets/auth/dashboard-preview.png",
+    darkImage: "/assets/auth/dashboard-preview-dark.png",
     title: "Company pulse",
     description:
       "See revenue, active projects, and team momentum without digging for it.",
@@ -33,8 +24,8 @@ const slides = [
   },
   {
     id: "invoices",
-    image: invoicesPreview,
-    darkImage: invoicesPreviewDark,
+    image: "/assets/auth/invoices-preview.png",
+    darkImage: "/assets/auth/invoices-preview-dark.png",
     title: "Billing command",
     description:
       "Keep drafts, overdue balances, and paid work in the same place.",
@@ -45,8 +36,8 @@ const slides = [
   },
   {
     id: "time-tracking",
-    image: timeTrackingPreview,
-    darkImage: timeTrackingPreviewDark,
+    image: "/assets/auth/time-tracking-preview.png",
+    darkImage: "/assets/auth/time-tracking-preview-dark.png",
     title: "Clear weekly flow",
     description:
       "Week-by-week time entry stays current without turning into busywork.",
@@ -57,8 +48,8 @@ const slides = [
   },
   {
     id: "payments",
-    image: paymentsPreview,
-    darkImage: paymentsPreviewDark,
+    image: "/assets/auth/payments-preview.png",
+    darkImage: "/assets/auth/payments-preview-dark.png",
     title: "Cash ledger",
     description:
       "Every payment lands in one ledger with method, status, and source.",
