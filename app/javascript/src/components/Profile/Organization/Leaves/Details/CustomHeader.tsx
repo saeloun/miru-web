@@ -8,7 +8,7 @@ const Header = ({
   currentYear,
   setCurrentYear,
 }: Iprops) => (
-  <div className="flex h-16 justify-between bg-miru-han-purple-1000 p-4 pl-10  text-white">
+  <div className="flex h-16 items-center justify-between rounded-xl border border-border bg-card px-4 text-foreground shadow-sm md:px-6">
     <span className="text-2xl font-bold">Leaves</span>
     {showYearPicker && (
       <CustomYearPicker
@@ -19,7 +19,7 @@ const Header = ({
     <div className="visible mt-1 text-center">
       <div>
         <button
-          className="mx-1 w-20 cursor-pointer rounded-md border bg-miru-han-purple-1000 px-3 text-white"
+          className="mx-1 w-20 cursor-pointer rounded-md bg-primary px-3 py-2 text-primary-foreground transition-colors hover:bg-primary/90"
           onClick={editAction}
         >
           Edit

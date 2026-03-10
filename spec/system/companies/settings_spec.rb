@@ -65,7 +65,7 @@ RSpec.describe "Company organization settings", type: :system, js: true do
         visit "/settings/profile"
 
         expect(page).to have_css("#react-root", wait: 10)
-        expect(page).to have_content("Personal Details", wait: 10)
+        expect(page).to have_content("Personal Information", wait: 10)
       end
     end
   end

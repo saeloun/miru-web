@@ -14,17 +14,15 @@ const InputWrapper = ({ children, className = "" }) => (
 
 const SectionHeader = ({ icon: Icon, title }) => (
   <div className="flex items-center gap-2 mb-4">
-    <Icon className="h-4 w-4 text-miru-han-purple-600" />
-    <h3 className="text-sm font-semibold text-miru-dark-purple-1000">
-      {title}
-    </h3>
+    <Icon className="h-4 w-4 text-primary" />
+    <h3 className="text-sm font-semibold text-foreground">{title}</h3>
   </div>
 );
 
 const FormSection = ({ children, className = "" }) => (
   <div
     className={cn(
-      "bg-white rounded-lg p-4 md:p-6 shadow-sm border border-miru-gray-200",
+      "rounded-lg border border-border bg-card p-4 shadow-sm md:p-6",
       className
     )}
   >
@@ -77,7 +75,7 @@ export const ModernStaticPage = ({
       <div className="grid md:grid-cols-2 gap-4">
         {/* Logo Upload */}
         <div className="md:col-span-2">
-          <label className="block text-xs font-medium text-miru-dark-purple-600 mb-2">
+          <label className="block text-xs font-medium text-muted-foreground mb-2">
             Company Logo
           </label>
           <div className="flex items-start gap-4">
@@ -86,19 +84,17 @@ export const ModernStaticPage = ({
                 {...getRootProps()}
                 className={cn(
                   "border-2 border-dashed rounded-lg p-6 cursor-pointer transition-colors",
-                  "hover:border-miru-han-purple-400 hover:bg-miru-gray-50",
-                  isDragActive
-                    ? "border-miru-han-purple-600 bg-miru-han-purple-50"
-                    : "border-miru-gray-300"
+                  "hover:border-border hover:bg-background",
+                  isDragActive ? "border-primary bg-accent/60" : "border-border"
                 )}
               >
                 <input {...getInputProps()} />
                 <div className="flex flex-col items-center gap-2">
-                  <Upload className="h-8 w-8 text-miru-gray-400" />
-                  <p className="text-sm text-miru-dark-purple-600">
+                  <Upload className="h-8 w-8 text-muted-foreground" />
+                  <p className="text-sm text-muted-foreground">
                     Drop logo here or click to upload
                   </p>
-                  <p className="text-xs text-miru-gray-500">
+                  <p className="text-xs text-muted-foreground">
                     JPG, PNG or GIF (max. 2MB)
                   </p>
                 </div>
@@ -108,11 +104,11 @@ export const ModernStaticPage = ({
                 <img
                   src={logoUrl}
                   alt="Company logo"
-                  className="h-24 w-24 rounded-lg object-cover border border-miru-gray-200"
+                  className="h-24 w-24 rounded-lg object-cover border border-border"
                 />
                 <button
                   onClick={handleDeleteLogo}
-                  className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                  className="absolute -top-2 -right-2 rounded-full bg-destructive p-1 text-destructive-foreground opacity-0 transition-opacity group-hover:opacity-100"
                 >
                   <X className="h-3 w-3" />
                 </button>
@@ -125,7 +121,7 @@ export const ModernStaticPage = ({
                 />
                 <label
                   htmlFor="logo-change"
-                  className="absolute inset-0 bg-black bg-opacity-50 rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+                  className="absolute inset-0 flex cursor-pointer items-center justify-center rounded-lg bg-foreground/55 opacity-0 transition-opacity group-hover:opacity-100"
                 >
                   <Upload className="h-6 w-6 text-white" />
                 </label>
@@ -135,7 +131,7 @@ export const ModernStaticPage = ({
         </div>
         {/* Company Name */}
         <InputWrapper>
-          <label className="text-xs font-medium text-miru-dark-purple-600">
+          <label className="text-xs font-medium text-muted-foreground">
             Company Name *
           </label>
           <input
@@ -146,23 +142,23 @@ export const ModernStaticPage = ({
             }
             className={cn(
               "w-full px-3 py-2 border rounded-md text-sm transition-colors",
-              "focus:outline-none focus:ring-2 focus:ring-miru-han-purple-200",
+              "focus:outline-none focus:ring-2 focus:ring-ring/40",
               errDetails.companyNameErr
-                ? "border-red-500 focus:ring-red-200"
-                : "border-miru-gray-300 hover:border-miru-gray-400"
+                ? "border-destructive focus:ring-destructive/20"
+                : "border-border hover:border-border"
             )}
             placeholder="Enter company name"
           />
           {errDetails.companyNameErr && (
             <ErrorSpan
-              className="text-xs text-red-600"
+              className="text-xs text-destructive"
               message={errDetails.companyNameErr}
             />
           )}
         </InputWrapper>
         {/* Business Phone */}
         <InputWrapper>
-          <label className="text-xs font-medium text-miru-dark-purple-600">
+          <label className="text-xs font-medium text-muted-foreground">
             Business Phone
           </label>
           <div className="relative">
@@ -174,7 +170,7 @@ export const ModernStaticPage = ({
               onChange={value =>
                 handleChangeCompanyDetails(value, "companyPhone")
               }
-              inputClassName="w-full px-3 py-2 border border-miru-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-miru-han-purple-200"
+              inputClassName="w-full px-3 py-2 border border-border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-ring/40"
             />
           </div>
         </InputWrapper>
@@ -185,7 +181,7 @@ export const ModernStaticPage = ({
       <SectionHeader icon={MapPin} title="Address" />
       <div className="grid md:grid-cols-2 gap-3">
         <InputWrapper className="md:col-span-2">
-          <label className="text-xs font-medium text-miru-dark-purple-600">
+          <label className="text-xs font-medium text-muted-foreground">
             Address Line 1 *
           </label>
           <input
@@ -194,34 +190,34 @@ export const ModernStaticPage = ({
             onChange={e => handleAddrChange(e.target.value, "addressLine1")}
             className={cn(
               "w-full px-3 py-2 border rounded-md text-sm",
-              "focus:outline-none focus:ring-2 focus:ring-miru-han-purple-200",
+              "focus:outline-none focus:ring-2 focus:ring-ring/40",
               errDetails.addressLine1Err
-                ? "border-red-500"
-                : "border-miru-gray-300 hover:border-miru-gray-400"
+                ? "border-destructive"
+                : "border-border hover:border-border"
             )}
             placeholder="Street address"
           />
           {errDetails.addressLine1Err && (
             <ErrorSpan
-              className="text-xs text-red-600"
+              className="text-xs text-destructive"
               message={errDetails.addressLine1Err}
             />
           )}
         </InputWrapper>
         <InputWrapper className="md:col-span-2">
-          <label className="text-xs font-medium text-miru-dark-purple-600">
+          <label className="text-xs font-medium text-muted-foreground">
             Address Line 2
           </label>
           <input
             type="text"
             value={companyAddr?.addressLine2 || ""}
             onChange={e => handleAddrChange(e.target.value, "addressLine2")}
-            className="w-full px-3 py-2 border border-miru-gray-300 rounded-md text-sm hover:border-miru-gray-400 focus:outline-none focus:ring-2 focus:ring-miru-han-purple-200"
+            className="w-full px-3 py-2 border border-border rounded-md text-sm hover:border-border focus:outline-none focus:ring-2 focus:ring-ring/40"
             placeholder="Apartment, suite, etc. (optional)"
           />
         </InputWrapper>
         <InputWrapper>
-          <label className="text-xs font-medium text-miru-dark-purple-600">
+          <label className="text-xs font-medium text-muted-foreground">
             Country *
           </label>
           <CustomReactSelect
@@ -233,38 +229,38 @@ export const ModernStaticPage = ({
           />
         </InputWrapper>
         <InputWrapper>
-          <label className="text-xs font-medium text-miru-dark-purple-600">
+          <label className="text-xs font-medium text-muted-foreground">
             State/Province
           </label>
           <input
             type="text"
             value={companyAddr?.state || ""}
             onChange={handleStateChange}
-            className="w-full px-3 py-2 border border-miru-gray-300 rounded-md text-sm hover:border-miru-gray-400 focus:outline-none focus:ring-2 focus:ring-miru-han-purple-200"
+            className="w-full px-3 py-2 border border-border rounded-md text-sm hover:border-border focus:outline-none focus:ring-2 focus:ring-ring/40"
             placeholder="State or province"
           />
         </InputWrapper>
         <InputWrapper>
-          <label className="text-xs font-medium text-miru-dark-purple-600">
+          <label className="text-xs font-medium text-muted-foreground">
             City
           </label>
           <input
             type="text"
             value={companyAddr?.city || ""}
             onChange={handleCityChange}
-            className="w-full px-3 py-2 border border-miru-gray-300 rounded-md text-sm hover:border-miru-gray-400 focus:outline-none focus:ring-2 focus:ring-miru-han-purple-200"
+            className="w-full px-3 py-2 border border-border rounded-md text-sm hover:border-border focus:outline-none focus:ring-2 focus:ring-ring/40"
             placeholder="City"
           />
         </InputWrapper>
         <InputWrapper>
-          <label className="text-xs font-medium text-miru-dark-purple-600">
+          <label className="text-xs font-medium text-muted-foreground">
             ZIP/Postal Code
           </label>
           <input
             type="text"
             value={companyAddr?.zipcode || ""}
             onChange={handleZipcodeChange}
-            className="w-full px-3 py-2 border border-miru-gray-300 rounded-md text-sm hover:border-miru-gray-400 focus:outline-none focus:ring-2 focus:ring-miru-han-purple-200"
+            className="w-full px-3 py-2 border border-border rounded-md text-sm hover:border-border focus:outline-none focus:ring-2 focus:ring-ring/40"
             placeholder="ZIP code"
           />
         </InputWrapper>
@@ -275,7 +271,7 @@ export const ModernStaticPage = ({
       <SectionHeader icon={Globe} title="Business Settings" />
       <div className="grid md:grid-cols-2 gap-3">
         <InputWrapper>
-          <label className="text-xs font-medium text-miru-dark-purple-600">
+          <label className="text-xs font-medium text-muted-foreground">
             Currency
           </label>
           <CustomReactSelect
@@ -287,11 +283,11 @@ export const ModernStaticPage = ({
           />
         </InputWrapper>
         <InputWrapper>
-          <label className="text-xs font-medium text-miru-dark-purple-600">
+          <label className="text-xs font-medium text-muted-foreground">
             Standard Rate
           </label>
           <div className="relative">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-miru-dark-purple-600">
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
               {companyCurrency?.symbol || "$"}
             </span>
             <input
@@ -300,13 +296,13 @@ export const ModernStaticPage = ({
               onChange={e =>
                 handleChangeCompanyDetails(e.target.value, "companyRate")
               }
-              className="w-full pl-8 pr-3 py-2 border border-miru-gray-300 rounded-md text-sm hover:border-miru-gray-400 focus:outline-none focus:ring-2 focus:ring-miru-han-purple-200"
+              className="w-full pl-8 pr-3 py-2 border border-border rounded-md text-sm hover:border-border focus:outline-none focus:ring-2 focus:ring-ring/40"
               placeholder="0.00"
             />
           </div>
         </InputWrapper>
         <InputWrapper>
-          <label className="text-xs font-medium text-miru-dark-purple-600">
+          <label className="text-xs font-medium text-muted-foreground">
             Timezone
           </label>
           <CustomReactSelect
@@ -318,7 +314,7 @@ export const ModernStaticPage = ({
           />
         </InputWrapper>
         <InputWrapper>
-          <label className="text-xs font-medium text-miru-dark-purple-600">
+          <label className="text-xs font-medium text-muted-foreground">
             Date Format
           </label>
           <CustomReactSelect
@@ -330,7 +326,7 @@ export const ModernStaticPage = ({
           />
         </InputWrapper>
         <InputWrapper>
-          <label className="text-xs font-medium text-miru-dark-purple-600">
+          <label className="text-xs font-medium text-muted-foreground">
             Fiscal Year End
           </label>
           <CustomReactSelect
@@ -348,10 +344,7 @@ export const ModernStaticPage = ({
       <Button variant="outline" onClick={cancelAction} className="px-6">
         Cancel
       </Button>
-      <Button
-        onClick={saveAction}
-        className="px-6 bg-miru-han-purple-600 hover:bg-miru-han-purple-700"
-      >
+      <Button onClick={saveAction} className="px-6 bg-primary hover:bg-primary">
         Save Changes
       </Button>
     </div>

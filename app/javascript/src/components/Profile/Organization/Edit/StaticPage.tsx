@@ -21,10 +21,10 @@ import { ProfileImage } from "./ProfileImage";
 import { Uploader } from "./Uploader";
 
 const inputClass =
-  "form__input block w-full appearance-none bg-white p-4 text-miru-dark-purple-1000 font-medium text-sm md:text-base h-10 md:h-12 focus-within:border-miru-han-purple-1000";
+  "form__input block h-10 w-full appearance-none bg-background p-4 text-sm font-medium text-foreground focus-within:border-primary md:h-12 md:text-base";
 
 const labelClass =
-  "absolute top-0.5 left-1 h-6 z-1 origin-0 bg-white p-2 text-base font-medium duration-300";
+  "absolute top-0.5 left-1 z-1 h-6 origin-0 bg-background p-2 text-base font-medium duration-300";
 
 export const StaticPage = ({
   orgDetails: {
@@ -64,10 +64,10 @@ export const StaticPage = ({
   cancelAction,
   saveAction,
 }) => (
-  <div className="mt-4 h-full bg-miru-gray-100 px-4 md:px-10">
-    <div className="flex flex-col gap-y-6 border-b border-b-miru-gray-400 py-6 md:flex-row md:gap-y-0 md:py-8">
+  <div className="mt-4 h-full bg-muted px-4 md:px-10">
+    <div className="flex flex-col gap-y-6 border-b border-b-border py-6 md:flex-row md:gap-y-0 md:py-8">
       <div className="w-full md:w-18">
-        <div className="flex flex-row items-center text-sm font-medium text-miru-dark-purple-1000">
+        <div className="flex flex-row items-center text-sm font-medium text-foreground">
           <InfoIcon
             className="mr-2"
             color="#1D1A31"
@@ -92,7 +92,7 @@ export const StaticPage = ({
               onLogoChange={onLogoChange}
             />
           )}
-          <div className="ml-5 whitespace-pre-wrap text-left text-xs font-normal text-miru-dark-purple-400 md:w-44 lg:w-36">
+          <div className="ml-5 whitespace-pre-wrap text-left text-xs font-normal text-muted-foreground md:w-44 lg:w-36">
             <FileAcceptanceText />
           </div>
         </div>
@@ -104,14 +104,12 @@ export const StaticPage = ({
             type="text"
             value={companyName}
             inputBoxClassName={`${inputClass} ${
-              errDetails.companyNameErr
-                ? "border-red-600"
-                : "border-miru-gray-1000"
+              errDetails.companyNameErr ? "border-destructive" : "border-border"
             }`}
             labelClassName={`${labelClass} ${
               errDetails.companyNameErr
-                ? "text-red-600"
-                : "text-miru-dark-purple-200"
+                ? "text-destructive"
+                : "text-muted-foreground"
             }`}
             onChange={e =>
               handleChangeCompanyDetails(e.target.value, "companyName")
@@ -119,16 +117,16 @@ export const StaticPage = ({
           />
           {errDetails.companyNameErr && (
             <ErrorSpan
-              className="text-xs text-red-600"
+              className="text-xs text-destructive"
               message={errDetails.companyNameErr}
             />
           )}
         </div>
       </div>
     </div>
-    <div className="flex flex-col gap-y-6 border-b border-b-miru-gray-400 py-6 md:flex-row md:gap-y-0 md:py-8">
+    <div className="flex flex-col gap-y-6 border-b border-b-border py-6 md:flex-row md:gap-y-0 md:py-8">
       <div className="w-full md:w-18">
-        <div className="flex flex-row items-center text-sm font-medium text-miru-dark-purple-1000">
+        <div className="flex flex-row items-center text-sm font-medium text-foreground">
           <PhoneIcon
             className="mr-2"
             color="#1D1A31"
@@ -141,18 +139,18 @@ export const StaticPage = ({
       <div className="w-full md:w-72">
         <div className="flex flex-row">
           <div className="flex w-full flex-col px-2 md:w-1/2">
-            <div className="outline relative flex h-12 flex-row rounded border border-miru-gray-1000 bg-white px-4 md:py-2.5">
+            <div className="outline relative flex h-12 flex-row rounded border border-border bg-background px-4 md:py-2.5">
               <PhoneInput
                 className="input-phone-number w-full border-transparent text-sm font-medium focus:border-transparent focus:ring-0"
                 defaultCountry="US"
                 flags={flags}
                 initialValueFormat="national"
-                inputClassName="form__input block w-full appearance-none bg-white border-0 focus:border-0 px-0 text-base border-transparent focus:border-transparent focus:ring-0 border-miru-gray-1000 w-full border-bottom-none "
+                inputClassName="form__input block w-full appearance-none border-0 bg-background px-0 text-base border-transparent focus:border-0 focus:border-transparent focus:ring-0 border-border w-full border-bottom-none "
                 value={companyPhone || ""}
                 onChange={e => handleChangeCompanyDetails(e, "companyPhone")}
               />
               <label
-                className="absolute -top-1 left-0 z-1 ml-3 origin-0 bg-white px-1 text-xsm font-medium text-miru-dark-purple-200 duration-300"
+                className="absolute -top-1 left-0 z-1 ml-3 origin-0 bg-background px-1 text-xsm font-medium text-muted-foreground duration-300"
                 htmlFor="phone_number"
               >
                 Phone number
@@ -160,7 +158,7 @@ export const StaticPage = ({
             </div>
             {errDetails.companyPhoneErr && (
               <ErrorSpan
-                className="text-xs text-red-600"
+                className="text-xs text-destructive"
                 message={errDetails.companyPhoneErr}
               />
             )}
@@ -168,9 +166,9 @@ export const StaticPage = ({
         </div>
       </div>
     </div>
-    <div className="flex flex-col gap-y-6 border-b border-b-miru-gray-400 py-6 md:flex-row md:gap-y-0 md:py-8">
+    <div className="flex flex-col gap-y-6 border-b border-b-border py-6 md:flex-row md:gap-y-0 md:py-8">
       <div className="w-full md:w-18">
-        <div className="flex flex-row items-center text-sm font-medium text-miru-dark-purple-1000">
+        <div className="flex flex-row items-center text-sm font-medium text-foreground">
           <MapPinIcon
             className="mr-2"
             color="#1D1A31"
@@ -193,7 +191,7 @@ export const StaticPage = ({
           />
           {errDetails.addressLine1Err && (
             <ErrorSpan
-              className="text-xs text-red-600"
+              className="text-xs text-destructive"
               message={errDetails.addressLine1Err}
             />
           )}
@@ -210,7 +208,7 @@ export const StaticPage = ({
           />
           {errDetails.addressLine2Err && (
             <ErrorSpan
-              className="text-xs text-red-600"
+              className="text-xs text-destructive"
               message={errDetails.addressLine2Err}
             />
           )}
@@ -226,7 +224,7 @@ export const StaticPage = ({
             />
             {errDetails.countryErr && (
               <ErrorSpan
-                className="text-xs text-red-600"
+                className="text-xs text-destructive"
                 message={errDetails.countryErr}
               />
             )}
@@ -244,7 +242,7 @@ export const StaticPage = ({
             />
             {errDetails.stateErr && (
               <ErrorSpan
-                className="text-xs text-red-600"
+                className="text-xs text-destructive"
                 message={errDetails.stateErr}
               />
             )}
@@ -267,7 +265,7 @@ export const StaticPage = ({
             />
             {errDetails.cityErr && (
               <ErrorSpan
-                className="text-xs text-red-600"
+                className="text-xs text-destructive"
                 message={errDetails.cityErr}
               />
             )}
@@ -285,7 +283,7 @@ export const StaticPage = ({
             />
             {errDetails.zipcodeErr && (
               <ErrorSpan
-                className="text-xs text-red-600"
+                className="text-xs text-destructive"
                 message={errDetails.zipcodeErr}
               />
             )}
@@ -293,9 +291,9 @@ export const StaticPage = ({
         </div>
       </div>
     </div>
-    <div className="flex flex-col gap-y-6 border-b border-b-miru-gray-400 py-6 md:flex-row md:py-8">
+    <div className="flex flex-col gap-y-6 border-b border-b-border py-6 md:flex-row md:py-8">
       <div className="w-full md:w-18">
-        <span className="flex flex-row items-center text-sm font-medium text-miru-dark-purple-1000">
+        <span className="flex flex-row items-center text-sm font-medium text-foreground">
           <span className="mr-2 w-13">
             <MoneyIcon color="#1D1A31" size={13.5} weight="bold" />
           </span>
@@ -329,13 +327,13 @@ export const StaticPage = ({
               value={companyRate}
               inputBoxClassName={`${inputClass} ${
                 errDetails.companyNameErr
-                  ? "border-red-600"
-                  : "border-miru-gray-1000"
+                  ? "border-destructive"
+                  : "border-border"
               }`}
               labelClassName={`${labelClass} ${
                 errDetails.companyNameErr
-                  ? "text-red-600"
-                  : "text-miru-dark-purple-200"
+                  ? "text-destructive"
+                  : "text-muted-foreground"
               }`}
               onChange={e =>
                 handleChangeCompanyDetails(e.target.value, "companyRate")
@@ -343,7 +341,7 @@ export const StaticPage = ({
             />
             {errDetails.companyRateErr && (
               <ErrorSpan
-                className="text-xs text-red-600"
+                className="text-xs text-destructive"
                 message={errDetails.companyRateErr}
               />
             )}
@@ -351,9 +349,9 @@ export const StaticPage = ({
         </div>
       </div>
     </div>
-    <div className="flex flex-col gap-y-6 border-b border-b-miru-gray-400 py-6 md:flex-row md:py-8">
+    <div className="flex flex-col gap-y-6 border-b border-b-border py-6 md:flex-row md:py-8">
       <div className="w-full md:w-18">
-        <div className="flex flex-row items-center text-sm font-medium text-miru-dark-purple-1000">
+        <div className="flex flex-row items-center text-sm font-medium text-foreground">
           <CalendarIcon
             className="mr-2"
             color="#1D1A31"
@@ -412,7 +410,7 @@ export const StaticPage = ({
     </div>
     <div className="flex flex-col gap-y-6 py-6 md:flex-row md:py-8">
       <div className="w-full md:w-18">
-        <span className="flex flex-row items-center text-sm font-medium text-miru-dark-purple-1000">
+        <span className="flex flex-row items-center text-sm font-medium text-foreground">
           <span className="mr-2 w-13">
             <ClockIcon color="#1D1A31" size={13.5} weight="bold" />
           </span>
@@ -430,13 +428,13 @@ export const StaticPage = ({
               value={companyWorkingDays || ""}
               inputBoxClassName={`${inputClass} ${
                 errDetails.companyWorkingDays
-                  ? "border-red-600"
-                  : "border-miru-gray-1000"
+                  ? "border-destructive"
+                  : "border-border"
               }`}
               labelClassName={`${labelClass} ${
                 errDetails.companyWorkingDays
-                  ? "text-red-600"
-                  : "text-miru-dark-purple-200"
+                  ? "text-destructive"
+                  : "text-muted-foreground"
               }`}
               onChange={e =>
                 handleChangeCompanyDetails(e.target.value, "companyWorkingDays")
@@ -444,7 +442,7 @@ export const StaticPage = ({
             />
             {errDetails.companyWorkingDays && (
               <ErrorSpan
-                className="text-xs text-red-600"
+                className="text-xs text-destructive"
                 message={errDetails.companyWorkingDays}
               />
             )}
@@ -458,13 +456,13 @@ export const StaticPage = ({
               value={companyWorkingHours || ""}
               inputBoxClassName={`${inputClass} ${
                 errDetails.companyNameErr
-                  ? "border-red-600"
-                  : "border-miru-gray-1000"
+                  ? "border-destructive"
+                  : "border-border"
               }`}
               labelClassName={`${labelClass} ${
                 errDetails.companyNameErr
-                  ? "text-red-600"
-                  : "text-miru-dark-purple-200"
+                  ? "text-destructive"
+                  : "text-muted-foreground"
               }`}
               onChange={e =>
                 handleChangeCompanyDetails(
@@ -475,7 +473,7 @@ export const StaticPage = ({
             />
             {errDetails.companyWorkingHoursErr && (
               <ErrorSpan
-                className="text-xs text-red-600"
+                className="text-xs text-destructive"
                 message={errDetails.companyWorkingHoursErr}
               />
             )}
@@ -486,7 +484,7 @@ export const StaticPage = ({
     <div className="flex items-center justify-between gap-x-2 py-4 md:hidden md:w-0">
       <div className="w-1/2 text-center">
         <button
-          className="w-full cursor-pointer rounded border border-miru-han-purple-1000 bg-miru-white-1000 py-2 text-base font-bold text-miru-han-purple-1000"
+          className="w-full cursor-pointer rounded border border-primary bg-background py-2 text-base font-bold text-primary"
           onClick={cancelAction}
         >
           Cancel
@@ -494,7 +492,7 @@ export const StaticPage = ({
       </div>
       <div className="w-1/2 text-center">
         <button
-          className="w-full cursor-pointer rounded bg-miru-han-purple-1000 py-2 text-base font-bold text-miru-white-1000"
+          className="w-full cursor-pointer rounded bg-primary py-2 text-base font-bold text-primary-foreground"
           onClick={saveAction}
         >
           Save

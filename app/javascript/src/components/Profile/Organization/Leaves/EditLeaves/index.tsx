@@ -58,17 +58,17 @@ const EditLeaves = ({
         subTitle=""
         title="Leaves"
       />
-      <div className="mt-4 min-h-full p-4 lg:min-h-80v lg:bg-miru-gray-100 lg:p-10">
+      <div className="mt-4 min-h-full p-4 lg:min-h-80v lg:bg-muted lg:p-10">
         <div className="flex flex-col lg:flex-row lg:py-6">
           <div className="p-2 lg:w-2/12">Leave Balance</div>
           <div className="p-2 lg:w-10/12">
-            <div className="flex flex-col bg-miru-gray-100 py-6 px-4 lg:bg-transparent lg:p-0">
+            <div className="flex flex-col bg-muted py-6 px-4 lg:bg-transparent lg:p-0">
               {leaveBalanceList.map((leaveBalance, index) => (
                 <div className="flex flex-col" key={index}>
                   <div className="flex w-full flex-col items-center justify-between lg:mb-4 lg:flex-row">
                     <CustomInputText
                       id={`leaveType_${index}`}
-                      inputBoxClassName="border focus:border-miru-han-purple-1000 cursor-pointer"
+                      inputBoxClassName="border focus:border-primary cursor-pointer"
                       label="Leave Type"
                       labelClassName="cursor-pointer"
                       name={`leaveType_${index}`}
@@ -123,7 +123,7 @@ const EditLeaves = ({
                   <div className="mb-6 flex w-full flex-col items-center justify-between lg:flex-row">
                     <CustomInputText
                       id={`total_${index}`}
-                      inputBoxClassName="border focus:border-miru-han-purple-1000 cursor-pointer"
+                      inputBoxClassName="border focus:border-primary cursor-pointer"
                       label="Total"
                       labelClassName="cursor-pointer"
                       min={0}
@@ -193,7 +193,7 @@ const EditLeaves = ({
                     />
                     <CustomInputText
                       id={`carryForward_${index}`}
-                      inputBoxClassName="border focus:border-miru-han-purple-1000 cursor-pointer"
+                      inputBoxClassName="border focus:border-primary cursor-pointer"
                       label="Carry forward (days)"
                       labelClassName="cursor-pointer"
                       min={0}
@@ -215,7 +215,7 @@ const EditLeaves = ({
                         style="ternary"
                         onClick={() => handleDeleteLeave(leaveBalance)}
                       >
-                        <DeleteIcon className="cursor-pointer rounded-full text-miru-han-purple-1000" />
+                        <DeleteIcon className="cursor-pointer rounded-full text-primary" />
                       </Button>
                     </div>
                   </div>
@@ -247,7 +247,7 @@ const EditLeaves = ({
                 <div className="flex w-full flex-col items-center justify-between lg:mb-6 lg:flex-row">
                   <CustomInputText
                     id={`customLeaveType_${index}`}
-                    inputBoxClassName="border focus:border-miru-han-purple-1000 cursor-pointer"
+                    inputBoxClassName="border focus:border-primary cursor-pointer"
                     label="Leave Type"
                     labelClassName="cursor-pointer"
                     name={`customLeaveType_${index}`}
@@ -258,7 +258,7 @@ const EditLeaves = ({
                   />
                   <CustomInputText
                     id={`customLeaveTotal_${index}`}
-                    inputBoxClassName="border focus:border-miru-han-purple-1000 cursor-pointer"
+                    inputBoxClassName="border focus:border-primary cursor-pointer"
                     label="Total"
                     labelClassName="cursor-pointer"
                     name={`customLeaveTotal_${index}`}
@@ -320,7 +320,7 @@ const EditLeaves = ({
                       style="ternary"
                       onClick={() => handleDeleteLeave(customLeave, true)}
                     >
-                      <DeleteIcon className="cursor-pointer rounded-full text-miru-han-purple-1000" />
+                      <DeleteIcon className="cursor-pointer rounded-full text-primary" />
                     </Button>
                   </div>
                 </div>
@@ -346,10 +346,10 @@ const EditLeaves = ({
           (leaveBalanceList.length > 0 || customLeavesList.length > 0) && (
             <div className="mt-5 flex w-full justify-between px-2">
               <Button
-                className="mr-2 flex w-1/2 items-center justify-center rounded border border-miru-red-400 px-4 py-2"
+                className="mr-2 flex w-1/2 items-center justify-center rounded border border-destructive px-4 py-2"
                 onClick={handleCancelAction}
               >
-                <span className="ml-2 text-center text-base font-bold leading-5 text-miru-red-400">
+                <span className="ml-2 text-center text-base font-bold leading-5 text-destructive">
                   Cancel
                 </span>
               </Button>
@@ -358,7 +358,7 @@ const EditLeaves = ({
                 style="primary"
                 onClick={updateLeaveDetails}
               >
-                <span className="ml-2 text-center text-base font-bold leading-5 text-white">
+                <span className="ml-2 text-center text-base font-bold leading-5 text-primary-foreground">
                   Save
                 </span>
               </Button>

@@ -3,7 +3,18 @@
 require "rails_helper"
 
 RSpec.describe PdfGeneration::InvoiceService do
-  let(:company) { create(:company) }
+  let(:company) do
+    create(
+      :company,
+      bank_name: "First Bank",
+      bank_account_number: "123456789",
+      bank_routing_number: "987654321",
+      bank_swift_code: "FSTBUS33",
+      tax_id: "TAX-123",
+      vat_number: "VAT-456",
+      gst_number: "GST-789"
+    )
+  end
   let(:client) { create(:client, company: company) }
   let(:invoice) do
     create(:invoice,
@@ -71,6 +82,8 @@ RSpec.describe PdfGeneration::InvoiceService do
         expect(locals[:invoice]).to eq(invoice)
         expect(locals[:client]).to eq(client)
         expect(locals[:company_logo]).to eq(logo_url)
+        expect(locals[:invoice].company.bank_name).to eq("First Bank")
+        expect(locals[:invoice].company.tax_id).to eq("TAX-123")
         expect(locals[:invoice_amount]).to be_present
         expect(locals[:invoice_tax]).to be_present
         expect(locals[:invoice_discount]).to be_present

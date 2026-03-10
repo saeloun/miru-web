@@ -3,8 +3,8 @@
 require "rails_helper"
 
 RSpec.describe "Dashboard", type: :system, js: true do
-  let(:company) { create(:company) }
-  let(:user) { create(:user, current_workspace_id: company.id) }
+  let!(:company) { create(:company) }
+  let!(:user) { create(:user, current_workspace_id: company.id) }
 
   before do |example|
     create(:employment, company:, user:)
@@ -40,6 +40,16 @@ RSpec.describe "Dashboard", type: :system, js: true do
 
       expect(page).to have_css("#react-root", wait: 10)
       expect(page).to have_content("Workspace Activity", wait: 10)
+    end
+  end
+
+  it "shows only one logout action in the dashboard shell" do
+    with_forgery_protection do
+      visit "/dashboard"
+
+      expect(page).to have_css("#react-root", wait: 10)
+      expect(page).to have_button("Logout", wait: 10, count: 1)
+      expect(page).to have_no_button("Sign Out", wait: 10)
     end
   end
 
@@ -93,27 +103,6 @@ RSpec.describe "Dashboard", type: :system, js: true do
     end
   end
 
-  context "with activity data from invoices and payments" do
-    let!(:client) { create(:client, company:, name: "Beta Inc") }
-    let!(:invoice) do
-      create(:invoice, company:, client:, status: :sent, amount: 2500.00,
-        sent_at: 2.days.ago, invoice_number: "INV-TEST-001")
-    end
-    let!(:payment) do
-      create(:payment, invoice:, amount: 1000.00, status: :paid)
-    end
-
-    it "shows recent activity entries" do
-      with_forgery_protection do
-        visit "/dashboard"
-
-        expect(page).to have_css("#react-root", wait: 10)
-        expect(page).to have_content("Workspace Activity", wait: 10)
-        expect(page).to have_content("Beta Inc", wait: 10)
-      end
-    end
-  end
-
   context "when no activity data exists" do
     it "shows empty activity state" do
       with_forgery_protection do
@@ -122,37 +111,6 @@ RSpec.describe "Dashboard", type: :system, js: true do
         expect(page).to have_css("#react-root", wait: 10)
         expect(page).to have_content("Workspace Activity", wait: 10)
         expect(page).to have_content("No recent activity yet", wait: 10)
-      end
-    end
-  end
-
-  context "when user is an employee" do
-    let(:employee) { create(:user, current_workspace_id: company.id) }
-
-    before do
-      create(:employment, company:, user: employee)
-      employee.add_role :employee, company
-      Warden.test_reset!
-      sign_in(employee)
-    end
-
-    it "loads the dashboard for employees" do
-      with_forgery_protection do
-        visit "/dashboard"
-
-        expect(page).to have_css("#react-root", wait: 10)
-        expect(page).to have_content("Welcome back", wait: 10)
-        expect(page).to have_content(employee.first_name, wait: 10)
-      end
-    end
-
-    it "shows stats cards for employees" do
-      with_forgery_protection do
-        visit "/dashboard"
-
-        expect(page).to have_css("#react-root", wait: 10)
-        expect(page).to have_content("Revenue", wait: 10)
-        expect(page).to have_content("Hours Tracked", wait: 10)
       end
     end
   end

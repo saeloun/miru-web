@@ -9,7 +9,6 @@ import {
   Hash,
   Upload,
   X,
-  ArrowLeft,
   Check,
 } from "phosphor-react";
 import PhoneInput from "react-phone-number-input";
@@ -84,9 +83,9 @@ const SectionTitle = ({
   title: string;
   icon: React.ReactNode;
 }) => (
-  <div className="flex items-center gap-2 mb-4">
-    <span className="text-gray-400">{icon}</span>
-    <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wider">
+  <div className="mb-4 flex items-center gap-2">
+    <span className="text-muted-foreground">{icon}</span>
+    <h3 className="text-sm font-semibold uppercase tracking-wider text-foreground">
       {title}
     </h3>
   </div>
@@ -106,11 +105,13 @@ const FormField = ({
   className?: string;
 }) => (
   <div className={cn("space-y-2", className)}>
-    <Label className="text-xs font-medium text-gray-600 uppercase tracking-wider">
-      {label} {required && <span className="text-red-500">*</span>}
+    <Label className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+      {label} {required && <span className="text-destructive">*</span>}
     </Label>
     {children}
-    {error && <ErrorSpan className="text-xs text-red-600" message={error} />}
+    {error && (
+      <ErrorSpan className="text-xs text-destructive" message={error} />
+    )}
   </div>
 );
 
@@ -163,64 +164,37 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
   } = orgDetails;
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header Section */}
-      <div className="bg-white border-b">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Button
-                onClick={cancelAction}
-                variant="ghost"
-                size="sm"
-                className="hover:bg-gray-100"
-              >
-                <ArrowLeft className="h-4 w-4" />
-              </Button>
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900">
-                  Edit Organization Settings
-                </h1>
-                <p className="mt-1 text-sm text-gray-500">
-                  Update your company's information and preferences
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <Button
-                onClick={cancelAction}
-                variant="outline"
-                size="sm"
-                className="border-gray-300"
-              >
-                Cancel
-              </Button>
-              <Button
-                onClick={saveAction}
-                disabled={!isDetailUpdated}
-                size="sm"
-                className={cn(
-                  "text-white",
-                  isDetailUpdated
-                    ? "bg-gray-900 hover:bg-gray-800"
-                    : "bg-gray-400 cursor-not-allowed"
-                )}
-              >
-                <Check className="h-4 w-4 mr-2" />
-                Save Changes
-              </Button>
-            </div>
-          </div>
+    <div className="min-h-screen bg-background">
+      <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
+        <div className="mb-6 flex items-center justify-end gap-3">
+          <Button
+            onClick={cancelAction}
+            variant="outline"
+            size="sm"
+            className="border-border"
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={saveAction}
+            disabled={!isDetailUpdated}
+            size="sm"
+            className={cn(
+              "text-primary-foreground",
+              isDetailUpdated
+                ? "bg-primary hover:bg-primary/90"
+                : "cursor-not-allowed bg-muted text-muted-foreground"
+            )}
+          >
+            <Check className="h-4 w-4 mr-2" />
+            Save Changes
+          </Button>
         </div>
-      </div>
-
-      {/* Main Content */}
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
           {/* Left Column - Company Identity */}
           <div className="lg:col-span-1 space-y-6">
             {/* Logo Upload Card */}
-            <Card className="overflow-hidden border-0 shadow-sm">
+            <Card className="overflow-hidden border-border shadow-sm">
               <CardHeader className="pb-4">
                 <SectionTitle
                   title="Company Logo"
@@ -233,20 +207,19 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                     <div
                       {...getRootProps()}
                       className={cn(
-                        "border-2 border-dashed rounded-lg p-8 cursor-pointer transition-all",
-                        "hover:border-gray-400 hover:bg-gray-50",
-                        "flex flex-col items-center justify-center",
+                        "flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed p-8 transition-all",
+                        "hover:border-primary/40 hover:bg-accent/60",
                         isDragActive
-                          ? "border-gray-600 bg-gray-50"
-                          : "border-gray-300"
+                          ? "border-primary bg-accent"
+                          : "border-border"
                       )}
                     >
                       <input {...getInputProps()} />
-                      <Upload className="h-10 w-10 text-gray-400 mb-3" />
-                      <p className="text-sm font-medium text-gray-700">
+                      <Upload className="mb-3 h-10 w-10 text-muted-foreground" />
+                      <p className="text-sm font-medium text-foreground">
                         Drop logo here or click to upload
                       </p>
-                      <p className="text-xs text-gray-500 mt-1">
+                      <p className="mt-1 text-xs text-muted-foreground">
                         JPG, PNG or GIF (max. 2MB)
                       </p>
                     </div>
@@ -255,20 +228,20 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                       <img
                         src={logoUrl}
                         alt="Company logo"
-                        className="w-full h-40 object-contain rounded-lg border border-gray-200 p-4 bg-white"
+                        className="h-40 w-full rounded-lg border border-border bg-card p-4 object-contain"
                       />
-                      <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 rounded-lg transition-all flex items-center justify-center">
-                        <div className="opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
+                      <div className="absolute inset-0 flex items-center justify-center rounded-lg bg-background/0 transition-all group-hover:bg-background/70">
+                        <div className="flex gap-2 opacity-0 transition-opacity group-hover:opacity-100">
                           <label
                             htmlFor="logo-change"
-                            className="bg-white text-gray-700 rounded-md px-3 py-1.5 text-sm font-medium cursor-pointer hover:bg-gray-100 flex items-center gap-1"
+                            className="flex cursor-pointer items-center gap-1 rounded-md border border-border bg-card px-3 py-1.5 text-sm font-medium text-foreground hover:bg-accent"
                           >
                             <Upload className="h-3 w-3" />
                             Change
                           </label>
                           <button
                             onClick={handleDeleteLogo}
-                            className="bg-white text-red-600 rounded-md px-3 py-1.5 text-sm font-medium hover:bg-red-50 flex items-center gap-1"
+                            className="flex items-center gap-1 rounded-md border border-border bg-card px-3 py-1.5 text-sm font-medium text-destructive hover:bg-destructive/10"
                           >
                             <X className="h-3 w-3" />
                             Remove
@@ -289,7 +262,10 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
             </Card>
 
             {/* Company Name Card */}
-            <Card className="overflow-hidden border-0 shadow-sm">
+            <Card
+              className="scroll-mt-24 overflow-hidden border-border shadow-sm"
+              id="tax-info"
+            >
               <CardHeader className="pb-4">
                 <SectionTitle
                   title="Company Name"
@@ -310,8 +286,8 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                     }
                     placeholder="Enter company name"
                     className={cn(
-                      "border-gray-200",
-                      errDetails.companyNameErr && "border-red-500"
+                      "border-border",
+                      errDetails.companyNameErr && "border-destructive"
                     )}
                   />
                 </FormField>
@@ -322,7 +298,10 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
           {/* Right Column - Details */}
           <div className="lg:col-span-2 space-y-6">
             {/* Contact Information */}
-            <Card className="overflow-hidden border-0 shadow-sm">
+            <Card
+              className="scroll-mt-24 overflow-hidden border-border shadow-sm"
+              id="bank-info"
+            >
               <CardHeader className="pb-4">
                 <SectionTitle
                   title="Contact Information"
@@ -343,7 +322,7 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                       onChange={value =>
                         handleChangeCompanyDetails(value, "companyPhone")
                       }
-                      inputClassName="w-full px-3 py-2 border border-gray-200 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-gray-200"
+                      inputClassName="w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
                     />
                   </FormField>
 
@@ -369,8 +348,8 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                         }
                         placeholder="Street address"
                         className={cn(
-                          "border-gray-200",
-                          errDetails.addressLine1Err && "border-red-500"
+                          "border-border",
+                          errDetails.addressLine1Err && "border-destructive"
                         )}
                       />
                     </FormField>
@@ -383,7 +362,7 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                           handleAddrChange(e.target.value, "addressLine2")
                         }
                         placeholder="Apartment, suite, etc. (optional)"
-                        className="border-gray-200"
+                        className="border-border"
                       />
                     </FormField>
 
@@ -403,7 +382,7 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                           }
                         }}
                       >
-                        <SelectTrigger className="border-gray-200">
+                        <SelectTrigger className="border-border">
                           <SelectValue placeholder="Select country" />
                         </SelectTrigger>
                         <SelectContent>
@@ -430,8 +409,8 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                         onChange={handleStateChange}
                         placeholder="State or province"
                         className={cn(
-                          "border-gray-200",
-                          errDetails.stateErr && "border-red-500"
+                          "border-border",
+                          errDetails.stateErr && "border-destructive"
                         )}
                       />
                     </FormField>
@@ -443,8 +422,8 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                         onChange={handleCityChange}
                         placeholder="City"
                         className={cn(
-                          "border-gray-200",
-                          errDetails.cityErr && "border-red-500"
+                          "border-border",
+                          errDetails.cityErr && "border-destructive"
                         )}
                       />
                     </FormField>
@@ -460,8 +439,8 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                         onChange={handleZipcodeChange}
                         placeholder="ZIP code"
                         className={cn(
-                          "border-gray-200",
-                          errDetails.zipcodeErr && "border-red-500"
+                          "border-border",
+                          errDetails.zipcodeErr && "border-destructive"
                         )}
                       />
                     </FormField>
@@ -471,7 +450,7 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
             </Card>
 
             {/* Financial Configuration */}
-            <Card className="overflow-hidden border-0 shadow-sm">
+            <Card className="overflow-hidden border-border shadow-sm">
               <CardHeader className="pb-4">
                 <SectionTitle
                   title="Financial Configuration"
@@ -496,7 +475,7 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                         }
                       }}
                     >
-                      <SelectTrigger className="border-gray-200">
+                      <SelectTrigger className="border-border">
                         <SelectValue placeholder="Select currency" />
                       </SelectTrigger>
                       <SelectContent>
@@ -518,7 +497,7 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                     error={errDetails.companyRateErr}
                   >
                     <div className="relative">
-                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-gray-600">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
                         $
                       </span>
                       <Input
@@ -531,13 +510,13 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                           )
                         }
                         className={cn(
-                          "pl-8 border-gray-200",
-                          errDetails.companyRateErr && "border-red-500"
+                          "border-border pl-8",
+                          errDetails.companyRateErr && "border-destructive"
                         )}
                         placeholder="0.00"
                         step="0.01"
                       />
-                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-500">
+                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
                         /hr
                       </span>
                     </div>
@@ -559,7 +538,7 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                         }
                       }}
                     >
-                      <SelectTrigger className="border-gray-200">
+                      <SelectTrigger className="border-border">
                         <SelectValue placeholder="Select month" />
                       </SelectTrigger>
                       <SelectContent>
@@ -579,7 +558,7 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
             </Card>
 
             {/* Regional Settings */}
-            <Card className="overflow-hidden border-0 shadow-sm">
+            <Card className="overflow-hidden border-border shadow-sm">
               <CardHeader className="pb-4">
                 <SectionTitle
                   title="Regional Settings"
@@ -604,7 +583,7 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                         }
                       }}
                     >
-                      <SelectTrigger className="border-gray-200">
+                      <SelectTrigger className="border-border">
                         <SelectValue placeholder="Select timezone" />
                       </SelectTrigger>
                       <SelectContent>
@@ -636,7 +615,7 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                         }
                       }}
                     >
-                      <SelectTrigger className="border-gray-200">
+                      <SelectTrigger className="border-border">
                         <SelectValue placeholder="Select format" />
                       </SelectTrigger>
                       <SelectContent>
@@ -656,7 +635,7 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
             </Card>
 
             {/* Work Schedule */}
-            <Card className="overflow-hidden border-0 shadow-sm">
+            <Card className="overflow-hidden border-border shadow-sm">
               <CardHeader className="pb-4">
                 <SectionTitle
                   title="Work Schedule"
@@ -675,7 +654,7 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                           "companyWorkingDays"
                         )
                       }
-                      className="border-gray-200"
+                      className="border-border"
                       placeholder="5"
                       min="1"
                       max="7"
@@ -692,7 +671,7 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                           "companyWorkingHours"
                         )
                       }
-                      className="border-gray-200"
+                      className="border-border"
                       placeholder="40"
                       min="1"
                       max="168"
@@ -703,7 +682,7 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
             </Card>
 
             {/* Bank Information */}
-            <Card className="overflow-hidden border-0 shadow-sm">
+            <Card className="overflow-hidden border-border shadow-sm">
               <CardHeader className="pb-4">
                 <SectionTitle
                   title="Bank Information"
@@ -719,7 +698,7 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                       onChange={e =>
                         handleChangeCompanyDetails(e.target.value, "bankName")
                       }
-                      className="border-gray-200"
+                      className="border-border"
                       placeholder="Enter bank name"
                     />
                   </FormField>
@@ -734,7 +713,7 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                           "bankAccountNumber"
                         )
                       }
-                      className="border-gray-200"
+                      className="border-border"
                       placeholder="Enter account number"
                     />
                   </FormField>
@@ -749,7 +728,7 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                           "bankRoutingNumber"
                         )
                       }
-                      className="border-gray-200"
+                      className="border-border"
                       placeholder="Enter routing number"
                     />
                   </FormField>
@@ -764,7 +743,7 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                           "bankSwiftCode"
                         )
                       }
-                      className="border-gray-200"
+                      className="border-border"
                       placeholder="Enter SWIFT code"
                     />
                   </FormField>
@@ -773,7 +752,10 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
             </Card>
 
             {/* Tax Information */}
-            <Card className="overflow-hidden border-0 shadow-sm">
+            <Card
+              className="scroll-mt-24 overflow-hidden border-border shadow-sm"
+              id="tax-info"
+            >
               <CardHeader className="pb-4">
                 <SectionTitle
                   title="Tax Information"
@@ -789,7 +771,7 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                       onChange={e =>
                         handleChangeCompanyDetails(e.target.value, "taxId")
                       }
-                      className="border-gray-200"
+                      className="border-border"
                       placeholder="Enter Tax ID"
                     />
                   </FormField>
@@ -801,7 +783,7 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                       onChange={e =>
                         handleChangeCompanyDetails(e.target.value, "vatNumber")
                       }
-                      className="border-gray-200"
+                      className="border-border"
                       placeholder="Enter VAT number"
                     />
                   </FormField>
@@ -813,7 +795,7 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                       onChange={e =>
                         handleChangeCompanyDetails(e.target.value, "gstNumber")
                       }
-                      className="border-gray-200"
+                      className="border-border"
                       placeholder="Enter GST number"
                     />
                   </FormField>

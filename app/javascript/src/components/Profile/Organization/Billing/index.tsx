@@ -49,7 +49,9 @@ const Billing = () => {
       if (checkoutUrl) window.location.href = checkoutUrl;
     } catch (error: any) {
       toast.error(
-        error?.response?.data?.errors || error?.message || "Unable to open Stripe checkout"
+        error?.response?.data?.errors ||
+          error?.message ||
+          "Unable to open Stripe checkout"
       );
     } finally {
       setProcessingCheckout(false);
@@ -64,7 +66,9 @@ const Billing = () => {
       if (portalUrl) window.location.href = portalUrl;
     } catch (error: any) {
       toast.error(
-        error?.response?.data?.errors || error?.message || "Unable to open Stripe billing portal"
+        error?.response?.data?.errors ||
+          error?.message ||
+          "Unable to open Stripe billing portal"
       );
     } finally {
       setProcessingPortal(false);
@@ -98,13 +102,6 @@ const Billing = () => {
 
   return (
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-6 p-4 sm:p-6">
-      <div>
-        <h1 className="text-2xl font-semibold text-foreground">Billing</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Manage your workspace plan and subscription in Stripe.
-        </p>
-      </div>
-
       {billingResult === "success" && (
         <Alert>
           <AlertTitle>Subscription updated</AlertTitle>
@@ -211,8 +208,8 @@ const Billing = () => {
         </CardHeader>
         <CardContent className="space-y-4">
           <p className="text-sm text-muted-foreground">
-            Install the Miru CLI to use Miru from your terminal, scripts, or AI agents with the same
-            permissions as your user account.
+            Install the Miru CLI to use Miru from your terminal, scripts, or AI
+            agents with the same permissions as your user account.
           </p>
 
           <div className="rounded-md border bg-muted/40 p-3">
@@ -237,17 +234,27 @@ const Billing = () => {
           </div>
 
           <div className="rounded-md border p-3">
-            <p className="mb-2 text-xs uppercase tracking-wide text-muted-foreground">Try it</p>
-            <code className="block overflow-x-auto text-sm text-foreground">miru whoami</code>
+            <p className="mb-2 text-xs uppercase tracking-wide text-muted-foreground">
+              Try it
+            </p>
+            <code className="block overflow-x-auto text-sm text-foreground">
+              miru whoami
+            </code>
             <code className="mt-1 block overflow-x-auto text-sm text-foreground">
               miru config show
             </code>
-            <code className="mt-1 block overflow-x-auto text-sm text-foreground">miru version</code>
-            <code className="mt-1 block overflow-x-auto text-sm text-foreground">miru upgrade</code>
+            <code className="mt-1 block overflow-x-auto text-sm text-foreground">
+              miru version
+            </code>
+            <code className="mt-1 block overflow-x-auto text-sm text-foreground">
+              miru upgrade
+            </code>
             <code className="mt-1 block overflow-x-auto text-sm text-foreground">
               miru capabilities
             </code>
-            <code className="block overflow-x-auto text-sm text-foreground">miru help</code>
+            <code className="block overflow-x-auto text-sm text-foreground">
+              miru help
+            </code>
             <code className="mt-1 block overflow-x-auto text-sm text-foreground">
               miru client list
             </code>
@@ -261,8 +268,8 @@ const Billing = () => {
               miru expense list
             </code>
             <code className="mt-1 block overflow-x-auto text-sm text-foreground">
-              miru expense create --amount 42.25 --date 2026-03-09 --category-id 3 --description
-              "Lunch with client"
+              miru expense create --amount 42.25 --date 2026-03-09 --category-id
+              3 --description "Lunch with client"
             </code>
             <code className="mt-1 block overflow-x-auto text-sm text-foreground">
               miru invoice list
@@ -277,10 +284,12 @@ const Billing = () => {
               miru time list --from 2026-03-01 --to 2026-03-09
             </code>
             <code className="mt-1 block overflow-x-auto text-sm text-foreground">
-              miru time create --project-id 2 --duration 30 --date 2026-03-09 --note "CLI entry"
+              miru time create --project-id 2 --duration 30 --date 2026-03-09
+              --note "CLI entry"
             </code>
             <code className="mt-1 block overflow-x-auto text-sm text-foreground">
-              miru time update --id 629 --project-id 2 --duration 45 --date 2026-03-09
+              miru time update --id 629 --project-id 2 --duration 45 --date
+              2026-03-09
             </code>
           </div>
         </CardContent>

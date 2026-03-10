@@ -11,16 +11,7 @@ const Header = () => {
 
   const getHeaderContent = () => {
     if (isCalledFromSettings) {
-      return (
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight text-foreground">
-            Settings
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            Update profile, workspace, and preferences.
-          </p>
-        </div>
-      );
+      return null;
     }
 
     return (

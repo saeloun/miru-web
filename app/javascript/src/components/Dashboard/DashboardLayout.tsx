@@ -144,7 +144,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
           label: "Bank & Tax Info",
           href: "/settings/bank-info",
           icon: CurrencyCircleDollar,
-          roles: ["admin", "owner", "book_keeper"],
+          roles: ["admin", "owner"],
         },
       ],
     },

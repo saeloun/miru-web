@@ -61,7 +61,7 @@ RSpec.describe "Settings", type: :system, js: true do
       with_forgery_protection do
         visit "/settings/leaves"
         expect(page).to have_css("#react-root", wait: 10)
-        expect(page).to have_content("Leaves & Holidays", wait: 10)
+        expect(page).to have_content("My Leaves", wait: 10)
         expect(page).to have_text(/Balance|Leave/i, wait: 10)
 
         visit "/settings/holidays"

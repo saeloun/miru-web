@@ -109,29 +109,14 @@ const ModernPaymentSettings: React.FC<ModernPaymentSettingsProps> = ({
 
   return (
     <div className="min-h-screen bg-muted/40">
-      {/* Header */}
-      <div className="bg-card shadow-sm border-b sticky top-0 z-10">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between py-4">
-            <div>
-              <h1 className="text-2xl font-semibold text-foreground">
-                Payment Settings
-              </h1>
-              <p className="text-sm text-muted-foreground mt-1">
-                Configure payment processing for your organization
-              </p>
-            </div>
-            {onBack && (
-              <Button variant="outline" onClick={onBack}>
-                Back to Settings
-              </Button>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* Content */}
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {onBack && (
+          <div className="mb-6 flex justify-end">
+            <Button variant="outline" onClick={onBack}>
+              Back to Settings
+            </Button>
+          </div>
+        )}
         <div className="space-y-6">
           {/* Payment Providers Section */}
           <Card className="border-border shadow-sm">
@@ -158,10 +143,10 @@ const ModernPaymentSettings: React.FC<ModernPaymentSettingsProps> = ({
               ) : (
                 <div className="space-y-6">
                   {/* Stripe Provider */}
-                  <div className="border rounded-lg p-6 bg-card">
+                  <div className="rounded-lg border border-border bg-card p-6">
                     <div className="flex items-start justify-between">
                       <div className="flex items-start space-x-4">
-                        <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-indigo-50 border border-indigo-100">
+                        <div className="flex h-12 w-12 items-center justify-center rounded-lg border border-border bg-muted">
                           <svg
                             className="h-7 w-7"
                             viewBox="0 0 24 24"
@@ -184,7 +169,7 @@ const ModernPaymentSettings: React.FC<ModernPaymentSettingsProps> = ({
                           {isStripeConnected && stripeAccountDetails && (
                             <div className="mt-3 space-y-2">
                               <div className="flex items-center space-x-2">
-                                <CheckCircle2 className="h-4 w-4 text-green-600" />
+                                <CheckCircle2 className="h-4 w-4 text-primary" />
                                 <span className="text-sm text-muted-foreground">
                                   Connected to{" "}
                                   {stripeAccountDetails.email ||
@@ -194,7 +179,7 @@ const ModernPaymentSettings: React.FC<ModernPaymentSettingsProps> = ({
                               {stripeAccountDetails.charges_enabled && (
                                 <Badge
                                   variant="secondary"
-                                  className="bg-green-50 text-green-700 border-green-200"
+                                  className="border-border bg-accent text-foreground"
                                 >
                                   Charges Enabled
                                 </Badge>
@@ -206,14 +191,14 @@ const ModernPaymentSettings: React.FC<ModernPaymentSettingsProps> = ({
                       <div className="flex items-center space-x-2">
                         {isStripeConnected ? (
                           <>
-                            <Badge className="bg-green-100 text-green-800 border-green-200">
+                            <Badge className="border-border bg-accent text-foreground">
                               Connected
                             </Badge>
                             <Button
                               variant="outline"
                               size="sm"
                               onClick={() => setShowDisconnectDialog(true)}
-                              className="text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200"
+                              className="border-border text-destructive hover:bg-destructive/10 hover:text-destructive"
                             >
                               Disconnect
                             </Button>
@@ -222,7 +207,7 @@ const ModernPaymentSettings: React.FC<ModernPaymentSettingsProps> = ({
                           <Button
                             onClick={connectStripe}
                             disabled={isConnecting}
-                            className="bg-indigo-600 hover:bg-indigo-700"
+                            className="bg-primary hover:bg-primary/90"
                           >
                             {isConnecting ? (
                               <>
@@ -248,7 +233,7 @@ const ModernPaymentSettings: React.FC<ModernPaymentSettingsProps> = ({
                     </h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="flex items-start space-x-3">
-                        <Shield className="h-5 w-5 text-indigo-600 mt-0.5" />
+                        <Shield className="mt-0.5 h-5 w-5 text-primary" />
                         <div>
                           <p className="text-sm font-medium text-foreground">
                             Secure Payments
@@ -259,7 +244,7 @@ const ModernPaymentSettings: React.FC<ModernPaymentSettingsProps> = ({
                         </div>
                       </div>
                       <div className="flex items-start space-x-3">
-                        <Building2 className="h-5 w-5 text-indigo-600 mt-0.5" />
+                        <Building2 className="mt-0.5 h-5 w-5 text-primary" />
                         <div>
                           <p className="text-sm font-medium text-foreground">
                             Multiple Currencies
@@ -270,7 +255,7 @@ const ModernPaymentSettings: React.FC<ModernPaymentSettingsProps> = ({
                         </div>
                       </div>
                       <div className="flex items-start space-x-3">
-                        <CreditCard className="h-5 w-5 text-indigo-600 mt-0.5" />
+                        <CreditCard className="mt-0.5 h-5 w-5 text-primary" />
                         <div>
                           <p className="text-sm font-medium text-foreground">
                             Various Payment Methods
@@ -281,7 +266,7 @@ const ModernPaymentSettings: React.FC<ModernPaymentSettingsProps> = ({
                         </div>
                       </div>
                       <div className="flex items-start space-x-3">
-                        <CheckCircle2 className="h-5 w-5 text-indigo-600 mt-0.5" />
+                        <CheckCircle2 className="mt-0.5 h-5 w-5 text-primary" />
                         <div>
                           <p className="text-sm font-medium text-foreground">
                             Instant Setup
@@ -299,7 +284,7 @@ const ModernPaymentSettings: React.FC<ModernPaymentSettingsProps> = ({
           </Card>
 
           {/* Help Section */}
-          <Card className="border-blue-200 bg-blue-50">
+          <Card className="border-border bg-card">
             <CardHeader>
               <CardTitle className="text-lg">Need Help?</CardTitle>
             </CardHeader>
