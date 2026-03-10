@@ -407,8 +407,7 @@ const PaymentsTable: React.FC = () => {
     <div className="mx-auto max-w-7xl space-y-6 p-6">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Payments</h1>
-          <p className="mt-1 text-sm text-muted-foreground">
+          <p className="text-sm text-muted-foreground md:text-base">
             Stripe and manual entries in one simple ledger.
           </p>
         </div>
