@@ -83,6 +83,7 @@ gem "rolify", "~> 6.0"
 
 # OAuth Gems
 gem "omniauth-google-oauth2", "~> 1.0"
+gem "omniauth-github", "~> 2.0"
 gem "omniauth-rails_csrf_protection", "~> 1.0"
 
 # Pundit gem for user authorization
@@ -188,10 +189,6 @@ group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem "web-console", ">= 4.1.0"
 
-  # Add speed badges [https://github.com/MiniProfiler/rack-mini-profiler]
-  gem "rack-mini-profiler", ">= 2.3.3"
-
-
   # Use AnnotateRb instead of annotate for Rails 8 compatibility
   gem "annotaterb"
 
@@ -201,7 +198,7 @@ end
 
 group :test, :ci do
   gem "capybara", ">= 3.26"
-  gem "capybara-playwright-driver"
+  gem "cuprite"
 
   # Use Codecov for code coverage analysis
   gem "simplecov", require: false
