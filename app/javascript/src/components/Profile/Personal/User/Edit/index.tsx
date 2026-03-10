@@ -17,6 +17,7 @@ import { useCurrentUser } from "~/hooks/useCurrentUser";
 
 import MobileEditPage from "./MobileEditPage";
 import EditProfilePage from "./StaticPage";
+import ProfileImageCard from "./ProfileImageCard";
 import { userSchema } from "./validationSchema";
 
 dayjs.extend(utc);
@@ -41,8 +42,8 @@ const UserDetailsEdit = () => {
   };
 
   const navigate = useNavigate();
-  const { user, isDesktop } = useUserContext();
-  const { currentUser } = useCurrentUser();
+  const { avatarUrl, user, isDesktop, setCurrentAvatarUrl } = useUserContext();
+  const { currentUser, refetch: refetchCurrentUser } = useCurrentUser();
   const { personalDetails, isCalledFromSettings, updateDetails } =
     useProfileContext();
 
@@ -314,6 +315,11 @@ const UserDetailsEdit = () => {
     setConfirmPassword(event.target.value);
   };
 
+  const handleAvatarChange = async avatarUrl => {
+    setCurrentAvatarUrl(avatarUrl);
+    await refetchCurrentUser();
+  };
+
   return (
     <Fragment>
       {isDesktop && (
@@ -330,6 +336,20 @@ const UserDetailsEdit = () => {
             <Loader className="min-h-70v" />
           ) : (
             <EditProfilePage
+              avatarSection={
+                isCalledFromSettings && currentUserId ? (
+                  <ProfileImageCard
+                    displayName={
+                      `${personalDetails.first_name || ""} ${
+                        personalDetails.last_name || ""
+                      }`.trim() || "User"
+                    }
+                    imageUrl={avatarUrl || currentUser?.avatar_url}
+                    onAvatarChange={handleAvatarChange}
+                    userId={currentUserId}
+                  />
+                ) : null
+              }
               _confirmPassword={confirmPassword}
               _currentPassword={currentPassword}
               _getErr={getErr}
@@ -375,6 +395,20 @@ const UserDetailsEdit = () => {
             <Loader className="min-h-70v" />
           ) : (
             <MobileEditPage
+              avatarSection={
+                isCalledFromSettings && currentUserId ? (
+                  <ProfileImageCard
+                    displayName={
+                      `${personalDetails.first_name || ""} ${
+                        personalDetails.last_name || ""
+                      }`.trim() || "User"
+                    }
+                    imageUrl={avatarUrl || currentUser?.avatar_url}
+                    onAvatarChange={handleAvatarChange}
+                    userId={currentUserId}
+                  />
+                ) : null
+              }
               addrType={addrType}
               addressOptions={addressOptions}
               cancelPasswordChange={cancelPasswordChange}

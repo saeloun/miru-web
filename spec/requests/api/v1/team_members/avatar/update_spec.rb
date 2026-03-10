@@ -30,6 +30,19 @@ RSpec.describe "Api::V1::TeamMembers::AvatarController#update", type: :request d
       expect(user.reload.avatar).to be_present
     end
 
+    it "preserves uploaded image bytes" do
+      expected_bytes = File.binread(Rails.root.join("spec", "support", "fixtures", "test-image.png")).bytes.first(16)
+
+      send_request :put, api_v1_team_avatar_path(team_id: user.id), params: {
+        user: { avatar: }
+      }, headers: auth_headers(owner)
+
+      stored_bytes = user.reload.avatar.download.bytes.first(16)
+
+      expect(response).to have_http_status(:ok)
+      expect(stored_bytes).to eq(expected_bytes)
+    end
+
     it "won't return any error if avatar is not present" do
       send_request :put, api_v1_team_avatar_path(team_id: user.id), params: {
         user: { avatar: nil }

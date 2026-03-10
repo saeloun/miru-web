@@ -19,7 +19,7 @@ const UserDetailsView = () => {
     useProfileContext();
   const [isLoading, setIsLoading] = useState(false);
   const [currentUserId, setCurrentUserId] = useState(null);
-  const { user, isDesktop, companyRole } = useUserContext();
+  const { avatarUrl, user, isDesktop, companyRole } = useUserContext();
   const { currentUser } = useCurrentUser();
   const { memberId } = useParams();
 
@@ -102,6 +102,7 @@ const UserDetailsView = () => {
             <Loader className="min-h-70v" />
           ) : (
             <StaticPage
+              avatarUrl={avatarUrl}
               handleEditClick={handleEditClick}
               isCalledFromSettings={isCalledFromSettings}
               personalDetails={personalDetails}
@@ -122,6 +123,7 @@ const UserDetailsView = () => {
             <Loader className="min-h-70v" />
           ) : (
             <MobilePersonalDetails
+              avatarUrl={avatarUrl}
               handleEditClick={handleEditClick}
               isCalledFromSettings={isCalledFromSettings}
               personalDetails={personalDetails}

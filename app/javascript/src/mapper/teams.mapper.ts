@@ -17,8 +17,8 @@ export const teamsMapper = (user, address) => ({
     city: address?.city,
     pin: address?.pin,
   },
-  linkedin: user.social_accounts.linkedin_url,
-  github: user.social_accounts.github_url,
+  linkedin: user.social_accounts?.linkedin_url,
+  github: user.social_accounts?.github_url,
   date_format: user.date_format,
 });
 

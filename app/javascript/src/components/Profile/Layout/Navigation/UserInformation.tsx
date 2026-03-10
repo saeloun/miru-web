@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import { teamApi, teamsApi } from "apis/api";
 import { useProfileContext } from "context/Profile/ProfileContext";
+import { useUserContext } from "context/UserContext";
 import { UserAvatarSVG, DeleteIcon, ImageIcon, EditIcon } from "miruIcons";
 import { MoreOptions, Toastr, Tooltip } from "StyledComponents";
 import { useCurrentUser } from "~/hooks/useCurrentUser";
@@ -11,6 +12,7 @@ const UserInformation = () => {
     personalDetails: { first_name, last_name, id },
     isCalledFromSettings,
   } = useProfileContext();
+  const { avatarUrl, setCurrentAvatarUrl } = useUserContext();
   const { currentUser } = useCurrentUser();
 
   const [showProfileOptions, setShowProfileOptions] = useState(false);
@@ -29,10 +31,8 @@ const UserInformation = () => {
 
     try {
       if (isCalledFromSettings && currentUser) {
-        // Use current user avatar from _me endpoint
-        setImageUrl(currentUser.avatar_url);
+        setImageUrl(avatarUrl || currentUser.avatar_url);
       } else {
-        // Use teams API for team member context
         const responseData = await teamsApi.get(userId);
         setImageUrl(responseData.data.avatar_url);
       }
@@ -45,7 +45,7 @@ const UserInformation = () => {
     if (userId) {
       getAvatar();
     }
-  }, [userId, currentUser]);
+  }, [userId, currentUser, avatarUrl]);
 
   const validateFileSize = file => {
     const sizeInKB = file.size / 1024;
@@ -68,10 +68,8 @@ const UserInformation = () => {
       validateFileSize(file);
       setImageUrl(URL.createObjectURL(file));
       const payload = createFormData(file);
-      const headers = {
-        "Content-Type": "multipart/form-data",
-      };
-      await teamApi.updateTeamMemberAvatar(userId, payload, { headers });
+      const response = await teamApi.updateTeamMemberAvatar(userId, payload);
+      if (isCalledFromSettings) setCurrentAvatarUrl(response.data.avatar_url);
     } catch (error) {
       Toastr.error(error.message);
     }
@@ -82,6 +80,7 @@ const UserInformation = () => {
       setShowProfileOptions(false);
       await teamApi.destroyTeamMemberAvatar(userId);
       setImageUrl(null);
+      if (isCalledFromSettings) setCurrentAvatarUrl(null);
     } catch {
       Toastr.error("Error in deleting Profile Image");
     }

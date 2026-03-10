@@ -73,7 +73,13 @@ class ApiHandler {
     );
 
     this.axios.interceptors.request.use(
-      async (config: any) => config,
+      async (config: any) => {
+        if (config?.data instanceof FormData) {
+          delete config.headers["Content-Type"];
+        }
+
+        return config;
+      },
       (error: any) => Promise.reject(error)
     );
   }

@@ -6,6 +6,12 @@ require "delegate"
 # Fixes Encoding::CompatibilityError when UTF-16LE encoded data is sent in
 # query strings or POST bodies (e.g., from certain browsers, bots, or malformed requests).
 class EncodingSanitizer
+  TEXTUAL_CONTENT_TYPES = [
+    "application/json",
+    "application/x-www-form-urlencoded",
+    "text/"
+  ].freeze
+
   def initialize(app)
     @app = app
   end
@@ -18,7 +24,7 @@ class EncodingSanitizer
       end
 
       # Wrap rack.input to sanitize POST body
-      if env["rack.input"]
+      if env["rack.input"] && sanitize_request_body?(env)
         env["rack.input"] = SanitizedInput.new(env["rack.input"])
       end
     rescue => e
@@ -45,6 +51,14 @@ class EncodingSanitizer
         .encode(Encoding::UTF_8, invalid: :replace, undef: :replace, replace: "")
     rescue Encoding::UndefinedConversionError, Encoding::InvalidByteSequenceError
       value.dup.force_encoding(Encoding::UTF_8).scrub("")
+    end
+
+    def sanitize_request_body?(env)
+      content_type = env["CONTENT_TYPE"].to_s.downcase
+      return false if content_type.empty?
+      return false if content_type.start_with?("multipart/form-data", "application/octet-stream")
+
+      TEXTUAL_CONTENT_TYPES.any? { |type| content_type.start_with?(type) }
     end
 
     # Wrapper for rack.input that sanitizes encoding on read
