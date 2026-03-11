@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+CONFIG_PATH="${SUBSET_CONFIG:-$ROOT/config/data_subsets/miru.yml}"
+
+read_config() {
+  ruby -ryaml -e 'config = YAML.safe_load_file(ARGV[0]); puts config.fetch(ARGV[1])' "$CONFIG_PATH" "$1"
+}
+
+ARTIFACT_PREFIX_NAME="${ARTIFACT_PREFIX_NAME:-$(read_config artifact_name)}"
+OUTPUT_DIR="${OUTPUT_DIR:-$ROOT/tmp/data_subsets}"
+ARTIFACT_PATH="${ARTIFACT_PATH:-$OUTPUT_DIR/${ARTIFACT_PREFIX_NAME}.dump}"
+TARGET_DATABASE="${TARGET_DATABASE:-${1:-miru_development}}"
+TARGET_DATABASE_URL="${TARGET_DATABASE_URL:-postgres://localhost/${TARGET_DATABASE}}"
+
+mkdir -p "$OUTPUT_DIR"
+
+if [[ "${DOWNLOAD_FROM_R2:-0}" == "1" ]]; then
+  mise exec -- bundle exec ruby script/data_subsets/r2.rb download-latest "$ARTIFACT_PATH"
+fi
+
+if [[ ! -f "$ARTIFACT_PATH" ]]; then
+  LATEST_MATCH="$(find "$OUTPUT_DIR" -maxdepth 1 -type f -name "${ARTIFACT_PREFIX_NAME}-*.dump" | sort | tail -n 1)"
+  if [[ -n "${LATEST_MATCH:-}" ]]; then
+    ARTIFACT_PATH="$LATEST_MATCH"
+  fi
+fi
+
+if [[ ! -f "$ARTIFACT_PATH" ]]; then
+  echo "Missing artifact: $ARTIFACT_PATH" >&2
+  echo "Set DOWNLOAD_FROM_R2=1 or provide ARTIFACT_PATH=<path-to-dump>." >&2
+  exit 1
+fi
+
+dropdb --if-exists "$TARGET_DATABASE" >/dev/null 2>&1 || true
+createdb "$TARGET_DATABASE"
+
+mise exec -- pg_restore --clean --if-exists --no-owner --no-privileges -d "$TARGET_DATABASE" "$ARTIFACT_PATH"
+DATABASE_URL="$TARGET_DATABASE_URL" mise exec -- bundle exec rails db:migrate
+DATABASE_URL="$TARGET_DATABASE_URL" mise exec -- bundle exec rails data:migrate
+
+echo "Restored sanitized subset into $TARGET_DATABASE"

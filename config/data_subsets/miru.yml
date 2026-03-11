@@ -1,0 +1,9 @@
+source_dump: tmp/migration/miru_production_20260306_203652.dump
+working_database: miru_subset_working
+target_company_id: 2
+start_date: "2025-01-01"
+artifact_prefix: miru/sanitized-subsets
+artifact_name: company-2-2025-plus
+keep_company_name: Saeloun Inc
+internal_email_domain: saeloun.com
+external_email_domain: example.com

@@ -16,6 +16,10 @@
 /tmp/*
 !/log/.keep
 !/tmp/.keep
+!/tmp/data_subsets/
+!/tmp/data_subsets/.keep
+!/tmp/migration/
+!/tmp/migration/.keep
 
 # Ignore pidfiles, but keep the directory.
 /tmp/pids/*
@@ -110,3 +114,5 @@ tools/miru-cli/miru
 output/
 output/pinchtab/
 Procfile.dev.9000
+tmp/data_subsets/*.dump
+tmp/migration/*.dump
