@@ -53,6 +53,19 @@ RSpec.describe "Dashboard", type: :system, js: true do
     end
   end
 
+  it "logs out from the dashboard shell" do
+    with_forgery_protection do
+      visit "/dashboard"
+
+      expect(page).to have_button("Logout", wait: 10)
+
+      click_button "Logout"
+
+      expect(page).to have_current_path(%r{/(user/)?sign_in|/login}, wait: 10)
+      expect(page).to have_content("Sign in to your workspace", wait: 10)
+    end
+  end
+
   context "with revenue data from invoices" do
     let!(:client) { create(:client, company:, name: "Acme Corp") }
     let!(:project) { create(:project, client:) }

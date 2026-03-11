@@ -126,7 +126,7 @@ export const ModernNavbar: React.FC = () => {
 
   const handleLogout = async () => {
     try {
-      await logoutApi.logout();
+      await logoutApi();
       window.location.href = "/";
     } catch (error) {
       console.error("Logout failed:", error);

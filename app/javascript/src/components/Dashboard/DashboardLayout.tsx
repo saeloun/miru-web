@@ -170,7 +170,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
 
   const handleLogout = async () => {
     try {
-      await logoutApi.logout();
+      await logoutApi();
       window.location.href = "/";
     } catch (error) {
       window.location.href = "/";
