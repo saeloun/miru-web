@@ -30,12 +30,12 @@ module Api
         private
 
           def fetch_activities
-            invoices = current_company.invoices
+            invoices = scoped_invoices
               .where.not(status: "draft")
               .includes(:client)
               .map { |invoice| build_invoice_activity(invoice) }
 
-            payments = current_company.payments
+            payments = scoped_payments
               .includes(invoice: :client)
               .map { |payment| build_payment_activity(payment) }
 
@@ -92,6 +92,20 @@ module Api
               activities: paginated,
               has_more: activities.count > (offset + per_page)
             }
+          end
+
+          def scoped_invoices
+            return current_company.invoices unless current_user.has_role?(:client, current_company)
+
+            current_company.invoices.where(client_id: current_user.client_members.kept.where(company: current_company).select(:client_id))
+          end
+
+          def scoped_payments
+            return current_company.payments unless current_user.has_role?(:client, current_company)
+
+            current_company.payments.joins(:invoice).where(invoices: {
+              client_id: current_user.client_members.kept.where(company: current_company).select(:client_id)
+            })
           end
       end
     end

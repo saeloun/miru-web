@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
 class DashboardPresenter
-  attr_reader :company, :timeframe, :from_date, :to_date
+  attr_reader :company, :current_user, :timeframe, :from_date, :to_date
 
-  def initialize(company:, timeframe: "year", from_date: nil, to_date: nil)
+  def initialize(company:, current_user:, timeframe: "year", from_date: nil, to_date: nil)
     @company = company
+    @current_user = current_user
     @timeframe = "year" # Always use year for consistent annual view
     @to_date = to_date || Date.current
     @from_date = from_date || Date.current - 1.year
@@ -36,7 +37,7 @@ class DashboardPresenter
     end
 
     def stats_data
-      invoices = company.invoices.kept
+      invoices = scoped_invoices
       period_invoices = invoices.where(issue_date: from_date..to_date)
 
       # Calculate revenue
@@ -45,7 +46,7 @@ class DashboardPresenter
       revenue_trend = calculate_trend(total_revenue, previous_period_revenue)
 
       # Calculate projects
-      active_projects = company.projects.where(billable: true).count
+      active_projects = scoped_projects.where(billable: true).count
       previous_active_projects = calculate_previous_active_projects
       projects_trend = calculate_trend(active_projects, previous_active_projects)
 
@@ -59,7 +60,7 @@ class DashboardPresenter
         revenue_trend: revenue_trend,
         active_projects: active_projects,
         projects_trend: projects_trend,
-        team_size: company.users.count,
+        team_size: team_size,
         billable_hours: billable_hours,
         hours_trend: hours_trend,
         currency: company.base_currency
@@ -67,7 +68,7 @@ class DashboardPresenter
     end
 
     def revenue_chart_data
-      invoices = company.invoices.kept.where(issue_date: from_date..to_date)
+      invoices = scoped_invoices.where(issue_date: from_date..to_date)
 
       # Group by month
       monthly_data = invoices.group_by { |i| i.issue_date.beginning_of_month }
@@ -95,7 +96,7 @@ class DashboardPresenter
     end
 
     def revenue_by_customer_data
-      invoices = company.invoices.kept.where(issue_date: from_date..to_date)
+      invoices = scoped_invoices.where(issue_date: from_date..to_date)
 
       # Group by client
       client_revenue = invoices.includes(:client).group_by(&:client)
@@ -125,7 +126,7 @@ class DashboardPresenter
       activities = []
 
       # Recent invoices
-      recent_invoices = company.invoices.kept
+      recent_invoices = scoped_invoices
                               .includes(:client)
                               .order(created_at: :desc)
                               .limit(2)
@@ -143,7 +144,7 @@ class DashboardPresenter
       end
 
       # Recent projects
-      recent_projects = company.projects
+      recent_projects = scoped_projects
                               .order(created_at: :desc)
                               .limit(2)
 
@@ -169,9 +170,7 @@ class DashboardPresenter
     end
 
     def calculate_billable_hours
-      # Calculate from timesheet entries
-      timesheet_entries = company.timesheet_entries
-                                .where(work_date: from_date..to_date)
+      timesheet_entries = scoped_timesheet_entries.where(work_date: from_date..to_date)
 
       timesheet_entries.sum(:duration).to_f / 60 # Convert minutes to hours
     end
@@ -180,8 +179,7 @@ class DashboardPresenter
       previous_from = from_date - (to_date - from_date).days
       previous_to = from_date - 1.day
 
-      timesheet_entries = company.timesheet_entries
-                                .where(work_date: previous_from..previous_to)
+      timesheet_entries = scoped_timesheet_entries.where(work_date: previous_from..previous_to)
 
       timesheet_entries.sum(:duration).to_f / 60
     end
@@ -190,14 +188,11 @@ class DashboardPresenter
       previous_from = from_date - (to_date - from_date).days
       previous_to = from_date - 1.day
 
-      company.invoices.kept
-            .where(issue_date: previous_from..previous_to)
-            .sum(:amount)
+      scoped_invoices.where(issue_date: previous_from..previous_to).sum(:amount)
     end
 
     def calculate_previous_active_projects
-      # For simplicity, return current count minus 1
-      [company.projects.where(billable: true).count - 1, 0].max
+      [scoped_projects.where(billable: true).count - 1, 0].max
     end
 
     def calculate_trend(current_value, previous_value)
@@ -221,5 +216,35 @@ class DashboardPresenter
       else
         time.strftime("%b %d")
       end
+    end
+
+    def client_scoped?
+      current_user.has_role?(:client, company)
+    end
+
+    def accessible_client_ids
+      @accessible_client_ids ||= if client_scoped?
+        current_user.client_members.kept.where(company: company).select(:client_id)
+      else
+        company.clients.kept.select(:id)
+      end
+    end
+
+    def scoped_invoices
+      company.invoices.kept.where(client_id: accessible_client_ids)
+    end
+
+    def scoped_projects
+      company.projects.where(client_id: accessible_client_ids)
+    end
+
+    def scoped_timesheet_entries
+      company.timesheet_entries.joins(:project).where(projects: { client_id: accessible_client_ids })
+    end
+
+    def team_size
+      return company.users.count unless client_scoped?
+
+      scoped_projects.joins(:project_members).distinct.count("project_members.user_id")
     end
 end

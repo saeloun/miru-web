@@ -6,6 +6,7 @@ class Api::V1::DashboardController < Api::V1::BaseController
 
     @presenter = DashboardPresenter.new(
       company: current_company,
+      current_user: current_user,
       timeframe: params[:timeframe] || "month",
       from_date: params[:from_date],
       to_date: params[:to_date]
