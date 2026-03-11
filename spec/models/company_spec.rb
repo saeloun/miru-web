@@ -158,5 +158,114 @@ RSpec.describe Company, type: :model do
         end
       end
     end
+
+    describe "#trial_available?" do
+      it "is true for a free company that has not used a trial" do
+        expect(company.trial_available?).to eq(true)
+      end
+
+      it "is false for a paid company" do
+        company.update!(plan_tier: "paid")
+
+        expect(company.trial_available?).to eq(false)
+      end
+
+      it "is false for a billing exempt company" do
+        company.update!(billing_exempt: true)
+
+        expect(company.trial_available?).to eq(false)
+      end
+
+      it "is false after the company has used its trial" do
+        company.update!(trial_started_at: 31.days.ago, trial_ends_at: 1.day.ago)
+
+        expect(company.trial_available?).to eq(false)
+      end
+    end
+
+    describe "#pro_access?" do
+      it "is true while the trial is active" do
+        travel_to(Time.zone.local(2026, 3, 11, 12, 0, 0)) do
+          company.update!(trial_started_at: Time.current, trial_ends_at: 30.days.from_now)
+
+          expect(company.pro_access?).to eq(true)
+          expect(company.current_plan_label).to eq("pro_trial")
+          expect(company.current_subscription_status).to eq("trialing")
+          expect(company.team_member_limit).to eq(100)
+        end
+      end
+
+      it "falls back to free access after the trial ends" do
+        travel_to(Time.zone.local(2026, 4, 15, 12, 0, 0)) do
+          company.update!(
+            trial_started_at: 35.days.ago,
+            trial_ends_at: 5.days.ago
+          )
+
+          expect(company.pro_access?).to eq(false)
+          expect(company.current_subscription_status).to eq("trial_expired")
+          expect(company.team_member_limit).to eq(3)
+        end
+      end
+
+      it "is true for a paid Stripe subscription" do
+        company.update!(plan_tier: "paid", subscription_status: "active")
+
+        expect(company.pro_access?).to eq(true)
+        expect(company.stripe_subscription_active?).to eq(true)
+      end
+    end
+
+    describe "#apply_stripe_subscription!" do
+      it "marks the company as paid for active subscriptions" do
+        company.apply_stripe_subscription!(
+          stripe_customer_id: "cus_123",
+          stripe_subscription_id: "sub_123",
+          subscription_status: "active",
+          subscription_ends_at: Time.zone.local(2026, 4, 10, 12, 0, 0),
+          subscription_interval: "month"
+        )
+
+        company.reload
+
+        expect(company.plan_tier).to eq("paid")
+        expect(company.stripe_customer_id).to eq("cus_123")
+        expect(company.stripe_subscription_id).to eq("sub_123")
+        expect(company.subscription_status).to eq("active")
+        expect(company.subscription_interval).to eq("month")
+      end
+
+      it "marks the company as free for canceled subscriptions" do
+        company.apply_stripe_subscription!(
+          stripe_customer_id: "cus_123",
+          stripe_subscription_id: "sub_123",
+          subscription_status: "canceled",
+          subscription_interval: "year"
+        )
+
+        expect(company.reload.plan_tier).to eq("free")
+      end
+    end
+
+    describe "#revoke_stripe_subscription_access!" do
+      it "clears paid access while preserving trial history" do
+        company.update!(
+          plan_tier: "paid",
+          stripe_customer_id: "cus_123",
+          stripe_subscription_id: "sub_123",
+          subscription_status: "active",
+          subscription_interval: "month"
+        )
+
+        company.revoke_stripe_subscription_access!
+        company.reload
+
+        expect(company.plan_tier).to eq("free")
+        expect(company.subscription_status).to eq("canceled")
+        expect(company.subscription_ends_at).to be_nil
+        expect(company.stripe_subscription_id).to be_nil
+        expect(company.subscription_interval).to be_nil
+      end
+    end
   end
 end

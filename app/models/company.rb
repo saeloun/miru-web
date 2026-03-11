@@ -100,7 +100,7 @@ class Company < ApplicationRecord
   def team_member_limit
     return Float::INFINITY if billing_exempt?
 
-    plan_tier == "paid" ? 100 : 3
+    pro_access? ? 100 : 3
   end
 
   def used_team_seats
@@ -111,6 +111,83 @@ class Company < ApplicationRecord
     return false if team_member_limit.infinite?
 
     used_team_seats >= team_member_limit
+  end
+
+  def trial_active?
+    trial_started_at.present? && trial_ends_at.present? && trial_ends_at.future?
+  end
+
+  def trial_expired?
+    trial_started_at.present? && trial_ends_at.present? && trial_ends_at.past?
+  end
+
+  def trial_available?
+    !billing_exempt? && plan_tier != "paid" && trial_started_at.blank?
+  end
+
+  def pro_access?
+    billing_exempt? || plan_tier == "paid" || trial_active?
+  end
+
+  def stripe_subscription_active?
+    %w[active trialing past_due].include?(subscription_status.to_s)
+  end
+
+  def current_plan_label
+    return "free_pro" if billing_exempt?
+    return "pro_trial" if trial_active?
+    return "paid" if plan_tier == "paid"
+
+    "free"
+  end
+
+  def current_subscription_status
+    return "trialing" if trial_active?
+    return "trial_expired" if trial_expired? && plan_tier != "paid"
+
+    subscription_status
+  end
+
+  def start_pro_trial!(starts_at: Time.current)
+    raise ArgumentError, "trial_unavailable" unless trial_available?
+
+    update!(
+      trial_started_at: starts_at,
+      trial_ends_at: starts_at + 30.days
+    )
+  end
+
+  def apply_stripe_subscription!(
+    stripe_customer_id:,
+    stripe_subscription_id: nil,
+    subscription_status:,
+    subscription_ends_at: nil,
+    subscription_interval: nil
+  )
+    attrs = {
+      stripe_customer_id:,
+      subscription_status:,
+      subscription_ends_at:,
+      plan_tier: stripe_subscription_access?(subscription_status) ? "paid" : "free"
+    }
+
+    attrs[:stripe_subscription_id] = stripe_subscription_id if has_attribute?(:stripe_subscription_id)
+    attrs[:subscription_interval] = subscription_interval if has_attribute?(:subscription_interval)
+
+    update!(attrs)
+  end
+
+  def revoke_stripe_subscription_access!
+    attrs = {
+      plan_tier: "free",
+      subscription_status: "canceled",
+      subscription_ends_at: nil
+    }
+
+    attrs[:stripe_subscription_id] = nil if has_attribute?(:stripe_subscription_id)
+    attrs[:subscription_interval] = nil if has_attribute?(:subscription_interval)
+
+    update!(attrs)
   end
 
   delegate :formatted_address, to: :current_address
@@ -136,4 +213,10 @@ class Company < ApplicationRecord
 
     users.with_kept_employments.where.not(id: user_ids_with_only_client_role).distinct
   end
+
+  private
+
+    def stripe_subscription_access?(status)
+      %w[active trialing past_due].include?(status.to_s)
+    end
 end

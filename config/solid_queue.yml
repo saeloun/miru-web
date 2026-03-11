@@ -9,6 +9,9 @@ default: &default
         weekly_reminder:
           class: WeeklyReminderToUserJob
           schedule: '0 14 * * 1 Asia/Kolkata' # Runs every Monday at 14:00
+        sync_stripe_subscriptions:
+          class: SyncStripeSubscriptionsJob
+          schedule: '0 1 * * *'
   workers:
     - queues: "*"
       threads: 5
@@ -32,6 +35,9 @@ production:
         weekly_reminder:
           class: WeeklyReminderToUserJob
           schedule: '0 14 * * 1 Asia/Kolkata'
+        sync_stripe_subscriptions:
+          class: SyncStripeSubscriptionsJob
+          schedule: '0 1 * * *'
   workers:
     - queues: "*"
       threads: <%= ENV.fetch("SOLID_QUEUE_THREADS", "3").to_i %>
