@@ -80,6 +80,7 @@ namespace :api, defaults: { format: "json" } do
     resource :subscription, only: [:show] do
       post :checkout
       post :portal
+      post :trial
     end
     namespace :invoices do
       resources :bulk_deletion, only: [:create]

@@ -16,8 +16,8 @@ const AdminNav = () => {
   );
 
   return (
-    <div className="min-h-[60vh] overflow-hidden rounded-xl border border-border bg-card shadow-sm">
-      <div className="p-4 md:p-6">
+    <div className="min-h-[60vh] rounded-xl border border-border bg-card shadow-sm">
+      <div className="max-h-[70vh] overflow-y-auto p-4 md:p-6">
         <List companyRole={companyRole} settingsList={allSettings} />
       </div>
     </div>

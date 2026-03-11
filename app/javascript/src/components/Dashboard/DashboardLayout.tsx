@@ -116,6 +116,12 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
           icon: Wallet,
           roles: ["admin", "owner"],
         },
+        {
+          label: "Billing",
+          href: "/settings/billing",
+          icon: Wallet,
+          roles: ["admin", "owner"],
+        },
       ],
     },
     {

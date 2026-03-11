@@ -1,0 +1,12 @@
+<p>Hello <%= @recipient.first_name.presence || @recipient.email %>,</p>
+
+<p>Your 30-day Miru Pro trial for <%= @company.name %> is now active.</p>
+
+<p>
+  Trial ends on <%= @trial_ends_at&.in_time_zone(@company.timezone.presence || Time.zone)&.strftime("%B %-d, %Y") %>.
+</p>
+
+<p>
+  You can review billing and upgrade any time from
+  <a href="<%= @billing_url %>"><%= @billing_url %></a>.
+</p>

@@ -406,7 +406,9 @@ export const teamApi = {
 // Subscriptions
 export const subscriptionsApi = {
   show: () => http.get(`/subscription`),
-  checkout: () => http.post(`/subscription/checkout`),
+  trial: () => http.post(`/subscription/trial`),
+  checkout: (interval = "monthly") =>
+    http.post(`/subscription/checkout`, { interval }),
   portal: () => http.post(`/subscription/portal`),
 };
 
