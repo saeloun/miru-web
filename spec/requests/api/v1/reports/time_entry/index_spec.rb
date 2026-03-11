@@ -3,7 +3,7 @@
 require "rails_helper"
 
 RSpec.describe "Api::V1::Reports::TimeEntryController::#index", type: :request do
-  let(:company) { create(:company, name: "company_one") }
+  let(:company) { create(:company, name: "company_one", plan_tier: "paid") }
   let(:user) { create(:user, current_workspace_id: company.id) }
   let(:client) { create(:client, :with_logo, company:, name: "American_Client") }
   let(:project) { create(:project, billable: true, client:, name: "A class project") }

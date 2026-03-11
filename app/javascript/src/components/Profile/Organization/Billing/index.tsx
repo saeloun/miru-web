@@ -1,6 +1,16 @@
 import React, { useEffect, useState } from "react";
 
 import { ApiStatus } from "constants/index";
+import {
+  ChartLineUp,
+  CheckCircle,
+  ClockClockwise,
+  LockKey,
+  RocketLaunch,
+  ShieldCheck,
+  Sparkle,
+  Storefront,
+} from "phosphor-react";
 import { toast } from "sonner";
 
 import { subscriptionsApi } from "apis/api";
@@ -148,9 +158,6 @@ const Billing = () => {
     ? `${summary.used_team_seats}/${summary.team_member_limit} seats used`
     : "";
 
-  const cliInstallCommand =
-    "curl -fsSL https://raw.githubusercontent.com/saeloun/miru-web/main/tools/miru-cli/install.sh | bash";
-
   const priceByInterval = {
     monthly: {
       proPerSeat: 5,
@@ -226,10 +233,10 @@ const Billing = () => {
     },
     {
       feature: "Reports and dashboards",
-      free: "Core reports",
-      pro: "Advanced finance views",
-      enterprise: "Advanced finance views",
-      hostedEnterprise: "Advanced finance views",
+      free: "Dashboard only",
+      pro: "Reports and analytics",
+      enterprise: "Reports and analytics",
+      hostedEnterprise: "Reports and analytics",
     },
     {
       feature: "SSO",
@@ -253,6 +260,49 @@ const Billing = () => {
       hostedEnterprise: "Managed service + onboarding",
     },
   ];
+
+  const proHighlights = [
+    {
+      title: "More seats without admin pain",
+      description:
+        "Move past the 3-seat free limit and keep onboarding simple.",
+      icon: <RocketLaunch size={18} weight="duotone" />,
+    },
+    {
+      title: "SSO and stronger controls",
+      description: "Give growing teams secure access without extra tools.",
+      icon: <LockKey size={18} weight="duotone" />,
+    },
+    {
+      title: "Finance visibility that stays calm",
+      description:
+        "Know margin, billing cadence, and team usage without extra setup.",
+      icon: <ChartLineUp size={18} weight="duotone" />,
+    },
+  ];
+
+  const planBullets = {
+    free: [
+      "Self-hosted core product",
+      "Time tracking, invoices, payments",
+      "Dashboard visibility for a small team",
+    ],
+    pro: [
+      "30-day free trial before paying",
+      "SSO, advanced reporting, stronger admin controls",
+      "Best fit for agencies and growing teams",
+    ],
+    enterprise: [
+      "Procurement-friendly contracts",
+      "Security review and onboarding support",
+      "For larger teams with approval and compliance needs",
+    ],
+    hostedEnterprise: [
+      "Dedicated managed setup",
+      "We handle upgrades, backups, and support",
+      "For teams that want Miru fully operated for them",
+    ],
+  } as const;
 
   return (
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-6 p-4 sm:p-6">
@@ -430,15 +480,48 @@ const Billing = () => {
         </CardContent>
       </Card>
 
-      <Card className="border-border bg-card shadow-sm">
+      <Card className="overflow-hidden border-border bg-card shadow-sm">
         <CardHeader className="gap-2">
-          <CardTitle>Plans</CardTitle>
-          <p className="text-sm text-muted-foreground">
-            Pick the cheapest plan that still gives your team enough room. Most
-            growing teams should choose yearly Pro once they cross 3 seats.
+          <div className="flex flex-wrap items-center gap-3">
+            <Badge className="gap-1.5 px-3 py-1">
+              <Sparkle size={14} weight="fill" />
+              30-day Pro trial
+            </Badge>
+            <Badge variant="secondary" className="gap-1.5 px-3 py-1">
+              <ClockClockwise size={14} weight="fill" />
+              Save two months on yearly
+            </Badge>
+          </div>
+          <CardTitle className="text-2xl tracking-tight">
+            Pick the package that fits now. Switch later if you need more.
+          </CardTitle>
+          <p className="max-w-3xl text-sm text-muted-foreground">
+            Start on Free, move to Pro when the team needs more control, or let
+            us run Miru for you. Pro stays inexpensive, yearly saves real money,
+            and billing stays simple because checkout and subscription
+            management are powered by Stripe.
           </p>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-6">
+          <div className="grid gap-4 lg:grid-cols-3">
+            {proHighlights.map(item => (
+              <div
+                key={item.title}
+                className="rounded-xl border border-border bg-background p-4 shadow-sm"
+              >
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-card text-foreground shadow-sm">
+                  {item.icon}
+                </div>
+                <p className="mt-3 text-sm font-semibold text-foreground">
+                  {item.title}
+                </p>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  {item.description}
+                </p>
+              </div>
+            ))}
+          </div>
+
           <div className="rounded-xl border border-border bg-muted/40 p-4 shadow-sm">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
               <div className="space-y-2">
@@ -524,15 +607,37 @@ const Billing = () => {
               </div>
               <p className="mt-2 text-2xl font-semibold text-foreground">$0</p>
               <p className="mt-2 text-sm text-muted-foreground">
-                Self-host Miru with core tracking, invoicing, reporting, and up
+                Self-host Miru with core tracking, invoicing, payments, and up
                 to 3 team seats.
               </p>
+              <div className="mt-4 space-y-2">
+                {planBullets.free.map(item => (
+                  <div
+                    key={item}
+                    className="flex items-start gap-2 text-sm text-muted-foreground"
+                  >
+                    <CheckCircle
+                      size={16}
+                      weight="fill"
+                      className="mt-0.5 shrink-0 text-foreground"
+                    />
+                    <span>{item}</span>
+                  </div>
+                ))}
+              </div>
             </div>
 
             <div className="rounded-xl border border-primary/40 bg-card p-4 shadow-sm ring-1 ring-primary/10">
               <div className="flex items-center justify-between">
                 <h3 className="text-base font-semibold text-foreground">Pro</h3>
-                <Badge>Recommended</Badge>
+                <div className="flex items-center gap-2">
+                  {billingInterval === "yearly" && (
+                    <Badge variant="secondary">
+                      Save ${10 * seatEstimate}/yr
+                    </Badge>
+                  )}
+                  <Badge>Recommended</Badge>
+                </div>
               </div>
               <p className="mt-2 text-2xl font-semibold text-foreground">
                 {priceByInterval[billingInterval].pro}
@@ -541,9 +646,53 @@ const Billing = () => {
                 {priceByInterval[billingInterval].proSavings}
               </p>
               <p className="mt-2 text-sm text-muted-foreground">
-                Pro adds SSO, better reporting, more seats, and a 30-day free
-                trial before you commit.
+                Pro adds reports, SSO, more seats, and calmer admin controls
+                without enterprise overhead.
               </p>
+              <div className="mt-4 space-y-2">
+                {planBullets.pro.map(item => (
+                  <div
+                    key={item}
+                    className="flex items-start gap-2 text-sm text-muted-foreground"
+                  >
+                    <CheckCircle
+                      size={16}
+                      weight="fill"
+                      className="mt-0.5 shrink-0 text-primary"
+                    />
+                    <span>{item}</span>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-4 space-y-2">
+                {summary?.trial_available && (
+                  <Button
+                    className="w-full"
+                    variant="outline"
+                    onClick={startTrial}
+                    disabled={processingTrial}
+                  >
+                    {processingTrial
+                      ? "Starting trial..."
+                      : "Start 30-day Pro trial"}
+                  </Button>
+                )}
+                {!summary?.billing_exempt && summary?.plan_tier !== "paid" && (
+                  <Button
+                    className="w-full"
+                    onClick={startCheckout}
+                    disabled={processingCheckout}
+                  >
+                    {processingCheckout
+                      ? "Opening Stripe..."
+                      : "Upgrade with Stripe"}
+                  </Button>
+                )}
+                <p className="text-xs text-muted-foreground">
+                  No sales call for Pro. Cancel or change plans in Stripe
+                  anytime.
+                </p>
+              </div>
             </div>
 
             <div className="rounded-xl border border-border bg-card p-4 shadow-sm">
@@ -560,6 +709,30 @@ const Billing = () => {
                 Procurement-friendly contracts, advanced controls, and support
                 for larger teams that need security review.
               </p>
+              <p className="mt-2 text-sm font-medium text-foreground">
+                Talk to{" "}
+                <a
+                  className="underline underline-offset-4"
+                  href="mailto:hello@saeloun.com"
+                >
+                  hello@saeloun.com
+                </a>
+              </p>
+              <div className="mt-4 space-y-2">
+                {planBullets.enterprise.map(item => (
+                  <div
+                    key={item}
+                    className="flex items-start gap-2 text-sm text-muted-foreground"
+                  >
+                    <ShieldCheck
+                      size={16}
+                      weight="fill"
+                      className="mt-0.5 shrink-0 text-foreground"
+                    />
+                    <span>{item}</span>
+                  </div>
+                ))}
+              </div>
             </div>
 
             <div className="rounded-xl border border-border bg-card p-4 shadow-sm">
@@ -576,6 +749,30 @@ const Billing = () => {
                 We host, upgrade, back up, and support Miru for you on a
                 dedicated setup.
               </p>
+              <p className="mt-2 text-sm font-medium text-foreground">
+                Talk to{" "}
+                <a
+                  className="underline underline-offset-4"
+                  href="mailto:hello@saeloun.com"
+                >
+                  hello@saeloun.com
+                </a>
+              </p>
+              <div className="mt-4 space-y-2">
+                {planBullets.hostedEnterprise.map(item => (
+                  <div
+                    key={item}
+                    className="flex items-start gap-2 text-sm text-muted-foreground"
+                  >
+                    <Storefront
+                      size={16}
+                      weight="fill"
+                      className="mt-0.5 shrink-0 text-foreground"
+                    />
+                    <span>{item}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
 
@@ -605,98 +802,29 @@ const Billing = () => {
               </TableBody>
             </Table>
           </div>
-        </CardContent>
-      </Card>
 
-      <Card className="border-border bg-card shadow-sm">
-        <CardHeader>
-          <CardTitle>Miru CLI</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <p className="text-sm text-muted-foreground">
-            Install the Miru CLI to use Miru from your terminal, scripts, or AI
-            agents with the same permissions as your user account.
-          </p>
-
-          <div className="rounded-lg border border-border bg-muted/40 p-3 shadow-sm">
-            <p className="mb-2 text-xs uppercase tracking-wide text-muted-foreground">
-              Install with mise
-            </p>
-            <code className="block overflow-x-auto text-sm text-foreground">
-              {cliInstallCommand}
-            </code>
-          </div>
-
-          <div className="rounded-lg border border-border bg-background p-3 shadow-sm">
-            <p className="mb-2 text-xs uppercase tracking-wide text-muted-foreground">
-              Log in once
-            </p>
-            <code className="block overflow-x-auto text-sm text-foreground">
-              miru login --email you@example.com --password password
-            </code>
-            <code className="mt-1 block overflow-x-auto text-sm text-foreground">
-              miru config set-base-url --url http://127.0.0.1:9000
-            </code>
-          </div>
-
-          <div className="rounded-lg border border-border bg-background p-3 shadow-sm">
-            <p className="mb-2 text-xs uppercase tracking-wide text-muted-foreground">
-              Try it
-            </p>
-            <code className="block overflow-x-auto text-sm text-foreground">
-              miru whoami
-            </code>
-            <code className="mt-1 block overflow-x-auto text-sm text-foreground">
-              miru config show
-            </code>
-            <code className="mt-1 block overflow-x-auto text-sm text-foreground">
-              miru version
-            </code>
-            <code className="mt-1 block overflow-x-auto text-sm text-foreground">
-              miru upgrade
-            </code>
-            <code className="mt-1 block overflow-x-auto text-sm text-foreground">
-              miru capabilities
-            </code>
-            <code className="block overflow-x-auto text-sm text-foreground">
-              miru help
-            </code>
-            <code className="mt-1 block overflow-x-auto text-sm text-foreground">
-              miru client list
-            </code>
-            <code className="mt-1 block overflow-x-auto text-sm text-foreground">
-              miru project list
-            </code>
-            <code className="mt-1 block overflow-x-auto text-sm text-foreground">
-              miru project list --search solar
-            </code>
-            <code className="mt-1 block overflow-x-auto text-sm text-foreground">
-              miru expense list
-            </code>
-            <code className="mt-1 block overflow-x-auto text-sm text-foreground">
-              miru expense create --amount 42.25 --date 2026-03-09 --category-id
-              3 --description "Lunch with client"
-            </code>
-            <code className="mt-1 block overflow-x-auto text-sm text-foreground">
-              miru invoice list
-            </code>
-            <code className="mt-1 block overflow-x-auto text-sm text-foreground">
-              miru invoice send --id 1 --recipients client@example.com
-            </code>
-            <code className="mt-1 block overflow-x-auto text-sm text-foreground">
-              miru payment list
-            </code>
-            <code className="mt-1 block overflow-x-auto text-sm text-foreground">
-              miru time list --from 2026-03-01 --to 2026-03-09
-            </code>
-            <code className="mt-1 block overflow-x-auto text-sm text-foreground">
-              miru time create --project-id 2 --duration 30 --date 2026-03-09
-              --note "CLI entry"
-            </code>
-            <code className="mt-1 block overflow-x-auto text-sm text-foreground">
-              miru time update --id 629 --project-id 2 --duration 45 --date
-              2026-03-09
-            </code>
+          <div className="rounded-xl border border-border bg-background p-4 shadow-sm">
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+              <div className="space-y-2">
+                <p className="text-sm font-semibold text-foreground">
+                  Checkout and subscription management are powered by Stripe.
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  Start the trial without a sales process, upgrade when you are
+                  ready, and manage billing yourself whenever you need.
+                </p>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <Badge variant="outline" className="gap-1.5 px-3 py-1">
+                  <ShieldCheck size={14} weight="fill" />
+                  Powered by Stripe
+                </Badge>
+                <Badge variant="secondary" className="gap-1.5 px-3 py-1">
+                  <ClockClockwise size={14} weight="fill" />
+                  Change plans anytime
+                </Badge>
+              </div>
+            </div>
           </div>
         </CardContent>
       </Card>

@@ -3,17 +3,20 @@
 require "rails_helper"
 
 RSpec.describe ReportPolicy, type: :policy do
-  let(:company) { create(:company) }
+  let(:company) { create(:company, plan_tier: "paid") }
+  let(:free_company) { create(:company, plan_tier: "free") }
   let(:admin) { create(:user, current_workspace_id: company.id) }
   let(:owner) { create(:user, current_workspace_id: company.id) }
   let(:employee) { create(:user, current_workspace_id: company.id) }
   let(:book_keeper) { create(:user, current_workspace_id: company.id) }
+  let(:free_owner) { create(:user, current_workspace_id: free_company.id) }
 
   before do
     admin.add_role :admin, company
     owner.add_role :owner, company
     employee.add_role :employee, company
     book_keeper.add_role :book_keeper, company
+    free_owner.add_role :owner, free_company
   end
 
   permissions :index?, :download? do
@@ -25,6 +28,22 @@ RSpec.describe ReportPolicy, type: :policy do
 
     it "denies permission to a employee" do
       expect(described_class).not_to permit(employee)
+    end
+
+    it "denies permission on the free plan" do
+      expect(described_class).not_to permit(free_owner)
+    end
+  end
+
+  permissions :new? do
+    it "grants permission to admins and owners on pro access" do
+      expect(described_class).to permit(admin)
+      expect(described_class).to permit(owner)
+    end
+
+    it "denies permission to book keepers and free-plan owners" do
+      expect(described_class).not_to permit(book_keeper)
+      expect(described_class).not_to permit(free_owner)
     end
   end
 end

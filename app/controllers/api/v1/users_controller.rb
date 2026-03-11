@@ -23,6 +23,14 @@ class Api::V1::UsersController < Api::V1::BaseController
           "date_format",
           "business_phone",
           "tax_id"
+        )&.merge(
+          "pro_access" => current_company&.pro_access?,
+          "plan_tier" => current_company&.plan_tier,
+          "current_plan_label" => current_company&.current_plan_label,
+          "team_member_limit" => current_company&.team_member_limit,
+          "used_team_seats" => current_company&.used_team_seats,
+          "reserved_team_seats" => current_company&.reserved_team_seats,
+          "team_member_limit_reached" => current_company&.team_member_limit_reached?
         ),
         company_role: current_user.roles.find_by(resource: current_company)&.name
       }

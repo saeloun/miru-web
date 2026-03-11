@@ -25,6 +25,7 @@ import { useLocation } from "react-router-dom";
 import { useUserContext } from "context/UserContext";
 import { logoutApi } from "apis/api";
 import ThemeToggle from "../../common/ThemeToggle";
+import { hasProAccess } from "../../lib/planAccess";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -38,7 +39,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
-  const { companyRole, user } = useUserContext();
+  const { companyRole, user, company } = useUserContext();
 
   const navigationGroups = [
     {
@@ -159,12 +160,14 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
   const filterNavigationGroup = group => ({
     ...group,
     items: group.items.filter(
-      item => !item.roles || item.roles.includes(companyRole)
+      item =>
+        (!item.roles || item.roles.includes(companyRole)) &&
+        !(item.href === "/reports" && !hasProAccess(company))
     ),
   });
 
   // prettier-ignore
-  const filteredNavigation = useMemo(() => navigationGroups.map(filterNavigationGroup), [companyRole]);
+  const filteredNavigation = useMemo(() => navigationGroups.map(filterNavigationGroup), [companyRole, company?.pro_access]);
 
   const pageTitle = useMemo(() => {
     const item = filteredNavigation

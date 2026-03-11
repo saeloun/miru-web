@@ -38,7 +38,7 @@ class Api::V1::Users::SessionsController < Devise::SessionsController
       render json: {
         user: user_data,
         company_role: current_user.roles.find_by(resource: current_company)&.name,
-        company: current_company
+        company: company_payload(current_company)
       }, status: 200
     else
       render json: { error: "Not authenticated" }, status: 401
@@ -89,7 +89,7 @@ class Api::V1::Users::SessionsController < Devise::SessionsController
         notice: I18n.t("devise.sessions.signed_in"),
         user: user_data,
         company_role: user.roles.find_by(resource: current_company)&.name,
-        company: current_company
+        company: company_payload(current_company)
       }, status: 200
     end
 
@@ -99,7 +99,7 @@ class Api::V1::Users::SessionsController < Devise::SessionsController
         avatar_url: current_user && current_user.avatar_url,
         company_role: current_user && current_user.roles.find_by(resource: current_company)&.name,
         confirmed_user: current_user && current_user.confirmed?,
-        company: current_company,
+        company: company_payload(current_company),
         google_oauth_success: @google_oauth_success.present?
       }
 
@@ -125,5 +125,27 @@ class Api::V1::Users::SessionsController < Devise::SessionsController
 
     def safe_user_payload(user)
       user.as_json(only: [:id, :email, :first_name, :last_name, :current_workspace_id])
+    end
+
+    def company_payload(company)
+      return nil unless company
+
+      company.attributes.slice(
+        "id",
+        "name",
+        "base_currency",
+        "fiscal_year_end",
+        "date_format",
+        "business_phone",
+        "tax_id",
+        "plan_tier"
+      ).merge(
+        "pro_access" => company.pro_access?,
+        "current_plan_label" => company.current_plan_label,
+        "team_member_limit" => company.team_member_limit,
+        "used_team_seats" => company.used_team_seats,
+        "reserved_team_seats" => company.reserved_team_seats,
+        "team_member_limit_reached" => company.team_member_limit_reached?
+      )
     end
 end

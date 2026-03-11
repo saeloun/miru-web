@@ -16,10 +16,17 @@ RSpec.describe Api::V1::SubscriptionsController, type: :request do
   describe "authorization" do
     let(:employee) { create(:user, current_workspace_id: company.id) }
     let(:employee_headers) { auth_headers(employee) }
+    let(:book_keeper) { create(:user, current_workspace_id: company.id) }
+    let(:book_keeper_headers) { auth_headers(book_keeper) }
+    let(:client) { create(:user, current_workspace_id: company.id) }
+    let(:client_headers) { auth_headers(client) }
 
     before do
       create(:employment, company:, user: employee)
       employee.add_role(:employee, company)
+      create(:employment, company:, user: book_keeper)
+      book_keeper.add_role(:book_keeper, company)
+      client.add_role(:client, company)
     end
 
     it "blocks employees from billing summary and actions" do
@@ -33,6 +40,34 @@ RSpec.describe Api::V1::SubscriptionsController, type: :request do
       expect(response).to have_http_status(:forbidden)
 
       post "/api/v1/subscription/portal", headers: employee_headers
+      expect(response).to have_http_status(:forbidden)
+    end
+
+    it "blocks book keepers from billing summary and actions" do
+      get "/api/v1/subscription", headers: book_keeper_headers
+      expect(response).to have_http_status(:forbidden)
+
+      post "/api/v1/subscription/trial", headers: book_keeper_headers
+      expect(response).to have_http_status(:forbidden)
+
+      post "/api/v1/subscription/checkout", headers: book_keeper_headers
+      expect(response).to have_http_status(:forbidden)
+
+      post "/api/v1/subscription/portal", headers: book_keeper_headers
+      expect(response).to have_http_status(:forbidden)
+    end
+
+    it "blocks clients from billing summary and actions" do
+      get "/api/v1/subscription", headers: client_headers
+      expect(response).to have_http_status(:forbidden)
+
+      post "/api/v1/subscription/trial", headers: client_headers
+      expect(response).to have_http_status(:forbidden)
+
+      post "/api/v1/subscription/checkout", headers: client_headers
+      expect(response).to have_http_status(:forbidden)
+
+      post "/api/v1/subscription/portal", headers: client_headers
       expect(response).to have_http_status(:forbidden)
     end
   end

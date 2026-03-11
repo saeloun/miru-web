@@ -216,6 +216,19 @@ RSpec.describe Company, type: :model do
       end
     end
 
+    describe "#team_member_limit_reached?" do
+      it "counts pending non-client invitations against the free limit" do
+        create(:employment, company:, user: create(:user, current_workspace_id: company.id))
+        create(:invitation, company:, sender: create(:user), role: :client)
+
+        expect(company.used_team_seats).to eq(3)
+        expect(company.pending_team_seat_invites).to eq(0)
+        expect(company.team_member_limit_reached?).to eq(true)
+        expect(company.can_add_team_member_role?("client")).to eq(true)
+        expect(company.can_add_team_member_role?("employee")).to eq(false)
+      end
+    end
+
     describe "#apply_stripe_subscription!" do
       it "marks the company as paid for active subscriptions" do
         company.apply_stripe_subscription!(

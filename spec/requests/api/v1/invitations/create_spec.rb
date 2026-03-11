@@ -6,13 +6,15 @@ RSpec.describe "Api::V1::Invitations#create", type: :request do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
 
+  before do
+    create(:employment, company:, user:)
+    user.add_role :admin, company
+    sign_in user
+  end
+
   context "when new user is invited" do
     describe "passed valid first_name, last_name, email and role" do
       before do
-        create(:employment, company:, user:)
-        user.add_role :admin, company
-        sign_in user
-
         send_request :post, api_v1_invitations_path, params: {
           first_name: "test",
           last_name: "example",
@@ -37,10 +39,6 @@ RSpec.describe "Api::V1::Invitations#create", type: :request do
 
     describe "passed invalid first_name and last_name" do
       before do
-        create(:employment, company:, user:)
-        user.add_role :admin, company
-        sign_in user
-
         send_request :post, api_v1_invitations_path, params: {
           first_name: "test1",
           last_name: "example2",
@@ -66,10 +64,6 @@ RSpec.describe "Api::V1::Invitations#create", type: :request do
 
     describe "passed invalid recipient_email" do
       before do
-        create(:employment, company:, user:)
-        user.add_role :admin, company
-        sign_in user
-
         send_request :post, api_v1_invitations_path, params: {
           first_name: "test",
           last_name: "example",
@@ -97,10 +91,7 @@ RSpec.describe "Api::V1::Invitations#create", type: :request do
   context "when user already exists in application" do
     describe "passed valid first_name, last_name, email and role" do
       before do
-        create(:employment, company:, user:)
-        user.add_role :admin, company
         existing_user = create(:user)
-        sign_in user
 
         send_request :post, api_v1_invitations_path, params: {
           first_name: existing_user.first_name,
@@ -126,10 +117,7 @@ RSpec.describe "Api::V1::Invitations#create", type: :request do
 
     describe "passed invalid first_name and last_name" do
       before do
-        create(:employment, company:, user:)
-        user.add_role :admin, company
         existing_user = create(:user)
-        sign_in user
 
         send_request :post, api_v1_invitations_path, params: {
           first_name: "test1",
@@ -156,10 +144,7 @@ RSpec.describe "Api::V1::Invitations#create", type: :request do
 
     describe "passed invalid recipient_email" do
       before do
-        create(:employment, company:, user:)
-        user.add_role :admin, company
         existing_user = create(:user)
-        sign_in user
 
         send_request :post, api_v1_invitations_path, params: {
           first_name: existing_user.first_name,
@@ -186,10 +171,7 @@ RSpec.describe "Api::V1::Invitations#create", type: :request do
 
     describe "passed invalid role" do
       before do
-        create(:employment, company:, user:)
-        user.add_role :admin, company
         existing_user = create(:user)
-        sign_in user
 
         send_request :post, api_v1_invitations_path, params: {
           first_name: existing_user.first_name,
@@ -212,6 +194,43 @@ RSpec.describe "Api::V1::Invitations#create", type: :request do
       it "doesn't create invitation record" do
         expect(Invitation.count).to eq(0)
       end
+    end
+  end
+
+  context "when a free workspace is already at the team seat limit" do
+    let(:company) { create(:company, plan_tier: "free") }
+
+    before do
+      create_list(:employment, 2, company:) do |employment|
+        employment.user = create(:user, current_workspace_id: company.id)
+        employment.user.add_role :employee, company
+      end
+    end
+
+    it "blocks another team invite and prompts an upgrade" do
+      send_request :post, api_v1_invitations_path, params: {
+        first_name: "Extra",
+        last_name: "Member",
+        recipient_email: "extra@example.com",
+        role: "employee"
+      }, headers: auth_headers(user)
+
+      expect(response).to have_http_status(:forbidden)
+      expect(json_response["notice"]).to eq("Upgrade required")
+      expect(json_response["errors"]).to eq("Free workspaces are limited to 3 team seats. Upgrade to Pro to invite more members.")
+      expect(Invitation.count).to eq(0)
+    end
+
+    it "still allows client invites" do
+      send_request :post, api_v1_invitations_path, params: {
+        first_name: "Client",
+        last_name: "Contact",
+        recipient_email: "client-contact@example.com",
+        role: "client"
+      }, headers: auth_headers(user)
+
+      expect(response).to have_http_status(:created)
+      expect(Invitation.count).to eq(1)
     end
   end
 end

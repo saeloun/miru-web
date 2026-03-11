@@ -94,6 +94,9 @@ const TeamTable: React.FC = () => {
     queryFn: fetchTeamMembers,
   });
 
+  const teamSeatLimitReached =
+    !company?.pro_access && Boolean(company?.team_member_limit_reached);
+
   const deleteMutation = useMutation({
     mutationFn: async (memberId: string) => {
       await teamApi.destroy(memberId);
@@ -414,13 +417,27 @@ const TeamTable: React.FC = () => {
           </p>
         </div>
         {isAdminUser && (
-          <Button
-            onClick={() => setShowInviteDialog(true)}
-            className="bg-gray-900 hover:bg-gray-800 text-white"
-          >
-            <UserPlus size={20} className="mr-2" />
-            Invite Member
-          </Button>
+          <div className="flex flex-col items-start gap-2 md:items-end">
+            <Button
+              onClick={() => setShowInviteDialog(true)}
+              className="bg-gray-900 hover:bg-gray-800 text-white"
+              disabled={teamSeatLimitReached}
+            >
+              <UserPlus size={20} className="mr-2" />
+              {teamSeatLimitReached
+                ? "Upgrade to invite more"
+                : "Invite Member"}
+            </Button>
+            {teamSeatLimitReached && (
+              <button
+                type="button"
+                className="text-sm font-medium text-primary hover:underline"
+                onClick={() => navigate("/settings/billing")}
+              >
+                Free includes 3 seats. View plans and upgrade.
+              </button>
+            )}
+          </div>
         )}
       </div>
 
@@ -504,9 +521,12 @@ const TeamTable: React.FC = () => {
                 <Button
                   variant="outline"
                   onClick={() => setShowInviteDialog(true)}
+                  disabled={teamSeatLimitReached}
                 >
                   <UserPlus size={20} className="mr-2" />
-                  Invite Your First Team Member
+                  {teamSeatLimitReached
+                    ? "Upgrade to invite more"
+                    : "Invite Your First Team Member"}
                 </Button>
               )}
             </div>

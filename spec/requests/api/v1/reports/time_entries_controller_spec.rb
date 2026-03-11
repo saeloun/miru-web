@@ -3,7 +3,7 @@
 require "rails_helper"
 
 RSpec.describe Api::V1::Reports::TimeEntriesController, type: :request do
-  let(:company) { create(:company) }
+  let(:company) { create(:company, plan_tier: "paid") }
   let(:user) { create(:user, current_workspace_id: company.id) }
   let(:client) { create(:client, company:) }
   let(:project) { create(:project, client:) }
@@ -143,6 +143,18 @@ RSpec.describe Api::V1::Reports::TimeEntriesController, type: :request do
         expect(response).to have_http_status(:forbidden)
       end
     end
+
+    context "when workspace is on the free plan" do
+      before do
+        company.update!(plan_tier: "free")
+      end
+
+      it "returns forbidden" do
+        get api_v1_reports_time_entries_path
+
+        expect(response).to have_http_status(:forbidden)
+      end
+    end
   end
 
   describe "GET #download" do
@@ -183,6 +195,18 @@ RSpec.describe Api::V1::Reports::TimeEntriesController, type: :request do
       end
 
       it "returns unauthorized" do
+        get download_api_v1_reports_time_entries_path(format: :csv)
+
+        expect(response).to have_http_status(:forbidden)
+      end
+    end
+
+    context "when workspace is on the free plan" do
+      before do
+        company.update!(plan_tier: "free")
+      end
+
+      it "returns forbidden" do
         get download_api_v1_reports_time_entries_path(format: :csv)
 
         expect(response).to have_http_status(:forbidden)
