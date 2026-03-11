@@ -176,6 +176,36 @@ RSpec.describe Api::V1::Dashboard::ActivitiesController, type: :request do
           expect(activities.first["metadata"]["invoice_id"]).to eq(company_invoice.id)
         end
       end
+
+      context "when user has a client role" do
+        let(:visible_client) { create(:client, company: company, name: "Visible Client") }
+        let(:hidden_client) { create(:client, company: company, name: "Hidden Client") }
+        let!(:visible_invoice) { create(:invoice, :sent, company: company, client: visible_client) }
+        let!(:hidden_invoice) { create(:invoice, :sent, company: company, client: hidden_client) }
+        let!(:visible_payment) { create(:payment, invoice: visible_invoice, amount: 111) }
+        let!(:hidden_payment) { create(:payment, invoice: hidden_invoice, amount: 222) }
+
+        before do
+          user.roles.destroy_all
+          user.add_role(:client, company)
+          create(:client_member, company: company, client: visible_client, user: user)
+        end
+
+        it "only returns invoice and payment activities for the user's clients" do
+          get "/api/v1/dashboard/activities"
+
+          expect(response).to have_http_status(:ok)
+          activities = response_json["activities"]
+
+          invoice_ids = activities.filter_map { |activity| activity.dig("metadata", "invoice_id") }
+          payment_ids = activities.filter_map { |activity| activity.dig("metadata", "payment_id") }
+
+          expect(invoice_ids).to include(visible_invoice.id)
+          expect(invoice_ids).not_to include(hidden_invoice.id)
+          expect(payment_ids).to include(visible_payment.id)
+          expect(payment_ids).not_to include(hidden_payment.id)
+        end
+      end
     end
 
     context "when user is not authenticated" do
