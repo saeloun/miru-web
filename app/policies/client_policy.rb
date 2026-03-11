@@ -8,7 +8,7 @@ class ClientPolicy < ApplicationPolicy
     end
 
     def resolve
-      if user_owner_role? || user_admin_role?
+      if user_owner_role? || user_admin_role? || user_book_keeper_role?
         scope.clients.kept.order(:name)
       else
         user.clients.kept
@@ -27,7 +27,7 @@ class ClientPolicy < ApplicationPolicy
   attr_reader :error_message_key
 
   def index?
-    user_employee_role? || user_owner_role? || user_admin_role?
+    user_employee_role? || user_owner_role? || user_admin_role? || user_book_keeper_role?
   end
 
   def show?
