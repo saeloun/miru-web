@@ -18,14 +18,11 @@ RSpec.describe ClientPolicy, type: :policy do
   end
 
   permissions :index? do
-    it "grants permission to an admin, employee and owner" do
+    it "grants permission to an admin, employee, owner and book keeper" do
       expect(described_class).to permit(owner)
       expect(described_class).to permit(admin)
       expect(described_class).to permit(employee)
-    end
-
-    it "does not grants permission to book_keeper" do
-      expect(described_class).not_to permit(book_keeper)
+      expect(described_class).to permit(book_keeper)
     end
   end
 
@@ -98,9 +95,14 @@ RSpec.describe ClientPolicy, type: :policy do
       project_membership.discard!
     end
 
-    context "when user is an admin/owner" do
+    context "when user is an admin/owner/book_keeper" do
       it "returns the list of allowed clients" do
         result = ClientPolicy::Scope.new(admin, company).resolve
+        expect(result.pluck(:id)).to eq([client_3.id, client.id])
+      end
+
+      it "returns the list of allowed clients for book keeper" do
+        result = ClientPolicy::Scope.new(book_keeper, company).resolve
         expect(result.pluck(:id)).to eq([client_3.id, client.id])
       end
     end

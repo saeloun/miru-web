@@ -39,6 +39,7 @@ import { Invoice } from "../../services/invoiceApi";
 import ChartWithSummary from "./ChartWithSummary";
 import RecentlyUpdated from "./List/RecentlyUpdated";
 import { currencyFormat } from "../../helpers/currency";
+import { useUserContext } from "../../context/UserContext";
 
 interface InvoiceListProps {
   invoices: Invoice[];
@@ -71,6 +72,7 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
   hasMore = false,
   isLoadingMore = false,
 }) => {
+  const { companyRole } = useUserContext();
   const [searchTerm, setSearchTerm] = useState("");
   const [filterParams, setFilterParams] = useState({
     dateRange: { label: "All", value: "all", from: "", to: "" },
@@ -230,6 +232,8 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
     };
   }, [hasMore, isLoadingMore, onLoadMore]);
 
+  const canManageInvoices = companyRole === "owner" || companyRole === "admin";
+
   const getQuickActions = (invoice: Invoice) => (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -256,33 +260,37 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
           <Download className="h-4 w-4 mr-2" />
           Download
         </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        {invoice.status === "draft" && (
-          <DropdownMenuItem
-            data-testid={`invoice-action-send-${invoice.id}`}
-            onClick={() => onSendInvoice?.(invoice.id)}
-          >
-            <PaperPlaneTilt className="h-4 w-4 mr-2" />
-            Send Invoice
-          </DropdownMenuItem>
-        )}
-        {invoice.status === "overdue" && (
-          <DropdownMenuItem
-            data-testid={`invoice-action-reminder-${invoice.id}`}
-            onClick={() => onSendReminder?.(invoice.id)}
-          >
-            <PaperPlaneTilt className="h-4 w-4 mr-2" />
-            Send Reminder
-          </DropdownMenuItem>
-        )}
-        {invoice.status !== "paid" && (
-          <DropdownMenuItem
-            data-testid={`invoice-action-mark-paid-${invoice.id}`}
-            onClick={() => onMarkPaid?.(invoice.id)}
-          >
-            <CheckCircle className="h-4 w-4 mr-2" />
-            Mark as Paid
-          </DropdownMenuItem>
+        {canManageInvoices && (
+          <>
+            <DropdownMenuSeparator />
+            {invoice.status === "draft" && (
+              <DropdownMenuItem
+                data-testid={`invoice-action-send-${invoice.id}`}
+                onClick={() => onSendInvoice?.(invoice.id)}
+              >
+                <PaperPlaneTilt className="h-4 w-4 mr-2" />
+                Send Invoice
+              </DropdownMenuItem>
+            )}
+            {invoice.status === "overdue" && (
+              <DropdownMenuItem
+                data-testid={`invoice-action-reminder-${invoice.id}`}
+                onClick={() => onSendReminder?.(invoice.id)}
+              >
+                <PaperPlaneTilt className="h-4 w-4 mr-2" />
+                Send Reminder
+              </DropdownMenuItem>
+            )}
+            {invoice.status !== "paid" && (
+              <DropdownMenuItem
+                data-testid={`invoice-action-mark-paid-${invoice.id}`}
+                onClick={() => onMarkPaid?.(invoice.id)}
+              >
+                <CheckCircle className="h-4 w-4 mr-2" />
+                Mark as Paid
+              </DropdownMenuItem>
+            )}
+          </>
         )}
       </DropdownMenuContent>
     </DropdownMenu>
@@ -297,10 +305,12 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
             Manage your invoices and track payments
           </p>
         </div>
-        <Button onClick={onCreateInvoice}>
-          <Plus className="h-4 w-4 mr-2" />
-          Create New Invoice
-        </Button>
+        {canManageInvoices && (
+          <Button onClick={onCreateInvoice}>
+            <Plus className="h-4 w-4 mr-2" />
+            Create New Invoice
+          </Button>
+        )}
       </div>
 
       {/* Charts and Summary */}
