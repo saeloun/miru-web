@@ -98,6 +98,7 @@ const AppWithUserData = (props: any) => {
   const [selectedTab, setSelectedTab] = useState(null);
   const [currentAvatarUrl, setCurrentAvatarUrl] = useState(avatarUrl);
   const [companyState, setCompany] = useState(company);
+  const resolvedCompany = companyState || company;
 
   const handleOverlayVisibility = (isOverlayVisible: boolean) => {
     const overlayEl = document.getElementById("overlay");
@@ -151,7 +152,7 @@ const AppWithUserData = (props: any) => {
         handleOverlayVisibility,
         selectedTab,
         setSelectedTab,
-        company: companyState,
+        company: resolvedCompany,
         setCompany,
         loading,
       }}

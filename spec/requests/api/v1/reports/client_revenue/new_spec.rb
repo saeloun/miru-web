@@ -3,7 +3,7 @@
 require "rails_helper"
 
 RSpec.describe "Api::V1::Reports::ClientRevenuesController::#new", type: :request do
-  let(:company) { create(:company) }
+  let(:company) { create(:company, plan_tier: "paid") }
   let(:user) { create(:user, current_workspace_id: company.id) }
   let(:client_1) { create(:client, company:) }
   let(:client_2) { create(:client, company:) }

@@ -5,6 +5,14 @@ class Api::V1::InvitationsController < Api::V1::ApplicationController
 
   def create
     authorize :invitation
+
+    if current_company.pro_access? == false && !current_company.can_add_team_member_role?(invitation_params[:role])
+      return render json: {
+        notice: "Upgrade required",
+        errors: "Free workspaces are limited to 3 team seats. Upgrade to Pro to invite more members."
+      }, status: 403
+    end
+
     invitation = Invitations::CreateInvitationService.new(invitation_params, current_company, current_user).process
     render :create, locals: {
                       invitation:

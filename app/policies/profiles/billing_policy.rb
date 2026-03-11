@@ -2,14 +2,14 @@
 
 class Profiles::BillingPolicy < ApplicationPolicy
   def index?
-    true
+    user_owner_role? || user_admin_role?
   end
 
   def create?
-    true
+    user_owner_role? || user_admin_role?
   end
 
   def update?
-    true
+    user_owner_role? || user_admin_role?
   end
 end

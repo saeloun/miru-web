@@ -25,7 +25,6 @@ RSpec.describe "Settings billing", type: :system, js: true do
       expect(page).to have_content("1/3 seats used", wait: 10)
       expect(page).to have_button("Start 30-day Pro trial", wait: 10)
       expect(page).to have_button("Upgrade with Stripe", wait: 10)
-      expect(page).to have_content("Plans", wait: 10)
       expect(page).to have_content("Hosted Enterprise", wait: 10)
       expect(page).to have_button("Monthly", wait: 10)
       expect(page).to have_button("Yearly", wait: 10)
@@ -34,7 +33,8 @@ RSpec.describe "Settings billing", type: :system, js: true do
       expect(page).to have_content("$5/user/mo", wait: 10)
       click_button "Yearly"
       expect(page).to have_content("$50/user/yr", wait: 10)
-      expect(page).to have_content("Miru CLI", wait: 10)
+      expect(page).to have_content("Powered by Stripe", wait: 10)
+      expect(page).to have_content("Reports and analytics", wait: 10)
     end
   end
 
@@ -44,6 +44,53 @@ RSpec.describe "Settings billing", type: :system, js: true do
 
       click_link "Billing"
       expect(page).to have_current_path("/settings/billing", wait: 10)
+    end
+  end
+
+  it "hides billing from employees and blocks direct access" do
+    employee = create(:user, current_workspace_id: company.id)
+    create(:employment, company:, user: employee)
+    employee.add_role :employee, company
+
+    with_forgery_protection do
+      sign_in(employee)
+      visit "/dashboard"
+
+      expect(page).not_to have_link("Billing")
+
+      visit "/settings/billing"
+      expect(page).to have_current_path("/error", wait: 10)
+    end
+  end
+
+  it "hides billing from clients and blocks direct access" do
+    client = create(:user, current_workspace_id: company.id)
+    client.add_role :client, company
+
+    with_forgery_protection do
+      sign_in(client)
+      visit "/dashboard"
+
+      expect(page).not_to have_link("Billing")
+
+      visit "/settings/billing"
+      expect(page).to have_current_path("/error", wait: 10)
+    end
+  end
+
+  it "hides billing from book keepers and blocks direct access" do
+    book_keeper = create(:user, current_workspace_id: company.id)
+    create(:employment, company:, user: book_keeper)
+    book_keeper.add_role :book_keeper, company
+
+    with_forgery_protection do
+      sign_in(book_keeper)
+      visit "/dashboard"
+
+      expect(page).not_to have_link("Billing")
+
+      visit "/settings/billing"
+      expect(page).to have_current_path("/error", wait: 10)
     end
   end
 

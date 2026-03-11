@@ -1,4 +1,5 @@
 import { Roles, Paths } from "constants/index";
+import React from "react";
 
 import ErrorPage from "common/Error";
 import EmailVerification from "components/Authentication/EmailVerification";
@@ -29,8 +30,16 @@ import RevenueByClientReport from "../components/Reports/RevenueByClientReport";
 import TimeEntryReports from "../components/Reports/TimeEntryReport";
 import TotalHoursReport from "../components/Reports/totalHoursLogged";
 import PaymentReport from "../components/Reports/PaymentReport/CleanPaymentReport";
+import ReportsAccessGate from "../components/Reports/AccessGate";
 import PlanSelection from "../components/Subscriptions/PlanSelection";
 import TimeTracking from "../components/TimeTracking";
+
+const withReportsGate = Component => props =>
+  React.createElement(
+    ReportsAccessGate,
+    null,
+    React.createElement(Component, props)
+  );
 
 const DashboardRoutes = [
   { path: "", Component: DashboardHome },
@@ -43,14 +52,23 @@ const ClientsRoutes = [
 ];
 
 const ReportsRoutes = [
-  { path: "", Component: ReportsTable },
-  { path: "time-entry", Component: TimeEntryReports },
-  { path: "revenue-by-client", Component: RevenueByClientReport },
-  { path: "outstanding-overdue-invoices", Component: OutstandingInvoiceReport },
-  { path: "outstanding-overdue-invoice", Component: OutstandingInvoiceReport },
-  { path: "total-hours", Component: TotalHoursReport },
-  { path: "accounts-aging", Component: AccountsAgingReport },
-  { path: "payments", Component: PaymentReport },
+  { path: "", Component: withReportsGate(ReportsTable) },
+  { path: "time-entry", Component: withReportsGate(TimeEntryReports) },
+  {
+    path: "revenue-by-client",
+    Component: withReportsGate(RevenueByClientReport),
+  },
+  {
+    path: "outstanding-overdue-invoices",
+    Component: withReportsGate(OutstandingInvoiceReport),
+  },
+  {
+    path: "outstanding-overdue-invoice",
+    Component: withReportsGate(OutstandingInvoiceReport),
+  },
+  { path: "total-hours", Component: withReportsGate(TotalHoursReport) },
+  { path: "accounts-aging", Component: withReportsGate(AccountsAgingReport) },
+  { path: "payments", Component: withReportsGate(PaymentReport) },
 ];
 
 const ProjectsRoutes = [

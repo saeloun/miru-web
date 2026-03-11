@@ -53,7 +53,7 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
   const [apiError, setApiError] = useState<string>("");
   const { setModalState, modal, setTeamList, teamList } = useList();
   const wrapperRef = useRef<HTMLDivElement>(null);
-  const { isDesktop } = useUserContext();
+  const { isDesktop, company } = useUserContext();
 
   const updateTeamList = updatedUser => {
     const updatedTeamList = teamList.map(member => {
@@ -154,6 +154,12 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
               setFieldError,
               setFieldValue,
             } = props;
+
+            const teamSeatLimitReached =
+              !company?.pro_access &&
+              Boolean(company?.team_member_limit_reached) &&
+              !isEdit &&
+              values.role !== "client";
 
             return (
               <Form>
@@ -264,11 +270,17 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
                   </div>
                 </div>
                 <div className="actions mt-6">
+                  {teamSeatLimitReached && (
+                    <p className="mb-3 text-sm text-muted-foreground">
+                      Free workspaces are limited to 3 team seats. Upgrade to
+                      Pro to invite more members.
+                    </p>
+                  )}
                   <Button
-                    disabled={!(dirty && isValid)}
+                    disabled={!(dirty && isValid) || teamSeatLimitReached}
                     type="submit"
                     className={
-                      !isValid || !dirty
+                      !isValid || !dirty || teamSeatLimitReached
                         ? "focus:outline-none flex h-10 w-full justify-center rounded border border-transparent bg-secondary text-base font-medium tracking-widest text-primary-foreground shadow-sm"
                         : "form__input_submit"
                     }

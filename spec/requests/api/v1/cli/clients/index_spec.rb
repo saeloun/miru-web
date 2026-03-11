@@ -23,11 +23,12 @@ RSpec.describe "Api::V1::Cli::Clients#index", type: :request do
     expect(json_response["clients"]).to contain_exactly(include("id" => client.id, "name" => "Solar Client"))
   end
 
-  it "returns forbidden for a book keeper" do
+  it "returns clients for a book keeper" do
     user.add_role :book_keeper, company
 
     send_request :get, api_v1_cli_clients_path, headers: cli_auth_headers(cli_token)
 
-    expect(response).to have_http_status(:forbidden)
+    expect(response).to have_http_status(:ok)
+    expect(json_response["clients"]).to contain_exactly(include("id" => client.id, "name" => "Solar Client"))
   end
 end

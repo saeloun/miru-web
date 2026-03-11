@@ -3,7 +3,7 @@
 require "rails_helper"
 
 RSpec.describe "Reports", type: :system, js: true do
-  let!(:company) { create(:company, base_currency: "USD", name: "Reports Corp") }
+  let!(:company) { create(:company, base_currency: "USD", name: "Reports Corp", plan_tier: "paid") }
   let!(:admin) { create(:user, current_workspace_id: company.id) }
 
   before do
@@ -114,6 +114,41 @@ RSpec.describe "Reports", type: :system, js: true do
 
       expect(page).to have_css("#react-root", wait: 10)
       expect(page).to have_no_content("Time Entry Report", wait: 5).or have_current_path("/time-tracking", wait: 10)
+    end
+  end
+
+  it "redirects free-plan admins to billing" do
+    free_company = create(:company, name: "Free Corp", plan_tier: "free")
+    free_admin = create(:user, current_workspace_id: free_company.id)
+    create(:employment, company: free_company, user: free_admin)
+    free_admin.add_role :admin, free_company
+
+    Warden.test_reset!
+    sign_in(free_admin)
+
+    with_forgery_protection do
+      visit "/reports"
+
+      expect(page).to have_current_path("/settings/billing", wait: 10)
+      expect(page).to have_content("Pick the package that fits now", wait: 10)
+      expect(page).to have_content("Reports and analytics", wait: 10)
+    end
+  end
+
+  it "hides the reports navigation for free-plan admins" do
+    free_company = create(:company, name: "Free Corp", plan_tier: "free")
+    free_admin = create(:user, current_workspace_id: free_company.id)
+    create(:employment, company: free_company, user: free_admin)
+    free_admin.add_role :admin, free_company
+
+    Warden.test_reset!
+    sign_in(free_admin)
+
+    with_forgery_protection do
+      visit "/dashboard"
+
+      expect(page).to have_no_link("Reports", wait: 10)
+      expect(page).to have_link("Billing", wait: 10)
     end
   end
 end

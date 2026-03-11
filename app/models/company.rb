@@ -103,14 +103,28 @@ class Company < ApplicationRecord
     pro_access? ? 100 : 3
   end
 
+  def pending_team_seat_invites
+    invitations.valid_invitations.where.not(role: :client).count
+  end
+
   def used_team_seats
     users.with_kept_employments.distinct.count
+  end
+
+  def reserved_team_seats
+    used_team_seats + pending_team_seat_invites
   end
 
   def team_member_limit_reached?
     return false if team_member_limit.infinite?
 
-    used_team_seats >= team_member_limit
+    reserved_team_seats >= team_member_limit
+  end
+
+  def can_add_team_member_role?(role)
+    return true if role.to_s == "client"
+
+    !team_member_limit_reached?
   end
 
   def trial_active?

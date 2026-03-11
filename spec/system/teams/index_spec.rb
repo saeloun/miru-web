@@ -56,5 +56,29 @@ RSpec.describe "Team Member", type: :system, js: true do
         end
       end
     end
+
+    context "when free plan seat limit is reached" do
+      let(:company) { create(:company, plan_tier: "free") }
+
+      before do
+        create(:employment, company:, user:)
+        create(:employment, company:, user: employee_user)
+        extra_user = create(:user, current_workspace_id: company.id)
+        create(:employment, company:, user: extra_user)
+        user.add_role :admin, company
+        employee_user.add_role :employee, company
+        extra_user.add_role :employee, company
+        sign_in(user)
+      end
+
+      it "disables inviting more members and prompts an upgrade" do
+        with_forgery_protection do
+          visit "/team"
+
+          expect(page).to have_button("Upgrade to invite more", disabled: true, wait: 10)
+          expect(page).to have_button("View plans and upgrade.", wait: 10)
+        end
+      end
+    end
   end
 end
