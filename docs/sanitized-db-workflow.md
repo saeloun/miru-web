@@ -79,18 +79,52 @@ The restore script recreates the target database, restores the dump, then runs:
 
 - `rails db:migrate`
 - `rails data:migrate`
+- `script/data_subsets/post_restore.rb`
+
+The post-restore step normalizes the dataset for testing:
+
+- sets every user password to `password`
+- confirms any unconfirmed users
+- clears reset-password tokens
+
+To use a different shared password:
+
+```bash
+SANITIZED_SUBSET_TEST_PASSWORD=secret123 mise exec -- ./bin/restore-sanitized-subset miru_development
+```
+
+To skip user normalization:
+
+```bash
+POST_RESTORE_NORMALIZE_USERS=0 mise exec -- ./bin/restore-sanitized-subset miru_development
+```
 
 ## Restore to staging
 
 1. Download the latest sanitized dump locally or from R2.
 2. Restore it into the staging database from a trusted environment.
 3. Run application migrations after restore.
+4. Run the post-restore normalization step so test logins work.
 
 If staging already has the app code deployed, the same artifact can be restored using:
 
 ```bash
 DOWNLOAD_FROM_R2=1 TARGET_DATABASE_URL=<staging database url> mise exec -- ./bin/restore-sanitized-subset <db_name>
 ```
+
+For Render or another remote app where the database host is only reachable from inside the service network:
+
+1. Copy the sanitized dump to the app instance.
+2. Reset the target schema.
+3. Restore the dump.
+4. Run:
+
+```bash
+cd /rails/app
+bundle exec rails runner script/data_subsets/post_restore.rb
+```
+
+That avoids the broken ad hoc password-reset path and makes deployed subset users immediately testable.
 
 Only use sanitized subset artifacts for staging, never raw production dumps.
 
