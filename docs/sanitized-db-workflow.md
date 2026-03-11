@@ -29,13 +29,11 @@ Actual dump files do not belong in git. `tmp/migration/*.dump` and `tmp/data_sub
 
 ## Required environment
 
-For R2 upload/download:
+For bucket creation and artifact upload/download through Wrangler:
 
-- `CLOUDFLARE_R2_ACCESS_KEY_ID`
-- `CLOUDFLARE_R2_SECRET_ACCESS_KEY`
-- `CLOUDFLARE_R2_BUCKET_NAME`
-- `CLOUDFLARE_R2_ENDPOINT`
-- optional `CLOUDFLARE_R2_REGION`
+- `CLOUDFLARE_API_TOKEN`
+- `CLOUDFLARE_ACCOUNT_ID`
+- optional `SANITIZED_SUBSET_R2_BUCKET`
 - optional `SANITIZED_SUBSET_R2_PREFIX`
 
 ## Build a sanitized subset
@@ -95,6 +93,19 @@ DOWNLOAD_FROM_R2=1 TARGET_DATABASE_URL=<staging database url> mise exec -- ./bin
 ```
 
 Only use sanitized subset artifacts for staging, never raw production dumps.
+
+## Bucket bootstrap
+
+Create the bucket once with Wrangler:
+
+```bash
+CLOUDFLARE_API_TOKEN=... CLOUDFLARE_ACCOUNT_ID=... mise exec -- npx -y wrangler r2 bucket create miru-sanitized-subsets
+```
+
+The upload script stores:
+
+- an immutable timestamped dump
+- `latest.dump` for simple restore automation
 
 ## Safety rules
 
