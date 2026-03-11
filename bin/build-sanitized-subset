@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+CONFIG_PATH="${SUBSET_CONFIG:-$ROOT/config/data_subsets/miru.yml}"
+
+read_config() {
+  ruby -ryaml -e 'config = YAML.safe_load_file(ARGV[0]); puts config.fetch(ARGV[1])' "$CONFIG_PATH" "$1"
+}
+
+SOURCE_DUMP="${SOURCE_DUMP:-$ROOT/$(read_config source_dump)}"
+WORKING_DATABASE="${WORKING_DATABASE:-$(read_config working_database)}"
+ARTIFACT_PREFIX_NAME="${ARTIFACT_PREFIX_NAME:-$(read_config artifact_name)}"
+TIMESTAMP="$(date +%Y%m%d-%H%M%S)"
+OUTPUT_DIR="${OUTPUT_DIR:-$ROOT/tmp/data_subsets}"
+ARTIFACT_PATH="${ARTIFACT_PATH:-$OUTPUT_DIR/${ARTIFACT_PREFIX_NAME}-${TIMESTAMP}.dump}"
+WORKING_DATABASE_URL="${WORKING_DATABASE_URL:-postgres://localhost/${WORKING_DATABASE}}"
+
+mkdir -p "$OUTPUT_DIR"
+
+dropdb --if-exists "$WORKING_DATABASE" >/dev/null 2>&1 || true
+createdb "$WORKING_DATABASE"
+
+mise exec -- pg_restore --no-owner --no-privileges -d "$WORKING_DATABASE" "$SOURCE_DUMP"
+DATABASE_URL="$WORKING_DATABASE_URL" mise exec -- bundle exec rails db:migrate
+DATABASE_URL="$WORKING_DATABASE_URL" SUBSET_CONFIG="$CONFIG_PATH" mise exec -- bundle exec rails runner script/data_subsets/build.rb
+mise exec -- pg_dump -Fc --no-owner --no-privileges -d "$WORKING_DATABASE" -f "$ARTIFACT_PATH"
+
+if [[ "${UPLOAD_TO_R2:-0}" == "1" ]]; then
+  mise exec -- bundle exec ruby script/data_subsets/r2.rb upload "$ARTIFACT_PATH"
+fi
+
+echo "$ARTIFACT_PATH"
