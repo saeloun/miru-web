@@ -115,5 +115,6 @@ output/
 output/pinchtab/
 Procfile.dev.9000
 tmp/data_subsets/*.dump
+tmp/data_subsets/*.sql
 tmp/migration/*.dump
 .wrangler/

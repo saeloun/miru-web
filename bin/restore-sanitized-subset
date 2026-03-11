@@ -13,6 +13,7 @@ OUTPUT_DIR="${OUTPUT_DIR:-$ROOT/tmp/data_subsets}"
 ARTIFACT_PATH="${ARTIFACT_PATH:-$OUTPUT_DIR/${ARTIFACT_PREFIX_NAME}.dump}"
 TARGET_DATABASE="${TARGET_DATABASE:-${1:-miru_development}}"
 TARGET_DATABASE_URL="${TARGET_DATABASE_URL:-postgres://localhost/${TARGET_DATABASE}}"
+POST_RESTORE_NORMALIZE_USERS="${POST_RESTORE_NORMALIZE_USERS:-1}"
 
 mkdir -p "$OUTPUT_DIR"
 
@@ -39,5 +40,9 @@ createdb "$TARGET_DATABASE"
 mise exec -- pg_restore --clean --if-exists --no-owner --no-privileges -d "$TARGET_DATABASE" "$ARTIFACT_PATH"
 DATABASE_URL="$TARGET_DATABASE_URL" mise exec -- bundle exec rails db:migrate
 DATABASE_URL="$TARGET_DATABASE_URL" mise exec -- bundle exec rails data:migrate
+
+if [[ "$POST_RESTORE_NORMALIZE_USERS" == "1" ]]; then
+  DATABASE_URL="$TARGET_DATABASE_URL" mise exec -- bundle exec rails runner script/data_subsets/post_restore.rb
+fi
 
 echo "Restored sanitized subset into $TARGET_DATABASE"
