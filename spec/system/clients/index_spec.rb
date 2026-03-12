@@ -61,12 +61,12 @@ RSpec.describe "Client listing", type: :system, js: true do
       sign_in(employee)
     end
 
-    it "can access the clients page" do
+    it "cannot access the clients page" do
       with_forgery_protection do
         visit "/clients"
 
         expect(page).to have_css("#react-root", wait: 10)
-        expect(page).to have_current_path("/clients", wait: 10)
+        expect(page).to have_current_path("/time-tracking", wait: 10)
       end
     end
   end

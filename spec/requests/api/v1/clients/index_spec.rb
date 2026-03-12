@@ -20,4 +20,19 @@ RSpec.describe "Api::V1::Clients#index", type: :request do
     expect(response.parsed_body.fetch("client_details").pluck("name")).to include("Visible Client")
     expect(response.parsed_body.fetch("client_details").pluck("name")).not_to include("Other Company Client")
   end
+
+  it "blocks employees from fetching the clients index" do
+    employee = create(:user, current_workspace_id: company.id)
+    assigned_client = create(:client, company: company, name: "Assigned Client")
+    assigned_project = create(:project, client: assigned_client)
+    create(:project_member, project: assigned_project, user: employee, hourly_rate: 100)
+    create(:employment, company:, user: employee)
+    employee.add_role(:employee, company)
+
+    sign_in employee
+
+    get "/api/v1/clients", headers: auth_headers(employee)
+
+    expect(response).to have_http_status(:forbidden)
+  end
 end

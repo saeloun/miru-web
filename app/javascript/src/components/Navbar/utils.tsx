@@ -28,7 +28,7 @@ const navOptions = [
     logo: <ClientsIcon className="mr-0 md:mr-4" size={26} />,
     label: "Clients",
     path: Paths.CLIENTS,
-    allowedRoles: ["admin", "employee", "owner"],
+    allowedRoles: ["admin", "owner"],
   },
   {
     logo: <ProjectsIcon className="mr-0 md:mr-4" size={26} />,

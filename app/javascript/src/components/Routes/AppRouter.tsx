@@ -23,6 +23,7 @@ import Success from "components/payments/Success";
 import InvalidLink from "components/Team/List/InvalidLink";
 import InvoiceEmail from "components/InvoiceEmail";
 import ErrorPage from "common/Error";
+import { dashboardUrl } from "utils/dashboardUrl";
 
 interface AppRouterProps {
   user?: any;
@@ -36,6 +37,7 @@ interface AppRouterProps {
 const AppRouter: React.FC<AppRouterProps> = props => {
   const needsOrganizationSetup =
     props.user && !props.user?.current_workspace_id;
+  const defaultAuthedPath = dashboardUrl(props.companyRole);
 
   return (
     <>
@@ -52,7 +54,7 @@ const AppRouter: React.FC<AppRouterProps> = props => {
               needsOrganizationSetup ? (
                 <OrganizationSetup />
               ) : (
-                <Navigate replace to={Paths.DASHBOARD} />
+                <Navigate replace to={defaultAuthedPath} />
               )
             ) : (
               <Navigate replace to={Paths.SIGN_IN} />
@@ -69,7 +71,9 @@ const AppRouter: React.FC<AppRouterProps> = props => {
 
         {/* Auth Routes - Only for non-authenticated users */}
         {/* These routes will redirect to dashboard if user is already logged in */}
-        <Route element={<PublicRoute restricted />}>
+        <Route
+          element={<PublicRoute restricted redirectTo={defaultAuthedPath} />}
+        >
           <Route element={<SignIn />} path={Paths.SIGN_IN} />
           <Route element={<SignIn />} path={Paths.LOGIN} />
           <Route element={<SignUp />} path={Paths.SIGNUP} />

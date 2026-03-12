@@ -77,7 +77,21 @@ module Clients
       end
 
       def overdue_outstanding_amount
-        current_company.overdue_and_outstanding_and_draft_amount
+        amounts = clients_list.includes(:invoices).sum do |client|
+          summary = client.client_overdue_and_outstanding_calculation
+          summary[:outstanding_amount].to_f
+        end
+
+        overdue = clients_list.includes(:invoices).sum do |client|
+          summary = client.client_overdue_and_outstanding_calculation
+          summary[:overdue_amount].to_f
+        end
+
+        {
+          outstanding: amounts.round(2),
+          overdue: overdue.round(2),
+          currency: current_company.base_currency
+        }
       end
   end
 end

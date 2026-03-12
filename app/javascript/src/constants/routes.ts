@@ -157,12 +157,12 @@ export const ROUTES = [
   {
     path: Paths.DASHBOARD,
     subRoutes: DashboardRoutes,
-    authorisedRoles: [ADMIN, OWNER, EMPLOYEE, BOOK_KEEPER, CLIENT],
+    authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER],
   },
   {
     path: Paths.CLIENTS,
     subRoutes: ClientsRoutes,
-    authorisedRoles: [ADMIN, OWNER, EMPLOYEE],
+    authorisedRoles: [ADMIN, OWNER],
   },
   {
     path: Paths.INVOICES,

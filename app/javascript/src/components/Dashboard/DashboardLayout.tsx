@@ -45,7 +45,12 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
     {
       title: "Main",
       items: [
-        { label: "Dashboard", href: "/dashboard", icon: House },
+        {
+          label: "Dashboard",
+          href: "/dashboard",
+          icon: House,
+          roles: ["admin", "owner", "book_keeper"],
+        },
         {
           label: "Time Tracking",
           href: "/time-tracking",
@@ -56,7 +61,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
           label: "Clients",
           href: "/clients",
           icon: UsersThree,
-          roles: ["admin", "owner", "employee"],
+          roles: ["admin", "owner"],
         },
         {
           label: "Projects",

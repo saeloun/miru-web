@@ -24,9 +24,9 @@ module SessionHelpers
       window.localStorage.setItem("company_role", #{role.to_json}.replace(/^"|"$/g, ""));
       window.localStorage.setItem("company", JSON.stringify(#{company.to_json}));
     JS
-    visit "/dashboard"
+    visit default_path_for(role)
     wait_for_react_app
-    expect(page).to have_content("Dashboard", wait: 15)
+    expect(page).to have_current_path(default_path_for(role), ignore_query: true, wait: 15)
   end
 
   def wait_for_react_app
@@ -58,6 +58,19 @@ module SessionHelpers
   def navigate_to_spa_page(path)
     visit path
     wait_for_react_app
+  end
+
+  def default_path_for(role)
+    case role
+    when "admin", "owner"
+      "/dashboard"
+    when "book_keeper"
+      "/payments"
+    when "client"
+      "/invoices"
+    else
+      "/time-tracking"
+    end
   end
 
   def skip_react_app_for_functionality_test
