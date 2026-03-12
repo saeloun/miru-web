@@ -4,8 +4,8 @@ import { projectApi } from "apis/api";
 import { UnifiedSearch } from "../../ui/enhanced-search";
 import { useUserContext } from "context/UserContext";
 import Logger from "js-logger";
-import { PlusIcon } from "miruIcons";
-import { Button } from "StyledComponents";
+import { Plus } from "phosphor-react";
+import { Button } from "components/ui/button";
 
 const Header = ({ projectDataPresent, setShowProjectModal, isAdminUser }) => {
   const { isDesktop } = useUserContext();
@@ -59,12 +59,13 @@ const Header = ({ projectDataPresent, setShowProjectModal, isAdminUser }) => {
             />
           )}
           <Button
-            className="ml-0 flex w-full items-center justify-center px-2 py-2 sm:ml-2 sm:w-auto lg:ml-0 lg:px-4"
-            style="secondary"
+            className="ml-0 flex h-11 w-full items-center justify-center gap-2 px-4 sm:ml-2 sm:w-auto lg:ml-0"
+            type="button"
+            variant="default"
             onClick={() => setShowProjectModal(true)}
           >
-            <PlusIcon size={16} weight="bold" />
-            <span className="ml-2 hidden text-base font-bold tracking-widest lg:inline-block">
+            <Plus size={16} />
+            <span className="hidden text-sm font-medium lg:inline-block">
               New Project
             </span>
           </Button>
