@@ -18,9 +18,10 @@ module ProjectSqlQueries
           GROUP BY user_id
         ) te
         RIGHT JOIN (
-          SELECT user_id, hourly_rate
+          SELECT DISTINCT ON (user_id) user_id, hourly_rate
           FROM project_members
           WHERE project_id = #{id} AND discarded_at IS NULL
+          ORDER BY user_id, id DESC
         ) pm ON pm.user_id = te.user_id
         LEFT JOIN users u ON u.id = pm.user_id;
       """
