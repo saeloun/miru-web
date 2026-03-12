@@ -40,6 +40,28 @@ class DashboardPresenter
       invoices = scoped_invoices
       period_invoices = invoices.where(issue_date: from_date..to_date)
 
+      if client_scoped?
+        paid_invoices = period_invoices.paid.count
+        open_invoices = period_invoices.where(status: [:sent, :viewed, :overdue]).count
+        outstanding_amount = period_invoices.sum(:amount_due)
+        payments_received = scoped_payments.where(transaction_date: from_date..to_date).sum(:amount)
+
+        return {
+          total_revenue: period_invoices.sum(:amount).round(2),
+          revenue_trend: calculate_trend(period_invoices.sum(:amount), calculate_previous_period_revenue),
+          active_projects: open_invoices,
+          projects_trend: 0,
+          team_size: paid_invoices,
+          billable_hours: payments_received.round(2),
+          hours_trend: 0,
+          outstanding_amount: outstanding_amount.round(2),
+          payments_received: payments_received.round(2),
+          paid_invoices: paid_invoices,
+          open_invoices: open_invoices,
+          currency: company.base_currency
+        }
+      end
+
       # Calculate revenue
       total_revenue = employee_scoped? ? 0 : period_invoices.sum(:amount)
       previous_period_revenue = employee_scoped? ? 0 : calculate_previous_period_revenue
@@ -98,7 +120,7 @@ class DashboardPresenter
     end
 
     def revenue_by_customer_data
-      return [] if employee_scoped?
+      return [] if employee_scoped? || client_scoped?
 
       invoices = scoped_invoices.where(issue_date: from_date..to_date)
 
@@ -252,6 +274,10 @@ class DashboardPresenter
       return scope unless employee_scoped?
 
       scope.where(user: current_user)
+    end
+
+    def scoped_payments
+      company.payments.joins(:invoice).where(invoices: { client_id: accessible_client_ids })
     end
 
     def team_size
