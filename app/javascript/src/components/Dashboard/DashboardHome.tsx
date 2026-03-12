@@ -54,6 +54,8 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({
   } = useActivities();
 
   const baseCurrency = company?.baseCurrency || "USD";
+  const isEmployee = companyRole === "employee";
+  const isClient = companyRole === "client";
 
   const timeframeLabel = (() => {
     switch (timeframe) {
@@ -122,7 +124,7 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({
     return () => el.removeEventListener("scroll", onScroll);
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
-  const statsCards = [
+  const financialStatsCards = [
     {
       title: "Revenue",
       value: currencyFormat(baseCurrency, statsData.total_revenue),
@@ -161,6 +163,25 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({
     },
   ];
 
+  const employeeStatsCards = [
+    {
+      title: "Assigned Projects",
+      value: statsData.active_projects.toString(),
+      description: "Projects you can work on",
+      icon: Briefcase,
+    },
+    {
+      title: "Hours Tracked",
+      value: Math.round(statsData.billable_hours).toLocaleString(),
+      description: timeframeLabel,
+      icon: Timer,
+      trend: {
+        value: statsData.hours_trend,
+        isPositive: statsData.hours_trend > 0,
+      },
+    },
+  ];
+
   const roleGuidance = (() => {
     switch (companyRole) {
       case "employee":
@@ -173,6 +194,8 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({
         return "Revenue, projects, and team momentum at a glance.";
     }
   })();
+
+  const statsCards = isEmployee ? employeeStatsCards : financialStatsCards;
 
   return (
     <div className="space-y-6 max-w-[1600px] mx-auto">
@@ -189,7 +212,11 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({
         </div>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div
+        className={`grid gap-4 md:grid-cols-2 ${
+          isEmployee ? "lg:grid-cols-2" : "lg:grid-cols-4"
+        }`}
+      >
         {statsCards.map((stat, index) => {
           const Icon = stat.icon;
 
@@ -244,35 +271,39 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({
         })}
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-10">
-        <div className="lg:col-span-7">
-          <RevenueAreaChart
-            data={revenueData}
-            timeframe={timeframe}
-            onTimeframeChange={setTimeframe}
-            baseCurrency={baseCurrency}
-            loading={isDashboardLoading}
-          />
+      {!isEmployee && (
+        <div className="grid gap-4 lg:grid-cols-10">
+          <div className="lg:col-span-7">
+            <RevenueAreaChart
+              data={revenueData}
+              timeframe={timeframe}
+              onTimeframeChange={setTimeframe}
+              baseCurrency={baseCurrency}
+              loading={isDashboardLoading}
+            />
+          </div>
+          <div className="lg:col-span-3">
+            <CustomerRevenueChart
+              data={customerRevenueData}
+              timeframe={timeframe}
+              baseCurrency={baseCurrency}
+              loading={isDashboardLoading}
+            />
+          </div>
         </div>
-        <div className="lg:col-span-3">
-          <CustomerRevenueChart
-            data={customerRevenueData}
-            timeframe={timeframe}
-            baseCurrency={baseCurrency}
-            loading={isDashboardLoading}
-          />
-        </div>
-      </div>
+      )}
 
       <Card className="border border-border hover:shadow-md transition-shadow">
         <CardHeader className="border-b border-border">
           <div className="flex items-center justify-between">
             <div>
               <CardTitle className="text-lg font-semibold text-foreground">
-                Workspace Activity
+                {isClient ? "Recent Activity" : "Workspace Activity"}
               </CardTitle>
               <CardDescription className="text-sm text-muted-foreground mt-1">
-                Latest updates across your invoices and payments
+                {isEmployee
+                  ? "Your dashboard is focused on time tracking and assigned work."
+                  : "Latest updates across your invoices and payments"}
               </CardDescription>
             </div>
           </div>

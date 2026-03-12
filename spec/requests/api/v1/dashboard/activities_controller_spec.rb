@@ -206,6 +206,27 @@ RSpec.describe Api::V1::Dashboard::ActivitiesController, type: :request do
           expect(payment_ids).not_to include(hidden_payment.id)
         end
       end
+
+      context "when user has an employee role" do
+        let!(:invoice) { create(:invoice, :sent, company: company, client: client) }
+        let!(:payment) { create(:payment, invoice: invoice, amount: 111) }
+
+        before do
+          user.roles.destroy_all
+          user.add_role(:employee, company)
+        end
+
+        it "returns no finance activities" do
+          get "/api/v1/dashboard/activities"
+
+          expect(response).to have_http_status(:ok)
+          expect(response_json).to include(
+            "activities" => [],
+            "has_more" => false,
+            "total_count" => 0
+          )
+        end
+      end
     end
 
     context "when user is not authenticated" do

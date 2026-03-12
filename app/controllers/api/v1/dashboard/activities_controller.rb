@@ -95,12 +95,14 @@ module Api
           end
 
           def scoped_invoices
+            return Invoice.none if current_user.has_role?(:employee, current_company)
             return current_company.invoices unless current_user.has_role?(:client, current_company)
 
             current_company.invoices.where(client_id: current_user.client_members.kept.where(company: current_company).select(:client_id))
           end
 
           def scoped_payments
+            return Payment.none if current_user.has_role?(:employee, current_company)
             return current_company.payments unless current_user.has_role?(:client, current_company)
 
             current_company.payments.joins(:invoice).where(invoices: {
