@@ -3,31 +3,17 @@
 class Api::V1::ClientsController < Api::V1::ApplicationController
   def index
     authorize Client
-
-    # Apply search/filter
-    clients = current_company.clients.kept
-
-    # Apply text search if query present
-    if params[:query].present?
-      clients = clients.search(params[:query])
-    elsif (params[:q].is_a?(ActionController::Parameters) || params[:q].is_a?(Hash)) &&
-        params[:q][:name_cont].present?
-      # Handle legacy ransack-style search
-      search_term = ActiveRecord::Base.sanitize_sql_like(params[:q][:name_cont].to_s)
-      clients = clients.where("name ILIKE ?", "%#{search_term}%")
-    end
-
-    clients = clients.includes(:logo_attachment)
-
-    # Calculate aggregations
-    client_details = clients.map { |client| client.client_detail(params[:time_frame]) }
-    total_minutes = client_details.pluck(:minutes_spent).sum
-    overdue_outstanding_amount = current_company.overdue_and_outstanding_and_draft_amount
+    response = Clients::IndexService.process(
+      current_company,
+      current_user,
+      params[:query] || params.dig(:q, :name_cont),
+      params[:time_frame]
+    )
 
     render json: {
-      client_details: client_details,
-      total_minutes: total_minutes,
-      overdue_outstanding_amount: overdue_outstanding_amount
+      client_details: response[:client_details],
+      total_minutes: response[:total_minutes],
+      overdue_outstanding_amount: response[:overdue_outstanding_amount]
     }, status: 200
   end
 

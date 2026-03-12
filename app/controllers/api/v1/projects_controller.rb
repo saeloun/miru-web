@@ -14,7 +14,7 @@ class Api::V1::ProjectsController < Api::V1::ApplicationController
     end
 
     projects = projects.includes(:client, :timesheet_entries, project_members: :user)
-    clients = current_company.clients.kept
+    clients = projects.filter_map(&:client).uniq
 
     render :index, locals: {
       projects: projects,

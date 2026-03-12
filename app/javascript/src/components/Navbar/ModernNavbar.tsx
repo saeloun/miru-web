@@ -35,7 +35,7 @@ const navigationItems: NavItem[] = [
     label: "Dashboard",
     path: "/",
     icon: House,
-    allowedRoles: ["admin", "employee", "owner", "book_keeper", "client"],
+    allowedRoles: ["admin", "owner", "book_keeper"],
   },
   {
     label: "Time Tracking",
@@ -47,7 +47,7 @@ const navigationItems: NavItem[] = [
     label: "Clients",
     path: Paths.CLIENTS,
     icon: Users,
-    allowedRoles: ["admin", "employee", "owner"],
+    allowedRoles: ["admin", "owner"],
   },
   {
     label: "Projects",

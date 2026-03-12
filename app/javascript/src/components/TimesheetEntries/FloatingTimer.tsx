@@ -85,15 +85,10 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({ onSaveEntry }) => {
     queryKey: ["projects"],
     queryFn: async () => {
       try {
-        // Fetch clients
-        const clientsResponse = await axios.get("/api/v1/clients");
-        const clients = clientsResponse.data.clients || [];
-
-        // Fetch projects
         const projectsResponse = await axios.get("/api/v1/projects");
         const projects = projectsResponse.data.projects || [];
+        const clients = projectsResponse.data.clients || [];
 
-        // Transform data to match expected format
         return {
           clients: clients.map(client => ({
             id: client.id,
@@ -102,8 +97,8 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({ onSaveEntry }) => {
           projects: projects.map(project => ({
             id: project.id,
             name: project.name,
-            client: project.client?.name || "No Client",
-            clientId: project.client?.id || null,
+            client: project.client_name || "No Client",
+            clientId: project.client_id || null,
             billable: project.billable || false,
           })),
         };
