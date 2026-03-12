@@ -104,6 +104,7 @@ rspec_output.txt
 test-*.spec.ts
 *.png
 !app/assets/images/*.png
+!app/javascript/assets/images/auth/*.png
 !spec/support/fixtures/*.png
 .playwright-mcp/
 test-results/
