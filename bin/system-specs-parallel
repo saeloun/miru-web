@@ -19,10 +19,20 @@ if [ "${#ARGS[@]}" -eq 0 ]; then
 fi
 
 echo "Preparing parallel test databases for ${PROCS} processes..."
-mise exec -- bundle exec rake "parallel:create[${PROCS}]" "parallel:load_schema[${PROCS}]"
+if command -v mise >/dev/null 2>&1; then
+  run_cmd() {
+    mise exec -- "$@"
+  }
+else
+  run_cmd() {
+    "$@"
+  }
+fi
+
+run_cmd bundle exec rake "parallel:create[${PROCS}]" "parallel:load_schema[${PROCS}]"
 
 echo "Running system specs in parallel (${PROCS} processes)..."
-BASE_CMD=(mise exec -- bundle exec parallel_rspec "${ARGS[@]}" -n "${PROCS}" --runtime-log "${RUNTIME_LOG}")
+BASE_CMD=(bundle exec parallel_rspec "${ARGS[@]}" -n "${PROCS}" --runtime-log "${RUNTIME_LOG}")
 
 if [ -f "${RUNTIME_LOG}" ] && [ "$(wc -l < "${RUNTIME_LOG}")" -ge "${#ARGS[@]}" ]; then
   BASE_CMD+=(--group-by runtime)
@@ -32,4 +42,4 @@ if [ "${QUIET}" = "1" ]; then
   BASE_CMD+=(--serialize-stdout --combine-stderr --quiet --test-options "--format progress")
 fi
 
-CI=true "${BASE_CMD[@]}"
+CI=true run_cmd "${BASE_CMD[@]}"
