@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { MIRU_APP_URL } from "constants/index";
 import { MiruLogoWithTextSVG } from "miruIcons";
-import dashboardPreview from "../../../assets/images/auth/dashboard-preview.png";
-import dashboardPreviewDark from "../../../assets/images/auth/dashboard-preview-dark.png";
-import invoicesPreview from "../../../assets/images/auth/invoices-preview.png";
-import invoicesPreviewDark from "../../../assets/images/auth/invoices-preview-dark.png";
-import paymentsPreview from "../../../assets/images/auth/payments-preview.png";
-import paymentsPreviewDark from "../../../assets/images/auth/payments-preview-dark.png";
-import timeTrackingPreview from "../../../assets/images/auth/time-tracking-preview.png";
-import timeTrackingPreviewDark from "../../../assets/images/auth/time-tracking-preview-dark.png";
+import dashboardPreview from "@/assets/images/auth/dashboard-preview.png";
+import dashboardPreviewDark from "@/assets/images/auth/dashboard-preview-dark.png";
+import invoicesPreview from "@/assets/images/auth/invoices-preview.png";
+import invoicesPreviewDark from "@/assets/images/auth/invoices-preview-dark.png";
+import paymentsPreview from "@/assets/images/auth/payments-preview.png";
+import paymentsPreviewDark from "@/assets/images/auth/payments-preview-dark.png";
+import timeTrackingPreview from "@/assets/images/auth/time-tracking-preview.png";
+import timeTrackingPreviewDark from "@/assets/images/auth/time-tracking-preview-dark.png";
 import AuthThemeToggle from "./AuthThemeToggle";
 
 interface AuthShellProps {
