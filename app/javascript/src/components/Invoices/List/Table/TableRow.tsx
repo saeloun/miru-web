@@ -5,7 +5,7 @@ import React, { useState, useRef } from "react";
 import { invoicesApi } from "apis/api";
 import CustomCheckbox from "common/CustomCheckbox";
 import SendInvoice from "components/Invoices/common/InvoiceForm/SendInvoice";
-import SendInvoiceContainer from "components/Invoices/Generate/MobileView/Container/SendInvoiceContainer";
+import SendInvoiceContainer from "components/Invoices/common/SendInvoiceContainer";
 import ConnectPaymentGateway from "components/Invoices/popups/ConnectPaymentGateway";
 import AnimatedAvatar from "components/ui/animated-avatar";
 import StatusBadge from "components/ui/status-badge";

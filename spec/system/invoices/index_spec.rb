@@ -22,6 +22,16 @@ RSpec.describe "Invoice listing", type: :system, js: true do
     end
   end
 
+  it "redirects the legacy generate route to the new invoice flow" do
+    with_forgery_protection do
+      visit "/invoices/generate?clientId=#{client.id}"
+
+      expect(page).to have_current_path("/invoices/new?clientId=#{client.id}", wait: 10)
+      expect(page).to have_content("New invoice", wait: 10)
+      expect(page).not_to have_content("Generate Invoice")
+    end
+  end
+
   context "with invoices in various statuses" do
     let!(:draft_invoice) do
       create(:invoice,

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import cn from "classnames";
 import { Formik, Form, FormikProps } from "formik";
@@ -22,7 +22,6 @@ const SendInvoiceContainer = ({
   invoice,
   handleSaveSendInvoice,
   setIsSending,
-
   setIsSendReminder = _value => {},
   isSendReminder = false,
 }) => {
@@ -44,6 +43,7 @@ const SendInvoiceContainer = ({
       )}
     </div>
   );
+
   interface InvoiceEmail {
     recipients: string[];
     subject: string;
@@ -57,8 +57,7 @@ const SendInvoiceContainer = ({
   });
 
   const [newRecipient, setNewRecipient] = useState<string>("");
-
-  const [width, setWidth] = useState<string>("10ch");
+  const [_width, setWidth] = useState<string>("10ch");
   const [status, setStatus] = useState<InvoiceStatus>(InvoiceStatus.IDLE);
   const navigate = useNavigate();
 
@@ -113,7 +112,6 @@ const SendInvoiceContainer = ({
 
   useEffect(() => {
     const length = newRecipient.length;
-
     setWidth(`${length > 10 ? length : 10}ch`);
   }, [newRecipient]);
 
@@ -121,7 +119,7 @@ const SendInvoiceContainer = ({
     setTimeout(() => {
       status === InvoiceStatus.SUCCESS && navigate("/invoices");
     }, 5000);
-  }, [status]);
+  }, [status, navigate]);
 
   return (
     <div className="h-full w-full p-4">
