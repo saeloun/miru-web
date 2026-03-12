@@ -69,7 +69,6 @@ yarn-debug.log*
 
 # Claude Code Assistant
 .claude
-CLAUDE.md
 
 # Git hooks
 .husky/
