@@ -33,6 +33,30 @@ RSpec.describe "Role access redirects", type: :system, js: true do
         expect(page).to have_current_path("/time-tracking", wait: 10)
       end
     end
+
+    it "redirects employee away from clients" do
+      with_forgery_protection do
+        visit "/clients"
+
+        expect(page).to have_current_path("/time-tracking", wait: 10)
+      end
+    end
+
+    it "redirects employee away from invoices" do
+      with_forgery_protection do
+        visit "/invoices"
+
+        expect(page).to have_current_path("/time-tracking", wait: 10)
+      end
+    end
+
+    it "redirects employee away from payments" do
+      with_forgery_protection do
+        visit "/payments"
+
+        expect(page).to have_current_path("/time-tracking", wait: 10)
+      end
+    end
   end
 
   context "when user is a book keeper" do
@@ -57,6 +81,40 @@ RSpec.describe "Role access redirects", type: :system, js: true do
         visit "/time-tracking"
 
         expect(page).to have_current_path("/payments", wait: 10)
+      end
+    end
+  end
+
+  context "when user is a client" do
+    let(:client_user) { create(:user, current_workspace_id: company.id) }
+
+    before do
+      create(:employment, company:, user: client_user)
+      client_user.add_role :client, company
+      sign_in(client_user)
+    end
+
+    it "redirects client away from dashboard" do
+      with_forgery_protection do
+        visit "/dashboard"
+
+        expect(page).to have_current_path(%r{\A/invoices(\?.*)?\z}, wait: 10)
+      end
+    end
+
+    it "redirects client away from clients" do
+      with_forgery_protection do
+        visit "/clients"
+
+        expect(page).to have_current_path(%r{\A/invoices(\?.*)?\z}, wait: 10)
+      end
+    end
+
+    it "redirects client away from billing" do
+      with_forgery_protection do
+        visit "/settings/billing"
+
+        expect(page).to have_current_path("/error", wait: 10)
       end
     end
   end
