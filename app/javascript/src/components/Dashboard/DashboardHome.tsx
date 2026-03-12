@@ -182,6 +182,33 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({
     },
   ];
 
+  const clientStatsCards = [
+    {
+      title: "Total Invoiced",
+      value: currencyFormat(baseCurrency, statsData.total_revenue),
+      description: timeframeLabel,
+      icon: CurrencyCircleDollar,
+    },
+    {
+      title: "Open Invoices",
+      value: (statsData.open_invoices || 0).toString(),
+      description: "Awaiting payment",
+      icon: Receipt,
+    },
+    {
+      title: "Paid Invoices",
+      value: (statsData.paid_invoices || 0).toString(),
+      description: "Already settled",
+      icon: Receipt,
+    },
+    {
+      title: "Payments Received",
+      value: currencyFormat(baseCurrency, statsData.payments_received || 0),
+      description: timeframeLabel,
+      icon: CurrencyCircleDollar,
+    },
+  ];
+
   const roleGuidance = (() => {
     switch (companyRole) {
       case "employee":
@@ -195,7 +222,11 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({
     }
   })();
 
-  const statsCards = isEmployee ? employeeStatsCards : financialStatsCards;
+  const statsCards = isEmployee
+    ? employeeStatsCards
+    : isClient
+    ? clientStatsCards
+    : financialStatsCards;
 
   return (
     <div className="space-y-6 max-w-[1600px] mx-auto">
@@ -271,7 +302,7 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({
         })}
       </div>
 
-      {!isEmployee && (
+      {!isEmployee && !isClient && (
         <div className="grid gap-4 lg:grid-cols-10">
           <div className="lg:col-span-7">
             <RevenueAreaChart
@@ -290,6 +321,18 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({
               loading={isDashboardLoading}
             />
           </div>
+        </div>
+      )}
+
+      {isClient && (
+        <div className="grid gap-4 lg:grid-cols-1">
+          <RevenueAreaChart
+            data={revenueData}
+            timeframe={timeframe}
+            onTimeframeChange={setTimeframe}
+            baseCurrency={baseCurrency}
+            loading={isDashboardLoading}
+          />
         </div>
       )}
 
