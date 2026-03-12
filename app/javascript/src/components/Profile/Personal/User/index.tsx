@@ -29,30 +29,19 @@ const UserDetailsView = () => {
     setIsLoading(true);
     try {
       if (companyRole !== "client") {
-        // First, get the list of employments to find the current one
-        const employmentsResponse: any = await teamsApi.getEmployments();
+        const employmentData: any = await teamsApi.getEmploymentDetails(
+          currentUserId
+        );
 
-        if (
-          employmentsResponse.status === 200 &&
-          employmentsResponse.data.employments?.length > 0
-        ) {
-          // Use the first employment (current employment)
-          const currentEmployment = employmentsResponse.data.employments[0];
+        const previousEmploymentData: any =
+          await teamsApi.getPreviousEmployments(currentUserId);
 
-          const employmentData: any = await teamsApi.getEmploymentDetails(
-            currentEmployment.id
+        if (employmentData.status && employmentData.status == 200) {
+          const employmentObj = employmentMapper(
+            employmentData.data.employment,
+            previousEmploymentData.data.previous_employments
           );
-
-          const previousEmploymentData: any =
-            await teamsApi.getPreviousEmployments(currentUserId);
-
-          if (employmentData.status && employmentData.status == 200) {
-            const employmentObj = employmentMapper(
-              employmentData.data.employment,
-              previousEmploymentData.data.previous_employments
-            );
-            updateDetails("employmentDetails", employmentObj);
-          }
+          updateDetails("employmentDetails", employmentObj);
         }
       }
     } catch (error) {
