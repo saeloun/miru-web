@@ -2,11 +2,16 @@ import React, { useEffect, useState } from "react";
 
 import { projectApi } from "apis/api";
 import Logger from "js-logger";
-import { XIcon } from "miruIcons";
-import { Modal } from "StyledComponents";
 import { Input } from "../../ui/input";
 import { Label } from "../../ui/label";
 import { Button } from "../../ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "../../ui/dialog";
 import {
   Select,
   SelectContent,
@@ -41,7 +46,12 @@ const AddEditProject = ({
   const getClientList = async () => {
     try {
       const { data } = await projectApi.get();
-      setClientList(data.clients);
+      const uniqueClients = Array.from(
+        new Map(
+          (data.clients || []).map(clientItem => [clientItem.id, clientItem])
+        ).values()
+      );
+      setClientList(uniqueClients);
     } catch (error) {
       Logger.error(error);
     }
@@ -119,92 +129,114 @@ const AddEditProject = ({
   }, [editProjectData, clientList]);
 
   return !isEdit || showEditModal ? (
-    <Modal
-      customStyle="sm:my-8 sm:w-full sm:max-w-lg sm:align-middle"
-      isOpen={showProjectModal}
-      onClose={() => setShowProjectModal(false)}
+    <Dialog
+      open={showProjectModal}
+      onOpenChange={open => {
+        if (!open) {
+          setEditProjectData("");
+          setShowProjectModal(false);
+        }
+      }}
     >
-      <div className="modal__position">
-        <h6 className="modal__title">
-          {isEdit ? "Edit Project Details" : "Add New Project"}
-        </h6>
-        <div className="modal__close">
-          <button
-            className="modal__button"
-            onClick={() => {
-              setEditProjectData("");
-              setShowProjectModal(false);
-            }}
-          >
-            <XIcon color="#CDD6DF" size={15} />
-          </button>
-        </div>
-      </div>
-      <div className="modal__form flex-col space-y-4">
-        {/* Client Selection */}
-        <div className="space-y-2">
-          <Label htmlFor="client">
-            Client <span className="text-red-500">*</span>
-          </Label>
-          <Select
-            value={client.toString()}
-            onValueChange={value => setClient(Number(value))}
-          >
-            <SelectTrigger id="client">
-              <SelectValue placeholder="Select Client" />
-            </SelectTrigger>
-            <SelectContent>
-              {clientList &&
-                clientList.map((clientItem, index) => (
-                  <SelectItem key={index} value={clientItem["id"].toString()}>
-                    {clientItem["name"]}
-                  </SelectItem>
-                ))}
-            </SelectContent>
-          </Select>
-        </div>
-        {/* Project Name */}
-        <div className="space-y-2">
-          <Label htmlFor="project-name">
-            Project Name <span className="text-red-500">*</span>
-          </Label>
-          <Input
-            id="project-name"
-            placeholder="Enter Project Name"
-            type="text"
-            value={projectName}
-            onChange={event => setProjectName(event.target.value)}
-          />
-        </div>
-        {/* Project Type */}
-        <div className="space-y-2">
-          <Label>Project Type</Label>
-          <RadioGroup value={projectType} onValueChange={setProjectType}>
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2">
+      <DialogContent className="max-w-lg">
+        <DialogHeader>
+          <DialogTitle>
+            {isEdit ? "Edit project" : "Create project"}
+          </DialogTitle>
+          <DialogDescription>
+            Choose the client, name the project, and set whether the work is
+            billable.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="flex flex-col space-y-5">
+          <div className="space-y-2">
+            <Label htmlFor="client">Client</Label>
+            <Select
+              value={client ? client.toString() : ""}
+              onValueChange={value => setClient(Number(value))}
+            >
+              <SelectTrigger id="client">
+                <SelectValue placeholder="Select client" />
+              </SelectTrigger>
+              <SelectContent>
+                {clientList &&
+                  clientList.map(clientItem => (
+                    <SelectItem
+                      key={clientItem["id"]}
+                      value={clientItem["id"].toString()}
+                    >
+                      {clientItem["name"]}
+                    </SelectItem>
+                  ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="project-name">Project name</Label>
+            <Input
+              id="project-name"
+              placeholder="Enter project name"
+              type="text"
+              value={projectName}
+              onChange={event => setProjectName(event.target.value)}
+            />
+          </div>
+
+          <div className="space-y-3">
+            <Label>Project type</Label>
+            <RadioGroup
+              className="grid gap-3"
+              value={projectType}
+              onValueChange={setProjectType}
+            >
+              <div className="flex items-center justify-between rounded-xl border border-border bg-card px-4 py-3">
+                <div>
+                  <Label className="text-sm font-medium" htmlFor="billable">
+                    Billable
+                  </Label>
+                  <p className="text-sm text-muted-foreground">
+                    Use this for client work that turns into invoices.
+                  </p>
+                </div>
                 <RadioGroupItem value="Billable" id="billable" />
-                <Label htmlFor="billable">Billable</Label>
               </div>
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center justify-between rounded-xl border border-border bg-card px-4 py-3">
+                <div>
+                  <Label className="text-sm font-medium" htmlFor="non-billable">
+                    Non-billable
+                  </Label>
+                  <p className="text-sm text-muted-foreground">
+                    Use this for internal work, admin tasks, or research.
+                  </p>
+                </div>
                 <RadioGroupItem value="Non-Billable" id="non-billable" />
-                <Label htmlFor="non-billable">Non-billable</Label>
               </div>
-            </div>
-          </RadioGroup>
+            </RadioGroup>
+          </div>
+
+          <div className="flex justify-end gap-3 pt-2">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => {
+                setEditProjectData("");
+                setShowProjectModal(false);
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              disabled={!isFormFilled}
+              type="button"
+              onClick={handleSubmit}
+            >
+              {isEdit ? "Save changes" : "Create project"}
+            </Button>
+          </div>
         </div>
-        {/* Submit Button */}
-        <div className="pt-4">
-          <Button
-            disabled={!isFormFilled}
-            type="button"
-            className="w-full"
-            onClick={handleSubmit}
-          >
-            {isEdit ? "Save Changes" : "Add Project"}
-          </Button>
-        </div>
-      </div>
-    </Modal>
+      </DialogContent>
+    </Dialog>
   ) : null;
 };
 
