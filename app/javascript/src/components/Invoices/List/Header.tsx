@@ -112,7 +112,7 @@ const Header = ({
       <Button
         className="ml-0 flex w-full items-center justify-center px-4 py-2.5 sm:ml-2 sm:w-auto lg:ml-0"
         style="secondary"
-        onClick={() => navigate("/invoices/generate")}
+        onClick={() => navigate("/invoices/new")}
       >
         <PlusIcon size={16} weight="bold" />
         <span className="ml-2 hidden text-sm font-bold tracking-wide lg:inline-block">

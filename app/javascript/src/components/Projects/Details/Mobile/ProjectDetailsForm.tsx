@@ -1,14 +1,11 @@
 import React from "react";
 
 import { minToHHMM, currencyFormat } from "helpers";
-import { ArrowLeftIcon, DotsThreeVerticalIcon, PlusIcon } from "miruIcons";
+import { ArrowLeft, DotsThreeVertical, Plus } from "phosphor-react";
 import { useNavigate } from "react-router-dom";
-import {
-  Badge,
-  Button,
-  MobileMoreOptions,
-  SummaryDashboard,
-} from "StyledComponents";
+import { MobileMoreOptions, SummaryDashboard } from "StyledComponents";
+import { Badge } from "components/ui/badge";
+import { Button } from "components/ui/button";
 
 import EmptyStates from "common/EmptyStates";
 
@@ -44,39 +41,36 @@ const ProjectDetailsForm = ({
 
   return (
     <div className="flex w-full flex-col lg:hidden">
-      <div className="flex h-12 w-full items-center bg-white shadow-c1">
+      <div className="flex h-14 w-full items-center border-b border-border bg-background/95 px-2 backdrop-blur">
         <Button
-          className="p-3"
-          style="primary_disabled"
+          className="h-10 w-10 rounded-full"
+          size="icon"
+          type="button"
+          variant="ghost"
           onClick={() => {
             navigate("/projects");
           }}
         >
-          <ArrowLeftIcon className="text-foreground" size={16} weight="bold" />
+          <ArrowLeft className="text-foreground" size={18} />
         </Button>
-        <div className="flex w-full py-3">
-          <h2 className="mr-3 text-base font-medium text-foreground">
+        <div className="flex w-full items-center gap-3 px-2">
+          <h2 className="mr-1 text-base font-semibold text-foreground">
             {project?.name}
           </h2>
           {project?.is_billable && (
-            <Badge
-              bgColor="bg-accent"
-              className="uppercase"
-              color="text-primary"
-              text="billable"
-            />
+            <Badge className="rounded-full bg-primary/10 px-2.5 py-0.5 text-xs text-primary hover:bg-primary/10">
+              Billable
+            </Badge>
           )}
         </div>
         <Button
-          className="p-3"
-          style="primary_disabled"
+          className="h-10 w-10 rounded-full"
+          size="icon"
+          type="button"
+          variant="ghost"
           onClick={() => setIsHeaderMenuVisible(true)}
         >
-          <DotsThreeVerticalIcon
-            className="text-foreground"
-            size={16}
-            weight="bold"
-          />
+          <DotsThreeVertical className="text-foreground" size={18} />
         </Button>
       </div>
       {isHeaderMenuVisible && (
@@ -154,12 +148,13 @@ const ProjectDetailsForm = ({
               showNoSearchResultState={false}
             >
               <Button
-                className="flex w-full items-center justify-center p-2 "
-                style="primary"
+                className="h-11 w-full"
+                type="button"
+                variant="default"
                 onClick={handleAddRemoveMembers}
               >
-                <PlusIcon className="mr-4 text-white" weight="bold" />
-                <span className="text-center text-base font-bold">
+                <Plus className="mr-2" size={16} />
+                <span className="text-center text-base font-medium">
                   Add Team Members
                 </span>
               </Button>

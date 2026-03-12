@@ -15,6 +15,7 @@ Scope: entire repository.
 7. Keep changes minimal, focused, and aligned with existing repo patterns.
 8. If a change is verified and there is no explicit reason to hold it back, commit and push it instead of letting the working tree drift.
 9. Do not stop after a trivial sub-step when the user asked for a larger verified batch. Keep going until the batch is done, there is a real blocker, or the next action would be risky without user input.
+10. Do not pause just to summarize progress when the requested implementation batch is still in flight. Execute the next obvious step immediately and only report once a real verification checkpoint or blocker exists.
 
 ## Repo-Specific Workflow
 
@@ -24,6 +25,7 @@ Scope: entire repository.
 - For browser-facing fixes, verify on the local app with Playwright or PinchTab.
 - Do not claim a React or JS crash is fixed unless the affected page is loaded successfully in the browser and checked for errors.
 - Commit verified changes promptly when asked.
+- When a user gives a sequence like "finish A, then do B", complete A and immediately continue into B without waiting for another "continue" message.
 
 ## Local Development
 

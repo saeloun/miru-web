@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import InvoiceList from "./InvoiceList";
 import InvoiceEditor from "./InvoiceEditor/index";
 import InvoicePreview from "./InvoicePreview";
@@ -18,12 +19,15 @@ type ViewMode = "list" | "edit" | "create" | "preview";
 interface InvoicesPageProps {
   initialMode?: ViewMode;
   initialInvoiceId?: string;
+  initialClientId?: string;
 }
 
 const InvoicesPage: React.FC<InvoicesPageProps> = ({
   initialMode = "list",
   initialInvoiceId,
+  initialClientId,
 }) => {
+  const navigate = useNavigate();
   const { company: currentCompany } = useUserContext();
   const [viewMode, setViewMode] = useState<ViewMode>(initialMode);
   const [selectedInvoiceId, setSelectedInvoiceId] = useState<string | null>(
@@ -426,6 +430,7 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
     setSelectedInvoice(null);
     setPreviewData(null);
     setError(null);
+    navigate("/invoices");
   };
 
   const renderBackButton = () => (
@@ -480,6 +485,7 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
           <InvoiceEditor
             clients={clients}
             company={fallbackCompany}
+            initialClientId={initialClientId}
             onSave={handleSaveInvoice}
             onSend={handleSendInvoice}
             onPreview={handlePreview}

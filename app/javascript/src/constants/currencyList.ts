@@ -337,8 +337,8 @@ export const currencyList = [
   },
   {
     name: "Indian Rupee",
-    symbol: "Rs",
-    symbolNative: "টকা",
+    symbol: "₹",
+    symbolNative: "₹",
     code: "INR",
     namePlural: "Indian rupees",
   },

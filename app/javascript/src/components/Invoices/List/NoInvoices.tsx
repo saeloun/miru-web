@@ -35,7 +35,7 @@ const NoInvoices = ({ isDesktop, filterParamsStr, handleReset, params }) => {
             className="flex items-center justify-center"
             size={isDesktop ? "large" : "small"}
             style="primary"
-            onClick={() => navigate("/invoices/generate")}
+            onClick={() => navigate("/invoices/new")}
           >
             <PlusIcon className="mr-2.5" size={isDesktop ? 16 : 12} />
             <span>Create New Invoice</span>
