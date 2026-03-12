@@ -30,6 +30,7 @@ class Api::V1::TimeTrackingController < Api::V1::ApplicationController
     else
       # Employee only sees their assigned projects in the current company
       project_ids = @user.project_members
+        .kept
         .joins(project: :client)
         .where(projects: { discarded_at: nil }, clients: { company_id: current_company.id })
         .pluck(:project_id)

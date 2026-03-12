@@ -37,6 +37,7 @@ interface InvoiceEditorProps {
   invoice?: any;
   clients: any[];
   company?: any;
+  initialClientId?: string;
   onSave?: (invoice: any) => void;
   onSend?: (invoice: any) => void;
   onPreview?: (invoice: any) => void;
@@ -62,6 +63,7 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
     bankRoutingNumber: "",
     bankSwiftCode: "",
   },
+  initialClientId = "",
   onSave,
   onSend,
   onPreview,
@@ -86,7 +88,7 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
         .slice(0, 8)
         .toUpperCase()}`,
     status: invoice?.status || "draft",
-    clientId: invoice?.clientId || "",
+    clientId: invoice?.clientId || initialClientId || "",
     issueDate: ensureValidDate(invoice?.issueDate),
     dueDate: ensureValidDate(
       invoice?.dueDate || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
@@ -107,7 +109,9 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
   const initialStateRef = useRef<string | null>(null);
 
   const selectedClient = useMemo(() => {
-    const client = clients.find(c => c.id === formData.clientId);
+    const client = clients.find(
+      c => String(c.id) === String(formData.clientId)
+    );
     if (!client) {
       return {
         name: "Select a client",
@@ -265,17 +269,17 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-gray-50/50">
+    <div className="min-h-screen bg-background/60">
       {/* Header */}
-      <div className="bg-white border-b sticky top-0 z-30">
+      <div className="sticky top-0 z-30 border-b bg-background/95 backdrop-blur">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
-              <h1 className="text-2xl font-semibold text-gray-900">
-                {invoice ? "Edit Invoice" : "Generate Invoice"}
+              <h1 className="text-2xl font-semibold text-foreground">
+                {invoice ? "Edit invoice" : "New invoice"}
               </h1>
-              <p className="text-sm text-gray-500 mt-1">
-                Fill in the details and preview your invoice in real-time
+              <p className="mt-1 text-sm text-muted-foreground">
+                Fill in the details and preview the invoice before sending it.
               </p>
             </div>
             <div className="flex flex-wrap gap-2 sm:gap-3">
@@ -325,7 +329,6 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
                     ].filter(item => !item._destroy),
                   })
                 }
-                className="bg-[#5E58F1] hover:bg-[#4D47E0]"
                 size="sm"
                 disabled={isLoading}
               >
@@ -397,7 +400,7 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
                     </SelectTrigger>
                     <SelectContent>
                       {clients.map(client => (
-                        <SelectItem key={client.id} value={client.id}>
+                        <SelectItem key={client.id} value={String(client.id)}>
                           {client.name}
                         </SelectItem>
                       ))}

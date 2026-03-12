@@ -5,15 +5,13 @@ import { useMediaQuery } from "../../hooks/use-media-query";
 import InvoiceList from "./InvoiceList";
 import InvoiceDetails from "./Invoice";
 import InvoiceEditor from "./InvoiceEditor";
-import GenerateInvoice from "./Generate";
 
 // Mobile Components
 import MobileInvoiceDetails from "./Invoice/MobileView";
-import MobileGenerateInvoice from "./Generate/MobileView";
 import MobileInvoiceEditor from "./Edit/Mobile";
 
 interface ResponsiveInvoiceProps {
-  view: "list" | "details" | "edit" | "generate";
+  view: "list" | "details" | "edit";
   [key: string]: any;
 }
 
@@ -40,13 +38,6 @@ export const ResponsiveInvoice: React.FC<ResponsiveInvoiceProps> = ({
         <InvoiceEditor {...props} />
       ) : (
         <MobileInvoiceEditor {...props} />
-      );
-
-    case "generate":
-      return isDesktop ? (
-        <GenerateInvoice {...props} />
-      ) : (
-        <MobileGenerateInvoice {...props} />
       );
 
     default:

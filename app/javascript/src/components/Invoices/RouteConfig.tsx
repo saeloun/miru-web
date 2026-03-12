@@ -4,8 +4,6 @@ import ErrorPage from "common/Error";
 import { useUserContext } from "context/UserContext";
 
 import InvoicesPage from "./index";
-
-import GenerateInvoices from "./Generate";
 import ClientInvoices from "components/ClientInvoices";
 import ClientInvoiceDetails from "components/ClientInvoices/Details";
 
@@ -21,6 +19,18 @@ const InvoiceView = () => {
   return <InvoicesPage initialMode="preview" initialInvoiceId={id} />;
 };
 
+const InvoiceCreate = () => {
+  const search = window.location.search;
+  const params = new URLSearchParams(search);
+
+  return (
+    <InvoicesPage
+      initialMode="create"
+      initialClientId={params.get("clientId") || ""}
+    />
+  );
+};
+
 const InvoicesRouteConfig = () => {
   const { companyRole } = useUserContext();
 
@@ -34,11 +44,10 @@ const InvoicesRouteConfig = () => {
   const protectedRoutes = () => (
     <Routes>
       <Route index element={<InvoicesPage />} />
+      <Route element={<InvoiceCreate />} path="new" />
 
       <Route element={<InvoiceEdit />} path=":id/edit" />
       <Route element={<InvoiceView />} path=":id" />
-
-      <Route element={<GenerateInvoices />} path="generate" />
 
       <Route element={<ErrorPage />} path="*" />
     </Routes>

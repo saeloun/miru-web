@@ -4,12 +4,33 @@ import ErrorPage from "common/Error";
 import ClientInvoices from "components/ClientInvoices";
 import ClientInvoiceDetails from "components/ClientInvoices/Details";
 import { useUserContext } from "context/UserContext";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useParams } from "react-router-dom";
 
-import EditInvoice from "./Edit";
-import GenerateInvoices from "./Generate";
-import Invoice from "./Invoice";
-import InvoicesList from "./List";
+import InvoicesPage from "./index";
+
+const InvoiceCreate = () => {
+  const search = window.location.search;
+  const params = new URLSearchParams(search);
+
+  return (
+    <InvoicesPage
+      initialMode="create"
+      initialClientId={params.get("clientId") || ""}
+    />
+  );
+};
+
+const InvoiceEdit = () => {
+  const { id } = useParams();
+
+  return <InvoicesPage initialMode="edit" initialInvoiceId={id} />;
+};
+
+const InvoiceView = () => {
+  const { id } = useParams();
+
+  return <InvoicesPage initialMode="preview" initialInvoiceId={id} />;
+};
 
 const InvoicesRouteConfig = () => {
   const { companyRole } = useUserContext();
@@ -23,10 +44,10 @@ const InvoicesRouteConfig = () => {
 
   const protectedRoutes = () => (
     <Routes>
-      <Route index element={<InvoicesList />} />
-      <Route element={<GenerateInvoices />} path="generate" />
-      <Route element={<EditInvoice />} path=":id/edit" />
-      <Route element={<Invoice />} path=":id" />
+      <Route index element={<InvoicesPage />} />
+      <Route element={<InvoiceCreate />} path="new" />
+      <Route element={<InvoiceEdit />} path=":id/edit" />
+      <Route element={<InvoiceView />} path=":id" />
       <Route element={<ErrorPage />} path="*" />
     </Routes>
   );

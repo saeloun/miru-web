@@ -66,9 +66,18 @@ RSpec.describe "Api::V1::TimeTracking#index", type: :request do
     it "returns only those projects to which employee is added" do
       expected_response = { client1.name => [project1.id] }
       actual_response = json_response["projects"].transform_values { |projects|
-  projects.pluck("id")
-}
+        projects.pluck("id")
+      }
       expect(actual_response).to eq(expected_response)
+    end
+
+    it "excludes removed project assignments" do
+      user.project_members.find_by(project: project1).discard
+
+      send_request :get, api_v1_time_tracking_index_path, headers: auth_headers(user)
+
+      expect(json_response["clients"]).to eq([])
+      expect(json_response["projects"]).to be_nil.or eq({})
     end
   end
 end
