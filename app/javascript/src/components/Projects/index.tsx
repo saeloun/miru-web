@@ -11,6 +11,7 @@ import Header from "./List/Header";
 import ProjectForm from "./List/Mobile/ProjectForm";
 import AddEditProject from "./Modals/AddEditProject";
 import DeleteProject from "./Modals/DeleteProject";
+import ProjectsTable from "./ProjectsTable";
 
 const Projects = ({ isAdminUser }) => {
   const [showProjectModal, setShowProjectModal] = useState(false);
@@ -92,7 +93,7 @@ const Projects = ({ isAdminUser }) => {
     return <Main />;
   }
 
-  return ProjectsLayout();
+  return <ProjectsTable />;
 };
 
 export default Projects;
