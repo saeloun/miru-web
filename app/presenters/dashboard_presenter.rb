@@ -41,9 +41,9 @@ class DashboardPresenter
       period_invoices = invoices.where(issue_date: from_date..to_date)
 
       # Calculate revenue
-      total_revenue = period_invoices.sum(:amount)
-      previous_period_revenue = calculate_previous_period_revenue
-      revenue_trend = calculate_trend(total_revenue, previous_period_revenue)
+      total_revenue = employee_scoped? ? 0 : period_invoices.sum(:amount)
+      previous_period_revenue = employee_scoped? ? 0 : calculate_previous_period_revenue
+      revenue_trend = employee_scoped? ? 0 : calculate_trend(total_revenue, previous_period_revenue)
 
       # Calculate projects
       active_projects = scoped_projects.where(billable: true).count
@@ -65,9 +65,11 @@ class DashboardPresenter
         hours_trend: hours_trend,
         currency: company.base_currency
       }
-    end
+      end
 
     def revenue_chart_data
+      return [] if employee_scoped?
+
       invoices = scoped_invoices.where(issue_date: from_date..to_date)
 
       # Group by month
@@ -96,6 +98,8 @@ class DashboardPresenter
     end
 
     def revenue_by_customer_data
+      return [] if employee_scoped?
+
       invoices = scoped_invoices.where(issue_date: from_date..to_date)
 
       # Group by client
@@ -123,6 +127,8 @@ class DashboardPresenter
     end
 
     def recent_activities_data
+      return [] if employee_scoped?
+
       activities = []
 
       # Recent invoices
@@ -235,16 +241,27 @@ class DashboardPresenter
     end
 
     def scoped_projects
-      company.projects.where(client_id: accessible_client_ids)
+      scope = company.projects.where(client_id: accessible_client_ids)
+      return scope unless employee_scoped?
+
+      scope.joins(:project_members).merge(current_user.project_members.kept).distinct
     end
 
     def scoped_timesheet_entries
-      company.timesheet_entries.joins(:project).where(projects: { client_id: accessible_client_ids })
+      scope = company.timesheet_entries.joins(:project).where(projects: { client_id: accessible_client_ids })
+      return scope unless employee_scoped?
+
+      scope.where(user: current_user)
     end
 
     def team_size
+      return 1 if employee_scoped?
       return company.users.count unless client_scoped?
 
       scoped_projects.joins(:project_members).distinct.count("project_members.user_id")
+    end
+
+    def employee_scoped?
+      current_user.has_role?(:employee, company)
     end
 end
