@@ -39,8 +39,19 @@ RSpec.describe EmploymentPolicy, type: :policy do
       end
     end
 
-    context "when user is an employee" do
-      it "does not grants permission" do
+    context "when user is an employee or book keeper viewing their own record" do
+      let(:employee_employment) { create(:employment, company_id: company.id, user_id: employee.id) }
+      let(:book_keeper_employment) { create(:employment, company_id: company.id, user_id: book_keeper.id) }
+
+      it "grants permission" do
+        expect(described_class).to permit(employee, employee_employment)
+        expect(described_class).to permit(book_keeper, book_keeper_employment)
+      end
+    end
+
+    context "when user is an employee or book keeper viewing another record" do
+      it "does not grant permission" do
+        expect(described_class).not_to permit(employee, employment)
         expect(described_class).not_to permit(book_keeper, employment)
       end
     end

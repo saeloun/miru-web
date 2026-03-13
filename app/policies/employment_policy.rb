@@ -6,11 +6,19 @@ class EmploymentPolicy < ApplicationPolicy
   end
 
   def show?
-    authorize_current_user && (user_owner_role? || user_admin_role? || user_employee_role?)
+    authorize_current_user && (
+      user_owner_role? ||
+      user_admin_role? ||
+      self_service_role?
+    )
   end
 
   def update?
-    authorize_current_user && (user_owner_role? || user_admin_role? || user_employee_role?)
+    authorize_current_user && (
+      user_owner_role? ||
+      user_admin_role? ||
+      self_service_role?
+    )
   end
 
   def authorize_current_user
@@ -21,4 +29,10 @@ class EmploymentPolicy < ApplicationPolicy
       false
     end
   end
+
+  private
+
+    def self_service_role?
+      record_belongs_to_user? && (user_employee_role? || user_book_keeper_role?)
+    end
 end
