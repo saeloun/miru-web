@@ -239,7 +239,7 @@ const PaymentsTable: React.FC = () => {
       ),
       cell: ({ row }) => (
         <div className="flex items-center gap-2">
-          <Calendar className="h-4 w-4 text-gray-400" />
+          <Calendar className="h-4 w-4 text-muted-foreground" />
           <span className="text-sm">{row.original.transactionDate}</span>
         </div>
       ),
@@ -252,7 +252,7 @@ const PaymentsTable: React.FC = () => {
 
         if (!payment.invoiceId) {
           return (
-            <span className="font-medium text-gray-600">
+            <span className="font-medium text-muted-foreground">
               #{payment.invoiceNumber}
             </span>
           );
@@ -260,7 +260,7 @@ const PaymentsTable: React.FC = () => {
 
         return (
           <button
-            className="text-blue-600 hover:text-blue-800 hover:underline font-medium"
+            className="font-medium text-primary hover:underline"
             onClick={() => navigate(`/invoices/${payment.invoiceId}`)}
           >
             #{payment.invoiceNumber}
@@ -276,7 +276,7 @@ const PaymentsTable: React.FC = () => {
 
         return (
           <div>
-            <p className="font-medium text-gray-900">{payment.clientName}</p>
+            <p className="font-medium text-foreground">{payment.clientName}</p>
           </div>
         );
       },
@@ -316,7 +316,7 @@ const PaymentsTable: React.FC = () => {
       accessorKey: "note",
       header: "Notes",
       cell: ({ row }) => (
-        <span className="text-sm text-gray-600 line-clamp-1">
+        <span className="line-clamp-1 text-sm text-muted-foreground">
           {row.original.note || "—"}
         </span>
       ),

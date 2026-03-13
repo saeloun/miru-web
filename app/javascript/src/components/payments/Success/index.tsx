@@ -66,11 +66,11 @@ const Success = () => {
           </div>
           <div className="py-16">
             <div className="flex flex-col items-center">
-              <p className="tracking-wide text-sm font-semibold uppercase text-indigo-600">{`Invoice ${invoice?.invoice_number}`}</p>
-              <h1 className="mt-2 text-2xl font-semibold tracking-tight text-gray-900 sm:text-3xl">
+              <p className="text-sm font-semibold uppercase tracking-wide text-primary">{`Invoice ${invoice?.invoice_number}`}</p>
+              <h1 className="mt-2 text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
                 Payment was successful. 🎉
               </h1>
-              <p className="mt-2 text-base text-gray-500">
+              <p className="mt-2 text-base text-muted-foreground">
                 We have received your payment.
               </p>
               <Button

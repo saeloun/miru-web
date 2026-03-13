@@ -124,7 +124,7 @@ const SelectProject: React.FC<Iprops> = ({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Client Select */}
         <div>
-          <label className="text-sm font-medium text-gray-700 mb-1.5 block">
+          <label className="mb-1.5 block text-sm font-medium text-foreground">
             Client
           </label>
           <Select
@@ -146,7 +146,7 @@ const SelectProject: React.FC<Iprops> = ({
         </div>
         {/* Project Select */}
         <div>
-          <label className="text-sm font-medium text-gray-700 mb-1.5 block">
+          <label className="mb-1.5 block text-sm font-medium text-foreground">
             Project
           </label>
           <Select
@@ -184,7 +184,7 @@ const SelectProject: React.FC<Iprops> = ({
 
       {/* Time Duration */}
       <div>
-        <label className="text-sm font-medium text-gray-700 mb-1.5 block">
+        <label className="mb-1.5 block text-sm font-medium text-foreground">
           Duration
         </label>
         <div className="flex gap-2">
@@ -199,7 +199,7 @@ const SelectProject: React.FC<Iprops> = ({
                 max="23"
                 className="pr-12"
               />
-              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-gray-500">
+              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
                 hours
               </span>
             </div>
@@ -215,7 +215,7 @@ const SelectProject: React.FC<Iprops> = ({
                 max="59"
                 className="pr-12"
               />
-              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-gray-500">
+              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
                 mins
               </span>
             </div>
@@ -225,7 +225,7 @@ const SelectProject: React.FC<Iprops> = ({
 
       {/* Description */}
       <div>
-        <label className="text-sm font-medium text-gray-700 mb-1.5 block">
+        <label className="mb-1.5 block text-sm font-medium text-foreground">
           Description
         </label>
         <Textarea
@@ -243,7 +243,6 @@ const SelectProject: React.FC<Iprops> = ({
         <Button
           onClick={handleSaveButton}
           disabled={!client || !project || (!hours && !minutes)}
-          className="bg-indigo-600 hover:bg-indigo-700 text-white"
         >
           Add Entry
         </Button>
