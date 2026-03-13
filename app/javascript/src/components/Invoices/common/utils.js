@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import { invoicesApi, generateInvoice } from "apis/api";
+import { invoiceLineItemsApi, invoicesApi } from "apis/api";
 import { lineTotalCalc } from "helpers";
 import { Toastr } from "StyledComponents";
 
@@ -63,7 +63,7 @@ export const fetchNewLineItems = async (
       }
     });
     const queryParams = `client_id=${selectedClient.id}${selectedEntriesString}`;
-    const res = await generateInvoice.getLineItems(queryParams);
+    const res = await invoiceLineItemsApi.getLineItems(queryParams);
     const mergedItems = [...res.data.new_line_item_entries];
     const sortedData = mergedItems.sort((item1, item2) =>
       dayjs(item1.date).isAfter(dayjs(item2.date)) ? 1 : -1
@@ -81,7 +81,7 @@ export const fetchMultipleNewLineItems = async (
   allCheckboxSelected,
   setTeamMembers
 ) => {
-  const res = await generateInvoice.getLineItems(handleFilterParams());
+  const res = await invoiceLineItemsApi.getLineItems(handleFilterParams());
   const itemSelected = id =>
     selectedLineItems.filter(
       selectedItem => id == selectedItem.timesheet_entry_id
