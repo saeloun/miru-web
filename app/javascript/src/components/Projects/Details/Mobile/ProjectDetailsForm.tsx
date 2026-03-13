@@ -3,9 +3,9 @@ import React from "react";
 import { minToHHMM, currencyFormat } from "helpers";
 import { ArrowLeft, DotsThreeVertical, Plus } from "phosphor-react";
 import { useNavigate } from "react-router-dom";
-import { MobileMoreOptions, SummaryDashboard } from "StyledComponents";
 import { Badge } from "components/ui/badge";
 import { Button } from "components/ui/button";
+import { Dialog, DialogContent } from "components/ui/dialog";
 
 import EmptyStates from "common/EmptyStates";
 
@@ -73,35 +73,47 @@ const ProjectDetailsForm = ({
           <DotsThreeVertical className="text-foreground" size={18} />
         </Button>
       </div>
-      {isHeaderMenuVisible && (
-        <MobileMoreOptions
-          className="p-0"
-          setVisibilty={setIsHeaderMenuVisible}
-          visibilty={isHeaderMenuVisible}
-        >
-          <HeaderMenuList
-            handleAddRemoveMembers={handleAddRemoveMembers}
-            handleEditProject={handleEditProject}
-            handleGenerateInvoice={handleGenerateInvoice}
-            setIsHeaderMenuVisible={setIsHeaderMenuVisible}
-            setShowDeleteDialog={setShowDeleteDialog}
-          />
-        </MobileMoreOptions>
-      )}
+      <Dialog open={isHeaderMenuVisible} onOpenChange={setIsHeaderMenuVisible}>
+        <DialogContent className="max-w-sm p-0 sm:rounded-3xl">
+          <div className="p-2">
+            <HeaderMenuList
+              handleAddRemoveMembers={handleAddRemoveMembers}
+              handleEditProject={handleEditProject}
+              handleGenerateInvoice={handleGenerateInvoice}
+              setIsHeaderMenuVisible={setIsHeaderMenuVisible}
+              setShowDeleteDialog={setShowDeleteDialog}
+            />
+          </div>
+        </DialogContent>
+      </Dialog>
       <div className="flex flex-1 flex-col p-4">
         {project?.members.length > 0 ? (
           <div>
             {project && (
-              <SummaryDashboard
-                bgColor="bg-muted"
-                borderColor="border-border"
-                currency={project.overdueOutstandingAmount.currency}
-                summaryList={summaryList}
-                textColor="text-foreground"
-              />
+              <div className="grid gap-3 rounded-2xl border border-border bg-card p-4 sm:grid-cols-3">
+                {summaryList.map(summary => (
+                  <div
+                    className="rounded-xl border border-border bg-background px-4 py-3"
+                    key={summary.label}
+                  >
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+                      {summary.label}
+                    </p>
+                    <p className="mt-2 text-lg font-semibold text-foreground">
+                      {summary.hideCurrencySymbol
+                        ? summary.value
+                        : currencyFormat(
+                            project.overdueOutstandingAmount.currency,
+                            summary.value,
+                            summary.value > 999 ? "compact" : "standard"
+                          )}
+                    </p>
+                  </div>
+                ))}
+              </div>
             )}
             {project && (
-              <table className="w-full">
+              <table className="mt-4 w-full">
                 <thead>
                   <tr>
                     <th className="w-1/4 py-3 text-left text-xs font-medium leading-4 tracking-widest text-muted-foreground">

@@ -2,12 +2,18 @@ import React, { useState, useEffect } from "react";
 
 import { Formik, Form, FormikProps } from "formik";
 import { useDebounce } from "helpers";
-import { XIcon, SearchIcon } from "miruIcons";
-import { Button, MobileMoreOptions } from "StyledComponents";
+import { MagnifyingGlass, X } from "phosphor-react";
 
 import { projectApi } from "apis/api";
 import CustomRadioButton from "common/CustomRadio";
 import { InputField, InputErrors } from "common/FormikFields";
+import { Button } from "components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "components/ui/dialog";
 
 const ProjectForm = ({
   editProjectData,
@@ -144,12 +150,12 @@ const ProjectForm = ({
 
   return (
     <div className="z-50 flex h-full w-full flex-col">
-      <div className="flex items-center justify-between bg-primary p-3 text-white">
-        <span className="w-full pl-6 text-center text-base font-medium leading-5 text-white">
+      <div className="flex items-center justify-between border-b border-border bg-background px-4 py-3">
+        <span className="w-full pl-6 text-center text-base font-semibold leading-5 text-foreground">
           {editProjectData?.id ? "Edit Project Details" : "Add New Project"}
         </span>
-        <XIcon
-          className="text-white"
+        <X
+          className="cursor-pointer text-foreground"
           size={16}
           onClick={() => {
             setEditProjectData("");
@@ -185,44 +191,41 @@ const ProjectForm = ({
                   fieldErrors={errors.client}
                   fieldTouched={touched.client}
                 />
-                {showClientList && (
-                  <MobileMoreOptions
-                    className="flex h-1/2 flex-col"
-                    setVisibilty={setShowClientList}
-                    visibilty={showClientList}
-                  >
+                <Dialog open={showClientList} onOpenChange={setShowClientList}>
+                  <DialogContent className="max-w-sm">
+                    <DialogHeader>
+                      <DialogTitle>Select client</DialogTitle>
+                    </DialogHeader>
                     <div className="relative mt-2 flex w-full items-center">
                       <input
                         placeholder="Search"
                         type="text"
                         value={clientName}
-                        className="focus:outline-none w-full rounded bg-muted p-2
-            text-sm font-medium focus:border-border focus:ring-1 focus:ring-ring"
+                        className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm font-medium text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
                         onChange={e => {
                           setClientName(e.target.value);
                         }}
                       />
                       {clientName ? (
-                        <XIcon
-                          className="absolute right-2"
-                          color="#1D1A31"
+                        <X
+                          className="absolute right-3 cursor-pointer text-muted-foreground"
                           size={16}
                           onClick={() => setClientName("")}
                         />
                       ) : (
-                        <SearchIcon
-                          className="absolute right-2"
-                          color="#1D1A31"
+                        <MagnifyingGlass
+                          className="absolute right-3 text-muted-foreground"
                           size={16}
                         />
                       )}
                     </div>
-                    <div className="flex flex-auto flex-col overflow-y-scroll">
+                    <div className="mt-3 flex max-h-64 flex-auto flex-col overflow-y-auto rounded-xl border border-border bg-card">
                       {filteredClientList ? (
                         filteredClientList.map(clientItem => (
-                          <li
-                            className="flex items-center px-2 pt-3 text-sm leading-5 text-foreground hover:bg-muted"
+                          <button
+                            className="flex items-center border-b border-border px-3 py-3 text-left text-sm leading-5 text-foreground transition hover:bg-muted last:border-b-0"
                             key={clientItem?.id}
+                            type="button"
                             onClick={() => {
                               setFieldValue("client", clientItem.name, true);
                               setClient(clientItem);
@@ -231,14 +234,16 @@ const ProjectForm = ({
                             }}
                           >
                             {clientItem.name}
-                          </li>
+                          </button>
                         ))
                       ) : (
-                        <span className="mt-4">No clients present</span>
+                        <span className="px-3 py-4 text-sm text-muted-foreground">
+                          No clients present
+                        </span>
                       )}
                     </div>
-                  </MobileMoreOptions>
-                )}
+                  </DialogContent>
+                </Dialog>
                 <InputField
                   autoComplete="off"
                   id="project"
@@ -290,11 +295,8 @@ const ProjectForm = ({
               </div>
               <Button
                 disabled={isSubmitDisabled}
-                style="primary"
-                className={`w-full p-2 text-center text-base font-bold ${
-                  isSubmitDisabled && "bg-secondary"
-                }`}
-                onClick={handleSubmit}
+                className="h-11 w-full text-base font-semibold"
+                type="submit"
               >
                 {isEdit ? "Edit Project" : "Add Project"}
               </Button>
