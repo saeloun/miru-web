@@ -86,6 +86,12 @@ The post-restore step normalizes the dataset for testing:
 - sets every user password to `password`
 - confirms any unconfirmed users
 - clears reset-password tokens
+- restores the canonical test roles for key logins:
+  - `vipul@saeloun.com` -> `owner`
+  - `supriya@saeloun.com` and `sonam@saeloun.com` -> `admin`
+  - `accounts@saeloun.com` -> `book_keeper`
+  - `keshav@saeloun.com` and `amit@saeloun.com` -> `employee`
+  - `finance@example.com`, `maya.client@example.com`, `oliver@example.com` -> `client`
 
 To use a different shared password:
 
