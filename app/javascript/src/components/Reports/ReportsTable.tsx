@@ -31,7 +31,6 @@ interface ReportCard {
   title: string;
   description: string;
   icon: React.ElementType;
-  color: string;
   url: string;
   available: boolean;
   category: "time" | "financial" | "client" | "team";
@@ -44,7 +43,6 @@ const reportCards: ReportCard[] = [
     description:
       "A comprehensive summary of time entries added by your team members",
     icon: Clock,
-    color: "text-blue-600",
     url: "/reports/time-entry",
     available: true,
     category: "time",
@@ -55,7 +53,6 @@ const reportCards: ReportCard[] = [
     description:
       "Detailed overview of outstanding and overdue invoices across all clients",
     icon: Receipt,
-    color: "text-green-600",
     url: "/reports/outstanding-overdue-invoices",
     available: true,
     category: "financial",
@@ -65,7 +62,6 @@ const reportCards: ReportCard[] = [
     title: "Revenue by Client",
     description: "Revenue breakdown by client with trends and comparisons",
     icon: TrendUp,
-    color: "text-purple-600",
     url: "/reports/revenue-by-client",
     available: true,
     category: "financial",
@@ -75,7 +71,6 @@ const reportCards: ReportCard[] = [
     title: "Accounts Aging",
     description: "Age analysis of outstanding receivables by time period",
     icon: Calendar,
-    color: "text-orange-600",
     url: "/reports/accounts-aging",
     available: true,
     category: "financial",
@@ -86,7 +81,6 @@ const reportCards: ReportCard[] = [
     description:
       "Track all payments received with detailed transaction history",
     icon: CreditCard,
-    color: "text-indigo-600",
     url: "/reports/payments",
     available: true,
     category: "financial",
@@ -96,7 +90,6 @@ const reportCards: ReportCard[] = [
     title: "Team Utilization",
     description: "Team member utilization rates and capacity analysis",
     icon: Users,
-    color: "text-pink-600",
     url: "/reports/team-utilization",
     available: false,
     category: "team",
@@ -106,7 +99,6 @@ const reportCards: ReportCard[] = [
     title: "Project Profitability",
     description: "Profitability analysis by project with cost breakdown",
     icon: Briefcase,
-    color: "text-cyan-600",
     url: "/reports/project-profitability",
     available: false,
     category: "client",
@@ -116,7 +108,6 @@ const reportCards: ReportCard[] = [
     title: "Client Summary",
     description: "Comprehensive client performance and engagement metrics",
     icon: FileText,
-    color: "text-gray-600",
     url: "/reports/client-summary",
     available: false,
     category: "client",
@@ -126,6 +117,19 @@ const reportCards: ReportCard[] = [
 const ReportsTable: React.FC = () => {
   const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
+
+  const handleReportKeyDown = (
+    event: React.KeyboardEvent<HTMLDivElement>,
+    url: string,
+    available: boolean
+  ) => {
+    if (!available) return;
+
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      navigate(url);
+    }
+  };
 
   const filteredReports =
     selectedCategory === "all"
@@ -154,7 +158,10 @@ const ReportsTable: React.FC = () => {
             Understand revenue, time, and outstanding work at a glance.
           </p>
         </div>
-        <Button variant="outline" className="bg-card">
+        <Button
+          variant="outline"
+          className="border-border bg-card text-foreground"
+        >
           <Calendar size={20} className="mr-2" />
           Schedule reports
         </Button>
@@ -217,7 +224,7 @@ const ReportsTable: React.FC = () => {
 
       {/* Category Tabs */}
       <Tabs value={selectedCategory} onValueChange={setSelectedCategory}>
-        <TabsList className="grid w-full grid-cols-5 max-w-2xl">
+        <TabsList className="grid h-auto w-full max-w-2xl grid-cols-2 gap-2 bg-muted p-1 md:grid-cols-5">
           <TabsTrigger value="all">All Reports</TabsTrigger>
           <TabsTrigger value="time">Time</TabsTrigger>
           <TabsTrigger value="financial">Financial</TabsTrigger>
@@ -241,6 +248,12 @@ const ReportsTable: React.FC = () => {
                   key={report.id}
                   className="group cursor-pointer border-border transition-all hover:shadow-lg"
                   onClick={() => navigate(report.url)}
+                  onKeyDown={event =>
+                    handleReportKeyDown(event, report.url, report.available)
+                  }
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`Open ${report.title} report`}
                 >
                   <CardHeader>
                     <div className="flex items-start justify-between">
@@ -265,7 +278,10 @@ const ReportsTable: React.FC = () => {
                   </CardHeader>
                   <CardContent>
                     <div className="flex items-center justify-between">
-                      <Badge variant="outline" className="text-xs">
+                      <Badge
+                        variant="outline"
+                        className="border-border bg-background text-xs text-foreground"
+                      >
                         {report.category.charAt(0).toUpperCase() +
                           report.category.slice(1)}
                       </Badge>
@@ -301,14 +317,14 @@ const ReportsTable: React.FC = () => {
               return (
                 <Card
                   key={report.id}
-                  className="border-border bg-muted/30 opacity-70"
+                  className="border-border bg-muted/30 opacity-80"
                 >
                   <CardHeader>
                     <div className="flex items-start justify-between">
                       <div className="rounded-lg bg-muted p-2">
                         <Icon size={24} className="text-muted-foreground" />
                       </div>
-                      <Badge className="border-border bg-muted text-muted-foreground hover:bg-muted">
+                      <Badge className="border-border bg-background text-muted-foreground hover:bg-background">
                         Coming Soon
                       </Badge>
                     </div>
