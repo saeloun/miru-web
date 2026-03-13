@@ -1,5 +1,6 @@
 import React, { Fragment } from "react";
 
+import useThemeMode from "common/useThemeMode";
 import { MiruLogoSVG, MiruLogoWithTextSVG } from "miruIcons";
 import { Link } from "react-router-dom";
 
@@ -8,6 +9,7 @@ import { useUserContext } from "context/UserContext";
 
 const Header = ({ selectedTab }) => {
   const { user, companyRole } = useUserContext();
+  const themeMode = useThemeMode();
 
   const rootPath = () => {
     if (!user) {
@@ -45,8 +47,11 @@ const Header = ({ selectedTab }) => {
         >
           <img
             alt="miru-logo"
-            className="h-10 w-20 dark:invert"
+            className="h-10 w-20"
             src={MiruLogoWithTextSVG}
+            style={{
+              filter: themeMode === "dark" ? "brightness(0) invert(1)" : "none",
+            }}
           />
         </Link>
       );
@@ -57,8 +62,11 @@ const Header = ({ selectedTab }) => {
         <Link className="flex items-center justify-center" to={rootPath()}>
           <img
             alt="miru-logo"
-            className="h-6 w-6 dark:invert"
+            className="h-6 w-6"
             src={MiruLogoSVG}
+            style={{
+              filter: themeMode === "dark" ? "brightness(0) invert(1)" : "none",
+            }}
           />
         </Link>
         <span className="z-40 w-full pr-3 text-center text-base font-bold leading-5 text-foreground">

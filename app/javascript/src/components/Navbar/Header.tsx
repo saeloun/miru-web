@@ -2,12 +2,14 @@ import { Roles, Paths } from "constants/index";
 
 import React from "react";
 
+import useThemeMode from "common/useThemeMode";
 import { useUserContext } from "context/UserContext";
 import { MiruLogoSVG } from "miruIcons";
 import { Link } from "react-router-dom";
 
 const Header = () => {
   const { user, companyRole } = useUserContext();
+  const themeMode = useThemeMode();
 
   const rootPath = () => {
     if (!user) {
@@ -41,9 +43,12 @@ const Header = () => {
       <Link to={rootPath()}>
         <img
           alt="Miru"
-          className="dark:invert"
+          className="transition"
           height="64px"
           src={MiruLogoSVG}
+          style={{
+            filter: themeMode === "dark" ? "brightness(0) invert(1)" : "none",
+          }}
           width="64px"
         />
       </Link>
