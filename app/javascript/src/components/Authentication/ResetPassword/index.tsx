@@ -5,6 +5,7 @@ import React from "react";
 import { authenticationApi } from "apis/api";
 import { InputErrors, InputField } from "common/FormikFields";
 import MiruLogoWatermark from "common/MiruLogoWatermark";
+import useThemeMode from "common/useThemeMode";
 import { Formik, Form, FormikProps } from "formik";
 import { MiruLogoWithTextSVG } from "miruIcons";
 import { setToLocalStorage } from "utils/storage";
@@ -20,6 +21,7 @@ interface ResetPasswordFormValues {
 }
 
 const ResetPassword = () => {
+  const themeMode = useThemeMode();
   const searchParams = new URLSearchParams(document.location.search);
 
   const handleResetPasswordFormSubmit = async (values, { setFieldError }) => {
@@ -55,8 +57,12 @@ const ResetPassword = () => {
           <a href={MIRU_APP_URL} rel="noreferrer noopener">
             <img
               alt="Miru"
-              className="d-block mx-auto mb-4 h-10 w-auto object-contain brightness-0 dark:invert md:mb-10 lg:mb-20"
+              className="d-block mx-auto mb-4 h-10 w-auto object-contain md:mb-10 lg:mb-20"
               src={MiruLogoWithTextSVG}
+              style={{
+                filter:
+                  themeMode === "dark" ? "brightness(0) invert(1)" : "none",
+              }}
             />
           </a>
         </div>

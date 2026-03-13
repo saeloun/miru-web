@@ -50,6 +50,7 @@ import {
 } from "../ui/collapsible";
 
 import { useUserContext } from "../../context/UserContext";
+import useThemeMode from "common/useThemeMode";
 import { WorkspaceApi } from "apis/api";
 import { MiruLogoSVG } from "miruIcons";
 import { Paths, Roles } from "../../constants";
@@ -57,6 +58,7 @@ import { Paths, Roles } from "../../constants";
 const Sidebar: React.FC = () => {
   const location = useLocation();
   const { user, companyRole } = useUserContext();
+  const themeMode = useThemeMode();
 
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [workspaces, setWorkspaces] = useState([]);
@@ -334,9 +336,13 @@ const Sidebar: React.FC = () => {
               alt="Miru"
               src={MiruLogoSVG}
               className={cn(
-                "transition-all dark:invert",
+                "transition-all",
                 isCollapsed ? "h-8 w-8" : "h-10 w-10"
               )}
+              style={{
+                filter:
+                  themeMode === "dark" ? "brightness(0) invert(1)" : "none",
+              }}
             />
             {!isCollapsed && <span className="text-2xl font-bold">Miru</span>}
           </NavLink>
