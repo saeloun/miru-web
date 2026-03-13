@@ -1,9 +1,9 @@
 import React from "react";
 
+import { Button } from "components/ui/button";
 import { useProfileContext } from "context/Profile/ProfileContext";
 import { ArrowLeftIcon } from "miruIcons";
 import { useNavigate } from "react-router-dom";
-import { Button } from "StyledComponents";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -18,7 +18,9 @@ const Header = () => {
       <div className="flex items-center">
         <Button
           className="mr-4"
-          style="ternary"
+          size="icon"
+          type="button"
+          variant="outline"
           onClick={() => navigate("/teams")}
         >
           <ArrowLeftIcon size={20} />
