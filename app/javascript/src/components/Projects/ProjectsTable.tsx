@@ -152,7 +152,7 @@ const ProjectsTable: React.FC = () => {
       case "completed":
         return <CircleWavyCheck size={16} className="text-blue-600" />;
       default:
-        return <HourglassMedium size={16} className="text-gray-400" />;
+        return <HourglassMedium size={16} className="text-muted-foreground" />;
     }
   };
 
@@ -257,12 +257,12 @@ const ProjectsTable: React.FC = () => {
         return (
           <div className="flex flex-wrap gap-1">
             {members.slice(0, displayCount).map(member => (
-              <span key={member.id} className="text-sm text-gray-600">
+              <span key={member.id} className="text-sm text-muted-foreground">
                 {member.name}
               </span>
             ))}
             {remainingCount > 0 && (
-              <span className="text-sm text-gray-600">
+              <span className="text-sm text-muted-foreground">
                 +{remainingCount} more
               </span>
             )}
