@@ -190,8 +190,8 @@ const ClientsTable: React.FC = () => {
 
         return (
           <div>
-            <p className="font-medium text-gray-900">{client.name}</p>
-            <p className="text-sm text-gray-500">{client.email}</p>
+            <p className="font-medium text-foreground">{client.name}</p>
+            <p className="text-sm text-muted-foreground">{client.email}</p>
           </div>
         );
       },
@@ -204,7 +204,7 @@ const ClientsTable: React.FC = () => {
 
         return (
           <div className="text-sm">
-            {client.phone || <span className="text-gray-400">—</span>}
+            {client.phone || <span className="text-muted-foreground">—</span>}
           </div>
         );
       },
@@ -232,7 +232,7 @@ const ClientsTable: React.FC = () => {
       ),
       cell: ({ row }) => (
         <div className="flex items-center gap-2">
-          <Timer size={16} className="text-gray-400" />
+          <Timer size={16} className="text-muted-foreground" />
           <span className="text-sm">
             {formatHours(row.original.minutes || 0)}
           </span>
@@ -279,7 +279,7 @@ const ClientsTable: React.FC = () => {
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => handleDelete(client)}
-                className="text-red-600"
+                className="text-destructive focus:text-destructive"
               >
                 <Trash size={16} className="mr-2" />
                 Delete client
@@ -299,8 +299,8 @@ const ClientsTable: React.FC = () => {
     return (
       <div className="flex items-center justify-center h-96">
         <div className="text-center">
-          <Warning size={48} className="mx-auto mb-4 text-gray-400" />
-          <p className="text-gray-600">Failed to load clients</p>
+          <Warning size={48} className="mx-auto mb-4 text-muted-foreground" />
+          <p className="text-muted-foreground">Failed to load clients</p>
         </div>
       </div>
     );
@@ -311,7 +311,7 @@ const ClientsTable: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <p className="text-sm text-gray-600 md:text-base">
+          <p className="text-sm text-muted-foreground md:text-base">
             Manage your client relationships and billing
           </p>
         </div>
@@ -320,7 +320,7 @@ const ClientsTable: React.FC = () => {
             id="timeFrame"
             value={timeFrame}
             onChange={event => setTimeFrame(event.target.value)}
-            className="h-10 rounded-md border border-gray-300 bg-white px-3 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-400"
+            className="h-10 rounded-md border border-border bg-background px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
           >
             <option value="week">This Week</option>
             <option value="last_week">Last Week</option>
@@ -335,7 +335,6 @@ const ClientsTable: React.FC = () => {
                 setClientLogoUrl("");
                 setShowNewClientDialog(true);
               }}
-              className="bg-gray-900 hover:bg-gray-800 text-white"
             >
               <Plus size={20} className="mr-2" />
               Add Client
@@ -346,36 +345,36 @@ const ClientsTable: React.FC = () => {
 
       {/* Stats Cards */}
       <div className="grid gap-4 md:grid-cols-3">
-        <Card className="border-gray-200">
+        <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Clients</CardTitle>
-            <Buildings size={20} className="text-gray-400" />
+            <Buildings size={20} className="text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
               {data?.clientList?.length || 0}
             </div>
-            <p className="text-xs text-gray-600 mt-1">Active clients</p>
+            <p className="mt-1 text-xs text-muted-foreground">Active clients</p>
           </CardContent>
         </Card>
 
-        <Card className="border-gray-200">
+        <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Hours Tracked</CardTitle>
-            <Timer size={20} className="text-gray-400" />
+            <Timer size={20} className="text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
               {data?.totalMinutes ? formatHours(data.totalMinutes) : "0h 0m"}
             </div>
-            <p className="text-xs text-gray-600 mt-1">Total tracked</p>
+            <p className="mt-1 text-xs text-muted-foreground">Total tracked</p>
           </CardContent>
         </Card>
 
-        <Card className="border-gray-200">
+        <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">OUTSTANDING</CardTitle>
-            <CurrencyDollar size={20} className="text-gray-400" />
+            <CurrencyDollar size={20} className="text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
@@ -385,7 +384,7 @@ const ClientsTable: React.FC = () => {
               )}
             </div>
             {data?.overdueOutstandingAmount?.overdue > 0 && (
-              <p className="text-xs text-red-600 mt-1">
+              <p className="mt-1 text-xs text-destructive">
                 {currencyFormat(
                   baseCurrency,
                   data.overdueOutstandingAmount.overdue
@@ -398,7 +397,7 @@ const ClientsTable: React.FC = () => {
       </div>
 
       {/* Data Table */}
-      <Card className="border-gray-200">
+      <Card>
         <CardHeader>
           <CardTitle>All Clients</CardTitle>
           <CardDescription>
@@ -415,8 +414,11 @@ const ClientsTable: React.FC = () => {
             />
           ) : (
             <div className="text-center py-12">
-              <Buildings size={48} className="mx-auto mb-4 text-gray-300" />
-              <p className="text-gray-600 mb-4">
+              <Buildings
+                size={48}
+                className="mx-auto mb-4 text-muted-foreground/70"
+              />
+              <p className="mb-4 text-muted-foreground">
                 Looks like there aren't any clients added yet.
               </p>
               {isAdminUser && (
@@ -534,7 +536,7 @@ const ClientsTable: React.FC = () => {
           </DialogHeader>
           {loadingClient ? (
             <div className="flex items-center justify-center py-8">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+              <Loader size="sm" overlay={false} className="min-h-0 py-0" />
             </div>
           ) : editClientData ? (
             <ClientForm
