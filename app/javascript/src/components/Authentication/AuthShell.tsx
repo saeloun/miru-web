@@ -115,8 +115,14 @@ const AuthShell = ({ children, description, title }: AuthShellProps) => {
             >
               <img
                 alt="Miru"
-                className="h-10 w-auto object-contain brightness-0 dark:invert"
+                className="h-10 w-auto object-contain transition"
                 src={MiruLogoWithTextSVG}
+                style={{
+                  filter:
+                    theme === "dark"
+                      ? "brightness(0) invert(1)"
+                      : "brightness(0)",
+                }}
               />
             </a>
             <div className="rounded-3xl border border-border bg-card/95 p-6 shadow-xl backdrop-blur sm:p-8">

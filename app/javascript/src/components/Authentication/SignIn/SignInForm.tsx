@@ -125,7 +125,7 @@ const SignInForm = () => {
                   value={csrfToken}
                 />
                 <button
-                  className="flex w-full items-center justify-center rounded-xl border border-border bg-background px-4 py-3 text-sm font-medium text-foreground transition hover:bg-accent"
+                  className="flex w-full items-center justify-center rounded-xl border border-border bg-card px-4 py-3 text-sm font-medium text-foreground shadow-sm transition hover:bg-accent"
                   type="submit"
                   onClick={handleGoogleAuth}
                 >
@@ -140,11 +140,14 @@ const SignInForm = () => {
                   value={csrfToken}
                 />
                 <button
-                  className="flex w-full items-center justify-center rounded-xl border border-border bg-background px-4 py-3 text-sm font-medium text-foreground transition hover:bg-accent"
+                  className="flex w-full items-center justify-center rounded-xl border border-border bg-card px-4 py-3 text-sm font-medium text-foreground shadow-sm transition hover:bg-accent"
                   type="submit"
                   onClick={handleGithubAuth}
                 >
-                  <GithubIcon className="mr-2 h-4 w-4" weight="fill" />
+                  <GithubIcon
+                    className="mr-2 h-4 w-4 text-foreground"
+                    weight="fill"
+                  />
                   Continue with GitHub
                 </button>
               </Form>
@@ -211,7 +214,7 @@ const SignInForm = () => {
                       type="submit"
                       className={`mt-2 w-full rounded-xl border px-4 py-3 text-sm font-medium transition ${
                         isBtnDisabled(values)
-                          ? "cursor-not-allowed border-transparent bg-muted text-muted-foreground"
+                          ? "cursor-not-allowed border-border bg-muted text-muted-foreground"
                           : "cursor-pointer border-transparent bg-primary text-primary-foreground hover:bg-primary/90"
                       }`}
                     >

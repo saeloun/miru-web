@@ -124,7 +124,7 @@ const SignUpForm = () => {
                   value={csrfToken}
                 />
                 <button
-                  className="flex w-full items-center justify-center rounded-xl border border-border bg-background px-4 py-3 text-sm font-medium text-foreground transition hover:bg-accent"
+                  className="flex w-full items-center justify-center rounded-xl border border-border bg-card px-4 py-3 text-sm font-medium text-foreground shadow-sm transition hover:bg-accent"
                   type="submit"
                   onClick={handleGoogleAuth}
                 >
@@ -139,11 +139,14 @@ const SignUpForm = () => {
                   value={csrfToken}
                 />
                 <button
-                  className="flex w-full items-center justify-center rounded-xl border border-border bg-background px-4 py-3 text-sm font-medium text-foreground transition hover:bg-accent"
+                  className="flex w-full items-center justify-center rounded-xl border border-border bg-card px-4 py-3 text-sm font-medium text-foreground shadow-sm transition hover:bg-accent"
                   type="submit"
                   onClick={handleGithubAuth}
                 >
-                  <GithubIcon className="mr-2 h-4 w-4" weight="fill" />
+                  <GithubIcon
+                    className="mr-2 h-4 w-4 text-foreground"
+                    weight="fill"
+                  />
                   Continue with GitHub
                 </button>
               </Form>
