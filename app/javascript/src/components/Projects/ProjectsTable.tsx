@@ -208,13 +208,13 @@ const ProjectsTable: React.FC = () => {
 
         return (
           <div className="flex items-center gap-3">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gray-100">
-              <Briefcase size={16} className="text-gray-600" />
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-muted">
+              <Briefcase size={16} className="text-muted-foreground" />
             </div>
             <div>
-              <p className="font-medium text-gray-900">{project.name}</p>
+              <p className="font-medium text-foreground">{project.name}</p>
               {project.description && (
-                <p className="text-sm text-gray-500 truncate max-w-xs">
+                <p className="max-w-xs truncate text-sm text-muted-foreground">
                   {project.description}
                 </p>
               )}
@@ -231,7 +231,7 @@ const ProjectsTable: React.FC = () => {
           row.original.client_name || row.original.client?.name || "No Client";
 
         return (
-          <span className="text-sm font-medium text-gray-700">
+          <span className="text-sm font-medium text-foreground">
             {clientName}
           </span>
         );
@@ -275,11 +275,14 @@ const ProjectsTable: React.FC = () => {
       header: "Type",
       cell: ({ row }) =>
         row.original.billable ? (
-          <Badge variant="outline" className="text-green-700">
+          <Badge
+            variant="outline"
+            className="border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900/60 dark:bg-emerald-950/30 dark:text-emerald-300"
+          >
             Billable
           </Badge>
         ) : (
-          <Badge variant="outline" className="text-gray-600">
+          <Badge variant="outline" className="text-muted-foreground">
             Non-billable
           </Badge>
         ),
@@ -342,7 +345,7 @@ const ProjectsTable: React.FC = () => {
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => handleDelete(project)}
-                className="text-red-600"
+                className="text-destructive focus:text-destructive"
               >
                 <Trash size={16} className="mr-2" />
                 Delete Project
@@ -362,8 +365,8 @@ const ProjectsTable: React.FC = () => {
     return (
       <div className="flex items-center justify-center h-96">
         <div className="text-center">
-          <Warning size={48} className="mx-auto mb-4 text-gray-400" />
-          <p className="text-gray-600">Failed to load projects</p>
+          <Warning size={48} className="mx-auto mb-4 text-muted-foreground" />
+          <p className="text-muted-foreground">Failed to load projects</p>
         </div>
       </div>
     );
@@ -378,19 +381,15 @@ const ProjectsTable: React.FC = () => {
   const uniqueTeamMembers = teamMembersSet.size;
 
   return (
-    <div className="space-y-6 p-6 max-w-7xl mx-auto">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+    <div className="mx-auto max-w-7xl space-y-6 p-6">
+      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <p className="text-sm text-gray-600 md:text-base">
+          <p className="text-sm text-muted-foreground md:text-base">
             Manage your projects and track progress
           </p>
         </div>
         {isAdminUser && (
-          <Button
-            onClick={() => setShowNewProjectDialog(true)}
-            className="bg-gray-900 hover:bg-gray-800 text-white"
-          >
+          <Button onClick={() => setShowNewProjectDialog(true)}>
             <Plus size={20} className="mr-2" />
             New Project
           </Button>
@@ -399,48 +398,49 @@ const ProjectsTable: React.FC = () => {
 
       {/* Stats Cards */}
       <div className="grid gap-4 md:grid-cols-3">
-        <Card className="border-gray-200">
+        <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
               Active Projects
             </CardTitle>
-            <Briefcase size={20} className="text-gray-400" />
+            <Briefcase size={20} className="text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{activeProjects}</div>
-            <p className="text-xs text-gray-600 mt-1">
+            <p className="mt-1 text-xs text-muted-foreground">
               of {projects.length} total projects
             </p>
           </CardContent>
         </Card>
 
-        <Card className="border-gray-200">
+        <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Hours</CardTitle>
-            <Timer size={20} className="text-gray-400" />
+            <Timer size={20} className="text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{totalHours.toFixed(0)}h</div>
-            <p className="text-xs text-gray-600 mt-1">
+            <p className="mt-1 text-xs text-muted-foreground">
               Tracked across all projects
             </p>
           </CardContent>
         </Card>
 
-        <Card className="border-gray-200">
+        <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Team Members</CardTitle>
-            <Users size={20} className="text-gray-400" />
+            <Users size={20} className="text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{uniqueTeamMembers}</div>
-            <p className="text-xs text-gray-600 mt-1">Working on projects</p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              Working on projects
+            </p>
           </CardContent>
         </Card>
       </div>
 
-      {/* Data Table */}
-      <Card className="border-gray-200">
+      <Card>
         <CardHeader>
           <CardTitle>All Projects</CardTitle>
           <CardDescription>
@@ -458,8 +458,11 @@ const ProjectsTable: React.FC = () => {
             />
           ) : (
             <div className="text-center py-12">
-              <Briefcase size={48} className="mx-auto mb-4 text-gray-300" />
-              <p className="text-gray-600 mb-4">
+              <Briefcase
+                size={48}
+                className="mx-auto mb-4 text-muted-foreground/50"
+              />
+              <p className="mb-4 text-muted-foreground">
                 Looks like there aren't any projects added yet.
               </p>
               {isAdminUser && (
