@@ -1,9 +1,16 @@
 import React, { useState, useEffect } from "react";
 
-import { XIcon } from "miruIcons";
-import { Button, Toastr } from "StyledComponents";
-
 import { companyUsersApi, projectMembersApi } from "apis/api";
+import { toast } from "sonner";
+import { X } from "phosphor-react";
+import { Button } from "components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "components/ui/dialog";
 
 import EditMembersListForm from "../EditMembersListForm";
 
@@ -66,7 +73,7 @@ const MembersListForm = ({
       setExistingMembers(members);
       handleAddProjectDetails();
       closeAddRemoveMembers();
-      Toastr.success("Changes saved successfully");
+      toast.success("Team members updated");
     }
   };
 
@@ -99,27 +106,40 @@ const MembersListForm = ({
   };
 
   return (
-    <div className="flex w-full flex-col">
-      <div className="flex h-12 w-full items-center bg-primary text-white shadow-c1">
-        <span className="flex w-full items-center justify-center py-3 pl-8">
-          Add Team Members
-        </span>
-        <Button className="p-3" onClick={closeAddRemoveMembers}>
-          <XIcon className="text-white" size={16} weight="bold" />
-        </Button>
-      </div>
-      <div className="flex flex-1 flex-col p-4">
-        <EditMembersListForm
-          allMemberList={allMemberList}
-          currencySymbol={currencySymbol}
-          handleSubmit={handleSubmit}
-          members={members}
-          setAllMemberList={setAllMemberList}
-          setMembers={setMembers}
-          updateMemberState={updateMemberState}
-        />
-      </div>
-    </div>
+    <Dialog open onOpenChange={open => !open && closeAddRemoveMembers()}>
+      <DialogContent className="flex h-full max-h-[100dvh] w-full max-w-none flex-col gap-0 rounded-none border-0 p-0 sm:max-w-lg sm:rounded-2xl sm:border sm:p-0">
+        <DialogHeader className="border-b border-border px-4 py-4 text-left">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <DialogTitle>Manage project members</DialogTitle>
+              <DialogDescription>
+                Add teammates, update rates, or remove members from this
+                project.
+              </DialogDescription>
+            </div>
+            <Button
+              size="icon"
+              type="button"
+              variant="ghost"
+              onClick={closeAddRemoveMembers}
+            >
+              <X size={16} />
+            </Button>
+          </div>
+        </DialogHeader>
+        <div className="flex flex-1 flex-col overflow-y-auto p-4">
+          <EditMembersListForm
+            allMemberList={allMemberList}
+            currencySymbol={currencySymbol}
+            handleSubmit={handleSubmit}
+            members={members}
+            setAllMemberList={setAllMemberList}
+            setMembers={setMembers}
+            updateMemberState={updateMemberState}
+          />
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 };
 export default MembersListForm;
