@@ -75,7 +75,33 @@ RSpec.describe "Api::V1::Employments#update", type: :request do
         }, headers: auth_headers(user))
     end
 
-    it "forbids the user to update the employment details" do
+    it "updates employment" do
+      employment.reload
+      expect(response).to have_http_status(:ok)
+      expect(employment.designation).to eq("Software Engineer")
+      expect(employment.employment_type).to eq("Consultant")
+      expect(employment.employee_id).to eq("SA123")
+      expect(json_response["notice"]).to match("Employment updated successfully")
+    end
+  end
+
+  context "when a self-service user updates another user's employment" do
+    let(:book_keeper) { create(:user, current_workspace_id: company.id) }
+
+    before do
+      book_keeper.add_role :book_keeper, company
+      sign_in book_keeper
+      send_request(
+        :patch, api_v1_employment_path(user), params: {
+          employment: {
+            designation: "Software Engineer",
+            employment_type: "Consultant",
+            employee_id: "SA123"
+          }
+        }, headers: auth_headers(book_keeper))
+    end
+
+    it "forbids the update" do
       expect(response).to have_http_status(:forbidden)
       expect(json_response["errors"]).to eq("You are not authorized to perform this action.")
     end

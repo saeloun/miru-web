@@ -36,7 +36,7 @@ RSpec.describe "Api::V1::Employments#show", type: :request do
       get api_v1_employment_path(user), headers: auth_headers(user)
     end
 
-    it "forbids the user to access the employment details" do
+    it "returns the employment details for the current user" do
       expect(response).to have_http_status(:ok)
       expect(json_response["employment"]["designation"]).to eq(employment.designation)
       expect(json_response["employment"]["id"]).to eq(employment.id)
@@ -55,7 +55,28 @@ RSpec.describe "Api::V1::Employments#show", type: :request do
       get api_v1_employment_path(user), headers: auth_headers(user)
     end
 
-    it "forbids the user to access the employment details" do
+    it "returns the employment details for the current user" do
+      expect(response).to have_http_status(:ok)
+      expect(json_response["employment"]["designation"]).to eq(employment.designation)
+      expect(json_response["employment"]["id"]).to eq(employment.id)
+      expect(json_response["employment"]["employment_type"]).to eq(employment.employment_type)
+      expect(json_response["employment"]["joined_at"]).to eq(employment.joined_at.strftime("%m.%d.%Y"))
+      expect(json_response["employment"]["resigned_at"]).to eq(employment.resigned_at.strftime("%m.%d.%Y"))
+      expect(json_response["employment"]["employee_id"]).to eq(employment.employee_id)
+      expect(json_response["employment"]["email"]).to eq(user.email)
+    end
+  end
+
+  context "when a self-service user tries to access another user's employment" do
+    let!(:book_keeper) { create(:user, current_workspace_id: company.id) }
+
+    before do
+      book_keeper.add_role :book_keeper, company
+      sign_in book_keeper
+      get api_v1_employment_path(user), headers: auth_headers(book_keeper)
+    end
+
+    it "forbids access" do
       expect(response).to have_http_status(:forbidden)
       expect(json_response["errors"]).to eq("You are not authorized to perform this action.")
     end

@@ -83,4 +83,26 @@ RSpec.describe "Profile Settings", type: :system, js: true do
       expect(page).to have_content("Current Employment", wait: 10)
     end
   end
+
+  it "lets a book keeper access personal settings pages" do
+    book_keeper_user = create(:user,
+      first_name: "Ava",
+      last_name: "Finance",
+      email: "ava.finance@example.com",
+      current_workspace_id: company.id)
+    create(:employment, company:, user: book_keeper_user, designation: "Book Keeper", employment_type: "Salaried")
+    book_keeper_user.add_role :book_keeper, company
+    sign_in(book_keeper_user)
+
+    with_forgery_protection do
+      visit "/settings/profile"
+      expect(page).to have_css("#react-root", wait: 10)
+      expect(page).to have_content("Ava", wait: 10)
+      expect(page).to have_content("ava.finance@example.com", wait: 10)
+
+      visit "/settings/employment"
+      expect(page).to have_css("#react-root", wait: 10)
+      expect(page).to have_content("Current Employment", wait: 10)
+    end
+  end
 end
