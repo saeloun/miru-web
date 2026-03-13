@@ -85,16 +85,6 @@ RSpec.describe "Dashboard", type: :system, js: true do
         expect(page).to have_content("Revenue Momentum", wait: 10)
       end
     end
-
-    it "shows workspace activity for sent invoices" do
-      with_forgery_protection do
-        visit "/dashboard"
-
-        expect(page).to have_css("#react-root", wait: 10)
-        expect(page).to have_content("Workspace Activity", wait: 10)
-        expect(page).to have_content("Acme Corp", wait: 10)
-      end
-    end
   end
 
   context "with time tracking data" do

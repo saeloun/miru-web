@@ -25,6 +25,7 @@ import { useLocation } from "react-router-dom";
 import { useUserContext } from "context/UserContext";
 import { logoutApi } from "apis/api";
 import ThemeToggle from "../../common/ThemeToggle";
+import useThemeMode from "../../common/useThemeMode";
 import { hasProAccess } from "../../lib/planAccess";
 
 interface DashboardLayoutProps {
@@ -40,6 +41,13 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
   const { companyRole, user, company } = useUserContext();
+  const themeMode = useThemeMode();
+  const logoStyle = useMemo(
+    () => ({
+      filter: themeMode === "dark" ? "brightness(0) invert(1)" : "none",
+    }),
+    [themeMode]
+  );
 
   const navigationGroups = [
     {
@@ -226,7 +234,8 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
               <img
                 src={MiruLogoSVG}
                 alt="Miru"
-                className="h-6 w-6 dark:invert"
+                className="h-6 w-6"
+                style={logoStyle}
               />
               <span className="font-semibold text-foreground">Miru</span>
             </div>
@@ -246,7 +255,8 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
                   <img
                     src={MiruLogoSVG}
                     alt="Miru"
-                    className="h-6 w-6 dark:invert"
+                    className="h-6 w-6"
+                    style={logoStyle}
                   />
                   <span className="font-semibold text-foreground">Miru</span>
                 </div>
@@ -269,7 +279,8 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
               <img
                 src={MiruLogoSVG}
                 alt="Miru"
-                className="h-6 w-6 dark:invert"
+                className="h-6 w-6"
+                style={logoStyle}
               />
               {!sidebarCollapsed && (
                 <div className="text-left">
