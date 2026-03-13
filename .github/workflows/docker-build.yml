@@ -3,7 +3,7 @@ name: Build and Push Docker Images
 
 on:
   push:
-    branches: [develop, main]
+    branches: [develop, main, miru-2-0-upgrade-v2]
   pull_request:
     branches: [develop, main]
     types: [opened, synchronize, reopened]
@@ -17,6 +17,7 @@ concurrency:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
+  RENDER_SERVICE_ID: srv-d6leu6k50q8c73bsottg
 
 jobs:
   build-and-push:
@@ -113,3 +114,14 @@ jobs:
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
           echo "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:devcontainer-latest" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+
+      - name: Trigger Render image deploy
+        if: success() && github.event_name != 'pull_request' && github.ref == 'refs/heads/miru-2-0-upgrade-v2'
+        env:
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+        run: |
+          curl --fail-with-body --silent --show-error \
+            -X POST \
+            -H "Authorization: Bearer ${RENDER_API_KEY}" \
+            -H "Content-Type: application/json" \
+            "https://api.render.com/v1/services/${RENDER_SERVICE_ID}/deploys"
