@@ -134,7 +134,7 @@ const TeamTable: React.FC = () => {
       case Roles.ADMIN:
         return <Shield size={16} className="text-blue-600" />;
       default:
-        return <User size={16} className="text-gray-500" />;
+        return <User size={16} className="text-muted-foreground" />;
     }
   };
 
@@ -160,7 +160,7 @@ const TeamTable: React.FC = () => {
         );
       case Roles.EMPLOYEE:
         return (
-          <Badge className="bg-gray-100 text-gray-800 hover:bg-gray-100">
+          <Badge className="border-border bg-muted text-foreground hover:bg-muted">
             Employee
           </Badge>
         );
@@ -179,7 +179,7 @@ const TeamTable: React.FC = () => {
         );
       case "inactive":
         return (
-          <Badge className="bg-gray-100 text-gray-600 hover:bg-gray-100">
+          <Badge className="border-border bg-muted text-muted-foreground hover:bg-muted">
             Inactive
           </Badge>
         );
@@ -225,14 +225,14 @@ const TeamTable: React.FC = () => {
             <Avatar className="h-9 w-9">
               <AvatarImage src={gravatarUrl} alt={member.name} />
               <AvatarImage src={member.avatar} alt={member.name} />
-              <AvatarFallback className="bg-gray-100 text-sm">
+              <AvatarFallback className="bg-muted text-sm text-foreground">
                 {member.firstName?.[0]}
                 {member.lastName?.[0]}
               </AvatarFallback>
             </Avatar>
             <div>
-              <p className="font-medium text-gray-900">{member.name}</p>
-              <p className="text-sm text-gray-500">{member.email}</p>
+              <p className="font-medium text-foreground">{member.name}</p>
+              <p className="text-sm text-muted-foreground">{member.email}</p>
             </div>
           </div>
         );
@@ -269,11 +269,11 @@ const TeamTable: React.FC = () => {
 
         return (
           <div className="text-sm">
-            <p className="font-medium text-gray-900">
+            <p className="font-medium text-foreground">
               {member.designation || "—"}
             </p>
             {member.department && (
-              <p className="text-gray-500">{member.department}</p>
+              <p className="text-muted-foreground">{member.department}</p>
             )}
           </div>
         );
@@ -286,7 +286,7 @@ const TeamTable: React.FC = () => {
         const projects = row.original.projects || 0;
 
         return (
-          <div className="text-sm text-gray-600">
+          <div className="text-sm text-muted-foreground">
             {projects} {projects === 1 ? "project" : "projects"}
           </div>
         );
@@ -322,8 +322,10 @@ const TeamTable: React.FC = () => {
 
         return (
           <div className="text-sm">
-            <p className="font-medium">{totalHours.toFixed(1)}h</p>
-            <p className="text-xs text-gray-500">
+            <p className="font-medium text-foreground">
+              {totalHours.toFixed(1)}h
+            </p>
+            <p className="text-xs text-muted-foreground">
               {billablePercentage.toFixed(0)}% billable
             </p>
           </div>
@@ -368,7 +370,7 @@ const TeamTable: React.FC = () => {
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => handleDelete(member)}
-                className="text-red-600"
+                className="text-destructive"
               >
                 <Trash size={16} className="mr-2" />
                 Remove member
@@ -388,8 +390,8 @@ const TeamTable: React.FC = () => {
     return (
       <div className="flex items-center justify-center h-96">
         <div className="text-center">
-          <Users size={48} className="mx-auto mb-4 text-gray-400" />
-          <p className="text-gray-600">Failed to load team members</p>
+          <Users size={48} className="mx-auto mb-4 text-muted-foreground" />
+          <p className="text-muted-foreground">Failed to load team members</p>
         </div>
       </div>
     );
@@ -420,7 +422,7 @@ const TeamTable: React.FC = () => {
           <div className="flex flex-col items-start gap-2 md:items-end">
             <Button
               onClick={() => setShowInviteDialog(true)}
-              className="bg-gray-900 hover:bg-gray-800 text-white"
+              className="bg-primary text-primary-foreground hover:bg-primary/90"
               disabled={teamSeatLimitReached}
             >
               <UserPlus size={20} className="mr-2" />
@@ -443,47 +445,51 @@ const TeamTable: React.FC = () => {
 
       {/* Stats Cards */}
       <div className="grid gap-4 md:grid-cols-4">
-        <Card className="border-gray-200">
+        <Card className="border-border">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Members</CardTitle>
-            <Users size={20} className="text-gray-400" />
+            <Users size={20} className="text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{teamMembers.length}</div>
-            <p className="text-xs text-gray-600 mt-1">{activeMembers} active</p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              {activeMembers} active
+            </p>
           </CardContent>
         </Card>
 
-        <Card className="border-gray-200">
+        <Card className="border-border">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Hours</CardTitle>
-            <Calendar size={20} className="text-gray-400" />
+            <Calendar size={20} className="text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{totalHours.toFixed(0)}h</div>
-            <p className="text-xs text-gray-600 mt-1">This month</p>
+            <p className="mt-1 text-xs text-muted-foreground">This month</p>
           </CardContent>
         </Card>
 
-        <Card className="border-gray-200">
+        <Card className="border-border">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
               Active Projects
             </CardTitle>
-            <Crown size={20} className="text-gray-400" />
+            <Crown size={20} className="text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{totalProjects}</div>
-            <p className="text-xs text-gray-600 mt-1">Across all members</p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              Across all members
+            </p>
           </CardContent>
         </Card>
 
-        <Card className="border-gray-200">
+        <Card className="border-border">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
               Avg Utilization
             </CardTitle>
-            <Shield size={20} className="text-gray-400" />
+            <Shield size={20} className="text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
@@ -499,13 +505,13 @@ const TeamTable: React.FC = () => {
                 : 0}
               %
             </div>
-            <p className="text-xs text-gray-600 mt-1">Billable hours</p>
+            <p className="mt-1 text-xs text-muted-foreground">Billable hours</p>
           </CardContent>
         </Card>
       </div>
 
       {/* Data Table */}
-      <Card className="border-gray-200">
+      <Card className="border-border">
         <CardContent>
           {teamMembers.length > 0 ? (
             <DataTable
@@ -515,8 +521,8 @@ const TeamTable: React.FC = () => {
             />
           ) : (
             <div className="text-center py-12">
-              <Users size={48} className="mx-auto mb-4 text-gray-300" />
-              <p className="text-gray-600 mb-4">No team members yet</p>
+              <Users size={48} className="mx-auto mb-4 text-muted-foreground" />
+              <p className="mb-4 text-muted-foreground">No team members yet</p>
               {isAdminUser && (
                 <Button
                   variant="outline"
